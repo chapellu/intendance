@@ -1,0 +1,109 @@
+# Re-worded structured encoding of a real Marie Chioca recipe, per the licensing
+# frame in map #26: the dish, quantities and process are unprotectable savoir-faire
+# (TGI Paris 1974; 1997); her prose and photos are NOT reproduced here.
+
+recipe:
+  id: burgers-de-lentilles
+  title: Petits burgers de lentilles au tofu fumé
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Petits burgers pour grands gourmands », blog Saines Gourmandises, 23 février 2012"
+    url: https://saines-gourmandises.fr/comment-rendre-seduisant-au-possible-un-reste-de-lentilles/
+    encoding: re-worded structured steps; no original prose or photos
+  yields:
+    portions_eq: 4
+    pieces: 10
+  time_min_total: 30
+  active_min: 25
+
+  # The chaining hook (#30): this recipe is BUILT on a reste. If the base is in
+  # stock, the compiler starts here; if not, it points at the fallback recipe.
+  accepts:
+    - type: lentilles-vertes-cuites
+      qty: {amount: 400, unit: g}
+      required: true
+      fallback_recipe: lentilles-mijotees
+
+  ingredients:
+    - {id: lentilles-cuites, name: lentilles vertes cuites, qty: 400, unit: g, from_accepts: true}
+    - id: tofu-fume
+      name: tofu fumé
+      qty: 200
+      unit: g
+      subs:
+        - {name: lardons fumés, note: "version non végé, même poids", ratio: 1.0}
+    - {id: oignons, name: oignons, qty: 3, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - id: farine
+      name: farine complète (blé ou épeautre)
+      qty: 3
+      unit: c. à s.
+    - id: bouillon-miso
+      name: cube de bouillon de légumes au miso
+      qty: 1
+      unit: pièce
+      seasoning: true
+      subs:
+        - {name: cube de bouillon de légumes bio, note: "à défaut de miso", ratio: 1.0}
+    - {id: poivre-5-baies, name: poivre 5 baies, qty: 1, unit: pincée, seasoning: true}
+    - id: son-avoine
+      name: son d'avoine (panure)
+      qty: 50
+      unit: g
+      subs:
+        - {name: flocons d'avoine mixés, note: "même usage", ratio: 1.0}
+
+  steps:
+    - id: dorer
+      action: "Faire dorer doucement les oignons émincés et le tofu fumé en dés dans l'huile d'olive, jusqu'à belle coloration"
+      needs: [pan-fry]
+      time_min: 10
+      attended: true
+    - id: hacher
+      action: "Hacher grossièrement le mélange oignons-tofu"
+      needs: [chop-coarse]        # Chioca uses a food processor — the household has none
+      time_min: 2
+    - id: melanger
+      action: "Mélanger avec les lentilles, le cube émietté, le poivre et la farine ; pétrir en pâte souple"
+      needs: []
+      time_min: 4
+      seasoning_gate: true
+      kid: {age_min_months: 24, task: "malaxer la pâte avec les mains (propres !)"}
+    - id: faconner
+      action: "Façonner une dizaine de petites croquettes à la main"
+      needs: []
+      time_min: 5
+      kid: {age_min_months: 24, task: "tapoter et former les croquettes"}
+    - id: paner
+      action: "Rouler chaque croquette dans le son d'avoine"
+      needs: []
+      time_min: 4
+      kid: {age_min_months: 24, task: "rouler les croquettes dans l'assiette de son"}
+    - id: cuire
+      action: "Faire dorer les croquettes quelques minutes de chaque côté"
+      needs: [pan-fry]
+      time_min: 8
+      attended: true
+
+  baby_portion:
+    take: "3 c. à s. de lentilles cuites nature, avant l'étape du mélange (le bouillon et le tofu fumé sont trop salés)"
+    prep: "écraser ou mixer avec un peu d'eau tiède"
+    needs: [blend-smooth]
+
+  emits:
+    - kind: reste-plat
+      type: burgers-lentilles
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+      note: "très bons froids — format boîte coworking"
+
+  plan_b:
+    - drop: paner
+      saves_min: 4
+      effect: "croquettes moins croustillantes"
+    - swap:
+        step: faconner
+        action: "Former des galettes directement à la cuillère dans la poêle"
+        saves_min: 4
+      effect: "galettes rustiques au lieu de croquettes"

@@ -1,0 +1,66 @@
+# The kitchen table as data — ground truth from issue #29 (closed 2026-08-08).
+# This file is the compiler's second input: every recipe is compiled *against* it.
+
+household:
+  name: Francheville
+  fridge_window_days: 4          # lax household, trusted cold chain (#29)
+  freezer_drawers: 3             # binding constraint; one proposed as « plats maison prêts »
+
+  eaters:
+    - id: adulte-1
+      kind: adult
+      portion_eq: 1.0
+    - id: adulte-2
+      kind: adult
+      portion_eq: 1.0
+    - id: grand
+      kind: toddler
+      age_months: 30
+      portion_eq: 0.5
+    - id: petit
+      kind: baby
+      age_months: 12
+      portion_eq: 0.25
+      diet: baby                  # unsalted, mashed/blended — triggers the set-aside step
+  # third baby due ≈ end 2026: will appear here as diet: baby at diversification
+
+  exclusions:
+    - piquant
+    - choux de bruxelles
+
+  # Equipment inventory (#29, rounds 2 + correction). Tools declare *capabilities*;
+  # steps require capabilities, never tools — that indirection is the whole trick.
+  equipment:
+    - id: induction-3-feux
+      capabilities: [pan-fry, simmer, boil]
+    - id: four-chaleur-tournante
+      capabilities: [bake, gratin, roast]
+    - id: micro-ondes
+      capabilities: [reheat]
+    - id: cocotte-7.5l
+      label: cocotte 7,5 L
+      capabilities: [simmer-large, steam]     # panier vapeur (#29 correction)
+    - id: sauteuse-28
+      label: sauteuse 28 cm
+      capabilities: [pan-fry, simmer]
+    - id: poele-inox-30
+      label: poêle inox 30 cm
+      capabilities: [pan-fry]
+    - id: poeles-ingenio
+      label: poêles Ingenio 30/26 cm (poignées amovibles)
+      capabilities: [pan-fry, oven-transfer]
+    - id: casseroles
+      label: casseroles 2,6 L / 1,6 L
+      capabilities: [simmer, boil]
+    - id: plats-a-gratin
+      label: plats à gratin 35×18 / 32×20
+      capabilities: [gratin-vessel]
+    - id: mixeur-plongeur
+      capabilities: [blend-smooth, puree]
+    - id: mini-blender
+      label: petit blender du mixeur plongeur
+      capabilities: [chop-coarse-small, blend-small]
+    - id: balance-tefal
+      capabilities: [weigh]
+    # NOT owned: food processor, steamer appliance, stand mixer, Thermomix-class robot.
+    # Small kitchen: the compiler must never suggest a purchase (#29).

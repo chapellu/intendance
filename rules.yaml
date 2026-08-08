@@ -1,0 +1,44 @@
+# Capability fallback rules — GLOBAL, not per-recipe. This is the anti-explosion bet
+# of ticket #31: a recipe step requires a capability; these chains say how each
+# capability degrades onto whatever the household actually owns. Adding a recipe
+# adds zero rules; adding a tool amends a handful of chains.
+#
+# Each entry: ordered candidates. First one satisfiable by household equipment wins.
+# `rewrite` replaces the step's tool phrase; `time_delta_min` adjusts the step timer.
+
+capabilities:
+  chop-coarse:
+    - tool: food-processor
+    - tool: mini-blender
+      rewrite: "au petit blender, en 2–3 fois, par impulsions courtes"
+      time_delta_min: 3
+    - tool: couteau
+      rewrite: "au couteau, sur une planche"
+      time_delta_min: 5
+
+  blend-smooth:
+    - tool: blender
+    - tool: mixeur-plongeur
+      rewrite: "au mixeur plongeur, directement dans le récipient"
+      time_delta_min: 0
+
+  steam:
+    - tool: cuit-vapeur
+    - tool: cocotte-7.5l
+      rewrite: "dans le panier vapeur de la cocotte, 2 cm d'eau au fond"
+      time_delta_min: 0
+    - tool: micro-ondes
+      rewrite: "au micro-ondes, récipient couvert avec un fond d'eau"
+      time_delta_min: -5
+
+  pan-fry: [{tool: sauteuse-28}, {tool: poele-inox-30}, {tool: poeles-ingenio}]
+  simmer: [{tool: casseroles}, {tool: sauteuse-28}]
+  simmer-large: [{tool: cocotte-7.5l}]
+  bake: [{tool: four-chaleur-tournante}]
+  gratin: [{tool: four-chaleur-tournante}]
+  puree: [{tool: mixeur-plongeur}, {tool: presse-puree, rewrite: "au presse-purée", time_delta_min: 3}]
+  weigh:
+    - tool: balance-tefal
+    - tool: none
+      rewrite: "en volume (voir équivalences)"
+      time_delta_min: 0

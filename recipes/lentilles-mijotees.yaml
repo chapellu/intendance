@@ -1,0 +1,54 @@
+# Household staple, authored for the prototype (no external source).
+# Role in the demo: the dish that EMITS the cooked-lentil base the Chioca
+# burgers ACCEPT — one edge of the chaining graph from ticket #30.
+
+recipe:
+  id: lentilles-mijotees
+  title: Lentilles vertes mijotées aux carottes
+  lang: fr
+  yields:
+    portions_eq: 4          # adult-equivalents at base quantities
+  time_min_total: 40
+  active_min: 10
+
+  ingredients:
+    - {id: lentilles-seches, name: lentilles vertes sèches, qty: 300, unit: g}
+    - {id: carottes, name: carottes, qty: 4, unit: pièce}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: laurier, name: feuille de laurier, qty: 1, unit: pièce}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+
+  steps:
+    - id: lancer-mijotage
+      action: "Rincer les lentilles, les couvrir de 3 fois leur volume d'eau froide avec l'oignon émincé et le laurier, porter à frémissement puis laisser mijoter à couvert"
+      needs: [simmer-large]
+      time_min: 30
+      attended: false
+    - id: carottes-vapeur
+      action: "Pendant le mijotage : carottes en rondelles, cuites à la vapeur au-dessus des lentilles"
+      needs: [steam]
+      time_min: 15
+      parallel_with: lancer-mijotage
+      kid: {age_min_months: 30, task: "mettre les rondelles de carottes dans le panier"}
+    - id: assaisonner
+      action: "Égoutter, retirer le laurier, saler"
+      needs: []
+      time_min: 2
+      seasoning_gate: true    # the baby set-aside is injected BEFORE this step
+
+  baby_portion:
+    take: "3 c. à s. de lentilles + quelques rondelles de carottes, avant salage"
+    prep: "mixer avec un peu d'eau de cuisson tiède"
+    needs: [blend-smooth]
+
+  emits:
+    - kind: base
+      type: lentilles-vertes-cuites
+      qty_band: 2-repas       # 300 g dry ≈ 700 g cooked: dinner + a 400 g reste
+      keeps: {frigo_days: 4, congelo: true}
+    - kind: portion-bebe
+      type: puree-lentilles-carottes
+      qty_band: 1-repas
+      keeps: {frigo_days: 2}
+
+  plan_b: []                  # nothing to compress: passive simmer

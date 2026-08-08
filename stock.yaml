@@ -1,0 +1,8 @@
+# Simulated stock of chaining outputs (#30): what previous cooking left behind.
+# In the real app this is inferred from logged cooking events, never typed by hand.
+outputs:
+  - type: lentilles-vertes-cuites
+    kind: base
+    qty_band: 2-repas
+    born: 2026-08-06
+    location: frigo
