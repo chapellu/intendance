@@ -16,6 +16,7 @@ from pathlib import Path
 
 import yaml
 
+import catalogue
 import semaine_model as M
 
 HERE = Path(__file__).parent
@@ -26,16 +27,14 @@ V, J, C = "\x1b[32m", "\x1b[33m", "\x1b[36m"
 
 
 def charger(today, n_jours):
-    catalogue = {}
-    for p in sorted((HERE / "recipes").glob("*.yaml")):
-        r = yaml.safe_load(p.read_text())["recipe"]
-        catalogue[r["id"]] = r
+    cat = catalogue.charger_recettes(HERE / "recipes")
     foyer = yaml.safe_load((HERE / "household.yaml").read_text())["household"]
     stock = yaml.safe_load((HERE / "stock.yaml").read_text())
     rayons = yaml.safe_load((HERE / "rayons.yaml").read_text())
+    equilibre = yaml.safe_load((HERE / "equilibre.yaml").read_text())
     jours = tuple(JOURS[(today.weekday() + i) % 7] for i in range(n_jours))
-    return M.Contexte(catalogue=catalogue, foyer=foyer, stock=stock,
-                      rayons=rayons, today=today, jours=jours)
+    return M.Contexte(catalogue=cat, foyer=foyer, stock=stock, rayons=rayons,
+                      equilibre=equilibre, today=today, jours=jours)
 
 
 def frame(ctx, etat, vue_liste=False, message=""):
@@ -95,6 +94,22 @@ def frame(ctx, etat, vue_liste=False, message=""):
         etiq = f"{J}périmé (J-{f['age']}, fenêtre {ctx.foyer['fridge_window_days']} j){R}" \
             if f["perime"] else f"{D}J-{f['age']}, encore bon et non utilisé{R}"
         out.append(f"       {D}frigo :{R} {f['type']} — {etiq}")
+
+    # ---- what the week covers, and what it still lacks
+    cov = M.couverture(ctx, etat.choix)
+    prot = ", ".join(f"{k}×{v}" for k, v in sorted(cov["proteine"].items())) or "—"
+    out.append(f"{B}APPORTS{R} protéines : {prot}   {D}·{R}   "
+               f"légumes : {len(cov['familles'])} familles "
+               f"{D}({', '.join(sorted(cov['familles'])) or '—'}){R}")
+    besoins = []
+    for p, n in cov["manques"].items():
+        besoins.append(f"{p} ×{n}")
+    if cov["familles_manquantes"]:
+        besoins.append(f"{cov['familles_manquantes']} famille(s) de légumes")
+    if besoins:
+        out.append(f"        {J}manque encore : {' · '.join(besoins)}{R}")
+    elif any(etat.choix):
+        out.append(f"        {V}cibles de la semaine atteintes{R}")
     out.append("")
 
     if vue_liste:
@@ -131,8 +146,13 @@ def frame(ctx, etat, vue_liste=False, message=""):
                 why.append(f"{J}hors budget{R}")
             if l["emits"]:
                 why.append(f"{D}→ laisse {', '.join(l['emits'])}{R}")
-            out.append(f"  {B}{k}{R}. {l['titre']:<42} {D}⏱{R} {l['minutes']:>2} min  "
-                       f"{cout:<22} " + "  ".join(why))
+            tete = (f"  {B}{k:>2}{R}. {l['titre']:<40} {D}⏱{R} {l['minutes']:>2} min  "
+                    f"{cout:<22} ")
+            if etat.mode == "equilibre":
+                tete += f"{C}{l['score']:>5}{R}  "
+            out.append(tete + "  ".join(why))
+            if etat.mode == "equilibre" and l["pourquoi"]:
+                out.append(f"        {D}{' · '.join(l['pourquoi'])}{R}")
         out.append("")
 
     if message:

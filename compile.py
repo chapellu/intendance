@@ -104,7 +104,16 @@ def stock_has(stock, wanted_type, fridge_window_days, today):
 def compile_recipe(recipe_id, household, rules, stock, time_budget=None,
                    kids_mode=False, today=None):
     today = today or dt.date.today()
-    r = load(HERE / "recipes" / f"{recipe_id}.yaml")["recipe"]
+    import catalogue
+    cat = catalogue.charger_recettes(HERE / "recipes")
+    if recipe_id not in cat:
+        return f"Plat inconnu : {recipe_id}"
+    r = cat[recipe_id]
+    if not catalogue.est_cuisinable(r):
+        return (f"« {r['title']} » est saisi au niveau plan : il a des ingrédients "
+                f"et des apports, mais pas d'étapes.\nIl suffit pour planifier la "
+                f"semaine et faire les courses (plan.py, semaine_tui.py) ; pour le "
+                f"cuisiner, il faut d'abord lui écrire ses étapes.")
     hh = household["household"]
     notes, prelude, steps_out = [], [], []
 

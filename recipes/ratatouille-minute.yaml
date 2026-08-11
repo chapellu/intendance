@@ -11,6 +11,13 @@ recipe:
   time_min_total: 35
   active_min: 15
 
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: [cucurbitacee, solanacee, allium]
+    profil: mijote
+    origine: francais
+
   ingredients:
     - {id: courgettes, name: courgettes, qty: 2, unit: pièce}
     - {id: aubergine, name: aubergine, qty: 1, unit: pièce}

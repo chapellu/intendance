@@ -25,6 +25,13 @@ recipe:
       required: true
       fallback_recipe: lentilles-mijotees
 
+  apports:
+    proteine: legumineuse
+    feculent: aucun
+    legumes: [allium]
+    profil: poele
+    origine: francais
+
   ingredients:
     - {id: lentilles-cuites, name: lentilles vertes cuites, qty: 400, unit: g, from_accepts: true}
     - id: tofu-fume

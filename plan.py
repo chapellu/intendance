@@ -26,6 +26,7 @@ from pathlib import Path
 
 import yaml
 
+import catalogue
 import compile as rc  # shadows the builtin `compile` in this module only
 
 HERE = Path(__file__).parent
@@ -49,7 +50,8 @@ def canon(ing_id, aliases):
     return aliases.get(ing_id, ing_id)
 
 
-def plan_week(days, household, rules, stock, rayons, today):
+def plan_week(days, household, rules, stock, rayons, today, cat=None):
+    cat = cat if cat is not None else catalogue.charger_recettes(HERE / "recipes")
     hh = household["household"]
     need = rc.household_portions(hh)
     aliases = rayons.get("aliases", {})
@@ -66,7 +68,7 @@ def plan_week(days, household, rules, stock, rayons, today):
 
     for offset, entry in enumerate(days):
         date = today + dt.timedelta(days=offset)
-        r = rc.load(HERE / "recipes" / f"{entry['recipe']}.yaml")["recipe"]
+        r = cat[entry["recipe"]]
 
         # --- chaining: does an earlier dish (or the fridge) cover what this accepts?
         covered = set()

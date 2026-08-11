@@ -11,6 +11,13 @@ recipe:
   time_min_total: 30
   active_min: 10
 
+  apports:
+    proteine: aucune
+    feculent: pommes-de-terre
+    legumes: [cucurbitacee, allium]
+    profil: soupe
+    origine: francais
+
   ingredients:
     - {id: courgettes, name: courgettes, qty: 4, unit: pièce}
     - {id: pomme-de-terre, name: pomme de terre, qty: 1, unit: pièce}

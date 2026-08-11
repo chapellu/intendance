@@ -1,0 +1,52 @@
+# ---------------------------------------------------------------------------
+# Cibles d'équilibre de la semaine, et poids du classement « équilibre ».
+#
+# HONNÊTETÉ SUR CE QUE ÇA FAIT, ET NE FAIT PAS
+# Ceci ne calcule aucun apport nutritionnel. C'est une *couverture par
+# catégories* : est-ce que la semaine touche assez de sources de protéines
+# différentes, assez de familles de légumes, sans répéter trois fois le même
+# féculent ni le même format de plat. C'est suffisant pour proposer un plat qui
+# complète la semaine, et très insuffisant pour prétendre à un équilibre
+# nutritionnel réel.
+#
+# Le vrai chemin, si on veut des apports au sens strict : la table de
+# composition **Ciqual** de l'ANSES, publiée sous **Licence Ouverte** — donc
+# compatible avec la politique de contenu du projet (CC0 / Licence Ouverte /
+# CC BY / travail propre), contrairement aux bases sous BY-SA. Les repères de
+# fréquence ci-dessous devraient de même être sourcés sur les recommandations
+# du PNNS plutôt que posés à vue. **Les chiffres actuels ne sont pas sourcés :
+# ce sont des hypothèses de prototype, à remplacer.**
+# ---------------------------------------------------------------------------
+
+# Fréquences visées sur une semaine (hypothèses non sourcées — cf. ci-dessus).
+cibles:
+  proteine:
+    legumineuse: {min: 2}
+    poisson: {min: 1}
+    oeuf: {min: 1}
+    viande-rouge: {max: 1}
+    viande-blanche: {max: 2}
+    fromage: {max: 2}
+    tofu-soja: {min: 0}
+  # Nombre de familles de légumes distinctes visé sur la semaine.
+  familles_legumes_min: 5
+  # Au-delà de ce nombre d'occurrences, un féculent / format / origine
+  # commence à peser sur le score : c'est le « varier les plaisirs ».
+  repetition_max:
+    feculent: 2
+    profil: 2
+    origine: 2
+
+# Poids du score. Positif = attire le plat vers le haut de la proposition.
+poids:
+  proteine_manquante: 6      # comble une cible non atteinte
+  proteine_saturee: -5       # dépasse un plafond
+  famille_legume_neuve: 2    # chaque famille de légumes pas encore vue
+  repetition_feculent: -3
+  repetition_profil: -2
+  repetition_origine: -2
+  chaine_couverte: 4         # sa base est déjà cuite plus tôt dans la semaine
+  ecoule_frigo: 5            # consomme un reste qui dort au frigo
+  chaine_manquante: -8       # exige une base que rien ne produit avant
+  hors_budget: -4
+  article_marginal: -0.4     # la liste de courses pèse, mais ne décide plus

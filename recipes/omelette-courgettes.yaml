@@ -11,6 +11,13 @@ recipe:
   time_min_total: 20
   active_min: 18
 
+  apports:
+    proteine: oeuf
+    feculent: aucun
+    legumes: [cucurbitacee, allium]
+    profil: rapide
+    origine: francais
+
   ingredients:
     - {id: oeufs, name: œufs, qty: 6, unit: pièce}
     - {id: courgettes, name: courgettes, qty: 2, unit: pièce}

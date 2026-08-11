@@ -1,0 +1,334 @@
+# ---------------------------------------------------------------------------
+# RÉPERTOIRE — saisie en vrac, « niveau plan »
+#
+# À CORRIGER PAR L'UTILISATEUR. Les plats ci-dessous sont une amorce : ceux que
+# #29 nomme explicitement (bolognaise, fajitas, gnocchis) plus des classiques
+# plausibles pour ce foyer. Les quantités et les compositions sont des
+# hypothèses, pas votre façon de faire.
+#
+# LA DÉCOUVERTE QUI JUSTIFIE CE FICHIER : pour *planifier* et *faire les
+# courses*, on n'a pas besoin de la recette. Il faut le titre, le temps, les
+# ingrédients et les apports. Les étapes, le plan B, les tâches enfants et la
+# portion bébé ne servent qu'au moment de cuisiner. Un plat peut donc entrer
+# dans le catalogue en trente secondes, à « niveau plan », et être complété
+# plus tard — c'est la seule façon d'atteindre les trente plats sans lesquels
+# le choix ne veut rien dire.
+#
+# `apports` porte les deux critères demandés :
+#   proteine / feculent / legumes  → compléter correctement les apports
+#   profil / origine               → varier les plaisirs
+# ---------------------------------------------------------------------------
+
+recipes:
+  - id: sauce-bolognaise
+    title: Sauce bolognaise
+    yields: {portions_eq: 6}
+    time_min_total: 60
+    apports:
+      proteine: viande-rouge
+      feculent: aucun
+      legumes: [solanacee, allium, racine]
+      profil: mijote
+      origine: italien
+    ingredients:
+      - {id: boeuf-hache, name: bœuf haché, qty: 500, unit: g}
+      - {id: tomates-pelees, name: tomates pelées en conserve, qty: 800, unit: g}
+      - {id: carottes, name: carottes, qty: 2, unit: pièce}
+      - {id: oignon, name: oignon, qty: 2, unit: pièce}
+      - {id: ail, name: ail, qty: 2, unit: gousse}
+      - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+      - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    emits:
+      - kind: base
+        type: sauce-bolognaise
+        qty_band: 2-repas
+        keeps: {frigo_days: 3, congelo: true}
+
+  - id: pates-bolognaise
+    title: Pâtes à la bolognaise
+    yields: {portions_eq: 4}
+    time_min_total: 15
+    apports:
+      proteine: viande-rouge
+      feculent: pates
+      legumes: [solanacee]
+      profil: rapide
+      origine: italien
+    accepts:
+      - type: sauce-bolognaise
+        qty: {amount: 500, unit: g}
+        required: true
+        fallback_recipe: sauce-bolognaise
+    ingredients:
+      - {id: sauce-bolognaise-ing, name: sauce bolognaise, qty: 500, unit: g, from_accepts: true}
+      - {id: pates, name: "pâtes longues (spaghetti, linguine)", qty: 350, unit: g}
+      - {id: fromage-rape, name: parmesan ou comté râpé, qty: 60, unit: g}
+
+  - id: lasagnes
+    title: Lasagnes
+    yields: {portions_eq: 6}
+    time_min_total: 50
+    apports:
+      proteine: viande-rouge
+      feculent: pates
+      legumes: [solanacee]
+      profil: four
+      origine: italien
+    accepts:
+      - type: sauce-bolognaise
+        qty: {amount: 700, unit: g}
+        required: true
+        fallback_recipe: sauce-bolognaise
+    ingredients:
+      - {id: sauce-bolognaise-ing, name: sauce bolognaise, qty: 700, unit: g, from_accepts: true}
+      - {id: pates-lasagne, name: plaques à lasagne, qty: 250, unit: g}
+      - {id: lait, name: lait, qty: 50, unit: cl}
+      - {id: farine, name: farine, qty: 4, unit: c. à s.}
+      - {id: fromage-rape, name: comté râpé, qty: 100, unit: g}
+    emits:
+      - kind: reste-plat
+        type: lasagnes
+        qty_band: lunchbox
+        keeps: {frigo_days: 3, congelo: true}
+
+  - id: gnocchis-poelees
+    title: Gnocchis poêlés aux légumes
+    yields: {portions_eq: 4}
+    time_min_total: 25
+    apports:
+      proteine: fromage
+      feculent: pommes-de-terre
+      legumes: [cucurbitacee, allium]
+      profil: poele
+      origine: italien
+    ingredients:
+      - {id: gnocchis, name: gnocchis à poêler, qty: 500, unit: g}
+      - {id: courgettes, name: courgettes, qty: 2, unit: pièce}
+      - {id: oignon, name: oignon, qty: 1, unit: pièce}
+      - {id: fromage-rape, name: parmesan râpé, qty: 60, unit: g}
+      - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+
+  - id: poulet-roti
+    title: Poulet rôti et pommes de terre
+    yields: {portions_eq: 6}
+    time_min_total: 80
+    apports:
+      proteine: viande-blanche
+      feculent: pommes-de-terre
+      legumes: [allium, racine]
+      profil: four
+      origine: francais
+    ingredients:
+      - {id: poulet, name: poulet fermier entier, qty: 1, unit: pièce}
+      - {id: pommes-de-terre, name: pommes de terre, qty: 1, unit: kg}
+      - {id: oignon, name: oignon, qty: 2, unit: pièce}
+      - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+      - {id: thym, name: thym, qty: 1, unit: c. à c., seasoning: true}
+    emits:
+      - kind: base
+        type: poulet-cuit
+        qty_band: 2-repas
+        keeps: {frigo_days: 3, congelo: true}
+      - kind: base
+        type: carcasse-volaille
+        qty_band: 1-repas
+        keeps: {frigo_days: 2}
+
+  - id: fajitas-poulet
+    title: Fajitas au poulet
+    yields: {portions_eq: 4}
+    time_min_total: 25
+    apports:
+      proteine: viande-blanche
+      feculent: pain
+      legumes: [solanacee, allium]
+      profil: poele
+      origine: mexicain
+    accepts:
+      - type: poulet-cuit
+        qty: {amount: 400, unit: g}
+        required: false
+        fallback_recipe: poulet-roti
+    ingredients:
+      - {id: poulet-cuit-ing, name: poulet cuit effiloché, qty: 400, unit: g, from_accepts: true}
+      - {id: tortillas, name: tortillas de blé, qty: 8, unit: pièce}
+      - {id: poivron, name: poivrons, qty: 2, unit: pièce}
+      - {id: oignon, name: oignon, qty: 1, unit: pièce}
+      - {id: creme, name: crème fraîche, qty: 10, unit: cl}
+      - {id: fromage-rape, name: fromage râpé, qty: 80, unit: g}
+
+  - id: soupe-de-poule
+    title: Soupe de poule aux vermicelles
+    yields: {portions_eq: 4}
+    time_min_total: 45
+    apports:
+      proteine: viande-blanche
+      feculent: pates
+      legumes: [racine, allium]
+      profil: soupe
+      origine: francais
+    accepts:
+      - type: carcasse-volaille
+        qty: {amount: 1, unit: pièce}
+        required: true
+        fallback_recipe: poulet-roti
+    ingredients:
+      - {id: carcasse-ing, name: carcasse de volaille, qty: 1, unit: pièce, from_accepts: true}
+      - {id: carottes, name: carottes, qty: 3, unit: pièce}
+      - {id: poireau, name: poireau, qty: 1, unit: pièce}
+      - {id: vermicelles, name: vermicelles, qty: 100, unit: g}
+
+  - id: curry-pois-chiches
+    title: Curry de pois chiches au lait de coco
+    yields: {portions_eq: 4}
+    time_min_total: 30
+    apports:
+      proteine: legumineuse
+      feculent: riz
+      legumes: [solanacee, allium]
+      profil: mijote
+      origine: indien
+    ingredients:
+      - {id: pois-chiches, name: pois chiches cuits (bocal), qty: 500, unit: g}
+      - {id: lait-coco, name: lait de coco, qty: 40, unit: cl}
+      - {id: tomates-pelees, name: tomates pelées en conserve, qty: 400, unit: g}
+      - {id: oignon, name: oignon, qty: 1, unit: pièce}
+      - {id: riz, name: riz basmati, qty: 250, unit: g}
+      - {id: curry, name: curry doux en poudre, qty: 2, unit: c. à c., seasoning: true}
+    emits:
+      - kind: reste-plat
+        type: curry-pois-chiches
+        qty_band: lunchbox
+        keeps: {frigo_days: 3, congelo: true}
+
+  - id: saumon-riz-brocoli
+    title: Pavé de saumon, riz et brocoli
+    yields: {portions_eq: 4}
+    time_min_total: 25
+    apports:
+      proteine: poisson
+      feculent: riz
+      legumes: [crucifere]
+      profil: poele
+      origine: francais
+    ingredients:
+      - {id: saumon, name: pavés de saumon, qty: 4, unit: pièce}
+      - {id: riz, name: riz, qty: 250, unit: g}
+      - {id: brocoli, name: brocoli, qty: 1, unit: pièce}
+      - {id: citron, name: citron, qty: 1, unit: pièce}
+
+  - id: quiche-poireaux
+    title: Quiche aux poireaux
+    yields: {portions_eq: 6}
+    time_min_total: 55
+    apports:
+      proteine: oeuf
+      feculent: pate-brisee
+      legumes: [allium]
+      profil: four
+      origine: francais
+    ingredients:
+      - {id: pate-brisee, name: pâte brisée, qty: 1, unit: pièce}
+      - {id: poireau, name: poireaux, qty: 3, unit: pièce}
+      - {id: oeufs, name: œufs, qty: 3, unit: pièce}
+      - {id: creme, name: crème fraîche, qty: 20, unit: cl}
+      - {id: fromage-rape, name: comté râpé, qty: 80, unit: g}
+    emits:
+      - kind: reste-plat
+        type: quiche
+        qty_band: lunchbox
+        keeps: {frigo_days: 3, congelo: true}
+
+  - id: chili-sin-carne
+    title: Chili sin carne
+    yields: {portions_eq: 6}
+    time_min_total: 40
+    apports:
+      proteine: legumineuse
+      feculent: riz
+      legumes: [solanacee, allium]
+      profil: mijote
+      origine: mexicain
+    ingredients:
+      - {id: haricots-rouges, name: haricots rouges cuits, qty: 500, unit: g}
+      - {id: tomates-pelees, name: tomates pelées en conserve, qty: 400, unit: g}
+      - {id: mais, name: maïs doux, qty: 150, unit: g}
+      - {id: poivron, name: poivron, qty: 1, unit: pièce}
+      - {id: oignon, name: oignon, qty: 1, unit: pièce}
+      - {id: riz, name: riz, qty: 250, unit: g}
+    emits:
+      - kind: reste-plat
+        type: chili
+        qty_band: lunchbox
+        keeps: {frigo_days: 3, congelo: true}
+
+  - id: gratin-courgettes-riz
+    title: Gratin de courgettes au riz
+    yields: {portions_eq: 4}
+    time_min_total: 50
+    apports:
+      proteine: fromage
+      feculent: riz
+      legumes: [cucurbitacee, allium]
+      profil: four
+      origine: francais
+    ingredients:
+      - {id: courgettes, name: courgettes, qty: 3, unit: pièce}
+      - {id: riz, name: riz, qty: 200, unit: g}
+      - {id: oeufs, name: œufs, qty: 2, unit: pièce}
+      - {id: fromage-rape, name: comté râpé, qty: 80, unit: g}
+      - {id: oignon, name: oignon, qty: 1, unit: pièce}
+
+  - id: salade-lentilles-feta
+    title: Salade de lentilles à la feta
+    yields: {portions_eq: 4}
+    time_min_total: 15
+    apports:
+      proteine: legumineuse
+      feculent: legumineuse
+      legumes: [allium, solanacee]
+      profil: cru
+      origine: francais
+    accepts:
+      - type: lentilles-vertes-cuites
+        qty: {amount: 400, unit: g}
+        required: true
+        fallback_recipe: lentilles-mijotees
+    ingredients:
+      - {id: lentilles-cuites, name: lentilles vertes cuites, qty: 400, unit: g, from_accepts: true}
+      - {id: feta, name: feta, qty: 150, unit: g}
+      - {id: tomates, name: tomates, qty: 3, unit: pièce}
+      - {id: oignon-rouge, name: oignon rouge, qty: 1, unit: pièce}
+      - {id: huile-olive, name: huile d'olive, qty: 3, unit: c. à s.}
+
+  - id: croque-monsieur-salade
+    title: Croque-monsieur et salade verte
+    yields: {portions_eq: 4}
+    time_min_total: 20
+    apports:
+      proteine: fromage
+      feculent: pain
+      legumes: [feuille]
+      profil: rapide
+      origine: francais
+    ingredients:
+      - {id: pain-de-mie, name: pain de mie, qty: 8, unit: pièce}
+      - {id: jambon, name: jambon blanc, qty: 4, unit: pièce}
+      - {id: fromage-rape, name: comté râpé, qty: 100, unit: g}
+      - {id: salade-verte, name: salade verte, qty: 1, unit: pièce}
+
+  - id: tarte-tomates-moutarde
+    title: Tarte tomates-moutarde
+    yields: {portions_eq: 4}
+    time_min_total: 45
+    apports:
+      proteine: fromage
+      feculent: pate-brisee
+      legumes: [solanacee]
+      profil: four
+      origine: francais
+    ingredients:
+      - {id: pate-brisee, name: pâte brisée, qty: 1, unit: pièce}
+      - {id: tomates, name: tomates, qty: 5, unit: pièce}
+      - {id: moutarde, name: moutarde, qty: 2, unit: c. à s., seasoning: true}
+      - {id: fromage-rape, name: comté râpé, qty: 80, unit: g}

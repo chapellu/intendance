@@ -76,7 +76,8 @@ shopping list tells you nothing while you are still choosing. What tells you
 something is *this dish adds 2 lines, that one adds 6, and this third adds 1
 because Tuesday already cooked its base.* Every candidate is therefore priced
 in **new shopping lines given everything already picked**, recomputed on every
-keystroke.
+keystroke — and, since the objective was corrected, scored on what it adds to
+the week's coverage (see `equilibre` below, now the default sort).
 
 The moment worth watching is Wednesday. Before lentils are placed anywhere, the
 burgers read `+2 articles  ⚠ demande « lentilles-vertes-cuites »`. Put the
@@ -88,24 +89,57 @@ that dish tonight.
 `calculer`, `offre`. The TUI is disposable; the model is the part that lifts
 into the real app.
 
+### Ranking by what the week still needs (`equilibre`, the default)
+
+The first cut ranked candidates by cheapest marginal shopping list. The user
+corrected the objective: *dishes that complete the intake correctly while
+varying the pleasures, and that respect the chains if there are any.* That is a
+different thing, and the shopping list is now a tiebreaker rather than the goal.
+
+Each dish carries an `apports` block — `proteine`, `feculent`, `legumes`
+(families), plus `profil` and `origine` for the *pleasures* axis. `couverture()`
+reports what the week has and lacks; `_score()` ranks each candidate on what it
+would fill, with the reasons printed under it (« apporte legumineuse, qui
+manque · légumes nouveaux : racine, allium »). Targets and weights are data, in
+`equilibre.yaml`.
+
+**This is categorical coverage, not nutrition**, and `equilibre.yaml` says so at
+the top: the frequency targets are unsourced prototype guesses. Real intake
+needs ANSES **Ciqual** (Licence Ouverte, so compatible with the project's
+content policy) and PNNS frequency guidance as the source of the targets.
+
 ### What driving it has already shown
 
-- **The catalogue is far too small for the question to bite.** Six recipes for
-  six nights is not a choice, it is an ordering — you end up cooking all six
-  whichever way you go, and the totals land on the same 15 articles. The
-  marginal ranking cannot be judged until the corpus is ~20–30 dishes. Run
-  `--jours 3` to get a week where choosing is real (7 articles, three dishes
-  out of six).
+- **Entering a repertoire, not a recipe, is the unlock.** The catalogue was
+  stuck at six because every dish demanded steps, plan B, kid tasks and a baby
+  set-aside before it could exist. But planning and shopping need only title,
+  time, ingredients and apports — so `recipes/_repertoire.yaml` takes dishes in
+  bulk at **plan level**, and the catalogue went to 21 in one sitting.
+  `compile.py` refuses such a dish politely and says what is missing. Splitting
+  *enter it* from *complete it* is the finding; the bulk file is just where it
+  landed.
+- **Chaining and balance can pull in opposite directions.** Place the
+  bolognese sauce (it emits two meals' worth) and the dishes that consume it
+  drop to the bottom — because `viande-rouge` is capped at once a week and the
+  sauce already spent it. The cap counts *meals served*; arguably it should
+  count the *meat bought*, since the leftover costs nothing extra and refusing
+  it just wastes food. Unresolved, and a good argument that these targets are
+  about shopping events as much as plates.
+- **The `origine` axis is probably wrong for this household.** Most of the
+  repertoire is French, so after two French dinners the penalty fires on nearly
+  everything and pushes exotic outliers up for no good reason. Either the home
+  cuisine gets no cap, or "varying the pleasures" should be measured on
+  `profil` (mijoté / four / poêlé / cru / soupe) rather than on nationality.
 - **Ordering matters even when the set is forced**, because of chaining. Place
   the burgers before the lentils and the offer says so, and names the fix.
-- **The four ranking modes are a genuine unresolved tension**, not decoration.
-  `courses` sorts by cheapest marginal list; `varie` is its exact mirror,
-  deliberately, because a planner that always minimises the list will quietly
-  converge on the same four vegetables all month. Which of these deserves to be
-  the default is the decision this prototype exists to force.
 - **`[p]` fills the week with the top-ranked dish everywhere.** It is in here to
-  test the user's actual complaint: is the wanted interaction *choose from
-  empty*, or *correct a proposal*? Those are different apps.
+  test the actual complaint: is the wanted interaction *choose from empty*, or
+  *correct a proposal*? Those are different apps.
+
+The repertoire in `_repertoire.yaml` is **an amorce to be corrected** — the
+dishes #29 names (bolognaise, fajitas, gnocchis) plus plausible staples, with
+invented quantities. It is scaffolding for testing the ranking, not a record of
+how this household actually eats.
 
 ## What a recipe must be stored as (the ticket's first question)
 

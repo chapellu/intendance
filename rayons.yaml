@@ -1,25 +1,30 @@
 # Shopping-aisle table for the week planner.
 #
-# Two jobs beyond the obvious one:
+# Three jobs beyond the obvious one:
 #
-# 1. `aliases` merges ingredient ids that mean the same thing. The recipes were
-#    authored independently and already disagree (`oignons` vs `oignon`), which
-#    is exactly the drift the compiler's README predicted would force a typed
-#    ingredient vocabulary at corpus scale. This map is the cheap stand-in.
+# 1. `ordre` is the order you walk the shop, so the list comes out in the order
+#    you meet the shelves. That ordering is household data, not recipe data.
 #
-# 2. `placard` marks what the household almost certainly already owns in the
-#    quantities these recipes use (a tablespoon of oil, a pinch of salt). Those
-#    are listed to *check*, never added to the buy list — a shopping list that
-#    tells you to buy salt every week gets ignored.
+# 2. `aliases` merges ingredient ids that mean the same thing. Recipes authored
+#    independently drift immediately — `oignons`/`oignon`, then
+#    `pommes-de-terre`/`pomme-de-terre` the moment a bulk repertoire landed.
+#    This map is the cheap stand-in for the typed ingredient vocabulary the
+#    corpus actually needs.
+#
+# 3. `placard` marks what the household almost certainly already owns in the
+#    quantities these recipes use. Those are listed to *check*, never added to
+#    the buy list — a list that says "buy salt" every week gets ignored.
 
-ordre: [primeur, crèmerie, frais, épicerie]
+ordre: [primeur, boucherie, poissonnerie, crèmerie, frais, épicerie]
 
 aliases:
   oignons: oignon
+  pommes-de-terre: pomme-de-terre
 
 rayons:
   primeur:
     - oignon
+    - oignon-rouge
     - ail
     - carottes
     - courgettes
@@ -27,16 +32,39 @@ rayons:
     - poivron
     - tomates
     - pomme-de-terre
+    - poireau
+    - brocoli
+    - citron
+    - salade-verte
+  boucherie:
+    - boeuf-hache
+    - poulet
+    - jambon
+  poissonnerie:
+    - saumon
   crèmerie:
     - oeufs
     - fromage-rape
     - creme
+    - lait
+    - feta
   frais:
     - tofu-fume
+    - gnocchis
+    - pate-brisee
   épicerie:
     - lentilles-seches
     - pates
+    - pates-lasagne
+    - vermicelles
+    - riz
     - tomates-pelees
+    - pois-chiches
+    - haricots-rouges
+    - mais
+    - lait-coco
+    - tortillas
+    - pain-de-mie
 
 placard:
   - huile-olive
@@ -49,3 +77,5 @@ placard:
   - bouillon-legumes
   - farine
   - son-avoine
+  - curry
+  - moutarde

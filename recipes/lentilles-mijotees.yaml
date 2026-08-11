@@ -11,6 +11,13 @@ recipe:
   time_min_total: 40
   active_min: 10
 
+  apports:
+    proteine: legumineuse
+    feculent: legumineuse
+    legumes: [racine, allium]
+    profil: mijote
+    origine: francais
+
   ingredients:
     - {id: lentilles-seches, name: lentilles vertes sèches, qty: 300, unit: g}
     - {id: carottes, name: carottes, qty: 4, unit: pièce}

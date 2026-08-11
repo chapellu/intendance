@@ -22,12 +22,14 @@ functions below are what lifts into the real app once the question is settled.
 """
 
 import datetime as dt
+from collections import Counter
 from dataclasses import dataclass, replace
-from typing import Optional
 
-# Ranking modes the offer can be sorted by. Which of these deserves to be the
-# default is a live design question — cycling them is the point of the probe.
-MODES = ("courses", "temps", "frigo", "varie")
+# Ranking modes. `equilibre` is the default: the user asked for dishes that
+# "complete the intake while varying the pleasures and respect the chains",
+# which is a different objective from the cheapest possible shopping list.
+# `courses` is kept as its rival so the two can be compared side by side.
+MODES = ("equilibre", "courses", "temps", "frigo", "varie")
 
 COUNTABLE = ("pièce", "gousse")
 
@@ -39,6 +41,7 @@ class Contexte:
     foyer: dict              # household["household"]
     stock: dict              # {"outputs": [...]}
     rayons: dict
+    equilibre: dict          # targets + weights
     today: dt.date
     jours: tuple             # ("mardi", "mercredi", ...)
 
@@ -49,7 +52,7 @@ class Etat:
     choix: tuple             # Optional[recipe_id] per day
     jour: int                # the day currently being filled
     budgets: tuple           # Optional[int] minutes per day
-    mode: str = "courses"
+    mode: str = "equilibre"
 
 
 # --------------------------------------------------------------- construction
@@ -228,6 +231,90 @@ def calculer(ctx: Contexte, choix: tuple) -> dict:
             "problemes": problemes, "frigo": frigo}
 
 
+# --------------------------------------------------------------- balance model
+
+def couverture(ctx: Contexte, choix: tuple) -> dict:
+    """What the week already covers, and what it is still missing.
+
+    Categorical coverage only — protein sources, vegetable families, starches,
+    formats, cuisines. This is *not* a nutrient calculation; see equilibre.yaml
+    for why, and for the Ciqual/PNNS path if real intake is ever wanted.
+    """
+    prot, fec, profils, origines = Counter(), Counter(), Counter(), Counter()
+    familles = set()
+    for rid in choix:
+        if not rid:
+            continue
+        a = ctx.catalogue[rid].get("apports", {})
+        if a.get("proteine") and a["proteine"] != "aucune":
+            prot[a["proteine"]] += 1
+        if a.get("feculent") and a["feculent"] != "aucun":
+            fec[a["feculent"]] += 1
+        familles.update(a.get("legumes", []) or [])
+        if a.get("profil"):
+            profils[a["profil"]] += 1
+        if a.get("origine"):
+            origines[a["origine"]] += 1
+
+    cibles = ctx.equilibre["cibles"]
+    manques, satures = {}, {}
+    for p, c in cibles["proteine"].items():
+        if "min" in c and prot[p] < c["min"]:
+            manques[p] = c["min"] - prot[p]
+        if "max" in c and prot[p] >= c["max"]:
+            satures[p] = prot[p] - c["max"]
+
+    besoin_familles = max(0, cibles["familles_legumes_min"] - len(familles))
+    return {"proteine": prot, "feculent": fec, "familles": familles,
+            "profil": profils, "origine": origines,
+            "manques": manques, "satures": satures,
+            "familles_manquantes": besoin_familles}
+
+
+def _score(ctx: Contexte, ligne: dict, cov: dict) -> tuple:
+    """Score a candidate against what the week still needs. Returns (score, why)."""
+    w = ctx.equilibre["poids"]
+    a = ctx.catalogue[ligne["id"]].get("apports", {})
+    rep = ctx.equilibre["cibles"]["repetition_max"]
+    s, why = 0.0, []
+
+    p = a.get("proteine")
+    if p and p != "aucune":
+        if p in cov["manques"]:
+            s += w["proteine_manquante"]
+            why.append(f"apporte {p}, qui manque")
+        elif p in cov["satures"]:
+            s += w["proteine_saturee"]
+            why.append(f"{p} déjà servi assez")
+
+    neuves = [f for f in (a.get("legumes") or []) if f not in cov["familles"]]
+    if neuves:
+        s += w["famille_legume_neuve"] * len(neuves)
+        why.append("légumes nouveaux : " + ", ".join(neuves))
+
+    f = a.get("feculent")
+    if f and f != "aucun" and cov["feculent"][f] >= rep["feculent"]:
+        s += w["repetition_feculent"]
+        why.append(f"{f} déjà {cov['feculent'][f]}×")
+    if a.get("profil") and cov["profil"][a["profil"]] >= rep["profil"]:
+        s += w["repetition_profil"]
+        why.append(f"encore du {a['profil']}")
+    if a.get("origine") and cov["origine"][a["origine"]] >= rep["origine"]:
+        s += w["repetition_origine"]
+        why.append(f"encore {a['origine']}")
+
+    if ligne["chaine"]:
+        s += w["chaine_couverte"]
+    if ligne["ecoule"]:
+        s += w["ecoule_frigo"]
+    if ligne["manque"]:
+        s += w["chaine_manquante"]
+    if ligne["hors_budget"]:
+        s += w["hors_budget"]
+    s += w["article_marginal"] * ligne["marginal"]
+    return round(s, 2), why
+
+
 # ------------------------------------------------------------------- the offer
 
 def offre(ctx: Contexte, etat: Etat) -> list:
@@ -277,13 +364,19 @@ def offre(ctx: Contexte, etat: Etat) -> list:
             "ecoule": ecoule,
             "hors_budget": bool(budget and minutes > budget),
             "emits": [e["type"] for e in r.get("emits", [])],
+            "apports": r.get("apports", {}),
         })
 
+    cov = couverture(ctx, etat.choix)
+    for l in lignes:
+        l["score"], l["pourquoi"] = _score(ctx, l, cov)
     return _trier(lignes, etat.mode)
 
 
 def _trier(lignes, mode):
-    if mode == "temps":
+    if mode == "equilibre":
+        cle = lambda l: (-l["score"], l["marginal"])
+    elif mode == "temps":
         cle = lambda l: (l["hors_budget"], l["minutes"], l["marginal"])
     elif mode == "frigo":
         cle = lambda l: (not l["ecoule"], not l["chaine"], l["marginal"])

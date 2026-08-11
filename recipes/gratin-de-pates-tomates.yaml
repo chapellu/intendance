@@ -11,6 +11,13 @@ recipe:
   time_min_total: 45
   active_min: 15
 
+  apports:
+    proteine: fromage
+    feculent: pates
+    legumes: [solanacee, allium]
+    profil: four
+    origine: italien
+
   ingredients:
     - {id: pates, name: "pâtes courtes (penne, coquillettes)", qty: 350, unit: g}
     - {id: tomates-pelees, name: tomates pelées en conserve, qty: 400, unit: g}
