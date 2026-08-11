@@ -1,0 +1,51 @@
+# Shopping-aisle table for the week planner.
+#
+# Two jobs beyond the obvious one:
+#
+# 1. `aliases` merges ingredient ids that mean the same thing. The recipes were
+#    authored independently and already disagree (`oignons` vs `oignon`), which
+#    is exactly the drift the compiler's README predicted would force a typed
+#    ingredient vocabulary at corpus scale. This map is the cheap stand-in.
+#
+# 2. `placard` marks what the household almost certainly already owns in the
+#    quantities these recipes use (a tablespoon of oil, a pinch of salt). Those
+#    are listed to *check*, never added to the buy list — a shopping list that
+#    tells you to buy salt every week gets ignored.
+
+ordre: [primeur, crèmerie, frais, épicerie]
+
+aliases:
+  oignons: oignon
+
+rayons:
+  primeur:
+    - oignon
+    - ail
+    - carottes
+    - courgettes
+    - aubergine
+    - poivron
+    - tomates
+    - pomme-de-terre
+  crèmerie:
+    - oeufs
+    - fromage-rape
+    - creme
+  frais:
+    - tofu-fume
+  épicerie:
+    - lentilles-seches
+    - pates
+    - tomates-pelees
+
+placard:
+  - huile-olive
+  - sel
+  - poivre-5-baies
+  - laurier
+  - thym
+  - herbes-provence
+  - bouillon-miso
+  - bouillon-legumes
+  - farine
+  - son-avoine

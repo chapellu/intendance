@@ -1,0 +1,64 @@
+# Household staple, authored for the prototype (no external source).
+# August seasonality for the Rhône; the household's exclusions (piquant,
+# choux de Bruxelles) are respected.
+
+recipe:
+  id: ratatouille-minute
+  title: Ratatouille minute
+  lang: fr
+  yields:
+    portions_eq: 4
+  time_min_total: 35
+  active_min: 15
+
+  ingredients:
+    - {id: courgettes, name: courgettes, qty: 2, unit: pièce}
+    - {id: aubergine, name: aubergine, qty: 1, unit: pièce}
+    - {id: poivron, name: poivron rouge, qty: 1, unit: pièce}
+    - {id: tomates, name: tomates, qty: 4, unit: pièce}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: ail, name: ail, qty: 2, unit: gousse}
+    - {id: huile-olive, name: huile d'olive, qty: 3, unit: c. à s.}
+    - {id: thym, name: thym, qty: 1, unit: c. à c., seasoning: true}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+
+  steps:
+    - id: tailler
+      action: "Tailler courgettes, aubergine, poivron et tomates en cubes réguliers ; émincer l'oignon et l'ail"
+      needs: []
+      time_min: 10
+      kid: {age_min_months: 30, task: "rincer les légumes et les tendre un par un"}
+    - id: dorer
+      action: "Faire revenir l'oignon et l'aubergine dans l'huile d'olive jusqu'à coloration"
+      needs: [pan-fry]
+      time_min: 8
+      attended: true
+    - id: mijoter
+      action: "Ajouter courgettes, poivron, tomates, ail et thym ; couvrir et laisser mijoter"
+      needs: [simmer]
+      time_min: 15
+      attended: false
+    - id: assaisonner
+      action: "Goûter et saler"
+      needs: []
+      time_min: 2
+      seasoning_gate: true
+
+  baby_portion:
+    take: "2 c. à s. de légumes fondus, avant salage"
+    prep: "écraser à la fourchette ou mixer court"
+    needs: [blend-smooth]
+
+  emits:
+    - kind: reste-plat
+      type: ratatouille
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+      note: "meilleure réchauffée le lendemain"
+
+  plan_b:
+    - swap:
+        step: mijoter
+        action: "Couvrir et pousser le feu : mijotage court, légumes plus fermes"
+        saves_min: 7
+      effect: "légumes croquants plutôt que fondants"

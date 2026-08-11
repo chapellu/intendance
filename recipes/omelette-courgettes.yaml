@@ -1,0 +1,46 @@
+# Household staple, authored for the prototype (no external source).
+# Role in the demo: the short weeknight dish — nothing to chain, nothing to
+# keep. Exists to prove the planner handles a meal that emits nothing.
+
+recipe:
+  id: omelette-courgettes
+  title: Omelette aux courgettes
+  lang: fr
+  yields:
+    portions_eq: 4
+  time_min_total: 20
+  active_min: 18
+
+  ingredients:
+    - {id: oeufs, name: œufs, qty: 6, unit: pièce}
+    - {id: courgettes, name: courgettes, qty: 2, unit: pièce}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre-5-baies, name: poivre 5 baies, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: revenir
+      action: "Faire revenir les courgettes en rondelles et l'oignon émincé dans l'huile d'olive"
+      needs: [pan-fry]
+      time_min: 10
+      attended: true
+    - id: battre
+      action: "Battre les œufs en omelette"
+      needs: []
+      time_min: 2
+      kid: {age_min_months: 30, task: "battre les œufs à la fourchette"}
+    - id: cuire
+      action: "Verser les œufs sur les légumes, cuire à feu doux jusqu'à prise"
+      needs: [pan-fry]
+      time_min: 6
+      attended: true
+      seasoning_gate: true
+
+  baby_portion:
+    take: "quelques rondelles de courgettes fondues, avant salage"
+    prep: "écraser à la fourchette"
+    needs: []
+
+  emits: []
+  plan_b: []

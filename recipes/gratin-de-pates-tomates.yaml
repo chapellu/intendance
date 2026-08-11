@@ -1,0 +1,67 @@
+# Household staple, authored for the prototype (no external source).
+# Role in the demo: an oven dish, to exercise a different capability branch
+# (bake/gratin-vessel) than the pan-fry recipes.
+
+recipe:
+  id: gratin-de-pates-tomates
+  title: Gratin de pâtes à la tomate
+  lang: fr
+  yields:
+    portions_eq: 4
+  time_min_total: 45
+  active_min: 15
+
+  ingredients:
+    - {id: pates, name: "pâtes courtes (penne, coquillettes)", qty: 350, unit: g}
+    - {id: tomates-pelees, name: tomates pelées en conserve, qty: 400, unit: g}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: ail, name: ail, qty: 2, unit: gousse}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - id: fromage-rape
+      name: comté râpé
+      qty: 80
+      unit: g
+      subs:
+        - {name: emmental râpé, note: "même poids", ratio: 1.0}
+    - {id: herbes-provence, name: herbes de Provence, qty: 1, unit: c. à c., seasoning: true}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+
+  steps:
+    - id: sauce
+      action: "Faire revenir l'oignon et l'ail, ajouter les tomates pelées écrasées et les herbes ; laisser réduire"
+      needs: [pan-fry, simmer]
+      time_min: 15
+      attended: false
+    - id: pates
+      action: "Cuire les pâtes très al dente (2 min de moins que le paquet) et les égoutter"
+      needs: [boil]
+      time_min: 8
+      parallel_with: sauce
+    - id: assembler
+      action: "Mélanger pâtes et sauce, verser dans le plat, saler puis couvrir de fromage râpé"
+      needs: [gratin-vessel]
+      time_min: 5
+      seasoning_gate: true
+      kid: {age_min_months: 24, task: "parsemer le fromage sur le dessus"}
+    - id: gratiner
+      action: "Enfourner jusqu'à ce que le dessus soit doré"
+      needs: [gratin]
+      time_min: 20
+      attended: false
+
+  baby_portion:
+    take: "quelques pâtes et 2 c. à s. de sauce tomate, avant salage et sans fromage"
+    prep: "écraser à la fourchette"
+    needs: []
+
+  emits:
+    - kind: reste-plat
+      type: gratin-pates
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+      note: "se réchauffe bien au four ou à la poêle"
+
+  plan_b:
+    - drop: gratiner
+      saves_min: 20
+      effect: "pâtes à la tomate sans le gratiné — le fromage fond quand même à couvert"

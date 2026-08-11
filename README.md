@@ -22,6 +22,41 @@ python3 compile.py lentilles-mijotees                # the emitting dish: cocott
 
 Frozen sample outputs live in `demo/`.
 
+## Planning a week and shopping for it (`plan.py`)
+
+```bash
+python3 plan.py                             # the week in semaine.yaml
+python3 plan.py --today 2026-08-11          # plan from a given date
+python3 plan.py lentilles-mijotees omelette-courgettes   # an ad-hoc list
+```
+
+`compile.py` answers *what do I cook tonight*; `plan.py` answers the question
+that comes before it and that you cannot do in your head: **given a week of
+dishes, what do I actually have to buy?**
+
+The arithmetic is trivial; the chaining is not. Walking the days forward, a
+dish that `emits` a base feeds a later dish that `accepts` it, so the accepted
+item never reaches the list — Wednesday's burgers cost nothing because Tuesday
+simmered the lentils. Beyond that it does three things a paper list cannot:
+it **rounds countables up** at the end of the week (nobody buys 7.5 onions,
+though 7.5 is the correct kitchen quantity), it separates **buy** from
+**check the cupboard** (a list that says "buy salt" every week gets ignored),
+and it reports what is **already in the fridge** — including a reste that has
+aged out of the freshness window, which is exactly the thing you rediscover too
+late.
+
+Two findings from building it:
+
+- **Ingredient ids drift immediately.** Two recipes authored a week apart
+  already disagreed (`oignons` vs `oignon`), which would have split one
+  shopping line into two. `rayons.yaml` carries an `aliases` map as a stand-in,
+  but this is the typed ingredient vocabulary this README predicted would be
+  needed at corpus scale, arriving at *six* recipes rather than a hundred.
+- **The aisle table is per-shop, not per-recipe.** `rayons.yaml` is ordered to
+  be walked, so the list comes out in the order you meet the shelves. That
+  ordering is household data, not recipe data — another file the real app has
+  to own.
+
 ## What a recipe must be stored as (the ticket's first question)
 
 See `recipes/*.yaml`. The load-bearing fields, discovered by building:
