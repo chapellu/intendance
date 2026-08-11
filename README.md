@@ -117,6 +117,44 @@ choice among a few, not a verdict.
   scroll — is the open question; a mulligan budget is the obvious lever if it
   does.
 
+### Conservation as a transformation, not a property (`[c]`)
+
+The user's framing: *jarring is also a skill and equipment that can be worked;
+sous-vide is easy today; same logic as Don't Starve — I transform food to
+increase its keeping.* That breaks the old model, correctly.
+
+`keeps: {frigo_days: 3, congelo: true}` treated shelf life as a property of the
+**dish**. It is not. It is a property of the **dish × the method you own and
+know**. So `conservation.yaml` holds the methods as data, each requiring a
+*capability* rather than a tool — the same indirection `rules.yaml` uses for
+cooking steps — and three things fall out on their own:
+
+1. A method the household lacks is not a missing feature, it is a **locked
+   skill-tree node with a kit lock**, which is exactly one of the three lock
+   kinds #10 settled on. It reports what it would need and, per #29, never turns
+   that into a purchase suggestion.
+2. Conservation becomes an **axis of progression** with a measurable payoff in
+   days, not a setting.
+3. The household turned out to already own more than it thought: a 7.5 L cocotte
+   immerses jars, so `sterilisation-bain-marie` is *acquired* — for acidic foods
+   only.
+
+**The safety finding, which is the important one.** Encoding this surfaced that
+the user's own example is the dangerous case. *C. botulinum* grows in
+**anaerobic, low-acid, ambient-temperature** conditions — which is precisely a
+sealed jar of meat sauce, lentils or plain vegetables in a cupboard. A
+boiling-water bath does not destroy the spores; only a **pressure** process
+(>115 °C) does. Water-bath canning is safe only for acidic foods (pH ≤ 4.6).
+Vacuum sealing creates the same anaerobic environment: it **extends the cold
+chain, it does not replace it**. So the model defaults every dish to
+`acidite: basse` — the conservative choice — and `bocal-bain-marie` refuses a
+low-acid dish outright rather than quietly allowing it.
+
+The keeping windows in `conservation.yaml` are **prototype orders of magnitude,
+not sourced figures**, and the file says so. Before anyone acts on them they
+need real references: ANSES/DGCCRF on the French side, and NCHFP for
+per-food process times and pressures.
+
 ### Ranking by what the week still needs (`equilibre`, the default)
 
 The first cut ranked candidates by cheapest marginal shopping list. The user

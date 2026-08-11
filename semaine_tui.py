@@ -32,10 +32,12 @@ def charger(today, n_jours):
     stock = yaml.safe_load((HERE / "stock.yaml").read_text())
     rayons = yaml.safe_load((HERE / "rayons.yaml").read_text())
     equilibre = yaml.safe_load((HERE / "equilibre.yaml").read_text())
+    conserv = yaml.safe_load((HERE / "conservation.yaml").read_text())
     histo = yaml.safe_load((HERE / "historique.yaml").read_text())
     jours = tuple(JOURS[(today.weekday() + i) % 7] for i in range(n_jours))
     ctx = M.Contexte(catalogue=cat, foyer=foyer, stock=stock, rayons=rayons,
-                     equilibre=equilibre, today=today, jours=jours)
+                     equilibre=equilibre, conservation=conserv,
+                     today=today, jours=jours)
     return ctx, histo
 
 
@@ -84,6 +86,17 @@ def carte(ctx, l, k):
     if l.get("pourquoi"):
         pq = _coupe(" · ".join(l["pourquoi"]), INNER)
         out.append(f"│ {V}{pq}{' ' * (INNER - len(pq))}{R} │")
+
+    # What can be done with what this dish leaves behind.
+    if l["emits"]:
+        opts = M.conservations(ctx, ctx.catalogue[l["id"]])
+        libres = [f"{o['label']} {o['duree']}" for o in opts if o["dispo"]]
+        verrous = [o for o in opts if not o["dispo"] and o["manque"]]
+        txt = "conserver : " + " · ".join(libres)
+        if verrous:
+            txt += f"   🔒 {len(verrous)} à débloquer"
+        txt = _coupe(txt, INNER)
+        out.append(f"│ {C}{txt}{' ' * (INNER - len(txt))}{R} │")
 
     out.append("└" + "─" * (W - 2) + "┘")
     return out
@@ -182,6 +195,25 @@ def frame(ctx, etat, histo, vue="main", message=""):
         for k, l in enumerate(hand, 1):
             out += carte(ctx, l, k)
         out.append("")
+    elif vue == "conservation":
+        out.append(f"{B}CONSERVATION — ce qui est acquis, ce qui reste à débloquer{R}")
+        out.append(f"{D}Une méthode absente n'est pas une fonctionnalité manquante :{R}")
+        out.append(f"{D}c'est un nœud verrouillé par le kit, au sens de #10.{R}")
+        out.append("")
+        opts = M.conservations(ctx, {"emits": [{}]})
+        for o in opts:
+            if o["dispo"]:
+                etat_txt = f"{V}✓ acquis{R}"
+            elif o["interdit"]:
+                etat_txt = f"{J}✗ {o['interdit']}{R}"
+            else:
+                etat_txt = f"{D}🔒 demande : {o['manque']}{R}"
+            out.append(f"  {B}{o['label']:<24}{R} {o['duree']:<10} {etat_txt}")
+            if o["noeud"] and not o["dispo"]:
+                out.append(f"      {D}nœud : {o['noeud']}{R}")
+            if o["securite"]:
+                out.append(f"      {J}⚠ {o['securite'][:110]}{R}")
+        out.append("")
     elif vue == "courses":
         out.append(f"{B}LISTE DE COURSES{R}")
         for rayon, items in M.par_rayon(ctx, calc["panier"]):
@@ -230,8 +262,8 @@ def frame(ctx, etat, histo, vue="main", message=""):
         out.append("")
     out.append(f"{D}[1-9] jouer la carte  ·  [r] repiocher la main  ·  [a] tout le paquet"
                f"  ·  [j N] aller au jour N  ·  [x] vider le jour{R}")
-    out.append(f"{D}[t N] budget minutes  ·  [m] tri ({etat.mode})  ·  [l] liste de courses"
-               f"  ·  [p] laisser l'app remplir  ·  [z] effacer  ·  [q] quitter{R}")
+    out.append(f"{D}[t N] budget minutes  ·  [m] tri ({etat.mode})  ·  [l] courses"
+               f"  ·  [c] conservation  ·  [p] l'app remplit  ·  [z] effacer  ·  [q] quitter{R}")
     return "\n".join(out)
 
 
@@ -263,6 +295,8 @@ def main():
             vue = "main" if vue == "courses" else "courses"
         elif tete == "a":
             vue = "main" if vue == "tous" else "tous"
+        elif tete == "c":
+            vue = "main" if vue == "conservation" else "conservation"
         elif tete == "r":
             etat = M.reduire(ctx, etat, ("repiocher",))
         elif tete == "m":

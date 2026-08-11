@@ -42,6 +42,7 @@ class Contexte:
     stock: dict              # {"outputs": [...]}
     rayons: dict
     equilibre: dict          # targets + weights
+    conservation: dict       # preservation methods
     today: dt.date
     jours: tuple             # ("mardi", "mercredi", ...)
 
@@ -312,6 +313,52 @@ def categorie_principale(recipe: dict) -> str:
         if c in categories(recipe):
             return c
     return "complet"
+
+
+def capacites_foyer(ctx: Contexte) -> set:
+    return {c for eq in ctx.foyer["equipment"] for c in eq.get("capabilities", [])}
+
+
+def conservations(ctx: Contexte, recipe: dict) -> list:
+    """Which preservation methods this dish's output can take, and which are locked.
+
+    Keeping is not a property of the dish — it is a property of the dish times
+    the method you own and know. A locked method is a skill-tree node, not a
+    missing feature, so it reports *what it would need* and never a purchase.
+    """
+    conf = ctx.conservation
+    acidite = recipe.get("acidite", conf.get("defaut_acidite", "basse"))
+    caps = capacites_foyer(ctx)
+    dehors = []
+
+    for m in conf["methodes"]:
+        need = m.get("needs")
+        dispo = need is None or need in caps
+        interdit = None
+        if m.get("exige_acidite") == "haute" and acidite != "haute":
+            interdit = "plat peu acide : cette méthode ne le sécurise pas"
+
+        f = m.get("fenetre", {})
+        if "multiplicateur" in f:
+            base = ctx.foyer.get("fridge_window_days", 4)
+            duree = f"{int(base * f['multiplicateur'])} j"
+        elif f.get("unite") == "mois":
+            duree = f"{f.get('valeur', '?')} mois"
+        elif f.get("source") == "household.fridge_window_days":
+            duree = f"{ctx.foyer.get('fridge_window_days', 4)} j"
+        else:
+            duree = f"{f.get('valeur', '?')} j"
+
+        noeud = m.get("noeud_competence") or {}
+        dehors.append({
+            "id": m["id"], "label": m["label"], "duree": duree,
+            "dispo": dispo and not interdit,
+            "interdit": interdit,
+            "manque": None if dispo else (noeud.get("kit_manquant") or need),
+            "noeud": noeud.get("titre"),
+            "securite": (m.get("note_securite") or "").strip() or None,
+        })
+    return dehors
 
 
 def portions_congelees(ctx: Contexte, choix: tuple) -> dict:

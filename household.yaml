@@ -39,7 +39,13 @@ household:
       capabilities: [reheat]
     - id: cocotte-7.5l
       label: cocotte 7,5 L
-      capabilities: [simmer-large, steam]     # panier vapeur (#29 correction)
+      # `sterilisation-bain-marie` : une cocotte de 7,5 L immerge des bocaux —
+      # donc la conservation en bocal est DÉJÀ à portée, mais uniquement pour
+      # les aliments acides. Voir l'avertissement de conservation.yaml.
+      capabilities: [simmer-large, steam, sterilisation-bain-marie]
+    - id: congelateur-3-tiroirs
+      label: congélateur 3 tiroirs
+      capabilities: [congeler]
     - id: sauteuse-28
       label: sauteuse 28 cm
       capabilities: [pan-fry, simmer]
@@ -64,3 +70,10 @@ household:
       capabilities: [weigh]
     # NOT owned: food processor, steamer appliance, stand mixer, Thermomix-class robot.
     # Small kitchen: the compiler must never suggest a purchase (#29).
+    #
+    # NOT owned, conservation side — each one is a locked node of the skill tree
+    # rather than a missing feature (kit lock, per #10):
+    #   machine à mise sous vide · autocuiseur/stérilisateur à manomètre ·
+    #   déshydrateur · bocaux à joint caoutchouc
+    # The rule from #29 still holds: the app names what a node would need, and
+    # never turns that into a shopping suggestion.
