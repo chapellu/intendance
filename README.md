@@ -57,6 +57,56 @@ Two findings from building it:
   ordering is household data, not recipe data — another file the real app has
   to own.
 
+## Building the week by hand (`semaine_tui.py`) — the choosing prototype
+
+```bash
+python3 semaine_tui.py                            # 6 dinners from today
+python3 semaine_tui.py --today 2026-08-11 --jours 3
+```
+
+`plan.py` prices a week somebody already decided, which is what prompted the
+user's objection: *you chose the dishes for me, I want to choose.* So this
+prototype answers the question that comes before both:
+
+> When I build the week one dish at a time, what must the app show me after
+> every choice, so that choosing feels informed rather than blind?
+
+**The bet under test: the useful feedback is marginal, not total.** A 17-line
+shopping list tells you nothing while you are still choosing. What tells you
+something is *this dish adds 2 lines, that one adds 6, and this third adds 1
+because Tuesday already cooked its base.* Every candidate is therefore priced
+in **new shopping lines given everything already picked**, recomputed on every
+keystroke.
+
+The moment worth watching is Wednesday. Before lentils are placed anywhere, the
+burgers read `+2 articles  ⚠ demande « lentilles-vertes-cuites »`. Put the
+lentils on Tuesday and the same dish becomes `+1 article  ↪ base déjà cuite` —
+the chaining stops being a footnote in a README and becomes the reason you pick
+that dish tonight.
+
+`semaine_model.py` is pure and holds all of it — `reduire(ctx, etat, action)`,
+`calculer`, `offre`. The TUI is disposable; the model is the part that lifts
+into the real app.
+
+### What driving it has already shown
+
+- **The catalogue is far too small for the question to bite.** Six recipes for
+  six nights is not a choice, it is an ordering — you end up cooking all six
+  whichever way you go, and the totals land on the same 15 articles. The
+  marginal ranking cannot be judged until the corpus is ~20–30 dishes. Run
+  `--jours 3` to get a week where choosing is real (7 articles, three dishes
+  out of six).
+- **Ordering matters even when the set is forced**, because of chaining. Place
+  the burgers before the lentils and the offer says so, and names the fix.
+- **The four ranking modes are a genuine unresolved tension**, not decoration.
+  `courses` sorts by cheapest marginal list; `varie` is its exact mirror,
+  deliberately, because a planner that always minimises the list will quietly
+  converge on the same four vegetables all month. Which of these deserves to be
+  the default is the decision this prototype exists to force.
+- **`[p]` fills the week with the top-ranked dish everywhere.** It is in here to
+  test the user's actual complaint: is the wanted interaction *choose from
+  empty*, or *correct a proposal*? Those are different apps.
+
 ## What a recipe must be stored as (the ticket's first question)
 
 See `recipes/*.yaml`. The load-bearing fields, discovered by building:
