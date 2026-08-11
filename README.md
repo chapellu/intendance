@@ -89,6 +89,34 @@ that dish tonight.
 `calculer`, `offre`. The TUI is disposable; the model is the part that lifts
 into the real app.
 
+### A hand of cards, dealt from a deck that turns over
+
+The user's own picture of the thing: *a card game, with a deck that varies and
+cards of different categories.* That is a better interaction than a ranked list
+of twenty-one dishes, and it fixes the original complaint properly — a hand is a
+choice among a few, not a verdict.
+
+- **Suits are derived, never hand-tagged.** A dish that emits a base *is* a
+  `♠ SOUCHE`; one with an `accepts` edge *is* `♥ SUR UN RESTE`; under 25 minutes
+  is `♦ EXPRESS`; freezable is `♣ SE CONGÈLE`. Category falls out of the recipe
+  data that already existed.
+- **The balance score becomes a draw weight, not a ranking.** What the week
+  needs comes up more often without the app deciding. The floor is deliberately
+  positive so an ill-fitting dish stays possible — a deck you can predict is not
+  a deck.
+- **The hand is composed, not top-N**: `main.garantir` in `equilibre.yaml`
+  guarantees an express, a souche and a derivative in every hand, so you are
+  never offered five 50-minute oven dishes on a Tuesday.
+- **The deck turns over.** A dish cooked within `cooldown_jours` (from
+  `historique.yaml`, which in the real app is the cooking log) leaves the paquet
+  and is not dealt. Without this the hand converges on the same favourites,
+  which is exactly what "un deck qui varie" is meant to prevent.
+- **`[r]` redeals.** The hand is deterministic for a given (day, redeal count)
+  so it does not reshuffle under you on every keystroke. Whether unlimited
+  redealing quietly destroys the point — turning a hand back into a list you
+  scroll — is the open question; a mulligan budget is the obvious lever if it
+  does.
+
 ### Ranking by what the week still needs (`equilibre`, the default)
 
 The first cut ranked candidates by cheapest marginal shopping list. The user
@@ -118,18 +146,24 @@ content policy) and PNNS frequency guidance as the source of the targets.
   `compile.py` refuses such a dish politely and says what is missing. Splitting
   *enter it* from *complete it* is the finding; the bulk file is just where it
   landed.
-- **Chaining and balance can pull in opposite directions.** Place the
-  bolognese sauce (it emits two meals' worth) and the dishes that consume it
-  drop to the bottom — because `viande-rouge` is capped at once a week and the
-  sauce already spent it. The cap counts *meals served*; arguably it should
-  count the *meat bought*, since the leftover costs nothing extra and refusing
-  it just wastes food. Unresolved, and a good argument that these targets are
-  about shopping events as much as plates.
-- **The `origine` axis is probably wrong for this household.** Most of the
-  repertoire is French, so after two French dinners the penalty fires on nearly
-  everything and pushes exotic outliers up for no good reason. Either the home
-  cuisine gets no cap, or "varying the pleasures" should be measured on
-  `profil` (mijoté / four / poêlé / cru / soupe) rather than on nationality.
+- **Chaining and balance pulled in opposite directions — resolved: caps are
+  about the shopping trip, not the plate.** Placing the bolognese sauce used up
+  a `viande-rouge` cap of one a week, so the dishes that consumed it sank to the
+  bottom: the planner was refusing a portion already bought, cooked and frozen,
+  which is just waste. A dish built on an `accepts` edge is now exempt from
+  protein caps (it still counts toward the minimums — you did eat it). The same
+  two dishes now lead the hand at +11.2 and +10.8, and say why: *« viande-rouge
+  déjà pris cette semaine, mais celle-ci est déjà payée »*.
+- **"Varying the pleasures" is about format, not nationality — settled.** The
+  first cut capped `origine`, which in a household that mostly cooks French
+  penalised nearly everything and floated exotic outliers up for no reason.
+  The axis is now `profil` (mijoté / four / poêlé / soupe / cru / rapide), with
+  a heavier weight. `origine` stays in the data and scores nothing.
+- **The freezer is an output, not a bin.** The fridge is a countdown; the
+  freezer is a *planned* output — a jarred or frozen portion is the emergency
+  card you play on a night with no time. `portions_congelees()` counts what the
+  week banks against the drawer budget (#29's binding constraint), and a card
+  that pulls a portion back out is marked `❄` and scored for it.
 - **Ordering matters even when the set is forced**, because of chaining. Place
   the burgers before the lentils and the offer says so, and names the fix.
 - **`[p]` fills the week with the top-ranked dish everywhere.** It is in here to

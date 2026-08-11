@@ -52,6 +52,7 @@ class Etat:
     choix: tuple             # Optional[recipe_id] per day
     jour: int                # the day currently being filled
     budgets: tuple           # Optional[int] minutes per day
+    mulligans: tuple = ()    # how many times each day's hand was redealt
     mode: str = "equilibre"
 
 
@@ -59,7 +60,8 @@ class Etat:
 
 def etat_initial(ctx: Contexte) -> Etat:
     n = len(ctx.jours)
-    return Etat(choix=(None,) * n, jour=0, budgets=(None,) * n)
+    return Etat(choix=(None,) * n, jour=0, budgets=(None,) * n,
+                mulligans=(0,) * n)
 
 
 def reduire(ctx: Contexte, etat: Etat, action) -> Etat:
@@ -88,6 +90,11 @@ def reduire(ctx: Contexte, etat: Etat, action) -> Etat:
 
     if kind == "mode":
         return replace(etat, mode=args[0] if args[0] in MODES else etat.mode)
+
+    if kind == "repiocher":
+        m = list(etat.mulligans)
+        m[etat.jour] += 1
+        return replace(etat, mulligans=tuple(m))
 
     if kind == "remplir":
         # Fill every empty slot with whatever the offer ranks first. Exists to
@@ -240,35 +247,87 @@ def couverture(ctx: Contexte, choix: tuple) -> dict:
     formats, cuisines. This is *not* a nutrient calculation; see equilibre.yaml
     for why, and for the Ciqual/PNNS path if real intake is ever wanted.
     """
-    prot, fec, profils, origines = Counter(), Counter(), Counter(), Counter()
+    servi, achete, fec, profils = Counter(), Counter(), Counter(), Counter()
     familles = set()
     for rid in choix:
         if not rid:
             continue
-        a = ctx.catalogue[rid].get("apports", {})
-        if a.get("proteine") and a["proteine"] != "aucune":
-            prot[a["proteine"]] += 1
+        r = ctx.catalogue[rid]
+        a = r.get("apports", {})
+        p = a.get("proteine")
+        if p and p != "aucune":
+            servi[p] += 1
+            # A dish built on a base cooked earlier did not *buy* its protein
+            # again. Caps are about the shopping trip, not the plate: refusing
+            # the leftover bolognese only wastes it.
+            if not vient_dun_reste(r):
+                achete[p] += 1
         if a.get("feculent") and a["feculent"] != "aucun":
             fec[a["feculent"]] += 1
         familles.update(a.get("legumes", []) or [])
         if a.get("profil"):
             profils[a["profil"]] += 1
-        if a.get("origine"):
-            origines[a["origine"]] += 1
 
     cibles = ctx.equilibre["cibles"]
     manques, satures = {}, {}
     for p, c in cibles["proteine"].items():
-        if "min" in c and prot[p] < c["min"]:
-            manques[p] = c["min"] - prot[p]
-        if "max" in c and prot[p] >= c["max"]:
-            satures[p] = prot[p] - c["max"]
+        if "min" in c and servi[p] < c["min"]:
+            manques[p] = c["min"] - servi[p]
+        if "max" in c and achete[p] >= c["max"]:
+            satures[p] = achete[p] - c["max"]
 
     besoin_familles = max(0, cibles["familles_legumes_min"] - len(familles))
-    return {"proteine": prot, "feculent": fec, "familles": familles,
-            "profil": profils, "origine": origines,
+    return {"proteine": servi, "achetee": achete, "feculent": fec,
+            "familles": familles, "profil": profils,
             "manques": manques, "satures": satures,
             "familles_manquantes": besoin_familles}
+
+
+def vient_dun_reste(recipe: dict) -> bool:
+    """True when the dish is built on a base cooked earlier (an `accepts` edge)."""
+    return any(i.get("from_accepts") for i in recipe.get("ingredients", []))
+
+
+# --------------------------------------------------------------- card model
+
+# A card's category is derived from the recipe, never hand-tagged: a dish that
+# emits a base IS a souche, a dish with an `accepts` edge IS a derivative.
+def categories(recipe: dict) -> set:
+    cats = set()
+    if any(e.get("kind") == "base" for e in recipe.get("emits", [])):
+        cats.add("souche")
+    if recipe.get("accepts"):
+        cats.add("derive")
+    if (recipe.get("time_min_total") or 999) <= 25:
+        cats.add("express")
+    if any(e.get("keeps", {}).get("congelo") for e in recipe.get("emits", [])):
+        cats.add("congelable")
+    if not cats:
+        cats.add("complet")
+    return cats
+
+
+def categorie_principale(recipe: dict) -> str:
+    for c in ("derive", "souche", "express", "congelable", "complet"):
+        if c in categories(recipe):
+            return c
+    return "complet"
+
+
+def portions_congelees(ctx: Contexte, choix: tuple) -> dict:
+    """How many freezer portions the week banks, against the drawer budget."""
+    conf = ctx.equilibre.get("congelateur", {})
+    par_tiroir = conf.get("portions_par_tiroir", 6)
+    capacite = ctx.foyer.get("freezer_drawers", 0) * par_tiroir
+    n = 0
+    for rid in choix:
+        if not rid:
+            continue
+        for e in ctx.catalogue[rid].get("emits", []):
+            if e.get("keeps", {}).get("congelo"):
+                n += 1
+    return {"portions": n, "capacite": capacite,
+            "deborde": capacite and n > capacite}
 
 
 def _score(ctx: Contexte, ligne: dict, cov: dict) -> tuple:
@@ -279,13 +338,19 @@ def _score(ctx: Contexte, ligne: dict, cov: dict) -> tuple:
     s, why = 0.0, []
 
     p = a.get("proteine")
+    sur_un_reste = vient_dun_reste(ctx.catalogue[ligne["id"]])
     if p and p != "aucune":
         if p in cov["manques"]:
             s += w["proteine_manquante"]
             why.append(f"apporte {p}, qui manque")
-        elif p in cov["satures"]:
+        elif p in cov["satures"] and not sur_un_reste:
             s += w["proteine_saturee"]
             why.append(f"{p} déjà servi assez")
+        elif p in cov["satures"]:
+            # The cap is about the shopping trip. This portion was bought — and
+            # frozen or jarred — in a week already; eating it now costs nothing
+            # and refusing it only wastes food.
+            why.append(f"{p} déjà pris cette semaine, mais celle-ci est déjà payée")
 
     neuves = [f for f in (a.get("legumes") or []) if f not in cov["familles"]]
     if neuves:
@@ -299,14 +364,14 @@ def _score(ctx: Contexte, ligne: dict, cov: dict) -> tuple:
     if a.get("profil") and cov["profil"][a["profil"]] >= rep["profil"]:
         s += w["repetition_profil"]
         why.append(f"encore du {a['profil']}")
-    if a.get("origine") and cov["origine"][a["origine"]] >= rep["origine"]:
-        s += w["repetition_origine"]
-        why.append(f"encore {a['origine']}")
 
     if ligne["chaine"]:
         s += w["chaine_couverte"]
     if ligne["ecoule"]:
         s += w["ecoule_frigo"]
+    if ligne.get("congelo"):
+        s += w.get("ecoule_congelo", 0)
+        why.append("sort une portion du congélo")
     if ligne["manque"]:
         s += w["chaine_manquante"]
     if ligne["hors_budget"]:
@@ -345,12 +410,14 @@ def offre(ctx: Contexte, etat: Etat) -> list:
         manque_ici = [p for p in apres["problemes"] if p["jour"] == etat.jour]
 
         # Does it eat something already sitting in the fridge?
-        ecoule = []
+        ecoule, du_congelo = [], False
         for acc in r.get("accepts", []):
             out, age = _stock_has(ctx.stock.get("outputs", []), acc["type"],
                                   window, date)
             if out:
                 ecoule.append(acc["type"])
+                if out.get("location") == "congelo":
+                    du_congelo = True
 
         minutes = r.get("time_min_total", 0)
         lignes.append({
@@ -362,6 +429,7 @@ def offre(ctx: Contexte, etat: Etat) -> list:
             "depuis": chaine_ici[0]["depuis"] if chaine_ici else None,
             "manque": manque_ici[0] if manque_ici else None,
             "ecoule": ecoule,
+            "congelo": du_congelo,
             "hors_budget": bool(budget and minutes > budget),
             "emits": [e["type"] for e in r.get("emits", [])],
             "apports": r.get("apports", {}),
@@ -393,6 +461,80 @@ def _trier(lignes, mode):
 
 
 # --------------------------------------------------------------- presentation
+
+def deck(ctx: Contexte, etat: Etat, historique: dict) -> list:
+    """The dishes still in the paquet: not already placed, not on cooldown.
+
+    The deck turning over is what stops the planner proposing the same five
+    dinners forever — a dish cooked recently goes to the discard pile for
+    `cooldown_jours` and simply is not dealt.
+    """
+    conf = ctx.equilibre.get("main", {})
+    cd = conf.get("cooldown_jours", 0)
+    recents = set()
+    for entree in (historique or {}).get("cuisines", []):
+        d = entree["date"]
+        if isinstance(d, str):
+            d = dt.date.fromisoformat(d)
+        if (ctx.today - d).days < cd:
+            recents.add(entree["recipe"])
+    deja = {r for r in etat.choix if r}
+    return [rid for rid in ctx.catalogue if rid not in deja and rid not in recents]
+
+
+def main_du_soir(ctx: Contexte, etat: Etat, historique: dict) -> list:
+    """Deal a hand for the selected day: a few cards, spread across categories.
+
+    This is the shape the user pictured — a hand drawn from a varying deck,
+    cards of different kinds — rather than a ranked list of twenty-one. The
+    balance score becomes the *weight* of a card in the draw instead of a
+    verdict, so what the week needs shows up more often without the app
+    deciding for you.
+
+    Deterministic for a given (day, mulligan count) so the hand does not
+    reshuffle under you on every keystroke; `[r]` deals a new one.
+    """
+    import random
+
+    conf = ctx.equilibre.get("main", {})
+    taille = conf.get("taille", 5)
+    garantir = list(conf.get("garantir", []))
+
+    dispo = set(deck(ctx, etat, historique))
+    lignes = [l for l in offre(ctx, etat) if l["id"] in dispo]
+    if not lignes:
+        return []
+
+    rng = random.Random(f"{ctx.today}:{etat.jour}:{etat.mulligans[etat.jour]}")
+    par_id = {l["id"]: l for l in lignes}
+
+    def tirer(candidats, deja_pris):
+        pool = [l for l in candidats if l["id"] not in deja_pris]
+        if not pool:
+            return None
+        # Score -> weight. Floor at a small positive so a badly-fitting dish
+        # stays possible: a deck you can predict is not a deck.
+        poids = [max(0.4, l["score"] + 12) for l in pool]
+        return rng.choices(pool, weights=poids, k=1)[0]
+
+    prises, hand = set(), []
+    for cat in garantir:
+        cands = [l for l in lignes if cat in categories(ctx.catalogue[l["id"]])]
+        c = tirer(cands, prises)
+        if c:
+            prises.add(c["id"])
+            hand.append(c)
+    while len(hand) < taille:
+        c = tirer(lignes, prises)
+        if c is None:
+            break
+        prises.add(c["id"])
+        hand.append(c)
+
+    for l in hand:
+        l["categorie"] = categorie_principale(ctx.catalogue[l["id"]])
+    return sorted(hand, key=lambda l: -l["score"])
+
 
 def articles(panier: dict) -> list:
     """Basket -> flat, aisle-ordered shopping lines. Countables round up."""

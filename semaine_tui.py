@@ -32,12 +32,64 @@ def charger(today, n_jours):
     stock = yaml.safe_load((HERE / "stock.yaml").read_text())
     rayons = yaml.safe_load((HERE / "rayons.yaml").read_text())
     equilibre = yaml.safe_load((HERE / "equilibre.yaml").read_text())
+    histo = yaml.safe_load((HERE / "historique.yaml").read_text())
     jours = tuple(JOURS[(today.weekday() + i) % 7] for i in range(n_jours))
-    return M.Contexte(catalogue=cat, foyer=foyer, stock=stock, rayons=rayons,
-                      equilibre=equilibre, today=today, jours=jours)
+    ctx = M.Contexte(catalogue=cat, foyer=foyer, stock=stock, rayons=rayons,
+                     equilibre=equilibre, today=today, jours=jours)
+    return ctx, histo
 
 
-def frame(ctx, etat, vue_liste=False, message=""):
+SUITS = {"souche": "♠ SOUCHE", "derive": "♥ SUR UN RESTE", "express": "♦ EXPRESS",
+         "congelable": "♣ SE CONGÈLE", "complet": "● PLAT"}
+
+
+W = 78          # total card width
+INNER = W - 4   # room between "│ " and " │"
+
+
+def _coupe(txt, n):
+    return txt if len(txt) <= n else txt[:n - 1] + "…"
+
+
+def carte(ctx, l, k):
+    """One dish, drawn as a card. Category is the suit."""
+    suit = SUITS.get(l.get("categorie", "complet"), "● PLAT")
+    a = l.get("apports", {})
+
+    entete = f"┌─ {k} {suit} "
+    out = [f"┌─ {B}{k}{R} {C}{suit}{R} " + "─" * (W - len(entete) - 1) + "┐"]
+
+    titre = _coupe(l["titre"], INNER - 22)
+    cout = f"{l['minutes']:>3} min   +{l['marginal']} art."
+    pad = INNER - len(titre) - len(cout)
+    out.append(f"│ {B}{titre}{R}{' ' * pad}{D}{cout}{R} │")
+
+    detail = []
+    if a.get("proteine") and a["proteine"] != "aucune":
+        detail.append(a["proteine"])
+    if a.get("profil"):
+        detail.append(a["profil"])
+    if l["chaine"]:
+        src = ctx.catalogue[l["depuis"]]["title"] if l["depuis"] else "le frigo"
+        detail.append(f"↪ base déjà cuite ({_coupe(src, 24)})")
+    if l.get("congelo"):
+        detail.append("❄ portion du congélo")
+    if l["manque"]:
+        detail.append(f"⚠ demande {l['manque']['type']}")
+    if l["emits"]:
+        detail.append("→ laisse " + _coupe(", ".join(l["emits"]), 30))
+    ligne = _coupe(" · ".join(detail), INNER)
+    out.append(f"│ {D}{ligne}{' ' * (INNER - len(ligne))}{R} │")
+
+    if l.get("pourquoi"):
+        pq = _coupe(" · ".join(l["pourquoi"]), INNER)
+        out.append(f"│ {V}{pq}{' ' * (INNER - len(pq))}{R} │")
+
+    out.append("└" + "─" * (W - 2) + "┘")
+    return out
+
+
+def frame(ctx, etat, histo, vue="main", message=""):
     out = ["\x1b[2J\x1b[H"]
     d0, d1 = ctx.today, ctx.today + dt.timedelta(days=len(ctx.jours) - 1)
     out.append(f"{B}CONSTRUCTION DE LA SEMAINE{R}  "
@@ -110,9 +162,27 @@ def frame(ctx, etat, vue_liste=False, message=""):
         out.append(f"        {J}manque encore : {' · '.join(besoins)}{R}")
     elif any(etat.choix):
         out.append(f"        {V}cibles de la semaine atteintes{R}")
+
+    cong = M.portions_congelees(ctx, etat.choix)
+    if cong["portions"]:
+        etiq = f"{J}déborde les {cong['capacite']} portions de tiroir{R}" if cong["deborde"] \
+            else f"{D}sur {cong['capacite']} places{R}"
+        out.append(f"{B}CONGÉLO{R} {cong['portions']} portion(s) mises de côté "
+                   f"cette semaine {etiq}")
     out.append("")
 
-    if vue_liste:
+    if vue == "main":
+        hand = M.main_du_soir(ctx, etat, histo)
+        n_deck = len(M.deck(ctx, etat, histo))
+        out.append(f"{B}LA MAIN DE {ctx.jours[etat.jour].upper()}{R}  "
+                   f"{D}{len(hand)} cartes tirées d'un paquet de {n_deck} · "
+                   f"repioche {etat.mulligans[etat.jour]}×{R}")
+        if not hand:
+            out.append(f"  {D}paquet vide — tout est placé ou en repos{R}")
+        for k, l in enumerate(hand, 1):
+            out += carte(ctx, l, k)
+        out.append("")
+    elif vue == "courses":
         out.append(f"{B}LISTE DE COURSES{R}")
         for rayon, items in M.par_rayon(ctx, calc["panier"]):
             out.append(f"  {B}{rayon.upper()}{R}")
@@ -158,10 +228,10 @@ def frame(ctx, etat, vue_liste=False, message=""):
     if message:
         out.append(f"{J}{message}{R}")
         out.append("")
-    out.append(f"{D}[1-9] choisir dans la liste  ·  [j N] aller au jour N  ·  [x] vider le jour"
-               f"  ·  [t N] budget minutes{R}")
-    out.append(f"{D}[m] mode de tri  ·  [l] liste de courses  ·  [p] laisser l'app remplir"
-               f"  ·  [z] tout effacer  ·  [q] quitter{R}")
+    out.append(f"{D}[1-9] jouer la carte  ·  [r] repiocher la main  ·  [a] tout le paquet"
+               f"  ·  [j N] aller au jour N  ·  [x] vider le jour{R}")
+    out.append(f"{D}[t N] budget minutes  ·  [m] tri ({etat.mode})  ·  [l] liste de courses"
+               f"  ·  [p] laisser l'app remplir  ·  [z] effacer  ·  [q] quitter{R}")
     return "\n".join(out)
 
 
@@ -172,12 +242,12 @@ def main():
     args = ap.parse_args()
 
     today = dt.date.fromisoformat(args.today) if args.today else dt.date.today()
-    ctx = charger(today, args.jours)
+    ctx, histo = charger(today, args.jours)
     etat = M.etat_initial(ctx)
-    vue_liste, message = False, ""
+    vue, message = "main", ""
 
     while True:
-        print(frame(ctx, etat, vue_liste, message))
+        print(frame(ctx, etat, histo, vue, message))
         message = ""
         try:
             cmd = input("> ").strip()
@@ -190,7 +260,11 @@ def main():
         if tete in ("q", "quit"):
             break
         elif tete == "l":
-            vue_liste = not vue_liste
+            vue = "main" if vue == "courses" else "courses"
+        elif tete == "a":
+            vue = "main" if vue == "tous" else "tous"
+        elif tete == "r":
+            etat = M.reduire(ctx, etat, ("repiocher",))
         elif tete == "m":
             i = M.MODES.index(etat.mode)
             etat = M.reduire(ctx, etat, ("mode", M.MODES[(i + 1) % len(M.MODES)]))
@@ -207,17 +281,17 @@ def main():
         elif tete == "t" and reste and reste[0].isdigit():
             etat = M.reduire(ctx, etat, ("budget", int(reste[0])))
         elif tete.isdigit():
-            o = M.offre(ctx, etat)
+            o = M.main_du_soir(ctx, etat, histo) if vue == "main" else M.offre(ctx, etat)
             k = int(tete) - 1
             if 0 <= k < len(o):
                 etat = M.reduire(ctx, etat, ("choisir", o[k]["id"]))
             else:
-                message = "Pas de plat à ce numéro."
+                message = "Pas de carte à ce numéro."
         else:
             message = f"Commande inconnue : {cmd}"
 
     calc = M.calculer(ctx, etat.choix)
-    print("\x1b[2J\x1b[H" + frame(ctx, etat, True).split("\x1b[2J\x1b[H")[1])
+    print("\x1b[2J\x1b[H" + frame(ctx, etat, histo, "courses").split("\x1b[2J\x1b[H")[1])
     print(f"{D}{len(M.articles(calc['panier']))} articles — bonnes courses.{R}")
 
 

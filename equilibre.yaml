@@ -30,12 +30,14 @@ cibles:
     tofu-soja: {min: 0}
   # Nombre de familles de légumes distinctes visé sur la semaine.
   familles_legumes_min: 5
-  # Au-delà de ce nombre d'occurrences, un féculent / format / origine
-  # commence à peser sur le score : c'est le « varier les plaisirs ».
+  # « Varier les plaisirs » se mesure sur le **format** du plat (mijoté, four,
+  # poêlé, soupe, cru, rapide) — pas sur la nationalité. Corrigé par
+  # l'utilisateur : dans un foyer qui cuisine français, plafonner l'origine
+  # faisait remonter des plats exotiques sans raison. `origine` reste saisi
+  # dans les recettes mais ne pèse plus rien.
   repetition_max:
     feculent: 2
     profil: 2
-    origine: 2
 
 # Poids du score. Positif = attire le plat vers le haut de la proposition.
 poids:
@@ -43,10 +45,29 @@ poids:
   proteine_saturee: -5       # dépasse un plafond
   famille_legume_neuve: 2    # chaque famille de légumes pas encore vue
   repetition_feculent: -3
-  repetition_profil: -2
-  repetition_origine: -2
+  repetition_profil: -4      # l'axe « varier les plaisirs », renforcé
   chaine_couverte: 4         # sa base est déjà cuite plus tôt dans la semaine
   ecoule_frigo: 5            # consomme un reste qui dort au frigo
+  ecoule_congelo: 3          # sort une portion d'urgence du congélateur
   chaine_manquante: -8       # exige une base que rien ne produit avant
   hors_budget: -4
   article_marginal: -0.4     # la liste de courses pèse, mais ne décide plus
+
+# Le congélateur est une *sortie* à part entière, pas un débarras : un plat
+# souche produit des portions d'urgence en bocal ou en barquette. Le foyer a
+# trois tiroirs (#29), et c'est la contrainte qui mord — d'où le plafond.
+congelateur:
+  portions_par_tiroir: 6
+  # Une protéine plafonnée n'est décomptée que si elle est ACHETÉE. Reprendre
+  # une bolognaise déjà cuisinée et congelée ne « dépense » pas le quota de
+  # viande rouge de la semaine : la viande a été payée la semaine où on l'a
+  # achetée. Refuser le reste ne fait que gaspiller.
+  reste_ne_compte_pas_dans_les_plafonds: true
+
+# Main de cartes : combien de plats proposer par soir, et quelles catégories
+# garantir dans la main. Le deck tourne — un plat récemment cuisiné
+# (historique.yaml) sort du paquet pour `cooldown_jours`.
+main:
+  taille: 5
+  cooldown_jours: 10
+  garantir: [express, souche, derive]
