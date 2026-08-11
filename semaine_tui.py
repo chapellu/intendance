@@ -76,6 +76,8 @@ def carte(ctx, l, k):
         detail.append(f"↪ base déjà cuite ({_coupe(src, 24)})")
     if l.get("congelo"):
         detail.append("❄ portion du congélo")
+    if l.get("plein"):
+        detail.append("plein tarif : sans le reste")
     if l["manque"]:
         detail.append(f"⚠ demande {l['manque']['type']}")
     if l["emits"]:

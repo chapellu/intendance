@@ -59,6 +59,12 @@ recipes:
         qty: {amount: 500, unit: g}
         required: true
         fallback_recipe: sauce-bolognaise
+    sans_reste:
+      temps_min: 45
+      ingredients:
+        - {id: boeuf-hache, name: bœuf haché, qty: 400, unit: g}
+        - {id: tomates-pelees, name: tomates pelées en conserve, qty: 400, unit: g}
+        - {id: oignon, name: oignon, qty: 1, unit: pièce}
     ingredients:
       - {id: sauce-bolognaise-ing, name: sauce bolognaise, qty: 500, unit: g, from_accepts: true}
       - {id: pates, name: "pâtes longues (spaghetti, linguine)", qty: 350, unit: g}
@@ -79,6 +85,12 @@ recipes:
         qty: {amount: 700, unit: g}
         required: true
         fallback_recipe: sauce-bolognaise
+    sans_reste:
+      temps_min: 45
+      ingredients:
+        - {id: boeuf-hache, name: bœuf haché, qty: 500, unit: g}
+        - {id: tomates-pelees, name: tomates pelées en conserve, qty: 600, unit: g}
+        - {id: oignon, name: oignon, qty: 2, unit: pièce}
     ingredients:
       - {id: sauce-bolognaise-ing, name: sauce bolognaise, qty: 700, unit: g, from_accepts: true}
       - {id: pates-lasagne, name: plaques à lasagne, qty: 250, unit: g}
@@ -149,6 +161,10 @@ recipes:
         qty: {amount: 400, unit: g}
         required: false
         fallback_recipe: poulet-roti
+    sans_reste:
+      temps_min: 15
+      ingredients:
+        - {id: poulet-filets, name: filets de poulet, qty: 400, unit: g}
     ingredients:
       - {id: poulet-cuit-ing, name: poulet cuit effiloché, qty: 400, unit: g, from_accepts: true}
       - {id: tortillas, name: tortillas de blé, qty: 8, unit: pièce}
@@ -172,6 +188,11 @@ recipes:
         qty: {amount: 1, unit: pièce}
         required: true
         fallback_recipe: poulet-roti
+    sans_reste:
+      temps_min: 10
+      ingredients:
+        - {id: bouillon-volaille, name: bouillon de volaille, qty: 1, unit: pièce}
+        - {id: poulet-filets, name: filets de poulet, qty: 200, unit: g}
     ingredients:
       - {id: carcasse-ing, name: carcasse de volaille, qty: 1, unit: pièce, from_accepts: true}
       - {id: carottes, name: carottes, qty: 3, unit: pièce}
@@ -294,6 +315,10 @@ recipes:
         qty: {amount: 400, unit: g}
         required: true
         fallback_recipe: lentilles-mijotees
+    sans_reste:
+      temps_min: 35
+      ingredients:
+        - {id: lentilles-seches, name: lentilles vertes sèches, qty: 200, unit: g}
     ingredients:
       - {id: lentilles-cuites, name: lentilles vertes cuites, qty: 400, unit: g, from_accepts: true}
       - {id: feta, name: feta, qty: 150, unit: g}

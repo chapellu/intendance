@@ -39,6 +39,7 @@ rayons:
   boucherie:
     - boeuf-hache
     - poulet
+    - poulet-filets
     - jambon
   poissonnerie:
     - saumon
@@ -75,6 +76,7 @@ placard:
   - herbes-provence
   - bouillon-miso
   - bouillon-legumes
+  - bouillon-volaille
   - farine
   - son-avoine
   - curry

@@ -184,6 +184,7 @@ def calculer(ctx: Contexte, choix: tuple) -> dict:
     running = [dict(o) for o in ctx.stock.get("outputs", [])]
     panier, a_verifier = {}, {}
     chaine, problemes, ecoule = [], [], set()
+    plein_tarif = []
 
     for i, rid in enumerate(choix):
         if rid is None:
@@ -191,6 +192,9 @@ def calculer(ctx: Contexte, choix: tuple) -> dict:
         r = ctx.catalogue[rid]
         date = _date(ctx, i)
 
+        # 7 Wonders chaining: an uncovered `accepts` is a *price*, not a gate.
+        # `sans_reste` says what to buy and how long it costs instead.
+        plein = False
         for acc in r.get("accepts", []):
             out, age = _stock_has(running, acc["type"], window, date)
             if out:
@@ -199,6 +203,11 @@ def calculer(ctx: Contexte, choix: tuple) -> dict:
                                "age": age})
                 if src is None:
                     ecoule.add(acc["type"])
+            elif r.get("sans_reste"):
+                plein = True
+                plein_tarif.append({"jour": i, "titre": r["title"],
+                                    "type": acc["type"],
+                                    "minutes": r["sans_reste"].get("temps_min", 0)})
             elif acc.get("required"):
                 problemes.append({
                     "jour": i, "titre": r["title"], "type": acc["type"],
@@ -206,7 +215,10 @@ def calculer(ctx: Contexte, choix: tuple) -> dict:
                 })
 
         factor = _facteur(r, besoin)
-        for ing in r["ingredients"]:
+        lignes_ing = list(r["ingredients"])
+        if plein:
+            lignes_ing += r["sans_reste"].get("ingredients", [])
+        for ing in lignes_ing:
             if ing.get("from_accepts"):
                 continue
             cid = _canon(ing["id"], ctx.rayons)
@@ -236,7 +248,7 @@ def calculer(ctx: Contexte, choix: tuple) -> dict:
                       "perime": age > window})
 
     return {"panier": panier, "placard": a_verifier, "chaine": chaine,
-            "problemes": problemes, "frigo": frigo}
+            "problemes": problemes, "plein_tarif": plein_tarif, "frigo": frigo}
 
 
 # --------------------------------------------------------------- balance model
@@ -455,6 +467,7 @@ def offre(ctx: Contexte, etat: Etat) -> list:
         # Did placing it here actually resolve its own chaining need?
         chaine_ici = [c for c in apres["chaine"] if c["jour"] == etat.jour]
         manque_ici = [p for p in apres["problemes"] if p["jour"] == etat.jour]
+        plein_ici = [p for p in apres["plein_tarif"] if p["jour"] == etat.jour]
 
         # Does it eat something already sitting in the fridge?
         ecoule, du_congelo = [], False
@@ -467,10 +480,13 @@ def offre(ctx: Contexte, etat: Etat) -> list:
                     du_congelo = True
 
         minutes = r.get("time_min_total", 0)
+        if plein_ici:
+            minutes += plein_ici[0]["minutes"]
         lignes.append({
             "id": rid,
             "titre": r["title"],
             "minutes": minutes,
+            "plein": bool(plein_ici),
             "marginal": len(apres["panier"]) - n_base,
             "chaine": bool(chaine_ici),
             "depuis": chaine_ici[0]["depuis"] if chaine_ici else None,
@@ -614,4 +630,6 @@ def par_rayon(ctx: Contexte, panier: dict) -> list:
 
 
 def minutes_semaine(ctx: Contexte, choix: tuple) -> int:
-    return sum(ctx.catalogue[r].get("time_min_total", 0) for r in choix if r)
+    base = sum(ctx.catalogue[r].get("time_min_total", 0) for r in choix if r)
+    # Dishes cooked at full price took their `sans_reste` detour too.
+    return base + sum(p["minutes"] for p in calculer(ctx, choix)["plein_tarif"])

@@ -89,6 +89,35 @@ that dish tonight.
 `calculer`, `offre`. The TUI is disposable; the model is the part that lifts
 into the real app.
 
+### Chaining is a discount, not a gate (7 Wonders)
+
+See [MECANIQUES.md](MECANIQUES.md) for the full survey of board-game mechanics
+against this domain — what maps, what is next, and what is rejected on purpose.
+One finding was clear enough to build immediately.
+
+In 7 Wonders a chain symbol lets you build a card **for free** if you built its
+predecessor; you could always have built it anyway by paying. This prototype had
+it backwards: `accepts: {required: true}` made a derived dish *impossible*
+without its base, so the offer showed a hard error. But you can obviously make
+pasta bolognese without last night's sauce — you buy mince and spend 45 more
+minutes. That is a price, in the two currencies the app already speaks.
+
+Recipes therefore carry `sans_reste` — what to buy, and how much longer it takes,
+when the base is missing. The same dish now shows two prices depending on the
+week around it: *Petits burgers* costs 30 min and +1 article the day after the
+lentils are simmered, and 65 min and +3 articles on its own. Hard errors are gone
+from the offer, and the *value* of cooking a souche becomes legible, because it
+is exactly the discount it unlocks later.
+
+`required: true` now means "no `sans_reste` exists" — genuinely impossible
+without the base — rather than "blocked".
+
+**Known duplication:** `plan.py` still carries its own copy of the basket
+aggregation and does not know about `sans_reste`, so it would still report a hard
+error on an unchained week. The two must collapse into `semaine_model.py`; it has
+not happened yet because `plan.py` is the path that has actually been used for
+shopping.
+
 ### A hand of cards, dealt from a deck that turns over
 
 The user's own picture of the thing: *a card game, with a deck that varies and

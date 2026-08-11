@@ -25,6 +25,13 @@ recipe:
       required: true
       fallback_recipe: lentilles-mijotees
 
+  # 7 Wonders chaining: the reste is a *discount*, not a gate. Without it you
+  # buy dry lentils and spend 35 more minutes — a price, not an impossibility.
+  sans_reste:
+    temps_min: 35
+    ingredients:
+      - {id: lentilles-seches, name: lentilles vertes sèches, qty: 200, unit: g}
+
   apports:
     proteine: legumineuse
     feculent: aucun
