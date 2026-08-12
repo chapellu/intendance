@@ -55,6 +55,7 @@ class Etat:
     budgets: tuple           # Optional[int] minutes per day
     mulligans: tuple = ()    # how many times each day's hand was redealt
     mode: str = "equilibre"
+    jetes: tuple = ()        # fridge outputs the user chose to throw away
 
 
 # --------------------------------------------------------------- construction
@@ -110,6 +111,29 @@ def reduire(ctx: Contexte, etat: Etat, action) -> Etat:
                     c[i] = o[0]["id"]
                     cur = replace(cur, choix=tuple(c))
         return replace(cur, jour=etat.jour)
+
+    if kind == "conjurer":
+        # Play the curse: put the dish that eats the doomed leftover on the
+        # earliest day that still catches it, before it ages out.
+        m = malediction(ctx, etat)
+        if not m or not m["candidats"]:
+            return etat
+        jour = min(min(c["jours"]) for c in m["candidats"])
+        ids = {c["id"] for c in m["candidats"] if jour in c["jours"]}
+        lignes = [l for l in offre(ctx, replace(etat, jour=jour)) if l["id"] in ids]
+        if not lignes:
+            return etat
+        choix = list(etat.choix)
+        choix[jour] = max(lignes, key=lambda l: l["score"])["id"]
+        return _avancer(replace(etat, choix=tuple(choix), jour=jour))
+
+    if kind == "jeter":
+        # Discard the curse. Deliberately an *action*, so throwing food away is
+        # something you did rather than something that happened to you.
+        m = malediction(ctx, etat)
+        if not m or m["type"] in etat.jetes:
+            return etat
+        return replace(etat, jetes=etat.jetes + (m["type"],))
 
     if kind == "vider-tout":
         return etat_initial(ctx)
@@ -171,17 +195,22 @@ def _echelle(qty, unit, factor):
     return round(v, 1)
 
 
-def calculer(ctx: Contexte, choix: tuple) -> dict:
+def calculer(ctx: Contexte, choix: tuple, jetes: tuple = ()) -> dict:
     """The whole derived state of a (possibly partial) week. Pure.
 
     Returns the basket, what the cupboard should be checked for, the chaining
     edges that actually fired, the problems, and the leftover fridge stock.
+
+    `jetes` are outputs the user discarded: they stop being available to chain
+    against, which is the whole point — waste has to cost something downstream
+    or the discard is free and means nothing.
     """
     besoin = _portions_foyer(ctx.foyer)
     window = ctx.foyer["fridge_window_days"]
     placard = ctx.rayons.get("placard", [])
 
-    running = [dict(o) for o in ctx.stock.get("outputs", [])]
+    running = [dict(o) for o in ctx.stock.get("outputs", [])
+               if o["type"] not in jetes]
     panier, a_verifier = {}, {}
     chaine, problemes, ecoule = [], [], set()
     plein_tarif = []
@@ -200,7 +229,8 @@ def calculer(ctx: Contexte, choix: tuple) -> dict:
             if out:
                 src = out.get("_from")
                 chaine.append({"jour": i, "type": acc["type"], "depuis": src,
-                               "age": age})
+                               "age": age,
+                               "congelo": out.get("location") == "congelo"})
                 if src is None:
                     ecoule.add(acc["type"])
             elif r.get("sans_reste"):
@@ -240,6 +270,8 @@ def calculer(ctx: Contexte, choix: tuple) -> dict:
     for o in ctx.stock.get("outputs", []):
         if o["type"] in ecoule or o.get("location") == "congelo":
             continue
+        if o["type"] in jetes:
+            continue
         born = o["born"]
         if isinstance(born, str):
             born = dt.date.fromisoformat(born)
@@ -248,7 +280,8 @@ def calculer(ctx: Contexte, choix: tuple) -> dict:
                       "perime": age > window})
 
     return {"panier": panier, "placard": a_verifier, "chaine": chaine,
-            "problemes": problemes, "plein_tarif": plein_tarif, "frigo": frigo}
+            "problemes": problemes, "plein_tarif": plein_tarif, "frigo": frigo,
+            "jetes": list(jetes)}
 
 
 # --------------------------------------------------------------- balance model
@@ -373,23 +406,113 @@ def conservations(ctx: Contexte, recipe: dict) -> list:
     return dehors
 
 
-def portions_congelees(ctx: Contexte, choix: tuple) -> dict:
-    """How many freezer portions the week banks, against the drawer budget."""
+def _band_portions(band) -> int:
+    """« 2-repas » -> 2. Crude, and honest about it: the bands are coarse."""
+    try:
+        return int(str(band).split("-")[0])
+    except (TypeError, ValueError):
+        return 1
+
+
+def bilan_congelo(ctx: Contexte, etat: Etat) -> dict:
+    """The freezer as a level between a floor and a ceiling, across the week.
+
+    RimWorld does not ask you to queue meals one at a time; you set a **standing
+    bill** — *cook simple meals until you have 20* — and the colony reorders on
+    its own when the stock drops through the threshold. That is the right shape
+    for the emergency drawer, and it is a different question from the one the
+    planner asks everywhere else. « What shall we eat Tuesday? » is a choice.
+    « Are there still portions behind me if Tuesday collapses? » is a *level*,
+    and levels want a floor, not a decision.
+
+    So: what is in the freezer today, minus what the week takes out, plus what
+    the week banks. Below the floor, batch-cooking stops being a nice idea and
+    becomes the thing the week is short of — and `_score` says so out loud.
+    """
     conf = ctx.equilibre.get("congelateur", {})
     par_tiroir = conf.get("portions_par_tiroir", 6)
+    plancher = conf.get("plancher", 0)
     capacite = ctx.foyer.get("freezer_drawers", 0) * par_tiroir
-    n = 0
-    for rid in choix:
+
+    debut = sum(_band_portions(o.get("qty_band"))
+                for o in ctx.stock.get("outputs", [])
+                if o.get("location") == "congelo" and o["type"] not in etat.jetes)
+
+    banque = 0
+    for rid in etat.choix:
         if not rid:
             continue
         for e in ctx.catalogue[rid].get("emits", []):
             if e.get("keeps", {}).get("congelo"):
-                n += 1
-    return {"portions": n, "capacite": capacite,
-            "deborde": capacite and n > capacite}
+                banque += _band_portions(e.get("qty_band"))
+
+    calc = calculer(ctx, etat.choix, etat.jetes)
+    sortie = sum(_band_portions("1-repas") for c in calc["chaine"] if c.get("congelo"))
+
+    fin = debut - sortie + banque
+    return {"debut": debut, "banque": banque, "sortie": sortie, "fin": fin,
+            "plancher": plancher, "capacite": capacite,
+            "sous_plancher": plancher and fin < plancher,
+            "deborde": bool(capacite and fin > capacite)}
 
 
-def _score(ctx: Contexte, ligne: dict, cov: dict) -> tuple:
+def malediction(ctx: Contexte, etat: Etat) -> dict:
+    """The leftover that will spoil this week, dealt as a card nobody asked for.
+
+    Slay the Spire's curse is a card shuffled into your deck that you did not
+    choose and would rather not draw. The kitchen has exactly one of these, and
+    it is not a metaphor: the thing at the back of the fridge with a clock on it.
+
+    Today that fact is a grey line under the week — passive, scrollable, and in
+    practice already too late by the time anyone reads it. As a card *in the
+    hand*, with its deadline printed on it and only two ways out, the same fact
+    becomes a decision: cook it, or discard it and watch the app write down that
+    you threw food away. Making waste an explicit discard rather than a silent
+    default is the point; nothing else in this model changes behaviour as
+    directly.
+
+    Returns the most urgent one, or None when the fridge holds no deadline.
+    """
+    window = ctx.foyer["fridge_window_days"]
+    fin_semaine = _date(ctx, len(ctx.jours) - 1)
+    calc = calculer(ctx, etat.choix, etat.jetes)
+    deja_mange = {c["type"] for c in calc["chaine"]}
+    places = {r for r in etat.choix if r}
+
+    pire = None
+    for o in ctx.stock.get("outputs", []):
+        if o.get("location") == "congelo":
+            continue                      # the freezer has no clock — that is why it exists
+        if o["type"] in etat.jetes or o["type"] in deja_mange:
+            continue
+        born = o["born"]
+        if isinstance(born, str):
+            born = dt.date.fromisoformat(born)
+        peremption = born + dt.timedelta(days=window)
+        if peremption > fin_semaine:
+            continue                      # it outlives the week: no decision to force
+
+        candidats = []
+        for rid, r in ctx.catalogue.items():
+            if rid in places:
+                continue
+            if not any(a["type"] == o["type"] for a in r.get("accepts", [])):
+                continue
+            jours = [i for i in range(len(ctx.jours))
+                     if etat.choix[i] is None and _date(ctx, i) <= peremption]
+            if jours:
+                candidats.append({"id": rid, "titre": r["title"], "jours": jours})
+
+        reste = (peremption - ctx.today).days
+        item = {"type": o["type"], "band": o.get("qty_band"),
+                "peremption": peremption, "reste": reste,
+                "perdu": reste < 0, "candidats": candidats}
+        if pire is None or reste < pire["reste"]:
+            pire = item
+    return pire
+
+
+def _score(ctx: Contexte, ligne: dict, cov: dict, cong: dict = None) -> tuple:
     """Score a candidate against what the week still needs. Returns (score, why)."""
     w = ctx.equilibre["poids"]
     a = ctx.catalogue[ligne["id"]].get("apports", {})
@@ -431,6 +554,12 @@ def _score(ctx: Contexte, ligne: dict, cov: dict) -> tuple:
     if ligne.get("congelo"):
         s += w.get("ecoule_congelo", 0)
         why.append("sort une portion du congélo")
+    # Standing bill: while the emergency drawer is under its floor, a dish that
+    # refills it is worth more than one that merely feeds tonight.
+    if cong and cong["sous_plancher"] and ligne.get("banque"):
+        s += w.get("plancher_congelo", 0)
+        why.append(f"remplit le congélo, sous son plancher "
+                   f"({cong['fin']}/{cong['plancher']})")
     if ligne["manque"]:
         s += w["chaine_manquante"]
     if ligne["hors_budget"]:
@@ -449,7 +578,7 @@ def offre(ctx: Contexte, etat: Etat) -> list:
     an earlier day, or whose vegetables another dish already needs, is cheap in
     a way no recipe page can tell you.
     """
-    base = calculer(ctx, etat.choix)
+    base = calculer(ctx, etat.choix, etat.jetes)
     n_base = len(base["panier"])
     deja = {r for r in etat.choix if r}
     budget = etat.budgets[etat.jour]
@@ -462,7 +591,7 @@ def offre(ctx: Contexte, etat: Etat) -> list:
             continue
         essai = list(etat.choix)
         essai[etat.jour] = rid
-        apres = calculer(ctx, tuple(essai))
+        apres = calculer(ctx, tuple(essai), etat.jetes)
 
         # Did placing it here actually resolve its own chaining need?
         chaine_ici = [c for c in apres["chaine"] if c["jour"] == etat.jour]
@@ -471,9 +600,10 @@ def offre(ctx: Contexte, etat: Etat) -> list:
 
         # Does it eat something already sitting in the fridge?
         ecoule, du_congelo = [], False
+        dispo_stock = [o for o in ctx.stock.get("outputs", [])
+                       if o["type"] not in etat.jetes]
         for acc in r.get("accepts", []):
-            out, age = _stock_has(ctx.stock.get("outputs", []), acc["type"],
-                                  window, date)
+            out, age = _stock_has(dispo_stock, acc["type"], window, date)
             if out:
                 ecoule.append(acc["type"])
                 if out.get("location") == "congelo":
@@ -495,12 +625,15 @@ def offre(ctx: Contexte, etat: Etat) -> list:
             "congelo": du_congelo,
             "hors_budget": bool(budget and minutes > budget),
             "emits": [e["type"] for e in r.get("emits", [])],
+            "banque": any(e.get("keeps", {}).get("congelo")
+                          for e in r.get("emits", [])),
             "apports": r.get("apports", {}),
         })
 
     cov = couverture(ctx, etat.choix)
+    cong = bilan_congelo(ctx, etat)
     for l in lignes:
-        l["score"], l["pourquoi"] = _score(ctx, l, cov)
+        l["score"], l["pourquoi"] = _score(ctx, l, cov, cong)
     return _trier(lignes, etat.mode)
 
 
@@ -633,3 +766,12 @@ def minutes_semaine(ctx: Contexte, choix: tuple) -> int:
     base = sum(ctx.catalogue[r].get("time_min_total", 0) for r in choix if r)
     # Dishes cooked at full price took their `sans_reste` detour too.
     return base + sum(p["minutes"] for p in calculer(ctx, choix)["plein_tarif"])
+
+
+def gaspillage(ctx: Contexte, etat: Etat) -> list:
+    """What the week threw away, named. The scoreboard for the discard pile."""
+    perdu = []
+    for o in ctx.stock.get("outputs", []):
+        if o["type"] in etat.jetes:
+            perdu.append({"type": o["type"], "band": o.get("qty_band")})
+    return perdu

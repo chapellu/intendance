@@ -1,9 +1,15 @@
-# Card-game mechanics, and which ones survive contact with a real kitchen
+# Game mechanics, and which ones survive contact with a real kitchen
 
-Exploration note for the week-builder prototype. The user's prompt: *7 Wonders'
-chaining, and there are plenty of interesting mechanics.* True — and one of them
-is strictly better than what this prototype does today, so it got implemented
-rather than just noted (see **1**).
+Exploration note for the week-builder prototype, in two waves. The first came
+from *7 Wonders' chaining, and there are plenty of interesting mechanics* and
+stayed inside card games. The second (from **11** on) was asked to sail further
+out — any genre — and it turns out the card-game frame was the smaller half.
+Colony sims, factory builders and farming games have been modelling *supply,
+spoilage and standing orders* for twenty years, which is more literally this
+problem than any deck ever was.
+
+Two mechanics from the second wave are **built**, not merely noted: the standing
+freezer floor (**12**) and the curse card (**13**).
 
 Ground rule throughout, inherited from the garden map: **this is not a game.**
 A mechanic earns its place only if it makes a real decision easier or gets food
@@ -143,6 +149,256 @@ the rigid DAG that the "loose web" decision rejected.
 
 ---
 
+# Second wave — beyond card games
+
+## 11. Agricola — the feeding phase, and the slot two people are fighting over 🔜
+
+Agricola is the closest thing to this app that exists as a boardgame, and its
+central rule is not a card: **at fixed intervals the harvest comes, and you must
+feed your family.** Fail and you take a begging card, which is pure penalty.
+Food is not a resource you accumulate for points — it is a *debt that comes due
+on a clock*, and everything else you do is subordinate to it.
+
+That framing is more honest than this prototype's. Today a week is an optional
+planning exercise you open when you feel like it; the model is happy with three
+empty days. In reality 21 meal slots arrive every week whether or not anyone
+opened the app, and the ones you did not plan get resolved by pasta or by
+delivery. Naming the unplanned nights, rather than leaving them blank, would
+change what the screen is *for*.
+
+The second half of Agricola is worker placement: you have a few family members,
+each action space fits one, and taking a space **denies it to everyone else**.
+The kitchen equivalent is not ingredients — those are elastic, you can buy more.
+It is the **batch slot**. There is one Sunday afternoon. Putting a 3-hour souche
+in it means nothing else goes there, and #29 already says the weekends are
+nomadic and the batch slot is a weekday. The prototype models minutes per night
+as if minutes were fungible; they are not, because they belong to a specific
+person on a specific evening.
+
+Unbuilt because it needs schedule data the model does not have. But it is the
+mechanic most likely to make the app match the actual constraint, which has
+never been "what shall we eat" and has always been "who is free to cook".
+
+## 12. RimWorld — the standing bill, and a reorder point ✅ implemented
+
+In RimWorld you do not queue meals one at a time. You attach a **bill** to the
+stove — *cook simple meals until you have 20* — and the colony re-triggers it on
+its own whenever the stock falls through the threshold. It is the classic (s,S)
+inventory policy wearing a game's clothes, and it is the right shape for a part
+of this problem that the card frame was handling badly.
+
+The insight: **not everything in a kitchen is a choice.** "What shall we eat
+Tuesday?" is a decision, and deserves a hand of cards. "Are there still portions
+behind me if Tuesday collapses?" is not a decision — it is a *level*, and levels
+want a floor and an alarm, not a deal.
+
+So `equilibre.yaml` gained `congelateur.plancher`, and the model now tracks the
+freezer as a moving level across the week rather than a count of what the week
+banks:
+
+```
+CONGÉLO 2 −1 +3 = 4 portion(s) d'urgence   au-dessus du plancher de 4
+```
+
+Opening stock, minus what the week eats out of it, plus what it puts back. Under
+the floor, `_score` adds `plancher_congelo` to any dish that banks portions, and
+the card says why — *remplit le congélo, sous son plancher (2/4)*. Batch cooking
+stops being a virtue in the abstract and becomes the thing this particular week
+is short of.
+
+Worth noting what this replaced: the old `portions_congelees` only counted what
+the week *added*, so a week that emptied the freezer looked identical to one that
+never touched it. A level you only ever measure going up is not a level.
+
+## 13. Slay the Spire — the curse card ✅ implemented, and it drew blood immediately
+
+Wave one rated this the best unbuilt idea. It is now built, and it justified
+itself on the first frame.
+
+A curse is a card forced into your hand that you did not choose and cannot
+usefully play. The kitchen has exactly one: **the thing in the fridge with a
+clock on it.** Previously that was a grey line under the week — passive, easy to
+scroll past. It is now dealt as a card above the hand, with its deadline printed
+on it and exactly two exits:
+
+```
+┌─ ✖ MALÉDICTION ──────────────────────────────────────────────────┐
+│ lentilles-vertes-cuites (2-repas)                     encore 1 j │
+│ le sauve : Salade de lentilles à la feta, Petits burgers…        │
+│ [!] le cuisiner    [d] le jeter                                  │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+`[!]` places the best dish that eats it on the earliest day that still catches
+it. `[d]` throws it away — and that is the part that matters. The discard is
+**recorded**, `calculer` stops counting the item as available, and everything
+downstream reprices. Cook the doomed lentils and the burgers cost **30 min and 2
+articles**; discard them and the same dish costs **65 min and 3 articles**,
+because it now pays full `sans_reste` price. Waste is no longer free, and it is
+no longer silent: it is a move you made.
+
+The first frame it ever rendered, dated for today, said *périmé depuis 2 j —
+plus aucun plat ne peut le rattraper à temps*, and offered only `[d]`. That is
+the passive grey line's real failure mode, stated out loud: by the time anyone
+reads it, the decision is gone. A curse card that arrives too late to play is
+itself the finding.
+
+## 14. Factorio — ratios, and alerting on the *starved* node 🔜
+
+Factorio's deep teaching is throughput matching: a chain runs at the speed of its
+slowest step, and overproducing an intermediate is waste dressed as progress.
+The kitchen version is direct — a souche that yields four portions of sauce when
+the week only ever consumes two has not saved you anything, it has moved the
+spoilage downstream. The model has `emits`, `accepts` and `qty_band` already, so
+the ratio is computable: **does what the week produces match what it consumes?**
+
+The more transferable half is Factorio's *alerting discipline*. It never shows
+you a dashboard of everything that is fine; it shows you the assembler that is
+**starved**, with an arrow pointing at it. This prototype currently prints the
+whole state every frame — deliberately, that is the point of a logic prototype —
+but the real app should invert it. One line about the thing that will not work is
+worth more than a full-week readout nobody parses.
+
+## 15. Factorio — the blueprint, i.e. the week you already know 🔜 (but not here)
+
+A blueprint is a saved arrangement you stamp down and then edit. The household
+equivalent is obvious and probably valuable: **"ma semaine type"** — a skeleton
+you drop in and adjust, rather than six blank slots every Sunday. Most weeks in
+most households are a variation on the same week.
+
+Explicitly *not* built here, because the prototype's rules say no persistence:
+saving weeks is the thing a prototype should be testing the value of, not
+depending on. Noted for the real app.
+
+## 16. Zelda: Breath of the Wild — cook the fridge, not the recipe 🔜 an inverted query
+
+BOTW has no recipe list to follow. You throw ingredients in a pot and their
+*properties* combine into a result. Under-appreciated: this reverses the
+direction of the whole interaction. Every planner, including this one, runs
+**dish → ingredients → shopping list**. BOTW runs **what I have → what that
+becomes**.
+
+Both directions are needed and the app only has one. Sunday-with-a-list wants
+dish→ingredients. Thursday at 19:00 with half a courgette, an egg and no
+shopping trip left in you wants the inverse: *what does this become?* The
+catalogue can already answer it — filter dishes whose non-cupboard ingredients
+are a subset of what is in stock — and it is a genuinely different screen, not a
+sort order.
+
+The caveat is that it needs a real pantry inventory, which is the single most
+tedious thing to ask a human to maintain. Worth prototyping with a deliberately
+lazy input (five checkboxes for what is left) before assuming full inventory.
+
+## 17. Balatro — jokers, i.e. the week has a modifier 🔜 a reframe of what exists
+
+Balatro's jokers are not cards you play into a hand; they sit alongside it and
+**change how everything scores**. The prototype already has this and does not
+know it: `MODES` (`equilibre / courses / temps / frigo / varie`) are exactly
+score modifiers, but they are buried in a `[m]` cycling key, mutually exclusive,
+and invisible on the cards they are reweighting.
+
+As played modifiers they would become *combinable and legible*: "semaine sans
+viande" + "semaine à petit budget" + "on reçoit samedi" are three real constraints
+that co-occur constantly and that the current single-mode switch cannot express.
+This is cheap — the weights are already data in `equilibre.yaml` — and it turns a
+hidden sort order into something the user states about their week.
+
+## 18. Carcassonne — edges must match, i.e. companion planting 🔜 for the garden facet
+
+Carcassonne's only placement rule is that a tile's edges must match its
+neighbours'. That is a startlingly good fit for the **garden** side, where what
+you may plant in a bed genuinely depends on what is in the bed next to it —
+companion planting, allelopathy, shade cast by a neighbour. On a terrace of eight
+containers, adjacency is the whole design space.
+
+This is the first mechanic in either wave that belongs to the garden rather than
+the kitchen, and it is worth flagging to the garden-interior research: the
+question "how do we draw the terrace" has an answer that depends on whether beds
+have *edges that interact*. A grid of independent pots and a tile-laying board are
+different apps.
+
+## 19. Crop rotation — the same cooldown, in the other facet ✅ already there, twice
+
+Real gardening forbids planting the same botanical family in the same bed year
+after year: pests accumulate, the soil is drawn down the same way. Agricola and
+Fields of Arle both model it.
+
+The pleasing part is that this app **already implements it** — as
+`main.cooldown_jours`, which pulls a recently-cooked dish out of the deck. A dish
+on cooldown and a bed on rotation are the same mechanic: *a slot that must lie
+fallow so the system does not degenerate into repetition*. Two facets, one rule.
+That is a strong signal for the shared shell: it belongs in the common layer, not
+duplicated in each facet.
+
+## 20. Darkest Dungeon — the roster gets tired 🔜 the honest missing axis
+
+In Darkest Dungeon you cannot send the same four heroes on every expedition; they
+accumulate stress and must be benched. The model is *the party is a renewable but
+not infinite resource*.
+
+The kitchen has this and refuses to say it: **the cook gets tired.** Six
+cook-from-scratch evenings in a row is not a time problem — each night fits its
+budget — it is a fatigue problem, and it is the actual reason weeks collapse into
+takeaway on Thursday. The prototype scores every night independently and is
+therefore blind to it by construction.
+
+The minimum version is small: a cap on consecutive high-effort nights, or a
+"curve" check in the sense of **7** — how many nights this week ask for real
+cooking, against how many the household has in it. This is the clearest thing the
+model is missing that no amount of better ranking will fix.
+
+## 21. Root / Spirit Island — asymmetry, and the baby as a derived consumer 🔜
+
+Asymmetric games give each player different rules, not different stats. The
+household is asymmetric in exactly that way: two adults with different evenings
+and different skills, and — per `household.yaml` — a baby, whose `diet: baby`
+currently only removes them from `portion_eq` so they do not inflate the
+quantities.
+
+That is a modelling shortcut worth revisiting, because the baby's meals are not
+absent, they are **derived**: the purée comes from the same vegetables, cooked
+plainer, before the salt. That is an `emits`/`accepts` edge the catalogue does not
+have, and it is the same chaining machinery already built for bases. A dish that
+also feeds the baby is cheaper than one that requires a second, separate cooking
+job — and right now the app cannot see that difference at all.
+
+## 22. Legacy games — the repertoire keeps a scar 🔜
+
+Pandemic Legacy has you write on the board and tear up cards; the game state
+carries history permanently. Wave one covered *culling* (Dominion, **5**), but
+legacy adds something culling does not: the board **remembers why**. A dish that
+was refused twice by a kid, a recipe that always overruns its stated time, a
+souche that reliably gets eaten before its derivative — these are facts a
+household learns and an app throws away every week.
+
+`historique.yaml` is already the log that would feed it. Annotation is cheap, and
+it is what makes a repertoire *yours* rather than a list.
+
+## 23. Slay the Spire — upgraded cards, i.e. you get faster 🔜 built-adjacent, deliberately not built
+
+Strike+ costs the same and hits harder. Cooks do this for real: the fifth time you
+make a dish it takes noticeably less time than the first, and stated recipe times
+are written for someone who has never made it.
+
+`historique.yaml` already counts how often each dish was cooked, so a mastery
+discount on `time_min_total` is a handful of lines. Not built, for an honest
+reason: with three entries in the log it would change nothing visible, and a
+mechanic you cannot see working is a mechanic you cannot evaluate. It needs the
+user's real cooking history first.
+
+## 24. Dorfromantik / Terra Nil — the tone: no fail state 🎨 a constraint, not a mechanic
+
+Both are placement games with no way to lose — Dorfromantik ends when it ends,
+Terra Nil is about restoring rather than conquering. They are calm on purpose.
+
+This is the right register for a household app and it is worth writing down as a
+constraint, because several mechanics above could easily drift the other way. The
+week is not scored, the fridge is not a threat, and a week where you ate badly is
+information rather than a loss. The curse card in **13** sits closest to that line
+and is deliberately phrased as a choice you make, not a punishment you receive.
+
+---
+
 ## Rejected, deliberately
 
 - **Military conflict / player interaction (7 Wonders)** — there is one
@@ -156,3 +412,16 @@ the rigid DAG that the "loose web" decision rejected.
 - **Card rarity / packs / collection** — a repertoire is not a collection to
   complete. Rarity would push toward cooking things for novelty rather than
   because they suit a Tuesday.
+- **Overcooked's real-time chaos** — dramatising the rush is the opposite of
+  helping. Its one real lesson is kept and belongs elsewhere: the binding
+  constraint on a weeknight is often *the oven and the two hobs*, not the
+  ingredients. The capability model can express that; the panic cannot.
+- **Streaks, badges, "you planned 5 weeks in a row!"** — the habit-app trap. A
+  streak makes a bad week feel like a failure and quietly pushes you to log
+  rather than to cook. It also breaks exactly when life is hardest, which is
+  when the app should be most useful.
+- **Hunger / satisfaction meters on the household** — modelling people as bars
+  that deplete. Wrong on the merits and unpleasant besides; the household knows
+  whether it ate well and does not need a gauge to tell it.
+- **Trading, markets, dynamic prices** — the shop is not an opponent. Money
+  belongs in the model eventually (see **4**), as a cost axis, not as a game.

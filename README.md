@@ -91,9 +91,11 @@ into the real app.
 
 ### Chaining is a discount, not a gate (7 Wonders)
 
-See [MECANIQUES.md](MECANIQUES.md) for the full survey of board-game mechanics
-against this domain — what maps, what is next, and what is rejected on purpose.
-One finding was clear enough to build immediately.
+See [MECANIQUES.md](MECANIQUES.md) for the full survey of game mechanics against
+this domain — what maps, what is next, and what is rejected on purpose. It runs
+in two waves: card games first, then everything else (colony sims, factory
+builders, farming games), which turned out to be the richer half. Three findings
+were clear enough to build immediately — this one, plus the two below.
 
 In 7 Wonders a chain symbol lets you build a card **for free** if you built its
 predecessor; you could always have built it anyway by paying. This prototype had
@@ -145,6 +147,37 @@ choice among a few, not a verdict.
   redealing quietly destroys the point — turning a hand back into a list you
   scroll — is the open question; a mulligan budget is the obvious lever if it
   does.
+
+### The curse card: the leftover with a clock (`[!]` / `[d]`)
+
+Borrowed from Slay the Spire, where a curse is a card forced into your hand that
+you did not choose. The fridge has exactly one, and it used to be a grey line
+under the week that was easy to scroll past. It is now dealt **above** the hand,
+with its deadline printed on it and two exits: `[!]` cooks it — placing the best
+dish that eats it on the earliest day that still catches it — or `[d]` throws it
+away.
+
+The discard is the point. It is recorded, the item stops being available, and
+everything downstream reprices: cook the doomed lentils and the burgers cost 30
+min and 2 articles; discard them and the same dish costs 65 min and 3, because it
+now pays full `sans_reste` price. Waste stops being free and silent.
+
+The very first frame it rendered said *périmé depuis 2 j — plus aucun plat ne
+peut le rattraper*, offering only `[d]`. That is the old passive line's failure
+mode stated out loud, and it is itself a finding.
+
+### The freezer as a level with a floor (RimWorld's standing bill)
+
+RimWorld does not ask you to queue meals; you set a bill — *cook until you have
+20* — and it re-triggers when stock drops through the threshold. Not everything
+in a kitchen is a choice: what to eat Tuesday is, but *whether there are portions
+behind you if Tuesday collapses* is a level, and levels want a floor.
+
+So the freezer line now moves across the week — `2 −1 +3 = 4 portions d'urgence`
+— against `congelateur.plancher` in `equilibre.yaml`. Below the floor, `_score`
+rewards any dish that banks portions and the card says so. This replaced a
+counter that only ever measured what the week *added*, so a week that emptied the
+freezer looked identical to one that never opened it.
 
 ### Conservation as a transformation, not a property (`[c]`)
 

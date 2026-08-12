@@ -51,6 +51,7 @@ poids:
   ecoule_congelo: 3          # sort une portion d'urgence du congélateur
   chaine_manquante: -8       # exige une base que rien ne produit avant
   hors_budget: -4
+  plancher_congelo: 4        # remonte le stock d'urgence quand il est bas
   article_marginal: -0.4     # la liste de courses pèse, mais ne décide plus
 
 # Le congélateur est une *sortie* à part entière, pas un débarras : un plat
@@ -58,6 +59,13 @@ poids:
 # trois tiroirs (#29), et c'est la contrainte qui mord — d'où le plafond.
 congelateur:
   portions_par_tiroir: 6
+  # Plancher, au sens de l'ordre permanent de RimWorld (« cuisiner jusqu'à en
+  # avoir N ») : en dessous, le congélateur n'a plus assez de portions pour
+  # amortir un soir qui s'effondre, et un plat qui le recharge vaut plus qu'un
+  # plat qui nourrit seulement ce soir. Ce n'est pas une cible à atteindre — un
+  # congélateur plein n'est pas un but — c'est un seuil sous lequel on redevient
+  # dépendant de la liste de courses. Valeur posée à vue, à régler à l'usage.
+  plancher: 4
   # Une protéine plafonnée n'est décomptée que si elle est ACHETÉE. Reprendre
   # une bolognaise déjà cuisinée et congelée ne « dépense » pas le quota de
   # viande rouge de la semaine : la viande a été payée la semaine où on l'a

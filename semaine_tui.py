@@ -104,6 +104,34 @@ def carte(ctx, l, k):
     return out
 
 
+def carte_malediction(ctx, m):
+    """The curse: not a dish, a deadline. Two ways out, both of them a choice."""
+    tete = "┌─ ✖ MALÉDICTION "
+    out = [f"┌─ {J}✖ MALÉDICTION{R} " + "─" * (W - len(tete) - 1) + "┐"]
+
+    titre = _coupe(f"{m['type']} ({m['band']})", INNER - 24)
+    if m["perdu"]:
+        clock = f"périmé depuis {-m['reste']} j"
+    elif m["reste"] == 0:
+        clock = "dernier jour"
+    else:
+        clock = f"encore {m['reste']} j"
+    pad = INNER - len(titre) - len(clock)
+    out.append(f"│ {B}{titre}{R}{' ' * pad}{J}{clock}{R} │")
+
+    if m["candidats"]:
+        noms = ", ".join(c["titre"] for c in m["candidats"][:3])
+        ligne = _coupe(f"le sauve : {noms}", INNER)
+    else:
+        ligne = _coupe("plus aucun plat ne peut le rattraper à temps", INNER)
+    out.append(f"│ {D}{ligne}{' ' * (INNER - len(ligne))}{R} │")
+
+    act = "[!] le cuisiner    [d] le jeter" if m["candidats"] else "[d] le jeter"
+    out.append(f"│ {C}{act}{R}{' ' * (INNER - len(act))} │")
+    out.append("└" + "─" * (W - 2) + "┘")
+    return out
+
+
 def frame(ctx, etat, histo, vue="main", message=""):
     out = ["\x1b[2J\x1b[H"]
     d0, d1 = ctx.today, ctx.today + dt.timedelta(days=len(ctx.jours) - 1)
@@ -178,15 +206,29 @@ def frame(ctx, etat, histo, vue="main", message=""):
     elif any(etat.choix):
         out.append(f"        {V}cibles de la semaine atteintes{R}")
 
-    cong = M.portions_congelees(ctx, etat.choix)
-    if cong["portions"]:
-        etiq = f"{J}déborde les {cong['capacite']} portions de tiroir{R}" if cong["deborde"] \
-            else f"{D}sur {cong['capacite']} places{R}"
-        out.append(f"{B}CONGÉLO{R} {cong['portions']} portion(s) mises de côté "
-                   f"cette semaine {etiq}")
+    cong = M.bilan_congelo(ctx, etat)
+    mouvement = (f"{cong['debut']}"
+                 + (f" −{cong['sortie']}" if cong["sortie"] else "")
+                 + (f" +{cong['banque']}" if cong["banque"] else "")
+                 + f" = {B}{cong['fin']}{R}")
+    if cong["sous_plancher"]:
+        etiq = (f"{J}sous le plancher de {cong['plancher']} — "
+                f"il manque un plat à mettre de côté{R}")
+    elif cong["deborde"]:
+        etiq = f"{J}déborde les {cong['capacite']} places de tiroir{R}"
+    else:
+        etiq = f"{V}au-dessus du plancher de {cong['plancher']}{R}"
+    out.append(f"{B}CONGÉLO{R} {mouvement} portion(s) d'urgence   {etiq}")
+
+    for p in M.gaspillage(ctx, etat):
+        out.append(f"       {J}✗ jeté : {p['type']} ({p['band']}) — "
+                   f"la semaine ne peut plus compter dessus{R}")
     out.append("")
 
     if vue == "main":
+        mal = M.malediction(ctx, etat)
+        if mal:
+            out += carte_malediction(ctx, mal)
         hand = M.main_du_soir(ctx, etat, histo)
         n_deck = len(M.deck(ctx, etat, histo))
         out.append(f"{B}LA MAIN DE {ctx.jours[etat.jour].upper()}{R}  "
@@ -266,6 +308,7 @@ def frame(ctx, etat, histo, vue="main", message=""):
                f"  ·  [j N] aller au jour N  ·  [x] vider le jour{R}")
     out.append(f"{D}[t N] budget minutes  ·  [m] tri ({etat.mode})  ·  [l] courses"
                f"  ·  [c] conservation  ·  [p] l'app remplit  ·  [z] effacer  ·  [q] quitter{R}")
+    out.append(f"{D}[!] cuisiner le reste condamné  ·  [d] le jeter{R}")
     return "\n".join(out)
 
 
@@ -301,6 +344,18 @@ def main():
             vue = "main" if vue == "conservation" else "conservation"
         elif tete == "r":
             etat = M.reduire(ctx, etat, ("repiocher",))
+        elif tete == "!":
+            avant = etat.choix
+            etat = M.reduire(ctx, etat, ("conjurer",))
+            message = ("Malédiction conjurée : le reste est placé au plus tôt."
+                       if etat.choix != avant
+                       else "Rien ne peut plus le rattraper — reste [d] le jeter.")
+        elif tete == "d":
+            m = M.malediction(ctx, etat)
+            etat = M.reduire(ctx, etat, ("jeter",))
+            if m:
+                message = (f"Jeté : {m['type']}. C'est un choix, pas un oubli — "
+                           f"la semaine en tient compte.")
         elif tete == "m":
             i = M.MODES.index(etat.mode)
             etat = M.reduire(ctx, etat, ("mode", M.MODES[(i + 1) % len(M.MODES)]))
