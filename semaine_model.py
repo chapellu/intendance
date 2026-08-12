@@ -35,6 +35,29 @@ COUNTABLE = ("pièce", "gousse")
 
 
 @dataclass(frozen=True)
+class Creneau:
+    """One meal slot: a day *and* which meal of that day.
+
+    The prototype used to index everything by day, which silently meant « one
+    dinner per day » and made the most common chain in a real household —
+    *last night's dinner is today's lunch* — literally inexpressible. #29 is
+    explicit: all three meals are planned, ~21 slots a week, both adults home
+    at midday.
+
+    Slots are kept in chronological order, which is what makes the chain
+    correct for free: lunch on day 3 is reduced before dinner on day 3, so it
+    can only ever see what day 2 left behind.
+    """
+    jour: int                # offset in days from ctx.today
+    repas: str               # petit-dejeuner | dejeuner | gouter | diner
+    emporte: bool = False    # coworking day: this lunch travels (#29)
+
+    @property
+    def cle(self):
+        return (self.jour, self.repas)
+
+
+@dataclass(frozen=True)
 class Contexte:
     """Everything static: the catalogue and the household it compiles against."""
     catalogue: dict          # recipe_id -> recipe dict
@@ -45,6 +68,17 @@ class Contexte:
     conservation: dict       # preservation methods
     today: dt.date
     jours: tuple             # ("mardi", "mercredi", ...)
+    creneaux: tuple = ()     # Creneau, chronological — what `choix` indexes
+    repas: dict = None       # creneaux.yaml["repas"]: label, nature, minutes
+    equilibre_sur: tuple = ("dejeuner", "diner")
+
+    def nature(self, i):
+        return (self.repas or {}).get(self.creneaux[i].repas, {}).get("nature", "choisi")
+
+    def label(self, i):
+        c = self.creneaux[i]
+        lab = (self.repas or {}).get(c.repas, {}).get("label", c.repas)
+        return f"{self.jours[c.jour]} {lab}"
 
 
 @dataclass(frozen=True)
@@ -61,8 +95,11 @@ class Etat:
 # --------------------------------------------------------------- construction
 
 def etat_initial(ctx: Contexte) -> Etat:
-    n = len(ctx.jours)
-    return Etat(choix=(None,) * n, jour=0, budgets=(None,) * n,
+    n = len(ctx.creneaux)
+    # Land on the first slot that is actually chosen by hand — a breakfast is a
+    # routine, not a decision, so starting the week there would be nonsense.
+    depart = next((i for i in range(n) if ctx.nature(i) == "choisi"), 0)
+    return Etat(choix=(None,) * n, jour=depart, budgets=(None,) * n,
                 mulligans=(0,) * n)
 
 
@@ -74,7 +111,7 @@ def reduire(ctx: Contexte, etat: Etat, action) -> Etat:
         choix = list(etat.choix)
         choix[etat.jour] = args[0]
         etat = replace(etat, choix=tuple(choix))
-        return _avancer(etat)
+        return _avancer(ctx, etat)
 
     if kind == "vider":
         choix = list(etat.choix)
@@ -103,7 +140,7 @@ def reduire(ctx: Contexte, etat: Etat, action) -> Etat:
         # be compared against choosing by hand — not because it is the answer.
         cur = etat
         for i in range(len(cur.choix)):
-            if cur.choix[i] is None:
+            if cur.choix[i] is None and ctx.nature(i) == "choisi":
                 cur = replace(cur, jour=i)
                 o = offre(ctx, cur)
                 if o:
@@ -125,7 +162,7 @@ def reduire(ctx: Contexte, etat: Etat, action) -> Etat:
             return etat
         choix = list(etat.choix)
         choix[jour] = max(lignes, key=lambda l: l["score"])["id"]
-        return _avancer(replace(etat, choix=tuple(choix), jour=jour))
+        return _avancer(ctx, replace(etat, choix=tuple(choix), jour=jour))
 
     if kind == "jeter":
         # Discard the curse. Deliberately an *action*, so throwing food away is
@@ -141,12 +178,12 @@ def reduire(ctx: Contexte, etat: Etat, action) -> Etat:
     return etat
 
 
-def _avancer(etat: Etat) -> Etat:
-    """After a pick, land on the next empty day — the natural build loop."""
+def _avancer(ctx: Contexte, etat: Etat) -> Etat:
+    """After a pick, land on the next empty slot that is chosen by hand."""
     n = len(etat.choix)
     for step in range(1, n + 1):
         i = (etat.jour + step) % n
-        if etat.choix[i] is None:
+        if etat.choix[i] is None and ctx.nature(i) == "choisi":
             return replace(etat, jour=i)
     return etat
 
@@ -154,16 +191,36 @@ def _avancer(etat: Etat) -> Etat:
 # --------------------------------------------------------------- derived view
 
 def _date(ctx: Contexte, i: int) -> dt.date:
-    return ctx.today + dt.timedelta(days=i)
+    """The calendar date of slot `i` — no longer the same thing as its index."""
+    return ctx.today + dt.timedelta(days=ctx.creneaux[i].jour)
 
 
 def _canon(ing_id, rayons):
     return rayons.get("aliases", {}).get(ing_id, ing_id)
 
 
-def _stock_has(outputs, wanted_type, window_days, on_date):
+def _accepte(out: dict, acc: dict) -> bool:
+    """Does this stored output satisfy this `accepts` edge?
+
+    Two ways to ask. `type:` names one exact output — « sauce-bolognaise ».
+    `kind:` names a *class* — « any reste-plat » — which is what makes a single
+    « reste de la veille » lunch able to eat last night's chili, gratin, quiche
+    or ratatouille without writing nine near-identical recipes.
+    """
+    if acc.get("type"):
+        return out["type"] == acc["type"]
+    if acc.get("kind"):
+        return out.get("kind") == acc["kind"]
+    return False
+
+
+def _libelle(acc: dict) -> str:
+    return acc.get("type") or f"un {acc.get('kind', '?')}"
+
+
+def _stock_has(outputs, acc, window_days, on_date):
     for out in outputs:
-        if out["type"] != wanted_type:
+        if not _accepte(out, acc):
             continue
         born = out["born"]
         if isinstance(born, str):
@@ -225,22 +282,22 @@ def calculer(ctx: Contexte, choix: tuple, jetes: tuple = ()) -> dict:
         # `sans_reste` says what to buy and how long it costs instead.
         plein = False
         for acc in r.get("accepts", []):
-            out, age = _stock_has(running, acc["type"], window, date)
+            out, age = _stock_has(running, acc, window, date)
             if out:
                 src = out.get("_from")
-                chaine.append({"jour": i, "type": acc["type"], "depuis": src,
+                chaine.append({"creneau": i, "type": out["type"], "depuis": src,
                                "age": age,
                                "congelo": out.get("location") == "congelo"})
                 if src is None:
-                    ecoule.add(acc["type"])
+                    ecoule.add(out["type"])
             elif r.get("sans_reste"):
                 plein = True
-                plein_tarif.append({"jour": i, "titre": r["title"],
-                                    "type": acc["type"],
+                plein_tarif.append({"creneau": i, "titre": r["title"],
+                                    "type": _libelle(acc),
                                     "minutes": r["sans_reste"].get("temps_min", 0)})
             elif acc.get("required"):
                 problemes.append({
-                    "jour": i, "titre": r["title"], "type": acc["type"],
+                    "creneau": i, "titre": r["title"], "type": _libelle(acc),
                     "fix": acc.get("fallback_recipe"),
                 })
 
@@ -295,8 +352,13 @@ def couverture(ctx: Contexte, choix: tuple) -> dict:
     """
     servi, achete, fec, profils = Counter(), Counter(), Counter(), Counter()
     familles = set()
-    for rid in choix:
+    for i, rid in enumerate(choix):
         if not rid:
+            continue
+        # Targets are measured on the main meals only (`equilibre_sur`). The
+        # protein caps were posed by eye against six dinners; counting them
+        # across all 21 slots would silently halve them, which nobody decided.
+        if i < len(ctx.creneaux) and ctx.creneaux[i].repas not in ctx.equilibre_sur:
             continue
         r = ctx.catalogue[rid]
         a = r.get("apports", {})
@@ -332,6 +394,26 @@ def couverture(ctx: Contexte, choix: tuple) -> dict:
 def vient_dun_reste(recipe: dict) -> bool:
     """True when the dish is built on a base cooked earlier (an `accepts` edge)."""
     return any(i.get("from_accepts") for i in recipe.get("ingredients", []))
+
+
+# ------------------------------------------------------------------ slot fit
+
+# A dish that declares nothing is a main dish: it suits lunch and dinner. That
+# default is what keeps the whole existing catalogue valid without editing 21
+# files — breakfast and goûter are opt-in, because nothing in the repertoire is
+# one yet.
+CRENEAUX_DEFAUT = ("dejeuner", "diner")
+
+
+def convient(ctx: Contexte, recipe: dict, i: int) -> bool:
+    """Does this dish belong at this slot at all?"""
+    ok = recipe.get("creneaux") or CRENEAUX_DEFAUT
+    return ctx.creneaux[i].repas in ok
+
+
+def transportable(recipe: dict) -> bool:
+    """Does it survive a lunchbox? Opt-out, so silence means yes."""
+    return recipe.get("transportable", True)
 
 
 # --------------------------------------------------------------- card model
@@ -474,7 +556,7 @@ def malediction(ctx: Contexte, etat: Etat) -> dict:
     Returns the most urgent one, or None when the fridge holds no deadline.
     """
     window = ctx.foyer["fridge_window_days"]
-    fin_semaine = _date(ctx, len(ctx.jours) - 1)
+    fin_semaine = _date(ctx, len(ctx.creneaux) - 1)
     calc = calculer(ctx, etat.choix, etat.jetes)
     deja_mange = {c["type"] for c in calc["chaine"]}
     places = {r for r in etat.choix if r}
@@ -496,10 +578,12 @@ def malediction(ctx: Contexte, etat: Etat) -> dict:
         for rid, r in ctx.catalogue.items():
             if rid in places:
                 continue
-            if not any(a["type"] == o["type"] for a in r.get("accepts", [])):
+            if not any(_accepte(o, a) for a in r.get("accepts", [])):
                 continue
-            jours = [i for i in range(len(ctx.jours))
-                     if etat.choix[i] is None and _date(ctx, i) <= peremption]
+            jours = [i for i in range(len(ctx.creneaux))
+                     if etat.choix[i] is None and ctx.nature(i) == "choisi"
+                     and _date(ctx, i) <= peremption
+                     and convient(ctx, r, i)]
             if jours:
                 candidats.append({"id": rid, "titre": r["title"], "jours": jours})
 
@@ -564,6 +648,9 @@ def _score(ctx: Contexte, ligne: dict, cov: dict, cong: dict = None) -> tuple:
         s += w["chaine_manquante"]
     if ligne["hors_budget"]:
         s += w["hors_budget"]
+    if ligne.get("mal_transporte"):
+        s += w.get("mal_transporte", 0)
+        why.append("voyage mal en gamelle")
     s += w["article_marginal"] * ligne["marginal"]
     return round(s, 2), why
 
@@ -589,23 +676,25 @@ def offre(ctx: Contexte, etat: Etat) -> list:
     for rid, r in ctx.catalogue.items():
         if rid in deja:
             continue
+        if not convient(ctx, r, etat.jour):
+            continue
         essai = list(etat.choix)
         essai[etat.jour] = rid
         apres = calculer(ctx, tuple(essai), etat.jetes)
 
         # Did placing it here actually resolve its own chaining need?
-        chaine_ici = [c for c in apres["chaine"] if c["jour"] == etat.jour]
-        manque_ici = [p for p in apres["problemes"] if p["jour"] == etat.jour]
-        plein_ici = [p for p in apres["plein_tarif"] if p["jour"] == etat.jour]
+        chaine_ici = [c for c in apres["chaine"] if c["creneau"] == etat.jour]
+        manque_ici = [p for p in apres["problemes"] if p["creneau"] == etat.jour]
+        plein_ici = [p for p in apres["plein_tarif"] if p["creneau"] == etat.jour]
 
         # Does it eat something already sitting in the fridge?
         ecoule, du_congelo = [], False
         dispo_stock = [o for o in ctx.stock.get("outputs", [])
                        if o["type"] not in etat.jetes]
         for acc in r.get("accepts", []):
-            out, age = _stock_has(dispo_stock, acc["type"], window, date)
+            out, age = _stock_has(dispo_stock, acc, window, date)
             if out:
-                ecoule.append(acc["type"])
+                ecoule.append(out["type"])
                 if out.get("location") == "congelo":
                     du_congelo = True
 
@@ -628,6 +717,9 @@ def offre(ctx: Contexte, etat: Etat) -> list:
             "banque": any(e.get("keeps", {}).get("congelo")
                           for e in r.get("emits", [])),
             "apports": r.get("apports", {}),
+            # Coworking lunch: a dish that travels badly is not forbidden, it
+            # is just a worse idea. Same rule as chaining — a price, not a gate.
+            "mal_transporte": ctx.creneaux[etat.jour].emporte and not transportable(r),
         })
 
     cov = couverture(ctx, etat.choix)

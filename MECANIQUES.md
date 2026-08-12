@@ -332,6 +332,14 @@ duplicated in each facet.
 
 ## 20. Darkest Dungeon — the roster gets tired 🔜 the honest missing axis
 
+> **Confirmé depuis, par les données.** Ce point était une intuition tant que le
+> modèle n'avait qu'un dîner par jour. Avec les 21 créneaux réels, l'auto-remplissage
+> d'une semaine produit **475 minutes de cuisine** — dont une sauce bolognaise de
+> 60 minutes placée un *lundi midi*, parce que le glouton note chaque créneau
+> isolément et ne voit jamais la journée. Chaque créneau tient dans son budget ;
+> la journée, non. C'est exactement la fatigue décrite ci-dessous, et elle n'était
+> pas mesurable avant que les trois repas existent.
+
 In Darkest Dungeon you cannot send the same four heroes on every expedition; they
 accumulate stress and must be benched. The model is *the party is a renewable but
 not infinite resource*.

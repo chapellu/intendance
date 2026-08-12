@@ -148,6 +148,56 @@ choice among a few, not a verdict.
   scroll — is the open question; a mulligan budget is the obvious lever if it
   does.
 
+### Three meals a day, not one (`creneaux.yaml`)
+
+The prototype handled **one dish per day** — the dinner — while quoting « 21 meal
+slots » from #29 in its own docs. #29 is explicit and says the opposite:
+
+> 100% remote + parental leave → **all three meals planned, ~21 meal slots/week**.
+> Coworking days need **lunchbox** outputs. Weekends nomadic → the batch slot is a
+> weekday (both adults home at midday); kids session likewise a weekday **goûter**.
+
+So `choix` is no longer indexed by day. It is indexed by **slot** — a `Creneau`
+of `(jour, repas)` — expanded from `creneaux.yaml`. Seven days now yield 22 slots
+(21 + the Wednesday goûter). Slots are kept chronological, and that ordering is
+load-bearing: lunch on day 3 is reduced *before* dinner on day 3, so it can only
+ever see what day 2 left behind.
+
+Meals are **not symmetric**. Breakfast and goûter are `nature: routine` — counted
+in the shopping list and the balance view, never dealt as a hand. Nobody wants to
+draw a card at 7 a.m., and #29 asks for breakfasts « with a weekly intake-balance
+view », not a daily choice.
+
+**What this unlocked, and it is the real point.** Nine dishes in the repertoire
+emit a `reste-plat` — chili, gratin, lasagnes, quiche, ratatouille, velouté,
+burgers, curry — and **not one of them had a consumer**. Every leftover portion
+was emitted into the void, because there was no meal to put it in. The chains that
+worked were all `base` chains (a sauce, cooked lentils, a carcass); « a portion of
+the finished dish » had nowhere to go.
+
+Lunch creates the outlet. Rather than write nine near-identical reheat recipes,
+`accepts` now matches either an exact `type:` or a whole **`kind:`** class, so one
+card — `reste-de-la-veille` — eats any leftover dish. Same indirection as
+capability/tool, applied to leftovers:
+
+```
+AVANT tout dîner  → Reste réchauffé   score=-8.0   manque: un reste-plat
+APRÈS le gratin   → Reste réchauffé   score=+4.0   +0 article   ↪ gratin-de-pates-tomates
+```
+
+Coworking lunches carry `emporte` and a dish that travels badly is scored down,
+never forbidden — the same 7 Wonders rule as chaining: a price, not a gate.
+
+Balance targets are measured on `equilibre_sur: [dejeuner, diner]` only. The
+protein caps were posed by eye against six dinners; spreading them over 21 slots
+would have silently halved them without anyone deciding to.
+
+**Left undone, deliberately:** the visual prototype (`proto.chapellu.fr`) still
+shows the old one-dish-per-day model — `semaine.js` has not been ported to slots.
+And the catalogue contains **no breakfast and no goûter item**, so those slots are
+correctly marked routine but have nothing behind them yet. Both are data/porting
+gaps, not model gaps.
+
 ### The curse card: the leftover with a clock (`[!]` / `[d]`)
 
 Borrowed from Slay the Spire, where a curse is a card forced into your hand that

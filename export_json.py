@@ -26,6 +26,7 @@ def main():
     equilibre = yaml.safe_load((HERE / "equilibre.yaml").read_text())
     conserv = yaml.safe_load((HERE / "conservation.yaml").read_text())
     stock = yaml.safe_load((HERE / "stock.yaml").read_text())
+    creneaux = yaml.safe_load((HERE / "creneaux.yaml").read_text())
 
     plats = []
     for rid, r in cat.items():
@@ -40,11 +41,17 @@ def main():
                  "unit": i["unit"], "base": bool(i.get("from_accepts"))}
                 for i in r.get("ingredients", [])
             ],
+            # `accepts` matches either one exact output (`type`) or a whole
+            # class of them (`kind`) — the latter is what lets a single
+            # « reste de la veille » eat any leftover dish.
             "accepts": [
-                {"type": a["type"], "requis": bool(a.get("required")),
+                {"type": a.get("type"), "kind": a.get("kind"),
+                 "requis": bool(a.get("required")),
                  "mere": a.get("fallback_recipe")}
                 for a in r.get("accepts", [])
             ],
+            "creneaux": r.get("creneaux") or ["dejeuner", "diner"],
+            "transportable": r.get("transportable", True),
             "sansReste": (
                 {"minutes": r["sans_reste"].get("temps_min", 0),
                  "ingredients": [
@@ -84,6 +91,7 @@ def main():
             "tiroirs": foyer["freezer_drawers"],
         },
         "plats": plats,
+        "creneaux": creneaux,
         "rayons": rayons,
         "equilibre": equilibre,
         "conservation": methodes,

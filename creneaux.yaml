@@ -1,0 +1,65 @@
+# ---------------------------------------------------------------------------
+# La forme de la semaine — quels repas existent, et de quelle nature.
+#
+# CE QUE ÇA CORRIGE
+# Le prototype ne gérait qu'UN plat par jour, c'est-à-dire le dîner, alors que
+# #29 dit exactement l'inverse :
+#
+#   « 100% remote + parental leave -> all three meals planned, ~21 meal slots /
+#     week (breakfasts added by user). Coworking days need lunchbox outputs.
+#     Weekends nomadic -> the batch slot is a weekday (both adults home at
+#     midday); kids session likewise a weekday goûter slot. »
+#
+# 3 repas × 7 jours = 21, ce qui tombe pile sur le chiffre de #29. Le goûter
+# vient en plus, un jour de semaine.
+#
+# CE QUE ÇA DÉBLOQUE
+# Le midi n'est pas un dîner plus petit : c'est le premier consommateur des
+# restes. Les deux adultes sont à la maison à midi (télétravail), donc le
+# chaînage le plus fréquent d'un vrai foyer — « le dîner d'hier soir est le
+# déjeuner d'aujourd'hui » — était tout simplement inexprimable tant que le
+# modèle n'avait qu'un créneau par jour. C'est la vraie raison de ce fichier.
+# ---------------------------------------------------------------------------
+
+repas:
+  petit-dejeuner:
+    label: petit-déj
+    # `routine` : compté dans les apports de la semaine et dans les courses,
+    # mais PAS proposé sous forme de main de cartes. #29 demande les petits
+    # déjeuners « with a weekly intake-balance view », pas un choix chaque
+    # matin — personne ne veut piocher une carte à 7 h.
+    nature: routine
+    minutes: 10
+  dejeuner:
+    label: déjeuner
+    nature: choisi
+    minutes: 30
+  diner:
+    label: dîner
+    nature: choisi
+    minutes: 40
+  gouter:
+    label: goûter
+    nature: routine
+    minutes: 10
+
+# Quels créneaux existent, jour par jour. `defaut` s'applique à tout jour non
+# listé dans `exceptions`.
+jours:
+  defaut: [petit-dejeuner, dejeuner, diner]
+  exceptions:
+    # Séance des enfants un jour de semaine (#29) : un goûter s'ajoute.
+    mercredi: [petit-dejeuner, dejeuner, gouter, diner]
+
+# Jours de coworking : le déjeuner doit partir en gamelle (#29, « coworking
+# days need lunchbox outputs »). Un plat qui voyage mal n'y a pas sa place.
+# À CORRIGER PAR L'UTILISATEUR — je ne connais pas les vrais jours.
+emporte:
+  dejeuner: [mardi, jeudi]
+
+# Sur quels créneaux les cibles d'équilibre (equilibre.yaml) se mesurent.
+# Les plafonds de protéines ont été posés à vue contre 6 dîners ; les compter
+# maintenant sur 14 repas principaux les rendrait deux fois plus serrés sans
+# que personne l'ait décidé. On les garde donc sur les repas principaux et on
+# assume que les chiffres sont à re-régler — ils n'ont jamais été sourcés.
+equilibre_sur: [dejeuner, diner]

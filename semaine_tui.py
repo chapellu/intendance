@@ -34,10 +34,27 @@ def charger(today, n_jours):
     equilibre = yaml.safe_load((HERE / "equilibre.yaml").read_text())
     conserv = yaml.safe_load((HERE / "conservation.yaml").read_text())
     histo = yaml.safe_load((HERE / "historique.yaml").read_text())
+    cren = yaml.safe_load((HERE / "creneaux.yaml").read_text())
     jours = tuple(JOURS[(today.weekday() + i) % 7] for i in range(n_jours))
+
+    # Expand the week shape into an ordered list of slots. Chronological order
+    # is load-bearing: it is what makes « hier soir nourrit ce midi » correct.
+    ordre = list(cren["repas"].keys())
+    emporte = cren.get("emporte", {}) or {}
+    creneaux = []
+    for i, nom in enumerate(jours):
+        du_jour = cren["jours"].get("exceptions", {}).get(nom, cren["jours"]["defaut"])
+        for repas in sorted(du_jour, key=ordre.index):
+            creneaux.append(M.Creneau(
+                jour=i, repas=repas,
+                emporte=nom in (emporte.get(repas) or [])))
+
     ctx = M.Contexte(catalogue=cat, foyer=foyer, stock=stock, rayons=rayons,
                      equilibre=equilibre, conservation=conserv,
-                     today=today, jours=jours)
+                     today=today, jours=jours, creneaux=tuple(creneaux),
+                     repas=cren["repas"],
+                     equilibre_sur=tuple(cren.get("equilibre_sur",
+                                                  ("dejeuner", "diner"))))
     return ctx, histo
 
 
@@ -143,19 +160,28 @@ def frame(ctx, etat, histo, vue="main", message=""):
     calc = M.calculer(ctx, etat.choix)
     arts = M.articles(calc["panier"])
 
-    # ---- the week
-    for i, jour in enumerate(ctx.jours):
-        sel = "▸" if i == etat.jour else " "
-        date = (ctx.today + dt.timedelta(days=i)).strftime("%d/%m")
+    # ---- the week, now days containing slots rather than days containing a dish
+    jour_courant = None
+    for i, cr in enumerate(ctx.creneaux):
+        if cr.jour != jour_courant:
+            jour_courant = cr.jour
+            date = (ctx.today + dt.timedelta(days=cr.jour)).strftime("%d/%m")
+            out.append(f"  {B}{ctx.jours[cr.jour]}{R} {D}{date}{R}")
+        sel = f"{C}▸{R}" if i == etat.jour else " "
+        lab = ctx.repas.get(cr.repas, {}).get("label", cr.repas)
+        if cr.emporte:
+            lab += " 🥡"
+        routine = ctx.nature(i) == "routine"
         rid = etat.choix[i]
+
         if rid:
             r = ctx.catalogue[rid]
             marks = []
-            if any(c["jour"] == i for c in calc["chaine"]):
-                src = next(c["depuis"] for c in calc["chaine"] if c["jour"] == i)
+            if any(c["creneau"] == i for c in calc["chaine"]):
+                src = next(c["depuis"] for c in calc["chaine"] if c["creneau"] == i)
                 marks.append(f"{V}↪ part du reste"
                              f"{' de ' + ctx.catalogue[src]['title'] if src else ' du frigo'}{R}")
-            if any(p["jour"] == i for p in calc["problemes"]):
+            if any(p["creneau"] == i for p in calc["problemes"]):
                 marks.append(f"{J}⚠ reste manquant{R}")
             if r.get("emits"):
                 marks.append(f"{D}→ {', '.join(e['type'] for e in r['emits'])}{R}")
@@ -163,11 +189,14 @@ def frame(ctx, etat, histo, vue="main", message=""):
             temps = f"{r.get('time_min_total')} min"
             if bud and r.get("time_min_total", 0) > bud:
                 temps = f"{J}{temps} > {bud}{R}"
-            out.append(f" {sel} {B}{i+1}{R} {jour:<9} {D}{date}{R}  "
-                       f"{r['title']:<42} {D}⏱{R} {temps}  " + "  ".join(marks))
+            out.append(f" {sel} {B}{i+1:>2}{R} {D}{lab:<11}{R} "
+                       f"{r['title']:<40} {D}⏱{R} {temps}  " + "  ".join(marks))
+        elif routine:
+            out.append(f" {sel} {B}{i+1:>2}{R} {D}{lab:<11}{R} "
+                       f"{D}— routine, pas une carte à jouer —{R}")
         else:
             bud = f"{D}(budget {etat.budgets[i]} min){R}" if etat.budgets[i] else ""
-            out.append(f" {sel} {B}{i+1}{R} {jour:<9} {D}{date}{R}  "
+            out.append(f" {sel} {B}{i+1:>2}{R} {D}{lab:<11}{R} "
                        f"{D}— vide —{R} {bud}")
     out.append("")
 
@@ -179,10 +208,10 @@ def frame(ctx, etat, histo, vue="main", message=""):
     if calc["chaine"]:
         for c in calc["chaine"]:
             src = ctx.catalogue[c["depuis"]]["title"] if c["depuis"] else "le frigo"
-            out.append(f"       {V}↪ {ctx.jours[c['jour']]} part de « {c['type']} » "
+            out.append(f"       {V}↪ {ctx.label(c['creneau'])} part de « {c['type']} » "
                        f"venu de {src} — zéro achat pour cette base{R}")
     for p in calc["problemes"]:
-        out.append(f"       {J}⚠ {ctx.jours[p['jour']]} : « {p['titre']} » attend le reste "
+        out.append(f"       {J}⚠ {ctx.label(p['creneau'])} : « {p['titre']} » attend le reste "
                    f"« {p['type']} » que rien ne produit avant — placer "
                    f"« {p['fix']} » plus tôt{R}")
     for f in calc["frigo"]:
@@ -231,7 +260,7 @@ def frame(ctx, etat, histo, vue="main", message=""):
             out += carte_malediction(ctx, mal)
         hand = M.main_du_soir(ctx, etat, histo)
         n_deck = len(M.deck(ctx, etat, histo))
-        out.append(f"{B}LA MAIN DE {ctx.jours[etat.jour].upper()}{R}  "
+        out.append(f"{B}LA MAIN — {ctx.label(etat.jour).upper()}{R}  "
                    f"{D}{len(hand)} cartes tirées d'un paquet de {n_deck} · "
                    f"repioche {etat.mulligans[etat.jour]}×{R}")
         if not hand:
@@ -271,7 +300,7 @@ def frame(ctx, etat, histo, vue="main", message=""):
     else:
         # ---- the offer for the selected day
         o = M.offre(ctx, etat)
-        out.append(f"{B}POUR {ctx.jours[etat.jour].upper()}{R} — "
+        out.append(f"{B}POUR {ctx.label(etat.jour).upper()}{R} — "
                    f"{D}classé par {R}{C}{etat.mode}{R}"
                    f"{D} (m pour changer : {' → '.join(M.MODES)}){R}")
         if not o:

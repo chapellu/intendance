@@ -52,6 +52,7 @@ poids:
   chaine_manquante: -8       # exige une base que rien ne produit avant
   hors_budget: -4
   plancher_congelo: 4        # remonte le stock d'urgence quand il est bas
+  mal_transporte: -6         # déjeuner de coworking : ce plat voyage mal
   article_marginal: -0.4     # la liste de courses pèse, mais ne décide plus
 
 # Le congélateur est une *sortie* à part entière, pas un débarras : un plat
