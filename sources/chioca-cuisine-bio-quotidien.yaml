@@ -12,9 +12,9 @@
 # `_repertoire.yaml` sont à corriger.
 #
 # Une entrée saisie se signale en lui ajoutant `catalogue_id: <id>` pointant sur
-# le plat correspondant dans `recipes/`. Saisies à ce jour : **24 sur 100**.
+# le plat correspondant dans `recipes/`. Saisies à ce jour : **25 sur 100**.
 # Le PRINTEMPS est complet à cinq pages près (42, 45, 46, 49, 50) ; l'ÉTÉ est
-# entamé (p. 70 à 76) ; l'automne et l'hiver sont entièrement à saisir.
+# entamé (p. 70 à 81) ; l'automne et l'hiver sont entièrement à saisir.
 #
 # `niveau: plan` marquerait une entrée saisie SANS étapes — planifiable et
 # achetable, pas encore cuisinable. Aucune n'est dans ce cas : les samoussas
@@ -87,7 +87,7 @@ sommaire:
     - {page: 74, titre: "Panzanella Toscana", catalogue_id: panzanella-toscana}
     - {page: 75, titre: "Rillettes de poisson faciles à l'échalote", catalogue_id: rillettes-poisson-echalote}
     - {page: 76, titre: "Samoussas végétariens aux légumes rôtis", catalogue_id: samoussas-legumes-rotis}
-    - {page: 81, titre: "Falafels poêlés aux herbes"}
+    - {page: 81, titre: "Falafels poêlés aux herbes", catalogue_id: falafels-aux-herbes}
     - {page: 82, titre: "One pot pasta capriociosa"}
     - {page: 85, titre: "« Courgettes farcies » des fainéants"}
     - {page: 86, titre: "Risotto aux poivrons rouges et piment d'Espelette"}
