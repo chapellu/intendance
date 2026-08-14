@@ -1,0 +1,89 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# LA SOUCHE QUE L'AUTRICE DÉCLARE ELLE-MÊME. Le livre l'annonce « 2 en 1 » et
+# renvoie explicitement à la page suivante pour l'emploi du bouillon. C'est la
+# première arête de chaînage du catalogue qui ne soit pas déduite par nous :
+# elle est écrite dans l'ouvrage. `soupe-orge-petits-pois` (p. 56) la consomme.
+
+recipe:
+  id: roti-bouillon-herbes
+  title: Rôti au bouillon d'herbes printanières
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 55"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 55
+    saison: printemps
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6
+  time_min_total: 70
+  active_min: 10
+  # À PRÉPARER LA VEILLE : le rôti se sert froid le lendemain, en tranches
+  # fines. Le modèle n'a aucun champ pour « ce plat s'étale sur deux jours » —
+  # `time_min_total` ne mesure qu'une session de cuisine. La cuisson est donc
+  # comptée ici, et le service du lendemain n'apparaît nulle part.
+
+  apports:
+    proteine: viande-blanche
+    feculent: aucun
+    legumes: [racine, allium, feuille]
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: roti-porc, name: rôti de porc, qty: 1, unit: kg}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: carottes, name: carottes, qty: 3, unit: pièce}
+    - {id: celeri-branche, name: branches de céleri bien tendres, qty: 3, unit: côte}
+    - {id: poireau, name: poireau, qty: 1, unit: pièce}
+    - {id: herbes-fraiches, name: "herbes fraîches, seules ou en mélange (romarin, sarriette, thym, serpolet, hysope, marjolaine, origan, sauge…)", qty: 1, unit: poignée}
+    - {id: persil, name: persil frais, qty: 1, unit: poignée}
+    - {id: eau, name: eau, qty: 2, unit: l}
+    - {id: clous-girofle, name: clous de girofle, qty: 3, unit: pièce, seasoning: true}
+    - {id: laurier, name: feuille de laurier, qty: 1, unit: pièce, seasoning: true}
+    - {id: gros-sel, name: gros sel, qty: 2, unit: c. à s., seasoning: true}
+
+  steps:
+    - id: tailler
+      action: "La veille : détailler l'oignon en petits cubes, émincer les carottes, le céleri et le poireau"
+      needs: []
+      time_min: 10
+      kid: {age_min_months: 30, task: "laver le céleri et le poireau"}
+    - id: cuire
+      action: "Réunir le rôti, les légumes, les clous de girofle, le laurier, le gros sel et l'eau dans un faitout, couvrir et cuire 1 h à feu moyen"
+      needs: [simmer-large]
+      time_min: 45
+      attended: false
+    - id: herbes
+      action: "15 à 20 min avant la fin, ajouter les herbes fraîches et recouvrir"
+      needs: [simmer-large]
+      time_min: 15
+      attended: false
+    - id: refroidir
+      action: "Sortir le rôti, le laisser sécher et refroidir quelques instants dans une passoire, puis le mettre au frais bien emballé ; il se sert le lendemain en tranches fines, un peu comme du jambon"
+      needs: []
+      time_min: 5
+
+  # PAS DE `baby_portion` : 2 c. à s. de gros sel partent dans l'eau dès le
+  # départ, et c'est délibéré chez l'autrice — c'est ainsi que le rôti
+  # s'assaisonne à cœur. Le bouillon en ressort volontairement trop salé et doit
+  # être dilué avant emploi. Un prélèvement non salé est ici impossible par
+  # construction, pas par négligence.
+
+  emits:
+    - kind: base
+      type: bouillon-herbes
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: true}
+      note: "volontairement très salé et concentré : à DILUER avant de l'employer ailleurs"
+    - kind: reste-plat
+      type: roti-froid
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: true}
+      note: "se tranche fin et se mange froid — le déjeuner nomade du lendemain"
+
+  plan_b: []                # 1 h de cuisson passive : rien à comprimer

@@ -36,19 +36,54 @@ rayons:
     - brocoli
     - citron
     - salade-verte
+    # Arrivés avec les recettes de printemps de Chioca (p. 26–34).
+    - cebette
+    - ciboulette
+    - persil
+    - thym-frais
+    - vert-de-blette
+    - pousses-epinards
+    - petits-pois
+    - pois-gourmands
+    - navet-primeur
+    - navets-roses
+    - echalote
+    - champignons-paris
+    - celeri-branche
+    - fraises
+    # NE S'ACHÈTENT PAS — SE CUEILLENT. Le modèle n'a pas de rayon
+    # « cueillette », et trois des dix recettes saisies en dépendent (orties
+    # p. 34 et p. 35, pousses sauvages et ail des ours p. 36). C'est une vraie
+    # limite pour un projet qui a un jardin : la liste de courses les fait
+    # acheter alors qu'ils demandent une sortie, une saison et une
+    # identification. Rangés ici faute de mieux.
+    - orties
+    - pousses-sauvages
+    - ail-des-ours
+    - fenouil-sauvage
+    - herbes-fraiches
   boucherie:
     - boeuf-hache
+    - agneau-collier
+    - roti-porc
     - poulet
     - poulet-filets
     - jambon
   poissonnerie:
     - saumon
+    - colin-surgele
+    - sardines-boite
   crèmerie:
     - oeufs
     - fromage-rape
     - creme
     - lait
     - feta
+    - faisselle
+    - chevre-demi-sec
+    - chevre-buche
+    - beurre
+    - petits-suisses
   frais:
     - tofu-fume
     - gnocchis
@@ -66,6 +101,29 @@ rayons:
     - lait-coco
     - tortillas
     - pain-de-mie
+    - farine-complete
+    - poudre-amande
+    - poudre-a-lever
+    - vin-blanc-sec
+    - flocons-avoine
+    - kasha
+    - vinaigre-balsamique
+    - biscottes
+    - orge
+    - creme-coco
+    - sucre-roux
+    - sucre-vanille
+    - chocolat-noir
+    - huile-coco
+    - sucre-complet
+    - sirop-agave
+    - extrait-vanille
+    - lait-soja-vanille
+    - biscuits-cuillere
+    - sirop-imbibage
+    - cacao
+    - caissettes
+    - pots-carton
 
 placard:
   - huile-olive
@@ -81,3 +139,9 @@ placard:
   - son-avoine
   - curry
   - moutarde
+  - fleur-de-sel
+  - poivre
+  - clous-girofle
+  - gros-sel
+  - origan
+  - eau            # ne s'achète pas ; listé pour ne pas polluer la liste

@@ -1,0 +1,84 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+
+recipe:
+  id: mini-brownies-paques
+  title: Mini-brownies fondants de Pâques
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 62"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 62
+    saison: printemps
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6
+    pieces: 20              # « environ », selon la taille des caissettes
+  time_min_total: 25
+  active_min: 19
+
+  creneaux: [gouter]        # dessert / goûter : voir la note de `mousse-au-chocolat`
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-complete, name: farine de blé ou de grand épeautre T110, qty: 65, unit: g}
+    - {id: poudre-a-lever, name: poudre à lever, qty: 0.5, unit: sachet}
+    - {id: chocolat-noir, name: chocolat noir pâtissier à 70 %, qty: 100, unit: g}
+    - {id: sirop-agave, name: sirop d'agave, qty: 4, unit: grosse c. à s.}
+    - {id: huile-coco, name: huile de coco vierge, qty: 4, unit: grosse c. à s.}
+    - {id: extrait-vanille, name: extrait de vanille liquide, qty: 1, unit: grosse c. à s.}
+    - {id: oeufs, name: œufs, qty: 3, unit: pièce}
+    - {id: fleur-de-sel, name: fleur de sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: caissettes, name: caissettes à truffe ou mini-caissettes à muffins d'environ 4 cm, qty: 20, unit: pièce}
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 180 °C"
+      needs: [bake]
+      time_min: 1
+      attended: false
+    - id: installer-caissettes
+      action: "Installer les caissettes dans une plaque à mini-muffins ou, à défaut, dans une plaque à œufs en carton en ne garnissant qu'une alvéole sur deux — cette plaque-là brunira et sera perdue"
+      needs: []
+      time_min: 4
+    - id: melange-sec
+      action: "Mélanger la farine, la fleur de sel et la poudre à lever dans un bol et réserver"
+      needs: []
+      time_min: 2
+    - id: fondre
+      action: "Faire fondre le chocolat au bain-marie avec le sirop d'agave et l'huile de coco ; hors du feu, ajouter la vanille et les œufs entiers, puis la farine, et bien mélanger"
+      needs: [simmer]
+      time_min: 8
+      attended: true
+    - id: remplir
+      action: "Transférer la pâte dans un pichet verseur et remplir les caissettes aux trois quarts"
+      needs: []
+      time_min: 4
+      kid: {age_min_months: 30, task: "verser la pâte dans les caissettes au pichet"}
+    - id: cuire
+      action: "Enfourner 6 minutes chrono, puis laisser refroidir entièrement avant de mettre en boîte"
+      needs: [bake]
+      time_min: 6
+      attended: false
+      # 6 minutes « chrono » : c'est ce qui fait le fondant. Au-delà, ce sont
+      # des mini-gâteaux secs.
+
+  emits:
+    - kind: reste-plat
+      type: mini-brownies
+      qty_band: 2-repas
+      keeps: {frigo_days: 7, congelo: true}
+      # MÊME LIMITE QUE LES COOKIES DE LA P. 26 : ces brownies se gardent en
+      # boîte à température ambiante — c'est même le propos de la recette, qui
+      # les fait pour être cachés dans le jardin. `keeps` ne connaît que le
+      # frigo et le congélateur ; `frigo_days: 7` est un pis-aller.
+
+  plan_b: []

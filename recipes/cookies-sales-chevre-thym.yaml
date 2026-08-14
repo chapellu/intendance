@@ -1,0 +1,83 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable (TGI Paris 1974 ; 1997) ; sa prose et ses photos
+# ne sont PAS reproduites ici.
+
+recipe:
+  id: cookies-sales-chevre-thym
+  title: Cookies salés au chèvre, thym et fleur de sel
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 26"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 26
+    saison: printemps
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # en entrée, d'après le livre ; doubler pour un plat
+    pieces: 15
+  time_min_total: 30
+  active_min: 10
+
+  apports:
+    proteine: fromage
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 200, unit: g}
+    - {id: chevre-demi-sec, name: fromage de chèvre demi-sec, qty: 100, unit: g}
+    - {id: thym-frais, name: brins de thym bien tendres, qty: 12, unit: brin}
+    - {id: huile-olive, name: huile d'olive, qty: 7, unit: cl}
+    - {id: vin-blanc-sec, name: vin blanc sec, qty: 5, unit: cl}
+    - {id: fleur-de-sel, name: fleur de sel, qty: 1, unit: c. à c., seasoning: true}
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 180 °C, chaleur tournante de préférence"
+      needs: [bake]
+      time_min: 1
+      attended: false
+    - id: melanger
+      action: "Mélanger la farine et la fleur de sel, puis ajouter le chèvre en petits cubes, le thym ciselé (tiges ligneuses écartées), l'huile et le vin blanc"
+      needs: []
+      time_min: 5
+      kid: {age_min_months: 30, task: "effeuiller les brins de thym dans le saladier"}
+    - id: amalgamer
+      action: "Amalgamer du bout des doigts et s'arrêter dès que la pâte tient : moins elle est travaillée, plus les cookies seront sablés"
+      needs: []
+      time_min: 2
+      kid: {age_min_months: 30, task: "mélanger la pâte avec les mains"}
+    - id: former
+      action: "Former des boules de 30 g, les aplatir sur une plaque chemisée jusqu'à 7 mm d'épaisseur environ — plus elles sont fines, plus les cookies croustillent"
+      needs: [weigh]
+      time_min: 5
+      kid: {age_min_months: 30, task: "rouler les boules de pâte et les écraser"}
+    - id: cuire
+      action: "Enfourner 15 à 20 min en surveillant, jusqu'à belle coloration"
+      needs: [bake]
+      time_min: 17
+      attended: false
+    - id: refroidir
+      action: "Débarrasser aussitôt sur une grille — pas sur le papier cuisson, qui garderait l'humidité et ramollirait les cookies"
+      needs: []
+      time_min: 1
+
+  # PAS DE `baby_portion` ET C'EST STRUCTUREL : la fleur de sel est dans la pâte,
+  # pas ajoutée en fin de cuisson. Aucun prélèvement non salé n'est possible sans
+  # faire une seconde pâte. Voir la note du README sur le `seasoning_gate`.
+
+  emits:
+    - kind: reste-plat
+      type: cookies-sales
+      qty_band: 2-repas
+      keeps: {frigo_days: 7, congelo: true}
+      # LIMITE DU MODÈLE : ces cookies se gardent en réalité en boîte hermétique
+      # à température ambiante, ce que `keeps` ne sait pas exprimer — il ne
+      # connaît que le frigo et le congélateur. `frigo_days: 7` est donc un
+      # substitut, pas la bonne façon de les conserver.
+
+  plan_b: []                # rien à comprimer : la cuisson est passive

@@ -1,0 +1,240 @@
+# ---------------------------------------------------------------------------
+# SOURCE — index bibliographique d'un livre du foyer.
+#
+# CE FICHIER N'EST PAS UN CATALOGUE. Il vit hors de `recipes/` exprès :
+# `charger_recettes()` ne lit que `recipes/*.yaml`, donc rien d'ici n'entre dans
+# le catalogue tant que quelqu'un n'a pas ouvert la page et saisi le plat.
+#
+# Ce qu'il contient est ce que les photos du sommaire donnent, et rien de plus :
+# saison, titre, page. Les ingrédients, les temps et les `apports` ne sont PAS
+# dans un sommaire — les inventer produirait cent entrées fausses au lieu de
+# cent entrées vides, et le README dit déjà que les quantités inventées de
+# `_repertoire.yaml` sont à corriger.
+#
+# Une entrée saisie se signale en lui ajoutant `catalogue_id: <id>` pointant sur
+# le plat correspondant dans `recipes/`. Saisies à ce jour : **19 sur 100**.
+# Le PRINTEMPS est complet à cinq pages près (42, 45, 46, 49, 50) ; l'été,
+# l'automne et l'hiver sont entièrement à saisir.
+#
+# CADRE DE LICENCE (celui de la carte #26) : un sommaire est une donnée
+# factuelle de référence — auteur, titre, page. Aucune prose, aucune photo,
+# aucune recette de l'ouvrage n'est reproduite ici. Quand un plat sera saisi, il
+# le sera comme `burgers-de-lentilles` : plat et procédé (savoir-faire non
+# protégeable), formulation refaite, `source:` renseignée.
+#
+# CE QUE CETTE SOURCE APPORTE ET QUE LE MODÈLE N'A PAS : le livre est organisé
+# par SAISON, et aucune recette du catalogue ne porte de champ `saison`. Les
+# quatre bornes de pagination ci-dessous sont donc, en creux, une table de
+# saisonnalité pour cent plats — exactement l'axe qui manque à `_score()` pour
+# refuser un tian-ratatouille en février.
+# ---------------------------------------------------------------------------
+
+source:
+  id: chioca-cuisine-bio-quotidien
+  type: livre
+  author: Marie Chioca
+  title: La cuisine bio du quotidien
+  subtitle: 100 recettes pour bien manger en famille sans se ruiner !
+  publisher: Terre vivante
+  lang: fr
+  releve: photos du sommaire, 2026-08-13
+  encodage: >-
+    index seul (saison, titre, page). Ni prose, ni photo, ni recette reproduite.
+
+# Les quatre saisons du livre, avec leurs bornes de pagination : une recette
+# entre ces bornes est de cette saison, ce qui vaut aussi pour les plats du
+# catalogue qu'on y retrouverait.
+saisons:
+  printemps: {de: 26, a: 64}
+  ete: {de: 70, a: 116}
+  automne: {de: 123, a: 166}
+  hiver: {de: 172, a: 214}
+
+sommaire:
+  printemps:
+    - {page: 26, titre: "Cookies salés au chèvre, thym et fleur de sel", catalogue_id: cookies-sales-chevre-thym}
+    - {page: 29, titre: "Quiche à la faisselle et aux cébettes", catalogue_id: quiche-faisselle-cebettes}
+    - {page: 30, titre: "Farçous végétariens au vert de blette", catalogue_id: farcous-vert-de-blette}
+    - {page: 33, titre: "Omelette du potager", catalogue_id: omelette-du-potager}
+    - {page: 34, titre: "Velouté d'ortie (ou de fanes, ou de jeunes pousses d'épinards…)", catalogue_id: veloute-ortie}
+    - {page: 35, titre: "Consommé de fanes", catalogue_id: consomme-de-fanes}
+    - {page: 36, titre: "Salade de pois chiches aux œufs mollets et herbes sauvages", catalogue_id: salade-pois-chiches-oeufs-mollets}
+    - {page: 39, titre: "Escalopes végétariennes emmental-champignons", catalogue_id: escalopes-emmental-champignons}
+    - {page: 40, titre: "Croc'kasha à l'échalote et à la ciboulette", catalogue_id: crockasha-echalote-ciboulette}
+    - {page: 41, titre: "Navarin de collier aux légumes al dente", catalogue_id: navarin-collier-legumes}
+    - {page: 42, titre: "Dahl de riz et lentilles corail aux carottes"}
+    - {page: 45, titre: "Croquettes dorées au parmesan et restes de dahl"}
+    - {page: 46, titre: "Tartines-repas « sur le pouce » au chèvre frais"}
+    - {page: 49, titre: "Bruschettas « express » aux champignons"}
+    - {page: 50, titre: "Brouillade du pêcheur"}
+    - {page: 51, titre: "Nuggets de colin au four", catalogue_id: nuggets-colin-four}
+    - {page: 52, titre: "Pasta con le sarde à ma façon", catalogue_id: pasta-con-le-sarde}
+    - {page: 55, titre: "Rôti au bouillon d'herbes printanières", catalogue_id: roti-bouillon-herbes}
+    - {page: 56, titre: "Soupe d'orge et de petits pois", catalogue_id: soupe-orge-petits-pois}
+    - {page: 58, titre: "Tarte aux fraises « de compet' »", catalogue_id: tarte-aux-fraises}
+    - {page: 59, titre: "Mousse au chocolat, les deux versions (et plus…)", catalogue_id: mousse-au-chocolat}
+    - {page: 61, titre: "Gâteau sans cuisson à la mousse au chocolat", catalogue_id: gateau-sans-cuisson-mousse}
+    - {page: 62, titre: "Mini-brownies fondants de Pâques", catalogue_id: mini-brownies-paques}
+    - {page: 64, titre: "Petits pots de crème glacée vanille-fraise", catalogue_id: petits-pots-creme-glacee}
+
+  ete:
+    - {page: 70, titre: "Cocktail gourmand pour toute la famille !"}
+    - {page: 73, titre: "Tarte aux tomates fraîches de Mémé"}
+    - {page: 74, titre: "Panzanella Toscana"}
+    - {page: 75, titre: "Rillettes de poisson faciles à l'échalote"}
+    - {page: 76, titre: "Samoussas végétariens aux légumes rôtis"}
+    - {page: 81, titre: "Falafels poêlés aux herbes"}
+    - {page: 82, titre: "One pot pasta capriociosa"}
+    - {page: 85, titre: "« Courgettes farcies » des fainéants"}
+    - {page: 86, titre: "Risotto aux poivrons rouges et piment d'Espelette"}
+    - {page: 87, titre: "Tourte niçoise aux courgettes"}
+    - {page: 88, titre: "Tian-ratatouille au parmesan"}
+    - {page: 90, titre: "Pain perdu façon moussaka"}
+    - {page: 92, titre: "Salade d'orge sympa"}
+    - {page: 93, titre: "Poulet « cocotte » aux olives noires, citron et ail confit"}
+    - {page: 95, titre: "Rôti roulé aux herbes et au fenouil"}
+    - {page: 96, titre: "LA pâte à pizza (fougasse, focaccia…) « spéciale pique-nique »"}
+    - {page: 99, titre: "Grande pizza aux légumes verts, basilic et mozzarella"}
+    - {page: 100, titre: "Focaccia ai porcini"}
+    - {page: 101, titre: "Yaourts aux fruits, LA recette inratable (sans yaourtière)"}
+    - {page: 104, titre: "Glace très « sage » au chocolat noir (sans sorbetière)"}
+    - {page: 107, titre: "Mousse légère aux pêches (ou super gâteau !)"}
+    - {page: 108, titre: "Muffins choco-courgettes"}
+    - {page: 111, titre: "Gaufres « pain perdu » aux mûres"}
+    - {page: 112, titre: "Carrés sablés faciles à la crème de groseille (et l'hiver, tarte au citron !)"}
+    - {page: 115, titre: "Clafoutis super crémeux au miel et à l'abricot"}
+    - {page: 116, titre: "Juste un gâteau au yaourt, la « classe » en plus"}
+
+  automne:
+    - {page: 123, titre: "Jolie tourte « feuilles d'automne »"}
+    - {page: 124, titre: "Châtaignes grillées"}
+    - {page: 127, titre: "Le meilleur des veloutés de potiron !"}
+    - {page: 128, titre: "Moules de bouchot aux spaghettis"}
+    - {page: 129, titre: "Potage crémeux à l'avoine et saveurs iodées"}
+    - {page: 130, titre: "Galette de céréales « maxi-format »"}
+    - {page: 132, titre: "Poule au « potit » épeautre"}
+    - {page: 133, titre: "Gratin de courge au riz"}
+    - {page: 134, titre: "Terrine légère à l'échalote, noisettes et champignons"}
+    - {page: 137, titre: "Gnocchis de polenta à la bolognaise"}
+    - {page: 138, titre: "« Frites au four » de légumes d'automne"}
+    - {page: 141, titre: "Cock-a-leekie (un peu à ma façon)"}
+    - {page: 142, titre: "Marbré aux légumes-racines"}
+    - {page: 145, titre: "Chou farci facile"}
+    - {page: 146, titre: "Tranches de butternut rôties aux lardons et aux herbes"}
+    - {page: 149, titre: "« Casspoulet »"}
+    - {page: 150, titre: "Jarret braisé au vin blanc et petits légumes"}
+    - {page: 153, titre: "Moelleux « mystère » à l'orange"}
+    - {page: 154, titre: "Gros cookie à partager…"}
+    - {page: 157, titre: "Bon lait « bana-chaud » du petit déjeuner"}
+    - {page: 158, titre: "Riz au lait « retour des îles »"}
+    - {page: 159, titre: "Soja-dessert à la vanille (sans yaourtière, 3 méthodes !)"}
+    - {page: 160, titre: "Tourte-crumble « des paresseux » aux pommes et aux noix"}
+    - {page: 163, titre: "Marbré du goûter façon « Savane »"}
+    - {page: 166, titre: "Quatre-quarts d'anniversaire à la poire"}
+
+  hiver:
+    - {page: 172, titre: "Soupe crétoise « 3 min chrono »"}
+    - {page: 173, titre: "Lentilles vertes mijotées à la paysanne"}
+    - {page: 174, titre: "Méli-mélo en rémoulade légère au yaourt de brebis"}
+    - {page: 177, titre: "Croque-monsieur montagnards"}
+    - {page: 178, titre: "Accras gourmands au thon, pain et carottes râpées"}
+    - {page: 181, titre: "Tartelettes aux noix et topinambours"}
+    - {page: 182, titre: "Pot-au-feu traditionnel (ou poule-au-pot, potée…)"}
+    - {page: 184, titre: "Coquilles de poisson"}
+    - {page: 186, titre: "Restes de rôti en « cordons bleus » au four"}
+    - {page: 189, titre: "Colcannon irlandais"}
+    - {page: 190, titre: "Gâteau de légumes"}
+    - {page: 192, titre: "Soupe de crêpes de Haute-Autriche"}
+    - {page: 193, titre: "Donburi au porc et chou chinois"}
+    - {page: 194, titre: "« Poulet de 4 h » farci"}
+    - {page: 197, titre: "Mitonnée de pois cassés « qui réchauffe »"}
+    - {page: 198, titre: "Gratin de crozets végétarien"}
+    - {page: 199, titre: "Hachis Parmentier « 50/50 »"}
+    - {page: 200, titre: "Blinis de légumes"}
+    - {page: 203, titre: "Galettes des rois aux poires caramélisées et pâte d'amande"}
+    - {page: 204, titre: "Stollen de Noël au cranberries (ou brioche pour tout le reste de l'année !)"}
+    - {page: 207, titre: "Crème dessert au chocolat « 3 min chrono »"}
+    - {page: 208, titre: "Petits pains d'épices en bocaux (ou pas…)"}
+    - {page: 211, titre: "Truffes de Noël pour cadeaux gourmands"}
+    - {page: 212, titre: "Fondant au (poti-)marron façon Rennes de Noël"}
+    - {page: 214, titre: "Pâte d'amande « express » aux sucres non raffinés"}
+
+annexes:
+  - {page: 218, titre: "Bonnes adresses"}
+  - {page: 220, titre: "Index des recettes sans gluten/sans lait/sans œufs"}
+  - {page: 222, titre: "Index par ingrédients"}
+
+# ---------------------------------------------------------------------------
+# MENUS TYPES DE L'AUTEURE
+#
+# Deux journées équilibrées données en introduction, pour une famille de deux
+# adultes (dont un absent le midi), deux jumeaux de 16 ans, une fillette de
+# 7 ans et un bébé de 13 mois. L'auteure précise que ce ne sont pas des journées
+# calquées sur les siennes (six enfants de 6 à 19 ans), mais l'illustration
+# d'« un seul menu pour tout le monde ».
+#
+# POURQUOI C'EST DANS LA DB : c'est une validation externe de `creneaux.yaml`.
+# Ses journées sont indexées par CRÉNEAU (petit déjeuner / déjeuner / goûter /
+# dîner), pas par plat du soir, et les créneaux ne sont pas symétriques — le
+# petit déjeuner et le goûter sont des routines sans recette, exactement le
+# `nature: routine` du modèle. Deux mécaniques déjà codées apparaissent aussi en
+# clair dans sa prose : le prélèvement bébé avant salage (`baby_portion`) et la
+# part mise de côté qui devient le déjeuner du lendemain (`emits` → `accepts`).
+# ---------------------------------------------------------------------------
+menus_types:
+  foyer_decrit: >-
+    deux adultes dont un absent le midi, deux jumeaux de 16 ans,
+    une fillette de 7 ans, un bébé de 13 mois
+  journees:
+    - id: journee-1
+      creneaux:
+        petit_dejeuner:
+          items:
+            - "tartines de pain complet, 20 g de beurre bio"
+            - "un œuf à la coque"
+          note: >-
+            riche en céréales complètes, légèrement protéiné et sans sucres
+            rapides ; même petit déjeuner pour tout le monde, on adapte les
+            quantités de pain aux appétits. Bébé : 10 g de beurre et une
+            mouillette dans l'œuf.
+        dejeuner:
+          items:
+            - "salade verte"
+            - {titre_menu: "Pizza végétarienne", page: 99}
+            - {titre_menu: "Gratin de crozets", page: 198, alternative: true}
+          note: >-
+            entrée crue parce que le plat principal contient peu de légumes ;
+            le fromage du plat tient lieu de laitage. Part du bébé écrasée à la
+            fourchette ; une part mise de côté pour le déjeuner du lendemain de
+            l'adulte absent (à emporter au travail).
+        gouter:
+          items: ["pain complet avec du chocolat noir", "une poire"]
+        diner:
+          items:
+            - {titre_menu: "Tian-ratatouille", page: 88}
+          note: "on ajoute du riz complet pour les ados"
+
+    - id: journee-2
+      creneaux:
+        petit_dejeuner:
+          items:
+            - "muësli aux vrais flocons d'avoine, fruits frais et séchés"
+            - "yaourt ou fromage blanc bio"
+        dejeuner:
+          items:
+            - {titre_menu: "Donburi de chou chinois", page: 193}
+          note: >-
+            pas d'entrée et pas de fromage, le plat principal est déjà
+            équilibré. Part mise de côté pour le déjeuner du lendemain de
+            l'adulte absent ; on écrase les aliments avec un peu de jus pour le
+            bébé.
+        gouter:
+          items:
+            - {titre_menu: "pain d'épices fait maison", page: 208, qty: "une ou deux tranches"}
+            - "une orange"
+        diner:
+          items:
+            - {titre_menu: "Soupe crétoise « 3 min chrono »", page: 172}
+          note: >-
+            mixée pour le bébé, additionnée de deux larges tranches de pain
+            complet grillé pour les ados

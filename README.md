@@ -286,6 +286,198 @@ the top: the frequency targets are unsourced prototype guesses. Real intake
 needs ANSES **Ciqual** (Licence Ouverte, so compatible with the project's
 content policy) and PNNS frequency guidance as the source of the targets.
 
+### Books the household owns (`sources/`)
+
+`sources/chioca-cuisine-bio-quotidien.yaml` indexes Marie Chioca's *La cuisine
+bio du quotidien* (Terre vivante) — the 100 recipes as **season, title, page**,
+plus the author's two worked example days. It lives outside `recipes/` on
+purpose: `charger_recettes()` globs `recipes/*.yaml` only, so nothing in
+`sources/` reaches the catalogue until somebody opens the page and encodes the
+dish (marked back with `catalogue_id:`). Today the file is entirely a backlog.
+
+Two reasons it is worth having as data rather than as a book on a shelf:
+
+- **It is the seasonality table the model does not have.** No recipe carries a
+  `saison` field and `_score()` has no way to refuse a tian-ratatouille in
+  February. The book is organised by season, so its four page ranges type 100
+  dishes by season for free — and by name-matching, some of the catalogue's own.
+- **The author's example days independently reproduce `creneaux.yaml`.** Her
+  balanced days are indexed by *slot* (petit déjeuner / déjeuner / goûter /
+  dîner), not by dinner; breakfast and goûter carry no recipe, which is exactly
+  `nature: routine`. Two coded mechanics also appear in her prose in plain
+  words: the baby's portion taken out before salting (`seasoning_gate` +
+  `baby_portion`), and the part set aside that becomes the absent adult's
+  lunchbox the next day (`emits` → `accepts`).
+
+Licensing, per map #26: a table of contents is factual reference data. No prose,
+no photo and no recipe from the book is reproduced. Encoding one follows
+`burgers-de-lentilles` — dish and process are unprotectable savoir-faire,
+wording redone, `source:` filled in.
+
+#### The spring section, and what encoding real recipes broke
+
+Pages 26–64 are now in `recipes/` — **the whole spring chapter bar five pages**
+(42, 45, 46, 49, 50), so 19 of the book's 100. The catalogue goes from 22 to 41,
+and the part that matters, from **2 fully-cooked authored recipes to 26**. Both
+originals were written by me to fit the schema. These nineteen were not, and
+that is what makes them worth having: several assumptions failed immediately.
+
+- **`seasoning_gate` assumes salt is a last step. Real recipes salt early.** The
+  compiler injects the baby's unsalted set-aside *before* the step flagged
+  `seasoning_gate`, which works perfectly for `ratatouille-minute` and
+  `lentilles-mijotees` — because I wrote both to salt at the end. Of the five
+  Chioca recipes, **three cannot have a baby portion at all**: the velouté salts
+  the cooking water at minute one, the omelette salts three separate times
+  starting with the raw vegetables, and the cookies have fleur de sel in the
+  dough. Only the farçous salt the batter after blending. This is not a bug to
+  fix in those recipes — it is the model's assumption being wrong. A real
+  household with a baby either cooks unsalted and salts at the plate, or accepts
+  that most dishes have no set-aside. The app has to say which, and today it
+  silently offers no set-aside and no explanation.
+- **A `seasoning_gate` step must not also *create* the thing being set aside.**
+  The quiche's set-aside first rendered *before* the step that mixed the filling
+  — the baby's portion was taken from a mixture that did not exist yet. Fixed by
+  splitting mix and salt into two steps, but nothing in the model prevents
+  re-making the mistake; the gate is a marker with no dependency on what the
+  step produces.
+- **`keeps` cannot express a cupboard.** Salted cookies keep three weeks in a
+  tin at room temperature. `keeps` knows `frigo_days` and `congelo` and nothing
+  else, so they are encoded as `frigo_days: 7` — wrong, and wrong in the
+  direction that makes the planner under-use them. Ambient storage is a third
+  location the stock model does not have, which also affects every jar
+  `conservation.yaml` talks about.
+
+Two smaller ones worth recording. The aisle merge earned its keep on contact:
+three of the five want grated hard cheese and three want wholemeal flour, and
+`rayons.yaml` collapses them into one 400 g line and one 750 g line instead of
+six. And `orties` exposed a missing aisle — nettles are *foraged*, not bought,
+and a project with a garden has nowhere to put an ingredient whose supply is
+"go outside", so it sits under `primeur` with a comment. Three of the ten now
+depend on foraging, so that gap is not an edge case.
+
+#### The waste edge, and the correction it forced
+
+`veloute-ortie` shipped with a note saying its `fanes` chain was left unencoded
+because a dangling `accepts` would cost `chaine_manquante` (−8) every draw.
+**That was wrong**, and reading `calculer()` for the next recipe showed why: an
+uncovered `accepts` falls through to `sans_reste` and is only penalised when
+there is no `sans_reste` at all. The −8 punishes the impossible, not the
+unchained. An edge with a full price is always safe to declare.
+
+So p. 35's *Consommé de fanes* — which the book itself badges "avec des restes"
+— now closes the loop, and it is a kind of edge the graph did not have:
+
+```
+Jeudi    Velouté d'ortie    (→ veloute-vert, parures-legumes)
+Vendredi Consommé de fanes  (part d'un reste · → bouillon-maison)
+  ↪ rien à acheter pour cette base
+```
+
+Peeling 400 g of potatoes *emits* `parures-legumes`; the consommé accepts them
+and emits `bouillon-maison`. Every previous chain moved food forward — a sauce,
+cooked lentils, a carcass. **This one moves a waste product forward**, and the
+carrot, leek and celery its `sans_reste` would otherwise buy simply vanish from
+the shopping list. It is also the first dish whose main input has no quantity at
+all: the author refuses to give one on purpose, because you use what the week
+happened to produce. The model cannot say "an undetermined free amount", so it
+says `1-repas` and carries a comment instead of an honest number.
+
+#### The author writes her own chains — and a `role:` field is now the blocker
+
+Two more findings from pages 51–58, and they point in opposite directions.
+
+**The good one.** p. 55's roast is badged "2 en 1" and its text sends you to the
+next page for the broth; p. 56's ingredient list literally opens with *the
+cooking broth from the previous recipe*. So `roti-bouillon-herbes` emits
+`bouillon-herbes` and `soupe-orge-petits-pois` accepts it — the first chaining
+edge in the catalogue **we did not infer**. It is printed in the book. p. 61
+does it again ("mousse au chocolat still warm from the previous page"), and
+p. 59 offers aquafaba — the drained liquid from a tin of chickpeas — as a full
+equal of egg whites, which turns p. 36's salad into its supplier. Three links
+now run end to end:
+
+```
+Salade de pois chiches  →(aquafaba)→  Mousse au chocolat  →  Gâteau sans cuisson
+  ↪ ni œufs ni base achetés pour les deux desserts
+```
+
+That is worth noting for the eventual entry UI: a cookbook already contains its
+own `emits`/`accepts` graph in prose, and the useful question when entering a
+recipe is not "what are the ingredients" but **"what does this leave behind"**.
+Two of the four edges found so far are byproducts — peelings, chickpea water —
+which no ingredient list would ever have surfaced.
+
+**The one that looked like a blocker and wasn't.** p. 58 is the first dessert,
+and it does not fit the *meal* assumption: `portions_eq` counts adult
+meal-shares, `apports` measures what a dish brings to dinner. Encoded naively a
+tart gets dealt as a main course and its `apports` (no protein, no vegetable)
+drags the week's coverage down. I wrote here that fixing it needed a new `role:`
+field and a change to `semaine_model.py`. **That was wrong — the lever already
+exists.** `convient()` reads a per-recipe `creneaux:` list, and `equilibre_sur`
+already limits balance measurement to lunch and dinner. So:
+
+```yaml
+creneaux: [gouter]
+```
+
+is enough: the dish is never offered at a `choisi` slot, and `couverture()`
+never counts it. Better still, goûter is `nature: routine`, so it is planned and
+shopped for but never dealt as a card — which is exactly right for a dessert.
+The five desserts entered so far (p. 58, 59, 61, 62, 64) all carry it, and they
+incidentally fill the empty goûter slot this README complained about earlier.
+
+Two dessert-specific limits that are *not* solved, and are noted in the files:
+
+- **`accepts` has no "immediately" scale.** p. 61's cake wants the p. 59 mousse
+  *still warm*, before it sets. `_stock_has()` checks a freshness window in
+  **days**, so yesterday's mousse in the fridge passes the test and ruins the
+  recipe. Alongside `frigo_days` and `congelo` there needs to be a third thing:
+  chain now, or not at all. The same entry also needs *double* the base recipe,
+  which `accepts` cannot say either.
+- **The freezer counter conflates storage with security.** `bilan_congelo()`
+  totals every `congelo: true` output as an emergency portion — a meal for the
+  night everything collapses. Six pots of ice cream are not that, yet they
+  occupy one of the household's three drawers. "What is in the freezer" and
+  "what I can count on to eat" are different quantities.
+
+Third recurrence of a smaller one: the book's "prep + cooking" header keeps
+hiding *waiting*. Chickpeas soak overnight (p. 36), barley soaks 12 h (p. 56),
+the fish thaws two hours (p. 51), the tart pastry rests an hour (p. 58), and the
+roast is cooked the day before it is eaten (p. 55). The model counts kitchen
+minutes and has no way to say "and then wait until tomorrow", so all five
+recipes under-report what they actually cost to schedule.
+
+#### A validator, because I made the same mistake three times
+
+`verifier.py` exists because entering ten recipes produced the *same* silent
+error three times — a `seasoning_gate` on a step that both builds and salts the
+mixture, so the baby's set-aside renders before the mixture exists. Nothing
+crashed; `compile.py` printed a plausible wrong plan each time. It also caught a
+class I would not have found by reading output at all: `plan_b`'s `drop:` takes a
+bare step id while `swap:` takes a mapping, and writing `drop: {step: …}` fails
+silently — the str/dict comparison never matches, so the plan B simply never
+applies. Four of my recipes had it.
+
+```bash
+python3 verifier.py                # whole catalogue
+python3 verifier.py <id> ...       # just what you entered
+```
+
+Errors are things that will crash or misrender; warnings are things that have
+been wrong every time so far but that a recipe could legitimately do. Run on the
+full catalogue it reports **4 pre-existing errors, all in `reste-de-la-veille`**,
+and they are worth naming here because they are the `plan.py` / `semaine_model.py`
+divergence this README already flags, showing up as data:
+
+- its `accepts` matches by `kind:` (any `reste-plat`) with no `type:`, which
+  `semaine_model.py` supports and `compile.py` does not;
+- its steps use `text:` with no `id:`, which no other recipe does.
+
+The result is a dish that plans fine and **crashes `compile.py` outright**
+(`KeyError: 'type'`). That is on the branch before any of this work; it is left
+alone here rather than fixed silently, because collapsing the two code paths is
+the actual repair and it is a bigger change than entering a cookbook.
+
 ### What driving it has already shown
 
 - **Entering a repertoire, not a recipe, is the unlock.** The catalogue was
