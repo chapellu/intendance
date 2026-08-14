@@ -2,24 +2,19 @@
 # de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
 # savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
 #
-# ⚠ SAISIE AU NIVEAU PLAN, VOLONTAIREMENT — PAS D'`steps:`.
-# La photo de référence s'arrête au rôtissage des légumes ; le pliage des
-# samoussas et leur cuisson finale sont sur une page qui n'a pas été
-# photographiée (l'en-tête annonce « cuisson 35 min + environ 15 à 20 min »,
-# donc une seconde phase existe bel et bien).
+# COMPLÉTÉE. Cette recette était entrée au niveau plan faute de la page de
+# pliage ; la p. 78 l'a fournie et elle passe donc au niveau cuisinable. Deux
+# choses que seule la seconde page apprend, et qui montrent ce que « niveau
+# plan » coûte vraiment :
 #
-# Encoder les seules étapes connues aurait produit exactement le défaut que
-# `verifier.py` existe pour empêcher : un plan complet en apparence, qui
-# s'arrête après le four et ne dit jamais qu'il faut plier des samoussas. Au
-# niveau plan, la recette entre au catalogue — elle se planifie et se fait
-# acheter — et `compile.py` refuse poliment de la compiler en disant ce qui
-# manque. C'est précisément la scission que le README décrit.
-#
-# CE QUI EST CONNU DE LA MÉTHODE, en attendant la page manquante : les légumes
-# sont taillés en tranches d'environ 8 mm, brassés à l'huile et au sel, puis
-# rôtis ensemble sur une même lèchefrite à 200 °C pendant ~35 min (25 min si le
-# four est grand et les légumes bien étalés — serrés, ils cuisent plus
-# lentement). Le poivron part peau vers le haut.
+#  1. LE COMPTE ÉTAIT FAUX. J'avais lu « 24 feuilles de brick » comme
+#     24 samoussas. Chaque feuille se coupe en deux, donc les proportions
+#     donnent **48 samoussas, 16 de chaque garniture** — l'autrice le dit en
+#     toutes lettres p. 78. Un facteur deux sur le rendement, invisible depuis
+#     la seule liste d'ingrédients.
+#  2. IL Y A TROIS GARNITURES, pas une farce. Les légumes sont rôtis ensemble
+#     puis mixés en trois appareils séparés. La p. 76 l'annonçait (« trois
+#     garnitures différentes ») sans dire lesquelles.
 
 recipe:
   id: samoussas-legumes-rotis
@@ -27,16 +22,22 @@ recipe:
   lang: fr
   source:
     author: Marie Chioca
-    work: "La cuisine bio du quotidien, Terre vivante, p. 76"
+    work: "La cuisine bio du quotidien, Terre vivante, p. 76-78"
     source_id: chioca-cuisine-bio-quotidien
     page: 76
     saison: ete
-    encoding: niveau plan — étapes de pliage absentes de la source photographiée
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
   yields:
-    portions_eq: 8          # en plat principal ; 12 à 16 en entrée ou en apéro
-    pieces: 24
-  time_min_total: 90        # 35 prép. + 35 rôtissage + 15 à 20 de cuisson finale
-  active_min: 55
+    portions_eq: 8          # 6 samoussas par personne en plat ; 3 en entrée → 16 pers.
+    pieces: 48              # 24 feuilles coupées en deux, 16 de chaque garniture
+  # Le livre annonce 35 + 35 + 15/20, soit ~90 min. Le découpage en étapes en
+  # donne 112, et la compilation contre ce foyer monte à ~121 : les trois
+  # mixages passent au petit blender, en plusieurs fois, avec lavage du bol
+  # entre chaque garniture. L'écart n'est pas une erreur du livre — c'est le
+  # coût de ne pas avoir de robot, et c'est exactement ce que le compilateur
+  # est censé rendre visible.
+  time_min_total: 112
+  active_min: 60
 
   apports:
     proteine: fromage
@@ -60,12 +61,95 @@ recipe:
     - {id: huile-olive, name: huile d'olive, qty: 5, unit: c. à s.}
     - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
     - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
-    # Le livre ajoute du piment d'Espelette : écarté, `piquant` est une
-    # exclusion du foyer (household.yaml).
+    # La farine est sur la liste de la p. 76 mais aucune des étapes
+    # photographiées ne dit où elle passe — vraisemblablement en colle
+    # farine-eau pour sceller les bricks, ce que la source ne confirme pas.
+    # Laissée en ingrédient, sans étape inventée pour l'employer.
+    #
+    # Le livre ajoute aussi du piment d'Espelette dans la garniture au poivron :
+    # écarté, `piquant` est une exclusion du foyer (household.yaml).
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 200 °C et chemiser une grande lèchefrite de papier cuisson"
+      needs: [bake]
+      time_min: 2
+      attended: false
+    - id: tailler-courgettes
+      action: "Couper les courgettes en tranches d'environ 8 mm, les brasser avec 2 c. à s. d'huile d'olive et un peu de sel, puis les étaler sur la lèchefrite en les serrant — elles peuvent se chevaucher un peu pour laisser la place aux autres légumes"
+      needs: []
+      time_min: 8
+    - id: tailler-aubergine
+      action: "Couper l'aubergine en tranches d'environ 8 mm, les brasser avec 3 c. à s. d'huile d'olive et un peu de sel, et les ranger à côté des courgettes"
+      needs: []
+      time_min: 7
+    - id: preparer-poivron-tomates
+      action: "Ouvrir le poivron en deux, jeter les graines et le poser peau vers le haut ; couper les tomates en tranches, les disposer et les saler légèrement"
+      needs: []
+      time_min: 5
+      kid: {age_min_months: 30, task: "ranger les tranches de tomate sur la plaque"}
+    - id: rotir
+      action: "Enfourner environ 35 min, jusqu'à ce que les légumes soient bien dorés et qu'il ne reste plus d'eau au fond de la lèchefrite"
+      needs: [bake]
+      time_min: 35
+      attended: false
+      # Le temps varie beaucoup : 25 min dans un grand four où les légumes sont
+      # étalés, davantage s'ils sont serrés et se chevauchent.
+    - id: garniture-courgette
+      action: "Mixer les courgettes avec le basilic, le chèvre et une gousse d'ail, puis réserver"
+      needs: [chop-coarse]
+      time_min: 5
+    - id: garniture-poivron
+      action: "Ôter la peau du poivron — elle se retire toute seule après cuisson — et le mixer avec la moitié des tomates et la tomme de brebis, puis réserver"
+      needs: [chop-coarse]
+      time_min: 5
+    - id: garniture-aubergine
+      action: "Mixer l'aubergine avec le parmesan, la dernière gousse d'ail et le reste des tomates"
+      needs: [chop-coarse]
+      time_min: 5
+      # TROIS mixages successifs. Le foyer n'a que le petit bol du mixeur
+      # plongeur : la chaîne `chop-coarse` bascule dessus et il faut le laver
+      # entre chaque garniture. C'est la friction réelle de cette recette.
+    - id: plier
+      action: "Couper chaque feuille de brick en deux, replier la partie bombée pour obtenir un long rectangle, poser un peu de farce au bout et rabattre en triangle par un mouvement de balancier gauche-droite, en suivant le bord de la feuille comme un rail ; rentrer le bout restant dans un pli ou le replier dessous"
+      needs: []
+      time_min: 20
+      kid: {age_min_months: 30, task: "poser la cuillerée de farce au bout de chaque bande"}
+    - id: huiler
+      action: "Ranger les samoussas sur une plaque de cuisson et les huiler au pinceau"
+      needs: []
+      time_min: 5
+      kid: {age_min_months: 30, task: "badigeonner les samoussas au pinceau"}
+    - id: cuire
+      action: "Enfourner environ 15 min, jusqu'à ce que les samoussas soient bien dorés et croustillants"
+      needs: [bake]
+      time_min: 15
+      attended: false
+
+  # PAS DE `baby_portion`. J'en avais posé un, et la compilation l'a montré
+  # absurde : il s'affichait avant le rôtissage, donc il proposait de prélever
+  # « quelques tranches de légumes rôtis » alors que les légumes étaient encore
+  # crus sur la plaque. Le sel entre ici avec l'huile, au moment où l'on brasse
+  # les tranches — soit avant toute cuisson. Il n'existe donc aucun instant où
+  # un prélèvement serait à la fois cuit et non salé. Sixième recette du livre
+  # dans ce cas.
 
   emits:
     - kind: reste-plat
       type: samoussas
-      qty_band: 2-repas
+      qty_band: 3-repas
       keeps: {frigo_days: 2, congelo: true}
-      note: "à repasser au four pour retrouver le croustillant de la brick"
+      note: "l'autrice les fait exprès à l'avance ; réchauffage impératif à 200 °C quelques minutes, sinon la brick reste molle"
+
+  plan_b:
+    # Variante donnée par l'autrice elle-même : une seule garniture au choix,
+    # 8 feuilles de brick, 16 samoussas. Ce n'est pas une dégradation, c'est
+    # l'échelle du soir de semaine plutôt que celle du buffet.
+    - swap:
+        step: garniture-poivron
+        action: "Ne faire qu'une seule garniture au choix : 8 feuilles de brick suffisent et donnent 16 samoussas"
+        saves_min: 5
+      effect: "un tiers du rendement et une seule saveur, mais deux mixages et deux lavages de bol en moins"
+    - drop: garniture-aubergine
+      saves_min: 5
+      effect: "deux garnitures au lieu de trois"

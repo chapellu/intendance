@@ -16,9 +16,9 @@
 # Le PRINTEMPS est complet à cinq pages près (42, 45, 46, 49, 50) ; l'ÉTÉ est
 # entamé (p. 70 à 76) ; l'automne et l'hiver sont entièrement à saisir.
 #
-# `niveau: plan` marque une entrée saisie SANS étapes — planifiable et
-# achetable, pas encore cuisinable. C'est le cas des samoussas p. 76, dont la
-# page de pliage n'a pas été photographiée.
+# `niveau: plan` marquerait une entrée saisie SANS étapes — planifiable et
+# achetable, pas encore cuisinable. Aucune n'est dans ce cas : les samoussas
+# p. 76 y sont passés le temps que la page de pliage (p. 78) arrive.
 #
 # CADRE DE LICENCE (celui de la carte #26) : un sommaire est une donnée
 # factuelle de référence — auteur, titre, page. Aucune prose, aucune photo,
@@ -86,7 +86,7 @@ sommaire:
     - {page: 73, titre: "Tarte aux tomates fraîches de Mémé", catalogue_id: tarte-tomates-meme}
     - {page: 74, titre: "Panzanella Toscana", catalogue_id: panzanella-toscana}
     - {page: 75, titre: "Rillettes de poisson faciles à l'échalote", catalogue_id: rillettes-poisson-echalote}
-    - {page: 76, titre: "Samoussas végétariens aux légumes rôtis", catalogue_id: samoussas-legumes-rotis, niveau: plan}
+    - {page: 76, titre: "Samoussas végétariens aux légumes rôtis", catalogue_id: samoussas-legumes-rotis}
     - {page: 81, titre: "Falafels poêlés aux herbes"}
     - {page: 82, titre: "One pot pasta capriociosa"}
     - {page: 85, titre: "« Courgettes farcies » des fainéants"}

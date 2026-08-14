@@ -452,14 +452,31 @@ recipes under-report what they actually cost to schedule.
 
 Pages 70–76 add five more. Two things came out of them.
 
-**A recipe entered deliberately at plan level.** The samoussas' folding steps are
-on a page that was not photographed (the header promises "35 min + 15 to 20",
-so a second cooking phase exists). Encoding only the known steps would have
-produced exactly what `verifier.py` was written to prevent: a plan that looks
-complete and stops after the oven. So it goes in **without `steps:`** —
-plannable and shoppable, and `compile.py` refuses it politely and says what is
-missing. First real use of the two-tier entry this README describes; the source
-index marks it `niveau: plan` so it is findable when the page turns up.
+**A recipe entered at plan level, then completed — and the round trip is the
+finding.** The samoussas' folding steps were on a page that had not been
+photographed, so the dish went in **without `steps:`**: plannable, shoppable,
+and politely refused by `compile.py`. When p. 78 arrived it was promoted to a
+full recipe, and the second page corrected two things the ingredient list alone
+had got wrong:
+
+- **The yield was out by a factor of two.** "24 feuilles de brick" reads like
+  24 samoussas. Each sheet is cut in half, so the quantities make **48, sixteen
+  of each filling** — stated plainly on p. 78, invisible on p. 76.
+- **There is no single stuffing.** The roasted vegetables become *three*
+  separate fillings, blended one after another. p. 76 promised "trois garnitures
+  différentes" without saying what they were.
+
+That is the honest argument for the two-tier entry: a plan-level record is not a
+lesser recipe, it is a *correct* one that knows what it doesn't know. Had the
+first pass guessed at the missing steps, both errors would have been baked in
+and looked authoritative.
+
+It also produced the clearest example yet of the compiler earning its keep.
+Chioca's header says ~90 minutes; the step breakdown says 112; compiled against
+this household it says **121**, because the three blendings fall back to the
+small immersion-blender bowl and it has to be washed between fillings. The gap
+is not an error in the book — it is the price of not owning a food processor,
+which is exactly what compiling a recipe against a real kitchen is for.
 
 **The `plan.py` / `semaine_model.py` split now costs real money.** The panzanella
 is built on stale bread, so its `sans_reste` buys a 400 g sourdough loaf when
