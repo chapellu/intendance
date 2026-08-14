@@ -86,15 +86,41 @@ def scale_qty(qty, unit, factor):
 
 # ---------------------------------------------------------------- stock
 
-def stock_has(stock, wanted_type, fridge_window_days, today):
+def accepte(out, acc):
+    """Does this stored output satisfy this `accepts` edge?
+
+    Two ways to ask. `type:` names one exact output — « sauce-bolognaise ».
+    `kind:` names a *class* — « any reste-plat » — which is what makes a single
+    « reste de la veille » lunch able to eat last night's chili, gratin, quiche
+    or ratatouille without writing nine near-identical recipes.
+
+    This lives here, in the module `plan.py` and `verifier.py` already import as
+    `rc`, because it was written once in `semaine_model.py` and read three times:
+    the two other readers indexed `acc["type"]` directly and crashed outright on
+    the first recipe to use `kind:`. One matcher, one meaning of `accepts`.
+    """
+    if acc.get("type"):
+        return out["type"] == acc["type"]
+    if acc.get("kind"):
+        return out.get("kind") == acc["kind"]
+    return False
+
+
+def libelle_accepts(acc):
+    """How to name an `accepts` edge to a human — a type is already a name, a
+    class needs an article: « sauce-bolognaise » vs « un reste-plat »."""
+    return acc.get("type") or f"un {acc.get('kind', '?')}"
+
+
+def stock_has(stock, acc, fridge_window_days, today):
     for out in stock.get("outputs", []):
-        if out["type"] != wanted_type:
+        if not accepte(out, acc):
             continue
         born = out["born"]
         if isinstance(born, str):
             born = dt.date.fromisoformat(born)
         age = (today - born).days
-        if out["location"] == "congelo" or age <= fridge_window_days:
+        if out.get("location") == "congelo" or age <= fridge_window_days:
             return out, age
     return None, None
 
@@ -120,17 +146,24 @@ def compile_recipe(recipe_id, household, rules, stock, time_budget=None,
     # --- chaining: accepts against stock (#30)
     scale_base = r["yields"]["portions_eq"]
     for acc in r.get("accepts", []):
-        out, age = stock_has(stock, acc["type"], hh["fridge_window_days"], today)
+        out, age = stock_has(stock, acc, hh["fridge_window_days"], today)
         if out:
-            loc = "au frigo" if out["location"] == "frigo" else "au congélo"
-            notes.append(f"✔ Reste disponible : {acc['type']} ({out['qty_band']}, "
+            loc = "au frigo" if out.get("location") == "frigo" else "au congélo"
+            # On matching by `kind:`, name the output that actually answered —
+            # « un reste-plat » is what the recipe asked for, « ratatouille »
+            # is what you are about to reheat, and only the second is cookable.
+            notes.append(f"✔ Reste disponible : {out['type']} ({out['qty_band']}, "
                          f"{loc}, J-{age}) — la recette démarre directement dessus.")
         elif acc.get("required"):
             fb = acc.get("fallback_recipe")
+            manque = (f"Il manque le reste « {libelle_accepts(acc)} » : ")
             prelude.append(
-                f"Il manque le reste « {acc['type']} » : prévoir la recette "
-                f"« {fb} » en amont (ou la veille — elle mijote toute seule), "
-                f"ou remonter d'un cran dans le plan de la semaine.")
+                manque + (f"prévoir la recette « {fb} » en amont (ou la veille — "
+                          f"elle mijote toute seule), ou remonter d'un cran dans "
+                          f"le plan de la semaine."
+                          if fb else
+                          "rien au frigo ne convient, et ce plat ne se cuisine "
+                          "que sur un reste — c'est un autre plat qu'il faut ce soir."))
 
     # --- portions: household need vs full batch (chaining bias)
     need = household_portions(hh)

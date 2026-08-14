@@ -39,14 +39,35 @@ recipe:
 
   ingredients: []             # rien à acheter : tout est déjà au frigo
 
+  # Écrites au schéma commun — `id:` + `action:` — et non en `text:` libre. La
+  # première version de cette carte était la seule du catalogue à s'en écarter,
+  # et `compile.py` lit `s["action"]` sans garde : elle se planifiait très bien
+  # et ne se cuisinait pas du tout.
   steps:
-    - text: "Sortir le reste du frigo, vérifier qu'il sent bon et qu'il est dans la fenêtre."
+    - id: sortir
+      action: "Sortir le reste du frigo, vérifier qu'il sent bon et qu'il est dans la fenêtre."
       needs: []
       time_min: 1
-    - text: "Réchauffer à couvert — micro-ondes pour une portion, poêle ou casserole au-delà."
+    - id: rechauffer
+      action: "Réchauffer à couvert — micro-ondes pour une portion, poêle ou casserole au-delà."
       needs: [reheat]
       time_min: 8
-    - text: "Pour le petit : prélever avant de saler, écraser à la fourchette."
-      needs: [puree]
+      attended: false
+    - id: rectifier
+      action: "Goûter et rectifier le sel : un plat réchauffé rend plus fade que la veille."
+      needs: []
       time_min: 1
-      pour: petit
+      seasoning_gate: true
+
+  # Le prélèvement bébé est une DONNÉE, pas une phrase dans une étape : c'est
+  # `compile.py` qui l'injecte devant `seasoning_gate`, et seulement si le foyer
+  # a un bébé. En prose il s'imprimait pour tout le monde, tout le temps.
+  #
+  # RÉSERVE ASSUMÉE : le plat d'origine était déjà salé hier. Ce prélèvement
+  # n'évite que le sel d'AUJOURD'HUI. Le vrai geste — mettre de côté la part du
+  # petit à la cuisson de la veille — est une sortie à part que le modèle ne sait
+  # pas encore porter (`emits` ne connaît pas la portion bébé).
+  baby_portion:
+    take: "2 c. à s. du plat réchauffé, avant de rectifier le sel"
+    prep: "écraser à la fourchette, allonger d'un peu d'eau tiède si c'est compact"
+    needs: [puree]

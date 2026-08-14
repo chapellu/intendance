@@ -61,22 +61,32 @@ def verifier(rid: str, r: dict, rayons: dict, rules: dict, cat: dict, capacites:
         if cid not in ids_connus:
             err.append(f"ingrédient « {cid} » sans rayon (à ajouter dans rayons.yaml)")
 
-    # Chaînage. `semaine_model.py` accepte `type:` OU `kind:` (une classe entière,
-    # « n'importe quel reste-plat ») ; `compile.py` ne lit que `type:` et plante
-    # sur un `accepts` qui n'en a pas. C'est la divergence que le README signale
-    # entre les deux chemins de code.
+    # Chaînage. Un `accepts` demande soit un `type:` exact (« sauce-bolognaise »),
+    # soit un `kind:`, c'est-à-dire une CLASSE de sorties (« n'importe quel
+    # reste-plat »). Les trois lecteurs passent maintenant par `rc.accepte`.
     for acc in r.get("accepts", []):
-        if "type" not in acc:
-            err.append(f"accepts par `kind: {acc.get('kind')}` sans `type:` — "
-                       "fonctionne dans semaine_model.py, plante dans compile.py")
+        libelle = rc.libelle_accepts(acc)
+        if not acc.get("type") and not acc.get("kind"):
+            err.append("accepts sans `type:` ni `kind:` — l'arête ne peut matcher "
+                       "aucune sortie, et échoue en silence")
             continue
         if acc.get("required") and not r.get("sans_reste"):
             fb = acc.get("fallback_recipe")
-            if not fb:
-                err.append(f"accepts « {acc['type']} » requis, sans sans_reste ni fallback_recipe : "
-                           "le plat sera bloqué à chaque tirage")
-            elif fb not in cat:
+            if fb and fb not in cat:
                 err.append(f"fallback_recipe « {fb} » absent du catalogue")
+            elif not fb and acc.get("type"):
+                err.append(f"accepts « {acc['type']} » requis, sans sans_reste ni "
+                           "fallback_recipe : le plat sera bloqué à chaque tirage")
+            elif not fb:
+                # Une arête par CLASSE n'a pas de recette de repli unique — c'est
+                # tout l'intérêt : n'importe lequel des émetteurs la couvre. Ce
+                # qu'il faut vérifier, c'est qu'il en existe au moins un.
+                emis = any(e.get("kind") == acc["kind"]
+                           for r2 in cat.values() for e in r2.get("emits", []))
+                if not emis:
+                    err.append(f"accepts « {libelle} » requis, mais aucune recette du "
+                               "catalogue n'émet cette classe : le plat sera bloqué "
+                               "à chaque tirage")
     for e in r.get("emits", []):
         if e.get("qty_band") not in BANDES:
             warn.append(f"emits « {e.get('type')} » : bande « {e.get('qty_band')} » hors vocabulaire {sorted(BANDES)}")

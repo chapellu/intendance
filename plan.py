@@ -73,23 +73,30 @@ def plan_week(days, household, rules, stock, rayons, today, cat=None):
         # --- chaining: does an earlier dish (or the fridge) cover what this accepts?
         covered = set()
         for acc in r.get("accepts", []):
-            out, age = rc.stock_has({"outputs": running}, acc["type"],
+            out, age = rc.stock_has({"outputs": running}, acc,
                                     hh["fridge_window_days"], date)
             if out:
-                covered.add(acc["type"])
+                covered.add(rc.libelle_accepts(acc))
                 src = out.get("_from")
                 if src:
                     chained.append(f"{r['title']} part du reste de « {src} » "
                                    f"— rien à acheter pour cette base.")
                 else:
-                    used_from_fridge.add(acc["type"])
+                    # The type CONSUMED, not the edge asked for: a `kind:` edge
+                    # eats one particular output, and the rest of the fridge is
+                    # still there to be reported.
+                    used_from_fridge.add(out["type"])
                     chained.append(f"{r['title']} part d'un reste déjà au frigo "
-                                   f"({acc['type']}, J-{age}).")
+                                   f"({out['type']}, J-{age}).")
             elif acc.get("required"):
+                fb = acc.get("fallback_recipe")
                 warnings.append(
                     f"{entry['jour'].capitalize()} — {r['title']} a besoin du reste "
-                    f"« {acc['type']} », que rien ne produit avant ce jour-là. "
-                    f"Avancer « {acc.get('fallback_recipe')} » plus tôt dans la semaine.")
+                    f"« {rc.libelle_accepts(acc)} », que rien ne produit avant ce "
+                    f"jour-là. " + (f"Avancer « {fb} » plus tôt dans la semaine."
+                                    if fb else
+                                    "Ce plat ne se cuisine que sur un reste : il "
+                                    "n'a sa place qu'après un plat qui en émet un."))
 
         # --- portions: same rule as the compiler (keep the full batch when it keeps)
         base = r["yields"]["portions_eq"]

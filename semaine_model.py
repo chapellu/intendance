@@ -25,6 +25,8 @@ import datetime as dt
 from collections import Counter
 from dataclasses import dataclass, replace
 
+import compile as rc  # shadows the builtin `compile` in this module only
+
 # Ranking modes. `equilibre` is the default: the user asked for dishes that
 # "complete the intake while varying the pleasures and respect the chains",
 # which is a different objective from the cheapest possible shopping list.
@@ -199,36 +201,16 @@ def _canon(ing_id, rayons):
     return rayons.get("aliases", {}).get(ing_id, ing_id)
 
 
-def _accepte(out: dict, acc: dict) -> bool:
-    """Does this stored output satisfy this `accepts` edge?
-
-    Two ways to ask. `type:` names one exact output — « sauce-bolognaise ».
-    `kind:` names a *class* — « any reste-plat » — which is what makes a single
-    « reste de la veille » lunch able to eat last night's chili, gratin, quiche
-    or ratatouille without writing nine near-identical recipes.
-    """
-    if acc.get("type"):
-        return out["type"] == acc["type"]
-    if acc.get("kind"):
-        return out.get("kind") == acc["kind"]
-    return False
-
-
-def _libelle(acc: dict) -> str:
-    return acc.get("type") or f"un {acc.get('kind', '?')}"
+# The `accepts` matcher used to live here, and only here — `plan.py` and
+# `compile.py` each indexed `acc["type"]` by hand and crashed on the first
+# recipe to match by `kind:`. It now lives in `compile.py`, the module those two
+# already share; these aliases keep the local vocabulary of this file.
+_accepte = rc.accepte
+_libelle = rc.libelle_accepts
 
 
 def _stock_has(outputs, acc, window_days, on_date):
-    for out in outputs:
-        if not _accepte(out, acc):
-            continue
-        born = out["born"]
-        if isinstance(born, str):
-            born = dt.date.fromisoformat(born)
-        age = (on_date - born).days
-        if out.get("location") == "congelo" or age <= window_days:
-            return out, age
-    return None, None
+    return rc.stock_has({"outputs": outputs}, acc, window_days, on_date)
 
 
 def _portions_foyer(foyer):

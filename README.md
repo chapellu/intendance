@@ -562,19 +562,44 @@ python3 verifier.py <id> ...       # just what you entered
 ```
 
 Errors are things that will crash or misrender; warnings are things that have
-been wrong every time so far but that a recipe could legitimately do. Run on the
-full catalogue it reports **4 pre-existing errors, all in `reste-de-la-veille`**,
-and they are worth naming here because they are the `plan.py` / `semaine_model.py`
-divergence this README already flags, showing up as data:
+been wrong every time so far but that a recipe could legitimately do. The
+catalogue is now at **0 errors, 5 warnings** — the warnings are the five
+original recipes whose `seasoning_gate` sits on a step that both builds and
+salts, each one a real culinary judgement to make, not a code fix.
 
-- its `accepts` matches by `kind:` (any `reste-plat`) with no `type:`, which
-  `semaine_model.py` supports and `compile.py` does not;
-- its steps use `text:` with no `id:`, which no other recipe does.
+#### The one dish that planned and would not cook
 
-The result is a dish that plans fine and **crashes `compile.py` outright**
-(`KeyError: 'type'`). That is on the branch before any of this work; it is left
-alone here rather than fixed silently, because collapsing the two code paths is
-the actual repair and it is a bigger change than entering a cookbook.
+Getting to zero meant repairing what the validator found and this README used to
+list as *left alone*: `reste-de-la-veille`, a dish that planned perfectly and
+**crashed the compiler outright** (`KeyError: 'type'`). Three causes, one shape:
+
+- its `accepts` matches by `kind:` (any `reste-plat`) with no `type:`;
+- its steps used `text:` with no `id:`, which no other recipe does;
+- its baby set-aside was a *sentence inside a step* rather than the
+  `seasoning_gate` + `baby_portion` data every other recipe uses — so it printed
+  for every household, baby or not, and cost zero minutes.
+
+The first is the real one, and it was worse than recorded here. The matcher that
+understands `kind:` was written once, in `semaine_model.py`, and **both** other
+readers — `compile.py:123` *and* `plan.py:76` — indexed `acc["type"]` by hand.
+Two of the three code paths crashed, not one. `accepte()` / `libelle_accepts()`
+now live in `compile.py`, the module `plan.py` and `verifier.py` already import
+as `rc`, and `semaine_model.py` aliases them.
+
+The lesson is not "put it in a shared module". It is that **a schema written
+once and read three times is not a schema, it is three schemas**, and nothing
+told us until a recipe used a field the majority reader had never parsed. The
+validator is what turned that from a crash into a line of output; the fix is
+what made the crash impossible. What still lacks a guard: `accepts` is now
+matched in one place, but `scale_qty`/`_echelle` and `household_portions`/
+`_portions_foyer` are still each written twice, and nothing checks they agree.
+
+One thing the repair could not fix, and it is honest to say so in the data: the
+baby's portion of a reheated leftover is *taken from a dish that was already
+salted yesterday*. Prélever avant de saler only avoids today's salt. The real
+gesture — setting the baby's share aside when the dish is first cooked — is an
+output the model cannot carry yet, because `emits` has no notion of a baby
+portion. The recipe says so in a comment rather than pretending.
 
 ### What driving it has already shown
 
