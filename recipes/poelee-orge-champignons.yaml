@@ -1,0 +1,93 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose n'est PAS reproduite.
+
+recipe:
+  id: poelee-orge-champignons
+  title: Grande poêlée d'orge aux champignons, jambon fumé et thym frais
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "blog Saines Gourmandises"
+    source_id: saines-gourmandises-blog
+    url: https://saines-gourmandises.fr/lorge-magnifique-cereale-a-redecouvrir/
+    saison: automne
+    encoding: étapes restructurées et reformulées ; prose d'origine non reproduite
+  yields:
+    portions_eq: 6
+  time_min_total: 35        # hors trempage de l'orge, une nuit
+  active_min: 20
+
+  apports:
+    proteine: viande-blanche
+    feculent: orge
+    legumes: [champignon, allium]
+    profil: poele
+    origine: francais
+
+  # Deuxième recette à l'orge du catalogue, après la soupe d'orge du livre
+  # (p. 56), et même trempage d'une nuit — que le modèle ne sait toujours pas
+  # exprimer autrement qu'en commentaire.
+  ingredients:
+    - {id: orge, name: orge mondé, qty: 500, unit: g}
+    - {id: champignons-paris, name: champignons frais, qty: 500, unit: g}
+    - {id: champignons-conserve, name: champignons en conserve, qty: 450, unit: g}
+    - {id: jambon-cru, name: jambon cru fumé, qty: 100, unit: g}
+    - {id: oignon, name: gros oignon, qty: 1, unit: pièce}
+    - {id: ail, name: ail, qty: 1, unit: gousse}
+    - {id: thym-frais, name: brins de thym frais, qty: 3, unit: brin, seasoning: true}
+    - {id: huile-olive, name: huile d'olive, qty: 6, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: tremper
+      action: "La veille : mettre l'orge à tremper ; le lendemain, l'égoutter et le rincer"
+      needs: []
+      time_min: 3
+    - id: cuire-orge
+      action: "Cuire l'orge 15 min dans un grand faitout d'eau bouillante salée — le temps se compte à partir de la reprise de l'ébullition"
+      needs: [simmer-large]
+      time_min: 15
+      attended: false
+    - id: dorer-oignon-jambon
+      action: "Pendant ce temps : faire dorer à l'huile d'olive l'oignon en cubes et le jambon, au wok ou dans une grande sauteuse"
+      needs: [pan-fry]
+      time_min: 6
+      parallel_with: cuire-orge
+      attended: true
+    - id: sauter-champignons
+      action: "Ajouter les champignons frais émincés et les champignons en conserve bien rincés et égouttés, puis faire sauter à feu vif 10 à 15 min, le temps qu'ils soient bien dorés"
+      needs: [pan-fry]
+      time_min: 13
+      parallel_with: cuire-orge
+      attended: true
+      # À feu vif et sans couvrir : c'est ce qui fait dorer plutôt que bouillir.
+    - id: assaisonner
+      action: "Ajouter l'ail écrasé, poivrer, effeuiller le thym et bien mélanger"
+      needs: []
+      time_min: 2
+      seasoning_gate: true
+    - id: reunir
+      action: "Égoutter l'orge, le mélanger à la poêlée et servir aussitôt, nature ou avec un peu de parmesan"
+      needs: []
+      time_min: 3
+
+  baby_portion:
+    take: "2 c. à s. d'orge et quelques champignons, AVANT l'ail, le poivre et le thym"
+    prep: "écraser à la fourchette ; écarter le jambon, trop salé"
+    needs: []
+
+  emits:
+    - kind: reste-plat
+      type: poelee-orge
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+      note: "se mange aussi bien froide en salade le lendemain"
+
+  plan_b:
+    - swap:
+        step: sauter-champignons
+        action: "N'utiliser que les champignons en conserve, rincés et égouttés"
+        saves_min: 8
+      effect: "beaucoup moins de goût : ce sont les champignons frais qui dorent"

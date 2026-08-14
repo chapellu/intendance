@@ -117,8 +117,11 @@ def verifier(rid: str, r: dict, rayons: dict, rules: dict, cat: dict, capacites:
             if not MOTS_ASSAISONNEMENT.search(g.get("action", "")):
                 warn.append(f"seasoning_gate sur « {g['id']} » : l'action ne parle pas d'assaisonnement")
 
-    if r.get("source") and not r["source"].get("page"):
-        warn.append("bloc source sans numéro de page")
+    # Une source doit être RETROUVABLE, pas forcément paginée : un livre se cite
+    # par sa page, un billet de blog par son URL.
+    src = r.get("source")
+    if src and not (src.get("page") or src.get("url")):
+        warn.append("bloc source sans numéro de page ni URL : la recette n'est pas retrouvable")
     return err, warn
 
 

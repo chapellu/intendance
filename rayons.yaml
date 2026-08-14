@@ -54,6 +54,10 @@ rayons:
     - peches
     - tomates-roma
     - concombre
+    - chou-chinois
+    - chou-frise
+    - celeri-rave
+    - champignons-conserve
     - basilic
     # NE S'ACHÈTENT PAS — SE CUEILLENT. Le modèle n'a pas de rayon
     # « cueillette », et trois des dix recettes saisies en dépendent (orties
@@ -73,6 +77,7 @@ rayons:
     - poulet
     - poulet-filets
     - jambon
+    - jambon-cru
   poissonnerie:
     - saumon
     - colin-surgele
@@ -87,6 +92,7 @@ rayons:
     - chevre-demi-sec
     - chevre-buche
     - parmesan
+    - cantal
     - beurre
     - petits-suisses
   frais:
@@ -136,6 +142,8 @@ rayons:
     - rhum
     - vinaigre
     - tahin
+    - pruneaux
+    - noix
     - caissettes
     - pots-carton
 

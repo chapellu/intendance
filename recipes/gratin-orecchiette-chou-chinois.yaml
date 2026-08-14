@@ -1,0 +1,115 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose n'est PAS reproduite.
+#
+# Première recette saisie depuis le blog plutôt que depuis le livre, et choisie
+# pour ce qui manquait : un plat principal d'automne, la saison la plus vide du
+# catalogue.
+
+recipe:
+  id: gratin-orecchiette-chou-chinois
+  title: Gratin d'orecchiette au chou chinois et au bœuf
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "blog Saines Gourmandises"
+    source_id: saines-gourmandises-blog
+    url: https://saines-gourmandises.fr/88076/
+    saison: automne
+    encoding: étapes restructurées et reformulées ; prose d'origine non reproduite
+  yields:
+    portions_eq: 6
+  time_min_total: 45
+  active_min: 25
+
+  apports:
+    proteine: viande-rouge
+    feculent: pates
+    legumes: [crucifere, allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: pates, name: orecchiette (ou autres pâtes), qty: 500, unit: g}
+    - {id: chou-chinois, name: gros chou chinois (ou deux petits), qty: 1, unit: pièce}
+    - {id: oignon, name: gros oignons, qty: 3, unit: pièce}
+    - {id: boeuf-hache, name: bœuf haché, qty: 400, unit: g}
+    - {id: fromage-rape, name: parmesan râpé, qty: 100, unit: g}
+    - {id: huile-olive, name: huile d'olive, qty: 6, unit: c. à s.}
+    - {id: origan, name: origan séché, qty: 1, unit: pincée, seasoning: true}
+    - {id: thym, name: thym séché, qty: 1, unit: pincée, seasoning: true}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: revenir-oignons
+      action: "Émincer finement les oignons et les faire revenir à l'huile d'olive dans un grand wok ou une cocotte en fonte"
+      needs: [pan-fry]
+      time_min: 6
+      attended: true
+    - id: emincer-chou
+      action: "Pendant ce temps : émincer le chou chinois — des tranches de 3 cm côté feuilles, mais de plus en plus fines à mesure qu'on approche du trognon, sinon la texture reste filandreuse après cuisson"
+      needs: []
+      time_min: 8
+      parallel_with: revenir-oignons
+      kid: {age_min_months: 30, task: "détacher les feuilles du chou une à une"}
+    - id: dorer-chou
+      action: "Faire dorer le chou avec les oignons et la viande"
+      needs: [pan-fry]
+      time_min: 6
+      attended: true
+    - id: assaisonner-poelee
+      action: "Ajouter l'origan et le thym, saler et poivrer"
+      needs: []
+      time_min: 1
+      seasoning_gate: true
+    - id: mijoter
+      action: "Couvrir et laisser mijoter une dizaine de minutes"
+      needs: [pan-fry]
+      time_min: 10
+      attended: false
+    - id: reduire
+      action: "Découvrir et laisser réduire le jus jusqu'à ce que tout soit fondu et bien doré au fond"
+      needs: [pan-fry]
+      time_min: 6
+      attended: true
+      # C'est cette réduction qui décide du plat : un gratin monté sur une
+      # poêlée encore humide rend de l'eau et ne dore pas.
+    - id: cuire-pates
+      action: "En parallèle : cuire les pâtes à l'eau salée selon le paquet, les égoutter et les huiler légèrement"
+      needs: [simmer-large]
+      time_min: 12
+      parallel_with: mijoter
+      attended: false
+    - id: prechauffer
+      action: "Préchauffer le four à 225 °C"
+      needs: [bake]
+      time_min: 1
+      parallel_with: mijoter
+      attended: false
+    - id: monter
+      action: "Dans un grand plat à gratin : la moitié des pâtes, toute la poêlée au chou, la moitié du parmesan, le reste des pâtes, le reste du parmesan, un peu de thym et d'origan"
+      needs: [gratin-vessel]
+      time_min: 6
+      kid: {age_min_months: 30, task: "saupoudrer le parmesan entre les couches"}
+    - id: gratiner
+      action: "Enfourner quelques minutes, juste le temps de faire dorer le dessus"
+      needs: [gratin]
+      time_min: 8
+      attended: false
+
+  baby_portion:
+    take: "2 c. à s. de chou et de viande, AVANT de saler et poivrer la poêlée"
+    prep: "écraser à la fourchette avec quelques pâtes bien cuites"
+    needs: []
+
+  emits:
+    - kind: reste-plat
+      type: gratin-chou-chinois
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b:
+    - drop: gratiner
+      saves_min: 8
+      effect: "servi en poêlée sur les pâtes, sans passage au four : on perd le dessus gratiné"

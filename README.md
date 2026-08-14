@@ -498,6 +498,53 @@ has no field for an allergen, an alcohol or an age restriction. `exclusions` in
 `household.yaml` only knows tastes (piquant, Brussels sprouts). With a 12-month
 old in the house that gap is worth naming.
 
+#### The blog: 255 recipes indexed, and why only four of them got entered
+
+There is no ebook of the Chioca book — Terre vivante sells print only — so the
+scanning would have run to 100 photographs. Her blog, *Saines Gourmandises*, is
+the same author publishing freely, and it is machine-readable. `sources/`
+now carries the scrapers (`extraire_blog.py`, `blog_vers_yaml.py`) and their
+output: **255 recipes out of 399 articles**, with title, URL, yield, times and
+ingredient list.
+
+**What the pass reveals is a difference in kind between a book and a blog.**
+The book is a rigid template, so extraction is near-perfect. The blog is fifteen
+years of a person writing, and three things degrade:
+
+- **Titles are headlines, not dish names.** "Mais elles ne sont plus là !",
+  "Bon, et cette tarte au citron on en parle enfin ?". 79 of the 255 entries
+  carry `titre_a_revoir: true` — naming those dishes needs a human opening the
+  page. A book names its dishes; a blog tells you about them.
+- **Structure drifted across two WordPress generations** — recent posts use
+  Gutenberg `<ul>` blocks, older ones hand-coloured `<p>` lines split by `<br>`.
+  Parsing by CSS selector needed two extractors; flattening to *lines of text*
+  and classifying by shape handles both. The rule that made it work is that an
+  ingredient line is recognised by **the absence of an opening verb**, not by
+  being short — some ingredients are long and some instructions are two words.
+- **Only 123 of 255 state a yield at all**, so half the corpus cannot be scaled
+  to a household without a human deciding what "pour 4" would have meant.
+
+And one thing does not degrade at all: **`apports` cannot be derived by any
+means**. Protein source, starch, vegetable families, format — that is judgment,
+and automating it would commit at scale precisely the sin `_repertoire.yaml`
+already confesses to.
+
+So the 255 land in `sources/`, not in `recipes/` — same rule as the book index,
+enforced the same way (`charger_recettes()` only globs `recipes/*.yaml`). Four
+were then entered by hand, chosen for the hole in the catalogue rather than for
+convenience: **two autumn and two winter main courses**, the two seasons that
+had nothing. `chiffonnade-chou-frise-cantal` is the catalogue's only raw winter
+dish, which matters because `equilibre.yaml` penalises repeating a `profil` and
+winter had only soups and oven dishes to offer.
+
+**Licensing, and why the index stores no steps.** Her ingredient lists are
+functional data — quantities — of the same kind already encoded from the book.
+Her *steps are her prose*, and every recipe in this catalogue has had them
+re-worded at encoding time, never copied. Storing 255 verbatim step-sets in a
+git repository would be republishing the blog. The index therefore stops at the
+ingredients and keeps a `url`; the steps are re-worded when an entry is
+promoted, exactly as they are for the book.
+
 #### A validator, because I made the same mistake three times
 
 `verifier.py` exists because entering ten recipes produced the *same* silent
