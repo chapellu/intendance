@@ -1,0 +1,84 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+
+recipe:
+  id: rillettes-poisson-echalote
+  title: Rillettes de poisson faciles à l'échalote
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 75"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 75
+    saison: ete
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4
+  time_min_total: 30
+  active_min: 15
+
+  # CE N'EST PAS UN PLAT, C'EST UNE RÉSERVE. L'autrice le dit : doubler les
+  # proportions, ça attend au frigo et ça permet d'improviser des petits repas
+  # sur le pouce. Le catalogue n'a pas de créneau « tartinable qui dort au
+  # frigo » — le plus proche est la souche, et c'est bien ce que `emits` dit.
+  # Restreint au goûter pour ne pas être tiré comme dîner : quatre tartines de
+  # rillettes ne sont pas un repas du soir pour ce foyer.
+  creneaux: [gouter]
+
+  apports:
+    proteine: poisson
+    feculent: aucun
+    legumes: [allium, racine]
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: saumon, name: saumon sauvage frais ou surgelé, sans peau ni arête, qty: 250, unit: g}
+    - {id: echalote, name: échalotes, qty: 6, unit: pièce}
+    - {id: carottes, name: carotte, qty: 1, unit: pièce}
+    - {id: vin-blanc-sec, name: vin blanc sec (ou eau), qty: 10, unit: cl}
+    - {id: creme, name: crème fraîche épaisse (ou yaourt de brebis au lait entier), qty: 1, unit: c. à s.}
+    - {id: concentre-tomate, name: double concentré de tomate (facultatif), qty: 1, unit: c. à c.}
+    - {id: ciboulette, name: ciboulette, qty: 0.5, unit: bouquet}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    # Le livre finit sur une grosse pincée de piment d'Espelette. Écarté :
+    # `piquant` est une exclusion du foyer (household.yaml).
+
+  steps:
+    - id: suer
+      action: "Émincer les échalotes, couper la carotte en petits cubes et les faire revenir à l'huile d'olive dans une petite cocotte jusqu'à ce que les sucs prennent une légère coloration"
+      needs: [pan-fry]
+      time_min: 8
+      attended: true
+    - id: mijoter
+      action: "Ajouter le saumon, mouiller au vin blanc, saler, couvrir et laisser mijoter une dizaine de minutes jusqu'à ce que le poisson soit bien cuit"
+      needs: [simmer]
+      time_min: 12
+      attended: false
+    - id: finir
+      action: "Ajouter la crème, le concentré de tomate et la ciboulette ciselée"
+      needs: []
+      time_min: 2
+    - id: mixer
+      action: "Mixer par brèves impulsions pour garder des petits morceaux, puis débarrasser en pot bien fermé"
+      needs: [chop-coarse]
+      time_min: 3
+      # Par impulsions : mixé lisse, ce ne sont plus des rillettes.
+
+  # PAS DE `baby_portion`. J'en avais posé un « avant la crème et la ciboulette »
+  # — c'était faux : le sel entre à l'étape `mijoter`, tout au début de la
+  # cuisson du poisson. Un prélèvement pris plus tard est déjà salé, et le
+  # présenter comme la portion du bébé aurait été un mensonge poli. Même cas que
+  # le velouté d'ortie et l'omelette du potager : chez cette autrice le sel
+  # n'est presque jamais une dernière étape.
+
+  emits:
+    - kind: base
+      type: rillettes-poisson
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: false}
+      note: "2 à 3 jours en pot fermé — de quoi garnir les sandwichs de la semaine"
+
+  plan_b: []

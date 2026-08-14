@@ -12,9 +12,13 @@
 # `_repertoire.yaml` sont à corriger.
 #
 # Une entrée saisie se signale en lui ajoutant `catalogue_id: <id>` pointant sur
-# le plat correspondant dans `recipes/`. Saisies à ce jour : **19 sur 100**.
-# Le PRINTEMPS est complet à cinq pages près (42, 45, 46, 49, 50) ; l'été,
-# l'automne et l'hiver sont entièrement à saisir.
+# le plat correspondant dans `recipes/`. Saisies à ce jour : **24 sur 100**.
+# Le PRINTEMPS est complet à cinq pages près (42, 45, 46, 49, 50) ; l'ÉTÉ est
+# entamé (p. 70 à 76) ; l'automne et l'hiver sont entièrement à saisir.
+#
+# `niveau: plan` marque une entrée saisie SANS étapes — planifiable et
+# achetable, pas encore cuisinable. C'est le cas des samoussas p. 76, dont la
+# page de pliage n'a pas été photographiée.
 #
 # CADRE DE LICENCE (celui de la carte #26) : un sommaire est une donnée
 # factuelle de référence — auteur, titre, page. Aucune prose, aucune photo,
@@ -78,11 +82,11 @@ sommaire:
     - {page: 64, titre: "Petits pots de crème glacée vanille-fraise", catalogue_id: petits-pots-creme-glacee}
 
   ete:
-    - {page: 70, titre: "Cocktail gourmand pour toute la famille !"}
-    - {page: 73, titre: "Tarte aux tomates fraîches de Mémé"}
-    - {page: 74, titre: "Panzanella Toscana"}
-    - {page: 75, titre: "Rillettes de poisson faciles à l'échalote"}
-    - {page: 76, titre: "Samoussas végétariens aux légumes rôtis"}
+    - {page: 70, titre: "Cocktail gourmand pour toute la famille !", catalogue_id: cocktail-gourmand-peche-coco}
+    - {page: 73, titre: "Tarte aux tomates fraîches de Mémé", catalogue_id: tarte-tomates-meme}
+    - {page: 74, titre: "Panzanella Toscana", catalogue_id: panzanella-toscana}
+    - {page: 75, titre: "Rillettes de poisson faciles à l'échalote", catalogue_id: rillettes-poisson-echalote}
+    - {page: 76, titre: "Samoussas végétariens aux légumes rôtis", catalogue_id: samoussas-legumes-rotis, niveau: plan}
     - {page: 81, titre: "Falafels poêlés aux herbes"}
     - {page: 82, titre: "One pot pasta capriociosa"}
     - {page: 85, titre: "« Courgettes farcies » des fainéants"}

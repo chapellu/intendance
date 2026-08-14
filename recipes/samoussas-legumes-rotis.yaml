@@ -1,0 +1,71 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# ⚠ SAISIE AU NIVEAU PLAN, VOLONTAIREMENT — PAS D'`steps:`.
+# La photo de référence s'arrête au rôtissage des légumes ; le pliage des
+# samoussas et leur cuisson finale sont sur une page qui n'a pas été
+# photographiée (l'en-tête annonce « cuisson 35 min + environ 15 à 20 min »,
+# donc une seconde phase existe bel et bien).
+#
+# Encoder les seules étapes connues aurait produit exactement le défaut que
+# `verifier.py` existe pour empêcher : un plan complet en apparence, qui
+# s'arrête après le four et ne dit jamais qu'il faut plier des samoussas. Au
+# niveau plan, la recette entre au catalogue — elle se planifie et se fait
+# acheter — et `compile.py` refuse poliment de la compiler en disant ce qui
+# manque. C'est précisément la scission que le README décrit.
+#
+# CE QUI EST CONNU DE LA MÉTHODE, en attendant la page manquante : les légumes
+# sont taillés en tranches d'environ 8 mm, brassés à l'huile et au sel, puis
+# rôtis ensemble sur une même lèchefrite à 200 °C pendant ~35 min (25 min si le
+# four est grand et les légumes bien étalés — serrés, ils cuisent plus
+# lentement). Le poivron part peau vers le haut.
+
+recipe:
+  id: samoussas-legumes-rotis
+  title: Samoussas végétariens aux légumes rôtis
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 76"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 76
+    saison: ete
+    encoding: niveau plan — étapes de pliage absentes de la source photographiée
+  yields:
+    portions_eq: 8          # en plat principal ; 12 à 16 en entrée ou en apéro
+    pieces: 24
+  time_min_total: 90        # 35 prép. + 35 rôtissage + 15 à 20 de cuisson finale
+  active_min: 55
+
+  apports:
+    proteine: fromage
+    feculent: pate-brisee
+    legumes: [cucurbitacee, solanacee, allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: feuilles-brick, name: feuilles de brick rondes, qty: 24, unit: pièce}
+    - {id: courgettes, name: courgettes de taille moyenne, qty: 2, unit: pièce}
+    - {id: aubergine, name: grosse aubergine, qty: 1, unit: pièce}
+    - {id: poivron, name: gros poivron, qty: 1, unit: pièce}
+    - {id: tomates-roma, name: tomates Roma, qty: 3, unit: pièce}
+    - {id: ail, name: ail, qty: 3, unit: gousse}
+    - {id: basilic, name: feuilles de basilic, qty: 15, unit: pièce}
+    - {id: chevre-buche, name: bûche de chèvre, qty: 70, unit: g}
+    - {id: fromage-rape, name: tomme de brebis râpée (ou gruyère), qty: 70, unit: g}
+    - {id: parmesan, name: parmesan, qty: 50, unit: g}
+    - {id: farine, name: farine, qty: 1, unit: c. à s.}
+    - {id: huile-olive, name: huile d'olive, qty: 5, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+    # Le livre ajoute du piment d'Espelette : écarté, `piquant` est une
+    # exclusion du foyer (household.yaml).
+
+  emits:
+    - kind: reste-plat
+      type: samoussas
+      qty_band: 2-repas
+      keeps: {frigo_days: 2, congelo: true}
+      note: "à repasser au four pour retrouver le croustillant de la brick"

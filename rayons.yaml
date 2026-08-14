@@ -51,6 +51,10 @@ rayons:
     - champignons-paris
     - celeri-branche
     - fraises
+    - peches
+    - tomates-roma
+    - concombre
+    - basilic
     # NE S'ACHÈTENT PAS — SE CUEILLENT. Le modèle n'a pas de rayon
     # « cueillette », et trois des dix recettes saisies en dépendent (orties
     # p. 34 et p. 35, pousses sauvages et ail des ours p. 36). C'est une vraie
@@ -82,12 +86,15 @@ rayons:
     - faisselle
     - chevre-demi-sec
     - chevre-buche
+    - parmesan
     - beurre
     - petits-suisses
   frais:
     - tofu-fume
     - gnocchis
     - pate-brisee
+    - pate-feuilletee
+    - feuilles-brick
   épicerie:
     - lentilles-seches
     - pates
@@ -122,6 +129,12 @@ rayons:
     - biscuits-cuillere
     - sirop-imbibage
     - cacao
+    - pain-levain
+    - olives-noires
+    - concentre-tomate
+    - gousse-vanille
+    - rhum
+    - vinaigre
     - caissettes
     - pots-carton
 
@@ -144,4 +157,5 @@ placard:
   - clous-girofle
   - gros-sel
   - origan
+  - glacons        # se font, ne s'achètent pas
   - eau            # ne s'achète pas ; listé pour ne pas polluer la liste

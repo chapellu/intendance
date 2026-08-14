@@ -314,11 +314,12 @@ no photo and no recipe from the book is reproduced. Encoding one follows
 `burgers-de-lentilles` — dish and process are unprotectable savoir-faire,
 wording redone, `source:` filled in.
 
-#### The spring section, and what encoding real recipes broke
+#### The spring section and the start of summer, and what they broke
 
-Pages 26–64 are now in `recipes/` — **the whole spring chapter bar five pages**
-(42, 45, 46, 49, 50), so 19 of the book's 100. The catalogue goes from 22 to 41,
-and the part that matters, from **2 fully-cooked authored recipes to 26**. Both
+Pages 26–76 are now in `recipes/` — **the whole spring chapter bar five pages**
+(42, 45, 46, 49, 50) plus the opening of summer, so 24 of the book's 100. The
+catalogue goes from 22 to 46, and the part that matters, from **2 fully-cooked
+authored recipes to 30**. Both
 originals were written by me to fit the schema. These nineteen were not, and
 that is what makes them worth having: several assumptions failed immediately.
 
@@ -446,6 +447,39 @@ the fish thaws two hours (p. 51), the tart pastry rests an hour (p. 58), and the
 roast is cooked the day before it is eaten (p. 55). The model counts kitchen
 minutes and has no way to say "and then wait until tomorrow", so all five
 recipes under-report what they actually cost to schedule.
+
+#### Summer opens with a bug in `plan.py`, quantified
+
+Pages 70–76 add five more. Two things came out of them.
+
+**A recipe entered deliberately at plan level.** The samoussas' folding steps are
+on a page that was not photographed (the header promises "35 min + 15 to 20",
+so a second cooking phase exists). Encoding only the known steps would have
+produced exactly what `verifier.py` was written to prevent: a plan that looks
+complete and stops after the oven. So it goes in **without `steps:`** —
+plannable and shoppable, and `compile.py` refuses it politely and says what is
+missing. First real use of the two-tier entry this README describes; the source
+index marks it `niveau: plan` so it is findable when the page turns up.
+
+**The `plan.py` / `semaine_model.py` split now costs real money.** The panzanella
+is built on stale bread, so its `sans_reste` buys a 400 g sourdough loaf when
+there is none. `semaine_model.calculer()` gets this right — it reports
+`plein_tarif` and puts 250 g of bread in the basket. **`plan.py` silently omits
+it**: no bread anywhere in the list. This README already flagged the duplication
+as known; what is new is the size of it. Seven of the 24 recipes entered so far
+carry a `sans_reste` — consommé, salade de pois chiches, croc'kasha, soupe
+d'orge, mousse, gâteau, panzanella — so `plan.py` now under-reports the
+shopping list for **nearly a third of the catalogue**, always in the direction
+of "you get to the shop and the thing is not on your list".
+
+Two smaller notes, both recorded in the recipe files. p. 73 sends you to p. 58
+for its pastry, and p. 36 sent you to p. 18 for cooking chickpeas: a **shared
+sub-recipe** is a third kind of link, neither ingredient nor leftover, and the
+model has no way to say it. And p. 70 is the first *drink*, containing rum —
+mostly cooked off, per the author, but "mostly" is not "entirely" and the model
+has no field for an allergen, an alcohol or an age restriction. `exclusions` in
+`household.yaml` only knows tastes (piquant, Brussels sprouts). With a 12-month
+old in the house that gap is worth naming.
 
 #### A validator, because I made the same mistake three times
 

@@ -1,0 +1,91 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# Le livre la badge « avec des restes » : c'est une salade toscane bâtie sur du
+# PAIN RASSIS. Troisième arête « déchet » du graphe, après les parures du
+# consommé de fanes et l'aquafaba de la mousse.
+
+recipe:
+  id: panzanella-toscana
+  title: Panzanella Toscana
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 74"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 74
+    saison: ete
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4
+  time_min_total: 20        # hors 30 min à 1 h de repos au frais
+  active_min: 20
+
+  apports:
+    proteine: aucune
+    feculent: pain
+    legumes: [solanacee, cucurbitacee, allium]
+    profil: cru
+    origine: italien
+
+  accepts:
+    - type: pain-rassis
+      qty: {amount: 350, unit: g}
+      required: false
+      fallback_recipe: null
+
+  sans_reste:
+    temps_min: 0
+    ingredients:
+      - {id: pain-levain, name: pain demi-complet au levain, qty: 400, unit: g}
+
+  ingredients:
+    - {id: pain-rassis-ing, name: pain demi-complet au levain un peu rassis, en tranches, qty: 350, unit: g, from_accepts: true}
+    - {id: tomates, name: grosses tomates bien goûteuses (idéalement anciennes), qty: 4, unit: pièce}
+    - {id: concombre, name: petit concombre Noa, qty: 1, unit: pièce}
+    - {id: olives-noires, name: olives noires, qty: 16, unit: pièce}
+    - {id: oignon-rouge, name: oignon rouge, qty: 1, unit: pièce}
+    - {id: basilic, name: feuilles de basilic, qty: 2, unit: poignée}
+    - {id: huile-olive, name: huile d'olive, qty: 5, unit: c. à s.}
+    - {id: vinaigre, name: vinaigre, qty: 2, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: griller-tremper
+      action: "Faire légèrement dorer les tranches au grille-pain, puis les tremper 3 min dans de l'eau froide"
+      needs: []
+      time_min: 6
+      # Griller puis tremper : c'est ce qui ressuscite un pain rassis sans le
+      # transformer en bouillie.
+    - id: couper-pain
+      action: "Quand le pain est ramolli, le découper en petits morceaux dans un grand plat"
+      needs: []
+      time_min: 4
+    - id: assaisonner-pain
+      action: "Brasser le pain avec le sel, l'huile d'olive et le vinaigre"
+      needs: []
+      time_min: 1
+      seasoning_gate: true
+    - id: garnir
+      action: "Ajouter les tomates et le concombre en morceaux, les olives, l'oignon très finement émincé et les feuilles de basilic, puis mélanger"
+      needs: []
+      time_min: 7
+      kid: {age_min_months: 30, task: "effeuiller le basilic dans le saladier"}
+    - id: reposer
+      action: "Couvrir et laisser reposer 30 min à 1 h au frais ; juste avant de servir, ajouter un filet d'huile d'olive et quelques feuilles de basilic"
+      needs: []
+      time_min: 2
+      attended: false
+
+  baby_portion:
+    take: "un morceau de pain trempé et quelques dés de tomate, AVANT sel, huile et vinaigre"
+    prep: "écraser à la fourchette ; pas d'olive ni d'oignon cru"
+    needs: []
+
+  # Pas d'`emits` : le pain continue de boire et la salade s'affaisse. Elle se
+  # mange le jour même, ce qui est justement le contraire d'un reste.
+  transportable: false
+
+  plan_b: []                # 20 min de travail, tout en assemblage

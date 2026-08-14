@@ -1,0 +1,85 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# ⚠ PREMIÈRE BOISSON DU CATALOGUE, ET ELLE CONTIENT DE L'ALCOOL.
+# 2 c. à s. de rhum sont cuites 5 min à découvert, ce qui en évapore la plus
+# grande part — c'est l'astuce revendiquée par l'autrice, qui présente la
+# recette comme familiale. « La plus grande part » n'est pas « la totalité » :
+# une cuisson courte laisse une fraction résiduelle. Le foyer a un bébé de
+# 12 mois et un enfant de 30 mois, et le modèle n'a AUCUN champ pour signaler
+# un allergène, un alcool ou un interdit d'âge — `exclusions` dans
+# household.yaml ne connaît que des goûts (piquant, choux de Bruxelles).
+# Le `baby_portion` est donc volontairement absent, et cette note tient lieu
+# d'avertissement faute de champ pour le porter.
+
+recipe:
+  id: cocktail-gourmand-peche-coco
+  title: Cocktail gourmand pêche-coco-vanille
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 70"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 70
+    saison: ete
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4
+  time_min_total: 25        # dont le refroidissement de l'infusion
+  active_min: 15
+
+  creneaux: [gouter]        # boisson, pas un repas — cf. les desserts du printemps
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: peches, name: pêches jaunes ou blanches, mûres à point, qty: 6, unit: pièce}
+    - {id: gousse-vanille, name: gousse de vanille, qty: 1, unit: pièce}
+    - {id: creme-coco, name: crème de coco liquide, qty: 20, unit: cl}
+    - {id: rhum, name: rhum, qty: 2, unit: c. à s.}
+    - {id: eau, name: eau, qty: 10, unit: cl}
+    - {id: glacons, name: glaçons, qty: 8, unit: pièce}
+
+  steps:
+    - id: infuser
+      action: "Fendre la gousse de vanille, gratter les graines et mettre gousse et graines dans une petite casserole avec l'eau et le rhum"
+      needs: []
+      time_min: 4
+    - id: reduire
+      action: "Porter à ébullition puis cuire 5 min à tout petit feu SANS COUVERCLE — c'est l'étape qui infuse la vanille et évapore l'essentiel de l'alcool ; couvrir la manquerait"
+      needs: [simmer]
+      time_min: 5
+      attended: true
+    - id: refroidir
+      action: "Laisser refroidir puis retirer la gousse"
+      needs: []
+      time_min: 8
+      attended: false
+    - id: peler
+      action: "Pendant ce temps : éplucher et dénoyauter les pêches"
+      needs: []
+      time_min: 8
+      parallel_with: refroidir
+      kid: {age_min_months: 30, task: "compter les pêches et les rincer"}
+    - id: mixer
+      action: "Mixer les pêches avec la crème de coco et l'infusion refroidie jusqu'à une texture parfaitement veloutée"
+      needs: [blend-smooth]
+      time_min: 4
+    - id: servir
+      action: "Ajouter les glaçons, mélanger rapidement et servir aussitôt"
+      needs: []
+      time_min: 1
+
+  # Pas d'`emits` : ça se boit tout de suite, avec les glaçons dedans.
+  transportable: false
+
+  plan_b:
+    - drop: refroidir
+      saves_min: 6
+      effect: "infusion encore tiède : le cocktail sera moins frappé, mettre plus de glaçons"

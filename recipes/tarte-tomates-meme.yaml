@@ -1,0 +1,89 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+
+recipe:
+  id: tarte-tomates-meme
+  title: Tarte aux tomates fraîches de Mémé
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 73"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 73
+    saison: ete
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # en plat principal avec une salade ; 6 en entrée, 8 en apéro
+  time_min_total: 45
+  active_min: 15
+
+  apports:
+    proteine: fromage
+    feculent: pate-brisee
+    legumes: [solanacee]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: pate-feuilletee, name: pâte feuilletée (aux petits suisses, p. 58, ou bio du commerce), qty: 1, unit: pièce}
+    - {id: tomates-roma, name: "tomates Roma bien mûres — les autres variétés rendent trop d'eau", qty: 3, unit: pièce}
+    - {id: fromage-rape, name: gruyère râpé, qty: 70, unit: g}
+    - {id: moutarde, name: moutarde à l'ancienne, qty: 2, unit: c. à s., seasoning: true}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: origan, name: origan en poudre, qty: 2, unit: c. à c., seasoning: true}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  # RENVOI DE SOUS-RECETTE, TROISIÈME TYPE DE LIEN DU LIVRE. « Une pâte
+  # feuilletée aux petits suisses (voir page 58) ou bio du commerce » : ce n'est
+  # ni un ingrédient ni un reste, c'est un composant dont la recette est
+  # ailleurs dans l'ouvrage. Même forme que le renvoi p. 18 pour la cuisson des
+  # pois chiches (p. 36). Le modèle n'a que `accepts`/`emits`, qui parlent de
+  # restes datés — pas de sous-recette partagée. Laissé en ingrédient simple,
+  # l'alternative du commerce étant celle que l'autrice propose elle-même.
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 200 °C"
+      needs: [bake]
+      time_min: 1
+      attended: false
+    - id: foncer
+      action: "Étaler la pâte et la déposer dans un moule à tarte de 24 cm bien fariné — jamais sur un papier cuisson, qui retient l'humidité et détrempe le fond"
+      needs: []
+      time_min: 6
+    - id: garnir
+      action: "Badigeonner le fond de moutarde à l'ancienne, répartir le gruyère par-dessus, puis ranger les tomates en tranches sur le fromage"
+      needs: []
+      time_min: 6
+      kid: {age_min_months: 30, task: "poser les tranches de tomate sur le fromage"}
+      # L'ordre compte : le fromage fait barrière entre la pâte et l'eau des
+      # tomates. Inversé, la tarte est détrempée.
+    - id: assaisonner
+      action: "Saler, poivrer, saupoudrer d'origan et arroser d'un filet d'huile d'olive"
+      needs: []
+      time_min: 2
+      seasoning_gate: true
+    - id: cuire
+      action: "Enfourner 25 min, sur un cran bas pour que le fond cuise bien, et savourer idéalement encore tiède"
+      needs: [bake]
+      time_min: 25
+      attended: false
+
+  baby_portion:
+    take: "quelques tranches de tomate et un peu de gruyère, AVANT le sel et la moutarde"
+    prep: "cuire à part en ramequin et écraser à la fourchette"
+    needs: [bake]
+
+  emits:
+    - kind: reste-plat
+      type: tarte-tomates
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: false}
+      note: "se mange froide en pique-nique, mais la pâte perd son croustillant"
+
+  plan_b:
+    - drop: foncer
+      saves_min: 4
+      effect: "pâte du commerce déroulée telle quelle dans son papier : fond moins croustillant"
