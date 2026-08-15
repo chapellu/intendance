@@ -682,6 +682,41 @@ multi-jar draw to the first jar; and *« que rien ne produit avant ce jour-là �
 was printed when the week produced plenty and had merely eaten it all — which
 sends you to move a dish when the fix is to cook more of it.
 
+#### Where each line comes from, decided once
+
+"Where does this ingredient come from" already existed, scattered across three
+unrelated encodings: `rayons.placard` (a global static list — salt is *always*
+cupboard), `ing.from_accepts` (a per-line boolean), and `stock.location`
+(household state, reserved for chaining outputs). Nothing joined them, so each
+reader re-decided in its own corner — `plan.py` and `semaine_model.py` each wrote
+their own two tests, and `compile.py` wrote none at all and printed every
+ingredient identically.
+
+`chainage.provenance()` is now the single decision, and the cooking view is where
+it pays:
+
+```
+400 g — lentilles vertes cuites  (déjà au frigo)
+200 g — tofu fumé  (à acheter)
+4 c. à s. — huile d'olive  (placard)
+```
+
+The fifth case is the one that had no name and caused a real regression while
+this was being wired. An uncovered `from_accepts` line is **not** `à acheter`:
+labelling it so put *« 250 g de lentilles vertes cuites »* on the shopping list,
+and cooked lentils are not sold anywhere. It is `ABSENT` — *à cuisiner d'avance* —
+and `sans_reste` is what says which raw goods to buy instead. The bug is worth
+recording because it is the argument for the whole refactor in miniature: three
+scattered tests all happened to skip that line by accident; one honest decision
+had to name why.
+
+The week now reports what it costs in origin, not just in euros:
+
+```
+D'OÙ VIENT LA SEMAINE — 41 lignes d'ingrédients
+  23 à acheter · 17 placard · 1 déjà cuisiné cette semaine
+```
+
 ### What driving it has already shown
 
 - **Entering a repertoire, not a recipe, is the unlock.** The catalogue was

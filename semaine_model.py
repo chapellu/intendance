@@ -257,6 +257,7 @@ def calculer(ctx: Contexte, choix: tuple, jetes: tuple = ()) -> dict:
     running = ch.Stock([o for o in ctx.stock.get("outputs", [])
                         if o["type"] not in jetes], window)
     panier, a_verifier = {}, {}
+    provenances = Counter()
     chaine, problemes, ecoule = [], [], set()
     plein_tarif = []
 
@@ -269,8 +270,10 @@ def calculer(ctx: Contexte, choix: tuple, jetes: tuple = ()) -> dict:
         # 7 Wonders chaining: an uncovered `accepts` is a *price*, not a gate.
         # `sans_reste` says what to buy and how long it costs instead.
         plein = False
+        prises = []
         for acc in r.get("accepts", []):
             pr = running.prelever(acc, date)
+            prises.append(pr)
             if pr.trouve:
                 src = pr.out.get("_from")
                 chaine.append({"creneau": i, "type": pr.out["type"], "depuis": src,
@@ -297,10 +300,12 @@ def calculer(ctx: Contexte, choix: tuple, jetes: tuple = ()) -> dict:
         if plein:
             lignes_ing += r["sans_reste"].get("ingredients", [])
         for ing in lignes_ing:
-            if ing.get("from_accepts"):
-                continue
             cid = _canon(ing["id"], ctx.rayons)
-            if cid in placard:
+            prov = ch.provenance(ing, cid, placard, prises)
+            provenances[prov] += 1
+            if prov in ch.HORS_COURSES:
+                continue
+            if prov == ch.PLACARD:
                 a_verifier[cid] = ing["name"]
                 continue
             q = _echelle(ing["qty"], ing["unit"], factor)
@@ -331,7 +336,7 @@ def calculer(ctx: Contexte, choix: tuple, jetes: tuple = ()) -> dict:
 
     return {"panier": panier, "placard": a_verifier, "chaine": chaine,
             "problemes": problemes, "plein_tarif": plein_tarif, "frigo": frigo,
-            "jetes": list(jetes)}
+            "jetes": list(jetes), "provenances": provenances}
 
 
 # --------------------------------------------------------------- balance model

@@ -341,6 +341,58 @@ def _fusionner(offres):
     return list(par_cle.values())
 
 
+# ---------------------------------------------------------------- provenance
+
+# D'où sort une ligne d'ingrédient. Ces quatre cas existaient déjà, mais éclatés
+# en trois encodages sans rapport : `rayons.placard` (une liste globale et
+# statique), `ing.from_accepts` (un booléen par ligne) et `stock.location`
+# (un état du foyer, réservé aux sorties de chaînage). Rien ne les rassemblait,
+# donc chaque lecteur redécidait dans son coin — et « déjà à la maison » ne se
+# disait pas du tout pour un ingrédient ordinaire.
+PLACARD = "placard"     # denrée de fond : on vérifie, on n'achète pas
+CHAINE = "chaine"       # cuisiné plus tôt dans la semaine
+FRIGO = "frigo"         # déjà à la maison avant que la semaine commence
+COURSES = "courses"     # à acheter
+ABSENT = "absent"       # base attendue qui n'est pas là — et qui NE S'ACHÈTE PAS
+
+ETIQUETTES = {
+    PLACARD: "placard",
+    CHAINE: "déjà cuisiné cette semaine",
+    FRIGO: "déjà au frigo",
+    COURSES: "à acheter",
+    ABSENT: "à cuisiner d'avance",
+}
+
+# Les provenances qui ne produisent JAMAIS de ligne de courses. `ABSENT` en fait
+# partie et c'est contre-intuitif : une base manquante se rattrape en cuisinant
+# (`sans_reste` dit alors quoi acheter, en matières premières), jamais en
+# achetant la base elle-même. On n'achète pas 250 g de lentilles *cuites*.
+HORS_COURSES = (CHAINE, FRIGO, ABSENT)
+
+
+def provenance(ing, cid, placard_ids, prelevements=()):
+    """Où va-t-on chercher cette ligne d'ingrédient ?
+
+    UNE décision, au lieu de trois tests dispersés. L'ordre compte : une base
+    chaînée l'emporte sur le placard, parce qu'elle est déjà cuisinée et qu'on
+    ne la rachète en aucun cas.
+
+    `prelevements` sont les prises faites pour cette recette. Une ligne
+    `from_accepts` non couverte devient `ABSENT` et non `COURSES` : la dire
+    « à acheter » mettrait « 250 g de lentilles cuites » sur la liste de
+    courses, ce qui ne s'achète nulle part. C'est `sans_reste` qui dit alors
+    quoi acheter — des lentilles sèches — et combien de temps ça coûte.
+    """
+    if ing.get("from_accepts"):
+        pr = next((p for p in prelevements if p.trouve), None)
+        if pr is None:
+            return ABSENT
+        return CHAINE if pr.out.get("_from") else FRIGO
+    if cid in placard_ids:
+        return PLACARD
+    return COURSES
+
+
 def gain_du_chainage(recipe):
     """Minutes évitées quand la base est déjà là : le plein tarif moins le prix chaîné."""
     sr = recipe.get("sans_reste") or {}

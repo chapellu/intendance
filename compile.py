@@ -104,7 +104,7 @@ def stock_has(stock, acc, fridge_window_days, today):
 # ---------------------------------------------------------------- compilation
 
 def compile_recipe(recipe_id, household, rules, stock, time_budget=None,
-                   kids_mode=False, today=None):
+                   kids_mode=False, today=None, rayons=None):
     today = today or dt.date.today()
     import catalogue
     cat = catalogue.charger_recettes(HERE / "recipes")
@@ -121,8 +121,10 @@ def compile_recipe(recipe_id, household, rules, stock, time_budget=None,
 
     # --- chaining: accepts against stock (#30)
     scale_base = r["yields"]["portions_eq"]
+    prises = []
     for acc in r.get("accepts", []):
         out, age = stock_has(stock, acc, hh["fridge_window_days"], today)
+        prises.append(ch.Prelevement(out=out, age=age))
         if out:
             loc = "au frigo" if out.get("location") == "frigo" else "au congélo"
             # On matching by `kind:`, name the output that actually answered —
@@ -154,12 +156,22 @@ def compile_recipe(recipe_id, household, rules, stock, time_budget=None,
         factor = need / scale_base
         notes.append(f"Portions : recette ramenée de {scale_base:g} à {need:g} éq. adulte.")
 
+    # Chaque ligne dit OÙ ALLER LA CHERCHER. Le compilateur les affichait toutes
+    # à l'identique, alors que devant le plan de travail la différence entre
+    # « c'est dans le placard », « c'est le reste d'hier » et « il faut l'avoir
+    # acheté » est la première chose qu'on veut lire.
+    placard_ids = set((rayons or {}).get("placard", []))
+    aliases = (rayons or {}).get("aliases", {})
     ingredients = []
     for ing in r["ingredients"]:
         q, u = scale_qty(ing["qty"], ing["unit"], factor)
         line = f"{q} {u} — {ing['name']}"
-        if ing.get("from_accepts"):
-            line += "  (le reste)"
+        cid = aliases.get(ing["id"], ing["id"])
+        prov = ch.provenance(ing, cid, placard_ids, prises)
+        # Sans `rayons`, le placard est indiscernable des courses : on se tait
+        # plutôt que d'étiqueter « à acheter » du sel qu'on a déjà.
+        if rayons is not None or prov != ch.COURSES:
+            line += f"  ({ch.ETIQUETTES[prov]})"
         subs = ing.get("subs") or []
         if subs:
             line += f"  [à défaut : {subs[0]['name']} — {subs[0]['note']}]"
@@ -295,10 +307,12 @@ def main():
     household = load(HERE / "household.yaml")
     rules = load(HERE / "rules.yaml")
     stock = {"outputs": []} if args.no_stock else load(HERE / "stock.yaml")
+    rayons = load(HERE / "rayons.yaml")
     today = dt.date.fromisoformat(args.today)
 
     print(compile_recipe(args.recipe, household, rules, stock,
-                         time_budget=args.time, kids_mode=args.kids, today=today))
+                         time_budget=args.time, kids_mode=args.kids, today=today,
+                         rayons=rayons))
 
 
 if __name__ == "__main__":

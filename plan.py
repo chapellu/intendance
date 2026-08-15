@@ -21,7 +21,7 @@ import argparse
 import datetime as dt
 import math
 import sys
-from collections import OrderedDict
+from collections import Counter, OrderedDict
 from pathlib import Path
 
 import yaml
@@ -65,6 +65,7 @@ def plan_week(days, household, rules, stock, rayons, today, cat=None):
     menu, warnings, chained = [], [], []
     manques = []          # shortfalls, turned into sizing offers after the walk
     facteurs = []
+    compte_provenance = Counter()
     # (canonical_id, unit) -> {name, qty, recipes}
     basket = OrderedDict()
     to_check = OrderedDict()
@@ -82,8 +83,10 @@ def plan_week(days, household, rules, stock, rayons, today, cat=None):
 
         # --- chaining: take what this dish accepts out of the running stock
         covered = set()
+        prises = []
         for acc in r.get("accepts", []):
             pr = depot.prelever(acc, date)
+            prises.append(pr)
             if pr.trouve:
                 covered.add(ch.libelle_accepts(acc))
                 chained.append(f"{r['title']} part de {pr.raconte()} "
@@ -128,12 +131,17 @@ def plan_week(days, household, rules, stock, rayons, today, cat=None):
                                         "Ce plat ne se cuisine que sur un reste : il "
                                         "n'a sa place qu'après un plat qui en émet un."))
 
+        # Une seule décision par ligne — d'où elle vient — et le reste en découle.
+        # Avant, « c'est un reste » et « c'est du placard » étaient deux tests
+        # écrits séparément ici, dans `semaine_model.py` et nulle part dans
+        # `compile.py`, qui les affichait donc tous à l'identique.
         for ing in r["ingredients"]:
-            # An accepted base is cooked, not bought — never a shopping line.
-            if ing.get("from_accepts"):
-                continue
             cid = canon(ing["id"], aliases)
-            if cid in rayons.get("placard", []):
+            prov = ch.provenance(ing, cid, rayons.get("placard", []), prises)
+            compte_provenance[prov] += 1
+            if prov in ch.HORS_COURSES:
+                continue                  # cuisiné, déjà là, ou à cuisiner : pas un achat
+            if prov == ch.PLACARD:
                 to_check.setdefault(cid, ing["name"])
                 continue
             q, u = rc.scale_qty(ing["qty"], ing["unit"], factor)
@@ -187,10 +195,12 @@ def plan_week(days, household, rules, stock, rayons, today, cat=None):
                           f"mais la semaine ne le finit pas.")
 
     offres = ch.offres_surproduction(manques, days, cat, facteurs)
-    return menu, basket, to_check, warnings, chained, fridge, offres
+    return (menu, basket, to_check, warnings, chained, fridge, offres,
+            compte_provenance)
 
 
-def render(menu, basket, to_check, warnings, chained, fridge, offres, rayons, household):
+def render(menu, basket, to_check, warnings, chained, fridge, offres,
+           provenances, rayons, household):
     hh = household["household"]
     out = []
     out.append("═══ COURSES — semaine du "
@@ -240,6 +250,19 @@ def render(menu, basket, to_check, warnings, chained, fridge, offres, rayons, ho
         out.append("  " + " · ".join(sorted(to_check.values())))
         out.append("")
 
+    # Le rapport de la semaine : combien de lignes on achète vraiment, et combien
+    # étaient déjà là. C'est la mesure de ce que le chaînage rapporte, et elle
+    # n'existait pas — la liste de courses ne montre que ce qui reste à payer.
+    if provenances:
+        total = sum(provenances.values())
+        detail = " · ".join(
+            f"{provenances[p]} {ch.ETIQUETTES[p]}"
+            for p in (ch.COURSES, ch.PLACARD, ch.CHAINE, ch.FRIGO, ch.ABSENT)
+            if provenances.get(p))
+        out.append(f"D'OÙ VIENT LA SEMAINE — {total} lignes d'ingrédients")
+        out.append(f"  {detail}")
+        out.append("")
+
     if fridge:
         out.append("AVANT DE PARTIR — CE QUI EST DÉJÀ AU FRIGO")
         out += [f"  · {f}" for f in fridge]
@@ -277,10 +300,10 @@ def main():
     else:
         days = rc.load(HERE / "semaine.yaml")["semaine"]
 
-    menu, basket, to_check, warnings, chained, fridge, offres = plan_week(
-        days, household, rules, stock, rayons, today)
+    (menu, basket, to_check, warnings, chained, fridge, offres,
+     provenances) = plan_week(days, household, rules, stock, rayons, today)
     print(render(menu, basket, to_check, warnings, chained, fridge, offres,
-                 rayons, household))
+                 provenances, rayons, household))
 
 
 if __name__ == "__main__":
