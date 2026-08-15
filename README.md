@@ -812,5 +812,13 @@ typed ingredient vocabulary shared with `accepts`/`emits`, which is needed anywa
   Representable via capabilities, not implemented.
 - Over-production is costed in ingredients and in nothing else. Cooking 2× takes
   somewhat longer than 1× and occupies a freezer drawer; the offer says neither.
+- **Recursive resolution.** Chaining looks exactly one level back, and only among
+  dishes already in the week; `fallback_recipe:` is a hand-written pointer at the
+  sub-recipe. AE2's autocrafting resolves the whole tree and finds the pattern
+  itself — see `MECANIQUES.md` §25 for what that would change, and for the
+  design question it opens (propose the missing sub-dish, or insert it?).
+- **Which recipes are atomic** is declared one at a time (`lot_entier:`) and only
+  two carry it so far. Nothing flags a recipe built on a whole chicken, a mould
+  or a jar that has not been marked.
 - The full-batch-vs-scale decision is a single rule here (keep full batch when
   emits keep well); the real planner should weigh freezer-drawer budget (#30).

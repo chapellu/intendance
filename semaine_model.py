@@ -224,7 +224,8 @@ def _facteur(recipe, besoin):
     base = recipe["yields"]["portions_eq"]
     keeps = any(e.get("keeps", {}).get("congelo") or e["kind"] == "reste-plat"
                 for e in recipe.get("emits", []))
-    return 1.0 if (keeps and besoin < base) else besoin / base
+    f = 1.0 if (keeps and besoin < base) else besoin / base
+    return ch.facteur_lot(recipe, f)
 
 
 def _echelle(qty, unit, factor):

@@ -155,6 +155,14 @@ def compile_recipe(recipe_id, household, rules, stock, time_budget=None,
     else:
         factor = need / scale_base
         notes.append(f"Portions : recette ramenée de {scale_base:g} à {need:g} éq. adulte.")
+    # Un lot bâti sur un objet entier — un poulet, un moule — ne se cuisine pas
+    # à 42 %. On remonte au lot plein et on le dit, plutôt que d'afficher des
+    # quantités que personne ne peut exécuter.
+    ajuste = ch.facteur_lot(r, factor)
+    if ajuste != factor:
+        factor = ajuste
+        notes.append(f"Lot entier : cette recette se cuisine par lots complets "
+                     f"(×{factor:g}) — le surplus part au congélo ou en lunchbox.")
 
     # Chaque ligne dit OÙ ALLER LA CHERCHER. Le compilateur les affichait toutes
     # à l'identique, alors que devant le plan de travail la différence entre

@@ -79,6 +79,7 @@ def plan_week(days, household, rules, stock, rayons, today, cat=None):
         keeps_well = any(e.get("keeps", {}).get("congelo") or e["kind"] == "reste-plat"
                          for e in r.get("emits", []))
         factor = 1.0 if (keeps_well and need < base) else need / base
+        factor = ch.facteur_lot(r, factor)
         facteurs.append(factor)
 
         # --- chaining: take what this dish accepts out of the running stock

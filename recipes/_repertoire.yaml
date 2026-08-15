@@ -127,6 +127,9 @@ recipes:
   - id: poulet-roti
     title: Poulet rôti et pommes de terre
     yields: {portions_eq: 6}
+    # Bâti sur UN poulet entier : ce lot ne se cuisine qu'en multiples
+    # entiers. Rien ne le devine — « 1 pièce » qualifie aussi un oignon.
+    lot_entier: true
     time_min_total: 80
     apports:
       proteine: viande-blanche

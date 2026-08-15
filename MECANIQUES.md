@@ -405,6 +405,84 @@ week is not scored, the fridge is not a threat, and a week where you ate badly i
 information rather than a loss. The curse card in **13** sits closest to that line
 and is deliberately phrased as a choice you make, not a punishment you receive.
 
+## 25. Applied Energistics 2 (Minecraft) — the closest thing to what we built ✅ mostly, and it corrected a bug
+
+The nearest analogue to this whole file, and it came from the user rather than
+from me. AE2's autocrafting is not *a* mechanic to borrow — it is the same
+problem, solved fifteen years ago by people who had to make it work at scale.
+
+**What it does.** Items live in one queryable ME network. Recipes are **patterns**
+(inputs → outputs, bound to a machine). You *request* an output, and the system
+resolves the whole dependency tree, then shows a **plan before committing**: per
+item, how many are in stock, how many will be crafted, and how many are
+**missing** — the last in red, and the job will not start. Accept it, and a
+**crafting CPU** takes the job: it *extracts and holds* the inputs, which stop
+being available to any other job. Patterns run a whole number of times; surplus
+outputs flow back into the network. An **ME Interface** can be told to keep N of
+something in stock, so a level crossing a threshold *is* a craft order.
+
+**What maps, and already did.** Nearly all of the supply half:
+
+| AE2 | here |
+|---|---|
+| pattern | a recipe with `accepts` / `emits` |
+| the ME network | `chainage.Stock` |
+| the CPU extracting and holding inputs | `Stock.prelever()` — it depletes |
+| fuzzy / substitution patterns | `accepts: {kind:}` and `subs:` |
+| the missing-items plan | *« il manque 100 g »* and the sizing offers |
+| ME Interface "keep N in stock" | the freezer floor from **12** (RimWorld) |
+| byproducts returning to the network | `emits` landing back in the running stock |
+
+That the RimWorld entry and the AE2 interface arrive at the same (s,S) reorder
+policy from opposite directions is a decent sign the shape is right.
+
+**What it caught.** One rule had no counterpart here and should have: **a pattern
+runs a whole number of times.** The over-production offer was computing
+`facteur + manque / par_lot` and cheerfully proposing *« en faire 1,6× »* a roast
+chicken — a recipe whose principal ingredient is *one whole farm chicken*.
+Pulling the thread found the same error one level deeper and much older: the base
+scaling rule `facteur = besoin / rendement` gives **0,42** for a household of 2.5
+facing a recipe for 6, which for a mousse means *make 42% of a mousse*. That
+number was flowing into the shopping basket. `lot_entier:` now declares the
+recipes built on an object you cannot cut, `chainage.facteur_lot()` rounds them up
+to whole lots, and the offer says so out loud:
+
+```
+⤴ Poulet rôti : en faire 2 lots entiers (+300 g de poulet-cuit) et j2 (Fajitas)
+  ne coûte plus rien — un lot ne se coupe pas, donc 200 g en plus au congélo.
+```
+
+Note the kitchen is *more* granular than AE2, not less: 1,5× a bolognese is a
+perfectly good instruction. The lesson is not "always round" but "some patterns
+are atomic, and the model must know which" — which is a declaration, not a rule
+that can be derived. « 1 pièce » describes a whole chicken and also an onion.
+
+**What is missing, and it is the big one.** AE2 resolves **recursively**. Ask for
+lasagne and it will craft the bolognese, and whatever the bolognese needs, on its
+own. This planner looks exactly *one* level back, and only among dishes already
+placed in the week; `fallback_recipe:` is a hand-written pointer at the sub-recipe,
+which AE2 would never need — it finds the pattern that emits the type. That is
+both a real simplification available (derive the fallback from the catalogue, a
+query the validator already performs for `kind:` edges) and a genuine design
+question: should the planner *insert* "cook a bolognese on Monday" into your week
+by itself? AE2 would. A week is not a factory order, and the answer is probably
+"propose, never insert" — the same line already drawn for over-production.
+
+**Where the analogy breaks, and why it matters.** AE2's storage is infinite and
+eternal, its items never rot, its patterns cost energy rather than a human being
+standing in a kitchen at 19h with a baby on one hip, and — decisively — **in AE2
+the demand is given**. You request 64 gears. Nobody requests a week of dinners:
+you fill 21 slots with things that must also be pleasant, varied and balanced, and
+that demand is *constructed*, not stated. That single asymmetry is why AE2 can be
+fully automatic and this cannot, and it is why the interactive half of this
+prototype is a card game rather than a crafting terminal. AE2 has no counterpart
+to `equilibre.yaml`, to the fridge window, or to the freezer drawer budget —
+nothing in it ever says *you had pasta twice this week*.
+
+The honest summary: **AE2 is the right model for the supply half and the wrong
+model for the demand half.** Almost every remaining idea worth stealing from it
+is on the supply side.
+
 ---
 
 ## Rejected, deliberately

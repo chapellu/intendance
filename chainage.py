@@ -36,6 +36,7 @@ pour que l'appelant puisse l'annoncer au lieu de faire semblant.
 """
 
 import datetime as dt
+import math
 
 
 # ---------------------------------------------------------------- vocabulaire
@@ -253,6 +254,37 @@ class Stock:
 
 # ------------------------------------------------------- dimensionnement
 
+# Unités qui comptent des OBJETS. Une sortie mesurée là-dedans ne se produit pas
+# en fraction : on ne récupère pas 1,4 carcasse ni 1,4 recette de mousse.
+LOTS_COMPTABLES = ("pièce", "recette", "lot")
+
+
+def lot_indivisible(recipe, unite=None):
+    """Ce lot ne se cuisine-t-il qu'en multiples entiers ?
+
+    Deux raisons, une dérivée et une déclarée. La sortie peut être comptable
+    (`pièce`, `recette`, `lot`). Ou bien la recette est bâtie sur un objet qu'on
+    ne coupe pas : un poulet entier, un moule, un bocal — ce que `lot_entier:`
+    déclare, parce qu'aucune règle ne le devine (« 1 pièce » qualifie aussi bien
+    un oignon, qu'on achète à 5 sans y penser).
+    """
+    return bool(recipe.get("lot_entier")) or (unite or "") in LOTS_COMPTABLES
+
+
+def facteur_lot(recipe, facteur):
+    """Ramène un facteur d'échelle à ce que la recette sait réellement produire.
+
+    `facteur = besoin / rendement` donne 0,42 pour un foyer de 2,5 devant une
+    recette pour 6. Pour une sauce, cuisiner 42 % du lot a un sens. Pour un plat
+    bâti sur un objet entier, non : « faire 0,42 poulet rôti » n'est pas une
+    quantité, c'est une erreur de modèle qui se propageait jusque dans le panier.
+    Un lot indivisible se cuisine au moins une fois, et en nombre entier.
+    """
+    if not recipe.get("lot_entier"):
+        return facteur
+    return float(max(1, math.ceil(facteur - 1e-9)))
+
+
 class Offre:
     """« Fais-en plus tôt dans la semaine, et le plat d'après est déjà payé. »
 
@@ -262,17 +294,26 @@ class Offre:
     """
 
     def __init__(self, i_emetteur, rid_emetteur, titre_emetteur, type_sortie,
-                 facteur_actuel, facteur_propose, manque, unite, pour, gain_min=0):
+                 facteur_actuel, par_lot, manque, unite, pour, gain_min=0,
+                 indivisible=False):
         self.i_emetteur = i_emetteur
         self.rid_emetteur = rid_emetteur
         self.titre_emetteur = titre_emetteur
         self.type_sortie = type_sortie
         self.facteur_actuel = facteur_actuel
-        self.facteur_propose = facteur_propose
+        self.par_lot = par_lot          # ce qu'un lot plein rend, dans `unite`
         self.manque = manque
         self.unite = unite
         self.pour = list(pour)          # [(jour, titre)]
         self.gain_min = gain_min
+        self.indivisible = indivisible
+
+    @property
+    def facteur_propose(self):
+        """Calculé, jamais stocké — le manque s'accumule quand deux plats
+        réclament la même base, et l'arrondi doit se faire sur le total."""
+        brut = self.facteur_actuel + self.manque / self.par_lot
+        return math.ceil(brut - 1e-9) if self.indivisible else brut
 
     @property
     def multiple(self):
@@ -281,9 +322,24 @@ class Offre:
     def phrase(self):
         beneficiaires = " et ".join(f"{j} ({t})" for j, t in self.pour)
         gain = f", {self.gain_min} min gagnées" if self.gain_min else ""
-        return (f"{self.titre_emetteur} : en faire {self.multiple:.2g}× "
+        # Un lot indivisible se dit en LOTS, pas en multiplicateur : « ×4,8 »
+        # d'un lot déjà fractionnaire ne veut rien dire devant une casserole.
+        if self.indivisible:
+            n = self.facteur_propose
+            combien = f"en faire {n:g} lot{'s' if n > 1 else ''} entier{'s' if n > 1 else ''}"
+        else:
+            combien = f"en faire {self.multiple:.2g}×"
+        # Quand l'arrondi a mordu, le dire : le surplus au-delà du manque est un
+        # effet du lot indivisible, pas une largesse du planificateur.
+        arrondi = ""
+        if self.indivisible:
+            rendu = self.par_lot * (self.facteur_propose - self.facteur_actuel)
+            if rendu > self.manque + 1e-9:
+                arrondi = (f" — un lot ne se coupe pas, donc "
+                           f"{fmt_qte(rendu - self.manque, self.unite)} en plus au congélo")
+        return (f"{self.titre_emetteur} : {combien} "
                 f"(+{fmt_qte(self.manque, self.unite)} de {self.type_sortie}) "
-                f"et {beneficiaires} ne coûte plus rien{gain}.")
+                f"et {beneficiaires} ne coûte plus rien{gain}{arrondi}.")
 
 
 def offres_surproduction(manques, jours, catalogue, facteurs):
@@ -310,14 +366,14 @@ def offres_surproduction(manques, jours, catalogue, facteurs):
                 amount, unit = quantite(e)
                 if amount is None or unit != m["unite"] or amount <= 0:
                     continue
-                f = facteurs[j]
                 offres.append(Offre(
                     i_emetteur=j, rid_emetteur=jours[j]["recipe"],
                     titre_emetteur=r["title"], type_sortie=e.get("type"),
-                    facteur_actuel=f, facteur_propose=f + m["manque"] / amount,
+                    facteur_actuel=facteurs[j], par_lot=amount,
                     manque=m["manque"], unite=m["unite"],
                     pour=[(jours[m["i"]]["jour"], m["titre"])],
-                    gain_min=m.get("gain_min", 0)))
+                    gain_min=m.get("gain_min", 0),
+                    indivisible=lot_indivisible(r, unit)))
                 trouve = True
                 break
             if trouve:
@@ -326,14 +382,17 @@ def offres_surproduction(manques, jours, catalogue, facteurs):
 
 
 def _fusionner(offres):
-    """Deux plats qui réclament la même base au même émetteur = une seule offre."""
+    """Deux plats qui réclament la même base au même émetteur = une seule offre.
+
+    Seul le MANQUE s'additionne ; le facteur se recalcule dessus. Additionner
+    des facteurs arrondis arrondirait deux fois et proposerait un lot de trop.
+    """
     par_cle = {}
     for o in offres:
         cle = (o.i_emetteur, o.type_sortie)
         if cle in par_cle:
             a = par_cle[cle]
             a.manque += o.manque
-            a.facteur_propose += o.facteur_propose - o.facteur_actuel
             a.pour += o.pour
             a.gain_min += o.gain_min
         else:

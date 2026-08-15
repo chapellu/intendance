@@ -15,6 +15,9 @@ recipe:
     encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
   yields:
     portions_eq: 6
+  # La sortie se compte en « recette » et les consommateurs en réclament deux :
+  # ce lot ne se fractionne pas. Sans ça le modèle proposait d'en faire 0,42.
+  lot_entier: true
   time_min_total: 15        # hors 4 h de prise au frais (une nuit au mieux)
   active_min: 15
 
