@@ -457,6 +457,55 @@ perfectly good instruction. The lesson is not "always round" but "some patterns
 are atomic, and the model must know which" — which is a declaration, not a rule
 that can be derived. « 1 pièce » describes a whole chicken and also an onion.
 
+**The CPU has RAM, and the kitchen has pans.** The user's follow-up sharpened the
+mapping further, and it is exact: an AE2 crafting CPU has a **storage budget**,
+and a job that does not fit in it will not run no matter how many ingredients the
+network holds. The kitchen's equivalent is the 28 cm sauteuse. Equipment now
+declares `contenance` in *portions équivalent-adulte* — the same unit as
+`yields.portions_eq`, so no conversion from litres to plates is needed — and
+`chainage.facteur_max_vaisselle()` finds the binding vessel: for each capability
+the recipe needs, the **largest** vessel providing it (you get the cocotte out,
+not the small saucepan), then the **narrowest** of those decides. An offer that
+exceeds it says so rather than pretending:
+
+```
+⤴ Mousse au chocolat : en faire 2 lots entiers … — ⚠ ça ne tient pas dans
+  sauteuse 28 cm (×1 maximum) — il faut deux tournées
+```
+
+`plats-a-gratin` carries `exemplaires: 2`, which is the honest kitchen answer to
+a job too big for one CPU: run it on two. The induction hob has no `contenance`
+and is correctly ignored — it is a heat source, not a vessel, and the distinction
+falls out of the data rather than needing a rule.
+
+**Storage is not infinite either, and that one was already half-built.** The
+freezer ceiling existed (`freezer_drawers × portions_par_tiroir`) but only the TUI
+displayed it: it scored nothing, `plan.py` was entirely blind to it, and — worst —
+the over-production offer this file introduced was cheerfully proposing to bank
+portions into a freezer that might be full. Both now hold:
+
+```
+CONGÉLO — 15 au départ +6 mis de côté cette semaine = 21 / 18 · ⚠ DÉBORDE
+⤴ Poulet rôti : en faire 3 lots entiers … — un lot ne se coupe pas, donc 1.2
+  portion(s) de plus à ranger ; ⚠ le congélo n'a que 0 place(s) libre(s)
+```
+
+Note which quantity is checked: only the **rounding surplus**. What the downstream
+dish eats is not stored, so a divisible lot has nothing to put away — the storage
+pressure is created purely by lots that cannot be cut. AE2 has the same coupling
+(patterns run whole, byproducts return to a finite network) and the same
+consequence: capacity pressure is a *side effect of granularity*.
+
+**The roast chicken, which was too blunt.** The user pushed back on `lot_entier`
+and was right. It is cheaper and simpler to roast one whole chicken than a
+half — but a chicken is *several portions and more than one meal*, and above all
+it has a **calibre**. Faced with 300 g short, the real gesture is not to roast a
+second bird, it is to buy a bigger one. `lot_calibre.facteur_max` says how much
+size play the object has, and inside those bounds the offer becomes *prendre plus
+gros* rather than *en faire 2 lots entiers*. Beyond them, whole multiples resume.
+The lot stays indivisible; it is its **size** that has slack — a distinction AE2
+has no need for, because an iron ingot has no calibre.
+
 **What is missing, and it is the big one.** AE2 resolves **recursively**. Ask for
 lasagne and it will craft the bolognese, and whatever the bolognese needs, on its
 own. This planner looks exactly *one* level back, and only among dishes already

@@ -676,6 +676,22 @@ That is an **offer, never an automatic resize**. Cooking bigger commits a bowl, 
 freezer drawer and money — three things the model cannot arbitrate for the cook.
 The planner's job is to notice, price it, and say what it buys you.
 
+And to know what the kitchen can physically take, which is the other half of the
+same idea and arrived from the AE2 comparison (`MECANIQUES.md` §25): a crafting
+CPU has a storage budget, and a job that exceeds it does not run however many
+ingredients are in the network. Equipment therefore declares `contenance` in
+portions, the freezer has a ceiling as well as a floor, and an offer that breaks
+either says which one:
+
+```
+⤴ Poulet rôti : en faire 3 lots entiers (+700 g de poulet-cuit) … — un lot ne se
+  coupe pas, donc 1.2 portion(s) de plus à ranger ; ⚠ le congélo n'a que 0 place(s)
+```
+
+Only the *rounding surplus* is charged to storage — what the downstream dish eats
+is not stored — so a divisible lot puts nothing away. Storage pressure is a side
+effect of granularity, which is why the two rules had to arrive together.
+
 Two messages had to be rewritten once quantity was real, because both had been
 true only by accident. *« part d'un reste déjà au frigo (700 g) »* attributed a
 multi-jar draw to the first jar; and *« que rien ne produit avant ce jour-là »*
@@ -807,11 +823,14 @@ typed ingredient vocabulary shared with `accepts`/`emits`, which is needed anywa
   kitchen step-by-step with live timers. The compiled structure (ordered steps,
   durations, parallelism, attended flags) is exactly what such a UI consumes, but
   the UX itself is unbuilt — that's app-building, beyond this map's mandate.
-- Vessel-size checks — does the doubled batch still fit the 28 cm sauteuse? An
-  over-production offer can currently propose a quantity the kitchen cannot hold.
-  Representable via capabilities, not implemented.
-- Over-production is costed in ingredients and in nothing else. Cooking 2× takes
-  somewhat longer than 1× and occupies a freezer drawer; the offer says neither.
+- Over-production is costed in ingredients, vessel space and freezer places, but
+  **not in minutes**: cooking 2× takes somewhat longer than 1× and the offer does
+  not say so.
+- The fridge has **no capacity at all** — only the freezer does. A week can plan
+  more leftovers than the shelves hold and nothing notices.
+- `contenance` is one number per vessel, in portions. A batch that fits by volume
+  can still be wrong by *shape* (a gratin spread too thin, a sauté pan too
+  crowded to brown), and nothing represents that.
 - **Recursive resolution.** Chaining looks exactly one level back, and only among
   dishes already in the week; `fallback_recipe:` is a hand-written pointer at the
   sub-recipe. AE2's autocrafting resolves the whole tree and finds the pattern

@@ -30,6 +30,13 @@ household:
 
   # Equipment inventory (#29, rounds 2 + correction). Tools declare *capabilities*;
   # steps require capabilities, never tools — that indirection is the whole trick.
+  #
+  # `contenance` est en PORTIONS ÉQUIVALENT-ADULTE, la même unité que
+  # `yields.portions_eq` — c'est ce qui rend la comparaison possible sans
+  # convertir des litres en assiettes. Un lot ne se cuisine pas s'il ne tient
+  # pas dans le récipient, quels que soient les ingrédients : c'est la limite
+  # que le modèle ignorait complètement, et elle mord dès qu'on propose de
+  # cuisiner plus grand. Valeurs posées à vue, à corriger à l'usage.
   equipment:
     - id: induction-3-feux
       capabilities: [pan-fry, simmer, boil]
@@ -42,24 +49,31 @@ household:
       # `sterilisation-bain-marie` : une cocotte de 7,5 L immerge des bocaux —
       # donc la conservation en bocal est DÉJÀ à portée, mais uniquement pour
       # les aliments acides. Voir l'avertissement de conservation.yaml.
+      contenance: 12
       capabilities: [simmer-large, steam, sterilisation-bain-marie]
     - id: congelateur-3-tiroirs
       label: congélateur 3 tiroirs
       capabilities: [congeler]
     - id: sauteuse-28
       label: sauteuse 28 cm
+      contenance: 6
       capabilities: [pan-fry, simmer]
     - id: poele-inox-30
       label: poêle inox 30 cm
+      contenance: 5
       capabilities: [pan-fry]
     - id: poeles-ingenio
       label: poêles Ingenio 30/26 cm (poignées amovibles)
+      contenance: 5
       capabilities: [pan-fry, oven-transfer]
     - id: casseroles
       label: casseroles 2,6 L / 1,6 L
+      contenance: 5
       capabilities: [simmer, boil]
     - id: plats-a-gratin
       label: plats à gratin 35×18 / 32×20
+      contenance: 6
+      exemplaires: 2      # deux plats : un lot double passe, en deux plats
       capabilities: [gratin-vessel]
     - id: mixeur-plongeur
       capabilities: [blend-smooth, puree]

@@ -30,7 +30,8 @@ BANDES = {"1-repas", "2-repas", "3-repas", "lunchbox"}
 MOTS_ASSAISONNEMENT = re.compile(r"\bsel\b|sal|poivr|assaisonn|rectifi", re.I)
 
 
-def verifier(rid: str, r: dict, rayons: dict, rules: dict, cat: dict, capacites: set) -> tuple:
+def verifier(rid: str, r: dict, rayons: dict, rules: dict, cat: dict,
+             capacites: set, foyer: dict) -> tuple:
     err, warn = [], []
     ids_connus = {i for v in rayons["rayons"].values() for i in v} | set(rayons["placard"])
     alias = rayons.get("aliases", {})
@@ -114,6 +115,24 @@ def verifier(rid: str, r: dict, rayons: dict, rules: dict, cat: dict, capacites:
                            "mesurer dans la même unité")
             break
 
+    # La vaisselle est une capacité finie, comme la mémoire d'un CPU de craft :
+    # un lot qui n'entre pas dans le récipient ne se cuisine pas, quels que
+    # soient les ingrédients. Zéro recette du catalogue est dans ce cas
+    # aujourd'hui ; le contrôle existe pour que ça se voie le jour où une
+    # recette pour 12 arrive dans un foyer qui n'a qu'une sauteuse.
+    eq_max, f_max = ch.facteur_max_vaisselle(r, foyer)
+    if f_max is not None:
+        base = r["yields"]["portions_eq"]
+        garde = any(e.get("keeps", {}).get("congelo") or e["kind"] == "reste-plat"
+                    for e in r.get("emits", []))
+        besoin = sum(e["portion_eq"] for e in foyer["eaters"] if e.get("diet") != "baby")
+        f = ch.facteur_lot(r, 1.0 if (garde and besoin < base) else besoin / base)
+        if f > f_max + 1e-9:
+            lab = eq_max.get("label", eq_max["id"])
+            err.append(f"le lot courant (×{f:.2g} de {base:g} parts) ne tient pas dans "
+                       f"{lab} (×{f_max:.2g} au maximum) : la recette ne s'exécute pas "
+                       "telle quelle chez ce foyer")
+
     # `drop:` est une CHAÎNE (l'id de l'étape), `swap:` est un mapping — asymétrie
     # de `compile.py`. Écrire `drop: {step: …}` ne lève rien : la comparaison
     # str/dict échoue en silence et le plan B ne s'applique jamais.
@@ -195,7 +214,7 @@ def main() -> int:
             print(f"✗ {rid} : absent du catalogue")
             n_err += 1
             continue
-        err, warn = verifier(rid, cat[rid], rayons, rules, cat, capacites)
+        err, warn = verifier(rid, cat[rid], rayons, rules, cat, capacites, foyer)
         n_err += len(err)
         n_warn += len(warn)
         if err or warn:

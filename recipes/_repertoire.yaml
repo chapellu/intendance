@@ -130,6 +130,13 @@ recipes:
     # Bâti sur UN poulet entier : ce lot ne se cuisine qu'en multiples
     # entiers. Rien ne le devine — « 1 pièce » qualifie aussi un oignon.
     lot_entier: true
+    # Mais un poulet a un CALIBRE. Le geste réel devant 300 g manquants n'est pas
+    # d'en rôtir deux, c'est d'en prendre un plus gros — et un poulet rôti donne
+    # déjà plusieurs repas : le dîner, la chair effilochée, la carcasse. Le lot
+    # reste indivisible ; c'est sa taille qui a du jeu.
+    lot_calibre:
+      facteur_max: 1.6      # ~1,3 kg par défaut, jusqu'à ~2 kg chez le volailler
+      note: "prendre un poulet plus gros plutôt que d'en rôtir deux"
     time_min_total: 80
     apports:
       proteine: viande-blanche

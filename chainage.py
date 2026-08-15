@@ -285,6 +285,42 @@ def facteur_lot(recipe, facteur):
     return float(max(1, math.ceil(facteur - 1e-9)))
 
 
+# ------------------------------------------------- ce que la cuisine peut tenir
+
+def facteur_max_vaisselle(recipe, foyer):
+    """Combien de fois le lot de base tient dans le récipient le plus contraignant.
+
+    L'analogue exact du CPU de craft d'AE2 : un travail qui n'entre pas dans la
+    mémoire du CPU ne part pas, quels que soient les ingrédients disponibles.
+    Ici la mémoire est une sauteuse de 28 cm, et elle ne s'agrandit pas parce que
+    la semaine réclame plus de sauce.
+
+    Pour une capacité donnée on prend le PLUS GRAND récipient qui la fournit (on
+    sort la cocotte, pas la petite casserole), puis la capacité la plus étroite
+    de la recette décide. Retourne (equipement, facteur_max) ou (None, None)
+    quand rien ne contraint — une recette sans étapes, ou qui n'emploie que des
+    outils sans contenance.
+    """
+    besoins = {c for s in recipe.get("steps", []) for c in s.get("needs", [])}
+    base = (recipe.get("yields") or {}).get("portions_eq") or 0
+    if not besoins or not base:
+        return None, None
+    pire = None
+    for cap in besoins:
+        meilleur = None
+        for eq in foyer.get("equipment", []):
+            if cap not in eq.get("capabilities", []) or not eq.get("contenance"):
+                continue
+            total = eq["contenance"] * eq.get("exemplaires", 1)
+            if meilleur is None or total > meilleur[1]:
+                meilleur = (eq, total)
+        if meilleur and (pire is None or meilleur[1] < pire[1]):
+            pire = meilleur
+    if pire is None:
+        return None, None
+    return pire[0], pire[1] / base
+
+
 class Offre:
     """« Fais-en plus tôt dans la semaine, et le plat d'après est déjà payé. »
 
@@ -295,7 +331,8 @@ class Offre:
 
     def __init__(self, i_emetteur, rid_emetteur, titre_emetteur, type_sortie,
                  facteur_actuel, par_lot, manque, unite, pour, gain_min=0,
-                 indivisible=False):
+                 indivisible=False, calibre_max=None, vaisselle=None,
+                 facteur_max_vaisselle=None, repas_par_lot=1, places_congelo=None):
         self.i_emetteur = i_emetteur
         self.rid_emetteur = rid_emetteur
         self.titre_emetteur = titre_emetteur
@@ -307,13 +344,57 @@ class Offre:
         self.pour = list(pour)          # [(jour, titre)]
         self.gain_min = gain_min
         self.indivisible = indivisible
+        self.calibre_max = calibre_max  # un lot entier qui se choisit plus gros
+        self.vaisselle = vaisselle      # l'équipement contraignant, s'il y en a
+        self.facteur_max_vaisselle = facteur_max_vaisselle
+        self.repas_par_lot = repas_par_lot
+        self.places_congelo = places_congelo
+
+    @property
+    def facteur_brut(self):
+        """Ce qu'il faudrait, avant que la cuisine ait son mot à dire."""
+        return self.facteur_actuel + self.manque / self.par_lot
+
+    @property
+    def calibre(self):
+        """Un seul lot, pris plus gros — un poulet se choisit entre 1,2 et 2 kg.
+
+        Sans ça, « lot entier » envoie rôtir DEUX poulets pour 300 g manquants,
+        alors que le geste réel est d'en prendre un plus grand. Le lot reste
+        indivisible ; c'est sa taille qui a du jeu, dans les bornes déclarées.
+        """
+        return bool(self.calibre_max and self.facteur_brut <= self.calibre_max + 1e-9)
 
     @property
     def facteur_propose(self):
         """Calculé, jamais stocké — le manque s'accumule quand deux plats
         réclament la même base, et l'arrondi doit se faire sur le total."""
-        brut = self.facteur_actuel + self.manque / self.par_lot
-        return math.ceil(brut - 1e-9) if self.indivisible else brut
+        brut = self.facteur_brut
+        if self.indivisible and not self.calibre:
+            brut = math.ceil(brut - 1e-9)
+        return brut
+
+    @property
+    def tient_dans_la_vaisselle(self):
+        if self.facteur_max_vaisselle is None:
+            return True
+        return self.facteur_propose <= self.facteur_max_vaisselle + 1e-9
+
+    @property
+    def portions_a_stocker(self):
+        """Le surplus au-delà du manque : ce qui finira au congélo, en portions.
+
+        Zéro pour un lot divisible — on produit exactement ce qui manque. C'est
+        l'arrondi du lot entier qui crée du stock, et le stock n'est pas infini.
+        """
+        surplus_lots = self.facteur_propose - self.facteur_brut
+        return max(0.0, surplus_lots) * self.repas_par_lot
+
+    @property
+    def tient_au_congelo(self):
+        if self.places_congelo is None:
+            return True
+        return self.portions_a_stocker <= self.places_congelo + 1e-9
 
     @property
     def multiple(self):
@@ -324,25 +405,36 @@ class Offre:
         gain = f", {self.gain_min} min gagnées" if self.gain_min else ""
         # Un lot indivisible se dit en LOTS, pas en multiplicateur : « ×4,8 »
         # d'un lot déjà fractionnaire ne veut rien dire devant une casserole.
-        if self.indivisible:
+        if self.calibre:
+            combien = "prendre plus gros"
+        elif self.indivisible:
             n = self.facteur_propose
             combien = f"en faire {n:g} lot{'s' if n > 1 else ''} entier{'s' if n > 1 else ''}"
         else:
             combien = f"en faire {self.multiple:.2g}×"
+
         # Quand l'arrondi a mordu, le dire : le surplus au-delà du manque est un
-        # effet du lot indivisible, pas une largesse du planificateur.
-        arrondi = ""
-        if self.indivisible:
-            rendu = self.par_lot * (self.facteur_propose - self.facteur_actuel)
-            if rendu > self.manque + 1e-9:
-                arrondi = (f" — un lot ne se coupe pas, donc "
-                           f"{fmt_qte(rendu - self.manque, self.unite)} en plus au congélo")
+        # effet du lot entier, pas une largesse du planificateur.
+        reserves = []
+        if self.portions_a_stocker > 1e-9:
+            reserves.append(f"un lot ne se coupe pas, donc "
+                            f"{self.portions_a_stocker:.2g} portion(s) de plus à ranger")
+        # Les deux murs de la cuisine, que le modèle ignorait tous les deux.
+        if not self.tient_dans_la_vaisselle:
+            lab = (self.vaisselle or {}).get("label") or (self.vaisselle or {}).get("id", "?")
+            reserves.append(f"⚠ ça ne tient pas dans {lab} "
+                            f"(×{self.facteur_max_vaisselle:.2g} maximum) — il faut deux tournées")
+        if not self.tient_au_congelo:
+            reserves.append(f"⚠ le congélo n'a que {self.places_congelo:.2g} place(s) libre(s)")
+        queue = (" — " + " ; ".join(reserves)) if reserves else ""
+
         return (f"{self.titre_emetteur} : {combien} "
                 f"(+{fmt_qte(self.manque, self.unite)} de {self.type_sortie}) "
-                f"et {beneficiaires} ne coûte plus rien{gain}{arrondi}.")
+                f"et {beneficiaires} ne coûte plus rien{gain}{queue}.")
 
 
-def offres_surproduction(manques, jours, catalogue, facteurs):
+def offres_surproduction(manques, jours, catalogue, facteurs, foyer=None,
+                         places_congelo=None):
     """Transforme les manques constatés en propositions d'agrandir un lot AMONT.
 
     `manques` : [{i, acc, manque, unite, titre}] relevés en marchant la semaine.
@@ -366,6 +458,8 @@ def offres_surproduction(manques, jours, catalogue, facteurs):
                 amount, unit = quantite(e)
                 if amount is None or unit != m["unite"] or amount <= 0:
                     continue
+                eq, fmax = (facteur_max_vaisselle(r, foyer) if foyer
+                            else (None, None))
                 offres.append(Offre(
                     i_emetteur=j, rid_emetteur=jours[j]["recipe"],
                     titre_emetteur=r["title"], type_sortie=e.get("type"),
@@ -373,7 +467,11 @@ def offres_surproduction(manques, jours, catalogue, facteurs):
                     manque=m["manque"], unite=m["unite"],
                     pour=[(jours[m["i"]]["jour"], m["titre"])],
                     gain_min=m.get("gain_min", 0),
-                    indivisible=lot_indivisible(r, unit)))
+                    indivisible=lot_indivisible(r, unit),
+                    calibre_max=(r.get("lot_calibre") or {}).get("facteur_max"),
+                    vaisselle=eq, facteur_max_vaisselle=fmax,
+                    repas_par_lot=band_repas(e.get("qty_band")),
+                    places_congelo=places_congelo))
                 trouve = True
                 break
             if trouve:
