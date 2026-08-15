@@ -63,9 +63,24 @@ def main():
             "apports": r.get("apports", {}),
             "ingredients": [
                 {"id": i["id"], "nom": i["name"], "qty": i["qty"],
-                 "unit": i["unit"], "base": bool(i.get("from_accepts"))}
+                 "unit": i["unit"], "base": bool(i.get("from_accepts")),
+                 "assaisonnement": bool(i.get("seasoning"))}
                 for i in r.get("ingredients", [])
             ],
+            # Les étapes, pour que l'écran puisse montrer la recette et pas
+            # seulement la carte. `needs` reste en CAPACITÉS : c'est l'outil du
+            # foyer qui s'y branche, jamais l'inverse.
+            "steps": [
+                {"id": s.get("id"), "action": s.get("action"),
+                 "minutes": s.get("time_min"), "needs": s.get("needs", []),
+                 "surveille": s.get("attended", True),
+                 "enfant": (s.get("kid") or {}).get("task"),
+                 "enfantDes": (s.get("kid") or {}).get("age_min_months"),
+                 "porteAssaisonnement": bool(s.get("seasoning_gate"))}
+                for s in r.get("steps", [])
+            ],
+            "bebe": (r.get("baby_portion") or {}).get("take"),
+            "actifMin": r.get("active_min"),
             # `accepts` matches either one exact output (`type`) or a whole
             # class of them (`kind`) — the latter is what lets a single
             # « reste de la veille » eat any leftover dish. `qty` dit COMBIEN
@@ -91,7 +106,8 @@ def main():
             "emits": [
                 {"type": e["type"], "kind": e.get("kind"),
                  "qty": _qty(e), "band": e.get("qty_band"),
-                 "espace": ch.espace_de(e),
+                 "espace": ch.espace_de(e), "note": e.get("note"),
+                 "gardeFrigo": (e.get("keeps") or {}).get("frigo_days"),
                  "congelo": bool(e.get("keeps", {}).get("congelo"))}
                 for e in r.get("emits", [])
             ],
@@ -147,6 +163,14 @@ def main():
                          if e.get("diet") != "baby"),
             "fenetreFrigo": foyer["fridge_window_days"],
             "tiroirs": foyer["freezer_drawers"],
+            # De quoi les parts sont faites. Le bébé compte pour 0 dans le
+            # total : sa portion est PRÉLEVÉE sur le plat avant salage, elle ne
+            # s'ajoute pas au dimensionnement.
+            "mangeurs": [
+                {"id": e["id"], "genre": e["kind"], "parts": e["portion_eq"],
+                 "bebe": e.get("diet") == "baby"}
+                for e in foyer["eaters"]
+            ],
             "espaces": espaces,
             "contenants": [
                 {"id": c["id"], "label": c.get("label") or c["id"],

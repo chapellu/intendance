@@ -200,6 +200,21 @@ pool, the over-production offers, and ingredient provenance. **Regenerating
 `cuisine-data.json` is the only way to move the screen**, and any new field
 added here has to be exported before it can be shown.
 
+**The proto is now ahead of this model on three rules**, and they are rules, not
+screen decoration — they belong here and have not been written here yet:
+
+- **A skipped meal.** `SAUTE` distinguishes *we are not eating here* (nomadic
+  weekends, per #29) from *not decided yet*. This model only knows the second,
+  so it counts a deliberate hole as a gap in the week.
+- **Portions per slot.** `household_portions()` sizes the whole week off one
+  number. Guests at dinner, a lunch alone and a lunchbox to prepare are three
+  different sizes, and size commands the basket and the leftovers.
+- **The coworking lunchbox.** #29 asks for lunchbox outputs; this model only
+  scores a badly-travelling dish down. Nobody cooks a lunchbox in the morning —
+  it is taken off the previous evening's dinner, which therefore has to be
+  cooked bigger. It is `offres_surproduction` commanded by the calendar instead
+  of by a shortage.
+
 **Left undone, deliberately:** the catalogue contains **no breakfast and no
 goûter item**, so those slots are correctly marked routine but have nothing
 behind them yet. That is a data gap, not a model gap.
