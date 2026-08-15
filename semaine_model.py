@@ -513,7 +513,10 @@ def bilan_congelo(ctx: Contexte, etat: Etat) -> dict:
     conf = ctx.equilibre.get("congelateur", {})
     par_tiroir = conf.get("portions_par_tiroir", 6)
     plancher = conf.get("plancher", 0)
-    capacite = ctx.foyer.get("freezer_drawers", 0) * par_tiroir
+    # Une seule source pour cette grandeur : `chainage` la calcule aussi pour
+    # `plan.py`, et deux nombres pour une même capacité est précisément la
+    # faute que ce prototype passe son temps à réparer.
+    capacite = ch.capacites_stockage(ctx.foyer, {"congelateur": conf}).get("congelo", 0)
 
     debut = sum(_band_portions(o.get("qty_band"))
                 for o in ctx.stock.get("outputs", [])

@@ -692,6 +692,29 @@ Only the *rounding surplus* is charged to storage — what the downstream dish e
 is not stored — so a divisible lot puts nothing away. Storage pressure is a side
 effect of granularity, which is why the two rules had to arrive together.
 
+#### Two ceilings per space: the shelf and the box
+
+Storage is bounded twice, and the model says which bound is biting, because the
+two call for opposite gestures — clear a shelf, or wash up. `household.contenants`
+is a **pool** (boxes, jars, freezer bags: a count, a capacity in portions, and the
+spaces each may go in), and `frigo` / `placard` finally have capacities alongside
+the freezer:
+
+```
+FRIGO    2 +1 −0 = 3 / 10 places · 7 libre(s)
+CONGELO  0 +6 −0 = 6 / 5 (limité par les contenants, pas par la place :
+                          18 d'étagère) · ⚠ DÉBORDE
+```
+
+The `−` term matters: eating from stock **returns** a container to the pool. In a
+real kitchen the binding constraint is almost never *the freezer is full* — it is
+*the six boxes are in the fridge with Tuesday's ratatouille in them*.
+
+One consequence nobody wrote a rule for: remove `sterilisation-bain-marie` from
+the household and the cupboard drops from 24 storable places to **zero**. Jars
+stop being cupboard cells and revert to fridge containers, which is physically
+correct — it is `conservation.yaml`'s botulism warning reappearing as arithmetic.
+
 Two messages had to be rewritten once quantity was real, because both had been
 true only by accident. *« part d'un reste déjà au frigo (700 g) »* attributed a
 multi-jar draw to the first jar; and *« que rien ne produit avant ce jour-là »*
@@ -826,8 +849,11 @@ typed ingredient vocabulary shared with `accepts`/`emits`, which is needed anywa
 - Over-production is costed in ingredients, vessel space and freezer places, but
   **not in minutes**: cooking 2× takes somewhat longer than 1× and the offer does
   not say so.
-- The fridge has **no capacity at all** — only the freezer does. A week can plan
-  more leftovers than the shelves hold and nothing notices.
+- Consumable containers (freezer bags) count as pool places but are never
+  *used up* — the prototype has no persistence, so nothing carries across weeks.
+- Nothing decides *which* container a given output goes into, only whether the
+  pool has room. A 2-portion jar used for a 1-portion leftover wastes half a
+  place and the model does not see it.
 - `contenance` is one number per vessel, in portions. A batch that fits by volume
   can still be wrong by *shape* (a gratin spread too thin, a sauté pan too
   crowded to brown), and nothing represents that.

@@ -160,6 +160,11 @@ def plan_week(days, household, rules, stock, rayons, today, cat=None,
             amount, unit = ch.quantite(e)
             if amount is not None:
                 sortie["qty"] = {"amount": amount * factor, "unit": unit}
+            # `location` dit où c'est POSÉ (une sortie fraîche part au frigo) ;
+            # `_espace` dit à quel budget de rangement elle est IMPUTÉE. Les
+            # confondre faisait compter une sortie au congélo à l'entrée et au
+            # frigo à la sortie, donc un frigo qui se vidait tout seul.
+            sortie["_espace"] = ch.espace_de(e)
             depot.ajouter(sortie, born=date, source=r["title"], location="frigo")
 
         menu.append({
@@ -200,35 +205,42 @@ def plan_week(days, household, rules, stock, rayons, today, cat=None,
     # fait — seul le TUI l'affichait — donc une semaine pouvait planifier plus
     # de portions qu'il n'y a de places, et l'offre de surproduction proposait
     # d'en rajouter par-dessus.
-    congelo = _bilan_congelo(days, cat, stock, hh, equilibre, facteurs)
+    stockage = _bilan_stockage(days, cat, stock, hh, rules, equilibre, facteurs,
+                               depot)
     offres = ch.offres_surproduction(manques, days, cat, facteurs, foyer=hh,
-                                     places_congelo=congelo.get("libre"))
+                                     stockage=stockage)
     return (menu, basket, to_check, warnings, chained, fridge, offres,
-            compte_provenance, congelo)
+            compte_provenance, stockage)
 
 
-def _bilan_congelo(days, cat, stock, hh, equilibre, facteurs):
-    """Combien de places de congélateur la semaine occupe, sur combien."""
-    conf = (equilibre or {}).get("congelateur", {})
-    par_tiroir = conf.get("portions_par_tiroir")
-    if not par_tiroir or not hh.get("freezer_drawers"):
-        return {}
-    capacite = hh["freezer_drawers"] * par_tiroir
-    debut = sum(ch.band_repas(o.get("qty_band"))
-                for o in stock.get("outputs", [])
-                if o.get("location") == "congelo")
-    banque = 0.0
+def _bilan_stockage(days, cat, stock, hh, rules, equilibre, facteurs, depot):
+    """Ce que la semaine range dans chaque espace, sur ce qui peut y tenir."""
+    depart, banque, libere = {}, {}, {}
+    for o in stock.get("outputs", []):
+        espace = "congelo" if o.get("location") == "congelo" else "frigo"
+        depart[espace] = depart.get(espace, 0.0) + ch.band_repas(o.get("qty_band"))
     for offset, entry in enumerate(days):
         for e in cat[entry["recipe"]].get("emits", []):
-            if e.get("keeps", {}).get("congelo"):
-                banque += ch.band_repas(e.get("qty_band")) * facteurs[offset]
-    fin = debut + banque
-    return {"capacite": capacite, "debut": debut, "banque": banque, "fin": fin,
-            "libre": max(0.0, capacite - fin), "deborde": fin > capacite}
+            espace = ch.espace_de(e)
+            banque[espace] = (banque.get(espace, 0.0)
+                              + ch.band_repas(e.get("qty_band")) * facteurs[offset])
+    # Ce que la semaine MANGE rend sa place et son contenant. Sans ce terme, le
+    # stockage ne serait qu'un compteur qui monte.
+    for ligne in depot.lignes:
+        if not ligne.get("_epuise"):
+            continue
+        espace = ligne.get("_espace") or ("congelo" if ligne.get("location") == "congelo"
+                                          else "frigo")
+        libere[espace] = libere.get(espace, 0.0) + ch.band_repas(ligne.get("qty_band"))
+
+    capacites = set(rules.get("capabilities", {}))
+    for eq in hh.get("equipment", []):
+        capacites |= set(eq.get("capabilities", []))
+    return ch.bilan_stockage(depart, banque, hh, equilibre, capacites, libere)
 
 
 def render(menu, basket, to_check, warnings, chained, fridge, offres,
-           provenances, congelo, rayons, household):
+           provenances, stockage, rayons, household):
     hh = household["household"]
     out = []
     out.append("═══ COURSES — semaine du "
@@ -301,12 +313,24 @@ def render(menu, basket, to_check, warnings, chained, fridge, offres,
         out += [f"  ↪ {c}" for c in chained]
         out.append("")
 
-    if congelo:
-        etat = ("⚠ DÉBORDE" if congelo["deborde"]
-                else f"{congelo['libre']:.2g} place(s) libre(s)")
-        out.append(f"CONGÉLO — {congelo['debut']:.2g} au départ "
-                   f"+{congelo['banque']:.2g} mis de côté cette semaine "
-                   f"= {congelo['fin']:.2g} / {congelo['capacite']:g} · {etat}")
+    # Trois espaces, deux plafonds chacun : les étagères et les boîtes. Dire
+    # lequel commande, parce que dégager une étagère et laver des boîtes ne
+    # sont pas le même geste.
+    if stockage:
+        out.append("OÙ ÇA SE RANGE — la cuisine est finie")
+        for espace in ch.ESPACES:
+            b = stockage.get(espace)
+            if not b:
+                continue
+            etat = ("⚠ DÉBORDE" if b["deborde"]
+                    else f"{b['libre']:.2g} libre(s)")
+            borne = (f"{b['limite']:g} places"
+                     if b["cause"] == "place"
+                     else f"{b['limite']:g} (limité par les contenants, "
+                          f"pas par la place : {b['capacite']:g} d'étagère)")
+            mouvement = (f"{b['debut']:.2g} +{b['entre']:.2g} −{b['sort']:.2g} "
+                         f"= {b['fin']:.2g}")
+            out.append(f"  {espace.upper():<8} {mouvement} / {borne} · {etat}")
         out.append("")
 
     # Des propositions, jamais un redimensionnement d'office : cuisiner plus
@@ -338,10 +362,10 @@ def main():
         days = rc.load(HERE / "semaine.yaml")["semaine"]
 
     (menu, basket, to_check, warnings, chained, fridge, offres,
-     provenances, congelo) = plan_week(days, household, rules, stock, rayons,
-                                       today, equilibre=equilibre)
+     provenances, stockage) = plan_week(days, household, rules, stock, rayons,
+                                        today, equilibre=equilibre)
     print(render(menu, basket, to_check, warnings, chained, fridge, offres,
-                 provenances, congelo, rayons, household))
+                 provenances, stockage, rayons, household))
 
 
 if __name__ == "__main__":

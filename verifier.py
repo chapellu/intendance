@@ -194,6 +194,34 @@ def verifier(rid: str, r: dict, rayons: dict, rules: dict, cat: dict,
     return err, warn
 
 
+def verifier_foyer(foyer: dict, equilibre: dict, capacites: set) -> tuple:
+    """Le foyer aussi se vérifie : espaces et contenants sont des données.
+
+    Un contenant qui ne va nulle part, ou un espace sans contenant possible,
+    sont des impasses silencieuses — la semaine se planifie et rien ne se range.
+    """
+    err, warn = [], []
+    for c in foyer.get("contenants", []) or []:
+        cid = c.get("id", "?")
+        if not c.get("nombre") or not c.get("portions"):
+            err.append(f"contenant « {cid} » : il faut un `nombre` et des `portions` "
+                       "non nuls, sinon il n'offre aucune place")
+        inconnus = set(c.get("espaces", [])) - set(ch.ESPACES)
+        if inconnus:
+            err.append(f"contenant « {cid} » : espace(s) inconnu(s) {sorted(inconnus)} "
+                       f"— attendu parmi {list(ch.ESPACES)}")
+        if not c.get("espaces"):
+            err.append(f"contenant « {cid} » ne déclare aucun espace : il ne servira jamais")
+
+    espaces = ch.capacites_stockage(foyer, equilibre)
+    boites = ch.contenants_par_espace(foyer, capacites)
+    for espace, cap in espaces.items():
+        if not boites.get(espace):
+            warn.append(f"espace « {espace} » : {cap:g} places d'étagère mais AUCUN "
+                        "contenant utilisable — rien ne peut y être rangé")
+    return err, warn
+
+
 def main() -> int:
     rayons = rc.load(HERE / "rayons.yaml")
     rules = rc.load(HERE / "rules.yaml")
@@ -207,8 +235,22 @@ def main() -> int:
     for e in foyer["equipment"]:
         capacites |= set(e.get("capabilities", []))
 
+    equilibre = rc.load(HERE / "equilibre.yaml")
     cibles = sys.argv[1:] or sorted(cat)
     n_err = n_warn = 0
+
+    # Le foyer d'abord : si les espaces ou les contenants sont incohérents,
+    # aucune recette ne se range, et le dire recette par recette serait 51 fois
+    # le même message.
+    if not sys.argv[1:]:
+        err, warn = verifier_foyer(foyer, equilibre, capacites)
+        n_err += len(err); n_warn += len(warn)
+        if err or warn:
+            print("\nhousehold.yaml")
+            for e in err:
+                print(f"  ✗ {e}")
+            for w in warn:
+                print(f"  ⚠ {w}")
     for rid in cibles:
         if rid not in cat:
             print(f"✗ {rid} : absent du catalogue")

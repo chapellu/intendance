@@ -24,6 +24,57 @@ household:
       diet: baby                  # unsalted, mashed/blended — triggers the set-aside step
   # third baby due ≈ end 2026: will appear here as diet: baby at diversification
 
+  # --- Les trois espaces de stockage --------------------------------------
+  # Une seule unité, la PLACE = une portion équivalent-adulte rangée, la même
+  # que `contenance` sur les récipients et que `portions_eq` sur les recettes.
+  # Le congélateur se dérive de `freezer_drawers` × `equilibre.portions_par_tiroir`
+  # et n'est donc PAS répété ici : deux nombres pour une même grandeur, c'est
+  # la faute que ce dépôt passe son temps à réparer.
+  #
+  # Le frigo et le placard n'avaient jusqu'ici AUCUNE capacité. Une semaine
+  # pouvait planifier plus de restes que d'étagères, et rien ne le voyait.
+  stockage:
+    frigo:
+      places: 10
+      note: "étagères hors bacs à légumes et hors porte — ce qui accueille des plats"
+    placard:
+      places: 20
+      note: "réserve sèche + bocaux stérilisés ; ne compte pas les denrées de fond"
+
+  # --- Les contenants : un POOL qui tourne, pas un puits ------------------
+  # L'équivalent exact de la cellule de stockage d'AE2 (MECANIQUES.md §25) : on
+  # ne range rien sans contenant, ils sont en nombre fini, et un contenant plein
+  # est INDISPONIBLE jusqu'à ce qu'on en mange le contenu. C'est ce cycle qui
+  # manquait — `conservation.yaml` connaissait déjà les bocaux, mais comme un
+  # verrou de compétence, jamais comme un objet qu'on a en nombre limité et
+  # qui revient au lavage.
+  #
+  # La contrainte qui mord dans une vraie cuisine n'est presque jamais « le
+  # congélateur est plein » : c'est « les six boîtes sont au frigo avec la
+  # ratatouille de mardi dedans ».
+  contenants:
+    - id: boites-hermetiques
+      label: boîtes hermétiques 0,5 / 1 L
+      nombre: 8
+      portions: 1
+      espaces: [frigo, congelo]
+    - id: bocaux-le-parfait
+      label: bocaux Le Parfait 0,75 L
+      nombre: 12
+      portions: 2
+      espaces: [frigo, placard]
+      # Le placard n'est ouvert qu'aux bocaux STÉRILISÉS, et la stérilisation
+      # au bain-marie ne vaut que pour les acides — voir l'avertissement en tête
+      # de conservation.yaml. Sans cette capacité, un bocal reste un contenant
+      # de frigo.
+      needs_pour: {placard: sterilisation-bain-marie}
+    - id: sacs-congelation
+      label: sacs congélation
+      nombre: 20
+      portions: 1
+      espaces: [congelo]
+      reutilisable: false        # consommable : il part avec le contenu
+
   exclusions:
     - piquant
     - choux de bruxelles

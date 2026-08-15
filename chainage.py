@@ -321,6 +321,88 @@ def facteur_max_vaisselle(recipe, foyer):
     return pire[0], pire[1] / base
 
 
+# ------------------------------------------------------- espaces et contenants
+
+ESPACES = ("frigo", "congelo", "placard")
+
+
+def espace_de(emit):
+    """Où atterrit cette sortie ? Dérivé de `keeps:`, jamais déclaré deux fois.
+
+    Le placard n'apparaît pas ici : y ranger un plat demande une conservation
+    (bocal stérilisé), c'est-à-dire un geste choisi, pas la destination par
+    défaut d'un reste. `conservation.yaml` porte cette décision, et son
+    avertissement botulisme dit pourquoi elle ne peut pas être automatique.
+    """
+    return "congelo" if (emit.get("keeps") or {}).get("congelo") else "frigo"
+
+
+def capacites_stockage(foyer, equilibre=None):
+    """Les places de chaque espace. Le congélateur reste dérivé de ses tiroirs."""
+    st = foyer.get("stockage") or {}
+    caps = {e: (st.get(e) or {}).get("places") for e in ("frigo", "placard")}
+    par_tiroir = ((equilibre or {}).get("congelateur") or {}).get("portions_par_tiroir")
+    if par_tiroir and foyer.get("freezer_drawers"):
+        caps["congelo"] = foyer["freezer_drawers"] * par_tiroir
+    return {e: c for e, c in caps.items() if c}
+
+
+def contenants_par_espace(foyer, capacites_foyer=()):
+    """Combien de PLACES le pool de contenants offre dans chaque espace.
+
+    Un contenant ne compte que là où il peut aller, et seulement si le foyer
+    sait faire ce que cet espace exige — un bocal ne devient une place de
+    placard que si la stérilisation est acquise. Sans ça il reste un contenant
+    de frigo, ce qui est exactement la vérité physique.
+    """
+    total = {e: 0.0 for e in ESPACES}
+    for c in foyer.get("contenants", []) or []:
+        places = (c.get("nombre") or 0) * (c.get("portions") or 0)
+        for espace in c.get("espaces", []):
+            besoin = (c.get("needs_pour") or {}).get(espace)
+            if besoin and besoin not in capacites_foyer:
+                continue
+            total[espace] = total.get(espace, 0.0) + places
+    return total
+
+
+def bilan_stockage(occupation_depart, banque, foyer, equilibre=None,
+                   capacites_foyer=(), libere=None):
+    """Ce que la semaine range, sur ce que la cuisine peut tenir.
+
+    Deux plafonds distincts et tous deux réels : l'ESPACE (des étagères) et les
+    CONTENANTS (des boîtes). Le plus bas des deux commande, et savoir lequel
+    change le geste — vider une étagère, ou laver des boîtes.
+
+    `libere` compte les places rendues quand la semaine mange du stock : un
+    contenant vidé retourne au pool, une étagère se dégage. Sans ce terme, le
+    stockage ne serait qu'un compteur qui monte, et la §12 (RimWorld) a déjà
+    montré qu'un niveau qu'on ne mesure qu'à la hausse n'est pas un niveau.
+    """
+    espaces_cap = capacites_stockage(foyer, equilibre)
+    boites_cap = contenants_par_espace(foyer, capacites_foyer)
+    libere = libere or {}
+    bilan = {}
+    for espace, cap in espaces_cap.items():
+        debut = occupation_depart.get(espace, 0.0)
+        entre = banque.get(espace, 0.0)
+        sort = libere.get(espace, 0.0)
+        fin = debut + entre - sort
+        boites = boites_cap.get(espace)
+        # Le pool de contenants ne borne que ce qui est RANGÉ, et il n'existe
+        # pas partout : un espace sans contenant déclaré n'est borné que par
+        # ses étagères.
+        limite, cause = cap, "place"
+        if boites and boites < cap:
+            limite, cause = boites, "contenant"
+        bilan[espace] = {
+            "capacite": cap, "contenants": boites, "limite": limite,
+            "cause": cause, "debut": debut, "entre": entre, "sort": sort,
+            "fin": fin, "libre": max(0.0, limite - fin), "deborde": fin > limite,
+        }
+    return bilan
+
+
 class Offre:
     """« Fais-en plus tôt dans la semaine, et le plat d'après est déjà payé. »
 
@@ -332,7 +414,8 @@ class Offre:
     def __init__(self, i_emetteur, rid_emetteur, titre_emetteur, type_sortie,
                  facteur_actuel, par_lot, manque, unite, pour, gain_min=0,
                  indivisible=False, calibre_max=None, vaisselle=None,
-                 facteur_max_vaisselle=None, repas_par_lot=1, places_congelo=None):
+                 facteur_max_vaisselle=None, repas_par_lot=1, places_libres=None,
+                 espace=None, cause_limite=None):
         self.i_emetteur = i_emetteur
         self.rid_emetteur = rid_emetteur
         self.titre_emetteur = titre_emetteur
@@ -348,7 +431,9 @@ class Offre:
         self.vaisselle = vaisselle      # l'équipement contraignant, s'il y en a
         self.facteur_max_vaisselle = facteur_max_vaisselle
         self.repas_par_lot = repas_par_lot
-        self.places_congelo = places_congelo
+        self.places_libres = places_libres
+        self.espace = espace
+        self.cause_limite = cause_limite
 
     @property
     def facteur_brut(self):
@@ -391,10 +476,10 @@ class Offre:
         return max(0.0, surplus_lots) * self.repas_par_lot
 
     @property
-    def tient_au_congelo(self):
-        if self.places_congelo is None:
+    def tient_au_stockage(self):
+        if self.places_libres is None:
             return True
-        return self.portions_a_stocker <= self.places_congelo + 1e-9
+        return self.portions_a_stocker <= self.places_libres + 1e-9
 
     @property
     def multiple(self):
@@ -424,8 +509,13 @@ class Offre:
             lab = (self.vaisselle or {}).get("label") or (self.vaisselle or {}).get("id", "?")
             reserves.append(f"⚠ ça ne tient pas dans {lab} "
                             f"(×{self.facteur_max_vaisselle:.2g} maximum) — il faut deux tournées")
-        if not self.tient_au_congelo:
-            reserves.append(f"⚠ le congélo n'a que {self.places_congelo:.2g} place(s) libre(s)")
+        if not self.tient_au_stockage:
+            # Dire LAQUELLE des deux limites mord : dégager une étagère et laver
+            # des boîtes ne sont pas le même geste.
+            manque = ("de place au " if self.cause_limite == "place"
+                      else "de contenant pour le ")
+            reserves.append(f"⚠ il n'y a plus {manque}{self.espace or 'stockage'} "
+                            f"({self.places_libres:.2g} place(s) libre(s))")
         queue = (" — " + " ; ".join(reserves)) if reserves else ""
 
         return (f"{self.titre_emetteur} : {combien} "
@@ -434,7 +524,7 @@ class Offre:
 
 
 def offres_surproduction(manques, jours, catalogue, facteurs, foyer=None,
-                         places_congelo=None):
+                         stockage=None):
     """Transforme les manques constatés en propositions d'agrandir un lot AMONT.
 
     `manques` : [{i, acc, manque, unite, titre}] relevés en marchant la semaine.
@@ -471,7 +561,9 @@ def offres_surproduction(manques, jours, catalogue, facteurs, foyer=None,
                     calibre_max=(r.get("lot_calibre") or {}).get("facteur_max"),
                     vaisselle=eq, facteur_max_vaisselle=fmax,
                     repas_par_lot=band_repas(e.get("qty_band")),
-                    places_congelo=places_congelo))
+                    places_libres=(stockage or {}).get(espace_de(e), {}).get("libre"),
+                    espace=espace_de(e),
+                    cause_limite=(stockage or {}).get(espace_de(e), {}).get("cause")))
                 trouve = True
                 break
             if trouve:

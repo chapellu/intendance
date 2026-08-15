@@ -496,6 +496,40 @@ pressure is created purely by lots that cannot be cut. AE2 has the same coupling
 (patterns run whole, byproducts return to a finite network) and the same
 consequence: capacity pressure is a *side effect of granularity*.
 
+**The storage cell, which is the piece I had missed entirely.** AE2 does not let
+you store anything without a **cell**: cells are a finite resource with byte and
+type limits, they sit in drives, and emptying one frees it again. The kitchen has
+exactly this and it had no representation at all — `conservation.yaml` knew about
+`bocaux-a-joint`, but only as a *skill lock*, never as objects you own a limited
+number of and that come back at the washing-up.
+
+`household.contenants` is now a pool: boxes, Le Parfait jars, freezer bags, each
+with a count, a capacity in portions, and the spaces it may go in. And spaces
+themselves — `frigo`, `placard` — finally have capacities, alongside the freezer
+that already had one. Every space is bounded **twice**, and the model says which
+bound is biting, because they call for opposite gestures:
+
+```
+FRIGO    2 +1 −0 = 3 / 10 places · 7 libre(s)
+CONGELO  0 +6 −0 = 6 / 5 (limité par les contenants, pas par la place :
+                          18 d'étagère) · ⚠ DÉBORDE
+```
+
+*You have freezer room and no boxes* is a different problem from *you have boxes
+and no room*, and in a real kitchen the first is far commoner — the constraint
+that actually bites is almost never "the freezer is full", it is "the six boxes
+are in the fridge with Tuesday's ratatouille in them". Which is why the balance
+carries a `−` term: eating from stock **returns** a container to the pool. §12
+already established that a level you only ever measure going up is not a level;
+the same is true of a container pool.
+
+One result fell out that no rule was written for: strip
+`sterilisation-bain-marie` from the household and the cupboard drops from 24
+storable places to **zero** — jars stop counting as cupboard cells and revert to
+being fridge containers. That is physically correct and it is `conservation.yaml`'s
+botulism warning showing up as arithmetic rather than as prose. AE2's equivalent
+is real too: a cell you have no way to format is not storage.
+
 **The roast chicken, which was too blunt.** The user pushed back on `lot_entier`
 and was right. It is cheaper and simpler to roast one whole chicken than a
 half — but a chicken is *several portions and more than one meal*, and above all
