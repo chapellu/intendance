@@ -91,6 +91,7 @@ recipe:
     - kind: base
       type: jus-pois-chiches
       qty_band: 1-repas
+      qty: {amount: 15, unit: cl}
       keeps: {frigo_days: 3, congelo: true}
       note: "aquafaba : se monte en neige comme des blancs d'œufs" 
   transportable: false      # assaisonnée et montée à l'assiette : ne voyage pas

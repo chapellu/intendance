@@ -103,6 +103,7 @@ recipe:
     - kind: base
       type: jus-pois-chiches
       qty_band: 1-repas
+      qty: {amount: 15, unit: cl}     # l'aquafaba de 500 g de pois chiches égouttés
       keeps: {frigo_days: 3, congelo: true}
 
   plan_b:

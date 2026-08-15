@@ -637,6 +637,51 @@ gesture — setting the baby's share aside when the dish is first cooked — is 
 output the model cannot carry yet, because `emits` has no notion of a baby
 portion. The recipe says so in a comment rather than pretending.
 
+#### The chain was a token, not a quantity
+
+Asked whether portions were properly wired into the chaining, the honest answer
+was no, and a three-dish week proves it. One 2-repas jar of bolognese covered
+**both** Tuesday's pasta (500 g) and Wednesday's lasagne (700 g) — 1200 g claimed
+against one jar — while the sauce actually cooked on Monday was consumed by
+nobody. `stock_has()` found an output and never removed it, so an output was a
+*token*: present or absent, infinitely divisible, never spent. The `qty:` written
+on every `accepts` since #30 was read by **zero lines of code**.
+
+What was missing was not a check but a **magnitude**. `chainage.py` now owns the
+whole chaining vocabulary — matcher, stock, sizing — and `Stock.prelever()`
+*takes* what a dish needs, across several jars if it must:
+
+```
+↪ Pâtes à la bolognaise part de 500 g du congélo
+↪ Lasagnes part de 200 g du congélo + 500 g du lot « Sauce bolognaise »
+```
+
+Three things fell out of making the quantity real, and only the first was the
+bug being chased:
+
+- double-counting became impossible — you take, so it goes down;
+- *"there is 100 g short"* became sayable, where before an edge was covered or
+  not, with nothing in between. The partial cover turns out to be the common
+  case, and it was the one the model could not express at all;
+- and the week became **sizeable**. If Thursday wants a base Tuesday makes,
+  Tuesday can be cooked bigger *on purpose*:
+
+```
+⤴ Lentilles vertes mijotées aux carottes : en faire 2× (+400 g de
+  lentilles-vertes-cuites) et lundi (Salade de lentilles à la feta) ne coûte
+  plus rien, 20 min gagnées.
+```
+
+That is an **offer, never an automatic resize**. Cooking bigger commits a bowl, a
+freezer drawer and money — three things the model cannot arbitrate for the cook.
+The planner's job is to notice, price it, and say what it buys you.
+
+Two messages had to be rewritten once quantity was real, because both had been
+true only by accident. *« part d'un reste déjà au frigo (700 g) »* attributed a
+multi-jar draw to the first jar; and *« que rien ne produit avant ce jour-là »*
+was printed when the week produced plenty and had merely eaten it all — which
+sends you to move a dish when the fix is to cook more of it.
+
 ### What driving it has already shown
 
 - **Entering a repertoire, not a recipe, is the unlock.** The catalogue was
@@ -687,10 +732,14 @@ See `recipes/*.yaml`. The load-bearing fields, discovered by building:
   onto whatever the household owns, with a text `rewrite` and a `time_delta_min`.
   Chioca's food-processor step compiles to « au petit blender, en 2–3 fois, par
   impulsions courtes » because the household file says so — no per-recipe rule.
-- **`accepts` / `emits`** (from #30): typed chaining outputs with coarse quantity
-  bands. `accepts` checks stock (freshness window from the household file);
-  missing → prelude pointing at `fallback_recipe`. `emits` renders as a
-  "consigner dans le stock" footer — the cooking event *is* the stock event.
+- **`accepts` / `emits`** (from #30): typed chaining outputs, measured on **two
+  scales that do not compete**. `qty: {amount, unit}` sizes a *base* — 700 g of
+  sauce, 1500 ml of broth, 1 carcass — and is what makes "is there enough" a
+  question with an answer. `qty_band` (« 2-repas », « lunchbox ») counts *meals*,
+  which is the right unit for a leftover dish and for the freezer budget.
+  `accepts` draws on the stock through `chainage.Stock.prelever`, which
+  **depletes**; missing → prelude pointing at `fallback_recipe`. `emits` renders
+  as a "consigner dans le stock" footer — the cooking event *is* the stock event.
 - **`seasoning_gate` + `baby_portion`**: one boolean on a step; the compiler
   injects the unsalted set-aside *before* it whenever an eater has `diet: baby`.
   `baby_portion.depuis:` names the steps the share is drawn from (`[]` = from an
@@ -723,8 +772,10 @@ typed ingredient vocabulary shared with `accepts`/`emits`, which is needed anywa
   kitchen step-by-step with live timers. The compiled structure (ordered steps,
   durations, parallelism, attended flags) is exactly what such a UI consumes, but
   the UX itself is unbuilt — that's app-building, beyond this map's mandate.
-- Quantity intelligence beyond banded rounding (vessel-size checks — e.g. does
-  the batch fit the 28 cm sauteuse — is representable via capabilities but not
-  implemented).
+- Vessel-size checks — does the doubled batch still fit the 28 cm sauteuse? An
+  over-production offer can currently propose a quantity the kitchen cannot hold.
+  Representable via capabilities, not implemented.
+- Over-production is costed in ingredients and in nothing else. Cooking 2× takes
+  somewhat longer than 1× and occupies a freezer drawer; the offer says neither.
 - The full-batch-vs-scale decision is a single rule here (keep full batch when
   emits keep well); the real planner should weigh freezer-drawer budget (#30).

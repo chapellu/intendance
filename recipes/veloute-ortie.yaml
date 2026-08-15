@@ -78,6 +78,7 @@ recipe:
     - kind: parure
       type: parures-legumes
       qty_band: 1-repas
+      qty: {amount: 1, unit: lot}
       keeps: {frigo_days: 3}
       note: "épluchures lavées, en boîte hermétique — 2 à 3 jours selon l'autrice"
 

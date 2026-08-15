@@ -21,6 +21,7 @@ import sys
 from pathlib import Path
 
 import catalogue
+import chainage as ch
 import compile as rc  # shadows the builtin `compile` in this module only
 
 HERE = Path(__file__).parent
@@ -63,9 +64,9 @@ def verifier(rid: str, r: dict, rayons: dict, rules: dict, cat: dict, capacites:
 
     # Chaînage. Un `accepts` demande soit un `type:` exact (« sauce-bolognaise »),
     # soit un `kind:`, c'est-à-dire une CLASSE de sorties (« n'importe quel
-    # reste-plat »). Les trois lecteurs passent maintenant par `rc.accepte`.
+    # reste-plat »). Tous les lecteurs passent par `chainage.accepte`.
     for acc in r.get("accepts", []):
-        libelle = rc.libelle_accepts(acc)
+        libelle = ch.libelle_accepts(acc)
         if not acc.get("type") and not acc.get("kind"):
             err.append("accepts sans `type:` ni `kind:` — l'arête ne peut matcher "
                        "aucune sortie, et échoue en silence")
@@ -90,6 +91,28 @@ def verifier(rid: str, r: dict, rayons: dict, rules: dict, cat: dict, capacites:
     for e in r.get("emits", []):
         if e.get("qty_band") not in BANDES:
             warn.append(f"emits « {e.get('type')} » : bande « {e.get('qty_band')} » hors vocabulaire {sorted(BANDES)}")
+        amount, unit = ch.quantite(e)
+        if e.get("qty") is not None and (amount is None or amount <= 0 or not unit):
+            err.append(f"emits « {e.get('type')} » : `qty:` doit porter un `amount` "
+                       "positif et une `unit`")
+        # Une arête typée dont l'émetteur ne chiffre rien retombe sur le jeton :
+        # elle se laisse consommer autant de fois qu'on veut. La bande ne suffit
+        # pas — « 2-repas » ne se compare pas à « 700 g ».
+        demandeurs = [(rid2, ch.quantite(a)) for rid2, r2 in cat.items()
+                      for a in r2.get("accepts", [])
+                      if a.get("type") and a["type"] == e.get("type")]
+        for rid2, (besoin, u2) in demandeurs:
+            if besoin is None:
+                continue
+            if amount is None:
+                warn.append(f"emits « {e['type']} » sans `qty:` alors que « {rid2} » en "
+                            f"réclame {besoin} {u2} : le chaînage ne saura pas s'il y en "
+                            "a assez, et la sortie se consommera sans jamais baisser")
+            elif unit != u2:
+                err.append(f"emits « {e['type']} » chiffré en {unit}, mais « {rid2} » le "
+                           f"réclame en {u2} : les deux faces d'une arête doivent se "
+                           "mesurer dans la même unité")
+            break
 
     # `drop:` est une CHAÎNE (l'id de l'étape), `swap:` est un mapping — asymétrie
     # de `compile.py`. Écrire `drop: {step: …}` ne lève rien : la comparaison

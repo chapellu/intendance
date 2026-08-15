@@ -87,6 +87,7 @@ recipe:
     - kind: base
       type: mousse-chocolat
       qty_band: 2-repas
+      qty: {amount: 1, unit: recette}  # UNE recette — le gâteau p.61 en veut deux
       keeps: {frigo_days: 2, congelo: false}
       note: "le gâteau de la p. 61 la veut ENCORE TIÈDE — voir l'avertissement là-bas"
 

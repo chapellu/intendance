@@ -25,7 +25,7 @@ import datetime as dt
 from collections import Counter
 from dataclasses import dataclass, replace
 
-import compile as rc  # shadows the builtin `compile` in this module only
+import chainage as ch
 
 # Ranking modes. `equilibre` is the default: the user asked for dishes that
 # "complete the intake while varying the pleasures and respect the chains",
@@ -203,14 +203,17 @@ def _canon(ing_id, rayons):
 
 # The `accepts` matcher used to live here, and only here — `plan.py` and
 # `compile.py` each indexed `acc["type"]` by hand and crashed on the first
-# recipe to match by `kind:`. It now lives in `compile.py`, the module those two
-# already share; these aliases keep the local vocabulary of this file.
-_accepte = rc.accepte
-_libelle = rc.libelle_accepts
+# recipe to match by `kind:`. It now lives in `chainage.py` with the rest of the
+# chaining vocabulary; these aliases keep the local names of this file.
+_accepte = ch.accepte
+_libelle = ch.libelle_accepts
 
 
 def _stock_has(outputs, acc, window_days, on_date):
-    return rc.stock_has({"outputs": outputs}, acc, window_days, on_date)
+    """Sonde NON destructive — sert aux vues qui demandent « ce plat mangerait-il
+    quelque chose du frigo ? ». Proposer une carte n'est pas la jouer, donc rien
+    ne se consomme ici ; c'est `calculer()` qui prélève pour de bon."""
+    return ch.Stock(outputs, window_days).disponible(acc, on_date)
 
 
 def _portions_foyer(foyer):
@@ -248,8 +251,11 @@ def calculer(ctx: Contexte, choix: tuple, jetes: tuple = ()) -> dict:
     window = ctx.foyer["fridge_window_days"]
     placard = ctx.rayons.get("placard", [])
 
-    running = [dict(o) for o in ctx.stock.get("outputs", [])
-               if o["type"] not in jetes]
+    # Le stock SE CONSOMME au fil de la semaine : un plat qui se branche dessus
+    # le vide d'autant, et le suivant ne trouve que le reste. Tant que c'était
+    # une simple liste, le même bocal couvrait autant de plats qu'on voulait.
+    running = ch.Stock([o for o in ctx.stock.get("outputs", [])
+                        if o["type"] not in jetes], window)
     panier, a_verifier = {}, {}
     chaine, problemes, ecoule = [], [], set()
     plein_tarif = []
@@ -264,15 +270,18 @@ def calculer(ctx: Contexte, choix: tuple, jetes: tuple = ()) -> dict:
         # `sans_reste` says what to buy and how long it costs instead.
         plein = False
         for acc in r.get("accepts", []):
-            out, age = _stock_has(running, acc, window, date)
-            if out:
-                src = out.get("_from")
-                chaine.append({"creneau": i, "type": out["type"], "depuis": src,
-                               "age": age,
-                               "congelo": out.get("location") == "congelo"})
+            pr = running.prelever(acc, date)
+            if pr.trouve:
+                src = pr.out.get("_from")
+                chaine.append({"creneau": i, "type": pr.out["type"], "depuis": src,
+                               "age": pr.age, "pris": pr.pris, "unite": pr.unite,
+                               "manque": pr.manque,
+                               "congelo": pr.out.get("location") == "congelo"})
                 if src is None:
-                    ecoule.add(out["type"])
-            elif r.get("sans_reste"):
+                    ecoule.add(pr.out["type"])
+            if pr.couvert or (pr.trouve and pr.approximatif):
+                continue
+            if r.get("sans_reste"):
                 plein = True
                 plein_tarif.append({"creneau": i, "titre": r["title"],
                                     "type": _libelle(acc),
@@ -301,9 +310,11 @@ def calculer(ctx: Contexte, choix: tuple, jetes: tuple = ()) -> dict:
             slot["n"] += 1
 
         for e in r.get("emits", []):
-            running.append({"type": e["type"], "kind": e["kind"],
-                            "qty_band": e["qty_band"], "born": date,
-                            "location": "frigo", "_from": rid})
+            sortie = dict(e)
+            amount, unit = ch.quantite(e)
+            if amount is not None:
+                sortie["qty"] = {"amount": amount * factor, "unit": unit}
+            running.ajouter(sortie, born=date, source=rid, location="frigo")
 
     frigo = []
     for o in ctx.stock.get("outputs", []):

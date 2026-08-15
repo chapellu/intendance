@@ -42,6 +42,10 @@ recipes:
       - kind: base
         type: sauce-bolognaise
         qty_band: 2-repas
+        # 500 g de bœuf + 800 g de tomates, réduits : ~1400 g de sauce. Les
+        # pâtes en réclament 500 et les lasagnes 700 — un lot couvre les deux,
+        # ce que le modèle ne pouvait pas dire tant qu'il comptait en jetons.
+        qty: {amount: 1400, unit: g}
         keeps: {frigo_days: 3, congelo: true}
 
   - id: pates-bolognaise
@@ -140,10 +144,12 @@ recipes:
       - kind: base
         type: poulet-cuit
         qty_band: 2-repas
+        qty: {amount: 500, unit: g}     # ce qu'on détache d'un poulet une fois servi
         keeps: {frigo_days: 3, congelo: true}
       - kind: base
         type: carcasse-volaille
         qty_band: 1-repas
+        qty: {amount: 1, unit: pièce}   # une carcasse, et il n'y en a qu'une
         keeps: {frigo_days: 2}
 
   - id: fajitas-poulet

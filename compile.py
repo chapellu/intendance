@@ -20,6 +20,8 @@ from pathlib import Path
 
 import yaml
 
+import chainage as ch
+
 HERE = Path(__file__).parent
 
 
@@ -86,43 +88,17 @@ def scale_qty(qty, unit, factor):
 
 # ---------------------------------------------------------------- stock
 
-def accepte(out, acc):
-    """Does this stored output satisfy this `accepts` edge?
-
-    Two ways to ask. `type:` names one exact output — « sauce-bolognaise ».
-    `kind:` names a *class* — « any reste-plat » — which is what makes a single
-    « reste de la veille » lunch able to eat last night's chili, gratin, quiche
-    or ratatouille without writing nine near-identical recipes.
-
-    This lives here, in the module `plan.py` and `verifier.py` already import as
-    `rc`, because it was written once in `semaine_model.py` and read three times:
-    the two other readers indexed `acc["type"]` directly and crashed outright on
-    the first recipe to use `kind:`. One matcher, one meaning of `accepts`.
-    """
-    if acc.get("type"):
-        return out["type"] == acc["type"]
-    if acc.get("kind"):
-        return out.get("kind") == acc["kind"]
-    return False
-
-
-def libelle_accepts(acc):
-    """How to name an `accepts` edge to a human — a type is already a name, a
-    class needs an article: « sauce-bolognaise » vs « un reste-plat »."""
-    return acc.get("type") or f"un {acc.get('kind', '?')}"
+# Le vocabulaire du chaînage vit dans `chainage.py` — un seul endroit qui sait
+# ce qu'une arête veut dire, quantité comprise. Ces alias gardent les noms
+# qu'employaient déjà les appelants.
+accepte = ch.accepte
+libelle_accepts = ch.libelle_accepts
 
 
 def stock_has(stock, acc, fridge_window_days, today):
-    for out in stock.get("outputs", []):
-        if not accepte(out, acc):
-            continue
-        born = out["born"]
-        if isinstance(born, str):
-            born = dt.date.fromisoformat(born)
-        age = (today - born).days
-        if out.get("location") == "congelo" or age <= fridge_window_days:
-            return out, age
-    return None, None
+    """Sonde non destructive. Le compilateur cuisine UN plat : il constate ce
+    qu'il y a, il n'arbitre pas la semaine — c'est `plan.py` qui prélève."""
+    return ch.Stock(stock.get("outputs", []), fridge_window_days).disponible(acc, today)
 
 
 # ---------------------------------------------------------------- compilation

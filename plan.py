@@ -27,6 +27,7 @@ from pathlib import Path
 import yaml
 
 import catalogue
+import chainage as ch
 import compile as rc  # shadows the builtin `compile` in this module only
 
 HERE = Path(__file__).parent
@@ -57,11 +58,13 @@ def plan_week(days, household, rules, stock, rayons, today, cat=None):
     aliases = rayons.get("aliases", {})
 
     # Stock evolves as the week is cooked: start from what is in the fridge,
-    # then let each day's `emits` land in it, dated that day.
-    running = [dict(o) for o in stock.get("outputs", [])]
+    # then let each day's `emits` land in it, dated that day. It DEPLETES —
+    # `prelever` takes what a dish needs and the next dish only finds the rest.
+    depot = ch.Stock(stock.get("outputs", []), hh["fridge_window_days"])
 
     menu, warnings, chained = [], [], []
-    used_from_fridge = set()
+    manques = []          # shortfalls, turned into sizing offers after the walk
+    facteurs = []
     # (canonical_id, unit) -> {name, qty, recipes}
     basket = OrderedDict()
     to_check = OrderedDict()
@@ -70,39 +73,60 @@ def plan_week(days, household, rules, stock, rayons, today, cat=None):
         date = today + dt.timedelta(days=offset)
         r = cat[entry["recipe"]]
 
-        # --- chaining: does an earlier dish (or the fridge) cover what this accepts?
-        covered = set()
-        for acc in r.get("accepts", []):
-            out, age = rc.stock_has({"outputs": running}, acc,
-                                    hh["fridge_window_days"], date)
-            if out:
-                covered.add(rc.libelle_accepts(acc))
-                src = out.get("_from")
-                if src:
-                    chained.append(f"{r['title']} part du reste de « {src} » "
-                                   f"— rien à acheter pour cette base.")
-                else:
-                    # The type CONSUMED, not the edge asked for: a `kind:` edge
-                    # eats one particular output, and the rest of the fridge is
-                    # still there to be reported.
-                    used_from_fridge.add(out["type"])
-                    chained.append(f"{r['title']} part d'un reste déjà au frigo "
-                                   f"({out['type']}, J-{age}).")
-            elif acc.get("required"):
-                fb = acc.get("fallback_recipe")
-                warnings.append(
-                    f"{entry['jour'].capitalize()} — {r['title']} a besoin du reste "
-                    f"« {rc.libelle_accepts(acc)} », que rien ne produit avant ce "
-                    f"jour-là. " + (f"Avancer « {fb} » plus tôt dans la semaine."
-                                    if fb else
-                                    "Ce plat ne se cuisine que sur un reste : il "
-                                    "n'a sa place qu'après un plat qui en émet un."))
-
         # --- portions: same rule as the compiler (keep the full batch when it keeps)
         base = r["yields"]["portions_eq"]
         keeps_well = any(e.get("keeps", {}).get("congelo") or e["kind"] == "reste-plat"
                          for e in r.get("emits", []))
         factor = 1.0 if (keeps_well and need < base) else need / base
+        facteurs.append(factor)
+
+        # --- chaining: take what this dish accepts out of the running stock
+        covered = set()
+        for acc in r.get("accepts", []):
+            pr = depot.prelever(acc, date)
+            if pr.trouve:
+                covered.add(ch.libelle_accepts(acc))
+                chained.append(f"{r['title']} part de {pr.raconte()} "
+                               f"— rien à acheter pour cette base.")
+            if pr.couvert or (pr.trouve and pr.approximatif):
+                continue
+
+            # Not covered, or covered only in part. A partial cover is the case
+            # the token model could not express at all, and it is the common one.
+            manque = pr.manque if pr.unite else None
+            if manque:
+                manques.append({"i": offset, "acc": acc, "manque": manque,
+                                "unite": pr.unite, "titre": r["title"],
+                                "gain_min": ch.gain_du_chainage(r)})
+            if pr.trouve:
+                warnings.append(
+                    f"{entry['jour'].capitalize()} — {r['title']} réclame "
+                    f"{ch.fmt_qte(*ch.quantite(acc))} de "
+                    f"« {ch.libelle_accepts(acc)} » et il n'en reste que "
+                    f"{ch.fmt_qte(pr.pris, pr.unite)} : il manque "
+                    f"{ch.fmt_qte(pr.manque, pr.unite)}.")
+            elif acc.get("required"):
+                fb = acc.get("fallback_recipe")
+                # « rien n'en produit » et « tout est déjà mangé » demandent des
+                # gestes opposés — avancer une recette, ou en faire plus. Dire
+                # l'un pour l'autre envoie corriger le plan là où il est juste.
+                emis_avant = any(
+                    any(ch.accepte(e, acc) for e in cat[d["recipe"]].get("emits", []))
+                    for d in days[:offset])
+                if emis_avant:
+                    warnings.append(
+                        f"{entry['jour'].capitalize()} — {r['title']} réclame "
+                        f"« {ch.libelle_accepts(acc)} » : la semaine en produit, mais "
+                        f"tout est déjà consommé quand ce jour arrive. En faire plus "
+                        f"en amont (voir plus bas) ou déplacer ce plat.")
+                else:
+                    warnings.append(
+                        f"{entry['jour'].capitalize()} — {r['title']} a besoin du reste "
+                        f"« {ch.libelle_accepts(acc)} », que rien ne produit avant ce "
+                        f"jour-là. " + (f"Avancer « {fb} » plus tôt dans la semaine."
+                                        if fb else
+                                        "Ce plat ne se cuisine que sur un reste : il "
+                                        "n'a sa place qu'après un plat qui en émet un."))
 
         for ing in r["ingredients"]:
             # An accepted base is cooked, not bought — never a shopping line.
@@ -118,11 +142,15 @@ def plan_week(days, household, rules, stock, rayons, today, cat=None):
             slot["qty"] += q
             slot["recipes"].append(r["title"])
 
-        # --- this dish's own outputs join the running stock for later days
+        # --- this dish's own outputs join the running stock for later days.
+        # Scaled by the batch: cooking 2× the sauce banks 2× the sauce, which is
+        # exactly what makes an over-production offer worth anything.
         for e in r.get("emits", []):
-            running.append({"type": e["type"], "kind": e["kind"],
-                            "qty_band": e["qty_band"], "born": date,
-                            "location": "frigo", "_from": r["title"]})
+            sortie = dict(e)
+            amount, unit = ch.quantite(e)
+            if amount is not None:
+                sortie["qty"] = {"amount": amount * factor, "unit": unit}
+            depot.ajouter(sortie, born=date, source=r["title"], location="frigo")
 
         menu.append({
             "jour": entry["jour"], "date": date, "titre": r["title"],
@@ -136,25 +164,33 @@ def plan_week(days, household, rules, stock, rayons, today, cat=None):
     # one already at home, and the second cheapest is the one you throw away
     # knowingly rather than discovering next week.
     fridge = []
-    for o in stock.get("outputs", []):
-        if o["type"] in used_from_fridge or o.get("location") == "congelo":
+    depart = {id(l) for l in depot.lignes[:len(stock.get("outputs", []))]}
+    for o in depot.restant():
+        if id(o) not in depart and o.get("_from"):
+            continue                      # cooked this week, not "already at home"
+        if o.get("location") == "congelo":
             continue
         born = o["born"]
         if isinstance(born, str):
             born = dt.date.fromisoformat(born)
         age = (today - born).days
+        # A partly eaten jar is neither « intact » nor « consumed » — say how
+        # much is left, because that is what decides whether it is worth a meal.
+        reste = ("" if o.get("_reste") is None
+                 else f", il reste {ch.fmt_qte(o['_reste'], o['_unite'])}")
         if age > hh["fridge_window_days"]:
-            fridge.append(f"{o['type']} ({o['qty_band']}) — J-{age}, au-delà de la "
+            fridge.append(f"{o['type']} ({o['qty_band']}{reste}) — J-{age}, au-delà de la "
                           f"fenêtre de {hh['fridge_window_days']} j : à vérifier, "
                           f"le plan ne compte plus dessus.")
         else:
-            fridge.append(f"{o['type']} ({o['qty_band']}) — J-{age}, encore bon "
-                          f"mais aucun plat de la semaine ne le consomme.")
+            fridge.append(f"{o['type']} ({o['qty_band']}{reste}) — J-{age}, encore bon "
+                          f"mais la semaine ne le finit pas.")
 
-    return menu, basket, to_check, warnings, chained, fridge
+    offres = ch.offres_surproduction(manques, days, cat, facteurs)
+    return menu, basket, to_check, warnings, chained, fridge, offres
 
 
-def render(menu, basket, to_check, warnings, chained, fridge, rayons, household):
+def render(menu, basket, to_check, warnings, chained, fridge, offres, rayons, household):
     hh = household["household"]
     out = []
     out.append("═══ COURSES — semaine du "
@@ -212,6 +248,14 @@ def render(menu, basket, to_check, warnings, chained, fridge, rayons, household)
     if chained:
         out.append("CE QUE LE CHAÎNAGE ÉVITE D'ACHETER")
         out += [f"  ↪ {c}" for c in chained]
+        out.append("")
+
+    # Des propositions, jamais un redimensionnement d'office : cuisiner plus
+    # grand engage un saladier, un tiroir de congélo et de l'argent.
+    if offres:
+        out.append("EN FAIRE PLUS EN AMONT ? (la semaine sait ce qu'elle réclamera)")
+        for o in offres:
+            out.append(f"  ⤴ {o.phrase()}")
     return "\n".join(out)
 
 
@@ -233,9 +277,9 @@ def main():
     else:
         days = rc.load(HERE / "semaine.yaml")["semaine"]
 
-    menu, basket, to_check, warnings, chained, fridge = plan_week(
+    menu, basket, to_check, warnings, chained, fridge, offres = plan_week(
         days, household, rules, stock, rayons, today)
-    print(render(menu, basket, to_check, warnings, chained, fridge,
+    print(render(menu, basket, to_check, warnings, chained, fridge, offres,
                  rayons, household))
 
 

@@ -52,6 +52,10 @@ recipe:
     - kind: base
       type: lentilles-vertes-cuites
       qty_band: 2-repas       # 300 g dry ≈ 700 g cooked: dinner + a 400 g reste
+      # Ce que le lot laisse VRAIMENT pour la suite, une fois le dîner servi.
+      # La bande compte des repas, celle-ci des grammes : c'est en grammes que
+      # « les burgers en réclament 400, y en a-t-il assez » a un sens.
+      qty: {amount: 400, unit: g}
       keeps: {frigo_days: 4, congelo: true}
     - kind: portion-bebe
       type: puree-lentilles-carottes

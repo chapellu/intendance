@@ -78,6 +78,7 @@ recipe:
     - kind: base
       type: bouillon-herbes
       qty_band: 2-repas
+      qty: {amount: 1500, unit: ml}   # concentré : la soupe d'orge en réclame 1500 après dilution
       keeps: {frigo_days: 3, congelo: true}
       note: "volontairement très salé et concentré : à DILUER avant de l'employer ailleurs"
     - kind: reste-plat
