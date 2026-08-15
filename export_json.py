@@ -15,8 +15,21 @@ from pathlib import Path
 import yaml
 
 import catalogue
+import chainage as ch
 
 HERE = Path(__file__).parent
+
+
+def _qty(bloc):
+    """`{'amount': 700, 'unit': 'g'}` ou `None` — la forme que le JS relira."""
+    amount, unit = ch.quantite(bloc)
+    return {"amount": amount, "unit": unit} if amount is not None else None
+
+
+def _ouvert(contenant, espace, capacites):
+    """Ce contenant compte-t-il dans cet espace, vu ce que le foyer sait faire ?"""
+    besoin = (contenant.get("needs_pour") or {}).get(espace)
+    return not besoin or besoin in capacites
 
 
 def main():
@@ -27,9 +40,21 @@ def main():
     conserv = yaml.safe_load((HERE / "conservation.yaml").read_text())
     stock = yaml.safe_load((HERE / "stock.yaml").read_text())
     creneaux = yaml.safe_load((HERE / "creneaux.yaml").read_text())
+    rules = yaml.safe_load((HERE / "rules.yaml").read_text())
+
+    # Tout ce que le foyer sait faire — l'union des capacités de ses outils et
+    # des chaînes de dégradation. C'est ce qui décide si un bocal est une place
+    # de placard ou seulement une boîte de frigo.
+    capacites = set(rules.get("capabilities", {}))
+    for eq in foyer.get("equipment", []):
+        capacites |= set(eq.get("capabilities", []))
 
     plats = []
     for rid, r in cat.items():
+        # La contenance du récipient le plus contraignant, précalculée : elle ne
+        # dépend que du catalogue et du foyer, tous deux statiques ici. Le JS
+        # n'a pas à refaire la résolution capacité -> outil pour l'afficher.
+        vaisselle, fmax = ch.facteur_max_vaisselle(r, foyer)
         plats.append({
             "id": rid,
             "titre": r["title"],
@@ -43,10 +68,13 @@ def main():
             ],
             # `accepts` matches either one exact output (`type`) or a whole
             # class of them (`kind`) — the latter is what lets a single
-            # « reste de la veille » eat any leftover dish.
+            # « reste de la veille » eat any leftover dish. `qty` dit COMBIEN
+            # l'arête réclame : sans elle le chaînage n'est qu'un jeton, et le
+            # même bocal couvre autant de plats qu'on veut.
             "accepts": [
                 {"type": a.get("type"), "kind": a.get("kind"),
                  "requis": bool(a.get("required")),
+                 "qty": _qty(a),
                  "mere": a.get("fallback_recipe")}
                 for a in r.get("accepts", [])
             ],
@@ -62,9 +90,21 @@ def main():
             ),
             "emits": [
                 {"type": e["type"], "kind": e.get("kind"),
+                 "qty": _qty(e), "band": e.get("qty_band"),
+                 "espace": ch.espace_de(e),
                  "congelo": bool(e.get("keeps", {}).get("congelo"))}
                 for e in r.get("emits", [])
             ],
+            # Un lot qui ne se coupe pas en deux : « faire 0,42 poulet rôti »
+            # n'est pas une quantité. `calibre` dit jusqu'où le même lot unique
+            # peut être pris plus gros avant qu'il faille en faire deux.
+            "lotEntier": bool(r.get("lot_entier")),
+            "calibreMax": (r.get("lot_calibre") or {}).get("facteur_max"),
+            "vaisselle": ({"id": vaisselle["id"],
+                           "label": vaisselle.get("label") or vaisselle["id"],
+                           "facteurMax": round(fmax, 3)}
+                          if vaisselle else None),
+            "gainChainage": ch.gain_du_chainage(r),
             "cuisinable": catalogue.est_cuisinable(r),
         })
 
@@ -82,6 +122,24 @@ def main():
             "acideSeulement": m.get("exige_acidite") == "haute",
         })
 
+    # La cuisine est FINIE. Deux plafonds par espace, tous deux réels : les
+    # étagères et les boîtes. Le plus bas commande, et savoir lequel change le
+    # geste — dégager une étagère, ou laver des boîtes.
+    places = ch.capacites_stockage(foyer, equilibre)
+    boites = ch.contenants_par_espace(foyer, capacites)
+    espaces = {}
+    for e in ch.ESPACES:
+        cap = places.get(e)
+        if not cap:
+            continue
+        pool = boites.get(e) or 0
+        espaces[e] = {
+            "places": cap,
+            "contenants": pool or None,
+            "limite": pool if pool and pool < cap else cap,
+            "cause": "contenant" if pool and pool < cap else "place",
+        }
+
     json.dump({
         "foyer": {
             "nom": foyer["name"],
@@ -89,6 +147,24 @@ def main():
                          if e.get("diet") != "baby"),
             "fenetreFrigo": foyer["fridge_window_days"],
             "tiroirs": foyer["freezer_drawers"],
+            "espaces": espaces,
+            "contenants": [
+                {"id": c["id"], "label": c.get("label") or c["id"],
+                 "nombre": c.get("nombre", 0), "portions": c.get("portions", 0),
+                 # Un bocal ne devient une place de placard que si la
+                 # stérilisation est acquise ; sinon il reste une boîte de
+                 # frigo, ce qui est exactement la vérité physique.
+                 "espaces": [esp for esp in c.get("espaces", [])
+                             if _ouvert(c, esp, capacites)],
+                 "consommable": c.get("reutilisable") is False}
+                for c in foyer.get("contenants", [])
+            ],
+            "vaisselle": [
+                {"id": eq["id"], "label": eq.get("label") or eq["id"],
+                 "contenance": eq["contenance"],
+                 "exemplaires": eq.get("exemplaires", 1)}
+                for eq in foyer.get("equipment", []) if eq.get("contenance")
+            ],
         },
         "plats": plats,
         "creneaux": creneaux,
@@ -96,6 +172,11 @@ def main():
         "equilibre": equilibre,
         "conservation": methodes,
         "stock": stock.get("outputs", []),
+        # Une seule table de libellés pour les deux modèles : le Python et sa
+        # transcription JS ne peuvent pas diverger sur ce que « à cuisiner
+        # d'avance » veut dire.
+        "provenances": ch.ETIQUETTES,
+        "horsCourses": list(ch.HORS_COURSES),
     }, sys.stdout, ensure_ascii=False, indent=1, default=str)
 
 

@@ -192,11 +192,17 @@ Balance targets are measured on `equilibre_sur: [dejeuner, diner]` only. The
 protein caps were posed by eye against six dinners; spreading them over 21 slots
 would have silently halved them without anyone deciding to.
 
-**Left undone, deliberately:** the visual prototype (`proto.chapellu.fr`) still
-shows the old one-dish-per-day model — `semaine.js` has not been ported to slots.
-And the catalogue contains **no breakfast and no goûter item**, so those slots are
-correctly marked routine but have nothing behind them yet. Both are data/porting
-gaps, not model gaps.
+The visual prototype (`proto.chapellu.fr`, `chapellu/flagship`) is fed by
+`export_json.py` and carries a transcription of this model in `semaine.js`. It
+has been ported to slots, and then to the four grandeurs of #30–#33: the
+depleting stock with its quantities, the storage spaces and their container
+pool, the over-production offers, and ingredient provenance. **Regenerating
+`cuisine-data.json` is the only way to move the screen**, and any new field
+added here has to be exported before it can be shown.
+
+**Left undone, deliberately:** the catalogue contains **no breakfast and no
+goûter item**, so those slots are correctly marked routine but have nothing
+behind them yet. That is a data gap, not a model gap.
 
 ### The curse card: the leftover with a clock (`[!]` / `[d]`)
 
