@@ -71,3 +71,4 @@ recipe:
     take: "2 c. à s. du plat réchauffé, avant de rectifier le sel"
     prep: "écraser à la fourchette, allonger d'un peu d'eau tiède si c'est compact"
     needs: [puree]
+    depuis: [rechauffer]

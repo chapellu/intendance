@@ -60,6 +60,9 @@ recipe:
     take: "quelques pâtes et 2 c. à s. de sauce tomate, avant salage et sans fromage"
     prep: "écraser à la fourchette"
     needs: []
+    # Les deux composants existent séparément avant l'assemblage — c'est
+    # justement pour ça qu'on peut prélever sans fromage.
+    depuis: [sauce, pates]
 
   emits:
     - kind: reste-plat

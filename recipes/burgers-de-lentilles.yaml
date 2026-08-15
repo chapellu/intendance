@@ -104,6 +104,9 @@ recipe:
     take: "3 c. à s. de lentilles cuites nature, avant l'étape du mélange (le bouillon et le tofu fumé sont trop salés)"
     prep: "écraser ou mixer avec un peu d'eau tiède"
     needs: [blend-smooth]
+    # Prélevé sur un INGRÉDIENT (les lentilles arrivent cuites par `accepts`),
+    # donc disponible dès la minute zéro : aucune étape ne doit le précéder.
+    depuis: []
 
   emits:
     - kind: reste-plat

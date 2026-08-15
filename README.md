@@ -563,9 +563,45 @@ python3 verifier.py <id> ...       # just what you entered
 
 Errors are things that will crash or misrender; warnings are things that have
 been wrong every time so far but that a recipe could legitimately do. The
-catalogue is now at **0 errors, 5 warnings** — the warnings are the five
-original recipes whose `seasoning_gate` sits on a step that both builds and
-salts, each one a real culinary judgement to make, not a code fix.
+catalogue is now at **0 errors, 0 warnings**.
+
+#### The check that was wrong four times out of five
+
+Getting the warnings to zero was not a matter of obeying them. The
+`seasoning_gate` check asked *is this step short enough to be only salting?* —
+on the grounds that a gate on a long step is probably a gate on the step that
+builds the mixture. Read one by one, **four of its five hits were on correct
+recipes**: the burgers set the baby's share aside from the cooked lentils (an
+*ingredient*, present from minute zero), the gratin from the pasta and the sauce
+(two *earlier* steps), the velouté from the blended soup, the omelette from the
+softened courgettes. In every case the thing being set aside already existed.
+
+A check that is wrong 80% of the time is worse than no check, because it teaches
+you to skim past it — which is exactly how the original bug survived three
+recipes. So the question was rewritten. Not *is this step short*, but **does
+what we set aside exist yet**, which `baby_portion.depuis:` answers in data:
+
+```yaml
+baby_portion:
+  take: "quelques pâtes et 2 c. à s. de sauce tomate, avant salage et sans fromage"
+  depuis: [sauce, pates]     # the steps it is drawn from — both precede the gate
+```
+
+`depuis: []` means *drawn from an ingredient*, available from the start. Every id
+in `depuis` must come strictly before the gate; if it does not, the set-aside
+would be rendered before the thing to set aside exists — the historical bug,
+now an **error** rather than a hunch, because it is provable from the structure.
+
+Where `depuis:` is absent the old heuristic still runs, so nothing got quieter by
+being loosened. 18 recipes are still in that state; the validator prints the
+count as one line rather than 18 warnings, because it is a debt to work through,
+not a finding to act on.
+
+The fifth warning was real, and of a kind the heuristic found only by accident:
+`omelette-courgettes` carried salt and pepper in its ingredients and mentioned
+them in **no step at all**. The gate sat on a step that did not season, so
+« prélever avant salage » described a salting that never happened. The step now
+salts.
 
 #### The one dish that planned and would not cook
 
@@ -657,6 +693,9 @@ See `recipes/*.yaml`. The load-bearing fields, discovered by building:
   "consigner dans le stock" footer — the cooking event *is* the stock event.
 - **`seasoning_gate` + `baby_portion`**: one boolean on a step; the compiler
   injects the unsalted set-aside *before* it whenever an eater has `diet: baby`.
+  `baby_portion.depuis:` names the steps the share is drawn from (`[]` = from an
+  ingredient), which is what makes the gate's placement checkable rather than
+  guessable.
 - **`plan_b`**: per-recipe list of `drop`/`swap` entries with honest `effect`
   labels, applied greedily until the time budget fits; if it still doesn't fit,
   the advice is the #30 fallback (« portion maison du congélo »), never a

@@ -51,6 +51,7 @@ recipe:
     take: "3 c. à s. de velouté mixé, avant le bouillon et la crème"
     prep: "détendre avec un peu d'eau de cuisson tiède"
     needs: [blend-smooth]
+    depuis: [mixer]
 
   emits:
     - kind: reste-plat

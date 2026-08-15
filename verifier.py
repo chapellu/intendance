@@ -118,12 +118,29 @@ def verifier(rid: str, r: dict, rayons: dict, rules: dict, cat: dict, capacites:
         else:
             g = portes[0]
             # L'erreur commise trois fois : une porte posée sur l'étape qui
-            # FABRIQUE le mélange. Le signe mécanique est qu'elle dure trop
-            # longtemps pour ne faire que saler.
-            if g.get("time_min", 0) > 2:
-                warn.append(f"seasoning_gate sur « {g['id']} » ({g['time_min']} min) : une étape qui ne fait "
-                            "que saler est courte. Si elle fabrique aussi le mélange, le prélèvement bébé "
-                            "sera injecté AVANT que ce mélange existe — scinder en deux étapes.")
+            # FABRIQUE la chose à prélever, donc le prélèvement est rendu avant
+            # qu'elle existe. La bonne question n'est pas « cette étape est-elle
+            # trop longue pour ne faire que saler » — c'était une devinette, et
+            # elle criait au loup sur quatre recettes correctes sur cinq. C'est
+            # « ce qu'on prélève existe-t-il déjà à ce moment-là ». `depuis:`
+            # répond en données : les étapes dont sort la portion bébé, ou `[]`
+            # quand elle est prélevée sur un ingrédient (disponible d'emblée).
+            depuis = r["baby_portion"].get("depuis")
+            if depuis is None:
+                if g.get("time_min", 0) > 2:
+                    warn.append(f"seasoning_gate sur « {g['id']} » ({g['time_min']} min) sans `depuis:` sur "
+                                "baby_portion : faute de savoir d'où sort la portion, on ne peut que deviner. "
+                                "Une étape qui ne fait que saler est courte ; si celle-ci fabrique aussi ce "
+                                "qu'on prélève, le prélèvement sera injecté AVANT que ça existe.")
+            else:
+                rang_porte = vus.index(g["id"]) if g["id"] in vus else len(vus)
+                for sid in depuis:
+                    if sid not in vus:
+                        err.append(f"baby_portion `depuis: {sid}` — cette étape n'existe pas")
+                    elif vus.index(sid) >= rang_porte:
+                        err.append(f"baby_portion prélevée depuis « {sid} », qui ne précède pas la porte "
+                                   f"« {g['id']} » : le prélèvement serait rendu avant que la chose à "
+                                   "prélever existe. C'est exactement la faute passée trois fois.")
             if not MOTS_ASSAISONNEMENT.search(g.get("action", "")):
                 warn.append(f"seasoning_gate sur « {g['id']} » : l'action ne parle pas d'assaisonnement")
 
@@ -168,6 +185,17 @@ def main() -> int:
     plan = sum(1 for rid in cibles if rid in cat and not catalogue.est_cuisinable(cat[rid]))
     print(f"\n{len(cibles)} recettes · {len(cibles) - plan} cuisinables, {plan} au niveau plan "
           f"· {n_err} erreur(s), {n_warn} avertissement(s)")
+
+    # Une ligne, pas un avertissement par recette : ce sont les portions bébé
+    # encore contrôlées à la devinette faute de `depuis:`. C'est une dette, elle
+    # se solde en lisant les recettes une par une, et elle mérite d'être visible
+    # sans noyer les vraies trouvailles.
+    sans_depuis = sorted(rid for rid in cibles
+                         if rid in cat and cat[rid].get("baby_portion")
+                         and cat[rid]["baby_portion"].get("depuis") is None)
+    if sans_depuis:
+        print(f"  ({len(sans_depuis)} baby_portion sans `depuis:` — porte contrôlée "
+              f"par heuristique, pas par la structure)")
     return 1 if n_err else 0
 
 

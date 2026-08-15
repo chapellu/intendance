@@ -37,8 +37,11 @@ recipe:
       needs: []
       time_min: 2
       kid: {age_min_months: 30, task: "battre les œufs à la fourchette"}
+    # Le sel et le poivre étaient dans les ingrédients et dans AUCUNE étape : la
+    # porte était posée sur une étape qui n'assaisonnait pas, donc « prélever
+    # avant salage » ne voulait rien dire — on ne salait jamais.
     - id: cuire
-      action: "Verser les œufs sur les légumes, cuire à feu doux jusqu'à prise"
+      action: "Saler et poivrer les légumes, verser les œufs battus dessus et cuire à feu doux jusqu'à prise"
       needs: [pan-fry]
       time_min: 6
       attended: true
@@ -48,6 +51,7 @@ recipe:
     take: "quelques rondelles de courgettes fondues, avant salage"
     prep: "écraser à la fourchette"
     needs: []
+    depuis: [revenir]
 
   emits: []
   plan_b: []
