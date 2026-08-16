@@ -25,6 +25,7 @@ import datetime as dt
 from collections import Counter
 from dataclasses import dataclass, replace
 
+import agenda as AG
 import anticipation as an
 import chainage as ch
 
@@ -113,6 +114,29 @@ class Etat:
 
 
 # --------------------------------------------------------------- construction
+
+def construire_creneaux(cren: dict, jours: tuple) -> tuple:
+    """La forme de la semaine, dépliée en créneaux ORDONNÉS PAR L'HORLOGE.
+
+    Ça vivait dans la TUI, trié par l'ordre de déclaration de `creneaux.yaml`,
+    et ce n'était pas le même ordre : le goûter y est écrit après le dîner
+    parce qu'il est arrivé après dans le fichier, donc le mercredi se rangeait
+    petit-déj, déjeuner, dîner, goûter — 16 h après 19 h 30. Le `Contexte`
+    promet « chronological » dans son commentaire depuis le début ; deux
+    mécaniques le croyaient (l'ancrage d'un rappel prend la dernière présence,
+    le chaînage marche les créneaux vers l'avant) et une seule promesse en
+    commentaire ne tient rien. Le tri se fait donc ici, sur l'heure, et
+    l'invariant est enfin au même endroit que la structure qui le déclare.
+    """
+    emporte = cren.get("emporte", {}) or {}
+    creneaux = []
+    for i, nom in enumerate(jours):
+        du_jour = cren["jours"].get("exceptions", {}).get(nom, cren["jours"]["defaut"])
+        for repas in sorted(du_jour, key=lambda r: an.heure_de(cren.get("repas"), r)):
+            creneaux.append(Creneau(jour=i, repas=repas,
+                                    emporte=nom in (emporte.get(repas) or [])))
+    return tuple(creneaux)
+
 
 def etat_initial(ctx: Contexte) -> Etat:
     n = len(ctx.creneaux)
@@ -638,28 +662,41 @@ def malediction(ctx: Contexte, etat: Etat) -> dict:
 
 # ------------------------------------------------------------------- agenda
 
-# De combien on accepte de prendre de l'avance sur une échéance qui ne se
-# remonte pas. Un rôti cuit six heures trop tôt reste un rôti ; trois jours
-# trop tôt, non.
-AVANCE_RIGIDE_MAX_H = 6
+# L'ancrage, le regroupement en visites et le curseur « maintenant » sont
+# partis dans `agenda.py`, qui ne sait pas ce qu'est une recette : la même
+# mécanique sert au jardin, où un voile d'hivernage se pose avant la gelée et
+# où le rappel ne vaut que s'il tombe quand on est devant la jardinière. Ce
+# qui reste ici est la part cuisine — ce qui produit des échéances, et ce qui
+# compte comme un moment dans la cuisine.
+AVANCE_RIGIDE_MAX_H = AG.AVANCE_RIGIDE_MAX_H
 
 
-def _ancrer(ctx: Contexte, limite, souple: bool):
-    """Le dernier créneau qui précède l'échéance, ou None.
+def presences(ctx: Contexte, etat: Etat) -> list:
+    """Les moments de la semaine où quelqu'un est dans la cuisine.
 
-    Une échéance est une heure ; un rappel utile est un MOMENT OÙ ON EST DÉJÀ
-    DANS LA CUISINE. « Au plus tard à 7 h 05 » se dit mieux « dimanche, en
-    dînant » — et le modèle a exactement ce qu'il faut pour le dire, puisque
-    les créneaux sont sa matière première. Tremper plus longtemps ne coûte
-    rien, donc on remonte librement ; ce qui ne se remonte pas garde son heure.
+    UN CRÉNEAU N'EST PAS UNE PRÉSENCE, et c'est la découverte de cette passe.
+    Le déjeuner emporté du mardi est un repas — il compte dans l'équilibre, il
+    coûte des courses — mais il se mange au coworking. Y accrocher « pense à
+    mettre l'orge à tremper », c'est le dire à quelqu'un qui est à trente
+    kilomètres de son orge. L'ancrage promettait « un moment où on est de toute
+    façon dans la cuisine » et prenait tous les créneaux sans distinction ; le
+    modèle savait déjà lesquels partent en gamelle, personne n'avait relié les
+    deux.
+
+    `charge_min` est ce que la présence coûte pour elle-même : les minutes du
+    plat qui se paient sur place. Une présence sans plat en vaut une quand même
+    — un petit-déj est un moment dans la cuisine, et c'est un endroit
+    parfaitement valable où sortir une portion du congélateur.
     """
-    avant = [j for j in range(len(ctx.creneaux)) if ctx.quand(j) <= limite]
-    if not avant:
-        return None
-    j = avant[-1]
-    if not souple and limite - ctx.quand(j) > dt.timedelta(hours=AVANCE_RIGIDE_MAX_H):
-        return None
-    return j
+    out = []
+    for i, cr in enumerate(ctx.creneaux):
+        if cr.emporte:
+            continue
+        rid = etat.choix[i] if i < len(etat.choix) else None
+        propre = an.minutes_sur_place(ctx.catalogue[rid]) if rid else 0
+        out.append(AG.Presence(quand=ctx.quand(i), label=ctx.label(i), cle=i,
+                               facette="cuisine", charge_min=propre))
+    return out
 
 
 def agenda(ctx: Contexte, etat: Etat) -> list:
@@ -680,6 +717,7 @@ def agenda(ctx: Contexte, etat: Etat) -> list:
     calc = calculer(ctx, etat.choix, etat.jetes)
     gele = {c["creneau"] for c in calc["chaine"] if c.get("congelo")}
     h_decongelo, comment = an.decongelation_h(ctx.foyer, ctx.rules or {})
+    pres = presences(ctx, etat)
 
     lignes = []
     for i, rid in enumerate(etat.choix):
@@ -699,17 +737,57 @@ def agenda(ctx: Contexte, etat: Etat) -> list:
                 "raison": "décongélation", "etapes": [], "rattrapage": None,
             })
         for e in echeances:
-            ancre = _ancrer(ctx, e["limite"], e.get("souple", True))
+            p = AG.ancrer(e["limite"], e.get("souple", True), pres)
             lignes.append({
                 **e,
                 "creneau": i, "pour": ctx.label(i),
                 "id": rid, "titre": r["title"],
-                "ancre": ancre,
-                "ou": ctx.label(ancre) if ancre is not None else None,
+                "ancre": p.cle if p else None,
+                "ou": p.label if p else None,
                 "retard": an.en_retard(e, ctx.instant),
             })
     lignes.sort(key=lambda l: l["limite"])
     return lignes
+
+
+def visites(ctx: Contexte, etat: Etat):
+    """La semaine comme une suite de passages dans la cuisine. `(visites, orphelines)`.
+
+    C'est l'agenda vu par l'endroit plutôt que par le geste, et c'est ce qui
+    s'annonce : « ce soir, 1 h 38 — le dîner, le rôti de demain midi, et l'orge
+    à tremper » tient en une phrase là où trois rappels séparés redemandent
+    l'attention trois fois pour un seul déplacement dans la même pièce.
+    """
+    return AG.visites(presences(ctx, etat), agenda(ctx, etat))
+
+
+def charge_ancree(ctx: Contexte, etat: Etat) -> dict:
+    """créneau -> minutes que d'AUTRES repas lui doivent.
+
+    LA MOITIÉ QUI MANQUAIT. `minutes_sur_place` a appris à retrancher les
+    minutes anticipées du repas qui les subissait à tort — le trempage n'est
+    pas dans le dîner de demain — et personne ne les a jamais rajoutées au soir
+    qui les paie. Elles tombaient entre les deux : le lundi soir de la semaine
+    de test s'affiche à 20 min et en doit 98, parce qu'il y cuit aussi le rôti
+    de mardi midi (75 min, mangé froid) et qu'il y met l'orge à tremper.
+
+    Se tromper de 78 min sur un budget de soirée n'est pas un détail
+    d'affichage : c'est la donnée sur laquelle « hors budget » et le tri par
+    temps décident.
+    """
+    par_creneau = {}
+    for l in agenda(ctx, etat):
+        if l["ancre"] is not None:
+            par_creneau[l["ancre"]] = par_creneau.get(l["ancre"], 0) + int(l["minutes"])
+    return par_creneau
+
+
+def charge(ctx: Contexte, etat: Etat, i: int) -> int:
+    """Les minutes réellement dues au créneau `i` : son plat, plus ce qu'on lui
+    a accroché."""
+    rid = etat.choix[i]
+    propre = an.minutes_sur_place(ctx.catalogue[rid]) if rid else 0
+    return propre + charge_ancree(ctx, etat).get(i, 0)
 
 
 def _score(ctx: Contexte, ligne: dict, cov: dict, cong: dict = None) -> tuple:
@@ -795,6 +873,12 @@ def offre(ctx: Contexte, etat: Etat) -> list:
     date = _date(ctx, etat.jour)
     date_h = ctx.quand(etat.jour)
     window = ctx.foyer["fridge_window_days"]
+    # Ce que la soirée doit DÉJÀ à d'autres repas. Un budget de 30 min sur un
+    # soir qui cuit le rôti de demain midi n'est pas un budget de 30 min, et
+    # proposer une carte contre le budget nu revient à la vendre trop bon
+    # marché. Calculé une fois, sur l'état courant : c'est la dette d'avant le
+    # choix, ce qui est exactement la question posée.
+    deja_du = charge_ancree(ctx, etat).get(etat.jour, 0)
 
     lignes = []
     for rid, r in ctx.catalogue.items():
@@ -833,6 +917,7 @@ def offre(ctx: Contexte, etat: Etat) -> list:
             "id": rid,
             "titre": r["title"],
             "minutes": minutes,
+            "deja_du": deja_du,
             "avant": avant,
             "retard": [e for e in avant if an.en_retard(e, ctx.instant)],
             "plein": bool(plein_ici),
@@ -842,7 +927,7 @@ def offre(ctx: Contexte, etat: Etat) -> list:
             "manque": manque_ici[0] if manque_ici else None,
             "ecoule": ecoule,
             "congelo": du_congelo,
-            "hors_budget": bool(budget and minutes > budget),
+            "hors_budget": bool(budget and minutes + deja_du > budget),
             "emits": [e["type"] for e in r.get("emits", [])],
             "banque": any(e.get("keeps", {}).get("congelo")
                           for e in r.get("emits", [])),

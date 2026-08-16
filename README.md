@@ -64,7 +64,12 @@ Two findings from building it:
 ```bash
 python3 semaine_tui.py                            # 6 dinners from today
 python3 semaine_tui.py --today 2026-08-11 --jours 3
+python3 semaine_tui.py --today 2026-08-10 --jours 7 --maintenant 2026-08-10T18:00 \
+    --agenda --placer 3:panzanella-toscana 5:roti-bouillon-herbes 6:soupe-orge-petits-pois
 ```
+
+The last one is non-interactive: it places three dishes on numbered slots and
+prints the agenda as of a given moment (`demo/g-agenda.txt`).
 
 `plan.py` prices a week somebody already decided, which is what prompted the
 user's objection: *you chose the dishes for me, I want to choose.* So this
@@ -898,11 +903,95 @@ wrong, the ratio this README already identified as the point where a check
 teaches you to skim. It was tightened the same hour, to the turns of phrase that
 actually announce a wait.
 
-**What this does not do.** The agenda is computed, not *delivered*: there is no
-notification, and the prototype has no notion of "now" beyond a default of 8 a.m.
-An anticipation aid that only exists when you open the app is half an aid — but
-the half that was missing was knowing *what* to announce and *when*, and that is
-now data rather than a comment in a YAML file.
+**What this does not do** — attacked in the next section, which found that the
+missing delivery was hiding three defects rather than one missing feature.
+
+### The agenda's unit is the visit, not the gesture (`agenda.py`)
+
+The previous section closed on an apology: *the agenda is computed, not
+delivered; there is no notion of "now".* That reads like one missing feature —
+wire up a notification — and it was not. Going at the delivery meant asking
+*what exactly would you announce, and when*, and the model could not answer
+either half. Three separate things were wrong, and all three were about time.
+
+**The list of slots was not in clock order.** `Contexte.creneaux` carried the
+comment `# Creneau, chronological` from the day it was written. It wasn't. The
+TUI built the week by sorting each day's meals by their position in
+`creneaux.yaml`, and the goûter is declared last because it arrived last — so
+Wednesday came out *petit-déj, déjeuner, dîner, goûter*, with 16 h filed after
+19 h 30. Two mechanics believed the comment: the chaining walks slots forward to
+make *« hier soir nourrit ce midi »* true, and the anchor takes **the last slot
+preceding a deadline** — by index. A Wednesday-evening deadline anchored to
+*« mercredi goûter »*, naming a moment five hours in the past. The invariant now
+lives in `construire_creneaux()`, next to the structure that declares it,
+because a promise in a comment holds nothing.
+
+**A slot is not a presence.** The anchor's whole premise is *a moment when
+somebody is in the kitchen anyway* — and it was reaching for any slot at all,
+including Tuesday's lunch, which `creneaux.yaml` has said all along departs in a
+lunchbox (`emporte: {dejeuner: [mardi, jeudi]}`). Anchoring *« mets l'orge à
+tremper »* there is telling someone to do it thirty kilometres from their
+barley. The model already knew which meals leave the house; nothing had
+connected that to the reminder. Of 22 slots, 20 are presences.
+
+**And the minutes had been subtracted without ever being added.** This is the
+one that matters. `minutes_sur_place` took the anticipated gestures *off* the
+meal that was wrongly carrying them — the 3 min of soaking are not in tomorrow's
+dinner — and nothing put them *on* the evening that actually pays them. They
+fell between the two. On the test week, Monday evening displayed **20 min** and
+owed **98**: its own panzanella, plus 75 min cooking Tuesday's roast (served
+cold, so all of it is anticipated), plus the barley. `hors_budget` and the
+time-ranking were both deciding on that number.
+
+```
+AGENDA — la cuisine visite par visite · maintenant : 10/08 18h00
+  ▶ lundi dîner — y être à 17h52 · 98 min (dont 78 pour plus tard)
+        ⏳ Détailler l'oignon…  (75 min, refroidissement) → mardi déjeuner
+        ⏳ Mettre l'orge à tremper…  (3 min, trempage)    → mardi dîner
+```
+
+**The fix for all three is one object: the visit.** A flat list of gestures says
+*« lundi dîner »* three times and never says what Monday evening costs. A visit
+is a presence plus everything that hangs on it, and it knows two numbers nobody
+had: what the evening really owes, and **the time to walk into the kitchen** —
+17 h 52, not the 19 h 10 the meal's own duration implies. That start time moves
+when tomorrow asks something of tonight, which is precisely the coupling the
+model could not express.
+
+The visit is also what makes delivery trivial, and that is the argument for it
+over the gesture. *What* to announce is the visit's contents; *when* is
+`visite.debut`. Three gestures in one room would otherwise be three
+notifications for one trip — which is how you teach someone to turn
+notifications off. `curseur(visites, maintenant)` splits the week at `debut`
+rather than at the meal hour, so at 19 h 15 a 19 h 30 dinner needing 98 min is
+not *« à venir »*, it is an hour and a half late.
+
+**Two things the view exposed the moment it existed.** A missed deadline prices
+its `rattrapage` on the gesture but not on the meal, so Tuesday read *« 22 min »*
+for an evening whose only remaining route costs 82 — the same lie one level
+down; it now reads `22 min + 60 min de rattrapage`. And the announcement is
+built out of `action`, which is recipe prose (*« détailler l'oignon en petits
+cubes, émincer les carottes, le céleri et le poireau »*) and not a label. It is
+truncated for now, and the truncation is the finding: a step needs a short
+imperative name that the recipe format does not carry.
+
+**`agenda.py` contains no word of cooking, and that is deliberate** — this
+mechanic is shared across facets, not owned by the kitchen. The garden has the
+same shape: a sowing has a window, a winter fleece goes on *before* the frost,
+and the reminder is worth something only if it lands when you are already at the
+planter. So the module knows three things — a deadline, a presence, a visit —
+and `semaine_model` supplies the kitchen's answers to *what produces deadlines*
+and *what counts as being there*. Another facet supplies its own. The rule that
+generalises furthest is the narrow one found here: **a presence is not every
+moment you have an appointment, it is the moments you are actually in the
+place** — which in the kitchen excluded the lunchbox, and in the garden will
+exclude whatever its equivalent turns out to be.
+
+**What this still does not do.** Nobody fires the reminder: `annonce()` renders
+the sentence a notification would carry, and there is no scheduler behind it —
+correctly so, since posting it belongs to the shell, which is the only layer
+that sees a Tuesday-evening kitchen visit and a Tuesday-evening garden visit as
+one interruption. `maintenant` is a flag, not a clock.
 
 ### What driving it has already shown
 
