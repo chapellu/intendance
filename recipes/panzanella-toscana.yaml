@@ -74,10 +74,12 @@ recipe:
       time_min: 7
       kid: {age_min_months: 30, task: "effeuiller le basilic dans le saladier"}
     - id: reposer
-      action: "Couvrir et laisser reposer 30 min à 1 h au frais ; juste avant de servir, ajouter un filet d'huile d'olive et quelques feuilles de basilic"
+      action: "Couvrir et mettre au frais ; juste avant de servir, ajouter un filet d'huile d'olive et quelques feuilles de basilic"
       needs: []
       time_min: 2
       attended: false
+      attente_min: 45          # « 30 min à 1 h » : sous le seuil, donc pas une session à part
+      attente_raison: repos
 
   baby_portion:
     take: "un morceau de pain trempé et quelques dés de tomate, AVANT sel, huile et vinaigre"

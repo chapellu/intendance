@@ -16,6 +16,7 @@ from pathlib import Path
 
 import yaml
 
+import anticipation as A
 import catalogue
 import semaine_model as M
 
@@ -35,6 +36,7 @@ def charger(today, n_jours):
     conserv = yaml.safe_load((HERE / "conservation.yaml").read_text())
     histo = yaml.safe_load((HERE / "historique.yaml").read_text())
     cren = yaml.safe_load((HERE / "creneaux.yaml").read_text())
+    rules = yaml.safe_load((HERE / "rules.yaml").read_text())
     jours = tuple(JOURS[(today.weekday() + i) % 7] for i in range(n_jours))
 
     # Expand the week shape into an ordered list of slots. Chronological order
@@ -52,7 +54,7 @@ def charger(today, n_jours):
     ctx = M.Contexte(catalogue=cat, foyer=foyer, stock=stock, rayons=rayons,
                      equilibre=equilibre, conservation=conserv,
                      today=today, jours=jours, creneaux=tuple(creneaux),
-                     repas=cren["repas"],
+                     repas=cren["repas"], rules=rules,
                      equilibre_sur=tuple(cren.get("equilibre_sur",
                                                   ("dejeuner", "diner"))))
     return ctx, histo
@@ -95,6 +97,14 @@ def carte(ctx, l, k):
         detail.append("❄ portion du congélo")
     if l.get("plein"):
         detail.append("plein tarif : sans le reste")
+    # L'anticipation s'annonce sur la carte, pas au moment de cuisiner : c'est
+    # la seule façon qu'elle serve à quelque chose.
+    if l.get("retard"):
+        e = l["retard"][0]
+        detail.append(f"⏳ {e['raison']} : c'était {e['dit'].replace('au plus tard ', '')}")
+    elif l.get("avant"):
+        e = l["avant"][0]
+        detail.append(f"⏳ {e['raison']} à lancer {e['dit'].replace('au plus tard ', '')}")
     if l["manque"]:
         detail.append(f"⚠ demande {l['manque']['type']}")
     if l["emits"]:
@@ -186,8 +196,14 @@ def frame(ctx, etat, histo, vue="main", message=""):
             if r.get("emits"):
                 marks.append(f"{D}→ {', '.join(e['type'] for e in r['emits'])}{R}")
             bud = etat.budgets[i]
-            temps = f"{r.get('time_min_total')} min"
-            if bud and r.get("time_min_total", 0) > bud:
+            # Les minutes DU CRÉNEAU. Le budget d'un soir n'a pas à payer un
+            # trempage lancé la veille, et un plat entièrement cuisiné l'avant-
+            # veille ne coûte rien ici — c'est le ⏳ qui dit ce qu'il a coûté.
+            sur_place = A.minutes_sur_place(r)
+            temps = f"{sur_place} min"
+            if A.anticipations(r):
+                temps += " ⏳"
+            if bud and sur_place > bud:
                 temps = f"{J}{temps} > {bud}{R}"
             out.append(f" {sel} {B}{i+1:>2}{R} {D}{lab:<11}{R} "
                        f"{r['title']:<40} {D}⏱{R} {temps}  " + "  ".join(marks))
@@ -210,6 +226,12 @@ def frame(ctx, etat, histo, vue="main", message=""):
             src = ctx.catalogue[c["depuis"]]["title"] if c["depuis"] else "le frigo"
             out.append(f"       {V}↪ {ctx.label(c['creneau'])} part de « {c['type']} » "
                        f"venu de {src} — zéro achat pour cette base{R}")
+    for t in calc.get("trop_tard", []):
+        ecart = (f"{t['ecart_h']:.0f} h plus tôt" if t["ecart_h"] is not None
+                 else "on ne sait pas quand")
+        out.append(f"       {J}⏳ {ctx.label(t['creneau'])} : « {t['titre']} » veut "
+                   f"« {t['type'] } » sous {t['delai_max_h']:g} h — il est cuisiné {ecart}. "
+                   f"Cette base ne se garde pas, elle s'enchaîne.{R}")
     for p in calc["problemes"]:
         out.append(f"       {J}⚠ {ctx.label(p['creneau'])} : « {p['titre']} » attend le reste "
                    f"« {p['type']} » que rien ne produit avant — placer "
@@ -252,6 +274,24 @@ def frame(ctx, etat, histo, vue="main", message=""):
     for p in M.gaspillage(ctx, etat):
         out.append(f"       {J}✗ jeté : {p['type']} ({p['band']}) — "
                    f"la semaine ne peut plus compter dessus{R}")
+
+    # ---- ce que la semaine oblige à lancer AVANT
+    ag = M.agenda(ctx, etat)
+    if ag:
+        out.append(f"{B}À ANTICIPER{R} {D}— les gestes dont l'oubli fait rater le plat"
+                   f" sans recours{R}")
+        for e in ag:
+            quand = e["ou"] or e["dit"]
+            if e["retard"]:
+                marque, coul = "✗", J
+                rattr = e.get("rattrapage")
+                suite = (f" — rattrapage : {rattr['action'][:60]} (+{rattr['cout_min']} min)"
+                         if rattr else " — sans rattrapage : c'est un autre plat ce soir")
+            else:
+                marque, coul, suite = "⏳", C, ""
+            out.append(f"       {coul}{marque} {quand}{R} : {e['geste'][:58]} "
+                       f"{D}({e['minutes']} min, {e['raison']}) → {e['pour']}{R}"
+                       + (f"{coul}{suite}{R}" if suite else ""))
     out.append("")
 
     if vue == "main":
@@ -319,6 +359,12 @@ def frame(ctx, etat, histo, vue="main", message=""):
                            f"placer « {l['manque']['fix']} » avant{R}")
             if l["hors_budget"]:
                 why.append(f"{J}hors budget{R}")
+            if l.get("retard"):
+                why.append(f"{J}⏳ {l['retard'][0]['raison']} : l'heure est passée{R}")
+            elif l.get("avant"):
+                e = l["avant"][0]
+                why.append(f"{C}⏳ {e['raison']} "
+                           f"{e['dit'].replace('au plus tard ', 'avant ')}{R}")
             if l["emits"]:
                 why.append(f"{D}→ laisse {', '.join(l['emits'])}{R}")
             tete = (f"  {B}{k:>2}{R}. {l['titre']:<40} {D}⏱{R} {l['minutes']:>2} min  "

@@ -20,6 +20,7 @@ from pathlib import Path
 
 import yaml
 
+import anticipation as an
 import chainage as ch
 
 HERE = Path(__file__).parent
@@ -104,7 +105,8 @@ def stock_has(stock, acc, fridge_window_days, today):
 # ---------------------------------------------------------------- compilation
 
 def compile_recipe(recipe_id, household, rules, stock, time_budget=None,
-                   kids_mode=False, today=None, rayons=None):
+                   kids_mode=False, today=None, rayons=None, repas="diner",
+                   creneaux=None):
     today = today or dt.date.today()
     import catalogue
     cat = catalogue.charger_recettes(HERE / "recipes")
@@ -199,8 +201,17 @@ def compile_recipe(recipe_id, household, rules, stock, time_budget=None,
             t += delta
         return t
 
+    def sessions_de(ss):
+        """Le découpage en séances, recalculé après chaque coupe du plan B :
+        supprimer une étape peut déplacer l'heure à laquelle il faut s'y mettre."""
+        return an.decouper({"steps": ss, "time_min_total": r.get("time_min_total")},
+                           temps=eff_time)
+
     def plan_total(ss):
-        return sum(eff_time(s) for s in ss if not s.get("parallel_with")) + baby_extra
+        # Les minutes du repas, et elles seules. Un budget de 20 min ce soir
+        # n'a pas à payer les 3 min de trempage d'hier — c'était le cas avant,
+        # et le plan B se déclenchait donc un peu trop tôt.
+        return sum(s.gestes_min for s in sessions_de(ss) if s.fin_avant_min == 0) + baby_extra
 
     total = plan_total(steps)
     if time_budget and total > time_budget:
@@ -226,8 +237,19 @@ def compile_recipe(recipe_id, household, rules, stock, time_budget=None,
     eldest_months = max((e["age_months"] for e in hh["eaters"] if e["kind"] == "toddler"),
                         default=None)
 
+    # --- l'anticipation : ce qui ne se fait pas à l'heure du repas (#anticipation)
+    quand = an.quand_repas(today, (creneaux or {}).get("repas"), repas)
+    sessions = sessions_de(steps)
+    avance = [s for s in sessions if s.fin_avant_min > 0]
+    ids_avance = {e.get("id") for s in avance for e in s.etapes}
+    echeances = an.echeances({"steps": steps, "time_min_total": r.get("time_min_total")},
+                             quand, temps=eff_time)
+    depart = quand - dt.timedelta(minutes=sessions[0].debut_avant_min) if sessions else quand
+
     n = 0
     for s in steps:
+        if s.get("id") in ids_avance:
+            continue                    # rendue plus haut, à son heure
         if s.get("seasoning_gate") and has_baby and r.get("baby_portion"):
             bp = r["baby_portion"]
             n += 1
@@ -278,6 +300,16 @@ def compile_recipe(recipe_id, household, rules, stock, time_budget=None,
                + (f" — budget {time_budget} min" if time_budget else "")
                + (" — session enfants" if kids_mode else ""))
     out.append("")
+    if echeances:
+        out.append(f"À ANTICIPER — servi {repas} à {quand.strftime('%Hh%M')} :")
+        for e in echeances:
+            out.append(f"  ⏳ {e['dit']} ({e['raison']}, {e['attente_min'] // 60} h "
+                       f"d'attente) : {e['geste']}  ⏱ {e['minutes']} min")
+            if e.get("rattrapage"):
+                rat = e["rattrapage"]
+                out.append(f"     ↯ oublié ? {rat['action']} (+{rat['cout_min']} min) "
+                           f"— {rat['effet']}")
+        out.append("")
     if prelude:
         out.append("AVANT DE COMMENCER :")
         out += [f"  ⚠ {p}" for p in prelude]
@@ -293,9 +325,22 @@ def compile_recipe(recipe_id, household, rules, stock, time_budget=None,
     out += [f"  {i}" for i in ingredients]
     out.append("")
     out.append("ÉTAPES :")
-    out += [f"  {s}" for s in steps_out]
+    # Un plat entièrement cuisiné la veille — le rôti servi froid — n'a rien à
+    # faire le jour même, et le dire est plus honnête qu'une section vide. Le
+    # geste qui reste (le trancher) n'est écrit dans aucune étape : la recette
+    # s'arrête à la cuisson, comme le livre.
+    out += ([f"  {s}" for s in steps_out] or
+            ["  — rien à cuisiner le jour même : tout est fait la veille —"])
     out.append("")
-    out.append(f"Temps total estimé : {total} min")
+    out.append(f"Temps à l'heure du repas : {total} min")
+    if sessions:
+        # « 25 min » ne dit pas à quelle heure s'y mettre quand la pâte repose
+        # une heure au milieu. Les deux chiffres mesurent des choses
+        # différentes, et c'est le second qu'on cherche à 18 h.
+        etendue = sessions[0].debut_avant_min
+        if etendue > total:
+            out.append(f"Du premier geste au repas : {etendue // 60} h {etendue % 60:02d} "
+                       f"— commencer {depart.strftime('%d/%m à %Hh%M')}")
     if emits_out:
         out.append("")
         out.append("EN SORTIE (à consigner dans le stock) :")
@@ -310,17 +355,20 @@ def main():
     ap.add_argument("--kids", action="store_true")
     ap.add_argument("--no-stock", action="store_true")
     ap.add_argument("--today", default="2026-08-08")
+    ap.add_argument("--repas", default="diner",
+                    help="le créneau servi — décide de l'heure, donc des échéances")
     args = ap.parse_args()
 
     household = load(HERE / "household.yaml")
     rules = load(HERE / "rules.yaml")
     stock = {"outputs": []} if args.no_stock else load(HERE / "stock.yaml")
     rayons = load(HERE / "rayons.yaml")
+    creneaux = load(HERE / "creneaux.yaml")
     today = dt.date.fromisoformat(args.today)
 
     print(compile_recipe(args.recipe, household, rules, stock,
                          time_budget=args.time, kids_mode=args.kids, today=today,
-                         rayons=rayons))
+                         rayons=rayons, repas=args.repas, creneaux=creneaux))
 
 
 if __name__ == "__main__":

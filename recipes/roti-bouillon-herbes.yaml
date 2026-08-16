@@ -22,10 +22,10 @@ recipe:
     portions_eq: 6
   time_min_total: 70
   active_min: 10
-  # À PRÉPARER LA VEILLE : le rôti se sert froid le lendemain, en tranches
-  # fines. Le modèle n'a aucun champ pour « ce plat s'étale sur deux jours » —
-  # `time_min_total` ne mesure qu'une session de cuisine. La cuisson est donc
-  # comptée ici, et le service du lendemain n'apparaît nulle part.
+  # LE PLAT QUI S'ÉTALE SUR DEUX JOURS, et le cas extrême de l'anticipation :
+  # `attente_min: 720` sur la dernière étape veut dire que TOUTE la cuisine se
+  # fait la veille. Le jour où on le mange, il ne reste qu'à le trancher — donc
+  # `minutes_sur_place` tombe à 0, ce qui est la vérité et non un bug.
 
   apports:
     proteine: viande-blanche
@@ -49,7 +49,7 @@ recipe:
 
   steps:
     - id: tailler
-      action: "La veille : détailler l'oignon en petits cubes, émincer les carottes, le céleri et le poireau"
+      action: "Détailler l'oignon en petits cubes, émincer les carottes, le céleri et le poireau"
       needs: []
       time_min: 10
       kid: {age_min_months: 30, task: "laver le céleri et le poireau"}
@@ -64,9 +64,15 @@ recipe:
       time_min: 15
       attended: false
     - id: refroidir
-      action: "Sortir le rôti, le laisser sécher et refroidir quelques instants dans une passoire, puis le mettre au frais bien emballé ; il se sert le lendemain en tranches fines, un peu comme du jambon"
+      action: "Sortir le rôti, le laisser sécher et refroidir quelques instants dans une passoire, puis le mettre au frais bien emballé"
       needs: []
       time_min: 5
+      attente_min: 720
+      attente_raison: refroidissement
+      attente_souple: false     # il se mange froid le lendemain : ni plus tôt, ni bien plus tard
+      # C'est cette ligne qui dit « 2 en 1 sur deux jours ». Elle se sert en
+      # tranches fines, un peu comme du jambon — le geste du jour même, que la
+      # recette ne compte nulle part parce qu'il n'a pas d'étape.
 
   # PAS DE `baby_portion` : 2 c. à s. de gros sel partent dans l'eau dès le
   # départ, et c'est délibéré chez l'autrice — c'est ainsi que le rôti

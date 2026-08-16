@@ -42,3 +42,20 @@ capabilities:
     - tool: none
       rewrite: "en volume (voir équivalences)"
       time_delta_min: 0
+
+  # Une chaîne de repli qui ne se paie PAS en minutes mais en HEURES D'AVANCE
+  # (`avance_h`) — la seconde horloge, celle d'`anticipation.py`. Décongeler ne
+  # prend pas plus de temps de cuisine selon l'outil, ça prend plus de PRÉAVIS.
+  #
+  # Conséquence désagréable et vraie : sans micro-ondes, une portion du
+  # congélateur réclame une nuit de préavis, et « portion d'urgence » devient un
+  # abus de langage — c'est une réserve. Ce foyer a un micro-ondes, donc la
+  # carte se joue le soir même ; le modèle ne le savait pas et l'aurait promis
+  # à un foyer qui n'en a pas.
+  decongeler:
+    - tool: micro-ondes
+      rewrite: "au micro-ondes, mode décongélation, en remuant à mi-parcours"
+      avance_h: 0.5
+    - tool: none
+      rewrite: "au frigo, sorti la veille au soir"
+      avance_h: 12

@@ -31,22 +31,21 @@ recipe:
     profil: cru
     origine: francais
 
-  # ⚠ UNE CONTRAINTE QUE LE MODÈLE NE SAIT PAS EXPRIMER. `accepts` vérifie que
-  # la base est en stock dans la fenêtre de fraîcheur du foyer — en JOURS. Or
-  # l'autrice demande la mousse « encore tiède », c'est-à-dire dans les minutes
-  # qui suivent, avant qu'elle prenne. Une mousse d'hier au frigo passerait le
-  # test de `_stock_has()` et raterait complètement la recette : elle serait
-  # ferme, impossible à couler dans le cercle.
+  # L'AUTRE BOUT DE L'AXE DU TEMPS. `accepts` vérifiait la fraîcheur en JOURS,
+  # alors que l'autrice demande la mousse « encore tiède » — dans les minutes
+  # qui suivent, avant qu'elle prenne. Une mousse d'hier au frigo passait le
+  # test et ratait la recette : ferme, impossible à couler dans le cercle.
+  # `delai_max_h` dit ce « pas plus de », comme `attente_min` dit le « pas
+  # moins de » (cf. `anticipation.py`).
   #
-  # Il manque donc une troisième échelle à côté de `frigo_days` et `congelo` :
-  # « à enchaîner immédiatement ». `doubler_la_base` ci-dessous est du même
-  # tonneau — un `accepts` ne sait pas dire « il m'en faut deux fois la
-  # recette ». Les deux sont notés ici et non contournés.
+  # `doubler_la_base` reste, lui, du documentaire : un `accepts` ne sait
+  # toujours pas dire « il m'en faut deux fois la recette ».
   accepts:
     - type: mousse-chocolat
       qty: {amount: 2, unit: recette}
       required: true
       fallback_recipe: mousse-au-chocolat
+      delai_max_h: 2          # « encore tiède » : le même après-midi, pas la veille
   doubler_la_base: true     # champ documentaire : rien ne le lit aujourd'hui
 
   sans_reste:
@@ -80,10 +79,18 @@ recipe:
       needs: []
       time_min: 6
     - id: reposer
-      action: "Couvrir et mettre une nuit au frais ; saupoudrer de cacao au moment de servir le lendemain"
+      action: "Couvrir et mettre au frais ; saupoudrer de cacao au moment de servir"
       needs: []
       time_min: 4
       attended: false
+      attente_min: 720
+      attente_raison: repos
+      attente_souple: false
+      # Neuvième recette du catalogue à s'étaler sur deux jours, et la seule
+      # trouvée par le validateur plutôt qu'à la lecture : « une nuit au frais »
+      # était écrit dans la phrase, donc invisible. Le gâteau se monte la veille
+      # de son goûter — et la mousse, elle, se coule dans les minutes qui suivent
+      # sa fabrication. La même recette porte les deux bouts de l'axe.
 
   # PAS DE `baby_portion` : dessert au chocolat noir, sirop et, selon la
   # variante, alcool (marsala, amaretto, rhum).

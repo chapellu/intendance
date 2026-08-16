@@ -22,11 +22,10 @@ recipe:
     portions_eq: 6
   time_min_total: 25
   active_min: 10
-  # LE TREMPAGE N'EST PAS DANS CE CHIFFRE. L'orge trempe 12 h la veille. Comme
-  # les pois chiches de la p. 36, c'est un coût réel que le format « prép. +
-  # cuisson » du livre ne montre pas, et que le modèle ne sait pas porter : il
-  # n'a pas de notion de délai d'attente la veille, seulement des minutes de
-  # cuisine. Troisième recette sur douze à buter dessus.
+  # Le trempage de l'orge est maintenant DANS le modèle : `attente_min: 720` sur
+  # l'étape `tremper`. « La veille » n'est plus écrit nulle part — c'est ce que
+  # donnent 12 h d'attente reculées depuis l'heure du repas. `time_min_total`
+  # reste la session de cuisine ; `anticipation.duree_totale()` dit les 13 h.
 
   apports:
     proteine: aucune
@@ -56,9 +55,19 @@ recipe:
 
   steps:
     - id: tremper
-      action: "La veille : mettre l'orge à tremper ; le lendemain, le rincer et l'égoutter"
+      action: "Mettre l'orge à tremper dans un grand volume d'eau froide"
       needs: []
       time_min: 3
+      attente_min: 720          # 12 h : c'est ce qui fait « la veille », rien d'autre
+      attente_raison: trempage
+      rattrapage:
+        action: "À défaut : couvrir l'orge d'eau bouillante et la laisser gonfler 1 h à couvert"
+        cout_min: 60
+        effet: "grain moins tendre et cuisson un peu plus longue, mais le plat se fait le jour même"
+    - id: rincer
+      action: "Rincer et égoutter l'orge trempée"
+      needs: []
+      time_min: 1
     - id: completer
       action: "Mesurer le bouillon restant et compléter d'eau pour arriver à 1,8 l dans le faitout ; retirer le laurier et les tiges d'herbes, mais garder les morceaux de légumes"
       needs: []

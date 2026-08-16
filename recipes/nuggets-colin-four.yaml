@@ -17,10 +17,10 @@ recipe:
     portions_eq: 4
   time_min_total: 30
   active_min: 15
-  # LES 2 H DE DÉCONGÉLATION NE SONT PAS DEDANS. Le poisson décongèle dans une
-  # marinade citronnée deux heures avant. C'est de l'attente, pas du travail :
-  # le modèle ne distingue pas les deux, il ne connaît que des minutes d'étape.
-  # Même impasse que le trempage de l'orge (p. 56) et des pois chiches (p. 36).
+  # Les 2 h de décongélation sont maintenant portées par `attente_min: 120` sur
+  # l'étape `mariner` — de l'attente, pas du travail, et le modèle sait enfin
+  # faire la différence. C'est la seule anticipation du catalogue qui tombe le
+  # jour même : deux heures avant le dîner, pas la veille.
 
   apports:
     proteine: poisson
@@ -42,10 +42,16 @@ recipe:
 
   steps:
     - id: mariner
-      action: "Environ 2 h avant : faire décongeler le colin dans le jus de citron, avec un peu de sel et de poivre"
+      action: "Mettre le colin surgelé à décongeler dans le jus de citron, avec un peu de sel et de poivre"
       needs: []
       time_min: 5
       attended: false
+      attente_min: 120
+      attente_raison: decongelation
+      rattrapage:
+        action: "À défaut : décongeler au micro-ondes, puis laisser 15 min dans le citron"
+        cout_min: 20
+        effet: "chair moins ferme et marinade à peine prise — le citron n'a pas le temps d'agir"
     - id: detailler
       action: "Égoutter la marinade et découper le colin en morceaux de deux bouchées"
       needs: []

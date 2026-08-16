@@ -26,6 +26,7 @@ from pathlib import Path
 
 import yaml
 
+import anticipation as an
 import catalogue
 import chainage as ch
 import compile as rc  # shadows the builtin `compile` in this module only
@@ -52,7 +53,7 @@ def canon(ing_id, aliases):
 
 
 def plan_week(days, household, rules, stock, rayons, today, cat=None,
-              equilibre=None):
+              equilibre=None, creneaux=None):
     cat = cat if cat is not None else catalogue.charger_recettes(HERE / "recipes")
     hh = household["household"]
     need = rc.household_portions(hh)
@@ -167,11 +168,16 @@ def plan_week(days, household, rules, stock, rayons, today, cat=None,
             sortie["_espace"] = ch.espace_de(e)
             depot.ajouter(sortie, born=date, source=r["title"], location="frigo")
 
+        # Ce qu'il faut avoir lancé avant. La liste de courses est faite pour
+        # être lue AVANT la semaine ; c'est donc ici, et pas seulement dans le
+        # compilateur du soir, que « mettre l'orge à tremper » doit apparaître.
+        quand = an.quand_repas(date, (creneaux or {}).get("repas"), "diner")
         menu.append({
             "jour": entry["jour"], "date": date, "titre": r["title"],
-            "minutes": r.get("time_min_total"),
+            "minutes": an.minutes_sur_place(r),
             "reste": bool(covered),
             "emits": [e["type"] for e in r.get("emits", [])],
+            "avant": an.echeances(r, quand),
         })
 
     # What is already in the fridge and the plan does not touch. Worth saying
@@ -260,6 +266,18 @@ def render(menu, basket, to_check, warnings, chained, fridge, offres,
         out.append(f"  {m['jour'].capitalize():<10} {m['date'].strftime('%d/%m')}  "
                    f"{m['titre']}  ⏱ {m['minutes']} min{tail}")
     out.append("")
+
+    # Ce qui se joue la veille au soir, et qu'aucune liste de courses ne dit.
+    avant = [(m, e) for m in menu for e in m.get("avant") or []]
+    if avant:
+        out.append("À ANTICIPER — à lancer avant, sinon le plat est raté sans recours")
+        for m, e in sorted(avant, key=lambda x: x[1]["limite"]):
+            quand = e["limite"]
+            out.append(f"  ⏳ {JOURS[quand.weekday()]} {quand.strftime('%d/%m à %Hh%M')} "
+                       f"au plus tard ({e['raison']}, {e['attente_min'] // 60} h) — "
+                       f"{e['geste']}")
+            out.append(f"     pour {m['jour']} : {m['titre']}  ⏱ {e['minutes']} min")
+        out.append("")
 
     if warnings:
         out.append("⚠ À CORRIGER DANS LE PLAN")
@@ -353,6 +371,7 @@ def main():
     stock = rc.load(HERE / "stock.yaml")
     rayons = rc.load(HERE / "rayons.yaml")
     equilibre = rc.load(HERE / "equilibre.yaml")
+    creneaux = rc.load(HERE / "creneaux.yaml")
     today = dt.date.fromisoformat(args.today) if args.today else dt.date.today()
 
     if args.recipes:
@@ -363,7 +382,8 @@ def main():
 
     (menu, basket, to_check, warnings, chained, fridge, offres,
      provenances, stockage) = plan_week(days, household, rules, stock, rayons,
-                                        today, equilibre=equilibre)
+                                        today, equilibre=equilibre,
+                                        creneaux=creneaux)
     print(render(menu, basket, to_check, warnings, chained, fridge, offres,
                  provenances, stockage, rayons, household))
 

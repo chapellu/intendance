@@ -22,7 +22,7 @@ recipe:
     encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
   yields:
     portions_eq: 8          # « 8 à 9 parts » — des parts de dessert, pas de repas
-  time_min_total: 50        # hors 1 h de repos de la pâte au frais
+  time_min_total: 50        # dont 1 h de repos de la pâte, portée par `attente_min`
   active_min: 25
 
   creneaux: [gouter]        # dessert, pas un plat — cf. la note d'en-tête
@@ -53,12 +53,16 @@ recipe:
       time_min: 10
       kid: {age_min_months: 30, task: "malaxer la pâte à la main"}
     - id: reposer
-      action: "Couvrir et laisser reposer 1 h au frais"
+      action: "Couvrir et mettre au frais"
       needs: []
       time_min: 5
       attended: false
-      # Le repos réel est d'une heure ; seules les 5 min de mise au frais sont
-      # comptées, faute de pouvoir exprimer une attente dans le modèle.
+      attente_min: 60
+      attente_raison: repos
+      # 1 h d'attente, sous le seuil de coupure : le repos ne coupe PAS la
+      # recette en deux séances — on attend à la maison. Il décale seulement
+      # l'heure de départ, ce qui est exactement l'information manquante quand
+      # le goûter est à 16 h.
     - id: cuire-a-blanc
       action: "Préchauffer à 200 °C, étaler la pâte et foncer un moule à tarte en tôle d'environ 22 cm, puis enfourner 20 min jusqu'à belle coloration"
       needs: [bake]

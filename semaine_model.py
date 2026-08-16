@@ -25,6 +25,7 @@ import datetime as dt
 from collections import Counter
 from dataclasses import dataclass, replace
 
+import anticipation as an
 import chainage as ch
 
 # Ranking modes. `equilibre` is the default: the user asked for dishes that
@@ -71,8 +72,14 @@ class Contexte:
     today: dt.date
     jours: tuple             # ("mardi", "mercredi", ...)
     creneaux: tuple = ()     # Creneau, chronological — what `choix` indexes
-    repas: dict = None       # creneaux.yaml["repas"]: label, nature, minutes
+    repas: dict = None       # creneaux.yaml["repas"]: label, nature, minutes, heure
     equilibre_sur: tuple = ("dejeuner", "diner")
+    rules: dict = None       # rules.yaml — pour le préavis de décongélation
+    # L'instant où la semaine se construit. Il ne servait à rien tant que le
+    # modèle n'avait que des jours ; il décide maintenant si un trempage est
+    # encore possible ou déjà manqué. 8 h du matin par défaut : on planifie la
+    # semaine devant son café, pas à minuit.
+    maintenant: dt.datetime = None
 
     def nature(self, i):
         return (self.repas or {}).get(self.creneaux[i].repas, {}).get("nature", "choisi")
@@ -81,6 +88,17 @@ class Contexte:
         c = self.creneaux[i]
         lab = (self.repas or {}).get(c.repas, {}).get("label", c.repas)
         return f"{self.jours[c.jour]} {lab}"
+
+    def quand(self, i):
+        """L'heure exacte du créneau `i`. Un créneau n'avait qu'un jour, ce qui
+        rendait « la veille au soir » indicible — cf. `anticipation.py`."""
+        c = self.creneaux[i]
+        return an.quand_repas(self.today + dt.timedelta(days=c.jour),
+                              self.repas, c.repas)
+
+    @property
+    def instant(self):
+        return self.maintenant or dt.datetime.combine(self.today, dt.time(8, 0))
 
 
 @dataclass(frozen=True)
@@ -261,6 +279,8 @@ def calculer(ctx: Contexte, choix: tuple, jetes: tuple = ()) -> dict:
     provenances = Counter()
     chaine, problemes, ecoule = [], [], set()
     plein_tarif = []
+    trop_tard = []           # arêtes qui exigent l'enchaînement immédiat
+    emis_a = {}              # recipe_id -> créneau où il a été cuisiné
 
     for i, rid in enumerate(choix):
         if rid is None:
@@ -283,6 +303,20 @@ def calculer(ctx: Contexte, choix: tuple, jetes: tuple = ()) -> dict:
                                "congelo": pr.out.get("location") == "congelo"})
                 if src is None:
                     ecoule.add(pr.out["type"])
+            # « Pas plus de » : certaines bases ne se chaînent que TOUT DE
+            # SUITE. La mousse entre dans le gâteau encore tiède ; celle
+            # d'hier est ferme et rate la recette, alors qu'elle passe sans
+            # difficulté une fenêtre de fraîcheur comptée en jours.
+            dmax = an.delai_max_h(acc)
+            if dmax is not None and pr.trouve:
+                src = pr.out.get("_from")
+                j = emis_a.get(src)
+                ecart = (ctx.quand(i) - ctx.quand(j)).total_seconds() / 3600 if j is not None else None
+                if ecart is None or ecart > dmax:
+                    trop_tard.append({
+                        "creneau": i, "titre": r["title"], "type": _libelle(acc),
+                        "delai_max_h": dmax, "ecart_h": ecart, "depuis": src,
+                    })
             if pr.couvert or (pr.trouve and pr.approximatif):
                 continue
             if r.get("sans_reste"):
@@ -321,6 +355,9 @@ def calculer(ctx: Contexte, choix: tuple, jetes: tuple = ()) -> dict:
             if amount is not None:
                 sortie["qty"] = {"amount": amount * factor, "unit": unit}
             running.ajouter(sortie, born=date, source=rid, location="frigo")
+        # Le stock date les sorties au JOUR ; l'heure du créneau, elle, permet
+        # de dire « deux heures après », ce dont `delai_max_h` a besoin.
+        emis_a[rid] = i
 
     frigo = []
     for o in ctx.stock.get("outputs", []):
@@ -337,7 +374,8 @@ def calculer(ctx: Contexte, choix: tuple, jetes: tuple = ()) -> dict:
 
     return {"panier": panier, "placard": a_verifier, "chaine": chaine,
             "problemes": problemes, "plein_tarif": plein_tarif, "frigo": frigo,
-            "jetes": list(jetes), "provenances": provenances}
+            "jetes": list(jetes), "provenances": provenances,
+            "trop_tard": trop_tard}
 
 
 # --------------------------------------------------------------- balance model
@@ -598,6 +636,82 @@ def malediction(ctx: Contexte, etat: Etat) -> dict:
     return pire
 
 
+# ------------------------------------------------------------------- agenda
+
+# De combien on accepte de prendre de l'avance sur une échéance qui ne se
+# remonte pas. Un rôti cuit six heures trop tôt reste un rôti ; trois jours
+# trop tôt, non.
+AVANCE_RIGIDE_MAX_H = 6
+
+
+def _ancrer(ctx: Contexte, limite, souple: bool):
+    """Le dernier créneau qui précède l'échéance, ou None.
+
+    Une échéance est une heure ; un rappel utile est un MOMENT OÙ ON EST DÉJÀ
+    DANS LA CUISINE. « Au plus tard à 7 h 05 » se dit mieux « dimanche, en
+    dînant » — et le modèle a exactement ce qu'il faut pour le dire, puisque
+    les créneaux sont sa matière première. Tremper plus longtemps ne coûte
+    rien, donc on remonte librement ; ce qui ne se remonte pas garde son heure.
+    """
+    avant = [j for j in range(len(ctx.creneaux)) if ctx.quand(j) <= limite]
+    if not avant:
+        return None
+    j = avant[-1]
+    if not souple and limite - ctx.quand(j) > dt.timedelta(hours=AVANCE_RIGIDE_MAX_H):
+        return None
+    return j
+
+
+def agenda(ctx: Contexte, etat: Etat) -> list:
+    """Ce que la semaine choisie oblige à lancer AVANT, en ordre chronologique.
+
+    C'est la moitié manquante du planificateur. Il savait dire quoi manger
+    mardi et ce qu'il fallait acheter ; il ne savait pas dire *ce soir, mets
+    l'orge à tremper*, qui est pourtant le seul geste dont l'oubli fait rater
+    le plat sans recours. Un rappel après coup n'est pas une aide, c'est un
+    reproche.
+
+    Deux sources, et la seconde ne s'écrit sur aucune recette :
+
+    - les sessions anticipées de la recette (`attente_min`) ;
+    - la décongélation d'une portion prise au congélateur, qui est une
+      propriété du FOYER — 30 min avec un micro-ondes, une nuit sans.
+    """
+    calc = calculer(ctx, etat.choix, etat.jetes)
+    gele = {c["creneau"] for c in calc["chaine"] if c.get("congelo")}
+    h_decongelo, comment = an.decongelation_h(ctx.foyer, ctx.rules or {})
+
+    lignes = []
+    for i, rid in enumerate(etat.choix):
+        if not rid:
+            continue
+        r = ctx.catalogue[rid]
+        quand = ctx.quand(i)
+        echeances = list(an.echeances(r, quand))
+        if i in gele:
+            limite = quand - dt.timedelta(hours=h_decongelo)
+            echeances.append({
+                "quand": limite, "limite": limite,
+                "dit": "au plus tard " + an.dire_quand(limite, quand.date()),
+                "souple": True,
+                "geste": f"Sortir la portion du congélateur — {comment}",
+                "minutes": 2, "attente_min": int(h_decongelo * 60),
+                "raison": "décongélation", "etapes": [], "rattrapage": None,
+            })
+        for e in echeances:
+            ancre = _ancrer(ctx, e["limite"], e.get("souple", True))
+            lignes.append({
+                **e,
+                "creneau": i, "pour": ctx.label(i),
+                "id": rid, "titre": r["title"],
+                "ancre": ancre,
+                "ou": ctx.label(ancre) if ancre is not None else None,
+                "retard": an.en_retard(e, ctx.instant),
+            })
+    lignes.sort(key=lambda l: l["limite"])
+    return lignes
+
+
 def _score(ctx: Contexte, ligne: dict, cov: dict, cong: dict = None) -> tuple:
     """Score a candidate against what the week still needs. Returns (score, why)."""
     w = ctx.equilibre["poids"]
@@ -646,6 +760,13 @@ def _score(ctx: Contexte, ligne: dict, cov: dict, cong: dict = None) -> tuple:
         s += w.get("plancher_congelo", 0)
         why.append(f"remplit le congélo, sous son plancher "
                    f"({cong['fin']}/{cong['plancher']})")
+    # L'anticipation en elle-même ne coûte RIEN au score : pénaliser un plat
+    # parce qu'il faut y penser la veille reviendrait à écarter les
+    # légumineuses, que les cibles juste à côté encouragent. C'est le fait
+    # d'être DÉJÀ en retard qui se paie.
+    if ligne.get("retard"):
+        s += w.get("anticipation_ratee", 0)
+        why.append(f"{ligne['retard'][0]['raison']} : l'heure est passée")
     if ligne["manque"]:
         s += w["chaine_manquante"]
     if ligne["hors_budget"]:
@@ -672,6 +793,7 @@ def offre(ctx: Contexte, etat: Etat) -> list:
     deja = {r for r in etat.choix if r}
     budget = etat.budgets[etat.jour]
     date = _date(ctx, etat.jour)
+    date_h = ctx.quand(etat.jour)
     window = ctx.foyer["fridge_window_days"]
 
     lignes = []
@@ -700,13 +822,19 @@ def offre(ctx: Contexte, etat: Etat) -> list:
                 if out.get("location") == "congelo":
                     du_congelo = True
 
-        minutes = r.get("time_min_total", 0)
+        # Les minutes du créneau, et elles seules : le trempage est réel mais il
+        # se dépense la veille, et le compter ici revient à dire à quelqu'un qui
+        # a 20 min qu'il n'en a que 17.
+        minutes = an.minutes_sur_place(r)
         if plein_ici:
             minutes += plein_ici[0]["minutes"]
+        avant = an.echeances(r, date_h)
         lignes.append({
             "id": rid,
             "titre": r["title"],
             "minutes": minutes,
+            "avant": avant,
+            "retard": [e for e in avant if an.en_retard(e, ctx.instant)],
             "plein": bool(plein_ici),
             "marginal": len(apres["panier"]) - n_base,
             "chaine": bool(chaine_ici),

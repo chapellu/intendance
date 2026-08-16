@@ -18,6 +18,8 @@ python3 compile.py burgers-de-lentilles --no-stock   # reste missing → prelude
 python3 compile.py burgers-de-lentilles --time 20    # plan B compression + freezer-portion fallback advice
 python3 compile.py burgers-de-lentilles --kids       # monthly kids session: toddler tasks surface
 python3 compile.py lentilles-mijotees                # the emitting dish: cocotte + steamer-basket parallelism
+python3 compile.py soupe-orge-petits-pois            # what has to be started 12 h earlier, and when
+python3 compile.py tarte-aux-fraises --repas gouter  # the slot decides the hour, so it decides the deadlines
 ```
 
 Frozen sample outputs live in `demo/`.
@@ -162,6 +164,10 @@ of `(jour, repas)` — expanded from `creneaux.yaml`. Seven days now yield 22 sl
 (21 + the Wednesday goûter). Slots are kept chronological, and that ordering is
 load-bearing: lunch on day 3 is reduced *before* dinner on day 3, so it can only
 ever see what day 2 left behind.
+
+A slot carried a day and no **hour** until anticipation needed one — see *The
+second clock* below. `heure:` per meal is what makes « la veille au soir » a
+thing the model can say rather than a phrase written inside a recipe.
 
 Meals are **not symmetric**. Breakfast and goûter are `nature: routine` — counted
 in the shopping list and the balance view, never dealt as a hand. Nobody wants to
@@ -448,26 +454,30 @@ shopped for but never dealt as a card — which is exactly right for a dessert.
 The five desserts entered so far (p. 58, 59, 61, 62, 64) all carry it, and they
 incidentally fill the empty goûter slot this README complained about earlier.
 
-Two dessert-specific limits that are *not* solved, and are noted in the files:
+Two dessert-specific limits, one since solved and one still open:
 
-- **`accepts` has no "immediately" scale.** p. 61's cake wants the p. 59 mousse
+- **`accepts` had no "immediately" scale.** p. 61's cake wants the p. 59 mousse
   *still warm*, before it sets. `_stock_has()` checks a freshness window in
-  **days**, so yesterday's mousse in the fridge passes the test and ruins the
-  recipe. Alongside `frigo_days` and `congelo` there needs to be a third thing:
-  chain now, or not at all. The same entry also needs *double* the base recipe,
-  which `accepts` cannot say either.
+  **days**, so yesterday's mousse in the fridge passed the test and ruined the
+  recipe. `delai_max_h` now says it — see *The second clock* below, which is
+  where this ended up. The same entry still needs *double* the base recipe,
+  which `accepts` cannot say.
 - **The freezer counter conflates storage with security.** `bilan_congelo()`
   totals every `congelo: true` output as an emergency portion — a meal for the
   night everything collapses. Six pots of ice cream are not that, yet they
   occupy one of the household's three drawers. "What is in the freezer" and
-  "what I can count on to eat" are different quantities.
+  "what I can count on to eat" are different quantities. *The second clock*
+  adds a third difference: a frozen portion is only playable tonight if you
+  can thaw it tonight.
 
 Third recurrence of a smaller one: the book's "prep + cooking" header keeps
 hiding *waiting*. Chickpeas soak overnight (p. 36), barley soaks 12 h (p. 56),
 the fish thaws two hours (p. 51), the tart pastry rests an hour (p. 58), and the
 roast is cooked the day before it is eaten (p. 55). The model counts kitchen
-minutes and has no way to say "and then wait until tomorrow", so all five
-recipes under-report what they actually cost to schedule.
+minutes and had no way to say "and then wait until tomorrow", so all five
+recipes under-reported what they actually cost to schedule. That is the finding
+the section below is built on — it was recorded here three times before it was
+modelled once.
 
 #### Summer opens with a bug in `plan.py`, quantified
 
@@ -777,6 +787,123 @@ D'OÙ VIENT LA SEMAINE — 41 lignes d'ingrédients
   23 à acheter · 17 placard · 1 déjà cuisiné cette semaine
 ```
 
+### The second clock: what has to be started the night before (`anticipation.py`)
+
+The user's objection, and it is the last big hole in the planner: *what we are
+missing is help with **anticipating** — remembering to soak the legumes the
+night before.*
+
+The model had exactly two notions of time — **minutes inside a step**, and
+**which day a dish sits on** — and nothing in between. Almost everything that
+ruins a dinner lives in that gap. It had also been recorded, in the data, eight
+separate times, always in the same defeated register: *« le trempage n'est pas
+dans ce chiffre »*, *« les 2 h de décongélation ne sont pas dedans »*, *« faute
+de pouvoir exprimer une attente dans le modèle »*. Being written down eight
+times is not the same as being modelled once.
+
+**The field is not `avance: veille`. It is the waiting.** The tempting fix was
+to tag the steps that happen the day before, and it is the mistake this repo
+keeps repairing: a hand-placed label where a magnitude can be derived. One
+honest number is enough —
+
+```yaml
+- id: tremper
+  action: "Mettre l'orge à tremper dans un grand volume d'eau froide"
+  time_min: 3
+  attente_min: 720        # ce qui ATTEND, sans personne
+  attente_raison: trempage
+```
+
+— and the rest falls out. A recipe splits into **sessions**: wherever the wait
+is too long to stand around for (`COUPURE_MIN`, 90 min), you leave, and what
+follows is another visit to the kitchen. *The night before* is not a field; it
+is what 12 hours of waiting does to a start time. No recipe says « la veille »
+anywhere any more — the four that did have had the phrase deleted, because the
+model now computes it.
+
+Four things came out of it, and only the first was the point.
+
+- **Minutes are billed to the right meal.** The 3 min of soaking were being
+  charged to tomorrow's dinner, the one evening nobody can spend them. The
+  offer now prices the *slot*: the barley soup is 22 min, not 25, and the plan-B
+  compressor no longer fires early because it was counting yesterday's gesture
+  against tonight's budget.
+- **A dish now says what time to start it**, which « 50 min » never did when the
+  pastry rests an hour in the middle: `Du premier geste au repas : 1 h 55 —
+  commencer à 14h05` for a 16 h goûter. The rest is *below* the cut, so it does
+  not split the recipe — you wait at home. Same field, different consequence,
+  and the threshold is the only thing deciding between them.
+- **The extreme case is a dish that costs zero minutes the day you eat it.**
+  p. 55's roast is served cold the next day, so all 75 minutes are anticipated
+  and `minutes_sur_place` is 0. The compiler prints *« rien à cuisiner le jour
+  même : tout est fait la veille »*, which is the truth and reads like a bug.
+  It also exposes an unwritten step: nothing in the recipe covers *slicing it*.
+- **The reminder had to be anchored to a slot, not to an hour.** 12 h before a
+  19 h 30 dinner is 07 h 05 — correct arithmetic, useless advice. But
+  `attente_min` is a *minimum*, so the deadline is a **latest** moment and
+  anything earlier is free. `agenda()` therefore hangs each gesture on the last
+  meal slot that precedes it — a moment when somebody is in the kitchen anyway:
+
+```
+À ANTICIPER — les gestes dont l'oubli fait rater le plat sans recours
+  ⏳ lundi dîner : Mettre l'orge à tremper (3 min, trempage) → mardi dîner
+  ⏳ lundi dîner : Détailler l'oignon… (75 min, refroidissement) → mardi déjeuner
+  ⏳ mercredi goûter : Mettre le colin à décongeler (5 min) → mercredi dîner
+```
+
+  What cannot be pulled earlier says so (`attente_souple: false`) and keeps its
+  hour, bounded by `AVANCE_RIGIDE_MAX_H`: a roast cooked six hours early is
+  still a roast, three days early is not.
+
+**Missing the window is a price, not a gate** — the same 7 Wonders rule the
+chaining already runs on. A dish whose soak was due last night is not forbidden;
+it scores `anticipation_ratee` and offers its `rattrapage` (barley covered in
+boiling water for an hour: *grain moins tendre, mais le plat se fait le jour
+même*). And anticipation **by itself costs nothing** in the ranking: penalising
+a dish for needing forethought would quietly push away the legumes that
+`legumineuse: {min: 2}` two lines above is trying to encourage.
+
+**The uncomfortable finding, and it is about a mechanic already shipped.**
+Thawing is not a recipe property, it is a **household** property, so it is
+derived — a new `decongeler` chain in `rules.yaml` whose steps are priced in
+`avance_h` rather than `time_delta_min`. Which means the freezer's *« portions
+d'urgence »*, the card you play on the night everything collapses, need
+**twelve hours' notice in a household without a microwave**. That is a reserve,
+not an emergency. This household has one, so the card is playable — but the
+model was promising something it could not have delivered to a household that
+does not, and nobody had noticed because nothing measured notice.
+
+**The other end of the same axis.** `attente_min` says *not less than*;
+`delai_max_h` on an `accepts` edge says *not more than*. p. 61's cake wants the
+p. 59 mousse **still warm**, and the freshness window — counted in days — was
+happily letting yesterday's set mousse through. The week now says so:
+
+```
+⏳ mercredi goûter : « Gâteau sans cuisson » veut « mousse-chocolat » sous 2 h
+   — il est cuisiné 32 h plus tôt. Cette base ne se garde pas, elle s'enchaîne.
+```
+
+Both ends measure the gap between two moments, which is precisely what the
+model could not measure at all. The mousse carries both at once: it needs 4 h to
+set for its own goûter, and it must be poured into the cake within 2 h of being
+made. Not a contradiction — two different uses of the same bowl.
+
+**The validator earned its keep on the first run.** The new check is *does the
+prose announce a wait that no field carries* — the exact failure mode, since for
+eight recipes the information existed in French and was invisible to Python. It
+found a ninth: p. 62's no-bake cake sets *« une nuit au frais »*, which nobody
+had spotted by reading. It also fired on three false positives — bread dipped
+3 min in water, a leftover *« plus fade que la veille »* — and that is 75 %
+wrong, the ratio this README already identified as the point where a check
+teaches you to skim. It was tightened the same hour, to the turns of phrase that
+actually announce a wait.
+
+**What this does not do.** The agenda is computed, not *delivered*: there is no
+notification, and the prototype has no notion of "now" beyond a default of 8 a.m.
+An anticipation aid that only exists when you open the app is half an aid — but
+the half that was missing was knowing *what* to announce and *when*, and that is
+now data rather than a comment in a YAML file.
+
 ### What driving it has already shown
 
 - **Entering a repertoire, not a recipe, is the unlock.** The catalogue was
@@ -822,6 +949,11 @@ See `recipes/*.yaml`. The load-bearing fields, discovered by building:
 
 - **Steps as data**: `action` (French, one imperative sentence), `needs`
   (capabilities, never tools), `time_min`, `attended`, `parallel_with`.
+- **`attente_min`**: what the step *waits*, with nobody there, after the gesture.
+  The second clock. Long enough (90 min) and it cuts the recipe into two
+  sessions, which is what makes « la veille » derivable instead of written by
+  hand; `attente_raison` names it, `attente_souple: false` forbids doing it
+  earlier, and `rattrapage` is the price of having forgotten.
 - **`needs` is the whole trick**: a step requires a *capability* (`chop-coarse`,
   `steam`); `rules.yaml` holds one global fallback chain per capability mapping it
   onto whatever the household owns, with a text `rewrite` and a `time_delta_min`.

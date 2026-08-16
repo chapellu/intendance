@@ -78,10 +78,17 @@ recipe:
       needs: []
       time_min: 3
     - id: mettre-au-frais
-      action: "Verser aussitôt dans des petits pots et mettre au frais au moins 4 h — une nuit, c'est mieux"
+      action: "Verser aussitôt dans des petits pots et mettre au frais — au moins 4 h"
       needs: []
       time_min: 2
       attended: false
+      attente_min: 240
+      attente_raison: repos
+      # 4 h de prise : la mousse se fait le matin pour le goûter, pas à 16 h.
+      # C'est aussi le plat qui porte les deux bouts de l'axe en même temps —
+      # sa PROPRE attente est de 4 h, et le gâteau de la p. 61 la réclame dans
+      # les 2 h, avant qu'elle prenne. Les deux contraintes sont vraies et ne
+      # se contredisent pas : ce sont deux usages différents du même bol.
 
   # PAS DE `baby_portion` : chocolat noir à 70 % et sucre, plus des blancs
   # d'œufs crus dans une des deux versions. Ni l'un ni l'autre pour 12 mois.

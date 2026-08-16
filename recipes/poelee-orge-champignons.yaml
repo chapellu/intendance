@@ -15,7 +15,7 @@ recipe:
     encoding: étapes restructurées et reformulées ; prose d'origine non reproduite
   yields:
     portions_eq: 6
-  time_min_total: 35        # hors trempage de l'orge, une nuit
+  time_min_total: 35        # la session de cuisine ; le trempage est une session à part
   active_min: 20
 
   apports:
@@ -26,8 +26,8 @@ recipe:
     origine: francais
 
   # Deuxième recette à l'orge du catalogue, après la soupe d'orge du livre
-  # (p. 56), et même trempage d'une nuit — que le modèle ne sait toujours pas
-  # exprimer autrement qu'en commentaire.
+  # (p. 56), et même trempage d'une nuit — porté par `attente_min` depuis que le
+  # modèle a une seconde horloge.
   ingredients:
     - {id: orge, name: orge mondé, qty: 500, unit: g}
     - {id: champignons-paris, name: champignons frais, qty: 500, unit: g}
@@ -42,9 +42,19 @@ recipe:
 
   steps:
     - id: tremper
-      action: "La veille : mettre l'orge à tremper ; le lendemain, l'égoutter et le rincer"
+      action: "Mettre l'orge à tremper dans un grand volume d'eau froide"
       needs: []
       time_min: 3
+      attente_min: 720
+      attente_raison: trempage
+      rattrapage:
+        action: "À défaut : couvrir l'orge d'eau bouillante et la laisser gonfler 1 h à couvert"
+        cout_min: 60
+        effet: "grain moins tendre ; compter quelques minutes de cuisson en plus"
+    - id: rincer
+      action: "Égoutter et rincer l'orge trempée"
+      needs: []
+      time_min: 1
     - id: cuire-orge
       action: "Cuire l'orge 15 min dans un grand faitout d'eau bouillante salée — le temps se compte à partir de la reprise de l'ébullition"
       needs: [simmer-large]

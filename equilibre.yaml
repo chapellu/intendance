@@ -54,6 +54,13 @@ poids:
   plancher_congelo: 4        # remonte le stock d'urgence quand il est bas
   mal_transporte: -6         # déjeuner de coworking : ce plat voyage mal
   article_marginal: -0.4     # la liste de courses pèse, mais ne décide plus
+  # Anticipation ratée : l'échéance est DÉJÀ passée (le trempage était pour
+  # hier soir). Ce n'est pas un interdit, c'est un prix — même règle 7 Wonders
+  # que le chaînage. Un plat qui demande simplement de s'y prendre à l'avance
+  # n'est pas pénalisé du tout : sanctionner l'anticipation reviendrait à
+  # décourager les légumineuses, ce que la cible `legumineuse: {min: 2}` juste
+  # au-dessus passe son temps à encourager.
+  anticipation_ratee: -5
 
 # Le congélateur est une *sortie* à part entière, pas un débarras : un plat
 # souche produit des portions d'urgence en bocal ou en barquette. Le foyer a

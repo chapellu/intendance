@@ -14,6 +14,7 @@ from pathlib import Path
 
 import yaml
 
+import anticipation as an
 import catalogue
 import chainage as ch
 
@@ -59,6 +60,18 @@ def main():
             "id": rid,
             "titre": r["title"],
             "minutes": r.get("time_min_total", 0),
+            # Ce que le plat coûte À L'HEURE DU REPAS, et de combien il faut
+            # s'y prendre à l'avance. Deux grandeurs, deux décisions : la
+            # première dit si on a le temps ce soir, la seconde si c'est encore
+            # possible du tout.
+            "minutesSurPlace": an.minutes_sur_place(r),
+            "avanceMin": an.duree_totale(r),
+            "anticipations": [
+                {"gestes": [e.get("id") for e in s.etapes],
+                 "minutes": s.gestes_min, "attente": s.attente_min,
+                 "avantMin": s.debut_avant_min, "raison": s.raison}
+                for s in an.anticipations(r)
+            ],
             "portions": r.get("yields", {}).get("portions_eq", 4),
             "apports": r.get("apports", {}),
             "ingredients": [
@@ -74,6 +87,13 @@ def main():
                 {"id": s.get("id"), "action": s.get("action"),
                  "minutes": s.get("time_min"), "needs": s.get("needs", []),
                  "surveille": s.get("attended", True),
+                 # L'attente : la seconde horloge. Sans elle l'écran ne peut
+                 # pas dire à quelle heure s'y mettre, ni ce qui se lance la
+                 # veille — cf. `anticipation.py`.
+                 "attente": s.get("attente_min"),
+                 "attenteRaison": s.get("attente_raison"),
+                 "attenteSouple": s.get("attente_souple", True),
+                 "rattrapage": s.get("rattrapage"),
                  "enfant": (s.get("kid") or {}).get("task"),
                  "enfantDes": (s.get("kid") or {}).get("age_min_months"),
                  "porteAssaisonnement": bool(s.get("seasoning_gate"))}
@@ -90,6 +110,10 @@ def main():
                 {"type": a.get("type"), "kind": a.get("kind"),
                  "requis": bool(a.get("required")),
                  "qty": _qty(a),
+                 # L'autre bout de l'axe du temps : « pas plus de N heures
+                 # après », pour une base qui ne se garde pas (la mousse encore
+                 # tiède qu'on coule dans le gâteau).
+                 "delaiMaxH": an.delai_max_h(a),
                  "mere": a.get("fallback_recipe")}
                 for a in r.get("accepts", [])
             ],

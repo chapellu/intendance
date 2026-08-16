@@ -20,6 +20,7 @@ import re
 import sys
 from pathlib import Path
 
+import anticipation as an
 import catalogue
 import chainage as ch
 import compile as rc  # shadows the builtin `compile` in this module only
@@ -28,6 +29,19 @@ HERE = Path(__file__).parent
 
 BANDES = {"1-repas", "2-repas", "3-repas", "lunchbox"}
 MOTS_ASSAISONNEMENT = re.compile(r"\bsel\b|sal|poivr|assaisonn|rectifi", re.I)
+# Une attente écrite DANS la phrase est invisible au modèle : c'est exactement
+# la faute que `attente_min` répare, et elle a été commise huit fois avant
+# d'être vue. Le contrôle la rend impossible à refaire en silence.
+#
+# Resserré une fois écrit, et pour la raison que ce fichier connaît déjà : une
+# première version attrapait « tremper » et « la veille » n'importe où, donc le
+# pain qu'on trempe 3 min et le plat « plus fade que la veille ». Trois faux
+# positifs sur quatre — le seuil à partir duquel un contrôle apprend à être
+# ignoré. Ne restent que les tournures qui annoncent VRAIMENT une attente.
+MOTS_ATTENTE = re.compile(
+    r"^\s*la veille\b|\ble lendemain\b|\btoute la nuit\b|\bune nuit\b"
+    r"|\bd'avance\b|\bà l'avance\b|\d+\s*h\s*avant|\bà tremper\b|\btrempage\b"
+    r"|\bdécongel", re.I)
 
 
 def verifier(rid: str, r: dict, rayons: dict, rules: dict, cat: dict,
@@ -53,6 +67,25 @@ def verifier(rid: str, r: dict, rayons: dict, rules: dict, cat: dict,
         p = s.get("parallel_with")
         if p and p not in vus:
             err.append(f"étape {s['id']} : parallel_with « {p} » ne précède pas cette étape")
+
+        # L'attente, seconde horloge du modèle (cf. `anticipation.py`).
+        att = s.get("attente_min")
+        if att is not None and (not isinstance(att, int) or att <= 0):
+            err.append(f"étape {s['id']} : `attente_min` doit être un entier de minutes "
+                       "strictement positif")
+        elif att and att >= an.COUPURE_MIN and not s.get("attente_raison"):
+            warn.append(f"étape {s['id']} : {att} min d'attente coupent la recette en deux "
+                        "séances, mais sans `attente_raison:` l'agenda ne saura pas dire "
+                        "de quoi il s'agit")
+        rat = s.get("rattrapage")
+        if rat and not (rat.get("action") and rat.get("cout_min")):
+            err.append(f"étape {s['id']} : `rattrapage` demande une `action` et un "
+                       "`cout_min` — sans quoi il n'y a rien à proposer à qui a oublié")
+        if not att and MOTS_ATTENTE.search(s.get("action", "")):
+            warn.append(f"étape {s['id']} : l'action parle d'attente (« la veille », "
+                        "« 2 h avant », trempage…) sans `attente_min:`. Écrite dans la "
+                        "phrase, l'attente est invisible au modèle : le plat ne sera "
+                        "jamais annoncé la veille et son coût sera facturé au repas.")
         vus.append(s["id"])
 
     # Ingrédients : tout id doit avoir un rayon, sinon il tombe en « NON CLASSÉ ».

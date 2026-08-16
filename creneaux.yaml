@@ -21,6 +21,12 @@
 # modèle n'avait qu'un créneau par jour. C'est la vraie raison de ce fichier.
 # ---------------------------------------------------------------------------
 
+#
+# L'HEURE, arrivée avec l'anticipation. Un créneau n'avait qu'un JOUR, ce qui
+# rendait « la veille au soir » littéralement indicible : le modèle savait
+# compter les minutes d'une étape et savait quel plat quel jour, et n'avait
+# rien entre les deux. Mettre l'orge à tremper se joue exactement là.
+# À CORRIGER PAR L'USAGER — ce sont des heures plausibles, pas les vraies.
 repas:
   petit-dejeuner:
     label: petit-déj
@@ -30,18 +36,22 @@ repas:
     # matin — personne ne veut piocher une carte à 7 h.
     nature: routine
     minutes: 10
+    heure: 8
   dejeuner:
     label: déjeuner
     nature: choisi
     minutes: 30
+    heure: 12.5
   diner:
     label: dîner
     nature: choisi
     minutes: 40
+    heure: 19.5      # deux enfants en bas âge : on dîne tôt
   gouter:
     label: goûter
     nature: routine
     minutes: 10
+    heure: 16
 
 # Quels créneaux existent, jour par jour. `defaut` s'applique à tout jour non
 # listé dans `exceptions`.
