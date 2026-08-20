@@ -59,6 +59,7 @@ rayons:
     - celeri-rave
     - champignons-conserve
     - basilic
+    - abricots
     # NE S'ACHÈTENT PAS — SE CUEILLENT. Le modèle n'a pas de rayon
     # « cueillette », et trois des dix recettes saisies en dépendent (orties
     # p. 34 et p. 35, pousses sauvages et ail des ours p. 36). C'est une vraie
@@ -146,6 +147,17 @@ rayons:
     - noix
     - caissettes
     - pots-carton
+    # Arrivés avec le clafoutis p. 115. `farine-petit-epeautre` est un id à part
+    # de `farine-complete` : le petit épeautre (engrain) et le grand épeautre
+    # sont deux céréales distinctes, vendues côte à côte au rayon bio. Les
+    # aliaser aurait fusionné deux lignes de courses qui ne s'achètent pas au
+    # même endroit — exactement l'inverse du service que rend `aliases`.
+    - lait-amande
+    - puree-amande-blanche
+    - farine-petit-epeautre
+    - miel-acacia
+    - extrait-amande-amere
+    - amandes-effilees
 
 placard:
   - huile-olive

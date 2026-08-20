@@ -582,6 +582,62 @@ the open question this README already poses about unlimited redealing: the
 problem is not that redealing turns the hand into a list, it is that **a hand
 has no answer at all to a cook who has already chosen**.
 
+#### p. 115, the dessert of the same dinner — and the oven neither dish can see
+
+The same evening needed a dessert, and the household had ageing apricots, so
+p. 115's *Clafoutis super crémeux au miel et à l'abricot* went in beside the
+tourte. Entering two dishes **for one meal** rather than one dish for the
+catalogue is what produced the finding that matters.
+
+**Nothing in the model knows there is one oven.** The tourte bakes 45 min at
+180 °C and finishes under the grill; the clafoutis bakes an hour at 150 °C and
+must then cool. Both are `needs: [bake]`, both resolve to
+`four-chaleur-tournante`, and the two facts that decide the whole evening — the
+appliance is shared, and the two temperatures are incompatible — are represented
+nowhere. `facteur_max_vaisselle` asks *does this batch fit in its vessel*, which
+is a question about one dish against one pan. The question a meal actually poses
+is *do these dishes fit in this kitchen, in this order, at these temperatures*,
+and it has no owner. `plan.py` never even meets it, because it lays one dish per
+day: it put the tourte on Friday and the clafoutis on Saturday when both are
+Friday. The right answer here is knowable and boring — bake the clafoutis in the
+afternoon, it has to cool anyway — but the model neither finds it nor warns that
+it is needed. Note also that no recipe carries its oven **temperature** as data
+at all; 180 °C and 150 °C exist only inside French step prose.
+
+Three smaller ones, and the first is a repeat that has now earned a field:
+
+- **A dish must be able to carry an age ban and its reason.** The clafoutis has
+  115 g of honey, a tablespoon of rum and bitter-almond extract. Honey is
+  advised against before 12 months (infant botulism: the spores survive, and a
+  custard at 150 °C does not destroy them), and this household's baby is exactly
+  12 months — on the line, which makes it a parent's call and not a compiler's.
+  So `baby_portion` is absent, exactly as it is for p. 70's rum cocktail. **But
+  absence is the only thing the model can say**, and it is indistinguishable
+  from nobody having thought about it. Second occurrence of the gap p. 70
+  recorded; it wants a field, not a third comment.
+- **The author's variants are priced in money, and there is no axis for money.**
+  « SOS porte-monnaie » offers almond purée → 40 g melted butter, almond milk →
+  vanilla soy milk, honey → agave syrup. `plan_b` is denominated in minutes and
+  `sans_reste` repairs a missing base; neither speaks of cost or of *what is
+  already in the cupboard*. That gap points straight at this household, whose
+  stated trajectory (#26) is a **smooth** transition toward organic and short
+  chains — which is a sequence of price arbitrations, one substitution at a time.
+- **`aliases` can merge two things that must not merge.** The tourte wants
+  T80–T110 wheat or *grand* épeautre; the clafoutis wants T110 *petit* épeautre.
+  Einkorn and spelt are different cereals sold side by side, so
+  `farine-petit-epeautre` is a separate id. The aisle table's merging is a
+  service right up to the point where it silently deletes a shopping line.
+
+And the dessert inherits `creneaux: [gouter]` from the five before it, which is
+still the only lever available and is still not what is happening: this clafoutis
+is being served after Friday's dinner. `compile.py` duly schedules it against a
+16 h goûter and says *commencer à 13h42*. **A dessert at dinner is a slot the
+model does not have**, and six recipes now pretend to be goûters to get planned
+and shopped at all.
+
+What did work, first time and without help: the egg line. One dish wants 1 and
+the other 4, and the list came out `5 pièce — œuf (2 plats)`.
+
 #### The blog: 255 recipes indexed, and why only four of them got entered
 
 There is no ebook of the Chioca book — Terre vivante sells print only — so the

@@ -106,7 +106,7 @@ sommaire:
     - {page: 108, titre: "Muffins choco-courgettes"}
     - {page: 111, titre: "Gaufres « pain perdu » aux mûres"}
     - {page: 112, titre: "Carrés sablés faciles à la crème de groseille (et l'hiver, tarte au citron !)"}
-    - {page: 115, titre: "Clafoutis super crémeux au miel et à l'abricot"}
+    - {page: 115, titre: "Clafoutis super crémeux au miel et à l'abricot", catalogue_id: clafoutis-miel-abricot}
     - {page: 116, titre: "Juste un gâteau au yaourt, la « classe » en plus"}
 
   automne:
