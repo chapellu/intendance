@@ -183,6 +183,51 @@ def verifier(rid: str, r: dict, rayons: dict, rules: dict, cat: dict,
         if cible not in vus:
             err.append(f"plan_b vise l'étape « {cible} », qui n'existe pas")
 
+    # `uses:` — le lien étape → ingrédient, et ses deux façons de mentir.
+    #
+    # Il est FACULTATIF par recette (la plupart du catalogue ne l'a pas encore)
+    # mais TOTAL dès qu'une recette en déclare un seul : une couverture partielle
+    # est pire que pas de couverture du tout, parce qu'un écran qui déroule la
+    # recette geste par geste ne montre alors qu'une partie des quantités sans
+    # rien signaler, et le cuisinier oublie ce qui manque en croyant tout voir.
+    refs, doublons = {}, []
+    for i in r.get("ingredients", []):
+        cle = i.get("ref") or i["id"]
+        if cle in refs:
+            doublons.append(cle)
+        refs[cle] = i
+    if any("uses" in s for s in etapes if isinstance(s, dict)):
+        # Une même ligne deux fois — l'huile de la pâte et celle de la farce —
+        # n'est un problème QUE là : sans `uses:`, l'`id` commun est même ce
+        # qu'on veut, c'est lui qui fusionne les deux lignes de courses.
+        for cle in doublons:
+            err.append(f"deux lignes d'ingrédient portent la même référence « {cle} » : "
+                       "`uses:` ne peut pas les distinguer — donner un `ref:` à chacune")
+        vises = set()
+        for s in etapes:
+            if not isinstance(s, dict) or "id" not in s:
+                continue
+            if "uses" not in s:
+                err.append(f"étape « {s['id']} » sans `uses:` alors que d'autres étapes en ont : "
+                           "la couverture doit être totale, sinon l'écran affiche une "
+                           "partie des quantités en ayant l'air de toutes les afficher "
+                           "— écrire `uses: []` si l'étape ne consomme rien")
+                continue
+            for u in s["uses"]:
+                if u not in refs:
+                    err.append(f"étape « {s['id']} » : `uses: {u}` ne correspond à aucun "
+                               "ingrédient de la recette")
+                else:
+                    vises.add(u)
+        # Un ingrédient qu'aucune étape ne réclame est acheté et jamais versé.
+        # Les assaisonnements ne sont PAS dispensés : le sel oublié dans la
+        # liste sans étape pour l'employer est justement la faute que
+        # `seasoning_gate` a déjà attrapée une fois sur `omelette-courgettes`.
+        for cle, i in refs.items():
+            if cle not in vises:
+                err.append(f"« {i['name']} » est dans la liste d'ingrédients mais aucune "
+                           "étape ne l'emploie : il serait acheté et jamais versé")
+
     # Le prélèvement bébé et sa porte.
     portes = [s for s in etapes if s.get("seasoning_gate")]
     if r.get("baby_portion"):

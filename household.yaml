@@ -90,10 +90,13 @@ household:
   # cuisiner plus grand. Valeurs posées à vue, à corriger à l'usage.
   equipment:
     - id: induction-3-feux
+      label: plaque induction 3 feux
       capabilities: [pan-fry, simmer, boil]
     - id: four-chaleur-tournante
+      label: four chaleur tournante
       capabilities: [bake, gratin, roast]
     - id: micro-ondes
+      label: micro-ondes
       capabilities: [reheat]
     - id: cocotte-7.5l
       label: cocotte 7,5 L
@@ -127,11 +130,13 @@ household:
       exemplaires: 2      # deux plats : un lot double passe, en deux plats
       capabilities: [gratin-vessel]
     - id: mixeur-plongeur
+      label: mixeur plongeur
       capabilities: [blend-smooth, puree]
     - id: mini-blender
       label: petit blender du mixeur plongeur
       capabilities: [chop-coarse-small, blend-small]
     - id: balance-tefal
+      label: balance de cuisine
       capabilities: [weigh]
     # NOT owned: food processor, steamer appliance, stand mixer, Thermomix-class robot.
     # Small kitchen: the compiler must never suggest a purchase (#29).

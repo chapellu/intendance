@@ -57,20 +57,28 @@ recipe:
     - {id: extrait-amande-amere, name: extrait d'amande amère pour pâtisserie, qty: 0.5, unit: c. à moka}
     - {id: amandes-effilees, name: amandes effilées, qty: 2, unit: c. à s.}
 
+  # `uses:` — voir la note de `tourte-nicoise-courgettes`. Ici le lien fait
+  # apparaître une asymétrie qu'on ne voyait pas : SEPT des neuf ingrédients
+  # entrent dans la même étape, `appareil`. C'est la recette qui est comme ça —
+  # un clafoutis est un saladier — mais ça veut dire qu'un écran de cuisson
+  # guidée aura un écran chargé et six écrans quasi vides.
   steps:
     - id: denoyauter
       action: "Dénoyauter les fruits et les recouper : en quatre pour des abricots, en deux pour des prunes, en huit pour des pêches"
       needs: []
+      uses: [abricots]
       time_min: 6
       kid: {age_min_months: 30, task: "ouvrir les abricots en deux à la main et retirer le noyau"}
     - id: prechauffer
       action: "Préchauffer le four à 150 °C, en chaleur tournante de préférence — en statique, compter quelques minutes de cuisson en plus"
       needs: [bake]
+      uses: []
       time_min: 1
       attended: false
     - id: huiler-moule
       action: "Huiler un grand moule à clafoutis, ou 6 gros ramequins, ou 4 plats à gratin individuels — beurré plutôt qu'huilé, c'est meilleur, si le lactose n'est pas un sujet"
       needs: []
+      uses: []
       time_min: 2
     # PAS de `blend-smooth` : c'est un fouet à la main, et la recette entière ne
     # demande qu'un couteau et un fouet. Déclarer la capacité ferait résoudre
@@ -78,17 +86,21 @@ recipe:
     - id: appareil
       action: "Fouetter ensemble le lait d'amande, la purée d'amande, les œufs, la farine, le miel, le rhum et l'extrait d'amande amère, jusqu'à ce qu'il ne reste aucun grumeau"
       needs: []
+      uses: [lait-amande, puree-amande-blanche, oeufs, farine-petit-epeautre,
+             miel-acacia, rhum, extrait-amande-amere]
       time_min: 5
     - id: garnir
       action: "Verser l'appareil dans le moule, répartir les fruits par-dessus et parsemer d'amandes effilées"
       needs: []
+      uses: [abricots, amandes-effilees]
       time_min: 3
       kid: {age_min_months: 30, task: "poser les quartiers d'abricot sur l'appareil et semer les amandes effilées"}
     - id: cuire
       action: "Enfourner — environ 30 min en ramequins, 45 min en plats individuels, 1 h en grand moule. C'est cuit quand l'appareil est bien pris et commence à dorer jusqu'au centre ; les fours varient, il faut surveiller"
       needs: [bake]
+      uses: []
       time_min: 60
-      attended: true        # l'autrice le dit : le temps varie selon les fours
+      attended: true       # l'autrice le dit : le temps varie selon les fours
       # « Laisser refroidir avant de savourer. » Une heure sans personne, sous
       # la coupure de 90 min : la recette ne se scinde pas, mais l'heure du
       # premier geste recule d'autant — c'est ce qui oblige à l'enfourner
@@ -98,6 +110,7 @@ recipe:
     - id: servir
       action: "Servir refroidi, éventuellement sous un voile de sucre glace"
       needs: []
+      uses: []
       time_min: 1
 
   emits:

@@ -17,6 +17,7 @@ import yaml
 import anticipation as an
 import catalogue
 import chainage as ch
+import compile as rc  # masque le `compile` natif dans ce module seulement
 
 HERE = Path(__file__).parent
 
@@ -25,6 +26,16 @@ def _qty(bloc):
     """`{'amount': 700, 'unit': 'g'}` ou `None` — la forme que le JS relira."""
     amount, unit = ch.quantite(bloc)
     return {"amount": amount, "unit": unit} if amount is not None else None
+
+
+def _bebe_apres(r):
+    """L'id de l'étape après laquelle le prélèvement bébé se fait, ou `None`
+    quand la recette ne dit pas d'où il sort — auquel cas l'écran retombe sur
+    la porte d'assaisonnement, en devinant comme le fait `compile.py`."""
+    bp = r.get("baby_portion") or {}
+    depuis = set(bp.get("depuis") or [])
+    rangs = [i for i, s in enumerate(r.get("steps", [])) if s.get("id") in depuis]
+    return r["steps"][max(rangs)]["id"] if rangs else None
 
 
 def _ouvert(contenant, espace, capacites):
@@ -49,6 +60,19 @@ def main():
     capacites = set(rules.get("capabilities", {}))
     for eq in foyer.get("equipment", []):
         capacites |= set(eq.get("capabilities", []))
+
+    # CHAQUE CAPACITÉ, RÉSOLUE UNE FOIS SUR L'OUTIL QUE CE FOYER POSSÈDE.
+    # `needs:` est en capacités et jamais en outils — c'est le pari anti-explosion
+    # de #31, et il tient. Mais du coup l'écran ne pouvait pas nommer la poêle :
+    # il lisait « pan-fry ». Or au moment de démarrer le geste, ce qu'on veut lire
+    # c'est « sauteuse 28 cm », et pour `chop-coarse` c'est la RÉÉCRITURE qui est
+    # la vraie instruction — « au couteau, sur une planche ». La table se calcule
+    # ici parce qu'elle ne dépend que du foyer, qui est statique côté proto.
+    outils = {}
+    for cap in sorted({c for r in cat.values() for s in r.get("steps", [])
+                       for c in s.get("needs", [])}):
+        label, reecrit, delta = rc.resolve_capability(cap, foyer, rules)
+        outils[cap] = {"label": label, "reecrit": reecrit, "deltaMin": delta}
 
     plats = []
     for rid, r in cat.items():
@@ -75,7 +99,12 @@ def main():
             "portions": r.get("yields", {}).get("portions_eq", 4),
             "apports": r.get("apports", {}),
             "ingredients": [
-                {"id": i["id"], "nom": i["name"], "qty": i["qty"],
+                # `ref` est la clé de LIGNE (défaut : l'id), celle que `uses:`
+                # vise. L'`id` reste la clé d'ACHAT, commune aux deux lignes
+                # d'huile d'olive d'une même recette — deux clés parce que ce
+                # sont deux questions.
+                {"id": i["id"], "ref": i.get("ref") or i["id"],
+                 "nom": i["name"], "qty": i["qty"],
                  "unit": i["unit"], "base": bool(i.get("from_accepts")),
                  "assaisonnement": bool(i.get("seasoning"))}
                 for i in r.get("ingredients", [])
@@ -87,6 +116,19 @@ def main():
                 {"id": s.get("id"), "action": s.get("action"),
                  "minutes": s.get("time_min"), "needs": s.get("needs", []),
                  "surveille": s.get("attended", True),
+                 # Ce que CETTE étape réclame, en références de ligne. Sans ce
+                 # lien un écran de cuisson guidée ne peut pas montrer les
+                 # quantités au moment où elles servent : il renvoie à la liste
+                 # complète à chaque geste, ce qui est précisément ce qu'un
+                 # déroulé pas-à-pas existe pour éviter. `null` (et non `[]`)
+                 # quand la recette n'a pas encore le lien — l'écran doit
+                 # pouvoir distinguer « rien à verser ici » de « on ne sait pas ».
+                 "uses": s.get("uses"),
+                 # L'étape qu'on mène EN MÊME TEMPS qu'une autre. La pâte se
+                 # pétrit pendant que la poêlée refroidit : deux gestes, une
+                 # seule tranche de temps, et le déroulé doit les présenter
+                 # ensemble au lieu de les mettre à la queue leu leu.
+                 "enParallele": s.get("parallel_with"),
                  # L'attente : la seconde horloge. Sans elle l'écran ne peut
                  # pas dire à quelle heure s'y mettre, ni ce qui se lance la
                  # veille — cf. `anticipation.py`.
@@ -100,6 +142,14 @@ def main():
                 for s in r.get("steps", [])
             ],
             "bebe": (r.get("baby_portion") or {}).get("take"),
+            "bebePrep": (r.get("baby_portion") or {}).get("prep"),
+            # APRÈS QUELLE ÉTAPE prélever, et c'est rarement la porte de sel.
+            # `depuis:` nomme les étapes d'où sort la portion ; la dernière est
+            # le plus tard où il reste du nature à prendre. Faute de ce champ
+            # l'écran n'avait que « avant d'assaisonner », ce qui sur la tourte
+            # place le prélèvement APRÈS les 100 g de parmesan — salant, et
+            # qu'aucun champ ne déclare assaisonnement. Voir `compile.py`.
+            "bebeApres": _bebe_apres(r),
             "actifMin": r.get("active_min"),
             # `accepts` matches either one exact output (`type`) or a whole
             # class of them (`kind`) — the latter is what lets a single
@@ -196,6 +246,7 @@ def main():
                 for e in foyer["eaters"]
             ],
             "espaces": espaces,
+            "outils": outils,
             "contenants": [
                 {"id": c["id"], "label": c.get("label") or c["id"],
                  "nombre": c.get("nombre", 0), "portions": c.get("portions", 0),

@@ -246,18 +246,47 @@ def compile_recipe(recipe_id, household, rules, stock, time_budget=None,
                              quand, temps=eff_time)
     depart = quand - dt.timedelta(minutes=sessions[0].debut_avant_min) if sessions else quand
 
+    # OÙ LE PRÉLÈVEMENT BÉBÉ SE RANGE — et la porte de sel n'est que le cas par
+    # défaut. `depuis:` nomme les étapes d'où SORT la portion ; la dernière
+    # d'entre elles est le plus tard où l'on prélève encore du nature. Le
+    # compilateur rendait le prélèvement à la porte quoi qu'il arrive, ce qui
+    # contredisait `depuis:` dès que les deux divergent — et ils divergent sur
+    # `tourte-nicoise-courgettes`, dont le YAML l'avait écrit noir sur blanc :
+    # les 100 g de parmesan entrent à l'étape d'AVANT la porte, ils salent
+    # lourdement, et aucun champ ne les déclare assaisonnement. Prélever à la
+    # porte donnait donc au bébé une portion très salée tout en cochant la case.
+    # `verifier.py` ne voyait rien : il contrôle que `depuis:` précède la porte,
+    # ce qui était vrai — c'est le rendu qui n'en tenait pas compte.
+    bebe_apres = bebe_avant = None
+    if has_baby and r.get("baby_portion"):
+        depuis = r["baby_portion"].get("depuis") or []
+        rangs = [i for i, s in enumerate(steps)
+                 if s.get("id") in depuis and s.get("id") not in ids_avance]
+        if rangs:
+            bebe_apres = steps[max(rangs)]["id"]
+        else:
+            g = next((s for s in steps if s.get("seasoning_gate")
+                      and s.get("id") not in ids_avance), None)
+            bebe_avant = g["id"] if g else None
+
+    def ligne_bebe(rang, a_la_porte):
+        bp = r["baby_portion"]
+        _, rw, _ = (resolve_capability(bp["needs"][0], hh, rules)
+                    if bp.get("needs") else (None, None, 0))
+        prep = bp["prep"] + (f" ({rw})" if rw else "")
+        quand = ", avant d'assaisonner" if a_la_porte else ""
+        return f"{rang}. Portion bébé{quand} : prélever {bp['take']} ; {prep}  ⏱ 3 min"
+
     n = 0
+    rangs_rendus = {}
     for s in steps:
         if s.get("id") in ids_avance:
             continue                    # rendue plus haut, à son heure
-        if s.get("seasoning_gate") and has_baby and r.get("baby_portion"):
-            bp = r["baby_portion"]
+        if s.get("id") == bebe_avant:
             n += 1
-            _, rw, _ = resolve_capability(bp["needs"][0], hh, rules) if bp.get("needs") else (None, None, 0)
-            prep = bp["prep"] + (f" ({rw})" if rw else "")
-            steps_out.append(f"{n}. Portion bébé, avant d'assaisonner : prélever "
-                             f"{bp['take']} ; {prep}  ⏱ 3 min")
+            steps_out.append(ligne_bebe(n, True))
         n += 1
+        rangs_rendus[s.get("id")] = n
         time = s["time_min"]
         tool_txt = ""
         impossible = False
@@ -273,7 +302,12 @@ def compile_recipe(recipe_id, household, rules, stock, time_budget=None,
                 tool_txt = f" — {label}"
         line = f"{n}. {s['action']}{tool_txt}  ⏱ {time} min"
         if s.get("parallel_with"):
-            line += "  (en parallèle de l'étape précédente)"
+            # Numéroter l'étape visée plutôt que dire « la précédente » : dès
+            # qu'une ligne s'insère entre les deux — le prélèvement bébé le
+            # fait — « la précédente » désigne la mauvaise.
+            cible = rangs_rendus.get(s["parallel_with"])
+            line += (f"  (en parallèle de l'étape {cible})" if cible
+                     else "  (en parallèle de l'étape précédente)")
         if not s.get("attended", True) is True and s.get("attended") is False:
             line += "  — sans surveillance"
         if impossible:
@@ -281,6 +315,9 @@ def compile_recipe(recipe_id, household, rules, stock, time_budget=None,
         if kids_mode and s.get("kid") and eldest_months and eldest_months >= s["kid"]["age_min_months"]:
             line += f"\n   👶 avec le grand : {s['kid']['task']}"
         steps_out.append(line)
+        if s.get("id") == bebe_apres:
+            n += 1
+            steps_out.append(ligne_bebe(n, False))
 
     emits_out = []
     for e in r.get("emits", []):
