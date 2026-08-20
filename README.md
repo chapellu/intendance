@@ -219,6 +219,23 @@ goûter, dîner, dessert* — 16 h before 19 h 30 before 20 h 15. **The proto's 
 was still sorting by declaration order**, the bug this README records as fixed on
 the Python side, and adding a fifth meal is what made the divergence visible.
 
+**And it put a number on the oven.** The section on p. 115 above argues that
+nothing in the model knows there is one oven; that was reasoning from the data.
+With a dessert slot the model states the contradiction itself, in its own output:
+
+```
+$ compile.py tourte-nicoise-courgettes --repas diner    → commencer à 17h52
+$ compile.py clafoutis-miel-abricot   --repas dessert   → commencer à 17h57
+```
+
+Five minutes apart, one oven, 180 °C against 150 °C. Before the slot existed the
+clafoutis was pinned to a 16 h goûter and the two schedules never appeared to
+touch, so the gap was invisible *because a dish was filed at the wrong hour*. A
+missing slot was hiding a missing constraint. That is the argument for adding
+slots that are honest about when food is actually eaten, ahead of any other
+scheduling work: **the calendar has to be right before contention can even be
+noticed**, let alone resolved.
+
 **What this unlocked, and it is the real point.** Nine dishes in the repertoire
 emit a `reste-plat` — chili, gratin, lasagnes, quiche, ratatouille, velouté,
 burgers, curry — and **not one of them had a consumer**. Every leftover portion
