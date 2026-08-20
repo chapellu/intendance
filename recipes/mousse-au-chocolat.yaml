@@ -26,7 +26,7 @@ recipe:
   # donc jamais tirée comme dîner, et `equilibre_sur: [dejeuner, diner]`
   # l'exclut du calcul de couverture — un dessert ne doit ni prétendre nourrir
   # ni faire plonger l'équilibre de la semaine.
-  creneaux: [gouter]
+  creneaux: [gouter, dessert]
 
   apports:
     proteine: aucune

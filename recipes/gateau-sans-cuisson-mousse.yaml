@@ -22,7 +22,7 @@ recipe:
   time_min_total: 20        # hors prise au frais une nuit entière
   active_min: 20
 
-  creneaux: [gouter]        # dessert : voir la note de `mousse-au-chocolat`
+  creneaux: [gouter, dessert]        # dessert : voir la note de `mousse-au-chocolat`
 
   apports:
     proteine: aucune

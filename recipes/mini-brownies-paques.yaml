@@ -19,7 +19,7 @@ recipe:
   time_min_total: 25
   active_min: 19
 
-  creneaux: [gouter]        # dessert / goûter : voir la note de `mousse-au-chocolat`
+  creneaux: [gouter, dessert]        # dessert / goûter : voir la note de `mousse-au-chocolat`
 
   apports:
     proteine: aucune

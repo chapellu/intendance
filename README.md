@@ -179,6 +179,46 @@ in the shopping list and the balance view, never dealt as a hand. Nobody wants t
 draw a card at 7 a.m., and #29 asks for breakfasts « with a weekly intake-balance
 view », not a daily choice.
 
+#### A third nature: `optionnel`, and the dessert slot it was needed for
+
+Two natures were not enough, and the proof arrived from a real dinner rather
+than from reasoning. Six desserts in the catalogue declared `creneaux: [gouter]`
+because that was the only lever available — and the README above argues for it
+at length, correctly, as far as it goes. Driving the visual proto on production
+showed how far that is: the week holds **one** goûter, on Wednesday, and it is
+`routine`, therefore never dealt. So **no gesture in the whole app could put a
+dessert into a week.** Six recipes were plannable, shoppable, and unreachable.
+
+The obvious repair is the wrong one. Adding `diner` to a dessert's `creneaux`
+makes it a candidate main course, and its `apports` — no protein, no vegetable —
+drag the week's coverage down, which is the exact harm `[gouter]` was chosen to
+avoid. The dish is not miscategorised; **the slot was missing**.
+
+`dessert` is therefore a meal in `creneaux.yaml`, at 20 h 15, on every day, and
+its nature is neither of the two that existed:
+
+| nature | empty slot is… | dealt a hand? | auto-filled? |
+|---|---|---|---|
+| `choisi` | a **gap** the week complains about | yes | yes |
+| `routine` | nothing — planned and shopped, never chosen | no | no |
+| `optionnel` | nothing — but selectable, and it deals | yes | no |
+
+`optionnel` is the cell those two left empty: a slot that **exists without being
+a lack**. Nobody eats a dessert every night, and a week with no dessert is not an
+incomplete week — but when you do want one, you must be able to say so. Every
+`ctx.nature(i) == "choisi"` test in `semaine_model.py` already did the right
+thing by construction: the landing slot, `_avancer`, `remplir` and the curse
+card's rescue days all skip it, while `offre()` — which asks `convient()`, not
+nature — deals it normally. The change is one meal in a YAML file and one word.
+
+Two consequences worth recording. The week goes from 22 slots to **29**, which
+is 21 + goûter + 7 desserts, and none of the seven counts as a gap. And the
+ordering invariant earned its keep again immediately: `dessert` is declared last
+in `repas:` but sorted by `heure`, so Wednesday comes out *petit-déj, déjeuner,
+goûter, dîner, dessert* — 16 h before 19 h 30 before 20 h 15. **The proto's JS
+was still sorting by declaration order**, the bug this README records as fixed on
+the Python side, and adding a fifth meal is what made the divergence visible.
+
 **What this unlocked, and it is the real point.** Nine dishes in the repertoire
 emit a `reste-plat` — chili, gratin, lasagnes, quiche, ratatouille, velouté,
 burgers, curry — and **not one of them had a consumer**. Every leftover portion

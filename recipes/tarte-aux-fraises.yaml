@@ -25,7 +25,7 @@ recipe:
   time_min_total: 50        # dont 1 h de repos de la pâte, portée par `attente_min`
   active_min: 25
 
-  creneaux: [gouter]        # dessert, pas un plat — cf. la note d'en-tête
+  creneaux: [gouter, dessert]        # dessert, pas un plat — cf. la note d'en-tête
 
   apports:
     proteine: aucune

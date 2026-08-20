@@ -19,7 +19,7 @@ recipe:
   time_min_total: 15        # hors 2 h de congélation
   active_min: 15
 
-  creneaux: [gouter]        # dessert : voir la note de `mousse-au-chocolat`
+  creneaux: [gouter, dessert]        # dessert : voir la note de `mousse-au-chocolat`
 
   apports:
     proteine: aucune

@@ -52,14 +52,33 @@ repas:
     nature: routine
     minutes: 10
     heure: 16
+  dessert:
+    label: dessert
+    # TROISIÈME NATURE : `optionnel`. Les deux existantes ne suffisaient pas.
+    # `choisi` fait d'un créneau vide un TROU : la semaine s'en plaint, la
+    # navigation y atterrit, le remplissage automatique le comble. Or on ne
+    # dîne pas d'un dessert tous les soirs, et une semaine sans dessert n'est
+    # pas une semaine incomplète. `routine` ne va pas non plus : elle veut
+    # dire « compté mais jamais proposé en cartes », ce qui est exactement le
+    # piège d'où l'on sort — les six desserts du catalogue se déclaraient
+    # `[gouter]` faute de mieux, donc n'étaient proposés qu'au seul goûter du
+    # mercredi, lui-même `routine`, donc jamais distribué. Aucun geste ne
+    # pouvait poser un dessert dans la semaine.
+    #
+    # `optionnel` = un créneau qui EXISTE sans être un manque quand il est
+    # vide : jamais atterri dessus, jamais rempli d'office, jamais compté en
+    # trou — mais sélectionnable à la main, et il distribue des cartes.
+    nature: optionnel
+    minutes: 5
+    heure: 20.25     # après le dîner de 19 h 30, et c'est l'heure qui l'ordonne
 
 # Quels créneaux existent, jour par jour. `defaut` s'applique à tout jour non
 # listé dans `exceptions`.
 jours:
-  defaut: [petit-dejeuner, dejeuner, diner]
+  defaut: [petit-dejeuner, dejeuner, diner, dessert]
   exceptions:
     # Séance des enfants un jour de semaine (#29) : un goûter s'ajoute.
-    mercredi: [petit-dejeuner, dejeuner, gouter, diner]
+    mercredi: [petit-dejeuner, dejeuner, gouter, diner, dessert]
 
 # Jours de coworking : le déjeuner doit partir en gamelle (#29, « coworking
 # days need lunchbox outputs »). Un plat qui voyage mal n'y a pas sa place.
