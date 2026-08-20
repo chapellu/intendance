@@ -534,6 +534,54 @@ has no field for an allergen, an alcohol or an age restriction. `exclusions` in
 `household.yaml` only knows tastes (piquant, Brussels sprouts). With a 12-month
 old in the house that gap is worth naming.
 
+#### p. 87, entered to be cooked tonight — the first entry driven by a real dinner
+
+Every recipe before this one was entered to fill a hole in the catalogue. The
+*Tourte niçoise aux courgettes* was entered because the household has a guest
+tomorrow and a week-old glut of courgettes, which is a different pressure and
+found different things.
+
+- **A fallback chain can degrade a dish, and nothing says so.** The filling is
+  cut in 1–1.5 cm cubes, and that size *is* the recipe: it is what lets the
+  courgettes render their water in the pan instead of holding it. Declared
+  `needs: [chop-coarse]`, the chain would have resolved onto the mini-blender
+  and puréed them. Every previous use of `rules.yaml` degraded *gracefully* — a
+  slower gesture, a smaller bowl, a longer time. This is the first capability
+  whose fallback would have produced a **different, worse dish**, and the only
+  defence available was to declare the knife in hard, with `needs: []`. A chain
+  has no way to say "below this rung, do not substitute — ask".
+- **The salt is not the salt.** `seasoning_gate` injects the baby's unsalted
+  set-aside before the step marked with it, and `seasoning: true` marks salt and
+  pepper. Here the real salt load is **100 g of parmesan**, which carries no such
+  flag. A set-aside taken from the filling "before salting" would have been
+  heavily salted while ticking the box. The share is therefore drawn from the
+  plain sautéed courgettes upstream (`depuis: [poeler]`). The class the validator
+  cannot see: *a salting ingredient that is not a seasoning*.
+- **The book never says when to salt.** « Sel, poivre » is in the ingredient list
+  and in no step at all — the exact hole already recorded for
+  `omelette-courgettes`. Third occurrence; it is a property of how cookbooks are
+  written, not an oversight, and an entry checklist should ask for it.
+
+`lot_entier: true` earned its keep immediately: built on a mould, the tourte
+cannot be cooked in fractions, and without the flag a 2.5-portion household
+ordered 0.625 of it — 375 g of courgettes and 0.6 egg. It is also the reason the
+guest is covered without the model knowing there is one: **portions per slot**
+is still the gap this README names above, and an indivisible lot happens to
+paper over it.
+
+**And the dish is nearly unreachable on the screen, which is the finding the
+real dinner produced.** It scores 1.6 (5.6 on the one slot where its vegetable
+families are new), ranking 36th of 44 — correctly, since cheese-and-pastry
+completes nothing the week lacks. Its category is `congelable`, so it is not one
+of the three `garantir` suits and only ever enters the hand through the general
+draw: measured over 300 redeals of a five-card hand, it comes up **14 times, 4.7%**
+— about twenty redeals to see it once. The proto has no search, no repertoire
+view, no way to say *I own this book and I am cooking page 87 tonight*. That is
+a legitimate entry point the deck cannot express, and it is field evidence on
+the open question this README already poses about unlimited redealing: the
+problem is not that redealing turns the hand into a list, it is that **a hand
+has no answer at all to a cook who has already chosen**.
+
 #### The blog: 255 recipes indexed, and why only four of them got entered
 
 There is no ebook of the Chioca book — Terre vivante sells print only — so the

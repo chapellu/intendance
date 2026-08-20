@@ -91,7 +91,7 @@ sommaire:
     - {page: 82, titre: "One pot pasta capriociosa"}
     - {page: 85, titre: "« Courgettes farcies » des fainéants"}
     - {page: 86, titre: "Risotto aux poivrons rouges et piment d'Espelette"}
-    - {page: 87, titre: "Tourte niçoise aux courgettes"}
+    - {page: 87, titre: "Tourte niçoise aux courgettes", catalogue_id: tourte-nicoise-courgettes}
     - {page: 88, titre: "Tian-ratatouille au parmesan"}
     - {page: 90, titre: "Pain perdu façon moussaka"}
     - {page: 92, titre: "Salade d'orge sympa"}

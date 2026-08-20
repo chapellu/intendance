@@ -36,6 +36,14 @@ capabilities:
   simmer-large: [{tool: cocotte-7.5l}]
   bake: [{tool: four-chaleur-tournante}]
   gratin: [{tool: four-chaleur-tournante}]
+  # Le gril est une résistance de voûte, pas la chaleur tournante — une capacité
+  # distincte, et un four qui ne l'a pas doit finir autrement plutôt que de
+  # sauter l'étape. Ce foyer l'a ; la chaîne existe pour celui qui ne l'aurait pas.
+  grill:
+    - tool: four-chaleur-tournante
+    - tool: none
+      rewrite: "sans gril : prolonger de 5 min à 210 °C en surveillant la couleur"
+      time_delta_min: 5
   puree: [{tool: mixeur-plongeur}, {tool: presse-puree, rewrite: "au presse-purée", time_delta_min: 3}]
   weigh:
     - tool: balance-tefal
