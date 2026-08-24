@@ -118,11 +118,14 @@ export interface Carte {
 /**
  * Tous les plats jouables sur un créneau, notés et triés.
  *
- * COÛTEUX PAR CONSTRUCTION : `calculer` est rejoué pour CHAQUE plat candidat,
- * parce que le coût marginal d'une carte ne se lit nulle part ailleurs — il
- * faut poser le plat et regarder ce que le panier devient. Le proto y met
- * 13,7 s pour remplir quatorze créneaux. C'est le sujet de T17 ; le port ne
- * corrige rien ici, sinon la parité ne voudrait plus rien dire.
+ * `calculer` est rejoué pour CHAQUE plat candidat, parce que le coût marginal
+ * d'une carte ne se lit nulle part ailleurs : il faut poser le plat et regarder
+ * ce que le panier devient.
+ *
+ * ON A LONGTEMPS CRU QUE C'ÉTAIT CHER. Mesuré (T17, `npm run perf`) : un appel
+ * coûte 1 ms pour 29 candidats, et poser les quatorze créneaux d'une semaine en
+ * coûte 12. Rien à mémoïser — et surtout rien à mémoïser « au cas où », ce qui
+ * aurait ajouté une invalidation à tenir juste pour un problème inexistant.
  */
 export function offre(jeu: Jeu, choix: Choix[], slot: number): Carte[] {
   const base = calculer(jeu, choix);
