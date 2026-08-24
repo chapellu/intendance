@@ -422,10 +422,50 @@ Un ticket = un commit qui laisse l'app fonctionnelle. `[ ]` à faire,
       pendant qu'on code fait perdre une heure, toujours passée à chercher
       ailleurs.
 
-- [ ] **T19 — Déploiement.** Dockerfile, `k8s/intendance`, workflow d'image, rrset
-      DNS, listener Gateway. À côté de `proto-shell`, pas à sa place.
-      **`/sw.js` se sert sans cache HTTP** — sous un `Cache-Control` long, il ne
-      serait jamais revérifié et l'app resterait sur sa version d'autant.
+- [x] **T19 — Déploiement.** Dockerfile, `k8s/intendance`, workflow d'image, rrset
+      DNS, listener Gateway. À côté de `proto-shell`, pas à sa place :
+      `intendance.chapellu.fr` en plus de `proto.chapellu.fr`, les deux vivants.
+
+      L'image a deux étages — Node construit, nginx sert — et la finale ne
+      contient ni Node, ni `node_modules`, ni les sources : 83 Mo, et rien à
+      exécuter côté serveur. `npm run build` typecheckant avant de construire,
+      un code qui ne compile pas ne produit pas d'image du tout.
+
+      **Le cache, en une règle** : ce dont l'URL porte l'empreinte se garde un
+      an, tout le reste se revalide. Vérifié sur l'image qui tourne :
+
+      | | Cache-Control |
+      | --- | --- |
+      | `/assets/index-*.js`, `*.css` | `public, max-age=31536000, immutable` |
+      | `/`, `/sw.js`, le manifeste, le catalogue, polices, icônes | `no-cache` |
+
+      `/sw.js` est le cas qui commandait : c'est le seul fichier que le
+      navigateur va rechercher tout seul pour savoir s'il existe une nouvelle
+      version. Sous un cache long, il ne serait jamais revérifié et l'app
+      resterait sur sa version pour la durée de ce cache — sans que rien
+      n'échoue nulle part.
+
+      **La compression se paie une fois, au build** (`gzip -9` + `gzip_static`)
+      et pas à chaque première visite : le nœud est un ARM à un cœur. Mesuré sur
+      l'image : le JS passe de 326 ko à 106 ko, le catalogue de 183 ko à 24 ko —
+      et ce dernier est demandé à chaque ouverture à froid tant que le service
+      worker n'est pas posé. Le manifeste, que nginx servait en
+      `application/octet-stream`, a désormais son vrai type.
+
+      **Vérifié pour de bon** : l'image construite ici, puis lancée, sert la PWA
+      entière — installation du worker, la semaine, les écrans, hors ligne,
+      polices comprises. Elle produit la même version de précache que le build
+      local (`7c43e922…`) : le conteneur reconstruit exactement le même `dist/`.
+
+      **Ce qui ne se vérifie pas d'ici** : le cluster. Flux, le listener du
+      Gateway, le certificat et le rrset sont déclaratifs et ne se prouvent
+      qu'à l'apply — ils reprennent trait pour trait ce qui fait tourner le
+      blog et le prototype, et c'est tout ce qu'on peut en dire avant que ça
+      tourne.
+
+      **Le CI teste avant de publier**, ce que le workflow du prototype ne
+      faisait pas : typecheck, tests et parité passent d'abord, l'image part
+      ensuite. Une image sur GHCR avec des tests rouges n'a rien à y faire.
 - [ ] **T20 — E2E.** Playwright sur les parcours qui comptent : poser une
       semaine, la retrouver après rechargement, cocher des courses et les
       rentrer.

@@ -1,0 +1,5 @@
+# Ce qui n'a rien à faire dans le contexte de build : `npm ci` réinstalle les
+# dépendances de toute façon (et celles d'ici sont d'une autre architecture),
+# et `dist` est refabriqué par l'étage de build.
+node_modules
+dist

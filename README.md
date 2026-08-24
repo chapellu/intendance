@@ -54,9 +54,31 @@ celui qu'une prévisualisation aurait laissé sur le même port.
 
 **Une nouvelle version ne se substitue jamais toute seule.** Elle s'installe à
 côté, la page l'annonce (« une nouvelle version est prête »), et c'est un doigt
-qui la fait passer. Conséquence pour le déploiement (T19) : **`/sw.js` doit être
-servi sans cache HTTP**. Servi avec un `Cache-Control` long, il ne serait
-jamais revérifié, et l'app resterait sur sa version pour la durée de ce cache.
+qui la fait passer. Conséquence pour le serveur : **`/sw.js` se sert sans cache
+HTTP** — sous un `Cache-Control` long, il ne serait jamais revérifié et l'app
+resterait sur sa version pour la durée de ce cache. C'est la règle que
+`nginx.conf` applique.
+
+## Déployer
+
+`intendance.chapellu.fr`, **à côté** de `proto.chapellu.fr` et pas à sa place :
+les deux tournent tant que le prototype sert encore de référence.
+
+- `Dockerfile` — deux étages. Node construit `dist/` (en typecheckant d'abord),
+  nginx-unprivileged le sert ; l'image finale ne contient ni Node, ni
+  `node_modules`, ni les sources. Les fichiers compressibles sont gzippés une
+  fois au build et servis tels quels (`gzip_static`) : le nœud est un ARM à un
+  cœur.
+- `nginx.conf` — une seule règle : ce dont l'URL porte l'empreinte
+  (`/assets/…`) se garde un an, tout le reste se revalide.
+- `k8s/intendance/` — namespace, deployment, service, HTTPRoute ;
+  `k8s/flux/intendance.yaml` les fait réconcilier par Flux, après
+  `infrastructure-config` (le Gateway et le ClusterIssuer d'abord).
+- `.github/workflows/intendance-image.yml` — typecheck, tests et parité, PUIS
+  l'image sur GHCR, puis le SHA épinglé dans le deployment. Flux fait le
+  rollout : rien ne s'applique hors bande.
+- le listener `https-intendance` du Gateway partagé (cert-manager émet
+  `intendance-tls`) et le rrset `intendance_a` dans `infra/dns.tf`.
 
 ## L'état des travaux
 
