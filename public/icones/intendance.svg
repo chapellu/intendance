@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Intendance">
+  <!-- La variante ARRONDIE, pour l'onglet d'un navigateur — qui ne masque rien
+       et poserait un carré cru sur la barre. `intendance-carre.svg` est la
+       source des PNG du manifeste : là, c'est le système qui masque. -->
+  <rect width="512" height="512" rx="96" fill="#f5ead8"/>
+  <path d="M126 175 A130 130 0 0 0 386 175 Z" fill="#c67139"/>
+  <rect x="86" y="317" width="340" height="24" rx="12" fill="#7a8a5e"/>
+</svg>

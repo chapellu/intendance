@@ -1,8 +1,9 @@
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
+import { pwa } from "./src/pwa/plugin";
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), pwa()],
   // L'app se juge sur un téléphone du réseau local, jamais sur localhost : sans
   // `host`, le serveur de dev n'écoute que la boucle locale et le téléphone ne
   // voit rien.

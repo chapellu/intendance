@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Intendance">
+  <!-- La variante MASQUABLE (`purpose: maskable`). Android découpe l'icône à la
+       forme du lanceur — cercle, goutte, squircle — et ne garantit que les 80 %
+       centraux. Le glyphe y est donc rentré d'un cinquième ; le fond, lui, va
+       jusqu'au bord, sinon le découpage laisserait du vide. -->
+  <rect width="512" height="512" fill="#f5ead8"/>
+  <g transform="translate(51.2 51.2) scale(0.8)">
+    <path d="M126 175 A130 130 0 0 0 386 175 Z" fill="#c67139"/>
+    <rect x="86" y="317" width="340" height="24" rx="12" fill="#7a8a5e"/>
+  </g>
+</svg>

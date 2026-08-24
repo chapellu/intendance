@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Intendance">
+  <!-- Le glyphe, À FOND PERDU et sans coin arrondi : iOS et Android posent leur
+       propre masque sur l'icône qu'on leur donne, et arrondir ici reviendrait à
+       arrondir deux fois — un liseré clair le long du bord. C'est ce fichier
+       que les PNG du manifeste rendent ; `intendance.svg` est sa variante
+       arrondie, pour l'onglet d'un navigateur, qui ne masque rien.
+       Un bol posé sur le comptoir : les deux couleurs du système, terre cuite
+       et sauge, et rien d'autre — une icône se lit à 40 px. -->
+  <rect width="512" height="512" fill="#f5ead8"/>
+  <path d="M126 175 A130 130 0 0 0 386 175 Z" fill="#c67139"/>
+  <rect x="86" y="317" width="340" height="24" rx="12" fill="#7a8a5e"/>
+</svg>

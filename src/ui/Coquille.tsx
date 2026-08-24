@@ -11,6 +11,7 @@
 import type { ReactNode } from "react";
 import { chemin, dansCuisine, type Route } from "../nav/routes";
 import { aller } from "../nav/useRoute";
+import { MiseAJour } from "./MiseAJour";
 
 interface Onglet {
   route: Route;
@@ -74,6 +75,8 @@ export function Coquille({
       ) : null}
 
       {children}
+
+      <MiseAJour />
 
       <nav className="co-barre" aria-label="Facettes">
         <Facette

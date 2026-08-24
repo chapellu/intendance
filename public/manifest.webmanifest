@@ -1,0 +1,17 @@
+{
+  "name": "Intendance",
+  "short_name": "Intendance",
+  "description": "La conduite d'une maison : sa cuisine, son stock, ses courses.",
+  "lang": "fr",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5ead8",
+  "theme_color": "#f5ead8",
+  "icons": [
+    { "src": "icones/icone-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icones/icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icones/icone-masque-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

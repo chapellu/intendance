@@ -30,6 +30,34 @@ npm run build
 `npm run build` typecheck avant de construire : un `dist/` qui sort d'un code
 qui ne compile pas n'a rien à faire dans une image.
 
+## La PWA
+
+L'app s'installe sur l'écran d'accueil et s'ouvre sans réseau. Trois pièces :
+
+- `public/manifest.webmanifest` — le nom, les couleurs, les icônes,
+  `display: standalone`. `start_url` et `scope` sont RELATIFS : l'app ne décide
+  pas de l'endroit où elle sera servie, et un chemin absolu la casserait sous
+  un sous-répertoire. Lancée depuis l'écran d'accueil, l'app ouvre donc le
+  cockpit — la route par défaut, et la bonne question du matin.
+- `public/icones/` — les SVG sont la source, les PNG en sont un rendu commité.
+  `node scripts/icones.mjs` les refabrique quand un SVG change.
+- `src/pwa/` — le worker (`sw.js`, un modèle), le greffon Vite qui y injecte la
+  liste du build (`plugin.ts`), et l'inscription côté page (`maj.ts`).
+
+Le worker précache le build ENTIER à l'installation — document, code, styles,
+polices, catalogue, icônes — et le sert depuis le cache. C'est ce qui permet à
+un lien profond de s'ouvrir hors ligne : avec le routeur en dièse, toute
+navigation est la même page.
+
+Il n'existe qu'en production : `npm run dev` n'en pose aucun, et désinscrit
+celui qu'une prévisualisation aurait laissé sur le même port.
+
+**Une nouvelle version ne se substitue jamais toute seule.** Elle s'installe à
+côté, la page l'annonce (« une nouvelle version est prête »), et c'est un doigt
+qui la fait passer. Conséquence pour le déploiement (T19) : **`/sw.js` doit être
+servi sans cache HTTP**. Servi avec un `Cache-Control` long, il ne serait
+jamais revérifié, et l'app resterait sur sa version pour la durée de ce cache.
+
 ## L'état des travaux
 
 `BACKLOG.md` porte les vingt tickets et leur avancement. Un ticket = un commit

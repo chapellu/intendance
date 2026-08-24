@@ -378,10 +378,54 @@ Un ticket = un commit qui laisse l'app fonctionnelle. `[ ]` à faire,
       dépendance du projet. Il le devient en **T20**, qui reprendra ces trois
       mesures.
 
-- [ ] **T18 — PWA.** Manifeste, service worker, installable, utilisable hors
+- [x] **T18 — PWA.** Manifeste, service worker, installable, utilisable hors
       ligne — l'app se juge sur l'écran d'accueil d'un iPhone, pas dans Safari.
+
+      Le worker précache le BUILD ENTIER à l'installation (16 fichiers :
+      document, code, styles, quatre polices, catalogue, icônes) et le sert
+      depuis le cache. Pas de « je garde ce que j'ai servi » : ce qu'une visite
+      n'a pas demandé est exactement ce qui manquera le jour sans réseau, et on
+      ne l'apprendrait qu'à ce moment-là. Écrit à la main plutôt que par
+      Workbox, pour la même raison que le routeur de T7 : l'ensemble est fini,
+      plat et connu à la fin du build.
+
+      Vérifié hors ligne dans un vrai Chromium, réseau coupé pour de bon : la
+      semaine, « À prévoir », « Poser », les courses et le cockpit s'ouvrent,
+      les polices comprises — et par LIEN PROFOND rechargé, ce que seul le
+      routeur en dièse rend possible sans réécriture côté serveur.
+
+      **Ce que ça fait gagner** (même build, même écran, CPU ×4, médiane de
+      cinq ouvertures à froid) :
+
+      | réseau | sans worker | avec worker |
+      | --- | --- | --- |
+      | local, aucun bridage | 616 ms | 666 ms |
+      | 4G lente (1,6 Mb/s, 150 ms) | 2 211 ms | 613 ms |
+
+      Sur `localhost`, le worker ne gagne RIEN — il coûte même un peu. C'est la
+      suite exacte de T17 : sur une boucle locale, l'ouverture n'est pas du
+      réseau. Sur un vrai réseau, elle l'était pour les trois quarts, et il ne
+      reste que le plancher — 613 ms d'analyse, d'exécution et de premier rendu,
+      identiques dans les deux cas. Le prochain gain, s'il en faut un, se prend
+      là (326 ko de JS en un seul morceau), pas sur le transport.
+
+      **Une nouvelle version ne prend jamais la place de l'ancienne toute
+      seule** : elle s'installe à côté, la page l'annonce d'un bandeau, un doigt
+      la fait passer. Remplacer d'office échangerait le code sous une page en
+      train de servir. Le chemin complet est joué en vrai (installation,
+      « déploiement » d'une seconde version, bandeau, bascule, ancien cache
+      effacé) — c'est la partie du ticket qui pouvait le plus silencieusement
+      être fausse.
+
+      Le worker n'existe qu'en production, et `npm run dev` désinscrit celui
+      qu'une prévisualisation aurait laissé sur le même port : un cache qui sert
+      pendant qu'on code fait perdre une heure, toujours passée à chercher
+      ailleurs.
+
 - [ ] **T19 — Déploiement.** Dockerfile, `k8s/intendance`, workflow d'image, rrset
       DNS, listener Gateway. À côté de `proto-shell`, pas à sa place.
+      **`/sw.js` se sert sans cache HTTP** — sous un `Cache-Control` long, il ne
+      serait jamais revérifié et l'app resterait sur sa version d'autant.
 - [ ] **T20 — E2E.** Playwright sur les parcours qui comptent : poser une
       semaine, la retrouver après rechargement, cocher des courses et les
       rentrer.
