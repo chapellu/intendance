@@ -3,16 +3,17 @@
 // Un port se prouve par l'ÉGALITÉ, pas par ses propres tests. Des tests écrits
 // en même temps que le code testent surtout ce que le code fait ; ils ne disent
 // pas s'il fait la même chose qu'avant. Ce script joue les mêmes semaines dans
-// les deux modèles — le JS de `apps/proto-shell/semaine.js`, qui tourne en
-// production sur proto.chapellu.fr, et le port TypeScript — puis compare une
+// les deux modèles — le JS du prototype, qui tourne en production sur
+// proto.chapellu.fr, et le port TypeScript — puis compare une
 // empreinte de TOUT ce que `calculer` produit : panier, chaînage, manques,
 // plein tarif, provenances, facteurs, bilan de rangement, état du dépôt.
 //
-// CE SCRIPT EST TEMPORAIRE PAR CONSTRUCTION. Il lit le proto, et le proto sera
-// supprimé quand le squelette portera les mêmes verdicts (voir la section
-// « Sortie » du backlog). Il disparaîtra avec lui — c'est le but.
+// CE SCRIPT EST TEMPORAIRE PAR CONSTRUCTION. Il lit le modèle du proto, figé
+// dans `reference/proto-semaine.js`, et le proto sera supprimé quand cette app
+// portera les mêmes verdicts (voir la section « Sortie » du backlog). Les deux
+// fichiers disparaîtront ensemble — c'est le but.
 import { readFileSync } from "node:fs";
-import * as P from "../../proto-shell/semaine.js";
+import * as P from "../reference/proto-semaine.js";
 
 const brut = JSON.parse(readFileSync(new URL("../public/cuisine-data.json", import.meta.url), "utf8"));
 const LUNDI = new Date("2026-08-17T12:00:00Z");

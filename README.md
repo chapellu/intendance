@@ -12,10 +12,22 @@ Le mot ne dit ni le jardin ni la cuisine en particulier, et laisse la place aux
 facettes qui viendront. Dans le code, le châssis reste « la coquille » : le nom
 de l'app et le nom de sa structure n'ont pas à être le même mot.
 
-**Ce n'est pas `apps/proto-shell`.** Le proto répondait à une question de design
-avec du code jetable et sans persistance ; celui-ci est l'app, sur la stack
-décidée par [Workspace#6](https://github.com/chapellu/Workspace/issues/6) :
-Vite + React + TypeScript + Dexie.
+**Ce n'est pas le prototype.** `apps/proto-shell`, dans
+[chapellu/flagship](https://github.com/chapellu/flagship), répondait à une
+question de design avec du code jetable et sans persistance ; celui-ci est
+l'app, sur la stack décidée par
+[Workspace#6](https://github.com/chapellu/Workspace/issues/6) : Vite + React +
+TypeScript + Dexie.
+
+**Ce dépôt porte l'app et son déploiement.** Elle a vécu ses vingt premiers
+tickets dans le monodépôt `flagship`, sous `apps/intendance` ; l'historique est
+celui-là, commit pour commit. Restent chez `flagship` les deux choses qui sont
+de l'infrastructure et pas de l'app : le **listener `https-intendance`** du
+Gateway partagé (`k8s/infrastructure-config/gateway.yaml`) et le **rrset DNS**
+(`infra/dns.tf`) — plus la `GitRepository` et la `Kustomization` Flux
+(`k8s/flux/intendance.yaml`) qui font lire `k8s/` d'ici.
+
+Tout chemin en `apps/…` dans ce dépôt (backlog compris) désigne `flagship`.
 
 ## Faire tourner
 
@@ -84,14 +96,17 @@ les deux tournent tant que le prototype sert encore de référence.
   cœur.
 - `nginx.conf` — une seule règle : ce dont l'URL porte l'empreinte
   (`/assets/…`) se garde un an, tout le reste se revalide.
-- `k8s/intendance/` — namespace, deployment, service, HTTPRoute ;
-  `k8s/flux/intendance.yaml` les fait réconcilier par Flux, après
-  `infrastructure-config` (le Gateway et le ClusterIssuer d'abord).
-- `.github/workflows/intendance-image.yml` — typecheck, tests et parité, PUIS
-  l'image sur GHCR, puis le SHA épinglé dans le deployment. Flux fait le
-  rollout : rien ne s'applique hors bande.
-- le listener `https-intendance` du Gateway partagé (cert-manager émet
-  `intendance-tls`) et le rrset `intendance_a` dans `infra/dns.tf`.
+- `k8s/` — namespace, deployment, service, HTTPRoute. Flux les lit ICI :
+  `flagship` déclare la source et la `Kustomization` qui pointent sur ce dépôt,
+  et les fait réconcilier après `infrastructure-config` (le Gateway et le
+  ClusterIssuer d'abord).
+- `.github/workflows/image.yml` — typecheck, tests, parité et parcours, PUIS
+  l'image sur GHCR, puis le SHA épinglé dans `k8s/deployment.yaml`. Le CI
+  n'écrit que dans ce dépôt : c'est ce qui évite un jeton croisé, et c'est la
+  raison pour laquelle les manifestes sont ici plutôt que chez `flagship`.
+- chez `flagship` : le listener `https-intendance` du Gateway partagé
+  (cert-manager émet `intendance-tls`) et le rrset `intendance_a`
+  (`infra/dns.tf`).
 
 ## L'état des travaux
 

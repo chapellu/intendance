@@ -6,6 +6,12 @@
 > viendront. Dans le code, la coquille reste « la coquille » : le nom de l'app
 > et le nom de son châssis n'ont pas à être le même mot.
 
+> **Où ce backlog a été écrit.** Les vingt tickets ont été menés dans le
+> monodépôt `chapellu/flagship`, où l'app vivait sous `apps/intendance`. Elle a
+> depuis son propre dépôt, avec son historique. Les chemins en `apps/…` qu'on
+> lit ci-dessous désignent donc `flagship` — ils n'ont pas été réécrits : ils
+> disent où la décision a été prise.
+
 **Ceci n'est pas un prototype.** `apps/proto-shell` répondait à une question de
 design et sera supprimé ; ceci est l'app, sur la stack décidée par
 [Workspace#6](https://github.com/chapellu/Workspace/issues/6) : **Vite + React +
@@ -514,5 +520,8 @@ Un ticket = un commit qui laisse l'app fonctionnelle. `[ ]` à faire,
 
 ## Sortie
 
-Quand le squelette porte les mêmes verdicts que le proto : supprimer
-`apps/proto-shell`, `k8s/proto-shell`, son listener, son rrset et son workflow.
+Quand l'app porte les mêmes verdicts que le proto : supprimer, chez `flagship`,
+`apps/proto-shell`, `k8s/proto-shell`, son listener, son rrset et son workflow —
+et ici, `scripts/parite.mjs` avec `reference/proto-semaine.js`, qui n'existent
+que pour prouver le port et n'ont plus rien à prouver une fois l'original
+parti.

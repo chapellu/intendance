@@ -1,0 +1,72 @@
+# intendance.chapellu.fr — Vite + React construits en statique, servis par
+# nginx-unprivileged. Aucun état côté serveur : tout ce que l'app retient vit
+# dans l'IndexedDB du téléphone.
+#
+# Le tag d'image est épinglé par le CI (.github/workflows/image.yml) qui
+# committe le nouveau SHA ici après publication sur GHCR : Flux déploie, rien ne
+# s'applique hors bande. `latest` ci-dessous ne tient que jusqu'au premier
+# passage du CI.
+#
+# CE DOSSIER EST LU PAR FLUX depuis `chapellu/flagship`, qui déclare la
+# `GitRepository` et la `Kustomization` qui pointent ici (`k8s/flux/
+# intendance.yaml`). Y vivent aussi les deux choses qui ne sont pas à l'app :
+# le listener `https-intendance` du Gateway partagé et le rrset DNS.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: intendance
+  namespace: intendance
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: intendance
+  template:
+    metadata:
+      labels:
+        app: intendance
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: nginx
+          image: ghcr.io/chapellu/intendance:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 2
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
+          securityContext:
+            # uid de nginx-unprivileged
+            runAsUser: 101
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            # nginx-unprivileged met pid et caches sous /tmp
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}

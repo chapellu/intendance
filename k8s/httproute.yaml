@@ -1,0 +1,21 @@
+# Route publique de l'app. Se branche sur le listener https-intendance du
+# Gateway partagé, qui est déclaré dans `chapellu/flagship`
+# (`k8s/infrastructure-config/gateway.yaml`) : la TLS est terminée là, et le
+# certificat intendance-tls est émis par cert-manager.
+# Public en lecture, comme le blog et le prototype — pas de SecurityPolicy.
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: intendance
+  namespace: intendance
+spec:
+  parentRefs:
+    - name: eg
+      namespace: envoy-gateway-system
+      sectionName: https-intendance
+  hostnames:
+    - intendance.chapellu.fr
+  rules:
+    - backendRefs:
+        - name: intendance
+          port: 80
