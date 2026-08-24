@@ -1,2 +1,6 @@
 node_modules/
 dist/
+
+# Playwright : rapports et traces d'un passage, jamais du code.
+test-results/
+playwright-report/

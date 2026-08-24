@@ -23,9 +23,22 @@ Vite + React + TypeScript + Dexie.
 npm install
 npm run dev        # écoute sur 0.0.0.0 — l'app se juge sur un téléphone du réseau
 npm run typecheck
-npm test
+npm test           # unitaires (Vitest)
+npm run e2e        # parcours de bout en bout (Playwright, contre le build)
 npm run build
 ```
+
+Deux scripts de mesure, qui n'échouent jamais : ils impriment, et c'est au
+lecteur de conclure. `npm run perf` mesure le modèle (aucun navigateur) ;
+`npm run banc` mesure l'app dans Chromium — ouverture à froid, repioche,
+changement d'écran, et ce que le service worker fait gagner selon le réseau. Il
+veut un serveur en face : `npm run build && npm run preview` dans un autre
+terminal.
+
+`npm run e2e` construit et sert l'app lui-même. Les parcours vont contre le
+**build de production**, parce que c'est le seul endroit où le service worker
+existe — et hors ligne, la mise à jour et l'installation sont justement ce
+qu'un test unitaire ne peut pas voir.
 
 `npm run build` typecheck avant de construire : un `dist/` qui sort d'un code
 qui ne compile pas n'a rien à faire dans une image.

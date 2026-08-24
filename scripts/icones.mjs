@@ -13,9 +13,9 @@
 //
 //   node scripts/icones.mjs
 //
-// Playwright n'est pas encore une dépendance du projet — il le devient en T20.
-// D'ici là, ce script se lance avec un Playwright installé à côté ; le chemin
-// du binaire se donne par `CHROMIUM` si besoin.
+// Playwright est une dépendance du projet depuis T20 (les parcours de bout en
+// bout) ; ce script n'a donc plus rien à installer. `CHROMIUM=/chemin/vers/chrome`
+// force un binaire déjà présent, là où le téléchargement est coupé.
 
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";

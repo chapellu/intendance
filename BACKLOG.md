@@ -466,9 +466,51 @@ Un ticket = un commit qui laisse l'app fonctionnelle. `[ ]` à faire,
       **Le CI teste avant de publier**, ce que le workflow du prototype ne
       faisait pas : typecheck, tests et parité passent d'abord, l'image part
       ensuite. Une image sur GHCR avec des tests rouges n'a rien à y faire.
-- [ ] **T20 — E2E.** Playwright sur les parcours qui comptent : poser une
+- [x] **T20 — E2E.** Playwright sur les parcours qui comptent : poser une
       semaine, la retrouver après rechargement, cocher des courses et les
       rentrer.
+
+      **Contre le build de production, en 390 × 844.** C'est la seule façon de
+      tester ce que T18 promet : le service worker n'existe qu'en production, et
+      « l'app s'ouvre sans réseau » n'a aucun sens contre un serveur qui
+      recompile à chaque requête. Six parcours, quatorze secondes :
+
+      - poser un plat au doigt et le retrouver après rechargement ;
+      - sauter un repas, le retrouver sauté, y remanger — et vérifier au passage
+        que le PLI ne survit pas au rechargement quand le SAUT, lui, survit :
+        c'est l'hypothèse de persistance du projet, jouée pour de bon ;
+      - un lien profond vers un jour sorti de la semaine, qui doit le DIRE ;
+      - cocher un article au magasin, le rentrer à la maison, le retrouver
+        rentré — avec le contrôle qui compte : cocher ne range rien ;
+      - hors ligne pour de bon (`setOffline`), trois liens profonds rechargés,
+        la semaine posée toujours là, les polices comprises ;
+      - une seconde version « déployée » sous le serveur : le bandeau paraît,
+        l'ANCIENNE continue de servir tant qu'on n'a pas dit oui, puis la
+        nouvelle prend la place et l'ancien cache disparaît.
+
+      Le dernier est celui qui justifie la dépendance à lui seul : un chemin de
+      mise à jour cassé ne fait RIEN — pas d'écran blanc, pas de bouton mort,
+      juste une app qui reste sur sa version et personne pour s'en apercevoir.
+
+      **Aucune écriture directe en base dans les parcours.** Semer une semaine
+      dans IndexedDB gagnerait dix secondes et poserait des plats que l'app n'a
+      jamais acceptés : le jour où « poser » casserait, les parcours des courses
+      resteraient verts. Ce qu'un doigt fait, le doigt le fait.
+
+      **Un piège rencontré, et gardé en commentaire** : désigner une case par
+      son texte (« la première qui dit *à poser* ») alors que le test change ce
+      texte — le localisateur se déplace alors sur la case suivante et le test
+      vérifie tranquillement autre chose. On désigne la case OUVERTE, qui est
+      unique.
+
+      **Les mesures de T17 et T18 sont commitées** : `npm run banc`, à côté de
+      `npm run perf`. Ce n'est PAS un test — un seuil de performance dans un CI
+      partagé mesure le voisin, rougit un jour sur trois, s'élargit, et finit
+      par ne plus rien dire. Le banc imprime ; c'est au lecteur de conclure.
+
+      Le CI lance les parcours sur x86_64 et non sur ARM comme le reste : ici on
+      teste un comportement de navigateur, pas l'image déployée, et Playwright y
+      livre son Chromium sans discussion.
 
 ## Sortie
 
