@@ -28,6 +28,12 @@ import compile as rc  # shadows the builtin `compile` in this module only
 HERE = Path(__file__).parent
 
 BANDES = {"1-repas", "2-repas", "3-repas", "lunchbox"}
+# Tout ce qu'une ligne d'ingrédient a le droit de porter. La liste est CLOSE
+# exprès : c'est elle qui fait remonter les clés nées d'une virgule non quotée
+# (voir le contrôle plus bas). Un nouveau champ s'ajoute ici en même temps que
+# le code qui le lit.
+CHAMPS_INGREDIENT = {"id", "name", "qty", "unit", "seasoning", "ref",
+                     "from_accepts", "subs"}
 MOTS_ASSAISONNEMENT = re.compile(r"\bsel\b|sal|poivr|assaisonn|rectifi", re.I)
 # Une attente écrite DANS la phrase est invisible au modèle : c'est exactement
 # la faute que `attente_min` répare, et elle a été commise huit fois avant
@@ -90,6 +96,25 @@ def verifier(rid: str, r: dict, rayons: dict, rules: dict, cat: dict,
 
     # Ingrédients : tout id doit avoir un rayon, sinon il tombe en « NON CLASSÉ ».
     for ing in r.get("ingredients", []) + r.get("sans_reste", {}).get("ingredients", []):
+        # UNE VIRGULE NON QUOTÉE COUPE LE NOM EN DEUX, EN SILENCE. Les lignes
+        # d'ingrédient sont écrites en flow mapping — `{id: x, name: y, qty: 1}` —
+        # où la virgule sépare les champs. Un nom qui en contient une sans être
+        # entre guillemets s'arrête donc à la virgule, et ce qui suit devient une
+        # CLÉ sans valeur, que personne ne lit. Rien ne casse : la recette se
+        # charge, se vérifie et se compile, avec un nom amputé.
+        #
+        # Huit lignes du catalogue étaient dans ce cas, découvertes en saisissant
+        # l'hiver. Ce qu'elles perdaient n'était pas de l'ornement — « sans peau
+        # ni arêtes », « à température ambiante », « très froide » : des
+        # instructions dont dépend la recette. Les clés inconnues sont donc une
+        # erreur, jamais un avertissement.
+        inconnues = set(ing) - CHAMPS_INGREDIENT
+        if inconnues:
+            err.append(
+                f"ingrédient « {ing.get('id', '?')} » : champ(s) inconnu(s) "
+                f"{sorted(inconnues)} — presque toujours une virgule non quotée "
+                f"dans `name:`, qui a coupé le nom à « {ing.get('name')} » et "
+                "transformé la suite en clés vides. Mettre le nom entre guillemets.")
         if ing.get("from_accepts"):
             continue
         cid = alias.get(ing["id"], ing["id"])

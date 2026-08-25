@@ -37,13 +37,13 @@ recipe:
   ingredients:
     # Pâte — aux petits suisses, sans crème ni œuf
     - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 180, unit: g}
-    - {id: beurre, name: beurre mou, à température ambiante, qty: 90, unit: g}
+    - {id: beurre, name: "beurre mou, à température ambiante", qty: 90, unit: g}
     - {id: petits-suisses, name: petits suisses au lait entier, qty: 180, unit: g}
     - {id: sucre-roux, name: sucre roux, qty: 3, unit: c. à s.}
     - {id: sel, name: sel, qty: 1, unit: bonne pincée, seasoning: true}
     # Garniture
     - {id: fraises, name: fraises bien sucrées et parfumées, qty: 350, unit: g}
-    - {id: creme-coco, name: crème de coco liquide, très froide, qty: 20, unit: cl}
+    - {id: creme-coco, name: "crème de coco liquide, très froide", qty: 20, unit: cl}
     - {id: sucre-vanille, name: sucre vanillé, qty: 3, unit: sachet}
 
   steps:

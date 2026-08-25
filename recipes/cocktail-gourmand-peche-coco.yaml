@@ -39,7 +39,7 @@ recipe:
     origine: francais
 
   ingredients:
-    - {id: peches, name: pêches jaunes ou blanches, mûres à point, qty: 6, unit: pièce}
+    - {id: peches, name: "pêches jaunes ou blanches, mûres à point", qty: 6, unit: pièce}
     - {id: gousse-vanille, name: gousse de vanille, qty: 1, unit: pièce}
     - {id: creme-coco, name: crème de coco liquide, qty: 20, unit: cl}
     - {id: rhum, name: rhum, qty: 2, unit: c. à s.}

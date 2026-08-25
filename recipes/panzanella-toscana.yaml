@@ -41,7 +41,7 @@ recipe:
       - {id: pain-levain, name: pain demi-complet au levain, qty: 400, unit: g}
 
   ingredients:
-    - {id: pain-rassis-ing, name: pain demi-complet au levain un peu rassis, en tranches, qty: 350, unit: g, from_accepts: true}
+    - {id: pain-rassis-ing, name: "pain demi-complet au levain un peu rassis, en tranches", qty: 350, unit: g, from_accepts: true}
     - {id: tomates, name: grosses tomates bien goûteuses (idéalement anciennes), qty: 4, unit: pièce}
     - {id: concombre, name: petit concombre Noa, qty: 1, unit: pièce}
     - {id: olives-noires, name: olives noires, qty: 16, unit: pièce}

@@ -34,7 +34,7 @@ recipe:
     origine: francais
 
   ingredients:
-    - {id: saumon, name: saumon sauvage frais ou surgelé, sans peau ni arête, qty: 250, unit: g}
+    - {id: saumon, name: "saumon sauvage frais ou surgelé, sans peau ni arête", qty: 250, unit: g}
     - {id: echalote, name: échalotes, qty: 6, unit: pièce}
     - {id: carottes, name: carotte, qty: 1, unit: pièce}
     - {id: vin-blanc-sec, name: vin blanc sec (ou eau), qty: 10, unit: cl}

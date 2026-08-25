@@ -57,7 +57,7 @@ recipe:
     - {id: chocolat-noir, name: chocolat noir pâtissier à 70 % de cacao, qty: 200, unit: g}
     - {id: creme-coco, name: crème de coco liquide (ou de soja), qty: 20, unit: cl}
     - {id: huile-coco, name: huile de coco vierge (ou beurre), qty: 40, unit: g}
-    - {id: sucre-complet, name: sucre au choix (complet, coco…), qty: 40, unit: g}
+    - {id: sucre-complet, name: "sucre au choix (complet, coco…)", qty: 40, unit: g}
     - {id: extrait-vanille, name: extrait de vanille liquide, qty: 1, unit: c. à s.}
     - {id: fleur-de-sel, name: fleur de sel, qty: 1, unit: pincée, seasoning: true}
 

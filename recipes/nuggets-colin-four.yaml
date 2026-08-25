@@ -30,7 +30,7 @@ recipe:
     origine: francais
 
   ingredients:
-    - {id: colin-surgele, name: filets de colin surgelés, sans peau ni arêtes, qty: 400, unit: g}
+    - {id: colin-surgele, name: "filets de colin surgelés, sans peau ni arêtes", qty: 400, unit: g}
     - {id: fromage-rape, name: parmesan râpé, qty: 70, unit: g}
     - {id: biscottes, name: biscottes complètes de blé ou d'épeautre, qty: 70, unit: g}
     - {id: oeufs, name: œufs, qty: 2, unit: pièce}

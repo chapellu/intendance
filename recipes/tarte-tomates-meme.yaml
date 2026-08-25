@@ -26,7 +26,7 @@ recipe:
     origine: francais
 
   ingredients:
-    - {id: pate-feuilletee, name: pâte feuilletée (aux petits suisses, p. 58, ou bio du commerce), qty: 1, unit: pièce}
+    - {id: pate-feuilletee, name: "pâte feuilletée (aux petits suisses, p. 58, ou bio du commerce)", qty: 1, unit: pièce}
     - {id: tomates-roma, name: "tomates Roma bien mûres — les autres variétés rendent trop d'eau", qty: 3, unit: pièce}
     - {id: fromage-rape, name: gruyère râpé, qty: 70, unit: g}
     - {id: moutarde, name: moutarde à l'ancienne, qty: 2, unit: c. à s., seasoning: true}
