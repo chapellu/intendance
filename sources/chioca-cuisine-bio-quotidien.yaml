@@ -12,9 +12,15 @@
 # `_repertoire.yaml` sont à corriger.
 #
 # Une entrée saisie se signale en lui ajoutant `catalogue_id: <id>` pointant sur
-# le plat correspondant dans `recipes/`. Saisies à ce jour : **25 sur 100**.
+# le plat correspondant dans `recipes/`. Saisies à ce jour : **31 sur 100**.
 # Le PRINTEMPS est complet à cinq pages près (42, 45, 46, 49, 50) ; l'ÉTÉ est
-# entamé (p. 70 à 81) ; l'automne et l'hiver sont entièrement à saisir.
+# entamé (p. 70 à 81, plus les p. 87 et 115) ; l'HIVER est ouvert par ses quatre
+# premiers plats (p. 177 à 182) ; l'automne est entièrement à saisir.
+#
+# LE COMPTE DE CET EN-TÊTE SE PÉRIME, et il l'a fait : il annonçait 25 alors que
+# les p. 87 et 115 étaient entrées depuis dix jours. Le chiffre juste se calcule
+# — c'est le nombre d'entrées portant un `catalogue_id` — et cette ligne n'est
+# qu'un résumé de lecture. En cas de désaccord, croire le fichier, pas l'en-tête.
 #
 # `niveau: plan` marquerait une entrée saisie SANS étapes — planifiable et
 # achetable, pas encore cuisinable. Aucune n'est dans ce cas : les samoussas
@@ -140,10 +146,10 @@ sommaire:
     - {page: 172, titre: "Soupe crétoise « 3 min chrono »"}
     - {page: 173, titre: "Lentilles vertes mijotées à la paysanne"}
     - {page: 174, titre: "Méli-mélo en rémoulade légère au yaourt de brebis"}
-    - {page: 177, titre: "Croque-monsieur montagnards"}
-    - {page: 178, titre: "Accras gourmands au thon, pain et carottes râpées"}
-    - {page: 181, titre: "Tartelettes aux noix et topinambours"}
-    - {page: 182, titre: "Pot-au-feu traditionnel (ou poule-au-pot, potée…)"}
+    - {page: 177, titre: "Croque-monsieur montagnards", catalogue_id: croque-monsieur-montagnards}
+    - {page: 178, titre: "Accras gourmands au thon, pain et carottes râpées", catalogue_id: accras-thon-pain-carottes}
+    - {page: 181, titre: "Tartelettes aux noix et topinambours", catalogue_id: tartelettes-noix-topinambours}
+    - {page: 182, titre: "Pot-au-feu traditionnel (ou poule-au-pot, potée…)", catalogue_id: pot-au-feu-traditionnel}
     - {page: 184, titre: "Coquilles de poisson"}
     - {page: 186, titre: "Restes de rôti en « cordons bleus » au four"}
     - {page: 189, titre: "Colcannon irlandais"}

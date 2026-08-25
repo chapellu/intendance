@@ -695,6 +695,96 @@ and shopped at all.
 What did work, first time and without help: the egg line. One dish wants 1 and
 the other 4, and the list came out `5 pièce — œuf (2 plats)`.
 
+#### Winter opens on four consecutive pages (p. 177–182)
+
+The first batch entered from photographs of **full pages** rather than of the
+contents index, and the first four of the book's twenty-five winter recipes:
+croque-monsieur montagnards (p. 177), accras de thon au pain rassis (p. 178),
+tartelettes noix-topinambours (p. 181), pot-au-feu (p. 182). 31 of 100 entered.
+
+**The pot-au-feu is the first souche with three outputs, and the author declares
+all three herself**: « Un seul plat, trois bons repas en perspective » — the meat
+and vegetables at midday, the broth with small pasta or crêpe ribbons that
+evening (she points at p. 192), the leftovers the next day as hachis Parmentier
+(p. 199) or cold with vinaigrette. Two of the three consumers are recipes in this
+same book, neither entered yet, so `bouillon-pot-au-feu` deliberately ships
+without a `qty:`: a number with nothing to check it against would look like a
+measurement. What three simultaneous outputs expose is that `emits` has always
+been read as a pleasant consequence — the dish leaves a leftover, good. Here the
+three are born in the same minute and go to the same place. The household has 10
+fridge places, 8 boxes and 12 jars, and **the container pool is verified over the
+week, never at the moment a dish emits**.
+
+**The author lists the pot as the last line of the ingredients** — « … Une très
+grande marmite (de type "faitout traiteur") », right after the coarse salt. No
+other recipe in the catalogue declares its vessel, and the model cannot hear it.
+`contenance` is denominated in adult portions, so the 7.5 L cocotte offers 12
+against this dish's 6 and `facteur_max_vaisselle` says yes twice over. But 3.5 l
+of water, 1.5 kg of meat and nearly 3 kg of whole vegetables do not go into 7.5 L
+whatever the arithmetic of portions says. A portion of pot-au-feu is three times
+the volume of a portion of stew, and the portion unit was chosen precisely so
+nobody would have to convert litres into plates. First dish where that turns.
+
+**The croque-monsieur is cooked on the author's fallback, and nothing says so.**
+She writes « au gaufrier … ou sur une plaque de cuisson, 10 minutes dans un four
+préchauffé à 240 °C ». This kitchen has no waffle iron and no croque press, so
+only the second path exists. But there is no `gaufrier` capability, so writing
+`needs: [bake]` does not *declare a fallback* — it declares the recipe. A missing
+capability that `rules.yaml` knows about announces its downgrade in the compiled
+output (« au petit blender, en 2–3 fois »); a capability the vocabulary never had
+downgrades in silence, and the loss is not nil — pressed and gridded versus
+merely toasted.
+
+**Oven temperature, four more times, and now the converse of p. 115's finding.**
+240 °C, 240 °C, 180 °C « assez bas dans le four ». p. 115 showed the model cannot
+see two dishes *conflicting* over one oven; the croque and the accras want the
+same 240 °C and could share it happily, and the model cannot see the *agreement*
+either. Temperature is not just a conflict detector — it is what would let two
+dishes be scheduled together, which is the more useful half.
+
+**`pain-rassis` has a second consumer and still no emitter.** The accras are
+badged « avec des restes » and open on 200 g of stale bread; `panzanella-toscana`
+already declared the same edge. Nothing emits it, because stale bread is not the
+output of a cooked dish — it is a bought ingredient that got old. The chaining
+graph (#30) only knows leftovers of *dishes*. The leftover *ingredient* — Sunday's
+bread, the end of a cheese, half a pot of cream — has no possible emitter, so its
+edge stays at `required: false` forever and `sans_reste` buys fresh bread in
+order to let it stale. What the model lacks is an inventory that **ages**.
+
+**Salt that is not salt, three more times.** p. 87 found it once (100 g of
+parmesan crossing a `seasoning_gate` unseen); this batch adds parmesan again, and
+then cured ham + aged tomme + gherkins in one dish, and 80 g of demi-sel butter
+in another. All four winter dishes end up with no baby portion, for three
+structurally distinct reasons — salt in the pan at minute one (p. 177, p. 181),
+salt in the cooking water at minute zero (p. 182, exactly the rôti p. 55), and
+for the accras no reason at all, which is why they *do* get one: their gate was
+written by splitting the author's single « add everything » step in two, purely
+so a set-aside could exist.
+
+**A second non-time axis, after money.** The pot-au-feu is the first recipe where
+the author explicitly *forbids* a time plan B — « ne raccourcissez pas le temps
+de cuisson ! » — and offers an energy one instead: « pour économiser l'énergie
+(gaz ou électricité), vous pouvez en revanche faire cuire à tout petit feu ».
+Same dish, same duration, different bill. `plan_b` counts minutes and nothing
+else; p. 115 wanted money, p. 178 wants money again (the optional 100 g of
+parmesan buys nothing back in time), p. 182 wants energy.
+
+##### The bug this batch found in the eight recipes before it
+
+Ingredient lines are written as YAML **flow mappings** — `{id: x, name: y, qty: 1}`
+— where the comma separates fields. An unquoted `name:` containing a comma
+therefore ends at that comma, and everything after it becomes a **key with no
+value** that nobody reads. Nothing breaks: the recipe loads, verifies and
+compiles, with an amputated name. I wrote four such lines in an afternoon, saw
+`jarret de bœuf avec l'os (ou gîte` in the compiled output, and went looking.
+
+Eight lines of the existing catalogue were already in that state, and what they
+were losing was not ornament: « sans peau ni arêtes », « à température ambiante »,
+« très froide ». That last one is on the coconut cream of a whipped tart — the
+difference between the recipe working and not. `verifier.py` now closes the set
+of legal ingredient fields and treats an unknown key as an **error**, since the
+only way to get one is this mistake.
+
 #### The blog: 255 recipes indexed, and why only four of them got entered
 
 There is no ebook of the Chioca book — Terre vivante sells print only — so the

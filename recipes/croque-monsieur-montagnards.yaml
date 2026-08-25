@@ -1,0 +1,115 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# PREMIÈRE RECETTE DE L'HIVER, et la première dont L'APPAREIL PRINCIPAL DE
+# L'AUTRICE N'EXISTE PAS DANS CE FOYER. Elle écrit « faire cuire au gaufrier
+# (le temps de cuisson dépend de l'appareil utilisé) OU sur une plaque de
+# cuisson, 10 minutes dans un four préchauffé à 240 °C ». Le foyer n'a ni
+# gaufrier ni appareil à croque-monsieur : la seule voie est la seconde.
+#
+# Le modèle ne peut pas dire ça. Une étape réclame des CAPACITÉS, et la chaîne
+# de repli de `rules.yaml` réécrit une capacité manquante en ce que le foyer
+# possède — c'est ce qui fait dire « au petit blender, en 2–3 fois » à la place
+# du robot. Mais il n'existe pas de capacité `gaufrier`, donc écrire
+# `needs: [bake]` ne DÉCLARE PAS un repli : ça déclare la recette. Le
+# compilateur affichera le plan B de l'autrice comme s'il était son plan A, et
+# personne ne saura jamais qu'un arbitrage a eu lieu.
+#
+# C'est différent du repli d'une capacité connue, qui lui s'annonce. Ici la
+# perte est silencieuse — et elle n'est pas nulle : au gaufrier le pain est
+# pressé et quadrillé, au four il est simplement grillé.
+
+recipe:
+  id: croque-monsieur-montagnards
+  title: Croque-monsieur montagnards
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 177"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 177
+    saison: hiver
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # 6 croque-monsieur, un par adulte avec une salade
+  time_min_total: 37        # en-tête : 15 min de préparation + 10 min à la cocotte + 12 min au four
+  active_min: 15
+
+  apports:
+    proteine: fromage       # 300 g de tomme dominent les 6 tranches de speck
+    feculent: pain
+    legumes: [allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: pain-levain, name: "tranches fines de pain bio moulé au levain (complet ou semi-complet, blé, épeautre ou sans gluten)", qty: 12, unit: tranche}
+    - {id: oignon, name: gros oignons, qty: 3, unit: pièce}
+    - {id: tomme-savoie, name: tomme de Savoie, qty: 300, unit: g}
+    - {id: jambon-cru, name: tranches de Speck ou de jambon cru fumé de montagne, qty: 6, unit: tranche}
+    - {id: cornichons, name: petits cornichons (ou 12 moyens), qty: 18, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 6, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: emincer
+      action: "Éplucher les oignons et les émincer finement"
+      needs: []
+      uses: [oignon]
+      time_min: 6
+    - id: fondue
+      action: "Faire revenir les oignons dans l'huile d'olive avec une pincée de sel — sans trop saler, le jambon l'est déjà — en petite cocotte, jusqu'à obtenir des notes bien caramélisées, et sans jamais les laisser brûler : c'est le goût de la fondue d'oignons qui se joue là"
+      needs: [pan-fry]
+      uses: [oignon, huile-olive, sel]
+      time_min: 10
+    - id: prechauffer
+      action: "Préchauffer le four à 240 °C"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+      parallel_with: fondue
+    - id: trancher-tomme
+      action: "Découper la tomme de Savoie en 6 tranchettes à peu près égales"
+      needs: []
+      uses: [tomme-savoie]
+      time_min: 2
+      parallel_with: fondue
+    - id: monter
+      action: "Sur une première tranche de pain, poser une tranchette de tomme, une tranche de speck, deux cuillerées à soupe de fondue d'oignons et 2 à 3 cornichons recoupés en deux ; couvrir de la seconde tranche et bien appuyer. Procéder de même pour les six"
+      needs: []
+      uses: [pain-levain, tomme-savoie, jambon-cru, cornichons]
+      time_min: 8
+      kid: {age_min_months: 30, task: "poser les cornichons coupés sur le fromage, puis appuyer sur la tranche du dessus"}
+    - id: cuire
+      action: "Enfourner sur une plaque de cuisson 10 min : le pain doit être bien doré et le fromage coulant à cœur"
+      needs: [bake]
+      uses: []
+      time_min: 10
+      attended: true        # 240 °C sur du pain : ça passe de doré à noir sans prévenir
+
+  # PAS DE PRÉLÈVEMENT BÉBÉ, ET IL EST IMPOSSIBLE PAR CONSTRUCTION — même cas
+  # que le velouté p. 34 et le rôti p. 55, pas un oubli. Le sel entre dans la
+  # cocotte à la première minute, avec les oignons crus : il n'existe aucun
+  # moment où la fondue soit nature. Et le reste du croque est du sel déguisé —
+  # jambon cru fumé, tomme affinée, cornichons au vinaigre — dont rien dans le
+  # modèle ne porte la charge salée, puisque `seasoning: true` ne marque que le
+  # sel et le poivre. C'est la leçon de la tourte p. 87 (les 100 g de parmesan)
+  # une deuxième fois, et sur trois ingrédients à la fois.
+
+  emits:
+    - kind: reste-plat
+      type: croque-montagnard
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: false}
+      note: "se repasse au four, jamais au micro-ondes — le pain y devient mou, et c'est le croustillant qui fait le plat"
+
+  transportable: false      # se mange chaud, fromage coulant : la gamelle froide n'a plus de rapport
+
+  plan_b:
+    - swap:
+        step: fondue
+        action: "Arrêter les oignons dès qu'ils sont blonds et fondants, sans pousser jusqu'à la caramélisation"
+        saves_min: 5
+      effect: "l'autrice avertit que c'est le goût de la fondue d'oignons qui se perd — c'est la moitié de la recette"

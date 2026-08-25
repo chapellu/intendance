@@ -71,6 +71,14 @@ rayons:
     - ail-des-ours
     - fenouil-sauvage
     - herbes-fraiches
+    # Arrivés avec l'hiver de Chioca (p. 177–182). `navets` est le navet d'hiver
+    # et reste un id à part de `navet-primeur` et de `navets-roses`, qui sont des
+    # légumes de printemps : les aliaser reviendrait à dire que le pot-au-feu de
+    # février et la salade de mai s'achètent au même moment.
+    - topinambours
+    - panais
+    - navets
+    - potimarron
   boucherie:
     - boeuf-hache
     - agneau-collier
@@ -79,6 +87,8 @@ rayons:
     - poulet-filets
     - jambon
     - jambon-cru
+    - jarret-boeuf
+    - os-a-moelle
   poissonnerie:
     - saumon
     - colin-surgele
@@ -96,6 +106,7 @@ rayons:
     - cantal
     - beurre
     - petits-suisses
+    - tomme-savoie
   frais:
     - tofu-fume
     - gnocchis
@@ -158,6 +169,9 @@ rayons:
     - miel-acacia
     - extrait-amande-amere
     - amandes-effilees
+    # Arrivés avec l'hiver (p. 177 et p. 178).
+    - cornichons
+    - thon-boite
 
 placard:
   - huile-olive
@@ -178,5 +192,6 @@ placard:
   - clous-girofle
   - gros-sel
   - origan
+  - graines-coriandre
   - glacons        # se font, ne s'achètent pas
   - eau            # ne s'achète pas ; listé pour ne pas polluer la liste
