@@ -1,0 +1,157 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# ═══ L'UNITÉ EST UN INGRÉDIENT DE LA RECETTE ═══
+# « 3 pots de farine », « 1 pot et demi de cassonade », « 3/4 de pot d'huile
+# d'olive ». Le pot, c'est le pot de yaourt — première ligne de la liste. La
+# recette définit son étalon avec un de ses propres ingrédients, et c'est
+# exactement ce qui la rend mémorisable sans balance.
+#
+# Le modèle ne peut pas le suivre, et de trois façons :
+#   · `unit: pot` s'écrit, mais rien ne relie ce pot à la ligne `yaourt-nature`.
+#     Changer de marque change toutes les quantités de la recette.
+#   · Un pot ne pèse pas la même chose selon ce qu'on y met : ~125 g de yaourt,
+#     ~70 g de farine, ~110 g d'huile. La liste de courses ne sait donc pas
+#     convertir « 3 pots de farine » en grammes achetables.
+#   · Diviser la recette ne divise pas le pot, ça divise le NOMBRE de pots —
+#     `facteur_lot` multiplie un `qty` sans savoir que l'unité, elle, est fixe.
+#
+# C'est le seul cas du corpus où l'unité de mesure est une donnée du foyer et
+# non une constante. Les grammes sont écrits ci-dessous à titre indicatif, avec
+# le compte en pots dans le `name:` — l'inverse serait plus fidèle et moins
+# achetable.
+#
+# ET C'EST LA BASE QUE LA MOUSSE P. 107 DÉSIGNE pour sa variante gâteau
+# d'anniversaire : « la moitié des proportions du gâteau au yaourt page 116 ou
+# du quatre-quarts page 166 ». Les deux sont désormais saisis. L'arête n'est pas
+# encodée en `accepts` parce qu'elle relie une VARIANTE de la mousse à une
+# DEMI-recette d'ici — deux choses que le chaînage ne sait dire ni l'une ni
+# l'autre.
+#
+# Cette page ferme l'été : 26 sur 26.
+
+recipe:
+  id: gateau-au-yaourt-classe
+  title: Juste un gâteau au yaourt, la « classe » en plus
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 116"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 116
+    saison: ete
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 7          # « pour 6/8 personnes »
+  lot_entier: true
+  time_min_total: 45        # en-tête : 15 à 20 min de préparation + 25 min de cuisson
+  active_min: 20
+
+  creneaux: [gouter, dessert]
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    # Gâteau — les grammes sont une conversion indicative, le pot est la mesure.
+    - {id: yaourt-nature, name: "yaourt nature de vache, chèvre, brebis ou soja — et son pot, qui sert d'unité à tout le reste", qty: 1, unit: pot}
+    - {id: farine-complete, name: "farine T80 ou T110 de blé ou de grand épeautre (3 pots)", qty: 210, unit: g}
+    - {id: sucre-roux, name: "cassonade (1 pot et demi)", qty: 190, unit: g}
+    - {id: oeufs, name: œufs, qty: 3, unit: pièce}
+    - {id: huile-olive, name: "huile d'olive (3/4 de pot)", qty: 85, unit: g}
+    - {id: poudre-a-lever, name: sachet de poudre à lever, qty: 1, unit: sachet}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    # Garniture
+    - {id: peches, name: pêche mûre à point, qty: 1, unit: pièce}
+    - {id: abricots, name: abricots mûrs à point, qty: 3, unit: pièce}
+    - {id: fraises, name: fraises mûres à point, qty: 6, unit: pièce}
+    - {id: creme-coco, name: "crème de coco liquide bien froide, sortant juste du réfrigérateur", qty: 20, unit: cl}
+    - {id: miel-acacia, ref: miel-chantilly, name: "miel ou sirop d'agave (chantilly)", qty: 2, unit: c. à s.}
+    - {id: extrait-vanille, ref: vanille-chantilly, name: extrait de vanille liquide (chantilly), qty: 1, unit: c. à s.}
+    # Sirop d'imbibage
+    - {id: miel-acacia, ref: miel-sirop, name: "miel ou sirop d'agave (sirop)", qty: 3, unit: c. à s.}
+    - {id: eau, name: eau, qty: 3, unit: c. à s.}
+    - {id: eau-fleur-oranger, name: eau de fleur d'oranger, qty: 1, unit: c. à s.}
+    - {id: extrait-vanille, ref: vanille-sirop, name: extrait de vanille liquide (sirop), qty: 1, unit: c. à s.}
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 180 °C"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: pate
+      action: "Mettre la farine, le sucre, le sel et la poudre à lever dans un saladier, mélanger et faire un puits ; y verser les œufs, l'huile et le yaourt, puis bien mélanger"
+      needs: []
+      uses: [farine-complete, sucre-roux, sel, poudre-a-lever, oeufs, huile-olive, yaourt-nature]
+      time_min: 8
+      kid: {age_min_months: 30, task: "vider les pots de farine dans le saladier et compter à voix haute"}
+    - id: cuire
+      action: "Verser la pâte dans un moule à couronne ou à savarin — donc avec un trou au milieu — d'environ 24 cm de diamètre, puis enfourner environ 25 minutes"
+      needs: [bake]
+      uses: []
+      time_min: 25
+      attended: false
+    - id: verifier-cuisson
+      action: "Vérifier la cuisson à la pique métallique avant de sortir le gâteau du four, puis le laisser refroidir"
+      needs: []
+      uses: []
+      time_min: 3
+      attente_min: 45
+      attente_raison: refroidissement
+    - id: fruits
+      action: "Pendant ce temps, laver les fruits et les découper en morceaux"
+      needs: []
+      uses: [peches, abricots, fraises]
+      time_min: 8
+      parallel_with: cuire
+      kid: {age_min_months: 30, task: "équeuter les fraises et les couper en deux"}
+    - id: sirop
+      action: "Mélanger tous les ingrédients du sirop dans un bol"
+      needs: []
+      uses: [miel-sirop, eau, eau-fleur-oranger, vanille-sirop]
+      time_min: 3
+      parallel_with: cuire
+    - id: chantilly
+      action: "Fouetter la crème de coco en chantilly avec les deux cuillerées de miel et la cuillerée d'extrait de vanille"
+      needs: []
+      uses: [creme-coco, miel-chantilly, vanille-chantilly]
+      time_min: 6
+    - id: monter
+      action: "Quand le gâteau est démoulé et bien refroidi, l'ouvrir en deux et réserver le haut ; poser la base sur une assiette, l'imbiber avec la moitié du sirop, disposer les morceaux de fruits bien serrés, étaler la chantilly par-dessus, poser le haut du gâteau et l'imbiber avec le reste de sirop"
+      needs: []
+      uses: []
+      time_min: 10
+    - id: servir
+      action: "Juste avant de servir, saupoudrer éventuellement de sucre glace"
+      needs: []
+      uses: []
+      time_min: 1
+
+  # PAS DE PRÉLÈVEMENT BÉBÉ : le sirop et la chantilly portent 5 c. à s. de MIEL,
+  # déconseillé avant 12 mois. Deuxième plat du corpus arrêté par le miel après
+  # le clafoutis p. 115, et dixième toutes raisons d'âge confondues. Ici la
+  # variante existe pourtant dans le texte même — « miel OU sirop d'agave » — et
+  # elle change ce qui est possible pour le bébé du foyer. Quatrième fois qu'une
+  # substitution proposée par l'autrice déciderait d'un interdit, et toujours
+  # rien pour relier les deux.
+
+  emits:
+    - kind: reste-plat
+      type: gateau-yaourt-fruits
+      qty_band: 2-repas
+      keeps: {frigo_days: 2, congelo: false}
+      note: "monté avec chantilly et fruits frais imbibés : il se mange le jour même ou le lendemain, et ne voyage pas"
+
+  transportable: false
+
+  plan_b:
+    - drop: monter
+      saves_min: 10
+      effect: "on garde le gâteau au yaourt nature, « bête » selon l'autrice — c'est-à-dire toute la recette moins la classe en plus"

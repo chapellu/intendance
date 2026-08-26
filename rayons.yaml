@@ -71,6 +71,10 @@ rayons:
     - ail-des-ours
     - fenouil-sauvage
     - herbes-fraiches
+    # Les châtaignes de la p. 124 rejoignent ce bloc : « venant juste d'être
+    # ramassées ou achetées au marché ». Elles s'achètent AUSSI, ce qui en
+    # fait le premier ingrédient à double régime de la liste.
+    - chataignes
     # Arrivés avec l'hiver de Chioca (p. 177–182). `navets` est le navet d'hiver
     # et reste un id à part de `navet-primeur` et de `navets-roses`, qui sont des
     # légumes de printemps : les aliaser reviendrait à dire que le pot-au-feu de
@@ -94,6 +98,7 @@ rayons:
     - fruits-frais
     - mures
     - groseilles
+    - courge
   boucherie:
     - boeuf-hache
     - agneau-collier
@@ -129,6 +134,7 @@ rayons:
     # `yaourt-soja` qu'émet la p. 159 : on peut l'acheter ou le cuisiner.
     - yaourt-soja
     - yaourt-brebis
+    - yaourt-nature
   frais:
     - tofu-fume
     - gnocchis
@@ -207,6 +213,7 @@ rayons:
     - levure-boulangere
     - agar-agar
     - lait-avoine
+    - eau-fleur-oranger
 
 placard:
   - huile-olive

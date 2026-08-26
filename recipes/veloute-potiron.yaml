@@ -1,0 +1,102 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# ═══ L'AUTRICE DÉCLARE UN ÂGE, ET LE MODÈLE NE SAIT QUE SE TAIRE ═══
+# « Ce velouté fait l'unanimité, DE 7 MOIS À 77 ANS (au moins !). » C'est la
+# première fois du corpus qu'une recette énonce elle-même à partir de quel âge
+# elle convient — et le bébé du foyer a 12 mois.
+#
+# Or la recette met 1 c. à soupe de GROS SEL dans la cocotte avec l'eau et le
+# potiron, dès le début des 25 minutes. Structurellement, il n'existe donc aucun
+# instant où le velouté soit nature : `seasoning_gate` ne peut se poser nulle
+# part et `baby_portion` reste absent, exactement comme au pot-au-feu p. 182.
+#
+# Les deux affirmations ne se contredisent pas dans la cuisine — un parent
+# cuisine la même casserole sans sel, ou en met moins — mais elles se
+# contredisent DANS LE MODÈLE, qui ne lit que la structure. Le corpus a
+# maintenant dix plats sans portion bébé pour raison d'âge, et celui-ci est le
+# seul où le livre affirme l'inverse. C'est le meilleur argument accumulé pour
+# le champ réclamé depuis la p. 115 : il ne s'agit plus seulement de porter un
+# INTERDIT et sa raison, il s'agit de pouvoir porter une AUTORISATION quand
+# l'ouvrage en donne une, et de voir qu'elle ne cadre pas avec les étapes.
+#
+# Troisième plat du corpus à dire « faire dorer les oignons dans une cocotte »,
+# avec les p. 93 et 123 — c'est ce trio qui a fait ajouter `pan-fry` aux
+# capacités de la cocotte dans `household.yaml`.
+
+recipe:
+  id: veloute-potiron
+  title: Le meilleur des veloutés de potiron
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 127"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 127
+    saison: automne
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8
+  time_min_total: 45        # en-tête : 15 min de préparation + 30 min de cuisson
+  active_min: 15
+
+  creneaux: [diner]         # « Pour 8 personnes (en plat principal du soir) », dit le livre
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: [cucurbitacee, allium, solanacee]
+    profil: soupe
+    origine: francais
+
+  ingredients:
+    - {id: courge, name: "potiron d'une variété à chair épaisse — potimarron, bleu de Hongrie, butternut, Marina di Chiogga", qty: 1.5, unit: kg}
+    - {id: oignon, name: oignons, qty: 3, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 6, unit: c. à s.}
+    - {id: sauce-tomate, name: "sauce tomate, ou pulpe de tomate — c'est elle qui réveille la douceur du potiron", qty: 400, unit: g}
+    - {id: eau, name: eau, qty: 1.5, unit: l}
+    - {id: gros-sel, name: gros sel, qty: 1, unit: c. à s., seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: caraméliser
+      action: "Émincer les oignons, puis les faire dorer à l'huile d'olive dans une cocotte jusqu'à obtenir une légère caramélisation des sucs — c'est le premier secret de la recette"
+      needs: [pan-fry]
+      uses: [oignon, huile-olive]
+      time_min: 12
+    - id: potiron
+      action: "Éplucher le potiron — ou pas, tout dépend de la variété —, jeter les graines, le couper en gros morceaux, et le mettre dans la cocotte avec l'eau, le sel et la sauce tomate"
+      needs: [simmer-large]
+      uses: [courge, eau, gros-sel, sauce-tomate]
+      time_min: 15
+      kid: {age_min_months: 30, task: "récupérer les graines de potiron à la cuillère, pour les faire griller plus tard"}
+    - id: cuire
+      action: "Poser un couvercle et compter 25 minutes de cuisson à partir de la reprise de l'ébullition"
+      needs: [simmer-large]
+      uses: []
+      time_min: 25
+      attended: false
+    - id: mixer
+      action: "Mixer bien finement avec une bonne pincée de poivre, en ajoutant si besoin un tout petit peu d'eau si le velouté semble trop épais"
+      needs: [blend-smooth]
+      uses: [poivre]
+      time_min: 6
+    - id: servir
+      action: "Servir tel quel, ou avec un peu de crème fraîche ajoutée directement dans l'assiette"
+      needs: []
+      uses: []
+      time_min: 2
+
+  # PAS DE PRÉLÈVEMENT BÉBÉ — voir l'en-tête, et c'est le cas le plus frustrant
+  # du corpus, puisque l'autrice affirme le contraire. Le gros sel entre à la
+  # minute zéro avec l'eau de cuisson.
+
+  emits:
+    - kind: reste-plat
+      type: veloute-potiron
+      qty_band: 3-repas
+      keeps: {frigo_days: 3, congelo: true}
+      note: "huit parts pour un foyer de 2,5 : c'est un plat souche déguisé en soupe, et il remplit le congélateur en portions de secours"
+
+  plan_b: []                # 25 min de cuisson à couvert : rien à comprimer

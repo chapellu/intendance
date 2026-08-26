@@ -1,0 +1,120 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# ═══ L'INVENTAIRE QUI VIEILLIT, MAIS DANS L'AUTRE SENS ═══
+# Cinq recettes du corpus veulent du pain RASSIS : un ingrédient qui s'améliore
+# en séchant, et dont la p. 111 fait même dépendre ses quantités. Celle-ci est
+# son miroir exact. L'autrice : « évitez de les conserver trop longtemps : plus
+# vous les consommerez vite après les avoir ramassées, plus elles seront saines
+# et savoureuses ». La châtaigne se dégrade, et vite.
+#
+# Le manque est donc bien un axe et non un cas particulier. Un ingrédient a un
+# ÂGE, et cet âge le rend meilleur ou pire selon ce qu'il est. `stock.yaml` date
+# les sorties de plats, `keeps` compte les jours d'un reste ; rien ne date un
+# ingrédient acheté ni ne dit dans quel sens il évolue.
+#
+# ═══ ET UN TRI QUI JETTE UNE PART INCONNUE DES COURSES ═══
+# « Faites tremper les châtaignes dans une bassine d'eau, et jetez sans pitié
+# celles qui surnagent : elles sont véreuses. » On achète 500 g et on en cuit
+# moins, sans savoir combien à l'avance. C'est la troisième forme d'écart entre
+# l'acheté et l'employé, après les pêches p. 107 (1,2 kg → 800 g) et les
+# groseilles p. 112 (300 g → 200 g) — et la seule dont la proportion soit
+# inconnue au moment de la liste de courses.
+#
+# CUEILLIE OU ACHETÉE, AU CHOIX. « Venant juste d'être ramassées ou achetées au
+# marché » : c'est le premier ingrédient du catalogue à double régime. Le bloc
+# « ne s'achètent pas — se cueillent » de `rayons.yaml` disait déjà que la
+# cueillette n'a pas sa place dans une liste de courses ; ici les deux voies
+# coexistent dans une seule ligne.
+
+recipe:
+  id: chataignes-grillees
+  title: Châtaignes grillées
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 124"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 124
+    saison: automne
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4
+  time_min_total: 35        # en-tête : 10 min de préparation + 20 min de cuisson + 5 à 10 min de repos
+  active_min: 10
+
+  creneaux: [gouter]
+
+  apports:
+    proteine: aucune
+    feculent: chataigne
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: chataignes, name: "châtaignes très fraîches, tout juste ramassées ou achetées au marché — les choisir bien dures et bien brillantes", qty: 500, unit: g}
+
+  steps:
+    - id: bouillir
+      action: "Porter à ébullition un faitout d'eau"
+      needs: [boil]
+      uses: []
+      time_min: 8
+      attended: false
+      charge_partielle: true
+    - id: trier
+      action: "Faire tremper les châtaignes dans une bassine d'eau et jeter celles qui surnagent : elles sont véreuses"
+      needs: []
+      uses: [chataignes]
+      time_min: 3
+      kid: {age_min_months: 30, task: "repêcher à l'écumoire les châtaignes qui flottent"}
+    - id: inciser
+      action: "Inciser avec précaution le dessus de chaque châtaigne en croix, au couteau d'office à lame bien lisse ; veiller à réellement inciser la première peau, sinon les châtaignes exploseront à la cuisson"
+      needs: []
+      uses: []
+      time_min: 10
+    - id: precuire
+      action: "Les précuire 10 minutes à l'eau bouillante, puis les égoutter"
+      needs: [boil]
+      uses: []
+      time_min: 10
+      charge_partielle: true
+    - id: griller
+      action: "Les faire griller 15 minutes au four préchauffé à 240 °C — l'autrice propose aussi de les verser dans une poêle à châtaignes, à trous, et de les griller 10 min sur la flamme d'une cheminée ou sur le feu de la cuisinière, en secouant régulièrement"
+      needs: [bake]
+      uses: []
+      time_min: 15
+      attended: true
+    - id: reposer
+      action: "Les transférer dans un sac en papier kraft — surtout pas dans du papier journal, dont les encres peuvent être toxiques au contact de la chaleur — et laisser reposer 10 minutes au chaud sous une couverture, pour faciliter l'épluchage"
+      needs: []
+      uses: []
+      time_min: 3
+      attente_min: 10
+      attente_raison: repos
+
+  baby_portion:
+    take: "quelques châtaignes grillées et épluchées"
+    prep: "écraser à la fourchette avec un peu d'eau tiède — jamais entières, elles étouffent"
+    depuis: [reposer]
+    needs: []
+    # SECOND PRÉLÈVEMENT DU CATALOGUE SANS PORTE DE SEL, après la compotée de
+    # pommes p. 160 — et ici il n'y a pas de sel DU TOUT dans la recette : un
+    # seul ingrédient, de l'eau, et du feu. C'est le plat le plus simple du
+    # corpus, et l'ancienne version de `verifier.py` l'aurait refusé.
+
+  emits:
+    - kind: reste-plat
+      type: chataignes-grillees
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: true}
+      note: "épluchées, elles se congèlent très bien — mais l'autrice insiste pour les manger vite, et c'est l'INGRÉDIENT qu'elle veut frais, pas le plat"
+
+  plan_b:
+    - swap:
+        step: griller
+        action: "S'en tenir à la précuisson à l'eau : des châtaignes bouillies s'épluchent aussi, mais ne grillent pas"
+        saves_min: 15
+      effect: "on perd exactement ce que le titre annonce — l'odeur de châtaigne grillée est la recette"

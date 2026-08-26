@@ -936,6 +936,65 @@ this kind (salt at p. 87 and p. 181) were written in here, because salting has
 only one possible moment. Melting does not — bain-marie, in the milk, microwave
 all give different batters — so the step stays as the book prints it, flagged.
 
+##### Summer closes (26/26), and the household inventory turns out to be wrong
+
+p. 116 finishes summer; p. 123, 124 and 127 open autumn from its head. 60/100.
+
+**The unit is one of the recipe's own ingredients.** p. 116 measures in *pots* —
+« 3 pots de farine », « 1 pot et demi de cassonade », « 3/4 de pot d'huile
+d'olive » — where the pot is the yoghurt pot, line one of the list. That is what
+makes the recipe memorable without a scale, and the model cannot follow it three
+ways over: nothing links `unit: pot` to the yoghurt line, a pot weighs ~125 g of
+yoghurt but ~70 g of flour, and halving the recipe halves the *number* of pots
+rather than the pot. It is the only case in the corpus where the unit of measure
+is household data instead of a constant.
+
+**The bug was in the inventory, not in the check.** p. 123 browns 1.5 kg of
+squash, three leeks and three onions; the 28 cm sauteuse offers 6 portions
+against the recipe's 7, and `facteur_max_vaisselle` refused the dish. But the
+author says *cocotte*, and the household's 7.5 L cast-iron pot declared only
+`simmer-large`, `steam` and sterilising. A Dutch oven browns — that is what it is
+for. Three recipes say so outright (p. 93, 123, 127), so `pan-fry` joins its
+capabilities.
+
+This is more unsettling than a wrong check. **A wrong inventory never announces
+itself**: it just makes dishes impossible, and you conclude the kitchen is too
+small. Note also that `rules.yaml`'s `pan-fry` chain still names the sauteuse
+first, so the compiled text says "sauteuse 28 cm" even where only the cocotte's
+volume makes the batch possible — the two files answer different questions (which
+tool to name / what fits) and they diverge here for the first time.
+
+**The ageing inventory, running backwards.** Five recipes want bread that has
+*improved* by drying, and p. 111 makes its own quantities depend on how far that
+has gone. p. 124 is the exact mirror: « évitez de les conserver trop longtemps :
+plus vous les consommerez vite après les avoir ramassées, plus elles seront
+saines ». Chestnuts degrade, fast. So the gap is an axis and not a special case:
+an ingredient has an age, and that age makes it better or worse depending on what
+it is. Nothing dates a bought ingredient, and nothing says which direction it
+moves in.
+
+p. 124 also adds a third form of *bought ≠ used*, after the peaches (1.2 kg →
+800 g) and the redcurrants (300 g → 200 g): float the chestnuts and throw away
+the ones that surface, in a proportion nobody knows when writing the list.
+
+**The author states an age, and the model can only stay silent.** p. 127's
+introduction: this velouté « fait l'unanimité, **de 7 mois à 77 ans** ». The
+household's baby is 12 months. And the recipe puts a tablespoon of coarse salt
+into the pot with the water at minute zero, so structurally there is no unsalted
+moment, no `seasoning_gate` to place, and `baby_portion` stays absent — exactly
+as at p. 182. The two statements do not conflict in a kitchen (a parent cooks the
+same pot without salt); they conflict *in the model*, which reads only structure.
+
+Ten dishes now carry no baby portion for reasons of age, and this is the only one
+where the book asserts the opposite. It sharpens what p. 115 asked for: not just a
+field for a **ban** and its reason, but one for a **permission** when the source
+grants it — and the ability to notice that the permission does not match the
+steps.
+
+The corpus's second gate-free baby portion also landed here: p. 124's chestnuts
+contain one ingredient, water and fire, no salt anywhere. The old `verifier.py`
+would have rejected the simplest dish in the catalogue.
+
 #### The blog: 255 recipes indexed, and why only four of them got entered
 
 There is no ebook of the Chioca book — Terre vivante sells print only — so the

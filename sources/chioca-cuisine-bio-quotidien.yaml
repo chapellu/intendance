@@ -12,12 +12,12 @@
 # `_repertoire.yaml` sont à corriger.
 #
 # Une entrée saisie se signale en lui ajoutant `catalogue_id: <id>` pointant sur
-# le plat correspondant dans `recipes/`. Saisies à ce jour : **56 sur 100**.
-# L'ÉTÉ est complet à UNE PAGE PRÈS — il ne manque que le gâteau au yaourt
-# p. 116, que la mousse p. 107 désigne d'ailleurs comme base de sa variante
-# gâteau ; le PRINTEMPS l'est à cinq pages près (42, 45, 46, 49, 50) ;
-# l'HIVER tient ses sept premiers plats (p. 172 à 182) ; l'AUTOMNE n'a que sa
-# queue (p. 157 à 166), sa p. 163 restant illisible sur la photo disponible.
+# le plat correspondant dans `recipes/`. Saisies à ce jour : **60 sur 100**.
+# L'ÉTÉ EST COMPLET : 26 sur 26, la p. 116 ayant fermé la saison. Le PRINTEMPS
+# l'est à cinq pages près (42, 45, 46, 49, 50) ; l'HIVER tient ses sept premiers
+# plats (p. 172 à 182) ; l'AUTOMNE est entamé par les deux bouts — sa tête
+# (p. 123 à 127) et sa queue (p. 157 à 166) —, sa p. 163 restant illisible sur
+# la photo disponible.
 #
 # LE COMPTE DE CET EN-TÊTE SE PÉRIME, et il l'a fait : il annonçait 25 alors que
 # les p. 87 et 115 étaient entrées depuis dix jours. Le chiffre juste se calcule
@@ -115,12 +115,12 @@ sommaire:
     - {page: 111, titre: "Gaufres « pain perdu » aux mûres", catalogue_id: gaufres-pain-perdu-mures}
     - {page: 112, titre: "Carrés sablés faciles à la crème de groseille (et l'hiver, tarte au citron !)", catalogue_id: carres-sables-creme-groseilles}
     - {page: 115, titre: "Clafoutis super crémeux au miel et à l'abricot", catalogue_id: clafoutis-miel-abricot}
-    - {page: 116, titre: "Juste un gâteau au yaourt, la « classe » en plus"}
+    - {page: 116, titre: "Juste un gâteau au yaourt, la « classe » en plus", catalogue_id: gateau-au-yaourt-classe}
 
   automne:
-    - {page: 123, titre: "Jolie tourte « feuilles d'automne »"}
-    - {page: 124, titre: "Châtaignes grillées"}
-    - {page: 127, titre: "Le meilleur des veloutés de potiron !"}
+    - {page: 123, titre: "Jolie tourte « feuilles d'automne »", catalogue_id: tourte-feuilles-automne}
+    - {page: 124, titre: "Châtaignes grillées", catalogue_id: chataignes-grillees}
+    - {page: 127, titre: "Le meilleur des veloutés de potiron !", catalogue_id: veloute-potiron}
     - {page: 128, titre: "Moules de bouchot aux spaghettis"}
     - {page: 129, titre: "Potage crémeux à l'avoine et saveurs iodées"}
     - {page: 130, titre: "Galette de céréales « maxi-format »"}
