@@ -1,0 +1,97 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# LA PREMIÈRE RECETTE DONT L'EN-TÊTE PORTE TROIS HORLOGES, ET LE MODÈLE LES LIT
+# TOUTES LES TROIS : « PRÉPARATION 3 MIN | CUISSON 35 MIN | PRISE AU FRAIS AU
+# MOINS 4 H ». `active_min` prend la première, `time_min_total` les deux
+# premières, `attente_min` la troisième. Jusqu'ici la troisième colonne d'un
+# en-tête Chioca — quand elle existait — se perdait dans un commentaire.
+#
+# Il a fallu un mot pour la dire : `attente_raison: prise-au-frais`, ajouté à
+# `RAISONS` avec `fermentation` (p. 159). Ni l'un ni l'autre n'est un `repos` :
+# on n'attend pas que ça se calme, on attend que ça DEVIENNE autre chose. Le riz
+# au lait sorti du feu est liquide ; ce sont les quatre heures qui en font un riz
+# au lait. C'est le libellé que l'agenda montrera au cuisinier, donc il compte.
+
+recipe:
+  id: riz-au-lait-retour-des-iles
+  title: Riz au lait « retour des îles »
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 158"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 158
+    saison: automne
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6
+  time_min_total: 38        # en-tête : 3 min de préparation + 35 min de cuisson
+  active_min: 3
+
+  creneaux: [gouter, dessert]
+
+  apports:
+    proteine: aucune
+    feculent: riz
+    legumes: []
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: lait-soja-vanille, name: "lait de soja-vanille (aucun autre lait végétal ne conviendrait aussi bien)", qty: 1, unit: l}
+    - {id: riz-arborio, name: "riz rond à risotto (arborio ou carnaroli)", qty: 150, unit: g}
+    - {id: sucre-roux, name: "cassonade — ou 4 c. à s. de sirop d'agave", qty: 6, unit: c. à s.}
+    - {id: gousse-vanille, name: gousse de vanille, qty: 1, unit: pièce}
+    - {id: rhum, name: rhum ambré, qty: 3, unit: cl}
+    - {id: creme-coco, name: briquette de crème de coco liquide, qty: 20, unit: cl}
+    - {id: cannelle, name: cannelle, qty: 1, unit: pincée, seasoning: true}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: bouillir
+      action: "Porter le lait à ébullition dans une cocotte en fonte avec la gousse de vanille fendue en deux, le sel, la cannelle et le rhum, puis verser le riz en pluie en mélangeant au fouet"
+      needs: [simmer]
+      uses: [lait-soja-vanille, gousse-vanille, sel, cannelle, rhum, riz-arborio]
+      time_min: 8
+    - id: mijoter
+      action: "Poser un couvercle et baisser le feu au minimum, puis laisser mijoter 35 minutes à feu le plus doux possible, en mélangeant de temps en temps à la cuillère de bois"
+      needs: [simmer]
+      uses: []
+      time_min: 35
+      attended: true        # « en mélangeant de temps en temps » : le lait végétal attache
+    - id: finir
+      action: "En fin de cuisson, ajouter hors du feu la crème de coco et le sucre, bien mélanger, poser un couvercle, porter de nouveau à ébullition, puis laisser complètement refroidir hors du feu"
+      needs: [simmer]
+      uses: [creme-coco, sucre-roux]
+      time_min: 8
+      attente_min: 60
+      attente_raison: refroidissement
+    - id: mettre-au-frais
+      action: "Répartir dans des petits pots bien fermés et mettre au frais : le riz au lait s'épaissira alors et deviendra parfaitement crémeux"
+      needs: []
+      uses: []
+      time_min: 5
+      attente_min: 240
+      attente_raison: prise-au-frais
+      # Six pots fermés qui partent au frigo d'un coup : c'est la moitié des huit
+      # boîtes hermétiques du foyer, ou trois des douze bocaux. Le pool de
+      # contenants (#25) se vérifie sur la semaine et pas au moment où un plat
+      # émet — même angle mort que les trois sorties du pot-au-feu p. 182, sur
+      # une recette bien plus banale.
+
+  # PAS DE PRÉLÈVEMENT BÉBÉ : 3 cl de rhum ambré, ajoutés au lait AVANT une
+  # cuisson à couvert de 35 minutes — donc en grande partie évaporés, mais pas
+  # totalement, et le couvercle est justement ce qui limite l'évaporation. Plus
+  # 6 c. à s. de cassonade. Même famille que le clafoutis p. 115, et toujours
+  # aucun champ pour porter un interdit d'âge et sa raison.
+
+  emits:
+    - kind: reste-plat
+      type: riz-au-lait
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: false}
+      note: "déjà en pots individuels fermés à la fin de la recette — le dessert de la gamelle sans un geste de plus"
+
+  plan_b: []                # 35 min de feu doux plus 4 h de frais : rien ne se comprime

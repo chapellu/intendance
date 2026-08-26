@@ -1,0 +1,134 @@
+# ---------------------------------------------------------------------------
+# CONSERVATION — la transformation qui rallonge la vie d'une sortie.
+#
+# Le modèle change de forme ici, et c'est le point. Jusqu'ici `keeps:` était une
+# propriété du plat : « frigo 3 j, congélo oui ». Faux. La durée de vie n'est pas
+# une propriété du plat, c'est une propriété du **plat × la méthode qu'on sait et
+# qu'on peut appliquer**. Exactement la logique de Don't Starve : l'aliment a une
+# horloge, et le transformer remet l'horloge à zéro — mais seulement si on a le
+# séchoir, et seulement si on a appris à s'en servir.
+#
+# D'où trois conséquences qui tombent toutes seules :
+#
+# 1. `needs` désigne une **capacité**, jamais un outil — même indirection que
+#    rules.yaml. Le foyer possède la capacité ou non.
+# 2. Une méthode non possédée n'est pas une erreur, c'est un **nœud de l'arbre de
+#    compétences verrouillé par le kit** — précisément le type de verrou retenu
+#    par #10 (kit possédé / acte prérequis / fenêtre saisonnière).
+# 3. La conservation devient une **acquisition** : elle a un coût d'entrée, un
+#    geste à apprendre, et un gain mesurable en jours. C'est un axe de
+#    progression, pas un réglage.
+#
+# ⚠ SÉCURITÉ — LE POINT LE PLUS IMPORTANT DE CE FICHIER
+# La stérilisation maison n'est pas un détail de confort. *Clostridium botulinum*
+# se développe en milieu **anaérobie, peu acide, à température ambiante** — c'est
+# exactement un bocal de sauce à la viande, de lentilles ou de légumes fermé et
+# rangé dans un placard. Un bain-marie à 100 °C ne détruit pas les spores : seul
+# un traitement **sous pression** (autocuiseur/stérilisateur, >115 °C) le fait.
+# Le bain-marie n'est sûr que pour les aliments **acides** (pH ≤ 4,6 : fruits,
+# cornichons, tomates *acidifiées*).
+# Le sous-vide crée le même milieu anaérobie : il **prolonge le froid, il ne
+# remplace pas le froid**. Un sous-vide laissé hors du frigo est plus dangereux
+# qu'un aliment à l'air libre, pas moins.
+#
+# `defaut_acidite: basse` ci-dessous est délibérément le choix prudent : un plat
+# est présumé peu acide tant qu'il n'est pas explicitement marqué autrement.
+#
+# ⚠ CHIFFRES NON SOURCÉS. Les fenêtres ci-dessous sont des ordres de grandeur de
+# prototype. À remplacer par des références réelles avant que quiconque agisse
+# dessus : ANSES / DGCCRF côté français, NCHFP (National Center for Home Food
+# Preservation) pour les barèmes de stérilisation, qui est la référence publique
+# la plus détaillée sur les temps et pressions par aliment.
+# ---------------------------------------------------------------------------
+
+defaut_acidite: basse
+
+methodes:
+  - id: frigo
+    label: au frigo
+    needs: null                      # tout le monde a un frigo
+    fenetre: {unite: jours, valeur: 4, source: household.fridge_window_days}
+    noeud_competence: null
+
+  - id: congeler
+    label: au congélateur
+    needs: congeler
+    fenetre: {unite: mois, valeur: 3}
+    contrainte: "compte contre les 3 tiroirs (#29) — la vraie limite ici"
+    noeud_competence:
+      id: congeler-en-portions
+      titre: "Congeler en portions utiles"
+      verrou: kit
+      acte: "porter une sortie au congélo en portions d'un repas, étiquetées et datées"
+
+  - id: sous-vide-frigo
+    label: sous vide, au frigo
+    needs: mise-sous-vide
+    fenetre: {unite: jours, multiplicateur: 2.5}
+    exige_froid: true
+    note_securite: >
+      Prolonge le froid, ne le remplace pas. Le sachet est anaérobie : hors du
+      frigo il favorise précisément les germes qu'on veut éviter.
+    noeud_competence:
+      id: mise-sous-vide
+      titre: "Mettre sous vide"
+      verrou: kit
+      kit_manquant: machine à mise sous vide (à cloche ou à aspiration)
+      acte: "conditionner une sortie sous vide et vérifier la tenue du sachet à J+7"
+
+  - id: bocal-bain-marie
+    label: en bocal, bain-marie
+    needs: sterilisation-bain-marie
+    fenetre: {unite: mois, valeur: 12}
+    exige_acidite: haute
+    note_securite: >
+      RÉSERVÉ aux aliments acides (pH ≤ 4,6). Sur un plat peu acide — sauce à la
+      viande, lentilles, légumes nature — le bain-marie ne détruit pas les spores
+      de C. botulinum et le bocal devient dangereux à température ambiante.
+    noeud_competence:
+      id: steriliser-acide
+      titre: "Stériliser les acides au bain-marie"
+      verrou: acte
+      acte: "réussir un lot de bocaux acides, couvercles bombés vérifiés à froid"
+
+  - id: bocal-sous-pression
+    label: en bocal, sous pression
+    needs: sterilisation-sous-pression
+    fenetre: {unite: mois, valeur: 12}
+    note_securite: >
+      La seule voie sûre pour mettre un plat PEU ACIDE en bocal à température
+      ambiante : >115 °C sous pression, avec un barème temps/pression propre à
+      l'aliment et au volume du bocal. Barèmes à sourcer (NCHFP) avant usage.
+    noeud_competence:
+      id: steriliser-sous-pression
+      titre: "Stériliser sous pression"
+      verrou: kit
+      kit_manquant: autocuiseur/stérilisateur avec manomètre
+      acte: "réussir un lot peu acide en suivant un barème publié, sans improviser"
+
+  - id: lacto-fermentation
+    label: en lacto-fermentation
+    needs: bocaux-a-joint
+    fenetre: {unite: mois, valeur: 6}
+    applique_a: [legume-cru]
+    note_securite: >
+      Le milieu s'acidifie lui-même, ce qui le sécurise — mais seulement pour des
+      légumes en saumure, jamais pour un plat cuisiné.
+    noeud_competence:
+      id: lacto-fermenter
+      titre: "Lacto-fermenter un légume"
+      verrou: kit
+      kit_manquant: bocaux à joint caoutchouc
+      acte: "réussir un bocal de légumes en saumure, goûté à 3 semaines"
+
+  - id: sechage
+    label: séché
+    needs: sechage
+    fenetre: {unite: mois, valeur: 6}
+    applique_a: [herbe, legume-cru, fruit]
+    noeud_competence:
+      id: secher
+      titre: "Sécher herbes et légumes"
+      verrou: kit
+      kit_manquant: déshydrateur (ou four à très basse température)
+      acte: "sécher une récolte d'herbes du jardin et la mettre en bocal"

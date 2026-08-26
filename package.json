@@ -4,15 +4,17 @@
   "private": true,
   "version": "0.1.0",
   "scripts": {
-    "dev": "vite",
+    "banc": "node scripts/banc.mjs",
     "build": "tsc --noEmit && vite build",
-    "preview": "vite preview",
-    "typecheck": "tsc --noEmit",
-    "test": "vitest run",
+    "catalogue": "python3 catalogue/export_json.py > public/cuisine-data.json",
+    "catalogue:verifie": "python3 catalogue/verifier.py && npm run catalogue && git diff --exit-code -- public/cuisine-data.json",
+    "dev": "vite",
+    "e2e": "playwright test",
     "parite": "vite-node scripts/parite.mjs",
     "perf": "vite-node scripts/perf.mjs",
-    "e2e": "playwright test",
-    "banc": "node scripts/banc.mjs"
+    "preview": "vite preview",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "dexie": "^4.4.5",

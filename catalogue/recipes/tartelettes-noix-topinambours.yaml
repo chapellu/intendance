@@ -1,0 +1,167 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# HUIT MOULES À TARTELETTES EN FER BLANC, ET LE MODÈLE NE SAIT PAS COMPTER LA
+# PÂTISSERIE. `household.yaml` inventorie des appareils par CAPACITÉS et donne
+# une `contenance` en parts aux récipients de cuisson — sauteuse, cocotte,
+# plats à gratin. Il ne connaît aucun moule. La tourte p. 87 avait déjà fait
+# passer « un moule à tarte » sans que rien ne le remarque ; ici il en faut
+# HUIT, du même format, en même temps, et c'est exactement le genre de chose
+# qu'une petite cuisine n'a pas.
+#
+# La règle de #29 tient — l'application ne suggère jamais un achat — mais elle
+# suppose qu'on SACHE ce qui manque. Un moule n'est ni une capacité (il ne
+# transforme rien) ni un contenant de rangement (il ne conserve rien) : il
+# n'entre dans aucune des deux listes que le foyer tient. D'où le `plan_b` en
+# bas de fichier, qui est ici moins un gain de temps qu'un plan de secours
+# matériel.
+
+recipe:
+  id: tartelettes-noix-topinambours
+  title: Tartelettes aux noix et topinambours
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 181"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 181
+    saison: hiver
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    # Le livre compte 8 TARTELETTES et ne donne aucun nombre de convives : il la
+    # présente comme une « entrée de Noël », et l'étape finale comme un plat
+    # « avec une salade ». Deux tartelettes font une part adulte en plat, une
+    # seule fait une entrée — d'où 4, le compte en plat, qui est l'usage de ce
+    # foyer. Le chiffre à corriger le jour où elle sert d'entrée à huit.
+    portions_eq: 4
+  # Bâtie sur des moules, comme la tourte p. 87 : elle ne se cuisine pas en
+  # fraction. Sans ça le foyer (2,5 parts) commandait 0,625 recette, donc
+  # 5 moules et 469 g de topinambours.
+  lot_entier: true
+  time_min_total: 55        # en-tête du livre : 25 min de préparation + 30 min de cuisson
+  active_min: 25
+
+  apports:
+    # LE PLAT A DEUX FÉCULENTS ET LE CHAMP N'EN PORTE QU'UN : 500 g de pommes
+    # de terre dans la garniture ET 360 g de farine dans la pâte. Déclarer la
+    # masse dominante est le moins faux, mais `repetition_max.feculent: 2` de
+    # `equilibre.yaml` comptera une semaine avec cette tartelette et une quiche
+    # comme deux féculents différents, alors qu'il y a deux pâtes.
+    proteine: fromage
+    feculent: pommes-de-terre
+    legumes: [racine, allium]
+    profil: four
+    origine: francais
+
+  # `ref:` — le sel entre deux fois, dans la pâte puis dans la garniture, et
+  # `uses:` doit viser l'un sans l'autre (cf. la note de `tourte-nicoise-courgettes`).
+  ingredients:
+    # Pâte au vin blanc — ni beurre ni œuf : le vin et l'huile remplacent le
+    # corps gras solide, ce qui la rend faisable sans rien sabler.
+    - {id: farine-complete, name: farine T80 ou T110 de blé ou de grand épeautre, qty: 360, unit: g}
+    - {id: vin-blanc-sec, name: vin blanc sec, qty: 150, unit: g}
+    - {id: huile-olive, name: huile d'olive, qty: 95, unit: g}
+    - {id: sel, ref: sel-pate, name: sel fin (pâte), qty: 1, unit: c. à c. rase, seasoning: true}
+    # Garniture
+    - {id: topinambours, name: topinambours, qty: 750, unit: g}
+    - {id: pomme-de-terre, name: pommes de terre, qty: 500, unit: g}
+    - {id: oignon, name: gros oignon, qty: 1, unit: pièce}
+    - {id: noix, name: "cerneaux de noix fraîchement décortiqués — surtout pas du commerce, dont le rance gâcherait tout", qty: 75, unit: g}
+    - {id: fromage-rape, name: "fromage râpé au choix (cantal, comté…)", qty: 100, unit: g}
+    - {id: beurre, name: beurre demi-sel, qty: 80, unit: g}
+    # LE LIVRE NE LES LISTE PAS. Sa garniture s'arrête au beurre, et l'étape
+    # suivante dit pourtant « saler, poivrer ». Même trou qu'à la p. 87 et à la
+    # p. 33 : un assaisonnement présent dans le geste et absent de la liste.
+    # Écrits ici, sans quoi `uses:` viserait un ingrédient qui n'existe pas.
+    - {id: sel, ref: sel-garniture, name: sel (garniture), qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: eplucher
+      action: "Éplucher les pommes de terre et les topinambours, puis les découper en tranches, comme pour un gratin dauphinois"
+      needs: []
+      uses: [pomme-de-terre, topinambours]
+      time_min: 15
+    - id: emincer
+      action: "Émincer l'oignon"
+      needs: []
+      uses: [oignon]
+      time_min: 3
+    - id: poeler
+      action: "Faire colorer l'oignon avec le beurre dans une grande sauteuse, ajouter les pommes de terre et les topinambours, saler, poivrer, et faire dorer le tout une douzaine de minutes sans laisser noircir le beurre ; couper le feu quand les pommes de terre sont presque cuites, encore un peu fermes"
+      needs: [pan-fry]
+      uses: [beurre, pomme-de-terre, topinambours, sel-garniture, poivre]
+      time_min: 15
+      # LA RECETTE LA PLUS SERRÉE DU CATALOGUE CÔTÉ VAISSELLE. 1,25 kg de
+      # tubercules en tranches dans la sauteuse de 28 cm : `facteur_max_vaisselle`
+      # donne 1,5 fois le lot de base, donc ça passe une fois et JAMAIS DEUX.
+      # Une entrée de fête pour huit — l'usage même que l'autrice propose — ne
+      # tient pas dans cette cuisine, et c'est le premier plat dont on peut le
+      # dire par le calcul plutôt qu'au jugé.
+    - id: garniture
+      action: "Ajouter les cerneaux de noix légèrement concassés et le fromage râpé hors du feu, puis réserver"
+      needs: []
+      uses: [noix, fromage-rape]
+      time_min: 3
+      kid: {age_min_months: 30, task: "casser les cerneaux de noix en morceaux avec les mains"}
+    - id: prechauffer
+      action: "Préchauffer le four à 180 °C"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+      parallel_with: poeler
+    - id: pate
+      action: "Mélanger le vin, l'huile et le sel, puis verser d'un coup sur la farine et travailler la pâte juste ce qu'il faut pour l'amalgamer, sans insister"
+      needs: []
+      uses: [vin-blanc-sec, huile-olive, sel-pate, farine-complete]
+      time_min: 6
+    - id: foncer
+      action: "Étaler la pâte sur un plan fariné, y découper des cercles et en foncer 8 moules à tartelettes en fer blanc"
+      needs: []
+      uses: []
+      time_min: 12
+      kid: {age_min_months: 30, task: "découper les cercles à l'emporte-pièce dans la pâte étalée"}
+    - id: garnir
+      action: "Répartir la garniture dans les moules et bien lisser à la cuillère"
+      needs: []
+      uses: []
+      time_min: 5
+    - id: cuire
+      action: "Enfourner 30 min assez bas dans le four, pour que la pâte soit bien cuite sans que le dessus brûle"
+      needs: [bake]
+      uses: []
+      time_min: 30
+      attended: false
+    - id: servir
+      action: "Servir encore tiède, avec une salade"
+      needs: []
+      uses: []
+      time_min: 2
+
+  # PAS DE PRÉLÈVEMENT BÉBÉ, IMPOSSIBLE PAR CONSTRUCTION — troisième occurrence
+  # de la même forme dans cette seule série d'hiver. Le sel arrive à la poêlée,
+  # mais SURTOUT les 80 g de beurre sont demi-sel et entrent à la première
+  # minute : même en retirant le sel et le poivre, il n'existe aucun instant où
+  # les tranches soient nature. Le beurre demi-sel est un troisième ingrédient
+  # salant que `seasoning: true` ne marque pas, après le parmesan de la p. 87 et
+  # la charcuterie de la p. 177.
+  #
+  # Deux réserves de plus, qu'aucun champ ne porte : les 150 g de vin blanc de
+  # la pâte (cuits 30 min à 180 °C, donc pour l'essentiel évaporés) et l'inuline
+  # du topinambour, qui est très fermentescible pour un intestin de 12 mois.
+
+  emits:
+    - kind: reste-plat
+      type: tartelettes-topinambours
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: false}
+      note: "l'autrice le dit elle-même : on peut les préparer LA VEILLE et les réchauffer 10 min à 180 °C — le plat entier est anticipable, ce qu'aucun champ ne sait déclarer autrement qu'en imposant l'attente"
+
+  plan_b:
+    - swap:
+        step: foncer
+        action: "Foncer un seul grand moule à tarte plutôt que huit moules à tartelettes"
+        saves_min: 6
+      effect: "c'est aussi le seul chemin praticable sans huit moules identiques ; on perd la part individuelle qui fait l'entrée de fête, et la cuisson demande quelques minutes de plus"

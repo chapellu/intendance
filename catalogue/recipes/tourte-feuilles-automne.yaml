@@ -1,0 +1,150 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# LA RECETTE QUI A FAIT AJOUTER `pan-fry` À LA COCOTTE. 1,5 kg de courge, trois
+# poireaux et trois oignons dans une poêlée : la sauteuse de 28 cm annonce 6
+# parts, la recette en fait 7, et `facteur_max_vaisselle` refusait le plat. Or
+# l'autrice écrit « les faire revenir » dans une cocotte, et le foyer en a une de
+# 7,5 L qui ne déclarait que `simmer-large`, `steam` et la stérilisation. Une
+# cocotte en fonte rissole. C'est le troisième plat à le dire noir sur blanc
+# (p. 93, p. 127) et c'est ce qui a corrigé `household.yaml`.
+#
+# Le défaut n'était pas dans le contrôle mais dans l'inventaire — ce qui est plus
+# inquiétant, parce qu'un inventaire faux ne se signale jamais tout seul : il
+# rend simplement des plats infaisables, et on croit que c'est la cuisine qui est
+# trop petite.
+#
+# UNE PÂTE AU CONCENTRÉ DE TOMATE, et c'est elle qui fait les « feuilles
+# d'automne » : 70 g de double concentré dilués dans le vin blanc donnent la
+# couleur. Le catalogue a maintenant trois pâtes salées de trois natures — à
+# l'huile d'olive p. 87, au vin blanc p. 181, à la tomate ici — et `apports`
+# n'a qu'un mot pour les trois, `pate-brisee`.
+
+recipe:
+  id: tourte-feuilles-automne
+  title: Jolie tourte « feuilles d'automne »
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 123"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 123
+    saison: automne
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 7          # « pour 6 à 8 personnes », en plat complet principal avec une salade
+  lot_entier: true          # un moule à tarte de 30 cm ne se remplit pas en fraction
+  time_min_total: 60        # en-tête : 25 min de préparation + 35 min de cuisson
+  active_min: 25
+
+  apports:
+    proteine: fromage       # 200 g de parmesan devant les 200 g de jambon cru
+    feculent: pate-brisee
+    legumes: [cucurbitacee, allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    # Garniture
+    - {id: oignon, name: oignons, qty: 3, unit: pièce}
+    - {id: poireau, name: poireaux, qty: 3, unit: pièce}
+    - {id: jambon-cru, name: "jambon cru ou tofu fumé, coupé en « lardons »", qty: 200, unit: g}
+    - {id: courge, name: "courge ou potiron d'une variété peu aqueuse — potimarron et butternut ne s'épluchent même pas", qty: 1.5, unit: kg}
+    - {id: parmesan, name: "parmesan râpé (ou Grana Padano) — 150 g dans la garniture, 50 g sur le dessus", qty: 200, unit: g}
+    - {id: huile-olive, ref: huile-garniture, name: huile d'olive (garniture), qty: 4, unit: c. à s.}
+    - {id: eau, name: verre d'eau pour le mijotage, qty: 1, unit: verre}
+    # Pâte
+    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 540, unit: g}
+    - {id: vin-blanc-sec, name: vin blanc sec, qty: 165, unit: g}
+    - {id: concentre-tomate, name: double concentré de tomate, qty: 70, unit: g}
+    - {id: huile-olive, ref: huile-pate, name: huile d'olive (pâte), qty: 110, unit: g}
+    - {id: sel, name: c. à c. rase de sel fin, qty: 1, unit: c. à c., seasoning: true}
+
+  steps:
+    - id: revenir
+      action: "Émincer les oignons et les poireaux, puis les faire revenir avec les « lardons » dans les quatre cuillerées à soupe d'huile d'olive"
+      needs: [pan-fry]
+      uses: [oignon, poireau, jambon-cru, huile-garniture]
+      time_min: 12
+      # Cette étape ne porte QUE les oignons, les poireaux et les lardons : la
+      # courge n'arrive qu'au mijotage suivant. C'est le sens même de
+      # `charge_partielle`, et le fait de l'avoir oublié est ce qui m'a fait
+      # accuser la sauteuse à tort.
+      charge_partielle: true
+    - id: courge
+      action: "Pendant ce temps, découper la courge en gros morceaux — certaines variétés comme le potimarron ou la butternut ne s'épluchent pas"
+      needs: []
+      uses: [courge]
+      time_min: 15
+      parallel_with: revenir
+    - id: mijoter
+      action: "Quand la poêlée de poireaux commence à bien dorer, ajouter les cubes de potiron et un verre d'eau, mélanger, poser un couvercle et laisser mijoter environ 10 minutes — le temps de faire la pâte"
+      # `simmer-large` ET NON `pan-fry` : à couvert, avec un verre d'eau, ce
+      # n'est plus une poêlée mais un mijotage — et c'est LUI qui porte les
+      # 1,5 kg de courge, donc la cocotte. J'avais d'abord écrit `pan-fry` puis
+      # « corrigé » l'inventaire du foyer en donnant `pan-fry` à la cocotte ;
+      # c'était un pansement sur une erreur de saisie, et il rendait les
+      # escalopes p. 39 faisables en lot et demi alors qu'une cocotte donne du
+      # VOLUME et pas de la SURFACE. Un test de l'app l'a attrapé.
+      needs: [simmer-large]
+      uses: [eau]
+      time_min: 12
+    - id: pate
+      action: "Diluer le double concentré de tomate dans le vin blanc, puis mélanger dans un saladier avec tous les autres ingrédients de la pâte, en la travaillant juste ce qu'il faut pour former une boule homogène ; la diviser en deux pâtons « deux tiers / un tiers »"
+      needs: []
+      uses: [concentre-tomate, vin-blanc-sec, farine-complete, huile-pate, sel]
+      time_min: 8
+      parallel_with: mijoter
+    - id: prechauffer
+      action: "Préchauffer le four"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+      parallel_with: mijoter
+    - id: foncer
+      action: "Étaler le plus gros pâton sur un plan fariné, puis en chemiser un moule à tarte d'environ 30 cm de diamètre"
+      needs: []
+      uses: []
+      time_min: 8
+    - id: feuilles
+      action: "Étaler le deuxième pâton, toujours sur un plan bien fariné, et y découper des feuilles à l'emporte-pièce ; on peut aussi en former les nervures à la fourchette"
+      needs: []
+      uses: []
+      time_min: 10
+      kid: {age_min_months: 30, task: "découper les feuilles à l'emporte-pièce et dessiner les nervures à la fourchette"}
+    - id: garnir
+      action: "Quand la chair du potiron commence un peu à se défaire, ajouter 150 g de parmesan et bien mélanger ; en garnir le fond de tarte, puis saupoudrer avec le parmesan restant"
+      needs: []
+      uses: [parmesan]
+      time_min: 6
+    - id: fermer
+      action: "Rabattre rapidement les « trottoirs » de la tourte sur la garniture, puis camoufler les bords avec les feuilles de pâte"
+      needs: []
+      uses: []
+      time_min: 6
+    - id: cuire
+      action: "Enfourner 35 à 40 minutes sur le cran le plus bas du four, juste au-dessus de la sole, afin que la pâte cuise bien dessous sans brûler dessus"
+      needs: [bake]
+      uses: []
+      time_min: 38
+      attended: false
+
+  # PAS DE PRÉLÈVEMENT BÉBÉ : 200 g de jambon cru et 200 g de parmesan, deux
+  # ingrédients salants que rien ne déclare, cuits ensemble dès la première
+  # poêlée. C'est la forme la plus fréquente du corpus, et la version
+  # végétarienne que l'autrice propose (tofu fumé) ne l'allège pas — le tofu
+  # fumé est salé lui aussi.
+
+  emits:
+    - kind: reste-plat
+      type: tourte-feuilles-automne
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: true}
+      note: "une tourte à la courge se réchauffe au four sans rien perdre — la part de gamelle est dans la recette"
+
+  plan_b:
+    - drop: feuilles
+      saves_min: 10
+      effect: "on perd les « feuilles d'automne » qui donnent son nom au plat ; la tourte se ferme simplement en rabattant les bords"

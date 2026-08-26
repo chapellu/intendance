@@ -1,0 +1,167 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# LA SOUCHE À TROIS SORTIES, DÉCLARÉE PAR L'AUTRICE EN UNE PHRASE : « Un seul
+# plat, trois bons repas en perspective. » Elle les nomme un par un — à midi la
+# viande et les légumes, le soir le bouillon avec des petites pâtes ou des
+# lanières de crêpes (p. 192), le lendemain les restes en hachis Parmentier
+# (p. 199) ou à la vinaigrette. C'est la deuxième arête de chaînage du
+# catalogue écrite noir sur blanc dans l'ouvrage après le rôti p. 55, et la
+# première à en porter TROIS d'un coup.
+#
+# CE QUE TROIS SORTIES SIMULTANÉES RÉVÈLENT. `emits` a toujours été lu comme
+# une conséquence agréable : un plat laisse un reste, tant mieux. Ici les trois
+# sorties naissent à la même minute et vont au même endroit. Le foyer a 10
+# places de frigo, 8 boîtes et 12 bocaux (`household.yaml`), et cette seule
+# séance de cuisine réclame de quoi ranger de la viande, des légumes et deux
+# litres et demi de liquide en même temps. Le pool de contenants existe et se
+# vérifie SUR LA SEMAINE ; personne ne le regarde AU MOMENT où un plat émet.
+# C'est la vraie contrainte d'un pot-au-feu dans une petite cuisine, et le
+# modèle ne la voit pas.
+
+recipe:
+  id: pot-au-feu-traditionnel
+  title: Pot-au-feu traditionnel
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 182"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 182
+    saison: hiver
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6
+  time_min_total: 170       # en-tête du livre : 20 min de préparation + 2 h 30 à 3 h de cuisson
+  active_min: 20
+
+  # LA MARMITE EST LE DERNIER INGRÉDIENT DE LA LISTE. L'autrice l'écrit ainsi,
+  # à la suite du gros sel : « … Une très grande marmite (de type "faitout
+  # traiteur") ». C'est la première recette du catalogue qui DÉCLARE SON
+  # RÉCIPIENT, et le modèle ne peut pas l'entendre : `contenance` se compte en
+  # parts adulte, donc la cocotte de 7,5 L annonce 12 parts et ce plat en
+  # demande 6 — `facteur_max_vaisselle` dit oui deux fois plutôt qu'une.
+  #
+  # Sauf que 3,5 l d'eau, 1,5 kg de viande et près de 3 kg de légumes entiers ne
+  # tiennent pas dans 7,5 L, quelle que soit l'arithmétique des parts. Une part
+  # de pot-au-feu occupe trois fois le volume d'une part de mijoté, et l'unité
+  # « part » a précisément été choisie pour ne pas convertir des litres en
+  # assiettes. C'est le premier plat où ce choix se retourne.
+
+  apports:
+    proteine: viande-rouge
+    feculent: pommes-de-terre
+    legumes: [racine, allium, crucifere, cucurbitacee]   # quatre familles d'un coup
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: jarret-boeuf, name: "jarret de bœuf avec l'os (ou gîte, paleron — des morceaux « à braiser », donc à cuire longtemps)", qty: 1.5, unit: kg}
+    - {id: os-a-moelle, name: os à moelle (facultatif), qty: 1, unit: pièce}
+    - {id: eau, name: eau froide, qty: 3.5, unit: l}
+    - {id: carottes, name: carottes, qty: 6, unit: pièce}
+    - {id: oignon, name: oignons, qty: 3, unit: pièce}
+    - {id: poireau, name: poireaux, qty: 3, unit: pièce}
+    - {id: panais, name: panais (facultatif), qty: 3, unit: pièce}
+    - {id: navets, name: navets, qty: 3, unit: pièce}
+    - {id: potimarron, name: petit potimarron (600 g environ) ou une grosse tranche de courge musquée (facultatif), qty: 1, unit: pièce}
+    - {id: pomme-de-terre, name: pommes de terre de taille moyenne, qty: 12, unit: pièce}
+    - {id: celeri-rave, name: petit céleri-rave ou petit céleri branche, qty: 1, unit: pièce}
+    - {id: clous-girofle, name: clous de girofle, qty: 6, unit: pièce, seasoning: true}
+    - {id: laurier, name: feuilles de laurier, qty: 3, unit: pièce, seasoning: true}
+    - {id: graines-coriandre, name: graines de coriandre, qty: 1, unit: c. à c., seasoning: true}
+    - {id: thym, name: "brins de thym, d'origan ou de sarriette", qty: 1, unit: poignée, seasoning: true}
+    - {id: gros-sel, name: gros sel, qty: 2, unit: c. à s., seasoning: true}
+    - {id: huile-olive, name: "huile d'olive, pour l'assiette", qty: 2, unit: c. à s.}
+    - {id: poivre, name: "poivre du moulin, à l'assiette", qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: lancer
+      action: "Mettre la viande et l'os à moelle dans 3,5 l d'eau froide avec le gros sel, les oignons, les carottes, éventuellement les panais, le laurier, la coriandre, les herbes et les clous de girofle"
+      needs: [simmer-large]
+      uses: [jarret-boeuf, os-a-moelle, eau, gros-sel, oignon, carottes, panais,
+             laurier, graines-coriandre, thym, clous-girofle]
+      time_min: 10
+    - id: precuire
+      action: "Couvrir, porter à ébullition, puis compter 2 heures de cuisson — à tout petit feu, car mener la cuisson tambour battant ne sert à rien"
+      needs: [simmer-large]
+      uses: []
+      time_min: 120
+      attended: false
+    - id: preparer-legumes
+      action: "Pendant la précuisson : éplucher et préparer les autres légumes — recouper les poireaux et les navets en deux, le potimarron et le céleri-rave en six, laisser les pommes de terre entières"
+      needs: []
+      uses: [poireau, navets, potimarron, celeri-rave, pomme-de-terre]
+      time_min: 15
+      parallel_with: precuire
+      kid: {age_min_months: 30, task: "laver les poireaux sous l'eau et compter les pommes de terre"}
+    - id: ajouter-legumes
+      action: "Au bout des 2 heures, ajouter dans la marmite DANS CET ORDRE : le céleri-rave, les poireaux, les navets, les pommes de terre, puis le potimarron — les légumes coriaces doivent être parfaitement immergés, le potimarron et la pomme de terre cuisent quasiment à la vapeur au-dessus"
+      needs: [simmer-large]
+      uses: []
+      time_min: 5
+    - id: finir
+      action: "Couvrir, attendre la reprise de l'ébullition, puis compter encore 30 minutes"
+      needs: [simmer-large]
+      uses: []
+      time_min: 30
+      attended: false
+    - id: servir
+      action: "Sortir la viande et les légumes à l'écumoire, les disposer dans un plat et servir aussitôt, avec un filet d'huile d'olive et du poivre du moulin sur chaque assiette"
+      needs: []
+      uses: [huile-olive, poivre]
+      time_min: 5
+      # L'AUTRICE DONNE DEUX FINITIONS ET PRÉFÈRE LA SECONDE : huile et poivre,
+      # « ou une bonne vinaigrette aux câpres et au persil frais (le top !) ».
+      # Seule la première est encodée, parce qu'un « ou » de garniture n'a
+      # aucune représentation : `plan_b` échange une étape pour gagner des
+      # minutes, `sans_reste` rachète une base absente, et ni l'un ni l'autre ne
+      # sait dire « deux fins possibles, à choisir à table ». Encoder les deux
+      # ferait acheter des câpres pour rien une fois sur deux.
+
+  # PAS DE PRÉLÈVEMENT BÉBÉ, ET C'EST LE MÊME CAS EXACT QUE LE RÔTI P. 55 :
+  # 2 c. à s. de gros sel dans l'eau froide à la minute zéro. Ce n'est pas une
+  # négligence de l'autrice, c'est la technique — saler l'eau est ce qui
+  # assaisonne la viande à cœur et donne au bouillon son goût. Aucun légume ne
+  # sort jamais de cette marmite sans avoir cuit dans de la saumure, donc aucun
+  # prélèvement nature n'est possible, à aucun moment.
+  #
+  # Deuxième occurrence de cette forme précise (saler le bain de cuisson au
+  # départ), après p. 55. Quatre recettes de cette série d'hiver sur quatre
+  # n'ont pas de portion bébé, pour trois raisons structurelles distinctes.
+
+  emits:
+    - kind: base
+      type: bouillon-pot-au-feu
+      qty_band: 2-repas
+      # PAS DE `qty:`, DÉLIBÉRÉMENT. Le chiffre n'aurait aucun consommateur pour
+      # le confronter : la soupe de crêpes p. 192, que l'autrice désigne
+      # elle-même, n'est pas saisie. Poser « 2500 ml » maintenant serait une
+      # estimation inventée qui aurait l'air d'une mesure — exactement ce que le
+      # 1500 ml du rôti p. 55 évite en étant, lui, adossé au besoin de la soupe
+      # d'orge. À chiffrer le jour où la p. 192 entre.
+      keeps: {frigo_days: 3, congelo: true}
+      note: "le repas du soir selon l'autrice : le bouillon avec des petites pâtes, ou des lanières de crêpes (p. 192)"
+    - kind: reste-plat
+      type: viande-pot-au-feu
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: true}
+      note: "le lendemain, en hachis Parmentier (p. 199) ou froide à la vinaigrette"
+    - kind: reste-plat
+      type: legumes-pot-au-feu
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: false}
+      note: "pommes de terre et navets cuits à l'eau : ils se délitent à la décongélation, ils restent au frigo"
+
+  # PAS DE `plan_b`, ET POUR UNE FOIS L'AUTRICE L'INTERDIT EXPLICITEMENT :
+  # « parfois à 20 minutes près la viande peut être dure et caoutchouteuse ou
+  # fondante à souhait, alors ne raccourcissez pas le temps de cuisson ! »
+  #
+  # Le levier qu'elle propose à la place n'est pas du temps : « pour économiser
+  # l'énergie (gaz ou électricité), vous pouvez en revanche faire cuire à tout
+  # petit feu ». 2 h 30 de feu doux contre 2 h 30 de gros bouillon, c'est le
+  # même plat, la même durée et pas la même facture. Second axe non temporel
+  # rencontré dans cette série, après l'argent des accras p. 178 et du clafoutis
+  # p. 115 : `plan_b` ne sait compter que des minutes.
+  plan_b: []

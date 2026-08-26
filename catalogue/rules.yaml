@@ -1,0 +1,83 @@
+# Capability fallback rules — GLOBAL, not per-recipe. This is the anti-explosion bet
+# of ticket #31: a recipe step requires a capability; these chains say how each
+# capability degrades onto whatever the household actually owns. Adding a recipe
+# adds zero rules; adding a tool amends a handful of chains.
+#
+# Each entry: ordered candidates. First one satisfiable by household equipment wins.
+# `rewrite` replaces the step's tool phrase; `time_delta_min` adjusts the step timer.
+
+capabilities:
+  chop-coarse:
+    - tool: food-processor
+    - tool: mini-blender
+      rewrite: "au petit blender, en 2–3 fois, par impulsions courtes"
+      time_delta_min: 3
+    - tool: couteau
+      rewrite: "au couteau, sur une planche"
+      time_delta_min: 5
+
+  blend-smooth:
+    - tool: blender
+    - tool: mixeur-plongeur
+      rewrite: "au mixeur plongeur, directement dans le récipient"
+      time_delta_min: 0
+
+  steam:
+    - tool: cuit-vapeur
+    - tool: cocotte-7.5l
+      rewrite: "dans le panier vapeur de la cocotte, 2 cm d'eau au fond"
+      time_delta_min: 0
+    - tool: micro-ondes
+      rewrite: "au micro-ondes, récipient couvert avec un fond d'eau"
+      time_delta_min: -5
+
+  pan-fry: [{tool: sauteuse-28}, {tool: poele-inox-30}, {tool: poeles-ingenio}]
+  simmer: [{tool: casseroles}, {tool: sauteuse-28}]
+  simmer-large: [{tool: cocotte-7.5l}]
+  bake: [{tool: four-chaleur-tournante}]
+  gratin: [{tool: four-chaleur-tournante}]
+  # Le gril est une résistance de voûte, pas la chaleur tournante — une capacité
+  # distincte, et un four qui ne l'a pas doit finir autrement plutôt que de
+  # sauter l'étape. Ce foyer l'a ; la chaîne existe pour celui qui ne l'aurait pas.
+  grill:
+    - tool: four-chaleur-tournante
+    - tool: none
+      rewrite: "sans gril : prolonger de 5 min à 210 °C en surveillant la couleur"
+      time_delta_min: 5
+  # LE GAUFRIER, ET C'EST LA PREMIÈRE CAPACITÉ SANS REPLI PRATICABLE. Le croque
+  # p. 177 s'en passait parce que l'autrice donnait elle-même le four comme
+  # seconde voie ; une gaufre n'en a aucune — sans gaufrier, la p. 111 ne se
+  # fait pas, un point c'est tout. Déclarer la capacité avec un seul outil que
+  # le foyer ne possède PAS est la seule façon pour le modèle de dire ça :
+  # `resolve_capability` renvoie alors (None, None) et `compile.py` marque
+  # l'étape « aucune solution avec l'équipement du foyer ».
+  #
+  # Ce chemin de code existait depuis le début et rien ne l'avait jamais
+  # emprunté. C'est aussi ce qui manquait à la p. 177 pour signaler que son plan
+  # A était hors de portée : là-bas le repli était dans la prose, ici il est
+  # dans le modèle.
+  gaufrier: [{tool: gaufrier}]
+
+  puree: [{tool: mixeur-plongeur}, {tool: presse-puree, rewrite: "au presse-purée", time_delta_min: 3}]
+  weigh:
+    - tool: balance-tefal
+    - tool: none
+      rewrite: "en volume (voir équivalences)"
+      time_delta_min: 0
+
+  # Une chaîne de repli qui ne se paie PAS en minutes mais en HEURES D'AVANCE
+  # (`avance_h`) — la seconde horloge, celle d'`anticipation.py`. Décongeler ne
+  # prend pas plus de temps de cuisine selon l'outil, ça prend plus de PRÉAVIS.
+  #
+  # Conséquence désagréable et vraie : sans micro-ondes, une portion du
+  # congélateur réclame une nuit de préavis, et « portion d'urgence » devient un
+  # abus de langage — c'est une réserve. Ce foyer a un micro-ondes, donc la
+  # carte se joue le soir même ; le modèle ne le savait pas et l'aurait promis
+  # à un foyer qui n'en a pas.
+  decongeler:
+    - tool: micro-ondes
+      rewrite: "au micro-ondes, mode décongélation, en remuant à mi-parcours"
+      avance_h: 0.5
+    - tool: none
+      rewrite: "au frigo, sorti la veille au soir"
+      avance_h: 12

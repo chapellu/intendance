@@ -1,0 +1,74 @@
+# Le déjeuner le plus fréquent d'un vrai foyer, et le seul que le prototype ne
+# savait pas exprimer : on réchauffe ce qui reste d'hier soir.
+#
+# POURQUOI IL N'EXISTAIT PAS
+# Neuf plats du répertoire émettent un `reste-plat` (chili, gratin, lasagnes,
+# quiche, ratatouille, velouté, burgers, curry…) que RIEN n'acceptait. Ces
+# sorties partaient dans le vide, parce qu'il n'y avait aucun créneau où les
+# remettre : le modèle n'avait qu'un dîner par jour. Le midi crée le débouché.
+#
+# POURQUOI UNE SEULE RECETTE ET PAS NEUF
+# `accepts` sait maintenant matcher une *classe* de sortie (`kind`) et pas
+# seulement un type exact. Une seule carte mange donc n'importe quel reste de
+# plat, et le répertoire n'a pas à grossir de neuf doublons — c'est la même
+# indirection que capacité/outil, appliquée aux restes.
+
+recipe:
+  id: reste-de-la-veille
+  title: Reste réchauffé
+  time_min_total: 10
+  # Un midi, deux midis — jamais un dîner : servir un reste au dîner ferait de
+  # la place pour un autre reste le lendemain, sans rien résoudre.
+  creneaux: [dejeuner]
+  transportable: true
+
+  yields:
+    portions_eq: 2.5
+
+  apports:
+    # Volontairement vide : les apports sont ceux du plat d'origine, pas les
+    # siens. Les compter ici les compterait deux fois.
+    proteine: aucune
+    feculent: aucun
+    legumes: []
+    profil: reste
+
+  accepts:
+    - kind: reste-plat
+      required: true          # sans reste, cette carte n'a aucun sens
+
+  ingredients: []             # rien à acheter : tout est déjà au frigo
+
+  # Écrites au schéma commun — `id:` + `action:` — et non en `text:` libre. La
+  # première version de cette carte était la seule du catalogue à s'en écarter,
+  # et `compile.py` lit `s["action"]` sans garde : elle se planifiait très bien
+  # et ne se cuisinait pas du tout.
+  steps:
+    - id: sortir
+      action: "Sortir le reste du frigo, vérifier qu'il sent bon et qu'il est dans la fenêtre."
+      needs: []
+      time_min: 1
+    - id: rechauffer
+      action: "Réchauffer à couvert — micro-ondes pour une portion, poêle ou casserole au-delà."
+      needs: [reheat]
+      time_min: 8
+      attended: false
+    - id: rectifier
+      action: "Goûter et rectifier le sel : un plat réchauffé rend plus fade que la veille."
+      needs: []
+      time_min: 1
+      seasoning_gate: true
+
+  # Le prélèvement bébé est une DONNÉE, pas une phrase dans une étape : c'est
+  # `compile.py` qui l'injecte devant `seasoning_gate`, et seulement si le foyer
+  # a un bébé. En prose il s'imprimait pour tout le monde, tout le temps.
+  #
+  # RÉSERVE ASSUMÉE : le plat d'origine était déjà salé hier. Ce prélèvement
+  # n'évite que le sel d'AUJOURD'HUI. Le vrai geste — mettre de côté la part du
+  # petit à la cuisson de la veille — est une sortie à part que le modèle ne sait
+  # pas encore porter (`emits` ne connaît pas la portion bébé).
+  baby_portion:
+    take: "2 c. à s. du plat réchauffé, avant de rectifier le sel"
+    prep: "écraser à la fourchette, allonger d'un peu d'eau tiède si c'est compact"
+    needs: [puree]
+    depuis: [rechauffer]

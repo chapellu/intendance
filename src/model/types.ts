@@ -24,8 +24,19 @@ export type EmitKind = "base" | "parure" | "portion-bebe" | "reste-plat";
 /** Lequel des deux plafonds d'un espace mord. */
 export type CauseLimite = "place" | "contenant";
 
-/** Un créneau se choisit (on y pioche un plat) ou se subit (petit-déj, goûter). */
-export type NatureCreneau = "choisi" | "routine";
+/** TROIS NATURES, ET LA TROISIÈME EST CE QUI MANQUAIT AUX DESSERTS.
+ *
+ *    choisi     vide = un TROU dont la semaine se plaint · distribué · rempli d'office
+ *    routine    vide = rien · jamais distribué · jamais rempli
+ *    optionnel  vide = rien · distribué · jamais rempli d'office
+ *
+ *  On ne dîne pas d'un dessert tous les soirs, et une semaine sans dessert
+ *  n'est pas une semaine incomplète : `choisi` en ferait un manque. Mais
+ *  `routine` veut dire « compté sans jamais être proposé », ce qui rendait les
+ *  desserts du catalogue littéralement injoignables — aucun geste de l'app ne
+ *  pouvait en poser un. `optionnel` est le créneau qui EXISTE sans être un
+ *  manque quand il est vide. */
+export type NatureCreneau = "choisi" | "routine" | "optionnel";
 
 /** D'où sort une ligne d'ingrédient — décidé une fois, lu partout. */
 export type Provenance = "placard" | "chaine" | "frigo" | "courses" | "absent";

@@ -1,0 +1,108 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+
+recipe:
+  id: crockasha-echalote-ciboulette
+  title: Croc'kasha à l'échalote et à la ciboulette
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 40"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 40
+    saison: printemps
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # 12 croquettes, « 3 à 4 personnes »
+    pieces: 12
+  time_min_total: 40
+  active_min: 30
+
+  apports:
+    proteine: fromage
+    feculent: sarrasin
+    legumes: [allium]
+    profil: poele
+    origine: francais
+
+  # Le kasha (sarrasin grillé) cuit et refroidi tient mieux au façonnage. Le
+  # livre suggère de le cuire la veille — d'où cet `accepts` : c'est le même
+  # geste que les lentilles de `burgers-de-lentilles`, une base préparée
+  # d'avance qui fait gagner du temps le jour J.
+  accepts:
+    - type: kasha-cuit
+      qty: {amount: 250, unit: g}
+      required: false
+      fallback_recipe: null
+
+  sans_reste:
+    temps_min: 20           # cuisson 12 min + refroidissement dans la passoire
+    ingredients:
+      - {id: kasha, name: kasha (sarrasin grillé), qty: 250, unit: g}
+
+  ingredients:
+    - {id: kasha-cuit-ing, name: kasha cuit et refroidi, qty: 250, unit: g, from_accepts: true}
+    - {id: echalote, name: échalotes, qty: 2, unit: pièce}
+    - {id: huile-olive, name: huile (+ un fond pour la poêle), qty: 2, unit: c. à s.}
+    - {id: oeufs, name: œuf, qty: 1, unit: pièce}
+    - {id: chevre-buche, name: bûche de fromage de chèvre, qty: 200, unit: g}
+    - {id: ciboulette, name: ciboulette, qty: 1, unit: petit bouquet}
+    - {id: farine-complete, name: farine de blé ou d'épeautre (pour rouler), qty: 1, unit: tasse}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: cuire-kasha
+      action: "Cuire le kasha 12 min à l'eau bouillante salée, l'égoutter et le laisser refroidir dans la passoire"
+      needs: [simmer]
+      time_min: 15
+      attended: false
+      # Étape sautée quand le kasha vient de la veille (`accepts`).
+    - id: dorer-echalotes
+      action: "Détailler les échalotes en petits cubes et les faire dorer à l'huile"
+      needs: [pan-fry]
+      time_min: 5
+      attended: true
+    - id: melanger
+      action: "Réunir dans un saladier le kasha, les échalotes, l'œuf, le chèvre en petits cubes et la ciboulette finement ciselée, puis malaxer"
+      needs: []
+      time_min: 4
+    - id: assaisonner-appareil
+      action: "Saler et poivrer l'appareil"
+      needs: []
+      time_min: 1
+      seasoning_gate: true
+    - id: faconner
+      action: "Façonner 12 croquettes à la main en les roulant dans la farine ; se mouiller les mains au fur et à mesure évite que la pâte colle"
+      needs: []
+      time_min: 8
+      kid: {age_min_months: 30, task: "rouler les croquettes dans l'assiette de farine"}
+    - id: dorer-croquettes
+      action: "Faire dorer les croquettes sur toutes leurs faces dans une grande poêle avec un fond d'huile, jusqu'à ce qu'elles soient croustillantes"
+      needs: [pan-fry]
+      time_min: 10
+      attended: true
+    - id: egoutter
+      action: "Débarrasser sur du papier absorbant et servir avec une salade de saison"
+      needs: []
+      time_min: 2
+
+  baby_portion:
+    take: "2 c. à s. du mélange kasha-chèvre AVANT le poivre et le sel de finition"
+    prep: "former une petite croquette sans farine, la dorer à la poêle et la couper en bâtonnets"
+    needs: [pan-fry]
+
+  emits:
+    - kind: reste-plat
+      type: crockasha
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+      note: "à repasser à la poêle pour retrouver le croustillant"
+
+  plan_b:
+    - swap:
+        step: faconner
+        action: "Étaler la pâte en galettes à la cuillère plutôt que de façonner 12 croquettes à la main"
+        saves_min: 5
+      effect: "moins joli, cuisson identique"

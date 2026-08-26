@@ -35,6 +35,15 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      # Le catalogue commité est un ARTEFACT : `public/cuisine-data.json` se
+      # fabrique depuis `catalogue/`. Cette étape le refabrique et échoue si le
+      # fichier du dépôt diverge — c'est le garde-fou qui manquait quand le JSON
+      # est resté à 51 plats pendant que le corpus en portait 86.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml
+      - run: npm run catalogue:verifie
       - run: npm run typecheck
       - run: npm test
       # La parité rejoue les mêmes semaines dans le modèle du prototype (figé

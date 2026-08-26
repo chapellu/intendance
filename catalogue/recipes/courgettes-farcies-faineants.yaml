@@ -1,0 +1,119 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# LE SEL QUI TRAVAILLE. Cette recette met « un peu de sel et de poivre » AVEC
+# 1,2 kg de courgettes en tranches, au moment où elles arrivent dans le wok, et
+# ce n'est pas un assaisonnement : c'est le sel qui fait rendre l'eau, sans quoi
+# le plat baigne et le parmesan ne gratine pas. La suite de la recette le
+# confirme — « quand il ne reste plus de jus au fond du wok ».
+#
+# `seasoning_gate` suppose exactement le contraire : que le sel arrive en
+# dernier, qu'il ne change rien à la cuisson, et qu'on peut donc prélever juste
+# avant. C'est vrai des lentilles mijotées, faux ici. Le découpage qui a sauvé
+# les accras p. 178 — mettre l'assaisonnement dans une étape à part, après la
+# masse — détruirait ce plat. Le modèle n'a aucun moyen de distinguer un sel
+# FONCTIONNEL d'un sel de goût, et c'est ce qui décide si un prélèvement bébé
+# est possible ou non.
+
+recipe:
+  id: courgettes-farcies-faineants
+  title: « Courgettes farcies » des fainéants
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 85"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 85
+    saison: ete
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4
+  time_min_total: 45        # en-tête : 5 à 15 min de préparation + ~20 min à la poêle + 10 min au four
+  active_min: 15
+
+  apports:
+    proteine: viande-rouge
+    feculent: riz
+    legumes: [cucurbitacee, allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    # 500 g de riz cuits pour 4 CUILLERÉES dans la farce : le reste est servi à
+    # côté. La recette produit donc délibérément beaucoup plus d'un ingrédient
+    # qu'elle n'en consomme, et le surplus n'est ni un `emits` (il ne sort pas
+    # de la recette, il fait partie du repas) ni un ingrédient de la farce. Le
+    # modèle n'a pas de mot pour un accompagnement inclus dans la recette.
+    - {id: riz, name: "riz basmati demi-complet — 4 c. à s. pour la farce, le reste pour servir avec les farcis", qty: 500, unit: g}
+    - {id: boeuf-hache, name: viande de bœuf hachée, qty: 400, unit: g}
+    - {id: courgettes, name: courgettes bien fraîches, qty: 1.2, unit: kg}
+    - {id: oignon, name: oignons, qty: 3, unit: pièce}
+    - {id: sauce-tomate, name: sauce tomate cuisinée au choix, qty: 200, unit: g}
+    - {id: ail, name: gousses d'ail, qty: 3, unit: pièce}
+    - {id: olives-noires, name: olives noires, qty: 16, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 6, unit: c. à s.}
+    - {id: parmesan, name: parmesan râpé, qty: 100, unit: g}
+    - {id: herbes-provence, name: "brins d'herbes de Provence au choix (thym, sarriette ou origan), ou 1 c. à c. de ces mêmes herbes séchées", qty: 1, unit: poignée}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: riz
+      action: "Faire cuire le riz dans un faitout d'eau bouillante salée selon la variété choisie, l'égoutter, puis y ajouter 2 cuillerées à soupe d'huile d'olive pour l'empêcher de coller"
+      needs: [boil]
+      uses: [riz, huile-olive]
+      time_min: 20
+      attended: false
+    - id: revenir
+      action: "Pendant ce temps, faire revenir dans un wok ou une grande sauteuse les oignons découpés en petits cubes avec la viande hachée et le reste de l'huile d'olive"
+      needs: [pan-fry]
+      uses: [oignon, boeuf-hache, huile-olive]
+      time_min: 10
+      parallel_with: riz
+    - id: courgettes
+      action: "Quand tout est bien doré, ajouter les courgettes en tranches — en réserver une demi-courgette pour la décoration —, la sauce tomate, les gousses d'ail émincées, les herbes, 12 olives recoupées en petits morceaux, un peu de sel et de poivre, puis laisser cuire à feu assez vif en mélangeant de temps en temps"
+      needs: [pan-fry]
+      uses: [courgettes, sauce-tomate, ail, herbes-provence, olives-noires, sel, poivre]
+      time_min: 15
+      # 1,2 kg de courgettes plus 400 g de viande dans la sauteuse de 28 cm :
+      # `facteur_max_vaisselle` donne 1,5 lot, donc ça passe une fois. Doubler
+      # pour recevoir ne passe pas — même verdict qu'aux tartelettes p. 181.
+    - id: parmesan
+      action: "Quand la viande et les légumes sont bien dorés et qu'il ne reste plus de jus au fond du wok, ajouter les deux tiers du parmesan, mélanger, puis répartir dans 4 plats individuels ou un seul grand plat"
+      needs: []
+      uses: [parmesan]
+      time_min: 5
+    - id: decorer
+      action: "Poser quelques fines tranches de courgette pour décorer, saupoudrer du reste de parmesan, puis déposer une olive sur chaque plat"
+      needs: []
+      uses: [courgettes, parmesan, olives-noires]
+      time_min: 3
+      kid: {age_min_months: 30, task: "disposer les rondelles de courgette et poser une olive sur chaque plat"}
+    - id: gratiner
+      action: "Enfourner 10 minutes, juste le temps de faire dorer le fromage"
+      needs: [gratin]
+      uses: []
+      time_min: 10
+      attended: false
+      # PAS D'ÉTAPE DE PRÉCHAUFFAGE, ET C'EST VOULU PAR L'AUTRICE : « le gros de
+      # la cuisson se fait à la poêle, le four ne restera allumé que 10 petites
+      # minutes ». C'est un argument d'ÉNERGIE, le second du corpus après le
+      # « tout petit feu » du pot-au-feu p. 182, et le modèle n'a toujours pas
+      # d'axe pour le compter.
+
+  # PAS DE PRÉLÈVEMENT BÉBÉ — voir l'en-tête : le sel entre avec les courgettes
+  # parce qu'il les fait dégorger, et le déplacer casserait la recette. Ajouter
+  # que les 100 g de parmesan salent davantage que la pincée elle-même.
+
+  emits:
+    - kind: reste-plat
+      type: courgettes-farcies
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+      note: "l'autrice la donne bonne froide en pique-nique — la gamelle de coworking est dans la recette"
+
+  plan_b:
+    - drop: decorer
+      saves_min: 3
+      effect: "on perd la présentation en plats individuels, le goût ne bouge pas"

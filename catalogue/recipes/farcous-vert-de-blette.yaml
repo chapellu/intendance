@@ -1,0 +1,95 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# Recette traditionnelle de l'Aveyron, ici en version végétarienne.
+
+recipe:
+  id: farcous-vert-de-blette
+  title: Farçous végétariens au vert de blette
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 30"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 30
+    saison: printemps
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # en plat principal avec une salade ; 8 servis avec du riz
+  time_min_total: 35
+  active_min: 30            # la cuisson se fait poêlée par poêlée, toute surveillée
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: [feuille, allium]
+    profil: poele
+    origine: francais
+
+  ingredients:
+    - {id: oeufs, name: œufs, qty: 4, unit: pièce}
+    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 300, unit: g}
+    - {id: vert-de-blette, name: vert de blettes (ou épinards frais), qty: 400, unit: g}
+    - {id: fromage-rape, name: gruyère râpé (facultatif), qty: 140, unit: g}
+    - {id: cebette, name: cébette avec le vert, qty: 1, unit: pièce}
+    - {id: persil, name: persil, qty: 1, unit: petit bouquet}
+    - {id: ail, name: ail, qty: 2, unit: gousse}
+    - {id: lait, name: lait entier, qty: 40, unit: cl}
+    - {id: poudre-a-lever, name: poudre à lever, qty: 1, unit: sachet}
+    - {id: huile-olive, name: huile pour la poêle, qty: 4, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: laver-essorer
+      action: "Laver les feuilles de blette (ou les épinards) et les essorer soigneusement à l'essoreuse à salade"
+      needs: []
+      time_min: 6
+      kid: {age_min_months: 30, task: "tourner l'essoreuse à salade"}
+    - id: mixer
+      action: "Mixer ensemble les feuilles, la cébette, le persil, l'ail, les œufs, la farine, le lait, la poudre à lever et le fromage, jusqu'à une pâte à crêpes verte et bien épaisse"
+      needs: [blend-smooth]
+      time_min: 5
+      # FRICTION RÉELLE : environ 1,4 kg de pâte très épaisse. Le foyer n'a qu'un
+      # mixeur plongeur et son petit bol — il faudra procéder en plusieurs fois,
+      # d'où le `time_delta_min` de la chaîne `blend-smooth`.
+    - id: assaisonner
+      action: "Saler et poivrer la pâte"
+      needs: []
+      time_min: 1
+      seasoning_gate: true    # le prélèvement bébé est injecté AVANT cette étape
+    - id: cuire-poelees
+      action: "Cuire par poêlées dans une grande poêle bien huilée, en versant de petites louches comme des blinis, 2 à 3 min par face jusqu'à ce qu'ils soient bien dorés"
+      needs: [pan-fry]
+      time_min: 20
+      attended: true
+    - id: egoutter-servir
+      action: "Débarrasser sur du papier absorbant et servir aussitôt, tant que les farçous sont croustillants"
+      needs: []
+      time_min: 2
+
+  baby_portion:
+    take: "une petite louche de pâte, AVANT salage"
+    prep: "cuire un farçou fin à la poêle, puis l'écraser ou le couper en bâtonnets à saisir"
+    needs: [pan-fry]
+
+  emits:
+    - kind: reste-plat
+      type: farcous
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+      note: "à repasser à la poêle plutôt qu'au micro-ondes : ils ramollissent"
+
+  # `transportable` reste implicite (= vrai) : ils voyagent bien froids, mais ils
+  # perdent le croustillant qui fait la recette.
+
+  plan_b:
+    - drop: laver-essorer
+      saves_min: 6
+      effect: "avec des pousses d'épinards en sachet déjà lavées ; le goût est plus doux que le vert de blette"
+    - swap:
+        step: cuire-poelees
+        action: "Cuire deux poêles en parallèle sur deux feux"
+        saves_min: 8
+      effect: "moins de contrôle sur la coloration, plus de surveillance en même temps"

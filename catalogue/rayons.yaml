@@ -1,0 +1,242 @@
+# Shopping-aisle table for the week planner.
+#
+# Three jobs beyond the obvious one:
+#
+# 1. `ordre` is the order you walk the shop, so the list comes out in the order
+#    you meet the shelves. That ordering is household data, not recipe data.
+#
+# 2. `aliases` merges ingredient ids that mean the same thing. Recipes authored
+#    independently drift immediately — `oignons`/`oignon`, then
+#    `pommes-de-terre`/`pomme-de-terre` the moment a bulk repertoire landed.
+#    This map is the cheap stand-in for the typed ingredient vocabulary the
+#    corpus actually needs.
+#
+# 3. `placard` marks what the household almost certainly already owns in the
+#    quantities these recipes use. Those are listed to *check*, never added to
+#    the buy list — a list that says "buy salt" every week gets ignored.
+
+ordre: [primeur, boucherie, poissonnerie, crèmerie, frais, épicerie]
+
+aliases:
+  oignons: oignon
+  pommes-de-terre: pomme-de-terre
+
+rayons:
+  primeur:
+    - oignon
+    - oignon-rouge
+    - ail
+    - carottes
+    - courgettes
+    - aubergine
+    - poivron
+    - tomates
+    - pomme-de-terre
+    - poireau
+    - brocoli
+    - citron
+    - salade-verte
+    # Arrivés avec les recettes de printemps de Chioca (p. 26–34).
+    - cebette
+    - ciboulette
+    - persil
+    - thym-frais
+    - vert-de-blette
+    - pousses-epinards
+    - petits-pois
+    - pois-gourmands
+    - navet-primeur
+    - navets-roses
+    - echalote
+    - champignons-paris
+    - celeri-branche
+    - fraises
+    - peches
+    - tomates-roma
+    - concombre
+    - chou-chinois
+    - chou-frise
+    - celeri-rave
+    - champignons-conserve
+    - basilic
+    - abricots
+    # NE S'ACHÈTENT PAS — SE CUEILLENT. Le modèle n'a pas de rayon
+    # « cueillette », et trois des dix recettes saisies en dépendent (orties
+    # p. 34 et p. 35, pousses sauvages et ail des ours p. 36). C'est une vraie
+    # limite pour un projet qui a un jardin : la liste de courses les fait
+    # acheter alors qu'ils demandent une sortie, une saison et une
+    # identification. Rangés ici faute de mieux.
+    - orties
+    - pousses-sauvages
+    - ail-des-ours
+    - fenouil-sauvage
+    - herbes-fraiches
+    # Les châtaignes de la p. 124 rejoignent ce bloc : « venant juste d'être
+    # ramassées ou achetées au marché ». Elles s'achètent AUSSI, ce qui en
+    # fait le premier ingrédient à double régime de la liste.
+    - chataignes
+    # Arrivés avec l'hiver de Chioca (p. 177–182). `navets` est le navet d'hiver
+    # et reste un id à part de `navet-primeur` et de `navets-roses`, qui sont des
+    # légumes de printemps : les aliaser reviendrait à dire que le pot-au-feu de
+    # février et la salade de mai s'achètent au même moment.
+    - topinambours
+    - panais
+    - navets
+    - potimarron
+    # Arrivés avec l'été (p. 82) et l'automne (p. 157–166). Les fruits n'ont
+    # pas de rayon à eux : le primeur les vend à côté des légumes.
+    - tomates-cerises
+    - pommes
+    - poires
+    - banane
+    - chou-rouge
+    # Arrivés avec l'été (p. 93 à 101). `fruits-frais` est volontairement
+    # générique : la p. 101 écrit « fraises, poires, pêches, cerises ou
+    # abricots SELON LA SAISON », donc l'ingrédient EST la substitution.
+    - sauge
+    - romarin
+    - fruits-frais
+    - mures
+    - groseilles
+    - courge
+  boucherie:
+    - boeuf-hache
+    - agneau-collier
+    - roti-porc
+    - poulet
+    - poulet-filets
+    - jambon
+    - jambon-cru
+    - jarret-boeuf
+    - os-a-moelle
+    - saucisse-fumee
+  poissonnerie:
+    - saumon
+    - colin-surgele
+    - sardines-boite
+  crèmerie:
+    - oeufs
+    - fromage-rape
+    - creme
+    - lait
+    - feta
+    - faisselle
+    - chevre-demi-sec
+    - chevre-buche
+    - parmesan
+    - cantal
+    - beurre
+    - petits-suisses
+    - tomme-savoie
+    - mozzarella
+    - mascarpone
+    # `yaourt-soja` est un id d'INGRÉDIENT, distinct du type de chaînage
+    # `yaourt-soja` qu'émet la p. 159 : on peut l'acheter ou le cuisiner.
+    - yaourt-soja
+    - yaourt-brebis
+    - yaourt-nature
+  frais:
+    - tofu-fume
+    - gnocchis
+    - pate-brisee
+    - pate-feuilletee
+    - feuilles-brick
+  épicerie:
+    - lentilles-seches
+    - pates
+    - pates-lasagne
+    - vermicelles
+    - riz
+    - tomates-pelees
+    - pois-chiches
+    - haricots-rouges
+    - mais
+    - lait-coco
+    - tortillas
+    - pain-de-mie
+    - farine-complete
+    - poudre-amande
+    - poudre-a-lever
+    - vin-blanc-sec
+    - flocons-avoine
+    - kasha
+    - vinaigre-balsamique
+    - biscottes
+    - orge
+    - creme-coco
+    - sucre-roux
+    - sucre-vanille
+    - chocolat-noir
+    - huile-coco
+    - sucre-complet
+    - sirop-agave
+    - extrait-vanille
+    - lait-soja-vanille
+    - biscuits-cuillere
+    - sirop-imbibage
+    - cacao
+    - pain-levain
+    - olives-noires
+    - concentre-tomate
+    - gousse-vanille
+    - rhum
+    - vinaigre
+    - tahin
+    - pruneaux
+    - noix
+    - caissettes
+    - pots-carton
+    # Arrivés avec le clafoutis p. 115. `farine-petit-epeautre` est un id à part
+    # de `farine-complete` : le petit épeautre (engrain) et le grand épeautre
+    # sont deux céréales distinctes, vendues côte à côte au rayon bio. Les
+    # aliaser aurait fusionné deux lignes de courses qui ne s'achètent pas au
+    # même endroit — exactement l'inverse du service que rend `aliases`.
+    - lait-amande
+    - puree-amande-blanche
+    - farine-petit-epeautre
+    - miel-acacia
+    - extrait-amande-amere
+    - amandes-effilees
+    # Arrivés avec l'hiver (p. 177 et p. 178).
+    - cornichons
+    - thon-boite
+    # Arrivés avec l'été et l'automne (p. 82 à 166). `riz-arborio` reste
+    # distinct de `riz` : un riz rond à risotto ne remplace pas un basmati,
+    # et les deux se retrouvent dans la même semaine (p. 85 et p. 86).
+    - capres
+    - sauce-tomate
+    - riz-arborio
+    - huile-pepin-raisin
+    - huile-tournesol
+    - ferments-yaourt
+    - creme-soja
+    - levure-boulangere
+    - agar-agar
+    - lait-avoine
+    - eau-fleur-oranger
+
+placard:
+  - huile-olive
+  - sel
+  - poivre-5-baies
+  - laurier
+  - thym
+  - herbes-provence
+  - bouillon-miso
+  - bouillon-legumes
+  - bouillon-volaille
+  - farine
+  - son-avoine
+  - curry
+  - moutarde
+  - fleur-de-sel
+  - poivre
+  - clous-girofle
+  - gros-sel
+  - origan
+  - graines-coriandre
+  - cannelle
+  - piment-espelette
+  - graines-fenouil
+  - glacons        # se font, ne s'achètent pas
+  - eau            # ne s'achète pas ; listé pour ne pas polluer la liste

@@ -1,0 +1,132 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# CE QU'ON ACHÈTE N'EST PAS CE QU'ON EMPLOIE, ET LE LIVRE CHIFFRE LES DEUX :
+# « 200 g de jus de groseilles fraîchement pressé à la centrifugeuse ou au tamis
+# (il faut prévoir environ 300 g de groseilles fraîches pour l'extraire) ». Une
+# ligne d'ingrédient porte UNE quantité, et il en faut deux — celle des courses
+# et celle de la recette, reliées par un rendement d'extraction. Ici c'est
+# 300 → 200 ; à la p. 107 c'est 1,2 kg de pêches pour 800 g de chair. Deux
+# occurrences dans la même série, toutes deux chiffrées par l'autrice.
+#
+# La ligne ci-dessous porte donc les 300 g — le chiffre qui doit atteindre la
+# liste de courses, parce qu'acheter 200 g de groseilles ferait rater la recette
+# et qu'acheter trop ne fait rater personne.
+#
+# LE TITRE PORTE SA PROPRE SUBSTITUTION SAISONNIÈRE : « (et l'hiver, tarte au
+# citron !) ». Remplacer le jus de groseille par du jus de citron ne change pas
+# une garniture, ça change le PLAT et son nom. Deuxième forme de saisonnalité de
+# ce lot après le potimarron des muffins p. 108 — et la plus radicale, puisque
+# le catalogue devrait ici porter deux entrées ou une entrée à deux visages, et
+# n'a de place que pour une.
+#
+# Enfin, une note de procédé qui dépend de la TEMPÉRATURE AMBIANTE : « l'huile
+# de coco est assez molle en cette saison, elle se mélange donc assez facilement
+# ». En janvier elle est dure et le geste change. Même famille que les trois
+# méthodes de fermentation de la p. 159, dont deux ne valent qu'à une saison.
+
+recipe:
+  id: carres-sables-creme-groseilles
+  title: Carrés sablés faciles à la crème de groseilles
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 112"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 112
+    saison: ete
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 7          # « pour 6 à 8 personnes » ; sixième fourchette du corpus
+  lot_entier: true          # un rectangle de 17 × 22 cm, découpé après coup
+  time_min_total: 18        # en-tête : 2 min de préparation + 15 min au four + 1 min à la casserole
+  active_min: 2
+
+  creneaux: [gouter, dessert]
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    # Pâte sablée
+    - {id: farine-complete, ref: farine-pate, name: farine de blé ou de grand épeautre T110 (pâte), qty: 150, unit: g}
+    - {id: huile-coco, ref: coco-pate, name: "huile de coco (ou beurre), pour la pâte", qty: 75, unit: g}
+    - {id: sucre-complet, name: "sucre de coco (ou sucre blond)", qty: 50, unit: g}
+    - {id: fleur-de-sel, name: fleur de sel, qty: 1, unit: pincée, seasoning: true}
+    # Crème de groseilles
+    - {id: groseilles, name: "groseilles fraîches — environ 300 g pour en extraire les 200 g de jus de la recette", qty: 300, unit: g}
+    - {id: sirop-agave, name: sirop d'agave, qty: 160, unit: g}
+    - {id: creme-coco, name: crème de coco liquide, qty: 20, unit: cl}
+    - {id: gousse-vanille, name: gousse de vanille, qty: 1, unit: pièce}
+    - {id: agar-agar, name: agar-agar, qty: 4, unit: g}
+    - {id: huile-coco, ref: coco-creme, name: huile de coco (crème), qty: 55, unit: g}
+    - {id: farine-complete, ref: farine-creme, name: farine de grand épeautre T110 ou T70 (crème), qty: 30, unit: g}
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 180 °C, si possible en chaleur tournante"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: presser
+      action: "Presser les groseilles à la centrifugeuse ou au tamis, de façon à en extraire 200 g de jus"
+      needs: []
+      uses: [groseilles]
+      time_min: 10
+      # L'autrice donne elle-même les deux outils, dont le tamis — que tout le
+      # monde a. Pas de capacité déclarée : une centrifugeuse n'est pas dans ce
+      # foyer, et le repli est ici dans la recette et non dans `rules.yaml`.
+    - id: pate
+      action: "Mélanger dans un saladier tous les ingrédients de la pâte, puis bien tasser le mélange au fond d'un rectangle à pâtisserie d'environ 17 × 22 cm posé sur une plaque chemisée de papier cuisson"
+      needs: []
+      uses: [farine-pate, coco-pate, sucre-complet, fleur-de-sel]
+      time_min: 6
+      kid: {age_min_months: 30, task: "tasser la pâte au fond du cadre avec le dos d'une cuillère"}
+    - id: cuire-biscuit
+      action: "Enfourner 15 à 20 minutes, jusqu'à ce que la pâte soit bien dorée"
+      needs: [bake]
+      uses: []
+      time_min: 18
+      attended: false
+    - id: creme
+      action: "Pendant ce temps, fendre la gousse de vanille en deux, en gratter les graines, mettre le tout — gousse et graines — dans une casserole, et ajouter tous les autres ingrédients de la crème ; bien mélanger au fouet, sans s'inquiéter des petits grumeaux d'huile de coco, qui fondront à la cuisson"
+      needs: []
+      uses: [gousse-vanille, sirop-agave, creme-coco, agar-agar, coco-creme, farine-creme]
+      time_min: 6
+      parallel_with: cuire-biscuit
+    - id: bouillir
+      action: "Faire chauffer à feu doux en mélangeant sans cesse au fouet ; dès que le mélange arrive à ébullition — on le voit aux grosses bulles qui font « blop » quand on cesse de mélanger — compter 1 minute de cuisson sans cesser de mélanger"
+      needs: [simmer]
+      uses: []
+      time_min: 8
+      charge_partielle: true
+    - id: napper
+      action: "Quand le biscuit sort du four, le laisser un peu refroidir, retirer la gousse de vanille de la crème, puis verser celle-ci dans le rectangle et égaliser"
+      needs: []
+      uses: []
+      time_min: 5
+    - id: prendre
+      action: "Mettre au frais jusqu'au lendemain, puis démouler et découper en carrés de la taille de votre choix — tout petits comme des mignardises, ou en plus grosses parts individuelles"
+      needs: []
+      uses: []
+      time_min: 6
+      attente_min: 720
+      attente_raison: prise-au-frais
+
+  # PAS DE PRÉLÈVEMENT BÉBÉ : 160 g de sirop d'agave dans la crème et 50 g de
+  # sucre dans la pâte. Neuvième plat du corpus écarté pour du sucre ajouté.
+
+  emits:
+    - kind: reste-plat
+      type: carres-sables-groseilles
+      qty_band: 2-repas
+      keeps: {frigo_days: 4, congelo: false}
+      note: "l'agar-agar tient au frais plusieurs jours, et les carrés se découpent au fur et à mesure — la taille de la part est décidée après coup, ce que `qty_band` ne sait pas dire"
+
+  plan_b: []                # 2 min de gestes et une nuit d'attente : il n'y a rien sous ça

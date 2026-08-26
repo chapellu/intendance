@@ -1,0 +1,160 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# ═══ L'AUTRICE DÉCRIT EXACTEMENT L'INVENTAIRE QUI MANQUE AU MODÈLE ═══
+# Son introduction, en substance : à la maison, une petite panière recueille tous
+# les petits morceaux de pain non consommés au repas et les quignons un peu
+# rassis ; ce pain sèche quelques jours à l'air libre, et dès qu'il y en a assez,
+# on l'incorpore dans une recette.
+#
+# C'est mot pour mot ce que trois fichiers de ce catalogue réclamaient sans le
+# nommer. `panzanella-toscana`, les accras p. 178 et la soupe crétoise p. 172
+# déclarent tous `accepts: pain-rassis` avec `required: false` et aucun émetteur,
+# parce que le pain rassis n'est la sortie d'aucune recette. Voici la quatrième,
+# et la première où l'ouvrage explique le mécanisme : ce n'est pas une recette
+# qui produit le pain rassis, c'est un CONTENANT QUI ACCUMULE ET QUI VIEILLIT.
+#
+# Le modèle a des sorties de plats (`emits`), un stock daté (`stock.yaml`) et un
+# pool de contenants (#25). Il n'a pas de panière : un réceptacle sans recette
+# d'origine, alimenté par des restes d'assiette, dont le contenu s'améliore avec
+# le temps au lieu de se dégrader, et qui déclenche une recette quand il est
+# plein. Quatre occurrences, dont une documentée par l'autrice : ce n'est plus
+# une hypothèse.
+#
+# Second détail, et il est du même esprit : elle fait rincer le bocal de sauce
+# tomate avec l'eau de la recette « afin de ne pas gaspiller la sauce restée sur
+# les parois ». Un geste anti-gaspillage à l'échelle du bocal, encodé ci-dessous
+# comme il est écrit — le demi-bocal d'eau n'est pas une quantité arbitraire,
+# c'est un outil de rinçage.
+
+recipe:
+  id: pain-perdu-moussaka
+  title: Pain perdu façon moussaka
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 90"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 90
+    saison: ete
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4
+  time_min_total: 60        # en-tête : 20 min de préparation + 20 min + 20 min de cuisson
+  active_min: 20
+
+  apports:
+    proteine: viande-rouge
+    # L'AUTRICE DÉCLARE ELLE-MÊME QUE CE FÉCULENT NE SUFFIT PAS : elle termine en
+    # conseillant de servir « avec une salade verte et un peu de riz complet ou
+    # de semoule de couscous, car la quantité de pain dans la recette ne suffit
+    # pas à assurer la totalité des besoins en glucides d'un repas de midi ».
+    # `apports.feculent` est une CATÉGORIE, jamais une quantité : le modèle
+    # comptera ce plat comme couvrant le féculent de la semaine, et l'autrice
+    # dit le contraire dans la recette même.
+    feculent: pain
+    legumes: [solanacee, allium]
+    profil: four
+    origine: grec
+
+  accepts:
+    - type: pain-rassis
+      qty: {amount: 150, unit: g}
+      required: false
+      fallback_recipe: null
+
+  sans_reste:
+    temps_min: 0
+    ingredients:
+      - {id: pain-levain, name: pain à laisser sécher quelques jours, qty: 150, unit: g}
+
+  ingredients:
+    - {id: pain-rassis-ing, name: "pain rassis au choix — blé, épeautre, complet, demi-complet, levure ou levain, c'est égal", qty: 150, unit: g, from_accepts: true}
+    - {id: sauce-tomate, name: "bocal de sauce tomate cuisinée (napolitaine par exemple)", qty: 400, unit: g}
+    - {id: eau, name: "un demi-bocal d'eau, servant aussi à rincer la sauce restée sur les parois", qty: 200, unit: g}
+    - {id: aubergine, name: "aubergines bien fraîches (environ 2 de taille moyenne)", qty: 500, unit: g}
+    - {id: creme-soja, name: crème de soja ou d'avoine, qty: 20, unit: cl}
+    - {id: fromage-rape, name: fromage râpé, qty: 120, unit: g}
+    - {id: boeuf-hache, name: "steak haché surgelé, bœuf haché ou sauté de porc", qty: 400, unit: g}
+    - {id: oignon, name: gros oignon, qty: 1, unit: pièce}
+    - {id: huile-olive, ref: huile-aubergines, name: huile d'olive (aubergines), qty: 3, unit: c. à s.}
+    - {id: huile-olive, ref: huile-viande, name: huile d'olive (viande), qty: 2, unit: c. à s.}
+    - {id: origan, name: origan ou thym, qty: 1, unit: pincée, seasoning: true}
+    - {id: sel, ref: sel-creme, name: sel (crème au fromage), qty: 1, unit: pincée, seasoning: true}
+    - {id: sel, ref: sel-viande, name: sel (viande), qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, ref: poivre-creme, name: poivre (crème au fromage), qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, ref: poivre-viande, name: poivre (viande), qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: tremper
+      action: "Découper le pain en petits morceaux d'environ 3 cm et les mettre dans un petit saladier ; ajouter la sauce tomate, puis remplir à demi le bocal vide d'eau, bien le secouer et verser sur le pain — cela évite de gaspiller la sauce restée sur les parois. Mélanger, puis laisser le pain s'imbiber"
+      needs: []
+      uses: [pain-rassis-ing, sauce-tomate, eau]
+      time_min: 8
+      attente_min: 720
+      attente_raison: trempage
+      rattrapage:
+        # L'autrice l'écrit elle-même : « la veille, OU DU MOINS quelques heures
+        # avant ». C'est le premier rattrapage du corpus donné par l'ouvrage et
+        # non inventé par nous.
+        action: "À défaut : laisser le pain s'imbiber quelques heures seulement"
+        cout_min: 180
+        effet: "le pain reste un peu plus ferme sous la dent, la recette se fait le jour même"
+    - id: prechauffer
+      action: "Préchauffer le four à 225 °C"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: aubergines
+      action: "Découper les aubergines en tranches de 1 cm d'épaisseur et les déposer sur une lèchefrite chemisée de papier cuisson bien huilé ; huiler aussi le dessus des tranches au pinceau, puis enfourner 20 minutes"
+      needs: [bake]
+      uses: [aubergine, huile-aubergines]
+      time_min: 22
+      attended: false
+    - id: creme
+      action: "Pendant ce temps, mélanger la crème et le fromage, saler légèrement, poivrer, et réserver"
+      needs: []
+      uses: [creme-soja, fromage-rape, sel-creme, poivre-creme]
+      time_min: 4
+      parallel_with: aubergines
+    - id: viande
+      action: "Faire revenir l'oignon émincé dans deux cuillerées à soupe d'huile d'olive avec la viande ; saler, poivrer, ajouter une bonne pincée d'origan et laisser cuire jusqu'à ce que la viande soit bien dorée"
+      needs: [pan-fry]
+      uses: [oignon, huile-viande, boeuf-hache, sel-viande, poivre-viande, origan]
+      time_min: 12
+      parallel_with: aubergines
+    - id: mixer
+      action: "Transférer dans un robot mixeur avec le pain à la sauce tomate, et mixer le tout"
+      needs: [chop-coarse]
+      uses: []
+      time_min: 5
+    - id: monter
+      action: "Tasser la moitié de la farce au fond d'un plat à gratin de taille moyenne, recouvrir de tranches d'aubergine grillées, puis verser la moitié de la crème au fromage ; tasser le reste de la farce, disposer par-dessus le restant des aubergines, et recouvrir de la crème au fromage"
+      needs: [gratin-vessel]
+      uses: []
+      time_min: 8
+    - id: gratiner
+      action: "Enfourner 20 minutes"
+      needs: [gratin]
+      uses: []
+      time_min: 20
+      attended: false
+    - id: servir
+      action: "Servir avec une salade verte et un peu de riz complet ou de semoule de couscous — la quantité de pain de la recette ne suffit pas aux besoins en glucides d'un repas de midi"
+      needs: []
+      uses: []
+      time_min: 2
+
+  # PAS DE PRÉLÈVEMENT BÉBÉ : le sel entre dans la crème au fromage ET dans la
+  # viande, chaque fois au début de leur étape, et les deux préparations sont
+  # ensuite mixées ensemble. Aucun moment nature, comme aux p. 85, 99 et 181.
+
+  emits:
+    - kind: reste-plat
+      type: pain-perdu-moussaka
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

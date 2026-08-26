@@ -31,10 +31,16 @@ const poser = (jour: number, repas: string, rid: string) => {
 const vue = () => vueDeLaSemaine(jeu, calculer(jeu));
 
 describe("la grille", () => {
-  test("sept journées, deux créneaux choisis chacune", () => {
+  test("sept journées, et le dessert tient sa place sans être un manque", () => {
+    // Trois créneaux se posent chaque jour : deux `choisi` et un `optionnel`.
+    // Le dessert APPARAÎT dans la grille — sinon aucun geste ne pourrait en
+    // poser un, ce qui était exactement le cas avant qu'il existe — mais il ne
+    // compte pas comme un trou : `prochainVide` ne le vise jamais, et le test
+    // « le prochain vide » plus bas le vérifie.
     const j = vue();
     expect(j).toHaveLength(7);
-    for (const jour of j) expect(jour.slots.map((s) => s.label)).toEqual(["déjeuner", "dîner"]);
+    for (const jour of j)
+      expect(jour.slots.map((s) => s.label)).toEqual(["déjeuner", "dîner", "dessert"]);
   });
 
   test("les routines sont listées à part, jamais dans la grille", () => {

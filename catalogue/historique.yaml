@@ -1,0 +1,11 @@
+# What was cooked recently. In the real app this is the cooking log, not a
+# hand-typed file — the same log that feeds the stock.
+#
+# Its only job here is to make the deck turn over: a dish cooked within
+# `main.cooldown_jours` (equilibre.yaml) leaves the paquet and is not dealt.
+# Without it the hand proposes the same favourites every week, which is exactly
+# the failure a "deck qui varie" is meant to avoid.
+cuisines:
+  - {recipe: gratin-de-pates-tomates, date: 2026-08-08}
+  - {recipe: poulet-roti, date: 2026-08-05}
+  - {recipe: croque-monsieur-salade, date: 2026-08-09}

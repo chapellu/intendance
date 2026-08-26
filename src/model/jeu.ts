@@ -30,6 +30,15 @@ export type Choix = string | typeof SAUTE | null;
 /** Vrai seulement pour un plat réellement joué — ni vide, ni sauté. */
 export const joue = (rid: Choix): rid is string => !!rid && rid !== SAUTE;
 
+/** Les créneaux où un plat se POSE — donc où des cartes se distribuent et où
+ *  l'écran doit montrer une place. `choisi` et `optionnel` en sont ; `routine`
+ *  non, elle se compte dans les apports sans jamais se piocher.
+ *
+ *  À ne pas confondre avec « ce qui compte comme un manque », qui reste
+ *  `nature === "choisi"` seul — c'est ce que testent `prochainVide` et le
+ *  créneau de démarrage, et c'est pour ça qu'ils ne passent pas par ici. */
+export const sePioche = (n: NatureCreneau): boolean => n !== "routine";
+
 export interface JourSemaine {
   nom: string;
   date: Date;

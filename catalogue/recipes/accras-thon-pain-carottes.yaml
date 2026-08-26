@@ -1,0 +1,160 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# LE SECOND CONSOMMATEUR DE `pain-rassis`, ET TOUJOURS AUCUN ÉMETTEUR.
+# Le livre badge cette recette « avec des restes » et la première ligne de sa
+# liste est « 200 g de pain rassis ». `panzanella-toscana` déclarait déjà
+# `accepts: pain-rassis` ; deux recettes du catalogue tournent donc autour d'un
+# reste que RIEN n'émet, parce que le pain rassis n'est pas la sortie d'un plat
+# cuisiné — c'est un ingrédient acheté qui a vieilli dans sa boîte.
+#
+# Le graphe de chaînage (#30) ne connaît que des restes de PLATS : `emits` sort
+# d'une recette. Le reste d'INGRÉDIENT — le pain de dimanche, la fin d'un
+# fromage, le demi-pot de crème — n'a pas d'émetteur possible, donc son arête
+# reste éternellement à `required: false` et le `sans_reste` fait racheter du
+# pain neuf pour le laisser rassir. Deux occurrences, c'est un manque : ce que
+# le modèle n'a pas, c'est un inventaire qui VIEILLIT.
+
+recipe:
+  id: accras-thon-pain-carottes
+  title: Accras gourmands au thon, pain et carottes râpées
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 178"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 178
+    saison: hiver
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « 25 accras (environ 6 personnes) »
+  time_min_total: 30        # en-tête : 15 min de préparation + 15 min de cuisson
+  active_min: 15
+  # L'en-tête porte aussi « (à commencer la veille) ». Ce n'est plus une note de
+  # lecture : c'est `attente_min: 720` sur `tremper-pain`, et c'est la seconde
+  # horloge qui le dira — pas la phrase.
+
+  apports:
+    proteine: poisson
+    feculent: pain
+    legumes: [racine, allium]
+    profil: four
+    origine: francais
+
+  accepts:
+    - type: pain-rassis
+      qty: {amount: 200, unit: g}
+      required: false
+      fallback_recipe: null
+
+  sans_reste:
+    temps_min: 0
+    ingredients:
+      # Acheter du pain pour qu'il rassisse est une contradiction que le modèle
+      # ne sait pas exprimer autrement : `sans_reste` répare une base absente en
+      # la RACHETANT, et ici ce qui manque n'est pas le pain mais son âge.
+      - {id: pain-levain, name: "pain au levain acheté l'avant-veille, à laisser sécher", qty: 250, unit: g}
+
+  ingredients:
+    - {id: pain-rassis-ing, name: pain rassis, qty: 200, unit: g, from_accepts: true}
+    - {id: eau, name: eau, qty: 20, unit: cl}
+    - {id: oeufs, name: œufs, qty: 4, unit: pièce}
+    - {id: carottes, name: carotte, qty: 120, unit: g}
+    - {id: oignon, name: petit oignon, qty: 1, unit: pièce}
+    - {id: thon-boite, name: thon égoutté, qty: 140, unit: g}
+    - {id: farine-complete, name: farine semi-complète de blé ou de grand épeautre, qty: 40, unit: g}
+    - {id: poudre-a-lever, name: poudre à lever, qty: 1, unit: sachet}
+    - {id: citron, name: jus d'un citron, qty: 1, unit: pièce}
+    - {id: parmesan, name: parmesan ou gruyère râpé (facultatif), qty: 100, unit: g}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: tremper-pain
+      action: "Couper le pain en petits morceaux et le mettre dans un saladier avec l'eau et les œufs battus ; bien mélanger, couvrir et mettre au frais"
+      needs: []
+      uses: [pain-rassis-ing, eau, oeufs]
+      time_min: 8
+      attente_min: 720          # « la veille au soir » : 12 h, et c'est tout ce que ça veut dire
+      attente_raison: trempage
+      rattrapage:
+        # L'autrice ne propose AUCUN repli — c'est le nôtre, du même genre que
+        # celui de l'orge p. 56, et il se paie de la même façon.
+        action: "À défaut : laisser le pain gonfler 1 h à température ambiante plutôt qu'une nuit au frais"
+        cout_min: 60
+        effet: "la mie boit moins et la pâte reste plus grumeleuse, mais les accras se font le jour même"
+    - id: prechauffer
+      action: "Préchauffer le four à 240 °C, en chaleur tournante"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: raper
+      action: "Râper la carotte et découper l'oignon en tout petits cubes"
+      needs: []
+      uses: [carottes, oignon]
+      time_min: 6
+    - id: melanger
+      action: "Mélanger à part la farine et la poudre à lever, puis les verser dans le saladier avec la carotte, l'oignon, le thon égoutté et le jus de citron ; malaxer à la main"
+      needs: []
+      uses: [farine-complete, poudre-a-lever, carottes, oignon, thon-boite, citron]
+      time_min: 5
+    # L'AUTRICE MET TOUT EN MÊME TEMPS — « ajouter tous les autres ingrédients
+    # (sauf l'huile) » — et l'assaisonnement part donc dans la masse avec le
+    # reste. Le découpage en deux étapes est de nous, et il est fait POUR QUE LE
+    # PRÉLÈVEMENT BÉBÉ EXISTE : il n'y a pas d'autre moment où la pâte soit
+    # nature. Le geste est identique dans la cuisine, l'ordre seul change.
+    #
+    # Le parmesan est DANS la porte, pas avant : 100 g de parmesan salent bien
+    # plus que la cuillère de sel qui les accompagne, et rien dans le modèle ne
+    # le dit — `seasoning: true` ne marque que le sel et le poivre. C'est la
+    # deuxième fois après la tourte p. 87 : un ingrédient salant qui n'est pas
+    # un assaisonnement traverse la porte sans être vu.
+    - id: assaisonner
+      action: "Ajouter le parmesan râpé, saler et poivrer, puis mélanger une dernière fois"
+      needs: []
+      uses: [parmesan, sel, poivre]
+      time_min: 2
+      seasoning_gate: true
+    - id: former
+      action: "Former des boules de la taille d'une grosse prune, les déposer au fur et à mesure sur une plaque chemisée de papier cuisson, puis les huiler au pinceau"
+      needs: []
+      uses: [huile-olive]
+      time_min: 10
+      kid: {age_min_months: 30, task: "rouler les boules entre ses paumes et passer le pinceau à huile dessus"}
+    - id: cuire
+      action: "Enfourner 15 min, jusqu'à ce que les accras soient bien dorés — et les savourer tout chauds"
+      needs: [bake]
+      uses: []
+      time_min: 15
+      attended: false
+
+  baby_portion:
+    take: "deux ou trois boules formées à partir de la masse AVANT le parmesan et le sel"
+    prep: "les cuire avec les autres, puis les écraser à la fourchette"
+    depuis: [melanger]
+    needs: []
+    # RÉSERVE, ET ELLE N'EST PAS DANS LE MODÈLE : le thon est un poisson
+    # prédateur, dont l'ANSES recommande de limiter la fréquence chez le jeune
+    # enfant à cause du méthylmercure. Ce n'est pas un interdit comme le miel du
+    # clafoutis p. 115 — c'est un plafond de FRÉQUENCE, sur un axe (celui de
+    # `equilibre.yaml`) qui ne connaît que la semaine des adultes et n'a aucune
+    # notion d'âge. Le prélèvement reste donc permis ici, et c'est au parent de
+    # ne pas le refaire trois fois la même semaine.
+
+  emits:
+    - kind: reste-plat
+      type: accras-thon
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: true}
+      note: "cuits au four et non frits : ils se repassent au four sans devenir gras, et la gamelle froide tient debout"
+
+  # PAS DE `plan_b`, ET LE SEUL LEVIER QUE DONNE L'AUTRICE N'EST PAS DU TEMPS :
+  # les 100 g de parmesan sont marqués « facultatif ». Les retirer ne fait
+  # gagner aucune minute — ça fait gagner de l'argent, et ça retire du sel.
+  # `plan_b` se paie en MINUTES et rien d'autre. C'est la deuxième fois après le
+  # clafoutis p. 115 (« SOS porte-monnaie ») que l'autrice propose un arbitrage
+  # que le modèle n'a aucun axe pour représenter.
+  plan_b: []

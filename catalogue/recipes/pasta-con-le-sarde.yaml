@@ -1,0 +1,92 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# Version réadaptée d'une recette sicilienne ancestrale — l'autrice remplace le
+# duo fenouil/pignons/raisins secs difficile à trouver.
+
+recipe:
+  id: pasta-con-le-sarde
+  title: Pasta con le sarde à ma façon
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 52"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 52
+    saison: printemps
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4
+  time_min_total: 20
+  active_min: 20
+
+  apports:
+    proteine: poisson
+    feculent: pates
+    legumes: [allium]
+    profil: rapide
+    origine: italien
+
+  ingredients:
+    - {id: pates, name: "tagliatelles (blanches ou semi-complètes, blé ou épeautre)", qty: 350, unit: g}
+    - {id: sardines-boite, name: sardines en boîte à l'huile d'olive, qty: 8, unit: pièce}
+    - {id: oignon, name: oignons, qty: 2, unit: pièce}
+    - {id: ail, name: ail, qty: 1, unit: gousse}
+    - {id: persil, name: persil plat bien frais, qty: 0.5, unit: bouquet}
+    - {id: fenouil-sauvage, name: tiges et feuilles de fenouil sauvage frais (ou fenouil séché), qty: 1, unit: poignée}
+    - {id: fromage-rape, name: parmesan râpé, qty: 100, unit: g}
+    - {id: huile-olive, name: huile d'olive, qty: 3, unit: c. à s.}
+    - {id: origan, name: origan séché, qty: 1, unit: c. à c., seasoning: true}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: cuire-pates
+      action: "Cuire les tagliatelles al dente dans un grand faitout d'eau salée, selon le temps indiqué sur le paquet"
+      needs: [simmer-large]
+      time_min: 10
+      attended: false
+    - id: fondre-oignons
+      action: "Pendant ce temps : détailler les oignons en petits cubes et les faire revenir à l'huile d'olive dans une petite cocotte avec un peu de sel, l'origan et le fenouil ciselé, jusqu'à ce qu'ils soient tendres et bien dorés — sans les laisser brûler"
+      needs: [pan-fry]
+      time_min: 10
+      parallel_with: cuire-pates
+      attended: true
+    - id: persillade
+      action: "Hacher l'ail et le persil"
+      needs: []
+      time_min: 3
+      parallel_with: cuire-pates
+    - id: sardines
+      action: "Égoutter les sardines et les ajouter aux oignons ; mélanger à la cuillère de bois juste assez pour les réduire en gros morceaux"
+      needs: [pan-fry]
+      time_min: 3
+      # Pour les enfants, l'autrice suggère d'ôter peau et arêtes des sardines —
+      # facultatif chez elle, et le geste qui rend le plat mangeable ici.
+    - id: assaisonner
+      action: "Ajouter la persillade et un peu de poivre, puis réchauffer le tout"
+      needs: [pan-fry]
+      time_min: 2
+      seasoning_gate: true
+    - id: servir
+      action: "Égoutter les tagliatelles, les huiler légèrement, mélanger et servir bien chaud avec la garniture de sardines, en parsemant de parmesan"
+      needs: []
+      time_min: 3
+
+  baby_portion:
+    take: "quelques tagliatelles et un peu de chair de sardine, AVANT la persillade et le poivre"
+    prep: "vérifier soigneusement peau et arêtes, couper les pâtes court et écraser à la fourchette"
+    needs: []
+
+  emits:
+    - kind: reste-plat
+      type: pasta-sardes
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: false}
+      note: "pâtes au poisson : le lendemain au plus tard"
+
+  plan_b:
+    - drop: persillade
+      saves_min: 3
+      effect: "sans persillade fraîche : le plat perd son parfum de fin, mais tient"

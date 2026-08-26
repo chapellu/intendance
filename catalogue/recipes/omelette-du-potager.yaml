@@ -1,0 +1,98 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+
+recipe:
+  id: omelette-du-potager
+  title: Omelette du potager
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 33"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 33
+    saison: printemps
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « 3/4 personnes » dans le livre
+  time_min_total: 40        # dont 10 min de repos hors du feu, qui font la texture
+  active_min: 15
+
+  apports:
+    proteine: oeuf
+    feculent: pommes-de-terre
+    legumes: [racine, crucifere, allium, feuille, legumineuse]
+    profil: poele
+    origine: francais
+
+  ingredients:
+    - {id: pomme-de-terre, name: petites pommes de terre nouvelles, qty: 3, unit: pièce}
+    - {id: navet-primeur, name: navet primeur, qty: 1, unit: pièce}
+    - {id: carottes, name: carottes nouvelles, qty: 2, unit: pièce}
+    - {id: cebette, name: cébette, qty: 1, unit: pièce}
+    - {id: petits-pois, name: petits pois à écosser, qty: 1, unit: poignée}
+    - {id: pois-gourmands, name: pois gourmands, qty: 1, unit: poignée}
+    - {id: pousses-epinards, name: jeunes pousses d'épinards, qty: 1, unit: poignée}
+    - {id: ciboulette, name: ciboulette, qty: 1, unit: petit bouquet}
+    - {id: oeufs, name: œufs fermiers, qty: 6, unit: pièce}
+    - {id: fromage-rape, name: comté ou emmental fraîchement râpé, qty: 100, unit: g}
+    - {id: huile-olive, name: huile d'olive, qty: 6, unit: c. à s.}
+    - {id: farine, name: farine, qty: 1, unit: c. à s.}
+    - {id: fleur-de-sel, name: fleur de sel, qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 1, unit: pincée, seasoning: true}
+    # Le livre propose le piment d'Espelette en alternative au poivre. Écarté :
+    # `piquant` est une exclusion du foyer (household.yaml).
+
+  steps:
+    - id: tailler-racines
+      action: "Brosser pommes de terre, navet et carottes sous l'eau, les tailler en petits morceaux et les essuyer au torchon ; émincer la cébette"
+      needs: []
+      time_min: 10
+      kid: {age_min_months: 30, task: "brosser les légumes sous l'eau"}
+    - id: cuire-racines
+      action: "Faire revenir les racines à l'huile d'olive dans une grande poêle en fonte ou céramique — l'inox accroche trop — saler, couvrir et compter 10 min en remuant de temps en temps"
+      needs: [pan-fry]
+      time_min: 10
+      attended: false
+    - id: preparer-verts
+      action: "Pendant ce temps : écosser les petits pois, équeuter les pois gourmands, laver et essorer les pousses d'épinards"
+      needs: []
+      time_min: 8
+      parallel_with: cuire-racines
+      kid: {age_min_months: 30, task: "écosser les petits pois"}
+    - id: ajouter-verts
+      action: "Ajouter épinards, pois gourmands et petits pois, mélanger, saler légèrement, couvrir et compter 5 min de plus"
+      needs: [pan-fry]
+      time_min: 5
+      attended: false
+    - id: battre-oeufs
+      action: "Pendant ce temps : battre les œufs avec la farine, le fromage râpé et la ciboulette ciselée, saler et poivrer"
+      needs: []
+      time_min: 4
+      parallel_with: ajouter-verts
+      kid: {age_min_months: 30, task: "casser et battre les œufs"}
+    - id: cuire-omelette
+      action: "Verser sur les légumes, donner quelques coups de cuillère, couvrir et cuire 5 min à feu doux"
+      needs: [pan-fry]
+      time_min: 5
+      attended: false
+    - id: reposer
+      action: "Couper le feu et laisser reposer 10 min sans découvrir : l'omelette finit de prendre et se décolle seule du fond"
+      needs: []
+      time_min: 10
+      attended: false
+      # C'est l'étape qui décide du résultat — ni trop cuite, ni baveuse. La
+      # supprimer, c'est rater le plat, d'où son absence du plan B.
+
+  # PAS DE `baby_portion` : le sel entre dès la première poêlée de racines, puis
+  # une seconde fois avec les verts, puis dans les œufs. Il n'y a aucun instant
+  # où un prélèvement serait non salé, sauf à cuire une part séparément. C'est le
+  # même constat que pour la quiche et le velouté — voir le README.
+
+  # Pas d'`emits` : 4 portions pour un foyer qui en pèse 2,75, l'excédent ne fait
+  # pas une gamelle. Le livre note d'ailleurs qu'à midi ce plat ne cale pas seul.
+
+  plan_b:
+    - drop: preparer-verts
+      saves_min: 8
+      effect: "avec des petits pois surgelés et des pousses en sachet ; la recette perd son côté primeur"

@@ -1,0 +1,26 @@
+# Simulated stock of chaining outputs (#30): what previous cooking left behind.
+# In the real app this is inferred from logged cooking events, never typed by hand.
+#
+# Note the two locations. The fridge is a countdown — an item ages out of
+# `fridge_window_days` and the planner stops counting on it. The freezer is not:
+# a jarred or frozen portion is a **planned output**, the emergency card you
+# play on a night with no time. That distinction is why the bolognese tension
+# resolves — the meat was bought once, and its second life costs nothing.
+#
+# `qty_band` compte des repas, `qty` chiffre la matière. Sans la seconde, un
+# stock est un jeton : le même bocal couvrait autant de plats qu'on voulait.
+outputs:
+  - type: lentilles-vertes-cuites
+    kind: base
+    qty_band: 2-repas
+    qty: {amount: 400, unit: g}
+    born: 2026-08-06
+    location: frigo
+
+  - type: sauce-bolognaise
+    kind: base
+    qty_band: 2-repas
+    qty: {amount: 700, unit: g}
+    born: 2026-07-20
+    location: congelo
+    note: en bocaux — portion d'urgence

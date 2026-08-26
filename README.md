@@ -55,6 +55,45 @@ qu'un test unitaire ne peut pas voir.
 `npm run build` typecheck avant de construire : un `dist/` qui sort d'un code
 qui ne compile pas n'a rien à faire dans une image.
 
+## Le catalogue
+
+`public/cuisine-data.json` est un **artefact**, jamais une source. Il se
+fabrique depuis `catalogue/`, qui porte le corpus de recettes et le modèle
+Python qui le valide :
+
+```sh
+npm run catalogue          # refabrique public/cuisine-data.json
+npm run catalogue:verifie  # vérifie le corpus PUIS que le fichier commité est à jour
+```
+
+Le second tourne en CI. Il demande `python3` et `pyyaml`.
+
+**Pourquoi le corpus vit ici.** Il a passé ses premiers mois dans
+`chapellu/Workspace`, sous `prototypes/recipe-compiler`, et l'app y lisait un
+vidage exporté à la main. Ça a dérivé exactement comme ce genre de couplage
+dérive toujours : le JSON commité est resté à **51 plats** pendant que le corpus
+en portait **86**, et la nature de créneau `optionnel` — donc les quinze
+desserts — n'a jamais atteint l'écran. Le `CLAUDE.md` de Workspace dit par
+ailleurs de lui-même « scratch workspace », ce qui n'est pas un domicile pour
+soixante recettes saisies à la main depuis un livre papier : chacune a coûté une
+photo, une lecture et des arbitrages, et c'est l'actif le moins reproductible du
+projet.
+
+L'historique a suivi, commit pour commit, comme lors du départ de `flagship` —
+`git log` remonte jusqu'au premier prototype de compilation.
+
+**Ce que `catalogue/` contient.** Les recettes (`recipes/`), la table du foyer
+(`household.yaml` : mangeurs, équipement, contenants, exclusions), les rayons,
+les créneaux, l'équilibre, les règles de repli d'ustensile, et l'index
+bibliographique des livres du foyer (`sources/`). Plus le modèle Python qui
+compile une recette contre ce foyer, le vérificateur qui refuse un corpus
+incohérent, et `README.md` — le carnet de bord de ce que la saisie a révélé du
+modèle, recette par recette.
+
+**Le modèle Python ne tourne pas dans l'app.** L'app a le sien, en TypeScript,
+sous `src/model/`. Le Python sert à valider le corpus et à produire le JSON ;
+`npm run parite` est ce qui garantit que les deux disent la même chose.
+
 ## La PWA
 
 L'app s'installe sur l'écran d'accueil et s'ouvre sans réseau. Trois pièces :

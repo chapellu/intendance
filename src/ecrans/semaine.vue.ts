@@ -11,7 +11,7 @@
 
 import { cleCreneau, jourISO } from "../db";
 import { articles, minutesParJour, type Calcul, type LigneChaine } from "../model/calcul";
-import { joue, SAUTE, type Jeu } from "../model/jeu";
+import { joue, SAUTE, sePioche, type Jeu } from "../model/jeu";
 import type { Emit, Plat } from "../model/types";
 import type { CleCreneau, Route } from "../nav/routes";
 import { duree } from "../ui/format";
@@ -70,7 +70,7 @@ export function vueDeLaSemaine(jeu: Jeu, calc: Calcul): VueJour[] {
       minutes: m,
       lourde: m > JOURNEE_LOURDE,
       slots: duJour
-        .filter((x) => x.c.nature === "choisi")
+        .filter((x) => sePioche(x.c.nature))
         .map((x) => slot(jeu, calc, x.i, jourISO(j.date))),
       routines: duJour.filter((x) => x.c.nature === "routine").map((x) => x.c.label),
     };

@@ -1,0 +1,106 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# LA RECETTE QUI FERME LA BOUCLE. `veloute-ortie` notait une piste de chaînage
+# non encodée — un plat qui mangerait les parures d'un autre. La voici, et c'est
+# l'autrice qui la fournit : le livre la marque « avec des restes ».
+#
+# Elle est aussi le premier plat du catalogue dont l'entrée principale n'a
+# AUCUNE QUANTITÉ, et c'est délibéré chez l'autrice : on met ce qu'on a sous la
+# main après les repas de la semaine. Le modèle n'a pas de façon d'exprimer
+# « une quantité indéterminée et gratuite » — d'où la bande `1-repas` et ce
+# commentaire à la place d'un chiffre honnête.
+
+recipe:
+  id: consomme-de-fanes
+  title: Consommé de fanes
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 35"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 35
+    saison: printemps
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # environ 1 litre de bouillon
+  time_min_total: 25
+  active_min: 10
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: [racine, allium, feuille]
+    profil: soupe
+    origine: francais
+
+  # LE CHAÎNAGE : les parures de la semaine sont l'ingrédient principal. Sans
+  # elles la recette reste faisable — on achète les aromates — mais elle perd
+  # tout son intérêt, qui est d'être gratuite. C'est exactement la remise
+  # 7 Wonders : un prix, jamais une interdiction.
+  accepts:
+    - type: parures-legumes
+      qty: {amount: 1, unit: lot}
+      required: false
+      fallback_recipe: veloute-ortie
+
+  sans_reste:
+    temps_min: 5
+    ingredients:
+      - {id: carottes, name: carottes, qty: 3, unit: pièce}
+      - {id: poireau, name: poireau, qty: 1, unit: pièce}
+      - {id: celeri-branche, name: céleri branche, qty: 2, unit: côte}
+
+  ingredients:
+    - {id: parures-legumes, name: "épluchures de carottes, vert de poireau, feuilles de céleri", qty: 1, unit: lot, from_accepts: true}
+    - {id: oignon, name: oignon (ou vert de cébette), qty: 1, unit: pièce}
+    - {id: persil, name: tiges de persil (facultatif), qty: 1, unit: poignée}
+    - {id: orties, name: orties (facultatif), qty: 1, unit: poignée}
+    - {id: eau, name: eau, qty: 1, unit: l}
+    - {id: laurier, name: feuille de laurier, qty: 1, unit: pièce, seasoning: true}
+    - {id: clous-girofle, name: clous de girofle, qty: 3, unit: pièce, seasoning: true}
+    - {id: thym, name: "thym, sarriette, marjolaine, origan ou hysope (au choix ou en mélange)", qty: 1, unit: c. à c., seasoning: true}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: laver
+      action: "Laver soigneusement les parures et les rassembler dans un faitout avec l'oignon, les herbes, le laurier et les clous de girofle"
+      needs: []
+      time_min: 8
+      kid: {age_min_months: 30, task: "laver les épluchures dans une grande bassine"}
+    - id: bouillir
+      action: "Mouiller à l'eau, porter à ébullition et compter 15 min"
+      needs: [simmer-large]
+      time_min: 15
+      attended: false
+    - id: filtrer
+      action: "Filtrer le bouillon"
+      needs: []
+      time_min: 2
+    - id: rectifier
+      action: "Goûter et rectifier le sel"
+      needs: []
+      time_min: 1
+      seasoning_gate: true
+
+  baby_portion:
+    take: "une petite louche de bouillon filtré, AVANT de rectifier le sel"
+    prep: "servir tiède à la cuillère, ou l'utiliser pour détendre une purée"
+    needs: []
+    # Ici le prélèvement non salé marche vraiment : le sel est rectifié à la
+    # toute fin. C'est la seule des dix recettes saisies dans ce cas.
+
+  emits:
+    - kind: base
+      type: bouillon-maison
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: true}
+      note: "base pour des coquillettes, un risotto, un court-bouillon ou une soupe de vermicelles"
+
+  # VARIANTE NON ENCODÉE : la version thaïe/indienne du livre ajoute gingembre,
+  # curcuma et une touche de piment. `piquant` est une exclusion du foyer
+  # (household.yaml), donc la variante n'est pas proposée telle quelle.
+
+  plan_b: []                # 15 min de frémissement, rien à comprimer

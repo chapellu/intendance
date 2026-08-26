@@ -1,0 +1,137 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# ⚠ PAS DE PRÉLÈVEMENT BÉBÉ, ET C'EST DÉLIBÉRÉ — deuxième occurrence du trou
+# signalé par `cocktail-gourmand-peche-coco` (p. 70), et plus net ici.
+# Trois raisons cumulées, dont aucune n'a de champ pour la porter :
+#   · 115 g de MIEL. Le miel est déconseillé avant 12 mois (botulisme
+#     infantile : les spores de C. botulinum y survivent et la cuisson d'un
+#     appareil à 150 °C ne les détruit pas). Le bébé du foyer a exactement
+#     12 mois — on est sur la limite, pas au-delà, et c'est une décision de
+#     parent, pas de compilateur.
+#   · 1 c. à s. de RHUM dans un appareil cuit 1 h à 150 °C : l'essentiel
+#     s'évapore, l'essentiel n'est pas la totalité.
+#   · de l'extrait d'amande amère.
+# `exclusions` dans household.yaml ne connaît que des goûts. Le modèle ne sait
+# dire « pas de portion bébé » que par ABSENCE, ce qui ne se distingue pas de
+# « personne n'y a pensé ». C'est le manque à combler : un plat doit pouvoir
+# porter un interdit d'âge explicite et sa raison.
+
+recipe:
+  id: clafoutis-miel-abricot
+  title: Clafoutis super crémeux au miel et à l'abricot
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 115"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 115
+    saison: ete
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6
+  time_min_total: 70        # en-tête du livre : 10 min de préparation + 45 min à 1 h de cuisson
+  active_min: 10
+
+  creneaux: [gouter, dessert]        # dessert / goûter : voir la note de `mousse-au-chocolat`
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: lait-amande, name: lait d'amande, qty: 50, unit: cl}
+    - {id: puree-amande-blanche, name: purée d'amande blanche, qty: 40, unit: g}
+    - {id: oeufs, name: œufs fermiers ultra frais, qty: 4, unit: pièce}
+    # T110 de PETIT épeautre — l'engrain, pas le grand épeautre de la tourte
+    # p. 87 ni le blé. Deux céréales distinctes vendues côte à côte, d'où un id
+    # séparé : les confondre ferait fusionner deux lignes de courses en une.
+    - {id: farine-petit-epeautre, name: farine T110 de petit épeautre, qty: 55, unit: g}
+    - {id: miel-acacia, name: miel d'acacia, qty: 115, unit: g}
+    - {id: abricots, name: "abricots — ou tout autre fruit à noyau : cerises, pêches, nectarines, reines-claudes, mirabelles", qty: 350, unit: g}
+    - {id: rhum, name: rhum, qty: 1, unit: c. à s.}
+    - {id: extrait-amande-amere, name: extrait d'amande amère pour pâtisserie, qty: 0.5, unit: c. à moka}
+    - {id: amandes-effilees, name: amandes effilées, qty: 2, unit: c. à s.}
+
+  # `uses:` — voir la note de `tourte-nicoise-courgettes`. Ici le lien fait
+  # apparaître une asymétrie qu'on ne voyait pas : SEPT des neuf ingrédients
+  # entrent dans la même étape, `appareil`. C'est la recette qui est comme ça —
+  # un clafoutis est un saladier — mais ça veut dire qu'un écran de cuisson
+  # guidée aura un écran chargé et six écrans quasi vides.
+  steps:
+    - id: denoyauter
+      action: "Dénoyauter les fruits et les recouper : en quatre pour des abricots, en deux pour des prunes, en huit pour des pêches"
+      needs: []
+      uses: [abricots]
+      time_min: 6
+      kid: {age_min_months: 30, task: "ouvrir les abricots en deux à la main et retirer le noyau"}
+    - id: prechauffer
+      action: "Préchauffer le four à 150 °C, en chaleur tournante de préférence — en statique, compter quelques minutes de cuisson en plus"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: huiler-moule
+      action: "Huiler un grand moule à clafoutis, ou 6 gros ramequins, ou 4 plats à gratin individuels — beurré plutôt qu'huilé, c'est meilleur, si le lactose n'est pas un sujet"
+      needs: []
+      uses: []
+      time_min: 2
+    # PAS de `blend-smooth` : c'est un fouet à la main, et la recette entière ne
+    # demande qu'un couteau et un fouet. Déclarer la capacité ferait résoudre
+    # vers le mixeur plongeur, qui n'apporte rien et salit un bol de plus.
+    - id: appareil
+      action: "Fouetter ensemble le lait d'amande, la purée d'amande, les œufs, la farine, le miel, le rhum et l'extrait d'amande amère, jusqu'à ce qu'il ne reste aucun grumeau"
+      needs: []
+      uses: [lait-amande, puree-amande-blanche, oeufs, farine-petit-epeautre,
+             miel-acacia, rhum, extrait-amande-amere]
+      time_min: 5
+    - id: garnir
+      action: "Verser l'appareil dans le moule, répartir les fruits par-dessus et parsemer d'amandes effilées"
+      needs: []
+      uses: [abricots, amandes-effilees]
+      time_min: 3
+      kid: {age_min_months: 30, task: "poser les quartiers d'abricot sur l'appareil et semer les amandes effilées"}
+    - id: cuire
+      action: "Enfourner — environ 30 min en ramequins, 45 min en plats individuels, 1 h en grand moule. C'est cuit quand l'appareil est bien pris et commence à dorer jusqu'au centre ; les fours varient, il faut surveiller"
+      needs: [bake]
+      uses: []
+      time_min: 60
+      attended: true       # l'autrice le dit : le temps varie selon les fours
+      # « Laisser refroidir avant de savourer. » Une heure sans personne, sous
+      # la coupure de 90 min : la recette ne se scinde pas, mais l'heure du
+      # premier geste recule d'autant — c'est ce qui oblige à l'enfourner
+      # l'après-midi plutôt qu'après le plat.
+      attente_min: 60
+      attente_raison: refroidissement
+    - id: servir
+      action: "Servir refroidi, éventuellement sous un voile de sucre glace"
+      needs: []
+      uses: []
+      time_min: 1
+
+  emits:
+    - kind: reste-plat
+      type: clafoutis-abricot
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: false}
+      note: "un appareil à base d'œufs et de lait végétal rend son eau à la décongélation — il se garde au frigo, il ne se congèle pas"
+
+  # SUBSTITUTIONS DE PRIX, ET LE MODÈLE N'A PAS D'AXE POUR LES DIRE. L'autrice
+  # donne trois variantes explicitement motivées par le coût — purée d'amande
+  # blanche → 40 g de beurre fondu, lait d'amande → lait de soja-vanille, miel
+  # → sirop d'agave — sous un intertitre « SOS porte-monnaie ». `plan_b` se paie
+  # en MINUTES et `sans_reste` répare une base absente ; ni l'un ni l'autre ne
+  # parle d'argent ni de « ce que j'ai déjà dans le placard ». C'est une lacune
+  # qui compte pour ce foyer précisément, dont la trajectoire (#26) est une
+  # transition DOUCE vers le bio et les circuits courts — donc une question de
+  # prix, arbitrage par arbitrage.
+  plan_b:
+    - swap:
+        step: cuire
+        action: "Cuire en 6 gros ramequins plutôt qu'en grand moule : 30 min au lieu d'une heure"
+        saves_min: 30
+      effect: "portions individuelles, et ça refroidit bien plus vite — mais on perd le grand clafoutis qu'on partage"

@@ -1,0 +1,132 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# LE MOULE, DIMENSIONNÉ AU CENTIMÈTRE, ET TOUJOURS AUCUN ENDROIT OÙ LE METTRE.
+# « Disposer les poires entières dans un cercle à pâtisserie assez haut (au
+# moins 10 cm) et de 18 à 20 cm de diamètre. » Les huit moules à tartelettes de
+# la p. 181 avaient déjà montré le trou ; celui-ci le montre plus précisément,
+# parce que la recette ne marche PAS sans la bonne hauteur — cinq poires
+# entières debout dans une pâte, c'est la hauteur qui décide.
+#
+# `household.yaml` tient deux listes : des appareils qui déclarent des
+# CAPACITÉS, et des contenants de rangement qui déclarent des PLACES. Un moule
+# ne transforme rien et ne conserve rien : il n'entre ni dans l'une ni dans
+# l'autre. Troisième recette du corpus à en réclamer un après la tourte p. 87 et
+# les tartelettes p. 181, et la première à en donner les cotes.
+#
+# L'autrice fournit elle-même la sortie de secours, et c'est le `plan_b` du bas.
+
+recipe:
+  id: quatre-quarts-anniversaire-poire
+  title: Quatre-quarts d'anniversaire à la poire
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 166"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 166
+    saison: automne
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « un gâteau de 8 parts »
+  lot_entier: true
+  time_min_total: 70        # en-tête : 10 min de préparation + 1 h de cuisson
+  active_min: 10
+
+  creneaux: [gouter, dessert]
+
+  apports:
+    proteine: aucune        # trois œufs dans un gâteau ne font pas la protéine d'une semaine
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 180, unit: g}
+    - {id: poires, name: "poires pas trop grosses, mûres à point mais encore un peu fermes pour qu'elles se tiennent à la cuisson", qty: 5, unit: pièce}
+    - {id: oeufs, name: œufs (180 g), qty: 3, unit: pièce}
+    - {id: beurre, name: beurre demi-sel, qty: 180, unit: g}
+    - {id: sucre-roux, name: sucre roux, qty: 180, unit: g}
+    - {id: sucre-vanille, name: sachets de sucre vanillé, qty: 3, unit: sachet}
+    - {id: poudre-a-lever, name: poudre à lever, qty: 1, unit: sachet}
+    - {id: amandes-effilees, name: amandes effilées, qty: 50, unit: g}
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 180 °C"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: fondre-beurre
+      action: "Faire fondre le beurre à feu doux à la casserole"
+      needs: [simmer]
+      uses: [beurre]
+      time_min: 5
+      # 180 g de beurre dans une casserole : cette étape ne porte pas les huit
+      # parts du gâteau, elle porte un ingrédient. Sans ce marqueur, le contrôle
+      # de vaisselle comparait la contenance de la casserole au rendement entier
+      # et refusait la recette.
+      charge_partielle: true
+    - id: laver-poires
+      action: "Laver les poires, sans les éplucher ni les couper"
+      needs: []
+      uses: [poires]
+      time_min: 3
+      parallel_with: fondre-beurre
+      kid: {age_min_months: 30, task: "laver les poires une à une sous l'eau"}
+    - id: pate
+      action: "Mélanger la farine, la poudre à lever et les sucres, faire un puits, y verser les œufs et le beurre fondu, puis bien mélanger"
+      needs: []
+      uses: [farine-complete, poudre-a-lever, sucre-roux, sucre-vanille, oeufs, beurre]
+      time_min: 6
+    - id: monter
+      action: "Disposer les poires entières dans un cercle à pâtisserie assez haut — au moins 10 cm — et de 18 à 20 cm de diamètre, en veillant à ce qu'elles ne se touchent pas, puis verser la pâte entre les poires et bien égaliser"
+      needs: []
+      uses: []
+      time_min: 8
+    - id: cuire
+      action: "Enfourner assez bas dans le four pour 50 minutes"
+      needs: [bake]
+      uses: []
+      time_min: 50
+      attended: false
+    - id: amandes
+      action: "Ouvrir rapidement le four, parsemer d'amandes effilées, et renfourner pour les 10 minutes restantes"
+      needs: [bake]
+      uses: [amandes-effilees]
+      time_min: 2
+    - id: verifier-cuisson
+      action: "Vérifier la cuisson en piquant le gâteau à cœur — le laisser encore 5 à 10 minutes si un peu de pâte crue adhère à la pique —, puis laisser refroidir, démouler et saupoudrer éventuellement de sucre glace"
+      needs: []
+      uses: []
+      time_min: 10
+      attente_min: 45
+      attente_raison: refroidissement
+
+  # PAS DE PRÉLÈVEMENT BÉBÉ : 180 g de sucre roux et 3 sachets de sucre vanillé
+  # pour 8 parts, plus 180 g de beurre demi-sel. C'est un gâteau d'anniversaire
+  # et il assume de l'être — l'autrice note que c'est l'une des rares recettes
+  # de l'ouvrage à contenir du beurre. Le beurre demi-sel est par ailleurs le
+  # troisième ingrédient salant du corpus qu'aucun champ ne signale, après le
+  # parmesan et la charcuterie.
+
+  emits:
+    - kind: reste-plat
+      type: quatre-quarts-poire
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: true}
+      note: "un quatre-quarts se congèle en parts et se sort une par une pour un goûter"
+
+  plan_b:
+    # La sortie donnée par l'autrice elle-même, et elle règle aussi le problème
+    # du cercle : « c'est même LA recette traditionnelle du quatre-quarts
+    # breton, que vous pourriez faire tout simplement cuire 50 minutes dans un
+    # long moule à cake sans les poires ».
+    - swap:
+        step: monter
+        action: "Verser la pâte dans un long moule à cake, sans les poires — c'est le quatre-quarts breton traditionnel"
+        saves_min: 8
+      effect: "on perd les poires entières et le tranchage spectaculaire, qui sont toute la recette d'anniversaire ; en revanche cela ne demande plus de cercle à pâtisserie haut, que ce foyer n'a pas"

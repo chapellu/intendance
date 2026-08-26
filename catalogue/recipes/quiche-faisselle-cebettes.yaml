@@ -1,0 +1,116 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+
+recipe:
+  id: quiche-faisselle-cebettes
+  title: Quiche à la faisselle et aux cébettes
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 29"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 29
+    saison: printemps
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # en plat principal complet ; 6 à 8 en entrée (livre)
+  time_min_total: 55
+  active_min: 25
+
+  apports:
+    proteine: fromage
+    feculent: pate-brisee
+    legumes: [allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    # Pâte — brisée végétalienne à la poudre d'amande, sans beurre ni œuf.
+    - {id: poudre-amande, name: poudre d'amande, qty: 125, unit: g}
+    - {id: farine-complete, name: farine semi-complète de blé ou de grand épeautre, qty: 250, unit: g}
+    - {id: huile-olive, name: huile d'olive, qty: 80, unit: g}
+    - {id: eau, name: eau, qty: 80, unit: g}
+    - {id: fleur-de-sel, name: fleur de sel, qty: 7, unit: g, seasoning: true}
+    # Garniture
+    - {id: cebette, name: cébettes (oignons tiges nouveaux), qty: 2, unit: botte}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: faisselle, name: fromage frais en faisselle, qty: 500, unit: g}
+    - {id: fromage-rape, name: "fromage râpé à pâte dure (parmesan, comté, tomme de chèvre ou de brebis)", qty: 200, unit: g}
+    - {id: oeufs, name: œufs, qty: 2, unit: pièce}
+    - {id: ciboulette, name: ciboulette, qty: 1, unit: petit bouquet}
+    - {id: farine, name: farine (pour lier l'appareil), qty: 1, unit: c. à s.}
+    - {id: sel, name: sel (garniture), qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: egoutter
+      action: "Renverser la faisselle dans une passoire et la laisser s'égoutter — c'est ce qui décide de la tenue de l'appareil"
+      needs: []
+      time_min: 2
+      attended: false
+    - id: prechauffer
+      action: "Préchauffer le four à 200 °C, grille sur le cran le plus bas au-dessus de la sole"
+      needs: [bake]
+      time_min: 1
+      attended: false
+    - id: poeler-cebettes
+      action: "Ôter la première feuille des cébettes, les coucher à plat dans une grande poêle huilée, saler, les faire dorer 5 min à feu doux ; ajouter un verre d'eau, couvrir et étuver 10 min"
+      needs: [pan-fry]
+      time_min: 17
+      attended: false
+      kid: {age_min_months: 30, task: "éplucher la première feuille des cébettes"}
+    - id: faire-la-pate
+      action: "Pendant l'étuvée : mélanger poudre d'amande, farine et fleur de sel, incorporer l'huile jusqu'à une texture sablonneuse, verser l'eau d'un coup et amalgamer sans travailler la pâte"
+      needs: []
+      time_min: 8
+      parallel_with: poeler-cebettes
+    - id: foncer
+      action: "Étaler la pâte au rouleau sur un papier cuisson, la transférer dans un moule d'environ 30 cm avec son papier, puis recouper les bords"
+      needs: []
+      time_min: 5
+      parallel_with: poeler-cebettes
+    # Le mixage et le salage sont deux étapes, et pas par coquetterie : le
+    # `seasoning_gate` injecte le prélèvement bébé AVANT l'étape qu'il marque.
+    # Fusionnées, la portion bébé était prélevée avant que l'appareil existe.
+    - id: appareil
+      action: "Mixer la faisselle égouttée avec le fromage râpé, la cuillerée de farine et le poivre, puis incorporer la ciboulette ciselée et les œufs"
+      needs: [blend-smooth]
+      time_min: 4
+    - id: saler-appareil
+      action: "Saler l'appareil"
+      needs: []
+      time_min: 1
+      seasoning_gate: true
+    - id: garnir-cuire
+      action: "Verser l'appareil sur le fond de tarte, ranger les cébettes poêlées par-dessus et enfourner 30 min jusqu'à belle coloration"
+      needs: [bake]
+      time_min: 30
+      attended: false
+
+  baby_portion:
+    take: "2 c. à s. d'appareil faisselle-fromage AVANT d'ajouter le sel, plus une cébette étuvée"
+    prep: "écraser la cébette à la fourchette et la mélanger à l'appareil, puis cuire à part en ramequin"
+    needs: [bake]
+    # HONNÊTETÉ : le prélèvement n'est que *partiellement* non salé — les cébettes
+    # sont salées à la poêle dès le début, et la pâte contient 7 g de fleur de
+    # sel. Seul l'appareil peut être prélevé avant salage. C'est le cas typique
+    # décrit dans le README : chez une vraie autrice, le sel n'est pas une
+    # dernière étape.
+
+  emits:
+    - kind: reste-plat
+      type: quiche-faisselle
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+      note: "très bonne froide — le déjeuner nomade évident"
+
+  plan_b:
+    - swap:
+        step: faire-la-pate
+        action: "Utiliser une pâte brisée du commerce plutôt que la pâte poudre d'amande"
+        saves_min: 8
+      effect: "on perd la pâte sans beurre et l'apport de l'amande"
+    - drop: egoutter
+      saves_min: 2
+      effect: "appareil plus humide, quiche moins ferme à la découpe"
