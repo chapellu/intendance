@@ -1,0 +1,111 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# LE LIVRE NE DIT PAS QUOI FAIRE DU CHOCOLAT. Ses étapes sont : préchauffer,
+# râper la courgette, « mélanger la farine et la levure, faire un puits, y
+# verser TOUS LES AUTRES INGRÉDIENTS des muffins, puis bien mélanger au fouet »,
+# verser en caissettes, enfourner. Or 130 g de chocolat noir à 70 % ne se
+# fouettent pas en morceaux dans 5 cl de lait et 3 œufs : il faut le faire
+# fondre, et aucune étape ne le dit.
+#
+# C'est la troisième omission du même genre dans le corpus, après le sel absent
+# des étapes de la tourte p. 87 et de la garniture des tartelettes p. 181. Les
+# deux premières fois, l'étape manquante a été ÉCRITE ici, parce qu'un salage
+# n'a qu'une place possible. Cette fois non : faire fondre au bain-marie, à la
+# casserole avec le lait, ou au micro-ondes ne donne pas la même pâte, et
+# choisir serait inventer le procédé plutôt que le restituer. L'étape reste donc
+# telle que le livre l'écrit, avec ce commentaire pour que la lacune se voie.
+#
+# UNE SUBSTITUTION SAISONNIÈRE ÉCRITE DANS UNE RECETTE D'ÉTÉ. « UNE ASTUCE
+# D'AUTOMNE : remplacez la courgette par du potimarron ! » La recette est
+# indexée `saison: ete` par sa page, et l'autrice y range la version d'automne.
+# Un plat peut donc appartenir à deux saisons par une substitution d'une ligne,
+# et `source.saison` — déduit des bornes de pagination — n'en portera jamais
+# qu'une. Deuxième occurrence dans ce lot après les carrés p. 112, qui
+# deviennent une tarte au citron l'hiver venu.
+
+recipe:
+  id: muffins-choco-courgettes
+  title: Muffins choco-courgettes
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 108"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 108
+    saison: ete
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # 8 muffins ; parts de goûter, pas de repas
+  lot_entier: true          # une courgette de 90 g et un demi-sachet de levure ne se divisent pas
+  time_min_total: 30        # en-tête : 10 min de préparation + 20 min de cuisson
+  active_min: 10
+
+  creneaux: [petit-dejeuner, gouter]
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: [cucurbitacee]   # 90 g de courgette dans un muffin : c'est la blague de la recette
+    origine: francais
+    profil: four
+
+  ingredients:
+    - {id: courgettes, name: "petite courgette bien fraîche (90 g environ)", qty: 90, unit: g}
+    - {id: chocolat-noir, name: chocolat noir pâtissier à 70 % de cacao, qty: 130, unit: g}
+    - {id: lait-avoine, name: lait d'avoine ou de soja, qty: 5, unit: cl}
+    - {id: sirop-agave, name: sirop d'agave, qty: 7, unit: cl}
+    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 75, unit: g}
+    - {id: poudre-a-lever, name: demi-sachet de levure, qty: 0.5, unit: sachet}
+    - {id: oeufs, name: œufs, qty: 3, unit: pièce}
+    - {id: caissettes, name: "caissettes cartonnées à muffins (environ 6 cm de diamètre et 4,5 cm de haut)", qty: 8, unit: pièce}
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 180 °C, si possible en chaleur tournante"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: raper
+      action: "Râper la courgette"
+      needs: []
+      uses: [courgettes]
+      time_min: 4
+      kid: {age_min_months: 30, task: "tourner la manivelle de la râpe à courgette"}
+    - id: melanger
+      action: "Mélanger la farine et la levure, faire un puits, y verser tous les autres ingrédients des muffins — la courgette râpée, le chocolat, le lait, le sirop d'agave et les œufs — puis bien mélanger au fouet"
+      needs: []
+      uses: [farine-complete, poudre-a-lever, courgettes, chocolat-noir, lait-avoine, sirop-agave, oeufs]
+      time_min: 6
+      # Voir l'en-tête : le sort du chocolat n'est pas écrit dans le livre.
+    - id: cuire
+      action: "Verser dans 8 petites caissettes cartonnées à muffins et enfourner 20 minutes"
+      needs: [bake]
+      uses: [caissettes]
+      time_min: 20
+      attended: false
+    - id: servir
+      action: "Savourer encore chaud, ou à température ambiante"
+      needs: []
+      uses: []
+      time_min: 1
+
+  # PAS DE PRÉLÈVEMENT BÉBÉ : 130 g de chocolat à 70 % et 7 cl de sirop d'agave
+  # pour huit muffins. Même famille que le bana-chaud p. 157 et la glace p. 104.
+
+  emits:
+    - kind: reste-plat
+      type: muffins-choco-courgettes
+      qty_band: lunchbox
+      # `frigo_days: 0` NE VEUT PAS DIRE « ça ne se garde pas » : ça se garde
+      # très bien à température ambiante. L'autrice dit l'inverse du modèle —
+      # « le passage au froid fait un peu perdre le moelleux » —, c'est-à-dire
+      # que RANGER AU FRIGO DÉGRADE le plat. `keeps` sait dire combien de temps
+      # une sortie survit à un espace ; il ne sait pas dire qu'un espace lui
+      # nuit, ni qu'il existe un quatrième endroit, la boîte à gâteaux.
+      keeps: {frigo_days: 0, congelo: true}
+      note: "à garder à température ambiante : le frigo leur fait perdre le moelleux, et c'est l'autrice qui le dit"
+
+  plan_b: []

@@ -1,0 +1,63 @@
+# Household staple, authored for the prototype (no external source).
+# Role in the demo: a second EMITTING dish, so the planner has more than one
+# chaining edge to resolve.
+
+recipe:
+  id: veloute-de-courgettes
+  title: Velouté de courgettes
+  lang: fr
+  yields:
+    portions_eq: 4
+  time_min_total: 30
+  active_min: 10
+
+  apports:
+    proteine: aucune
+    feculent: pommes-de-terre
+    legumes: [cucurbitacee, allium]
+    profil: soupe
+    origine: francais
+
+  ingredients:
+    - {id: courgettes, name: courgettes, qty: 4, unit: pièce}
+    - {id: pomme-de-terre, name: pomme de terre, qty: 1, unit: pièce}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: bouillon-legumes, name: cube de bouillon de légumes, qty: 1, unit: pièce, seasoning: true}
+    - id: creme
+      name: crème fraîche
+      qty: 10
+      unit: cl
+      subs:
+        - {name: crème d'avoine, note: "version sans lactose, même volume", ratio: 1.0}
+
+  steps:
+    - id: cuire
+      action: "Couvrir courgettes en tronçons, pomme de terre en cubes et oignon d'eau ; cuire à frémissement"
+      needs: [simmer]
+      time_min: 20
+      attended: false
+    - id: mixer
+      action: "Mixer finement avec un peu d'eau de cuisson jusqu'à texture lisse"
+      needs: [blend-smooth]
+      time_min: 4
+    - id: assaisonner
+      action: "Ajouter le bouillon émietté et la crème, rectifier"
+      needs: []
+      time_min: 3
+      seasoning_gate: true
+      kid: {age_min_months: 30, task: "verser la crème et remuer"}
+
+  baby_portion:
+    take: "3 c. à s. de velouté mixé, avant le bouillon et la crème"
+    prep: "détendre avec un peu d'eau de cuisson tiède"
+    needs: [blend-smooth]
+    depuis: [mixer]
+
+  emits:
+    - kind: reste-plat
+      type: veloute-courgettes
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: true}
+      note: "bon froid en été — format bouteille pour la lunchbox"
+
+  plan_b: []

@@ -1,0 +1,114 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+
+recipe:
+  id: falafels-aux-herbes
+  title: Falafels poêlés aux herbes
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 81"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 81
+    saison: ete
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4
+    pieces: 20              # boules de 35 g
+  time_min_total: 38
+  active_min: 37            # tout est surveillé : mixage, façonnage, poêlée
+
+  apports:
+    proteine: legumineuse
+    feculent: legumineuse
+    legumes: [feuille, allium]
+    profil: poele
+    origine: francais
+
+  # Même arête que la salade de la p. 36 : 500 g de pois chiches déjà cuits
+  # rendent le plat express ; sans eux il faut ouvrir des bocaux, ou compter une
+  # nuit de trempage et plus d'une heure de cuisson (le livre renvoie à sa p. 18
+  # pour la cuisson maison — TROISIÈME renvoi de sous-recette du corpus, après
+  # la p. 18 déjà citée p. 36 et la p. 58 citée p. 73).
+  accepts:
+    - type: pois-chiches-cuits
+      qty: {amount: 500, unit: g}
+      required: false
+      fallback_recipe: null
+
+  sans_reste:
+    temps_min: 5
+    ingredients:
+      - {id: pois-chiches, name: pois chiches cuits (bocal), qty: 1000, unit: g}
+
+  ingredients:
+    - {id: pois-chiches-cuits-ing, name: pois chiches cuits bien égouttés, qty: 500, unit: g, from_accepts: true}
+    - {id: herbes-fraiches, name: "herbes fraîches en mélange (fenouil, basilic, origan, marjolaine, ciboulette, thym, sauge, ail des ours…), tiges ligneuses retirées", qty: 80, unit: g}
+    - {id: tahin, name: tahin, qty: 50, unit: g}
+    - {id: farine-complete, name: farine semi-complète de petit épeautre (+ un peu pour enrober), qty: 55, unit: g}
+    - {id: citron, name: jus de citron (environ un demi-citron), qty: 3, unit: cl}
+    - {id: ail, name: ail, qty: 1, unit: gousse}
+    - {id: huile-olive, name: huile d'olive (+ un peu pour la cuisson), qty: 4, unit: c. à s.}
+    - {id: sel, name: sel fin, qty: 5, unit: g, seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: mixer-herbes
+      action: "Mixer très finement les herbes avec le sel, le poivre, l'ail, le tahin, l'huile d'olive et le jus de citron"
+      needs: [chop-coarse]
+      time_min: 5
+    - id: mixer-pois-chiches
+      action: "Ajouter les pois chiches et la farine, puis mixer par brèves impulsions en gardant des petits morceaux — réduits en purée lisse, l'appareil devient trop souple et les boules ne tiennent plus"
+      needs: [chop-coarse]
+      time_min: 4
+    - id: faconner
+      action: "Façonner une vingtaine de boules de 35 g environ, en les roulant au fur et à mesure dans une assiette de farine"
+      needs: [weigh]
+      time_min: 10
+      kid: {age_min_months: 30, task: "rouler les boules dans l'assiette de farine"}
+    - id: poeler
+      action: "Chauffer un peu d'huile dans une poêle et cuire les falafels quelques minutes en les retournant de temps en temps, jusqu'à ce qu'ils soient bien dorés"
+      needs: [pan-fry]
+      time_min: 18
+      attended: true
+      # À la poêle plutôt que frits ou au four : l'autrice y tient, c'est ce qui
+      # donne le crousti-fondant et rend le plat plus digeste.
+    - id: servir
+      action: "Servir tout chaud avec une salade"
+      needs: []
+      time_min: 1
+
+  # PAS DE `baby_portion` AU SENS DU MODÈLE, ET LE CAS EST INSTRUCTIF.
+  # Les 5 g de sel partent dès le premier mixage : aucun prélèvement ne peut
+  # être non salé. Mais l'autrice, elle, déclare la recette adaptée aux bébés —
+  # à une condition qui n'a rien à voir avec le sel : REMPLACER LE TAHIN PAR DU
+  # YAOURT DE BREBIS, c'est-à-dire écarter le sésame.
+  #
+  # C'est une troisième forme d'adaptation que le modèle ne sait pas porter. Il
+  # connaît le prélèvement avant salage (`baby_portion` + `seasoning_gate`) et
+  # la compression de temps (`plan_b`). Ici l'adaptation est une SUBSTITUTION
+  # D'INGRÉDIENT SUR TOUTE LA FOURNÉE, motivée par un allergène. Même trou que
+  # le rhum du cocktail p. 70 : `exclusions` dans household.yaml ne connaît que
+  # des goûts, pas des allergènes ni des interdits d'âge.
+
+  emits:
+    - kind: reste-plat
+      type: falafels
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+      note: "à repasser à la poêle : au micro-ondes ils ramollissent"
+    # Égoutter 500 g de pois chiches donne l'aquafaba que la mousse au chocolat
+    # (p. 59) monte en neige — même sous-produit que la salade de la p. 36.
+    - kind: base
+      type: jus-pois-chiches
+      qty_band: 1-repas
+      qty: {amount: 15, unit: cl}     # l'aquafaba de 500 g de pois chiches égouttés
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b:
+    - swap:
+        step: faconner
+        action: "Former des galettes plates à la cuillère directement dans la poêle plutôt que de rouler vingt boules"
+        saves_min: 6
+      effect: "moins régulier et moins joli, cuisson identique"

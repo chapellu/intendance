@@ -1,0 +1,118 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# LE PLAT DÉRIVÉ, DÉCLARÉ COMME TEL PAR L'AUTRICE. Sa liste d'ingrédients
+# commence littéralement par « le bouillon de cuisson de la recette précédente »
+# et le livre badge la recette « avec des restes ». C'est `roti-bouillon-herbes`
+# (p. 55) qui l'émet.
+
+recipe:
+  id: soupe-orge-petits-pois
+  title: Soupe d'orge et de petits pois
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 56"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 56
+    saison: printemps
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6
+  time_min_total: 25
+  active_min: 10
+  # Le trempage de l'orge est maintenant DANS le modèle : `attente_min: 720` sur
+  # l'étape `tremper`. « La veille » n'est plus écrit nulle part — c'est ce que
+  # donnent 12 h d'attente reculées depuis l'heure du repas. `time_min_total`
+  # reste la session de cuisine ; `anticipation.duree_totale()` dit les 13 h.
+
+  apports:
+    proteine: aucune
+    feculent: orge
+    legumes: [legumineuse, allium]
+    profil: soupe
+    origine: francais
+
+  accepts:
+    - type: bouillon-herbes
+      qty: {amount: 1500, unit: ml}
+      required: false
+      fallback_recipe: roti-bouillon-herbes
+
+  sans_reste:
+    temps_min: 0
+    ingredients:
+      - {id: bouillon-legumes, name: bouillon de légumes, qty: 2, unit: cube}
+
+  ingredients:
+    - {id: bouillon-herbes-ing, name: bouillon de cuisson du rôti, qty: 1500, unit: ml, from_accepts: true}
+    - {id: orge, name: orge mondé ou perlé, qty: 200, unit: g}
+    - {id: petits-pois, name: petits pois frais écossés (ou surgelés), qty: 200, unit: g}
+    - {id: ciboulette, name: ciboulette (facultatif), qty: 1, unit: petit bouquet}
+    - {id: eau, name: eau, qty: 300, unit: ml}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+
+  steps:
+    - id: tremper
+      action: "Mettre l'orge à tremper dans un grand volume d'eau froide"
+      needs: []
+      time_min: 3
+      attente_min: 720          # 12 h : c'est ce qui fait « la veille », rien d'autre
+      attente_raison: trempage
+      rattrapage:
+        action: "À défaut : couvrir l'orge d'eau bouillante et la laisser gonfler 1 h à couvert"
+        cout_min: 60
+        effet: "grain moins tendre et cuisson un peu plus longue, mais le plat se fait le jour même"
+    - id: rincer
+      action: "Rincer et égoutter l'orge trempée"
+      needs: []
+      time_min: 1
+    - id: completer
+      action: "Mesurer le bouillon restant et compléter d'eau pour arriver à 1,8 l dans le faitout ; retirer le laurier et les tiges d'herbes, mais garder les morceaux de légumes"
+      needs: []
+      time_min: 4
+      # Garder les légumes du bouillon est ce qui fait le corps de la soupe :
+      # c'est le « recyclage » que la recette revendique.
+    - id: cuire-orge
+      action: "Ajouter l'orge, porter à ébullition et compter 15 min"
+      needs: [simmer-large]
+      time_min: 15
+      attended: false
+    - id: petits-pois
+      action: "7 min avant la fin, ajouter les petits pois — plus tôt ils cuisent, moins ils restent verts"
+      needs: [simmer-large]
+      time_min: 7
+      parallel_with: cuire-orge
+      attended: false
+    - id: rectifier
+      action: "Goûter et rectifier le sel, puis parsemer de ciboulette à l'assiette"
+      needs: []
+      time_min: 2
+      seasoning_gate: true
+      # Rectifier, et pas saler : le bouillon du rôti arrive déjà très salé.
+
+  baby_portion:
+    take: "une petite louche d'orge et de petits pois avec un peu de liquide, AVANT de rectifier le sel"
+    prep: "écraser à la fourchette ; allonger d'eau, le bouillon du rôti étant salé"
+    needs: []
+    # Réserve honnête : « avant rectification » ne veut pas dire non salé. Le
+    # bouillon hérité porte déjà les 2 c. à s. de gros sel du rôti. Pour un
+    # bébé de 12 mois, mieux vaut prélever l'orge et les pois et les allonger
+    # d'eau claire.
+
+  emits:
+    - kind: reste-plat
+      type: soupe-orge
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b:
+    # `drop:` supprimerait l'étape — donc les petits pois. Ce n'est pas ça :
+    # l'autrice propose de les mettre plus tôt, pas de les enlever. C'est un
+    # `swap`.
+    - swap:
+        step: petits-pois
+        action: "Mettre les petits pois dès le début de la cuisson, avec l'orge"
+        saves_min: 2
+      effect: "un geste de moins à surveiller ; les pois ressortent moins verts"

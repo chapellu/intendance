@@ -1,0 +1,134 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# UNE FENÊTRE DE TEMPÉRATURE, ET ELLE N'EST PAS CELLE DU FOUR. L'encadré de
+# l'autrice : si la préparation est trop chaude, elle fait fondre la chantilly
+# et la mousse perd son aération ; si elle est trop froide, l'agar-agar fige
+# (vers 25 °C) et la chantilly ne s'incorpore plus du tout. L'idéal est
+# 35 °C environ, « température que l'on peut contrôler même sans thermomètre,
+# juste en touchant la crème avec le doigt ».
+#
+# Le corpus réclamait déjà une température de four par étape (p. 99, 115, 160).
+# Celle-ci est d'une autre espèce : une fenêtre bornée des DEUX côtés, portant
+# sur la matière et non sur l'appareil, avec une méthode de mesure au doigt. Ce
+# n'est pas un réglage, c'est une condition de réussite.
+#
+# ET L'EN-TÊTE RANGE UNE ATTENTE DANS LA COLONNE « CUISSON ». « PRÉPARATION
+# 10 MIN | CUISSON 1 H | PRISE AU FRAIS AU MOINS 6 H », alors que la seule
+# cuisson des étapes est UNE minute d'ébullition. L'heure annoncée est le temps
+# de tiédir jusqu'à 35 °C — une attente, pas un geste. `time_min_total` recopie
+# fidèlement l'en-tête du livre, comme partout ailleurs, mais il faut savoir
+# qu'ici ce chiffre décrit un refroidissement.
+#
+# LA VARIANTE « SUPER GÂTEAU » CHANGE UNE QUANTITÉ DE LA RECETTE ELLE-MÊME.
+# L'autrice explique comment en faire un gâteau d'anniversaire : la moitié des
+# proportions du quatre-quarts p. 166 (saisi) ou du gâteau au yaourt p. 116 (pas
+# encore), cuites 10 à 12 min à 180 °C dans un cercle de 24 cm — et surtout
+# « 4 g d'agar-agar au lieu de 2 g, car il faut que la mousse tienne à la
+# découpe ». Chaîner change donc les chiffres du CONSOMMATEUR, pas seulement
+# ceux de la base. `accepts` porte une `qty` de ce qu'on prend ; rien ne dit
+# « et dans ce cas, double ton agar-agar ».
+
+recipe:
+  id: mousse-legere-peches
+  title: Mousse légère aux pêches
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 107"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 107
+    saison: ete
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8
+  time_min_total: 70        # en-tête du livre ; voir ci-dessus, l'heure est un refroidissement
+  active_min: 10
+
+  creneaux: [gouter, dessert]
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    # ON ACHÈTE 1,2 kg ET ON EN EMPLOIE 800 g, l'autrice le chiffre elle-même
+    # (« peser exactement 800 g de chair de pêche »). L'écart est le noyau et la
+    # peau. Une ligne d'ingrédient porte UNE quantité, et la liste de courses a
+    # besoin de la grande quand la recette a besoin de la petite. Même forme
+    # qu'aux groseilles p. 112, où 300 g de fruits donnent 200 g de jus.
+    - {id: peches, name: "pêches blanches ou jaunes bien mûres — il faut en peser exactement 800 g de chair", qty: 1.2, unit: kg}
+    - {id: agar-agar, name: "agar-agar — 4 g si l'on en fait un gâteau, pour qu'il tienne à la découpe", qty: 2, unit: g}
+    - {id: sirop-agave, ref: agave-mousse, name: sirop d'agave (mousse), qty: 100, unit: g}
+    - {id: creme-coco, name: "crème liquide de coco (ou de vache, au choix)", qty: 40, unit: cl}
+    - {id: fraises, name: fraises bien mûres, qty: 300, unit: g}
+    - {id: sirop-agave, ref: agave-coulis, name: sirop d'agave (coulis), qty: 3, unit: c. à s.}
+
+  steps:
+    - id: peser
+      action: "Éplucher les pêches, retirer les noyaux, et peser exactement 800 g de chair de pêche"
+      needs: [weigh]
+      uses: [peches]
+      time_min: 12
+      kid: {age_min_months: 30, task: "poser les quartiers de pêche sur la balance jusqu'au bon chiffre"}
+    - id: mixer
+      action: "Mixer finement la chair de pêche avec l'agar-agar et le sirop d'agave"
+      needs: [blend-smooth]
+      uses: [agar-agar, agave-mousse]
+      time_min: 4
+    - id: bouillir
+      action: "Porter à ébullition, puis compter 1 minute de cuisson en mélangeant sans cesse"
+      needs: [simmer]
+      uses: []
+      time_min: 6
+      charge_partielle: true   # 800 g de purée, pas huit parts de repas — cf. p. 159 et 166
+    - id: tiedir
+      action: "Laisser tiédir jusqu'à ce que la préparation soit à peine plus chaude que le doigt, environ 35 °C — plus chaude elle ferait fondre la chantilly, plus froide l'agar-agar la ferait prendre en bloc"
+      needs: []
+      uses: []
+      time_min: 2
+      attente_min: 45
+      attente_raison: refroidissement
+      attente_souple: false    # la fenêtre se referme des deux côtés : ni avant, ni après
+    - id: chantilly
+      action: "Fouetter la crème en chantilly bien ferme"
+      needs: []
+      uses: [creme-coco]
+      time_min: 6
+      # Pas de capacité déclarée : le foyer n'a qu'un mixeur plongeur, qui
+      # liquéfierait la crème au lieu de la monter — même décision qu'à la glace
+      # p. 104 et à la tourte p. 87.
+    - id: incorporer
+      action: "Incorporer la chantilly à la crème de pêche tiède, très rapidement, en travaillant au fouet et non à la spatule, juste ce qu'il faut pour bien mélanger — trop fouetter ferait retomber la chantilly"
+      needs: []
+      uses: []
+      time_min: 4
+    - id: ramequins
+      action: "Verser immédiatement dans 8 ramequins et mettre au frais"
+      needs: []
+      uses: []
+      time_min: 4
+      attente_min: 360
+      attente_raison: prise-au-frais
+    - id: coulis
+      action: "Juste avant de servir, mixer les fraises avec le sirop d'agave et verser le coulis sur la mousse"
+      needs: [blend-smooth]
+      uses: [fraises, agave-coulis]
+      time_min: 4
+
+  # PAS DE PRÉLÈVEMENT BÉBÉ : 100 g de sirop d'agave dans la mousse et 3 c. à s.
+  # de plus dans le coulis. Rien d'interdit, seulement du sucre ajouté — huitième
+  # plat du corpus dans ce cas.
+
+  emits:
+    - kind: reste-plat
+      type: mousse-peches
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: false}
+      note: "déjà en ramequins individuels à la fin de la recette, comme le riz au lait p. 158 — huit places de frigo d'un coup"
+
+  plan_b: []                # 6 h de prise au frais : rien ne se comprime

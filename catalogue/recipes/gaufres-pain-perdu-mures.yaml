@@ -1,0 +1,120 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# ═══ LA RECETTE DONT LES NOMBRES SONT DES FONCTIONS DE L'ÂGE DU PAIN ═══
+# L'en-tête et la liste d'ingrédients le disent deux fois :
+#
+#   REPOS DE LA PÂTE 1 H (pain légèrement rassis) À 4 H (pain très dur)
+#   30 cl (pain juste rassis) À 40 cl (pain très sec) de lait de soja-vanille
+#
+# Une attente et une quantité, toutes deux fonction de la SÉCHERESSE du pain,
+# c'est-à-dire du temps qu'il a passé dans la panière de la p. 90. C'est le
+# meilleur argument possible pour l'inventaire qui vieillit : il ne s'agit plus
+# de savoir si on a du pain rassis, il s'agit de savoir DEPUIS QUAND, parce que
+# la recette change de chiffres selon la réponse.
+#
+# Le modèle n'a ni l'âge ni la fonction. `attente_min` porte donc le minimum
+# (1 h) et le lait la valeur haute (40 cl) : celle qui ne rate pas la recette si
+# on se trompe, puisqu'un pain trop sec avec 30 cl reste dur alors qu'un pain
+# peu rassis avec 40 cl fait seulement une pâte plus liquide. C'est un arbitrage
+# de saisie, pas une donnée du livre, et il est écrit ici pour qu'il se voie.
+#
+# ═══ ET LA PREMIÈRE RECETTE QUE CE FOYER NE PEUT PAS EXÉCUTER ═══
+# Il faut un gaufrier. Le croque p. 177 en réclamait un aussi, mais l'autrice y
+# donnait le four comme seconde voie ; ici il n'y en a pas — une gaufre sans
+# gaufrier n'est pas une gaufre. `rules.yaml` déclare donc la capacité
+# `gaufrier` avec un seul outil, que le foyer ne possède pas, et le compilateur
+# marque l'étape « aucune solution avec l'équipement du foyer ».
+#
+# Cinquième consommateur de `pain-rassis`, toujours aucun émetteur.
+
+recipe:
+  id: gaufres-pain-perdu-mures
+  title: Gaufres « pain perdu » aux mûres
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 111"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 111
+    saison: ete
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6
+  time_min_total: 40        # 10 min de préparation ; la cuisson, « quelques minutes par gaufre », n'est pas chiffrable
+  active_min: 10
+
+  creneaux: [petit-dejeuner, gouter]   # « de joyeux petits déjeuners d'été », dit le livre
+
+  apports:
+    proteine: aucune
+    feculent: pain
+    legumes: []
+    profil: rapide
+    origine: francais
+
+  accepts:
+    - type: pain-rassis
+      qty: {amount: 150, unit: g}
+      required: false
+      fallback_recipe: null
+
+  sans_reste:
+    temps_min: 0
+    ingredients:
+      - {id: pain-levain, name: pain bio à laisser sécher, qty: 150, unit: g}
+
+  ingredients:
+    - {id: pain-rassis-ing, name: "pain bio rassis de blé ou d'épeautre — blanc, semi-complet ou complet, c'est égal", qty: 150, unit: g, from_accepts: true}
+    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 100, unit: g}
+    - {id: lait-soja-vanille, name: "lait de soja-vanille — 30 cl si le pain est juste rassis, 40 cl s'il est très sec", qty: 40, unit: cl}
+    - {id: oeufs, name: œufs, qty: 3, unit: pièce}
+    - {id: rhum, name: rhum ambré, qty: 2, unit: c. à s.}
+    - {id: sucre-vanille, name: sucre vanillé, qty: 20, unit: g}
+    - {id: poudre-a-lever, name: c. à c. rase de poudre à lever, qty: 1, unit: c. à c.}
+    - {id: huile-tournesol, name: "huile neutre (tournesol désodorisé), plus un peu pour le gaufrier", qty: 6, unit: cl}
+    - {id: mures, name: mûres, qty: 200, unit: g}
+
+  steps:
+    - id: appareil
+      action: "Mélanger la farine avec la poudre à lever dans un saladier, puis faire un puits ; ajouter le lait, les œufs, le rhum, le sucre et l'huile, et bien mélanger au fouet"
+      needs: []
+      uses: [farine-complete, poudre-a-lever, lait-soja-vanille, oeufs, rhum, sucre-vanille, huile-tournesol]
+      time_min: 6
+    - id: imbiber
+      action: "Découper le pain en petits cubes d'environ 2 cm, les mettre dans le saladier, mélanger grossièrement à la cuillère de bois, puis laisser reposer pour imbiber le pain — 1 h si le pain est un peu rassis, jusqu'à 4 h s'il est très dur"
+      needs: []
+      uses: [pain-rassis-ing]
+      time_min: 4
+      attente_min: 60
+      attente_raison: repos
+    - id: malaxer
+      action: "Malaxer la pâte avec les mains, en écrasant bien les gros morceaux de pain — inutile de mixer, il peut rester de tout petits morceaux qui « boiront » le jus des mûres"
+      needs: []
+      uses: []
+      time_min: 5
+      kid: {age_min_months: 30, task: "écraser les morceaux de pain à la main dans le saladier"}
+    - id: mures
+      action: "Ajouter les mûres et mélanger délicatement à la cuillère"
+      needs: []
+      uses: [mures]
+      time_min: 2
+    - id: cuire
+      action: "Faire chauffer un gaufrier, l'huiler assez généreusement au pinceau, verser un peu de pâte et faire cuire jusqu'à ce que la gaufre soit bien dorée et se décolle ; renouveler jusqu'à épuisement de la pâte, et savourer aussitôt"
+      needs: [gaufrier]
+      uses: [huile-tournesol]
+      time_min: 25
+      attended: true
+
+  # PAS DE PRÉLÈVEMENT BÉBÉ : 2 c. à s. de rhum ambré dans une pâte cuite
+  # quelques minutes seulement — bien moins que l'heure du clafoutis p. 115 —
+  # plus 20 g de sucre vanillé. Septième plat du corpus écarté pour une raison
+  # d'âge, et toujours sans champ pour le porter.
+
+  # Pas d'`emits` : « savourer aussitôt », et une gaufre attendue est une gaufre
+  # molle. C'est le contraire d'un reste, et rien dans le modèle ne distingue un
+  # plat qui ne LAISSE pas de reste d'un plat dont le reste ne vaut rien.
+  transportable: false
+
+  plan_b: []

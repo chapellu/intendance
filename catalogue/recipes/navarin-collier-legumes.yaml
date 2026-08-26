@@ -1,0 +1,97 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# Premier plat carné saisi depuis le livre — et un morceau bon marché (collier),
+# ce qui est le propos de l'ouvrage.
+
+recipe:
+  id: navarin-collier-legumes
+  title: Navarin de collier aux légumes al dente
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 41"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 41
+    saison: printemps
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6
+  time_min_total: 65
+  active_min: 30
+
+  apports:
+    proteine: viande-rouge
+    feculent: pommes-de-terre
+    legumes: [racine, crucifere, allium, solanacee]
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: agneau-collier, name: collier d'agneau, qty: 1.2, unit: kg}
+    - {id: pomme-de-terre, name: pommes de terre nouvelles, qty: 500, unit: g}
+    - {id: carottes, name: jeunes carottes, qty: 12, unit: pièce}
+    - {id: navets-roses, name: jeunes navets roses, qty: 12, unit: pièce}
+    - {id: echalote, name: échalotes (ou 2 oignons), qty: 4, unit: pièce}
+    - {id: tomates-pelees, name: tomates pelées au jus, qty: 400, unit: g}
+    - {id: huile-olive, name: huile d'olive, qty: 6, unit: c. à s.}
+    - {id: thym-frais, name: thym frais (ou séché), qty: 6, unit: brin, seasoning: true}
+    - {id: fleur-de-sel, name: fleur de sel, qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: tailler-legumes
+      action: "Brosser les légumes sans les éplucher, recouper pommes de terre, carottes et navets en morceaux de deux bouchées, puis les essuyer soigneusement au torchon"
+      needs: []
+      time_min: 15
+      kid: {age_min_months: 30, task: "brosser les carottes et les navets sous l'eau"}
+      # L'essuyage est ce qui permet la coloration : des légumes humides
+      # bouillent au lieu de dorer.
+    - id: sauter-legumes
+      action: "Faire revenir les échalotes émincées à l'huile dans une grande cocotte, ajouter carottes, navets et pommes de terre, et les faire caraméliser 10 min à feu vif en remuant souvent ; ils doivent être presque cuits à cœur"
+      needs: [simmer-large]
+      time_min: 10
+      attended: true
+    - id: reserver-legumes
+      action: "Saler, poivrer, retirer les légumes à l'écumoire et les réserver"
+      needs: []
+      time_min: 2
+      seasoning_gate: true
+    - id: colorer-viande
+      action: "Colorer le collier sur toutes ses faces dans la cocotte, puis déglacer les sucs avec un verre d'eau"
+      needs: [simmer-large]
+      time_min: 8
+      attended: true
+    - id: mijoter
+      action: "Ajouter la concassée de tomates, saler, poivrer, ajouter le thym, couvrir et laisser mijoter 30 min à feu très doux en remuant de temps en temps"
+      needs: [simmer-large]
+      time_min: 30
+      attended: false
+    - id: reunir
+      action: "Remettre les légumes réservés dans la cocotte et poursuivre 5 min à petit feu, le temps de les réchauffer"
+      needs: [simmer-large]
+      time_min: 5
+      attended: false
+      # Tout l'intérêt de la recette : les légumes ne mijotent pas 40 min. Le
+      # livre insiste — des navets juste cuits passent bien mieux chez les
+      # enfants que des navets longuement bouillis.
+
+  baby_portion:
+    take: "quelques légumes sautés, AVANT de les saler et de les réserver"
+    prep: "écraser à la fourchette avec un peu de l'huile parfumée de la cocotte"
+    # Pas de « jus de cuisson » ici : à cet instant la viande n'est pas encore
+    # passée dans la cocotte, il n'y a que les sucs des légumes.
+    needs: []
+
+  emits:
+    - kind: reste-plat
+      type: navarin
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+      note: "meilleur réchauffé, mais les légumes perdent leur tenue"
+
+  plan_b:
+    - drop: sauter-legumes
+      saves_min: 10
+      effect: "légumes ajoutés crus au mijotage : c'est le navarin ordinaire, pas celui-ci"

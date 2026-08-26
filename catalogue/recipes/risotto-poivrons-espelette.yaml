@@ -1,0 +1,123 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# LA PREMIÈRE RECETTE QUI TOMBE SUR UNE EXCLUSION DU FOYER, ET RIEN NE LA VOIT.
+# `household.yaml` déclare depuis #29 :
+#
+#     exclusions:
+#       - piquant
+#       - choux de bruxelles
+#
+# Ce risotto porte une demi-cuillerée à café de piment d'Espelette. Un `grep`
+# sur le dépôt donne le verdict : `exclusions` n'apparaît nulle part ailleurs
+# que dans la docstring de `compile.py`, qui annonce compiler « against the
+# household (equipment, eaters, exclusions) ». AUCUNE LIGNE DE CODE NE LE LIT.
+#
+# Le champ existe depuis le premier jour, il a l'air de marcher parce qu'aucune
+# recette ne l'avait encore heurté, et il est faux depuis le premier jour. C'est
+# la forme d'erreur la plus coûteuse d'un fichier de configuration : une donnée
+# que l'utilisateur a pris la peine de renseigner et que personne ne consulte.
+# La recette est saisie fidèlement, telle que le livre l'écrit — c'est au foyer
+# de trancher, et c'est justement ce qu'il croyait avoir fait.
+
+recipe:
+  id: risotto-poivrons-espelette
+  title: Risotto aux poivrons rouges et piment d'Espelette
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 86"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 86
+    saison: ete
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    # Le livre écrit « Pour 3/4 personnes » — une FOURCHETTE, comme la p. 173
+    # (« 4 à 6 en plat unique ou 6 à 8 servi avec du riz ») et comme la p. 88
+    # (« pour 6 personnes, en accompagnement »). `portions_eq` est un nombre, et
+    # il lui faut porter à la fois combien de gens ça nourrit et à quel titre.
+    # Trois recettes de ce lot butent dessus ; 3,5 est le milieu, pas une mesure.
+    portions_eq: 3.5
+  time_min_total: 35        # en-tête : 15 min de préparation + environ 20 min de cuisson
+  active_min: 15
+
+  apports:
+    proteine: fromage       # 150 g de mascarpone
+    feculent: riz
+    legumes: [solanacee, allium]
+    profil: mijote
+    origine: italien
+
+  ingredients:
+    - {id: poivron, name: poivrons rouges, qty: 2, unit: pièce}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: riz-arborio, name: riz arborio, qty: 250, unit: g}
+    - {id: bouillon-legumes, name: "bouillon de légumes, de poule ou de bœuf (en cube bio, ou fait maison)", qty: 2, unit: l}
+    - {id: concentre-tomate, name: concentré de tomates, qty: 70, unit: g}
+    - {id: mascarpone, name: mascarpone, qty: 150, unit: g}
+    - {id: olives-noires, name: olives noires dénoyautées, qty: 15, unit: pièce}
+    - {id: piment-espelette, name: piment d'Espelette, qty: 0.5, unit: c. à c., seasoning: true}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: griller-poivrons
+      action: "Couper les poivrons en deux dans le sens de la longueur, les disposer face coupée vers le bas sur une plaque garnie de papier cuisson et enfourner 10 minutes sous le gril, jusqu'à ce que la peau noircisse et se boursoufle"
+      needs: [grill]
+      uses: [poivron]
+      time_min: 12
+      attended: true        # sous le gril, dix minutes suffisent à passer de noirci à brûlé
+    - id: oignon
+      action: "Pendant ce temps, couper l'oignon en petits cubes et le faire revenir avec l'huile d'olive dans une cocotte"
+      needs: [pan-fry]
+      uses: [oignon, huile-olive]
+      time_min: 8
+      parallel_with: griller-poivrons
+    - id: nacrer
+      action: "Quand l'oignon est bien doré, ajouter le riz et le faire un peu rissoler quelques instants"
+      needs: [pan-fry]
+      uses: [riz-arborio]
+      time_min: 3
+    - id: peler-poivrons
+      action: "Enlever la peau des poivrons, qui doit se détacher facilement, puis les couper en petits cubes et les incorporer au mélange riz-oignon"
+      needs: []
+      uses: [poivron]
+      time_min: 6
+    - id: mouiller
+      action: "Ajouter une louche de bouillon chaud et mélanger à la cuillère de bois jusqu'à absorption complète, puis recommencer, et ainsi de suite jusqu'à ce que le riz soit parfaitement cuit et crémeux — environ 20 minutes, mais cela dépend du riz et il n'y a pas de temps précis"
+      needs: [simmer]
+      uses: [bouillon-legumes]
+      time_min: 20
+      attended: true        # c'est la définition du risotto : on ne le quitte pas
+    - id: finir
+      action: "Peu avant la fin de la cuisson, ajouter le concentré de tomate, un peu de sel, le piment et les olives noires émincées ; terminer en ajoutant le mascarpone, bien mélanger, rectifier l'assaisonnement et servir aussitôt"
+      needs: []
+      uses: [concentre-tomate, sel, piment-espelette, olives-noires, mascarpone]
+      time_min: 5
+      seasoning_gate: true
+
+  baby_portion:
+    take: "une petite louche de risotto crémeux, AVANT le sel, le piment et les olives"
+    prep: "écraser à la fourchette et allonger d'un peu d'eau claire"
+    depuis: [mouiller]
+    needs: []
+    # Réserve honnête, la même qu'à la soupe d'orge p. 56 : « avant salage » ne
+    # veut pas dire non salé. Le riz a cuit dans deux litres de bouillon, qui est
+    # du cube dans la version courante. Le prélèvement se dilue.
+    #
+    # C'est aussi le seul plat de ce lot où le prélèvement est possible, et il
+    # l'est parce que le piment est déclaré `seasoning: true` — donc rangé
+    # derrière la porte avec le sel. Si le foyer honorait son exclusion
+    # `piquant`, la question ne se poserait pas : le plat ne serait pas proposé.
+
+  emits:
+    - kind: reste-plat
+      type: risotto-poivrons
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: false}
+      note: "un risotto réchauffé n'est plus un risotto — il se mange le lendemain, il ne se congèle pas"
+
+  transportable: false      # « servir aussitôt » : le crémeux ne survit pas au trajet
+
+  plan_b: []                # les 20 minutes de louche SONT la recette

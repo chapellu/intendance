@@ -1,0 +1,101 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+
+recipe:
+  id: veloute-ortie
+  title: Velouté d'ortie (ou de fanes, ou de jeunes pousses d'épinards)
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 34"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 34
+    saison: printemps
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4
+  time_min_total: 35
+  active_min: 10
+
+  apports:
+    proteine: aucune
+    feculent: pommes-de-terre
+    legumes: [feuille, allium]
+    profil: soupe
+    origine: francais
+
+  ingredients:
+    - {id: pomme-de-terre, name: pommes de terre, qty: 400, unit: g}
+    - {id: oignon, name: oignons, qty: 2, unit: pièce}
+    - {id: orties, name: "pointes d'orties (ou fanes de navets ou de radis, ou jeunes pousses d'épinards, ou roquette)", qty: 200, unit: g}
+    - {id: eau, name: eau, qty: 1.25, unit: l}
+    - {id: ail, name: ail frais, qty: 2, unit: gousse}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: c. à s., seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: blondir-oignons
+      action: "Émincer les oignons et les faire blondir à l'huile d'olive dans un grand faitout"
+      needs: [simmer-large]
+      time_min: 6
+      attended: true
+    - id: cuire-pommes-de-terre
+      action: "Pendant ce temps : éplucher les pommes de terre, les couper en cubes de 2 cm, les ajouter avec l'eau, l'ail épluché et le sel, puis laisser cuire"
+      needs: [simmer-large]
+      time_min: 15
+      attended: false
+    - id: laver-feuilles
+      action: "Pendant la cuisson : laver les orties (ou les feuilles choisies) — avec des gants pour les orties"
+      needs: []
+      time_min: 5
+      parallel_with: cuire-pommes-de-terre
+    - id: ajouter-feuilles
+      action: "Dès que les cubes de pomme de terre sont bien tendres, ajouter les feuilles et poursuivre 10 min"
+      needs: [simmer-large]
+      time_min: 10
+      attended: false
+      # La cuisson des feuilles est volontairement courte : au-delà, le vert vire
+      # au kaki et la recette perd ce qui la rend jolie.
+    - id: mixer
+      action: "Poivrer et mixer soigneusement jusqu'à une texture bien veloutée"
+      needs: [blend-smooth]
+      time_min: 3
+
+  # PAS DE `baby_portion` : le sel part dans l'eau de cuisson dès le départ, donc
+  # aucun prélèvement n'est non salé. On pourrait saler à l'assiette plutôt que
+  # dans le faitout, mais c'est modifier la recette, pas l'encoder — voir README.
+
+  emits:
+    - kind: reste-plat
+      type: veloute-vert
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+    # 400 g de pommes de terre épluchées et deux oignons : ce plat PRODUIT des
+    # parures, que `consomme-de-fanes` consomme. C'est la première arête du
+    # graphe de chaînage dont la sortie est un déchet plutôt qu'un aliment.
+    - kind: parure
+      type: parures-legumes
+      qty_band: 1-repas
+      qty: {amount: 1, unit: lot}
+      keeps: {frigo_days: 3}
+      note: "épluchures lavées, en boîte hermétique — 2 à 3 jours selon l'autrice"
+
+  # AVERTISSEMENT CUEILLETTE (repris de l'encadré santé du livre, reformulé) :
+  # ramasser uniquement les jeunes pointes, avec des gants, jamais en bord de
+  # route ni sur des champs traités.
+
+  # CHAÎNAGE, CORRIGÉ : j'avais laissé l'arête `fanes` de côté en croyant qu'une
+  # arête sans producteur coûterait `chaine_manquante` (-8). C'est faux — dans
+  # `calculer()`, un `accepts` non couvert bascule sur `sans_reste` et n'est
+  # pénalisé que s'il n'a AUCUN `sans_reste`. Le -8 punit l'impossible, pas le
+  # non-chaîné. Une arête avec plein tarif est donc toujours sûre à poser.
+  # `consomme-de-fanes` (p. 35) l'exploite maintenant dans l'autre sens.
+
+  plan_b:
+    - swap:
+        step: cuire-pommes-de-terre
+        action: "Couper les pommes de terre en cubes de 1 cm pour accélérer la cuisson"
+        saves_min: 6
+      effect: "aucun sur le résultat : le velouté est mixé de toute façon"

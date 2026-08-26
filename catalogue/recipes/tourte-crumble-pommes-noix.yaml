@@ -1,0 +1,152 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# LE CRUMBLE EST FAIT DES CHUTES DE SA PROPRE PÂTE. « Pour le crumble : les
+# chutes de la pâte, 3 à 4 c. à soupe de farine, 35 g de cerneaux de noix. » Une
+# étape produit un déchet, une étape suivante le consomme, et les deux sont dans
+# la MÊME recette. `emits` et `accepts` relient deux recettes distinctes ; il n'y
+# a pas de vocabulaire pour un sous-produit interne. C'est la seconde fois dans
+# ce lot après le riz de la p. 85, dont quatre cuillerées vont dans la farce et
+# le reste dans l'assiette.
+#
+# Et la quantité qui suit est pire encore : « 3 à 4 c. à soupe de farine… si
+# besoin, ajouter la 4e cuillerée (tout dépend de la quantité de "chutes" que
+# vous aviez au départ) ». Une quantité FONCTION d'un état produit plus tôt. Le
+# modèle ne connaît que des constantes, et la liste de courses n'a que le choix
+# d'arrondir au plus grand.
+#
+# LA TEMPÉRATURE, ET CETTE FOIS ELLE CHANGE EN COURS DE CUISSON. 180 °C au
+# départ, « mais si au bout de 15 minutes le dessus cuit trop vite, régler le
+# four en chaleur tournante par le bas, ou à défaut baisser la température à
+# 150 °C ». Le champ manquant depuis la p. 115 n'est donc pas « une température
+# par recette » : c'est une température par ÉTAPE, parfois conditionnelle, et
+# décidée en regardant.
+
+recipe:
+  id: tourte-crumble-pommes-noix
+  title: Tourte-crumble « des paresseux » aux pommes et aux noix
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 160"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 160
+    saison: automne
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « une tarte de 6/8 parts » ; parts de dessert, pas de repas
+  lot_entier: true          # une tarte étalée d'un tenant ne se cuisine pas en fraction
+  time_min_total: 45        # en-tête : 10 à 15 min de préparation + 30 min de cuisson
+  active_min: 15
+
+  creneaux: [gouter, dessert]
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    # Garniture
+    - {id: pommes, name: petites pommes Royal Gala, qty: 8, unit: pièce}
+    - {id: huile-pepin-raisin, ref: huile-garniture, name: huile de pépin de raisin (garniture), qty: 2, unit: c. à s.}
+    # Pâte
+    - {id: farine-petit-epeautre, name: farine T110 de petit épeautre, qty: 300, unit: g}
+    - {id: huile-pepin-raisin, ref: huile-pate, name: huile de pépin de raisin (pâte), qty: 12, unit: cl}
+    - {id: sirop-agave, name: sirop d'agave, qty: 5, unit: cl}
+    - {id: rhum, name: rhum, qty: 1, unit: c. à s.}
+    - {id: lait-soja-vanille, name: lait de soja-vanille, qty: 3, unit: c. à s.}
+    - {id: extrait-vanille, name: extrait de vanille liquide, qty: 1, unit: c. à s.}
+    - {id: fleur-de-sel, name: fleur de sel, qty: 0.5, unit: c. à moka, seasoning: true}
+    # Crumble — plus « les chutes de la pâte », qui ne s'achètent pas et n'ont
+    # donc pas de ligne : c'est exactement le sous-produit interne décrit plus
+    # haut, et l'absence de ligne est la seule façon de ne pas le faire acheter.
+    - {id: farine, name: "farine pour le crumble — 3 à 4 c. à s. selon la quantité de chutes", qty: 4, unit: c. à s.}
+    - {id: noix, name: cerneaux de noix fraîchement décortiqués, qty: 35, unit: g}
+
+  steps:
+    - id: pommes
+      action: "Éplucher les pommes, retirer les trognons, les couper en cubes, puis les faire dorer à la poêle dans deux cuillerées à soupe d'huile, en mélangeant de temps en temps, jusqu'à obtention d'une appétissante coloration des sucs ; réserver"
+      needs: [pan-fry]
+      uses: [pommes, huile-garniture]
+      time_min: 15
+      # Huit petites pommes en cubes tiennent sans peine dans la sauteuse. Ce qui
+      # ne tient pas, c'est l'unité : `contenance` se compte en parts de REPAS
+      # adulte, et les « 6/8 parts » d'une tarte sont des parts de DESSERT, qui
+      # occupent trois fois moins de volume. Le marqueur contourne le calcul ;
+      # la vraie réparation serait de ne pas mesurer deux choses différentes
+      # avec le même mot.
+      charge_partielle: true
+      kid: {age_min_months: 30, task: "couper les quartiers de pomme épluchés en cubes au couteau à bout rond"}
+    - id: prechauffer
+      action: "Préchauffer le four à 180 °C, si possible en chaleur tournante — en statique, compter quelques minutes de cuisson en plus"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+      parallel_with: pommes
+    - id: pate
+      action: "Mettre tous les ingrédients de la pâte dans le bol d'un robot et mixer par brèves impulsions, jusqu'à obtention d'une texture très grossièrement sablonneuse"
+      needs: [chop-coarse]
+      uses: [farine-petit-epeautre, huile-pate, sirop-agave, rhum, lait-soja-vanille,
+             extrait-vanille, fleur-de-sel]
+      time_min: 5
+      # Le foyer n'a pas de robot : `chop-coarse` se replie sur le petit blender
+      # du mixeur plongeur, et le compilateur l'ANNONCE. À comparer au gaufrier
+      # de la p. 177, qui n'est pas une capacité et se replie donc en silence.
+    - id: etaler
+      action: "Sortir la pâte du robot, l'amalgamer entre les mains en une boule bien souple, puis l'étaler directement sur une plaque chemisée de papier cuisson et y redécouper un cercle ou un carré bien régulier à la roulette"
+      needs: []
+      uses: []
+      time_min: 8
+    - id: crumble
+      action: "Mixer les chutes de pâte avec les noix et 3 cuillerées à soupe de farine, de façon à obtenir un crumble à consistance sablonneuse ; ajouter la quatrième cuillerée si besoin, tout dépend de la quantité de chutes"
+      needs: [chop-coarse]
+      uses: [noix, farine]
+      time_min: 4
+    - id: garnir
+      action: "Étaler la compotée de pommes sur la pâte, puis répartir le crumble par-dessus"
+      needs: []
+      uses: []
+      time_min: 4
+      kid: {age_min_months: 30, task: "semer le crumble à la main sur les pommes"}
+    - id: cuire
+      action: "Enfourner assez bas dans le four, afin que le dessous de la tourte soit cuit, et laisser cuire 30 minutes — si au bout de 15 minutes le dessus dore trop vite, passer en chaleur tournante par le bas, ou à défaut baisser le four à 150 °C"
+      needs: [bake]
+      uses: []
+      time_min: 30
+      attended: true        # la décision de mi-cuisson se prend en regardant
+    - id: servir
+      action: "Savourer tiède ou à température ambiante"
+      needs: []
+      uses: []
+      time_min: 1
+
+  baby_portion:
+    take: "quelques cubes de pomme dorés à la poêle, prélevés avant qu'ils ne rejoignent la pâte"
+    prep: "écraser à la fourchette"
+    depuis: [pommes]
+    needs: []
+    # LE PREMIER PRÉLÈVEMENT DU CATALOGUE QUI NE DOIT RIEN À UNE PORTE DE SEL.
+    # La compotée de pommes est nature — pommes et huile, rien d'autre — et la
+    # seule fleur de sel de la recette est dans la pâte, deux étapes plus loin.
+    # `verifier.py` refusait ce cas : il exigeait un `seasoning_gate` au motif
+    # que « le prélèvement ne sera jamais injecté », alors que `compile.py` sait
+    # depuis `depuis:` exactement où l'insérer. Le contrôle datait d'avant le
+    # champ ; c'est cette recette qui l'a mis en défaut.
+
+  emits:
+    - kind: reste-plat
+      type: tourte-crumble-pommes
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: false}
+      note: "un crumble décongelé rend son eau et perd le sablé : elle se garde au frais, elle ne se congèle pas"
+
+  # PAS DE `plan_b`, ET C'EST LOGIQUE : cette recette EST le plan B d'une tarte
+  # aux pommes. L'autrice l'annonce ainsi — pas de moule à beurrer, pas de pâte
+  # à foncer, pas de rosace à disposer. On ne comprime pas ce qui est déjà la
+  # version comprimée.
+  plan_b: []

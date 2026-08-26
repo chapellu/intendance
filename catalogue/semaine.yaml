@@ -1,0 +1,15 @@
+# The week being planned. Hand-written here; in the real app this is the
+# planner's *output*, chosen against the season, the stock and the week's
+# time budget — never typed by a human.
+#
+# Order matters: the planner walks the days forward, so a dish that emits a
+# base can feed a later dish that accepts it. `lentilles-mijotees` on day 1
+# is what makes `burgers-de-lentilles` on day 2 cost nothing extra.
+
+semaine:
+  - {jour: mardi, recipe: lentilles-mijotees}
+  - {jour: mercredi, recipe: burgers-de-lentilles}
+  - {jour: jeudi, recipe: ratatouille-minute}
+  - {jour: vendredi, recipe: omelette-courgettes}
+  - {jour: samedi, recipe: gratin-de-pates-tomates}
+  - {jour: dimanche, recipe: veloute-de-courgettes}

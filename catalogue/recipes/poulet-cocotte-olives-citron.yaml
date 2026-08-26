@@ -1,0 +1,118 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# UNE SOUCHE QUI ÉMET UNE CARCASSE, ET L'AUTRICE DÉSIGNE SON CONSOMMATEUR :
+# « Vous trouverez même page 141 une recette pour valoriser le poulet… jusqu'au
+# bout de sa carcasse. » C'est le cock-a-leekie p. 141, non saisi — troisième
+# arête déclarée par l'ouvrage et pointant vers une page absente, après les
+# p. 192 et 199 du pot-au-feu.
+#
+# Ces trois-là dessinent une règle de saisie qui n'était pas évidente : SAISIR
+# UNE SOUCHE SANS SON DÉRIVÉ PRODUIT UNE SORTIE ORPHELINE, qui se range dans le
+# stock et que rien ne vient chercher. L'inverse — saisir un dérivé sans sa
+# souche — est déjà géré (`fallback_recipe`, `sans_reste`). L'asymétrie n'a
+# jamais été énoncée, et elle dit dans quel ordre lire un livre de cuisine.
+#
+# « PRÉFÉREZ-LE ENTIER ! » est par ailleurs un encadré d'arbitrage à trois
+# entrées, dont aucune n'a d'axe dans le modèle : le prix au kilo (un poulet
+# entier coûte moitié moins que des découpes), l'éthique (les fabricants ne
+# vendent que cuisses et blancs, donc du gaspillage), et le suremballage. Quatre
+# recettes du corpus proposent maintenant un arbitrage en ARGENT — p. 115, 178,
+# 182 et celle-ci — et `plan_b` ne compte toujours que des minutes.
+
+recipe:
+  id: poulet-cocotte-olives-citron
+  title: Poulet « cocotte » aux olives noires, citron et ail confit
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 93"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 93
+    saison: ete
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6
+  time_min_total: 100       # en-tête : 10 min de préparation + 1 h 30 de cuisson
+  active_min: 10
+
+  apports:
+    proteine: viande-blanche
+    feculent: aucun
+    legumes: [allium]
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: poulet, name: poulet fermier entier, qty: 1, unit: pièce}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: ail, name: gousses d'ail, qty: 6, unit: pièce}
+    - {id: laurier, name: feuilles de laurier, qty: 3, unit: pièce, seasoning: true}
+    - {id: herbes-fraiches, name: "brins de sarriette fraîche, de thym frais et/ou de romarin, seuls ou en mélange", qty: 1, unit: poignée}
+    - {id: sauge, name: feuilles de sauge, qty: 6, unit: pièce}
+    - {id: olives-noires, name: olives noires, qty: 1, unit: poignée}
+    - {id: citron, name: "citron bio — le jus, puis le zeste", qty: 1, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: eau, name: verres d'eau, qty: 2, unit: verre}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: dorer-oignon
+      action: "Dans une cocotte en fonte, faire dorer l'oignon émincé dans l'huile d'olive, puis le retirer"
+      needs: [pan-fry]
+      uses: [oignon, huile-olive]
+      time_min: 6
+    - id: dorer-poulet
+      action: "Mettre le poulet dans la cocotte et le faire dorer sur toutes ses faces"
+      needs: [pan-fry]
+      uses: [poulet]
+      time_min: 10
+    - id: reunir
+      action: "Remettre l'oignon dans la cocotte avec le poulet doré, ajouter les gousses d'ail en chemise (non épluchées), les herbes, la sauge, les olives, le jus du citron, le sel et le poivre, puis verser deux verres d'eau"
+      needs: [simmer-large]
+      uses: [ail, herbes-fraiches, sauge, olives-noires, citron, sel, poivre, laurier, eau]
+      time_min: 6
+    - id: mijoter
+      action: "Continuer la cuisson à très petit feu pendant 1 h 30 environ, en surveillant de temps en temps que le fond n'accroche pas ; si besoin, ajouter un peu d'eau, car il doit toujours y avoir de la sauce au fond de la cocotte"
+      needs: [simmer-large]
+      uses: []
+      time_min: 90
+      attended: true        # « en surveillant de temps en temps » : elle l'écrit
+    - id: zeste
+      action: "Cinq minutes avant la fin de la cuisson, ajouter dans le fond de la cocotte le zeste du citron très finement râpé — sans mettre de peau blanche, trop amère — et mélanger"
+      needs: [simmer-large]
+      uses: [citron]
+      time_min: 4
+    - id: servir
+      action: "Le poulet est cuit quand il se découpe facilement aux jointures, même sans couteau"
+      needs: []
+      uses: []
+      time_min: 5
+
+  # PAS DE PRÉLÈVEMENT BÉBÉ : le sel entre avec le bouillon au début des 1 h 30,
+  # exactement comme au rôti p. 55, au pot-au-feu p. 182 et aux lentilles p. 173.
+  # C'est désormais la forme la plus fréquente du corpus — quatre plats mijotés
+  # sur quatre — et elle est structurelle, pas accidentelle : un braisage
+  # s'assaisonne par son liquide.
+
+  emits:
+    - kind: reste-plat
+      type: reste-roti
+      qty_band: 2-repas
+      qty: {amount: 200, unit: g}
+      keeps: {frigo_days: 3, congelo: true}
+      note: "l'autrice range le poulet restant avec les restes de rôti — c'est ce que la focaccia p. 100 réclame"
+    - kind: base
+      # `carcasse-volaille` ET NON UN TYPE NEUF : `soupe-de-poule` consomme déjà
+      # cette sortie, émise jusqu'ici par le seul `poulet-roti`. Inventer
+      # `carcasse-poulet` aurait créé une arête orpheline à côté d'une arête
+      # identique qui marche — la faute exacte que `aliases` répare côté courses.
+      type: carcasse-volaille
+      qty_band: 2-repas
+      qty: {amount: 1, unit: pièce}    # l'unité de `poulet-roti`, sinon l'arête ne matche pas
+      keeps: {frigo_days: 2, congelo: true}
+      note: "l'autrice renvoie au cock-a-leekie p. 141, non saisi ; en attendant, `soupe-de-poule` du répertoire la consomme déjà"
+
+  plan_b: []                # 1 h 30 de mijotage : l'autrice ne propose rien de plus court

@@ -1,0 +1,105 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# PREMIER DESSERT DU CATALOGUE. J'avais écrit ici qu'il fallait un champ
+# `role:` et donc modifier `semaine_model.py` — c'était faux : le levier existe
+# déjà. `convient()` lit un `creneaux:` par recette, et `equilibre_sur` limite
+# la mesure d'équilibre au déjeuner et au dîner. Déclarer `creneaux: [gouter]`
+# suffit à ce qu'un dessert ne soit jamais tiré comme plat principal ni compté
+# dans la couverture de la semaine.
+
+recipe:
+  id: tarte-aux-fraises
+  title: Tarte aux fraises « de compet' »
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 58"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 58
+    saison: printemps
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « 8 à 9 parts » — des parts de dessert, pas de repas
+  time_min_total: 50        # dont 1 h de repos de la pâte, portée par `attente_min`
+  active_min: 25
+
+  creneaux: [gouter, dessert]        # dessert, pas un plat — cf. la note d'en-tête
+
+  apports:
+    proteine: aucune
+    feculent: pate-brisee
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    # Pâte — aux petits suisses, sans crème ni œuf
+    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 180, unit: g}
+    - {id: beurre, name: "beurre mou, à température ambiante", qty: 90, unit: g}
+    - {id: petits-suisses, name: petits suisses au lait entier, qty: 180, unit: g}
+    - {id: sucre-roux, name: sucre roux, qty: 3, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: bonne pincée, seasoning: true}
+    # Garniture
+    - {id: fraises, name: fraises bien sucrées et parfumées, qty: 350, unit: g}
+    - {id: creme-coco, name: "crème de coco liquide, très froide", qty: 20, unit: cl}
+    - {id: sucre-vanille, name: sucre vanillé, qty: 3, unit: sachet}
+
+  steps:
+    - id: faire-la-pate
+      action: "Couper le beurre mou en petits morceaux, puis malaxer à la main farine, sel, sucre, beurre et petits suisses très soigneusement égouttés ; s'arrêter dès que la boule est formée — il doit rester des morceaux de beurre mal mélangés"
+      needs: []
+      time_min: 10
+      kid: {age_min_months: 30, task: "malaxer la pâte à la main"}
+    - id: reposer
+      action: "Couvrir et mettre au frais"
+      needs: []
+      time_min: 5
+      attended: false
+      attente_min: 60
+      attente_raison: repos
+      # 1 h d'attente, sous le seuil de coupure : le repos ne coupe PAS la
+      # recette en deux séances — on attend à la maison. Il décale seulement
+      # l'heure de départ, ce qui est exactement l'information manquante quand
+      # le goûter est à 16 h.
+    - id: cuire-a-blanc
+      action: "Préchauffer à 200 °C, étaler la pâte et foncer un moule à tarte en tôle d'environ 22 cm, puis enfourner 20 min jusqu'à belle coloration"
+      needs: [bake]
+      time_min: 22
+      attended: false
+    - id: refroidir
+      action: "Démouler et laisser refroidir sur une grille — hors du moule, la pâte reste bien plus croustillante"
+      needs: []
+      time_min: 5
+    - id: chantilly
+      action: "Fouetter la crème de coco bien froide en chantilly épaisse avec le sucre vanillé, puis l'étaler sur la pâte entièrement refroidie"
+      needs: [blend-smooth]
+      time_min: 5
+      # La crème de coco ne monte que sortant du frigo : c'est la seule
+      # contrainte technique de la recette.
+    - id: dresser
+      action: "Équeuter les fraises, les couper en deux et les serrer sur la crème"
+      needs: []
+      time_min: 8
+      kid: {age_min_months: 30, task: "équeuter les fraises et les ranger sur la tarte"}
+
+  # PAS DE `baby_portion` : c'est un dessert sucré monté au sucre vanillé. La
+  # question du prélèvement non salé ne se pose pas, et une part de tarte n'est
+  # pas une portion de bébé de 12 mois.
+
+  emits:
+    - kind: reste-plat
+      type: tarte-fraises
+      qty_band: 2-repas
+      keeps: {frigo_days: 1, congelo: false}
+      note: "24 h maximum, bien couverte au frais — au-delà la pâte se détrempe"
+
+  transportable: false      # chantilly et fraises fraîches : ne voyage pas
+
+  plan_b:
+    - swap:
+        step: faire-la-pate
+        action: "Utiliser une pâte feuilletée toute prête plutôt que la pâte aux petits suisses"
+        saves_min: 10
+      effect: "on perd la pâte maison, et il faut toujours la cuire à blanc et la refroidir"

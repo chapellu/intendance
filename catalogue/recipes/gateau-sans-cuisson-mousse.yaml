@@ -1,0 +1,106 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# TROISIÈME CHAÎNE DÉCLARÉE PAR L'AUTRICE (après rôti → soupe d'orge). Sa liste
+# d'ingrédients commence par « mousse au chocolat encore tiède de la page
+# précédente (doubler les proportions !) ».
+
+recipe:
+  id: gateau-sans-cuisson-mousse
+  title: Gâteau sans cuisson à la mousse au chocolat
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 61"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 61
+    saison: printemps
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 12         # « 10 à 12 personnes » — parts de dessert
+  time_min_total: 20        # hors prise au frais une nuit entière
+  active_min: 20
+
+  creneaux: [gouter, dessert]        # dessert : voir la note de `mousse-au-chocolat`
+
+  apports:
+    proteine: aucune
+    feculent: biscuit
+    legumes: []
+    profil: cru
+    origine: francais
+
+  # L'AUTRE BOUT DE L'AXE DU TEMPS. `accepts` vérifiait la fraîcheur en JOURS,
+  # alors que l'autrice demande la mousse « encore tiède » — dans les minutes
+  # qui suivent, avant qu'elle prenne. Une mousse d'hier au frigo passait le
+  # test et ratait la recette : ferme, impossible à couler dans le cercle.
+  # `delai_max_h` dit ce « pas plus de », comme `attente_min` dit le « pas
+  # moins de » (cf. `anticipation.py`).
+  #
+  # `doubler_la_base` reste, lui, du documentaire : un `accepts` ne sait
+  # toujours pas dire « il m'en faut deux fois la recette ».
+  accepts:
+    - type: mousse-chocolat
+      qty: {amount: 2, unit: recette}
+      required: true
+      fallback_recipe: mousse-au-chocolat
+      delai_max_h: 2          # « encore tiède » : le même après-midi, pas la veille
+  doubler_la_base: true     # champ documentaire : rien ne le lit aujourd'hui
+
+  sans_reste:
+    temps_min: 15
+    ingredients:
+      - {id: chocolat-noir, name: chocolat noir pâtissier à 70 %, qty: 400, unit: g}
+      - {id: creme-coco, name: crème de coco liquide, qty: 40, unit: cl}
+      - {id: huile-coco, name: huile de coco vierge, qty: 80, unit: g}
+      - {id: oeufs, name: œufs ultra frais, qty: 6, unit: pièce}
+      - {id: sucre-complet, name: sucre complet, qty: 80, unit: g}
+
+  ingredients:
+    - {id: mousse-chocolat-ing, name: mousse au chocolat encore tiède (proportions doublées), qty: 2, unit: recette, from_accepts: true}
+    - {id: biscuits-cuillere, name: biscuits à la cuillère, qty: 27, unit: pièce}
+    - {id: sirop-imbibage, name: "sirop d'imbibage au choix (expresso-amaretto, agrumes-rhum, Earl Grey, menthe, poire…)", qty: 15, unit: cl}
+    - {id: cacao, name: cacao pour saupoudrer, qty: 2, unit: c. à s.}
+
+  steps:
+    - id: premiere-couche
+      action: "Poser un cercle à pâtisserie d'environ 26 cm directement sur le plat de service et le tapisser d'une couche de biscuits très rapidement trempés dans le sirop, bien serrés"
+      needs: []
+      time_min: 8
+      kid: {age_min_months: 30, task: "tremper les biscuits et les ranger côte à côte"}
+      # « Très rapidement » : un biscuit qui boit trop s'effondre.
+    - id: premiere-mousse
+      action: "Verser la moitié de la mousse encore tiède dans le cercle"
+      needs: []
+      time_min: 2
+    - id: seconde-couche
+      action: "Déposer une deuxième couche de biscuits imbibés, verser le reste de mousse et égaliser"
+      needs: []
+      time_min: 6
+    - id: reposer
+      action: "Couvrir et mettre au frais ; saupoudrer de cacao au moment de servir"
+      needs: []
+      time_min: 4
+      attended: false
+      attente_min: 720
+      attente_raison: repos
+      attente_souple: false
+      # Neuvième recette du catalogue à s'étaler sur deux jours, et la seule
+      # trouvée par le validateur plutôt qu'à la lecture : « une nuit au frais »
+      # était écrit dans la phrase, donc invisible. Le gâteau se monte la veille
+      # de son goûter — et la mousse, elle, se coule dans les minutes qui suivent
+      # sa fabrication. La même recette porte les deux bouts de l'axe.
+
+  # PAS DE `baby_portion` : dessert au chocolat noir, sirop et, selon la
+  # variante, alcool (marsala, amaretto, rhum).
+
+  emits:
+    - kind: reste-plat
+      type: gateau-mousse
+      qty_band: 2-repas
+      keeps: {frigo_days: 2, congelo: false}
+
+  transportable: false      # monté au cercle sur son plat de service
+
+  plan_b: []

@@ -1,0 +1,169 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+
+recipe:
+  id: tourte-nicoise-courgettes
+  title: Tourte niçoise aux courgettes
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 87"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 87
+    saison: ete
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # 8 parts au couteau ; 4 parts adulte en plat principal
+                            # avec une salade, 6 à 8 en entrée ou en pique-nique.
+                            # Même calibrage que la quiche p. 29, plat de même forme.
+  # Bâtie sur un MOULE : la tourte ne se cuisine pas en fraction. Sans ça le
+  # foyer (2,5 parts) commandait 0,625 tourte, donc 375 g de courgettes et
+  # 0,6 œuf — une quantité que personne ne peut acheter ni cuisiner.
+  lot_entier: true
+  time_min_total: 80        # en-tête du livre : 15 à 20 min de préparation + 1 h de cuisson
+  active_min: 20
+
+  apports:
+    proteine: fromage
+    feculent: pate-brisee
+    legumes: [cucurbitacee, allium]
+    profil: four
+    origine: francais
+
+  # `ref:` désambiguïse une LIGNE quand deux partagent le même `id`. L'huile et
+  # le sel entrent ici deux fois, dans la pâte puis dans la farce : l'`id` doit
+  # rester commun (c'est lui qui fusionne les lignes de courses — on n'achète
+  # pas deux huiles), mais `uses:` doit pouvoir viser l'une sans l'autre.
+  ingredients:
+    # Pâte à l'huile d'olive — ni beurre ni œuf, et c'est ce qui la rend
+    # faisable à la main : rien à sabler, rien à faire monter.
+    - {id: farine-complete, name: farine T80 à T110 de blé ou de grand épeautre, qty: 300, unit: g}
+    - {id: eau, name: eau, qty: 15, unit: cl}
+    - {id: huile-olive, ref: huile-olive-pate, name: huile d'olive (pâte), qty: 5, unit: c. à s.}
+    - {id: sel, ref: sel-pate, name: sel (pâte), qty: 1, unit: pincée, seasoning: true}
+    # Farce
+    - {id: courgettes, name: jeunes courgettes, qty: 600, unit: g}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: riz, name: riz cru — il boit l'humidité qui reste et tient la farce, qty: 20, unit: g}
+    - {id: oeufs, name: œuf, qty: 1, unit: pièce}
+    - {id: parmesan, name: parmesan, qty: 100, unit: g}
+    - {id: huile-olive, ref: huile-olive-farce, name: huile d'olive (farce), qty: 4, unit: c. à s.}
+    - {id: sel, ref: sel-farce, name: sel (farce), qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  # `uses:` — QUELS INGRÉDIENTS CETTE ÉTAPE-LÀ RÉCLAME. La liste d'ingrédients
+  # dit ce qu'il faut acheter ; elle ne dit pas quand chaque chose entre. Tant
+  # que le lien n'existe pas, un écran qui déroule la recette geste par geste
+  # doit renvoyer le cuisinier vers la liste complète à chaque étape — c'est
+  # exactement ce qu'un appareil à cuisson guidée ne fait jamais.
+  # Un ingrédient peut revenir : les courgettes se pèsent à la découpe et se
+  # versent à la poêle, et les deux moments veulent le chiffre.
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 180 °C"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    # PAS de `chop-coarse` ICI, ET C'EST UNE DÉCISION. La capacité existe et se
+    # replierait sur le petit blender ; elle réduirait les courgettes en purée.
+    # Le cube de 1 à 1,5 cm EST la recette — c'est lui qui laisse la farce
+    # rendre son eau à la poêle au lieu de la garder. Premier cas du catalogue
+    # où la chaîne de repli dégraderait le plat au lieu de le sauver, donc le
+    # couteau est déclaré en dur, sans capacité.
+    - id: tailler
+      action: "Couper l'oignon et les courgettes en petits cubes de 1 à 1,5 cm de côté"
+      needs: []
+      uses: [oignon, courgettes]
+      time_min: 10
+    - id: poeler
+      action: "Faire revenir l'oignon quelques minutes dans l'huile d'olive, ajouter les courgettes et les laisser dorer à feu vif jusqu'à ce qu'elles soient colorées et aient rendu toute leur eau"
+      needs: [pan-fry]
+      uses: [huile-olive-farce, oignon, courgettes]
+      time_min: 15
+      # Le refroidissement n'est pas du confort : l'œuf arrive ensuite et
+      # coagulerait dans une poêlée brûlante. Court (sous la coupure de 90 min),
+      # donc il ne scinde pas la recette — on le passe à étaler la pâte.
+      attente_min: 10
+      attente_raison: refroidissement
+    - id: faire-la-pate
+      action: "Pendant la poêlée : mélanger la farine et le sel, verser l'eau et l'huile, pétrir énergiquement, puis diviser en deux pâtons dont l'un un peu plus petit"
+      needs: []
+      uses: [farine-complete, sel-pate, eau, huile-olive-pate]
+      time_min: 6
+      parallel_with: poeler
+    - id: foncer
+      action: "Étaler le plus gros pâton sur un plan fariné et en foncer un moule à tarte bien huilé et fariné"
+      needs: []
+      uses: []
+      time_min: 5
+      parallel_with: poeler
+    - id: melanger-farce
+      action: "Ajouter le parmesan, le riz cru et l'œuf à la poêlée refroidie, poivrer et bien mélanger"
+      needs: []
+      uses: [parmesan, riz, oeufs, poivre]
+      time_min: 3
+    - id: saler-farce
+      action: "Saler la farce"
+      needs: []
+      uses: [sel-farce]
+      time_min: 1
+      seasoning_gate: true
+      # Le livre ne dit à AUCUN moment quand saler : « sel, poivre » figure dans
+      # la liste et dans zéro étape. Même trou que `omelette-courgettes`, et il
+      # avait rendu son `seasoning_gate` mensonger. L'étape est donc écrite ici.
+    - id: garnir
+      action: "Garnir la tourtière de farce en égalisant"
+      needs: []
+      uses: []
+      time_min: 2
+    - id: couvrir
+      action: "Étaler le second pâton en un disque plus petit, en recouvrir la tourte, souder les bords et badigeonner le dessus d'un peu d'huile au pinceau"
+      needs: []
+      uses: [huile-olive-pate]
+      time_min: 6
+      kid: {age_min_months: 30, task: "souder les bords à la fourchette, puis passer le pinceau à huile sur le dessus"}
+    - id: cuire
+      action: "Enfourner 45 min"
+      needs: [bake]
+      uses: []
+      time_min: 45
+      attended: false
+    - id: dorer
+      action: "Finir 5 min sous le gril pour dorer la pâte"
+      needs: [grill]
+      uses: []
+      time_min: 5
+      attended: true        # 5 min sous le gril ne se quittent pas des yeux
+
+  baby_portion:
+    take: "quelques cubes de courgette poêlée, prélevés AVANT le parmesan et le sel"
+    prep: "écraser à la fourchette"
+    depuis: [poeler]
+    needs: []
+    # LE SEL N'EST PAS LE SEL. La porte d'assaisonnement ne connaît que ce qui
+    # porte `seasoning: true` — donc le sel et le poivre. Ici la vraie charge
+    # salée, ce sont les 100 g de parmesan, qu'aucun champ ne signale. Prélever
+    # « avant salage » dans la farce donnerait au bébé une portion très salée
+    # tout en cochant la case. Le prélèvement se fait donc en amont, dans la
+    # poêlée nature — d'où `depuis: [poeler]`, qui précède bien la porte.
+    # C'est une classe d'erreur que le validateur ne sait pas voir : un
+    # ingrédient salant qui n'est pas un assaisonnement.
+
+  emits:
+    - kind: reste-plat
+      type: tourte-nicoise
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+      note: "l'autrice la donne pour bonne froide : en refroidissant la pâte perd son croquant et devient moelleuse comme une pâte à pain — le déjeuner de coworking évident"
+
+  plan_b:
+    - drop: dorer
+      saves_min: 5
+      effect: "dessus plus pâle, le goût ne bouge pas"
+    - swap:
+        step: faire-la-pate
+        action: "Dérouler deux pâtes brisées du commerce plutôt que de pétrir la pâte à l'huile"
+        saves_min: 6
+      effect: "on perd la pâte à l'huile d'olive, qui fait la moitié du caractère de la tourte"

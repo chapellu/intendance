@@ -1,0 +1,158 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# ═══ LE FOUR OCCUPÉ TOUTE LA NUIT, À 50 °C ═══
+# « Préchauffer le four à 50 °C […] enfourner 2 heures […] éteindre le four et
+# laisser les yaourts fermenter toute la nuit, de 6 à 8 heures, sans surtout
+# ouvrir la porte. » Le four est mobilisé douze heures d'affilée, à une
+# température qui n'est pas une cuisson, pour une opération qui n'en est pas une.
+#
+# C'est le cas le plus dur de la contention du four, ouverte à la p. 115 avec
+# 180 °C contre 150 °C. Là il fallait arbitrer entre deux plats d'une même soirée
+# ; ici un plat prend l'appareil pour la nuit, et le dessert du lendemain midi
+# n'a nulle part où cuire. `needs: [bake]` ne dit ni la température, ni la durée
+# d'OCCUPATION distincte de la durée de cuisson, ni l'interdiction d'ouvrir.
+#
+# La p. 102 ajoute une courbe : mélange à 53–57 °C, incubation 2 h à 50 °C, puis
+# une descente lente obtenue en laissant le four refroidir. Une consigne de
+# procédé qui est une fonction du temps, pas un réglage.
+#
+# ═══ ET LA PREMIÈRE ARÊTE ENTRE DEUX RECETTES SAISIES DE CE LOT ═══
+# Elle démarre avec « 1 yaourt au lait entier, ou de soja ». Le soja-dessert
+# p. 159 en émet huit. Les deux recettes viennent de saisons différentes du même
+# livre, ne se citent pas l'une l'autre, et le graphe les relie quand même : la
+# p. 159 est la fabrique de ferment, celle-ci en est une consommatrice. Le
+# chaînage a enfin trouvé une arête que l'autrice n'avait pas écrite.
+#
+# ═══ LE RENDEMENT DÉPEND DE L'ENTRÉE ═══
+# « Pour 9 (avec le ferment) à 10 (avec un yaourt) pots. » Le nombre de sorties
+# est fonction de la façon dont on est entré — un sachet de ferments ne prend pas
+# la place d'un pot, un yaourt si. `yields.portions_eq` est une constante, et
+# c'est la deuxième quantité de ce lot qui devrait être une fonction, après la
+# farine du crumble p. 160.
+
+recipe:
+  id: yaourts-aux-fruits
+  title: Yaourts aux fruits, LA recette inratable
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 101"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 101
+    saison: ete
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 10         # 10 pots avec un yaourt, 9 avec du ferment — voir l'en-tête
+  lot_entier: true          # un litre de lait ensemencé d'un pot : ça ne se divise pas
+  time_min_total: 20        # en-tête : 10 min de préparation + ~10 min de cuisson
+  active_min: 10
+
+  creneaux: [petit-dejeuner, gouter, dessert]
+
+  apports:
+    # LE VOCABULAIRE N'A PAS DE CATÉGORIE LAITIÈRE. `cibles.proteine` connaît
+    # legumineuse, poisson, oeuf, viande-rouge, viande-blanche, fromage et
+    # tofu-soja. Un yaourt n'est aucun des sept, et pire : celui-ci se fait « au
+    # lait entier OU de soja », donc sa catégorie dépend d'un choix au magasin.
+    # `fromage` est le moins faux, et il traîne un plafond (`max: 2`) qui n'a
+    # aucun sens pour des yaourts.
+    proteine: fromage
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  accepts:
+    - type: yaourt-soja
+      qty: {amount: 1, unit: pot}
+      required: false
+      fallback_recipe: soja-dessert-vanille
+
+  sans_reste:
+    temps_min: 0
+    ingredients:
+      - {id: ferments-yaourt, name: sachets de ferments en poudre pour yaourt, qty: 2, unit: sachet}
+
+  ingredients:
+    - {id: yaourt-soja-ing, name: "yaourt au lait entier ou de soja, servant de ferment", qty: 1, unit: pot, from_accepts: true}
+    - {id: fruits-frais, name: "fruits frais — fraises, poires, pêches, cerises ou abricots selon la saison", qty: 500, unit: g}
+    - {id: sucre-roux, name: sucre blond, qty: 5, unit: c. à s.}
+    - {id: lait, name: "lait entier (ou de soja)", qty: 1, unit: l}
+
+  steps:
+    - id: compotee
+      action: "Découper les fruits en petits morceaux, les mettre dans une grande casserole avec le sucre et faire chauffer en mélangeant de temps en temps jusqu'à ce que les fruits rendent leur jus ; continuer la cuisson environ 10 minutes, jusqu'à ce que les liquides soient complètement évaporés — on obtient une texture épaisse évoquant la confiture"
+      needs: [simmer]
+      uses: [fruits-frais, sucre-roux]
+      time_min: 16
+      charge_partielle: true   # 500 g de fruits, pas dix parts de repas — cf. p. 159
+      kid: {age_min_months: 30, task: "équeuter les fraises ou dénoyauter les abricots"}
+    - id: repartir
+      action: "Répartir la compotée entre les pots, puis la laisser un peu refroidir — c'est elle au fond qui empêche le lait de cailler pendant la fermentation, et qui fait toute la réussite de la recette"
+      needs: []
+      uses: []
+      time_min: 5
+      attente_min: 20
+      attente_raison: refroidissement
+    - id: chauffer-four
+      action: "Pendant ce temps, faire chauffer de l'eau à la casserole ou à la bouilloire, et préchauffer le four à 50 °C"
+      needs: [bake]
+      uses: []
+      time_min: 5
+    - id: bouillir-lait
+      action: "Prélever 40 cl de lait — 50 cl si le lait sort du réfrigérateur — et le porter à ébullition"
+      needs: [simmer]
+      uses: [lait]
+      time_min: 7
+      charge_partielle: true
+    - id: delayer
+      action: "Pendant ce temps, délayer dans un pichet le yaourt ou le ferment dans le lait restant, puis ajouter le lait bouillant et bien mélanger"
+      needs: []
+      uses: [yaourt-soja-ing]
+      time_min: 4
+    - id: verser
+      action: "Verser immédiatement le lait dans les pots, tout doucement le long de la paroi, afin de ne pas trop déranger la compotée de fruits"
+      needs: []
+      uses: []
+      time_min: 4
+    - id: enfourner
+      action: "Ranger les pots dans un plat à four, verser de l'eau bouillante entre les pots jusqu'aux deux tiers de leur hauteur, et enfourner 2 heures"
+      needs: [bake]
+      uses: []
+      time_min: 120
+      attended: false
+    - id: fermenter
+      action: "Éteindre le four et laisser les yaourts fermenter toute la nuit, de 6 à 8 heures, sans surtout ouvrir la porte"
+      needs: []
+      uses: []
+      time_min: 1
+      attente_min: 420
+      attente_raison: fermentation
+    - id: refroidir
+      action: "Le lendemain, fermer les pots et les laisser entièrement refroidir au frais avant de savourer"
+      needs: []
+      uses: []
+      time_min: 3
+      attente_min: 240
+      attente_raison: prise-au-frais
+
+  # PAS DE PRÉLÈVEMENT BÉBÉ, et pour la même raison qu'au soja-dessert p. 159 :
+  # 5 c. à s. de sucre pour dix pots. Une compotée SANS SUCRE en ferait le
+  # dessert bébé le plus simple du catalogue — troisième fois dans ce lot qu'une
+  # variante déciderait de ce qui est possible pour un convive, après le yaourt
+  # p. 159 et les lentilles sans saucisse p. 173.
+
+  emits:
+    - kind: reste-plat
+      type: yaourt-fruits
+      qty_band: 2-repas
+      keeps: {frigo_days: 7, congelo: false}
+      # DÉLIBÉRÉMENT PAS `kind: base` : un yaourt à la compotée ne réensemence
+      # pas proprement une fournée suivante, contrairement au nature de la
+      # p. 159. La boucle du soja-dessert reste une boucle ; celle-ci est une
+      # feuille du graphe.
+      note: "dix pots dans le frigo pour la semaine — soit la totalité des huit boîtes hermétiques si on ne possède pas de pots à yaourt dédiés"
+
+  plan_b: []

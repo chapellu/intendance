@@ -1,0 +1,104 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+
+recipe:
+  id: salade-pois-chiches-oeufs-mollets
+  title: Salade de pois chiches aux œufs mollets et herbes sauvages
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 36"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 36
+    saison: printemps
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6
+  time_min_total: 20        # hors cueillette, et hors cuisson des pois chiches
+  active_min: 15
+
+  apports:
+    proteine: legumineuse
+    feculent: legumineuse
+    legumes: [feuille, allium]
+    profil: cru
+    origine: francais
+
+  # LE TEMPS CACHÉ DE LA RECETTE. Le livre annonce « 10 min + 8 min » et renvoie
+  # à sa page 18 pour la cuisson des pois chiches secs — soit une nuit de
+  # trempage et plus d'une heure de cuisson, invisibles dans les deux chiffres
+  # affichés. Encoder ça comme un `accepts` remet le coût là où il est : la
+  # salade est express SI la légumineuse est déjà cuite, et ne l'est pas sinon.
+  accepts:
+    - type: pois-chiches-cuits
+      qty: {amount: 500, unit: g}
+      required: false
+      fallback_recipe: null
+
+  sans_reste:
+    temps_min: 5            # avec des bocaux ; les pois chiches secs coûteraient une nuit + 1 h
+    ingredients:
+      - {id: pois-chiches, name: pois chiches cuits (bocal), qty: 1000, unit: g}
+
+  ingredients:
+    - {id: pois-chiches-cuits-ing, name: pois chiches cuits, qty: 500, unit: g, from_accepts: true}
+    - {id: oeufs, name: œufs ultra frais, qty: 6, unit: pièce}
+    - {id: pousses-sauvages, name: "jeunes pousses sauvages (pâquerette, pissenlit, plantain…), seules ou en mélange", qty: 2, unit: grosse poignée}
+    - {id: ail-des-ours, name: ail des ours et/ou cébette, qty: 1, unit: gousse}
+    - {id: huile-olive, name: huile d'olive, qty: 6, unit: c. à s.}
+    - {id: vinaigre-balsamique, name: vinaigre balsamique, qty: 3, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: cuire-oeufs
+      action: "Cuire les œufs 8 min à l'eau bouillante"
+      needs: [simmer]
+      time_min: 8
+      attended: false
+    - id: trier-cueillette
+      action: "Trier la cueillette brin à brin pour écarter tout ce qui n'a pas été identifié, puis laver, essorer et recouper les feuilles trop grandes"
+      needs: []
+      time_min: 8
+      parallel_with: cuire-oeufs
+      # Le tri n'est pas du confort : c'est l'étape de sécurité de la recette.
+    - id: assembler
+      action: "Mélanger les pois chiches, les herbes et l'ail des ours ou la cébette"
+      needs: []
+      time_min: 3
+    - id: assaisonner
+      action: "Assaisonner d'huile, de vinaigre et de sel, puis répartir dans les assiettes"
+      needs: []
+      time_min: 2
+      seasoning_gate: true
+    - id: dresser-oeufs
+      action: "Écaler les œufs, les couper en quatre, les poser sur les assiettes, saler et poivrer légèrement, servir aussitôt"
+      needs: []
+      time_min: 3
+
+  baby_portion:
+    take: "2 c. à s. de pois chiches et un demi-œuf, AVANT l'assaisonnement de la salade"
+    prep: "écraser à la fourchette avec un filet d'huile d'olive ; pas d'herbes sauvages crues"
+    needs: []
+
+  # Une salade assaisonnée ne se garde pas et les herbes cueillies tombent en
+  # quelques heures — donc aucun reste de plat. Mais égoutter 500 g de pois
+  # chiches produit un sous-produit que la mousse au chocolat (p. 59) réclame :
+  # l'aquafaba. Deuxième arête « déchet » du graphe, après les parures du
+  # consommé de fanes.
+  emits:
+    - kind: base
+      type: jus-pois-chiches
+      qty_band: 1-repas
+      qty: {amount: 15, unit: cl}
+      keeps: {frigo_days: 3, congelo: true}
+      note: "aquafaba : se monte en neige comme des blancs d'œufs" 
+  transportable: false      # assaisonnée et montée à l'assiette : ne voyage pas
+
+  plan_b:
+    - swap:
+        step: trier-cueillette
+        action: "Remplacer la cueillette par des pousses d'épinards et de la roquette du commerce, avec une cébette émincée"
+        saves_min: 6
+      effect: "recette du livre en version sans cueillette ; on perd l'amertume des sauvages"

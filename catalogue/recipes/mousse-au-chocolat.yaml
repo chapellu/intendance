@@ -1,0 +1,104 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+
+recipe:
+  id: mousse-au-chocolat
+  title: Mousse au chocolat, les deux versions
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 59"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 59
+    saison: printemps
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6
+  # La sortie se compte en « recette » et les consommateurs en réclament deux :
+  # ce lot ne se fractionne pas. Sans ça le modèle proposait d'en faire 0,42.
+  lot_entier: true
+  time_min_total: 15        # hors 4 h de prise au frais (une nuit au mieux)
+  active_min: 15
+
+  # UN DESSERT, PAS UN PLAT. Le champ `creneaux:` existe déjà et c'est le bon
+  # levier : `convient()` ne proposera cette recette qu'au goûter, elle ne sera
+  # donc jamais tirée comme dîner, et `equilibre_sur: [dejeuner, diner]`
+  # l'exclut du calcul de couverture — un dessert ne doit ni prétendre nourrir
+  # ni faire plonger l'équilibre de la semaine.
+  creneaux: [gouter, dessert]
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  # LES DEUX VERSIONS DU LIVRE, MISES EN REMISE 7 WONDERS. L'autrice les donne
+  # comme équivalentes : blancs d'œufs, ou aquafaba — le jus qu'on récupère en
+  # égouttant une boîte de pois chiches. Si ce jus existe déjà (parce qu'un
+  # autre plat a ouvert les pois chiches), la mousse est végétalienne et ne
+  # coûte rien de plus ; sinon on casse trois œufs. Encore une entrée qui est
+  # le sous-produit d'un autre plat, comme les parures du consommé.
+  accepts:
+    - type: jus-pois-chiches
+      qty: {amount: 12, unit: cl}
+      required: false
+      fallback_recipe: salade-pois-chiches-oeufs-mollets
+
+  sans_reste:
+    temps_min: 0
+    ingredients:
+      - {id: oeufs, name: œufs ultra frais, qty: 3, unit: pièce}
+
+  ingredients:
+    - {id: jus-pois-chiches-ing, name: jus de pois chiches (aquafaba), qty: 12, unit: cl, from_accepts: true}
+    - {id: chocolat-noir, name: chocolat noir pâtissier à 70 % de cacao, qty: 200, unit: g}
+    - {id: creme-coco, name: crème de coco liquide (ou de soja), qty: 20, unit: cl}
+    - {id: huile-coco, name: huile de coco vierge (ou beurre), qty: 40, unit: g}
+    - {id: sucre-complet, name: "sucre au choix (complet, coco…)", qty: 40, unit: g}
+    - {id: extrait-vanille, name: extrait de vanille liquide, qty: 1, unit: c. à s.}
+    - {id: fleur-de-sel, name: fleur de sel, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: fondre-chocolat
+      action: "Chauffer la crème avec la vanille, la fleur de sel et l'huile de coco en surveillant que le fond n'attache pas, puis casser le chocolat dedans et le faire fondre hors du feu en mélangeant"
+      needs: [simmer]
+      time_min: 6
+      attended: true
+    - id: monter-en-neige
+      action: "Pendant ce temps : monter en neige les blancs d'œufs (ou le jus de pois chiches) en ajoutant le sucre en trois fois ; dans la version aux œufs, les jaunes vont dans le chocolat"
+      needs: [blend-smooth]
+      time_min: 6
+      parallel_with: fondre-chocolat
+      kid: {age_min_months: 30, task: "verser le sucre en trois fois pendant que ça monte"}
+    - id: incorporer
+      action: "Incorporer la neige au chocolat fondu à la spatule souple, en soulevant le mélange d'un mouvement tournant, sans le casser"
+      needs: []
+      time_min: 3
+    - id: mettre-au-frais
+      action: "Verser aussitôt dans des petits pots et mettre au frais — au moins 4 h"
+      needs: []
+      time_min: 2
+      attended: false
+      attente_min: 240
+      attente_raison: repos
+      # 4 h de prise : la mousse se fait le matin pour le goûter, pas à 16 h.
+      # C'est aussi le plat qui porte les deux bouts de l'axe en même temps —
+      # sa PROPRE attente est de 4 h, et le gâteau de la p. 61 la réclame dans
+      # les 2 h, avant qu'elle prenne. Les deux contraintes sont vraies et ne
+      # se contredisent pas : ce sont deux usages différents du même bol.
+
+  # PAS DE `baby_portion` : chocolat noir à 70 % et sucre, plus des blancs
+  # d'œufs crus dans une des deux versions. Ni l'un ni l'autre pour 12 mois.
+
+  emits:
+    - kind: base
+      type: mousse-chocolat
+      qty_band: 2-repas
+      qty: {amount: 1, unit: recette}  # UNE recette — le gâteau p.61 en veut deux
+      keeps: {frigo_days: 2, congelo: false}
+      note: "le gâteau de la p. 61 la veut ENCORE TIÈDE — voir l'avertissement là-bas"
+
+  plan_b: []                # 15 min de travail : rien à comprimer

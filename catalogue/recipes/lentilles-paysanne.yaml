@@ -1,0 +1,97 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# AUCUNE LIGNE DE SEL, ET TOUT LE SEL DANS UN SEUL INGRÉDIENT. Ni la liste ni
+# les étapes ne mentionnent le sel : il vient entièrement de la saucisse fumée
+# ou des 70 g de « lardons » de jambon cru. L'encadré de l'autrice explique
+# pourquoi il n'en faut qu'une — les lentilles sont déjà riches en protéines, en
+# mettre plus ferait « double emploi ». Cinquième plat du corpus dont la charge
+# salée est invisible au modèle, et le premier où elle tient tout entière dans
+# UN ingrédient qu'on pourrait retirer.
+#
+# CAR L'AUTRICE PROPOSE JUSTEMENT DE LE RETIRER : « cette recette peut se
+# cuisiner en version végétarienne (c'est déjà très bon !) ». Sans la saucisse,
+# le plat n'a plus aucun sel — et devient mangeable par un bébé de 12 mois. Une
+# VARIANTE change donc ce qui est possible pour un convive, et le modèle n'a
+# rien pour relier les deux : `plan_b` échange une étape contre des minutes,
+# `sans_reste` rachète une base absente, et ni l'un ni l'autre ne dit « cette
+# version-là ouvre le prélèvement bébé ». C'est la deuxième fois que ça se pose
+# dans ce lot, après le yaourt p. 159 dont une base non sucrée changerait tout.
+#
+# LE CATALOGUE A MAINTENANT DEUX RAGOÛTS DE LENTILLES VERTES. Celui-ci et
+# `lentilles-mijotees`, écrit pour le prototype. Ils ne partagent aucun
+# identifiant, donc le cooldown d'`historique.yaml` — qui compte par recette —
+# les laissera tomber la même semaine sans rien remarquer. Rien ne détecte deux
+# plats voisins, et c'est un problème qui n'apparaît qu'avec la taille.
+
+recipe:
+  id: lentilles-paysanne
+  title: Lentilles vertes mijotées à la paysanne
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 173"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 173
+    saison: hiver
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    # « Pour 4 à 6 personnes (en plat unique) ou 6 à 8 personnes (servi avec du
+    # riz) » — la fourchette la plus large du corpus, et elle est DOUBLE :
+    # le nombre de convives dépend de l'accompagnement. 5 est le milieu du plat
+    # unique, qui est l'usage de ce foyer. Ce n'est pas une mesure.
+    portions_eq: 5
+  time_min_total: 55        # en-tête : 10 min de préparation + 45 min de cuisson
+  active_min: 10
+
+  apports:
+    proteine: legumineuse
+    feculent: legumineuse
+    legumes: [racine, allium]
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: saucisse-fumee, name: "saucisse fumée (environ 100 g), ou 70 g de « lardons » de jambon cru", qty: 1, unit: pièce}
+    - {id: lentilles-seches, name: lentilles vertes, qty: 250, unit: g}
+    - {id: oignon, name: oignons, qty: 2, unit: pièce}
+    - {id: poireau, name: poireau, qty: 1, unit: pièce}
+    - {id: carottes, name: carottes, qty: 3, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: eau, name: eau, qty: 1.5, unit: l}
+    - {id: laurier, name: feuilles de laurier, qty: 2, unit: pièce, seasoning: true}
+    - {id: clous-girofle, name: clous de girofle, qty: 2, unit: pièce, seasoning: true}
+
+  steps:
+    - id: revenir
+      action: "Faire revenir à l'huile d'olive, dans une grande cocotte, les oignons et le poireau émincés avec les « lardons » ou la saucisse fumée coupée en tranches"
+      needs: [pan-fry]
+      uses: [huile-olive, oignon, poireau, saucisse-fumee]
+      time_min: 12
+    - id: mijoter
+      action: "Quand tout est bien doré, ajouter l'eau, les carottes en rondelles, le laurier et les clous de girofle, porter à ébullition, puis verser les lentilles en pluie ; bien mélanger, couvrir et laisser mijoter à tout petit feu pendant 45 minutes"
+      needs: [simmer-large]
+      uses: [eau, carottes, laurier, clous-girofle, lentilles-seches]
+      time_min: 45
+      attended: false
+      kid: {age_min_months: 30, task: "verser les lentilles en pluie dans la cocotte à la petite louche"}
+    - id: servir
+      action: "Servir chaud en plat principal, ou encore tiède en salade avec un peu de moutarde à l'ancienne, de l'huile d'olive, un trait de vinaigre de cidre et du persil haché"
+      needs: []
+      uses: []
+      time_min: 3
+
+  # PAS DE PRÉLÈVEMENT BÉBÉ DANS CETTE VERSION : la saucisse entre à la première
+  # minute et sale tout le bain de cuisson des 45 minutes qui suivent — cas
+  # identique au rôti p. 55 et au pot-au-feu p. 182. Voir l'en-tête : la version
+  # végétarienne de l'autrice le rendrait possible, et rien ne permet de le dire.
+
+  emits:
+    - kind: reste-plat
+      type: lentilles-paysanne
+      qty_band: 2-repas
+      keeps: {frigo_days: 4, congelo: true}
+      note: "l'autrice les donne aussi tièdes en salade le lendemain — le reste a déjà sa recette"
+
+  plan_b: []                # 45 min de mijotage passif : rien à comprimer

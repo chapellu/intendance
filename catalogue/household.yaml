@@ -1,0 +1,162 @@
+# The kitchen table as data — ground truth from issue #29 (closed 2026-08-08).
+# This file is the compiler's second input: every recipe is compiled *against* it.
+
+household:
+  name: Francheville
+  fridge_window_days: 4          # lax household, trusted cold chain (#29)
+  freezer_drawers: 3             # binding constraint; one proposed as « plats maison prêts »
+
+  eaters:
+    - id: adulte-1
+      kind: adult
+      portion_eq: 1.0
+    - id: adulte-2
+      kind: adult
+      portion_eq: 1.0
+    - id: grand
+      kind: toddler
+      age_months: 30
+      portion_eq: 0.5
+    - id: petit
+      kind: baby
+      age_months: 12
+      portion_eq: 0.25
+      diet: baby                  # unsalted, mashed/blended — triggers the set-aside step
+  # third baby due ≈ end 2026: will appear here as diet: baby at diversification
+
+  # --- Les trois espaces de stockage --------------------------------------
+  # Une seule unité, la PLACE = une portion équivalent-adulte rangée, la même
+  # que `contenance` sur les récipients et que `portions_eq` sur les recettes.
+  # Le congélateur se dérive de `freezer_drawers` × `equilibre.portions_par_tiroir`
+  # et n'est donc PAS répété ici : deux nombres pour une même grandeur, c'est
+  # la faute que ce dépôt passe son temps à réparer.
+  #
+  # Le frigo et le placard n'avaient jusqu'ici AUCUNE capacité. Une semaine
+  # pouvait planifier plus de restes que d'étagères, et rien ne le voyait.
+  stockage:
+    frigo:
+      places: 10
+      note: "étagères hors bacs à légumes et hors porte — ce qui accueille des plats"
+    placard:
+      places: 20
+      note: "réserve sèche + bocaux stérilisés ; ne compte pas les denrées de fond"
+
+  # --- Les contenants : un POOL qui tourne, pas un puits ------------------
+  # L'équivalent exact de la cellule de stockage d'AE2 (MECANIQUES.md §25) : on
+  # ne range rien sans contenant, ils sont en nombre fini, et un contenant plein
+  # est INDISPONIBLE jusqu'à ce qu'on en mange le contenu. C'est ce cycle qui
+  # manquait — `conservation.yaml` connaissait déjà les bocaux, mais comme un
+  # verrou de compétence, jamais comme un objet qu'on a en nombre limité et
+  # qui revient au lavage.
+  #
+  # La contrainte qui mord dans une vraie cuisine n'est presque jamais « le
+  # congélateur est plein » : c'est « les six boîtes sont au frigo avec la
+  # ratatouille de mardi dedans ».
+  contenants:
+    - id: boites-hermetiques
+      label: boîtes hermétiques 0,5 / 1 L
+      nombre: 8
+      portions: 1
+      espaces: [frigo, congelo]
+    - id: bocaux-le-parfait
+      label: bocaux Le Parfait 0,75 L
+      nombre: 12
+      portions: 2
+      espaces: [frigo, placard]
+      # Le placard n'est ouvert qu'aux bocaux STÉRILISÉS, et la stérilisation
+      # au bain-marie ne vaut que pour les acides — voir l'avertissement en tête
+      # de conservation.yaml. Sans cette capacité, un bocal reste un contenant
+      # de frigo.
+      needs_pour: {placard: sterilisation-bain-marie}
+    - id: sacs-congelation
+      label: sacs congélation
+      nombre: 20
+      portions: 1
+      espaces: [congelo]
+      reutilisable: false        # consommable : il part avec le contenu
+
+  exclusions:
+    - piquant
+    - choux de bruxelles
+
+  # Equipment inventory (#29, rounds 2 + correction). Tools declare *capabilities*;
+  # steps require capabilities, never tools — that indirection is the whole trick.
+  #
+  # `contenance` est en PORTIONS ÉQUIVALENT-ADULTE, la même unité que
+  # `yields.portions_eq` — c'est ce qui rend la comparaison possible sans
+  # convertir des litres en assiettes. Un lot ne se cuisine pas s'il ne tient
+  # pas dans le récipient, quels que soient les ingrédients : c'est la limite
+  # que le modèle ignorait complètement, et elle mord dès qu'on propose de
+  # cuisiner plus grand. Valeurs posées à vue, à corriger à l'usage.
+  equipment:
+    - id: induction-3-feux
+      label: plaque induction 3 feux
+      capabilities: [pan-fry, simmer, boil]
+    - id: four-chaleur-tournante
+      label: four chaleur tournante
+      capabilities: [bake, gratin, roast]
+    - id: micro-ondes
+      label: micro-ondes
+      capabilities: [reheat]
+    - id: cocotte-7.5l
+      label: cocotte 7,5 L
+      # `sterilisation-bain-marie` : une cocotte de 7,5 L immerge des bocaux —
+      # donc la conservation en bocal est DÉJÀ à portée, mais uniquement pour
+      # les aliments acides. Voir l'avertissement de conservation.yaml.
+      contenance: 12
+      # `pan-fry` AJOUTÉ APRÈS TROIS RECETTES QUI L'ÉCRIVENT : « dans une cocotte
+      # en fonte, faire dorer l'oignon » (p. 93), « les faire revenir avec les
+      # lardons » sur 1,5 kg de courge (p. 123), « les faire dorer à l'huile
+      # d'olive dans une cocotte » (p. 127). Une cocotte en fonte rissole, c'est
+      # même ce pour quoi on l'achète, et l'oublier faisait refuser ces plats :
+      # `facteur_max_vaisselle` ne voyait que la sauteuse de 28 cm, et 1,5 kg de
+      # courge n'y tient pas.
+      #
+      # À NOTER — la chaîne `pan-fry` de `rules.yaml` reste dans l'ordre
+      # sauteuse → poêles, donc le texte compilé continue d'annoncer « sauteuse
+      # 28 cm » même quand seul le volume de la cocotte rend le lot possible.
+      # Les deux fichiers répondent à deux questions différentes (quel outil
+      # nommer / qu'est-ce qui tient) et ils divergent ici pour la première fois.
+      capabilities: [simmer-large, steam, sterilisation-bain-marie, pan-fry]
+    - id: congelateur-3-tiroirs
+      label: congélateur 3 tiroirs
+      capabilities: [congeler]
+    - id: sauteuse-28
+      label: sauteuse 28 cm
+      contenance: 6
+      capabilities: [pan-fry, simmer]
+    - id: poele-inox-30
+      label: poêle inox 30 cm
+      contenance: 5
+      capabilities: [pan-fry]
+    - id: poeles-ingenio
+      label: poêles Ingenio 30/26 cm (poignées amovibles)
+      contenance: 5
+      capabilities: [pan-fry, oven-transfer]
+    - id: casseroles
+      label: casseroles 2,6 L / 1,6 L
+      contenance: 5
+      capabilities: [simmer, boil]
+    - id: plats-a-gratin
+      label: plats à gratin 35×18 / 32×20
+      contenance: 6
+      exemplaires: 2      # deux plats : un lot double passe, en deux plats
+      capabilities: [gratin-vessel]
+    - id: mixeur-plongeur
+      label: mixeur plongeur
+      capabilities: [blend-smooth, puree]
+    - id: mini-blender
+      label: petit blender du mixeur plongeur
+      capabilities: [chop-coarse-small, blend-small]
+    - id: balance-tefal
+      label: balance de cuisine
+      capabilities: [weigh]
+    # NOT owned: food processor, steamer appliance, stand mixer, Thermomix-class robot.
+    # Small kitchen: the compiler must never suggest a purchase (#29).
+    #
+    # NOT owned, conservation side — each one is a locked node of the skill tree
+    # rather than a missing feature (kit lock, per #10):
+    #   machine à mise sous vide · autocuiseur/stérilisateur à manomètre ·
+    #   déshydrateur · bocaux à joint caoutchouc
+    # The rule from #29 still holds: the app names what a node would need, and
+    # never turns that into a shopping suggestion.
