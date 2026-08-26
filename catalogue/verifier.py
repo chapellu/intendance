@@ -24,6 +24,7 @@ import anticipation as an
 import catalogue
 import chainage as ch
 import compile as rc  # shadows the builtin `compile` in this module only
+import garde_manger as gm
 
 HERE = Path(__file__).parent
 
@@ -364,6 +365,20 @@ def main() -> int:
         n_err += len(err); n_warn += len(warn)
         if err or warn:
             print("\nhousehold.yaml")
+            for e in err:
+                print(f"  ✗ {e}")
+            for w in warn:
+                print(f"  ⚠ {w}")
+
+        # Le garde-manger ensuite, et ses avertissements ne ressemblent à aucun
+        # autre : ils ne parlent pas du corpus mais de la CUISINE. « Les pignons
+        # de pin sont à la lumière » se corrige en déplaçant un sachet, pas en
+        # éditant un fichier — et c'est la seule sortie de ce vérificateur dont
+        # ce soit vrai.
+        err, warn = gm.verifier_garde_manger(gm.charger(HERE / "garde-manger.yaml"), rayons)
+        n_err += len(err); n_warn += len(warn)
+        if err or warn:
+            print("\ngarde-manger.yaml")
             for e in err:
                 print(f"  ✗ {e}")
             for w in warn:

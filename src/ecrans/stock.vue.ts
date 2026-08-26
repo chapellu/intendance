@@ -18,7 +18,7 @@
 import type { BilanEspace, Calcul } from "../model/calcul";
 import type { LigneDepot } from "../model/depot";
 import type { Jeu } from "../model/jeu";
-import type { Espace } from "../model/types";
+import type { Denree, Espace, GardeManger, Zone } from "../model/types";
 import { fmt } from "../ui/format";
 import { nomEspace } from "../ui/phrases";
 
@@ -233,10 +233,161 @@ export function lots(jeu: Jeu, lignes: readonly LigneDepot[], filtre: Espace | n
     });
 }
 
+/* ───────────────────────────────────────────────────────── le garde-manger */
+
+/**
+ * Ce qu'on peut dire d'une denrée en une ligne.
+ *
+ * `quantite` ne ment jamais par arrondi : « 4 × 285 g » plutôt que « 1 140 g »,
+ * parce que ce sont quatre boîtes et qu'on en ouvre une à la fois. Le total
+ * pesé, lui, se lit au niveau de la zone — c'est là qu'il veut dire quelque
+ * chose.
+ */
+export interface DenreeVue {
+  cle: string;
+  nom: string;
+  quantite: string;
+  etat: string;
+  /** Ce qui abîme cette denrée ICI, et rien quand la zone lui convient. */
+  alerte: string;
+  note: string | null;
+}
+
+export interface ZoneVue {
+  id: string;
+  nom: string;
+  espace: Espace;
+  /** « 42 × 30 × 17 cm · 2 niveaux », ou ce qu'on en connaît. */
+  cotes: string;
+  /** « 42,8 L », ou vide quand une cote manque. */
+  volume: string;
+  /** L'ambiance, en mots : « à la lumière · près d'une source de chaleur ». */
+  ambiance: string;
+  denrees: DenreeVue[];
+  /** Ce que la zone porte, en grammes pesés. Zéro quand rien n'est pesé. */
+  poidsG: number;
+  poids: string;
+}
+
+const nomDenree = (id: string): string => id.replace(/-/g, " ");
+
+const ETIQUETTE_ETAT: Record<Denree["etat"], string> = {
+  conserve: "conserve",
+  bocal: "bocal",
+  sec: "sec",
+  entame: "entamé",
+  frais: "frais",
+};
+
+/** Ce que la zone fait subir à la denrée — et seulement ce qu'elle lui fait
+ *  subir vraiment. Une sensibilité que la zone ne contredit pas ne se dit pas :
+ *  écrire « craint l'humidité » sous un paquet rangé au sec est un avertissement
+ *  qui apprend à être ignoré. */
+export function agressions(d: Denree, z: Zone): string[] {
+  const dits: string[] = [];
+  if (d.sensible.includes("lumiere") && z.exposition === "jour") dits.push("à la lumière");
+  if (d.sensible.includes("humidite") && z.hygrometrie === "humide") dits.push("à l’humidité");
+  if (d.sensible.includes("chaleur") && z.chaleur) dits.push("près d’une source de chaleur");
+  return dits;
+}
+
+function denreeVue(d: Denree, z: Zone, i: number): DenreeVue {
+  const q = d.parUnite;
+  return {
+    cle: `${d.zone}|${d.ingredient}|${i}`,
+    nom: nomDenree(d.ingredient),
+    // Une denrée non pesée dit son compte, jamais « — » : « 1 » est une
+    // information, et c'est celle qu'on a.
+    quantite: q
+      ? d.unites > 1
+        ? `${d.unites} × ${fmt(q.amount)} ${q.unit}`
+        : `${fmt(q.amount)} ${q.unit}`
+      : `${d.unites}`,
+    etat: ETIQUETTE_ETAT[d.etat],
+    alerte: agressions(d, z).join(" · "),
+    note: d.note,
+  };
+}
+
+const cotesDe = (z: Zone): string => {
+  const { largeur_cm: l, profondeur_cm: p, hauteur_cm: h } = z.dimensions;
+  const dims = [l, p, h].every((c) => c != null)
+    ? `${fmt(l!)} × ${fmt(p!)} × ${fmt(h!)} cm`
+    : l != null && p != null
+      ? `${fmt(l!)} × ${fmt(p!)} cm · hauteur libre`
+      : "non mesurée";
+  return [dims, z.niveaux > 1 ? `${z.niveaux} niveaux` : ""].filter(Boolean).join(" · ");
+};
+
+const ambianceDe = (z: Zone): string =>
+  [
+    z.exposition === "jour" ? "à la lumière du jour" : "",
+    z.hygrometrie === "humide" ? "humide" : "",
+    z.chaleur ? "près d’une source de chaleur" : "",
+  ]
+    .filter(Boolean)
+    .join(" · ");
+
+/**
+ * Les rangements et ce qu'ils portent.
+ *
+ * L'ORDRE EST CELUI DU FICHIER, qui est celui du relevé — c'est-à-dire l'ordre
+ * dans lequel on a fait le tour de la cuisine. Trier par volume ou par nombre de
+ * denrées classerait des étagères par une grandeur dont personne ne se sert pour
+ * les retrouver.
+ */
+export function zones(gm: GardeManger): ZoneVue[] {
+  return gm.zones.map((z) => {
+    const dedans = gm.denrees.filter((d) => d.zone === z.id);
+    const poidsG = dedans.reduce((s, d) => s + (d.poidsG ?? 0), 0);
+    return {
+      id: z.id,
+      nom: z.label,
+      espace: z.espace,
+      cotes: cotesDe(z),
+      volume: z.volumeL == null ? "" : `${fmt(z.volumeL)} L`,
+      ambiance: ambianceDe(z),
+      denrees: dedans.map((d, i) => denreeVue(d, z, i)),
+      poidsG,
+      // Au-delà du kilo on lit des kilos : « 5 000 g de farine » se compte en
+      // sacs, pas en grammes.
+      poids: poidsG === 0 ? "" : poidsG >= 1000 ? `${fmt(poidsG / 1000)} kg` : `${fmt(poidsG)} g`,
+    };
+  });
+}
+
+export interface GardeMangerVue {
+  zones: ZoneVue[];
+  /** Les erreurs de rangement, calculées à l'export. */
+  alertes: string[];
+  /** Combien de denrées en tout, et combien pèsent quelque chose de connu. */
+  denrees: number;
+  pesees: number;
+  /** Le poids total constaté, en toutes lettres. */
+  poids: string;
+  /** Le volume mesuré du garde-manger. Les zones non cotées n'y sont pas. */
+  volume: string;
+}
+
+export function gardeManger(gm: GardeManger): GardeMangerVue {
+  const vues = zones(gm);
+  const poidsG = vues.reduce((s, z) => s + z.poidsG, 0);
+  const volumeL = gm.zones.reduce((s, z) => s + (z.volumeL ?? 0), 0);
+  return {
+    zones: vues,
+    alertes: gm.alertes,
+    denrees: gm.denrees.length,
+    pesees: gm.denrees.filter((d) => d.poidsG != null).length,
+    poids: poidsG >= 1000 ? `${fmt(poidsG / 1000)} kg` : `${fmt(poidsG)} g`,
+    volume: volumeL === 0 ? "" : `${fmt(volumeL)} L`,
+  };
+}
+
 export interface Inventaire {
   categories: Categorie[];
   espaces: EspaceVue[];
   lots: LotVue[];
+  gardeManger: GardeMangerVue;
   /**
    * Le rangement réellement ouvert.
    *
@@ -262,6 +413,11 @@ export function vueDeLInventaire(jeu: Jeu, calc: Calcul, voulu: Espace | null): 
     categories: cats,
     espaces: espaces(calc.stockage),
     lots: lots(jeu, lignes, filtre),
+    // LE GARDE-MANGER NE SE FILTRE PAS PAR ESPACE, et c'est délibéré : ses sept
+    // zones tombent toutes sur `placard`, donc le filtre ne trierait rien. Il se
+    // lit par rangement, ce qui est la seule question qu'on se pose devant un
+    // placard — « qu'est-ce qu'il y a dans celui-là ».
+    gardeManger: gardeManger(jeu.catalogue.gardeManger),
     filtre,
     nomDuFiltre: filtre ? nomEspace(filtre) : null,
     constates: lignes.filter((l) => l.ref !== null).length,

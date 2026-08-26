@@ -260,6 +260,74 @@ export interface Conservation {
   acideSeulement: boolean;
 }
 
+/* ─────────────────────────────────────────────────────── le garde-manger */
+
+/** Ce qui abîme une denrée. Chacune a pour miroir un attribut de zone : c'est
+ *  la confrontation des deux que `garde_manger.py` vérifie. */
+export type Agression = "lumiere" | "humidite" | "chaleur";
+
+/** Comment c'est conditionné — donc quelle barrière ça oppose au monde. Un
+ *  sachet entamé et une conserve ne se conservent pas pareil, et ce n'est pas la
+ *  denrée qui change, c'est son emballage. */
+export type Etat = "conserve" | "bocal" | "sec" | "entame" | "frais";
+
+export type Forme = "rectangle" | "demi-lune";
+
+/**
+ * Un rangement physique.
+ *
+ * IL NE REMPLACE PAS `Espace`, IL S'Y RATTACHE. `Espace` dit comment une chose
+ * vieillit — c'est ce dont la fenêtre de fraîcheur a besoin. Une zone dit OÙ
+ * c'est, avec les cotes et l'ambiance qui décident de ce qu'on peut y ranger.
+ * Les sept rangements de ce foyer tombent tous sur `placard` ; sans les zones,
+ * les 17 cm de l'étagère et l'humidité du sous-évier n'ont nulle part où aller.
+ */
+export interface Zone {
+  id: string;
+  label: string;
+  espace: Espace;
+  niveaux: number;
+  /** Cotes en cm. `null` par cote quand elle n'a pas été relevée. */
+  dimensions: { largeur_cm: number | null; profondeur_cm: number | null; hauteur_cm: number | null };
+  forme: Forme;
+  /** Volume utile en litres, dérivé des cotes et de la forme. `null` dès qu'une
+   *  cote manque : inventer une cote ferait entrer la zone dans un total faux. */
+  volumeL: number | null;
+  exposition: "jour" | "sombre";
+  hygrometrie: "sec" | "humide";
+  chaleur: boolean;
+  note: string | null;
+}
+
+/** Une matière première rangée quelque part.
+ *
+ *  `ingredient` est un id du vocabulaire de `rayons.yaml`, PAS un type de
+ *  chaînage : c'est ce qui distingue une conserve de maïs d'une sauce cuisinée,
+ *  et ce qui permettra un jour à `provenance()` de répondre autre chose qu'une
+ *  appartenance binaire. */
+export interface Denree {
+  ingredient: string;
+  zone: string;
+  unites: number;
+  /** `null` = constaté sans être pesé, ce qui est une information. */
+  parUnite: Quantite | null;
+  /** `unites × parUnite`, en grammes, quand l'unité s'y prête. */
+  poidsG: number | null;
+  etat: Etat;
+  sensible: Agression[];
+  /** Ce avec quoi cette denrée ne doit pas partager une zone. */
+  incompatibles: string[];
+  note: string | null;
+}
+
+export interface GardeManger {
+  zones: Zone[];
+  denrees: Denree[];
+  /** Les erreurs de RANGEMENT, calculées à l'export. Elles ne parlent pas des
+   *  données mais de la cuisine : elles se corrigent en déplaçant un sachet. */
+  alertes: string[];
+}
+
 export interface Catalogue {
   foyer: Foyer;
   plats: Plat[];
@@ -268,6 +336,7 @@ export interface Catalogue {
   equilibre: Equilibre;
   conservation: Conservation[];
   stock: LigneStock[];
+  gardeManger: GardeManger;
   provenances: Record<Provenance, string>;
   /** Les provenances qui ne produisent pas de ligne de courses. */
   horsCourses: Provenance[];

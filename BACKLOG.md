@@ -518,6 +518,66 @@ Un ticket = un commit qui laisse l'app fonctionnelle. `[ ]` à faire,
       teste un comportement de navigateur, pas l'image déployée, et Playwright y
       livre son Chromium sans discussion.
 
+- [x] **T21 — Le garde-manger.** `catalogue/garde-manger.yaml` : les rangements
+      physiques du foyer, et la matière première dedans. Relevé du 2026-08-26 —
+      sept zones, 53 denrées, 205,7 L mesurés.
+
+      **CE QUI MANQUAIT, ET POURQUOI AUCUN DES DEUX OBJETS EXISTANTS NE POUVAIT
+      LE PORTER.** `stock.yaml` porte les SORTIES DE CUISINE, indexées sur les
+      types que les recettes `emit` et `accept` : y mettre une conserve de maïs
+      demandait de lui donner `kind: base`, ce qui la faisait entrer dans le
+      graphe de chaînage — et le planificateur aurait proposé d'« enchaîner » une
+      boîte de conserve. `rayons.placard` marque ce qu'on possède TOUJOURS, sans
+      quantité ni endroit : il sait qu'on a du sel, jamais qu'on a quatre boîtes
+      de maïs de 285 g. Le modèle savait donc ce que la cuisine d'hier avait
+      laissé, et ce que le placard pouvait porter — pas ce qu'il y avait dedans.
+
+      **UNE ZONE N'EST PAS UN `Espace`, ELLE S'Y RATTACHE.** `Espace` (frigo ·
+      congelo · placard) dit COMMENT ça vieillit, ce dont la fenêtre de fraîcheur
+      a besoin. Les sept rangements de ce foyer tombent tous sur `placard`, et
+      avec eux les seules informations qui décident vraiment de ce qu'on peut y
+      mettre : 17 cm de hauteur utile sur l'étagère ouverte, la lumière du jour
+      qui y tombe, l'humidité sous l'évier.
+
+      **DEUX GRANDEURS SE DÉRIVENT ET NE SE SAISISSENT JAMAIS** : `volumeL` des
+      cotes et de la forme, `poidsG` des quantités. `forme: demi-lune` applique
+      π/4 — compter les plateaux d'angle en boîte donnait 67 L pour un plateau
+      qui en porte 53, et un budget de rangement faux d'un cinquième déborde sans
+      prévenir.
+
+      **LE VÉRIFICATEUR ATTRAPE DES ERREURS DE CUISINE, PAS DE SAISIE.**
+      `sensible` sur une denrée, `exposition` / `hygrometrie` / `chaleur` sur une
+      zone : c'est leur confrontation qui dit que les pignons de pin sont en
+      pleine lumière à côté de la bouilloire. `incompatibles` dit que les pommes
+      de terre ne doivent pas voisiner avec les alliacées — la seule perte ACTIVE
+      du relevé. C'est la première sortie de `verifier.py` qui se corrige en
+      déplaçant quelque chose plutôt qu'en éditant un fichier, et l'export ne
+      publie que celles-là : « le tiroir à épices n'a pas de cotes » s'adresse à
+      qui tient le corpus, pas à qui habite la cuisine.
+
+      **LES ALERTES SE GROUPENT PAR GESTE.** Une ligne par (denrée × agression)
+      donnait sept alertes pour trois problèmes — les pignons comptaient double,
+      et le sous-évier répétait « humide » sous quatre légumes qu'on sort du même
+      mouvement. Sept lignes ne se lisent pas ; trois, si.
+
+      **LE GARDE-MANGER EST DESCRIPTIF, ET LE RESTE POUR L'INSTANT.** Rien ne le
+      décrémente quand on cuisine, donc `provenance()` continue de lire
+      `rayons.placard` — voir ci-dessous.
+
+### Trouvé en portant, à décider
+
+- [ ] **Le garde-manger ne fait pas taire la liste de courses.** T21 donne enfin
+      des quantités à ce que le placard contient, et `chainage.py` regrettait
+      justement que `rayons.placard` soit « une liste globale et statique » et
+      que « déjà à la maison » ne se dise pas d'un ingrédient ordinaire. Le fil
+      manque pourtant, et ce n'est pas un oubli : brancher `provenance()` sur le
+      garde-manger demande de savoir ce qui SORT du placard quand on cuisine, et
+      rien ne le sait. Sans consommation, quatre boîtes de maïs suppriment la
+      ligne de courses pour toujours — y compris le jour où il n'en reste
+      aucune. Un chiffre qu'on croit tenu à jour alors que rien ne le tient est
+      pire que pas de chiffre du tout. À trancher avec « rentrer une course ne
+      peut pas faire un lot » : c'est le même fil, pris par l'autre bout.
+
 ## Sortie
 
 Quand l'app porte les mêmes verdicts que le proto : supprimer, chez `flagship`,

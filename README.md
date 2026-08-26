@@ -90,6 +90,17 @@ compile une recette contre ce foyer, le vérificateur qui refuse un corpus
 incohérent, et `README.md` — le carnet de bord de ce que la saisie a révélé du
 modèle, recette par recette.
 
+**Deux fichiers portent des stocks, et ce ne sont pas les mêmes.**
+`stock.yaml` porte les SORTIES DE CUISINE — des bases cuisinées, indexées sur ce
+que les recettes émettent, mangées par le graphe de chaînage.
+`garde-manger.yaml` porte la MATIÈRE PREMIÈRE — indexée sur le vocabulaire
+d'ingrédients de `rayons.yaml`, rangée dans des zones physiques qui ont des
+cotes, une exposition et une hygrométrie. Une conserve de maïs va dans le second :
+la mettre dans le premier la ferait entrer dans le chaînage, et le planificateur
+proposerait de l'« enchaîner ». Le garde-manger est descriptif — rien ne le
+décrémente quand on cuisine, et il ne fait donc pas encore taire la liste de
+courses.
+
 **Le modèle Python ne tourne pas dans l'app.** L'app a le sien, en TypeScript,
 sous `src/model/`. Le Python sert à valider le corpus et à produire le JSON ;
 `npm run parite` est ce qui garantit que les deux disent la même chose.

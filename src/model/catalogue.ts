@@ -15,13 +15,16 @@
 // possible. Un champ qu'aucun calcul ne lit peut manquer sans dommage.
 
 import type {
-  Accept, Catalogue, Emit, EmitKind, Espace, Etape, Foyer, Ingredient,
-  LigneStock, Plat, Provenance, Quantite,
+  Accept, Agression, Catalogue, Denree, Emit, EmitKind, Espace, Etape, Etat, Forme, Foyer,
+  GardeManger, Ingredient, LigneStock, Plat, Provenance, Quantite, Zone,
 } from "./types";
 
 const ESPACES: readonly Espace[] = ["frigo", "congelo", "placard"];
 const EMIT_KINDS: readonly EmitKind[] = ["base", "parure", "portion-bebe", "reste-plat"];
 const PROVENANCES: readonly Provenance[] = ["placard", "chaine", "frigo", "courses", "absent"];
+const AGRESSIONS: readonly Agression[] = ["lumiere", "humidite", "chaleur"];
+const ETATS: readonly Etat[] = ["conserve", "bocal", "sec", "entame", "frais"];
+const FORMES: readonly Forme[] = ["rectangle", "demi-lune"];
 
 /** Les deux repas que le code nomme en dur : `gamelles()` cherche « le dîner de
  *  la veille », et l'équilibre se mesure sur les repas principaux. Le reste de
@@ -296,6 +299,77 @@ function ligneStock(v: unknown, ou: string): LigneStock {
   };
 }
 
+/* ───────────────────────────────────────────────────────── le garde-manger */
+
+const coteOuNull = (v: unknown, ou: string): number | null =>
+  v === undefined || v === null ? null : nombre(v, ou);
+
+function zone(v: unknown, ou: string): Zone {
+  const o = obj(v, ou);
+  const d = obj(o["dimensions"] ?? {}, `${ou}.dimensions`);
+  const note = o["note"];
+  return {
+    id: texte(o["id"], `${ou}.id`),
+    label: texte(o["label"], `${ou}.label`),
+    espace: parmi(o["espace"], ESPACES, `${ou}.espace`),
+    niveaux: nombre(o["niveaux"], `${ou}.niveaux`),
+    dimensions: {
+      largeur_cm: coteOuNull(d["largeur_cm"], `${ou}.dimensions.largeur_cm`),
+      profondeur_cm: coteOuNull(d["profondeur_cm"], `${ou}.dimensions.profondeur_cm`),
+      hauteur_cm: coteOuNull(d["hauteur_cm"], `${ou}.dimensions.hauteur_cm`),
+    },
+    forme: parmi(o["forme"], FORMES, `${ou}.forme`),
+    volumeL: nombreOuNull(o["volumeL"] ?? null, `${ou}.volumeL`),
+    exposition: parmi(o["exposition"], ["jour", "sombre"] as const, `${ou}.exposition`),
+    hygrometrie: parmi(o["hygrometrie"], ["sec", "humide"] as const, `${ou}.hygrometrie`),
+    chaleur: booleen(o["chaleur"], `${ou}.chaleur`),
+    note: note === undefined || note === null ? null : texte(note, `${ou}.note`),
+  };
+}
+
+function denree(v: unknown, ou: string): Denree {
+  const o = obj(v, ou);
+  const note = o["note"];
+  return {
+    ingredient: texte(o["ingredient"], `${ou}.ingredient`),
+    zone: texte(o["zone"], `${ou}.zone`),
+    unites: nombre(o["unites"], `${ou}.unites`),
+    parUnite: quantiteOuNull(o["parUnite"] ?? null, `${ou}.parUnite`),
+    poidsG: nombreOuNull(o["poidsG"] ?? null, `${ou}.poidsG`),
+    etat: parmi(o["etat"], ETATS, `${ou}.etat`),
+    sensible: tableau(o["sensible"] ?? [], `${ou}.sensible`)
+      .map((x, i) => parmi(x, AGRESSIONS, `${ou}.sensible[${i}]`)),
+    incompatibles: listeDeTextes(o["incompatibles"] ?? [], `${ou}.incompatibles`),
+    note: note === undefined || note === null ? null : texte(note, `${ou}.note`),
+  };
+}
+
+/**
+ * Le garde-manger, et le seul invariant qui compte vraiment ici.
+ *
+ * UNE DENRÉE RATTACHÉE À UNE ZONE QUI N'EXISTE PAS EST INVISIBLE, pas fausse :
+ * l'écran groupe par zone, donc la ligne ne s'affiche nulle part et personne ne
+ * la cherche. C'est le mode de panne le plus coûteux de cette structure, parce
+ * qu'il ressemble à « je n'en ai plus ». Le vérificateur Python l'attrape déjà —
+ * mais l'export peut être plus vieux que le corpus, et c'est justement contre ça
+ * que cette frontière existe.
+ */
+function gardeManger(v: unknown, ou: string): GardeManger {
+  const o = obj(v, ou);
+  const zones = tableau(o["zones"] ?? [], `${ou}.zones`).map((x, i) => zone(x, `${ou}.zones[${i}]`));
+  const connues = new Set(zones.map((z) => z.id));
+  const denrees = tableau(o["denrees"] ?? [], `${ou}.denrees`)
+    .map((x, i) => denree(x, `${ou}.denrees[${i}]`));
+  for (const d of denrees)
+    if (!connues.has(d.zone))
+      throw new CatalogueInvalide(`${ou}.denrees`, "une zone déclarée", d.zone);
+  return {
+    zones,
+    denrees,
+    alertes: listeDeTextes(o["alertes"] ?? [], `${ou}.alertes`),
+  };
+}
+
 /* ──────────────────────────────────────────────────────────── le catalogue */
 
 /**
@@ -422,6 +496,7 @@ export function lireCatalogue(brut: unknown): Catalogue {
       };
     }),
     stock: tableau(o["stock"] ?? [], "stock").map((x, i) => ligneStock(x, `stock[${i}]`)),
+    gardeManger: gardeManger(o["gardeManger"] ?? {}, "gardeManger"),
     provenances,
     horsCourses: tableau(o["horsCourses"], "horsCourses")
       .map((x, i) => parmi(x, PROVENANCES, `horsCourses[${i}]`)),

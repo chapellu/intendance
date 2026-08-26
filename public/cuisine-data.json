@@ -19656,7 +19656,35 @@
     "levure-boulangere",
     "agar-agar",
     "lait-avoine",
-    "eau-fleur-oranger"
+    "eau-fleur-oranger",
+    "petits-pois-carottes",
+    "pousses-haricots",
+    "maquereaux-boite",
+    "pignons-pin",
+    "cocktail-fruits",
+    "creme-dessert-chocolat",
+    "confiture-orange",
+    "miel",
+    "chocolat-poudre",
+    "puree-mousline",
+    "cracotte",
+    "krisprolls",
+    "sucre-blanc",
+    "ble-lentilles",
+    "semoule",
+    "feuilles-nori",
+    "graines-courge",
+    "tomates-sechees",
+    "sauce-bolognaise-bocal",
+    "guacamole",
+    "compote",
+    "terrine-campagne",
+    "farine-epeautre",
+    "maizena",
+    "chapelure",
+    "riz-rond",
+    "fruits-secs-melange",
+    "preparation-amandine"
    ]
   },
   "placard": [
@@ -19831,6 +19859,818 @@
    "note": "en bocaux — portion d'urgence"
   }
  ],
+ "gardeManger": {
+  "zones": [
+   {
+    "id": "etagere-ouverte",
+    "label": "étagère ouverte",
+    "espace": "placard",
+    "niveaux": 2,
+    "dimensions": {
+     "largeur_cm": 42,
+     "profondeur_cm": 30,
+     "hauteur_cm": 17
+    },
+    "forme": "rectangle",
+    "volumeL": 42.8,
+    "exposition": "jour",
+    "hygrometrie": "sec",
+    "chaleur": true,
+    "note": "Présentoir bois à deux niveaux, sur le plan de travail, à côté de la bouilloire. 17 cm : rien de haut n'y entre, d'où les secs relégués sur le dessus. 30 cm de profondeur pour 17 de haut : le fond est borgne, c'est là que les dates se périment sans se voir."
+   },
+   {
+    "id": "dessus-etagere",
+    "label": "dessus de l'étagère ouverte",
+    "espace": "placard",
+    "niveaux": 1,
+    "dimensions": {
+     "largeur_cm": 42,
+     "profondeur_cm": 30,
+     "hauteur_cm": null
+    },
+    "forme": "rectangle",
+    "volumeL": null,
+    "exposition": "jour",
+    "hygrometrie": "sec",
+    "chaleur": true,
+    "note": "Même surface que l'étagère, hauteur libre. Reçoit ce que les 17 cm du dessous refusent. La bouilloire est ici — source de chaleur et de vapeur."
+   },
+   {
+    "id": "demi-lune-basse",
+    "label": "demi-lune basse",
+    "espace": "placard",
+    "niveaux": 1,
+    "dimensions": {
+     "largeur_cm": 70,
+     "profondeur_cm": 37,
+     "hauteur_cm": 26
+    },
+    "forme": "demi-lune",
+    "volumeL": 52.9,
+    "exposition": "sombre",
+    "hygrometrie": "sec",
+    "chaleur": false,
+    "note": "Plateau demi-lune d'un placard d'angle, ~1 900 cm² (demi-disque ⌀70). Porte le lourd : farine et sucre. Les deux pointes de l'arc sont peu exploitables."
+   },
+   {
+    "id": "demi-lune-haute",
+    "label": "demi-lune haute",
+    "espace": "placard",
+    "niveaux": 1,
+    "dimensions": {
+     "largeur_cm": 70,
+     "profondeur_cm": 37,
+     "hauteur_cm": 33
+    },
+    "forme": "demi-lune",
+    "volumeL": 67.1,
+    "exposition": "sombre",
+    "hygrometrie": "sec",
+    "chaleur": false,
+    "note": "La plus grande hauteur du foyer. C'est elle qui prend les paquets debout que l'étagère ouverte ne peut pas porter."
+   },
+   {
+    "id": "tiroir-epices",
+    "label": "tiroir à épices",
+    "espace": "placard",
+    "niveaux": 2,
+    "dimensions": {
+     "largeur_cm": null,
+     "profondeur_cm": null,
+     "hauteur_cm": null
+    },
+    "forme": "rectangle",
+    "volumeL": null,
+    "exposition": "sombre",
+    "hygrometrie": "sec",
+    "chaleur": false,
+    "note": "Colonne coulissante, deux niveaux. Épices d'un côté, bouteilles couchées de l'autre. Relevé POUR INFORMATION : les condiments n'entrent pas dans le décompte, mais c'est le seul endroit où vivent les huiles et les vinaigres, et un stock sans matière grasse serait un stock faux."
+   },
+   {
+    "id": "placard-haut",
+    "label": "placard haut, étagère basse",
+    "espace": "placard",
+    "niveaux": 1,
+    "dimensions": {
+     "largeur_cm": 57,
+     "profondeur_cm": 32,
+     "hauteur_cm": 23.5
+    },
+    "forme": "rectangle",
+    "volumeL": 42.9,
+    "exposition": "sombre",
+    "hygrometrie": "sec",
+    "chaleur": false,
+    "note": "~43 L. Le poste de pâtisserie : farines, bocaux, caddy de petits sachets. L'étagère du dessus porte les ustensiles et les consommables d'emballage, qui ne sont pas des denrées et ne figurent pas ici."
+   },
+   {
+    "id": "sous-evier",
+    "label": "sous-évier",
+    "espace": "placard",
+    "niveaux": 1,
+    "dimensions": {
+     "largeur_cm": null,
+     "profondeur_cm": null,
+     "hauteur_cm": null
+    },
+    "forme": "rectangle",
+    "volumeL": null,
+    "exposition": "sombre",
+    "hygrometrie": "humide",
+    "chaleur": false,
+    "note": "Meuble bas sous l'évier, siphon et évacuations au-dessus. Le point le plus humide du logement, et c'est là que sont les légumes racines. La lessive vaisselle partage l'emplacement."
+   }
+  ],
+  "denrees": [
+   {
+    "ingredient": "mais",
+    "zone": "etagere-ouverte",
+    "unites": 4,
+    "parUnite": {
+     "amount": 285,
+     "unit": "g"
+    },
+    "poidsG": 1140,
+    "etat": "conserve",
+    "sensible": [],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "petits-pois-carottes",
+    "zone": "etagere-ouverte",
+    "unites": 1,
+    "parUnite": {
+     "amount": 465,
+     "unit": "g"
+    },
+    "poidsG": 465,
+    "etat": "conserve",
+    "sensible": [],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "petits-pois-carottes",
+    "zone": "etagere-ouverte",
+    "unites": 1,
+    "parUnite": {
+     "amount": 530,
+     "unit": "g"
+    },
+    "poidsG": 530,
+    "etat": "conserve",
+    "sensible": [],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "pousses-haricots",
+    "zone": "etagere-ouverte",
+    "unites": 2,
+    "parUnite": {
+     "amount": 90,
+     "unit": "g"
+    },
+    "poidsG": 180,
+    "etat": "conserve",
+    "sensible": [],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "pois-chiches",
+    "zone": "etagere-ouverte",
+    "unites": 1,
+    "parUnite": {
+     "amount": 265,
+     "unit": "g"
+    },
+    "poidsG": 265,
+    "etat": "conserve",
+    "sensible": [],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "maquereaux-boite",
+    "zone": "etagere-ouverte",
+    "unites": 1,
+    "parUnite": {
+     "amount": 169,
+     "unit": "g"
+    },
+    "poidsG": 169,
+    "etat": "conserve",
+    "sensible": [],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "thon-boite",
+    "zone": "etagere-ouverte",
+    "unites": 1,
+    "parUnite": {
+     "amount": 140,
+     "unit": "g"
+    },
+    "poidsG": 140,
+    "etat": "conserve",
+    "sensible": [],
+    "incompatibles": [],
+    "note": "au naturel"
+   },
+   {
+    "ingredient": "thon-boite",
+    "zone": "etagere-ouverte",
+    "unites": 1,
+    "parUnite": {
+     "amount": 160,
+     "unit": "g"
+    },
+    "poidsG": 160,
+    "etat": "conserve",
+    "sensible": [],
+    "incompatibles": [],
+    "note": "à l'huile d'olive"
+   },
+   {
+    "ingredient": "concentre-tomate",
+    "zone": "etagere-ouverte",
+    "unites": 3,
+    "parUnite": {
+     "amount": 70,
+     "unit": "g"
+    },
+    "poidsG": 210,
+    "etat": "conserve",
+    "sensible": [],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "pignons-pin",
+    "zone": "etagere-ouverte",
+    "unites": 1,
+    "parUnite": {
+     "amount": 50,
+     "unit": "g"
+    },
+    "poidsG": 50,
+    "etat": "sec",
+    "sensible": [
+     "lumiere",
+     "chaleur"
+    ],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "cocktail-fruits",
+    "zone": "etagere-ouverte",
+    "unites": 2,
+    "parUnite": {
+     "amount": 825,
+     "unit": "g"
+    },
+    "poidsG": 1650,
+    "etat": "conserve",
+    "sensible": [],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "creme-dessert-chocolat",
+    "zone": "etagere-ouverte",
+    "unites": 1,
+    "parUnite": {
+     "amount": 570,
+     "unit": "g"
+    },
+    "poidsG": 570,
+    "etat": "conserve",
+    "sensible": [],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "confiture-orange",
+    "zone": "etagere-ouverte",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "bocal",
+    "sensible": [],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "miel",
+    "zone": "etagere-ouverte",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "bocal",
+    "sensible": [],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "chocolat-poudre",
+    "zone": "etagere-ouverte",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "sec",
+    "sensible": [],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "puree-mousline",
+    "zone": "dessus-etagere",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "sec",
+    "sensible": [],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "cracotte",
+    "zone": "dessus-etagere",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "entame",
+    "sensible": [
+     "humidite"
+    ],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "krisprolls",
+    "zone": "dessus-etagere",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "entame",
+    "sensible": [
+     "humidite"
+    ],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "biscottes",
+    "zone": "dessus-etagere",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "entame",
+    "sensible": [
+     "humidite"
+    ],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "farine",
+    "zone": "demi-lune-basse",
+    "unites": 1,
+    "parUnite": {
+     "amount": 4000,
+     "unit": "g"
+    },
+    "poidsG": 4000,
+    "etat": "sec",
+    "sensible": [],
+    "incompatibles": [],
+    "note": "T55"
+   },
+   {
+    "ingredient": "sucre-blanc",
+    "zone": "demi-lune-basse",
+    "unites": 1,
+    "parUnite": {
+     "amount": 1000,
+     "unit": "g"
+    },
+    "poidsG": 1000,
+    "etat": "sec",
+    "sensible": [],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "pates",
+    "zone": "demi-lune-haute",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "entame",
+    "sensible": [],
+    "incompatibles": [],
+    "note": "torsades"
+   },
+   {
+    "ingredient": "pates",
+    "zone": "demi-lune-haute",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "entame",
+    "sensible": [],
+    "incompatibles": [],
+    "note": "coquillettes"
+   },
+   {
+    "ingredient": "pates",
+    "zone": "demi-lune-haute",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "entame",
+    "sensible": [],
+    "incompatibles": [],
+    "note": "spaghettis n°5"
+   },
+   {
+    "ingredient": "pates",
+    "zone": "demi-lune-haute",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "sec",
+    "sensible": [],
+    "incompatibles": [],
+    "note": "étoiles"
+   },
+   {
+    "ingredient": "ble-lentilles",
+    "zone": "demi-lune-haute",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "entame",
+    "sensible": [],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "semoule",
+    "zone": "demi-lune-haute",
+    "unites": 2,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "sec",
+    "sensible": [],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "vermicelles",
+    "zone": "demi-lune-haute",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "sec",
+    "sensible": [],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "feuilles-nori",
+    "zone": "demi-lune-haute",
+    "unites": 2,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "sec",
+    "sensible": [
+     "humidite"
+    ],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "lentilles-seches",
+    "zone": "demi-lune-haute",
+    "unites": 1,
+    "parUnite": {
+     "amount": 500,
+     "unit": "g"
+    },
+    "poidsG": 500,
+    "etat": "sec",
+    "sensible": [],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "graines-courge",
+    "zone": "demi-lune-haute",
+    "unites": 1,
+    "parUnite": {
+     "amount": 200,
+     "unit": "g"
+    },
+    "poidsG": 200,
+    "etat": "sec",
+    "sensible": [
+     "lumiere"
+    ],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "tomates-sechees",
+    "zone": "demi-lune-haute",
+    "unites": 1,
+    "parUnite": {
+     "amount": 280,
+     "unit": "g"
+    },
+    "poidsG": 280,
+    "etat": "conserve",
+    "sensible": [],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "concentre-tomate",
+    "zone": "demi-lune-haute",
+    "unites": 2,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "conserve",
+    "sensible": [],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "sauce-bolognaise-bocal",
+    "zone": "demi-lune-haute",
+    "unites": 1,
+    "parUnite": {
+     "amount": 300,
+     "unit": "g"
+    },
+    "poidsG": 300,
+    "etat": "bocal",
+    "sensible": [],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "guacamole",
+    "zone": "demi-lune-haute",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "bocal",
+    "sensible": [],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "compote",
+    "zone": "demi-lune-haute",
+    "unites": 3,
+    "parUnite": {
+     "amount": 710,
+     "unit": "g"
+    },
+    "poidsG": 2130,
+    "etat": "bocal",
+    "sensible": [],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "terrine-campagne",
+    "zone": "demi-lune-haute",
+    "unites": 1,
+    "parUnite": {
+     "amount": 180,
+     "unit": "g"
+    },
+    "poidsG": 180,
+    "etat": "conserve",
+    "sensible": [],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "farine-epeautre",
+    "zone": "placard-haut",
+    "unites": 1,
+    "parUnite": {
+     "amount": 1000,
+     "unit": "g"
+    },
+    "poidsG": 1000,
+    "etat": "entame",
+    "sensible": [
+     "humidite"
+    ],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "farine-petit-epeautre",
+    "zone": "placard-haut",
+    "unites": 1,
+    "parUnite": {
+     "amount": 500,
+     "unit": "g"
+    },
+    "poidsG": 500,
+    "etat": "entame",
+    "sensible": [
+     "humidite"
+    ],
+    "incompatibles": [],
+    "note": "T110"
+   },
+   {
+    "ingredient": "maizena",
+    "zone": "placard-haut",
+    "unites": 1,
+    "parUnite": {
+     "amount": 400,
+     "unit": "g"
+    },
+    "poidsG": 400,
+    "etat": "sec",
+    "sensible": [],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "chapelure",
+    "zone": "placard-haut",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "sec",
+    "sensible": [],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "farine",
+    "zone": "placard-haut",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "bocal",
+    "sensible": [],
+    "incompatibles": [],
+    "note": "distributeur"
+   },
+   {
+    "ingredient": "sucre-blanc",
+    "zone": "placard-haut",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "bocal",
+    "sensible": [],
+    "incompatibles": [],
+    "note": "distributeur"
+   },
+   {
+    "ingredient": "riz-rond",
+    "zone": "placard-haut",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "bocal",
+    "sensible": [],
+    "incompatibles": [],
+    "note": "à racheter — bocal vide"
+   },
+   {
+    "ingredient": "fruits-secs-melange",
+    "zone": "placard-haut",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "bocal",
+    "sensible": [],
+    "incompatibles": [],
+    "note": "raisins secs et chips de banane — acheté en vrac"
+   },
+   {
+    "ingredient": "poudre-amande",
+    "zone": "placard-haut",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "entame",
+    "sensible": [],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "preparation-amandine",
+    "zone": "placard-haut",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "sec",
+    "sensible": [],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "sucre-vanille",
+    "zone": "placard-haut",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "sec",
+    "sensible": [],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "sirop-agave",
+    "zone": "placard-haut",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "bocal",
+    "sensible": [],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "pomme-de-terre",
+    "zone": "sous-evier",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "frais",
+    "sensible": [
+     "humidite",
+     "lumiere"
+    ],
+    "incompatibles": [
+     "oignon",
+     "echalote",
+     "ail"
+    ],
+    "note": null
+   },
+   {
+    "ingredient": "oignon",
+    "zone": "sous-evier",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "frais",
+    "sensible": [
+     "humidite"
+    ],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "echalote",
+    "zone": "sous-evier",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "frais",
+    "sensible": [
+     "humidite"
+    ],
+    "incompatibles": [],
+    "note": null
+   },
+   {
+    "ingredient": "ail",
+    "zone": "sous-evier",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "frais",
+    "sensible": [
+     "humidite"
+    ],
+    "incompatibles": [],
+    "note": null
+   }
+  ],
+  "alertes": [
+   "pignons pin — à la lumière du jour et près d'une source de chaleur (étagère ouverte)",
+   "pomme de terre, oignon, echalote, ail — dans un endroit humide (sous-évier)",
+   "pomme de terre — ne devrait pas voisiner avec ail, echalote, oignon (sous-évier)"
+  ]
+ },
  "provenances": {
   "placard": "placard",
   "chaine": "déjà cuisiné cette semaine",

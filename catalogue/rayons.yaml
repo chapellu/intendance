@@ -214,6 +214,53 @@ rayons:
     - agar-agar
     - lait-avoine
     - eau-fleur-oranger
+    # Arrivés avec le RELEVÉ DU GARDE-MANGER (2026-08-26), pas avec une recette.
+    # C'est une première : jusqu'ici le vocabulaire ne grandissait qu'en saisissant
+    # un plat, donc il ne nommait que ce qu'on cuisine. Un placard contient aussi
+    # ce avec quoi on n'a encore rien cuisiné, et ces ids sont ce qui permet au
+    # garde-manger de pointer vers le même mot que la liste de courses.
+    - petits-pois-carottes
+    - pousses-haricots
+    - maquereaux-boite
+    - pignons-pin
+    - cocktail-fruits
+    - creme-dessert-chocolat
+    - confiture-orange
+    # `miel` est générique et reste DISTINCT de `miel-acacia`, que la p. 115
+    # demande nommément. Les aliaser ferait croire qu'un pot de miel de placard
+    # répond à une recette qui veut de l'acacia.
+    - miel
+    - chocolat-poudre
+    - puree-mousline
+    - cracotte
+    - krisprolls
+    # `sucre-blanc` complète `sucre-roux`, `sucre-complet` et `sucre-vanille` :
+    # les quatre sucres du foyer sont enfin nommés.
+    - sucre-blanc
+    - ble-lentilles
+    - semoule
+    - feuilles-nori
+    - graines-courge
+    - tomates-sechees
+    # Bocal du commerce, à ne pas confondre avec le type de chaînage
+    # `sauce-bolognaise` qu'un plat souche émet : l'un s'achète, l'autre se
+    # cuisine, et c'est le second qui fait gagner du temps.
+    - sauce-bolognaise-bocal
+    - guacamole
+    - compote
+    - terrine-campagne
+    # `farine-epeautre` (grand épeautre) est un troisième id, à côté de
+    # `farine-complete` et de `farine-petit-epeautre` : trois céréales, trois
+    # lignes de courses, et les deux épeautres sont vendus côte à côte.
+    - farine-epeautre
+    - maizena
+    - chapelure
+    # `riz-rond` est le riz de bocal, générique. Il reste distinct de
+    # `riz-arborio`, qui est un riz À RISOTTO : la p. 85 ne se contente pas d'un
+    # riz rond quelconque.
+    - riz-rond
+    - fruits-secs-melange
+    - preparation-amandine
 
 placard:
   - huile-olive
