@@ -257,7 +257,21 @@ def verifier(rid: str, r: dict, rayons: dict, rules: dict, cat: dict,
     portes = [s for s in etapes if s.get("seasoning_gate")]
     if r.get("baby_portion"):
         if not portes:
-            err.append("baby_portion sans seasoning_gate : le prélèvement ne sera jamais injecté")
+            # LE CONTRÔLE DATAIT D'AVANT `depuis:`, ET SON MESSAGE EST DEVENU
+            # FAUX. `compile.py` cherche d'abord les étapes de `depuis:` et rend
+            # le prélèvement après la dernière ; il ne retombe sur la porte que
+            # si `depuis:` est vide. Un plat SANS SEL DU TOUT — le yaourt de
+            # soja p. 159, la compotée de pommes de la p. 160 — a un
+            # prélèvement parfaitement injectable et se voyait refuser au motif
+            # qu'il « ne serait jamais injecté ».
+            #
+            # Le contrôle supposait que la seule raison de prélever tôt est le
+            # salage. C'est vrai de la majorité du catalogue et faux en général :
+            # ce qu'il faut, c'est savoir D'OÙ sort la portion, et `depuis:` le
+            # dit mieux qu'une porte.
+            if not r["baby_portion"].get("depuis"):
+                err.append("baby_portion sans seasoning_gate ni `depuis:` : rien ne dit "
+                           "où insérer le prélèvement, il ne sera jamais injecté")
         elif len(portes) > 1:
             err.append(f"{len(portes)} seasoning_gate : le prélèvement serait injecté plusieurs fois")
         else:

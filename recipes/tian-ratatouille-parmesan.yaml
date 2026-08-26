@@ -1,0 +1,112 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# « POUR 6 PERSONNES (EN ACCOMPAGNEMENT) ». La parenthèse est la donnée. Ce plat
+# nourrit six personnes À CÔTÉ d'autre chose ; `portions_eq: 6` le fera compter
+# comme six parts de dîner dans l'équilibre de la semaine, avec un `apports`
+# complet — protéine, féculent, familles de légumes — alors qu'il ne remplit une
+# assiette qu'accompagné. L'autrice le dit d'ailleurs : « peut bien accompagner
+# des grillades, une omelette, un poisson… que se servir avec du riz ou des
+# pâtes pour un repas végétarien (dans ce cas, doublez les proportions de
+# fromage) ».
+#
+# Le rôle d'un plat — plat, accompagnement, entrée — n'existe nulle part dans le
+# modèle. Trois recettes de ce lot le réclament sous trois formes : celle-ci par
+# la parenthèse, la p. 86 et la p. 173 par une fourchette de convives, la p. 157
+# par un mug qui n'est pas un repas.
+#
+# Le catalogue contient déjà `ratatouille-minute` : ce n'est pas la même recette
+# (poêle contre four, morceaux de 3 cm contre minute), et rien dans le modèle ne
+# saurait dire que les deux se ressemblent assez pour ne pas tomber la même
+# semaine — `historique.yaml` a un cooldown par identifiant, pas par famille.
+
+recipe:
+  id: tian-ratatouille-parmesan
+  title: Tian-ratatouille au parmesan
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 88"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 88
+    saison: ete
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « en accompagnement » — voir l'en-tête
+  time_min_total: 60        # en-tête : 15 min de préparation + 30 à 45 min de cuisson
+  active_min: 15
+
+  apports:
+    proteine: fromage
+    feculent: aucun
+    legumes: [solanacee, cucurbitacee, allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: aubergine, name: aubergine, qty: 1, unit: pièce}
+    - {id: courgettes, name: grosses courgettes, qty: 2, unit: pièce}
+    - {id: poivron, name: poivron rouge et poivron vert, qty: 2, unit: pièce}
+    - {id: tomates-roma, name: tomates Roma, qty: 5, unit: pièce}
+    - {id: oignon, name: gros oignon, qty: 1, unit: pièce}
+    - {id: ail, name: gousses d'ail, qty: 3, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 6, unit: c. à s.}
+    - {id: thym-frais, name: brins de thym frais, qty: 1, unit: poignée}
+    - {id: parmesan, name: parmesan râpé, qty: 100, unit: g}
+    - {id: fleur-de-sel, name: fleur de sel, qty: 1, unit: c. à c., seasoning: true}
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 180 °C"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: tailler
+      action: "Laver les légumes, retirer les trognons, enlever les graines des poivrons, puis découper tous les légumes en gros morceaux d'environ 3 cm"
+      needs: []
+      uses: [aubergine, courgettes, poivron, tomates-roma, oignon]
+      time_min: 15
+    - id: brasser
+      action: "Mettre les légumes dans un grand saladier avec le sel, le parmesan, le thym ciselé, les gousses d'ail émincées et l'huile d'olive ; bien brasser le tout pour mélanger parfaitement, puis répartir sur une lèchefrite"
+      needs: []
+      uses: [fleur-de-sel, parmesan, thym-frais, ail, huile-olive]
+      time_min: 6
+      kid: {age_min_months: 30, task: "brasser les légumes à la cuillère dans le grand saladier"}
+    - id: cuire
+      action: "Enfourner 30 à 45 minutes, jusqu'à ce que les légumes soient bien dorés et qu'il n'y ait plus de jus sur la lèchefrite"
+      needs: [bake]
+      uses: []
+      time_min: 40
+      attended: false
+    - id: servir
+      action: "Servir aussi bien tiède qu'à température ambiante"
+      needs: []
+      uses: []
+      time_min: 1
+
+  # PAS DE PRÉLÈVEMENT BÉBÉ. Le sel et les 100 g de parmesan sont brassés avec
+  # les légumes CRUS, avant toute cuisson : le seul moment où quelque chose est
+  # nature, c'est quand rien n'est encore cuit. Aubergine et poivron crus ne se
+  # donnent pas à un enfant de 12 mois. Impossible par construction, comme aux
+  # p. 177, 181 et 182 — mais pour une quatrième raison encore différente :
+  # l'assaisonnement précède ici la cuisson tout entière.
+
+  emits:
+    - kind: reste-plat
+      type: tian-ratatouille
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: true}
+      note: "l'autrice le sert tiède ou à température ambiante : il ne demande même pas à être réchauffé"
+
+  plan_b:
+    # Le vrai levier de la recette, et l'autrice l'explique : le temps de
+    # cuisson dépend de l'ÉPAISSEUR sur la plaque. Étalés en une seule couche,
+    # 30 minutes suffisent ; entassés, il en faut 45. C'est une contrainte de
+    # surface de lèchefrite, que le modèle ne connaît pas plus que les moules.
+    - swap:
+        step: cuire
+        action: "Étaler les légumes sur une simple épaisseur, sans qu'ils se chevauchent : 30 minutes suffisent alors"
+        saves_min: 10
+      effect: "il faut une lèchefrite assez grande — dans un four ordinaire, cela veut dire cuire en deux fournées, ce qui reperd le temps gagné"

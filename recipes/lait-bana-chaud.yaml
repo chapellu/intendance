@@ -1,0 +1,92 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# PREMIÈRE RECETTE DU CATALOGUE À DÉCLARER `petit-dejeuner`, et elle entre en
+# étant INJOIGNABLE PAR CONCEPTION. Le créneau existe dans `creneaux.yaml` avec
+# `nature: routine` : compté dans les apports de la semaine et dans les courses,
+# jamais distribué en cartes. C'est exactement l'état dans lequel étaient les six
+# desserts avant le 20 août, et qui a fait inventer la nature `optionnel`.
+#
+# La différence est qu'ici c'est VOULU, et sourcé : #29 demande les petits
+# déjeuners « with a weekly intake-balance view », pas un choix chaque matin —
+# personne ne veut piocher une carte à 7 h. Le plat est donc planifiable et
+# achetable sans être proposable, et c'est le premier dont on puisse dire ça
+# sans que ce soit un bug. Ça mérite d'être écrit une fois, sinon la prochaine
+# lecture du catalogue le prendra pour la régression des desserts.
+
+recipe:
+  id: lait-bana-chaud
+  title: Bon lait « bana-chaud » du petit déjeuner
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 157"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 157
+    saison: automne
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    # « Pour 4 mugs ». Un mug de chocolat chaud n'est pas une part de repas, et
+    # `portions_eq` ne sait dire que « combien de personnes », jamais « quelle
+    # fraction d'un repas ». Même angle mort qu'au tian p. 88 (accompagnement)
+    # et qu'aux fourchettes des p. 86 et 173.
+    portions_eq: 4
+  time_min_total: 10        # en-tête : 5 min de préparation + 5 min de cuisson
+  active_min: 5
+
+  creneaux: [petit-dejeuner, gouter]
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: []
+    profil: rapide
+    origine: francais
+
+  ingredients:
+    # « On peut même recycler dans cette recette une banane un peu blette » :
+    # troisième plat du corpus bâti sur un reste d'INGRÉDIENT qui n'a pas
+    # d'émetteur possible, après le pain rassis des p. 178 et 172. Ici je ne
+    # déclare pas d'`accepts` : contrairement au pain, la banane blette n'est pas
+    # une variante d'ingrédient mais le même ingrédient plus tard — ce qui est
+    # précisément l'inventaire qui vieillit et qui manque au modèle.
+    - {id: banane, name: "banane mûre à point, ou un peu blette", qty: 1, unit: pièce}
+    - {id: lait-soja-vanille, name: lait de soja-vanille, qty: 80, unit: cl}
+    - {id: cacao, name: cacao bien parfumé, qty: 40, unit: g}
+    - {id: sucre-complet, name: "sucre non raffiné (rapadura, muscovado)", qty: 40, unit: g}
+
+  steps:
+    - id: eplucher
+      action: "Éplucher la banane"
+      needs: []
+      uses: [banane]
+      time_min: 1
+      kid: {age_min_months: 30, task: "éplucher la banane tout seul"}
+    - id: chauffer
+      action: "Faire chauffer le lait de soja"
+      needs: [simmer]
+      uses: [lait-soja-vanille]
+      time_min: 5
+    - id: mixer
+      action: "Mixer le tout au blender jusqu'à obtention d'une texture parfaitement lisse et veloutée"
+      needs: [blend-smooth]
+      uses: [banane, cacao, sucre-complet]
+      time_min: 3
+    - id: servir
+      action: "Servir aussitôt"
+      needs: []
+      uses: []
+      time_min: 1
+
+  # PAS DE PRÉLÈVEMENT BÉBÉ : 40 g de cacao et 40 g de sucre pour quatre mugs.
+  # Le sucre ajouté est déconseillé avant deux ans et le cacao apporte de la
+  # théobromine — ni l'un ni l'autre n'est un interdit strict comme le miel de la
+  # p. 115, et ni l'un ni l'autre n'a de champ. Quatrième plat du corpus dont
+  # l'absence de portion bébé tient à l'ÂGE et non à la structure de la recette.
+
+  # Pas d'`emits` : ça se boit aussitôt, et un chocolat chaud réchauffé au
+  # micro-ondes n'a plus la texture qui fait la recette.
+  transportable: false
+
+  plan_b: []                # 10 minutes en tout

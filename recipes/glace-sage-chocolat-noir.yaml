@@ -1,0 +1,99 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# LE CONGÉLATEUR N'EST PLUS UN RANGEMENT, C'EST UNE ÉTAPE. L'en-tête ne porte
+# même pas de ligne « cuisson » : « PRÉPARATION 10 MIN | PRISE AU CONGÉLATEUR
+# 4 H ». Rien ne cuit ; ce qui transforme le mélange, c'est le froid.
+#
+# `equilibre.congelateur` tient le congélateur pour une réserve de portions de
+# secours, avec un plancher (« en dessous de 4, on redevient dépendant de la
+# liste de courses »). Une glace n'est pas une portion de secours : elle occupe
+# une place en permanence, elle ne dépanne aucun soir qui s'effondre, et elle ne
+# doit surtout pas être décomptée du plancher. Le catalogue en a maintenant deux
+# — les petits pots p. 64 et celle-ci — et rien ne les distingue d'un reste de
+# bolognaise congelé.
+#
+# PAS DE `blend-smooth` SUR LA CHANTILLY, ET C'EST UNE DÉCISION, comme le
+# `chop-coarse` refusé à la tourte p. 87. Le foyer n'a qu'un mixeur plongeur :
+# déclarer la capacité ferait résoudre vers lui, et un mixeur plongeur ne monte
+# pas une crème — il la liquéfie. La chaîne de repli de `rules.yaml` dégraderait
+# la recette au lieu de la sauver, donc le fouet reste implicite.
+
+recipe:
+  id: glace-sage-chocolat-noir
+  title: Glace très « sage » au chocolat noir
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 104"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 104
+    saison: ete
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 5          # « pour 4 à 6 personnes » ; cinquième fourchette du corpus
+  time_min_total: 10        # en-tête : 10 min de préparation, aucune cuisson
+  active_min: 10
+
+  creneaux: [gouter, dessert]
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: sirop-agave, name: sirop d'agave, qty: 10, unit: cl}
+    - {id: cacao, name: cacao en poudre, qty: 50, unit: g}
+    - {id: creme-coco, name: "crème de coco très froide — c'est le froid qui permet de la monter", qty: 40, unit: cl}
+    - {id: extrait-vanille, name: extrait de vanille, qty: 1, unit: c. à s.}
+    - {id: lait-soja-vanille, name: lait soja-vanille, qty: 2, unit: c. à s.}
+    - {id: fleur-de-sel, name: fleur de sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: chocolat-noir, name: bon chocolat noir à 70 %, qty: 45, unit: g}
+
+  steps:
+    - id: monter
+      action: "Monter la crème de coco bien froide en chantilly"
+      needs: []
+      uses: [creme-coco]
+      time_min: 6
+    - id: sauce
+      action: "Mélanger à part le cacao, la vanille, la fleur de sel et le sirop d'agave, avec le lait soja-vanille, de façon à obtenir une sauce chocolat un peu liquide"
+      needs: []
+      uses: [cacao, extrait-vanille, fleur-de-sel, sirop-agave, lait-soja-vanille]
+      time_min: 4
+    - id: raper
+      action: "Râper le chocolat avec un économe"
+      needs: []
+      uses: [chocolat-noir]
+      time_min: 3
+      kid: {age_min_months: 30, task: "râper le chocolat à l'économe, sous surveillance"}
+    - id: incorporer
+      action: "Incorporer délicatement les copeaux de chocolat et la sauce cacao à la chantilly, en s'aidant idéalement d'une spatule souple pour soulever le mélange dans un mouvement tournant"
+      needs: []
+      uses: []
+      time_min: 5
+    - id: congeler
+      action: "Transférer dans un récipient au choix et mettre au congélateur avant de déguster"
+      needs: [congeler]
+      uses: []
+      time_min: 2
+      attente_min: 240
+      attente_raison: prise-au-congelateur
+
+  # PAS DE PRÉLÈVEMENT BÉBÉ : 50 g de cacao et 10 cl de sirop d'agave pour cinq
+  # parts, plus du chocolat à 70 %. Même famille que le bana-chaud p. 157 — le
+  # sucre ajouté et le cacao, ni interdits ni recommandés avant deux ans, et
+  # toujours sans champ pour le porter.
+
+  emits:
+    - kind: reste-plat
+      type: glace-chocolat
+      qty_band: 2-repas
+      keeps: {frigo_days: 0, congelo: true}
+      note: "elle VIT au congélateur : `congelo: true` ne dit pas ici « on peut la congeler » mais « elle n'existe pas ailleurs », et rien dans le modèle ne distingue les deux"
+
+  plan_b: []                # dix minutes de gestes ; les quatre heures sont la recette

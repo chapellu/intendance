@@ -1,0 +1,95 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# ═══ LA PREMIÈRE SOUCHE QUI N'EST PAS UN PLAT ═══
+# Toutes les bases du catalogue étaient jusqu'ici des plats qui laissent quelque
+# chose : les lentilles mijotées se mangent ET émettent, le rôti p. 55 se mange
+# ET donne son bouillon, le pot-au-feu p. 182 nourrit trois repas. Une pâte à
+# pizza crue ne se mange pas. C'est une PRODUCTION, pas un repas.
+#
+# Le modèle n'a pas de place pour ça, et ça se voit à trois endroits :
+#   · `portions_eq: 4` compte des parts d'un plat qui n'existe pas encore ;
+#   · `apports` déclare une protéine, un féculent et des familles de légumes
+#     pour quelque chose que personne ne mangera tel quel ;
+#   · `creneaux` retombe sur le défaut déjeuner + dîner, parce que
+#     `semaine_model.convient()` lit `recipe.get("creneaux") or CRENEAUX_DEFAUT`
+#     — une liste VIDE est falsy, donc « ce plat n'a aucun créneau » est
+#     littéralement inexprimable. La semaine peut donc distribuer une pâte à
+#     pizza crue comme carte de dîner.
+#
+# Ce n'est pas un détail de confort : c'est le pendant exact de ce que la nature
+# `optionnel` a réglé pour les desserts le 20 août. Il manque une nature de plus,
+# ou plutôt un cran au-dessus — un plat qui ne se sert à AUCUN créneau.
+#
+# ═══ ET SES DEUX CONSOMMATEURS SONT DANS LE MÊME LIVRE ═══
+# L'autrice les nomme : « Vous trouverez pages 99 et 100 des idées de recettes
+# avec cette bonne pâte ! » Les deux sont saisies avec celle-ci. C'est le premier
+# sous-graphe COMPLET du catalogue — une souche et tous ses dérivés déclarés —
+# alors que le rôti p. 55 n'en avait qu'un et que le pot-au-feu p. 182 renvoie à
+# deux pages non saisies.
+
+recipe:
+  id: pate-a-pizza-pique-nique
+  title: La pâte à pizza « spéciale pique-nique »
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 96"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 96
+    saison: ete
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # ce que le livre annonce ; voir l'en-tête, ce n'est pas un repas
+  lot_entier: true          # une pâte se fait d'un bloc, pas en 0,6 pâte
+  time_min_total: 10        # en-tête : 5 min de préparation ; la cuisson appartient aux dérivés
+  active_min: 5
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: italien
+
+  ingredients:
+    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 500, unit: g}
+    - {id: eau, name: eau tiède, qty: 365, unit: g}
+    - {id: levure-boulangere, name: "sachet de levure de boulangerie déshydratée (ou un demi-cube de levure fraîche)", qty: 1, unit: sachet}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: sel, name: sel, qty: 10, unit: g, seasoning: true}
+
+  steps:
+    - id: melanger
+      action: "Mélanger la farine et le sel, faire un puits ; délayer la levure dans l'eau tiède — jamais plus de 45 °C —, puis l'ajouter dans le puits avec l'huile d'olive"
+      needs: []
+      uses: [farine-complete, sel, levure-boulangere, eau, huile-olive]
+      time_min: 5
+      # PAS DE PÉTRISSAGE, et c'est la thèse de la recette : « sans pétrissage,
+      # cette pâte se mélange à la cuillère et s'étale avec les mains ». Le repos
+      # d'une nuit REMPLACE le pétrissage. Une attente qui se substitue à un
+      # geste, et non qui s'y ajoute — le modèle compte les deux séparément et
+      # n'a pas de quoi dire que l'une paie l'autre.
+    - id: travailler
+      action: "Bien mélanger à la cuillère de bois solide, en soulevant le mélange pour étirer au maximum le gluten (ou pétrir au robot 5 minutes)"
+      needs: []
+      uses: []
+      time_min: 4
+    - id: lever
+      action: "Poser une assiette retournée sur le saladier et laisser lever une nuit au réfrigérateur"
+      needs: []
+      uses: []
+      time_min: 1
+      attente_min: 720
+      attente_raison: repos
+
+  emits:
+    - kind: base
+      type: pate-a-pizza
+      qty_band: 2-repas
+      qty: {amount: 1, unit: pâte}
+      keeps: {frigo_days: 2, congelo: true}
+      note: "consommée par la grande pizza p. 99 et par la focaccia p. 100, toutes deux désignées par l'autrice"
+
+  plan_b: []                # cinq minutes de gestes ; le reste est une nuit d'attente

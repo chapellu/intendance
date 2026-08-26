@@ -300,8 +300,17 @@ def facteur_max_vaisselle(recipe, foyer):
     de la recette décide. Retourne (equipement, facteur_max) ou (None, None)
     quand rien ne contraint — une recette sans étapes, ou qui n'emploie que des
     outils sans contenance.
+
+    `charge_partielle: true` SUR UNE ÉTAPE LA SORT DU CALCUL, et il a fallu deux
+    faux positifs pour comprendre pourquoi ce champ manquait. Le contrôle
+    supposait que TOUTE étape à récipient traite le lot entier. C'était vrai tant
+    que chaque recette n'avait qu'un seul contenant de cuisson ; ça devient faux
+    dès qu'une étape ne touche qu'un ingrédient — faire fondre 180 g de beurre à
+    la casserole (p. 166) n'est pas huit parts de volume, et le contrôle refusait
+    le gâteau au motif que la casserole était trop petite pour le lot.
     """
-    besoins = {c for s in recipe.get("steps", []) for c in s.get("needs", [])}
+    besoins = {c for s in recipe.get("steps", []) if not s.get("charge_partielle")
+               for c in s.get("needs", [])}
     base = (recipe.get("yields") or {}).get("portions_eq") or 0
     if not besoins or not base:
         return None, None

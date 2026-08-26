@@ -12,10 +12,11 @@
 # `_repertoire.yaml` sont à corriger.
 #
 # Une entrée saisie se signale en lui ajoutant `catalogue_id: <id>` pointant sur
-# le plat correspondant dans `recipes/`. Saisies à ce jour : **31 sur 100**.
-# Le PRINTEMPS est complet à cinq pages près (42, 45, 46, 49, 50) ; l'ÉTÉ est
-# entamé (p. 70 à 81, plus les p. 87 et 115) ; l'HIVER est ouvert par ses quatre
-# premiers plats (p. 177 à 182) ; l'automne est entièrement à saisir.
+# le plat correspondant dans `recipes/`. Saisies à ce jour : **52 sur 100**, soit
+# la moitié du livre. L'ÉTÉ est presque complet (21 sur 26, il reste les
+# p. 107 à 116) ; le PRINTEMPS l'est à cinq pages près (42, 45, 46, 49, 50) ;
+# l'HIVER tient ses sept premiers plats (p. 172 à 182) ; l'AUTOMNE n'a que sa
+# queue (p. 157 à 166), sa p. 163 restant illisible sur la photo disponible.
 #
 # LE COMPTE DE CET EN-TÊTE SE PÉRIME, et il l'a fait : il annonçait 25 alors que
 # les p. 87 et 115 étaient entrées depuis dix jours. Le chiffre juste se calcule
@@ -94,20 +95,20 @@ sommaire:
     - {page: 75, titre: "Rillettes de poisson faciles à l'échalote", catalogue_id: rillettes-poisson-echalote}
     - {page: 76, titre: "Samoussas végétariens aux légumes rôtis", catalogue_id: samoussas-legumes-rotis}
     - {page: 81, titre: "Falafels poêlés aux herbes", catalogue_id: falafels-aux-herbes}
-    - {page: 82, titre: "One pot pasta capriociosa"}
-    - {page: 85, titre: "« Courgettes farcies » des fainéants"}
-    - {page: 86, titre: "Risotto aux poivrons rouges et piment d'Espelette"}
+    - {page: 82, titre: "One pot pasta capriociosa", catalogue_id: one-pot-pasta-capriciosa}
+    - {page: 85, titre: "« Courgettes farcies » des fainéants", catalogue_id: courgettes-farcies-faineants}
+    - {page: 86, titre: "Risotto aux poivrons rouges et piment d'Espelette", catalogue_id: risotto-poivrons-espelette}
     - {page: 87, titre: "Tourte niçoise aux courgettes", catalogue_id: tourte-nicoise-courgettes}
-    - {page: 88, titre: "Tian-ratatouille au parmesan"}
-    - {page: 90, titre: "Pain perdu façon moussaka"}
-    - {page: 92, titre: "Salade d'orge sympa"}
-    - {page: 93, titre: "Poulet « cocotte » aux olives noires, citron et ail confit"}
-    - {page: 95, titre: "Rôti roulé aux herbes et au fenouil"}
-    - {page: 96, titre: "LA pâte à pizza (fougasse, focaccia…) « spéciale pique-nique »"}
-    - {page: 99, titre: "Grande pizza aux légumes verts, basilic et mozzarella"}
-    - {page: 100, titre: "Focaccia ai porcini"}
-    - {page: 101, titre: "Yaourts aux fruits, LA recette inratable (sans yaourtière)"}
-    - {page: 104, titre: "Glace très « sage » au chocolat noir (sans sorbetière)"}
+    - {page: 88, titre: "Tian-ratatouille au parmesan", catalogue_id: tian-ratatouille-parmesan}
+    - {page: 90, titre: "Pain perdu façon moussaka", catalogue_id: pain-perdu-moussaka}
+    - {page: 92, titre: "Salade d'orge sympa", catalogue_id: salade-orge-thon}
+    - {page: 93, titre: "Poulet « cocotte » aux olives noires, citron et ail confit", catalogue_id: poulet-cocotte-olives-citron}
+    - {page: 95, titre: "Rôti roulé aux herbes et au fenouil", catalogue_id: roti-roule-herbes-fenouil}
+    - {page: 96, titre: "LA pâte à pizza (fougasse, focaccia…) « spéciale pique-nique »", catalogue_id: pate-a-pizza-pique-nique}
+    - {page: 99, titre: "Grande pizza aux légumes verts, basilic et mozzarella", catalogue_id: pizza-legumes-verts-mozzarella}
+    - {page: 100, titre: "Focaccia ai porcini", catalogue_id: focaccia-ai-porcini}
+    - {page: 101, titre: "Yaourts aux fruits, LA recette inratable (sans yaourtière)", catalogue_id: yaourts-aux-fruits}
+    - {page: 104, titre: "Glace très « sage » au chocolat noir (sans sorbetière)", catalogue_id: glace-sage-chocolat-noir}
     - {page: 107, titre: "Mousse légère aux pêches (ou super gâteau !)"}
     - {page: 108, titre: "Muffins choco-courgettes"}
     - {page: 111, titre: "Gaufres « pain perdu » aux mûres"}
@@ -135,17 +136,17 @@ sommaire:
     - {page: 150, titre: "Jarret braisé au vin blanc et petits légumes"}
     - {page: 153, titre: "Moelleux « mystère » à l'orange"}
     - {page: 154, titre: "Gros cookie à partager…"}
-    - {page: 157, titre: "Bon lait « bana-chaud » du petit déjeuner"}
-    - {page: 158, titre: "Riz au lait « retour des îles »"}
-    - {page: 159, titre: "Soja-dessert à la vanille (sans yaourtière, 3 méthodes !)"}
-    - {page: 160, titre: "Tourte-crumble « des paresseux » aux pommes et aux noix"}
+    - {page: 157, titre: "Bon lait « bana-chaud » du petit déjeuner", catalogue_id: lait-bana-chaud}
+    - {page: 158, titre: "Riz au lait « retour des îles »", catalogue_id: riz-au-lait-retour-des-iles}
+    - {page: 159, titre: "Soja-dessert à la vanille (sans yaourtière, 3 méthodes !)", catalogue_id: soja-dessert-vanille}
+    - {page: 160, titre: "Tourte-crumble « des paresseux » aux pommes et aux noix", catalogue_id: tourte-crumble-pommes-noix}
     - {page: 163, titre: "Marbré du goûter façon « Savane »"}
-    - {page: 166, titre: "Quatre-quarts d'anniversaire à la poire"}
+    - {page: 166, titre: "Quatre-quarts d'anniversaire à la poire", catalogue_id: quatre-quarts-anniversaire-poire}
 
   hiver:
-    - {page: 172, titre: "Soupe crétoise « 3 min chrono »"}
-    - {page: 173, titre: "Lentilles vertes mijotées à la paysanne"}
-    - {page: 174, titre: "Méli-mélo en rémoulade légère au yaourt de brebis"}
+    - {page: 172, titre: "Soupe crétoise « 3 min chrono »", catalogue_id: soupe-cretoise-3-min}
+    - {page: 173, titre: "Lentilles vertes mijotées à la paysanne", catalogue_id: lentilles-paysanne}
+    - {page: 174, titre: "Méli-mélo en rémoulade légère au yaourt de brebis", catalogue_id: meli-melo-remoulade-brebis}
     - {page: 177, titre: "Croque-monsieur montagnards", catalogue_id: croque-monsieur-montagnards}
     - {page: 178, titre: "Accras gourmands au thon, pain et carottes râpées", catalogue_id: accras-thon-pain-carottes}
     - {page: 181, titre: "Tartelettes aux noix et topinambours", catalogue_id: tartelettes-noix-topinambours}

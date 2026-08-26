@@ -68,6 +68,16 @@ RAISONS = {
     "repos": "repos",
     "maceration": "macération",
     "refroidissement": "refroidissement",
+    # Arrivées avec l'automne : le yaourt de soja p. 159 fermente 8 h, le riz au
+    # lait p. 158 « prend au frais au moins 4 h ». Ni l'un ni l'autre n'est un
+    # repos — on n'attend pas que ça se calme, on attend que ça DEVIENNE autre
+    # chose. Le libellé compte : c'est ce que l'agenda affichera au cuisinier.
+    "fermentation": "fermentation",
+    "prise-au-frais": "prise au frais",
+    # La glace p. 104 : le congélateur n'est plus un rangement, c'est une étape
+    # de la recette. Quatre heures pendant lesquelles il occupe une place que
+    # `equilibre.congelateur` croit réservée aux portions de secours.
+    "prise-au-congelateur": "prise au congélateur",
 }
 
 

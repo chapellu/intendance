@@ -1,0 +1,122 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# DEUX ARÊTES DE CHAÎNAGE SUR UN MÊME PLAT, ET C'EST LA PREMIÈRE FOIS. Elle
+# consomme la pâte à pizza de la p. 96 (l'autrice y renvoie explicitement) ET
+# « environ 200 g de restes de rôti, de poulet, de jambon cru ou cuit », d'où
+# son badge « avec des restes ». Le graphe de #30 avait toujours été manipulé un
+# lien à la fois ; ici deux entrées doivent être satisfaites le même soir, l'une
+# obligatoire et l'autre facultative.
+#
+# ET LE VOCABULAIRE DE CHAÎNAGE A EXACTEMENT DEUX NIVEAUX, IL EN FAUDRAIT TROIS.
+# `accepts` sait viser un `type:` EXACT (« bouillon-herbes ») ou un `kind:`,
+# c'est-à-dire la classe la plus large qui soit (« n'importe quel reste-plat »).
+# Ce que cette recette réclame est entre les deux : n'importe quelle VIANDE
+# RÔTIE restante — le rôti roulé p. 95, le poulet cocotte p. 93, le rôti au
+# bouillon p. 55, un talon de jambon. Trois plats du catalogue conviendraient et
+# aucun ne porte le même `type:`.
+#
+# Le contournement retenu : donner À DEUX PLATS DIFFÉRENTS le même `type:`
+# artificiel, `reste-roti`. Le rôti p. 95 et le poulet p. 93 l'émettent donc
+# tous les deux, et l'arête les capte tous les deux. Ça marche, et ça ne passe
+# pas à l'échelle : `roti-bouillon-herbes` p. 55 émet déjà `roti-froid`, et le
+# retyper pour l'occasion reviendrait à ranger le vocabulaire du chaînage selon
+# qui le consomme plutôt que selon ce qu'il est. Un cran intermédiaire manque —
+# une famille de sorties, entre le type exact et la classe `kind:`.
+
+recipe:
+  id: focaccia-ai-porcini
+  title: Focaccia ai porcini
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 100"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 100
+    saison: ete
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « repas complet à midi avec une salade », dit le livre
+  lot_entier: true
+  time_min_total: 30        # en-tête : 15 min de préparation + 15 min de cuisson
+  active_min: 15
+
+  apports:
+    proteine: fromage       # 200 g de chèvre, à peu près à égalité avec les 200 g de rôti
+    feculent: farine
+    legumes: [solanacee, allium]
+    profil: four
+    origine: italien
+
+  accepts:
+    - type: pate-a-pizza
+      qty: {amount: 1, unit: pâte}
+      required: true
+      fallback_recipe: pate-a-pizza-pique-nique
+    - type: reste-roti
+      qty: {amount: 200, unit: g}
+      required: false
+      fallback_recipe: roti-roule-herbes-fenouil
+
+  sans_reste:
+    temps_min: 0
+    ingredients:
+      - {id: jambon-cru, name: "jambon cru ou cuit, à défaut de restes de rôti", qty: 200, unit: g}
+
+  ingredients:
+    - {id: pate-a-pizza-ing, name: pâte à pizza (p. 96), qty: 1, unit: pâte, from_accepts: true}
+    - {id: reste-roti-ing, name: "restes de rôti, de poulet ou de jambon", qty: 200, unit: g, from_accepts: true}
+    - {id: oignon, name: oignons, qty: 4, unit: pièce}
+    - {id: tomates-cerises, name: tomates cerise, qty: 300, unit: g}
+    - {id: chevre-buche, name: fromage de chèvre, qty: 200, unit: g}
+    - {id: romarin, name: brins de romarin, qty: 1, unit: poignée}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: citron, name: jus d'un citron, qty: 1, unit: pièce}
+    - {id: farine, name: farine pour la lèchefrite, qty: 2, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 240 °C"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: etaler
+      action: "Étaler la pâte sur une lèchefrite généreusement badigeonnée d'huile et de farine, ou chemisée d'un papier cuisson huilé"
+      needs: []
+      uses: [pate-a-pizza-ing, huile-olive, farine]
+      time_min: 6
+    - id: revenir
+      action: "Faire revenir les oignons émincés avec l'huile d'olive et la viande découpée en petits morceaux"
+      needs: [pan-fry]
+      uses: [oignon, huile-olive, reste-roti-ing]
+      time_min: 10
+    - id: garnir
+      action: "Étaler le tout sur la pâte, ajouter les tomates cerise coupées en deux et le fromage de chèvre émietté, saler, poivrer, ciseler le romarin par-dessus et terminer avec un filet de jus de citron"
+      needs: []
+      uses: [tomates-cerises, chevre-buche, sel, poivre, romarin, citron]
+      time_min: 8
+      kid: {age_min_months: 30, task: "émietter le fromage de chèvre à la main sur la focaccia"}
+    - id: cuire
+      action: "Enfourner environ 15 minutes, et savourer encore tiède avec une grande salade estivale"
+      needs: [bake]
+      uses: []
+      time_min: 15
+      attended: false
+
+  # PAS DE PRÉLÈVEMENT BÉBÉ : la viande qui entre est déjà cuite ET déjà salée —
+  # c'est un reste de rôti ou du jambon cru. Le cas est nouveau dans le corpus :
+  # ce n'est pas le sel de CETTE recette qui bloque, c'est celui de la recette
+  # d'AVANT, hérité par l'arête de chaînage. Une sortie transporte sa charge
+  # salée, et `emits` ne porte rien de tel.
+
+  emits:
+    - kind: reste-plat
+      type: focaccia-porcini
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

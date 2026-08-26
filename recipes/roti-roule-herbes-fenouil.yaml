@@ -1,0 +1,107 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# « QUITTE À ALLUMER LE FOUR, AUTANT LE RENTABILISER À FOND » — et l'autrice en
+# tire une conséquence : « souvent je double les proportions ». C'est la première
+# fois du corpus qu'un DOUBLEMENT est motivé, et il ne l'est ni par le nombre de
+# convives ni par le stock : il l'est par l'énergie déjà dépensée. Le four est
+# allumé 1 h 15 pour un rôti ; il chaufferait pareil pour deux.
+#
+# Le modèle sait doubler (`facteur_lot`) mais seulement pour couvrir un besoin,
+# et `equilibre.yaml` récompense le remplissage du congélateur par le plancher
+# de portions de secours — jamais par le coût marginal nul d'un four déjà chaud.
+# Troisième remarque d'énergie du corpus après le « tout petit feu » du
+# pot-au-feu p. 182 et les « 10 petites minutes » de la p. 85, et la première
+# qui change une QUANTITÉ plutôt qu'un réglage.
+#
+# LE PIMENT D'ESPELETTE EST ICI FACULTATIF, ET C'EST PLUS INTÉRESSANT QUE P. 86.
+# Le foyer exclut le `piquant` (et rien ne lit cette exclusion, cf. le risotto
+# p. 86). Ici l'ingrédient est marqué facultatif par l'autrice elle-même : le
+# plat serait donc parfaitement compatible en le retirant. Une exclusion ne
+# devrait pas écarter un plat, elle devrait écarter une LIGNE — et le modèle n'a
+# ni l'un ni l'autre.
+
+recipe:
+  id: roti-roule-herbes-fenouil
+  title: Rôti roulé aux herbes et au fenouil
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 95"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 95
+    saison: ete
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6
+  time_min_total: 85        # en-tête : 10 min de préparation + 1 h 15 de cuisson
+  active_min: 10
+  doubler_la_base: true     # champ documentaire : voir l'en-tête, la raison est l'énergie
+
+  apports:
+    proteine: viande-blanche
+    feculent: aucun
+    legumes: [allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: roti-porc, name: "filet de porc bio ou fermier, découpé à plat par le boucher afin de pouvoir être roulé", qty: 1.5, unit: kg}
+    - {id: ail, name: gousses d'ail frais, qty: 3, unit: pièce}
+    - {id: herbes-fraiches, name: "brins de sarriette, d'origan ou de thym — à défaut 2 c. à c. d'origan séché", qty: 1, unit: poignée}
+    - {id: sauge, name: "feuilles de sauge fraîche (facultatif, mais recommandé)", qty: 6, unit: pièce}
+    - {id: graines-fenouil, name: c. à c. rases de graines de fenouil, qty: 2, unit: c. à c., seasoning: true}
+    - {id: piment-espelette, name: piment d'Espelette (facultatif), qty: 1, unit: pincée, seasoning: true}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre-5-baies, name: poivre 5 baies, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 200 °C, si possible en chaleur tournante"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: etaler
+      action: "Étaler le rôti bien à plat sur une planche"
+      needs: []
+      uses: [roti-porc]
+      time_min: 2
+    - id: garnir
+      action: "Ciseler les herbes et la sauge et les répartir dessus avec les gousses d'ail préalablement émincées et les graines de fenouil ; saler, poivrer généreusement, et ajouter éventuellement un peu de piment"
+      needs: []
+      uses: [herbes-fraiches, sauge, ail, graines-fenouil, sel, poivre-5-baies, piment-espelette]
+      time_min: 8
+    - id: rouler
+      action: "Rouler le rôti bien serré, puis le ficeler — facultatif, car roulé bien serré il gardera sa forme à la cuisson —, et bien le saler sur le dessus"
+      needs: []
+      uses: [sel]
+      time_min: 5
+      kid: {age_min_months: 30, task: "tenir le bout de la ficelle pendant que l'adulte roule"}
+    - id: cuire
+      action: "Enfourner 1 h 15"
+      needs: [bake]
+      uses: []
+      time_min: 75
+      attended: false
+    - id: servir
+      action: "Savourer tout chaud, ou froid découpé en tranches fines comme une charcuterie"
+      needs: []
+      uses: []
+      time_min: 3
+
+  # PAS DE PRÉLÈVEMENT BÉBÉ : « saler, poivrer généreusement » avant de rouler,
+  # puis « bien le saler sur le dessus » — le sel entre deux fois et à cœur, ce
+  # qui est le procédé même de la recette. Elle existe pour remplacer la
+  # charcuterie du commerce, et elle en a la teneur en sel.
+
+  emits:
+    - kind: reste-plat
+      type: reste-roti
+      qty_band: 2-repas
+      qty: {amount: 200, unit: g}
+      keeps: {frigo_days: 4, congelo: true}
+      note: "l'autrice le dit : il se conserve plusieurs jours au frais et se congèle en tranches — et la focaccia p. 100 le réclame nommément"
+
+  plan_b: []                # 1 h 15 de four passif : il n'y a rien à comprimer

@@ -79,6 +79,19 @@ rayons:
     - panais
     - navets
     - potimarron
+    # Arrivés avec l'été (p. 82) et l'automne (p. 157–166). Les fruits n'ont
+    # pas de rayon à eux : le primeur les vend à côté des légumes.
+    - tomates-cerises
+    - pommes
+    - poires
+    - banane
+    - chou-rouge
+    # Arrivés avec l'été (p. 93 à 101). `fruits-frais` est volontairement
+    # générique : la p. 101 écrit « fraises, poires, pêches, cerises ou
+    # abricots SELON LA SAISON », donc l'ingrédient EST la substitution.
+    - sauge
+    - romarin
+    - fruits-frais
   boucherie:
     - boeuf-hache
     - agneau-collier
@@ -89,6 +102,7 @@ rayons:
     - jambon-cru
     - jarret-boeuf
     - os-a-moelle
+    - saucisse-fumee
   poissonnerie:
     - saumon
     - colin-surgele
@@ -107,6 +121,12 @@ rayons:
     - beurre
     - petits-suisses
     - tomme-savoie
+    - mozzarella
+    - mascarpone
+    # `yaourt-soja` est un id d'INGRÉDIENT, distinct du type de chaînage
+    # `yaourt-soja` qu'émet la p. 159 : on peut l'acheter ou le cuisiner.
+    - yaourt-soja
+    - yaourt-brebis
   frais:
     - tofu-fume
     - gnocchis
@@ -172,6 +192,17 @@ rayons:
     # Arrivés avec l'hiver (p. 177 et p. 178).
     - cornichons
     - thon-boite
+    # Arrivés avec l'été et l'automne (p. 82 à 166). `riz-arborio` reste
+    # distinct de `riz` : un riz rond à risotto ne remplace pas un basmati,
+    # et les deux se retrouvent dans la même semaine (p. 85 et p. 86).
+    - capres
+    - sauce-tomate
+    - riz-arborio
+    - huile-pepin-raisin
+    - huile-tournesol
+    - ferments-yaourt
+    - creme-soja
+    - levure-boulangere
 
 placard:
   - huile-olive
@@ -193,5 +224,8 @@ placard:
   - gros-sel
   - origan
   - graines-coriandre
+  - cannelle
+  - piment-espelette
+  - graines-fenouil
   - glacons        # se font, ne s'achètent pas
   - eau            # ne s'achète pas ; listé pour ne pas polluer la liste

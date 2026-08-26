@@ -785,6 +785,102 @@ difference between the recipe working and not. `verifier.py` now closes the set
 of legal ingredient fields and treats an unknown key as an **error**, since the
 only way to get one is this mistake.
 
+#### Half the book (52/100): summer finished, autumn's tail, winter's head
+
+Twenty-one more pages entered in one sitting, from photographs of full pages.
+Summer went 8 → 21 of 26, autumn 0 → 5, winter 4 → 7. The findings stopped being
+one-offs and started being **counts**, which is the useful part.
+
+**The first complete author-declared sub-graph.** p. 96 is a pizza dough and
+nothing else; the author writes « vous trouverez pages 99 et 100 des idées de
+recettes avec cette bonne pâte ». Both are entered. The catalogue has had souches
+with one declared consumer (p. 55 → p. 56) and souches whose consumers are
+unentered pages (p. 182 → p. 192, p. 199; p. 93 → p. 141), but never a base plus
+all of its declared derivatives.
+
+And it exposes something the model assumes without saying: **every recipe is a
+meal.** Raw pizza dough is a *production*. `portions_eq: 4` counts parts of a dish
+that does not exist yet, `apports` declares a protein for something nobody eats,
+and `creneaux` cannot be emptied — `semaine_model.convient()` reads
+`recipe.get("creneaux") or CRENEAUX_DEFAUT`, so an empty list is falsy and falls
+back to lunch + dinner. The week can deal raw dough as a dinner card. This is the
+same shape as the dessert problem that produced `nature: optionnel`, one notch
+further out: a dish served at *no* slot.
+
+**A chaining edge the author never wrote.** p. 159 (plain soy yoghurt) emits
+`yaourt-soja`; p. 101 (fruit yoghurts) opens on « 1 yaourt au lait entier, ou de
+soja ». Different seasons, no cross-reference, and the graph connects them
+anyway: the autumn recipe is the starter factory, the summer one a consumer. And
+p. 159 is the first recipe in the catalogue **whose output is its own input** —
+seven pots get eaten, the eighth seeds the next batch. A cycle has no
+`fallback_recipe`, because falling back on yourself is infinite; `sans_reste` (a
+sachet of commercial ferments) is the only door *into* the loop, used once.
+
+**The author describes the missing inventory, in her own words.** p. 90's
+introduction: a small basket in the kitchen collects every uneaten piece of bread
+and stale heel, it dries in the open air for a few days, and when there is enough
+it goes into a recipe. Four recipes now declare `accepts: pain-rassis` with no
+emitter — panzanella, p. 178, p. 172, p. 90 — because stale bread is the output
+of no recipe. What is missing is not an edge, it is a **receptacle that
+accumulates and ages**: no origin recipe, fed by plate scraps, whose contents
+*improve* with time instead of spoiling, and which triggers a recipe when full.
+
+**`exclusions` has never been read by any code.** `household.yaml` has declared
+`piquant` and `choux de bruxelles` since #29. p. 86's risotto carries half a
+teaspoon of piment d'Espelette — the first recipe to hit it — and `grep` finds
+`exclusions` in exactly one place: a docstring in `compile.py` claiming to compile
+"against the household (equipment, eaters, exclusions)". It has been wrong since
+day one and looked fine because nothing had collided with it. p. 95 sharpens it:
+there the piment is marked *optional by the author*, so the dish is compatible if
+you drop one line. An exclusion should exclude a **line**, not a dish, and the
+model does neither.
+
+**The oven, four more times, and the worst case yet.** p. 99 bakes at 240 °C for
+5 minutes then, without opening the door, at 150 °C for 12 — a cooking programme,
+not a setting. p. 160 decides at the fifteen-minute mark whether to drop to
+150 °C. p. 101 holds the oven **twelve hours at 50 °C**, two hours on and the
+rest of the night off, door shut, to ferment yoghurt. p. 115 asked for a
+temperature field; what the corpus actually wants is a temperature *per step*,
+sometimes conditional, plus an occupancy distinct from the cooking time.
+
+**Salt keeps not being salt, and now it arrives by inheritance.** p. 82's author
+writes « ne pas saler » outright, because cured ham, olives, capers and
+mozzarella already carry it — the clearest possible evidence that salt load is a
+property of the *ingredient*. p. 85 shows the converse: there the salt is
+*technical*, added to draw water out of 1.2 kg of courgettes, so the trick that
+gave the accras a baby portion (split the seasoning into its own step) would
+break the dish. And p. 100 inherits its salt through a chaining edge — the meat
+that arrives is already cooked and already salted by p. 95. `emits` carries no
+salt load at all.
+
+**Counts, at half the book.** Six dishes have no baby portion for reasons of
+**age** (honey p. 115, tuna p. 178 and p. 92, cocoa p. 157, rum p. 158, sugar
+p. 159 and p. 101, raw yolk p. 174) and still nothing but comments to say so.
+Four recipes offer the author's own arbitration in **money** (p. 115, 178, 182,
+93) and three in **energy** (p. 182 « tout petit feu », p. 85 « le four ne restera
+allumé que 10 minutes », p. 95 « quitte à allumer le four, autant le rentabiliser
+à fond » — which makes her *double the recipe*). Five recipes give a **range** of
+servings, or a serving count that depends on the role (p. 86, 88, 99, 157, 173,
+104). `plan_b` counts minutes and only downwards; p. 172's VARIANTES offer the
+opposite — ten minutes *more* for a better dish — and there is no word for that.
+
+##### Three model repairs this batch forced
+
+- **`verifier.py` rejected a baby portion that works.** The check demanded a
+  `seasoning_gate`, on the theory that salting is the only reason to set aside
+  early. p. 160's caramelised apples are plain — apples and oil — and the only
+  fleur de sel is in the pastry two steps later. `compile.py` had already learned
+  to place the set-aside from `depuis:`; the check predated the field and its
+  message ("will never be injected") had become false.
+- **`facteur_max_vaisselle` assumed every step holds the whole yield.** Melting
+  180 g of butter in a saucepan (p. 166) got the cake rejected as too big for the
+  kitchen. `charge_partielle: true` opts a step out. Three of the four uses are
+  desserts, which points at the real cause: `contenance` is denominated in adult
+  *meal* portions and a tart's "8 parts" are dessert parts. The flag is a
+  stopgap; the repair is to stop measuring two quantities with one word.
+- **Five more truncated ingredient names**, all mine, all caught by the check
+  added the day before. It has now paid for itself twice over.
+
 #### The blog: 255 recipes indexed, and why only four of them got entered
 
 There is no ebook of the Chioca book — Terre vivante sells print only — so the

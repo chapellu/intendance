@@ -1,0 +1,118 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# DEUXIÈME RECETTE AU THON DU CATALOGUE, ET LA QUESTION CHANGE DE NATURE. Les
+# accras p. 178 portaient déjà une réserve : le thon est un poisson prédateur
+# dont l'ANSES recommande de limiter la FRÉQUENCE chez le jeune enfant. Avec une
+# seule recette, c'était une note de bas de page. Avec deux — 140 g là, 400 g
+# ici — c'est une propriété de la SEMAINE, et `equilibre.yaml` sait justement
+# compter des fréquences sur une semaine : `poisson: {min: 1}`.
+#
+# Mais ses cibles ne connaissent que la table des adultes. Il n'existe aucun
+# plafond exprimable par convive, ni a fortiori par âge. Deux plats de thon la
+# même semaine passeraient sans que rien ne bronche, et c'est exactement le cas
+# que la recommandation vise.
+#
+# L'orge retrempée est par ailleurs la même anticipation qu'à la p. 56, à une
+# différence près : là-bas l'eau de trempage devenait le bouillon, ici l'autrice
+# la fait jeter. Deux traitements opposés du même geste, et rien dans le modèle
+# ne relie une attente au devenir de son liquide.
+
+recipe:
+  id: salade-orge-thon
+  title: Salade d'orge sympa
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 92"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 92
+    saison: ete
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6
+  time_min_total: 30        # en-tête : 15 min de préparation + 15 min de cuisson
+  active_min: 15
+
+  apports:
+    proteine: poisson
+    feculent: orge
+    legumes: [solanacee, allium]
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: orge, name: "orge perlé (orge blanc) ou mondé (orge complet)", qty: 500, unit: g}
+    - {id: oeufs, name: œufs, qty: 6, unit: pièce}
+    - {id: thon-boite, name: thon au naturel, qty: 400, unit: g}
+    - {id: tomates-cerises, name: "tomates cerise, ou à défaut des tomates normales coupées en cubes", qty: 300, unit: g}
+    - {id: olives-noires, name: olives noires dénoyautées, qty: 12, unit: pièce}
+    - {id: cebette, name: cébette, qty: 1, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 6, unit: c. à s.}
+    - {id: vinaigre, name: vinaigre de cidre, qty: 3, unit: c. à s.}
+    - {id: moutarde, name: grosse c. à s. de moutarde à l'ancienne, qty: 1, unit: c. à s.}
+    - {id: sel, ref: sel-cuisson, name: sel (eau de cuisson de l'orge), qty: 1, unit: pincée, seasoning: true}
+    - {id: sel, ref: sel-sauce, name: sel (vinaigrette), qty: 1, unit: c. à c., seasoning: true}
+
+  steps:
+    - id: tremper
+      action: "Faire tremper l'orge dans l'eau"
+      needs: []
+      uses: [orge]
+      time_min: 3
+      attente_min: 720
+      attente_raison: trempage
+      rattrapage:
+        action: "À défaut : couvrir l'orge d'eau bouillante et la laisser gonfler 1 h à couvert"
+        cout_min: 60
+        effet: "grain moins tendre et cuisson un peu plus longue, mais la salade se fait le jour même"
+    - id: cuire-orge
+      action: "Le jour même, égoutter l'orge et jeter cette eau, puis la mettre dans un grand faitout d'eau froide légèrement salée — au moins 2 l — ; porter à ébullition et compter 15 minutes de cuisson"
+      needs: [simmer-large]
+      uses: [sel-cuisson]
+      time_min: 18
+      attended: false
+    - id: oeufs-mollets
+      action: "Pendant ce temps, faire cuire les œufs 8 minutes chrono pour des œufs mollets, puis les écaler"
+      needs: [boil]
+      uses: [oeufs]
+      time_min: 12
+      charge_partielle: true
+      parallel_with: cuire-orge
+      kid: {age_min_months: 30, task: "écaler les œufs refroidis sous un filet d'eau"}
+    - id: sauce
+      action: "Préparer la sauce en mélangeant l'huile, le vinaigre, la moutarde, la cébette très finement émincée et le sel"
+      needs: []
+      uses: [huile-olive, vinaigre, moutarde, cebette, sel-sauce]
+      time_min: 5
+      parallel_with: cuire-orge
+    - id: assembler
+      action: "Une fois le gruau cuit, l'égoutter, puis ajouter les tomates, le thon, les œufs coupés en quartiers, les olives et la vinaigrette"
+      needs: []
+      uses: [tomates-cerises, thon-boite, olives-noires]
+      time_min: 6
+    - id: rectifier
+      action: "Goûter et rectifier éventuellement l'assaisonnement en sel, puis servir tiède ou bien frais"
+      needs: []
+      uses: []
+      time_min: 2
+      seasoning_gate: true
+
+  baby_portion:
+    take: "un peu d'orge cuite et un demi-œuf mollet, AVANT la vinaigrette"
+    prep: "écraser à la fourchette"
+    depuis: [oeufs-mollets]
+    needs: []
+    # Deux réserves. L'orge a cuit dans une eau « légèrement salée », donc
+    # « avant vinaigrette » ne veut pas dire non salé — même honnêteté qu'à la
+    # p. 56. Et voir l'en-tête pour le thon, qu'on ne met PAS dans le prélèvement.
+
+  emits:
+    - kind: reste-plat
+      type: salade-orge
+      qty_band: 2-repas
+      keeps: {frigo_days: 2, congelo: false}
+      note: "l'œuf mollet limite à deux jours, et une salade ne se congèle pas — mais elle se mange « tiède ou bien frais », donc la gamelle ne demande aucun réchauffage"
+
+  plan_b: []                # 15 min de cuisson d'orge : le reste est de l'assemblage

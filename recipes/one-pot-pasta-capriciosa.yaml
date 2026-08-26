@@ -1,0 +1,113 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# « NE PAS SALER », ÉCRIT PAR L'AUTRICE DANS L'ÉTAPE. C'est la première fois que
+# le livre énonce lui-même ce que `seasoning: true` ne sait pas représenter : ce
+# plat n'a AUCUNE ligne de sel, parce que le jambon cru, les olives, les câpres
+# et la mozzarella en apportent assez pour quatre personnes. Cinq recettes
+# saisies portent maintenant une charge salée invisible au modèle (parmesan
+# p. 87 et p. 178, charcuterie p. 177, beurre demi-sel p. 181) ; celle-ci est la
+# seule où l'ouvrage l'écrit noir sur blanc, et donc la meilleure preuve que
+# c'est une propriété de l'INGRÉDIENT, pas une négligence de saisie.
+#
+# LE ONE POT EST AUSSI UNE THÈSE SUR LA VAISSELLE — « le tout avec un minimum de
+# vaisselle, même la passoire reste au placard ». Le modèle compte les
+# récipients comme une CONTRAINTE (`contenance`, `facteur_max_vaisselle`) et
+# jamais comme un COÛT : rien dans `equilibre.yaml` ne récompense un plat qui
+# salit une casserole plutôt que quatre. Pour un foyer avec deux enfants en bas
+# âge, c'est probablement l'axe le plus décisif de tous, et il n'existe pas.
+
+recipe:
+  id: one-pot-pasta-capriciosa
+  title: One pot pasta capriciosa
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 82"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 82
+    saison: ete
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4
+  time_min_total: 30        # en-tête : 5 à 10 min de préparation + 10 min de cuisson + 10 min de repos
+  active_min: 10
+
+  apports:
+    proteine: fromage       # 300 g de mozzarella devant 150 g de jambon cru
+    feculent: pates
+    legumes: [solanacee, allium, racine]
+    profil: rapide
+    origine: italien
+
+  ingredients:
+    - {id: pates, name: "petites pâtes (spirales, orecchiette, coudes…) de blé ou d'épeautre, blanches ou demi-complètes — surtout pas complètes, le résultat serait bien moins crémeux", qty: 360, unit: g}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: jambon-cru, name: jambon cru en tranches, qty: 150, unit: g}
+    - {id: carottes, name: carotte, qty: 1, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: ail, name: gousses d'ail, qty: 3, unit: pièce}
+    - {id: tomates-cerises, name: tomates cerise, qty: 300, unit: g}
+    - {id: olives-noires, name: olives noires, qty: 15, unit: pièce}
+    - {id: basilic, name: feuilles de basilic, qty: 35, unit: pièce}
+    - {id: capres, name: câpres, qty: 2, unit: c. à s.}
+    - {id: mozzarella, name: mozzarella, qty: 300, unit: g}
+    - {id: eau, name: eau froide, qty: 70, unit: cl}
+    # AUCUNE LIGNE DE SEL, ET C'EST LA RECETTE : voir l'en-tête de ce fichier.
+
+  steps:
+    - id: revenir
+      action: "Peler et émincer l'oignon, découper le jambon cru en fines lanières et la carotte en petits cubes, puis faire revenir le tout environ 5 minutes à l'huile d'olive dans un grand faitout"
+      needs: [pan-fry]
+      uses: [oignon, jambon-cru, carottes, huile-olive]
+      time_min: 10
+    - id: preparer
+      action: "Pendant ce temps : peler et découper les gousses d'ail en petits bouts, couper les tomates et les olives en deux"
+      needs: []
+      uses: [ail, tomates-cerises, olives-noires]
+      time_min: 6
+      parallel_with: revenir
+      kid: {age_min_months: 30, task: "couper les tomates cerise en deux au couteau à bout rond"}
+    - id: assembler
+      action: "Hors du feu, jeter les pâtes sur les oignons dorés, ajouter les tomates, le basilic, l'ail, les olives et les câpres — SANS SALER —, verser l'eau froide et remettre sur feu moyen avec un couvercle"
+      needs: []
+      uses: [pates, tomates-cerises, basilic, ail, olives-noires, capres, eau]
+      time_min: 3
+    - id: cuire
+      action: "Dès que l'eau bout, compter 10 minutes de cuisson en mélangeant de temps en temps pour que le fond n'accroche pas"
+      needs: [simmer-large]
+      uses: []
+      time_min: 10
+      attended: true        # « pour que le fond n'accroche pas » : ça ne se quitte pas
+    - id: mozzarella
+      action: "Pendant ce temps, égoutter la mozzarella et la découper en morceaux"
+      needs: []
+      uses: [mozzarella]
+      time_min: 3
+      parallel_with: cuire
+    - id: finir
+      action: "Quand le plat est cuit — il doit rester un peu de sauce au fond de la casserole — ajouter la mozzarella et bien mélanger pour la faire fondre entièrement"
+      needs: []
+      uses: []
+      time_min: 2
+      # L'autrice est formelle : s'il reste trop de sauce, ne PAS prolonger la
+      # cuisson, laisser reposer quelques minutes suffit à l'épaissir. L'attente
+      # n'est donc pas du confort, c'est la dernière étape de la recette.
+      attente_min: 10
+      attente_raison: repos
+
+  # PAS DE PRÉLÈVEMENT BÉBÉ : tout cuit ensemble dans le même liquide dès la
+  # troisième étape — pâtes, jambon cru, olives, câpres — et il n'existe aucun
+  # instant où quoi que ce soit soit nature. Cas identique au pot-au-feu p. 182,
+  # avec cette différence que le sel n'est nulle part et vient entièrement des
+  # ingrédients. Le résultat est le même pour un bébé de 12 mois.
+
+  emits:
+    - kind: reste-plat
+      type: one-pot-pasta
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: false}
+      note: "des pâtes en sauce avec de la mozzarella fondue : la congélation les rend farineuses, le frigo leur va"
+
+  plan_b: []                # 25 min en tout, dont 10 passives : il n'y a rien à comprimer

@@ -1,0 +1,125 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# LE FOUR SE PROGRAMME, IL NE SE RÈGLE PAS. « Enfourner assez bas — cran juste
+# au-dessus de la sole — pendant 5 minutes, puis, SANS OUVRIR LA PORTE, baisser
+# la température à 150 °C et laisser cuire encore 12 minutes. » Ce n'est plus une
+# température manquante, comme à la p. 115 : c'est une SUITE de consignes —
+# 240 °C, cinq minutes, une descente à 150 °C, porte fermée, douze minutes, sur
+# un gradin nommé. Une cuisson est une petite partition, et le modèle n'en garde
+# que la durée totale.
+#
+# Le corpus a maintenant quatre formes du même trou : la température absente
+# (p. 87 et 115), la température qui pourrait être PARTAGÉE entre deux plats
+# (p. 177 et 178, toutes deux à 240 °C), la température qu'on ajuste en
+# regardant (p. 160), et ici la température programmée d'avance.
+
+recipe:
+  id: pizza-legumes-verts-mozzarella
+  title: Grande pizza aux légumes verts, basilic et mozzarella
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 99"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 99
+    saison: ete
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    # « Pour une pizza de 8 parts (en entrée ou apéro) ou 4 parts (en plat
+    # principal) » — quatrième fourchette du corpus, et la plus explicite : ce
+    # n'est pas l'appétit qui varie, c'est le RÔLE du plat. 4 est l'usage de ce
+    # foyer. Voir la note du tian p. 88.
+    portions_eq: 4
+  lot_entier: true          # une lèchefrite entière de pizza, ou rien
+  time_min_total: 63        # en-tête : 25 min de préparation + ~25 min au wok + 13 min au four
+  active_min: 25
+
+  apports:
+    proteine: fromage
+    feculent: farine
+    legumes: [cucurbitacee, feuille, allium]
+    profil: four
+    origine: italien
+
+  accepts:
+    - type: pate-a-pizza
+      qty: {amount: 1, unit: pâte}
+      required: true
+      fallback_recipe: pate-a-pizza-pique-nique
+
+  ingredients:
+    - {id: pate-a-pizza-ing, name: pâte à pizza (p. 96), qty: 1, unit: pâte, from_accepts: true}
+    - {id: courgettes, name: jeunes courgettes très fraîches, qty: 1.6, unit: kg}
+    - {id: pousses-epinards, name: "jeunes feuilles d'épinards triées et lavées, ou surgelées", qty: 300, unit: g}
+    - {id: oignon, name: oignons, qty: 2, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 6, unit: c. à s.}
+    - {id: basilic, name: grosses feuilles de basilic bien tendres, qty: 25, unit: pièce}
+    - {id: ail, name: gousses d'ail, qty: 3, unit: pièce}
+    - {id: mozzarella, name: mozzarella, qty: 350, unit: g}
+    - {id: olives-noires, name: olives noires, qty: 12, unit: pièce}
+    - {id: farine, name: farine pour la lèchefrite, qty: 2, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: sortir-pate
+      action: "Sortir la pâte à température ambiante, sans la travailler, le temps de préparer la garniture"
+      needs: []
+      uses: [pate-a-pizza-ing]
+      time_min: 2
+    - id: oignons
+      action: "Dans un grand wok en fonte ou une grande cocotte, faire revenir les oignons émincés dans l'huile d'olive en les salant légèrement"
+      needs: [pan-fry]
+      uses: [oignon, huile-olive, sel]
+      time_min: 8
+    - id: courgettes
+      action: "Dès que les oignons sont bien dorés, ajouter les courgettes en rondelles, saler, mélanger et laisser dorer une quinzaine de minutes en mélangeant souvent"
+      needs: [pan-fry]
+      uses: [courgettes]
+      time_min: 18
+      # 1,6 kg de courgettes plus 300 g d'épinards : c'est le plus gros volume
+      # de légumes du catalogue dans un seul récipient. La sauteuse de 28 cm
+      # passe au facteur 1 et pas au-delà, comme aux p. 85 et 181.
+    - id: epinards
+      action: "Quand les courgettes sont à leur tour bien dorées, ajouter les épinards et le basilic, et faire « tomber » les feuilles jusqu'à ce qu'il n'y ait plus du tout d'eau — sinon la garniture détremperait la pâte"
+      needs: [pan-fry]
+      uses: [pousses-epinards, basilic]
+      time_min: 8
+    - id: ail
+      action: "Ajouter hors du feu les gousses d'ail écrasées, poivrer, rectifier si besoin l'assaisonnement en sel, et laisser très légèrement tiédir"
+      needs: []
+      uses: [ail, poivre]
+      time_min: 4
+    - id: lechefrite
+      action: "Huiler ET fariner généreusement une lèchefrite de taille standard avec les mains, en formant une sorte de « bouillie » épaisse qui adhère bien à la plaque"
+      needs: []
+      uses: [farine, huile-olive]
+      time_min: 4
+    - id: etaler
+      action: "Abaisser la pâte directement sur la lèchefrite avec les mains mouillées, étaler la garniture tiède, répartir par-dessus la mozzarella en tranches puis les olives, et laisser encore un peu lever le temps de préchauffer le four à 240 °C"
+      needs: [bake]
+      uses: [mozzarella, olives-noires]
+      time_min: 10
+      kid: {age_min_months: 30, task: "poser les tranches de mozzarella et semer les olives sur la garniture"}
+    - id: cuire
+      action: "Enfourner assez bas — cran juste au-dessus de la sole — pendant 5 minutes, puis, sans ouvrir la porte, baisser la température du four à 150 °C et laisser cuire encore 12 minutes avant de servir"
+      needs: [bake]
+      uses: []
+      time_min: 17
+      attended: true
+
+  # PAS DE PRÉLÈVEMENT BÉBÉ : les oignons sont salés à la première minute et les
+  # courgettes une deuxième fois juste après, exactement comme aux p. 85 et 181.
+  # Le sel fait ici le même travail technique — faire rendre l'eau, sans quoi la
+  # pâte se détrempe, et l'autrice le dit — donc il ne se déplace pas.
+
+  emits:
+    - kind: reste-plat
+      type: pizza-legumes-verts
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: false}
+      note: "l'autrice range cette pâte au rayon « spéciale pique-nique » : la pizza froide voyage, c'est sa raison d'être"
+
+  plan_b: []                # la garniture prend ce qu'elle prend : 25 min de wok

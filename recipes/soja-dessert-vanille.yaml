@@ -1,0 +1,138 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# ═══ LA PREMIÈRE ARÊTE DE CHAÎNAGE QUI BOUCLE SUR ELLE-MÊME ═══
+# Cette recette CONSOMME un yaourt de soja et en PRODUIT huit. Sa sortie est son
+# entrée. Le graphe de #30 a toujours été un arbre en pratique — un plat souche
+# émet, un plat dérivé consomme, et la flèche va dans un seul sens. Ici elle
+# revient : sept pots se mangent, le huitième ensemence la fournée suivante.
+#
+# C'est la forme domestique la plus classique qui soit — le levain, le kéfir, la
+# mère de vinaigre — et le catalogue ne l'avait jamais rencontrée. Elle pose une
+# question que rien ne sait traiter : un cycle n'a pas de `fallback_recipe`,
+# puisque le repli sur soi-même est infini. Le vrai repli est ailleurs, dans les
+# sachets de ferments du commerce, c'est-à-dire dans `sans_reste` — qui devient
+# ici la seule porte d'ENTRÉE dans le cycle. On n'y entre qu'une fois.
+#
+# ═══ LA MÉTHODE DÉPEND DE LA SAISON, ET C'EST ÉCRIT DANS LA RECETTE ═══
+# L'autrice donne trois façons de faire fermenter, et deux sont saisonnières :
+#   · Méthode 1 (automne et hiver) — les pots sur un radiateur, sous une couverture.
+#   · Méthode 2 (été) — les pots dans une voiture au soleil toute la journée.
+#   · Méthode 3 (toute l'année) — les pots dans une cocotte glissée dans un sac
+#     isotherme, avec de l'eau chaude du robinet entre les pots.
+#
+# Un radiateur n'est pas un équipement : c'est le chauffage de la maison, qui
+# n'existe qu'une partie de l'année. Une voiture au soleil non plus. Ce sont des
+# CONDITIONS AMBIANTES, et `needs:` ne sait désigner que des capacités
+# d'appareils, disponibles en permanence ou jamais. Les chaînes de repli de
+# `rules.yaml` sont de la même façon intemporelles : il n'existe aucun moyen de
+# dire « ce chemin-là n'existe qu'entre octobre et mars ».
+#
+# La méthode 3 est donc encodée — la seule qui ne dépende pas du calendrier —
+# et les deux autres restent dans le texte de l'étape, exactement comme le
+# gaufrier de la p. 177 : le compilateur affichera un repli sans dire que c'en
+# est un.
+
+recipe:
+  id: soja-dessert-vanille
+  title: Soja-dessert à la vanille (sans yaourtière)
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 159"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 159
+    saison: automne
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # 8 pots ; un dessert, pas un repas — cf. la note du tian p. 88
+  # UN LEVAIN NE SE DIVISE PAS. Sans ce marqueur, le compilateur ramenait la
+  # recette de 8 à 2,5 parts et commandait « 0.3 pot » de yaourt d'ensemencement,
+  # ce qui n'est pas une quantité. Le vrai motif est celui de la tourte p. 87,
+  # avec une raison de plus : c'est l'entrée du cycle, et une fraction de ferment
+  # ne relance rien.
+  lot_entier: true
+  time_min_total: 8         # en-tête : 5 min de préparation + 3 min de cuisson (+ 8 h de repos)
+  active_min: 5
+
+  creneaux: [petit-dejeuner, gouter, dessert]
+
+  apports:
+    proteine: tofu-soja
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  accepts:
+    # LE CYCLE. `fallback_recipe: null` et non `soja-dessert-vanille` : se
+    # désigner soi-même comme repli ne répare rien, ça décrit une boucle
+    # infinie. C'est `sans_reste` qui ouvre le cycle, une fois.
+    - type: yaourt-soja
+      qty: {amount: 1, unit: pot}
+      required: false
+      fallback_recipe: null
+
+  sans_reste:
+    temps_min: 0
+    ingredients:
+      - {id: ferments-yaourt, name: sachets de ferments pour yaourt, qty: 2, unit: sachet}
+
+  ingredients:
+    - {id: lait-soja-vanille, name: boisson soja-vanille, qty: 1, unit: l}
+    - {id: yaourt-soja-ing, name: yaourt de soja bio, qty: 1, unit: pot, from_accepts: true}
+
+  steps:
+    - id: tiedir
+      action: "Faire tiédir le lait, environ 45 à 50 °C"
+      needs: [simmer]
+      uses: [lait-soja-vanille]
+      time_min: 3
+      # Un litre de lait dans une casserole de 2,6 L. Troisième recours à
+      # `charge_partielle` dans ce lot, et les trois sont des DESSERTS de 8
+      # parts : `contenance` compte des parts de repas adulte, `portions_eq`
+      # compte ici des pots. Le marqueur est un pansement — la réparation est
+      # d'arrêter de mesurer deux grandeurs avec le même mot.
+      charge_partielle: true
+    - id: ensemencer
+      action: "Y délayer le yaourt ou le ferment en fouettant bien, puis verser dans 8 pots individuels munis de couvercles"
+      needs: []
+      uses: [yaourt-soja-ing]
+      time_min: 5
+    - id: fermenter
+      action: "Installer les pots dans le fond d'une cocotte ou d'un faitout placé dans un sac isotherme, verser entre les pots de l'eau bien chaude du robinet, fermer le sac et laisser fermenter — l'autrice propose aussi, selon la saison, les pots sur un radiateur couverts d'une couverture (automne et hiver), ou une journée entière dans une voiture au soleil (été, à condition que la température ne dépasse pas 55 °C)"
+      needs: []
+      uses: []
+      time_min: 5
+      attente_min: 480
+      attente_raison: fermentation
+    - id: refroidir
+      action: "Une fois la fermentation terminée, mettre au réfrigérateur et attendre que les yaourts soient bien frais avant de les savourer"
+      needs: []
+      uses: []
+      time_min: 2
+      attente_min: 240
+      attente_raison: prise-au-frais
+
+  # PAS DE PRÉLÈVEMENT BÉBÉ, ET POUR UNE FOIS CE N'EST NI LE SEL NI LA
+  # STRUCTURE : la base est une BOISSON soja-vanille, donc sucrée. Un yaourt
+  # nature conviendrait parfaitement à 12 mois ; celui-ci porte le sucre ajouté
+  # de sa base. Cinquième plat du corpus écarté pour une raison d'âge après le
+  # miel p. 115, le thon p. 178, le cacao p. 157 et le rhum p. 158 — et toujours
+  # aucun champ pour le dire autrement que par un commentaire.
+  #
+  # À noter pour le jour où le champ existera : il suffirait de partir d'une
+  # boisson soja NATURE pour que le plat devienne le dessert bébé le plus simple
+  # du catalogue. Une variante change ce qui est possible, et le modèle n'a pas
+  # non plus de quoi relier une variante à une capacité.
+
+  emits:
+    - kind: base
+      type: yaourt-soja
+      qty_band: 2-repas
+      qty: {amount: 8, unit: pot}
+      keeps: {frigo_days: 7, congelo: false}
+      note: "sept pots se mangent, le huitième ensemence la fournée suivante — c'est l'arête qui referme le cycle"
+
+  plan_b: []                # 8 minutes de gestes ; le reste est de l'attente

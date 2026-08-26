@@ -1,0 +1,102 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# LA PREMIÈRE FOIS QUE `keeps:` A UNE RAISON, ET C'EST L'AUTRICE QUI LA DONNE :
+# « cette recette se conserve 24 heures au frais, pas plus à cause du jaune
+# d'œuf ». Jusqu'ici `frigo_days` était un nombre posé au jugé, plat par plat.
+# Ici il est déduit d'un ingrédient précis, et la note le dit — ce qui veut
+# aussi dire que la variante sans jaune d'œuf n'aurait pas la même horloge.
+# `conservation.yaml` avait déjà établi que la durée de vie est une propriété du
+# plat × la méthode ; cette recette ajoute que c'est aussi une propriété du plat
+# × l'ingrédient le plus fragile, et rien ne le calcule.
+#
+# L'ATTENTE FACULTATIVE, TROISIÈME OCCURRENCE. « Servir aussitôt pour une
+# texture encore croquante, ou laisser reposer de 2 à 24 heures au frais pour
+# attendrir un peu les légumes. Tout dépend des goûts ! » Ce n'est ni un
+# `attente_min` (rien n'oblige à attendre) ni un `delai_max_h` (rien ne se gâte
+# avant 24 h) : c'est un curseur de TEXTURE laissé au cuisinier. Les tartelettes
+# p. 181 (« on peut les préparer la veille ») et le clafoutis p. 115 posaient
+# déjà la question ; le modèle ne sait déclarer une attente que si elle est
+# obligatoire.
+
+recipe:
+  id: meli-melo-remoulade-brebis
+  title: Méli-mélo en rémoulade légère au yaourt de brebis
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 174"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 174
+    saison: hiver
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « Pour 8 personnes (repas du soir, avec du pain) »
+  time_min_total: 15        # en-tête : 15 min de préparation, aucune cuisson
+  active_min: 15
+
+  creneaux: [diner]         # « repas du soir », dit le livre — comme la soupe p. 172
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: [crucifere, racine]
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: chou-rouge, name: chou rouge ou chou cabus, qty: 300, unit: g}
+    - {id: celeri-rave, name: céleri-rave ou chou-rave, qty: 300, unit: g}
+    - {id: carottes, name: "carottes ou potiron — oui, ça se mange cru aussi", qty: 300, unit: g}
+    - {id: oeufs, name: jaune d'œuf, qty: 1, unit: pièce}
+    - {id: moutarde, name: c. à s. légèrement bombées de moutarde à l'ancienne, qty: 2, unit: c. à s.}
+    - {id: vinaigre, name: vinaigre de vin ou de cidre, qty: 2, unit: c. à s.}
+    - {id: huile-tournesol, name: huile de tournesol désodorisée, qty: 6, unit: cl}
+    - {id: yaourt-brebis, name: "yaourt de brebis (ou à défaut de vache, entier)", qty: 1, unit: pot}
+    - {id: sel, name: sel fin, qty: 1, unit: c. à c. rase, seasoning: true}
+
+  steps:
+    # « Éventuellement dans le petit bol d'un robot spécial mayonnaise, sinon à
+    # la main » : aucune capacité déclarée, comme au clafoutis p. 115. Déclarer
+    # `blend-small` ferait résoudre vers le petit blender du foyer, qui salirait
+    # un bol de plus pour un fouet de trois minutes.
+    - id: sauce
+      action: "Mélanger le jaune d'œuf avec la moutarde, le sel et le vinaigre ; tout en fouettant bien, ajouter l'huile en filet jusqu'à obtention d'une mayonnaise, puis ajouter le yaourt en mélangeant juste ce qu'il faut, pas plus"
+      needs: []
+      uses: [oeufs, moutarde, sel, vinaigre, huile-tournesol, yaourt-brebis]
+      time_min: 8
+    - id: emincer
+      action: "Émincer finement les légumes"
+      needs: []
+      uses: [chou-rouge, celeri-rave, carottes]
+      time_min: 12
+      kid: {age_min_months: 30, task: "tourner la manivelle de la râpe pour les carottes"}
+    - id: melanger
+      action: "Bien mélanger les légumes avec la sauce"
+      needs: []
+      uses: []
+      time_min: 3
+    - id: servir
+      action: "Servir aussitôt pour une texture encore croquante, ou laisser reposer de 2 à 24 heures au frais pour attendrir un peu les légumes — tout dépend des goûts"
+      needs: []
+      uses: []
+      time_min: 1
+      # PAS d'`attente_min` : voir l'en-tête. L'attente est un choix de texture,
+      # pas une contrainte, et le modèle ne sait déclarer que l'obligatoire.
+
+  # PAS DE PRÉLÈVEMENT BÉBÉ, POUR DEUX RAISONS QUI SE CUMULENT. Le sel est dans
+  # la sauce dès le premier geste, donc aucun légume assaisonné n'est jamais
+  # nature. Et surtout la sauce contient un JAUNE D'ŒUF CRU, déconseillé avant
+  # l'âge de 5 ans (salmonelles). Sixième plat du corpus écarté pour une raison
+  # d'âge — miel p. 115, thon p. 178, cacao p. 157, rhum p. 158, sucre p. 159,
+  # œuf cru ici — et toujours aucun champ pour le porter.
+
+  emits:
+    - kind: reste-plat
+      type: meli-melo-remoulade
+      qty_band: 2-repas
+      keeps: {frigo_days: 1, congelo: false}
+      note: "24 heures au frais et pas plus, à cause du jaune d'œuf cru — c'est l'autrice qui pose la limite et qui en donne la raison"
+
+  plan_b: []
