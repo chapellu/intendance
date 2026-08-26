@@ -92,6 +92,8 @@ rayons:
     - sauge
     - romarin
     - fruits-frais
+    - mures
+    - groseilles
   boucherie:
     - boeuf-hache
     - agneau-collier
@@ -203,6 +205,8 @@ rayons:
     - ferments-yaourt
     - creme-soja
     - levure-boulangere
+    - agar-agar
+    - lait-avoine
 
 placard:
   - huile-olive

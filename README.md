@@ -881,6 +881,61 @@ opposite — ten minutes *more* for a better dish — and there is no word for t
 - **Five more truncated ingredient names**, all mine, all caught by the check
   added the day before. It has now paid for itself twice over.
 
+##### Summer's last four pages, and the first dish this kitchen cannot make
+
+p. 107, 108, 111, 112 — summer now stands at 25 of 26, missing only p. 116.
+56/100 overall.
+
+**A capability with no fallback, and the code path nothing had ever taken.**
+p. 111's waffles need a waffle iron. The croque p. 177 needed one too, but the
+author supplied the oven as a second route, so the model was never asked the
+question; a waffle has no second route. `rules.yaml` now declares `gaufrier` with
+a single tool the household does not own, `resolve_capability` returns
+`(None, None)`, and the compiled step carries **⚠ aucune solution avec
+l'équipement du foyer**. That branch has existed in `compile.py` since the
+beginning and no recipe had ever reached it. It is also the answer to what p. 177
+said was missing: there the fallback lived in the author's prose, here it lives
+in the model.
+
+**The strongest possible case for the ageing inventory.** p. 111's header and
+ingredient list each carry a number that is a *function of how stale the bread
+is*: rest the batter 1 h (slightly stale) to 4 h (very hard), and use 30 cl of
+milk (just stale) to 40 cl (very dry). It is no longer a question of whether
+there is stale bread in the basket — it is *since when*, because the recipe's own
+figures change with the answer. Fifth `pain-rassis` consumer, still no emitter.
+
+**What you buy is not what you use, twice, both numbers given by the author.**
+p. 107: buy 1.2 kg of peaches, « peser exactement 800 g de chair ». p. 112: buy
+about 300 g of redcurrants to extract the 200 g of juice the recipe wants. An
+ingredient line carries one quantity and two are needed, joined by a yield ratio.
+Both files carry the shopping figure, since buying too little fails the recipe
+and buying too much fails nobody.
+
+**A temperature window that is not the oven's.** p. 107 must fold whipped cream
+into a peach purée at about 35 °C: hotter melts the cream, colder and the agar
+has already set (around 25 °C) so nothing can be folded in at all. Bounded on
+both sides, measured on the *material*, and checked with a finger. The oven
+findings asked for a number per step; this one asks for a range with a failure
+mode at each end.
+
+**Seasonality inside a recipe, twice.** p. 108 is indexed `saison: ete` by its
+page and its own text offers the autumn version (« remplacez la courgette par du
+potimarron »). p. 112 goes further — its title is *« et l'hiver, tarte au
+citron ! »*, so swapping redcurrant juice for lemon changes the dish and its
+name. `source.saison` is derived from the book's page ranges and can only ever
+hold one.
+
+**`keeps` cannot say that storage harms.** p. 108's author: refrigerating the
+muffins makes them lose their moistness. `keeps` says how long an output survives
+a space; it has no way to say a space *degrades* it, nor that there is a fourth
+place — the biscuit tin — beside fridge, freezer and cupboard.
+
+And one omission left as an omission: p. 108 never says what to do with its 130 g
+of chocolate, which cannot be whisked in solid. The two previous omissions of
+this kind (salt at p. 87 and p. 181) were written in here, because salting has
+only one possible moment. Melting does not — bain-marie, in the milk, microwave
+all give different batters — so the step stays as the book prints it, flagged.
+
 #### The blog: 255 recipes indexed, and why only four of them got entered
 
 There is no ebook of the Chioca book — Terre vivante sells print only — so the

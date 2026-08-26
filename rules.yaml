@@ -44,6 +44,20 @@ capabilities:
     - tool: none
       rewrite: "sans gril : prolonger de 5 min à 210 °C en surveillant la couleur"
       time_delta_min: 5
+  # LE GAUFRIER, ET C'EST LA PREMIÈRE CAPACITÉ SANS REPLI PRATICABLE. Le croque
+  # p. 177 s'en passait parce que l'autrice donnait elle-même le four comme
+  # seconde voie ; une gaufre n'en a aucune — sans gaufrier, la p. 111 ne se
+  # fait pas, un point c'est tout. Déclarer la capacité avec un seul outil que
+  # le foyer ne possède PAS est la seule façon pour le modèle de dire ça :
+  # `resolve_capability` renvoie alors (None, None) et `compile.py` marque
+  # l'étape « aucune solution avec l'équipement du foyer ».
+  #
+  # Ce chemin de code existait depuis le début et rien ne l'avait jamais
+  # emprunté. C'est aussi ce qui manquait à la p. 177 pour signaler que son plan
+  # A était hors de portée : là-bas le repli était dans la prose, ici il est
+  # dans le modèle.
+  gaufrier: [{tool: gaufrier}]
+
   puree: [{tool: mixeur-plongeur}, {tool: presse-puree, rewrite: "au presse-purée", time_delta_min: 3}]
   weigh:
     - tool: balance-tefal

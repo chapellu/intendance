@@ -12,9 +12,10 @@
 # `_repertoire.yaml` sont à corriger.
 #
 # Une entrée saisie se signale en lui ajoutant `catalogue_id: <id>` pointant sur
-# le plat correspondant dans `recipes/`. Saisies à ce jour : **52 sur 100**, soit
-# la moitié du livre. L'ÉTÉ est presque complet (21 sur 26, il reste les
-# p. 107 à 116) ; le PRINTEMPS l'est à cinq pages près (42, 45, 46, 49, 50) ;
+# le plat correspondant dans `recipes/`. Saisies à ce jour : **56 sur 100**.
+# L'ÉTÉ est complet à UNE PAGE PRÈS — il ne manque que le gâteau au yaourt
+# p. 116, que la mousse p. 107 désigne d'ailleurs comme base de sa variante
+# gâteau ; le PRINTEMPS l'est à cinq pages près (42, 45, 46, 49, 50) ;
 # l'HIVER tient ses sept premiers plats (p. 172 à 182) ; l'AUTOMNE n'a que sa
 # queue (p. 157 à 166), sa p. 163 restant illisible sur la photo disponible.
 #
@@ -109,10 +110,10 @@ sommaire:
     - {page: 100, titre: "Focaccia ai porcini", catalogue_id: focaccia-ai-porcini}
     - {page: 101, titre: "Yaourts aux fruits, LA recette inratable (sans yaourtière)", catalogue_id: yaourts-aux-fruits}
     - {page: 104, titre: "Glace très « sage » au chocolat noir (sans sorbetière)", catalogue_id: glace-sage-chocolat-noir}
-    - {page: 107, titre: "Mousse légère aux pêches (ou super gâteau !)"}
-    - {page: 108, titre: "Muffins choco-courgettes"}
-    - {page: 111, titre: "Gaufres « pain perdu » aux mûres"}
-    - {page: 112, titre: "Carrés sablés faciles à la crème de groseille (et l'hiver, tarte au citron !)"}
+    - {page: 107, titre: "Mousse légère aux pêches (ou super gâteau !)", catalogue_id: mousse-legere-peches}
+    - {page: 108, titre: "Muffins choco-courgettes", catalogue_id: muffins-choco-courgettes}
+    - {page: 111, titre: "Gaufres « pain perdu » aux mûres", catalogue_id: gaufres-pain-perdu-mures}
+    - {page: 112, titre: "Carrés sablés faciles à la crème de groseille (et l'hiver, tarte au citron !)", catalogue_id: carres-sables-creme-groseilles}
     - {page: 115, titre: "Clafoutis super crémeux au miel et à l'abricot", catalogue_id: clafoutis-miel-abricot}
     - {page: 116, titre: "Juste un gâteau au yaourt, la « classe » en plus"}
 
