@@ -65,6 +65,7 @@ recipe:
       needs: [pan-fry]
       uses: [oignon, huile-olive]
       time_min: 12
+      charge_partielle: true   # trois oignons, pas huit parts de velouté
     - id: potiron
       action: "Éplucher le potiron — ou pas, tout dépend de la variété —, jeter les graines, le couper en gros morceaux, et le mettre dans la cocotte avec l'eau, le sel et la sauce tomate"
       needs: [simmer-large]

@@ -11,7 +11,7 @@
 
 import { jourISO } from "../db";
 import { facteurAffiche, type Calcul } from "../model/calcul";
-import { joue, SAUTE, type Jeu } from "../model/jeu";
+import { joue, SAUTE, sePioche, type Jeu } from "../model/jeu";
 import type { Plat } from "../model/types";
 import type { CleCreneau } from "../nav/routes";
 import { fmt } from "../ui/format";
@@ -169,7 +169,7 @@ export function apercuDeLaSemaine(jeu: Jeu, calc: Calcul, courant: number): Lign
   return jeu.creneaux
     .map((c, i) => ({ c, i }))
     .filter(({ c, i }) => {
-      if (c.nature !== "choisi") return false;
+      if (!sePioche(c.nature)) return false;
       if (i === courant) return true;
       return jeu.choix[i] != null || (jeu.parts[i] ?? foyer) !== foyer;
     })

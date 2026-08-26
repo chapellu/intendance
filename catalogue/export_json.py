@@ -1,11 +1,20 @@
 #!/usr/bin/env python3
-"""Export the catalogue and household to JSON for the visual prototype.
+"""Fabrique `public/cuisine-data.json`, le catalogue que l'app lit.
 
-The visual proto lives in another repo (chapellu/flagship, apps/proto-shell) and
-must not invent dishes. This dumps the real YAML so the cards on screen are the
-cards the Python model deals.
+L'app ne possède pas les recettes : elle lit ce vidage. C'est ce qui garantit
+que les cartes à l'écran sont exactement celles que le modèle Python distribue,
+et qu'aucun plat n'est inventé côté interface.
 
-  python3 export_json.py > /tmp/cuisine-data.json
+  npm run catalogue            # depuis la racine du dépôt
+  npm run catalogue:verifie    # vérifie le corpus PUIS que le JSON commité est à jour
+
+CE DOCSTRING A MENTI PENDANT DEUX SEMAINES. Il annonçait « the visual proto
+lives in another repo (chapellu/flagship, apps/proto-shell) » — l'app a
+déménagé, deux fois, et personne n'a corrigé la ligne. Pendant ce temps le JSON
+commité restait à 51 plats quand le corpus en portait 86, et le créneau
+`dessert` n'a jamais atteint l'écran. Un export manuel dont la doc pointe
+ailleurs est un export qui ne se fait pas : d'où `catalogue:verifie`, joué en
+CI, qui échoue si le fichier commité diverge du corpus.
 """
 
 import json

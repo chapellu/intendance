@@ -104,20 +104,7 @@ household:
       # donc la conservation en bocal est DÉJÀ à portée, mais uniquement pour
       # les aliments acides. Voir l'avertissement de conservation.yaml.
       contenance: 12
-      # `pan-fry` AJOUTÉ APRÈS TROIS RECETTES QUI L'ÉCRIVENT : « dans une cocotte
-      # en fonte, faire dorer l'oignon » (p. 93), « les faire revenir avec les
-      # lardons » sur 1,5 kg de courge (p. 123), « les faire dorer à l'huile
-      # d'olive dans une cocotte » (p. 127). Une cocotte en fonte rissole, c'est
-      # même ce pour quoi on l'achète, et l'oublier faisait refuser ces plats :
-      # `facteur_max_vaisselle` ne voyait que la sauteuse de 28 cm, et 1,5 kg de
-      # courge n'y tient pas.
-      #
-      # À NOTER — la chaîne `pan-fry` de `rules.yaml` reste dans l'ordre
-      # sauteuse → poêles, donc le texte compilé continue d'annoncer « sauteuse
-      # 28 cm » même quand seul le volume de la cocotte rend le lot possible.
-      # Les deux fichiers répondent à deux questions différentes (quel outil
-      # nommer / qu'est-ce qui tient) et ils divergent ici pour la première fois.
-      capabilities: [simmer-large, steam, sterilisation-bain-marie, pan-fry]
+      capabilities: [simmer-large, steam, sterilisation-bain-marie]
     - id: congelateur-3-tiroirs
       label: congélateur 3 tiroirs
       capabilities: [congeler]

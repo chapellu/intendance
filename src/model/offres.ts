@@ -17,7 +17,7 @@
 
 import { accepte, qteDe } from "./depot";
 import type { BilanEspace, Calcul } from "./calcul";
-import { joue, type Choix, type Jeu } from "./jeu";
+import { joue, sePioche, type Choix, type Jeu } from "./jeu";
 import type { CauseLimite, Espace, Plat, Vaisselle } from "./types";
 
 /** Unités qui comptent des OBJETS : on ne récupère pas 1,4 carcasse. */
@@ -269,7 +269,7 @@ export interface Gamelle {
 export function gamelles(jeu: Jeu, choix: Choix[], parts = jeu.parts): Gamelle[] {
   const out: Gamelle[] = [];
   jeu.creneaux.forEach((c, i) => {
-    if (!c.emporte || c.nature !== "choisi") return;
+    if (!c.emporte || !sePioche(c.nature)) return;
     const veille = dinerDeLaVeille(jeu, i);
     if (veille < 0) return;
 

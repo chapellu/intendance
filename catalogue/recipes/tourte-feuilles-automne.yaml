@@ -67,6 +67,11 @@ recipe:
       needs: [pan-fry]
       uses: [oignon, poireau, jambon-cru, huile-garniture]
       time_min: 12
+      # Cette étape ne porte QUE les oignons, les poireaux et les lardons : la
+      # courge n'arrive qu'au mijotage suivant. C'est le sens même de
+      # `charge_partielle`, et le fait de l'avoir oublié est ce qui m'a fait
+      # accuser la sauteuse à tort.
+      charge_partielle: true
     - id: courge
       action: "Pendant ce temps, découper la courge en gros morceaux — certaines variétés comme le potimarron ou la butternut ne s'épluchent pas"
       needs: []
@@ -75,7 +80,14 @@ recipe:
       parallel_with: revenir
     - id: mijoter
       action: "Quand la poêlée de poireaux commence à bien dorer, ajouter les cubes de potiron et un verre d'eau, mélanger, poser un couvercle et laisser mijoter environ 10 minutes — le temps de faire la pâte"
-      needs: [pan-fry]
+      # `simmer-large` ET NON `pan-fry` : à couvert, avec un verre d'eau, ce
+      # n'est plus une poêlée mais un mijotage — et c'est LUI qui porte les
+      # 1,5 kg de courge, donc la cocotte. J'avais d'abord écrit `pan-fry` puis
+      # « corrigé » l'inventaire du foyer en donnant `pan-fry` à la cocotte ;
+      # c'était un pansement sur une erreur de saisie, et il rendait les
+      # escalopes p. 39 faisables en lot et demi alors qu'une cocotte donne du
+      # VOLUME et pas de la SURFACE. Un test de l'app l'a attrapé.
+      needs: [simmer-large]
       uses: [eau]
       time_min: 12
     - id: pate

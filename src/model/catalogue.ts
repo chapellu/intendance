@@ -312,7 +312,7 @@ export function lireCatalogue(brut: unknown): Catalogue {
     const r = obj(v, `creneaux.repas.${id}`);
     repas[id] = {
       label: texte(r["label"], `creneaux.repas.${id}.label`),
-      nature: parmi(r["nature"], ["choisi", "routine"] as const, `creneaux.repas.${id}.nature`),
+      nature: parmi(r["nature"], ["choisi", "routine", "optionnel"] as const, `creneaux.repas.${id}.nature`),
       minutes: nombre(r["minutes"], `creneaux.repas.${id}.minutes`),
     };
   }
