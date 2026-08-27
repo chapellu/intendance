@@ -62,6 +62,34 @@ def _label(zone: dict) -> str:
     return zone.get("label") or zone["id"]
 
 
+# Trois urgences, et AUCUNE DATE. Le relevé n'en porte pas : ni DLC, ni DLUO, ni
+# date d'ouverture. Inventer une échéance pour pouvoir compter dessus serait le
+# genre de chiffre qui a l'air juste et ne l'est jamais.
+#
+# Ce que le relevé sait vraiment, c'est le CONDITIONNEMENT et l'ENDROIT. Un
+# sachet ouvert n'oppose plus de barrière ; un légume frais ne se garde pas ; une
+# denrée rangée là où elle s'abîme se dégrade en ce moment. Ces trois faits
+# suffisent à classer, et ils sont vérifiables — on peut aller les regarder.
+URGENCES = ("haute", "moyenne", "basse")
+
+
+def urgence(denree: dict, zone: dict) -> str:
+    """À quel point il faut manger ça bientôt.
+
+    `haute` — le frais, et tout ce que sa zone abîme activement.
+    `moyenne` — le paquet entamé : la barrière est rompue, l'horloge tourne.
+    `basse` — scellé. Une conserve attend des années sans rien demander.
+    """
+    if denree.get("etat") == "frais":
+        return "haute"
+    for s in denree.get("sensible") or []:
+        if s in AGRESSIONS:
+            attr, mauvais, _ = AGRESSIONS[s]
+            if zone.get(attr) == mauvais:
+                return "haute"
+    return "moyenne" if denree.get("etat") == "entame" else "basse"
+
+
 def charger(chemin: Path) -> dict:
     """`{'zones': [...], 'denrees': [...]}`, jamais `None` sur un fichier vide."""
     data = yaml.safe_load(chemin.read_text()) or {}

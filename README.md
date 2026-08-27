@@ -90,6 +90,12 @@ compile une recette contre ce foyer, le vérificateur qui refuse un corpus
 incohérent, et `README.md` — le carnet de bord de ce que la saisie a révélé du
 modèle, recette par recette.
 
+**Ce que le garde-manger sert à décider.** Chaque denrée porte une *urgence* —
+`haute`, `moyenne`, `basse` — dérivée de son conditionnement et de sa zone, sans
+aucune date : le relevé n'en porte pas. Le score s'en sert pour remonter les
+plats qui mangent ce qui se perd, et l'écran en tire la liste « À manger en
+premier ». Les deux se lisent ensemble : le score départage, la liste désigne.
+
 **Deux fichiers portent des stocks, et ce ne sont pas les mêmes.**
 `stock.yaml` porte les SORTIES DE CUISINE — des bases cuisinées, indexées sur ce
 que les recettes émettent, mangées par le graphe de chaînage.
@@ -102,8 +108,13 @@ décrémente quand on cuisine, et il ne fait donc pas encore taire la liste de
 courses.
 
 **Le modèle Python ne tourne pas dans l'app.** L'app a le sien, en TypeScript,
-sous `src/model/`. Le Python sert à valider le corpus et à produire le JSON ;
-`npm run parite` est ce qui garantit que les deux disent la même chose.
+sous `src/model/`. Le Python sert à valider le corpus et à produire le JSON.
+
+`npm run parite` rejouait les mêmes semaines dans le modèle du prototype et dans
+celui de l'app, et prouvait que le port disait la même chose. **Il a été retiré
+en T22** : depuis que le scoring tient compte du garde-manger — que le proto
+ignore — la parité ne pouvait plus qu'échouer, et un contrôle qui doit échouer
+n'en est plus un.
 
 ## La PWA
 

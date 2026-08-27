@@ -16,7 +16,7 @@
 
 import type {
   Accept, Agression, Catalogue, Denree, Emit, EmitKind, Espace, Etape, Etat, Forme, Foyer,
-  GardeManger, Ingredient, LigneStock, Plat, Provenance, Quantite, Zone,
+  GardeManger, Ingredient, LigneStock, Plat, Provenance, Quantite, Urgence, Zone,
 } from "./types";
 
 const ESPACES: readonly Espace[] = ["frigo", "congelo", "placard"];
@@ -25,6 +25,7 @@ const PROVENANCES: readonly Provenance[] = ["placard", "chaine", "frigo", "cours
 const AGRESSIONS: readonly Agression[] = ["lumiere", "humidite", "chaleur"];
 const ETATS: readonly Etat[] = ["conserve", "bocal", "sec", "entame", "frais"];
 const FORMES: readonly Forme[] = ["rectangle", "demi-lune"];
+const URGENCES: readonly Urgence[] = ["haute", "moyenne", "basse"];
 
 /** Les deux repas que le code nomme en dur : `gamelles()` cherche « le dîner de
  *  la veille », et l'équilibre se mesure sur les repas principaux. Le reste de
@@ -340,6 +341,7 @@ function denree(v: unknown, ou: string): Denree {
     sensible: tableau(o["sensible"] ?? [], `${ou}.sensible`)
       .map((x, i) => parmi(x, AGRESSIONS, `${ou}.sensible[${i}]`)),
     incompatibles: listeDeTextes(o["incompatibles"] ?? [], `${ou}.incompatibles`),
+    urgence: parmi(o["urgence"], URGENCES, `${ou}.urgence`),
     note: note === undefined || note === null ? null : texte(note, `${ou}.note`),
   };
 }

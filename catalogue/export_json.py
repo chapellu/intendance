@@ -64,6 +64,7 @@ def main():
     creneaux = yaml.safe_load((HERE / "creneaux.yaml").read_text())
     rules = yaml.safe_load((HERE / "rules.yaml").read_text())
     pantry = gm.charger(HERE / "garde-manger.yaml")
+    _zones = {z["id"]: z for z in pantry["zones"]}
 
     # Tout ce que le foyer sait faire — l'union des capacités de ses outils et
     # des chaînes de dégradation. C'est ce qui décide si un bocal est une place
@@ -308,6 +309,11 @@ def main():
                  "etat": d["etat"],
                  "sensible": d.get("sensible") or [],
                  "incompatibles": d.get("incompatibles") or [],
+                 # L'urgence dépend de la denrée ET de sa zone : le même sachet
+                 # de pignons est « basse » dans un placard fermé et « haute »
+                 # sur l'étagère au soleil. Elle se calcule donc ici, où les deux
+                 # sont sous la main, et pas dans le YAML où seule la denrée est.
+                 "urgence": gm.urgence(d, _zones[d["zone"]]),
                  "note": d.get("note")}
                 for d in pantry["denrees"]
             ],

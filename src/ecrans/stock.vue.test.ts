@@ -255,6 +255,7 @@ const denreeTest = (p: Partial<Denree> = {}): Denree => ({
   etat: "sec",
   sensible: [],
   incompatibles: [],
+  urgence: "basse",
   note: null,
   ...p,
 });
@@ -340,14 +341,14 @@ describe("les rangements", () => {
 
 describe("le garde-manger entier", () => {
   test("il compte ses denrées et distingue celles qui sont pesées", () => {
-    const vue = gardeManger(catalogue.gardeManger);
+    const vue = gardeManger(catalogue);
     expect(vue.denrees).toBe(catalogue.gardeManger.denrees.length);
     expect(vue.pesees).toBeGreaterThan(0);
     expect(vue.pesees).toBeLessThan(vue.denrees);
   });
 
   test("le volume mesuré ignore les zones non cotées, sans les cacher", () => {
-    const vue = gardeManger(catalogue.gardeManger);
+    const vue = gardeManger(catalogue);
     const cotees = catalogue.gardeManger.zones.filter((z) => z.volumeL != null);
     expect(cotees.length).toBeLessThan(vue.zones.length);
     expect(vue.volume).not.toBe("");
@@ -356,7 +357,7 @@ describe("le garde-manger entier", () => {
   test("les alertes du relevé remontent jusqu'à la vue", () => {
     // Le couple pommes de terre / oignons est la seule perte ACTIVE du relevé :
     // s'il cessait d'être signalé, l'écran mentirait par omission.
-    const vue = gardeManger(catalogue.gardeManger);
+    const vue = gardeManger(catalogue);
     expect(
       vue.alertes.some((a) => a.includes("pomme de terre") && a.includes("voisiner")),
     ).toBe(true);
@@ -367,7 +368,7 @@ describe("le garde-manger entier", () => {
     // relevé produit sept lignes pour trois problèmes — les pignons comptent
     // double, et le sous-évier répète « humide » sous quatre légumes qu'on
     // sortira du même mouvement. Une liste de sept ne se lit pas.
-    const vue = gardeManger(catalogue.gardeManger);
+    const vue = gardeManger(catalogue);
     expect(vue.alertes.length).toBeLessThanOrEqual(4);
     const humide = vue.alertes.find((a) => a.includes("endroit humide"));
     expect(humide).toContain("pomme de terre");

@@ -274,6 +274,17 @@ export type Etat = "conserve" | "bocal" | "sec" | "entame" | "frais";
 export type Forme = "rectangle" | "demi-lune";
 
 /**
+ * À quel point il faut manger ça bientôt.
+ *
+ * DÉRIVÉE, ET SANS AUCUNE DATE. Le relevé n'en porte pas — ni DLC, ni DLUO, ni
+ * date d'ouverture. Ce qu'il sait, c'est le conditionnement et l'endroit : un
+ * sachet ouvert n'oppose plus de barrière, un légume frais ne se garde pas, une
+ * denrée rangée là où elle s'abîme se dégrade en ce moment. Ces trois faits
+ * suffisent à classer, et on peut aller les vérifier de l'œil.
+ */
+export type Urgence = "haute" | "moyenne" | "basse";
+
+/**
  * Un rangement physique.
  *
  * IL NE REMPLACE PAS `Espace`, IL S'Y RATTACHE. `Espace` dit comment une chose
@@ -317,6 +328,10 @@ export interface Denree {
   sensible: Agression[];
   /** Ce avec quoi cette denrée ne doit pas partager une zone. */
   incompatibles: string[];
+  /** Calculée à l'export, parce qu'elle dépend de la denrée ET de sa zone : le
+   *  même sachet de pignons est `basse` dans un placard fermé et `haute` sur
+   *  l'étagère au soleil. */
+  urgence: Urgence;
   note: string | null;
 }
 

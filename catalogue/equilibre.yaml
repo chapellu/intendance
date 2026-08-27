@@ -49,6 +49,17 @@ poids:
   chaine_couverte: 4         # sa base est déjà cuite plus tôt dans la semaine
   ecoule_frigo: 5            # consomme un reste qui dort au frigo
   ecoule_congelo: 3          # sort une portion d'urgence du congélateur
+  # LE PLACARD SE VIDE AUSSI, ET IL SE GÂTE. Mêmes poids que `ecoule_frigo`,
+  # parce que c'est la même idée : une denrée qui se dégrade vaut d'être mangée
+  # avant une denrée qui attend tranquillement.
+  #
+  # SEULES LES DENRÉES À RISQUE SONT PAYÉES, et c'est tout le point. Utiliser une
+  # boîte de conserve qui tient trois ans n'a rien d'urgent — et c'est déjà
+  # récompensé ailleurs, par `article_marginal` qui ne monte pas quand
+  # l'ingrédient est au placard. Payer aussi le maïs ferait gagner les plats à
+  # longue liste d'épicerie, ce qui est l'inverse du service rendu.
+  ecoule_placard_urgent: 5   # frais, ou en train de s'abîmer là où il est rangé
+  ecoule_placard_entame: 2   # paquet ouvert : la barrière est rompue
   chaine_manquante: -8       # exige une base que rien ne produit avant
   hors_budget: -4
   plancher_congelo: 4        # remonte le stock d'urgence quand il est bas

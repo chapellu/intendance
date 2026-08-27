@@ -46,11 +46,12 @@ jobs:
       - run: npm run catalogue:verifie
       - run: npm run typecheck
       - run: npm test
-      # La parité rejoue les mêmes semaines dans le modèle du prototype (figé
-      # dans `reference/`) et dans celui de l'app, et compare tout ce que
-      # `calculer` produit. Elle disparaîtra avec le prototype ; d'ici là, c'est
-      # elle qui prouve le port.
-      - run: npm run parite
+      # LA PARITÉ A ÉTÉ RETIRÉE EN T22, et c'est elle-même qui l'annonçait.
+      # Elle rejouait les mêmes semaines dans le modèle du prototype et dans
+      # celui de l'app, et prouvait que le port disait la même chose. À partir du
+      # moment où le scoring tient compte du garde-manger — que le proto ignore —
+      # elle ne pouvait plus qu'échouer, et un contrôle qui DOIT échouer n'en est
+      # plus un. Voir la section « Sortie » du backlog.
 
   e2e:
     name: Parcours de bout en bout

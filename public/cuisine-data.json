@@ -19754,6 +19754,8 @@
    "chaine_couverte": 4,
    "ecoule_frigo": 5,
    "ecoule_congelo": 3,
+   "ecoule_placard_urgent": 5,
+   "ecoule_placard_entame": 2,
    "chaine_manquante": -8,
    "hors_budget": -4,
    "plancher_congelo": 4,
@@ -19994,6 +19996,7 @@
     "etat": "conserve",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": null
    },
    {
@@ -20008,6 +20011,7 @@
     "etat": "conserve",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": null
    },
    {
@@ -20022,6 +20026,7 @@
     "etat": "conserve",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": null
    },
    {
@@ -20036,6 +20041,7 @@
     "etat": "conserve",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": null
    },
    {
@@ -20050,6 +20056,7 @@
     "etat": "conserve",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": null
    },
    {
@@ -20064,6 +20071,7 @@
     "etat": "conserve",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": null
    },
    {
@@ -20078,6 +20086,7 @@
     "etat": "conserve",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": "au naturel"
    },
    {
@@ -20092,6 +20101,7 @@
     "etat": "conserve",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": "à l'huile d'olive"
    },
    {
@@ -20106,6 +20116,7 @@
     "etat": "conserve",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": null
    },
    {
@@ -20123,6 +20134,7 @@
      "chaleur"
     ],
     "incompatibles": [],
+    "urgence": "haute",
     "note": null
    },
    {
@@ -20137,6 +20149,7 @@
     "etat": "conserve",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": null
    },
    {
@@ -20151,6 +20164,7 @@
     "etat": "conserve",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": null
    },
    {
@@ -20162,6 +20176,7 @@
     "etat": "bocal",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": null
    },
    {
@@ -20173,6 +20188,7 @@
     "etat": "bocal",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": null
    },
    {
@@ -20184,6 +20200,7 @@
     "etat": "sec",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": null
    },
    {
@@ -20195,6 +20212,7 @@
     "etat": "sec",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": null
    },
    {
@@ -20208,6 +20226,7 @@
      "humidite"
     ],
     "incompatibles": [],
+    "urgence": "moyenne",
     "note": null
    },
    {
@@ -20221,6 +20240,7 @@
      "humidite"
     ],
     "incompatibles": [],
+    "urgence": "moyenne",
     "note": null
    },
    {
@@ -20234,6 +20254,7 @@
      "humidite"
     ],
     "incompatibles": [],
+    "urgence": "moyenne",
     "note": null
    },
    {
@@ -20248,6 +20269,7 @@
     "etat": "sec",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": "T55"
    },
    {
@@ -20262,6 +20284,7 @@
     "etat": "sec",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": null
    },
    {
@@ -20273,6 +20296,7 @@
     "etat": "entame",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "moyenne",
     "note": "torsades"
    },
    {
@@ -20284,6 +20308,7 @@
     "etat": "entame",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "moyenne",
     "note": "coquillettes"
    },
    {
@@ -20295,6 +20320,7 @@
     "etat": "entame",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "moyenne",
     "note": "spaghettis n°5"
    },
    {
@@ -20306,6 +20332,7 @@
     "etat": "sec",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": "étoiles"
    },
    {
@@ -20317,6 +20344,7 @@
     "etat": "entame",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "moyenne",
     "note": null
    },
    {
@@ -20328,6 +20356,7 @@
     "etat": "sec",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": null
    },
    {
@@ -20339,6 +20368,7 @@
     "etat": "sec",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": null
    },
    {
@@ -20352,6 +20382,7 @@
      "humidite"
     ],
     "incompatibles": [],
+    "urgence": "basse",
     "note": null
    },
    {
@@ -20366,6 +20397,7 @@
     "etat": "sec",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": null
    },
    {
@@ -20382,6 +20414,7 @@
      "lumiere"
     ],
     "incompatibles": [],
+    "urgence": "basse",
     "note": null
    },
    {
@@ -20396,6 +20429,7 @@
     "etat": "conserve",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": null
    },
    {
@@ -20407,6 +20441,7 @@
     "etat": "conserve",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": null
    },
    {
@@ -20421,6 +20456,7 @@
     "etat": "bocal",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": null
    },
    {
@@ -20432,6 +20468,7 @@
     "etat": "bocal",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": null
    },
    {
@@ -20446,6 +20483,7 @@
     "etat": "bocal",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": null
    },
    {
@@ -20460,6 +20498,7 @@
     "etat": "conserve",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": null
    },
    {
@@ -20476,6 +20515,7 @@
      "humidite"
     ],
     "incompatibles": [],
+    "urgence": "moyenne",
     "note": null
    },
    {
@@ -20492,6 +20532,7 @@
      "humidite"
     ],
     "incompatibles": [],
+    "urgence": "moyenne",
     "note": "T110"
    },
    {
@@ -20506,6 +20547,7 @@
     "etat": "sec",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": null
    },
    {
@@ -20517,6 +20559,7 @@
     "etat": "sec",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": null
    },
    {
@@ -20528,6 +20571,7 @@
     "etat": "bocal",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": "distributeur"
    },
    {
@@ -20539,6 +20583,7 @@
     "etat": "bocal",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": "distributeur"
    },
    {
@@ -20550,6 +20595,7 @@
     "etat": "bocal",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": "à racheter — bocal vide"
    },
    {
@@ -20561,6 +20607,7 @@
     "etat": "bocal",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": "raisins secs et chips de banane — acheté en vrac"
    },
    {
@@ -20572,6 +20619,7 @@
     "etat": "entame",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "moyenne",
     "note": null
    },
    {
@@ -20583,6 +20631,7 @@
     "etat": "sec",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": null
    },
    {
@@ -20594,6 +20643,7 @@
     "etat": "sec",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": null
    },
    {
@@ -20605,6 +20655,7 @@
     "etat": "bocal",
     "sensible": [],
     "incompatibles": [],
+    "urgence": "basse",
     "note": null
    },
    {
@@ -20623,6 +20674,7 @@
      "echalote",
      "ail"
     ],
+    "urgence": "haute",
     "note": null
    },
    {
@@ -20636,6 +20688,7 @@
      "humidite"
     ],
     "incompatibles": [],
+    "urgence": "haute",
     "note": null
    },
    {
@@ -20649,6 +20702,7 @@
      "humidite"
     ],
     "incompatibles": [],
+    "urgence": "haute",
     "note": null
    },
    {
@@ -20662,6 +20716,7 @@
      "humidite"
     ],
     "incompatibles": [],
+    "urgence": "haute",
     "note": null
    }
   ],

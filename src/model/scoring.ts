@@ -14,6 +14,7 @@
 // `main`, `alea`, `parRayon`).
 
 import { articles, calculer, type LignePanier } from "./calcul";
+import { bonusPlacard, urgences } from "./gardeManger";
 import { convient, joue, type Choix, type Jeu } from "./jeu";
 import { gamelles } from "./offres";
 import type { Catalogue, Plat } from "./types";
@@ -113,6 +114,12 @@ export interface Carte {
    *  confondait avec « il y en a ». */
   partiel: boolean;
   plein: boolean;
+  /** Les denrées à risque du placard que ce plat mangerait. Vide quand il n'en
+   *  sauve aucune — ce qui est le cas le plus fréquent, et normal. */
+  placard: string[];
+  /** L'une d'elles est-elle vraiment pressée ? `false` = seulement des paquets
+   *  entamés, ce qui n'appelle pas le même geste. */
+  sauve: boolean;
 }
 
 /**
@@ -136,6 +143,10 @@ export function offre(jeu: Jeu, choix: Choix[], slot: number): Carte[] {
   const rep = jeu.catalogue.equilibre.cibles.repetition_max;
   const cr = jeu.creneaux[slot];
   if (!cr) return [];
+
+  // Le placard ne change pas d'un plat à l'autre : on le lit une fois pour la
+  // proposition entière, pas 86 fois.
+  const pressees = urgences(jeu.catalogue);
 
   // Ce créneau est-il le dîner qui précède un déjeuner de coworking encore vide ?
   const gamelleDemain =
@@ -212,6 +223,23 @@ export function offre(jeu: Jeu, choix: Choix[], slot: number): Carte[] {
         pourquoi.push(`demande ${p.accepts.map((acc) => acc.type ?? `un ${acc.kind}`).join(", ")}`);
       }
 
+      // CE QUE LE PLAT SAUVE DU PLACARD. Après les autres termes, parce que
+      // c'est un argument de dernier recours : il ne fait pas d'un mauvais plat
+      // un bon, il départage deux plats également bons. Un plat qui sature une
+      // protéine reste mauvais même s'il vide le bac à légumes.
+      const placard = bonusPlacard(jeu.catalogue, p, pressees, poids);
+      if (placard.score) {
+        score += placard.score;
+        // Deux phrases, parce que ce sont deux gestes. « Se perdent » appelle à
+        // cuisiner ce soir ; « entamés » dit seulement qu'un paquet est ouvert
+        // et qu'autant le finir.
+        pourquoi.push(
+          placard.urgent
+            ? `sauve ce qui se perd : ${placard.noms.join(", ")}`
+            : `finit des paquets entamés : ${placard.noms.join(", ")}`,
+        );
+      }
+
       const marginal = apres.panier.size - nBase;
       score += (poids["article_marginal"] ?? 0) * marginal;
 
@@ -221,6 +249,8 @@ export function offre(jeu: Jeu, choix: Choix[], slot: number): Carte[] {
         score: Math.round(score * 10) / 10,
         marginal,
         pourquoi,
+        placard: placard.noms,
+        sauve: placard.urgent,
         malTransporte,
         manque: requisNonCouvert,
         minutes: p.minutes + (pleinIci[0]?.minutes ?? 0),

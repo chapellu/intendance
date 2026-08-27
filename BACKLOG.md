@@ -564,6 +564,54 @@ Un ticket = un commit qui laisse l'app fonctionnelle. `[ ]` à faire,
       décrémente quand on cuisine, donc `provenance()` continue de lire
       `rayons.placard` — voir ci-dessous.
 
+- [x] **T22 — L'anti-gaspi.** Le garde-manger entre dans le score : la
+      proposition remonte les plats qui mangent ce qui se perd.
+
+      **TROIS URGENCES, ET AUCUNE DATE.** Le relevé n'en porte pas — ni DLC, ni
+      DLUO, ni date d'ouverture — et en inventer une pour pouvoir compter dessus
+      donnerait un chiffre qui a l'air juste et ne l'est jamais. Ce que le relevé
+      sait, c'est le CONDITIONNEMENT et l'ENDROIT : un sachet ouvert n'oppose
+      plus de barrière, un légume frais ne se garde pas, une denrée rangée là où
+      elle s'abîme se dégrade en ce moment. `haute` / `moyenne` / `basse` se
+      dérivent de ces trois faits, et on peut aller les vérifier de l'œil. Sur le
+      vrai stock : 5 hautes, 10 entamées, 38 scellées.
+
+      **ON NE PAIE QUE CE QUI EST À RISQUE.** *Utiliser* le placard est déjà
+      récompensé, et ailleurs : un ingrédient de placard ne crée pas de ligne de
+      courses, donc `article_marginal` ne monte pas. *Sauver* le placard est ce
+      qui manquait. Une conserve tient trois ans et ne mérite aucun coup de
+      pouce ; la payer ferait gagner les plats à longue liste d'épicerie.
+
+      **UN SEUL BONUS PAR PLAT, ET C'EST LA MESURE QUI L'A DÉCIDÉ.** La première
+      version cumulait par ingrédient. Comptés sur le corpus : l'oignon paraît
+      dans **42 %** des 86 plats, l'ail dans **19 %**. Le cumul donnait donc +10
+      à presque tout ce qui contient les deux, et le haut de la proposition
+      répétait « sauve ce qui se perd : oignon, ail » huit fois de suite — un
+      terme qui se déclenche partout ne départage rien, et récompenser la
+      longueur d'une liste d'ingrédients est exactement ce que
+      `article_marginal` a été écrit pour empêcher.
+
+      **CE QUE LE MODÈLE NE SAIT PAS FAIRE, ET QUI EST ÉCRIT DANS LE CODE.** Un
+      aromate n'est pas sauvé parce qu'un plat le cite : l'oignon sera mangé de
+      toute façon. Distinguer un oignon pris sur un filet de 800 g de pommes de
+      terre prises sur deux kilos demanderait des quantités que le relevé ne
+      porte pas pour le frais (`par_unite: null`). D'où le partage assumé : le
+      score NUDGE, et `aSauver()` DÉSIGNE — la liste « À manger en premier »
+      nomme les pommes de terre et l'épeautre sans se laisser noyer par les
+      aromates.
+
+      **DEUX LISTES, DEUX GESTES.** « À déplacer » dit de ranger autrement ; « À
+      manger en premier » dit de cuisiner. Le même oignon peut être dans les
+      deux — il est mal rangé ET il court — et ce n'est pas une redite.
+
+      **LA PARITÉ EST PARTIE AVEC.** `scripts/parite.mjs` et
+      `reference/proto-semaine.js` sont supprimés, et l'étape retirée du CI. Ils
+      prouvaient que le port disait la même chose que `apps/proto-shell` ; à
+      partir du moment où le scoring tient compte du garde-manger, que le proto
+      ignore, la parité ne pouvait plus qu'échouer — et un contrôle qui DOIT
+      échouer n'en est plus un. Voir « Sortie » : la moitié `flagship` du
+      démontage reste à faire.
+
 ### Trouvé en portant, à décider
 
 - [ ] **Le garde-manger ne fait pas taire la liste de courses.** T21 donne enfin
@@ -578,7 +626,22 @@ Un ticket = un commit qui laisse l'app fonctionnelle. `[ ]` à faire,
       pire que pas de chiffre du tout. À trancher avec « rentrer une course ne
       peut pas faire un lot » : c'est le même fil, pris par l'autre bout.
 
+- [ ] **Un aromate n'est pas sauvé parce qu'un plat le cite.** La limite connue
+      de T22, à lever le jour où le frais sera quantifié. Il faudrait comparer ce
+      qu'on A à ce qu'un plat PREND — un oignon sur un filet, contre 800 g de
+      pommes de terre sur deux kilos. `garde-manger.yaml` porte déjà
+      `par_unite`, mais il est `null` sur tout le frais : personne ne pèse un
+      filet d'oignons en le rangeant. Peut-être la bonne réponse est-elle une
+      bande plutôt qu'un poids — « un filet », « une main » —, comme `qty_band`
+      compte des repas plutôt que des grammes.
+
 ## Sortie
+
+**Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`
+sont supprimés, l'étape est retirée du CI. Reste la moitié `flagship`, qui est de
+l'infrastructure vivante et se démonte à part — d'autant que le README dit encore
+que les deux tournent « tant que le prototype sert encore de référence », et que
+l'intérieur du jardin n'est pas tranché.
 
 Quand l'app porte les mêmes verdicts que le proto : supprimer, chez `flagship`,
 `apps/proto-shell`, `k8s/proto-shell`, son listener, son rrset et son workflow —

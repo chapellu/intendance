@@ -259,6 +259,38 @@ function GardeManger({ vue }: { vue: ReturnType<typeof vueDeLInventaire>["gardeM
         </div>
       ) : null}
 
+      {/* DEUX LISTES, DEUX GESTES, ET IL NE FAUT PAS LES CONFONDRE. « À
+          déplacer » dit de ranger autrement — un sachet à mettre ailleurs.
+          « À manger en premier » dit de cuisiner. Le même oignon peut être dans
+          les deux, et ce n'est pas une redite : il est mal rangé ET il court. */}
+      {vue.aSauver.length ? (
+        <>
+          <div className="co-kicker" style={{ margin: "0 var(--space-1) var(--space-2)" }}>
+            À manger en premier
+          </div>
+          {vue.aSauver.map((s) => (
+            <div key={s.cle} className="co-lot">
+              <span style={{ flex: 1 }}>
+                <div className="nom">{s.nom}</div>
+                <div className="ou">
+                  {s.raison} · {s.ou}
+                </div>
+              </span>
+              <span>
+                <div className={`src ${s.urgence === "haute" ? "estime" : ""}`}>
+                  {s.urgence === "haute" ? "pressé" : "entamé"}
+                </div>
+              </span>
+            </div>
+          ))}
+          <div className="co-note" style={{ margin: "var(--space-2) var(--space-1) var(--space-3)" }}>
+            « Poser un plat » remonte les recettes qui les mangent. Un aromate qu’on met partout —
+            l’oignon est dans 42&nbsp;% des plats — sera consommé de toute façon&nbsp;: c’est le reste
+            de cette liste qui se perd vraiment.
+          </div>
+        </>
+      ) : null}
+
       {vue.zones.map((z) => (
         <div key={z.id} className="co-espace" style={{ marginBottom: "var(--space-2)" }}>
           <div className="nom">

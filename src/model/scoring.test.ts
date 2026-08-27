@@ -207,3 +207,44 @@ describe("la liste de courses suit le magasin", () => {
     if (groupes.some(([r]) => r === "autre")) expect(groupes.at(-1)?.[0]).toBe("autre");
   });
 });
+
+describe("l'anti-gaspi entre dans le score", () => {
+  test("un plat qui sauve une denrée pressée le dit, et le dit en français", () => {
+    const slot = jeu.creneaux.findIndex((c) => c.repas === "diner");
+    const carte = offre(jeu, jeu.choix, slot).find((c) => c.plat.id === "omelette-du-potager");
+    expect(carte?.placard).toContain("pomme de terre");
+    expect(carte?.sauve).toBe(true);
+    expect(carte?.pourquoi.some((p) => p.startsWith("sauve ce qui se perd"))).toBe(true);
+  });
+
+  test("deux phrases, parce que ce sont deux gestes", () => {
+    // « Se perdent » appelle à cuisiner ce soir ; « entamés » dit seulement
+    // qu'un paquet est ouvert et qu'autant le finir. Les confondre ferait crier
+    // au gaspillage sous un paquet de biscottes.
+    const slot = jeu.creneaux.findIndex((c) => c.repas === "diner");
+    const cartes = offre(jeu, jeu.choix, slot).filter((c) => c.placard.length);
+    for (const c of cartes) {
+      const dit = c.pourquoi.find((p) => p.includes("placard") || p.includes("sauve") || p.includes("entamés"));
+      expect(dit?.startsWith(c.sauve ? "sauve ce qui se perd" : "finit des paquets entamés")).toBe(true);
+    }
+  });
+
+  test("le placard départage, il ne commande pas", () => {
+    // LE GARDE-FOU DU TERME. Un plat qui vide le bac à légumes mais sature une
+    // protéine doit rester derrière un plat qui comble un manque : l'anti-gaspi
+    // est un argument de dernier recours, pas le premier critère. Le bonus vaut
+    // 5 quand `proteine_manquante` vaut 6 et `chaine_manquante` −8.
+    const p = catalogue.equilibre.poids;
+    expect(p["ecoule_placard_urgent"]).toBeLessThan(p["proteine_manquante"]!);
+    expect(p["ecoule_placard_entame"]).toBeLessThan(p["ecoule_placard_urgent"]!);
+  });
+
+  test("un plat qui ne touche pas au placard n'est pas puni", () => {
+    // Un bonus absent n'est pas une pénalité : le score reste celui des autres
+    // termes, et rien dans `pourquoi` ne parle du placard.
+    const slot = jeu.creneaux.findIndex((c) => c.repas === "diner");
+    const sans = offre(jeu, jeu.choix, slot).filter((c) => !c.placard.length);
+    expect(sans.length).toBeGreaterThan(0);
+    expect(sans.every((c) => !c.pourquoi.some((x) => x.includes("sauve") || x.includes("entamés")))).toBe(true);
+  });
+});

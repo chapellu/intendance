@@ -18,7 +18,8 @@
 import type { BilanEspace, Calcul } from "../model/calcul";
 import type { LigneDepot } from "../model/depot";
 import type { Jeu } from "../model/jeu";
-import type { Denree, Espace, GardeManger, Zone } from "../model/types";
+import { aSauver } from "../model/gardeManger";
+import type { Catalogue, Denree, Espace, GardeManger, Urgence, Zone } from "../model/types";
 import { fmt } from "../ui/format";
 import { nomEspace } from "../ui/phrases";
 
@@ -356,10 +357,43 @@ export function zones(gm: GardeManger): ZoneVue[] {
   });
 }
 
+export interface ASauverVue {
+  cle: string;
+  nom: string;
+  urgence: Urgence;
+  raison: string;
+  /** Où aller le chercher. Plusieurs zones quand plusieurs lots courent. */
+  ou: string;
+}
+
+/**
+ * Ce qui se perd, prêt à lire.
+ *
+ * GROUPÉ PAR INGRÉDIENT, PARCE QUE LA LISTE EST UNE LISTE DE COURSES À L'ENVERS.
+ * Le modèle rend un élément par LOT — trois fonds de paquets de pâtes font trois
+ * lignes. Mais on ne cuisine pas « le deuxième paquet de pâtes » : on cuisine
+ * des pâtes. Trois lignes identiques feraient croire à trois choses à faire.
+ */
+export function aSauverVue(catalogue: Catalogue): ASauverVue[] {
+  const par = new Map<string, ASauverVue & { zones: Set<string> }>();
+  for (const s of aSauver(catalogue)) {
+    const vu = par.get(s.ingredient);
+    if (vu) {
+      vu.zones.add(s.zone);
+      continue;
+    }
+    par.set(s.ingredient, { ...s, cle: s.ingredient, ou: s.zone, zones: new Set([s.zone]) });
+  }
+  return [...par.values()].map(({ zones, ...v }) => ({ ...v, ou: [...zones].join(" · ") }));
+}
+
 export interface GardeMangerVue {
   zones: ZoneVue[];
   /** Les erreurs de rangement, calculées à l'export. */
   alertes: string[];
+  /** Ce qui se perd, du plus pressé au moins. L'autre moitié de l'anti-gaspi :
+   *  « à déplacer » dit de ranger autrement, celle-ci dit de cuisiner. */
+  aSauver: ASauverVue[];
   /** Combien de denrées en tout, et combien pèsent quelque chose de connu. */
   denrees: number;
   pesees: number;
@@ -369,13 +403,15 @@ export interface GardeMangerVue {
   volume: string;
 }
 
-export function gardeManger(gm: GardeManger): GardeMangerVue {
+export function gardeManger(catalogue: Catalogue): GardeMangerVue {
+  const gm = catalogue.gardeManger;
   const vues = zones(gm);
   const poidsG = vues.reduce((s, z) => s + z.poidsG, 0);
   const volumeL = gm.zones.reduce((s, z) => s + (z.volumeL ?? 0), 0);
   return {
     zones: vues,
     alertes: gm.alertes,
+    aSauver: aSauverVue(catalogue),
     denrees: gm.denrees.length,
     pesees: gm.denrees.filter((d) => d.poidsG != null).length,
     poids: poidsG >= 1000 ? `${fmt(poidsG / 1000)} kg` : `${fmt(poidsG)} g`,
@@ -417,7 +453,7 @@ export function vueDeLInventaire(jeu: Jeu, calc: Calcul, voulu: Espace | null): 
     // zones tombent toutes sur `placard`, donc le filtre ne trierait rien. Il se
     // lit par rangement, ce qui est la seule question qu'on se pose devant un
     // placard — « qu'est-ce qu'il y a dans celui-là ».
-    gardeManger: gardeManger(jeu.catalogue.gardeManger),
+    gardeManger: gardeManger(jeu.catalogue),
     filtre,
     nomDuFiltre: filtre ? nomEspace(filtre) : null,
     constates: lignes.filter((l) => l.ref !== null).length,
