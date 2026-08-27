@@ -92,3 +92,23 @@ export function horsListe(
     .filter(([p, n]) => p !== "courses" && !!n)
     .map(([p, n]) => [catalogue.provenances[p as Provenance] ?? p, n as number]);
 }
+
+/**
+ * Ce qu'on ne met pas au panier parce qu'on l'a déjà — séparé par la RAISON.
+ *
+ * DEUX LISTES, PARCE QUE CE SONT DEUX CERTITUDES DIFFÉRENTES. `placard` est une
+ * appartenance : on a toujours du sel, la question de la quantité ne se pose
+ * pas. `garde-manger` est un stock relevé qui s'épuise, et dont personne ne suit
+ * la consommation — la seule phrase honnête y est « va voir combien ».
+ *
+ * Les fondre en une seule ferait passer la seconde pour la première, et c'est le
+ * genre de raccourci qui fait rentrer du magasin sans le maïs.
+ */
+export function aVerifierParRaison(
+  aVerifier: Map<string, { nom: string; prov: Provenance }>,
+): { stock: string[]; fond: string[] } {
+  const stock: string[] = [];
+  const fond: string[] = [];
+  for (const v of aVerifier.values()) (v.prov === "garde-manger" ? stock : fond).push(v.nom);
+  return { stock, fond };
+}

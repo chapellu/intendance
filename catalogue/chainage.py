@@ -608,13 +608,27 @@ def _fusionner(offres):
 # donc chaque lecteur redécidait dans son coin — et « déjà à la maison » ne se
 # disait pas du tout pour un ingrédient ordinaire.
 PLACARD = "placard"     # denrée de fond : on vérifie, on n'achète pas
+GARDE_MANGER = "garde-manger"   # stock relevé : on en a, on va voir combien
 CHAINE = "chaine"       # cuisiné plus tôt dans la semaine
 FRIGO = "frigo"         # déjà à la maison avant que la semaine commence
 COURSES = "courses"     # à acheter
 ABSENT = "absent"       # base attendue qui n'est pas là — et qui NE S'ACHÈTE PAS
 
+# POURQUOI `GARDE_MANGER` N'EST PAS `PLACARD`, ALORS QUE LES DEUX FINISSENT
+# « à vérifier ». Ce ne sont pas les mêmes faits, et l'écran doit pouvoir le dire.
+#
+# `PLACARD` est une APPARTENANCE : le sel, l'huile, le poivre. On en a toujours,
+# sans quantité et sans fin. C'est ce qui évite une liste qui dirait « acheter du
+# sel » chaque semaine, et qu'on apprendrait à ignorer.
+#
+# `GARDE_MANGER` est un STOCK RELEVÉ : quatre boîtes de maïs de 285 g, un filet
+# d'oignons. Ça existe, ça s'épuise, et rien ne suit sa consommation. Dire « tu en
+# as assez » serait donc un mensonge — mais dire « tu en as, va voir » est
+# exactement vrai, et c'est le contrat de la liste « à vérifier » depuis toujours.
+# C'est ce qui permet de brancher le garde-manger SANS modèle de consommation.
 ETIQUETTES = {
     PLACARD: "placard",
+    GARDE_MANGER: "déjà au garde-manger",
     CHAINE: "déjà cuisiné cette semaine",
     FRIGO: "déjà au frigo",
     COURSES: "à acheter",
@@ -628,7 +642,7 @@ ETIQUETTES = {
 HORS_COURSES = (CHAINE, FRIGO, ABSENT)
 
 
-def provenance(ing, cid, placard_ids, prelevements=()):
+def provenance(ing, cid, placard_ids, prelevements=(), garde_manger_ids=()):
     """Où va-t-on chercher cette ligne d'ingrédient ?
 
     UNE décision, au lieu de trois tests dispersés. L'ordre compte : une base
@@ -640,6 +654,12 @@ def provenance(ing, cid, placard_ids, prelevements=()):
     « à acheter » mettrait « 250 g de lentilles cuites » sur la liste de
     courses, ce qui ne s'achète nulle part. C'est `sans_reste` qui dit alors
     quoi acheter — des lentilles sèches — et combien de temps ça coûte.
+
+    `garde_manger_ids` arrive en dernier, APRÈS le placard, et l'ordre est le
+    bon : ce qu'on a toujours l'emporte sur ce qu'on a en ce moment. Le sel est
+    dans les deux listes le jour où on relève un paquet de sel ; le dire
+    « placard » reste plus juste, parce que la question « combien m'en
+    reste-t-il » ne se pose pas pour lui.
     """
     if ing.get("from_accepts"):
         pr = next((p for p in prelevements if p.trouve), None)
@@ -648,6 +668,8 @@ def provenance(ing, cid, placard_ids, prelevements=()):
         return CHAINE if pr.out.get("_from") else FRIGO
     if cid in placard_ids:
         return PLACARD
+    if cid in garde_manger_ids:
+        return GARDE_MANGER
     return COURSES
 
 

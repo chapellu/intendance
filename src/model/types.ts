@@ -39,7 +39,13 @@ export type CauseLimite = "place" | "contenant";
 export type NatureCreneau = "choisi" | "routine" | "optionnel";
 
 /** D'où sort une ligne d'ingrédient — décidé une fois, lu partout. */
-export type Provenance = "placard" | "chaine" | "frigo" | "courses" | "absent";
+export type Provenance =
+  | "placard"
+  | "garde-manger"
+  | "chaine"
+  | "frigo"
+  | "courses"
+  | "absent";
 
 /** L'identifiant d'un repas dans `creneaux.repas`. Piloté par la donnée : la
  *  liste des repas est configurable, seuls `dejeuner` et `diner` sont exigés

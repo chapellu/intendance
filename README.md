@@ -114,9 +114,15 @@ que les recettes émettent, mangées par le graphe de chaînage.
 d'ingrédients de `rayons.yaml`, rangée dans des zones physiques qui ont des
 cotes, une exposition et une hygrométrie. Une conserve de maïs va dans le second :
 la mettre dans le premier la ferait entrer dans le chaînage, et le planificateur
-proposerait de l'« enchaîner ». Le garde-manger est descriptif — rien ne le
-décrémente quand on cuisine, et il ne fait donc pas encore taire la liste de
-courses.
+proposerait de l'« enchaîner ».
+
+**Le garde-manger reste descriptif — rien ne décrémente une denrée quand on
+cuisine — et il agit quand même sur la liste de courses.** Un ingrédient dont le
+relevé dit qu'il en reste ne part pas au panier : il passe « à vérifier », dont le
+contrat n'a jamais été « tu en as assez » mais « va voir avant d'acheter ». C'est
+ce qui permet de le brancher sans suivre la consommation. Deux provenances
+distinctes le portent : `placard` (on en a toujours — le sel) et `garde-manger`
+(il en reste, quantité inconnue — quatre boîtes de maïs).
 
 **Le modèle Python ne tourne pas dans l'app.** L'app a le sien, en TypeScript,
 sous `src/model/`. Le Python sert à valider le corpus et à produire le JSON.

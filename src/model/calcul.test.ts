@@ -356,3 +356,42 @@ describe("le dépôt part de ce que le foyer a constaté", () => {
     expect(c.depot.lignes[0]?.epuise).toBe(true);
   });
 });
+
+describe("le garde-manger ne s'achète pas les yeux fermés", () => {
+  test("ce dont le relevé dit qu'il en reste quitte le panier", () => {
+    // LE CAS QUI A MOTIVÉ T24. Le chili demande 150 g de maïs et un oignon ; le
+    // relevé porte quatre boîtes de 285 g et un filet. L'app envoyait quand même
+    // les deux sur la liste de courses, parce que ces ingrédients vivent dans
+    // `rayons.épicerie` et que `provenance()` ne lisait que `rayons.placard`.
+    const jeu = creerJeu(catalogue, 7, LUNDI);
+    const slot = jeu.creneaux.findIndex((c) => c.repas === "diner");
+    jeu.choix[slot] = "chili-sin-carne";
+    const c = calculer(jeu);
+    const achats = [...c.panier.values()].map((a) => a.id);
+    expect(achats).not.toContain("mais");
+    expect(achats).not.toContain("oignon");
+    expect([...c.aVerifier.keys()]).toContain("mais");
+  });
+
+  test("« on en a toujours » et « il t'en reste » ne se confondent pas", () => {
+    // Les deux finissent « à vérifier », et c'est là que la nuance compte : on
+    // ne se pose pas la question de la quantité pour le sel, on se la pose pour
+    // quatre boîtes de maïs. L'écran doit pouvoir les séparer.
+    const jeu = creerJeu(catalogue, 7, LUNDI);
+    const slot = jeu.creneaux.findIndex((c) => c.repas === "diner");
+    jeu.choix[slot] = "chili-sin-carne";
+    const c = calculer(jeu);
+    expect(c.aVerifier.get("mais")?.prov).toBe("garde-manger");
+    expect(c.provenances["garde-manger"]).toBeGreaterThan(0);
+  });
+
+  test("ce qu'on a toujours l'emporte sur ce qu'on a en ce moment", () => {
+    // L'ordre dans `provenance()`. Le jour où un paquet de sel entre au relevé,
+    // « placard » reste la bonne réponse : « combien m'en reste-t-il » ne se
+    // pose pas pour lui, et le dire « garde-manger » inviterait à aller compter.
+    const jeu = creerJeu(catalogue, 7, LUNDI);
+    const c = calculer(jeu);
+    for (const [cid, v] of c.aVerifier)
+      if (catalogue.rayons.placard.includes(cid)) expect(v.prov).toBe("placard");
+  });
+});

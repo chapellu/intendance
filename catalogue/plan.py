@@ -30,6 +30,7 @@ import anticipation as an
 import catalogue
 import chainage as ch
 import compile as rc  # shadows the builtin `compile` in this module only
+import garde_manger as gm
 
 HERE = Path(__file__).parent
 JOURS = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"]
@@ -58,6 +59,11 @@ def plan_week(days, household, rules, stock, rayons, today, cat=None,
     hh = household["household"]
     need = rc.household_portions(hh)
     aliases = rayons.get("aliases", {})
+
+    # Ce dont le relevé dit qu'il reste quelque chose. Lu ici et pas à chaque
+    # ligne : la fonction traverse la semaine entière.
+    garde_ids = {canon(d["ingredient"], aliases)
+                 for d in gm.charger(HERE / "garde-manger.yaml")["denrees"]}
 
     # Stock evolves as the week is cooked: start from what is in the fridge,
     # then let each day's `emits` land in it, dated that day. It DEPLETES —
@@ -140,11 +146,15 @@ def plan_week(days, household, rules, stock, rayons, today, cat=None,
         # `compile.py`, qui les affichait donc tous à l'identique.
         for ing in r["ingredients"]:
             cid = canon(ing["id"], aliases)
-            prov = ch.provenance(ing, cid, rayons.get("placard", []), prises)
+            prov = ch.provenance(ing, cid, rayons.get("placard", []), prises, garde_ids)
             compte_provenance[prov] += 1
             if prov in ch.HORS_COURSES:
                 continue                  # cuisiné, déjà là, ou à cuisiner : pas un achat
-            if prov == ch.PLACARD:
+            # Le placard et le garde-manger ne s'achètent ni l'un ni l'autre, et
+            # se vérifient tous les deux — mais pas pour la même raison. L'app
+            # les sépare à l'écran ; ici, où la sortie est une seule liste, les
+            # fondre reste juste.
+            if prov in (ch.PLACARD, ch.GARDE_MANGER):
                 to_check.setdefault(cid, ing["name"])
                 continue
             q, u = rc.scale_qty(ing["qty"], ing["unit"], factor)
@@ -315,7 +325,11 @@ def render(menu, basket, to_check, warnings, chained, fridge, offres,
         total = sum(provenances.values())
         detail = " · ".join(
             f"{provenances[p]} {ch.ETIQUETTES[p]}"
-            for p in (ch.COURSES, ch.PLACARD, ch.CHAINE, ch.FRIGO, ch.ABSENT)
+            # L'ORDRE EST ÉNUMÉRÉ À LA MAIN, ET IL VENAIT D'OUBLIER UNE
+            # PROVENANCE. `garde-manger` manquait, donc onze lignes sur
+            # quarante-et-une ne se comptaient nulle part et le détail ne
+            # totalisait plus. Toute provenance nouvelle s'ajoute ICI aussi.
+            for p in (ch.COURSES, ch.GARDE_MANGER, ch.PLACARD, ch.CHAINE, ch.FRIGO, ch.ABSENT)
             if provenances.get(p))
         out.append(f"D'OÙ VIENT LA SEMAINE — {total} lignes d'ingrédients")
         out.append(f"  {detail}")

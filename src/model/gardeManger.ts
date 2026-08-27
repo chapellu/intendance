@@ -6,9 +6,19 @@
 //
 // DEUX RÉCOMPENSES DISTINCTES, ET LES CONFONDRE CASSERAIT LES DEUX.
 //
-// *Utiliser* le placard est déjà payé, et ailleurs : un ingrédient de placard ne
-// crée pas de ligne de courses, donc `article_marginal` ne monte pas. Un plat
-// bâti sur ce qu'on a gagne déjà, sans que personne ait eu à l'écrire.
+// *Utiliser* le placard est déjà payé, et ailleurs : un ingrédient du
+// garde-manger ne crée pas de ligne de courses, donc `article_marginal` ne monte
+// pas. Un plat bâti sur ce qu'on a gagne déjà, sans que personne ait eu à
+// l'écrire.
+//
+// CETTE PHRASE A ÉTÉ FAUSSE ENTRE T22 ET T24, ce qui vaut d'être noté parce
+// qu'elle servait à justifier tout le reste. Elle n'était vraie que de
+// `rayons.placard` — le sel, l'huile. Les 45 ingrédients du garde-manger, eux,
+// étaient rangés dans `rayons.épicerie` : `provenance()` les disait `courses`,
+// ils produisaient une ligne d'achat, et un plat qui puisait dans le stock était
+// donc PÉNALISÉ de 0,4 au lieu d'être neutre. La conclusion tenait, la raison
+// était fausse. T24 a branché `provenance()` sur le relevé, et la phrase est
+// redevenue vraie.
 //
 // *Sauver* le placard est ce qui manquait. Une boîte de maïs tient trois ans ;
 // un sachet d'épeautre ouvert rancit en six mois ; quatre kilos de pommes de

@@ -21,7 +21,9 @@ import type {
 
 const ESPACES: readonly Espace[] = ["frigo", "congelo", "placard"];
 const EMIT_KINDS: readonly EmitKind[] = ["base", "parure", "portion-bebe", "reste-plat"];
-const PROVENANCES: readonly Provenance[] = ["placard", "chaine", "frigo", "courses", "absent"];
+const PROVENANCES: readonly Provenance[] = [
+  "placard", "garde-manger", "chaine", "frigo", "courses", "absent",
+];
 const AGRESSIONS: readonly Agression[] = ["lumiere", "humidite", "chaleur"];
 const ETATS: readonly Etat[] = ["conserve", "bocal", "sec", "entame", "frais"];
 const FORMES: readonly Forme[] = ["rectangle", "demi-lune"];

@@ -660,19 +660,42 @@ Un ticket = un commit qui laisse l'app fonctionnelle. `[ ]` à faire,
       pour douze des treize denrées à risque. Les alliacées gagnent en plus un
       nœud à débloquer — lacto-fermentation, bocaux à joint caoutchouc.
 
-### Trouvé en portant, à décider
+- [x] **T24 — Le garde-manger entre dans la liste de courses.** `provenance()`
+      lit enfin le relevé : l'app ne fait plus acheter ce qu'on a déjà.
 
-- [ ] **Le garde-manger ne fait pas taire la liste de courses.** T21 donne enfin
-      des quantités à ce que le placard contient, et `chainage.py` regrettait
-      justement que `rayons.placard` soit « une liste globale et statique » et
-      que « déjà à la maison » ne se dise pas d'un ingrédient ordinaire. Le fil
-      manque pourtant, et ce n'est pas un oubli : brancher `provenance()` sur le
-      garde-manger demande de savoir ce qui SORT du placard quand on cuisine, et
-      rien ne le sait. Sans consommation, quatre boîtes de maïs suppriment la
-      ligne de courses pour toujours — y compris le jour où il n'en reste
-      aucune. Un chiffre qu'on croit tenu à jour alors que rien ne le tient est
-      pire que pas de chiffre du tout. À trancher avec « rentrer une course ne
-      peut pas faire un lot » : c'est le même fil, pris par l'autre bout.
+      **UNE ERREUR DE T22, TROUVÉE EN VÉRIFIANT.** Le commentaire de
+      `gardeManger.ts` justifiait le fait de ne rien payer aux conserves en
+      disant qu'utiliser le placard était « déjà récompensé, parce qu'un
+      ingrédient de placard ne crée pas de ligne de courses ». Vrai du sel et de
+      l'huile — les vrais `rayons.placard`. FAUX des 45 ingrédients du
+      garde-manger, rangés dans `rayons.épicerie` : `provenance()` les disait
+      `courses`, ils produisaient une ligne d'achat, et un plat qui puisait dans
+      le stock était donc PÉNALISÉ de 0,4 par `article_marginal` au lieu d'être
+      neutre. La conclusion tenait, la raison était fausse.
+
+      **`aVerifier` ÉTAIT DÉJÀ LE BON ENDROIT, ET JE L'AVAIS SOUS LES YEUX.** Le
+      ticket précédent disait qu'il fallait un modèle de consommation avant de
+      brancher `provenance()` — sinon quatre boîtes de maïs suppriment la ligne
+      pour toujours, y compris le jour où il n'en reste aucune. Mais la liste
+      « à vérifier » ne promet aucune quantité : son contrat est « va voir avant
+      d'acheter », pas « tu en as assez ». Aucune consommation n'a besoin d'être
+      suivie pour dire ça, et c'est exactement vrai.
+
+      **DEUX PROVENANCES, PAS UNE.** `placard` est une APPARTENANCE — on a
+      toujours du sel, la quantité ne se pose pas. `garde-manger` est un STOCK
+      RELEVÉ qui s'épuise. Les fondre ferait passer le second pour le premier, et
+      c'est le genre de raccourci qui fait rentrer du magasin sans le maïs.
+      L'écran des courses les affiche donc en deux blocs distincts.
+
+      **UNE PROVENANCE OUBLIÉE DANS UN TOTAL.** `plan.py` énumère l'ordre
+      d'affichage à la main ; `garde-manger` y manquait, donc onze lignes sur
+      quarante-et-une ne se comptaient nulle part et le détail ne totalisait plus.
+
+      Mesure sur le cas qui a motivé le ticket : `chili-sin-carne` passe de six à
+      quatre lignes de courses — le maïs et l'oignon quittent le panier pour
+      « vous en avez, vérifiez la quantité ».
+
+### Trouvé en portant, à décider
 
 - [ ] **Un aromate n'est pas sauvé parce qu'un plat le cite.** La limite connue
       de T22, à lever le jour où le frais sera quantifié. Il faudrait comparer ce

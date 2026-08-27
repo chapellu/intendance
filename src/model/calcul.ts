@@ -26,19 +26,40 @@ import type {
 // `absent` ne produit PAS de ligne de courses, et c'est contre-intuitif : une
 // base manquante se rattrape en cuisinant, jamais en achetant la base. On
 // n'achète nulle part 250 g de lentilles *cuites*.
+//
+// `placard` ET `garde-manger` FINISSENT TOUS DEUX « à vérifier », ET NE DISENT
+// PAS LA MÊME CHOSE. `placard` est une appartenance — le sel, l'huile : on en a
+// toujours, sans quantité et sans fin. `garde-manger` est un stock relevé —
+// quatre boîtes de maïs, un filet d'oignons : ça existe, ça s'épuise, et rien ne
+// suit sa consommation. Dire « tu en as assez » serait un mensonge ; dire « tu en
+// as, va voir » est exactement vrai. C'est ce qui permet de brancher le
+// garde-manger sans modèle de consommation.
+//
+// L'ordre les départage : ce qu'on a TOUJOURS l'emporte sur ce qu'on a EN CE
+// MOMENT. Le jour où un paquet de sel entre au relevé, « placard » reste la
+// bonne réponse, parce que « combien m'en reste-t-il » ne se pose pas pour lui.
 function provenance(
   catalogue: Catalogue,
   ing: Ingredient,
   cid: string,
   prises: Prise[],
+  gardeManger: ReadonlySet<string>,
 ): Provenance {
   if (ing.base) {
     const pr = prises.find((p) => p.trouve);
     if (!pr) return "absent";
     return pr.out?.from ? "chaine" : "frigo";
   }
-  return catalogue.rayons.placard.includes(cid) ? "placard" : "courses";
+  if (catalogue.rayons.placard.includes(cid)) return "placard";
+  return gardeManger.has(cid) ? "garde-manger" : "courses";
 }
+
+/** Les ingrédients dont le relevé dit qu'il en reste quelque chose, alias
+ *  résolus. Construit une fois par calcul : `calculer` traverse jusqu'à
+ *  vingt-et-un plats, et refaire l'ensemble à chaque ligne serait le refaire
+ *  quelques centaines de fois pour rien. */
+const idsGardeManger = (catalogue: Catalogue): ReadonlySet<string> =>
+  new Set(catalogue.gardeManger.denrees.map((d) => alias(catalogue, d.ingredient)));
 
 const alias = (catalogue: Catalogue, id: string): string => catalogue.rayons.aliases[id] ?? id;
 
@@ -133,8 +154,12 @@ export interface BilanEspace {
 
 export interface Calcul {
   panier: Map<string, LignePanier>;
-  /** Ce qu'on a déjà et qu'on vérifie au lieu de l'acheter. */
-  aVerifier: Map<string, string>;
+  /** Ce qu'on a déjà et qu'on vérifie au lieu de l'acheter.
+   *
+   *  `prov` sépare les deux raisons de ne pas acheter, qui n'appellent pas le
+   *  même coup d'œil au rayon : `placard` (on en a toujours — le sel) et
+   *  `garde-manger` (il en reste, quantité inconnue — quatre boîtes de maïs). */
+  aVerifier: Map<string, { nom: string; prov: Provenance }>;
   chaine: LigneChaine[];
   pleinTarif: PleinTarif[];
   manques: Manque[];
@@ -169,7 +194,11 @@ export function calculer(
   );
 
   const panier = new Map<string, LignePanier>();
-  const aVerifier = new Map<string, string>();
+  // La valeur porte la PROVENANCE en plus du nom : l'écran doit pouvoir séparer
+  // « on en a toujours » de « il t'en reste », qui n'appellent pas le même coup
+  // d'œil au rayon.
+  const aVerifier = new Map<string, { nom: string; prov: Provenance }>();
+  const gardeManger = idsGardeManger(catalogue);
   const chaine: LigneChaine[] = [];
   const pleinTarif: PleinTarif[] = [];
   const manques: Manque[] = [];
@@ -220,11 +249,11 @@ export function calculer(
 
     for (const ing of lignes) {
       const cid = alias(catalogue, ing.id);
-      const prov = provenance(catalogue, ing, cid, prises);
+      const prov = provenance(catalogue, ing, cid, prises, gardeManger);
       provenances[prov] = (provenances[prov] ?? 0) + 1;
       if (catalogue.horsCourses.includes(prov)) continue;
-      if (prov === "placard") {
-        aVerifier.set(cid, ing.nom);
+      if (prov === "placard" || prov === "garde-manger") {
+        aVerifier.set(cid, { nom: ing.nom, prov });
         continue;
       }
       const cle = `${cid}|${ing.unit}`;

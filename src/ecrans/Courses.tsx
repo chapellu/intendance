@@ -22,7 +22,7 @@ import { Corps } from "../ui/Coquille";
 import { fmt } from "../ui/format";
 import {
   basculeDe,
-  horsListe,
+  aVerifierParRaison, horsListe,
   marque,
   vueDesCourses,
   type Article,
@@ -59,6 +59,7 @@ function Contenu({
     () => horsListe(jeu.catalogue, calc.provenances),
     [jeu.catalogue, calc.provenances],
   );
+  const aVerifier = useMemo(() => aVerifierParRaison(calc.aVerifier), [calc.aVerifier]);
 
   const magasin = mode === "magasin";
   const n = magasin ? vue.coches : vue.rentres;
@@ -141,11 +142,31 @@ function Contenu({
           </div>
         ))}
 
-        {calc.aVerifier.size ? (
+        {/* DEUX RAISONS DE NE PAS ACHETER, ET ELLES N'APPELLENT PAS LE MÊME
+            COUP D'ŒIL. Le sel, on l'a toujours : le nommer suffit. Le maïs, il
+            en reste quatre boîtes — mais rien ne suit ce qu'on en consomme, donc
+            la seule phrase honnête est « va voir combien ». Les mélanger ferait
+            passer la seconde pour la première, et on repartirait du magasin en
+            croyant avoir de quoi. */}
+        {aVerifier.stock.length || aVerifier.fond.length ? (
           <div className="co-vide" style={{ marginBottom: "var(--space-3)" }}>
-            <b>À vérifier au placard</b>
-            <br />
-            {[...calc.aVerifier.values()].join(" · ")}
+            {aVerifier.stock.length ? (
+              <>
+                <b>Vous en avez — vérifiez la quantité</b>
+                <br />
+                {aVerifier.stock.join(" · ")}
+              </>
+            ) : null}
+            {aVerifier.stock.length && aVerifier.fond.length ? (
+              <div style={{ height: "var(--space-2)" }} />
+            ) : null}
+            {aVerifier.fond.length ? (
+              <>
+                <b>Fond de placard</b>
+                <br />
+                {aVerifier.fond.join(" · ")}
+              </>
+            ) : null}
           </div>
         ) : null}
 
