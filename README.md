@@ -107,6 +107,14 @@ sort jamais sur un aliment peu acide (botulisme — voir l'avertissement en têt
 et `conserve_mal` couvre ce que le modèle général rate, comme la pomme de terre
 crue au congélateur.
 
+**La saison se lit sur l'ingrédient, pas sur la recette.** `saisons.yaml` porte
+le calendrier de récolte du CIVAM / DRAAF Auvergne-Rhône-Alpes — la région du
+foyer, information publique réutilisable. Le modèle **pénalise le hors-saison
+avéré et ne récompense jamais l'en-saison** : la source couvre 27 ingrédients sur
+57, sans aucun fruit, et un bonus refléterait ses trous plutôt que les saisons.
+Ce qui *se garde* (oignon, ail, pomme de terre, racines) n'est jamais pénalisé —
+récolte n'est pas disponibilité.
+
 **Deux fichiers portent des stocks, et ce ne sont pas les mêmes.**
 `stock.yaml` porte les SORTIES DE CUISINE — des bases cuisinées, indexées sur ce
 que les recettes émettent, mangées par le graphe de chaînage.

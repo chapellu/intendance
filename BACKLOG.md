@@ -269,7 +269,64 @@ Un ticket = un commit qui laisse l'app fonctionnelle. `[ ]` à faire,
       plats : trois tâches, pastille à 3, et chaque ligne ouvre l'écran qui y
       répond.
 
+- [x] **T25 — La saison, par ingrédient.** `catalogue/saisons.yaml` : le
+      calendrier de récolte de la région du foyer, et la seule décision qu'il
+      prend.
+
+      **PAS `source.saison`, QUI EXISTAIT POURTANT.** Soixante-quatre recettes en
+      portent une — nichée sous `source:`, à côté de `page:` et `work:`. C'est
+      une donnée BIBLIOGRAPHIQUE : le chapitre du livre, pas la saison du plat.
+      Le corpus le dit lui-même sur les carrés sablés, indexés `ete` alors que
+      l'autrice y range aussi la version d'automne. Et la vraie question n'est
+      pas « cette recette est-elle estivale » mais « les groseilles sont-elles
+      mûres » — elle se pose sur l'ingrédient.
+
+      **LA SOURCE ÉTAIT DÉJÀ TROUVÉE.** `research/curriculum-and-crop-data`
+      (Workspace, 2026-08-02) avait identifié le calendrier CIVAM / DRAAF
+      Auvergne-Rhône-Alpes : ~30 légumes, la région exacte du foyer, information
+      publique réutilisable (CRPA L321-1). La fiche notait « PDF graphique — must
+      be read by eye ». Elle a en fait été lue par ses TRACÉS VECTORIELS : la
+      couleur porte le sens, l'abscisse porte le mois. Deux fautes corrigées en
+      confrontant le résultat au rendu — une couleur qui fuyait entre blocs de
+      dessin (les filets ressortaient « récolte » sur douze mois) et un filtre
+      d'horizontalité trop strict (la bande du céleri est inclinée).
+
+      **ON PÉNALISE LE HORS-SAISON, ON NE RÉCOMPENSE JAMAIS L'EN-SAISON**, et
+      c'est une conséquence de la donnée, pas de la prudence. La source couvre 27
+      ingrédients sur les 57 du primeur que les recettes utilisent : c'est un
+      calendrier de potager, sans aucun fruit et sans la courgette. Un bonus
+      ferait donc gagner la tomate d'août contre la courgette d'août — non parce
+      que l'une est plus de saison, mais parce qu'on connaît l'une et pas
+      l'autre. Un classement qui reflète les trous de sa source est pire qu'un
+      classement muet. La pénalité n'a pas ce défaut : elle ne se déclenche que
+      là où on sait, et ce qu'on sait est vrai.
+
+      **RÉCOLTE N'EST PAS DISPONIBILITÉ — la faute attrapée en mesurant.** La
+      première version pénalisait, en février, tout plat contenant un oignon :
+      56 plats sur 64, dont les lentilles paysannes et le curry de pois chiches.
+      L'oignon se récolte de mai à août et se mange toute l'année, parce qu'il se
+      garde. `se_garde: true` marque donc ce qui survit à sa récolte — alliacées,
+      tubercules, racines, choux d'hiver. Ne se paie que ce qui disparaît
+      vraiment : tomate, salade, concombre, aubergine, poivron. Après correction,
+      3 plats pénalisés en août, 21 en février.
+
+      **LE MOIS EST CELUI DU CRÉNEAU**, pas d'aujourd'hui : une semaine posée le
+      28 août court jusqu'au 3 septembre, et juger ce dîner-là avec le calendrier
+      d'août serait faux d'un mois sans que rien n'échoue.
+
+      L'écran dit le hors-saison À PART des autres raisons. C'est la seule ligne
+      qui argumente contre le plat ; la noyer dans la file la ferait disparaître
+      dès qu'un meilleur argument existe.
+
 ### Trouvé en portant, à décider
+
+- [ ] **La saison ne couvre que la moitié du primeur.** 27 ingrédients sur 57,
+      et il manque des blocs entiers : TOUS les fruits (fraises, pommes, poires,
+      pêches, abricots, mûres, groseilles), la courgette, la courge et le
+      potimarron, les navets, les champignons. `saisons.yaml` les nomme dans
+      `sans_source` plutôt que de les subir — ils ne sont jamais pénalisés. Il
+      faudrait une seconde source, et les fruits d'abord ; la fiche de recherche
+      de Workspace n'en a pas identifié sous licence claire.
 
 - [ ] **Le modèle écrit du français.** `Offre.combien`, `deQuoi` et
       `reserves()` rendent des phrases toutes faites — « en faire 1.36× », « un
@@ -695,7 +752,64 @@ Un ticket = un commit qui laisse l'app fonctionnelle. `[ ]` à faire,
       quatre lignes de courses — le maïs et l'oignon quittent le panier pour
       « vous en avez, vérifiez la quantité ».
 
+- [x] **T25 — La saison, par ingrédient.** `catalogue/saisons.yaml` : le
+      calendrier de récolte de la région du foyer, et la seule décision qu'il
+      prend.
+
+      **PAS `source.saison`, QUI EXISTAIT POURTANT.** Soixante-quatre recettes en
+      portent une — nichée sous `source:`, à côté de `page:` et `work:`. C'est
+      une donnée BIBLIOGRAPHIQUE : le chapitre du livre, pas la saison du plat.
+      Le corpus le dit lui-même sur les carrés sablés, indexés `ete` alors que
+      l'autrice y range aussi la version d'automne. Et la vraie question n'est
+      pas « cette recette est-elle estivale » mais « les groseilles sont-elles
+      mûres » — elle se pose sur l'ingrédient.
+
+      **LA SOURCE ÉTAIT DÉJÀ TROUVÉE.** `research/curriculum-and-crop-data`
+      (Workspace, 2026-08-02) avait identifié le calendrier CIVAM / DRAAF
+      Auvergne-Rhône-Alpes : ~30 légumes, la région exacte du foyer, information
+      publique réutilisable (CRPA L321-1). La fiche notait « PDF graphique — must
+      be read by eye ». Elle a en fait été lue par ses TRACÉS VECTORIELS : la
+      couleur porte le sens, l'abscisse porte le mois. Deux fautes corrigées en
+      confrontant le résultat au rendu — une couleur qui fuyait entre blocs de
+      dessin (les filets ressortaient « récolte » sur douze mois) et un filtre
+      d'horizontalité trop strict (la bande du céleri est inclinée).
+
+      **ON PÉNALISE LE HORS-SAISON, ON NE RÉCOMPENSE JAMAIS L'EN-SAISON**, et
+      c'est une conséquence de la donnée, pas de la prudence. La source couvre 27
+      ingrédients sur les 57 du primeur que les recettes utilisent : c'est un
+      calendrier de potager, sans aucun fruit et sans la courgette. Un bonus
+      ferait donc gagner la tomate d'août contre la courgette d'août — non parce
+      que l'une est plus de saison, mais parce qu'on connaît l'une et pas
+      l'autre. Un classement qui reflète les trous de sa source est pire qu'un
+      classement muet. La pénalité n'a pas ce défaut : elle ne se déclenche que
+      là où on sait, et ce qu'on sait est vrai.
+
+      **RÉCOLTE N'EST PAS DISPONIBILITÉ — la faute attrapée en mesurant.** La
+      première version pénalisait, en février, tout plat contenant un oignon :
+      56 plats sur 64, dont les lentilles paysannes et le curry de pois chiches.
+      L'oignon se récolte de mai à août et se mange toute l'année, parce qu'il se
+      garde. `se_garde: true` marque donc ce qui survit à sa récolte — alliacées,
+      tubercules, racines, choux d'hiver. Ne se paie que ce qui disparaît
+      vraiment : tomate, salade, concombre, aubergine, poivron. Après correction,
+      3 plats pénalisés en août, 21 en février.
+
+      **LE MOIS EST CELUI DU CRÉNEAU**, pas d'aujourd'hui : une semaine posée le
+      28 août court jusqu'au 3 septembre, et juger ce dîner-là avec le calendrier
+      d'août serait faux d'un mois sans que rien n'échoue.
+
+      L'écran dit le hors-saison À PART des autres raisons. C'est la seule ligne
+      qui argumente contre le plat ; la noyer dans la file la ferait disparaître
+      dès qu'un meilleur argument existe.
+
 ### Trouvé en portant, à décider
+
+- [ ] **La saison ne couvre que la moitié du primeur.** 27 ingrédients sur 57,
+      et il manque des blocs entiers : TOUS les fruits (fraises, pommes, poires,
+      pêches, abricots, mûres, groseilles), la courgette, la courge et le
+      potimarron, les navets, les champignons. `saisons.yaml` les nomme dans
+      `sans_source` plutôt que de les subir — ils ne sont jamais pénalisés. Il
+      faudrait une seconde source, et les fruits d'abord ; la fiche de recherche
+      de Workspace n'en a pas identifié sous licence claire.
 
 - [ ] **Un aromate n'est pas sauvé parce qu'un plat le cite.** La limite connue
       de T22, à lever le jour où le frais sera quantifié. Il faudrait comparer ce

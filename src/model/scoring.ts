@@ -15,8 +15,9 @@
 
 import { articles, calculer, type LignePanier } from "./calcul";
 import { bonusPlacard, urgences } from "./gardeManger";
-import { convient, joue, type Choix, type Jeu } from "./jeu";
+import { convient, dateDe, joue, type Choix, type Jeu } from "./jeu";
 import { gamelles } from "./offres";
+import { horsSaison } from "./saisons";
 import type { Catalogue, Plat } from "./types";
 
 /* ───────────────────────────────────────────────────────────── couverture */
@@ -120,6 +121,10 @@ export interface Carte {
   /** L'une d'elles est-elle vraiment pressée ? `false` = seulement des paquets
    *  entamés, ce qui n'appelle pas le même geste. */
   sauve: boolean;
+  /** Les ingrédients dont on SAIT qu'ils ne sont pas de saison ce mois-ci. Vide
+   *  ne veut pas dire « tout est de saison » : la source ne couvre que la moitié
+   *  du rayon primeur, et ce qu'elle ignore n'est jamais reproché. */
+  horsSaison: string[];
 }
 
 /**
@@ -147,6 +152,11 @@ export function offre(jeu: Jeu, choix: Choix[], slot: number): Carte[] {
   // Le placard ne change pas d'un plat à l'autre : on le lit une fois pour la
   // proposition entière, pas 86 fois.
   const pressees = urgences(jeu.catalogue);
+  // LE MOIS DU CRÉNEAU, PAS CELUI D'AUJOURD'HUI. Une semaine posée à cheval sur
+  // deux mois n'a pas la même saison partout : le 31 août ne juge pas le
+  // 2 septembre. `dateDe` rend la date réelle du créneau, celle-là même dont le
+  // chaînage se sert pour la fraîcheur.
+  const mois = dateDe(jeu, slot).getMonth() + 1;
 
   // Ce créneau est-il le dîner qui précède un déjeuner de coworking encore vide ?
   const gamelleDemain =
@@ -240,6 +250,14 @@ export function offre(jeu: Jeu, choix: Choix[], slot: number): Carte[] {
         );
       }
 
+      // CE QUE LE PLAT DEMANDE À CONTRETEMPS. Un coût, jamais un interdit : on
+      // peut vouloir des tomates en février, ça se paie et ça se voit.
+      const saison = horsSaison(jeu.catalogue, p, mois, poids);
+      if (saison.score) {
+        score += saison.score;
+        pourquoi.push(`pas de saison : ${saison.noms.join(", ")}`);
+      }
+
       const marginal = apres.panier.size - nBase;
       score += (poids["article_marginal"] ?? 0) * marginal;
 
@@ -251,6 +269,7 @@ export function offre(jeu: Jeu, choix: Choix[], slot: number): Carte[] {
         pourquoi,
         placard: placard.noms,
         sauve: placard.urgent,
+        horsSaison: saison.noms,
         malTransporte,
         manque: requisNonCouvert,
         minutes: p.minutes + (pleinIci[0]?.minutes ?? 0),

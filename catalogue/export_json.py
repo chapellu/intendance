@@ -28,6 +28,7 @@ import catalogue
 import chainage as ch
 import compile as rc  # masque le `compile` natif dans ce module seulement
 import garde_manger as gm
+import saisons as sa
 
 HERE = Path(__file__).parent
 
@@ -64,6 +65,7 @@ def main():
     creneaux = yaml.safe_load((HERE / "creneaux.yaml").read_text())
     rules = yaml.safe_load((HERE / "rules.yaml").read_text())
     pantry = gm.charger(HERE / "garde-manger.yaml")
+    sais = sa.charger(HERE / "saisons.yaml")
     _zones = {z["id"]: z for z in pantry["zones"]}
 
     # Tout ce que le foyer sait faire — l'union des capacités de ses outils et
@@ -336,6 +338,22 @@ def main():
         # Une seule table de libellés pour les deux modèles : le Python et sa
         # transcription JS ne peuvent pas diverger sur ce que « à cuisiner
         # d'avance » veut dire.
+        # LA SAISONNALITÉ, PAR INGRÉDIENT. Le modèle TS n'a pas à relire le
+        # calendrier : il reçoit la fenêtre de récolte, et la règle qui va avec
+        # est écrite dans `saisons.py` — on pénalise le hors-saison AVÉRÉ, on ne
+        # récompense jamais l'en-saison, parce que la source couvre 27
+        # ingrédients sur 57 et qu'un bonus refléterait ses trous.
+        "saisons": {
+            "source": sais["source"],
+            "recoltes": {k: v["mois"] for k, v in sorted(sais["recoltes"].items())},
+            # CE QUI SURVIT À SA RÉCOLTE n'est jamais pénalisé : l'oignon se
+            # récolte l'été et se mange en février. Sa fenêtre reste juste et
+            # l'écran peut la dire — c'est le SCORE qui se tait.
+            "seGarde": sorted(k for k, v in sais["recoltes"].items() if v.get("se_garde")),
+            # Nommés plutôt que subis : ce sont les ingrédients que le modèle ne
+            # pénalisera jamais, et l'écran doit pouvoir le dire.
+            "sansSource": sorted({c for ids in sais["sans_source"].values() for c in ids}),
+        },
         "provenances": ch.ETIQUETTES,
         "horsCourses": list(ch.HORS_COURSES),
     }, sys.stdout, ensure_ascii=False, indent=1, default=str)

@@ -385,6 +385,23 @@ export interface GardeManger {
   alertes: string[];
 }
 
+/**
+ * La saisonnalité, par ingrédient.
+ *
+ * `recoltes` donne les mois (1..12) où l'ingrédient est récolté dans la région
+ * du foyer. `sansSource` nomme ceux que le calendrier ne couvre PAS — et cette
+ * liste-là compte autant que l'autre : elle dit de qui le modèle ne sait rien,
+ * et donc qui ne sera jamais pénalisé.
+ */
+export interface Saisons {
+  source: Record<string, string>;
+  recoltes: Record<string, number[]>;
+  /** Ce qui survit à sa récolte — alliacées, tubercules, racines, courges. La
+   *  fenêtre reste juste et s'affiche ; c'est le SCORE qui ne la reproche pas. */
+  seGarde: string[];
+  sansSource: string[];
+}
+
 export interface Catalogue {
   foyer: Foyer;
   plats: Plat[];
@@ -394,6 +411,7 @@ export interface Catalogue {
   conservation: Conservation[];
   stock: LigneStock[];
   gardeManger: GardeManger;
+  saisons: Saisons;
   provenances: Record<Provenance, string>;
   /** Les provenances qui ne produisent pas de ligne de courses. */
   horsCourses: Provenance[];

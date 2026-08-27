@@ -16,7 +16,7 @@
 
 import type {
   Accept, Agression, Catalogue, Denree, Emit, EmitKind, Espace, Etape, Etat, Forme, Foyer,
-  GardeManger, Ingredient, LigneStock, Nature, Plat, Provenance, Quantite, Urgence, Zone,
+  GardeManger, Ingredient, LigneStock, Nature, Plat, Provenance, Quantite, Saisons, Urgence, Zone,
 } from "./types";
 
 const ESPACES: readonly Espace[] = ["frigo", "congelo", "placard"];
@@ -388,6 +388,35 @@ function gardeManger(v: unknown, ou: string): GardeManger {
   };
 }
 
+/**
+ * La saisonnalité.
+ *
+ * ON VÉRIFIE LES MOIS, PARCE QU'UN MOIS FAUX NE SE VOIT PAS. Un `0` ou un `13`
+ * ne lèverait rien : il ne correspondrait simplement à aucun mois, et
+ * l'ingrédient serait tenu pour hors saison toute l'année — donc pénalisé douze
+ * mois sur douze, en silence.
+ */
+function saisons(v: unknown, ou: string): Saisons {
+  const o = obj(v, ou);
+  const src: Record<string, string> = {};
+  for (const [k, x] of Object.entries(obj(o["source"] ?? {}, `${ou}.source`)))
+    src[k] = texte(x, `${ou}.source.${k}`);
+  const recoltes: Record<string, number[]> = {};
+  for (const [k, x] of Object.entries(obj(o["recoltes"] ?? {}, `${ou}.recoltes`))) {
+    const mois = tableau(x, `${ou}.recoltes.${k}`).map((m, i) => nombre(m, `${ou}.recoltes.${k}[${i}]`));
+    for (const m of mois)
+      if (!Number.isInteger(m) || m < 1 || m > 12)
+        throw new CatalogueInvalide(`${ou}.recoltes.${k}`, "des mois entre 1 et 12", m);
+    recoltes[k] = mois;
+  }
+  return {
+    source: src,
+    recoltes,
+    seGarde: listeDeTextes(o["seGarde"] ?? [], `${ou}.seGarde`),
+    sansSource: listeDeTextes(o["sansSource"] ?? [], `${ou}.sansSource`),
+  };
+}
+
 /* ──────────────────────────────────────────────────────────── le catalogue */
 
 /**
@@ -515,6 +544,7 @@ export function lireCatalogue(brut: unknown): Catalogue {
     }),
     stock: tableau(o["stock"] ?? [], "stock").map((x, i) => ligneStock(x, `stock[${i}]`)),
     gardeManger: gardeManger(o["gardeManger"] ?? {}, "gardeManger"),
+    saisons: saisons(o["saisons"] ?? {}, "saisons"),
     provenances,
     horsCourses: tableau(o["horsCourses"], "horsCourses")
       .map((x, i) => parmi(x, PROVENANCES, `horsCourses[${i}]`)),

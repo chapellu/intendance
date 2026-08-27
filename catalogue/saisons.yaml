@@ -1,0 +1,148 @@
+# La saisonnalité, par INGRÉDIENT et non par recette.
+#
+# POURQUOI PAS `source.saison`, QUI EXISTE DÉJÀ. Soixante-quatre recettes sur
+# quatre-vingt-six portent une saison — mais nichée sous `source:`, à côté de
+# `page:` et `work:`. C'est une donnée BIBLIOGRAPHIQUE : elle dit dans quel
+# chapitre du livre la recette a été prise, pas quand le plat se cuisine. Le
+# corpus le dit lui-même, dans `carres-sables-creme-groseilles.yaml` :
+#
+#   « LE TITRE PORTE SA PROPRE SUBSTITUTION SAISONNIÈRE : "(et l'hiver, tarte au
+#   citron !)". […] le catalogue devrait ici porter deux entrées ou une entrée à
+#   deux visages, et n'a de place que pour une. »
+#
+# Cette recette est indexée `saison: ete` alors que l'autrice y range aussi une
+# version d'automne. Le chapitre n'est pas la saison. La vraie question n'est pas
+# « cette recette est-elle estivale » mais « les groseilles sont-elles mûres en
+# ce moment » — et celle-là se pose sur l'ingrédient.
+#
+# ─────────────────────────────────────────────────────────────── la source ───
+#
+# Calendrier des semis, plantations et récoltes — CIVAM Campagnes Vivantes, avec
+# la DRAAF Auvergne-Rhône-Alpes, l'ARS et le PNA.
+# https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf
+#
+# **Licence** : information publique, réutilisable y compris à titre commercial
+# au titre du CRPA (art. L321-1 et L322-1). Compatible avec la politique de
+# contenu du projet, au même titre que la Licence Ouverte — contrairement aux
+# bases sous BY-SA. Source retenue par la recherche du 2026-08-02
+# (`chapellu/Workspace`, `research/curriculum-and-crop-data`), notée ● parce
+# qu'elle couvre EXACTEMENT la région du foyer.
+#
+# **Ce qu'on en garde** : la bande de RÉCOLTE, jamais les semis ni les
+# plantations. Ces deux-là intéressent le jardin ; la cuisine veut savoir quand
+# la chose est disponible.
+#
+# **Comment elle a été lue** : la fiche est un graphique — `pdftotext` en rend
+# les noms et les en-têtes de mois, jamais les bandes. Elles ont donc été
+# extraites des TRACÉS VECTORIELS du PDF, où la couleur porte le sens (vert
+# semis, rouge plantations, jaune récoltes) et l'abscisse porte le mois. Le
+# résultat a ensuite été confronté page à page au rendu, ce qui a corrigé deux
+# fautes : une couleur qui fuyait d'un bloc de dessin à l'autre (les filets de
+# séparation ressortaient « récolte » sur douze mois) et un filtre trop strict
+# sur l'horizontalité (la bande du céleri est légèrement inclinée, et sautait).
+#
+# ───────────────────────────────────────────────────── CE QU'ELLE NE DIT PAS ──
+#
+# **27 ingrédients couverts sur les 57 du rayon primeur que les recettes
+# utilisent.** C'est un calendrier de POTAGER : il ne porte aucun fruit, et il
+# ignore des légumes courants. Manquent notamment les courgettes, la courge et le
+# potimarron, les navets, les champignons, et la totalité des fruits — fraises,
+# pommes, poires, pêches, abricots, mûres, groseilles.
+#
+# CETTE LACUNE COMMANDE LA FAÇON DONT LE SCORE S'EN SERT, et c'est le point le
+# plus important de ce fichier. Récompenser un plat « de saison » ferait gagner
+# la tomate d'août contre la courgette d'août — non parce que l'une est plus de
+# saison que l'autre, mais parce qu'on connaît la première et pas la seconde. Un
+# classement qui reflète les trous de sa donnée est pire qu'un classement muet.
+#
+# Le modèle ne PÉNALISE donc que le hors-saison AVÉRÉ, et ne récompense jamais
+# l'en-saison. Un ingrédient absent de ce fichier n'est jamais pénalisé : il est
+# neutre, ce qui est exactement ce qu'on sait de lui. Voir `saisons.py`.
+#
+# `mois` est en 1..12. Une bande peut être discontinue — le poireau se récolte en
+# janvier-février puis de juillet à décembre, et l'écrire d'un trait de janvier à
+# décembre serait faux.
+#
+# ─────────────────────────── RÉCOLTE N'EST PAS DISPONIBILITÉ ─────────────────
+#
+# La faute que ce fichier a failli commettre, attrapée en mesurant : pénaliser en
+# février tout plat contenant un OIGNON. L'oignon se récolte de mai à août — et
+# se mange toute l'année, parce qu'il se garde. Sur le corpus, la première
+# version punissait 56 plats sur 64 en février, dont les lentilles paysannes et
+# le curry de pois chiches. Une app qui déconseille l'oignon en hiver n'est pas
+# rigoureuse, elle est inutilisable.
+#
+# `se_garde: true` marque donc ce qui SURVIT à sa récolte en cave, en silo ou en
+# cageot : alliacées, tubercules, racines, courges, choux d'hiver. Ces
+# ingrédients gardent leur fenêtre — elle reste juste, et l'écran peut la dire —
+# mais ils ne sont JAMAIS pénalisés hors saison.
+#
+# Ne se paie donc que ce qui disparaît vraiment : la tomate, la courgette, la
+# salade, le concombre, l'aubergine, le poivron. C'est-à-dire exactement les
+# produits dont un achat en février veut dire « serre chauffée ou avion ».
+
+source:
+  titre: Calendrier des semis, plantations et récoltes
+  editeur: CIVAM Campagnes Vivantes · DRAAF Auvergne-Rhône-Alpes · ARS · PNA
+  url: https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf
+  licence: Information publique réutilisable — CRPA art. L321-1 et L322-1
+  region: Auvergne-Rhône-Alpes
+  releve: 2026-08-27
+  methode: >-
+    Extraction des tracés vectoriels du PDF (couleur = nature de la bande,
+    abscisse = mois), puis vérification page à page contre le rendu.
+
+# La ligne du calendrier dont chaque ingrédient tient sa fenêtre. Écrite pour
+# qu'on puisse retourner voir : sans elle, « pourquoi la tomate s'arrête-t-elle
+# en septembre » n'a plus de réponse vérifiable.
+recoltes:
+  ail: {mois: [4, 5, 6], ligne: Ail, se_garde: true}
+  aubergine: {mois: [7, 8, 9], ligne: Aubergine}
+  brocoli: {mois: [4, 5, 6, 7, 8, 9, 10, 11], ligne: "Chou fleur, brocoli, choux de printemps"}
+  carottes: {mois: [5, 6, 7, 8, 9, 10, 11, 12], ligne: Carotte, se_garde: true}
+  cebette: {mois: [6, 7, 8, 9], ligne: Oignons de printemps}
+  celeri-branche: {mois: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], ligne: Céleri}
+  celeri-rave: {mois: [6, 7, 8, 9, 10, 11, 12], ligne: Céleri-Rave, se_garde: true}
+  chou-chinois: {mois: [9, 10, 11, 12], ligne: "Choux de Chine, pak choi"}
+  chou-frise: {mois: [7, 8, 9, 10, 11, 12], ligne: "Choux frisé, blanc, rouge", se_garde: true}
+  chou-rouge: {mois: [7, 8, 9, 10, 11, 12], ligne: "Choux frisé, blanc, rouge", se_garde: true}
+  ciboulette: {mois: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], ligne: Persil et Ciboulette}
+  concombre: {mois: [6, 7, 8, 9], ligne: Concombre}
+  # L'ÉCHALOTE ET L'OIGNON ROUGE SUIVENT L'OIGNON, faute de ligne à eux. C'est une
+  # approximation, elle est écrite : trois alliacées de plein champ dont les
+  # fenêtres se ressemblent, et se taire donnerait « inconnu » là où on sait à peu
+  # près.
+  echalote: {mois: [5, 6, 7, 8], ligne: Oignons, se_garde: true}
+  oignon: {mois: [5, 6, 7, 8], ligne: Oignons, se_garde: true}
+  oignon-rouge: {mois: [5, 6, 7, 8], ligne: Oignons, se_garde: true}
+  panais: {mois: [7, 8, 9, 10, 11, 12], ligne: Panais, se_garde: true}
+  persil: {mois: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], ligne: Persil et Ciboulette}
+  petits-pois: {mois: [5, 6, 7, 8, 9], ligne: Pois}
+  # Deux bandes, et il faut les deux : le poireau d'hiver et celui d'été ne sont
+  # pas le même légume au marché.
+  poireau: {mois: [1, 2, 7, 8, 9, 10, 11, 12], ligne: Poireaux}
+  poivron: {mois: [7, 8, 9], ligne: Poivrons et piments}
+  pomme-de-terre: {mois: [4, 5, 6, 7, 8, 9, 10, 11, 12], ligne: Pommes de terre, se_garde: true}
+  pousses-epinards: {mois: [1, 2, 4, 5, 6, 9, 10, 11, 12], ligne: Epinard}
+  # LA SEULE LIGNE LUE À L'ŒIL. Le libellé « Laitues » n'est pas décodable dans le
+  # flux de texte du PDF — police à encodage propriétaire —, donc l'extraction ne
+  # pouvait pas rattacher ses bandes à un nom. Relevée sur le rendu de la page 1.
+  salade-verte: {mois: [3, 4, 5, 6, 7, 8, 9, 10, 11], ligne: Laitues, lue: a-l-oeil}
+  tomates: {mois: [6, 7, 8, 9], ligne: Tomates}
+  tomates-cerises: {mois: [6, 7, 8, 9], ligne: Tomates}
+  tomates-roma: {mois: [6, 7, 8, 9], ligne: Tomates}
+  vert-de-blette: {mois: [1, 2, 5, 6, 7, 8, 9, 10, 11, 12], ligne: Bettes à cardes}
+
+# Ce que la source ne couvre pas, nommé plutôt que subi. Un ingrédient de cette
+# liste ne sera jamais pénalisé : le modèle ne sait rien de sa saison, et le
+# silence est la seule réponse honnête. La liste est là pour qu'on sache quoi
+# chercher le jour où on voudra une seconde source — les fruits d'abord, ils
+# manquent en bloc.
+sans_source:
+  fruits: [abricots, banane, chataignes, fraises, fruits-frais, groseilles, mures, peches, poires, pommes]
+  legumes: [courge, courgettes, navet-primeur, navets, navets-roses, pois-gourmands, potimarron, topinambours,
+            champignons-paris, champignons-conserve, citron]
+  aromatiques: [basilic, romarin, sauge, thym-frais, herbes-fraiches]
+  # Ceux-là ne s'achètent pas : ils se cueillent, et leur « saison » est doublée
+  # d'une sortie et d'une identification. `rayons.yaml` note déjà la limite.
+  cueillette: [ail-des-ours, fenouil-sauvage, orties, pousses-sauvages]

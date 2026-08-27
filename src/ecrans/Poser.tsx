@@ -191,6 +191,19 @@ function Jouable({
           croire un plat qui se défend trop. */}
       {carte.pourquoi[0] ? <div className="co-action">{carte.pourquoi[0]}</div> : null}
 
+      {/* LE HORS-SAISON SE DIT À PART, ET TOUJOURS. C'est la seule ligne qui
+          n'argumente pas POUR le plat mais CONTRE lui : la noyer dans la file
+          des raisons la ferait disparaître dès qu'un meilleur argument existe,
+          alors que « des tomates en février » reste vrai même quand le plat
+          comble une protéine manquante.
+          Le silence ne veut pas dire « tout est de saison » : la source ignore
+          les fruits et la courgette, et ce qu'elle ignore n'est jamais reproché. */}
+      {carte.horsSaison.length ? (
+        <div className="co-note" style={{ margin: "var(--space-1) 0 0" }}>
+          ⚠ pas de saison&nbsp;: {carte.horsSaison.join(", ")}
+        </div>
+      ) : null}
+
       <div className="co-flux">
         <div className="co-kicker">Produit</div>
         {sorties.length ? (

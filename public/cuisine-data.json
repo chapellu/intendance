@@ -19756,6 +19756,7 @@
    "ecoule_congelo": 3,
    "ecoule_placard_urgent": 5,
    "ecoule_placard_entame": 2,
+   "hors_saison": -5,
    "chaine_manquante": -8,
    "hors_budget": -4,
    "plancher_congelo": 4,
@@ -21936,6 +21937,289 @@
    "pignons pin — à la lumière du jour et près d'une source de chaleur (étagère ouverte)",
    "pomme de terre, oignon, echalote, ail — dans un endroit humide (sous-évier)",
    "pomme de terre — ne devrait pas voisiner avec ail, echalote, oignon (sous-évier)"
+  ]
+ },
+ "saisons": {
+  "source": {
+   "titre": "Calendrier des semis, plantations et récoltes",
+   "editeur": "CIVAM Campagnes Vivantes · DRAAF Auvergne-Rhône-Alpes · ARS · PNA",
+   "url": "https://draaf.auvergne-rhone-alpes.agriculture.gouv.fr/IMG/pdf/FICHE_TECH_CALENDRIER_SEMIS_PLANTATIONS_RECOLTES-2_cle091634.pdf",
+   "licence": "Information publique réutilisable — CRPA art. L321-1 et L322-1",
+   "region": "Auvergne-Rhône-Alpes",
+   "releve": "2026-08-27",
+   "methode": "Extraction des tracés vectoriels du PDF (couleur = nature de la bande, abscisse = mois), puis vérification page à page contre le rendu."
+  },
+  "recoltes": {
+   "ail": [
+    4,
+    5,
+    6
+   ],
+   "aubergine": [
+    7,
+    8,
+    9
+   ],
+   "brocoli": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+   ],
+   "carottes": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ],
+   "cebette": [
+    6,
+    7,
+    8,
+    9
+   ],
+   "celeri-branche": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ],
+   "celeri-rave": [
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ],
+   "chou-chinois": [
+    9,
+    10,
+    11,
+    12
+   ],
+   "chou-frise": [
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ],
+   "chou-rouge": [
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ],
+   "ciboulette": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ],
+   "concombre": [
+    6,
+    7,
+    8,
+    9
+   ],
+   "echalote": [
+    5,
+    6,
+    7,
+    8
+   ],
+   "oignon": [
+    5,
+    6,
+    7,
+    8
+   ],
+   "oignon-rouge": [
+    5,
+    6,
+    7,
+    8
+   ],
+   "panais": [
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ],
+   "persil": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ],
+   "petits-pois": [
+    5,
+    6,
+    7,
+    8,
+    9
+   ],
+   "poireau": [
+    1,
+    2,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ],
+   "poivron": [
+    7,
+    8,
+    9
+   ],
+   "pomme-de-terre": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ],
+   "pousses-epinards": [
+    1,
+    2,
+    4,
+    5,
+    6,
+    9,
+    10,
+    11,
+    12
+   ],
+   "salade-verte": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+   ],
+   "tomates": [
+    6,
+    7,
+    8,
+    9
+   ],
+   "tomates-cerises": [
+    6,
+    7,
+    8,
+    9
+   ],
+   "tomates-roma": [
+    6,
+    7,
+    8,
+    9
+   ],
+   "vert-de-blette": [
+    1,
+    2,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ]
+  },
+  "seGarde": [
+   "ail",
+   "carottes",
+   "celeri-rave",
+   "chou-frise",
+   "chou-rouge",
+   "echalote",
+   "oignon",
+   "oignon-rouge",
+   "panais",
+   "pomme-de-terre"
+  ],
+  "sansSource": [
+   "abricots",
+   "ail-des-ours",
+   "banane",
+   "basilic",
+   "champignons-conserve",
+   "champignons-paris",
+   "chataignes",
+   "citron",
+   "courge",
+   "courgettes",
+   "fenouil-sauvage",
+   "fraises",
+   "fruits-frais",
+   "groseilles",
+   "herbes-fraiches",
+   "mures",
+   "navet-primeur",
+   "navets",
+   "navets-roses",
+   "orties",
+   "peches",
+   "poires",
+   "pois-gourmands",
+   "pommes",
+   "potimarron",
+   "pousses-sauvages",
+   "romarin",
+   "sauge",
+   "thym-frais",
+   "topinambours"
   ]
  },
  "provenances": {

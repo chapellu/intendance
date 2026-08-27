@@ -60,6 +60,15 @@ poids:
   # longue liste d'épicerie, ce qui est l'inverse du service rendu.
   ecoule_placard_urgent: 5   # frais, ou en train de s'abîmer là où il est rangé
   ecoule_placard_entame: 2   # paquet ouvert : la barrière est rompue
+  # LE HORS-SAISON SE PAIE, L'EN-SAISON NE SE RÉCOMPENSE PAS. La source ne couvre
+  # que 27 des 57 ingrédients du primeur — aucun fruit, pas la courgette. Un
+  # bonus ferait donc gagner la tomate d'août contre la courgette d'août, faute
+  # de connaître la seconde ; la pénalité, elle, ne se déclenche que sur ce qu'on
+  # sait, et ce qu'on sait est vrai. Voir `saisons.py`.
+  #
+  # Calé sous `proteine_manquante` : une tomate en février est une mauvaise idée,
+  # pas un interdit — même règle 7 Wonders que le chaînage.
+  hors_saison: -5            # demande un produit dont on SAIT qu'il n'est pas de saison
   chaine_manquante: -8       # exige une base que rien ne produit avant
   hors_budget: -4
   plancher_congelo: 4        # remonte le stock d'urgence quand il est bas

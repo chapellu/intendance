@@ -25,6 +25,7 @@ import catalogue
 import chainage as ch
 import compile as rc  # shadows the builtin `compile` in this module only
 import garde_manger as gm
+import saisons as sa
 
 HERE = Path(__file__).parent
 
@@ -375,6 +376,15 @@ def main() -> int:
         # de pin sont à la lumière » se corrige en déplaçant un sachet, pas en
         # éditant un fichier — et c'est la seule sortie de ce vérificateur dont
         # ce soit vrai.
+        err, warn = sa.verifier_saisons(sa.charger(HERE / "saisons.yaml"), rayons)
+        n_err += len(err); n_warn += len(warn)
+        if err or warn:
+            print("\nsaisons.yaml")
+            for e in err:
+                print(f"  ✗ {e}")
+            for w in warn:
+                print(f"  ⚠ {w}")
+
         err, warn = gm.verifier_garde_manger(gm.charger(HERE / "garde-manger.yaml"), rayons)
         n_err += len(err); n_warn += len(warn)
         if err or warn:
