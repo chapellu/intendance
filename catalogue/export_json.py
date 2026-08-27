@@ -27,6 +27,7 @@ import anticipation as an
 import catalogue
 import chainage as ch
 import compile as rc  # masque le `compile` natif dans ce module seulement
+import garde_manger as gm
 
 HERE = Path(__file__).parent
 
@@ -62,6 +63,8 @@ def main():
     stock = yaml.safe_load((HERE / "stock.yaml").read_text())
     creneaux = yaml.safe_load((HERE / "creneaux.yaml").read_text())
     rules = yaml.safe_load((HERE / "rules.yaml").read_text())
+    pantry = gm.charger(HERE / "garde-manger.yaml")
+    _zones = {z["id"]: z for z in pantry["zones"]}
 
     # Tout ce que le foyer sait faire — l'union des capacités de ses outils et
     # des chaînes de dégradation. C'est ce qui décide si un bocal est une place
@@ -280,6 +283,56 @@ def main():
         "equilibre": equilibre,
         "conservation": methodes,
         "stock": stock.get("outputs", []),
+        # LE GARDE-MANGER, ET SES DEUX GRANDEURS DÉRIVÉES ICI.
+        # `volumeL` et `poidsG` se calculent des dimensions et des quantités —
+        # jamais saisis, donc jamais divergents. L'app les affiche sans refaire
+        # l'arithmétique, comme elle le fait déjà de `facteurMax`.
+        "gardeManger": {
+            "zones": [
+                {"id": z["id"], "label": z.get("label") or z["id"],
+                 "espace": z["espace"],
+                 "niveaux": z.get("niveaux", 1),
+                 "dimensions": z.get("dimensions") or {},
+                 "forme": z.get("forme", "rectangle"),
+                 "volumeL": gm.volume_litres(z),
+                 "exposition": z["exposition"],
+                 "hygrometrie": z["hygrometrie"],
+                 "chaleur": bool(z.get("chaleur")),
+                 "note": z.get("note")}
+                for z in pantry["zones"]
+            ],
+            "denrees": [
+                {"ingredient": d["ingredient"], "zone": d["zone"],
+                 "unites": d.get("unites", 1),
+                 "parUnite": d.get("par_unite"),
+                 "poidsG": gm.poids_g(d),
+                 "etat": d["etat"],
+                 "sensible": d.get("sensible") or [],
+                 "incompatibles": d.get("incompatibles") or [],
+                 # L'urgence dépend de la denrée ET de sa zone : le même sachet
+                 # de pignons est « basse » dans un placard fermé et « haute »
+                 # sur l'étagère au soleil. Elle se calcule donc ici, où les deux
+                 # sont sous la main, et pas dans le YAML où seule la denrée est.
+                 "urgence": gm.urgence(d, _zones[d["zone"]]),
+                 "nature": d.get("nature", "autre"),
+                 # CE QU'ON PEUT EN FAIRE POUR ARRÊTER SON HORLOGE — la seconde
+                 # réponse au gaspillage, celle que `conservation.yaml` porte
+                 # depuis le prototype. Les méthodes verrouillées sont incluses :
+                 # un nœud de compétence qu'on ne possède pas n'est pas une
+                 # erreur à taire, c'est ce qu'il faudrait acquérir.
+                 "conservations": gm.conservations(d, conserv["methodes"], capacites),
+                 "note": d.get("note")}
+                for d in pantry["denrees"]
+            ],
+            # SEULEMENT LES ERREURS DE RANGEMENT. Le vérificateur en signale
+            # d'autres — un tiroir non coté, par exemple — mais celles-là parlent
+            # du fichier, et l'app n'a rien à en faire : elle s'adresse à qui
+            # habite la cuisine, pas à qui tient le corpus.
+            #
+            # Calculées ici, jamais recopiées du YAML : une alerte figée dans les
+            # données mentirait le jour où on déplace le sachet sans l'effacer.
+            "alertes": gm.alertes_rangement(pantry),
+        },
         # Une seule table de libellés pour les deux modèles : le Python et sa
         # transcription JS ne peuvent pas diverger sur ce que « à cuisiner
         # d'avance » veut dire.

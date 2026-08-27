@@ -1,0 +1,252 @@
+# Le garde-manger — ce qu'il y a dans les placards, et où.
+#
+# CE FICHIER N'EST PAS `stock.yaml`, ET LA DISTINCTION EST LE TICKET.
+# `stock.yaml` porte les SORTIES DE CUISINE : des bases cuisinées, périssables,
+# indexées sur les types que les recettes `emit` et `accept`, consommées par le
+# graphe de chaînage et comptées contre les places de rangement. Une conserve de
+# maïs n'est rien de tout ça. Lui donner `kind: base` la ferait entrer dans le
+# graphe, et le planificateur proposerait d'« enchaîner » une boîte de conserve.
+#
+# Le garde-manger porte la MATIÈRE PREMIÈRE : indexée sur le vocabulaire
+# d'ingrédients de `rayons.yaml`, non périssable à l'échelle de la semaine, et
+# rangée dans des endroits physiques qui ont des dimensions.
+#
+# POURQUOI DES ZONES, ALORS QUE `Espace` EXISTE DÉJÀ.
+# `Espace` (frigo · congelo · placard) dit COMMENT ÇA VIEILLIT — c'est ce dont le
+# modèle a besoin pour la fenêtre de fraîcheur. Il ne dit pas où c'est. Les six
+# rangements de ce foyer s'écrasent tous sur `placard`, et avec eux les seules
+# informations qui décident vraiment de ce qu'on peut y mettre : 17 cm de hauteur
+# utile sur l'étagère ouverte, la lumière du jour qui y tombe, l'humidité sous
+# l'évier. Une zone se RATTACHE à un espace ; elle ne le remplace pas.
+#
+# CE QUE CE FICHIER NE FAIT PAS ENCORE. Rien ne décrémente une denrée quand on
+# cuisine. Le garde-manger est donc DESCRIPTIF : il dit ce qu'il y a et sous
+# quelles contraintes, il ne dit pas encore à la liste de courses de se taire.
+# Brancher `provenance()` dessus demande un modèle de consommation qui n'existe
+# pas — c'est au backlog, pas ici. Un chiffre qu'on croirait tenu à jour alors
+# que rien ne le tient est exactement la faute que ce dépôt passe son temps à
+# réparer.
+#
+# Relevé du 2026-08-26, zone par zone, photos à l'appui.
+
+# ── Les rangements physiques ────────────────────────────────────────────────
+#
+# `hauteur_cm` est la hauteur UTILE d'un niveau, pas celle du meuble : c'est
+# elle qui décide si un paquet tient debout. `niveaux` multiplie la surface,
+# jamais la hauteur.
+#
+# `exposition` et `hygrometrie` ne sont pas décoratifs : `verifier.py` s'en sert
+# pour confronter une denrée sensible à l'endroit où elle est rangée. C'est la
+# seule règle du fichier qui attrape une vraie erreur de rangement.
+zones:
+  - id: etagere-ouverte
+    label: étagère ouverte
+    espace: placard
+    niveaux: 2
+    dimensions: {largeur_cm: 42, profondeur_cm: 30, hauteur_cm: 17}
+    exposition: jour
+    hygrometrie: sec
+    chaleur: true
+    note: >-
+      Présentoir bois à deux niveaux, sur le plan de travail, à côté de la
+      bouilloire. 17 cm : rien de haut n'y entre, d'où les secs relégués sur le
+      dessus. 30 cm de profondeur pour 17 de haut : le fond est borgne, c'est là
+      que les dates se périment sans se voir.
+
+  - id: dessus-etagere
+    label: dessus de l'étagère ouverte
+    espace: placard
+    niveaux: 1
+    dimensions: {largeur_cm: 42, profondeur_cm: 30, hauteur_cm: null}
+    exposition: jour
+    hygrometrie: sec
+    chaleur: true
+    note: >-
+      Même surface que l'étagère, hauteur libre. Reçoit ce que les 17 cm du
+      dessous refusent. La bouilloire est ici — source de chaleur et de vapeur.
+
+  - id: demi-lune-basse
+    label: demi-lune basse
+    espace: placard
+    niveaux: 1
+    dimensions: {largeur_cm: 70, profondeur_cm: 37, hauteur_cm: 26}
+    forme: demi-lune
+    exposition: sombre
+    hygrometrie: sec
+    note: >-
+      Plateau demi-lune d'un placard d'angle, ~1 900 cm² (demi-disque ⌀70). Porte
+      le lourd : farine et sucre. Les deux pointes de l'arc sont peu exploitables.
+
+  - id: demi-lune-haute
+    label: demi-lune haute
+    espace: placard
+    niveaux: 1
+    dimensions: {largeur_cm: 70, profondeur_cm: 37, hauteur_cm: 33}
+    forme: demi-lune
+    exposition: sombre
+    hygrometrie: sec
+    note: >-
+      La plus grande hauteur du foyer. C'est elle qui prend les paquets
+      debout que l'étagère ouverte ne peut pas porter.
+
+  - id: tiroir-epices
+    label: tiroir à épices
+    espace: placard
+    niveaux: 2
+    dimensions: {largeur_cm: null, profondeur_cm: null, hauteur_cm: null}
+    exposition: sombre
+    hygrometrie: sec
+    note: >-
+      Colonne coulissante, deux niveaux. Épices d'un côté, bouteilles couchées de
+      l'autre. Relevé POUR INFORMATION : les condiments n'entrent pas dans le
+      décompte, mais c'est le seul endroit où vivent les huiles et les vinaigres,
+      et un stock sans matière grasse serait un stock faux.
+
+  - id: placard-haut
+    label: placard haut, étagère basse
+    espace: placard
+    niveaux: 1
+    dimensions: {largeur_cm: 57, profondeur_cm: 32, hauteur_cm: 23.5}
+    exposition: sombre
+    hygrometrie: sec
+    note: >-
+      ~43 L. Le poste de pâtisserie : farines, bocaux, caddy de petits sachets.
+      L'étagère du dessus porte les ustensiles et les consommables d'emballage,
+      qui ne sont pas des denrées et ne figurent pas ici.
+
+  - id: sous-evier
+    label: sous-évier
+    espace: placard
+    niveaux: 1
+    dimensions: {largeur_cm: null, profondeur_cm: null, hauteur_cm: null}
+    exposition: sombre
+    hygrometrie: humide
+    note: >-
+      Meuble bas sous l'évier, siphon et évacuations au-dessus. Le point le plus
+      humide du logement, et c'est là que sont les légumes racines. La lessive
+      vaisselle partage l'emplacement.
+
+# ── Ce qu'il y a dedans ─────────────────────────────────────────────────────
+#
+# `ingredient` est un id du vocabulaire de `rayons.yaml` — c'est ce qui permettra
+# un jour à `provenance()` de répondre autre chose qu'une appartenance binaire.
+# `unites` × `par_unite` chiffre la matière ; `par_unite: null` dit qu'on a
+# constaté sans peser, ce qui est une information et pas un trou.
+#
+# `sensible` déclare ce qui abîme la denrée. `incompatibles` déclare ce avec quoi
+# elle ne doit pas partager une zone. Les deux se vérifient.
+#
+# ── LA CONSERVATION EST LA SECONDE RÉPONSE AU GASPILLAGE ─────────────────────
+# `conservation.yaml` existe depuis le prototype et dit la chose que le reste du
+# modèle ne disait pas : une denrée qui court ne se rattrape pas seulement en la
+# cuisinant, elle se rattrape en la TRANSFORMANT. « L'aliment a une horloge, et
+# le transformer remet l'horloge à zéro — mais seulement si on a le séchoir, et
+# seulement si on a appris à s'en servir. »
+#
+# Trois champs branchent une denrée sur ces méthodes :
+#
+# `nature` — ce que la chose EST. Certaines méthodes ne s'appliquent qu'à
+#   certaines natures (`applique_a: [legume-cru]` pour la lacto-fermentation).
+#   Sans ce champ on proposerait de lacto-fermenter de la farine.
+#
+# `acidite` — `basse` par défaut, et ce défaut est un choix de SÉCURITÉ, pas de
+#   confort : voir l'avertissement botulisme en tête de `conservation.yaml`. Le
+#   bain-marie ne stérilise que les aliments acides ; sur un légume nature en
+#   bocal à température ambiante, il produit exactement le milieu où prolifère
+#   C. botulinum. Aucune denrée de ce fichier n'est déclarée acide, donc le
+#   bain-marie n'est proposé sur aucune. C'est voulu.
+#
+# `conserve_mal` — l'échappatoire, pour ce que le modèle générique rate. Une
+#   pomme de terre CRUE congelée devient farineuse et noircit : le congélateur
+#   s'applique à tout, sauf à elle. Une règle générale qui a une exception vaut
+#   mieux qu'une règle spéciale par denrée, à condition d'écrire l'exception.
+denrees:
+  # ── zone 1 · étagère ouverte ─────────────────────────────────────────────
+  - {ingredient: mais, zone: etagere-ouverte, unites: 4, par_unite: {amount: 285, unit: g}, etat: conserve}
+  - {ingredient: petits-pois-carottes, zone: etagere-ouverte, unites: 1, par_unite: {amount: 465, unit: g}, etat: conserve}
+  - {ingredient: petits-pois-carottes, zone: etagere-ouverte, unites: 1, par_unite: {amount: 530, unit: g}, etat: conserve}
+  - {ingredient: pousses-haricots, zone: etagere-ouverte, unites: 2, par_unite: {amount: 90, unit: g}, etat: conserve}
+  - {ingredient: pois-chiches, zone: etagere-ouverte, unites: 1, par_unite: {amount: 265, unit: g}, etat: conserve}
+  - {ingredient: maquereaux-boite, zone: etagere-ouverte, unites: 1, par_unite: {amount: 169, unit: g}, etat: conserve}
+  - {ingredient: thon-boite, zone: etagere-ouverte, unites: 1, par_unite: {amount: 140, unit: g}, etat: conserve, note: au naturel}
+  - {ingredient: thon-boite, zone: etagere-ouverte, unites: 1, par_unite: {amount: 160, unit: g}, etat: conserve, note: à l'huile d'olive}
+  - {ingredient: concentre-tomate, zone: etagere-ouverte, unites: 3, par_unite: {amount: 70, unit: g}, etat: conserve}
+  # LA SEULE DENRÉE QUE SA ZONE ABÎME, et le vérificateur le dit. Très gras, donc
+  # rancit vite ; posé en pleine lumière, à côté de la bouilloire.
+  - {ingredient: pignons-pin, zone: etagere-ouverte, unites: 1, par_unite: {amount: 50, unit: g},
+     etat: sec, nature: gras, sensible: [lumiere, chaleur]}
+  - {ingredient: cocktail-fruits, zone: etagere-ouverte, unites: 2, par_unite: {amount: 825, unit: g}, etat: conserve}
+  - {ingredient: creme-dessert-chocolat, zone: etagere-ouverte, unites: 1, par_unite: {amount: 570, unit: g}, etat: conserve}
+  - {ingredient: confiture-orange, zone: etagere-ouverte, unites: 1, par_unite: null, etat: bocal}
+  - {ingredient: miel, zone: etagere-ouverte, unites: 1, par_unite: null, etat: bocal}
+  - {ingredient: chocolat-poudre, zone: etagere-ouverte, unites: 1, par_unite: null, etat: sec}
+
+  # ── zone 1b · dessus de l'étagère ────────────────────────────────────────
+  # Quantités non relevées : ce sont des paquets entamés, et personne ne compte
+  # les biscottes qui restent.
+  - {ingredient: puree-mousline, zone: dessus-etagere, unites: 1, par_unite: null, etat: sec}
+  - {ingredient: cracotte, zone: dessus-etagere, unites: 1, par_unite: null, etat: entame, nature: sec, sensible: [humidite]}
+  - {ingredient: krisprolls, zone: dessus-etagere, unites: 1, par_unite: null, etat: entame, nature: sec, sensible: [humidite]}
+  - {ingredient: biscottes, zone: dessus-etagere, unites: 1, par_unite: null, etat: entame, nature: sec, sensible: [humidite]}
+
+  # ── zone 2 · demi-lune basse — le lourd ──────────────────────────────────
+  - {ingredient: farine, zone: demi-lune-basse, unites: 1, par_unite: {amount: 4000, unit: g}, etat: sec, note: T55, réserve}
+  - {ingredient: sucre-blanc, zone: demi-lune-basse, unites: 1, par_unite: {amount: 1000, unit: g}, etat: sec}
+
+  # ── zone 2 · demi-lunes — répartition haute/basse non relevée ────────────
+  - {ingredient: pates, zone: demi-lune-haute, unites: 1, par_unite: null, etat: entame, nature: sec, note: torsades}
+  - {ingredient: pates, zone: demi-lune-haute, unites: 1, par_unite: null, etat: entame, nature: sec, note: coquillettes}
+  - {ingredient: pates, zone: demi-lune-haute, unites: 1, par_unite: null, etat: entame, nature: sec, note: spaghettis n°5}
+  - {ingredient: pates, zone: demi-lune-haute, unites: 1, par_unite: null, etat: sec, note: étoiles}
+  - {ingredient: ble-lentilles, zone: demi-lune-haute, unites: 1, par_unite: null, etat: entame, nature: sec}
+  - {ingredient: semoule, zone: demi-lune-haute, unites: 2, par_unite: null, etat: sec}
+  - {ingredient: vermicelles, zone: demi-lune-haute, unites: 1, par_unite: null, etat: sec}
+  - {ingredient: feuilles-nori, zone: demi-lune-haute, unites: 2, par_unite: null, etat: sec, sensible: [humidite]}
+  - {ingredient: lentilles-seches, zone: demi-lune-haute, unites: 1, par_unite: {amount: 500, unit: g}, etat: sec}
+  - {ingredient: graines-courge, zone: demi-lune-haute, unites: 1, par_unite: {amount: 200, unit: g}, etat: sec, nature: gras, sensible: [lumiere]}
+  - {ingredient: tomates-sechees, zone: demi-lune-haute, unites: 1, par_unite: {amount: 280, unit: g}, etat: conserve}
+  - {ingredient: concentre-tomate, zone: demi-lune-haute, unites: 2, par_unite: null, etat: conserve}
+  - {ingredient: sauce-bolognaise-bocal, zone: demi-lune-haute, unites: 1, par_unite: {amount: 300, unit: g}, etat: bocal}
+  - {ingredient: guacamole, zone: demi-lune-haute, unites: 1, par_unite: null, etat: bocal}
+  - {ingredient: compote, zone: demi-lune-haute, unites: 3, par_unite: {amount: 710, unit: g}, etat: bocal}
+  - {ingredient: terrine-campagne, zone: demi-lune-haute, unites: 1, par_unite: {amount: 180, unit: g}, etat: conserve}
+
+  # ── zone 4 · placard haut — le poste de pâtisserie ───────────────────────
+  # LES DEUX ÉPEAUTRES SONT DES FARINES COMPLÈTES : elles gardent le germe, donc
+  # les huiles, et rancissent en 3 à 6 mois une fois ouvertes. Ce sont aussi les
+  # seules farines du foyer sans contenant hermétique — sachet plus pince.
+  - {ingredient: farine-epeautre, zone: placard-haut, unites: 1, par_unite: {amount: 1000, unit: g},
+     etat: entame, nature: sec, sensible: [humidite]}
+  - {ingredient: farine-petit-epeautre, zone: placard-haut, unites: 1, par_unite: {amount: 500, unit: g},
+     etat: entame, nature: sec, sensible: [humidite], note: T110, meule de pierre}
+  - {ingredient: maizena, zone: placard-haut, unites: 1, par_unite: {amount: 400, unit: g}, etat: sec}
+  - {ingredient: chapelure, zone: placard-haut, unites: 1, par_unite: null, etat: sec}
+  # Les quatre bocaux. LE BOCAL EST UN DISTRIBUTEUR, pas une réserve : sa réserve
+  # est en demi-lune basse, et c'est pour ça qu'un fond de paquet y traîne — un
+  # kilo de farine occupe 1,8 L, un bocal en fait 1,2 à 1,5.
+  - {ingredient: farine, zone: placard-haut, unites: 1, par_unite: null, etat: bocal, note: distributeur, T55}
+  - {ingredient: sucre-blanc, zone: placard-haut, unites: 1, par_unite: null, etat: bocal, note: distributeur}
+  - {ingredient: riz-rond, zone: placard-haut, unites: 1, par_unite: null, etat: bocal, note: à racheter — bocal vide}
+  - {ingredient: fruits-secs-melange, zone: placard-haut, unites: 1, par_unite: null, etat: bocal,
+     note: raisins secs et chips de banane — acheté en vrac, le bocal EST le stock}
+  - {ingredient: poudre-amande, zone: placard-haut, unites: 1, par_unite: null, etat: entame, nature: gras}
+  - {ingredient: preparation-amandine, zone: placard-haut, unites: 1, par_unite: null, etat: sec}
+  - {ingredient: sucre-vanille, zone: placard-haut, unites: 1, par_unite: null, etat: sec}
+  - {ingredient: sirop-agave, zone: placard-haut, unites: 1, par_unite: null, etat: bocal}
+
+  # ── zone 5 · sous-évier — les racines ────────────────────────────────────
+  # LES ALLIACÉES DÉGAGENT HUMIDITÉ ET ÉTHYLÈNE, et les pommes de terre y
+  # répondent en germant. Les quatre partagent la même zone : c'est la seule
+  # perte ACTIVE du relevé, et `incompatibles` est ce qui la rend visible.
+  # `conserve_mal: [congeler]` sur la pomme de terre : crue, elle devient
+  # farineuse et noircit au congélateur. C'est l'exception que le modèle général
+  # ne peut pas deviner, et la seule du relevé.
+  - {ingredient: pomme-de-terre, zone: sous-evier, unites: 1, par_unite: null, etat: frais,
+     nature: legume-cru, conserve_mal: [congeler],
+     sensible: [humidite, lumiere], incompatibles: [oignon, echalote, ail]}
+  - {ingredient: oignon, zone: sous-evier, unites: 1, par_unite: null, etat: frais,
+     nature: legume-cru, sensible: [humidite]}
+  - {ingredient: echalote, zone: sous-evier, unites: 1, par_unite: null, etat: frais,
+     nature: legume-cru, sensible: [humidite]}
+  - {ingredient: ail, zone: sous-evier, unites: 1, par_unite: null, etat: frais,
+     nature: legume-cru, sensible: [humidite]}

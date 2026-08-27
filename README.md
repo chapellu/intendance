@@ -90,9 +90,42 @@ compile une recette contre ce foyer, le vérificateur qui refuse un corpus
 incohérent, et `README.md` — le carnet de bord de ce que la saisie a révélé du
 modèle, recette par recette.
 
+**Ce que le garde-manger sert à décider.** Chaque denrée porte une *urgence* —
+`haute`, `moyenne`, `basse` — dérivée de son conditionnement et de sa zone, sans
+aucune date : le relevé n'en porte pas. Le score s'en sert pour remonter les
+plats qui mangent ce qui se perd, et l'écran en tire la liste « À manger en
+premier ». Les deux se lisent ensemble : le score départage, la liste désigne.
+
+**Et une denrée qui court a DEUX sorties, pas une.** La cuisiner ce soir, ou
+arrêter son horloge — `conservation.yaml` porte la seconde depuis le prototype :
+« l'aliment a une horloge, et le transformer remet l'horloge à zéro, mais
+seulement si on a le séchoir et qu'on a appris à s'en servir. » Chaque denrée à
+risque porte donc ses méthodes applicables, acquises ou verrouillées. Trois
+filtres les taillent, et le premier est une règle de sécurité : le bain-marie ne
+sort jamais sur un aliment peu acide (botulisme — voir l'avertissement en tête de
+`conservation.yaml`), `applique_a` écarte ce qui n'a pas de sens pour la matière,
+et `conserve_mal` couvre ce que le modèle général rate, comme la pomme de terre
+crue au congélateur.
+
+**Deux fichiers portent des stocks, et ce ne sont pas les mêmes.**
+`stock.yaml` porte les SORTIES DE CUISINE — des bases cuisinées, indexées sur ce
+que les recettes émettent, mangées par le graphe de chaînage.
+`garde-manger.yaml` porte la MATIÈRE PREMIÈRE — indexée sur le vocabulaire
+d'ingrédients de `rayons.yaml`, rangée dans des zones physiques qui ont des
+cotes, une exposition et une hygrométrie. Une conserve de maïs va dans le second :
+la mettre dans le premier la ferait entrer dans le chaînage, et le planificateur
+proposerait de l'« enchaîner ». Le garde-manger est descriptif — rien ne le
+décrémente quand on cuisine, et il ne fait donc pas encore taire la liste de
+courses.
+
 **Le modèle Python ne tourne pas dans l'app.** L'app a le sien, en TypeScript,
-sous `src/model/`. Le Python sert à valider le corpus et à produire le JSON ;
-`npm run parite` est ce qui garantit que les deux disent la même chose.
+sous `src/model/`. Le Python sert à valider le corpus et à produire le JSON.
+
+`npm run parite` rejouait les mêmes semaines dans le modèle du prototype et dans
+celui de l'app, et prouvait que le port disait la même chose. **Il a été retiré
+en T22** : depuis que le scoring tient compte du garde-manger — que le proto
+ignore — la parité ne pouvait plus qu'échouer, et un contrôle qui doit échouer
+n'en est plus un.
 
 ## La PWA
 

@@ -208,7 +208,141 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
           compté du tout — on sait seulement que ça existe.
         </span>
       </div>
+
+      <GardeManger vue={vue.gardeManger} />
     </Corps>
+  );
+}
+
+/**
+ * Le garde-manger — les placards eux-mêmes, et la matière première dedans.
+ *
+ * IL VIENT APRÈS LES LOTS, ET L'ORDRE EST ENCORE L'ARGUMENT. Les lots sont ce
+ * que la semaine bouge ; le garde-manger est ce qui ne bouge pas. On ouvre cet
+ * écran pour savoir si la semaine tient, et la réponse est en haut ; on descend
+ * ici pour savoir ce qu'il reste de farine, ce qui est une autre question et une
+ * question plus rare.
+ *
+ * LES ALERTES SONT EN TÊTE PARCE QU'ELLES NE PARLENT PAS DE DONNÉES. Tout le
+ * reste de cet écran décrit un état ; ces lignes-là demandent d'aller déplacer un
+ * sachet. C'est la seule chose de l'inventaire qui appelle un geste dans la
+ * cuisine plutôt qu'un doigt sur le téléphone.
+ */
+function GardeManger({ vue }: { vue: ReturnType<typeof vueDeLInventaire>["gardeManger"] }) {
+  if (!vue.zones.length) return null;
+  return (
+    <>
+      <div className="co-kicker" style={{ margin: "var(--space-4) var(--space-1) var(--space-2)" }}>
+        Le garde-manger
+      </div>
+      <div className="co-note" style={{ margin: "0 var(--space-1) var(--space-2)" }}>
+        {vue.denrees} denrées dans {vue.zones.length} rangements
+        {vue.volume ? `, ${vue.volume} mesurés` : ""}. {vue.pesees} sont pesées, pour {vue.poids}.
+      </div>
+
+      {/* UNE ALERTE PAR LIGNE, PARCE QU'UNE ALERTE EST UN GESTE. Enfilées avec
+          des points médians elles formaient un pavé de sept lignes qu'on ne lit
+          pas — et une liste qu'on ne lit pas vaut une liste vide. */}
+      {vue.alertes.length ? (
+        <div className="co-encart" style={{ marginBottom: "var(--space-3)", display: "block" }}>
+          <div style={{ display: "flex", gap: "var(--space-1)", alignItems: "baseline" }}>
+            <Icone nom="info" />
+            <b>À déplacer</b>
+          </div>
+          <ul style={{ margin: "var(--space-1) 0 0", paddingLeft: "1.1em" }}>
+            {vue.alertes.map((a) => (
+              <li key={a} style={{ marginTop: 2 }}>
+                {a}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
+      {/* DEUX LISTES, DEUX GESTES, ET IL NE FAUT PAS LES CONFONDRE. « À
+          déplacer » dit de ranger autrement — un sachet à mettre ailleurs.
+          « À manger en premier » dit de cuisiner. Le même oignon peut être dans
+          les deux, et ce n'est pas une redite : il est mal rangé ET il court. */}
+      {vue.aSauver.length ? (
+        <>
+          <div className="co-kicker" style={{ margin: "0 var(--space-1) var(--space-2)" }}>
+            À manger en premier
+          </div>
+          {vue.aSauver.map((s) => (
+            <div key={s.cle} className="co-lot">
+              <span style={{ flex: 1 }}>
+                <div className="nom">{s.nom}</div>
+                <div className="ou">
+                  {s.raison} · {s.ou}
+                </div>
+                {/* LA SECONDE ISSUE. La cuisiner ce soir n'est pas toujours la
+                    bonne réponse — on ne mange pas six kilos de pommes de terre
+                    parce qu'ils germent. `conservation.yaml` porte l'autre
+                    depuis le prototype : arrêter l'horloge. */}
+                {s.conserver ? <div className="ou">ou&nbsp;: {s.conserver}</div> : null}
+                {/* Un nœud de compétence, JAMAIS une suggestion d'achat — la
+                    règle vient de #29 : l'app nomme ce qu'il faudrait savoir
+                    faire, elle n'envoie personne au magasin. */}
+                {s.debloquer ? <div className="ou">à débloquer&nbsp;: {s.debloquer}</div> : null}
+              </span>
+              <span>
+                <div className={`src ${s.urgence === "haute" ? "estime" : ""}`}>
+                  {s.urgence === "haute" ? "pressé" : "entamé"}
+                </div>
+              </span>
+            </div>
+          ))}
+          <div className="co-note" style={{ margin: "var(--space-2) var(--space-1) var(--space-3)" }}>
+            « Poser un plat » remonte les recettes qui les mangent. Un aromate qu’on met partout —
+            l’oignon est dans 42&nbsp;% des plats — sera consommé de toute façon&nbsp;: c’est le reste
+            de cette liste qui se perd vraiment.
+          </div>
+        </>
+      ) : null}
+
+      {vue.zones.map((z) => (
+        <div key={z.id} className="co-espace" style={{ marginBottom: "var(--space-2)" }}>
+          <div className="nom">
+            {z.nom}
+            {z.volume ? <span className="co-note"> · {z.volume}</span> : null}
+          </div>
+          <div className="co-note">
+            {z.cotes}
+            {z.ambiance ? ` · ${z.ambiance}` : ""}
+            {z.poids ? ` · ${z.poids}` : ""}
+          </div>
+          {z.denrees.length ? (
+            z.denrees.map((d) => (
+              <div key={d.cle} className="co-lot">
+                <span style={{ flex: 1 }}>
+                  <div className="nom">{d.nom}</div>
+                  {/* La note dit pourquoi cette ligne existe à part — « à l’huile
+                      d’olive », « distributeur ». Sans elle, deux thons de la
+                      même zone se ressemblent à s’y méprendre. */}
+                  {d.note ? <div className="ou">{d.note}</div> : null}
+                  {d.alerte ? <div className="ou">⚠ {d.alerte}</div> : null}
+                </span>
+                <span>
+                  <div className="q">{d.quantite}</div>
+                  <div className="src">{d.etat}</div>
+                </span>
+              </div>
+            ))
+          ) : (
+            <div className="co-note">Rien de relevé ici.</div>
+          )}
+        </div>
+      ))}
+
+      <div className="co-encart" style={{ marginTop: "var(--space-2)" }}>
+        <Icone nom="info" />
+        <span>
+          Le garde-manger est <b>descriptif</b>&nbsp;: rien ne le décrémente quand on cuisine, donc
+          il ne fait pas encore taire la liste de courses. Il dit ce qu’il y a, où, et ce que le
+          rangement fait subir.
+        </span>
+      </div>
+    </>
   );
 }
 

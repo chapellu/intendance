@@ -10,7 +10,6 @@
     "catalogue:verifie": "python3 catalogue/verifier.py && npm run catalogue && git diff --exit-code -- public/cuisine-data.json",
     "dev": "vite",
     "e2e": "playwright test",
-    "parite": "vite-node scripts/parite.mjs",
     "perf": "vite-node scripts/perf.mjs",
     "preview": "vite preview",
     "test": "vitest run",

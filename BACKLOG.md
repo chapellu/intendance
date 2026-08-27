@@ -518,7 +518,178 @@ Un ticket = un commit qui laisse l'app fonctionnelle. `[ ]` à faire,
       teste un comportement de navigateur, pas l'image déployée, et Playwright y
       livre son Chromium sans discussion.
 
+- [x] **T21 — Le garde-manger.** `catalogue/garde-manger.yaml` : les rangements
+      physiques du foyer, et la matière première dedans. Relevé du 2026-08-26 —
+      sept zones, 53 denrées, 205,7 L mesurés.
+
+      **CE QUI MANQUAIT, ET POURQUOI AUCUN DES DEUX OBJETS EXISTANTS NE POUVAIT
+      LE PORTER.** `stock.yaml` porte les SORTIES DE CUISINE, indexées sur les
+      types que les recettes `emit` et `accept` : y mettre une conserve de maïs
+      demandait de lui donner `kind: base`, ce qui la faisait entrer dans le
+      graphe de chaînage — et le planificateur aurait proposé d'« enchaîner » une
+      boîte de conserve. `rayons.placard` marque ce qu'on possède TOUJOURS, sans
+      quantité ni endroit : il sait qu'on a du sel, jamais qu'on a quatre boîtes
+      de maïs de 285 g. Le modèle savait donc ce que la cuisine d'hier avait
+      laissé, et ce que le placard pouvait porter — pas ce qu'il y avait dedans.
+
+      **UNE ZONE N'EST PAS UN `Espace`, ELLE S'Y RATTACHE.** `Espace` (frigo ·
+      congelo · placard) dit COMMENT ça vieillit, ce dont la fenêtre de fraîcheur
+      a besoin. Les sept rangements de ce foyer tombent tous sur `placard`, et
+      avec eux les seules informations qui décident vraiment de ce qu'on peut y
+      mettre : 17 cm de hauteur utile sur l'étagère ouverte, la lumière du jour
+      qui y tombe, l'humidité sous l'évier.
+
+      **DEUX GRANDEURS SE DÉRIVENT ET NE SE SAISISSENT JAMAIS** : `volumeL` des
+      cotes et de la forme, `poidsG` des quantités. `forme: demi-lune` applique
+      π/4 — compter les plateaux d'angle en boîte donnait 67 L pour un plateau
+      qui en porte 53, et un budget de rangement faux d'un cinquième déborde sans
+      prévenir.
+
+      **LE VÉRIFICATEUR ATTRAPE DES ERREURS DE CUISINE, PAS DE SAISIE.**
+      `sensible` sur une denrée, `exposition` / `hygrometrie` / `chaleur` sur une
+      zone : c'est leur confrontation qui dit que les pignons de pin sont en
+      pleine lumière à côté de la bouilloire. `incompatibles` dit que les pommes
+      de terre ne doivent pas voisiner avec les alliacées — la seule perte ACTIVE
+      du relevé. C'est la première sortie de `verifier.py` qui se corrige en
+      déplaçant quelque chose plutôt qu'en éditant un fichier, et l'export ne
+      publie que celles-là : « le tiroir à épices n'a pas de cotes » s'adresse à
+      qui tient le corpus, pas à qui habite la cuisine.
+
+      **LES ALERTES SE GROUPENT PAR GESTE.** Une ligne par (denrée × agression)
+      donnait sept alertes pour trois problèmes — les pignons comptaient double,
+      et le sous-évier répétait « humide » sous quatre légumes qu'on sort du même
+      mouvement. Sept lignes ne se lisent pas ; trois, si.
+
+      **LE GARDE-MANGER EST DESCRIPTIF, ET LE RESTE POUR L'INSTANT.** Rien ne le
+      décrémente quand on cuisine, donc `provenance()` continue de lire
+      `rayons.placard` — voir ci-dessous.
+
+- [x] **T22 — L'anti-gaspi.** Le garde-manger entre dans le score : la
+      proposition remonte les plats qui mangent ce qui se perd.
+
+      **TROIS URGENCES, ET AUCUNE DATE.** Le relevé n'en porte pas — ni DLC, ni
+      DLUO, ni date d'ouverture — et en inventer une pour pouvoir compter dessus
+      donnerait un chiffre qui a l'air juste et ne l'est jamais. Ce que le relevé
+      sait, c'est le CONDITIONNEMENT et l'ENDROIT : un sachet ouvert n'oppose
+      plus de barrière, un légume frais ne se garde pas, une denrée rangée là où
+      elle s'abîme se dégrade en ce moment. `haute` / `moyenne` / `basse` se
+      dérivent de ces trois faits, et on peut aller les vérifier de l'œil. Sur le
+      vrai stock : 5 hautes, 10 entamées, 38 scellées.
+
+      **ON NE PAIE QUE CE QUI EST À RISQUE.** *Utiliser* le placard est déjà
+      récompensé, et ailleurs : un ingrédient de placard ne crée pas de ligne de
+      courses, donc `article_marginal` ne monte pas. *Sauver* le placard est ce
+      qui manquait. Une conserve tient trois ans et ne mérite aucun coup de
+      pouce ; la payer ferait gagner les plats à longue liste d'épicerie.
+
+      **UN SEUL BONUS PAR PLAT, ET C'EST LA MESURE QUI L'A DÉCIDÉ.** La première
+      version cumulait par ingrédient. Comptés sur le corpus : l'oignon paraît
+      dans **42 %** des 86 plats, l'ail dans **19 %**. Le cumul donnait donc +10
+      à presque tout ce qui contient les deux, et le haut de la proposition
+      répétait « sauve ce qui se perd : oignon, ail » huit fois de suite — un
+      terme qui se déclenche partout ne départage rien, et récompenser la
+      longueur d'une liste d'ingrédients est exactement ce que
+      `article_marginal` a été écrit pour empêcher.
+
+      **CE QUE LE MODÈLE NE SAIT PAS FAIRE, ET QUI EST ÉCRIT DANS LE CODE.** Un
+      aromate n'est pas sauvé parce qu'un plat le cite : l'oignon sera mangé de
+      toute façon. Distinguer un oignon pris sur un filet de 800 g de pommes de
+      terre prises sur deux kilos demanderait des quantités que le relevé ne
+      porte pas pour le frais (`par_unite: null`). D'où le partage assumé : le
+      score NUDGE, et `aSauver()` DÉSIGNE — la liste « À manger en premier »
+      nomme les pommes de terre et l'épeautre sans se laisser noyer par les
+      aromates.
+
+      **DEUX LISTES, DEUX GESTES.** « À déplacer » dit de ranger autrement ; « À
+      manger en premier » dit de cuisiner. Le même oignon peut être dans les
+      deux — il est mal rangé ET il court — et ce n'est pas une redite.
+
+      **LA PARITÉ EST PARTIE AVEC.** `scripts/parite.mjs` et
+      `reference/proto-semaine.js` sont supprimés, et l'étape retirée du CI. Ils
+      prouvaient que le port disait la même chose que `apps/proto-shell` ; à
+      partir du moment où le scoring tient compte du garde-manger, que le proto
+      ignore, la parité ne pouvait plus qu'échouer — et un contrôle qui DOIT
+      échouer n'en est plus un. Voir « Sortie » : la moitié `flagship` du
+      démontage reste à faire.
+
+- [x] **T23 — La seconde issue : conserver.** Le garde-manger se branche sur
+      `conservation.yaml`, et l'anti-gaspi cesse de n'avoir qu'une réponse.
+
+      **LE MODÈLE LE SAVAIT DÉJÀ, PERSONNE NE L'ÉCOUTAIT.** T22 ne connaissait
+      qu'une sortie pour une denrée qui court : la cuisiner ce soir.
+      `conservation.yaml` porte l'autre depuis le prototype, et l'énonce mieux
+      que ce ticket ne le ferait : « l'aliment a une horloge, et le transformer
+      remet l'horloge à zéro — mais seulement si on a le séchoir, et seulement si
+      on a appris à s'en servir. » On ne mange pas six kilos de pommes de terre
+      parce qu'ils germent.
+
+      **`applique_a` DORMAIT DEPUIS SON ÉCRITURE** — déclaré dans
+      `conservation.yaml`, lu par personne. Ce ticket en est le premier
+      consommateur, et il a fallu le compléter : sans lui le modèle proposait de
+      mettre de la farine « en bocal sous pression ». Pas dangereux, seulement
+      absurde — mais un conseil absurde apprend à ignorer les conseils, y compris
+      celui qui compte.
+
+      **LE FRIGO N'EST PAS UNE CONSERVATION DE MATIÈRE PREMIÈRE.** Sa fenêtre est
+      `household.fridge_window_days`, l'horloge des RESTES : un sachet de farine
+      ne périme pas en quatre jours parce qu'on l'a mis au frais. D'où
+      `applique_a: [plat]` sur cette méthode. Ranger un ingrédient au froid est
+      un choix de RANGEMENT, que les zones portent déjà, pas une transformation.
+
+      **LA SÉCURITÉ EST UN FILTRE, PAS UNE NOTE DE BAS DE PAGE.** `acidite` vaut
+      `basse` par défaut, comme `defaut_acidite` de `conservation.yaml` — et ce
+      défaut est un choix de sécurité : le bain-marie sur un aliment peu acide en
+      bocal à température ambiante produit exactement le milieu anaérobie où
+      prolifère C. botulinum. Aucune denrée du relevé n'est déclarée acide, donc
+      le bain-marie n'est proposé sur aucune. Un test le verrouille.
+
+      **`conserve_mal`, L'ÉCHAPPATOIRE ASSUMÉE.** Une pomme de terre crue
+      congelée devient farineuse et noircit ; le modèle général ne peut pas le
+      deviner. Une règle générale avec une exception écrite vaut mieux qu'une
+      règle spéciale par denrée. C'est la seule du relevé — et elle fait de la
+      pomme de terre la seule denrée qui n'a vraiment qu'une sortie.
+
+      **ON NE PROPOSE QU'UN VERROU, ET SEULEMENT S'IL EST SPÉCIFIQUE.** Le
+      sous-vide marche sur à peu près tout, donc il était le premier verrou des
+      treize denrées : la même phrase treize fois de suite n'est plus une phrase.
+      Ne reste que ce qui dit quelque chose de CETTE denrée — lacto-fermenter un
+      oignon, sécher de l'ail. Et jamais présenté comme un achat : c'est un nœud
+      de compétence, la règle de #29.
+
+      Résultat sur le vrai stock : le congélateur, que le foyer possède, répond
+      pour douze des treize denrées à risque. Les alliacées gagnent en plus un
+      nœud à débloquer — lacto-fermentation, bocaux à joint caoutchouc.
+
+### Trouvé en portant, à décider
+
+- [ ] **Le garde-manger ne fait pas taire la liste de courses.** T21 donne enfin
+      des quantités à ce que le placard contient, et `chainage.py` regrettait
+      justement que `rayons.placard` soit « une liste globale et statique » et
+      que « déjà à la maison » ne se dise pas d'un ingrédient ordinaire. Le fil
+      manque pourtant, et ce n'est pas un oubli : brancher `provenance()` sur le
+      garde-manger demande de savoir ce qui SORT du placard quand on cuisine, et
+      rien ne le sait. Sans consommation, quatre boîtes de maïs suppriment la
+      ligne de courses pour toujours — y compris le jour où il n'en reste
+      aucune. Un chiffre qu'on croit tenu à jour alors que rien ne le tient est
+      pire que pas de chiffre du tout. À trancher avec « rentrer une course ne
+      peut pas faire un lot » : c'est le même fil, pris par l'autre bout.
+
+- [ ] **Un aromate n'est pas sauvé parce qu'un plat le cite.** La limite connue
+      de T22, à lever le jour où le frais sera quantifié. Il faudrait comparer ce
+      qu'on A à ce qu'un plat PREND — un oignon sur un filet, contre 800 g de
+      pommes de terre sur deux kilos. `garde-manger.yaml` porte déjà
+      `par_unite`, mais il est `null` sur tout le frais : personne ne pèse un
+      filet d'oignons en le rangeant. Peut-être la bonne réponse est-elle une
+      bande plutôt qu'un poids — « un filet », « une main » —, comme `qty_band`
+      compte des repas plutôt que des grammes.
+
 ## Sortie
+
+**Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`
+sont supprimés, l'étape est retirée du CI. Reste la moitié `flagship`, qui est de
+l'infrastructure vivante et se démonte à part — d'autant que le README dit encore
+que les deux tournent « tant que le prototype sert encore de référence », et que
+l'intérieur du jardin n'est pas tranché.
 
 Quand l'app porte les mêmes verdicts que le proto : supprimer, chez `flagship`,
 `apps/proto-shell`, `k8s/proto-shell`, son listener, son rrset et son workflow —

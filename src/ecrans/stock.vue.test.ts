@@ -3,8 +3,10 @@ import { beforeEach, describe, expect, test } from "vitest";
 import { calculer } from "../model/calcul";
 import { lireCatalogue } from "../model/catalogue";
 import { creerJeu, type Jeu } from "../model/jeu";
-import type { Catalogue } from "../model/types";
-import { categories, espaces, fiabilite, lots, vueDeLInventaire } from "./stock.vue";
+import type { Catalogue, Denree, Zone } from "../model/types";
+import {
+  agressions, categories, espaces, fiabilite, gardeManger, lots, vueDeLInventaire, zones,
+} from "./stock.vue";
 
 const LUNDI = new Date("2026-08-17T12:00:00Z");
 const catalogue: Catalogue = lireCatalogue(
@@ -224,5 +226,159 @@ describe("la vue entière", () => {
     const vue = vueDeLInventaire(jeu, calculer(jeu), null);
     expect(vue.constates).toBe(catalogue.stock.length);
     expect(vue.lots.length).toBeGreaterThan(vue.constates);
+  });
+});
+
+/* ───────────────────────────────────────────────────────── le garde-manger */
+
+const zoneTest = (p: Partial<Zone> = {}): Zone => ({
+  id: "z",
+  label: "une zone",
+  espace: "placard",
+  niveaux: 1,
+  dimensions: { largeur_cm: 40, profondeur_cm: 30, hauteur_cm: 20 },
+  forme: "rectangle",
+  volumeL: 24,
+  exposition: "sombre",
+  hygrometrie: "sec",
+  chaleur: false,
+  note: null,
+  ...p,
+});
+
+const denreeTest = (p: Partial<Denree> = {}): Denree => ({
+  ingredient: "farine",
+  zone: "z",
+  unites: 1,
+  parUnite: { amount: 1000, unit: "g" },
+  poidsG: 1000,
+  etat: "sec",
+  sensible: [],
+  incompatibles: [],
+  urgence: "basse",
+  nature: "autre",
+  conservations: [],
+  note: null,
+  ...p,
+});
+
+describe("ce que la zone fait subir à la denrée", () => {
+  test("une sensibilité que la zone ne contredit pas ne se dit pas", () => {
+    // C'EST LA RÈGLE QUI FAIT QUE L'AVERTISSEMENT COMPTE. Écrire « craint
+    // l'humidité » sous chaque paquet de biscottes rangé au sec produirait un
+    // écran où l'alerte est le décor, et le jour où elle mord elle ne se
+    // distinguerait plus.
+    const d = denreeTest({ sensible: ["humidite"] });
+    expect(agressions(d, zoneTest({ hygrometrie: "sec" }))).toEqual([]);
+    expect(agressions(d, zoneTest({ hygrometrie: "humide" }))).toEqual(["à l’humidité"]);
+  });
+
+  test("plusieurs agressions se cumulent", () => {
+    const d = denreeTest({ sensible: ["lumiere", "chaleur"] });
+    expect(agressions(d, zoneTest({ exposition: "jour", chaleur: true }))).toHaveLength(2);
+  });
+
+  test("les pignons de pin du relevé sont bien signalés", () => {
+    // Le cas réel, contre les vraies données : sachet gras, en pleine lumière,
+    // à côté de la bouilloire.
+    const gm = catalogue.gardeManger;
+    const pignons = gm.denrees.find((d) => d.ingredient === "pignons-pin");
+    const z = gm.zones.find((x) => x.id === pignons!.zone);
+    expect(agressions(pignons!, z!)).toEqual(["à la lumière", "près d’une source de chaleur"]);
+  });
+});
+
+/** Une zone et ce qu'elle porte, vues. Le `!` est sûr : `zones()` rend une vue
+ *  par zone, et on lui en donne exactement une. */
+const uneZone = (denrees: Denree[], z: Partial<Zone> = {}) =>
+  zones({ zones: [zoneTest(z)], denrees, alertes: [] })[0]!;
+
+const SANS_COTES = { largeur_cm: null, profondeur_cm: null, hauteur_cm: null };
+
+describe("les rangements", () => {
+  test("une denrée non pesée dit son compte, pas un tiret", () => {
+    // « 1 » est une information — celle qu'on a. « — » ferait croire à un trou.
+    const z = uneZone([denreeTest({ parUnite: null, poidsG: null })]);
+    expect(z.denrees[0]!.quantite).toBe("1");
+  });
+
+  test("plusieurs unités se disent en facteur, jamais en total", () => {
+    // Quatre boîtes de maïs sont quatre boîtes : on en ouvre une à la fois, et
+    // « 1 140 g » ne se range pas dans un placard.
+    const z = uneZone([denreeTest({ unites: 4, parUnite: { amount: 285, unit: "g" }, poidsG: 1140 })]);
+    expect(z.denrees[0]!.quantite).toBe("4 × 285 g");
+  });
+
+  test("le poids d'une zone additionne ce qui est pesé, et l'écrit en kilos", () => {
+    const z = uneZone([
+      denreeTest({ poidsG: 4000 }),
+      denreeTest({ poidsG: 1000 }),
+      denreeTest({ poidsG: null }),
+    ]);
+    expect(z.poidsG).toBe(5000);
+    expect(z.poids).toBe("5 kg");
+  });
+
+  test("une zone sans cotes n'annonce pas de volume", () => {
+    const z = uneZone([], { volumeL: null, dimensions: SANS_COTES });
+    expect(z.volume).toBe("");
+    expect(z.cotes).toBe("non mesurée");
+  });
+
+  test("une hauteur libre se dit, elle ne s'invente pas", () => {
+    const z = uneZone([], {
+      volumeL: null,
+      dimensions: { largeur_cm: 42, profondeur_cm: 30, hauteur_cm: null },
+    });
+    expect(z.cotes).toBe("42 × 30 cm · hauteur libre");
+  });
+
+  test("l'ordre est celui du relevé, pas un tri", () => {
+    // On retrouve une étagère par le tour qu'on fait de sa cuisine, jamais par
+    // son volume.
+    const ids = zones(catalogue.gardeManger).map((z) => z.id);
+    expect(ids).toEqual(catalogue.gardeManger.zones.map((z) => z.id));
+  });
+});
+
+describe("le garde-manger entier", () => {
+  test("il compte ses denrées et distingue celles qui sont pesées", () => {
+    const vue = gardeManger(catalogue);
+    expect(vue.denrees).toBe(catalogue.gardeManger.denrees.length);
+    expect(vue.pesees).toBeGreaterThan(0);
+    expect(vue.pesees).toBeLessThan(vue.denrees);
+  });
+
+  test("le volume mesuré ignore les zones non cotées, sans les cacher", () => {
+    const vue = gardeManger(catalogue);
+    const cotees = catalogue.gardeManger.zones.filter((z) => z.volumeL != null);
+    expect(cotees.length).toBeLessThan(vue.zones.length);
+    expect(vue.volume).not.toBe("");
+  });
+
+  test("les alertes du relevé remontent jusqu'à la vue", () => {
+    // Le couple pommes de terre / oignons est la seule perte ACTIVE du relevé :
+    // s'il cessait d'être signalé, l'écran mentirait par omission.
+    const vue = gardeManger(catalogue);
+    expect(
+      vue.alertes.some((a) => a.includes("pomme de terre") && a.includes("voisiner")),
+    ).toBe(true);
+  });
+
+  test("ce qui se corrige d'un seul geste tient sur une seule alerte", () => {
+    // LE REGROUPEMENT EST LA MOITIÉ DE L'INTÉRÊT DE CET ÉCRAN. Sans lui le
+    // relevé produit sept lignes pour trois problèmes — les pignons comptent
+    // double, et le sous-évier répète « humide » sous quatre légumes qu'on
+    // sortira du même mouvement. Une liste de sept ne se lit pas.
+    const vue = gardeManger(catalogue);
+    expect(vue.alertes.length).toBeLessThanOrEqual(4);
+    const humide = vue.alertes.find((a) => a.includes("endroit humide"));
+    expect(humide).toContain("pomme de terre");
+    expect(humide).toContain("ail");
+  });
+
+  test("la vue de l'inventaire porte le garde-manger", () => {
+    const vue = vueDeLInventaire(jeu, calculer(jeu), null);
+    expect(vue.gardeManger.zones.length).toBe(catalogue.gardeManger.zones.length);
   });
 });
