@@ -118,10 +118,30 @@ describe("la provenance vue de la fiche", () => {
     );
   });
 
-  test("le reste part aux courses", () => {
+  test("ce dont le relevé dit qu'il en reste ne s'achète pas les yeux fermés", () => {
+    // CE TEST DISAIT « les pâtes partent aux courses », ET C'ÉTAIT VRAI. Depuis
+    // que le garde-manger est branché sur `provenance`, ce n'est plus la bonne
+    // réponse : il traîne trois fonds de paquets en demi-lune haute. La fiche ne
+    // promet pas la quantité — personne ne la suit —, elle dit d'aller voir.
     expect(provenanceIngredient(catalogue, ing("pates"))).toEqual({
-      label: "à acheter", acheter: true,
+      label: "au garde-manger",
+      acheter: false,
     });
+  });
+
+  test("ce qui n'est ni au placard ni au relevé part aux courses", () => {
+    expect(provenanceIngredient(catalogue, ing("saumon"))).toEqual({
+      label: "à acheter",
+      acheter: true,
+    });
+  });
+
+  test("le fond de placard l'emporte sur le relevé", () => {
+    // Les deux mènent à « ne pas acheter », mais ne disent pas la même chose :
+    // on a TOUJOURS du sel, tandis qu'on a QUATRE BOÎTES de maïs. Pour le sel,
+    // « combien m'en reste-t-il » n'est pas une question qui se pose.
+    const fond = catalogue.rayons.placard[0]!;
+    expect(provenanceIngredient(catalogue, ing(fond)).label).toBe("placard");
   });
 });
 

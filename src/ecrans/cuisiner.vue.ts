@@ -97,9 +97,12 @@ export interface Provenance {
 export function provenanceIngredient(catalogue: Catalogue, ing: Ingredient): Provenance {
   if (ing.base) return { label: "base", acheter: true };
   const cid = catalogue.rayons.aliases[ing.id] ?? ing.id;
-  return catalogue.rayons.placard.includes(cid)
-    ? { label: "placard", acheter: false }
-    : { label: "à acheter", acheter: true };
+  if (catalogue.rayons.placard.includes(cid)) return { label: "placard", acheter: false };
+  // Le relevé dit qu'il en reste. La fiche ne promet pas la quantité — elle ne
+  // la connaît pas —, elle dit seulement d'aller voir avant de partir acheter.
+  if (catalogue.gardeManger.denrees.some((d) => (catalogue.rayons.aliases[d.ingredient] ?? d.ingredient) === cid))
+    return { label: "au garde-manger", acheter: false };
+  return { label: "à acheter", acheter: true };
 }
 
 /* ──────────────────────────────────────────────────────────────── l'avancement */
