@@ -16,7 +16,7 @@
 
 import type {
   Accept, Agression, Catalogue, Denree, Emit, EmitKind, Espace, Etape, Etat, Forme, Foyer,
-  GardeManger, Ingredient, LigneStock, Plat, Provenance, Quantite, Urgence, Zone,
+  GardeManger, Ingredient, LigneStock, Nature, Plat, Provenance, Quantite, Urgence, Zone,
 } from "./types";
 
 const ESPACES: readonly Espace[] = ["frigo", "congelo", "placard"];
@@ -26,6 +26,7 @@ const AGRESSIONS: readonly Agression[] = ["lumiere", "humidite", "chaleur"];
 const ETATS: readonly Etat[] = ["conserve", "bocal", "sec", "entame", "frais"];
 const FORMES: readonly Forme[] = ["rectangle", "demi-lune"];
 const URGENCES: readonly Urgence[] = ["haute", "moyenne", "basse"];
+const NATURES: readonly Nature[] = ["legume-cru", "fruit", "herbe", "sec", "gras", "plat", "autre"];
 
 /** Les deux repas que le code nomme en dur : `gamelles()` cherche « le dîner de
  *  la veille », et l'équilibre se mesure sur les repas principaux. Le reste de
@@ -342,6 +343,19 @@ function denree(v: unknown, ou: string): Denree {
       .map((x, i) => parmi(x, AGRESSIONS, `${ou}.sensible[${i}]`)),
     incompatibles: listeDeTextes(o["incompatibles"] ?? [], `${ou}.incompatibles`),
     urgence: parmi(o["urgence"], URGENCES, `${ou}.urgence`),
+    nature: parmi(o["nature"], NATURES, `${ou}.nature`),
+    conservations: tableau(o["conservations"] ?? [], `${ou}.conservations`).map((x, i) => {
+      const c = obj(x, `${ou}.conservations[${i}]`);
+      return {
+        id: texte(c["id"], `${ou}.conservations[${i}].id`),
+        label: texte(c["label"], `${ou}.conservations[${i}].label`),
+        acquis: booleen(c["acquis"], `${ou}.conservations[${i}].acquis`),
+        fenetre: texte(c["fenetre"], `${ou}.conservations[${i}].fenetre`),
+        manque: texteOuNull(c["manque"] ?? null, `${ou}.conservations[${i}].manque`),
+        noeud: texteOuNull(c["noeud"] ?? null, `${ou}.conservations[${i}].noeud`),
+        specifique: booleen(c["specifique"], `${ou}.conservations[${i}].specifique`),
+      };
+    }),
     note: note === undefined || note === null ? null : texte(note, `${ou}.note`),
   };
 }

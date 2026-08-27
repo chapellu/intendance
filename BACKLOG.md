@@ -612,6 +612,54 @@ Un ticket = un commit qui laisse l'app fonctionnelle. `[ ]` à faire,
       échouer n'en est plus un. Voir « Sortie » : la moitié `flagship` du
       démontage reste à faire.
 
+- [x] **T23 — La seconde issue : conserver.** Le garde-manger se branche sur
+      `conservation.yaml`, et l'anti-gaspi cesse de n'avoir qu'une réponse.
+
+      **LE MODÈLE LE SAVAIT DÉJÀ, PERSONNE NE L'ÉCOUTAIT.** T22 ne connaissait
+      qu'une sortie pour une denrée qui court : la cuisiner ce soir.
+      `conservation.yaml` porte l'autre depuis le prototype, et l'énonce mieux
+      que ce ticket ne le ferait : « l'aliment a une horloge, et le transformer
+      remet l'horloge à zéro — mais seulement si on a le séchoir, et seulement si
+      on a appris à s'en servir. » On ne mange pas six kilos de pommes de terre
+      parce qu'ils germent.
+
+      **`applique_a` DORMAIT DEPUIS SON ÉCRITURE** — déclaré dans
+      `conservation.yaml`, lu par personne. Ce ticket en est le premier
+      consommateur, et il a fallu le compléter : sans lui le modèle proposait de
+      mettre de la farine « en bocal sous pression ». Pas dangereux, seulement
+      absurde — mais un conseil absurde apprend à ignorer les conseils, y compris
+      celui qui compte.
+
+      **LE FRIGO N'EST PAS UNE CONSERVATION DE MATIÈRE PREMIÈRE.** Sa fenêtre est
+      `household.fridge_window_days`, l'horloge des RESTES : un sachet de farine
+      ne périme pas en quatre jours parce qu'on l'a mis au frais. D'où
+      `applique_a: [plat]` sur cette méthode. Ranger un ingrédient au froid est
+      un choix de RANGEMENT, que les zones portent déjà, pas une transformation.
+
+      **LA SÉCURITÉ EST UN FILTRE, PAS UNE NOTE DE BAS DE PAGE.** `acidite` vaut
+      `basse` par défaut, comme `defaut_acidite` de `conservation.yaml` — et ce
+      défaut est un choix de sécurité : le bain-marie sur un aliment peu acide en
+      bocal à température ambiante produit exactement le milieu anaérobie où
+      prolifère C. botulinum. Aucune denrée du relevé n'est déclarée acide, donc
+      le bain-marie n'est proposé sur aucune. Un test le verrouille.
+
+      **`conserve_mal`, L'ÉCHAPPATOIRE ASSUMÉE.** Une pomme de terre crue
+      congelée devient farineuse et noircit ; le modèle général ne peut pas le
+      deviner. Une règle générale avec une exception écrite vaut mieux qu'une
+      règle spéciale par denrée. C'est la seule du relevé — et elle fait de la
+      pomme de terre la seule denrée qui n'a vraiment qu'une sortie.
+
+      **ON NE PROPOSE QU'UN VERROU, ET SEULEMENT S'IL EST SPÉCIFIQUE.** Le
+      sous-vide marche sur à peu près tout, donc il était le premier verrou des
+      treize denrées : la même phrase treize fois de suite n'est plus une phrase.
+      Ne reste que ce qui dit quelque chose de CETTE denrée — lacto-fermenter un
+      oignon, sécher de l'ail. Et jamais présenté comme un achat : c'est un nœud
+      de compétence, la règle de #29.
+
+      Résultat sur le vrai stock : le congélateur, que le foyer possède, répond
+      pour douze des treize denrées à risque. Les alliacées gagnent en plus un
+      nœud à débloquer — lacto-fermentation, bocaux à joint caoutchouc.
+
 ### Trouvé en portant, à décider
 
 - [ ] **Le garde-manger ne fait pas taire la liste de courses.** T21 donne enfin

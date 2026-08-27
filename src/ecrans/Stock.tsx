@@ -275,6 +275,15 @@ function GardeManger({ vue }: { vue: ReturnType<typeof vueDeLInventaire>["gardeM
                 <div className="ou">
                   {s.raison} · {s.ou}
                 </div>
+                {/* LA SECONDE ISSUE. La cuisiner ce soir n'est pas toujours la
+                    bonne réponse — on ne mange pas six kilos de pommes de terre
+                    parce qu'ils germent. `conservation.yaml` porte l'autre
+                    depuis le prototype : arrêter l'horloge. */}
+                {s.conserver ? <div className="ou">ou&nbsp;: {s.conserver}</div> : null}
+                {/* Un nœud de compétence, JAMAIS une suggestion d'achat — la
+                    règle vient de #29 : l'app nomme ce qu'il faudrait savoir
+                    faire, elle n'envoie personne au magasin. */}
+                {s.debloquer ? <div className="ou">à débloquer&nbsp;: {s.debloquer}</div> : null}
               </span>
               <span>
                 <div className={`src ${s.urgence === "haute" ? "estime" : ""}`}>

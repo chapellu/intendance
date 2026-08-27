@@ -256,6 +256,8 @@ const denreeTest = (p: Partial<Denree> = {}): Denree => ({
   sensible: [],
   incompatibles: [],
   urgence: "basse",
+  nature: "autre",
+  conservations: [],
   note: null,
   ...p,
 });

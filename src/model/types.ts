@@ -284,6 +284,39 @@ export type Forme = "rectangle" | "demi-lune";
  */
 export type Urgence = "haute" | "moyenne" | "basse";
 
+/** Ce qu'une chose EST — pas comment elle est emballée (`Etat`). C'est la nature
+ *  qui décide des méthodes de conservation applicables : on ne lacto-fermente
+ *  pas de la farine. `plat` est une sortie de cuisine, ce que `stock.yaml`
+ *  porte ; les autres sont de la matière première. */
+export type Nature = "legume-cru" | "fruit" | "herbe" | "sec" | "gras" | "plat" | "autre";
+
+/**
+ * Une façon d'arrêter l'horloge d'une denrée.
+ *
+ * LA SECONDE RÉPONSE AU GASPILLAGE. La première est de cuisiner la chose ce
+ * soir ; celle-ci est de la transformer pour qu'elle tienne. `conservation.yaml`
+ * la porte depuis le prototype, et le garde-manger en est le premier
+ * consommateur.
+ *
+ * Les méthodes VERROUILLÉES sont rendues aussi, et c'est délibéré : un nœud de
+ * compétence qu'on ne possède pas n'est pas une erreur à taire, c'est ce qu'il
+ * faudrait acquérir. `manque` nomme le kit, `noeud` nomme le geste à apprendre.
+ */
+export interface ConservationDenree {
+  id: string;
+  label: string;
+  acquis: boolean;
+  /** « 3 mois », « ×2,5 » pour un multiplicateur, ou vide. */
+  fenetre: string;
+  manque: string | null;
+  noeud: string | null;
+  /** Taillée pour cette matière (lacto-fermentation, séchage) plutôt que
+   *  passe-partout (sous-vide). Seules les spécifiques valent d'être proposées :
+   *  le sous-vide est le premier verrou de tout, et le dire partout écrit treize
+   *  fois la même phrase. */
+  specifique: boolean;
+}
+
 /**
  * Un rangement physique.
  *
@@ -332,6 +365,9 @@ export interface Denree {
    *  même sachet de pignons est `basse` dans un placard fermé et `haute` sur
    *  l'étagère au soleil. */
   urgence: Urgence;
+  nature: Nature;
+  /** Ce qu'on peut en faire pour qu'elle tienne, acquis ou non. */
+  conservations: ConservationDenree[];
   note: string | null;
 }
 

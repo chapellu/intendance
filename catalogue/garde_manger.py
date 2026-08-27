@@ -90,10 +90,91 @@ def urgence(denree: dict, zone: dict) -> str:
     return "moyenne" if denree.get("etat") == "entame" else "basse"
 
 
+NATURES = ("legume-cru", "fruit", "herbe", "sec", "gras", "plat", "autre")
+
+# Le défaut d'acidité vient de `conservation.yaml` (`defaut_acidite: basse`) et
+# c'est un choix de SÉCURITÉ. Voir l'avertissement botulisme en tête de ce
+# fichier-là : le bain-marie ne stérilise que les aliments acides, et sur un
+# légume nature en bocal à température ambiante il crée exactement le milieu
+# anaérobie peu acide où prolifère C. botulinum. Une denrée est donc présumée
+# PEU ACIDE tant qu'elle ne dit pas le contraire.
+ACIDITE_DEFAUT = "basse"
+
+
 def charger(chemin: Path) -> dict:
     """`{'zones': [...], 'denrees': [...]}`, jamais `None` sur un fichier vide."""
     data = yaml.safe_load(chemin.read_text()) or {}
     return {"zones": data.get("zones") or [], "denrees": data.get("denrees") or []}
+
+
+def conservations(denree: dict, methodes: list, capacites: set) -> list:
+    """Ce qu'on peut faire de cette denrée pour arrêter son horloge.
+
+    LA SECONDE RÉPONSE AU GASPILLAGE, et elle existait avant ce fichier :
+    `conservation.yaml` la porte depuis le prototype. Une denrée qui court ne se
+    rattrape pas seulement en la cuisinant ce soir — elle se rattrape en la
+    transformant, à condition d'avoir le kit et le geste.
+
+    Rend une liste de `{id, label, acquis, fenetre, manque, noeud}`, y compris
+    les méthodes VERROUILLÉES : c'est le principe du nœud de compétence de #10.
+    Une méthode qu'on ne possède pas n'est pas une erreur à taire, c'est ce qu'il
+    faudrait acquérir — et le dire est la moitié de l'intérêt.
+
+    TROIS FILTRES, ET LE PREMIER TUE DES GENS S'IL SAUTE :
+
+    1. `exige_acidite: haute` contre l'acidité de la denrée. Le bain-marie sur un
+       aliment peu acide est la faute dangereuse de ce domaine.
+    2. `applique_a` contre la nature. On ne lacto-fermente pas de la farine.
+    3. `conserve_mal` sur la denrée, pour ce que le modèle général rate — la
+       pomme de terre crue au congélateur.
+    """
+    nature = denree.get("nature", "autre")
+    acide = denree.get("acidite", ACIDITE_DEFAUT)
+    exclues = set(denree.get("conserve_mal") or [])
+    sorties = []
+    for m in methodes:
+        if m["id"] in exclues:
+            continue
+        if m.get("exige_acidite") == "haute" and acide != "haute":
+            continue
+        vise = m.get("applique_a")
+        if vise and nature not in vise:
+            continue
+        besoin = m.get("needs")
+        noeud = m.get("noeud_competence") or {}
+        sorties.append({
+            "id": m["id"],
+            "label": m["label"],
+            "acquis": besoin is None or besoin in capacites,
+            "fenetre": _fenetre(m.get("fenetre")),
+            "manque": noeud.get("kit_manquant") or besoin,
+            "noeud": noeud.get("titre"),
+            # UNE MÉTHODE TAILLÉE POUR CETTE MATIÈRE, par opposition à une
+            # méthode passe-partout. `vise` sans `plat` veut dire que la méthode
+            # a été écrite pour de la matière première : la lacto-fermentation et
+            # le séchage, pas le sous-vide qui marche sur à peu près tout.
+            #
+            # La distinction sert à l'écran. Le sous-vide est le premier verrou
+            # de TOUTES les denrées, et l'afficher partout écrivait treize fois
+            # la même phrase — un conseil qu'on lit treize fois est un conseil
+            # qu'on ne lit plus. Ne se propose donc que ce qui est spécifique.
+            "specifique": bool(vise) and "plat" not in vise,
+        })
+    return sorties
+
+
+def _fenetre(f) -> str:
+    """« 3 mois », « 4 jours », ou « ×2,5 » — la forme que l'écran lira.
+
+    Un multiplicateur n'est pas une durée : le sous-vide RALLONGE le froid, il ne
+    donne pas une fenêtre à lui. Les rendre pareils ferait lire « 2,5 jours » là
+    où il faut lire « deux fois et demie plus longtemps ».
+    """
+    if not f:
+        return ""
+    if f.get("multiplicateur"):
+        return f"×{f['multiplicateur']}".replace(".", ",")
+    return f"{f['valeur']} {f['unite']}"
 
 
 def volume_litres(zone: dict):
@@ -238,6 +319,10 @@ def verifier_garde_manger(gm: dict, rayons: dict) -> tuple:
                        "n'a pas ne se range pas, elle s'efface")
         if d.get("etat") not in ETATS:
             err.append(f"{ou} : état « {d.get('etat')} » inconnu — attendu parmi {list(ETATS)}")
+        if d.get("nature", "autre") not in NATURES:
+            err.append(f"{ou} : nature « {d.get('nature')} » inconnue — attendu parmi {list(NATURES)}")
+        if d.get("acidite", ACIDITE_DEFAUT) not in ("basse", "haute"):
+            err.append(f"{ou} : acidité « {d.get('acidite')} » inconnue — attendu `basse` ou `haute`")
         for s in d.get("sensible") or []:
             if s not in AGRESSIONS:
                 err.append(f"{ou} : sensibilité « {s} » inconnue "

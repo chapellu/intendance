@@ -39,7 +39,7 @@
 // aromates. C'est elle qu'il faut lire pour savoir quoi cuisiner ce soir.
 // ────────────────────────────────────────────────────────────────────────────
 
-import type { Catalogue, Denree, Plat, Urgence } from "./types";
+import type { Catalogue, ConservationDenree, Denree, Plat, Urgence } from "./types";
 
 /** Du plus pressé au moins. Sert à départager deux lots du même ingrédient :
  *  un paquet de pâtes entamé et un neuf sont le même `pates`, et c'est l'entamé
@@ -135,6 +135,19 @@ export interface ASauver {
   zone: string;
   /** Pourquoi ça presse, dit en français. */
   raison: string;
+  /**
+   * L'AUTRE ISSUE : transformer au lieu de cuisiner.
+   *
+   * Une denrée qui court a deux sorties, et le modèle les connaît toutes les
+   * deux depuis le prototype. La première est de la manger ce soir — c'est ce
+   * que le score pousse. La seconde est d'arrêter son horloge, et c'est souvent
+   * la bonne : on ne mange pas six kilos de pommes de terre parce qu'ils
+   * germent.
+   */
+  conserver: ConservationDenree[];
+  /** Ce qu'il faudrait acquérir pour avoir une issue de plus. Le nœud de
+   *  compétence, pas une suggestion d'achat — la distinction vient de #29. */
+  verrouille: ConservationDenree[];
 }
 
 /**
@@ -164,6 +177,8 @@ export function aSauver(catalogue: Catalogue): ASauver[] {
       urgence: d.urgence,
       zone: zones.get(d.zone)?.label ?? d.zone,
       raison: raison(d),
+      conserver: d.conservations.filter((c) => c.acquis),
+      verrouille: d.conservations.filter((c) => !c.acquis),
     }))
     .sort((a, b) => RANG[b.urgence] - RANG[a.urgence] || a.nom.localeCompare(b.nom, "fr"));
 }

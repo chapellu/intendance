@@ -43,11 +43,30 @@
 
 defaut_acidite: basse
 
+# `applique_a` : les NATURES d'aliment auxquelles la méthode a un sens. Absent =
+# s'applique à tout. Le champ dormait depuis l'écriture de ce fichier — déclaré,
+# jamais lu — et le garde-manger (T23) en est le premier consommateur. Il a fallu
+# le compléter : sans ça le modèle proposait de mettre de la farine « en bocal
+# sous pression », ce qui n'est pas dangereux, seulement absurde. Un conseil
+# absurde apprend à ignorer les conseils, y compris celui qui compte.
+#
+# `plat` est la nature d'une sortie de cuisine — ce que `stock.yaml` porte. Les
+# natures de matière première viennent de `garde-manger.yaml` : `legume-cru`,
+# `fruit`, `herbe`, `sec`, `gras`.
+
 methodes:
   - id: frigo
     label: au frigo
     needs: null                      # tout le monde a un frigo
     fenetre: {unite: jours, valeur: 4, source: household.fridge_window_days}
+    # Cette fenêtre est celle des RESTES — c'est `household.fridge_window_days`,
+    # le délai au bout duquel le planificateur cesse de compter sur un plat
+    # cuisiné. Elle ne veut rien dire pour de la matière première : un sachet de
+    # farine ne périme pas en quatre jours parce qu'on l'a mis au frais. D'où
+    # `applique_a: [plat]`, et d'où le fait que le garde-manger ne propose jamais
+    # le frigo — y ranger un ingrédient est un choix de RANGEMENT, que les zones
+    # portent déjà, pas une transformation qui remet une horloge à zéro.
+    applique_a: [plat]
     noeud_competence: null
 
   - id: congeler
@@ -80,6 +99,7 @@ methodes:
     label: en bocal, bain-marie
     needs: sterilisation-bain-marie
     fenetre: {unite: mois, valeur: 12}
+    applique_a: [plat, legume-cru, fruit]
     exige_acidite: haute
     note_securite: >
       RÉSERVÉ aux aliments acides (pH ≤ 4,6). Sur un plat peu acide — sauce à la
@@ -95,6 +115,7 @@ methodes:
     label: en bocal, sous pression
     needs: sterilisation-sous-pression
     fenetre: {unite: mois, valeur: 12}
+    applique_a: [plat, legume-cru]
     note_securite: >
       La seule voie sûre pour mettre un plat PEU ACIDE en bocal à température
       ambiante : >115 °C sous pression, avec un barème temps/pression propre à

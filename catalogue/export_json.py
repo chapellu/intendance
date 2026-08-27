@@ -314,6 +314,13 @@ def main():
                  # sur l'étagère au soleil. Elle se calcule donc ici, où les deux
                  # sont sous la main, et pas dans le YAML où seule la denrée est.
                  "urgence": gm.urgence(d, _zones[d["zone"]]),
+                 "nature": d.get("nature", "autre"),
+                 # CE QU'ON PEUT EN FAIRE POUR ARRÊTER SON HORLOGE — la seconde
+                 # réponse au gaspillage, celle que `conservation.yaml` porte
+                 # depuis le prototype. Les méthodes verrouillées sont incluses :
+                 # un nœud de compétence qu'on ne possède pas n'est pas une
+                 # erreur à taire, c'est ce qu'il faudrait acquérir.
+                 "conservations": gm.conservations(d, conserv["methodes"], capacites),
                  "note": d.get("note")}
                 for d in pantry["denrees"]
             ],

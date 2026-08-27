@@ -19997,6 +19997,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20012,6 +20033,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20027,6 +20069,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20042,6 +20105,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20057,6 +20141,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20072,6 +20177,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20087,6 +20213,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": "au naturel"
    },
    {
@@ -20102,6 +20249,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": "à l'huile d'olive"
    },
    {
@@ -20117,6 +20285,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20135,6 +20324,27 @@
     ],
     "incompatibles": [],
     "urgence": "haute",
+    "nature": "gras",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20150,6 +20360,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20165,6 +20396,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20177,6 +20429,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20189,6 +20462,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20201,6 +20495,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20213,6 +20528,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20227,6 +20563,27 @@
     ],
     "incompatibles": [],
     "urgence": "moyenne",
+    "nature": "sec",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20241,6 +20598,27 @@
     ],
     "incompatibles": [],
     "urgence": "moyenne",
+    "nature": "sec",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20255,6 +20633,27 @@
     ],
     "incompatibles": [],
     "urgence": "moyenne",
+    "nature": "sec",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20270,6 +20669,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": "T55"
    },
    {
@@ -20285,6 +20705,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20297,6 +20738,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "moyenne",
+    "nature": "sec",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": "torsades"
    },
    {
@@ -20309,6 +20771,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "moyenne",
+    "nature": "sec",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": "coquillettes"
    },
    {
@@ -20321,6 +20804,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "moyenne",
+    "nature": "sec",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": "spaghettis n°5"
    },
    {
@@ -20333,6 +20837,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": "étoiles"
    },
    {
@@ -20345,6 +20870,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "moyenne",
+    "nature": "sec",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20357,6 +20903,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20369,6 +20936,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20383,6 +20971,27 @@
     ],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20398,6 +21007,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20415,6 +21045,27 @@
     ],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "gras",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20430,6 +21081,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20442,6 +21114,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20457,6 +21150,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20469,6 +21183,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20484,6 +21219,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20499,6 +21255,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20516,6 +21293,27 @@
     ],
     "incompatibles": [],
     "urgence": "moyenne",
+    "nature": "sec",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20533,6 +21331,27 @@
     ],
     "incompatibles": [],
     "urgence": "moyenne",
+    "nature": "sec",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": "T110"
    },
    {
@@ -20548,6 +21367,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20560,6 +21400,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20572,6 +21433,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": "distributeur"
    },
    {
@@ -20584,6 +21466,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": "distributeur"
    },
    {
@@ -20596,6 +21499,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": "à racheter — bocal vide"
    },
    {
@@ -20608,6 +21532,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": "raisins secs et chips de banane — acheté en vrac"
    },
    {
@@ -20620,6 +21565,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "moyenne",
+    "nature": "gras",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20632,6 +21598,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20644,6 +21631,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20656,6 +21664,27 @@
     "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
+    "nature": "autre",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
     "note": null
    },
    {
@@ -20675,6 +21704,45 @@
      "ail"
     ],
     "urgence": "haute",
+    "nature": "legume-cru",
+    "conservations": [
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     },
+     {
+      "id": "bocal-sous-pression",
+      "label": "en bocal, sous pression",
+      "acquis": false,
+      "fenetre": "12 mois",
+      "manque": "autocuiseur/stérilisateur avec manomètre",
+      "noeud": "Stériliser sous pression",
+      "specifique": false
+     },
+     {
+      "id": "lacto-fermentation",
+      "label": "en lacto-fermentation",
+      "acquis": false,
+      "fenetre": "6 mois",
+      "manque": "bocaux à joint caoutchouc",
+      "noeud": "Lacto-fermenter un légume",
+      "specifique": true
+     },
+     {
+      "id": "sechage",
+      "label": "séché",
+      "acquis": false,
+      "fenetre": "6 mois",
+      "manque": "déshydrateur (ou four à très basse température)",
+      "noeud": "Sécher herbes et légumes",
+      "specifique": true
+     }
+    ],
     "note": null
    },
    {
@@ -20689,6 +21757,54 @@
     ],
     "incompatibles": [],
     "urgence": "haute",
+    "nature": "legume-cru",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     },
+     {
+      "id": "bocal-sous-pression",
+      "label": "en bocal, sous pression",
+      "acquis": false,
+      "fenetre": "12 mois",
+      "manque": "autocuiseur/stérilisateur avec manomètre",
+      "noeud": "Stériliser sous pression",
+      "specifique": false
+     },
+     {
+      "id": "lacto-fermentation",
+      "label": "en lacto-fermentation",
+      "acquis": false,
+      "fenetre": "6 mois",
+      "manque": "bocaux à joint caoutchouc",
+      "noeud": "Lacto-fermenter un légume",
+      "specifique": true
+     },
+     {
+      "id": "sechage",
+      "label": "séché",
+      "acquis": false,
+      "fenetre": "6 mois",
+      "manque": "déshydrateur (ou four à très basse température)",
+      "noeud": "Sécher herbes et légumes",
+      "specifique": true
+     }
+    ],
     "note": null
    },
    {
@@ -20703,6 +21819,54 @@
     ],
     "incompatibles": [],
     "urgence": "haute",
+    "nature": "legume-cru",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     },
+     {
+      "id": "bocal-sous-pression",
+      "label": "en bocal, sous pression",
+      "acquis": false,
+      "fenetre": "12 mois",
+      "manque": "autocuiseur/stérilisateur avec manomètre",
+      "noeud": "Stériliser sous pression",
+      "specifique": false
+     },
+     {
+      "id": "lacto-fermentation",
+      "label": "en lacto-fermentation",
+      "acquis": false,
+      "fenetre": "6 mois",
+      "manque": "bocaux à joint caoutchouc",
+      "noeud": "Lacto-fermenter un légume",
+      "specifique": true
+     },
+     {
+      "id": "sechage",
+      "label": "séché",
+      "acquis": false,
+      "fenetre": "6 mois",
+      "manque": "déshydrateur (ou four à très basse température)",
+      "noeud": "Sécher herbes et légumes",
+      "specifique": true
+     }
+    ],
     "note": null
    },
    {
@@ -20717,6 +21881,54 @@
     ],
     "incompatibles": [],
     "urgence": "haute",
+    "nature": "legume-cru",
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     },
+     {
+      "id": "bocal-sous-pression",
+      "label": "en bocal, sous pression",
+      "acquis": false,
+      "fenetre": "12 mois",
+      "manque": "autocuiseur/stérilisateur avec manomètre",
+      "noeud": "Stériliser sous pression",
+      "specifique": false
+     },
+     {
+      "id": "lacto-fermentation",
+      "label": "en lacto-fermentation",
+      "acquis": false,
+      "fenetre": "6 mois",
+      "manque": "bocaux à joint caoutchouc",
+      "noeud": "Lacto-fermenter un légume",
+      "specifique": true
+     },
+     {
+      "id": "sechage",
+      "label": "séché",
+      "acquis": false,
+      "fenetre": "6 mois",
+      "manque": "déshydrateur (ou four à très basse température)",
+      "noeud": "Sécher herbes et légumes",
+      "specifique": true
+     }
+    ],
     "note": null
    }
   ],

@@ -364,6 +364,17 @@ export interface ASauverVue {
   raison: string;
   /** Où aller le chercher. Plusieurs zones quand plusieurs lots courent. */
   ou: string;
+  /**
+   * L'AUTRE ISSUE, en une phrase : « ou : au congélateur (3 mois) ».
+   *
+   * Vide quand il n'y en a pas — et c'est le cas de la pomme de terre crue, que
+   * le congélateur rend farineuse. Une denrée sans issue de conservation n'a
+   * qu'une sortie : la cuisiner.
+   */
+  conserver: string;
+  /** Ce qu'il faudrait savoir faire pour en avoir une de plus. Jamais présenté
+   *  comme un achat à faire : c'est un nœud de compétence, la règle de #29. */
+  debloquer: string;
 }
 
 /**
@@ -382,7 +393,27 @@ export function aSauverVue(catalogue: Catalogue): ASauverVue[] {
       vu.zones.add(s.zone);
       continue;
     }
-    par.set(s.ingredient, { ...s, cle: s.ingredient, ou: s.zone, zones: new Set([s.zone]) });
+    par.set(s.ingredient, {
+      cle: s.ingredient,
+      nom: s.nom,
+      urgence: s.urgence,
+      raison: s.raison,
+      ou: s.zone,
+      conserver: s.conserver.map((c) => `${c.label}${c.fenetre ? ` (${c.fenetre})` : ""}`).join(" · "),
+      // UN SEUL VERROU, ET SEULEMENT S'IL EST TAILLÉ POUR CETTE MATIÈRE.
+      //
+      // Deux filtres, deux raisons. Lister les quatre méthodes qu'on ne possède
+      // pas transforme un conseil en catalogue de courses, ce que #29 interdit
+      // au modèle. Et le sous-vide, qui marche sur à peu près tout, était le
+      // premier verrou des treize denrées : la même phrase treize fois de suite
+      // n'est plus une phrase. Ne reste que ce qui dit quelque chose de CETTE
+      // denrée-là — lacto-fermenter un oignon, sécher de l'ail.
+      debloquer: ((v) =>
+        v ? `${v.noeud ?? v.label}${v.manque ? ` — ${v.manque}` : ""}` : "")(
+        s.verrouille.find((c) => c.specifique),
+      ),
+      zones: new Set([s.zone]),
+    });
   }
   return [...par.values()].map(({ zones, ...v }) => ({ ...v, ou: [...zones].join(" · ") }));
 }

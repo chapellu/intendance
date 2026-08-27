@@ -135,3 +135,56 @@ describe("ce qui se perd", () => {
     expect(aSauver(catalogue).find((s) => s.ingredient === "pomme-de-terre")?.zone).toBe("sous-évier");
   });
 });
+
+describe("l'autre issue : transformer au lieu de cuisiner", () => {
+  const l = aSauver(catalogue);
+  const de = (id: string) => l.find((s) => s.ingredient === id)!;
+
+  test("LE BAIN-MARIE N'EST PROPOSÉ SUR AUCUNE DENRÉE PEU ACIDE", () => {
+    // LE CONTRÔLE LE PLUS IMPORTANT DE CE FICHIER. `conservation.yaml` le dit
+    // en tête : sur un aliment peu acide, un bocal stérilisé au bain-marie et
+    // rangé à température ambiante est exactement le milieu anaérobie où
+    // prolifère C. botulinum. Le défaut d'acidité est `basse`, aucune denrée du
+    // relevé n'est déclarée acide, donc la méthode ne doit sortir nulle part.
+    for (const s of l)
+      for (const c of [...s.conserver, ...s.verrouille])
+        expect(c.id).not.toBe("bocal-bain-marie");
+  });
+
+  test("le frigo n'est pas une conservation de matière première", () => {
+    // Sa fenêtre est `household.fridge_window_days` — l'horloge des RESTES. Un
+    // sachet de farine ne périme pas en quatre jours parce qu'on l'a mis au
+    // frais, et y ranger un ingrédient est un choix de rangement, que les zones
+    // portent déjà.
+    for (const s of l)
+      for (const c of [...s.conserver, ...s.verrouille]) expect(c.id).not.toBe("frigo");
+  });
+
+  test("le congélateur est acquis, et c'est la réponse pour presque tout", () => {
+    expect(de("farine-epeautre").conserver.map((c) => c.id)).toContain("congeler");
+    expect(de("pignons-pin").conserver.map((c) => c.id)).toContain("congeler");
+    expect(de("oignon").conserver[0]?.fenetre).toBe("3 mois");
+  });
+
+  test("la pomme de terre crue ne va PAS au congélateur", () => {
+    // `conserve_mal: [congeler]` — l'exception que le modèle général ne devine
+    // pas : crue, elle devient farineuse et noircit. C'est la seule denrée du
+    // relevé sans aucune issue de conservation, donc la seule qui n'a vraiment
+    // qu'une sortie : la cuisiner.
+    expect(de("pomme-de-terre").conserver).toHaveLength(0);
+  });
+
+  test("on ne lacto-fermente pas de la farine", () => {
+    // `applique_a: [legume-cru]`. Le champ dormait dans conservation.yaml,
+    // déclaré et jamais lu ; c'est ce module qui en est le premier lecteur.
+    const ids = (id: string) => [...de(id).conserver, ...de(id).verrouille].map((c) => c.id);
+    expect(ids("farine-epeautre")).not.toContain("lacto-fermentation");
+    expect(ids("oignon")).toContain("lacto-fermentation");
+  });
+
+  test("ce qui est verrouillé nomme le kit et le geste", () => {
+    const lacto = de("oignon").verrouille.find((c) => c.id === "lacto-fermentation");
+    expect(lacto?.manque).toBe("bocaux à joint caoutchouc");
+    expect(lacto?.noeud).toBe("Lacto-fermenter un légume");
+  });
+});
