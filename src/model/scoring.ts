@@ -17,6 +17,7 @@ import { articles, calculer, type LignePanier } from "./calcul";
 import { bonusPlacard, urgences } from "./gardeManger";
 import { convient, dateDe, joue, type Choix, type Jeu } from "./jeu";
 import { gamelles } from "./offres";
+import { incomplet } from "./repas";
 import { horsSaison } from "./saisons";
 import type { Catalogue, Plat } from "./types";
 
@@ -125,6 +126,12 @@ export interface Carte {
    *  ne veut pas dire « tout est de saison » : la source ne couvre que la moitié
    *  du rayon primeur, et ce qu'elle ignore n'est jamais reproché. */
   horsSaison: string[];
+  /** Les piliers qui manquent pour que ce plat fasse un repas. Vide = il se
+   *  suffit. C'est une BRIQUE quand ce n'est pas vide, et l'écran doit le dire :
+   *  proposer une sauce bolognaise en dîner sans mentionner les pâtes est ce
+   *  qui a fait ouvrir ce chantier. */
+  manqueAuRepas: string[];
+  ditLeManque: string;
 }
 
 /**
@@ -250,6 +257,15 @@ export function offre(jeu: Jeu, choix: Choix[], slot: number): Carte[] {
         );
       }
 
+      // CE QUI MANQUE POUR EN FAIRE UN REPAS. Une sauce bolognaise sans pâtes
+      // et un rôti sans riz manquent de la même chose ; ni l'un ni l'autre ne le
+      // disait, et l'app les proposait comme des dîners entiers.
+      const brique = incomplet(p, poids);
+      if (brique.score) {
+        score += brique.score;
+        pourquoi.push(brique.dit);
+      }
+
       // CE QUE LE PLAT DEMANDE À CONTRETEMPS. Un coût, jamais un interdit : on
       // peut vouloir des tomates en février, ça se paie et ça se voit.
       const saison = horsSaison(jeu.catalogue, p, mois, poids);
@@ -270,6 +286,8 @@ export function offre(jeu: Jeu, choix: Choix[], slot: number): Carte[] {
         placard: placard.noms,
         sauve: placard.urgent,
         horsSaison: saison.noms,
+        manqueAuRepas: brique.manque,
+        ditLeManque: brique.dit,
         malTransporte,
         manque: requisNonCouvert,
         minutes: p.minutes + (pleinIci[0]?.minutes ?? 0),

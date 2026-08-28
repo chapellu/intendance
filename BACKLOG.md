@@ -318,7 +318,88 @@ Un ticket = un commit qui laisse l'app fonctionnelle. `[ ]` à faire,
       qui argumente contre le plat ; la noyer dans la file la ferait disparaître
       dès qu'un meilleur argument existe.
 
+- [x] **T26 — Une brique n'est pas un repas.** Le score sait enfin qu'une sauce
+      bolognaise ne fait pas un dîner.
+
+      **LA REMARQUE, ET LA CORRECTION QU'ELLE M'A VALUE.** J'avais séparé « ce
+      n'est pas un plat » (sauce, pâte à pizza) de « c'est un plat, il manque un
+      accompagnement » (rôti, omelette). L'utilisateur a tranché : « c'est le
+      même problème que la bolognaise sans pâtes. Ce sont simplement des briques
+      qu'il faut assembler. » Il a raison — les deux manquent d'un féculent, et
+      ni l'un ni l'autre ne le dit. Ma distinction était de degré, pas de nature.
+
+      **LA CAUSE ÉTAIT UN DÉFAUT, AU SENS PROPRE.** 61 recettes sur 86 ne
+      déclarent aucun `creneaux:` ; l'export leur donne alors `[dejeuner, diner]`.
+      Une sauce, une pâte et un consommé devenaient des dîners sans que personne
+      l'ait décidé.
+
+      **ET LA DONNÉE ÉTAIT DÉJÀ LÀ.** `apports` porte `proteine`, `feculent` et
+      `legumes` avec `aucune` / `aucun` / `[]` quand la recette n'en apporte pas.
+      La complétude se DÉRIVE donc, sans rien saisir sur 86 recettes — ce qui
+      aurait été 86 occasions de se tromper. Mesuré : 44 des 65 plats jouables au
+      repas principal se suffisent, 21 sont des briques.
+
+      **LE COÛT CROÎT AVEC CE QUI MANQUE** (`repas_incomplet`, par pilier). Un
+      rôti sans féculent est presque un dîner ; une pâte à pizza nue ne l'est pas
+      du tout. Les compter pareil rendrait le terme aveugle à la différence qui a
+      motivé son écriture. Résultat : zéro brique dans les dix premières
+      propositions, la pâte à pizza dernière sur 64, la bolognaise passée de
+      proposée à 30ᵉ — et la carte dit « il manque un féculent ».
+
+      Un prix, pas un interdit : on a le droit de dîner d'une soupe.
+
+- [x] **T27 — Partager la liste de courses.** Un lien, pas un serveur.
+
+      **LE TROU.** L'app est locale par construction — Dexie sur IndexedDB, aucun
+      backend, `k8s/` ne sert que des fichiers statiques. Ouvrir
+      `intendance.chapellu.fr` sur un second téléphone donnait donc une base
+      VIDE. Le mot « partage » n'apparaissait pas une fois dans ce backlog : ça
+      n'avait jamais été un ticket. Or `household.yaml` déclare deux adultes, et
+      une liste que deux personnes ne peuvent pas lire est à moitié une liste.
+
+      **LE LIEN PORTE LES DÉCISIONS, PAS LA LISTE.** Elle se recalcule à
+      l'arrivée depuis le même catalogue. Transporter le résultat plutôt que ses
+      entrées se garantirait de diverger le jour où le corpus change — la faute
+      que ce dépôt a déjà payée avec le JSON resté à 51 plats. Une semaine tient
+      en ~400 caractères ; pas de compression, ce serait une pièce mobile pour un
+      problème qu'on n'a pas.
+
+      **LE JOUR VOYAGE EN DATE, JAMAIS EN INDEX** — même règle qu'en base, et
+      pour la même raison : un index ne veut rien dire hors de la semaine qui l'a
+      calculé.
+
+      **L'ÉCRAN D'ARRIVÉE N'ÉCRIT RIEN**, et c'est ce qui rend le partage
+      utilisable à deux : ouvrir le lien de son conjoint n'écrase pas sa propre
+      semaine. Il n'offre aucune case à cocher non plus — sans serveur, cocher ne
+      remonterait nulle part, et deux personnes rentreraient du magasin en
+      croyant chacune que l'autre a pris le lait. Ce qu'on ne peut pas tenir, on
+      ne l'offre pas ; l'écran dit que c'est un instantané.
+
+      Un lien tronqué est REFUSÉ plutôt que lu à moitié : les messageries coupent
+      les URL longues, et un JSON amputé peut rester syntaxiquement plausible.
+      Une liste incomplète est une liste dont on ne sait pas ce qui manque.
+
+      Le parcours e2e ouvre le lien dans un SECOND contexte navigateur, donc une
+      seconde IndexedDB vide. C'est la seule façon de prouver la fonctionnalité —
+      relire le lien dans le même contexte resterait vert le jour où il ne
+      transporte plus rien.
+
 ### Trouvé en portant, à décider
+
+- [ ] **Assembler, et pas seulement signaler.** T26 sait dire « il manque un
+      féculent » ; il ne sait pas proposer le riz qui irait avec. Deux choses
+      manquent : des briques d'accompagnement dans le corpus (riz nature, pâtes,
+      pain, salade — le livre n'en contient pas, ce sont des recettes de plats),
+      et un créneau qui porte PLUSIEURS plats, ce qui est une migration de schéma
+      (`DecisionCreneau.plat` est un `string | null`). C'est le vrai objectif que
+      l'utilisateur a formulé — « définir un repas complet et équilibré » — et
+      c'est un ticket entier, pas une rallonge.
+
+- [ ] **Le partage est à sens unique.** Rien ne remonte de la personne qui reçoit
+      la liste. Une liste vivante à deux demanderait un serveur, des comptes et
+      une résolution de conflits quand les deux cochent le même article. À ne
+      prendre que si l'instantané se révèle insuffisant à l'usage — c'est une
+      infrastructure entière contre un lien de 400 caractères.
 
 - [ ] **La saison ne couvre que la moitié du primeur.** 27 ingrédients sur 57,
       et il manque des blocs entiers : TOUS les fruits (fraises, pommes, poires,
@@ -801,7 +882,88 @@ Un ticket = un commit qui laisse l'app fonctionnelle. `[ ]` à faire,
       qui argumente contre le plat ; la noyer dans la file la ferait disparaître
       dès qu'un meilleur argument existe.
 
+- [x] **T26 — Une brique n'est pas un repas.** Le score sait enfin qu'une sauce
+      bolognaise ne fait pas un dîner.
+
+      **LA REMARQUE, ET LA CORRECTION QU'ELLE M'A VALUE.** J'avais séparé « ce
+      n'est pas un plat » (sauce, pâte à pizza) de « c'est un plat, il manque un
+      accompagnement » (rôti, omelette). L'utilisateur a tranché : « c'est le
+      même problème que la bolognaise sans pâtes. Ce sont simplement des briques
+      qu'il faut assembler. » Il a raison — les deux manquent d'un féculent, et
+      ni l'un ni l'autre ne le dit. Ma distinction était de degré, pas de nature.
+
+      **LA CAUSE ÉTAIT UN DÉFAUT, AU SENS PROPRE.** 61 recettes sur 86 ne
+      déclarent aucun `creneaux:` ; l'export leur donne alors `[dejeuner, diner]`.
+      Une sauce, une pâte et un consommé devenaient des dîners sans que personne
+      l'ait décidé.
+
+      **ET LA DONNÉE ÉTAIT DÉJÀ LÀ.** `apports` porte `proteine`, `feculent` et
+      `legumes` avec `aucune` / `aucun` / `[]` quand la recette n'en apporte pas.
+      La complétude se DÉRIVE donc, sans rien saisir sur 86 recettes — ce qui
+      aurait été 86 occasions de se tromper. Mesuré : 44 des 65 plats jouables au
+      repas principal se suffisent, 21 sont des briques.
+
+      **LE COÛT CROÎT AVEC CE QUI MANQUE** (`repas_incomplet`, par pilier). Un
+      rôti sans féculent est presque un dîner ; une pâte à pizza nue ne l'est pas
+      du tout. Les compter pareil rendrait le terme aveugle à la différence qui a
+      motivé son écriture. Résultat : zéro brique dans les dix premières
+      propositions, la pâte à pizza dernière sur 64, la bolognaise passée de
+      proposée à 30ᵉ — et la carte dit « il manque un féculent ».
+
+      Un prix, pas un interdit : on a le droit de dîner d'une soupe.
+
+- [x] **T27 — Partager la liste de courses.** Un lien, pas un serveur.
+
+      **LE TROU.** L'app est locale par construction — Dexie sur IndexedDB, aucun
+      backend, `k8s/` ne sert que des fichiers statiques. Ouvrir
+      `intendance.chapellu.fr` sur un second téléphone donnait donc une base
+      VIDE. Le mot « partage » n'apparaissait pas une fois dans ce backlog : ça
+      n'avait jamais été un ticket. Or `household.yaml` déclare deux adultes, et
+      une liste que deux personnes ne peuvent pas lire est à moitié une liste.
+
+      **LE LIEN PORTE LES DÉCISIONS, PAS LA LISTE.** Elle se recalcule à
+      l'arrivée depuis le même catalogue. Transporter le résultat plutôt que ses
+      entrées se garantirait de diverger le jour où le corpus change — la faute
+      que ce dépôt a déjà payée avec le JSON resté à 51 plats. Une semaine tient
+      en ~400 caractères ; pas de compression, ce serait une pièce mobile pour un
+      problème qu'on n'a pas.
+
+      **LE JOUR VOYAGE EN DATE, JAMAIS EN INDEX** — même règle qu'en base, et
+      pour la même raison : un index ne veut rien dire hors de la semaine qui l'a
+      calculé.
+
+      **L'ÉCRAN D'ARRIVÉE N'ÉCRIT RIEN**, et c'est ce qui rend le partage
+      utilisable à deux : ouvrir le lien de son conjoint n'écrase pas sa propre
+      semaine. Il n'offre aucune case à cocher non plus — sans serveur, cocher ne
+      remonterait nulle part, et deux personnes rentreraient du magasin en
+      croyant chacune que l'autre a pris le lait. Ce qu'on ne peut pas tenir, on
+      ne l'offre pas ; l'écran dit que c'est un instantané.
+
+      Un lien tronqué est REFUSÉ plutôt que lu à moitié : les messageries coupent
+      les URL longues, et un JSON amputé peut rester syntaxiquement plausible.
+      Une liste incomplète est une liste dont on ne sait pas ce qui manque.
+
+      Le parcours e2e ouvre le lien dans un SECOND contexte navigateur, donc une
+      seconde IndexedDB vide. C'est la seule façon de prouver la fonctionnalité —
+      relire le lien dans le même contexte resterait vert le jour où il ne
+      transporte plus rien.
+
 ### Trouvé en portant, à décider
+
+- [ ] **Assembler, et pas seulement signaler.** T26 sait dire « il manque un
+      féculent » ; il ne sait pas proposer le riz qui irait avec. Deux choses
+      manquent : des briques d'accompagnement dans le corpus (riz nature, pâtes,
+      pain, salade — le livre n'en contient pas, ce sont des recettes de plats),
+      et un créneau qui porte PLUSIEURS plats, ce qui est une migration de schéma
+      (`DecisionCreneau.plat` est un `string | null`). C'est le vrai objectif que
+      l'utilisateur a formulé — « définir un repas complet et équilibré » — et
+      c'est un ticket entier, pas une rallonge.
+
+- [ ] **Le partage est à sens unique.** Rien ne remonte de la personne qui reçoit
+      la liste. Une liste vivante à deux demanderait un serveur, des comptes et
+      une résolution de conflits quand les deux cochent le même article. À ne
+      prendre que si l'instantané se révèle insuffisant à l'usage — c'est une
+      infrastructure entière contre un lien de 400 caractères.
 
 - [ ] **La saison ne couvre que la moitié du primeur.** 27 ingrédients sur 57,
       et il manque des blocs entiers : TOUS les fruits (fraises, pommes, poires,

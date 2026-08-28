@@ -17,6 +17,7 @@ import { Cockpit, useCockpit } from "./ecrans/Cockpit";
 import { Courses } from "./ecrans/Courses";
 import { Cuisiner } from "./ecrans/Cuisiner";
 import { Jardin } from "./ecrans/Jardin";
+import { Partage } from "./ecrans/Partage";
 import { Parts } from "./ecrans/Parts";
 import { Poser } from "./ecrans/Poser";
 import { Prevoir } from "./ecrans/Prevoir";
@@ -86,6 +87,10 @@ function rendre(route: Route, jeu: Jeu) {
     case "prevoir": return <Prevoir />;
     case "courses": return <Courses />;
     case "stock": return <Stock />;
+    // LE PARTAGE NE PASSE PAS PAR LA SEMAINE LOCALE. Il reconstruit la sienne
+    // depuis le lien et n'écrit rien : ouvrir la liste de quelqu'un d'autre ne
+    // doit pas écraser la vôtre.
+    case "partage": return <Partage charge={route.charge} />;
     // Les trois écrans qui visent un créneau. Un lien d'hier rouvert
     // aujourd'hui désigne un jour sorti de la fenêtre : on le dit, plutôt que
     // d'ouvrir l'écran sur un créneau fantôme.

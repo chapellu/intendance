@@ -141,6 +141,17 @@ en T22** : depuis que le scoring tient compte du garde-manger — que le proto
 ignore — la parité ne pouvait plus qu'échouer, et un contrôle qui doit échouer
 n'en est plus un.
 
+## Partager la liste
+
+L'app est locale — Dexie sur IndexedDB, aucun serveur. « Partager la liste »
+encode donc les DÉCISIONS de la semaine dans l'URL (`#/partage/…`, ~400
+caractères) ; l'app d'arrivée recalcule la liste depuis le même catalogue et
+**n'écrit rien**, si bien qu'ouvrir le lien de quelqu'un n'écrase pas sa propre
+semaine.
+
+C'est un **instantané**, et l'écran le dit : rien ne remonte, et il n'y a pas de
+cases à cocher. Ce qu'on ne peut pas tenir sans serveur, on ne l'offre pas.
+
 ## La PWA
 
 L'app s'installe sur l'écran d'accueil et s'ouvre sans réseau. Trois pièces :

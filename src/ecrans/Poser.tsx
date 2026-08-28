@@ -191,6 +191,17 @@ function Jouable({
           croire un plat qui se défend trop. */}
       {carte.pourquoi[0] ? <div className="co-action">{carte.pourquoi[0]}</div> : null}
 
+      {/* CE QUI MANQUE POUR EN FAIRE UN REPAS, dit sur la carte et pas seulement
+          dans le score. C'est la remarque qui a ouvert le chantier : « bolognaise
+          ou pâte à pizza c'est sympa mais il manque la moitié ». Le score les
+          fait descendre ; cette ligne dit POURQUOI, et ce qu'il faudrait ajouter
+          dans l'assiette. */}
+      {carte.ditLeManque ? (
+        <div className="co-note" style={{ margin: "var(--space-1) 0 0" }}>
+          ⚠ {carte.ditLeManque}
+        </div>
+      ) : null}
+
       {/* LE HORS-SAISON SE DIT À PART, ET TOUJOURS. C'est la seule ligne qui
           n'argumente pas POUR le plat mais CONTRE lui : la noyer dans la file
           des raisons la ferait disparaître dès qu'un meilleur argument existe,

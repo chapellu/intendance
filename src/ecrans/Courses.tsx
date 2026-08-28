@@ -14,6 +14,9 @@
 // Port de `apps/proto-shell/comptoir.js` (`ecranCourses`).
 
 import { useMemo, useState } from "react";
+import { jourISO } from "../db/schema";
+import { aPartager, encoderPartage } from "../model/partage";
+import { chemin } from "../nav/routes";
 import { base, cocher, rentrer, rentrerLesCoches, viderCourses } from "../db";
 import { useCatalogue, useCourses, useSemaine } from "../db/hooks";
 import type { Calcul } from "../model/calcul";
@@ -60,6 +63,20 @@ function Contenu({
     [jeu.catalogue, calc.provenances],
   );
   const aVerifier = useMemo(() => aVerifierParRaison(calc.aVerifier), [calc.aVerifier]);
+
+  // LE LIEN PORTE LES DÉCISIONS, PAS LA LISTE. Elle se recalcule à l'arrivée,
+  // depuis le même catalogue — transporter le résultat plutôt que ses entrées
+  // se garantirait de diverger le jour où le corpus change. C'est la faute que
+  // ce dépôt a déjà payée avec le JSON resté à 51 plats.
+  const lien = useMemo(() => {
+    const p = aPartager(
+      jourISO(jeu.jours[0]!.date),
+      jeu.creneaux, jeu.jours, jeu.choix, jeu.parts, jourISO,
+    );
+    if (!p.decisions.length) return null;
+    return new URL(chemin({ ecran: "partage", charge: encoderPartage(p) }), location.href).href;
+  }, [jeu]);
+  const [copie, setCopie] = useState(false);
 
   const magasin = mode === "magasin";
   const n = magasin ? vue.coches : vue.rentres;
@@ -168,6 +185,28 @@ function Contenu({
               </>
             ) : null}
           </div>
+        ) : null}
+
+        {/* PARTAGER, PARCE QU'ON EST DEUX À FAIRE LES COURSES. `household.yaml`
+            déclare deux adultes et l'app était mono-appareil : ouvrir l'adresse
+            sur un second téléphone donnait une base vide. Le lien répare ça sans
+            serveur — au prix d'un instantané, que l'écran d'arrivée annonce. */}
+        {lien ? (
+          <button
+            className="btn btn-secondary btn-block"
+            style={{ marginBottom: "var(--space-3)" }}
+            onClick={() => {
+              void navigator.clipboard?.writeText(lien).then(
+                () => setCopie(true),
+                // Le presse-papier est refusé hors HTTPS et sur certains
+                // navigateurs : on ouvre alors le lien, qui reste partageable à
+                // la main. Un bouton qui ne fait rien serait pire.
+                () => window.open(lien, "_blank"),
+              );
+            }}
+          >
+            {copie ? "Lien copié ✓" : "Partager la liste"}
+          </button>
         ) : null}
 
         {hors.length ? (

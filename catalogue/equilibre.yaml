@@ -69,6 +69,17 @@ poids:
   # Calé sous `proteine_manquante` : une tomate en février est une mauvaise idée,
   # pas un interdit — même règle 7 Wonders que le chaînage.
   hors_saison: -5            # demande un produit dont on SAIT qu'il n'est pas de saison
+  # UN PLAT QUI NE FAIT PAS UN REPAS. Compté PAR PILIER MANQUANT — protéine,
+  # féculent, légumes — parce qu'un rôti sans féculent est presque un dîner
+  # tandis qu'une pâte à pizza nue ne l'est pas du tout. Les compter pareil
+  # rendrait le terme aveugle à la différence qui a motivé son écriture.
+  #
+  # Un prix, pas un interdit : on a le droit de dîner d'une soupe. L'app doit
+  # seulement cesser de faire comme si c'était un repas complet. Mesuré sur le
+  # corpus : 44 des 65 plats jouables au repas principal se suffisent, 21 sont
+  # des briques.
+  repas_incomplet: -3        # par pilier manquant
+
   chaine_manquante: -8       # exige une base que rien ne produit avant
   hors_budget: -4
   plancher_congelo: 4        # remonte le stock d'urgence quand il est bas

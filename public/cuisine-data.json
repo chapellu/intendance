@@ -19757,6 +19757,7 @@
    "ecoule_placard_urgent": 5,
    "ecoule_placard_entame": 2,
    "hors_saison": -5,
+   "repas_incomplet": -3,
    "chaine_manquante": -8,
    "hors_budget": -4,
    "plancher_congelo": 4,

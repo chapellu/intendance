@@ -48,7 +48,12 @@ export type Route =
   // « En cuisine » peut viser un plat qui n'est pas (encore) celui du créneau :
   // la fiche s'ouvre depuis une carte qu'on n'a pas posée, pour la lire avant
   // de choisir. Sans `plat`, c'est le plat du créneau qui s'affiche.
-  | { ecran: "cuisiner"; creneau: CleCreneau; plat?: string };
+  | { ecran: "cuisiner"; creneau: CleCreneau; plat?: string }
+  // LA LISTE DE COURSES DE QUELQU'UN D'AUTRE. Elle ne touche pas la base : le
+  // lien porte les décisions, l'app d'arrivée recalcule la liste et n'écrit
+  // rien. C'est ce qui permet d'ouvrir le lien d'un conjoint sans écraser sa
+  // propre semaine.
+  | { ecran: "partage"; charge: string };
 
 export type Ecran = Route["ecran"];
 
@@ -101,6 +106,7 @@ export function chemin(r: Route): string {
     case "parts": return `#/cuisine/parts/${r.creneau.jour}/${r.creneau.repas}`;
     case "cuisiner":
       return `#/cuisine/cuisiner/${r.creneau.jour}/${r.creneau.repas}${r.plat ? `/${r.plat}` : ""}`;
+    case "partage": return `#/partage/${r.charge}`;
   }
 }
 
@@ -114,6 +120,14 @@ export function lireRoute(hash: string): Route {
 
   const simple = SANS_PARAM[brut];
   if (simple) return { ecran: simple } as Route;
+
+  // Le partage se lit AVANT le découpage en segments : sa charge est du base64
+  // url-safe, qui ne contient pas de « / », mais la découper puis la recoller
+  // serait une reconstruction de plus à maintenir juste.
+  if (brut.startsWith("partage/")) {
+    const charge = brut.slice("partage/".length);
+    if (charge) return { ecran: "partage", charge };
+  }
 
   const morceaux = brut.split("/");
   // La fiche d'un plat qu'on n'a pas encore posé : un segment de plus.
