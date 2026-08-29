@@ -54,6 +54,16 @@ export interface CreneauSemaine {
   emporte: boolean;
 }
 
+/** Un plat réellement cuisiné, et sur quel créneau. `principal` sépare le plat
+ *  qui DÉCIDE du repas des briques posées à côté — les deux se cuisinent, se
+ *  paient et s'achètent pareil, mais une seule répond à « qu'est-ce qu'on
+ *  mange ». */
+export interface Pose {
+  i: number;
+  plat: Plat;
+  principal: boolean;
+}
+
 export interface Jeu {
   catalogue: Catalogue;
   /**
@@ -73,7 +83,25 @@ export interface Jeu {
   jours: JourSemaine[];
   creneaux: CreneauSemaine[];
   equilibreSur: RepasId[];
+  /** LE PLAT QUI DÉCIDE DU REPAS, un par créneau. Il n'est pas devenu « le
+   *  premier d'une liste » quand le créneau s'est mis à en porter plusieurs, et
+   *  c'est délibéré : « qu'est-ce qu'on mange ce soir ? » a une seule réponse,
+   *  et c'est elle que le score, la couverture et la gamelle regardent. */
   choix: Choix[];
+  /**
+   * LES BRIQUES POSÉES À CÔTÉ — le riz sous le rôti, le pain avec la soupe.
+   *
+   * Un tableau par créneau, vide presque partout. C'est ce qui manquait pour
+   * répondre à l'objectif de l'utilisateur : « définir un repas complet et
+   * équilibré… ce sont simplement des briques qu'il faut assembler. » T26 savait
+   * dire « il manque un féculent » et ne savait rien en faire.
+   *
+   * ILS NE SONT PAS DE SECONDE CLASSE. Un accompagnement se cuisine (il compte
+   * dans les minutes du jour), s'achète (il entre au panier), pèse sur la
+   * couverture (du riz quatre soirs de suite EST une répétition) et vide le
+   * placard. La seule chose qu'il ne fait pas, c'est décider du repas.
+   */
+  accompagnements: string[][];
   /** Les parts se règlent PAR REPAS, pas une fois pour la semaine. Un dîner
    *  avec des amis, un midi tout seul et une gamelle à prévoir n'ont pas la
    *  même taille, et c'est la taille qui commande le panier et les restes. */
@@ -122,6 +150,9 @@ export function creerJeu(catalogue: Catalogue, nJours = 7, aujourdhui = new Date
     creneaux,
     equilibreSur: cfg.equilibre_sur.length ? cfg.equilibre_sur : ["dejeuner", "diner"],
     choix: Array<Choix>(creneaux.length).fill(null),
+    // `.map()` et non `.fill([])` : `fill` poserait LE MÊME tableau sur les
+    // vingt-et-un créneaux, et poser du riz mardi en mettrait partout.
+    accompagnements: creneaux.map(() => []),
     parts: Array<number>(creneaux.length).fill(catalogue.foyer.parts),
     // On démarre sur le premier créneau réellement choisi : personne ne pioche
     // une carte pour son petit-déjeuner.
@@ -144,6 +175,66 @@ export function dateDe(jeu: Jeu, i: number): Date {
 export function platDe(jeu: Jeu, i: number): Plat | null {
   const rid = jeu.choix[i];
   return joue(rid ?? null) ? (jeu.plats[rid as string] ?? null) : null;
+}
+
+/** Les plats posés à côté du plat principal d'un créneau, résolus. Un id que le
+ *  catalogue ne connaît plus est sauté : une décision peut être plus vieille que
+ *  le corpus, et une base ne se réécrit pas toute seule. */
+export function accompagnementsDe(
+  jeu: Jeu,
+  i: number,
+  accompagnements: string[][] = jeu.accompagnements,
+): Plat[] {
+  return (accompagnements[i] ?? []).map((id) => jeu.plats[id]).filter((p): p is Plat => !!p);
+}
+
+/**
+ * L'ASSIETTE D'UN CRÉNEAU : le plat qui décide, puis ce qu'on a mis à côté.
+ *
+ * C'est l'unité que la complétude regarde. Un rôti seul manque d'un féculent ;
+ * le même rôti avec du riz n'en manque plus — et aucune des deux phrases ne se
+ * lit sur un plat isolé. Le principal vient toujours en tête : c'est l'ordre
+ * dans lequel on nomme un repas, et l'ordre dans lequel on le cuisine.
+ */
+export function assiette(
+  jeu: Jeu,
+  i: number,
+  choix: Choix[] = jeu.choix,
+  accompagnements: string[][] = jeu.accompagnements,
+): Plat[] {
+  const rid = choix[i] ?? null;
+  const principal = joue(rid) ? jeu.plats[rid] : null;
+  return [...(principal ? [principal] : []), ...accompagnementsDe(jeu, i, accompagnements)];
+}
+
+/**
+ * Tout ce que la semaine cuisine, dans l'ordre où ça se cuisine.
+ *
+ * LE PIVOT DE CE TICKET. `calculer` itérait `choix.forEach` — un créneau, un
+ * plat — et cette boucle était la seule raison pour laquelle un créneau ne
+ * pouvait pas en porter deux. Elle itère maintenant des POSES, et tout le reste
+ * du modèle a suivi sans changer de sens : un accompagnement s'achète, se
+ * cuisine et occupe une place comme n'importe quel plat.
+ *
+ * L'ORDRE EST CELUI DU TEMPS, et il n'est pas décoratif : le dépôt sert les
+ * chaînages dans l'ordre où les créneaux arrivent, si bien qu'un midi ne peut
+ * prendre que ce qui existait avant lui. Le principal passe avant ses
+ * accompagnements sur un même créneau — à ce grain-là, le repas est simultané.
+ */
+export function poses(
+  jeu: Jeu,
+  choix: Choix[] = jeu.choix,
+  accompagnements: string[][] = jeu.accompagnements,
+): Pose[] {
+  const out: Pose[] = [];
+  jeu.creneaux.forEach((_, i) => {
+    const rid = choix[i] ?? null;
+    const p = joue(rid) ? jeu.plats[rid] : null;
+    if (p) out.push({ i, plat: p, principal: true });
+    for (const a of accompagnementsDe(jeu, i, accompagnements))
+      out.push({ i, plat: a, principal: false });
+  });
+  return out;
 }
 
 /** Un plat déclare les créneaux qui lui vont ; le silence vaut « repas

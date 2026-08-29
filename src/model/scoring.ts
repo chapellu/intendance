@@ -15,9 +15,11 @@
 
 import { articles, calculer, type LignePanier } from "./calcul";
 import { bonusPlacard, urgences } from "./gardeManger";
-import { convient, dateDe, joue, type Choix, type Jeu } from "./jeu";
+import {
+  accompagnementsDe, assiette, convient, dateDe, poses as posesDe, type Choix, type Jeu,
+} from "./jeu";
 import { gamelles } from "./offres";
-import { incomplet } from "./repas";
+import { comble, ditLApport, incomplet, manqueALAssiette, type Pilier } from "./repas";
 import { horsSaison } from "./saisons";
 import type { Catalogue, Plat } from "./types";
 
@@ -36,7 +38,11 @@ export interface Couverture {
   famillesManquantes: number;
 }
 
-export function couverture(jeu: Jeu, choix: Choix[]): Couverture {
+export function couverture(
+  jeu: Jeu,
+  choix: Choix[],
+  accompagnements = jeu.accompagnements,
+): Couverture {
   const { catalogue } = jeu;
   const servi: Record<string, number> = {};
   const achete: Record<string, number> = {};
@@ -44,15 +50,20 @@ export function couverture(jeu: Jeu, choix: Choix[]): Couverture {
   const profil: Record<string, number> = {};
   const familles = new Set<string>();
 
-  choix.forEach((rid, i) => {
-    if (!joue(rid)) return;
+  // L'ACCOMPAGNEMENT COMPTE DANS LA COUVERTURE, et c'est le nerf du ticket :
+  // « compléter » et « équilibrer » sont le même geste. Du riz quatre soirs de
+  // suite est une répétition de féculent, des œufs durs sont une protéine
+  // servie. Les compter à part reviendrait à équilibrer la moitié de l'assiette.
+  //
+  // Le `profil`, lui, ne remonte pas — les accompagnements n'en déclarent aucun.
+  // Un accompagnement ne décide d'aucun format de repas : du riz sous une
+  // blanquette ne fait pas de la semaine une semaine de riz.
+  for (const { i, plat: p } of posesDe(jeu, choix, accompagnements)) {
     // Les cibles se mesurent sur les repas principaux. Les plafonds ont été
     // posés contre six dîners ; les étaler sur vingt-et-un créneaux les
     // diviserait par deux sans que personne l'ait décidé.
     const c = jeu.creneaux[i];
-    if (!c || !jeu.equilibreSur.includes(c.repas)) return;
-    const p = jeu.plats[rid];
-    if (!p) return;
+    if (!c || !jeu.equilibreSur.includes(c.repas)) continue;
 
     const a = p.apports;
     const surReste = p.ingredients.some((x) => x.base);
@@ -64,7 +75,7 @@ export function couverture(jeu: Jeu, choix: Choix[]): Couverture {
       feculent[a.feculent] = (feculent[a.feculent] ?? 0) + 1;
     for (const x of a.legumes) familles.add(x);
     if (a.profil) profil[a.profil] = (profil[a.profil] ?? 0) + 1;
-  });
+  }
 
   const cibles = catalogue.equilibre.cibles;
   const manques: Record<string, number> = {};
@@ -171,14 +182,25 @@ export function offre(jeu: Jeu, choix: Choix[], slot: number): Carte[] {
       ? (gamelles(jeu, choix).find((g) => g.veille === slot && !g.fait)?.jour ?? null)
       : null;
 
+  // CE QUI DÉJÀ POSÉ À CÔTÉ compte dans le jugement du candidat : proposer un
+  // rôti sur un créneau où le riz est déjà là ne doit pas afficher « il manque
+  // un féculent ». La carte note une ASSIETTE, pas un plat.
+  const cotes = accompagnementsDe(jeu, slot);
+
   return jeu.catalogue.plats
-    .filter((p) => !deja.has(p.id) && convient(jeu, p, slot))
+    // UN ACCOMPAGNEMENT NE SE PIOCHE PAS. Il est jouable partout et ne coûte
+    // presque rien : sans ce filtre, le riz nature et le pain remonteraient en
+    // tête de la main et l'app proposerait un bol de riz en dîner — la faute que
+    // T26 vient de corriger, refaite par l'autre bout. Voir `complements()`.
+    .filter((p) => !p.accompagnement && !deja.has(p.id) && convient(jeu, p, slot))
     .map((p): Carte => {
       const essai = [...choix];
       essai[slot] = p.id;
       const apres = calculer(jeu, essai);
-      const chaineIci = apres.chaine.filter((c) => c.creneau === slot);
-      const pleinIci = apres.pleinTarif.filter((c) => c.creneau === slot);
+      // Sur le créneau ET sur ce plat : un créneau porte maintenant plusieurs
+      // plats, et le chaînage du riz n'est pas un argument pour le rôti.
+      const chaineIci = apres.chaine.filter((c) => c.creneau === slot && c.plat === p.id);
+      const pleinIci = apres.pleinTarif.filter((c) => c.creneau === slot && c.plat === p.id);
       const a = p.apports;
       const surReste = p.ingredients.some((x) => x.base);
       const malTransporte = cr.emporte && p.transportable === false;
@@ -260,7 +282,7 @@ export function offre(jeu: Jeu, choix: Choix[], slot: number): Carte[] {
       // CE QUI MANQUE POUR EN FAIRE UN REPAS. Une sauce bolognaise sans pâtes
       // et un rôti sans riz manquent de la même chose ; ni l'un ni l'autre ne le
       // disait, et l'app les proposait comme des dîners entiers.
-      const brique = incomplet(p, poids);
+      const brique = incomplet([p, ...cotes], poids);
       if (brique.score) {
         score += brique.score;
         pourquoi.push(brique.dit);
@@ -296,6 +318,112 @@ export function offre(jeu: Jeu, choix: Choix[], slot: number): Carte[] {
         recit: chaineIci[0]?.recit ?? null,
         partiel: chaineIci.some((c) => c.manque > 1e-9),
         plein: pleinIci.length > 0,
+      };
+    })
+    .sort((x, y) => y.score - x.score);
+}
+
+/* ─────────────────────────────────────────────────── compléter une assiette */
+
+/** Une brique proposée à côté d'un plat déjà posé. */
+export interface Complement {
+  plat: Plat;
+  score: number;
+  /** Les piliers qu'elle comble ET qui manquaient vraiment. Vide = elle
+   *  n'ajoute rien à la complétude, ce qui n'est pas une raison de l'interdire :
+   *  on a le droit de vouloir du pain avec tout. */
+  comble: Pilier[];
+  /** Ce qui manquera ENCORE après l'avoir posée. Une soupe réclame parfois deux
+   *  briques, et l'écran doit pouvoir le dire au lieu de faire croire que
+   *  l'assiette est finie. */
+  restera: Pilier[];
+  marginal: number;
+  pourquoi: string[];
+  placard: string[];
+  horsSaison: string[];
+}
+
+/**
+ * Les accompagnements jouables à côté du plat d'un créneau, notés par ce qu'ils
+ * COMPLÈTENT.
+ *
+ * PAS UN SEUL POIDS NOUVEAU, et c'est ce qui rend ce score vérifiable : la
+ * valeur d'une brique est exactement la pénalité d'incomplétude qu'elle ANNULE.
+ * Poser du riz sous une bolognaise rapporte les trois points que la bolognaise
+ * seule payait — ni plus, ni moins. Inventer un `bonus_accompagnement` aurait
+ * ouvert la porte à ce que les deux termes ne se répondent plus.
+ *
+ * LE RESTE DES TERMES EST CELUI DES PLATS, parce qu'une brique est un plat : ce
+ * qu'elle ajoute à la liste de courses se paie, ce qu'elle sauve du placard se
+ * gagne, ce qu'elle demande hors saison se paie. C'est ce qui fait que le riz du
+ * bocal gagne contre les pâtes à acheter, sans qu'on ait eu à l'écrire.
+ */
+export function complements(
+  jeu: Jeu,
+  slot: number,
+  choix: Choix[] = jeu.choix,
+  accompagnements: string[][] = jeu.accompagnements,
+): Complement[] {
+  const base = calculer(jeu, choix, [], jeu.parts, accompagnements);
+  const nBase = base.panier.size;
+  const poids = jeu.catalogue.equilibre.poids;
+  const rep = jeu.catalogue.equilibre.cibles.repetition_max;
+  const cov = couverture(jeu, choix, accompagnements);
+  const pressees = urgences(jeu.catalogue);
+  const mois = dateDe(jeu, slot).getMonth() + 1;
+
+  const dedans = assiette(jeu, slot, choix, accompagnements);
+  const manque = manqueALAssiette(dedans);
+  const dejaLa = new Set(accompagnements[slot] ?? []);
+  const avant = incomplet(dedans, poids).score;
+
+  return jeu.catalogue.plats
+    .filter((p) => p.accompagnement && !dejaLa.has(p.id) && convient(jeu, p, slot))
+    .map((p): Complement => {
+      const essai = accompagnements.map((l, i) => (i === slot ? [...l, p.id] : l));
+      const apres = calculer(jeu, choix, [], jeu.parts, essai);
+      const marginal = apres.panier.size - nBase;
+      const restera = manqueALAssiette([...dedans, p]);
+
+      let score = incomplet([...dedans, p], poids).score - avant;
+      const pourquoi: string[] = [];
+      const utile = comble(p.apports).filter((x) => manque.includes(x));
+      if (utile.length) pourquoi.push(ditLApport(utile));
+
+      // La répétition du féculent se paie ICI AUSSI. C'est le risque propre à ce
+      // fichier : cinq accompagnements sur neuf sont des féculents, et rien
+      // n'empêcherait de poser du riz tous les soirs.
+      const f = p.apports.feculent;
+      if (f && f !== "aucun" && (cov.feculent[f] ?? 0) >= (rep["feculent"] ?? Infinity)) {
+        score += poids["repetition_feculent"] ?? 0;
+        pourquoi.push(`encore du ${f} cette semaine`);
+      }
+
+      const placard = bonusPlacard(jeu.catalogue, p, pressees, poids);
+      if (placard.score) {
+        score += placard.score;
+        pourquoi.push(
+          placard.urgent
+            ? `sauve ce qui se perd : ${placard.noms.join(", ")}`
+            : `finit des paquets entamés : ${placard.noms.join(", ")}`,
+        );
+      }
+
+      const saison = horsSaison(jeu.catalogue, p, mois, poids);
+      if (saison.score) score += saison.score;
+
+      score += (poids["article_marginal"] ?? 0) * marginal;
+      if (!marginal) pourquoi.push("rien à acheter en plus");
+
+      return {
+        plat: p,
+        score: Math.round(score * 10) / 10,
+        comble: utile,
+        restera,
+        marginal,
+        pourquoi,
+        placard: placard.noms,
+        horsSaison: saison.noms,
       };
     })
     .sort((x, y) => y.score - x.score);

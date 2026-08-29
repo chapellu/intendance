@@ -20,9 +20,27 @@ describe("ce qui voyage", () => {
     const p = aPartager("2026-08-28", semaine.creneaux, semaine.jours,
       ["pates-bolognaise", null, "lasagnes"], [4, 4, 2], jourISO);
     expect(p.decisions).toEqual([
-      { jour: "2026-08-28", repas: "diner", plat: "pates-bolognaise", parts: 4 },
-      { jour: "2026-08-29", repas: "diner", plat: "lasagnes", parts: 2 },
+      { jour: "2026-08-28", repas: "diner", plat: "pates-bolognaise", parts: 4, avec: [] },
+      { jour: "2026-08-29", repas: "diner", plat: "lasagnes", parts: 2, avec: [] },
     ]);
+  });
+
+  test("l'assiette voyage entière, pas seulement le plat", () => {
+    // Le riz posé sous le rôti est une ligne de courses. Le taire enverrait à
+    // ma femme une liste plus courte que la vraie — et c'est précisément le
+    // genre de manque qui ne se voit qu'au magasin.
+    const p = aPartager("2026-08-28", semaine.creneaux, semaine.jours,
+      ["roti-roule-herbes-fenouil", null, null], [4, 4, 4], jourISO,
+      [["riz-nature"], [], []]);
+    expect(p.decisions[0]!.avec).toEqual(["riz-nature"]);
+  });
+
+  test("UN ACCOMPAGNEMENT NE VOYAGE PAS SEUL", () => {
+    // Sans plat principal, le créneau n'a pas été décidé. Envoyer « du riz
+    // mardi soir » ferait acheter du riz pour un repas qui n'existe pas.
+    const p = aPartager("2026-08-28", semaine.creneaux, semaine.jours,
+      [null, null, null], [4, 4, 4], jourISO, [["riz-nature"], [], []]);
+    expect(p.decisions).toHaveLength(0);
   });
 
   test("un créneau vide ou sauté ne part pas", () => {
@@ -45,11 +63,46 @@ describe("ce qui voyage", () => {
 describe("l'aller-retour", () => {
   const p: Partage = {
     depuis: "2026-08-28",
-    decisions: [{ jour: "2026-08-28", repas: "diner", plat: "pâtes-à-l'ail", parts: 2.5 }],
+    decisions: [{ jour: "2026-08-28", repas: "diner", plat: "pâtes-à-l'ail", parts: 2.5, avec: [] }],
   };
 
   test("ce qui part revient identique, accents compris", () => {
     expect(lirePartage(encoderPartage(p))).toEqual(p);
+  });
+
+  test("l'assiette aussi fait l'aller-retour", () => {
+    const avec: Partage = {
+      depuis: "2026-08-28",
+      decisions: [{
+        jour: "2026-08-28", repas: "diner", plat: "roti-roule-herbes-fenouil",
+        parts: null, avec: ["riz-nature", "salade-verte-vinaigrette"],
+      }],
+    };
+    expect(lirePartage(encoderPartage(avec))).toEqual(avec);
+  });
+
+  test("un lien d'avant les accompagnements se relit encore", () => {
+    // Les liens déjà envoyés n'ont pas le champ. Absent vaut vide : refuser ces
+    // liens-là punirait quelqu'un pour avoir reçu un message la semaine dernière.
+    const vieux = btoa(JSON.stringify({
+      depuis: "2026-08-28",
+      decisions: [{ jour: "2026-08-28", repas: "diner", plat: "lasagnes", parts: null }],
+    }));
+    expect(lirePartage(vieux)?.decisions[0]!.avec).toEqual([]);
+  });
+
+  test("le champ vide ne part pas sur le fil", () => {
+    // Une dizaine d'octets par repas sur une URL qu'une messagerie peut couper.
+    expect(atob(encoderPartage(p).replace(/-/g, "+").replace(/_/g, "/")))
+      .not.toContain("avec");
+  });
+
+  test("un `avec` mal formé invalide le lot", () => {
+    const c = btoa(JSON.stringify({
+      depuis: "2026-08-28",
+      decisions: [{ jour: "2026-08-28", repas: "diner", plat: "x", parts: null, avec: [3] }],
+    }));
+    expect(lirePartage(c)).toBeNull();
   });
 
   test("l'encodage tient dans une URL", () => {
@@ -66,7 +119,7 @@ describe("un lien abîmé ne produit jamais une liste fausse", () => {
     // sait pas ce qui manque.
     const c = encoderPartage({
       depuis: "2026-08-28",
-      decisions: [{ jour: "2026-08-28", repas: "diner", plat: "lasagnes", parts: null }],
+      decisions: [{ jour: "2026-08-28", repas: "diner", plat: "lasagnes", parts: null, avec: [] }],
     });
     expect(lirePartage(c.slice(0, Math.floor(c.length / 2)))).toBeNull();
   });

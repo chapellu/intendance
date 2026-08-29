@@ -49,6 +49,10 @@ export function Partage({ charge }: { charge: string }) {
         continue;
       }
       jeu.choix[i] = d.plat;
+      // Même règle que pour le plat : un accompagnement que le catalogue ne
+      // connaît plus est sauté, pas inventé. Il ne compte pas dans les décisions
+      // ignorées — le repas, lui, a bien été posé.
+      jeu.accompagnements[i] = d.avec.filter((id) => jeu.plats[id]);
       if (d.parts != null) jeu.parts[i] = d.parts;
       poses += 1;
     }

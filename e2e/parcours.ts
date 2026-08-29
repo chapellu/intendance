@@ -30,6 +30,36 @@ export async function poserUnPlat(page: Page): Promise<string> {
   return titre;
 }
 
+/**
+ * Ajoute une brique à côté du plat déjà posé sur la première case décidée, et
+ * renvoie son nom.
+ *
+ * Le repas peut être complet ou non selon la carte tirée — la main est
+ * déterministe mais dépend du corpus. On passe donc par le bouton « Ajouter
+ * quand même » quand il est là : le parcours doit prouver qu'on PEUT assembler,
+ * pas que la première carte manque de quelque chose.
+ */
+export async function ajouterUnAccompagnement(page: Page, plat: string): Promise<string> {
+  await page.goto("/#/cuisine/semaine");
+  await attendreLApp(page);
+  // La case se désigne par le plat qu'elle porte : c'est la seule chose qui la
+  // distingue des treize autres, et « la première » ne veut plus rien dire une
+  // fois qu'un plat y est posé.
+  await page.locator(".co-slot", { hasText: plat }).first().locator("button.resume").click();
+  await page.locator(".co-slot.ouvert").getByRole("link", { name: "changer le plat" }).click();
+
+  const assiette = page.locator(".co-assiette");
+  await expect(assiette).toBeVisible();
+  const quandMeme = assiette.getByRole("button", { name: "Ajouter quand même" });
+  if (await quandMeme.isVisible()) await quandMeme.click();
+
+  const brique = assiette.locator(".brique").first();
+  const nom = (await brique.locator(".nom").innerText()).trim();
+  await brique.getByRole("button", { name: "Ajouter" }).click();
+  await expect(assiette.locator(".l", { hasText: nom })).toBeVisible();
+  return nom;
+}
+
 /** L'app a fini de charger : la barre des facettes est le dernier élément que
  *  la coquille monte, et elle n'apparaît qu'une fois le catalogue lu, l'amorce
  *  du stock passée et la semaine calculée. */

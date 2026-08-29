@@ -34,9 +34,16 @@ export interface DecisionCreneau {
   /** Date locale en `AAAA-MM-JJ`. */
   jour: string;
   repas: RepasId;
-  /** Un identifiant de plat, `SAUTE`, ou `null` pour effacer sans oublier les
-   *  parts qu'on avait réglées. */
+  /** LE PLAT QUI DÉCIDE DU REPAS : un identifiant, `SAUTE`, ou `null` pour
+   *  effacer sans oublier les parts qu'on avait réglées. */
   plat: string | null;
+  /** LES BRIQUES POSÉES À CÔTÉ — le riz sous le rôti, le pain avec la soupe.
+   *
+   *  Un champ à part plutôt qu'une liste unique où le principal serait le
+   *  premier : « qu'est-ce qu'on mange ce soir ? » a une seule réponse, et la
+   *  distinction se paierait de toute façon plus loin, en devinant. Vide sur la
+   *  quasi-totalité des créneaux. */
+  accompagnements: string[];
   /** `null` = les parts du foyer, quelles qu'elles soient au moment du calcul.
    *  Stocker la valeur du foyer figerait un chiffre qui doit suivre le foyer. */
   parts: number | null;
@@ -100,11 +107,23 @@ export interface Reglage {
 // La v1 n'a pas d'`upgrade` : il ne s'exécuterait sur aucune base existante,
 // puisqu'il n'en existe aucune. Une migration vide écrite « pour la forme »
 // est une migration qu'on croit avoir testée.
-export const VERSION = 1;
+export const VERSION = 2;
 
+// LA V2 N'INDEXE RIEN DE NEUF, ET DOIT QUAND MÊME EXISTER. `accompagnements` est
+// un champ ordinaire : Dexie stocke l'objet entier, il n'a besoin d'aucune
+// déclaration. Ce qui a besoin d'une version, c'est la DONNÉE — les créneaux
+// écrits avant ce ticket n'ont pas le champ du tout. Sans migration, `d.plat`
+// arriverait avec un `accompagnements: undefined` que chaque lecteur devrait
+// se rappeler de rattraper, et l'un d'eux finirait par l'oublier.
 const SCHEMAS: Record<number, Record<string, string>> = {
   1: {
     // `jour` est indexé : la semaine se lit par plage de dates, pas par clé.
+    creneaux: "cle, jour",
+    courses: "cle",
+    stock: "++id, type, espace",
+    reglages: "cle",
+  },
+  2: {
     creneaux: "cle, jour",
     courses: "cle",
     stock: "++id, type, espace",
@@ -120,7 +139,17 @@ export class Base extends Dexie {
 
   constructor(nom = "intendance") {
     super(nom);
-    for (const [n, stores] of Object.entries(SCHEMAS)) this.version(Number(n)).stores(stores);
+    for (const [n, stores] of Object.entries(SCHEMAS)) {
+      const v = this.version(Number(n)).stores(stores);
+      // Une semaine posée avant T28 n'avait pas d'accompagnements : elle en a
+      // maintenant zéro, ce qui est exactement ce qu'elle voulait dire.
+      if (Number(n) === 2)
+        v.upgrade((tx) =>
+          tx.table<DecisionCreneau>("creneaux").toCollection().modify((d) => {
+            d.accompagnements ??= [];
+          }),
+        );
+    }
   }
 }
 

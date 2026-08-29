@@ -1,0 +1,257 @@
+# ---------------------------------------------------------------------------
+# LES ACCOMPAGNEMENTS — les briques qui complètent une assiette.
+#
+# POURQUOI CE FICHIER N'EXISTAIT PAS. Le corpus vient d'un livre de cuisine :
+# soixante-douze recettes, et pas une seule pour le riz nature. C'est normal —
+# personne n'écrit « faire cuire des pâtes » dans un livre. Mais un planificateur
+# qui ne connaît que des recettes de plat ne peut pas composer un repas : il sait
+# proposer une sauce bolognaise, et il n'a rien à mettre dessous.
+#
+# T26 a mesuré le trou : 21 des 65 plats jouables au repas principal sont des
+# BRIQUES — il leur manque un pilier. Le détail dit quoi construire, et c'est ce
+# que ce fichier contient, rien de plus :
+#
+#     féculent manquant .................. 14 plats  → riz, pâtes, semoule,
+#                                                      pommes de terre, pain
+#     protéine manquante ................. 11 plats  → œufs durs, thon en boîte
+#     légumes manquants .................. 4 plats   → salade, carottes râpées
+#
+# `accompagnement: true` EST CE QUI LES REND INOFFENSIFS. Un accompagnement ne se
+# pioche jamais comme un plat : il n'entre pas dans la main de cartes, il ne peut
+# pas être le plat qui décide d'un repas. Sans ce drapeau, ajouter « riz nature »
+# au corpus reviendrait à proposer un bol de riz nature en dîner — exactement la
+# faute que T26 vient de corriger, refaite par l'autre bout.
+#
+# PAS DE `profil`, ET C'EST DÉLIBÉRÉ. Le profil (mijoté, four, soupe, cru) décrit
+# le FORMAT du repas, et il porte le terme « varier les plaisirs » : deux plats
+# du même profil dans la semaine se pénalisent. Un accompagnement ne décide
+# d'aucun format — du riz sous une blanquette ne fait pas de la semaine une
+# semaine de riz. Lui donner un profil ferait payer au plat principal une
+# répétition que personne n'a servie.
+#
+# LE FÉCULENT, LUI, COMPTE. `apports.feculent` entre dans la couverture de la
+# semaine comme celui d'un plat : du riz posé quatre soirs de suite EST une
+# répétition, et c'est même le premier risque de ce fichier. Compléter un repas
+# et l'équilibrer sont le même geste — c'est la phrase exacte de l'utilisateur.
+#
+# AUCUN N'A D'`emits`, ET C'EST UNE DÉCISION. Un accompagnement se cuisine à la
+# taille du repas : on ne met pas trois portions de riz au congélateur « au cas
+# où ». Ça évite aussi de gonfler le budget de rangement de neuf sorties que
+# personne n'a demandées. La conséquence à connaître : une brique ne peut pas
+# être la source d'une offre de surproduction (`offres.ts` cherche les `emits`
+# des créneaux amont). Le jour où l'une d'elles en déclarera un, ce chemin-là
+# devra être relu.
+#
+# CE QU'ILS PRENNENT EST DÉJÀ AU GARDE-MANGER, et ce n'est pas une coïncidence :
+# riz rond, pâtes, semoule, lentilles, pommes de terre, thon en boîte figurent au
+# relevé du 26 août. Un accompagnement est donc presque toujours GRATUIT à la
+# liste de courses (il part en « à vérifier »), et il fait tourner le placard —
+# les deux raisons pour lesquelles on garde ces choses-là chez soi.
+# ---------------------------------------------------------------------------
+
+recipes:
+  # ─────────────────────────────────────────────────────── les féculents (14)
+
+  - id: riz-nature
+    title: Riz nature
+    accompagnement: true
+    yields: {portions_eq: 4}
+    time_min_total: 20
+    active_min: 3
+    apports:
+      proteine: aucune
+      feculent: riz
+      legumes: []
+    ingredients:
+      - {id: riz-rond, name: riz, qty: 250, unit: g}
+      - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    steps:
+      - id: cuire-riz
+        action: "Rincer le riz, le verser dans 1,5 fois son volume d'eau salée bouillante, couvrir et laisser absorber à feu très doux"
+        needs: [boil]
+        time_min: 18
+        attended: false
+        kid: {age_min_months: 36, task: "rincer le riz dans la passoire"}
+    emits: []
+
+  - id: pates-nature
+    title: Pâtes nature
+    accompagnement: true
+    yields: {portions_eq: 4}
+    time_min_total: 12
+    active_min: 5
+    apports:
+      proteine: aucune
+      feculent: pates
+      legumes: []
+    ingredients:
+      - {id: pates, name: pâtes, qty: 300, unit: g}
+      - {id: sel, name: gros sel, qty: 1, unit: c. à s., seasoning: true}
+      - {id: huile-olive, name: huile d'olive, qty: 1, unit: c. à s.}
+    steps:
+      - id: cuire-pates
+        action: "Cuire les pâtes à grande eau salée, égoutter en gardant une louche d'eau de cuisson, filer d'huile"
+        needs: [boil]
+        time_min: 12
+    emits: []
+
+  - id: semoule-vapeur
+    title: Semoule
+    accompagnement: true
+    yields: {portions_eq: 4}
+    time_min_total: 5
+    active_min: 5
+    apports:
+      proteine: aucune
+      feculent: semoule
+      legumes: []
+    ingredients:
+      - {id: semoule, name: semoule de blé moyenne, qty: 250, unit: g}
+      - {id: huile-olive, name: huile d'olive, qty: 1, unit: c. à s.}
+      - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    steps:
+      - id: gonfler-semoule
+        action: "Verser la semoule dans un volume égal d'eau bouillante salée, couvrir, laisser gonfler 5 min puis égrener à la fourchette avec l'huile"
+        needs: [boil]
+        time_min: 5
+        attended: false
+        kid: {age_min_months: 42, task: "égrener la semoule à la fourchette"}
+    emits: []
+
+  - id: pommes-de-terre-vapeur
+    title: Pommes de terre vapeur
+    accompagnement: true
+    yields: {portions_eq: 4}
+    time_min_total: 25
+    active_min: 5
+    apports:
+      proteine: aucune
+      feculent: pommes-de-terre
+      legumes: []
+    ingredients:
+      - {id: pomme-de-terre, name: pommes de terre, qty: 800, unit: g}
+      - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    steps:
+      - id: vapeur-pdt
+        action: "Brosser les pommes de terre, les couper en deux si elles sont grosses, cuire à la vapeur jusqu'à ce que la pointe du couteau entre sans résistance"
+        needs: [steam]
+        time_min: 25
+        attended: false
+    emits: []
+
+  # LE PAIN N'A PAS D'ÉTAPE, ET C'EST EXACT. Il n'y a rien à cuisiner : on le
+  # coupe. Sans `steps:`, le catalogue le déclare « planifiable, pas
+  # cuisinable » — ce qui est précisément son statut. C'est aussi la complétion
+  # la moins chère qui existe, et celle qui va aux soupes : un velouté et du
+  # pain est un dîner, un velouté seul n'en est pas un.
+  - id: pain-a-table
+    title: Du pain
+    accompagnement: true
+    yields: {portions_eq: 4}
+    time_min_total: 0
+    apports:
+      proteine: aucune
+      feculent: pain
+      legumes: []
+    ingredients:
+      - {id: pain-levain, name: pain, qty: 250, unit: g}
+    emits: []
+
+  # ─────────────────────────────────────────────────────── les protéines (11)
+
+  - id: oeufs-durs
+    title: Œufs durs
+    accompagnement: true
+    yields: {portions_eq: 4}
+    time_min_total: 12
+    active_min: 3
+    apports:
+      proteine: oeuf
+      feculent: aucun
+      legumes: []
+    ingredients:
+      - {id: oeufs, name: œufs, qty: 4, unit: pièce}
+      - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    steps:
+      - id: cuire-oeufs
+        action: "Plonger les œufs dans l'eau frémissante, compter 9 min, refroidir aussitôt sous l'eau froide"
+        needs: [boil]
+        time_min: 12
+        kid: {age_min_months: 48, task: "écaler les œufs refroidis"}
+    emits: []
+
+  # LA BOÎTE DE THON EST UNE PROTÉINE, et le relevé en compte deux au fond de
+  # l'étagère ouverte. C'est la complétion d'un potage ou d'une salade qui ne
+  # coûte ni cuisson ni course.
+  - id: thon-egoutte
+    title: Thon en boîte
+    accompagnement: true
+    yields: {portions_eq: 2}
+    time_min_total: 2
+    active_min: 2
+    apports:
+      proteine: poisson
+      feculent: aucun
+      legumes: []
+    ingredients:
+      - {id: thon-boite, name: thon en boîte, qty: 1, unit: pièce}
+    steps:
+      - id: egoutter-thon
+        action: "Égoutter la boîte et l'émietter à la fourchette"
+        needs: []
+        time_min: 2
+    emits: []
+
+  # ───────────────────────────────────────────────────────── les légumes (4)
+
+  - id: salade-verte-vinaigrette
+    title: Salade verte
+    accompagnement: true
+    yields: {portions_eq: 4}
+    time_min_total: 8
+    active_min: 8
+    apports:
+      proteine: aucune
+      feculent: aucun
+      legumes: [feuille]
+    ingredients:
+      - {id: salade-verte, name: salade verte, qty: 1, unit: pièce}
+      - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+      - {id: vinaigre, name: vinaigre, qty: 1, unit: c. à s.}
+      - {id: moutarde, name: moutarde, qty: 1, unit: c. à c.}
+      - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    steps:
+      - id: laver-salade
+        action: "Laver et essorer la salade"
+        needs: []
+        time_min: 5
+        kid: {age_min_months: 36, task: "tourner l'essoreuse à salade"}
+      - id: vinaigrette
+        action: "Délayer la moutarde dans le vinaigre et le sel, monter à l'huile, brasser la salade au dernier moment"
+        needs: []
+        time_min: 3
+        seasoning_gate: true
+    emits: []
+
+  - id: carottes-rapees
+    title: Carottes râpées
+    accompagnement: true
+    yields: {portions_eq: 4}
+    time_min_total: 10
+    active_min: 10
+    apports:
+      proteine: aucune
+      feculent: aucun
+      legumes: [racine]
+    ingredients:
+      - {id: carottes, name: carottes, qty: 4, unit: pièce}
+      - {id: citron, name: citron, qty: 1, unit: pièce}
+      - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+      - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    steps:
+      - id: raper-carottes
+        action: "Râper les carottes, les assaisonner de jus de citron, d'huile et de sel"
+        needs: [chop-coarse]
+        time_min: 10
+        seasoning_gate: true
+    emits: []

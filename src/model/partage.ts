@@ -35,6 +35,11 @@ export interface DecisionPartagee {
   repas: string;
   plat: string;
   parts: number | null;
+  /** Les briques posées à côté. Le champ s'appelle `avec` dans le lien et pas
+   *  `accompagnements` : quinze caractères par créneau sur une URL qu'une
+   *  messagerie peut couper ne sont pas un détail. Absent quand il n'y en a
+   *  pas — l'immense majorité des créneaux. */
+  avec: string[];
 }
 
 export interface Partage {
@@ -70,10 +75,14 @@ export function aPartager(
   choix: readonly Choix[],
   parts: readonly number[],
   jourISO: (d: Date) => string,
+  accompagnements: readonly string[][] = [],
 ): Partage {
   const decisions: DecisionPartagee[] = [];
   choix.forEach((plat, i) => {
     const c = creneaux[i];
+    // UN ACCOMPAGNEMENT NE VOYAGE PAS SEUL. Sans plat principal, le créneau n'a
+    // pas été décidé : envoyer « du riz mardi soir » ferait acheter du riz pour
+    // un repas qui n'existe pas. Il part avec son plat, ou il ne part pas.
     if (!plat || plat === "SAUTE" || !c) return;
     // `c.jour` est un INDEX dans la semaine, pas une date. On le résout ici, une
     // fois : un index ne veut rien dire hors de la semaine qui l'a calculé, et
@@ -85,12 +94,23 @@ export function aPartager(
       repas: c.repas,
       plat,
       parts: parts[i] ?? null,
+      avec: [...(accompagnements[i] ?? [])],
     });
   });
   return { depuis, decisions };
 }
 
-export const encoderPartage = (p: Partage): string => encoder(JSON.stringify(p));
+/** LES CHAMPS VIDES NE PARTENT PAS. `"avec":[]` sur chaque créneau ajouterait
+ *  une dizaine d'octets par repas à une URL qui doit traverser une messagerie —
+ *  et un champ absent se relit exactement comme un champ vide, ce que
+ *  `lirePartage` garantit. */
+export const encoderPartage = (p: Partage): string =>
+  encoder(
+    JSON.stringify({
+      ...p,
+      decisions: p.decisions.map((d) => (d.avec.length ? d : { ...d, avec: undefined })),
+    }),
+  );
 
 /**
  * Relit un partage. Rend `null` sur tout ce qui ne se comprend pas.
@@ -115,7 +135,14 @@ export function lirePartage(brut: string): Partage | null {
       if (typeof x["plat"] !== "string" || !x["plat"]) return null;
       const parts = x["parts"];
       if (parts !== null && typeof parts !== "number") return null;
-      decisions.push({ jour: x["jour"], repas: x["repas"], plat: x["plat"], parts });
+      // ABSENT VAUT VIDE, et rien d'autre ne passe. Un lien d'avant T28 n'a pas
+      // le champ ; un lien tronqué peut en avoir un qui n'est plus un tableau de
+      // chaînes, et il ne doit pas produire une liste de courses à moitié juste.
+      const avec = x["avec"] ?? [];
+      if (!Array.isArray(avec) || avec.some((a) => typeof a !== "string" || !a)) return null;
+      decisions.push({
+        jour: x["jour"], repas: x["repas"], plat: x["plat"], parts, avec: avec as string[],
+      });
     }
     return { depuis: p["depuis"], decisions };
   } catch {

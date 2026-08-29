@@ -55,6 +55,10 @@ export function hydrater(jeu: Jeu, decisions: Map<string, DecisionCreneau>): Jeu
     const d = decisions.get(cle);
     if (!d) return;
     jeu.choix[i] = d.plat as Choix;
+    // `?? []` malgré la migration : une base neuve, un import, un test qui
+    // écrit une ligne à la main. Le champ est garanti par la v2, pas par le
+    // typage de ce qui traverse IndexedDB.
+    jeu.accompagnements[i] = [...(d.accompagnements ?? [])];
     if (d.parts != null) jeu.parts[i] = d.parts;
   });
   return jeu;
@@ -69,15 +73,57 @@ export async function poser(base: Base, jeu: Jeu, i: number, plat: Choix): Promi
   if (!c || !cle) throw new RangeError(`créneau ${i} hors de la semaine`);
   const [jour] = cle.split("|");
   const existant = await base.creneaux.get(cle);
+  // CHANGER LE PLAT PRINCIPAL EMPORTE SES ACCOMPAGNEMENTS. Le riz avait été
+  // posé sous un rôti ; sur une paella il n'a plus rien à faire, et personne ne
+  // penserait à l'enlever. Sauter le repas les emporte pour la même raison.
+  const garde = existant?.plat === plat;
   await base.creneaux.put({
     cle,
     jour: jour!,
     repas: c.repas,
     plat,
+    accompagnements: garde ? (existant?.accompagnements ?? []) : [],
     parts: existant?.parts ?? null,
     maj: Date.now(),
   });
   jeu.choix[i] = plat;
+  if (!garde) jeu.accompagnements[i] = [];
+}
+
+/**
+ * Ajoute ou retire une brique à côté du plat d'un créneau.
+ *
+ * UN SEUL POINT D'ÉCRITURE POUR LES DEUX GESTES, parce qu'ils partagent la
+ * seule règle qui compte : la liste est un ENSEMBLE. Poser deux fois le même riz
+ * ne fait pas deux riz, et deux écritures concurrentes ne doivent pas pouvoir en
+ * fabriquer un doublon que rien n'irait ensuite nettoyer.
+ */
+export async function accompagner(
+  base: Base,
+  jeu: Jeu,
+  i: number,
+  plat: string,
+  present: boolean,
+): Promise<void> {
+  const c = jeu.creneaux[i];
+  const cle = cleDuCreneau(jeu, i);
+  if (!c || !cle) throw new RangeError(`créneau ${i} hors de la semaine`);
+  const [jour] = cle.split("|");
+  await base.transaction("rw", base.creneaux, async () => {
+    const existant = await base.creneaux.get(cle);
+    const avant = existant?.accompagnements ?? [];
+    const apres = present ? [...new Set([...avant, plat])] : avant.filter((x) => x !== plat);
+    await base.creneaux.put({
+      cle,
+      jour: jour!,
+      repas: c.repas,
+      plat: existant?.plat ?? null,
+      accompagnements: apres,
+      parts: existant?.parts ?? null,
+      maj: Date.now(),
+    });
+    jeu.accompagnements[i] = apres;
+  });
 }
 
 /** Règle les parts d'un créneau. `null` remet le créneau aux parts du foyer —
@@ -100,6 +146,7 @@ export async function reglerParts(
     jour: jour!,
     repas: c.repas,
     plat: existant?.plat ?? null,
+    accompagnements: existant?.accompagnements ?? [],
     parts,
     maj: Date.now(),
   });

@@ -165,6 +165,12 @@ function Slot({
         <div className={`nom${s.plat || s.saute ? "" : " attente"}`}>
           {s.saute ? "on ne mange pas là" : (s.plat?.titre ?? "à poser")}
         </div>
+        {/* L'ASSIETTE ENTIÈRE, PAS SEULEMENT LE PLAT. Un dîner « rôti · riz
+            nature » n'est pas le même dîner qu'un rôti seul, et c'est
+            exactement la différence que ce ticket a apprise. */}
+        {s.cotes.length ? (
+          <div className="cotes">avec {s.cotes.map((p) => p.titre).join(" · ")}</div>
+        ) : null}
         {s.plat ? (
           <div className="marques">
             {/* Un plat à zéro minute n'est pas gratuit, il est déjà cuisiné :
@@ -176,6 +182,10 @@ function Slot({
           </div>
         ) : null}
         {s.souci ? <div className="souci">{s.souci}</div> : null}
+        {/* CE QUI MANQUE À L'ASSIETTE, sur la case et pas seulement au moment
+            de choisir. C'est ici qu'on relit sa semaine, donc ici qu'un dîner à
+            moitié posé doit se voir — l'écran « Poser » sait le compléter. */}
+        {s.dit ? <div className="souci">{s.dit}</div> : null}
       </button>
 
       {ouvert ? (

@@ -7,14 +7,19 @@
 // où le lien ne transporte plus rien.
 
 import { expect, test } from "@playwright/test";
-import { attendreLApp, poserUnPlat } from "./parcours";
+import { ajouterUnAccompagnement, attendreLApp, poserUnPlat } from "./parcours";
 
 test("la liste s'ouvre chez quelqu'un dont la base est vide", async ({ browser }) => {
   const expediteur = await browser.newContext({
     permissions: ["clipboard-read", "clipboard-write"],
   });
   const page = await expediteur.newPage();
-  await poserUnPlat(page);
+  // L'ASSIETTE ENTIÈRE VOYAGE, pas seulement le plat. Le riz posé à côté est
+  // une ligne de courses : si le lien ne portait que le principal, la liste
+  // reçue serait plus courte que la vraie — et c'est le genre de manque qui ne
+  // se voit qu'au magasin.
+  const plat = await poserUnPlat(page);
+  await ajouterUnAccompagnement(page, plat);
 
   await page.goto("/#/cuisine/courses");
   await attendreLApp(page);

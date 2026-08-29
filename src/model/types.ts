@@ -113,7 +113,11 @@ export interface Apports {
   proteine: string;
   feculent: string;
   legumes: string[];
-  profil: string;
+  /** Le FORMAT du plat — mijoté, four, soupe, cru. C'est lui qui porte « varier
+   *  les plaisirs », et c'est pourquoi il peut être absent : un accompagnement
+   *  ne décide d'aucun format. Du riz sous une blanquette ne fait pas de la
+   *  semaine une semaine de riz. */
+  profil: string | null;
   origine?: string;
 }
 
@@ -146,6 +150,11 @@ export interface Plat {
   accepts: Accept[];
   /** Les créneaux qui lui vont ; vide vaut « repas principal ». */
   creneaux: RepasId[];
+  /** Une brique qu'on pose À CÔTÉ d'un plat — du riz, du pain, une salade. Elle
+   *  ne se pioche jamais seule : un accompagnement ne décide pas d'un repas, il
+   *  le complète. C'est ce drapeau qui empêche « riz nature » de remonter comme
+   *  proposition de dîner. */
+  accompagnement: boolean;
   transportable: boolean;
   sansReste: SansReste | null;
   emits: Emit[];

@@ -71,7 +71,7 @@ function Contenu({
   const lien = useMemo(() => {
     const p = aPartager(
       jourISO(jeu.jours[0]!.date),
-      jeu.creneaux, jeu.jours, jeu.choix, jeu.parts, jourISO,
+      jeu.creneaux, jeu.jours, jeu.choix, jeu.parts, jourISO, jeu.accompagnements,
     );
     if (!p.decisions.length) return null;
     return new URL(chemin({ ecran: "partage", charge: encoderPartage(p) }), location.href).href;

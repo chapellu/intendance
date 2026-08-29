@@ -12,7 +12,7 @@
 // on juge ce qu'elle vaut, et le second appelle le premier — jamais l'inverse.
 
 import { bandRepas, Depot, qteDe, type LigneDepot, type Prise } from "./depot";
-import { dateDe, joue, type Jeu } from "./jeu";
+import { dateDe, poses as posesDe, type Jeu, type Pose } from "./jeu";
 import type {
   Accept, Catalogue, CauseLimite, Espace, Ingredient, Plat, Provenance,
 } from "./types";
@@ -103,6 +103,9 @@ export const echelleTexte = (ing: Ingredient, f: number): string =>
 
 export interface LigneChaine {
   creneau: number;
+  /** QUEL plat du créneau chaîne. Un créneau en porte plusieurs depuis T28, et
+   *  « le chaînage de ce créneau » ne suffit plus à désigner une carte. */
+  plat: string;
   type: string;
   depuis: string | null;
   age: number | null;
@@ -124,6 +127,7 @@ export interface Manque {
 
 export interface PleinTarif {
   creneau: number;
+  plat: string;
   minutes: number;
 }
 
@@ -164,7 +168,14 @@ export interface Calcul {
   pleinTarif: PleinTarif[];
   manques: Manque[];
   provenances: Partial<Record<Provenance, number>>;
+  /** Le facteur d'échelle du PLAT PRINCIPAL, par créneau. Reste indexé par
+   *  créneau parce que c'est ainsi que les écrans le lisent — « à quelle taille
+   *  je cuisine le dîner de mardi ». Pour un accompagnement, voir `poses`. */
   facteurs: number[];
+  /** Tout ce qui est cuisiné cette semaine, principal ET accompagnements, avec
+   *  la taille à laquelle chacun se fait. C'est la seule vue qui n'écrase pas un
+   *  créneau à deux plats. */
+  poses: (Pose & { facteur: number })[];
   depot: Depot;
   stockage: Record<Espace, BilanEspace>;
 }
@@ -176,6 +187,7 @@ export function calculer(
   choix = jeu.choix,
   jetes: string[] = [],
   parts = jeu.parts,
+  accompagnements = jeu.accompagnements,
 ): Calcul {
   const { catalogue } = jeu;
   // LE DÉPÔT PART DE `jeu.stock`, PAS DE `catalogue.stock`. L'export dit ce que
@@ -203,12 +215,15 @@ export function calculer(
   const pleinTarif: PleinTarif[] = [];
   const manques: Manque[] = [];
   const provenances: Partial<Record<Provenance, number>> = {};
-  const facteurs = choix.map(() => 1);
+  const facteurs = jeu.creneaux.map(() => 1);
+  // UN CRÉNEAU N'EST PLUS UN PLAT. La boucle itérait `choix`, ce qui rendait la
+  // question « et le riz à côté ? » impossible à poser : il n'y avait pas de
+  // place pour lui. Elle itère maintenant ce qui est RÉELLEMENT cuisiné.
+  const lesPoses = posesDe(jeu, choix, accompagnements).map((x) => ({ ...x, facteur: 1 }));
 
-  choix.forEach((rid, i) => {
-    if (!joue(rid)) return;
-    const p = jeu.plats[rid];
-    if (!p) return;
+  for (const pose of lesPoses) {
+    const { i, plat: p } = pose;
+    const rid = p.id;
     const date = dateDe(jeu, i);
     let plein = false;
     const prises: Prise[] = [];
@@ -220,6 +235,7 @@ export function calculer(
       if (pr.trouve)
         chaine.push({
           creneau: i,
+          plat: rid,
           type: pr.out!.type,
           depuis: pr.out!.from,
           age: pr.age,
@@ -238,12 +254,16 @@ export function calculer(
       if (pr.couvert || (pr.trouve && pr.approximatif)) continue;
       if (p.sansReste) {
         plein = true;
-        pleinTarif.push({ creneau: i, minutes: p.sansReste.minutes });
+        pleinTarif.push({ creneau: i, plat: rid, minutes: p.sansReste.minutes });
       }
     }
 
     const f = facteur(p, parts[i] ?? catalogue.foyer.parts);
-    facteurs[i] = f;
+    pose.facteur = f;
+    // `facteurs` reste la table du PRINCIPAL : c'est ce que les écrans lisent
+    // pour dire « ce dîner se cuisine pour six ». Un accompagnement n'y écrit
+    // pas, sinon le riz écraserait le rôti et la fiche du rôti mentirait.
+    if (pose.principal) facteurs[i] = f;
     const lignes = [...p.ingredients];
     if (plein && p.sansReste) lignes.push(...p.sansReste.ingredients);
 
@@ -270,11 +290,12 @@ export function calculer(
         { born: date, source: rid, location: "frigo" },
       );
     }
-  });
+  }
 
   return {
-    panier, aVerifier, chaine, pleinTarif, manques, provenances, facteurs, depot,
-    stockage: bilanStockage(jeu, choix, jetes, facteurs, depot),
+    panier, aVerifier, chaine, pleinTarif, manques, provenances, facteurs,
+    poses: lesPoses, depot,
+    stockage: bilanStockage(jeu, lesPoses, jetes, depot),
   };
 }
 
@@ -287,9 +308,8 @@ export function calculer(
 // frigo avec la ratatouille de mardi dedans ».
 export function bilanStockage(
   jeu: Jeu,
-  choix: Jeu["choix"],
+  poses: (Pose & { facteur: number })[],
   jetes: string[],
-  facteurs: number[],
   depot: Depot,
 ): Record<Espace, BilanEspace> {
   const { catalogue } = jeu;
@@ -305,12 +325,11 @@ export function bilanStockage(
     add(debut, o.location, bandRepas(o.qty_band));
   }
 
-  choix.forEach((rid, i) => {
-    if (!joue(rid)) return;
-    const p = jeu.plats[rid];
-    if (!p) return;
-    for (const e of p.emits) add(entre, e.espace, bandRepas(e.band) * (facteurs[i] ?? 1));
-  });
+  // Chaque pose avec SA taille : deux plats sur un créneau ne se cuisinent pas
+  // au même facteur, et c'est ce que l'ancien tableau par créneau ne pouvait
+  // plus dire.
+  for (const { plat, facteur: f } of poses)
+    for (const e of plat.emits) add(entre, e.espace, bandRepas(e.band) * f);
 
   // Ce que la semaine MANGE rend sa place ET son contenant. Sans ce terme, le
   // rangement ne serait qu'un compteur qui monte — et un niveau qu'on ne mesure
@@ -336,6 +355,16 @@ export function bilanStockage(
   return bilan;
 }
 
+/** À quelle taille SE PLAT-LÀ se cuisine sur CE créneau-là.
+ *
+ *  `facteurs[i]` ne suffit plus depuis qu'un créneau porte plusieurs plats : il
+ *  ne parle que du principal, et la fiche du riz y lirait l'échelle du rôti.
+ *  `null` quand le plat n'est pas posé là — la fiche d'un candidat qu'on lit
+ *  avant de le choisir, qui retombe alors sur les parts du foyer. */
+export function facteurPose(calc: Calcul, i: number, plat: string): number | null {
+  return calc.poses.find((x) => x.i === i && x.plat.id === plat)?.facteur ?? null;
+}
+
 /** Où une ligne du dépôt compte, pour le budget de rangement. */
 export const espaceDe = (l: LigneDepot): Espace => l.espace;
 
@@ -353,14 +382,19 @@ export function articles(panier: Map<string, LignePanier>): LignePanier[] {
 /** Minutes de cuisine par JOUR — pas par créneau. C'est la journée qui fatigue,
  *  pas le repas : trois plats qui tiennent chacun dans leur budget peuvent
  *  faire une journée intenable. */
-export function minutesParJour(jeu: Jeu, choix = jeu.choix): number[] {
+export function minutesParJour(
+  jeu: Jeu,
+  choix = jeu.choix,
+  accompagnements = jeu.accompagnements,
+): number[] {
   const parJour = jeu.jours.map(() => 0);
-  choix.forEach((rid, i) => {
-    if (!joue(rid)) return;
-    const p = jeu.plats[rid];
+  // L'ACCOMPAGNEMENT COMPTE DANS LA JOURNÉE. Vingt minutes de riz sont vingt
+  // minutes de cuisine : les taire ferait mentir le seul chiffre qui dit si le
+  // mardi tient debout, et ce serait le mensonge le plus tentant du ticket.
+  for (const { i, plat } of posesDe(jeu, choix, accompagnements)) {
     const c = jeu.creneaux[i];
-    if (!p || !c) return;
-    parJour[c.jour] = (parJour[c.jour] ?? 0) + p.minutes;
-  });
+    if (!c) continue;
+    parJour[c.jour] = (parJour[c.jour] ?? 0) + plat.minutes;
+  }
   return parJour;
 }

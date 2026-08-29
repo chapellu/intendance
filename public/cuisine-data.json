@@ -202,6 +202,716 @@
  },
  "plats": [
   {
+   "id": "riz-nature",
+   "titre": "Riz nature",
+   "minutes": 20,
+   "minutesSurPlace": 20,
+   "avanceMin": 18,
+   "anticipations": [],
+   "portions": 4,
+   "apports": {
+    "proteine": "aucune",
+    "feculent": "riz",
+    "legumes": []
+   },
+   "ingredients": [
+    {
+     "id": "riz-rond",
+     "ref": "riz-rond",
+     "nom": "riz",
+     "qty": 250,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false
+    },
+    {
+     "id": "sel",
+     "ref": "sel",
+     "nom": "sel",
+     "qty": 1,
+     "unit": "c. à c.",
+     "base": false,
+     "assaisonnement": true
+    }
+   ],
+   "steps": [
+    {
+     "id": "cuire-riz",
+     "action": "Rincer le riz, le verser dans 1,5 fois son volume d'eau salée bouillante, couvrir et laisser absorber à feu très doux",
+     "minutes": 18,
+     "needs": [
+      "boil"
+     ],
+     "surveille": false,
+     "uses": null,
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "rincer le riz dans la passoire",
+     "enfantDes": 36,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 3,
+   "accepts": [],
+   "creneaux": [
+    "dejeuner",
+    "diner"
+   ],
+   "accompagnement": true,
+   "transportable": true,
+   "sansReste": null,
+   "emits": [],
+   "lotEntier": false,
+   "calibreMax": null,
+   "vaisselle": {
+    "id": "casseroles",
+    "label": "casseroles 2,6 L / 1,6 L",
+    "facteurMax": 1.25
+   },
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
+   "id": "pates-nature",
+   "titre": "Pâtes nature",
+   "minutes": 12,
+   "minutesSurPlace": 12,
+   "avanceMin": 12,
+   "anticipations": [],
+   "portions": 4,
+   "apports": {
+    "proteine": "aucune",
+    "feculent": "pates",
+    "legumes": []
+   },
+   "ingredients": [
+    {
+     "id": "pates",
+     "ref": "pates",
+     "nom": "pâtes",
+     "qty": 300,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false
+    },
+    {
+     "id": "sel",
+     "ref": "sel",
+     "nom": "gros sel",
+     "qty": 1,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": true
+    },
+    {
+     "id": "huile-olive",
+     "ref": "huile-olive",
+     "nom": "huile d'olive",
+     "qty": 1,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false
+    }
+   ],
+   "steps": [
+    {
+     "id": "cuire-pates",
+     "action": "Cuire les pâtes à grande eau salée, égoutter en gardant une louche d'eau de cuisson, filer d'huile",
+     "minutes": 12,
+     "needs": [
+      "boil"
+     ],
+     "surveille": true,
+     "uses": null,
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 5,
+   "accepts": [],
+   "creneaux": [
+    "dejeuner",
+    "diner"
+   ],
+   "accompagnement": true,
+   "transportable": true,
+   "sansReste": null,
+   "emits": [],
+   "lotEntier": false,
+   "calibreMax": null,
+   "vaisselle": {
+    "id": "casseroles",
+    "label": "casseroles 2,6 L / 1,6 L",
+    "facteurMax": 1.25
+   },
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
+   "id": "semoule-vapeur",
+   "titre": "Semoule",
+   "minutes": 5,
+   "minutesSurPlace": 5,
+   "avanceMin": 5,
+   "anticipations": [],
+   "portions": 4,
+   "apports": {
+    "proteine": "aucune",
+    "feculent": "semoule",
+    "legumes": []
+   },
+   "ingredients": [
+    {
+     "id": "semoule",
+     "ref": "semoule",
+     "nom": "semoule de blé moyenne",
+     "qty": 250,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false
+    },
+    {
+     "id": "huile-olive",
+     "ref": "huile-olive",
+     "nom": "huile d'olive",
+     "qty": 1,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false
+    },
+    {
+     "id": "sel",
+     "ref": "sel",
+     "nom": "sel",
+     "qty": 1,
+     "unit": "c. à c.",
+     "base": false,
+     "assaisonnement": true
+    }
+   ],
+   "steps": [
+    {
+     "id": "gonfler-semoule",
+     "action": "Verser la semoule dans un volume égal d'eau bouillante salée, couvrir, laisser gonfler 5 min puis égrener à la fourchette avec l'huile",
+     "minutes": 5,
+     "needs": [
+      "boil"
+     ],
+     "surveille": false,
+     "uses": null,
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "égrener la semoule à la fourchette",
+     "enfantDes": 42,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 5,
+   "accepts": [],
+   "creneaux": [
+    "dejeuner",
+    "diner"
+   ],
+   "accompagnement": true,
+   "transportable": true,
+   "sansReste": null,
+   "emits": [],
+   "lotEntier": false,
+   "calibreMax": null,
+   "vaisselle": {
+    "id": "casseroles",
+    "label": "casseroles 2,6 L / 1,6 L",
+    "facteurMax": 1.25
+   },
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
+   "id": "pommes-de-terre-vapeur",
+   "titre": "Pommes de terre vapeur",
+   "minutes": 25,
+   "minutesSurPlace": 25,
+   "avanceMin": 25,
+   "anticipations": [],
+   "portions": 4,
+   "apports": {
+    "proteine": "aucune",
+    "feculent": "pommes-de-terre",
+    "legumes": []
+   },
+   "ingredients": [
+    {
+     "id": "pomme-de-terre",
+     "ref": "pomme-de-terre",
+     "nom": "pommes de terre",
+     "qty": 800,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false
+    },
+    {
+     "id": "sel",
+     "ref": "sel",
+     "nom": "sel",
+     "qty": 1,
+     "unit": "c. à c.",
+     "base": false,
+     "assaisonnement": true
+    }
+   ],
+   "steps": [
+    {
+     "id": "vapeur-pdt",
+     "action": "Brosser les pommes de terre, les couper en deux si elles sont grosses, cuire à la vapeur jusqu'à ce que la pointe du couteau entre sans résistance",
+     "minutes": 25,
+     "needs": [
+      "steam"
+     ],
+     "surveille": false,
+     "uses": null,
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 5,
+   "accepts": [],
+   "creneaux": [
+    "dejeuner",
+    "diner"
+   ],
+   "accompagnement": true,
+   "transportable": true,
+   "sansReste": null,
+   "emits": [],
+   "lotEntier": false,
+   "calibreMax": null,
+   "vaisselle": {
+    "id": "cocotte-7.5l",
+    "label": "cocotte 7,5 L",
+    "facteurMax": 3.0
+   },
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
+   "id": "pain-a-table",
+   "titre": "Du pain",
+   "minutes": 0,
+   "minutesSurPlace": 0,
+   "avanceMin": 0,
+   "anticipations": [],
+   "portions": 4,
+   "apports": {
+    "proteine": "aucune",
+    "feculent": "pain",
+    "legumes": []
+   },
+   "ingredients": [
+    {
+     "id": "pain-levain",
+     "ref": "pain-levain",
+     "nom": "pain",
+     "qty": 250,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false
+    }
+   ],
+   "steps": [],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": null,
+   "accepts": [],
+   "creneaux": [
+    "dejeuner",
+    "diner"
+   ],
+   "accompagnement": true,
+   "transportable": true,
+   "sansReste": null,
+   "emits": [],
+   "lotEntier": false,
+   "calibreMax": null,
+   "vaisselle": null,
+   "gainChainage": 0,
+   "cuisinable": false
+  },
+  {
+   "id": "oeufs-durs",
+   "titre": "Œufs durs",
+   "minutes": 12,
+   "minutesSurPlace": 12,
+   "avanceMin": 12,
+   "anticipations": [],
+   "portions": 4,
+   "apports": {
+    "proteine": "oeuf",
+    "feculent": "aucun",
+    "legumes": []
+   },
+   "ingredients": [
+    {
+     "id": "oeufs",
+     "ref": "oeufs",
+     "nom": "œufs",
+     "qty": 4,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false
+    },
+    {
+     "id": "sel",
+     "ref": "sel",
+     "nom": "sel",
+     "qty": 1,
+     "unit": "pincée",
+     "base": false,
+     "assaisonnement": true
+    }
+   ],
+   "steps": [
+    {
+     "id": "cuire-oeufs",
+     "action": "Plonger les œufs dans l'eau frémissante, compter 9 min, refroidir aussitôt sous l'eau froide",
+     "minutes": 12,
+     "needs": [
+      "boil"
+     ],
+     "surveille": true,
+     "uses": null,
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "écaler les œufs refroidis",
+     "enfantDes": 48,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 3,
+   "accepts": [],
+   "creneaux": [
+    "dejeuner",
+    "diner"
+   ],
+   "accompagnement": true,
+   "transportable": true,
+   "sansReste": null,
+   "emits": [],
+   "lotEntier": false,
+   "calibreMax": null,
+   "vaisselle": {
+    "id": "casseroles",
+    "label": "casseroles 2,6 L / 1,6 L",
+    "facteurMax": 1.25
+   },
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
+   "id": "thon-egoutte",
+   "titre": "Thon en boîte",
+   "minutes": 2,
+   "minutesSurPlace": 2,
+   "avanceMin": 2,
+   "anticipations": [],
+   "portions": 2,
+   "apports": {
+    "proteine": "poisson",
+    "feculent": "aucun",
+    "legumes": []
+   },
+   "ingredients": [
+    {
+     "id": "thon-boite",
+     "ref": "thon-boite",
+     "nom": "thon en boîte",
+     "qty": 1,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false
+    }
+   ],
+   "steps": [
+    {
+     "id": "egoutter-thon",
+     "action": "Égoutter la boîte et l'émietter à la fourchette",
+     "minutes": 2,
+     "needs": [],
+     "surveille": true,
+     "uses": null,
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 2,
+   "accepts": [],
+   "creneaux": [
+    "dejeuner",
+    "diner"
+   ],
+   "accompagnement": true,
+   "transportable": true,
+   "sansReste": null,
+   "emits": [],
+   "lotEntier": false,
+   "calibreMax": null,
+   "vaisselle": null,
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
+   "id": "salade-verte-vinaigrette",
+   "titre": "Salade verte",
+   "minutes": 8,
+   "minutesSurPlace": 8,
+   "avanceMin": 8,
+   "anticipations": [],
+   "portions": 4,
+   "apports": {
+    "proteine": "aucune",
+    "feculent": "aucun",
+    "legumes": [
+     "feuille"
+    ]
+   },
+   "ingredients": [
+    {
+     "id": "salade-verte",
+     "ref": "salade-verte",
+     "nom": "salade verte",
+     "qty": 1,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false
+    },
+    {
+     "id": "huile-olive",
+     "ref": "huile-olive",
+     "nom": "huile d'olive",
+     "qty": 2,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false
+    },
+    {
+     "id": "vinaigre",
+     "ref": "vinaigre",
+     "nom": "vinaigre",
+     "qty": 1,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false
+    },
+    {
+     "id": "moutarde",
+     "ref": "moutarde",
+     "nom": "moutarde",
+     "qty": 1,
+     "unit": "c. à c.",
+     "base": false,
+     "assaisonnement": false
+    },
+    {
+     "id": "sel",
+     "ref": "sel",
+     "nom": "sel",
+     "qty": 1,
+     "unit": "pincée",
+     "base": false,
+     "assaisonnement": true
+    }
+   ],
+   "steps": [
+    {
+     "id": "laver-salade",
+     "action": "Laver et essorer la salade",
+     "minutes": 5,
+     "needs": [],
+     "surveille": true,
+     "uses": null,
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "tourner l'essoreuse à salade",
+     "enfantDes": 36,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "vinaigrette",
+     "action": "Délayer la moutarde dans le vinaigre et le sel, monter à l'huile, brasser la salade au dernier moment",
+     "minutes": 3,
+     "needs": [],
+     "surveille": true,
+     "uses": null,
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": true
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 8,
+   "accepts": [],
+   "creneaux": [
+    "dejeuner",
+    "diner"
+   ],
+   "accompagnement": true,
+   "transportable": true,
+   "sansReste": null,
+   "emits": [],
+   "lotEntier": false,
+   "calibreMax": null,
+   "vaisselle": null,
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
+   "id": "carottes-rapees",
+   "titre": "Carottes râpées",
+   "minutes": 10,
+   "minutesSurPlace": 10,
+   "avanceMin": 10,
+   "anticipations": [],
+   "portions": 4,
+   "apports": {
+    "proteine": "aucune",
+    "feculent": "aucun",
+    "legumes": [
+     "racine"
+    ]
+   },
+   "ingredients": [
+    {
+     "id": "carottes",
+     "ref": "carottes",
+     "nom": "carottes",
+     "qty": 4,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false
+    },
+    {
+     "id": "citron",
+     "ref": "citron",
+     "nom": "citron",
+     "qty": 1,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false
+    },
+    {
+     "id": "huile-olive",
+     "ref": "huile-olive",
+     "nom": "huile d'olive",
+     "qty": 2,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false
+    },
+    {
+     "id": "sel",
+     "ref": "sel",
+     "nom": "sel",
+     "qty": 1,
+     "unit": "pincée",
+     "base": false,
+     "assaisonnement": true
+    }
+   ],
+   "steps": [
+    {
+     "id": "raper-carottes",
+     "action": "Râper les carottes, les assaisonner de jus de citron, d'huile et de sel",
+     "minutes": 10,
+     "needs": [
+      "chop-coarse"
+     ],
+     "surveille": true,
+     "uses": null,
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": true
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 10,
+   "accepts": [],
+   "creneaux": [
+    "dejeuner",
+    "diner"
+   ],
+   "accompagnement": true,
+   "transportable": true,
+   "sansReste": null,
+   "emits": [],
+   "lotEntier": false,
+   "calibreMax": null,
+   "vaisselle": null,
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
    "id": "sauce-bolognaise",
    "titre": "Sauce bolognaise",
    "minutes": 60,
@@ -295,6 +1005,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -386,6 +1097,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": {
     "minutes": 45,
@@ -503,6 +1215,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": {
     "minutes": 45,
@@ -620,6 +1333,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [],
@@ -704,6 +1418,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -836,6 +1551,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": {
     "minutes": 15,
@@ -933,6 +1649,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": {
     "minutes": 10,
@@ -1042,6 +1759,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -1127,6 +1845,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [],
@@ -1210,6 +1929,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -1314,6 +2034,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -1409,6 +2130,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [],
@@ -1505,6 +2227,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": {
     "minutes": 35,
@@ -1589,6 +2312,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [],
@@ -1663,6 +2387,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [],
@@ -1982,6 +2707,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": {
     "minutes": 0,
@@ -2228,6 +2954,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": {
     "minutes": 35,
@@ -2554,6 +3281,7 @@
     "gouter",
     "dessert"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -2714,6 +3442,7 @@
    "creneaux": [
     "gouter"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -2937,6 +3666,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": false,
    "sansReste": null,
    "emits": [],
@@ -3184,6 +3914,7 @@
     "gouter",
     "dessert"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -3385,6 +4116,7 @@
    "creneaux": [
     "gouter"
    ],
+   "accompagnement": false,
    "transportable": false,
    "sansReste": null,
    "emits": [],
@@ -3598,6 +4330,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": {
     "minutes": 5,
@@ -3828,6 +4561,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -4112,6 +4846,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -4377,6 +5112,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": {
     "minutes": 20,
@@ -4619,6 +5355,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": false,
    "sansReste": null,
    "emits": [
@@ -4886,6 +5623,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -5122,6 +5860,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": {
     "minutes": 5,
@@ -5392,6 +6131,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -5670,6 +6410,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": {
     "minutes": 0,
@@ -6054,6 +6795,7 @@
     "gouter",
     "dessert"
    ],
+   "accompagnement": false,
    "transportable": false,
    "sansReste": null,
    "emits": [
@@ -6227,6 +6969,7 @@
     "gouter",
     "dessert"
    ],
+   "accompagnement": false,
    "transportable": false,
    "sansReste": {
     "minutes": 15,
@@ -6498,6 +7241,7 @@
     "petit-dejeuner",
     "gouter"
    ],
+   "accompagnement": false,
    "transportable": false,
    "sansReste": {
     "minutes": 0,
@@ -6714,6 +7458,7 @@
     "gouter",
     "dessert"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -6910,6 +7655,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -7231,6 +7977,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -7395,6 +8142,7 @@
     "petit-dejeuner",
     "gouter"
    ],
+   "accompagnement": false,
    "transportable": false,
    "sansReste": null,
    "emits": [],
@@ -7536,6 +8284,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -7748,6 +8497,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -7958,6 +8708,7 @@
    "creneaux": [
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -8189,6 +8940,7 @@
     "gouter",
     "dessert"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -8376,6 +9128,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -8597,6 +9350,7 @@
     "gouter",
     "dessert"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": {
     "minutes": 0,
@@ -8878,6 +9632,7 @@
     "gouter",
     "dessert"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -9096,6 +9851,7 @@
     "petit-dejeuner",
     "gouter"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -9343,6 +10099,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -9606,6 +10363,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -9763,6 +10521,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [],
@@ -10054,6 +10813,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [],
@@ -10326,6 +11086,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -10717,6 +11478,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": {
     "minutes": 0,
@@ -10965,6 +11727,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": false,
    "sansReste": {
     "minutes": 0,
@@ -11217,6 +11980,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -11380,6 +12144,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -11564,6 +12329,7 @@
     "gouter",
     "dessert"
    ],
+   "accompagnement": false,
    "transportable": false,
    "sansReste": null,
    "emits": [
@@ -11894,6 +12660,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -12171,6 +12938,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -12515,6 +13283,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -12820,6 +13589,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -13109,6 +13879,7 @@
     "gouter",
     "dessert"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -13421,6 +14192,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -13626,6 +14398,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -13734,6 +14507,7 @@
    "creneaux": [
     "dejeuner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [],
@@ -13924,6 +14698,7 @@
    "creneaux": [
     "gouter"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -14190,6 +14965,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": false,
    "sansReste": null,
    "emits": [
@@ -14407,6 +15183,7 @@
     "gouter",
     "dessert"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -14643,6 +15420,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -14894,6 +15672,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -15177,6 +15956,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -15398,6 +16178,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": false,
    "sansReste": {
     "minutes": 5,
@@ -15781,6 +16562,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -15951,6 +16733,7 @@
     "gouter",
     "dessert"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": {
     "minutes": 0,
@@ -16220,6 +17003,7 @@
    "creneaux": [
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": {
     "minutes": 0,
@@ -16465,6 +17249,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": {
     "minutes": 0,
@@ -16699,6 +17484,7 @@
     "gouter",
     "dessert"
    ],
+   "accompagnement": false,
    "transportable": false,
    "sansReste": null,
    "emits": [
@@ -16905,6 +17691,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -17249,6 +18036,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -17491,6 +18279,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -17790,6 +18579,7 @@
     "gouter",
     "dessert"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -18134,6 +18924,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -18502,6 +19293,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -18654,6 +19446,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -18869,6 +19662,7 @@
     "dejeuner",
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -19098,6 +19892,7 @@
    "creneaux": [
     "diner"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": null,
    "emits": [
@@ -19384,6 +20179,7 @@
     "gouter",
     "dessert"
    ],
+   "accompagnement": false,
    "transportable": true,
    "sansReste": {
     "minutes": 0,

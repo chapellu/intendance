@@ -269,212 +269,6 @@ Un ticket = un commit qui laisse l'app fonctionnelle. `[ ]` à faire,
       plats : trois tâches, pastille à 3, et chaque ligne ouvre l'écran qui y
       répond.
 
-- [x] **T25 — La saison, par ingrédient.** `catalogue/saisons.yaml` : le
-      calendrier de récolte de la région du foyer, et la seule décision qu'il
-      prend.
-
-      **PAS `source.saison`, QUI EXISTAIT POURTANT.** Soixante-quatre recettes en
-      portent une — nichée sous `source:`, à côté de `page:` et `work:`. C'est
-      une donnée BIBLIOGRAPHIQUE : le chapitre du livre, pas la saison du plat.
-      Le corpus le dit lui-même sur les carrés sablés, indexés `ete` alors que
-      l'autrice y range aussi la version d'automne. Et la vraie question n'est
-      pas « cette recette est-elle estivale » mais « les groseilles sont-elles
-      mûres » — elle se pose sur l'ingrédient.
-
-      **LA SOURCE ÉTAIT DÉJÀ TROUVÉE.** `research/curriculum-and-crop-data`
-      (Workspace, 2026-08-02) avait identifié le calendrier CIVAM / DRAAF
-      Auvergne-Rhône-Alpes : ~30 légumes, la région exacte du foyer, information
-      publique réutilisable (CRPA L321-1). La fiche notait « PDF graphique — must
-      be read by eye ». Elle a en fait été lue par ses TRACÉS VECTORIELS : la
-      couleur porte le sens, l'abscisse porte le mois. Deux fautes corrigées en
-      confrontant le résultat au rendu — une couleur qui fuyait entre blocs de
-      dessin (les filets ressortaient « récolte » sur douze mois) et un filtre
-      d'horizontalité trop strict (la bande du céleri est inclinée).
-
-      **ON PÉNALISE LE HORS-SAISON, ON NE RÉCOMPENSE JAMAIS L'EN-SAISON**, et
-      c'est une conséquence de la donnée, pas de la prudence. La source couvre 27
-      ingrédients sur les 57 du primeur que les recettes utilisent : c'est un
-      calendrier de potager, sans aucun fruit et sans la courgette. Un bonus
-      ferait donc gagner la tomate d'août contre la courgette d'août — non parce
-      que l'une est plus de saison, mais parce qu'on connaît l'une et pas
-      l'autre. Un classement qui reflète les trous de sa source est pire qu'un
-      classement muet. La pénalité n'a pas ce défaut : elle ne se déclenche que
-      là où on sait, et ce qu'on sait est vrai.
-
-      **RÉCOLTE N'EST PAS DISPONIBILITÉ — la faute attrapée en mesurant.** La
-      première version pénalisait, en février, tout plat contenant un oignon :
-      56 plats sur 64, dont les lentilles paysannes et le curry de pois chiches.
-      L'oignon se récolte de mai à août et se mange toute l'année, parce qu'il se
-      garde. `se_garde: true` marque donc ce qui survit à sa récolte — alliacées,
-      tubercules, racines, choux d'hiver. Ne se paie que ce qui disparaît
-      vraiment : tomate, salade, concombre, aubergine, poivron. Après correction,
-      3 plats pénalisés en août, 21 en février.
-
-      **LE MOIS EST CELUI DU CRÉNEAU**, pas d'aujourd'hui : une semaine posée le
-      28 août court jusqu'au 3 septembre, et juger ce dîner-là avec le calendrier
-      d'août serait faux d'un mois sans que rien n'échoue.
-
-      L'écran dit le hors-saison À PART des autres raisons. C'est la seule ligne
-      qui argumente contre le plat ; la noyer dans la file la ferait disparaître
-      dès qu'un meilleur argument existe.
-
-- [x] **T26 — Une brique n'est pas un repas.** Le score sait enfin qu'une sauce
-      bolognaise ne fait pas un dîner.
-
-      **LA REMARQUE, ET LA CORRECTION QU'ELLE M'A VALUE.** J'avais séparé « ce
-      n'est pas un plat » (sauce, pâte à pizza) de « c'est un plat, il manque un
-      accompagnement » (rôti, omelette). L'utilisateur a tranché : « c'est le
-      même problème que la bolognaise sans pâtes. Ce sont simplement des briques
-      qu'il faut assembler. » Il a raison — les deux manquent d'un féculent, et
-      ni l'un ni l'autre ne le dit. Ma distinction était de degré, pas de nature.
-
-      **LA CAUSE ÉTAIT UN DÉFAUT, AU SENS PROPRE.** 61 recettes sur 86 ne
-      déclarent aucun `creneaux:` ; l'export leur donne alors `[dejeuner, diner]`.
-      Une sauce, une pâte et un consommé devenaient des dîners sans que personne
-      l'ait décidé.
-
-      **ET LA DONNÉE ÉTAIT DÉJÀ LÀ.** `apports` porte `proteine`, `feculent` et
-      `legumes` avec `aucune` / `aucun` / `[]` quand la recette n'en apporte pas.
-      La complétude se DÉRIVE donc, sans rien saisir sur 86 recettes — ce qui
-      aurait été 86 occasions de se tromper. Mesuré : 44 des 65 plats jouables au
-      repas principal se suffisent, 21 sont des briques.
-
-      **LE COÛT CROÎT AVEC CE QUI MANQUE** (`repas_incomplet`, par pilier). Un
-      rôti sans féculent est presque un dîner ; une pâte à pizza nue ne l'est pas
-      du tout. Les compter pareil rendrait le terme aveugle à la différence qui a
-      motivé son écriture. Résultat : zéro brique dans les dix premières
-      propositions, la pâte à pizza dernière sur 64, la bolognaise passée de
-      proposée à 30ᵉ — et la carte dit « il manque un féculent ».
-
-      Un prix, pas un interdit : on a le droit de dîner d'une soupe.
-
-- [x] **T27 — Partager la liste de courses.** Un lien, pas un serveur.
-
-      **LE TROU.** L'app est locale par construction — Dexie sur IndexedDB, aucun
-      backend, `k8s/` ne sert que des fichiers statiques. Ouvrir
-      `intendance.chapellu.fr` sur un second téléphone donnait donc une base
-      VIDE. Le mot « partage » n'apparaissait pas une fois dans ce backlog : ça
-      n'avait jamais été un ticket. Or `household.yaml` déclare deux adultes, et
-      une liste que deux personnes ne peuvent pas lire est à moitié une liste.
-
-      **LE LIEN PORTE LES DÉCISIONS, PAS LA LISTE.** Elle se recalcule à
-      l'arrivée depuis le même catalogue. Transporter le résultat plutôt que ses
-      entrées se garantirait de diverger le jour où le corpus change — la faute
-      que ce dépôt a déjà payée avec le JSON resté à 51 plats. Une semaine tient
-      en ~400 caractères ; pas de compression, ce serait une pièce mobile pour un
-      problème qu'on n'a pas.
-
-      **LE JOUR VOYAGE EN DATE, JAMAIS EN INDEX** — même règle qu'en base, et
-      pour la même raison : un index ne veut rien dire hors de la semaine qui l'a
-      calculé.
-
-      **L'ÉCRAN D'ARRIVÉE N'ÉCRIT RIEN**, et c'est ce qui rend le partage
-      utilisable à deux : ouvrir le lien de son conjoint n'écrase pas sa propre
-      semaine. Il n'offre aucune case à cocher non plus — sans serveur, cocher ne
-      remonterait nulle part, et deux personnes rentreraient du magasin en
-      croyant chacune que l'autre a pris le lait. Ce qu'on ne peut pas tenir, on
-      ne l'offre pas ; l'écran dit que c'est un instantané.
-
-      Un lien tronqué est REFUSÉ plutôt que lu à moitié : les messageries coupent
-      les URL longues, et un JSON amputé peut rester syntaxiquement plausible.
-      Une liste incomplète est une liste dont on ne sait pas ce qui manque.
-
-      Le parcours e2e ouvre le lien dans un SECOND contexte navigateur, donc une
-      seconde IndexedDB vide. C'est la seule façon de prouver la fonctionnalité —
-      relire le lien dans le même contexte resterait vert le jour où il ne
-      transporte plus rien.
-
-### Trouvé en portant, à décider
-
-- [ ] **Assembler, et pas seulement signaler.** T26 sait dire « il manque un
-      féculent » ; il ne sait pas proposer le riz qui irait avec. Deux choses
-      manquent : des briques d'accompagnement dans le corpus (riz nature, pâtes,
-      pain, salade — le livre n'en contient pas, ce sont des recettes de plats),
-      et un créneau qui porte PLUSIEURS plats, ce qui est une migration de schéma
-      (`DecisionCreneau.plat` est un `string | null`). C'est le vrai objectif que
-      l'utilisateur a formulé — « définir un repas complet et équilibré » — et
-      c'est un ticket entier, pas une rallonge.
-
-- [ ] **Le partage est à sens unique.** Rien ne remonte de la personne qui reçoit
-      la liste. Une liste vivante à deux demanderait un serveur, des comptes et
-      une résolution de conflits quand les deux cochent le même article. À ne
-      prendre que si l'instantané se révèle insuffisant à l'usage — c'est une
-      infrastructure entière contre un lien de 400 caractères.
-
-- [ ] **La saison ne couvre que la moitié du primeur.** 27 ingrédients sur 57,
-      et il manque des blocs entiers : TOUS les fruits (fraises, pommes, poires,
-      pêches, abricots, mûres, groseilles), la courgette, la courge et le
-      potimarron, les navets, les champignons. `saisons.yaml` les nomme dans
-      `sans_source` plutôt que de les subir — ils ne sont jamais pénalisés. Il
-      faudrait une seconde source, et les fruits d'abord ; la fiche de recherche
-      de Workspace n'en a pas identifié sous licence claire.
-
-- [ ] **Le modèle écrit du français.** `Offre.combien`, `deQuoi` et
-      `reserves()` rendent des phrases toutes faites — « en faire 1.36× », « un
-      lot ne se coupe pas : 0.5 portion(s) de plus à ranger ». Elles portent le
-      point décimal anglais et un pluriel entre parenthèses ; l'écran les
-      repasse par `virgules()` faute de mieux, parce que la parité avec le proto
-      se joue sur ces chaînes exactes. À trancher : le modèle rend-il des
-      NOMBRES et l'écran les phrases, ou garde-t-il la parole ? Le premier est
-      plus propre et casse la parité ; le second demande d'y écrire un français
-      correct. À faire quand `apps/proto-shell` disparaîtra, pas avant.
-
-- [ ] **Le catalogue configure la main, le code l'ignore.** `equilibre.main`
-      porte `taille: 5`, `cooldown_jours: 10` et `garantir: [express, souche,
-      derive]` ; `main()` code en dur une taille de 4 et les mêmes trois
-      enseignes, et ne lit jamais le cooldown. Le port garde ce comportement,
-      sinon la parité ne voudrait rien dire. Reste à trancher : la
-      configuration a-t-elle raison, ou faut-il la retirer du catalogue ?
-
-- [ ] **Rentrer une course ne peut pas faire un lot.** T15 a branché la table
-      `stock` sur le calcul, et la promesse du proto — « l'article rejoint le
-      stock, et le plat qui l'attendait passe en trouvé » — reste pourtant
-      intenable. Ce n'est pas un fil qui manque, c'est que les deux bouts ne
-      parlent pas de la même chose : une ligne de courses est un INGRÉDIENT
-      (`oignon`, `pâtes longues`, 140 identifiants), un lot du dépôt est une
-      SORTIE de plat (`sauce-bolognaise`, `lentilles-vertes-cuites`, 40 types),
-      et les `accepts` ne visent que les secondes. Sur les 140 identifiants
-      d'ingrédient du catalogue, un seul coïncide avec un `accepts.type`
-      (`parures-legumes`), et il ne s'achète pas. La règle du modèle le dit
-      d'ailleurs autrement : une base manquante est `absent`, « à cuisiner
-      d'avance », et `absent` ne produit pas de ligne de courses — on n'achète
-      nulle part 250 g de lentilles *cuites*. Trancher : ou bien rentrer une
-      course écrit un lot d'ingrédient BRUT que le dépôt ne sait pas encore
-      servir (et il faudrait alors que `calculer` prélève aussi sur les
-      ingrédients, ce qui est une autre modèle), ou bien la phrase du proto
-      était fausse et il faut la retirer d'où elle traîne encore. Question pour
-      le modèle Python.
-
-- [ ] **Rien n'efface les marques de courses quand la semaine tourne.** Un
-      article coché la semaine dernière garde sa marque, et la liste peut
-      mentir par omission — la pire façon de mentir pour une liste de courses.
-      T13 les compte et offre « Repartir de zéro » plutôt que d'effacer tout
-      seul : effacer ce que quelqu'un a coché est un geste qui lui appartient.
-      Reste à trancher s'il faut une règle automatique — et alors la table
-      `courses` a besoin d'un marqueur de semaine, ce qu'elle n'a pas (elle
-      porte `maj`, un horodatage, et la fenêtre de sept jours glisse chaque
-      jour : « avant lundi » ne veut rien dire ici).
-
-- [ ] **Le catalogue n'a pas de nom lisible pour ce qu'il produit.** Un `emit`
-      porte un `type` (`lentilles-vertes-cuites`, `puree-lentilles-carottes`) et
-      une catégorie d'équilibre porte un id (`legumineuse`) — jamais de libellé.
-      Les écrans les affichent donc tels quels, identifiants compris : « apporte
-      legumineuse, qui manque », « puree-lentilles-carottes » — alors que les
-      INGRÉDIENTS, eux, portent un `nom` lisible, ce qui prouve que le format
-      sait le faire. Les
-      dé-tiretiser produirait du faux français (« puree » sans accent), ce qui
-      est pire qu'un jeton qui s'assume. C'est une donnée qui manque au modèle
-      Python : un `label` par type et par catégorie, et les huit écrans en
-      profitent le même jour.
-
-- [ ] **Un lot congelable posé cette semaine vieillit au frigo.** `calculer`
-      range TOUTE sortie avec `location: "frigo"` — le lot n'est pas encore AU
-      congélo, il refroidit — mais du coup il sort de la fenêtre de fraîcheur au
-      bout de `fenetreFrigo` jours, alors que son `espace` dit congélo. Un plat
-      très en aval ne le trouve donc plus. Épinglé par un test dans
-      `calcul.test.ts` : le changer sera une décision, pas un effet de bord.
-      C'est une question pour le modèle Python, pas pour l'app.
-
 ### Le reste
 
 - [x] **T17 — Perf. LA PRÉMISSE ÉTAIT FAUSSE, il n'y a rien à optimiser.**
@@ -948,16 +742,90 @@ Un ticket = un commit qui laisse l'app fonctionnelle. `[ ]` à faire,
       relire le lien dans le même contexte resterait vert le jour où il ne
       transporte plus rien.
 
-### Trouvé en portant, à décider
+- [x] **T28 — Assembler.** Un créneau porte plusieurs plats, et le corpus a des
+      briques à y mettre.
 
-- [ ] **Assembler, et pas seulement signaler.** T26 sait dire « il manque un
-      féculent » ; il ne sait pas proposer le riz qui irait avec. Deux choses
-      manquent : des briques d'accompagnement dans le corpus (riz nature, pâtes,
-      pain, salade — le livre n'en contient pas, ce sont des recettes de plats),
-      et un créneau qui porte PLUSIEURS plats, ce qui est une migration de schéma
-      (`DecisionCreneau.plat` est un `string | null`). C'est le vrai objectif que
-      l'utilisateur a formulé — « définir un repas complet et équilibré » — et
-      c'est un ticket entier, pas une rallonge.
+      **L'OBJECTIF, DIT PAR L'UTILISATEUR.** « L'objectif c'est de définir un
+      repas complet et équilibré. Tu l'as dit toi-même dans les autres recettes
+      il "suffit" de rajouter du riz mais il n'est mentionné nulle part. C'est le
+      même problème que la bolognaise sans pâtes. Ce sont simplement des briques
+      qu'il faut assembler. » T26 savait signaler ; il ne savait pas réparer.
+
+      **CE QUI MANQUAIT AU CORPUS, MESURÉ AVANT D'ÊTRE ÉCRIT.** Le livre est un
+      livre de cuisine : personne n'y écrit « faire cuire des pâtes ». Sur les 21
+      briques du corpus, il manquait un féculent à 14, une protéine à 11, des
+      légumes à 4. `_accompagnements.yaml` porte les neuf recettes qui répondent
+      à ce décompte-là, et pas au goût de qui les écrit : riz, pâtes, semoule,
+      pommes de terre, pain · œufs durs, thon en boîte · salade, carottes râpées.
+      **Les 21 briques deviennent toutes un repas complet.**
+
+      **`accompagnement: true` EST CE QUI LES REND INOFFENSIFS.** Jouables
+      partout et presque gratuits, le riz nature et le pain auraient gagné la
+      main — l'app aurait proposé un bol de riz en dîner, soit la faute de T26
+      refaite par l'autre bout. Le drapeau les sort de `offre()` ; ils n'entrent
+      que par `complements()`, qui ne se pose que sur un créneau déjà décidé.
+
+      **LE CRÉNEAU N'EST PLUS UN PLAT.** `calculer` itérait `choix.forEach` — un
+      créneau, un plat — et cette boucle était la seule raison pour laquelle un
+      créneau ne pouvait pas en porter deux. Elle itère des POSES ; tout le reste
+      a suivi sans changer de sens. `choix` reste le plat qui DÉCIDE du repas,
+      parce que « qu'est-ce qu'on mange ce soir ? » a une seule réponse ; les
+      briques vivent à côté, dans `accompagnements`.
+
+      **UN ACCOMPAGNEMENT N'EST PAS DE SECONDE CLASSE.** Il entre au panier, il
+      compte dans les minutes de la journée, il pèse sur la couverture (du riz
+      quatre soirs de suite EST une répétition de féculent) et il vide le
+      placard. Ce qu'il ne fait pas : décider d'un format de repas — d'où
+      l'absence de `profil`, sans quoi le plat principal paierait une répétition
+      que personne n'a servie. `Apports.profil` est devenu nullable pour ça.
+
+      **AUCUN POIDS NOUVEAU**, et c'est ce qui rend le score vérifiable : la
+      valeur d'une brique est exactement la pénalité d'incomplétude qu'elle
+      ANNULE. Poser du riz sous une bolognaise rapporte les trois points que la
+      bolognaise seule payait. Un `bonus_accompagnement` inventé aurait ouvert la
+      porte à ce que les deux termes cessent de se répondre. Le reste des termes
+      est celui des plats — marginal, placard, saison, répétition — parce qu'une
+      brique EST un plat : c'est ce qui fait gagner le riz du bocal contre les
+      pâtes à acheter, sans qu'on ait eu à l'écrire.
+
+      **CE QU'ON A MESURÉ ENSUITE, ET QUI VAUT D'ÊTRE SU** : les pommes de terre
+      remontent en tête de presque toutes les complétions, parce que le relevé
+      les dit en train de s'abîmer sous l'évier. C'est vrai, c'est le service
+      rendu, et c'est cousin de la faute de T22 (le bonus placard qui domine un
+      classement). La répétition du féculent l'amortit à partir du troisième
+      soir ; l'écran propose trois briques, pas une. À relire si l'usage montre
+      que l'app sert des patates tous les jours.
+
+      **LA MIGRATION EST UNE VRAIE MIGRATION.** `accompagnements` n'est indexé
+      nulle part — Dexie n'en aurait pas besoin. Ce qui a besoin d'une version,
+      c'est la DONNÉE : les créneaux écrits avant ce ticket n'ont pas le champ, et
+      sans migration chaque lecteur devrait se souvenir de rattraper un
+      `undefined`. Le test ouvre une VRAIE v1, y écrit une décision, puis rouvre
+      en v2 — une migration qu'on n'exerce que sur une base neuve est une
+      migration qu'on croit avoir testée.
+
+      **CHANGER LE PLAT EMPORTE SES ACCOMPAGNEMENTS.** Le riz avait été posé sous
+      un rôti ; sur une paella il n'a plus rien à faire, et personne ne penserait
+      à l'enlever — la liste de courses porterait un riz que le repas ne mange
+      pas. Reposer le MÊME plat, en revanche, ne jette rien.
+
+      **L'ASSIETTE VOYAGE ENTIÈRE** dans le lien de partage, sous la clé courte
+      `avec`, absente quand elle est vide. Un accompagnement ne part jamais seul :
+      sans plat principal, le créneau n'a pas été décidé, et « du riz mardi soir »
+      ferait acheter du riz pour un repas qui n'existe pas. Les liens envoyés
+      avant ce ticket se relisent encore — absent vaut vide.
+
+      **Ce qui reste hors de portée** : les quantités ne se composent pas. L'app
+      sait qu'un rôti avec du riz tient debout ; elle ne sait pas si 250 g de riz
+      vont avec ce rôti-là. C'est un modèle de portions, et ce n'est pas ce
+      ticket.
+
+      **Trouvé en chemin** : ce backlog portait T25, T26, T27 et une section
+      « Trouvé en portant » EN DOUBLE, la seconde copie ayant été appendue au
+      mauvais endroit par un ticket précédent. Les doublons sont supprimés et les
+      deux listes d'items ouverts fusionnées — aucun item perdu.
+
+### Trouvé en portant, à décider
 
 - [ ] **Le partage est à sens unique.** Rien ne remonte de la personne qui reçoit
       la liste. Une liste vivante à deux demanderait un serveur, des comptes et
@@ -981,6 +849,72 @@ Un ticket = un commit qui laisse l'app fonctionnelle. `[ ]` à faire,
       filet d'oignons en le rangeant. Peut-être la bonne réponse est-elle une
       bande plutôt qu'un poids — « un filet », « une main » —, comme `qty_band`
       compte des repas plutôt que des grammes.
+
+- [ ] **Le modèle écrit du français.** `Offre.combien`, `deQuoi` et
+      `reserves()` rendent des phrases toutes faites — « en faire 1.36× », « un
+      lot ne se coupe pas : 0.5 portion(s) de plus à ranger ». Elles portent le
+      point décimal anglais et un pluriel entre parenthèses ; l'écran les
+      repasse par `virgules()` faute de mieux, parce que la parité avec le proto
+      se joue sur ces chaînes exactes. À trancher : le modèle rend-il des
+      NOMBRES et l'écran les phrases, ou garde-t-il la parole ? Le premier est
+      plus propre et casse la parité ; le second demande d'y écrire un français
+      correct. À faire quand `apps/proto-shell` disparaîtra, pas avant.
+
+- [ ] **Le catalogue configure la main, le code l'ignore.** `equilibre.main`
+      porte `taille: 5`, `cooldown_jours: 10` et `garantir: [express, souche,
+      derive]` ; `main()` code en dur une taille de 4 et les mêmes trois
+      enseignes, et ne lit jamais le cooldown. Le port garde ce comportement,
+      sinon la parité ne voudrait rien dire. Reste à trancher : la
+      configuration a-t-elle raison, ou faut-il la retirer du catalogue ?
+
+- [ ] **Rentrer une course ne peut pas faire un lot.** T15 a branché la table
+      `stock` sur le calcul, et la promesse du proto — « l'article rejoint le
+      stock, et le plat qui l'attendait passe en trouvé » — reste pourtant
+      intenable. Ce n'est pas un fil qui manque, c'est que les deux bouts ne
+      parlent pas de la même chose : une ligne de courses est un INGRÉDIENT
+      (`oignon`, `pâtes longues`, 140 identifiants), un lot du dépôt est une
+      SORTIE de plat (`sauce-bolognaise`, `lentilles-vertes-cuites`, 40 types),
+      et les `accepts` ne visent que les secondes. Sur les 140 identifiants
+      d'ingrédient du catalogue, un seul coïncide avec un `accepts.type`
+      (`parures-legumes`), et il ne s'achète pas. La règle du modèle le dit
+      d'ailleurs autrement : une base manquante est `absent`, « à cuisiner
+      d'avance », et `absent` ne produit pas de ligne de courses — on n'achète
+      nulle part 250 g de lentilles *cuites*. Trancher : ou bien rentrer une
+      course écrit un lot d'ingrédient BRUT que le dépôt ne sait pas encore
+      servir (et il faudrait alors que `calculer` prélève aussi sur les
+      ingrédients, ce qui est une autre modèle), ou bien la phrase du proto
+      était fausse et il faut la retirer d'où elle traîne encore. Question pour
+      le modèle Python.
+
+- [ ] **Rien n'efface les marques de courses quand la semaine tourne.** Un
+      article coché la semaine dernière garde sa marque, et la liste peut
+      mentir par omission — la pire façon de mentir pour une liste de courses.
+      T13 les compte et offre « Repartir de zéro » plutôt que d'effacer tout
+      seul : effacer ce que quelqu'un a coché est un geste qui lui appartient.
+      Reste à trancher s'il faut une règle automatique — et alors la table
+      `courses` a besoin d'un marqueur de semaine, ce qu'elle n'a pas (elle
+      porte `maj`, un horodatage, et la fenêtre de sept jours glisse chaque
+      jour : « avant lundi » ne veut rien dire ici).
+
+- [ ] **Le catalogue n'a pas de nom lisible pour ce qu'il produit.** Un `emit`
+      porte un `type` (`lentilles-vertes-cuites`, `puree-lentilles-carottes`) et
+      une catégorie d'équilibre porte un id (`legumineuse`) — jamais de libellé.
+      Les écrans les affichent donc tels quels, identifiants compris : « apporte
+      legumineuse, qui manque », « puree-lentilles-carottes » — alors que les
+      INGRÉDIENTS, eux, portent un `nom` lisible, ce qui prouve que le format
+      sait le faire. Les
+      dé-tiretiser produirait du faux français (« puree » sans accent), ce qui
+      est pire qu'un jeton qui s'assume. C'est une donnée qui manque au modèle
+      Python : un `label` par type et par catégorie, et les huit écrans en
+      profitent le même jour.
+
+- [ ] **Un lot congelable posé cette semaine vieillit au frigo.** `calculer`
+      range TOUTE sortie avec `location: "frigo"` — le lot n'est pas encore AU
+      congélo, il refroidit — mais du coup il sort de la fenêtre de fraîcheur au
+      bout de `fenetreFrigo` jours, alors que son `espace` dit congélo. Un plat
+      très en aval ne le trouve donc plus. Épinglé par un test dans
+      `calcul.test.ts` : le changer sera une décision, pas un effet de bord.
+      C'est une question pour le modèle Python, pas pour l'app.
 
 ## Sortie
 

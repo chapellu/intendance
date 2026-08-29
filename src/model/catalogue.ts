@@ -192,7 +192,10 @@ function plat(v: unknown, ou: string): Plat {
       proteine: texte(apports["proteine"], `${ou}.apports.proteine`),
       feculent: texte(apports["feculent"], `${ou}.apports.feculent`),
       legumes: listeDeTextes(apports["legumes"], `${ou}.apports.legumes`),
-      profil: texte(apports["profil"], `${ou}.apports.profil`),
+      // `null` ADMIS, depuis les accompagnements : une brique n'a pas de format
+      // de repas, et lui en inventer un ferait payer au plat principal une
+      // répétition que personne n'a servie. Reste vérifié quand il est là.
+      profil: texteOuNull(apports["profil"] ?? null, `${ou}.apports.profil`),
       ...(origine === undefined ? {} : { origine: texte(origine, `${ou}.apports.origine`) }),
     },
     ingredients: tableau(o["ingredients"], `${ou}.ingredients`)
@@ -202,6 +205,7 @@ function plat(v: unknown, ou: string): Plat {
     actifMin: nombreOuNull(o["actifMin"] ?? null, `${ou}.actifMin`),
     accepts: tableau(o["accepts"], `${ou}.accepts`).map((x, i) => accept(x, `${ou}.accepts[${i}]`)),
     creneaux: listeDeTextes(o["creneaux"] ?? [], `${ou}.creneaux`),
+    accompagnement: booleen(o["accompagnement"], `${ou}.accompagnement`),
     transportable: booleen(o["transportable"], `${ou}.transportable`),
     sansReste: o["sansReste"] == null ? null : (() => {
       const s = obj(o["sansReste"], `${ou}.sansReste`);

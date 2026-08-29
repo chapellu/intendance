@@ -11,7 +11,8 @@
 
 import { cleCreneau, jourISO } from "../db";
 import { articles, minutesParJour, type Calcul, type LigneChaine } from "../model/calcul";
-import { joue, SAUTE, sePioche, type Jeu } from "../model/jeu";
+import { accompagnementsDe, joue, SAUTE, sePioche, type Jeu } from "../model/jeu";
+import { ditLeManque, manqueALAssiette } from "../model/repas";
 import type { Emit, Plat } from "../model/types";
 import type { CleCreneau, Route } from "../nav/routes";
 import { duree } from "../ui/format";
@@ -32,6 +33,12 @@ export interface VueSlot {
   emporte: boolean;
   saute: boolean;
   plat: Plat | null;
+  /** Les briques posées à côté. La case en montre les titres : un dîner « rôti ·
+   *  riz nature » n'est pas le même dîner qu'un rôti seul, et c'est justement la
+   *  différence qu'on vient d'apprendre à faire. */
+  cotes: Plat[];
+  /** Ce qui manque à l'ASSIETTE, dit en français, vide quand elle se suffit. */
+  dit: string;
   parts: number;
   /** Les parts ne s'affichent que si elles ont été RÉGLÉES : répéter la taille
    *  du foyer quatorze fois n'apprend rien. */
@@ -81,6 +88,7 @@ function slot(jeu: Jeu, calc: Calcul, i: number, jour: string): VueSlot {
   const c = jeu.creneaux[i]!;
   const rid = jeu.choix[i] ?? null;
   const plat = joue(rid) ? jeu.plats[rid] ?? null : null;
+  const cotes = accompagnementsDe(jeu, i);
 
   // CE QU'UN CRÉNEAU DOIT AUX AUTRES JOURS, dans les deux sens : ce qu'il
   // reçoit d'un plat déjà cuisiné, ce qu'il laissera aux suivants. Le point
@@ -96,9 +104,15 @@ function slot(jeu: Jeu, calc: Calcul, i: number, jour: string): VueSlot {
     emporte: c.emporte,
     saute: rid === SAUTE,
     plat,
+    cotes,
+    // Rien à dire tant que rien n'est posé : un créneau vide n'est pas un repas
+    // raté, c'est une décision à prendre — et la case le dit déjà autrement.
+    dit: plat ? ditLeManque(manqueALAssiette([plat, ...cotes])) : "",
     parts: jeu.parts[i] ?? jeu.catalogue.foyer.parts,
     partsRegle: (jeu.parts[i] ?? jeu.catalogue.foyer.parts) !== jeu.catalogue.foyer.parts,
-    minutes: plat ? plat.minutes : 0,
+    // Le riz compte dans le temps du créneau, comme il compte dans celui du
+    // jour : c'est le même quart d'heure de cuisine.
+    minutes: (plat ? plat.minutes : 0) + cotes.reduce((n, p) => n + p.minutes, 0),
     lie: recoit.length > 0 || donne.length > 0,
     recoit,
     donne,

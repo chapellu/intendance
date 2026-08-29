@@ -2,9 +2,12 @@ import { readFileSync } from "node:fs";
 import { beforeEach, describe, expect, test } from "vitest";
 import { lireCatalogue } from "../model/catalogue";
 import { creerJeu, type Jeu } from "../model/jeu";
-import { main, offre, type Carte } from "../model/scoring";
+import { complements, main, offre, type Carte } from "../model/scoring";
 import type { Catalogue } from "../model/types";
-import { classeEtat, entreesDeLaCarte, sortiesDeLaCarte } from "./poser.vue";
+import {
+  classeEtat, entreesDeLaCarte, marqueMarginal, sortiesDeLaCarte, vueDeLAssiette,
+  vueDesComplements,
+} from "./poser.vue";
 
 const LUNDI = new Date("2026-08-17T12:00:00Z");
 const catalogue: Catalogue = lireCatalogue(
@@ -132,5 +135,71 @@ describe("la main", () => {
     const a = main(jeu).map((c) => c.plat.id);
     jeu.slot = creneau(1, "diner");
     expect(main(jeu).map((c) => c.plat.id)).not.toEqual(a);
+  });
+});
+
+describe("l'assiette, telle que l'écran la montre", () => {
+  const soir = () => creneau(0, "diner");
+
+  test("le principal vient en tête, les briques ensuite", () => {
+    const i = soir();
+    jeu.choix[i] = "roti-roule-herbes-fenouil";
+    jeu.accompagnements[i] = ["riz-nature"];
+    const v = vueDeLAssiette(jeu, i);
+    expect(v.plats.map((p) => [p.id, p.principal])).toEqual([
+      ["roti-roule-herbes-fenouil", true],
+      ["riz-nature", false],
+    ]);
+    expect(v.complete).toBe(true);
+    expect(v.dit).toBe("");
+  });
+
+  test("un créneau vide n'a pas d'assiette à juger", () => {
+    const v = vueDeLAssiette(jeu, soir());
+    expect(v.vide).toBe(true);
+    expect(v.complete).toBe(false);
+    expect(v.dit).toBe("");
+  });
+
+  test("le manque est annoncé en français", () => {
+    const i = soir();
+    jeu.choix[i] = "veloute-potiron";
+    expect(vueDeLAssiette(jeu, i).dit).toBe("il manque une protéine et un féculent");
+  });
+
+  test("TROIS BRIQUES AU PLUS", () => {
+    // Neuf accompagnements existent. En afficher neuf sous un plat déjà choisi
+    // transformerait une complétion en second choix de plat.
+    const i = soir();
+    jeu.choix[i] = "veloute-potiron";
+    const v = vueDesComplements(complements(jeu, i));
+    expect(v.length).toBe(3);
+    expect(v[0]!.pourquoi).toContain("apporte");
+  });
+
+  test("ce qui restera se dit, plutôt que de laisser croire que c'est fini", () => {
+    const i = soir();
+    jeu.choix[i] = "veloute-potiron";
+    const riz = vueDesComplements(complements(jeu, i), 9).find((c) => c.id === "riz-nature")!;
+    expect(riz.restera).toBe("il manque une protéine");
+  });
+});
+
+describe("le compteur d'articles a trois cas, pas deux", () => {
+  test("une carte peut RENDRE des articles, et le dire en français", () => {
+    // Sur un créneau déjà posé, la carte REMPLACE le plat qui s'y trouve : le
+    // marginal peut être négatif. L'écran écrivait « +-2 art. » et « -2 article
+    // de plus au panier » — le cas existait depuis toujours, T28 l'a mis sous
+    // les yeux en rangeant ces cartes-là sous « changer le plat ».
+    expect(marqueMarginal(2)).toBe("+2 art.");
+    expect(marqueMarginal(0)).toBe("0 art.");
+    expect(marqueMarginal(-2)).toBe("−2 art.");
+
+    const carte = (n: number) => ({ ...offre(jeu, jeu.choix, creneau(0, "diner"))[0]!, marginal: n });
+    expect(entreesDeLaCarte(carte(-2)).at(-1)).toEqual({
+      etat: "trouvé", texte: "2 articles de moins au panier",
+    });
+    expect(entreesDeLaCarte(carte(-1)).at(-1)?.texte).toBe("1 article de moins au panier");
+    expect(entreesDeLaCarte(carte(3)).at(-1)?.texte).toBe("3 articles de plus au panier");
   });
 });

@@ -182,6 +182,11 @@ def main():
                 for a in r.get("accepts", [])
             ],
             "creneaux": r.get("creneaux") or ["dejeuner", "diner"],
+            # UNE BRIQUE QU'ON POSE À CÔTÉ, JAMAIS UN PLAT QU'ON PIOCHE. Sans ce
+            # drapeau, faire entrer « riz nature » au corpus reviendrait à
+            # proposer un bol de riz nature en dîner — la faute que T26 vient de
+            # corriger, refaite par l'autre bout. Voir `_accompagnements.yaml`.
+            "accompagnement": bool(r.get("accompagnement")),
             "transportable": r.get("transportable", True),
             "sansReste": (
                 {"minutes": r["sans_reste"].get("temps_min", 0),

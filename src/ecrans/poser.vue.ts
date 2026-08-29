@@ -12,7 +12,9 @@
 //
 // Port de `apps/proto-shell/comptoir.js` (`carteJouable`).
 
-import type { Carte } from "../model/scoring";
+import { assiette, type Jeu } from "../model/jeu";
+import { ditLeManque, manqueALAssiette } from "../model/repas";
+import type { Carte, Complement } from "../model/scoring";
 import type { Plat } from "../model/types";
 import { fmt } from "../ui/format";
 import { iconeEspace, type NomIcone } from "../ui/icones";
@@ -63,16 +65,28 @@ export function entreesDeLaCarte(c: Carte): Entree[] {
         .join(", ")}`,
     });
 
+  // TROIS CAS, PAS DEUX — et le troisième s'écrivait « -2 article de plus au
+  // panier ». Une carte proposée sur un créneau DÉJÀ POSÉ remplace le plat qui
+  // s'y trouve : elle peut donc RENDRE des articles. Le cas existait depuis
+  // toujours ; T28 l'a mis sous les yeux en rangeant ces cartes-là sous
+  // « changer le plat », et une phrase qui se contredit se remarque.
   e.push({
-    etat: c.marginal === 0 ? "trouvé" : "à acheter",
+    etat: c.marginal > 0 ? "à acheter" : "trouvé",
     texte:
       c.marginal === 0
         ? "rien de plus à acheter"
-        : `${c.marginal} article${c.marginal > 1 ? "s" : ""} de plus au panier`,
+        : `${Math.abs(c.marginal)} article${Math.abs(c.marginal) > 1 ? "s" : ""} ` +
+          `de ${c.marginal > 0 ? "plus" : "moins"} au panier`,
   });
 
   return e;
 }
+
+/** Le compteur de la carte : `+2 art.`, `−2 art.`, `0 art.` Le signe est porté
+ *  par le texte et non par un `+` collé devant le nombre — « +-2 » n'est pas une
+ *  quantité. */
+export const marqueMarginal = (n: number): string =>
+  `${n > 0 ? "+" : n < 0 ? "−" : ""}${Math.abs(n)} art.`;
 
 /**
  * Ce que la carte produit — ce qu'elle laissera derrière elle.
@@ -81,6 +95,65 @@ export function entreesDeLaCarte(c: Carte): Entree[] {
  * moment-là le plat n'est pas encore posé, et les parts peuvent encore changer.
  * Annoncer 1 400 g pour en livrer 700 serait une promesse qu'on ne tient pas.
  */
+/* ─────────────────────────────────────────────────────────────── l'assiette */
+
+export interface VueAssiette {
+  /** Le plat qui décide du repas, puis les briques, dans cet ordre. */
+  plats: { id: string; titre: string; principal: boolean; minutes: number }[];
+  /** « il manque un féculent », vide quand l'assiette se suffit. */
+  dit: string;
+  complete: boolean;
+  /** Rien n'est encore posé : il n'y a pas d'assiette à juger. */
+  vide: boolean;
+}
+
+/**
+ * L'ASSIETTE D'UN CRÉNEAU, telle que l'écran la montre.
+ *
+ * Le calcul tient en trois lignes ; ce qui vaut d'être ici, c'est la décision
+ * qu'elles portent. Un créneau vide n'affiche AUCUN manque — « il manque une
+ * protéine, un féculent et des légumes » sur une case qu'on n'a pas encore
+ * remplie est une réponse vraie et inutile, qui apprend à ignorer la ligne.
+ */
+export function vueDeLAssiette(jeu: Jeu, i: number): VueAssiette {
+  const plats = assiette(jeu, i);
+  const manque = manqueALAssiette(plats);
+  return {
+    plats: plats.map((p, n) => ({
+      id: p.id, titre: p.titre, principal: n === 0, minutes: p.minutes,
+    })),
+    dit: ditLeManque(manque),
+    complete: plats.length > 0 && manque.length === 0,
+    vide: plats.length === 0,
+  };
+}
+
+export interface VueComplement {
+  id: string;
+  titre: string;
+  minutes: number;
+  /** « apporte un féculent · rien à acheter en plus ». */
+  pourquoi: string;
+  /** Ce qui manquera ENCORE : une soupe réclame parfois deux briques, et
+   *  laisser croire qu'une suffit serait la même faute qu'avant, en plus petit. */
+  restera: string;
+  horsSaison: string[];
+}
+
+/** Les briques proposées, coupées court. Neuf accompagnements existent ; en
+ *  afficher neuf sous un plat déjà choisi transformerait une complétion en
+ *  second choix de plat. */
+export function vueDesComplements(liste: Complement[], max = 3): VueComplement[] {
+  return liste.slice(0, max).map((c) => ({
+    id: c.plat.id,
+    titre: c.plat.titre,
+    minutes: c.plat.minutes,
+    pourquoi: c.pourquoi.join(" · "),
+    restera: ditLeManque(c.restera),
+    horsSaison: c.horsSaison,
+  }));
+}
+
 export function sortiesDeLaCarte(p: Plat): Sortie[] {
   const s: Sortie[] = p.emits.map((e) => ({
     // Un reste de plat va au frigo, quoi qu'il arrive : on ne congèle pas une

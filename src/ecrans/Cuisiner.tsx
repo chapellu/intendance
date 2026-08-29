@@ -17,7 +17,7 @@ import { useEffect, useState } from "react";
 import { indexDuCreneau } from "../db";
 import { useCatalogue, useSemaine } from "../db/hooks";
 import { cleEtape, cleMinuteur, poserReglage, useNombre, useObjet } from "../db/reglages";
-import { echelleTexte, facteurAffiche, type Calcul } from "../model/calcul";
+import { echelleTexte, facteurAffiche, facteurPose, type Calcul } from "../model/calcul";
 import { joue, type Jeu } from "../model/jeu";
 import { heureDe } from "../model/heures";
 import type { Etape, Plat } from "../model/types";
@@ -86,7 +86,10 @@ function Fiche({
   const etape = Math.min(range, Math.max(0, steps.length - 1));
 
   const parts = (i >= 0 ? jeu.parts[i] : undefined) ?? jeu.catalogue.foyer.parts;
-  const f = (i >= 0 ? calc.facteurs[i] : undefined) || facteurAffiche(p, parts);
+  // L'ÉCHELLE DE CE PLAT-CI, pas celle du créneau. Un créneau porte le rôti ET
+  // le riz : lire `facteurs[i]` afficherait sur la fiche du riz les quantités
+  // du rôti, sans que rien n'échoue.
+  const f = (i >= 0 ? facteurPose(calc, i, p.id) : null) ?? facteurAffiche(p, parts);
 
   const tete = (
     <>

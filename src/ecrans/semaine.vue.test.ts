@@ -182,3 +182,45 @@ describe("les trois chiffres", () => {
     expect(c[1]?.cle).toBe("de cuisine");
   });
 });
+
+describe("la case montre l'assiette, pas le plat", () => {
+  const avec = (jour: number, repas: string, ...ids: string[]) => {
+    jeu.accompagnements[creneau(jour, repas)] = ids;
+  };
+
+  test("les accompagnements se lisent sur la case", () => {
+    poser(0, "diner", "roti-roule-herbes-fenouil");
+    avec(0, "diner", "riz-nature");
+    const s = vue()[0]!.slots.find((x) => x.label.includes("îner"))!;
+    expect(s.cotes.map((p) => p.id)).toEqual(["riz-nature"]);
+  });
+
+  test("LE MANQUE DISPARAÎT QUAND ON LE COMBLE", () => {
+    poser(0, "diner", "roti-roule-herbes-fenouil");
+    const seul = vue()[0]!.slots.find((x) => x.label.includes("îner"))!;
+    expect(seul.dit).toBe("il manque un féculent");
+
+    avec(0, "diner", "riz-nature");
+    expect(vue()[0]!.slots.find((x) => x.label.includes("îner"))!.dit).toBe("");
+  });
+
+  test("un créneau vide ne se plaint de rien", () => {
+    // « Il manque une protéine, un féculent et des légumes » sur une case qu'on
+    // n'a pas remplie est une réponse vraie et inutile : elle apprend à sauter
+    // la ligne, et le vrai manque s'y noierait.
+    expect(vue()[0]!.slots.every((s) => s.dit === "")).toBe(true);
+  });
+
+  test("le riz compte dans le temps du créneau ET dans celui du jour", () => {
+    // Vingt minutes de riz sont vingt minutes de cuisine. Les taire ferait
+    // mentir le seul chiffre qui dit si la journée tient debout.
+    poser(0, "diner", "roti-roule-herbes-fenouil");
+    const sans = vue()[0]!;
+    avec(0, "diner", "riz-nature");
+    const jour = vue()[0]!;
+    const riz = jeu.plats["riz-nature"]!.minutes;
+    expect(jour.minutes).toBe(sans.minutes + riz);
+    const s = jour.slots.find((x) => x.label.includes("îner"))!;
+    expect(s.minutes).toBe(jeu.plats["roti-roule-herbes-fenouil"]!.minutes + riz);
+  });
+});

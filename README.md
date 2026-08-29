@@ -115,6 +115,18 @@ avéré et ne récompense jamais l'en-saison** : la source couvre 27 ingrédient
 Ce qui *se garde* (oignon, ail, pomme de terre, racines) n'est jamais pénalisé —
 récolte n'est pas disponibilité.
 
+**Un créneau porte un plat ET ce qu'on met à côté.** Le corpus vient d'un livre
+de cuisine, où personne n'écrit « faire cuire des pâtes » : 21 des 65 plats
+jouables au repas principal sont donc des BRIQUES — il leur manque un pilier
+(protéine, féculent, légumes). `recipes/_accompagnements.yaml` porte les neuf
+recettes qui comblent ce décompte-là, marquées `accompagnement: true` : elles ne
+se piochent jamais comme un plat, elles se posent à côté d'un plat déjà choisi.
+La complétude se juge donc sur l'ASSIETTE et non sur la recette — un rôti manque
+d'un féculent, le même rôti avec du riz n'en manque plus. Un accompagnement entre
+au panier, compte dans les minutes du jour et dans la couverture de la semaine
+(du riz quatre soirs de suite est une répétition) ; la seule chose qu'il ne fait
+pas, c'est décider du format du repas, d'où l'absence de `profil`.
+
 **Deux fichiers portent des stocks, et ce ne sont pas les mêmes.**
 `stock.yaml` porte les SORTIES DE CUISINE — des bases cuisinées, indexées sur ce
 que les recettes émettent, mangées par le graphe de chaînage.

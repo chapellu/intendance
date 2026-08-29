@@ -14,24 +14,27 @@
 //
 // Port de `apps/proto-shell/comptoir.js` (`ecranPoser`, `carteJouable`).
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { indexDuCreneau } from "../db";
 import { useCatalogue, useSemaine } from "../db/hooks";
 import { cleRepioche, poserReglage, useNombre } from "../db/reglages";
 import type { Calcul } from "../model/calcul";
 import { SAUTE, type Jeu } from "../model/jeu";
-import { main, type Carte } from "../model/scoring";
+import { complements, main, type Carte } from "../model/scoring";
 import { chemin, type CleCreneau } from "../nav/routes";
 import { aller } from "../nav/useRoute";
 import { Corps } from "../ui/Coquille";
 import { duree, fmt } from "../ui/format";
 import { Icone } from "../ui/icones";
-import { classeEtat, entreesDeLaCarte, sortiesDeLaCarte } from "./poser.vue";
+import {
+  classeEtat, entreesDeLaCarte, marqueMarginal, sortiesDeLaCarte, vueDeLAssiette,
+  vueDesComplements,
+} from "./poser.vue";
 import { chiffresDeLaSemaine } from "./semaine.vue";
 
 export function Poser({ creneau }: { creneau: CleCreneau }) {
   const { catalogue } = useCatalogue();
-  const { jeu, calc, poserPlat } = useSemaine(catalogue);
+  const { jeu, calc, poserPlat, accompagnerDe } = useSemaine(catalogue);
   const repioches = useNombre(cleRepioche(creneau.jour, creneau.repas));
 
   if (!jeu || !calc || repioches === undefined) return null;
@@ -46,6 +49,7 @@ export function Poser({ creneau }: { creneau: CleCreneau }) {
       creneau={creneau}
       repioches={repioches}
       poserPlat={poserPlat}
+      accompagnerDe={accompagnerDe}
     />
   );
 }
@@ -57,6 +61,7 @@ function Contenu({
   creneau,
   repioches,
   poserPlat,
+  accompagnerDe,
 }: {
   jeu: Jeu;
   calc: Calcul;
@@ -64,12 +69,18 @@ function Contenu({
   creneau: CleCreneau;
   repioches: number;
   poserPlat: (i: number, plat: string | null) => Promise<void>;
+  accompagnerDe: (i: number, plat: string, present: boolean) => Promise<void>;
 }) {
   const c = jeu.creneaux[i]!;
   const jour = jeu.jours[c.jour]!;
   const saute = jeu.choix[i] === SAUTE;
 
   const chiffres = useMemo(() => chiffresDeLaSemaine(jeu, calc), [jeu, calc]);
+  const plat = useMemo(() => vueDeLAssiette(jeu, i), [jeu, i]);
+  const briques = useMemo(
+    () => (plat.vide || saute ? [] : vueDesComplements(complements(jeu, i))),
+    [jeu, i, plat.vide, saute],
+  );
 
   // LE CALCUL LE PLUS CHER DE L'APP : `main` rejoue `calculer` pour chacun des
   // 51 plats candidats, parce que le coût marginal d'une carte ne se lit nulle
@@ -139,17 +150,128 @@ function Contenu({
           )}
         </div>
 
+        {/* L'ASSIETTE D'ABORD, LES CARTES ENSUITE. Une fois le plat posé, la
+            question n'est plus « lequel ? » mais « qu'est-ce qu'il y a avec ? » —
+            c'est l'objectif que l'utilisateur a formulé : « définir un repas
+            complet et équilibré… ce sont simplement des briques qu'il faut
+            assembler ». Les cartes restent dessous pour changer d'avis. */}
+        {saute || plat.vide ? null : (
+          <Assiette
+            vue={plat}
+            briques={briques}
+            creneau={creneau}
+            ajouter={(id) => void accompagnerDe(i, id, true)}
+            retirer={(id) => void accompagnerDe(i, id, false)}
+          />
+        )}
+
         {saute ? (
           <div className="co-vide">Repas sauté — rien à cuisiner, rien à acheter.</div>
         ) : cartes.length ? (
-          cartes.map((carte) => (
-            <Jouable key={carte.plat.id} carte={carte} creneau={creneau} jouer={jouer} />
-          ))
+          <>
+            {plat.vide ? null : (
+              <div className="co-kicker" style={{ margin: "var(--space-3) 0 var(--space-1)" }}>
+                Changer le plat
+              </div>
+            )}
+            {cartes.map((carte) => (
+              <Jouable key={carte.plat.id} carte={carte} creneau={creneau} jouer={jouer} />
+            ))}
+          </>
         ) : (
           <div className="co-vide">Plus de cartes pour ce créneau.</div>
         )}
       </Corps>
     </>
+  );
+}
+
+/**
+ * CE QU'IL Y A DANS L'ASSIETTE, ET CE QU'ON PEUT Y AJOUTER.
+ *
+ * LE MANQUE EST ANNONCÉ AVEC SA RÉPARATION, jamais seul. T26 savait déjà écrire
+ * « il manque un féculent » sur une carte ; le lire sans rien pouvoir en faire
+ * était le reproche suivant, et c'est celui que cette section répare.
+ *
+ * QUAND L'ASSIETTE SE SUFFIT, LES BRIQUES SE RANGENT derrière un bouton. Les
+ * proposer quand même les mettrait sur le chemin de quelqu'un qui a fini —
+ * mais les retirer serait décider à sa place qu'un gratin ne veut pas de
+ * salade.
+ */
+function Assiette({
+  vue,
+  briques,
+  creneau,
+  ajouter,
+  retirer,
+}: {
+  vue: ReturnType<typeof vueDeLAssiette>;
+  briques: ReturnType<typeof vueDesComplements>;
+  creneau: CleCreneau;
+  ajouter: (id: string) => void;
+  retirer: (id: string) => void;
+}) {
+  const [force, setForce] = useState(false);
+  const proposer = !vue.complete || force;
+
+  return (
+    <div className="co-assiette">
+      <div className="co-kicker">Dans l’assiette</div>
+      {vue.plats.map((p) => (
+        <div key={p.id} className="l">
+          <span style={{ flex: 1 }}>
+            {p.titre}
+            {p.principal ? "" : " — accompagnement"}
+          </span>
+          <a className="btn btn-ghost" href={chemin({ ecran: "cuisiner", creneau, plat: p.id })}>
+            Fiche
+          </a>
+          {/* Le plat principal ne se retire pas ici : il se REMPLACE, par une
+              carte. « Vider le créneau » est un autre geste, et il vit sur la
+              semaine. */}
+          {p.principal ? null : (
+            <button className="btn btn-ghost" onClick={() => retirer(p.id)}>
+              Retirer
+            </button>
+          )}
+        </div>
+      ))}
+
+      <div className={vue.complete ? "verdict complet" : "verdict"}>
+        {vue.complete ? "Repas complet." : `⚠ ${vue.dit}.`}
+      </div>
+
+      {proposer ? (
+        briques.length ? (
+          briques.map((b) => (
+            <div key={b.id} className="brique">
+              <span style={{ flex: 1 }}>
+                <span className="nom">{b.titre}</span>
+                <div className="pour">
+                  {[b.pourquoi, b.minutes ? duree(b.minutes) : "", b.restera ? `puis ${b.restera}` : ""]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </div>
+                {/* Le hors-saison se dit ici aussi : une brique est un plat, et
+                    des carottes râpées en février se paient comme le reste. */}
+                {b.horsSaison.length ? (
+                  <div className="pour">⚠ pas de saison&nbsp;: {b.horsSaison.join(", ")}</div>
+                ) : null}
+              </span>
+              <button className="btn btn-secondary" onClick={() => ajouter(b.id)}>
+                Ajouter
+              </button>
+            </div>
+          ))
+        ) : (
+          <div className="co-note">Rien à ajouter&nbsp;: tout est déjà dans l’assiette.</div>
+        )
+      ) : (
+        <button className="btn btn-ghost" onClick={() => setForce(true)}>
+          Ajouter quand même
+        </button>
+      )}
+    </div>
   );
 }
 
@@ -172,7 +294,7 @@ function Jouable({
         <span className="nom">{p.titre}</span>
         <span className="meta">
           <span>{duree(carte.minutes)}</span>
-          <span>+{carte.marginal} art.</span>
+          <span>{marqueMarginal(carte.marginal)}</span>
         </span>
       </div>
 

@@ -16,7 +16,8 @@ import { useCatalogue, useSemaine } from "../db/hooks";
 import { cleGeste, cleRappel, poserReglage, useDrapeau } from "../db/reglages";
 import { facteurAffiche, type Calcul } from "../model/calcul";
 import { heureDe } from "../model/heures";
-import { joue, SAUTE, type Jeu } from "../model/jeu";
+import { accompagnementsDe, joue, SAUTE, type Jeu } from "../model/jeu";
+import { ditLeManque, manqueALAssiette } from "../model/repas";
 import { chemin } from "../nav/routes";
 import { Corps } from "../ui/Coquille";
 import { duree, fmt, hhmm } from "../ui/format";
@@ -100,7 +101,13 @@ function CeSoir({ jeu, calc, i }: { jeu: Jeu; calc: Calcul; i: number }) {
   const f = calc.facteurs[i] ?? facteurAffiche(p, parts);
   const produit = +(p.portions * f).toFixed(1);
   const table = heureDe(c.repas);
-  const depart = table - p.minutes;
+  const cotes = accompagnementsDe(jeu, i);
+  // L'HEURE DE DÉPART EST UN CHEMIN CRITIQUE, PAS UNE SOMME. Le riz cuit pendant
+  // que le rôti est au four : additionner les deux ferait commencer une heure
+  // trop tôt, et on cesse de croire une horloge qui se trompe dans ce sens-là.
+  // C'est la journée qui s'additionne (`minutesParJour`), pas la casserole.
+  const depart = table - Math.max(p.minutes, ...cotes.map((x) => x.minutes), 0);
+  const dit = ditLeManque(manqueALAssiette([p, ...cotes]));
 
   // CE QUE LE PLAT LAISSE, mis à l'échelle du créneau — c'est ce qui rend la
   // suite de la semaine lisible depuis ce soir. Les manques s'écrivent au même
@@ -123,6 +130,22 @@ function CeSoir({ jeu, calc, i }: { jeu: Jeu; calc: Calcul; i: number }) {
         Ce soir · {jour.nom} · à table {hhmm(table)}
       </div>
       <div className="plat">{p.titre}</div>
+      {/* CE QUI SE CUISINE AUSSI. Le riz a été décidé en posant la semaine ; ne
+          pas le rappeler le soir même reviendrait à l'avoir fait décider pour
+          rien — c'est le seul écran qu'on lit une casserole à la main. */}
+      {cotes.length ? (
+        <div className="co-note" style={{ margin: "2px 0 0" }}>
+          avec {cotes.map((x) => `${x.titre}${x.minutes ? ` (${duree(x.minutes)})` : ""}`).join(" · ")}
+        </div>
+      ) : null}
+      {dit ? (
+        <div className="co-note" style={{ margin: "2px 0 0", color: "var(--color-accent-800)" }}>
+          ⚠ {dit} —{" "}
+          <a href={chemin({ ecran: "poser", creneau: { jour: jourIso, repas: c.repas } })}>
+            compléter
+          </a>
+        </div>
+      ) : null}
 
       <div className="co-pilules" style={{ flexDirection: "column", alignItems: "flex-start" }}>
         <span className="co-pilule">

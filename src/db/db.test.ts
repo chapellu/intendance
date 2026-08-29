@@ -1,11 +1,12 @@
 import { readFileSync } from "node:fs";
+import Dexie from "dexie";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { lireCatalogue } from "../model/catalogue";
 import { creerJeu, SAUTE, type Jeu } from "../model/jeu";
 import type { Catalogue } from "../model/types";
 import { Base, VERSION, cleCreneau, jourISO, schemaDeclare } from "./schema";
 import { cocher, lireCourses, rentrer, rentrerLesCoches, viderCourses } from "./courses";
-import { hydrater, lireSemaine, oublier, poser, reglerParts } from "./semaine";
+import { accompagner, hydrater, lireSemaine, oublier, poser, reglerParts } from "./semaine";
 import { ajouterLot, amorcer, auModele, corrigerLot, hydraterStock, lireStock, reamorcer, retirerLot } from "./stock";
 import { calculer } from "../model/calcul";
 
@@ -43,10 +44,34 @@ describe("le schéma", () => {
     // Ce test n'a l'air de rien : sa seule raison d'être est de rougir le jour
     // où quelqu'un ajoute une table sans monter la version. C'est à ce
     // moment-là qu'il faut se souvenir d'écrire la migration.
-    expect(VERSION).toBe(1);
+    expect(VERSION).toBe(2);
     expect(Object.keys(schemaDeclare()).sort()).toEqual([
       "courses", "creneaux", "reglages", "stock",
     ]);
+  });
+
+  test("LA V2 REMPLIT LES CRÉNEAUX ÉCRITS AVANT ELLE", async () => {
+    // La migration ne s'exercerait pas sur une base neuve : il faut une VRAIE
+    // v1, avec une décision dedans, pour que le chemin qui compte soit joué.
+    // Sans elle, `accompagnements` arriverait `undefined` chez chaque lecteur,
+    // et l'un d'eux finirait par oublier de le rattraper.
+    const nom = `migration-${++n}`;
+    const v1 = new Dexie(nom);
+    v1.version(1).stores({ creneaux: "cle, jour", courses: "cle", stock: "++id, type, espace", reglages: "cle" });
+    await v1.open();
+    await v1.table("creneaux").put({
+      cle: cleCreneau("2026-08-18", "diner"), jour: "2026-08-18",
+      repas: "diner", plat: "poulet-roti", parts: null, maj: Date.now(),
+    });
+    v1.close();
+
+    const v2 = new Base(nom);
+    await v2.open();
+    expect(v2.verno).toBe(2);
+    const relu = await v2.creneaux.get(cleCreneau("2026-08-18", "diner"));
+    expect(relu?.accompagnements).toEqual([]);
+    expect(relu?.plat).toBe("poulet-roti");
+    await v2.delete();
   });
 
   test("le jour se calcule en local, pas en UTC", () => {
@@ -98,6 +123,82 @@ describe("une décision appartient à un jour, pas à un index", () => {
     const jeudiSoir = creneau(depuisJeudi, 0, "diner");
     expect(jeudiSoir).not.toBe(jeudiSoirDepuisMardi);
     expect(depuisJeudi.choix[jeudiSoir]).toBe("poulet-roti");
+  });
+});
+
+describe("un créneau porte plusieurs plats", () => {
+  test("le riz survit au rechargement, comme le rôti", async () => {
+    const soir = creneau(jeu, 0, "diner");
+    await poser(base, jeu, soir, "roti-roule-herbes-fenouil");
+    await accompagner(base, jeu, soir, "riz-nature", true);
+
+    const relu = await recharger(MARDI);
+    expect(relu.choix[soir]).toBe("roti-roule-herbes-fenouil");
+    expect(relu.accompagnements[soir]).toEqual(["riz-nature"]);
+  });
+
+  test("la liste est un ENSEMBLE : poser deux fois le même riz ne fait pas deux riz", async () => {
+    const soir = creneau(jeu, 0, "diner");
+    await poser(base, jeu, soir, "roti-roule-herbes-fenouil");
+    await accompagner(base, jeu, soir, "riz-nature", true);
+    await accompagner(base, jeu, soir, "riz-nature", true);
+    expect((await recharger(MARDI)).accompagnements[soir]).toEqual(["riz-nature"]);
+  });
+
+  test("retirer n'enlève que la brique nommée", async () => {
+    const soir = creneau(jeu, 0, "diner");
+    await poser(base, jeu, soir, "veloute-potiron");
+    await accompagner(base, jeu, soir, "riz-nature", true);
+    await accompagner(base, jeu, soir, "oeufs-durs", true);
+    await accompagner(base, jeu, soir, "riz-nature", false);
+
+    const relu = await recharger(MARDI);
+    expect(relu.accompagnements[soir]).toEqual(["oeufs-durs"]);
+    expect(relu.choix[soir]).toBe("veloute-potiron");
+  });
+
+  test("CHANGER LE PLAT EMPORTE SES ACCOMPAGNEMENTS", async () => {
+    // Le riz avait été posé sous un rôti ; sur une paella il n'a plus rien à
+    // faire, et personne ne penserait à l'enlever. La liste de courses
+    // porterait un riz que le repas ne mange pas.
+    const soir = creneau(jeu, 0, "diner");
+    await poser(base, jeu, soir, "roti-roule-herbes-fenouil");
+    await accompagner(base, jeu, soir, "riz-nature", true);
+    await poser(base, jeu, soir, "pates-bolognaise");
+
+    expect(jeu.accompagnements[soir]).toEqual([]);
+    expect((await recharger(MARDI)).accompagnements[soir]).toEqual([]);
+  });
+
+  test("reposer LE MÊME plat ne jette rien", async () => {
+    // Deux clics sur la même carte, ou un retour arrière : le geste est
+    // idempotent, il ne doit pas coûter le riz déjà choisi.
+    const soir = creneau(jeu, 0, "diner");
+    await poser(base, jeu, soir, "roti-roule-herbes-fenouil");
+    await accompagner(base, jeu, soir, "riz-nature", true);
+    await poser(base, jeu, soir, "roti-roule-herbes-fenouil");
+    expect((await recharger(MARDI)).accompagnements[soir]).toEqual(["riz-nature"]);
+  });
+
+  test("le riz entre au panier — sinon rien de tout ça ne sert", async () => {
+    const soir = creneau(jeu, 0, "diner");
+    await poser(base, jeu, soir, "roti-roule-herbes-fenouil");
+    const sans = calculer(await recharger(MARDI));
+    await accompagner(base, jeu, soir, "pain-a-table", true);
+    const avec = calculer(await recharger(MARDI));
+    expect(avec.panier.size).toBe(sans.panier.size + 1);
+  });
+
+  test("un accompagnement du garde-manger part « à vérifier », pas aux courses", async () => {
+    // Le riz rond est au bocal du placard : le relevé dit qu'il y en a, pas
+    // combien. « Tu en as, va voir » est exactement vrai ; « tu en as assez »
+    // serait un mensonge.
+    const soir = creneau(jeu, 0, "diner");
+    await poser(base, jeu, soir, "roti-roule-herbes-fenouil");
+    await accompagner(base, jeu, soir, "riz-nature", true);
+    const calc = calculer(await recharger(MARDI));
+    expect(calc.aVerifier.get("riz-rond")?.prov).toBe("garde-manger");
+    expect([...calc.panier.keys()].some((k) => k.startsWith("riz-rond|"))).toBe(false);
   });
 });
 
@@ -156,7 +257,7 @@ describe("poser, régler, oublier", () => {
     // Une décision très ancienne, qui ne doit pas remonter.
     await base.creneaux.put({
       cle: cleCreneau("2020-01-01", "diner"), jour: "2020-01-01",
-      repas: "diner", plat: "lasagnes", parts: null, maj: Date.now(),
+      repas: "diner", plat: "lasagnes", accompagnements: [], parts: null, maj: Date.now(),
     });
     const lues = await lireSemaine(base, jeu);
     expect(lues.size).toBe(1);

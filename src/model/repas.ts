@@ -21,10 +21,14 @@
 // Mesuré sur le corpus : 44 des 65 plats jouables au déjeuner ou au dîner sont
 // complets, 21 sont des briques.
 //
-// CE QUE CE MODULE NE FAIT PAS ENCORE : assembler. Il sait dire « il manque un
-// féculent », il ne sait pas proposer le riz qui irait avec — le corpus n'a pas
-// de brique d'accompagnement, et un créneau ne porte qu'UN plat en base. C'est
-// le ticket suivant, et c'est le vrai objectif : composer un repas complet.
+// CE QUI A CHANGÉ EN T28 : ON ASSEMBLE. Ce module ne jugeait qu'un plat isolé,
+// faute de pouvoir en juger deux — un créneau n'en portait qu'un. Il juge
+// maintenant l'ASSIETTE : un rôti manque d'un féculent, le même rôti avec du riz
+// n'en manque plus, et aucune de ces deux phrases ne se lit sur un plat seul.
+//
+// LE PILIER EST COUVERT DÈS QU'UN SEUL PLAT L'APPORTE, jamais par addition. Deux
+// féculents ne font pas deux fois un féculent — mettre du pain à côté des pâtes
+// ne rend pas le repas plus complet, seulement plus lourd.
 
 import type { Apports, Plat } from "./types";
 
@@ -59,13 +63,45 @@ export function manqueAuRepas(a: Apports): Pilier[] {
 
 export const estUnRepas = (a: Apports): boolean => manqueAuRepas(a).length === 0;
 
-/** « il manque un féculent », « il manque une protéine et un féculent ». */
-export function ditLeManque(m: Pilier[]): string {
-  if (!m.length) return "";
-  const noms = m.map((p) => LIBELLE[p]);
-  const fin = noms.length > 1 ? `${noms.slice(0, -1).join(", ")} et ${noms.at(-1)}` : noms[0];
-  return `il manque ${fin}`;
+/**
+ * Ce qui manque à une ASSIETTE — le plat principal et ce qu'on a mis à côté.
+ *
+ * Un pilier ne manque que si AUCUN plat de l'assiette ne l'apporte. C'est la
+ * seule règle de composition, et elle est volontairement grossière : elle sait
+ * dire qu'un rôti avec du riz tient debout, elle ne sait pas dire si les
+ * quantités vont ensemble. Une assiette vide ne manque de rien — un créneau
+ * qu'on n'a pas rempli n'est pas un repas raté, c'est une décision à prendre.
+ */
+export function manqueALAssiette(plats: readonly Plat[]): Pilier[] {
+  if (!plats.length) return [];
+  const restants = new Set<Pilier>(manqueAuRepas(plats[0]!.apports));
+  for (const p of plats.slice(1)) for (const c of comble(p.apports)) restants.delete(c);
+  return (["proteine", "feculent", "legumes"] as const).filter((p) => restants.has(p));
 }
+
+/** Les piliers qu'un plat APPORTE — l'exact complément de `manqueAuRepas`, dit
+ *  dans l'autre sens parce que c'est celui-là qu'on lit sur une brique : le riz
+ *  « comble un féculent ». */
+export const comble = (a: Apports): Pilier[] => {
+  const tous: Pilier[] = ["proteine", "feculent", "legumes"];
+  const manque = new Set(manqueAuRepas(a));
+  return tous.filter((p) => !manque.has(p));
+};
+
+const enumere = (m: Pilier[]): string => {
+  const noms = m.map((p) => LIBELLE[p]);
+  return noms.length > 1 ? `${noms.slice(0, -1).join(", ")} et ${noms.at(-1)}` : (noms[0] ?? "");
+};
+
+/** « il manque un féculent », « il manque une protéine et un féculent ». */
+export const ditLeManque = (m: Pilier[]): string =>
+  m.length ? `il manque ${enumere(m)}` : "";
+
+/** Ce qu'une brique APPORTE à l'assiette où on la pose : « apporte un
+ *  féculent ». La phrase symétrique de la précédente, parce que c'est celle-là
+ *  qu'on lit sur un accompagnement qu'on hésite à ajouter. */
+export const ditLApport = (m: Pilier[]): string =>
+  m.length ? `apporte ${enumere(m)}` : "";
 
 export interface Incomplet {
   manque: Pilier[];
@@ -87,8 +123,11 @@ export interface Incomplet {
  * l'est pas du tout. Les compter pareil rendrait le terme aveugle à la
  * différence que l'utilisateur a signalée en premier.
  */
-export function incomplet(plat: Plat, poids: Record<string, number>): Incomplet {
-  const manque = manqueAuRepas(plat.apports);
+export function incomplet(
+  assiette: readonly Plat[],
+  poids: Record<string, number>,
+): Incomplet {
+  const manque = manqueALAssiette(assiette);
   return {
     manque,
     // Le `manque.length ?` n'est pas décoratif : `0 * -3` vaut `-0` en
