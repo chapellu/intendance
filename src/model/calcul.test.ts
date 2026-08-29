@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { beforeEach, describe, expect, test } from "vitest";
 import { lireCatalogue } from "./catalogue";
-import { articles, calculer, echelle, facteur, minutesParJour } from "./calcul";
+import { articles, calculer, echelle, facteur, facteurPose, minutesParJour } from "./calcul";
 import { creerJeu, SAUTE, type Jeu } from "./jeu";
 import type { Catalogue } from "./types";
 
@@ -189,6 +189,50 @@ describe("les parts commandent le panier", () => {
     const p = jeu.plats["poulet-roti"]!;
     expect(p.lotEntier).toBe(true);
     expect(facteur(p, p.portions + 0.5)).toBe(2);
+  });
+
+  test("l'accompagnement suit les parts du créneau, sur SA propre base", () => {
+    // LA QUESTION QU'ON POSE EN CUISINE : combien de riz ? La réponse ne peut
+    // pas être « un lot », elle dépend du nombre à table. Une brique est un
+    // plat comme un autre pour la mise à l'échelle, et elle compte en ses
+    // portions à elle — le riz rend 4 parts, pas celles du plat qu'il complète.
+    poser(0, "diner", "sauce-bolognaise");
+    const i = creneau(0, "diner");
+    const acc = jeu.creneaux.map(() => [] as string[]);
+    acc[i] = ["riz-nature"];
+    const riz = jeu.plats["riz-nature"]!;
+    expect(riz.portions).toBe(4);
+
+    const f = (parts: number): number | null => {
+      const p = jeu.parts.slice();
+      p[i] = parts;
+      return facteurPose(calculer(jeu, undefined, undefined, p, acc), i, "riz-nature");
+    };
+    expect(f(2)).toBe(0.5);
+    expect(f(4)).toBe(1);
+    expect(f(6)).toBe(1.5);
+  });
+
+  test("et il ne partage PAS le facteur du plat qu'il accompagne", () => {
+    // La bolognaise se garde : sous ses portions elle se cuisine en lot entier.
+    // Le riz ne se garde pas. Poser les deux à deux parts doit donc donner
+    // DEUX facteurs différents sur le même créneau — un facteur par créneau
+    // aurait fait cuire 250 g de riz pour deux, et c'est exactement la faute
+    // que `facteurPose` existe pour empêcher.
+    poser(0, "diner", "sauce-bolognaise");
+    const i = creneau(0, "diner");
+    const acc = jeu.creneaux.map(() => [] as string[]);
+    acc[i] = ["riz-nature"];
+    const parts = jeu.parts.slice();
+    parts[i] = 2;
+    const c = calculer(jeu, undefined, undefined, parts, acc);
+
+    expect(facteurPose(c, i, "sauce-bolognaise")).toBe(1);
+    expect(facteurPose(c, i, "riz-nature")).toBe(0.5);
+    // `facteurs[i]` reste celui du principal : les écrans le lisent ainsi.
+    expect(c.facteurs[i]).toBe(1);
+    // Et ce que la fiche du riz affiche suit : 250 g pour quatre, 130 pour deux.
+    expect(echelle(250, "g", facteurPose(c, i, "riz-nature")!)).toBe(130);
   });
 });
 
