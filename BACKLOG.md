@@ -706,6 +706,285 @@ Un ticket = un commit qui laisse l'app fonctionnelle. `[ ]` à faire,
       bande plutôt qu'un poids — « un filet », « une main » —, comme `qty_band`
       compte des repas plutôt que des grammes.
 
+### Le stock qui descend ([Workspace#42](https://github.com/chapellu/Workspace/issues/42))
+
+Le contrat de décrément et de réconciliation, grillé les 30 et 31 août 2026. Il
+part de quatre constats faits dans ce dépôt, et chacun est un trou :
+
+1. **Aucun événement « cuisiné » n'existe.** `Aujourdhui.tsx:182` — « Fait ✓ »
+   est un booléen dans `reglages`. Ni date, ni plat, ni parts, ni historique.
+2. **Le retrait au dépôt n'est jamais engagé.** `depot.prelever()` est appelé
+   *dans* `calculer()` (`calcul.ts:218`) : une projection recalculée à chaque
+   rendu. Le bocal n'est jamais retiré de la base.
+3. **Rentrer une course ne crée aucun lot.** `courses.ts:35` bascule
+   `rentre: true` et s'arrête, alors que le commentaire du fichier promet que
+   « c'est seulement là que le stock change ». `ajouterLot()` n'est appelé de
+   nulle part dans ce flux.
+4. **`corrigerLot` est mort.** Appelé nulle part hors tests. `Stock.tsx` sait
+   ajouter et retirer un lot, pas en corriger un ; le garde-manger n'a aucune
+   édition dans l'app.
+
+Et le chiffre qui donne sa forme à tout le reste : le garde-manger porte **45
+ids distincts sur 53 lots, dont 31 non chiffrés** ; les recettes nomment **175
+ids décrémentables** une fois retirées les 18 lignes `seasoning` et les lignes
+`base` ; **l'intersection fait 17**, et ce sont exactement les féculents, les
+légumineuses et les fonds de placard. Répartition des 175 par rayon : **61
+épicerie, 57 primeur, 23 hors rayon**, 17 crèmerie, 9 boucherie, 5 frais, 3
+poissonnerie. Un faible recouvrement n'est pas une panne du modèle : le primeur
+ne s'estime jamais et le frais court ne se parie pas sans avoir vu, donc les
+classes comptées **sont** l'épicerie.
+
+- [ ] **T25 — Le journal d'événements, et le niveau dérivé.** Trois sortes
+      d'événements persistés — cuisiné, observation, entrée — et **plus aucun
+      niveau stocké** : le garde-manger et le dépôt se rejouent depuis le
+      journal.
+
+      C'est la discipline que `db/schema.ts` s'est déjà écrite, appliquée là où
+      elle ne l'était pas : cuisiner est une décision d'un doigt, le niveau est
+      un calcul. Et c'est la réponse à l'objection de `garde-manger.yaml` — « un
+      chiffre qu'on croirait tenu à jour alors que rien ne le tient » — non pas
+      en rendant le chiffre plus juste, mais en le **datant**. Trois choses
+      tombent gratuitement : contredire l'estimation devient un événement
+      ordinaire, annuler un « fait » touché par erreur devient possible, et « je
+      n'ai rien vu depuis » devient calculable.
+
+- [ ] **T26 — L'événement cuisiné : trois effets, deux dates, une couture.**
+      Il ne se déclenche que **sur un créneau posé** et porte deux dates plus
+      les parts figées.
+
+      Le jour cuisiné vient gratuitement de `DecisionCreneau.jour` — aucune
+      saisie. Le jour de saisie est le seul qui puisse dire « je n'ai rien vu
+      depuis ». Les parts se figent parce que `parts: null` veut dire « les
+      parts du foyer, quelles qu'elles soient au moment du calcul », et qu'un
+      foyer qui grandit ne doit pas changer rétroactivement ce qui a été mangé.
+
+      Il engage **les trois effets** : retrait au garde-manger, retrait au
+      dépôt, et **création des lots que le plat `emit`**. Le troisième ferme la
+      boucle que la carte cite mot pour mot — « si je déstocke la dernière
+      bolognaise alors il faut encourager d'en refaire pour restocker » —
+      impossible tant que cuisiner une bolognaise n'en produit pas.
+
+      **LA CONSÉQUENCE À CONSTRUIRE : l'événement est la couture entre le fait
+      et la projection.** Avant lui le dépôt est constaté, après lui il est
+      projeté. `calculer()` doit donc **cesser de projeter les créneaux
+      passés**, sinon la sauce est comptée deux fois — une fois parce qu'on l'a
+      faite, une fois parce que la semaine prévoit de la faire.
+
+      Cuisiner hors plan **ne se journalise pas** : c'est le plus souvent du
+      hors-catalogue, donc sans id, sans rien à décrémenter ni à produire. Le
+      trou que ça laisse — un plat du catalogue cuisiné sans créneau, dont les
+      bocaux n'atteignent jamais le dépôt — se referme par le relevé de T32, pas
+      en élargissant l'événement.
+
+- [ ] **T27 — Rentrer crée un lot, et ce lot porte son poids.**
+      `courses.rentrer()` appelle enfin `ajouterLot()`.
+
+      **Le poids appartient au lot, pas à l'ingrédient**, et le relevé le
+      prouve : `thon-boite` existe en 140 g **et** 160 g, `petits-pois-carottes`
+      en 465 g **et** 530 g. Donc : le lot porte le poids que son canal lui a
+      donné (une liste de courses les porte déjà, ça ne coûte rien) ; le défaut
+      par ingrédient est **dérivé** — le dernier poids vu pour cet id, jamais
+      écrit à la main, donc **aucun des 61 ids d'épicerie à remplir** ; sans
+      poids, pas de chiffre, et T28 s'applique.
+
+      Apparier « Panzani Torsades 500 g » à l'id `pates` n'appartient pas à ce
+      ticket : c'est le même problème *propose-puis-valide* que les `apports`, et
+      il est traité par [Workspace#44](https://github.com/chapellu/Workspace/issues/44).
+
+- [ ] **T28 — Deux modes de décrément, choisis par le lot.** Un lot chiffré perd
+      des grammes ; **un lot non chiffré avance son `etat`** (`sec` → `entame`).
+      Aucun poids inventé.
+
+      Ce n'est pas un pis-aller déguisé : `etat: entame` porte déjà l'information
+      utile dans les mots du modèle — « la barrière est rompue, l'horloge
+      tourne » — et `garde_manger.py:76` la lit **déjà** pour faire monter
+      `urgence` à `moyenne`. Cuisiner des pâtes rend donc le paquet plus
+      pressant, ce qui remonte au score par `bonusPlacard`, sans un gramme
+      inventé.
+
+      Ordre de service, tranché par le fichier lui-même (« LE BOCAL EST UN
+      DISTRIBUTEUR, pas une réserve ») : **l'entamé avant le scellé**, donc le
+      distributeur avant la réserve. `farine` et `concentre-tomate` portent déjà
+      les deux.
+
+      **Jamais sous zéro, jamais un lot qu'on n'a pas constaté.** Une ligne qui
+      ne trouve rien est un **no-op DIT**, compté et montré : la carte du plat
+      annonce « je suis 3 des 11 ingrédients ». C'est ce qui empêche de croire le
+      placard au-delà des 17 ids qu'il couvre, et ce qui rend visible que le
+      relever davantage sert à quelque chose.
+
+      Le mode non chiffré est **permanent, pas transitoire** : trois des quatre
+      canaux — marché, casier Côté Champs, panier vert — livrent du non choisi et
+      non pesé, et le vrac (« le bocal EST le stock ») ne le sera jamais.
+
+- [ ] **T29 — L'unité scellée part en entier ; son reste devient un lot court.**
+      Ouvrir une `conserve` ou un `bocal` scellé consomme **l'unité d'achat** —
+      4 boîtes de maïs deviennent 3.
+
+      C'est le comportement réel : on vide la boîte pour ne pas garder 85 g
+      impossibles à passer. Mais **au-delà d'environ ⅓ de l'unité, le reste
+      devient un lot neuf** en frais court, donc `urgence: haute`, donc le score
+      va chercher un plat qui le mange. 85 g de maïs, non ; 600 g de crème sur
+      800, oui.
+
+      Le seuil est une **fraction, pas un plancher absolu** : 100 g de crème et
+      100 g de concentré de tomate ne sont pas la même quantité de cuisine. Et il
+      **se tranche tout seul** — #34 interdit toute confirmation par repas, « ce
+      serait de la comptabilité déguisée ».
+
+- [ ] **T30 — La classe dérivée, et trois états de confiance.** Les cinq classes
+      de #34 n'existent dans aucun fichier. Elles se **dérivent**, avec une
+      surcharge — la discipline que `garde_manger.py` a déjà employée pour
+      `urgence`, et pour la même raison : ce qu'un relevé sait vraiment, c'est le
+      conditionnement et l'endroit, et les deux se vérifient de l'œil.
+
+      | Classe | Dérivation |
+      |---|---|
+      | fond de placard | `rayons.placard`, déjà listé |
+      | congélateur | `espace: congelo` |
+      | fruits & légumes | `rayon: primeur` |
+      | frais court | `etat: frais` hors primeur, + crèmerie / boucherie / poissonnerie, + les restes de T29 |
+      | épicerie comptable | tout le reste en placard (`conserve` / `sec` / `bocal`) |
+      | **non suivi** | **aucun rayon — 23 des 175 ids** |
+
+      Les 23 sans rayon **ne décrémentent rien, et l'app le dit**. Leur inventer
+      une classe serait se tromper là où ça coûte le plus, puisque la classe
+      commande la précision ; ils remontent d'eux-mêmes dans le « je suis 3 des
+      11 » de T28.
+
+      **La confiance est trois états dérivés** — `sûr` / `probable` / `inconnu` —
+      avec le chiffre et la date toujours lisibles dessous. Pas un score
+      numérique : ce serait le chiffre qu'on croirait parce qu'il a été calculé.
+
+      **L'asymétrie qui la commande : une observation pose l'estimation et
+      restaure la confiance ; un décrément déplace l'estimation et la dépense.**
+      Cuisiner n'est **pas** une observation — ça éloigne le chiffre de la
+      dernière chose vue de ses yeux. La vitesse de dépense est celle des
+      tolérances par classe de #34, inchangées.
+
+- [ ] **T31 — La dérive, apprise, qui élargit le doute sans bouger le chiffre.**
+      Le « forfait hebdomadaire calibré sur l'historique de commande » de #34 ne
+      survit pas tel quel : aucun historique de commande n'existe ici, et
+      Workspace#41 a supprimé la semaine à quoi il s'accrochait.
+
+      Il devient un **terme de dérive dérivé du journal** : entre deux
+      observations d'une même denrée, ce que les décréments connus n'expliquent
+      pas. **Démarrage à froid à zéro**, donc le premier jour se comporte comme
+      s'il n'y avait pas de dérive ; le terme n'existe qu'à partir de la seconde
+      observation. Rien n'est jamais saisi.
+
+      Comme cuisiner hors plan ne se journalise pas (T26), la dérive absorbe
+      **tout ce que le journal ne voit pas**, cuisine hors catalogue comprise.
+      D'où le nom : un *forfait* laisse croire à une habitude stable, et ça n'en
+      est pas une.
+
+      **Et elle ne doit pas bouger le chiffre.** Un niveau qui descend sans que
+      rien de constaté ait été mangé est de la consommation inventée. La dérive
+      fait **tomber la confiance plus vite** : le taux de dégradation de T30
+      cesse d'être une constante par classe et devient **appris par ingrédient**.
+      Les denrées qui dérivent atteignent `inconnu` plus tôt, donc l'app demande
+      plus tôt, donc T33 les fait remonter. La cuisine hors catalogue produit une
+      **question au bon moment**, jamais un faux chiffre.
+
+- [ ] **T32 — Le relevé par zone — garde-manger ET dépôt.** Trois gestes, tous
+      des observations au sens de T30 : la **réponse** à une question (un
+      ingrédient), la **correction** spontanée (un ingrédient), le **relevé**
+      (une zone entière).
+
+      **Les corrections portent sur un ingrédient, jamais sur un lot.** C'est ce
+      qu'un œil voit en ouvrant un placard : on compte des boîtes de maïs, pas
+      *le lot n°17*. Par lot, il faudrait connaître une structure que l'app a
+      inventée — et qui cache déjà, pour `farine` et `concentre-tomate`, une
+      réserve pesée derrière un distributeur non pesé. La réconciliation suit
+      l'ordre de service de T28 : l'entamé absorbe l'écart avant le scellé.
+
+      **Un relevé est exhaustif sur sa zone** : ce qui n'y est pas n'y est plus —
+      zéro, pas silence. C'est le seul geste capable de dire « il n'y en a plus »
+      sans énumérer les absents ; l'alternative laisse pourrir les fantômes,
+      c'est-à-dire exactement la façon dont le relevé du 26/08 vieillit. **La
+      zone est la clôture** — le garde-manger en porte déjà six — donc aucun
+      bouton « terminé ». Un relevé restaure la confiance sur **toute la zone**,
+      pas seulement sur les lignes touchées : un quart d'heure achète des
+      semaines de silence.
+
+      **Le dépôt reçoit le même geste** — « clairement tout le stockage est
+      vérifiable, frigo, congélateur, placard… ». C'est ce qui referme le trou de
+      T26 : un plat du catalogue cuisiné hors plan met des bocaux au congélo dont
+      l'app n'entend jamais parler, et aucun relevé de placard ne les rattraperait
+      puisqu'ils vivent au dépôt. Un congélateur est **plus** facile à relever
+      qu'un placard : petit, compté en repas, ouvert tous les jours. Ça donne
+      aussi enfin un appelant à `corrigerLot`.
+
+- [ ] **T33 — Le déclencheur : à la proposition, toujours si l'ingrédient est
+      central.** Évalué **au moment où l'app propose**, avant qu'un doigt pose
+      quoi que ce soit.
+
+      C'est la seule position où la réponse a encore un effet : découvrir en
+      cuisinant qu'il n'y a plus de lentilles ne change aucune décision, ça
+      constate un échec. Posée à la proposition, elle **retire ou substitue** le
+      plat avant qu'il soit proposé. Corollaire : une question ne porte jamais sur
+      ce qu'on vient de cuisiner.
+
+      **La centralité vient du rayon**, avec une surcharge `central: true` par
+      ligne. Boucherie / poissonnerie / crèmerie et les féculents d'épicerie sont
+      centraux ; le primeur et le reste sont secondaires. On ne fait pas une
+      bolognaise sans viande, on la fait très bien sans persil. La dériver des
+      `apports` serait plus juste en principe mais réclame une table
+      `viande-rouge → boeuf-hache` qui est du jugement, donc de la saisie
+      déguisée. La surcharge ne coûte rien là où elle compte :
+      [Workspace#47](https://github.com/chapellu/Workspace/issues/47) dicte déjà
+      les 15 plats du répertoire, elle s'y pose au passage.
+
+      **Central + confiance basse → on demande, toujours. Secondaire → on parie,
+      en silence.**
+
+      **CECI RÉVISE LE PLAFOND DE ~5 DE #34, DÉLIBÉRÉMENT.** Ce plafond défendait
+      contre un *rituel qui balayait la semaine entière*. Workspace#41 a supprimé
+      le rituel ; l'utilisateur supprime le plafond (31/08/2026) : « Si
+      l'ingrédient est central pose la question. […] Les questions ne sont pas
+      gênantes dans l'absolu car elles demandent juste de savoir s'il faut acheter
+      ou si le stock est suffisant. »
+
+      **Le gouvernail n'est plus un compteur, c'est la qualité des
+      propositions.** Une question n'irrite que si elle porte sur ce qu'on
+      n'aurait pas dû proposer. Et la boucle est auto-limitante, ce qui en fait
+      une **promesse réfutable** : chaque réponse est une observation, qui
+      restaure la confiance, qui supprime les questions suivantes — donc le volume
+      doit décroître à l'usage, et s'il ne décroît pas, ce design est faux.
+
+      **Forme de la question : trois états** — « des lentilles : oui / il en reste
+      peu / non » —, le vocabulaire de signalement déjà retenu par #34, avec une
+      quantité libre optionnelle pour qui veut être précis. Une quantité par
+      défaut obligerait à peser pour répondre, donc on ne répondrait pas, donc
+      l'app cesserait de demander. `il en reste peu` est l'état qui gagne sa
+      place : il n'interdit pas le dahl, il interdit d'y **compter dessus deux
+      fois dans la même passe**.
+
+      **Ordre, quand plusieurs se disputent la place : celle qui débloque le plus
+      de propositions** — l'ingrédient présent dans le plus de plats candidats.
+      Pas « la plus incertaine d'abord », qui trie sur l'ignorance et non sur
+      l'utilité : la denrée la plus incertaine peut n'être réclamée par aucun plat
+      proposé.
+
+      **Le démarrage à froid est protégé par le crescendo**, pas par un plafond :
+      la semaine 1 pose trois dîners, donc trois plats de central à interroger. La
+      première passe **est** le relevé, par un autre chemin.
+
+      **Au-delà du budget, on parie en le disant.** Retirer des plats ferait
+      rétrécir les propositions à mesure que la confiance vieillit — la pire façon
+      d'échouer pour un outil dont le travail est que le dîner ait lieu.
+      Substituer en silence produit un plat qu'on ne peut pas contredire. Parier
+      à voix haute garde la règle de #34 tout en respectant celle de la carte :
+      l'estimation doit être visible et contredisable. Un pari raté tombe sur le
+      plan B, à parité d'effort avec des nouilles — #30 a déjà payé ce filet.
+
+### Trouvé en grillant #42, à faire
+
+- [ ] **Compléter `rayons.yaml` pour les 23 ids sans rayon.** Le vocabulaire des
+      recettes a poussé plus vite que la table des rayons. Tant qu'ils n'en ont
+      pas, T30 les classe `non suivi` et ils ne décrémentent rien — ce qui est le
+      bon défaut, mais pas une fin. C'est de la saisie, pas une décision.
+
 ## Sortie
 
 **Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`
