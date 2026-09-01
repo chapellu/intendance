@@ -171,11 +171,28 @@ export interface Calcul {
 
 /* ────────────────────────────────────────────────────────────── le calcul */
 
+/**
+ * LA COUTURE ENTRE LE FAIT ET LA PROJECTION — T26.
+ *
+ * Un créneau déjà cuisiné a **engagé ses effets pour de bon** : ses bocaux sont
+ * dans la table `stock`, son prélèvement en est parti. Continuer à le projeter
+ * ici compterait la sauce DEUX FOIS — une fois parce qu'on l'a faite, une fois
+ * parce que la semaine prévoit de la faire — et le dépôt afficherait deux
+ * bolognaises là où il y en a une.
+ *
+ * C'est la conséquence à construire de l'événement cuisiné, et elle n'est pas
+ * cosmétique : sans elle, journaliser AGGRAVE le modèle au lieu de le réparer.
+ *
+ * On passe donc les créneaux cuisinés, en les nommant par leur clé
+ * `(jour, repas)` — jamais par leur index, pour la raison que `db/schema.ts`
+ * expose en tête : l'index d'un créneau change de sens d'un jour à l'autre.
+ */
 export function calculer(
   jeu: Jeu,
   choix = jeu.choix,
   jetes: string[] = [],
   parts = jeu.parts,
+  cuisines: ReadonlySet<string> = new Set(),
 ): Calcul {
   const { catalogue } = jeu;
   // LE DÉPÔT PART DE `jeu.stock`, PAS DE `catalogue.stock`. L'export dit ce que
@@ -207,6 +224,9 @@ export function calculer(
 
   choix.forEach((rid, i) => {
     if (!joue(rid)) return;
+    // Déjà cuisiné : ses effets sont dans la base, pas dans cette projection.
+    // Voir la couture, en tête de cette fonction.
+    if (cuisines.has(cleDuCreneau(jeu, i))) return;
     const p = jeu.plats[rid];
     if (!p) return;
     const date = dateDe(jeu, i);
@@ -274,7 +294,7 @@ export function calculer(
 
   return {
     panier, aVerifier, chaine, pleinTarif, manques, provenances, facteurs, depot,
-    stockage: bilanStockage(jeu, choix, jetes, facteurs, depot),
+    stockage: bilanStockage(jeu, choix, jetes, facteurs, depot, cuisines),
   };
 }
 
@@ -291,6 +311,7 @@ export function bilanStockage(
   jetes: string[],
   facteurs: number[],
   depot: Depot,
+  cuisines: ReadonlySet<string> = new Set(),
 ): Record<Espace, BilanEspace> {
   const { catalogue } = jeu;
   const debut: Partial<Record<Espace, number>> = {};
@@ -307,6 +328,10 @@ export function bilanStockage(
 
   choix.forEach((rid, i) => {
     if (!joue(rid)) return;
+    // Un créneau cuisiné a déjà rangé ses bocaux : ils sont dans `debut`, par
+    // la table `stock`. Les compter aussi dans `entre` remplirait deux fois le
+    // même tiroir, et le bilan annoncerait un débordement qui n'existe pas.
+    if (cuisines.has(cleDuCreneau(jeu, i))) return;
     const p = jeu.plats[rid];
     if (!p) return;
     for (const e of p.emits) add(entre, e.espace, bandRepas(e.band) * (facteurs[i] ?? 1));
@@ -338,6 +363,24 @@ export function bilanStockage(
 
 /** Où une ligne du dépôt compte, pour le budget de rangement. */
 export const espaceDe = (l: LigneDepot): Espace => l.espace;
+
+/**
+ * La clé `(jour, repas)` d'un créneau — la même que celle de la base.
+ *
+ * Elle est reconstruite ici plutôt qu'importée de `db/` parce que le modèle ne
+ * dépend pas de la base ; mais c'est bien le même couple, et pour la même
+ * raison : un index de créneau change de sens d'un jour sur l'autre.
+ */
+export function cleDuCreneau(jeu: Jeu, i: number): string {
+  const c = jeu.creneaux[i];
+  if (!c) return "";
+  const j = jeu.jours[c.jour];
+  if (!j) return "";
+  const d = j.date;
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const jj = String(d.getDate()).padStart(2, "0");
+  return `${d.getFullYear()}-${mm}-${jj}|${c.repas}`;
+}
 
 /* ──────────────────────────────────────────────────────── lectures dérivées */
 

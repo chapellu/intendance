@@ -66,7 +66,11 @@ function Contenu({
 
   const toucher = (a: Article) => {
     const b = basculeDe(mode, a);
-    void (b.rentrer ? rentrer(base, a.cle, b.valeur) : cocher(base, a.cle, b.valeur));
+    // LE PANIER VOYAGE AVEC LE GESTE : c'est lui qui porte la quantité, donc
+    // c'est lui qui permet au lot de naître pesé (T27).
+    void (b.rentrer
+      ? rentrer(base, a.cle, b.valeur, calc.panier)
+      : cocher(base, a.cle, b.valeur));
   };
 
   return (
@@ -99,7 +103,7 @@ function Contenu({
           <button
             className="btn btn-primary btn-block"
             style={{ marginBottom: "var(--space-3)" }}
-            onClick={() => void rentrerLesCoches(base)}
+            onClick={() => void rentrerLesCoches(base, calc.panier)}
           >
             Tout rentrer — {vue.coches} article{vue.coches > 1 ? "s" : ""} du caddie
           </button>

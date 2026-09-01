@@ -246,6 +246,8 @@ export function lots(jeu: Jeu, lignes: readonly LigneDepot[], filtre: Espace | n
  */
 export interface DenreeVue {
   cle: string;
+  /** L'id du vocabulaire — ce sur quoi le rejeu et le relevé se recollent. */
+  ingredient: string;
   nom: string;
   quantite: string;
   etat: string;
@@ -296,6 +298,10 @@ function denreeVue(d: Denree, z: Zone, i: number): DenreeVue {
   const q = d.parUnite;
   return {
     cle: `${d.zone}|${d.ingredient}|${i}`,
+    // L'ID BRUT REMONTE À L'ÉCRAN, en plus du nom lisible : c'est lui qui
+    // permet de poser dessus l'état rejoué (confiance, « vu le »), et c'est lui
+    // qu'un relevé renvoie au journal. Un nom francisé ne se recolle à rien.
+    ingredient: d.ingredient,
     nom: nomDenree(d.ingredient),
     // Une denrée non pesée dit son compte, jamais « — » : « 1 » est une
     // information, et c'est celle qu'on a.

@@ -102,9 +102,24 @@ ACIDITE_DEFAUT = "basse"
 
 
 def charger(chemin: Path) -> dict:
-    """`{'zones': [...], 'denrees': [...]}`, jamais `None` sur un fichier vide."""
+    """`{'releve': str|None, 'zones': [...], 'denrees': [...]}`.
+
+    Jamais `None` sur un fichier vide.
+
+    `releve` EST UNE CHAÎNE, PAS UNE DATE, ET IL FAUT LE FORCER. PyYAML résout
+    tout seul `2026-08-26` en `datetime.date`, qui ne passe pas `json.dumps`.
+    Et surtout : tout le reste du modèle — les `born:` du stock, les jours des
+    créneaux — manipule des `AAAA-MM-JJ` en texte. Une seule vraie date au
+    milieu de vingt chaînes est le genre d'exception qui se paie trois fichiers
+    plus loin.
+    """
     data = yaml.safe_load(chemin.read_text()) or {}
-    return {"zones": data.get("zones") or [], "denrees": data.get("denrees") or []}
+    releve = data.get("releve")
+    return {
+        "releve": releve.isoformat() if hasattr(releve, "isoformat") else (releve or None),
+        "zones": data.get("zones") or [],
+        "denrees": data.get("denrees") or [],
+    }
 
 
 def conservations(denree: dict, methodes: list, capacites: set) -> list:

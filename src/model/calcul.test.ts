@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { beforeEach, describe, expect, test } from "vitest";
 import { lireCatalogue } from "./catalogue";
-import { articles, calculer, echelle, facteur, minutesParJour } from "./calcul";
+import { articles, calculer, cleDuCreneau, echelle, facteur, minutesParJour } from "./calcul";
 import { creerJeu, SAUTE, type Jeu } from "./jeu";
 import type { Catalogue } from "./types";
 
@@ -393,5 +393,56 @@ describe("le garde-manger ne s'achète pas les yeux fermés", () => {
     const c = calculer(jeu);
     for (const [cid, v] of c.aVerifier)
       if (catalogue.rayons.placard.includes(cid)) expect(v.prov).toBe("placard");
+  });
+});
+
+/* ═══════════════════════════════ la couture entre le fait et la projection */
+
+// T26. Un créneau cuisiné a DÉJÀ engagé ses effets dans la base : ses bocaux
+// sont au dépôt, son prélèvement en est parti. Le reprojeter compterait la sauce
+// deux fois — une fois parce qu'on l'a faite, une fois parce que la semaine
+// prévoit de la faire. Sans ces tests, journaliser AGGRAVE le modèle.
+describe("un créneau cuisiné n'est plus projeté", () => {
+  const posee = (): [Jeu, number, string] => {
+    const jeu = creerJeu(catalogue, 7, LUNDI);
+    const slot = jeu.creneaux.findIndex((c) => c.repas === "diner");
+    jeu.choix[slot] = "chili-sin-carne";
+    return [jeu, slot, cleDuCreneau(jeu, slot)];
+  };
+
+  test("ses ingrédients ne repartent pas aux courses", () => {
+    const [jeu, , cle] = posee();
+    const avant = calculer(jeu);
+    const apres = calculer(jeu, jeu.choix, [], jeu.parts, new Set([cle]));
+    expect(avant.panier.size).toBeGreaterThan(0);
+    expect(apres.panier.size).toBe(0);
+  });
+
+  test("ses sorties n'entrent pas une seconde fois au rangement", () => {
+    const [jeu, , cle] = posee();
+    const avant = calculer(jeu);
+    const apres = calculer(jeu, jeu.choix, [], jeu.parts, new Set([cle]));
+    for (const espace of Object.keys(avant.stockage) as (keyof typeof avant.stockage)[])
+      expect(apres.stockage[espace].entre).toBeLessThanOrEqual(avant.stockage[espace].entre);
+    // Et concrètement : le chili produit, donc « entre » doit retomber.
+    const total = (c: typeof avant) =>
+      Object.values(c.stockage).reduce((s, b) => s + b.entre, 0);
+    expect(total(apres)).toBeLessThan(total(avant));
+  });
+
+  test("un créneau NON cuisiné reste projeté — la couture ne coupe que ce qu'elle doit", () => {
+    const [jeu] = posee();
+    const avant = calculer(jeu);
+    const apres = calculer(jeu, jeu.choix, [], jeu.parts, new Set(["2099-01-01|diner"]));
+    expect(apres.panier.size).toBe(avant.panier.size);
+  });
+
+  test("la clé est (jour, repas), jamais l'index", () => {
+    // La même raison qu'en tête de `db/schema.ts` : un index de créneau change
+    // de sens d'un jour à l'autre, et ce bug-là ne se voit pas le jour où on
+    // l'écrit.
+    const [jeu, slot] = posee();
+    const c = jeu.creneaux[slot]!;
+    expect(cleDuCreneau(jeu, slot)).toBe(`2026-08-17|${c.repas}`);
   });
 });

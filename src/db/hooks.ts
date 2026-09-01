@@ -18,7 +18,9 @@ import { calculer, type Calcul } from "../model/calcul";
 import { chargerCatalogue } from "../model/catalogue";
 import { creerJeu, type Choix, type Jeu } from "../model/jeu";
 import type { Catalogue } from "../model/types";
+import { contexte, rejouer, type Evenement, type Rejeu } from "../model/journal";
 import { lireCourses } from "./courses";
+import { lireJournal } from "./journal";
 import { base, jourISO, type EtatCourse, type LotStock } from "./schema";
 import { amorcer, hydraterStock } from "./stock";
 import { hydrater, oublier, poser, prevoirGamelle, reglerParts } from "./semaine";
@@ -132,7 +134,15 @@ export function useSemaine(catalogue: Catalogue | null, aujourdhui = new Date())
     // eslint-disable-next-line react-hooks/exhaustive-deps -- même raison que ci-dessus
   }, [squelette, decisions, lots, jour0]);
 
-  const calc = useMemo(() => (jeu ? calculer(jeu) : null), [jeu]);
+  // LES CRÉNEAUX DÉJÀ CUISINÉS SONT UNE ENTRÉE DU CALCUL. Sans eux, `calculer`
+  // reprojette une cuisson dont les effets sont DÉJÀ dans la base, et compte la
+  // sauce deux fois — voir la couture en tête de `model/calcul.ts`.
+  const cuisines = useCuisines(debut, fin);
+
+  const calc = useMemo(
+    () => (jeu && cuisines ? calculer(jeu, jeu.choix, [], jeu.parts, cuisines) : null),
+    [jeu, cuisines],
+  );
 
   const poserPlat = useCallback(
     async (i: number, plat: Choix) => {
@@ -162,7 +172,7 @@ export function useSemaine(catalogue: Catalogue | null, aujourdhui = new Date())
   return {
     jeu,
     calc,
-    chargement: !catalogue || decisions === undefined || lots === undefined,
+    chargement: !catalogue || decisions === undefined || lots === undefined || cuisines === undefined,
     poserPlat,
     reglerLesParts,
     prevoirLaGamelle,
@@ -179,4 +189,42 @@ export function useCourses(): Map<string, EtatCourse> | undefined {
 /** Le stock réel, vivant. */
 export function useStock(): LotStock[] | undefined {
   return useLiveQuery(() => base.stock.toArray(), []);
+}
+
+/**
+ * Les créneaux déjà cuisinés sur la fenêtre, en clés `(jour, repas)`.
+ *
+ * `undefined` tant que la base n'a pas répondu, et l'appelant DOIT attendre :
+ * calculer avec un ensemble vide provisoire reprojetterait les cuissons de la
+ * semaine, ferait clignoter des manques puis les ferait disparaître.
+ */
+export function useCuisines(debut: string, fin: string): ReadonlySet<string> | undefined {
+  return useLiveQuery(async () => {
+    if (!debut) return new Set<string>();
+    const evts = await base.evenements.where("jour").between(debut, fin, true, true).toArray();
+    return new Set(
+      evts.filter((e) => e.sorte === "cuisine").map((e) => `${e.jour}|${(e as { repas: string }).repas}`),
+    );
+  }, [debut, fin]);
+}
+
+/** Le journal complet, vivant — la matière du rejeu du garde-manger. */
+export function useJournal(): Evenement[] | undefined {
+  return useLiveQuery(() => lireJournal(base), []);
+}
+
+/**
+ * Le garde-manger REJOUÉ — le niveau qui n'est stocké nulle part.
+ *
+ * C'est ici que T25 devient visible : rien de ce que rend ce hook n'existe dans
+ * la base. L'amorce du catalogue plus le journal, et le reste est une déduction
+ * datée, que l'écran peut afficher avec sa confiance et son « vu le ».
+ */
+export function usePlacard(catalogue: Catalogue | null, aujourdhui = new Date()): Rejeu | null {
+  const evts = useJournal();
+  const jour = jourISO(aujourdhui);
+  return useMemo(
+    () => (catalogue && evts ? rejouer(catalogue, evts, contexte(catalogue), jour) : null),
+    [catalogue, evts, jour],
+  );
 }

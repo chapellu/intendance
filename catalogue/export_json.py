@@ -288,6 +288,12 @@ def main():
         # jamais saisis, donc jamais divergents. L'app les affiche sans refaire
         # l'arithmétique, comme elle le fait déjà de `facteurMax`.
         "gardeManger": {
+            # LA DATE DU RELEVÉ, ET POURQUOI ELLE SORT DANS L'EXPORT.
+            # T25 traite ce relevé comme la première OBSERVATION du journal.
+            # Une observation sans date ne restaure aucune confiance et ne
+            # permet pas de calculer « je n'ai rien vu depuis » : la date est
+            # donc une donnée du modèle, pas une note de bas de page.
+            "releve": pantry.get("releve"),
             "zones": [
                 {"id": z["id"], "label": z.get("label") or z["id"],
                  "espace": z["espace"],

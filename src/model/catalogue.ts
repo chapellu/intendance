@@ -381,7 +381,12 @@ function gardeManger(v: unknown, ou: string): GardeManger {
   for (const d of denrees)
     if (!connues.has(d.zone))
       throw new CatalogueInvalide(`${ou}.denrees`, "une zone déclarée", d.zone);
+  // `releve` reste optionnel, et l'absence VAUT `null` — elle ne s'approxime
+  // pas par « aujourd'hui ». Un relevé daté d'aujourd'hui par défaut
+  // restaurerait une confiance que personne n'a gagnée en ouvrant un placard.
+  const brutReleve = o["releve"];
   return {
+    releve: typeof brutReleve === "string" && brutReleve ? brutReleve : null,
     zones,
     denrees,
     alertes: listeDeTextes(o["alertes"] ?? [], `${ou}.alertes`),
