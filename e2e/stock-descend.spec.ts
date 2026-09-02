@@ -62,12 +62,28 @@ test("terminer une recette journalise, et la confiance du placard se dépense", 
   });
 
   // Avancer jusqu'à la dernière étape, puis terminer.
+  //
+  // LE DERNIER CLIC SE DISPATCHE, IL NE SE « CLIQUE » PAS — et c'est le CI qui
+  // l'a appris à ce parcours. `click()` contrôle l'actionnabilité de l'élément,
+  // puis RÉESSAIE s'il se détache pendant l'action. Or « Terminer » journalise
+  // la cuisson : l'écriture Dexie provoque un re-rendu, puis `sortir()` quitte
+  // l'écran. Le bouton disparaît donc pendant son propre clic. En local le clic
+  // gagne la course ; sur le runner ARM, plus lent, il la perd — et Playwright
+  // a réessayé quatre-vingt-dix secondes durant un bouton dont l'effet avait
+  // DÉJÀ eu lieu.
+  //
+  // `dispatchEvent` envoie l'événement une fois, sans boucle de réessai. On n'y
+  // perd aucune garantie : `toBeVisible()` juste au-dessus a vérifié ce qu'il
+  // fallait vérifier, et la preuve que le clic a porté est l'assertion d'URL
+  // qui suit — pas l'accusé de réception de Playwright.
   for (let i = 0; i < 40; i += 1) {
     const suiv = page.getByRole("button", { name: /C’est fait|Terminer/ });
     await expect(suiv).toBeVisible();
-    const dernier = (await suiv.innerText()).includes("Terminer");
+    if ((await suiv.innerText()).includes("Terminer")) {
+      await suiv.dispatchEvent("click");
+      break;
+    }
     await suiv.click();
-    if (dernier) break;
   }
 
   // ON ATTEND QUE LA FICHE SE FERME D'ELLE-MÊME. « Terminer » journalise, PUIS
