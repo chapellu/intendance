@@ -84,21 +84,36 @@ test("terminer une recette journalise, et la confiance du placard se dépense", 
   // changé, le clic précédent n'est pas arrivé au bout. C'est aussi ce qui
   // rendra un vrai blocage lisible — le test dira quelle étape n'avance pas,
   // au lieu de « bouton introuvable ».
+  //
+  // ET AUCUN CLIC N'EST RETENTÉ — pas seulement le dernier.
+  //
+  // C'est la chronologie de la troisième trace CI qui l'a montré : la boucle
+  // avait parcouru toutes les étapes correctement avant de se bloquer sur
+  // « Terminer ». Le seul scénario compatible est qu'un `click()` INTERMÉDIAIRE
+  // soit parti deux fois — Playwright réessaie quand l'élément se détache sous
+  // lui, ce que chaque re-rendu provoque — la seconde frappe tombant sur le
+  // « Terminer » que la première venait de faire apparaître. L'app terminait
+  // donc la recette pendant que le test se croyait au milieu.
+  //
+  // `dispatchEvent` envoie l'événement UNE fois, sans boucle de réessai. Un
+  // clic, une étape, et l'attente ci-dessous vérifie que l'étape a bougé —
+  // ce que `not.toHaveText` seul ne suffisait pas à garantir, puisqu'il passe
+  // aussi quand l'élément a disparu.
   const etape = page.locator(".co-kicker.accent");
   for (let i = 0; i < 40; i += 1) {
     const suiv = page.getByRole("button", { name: /C’est fait|Terminer/ });
     await expect(suiv).toBeVisible();
 
     if ((await suiv.innerText()).includes("Terminer")) {
-      // Le dernier clic démonte l'écran par construction : `dispatchEvent`
-      // envoie l'événement une fois, sans attendre un accusé de réception d'un
-      // bouton qui n'existera plus. La preuve qu'il a porté est l'URL, ci-après.
       await suiv.dispatchEvent("click");
       break;
     }
 
     const avant = await etape.innerText();
-    await suiv.click();
+    await suiv.dispatchEvent("click");
+    // « L'étape porte un texte, ET ce texte a changé » — deux affirmations, et
+    // il faut les deux : la seconde seule est satisfaite par un écran vide.
+    await expect(etape).toBeVisible({ timeout: 15_000 });
     await expect(etape).not.toHaveText(avant, { timeout: 15_000 });
   }
 
