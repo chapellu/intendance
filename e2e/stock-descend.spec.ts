@@ -17,10 +17,16 @@ import { attendreLApp, poserUnPlat } from "./parcours";
 
 test("terminer une recette journalise, et la confiance du placard se dépense", async ({ page }) => {
   // LE PLUS LONG PARCOURS DE LA SUITE, et il l'est pour une raison : il traverse
-  // quatre écrans et autant d'étapes de recette qu'en porte le plat tiré. Le
-  // délai par défaut de 30 s le serrait de trop près — il passait seul et
-  // rougissait en suite, ce qui est la pire des deux façons d'échouer.
-  test.slow();
+  // quatre écrans et autant d'étapes de recette qu'en porte le plat tiré.
+  //
+  // UN BUDGET EXPLICITE, PAS `test.slow()`. Les deux échecs CI de ce parcours
+  // ont buté très exactement sur 90 s — c'est-à-dire sur le plafond que
+  // `test.slow()` accorde (trois fois 30 s). Un test qui meurt pile sur son
+  // budget dit d'abord qu'il est à l'étroit, avant de dire qu'il est cassé.
+  // Le runner ARM du CI met environ deux minutes pour huit parcours là où
+  // cette machine en met trente secondes ; le budget est donc posé pour lui,
+  // pas pour ici.
+  test.setTimeout(180_000);
 
   const titre = await poserUnPlat(page);
 
@@ -63,27 +69,52 @@ test("terminer une recette journalise, et la confiance du placard se dépense", 
 
   // Avancer jusqu'à la dernière étape, puis terminer.
   //
-  // LE DERNIER CLIC SE DISPATCHE, IL NE SE « CLIQUE » PAS — et c'est le CI qui
-  // l'a appris à ce parcours. `click()` contrôle l'actionnabilité de l'élément,
-  // puis RÉESSAIE s'il se détache pendant l'action. Or « Terminer » journalise
-  // la cuisson : l'écriture Dexie provoque un re-rendu, puis `sortir()` quitte
-  // l'écran. Le bouton disparaît donc pendant son propre clic. En local le clic
-  // gagne la course ; sur le runner ARM, plus lent, il la perd — et Playwright
-  // a réessayé quatre-vingt-dix secondes durant un bouton dont l'effet avait
-  // DÉJÀ eu lieu.
+  // ON ATTEND QUE L'ÉTAPE AIT BOUGÉ AVANT DE RECLIQUER, et c'est le CI qui l'a
+  // appris à ce parcours, deux fois.
   //
-  // `dispatchEvent` envoie l'événement une fois, sans boucle de réessai. On n'y
-  // perd aucune garantie : `toBeVisible()` juste au-dessus a vérifié ce qu'il
-  // fallait vérifier, et la preuve que le clic a porté est l'assertion d'URL
-  // qui suit — pas l'accusé de réception de Playwright.
+  // Un clic ici n'est pas synchrone : il écrit dans Dexie, la requête vive
+  // repart, React re-rend, et le bouton se détache le temps du re-rendu.
+  // Enchaîner les clics sans attendre marche sur une machine rapide — chaque
+  // clic a le temps de se poser — et se met à empiler les clics sur un runner
+  // lent. Ni `click()` (qui réessaie sur un élément détaché) ni
+  // `dispatchEvent()` (qui ne réessaie pas) ne règlent ça : le problème n'est
+  // pas COMMENT on clique, c'est qu'on clique trop tôt.
+  //
+  // L'indicateur « Étape N sur M » est le témoin fiable : tant qu'il n'a pas
+  // changé, le clic précédent n'est pas arrivé au bout. C'est aussi ce qui
+  // rendra un vrai blocage lisible — le test dira quelle étape n'avance pas,
+  // au lieu de « bouton introuvable ».
+  //
+  // ET AUCUN CLIC N'EST RETENTÉ — pas seulement le dernier.
+  //
+  // C'est la chronologie de la troisième trace CI qui l'a montré : la boucle
+  // avait parcouru toutes les étapes correctement avant de se bloquer sur
+  // « Terminer ». Le seul scénario compatible est qu'un `click()` INTERMÉDIAIRE
+  // soit parti deux fois — Playwright réessaie quand l'élément se détache sous
+  // lui, ce que chaque re-rendu provoque — la seconde frappe tombant sur le
+  // « Terminer » que la première venait de faire apparaître. L'app terminait
+  // donc la recette pendant que le test se croyait au milieu.
+  //
+  // `dispatchEvent` envoie l'événement UNE fois, sans boucle de réessai. Un
+  // clic, une étape, et l'attente ci-dessous vérifie que l'étape a bougé —
+  // ce que `not.toHaveText` seul ne suffisait pas à garantir, puisqu'il passe
+  // aussi quand l'élément a disparu.
+  const etape = page.locator(".co-kicker.accent");
   for (let i = 0; i < 40; i += 1) {
     const suiv = page.getByRole("button", { name: /C’est fait|Terminer/ });
     await expect(suiv).toBeVisible();
+
     if ((await suiv.innerText()).includes("Terminer")) {
       await suiv.dispatchEvent("click");
       break;
     }
-    await suiv.click();
+
+    const avant = await etape.innerText();
+    await suiv.dispatchEvent("click");
+    // « L'étape porte un texte, ET ce texte a changé » — deux affirmations, et
+    // il faut les deux : la seconde seule est satisfaite par un écran vide.
+    await expect(etape).toBeVisible({ timeout: 15_000 });
+    await expect(etape).not.toHaveText(avant, { timeout: 15_000 });
   }
 
   // ON ATTEND QUE LA FICHE SE FERME D'ELLE-MÊME. « Terminer » journalise, PUIS
