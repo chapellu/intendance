@@ -7,8 +7,20 @@ name: Image
 # Le Dockerfile typecheck et construit ; les tests, eux, tournent AVANT la
 # publication. Une image qui part sur GHCR avec des tests rouges n'a rien à y
 # faire, et un `needs:` le dit mieux qu'une consigne.
+# LES TESTS TOURNENT AUSSI SUR LES PULL REQUESTS, ET ÇA A ÉTÉ PAYÉ CHER.
+#
+# Tant que ce workflow ne se déclenchait que sur `main`, un parcours e2e cassé
+# ne pouvait être découvert QU'APRÈS la fusion — donc toujours sur `main`, donc
+# en bloquant le déploiement le temps de le réparer. C'est exactement ce qui
+# s'est produit deux fois de suite sur `stock-descend.spec.ts` : l'app était
+# bonne, le test ne l'était pas, et le déploiement a attendu.
+#
+# `build` reste réservé aux poussées : une PR VÉRIFIE, elle ne publie pas.
 on:
   push:
+    branches:
+      - main
+  pull_request:
     branches:
       - main
   workflow_dispatch:
@@ -17,8 +29,13 @@ permissions:
   contents: write # committe le nouveau tag d'image sur main
   packages: write # pousse sur GHCR
 
+# LE GROUPE PORTE LA RÉFÉRENCE. Un groupe unique sérialisait tout, si bien
+# qu'une PR aurait attendu derrière un build de `main` — pour un job qui ne
+# publie rien. `main` reste sérialisé contre lui-même, ce qui est le seul
+# endroit où ça compte : deux images qui se poussent en même temps se
+# disputeraient le commit d'épinglage.
 concurrency:
-  group: image
+  group: image-${{ github.ref }}
   cancel-in-progress: false
 
 env:
@@ -82,6 +99,10 @@ jobs:
   build:
     name: Build & publish
     needs: [test, e2e]
+    # UNE PR VÉRIFIE, ELLE NE PUBLIE PAS. Sans cette garde, ouvrir une PR
+    # pousserait une image sur GHCR et tenterait le commit d'épinglage — depuis
+    # une branche, sur un SHA qui n'est pas celui qui sera fusionné.
+    if: github.event_name != 'pull_request'
     # Le cluster est un nœud unique Ampere A1 : image arm64, build natif sur
     # runner ARM.
     runs-on: ubuntu-24.04-arm
