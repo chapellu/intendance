@@ -734,7 +734,7 @@ poissonnerie. Un faible recouvrement n'est pas une panne du modèle : le primeur
 ne s'estime jamais et le frais court ne se parie pas sans avoir vu, donc les
 classes comptées **sont** l'épicerie.
 
-- [ ] **T25 — Le journal d'événements, et le niveau dérivé.** Trois sortes
+- [x] **T25 — Le journal d'événements, et le niveau dérivé.** Trois sortes
       d'événements persistés — cuisiné, observation, entrée — et **plus aucun
       niveau stocké** : le garde-manger et le dépôt se rejouent depuis le
       journal.
@@ -748,7 +748,7 @@ classes comptées **sont** l'épicerie.
       ordinaire, annuler un « fait » touché par erreur devient possible, et « je
       n'ai rien vu depuis » devient calculable.
 
-- [ ] **T26 — L'événement cuisiné : trois effets, deux dates, une couture.**
+- [x] **T26 — L'événement cuisiné : trois effets, deux dates, une couture.**
       Il ne se déclenche que **sur un créneau posé** et porte deux dates plus
       les parts figées.
 
@@ -776,7 +776,7 @@ classes comptées **sont** l'épicerie.
       bocaux n'atteignent jamais le dépôt — se referme par le relevé de T32, pas
       en élargissant l'événement.
 
-- [ ] **T27 — Rentrer crée un lot, et ce lot porte son poids.**
+- [x] **T27 — Rentrer crée un lot, et ce lot porte son poids.**
       `courses.rentrer()` appelle enfin `ajouterLot()`.
 
       **Le poids appartient au lot, pas à l'ingrédient**, et le relevé le
@@ -791,7 +791,7 @@ classes comptées **sont** l'épicerie.
       ticket : c'est le même problème *propose-puis-valide* que les `apports`, et
       il est traité par [Workspace#44](https://github.com/chapellu/Workspace/issues/44).
 
-- [ ] **T28 — Deux modes de décrément, choisis par le lot.** Un lot chiffré perd
+- [x] **T28 — Deux modes de décrément, choisis par le lot.** Un lot chiffré perd
       des grammes ; **un lot non chiffré avance son `etat`** (`sec` → `entame`).
       Aucun poids inventé.
 
@@ -817,7 +817,7 @@ classes comptées **sont** l'épicerie.
       canaux — marché, casier Côté Champs, panier vert — livrent du non choisi et
       non pesé, et le vrac (« le bocal EST le stock ») ne le sera jamais.
 
-- [ ] **T29 — L'unité scellée part en entier ; son reste devient un lot court.**
+- [x] **T29 — L'unité scellée part en entier ; son reste devient un lot court.**
       Ouvrir une `conserve` ou un `bocal` scellé consomme **l'unité d'achat** —
       4 boîtes de maïs deviennent 3.
 
@@ -832,7 +832,7 @@ classes comptées **sont** l'épicerie.
       **se tranche tout seul** — #34 interdit toute confirmation par repas, « ce
       serait de la comptabilité déguisée ».
 
-- [ ] **T30 — La classe dérivée, et trois états de confiance.** Les cinq classes
+- [x] **T30 — La classe dérivée, et trois états de confiance.** Les cinq classes
       de #34 n'existent dans aucun fichier. Elles se **dérivent**, avec une
       surcharge — la discipline que `garde_manger.py` a déjà employée pour
       `urgence`, et pour la même raison : ce qu'un relevé sait vraiment, c'est le
@@ -862,7 +862,7 @@ classes comptées **sont** l'épicerie.
       dernière chose vue de ses yeux. La vitesse de dépense est celle des
       tolérances par classe de #34, inchangées.
 
-- [ ] **T31 — La dérive, apprise, qui élargit le doute sans bouger le chiffre.**
+- [x] **T31 — La dérive, apprise, qui élargit le doute sans bouger le chiffre.**
       Le « forfait hebdomadaire calibré sur l'historique de commande » de #34 ne
       survit pas tel quel : aucun historique de commande n'existe ici, et
       Workspace#41 a supprimé la semaine à quoi il s'accrochait.
@@ -886,7 +886,7 @@ classes comptées **sont** l'épicerie.
       plus tôt, donc T33 les fait remonter. La cuisine hors catalogue produit une
       **question au bon moment**, jamais un faux chiffre.
 
-- [ ] **T32 — Le relevé par zone — garde-manger ET dépôt.** Trois gestes, tous
+- [x] **T32 — Le relevé par zone — garde-manger ET dépôt.** Trois gestes, tous
       des observations au sens de T30 : la **réponse** à une question (un
       ingrédient), la **correction** spontanée (un ingrédient), le **relevé**
       (une zone entière).
@@ -984,6 +984,180 @@ classes comptées **sont** l'épicerie.
       recettes a poussé plus vite que la table des rayons. Tant qu'ils n'en ont
       pas, T30 les classe `non suivi` et ils ne décrémentent rien — ce qui est le
       bon défaut, mais pas une fin. C'est de la saisie, pas une décision.
+
+### Ce que T25–T32 laissent derrière eux
+
+Ils sont cochés, et ces trois manques sont réels — les écrire ici vaut mieux que
+de les laisser croire faits.
+
+- [ ] **La carte d'un plat ne dit pas encore « je suis 3 des 11 ingrédients ».**
+      Le modèle le SAIT — `retirer()` rend `effet: "aucun"` sur chaque ligne
+      qu'il ne suit pas, et `Rejeu.retraits` les porte toutes — mais rien ne
+      l'affiche. C'est le no-op DIT de T28, et c'est précisément ce qui doit
+      rendre visible que relever davantage sert à quelque chose. Sans l'écran,
+      le placard reste cru au-delà de ce qu'il couvre.
+- [ ] **Le relevé du dépôt n'a pas d'écran.** `releverDepot()` existe et est
+      testé ; l'inventaire n'expose que le relevé des zones du garde-manger.
+      C'est pourtant le geste qui referme le trou de T26 — un plat du catalogue
+      cuisiné hors plan met des bocaux au congélo dont l'app n'entend jamais
+      parler.
+- [ ] **`corrigerLot` est toujours sans appelant.** T32 devait lui en donner un ;
+      le relevé du dépôt supprime des lots (`bulkDelete`) au lieu d'en corriger
+      la quantité. Corriger « il reste 300 g et non 700 » demande un écran qui
+      n'existe pas encore, et c'est le même que celui du point précédent.
+- [ ] **La dérive ne se voit nulle part.** Elle est apprise, testée, et elle fait
+      tomber la confiance plus vite — mais aucun écran ne dit « cette denrée
+      part plus vite que ce que je vois ». Tant que T33 n'existe pas, sa seule
+      sortie est un mot de confiance qui change plus tôt.
+
+## Les niveaux de réserve — [Workspace#43](https://github.com/chapellu/Workspace/issues/43)
+
+Le contrat du plancher, grillé en français les 31/08 et 01/09/2026, seize
+décisions. **Rien ici n'est commencé** : T25–T32 ont construit le stock qui
+descend, ce qui est le socle dont tout ce qui suit dépend.
+
+**LE MOT EST `plancher`, ET CE N'EST PAS UN DÉTAIL.** « Réserve » est déjà pris
+dans ce foyer : `docs/cuisine/stock.md` appelle ainsi le PAQUET derrière le
+bocal distributeur — un objet physique, pas une cible. La cible s'appelle donc
+`plancher`, mot que `equilibre.yaml` emploie déjà dans exactement ce sens.
+
+- [ ] **T34 — Le plancher se pose sur ce qu'un plat PRODUIT.** Jamais sur la
+      recette : `pain-rassis` est émis par 5 recettes, `reste-roti` par 2, et une
+      recette en émet souvent deux ou trois. Un plancher sur la recette voudrait
+      dire qu'un poulet rôti au citron ne recharge pas le même `poulet-cuit`
+      qu'un poulet rôti nature. Le plat producteur est dérivé, et quand plusieurs
+      rechargent un type, ils partagent le bonus.
+
+- [ ] **T35 — Deux populations, deux plafonds.** Un pot-au-feu met trois choses
+      en stock d'un coup : `bouillon-pot-au-feu` (`base` — un ingrédient, il ne
+      fait pas un dîner, il en accélère un), `viande-pot-au-feu` (`reste-plat` —
+      un dîner), `legumes-pot-au-feu` (`congelo: false`, il reste au frigo). Donc
+      « un pot-au-feu d'avance » n'est pas une phrase que le modèle peut tenir.
+      Le corpus porte **13 `kind: base`** — exactement les 13 types que quoi que
+      ce soit `accepts` — contre **58 `reste-plat`**. Plafonds séparés, parce que
+      le congélateur fait 18 places et que si les bocaux de bouillon mangent les
+      tiroirs, il n'y a plus de soir qu'on sauve.
+
+- [ ] **T36 — Plancher par type, ET plancher de secours mutualisé.**
+      L'utilisateur : « si je déstocke la dernière bolognaise il faut encourager
+      d'en refaire ». Mais le pur par-type ne tient pas l'arithmétique — 68 types
+      × 1 = 68 portions pour 18 places. Donc les deux, à deux métiers : un
+      plancher par type qui dit *reconstitue celui-là*, et un plancher de secours
+      qui garde `congelateur.plancher: 4` **en lui ajoutant la diversité** :
+      ≥ 4 portions réparties sur **≥ 3 types distincts**. L'objection tuait le
+      compteur SANS diversité, pas le compteur. Le plancher de secours n'est pas
+      saisonnier — un soir s'effondre aussi en juillet.
+
+- [ ] **T37 — Propose-puis-valide, à la deuxième cuisson.** Sur 68 types, un
+      réglage à la main ne sera jamais fait, et `equilibre.yaml` dit de son
+      propre 4 : « valeur posée à vue, à régler à l'usage ». Aucun type n'a de
+      plancher tant qu'il n'a pas été cuisiné **deux fois** — le journal de T25
+      le sait — et à la seconde l'app propose `plancher: 1`, le dit, et attend.
+      **Démarrage à froid : zéro plancher**, donc aucun bonus inventé en
+      semaine 1.
+
+- [ ] **T38 — Le plafond éteint le bonus ; être au-dessus ne coûte rien.**
+      Congélateur plein → le bonus de reconstitution ne paie plus rien quels que
+      soient les déficits par type, et l'app nomme le type sur-représenté
+      (« 7 portions de ratatouille sur 18 »). Au-dessus de son plancher, **aucun
+      malus** : un plancher est un seuil, pas une bande.
+
+- [ ] **T39 — Le plancher du garde-manger porte sur l'ingrédient.** Cohérent avec
+      T32 (les corrections sont par ingrédient, jamais par lot) et avec ce qu'un
+      œil compte en ouvrant un placard.
+
+- [ ] **T40 — `usage: apero`, et c'est la preuve du mécanisme.** L'apéro n'existe
+      nulle part aujourd'hui : ni dans `rayons.ordre` (`primeur, boucherie,
+      poissonnerie, crèmerie, frais, épicerie`), ni comme nature. Ce n'est pas un
+      rayon — les fruits secs s'achètent en épicerie, le rayon dit *où on
+      l'achète* — ni un plat : `creneaux.yaml` fait 21 créneaux et rien d'autre.
+      C'est un **usage posé sur des denrées** — `fruits-secs-melange`,
+      `graines-courge`, `tomates-sechees`, `terrine-campagne`, `guacamole`,
+      `pignons-pin` sont déjà là. Jamais distribué comme carte, ne marque aucun
+      score, **ne produit que des lignes de courses**. S'il marche, c'est que le
+      plancher est bien indépendant du scoring.
+
+- [ ] **T41 — Aucun arbitrage cuisiner/acheter : l'objet dicte le canal.** Un
+      type du dépôt ne se recharge que par la cuisine (→ bonus de score) ; une
+      denrée du garde-manger que par l'achat (→ ligne de courses). La bolognaise
+      n'a l'air ambiguë que parce que les deux existent, et le catalogue les
+      distingue **déjà** : `sauce-bolognaise` (base cuisinée, congélo) et
+      `sauce-bolognaise-bocal` (bocal acheté, 300 g, garde-manger) sont deux ids.
+      **« Ce qui est sous son plancher » EST la liste Carrefour.**
+
+- [ ] **T42 — La saison se pose sur le plancher, pas sur le plat.** « L'hiver de
+      la soupe, l'été de la glace ». Or `saison` est un champ de PROVENANCE : il
+      est niché sous `source:` à côté de `page:` et `encoding:` — c'est le
+      chapitre du livre de Chioca —, il est **absent de `_repertoire.yaml`**
+      (aucun des 15 plats du foyer n'en porte), présent sur 64 des 72 fichiers,
+      et **lu nulle part**. Le promouvoir coûterait une saisie sur 86 recettes ;
+      poser une **fenêtre de validité sur le plancher** en coûte une dizaine.
+      Hors fenêtre, un plancher ne vaut rien : ni bonus, ni ligne de courses.
+      ⚠ Le plancher soupe est le plus fragile : 8 soupes et veloutés au corpus,
+      mais 9 plats hiver et 10 automne contre 26 été.
+      [Workspace#48](https://github.com/chapellu/Workspace/issues/48) en est donc
+      un vrai préalable.
+
+- [ ] **T43 — Le mois de fermeture inverse le plancher.** Fin septembre le
+      plancher glace s'éteint et il reste des portions qui ne valent plus rien et
+      occupent des tiroirs dont le plancher soupe a besoin. Dans le **dernier
+      mois** de sa fenêtre, un plancher cesse de payer la reconstitution et paie
+      l'écoulement, majoré, en disant pourquoi — « la saison des glaces se
+      termine, il en reste 3 ». Pas de suppression, pas d'alerte : un plat qui
+      remonte dans la main au bon moment.
+
+- [ ] **T44 — Un plancher que les faits contredisent se retire.** Symétrique de
+      T37 : sous son seuil depuis longtemps, rien ne le recharge, le plat a été
+      proposé et écarté plusieurs fois → l'app propose de le supprimer, même
+      geste que sa création en sens inverse. **Un plancher est une hypothèse sur
+      des habitudes.**
+
+- [ ] **T45 — Deux nombres : le plancher, et le niveau de réappro.** Un plancher
+      dit *que* tu es en dessous, pas *combien* mettre dans le caddie — et
+      Carrefour est rare et gros : « on ne fonctionne pas en flux tendu à faire
+      les courses tous les jours ». Plancher maïs à 2, il en reste 1 : racheter 1
+      te remet en dessous à la première boîte ouverte. Il faut donc un **niveau
+      de réappro** au-dessus du plancher. Il se **propose tout seul** — ce qui se
+      consomme entre deux grosses courses, que le journal de T25 sait mesurer —
+      donc toujours un seul chiffre à valider. **Pas de symétrique au dépôt** :
+      une soirée de cuisine produit ce qu'elle produit (`portions_eq`).
+
+- [ ] **T46 — Un plancher n'existe que sur ce que l'app sait compter.** Épicerie
+      comptable, fond de placard, congélateur. **Interdit** sur primeur, frais
+      court et les 23 ids sans rayon : T30 dit que les fruits & légumes ne
+      s'estiment pas du tout et que le frais court ne se parie jamais sans
+      l'avoir vu, donc « toujours 3 oignons » serait une cible que l'app est
+      structurellement incapable d'évaluer — et le premier endroit où elle
+      réclamerait des courses à tort. **Position de départ, pas frontière
+      acquise** : l'utilisateur a dit « ok pour le moment on verra à l'usage ».
+
+- [ ] **T47 — UNE SEULE ÉCHELLE : la vie qui reste.** C'est la correction de
+      l'utilisateur, et elle unifie trois mécaniques en une. `ecoule_frigo: 5` et
+      `ecoule_congelo: 3` classent par **endroit**, et l'endroit n'est qu'un
+      proxy grossier de l'urgence : « si j'ai une bolognaise un peu vieille au
+      congélateur c'est plus urgent qu'un truc frais au frigo ». Les deux
+      constantes sont **supprimées comme paire** et remplacées par un seul poids
+      `ecoule`, modulé par la **fraction de vie consommée** du lot — ce qui est
+      déjà la discipline de `urgences()` / `bonusPlacard`. Reconstituer devient
+      une valeur **constante**, écouler une valeur **qui monte avec le temps** :
+      tôt dans la vie d'un lot reconstituer gagne, tard écouler gagne, et
+      l'arbitrage cesse d'être une règle. `article_marginal: -0.4` fait déjà
+      payer un plat de reconstitution pour chaque article qu'il ajoute au panier,
+      donc reconstituer un bouillon (qui n'exige rien) bat naturellement
+      reconstituer une bolognaise (qui exige de la viande).
+      **Bloqué par [Workspace#50](https://github.com/chapellu/Workspace/issues/50)**,
+      qui donne son dénominateur à cette échelle.
+
+- [ ] **T48 — Le trou de portage est plus large qu'annoncé.** `scoring.ts` ne lit
+      que neuf poids : `proteine_manquante`, `proteine_saturee`,
+      `famille_legume_neuve`, `repetition_feculent`, `repetition_profil`,
+      `chaine_couverte`, `chaine_manquante`, `mal_transporte`,
+      `article_marginal`, plus les `ecoule_placard_*` via `bonusPlacard`. Sont
+      parsés et **jamais lus** : `plancher_congelo`, `ecoule_frigo`,
+      `ecoule_congelo`, `congelateur.plancher`, `main.taille` (le code code 4 en
+      dur), `main.cooldown_jours`. Ce n'est pas une série d'oublis épars — c'est
+      toute la moitié « stock et congélateur » du score qui n'a jamais été
+      portée. T36 et T47 en reprennent trois ; les trois autres restent.
 
 ## Sortie
 

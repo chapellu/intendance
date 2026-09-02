@@ -29,6 +29,18 @@
 #
 # Relevé du 2026-08-26, zone par zone, photos à l'appui.
 
+# LA DATE EST CE QUI REND CE FICHIER HONNÊTE.
+#
+# Ce n'est pas « le stock » : c'est le stock **tel qu'il était le 2026-08-26**.
+# T25 en fait la PREMIÈRE OBSERVATION du journal, et tout ce que l'app dit du
+# placard se rejoue depuis là. Sans cette date, « je n'ai rien vu depuis » n'est
+# pas calculable, et la confiance n'a rien à dépenser.
+#
+# C'est la réponse à l'objection que ce fichier s'était faite à lui-même — « un
+# chiffre qu'on croirait tenu à jour alors que rien ne le tient » : on ne rend
+# pas le chiffre plus juste, on le DATE, et l'app dit de quand il date.
+releve: 2026-08-26
+
 # ── Les rangements physiques ────────────────────────────────────────────────
 #
 # `hauteur_cm` est la hauteur UTILE d'un niveau, pas celle du meuble : c'est

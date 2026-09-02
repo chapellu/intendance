@@ -291,7 +291,7 @@ describe("ce que la zone fait subir à la denrée", () => {
 /** Une zone et ce qu'elle porte, vues. Le `!` est sûr : `zones()` rend une vue
  *  par zone, et on lui en donne exactement une. */
 const uneZone = (denrees: Denree[], z: Partial<Zone> = {}) =>
-  zones({ zones: [zoneTest(z)], denrees, alertes: [] })[0]!;
+  zones({ releve: "2026-08-26", zones: [zoneTest(z)], denrees, alertes: [] })[0]!;
 
 const SANS_COTES = { largeur_cm: null, profondeur_cm: null, hauteur_cm: null };
 

@@ -27,15 +27,18 @@
 
 import { useMemo, useState } from "react";
 import { ajouterLot, base, retirerLot, type LotStock } from "../db";
-import { useCatalogue, useSemaine } from "../db/hooks";
+import { useCatalogue, usePlacard, useSemaine } from "../db/hooks";
+import { releverZone } from "../db/journal";
 import type { Calcul } from "../model/calcul";
 import type { Jeu } from "../model/jeu";
+import type { Confiance, EtatIngredient, Rejeu } from "../model/journal";
 import type { Espace } from "../model/types";
 import { chemin } from "../nav/routes";
 import { aller } from "../nav/useRoute";
 import { Corps } from "../ui/Coquille";
 import { Icone, iconeEspace } from "../ui/icones";
-import { vueDeLInventaire, type LotVue } from "./stock.vue";
+import { fmt } from "../ui/format";
+import { vueDeLInventaire, type LotVue, type ZoneVue } from "./stock.vue";
 
 export function Stock() {
   const { catalogue } = useCatalogue();
@@ -58,6 +61,10 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
   const [retire, setRetire] = useState<LotStock | null>(null);
 
   const vue = useMemo(() => vueDeLInventaire(jeu, calc, filtre), [jeu, calc, filtre]);
+
+  // LE PLACARD REJOUÉ. Rien de ce qu'il rend n'existe en base : c'est l'amorce
+  // du catalogue plus le journal, et c'est là que T25 devient visible à l'œil.
+  const placard = usePlacard(jeu.catalogue);
 
   const retirer = async (ref: string) => {
     const id = Number(ref);
@@ -209,7 +216,7 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
         </span>
       </div>
 
-      <GardeManger vue={vue.gardeManger} />
+      <GardeManger vue={vue.gardeManger} placard={placard} />
     </Corps>
   );
 }
@@ -228,7 +235,13 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
  * sachet. C'est la seule chose de l'inventaire qui appelle un geste dans la
  * cuisine plutôt qu'un doigt sur le téléphone.
  */
-function GardeManger({ vue }: { vue: ReturnType<typeof vueDeLInventaire>["gardeManger"] }) {
+function GardeManger({
+  vue,
+  placard,
+}: {
+  vue: ReturnType<typeof vueDeLInventaire>["gardeManger"];
+  placard: Rejeu | null;
+}) {
   if (!vue.zones.length) return null;
   return (
     <>
@@ -301,49 +314,164 @@ function GardeManger({ vue }: { vue: ReturnType<typeof vueDeLInventaire>["gardeM
       ) : null}
 
       {vue.zones.map((z) => (
-        <div key={z.id} className="co-espace" style={{ marginBottom: "var(--space-2)" }}>
-          <div className="nom">
-            {z.nom}
-            {z.volume ? <span className="co-note"> · {z.volume}</span> : null}
-          </div>
-          <div className="co-note">
-            {z.cotes}
-            {z.ambiance ? ` · ${z.ambiance}` : ""}
-            {z.poids ? ` · ${z.poids}` : ""}
-          </div>
-          {z.denrees.length ? (
-            z.denrees.map((d) => (
-              <div key={d.cle} className="co-lot">
-                <span style={{ flex: 1 }}>
-                  <div className="nom">{d.nom}</div>
-                  {/* La note dit pourquoi cette ligne existe à part — « à l’huile
-                      d’olive », « distributeur ». Sans elle, deux thons de la
-                      même zone se ressemblent à s’y méprendre. */}
-                  {d.note ? <div className="ou">{d.note}</div> : null}
-                  {d.alerte ? <div className="ou">⚠ {d.alerte}</div> : null}
-                </span>
-                <span>
-                  <div className="q">{d.quantite}</div>
-                  <div className="src">{d.etat}</div>
-                </span>
-              </div>
-            ))
-          ) : (
-            <div className="co-note">Rien de relevé ici.</div>
-          )}
-        </div>
+        <Zone key={z.id} z={z} placard={placard} />
       ))}
 
       <div className="co-encart" style={{ marginTop: "var(--space-2)" }}>
         <Icone nom="info" />
         <span>
-          Le garde-manger est <b>descriptif</b>&nbsp;: rien ne le décrémente quand on cuisine, donc
-          il ne fait pas encore taire la liste de courses. Il dit ce qu’il y a, où, et ce que le
-          rangement fait subir.
+          Ces chiffres sont <b>déduits</b>, pas relevés&nbsp;: le stock descend quand on termine une
+          recette, et rien d’autre ne le regarde. C’est pour ça que chaque ligne dit de quand elle
+          date. <b>Relever une zone</b> remet tout ce qu’elle contient à ce que vos yeux voient — un
+          quart d’heure achète des semaines de silence.
         </span>
       </div>
     </>
   );
+}
+
+/* ─────────────────────────────────────────────────────────── une zone, relevée */
+
+/** Ce que le rejeu sait dire d'une ligne, en français. */
+const MOT_CONFIANCE: Record<Confiance, string> = {
+  sur: "vu",
+  probable: "estimé",
+  inconnu: "à vérifier",
+};
+
+/**
+ * Une zone du garde-manger, avec son relevé.
+ *
+ * LA ZONE EST LA CLÔTURE, donc il n'y a pas de bouton « terminé » à part :
+ * valider le relevé d'une zone déclare du même geste ce qu'elle contient ET que
+ * tout le reste n'y est plus. C'est le seul geste capable de dire « il n'y en a
+ * plus » sans énumérer les absents.
+ */
+function Zone({ z, placard }: { z: ZoneVue; placard: Rejeu | null }) {
+  const [releve, setReleve] = useState<Map<string, number> | null>(null);
+
+  const etatDe = (ing: string) => placard?.parIngredient.get(ing) ?? null;
+
+  const ouvrir = () =>
+    setReleve(new Map(z.denrees.map((d) => [d.ingredient, etatDe(d.ingredient)?.unites ?? 0])));
+
+  const valider = async () => {
+    if (!releve) return;
+    // Les lignes à zéro partent AVEC les autres : c'est bien le relevé complet
+    // de la zone qui est déclaré, pas une liste de corrections.
+    await releverZone(
+      base,
+      z.id,
+      [...releve].filter(([, n]) => n > 0).map(([ingredient, unites]) => ({ ingredient, unites })),
+    );
+    setReleve(null);
+  };
+
+  return (
+    <div className="co-espace" style={{ marginBottom: "var(--space-2)" }}>
+      <div className="nom" style={{ display: "flex", justifyContent: "space-between" }}>
+        <span>
+          {z.nom}
+          {z.volume ? <span className="co-note"> · {z.volume}</span> : null}
+        </span>
+        <button
+          className="btn btn-secondary"
+          style={{ fontSize: 12, padding: "4px 10px" }}
+          onClick={() => (releve ? setReleve(null) : ouvrir())}
+        >
+          {releve ? "Annuler" : "Relever"}
+        </button>
+      </div>
+      <div className="co-note">
+        {z.cotes}
+        {z.ambiance ? ` · ${z.ambiance}` : ""}
+        {z.poids ? ` · ${z.poids}` : ""}
+      </div>
+
+      {releve ? (
+        <>
+          {z.denrees.map((d) => (
+            <div key={d.cle} className="co-lot">
+              <span style={{ flex: 1 }}>
+                <div className="nom">{d.nom}</div>
+                {d.note ? <div className="ou">{d.note}</div> : null}
+              </span>
+              <span style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
+                <button
+                  className="btn btn-secondary"
+                  style={{ padding: "2px 10px" }}
+                  onClick={() =>
+                    setReleve(
+                      new Map(releve).set(
+                        d.ingredient,
+                        Math.max(0, (releve.get(d.ingredient) ?? 0) - 1),
+                      ),
+                    )
+                  }
+                >
+                  −
+                </button>
+                <b style={{ minWidth: "1.5em", textAlign: "center" }}>
+                  {releve.get(d.ingredient) ?? 0}
+                </b>
+                <button
+                  className="btn btn-secondary"
+                  style={{ padding: "2px 10px" }}
+                  onClick={() =>
+                    setReleve(new Map(releve).set(d.ingredient, (releve.get(d.ingredient) ?? 0) + 1))
+                  }
+                >
+                  +
+                </button>
+              </span>
+            </div>
+          ))}
+          <button
+            className="btn btn-primary btn-block"
+            style={{ marginTop: "var(--space-2)" }}
+            onClick={() => void valider()}
+          >
+            Valider le relevé — ce qui est à 0 n’y est plus
+          </button>
+        </>
+      ) : z.denrees.length ? (
+        z.denrees.map((d) => {
+          const e = etatDe(d.ingredient);
+          return (
+            <div key={d.cle} className="co-lot">
+              <span style={{ flex: 1 }}>
+                <div className="nom">{d.nom}</div>
+                {/* La note dit pourquoi cette ligne existe à part — « à l’huile
+                    d’olive », « distributeur ». Sans elle, deux thons de la
+                    même zone se ressemblent à s’y méprendre. */}
+                {d.note ? <div className="ou">{d.note}</div> : null}
+                {d.alerte ? <div className="ou">⚠ {d.alerte}</div> : null}
+                {/* LE CHIFFRE ET SA DATE, TOUJOURS LISIBLES DESSOUS. C'est ce
+                    qui remplace un score de confiance : trois mots se lisent,
+                    un score se croit. */}
+                {e?.vuLe ? <div className="ou">vu le {e.vuLe}</div> : null}
+              </span>
+              <span>
+                <div className="q">{e ? quantiteDite(e) : d.quantite}</div>
+                <div className={`src ${e && e.confiance !== "sur" ? "estime" : ""}`}>
+                  {e ? MOT_CONFIANCE[e.confiance] : d.etat}
+                </div>
+              </span>
+            </div>
+          );
+        })
+      ) : (
+        <div className="co-note">Rien de relevé ici.</div>
+      )}
+    </div>
+  );
+}
+
+/** Ce qu'on sait dire d'un ingrédient rejoué : des grammes quand tout est
+ *  chiffré, un compte sinon. « 1 » est une information, pas un tiret. */
+function quantiteDite(e: EtatIngredient): string {
+  if (e.grammes == null) return `${e.unites}`;
+  return e.grammes >= 1000 ? `${fmt(e.grammes / 1000)} kg` : `${fmt(e.grammes)} g`;
 }
 
 function Lot({ lot, retirer }: { lot: LotVue; retirer: (ref: string) => Promise<void> }) {

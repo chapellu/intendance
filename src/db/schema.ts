@@ -24,6 +24,7 @@
 // ────────────────────────────────────────────────────────────────────────────
 
 import Dexie, { type EntityTable } from "dexie";
+import type { Evenement } from "../model/journal";
 import type { EmitKind, Espace, RepasId } from "../model/types";
 
 /** Un créneau décidé. Absent de la table = pas encore décidé, ce qui n'est pas
@@ -100,7 +101,7 @@ export interface Reglage {
 // La v1 n'a pas d'`upgrade` : il ne s'exécuterait sur aucune base existante,
 // puisqu'il n'en existe aucune. Une migration vide écrite « pour la forme »
 // est une migration qu'on croit avoir testée.
-export const VERSION = 1;
+export const VERSION = 2;
 
 const SCHEMAS: Record<number, Record<string, string>> = {
   1: {
@@ -110,6 +111,21 @@ const SCHEMAS: Record<number, Record<string, string>> = {
     stock: "++id, type, espace",
     reglages: "cle",
   },
+  // v2 — LE JOURNAL (T25). Dexie n'exige de redéclarer que ce qui change ;
+  // les quatre tables de la v1 restent telles quelles.
+  //
+  // PAS D'`upgrade` ICI, ET C'EST JUSTE. Le journal démarre vide, et un
+  // journal vide rejoue exactement l'amorce du catalogue — c'est-à-dire l'état
+  // que l'app montrait avant cette version. Il n'y a donc aucune donnée
+  // existante à transformer : écrire une migration « pour la forme » serait
+  // écrire une migration qu'on croit avoir testée.
+  //
+  // `jour` est indexé parce que le rejeu lit par plage de dates, et `sorte`
+  // parce que « la dernière observation de cet ingrédient » est la requête la
+  // plus chaude du modèle.
+  2: {
+    evenements: "++id, jour, sorte",
+  },
 };
 
 export class Base extends Dexie {
@@ -117,6 +133,7 @@ export class Base extends Dexie {
   courses!: EntityTable<EtatCourse, "cle">;
   stock!: EntityTable<LotStock, "id">;
   reglages!: EntityTable<Reglage, "cle">;
+  evenements!: EntityTable<Evenement & { id: number }, "id">;
 
   constructor(nom = "intendance") {
     super(nom);
@@ -124,7 +141,24 @@ export class Base extends Dexie {
   }
 }
 
-export const schemaDeclare = (): Record<string, string> => SCHEMAS[VERSION] ?? {};
+/**
+ * Le schéma CUMULÉ, toutes versions confondues.
+ *
+ * Dexie n'exige d'une version que les tables qui CHANGENT : la v2 ne redéclare
+ * pas les quatre tables de la v1, et c'est la bonne façon de l'écrire. Mais du
+ * coup `SCHEMAS[VERSION]` ne décrit plus la base — seulement le dernier delta.
+ * Rendre ce delta ferait dire à un test d'épinglage que la base ne porte qu'une
+ * table, ce qui est faux, et le jour où ça compte c'est exactement le genre de
+ * demi-vérité qui coûte cher.
+ */
+export const schemaDeclare = (): Record<string, string> => {
+  const cumul: Record<string, string> = {};
+  for (const n of Object.keys(SCHEMAS)
+    .map(Number)
+    .sort((a, b) => a - b))
+    Object.assign(cumul, SCHEMAS[n]);
+  return cumul;
+};
 
 /** L'instance de l'app. Les tests construisent la leur, sous un autre nom, pour
  *  ne pas se marcher dessus. */

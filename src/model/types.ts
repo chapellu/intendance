@@ -378,6 +378,15 @@ export interface Denree {
 }
 
 export interface GardeManger {
+  /**
+   * Le jour du relevé, en `AAAA-MM-JJ`. `null` quand le fichier n'en porte pas.
+   *
+   * CE N'EST PAS UNE MÉTADONNÉE. T25 lit ce relevé comme la PREMIÈRE
+   * OBSERVATION du journal, et une observation sans date ne restaure aucune
+   * confiance : « je n'ai rien vu depuis » n'aurait pas de depuis. C'est la
+   * date qui rend le chiffre honnête, pas le chiffre qui se rend juste.
+   */
+  releve: string | null;
   zones: Zone[];
   denrees: Denree[];
   /** Les erreurs de RANGEMENT, calculées à l'export. Elles ne parlent pas des

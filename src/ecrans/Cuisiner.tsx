@@ -16,7 +16,9 @@
 import { useEffect, useState } from "react";
 import { indexDuCreneau } from "../db";
 import { useCatalogue, useSemaine } from "../db/hooks";
+import { dejaCuisine, journaliserCuisson } from "../db/journal";
 import { cleEtape, cleMinuteur, poserReglage, useNombre, useObjet } from "../db/reglages";
+import { base } from "../db/schema";
 import { echelleTexte, facteurAffiche, type Calcul } from "../model/calcul";
 import { joue, type Jeu } from "../model/jeu";
 import { heureDe } from "../model/heures";
@@ -88,6 +90,32 @@ function Fiche({
   const parts = (i >= 0 ? jeu.parts[i] : undefined) ?? jeu.catalogue.foyer.parts;
   const f = (i >= 0 ? calc.facteurs[i] : undefined) || facteurAffiche(p, parts);
 
+  /**
+   * Terminer une recette JOURNALISE la cuisson — T26.
+   *
+   * SEULEMENT SUR UN CRÉNEAU POSÉ (`i >= 0`). Ouverte depuis « Poser » pour
+   * lire un candidat, la fiche n'appartient à aucun créneau : la terminer n'est
+   * pas cuisiner, c'est finir de lire. Sans cette garde, feuilleter une recette
+   * viderait le placard.
+   *
+   * `parts` est figé ICI, à l'instant où l'on cuisine, et pas relu du foyer plus
+   * tard : un foyer qui grandit ne doit pas changer rétroactivement ce qui a
+   * été mangé.
+   *
+   * `dejaCuisine` protège du double décrément — marquer deux fois « fait » est
+   * un geste qu'on fait vraiment, et rien d'autre dans l'app ne le rattraperait.
+   */
+  const terminer = async () => {
+    if (i < 0) return;
+    if (await dejaCuisine(base, creneau.jour, creneau.repas)) return;
+    await journaliserCuisson(base, {
+      jour: creneau.jour,
+      repas: creneau.repas,
+      plat: p,
+      parts,
+    });
+  };
+
   const tete = (
     <>
       <div className="co-fiche-tete">
@@ -138,6 +166,7 @@ function Fiche({
         repas={creneau.repas}
         cle={cle}
         cleM={cleMinuteur(creneau.jour, creneau.repas, p.id, steps[etape]!.id)}
+        terminer={terminer}
       />
     </>
   );
@@ -197,6 +226,7 @@ function Guide({
   repas,
   cle,
   cleM,
+  terminer,
 }: {
   p: Plat;
   steps: Etape[];
@@ -204,6 +234,7 @@ function Guide({
   repas: string;
   cle: string;
   cleM: string;
+  terminer: () => Promise<void>;
 }) {
   const e = steps[etape]!;
   const etat = useObjet<EtatMinuteur>(cleM);
@@ -216,10 +247,16 @@ function Guide({
 
   const bouger = (d: number) => {
     if (d > 0 && dernier) {
-      // Terminer efface l'avancement : la prochaine fois qu'on ouvrira cette
-      // fiche, ce sera pour la refaire depuis le début.
-      void poserReglage(cle, null);
-      sortir();
+      // LE SEUL ENDROIT DE L'APP OÙ LE STOCK DESCEND. Terminer journalise la
+      // cuisson et engage ses trois effets ; l'avancement s'efface ensuite,
+      // parce que la prochaine ouverture de cette fiche sera pour la refaire.
+      //
+      // L'ordre compte : on sort APRÈS que l'écriture est partie, sinon un
+      // démontage de composant peut emporter la promesse avec lui.
+      void terminer().finally(() => {
+        void poserReglage(cle, null);
+        sortir();
+      });
       return;
     }
     void poserReglage(cle, Math.max(0, Math.min(steps.length - 1, etape + d)));

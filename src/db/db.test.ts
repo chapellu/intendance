@@ -43,9 +43,11 @@ describe("le schéma", () => {
     // Ce test n'a l'air de rien : sa seule raison d'être est de rougir le jour
     // où quelqu'un ajoute une table sans monter la version. C'est à ce
     // moment-là qu'il faut se souvenir d'écrire la migration.
-    expect(VERSION).toBe(1);
+    expect(VERSION).toBe(2);
+    // `schemaDeclare()` rend le schéma CUMULÉ, pas le delta de la dernière
+    // version : la v2 n'ajoute que `evenements`, mais la base porte les cinq.
     expect(Object.keys(schemaDeclare()).sort()).toEqual([
-      "courses", "creneaux", "reglages", "stock",
+      "courses", "creneaux", "evenements", "reglages", "stock",
     ]);
   });
 
