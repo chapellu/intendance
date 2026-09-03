@@ -16,14 +16,24 @@ async function shot(name, variant, steps = async () => {}) {
   await ctx.close();
 }
 
+// Répond à toutes les questions ouvertes pour atteindre la main de cartes.
+async function vider(p) {
+  for (let i = 0; i < 6; i++) {
+    const oui = p.getByRole("button", { name: "oui", exact: true }).first();
+    if (!(await oui.isVisible().catch(() => false))) break;
+    await oui.click();
+    await p.waitForTimeout(500);
+  }
+}
+
 await shot("A1-horizon", "A");
-await shot("A2-pas", "A", async (p) => {
+await shot("A2-fil", "A", async (p) => {
   await p.getByRole("button", { name: "3", exact: true }).click();
   await p.waitForTimeout(600);
+  await vider(p);
 });
 await shot("B1-pioche", "B");
 await shot("B2-recu", "B", async (p) => {
-  // pose la première carte, puis passe : le reçu doit s'empiler
   await p.locator(".co-jouable").first().click();
   await p.waitForTimeout(500);
   await p.getByRole("button", { name: "Passer" }).click();
@@ -36,6 +46,8 @@ await shot("C2-plateau", "C", async (p) => {
   await p.waitForTimeout(300);
   await p.getByRole("button", { name: /Planifier ces/ }).click();
   await p.waitForTimeout(900);
+  await p.getByRole("button", { name: /À préciser/ }).click();
+  await p.waitForTimeout(400);
 });
 
 await b.close();
