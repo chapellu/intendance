@@ -48,7 +48,9 @@ export type Route =
   // « En cuisine » peut viser un plat qui n'est pas (encore) celui du créneau :
   // la fiche s'ouvre depuis une carte qu'on n'a pas posée, pour la lire avant
   // de choisir. Sans `plat`, c'est le plat du créneau qui s'affiche.
-  | { ecran: "cuisiner"; creneau: CleCreneau; plat?: string };
+  | { ecran: "cuisiner"; creneau: CleCreneau; plat?: string }
+  // PROTOTYPE — à jeter avec la branche `proto/rail-45` (Workspace#45).
+  | { ecran: "protoRail" };
 
 export type Ecran = Route["ecran"];
 
@@ -60,6 +62,8 @@ export const ROUTE_DEFAUT: Route = { ecran: "cockpit" };
  *  l'en-tête et la sous-navigation. */
 const DANS_CUISINE: ReadonlySet<Ecran> = new Set<Ecran>([
   "aujourdhui", "semaine", "prevoir", "courses", "stock", "poser", "parts",
+  // Le prototype se juge DANS la coquille — en-tête, sous-nav, densité réelle.
+  "protoRail",
 ]);
 
 export const dansCuisine = (r: Route): boolean => DANS_CUISINE.has(r.ecran);
@@ -79,6 +83,7 @@ const SANS_PARAM: Record<string, Ecran> = {
   "cuisine/prevoir": "prevoir",
   "cuisine/courses": "courses",
   "cuisine/stock": "stock",
+  "cuisine/proto-rail": "protoRail",
 };
 
 const AVEC_CRENEAU: Record<string, Extract<Ecran, "poser" | "parts" | "cuisiner">> = {
@@ -97,6 +102,7 @@ export function chemin(r: Route): string {
     case "prevoir": return "#/cuisine/prevoir";
     case "courses": return "#/cuisine/courses";
     case "stock": return "#/cuisine/stock";
+    case "protoRail": return "#/cuisine/proto-rail";
     case "poser": return `#/cuisine/poser/${r.creneau.jour}/${r.creneau.repas}`;
     case "parts": return `#/cuisine/parts/${r.creneau.jour}/${r.creneau.repas}`;
     case "cuisiner":

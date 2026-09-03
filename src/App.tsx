@@ -20,6 +20,7 @@ import { Jardin } from "./ecrans/Jardin";
 import { Parts } from "./ecrans/Parts";
 import { Poser } from "./ecrans/Poser";
 import { Prevoir } from "./ecrans/Prevoir";
+import { ProtoRail } from "./ecrans/proto-rail/ProtoRail";
 import { Semaine } from "./ecrans/Semaine";
 import { Stock } from "./ecrans/Stock";
 import "./styles/organic.css";
@@ -86,6 +87,8 @@ function rendre(route: Route, jeu: Jeu) {
     case "prevoir": return <Prevoir />;
     case "courses": return <Courses />;
     case "stock": return <Stock />;
+    // PROTOTYPE — à jeter avec la branche `proto/rail-45` (Workspace#45).
+    case "protoRail": return <ProtoRail />;
     // Les trois écrans qui visent un créneau. Un lien d'hier rouvert
     // aujourd'hui désigne un jour sorti de la fenêtre : on le dit, plutôt que
     // d'ouvrir l'écran sur un créneau fantôme.
