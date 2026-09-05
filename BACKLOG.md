@@ -1145,8 +1145,11 @@ bocal distributeur — un objet physique, pas une cible. La cible s'appelle donc
       payer un plat de reconstitution pour chaque article qu'il ajoute au panier,
       donc reconstituer un bouillon (qui n'exige rien) bat naturellement
       reconstituer une bolognaise (qui exige de la viande).
-      **Bloqué par [Workspace#50](https://github.com/chapellu/Workspace/issues/50)**,
-      qui donne son dénominateur à cette échelle.
+      **Débloqué** : [Workspace#50](https://github.com/chapellu/Workspace/issues/50)
+      a donné son dénominateur à cette échelle (T54–T60). La fraction de vie
+      consommée se lit sur `gardeFrigo` au frigo et sur le forfait de 3 mois au
+      congélateur, et les urgences du placard s'y projettent à 1,0 / 0,4 / hors
+      échelle.
 
 - [ ] **T48 — Le trou de portage est plus large qu'annoncé.** `scoring.ts` ne lit
       que neuf poids : `proteine_manquante`, `proteine_saturee`,
@@ -1233,6 +1236,129 @@ fausses.
   droit d'atterrir ». À revoir, pas tranché.
 - **Les crans de l'horizon** (1/3/5/7/14) sont posés à vue, comme le `4` de
   `congelateur.plancher` avant eux. Seul l'usage les réglera.
+
+## Une horloge pour chaque stock — [Workspace#50](https://github.com/chapellu/Workspace/issues/50)
+
+Grillé en français les 04–05/09/2026. Le modèle tient en une phrase : **tout
+stock a une horloge, toutes les horloges se lisent sur le même axe 0–1, et cet
+axe n'a que deux mots.** C'est le dénominateur que l'écoulement de
+Workspace#43 §K attendait pour exister.
+
+**CE QUE LES CHIFFRES ONT CHANGÉ EN COURS DE ROUTE**, parce que rien de ce qui
+suit ne s'est décidé sur la seule lecture du code :
+
+- **Le dénominateur existait déjà, deux fois et dans la mauvaise forme.**
+  `conservation.yaml` porte `congeler.fenetre: {unite: mois, valeur: 3}`, plus
+  12 mois pour le bocal, 6 pour la lacto et le séchage, ×2,5 pour le sous-vide.
+  `export_json.py` **jette `fenetre`** côté dépôt — le type `Conservation` ne
+  l'a pas — et le **stringifie** côté garde-manger (`ConservationDenree.fenetre:
+  string`, « 3 mois »). Affichable, jamais calculable. Même mode d'échec que
+  `historique.yaml` et que les cinq réglages morts de T48.
+- **L'app promet une durée qu'elle n'applique pas.** `gardeFrigo` va jusqu'à la
+  ligne de dépôt et n'est lu que par `Semaine.tsx:191` et `Aujourdhui.tsx:110`,
+  qui écrivent « 3 j au frigo ». L'expiration, elle, lit `foyer.fenetreFrigo` :
+  **4 jours pour tout le monde**. L'app dit 3 et périme à 4.
+- **L'horloge manquante du congélateur est un court-circuit d'une ligne** —
+  `depot.ts:225`, `ligne.location === "congelo" || age <= this.fenetre`.
+- **`bonusPlacard` est en pratique un bonus de +5 pour « contient un oignon ».**
+  5 denrées `haute` sur 53 ; **4 le sont parce qu'elles sont sous l'évier** ; la
+  cinquième (pignons) n'est dans **aucun** plat ; et **40 plats sur 86**
+  contiennent oignon ou ail.
+
+- [ ] **T54 — Le frigo compte par plat, plus par foyer.** `gardeFrigo` (78
+      valeurs saisies à la main, de 0 à 7 jours) devient l'horloge réelle ;
+      `foyer.fenetreFrigo` retombe au rang de **défaut** pour un lot qui n'en
+      déclare pas. `depot.ts:225` lit la valeur de la ligne, pas celle du foyer.
+      **Ça resserre, et c'est voulu** : 43 emits passent de 4 à 3 jours, 21 à 2 ;
+      seuls les `frigo_days: 5` et `7` gagnent. Et **`frigo_days: 0` cesse de
+      disparaître en silence** — il signale « à éliminer ». Supprime au passage
+      l'incohérence entre ce que l'écran promet et ce que le modèle applique.
+
+- [ ] **T55 — Le congélateur a une horloge, forfait 3 mois.** Retirer le
+      court-circuit `location === "congelo"` de `depot.ts:225`. La fenêtre est
+      celle que `conservation.yaml` porte déjà : **il faut donc d'abord que
+      `export_json.py` cesse de jeter `fenetre`** côté dépôt, et que
+      `Conservation` la porte comme un **nombre de jours** plutôt que comme la
+      chaîne « 3 mois » que le garde-manger reçoit. Forfait et non par type :
+      congeler *aplatit* les différences, son mode d'échec est la qualité et non
+      la sécurité, et cinquante nombres posés à vue seraient cinquante faux
+      nombres. La nature reste l'échappatoire si le corpus prouve le contraire.
+
+- [ ] **T56 — Une date par lot, et aucun écran pour la saisir.** `dluo:`
+      optionnel sur la ligne de dépôt, qui gagne sur la fenêtre du type quand il
+      est là. La date imprimée sur une boîte est le seul nombre **vrai** de tout
+      ce ticket. Mais l'utilisateur ne la tapera pas : elle n'arrivera que
+      **gratuitement** — scan de code-barres, événement `entree` du journal. La
+      fenêtre du type est donc le cas **normal**, pas le repli. Si ça devait
+      coûter un écran de saisie, ne pas le faire.
+
+- [ ] **T57 — Un axe, deux mots.** Les urgences du garde-manger se **projettent**
+      sur le même axe 0–1 que la fraction du dépôt : `haute` = 1,0,
+      `moyenne` = 0,4, `basse` **hors échelle**. Ces valeurs ne sont pas
+      inventées — elles reproduisent exactement `ecoule_placard_urgent: 5` et
+      `ecoule_placard_entame: 2`, donc **le placard ne bouge pas**, seul le dépôt
+      gagne une horloge. `garde_manger.py` **garde ses trois urgences et ses
+      zéro date** : son objection (« inventer une échéance pour pouvoir compter
+      dessus serait le genre de chiffre qui a l'air juste et ne l'est jamais »)
+      tient, et le relevé ne porte ni DLC, ni DLUO, ni date d'ouverture.
+      L'affichage prend les seuils de **Don't Starve** — 50 % et 20 % — et
+      **jette sa jauge** : le dénominateur de Don't Starve est une constante de
+      jeu, le nôtre est deviné, donc une barre afficherait une précision qu'on
+      n'a pas. Trois points, deux mots : rien / **à manger** / **urgent**.
+      **L'absence de marque EST l'état frais**, comme *Fresh* n'a pas de préfixe
+      dans le jeu. `haute`/`moyenne`/`basse` sortent des écrans de décision ;
+      ils restent en donnée, et « L'inventaire » reste le bon endroit pour les
+      voir crus, étant une vue de diagnostic. Sur 3 mois ça prévient à **six
+      semaines** puis à **deux mois et demi** ; sur le frigo les mêmes seuils
+      tombent à J+1,5 et J+2,4, trop fin pour être dit — **seul le franchissement
+      compte**.
+
+- [ ] **T58 — Frigo dur, congélateur mou.** Passé sa fenêtre un reste de frigo
+      **sort du jeu**, comme aujourd'hui : c'est une question de sécurité. Passé
+      trois mois un bocal congelé **reste jouable**, sa fraction plafonne à 1, et
+      l'app le **dit**. Refuser de proposer une bolognaise de quatre mois, c'est
+      fabriquer de l'archéologie de congélateur.
+
+- [ ] **T59 — Le score cumule, plafonné à trois articles.** `ecoule: 5`, somme
+      des fractions sur **au plus trois** articles, **pas de dégressivité**.
+      **La règle « un seul bonus par plat » de `gardeManger.ts:122` est
+      abandonnée** : un plat qui sauve trois choses vaut mieux qu'un plat qui en
+      sauve une. L'objection d'équilibrage — plafond +15 quand
+      `proteine_manquante` vaut 6 — a été soulevée et **écartée** pour trois
+      raisons qui valent d'être relues avant de la ressortir : le levier de
+      correction est le nombre `ecoule` lui-même et non un mécanisme de plus
+      (`equilibre.yaml` : « valeur posée à vue, à régler à l'usage ») ; le mode
+      d'échec redouté est déjà défendu trois fois (`repetition_profil: -4`,
+      `repetition_feculent: -3`, `cooldown_jours: 10` depuis T52) ; et surtout
+      **la domination est le cahier des charges** — Workspace#41 demande
+      d'encourager « au maximum » l'utilisation des stocks, donc l'écoulement
+      passant devant la protéine manquante n'est pas un déséquilibre, c'est
+      l'app qui fait son travail. **Débloque T47.**
+
+- [ ] **T60 — Assainir la source du bonus placard.** Deux gestes, opposés et
+      délibérés. (a) **Une denrée qu'aucun plat ne consomme sort du score** :
+      4 des 10 `moyenne` sont dans zéro plat — cracotte, krisprolls,
+      blé-lentilles, farine d'épeautre, du petit-déjeuner qu'aucune recette de
+      dîner ne mange. Elle ne peut pas être sauvée en cuisinant, donc la payer ne
+      fait que bruiter le classement ; elle **reste dans la liste « à sauver »**,
+      qui est faite pour être lue. (b) **L'artefact du sous-évier n'est pas
+      neutralisé, il est déplacé** : l'app a raison de dire que ces oignons
+      courent, mais c'est un problème de **rangement**, pas de dîner. Il sort en
+      geste (« sors les légumes de sous l'évier »), pas en +5 sur 40 plats.
+      **Conséquence à garder en tête** : une fois le rangement corrigé il ne
+      resterait aucune denrée `haute`, et la seule qui subsiste n'est dans aucun
+      plat — donc **en régime normal le signal vient du dépôt**, c'est-à-dire de
+      l'horloge que T54–T55 installent. Le placard n'en fournissait presque
+      aucun.
+
+### Laissé ouvert par #50
+
+- **Les barèmes de stérilisation.** Toutes les fenêtres ci-dessus sont posées à
+  vue, comme `equilibre.yaml` avant elles — elles ne font que réordonner des
+  dîners. Une exception délibérément non ouverte : `conservation.yaml` documente
+  le risque *C. botulinum*, et là un mauvais nombre blesse quelqu'un plutôt
+  qu'un classement. NCHFP est la référence nommée. Mais `bocal-sous-pression`
+  est `acquis: false` — ça se lèvera avec l'autocuiseur, pas avant.
 
 ## Sortie
 
