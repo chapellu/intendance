@@ -1145,8 +1145,11 @@ bocal distributeur — un objet physique, pas une cible. La cible s'appelle donc
       payer un plat de reconstitution pour chaque article qu'il ajoute au panier,
       donc reconstituer un bouillon (qui n'exige rien) bat naturellement
       reconstituer une bolognaise (qui exige de la viande).
-      **Bloqué par [Workspace#50](https://github.com/chapellu/Workspace/issues/50)**,
-      qui donne son dénominateur à cette échelle.
+      **Débloqué** : [Workspace#50](https://github.com/chapellu/Workspace/issues/50)
+      a donné son dénominateur à cette échelle (T54–T60). La fraction de vie
+      consommée se lit sur `gardeFrigo` au frigo et sur le forfait de 3 mois au
+      congélateur, et les urgences du placard s'y projettent à 1,0 / 0,4 / hors
+      échelle.
 
 - [ ] **T48 — Le trou de portage est plus large qu'annoncé.** `scoring.ts` ne lit
       que neuf poids : `proteine_manquante`, `proteine_saturee`,
@@ -1233,6 +1236,331 @@ fausses.
   droit d'atterrir ». À revoir, pas tranché.
 - **Les crans de l'horizon** (1/3/5/7/14) sont posés à vue, comme le `4` de
   `congelateur.plancher` avant eux. Seul l'usage les réglera.
+
+## Une horloge pour chaque stock — [Workspace#50](https://github.com/chapellu/Workspace/issues/50)
+
+Grillé en français les 04–05/09/2026. Le modèle tient en une phrase : **tout
+stock a une horloge, toutes les horloges se lisent sur le même axe 0–1, et cet
+axe n'a que deux mots.** C'est le dénominateur que l'écoulement de
+Workspace#43 §K attendait pour exister.
+
+**CE QUE LES CHIFFRES ONT CHANGÉ EN COURS DE ROUTE**, parce que rien de ce qui
+suit ne s'est décidé sur la seule lecture du code :
+
+- **Le dénominateur existait déjà, deux fois et dans la mauvaise forme.**
+  `conservation.yaml` porte `congeler.fenetre: {unite: mois, valeur: 3}`, plus
+  12 mois pour le bocal, 6 pour la lacto et le séchage, ×2,5 pour le sous-vide.
+  `export_json.py` **jette `fenetre`** côté dépôt — le type `Conservation` ne
+  l'a pas — et le **stringifie** côté garde-manger (`ConservationDenree.fenetre:
+  string`, « 3 mois »). Affichable, jamais calculable. Même mode d'échec que
+  `historique.yaml` et que les cinq réglages morts de T48.
+- **L'app promet une durée qu'elle n'applique pas.** `gardeFrigo` va jusqu'à la
+  ligne de dépôt et n'est lu que par `Semaine.tsx:191` et `Aujourdhui.tsx:110`,
+  qui écrivent « 3 j au frigo ». L'expiration, elle, lit `foyer.fenetreFrigo` :
+  **4 jours pour tout le monde**. L'app dit 3 et périme à 4.
+- **L'horloge manquante du congélateur est un court-circuit d'une ligne** —
+  `depot.ts:225`, `ligne.location === "congelo" || age <= this.fenetre`.
+- **`bonusPlacard` est en pratique un bonus de +5 pour « contient un oignon ».**
+  5 denrées `haute` sur 53 ; **4 le sont parce qu'elles sont sous l'évier** ; la
+  cinquième (pignons) n'est dans **aucun** plat ; et **40 plats sur 86**
+  contiennent oignon ou ail.
+
+- [ ] **T54 — Le frigo compte par plat, plus par foyer.** `gardeFrigo` (78
+      valeurs saisies à la main, de 0 à 7 jours) devient l'horloge réelle ;
+      `foyer.fenetreFrigo` retombe au rang de **défaut** pour un lot qui n'en
+      déclare pas. `depot.ts:225` lit la valeur de la ligne, pas celle du foyer.
+      **Ça resserre, et c'est voulu** : 43 emits passent de 4 à 3 jours, 21 à 2 ;
+      seuls les `frigo_days: 5` et `7` gagnent. Et **`frigo_days: 0` cesse de
+      disparaître en silence** — il signale « à éliminer ». Supprime au passage
+      l'incohérence entre ce que l'écran promet et ce que le modèle applique.
+
+- [ ] **T55 — Le congélateur a une horloge, forfait 3 mois.** Retirer le
+      court-circuit `location === "congelo"` de `depot.ts:225`. La fenêtre est
+      celle que `conservation.yaml` porte déjà : **il faut donc d'abord que
+      `export_json.py` cesse de jeter `fenetre`** côté dépôt, et que
+      `Conservation` la porte comme un **nombre de jours** plutôt que comme la
+      chaîne « 3 mois » que le garde-manger reçoit. Forfait et non par type :
+      congeler *aplatit* les différences, son mode d'échec est la qualité et non
+      la sécurité, et cinquante nombres posés à vue seraient cinquante faux
+      nombres. La nature reste l'échappatoire si le corpus prouve le contraire.
+
+- [ ] **T56 — Une date par lot, et aucun écran pour la saisir.** `dluo:`
+      optionnel sur la ligne de dépôt, qui gagne sur la fenêtre du type quand il
+      est là. La date imprimée sur une boîte est le seul nombre **vrai** de tout
+      ce ticket. Mais l'utilisateur ne la tapera pas : elle n'arrivera que
+      **gratuitement** — scan de code-barres, événement `entree` du journal. La
+      fenêtre du type est donc le cas **normal**, pas le repli. Si ça devait
+      coûter un écran de saisie, ne pas le faire.
+
+- [ ] **T57 — Un axe, deux mots.** Les urgences du garde-manger se **projettent**
+      sur le même axe 0–1 que la fraction du dépôt : `haute` = 1,0,
+      `moyenne` = 0,4, `basse` **hors échelle**. Ces valeurs ne sont pas
+      inventées — elles reproduisent exactement `ecoule_placard_urgent: 5` et
+      `ecoule_placard_entame: 2`, donc **le placard ne bouge pas**, seul le dépôt
+      gagne une horloge. `garde_manger.py` **garde ses trois urgences et ses
+      zéro date** : son objection (« inventer une échéance pour pouvoir compter
+      dessus serait le genre de chiffre qui a l'air juste et ne l'est jamais »)
+      tient, et le relevé ne porte ni DLC, ni DLUO, ni date d'ouverture.
+      L'affichage prend les seuils de **Don't Starve** — 50 % et 20 % — et
+      **jette sa jauge** : le dénominateur de Don't Starve est une constante de
+      jeu, le nôtre est deviné, donc une barre afficherait une précision qu'on
+      n'a pas. Trois points, deux mots : rien / **à manger** / **urgent**.
+      **L'absence de marque EST l'état frais**, comme *Fresh* n'a pas de préfixe
+      dans le jeu. `haute`/`moyenne`/`basse` sortent des écrans de décision ;
+      ils restent en donnée, et « L'inventaire » reste le bon endroit pour les
+      voir crus, étant une vue de diagnostic. Sur 3 mois ça prévient à **six
+      semaines** puis à **deux mois et demi** ; sur le frigo les mêmes seuils
+      tombent à J+1,5 et J+2,4, trop fin pour être dit — **seul le franchissement
+      compte**.
+
+- [ ] **T58 — Frigo dur, congélateur mou.** Passé sa fenêtre un reste de frigo
+      **sort du jeu**, comme aujourd'hui : c'est une question de sécurité. Passé
+      trois mois un bocal congelé **reste jouable**, sa fraction plafonne à 1, et
+      l'app le **dit**. Refuser de proposer une bolognaise de quatre mois, c'est
+      fabriquer de l'archéologie de congélateur.
+
+- [ ] **T59 — Le score cumule, plafonné à trois articles.** `ecoule: 5`, somme
+      des fractions sur **au plus trois** articles, **pas de dégressivité**.
+      **La règle « un seul bonus par plat » de `gardeManger.ts:122` est
+      abandonnée** : un plat qui sauve trois choses vaut mieux qu'un plat qui en
+      sauve une. L'objection d'équilibrage — plafond +15 quand
+      `proteine_manquante` vaut 6 — a été soulevée et **écartée** pour trois
+      raisons qui valent d'être relues avant de la ressortir : le levier de
+      correction est le nombre `ecoule` lui-même et non un mécanisme de plus
+      (`equilibre.yaml` : « valeur posée à vue, à régler à l'usage ») ; le mode
+      d'échec redouté est déjà défendu trois fois (`repetition_profil: -4`,
+      `repetition_feculent: -3`, `cooldown_jours: 10` depuis T52) ; et surtout
+      **la domination est le cahier des charges** — Workspace#41 demande
+      d'encourager « au maximum » l'utilisation des stocks, donc l'écoulement
+      passant devant la protéine manquante n'est pas un déséquilibre, c'est
+      l'app qui fait son travail. **Débloque T47.**
+
+- [ ] **T60 — Assainir la source du bonus placard.** Deux gestes, opposés et
+      délibérés. (a) **Une denrée qu'aucun plat ne consomme sort du score** :
+      4 des 10 `moyenne` sont dans zéro plat — cracotte, krisprolls,
+      blé-lentilles, farine d'épeautre, du petit-déjeuner qu'aucune recette de
+      dîner ne mange. Elle ne peut pas être sauvée en cuisinant, donc la payer ne
+      fait que bruiter le classement ; elle **reste dans la liste « à sauver »**,
+      qui est faite pour être lue. (b) **L'artefact du sous-évier n'est pas
+      neutralisé, il est déplacé** : l'app a raison de dire que ces oignons
+      courent, mais c'est un problème de **rangement**, pas de dîner. Il sort en
+      geste (« sors les légumes de sous l'évier »), pas en +5 sur 40 plats.
+      **Conséquence à garder en tête** : une fois le rangement corrigé il ne
+      resterait aucune denrée `haute`, et la seule qui subsiste n'est dans aucun
+      plat — donc **en régime normal le signal vient du dépôt**, c'est-à-dire de
+      l'horloge que T54–T55 installent. Le placard n'en fournissait presque
+      aucun.
+
+### Laissé ouvert par #50
+
+- **Les barèmes de stérilisation.** Toutes les fenêtres ci-dessus sont posées à
+  vue, comme `equilibre.yaml` avant elles — elles ne font que réordonner des
+  dîners. Une exception délibérément non ouverte : `conservation.yaml` documente
+  le risque *C. botulinum*, et là un mauvais nombre blesse quelqu'un plutôt
+  qu'un classement. NCHFP est la référence nommée. Mais `bocal-sous-pression`
+  est `acquis: false` — ça se lèvera avec l'autocuiseur, pas avant.
+
+## Deux surfaces d'approvisionnement — [Workspace#44](https://github.com/chapellu/Workspace/issues/44)
+
+**Le partage n'est pas entre canaux, il est entre la demande planifiée et
+l'approvisionnement tout court.** Le ticket demandait « deux surfaces de
+courses », la réserve et le frais ; la proposition a été **refusée** :
+
+> *« I think we need to differentiate the ceremony that choose menu and the
+> ingredients list that is generated from the rest. The fact that I go to casier
+> or a grocery not planned just fill the stock. You are not the only input of it
+> et c'est pour ça que j'ai insisté pour consommer le stock d'abord. »*
+
+La cérémonie pose des créneaux, les créneaux font la liste. **Tout le reste est
+de l'approvisionnement** — le casier, une épicerie non prévue, le panier vert,
+le marché quand rien n'était planifié : *« ça remplit juste le stock »*. Un
+canal est un endroit où l'on va, jamais un écran de l'app.
+
+**Et le test permanent que ce ticket ajoute au principe directeur** :
+*« encourager une meilleure alimentation, pas augmenter drastiquement ma
+consommation ni exploser mon budget »*. **Un mécanisme qui fait monter ce qu'on
+achète ou ce qu'on mange a échoué, même s'il est par ailleurs juste.**
+
+### Ce que #44 corrige dans les tickets déjà posés
+
+- **T53 tombe.** Le récapitulatif à deux canaux — *le frais* contre *la
+  réserve* — était hérité : #45 ne l'avait pas tranché sur ses propres preuves,
+  il le tenait des notes de Workspace#41, qui le tenaient de Workspace#35.
+  L'utilisateur : *« as we have not yet integrated channels keep stuff
+  simple »*. **Une seule liste, dans `rayons.ordre`, comme aujourd'hui.** La
+  seule section qui survit est la **réserve** (T61) et c'est une section par
+  *raison*, pas par canal ; qu'elle soit surtout de l'épicerie est une
+  coïncidence.
+- **T27 se défait, et c'est du code en production.** Rentrer une course crée
+  aujourd'hui un lot (`courses.rentrer()` → `entrerAuStock()` → événement
+  `entree`) : c'est T25–T32, mergé. La liste redevient un **aide-mémoire** qui
+  ne touche plus au stock. **Ordre imposé : T63 avant T62**, sinon l'app se
+  retrouve sans aucun moyen de faire entrer de la nourriture.
+- **T56 est exaucé.** Il disait « une date par lot, et aucun écran pour la
+  saisir — elle n'arrivera que gratuitement ». L'entrée EST cet écran, et la
+  date y est effectivement gratuite : les pastilles donnent aujourd'hui, un
+  ticket porte sa propre date d'achat.
+
+- [ ] **T61 — La liste n'existe que s'il y a un plan.** Pas de vue permanente
+      « ce qui aiderait » à consulter avant de sortir : c'est un écran de
+      suggestions d'achat sans repas derrière, exactement la forme qui fait
+      grossir un budget. Dans un rayon, la seule aide honnête est *« voilà ce que
+      tu as déjà »* — l'inventaire, déjà construit.
+
+      **Les planchers achètent, mais dans cette liste-là**, en une section
+      **réserve**. #43 avait tranché que « ces planchers sont sous leur niveau »
+      *est* la liste Carrefour ; ce qu'ils n'obtiennent pas, c'est un écran à
+      eux. Ce qui leur fait passer le test du budget est un nombre, pas une
+      préférence : le `niveau de réappro` de T45 est dérivé de **ce qui a
+      réellement été consommé entre deux grosses courses**. Une ligne de plancher
+      ne peut donc que restituer ce qui a été mangé — elle est structurellement
+      incapable de faire grossir le placard. Un plan qui ne manque de rien mais
+      laisse quatre denrées sous leur plancher donne une liste réduite à cette
+      seule section : c'est normal, un plan a eu lieu.
+
+- [ ] **T62 — La liste ne touche plus le stock.** *« The list is an help for
+      grocery, what actually restock is the scanning of the tickets or
+      articles. »* `courses.rentrer()` et `rentrerLesCoches()` cessent d'appeler
+      `entrerAuStock()` ; **seule une entrée crée un lot**. Le contrat de T27
+      survit intact — le lot porte le poids que son canal lui a donné, le défaut
+      par ingrédient reste dérivé du dernier poids vu — et il est même **mieux
+      servi**, parce qu'un code-barres ou une ligne de ticket porte un vrai poids
+      d'emballage là où la liste portait une estimation tirée d'une recette.
+
+      Conséquence : `coché` redevient de l'ergonomie de magasin sans aucun sens
+      pour le stock, et comme la liste n'existe que tant qu'un plan existe, **il
+      meurt avec elle**. La question des marques orphelines de T13 disparaît
+      plutôt qu'elle n'est résolue. **Ne pas faire avant T63.**
+
+- [ ] **T63 — L'entrée : un geste sur « L'inventaire », des pastilles.** Pas un
+      quatrième onglet : l'inventaire est déjà *« le seul écran qui parle du
+      dépôt lui-même »*, et une arrivée y voisine naturellement avec le relevé de
+      T32 — même écran, même famille de verbes, tous deux disant « voilà ce
+      qu'il y a ». Un onglet de plus annoncerait l'approvisionnement comme un
+      mode de l'app, ce que T61 refuse.
+
+      **Des pastilles** : une liste courte d'ids `primeur`, ordonnée par ce qui
+      est plausible ce mois-ci et par ce qu'on a déjà reçu, **une pastille = un
+      lot**, plus une **recherche**. Poids et prix en **champs optionnels** —
+      *« simple to get started »*. C'est le chemin **principal du marché**, pas
+      un repli : tout est dématérialisé sauf lui, et le seul ticket qu'il donne
+      est le pire à lire (court, parfois manuscrit) alors qu'un retour de marché
+      fait huit articles de primeur. Sert aussi au panier vert, au jardin et aux
+      cadeaux.
+
+- [ ] **T64 — La table apprise : un EAN et un libellé mènent au même id.** Un
+      EAN est un nombre, une ligne de ticket est une chaîne, les deux doivent
+      atteindre `pates` ou `tomates`. **Une seule table, deux clés.** Open Food
+      Facts (ODbL) ne fait que pré-remplir marque, libellé et poids net pour que
+      la question soit répondable : il ne connaît rien au vocabulaire du
+      catalogue et n'en connaîtra jamais rien.
+
+      **La première rencontre demande une fois** — « Panzani Torsades 500 g →
+      c'est quoi ? » avec une liste courte — **et retient pour toujours**. L'EAN
+      s'apparie exact ; le libellé s'apparie **flou**, parce que « TOMATES
+      GRAPPE » devient « TOM GRAPPE VRAC » le mois suivant : un inconnu propose
+      l'id confirmé le plus proche et demande un tap. **La table converge au lieu
+      de grossir** — c'est la seule raison pour laquelle un ticket finit par
+      battre la saisie. Sans réseau ou sans réponse d'OFF, on retombe sur les
+      pastilles de T63.
+
+- [ ] **T65 — L'import du ticket dématérialisé.** Tout est dématérialisé sauf le
+      marché. La facture Drive de Carrefour est **lignée en EAN13** (Workspace#29)
+      : c'est un **fichier**, donc ni OCR, ni caméra, ni serveur — la plus grosse
+      course du mois rentre sans un seul scan. Le ticket de caisse dématérialisé
+      en magasin relève du même chemin, à confirmer par Workspace#49.
+
+- [ ] **T66 — Toute arrivée est datée, et le frais gagne enfin une horloge.**
+      L'entrée pose la date d'arrivée et le lot atterrit **au garde-manger** ;
+      pas de troisième magasin. C'est la date gratuite que T56 attendait : les
+      pastilles donnent aujourd'hui, un ticket porte sa date d'achat — donc
+      photographier un ticket et le traiter huit jours plus tard **ne fausse
+      rien**.
+
+      Ça ne rouvre pas #50, ça atteint la moitié qu'il ne pouvait pas atteindre :
+      l'épicerie garde ses trois urgences projetées (T57), mais une arrivée
+      périssable cesse d'être figée à une `urgence` dérivée de la zone, **qui ne
+      peut pas décroître** — sans quoi l'app crie en mars à propos d'un poireau
+      arrivé en septembre. Coût : une fenêtre de vie sur les ~57 ids `primeur`,
+      par la méthode propose-puis-valide des `apports`. **Et l'en-tête de
+      `garde-manger.yaml` se corrige** : il ne porte plus seulement du « non
+      périssable à l'échelle de la semaine » — c'était déjà faux avec les pommes
+      de terre sous l'évier.
+
+- [ ] **T67 — Le mode de décrément suit la classe, pas le nombre.** T28 choisit
+      le mode selon qu'un chiffre existe. Donnez-lui « TOMATES 1,240 kg » et il
+      se met à retrancher des grammes de recette à vos tomates : de la
+      comptabilité au gramme, que Workspace#41 exclut, obtenue par la porte de
+      derrière.
+
+      **La précision suit le canal, pas le rayon** : quand un canal pèse, on le
+      croit (ce qui assouplit « les fruits & légumes ne sont jamais estimés » de
+      T30) ; quand il ne pèse pas, `par_unite: null` comme avant. Mais
+      *« I will always use full tomatoes not exact weight »*, donc **deux
+      nombres, deux métiers** : le **poids** sert à l'historique de prix (T68) et
+      au registre de ce qui est entré, **il ne pilote jamais un décrément** ; la
+      **quantité de stock** du primeur est ce que l'œil compte — des unités
+      entières, ou l'`etat` quand personne ne compte.
+
+- [ ] **T68 — L'historique de prix au kilo, enregistré tout de suite, exploité
+      par rien.** Un ticket est le seul objet de tout ce modèle qui sache ce que
+      les choses coûtent. **On enregistre le prix sur le lot ; on ne score jamais
+      dessus** — scorer le prix ferait choisir la nourriture bon marché contre la
+      bonne, ce qui rate l'autre moitié du brief.
+
+      L'objet demandé est un **historique par ingrédient et par unité** — une
+      série en €/kg — et **pas** un coût par plat : *« more as an help for future
+      grocery to follow prices like how much cost a kilo of tomatoes and when it
+      is a good deal »*. C'est un sous-produit d'un chemin qu'on construit de
+      toute façon, et il ne se reconstitue pas après coup : on le capture dès le
+      premier jour. T67 est ce qui le rend possible — sans poids, pas de €/kg.
+
+- [ ] **T69 — Une entrée n'ajoute que ; elle ne dit jamais « c'est tout ».**
+      *« You are not the only input of it. »* Seul le relevé par zone (T32) peut
+      affirmer une absence. Six articles scannés sur vingt, c'est une course
+      à moitié connue : le reste ressort en confiance qui baisse et en questions
+      à la proposition, **jamais en zéro faux**. C'est ce qui garde l'app fausse
+      du bon côté — elle demande au lieu d'acheter. Une ligne analysée qui ne
+      s'apparie à rien et qu'on n'enseigne pas est un **no-op déclaré** : compté,
+      montré, sans lot inventé (T28).
+
+- [ ] **T70 — Après une entrée, l'app se tait.** Aucune re-proposition, aucune
+      notification, aucune cérémonie poussée — Workspace#41 l'exclut et une
+      relance trois jours plus tard est exactement ça. L'écran de revue se termine
+      sur **une ligne qu'on peut ignorer**, et il n'y a **jamais de seconde
+      sollicitation**. La vraie réaction est invisible et c'est la bonne : les
+      nouveaux lots portent une horloge (T66), donc la passe suivante du rail
+      propose autour d'eux toute seule.
+
+- [ ] **T71 — Le lecteur de ticket photographié. Serveur, et pas urgent.** Le
+      filet de sécurité quand un magasin ne dématérialise pas. L'app n'a pas de
+      back-end, mais vm-main fait tourner un cluster k8s avec Flux et des secrets
+      SOPS-age : c'est un coût, pas une impossibilité — *« it can be the first
+      server side component but nothing urgent »*. Ce qui le porte est la
+      justesse : un écran de revue plein de « TOMAT » déplace le travail au lieu
+      de l'économiser.
+
+      **Rien n'est urgent dans le temps** : *« I can take the picture of my
+      receipt whenever and wherever I want and always process it when I have
+      internet »*. La photo se prend hors ligne en un tap, l'analyse attend le
+      réseau — et T66 fait que la date reste juste. **Quoi qu'il lise le ticket,
+      sa sortie atterrit dans un écran de revue : elle est proposée, jamais
+      crue.**
+
+### Laissé ouvert par #44
+
+- **Le signal « bonne affaire ».** T68 enregistre sans exploiter, et c'est
+  délibéré : juger un bon prix demande une référence que seuls quelques mois de
+  tickets du foyer peuvent fournir, plus une courbe saisonnière par-dessus. En
+  inventer une maintenant donnerait un nombre sûr de lui avec rien derrière.
+  *« Start recording data now and the exploitation will come later. »*
+- **Le panier vert.** Mis sur le chemin des pastilles **parce qu'**il est prépayé
+  et peut ne rien remettre de lisible — mais *« I hope to have a paper with the
+  details of what is inside but I'm not sure »*. Parti en recherche sur
+  Workspace#49 ; si un papier existe, ce canal change de chemin.
+- **Les fenêtres de vie du primeur elles-mêmes.** T66 en a besoin sur ~57 ids :
+  même problème que les `apports`, et même goulot — c'est du jugement, pas de
+  l'extraction.
 
 ## Sortie
 
