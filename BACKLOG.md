@@ -1159,6 +1159,81 @@ bocal distributeur — un objet physique, pas une cible. La cible s'appelle donc
       toute la moitié « stock et congélateur » du score qui n'a jamais été
       portée. T36 et T47 en reprennent trois ; les trois autres restent.
 
+## Le rail de planification — [Workspace#45](https://github.com/chapellu/Workspace/issues/45)
+
+Tranché sur prototype le 03/09/2026 : trois variantes du rail montées côte à
+côte dans la coquille réelle (branche `proto/rail-45`, à jeter), et **A, « Le
+fil »**, l'emporte. Le prototype est la source primaire ; ce qui suit est ce
+qu'il faut en garder.
+
+**CE QUI A ÉTÉ ÉCARTÉ COMPTE AUTANT.** B distribuait sans horizon jusqu'à
+« j'arrête », C faisait de l'horizon une sélection sur la grille des vingt-et-un
+créneaux. Les deux montraient la main PENDANT qu'elles posaient une question —
+un bandeau, un tiroir — et c'est ce qui les a perdues : répondre change la main
+qui suit, donc les cartes affichées à ce moment-là sont des cartes qu'on sait
+fausses.
+
+- [ ] **T49 — L'écran du fil.** Un écran d'ouverture qui demande **combien de
+      repas**, en crans (1 / 3 / 5 / 7 / 14) et non en champ libre : ça se répond
+      du pouce. Puis le rail avance **linéairement, plein écran, un pas à la
+      fois**, en réutilisant `main()` créneau par créneau — c'est un rail, pas un
+      solveur de semaine (Workspace#41 range le solveur hors périmètre). Les
+      points de progression en haut sont des **boutons** : on retourne à *jeudi
+      déjeuner*, on ne recule pas « d'un », donc pas de bouton « précédent ».
+      L'itinéraire est les N premiers créneaux `choisi` encore indécis, dans
+      l'ordre chronologique.
+
+- [ ] **T50 — Une question est un PAS du fil.** Une seule file, pas deux : la
+      question prend l'écran, porte son propre point de progression, et la main
+      attend derrière elle. Elle naît au moment de la proposition, sur un
+      ingrédient **central** du plat proposé — ni assaisonnement, ni `base`, une
+      base ne s'achète pas — et seulement si `journal.confiance()` n'est pas
+      `sur`. Pas de plafond : Workspace#42 a supprimé les ~5 de #34, et le
+      gouverneur est ici mesurable — le doute s'épuise en étant répondu. Mesuré
+      sur un journal de démo (six dîners sur douze jours, aucune observation
+      depuis le relevé du 26/08) : **une passe de trois créneaux lève une à deux
+      questions.**
+
+- [ ] **T51 — Le vide silencieux, et PAS un troisième état.** « Je ne planifie
+      pas ce repas » n'entre pas dans le modèle. Deux raisons : choisir N met
+      déjà hors du plan tout ce que l'horizon ne couvre pas, sans qu'un doigt
+      clique ni que rien s'écrive ; et le trou n'était pas dans le modèle mais
+      dans l'écran — un créneau vide ne râle que parce que « La semaine »
+      l'affiche « à poser ». C'est donc `semaine.vue.ts` qui change : ne montrer
+      que ce qui est posé ou sauté, le reste ne dit rien. `SAUTE` garde son sens
+      exact — *on ne mange pas là*, une décision —, le vide redevient une
+      décision pas encore prise. Revoir dans la foulée `prochainVide` (le bouton
+      du bas a encore besoin d'une cible) et ce que `calc.manques` réclame. Le
+      bouton « Je ne planifie pas celui-là » du fil **n'écrit rien** : il
+      raccourcit la passe, c'est de la navigation.
+
+- [ ] **T52 — `equilibre.main` enfin lu.** Tranché ici plutôt que renvoyé au
+      backlog : `main()` prend `taille` du catalogue (**5**) au lieu du `4` en
+      dur, et honore `cooldown_jours: 10`. Le cooldown n'a **aucune source
+      exportée** — `catalogue/historique.yaml` existe mais `export_json.py` ne le
+      met pas dans `cuisine-data.json`. La source honnête est le journal des
+      cuissons (`sorte: "cuisine"`), déjà en base et déjà l'entrée du rejeu du
+      placard : un plat cuisiné dans les 10 jours sort du paquet. Reprend deux
+      des trois réglages morts que T48 recense.
+
+- [ ] **T53 — La fin de la passe : deux canaux, pas une liste.** Le
+      récapitulatif ferme le fil sur **le frais** (marché du vendredi, casier
+      Côté Champs, panier vert — non choisi, à manger dans les jours) et **la
+      réserve** (Carrefour — sec, boîte, congelé, ça se planifie). C'est le
+      partage de Workspace#41 : une seule liste fusionnée est la raison pour
+      laquelle la liste se lit mal. Le prototype le fabrique en découpant
+      `parRayon` sur `{primeur, boucherie, poissonnerie, crèmerie, frais}` contre
+      le reste ; c'est le partage qui est validé, pas cette implémentation.
+
+### Laissé ouvert par #45
+
+- **`nature: optionnel` perd une partie de sa raison d'être.**
+  `catalogue/creneaux.yaml` l'a inventée parce que « `choisi` fait d'un créneau
+  vide un TROU ». T51 supprime cet argument ; il ne reste que « où le rail a le
+  droit d'atterrir ». À revoir, pas tranché.
+- **Les crans de l'horizon** (1/3/5/7/14) sont posés à vue, comme le `4` de
+  `congelateur.plancher` avant eux. Seul l'usage les réglera.
+
 ## Sortie
 
 **Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`
