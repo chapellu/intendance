@@ -3,6 +3,8 @@ import { beforeEach, describe, expect, test } from "vitest";
 import { calculer } from "./calcul";
 import { lireCatalogue } from "./catalogue";
 import { creerJeu, type Jeu } from "./jeu";
+import { contexte, rejouer } from "./journal";
+import { centralite, questions, type Reste } from "./questions";
 import { categorie, couverture, main, offre, parRayon } from "./scoring";
 import type { Catalogue } from "./types";
 
@@ -246,5 +248,89 @@ describe("l'anti-gaspi entre dans le score", () => {
     const sans = offre(jeu, jeu.choix, slot).filter((c) => !c.placard.length);
     expect(sans.length).toBeGreaterThan(0);
     expect(sans.every((c) => !c.pourquoi.some((x) => x.includes("sauve") || x.includes("entamés")))).toBe(true);
+  });
+});
+
+/* ═══════════════════════════ T33 — la question, sur le corpus réel ═══════ */
+
+describe("T33 — ce que la proposition sait", () => {
+  const ctx = contexte(catalogue);
+  const rejeu = rejouer(catalogue, [], ctx, "2026-08-17");
+  const estCentral = centralite(catalogue, ctx);
+  const savoirAvec = (repondu: Record<string, Reste>, depense: Record<string, number> = {}) => ({
+    rejeu,
+    passe: { repondu: new Map(Object.entries(repondu)), depense: new Map(Object.entries(depense)) },
+  });
+
+  test("sans savoir, rien ne change : ni blocage, ni pari", () => {
+    // LA RÉTROCOMPATIBILITÉ EST LE CONTRAT. `offre` est appelé par des écrans
+    // qui n'ont pas le journal ; ils doivent continuer à voir la même chose.
+    const slot = creneau(0, "diner");
+    const cartes = offre(jeu, jeu.choix, slot);
+    expect(cartes.length).toBeGreaterThan(0);
+    expect(cartes.every((c) => c.paris.length === 0)).toBe(true);
+  });
+
+  test("« non » sur un central retire les plats qui en veulent", () => {
+    const slot = creneau(0, "diner");
+    const avant = offre(jeu, jeu.choix, slot);
+    const viande = avant.filter((c) =>
+      c.plat.ingredients.some((i) => i.id === "boeuf-hache" && !i.base),
+    );
+    expect(viande.length).toBeGreaterThan(0);
+
+    const apres = offre(jeu, jeu.choix, slot, savoirAvec({ "boeuf-hache": "non" }));
+    const restants = new Set(apres.map((c) => c.plat.id));
+    for (const c of viande) expect(restants.has(c.plat.id)).toBe(false);
+    // ET LE RESTE SURVIT : on retire ce qui manque, on ne rétrécit pas la main.
+    expect(apres.length).toBe(avant.length - viande.length);
+  });
+
+  test("« peu » ne retire rien tant que rien n'est posé dessus", () => {
+    const slot = creneau(0, "diner");
+    const avant = offre(jeu, jeu.choix, slot);
+    const apres = offre(jeu, jeu.choix, slot, savoirAvec({ "boeuf-hache": "peu" }));
+    expect(apres.length).toBe(avant.length);
+  });
+
+  test("« peu » déjà dépensé une fois retire les suivants", () => {
+    const slot = creneau(0, "diner");
+    const avant = offre(jeu, jeu.choix, slot);
+    const apres = offre(jeu, jeu.choix, slot, savoirAvec({ "boeuf-hache": "peu" }, { "boeuf-hache": 1 }));
+    expect(apres.length).toBeLessThan(avant.length);
+  });
+
+  test("la main honore le blocage comme l'offre", () => {
+    jeu.slot = creneau(0, "diner");
+    const cartes = main(jeu, 4, savoirAvec({ "boeuf-hache": "non" }));
+    expect(cartes.every((c) => !c.plat.ingredients.some((i) => i.id === "boeuf-hache" && !i.base))).toBe(true);
+  });
+
+  test("sur le corpus réel, la viande est centrale et l'oignon ne l'est pas", () => {
+    // Le garde-fou de `rayons.centraux` : si un jour la boucherie sortait des
+    // rayons centraux, ou l'oignon y entrait, c'est ici que ça se verrait.
+    const est = estCentral;
+    expect(est({ id: "boeuf-hache", central: false })).toBe(true);
+    expect(est({ id: "colin-surgele", central: false })).toBe(true);
+    expect(est({ id: "riz", central: false })).toBe(true);
+    expect(est({ id: "oignon", central: false })).toBe(false);
+    expect(est({ id: "persil", central: false })).toBe(false);
+    expect(est({ id: "vinaigre-balsamique", central: false })).toBe(false);
+  });
+
+  test("un placard jamais relevé fait demander sur les centraux proposés", () => {
+    jeu.slot = creneau(0, "diner");
+    const cartes = main(jeu, 4, savoirAvec({}));
+    const qs = questions({
+      catalogue, ctx, rejeu,
+      proposes: cartes.map((c) => c.plat),
+      candidats: offre(jeu, jeu.choix, jeu.slot, savoirAvec({})).map((c) => c.plat),
+      repondu: new Map(),
+    });
+    // Chaque question porte sur un central, aucune sur un aromate, et l'ordre
+    // décroît sur ce qu'elle débloque.
+    for (const q of qs) expect(estCentral({ id: q.ingredient, central: false })).toBe(true);
+    const d = qs.map((q) => q.debloque);
+    expect([...d].sort((a, b) => b - a)).toEqual(d);
   });
 });

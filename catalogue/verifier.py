@@ -312,6 +312,33 @@ def verifier(rid: str, r: dict, rayons: dict, rules: dict, cat: dict,
     return err, warn
 
 
+def verifier_centraux(rayons: dict) -> tuple:
+    """`centraux` désigne des rayons et des ids ; les deux doivent exister.
+
+    Une faute de frappe y est SILENCIEUSE et coûte cher : l'app cesse simplement
+    de demander sur cet ingrédient, elle parie dessus, et rien à l'écran ne dit
+    pourquoi. C'est exactement le genre de panne qu'un vérificateur attrape en
+    une seconde et qu'un usage met un mois à révéler.
+    """
+    err, warn = [], []
+    c = rayons.get("centraux") or {}
+    connus = {i for v in rayons["rayons"].values() for i in v} | set(rayons.get("placard", []))
+
+    for nom in c.get("rayons", []):
+        if nom not in rayons["rayons"]:
+            err.append(f"centraux.rayons : rayon « {nom} » inconnu")
+    for iid in c.get("ids", []):
+        if iid not in connus:
+            err.append(f"centraux.ids : ingrédient « {iid} » sans rayon")
+
+    # Nommer un id dont le rayon est DÉJÀ central ne casse rien mais ment sur
+    # l'intention : la liste est censée ne porter que les exceptions.
+    dedans = {i for nom in c.get("rayons", []) for i in rayons["rayons"].get(nom, [])}
+    for iid in sorted(set(c.get("ids", [])) & dedans):
+        warn.append(f"centraux.ids : « {iid} » est déjà central par son rayon")
+    return err, warn
+
+
 def verifier_foyer(foyer: dict, equilibre: dict, capacites: set) -> tuple:
     """Le foyer aussi se vérifie : espaces et contenants sont des données.
 
@@ -361,6 +388,15 @@ def main() -> int:
     # aucune recette ne se range, et le dire recette par recette serait 51 fois
     # le même message.
     if not sys.argv[1:]:
+        err, warn = verifier_centraux(rayons)
+        n_err += len(err); n_warn += len(warn)
+        if err or warn:
+            print("\nrayons.yaml")
+            for e in err:
+                print(f"  ✗ {e}")
+            for w in warn:
+                print(f"  ⚠ {w}")
+
         err, warn = verifier_foyer(foyer, equilibre, capacites)
         n_err += len(err); n_warn += len(warn)
         if err or warn:

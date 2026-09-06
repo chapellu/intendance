@@ -16,9 +16,11 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { calculer, type Calcul } from "../model/calcul";
 import { chargerCatalogue } from "../model/catalogue";
-import { creerJeu, type Choix, type Jeu } from "../model/jeu";
-import type { Catalogue } from "../model/types";
+import { creerJeu, joue, type Choix, type Jeu } from "../model/jeu";
+import type { Catalogue, Plat } from "../model/types";
 import { contexte, rejouer, type Evenement, type Rejeu } from "../model/journal";
+import { passeDuJour } from "../model/questions";
+import type { Savoir } from "../model/scoring";
 import { lireCourses } from "./courses";
 import { lireJournal } from "./journal";
 import { base, jourISO, type EtatCourse, type LotStock } from "./schema";
@@ -227,4 +229,33 @@ export function usePlacard(catalogue: Catalogue | null, aujourdhui = new Date())
     () => (catalogue && evts ? rejouer(catalogue, evts, contexte(catalogue), jour) : null),
     [catalogue, evts, jour],
   );
+}
+
+/**
+ * Ce que la proposition sait du placard et de la passe — T33.
+ *
+ * `null` TANT QUE LE JOURNAL N'A PAS RÉPONDU, et l'écran DOIT attendre. Une
+ * proposition calculée sur un journal vide ne bloque rien et ne parie rien, puis
+ * se corrige au rendu suivant : on verrait une main s'afficher, puis une
+ * question apparaître par-dessus. C'est-à-dire précisément la main qu'on sait
+ * fausse que Workspace#45 a écartée, obtenue par accident.
+ */
+export function useSavoir(
+  catalogue: Catalogue | null,
+  jeu: Jeu | null,
+  aujourdhui = new Date(),
+): Savoir | null {
+  const evts = useJournal();
+  const jour = jourISO(aujourdhui);
+  return useMemo(() => {
+    if (!catalogue || !evts || !jeu) return null;
+    const ctx = contexte(catalogue);
+    const poses = jeu.choix
+      .map((c) => (joue(c) ? (jeu.plats[c] ?? null) : null))
+      .filter((p): p is Plat => p !== null);
+    return {
+      rejeu: rejouer(catalogue, evts, ctx, jour),
+      passe: passeDuJour(catalogue, ctx, evts, poses, jour),
+    };
+  }, [catalogue, evts, jeu, jour]);
 }

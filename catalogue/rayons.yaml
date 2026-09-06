@@ -14,8 +14,68 @@
 # 3. `placard` marks what the household almost certainly already owns in the
 #    quantities these recipes use. Those are listed to *check*, never added to
 #    the buy list — a list that says "buy salt" every week gets ignored.
+#
+# 4. `centraux` decides which ingredients the app is allowed to ASK about (T33).
+#    You do not make a bolognese without meat; you make it perfectly well
+#    without parsley. Centrality rides on the aisle rather than on `apports`
+#    because deriving it from `apports` would need a `viande-rouge → boeuf-hache`
+#    table, which is judgement, i.e. data entry in disguise.
 
 ordre: [primeur, boucherie, poissonnerie, crèmerie, frais, épicerie]
+
+# Ce dont un plat ne se fait pas. Quand la confiance est basse sur l'un d'eux,
+# l'app demande ; sur tout le reste elle parie en silence.
+#
+# LA RÈGLE EST DANS `rayons`, LA LISTE EST L'EXCEPTION. Boucherie, poissonnerie
+# et crèmerie sont centraux en entier — un rayon suffit à les décrire. L'épicerie
+# ne l'est pas : elle porte le riz ET le vinaigre balsamique, et seuls ses
+# féculents commandent un plat. D'où `ids`, qui ne nomme QUE ces féculents-là.
+#
+# Le primeur reste secondaire, et c'est délibéré : l'oignon paraît dans 42 % des
+# 86 plats, l'ail dans 19 % — demander sur eux serait demander tout le temps,
+# donc ne rien départager. `frais` est secondaire pour la même raison qu'il est
+# petit : une recette qui tient vraiment sur ses gnocchis le dit sur sa ligne,
+# avec `central: true`, et cette surcharge l'emporte sur tout ce qui suit.
+#
+# LISTE POSÉE À VUE, À RÉGLER À L'USAGE — le même statut que les nombres
+# d'`equilibre.yaml`, et pour la même raison : seul l'usage dira si demander
+# « des biscottes ? » vaut la question qu'elle coûte.
+centraux:
+  rayons: [boucherie, poissonnerie, crèmerie]
+  ids:
+    # Légumineuses et céréales sèches
+    - lentilles-seches
+    - pois-chiches
+    - haricots-rouges
+    - ble-lentilles
+    - orge
+    - kasha
+    - flocons-avoine
+    - semoule
+    # Pâtes et riz. `riz-arborio` et `riz-rond` restent distincts de `riz` ici
+    # comme partout : un risotto ne se fait pas avec le basmati du placard.
+    - pates
+    - pates-lasagne
+    - vermicelles
+    - riz
+    - riz-arborio
+    - riz-rond
+    # Farines. Les trois céréales sont trois lignes de courses (voir plus bas),
+    # donc trois questions distinctes — manquer du petit épeautre n'est pas
+    # réparé par un paquet de farine complète.
+    - farine-complete
+    - farine-epeautre
+    - farine-petit-epeautre
+    # Les féculents qui PORTENT le plat : sans pain de mie il n'y a pas de
+    # croque-monsieur, sans tortilla pas de wrap. `maizena` et `chapelure` ne
+    # sont pas ici — elles épaississent et elles panent, elles ne portent rien.
+    - tortillas
+    - pain-de-mie
+    - pain-levain
+    - biscottes
+    - cracotte
+    - krisprolls
+    - puree-mousline
 
 aliases:
   oignons: oignon

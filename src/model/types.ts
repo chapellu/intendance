@@ -66,6 +66,15 @@ export interface Ingredient {
    *  250 g de lentilles *cuites*. */
   base: boolean;
   assaisonnement: boolean;
+  /**
+   * La surcharge de centralité de CETTE ligne, qui l'emporte sur son rayon.
+   *
+   * Sans elle, `rayons.centraux` décide, et il décide bien sur 86 plats. Elle
+   * existe pour la recette qui tient sur un ingrédient que son rayon dit
+   * secondaire — des gnocchis, un tofu fumé. Elle ne se pose que là où elle
+   * change une question ; ailleurs elle vaut faux et ne coûte rien.
+   */
+  central: boolean;
 }
 
 export interface Etape {
@@ -228,6 +237,15 @@ export interface ConfigRayons {
   rayons: Record<string, string[]>;
   /** Ce qu'on a toujours, et qu'on vérifie au lieu de l'acheter. */
   placard: string[];
+  /**
+   * Ce dont un plat ne se fait pas — la matière de la question de T33.
+   *
+   * DEUX FORMES PARCE QUE CE SONT DEUX FAITS. `rayons` porte la règle : la
+   * boucherie est centrale en entier, et le dire rayon par rayon la garde vraie
+   * quand un id s'y ajoute. `ids` porte l'exception : l'épicerie mélange le riz
+   * et le vinaigre balsamique, donc seuls ses féculents s'y nomment un par un.
+   */
+  centraux: { rayons: string[]; ids: string[] };
 }
 
 export interface Equilibre {

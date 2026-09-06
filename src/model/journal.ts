@@ -231,6 +231,25 @@ export interface Retrait {
 
 export interface Rejeu {
   parIngredient: Map<string, EtatIngredient>;
+  /**
+   * CE QU'UN ŒIL A VU SANS QUE ÇA LAISSE UN LOT — la moitié qui manquait.
+   *
+   * `parIngredient` dit ce qui EST LÀ, et cette promesse est épinglée : un
+   * relevé de zone qui ne mentionne pas les pâtes les en retire. Mais « j'ai
+   * regardé, il n'y a pas de bœuf haché » est une CONNAISSANCE, et elle tombait
+   * jusqu'ici par la trappe : aucun lot, donc aucune entrée, donc l'app
+   * redemandait indéfiniment ce à quoi on venait de répondre.
+   *
+   * Ça n'est devenu visible qu'avec T33, parce qu'avant lui rien ne posait la
+   * question — et c'est la MESURE qui l'a trouvé, pas la lecture : le volume de
+   * questions ne décroissait pas d'une passe à l'autre, ce que T33 s'était
+   * engagé à tenir pour réfutable.
+   *
+   * Deux cartes plutôt qu'une, parce que ce sont deux questions : « qu'y a-t-il
+   * dans ce placard » et « de quoi ai-je des nouvelles ». La viande et le
+   * poisson ne sont dans aucun relevé de placard et vivent entièrement ici.
+   */
+  vus: Map<string, EtatIngredient>;
   /** Tous les retraits, dans l'ordre — la matière du « je suis 3 des 11 ». */
   retraits: Retrait[];
 }
@@ -619,6 +638,12 @@ export function rejouer(
         const l = lots.get(id);
         if (!l || l.length === 0) {
           retraits.push({ ingredient: id, effet: "aucun", grammes: null, restePose: null });
+          // AUCUN LOT À RETIRER NE VEUT PAS DIRE RIEN À DÉPENSER. Il n'y a pas
+          // d'estimation à déplacer, mais il y a une CROYANCE — « oui, il y a du
+          // bœuf », répondue hier — et la cuisson vient de la manger. Sans cette
+          // ligne, une réponse valait pour toujours et l'app cessait de demander
+          // sur exactement les ingrédients pour lesquels T33 existe.
+          suiviDe(id).depuisVu += 1;
           continue;
         }
         retraits.push(retirer(l, id, d.grammes));
@@ -704,8 +729,7 @@ export function rejouer(
         }
   }
 
-  const parIngredient = new Map<string, EtatIngredient>();
-  for (const [id, l] of lots) {
+  const etatDe = (id: string, l: LotPlacard[]): EtatIngredient => {
     const s = suiviDe(id);
     const classe = classeDe(ctx, id, l);
     const derive = s.derives.length
@@ -714,7 +738,7 @@ export function rejouer(
     const jours = s.vuLe ? joursEntre(s.vuLe, aujourdhui) : 0;
     const d = s.vuLe === null ? Number.POSITIVE_INFINITY : doute(s.depuisVu, derive, jours);
     const chiffre = l.every((x) => poidsUnite(x) != null);
-    parIngredient.set(id, {
+    return {
       ingredient: id,
       lots: l.map(cloner),
       classe,
@@ -726,9 +750,20 @@ export function rejouer(
         ? l.reduce((g, x) => g + (x.entame ?? 0) + x.unites * (poidsUnite(x) ?? 0), 0)
         : null,
       unites: l.reduce((n, x) => n + x.unites + (x.entame != null ? 1 : 0), 0),
-    });
-  }
-  return { parIngredient, retraits };
+    };
+  };
+
+  const parIngredient = new Map<string, EtatIngredient>();
+  for (const [id, l] of lots) parIngredient.set(id, etatDe(id, l));
+
+  // CE QU'ON A VU SANS QUE ÇA LAISSE UN LOT. Un `vuLe` non nul est la seule
+  // condition : sans lui il n'y a pas eu d'œil, seulement des cuissons qui ont
+  // traversé un id dont l'app n'a jamais rien su.
+  const vus = new Map<string, EtatIngredient>();
+  for (const [id, s] of suivi)
+    if (s.vuLe !== null && !parIngredient.has(id)) vus.set(id, etatDe(id, []));
+
+  return { parIngredient, vus, retraits };
 }
 
 /**
