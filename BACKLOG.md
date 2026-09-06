@@ -1360,6 +1360,208 @@ suit ne s'est décidé sur la seule lecture du code :
   qu'un classement. NCHFP est la référence nommée. Mais `bocal-sous-pression`
   est `acquis: false` — ça se lèvera avec l'autocuiseur, pas avant.
 
+## Deux surfaces d'approvisionnement — [Workspace#44](https://github.com/chapellu/Workspace/issues/44)
+
+**Le partage n'est pas entre canaux, il est entre la demande planifiée et
+l'approvisionnement tout court.** Le ticket demandait « deux surfaces de
+courses », la réserve et le frais ; la proposition a été **refusée** :
+
+> *« I think we need to differentiate the ceremony that choose menu and the
+> ingredients list that is generated from the rest. The fact that I go to casier
+> or a grocery not planned just fill the stock. You are not the only input of it
+> et c'est pour ça que j'ai insisté pour consommer le stock d'abord. »*
+
+La cérémonie pose des créneaux, les créneaux font la liste. **Tout le reste est
+de l'approvisionnement** — le casier, une épicerie non prévue, le panier vert,
+le marché quand rien n'était planifié : *« ça remplit juste le stock »*. Un
+canal est un endroit où l'on va, jamais un écran de l'app.
+
+**Et le test permanent que ce ticket ajoute au principe directeur** :
+*« encourager une meilleure alimentation, pas augmenter drastiquement ma
+consommation ni exploser mon budget »*. **Un mécanisme qui fait monter ce qu'on
+achète ou ce qu'on mange a échoué, même s'il est par ailleurs juste.**
+
+### Ce que #44 corrige dans les tickets déjà posés
+
+- **T53 tombe.** Le récapitulatif à deux canaux — *le frais* contre *la
+  réserve* — était hérité : #45 ne l'avait pas tranché sur ses propres preuves,
+  il le tenait des notes de Workspace#41, qui le tenaient de Workspace#35.
+  L'utilisateur : *« as we have not yet integrated channels keep stuff
+  simple »*. **Une seule liste, dans `rayons.ordre`, comme aujourd'hui.** La
+  seule section qui survit est la **réserve** (T61) et c'est une section par
+  *raison*, pas par canal ; qu'elle soit surtout de l'épicerie est une
+  coïncidence.
+- **T27 se défait, et c'est du code en production.** Rentrer une course crée
+  aujourd'hui un lot (`courses.rentrer()` → `entrerAuStock()` → événement
+  `entree`) : c'est T25–T32, mergé. La liste redevient un **aide-mémoire** qui
+  ne touche plus au stock. **Ordre imposé : T63 avant T62**, sinon l'app se
+  retrouve sans aucun moyen de faire entrer de la nourriture.
+- **T56 est exaucé.** Il disait « une date par lot, et aucun écran pour la
+  saisir — elle n'arrivera que gratuitement ». L'entrée EST cet écran, et la
+  date y est effectivement gratuite : les pastilles donnent aujourd'hui, un
+  ticket porte sa propre date d'achat.
+
+- [ ] **T61 — La liste n'existe que s'il y a un plan.** Pas de vue permanente
+      « ce qui aiderait » à consulter avant de sortir : c'est un écran de
+      suggestions d'achat sans repas derrière, exactement la forme qui fait
+      grossir un budget. Dans un rayon, la seule aide honnête est *« voilà ce que
+      tu as déjà »* — l'inventaire, déjà construit.
+
+      **Les planchers achètent, mais dans cette liste-là**, en une section
+      **réserve**. #43 avait tranché que « ces planchers sont sous leur niveau »
+      *est* la liste Carrefour ; ce qu'ils n'obtiennent pas, c'est un écran à
+      eux. Ce qui leur fait passer le test du budget est un nombre, pas une
+      préférence : le `niveau de réappro` de T45 est dérivé de **ce qui a
+      réellement été consommé entre deux grosses courses**. Une ligne de plancher
+      ne peut donc que restituer ce qui a été mangé — elle est structurellement
+      incapable de faire grossir le placard. Un plan qui ne manque de rien mais
+      laisse quatre denrées sous leur plancher donne une liste réduite à cette
+      seule section : c'est normal, un plan a eu lieu.
+
+- [ ] **T62 — La liste ne touche plus le stock.** *« The list is an help for
+      grocery, what actually restock is the scanning of the tickets or
+      articles. »* `courses.rentrer()` et `rentrerLesCoches()` cessent d'appeler
+      `entrerAuStock()` ; **seule une entrée crée un lot**. Le contrat de T27
+      survit intact — le lot porte le poids que son canal lui a donné, le défaut
+      par ingrédient reste dérivé du dernier poids vu — et il est même **mieux
+      servi**, parce qu'un code-barres ou une ligne de ticket porte un vrai poids
+      d'emballage là où la liste portait une estimation tirée d'une recette.
+
+      Conséquence : `coché` redevient de l'ergonomie de magasin sans aucun sens
+      pour le stock, et comme la liste n'existe que tant qu'un plan existe, **il
+      meurt avec elle**. La question des marques orphelines de T13 disparaît
+      plutôt qu'elle n'est résolue. **Ne pas faire avant T63.**
+
+- [ ] **T63 — L'entrée : un geste sur « L'inventaire », des pastilles.** Pas un
+      quatrième onglet : l'inventaire est déjà *« le seul écran qui parle du
+      dépôt lui-même »*, et une arrivée y voisine naturellement avec le relevé de
+      T32 — même écran, même famille de verbes, tous deux disant « voilà ce
+      qu'il y a ». Un onglet de plus annoncerait l'approvisionnement comme un
+      mode de l'app, ce que T61 refuse.
+
+      **Des pastilles** : une liste courte d'ids `primeur`, ordonnée par ce qui
+      est plausible ce mois-ci et par ce qu'on a déjà reçu, **une pastille = un
+      lot**, plus une **recherche**. Poids et prix en **champs optionnels** —
+      *« simple to get started »*. C'est le chemin **principal du marché**, pas
+      un repli : tout est dématérialisé sauf lui, et le seul ticket qu'il donne
+      est le pire à lire (court, parfois manuscrit) alors qu'un retour de marché
+      fait huit articles de primeur. Sert aussi au panier vert, au jardin et aux
+      cadeaux.
+
+- [ ] **T64 — La table apprise : un EAN et un libellé mènent au même id.** Un
+      EAN est un nombre, une ligne de ticket est une chaîne, les deux doivent
+      atteindre `pates` ou `tomates`. **Une seule table, deux clés.** Open Food
+      Facts (ODbL) ne fait que pré-remplir marque, libellé et poids net pour que
+      la question soit répondable : il ne connaît rien au vocabulaire du
+      catalogue et n'en connaîtra jamais rien.
+
+      **La première rencontre demande une fois** — « Panzani Torsades 500 g →
+      c'est quoi ? » avec une liste courte — **et retient pour toujours**. L'EAN
+      s'apparie exact ; le libellé s'apparie **flou**, parce que « TOMATES
+      GRAPPE » devient « TOM GRAPPE VRAC » le mois suivant : un inconnu propose
+      l'id confirmé le plus proche et demande un tap. **La table converge au lieu
+      de grossir** — c'est la seule raison pour laquelle un ticket finit par
+      battre la saisie. Sans réseau ou sans réponse d'OFF, on retombe sur les
+      pastilles de T63.
+
+- [ ] **T65 — L'import du ticket dématérialisé.** Tout est dématérialisé sauf le
+      marché. La facture Drive de Carrefour est **lignée en EAN13** (Workspace#29)
+      : c'est un **fichier**, donc ni OCR, ni caméra, ni serveur — la plus grosse
+      course du mois rentre sans un seul scan. Le ticket de caisse dématérialisé
+      en magasin relève du même chemin, à confirmer par Workspace#49.
+
+- [ ] **T66 — Toute arrivée est datée, et le frais gagne enfin une horloge.**
+      L'entrée pose la date d'arrivée et le lot atterrit **au garde-manger** ;
+      pas de troisième magasin. C'est la date gratuite que T56 attendait : les
+      pastilles donnent aujourd'hui, un ticket porte sa date d'achat — donc
+      photographier un ticket et le traiter huit jours plus tard **ne fausse
+      rien**.
+
+      Ça ne rouvre pas #50, ça atteint la moitié qu'il ne pouvait pas atteindre :
+      l'épicerie garde ses trois urgences projetées (T57), mais une arrivée
+      périssable cesse d'être figée à une `urgence` dérivée de la zone, **qui ne
+      peut pas décroître** — sans quoi l'app crie en mars à propos d'un poireau
+      arrivé en septembre. Coût : une fenêtre de vie sur les ~57 ids `primeur`,
+      par la méthode propose-puis-valide des `apports`. **Et l'en-tête de
+      `garde-manger.yaml` se corrige** : il ne porte plus seulement du « non
+      périssable à l'échelle de la semaine » — c'était déjà faux avec les pommes
+      de terre sous l'évier.
+
+- [ ] **T67 — Le mode de décrément suit la classe, pas le nombre.** T28 choisit
+      le mode selon qu'un chiffre existe. Donnez-lui « TOMATES 1,240 kg » et il
+      se met à retrancher des grammes de recette à vos tomates : de la
+      comptabilité au gramme, que Workspace#41 exclut, obtenue par la porte de
+      derrière.
+
+      **La précision suit le canal, pas le rayon** : quand un canal pèse, on le
+      croit (ce qui assouplit « les fruits & légumes ne sont jamais estimés » de
+      T30) ; quand il ne pèse pas, `par_unite: null` comme avant. Mais
+      *« I will always use full tomatoes not exact weight »*, donc **deux
+      nombres, deux métiers** : le **poids** sert à l'historique de prix (T68) et
+      au registre de ce qui est entré, **il ne pilote jamais un décrément** ; la
+      **quantité de stock** du primeur est ce que l'œil compte — des unités
+      entières, ou l'`etat` quand personne ne compte.
+
+- [ ] **T68 — L'historique de prix au kilo, enregistré tout de suite, exploité
+      par rien.** Un ticket est le seul objet de tout ce modèle qui sache ce que
+      les choses coûtent. **On enregistre le prix sur le lot ; on ne score jamais
+      dessus** — scorer le prix ferait choisir la nourriture bon marché contre la
+      bonne, ce qui rate l'autre moitié du brief.
+
+      L'objet demandé est un **historique par ingrédient et par unité** — une
+      série en €/kg — et **pas** un coût par plat : *« more as an help for future
+      grocery to follow prices like how much cost a kilo of tomatoes and when it
+      is a good deal »*. C'est un sous-produit d'un chemin qu'on construit de
+      toute façon, et il ne se reconstitue pas après coup : on le capture dès le
+      premier jour. T67 est ce qui le rend possible — sans poids, pas de €/kg.
+
+- [ ] **T69 — Une entrée n'ajoute que ; elle ne dit jamais « c'est tout ».**
+      *« You are not the only input of it. »* Seul le relevé par zone (T32) peut
+      affirmer une absence. Six articles scannés sur vingt, c'est une course
+      à moitié connue : le reste ressort en confiance qui baisse et en questions
+      à la proposition, **jamais en zéro faux**. C'est ce qui garde l'app fausse
+      du bon côté — elle demande au lieu d'acheter. Une ligne analysée qui ne
+      s'apparie à rien et qu'on n'enseigne pas est un **no-op déclaré** : compté,
+      montré, sans lot inventé (T28).
+
+- [ ] **T70 — Après une entrée, l'app se tait.** Aucune re-proposition, aucune
+      notification, aucune cérémonie poussée — Workspace#41 l'exclut et une
+      relance trois jours plus tard est exactement ça. L'écran de revue se termine
+      sur **une ligne qu'on peut ignorer**, et il n'y a **jamais de seconde
+      sollicitation**. La vraie réaction est invisible et c'est la bonne : les
+      nouveaux lots portent une horloge (T66), donc la passe suivante du rail
+      propose autour d'eux toute seule.
+
+- [ ] **T71 — Le lecteur de ticket photographié. Serveur, et pas urgent.** Le
+      filet de sécurité quand un magasin ne dématérialise pas. L'app n'a pas de
+      back-end, mais vm-main fait tourner un cluster k8s avec Flux et des secrets
+      SOPS-age : c'est un coût, pas une impossibilité — *« it can be the first
+      server side component but nothing urgent »*. Ce qui le porte est la
+      justesse : un écran de revue plein de « TOMAT » déplace le travail au lieu
+      de l'économiser.
+
+      **Rien n'est urgent dans le temps** : *« I can take the picture of my
+      receipt whenever and wherever I want and always process it when I have
+      internet »*. La photo se prend hors ligne en un tap, l'analyse attend le
+      réseau — et T66 fait que la date reste juste. **Quoi qu'il lise le ticket,
+      sa sortie atterrit dans un écran de revue : elle est proposée, jamais
+      crue.**
+
+### Laissé ouvert par #44
+
+- **Le signal « bonne affaire ».** T68 enregistre sans exploiter, et c'est
+  délibéré : juger un bon prix demande une référence que seuls quelques mois de
+  tickets du foyer peuvent fournir, plus une courbe saisonnière par-dessus. En
+  inventer une maintenant donnerait un nombre sûr de lui avec rien derrière.
+  *« Start recording data now and the exploitation will come later. »*
+- **Le panier vert.** Mis sur le chemin des pastilles **parce qu'**il est prépayé
+  et peut ne rien remettre de lisible — mais *« I hope to have a paper with the
+  details of what is inside but I'm not sure »*. Parti en recherche sur
+  Workspace#49 ; si un papier existe, ce canal change de chemin.
+- **Les fenêtres de vie du primeur elles-mêmes.** T66 en a besoin sur ~57 ids :
+  même problème que les `apports`, et même goulot — c'est du jugement, pas de
+  l'extraction.
+
 ## Sortie
 
 **Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`
