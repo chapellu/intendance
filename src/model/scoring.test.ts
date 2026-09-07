@@ -184,7 +184,54 @@ describe("la main de cartes", () => {
       jeu.choix[libre++] = p.id;
     }
     jeu.slot = cible;
-    expect(main(jeu).length).toBeLessThanOrEqual(4);
+    // La taille vient du catalogue depuis T52 (`equilibre.main.taille: 5`) :
+    // l'écrire en dur ici referait exactement le réglage mort qu'il a réparé.
+    expect(main(jeu).length).toBeLessThanOrEqual(catalogue.equilibre.main.taille);
+  });
+
+  test("T52 — la taille et les enseignes garanties viennent du catalogue", () => {
+    // TROIS RÉGLAGES LUS, TYPÉS, ET SANS EFFET jusqu'ici. La parité avec le
+    // proto les gardait morts ; le proto est parti en T22, l'argument avec.
+    jeu.slot = creneau(0, "diner");
+    expect(catalogue.equilibre.main.taille).toBe(5);
+    expect(main(jeu)).toHaveLength(5);
+
+    const enseignes = new Set(main(jeu).map((c) => c.categorie));
+    for (const garantie of catalogue.equilibre.main.garantir)
+      expect(enseignes.has(garantie as never)).toBe(true);
+  });
+
+  test("T52 — un plat cuisiné dans les dix jours sort du paquet", () => {
+    jeu.slot = creneau(0, "diner");
+    const ctx = contexte(catalogue);
+    const rejeu = rejouer(catalogue, [], ctx, "2026-08-17");
+    const sans = main(jeu, undefined, {
+      rejeu, passe: { repondu: new Map(), depense: new Map() },
+      cuisinesRecemment: new Set<string>(),
+    });
+    expect(sans.length).toBeGreaterThan(0);
+
+    const ecarte = sans[0]!.plat.id;
+    const avec = main(jeu, undefined, {
+      rejeu, passe: { repondu: new Map(), depense: new Map() },
+      cuisinesRecemment: new Set([ecarte]),
+    });
+    expect(avec.map((c) => c.plat.id)).not.toContain(ecarte);
+  });
+
+  test("T52 — le cooldown s'efface plutôt que d'affamer la main", () => {
+    // UN PLAT DÉJÀ VU VAUT MIEUX QUE PAS DE DÎNER. Si tout le paquet est en
+    // cooldown, on repioche dedans — la même règle qui interdit à T33 de
+    // retirer un plat définitivement.
+    jeu.slot = creneau(0, "diner");
+    const ctx = contexte(catalogue);
+    const rejeu = rejouer(catalogue, [], ctx, "2026-08-17");
+    const tout = new Set(catalogue.plats.map((p) => p.id));
+    const cartes = main(jeu, undefined, {
+      rejeu, passe: { repondu: new Map(), depense: new Map() },
+      cuisinesRecemment: tout,
+    });
+    expect(cartes.length).toBeGreaterThan(0);
   });
 });
 
@@ -260,6 +307,7 @@ describe("T33 — ce que la proposition sait", () => {
   const savoirAvec = (repondu: Record<string, Reste>, depense: Record<string, number> = {}) => ({
     rejeu,
     passe: { repondu: new Map(Object.entries(repondu)), depense: new Map(Object.entries(depense)) },
+    cuisinesRecemment: new Set<string>(),
   });
 
   test("sans savoir, rien ne change : ni blocage, ni pari", () => {

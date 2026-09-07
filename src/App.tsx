@@ -15,6 +15,7 @@ import { Coquille, Corps, type Pastilles } from "./ui/Coquille";
 import { Aujourdhui } from "./ecrans/Aujourdhui";
 import { Cockpit, useCockpit } from "./ecrans/Cockpit";
 import { Courses } from "./ecrans/Courses";
+import { Fil } from "./ecrans/Fil";
 import { Cuisiner } from "./ecrans/Cuisiner";
 import { Jardin } from "./ecrans/Jardin";
 import { Parts } from "./ecrans/Parts";
@@ -86,6 +87,15 @@ function rendre(route: Route, jeu: Jeu) {
     case "prevoir": return <Prevoir />;
     case "courses": return <Courses />;
     case "stock": return <Stock />;
+    // Le fil sans créneau est son ouverture : il n'y a rien à valider, et il
+    // sait lui-même s'il doit demander l'horizon ou reprendre une passe.
+    case "fil":
+      if (!route.creneau) return <Fil />;
+      return indexDuCreneau(jeu, route.creneau.jour, route.creneau.repas) < 0 ? (
+        <HorsSemaine jour={route.creneau.jour} repas={route.creneau.repas} />
+      ) : (
+        <Fil creneau={route.creneau} />
+      );
     // Les trois écrans qui visent un créneau. Un lien d'hier rouvert
     // aujourd'hui désigne un jour sorti de la fenêtre : on le dit, plutôt que
     // d'ouvrir l'écran sur un créneau fantôme.

@@ -1217,6 +1217,16 @@ bocal distributeur — un objet physique, pas une cible. La cible s'appelle donc
       toute la moitié « stock et congélateur » du score qui n'a jamais été
       portée. T36 et T47 en reprennent trois ; les trois autres restent.
 
+      **T52 en a rendu trois au catalogue** — `main.taille` (5 au lieu du 4 en
+      dur), `main.cooldown_jours` (branché sur le journal des cuissons, faute de
+      source exportée), et `main.garantir`, qui n'était pas dans cette liste
+      parce que le code le recopiait à l'identique. Un réglage mort qui donne
+      par hasard la bonne réponse reste un réglage mort : il aurait divergé au
+      premier changement du catalogue, et en silence. **Restent
+      `plancher_congelo`, `ecoule_frigo`, `ecoule_congelo` et
+      `congelateur.plancher`** — c'est-à-dire exactement la moitié congélateur,
+      celle que T36 et T47 reprennent.
+
 ## Le rail de planification — [Workspace#45](https://github.com/chapellu/Workspace/issues/45)
 
 Tranché sur prototype le 03/09/2026 : trois variantes du rail montées côte à
@@ -1231,7 +1241,7 @@ un bandeau, un tiroir — et c'est ce qui les a perdues : répondre change la ma
 qui suit, donc les cartes affichées à ce moment-là sont des cartes qu'on sait
 fausses.
 
-- [ ] **T49 — L'écran du fil.** Un écran d'ouverture qui demande **combien de
+- [x] **T49 — L'écran du fil.** Un écran d'ouverture qui demande **combien de
       repas**, en crans (1 / 3 / 5 / 7 / 14) et non en champ libre : ça se répond
       du pouce. Puis le rail avance **linéairement, plein écran, un pas à la
       fois**, en réutilisant `main()` créneau par créneau — c'est un rail, pas un
@@ -1241,7 +1251,7 @@ fausses.
       L'itinéraire est les N premiers créneaux `choisi` encore indécis, dans
       l'ordre chronologique.
 
-- [ ] **T50 — Une question est un PAS du fil.** Une seule file, pas deux : la
+- [x] **T50 — Une question est un PAS du fil.** Une seule file, pas deux : la
       question prend l'écran, porte son propre point de progression, et la main
       attend derrière elle. Elle naît au moment de la proposition, sur un
       ingrédient **central** du plat proposé — ni assaisonnement, ni `base`, une
@@ -1252,7 +1262,7 @@ fausses.
       depuis le relevé du 26/08) : **une passe de trois créneaux lève une à deux
       questions.**
 
-- [ ] **T51 — Le vide silencieux, et PAS un troisième état.** « Je ne planifie
+- [x] **T51 — Le vide silencieux, et PAS un troisième état.** « Je ne planifie
       pas ce repas » n'entre pas dans le modèle. Deux raisons : choisir N met
       déjà hors du plan tout ce que l'horizon ne couvre pas, sans qu'un doigt
       clique ni que rien s'écrive ; et le trou n'était pas dans le modèle mais
@@ -1265,7 +1275,7 @@ fausses.
       bouton « Je ne planifie pas celui-là » du fil **n'écrit rien** : il
       raccourcit la passe, c'est de la navigation.
 
-- [ ] **T52 — `equilibre.main` enfin lu.** Tranché ici plutôt que renvoyé au
+- [x] **T52 — `equilibre.main` enfin lu.** Tranché ici plutôt que renvoyé au
       backlog : `main()` prend `taille` du catalogue (**5**) au lieu du `4` en
       dur, et honore `cooldown_jours: 10`. Le cooldown n'a **aucune source
       exportée** — `catalogue/historique.yaml` existe mais `export_json.py` ne le
@@ -1274,7 +1284,12 @@ fausses.
       placard : un plat cuisiné dans les 10 jours sort du paquet. Reprend deux
       des trois réglages morts que T48 recense.
 
-- [ ] **T53 — La fin de la passe : deux canaux, pas une liste.** Le
+- [~] **T53 — La fin de la passe : deux canaux, pas une liste.** **TOMBÉ**, voir « Ce que #44 corrige dans les tickets déjà posés » : une seule
+      liste dans `rayons.ordre`, la seule section qui survit étant la réserve
+      (T61). Ce que T49 a construit à la place est une fin de passe qui ne
+      récapitule rien et renvoie à la liste existante — *la cérémonie pose des
+      créneaux, les créneaux font la liste*. Le ticket reste ici barré plutôt
+      que supprimé : ce qu'il proposait a été jugé, pas oublié. Le
       récapitulatif ferme le fil sur **le frais** (marché du vendredi, casier
       Côté Champs, panier vert — non choisi, à manger dans les jours) et **la
       réserve** (Carrefour — sec, boîte, congelé, ça se planifie). C'est le
@@ -1282,6 +1297,48 @@ fausses.
       laquelle la liste se lit mal. Le prototype le fabrique en découpant
       `parRayon` sur `{primeur, boucherie, poissonnerie, crèmerie, frais}` contre
       le reste ; c'est le partage qui est validé, pas cette implémentation.
+
+### Ce que le fil a coûté et appris
+
+**Fait le 07/09/2026**, en une passe : `src/model/fil.ts`, `src/ecrans/fil.vue.ts`,
+`src/ecrans/Fil.tsx`, la route `#/cuisine/fil` à deux formes, et
+`src/ui/Cartes.tsx` — la question et la carte extraites de `Poser.tsx` plutôt que
+recopiées, parce que deux écrans qui proposent le même plat doivent en dire
+exactement la même chose.
+
+**L'ITINÉRAIRE SE PERSISTE, ET C'EST UNE EXCEPTION ASSUMÉE À LA RÈGLE DE TÊTE.**
+« Persisté : ce qu'un doigt a décidé ; recalculé : tout ce que `calculer`
+dérive. » L'itinéraire a l'air d'un calcul — « les N premiers créneaux indécis »
+— mais il n'est pas dérivable après coup : cette phrase change de sens à chaque
+plat posé, donc le recalculer ferait glisser le rail sous le doigt. Poser le
+premier ferait du deuxième le premier, et les points de progression se
+renuméroteraient à chaque geste. Ce qu'on garde est donc bien une **décision** :
+la liste que choisir l'horizon a arrêtée, à l'instant où on l'a choisi. Un test
+l'épingle en montrant qu'un itinéraire recalculé, lui, aurait bougé.
+
+**Un bug de routeur dormait depuis T7, et le fil lui a donné son premier
+appelant.** `aller(route, remplacer)` passait par `history.replaceState`, qui
+change l'URL **sans émettre `hashchange`** — l'événement auquel `useRoute`
+s'abonne. Le chemin `remplacer` n'avait jamais servi : la reprise d'une passe est
+la première redirection de l'app, et elle affichait un écran blanc pendant que la
+barre d'adresse annonçait la bonne route. Corrigé en `location.replace`. Le
+symptôme visible était trois parcours e2e à trente secondes de timeout chacun ;
+la suite est passée de 44 s à 14 s une fois la cause retirée.
+
+**T51 a rendu la case vide muette, donc introuvable.** Les parcours désignaient
+un créneau libre par son texte — `hasText: "à poser"` — c'est-à-dire exactement
+la phrase que ce ticket supprime. D'où `.co-slot.libre` : l'état existe toujours,
+il est simplement devenu silencieux, et un sélecteur doit pouvoir le nommer
+autrement que par ce qu'il raconte.
+
+**Le bouton du bas de « La semaine » lance désormais une passe** au lieu de viser
+la première case libre. `prochainVide` survit — il décide s'il y a une passe à
+lancer — mais il n'est plus une cible : c'est l'horizon qui choisit où l'on
+atterrit. Poser un plat isolément reste possible en dépliant la case.
+
+Vérifié aussi, et sans changement nécessaire : **`calc.manques` ne réclamait déjà
+rien sur un créneau vide** (`if (!joue(rid)) return`). La réclamation venait
+entièrement de l'écran, ce que #45 soupçonnait sans l'avoir mesuré.
 
 ### Laissé ouvert par #45
 
@@ -1291,6 +1348,17 @@ fausses.
   droit d'atterrir ». À revoir, pas tranché.
 - **Les crans de l'horizon** (1/3/5/7/14) sont posés à vue, comme le `4` de
   `congelateur.plancher` avant eux. Seul l'usage les réglera.
+- **La fin de passe ne récapitule rien.** T53 est tombé et T61 n'existe pas
+  encore : l'écran de fin compte les repas posés et renvoie à la liste, sans
+  savoir dire ce qui vient d'y entrer. C'est honnête et c'est maigre.
+- **« Pas celui-là » ne survit pas au rechargement**, par construction : il
+  n'écrit rien, donc il n'y a rien à retrouver. À l'usage, un créneau écarté
+  trois fois de suite dira peut-être quelque chose que le modèle devrait
+  entendre — mais l'entendre demanderait de l'écrire, et c'est précisément ce
+  que T51 refuse.
+- **Une seule passe à la fois** (`CLE_FIL` est une clé unique). Deux fils
+  concurrents seraient deux rails sur la même semaine et rien ne dirait lequel
+  gagne ; ça n'a pas été jugé, juste tranché au plus simple.
 
 ## Une horloge pour chaque stock — [Workspace#50](https://github.com/chapellu/Workspace/issues/50)
 

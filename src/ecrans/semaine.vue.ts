@@ -32,6 +32,24 @@ export interface VueSlot {
   emporte: boolean;
   saute: boolean;
   plat: Plat | null;
+  /**
+   * CE QUE LA CASE DIT — et `null` quand elle ne dit rien. T51.
+   *
+   * Elle disait « à poser » sur tout créneau vide, et c'est **là** qu'était le
+   * trou que Workspace#45 a d'abord cherché dans le modèle : pas dans les
+   * données, dans cette phrase. Un créneau vide n'est pas un manque, c'est une
+   * décision pas encore prise — et depuis que l'horizon du fil met hors du plan
+   * tout ce qu'il ne couvre pas, réclamer quatorze fois par semaine est devenu
+   * faux autant que bruyant.
+   *
+   * `SAUTE` garde son sens exact : « on ne mange pas là » est une décision, et
+   * elle se dit. C'est l'ABSENCE de décision qui se tait.
+   */
+  nom: string | null;
+  /** Ni posé ni sauté : le fil a le droit d'atterrir ici, et la case n'a rien
+   *  à annoncer. Porté jusqu'au DOM, parce qu'un état muet reste un état et
+   *  qu'un sélecteur doit pouvoir le nommer autrement que par son texte. */
+  libre: boolean;
   parts: number;
   /** Les parts ne s'affichent que si elles ont été RÉGLÉES : répéter la taille
    *  du foyer quatorze fois n'apprend rien. */
@@ -96,6 +114,8 @@ function slot(jeu: Jeu, calc: Calcul, i: number, jour: string): VueSlot {
     emporte: c.emporte,
     saute: rid === SAUTE,
     plat,
+    nom: rid === SAUTE ? "on ne mange pas là" : (plat?.titre ?? null),
+    libre: rid == null,
     parts: jeu.parts[i] ?? jeu.catalogue.foyer.parts,
     partsRegle: (jeu.parts[i] ?? jeu.catalogue.foyer.parts) !== jeu.catalogue.foyer.parts,
     minutes: plat ? plat.minutes : 0,

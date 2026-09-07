@@ -19,7 +19,10 @@ import { attendreLApp, repondreAuxQuestions } from "./parcours";
 async function ouvrirLaProposition(page: import("@playwright/test").Page): Promise<void> {
   await page.goto("/#/cuisine/semaine");
   await attendreLApp(page);
-  await page.locator(".co-slot", { hasText: "à poser" }).first().locator("button.resume").click();
+  // `.libre` ET PAS LE TEXTE « à poser » : T51 a rendu la case vide muette,
+  // et un localisateur écrit sur une phrase disparaît avec elle. L'état, lui,
+  // existe toujours — c'est pour ça qu'il est porté jusqu'au DOM.
+  await page.locator(".co-slot.libre").first().locator("button.resume").click();
   await page.locator(".co-slot.ouvert").getByRole("link", { name: "poser un plat" }).click();
   await expect(page.locator(".co-question, .co-jouable").first()).toBeVisible({ timeout: 30_000 });
 }
