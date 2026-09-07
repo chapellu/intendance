@@ -284,7 +284,7 @@ describe("T25 — le niveau est un rejeu, jamais un stock", () => {
       denrees: [denree({ ingredient: "lentilles-seches", unites: 1, parUnite: { amount: 500, unit: "g" } })],
       plats: [plat({
         id: "dahl", portions: 4,
-        ingredients: [{ id: "lentilles-seches", nom: "lentilles", qty: 200, unit: "g", base: false, assaisonnement: false }],
+        ingredients: [{ id: "lentilles-seches", nom: "lentilles", qty: 200, unit: "g", base: false, assaisonnement: false, central: false }],
       })],
       rayons: { épicerie: ["lentilles-seches"] },
     });
@@ -321,8 +321,8 @@ describe("T25 — le niveau est un rejeu, jamais un stock", () => {
     const p = plat({
       id: "x",
       ingredients: [
-        { id: "sel", nom: "sel", qty: 5, unit: "g", base: false, assaisonnement: true },
-        { id: "mais", nom: "maïs", qty: 100, unit: "g", base: false, assaisonnement: false },
+        { id: "sel", nom: "sel", qty: 5, unit: "g", base: false, assaisonnement: true, central: false },
+        { id: "mais", nom: "maïs", qty: 100, unit: "g", base: false, assaisonnement: false, central: false },
       ],
     });
     expect(demandes(p, 1).map((d) => d.ingredient)).toEqual(["mais"]);
@@ -331,7 +331,7 @@ describe("T25 — le niveau est un rejeu, jamais un stock", () => {
   test("les bases vont au dépôt, pas au placard", () => {
     const p = plat({
       id: "x",
-      ingredients: [{ id: "lentilles-vertes-cuites", nom: "lentilles cuites", qty: 250, unit: "g", base: true, assaisonnement: false }],
+      ingredients: [{ id: "lentilles-vertes-cuites", nom: "lentilles cuites", qty: 250, unit: "g", base: true, assaisonnement: false, central: false }],
     });
     expect(demandes(p, 1)).toHaveLength(0);
   });
@@ -339,7 +339,7 @@ describe("T25 — le niveau est un rejeu, jamais un stock", () => {
   test("une unité qui n'est pas une masse ne se soustrait pas d'un poids", () => {
     const p = plat({
       id: "x",
-      ingredients: [{ id: "ail", nom: "ail", qty: 2, unit: "gousse", base: false, assaisonnement: false }],
+      ingredients: [{ id: "ail", nom: "ail", qty: 2, unit: "gousse", base: false, assaisonnement: false, central: false }],
     });
     expect(demandes(p, 1)[0]!.grammes).toBeNull();
   });

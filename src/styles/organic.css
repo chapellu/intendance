@@ -398,6 +398,21 @@ button { font-family: var(--font-body); color: inherit; }
   border-radius: 999px; padding: 5px 12px; align-self: flex-start; display: inline-block;
 }
 .co-jouable .pied { display: flex; gap: var(--space-2); margin-top: var(--space-3); }
+.co-pari { margin-top: var(--space-2); font-size: 12px; line-height: 1.35; color: var(--color-neutral-700); }
+
+/* — la question de T33 —
+   ELLE A SA PROPRE CLASSE, ET CE N'EST PAS COSMÉTIQUE. Une question occupe la
+   place d'une carte mais n'en est pas une : lui laisser `.co-jouable` rendait
+   les deux indistinguables pour tout sélecteur, et le premier à s'y casser a été
+   le parcours e2e, qui cherchait « Poser sur ce créneau » à l'intérieur d'une
+   question. */
+.co-question { background: var(--color-surface); border-radius: var(--radius-lg); padding: var(--space-3); }
+.co-question .tete { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-2); }
+.co-question .nom { font-family: var(--font-heading); font-size: 19px; line-height: 1.15; }
+.co-question .meta { flex: none; font-size: 11px; color: var(--color-neutral-700); }
+.co-question .btns { display: flex; gap: var(--space-2); flex-wrap: wrap; margin-top: var(--space-3); }
+.co-question .compte { display: block; margin-top: var(--space-2); }
+.co-question .compte input { width: 5rem; margin-left: var(--space-1); }
 
 /* — écran « à prévoir » — */
 .co-offre { background: var(--color-surface); border-radius: var(--radius-lg); padding: var(--space-4); }

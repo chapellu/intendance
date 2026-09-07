@@ -915,7 +915,7 @@ classes comptées **sont** l'épicerie.
       qu'un placard : petit, compté en repas, ouvert tous les jours. Ça donne
       aussi enfin un appelant à `corrigerLot`.
 
-- [ ] **T33 — Le déclencheur : à la proposition, toujours si l'ingrédient est
+- [x] **T33 — Le déclencheur : à la proposition, toujours si l'ingrédient est
       central.** Évalué **au moment où l'app propose**, avant qu'un doigt pose
       quoi que ce soit.
 
@@ -978,7 +978,60 @@ classes comptées **sont** l'épicerie.
       l'estimation doit être visible et contredisable. Un pari raté tombe sur le
       plan B, à parité d'effort avec des nouilles — #30 a déjà payé ce filet.
 
+      **Fait.** `src/model/questions.ts`, `src/ecrans/questions.vue.ts`, la
+      question devant la main dans `Poser.tsx`, et `rayons.centraux` au
+      catalogue. Ce que le portage a appris, en trois points :
+
+      **La centralité est de la DONNÉE, et elle a deux formes.** `centraux
+      .rayons` porte la règle — boucherie, poissonnerie, crèmerie sont centraux
+      en entier, et le dire par rayon reste vrai quand un id s'y ajoute.
+      `centraux.ids` porte l'exception : l'épicerie mélange le riz et le
+      vinaigre balsamique, donc ses 24 féculents se nomment un par un. La
+      surcharge `central: true` par ligne existe, est exportée, et **aucune
+      recette ne l'emploie encore** — elle attend le répertoire de
+      [Workspace#47](https://github.com/chapellu/Workspace/issues/47), comme
+      prévu. `verifier.py` refuse un rayon ou un id inconnu : une faute de
+      frappe y serait silencieuse et l'app se mettrait simplement à parier.
+
+      **`non` et `peu` sont UN SEUL mécanisme, pas deux.** Une réponse laisse un
+      budget de tirage sur la passe — `oui` infini, `peu` un, `non` zéro — et un
+      plat sort dès qu'un de ses centraux a épuisé le sien. Ça rend « il n'en
+      reste pas » et « il n'en reste plus beaucoup » exactement aussi chers à
+      écrire, et le retrait reste **de portée passe, jamais un bannissement** :
+      la passe suivante repropose si le placard a bougé. Faute d'objet passe
+      avant T49, « la même passe » est **le jour** — les réponses saisies
+      aujourd'hui gouvernent les propositions d'aujourd'hui.
+
+      **Le trou trouvé À LA MESURE, et il valait le ticket.** La promesse
+      réfutable de T33 — « le volume de questions doit décroître à l'usage » — a
+      été mesurée sur le corpus réel avant d'être crue, et elle était **fausse** :
+      passe 1 seize questions, passe 2 les seize mêmes. `rejouer` ne projetait
+      que les ingrédients PORTANT DES LOTS, donc toute observation sur un
+      ingrédient qui n'en a pas — c'est-à-dire toute la viande et tout le
+      poisson, qui ne sont dans aucun relevé de placard — tombait par la trappe.
+      D'où `Rejeu.vus`, la seconde carte : `parIngredient` dit ce qui EST LÀ
+      (promesse épinglée par les tests du relevé exhaustif), `vus` dit **de quoi
+      on a des nouvelles**, absences constatées comprises. Et son corollaire :
+      une cuisson dépense désormais la confiance même quand elle ne trouve aucun
+      lot à retirer — il n'y a pas d'estimation à déplacer, mais il y a une
+      croyance, et elle vient d'être mangée. Sans elle, une réponse valait pour
+      toujours. Mesuré après correction : **16 → 0 → 6**, et c'est un test.
+
+      Reste vrai et non résolu : **le démarrage à froid coûte seize questions
+      pour trois dîners.** Le backlog l'annonçait (« la première passe EST le
+      relevé, par un autre chemin ») et l'usage tranchera si c'est tenable ;
+      c'est le seul chiffre de ce ticket qu'aucune mesure ne peut valider à la
+      place de l'utilisateur.
+
 ### Trouvé en grillant #42, à faire
+
+- [ ] **Le pari ne mène qu'à L'INVENTAIRE, pas à sa propre question.** La ligne
+      « je compte sur : carottes — à vérifier » est visible et datée, donc
+      contredisable au sens de #34 ; mais la contredire demande d'ouvrir
+      L'inventaire et d'y retrouver la ligne. Le geste juste serait d'ouvrir la
+      question à trois états sur place, ce qui est le même composant que celui
+      que T33 vient d'écrire. Petit, et laissé de côté pour ne pas mélanger deux
+      surfaces dans un ticket qui en installait déjà une.
 
 - [ ] **Compléter `rayons.yaml` pour les 23 ids sans rayon.** Le vocabulaire des
       recettes a poussé plus vite que la table des rayons. Tant qu'ils n'en ont
@@ -1007,8 +1060,10 @@ de les laisser croire faits.
       n'existe pas encore, et c'est le même que celui du point précédent.
 - [ ] **La dérive ne se voit nulle part.** Elle est apprise, testée, et elle fait
       tomber la confiance plus vite — mais aucun écran ne dit « cette denrée
-      part plus vite que ce que je vois ». Tant que T33 n'existe pas, sa seule
-      sortie est un mot de confiance qui change plus tôt.
+      part plus vite que ce que je vois ». **T33 lui a donné sa première
+      sortie** : elle fait arriver les questions plus tôt, et la question dit
+      « pas vu depuis le 26/08 ». Elle reste néanmoins invisible EN TANT QUE
+      dérive — l'écran montre la conséquence, jamais la cause.
 
 ## Les niveaux de réserve — [Workspace#43](https://github.com/chapellu/Workspace/issues/43)
 

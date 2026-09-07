@@ -115,10 +115,16 @@ def main():
                 # vise. L'`id` reste la clé d'ACHAT, commune aux deux lignes
                 # d'huile d'olive d'une même recette — deux clés parce que ce
                 # sont deux questions.
+                # `central` est la SURCHARGE de la ligne sur son rayon : la
+                # centralité se lit dans `rayons.centraux`, et une recette qui
+                # tient vraiment sur un ingrédient secondaire le dit ici. Elle
+                # ne se pose que là où elle change une question — absente, le
+                # rayon décide, ce qui est le bon défaut sur 86 plats.
                 {"id": i["id"], "ref": i.get("ref") or i["id"],
                  "nom": i["name"], "qty": i["qty"],
                  "unit": i["unit"], "base": bool(i.get("from_accepts")),
-                 "assaisonnement": bool(i.get("seasoning"))}
+                 "assaisonnement": bool(i.get("seasoning")),
+                 "central": bool(i.get("central"))}
                 for i in r.get("ingredients", [])
             ],
             # Les étapes, pour que l'écran puisse montrer la recette et pas

@@ -228,7 +228,8 @@
      "qty": 500,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "tomates-pelees",
@@ -237,7 +238,8 @@
      "qty": 800,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "carottes",
@@ -246,7 +248,8 @@
      "qty": 2,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -255,7 +258,8 @@
      "qty": 2,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "ail",
@@ -264,7 +268,8 @@
      "qty": 2,
      "unit": "gousse",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -273,7 +278,8 @@
      "qty": 2,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -282,7 +288,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [],
@@ -343,7 +350,8 @@
      "qty": 500,
      "unit": "g",
      "base": true,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "pates",
@@ -352,7 +360,8 @@
      "qty": 350,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fromage-rape",
@@ -361,7 +370,8 @@
      "qty": 60,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [],
@@ -442,7 +452,8 @@
      "qty": 700,
      "unit": "g",
      "base": true,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "pates-lasagne",
@@ -451,7 +462,8 @@
      "qty": 250,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "lait",
@@ -460,7 +472,8 @@
      "qty": 50,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "farine",
@@ -469,7 +482,8 @@
      "qty": 4,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fromage-rape",
@@ -478,7 +492,8 @@
      "qty": 100,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [],
@@ -571,7 +586,8 @@
      "qty": 500,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "courgettes",
@@ -580,7 +596,8 @@
      "qty": 2,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -589,7 +606,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fromage-rape",
@@ -598,7 +616,8 @@
      "qty": 60,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -607,7 +626,8 @@
      "qty": 2,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [],
@@ -655,7 +675,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "pommes-de-terre",
@@ -664,7 +685,8 @@
      "qty": 1,
      "unit": "kg",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -673,7 +695,8 @@
      "qty": 2,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -682,7 +705,8 @@
      "qty": 2,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "thym",
@@ -691,7 +715,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [],
@@ -766,7 +791,8 @@
      "qty": 400,
      "unit": "g",
      "base": true,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "tortillas",
@@ -775,7 +801,8 @@
      "qty": 8,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "poivron",
@@ -784,7 +811,8 @@
      "qty": 2,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -793,7 +821,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "creme",
@@ -802,7 +831,8 @@
      "qty": 10,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fromage-rape",
@@ -811,7 +841,8 @@
      "qty": 80,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [],
@@ -881,7 +912,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": true,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "carottes",
@@ -890,7 +922,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "poireau",
@@ -899,7 +932,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "vermicelles",
@@ -908,7 +942,8 @@
      "qty": 100,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [],
@@ -984,7 +1019,8 @@
      "qty": 500,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "lait-coco",
@@ -993,7 +1029,8 @@
      "qty": 40,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "tomates-pelees",
@@ -1002,7 +1039,8 @@
      "qty": 400,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -1011,7 +1049,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "riz",
@@ -1020,7 +1059,8 @@
      "qty": 250,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "curry",
@@ -1029,7 +1069,8 @@
      "qty": 2,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [],
@@ -1087,7 +1128,8 @@
      "qty": 4,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "riz",
@@ -1096,7 +1138,8 @@
      "qty": 250,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "brocoli",
@@ -1105,7 +1148,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "citron",
@@ -1114,7 +1158,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [],
@@ -1161,7 +1206,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "poireau",
@@ -1170,7 +1216,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oeufs",
@@ -1179,7 +1226,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "creme",
@@ -1188,7 +1236,8 @@
      "qty": 20,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fromage-rape",
@@ -1197,7 +1246,8 @@
      "qty": 80,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [],
@@ -1256,7 +1306,8 @@
      "qty": 500,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "tomates-pelees",
@@ -1265,7 +1316,8 @@
      "qty": 400,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "mais",
@@ -1274,7 +1326,8 @@
      "qty": 150,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "poivron",
@@ -1283,7 +1336,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -1292,7 +1346,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "riz",
@@ -1301,7 +1356,8 @@
      "qty": 250,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [],
@@ -1360,7 +1416,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "riz",
@@ -1369,7 +1426,8 @@
      "qty": 200,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oeufs",
@@ -1378,7 +1436,8 @@
      "qty": 2,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fromage-rape",
@@ -1387,7 +1446,8 @@
      "qty": 80,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -1396,7 +1456,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [],
@@ -1444,7 +1505,8 @@
      "qty": 400,
      "unit": "g",
      "base": true,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "feta",
@@ -1453,7 +1515,8 @@
      "qty": 150,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "tomates",
@@ -1462,7 +1525,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon-rouge",
@@ -1471,7 +1535,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -1480,7 +1545,8 @@
      "qty": 3,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [],
@@ -1549,7 +1615,8 @@
      "qty": 8,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "jambon",
@@ -1558,7 +1625,8 @@
      "qty": 4,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fromage-rape",
@@ -1567,7 +1635,8 @@
      "qty": 100,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "salade-verte",
@@ -1576,7 +1645,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [],
@@ -1623,7 +1693,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "tomates",
@@ -1632,7 +1703,8 @@
      "qty": 5,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "moutarde",
@@ -1641,7 +1713,8 @@
      "qty": 2,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "fromage-rape",
@@ -1650,7 +1723,8 @@
      "qty": 80,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [],
@@ -1708,7 +1782,8 @@
      "qty": 200,
      "unit": "g",
      "base": true,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "eau",
@@ -1717,7 +1792,8 @@
      "qty": 20,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oeufs",
@@ -1726,7 +1802,8 @@
      "qty": 4,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "carottes",
@@ -1735,7 +1812,8 @@
      "qty": 120,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -1744,7 +1822,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "thon-boite",
@@ -1753,7 +1832,8 @@
      "qty": 140,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "farine-complete",
@@ -1762,7 +1842,8 @@
      "qty": 40,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "poudre-a-lever",
@@ -1771,7 +1852,8 @@
      "qty": 1,
      "unit": "sachet",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "citron",
@@ -1780,7 +1862,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "parmesan",
@@ -1789,7 +1872,8 @@
      "qty": 100,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -1798,7 +1882,8 @@
      "qty": 2,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -1807,7 +1892,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre",
@@ -1816,7 +1902,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -2037,7 +2124,8 @@
      "qty": 400,
      "unit": "g",
      "base": true,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "tofu-fume",
@@ -2046,7 +2134,8 @@
      "qty": 200,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignons",
@@ -2055,7 +2144,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -2064,7 +2154,8 @@
      "qty": 4,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "farine",
@@ -2073,7 +2164,8 @@
      "qty": 3,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "bouillon-miso",
@@ -2082,7 +2174,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre-5-baies",
@@ -2091,7 +2184,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "son-avoine",
@@ -2100,7 +2194,8 @@
      "qty": 50,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [
@@ -2302,7 +2397,8 @@
      "qty": 150,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-coco",
@@ -2311,7 +2407,8 @@
      "qty": 75,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sucre-complet",
@@ -2320,7 +2417,8 @@
      "qty": 50,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fleur-de-sel",
@@ -2329,7 +2427,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "groseilles",
@@ -2338,7 +2437,8 @@
      "qty": 300,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sirop-agave",
@@ -2347,7 +2447,8 @@
      "qty": 160,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "creme-coco",
@@ -2356,7 +2457,8 @@
      "qty": 20,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "gousse-vanille",
@@ -2365,7 +2467,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "agar-agar",
@@ -2374,7 +2477,8 @@
      "qty": 4,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-coco",
@@ -2383,7 +2487,8 @@
      "qty": 55,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "farine-complete",
@@ -2392,7 +2497,8 @@
      "qty": 30,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [
@@ -2597,7 +2703,8 @@
      "qty": 500,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [
@@ -2760,7 +2867,8 @@
      "qty": 0.5,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon-rouge",
@@ -2769,7 +2877,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "cantal",
@@ -2778,7 +2887,8 @@
      "qty": 100,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "jambon-cru",
@@ -2787,7 +2897,8 @@
      "qty": 100,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "pruneaux",
@@ -2796,7 +2907,8 @@
      "qty": 8,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "noix",
@@ -2805,7 +2917,8 @@
      "qty": 10,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -2814,7 +2927,8 @@
      "qty": 6,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "vinaigre",
@@ -2823,7 +2937,8 @@
      "qty": 3,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -2832,7 +2947,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre",
@@ -2841,7 +2957,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -2969,7 +3086,8 @@
      "qty": 50,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "puree-amande-blanche",
@@ -2978,7 +3096,8 @@
      "qty": 40,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oeufs",
@@ -2987,7 +3106,8 @@
      "qty": 4,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "farine-petit-epeautre",
@@ -2996,7 +3116,8 @@
      "qty": 55,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "miel-acacia",
@@ -3005,7 +3126,8 @@
      "qty": 115,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "abricots",
@@ -3014,7 +3136,8 @@
      "qty": 350,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "rhum",
@@ -3023,7 +3146,8 @@
      "qty": 1,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "extrait-amande-amere",
@@ -3032,7 +3156,8 @@
      "qty": 0.5,
      "unit": "c. à moka",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "amandes-effilees",
@@ -3041,7 +3166,8 @@
      "qty": 2,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [
@@ -3227,7 +3353,8 @@
      "qty": 6,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "gousse-vanille",
@@ -3236,7 +3363,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "creme-coco",
@@ -3245,7 +3373,8 @@
      "qty": 20,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "rhum",
@@ -3254,7 +3383,8 @@
      "qty": 2,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "eau",
@@ -3263,7 +3393,8 @@
      "qty": 10,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "glacons",
@@ -3272,7 +3403,8 @@
      "qty": 8,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [
@@ -3425,7 +3557,8 @@
      "qty": 1,
      "unit": "lot",
      "base": true,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -3434,7 +3567,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "persil",
@@ -3443,7 +3577,8 @@
      "qty": 1,
      "unit": "poignée",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "orties",
@@ -3452,7 +3587,8 @@
      "qty": 1,
      "unit": "poignée",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "eau",
@@ -3461,7 +3597,8 @@
      "qty": 1,
      "unit": "l",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "laurier",
@@ -3470,7 +3607,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "clous-girofle",
@@ -3479,7 +3617,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "thym",
@@ -3488,7 +3627,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "sel",
@@ -3497,7 +3637,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre",
@@ -3506,7 +3647,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -3667,7 +3809,8 @@
      "qty": 200,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "chevre-demi-sec",
@@ -3676,7 +3819,8 @@
      "qty": 100,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "thym-frais",
@@ -3685,7 +3829,8 @@
      "qty": 12,
      "unit": "brin",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -3694,7 +3839,8 @@
      "qty": 7,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "vin-blanc-sec",
@@ -3703,7 +3849,8 @@
      "qty": 5,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fleur-de-sel",
@@ -3712,7 +3859,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -3874,7 +4022,8 @@
      "qty": 500,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "boeuf-hache",
@@ -3883,7 +4032,8 @@
      "qty": 400,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "courgettes",
@@ -3892,7 +4042,8 @@
      "qty": 1.2,
      "unit": "kg",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -3901,7 +4052,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sauce-tomate",
@@ -3910,7 +4062,8 @@
      "qty": 200,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "ail",
@@ -3919,7 +4072,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "olives-noires",
@@ -3928,7 +4082,8 @@
      "qty": 16,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -3937,7 +4092,8 @@
      "qty": 6,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "parmesan",
@@ -3946,7 +4102,8 @@
      "qty": 100,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "herbes-provence",
@@ -3955,7 +4112,8 @@
      "qty": 1,
      "unit": "poignée",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -3964,7 +4122,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre",
@@ -3973,7 +4132,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -4161,7 +4321,8 @@
      "qty": 250,
      "unit": "g",
      "base": true,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "echalote",
@@ -4170,7 +4331,8 @@
      "qty": 2,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -4179,7 +4341,8 @@
      "qty": 2,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oeufs",
@@ -4188,7 +4351,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "chevre-buche",
@@ -4197,7 +4361,8 @@
      "qty": 200,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "ciboulette",
@@ -4206,7 +4371,8 @@
      "qty": 1,
      "unit": "petit bouquet",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "farine-complete",
@@ -4215,7 +4381,8 @@
      "qty": 1,
      "unit": "tasse",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -4224,7 +4391,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre",
@@ -4233,7 +4401,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -4436,7 +4605,8 @@
      "qty": 12,
      "unit": "tranche",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -4445,7 +4615,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "tomme-savoie",
@@ -4454,7 +4625,8 @@
      "qty": 300,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "jambon-cru",
@@ -4463,7 +4635,8 @@
      "qty": 6,
      "unit": "tranche",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "cornichons",
@@ -4472,7 +4645,8 @@
      "qty": 18,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -4481,7 +4655,8 @@
      "qty": 6,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -4490,7 +4665,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -4669,7 +4845,8 @@
      "qty": 500,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -4678,7 +4855,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fromage-rape",
@@ -4687,7 +4865,8 @@
      "qty": 180,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "flocons-avoine",
@@ -4696,7 +4875,8 @@
      "qty": 120,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oeufs",
@@ -4705,7 +4885,8 @@
      "qty": 4,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -4714,7 +4895,8 @@
      "qty": 6,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "ail",
@@ -4723,7 +4905,8 @@
      "qty": 1,
      "unit": "gousse",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "persil",
@@ -4732,7 +4915,8 @@
      "qty": 0.5,
      "unit": "bouquet",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -4741,7 +4925,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre",
@@ -4750,7 +4935,8 @@
      "qty": 1,
      "unit": "bonne pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -4936,7 +5122,8 @@
      "qty": 500,
      "unit": "g",
      "base": true,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "herbes-fraiches",
@@ -4945,7 +5132,8 @@
      "qty": 80,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "tahin",
@@ -4954,7 +5142,8 @@
      "qty": 50,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "farine-complete",
@@ -4963,7 +5152,8 @@
      "qty": 55,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "citron",
@@ -4972,7 +5162,8 @@
      "qty": 3,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "ail",
@@ -4981,7 +5172,8 @@
      "qty": 1,
      "unit": "gousse",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -4990,7 +5182,8 @@
      "qty": 4,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -4999,7 +5192,8 @@
      "qty": 5,
      "unit": "g",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre",
@@ -5008,7 +5202,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -5195,7 +5390,8 @@
      "qty": 4,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "farine-complete",
@@ -5204,7 +5400,8 @@
      "qty": 300,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "vert-de-blette",
@@ -5213,7 +5410,8 @@
      "qty": 400,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fromage-rape",
@@ -5222,7 +5420,8 @@
      "qty": 140,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "cebette",
@@ -5231,7 +5430,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "persil",
@@ -5240,7 +5440,8 @@
      "qty": 1,
      "unit": "petit bouquet",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "ail",
@@ -5249,7 +5450,8 @@
      "qty": 2,
      "unit": "gousse",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "lait",
@@ -5258,7 +5460,8 @@
      "qty": 40,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "poudre-a-lever",
@@ -5267,7 +5470,8 @@
      "qty": 1,
      "unit": "sachet",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -5276,7 +5480,8 @@
      "qty": 4,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -5285,7 +5490,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre",
@@ -5294,7 +5500,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -5442,7 +5649,8 @@
      "qty": 1,
      "unit": "pâte",
      "base": true,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "reste-roti-ing",
@@ -5451,7 +5659,8 @@
      "qty": 200,
      "unit": "g",
      "base": true,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -5460,7 +5669,8 @@
      "qty": 4,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "tomates-cerises",
@@ -5469,7 +5679,8 @@
      "qty": 300,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "chevre-buche",
@@ -5478,7 +5689,8 @@
      "qty": 200,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "romarin",
@@ -5487,7 +5699,8 @@
      "qty": 1,
      "unit": "poignée",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -5496,7 +5709,8 @@
      "qty": 4,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "citron",
@@ -5505,7 +5719,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "farine",
@@ -5514,7 +5729,8 @@
      "qty": 2,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -5523,7 +5739,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre",
@@ -5532,7 +5749,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -5727,7 +5945,8 @@
      "qty": 1,
      "unit": "pot",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "farine-complete",
@@ -5736,7 +5955,8 @@
      "qty": 210,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sucre-roux",
@@ -5745,7 +5965,8 @@
      "qty": 190,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oeufs",
@@ -5754,7 +5975,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -5763,7 +5985,8 @@
      "qty": 85,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "poudre-a-lever",
@@ -5772,7 +5995,8 @@
      "qty": 1,
      "unit": "sachet",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -5781,7 +6005,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "peches",
@@ -5790,7 +6015,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "abricots",
@@ -5799,7 +6025,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fraises",
@@ -5808,7 +6035,8 @@
      "qty": 6,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "creme-coco",
@@ -5817,7 +6045,8 @@
      "qty": 20,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "miel-acacia",
@@ -5826,7 +6055,8 @@
      "qty": 2,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "extrait-vanille",
@@ -5835,7 +6065,8 @@
      "qty": 1,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "miel-acacia",
@@ -5844,7 +6075,8 @@
      "qty": 3,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "eau",
@@ -5853,7 +6085,8 @@
      "qty": 3,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "eau-fleur-oranger",
@@ -5862,7 +6095,8 @@
      "qty": 1,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "extrait-vanille",
@@ -5871,7 +6105,8 @@
      "qty": 1,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [
@@ -6110,7 +6345,8 @@
      "qty": 2,
      "unit": "recette",
      "base": true,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "biscuits-cuillere",
@@ -6119,7 +6355,8 @@
      "qty": 27,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sirop-imbibage",
@@ -6128,7 +6365,8 @@
      "qty": 15,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "cacao",
@@ -6137,7 +6375,8 @@
      "qty": 2,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [
@@ -6304,7 +6543,8 @@
      "qty": 150,
      "unit": "g",
      "base": true,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "farine-complete",
@@ -6313,7 +6553,8 @@
      "qty": 100,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "lait-soja-vanille",
@@ -6322,7 +6563,8 @@
      "qty": 40,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oeufs",
@@ -6331,7 +6573,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "rhum",
@@ -6340,7 +6583,8 @@
      "qty": 2,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sucre-vanille",
@@ -6349,7 +6593,8 @@
      "qty": 20,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "poudre-a-lever",
@@ -6358,7 +6603,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-tournesol",
@@ -6367,7 +6613,8 @@
      "qty": 6,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "mures",
@@ -6376,7 +6623,8 @@
      "qty": 200,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [
@@ -6554,7 +6802,8 @@
      "qty": 10,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "cacao",
@@ -6563,7 +6812,8 @@
      "qty": 50,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "creme-coco",
@@ -6572,7 +6822,8 @@
      "qty": 40,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "extrait-vanille",
@@ -6581,7 +6832,8 @@
      "qty": 1,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "lait-soja-vanille",
@@ -6590,7 +6842,8 @@
      "qty": 2,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fleur-de-sel",
@@ -6599,7 +6852,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "chocolat-noir",
@@ -6608,7 +6862,8 @@
      "qty": 45,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [
@@ -6760,7 +7015,8 @@
      "qty": 350,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "tomates-pelees",
@@ -6769,7 +7025,8 @@
      "qty": 400,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -6778,7 +7035,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "ail",
@@ -6787,7 +7045,8 @@
      "qty": 2,
      "unit": "gousse",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -6796,7 +7055,8 @@
      "qty": 2,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fromage-rape",
@@ -6805,7 +7065,8 @@
      "qty": 80,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "herbes-provence",
@@ -6814,7 +7075,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "sel",
@@ -6823,7 +7085,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -6960,7 +7223,8 @@
      "qty": 500,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "chou-chinois",
@@ -6969,7 +7233,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -6978,7 +7243,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "boeuf-hache",
@@ -6987,7 +7253,8 @@
      "qty": 400,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fromage-rape",
@@ -6996,7 +7263,8 @@
      "qty": 100,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -7005,7 +7273,8 @@
      "qty": 6,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "origan",
@@ -7014,7 +7283,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "thym",
@@ -7023,7 +7293,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "sel",
@@ -7032,7 +7303,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre",
@@ -7041,7 +7313,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -7278,7 +7551,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "lait-soja-vanille",
@@ -7287,7 +7561,8 @@
      "qty": 80,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "cacao",
@@ -7296,7 +7571,8 @@
      "qty": 40,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sucre-complet",
@@ -7305,7 +7581,8 @@
      "qty": 40,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [
@@ -7434,7 +7711,8 @@
      "qty": 300,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "carottes",
@@ -7443,7 +7721,8 @@
      "qty": 4,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -7452,7 +7731,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "laurier",
@@ -7461,7 +7741,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -7470,7 +7751,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -7599,7 +7881,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "lentilles-seches",
@@ -7608,7 +7891,8 @@
      "qty": 250,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -7617,7 +7901,8 @@
      "qty": 2,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "poireau",
@@ -7626,7 +7911,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "carottes",
@@ -7635,7 +7921,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -7644,7 +7931,8 @@
      "qty": 4,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "eau",
@@ -7653,7 +7941,8 @@
      "qty": 1.5,
      "unit": "l",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "laurier",
@@ -7662,7 +7951,8 @@
      "qty": 2,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "clous-girofle",
@@ -7671,7 +7961,8 @@
      "qty": 2,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -7798,7 +8089,8 @@
      "qty": 300,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "celeri-rave",
@@ -7807,7 +8099,8 @@
      "qty": 300,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "carottes",
@@ -7816,7 +8109,8 @@
      "qty": 300,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oeufs",
@@ -7825,7 +8119,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "moutarde",
@@ -7834,7 +8129,8 @@
      "qty": 2,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "vinaigre",
@@ -7843,7 +8139,8 @@
      "qty": 2,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-tournesol",
@@ -7852,7 +8149,8 @@
      "qty": 6,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "yaourt-brebis",
@@ -7861,7 +8159,8 @@
      "qty": 1,
      "unit": "pot",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -7870,7 +8169,8 @@
      "qty": 1,
      "unit": "c. à c. rase",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -8001,7 +8301,8 @@
      "qty": 65,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "poudre-a-lever",
@@ -8010,7 +8311,8 @@
      "qty": 0.5,
      "unit": "sachet",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "chocolat-noir",
@@ -8019,7 +8321,8 @@
      "qty": 100,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sirop-agave",
@@ -8028,7 +8331,8 @@
      "qty": 4,
      "unit": "grosse c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-coco",
@@ -8037,7 +8341,8 @@
      "qty": 4,
      "unit": "grosse c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "extrait-vanille",
@@ -8046,7 +8351,8 @@
      "qty": 1,
      "unit": "grosse c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oeufs",
@@ -8055,7 +8361,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fleur-de-sel",
@@ -8064,7 +8371,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "caissettes",
@@ -8073,7 +8381,8 @@
      "qty": 20,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [
@@ -8240,7 +8549,8 @@
      "qty": 0.5,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "navet-primeur",
@@ -8249,7 +8559,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "poireau",
@@ -8258,7 +8569,8 @@
      "qty": 2,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -8267,7 +8579,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "eau",
@@ -8276,7 +8589,8 @@
      "qty": 1.5,
      "unit": "l",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "beurre",
@@ -8285,7 +8599,8 @@
      "qty": 50,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "poivre",
@@ -8294,7 +8609,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -8449,7 +8765,8 @@
      "qty": 12,
      "unit": "cl",
      "base": true,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "chocolat-noir",
@@ -8458,7 +8775,8 @@
      "qty": 200,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "creme-coco",
@@ -8467,7 +8785,8 @@
      "qty": 20,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-coco",
@@ -8476,7 +8795,8 @@
      "qty": 40,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sucre-complet",
@@ -8485,7 +8805,8 @@
      "qty": 40,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "extrait-vanille",
@@ -8494,7 +8815,8 @@
      "qty": 1,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fleur-de-sel",
@@ -8503,7 +8825,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -8673,7 +8996,8 @@
      "qty": 1.2,
      "unit": "kg",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "agar-agar",
@@ -8682,7 +9006,8 @@
      "qty": 2,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sirop-agave",
@@ -8691,7 +9016,8 @@
      "qty": 100,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "creme-coco",
@@ -8700,7 +9026,8 @@
      "qty": 40,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fraises",
@@ -8709,7 +9036,8 @@
      "qty": 300,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sirop-agave",
@@ -8718,7 +9046,8 @@
      "qty": 3,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [
@@ -8923,7 +9252,8 @@
      "qty": 90,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "chocolat-noir",
@@ -8932,7 +9262,8 @@
      "qty": 130,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "lait-avoine",
@@ -8941,7 +9272,8 @@
      "qty": 5,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sirop-agave",
@@ -8950,7 +9282,8 @@
      "qty": 7,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "farine-complete",
@@ -8959,7 +9292,8 @@
      "qty": 75,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "poudre-a-lever",
@@ -8968,7 +9302,8 @@
      "qty": 0.5,
      "unit": "sachet",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oeufs",
@@ -8977,7 +9312,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "caissettes",
@@ -8986,7 +9322,8 @@
      "qty": 8,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [
@@ -9144,7 +9481,8 @@
      "qty": 1.2,
      "unit": "kg",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "pomme-de-terre",
@@ -9153,7 +9491,8 @@
      "qty": 500,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "carottes",
@@ -9162,7 +9501,8 @@
      "qty": 12,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "navets-roses",
@@ -9171,7 +9511,8 @@
      "qty": 12,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "echalote",
@@ -9180,7 +9521,8 @@
      "qty": 4,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "tomates-pelees",
@@ -9189,7 +9531,8 @@
      "qty": 400,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -9198,7 +9541,8 @@
      "qty": 6,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "thym-frais",
@@ -9207,7 +9551,8 @@
      "qty": 6,
      "unit": "brin",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "fleur-de-sel",
@@ -9216,7 +9561,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre",
@@ -9225,7 +9571,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -9400,7 +9747,8 @@
      "qty": 400,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fromage-rape",
@@ -9409,7 +9757,8 @@
      "qty": 70,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "biscottes",
@@ -9418,7 +9767,8 @@
      "qty": 70,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oeufs",
@@ -9427,7 +9777,8 @@
      "qty": 2,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "ciboulette",
@@ -9436,7 +9787,8 @@
      "qty": 1,
      "unit": "petit bouquet",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "citron",
@@ -9445,7 +9797,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -9454,7 +9807,8 @@
      "qty": 2,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -9463,7 +9817,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre",
@@ -9472,7 +9827,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -9652,7 +10008,8 @@
      "qty": 6,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "courgettes",
@@ -9661,7 +10018,8 @@
      "qty": 2,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -9670,7 +10028,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -9679,7 +10038,8 @@
      "qty": 2,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -9688,7 +10048,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre-5-baies",
@@ -9697,7 +10058,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -9805,7 +10167,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "navet-primeur",
@@ -9814,7 +10177,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "carottes",
@@ -9823,7 +10187,8 @@
      "qty": 2,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "cebette",
@@ -9832,7 +10197,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "petits-pois",
@@ -9841,7 +10207,8 @@
      "qty": 1,
      "unit": "poignée",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "pois-gourmands",
@@ -9850,7 +10217,8 @@
      "qty": 1,
      "unit": "poignée",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "pousses-epinards",
@@ -9859,7 +10227,8 @@
      "qty": 1,
      "unit": "poignée",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "ciboulette",
@@ -9868,7 +10237,8 @@
      "qty": 1,
      "unit": "petit bouquet",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oeufs",
@@ -9877,7 +10247,8 @@
      "qty": 6,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fromage-rape",
@@ -9886,7 +10257,8 @@
      "qty": 100,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -9895,7 +10267,8 @@
      "qty": 6,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "farine",
@@ -9904,7 +10277,8 @@
      "qty": 1,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fleur-de-sel",
@@ -9913,7 +10287,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre",
@@ -9922,7 +10297,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -10094,7 +10470,8 @@
      "qty": 360,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -10103,7 +10480,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "jambon-cru",
@@ -10112,7 +10490,8 @@
      "qty": 150,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "carottes",
@@ -10121,7 +10500,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -10130,7 +10510,8 @@
      "qty": 4,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "ail",
@@ -10139,7 +10520,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "tomates-cerises",
@@ -10148,7 +10530,8 @@
      "qty": 300,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "olives-noires",
@@ -10157,7 +10540,8 @@
      "qty": 15,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "basilic",
@@ -10166,7 +10550,8 @@
      "qty": 35,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "capres",
@@ -10175,7 +10560,8 @@
      "qty": 2,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "mozzarella",
@@ -10184,7 +10570,8 @@
      "qty": 300,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "eau",
@@ -10193,7 +10580,8 @@
      "qty": 70,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [
@@ -10386,7 +10774,8 @@
      "qty": 150,
      "unit": "g",
      "base": true,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sauce-tomate",
@@ -10395,7 +10784,8 @@
      "qty": 400,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "eau",
@@ -10404,7 +10794,8 @@
      "qty": 200,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "aubergine",
@@ -10413,7 +10804,8 @@
      "qty": 500,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "creme-soja",
@@ -10422,7 +10814,8 @@
      "qty": 20,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fromage-rape",
@@ -10431,7 +10824,8 @@
      "qty": 120,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "boeuf-hache",
@@ -10440,7 +10834,8 @@
      "qty": 400,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -10449,7 +10844,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -10458,7 +10854,8 @@
      "qty": 3,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -10467,7 +10864,8 @@
      "qty": 2,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "origan",
@@ -10476,7 +10874,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "sel",
@@ -10485,7 +10884,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "sel",
@@ -10494,7 +10894,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre",
@@ -10503,7 +10904,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre",
@@ -10512,7 +10914,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -10778,7 +11181,8 @@
      "qty": 350,
      "unit": "g",
      "base": true,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "tomates",
@@ -10787,7 +11191,8 @@
      "qty": 4,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "concombre",
@@ -10796,7 +11201,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "olives-noires",
@@ -10805,7 +11211,8 @@
      "qty": 16,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon-rouge",
@@ -10814,7 +11221,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "basilic",
@@ -10823,7 +11231,8 @@
      "qty": 2,
      "unit": "poignée",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -10832,7 +11241,8 @@
      "qty": 5,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "vinaigre",
@@ -10841,7 +11251,8 @@
      "qty": 2,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -10850,7 +11261,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre",
@@ -10859,7 +11271,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -11009,7 +11422,8 @@
      "qty": 350,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sardines-boite",
@@ -11018,7 +11432,8 @@
      "qty": 8,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -11027,7 +11442,8 @@
      "qty": 2,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "ail",
@@ -11036,7 +11452,8 @@
      "qty": 1,
      "unit": "gousse",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "persil",
@@ -11045,7 +11462,8 @@
      "qty": 0.5,
      "unit": "bouquet",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fenouil-sauvage",
@@ -11054,7 +11472,8 @@
      "qty": 1,
      "unit": "poignée",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fromage-rape",
@@ -11063,7 +11482,8 @@
      "qty": 100,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -11072,7 +11492,8 @@
      "qty": 3,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "origan",
@@ -11081,7 +11502,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "sel",
@@ -11090,7 +11512,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre",
@@ -11099,7 +11522,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -11276,7 +11700,8 @@
      "qty": 500,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "eau",
@@ -11285,7 +11710,8 @@
      "qty": 365,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "levure-boulangere",
@@ -11294,7 +11720,8 @@
      "qty": 1,
      "unit": "sachet",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -11303,7 +11730,8 @@
      "qty": 4,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -11312,7 +11740,8 @@
      "qty": 10,
      "unit": "g",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -11426,7 +11855,8 @@
      "qty": 40,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sirop-agave",
@@ -11435,7 +11865,8 @@
      "qty": 5,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "extrait-vanille",
@@ -11444,7 +11875,8 @@
      "qty": 1,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fraises",
@@ -11453,7 +11885,8 @@
      "qty": 200,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sirop-agave",
@@ -11462,7 +11895,8 @@
      "qty": 50,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "lait-soja-vanille",
@@ -11471,7 +11905,8 @@
      "qty": 60,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "pots-carton",
@@ -11480,7 +11915,8 @@
      "qty": 6,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [
@@ -11611,7 +12047,8 @@
      "qty": 1,
      "unit": "pâte",
      "base": true,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "courgettes",
@@ -11620,7 +12057,8 @@
      "qty": 1.6,
      "unit": "kg",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "pousses-epinards",
@@ -11629,7 +12067,8 @@
      "qty": 300,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -11638,7 +12077,8 @@
      "qty": 2,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -11647,7 +12087,8 @@
      "qty": 6,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "basilic",
@@ -11656,7 +12097,8 @@
      "qty": 25,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "ail",
@@ -11665,7 +12107,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "mozzarella",
@@ -11674,7 +12117,8 @@
      "qty": 350,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "olives-noires",
@@ -11683,7 +12127,8 @@
      "qty": 12,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "farine",
@@ -11692,7 +12137,8 @@
      "qty": 2,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -11701,7 +12147,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre",
@@ -11710,7 +12157,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -11954,7 +12402,8 @@
      "qty": 500,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "champignons-paris",
@@ -11963,7 +12412,8 @@
      "qty": 500,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "champignons-conserve",
@@ -11972,7 +12422,8 @@
      "qty": 450,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "jambon-cru",
@@ -11981,7 +12432,8 @@
      "qty": 100,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -11990,7 +12442,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "ail",
@@ -11999,7 +12452,8 @@
      "qty": 1,
      "unit": "gousse",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "thym-frais",
@@ -12008,7 +12462,8 @@
      "qty": 3,
      "unit": "brin",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -12017,7 +12472,8 @@
      "qty": 6,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -12026,7 +12482,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre",
@@ -12035,7 +12492,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -12223,7 +12681,8 @@
      "qty": 1.5,
      "unit": "kg",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "os-a-moelle",
@@ -12232,7 +12691,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "eau",
@@ -12241,7 +12701,8 @@
      "qty": 3.5,
      "unit": "l",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "carottes",
@@ -12250,7 +12711,8 @@
      "qty": 6,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -12259,7 +12721,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "poireau",
@@ -12268,7 +12731,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "panais",
@@ -12277,7 +12741,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "navets",
@@ -12286,7 +12751,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "potimarron",
@@ -12295,7 +12761,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "pomme-de-terre",
@@ -12304,7 +12771,8 @@
      "qty": 12,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "celeri-rave",
@@ -12313,7 +12781,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "clous-girofle",
@@ -12322,7 +12791,8 @@
      "qty": 6,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "laurier",
@@ -12331,7 +12801,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "graines-coriandre",
@@ -12340,7 +12811,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "thym",
@@ -12349,7 +12821,8 @@
      "qty": 1,
      "unit": "poignée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "gros-sel",
@@ -12358,7 +12831,8 @@
      "qty": 2,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -12367,7 +12841,8 @@
      "qty": 2,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "poivre",
@@ -12376,7 +12851,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -12584,7 +13060,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -12593,7 +13070,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "ail",
@@ -12602,7 +13080,8 @@
      "qty": 6,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "laurier",
@@ -12611,7 +13090,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "herbes-fraiches",
@@ -12620,7 +13100,8 @@
      "qty": 1,
      "unit": "poignée",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sauge",
@@ -12629,7 +13110,8 @@
      "qty": 6,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "olives-noires",
@@ -12638,7 +13120,8 @@
      "qty": 1,
      "unit": "poignée",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "citron",
@@ -12647,7 +13130,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -12656,7 +13140,8 @@
      "qty": 4,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "eau",
@@ -12665,7 +13150,8 @@
      "qty": 2,
      "unit": "verre",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -12674,7 +13160,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre",
@@ -12683,7 +13170,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -12883,7 +13371,8 @@
      "qty": 180,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "poires",
@@ -12892,7 +13381,8 @@
      "qty": 5,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oeufs",
@@ -12901,7 +13391,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "beurre",
@@ -12910,7 +13401,8 @@
      "qty": 180,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sucre-roux",
@@ -12919,7 +13411,8 @@
      "qty": 180,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sucre-vanille",
@@ -12928,7 +13421,8 @@
      "qty": 3,
      "unit": "sachet",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "poudre-a-lever",
@@ -12937,7 +13431,8 @@
      "qty": 1,
      "unit": "sachet",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "amandes-effilees",
@@ -12946,7 +13441,8 @@
      "qty": 50,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [
@@ -13154,7 +13650,8 @@
      "qty": 125,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "farine-complete",
@@ -13163,7 +13660,8 @@
      "qty": 250,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -13172,7 +13670,8 @@
      "qty": 80,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "eau",
@@ -13181,7 +13680,8 @@
      "qty": 80,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fleur-de-sel",
@@ -13190,7 +13690,8 @@
      "qty": 7,
      "unit": "g",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "cebette",
@@ -13199,7 +13700,8 @@
      "qty": 2,
      "unit": "botte",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -13208,7 +13710,8 @@
      "qty": 2,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "faisselle",
@@ -13217,7 +13720,8 @@
      "qty": 500,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fromage-rape",
@@ -13226,7 +13730,8 @@
      "qty": 200,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oeufs",
@@ -13235,7 +13740,8 @@
      "qty": 2,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "ciboulette",
@@ -13244,7 +13750,8 @@
      "qty": 1,
      "unit": "petit bouquet",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "farine",
@@ -13253,7 +13760,8 @@
      "qty": 1,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -13262,7 +13770,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre",
@@ -13271,7 +13780,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -13472,7 +13982,8 @@
      "qty": 2,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "aubergine",
@@ -13481,7 +13992,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "poivron",
@@ -13490,7 +14002,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "tomates",
@@ -13499,7 +14012,8 @@
      "qty": 4,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -13508,7 +14022,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "ail",
@@ -13517,7 +14032,8 @@
      "qty": 2,
      "unit": "gousse",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -13526,7 +14042,8 @@
      "qty": 3,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "thym",
@@ -13535,7 +14052,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "sel",
@@ -13544,7 +14062,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -13769,7 +14288,8 @@
      "qty": 250,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "echalote",
@@ -13778,7 +14298,8 @@
      "qty": 6,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "carottes",
@@ -13787,7 +14308,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "vin-blanc-sec",
@@ -13796,7 +14318,8 @@
      "qty": 10,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "creme",
@@ -13805,7 +14328,8 @@
      "qty": 1,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "concentre-tomate",
@@ -13814,7 +14338,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "ciboulette",
@@ -13823,7 +14348,8 @@
      "qty": 0.5,
      "unit": "bouquet",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -13832,7 +14358,8 @@
      "qty": 2,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -13841,7 +14368,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -13974,7 +14502,8 @@
      "qty": 2,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -13983,7 +14512,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "riz-arborio",
@@ -13992,7 +14522,8 @@
      "qty": 250,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "bouillon-legumes",
@@ -14001,7 +14532,8 @@
      "qty": 2,
      "unit": "l",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "concentre-tomate",
@@ -14010,7 +14542,8 @@
      "qty": 70,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "mascarpone",
@@ -14019,7 +14552,8 @@
      "qty": 150,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "olives-noires",
@@ -14028,7 +14562,8 @@
      "qty": 15,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "piment-espelette",
@@ -14037,7 +14572,8 @@
      "qty": 0.5,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -14046,7 +14582,8 @@
      "qty": 4,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -14055,7 +14592,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -14250,7 +14788,8 @@
      "qty": 1,
      "unit": "l",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "riz-arborio",
@@ -14259,7 +14798,8 @@
      "qty": 150,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sucre-roux",
@@ -14268,7 +14808,8 @@
      "qty": 6,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "gousse-vanille",
@@ -14277,7 +14818,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "rhum",
@@ -14286,7 +14828,8 @@
      "qty": 3,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "creme-coco",
@@ -14295,7 +14838,8 @@
      "qty": 20,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "cannelle",
@@ -14304,7 +14848,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "sel",
@@ -14313,7 +14858,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -14471,7 +15017,8 @@
      "qty": 1,
      "unit": "kg",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -14480,7 +15027,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "carottes",
@@ -14489,7 +15037,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "celeri-branche",
@@ -14498,7 +15047,8 @@
      "qty": 3,
      "unit": "côte",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "poireau",
@@ -14507,7 +15057,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "herbes-fraiches",
@@ -14516,7 +15067,8 @@
      "qty": 1,
      "unit": "poignée",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "persil",
@@ -14525,7 +15077,8 @@
      "qty": 1,
      "unit": "poignée",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "eau",
@@ -14534,7 +15087,8 @@
      "qty": 2,
      "unit": "l",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "clous-girofle",
@@ -14543,7 +15097,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "laurier",
@@ -14552,7 +15107,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "gros-sel",
@@ -14561,7 +15117,8 @@
      "qty": 2,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -14705,7 +15262,8 @@
      "qty": 1.5,
      "unit": "kg",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "ail",
@@ -14714,7 +15272,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "herbes-fraiches",
@@ -14723,7 +15282,8 @@
      "qty": 1,
      "unit": "poignée",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sauge",
@@ -14732,7 +15292,8 @@
      "qty": 6,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "graines-fenouil",
@@ -14741,7 +15302,8 @@
      "qty": 2,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "piment-espelette",
@@ -14750,7 +15312,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "sel",
@@ -14759,7 +15322,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre-5-baies",
@@ -14768,7 +15332,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -14953,7 +15518,8 @@
      "qty": 500,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oeufs",
@@ -14962,7 +15528,8 @@
      "qty": 6,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "thon-boite",
@@ -14971,7 +15538,8 @@
      "qty": 400,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "tomates-cerises",
@@ -14980,7 +15548,8 @@
      "qty": 300,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "olives-noires",
@@ -14989,7 +15558,8 @@
      "qty": 12,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "cebette",
@@ -14998,7 +15568,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -15007,7 +15578,8 @@
      "qty": 6,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "vinaigre",
@@ -15016,7 +15588,8 @@
      "qty": 3,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "moutarde",
@@ -15025,7 +15598,8 @@
      "qty": 1,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -15034,7 +15608,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "sel",
@@ -15043,7 +15618,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -15227,7 +15803,8 @@
      "qty": 500,
      "unit": "g",
      "base": true,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oeufs",
@@ -15236,7 +15813,8 @@
      "qty": 6,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "pousses-sauvages",
@@ -15245,7 +15823,8 @@
      "qty": 2,
      "unit": "grosse poignée",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "ail-des-ours",
@@ -15254,7 +15833,8 @@
      "qty": 1,
      "unit": "gousse",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -15263,7 +15843,8 @@
      "qty": 6,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "vinaigre-balsamique",
@@ -15272,7 +15853,8 @@
      "qty": 3,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -15281,7 +15863,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre",
@@ -15290,7 +15873,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -15462,7 +16046,8 @@
      "qty": 24,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "courgettes",
@@ -15471,7 +16056,8 @@
      "qty": 2,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "aubergine",
@@ -15480,7 +16066,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "poivron",
@@ -15489,7 +16076,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "tomates-roma",
@@ -15498,7 +16086,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "ail",
@@ -15507,7 +16096,8 @@
      "qty": 3,
      "unit": "gousse",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "basilic",
@@ -15516,7 +16106,8 @@
      "qty": 15,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "chevre-buche",
@@ -15525,7 +16116,8 @@
      "qty": 70,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fromage-rape",
@@ -15534,7 +16126,8 @@
      "qty": 70,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "parmesan",
@@ -15543,7 +16136,8 @@
      "qty": 50,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "farine",
@@ -15552,7 +16146,8 @@
      "qty": 1,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -15561,7 +16156,8 @@
      "qty": 5,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -15570,7 +16166,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre",
@@ -15579,7 +16176,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -15845,7 +16443,8 @@
      "qty": 1,
      "unit": "l",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "yaourt-soja-ing",
@@ -15854,7 +16453,8 @@
      "qty": 1,
      "unit": "pot",
      "base": true,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [
@@ -16009,7 +16609,8 @@
      "qty": 300,
      "unit": "g",
      "base": true,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sauce-tomate",
@@ -16018,7 +16619,8 @@
      "qty": 400,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "pois-chiches",
@@ -16027,7 +16629,8 @@
      "qty": 400,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "flocons-avoine",
@@ -16036,7 +16639,8 @@
      "qty": 4,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "eau",
@@ -16045,7 +16649,8 @@
      "qty": 1.5,
      "unit": "l",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "origan",
@@ -16054,7 +16659,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -16063,7 +16669,8 @@
      "qty": 3,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -16072,7 +16679,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre",
@@ -16081,7 +16689,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -16290,7 +16899,8 @@
      "qty": 1500,
      "unit": "ml",
      "base": true,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "orge",
@@ -16299,7 +16909,8 @@
      "qty": 200,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "petits-pois",
@@ -16308,7 +16919,8 @@
      "qty": 200,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "ciboulette",
@@ -16317,7 +16929,8 @@
      "qty": 1,
      "unit": "petit bouquet",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "eau",
@@ -16326,7 +16939,8 @@
      "qty": 300,
      "unit": "ml",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -16335,7 +16949,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -16522,7 +17137,8 @@
      "qty": 180,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "beurre",
@@ -16531,7 +17147,8 @@
      "qty": 90,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "petits-suisses",
@@ -16540,7 +17157,8 @@
      "qty": 180,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sucre-roux",
@@ -16549,7 +17167,8 @@
      "qty": 3,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -16558,7 +17177,8 @@
      "qty": 1,
      "unit": "bonne pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "fraises",
@@ -16567,7 +17187,8 @@
      "qty": 350,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "creme-coco",
@@ -16576,7 +17197,8 @@
      "qty": 20,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sucre-vanille",
@@ -16585,7 +17207,8 @@
      "qty": 3,
      "unit": "sachet",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [
@@ -16744,7 +17367,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "tomates-roma",
@@ -16753,7 +17377,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fromage-rape",
@@ -16762,7 +17387,8 @@
      "qty": 70,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "moutarde",
@@ -16771,7 +17397,8 @@
      "qty": 2,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -16780,7 +17407,8 @@
      "qty": 2,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "origan",
@@ -16789,7 +17417,8 @@
      "qty": 2,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "sel",
@@ -16798,7 +17427,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre",
@@ -16807,7 +17437,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -16951,7 +17582,8 @@
      "qty": 360,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "vin-blanc-sec",
@@ -16960,7 +17592,8 @@
      "qty": 150,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -16969,7 +17602,8 @@
      "qty": 95,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -16978,7 +17612,8 @@
      "qty": 1,
      "unit": "c. à c. rase",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "topinambours",
@@ -16987,7 +17622,8 @@
      "qty": 750,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "pomme-de-terre",
@@ -16996,7 +17632,8 @@
      "qty": 500,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -17005,7 +17642,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "noix",
@@ -17014,7 +17652,8 @@
      "qty": 75,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fromage-rape",
@@ -17023,7 +17662,8 @@
      "qty": 100,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "beurre",
@@ -17032,7 +17672,8 @@
      "qty": 80,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -17041,7 +17682,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre",
@@ -17050,7 +17692,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -17300,7 +17943,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "courgettes",
@@ -17309,7 +17953,8 @@
      "qty": 2,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "poivron",
@@ -17318,7 +17963,8 @@
      "qty": 2,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "tomates-roma",
@@ -17327,7 +17973,8 @@
      "qty": 5,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -17336,7 +17983,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "ail",
@@ -17345,7 +17993,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -17354,7 +18003,8 @@
      "qty": 6,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "thym-frais",
@@ -17363,7 +18013,8 @@
      "qty": 1,
      "unit": "poignée",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "parmesan",
@@ -17372,7 +18023,8 @@
      "qty": 100,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fleur-de-sel",
@@ -17381,7 +18033,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -17534,7 +18187,8 @@
      "qty": 8,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-pepin-raisin",
@@ -17543,7 +18197,8 @@
      "qty": 2,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "farine-petit-epeautre",
@@ -17552,7 +18207,8 @@
      "qty": 300,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-pepin-raisin",
@@ -17561,7 +18217,8 @@
      "qty": 12,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sirop-agave",
@@ -17570,7 +18227,8 @@
      "qty": 5,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "rhum",
@@ -17579,7 +18237,8 @@
      "qty": 1,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "lait-soja-vanille",
@@ -17588,7 +18247,8 @@
      "qty": 3,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "extrait-vanille",
@@ -17597,7 +18257,8 @@
      "qty": 1,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fleur-de-sel",
@@ -17606,7 +18267,8 @@
      "qty": 0.5,
      "unit": "c. à moka",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "farine",
@@ -17615,7 +18277,8 @@
      "qty": 4,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "noix",
@@ -17624,7 +18287,8 @@
      "qty": 35,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [
@@ -17836,7 +18500,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "poireau",
@@ -17845,7 +18510,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "jambon-cru",
@@ -17854,7 +18520,8 @@
      "qty": 200,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "courge",
@@ -17863,7 +18530,8 @@
      "qty": 1.5,
      "unit": "kg",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "parmesan",
@@ -17872,7 +18540,8 @@
      "qty": 200,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -17881,7 +18550,8 @@
      "qty": 4,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "eau",
@@ -17890,7 +18560,8 @@
      "qty": 1,
      "unit": "verre",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "farine-complete",
@@ -17899,7 +18570,8 @@
      "qty": 540,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "vin-blanc-sec",
@@ -17908,7 +18580,8 @@
      "qty": 165,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "concentre-tomate",
@@ -17917,7 +18590,8 @@
      "qty": 70,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -17926,7 +18600,8 @@
      "qty": 110,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -17935,7 +18610,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -18184,7 +18860,8 @@
      "qty": 300,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "eau",
@@ -18193,7 +18870,8 @@
      "qty": 15,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -18202,7 +18880,8 @@
      "qty": 5,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -18211,7 +18890,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "courgettes",
@@ -18220,7 +18900,8 @@
      "qty": 600,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -18229,7 +18910,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "riz",
@@ -18238,7 +18920,8 @@
      "qty": 20,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oeufs",
@@ -18247,7 +18930,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "parmesan",
@@ -18256,7 +18940,8 @@
      "qty": 100,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -18265,7 +18950,8 @@
      "qty": 4,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -18274,7 +18960,8 @@
      "qty": 1,
      "unit": "c. à c.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre",
@@ -18283,7 +18970,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -18552,7 +19240,8 @@
      "qty": 4,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "pomme-de-terre",
@@ -18561,7 +19250,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -18570,7 +19260,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "bouillon-legumes",
@@ -18579,7 +19270,8 @@
      "qty": 1,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "creme",
@@ -18588,7 +19280,8 @@
      "qty": 10,
      "unit": "cl",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [
@@ -18704,7 +19397,8 @@
      "qty": 400,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -18713,7 +19407,8 @@
      "qty": 2,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "orties",
@@ -18722,7 +19417,8 @@
      "qty": 200,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "eau",
@@ -18731,7 +19427,8 @@
      "qty": 1.25,
      "unit": "l",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "ail",
@@ -18740,7 +19437,8 @@
      "qty": 2,
      "unit": "gousse",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -18749,7 +19447,8 @@
      "qty": 4,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sel",
@@ -18758,7 +19457,8 @@
      "qty": 1,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre",
@@ -18767,7 +19467,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -18933,7 +19634,8 @@
      "qty": 1.5,
      "unit": "kg",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "oignon",
@@ -18942,7 +19644,8 @@
      "qty": 3,
      "unit": "pièce",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "huile-olive",
@@ -18951,7 +19654,8 @@
      "qty": 6,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sauce-tomate",
@@ -18960,7 +19664,8 @@
      "qty": 400,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "eau",
@@ -18969,7 +19674,8 @@
      "qty": 1.5,
      "unit": "l",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "gros-sel",
@@ -18978,7 +19684,8 @@
      "qty": 1,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     },
     {
      "id": "poivre",
@@ -18987,7 +19694,8 @@
      "qty": 1,
      "unit": "pincée",
      "base": false,
-     "assaisonnement": true
+     "assaisonnement": true,
+     "central": false
     }
    ],
    "steps": [
@@ -19171,7 +19879,8 @@
      "qty": 1,
      "unit": "pot",
      "base": true,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "fruits-frais",
@@ -19180,7 +19889,8 @@
      "qty": 500,
      "unit": "g",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "sucre-roux",
@@ -19189,7 +19899,8 @@
      "qty": 5,
      "unit": "c. à s.",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     },
     {
      "id": "lait",
@@ -19198,7 +19909,8 @@
      "qty": 1,
      "unit": "l",
      "base": false,
-     "assaisonnement": false
+     "assaisonnement": false,
+     "central": false
     }
    ],
    "steps": [
@@ -19485,6 +20197,39 @@
    "frais",
    "épicerie"
   ],
+  "centraux": {
+   "rayons": [
+    "boucherie",
+    "poissonnerie",
+    "crèmerie"
+   ],
+   "ids": [
+    "lentilles-seches",
+    "pois-chiches",
+    "haricots-rouges",
+    "ble-lentilles",
+    "orge",
+    "kasha",
+    "flocons-avoine",
+    "semoule",
+    "pates",
+    "pates-lasagne",
+    "vermicelles",
+    "riz",
+    "riz-arborio",
+    "riz-rond",
+    "farine-complete",
+    "farine-epeautre",
+    "farine-petit-epeautre",
+    "tortillas",
+    "pain-de-mie",
+    "pain-levain",
+    "biscottes",
+    "cracotte",
+    "krisprolls",
+    "puree-mousline"
+   ]
+  },
   "aliases": {
    "oignons": "oignon",
    "pommes-de-terre": "pomme-de-terre"

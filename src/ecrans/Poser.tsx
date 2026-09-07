@@ -14,27 +14,33 @@
 //
 // Port de `apps/proto-shell/comptoir.js` (`ecranPoser`, `carteJouable`).
 
-import { useMemo } from "react";
-import { indexDuCreneau } from "../db";
-import { useCatalogue, useSemaine } from "../db/hooks";
+import { useMemo, useState } from "react";
+import { base, indexDuCreneau } from "../db";
+import { useCatalogue, useSavoir, useSemaine } from "../db/hooks";
+import { observerIngredient } from "../db/journal";
 import { cleRepioche, poserReglage, useNombre } from "../db/reglages";
 import type { Calcul } from "../model/calcul";
 import { SAUTE, type Jeu } from "../model/jeu";
-import { main, type Carte } from "../model/scoring";
+import { contexte } from "../model/journal";
+import { questions, type Question, type Reste } from "../model/questions";
+import { main, offre, type Carte, type Savoir } from "../model/scoring";
 import { chemin, type CleCreneau } from "../nav/routes";
 import { aller } from "../nav/useRoute";
 import { Corps } from "../ui/Coquille";
 import { duree, fmt } from "../ui/format";
 import { Icone } from "../ui/icones";
 import { classeEtat, entreesDeLaCarte, sortiesDeLaCarte } from "./poser.vue";
+import { constatDe, enjeu, raison, REPONSES, titre } from "./questions.vue";
 import { chiffresDeLaSemaine } from "./semaine.vue";
 
 export function Poser({ creneau }: { creneau: CleCreneau }) {
   const { catalogue } = useCatalogue();
   const { jeu, calc, poserPlat } = useSemaine(catalogue);
+  const savoir = useSavoir(catalogue, jeu);
   const repioches = useNombre(cleRepioche(creneau.jour, creneau.repas));
 
-  if (!jeu || !calc || repioches === undefined) return null;
+  // ON ATTEND LE SAVOIR, on ne propose pas sans lui — voir `useSavoir`.
+  if (!jeu || !calc || !savoir || repioches === undefined) return null;
   const i = indexDuCreneau(jeu, creneau.jour, creneau.repas);
   if (i < 0) return null;
 
@@ -42,6 +48,7 @@ export function Poser({ creneau }: { creneau: CleCreneau }) {
     <Contenu
       jeu={jeu}
       calc={calc}
+      savoir={savoir}
       i={i}
       creneau={creneau}
       repioches={repioches}
@@ -53,6 +60,7 @@ export function Poser({ creneau }: { creneau: CleCreneau }) {
 function Contenu({
   jeu,
   calc,
+  savoir,
   i,
   creneau,
   repioches,
@@ -60,6 +68,7 @@ function Contenu({
 }: {
   jeu: Jeu;
   calc: Calcul;
+  savoir: Savoir;
   i: number;
   creneau: CleCreneau;
   repioches: number;
@@ -80,8 +89,24 @@ function Contenu({
     if (saute) return [];
     jeu.slot = i;
     jeu.repioches[i] = repioches;
-    return main(jeu);
-  }, [jeu, i, repioches, saute]);
+    return main(jeu, 4, savoir);
+  }, [jeu, i, repioches, saute, savoir]);
+
+  // L'ENSEMBLE VIENT DE LA MAIN, L'ORDRE DU VIVIER — d'où le second `offre`,
+  // qui coûte le même millième de seconde que le premier (T17) et évite de
+  // faire dépendre l'ordre des questions du hasard du tirage.
+  const aDemander = useMemo(() => {
+    if (saute || !cartes.length) return [];
+    const ctx = contexte(jeu.catalogue);
+    return questions({
+      catalogue: jeu.catalogue,
+      ctx,
+      rejeu: savoir.rejeu,
+      proposes: cartes.map((x) => x.plat),
+      candidats: offre(jeu, jeu.choix, i, savoir).map((x) => x.plat),
+      repondu: savoir.passe.repondu,
+    });
+  }, [jeu, i, cartes, savoir, saute]);
 
   const jouer = (id: string) => {
     void poserPlat(i, id).then(() => aller({ ecran: "semaine" }));
@@ -139,8 +164,14 @@ function Contenu({
           )}
         </div>
 
+        {/* LA QUESTION PASSE DEVANT LES CARTES, ET SEULE. Répondre change la
+            main qui suit : montrer les deux ensemble, c'est montrer une main
+            qu'on sait fausse — l'erreur qui a coûté les variantes B et C du
+            rail (Workspace#45). */}
         {saute ? (
           <div className="co-vide">Repas sauté — rien à cuisiner, rien à acheter.</div>
+        ) : aDemander[0] ? (
+          <Demande question={aDemander[0]} reste={aDemander.length - 1} />
         ) : cartes.length ? (
           cartes.map((carte) => (
             <Jouable key={carte.plat.id} carte={carte} creneau={creneau} jouer={jouer} />
@@ -150,6 +181,71 @@ function Contenu({
         )}
       </Corps>
     </>
+  );
+}
+
+/**
+ * Une question, posée seule.
+ *
+ * ELLE DIT CE QU'ELLE COÛTE ET CE QU'ELLE RAPPORTE : la raison (« pas vu depuis
+ * le 26/08 »), l'enjeu (« 3 plats l'attendent »), et combien il en reste après
+ * celle-ci. Une question dont on voit le prix est une question qu'on peut
+ * trouver mauvaise — et c'est le seul gouvernail que T33 se donne, le plafond de
+ * ~5 ayant été supprimé.
+ */
+function Demande({ question, reste }: { question: Question; reste: number }) {
+  const [saisie, setSaisie] = useState("");
+
+  const repondre = (r: Reste) => {
+    const { unites } = constatDe(r, saisie.trim() === "" ? null : Number(saisie));
+    // Pas de `.then` vers un écran : l'observation change le journal, le hook
+    // le relit, et la main se retire d'elle-même. C'est ce que `useLiveQuery`
+    // achète — la question suivante, ou les cartes, arrivent sans navigation.
+    void observerIngredient(base, question.ingredient, unites, r);
+  };
+
+  return (
+    <div className="co-question">
+      <div className="tete">
+        <span className="nom">{titre(question)}</span>
+        <span className="meta">{raison(question)}</span>
+      </div>
+
+      <div className="co-action">{enjeu(question)}</div>
+
+      <div className="btns">
+        {REPONSES.map((r) => (
+          <button
+            key={r.reste}
+            className={r.reste === "oui" ? "btn btn-primary" : "btn btn-secondary"}
+            onClick={() => repondre(r.reste)}
+          >
+            {r.libelle}
+          </button>
+        ))}
+      </div>
+
+      {/* LA QUANTITÉ EST FACULTATIVE, sans valeur par défaut : une quantité
+          obligatoire ferait peser pour répondre, donc on ne répondrait pas,
+          donc l'app cesserait de demander. */}
+      <label className="co-note compte">
+        ou comptez, si vous voulez être précis :
+        <input
+          type="number"
+          min="0"
+          inputMode="numeric"
+          value={saisie}
+          onChange={(e) => setSaisie(e.target.value)}
+          aria-label={`combien de ${question.nom}`}
+        />
+      </label>
+
+      {reste > 0 ? (
+        <div className="co-note" style={{ marginTop: "var(--space-2)" }}>
+          {reste === 1 ? "une autre question ensuite" : `${reste} autres questions ensuite`}
+        </div>
+      ) : null}
+    </div>
   );
 }
 
@@ -190,6 +286,18 @@ function Jouable({
           empiler transformerait un argument en plaidoirie, et on cesse de
           croire un plat qui se défend trop. */}
       {carte.pourquoi[0] ? <div className="co-action">{carte.pourquoi[0]}</div> : null}
+
+      {/* LE PARI, DIT À VOIX HAUTE. Retirer ces plats ferait rétrécir les
+          propositions à mesure que la confiance vieillit ; substituer en
+          silence produirait un plat qu'on ne peut pas contredire. On parie donc,
+          et on l'écrit — une estimation doit être visible ET contredisable, ce
+          que la ligne est en menant au relevé. */}
+      {carte.paris.length ? (
+        <div className="co-pari">
+          je compte sur : {carte.paris.join(", ")} —{" "}
+          <a href={chemin({ ecran: "stock" })}>à vérifier</a>
+        </div>
+      ) : null}
 
       <div className="co-flux">
         <div className="co-kicker">Produit</div>

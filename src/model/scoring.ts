@@ -16,8 +16,24 @@
 import { articles, calculer, type LignePanier } from "./calcul";
 import { bonusPlacard, urgences } from "./gardeManger";
 import { convient, joue, type Choix, type Jeu } from "./jeu";
+import { contexte, type Rejeu } from "./journal";
 import { gamelles } from "./offres";
+import { bloque, paris, type Passe } from "./questions";
 import type { Catalogue, Plat } from "./types";
+
+/**
+ * Ce que la proposition sait du placard et de la passe en cours — T33.
+ *
+ * OPTIONNEL, ET IL DOIT LE RESTER. `offre` est appelé par des écrans qui n'ont
+ * pas le journal sous la main, et une proposition sans placard reste une
+ * proposition juste : simplement, elle ne bloque rien et ne parie rien à voix
+ * haute. Le rendre obligatoire aurait fait passer le journal par quatre
+ * signatures pour un service que trois d'entre elles n'utilisent pas.
+ */
+export interface Savoir {
+  rejeu: Rejeu;
+  passe: Passe;
+}
 
 /* ───────────────────────────────────────────────────────────── couverture */
 
@@ -120,6 +136,14 @@ export interface Carte {
   /** L'une d'elles est-elle vraiment pressée ? `false` = seulement des paquets
    *  entamés, ce qui n'appelle pas le même geste. */
   sauve: boolean;
+  /**
+   * Ce que cette carte PARIE — les secondaires que le modèle croit avoir sans
+   * en être sûr (T33). Vide quand elle ne parie rien, ce qui est le cas normal.
+   *
+   * Une estimation doit être visible et contredisable ; c'est le seul endroit
+   * de la carte où l'app dit « je crois », et l'écran en fait un geste.
+   */
+  paris: string[];
 }
 
 /**
@@ -134,7 +158,7 @@ export interface Carte {
  * coûte 12. Rien à mémoïser — et surtout rien à mémoïser « au cas où », ce qui
  * aurait ajouté une invalidation à tenir juste pour un problème inexistant.
  */
-export function offre(jeu: Jeu, choix: Choix[], slot: number): Carte[] {
+export function offre(jeu: Jeu, choix: Choix[], slot: number, savoir?: Savoir): Carte[] {
   const base = calculer(jeu, choix);
   const nBase = base.panier.size;
   const deja = new Set(choix.filter(Boolean));
@@ -145,8 +169,10 @@ export function offre(jeu: Jeu, choix: Choix[], slot: number): Carte[] {
   if (!cr) return [];
 
   // Le placard ne change pas d'un plat à l'autre : on le lit une fois pour la
-  // proposition entière, pas 86 fois.
+  // proposition entière, pas 86 fois. Même raison pour le contexte du journal.
   const pressees = urgences(jeu.catalogue);
+  const ctx = savoir ? contexte(jeu.catalogue) : null;
+  const horsJeu = savoir && ctx ? bloque(jeu.catalogue, ctx, savoir.passe) : () => false;
 
   // Ce créneau est-il le dîner qui précède un déjeuner de coworking encore vide ?
   const gamelleDemain =
@@ -155,7 +181,11 @@ export function offre(jeu: Jeu, choix: Choix[], slot: number): Carte[] {
       : null;
 
   return jeu.catalogue.plats
-    .filter((p) => !deja.has(p.id) && convient(jeu, p, slot))
+    // LE BLOCAGE EST UN FILTRE, PAS UN MALUS, et c'est le « retire ou substitue
+    // AVANT qu'il soit proposé » de T33. Un plat dont un central vient d'être
+    // dit absent ne mérite pas d'être classé dernier : il ne mérite pas d'être
+    // montré, et la carte tirée à sa place l'est sur un placard vérifié.
+    .filter((p) => !deja.has(p.id) && convient(jeu, p, slot) && !horsJeu(p))
     .map((p): Carte => {
       const essai = [...choix];
       essai[slot] = p.id;
@@ -251,6 +281,7 @@ export function offre(jeu: Jeu, choix: Choix[], slot: number): Carte[] {
         pourquoi,
         placard: placard.noms,
         sauve: placard.urgent,
+        paris: savoir && ctx ? paris(jeu.catalogue, ctx, savoir.rejeu, p) : [],
         malTransporte,
         manque: requisNonCouvert,
         minutes: p.minutes + (pleinIci[0]?.minutes ?? 0),
@@ -294,8 +325,8 @@ function alea(graine: string): () => number {
  * et porte aussi `cooldown_jours`. Le proto ignore cette configuration ; le port
  * fait pareil, sinon la parité ne tiendrait pas. C'est noté au backlog.
  */
-export function main(jeu: Jeu, taille = 4): Carte[] {
-  const lignes = offre(jeu, jeu.choix, jeu.slot);
+export function main(jeu: Jeu, taille = 4, savoir?: Savoir): Carte[] {
+  const lignes = offre(jeu, jeu.choix, jeu.slot, savoir);
   if (!lignes.length) return [];
 
   const rnd = alea(`${jeu.slot}:${jeu.repioches[jeu.slot] ?? 0}`);

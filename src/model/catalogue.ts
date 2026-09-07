@@ -125,6 +125,10 @@ function ingredient(v: unknown, ou: string, defauts = false): Ingredient {
     unit: texte(o["unit"], `${ou}.unit`),
     base: drapeau("base"),
     assaisonnement: drapeau("assaisonnement"),
+    // `central` est une SURCHARGE, donc son absence vaut faux partout — y
+    // compris sur les lignes pleines, contrairement aux deux drapeaux
+    // au-dessus. Le rayon reste alors seul juge, ce qui est le défaut voulu.
+    central: o["central"] === undefined ? false : booleen(o["central"], `${ou}.central`),
   };
 }
 
@@ -437,6 +441,10 @@ export function lireCatalogue(brut: unknown): Catalogue {
   const aliases: Record<string, string> = {};
   for (const [k, v] of Object.entries(obj(rayonsBruts["aliases"] ?? {}, "rayons.aliases")))
     aliases[k] = texte(v, `rayons.aliases.${k}`);
+  // `centraux` absent VAUT « aucune question », pas une panne : un catalogue
+  // d'avant T33 doit encore charger, et il se comporte alors comme l'app se
+  // comportait avant — elle parie sur tout, en silence.
+  const centrauxBruts = obj(rayonsBruts["centraux"] ?? {}, "rayons.centraux");
 
   const equilibreBrut = obj(o["equilibre"], "equilibre");
   const cibles = obj(equilibreBrut["cibles"], "equilibre.cibles");
@@ -492,6 +500,10 @@ export function lireCatalogue(brut: unknown): Catalogue {
       aliases,
       rayons: rayonsParNom,
       placard: listeDeTextes(rayonsBruts["placard"] ?? [], "rayons.placard"),
+      centraux: {
+        rayons: listeDeTextes(centrauxBruts["rayons"] ?? [], "rayons.centraux.rayons"),
+        ids: listeDeTextes(centrauxBruts["ids"] ?? [], "rayons.centraux.ids"),
+      },
     },
     equilibre: {
       cibles: {
