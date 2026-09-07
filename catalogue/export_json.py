@@ -327,6 +327,12 @@ def main():
                  # sont sous la main, et pas dans le YAML où seule la denrée est.
                  "urgence": gm.urgence(d, _zones[d["zone"]]),
                  "nature": d.get("nature", "autre"),
+                 # À QUOI ÇA SERT, QUAND CE N'EST PAS À FAIRE UN PLAT — T40.
+                 # `None` pour l'immense majorité, et c'est la bonne réponse :
+                 # une denrée sans usage déclaré sert à cuisiner. Exporté même
+                 # vide plutôt qu'omis, pour que le type côté app soit
+                 # `usage: Usage | null` et non un champ optionnel de plus.
+                 "usage": d.get("usage"),
                  # CE QU'ON PEUT EN FAIRE POUR ARRÊTER SON HORLOGE — la seconde
                  # réponse au gaspillage, celle que `conservation.yaml` porte
                  # depuis le prototype. Les méthodes verrouillées sont incluses :

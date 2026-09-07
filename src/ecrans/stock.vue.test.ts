@@ -4,10 +4,10 @@ import { calculer } from "../model/calcul";
 import { lireCatalogue } from "../model/catalogue";
 import { creerJeu, type Jeu } from "../model/jeu";
 import type { Catalogue, Denree, Zone } from "../model/types";
-import type { Evenement } from "../model/journal";
+import { contexte, rejouer, type Evenement } from "../model/journal";
 import {
   agressions, categories, espaces, fiabilite, gardeManger, lots, vueDeLInventaire,
-  vueDesPlanchers, zones,
+  vueDesPlanchers, vueDesPlanchersDenrees, zones,
 } from "./stock.vue";
 
 const LUNDI = new Date("2026-08-17T12:00:00Z");
@@ -259,6 +259,7 @@ const denreeTest = (p: Partial<Denree> = {}): Denree => ({
   incompatibles: [],
   urgence: "basse",
   nature: "autre",
+  usage: null,
   conservations: [],
   note: null,
   ...p,
@@ -452,5 +453,73 @@ describe("ce qu'on veut toujours avoir", () => {
 
   test("un congélateur qui a de la place ne raconte pas qu'il est plein", () => {
     expect(vueDesPlanchers(jeu, calculer(jeu), new Map(), []).plein).toBe("");
+  });
+});
+
+/* ══════ les planchers du garde-manger, vus depuis « L'inventaire » — T39 ═══ */
+
+describe("ce qu'on veut toujours avoir, au placard", () => {
+  const placard = () => rejouer(catalogue, [], contexte(catalogue), "2026-09-07");
+
+  test("une base neuve n'en montre aucun, et l'app n'en propose AUCUN", () => {
+    // L'ÉCART ASSUMÉ AVEC LE CONGÉLATEUR. Là-bas le journal des cuissons permet
+    // à l'app d'ouvrir la bouche la première ; ici la seule chose qu'elle sache
+    // est combien il en reste, ce qui ne dit rien de combien on en VEUT.
+    // Proposer « en garder 1 » sur les 41 denrées comptables inventerait 41
+    // habitudes. T45 rouvrira le dossier avec la mesure qui le permet.
+    const vue = vueDesPlanchersDenrees(catalogue, placard(), []);
+    expect(vue.poses).toEqual([]);
+    expect(vue.manquent).toBe("");
+    expect(vue.libres.length).toBeGreaterThan(0);
+  });
+
+  test("un plancher posé dit ce qu'il y a et ce qu'on veut, en unités", () => {
+    const vue = vueDesPlanchersDenrees(catalogue, placard(), [{ ingredient: "mais", niveau: 6 }]);
+    const p = vue.poses.find((x) => x.ingredient === "mais")!;
+    expect(p.a).toBe(4);
+    expect(p.niveau).toBe(6);
+    expect(p.sous).toBe(true);
+    expect(vue.manquent).toContain("2 à racheter");
+  });
+
+  test("un plancher tenu ne demande rien, et passe derrière ceux qui manquent", () => {
+    const vue = vueDesPlanchersDenrees(catalogue, placard(), [
+      { ingredient: "mais", niveau: 2 },
+      { ingredient: "graines-courge", niveau: 3 },
+    ]);
+    expect(vue.poses.find((x) => x.ingredient === "mais")!.sous).toBe(false);
+    expect(vue.poses[0]!.sous).toBe(true);
+    expect(vue.manquent).toContain("1 denrée");
+  });
+
+  test("ce qui porte déjà un plancher ne se repropose pas", () => {
+    const vue = vueDesPlanchersDenrees(catalogue, placard(), [{ ingredient: "mais", niveau: 2 }]);
+    expect(vue.libres.some((p) => p.ingredient === "mais")).toBe(false);
+  });
+
+  test("l'apéro se dit, parce que rien d'autre ne le dirait", () => {
+    // Ces six denrées ne sont citées par aucune recette : hors de cette ligne,
+    // elles n'ont aucune raison lisible d'être dans une liste de courses.
+    const vue = vueDesPlanchersDenrees(catalogue, placard(), [
+      { ingredient: "graines-courge", niveau: 2 },
+    ]);
+    expect(vue.poses[0]!.usage).toBe("pour l’apéro");
+  });
+
+  test("ce qui ne peut pas porter de plancher est NOMMÉ, avec sa raison", () => {
+    // T46 — un placard où quatre denrées n'offrent pas le bouton, sans un mot,
+    // ressemble à une panne. Et la raison est la partie intéressante.
+    const vue = vueDesPlanchersDenrees(catalogue, placard(), []);
+    expect(vue.ecartes).toContain("oignon");
+    expect(vue.ecartes).toContain("s’estiment pas");
+    expect(vue.libres.some((p) => p.ingredient === "oignon")).toBe(false);
+  });
+
+  test("un plancher qui a survécu à sa denrée se dit « jamais vu »", () => {
+    const vue = vueDesPlanchersDenrees(catalogue, placard(), [
+      { ingredient: "denree-imaginaire", niveau: 1 },
+    ]);
+    expect(vue.poses[0]!.fiabilite).toBe("jamais vu");
+    expect(vue.poses[0]!.a).toBe(0);
   });
 });

@@ -27,9 +27,16 @@
 
 import { useMemo, useState } from "react";
 import { ajouterLot, base, retirerLot, type LotStock } from "../db";
-import { useCatalogue, useJournal, usePlacard, usePlanchers, useSemaine } from "../db/hooks";
+import {
+  useCatalogue,
+  useJournal,
+  usePlacard,
+  usePlanchers,
+  usePlanchersDenrees,
+  useSemaine,
+} from "../db/hooks";
 import { releverZone } from "../db/journal";
-import { poserPlancher } from "../db/planchers";
+import { poserPlancher, poserPlancherDenree, retirerPlancherDenree } from "../db/planchers";
 import type { Calcul } from "../model/calcul";
 import type { Jeu } from "../model/jeu";
 import type { Confiance, EtatIngredient, Rejeu } from "../model/journal";
@@ -39,7 +46,15 @@ import { aller } from "../nav/useRoute";
 import { Corps } from "../ui/Coquille";
 import { Icone, iconeEspace } from "../ui/icones";
 import { fmt } from "../ui/format";
-import { vueDeLInventaire, vueDesPlanchers, type LotVue, type PlanchersVue, type ZoneVue } from "./stock.vue";
+import {
+  vueDeLInventaire,
+  vueDesPlanchers,
+  vueDesPlanchersDenrees,
+  type LotVue,
+  type PlanchersDenreesVue,
+  type PlanchersVue,
+  type ZoneVue,
+} from "./stock.vue";
 
 export function Stock() {
   const { catalogue } = useCatalogue();
@@ -77,6 +92,16 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
   const planchers = useMemo(
     () => (journal && decisions ? vueDesPlanchers(jeu, calc, decisions, journal) : null),
     [jeu, calc, decisions, journal],
+  );
+
+  // LES PLANCHERS DU GARDE-MANGER — T39. Ils se lisent du placard REJOUÉ, pas du
+  // dépôt : leur unité est celle du relevé, des unités d'achat qu'un œil compte,
+  // et c'est `usePlacard` qui la tient à jour. Même prudence que ci-dessus —
+  // `null` tant que la base n'a pas répondu.
+  const denrees = usePlanchersDenrees();
+  const planchersDenrees = useMemo(
+    () => (placard && denrees ? vueDesPlanchersDenrees(jeu.catalogue, placard, denrees) : null),
+    [jeu.catalogue, placard, denrees],
   );
 
   const retirer = async (ref: string) => {
@@ -231,7 +256,7 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
         </span>
       </div>
 
-      <GardeManger vue={vue.gardeManger} placard={placard} />
+      <GardeManger vue={vue.gardeManger} placard={placard} planchers={planchersDenrees} />
     </Corps>
   );
 }
@@ -347,9 +372,11 @@ function Planchers({ vue }: { vue: PlanchersVue | null }) {
 function GardeManger({
   vue,
   placard,
+  planchers,
 }: {
   vue: ReturnType<typeof vueDeLInventaire>["gardeManger"];
   placard: Rejeu | null;
+  planchers: PlanchersDenreesVue | null;
 }) {
   if (!vue.zones.length) return null;
   return (
@@ -422,6 +449,8 @@ function GardeManger({
         </>
       ) : null}
 
+      <PlanchersDenrees vue={planchers} />
+
       {vue.zones.map((z) => (
         <Zone key={z.id} z={z} placard={placard} />
       ))}
@@ -435,6 +464,144 @@ function GardeManger({
           quart d’heure achète des semaines de silence.
         </span>
       </div>
+    </>
+  );
+}
+
+/**
+ * « Ce qu'on veut toujours avoir » — côté placard, T39 à T46.
+ *
+ * ICI L'APP NE PROPOSE RIEN, ET C'EST LA DIFFÉRENCE AVEC LE CONGÉLATEUR. Là-bas
+ * le journal des cuissons sait dire qu'un type est sorti deux fois d'une
+ * casserole, donc l'app peut ouvrir la bouche la première. Ici la seule chose
+ * qu'elle sache est combien il en reste — ce qui ne dit rien de combien on en
+ * VEUT. Proposer « en garder 1 » sur les 41 denrées comptables reviendrait à
+ * inventer 41 habitudes, et T37 a tranché la question dans l'autre sens : un
+ * plancher est une hypothèse, elle se pose sur quelque chose. T45 rouvrira le
+ * dossier, avec la seule mesure qui le permette — ce qui se consomme entre deux
+ * grosses courses.
+ *
+ * D'OÙ UN SEUL GESTE, ET IL EST À L'ENVERS DU RESTE DE L'ÉCRAN : partout
+ * ailleurs on constate, ici on décide. Le bouton est donc discret et la liste
+ * des candidats fermée par défaut — un placard de 41 lignes ouvertes en
+ * permanence noierait le relevé, qui est le vrai sujet de la section.
+ */
+function PlanchersDenrees({ vue }: { vue: PlanchersDenreesVue | null }) {
+  const [ouvert, setOuvert] = useState(false);
+  if (!vue) return null;
+
+  return (
+    <>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "baseline",
+          justifyContent: "space-between",
+          margin: "var(--space-3) var(--space-1) var(--space-2)",
+        }}
+      >
+        {/* PAS LE MÊME TITRE QUE LA SECTION DU CONGÉLATEUR, et ce n'est pas
+            qu'une affaire de test : deux « Ce qu'on veut toujours avoir » sur le
+            même écran laisseraient croire à une répétition, alors que ce sont
+            deux mécanismes — l'un pousse un plat, l'autre une ligne de courses.
+            Le titre doit porter la différence, puisque c'est tout T41. */}
+        <span className="co-kicker">Ce qu’on veut toujours au placard</span>
+        <button className="co-retour" onClick={() => setOuvert(!ouvert)}>
+          {ouvert ? "Fermer" : "En ajouter"}
+        </button>
+      </div>
+
+      {vue.poses.length === 0 && !ouvert ? (
+        <div className="co-note" style={{ margin: "0 var(--space-1) var(--space-2)" }}>
+          Aucun plancher au garde-manger. En poser un sur une denrée, c’est dire «&nbsp;j’en veux
+          toujours autant&nbsp;»&nbsp;: en dessous, elle part d’elle-même dans «&nbsp;Courses&nbsp;»,
+          sans qu’aucun plat n’ait à la réclamer.
+        </div>
+      ) : null}
+
+      {vue.poses.map((p) => (
+        <div key={p.ingredient} className="co-lot">
+          <span style={{ flex: 1 }}>
+            <div className="nom">{p.nom}</div>
+            <div className="ou">
+              {p.usage ? `${p.usage} · ` : ""}
+              {p.sous ? "à racheter" : "tenu"} · {p.fiabilite}
+            </div>
+            <div style={{ display: "flex", gap: "var(--space-1)", marginTop: 4 }}>
+              {/* LE NIVEAU SE RÈGLE ICI, PAS DANS UN ÉCRAN DE RÉGLAGES. « Deux,
+                  finalement » se pense devant le placard, au moment où l'on
+                  constate qu'une boîte ne passe pas la semaine. */}
+              <button
+                className="btn btn-secondary"
+                style={{ fontSize: 12, padding: "2px 8px" }}
+                onClick={() => void poserPlancherDenree(base, p.ingredient, p.niveau - 1)}
+              >
+                −
+              </button>
+              <button
+                className="btn btn-secondary"
+                style={{ fontSize: 12, padding: "2px 8px" }}
+                onClick={() => void poserPlancherDenree(base, p.ingredient, p.niveau + 1)}
+              >
+                +
+              </button>
+              <button
+                className="btn btn-ghost"
+                style={{ fontSize: 12, padding: "2px 8px" }}
+                onClick={() => void retirerPlancherDenree(base, p.ingredient)}
+              >
+                Ne plus suivre
+              </button>
+            </div>
+          </span>
+          <span>
+            <div className="q">
+              {p.a} / {p.niveau}
+            </div>
+            <div className={`src ${p.sous ? "estime" : ""}`}>{p.sous ? "sous" : "tenu"}</div>
+          </span>
+        </div>
+      ))}
+
+      {vue.manquent ? (
+        <div className="geste" style={{ margin: "var(--space-2) var(--space-1) 0" }}>
+          {vue.manquent}
+        </div>
+      ) : null}
+
+      {ouvert ? (
+        <div className="co-espace" style={{ marginTop: "var(--space-2)" }}>
+          <div className="nom">Sur quoi&nbsp;?</div>
+          {vue.libres.map((p) => (
+            <div key={p.ingredient} className="co-lot">
+              <span style={{ flex: 1 }}>
+                <div className="nom">{p.nom}</div>
+                <div className="ou">
+                  {p.usage === "apero" ? "pour l’apéro · " : ""}
+                  {p.a} en stock
+                </div>
+              </span>
+              <button
+                className="btn btn-secondary"
+                style={{ fontSize: 12, padding: "2px 8px" }}
+                onClick={() => void poserPlancherDenree(base, p.ingredient, 1)}
+              >
+                En garder 1
+              </button>
+            </div>
+          ))}
+          {/* T46 — CE QUI EST INTERDIT SE NOMME. Un placard où quatre denrées
+              n'offrent pas le bouton, sans un mot, ressemble à une panne ; et la
+              raison est la partie intéressante, puisqu'elle vient de ce que
+              l'app peut honnêtement savoir. */}
+          {vue.ecartes ? (
+            <div className="co-note" style={{ marginTop: "var(--space-2)" }}>
+              Pas de plancher sur&nbsp;: {vue.ecartes}. Une cible que l’app est incapable
+              d’évaluer serait le premier endroit où elle réclamerait des courses à tort.
+            </div>
+          ) : null}
+        </div>
+      ) : null}
     </>
   );
 }

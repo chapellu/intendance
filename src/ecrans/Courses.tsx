@@ -15,15 +15,17 @@
 
 import { useMemo, useState } from "react";
 import { base, cocher, rentrer, rentrerLesCoches, viderCourses } from "../db";
-import { useCatalogue, useCourses, useSemaine } from "../db/hooks";
+import { useCatalogue, useCourses, usePlacard, usePlanchersDenrees, useSemaine } from "../db/hooks";
 import type { Calcul } from "../model/calcul";
 import type { Jeu } from "../model/jeu";
+import { sousLeurPlancher } from "../model/plancherGardeManger";
 import { Corps } from "../ui/Coquille";
-import { fmt } from "../ui/format";
 import {
   basculeDe,
   aVerifierParRaison, horsListe,
   marque,
+  phraseDuPlancher,
+  quantiteDeLArticle,
   vueDesCourses,
   type Article,
   type Mode,
@@ -33,18 +35,34 @@ export function Courses() {
   const { catalogue } = useCatalogue();
   const { jeu, calc } = useSemaine(catalogue);
   const etats = useCourses();
-  if (!jeu || !calc || !etats) return null;
-  return <Contenu jeu={jeu} calc={calc} etats={etats} />;
+  // LE PLACARD ET LES PLANCHERS — T41. La liste ne vient plus seulement de la
+  // semaine : ce qui est sous son plancher EST la liste Carrefour. On attend les
+  // deux, comme on attend `etats` : une liste affichée puis complétée d'une
+  // ligne un instant plus tard est une liste dans laquelle on ne peut pas avoir
+  // confiance, et c'est le seul écran qu'on lit debout dans un rayon.
+  const placard = usePlacard(catalogue);
+  const planchers = usePlanchersDenrees();
+  if (!jeu || !calc || !etats || !placard || !planchers) return null;
+  return (
+    <Contenu
+      jeu={jeu}
+      calc={calc}
+      etats={etats}
+      sous={sousLeurPlancher(jeu.catalogue, placard, planchers)}
+    />
+  );
 }
 
 function Contenu({
   jeu,
   calc,
   etats,
+  sous,
 }: {
   jeu: Jeu;
   calc: Calcul;
   etats: NonNullable<ReturnType<typeof useCourses>>;
+  sous: ReturnType<typeof sousLeurPlancher>;
 }) {
   // LE MODE N'EST PAS PERSISTÉ, et c'est délibéré : c'est un endroit où l'on
   // se trouve, pas une décision. Rouvrir l'app trois jours plus tard sur « à
@@ -52,8 +70,8 @@ function Contenu({
   // économise.
   const [mode, setMode] = useState<Mode>("magasin");
   const vue = useMemo(
-    () => vueDesCourses(jeu.catalogue, calc.panier, etats),
-    [jeu.catalogue, calc.panier, etats],
+    () => vueDesCourses(jeu.catalogue, calc.panier, etats, sous),
+    [jeu.catalogue, calc.panier, etats, sous],
   );
   const hors = useMemo(
     () => horsListe(jeu.catalogue, calc.provenances),
@@ -68,8 +86,13 @@ function Contenu({
     const b = basculeDe(mode, a);
     // LE PANIER VOYAGE AVEC LE GESTE : c'est lui qui porte la quantité, donc
     // c'est lui qui permet au lot de naître pesé (T27).
+    // `vue.panier` ET NON `calc.panier` : c'est la semaine PLUS les lignes de
+    // plancher, et c'est cette carte qui porte la quantité au moment où un
+    // article rentre au stock (T27). Avec `calc.panier`, rentrer deux boîtes de
+    // maïs n'aurait rien mis dans le placard — et le plancher les aurait
+    // redemandées le lendemain.
     void (b.rentrer
-      ? rentrer(base, a.cle, b.valeur, calc.panier)
+      ? rentrer(base, a.cle, b.valeur, vue.panier)
       : cocher(base, a.cle, b.valeur));
   };
 
@@ -103,7 +126,7 @@ function Contenu({
           <button
             className="btn btn-primary btn-block"
             style={{ marginBottom: "var(--space-3)" }}
-            onClick={() => void rentrerLesCoches(base, calc.panier)}
+            onClick={() => void rentrerLesCoches(base, vue.panier)}
           >
             Tout rentrer — {vue.coches} article{vue.coches > 1 ? "s" : ""} du caddie
           </button>
@@ -130,17 +153,24 @@ function Contenu({
                 <span style={{ flex: 1 }}>
                   <span className="nom">{a.ligne.nom}</span>
                   {/* « 3 plats » dit pourquoi la quantité est ce qu'elle est,
-                      et c'est ce qui empêche de croire à une erreur. */}
+                      et c'est ce qui empêche de croire à une erreur.
+
+                      UNE LIGNE DE PLANCHER DIT LA SIENNE AUTREMENT, parce que sa
+                      raison n'est pas dans la semaine : aucun plat ne la
+                      réclame, c'est le placard qui la réclame. Écrire « 0 plat »
+                      aurait été exact et incompréhensible. */}
                   <div className="pour">
-                    {a.ligne.n > 1 ? `${a.ligne.n} plats` : "1 plat"}
+                    {a.plancher
+                      ? phraseDuPlancher(a.plancher, a.ligne.n)
+                      : a.ligne.n > 1
+                        ? `${a.ligne.n} plats`
+                        : "1 plat"}
                     {/* Au magasin, ce qui est déjà rentré n'a rien à faire dans
                         le caddie : on le dit plutôt que de le cacher. */}
                     {magasin && a.rentre ? " · déjà rentré" : ""}
                   </div>
                 </span>
-                <span className="q">
-                  {fmt(a.ligne.qty)} {a.ligne.unit}
-                </span>
+                <span className="q">{quantiteDeLArticle(a.ligne)}</span>
               </button>
             ))}
           </div>

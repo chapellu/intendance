@@ -1068,8 +1068,15 @@ de les laisser croire faits.
 ## Les niveaux de réserve — [Workspace#43](https://github.com/chapellu/Workspace/issues/43)
 
 Le contrat du plancher, grillé en français les 31/08 et 01/09/2026, seize
-décisions. **Rien ici n'est commencé** : T25–T32 ont construit le stock qui
-descend, ce qui est le socle dont tout ce qui suit dépend.
+décisions. T25–T32 ont construit le stock qui descend, ce qui est le socle dont
+tout ce qui suit dépend.
+
+**Les deux moitiés sont posées.** T34–T38 ont fait le congélateur — des portions,
+rechargées en cuisinant, qui poussent un plat. T39–T41 et T46 ont fait le
+garde-manger — des unités d'achat, rechargées en achetant, qui poussent une ligne
+de courses. C'est T41 qui les tient séparées, et il ne reste du bloc que ce qui
+module un plancher déjà posé : la saison (T42), le mois de fermeture (T43), le
+retrait d'un plancher démenti (T44) et le niveau de réappro (T45).
 
 **LE MOT EST `plancher`, ET CE N'EST PAS UN DÉTAIL.** « Réserve » est déjà pris
 dans ce foyer : `docs/cuisine/stock.md` appelle ainsi le PAQUET derrière le
@@ -1117,11 +1124,16 @@ bocal distributeur — un objet physique, pas une cible. La cible s'appelle donc
       (« 7 portions de ratatouille sur 18 »). Au-dessus de son plancher, **aucun
       malus** : un plancher est un seuil, pas une bande.
 
-- [ ] **T39 — Le plancher du garde-manger porte sur l'ingrédient.** Cohérent avec
+- [x] **T39 — Le plancher du garde-manger porte sur l'ingrédient.** Cohérent avec
       T32 (les corrections sont par ingrédient, jamais par lot) et avec ce qu'un
-      œil compte en ouvrant un placard.
+      œil compte en ouvrant un placard. `model/plancherGardeManger.ts`, à côté de
+      `plancher.ts` et **pas dedans** : même mot, autre objet — celui-ci compte
+      des **unités d'achat** et se recharge en achetant, l'autre compte des
+      portions et se recharge en cuisinant. L'unité est celle du relevé
+      (`EtatIngredient.unites`) : `pates` porte quatre lots au placard et **un**
+      plancher. Se pose à la main sur « L'inventaire ».
 
-- [ ] **T40 — `usage: apero`, et c'est la preuve du mécanisme.** L'apéro n'existe
+- [x] **T40 — `usage: apero`, et c'est la preuve du mécanisme.** L'apéro n'existe
       nulle part aujourd'hui : ni dans `rayons.ordre` (`primeur, boucherie,
       poissonnerie, crèmerie, frais, épicerie`), ni comme nature. Ce n'est pas un
       rayon — les fruits secs s'achètent en épicerie, le rayon dit *où on
@@ -1131,14 +1143,30 @@ bocal distributeur — un objet physique, pas une cible. La cible s'appelle donc
       `pignons-pin` sont déjà là. Jamais distribué comme carte, ne marque aucun
       score, **ne produit que des lignes de courses**. S'il marche, c'est que le
       plancher est bien indépendant du scoring.
+      **La preuve est plus forte que prévu, et elle est mesurée :** ces six
+      denrées sont citées par **zéro** des 86 recettes. Aucune ne peut donc
+      gagner un point par accident — si elles paraissent à l'écran, c'est que le
+      plancher a marché seul. Et elles ne sont pas un cas isolé : **28 des 45
+      ingrédients du garde-manger** ne sont cités par aucune recette. Plus de la
+      moitié du placard est invisible au scoring, et l'apéro n'est que le cas
+      nommé de ce trou-là.
 
-- [ ] **T41 — Aucun arbitrage cuisiner/acheter : l'objet dicte le canal.** Un
+- [x] **T41 — Aucun arbitrage cuisiner/acheter : l'objet dicte le canal.** Un
       type du dépôt ne se recharge que par la cuisine (→ bonus de score) ; une
       denrée du garde-manger que par l'achat (→ ligne de courses). La bolognaise
       n'a l'air ambiguë que parce que les deux existent, et le catalogue les
       distingue **déjà** : `sauce-bolognaise` (base cuisinée, congélo) et
       `sauce-bolognaise-bocal` (bocal acheté, 300 g, garde-manger) sont deux ids.
       **« Ce qui est sous son plancher » EST la liste Carrefour.**
+      Fondu **dans les rayons**, pas en section à part : un rayon se traverse une
+      fois. Deux détails que le ticket ne pouvait pas prévoir — un ingrédient que
+      la semaine réclame **déjà** n'ouvre pas une seconde ligne (il annote la
+      sienne, sinon on achèterait deux fois), et l'unité `unité` a dû naître pour
+      la clé de course : aucune des **744** lignes d'ingrédients du corpus ne
+      l'emploie, donc aucun état coché/rentré ne peut se marcher dessus.
+      `sousLeurPlancher` ne reçoit ni plats ni poids : l'absence de score s'y lit
+      **dans la signature**, et un test épingle les clés de la ligne pour que ça
+      le reste.
 
 - [ ] **T42 — La saison se pose sur le plancher, pas sur le plat.** « L'hiver de
       la soupe, l'été de la glace ». Or `saison` est un champ de PROVENANCE : il
@@ -1177,7 +1205,7 @@ bocal distributeur — un objet physique, pas une cible. La cible s'appelle donc
       donc toujours un seul chiffre à valider. **Pas de symétrique au dépôt** :
       une soirée de cuisine produit ce qu'elle produit (`portions_eq`).
 
-- [ ] **T46 — Un plancher n'existe que sur ce que l'app sait compter.** Épicerie
+- [x] **T46 — Un plancher n'existe que sur ce que l'app sait compter.** Épicerie
       comptable, fond de placard, congélateur. **Interdit** sur primeur, frais
       court et les 23 ids sans rayon : T30 dit que les fruits & légumes ne
       s'estiment pas du tout et que le frais court ne se parie jamais sans
@@ -1185,6 +1213,17 @@ bocal distributeur — un objet physique, pas une cible. La cible s'appelle donc
       structurellement incapable d'évaluer — et le premier endroit où elle
       réclamerait des courses à tort. **Position de départ, pas frontière
       acquise** : l'utilisateur a dit « ok pour le moment on verra à l'usage ».
+      *Pris en avance de T42–T45, parce que T39 ne peut pas exister sans lui :
+      sans barrière, le premier plancher posable est l'oignon.* La barrière est
+      la **classe** de T30, jamais une liste d'ids — elle suit donc le corpus au
+      lieu de vieillir à côté. **Ce que la mesure a corrigé :** sur le relevé du
+      26/08 elle ne mord **que sur le primeur**. 45 ingrédients distincts, dont
+      40 `epicerie`, 1 `fond-de-placard` (`farine`) et 4 `fruits-legumes` — ail,
+      échalote, oignon, pomme de terre. **Zéro `frais-court`, zéro `non-suivi`** :
+      les 23 ids sans rayon sont des ids de *recettes*, et aucun n'est dans un
+      placard. Elle attrape donc précisément, et seulement, les quatre denrées que
+      la prose du ticket nommait. Ce qui est écarté est **nommé à l'écran avec sa
+      raison** : un bouton absent sans un mot ressemble à une panne.
 
 - [ ] **T47 — UNE SEULE ÉCHELLE : la vie qui reste.** C'est la correction de
       l'utilisateur, et elle unifie trois mécaniques en une. `ecoule_frigo: 5` et

@@ -315,6 +315,22 @@ export type Urgence = "haute" | "moyenne" | "basse";
 export type Nature = "legume-cru" | "fruit" | "herbe" | "sec" | "gras" | "plat" | "autre";
 
 /**
+ * À quoi une denrée sert, quand ce n'est pas à faire un plat — T40.
+ *
+ * NI UN RAYON NI UNE NATURE, et c'est pourquoi il a fallu un champ. Le rayon dit
+ * OÙ ÇA S'ACHÈTE : les fruits secs et le riz sont tous deux en épicerie, ce qui
+ * ne les rend pas interchangeables. La nature dit ce que la chose EST, pour
+ * décider des méthodes de conservation. Aucun des deux ne sait dire « ça, c'est
+ * pour l'apéro ».
+ *
+ * ET SURTOUT PAS UN CRÉNEAU : `creneaux.yaml` fait 21 créneaux, sept jours ×
+ * trois repas. Un vingt-deuxième reviendrait à demander de PLANIFIER ses apéros.
+ *
+ * `null` est la réponse normale — 47 des 53 denrées relevées.
+ */
+export type Usage = "apero";
+
+/**
  * Une façon d'arrêter l'horloge d'une denrée.
  *
  * LA SECONDE RÉPONSE AU GASPILLAGE. La première est de cuisiner la chose ce
@@ -390,6 +406,8 @@ export interface Denree {
    *  l'étagère au soleil. */
   urgence: Urgence;
   nature: Nature;
+  /** Ce à quoi elle sert quand ce n'est pas à cuisiner. `null` par défaut. */
+  usage: Usage | null;
   /** Ce qu'on peut en faire pour qu'elle tienne, acquis ou non. */
   conservations: ConservationDenree[];
   note: string | null;

@@ -23,6 +23,7 @@ const denree = (p: Partial<Denree> & { ingredient: string }): Denree => ({
   incompatibles: [],
   urgence: "basse",
   nature: "autre",
+  usage: null,
   conservations: [],
   note: null,
   ...p,

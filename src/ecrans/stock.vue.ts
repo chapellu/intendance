@@ -19,7 +19,7 @@ import type { BilanEspace, Calcul } from "../model/calcul";
 import type { LigneDepot } from "../model/depot";
 import type { Jeu } from "../model/jeu";
 import { aSauver } from "../model/gardeManger";
-import type { Evenement } from "../model/journal";
+import type { Evenement, Rejeu } from "../model/journal";
 import {
   etatDuCongelo,
   nomDuType,
@@ -27,6 +27,12 @@ import {
   propositions,
   type Population,
 } from "../model/plancher";
+import {
+  nomDeLaDenree,
+  posables,
+  type PlancherDenree,
+  type Posable,
+} from "../model/plancherGardeManger";
 import type { Catalogue, Denree, Espace, GardeManger, Urgence, Zone } from "../model/types";
 import { fmt } from "../ui/format";
 import { nomEspace } from "../ui/phrases";
@@ -292,6 +298,102 @@ export function vueDesPlanchers(
         ? `Plus une place : ${portions(etat.dominant.portions)} de ${nomDuType(etat.dominant.type)} ` +
           `sur ${etat.reglages.limite}. Aucun plancher ne pousse plus rien tant que ça n'a pas baissé.`
         : "",
+  };
+}
+
+/* ────────────────────────────────────────── les planchers du garde-manger */
+
+/**
+ * Ce que « L'inventaire » dit des planchers de denrées — T39, T41, T46.
+ *
+ * MÊME ÉCRAN QUE LES PLANCHERS DU CONGÉLATEUR, ET C'EST LE BON. La phrase est la
+ * même — « je veux toujours en avoir » — et elle se prend au même endroit, devant
+ * le rangement. Ce qui change est ce qu'elle déclenche, et c'est justement ce que
+ * l'écran doit rendre lisible : l'un fait remonter un plat, l'autre fait une
+ * ligne de courses. Les séparer en deux écrans aurait fait croire à deux
+ * mécanismes là où il n'y a qu'un objet vu de deux côtés.
+ */
+export interface PlancherDenreeVue {
+  ingredient: string;
+  nom: string;
+  niveau: number;
+  a: number;
+  sous: boolean;
+  /** Ce qu'on croit du chiffre, en un mot. */
+  fiabilite: string;
+  /** « pour l'apéro », ou vide (T40). */
+  usage: string;
+}
+
+export interface PlanchersDenreesVue {
+  poses: PlancherDenreeVue[];
+  /** Ce sur quoi on peut encore en poser un, trié par nom. */
+  libres: Posable[];
+  /**
+   * Ce que la barrière de T46 écarte, NOMMÉ et non caché.
+   *
+   * Une denrée qui n'offre pas le geste sans dire pourquoi ressemble à une
+   * panne. Et la raison est la partie intéressante : elle vient d'une décision
+   * sur ce que l'app peut honnêtement savoir, pas d'une limite du code.
+   */
+  ecartes: string;
+  /** Ce que ça donne au magasin, en une phrase. Vide quand tout est tenu. */
+  manquent: string;
+}
+
+export function vueDesPlanchersDenrees(
+  catalogue: Catalogue,
+  rejeu: Rejeu,
+  planchers: readonly PlancherDenree[],
+): PlanchersDenreesVue {
+  const tous = posables(catalogue, rejeu);
+  const parId = new Map(tous.map((p) => [p.ingredient, p]));
+  const poses: PlancherDenreeVue[] = [];
+
+  for (const p of planchers) {
+    const vu = parId.get(p.ingredient);
+    const a = vu?.a ?? 0;
+    poses.push({
+      ingredient: p.ingredient,
+      nom: nomDeLaDenree(p.ingredient),
+      niveau: p.niveau,
+      a,
+      sous: a < p.niveau,
+      // Le même vocabulaire que les lots du dépôt : « compté » quand l'app a vu,
+      // « estimé » quand elle déduit. Un troisième mot ici pour dire la même
+      // chose forcerait à apprendre deux échelles sur le même écran.
+      fiabilite: vu ? "compté" : "jamais vu",
+      usage: vu?.usage === "apero" ? "pour l’apéro" : "",
+    });
+  }
+
+  // LES NON-COMPTABLES SONT ÉCARTÉS ICI, PAS DANS LE MODÈLE. `posables` les rend
+  // tous, avec leur raison, parce que c'est un fait sur le placard ; c'est
+  // l'écran qui décide de n'offrir le bouton que sur les uns et de nommer les
+  // autres. Filtrer plus tôt aurait rendu la phrase impossible à écrire.
+  const dejaPose = new Set(planchers.map((p) => p.ingredient));
+
+  // GROUPÉS PAR RAISON, ET PAS PAR DENRÉE. Les trois classes écartées le sont
+  // pour trois motifs différents ; les enfiler derrière un seul « — les fruits
+  // et légumes ne s'estiment pas » ferait dire au frais court quelque chose de
+  // faux. Sur le relevé du 2026-08-26 il n'y a qu'un groupe, mais la phrase doit
+  // rester vraie le jour où le frigo daté de Workspace#50 en ouvrira un second.
+  const parRaison = new Map<string, string[]>();
+  for (const p of tous)
+    if (!p.comptable) parRaison.set(p.raison, [...(parRaison.get(p.raison) ?? []), p.nom]);
+
+  return {
+    poses: poses.sort((a, b) => Number(b.sous) - Number(a.sous) || a.nom.localeCompare(b.nom, "fr")),
+    libres: tous.filter((p) => p.comptable && !dejaPose.has(p.ingredient)),
+    ecartes: [...parRaison]
+      .map(([raison, noms]) => `${noms.join(", ")} — ${raison}`)
+      .join(" · "),
+    manquent: (() => {
+      const sous = poses.filter((p) => p.sous);
+      if (!sous.length) return "";
+      const n = sous.reduce((t, p) => t + (p.niveau - p.a), 0);
+      return `${sous.length} denrée${sous.length > 1 ? "s" : ""} sous son plancher, ${n} à racheter — c’est déjà dans « Courses ».`;
+    })(),
   };
 }
 
