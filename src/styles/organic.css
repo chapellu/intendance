@@ -414,6 +414,39 @@ button { font-family: var(--font-body); color: inherit; }
 .co-question .compte { display: block; margin-top: var(--space-2); }
 .co-question .compte input { width: 5rem; margin-left: var(--space-1); }
 
+/* — le fil (T49) —
+   LES POINTS SONT DES DESTINATIONS, PAS UNE JAUGE. Ils défilent
+   horizontalement plutôt que de passer à la ligne : une passe de quatorze
+   repas ferait trois lignes de pastilles au-dessus de la carte, et pousserait
+   hors de l'écran la seule chose qu'on est venu lire. */
+.co-points {
+  display: flex; gap: var(--space-1); overflow-x: auto; padding-bottom: var(--space-1);
+  margin-bottom: var(--space-2); scrollbar-width: none;
+}
+.co-points::-webkit-scrollbar { display: none; }
+.co-points .pt {
+  flex: none; font-size: 11px; border-radius: 999px; padding: 4px 10px;
+  background: var(--color-neutral-200); color: var(--color-neutral-800);
+  text-decoration: none; white-space: nowrap;
+}
+.co-points .pt.fait { background: var(--color-accent-2-200); color: var(--color-accent-2-900); }
+.co-points .pt.courant {
+  background: var(--color-accent-700); color: #fff; font-weight: 700;
+}
+/* Une question ne mène nulle part : elle est là où on est. Le pointillé dit
+   qu'elle est d'une autre espèce que les créneaux, sans lui donner une
+   couleur de plus à retenir. */
+.co-points .pt.question { background: transparent; border: 1px dashed var(--color-neutral-400); }
+.co-points .pt.question.courant {
+  border-color: var(--color-accent-700); color: var(--color-accent-900); font-weight: 700;
+}
+
+.co-crans { display: flex; gap: var(--space-2); flex-wrap: wrap; margin-top: var(--space-3); }
+.co-pied-fil {
+  display: flex; gap: var(--space-2); flex-wrap: wrap; margin-top: var(--space-3);
+  padding-top: var(--space-3); border-top: 1px solid var(--color-neutral-200);
+}
+
 /* — écran « à prévoir » — */
 .co-offre { background: var(--color-surface); border-radius: var(--radius-lg); padding: var(--space-4); }
 .co-offre + .co-offre { margin-top: var(--space-3); }

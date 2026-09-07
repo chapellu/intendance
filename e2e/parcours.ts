@@ -14,7 +14,10 @@ export async function poserUnPlat(page: Page): Promise<string> {
   await page.goto("/#/cuisine/semaine");
   await attendreLApp(page);
 
-  await page.locator(".co-slot", { hasText: "à poser" }).first().locator("button.resume").click();
+  // `.libre` ET PAS LE TEXTE « à poser » : T51 a rendu la case vide muette,
+  // et un localisateur écrit sur une phrase disparaît avec elle. L'état, lui,
+  // existe toujours — c'est pour ça qu'il est porté jusqu'au DOM.
+  await page.locator(".co-slot.libre").first().locator("button.resume").click();
   // On désigne la case par le fait qu'elle est OUVERTE, pas par son texte : son
   // texte est précisément ce qu'on va changer.
   await page.locator(".co-slot.ouvert").getByRole("link", { name: "poser un plat" }).click();

@@ -9,6 +9,8 @@ const TOUTES: Route[] = [
   { ecran: "prevoir" },
   { ecran: "courses" },
   { ecran: "stock" },
+  { ecran: "fil" },
+  { ecran: "fil", creneau: { jour: "2026-08-19", repas: "diner" } },
   { ecran: "poser", creneau: { jour: "2026-08-19", repas: "diner" } },
   { ecran: "parts", creneau: { jour: "2026-08-19", repas: "dejeuner" } },
   { ecran: "cuisiner", creneau: { jour: "2026-08-19", repas: "diner" } },
@@ -21,7 +23,18 @@ describe("les routes", () => {
     for (const r of TOUTES) expect(lireRoute(chemin(r))).toEqual(r);
   });
 
-  test("les dix écrans ont des chemins distincts", () => {
+  test("le fil a deux formes, et elles ne se confondent pas", () => {
+    // Sans créneau c'est l'ouverture, avec c'est un pas. Les lire pareil
+    // ferait rouvrir le choix de l'horizon au milieu d'une passe.
+    expect(lireRoute("#/cuisine/fil")).toEqual({ ecran: "fil" });
+    expect(lireRoute("#/cuisine/fil/2026-08-19/diner")).toEqual({
+      ecran: "fil",
+      creneau: { jour: "2026-08-19", repas: "diner" },
+    });
+    expect(lireRoute("#/cuisine/fil/demain/diner")).toEqual(ROUTE_DEFAUT);
+  });
+
+  test("les écrans ont des chemins distincts", () => {
     const chemins = TOUTES.map(chemin);
     expect(new Set(chemins).size).toBe(chemins.length);
   });

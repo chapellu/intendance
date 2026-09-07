@@ -410,7 +410,11 @@ describe("le volume de questions DOIT décroître à l'usage", () => {
   function passeDe(evts: Evenement[], n: number): number {
     const jeu = creerJeu(reel, 7, new Date(`${JOUR}T12:00:00Z`));
     const rejeu = rejouer(reel, evts, ctxReel, JOUR);
-    const savoir = { rejeu, passe: passeDuJour(reel, ctxReel, evts, [], JOUR) };
+    const savoir = {
+      rejeu,
+      passe: passeDuJour(reel, ctxReel, evts, [], JOUR),
+      cuisinesRecemment: new Set<string>(),
+    };
     let total = 0;
     const dinersDeLaSemaine = jeu.creneaux
       .map((c, i) => [c, i] as const)

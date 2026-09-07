@@ -355,6 +355,29 @@ const joursEntre = (a: string, b: string): number =>
   Math.max(0, Math.round((Date.parse(b) - Date.parse(a)) / 86_400_000));
 
 /**
+ * Les plats cuisinés dans les N derniers jours — la source du cooldown (T52).
+ *
+ * `equilibre.main.cooldown_jours: 10` n'avait AUCUNE SOURCE EXPORTÉE :
+ * `catalogue/historique.yaml` existe mais `export_json.py` ne le verse pas dans
+ * `cuisine-data.json`, si bien que le réglage était lu, typé, et inapplicable.
+ * Le journal des cuissons est la source honnête — il est déjà en base, il est
+ * déjà l'entrée du rejeu du placard, et il dit ce que ce foyer a mangé plutôt
+ * que ce qu'un fichier de démonstration racontait.
+ *
+ * Rendu comme un ensemble d'ids : le cooldown ne classe pas, il écarte.
+ */
+export function cuissonsRecentes(
+  evenements: readonly Evenement[],
+  aujourdhui: string,
+  jours: number,
+): Set<string> {
+  const recents = new Set<string>();
+  for (const e of evenements)
+    if (e.sorte === "cuisine" && joursEntre(e.jour, aujourdhui) < jours) recents.add(e.plat);
+  return recents;
+}
+
+/**
  * Le doute accumulé depuis la dernière observation.
  *
  * L'ASYMÉTRIE QUI COMMANDE TOUT : une observation POSE l'estimation et RESTAURE

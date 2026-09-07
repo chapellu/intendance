@@ -25,10 +25,17 @@ export function useRoute(): Route {
 }
 
 /** Navigue. `remplacer` écrase l'entrée courante au lieu d'en empiler une —
- *  pour les redirections, qui n'ont rien à faire dans l'historique du pouce. */
+ *  pour les redirections, qui n'ont rien à faire dans l'historique du pouce.
+ *
+ *  `location.replace` ET SURTOUT PAS `history.replaceState`. Les deux changent
+ *  l'URL, mais `replaceState` **n'émet pas `hashchange`** — or c'est à cet
+ *  événement que `useRoute` s'abonne. La barre d'adresse partait donc sur la
+ *  nouvelle route pendant que React continuait de rendre l'ancienne, et l'écran
+ *  restait blanc. Ce chemin n'avait aucun appelant avant T49 : le bug attendait
+ *  le sien, et il l'a eu à la reprise d'une passe. */
 export function aller(r: Route, remplacer = false): void {
   const c = chemin(r);
-  if (remplacer) window.history.replaceState(null, "", c);
+  if (remplacer) window.location.replace(c);
   else window.location.hash = c.slice(1);
 }
 

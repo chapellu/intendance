@@ -89,9 +89,15 @@ function Contenu({ jeu, calc, poserPlat }: { jeu: Jeu; calc: Calcul; poserPlat: 
         />
       ))}
 
+      {/* LE BOUTON LANCE UNE PASSE, IL NE POSE PLUS UN PLAT — T49 et T51.
+          `prochainVide` reste ce qui décide de le montrer : s'il n'y a plus
+          rien d'indécis, il n'y a pas de passe à lancer. Ce qu'il perd, c'est
+          d'être une CIBLE — le fil demande d'abord combien de repas, et c'est
+          l'horizon qui choisit où l'on atterrit, pas la première case libre.
+          Poser un plat isolément reste possible : la case s'ouvre au doigt. */}
       {vide ? (
-        <a className="btn btn-primary btn-block" href={chemin({ ecran: "poser", creneau: vide })}>
-          Poser un plat
+        <a className="btn btn-primary btn-block" href={chemin({ ecran: "fil" })}>
+          Lancer une passe
         </a>
       ) : null}
     </Corps>
@@ -154,7 +160,9 @@ function Slot({
   poserPlat: Poser;
 }) {
   return (
-    <div className={`co-slot${s.saute ? " saute" : ""}${ouvert ? " ouvert" : ""}`}>
+    <div
+      className={`co-slot${s.saute ? " saute" : ""}${s.libre ? " libre" : ""}${ouvert ? " ouvert" : ""}`}
+    >
       <button className="resume" aria-expanded={ouvert} onClick={basculer}>
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
           <span className="quand">{s.label}</span>
@@ -162,9 +170,10 @@ function Slot({
           <span style={{ flex: 1 }} />
           {s.lie && !s.saute ? <span className="lien" /> : null}
         </div>
-        <div className={`nom${s.plat || s.saute ? "" : " attente"}`}>
-          {s.saute ? "on ne mange pas là" : (s.plat?.titre ?? "à poser")}
-        </div>
+        {/* LE VIDE NE DIT RIEN — T51. Pas « à poser », pas un tiret, pas un
+            gris clair : rien. Une case muette est une décision pas encore
+            prise, et c'est l'horizon du fil qui décide de ce qu'on planifie. */}
+        {s.nom ? <div className="nom">{s.nom}</div> : null}
         {s.plat ? (
           <div className="marques">
             {/* Un plat à zéro minute n'est pas gratuit, il est déjà cuisiné :
