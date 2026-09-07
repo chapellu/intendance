@@ -18,7 +18,7 @@ import { calculer, type Calcul } from "../model/calcul";
 import { chargerCatalogue } from "../model/catalogue";
 import { creerJeu, joue, type Choix, type Jeu } from "../model/jeu";
 import type { Catalogue, Plat } from "../model/types";
-import { contexte, rejouer, type Evenement, type Rejeu } from "../model/journal";
+import { contexte, cuissonsRecentes, rejouer, type Evenement, type Rejeu } from "../model/journal";
 import { passeDuJour } from "../model/questions";
 import type { Savoir } from "../model/scoring";
 import { lireCourses } from "./courses";
@@ -256,6 +256,7 @@ export function useSavoir(
     return {
       rejeu: rejouer(catalogue, evts, ctx, jour),
       passe: passeDuJour(catalogue, ctx, evts, poses, jour),
+      cuisinesRecemment: cuissonsRecentes(evts, jour, catalogue.equilibre.main.cooldown_jours),
     };
   }, [catalogue, evts, jeu, jour]);
 }

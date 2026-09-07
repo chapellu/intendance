@@ -12,7 +12,7 @@ import { attendreLApp, poserUnPlat } from "./parcours";
 test("poser un plat, le retrouver après rechargement", async ({ page }) => {
   const titre = await poserUnPlat(page);
 
-  // Le créneau porte le plat, et il ne dit plus « à poser ».
+  // Le créneau porte le plat, et il n’est plus libre.
   await expect(page.locator(".co-slot").filter({ hasText: titre }).first()).toBeVisible();
 
   await page.reload();
@@ -24,7 +24,10 @@ test("un créneau sauté se dit, et se reprend", async ({ page }) => {
   await page.goto("/#/cuisine/semaine");
   await attendreLApp(page);
 
-  await page.locator(".co-slot", { hasText: "à poser" }).first().locator("button.resume").click();
+  // `.libre` ET PAS LE TEXTE « à poser » : T51 a rendu la case vide muette,
+  // et un localisateur écrit sur une phrase disparaît avec elle. L'état, lui,
+  // existe toujours — c'est pour ça qu'il est porté jusqu'au DOM.
+  await page.locator(".co-slot.libre").first().locator("button.resume").click();
   // LA CASE OUVERTE, ET PAS « LA PREMIÈRE QUI DIT À POSER ». Une fois sautée,
   // elle ne dit plus « à poser » : un localisateur écrit sur son texte se
   // déplacerait alors sur la case suivante, et le test vérifierait

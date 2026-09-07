@@ -33,6 +33,16 @@ import type { Catalogue, Plat } from "./types";
 export interface Savoir {
   rejeu: Rejeu;
   passe: Passe;
+  /**
+   * Les plats cuisinés dans les `cooldown_jours` derniers jours — T52.
+   *
+   * ILS SORTENT DU PAQUET, PAS DU CLASSEMENT. Un plat mangé mardi n'est pas
+   * devenu mauvais, il est devenu prématuré — et un malus l'aurait laissé
+   * remonter dès que la semaine se serre, c'est-à-dire exactement quand la
+   * répétition se remarque. Vide quand le journal ne dit rien, ce qui rend le
+   * terme inoffensif sur une base neuve.
+   */
+  cuisinesRecemment: ReadonlySet<string>;
 }
 
 /* ───────────────────────────────────────────────────────────── couverture */
@@ -321,12 +331,24 @@ function alea(graine: string): () => number {
  * dérivée — puis on complète. Sans elles, le score seul servirait cinq fois la
  * même famille de plats.
  *
- * `taille` vaut 4 en dur, alors que le catalogue dit `equilibre.main.taille: 5`
- * et porte aussi `cooldown_jours`. Le proto ignore cette configuration ; le port
- * fait pareil, sinon la parité ne tiendrait pas. C'est noté au backlog.
+ * LE CATALOGUE COMMANDE ENFIN — T52. `taille` valait 4 en dur alors que
+ * `equilibre.main.taille` dit 5, et `garantir` était recopié dans le code à
+ * l'identique : trois réglages lus, typés, et sans effet. La parité avec le
+ * proto les gardait morts ; le proto est parti (T22), l'argument avec.
+ *
+ * LE COOLDOWN ÉCARTE, IL NE PÉNALISE PAS, et il s'efface plutôt que d'affamer
+ * la main : si tout le paquet a été cuisiné dans les dix jours, on repioche
+ * dedans. Un plat déjà vu vaut mieux que pas de dîner — c'est la même règle qui
+ * interdit à T33 de retirer définitivement un plat.
  */
-export function main(jeu: Jeu, taille = 4, savoir?: Savoir): Carte[] {
-  const lignes = offre(jeu, jeu.choix, jeu.slot, savoir);
+export function main(
+  jeu: Jeu,
+  taille = jeu.catalogue.equilibre.main.taille,
+  savoir?: Savoir,
+): Carte[] {
+  const toutes = offre(jeu, jeu.choix, jeu.slot, savoir);
+  const frais = savoir ? toutes.filter((l) => !savoir.cuisinesRecemment.has(l.plat.id)) : toutes;
+  const lignes = frais.length ? frais : toutes;
   if (!lignes.length) return [];
 
   const rnd = alea(`${jeu.slot}:${jeu.repioches[jeu.slot] ?? 0}`);
@@ -347,7 +369,7 @@ export function main(jeu: Jeu, taille = 4, savoir?: Savoir): Carte[] {
     return libres[libres.length - 1]!;
   };
 
-  for (const cat of ["express", "souche", "derive"] as const) {
+  for (const cat of jeu.catalogue.equilibre.main.garantir) {
     const c = tirer(lignes.filter((l) => l.categorie === cat));
     if (c) {
       pris.add(c.plat.id);

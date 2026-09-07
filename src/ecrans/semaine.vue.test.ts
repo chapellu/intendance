@@ -119,6 +119,36 @@ describe("ce que la case dit", () => {
     expect(souci).not.toMatch(/ {2}/);
   });
 
+  test("T51 — UN CRÉNEAU VIDE NE DIT RIEN", () => {
+    // Il disait « à poser » sur les quatorze cases, et c'est LÀ qu'était le
+    // trou que Workspace#45 a d'abord cherché dans le modèle : pas dans les
+    // données, dans cette phrase. Un créneau vide n'est pas un manque, c'est
+    // une décision pas encore prise.
+    const s = vue()[3]?.slots[0];
+    expect(s?.nom).toBeNull();
+    expect(s?.libre).toBe(true);
+  });
+
+  test("T51 — un repas sauté, LUI, se dit : c'est une décision", () => {
+    poser(0, "diner", SAUTE);
+    const s = vue()[0]?.slots[1];
+    expect(s?.nom).toBe("on ne mange pas là");
+    expect(s?.libre).toBe(false);
+  });
+
+  test("T51 — un plat posé se dit par son titre", () => {
+    poser(0, "diner", "sauce-bolognaise");
+    const s = vue()[0]?.slots[1];
+    expect(s?.nom).toBe(jeu.plats["sauce-bolognaise"]!.titre);
+    expect(s?.libre).toBe(false);
+  });
+
+  test("T51 — le vide ne produit aucun souci non plus", () => {
+    // `calc.manques` ne parle que des plats POSÉS (`if (!joue(rid)) return`),
+    // donc l'écran était le seul endroit d'où venait la réclamation.
+    expect(vue()[3]?.slots[0]?.souci).toBe("");
+  });
+
   test("les parts ne s'affichent que réglées", () => {
     poser(0, "diner", "sauce-bolognaise");
     expect(vue()[0]?.slots[1]?.partsRegle).toBe(false);

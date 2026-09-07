@@ -43,6 +43,11 @@ export type Route =
   | { ecran: "prevoir" }
   | { ecran: "courses" }
   | { ecran: "stock" }
+  // LE FIL A DEUX FORMES, ET C'EST LA MÊME ROUTE — T49. Sans créneau, c'est
+  // l'ouverture : on choisit l'horizon, ou on reprend une passe commencée.
+  // Avec, c'est un pas. Deux écrans auraient obligé chaque lien à savoir
+  // laquelle des deux il vise, alors que c'est la passe en base qui le sait.
+  | { ecran: "fil"; creneau?: CleCreneau }
   | { ecran: "poser"; creneau: CleCreneau }
   | { ecran: "parts"; creneau: CleCreneau }
   // « En cuisine » peut viser un plat qui n'est pas (encore) celui du créneau :
@@ -59,7 +64,7 @@ export const ROUTE_DEFAUT: Route = { ecran: "cockpit" };
 /** Les écrans qui appartiennent à la facette cuisine — ceux qui portent
  *  l'en-tête et la sous-navigation. */
 const DANS_CUISINE: ReadonlySet<Ecran> = new Set<Ecran>([
-  "aujourdhui", "semaine", "prevoir", "courses", "stock", "poser", "parts",
+  "aujourdhui", "semaine", "prevoir", "courses", "stock", "poser", "parts", "fil",
 ]);
 
 export const dansCuisine = (r: Route): boolean => DANS_CUISINE.has(r.ecran);
@@ -79,9 +84,11 @@ const SANS_PARAM: Record<string, Ecran> = {
   "cuisine/prevoir": "prevoir",
   "cuisine/courses": "courses",
   "cuisine/stock": "stock",
+  "cuisine/fil": "fil",
 };
 
-const AVEC_CRENEAU: Record<string, Extract<Ecran, "poser" | "parts" | "cuisiner">> = {
+const AVEC_CRENEAU: Record<string, Extract<Ecran, "poser" | "parts" | "cuisiner" | "fil">> = {
+  "cuisine/fil": "fil",
   "cuisine/poser": "poser",
   "cuisine/parts": "parts",
   "cuisine/cuisiner": "cuisiner",
@@ -97,6 +104,8 @@ export function chemin(r: Route): string {
     case "prevoir": return "#/cuisine/prevoir";
     case "courses": return "#/cuisine/courses";
     case "stock": return "#/cuisine/stock";
+    case "fil":
+      return r.creneau ? `#/cuisine/fil/${r.creneau.jour}/${r.creneau.repas}` : "#/cuisine/fil";
     case "poser": return `#/cuisine/poser/${r.creneau.jour}/${r.creneau.repas}`;
     case "parts": return `#/cuisine/parts/${r.creneau.jour}/${r.creneau.repas}`;
     case "cuisiner":
