@@ -4,8 +4,10 @@ import { calculer } from "../model/calcul";
 import { lireCatalogue } from "../model/catalogue";
 import { creerJeu, type Jeu } from "../model/jeu";
 import type { Catalogue, Denree, Zone } from "../model/types";
+import type { Evenement } from "../model/journal";
 import {
-  agressions, categories, espaces, fiabilite, gardeManger, lots, vueDeLInventaire, zones,
+  agressions, categories, espaces, fiabilite, gardeManger, lots, vueDeLInventaire,
+  vueDesPlanchers, zones,
 } from "./stock.vue";
 
 const LUNDI = new Date("2026-08-17T12:00:00Z");
@@ -380,5 +382,75 @@ describe("le garde-manger entier", () => {
   test("la vue de l'inventaire porte le garde-manger", () => {
     const vue = vueDeLInventaire(jeu, calculer(jeu), null);
     expect(vue.gardeManger.zones.length).toBe(catalogue.gardeManger.zones.length);
+  });
+});
+
+/* ═══════════════ les planchers, vus depuis « L'inventaire » — T34 à T38 ═══ */
+
+const cuisine = (plat: string, jour: string): Evenement => ({
+  sorte: "cuisine", jour, saisi: jour, maj: Date.parse(jour), repas: "diner", plat, parts: 2.5,
+});
+
+describe("ce qu'on veut toujours avoir", () => {
+  test("une base neuve ne montre aucun plancher, et n'en propose aucun", () => {
+    // DÉMARRAGE À FROID : ZÉRO PLANCHER. L'écran dit quand même l'état du stock
+    // d'urgence, parce que celui-là ne se décide pas — il vient du catalogue.
+    const vue = vueDesPlanchers(jeu, calculer(jeu), new Map(), []);
+    expect(vue.poses).toEqual([]);
+    expect(vue.propositions).toEqual([]);
+    expect(vue.secours).toContain("portion");
+  });
+
+  test("l'amorce est sous le plancher de secours, et l'écran le dit", () => {
+    // Un seul bocal au congélo : deux portions, un type. C'est exactement le
+    // cas que `congelateur.plancher` décrit depuis le prototype.
+    const vue = vueDesPlanchers(jeu, calculer(jeu), new Map(), []);
+    expect(vue.sous).toBe(true);
+  });
+
+  test("un plancher posé dit ce qu'il y a, ce qu'on veut, et ce qui le recharge", () => {
+    const vue = vueDesPlanchers(jeu, calculer(jeu), new Map([["sauce-bolognaise", 4]]), []);
+    const p = vue.poses.find((x) => x.type === "sauce-bolognaise")!;
+    expect(p.a).toBe(2);
+    expect(p.niveau).toBe(4);
+    expect(p.sous).toBe(true);
+    expect(p.population).toBe("apport");
+    expect(p.plats.length).toBeGreaterThan(0);
+  });
+
+  test("un plancher tenu ne demande rien, et passe derrière ceux qui manquent", () => {
+    const vue = vueDesPlanchers(
+      jeu,
+      calculer(jeu),
+      new Map([["sauce-bolognaise", 1], ["lasagnes", 2]]),
+      [],
+    );
+    expect(vue.poses.find((x) => x.type === "sauce-bolognaise")!.sous).toBe(false);
+    expect(vue.poses[0]!.sous).toBe(true);
+  });
+
+  test("un refus ne s'affiche pas et ne se repropose pas", () => {
+    // « Non merci » est une décision, pas un silence : sans elle, la même
+    // proposition revient à chaque ouverture de l'écran.
+    const plat = catalogue.plats.find((p) => p.emits.some((e) => e.type === "sauce-bolognaise"))!;
+    const evts = [cuisine(plat.id, "2026-08-10"), cuisine(plat.id, "2026-08-17")];
+    const decisions = new Map<string, number | null>([["sauce-bolognaise", null]]);
+    const vue = vueDesPlanchers(jeu, calculer(jeu), decisions, evts);
+    expect(vue.poses.some((x) => x.type === "sauce-bolognaise")).toBe(false);
+    expect(vue.propositions.some((x) => x.type === "sauce-bolognaise")).toBe(false);
+  });
+
+  test("deux cuissons proposent un plancher, et montrent ce qui le recharge", () => {
+    const plat = catalogue.plats.find((p) => p.emits.some((e) => e.type === "sauce-bolognaise"))!;
+    const evts = [cuisine(plat.id, "2026-08-10"), cuisine(plat.id, "2026-08-17")];
+    const vue = vueDesPlanchers(jeu, calculer(jeu), new Map(), evts);
+    const prop = vue.propositions.find((x) => x.type === "sauce-bolognaise")!;
+    expect(prop.niveau).toBe(1);
+    expect(prop.cuissons).toBe(2);
+    expect(prop.plats).toContain(plat.titre);
+  });
+
+  test("un congélateur qui a de la place ne raconte pas qu'il est plein", () => {
+    expect(vueDesPlanchers(jeu, calculer(jeu), new Map(), []).plein).toBe("");
   });
 });

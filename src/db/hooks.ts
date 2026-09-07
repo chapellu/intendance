@@ -23,6 +23,7 @@ import { passeDuJour } from "../model/questions";
 import type { Savoir } from "../model/scoring";
 import { lireCourses } from "./courses";
 import { lireJournal } from "./journal";
+import { lireDecisions, validesParmi } from "./planchers";
 import { base, jourISO, type EtatCourse, type LotStock } from "./schema";
 import { amorcer, hydraterStock } from "./stock";
 import { hydrater, oublier, poser, prevoirGamelle, reglerParts } from "./semaine";
@@ -246,9 +247,10 @@ export function useSavoir(
   aujourdhui = new Date(),
 ): Savoir | null {
   const evts = useJournal();
+  const decisions = usePlanchers();
   const jour = jourISO(aujourdhui);
   return useMemo(() => {
-    if (!catalogue || !evts || !jeu) return null;
+    if (!catalogue || !evts || !jeu || !decisions) return null;
     const ctx = contexte(catalogue);
     const poses = jeu.choix
       .map((c) => (joue(c) ? (jeu.plats[c] ?? null) : null))
@@ -257,6 +259,22 @@ export function useSavoir(
       rejeu: rejouer(catalogue, evts, ctx, jour),
       passe: passeDuJour(catalogue, ctx, evts, poses, jour),
       cuisinesRecemment: cuissonsRecentes(evts, jour, catalogue.equilibre.main.cooldown_jours),
+      // ON ATTEND LES PLANCHERS COMME ON ATTEND LE JOURNAL. Les servir vides en
+      // attendant afficherait une main, puis la même main réordonnée : c'est la
+      // main qu'on sait fausse que Workspace#45 a écartée, obtenue par accident
+      // — exactement le raisonnement qui a rendu `useSavoir` bloquant.
+      planchers: validesParmi(decisions),
     };
-  }, [catalogue, evts, jeu, jour]);
+  }, [catalogue, evts, jeu, decisions, jour]);
+}
+
+/**
+ * Les décisions prises sur les planchers, vivantes — T37.
+ *
+ * Rendues telles quelles, refus compris : l'écran qui propose a besoin de savoir
+ * ce qui a été REFUSÉ pour ne pas le reproposer, là où le score n'a besoin que
+ * de ce qui a été accepté. Deux lecteurs, deux questions.
+ */
+export function usePlanchers(): Map<string, number | null> | undefined {
+  return useLiveQuery(() => lireDecisions(base), []);
 }

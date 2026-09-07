@@ -20504,6 +20504,7 @@
    "chaine_manquante": -8,
    "hors_budget": -4,
    "plancher_congelo": 4,
+   "plancher_type": 3,
    "mal_transporte": -6,
    "article_marginal": -0.4,
    "anticipation_ratee": -5
@@ -20511,6 +20512,9 @@
   "congelateur": {
    "portions_par_tiroir": 6,
    "plancher": 4,
+   "diversite_min": 3,
+   "plafond_apports": 6,
+   "plafond_diners": 12,
    "reste_ne_compte_pas_dans_les_plafonds": true
   },
   "main": {

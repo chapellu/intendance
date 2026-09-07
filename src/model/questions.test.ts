@@ -414,6 +414,7 @@ describe("le volume de questions DOIT décroître à l'usage", () => {
       rejeu,
       passe: passeDuJour(reel, ctxReel, evts, [], JOUR),
       cuisinesRecemment: new Set<string>(),
+    planchers: [],
     };
     let total = 0;
     const dinersDeLaSemaine = jeu.creneaux
