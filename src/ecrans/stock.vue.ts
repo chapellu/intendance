@@ -19,6 +19,14 @@ import type { BilanEspace, Calcul } from "../model/calcul";
 import type { LigneDepot } from "../model/depot";
 import type { Jeu } from "../model/jeu";
 import { aSauver } from "../model/gardeManger";
+import type { Evenement } from "../model/journal";
+import {
+  etatDuCongelo,
+  nomDuType,
+  producteurs,
+  propositions,
+  type Population,
+} from "../model/plancher";
 import type { Catalogue, Denree, Espace, GardeManger, Urgence, Zone } from "../model/types";
 import { fmt } from "../ui/format";
 import { nomEspace } from "../ui/phrases";
@@ -179,6 +187,121 @@ export function espaces(stockage: Record<Espace, BilanEspace>): EspaceVue[] {
           : "",
     };
   });
+}
+
+/* ─────────────────────────────────────────────────────────── les planchers */
+
+/**
+ * Ce que « L'inventaire » dit des planchers — T34 à T38.
+ *
+ * ICI ET PAS AILLEURS, parce que c'est le seul écran qui parle du dépôt
+ * lui-même. Un plancher n'est pas une décision sur la semaine : c'est une
+ * phrase sur le congélateur — « je veux toujours en avoir » — et elle se prend
+ * devant le tiroir, pas devant une carte.
+ *
+ * ET C'EST LE SEUL ENDROIT OÙ UN PLANCHER PEUT NAÎTRE. Sans cet écran, T34 à
+ * T38 seraient exactement ce que T48 recense : un mécanisme lu, typé, et sans
+ * effet, parce que rien ne pourrait jamais valider une proposition.
+ */
+export interface PlancherVue {
+  type: string;
+  nom: string;
+  niveau: number;
+  /** Ce qu'il y a en ce moment, en portions. */
+  a: number;
+  sous: boolean;
+  population: Population;
+  /** Ce qui le recharge — dérivé, jamais saisi (T34). En titres lisibles. */
+  plats: string[];
+}
+
+export interface PropositionVue {
+  type: string;
+  nom: string;
+  niveau: number;
+  cuissons: number;
+  plats: string[];
+}
+
+export interface PlanchersVue {
+  /** L'état du plancher de secours, en une phrase. Toujours dit : c'est le seul
+   *  chiffre du congélateur qui vaille dès le premier jour. */
+  secours: string;
+  sous: boolean;
+  /** Les plafonds par population, en une phrase — T35. */
+  populations: string;
+  poses: PlancherVue[];
+  propositions: PropositionVue[];
+  /** Ce qui prend la place, quand il n'y en a plus — T38. Vide sinon. */
+  plein: string;
+}
+
+const portions = (n: number): string => `${n} portion${n > 1 ? "s" : ""}`;
+
+export function vueDesPlanchers(
+  jeu: Jeu,
+  calc: Calcul,
+  decisions: ReadonlyMap<string, number | null>,
+  evenements: readonly Evenement[],
+): PlanchersVue {
+  const catalogue = jeu.catalogue;
+  const etat = etatDuCongelo(catalogue, calc.depot.lignes);
+  const qui = producteurs(catalogue);
+  const titres = (type: string): string[] =>
+    (qui.get(type) ?? []).map((id) => jeu.plats[id]?.titre ?? id);
+
+  const poses: PlancherVue[] = [];
+  for (const [type, niveau] of decisions) {
+    if (niveau === null) continue;
+    const a = etat.portions.get(type) ?? 0;
+    poses.push({
+      type,
+      nom: nomDuType(type),
+      niveau,
+      a,
+      sous: a < niveau,
+      population: populationDuType(catalogue, type),
+      plats: titres(type),
+    });
+  }
+
+  return {
+    secours:
+      `${portions(etat.secours.portions)} au congélateur sur ${etat.reglages.secours} voulues, ` +
+      `réparties sur ${etat.secours.types} type${etat.secours.types > 1 ? "s" : ""} sur ` +
+      `${etat.reglages.diversite}`,
+    sous: etat.secours.sous,
+    populations:
+      `${etat.parPopulation.apport}/${etat.reglages.plafonds.apport} de quoi accélérer un soir · ` +
+      `${etat.parPopulation.diner}/${etat.reglages.plafonds.diner} dîners d'avance · ` +
+      `${etat.total}/${etat.reglages.limite} places`,
+    // TRIÉS PAR CE QUI MANQUE, parce que la liste est une liste de gestes : un
+    // plancher tenu n'appelle rien, un plancher sous son seuil appelle un dîner.
+    poses: poses.sort(
+      (a, b) => Number(b.sous) - Number(a.sous) || a.nom.localeCompare(b.nom, "fr"),
+    ),
+    propositions: propositions(catalogue, evenements, new Set(decisions.keys())).map((p) => ({
+      type: p.type,
+      nom: nomDuType(p.type),
+      niveau: p.niveau,
+      cuissons: p.cuissons,
+      plats: titres(p.type),
+    })),
+    plein:
+      etat.plein && etat.dominant
+        ? `Plus une place : ${portions(etat.dominant.portions)} de ${nomDuType(etat.dominant.type)} ` +
+          `sur ${etat.reglages.limite}. Aucun plancher ne pousse plus rien tant que ça n'a pas baissé.`
+        : "",
+  };
+}
+
+/** La population d'un type, lue au catalogue plutôt qu'au dépôt : un plancher
+ *  existe avant qu'il y ait quoi que ce soit dans le tiroir, et c'est même son
+ *  cas le plus utile. */
+function populationDuType(catalogue: Catalogue, type: string): Population {
+  for (const p of catalogue.plats)
+    for (const e of p.emits) if (e.type === type) return e.kind === "base" ? "apport" : "diner";
+  return "diner";
 }
 
 export interface LotVue {

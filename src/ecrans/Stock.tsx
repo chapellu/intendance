@@ -27,8 +27,9 @@
 
 import { useMemo, useState } from "react";
 import { ajouterLot, base, retirerLot, type LotStock } from "../db";
-import { useCatalogue, usePlacard, useSemaine } from "../db/hooks";
+import { useCatalogue, useJournal, usePlacard, usePlanchers, useSemaine } from "../db/hooks";
 import { releverZone } from "../db/journal";
+import { poserPlancher } from "../db/planchers";
 import type { Calcul } from "../model/calcul";
 import type { Jeu } from "../model/jeu";
 import type { Confiance, EtatIngredient, Rejeu } from "../model/journal";
@@ -38,7 +39,7 @@ import { aller } from "../nav/useRoute";
 import { Corps } from "../ui/Coquille";
 import { Icone, iconeEspace } from "../ui/icones";
 import { fmt } from "../ui/format";
-import { vueDeLInventaire, type LotVue, type ZoneVue } from "./stock.vue";
+import { vueDeLInventaire, vueDesPlanchers, type LotVue, type PlanchersVue, type ZoneVue } from "./stock.vue";
 
 export function Stock() {
   const { catalogue } = useCatalogue();
@@ -65,6 +66,18 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
   // LE PLACARD REJOUÉ. Rien de ce qu'il rend n'existe en base : c'est l'amorce
   // du catalogue plus le journal, et c'est là que T25 devient visible à l'œil.
   const placard = usePlacard(jeu.catalogue);
+
+  // LES PLANCHERS — T34 à T38. Le journal dit ce qui a été cuisiné, donc ce qui
+  // se propose ; les décisions disent ce qu'un doigt en a fait. `null` tant que
+  // la base n'a pas répondu, et la section ne s'affiche pas : montrer « aucun
+  // plancher » sur une base qui n'a pas encore parlé serait un mensonge de plus
+  // dans un écran dont tout le propos est de dire d'où vient chaque chiffre.
+  const journal = useJournal();
+  const decisions = usePlanchers();
+  const planchers = useMemo(
+    () => (journal && decisions ? vueDesPlanchers(jeu, calc, decisions, journal) : null),
+    [jeu, calc, decisions, journal],
+  );
 
   const retirer = async (ref: string) => {
     const id = Number(ref);
@@ -151,6 +164,8 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
         et c’est lui qui passe en terre cuite — laver deux bocaux n’est pas dégager une étagère.
       </div>
 
+      <Planchers vue={planchers} />
+
       <div
         style={{
           display: "flex",
@@ -218,6 +233,100 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
 
       <GardeManger vue={vue.gardeManger} placard={placard} />
     </Corps>
+  );
+}
+
+/* ──────────────────────────────────────────────────────────── les planchers */
+
+/**
+ * « Ce qu'on veut toujours avoir » — T34 à T38.
+ *
+ * L'APP PROPOSE, ELLE NE POSE PAS. Sur 48 types congelables, un réglage à la
+ * main ne sera jamais fait ; mais poser un plancher d'office ferait réclamer un
+ * dîner qu'on n'a peut-être cuisiné deux fois que par hasard. D'où les deux
+ * boutons, et le second compte autant que le premier : « non merci » est une
+ * DÉCISION qui s'écrit, sinon la proposition revient à chaque ouverture de
+ * l'écran et finit par discréditer les autres.
+ *
+ * LE PLANCHER DE SECOURS EST EN TÊTE ET SANS BOUTON, parce qu'il ne se décide
+ * pas : il vient du catalogue et vaut dès le premier jour. Ce n'est pas une
+ * hypothèse sur des habitudes, c'est une propriété du foyer — dix-huit places
+ * et un soir qui peut s'effondrer.
+ */
+function Planchers({ vue }: { vue: PlanchersVue | null }) {
+  if (!vue) return null;
+  return (
+    <>
+      <div className="co-kicker" style={{ margin: "var(--space-4) var(--space-1) var(--space-2)" }}>
+        Ce qu’on veut toujours avoir
+      </div>
+
+      <div className="co-espace">
+        <div className="nom">Le stock d’urgence</div>
+        <div className="co-note">{vue.secours}</div>
+        <div className="co-note">{vue.populations}</div>
+        {vue.sous ? (
+          <div className="geste">
+            sous son plancher — « Poser un plat » remonte les recettes qui le rechargent
+          </div>
+        ) : null}
+        {/* T38 — ce qui prend la place se NOMME. « Ça ne paie plus rien » sans
+            raison est un silence, pas une explication. */}
+        {vue.plein ? <div className="geste">{vue.plein}</div> : null}
+      </div>
+
+      {vue.poses.map((p) => (
+        <div key={p.type} className="co-lot">
+          <span style={{ flex: 1 }}>
+            <div className="nom">{p.nom}</div>
+            <div className="ou">
+              {p.population === "apport" ? "de quoi accélérer un soir" : "un dîner d’avance"}
+              {p.plats.length ? ` · se recharge en cuisinant ${p.plats.join(", ")}` : ""}
+            </div>
+          </span>
+          <span>
+            <div className="q">
+              {p.a} / {p.niveau}
+            </div>
+            <div className={`src ${p.sous ? "estime" : ""}`}>{p.sous ? "à refaire" : "tenu"}</div>
+          </span>
+        </div>
+      ))}
+
+      {vue.propositions.map((p) => (
+        <div key={p.type} className="co-lot">
+          <span style={{ flex: 1 }}>
+            <div className="nom">{p.nom}</div>
+            <div className="ou">
+              cuisiné {p.cuissons} fois
+              {p.plats.length ? ` · ${p.plats.join(", ")}` : ""}
+            </div>
+            <div style={{ display: "flex", gap: "var(--space-1)", marginTop: 4 }}>
+              <button
+                className="btn btn-secondary"
+                style={{ fontSize: 12, padding: "2px 8px" }}
+                onClick={() => void poserPlancher(base, p.type, p.niveau)}
+              >
+                En garder {p.niveau}
+              </button>
+              <button
+                className="btn btn-ghost"
+                style={{ fontSize: 12, padding: "2px 8px" }}
+                onClick={() => void poserPlancher(base, p.type, null)}
+              >
+                Non merci
+              </button>
+            </div>
+          </span>
+        </div>
+      ))}
+
+      <div className="co-note" style={{ margin: "var(--space-2) var(--space-1) 0" }}>
+        Un plancher est une <b>hypothèse sur une habitude</b>&nbsp;: l’app la propose à la deuxième
+        cuisson, jamais avant. En dessous, les plats qui le rechargent remontent dans la main&nbsp;;
+        au-dessus, rien ne coûte — un plancher est un seuil, pas une cible.
+      </div>
+    </>
   );
 }
 

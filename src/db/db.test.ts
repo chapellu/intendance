@@ -7,6 +7,7 @@ import { Base, VERSION, cleCreneau, jourISO, schemaDeclare } from "./schema";
 import { cocher, lireCourses, rentrer, rentrerLesCoches, viderCourses } from "./courses";
 import { hydrater, lireSemaine, oublier, poser, reglerParts } from "./semaine";
 import { ajouterLot, amorcer, auModele, corrigerLot, hydraterStock, lireStock, reamorcer, retirerLot } from "./stock";
+import { clePlancher, lireDecisions, poserPlancher, validesParmi } from "./planchers";
 import { calculer } from "../model/calcul";
 
 const catalogue: Catalogue = lireCatalogue(
@@ -298,5 +299,47 @@ describe("le stock", () => {
 
     await reamorcer(base, catalogue);
     expect(await lireStock(base)).toHaveLength(catalogue.stock.length);
+  });
+});
+
+/* ══════════════════════ les planchers, persistés — T37 ═══════════════════ */
+
+describe("un plancher est une décision, donc il survit", () => {
+  test("une base neuve n'en porte aucun", async () => {
+    expect((await lireDecisions(base)).size).toBe(0);
+    expect(validesParmi(await lireDecisions(base))).toEqual([]);
+  });
+
+  test("posé, il se relit — et le score ne voit que ce qui a été accepté", async () => {
+    await poserPlancher(base, "sauce-bolognaise", 2);
+    await poserPlancher(base, "lasagnes", null);
+    const d = await lireDecisions(base);
+    expect(d.get("sauce-bolognaise")).toBe(2);
+    expect(d.get("lasagnes")).toBe(null);
+    expect(validesParmi(d)).toEqual([{ type: "sauce-bolognaise", niveau: 2 }]);
+  });
+
+  test("un refus s'écrit, il ne s'efface pas", async () => {
+    // LA MOITIÉ QUI COMPTE. Effacer la clé transformerait « non merci » en
+    // « jamais demandé », donc en proposition qui revient indéfiniment.
+    await poserPlancher(base, "lasagnes", null);
+    expect(await base.reglages.get(clePlancher("lasagnes"))).toBeDefined();
+  });
+
+  test("redécider écrase, ça ne s'empile pas", async () => {
+    await poserPlancher(base, "sauce-bolognaise", 1);
+    await poserPlancher(base, "sauce-bolognaise", 3);
+    const d = await lireDecisions(base);
+    expect(d.size).toBe(1);
+    expect(d.get("sauce-bolognaise")).toBe(3);
+  });
+
+  test("les planchers ne se mélangent pas aux autres réglages", async () => {
+    // La table est un clé-valeur partagé : le préfixe est ce qui tient les
+    // lecteurs séparés, et une lecture qui ramasserait le drapeau d'amorce
+    // fabriquerait un plancher sur un type qui n'existe pas.
+    await base.reglages.put({ cle: "stock.amorce", valeur: 1, maj: 1 });
+    await poserPlancher(base, "sauce-bolognaise", 2);
+    expect([...(await lireDecisions(base)).keys()]).toEqual(["sauce-bolognaise"]);
   });
 });

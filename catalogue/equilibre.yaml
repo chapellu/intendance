@@ -62,7 +62,16 @@ poids:
   ecoule_placard_entame: 2   # paquet ouvert : la barrière est rompue
   chaine_manquante: -8       # exige une base que rien ne produit avant
   hors_budget: -4
+  # LES DEUX PLANCHERS SONT DEUX MÉCANIQUES, DONC DEUX POIDS (T36). Le premier
+  # paie le plancher de SECOURS — « il n'y a plus de soir qu'on sauve » —, le
+  # second le plancher PAR TYPE — « la dernière bolognaise vient de partir ».
+  # Le secours vaut plus, parce qu'il protège la soirée qui s'effondre quand le
+  # par-type ne protège qu'une habitude. Les deux restent sous
+  # `proteine_manquante` : reconstituer départage deux plats également bons, ça
+  # ne rend pas bon un plat qui sature une protéine. Valeurs posées à vue, à
+  # régler à l'usage.
   plancher_congelo: 4        # remonte le stock d'urgence quand il est bas
+  plancher_type: 3           # recharge un type précis passé sous son plancher
   mal_transporte: -6         # déjeuner de coworking : ce plat voyage mal
   article_marginal: -0.4     # la liste de courses pèse, mais ne décide plus
   # Anticipation ratée : l'échéance est DÉJÀ passée (le trempage était pour
@@ -85,6 +94,22 @@ congelateur:
   # congélateur plein n'est pas un but — c'est un seuil sous lequel on redevient
   # dépendant de la liste de courses. Valeur posée à vue, à régler à l'usage.
   plancher: 4
+  # ET LA DIVERSITÉ, QUI MANQUAIT (T36). « Quatre portions » sans elle, c'est
+  # quatre bolognaises — et l'utilisateur a tranché : « si je déstocke la
+  # dernière bolognaise il faut encourager d'en refaire », donc quatre fois le
+  # même plat n'est pas une réserve, c'est un stock d'un plat. L'objection tuait
+  # le compteur SANS diversité, pas le compteur : les deux conditions tiennent
+  # ensemble. Posée à vue elle aussi.
+  diversite_min: 3
+  # DEUX POPULATIONS, DEUX PLAFONDS (T35). Un pot-au-feu met en stock d'un seul
+  # soir un `bouillon-pot-au-feu` (une base — elle ne fait pas un dîner, elle en
+  # accélère un) et une `viande-pot-au-feu` (un dîner). Ce sont deux réserves
+  # différentes, et elles se disputent les mêmes tiroirs : si les bocaux de
+  # bouillon mangent les dix-huit places, il ne reste plus un seul soir qu'on
+  # sauve. Les deux plafonds font donc exactement la capacité — 6 + 12 = 18 —
+  # et un test l'épingle. Le partage, lui, est posé à vue.
+  plafond_apports: 6
+  plafond_diners: 12
   # Une protéine plafonnée n'est décomptée que si elle est ACHETÉE. Reprendre
   # une bolognaise déjà cuisinée et congelée ne « dépense » pas le quota de
   # viande rouge de la semaine : la viande a été payée la semaine où on l'a

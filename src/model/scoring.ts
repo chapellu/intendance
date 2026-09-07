@@ -18,6 +18,7 @@ import { bonusPlacard, urgences } from "./gardeManger";
 import { convient, joue, type Choix, type Jeu } from "./jeu";
 import { contexte, type Rejeu } from "./journal";
 import { gamelles } from "./offres";
+import { bonusPlancher, etatDuCongelo, type Plancher } from "./plancher";
 import { bloque, paris, type Passe } from "./questions";
 import type { Catalogue, Plat } from "./types";
 
@@ -43,6 +44,20 @@ export interface Savoir {
    * terme inoffensif sur une base neuve.
    */
   cuisinesRecemment: ReadonlySet<string>;
+  /**
+   * Les planchers par type qu'un doigt a validés — T37.
+   *
+   * VIDE AU DÉMARRAGE À FROID, ET C'EST LA PROMESSE DU TICKET : aucun type n'a
+   * de plancher tant qu'il n'a pas été cuisiné deux fois et que la proposition
+   * n'a pas été acceptée. Donc aucun bonus par type en semaine 1, et une
+   * proposition sans `savoir` — celle des écrans qui n'ont pas la base sous la
+   * main — n'en invente aucun non plus.
+   *
+   * Le plancher de SECOURS, lui, n'est pas ici : il vient du catalogue et vaut
+   * dès le premier jour. Ce n'est pas une hypothèse sur des habitudes, c'est une
+   * propriété du foyer — dix-huit places et un soir qui peut s'effondrer.
+   */
+  planchers: readonly Plancher[];
 }
 
 /* ───────────────────────────────────────────────────────────── couverture */
@@ -147,6 +162,16 @@ export interface Carte {
    *  entamés, ce qui n'appelle pas le même geste. */
   sauve: boolean;
   /**
+   * Les types que ce plat remonterait vers leur plancher — T34.
+   *
+   * Vide pour les 40 plats du corpus qui ne congèlent rien, vide aussi tant
+   * qu'aucun plancher n'a été validé, et vide encore quand le congélateur est
+   * plein : dans les trois cas il n'y a rien à reconstituer, et le score ne
+   * paie rien. Le plancher de secours, lui, ne nomme aucun type — il porte sur
+   * le tiroir entier — et se lit dans `pourquoi`.
+   */
+  plancher: string[];
+  /**
    * Ce que cette carte PARIE — les secondaires que le modèle croit avoir sans
    * en être sûr (T33). Vide quand elle ne parie rien, ce qui est le cas normal.
    *
@@ -181,6 +206,13 @@ export function offre(jeu: Jeu, choix: Choix[], slot: number, savoir?: Savoir): 
   // Le placard ne change pas d'un plat à l'autre : on le lit une fois pour la
   // proposition entière, pas 86 fois. Même raison pour le contexte du journal.
   const pressees = urgences(jeu.catalogue);
+  // LE CONGÉLATEUR SE LIT AVANT LA CARTE, ET UNE SEULE FOIS. Le lire par
+  // candidat le mesurerait 86 fois pour un tiroir qui ne bouge pas d'un plat à
+  // l'autre — et surtout, il doit être lu AVANT de poser la carte : un plat qui
+  // remplit le congélateur ne doit pas s'éteindre son propre bonus. C'est le
+  // même raisonnement que `cov`, qui se mesure sur `choix` et pas sur `essai`.
+  const congelo = etatDuCongelo(jeu.catalogue, base.depot.lignes);
+  const planchers = savoir?.planchers ?? [];
   const ctx = savoir ? contexte(jeu.catalogue) : null;
   const horsJeu = savoir && ctx ? bloque(jeu.catalogue, ctx, savoir.passe) : () => false;
 
@@ -280,6 +312,17 @@ export function offre(jeu: Jeu, choix: Choix[], slot: number, savoir?: Savoir): 
         );
       }
 
+      // CE QUE LE PLAT REMET AU CONGÉLATEUR — T34 à T38. Après le placard,
+      // parce que c'est le même registre : un argument qui départage deux plats
+      // également bons, pas un argument qui rend bon un mauvais plat. Et avant
+      // `article_marginal`, qui va faire payer à ce plat de reconstitution
+      // chaque article qu'il ajoute au panier — c'est ainsi que reconstituer un
+      // bouillon (qui n'exige rien) bat naturellement reconstituer une
+      // bolognaise (qui exige de la viande), sans qu'aucune règle le dise.
+      const plancher = bonusPlancher(p, congelo, planchers, poids);
+      score += plancher.score;
+      pourquoi.push(...plancher.raisons);
+
       const marginal = apres.panier.size - nBase;
       score += (poids["article_marginal"] ?? 0) * marginal;
 
@@ -291,6 +334,7 @@ export function offre(jeu: Jeu, choix: Choix[], slot: number, savoir?: Savoir): 
         pourquoi,
         placard: placard.noms,
         sauve: placard.urgent,
+        plancher: plancher.types,
         paris: savoir && ctx ? paris(jeu.catalogue, ctx, savoir.rejeu, p) : [],
         malTransporte,
         manque: requisNonCouvert,

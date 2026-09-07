@@ -138,6 +138,17 @@ test("terminer une recette journalise, et la confiance du placard se dépense", 
   await page.reload();
   await attendreLApp(page);
   await expect(lignes.filter({ hasText: /estimé|à vérifier/ }).first()).toBeVisible();
+
+  // T37 — UNE SEULE CUISSON NE PROPOSE AUCUN PLANCHER, et c'est la promesse la
+  // plus facile à casser dans le mauvais sens : une app qui propose de suivre
+  // le premier plat cuisiné produirait du bruit dès la semaine 1, sur des
+  // habitudes que personne n'a encore. La section, elle, est là — le stock
+  // d'urgence ne se décide pas, il vient du catalogue et vaut dès le premier
+  // jour. Quel que soit le plat que « Poser » a tiré, ces deux phrases sont
+  // vraies : c'est pour ça qu'elles sont testées ici plutôt qu'un compte.
+  await expect(page.getByText("Ce qu’on veut toujours avoir")).toBeVisible();
+  await expect(page.getByText("au congélateur sur")).toBeVisible();
+  await expect(page.getByRole("button", { name: /En garder/ })).toHaveCount(0);
 });
 
 test("relever une zone remet le placard à ce que l'œil voit", async ({ page }) => {

@@ -1076,14 +1076,14 @@ dans ce foyer : `docs/cuisine/stock.md` appelle ainsi le PAQUET derrière le
 bocal distributeur — un objet physique, pas une cible. La cible s'appelle donc
 `plancher`, mot que `equilibre.yaml` emploie déjà dans exactement ce sens.
 
-- [ ] **T34 — Le plancher se pose sur ce qu'un plat PRODUIT.** Jamais sur la
+- [x] **T34 — Le plancher se pose sur ce qu'un plat PRODUIT.** Jamais sur la
       recette : `pain-rassis` est émis par 5 recettes, `reste-roti` par 2, et une
       recette en émet souvent deux ou trois. Un plancher sur la recette voudrait
       dire qu'un poulet rôti au citron ne recharge pas le même `poulet-cuit`
       qu'un poulet rôti nature. Le plat producteur est dérivé, et quand plusieurs
       rechargent un type, ils partagent le bonus.
 
-- [ ] **T35 — Deux populations, deux plafonds.** Un pot-au-feu met trois choses
+- [x] **T35 — Deux populations, deux plafonds.** Un pot-au-feu met trois choses
       en stock d'un coup : `bouillon-pot-au-feu` (`base` — un ingrédient, il ne
       fait pas un dîner, il en accélère un), `viande-pot-au-feu` (`reste-plat` —
       un dîner), `legumes-pot-au-feu` (`congelo: false`, il reste au frigo). Donc
@@ -1093,7 +1093,7 @@ bocal distributeur — un objet physique, pas une cible. La cible s'appelle donc
       le congélateur fait 18 places et que si les bocaux de bouillon mangent les
       tiroirs, il n'y a plus de soir qu'on sauve.
 
-- [ ] **T36 — Plancher par type, ET plancher de secours mutualisé.**
+- [x] **T36 — Plancher par type, ET plancher de secours mutualisé.**
       L'utilisateur : « si je déstocke la dernière bolognaise il faut encourager
       d'en refaire ». Mais le pur par-type ne tient pas l'arithmétique — 68 types
       × 1 = 68 portions pour 18 places. Donc les deux, à deux métiers : un
@@ -1103,7 +1103,7 @@ bocal distributeur — un objet physique, pas une cible. La cible s'appelle donc
       compteur SANS diversité, pas le compteur. Le plancher de secours n'est pas
       saisonnier — un soir s'effondre aussi en juillet.
 
-- [ ] **T37 — Propose-puis-valide, à la deuxième cuisson.** Sur 68 types, un
+- [x] **T37 — Propose-puis-valide, à la deuxième cuisson.** Sur 68 types, un
       réglage à la main ne sera jamais fait, et `equilibre.yaml` dit de son
       propre 4 : « valeur posée à vue, à régler à l'usage ». Aucun type n'a de
       plancher tant qu'il n'a pas été cuisiné **deux fois** — le journal de T25
@@ -1111,7 +1111,7 @@ bocal distributeur — un objet physique, pas une cible. La cible s'appelle donc
       **Démarrage à froid : zéro plancher**, donc aucun bonus inventé en
       semaine 1.
 
-- [ ] **T38 — Le plafond éteint le bonus ; être au-dessus ne coûte rien.**
+- [x] **T38 — Le plafond éteint le bonus ; être au-dessus ne coûte rien.**
       Congélateur plein → le bonus de reconstitution ne paie plus rien quels que
       soient les déficits par type, et l'app nomme le type sur-représenté
       (« 7 portions de ratatouille sur 18 »). Au-dessus de son plancher, **aucun
@@ -1226,6 +1226,102 @@ bocal distributeur — un objet physique, pas une cible. La cible s'appelle donc
       `plancher_congelo`, `ecoule_frigo`, `ecoule_congelo` et
       `congelateur.plancher`** — c'est-à-dire exactement la moitié congélateur,
       celle que T36 et T47 reprennent.
+
+      **T36 en a rendu deux de plus** : `plancher_congelo` et
+      `congelateur.plancher` sont lus, et le premier paie enfin quelque chose.
+      **Restent `ecoule_frigo` et `ecoule_congelo`**, que T47 supprimera comme
+      paire — ils attendent l'horloge de Workspace#50, pas un branchement.
+
+### Ce que les planchers ont coûté et appris
+
+**Fait le 07/09/2026** : `src/model/plancher.ts`, `src/db/planchers.ts`, la
+section « Ce qu'on veut toujours avoir » de « L'inventaire », et le branchement
+dans `offre()`. Plus `npm run planchers`, un script qui IMPRIME les chiffres du
+corpus au lieu de les figer en assertions — même partage que `npm run perf` :
+les promesses vont dans les tests, les tailles dans un script qu'on relance.
+
+**TROIS DES FAITS DE CORPUS SUR LESQUELS #43 S'APPUYAIT SONT FAUX**, et c'est la
+mesure qui l'a dit, pas la relecture.
+
+- **« `pain-rassis` est émis par 5 recettes » : il est émis par ZÉRO.** Trois
+  types sont `accepts` sans que rien ne les produise — `pain-rassis`,
+  `kasha-cuit`, `pois-chiches-cuits`. Le modèle n'a pas eu à prévoir le cas :
+  dériver le producteur (T34) suffit à les écarter, puisqu'un type sans
+  producteur n'a aucun plat à encourager. L'exemple canonique du ticket était
+  faux ; l'argument qu'il servait tient quand même, sur `reste-roti` et
+  `carcasse-volaille`, produits chacun par deux recettes. **Seuls 4 types sur 74
+  sortent de plusieurs recettes**, et c'est peu — mais c'est exactement le cas
+  où un plancher sur la recette aurait fabriqué deux réserves pour un seul
+  bocal.
+- **« Les 13 `kind: base` sont exactement les 13 types acceptés » : non.** 12
+  types `base`, 14 types acceptés, 9 en commun. Cinq types acceptés ne sont pas
+  des bases, trois bases ne sont acceptées nulle part.
+- **Les tailles ont bougé** : 78 emits (et non 69), 74 types distincts (68), 50
+  congelables (46), sur 46 des 86 plats. **48 types peuvent porter un
+  plancher** — ce sont les congelables — ce qui rend l'arithmétique de T36 moins
+  brutale qu'annoncé, mais pas moins vraie : 48 planchers à une portion
+  réclameraient 48 places pour les 18 qui existent.
+
+**CE QUE LE BRANCHEMENT DÉPLACE VRAIMENT**, mesuré sur un dîner du lundi, 64
+cartes jouables :
+
+- à l'amorce le congélateur porte **2 portions d'un seul type** — donc sous le
+  plancher de secours par les deux conditions à la fois ;
+- un plancher `sauce-bolognaise` à 3 fait passer son producteur de la
+  **32ᵉ à la 16ᵉ place** ; le même plancher à 2, que le bocal existant satisfait,
+  ne le bouge pas d'un rang ;
+- un plancher `reste-roti` à 1 fait monter **ses deux producteurs ensemble** —
+  36ᵉ → 22ᵉ et 33ᵉ → 16ᵉ. Ils ne se partagent pas le bonus, ils l'ont tous les
+  deux, et c'est la promesse de T34 rendue visible.
+
+**LE PLANCHER DE SECOURS PAIE 40 CARTES SUR 64, ET C'EST BEAUCOUP.** Sur un
+congélateur vide, tout plat qui congèle quelque chose touche le bonus — 46 des
+86 plats du corpus. Le terme ne départage donc presque rien en semaine 1 : il
+dit « cuisine quelque chose qui se garde », ce qui est utile une fois et
+constant ensuite. C'est la mécanique telle que #43 la décrit, et la condition de
+diversité est ce qui la rattrape dès que le tiroir se remplit — mais **si le
+volume de questions de T33 devait décroître, celui-ci doit s'ÉTEINDRE**, et
+c'est à l'usage qu'on le verra. S'il ne s'éteint pas, c'est `plancher_congelo`
+qu'il faut rouvrir.
+
+**Une divergence assumée avec l'argument de #43, écrite ici pour qu'elle se
+voie.** Le plancher de secours compte **toutes** les portions du congélateur,
+bases comprises — c'est la lettre de §C (« ≥ 4 portions sur ≥ 3 types ») et le
+sens que `congelateur.plancher` avait déjà. Mais §B dit dans la même page qu'un
+bouillon « ne fait pas un dîner, il en accélère un » : à le suivre, le secours
+ne devrait compter que les dîners. Les deux lectures sont défendables, la
+seconde n'a pas été retenue — les deux plafonds de T35 empêchent déjà les bases
+de manger les tiroirs. **À trancher à l'usage.**
+
+**Ce que ça a coûté ailleurs.** `Savoir` gagne un champ obligatoire
+(`planchers`), donc trois fichiers de test ont été touchés pour y écrire
+`planchers: []` — c'est-à-dire « démarrage à froid », ce qui est une affirmation
+et pas du bruit. Et `equilibre.yaml` gagne quatre nombres (`diversite_min`,
+`plafond_apports`, `plafond_diners`, `plancher_type`), tous **posés à vue**,
+dans le registre que le fichier emploie déjà pour son propre 4.
+
+### Laissé ouvert par T34–T38
+
+- **Un plancher ne compte que ce qui est AU CONGÉLATEUR.** Les 400 g de
+  lentilles cuites de l'amorce sont au frigo et ne comptent pour aucun plancher.
+  C'est volontaire — un reste qui tient trois jours n'est pas une réserve, et le
+  poser en cible ferait réclamer de cuisiner tous les trois jours — mais c'est
+  une restriction, pas une vérité : elle se rouvre avec l'horloge de T54.
+- **On ne peut pas défaire un plancher accepté.** Le refus s'écrit et tient ;
+  l'acceptation, elle, n'a pas de bouton pour revenir en arrière. C'est T44 —
+  « un plancher que les faits contredisent se retire » — et tant qu'il n'existe
+  pas, un plancher posé un jour d'enthousiasme réclame pour toujours.
+- **Le geste d'acceptation n'a pas de parcours e2e.** Il en faudrait deux
+  cuissons à travers l'écran, ce qui double le plus long parcours de la suite.
+  Seule la moitié négative est épinglée bout en bout — *une seule cuisson ne
+  propose rien* —, et c'est la moitié qui protège du bruit.
+- **`article_marginal` fait bien payer un plat de reconstitution** pour ce qu'il
+  ajoute au panier, comme §K l'annonçait, mais **ça n'a pas été mesuré
+  séparément** : reconstituer un bouillon devrait battre reconstituer une
+  bolognaise, et personne n'a vérifié de combien.
+- **La proposition ne dit pas ce qu'un plancher COÛTERAIT en places.** Accepter
+  cinq planchers à 1 sur 18 places est possible et personne n'en avertit ; les
+  plafonds de T35 éteignent le bonus mais ne refusent pas la décision.
 
 ## Le rail de planification — [Workspace#45](https://github.com/chapellu/Workspace/issues/45)
 

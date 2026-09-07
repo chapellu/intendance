@@ -208,6 +208,7 @@ describe("la main de cartes", () => {
     const sans = main(jeu, undefined, {
       rejeu, passe: { repondu: new Map(), depense: new Map() },
       cuisinesRecemment: new Set<string>(),
+    planchers: [],
     });
     expect(sans.length).toBeGreaterThan(0);
 
@@ -215,6 +216,7 @@ describe("la main de cartes", () => {
     const avec = main(jeu, undefined, {
       rejeu, passe: { repondu: new Map(), depense: new Map() },
       cuisinesRecemment: new Set([ecarte]),
+      planchers: [],
     });
     expect(avec.map((c) => c.plat.id)).not.toContain(ecarte);
   });
@@ -230,6 +232,7 @@ describe("la main de cartes", () => {
     const cartes = main(jeu, undefined, {
       rejeu, passe: { repondu: new Map(), depense: new Map() },
       cuisinesRecemment: tout,
+      planchers: [],
     });
     expect(cartes.length).toBeGreaterThan(0);
   });
@@ -308,6 +311,7 @@ describe("T33 — ce que la proposition sait", () => {
     rejeu,
     passe: { repondu: new Map(Object.entries(repondu)), depense: new Map(Object.entries(depense)) },
     cuisinesRecemment: new Set<string>(),
+    planchers: [],
   });
 
   test("sans savoir, rien ne change : ni blocage, ni pari", () => {

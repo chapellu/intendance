@@ -11,6 +11,7 @@
     "dev": "vite",
     "e2e": "playwright test",
     "perf": "vite-node scripts/perf.mjs",
+    "planchers": "vite-node scripts/planchers.mjs",
     "preview": "vite preview",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
