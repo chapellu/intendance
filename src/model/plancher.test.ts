@@ -52,6 +52,7 @@ const lot = (type: string, kind: EmitKind, portions: number): LigneDepot => ({
   born: null,
   gardeFrigo: null,
   congelo: true,
+  dluo: null,
   from: null,
   ref: null,
   reste: null,

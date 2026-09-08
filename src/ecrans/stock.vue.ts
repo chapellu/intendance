@@ -16,7 +16,7 @@
 // Port de `apps/proto-shell/comptoir.js` (`ecranStock`, `fiabilite`).
 
 import type { BilanEspace, Calcul } from "../model/calcul";
-import type { LigneDepot } from "../model/depot";
+import type { Depot, LigneDepot } from "../model/depot";
 import type { Jeu } from "../model/jeu";
 import { aSauver } from "../model/gardeManger";
 import type { Evenement, Rejeu } from "../model/journal";
@@ -430,15 +430,37 @@ export interface LotVue {
    * ailleurs.
    */
   ref: string | null;
+  /**
+   * Ce que l'horloge a à dire de ce lot, ou « » quand elle n'a rien à dire.
+   *
+   * ELLE NE PARLE QUE DU CONGÉLATEUR DÉPASSÉ, et c'est la moitié visible de
+   * « frigo dur, congélateur mou ». Un reste de frigo périmé n'a pas de phrase
+   * parce qu'il n'est plus là — il est sorti du jeu, en silence, et c'est le
+   * bon comportement pour une question de sécurité. Un bocal congelé de quatre
+   * mois, lui, reste servi : le taire en ferait un lot comme un autre, le
+   * retirer fabriquerait de l'archéologie de congélateur. Il reste, et il le
+   * dit.
+   *
+   * EN JOURS, PAS EN MOIS. La conversion vit du côté Python, une seule fois
+   * (`JOURS_PAR_MOIS`) ; la refaire ici donnerait deux constantes libres de
+   * diverger pour gagner un « 4 mois » à la place d'un « 128 j ».
+   */
+  horloge: string;
 }
 
-export function lots(jeu: Jeu, lignes: readonly LigneDepot[], filtre: Espace | null): LotVue[] {
-  return lignes
+export function lots(
+  jeu: Jeu,
+  depot: Depot,
+  filtre: Espace | null,
+  aujourdhui: Date,
+): LotVue[] {
+  return depot.lignes
     .map((l, i) => ({ l, i }))
     .filter(({ l }) => !filtre || l.espace === filtre)
     .map(({ l, i }) => {
       const q = l.qty?.amount ?? null;
       const entame = l.reste != null && q != null && l.reste < q - 1e-9;
+      const v = depot.vie(l, aujourdhui);
       return {
         cle: l.ref ?? `d${i}`,
         espace: l.espace,
@@ -455,6 +477,10 @@ export function lots(jeu: Jeu, lignes: readonly LigneDepot[], filtre: Espace | n
         fiabilite: fiabilite(l),
         epuise: l.epuise,
         ref: l.ref,
+        horloge:
+          v && !v.dur && v.depasse
+            ? `au congélateur depuis ${v.age} j, au-delà des ${v.fenetre} prévus — encore bon à jouer`
+            : "",
       };
     });
 }
@@ -710,7 +736,10 @@ export function vueDeLInventaire(jeu: Jeu, calc: Calcul, voulu: Espace | null): 
   return {
     categories: cats,
     espaces: espaces(calc.stockage),
-    lots: lots(jeu, lignes, filtre),
+    // La date de référence est le PREMIER JOUR DE LA FENÊTRE, c'est-à-dire
+    // aujourd'hui : l'inventaire dit ce qu'il y a maintenant, pas ce qu'il en
+    // restera dimanche.
+    lots: lots(jeu, calc.depot, filtre, jeu.jours[0]?.date ?? new Date()),
     // LE GARDE-MANGER NE SE FILTRE PAS PAR ESPACE, et c'est délibéré : ses sept
     // zones tombent toutes sur `placard`, donc le filtre ne trierait rien. Il se
     // lit par rangement, ce qui est la seule question qu'on se pose devant un

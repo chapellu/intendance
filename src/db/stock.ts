@@ -101,6 +101,12 @@ export const auModele = (l: LotStock): LotInitial => ({
   born: l.born,
   location: l.espace,
   ...(l.id == null ? {} : { ref: String(l.id) }),
+  // La DLUO n'est portée que par les lots qui en ont une, et ils sont rares :
+  // elle n'arrive jamais qu'à l'œil d'un scan ou d'un événement `entree`, et
+  // AUCUN écran ne la saisit. Le champ est donc absent la plupart du temps, ce
+  // que `LotInitial` dit en le rendant optionnel plutôt qu'en le posant à
+  // `null` — un `null` écrit partout ressemble à une donnée qu'on a cherchée.
+  ...(l.dluo ? { dluo: l.dluo } : {}),
 });
 
 /**

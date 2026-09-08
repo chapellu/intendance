@@ -11,7 +11,7 @@
 // frontière n'est pas arbitraire : ici on mesure ce qu'une semaine coûte, là
 // on juge ce qu'elle vaut, et le second appelle le premier — jamais l'inverse.
 
-import { bandRepas, Depot, qteDe, type LigneDepot, type Prise } from "./depot";
+import { bandRepas, Depot, horlogesDu, qteDe, type LigneDepot, type Prise } from "./depot";
 import { dateDe, joue, type Jeu } from "./jeu";
 import type {
   Accept, Catalogue, CauseLimite, Espace, Ingredient, Plat, Provenance,
@@ -206,7 +206,7 @@ export function calculer(
   // constat. Les deux passent par le même filtre, et c'est normal — la
   // différence est dans qui s'en souvient demain.
   const depot = new Depot(
-    catalogue.foyer.fenetreFrigo,
+    horlogesDu(catalogue),
     jeu.stock.filter((o) => !jetes.includes(o.type)),
   );
 

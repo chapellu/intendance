@@ -279,6 +279,20 @@ export interface Conservation {
   id: string;
   label: string;
   acquis: boolean;
+  /**
+   * Combien de jours la méthode fait durer, ou `null` quand ce n'est pas une
+   * durée.
+   *
+   * EN JOURS, PARCE QUE C'EST CE QU'UNE HORLOGE COMPARE. Le garde-manger reçoit
+   * la même valeur en texte (`ConservationDenree.fenetre`, « 3 mois ») : deux
+   * formes du même fait, l'une pour l'écran, l'autre pour le calcul. Jusqu'à
+   * T55 seule la première existait, et la seconde était jetée à l'export — donc
+   * le congélateur n'avait pas d'horloge, faute de dénominateur.
+   *
+   * `null` sur le sous-vide, qui porte un MULTIPLICATEUR : il rallonge le froid
+   * d'un facteur, il ne donne pas de fenêtre à lui.
+   */
+  fenetreJours: number | null;
   manque: string | null;
   noeud: string | null;
   acideSeulement: boolean;

@@ -20532,6 +20532,7 @@
    "id": "frigo",
    "label": "au frigo",
    "acquis": true,
+   "fenetreJours": 4,
    "manque": null,
    "noeud": null,
    "acideSeulement": false
@@ -20540,6 +20541,7 @@
    "id": "congeler",
    "label": "au congélateur",
    "acquis": true,
+   "fenetreJours": 90,
    "manque": "congeler",
    "noeud": "Congeler en portions utiles",
    "acideSeulement": false
@@ -20548,6 +20550,7 @@
    "id": "sous-vide-frigo",
    "label": "sous vide, au frigo",
    "acquis": false,
+   "fenetreJours": null,
    "manque": "machine à mise sous vide (à cloche ou à aspiration)",
    "noeud": "Mettre sous vide",
    "acideSeulement": false
@@ -20556,6 +20559,7 @@
    "id": "bocal-bain-marie",
    "label": "en bocal, bain-marie",
    "acquis": true,
+   "fenetreJours": 360,
    "manque": "sterilisation-bain-marie",
    "noeud": "Stériliser les acides au bain-marie",
    "acideSeulement": true
@@ -20564,6 +20568,7 @@
    "id": "bocal-sous-pression",
    "label": "en bocal, sous pression",
    "acquis": false,
+   "fenetreJours": 360,
    "manque": "autocuiseur/stérilisateur avec manomètre",
    "noeud": "Stériliser sous pression",
    "acideSeulement": false
@@ -20572,6 +20577,7 @@
    "id": "lacto-fermentation",
    "label": "en lacto-fermentation",
    "acquis": false,
+   "fenetreJours": 180,
    "manque": "bocaux à joint caoutchouc",
    "noeud": "Lacto-fermenter un légume",
    "acideSeulement": false
@@ -20580,6 +20586,7 @@
    "id": "sechage",
    "label": "séché",
    "acquis": false,
+   "fenetreJours": 180,
    "manque": "déshydrateur (ou four à très basse température)",
    "noeud": "Sécher herbes et légumes",
    "acideSeulement": false

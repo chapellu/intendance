@@ -59,7 +59,7 @@ describe("d'où vient un chiffre", () => {
     const l = c.depot.lignes[0]!;
     expect(fiabilite(l)).toMatchObject({ label: "en bloc", classe: "", niveau: "basse" });
     // Et la quantité affichée retombe sur la bande de repas, pas sur « — ».
-    expect(lots(jeu, c.depot.lignes, null)[0]?.quantite).toBe("2-repas");
+    expect(lots(jeu, c.depot, null, LUNDI)[0]?.quantite).toBe("2-repas");
   });
 });
 
@@ -70,7 +70,7 @@ describe("les rangements", () => {
     poser(0, "diner", "pates-bolognaise");
     const c = calculer(jeu);
     for (const cat of categories(c.depot.lignes)) {
-      const dedans = lots(jeu, c.depot.lignes, cat.espace);
+      const dedans = lots(jeu, c.depot, cat.espace, LUNDI);
       expect(cat.vivants + cat.manges).toBe(dedans.length);
       expect(cat.manges).toBe(dedans.filter((l) => l.epuise).length);
     }
@@ -166,7 +166,7 @@ describe("les lots", () => {
       { type: "sauce-bolognaise", kind: "base", qty: { amount: 700, unit: "g" }, qty_band: "2-repas", born: "2026-08-16", location: "congelo", ref: "42" },
     ];
     poser(0, "diner", "sauce-bolognaise");
-    const vus = lots(jeu, calculer(jeu).depot.lignes, null);
+    const vus = lots(jeu, calculer(jeu).depot, null, LUNDI);
     expect(vus.find((l) => l.nom === "sauce-bolognaise" && l.ref === "42")).toBeTruthy();
     expect(vus.filter((l) => l.ref === null).length).toBeGreaterThan(0);
   });
@@ -174,7 +174,7 @@ describe("les lots", () => {
   test("un lot entamé dit ce qu'il en reste, un lot fini dit qu'il est mangé", () => {
     // Les pâtes du lundi entament le bocal du congélo : 500 g pris sur 700.
     poser(0, "diner", "pates-bolognaise");
-    const vus = lots(jeu, calculer(jeu).depot.lignes, null);
+    const vus = lots(jeu, calculer(jeu).depot, null, LUNDI);
     const bocal = vus.find((l) => l.nom === "sauce-bolognaise");
     expect(bocal?.ou).toContain("reste 200 g");
     expect(bocal?.ou).toContain("Congélo");
@@ -184,24 +184,59 @@ describe("les lots", () => {
 
   test("un lot cuisiné cette semaine nomme le plat, pas son identifiant", () => {
     poser(0, "diner", "sauce-bolognaise");
-    const vus = lots(jeu, calculer(jeu).depot.lignes, null);
+    const vus = lots(jeu, calculer(jeu).depot, null, LUNDI);
     const titre = catalogue.plats.find((p) => p.id === "sauce-bolognaise")?.titre;
     expect(vus.some((l) => l.ou.includes(`cuisiné cette semaine (${titre})`))).toBe(true);
   });
 
   test("le filtre ne montre qu'un rangement", () => {
-    const lignes = calculer(jeu).depot.lignes;
-    const congelo = lots(jeu, lignes, "congelo");
+    const depot = calculer(jeu).depot;
+    const congelo = lots(jeu, depot, "congelo", LUNDI);
     expect(congelo.length).toBeGreaterThan(0);
     expect(congelo.every((l) => l.espace === "congelo")).toBe(true);
-    expect(congelo.length).toBeLessThan(lots(jeu, lignes, null).length);
+    expect(congelo.length).toBeLessThan(lots(jeu, depot, null, LUNDI).length);
   });
 
   test("deux lots ne partagent jamais une clé", () => {
     poser(0, "diner", "sauce-bolognaise");
     poser(1, "diner", "pates-bolognaise");
-    const cles = lots(jeu, calculer(jeu).depot.lignes, null).map((l) => l.cle);
+    const cles = lots(jeu, calculer(jeu).depot, null, LUNDI).map((l) => l.cle);
     expect(new Set(cles).size).toBe(cles.length);
+  });
+
+  // T58, la moitié visible de « frigo dur, congélateur mou ».
+  test("un bocal congelé au-delà du forfait le DIT, et reste servi", () => {
+    jeu.stock = [
+      { type: "sauce-bolognaise", kind: "base", qty: { amount: 700, unit: "g" }, qty_band: "2-repas", born: "2026-01-05", location: "congelo", ref: "7" },
+    ];
+    const vu = lots(jeu, calculer(jeu).depot, null, LUNDI).find((l) => l.ref === "7");
+    expect(vu?.horloge).toContain("au-delà des 90 prévus");
+    // Il le DIT sans sortir du jeu : c'est toute la différence avec le frigo.
+    expect(vu?.epuise).toBe(false);
+    poser(0, "diner", "pates-bolognaise");
+    expect(calculer(jeu).chaine).toHaveLength(1);
+  });
+
+  test("un bocal congelé dans son forfait n'a rien à dire", () => {
+    // L'horloge ne parle que quand elle a quelque chose à dire : une phrase
+    // affichée en permanence ne se distingue plus le jour où elle compte —
+    // c'est la leçon de « dégager une étagère » en T15.
+    jeu.stock = [
+      { type: "sauce-bolognaise", kind: "base", qty: { amount: 700, unit: "g" }, qty_band: "2-repas", born: "2026-08-10", location: "congelo", ref: "7" },
+    ];
+    expect(lots(jeu, calculer(jeu).depot, null, LUNDI).find((l) => l.ref === "7")?.horloge).toBe("");
+  });
+
+  test("un reste de frigo périmé n'a pas de phrase : il n'est plus là", () => {
+    // FRIGO DUR. Il sort du jeu en silence, et c'est le bon comportement pour
+    // une question de sécurité — il n'y a rien à proposer sur un lot qu'on ne
+    // propose plus.
+    jeu.stock = [
+      { type: "carcasse-volaille", kind: "base", qty: { amount: 1, unit: "pièce" }, qty_band: "1-repas", born: "2026-08-10", location: "frigo", ref: "9" },
+    ];
+    expect(lots(jeu, calculer(jeu).depot, null, LUNDI).find((l) => l.ref === "9")?.horloge).toBe("");
+    poser(0, "diner", "soupe-de-poule");
+    expect(calculer(jeu).chaine).toHaveLength(0);
   });
 });
 

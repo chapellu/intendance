@@ -71,6 +71,18 @@ export interface LotStock {
   espace: Espace;
   /** Date locale `AAAA-MM-JJ` : le jour où le lot est né. */
   born: string;
+  /**
+   * La date imprimée sur la boîte, `AAAA-MM-JJ`. Absente presque partout.
+   *
+   * PAS D'INDEX, PAS DE MIGRATION. Dexie n'indexe que ce que `SCHEMAS` déclare
+   * et stocke l'objet tel quel : un champ optionnel non indexé s'ajoute sans
+   * version, et les lots déjà écrits restent lisibles — ils n'en ont pas, ce qui
+   * est exactement leur état.
+   *
+   * Elle n'arrive que GRATUITEMENT (scan, événement `entree`) : aucun écran ne
+   * la demande. Voir `LotInitial.dluo`.
+   */
+  dluo?: string;
   /** Le plat qui l'a produit, si c'est nous. */
   origine: string | null;
   maj: number;

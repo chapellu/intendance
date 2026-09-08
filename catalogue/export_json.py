@@ -225,6 +225,13 @@ def main():
         methodes.append({
             "id": m["id"], "label": m["label"],
             "acquis": need is None or need in caps,
+            # LA FENÊTRE CESSE D'ÊTRE JETÉE ICI, et c'est ce que T55 attendait
+            # pour exister. Elle sort en JOURS et non en « 3 mois » : le dépôt
+            # compare des âges, et une chaîne ne se compare à rien. C'est la même
+            # valeur que le garde-manger reçoit en texte juste en dessous — deux
+            # formes du même fait, parce que l'une s'affiche et l'autre se
+            # calcule. `None` sur un multiplicateur (le sous-vide).
+            "fenetreJours": gm.fenetre_jours(m.get("fenetre")),
             "manque": noeud.get("kit_manquant") or need,
             "noeud": noeud.get("titre"),
             "acideSeulement": m.get("exige_acidite") == "haute",

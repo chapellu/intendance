@@ -8,6 +8,7 @@
     "build": "tsc --noEmit && vite build",
     "catalogue": "python3 catalogue/export_json.py > public/cuisine-data.json",
     "catalogue:verifie": "python3 catalogue/verifier.py && npm run catalogue && git diff --exit-code -- public/cuisine-data.json",
+    "horloges": "vite-node scripts/horloges.mjs",
     "dev": "vite",
     "e2e": "playwright test",
     "perf": "vite-node scripts/perf.mjs",

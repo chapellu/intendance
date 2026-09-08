@@ -760,6 +760,12 @@ function Lot({ lot, retirer }: { lot: LotVue; retirer: (ref: string) => Promise<
       <span style={{ flex: 1 }}>
         <div className="nom">{lot.nom}</div>
         <div className="ou">{lot.ou}</div>
+        {/* L'HORLOGE NE PARLE QUE QUAND ELLE A QUELQUE CHOSE À DIRE, c'est-à-dire
+            sur un lot congelé au-delà de son forfait. Il reste servi — son mode
+            d'échec est la qualité et non la sécurité — donc la phrase informe :
+            elle ne barre pas la ligne et n'offre aucun geste. Un reste de frigo
+            périmé, lui, n'a pas de phrase, parce qu'il est déjà sorti du jeu. */}
+        {lot.horloge ? <div className="ou">{lot.horloge}</div> : null}
         {ref ? (
           <button
             className="btn btn-ghost"

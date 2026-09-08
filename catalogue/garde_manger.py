@@ -204,6 +204,41 @@ def _fenetre(f) -> str:
     return f"{f['valeur']} {f['unite']}"
 
 
+# Un mois vaut trente jours, et ce n'est ni exact ni grave. Les fenêtres de
+# `conservation.yaml` sont des ordres de grandeur revendiqués comme tels — le
+# fichier le dit en tête, « CHIFFRES NON SOURCÉS » — et elles ne servent qu'à
+# réordonner des dîners. Un vrai calendrier ferait croire à une précision que la
+# donnée d'entrée n'a pas.
+JOURS_PAR_MOIS = 30
+
+_EN_JOURS = {"jours": 1, "mois": JOURS_PAR_MOIS}
+
+
+def fenetre_jours(f):
+    """La même fenêtre, en JOURS, ou `None` quand ça n'en est pas une.
+
+    LE PENDANT CALCULABLE DE `_fenetre`, ET IL FAUT LES DEUX. `_fenetre` rend du
+    texte pour l'écran du garde-manger ; l'horloge du dépôt, elle, compare des
+    âges, et « 3 mois » ne se compare à rien. L'export JETAIT cette valeur côté
+    dépôt — le type `Conservation` ne la portait pas — et la STRINGIFIAIT côté
+    garde-manger : affichable, jamais calculable. C'est le mode d'échec de
+    `historique.yaml` et des cinq réglages morts de T48, une donnée que le corpus
+    porte et que le code ne peut pas lire.
+
+    `None` SUR UN MULTIPLICATEUR, pour la raison exacte qui empêche `_fenetre` de
+    l'écrire en jours : le sous-vide rallonge le froid d'un facteur, il ne donne
+    pas de fenêtre à lui. Rendre « 2,5 jours » ici inventerait une durée que
+    personne n'a écrite, et l'horloge s'en servirait sans le dire.
+    """
+    if not f or f.get("multiplicateur"):
+        return None
+    facteur = _EN_JOURS.get(f.get("unite"))
+    # Une unité qu'on ne sait pas convertir ne se devine pas : `None` fait
+    # retomber l'appelant sur son défaut, là où deviner produirait une horloge
+    # fausse que rien ne signalerait.
+    return f["valeur"] * facteur if facteur else None
+
+
 def volume_litres(zone: dict):
     """Le volume utile d'une zone, en litres, ou `None`.
 
