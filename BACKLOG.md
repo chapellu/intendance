@@ -1523,32 +1523,88 @@ suit ne s'est décidé sur la seule lecture du code :
   cinquième (pignons) n'est dans **aucun** plat ; et **40 plats sur 86**
   contiennent oignon ou ail.
 
-- [ ] **T54 — Le frigo compte par plat, plus par foyer.** `gardeFrigo` (78
+- [x] **T54 — Le frigo compte par plat, plus par foyer.** `gardeFrigo` (78
       valeurs saisies à la main, de 0 à 7 jours) devient l'horloge réelle ;
-      `foyer.fenetreFrigo` retombe au rang de **défaut** pour un lot qui n'en
-      déclare pas. `depot.ts:225` lit la valeur de la ligne, pas celle du foyer.
-      **Ça resserre, et c'est voulu** : 43 emits passent de 4 à 3 jours, 21 à 2 ;
-      seuls les `frigo_days: 5` et `7` gagnent. Et **`frigo_days: 0` cesse de
-      disparaître en silence** — il signale « à éliminer ». Supprime au passage
-      l'incohérence entre ce que l'écran promet et ce que le modèle applique.
+      `foyer.fenetreFrigo` retombe au rang de **défaut**. Supprime au passage
+      l'incohérence entre ce que l'écran promet et ce que le modèle applique —
+      deux écrans écrivaient « 3 j au frigo » pendant qu'il périmait à 4.
 
-- [ ] **T55 — Le congélateur a une horloge, forfait 3 mois.** Retirer le
-      court-circuit `location === "congelo"` de `depot.ts:225`. La fenêtre est
-      celle que `conservation.yaml` porte déjà : **il faut donc d'abord que
-      `export_json.py` cesse de jeter `fenetre`** côté dépôt, et que
-      `Conservation` la porte comme un **nombre de jours** plutôt que comme la
-      chaîne « 3 mois » que le garde-manger reçoit. Forfait et non par type :
-      congeler *aplatit* les différences, son mode d'échec est la qualité et non
-      la sécurité, et cinquante nombres posés à vue seraient cinquante faux
-      nombres. La nature reste l'échappatoire si le corpus prouve le contraire.
+      **CE QUE LE TICKET N'AVAIT PAS PRÉVU : UN LOT CONSTATÉ NE DÉCLARE RIEN.**
+      La table `stock` porte un type, une quantité et une date de naissance,
+      jamais un `frigo_days` — donc « lire la valeur de la ligne » aurait laissé
+      la moitié du dépôt sur le défaut du foyer, et le ticket n'aurait été fait
+      qu'à moitié, en silence. La fenêtre d'un lot constaté est donc **dérivée de
+      son type**, comme `producteurs()` dérive qui recharge quoi. Mesuré : 74
+      types émis, **un seul** dont les producteurs divergent (`reste-roti`, 3 ou
+      4 jours) — on retient le plus court, entre deux avis sur la vie d'un reste
+      le prudent est celui qui ne rend malade personne.
 
-- [ ] **T56 — Une date par lot, et aucun écran pour la saisir.** `dluo:`
-      optionnel sur la ligne de dépôt, qui gagne sur la fenêtre du type quand il
-      est là. La date imprimée sur une boîte est le seul nombre **vrai** de tout
-      ce ticket. Mais l'utilisateur ne la tapera pas : elle n'arrivera que
-      **gratuitement** — scan de code-barres, événement `entree` du journal. La
-      fenêtre du type est donc le cas **normal**, pas le repli. Si ça devait
-      coûter un écran de saisie, ne pas le faire.
+      **`frigo_days: 0` NE VEUT PAS DIRE « À ÉLIMINER », ET C'EST LA MESURE QUI
+      L'A DIT.** Les trois emits à zéro jour du corpus sont trois **desserts
+      glacés** — glace au chocolat, muffins, crème glacée — tous `congelo: true`.
+      Zéro jour de frigo veut dire « ça n'a aucune vie au frigo » : personne ne
+      fait refroidir une glace. Leur appliquer une fenêtre nulle les aurait fait
+      **disparaître le lendemain de leur cuisson**, alors qu'ils sont exactement
+      ce qu'on garde au congélateur. Leur horloge est donc celle du congélateur.
+      ⚠ Ça ne referme PAS « un lot congelable posé cette semaine vieillit au
+      frigo » : un congelable à 3 jours vieillit toujours au frigo, parce que
+      `ajouter()` l'y range. Seul le cas où la fenêtre est **nulle** est traité,
+      c'est-à-dire celui où le corpus dit explicitement non.
+
+      **Ce que ça resserre, remesuré** (`npm run horloges`) : sur les 78 emits,
+      69 resserrés, 4 inchangés, 5 allongés. Mais le chiffre qui compte est celui
+      des **28 non-congelables**, les seuls dont la vie se joue entièrement là :
+      **25 resserrés, 1 inchangé, 2 allongés** (les deux yaourts, qui passent de
+      4 à 7 jours).
+
+- [x] **T55 — Le congélateur a une horloge, forfait 3 mois.** Le court-circuit
+      `location === "congelo"` est retiré : un bocal de 2019 n'est plus
+      proposable pour l'éternité. La fenêtre est celle que `conservation.yaml`
+      portait déjà — **90 jours**, et il a d'abord fallu que l'export cesse de la
+      jeter. Forfait et non par type : congeler *aplatit* les différences, son
+      mode d'échec est la qualité et non la sécurité, et cinquante nombres posés
+      à vue seraient cinquante faux nombres.
+
+      **LA DONNÉE ÉTAIT LÀ, SOUS DEUX FORMES, ET AUCUNE NE SE CALCULAIT.**
+      `export_json.py` **jetait** `fenetre` côté dépôt (le type `Conservation` ne
+      la portait pas) et la **stringifiait** côté garde-manger (« 3 mois »).
+      Affichable, jamais comparable — le mode d'échec exact de `historique.yaml`
+      et des cinq réglages morts de T48. D'où `fenetre_jours()`, le pendant
+      calculable de `_fenetre()` : les deux coexistent parce que l'une s'affiche
+      et l'autre se compare, et la conversion (`JOURS_PAR_MOIS = 30`) vit **une
+      seule fois**, côté Python. Un mois de trente jours n'est ni exact ni grave :
+      `conservation.yaml` revendique des « CHIFFRES NON SOURCÉS » en tête, et ils
+      ne servent qu'à réordonner des dîners.
+
+      **`null` SUR UN MULTIPLICATEUR.** Le sous-vide porte `×2,5` : il rallonge
+      le froid d'un facteur, il ne donne pas de fenêtre à lui. Écrire « 2,5 j »
+      inventerait une durée que personne n'a saisie, et l'horloge s'en servirait
+      sans le dire. Les sept méthodes sortent donc à 4, 90, —, 360, 360, 180, 180.
+
+      **L'ABSENCE DE FENÊTRE ÉCHOUE BRUYAMMENT**, comme le chargeur du catalogue
+      échoue sur un export qui a dérivé. Se rabattre sur un nombre écrit dans le
+      code rendrait au congélateur le silence dont ce ticket vient de le sortir :
+      il aurait l'air d'avoir une horloge, elle ne viendrait plus du corpus, et
+      rien ne le dirait.
+
+- [x] **T56 — Une date par lot, et aucun écran pour la saisir.** `dluo`
+      optionnel sur la ligne de dépôt, qui **gagne sur la fenêtre du type**
+      quand il est là — c'est le seul nombre vrai de toute l'horloge, les autres
+      sont des ordres de grandeur posés à vue. L'ordre est la règle : la mesure
+      bat le forfait, le forfait bat le défaut.
+
+      **AUCUN ÉCRAN NE LA DEMANDE, ET C'EST LE TICKET.** Elle n'arrive que
+      gratuitement — scan, événement `entree` du journal. Une date se saisit une
+      fois par curiosité puis plus jamais, et le modèle se retrouve avec un champ
+      que trois lots portent. La fenêtre du type reste donc le cas **normal**,
+      pas le repli.
+
+      **NI INDEX NI MIGRATION.** Dexie n'indexe que ce que `SCHEMAS` déclare et
+      stocke l'objet tel quel : un champ optionnel non indexé s'ajoute sans
+      version, et les lots déjà écrits restent lisibles — ils n'en ont pas, ce
+      qui est exactement leur état. Elle se compte **depuis la naissance du lot**
+      et non depuis aujourd'hui, sinon la fraction de vie consommée repartirait
+      de zéro chaque matin.
 
 - [ ] **T57 — Un axe, deux mots.** Les urgences du garde-manger se **projettent**
       sur le même axe 0–1 que la fraction du dépôt : `haute` = 1,0,
@@ -1571,11 +1627,28 @@ suit ne s'est décidé sur la seule lecture du code :
       tombent à J+1,5 et J+2,4, trop fin pour être dit — **seul le franchissement
       compte**.
 
-- [ ] **T58 — Frigo dur, congélateur mou.** Passé sa fenêtre un reste de frigo
-      **sort du jeu**, comme aujourd'hui : c'est une question de sécurité. Passé
-      trois mois un bocal congelé **reste jouable**, sa fraction plafonne à 1, et
-      l'app le **dit**. Refuser de proposer une bolognaise de quatre mois, c'est
+- [x] **T58 — Frigo dur, congélateur mou.** Passé sa fenêtre un reste de frigo
+      **sort du jeu**, comme avant : c'est une question de sécurité. Passé trois
+      mois un bocal congelé **reste jouable**, sa fraction plafonne à 1, et l'app
+      le **dit**. Refuser de proposer une bolognaise de quatre mois, c'est
       fabriquer de l'archéologie de congélateur.
+
+      **LE PLAFOND N'EST PAS UNE COMMODITÉ D'AFFICHAGE.** Sans lui la fraction
+      d'un lot mou monterait à 1,7 puis 4,2, et le score grimperait sans fin sur
+      un bocal que personne ne mange — l'inverse exact du service rendu.
+
+      **L'HORLOGE NE PARLE QUE QUAND ELLE A QUELQUE CHOSE À DIRE.** Un seul cas
+      produit une phrase, le congelé dépassé : « au congélateur depuis 245 j,
+      au-delà des 90 prévus — encore bon à jouer ». Elle informe, elle ne barre
+      pas la ligne et n'offre aucun geste. Un reste de frigo périmé, lui, n'a
+      **pas** de phrase, parce qu'il n'est plus là : il n'y a rien à dire d'un
+      lot qu'on ne propose plus. C'est la leçon de « dégager une étagère » en
+      T15 — un impératif qui est toujours affiché ne se distingue plus le jour
+      où il compte.
+
+      **En jours, pas en mois** : la conversion vit une seule fois, côté Python.
+      La refaire à l'écran donnerait deux constantes libres de diverger, pour
+      gagner un « 4 mois » à la place d'un « 128 j ».
 
 - [ ] **T59 — Le score cumule, plafonné à trois articles.** `ecoule: 5`, somme
       des fractions sur **au plus trois** articles, **pas de dégressivité**.

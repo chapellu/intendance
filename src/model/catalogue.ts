@@ -531,6 +531,7 @@ export function lireCatalogue(brut: unknown): Catalogue {
         id: texte(c["id"], `conservation[${i}].id`),
         label: texte(c["label"], `conservation[${i}].label`),
         acquis: booleen(c["acquis"], `conservation[${i}].acquis`),
+        fenetreJours: nombreOuNull(c["fenetreJours"] ?? null, `conservation[${i}].fenetreJours`),
         manque: texteOuNull(c["manque"] ?? null, `conservation[${i}].manque`),
         noeud: texteOuNull(c["noeud"] ?? null, `conservation[${i}].noeud`),
         acideSeulement: booleen(c["acideSeulement"], `conservation[${i}].acideSeulement`),

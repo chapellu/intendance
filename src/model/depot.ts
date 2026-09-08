@@ -17,9 +17,37 @@
 // Port de `apps/proto-shell/semaine.js` (`Prise`, `Stock`). Deux champs que le
 // JS confondait volontiers sont ici distincts, parce qu'ils ne servent pas à la
 // même chose : `espace` dit OÙ ÇA SE RANGE (le budget de rangement le compte),
-// `location` dit COMMENT ÇA VIEILLIT (le congélo ignore la fenêtre du frigo).
+// `location` dit COMMENT ÇA VIEILLIT.
+//
+// ─────────────────────────────────────────────────────────────────────────────
+// L'HORLOGE (T54–T56, T58). La phrase ci-dessus disait « le congélo ignore la
+// fenêtre du frigo », et c'était vrai au sens le plus littéral : le congélo
+// n'avait aucune fenêtre du tout. Un bocal de 2019 restait proposable. Le frigo,
+// lui, en avait une seule, celle du foyer, appliquée à tout le monde — alors que
+// le corpus porte 78 `frigo_days` saisis à la main, de 0 à 7 jours, que deux
+// écrans affichaient déjà (« 3 j au frigo ») pendant que le modèle périmait à 4.
+//
+// Désormais TOUT LOT A UNE HORLOGE, et il y en a deux sortes :
+//
+//   — le frigo est DUR. Passé sa fenêtre, le lot sort du jeu. C'est une question
+//     de sécurité, pas de qualité, et ça ne se négocie pas.
+//   — le congélateur est MOU. Passé son forfait de trois mois le bocal reste
+//     jouable, sa fraction de vie plafonne à 1, et l'app le DIT. Refuser de
+//     proposer une bolognaise de quatre mois, c'est fabriquer de l'archéologie
+//     de congélateur.
+//
+// La FRACTION DE VIE CONSOMMÉE (0 → 1) est ce que ce fichier produit de neuf et
+// qu'il ne consomme pas lui-même : c'est le dénominateur commun que le score
+// attendait pour cesser de classer l'urgence par ENDROIT. Elle vit ici parce que
+// c'est ici qu'on sait quelle fenêtre s'applique à quel lot.
+// ─────────────────────────────────────────────────────────────────────────────
 
-import type { Accept, Emit, EmitKind, Espace, Quantite } from "./types";
+import type { Accept, Catalogue, Emit, EmitKind, Espace, Quantite } from "./types";
+
+const JOUR_MS = 86_400_000;
+
+const enJours = (fin: Date, debut: Date): number =>
+  Math.round((fin.getTime() - debut.getTime()) / JOUR_MS);
 
 /** Un `accepts` vise soit une sortie précise (`type`), soit toute une CLASSE de
  *  sorties (`kind`). C'est ce qui permet à une seule carte « reste réchauffé »
@@ -44,6 +72,98 @@ export function bandRepas(b: string | null | undefined): number {
 
 export const fmtQte = (v: number, u: string | null): string =>
   `${Math.round(v * 10) / 10} ${u ?? ""}`.trim();
+
+/* ══════════════════════════════════════════════════════════ les horloges */
+
+/** L'identifiant de la méthode qui donne son forfait au congélateur. Le corpus
+ *  la porte depuis le prototype ; jusqu'à T55 l'export jetait sa fenêtre. */
+const METHODE_CONGELO = "congeler";
+
+/**
+ * D'où sort la fenêtre qu'on applique à un lot, du plus précis au plus vague.
+ *
+ * RENDU, ET PAS SEULEMENT CALCULÉ. Deux raisons, et la seconde est la vraie :
+ * l'écran peut dire pourquoi un reste tient trois jours plutôt que quatre ; et
+ * un test peut vérifier qu'on n'est pas retombé sur `foyer` sans le vouloir.
+ * C'est exactement le défaut que T54 corrige — une valeur de repli qui s'applique
+ * partout finit par ressembler à une règle, et personne ne voit qu'elle a mangé
+ * les 78 valeurs du corpus.
+ */
+export type SourceHorloge = "dluo" | "lot" | "type" | "congelateur" | "foyer";
+
+/** Les fenêtres que le catalogue sait donner, dérivées une fois. */
+export interface Horloges {
+  /** Le défaut du foyer, pour un lot de frigo dont on ne sait rien d'autre. */
+  frigo: number;
+  /** Le forfait du congélateur, en jours. */
+  congelo: number;
+  /**
+   * Ce que chaque type garde au frigo, DÉRIVÉ DES EMITS QUI LE PRODUISENT.
+   *
+   * Un lot CONSTATÉ ne déclare pas sa fenêtre : la table `stock` porte un type,
+   * une quantité et une date de naissance, jamais un `frigo_days`. Sans cette
+   * table il retomberait sur le défaut du foyer — c'est-à-dire que la moitié du
+   * dépôt aurait continué de périmer à 4 jours pendant que l'autre suivait le
+   * corpus, et le ticket n'aurait été qu'à moitié fait, en silence.
+   *
+   * Même geste que `producteurs()` dans `plancher.ts` : on ne saisit pas ce
+   * qu'on peut dériver. Mesuré sur le corpus : 74 types émis, et UN SEUL dont
+   * les producteurs divergent (`reste-roti`, 3 ou 4 jours). On prend le PLUS
+   * COURT — entre deux avis sur la durée de vie d'un reste, le prudent est celui
+   * qui ne rend malade personne.
+   */
+  parType: ReadonlyMap<string, number>;
+}
+
+/**
+ * Les horloges du catalogue.
+ *
+ * ÉCHOUE BRUYAMMENT SI LE CONGÉLATEUR N'A PAS DE FENÊTRE, comme le chargeur du
+ * catalogue échoue sur un export qui a dérivé. Se rabattre sur un nombre écrit
+ * ici rendrait au congélateur le silence dont T55 vient de le sortir : il aurait
+ * l'air d'avoir une horloge, elle ne viendrait plus du corpus, et rien ne le
+ * dirait.
+ */
+export function horlogesDu(catalogue: Catalogue): Horloges {
+  const congeler = catalogue.conservation.find((c) => c.id === METHODE_CONGELO);
+  if (congeler?.fenetreJours == null)
+    throw new Error(
+      `conservation : la méthode « ${METHODE_CONGELO} » doit porter une fenêtre en jours ` +
+        `— sans elle le congélateur n'a pas d'horloge.`,
+    );
+
+  const parType = new Map<string, number>();
+  for (const p of catalogue.plats)
+    for (const e of p.emits) {
+      const vu = parType.get(e.type);
+      parType.set(e.type, vu == null ? e.gardeFrigo : Math.min(vu, e.gardeFrigo));
+    }
+
+  return { frigo: catalogue.foyer.fenetreFrigo, congelo: congeler.fenetreJours, parType };
+}
+
+/** Ce qu'il reste à vivre à un lot, et sur quelle horloge on le compte. */
+export interface Vie {
+  /** Jours depuis la naissance du lot. */
+  age: number;
+  /** La fenêtre appliquée, en jours. */
+  fenetre: number;
+  source: SourceHorloge;
+  /**
+   * La part de vie consommée, de 0 à 1, PLAFONNÉE.
+   *
+   * Le plafond n'est pas une commodité d'affichage : au congélateur un lot
+   * dépassé reste jouable, et une fraction qui monterait à 1,7 puis 4,2 ferait
+   * un score qui grimpe sans fin sur un bocal que personne ne mange — l'inverse
+   * exact du service rendu.
+   */
+  fraction: number;
+  /** Le lot a passé sa fenêtre. */
+  depasse: boolean;
+  /** L'horloge est-elle DURE (frigo : il sort du jeu) ou molle (congélateur :
+   *  il reste jouable et le dit) ? */
+  dur: boolean;
+}
 
 /**
  * Un lot déjà là quand la semaine commence.
@@ -74,6 +194,22 @@ export interface LotInitial {
   born: string;
   location: Espace;
   ref?: string;
+  /**
+   * La date imprimée sur la boîte, ISO `AAAA-MM-JJ`. Elle GAGNE sur la fenêtre
+   * du type quand elle est là.
+   *
+   * LE SEUL NOMBRE VRAI DE TOUTE L'HORLOGE, et c'est pourquoi elle passe devant
+   * tout le reste : les fenêtres du corpus sont des ordres de grandeur posés à
+   * vue, une DLUO est une mesure.
+   *
+   * ET POURTANT ELLE EST L'EXCEPTION, PAS LE CAS NORMAL. Personne ne tapera une
+   * date dans un écran — ça se saisit une fois, par curiosité, puis plus jamais,
+   * et le modèle se retrouve avec un champ que trois lots portent. Elle
+   * n'arrivera donc que GRATUITEMENT : un scan de code-barres, un événement
+   * `entree` du journal. D'où l'absence, assumée, de tout écran de saisie : si
+   * cette date devait coûter un formulaire, elle ne vaudrait pas son prix.
+   */
+  dluo?: string;
 }
 
 /** Une ligne du dépôt : un lot réel, présent avant la semaine ou produit par
@@ -86,11 +222,18 @@ export interface LigneDepot {
   band: string;
   /** Où ça se range. Commande le plafond d'espace. */
   espace: Espace;
-  /** Où ça se trouve, pour le vieillissement : le congélo ignore la fenêtre. */
+  /** Où ça se trouve, pour le vieillissement : c'est ce qui décide de LAQUELLE
+   *  des deux horloges compte, celle du frigo ou celle du congélateur. */
   location: Espace;
   born: Date | null;
+  /** Jours de vie au frigo pour CE lot. Renseigné pour ce que la semaine
+   *  produit (l'emit le porte) comme pour un lot constaté (dérivé de son type,
+   *  voir `Horloges.parType`) ; `null` seulement pour un type que le catalogue
+   *  ne produit nulle part. */
   gardeFrigo: number | null;
   congelo: boolean;
+  /** La date imprimée sur la boîte, quand elle est arrivée gratuitement. */
+  dluo: Date | null;
   /** L'identifiant du plat qui l'a produit, s'il vient de cette semaine. */
   from: string | null;
   /** L'identité du lot chez son fournisseur — la clé de base d'un lot constaté,
@@ -164,8 +307,7 @@ export class Depot {
   readonly lignes: LigneDepot[] = [];
 
   constructor(
-    /** Jours au bout desquels un reste au frigo cesse d'être proposé. */
-    private readonly fenetre: number,
+    private readonly horloges: Horloges,
     initial: readonly LotInitial[] = [],
   ) {
     for (const o of initial) {
@@ -177,8 +319,13 @@ export class Depot {
         espace: o.location,
         location: o.location,
         born: new Date(o.born),
-        gardeFrigo: null,
+        // Un lot constaté ne déclare pas sa fenêtre — la table `stock` porte un
+        // type, pas un `frigo_days`. On la dérive de son type ; `null` seulement
+        // pour un type que rien ne produit au catalogue, et il retombe alors sur
+        // le défaut du foyer, faute de mieux à dire.
+        gardeFrigo: horloges.parType.get(o.type) ?? null,
         congelo: o.location === "congelo",
+        dluo: o.dluo ? new Date(o.dluo) : null,
         from: null,
         ref: o.ref ?? null,
         // Un lot non chiffré n'a pas de reste : il part en entier ou pas du
@@ -209,6 +356,10 @@ export class Depot {
       born: born ?? null,
       gardeFrigo: sortie.gardeFrigo,
       congelo: sortie.congelo,
+      // Ce que la semaine produit n'a pas de DLUO : c'est une date d'INDUSTRIEL,
+      // imprimée sur une boîte achetée. Un bocal qu'on vient de faire n'en porte
+      // aucune, et lui en inventer une serait le chiffre qui a l'air juste.
+      dluo: null,
       from: source ?? null,
       ref: null,
       reste: amount,
@@ -219,10 +370,72 @@ export class Depot {
     return l;
   }
 
-  private age(ligne: LigneDepot, date: Date): number | null {
+  /**
+   * SUR QUELLE HORLOGE CE LOT COURT-IL ?
+   *
+   * Le congélateur, dès que le lot y est. Et AUSSI quand le catalogue refuse le
+   * frigo : `frigo_days: 0` sur un lot congelable ne veut pas dire « à jeter
+   * demain », il veut dire « ça n'a aucune vie au frigo ». Mesuré, les trois
+   * emits à zéro jour du corpus sont trois desserts glacés — glace au chocolat,
+   * muffins, crème glacée — tous `congelo: true`. Personne ne fait refroidir une
+   * glace au frigo, et leur appliquer une fenêtre de zéro jour les ferait
+   * disparaître le lendemain de leur cuisson, alors qu'elles sont exactement ce
+   * qu'on garde au congélateur.
+   *
+   * ATTENTION À CE QUE ÇA NE DIT PAS : un lot congelable à 3 jours vieillit
+   * toujours au frigo, parce que `ajouter()` l'y range et que « le congeler est
+   * un geste qu'on n'a pas encore fait ». Cette dette-là reste ouverte au
+   * backlog et ce ticket n'y touche pas. On ne traite ici que le cas où la
+   * fenêtre est NULLE, c'est-à-dire où le corpus dit explicitement non.
+   */
+  private auCongelo(ligne: LigneDepot): boolean {
+    return (
+      ligne.location === "congelo" || (ligne.gardeFrigo === 0 && ligne.congelo)
+    );
+  }
+
+  /**
+   * Ce qu'il reste à vivre à ce lot, à cette date. `null` s'il n'a pas de date
+   * de naissance : sans elle il n'y a pas d'âge, et donc rien à dire.
+   */
+  vie(ligne: LigneDepot, date: Date): Vie | null {
     if (!ligne.born) return null;
-    const age = Math.round((date.getTime() - ligne.born.getTime()) / 86_400_000);
-    return ligne.location === "congelo" || age <= this.fenetre ? age : null;
+    const age = enJours(date, ligne.born);
+    const congelo = this.auCongelo(ligne);
+
+    // L'ORDRE EST LA RÈGLE : la mesure bat le forfait, le forfait bat le défaut.
+    // Une DLUO se compte depuis la naissance du lot, pas depuis aujourd'hui —
+    // sinon la fraction de vie consommée repartirait de zéro chaque jour.
+    const [fenetre, source]: [number, SourceHorloge] = ligne.dluo
+      ? [Math.max(0, enJours(ligne.dluo, ligne.born)), "dluo"]
+      : congelo
+        ? [this.horloges.congelo, "congelateur"]
+        : ligne.gardeFrigo != null
+          ? [ligne.gardeFrigo, "type"]
+          : [this.horloges.frigo, "foyer"];
+
+    // Une fenêtre nulle ne se divise pas. Le lot est neuf le jour de sa
+    // naissance et fini le lendemain : c'est la seule lecture qui ne fabrique
+    // ni infini ni NaN.
+    const fraction = fenetre > 0 ? Math.min(1, age / fenetre) : age > 0 ? 1 : 0;
+
+    return { age, fenetre, source, fraction, depasse: age > fenetre, dur: !congelo };
+  }
+
+  /**
+   * L'âge d'un lot ENCORE EN JEU, `null` s'il en est sorti.
+   *
+   * FRIGO DUR, CONGÉLATEUR MOU. Passé sa fenêtre un reste de frigo sort du jeu,
+   * et ça ne se négocie pas : le mode d'échec est sanitaire. Passé son forfait
+   * un bocal congelé reste candidat — son mode d'échec à lui est la qualité, et
+   * refuser de proposer une bolognaise de quatre mois fabrique de l'archéologie
+   * de congélateur. Sa fraction plafonne à 1 et l'app le dit ; elle ne le cache
+   * pas et ne le retire pas.
+   */
+  private age(ligne: LigneDepot, date: Date): number | null {
+    const v = this.vie(ligne, date);
+    if (!v) return null;
+    return v.dur && v.depasse ? null : v.age;
   }
 
   private *candidats(acc: Accept, date: Date): Generator<[LigneDepot, number]> {

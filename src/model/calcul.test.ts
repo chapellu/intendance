@@ -275,6 +275,143 @@ describe("le vieillissement, tel que le modèle le fait aujourd'hui", () => {
   });
 });
 
+// T54–T56 et T58 : chaque stock a une horloge. Ces tests disent les promesses,
+// pas les nombres — les tailles du corpus vivent dans `npm run horloges`, qui
+// les IMPRIME. Un test qui épingle « 78 emits » rougit le jour où on écrit une
+// recette, ce qui n'apprend rien à personne.
+//
+// LE LOT TÉMOIN EST LA CARCASSE DE VOLAILLE, et ce n'est pas un cas d'école :
+// `poulet-roti` l'émet à 2 jours sans qu'elle se congèle, et `soupe-de-poule`
+// est le seul plat qui la mange. C'est donc un vrai maillon du chaînage, à
+// cheval exactement sur l'écart que ce ticket corrige — deux jours au corpus
+// contre les quatre du foyer.
+describe("chaque lot a son horloge", () => {
+  /**
+   * Un lot constaté de ce type, né `ilYA` jours avant le lundi.
+   *
+   * ATTENTION AU DEMI-JOUR : `born` est une date nue, donc minuit, quand le
+   * lundi de ces tests est à midi. Le modèle arrondit, et un lot « né il y a
+   * n jours » se lit donc à n+1 jours d'âge. C'est le comportement d'avant ce
+   * ticket et il n'a pas bougé ; les tests ci-dessous restent donc loin des
+   * bornes, parce que ce qu'ils promettent est la FENÊTRE APPLIQUÉE, pas la
+   * façon dont une demi-journée s'arrondit.
+   */
+  const constater = (type: string, ilYA: number, location: "frigo" | "congelo", dluo?: string) => {
+    const born = new Date(LUNDI.getTime() - ilYA * 86_400_000);
+    jeu.stock = [
+      {
+        type,
+        kind: "base",
+        qty: { amount: 1, unit: "pièce" },
+        qty_band: "1-repas",
+        born: born.toISOString().slice(0, 10),
+        location,
+        ...(dluo ? { dluo } : {}),
+      },
+    ];
+  };
+
+  const ligneDe = (type: string) => {
+    const c = calculer(jeu);
+    const l = c.depot.lignes.find((x) => x.type === type);
+    if (!l) throw new Error(`pas de ligne ${type}`);
+    return { vie: c.depot.vie(l, LUNDI), depot: c.depot };
+  };
+
+  test("le frigo compte par plat : la carcasse tient deux jours, pas les quatre du foyer", () => {
+    constater("carcasse-volaille", 3, "frigo");
+    const { vie } = ligneDe("carcasse-volaille");
+    expect(vie?.fenetre).toBe(2);
+    expect(vie?.source).toBe("type");
+    // Trois jours pour une fenêtre de deux : sortie du jeu. Sous l'ancienne
+    // règle — quatre jours pour tout le monde — la soupe l'aurait trouvée.
+    expect(vie?.depasse).toBe(true);
+    poser(0, "diner", "soupe-de-poule");
+    expect(calculer(jeu).chaine).toHaveLength(0);
+  });
+
+  test("la même carcasse, née du jour, se chaîne encore", () => {
+    // Le contrôle qui rend le précédent lisible : c'est bien l'ÂGE qui décide,
+    // pas le fait qu'on ait touché au stock.
+    constater("carcasse-volaille", 0, "frigo");
+    poser(0, "diner", "soupe-de-poule");
+    expect(calculer(jeu).chaine).toHaveLength(1);
+  });
+
+  test("le foyer ne sert plus que de défaut, pour un type que rien ne produit", () => {
+    // `pain-rassis` est accepté par cinq plats et émis par AUCUN : le corpus
+    // n'a donc pas de fenêtre à lui donner. C'est le seul cas où la valeur du
+    // foyer s'applique encore, et elle s'applique en le disant.
+    constater("pain-rassis", 1, "frigo");
+    const { vie } = ligneDe("pain-rassis");
+    expect(vie?.source).toBe("foyer");
+    expect(vie?.fenetre).toBe(catalogue.foyer.fenetreFrigo);
+  });
+
+  test("les producteurs qui divergent donnent la fenêtre la plus COURTE", () => {
+    // `reste-roti` est émis à 3 jours par le poulet cocotte et à 4 par le rôti
+    // roulé — le seul type du corpus dont les producteurs ne sont pas d'accord.
+    // Entre deux avis sur la vie d'un reste, on prend le prudent.
+    constater("reste-roti", 0, "frigo");
+    expect(ligneDe("reste-roti").vie?.fenetre).toBe(3);
+  });
+
+  test("le congélateur a une horloge : un bocal de quatre mois est DÉPASSÉ", () => {
+    constater("sauce-bolognaise", 120, "congelo");
+    const { vie } = ligneDe("sauce-bolognaise");
+    expect(vie?.source).toBe("congelateur");
+    expect(vie?.depasse).toBe(true);
+  });
+
+  test("mais il reste jouable, et sa fraction plafonne à 1", () => {
+    // FRIGO DUR, CONGÉLATEUR MOU. Le mode d'échec du congélateur est la
+    // qualité, pas la sécurité : le retirer du jeu fabriquerait de
+    // l'archéologie de congélateur. Et la fraction plafonne, sinon le score
+    // grimperait sans fin sur un bocal que personne ne mange.
+    constater("sauce-bolognaise", 400, "congelo");
+    const { vie } = ligneDe("sauce-bolognaise");
+    expect(vie?.dur).toBe(false);
+    expect(vie?.fraction).toBe(1);
+    poser(0, "diner", "pates-bolognaise");
+    expect(calculer(jeu).chaine).toHaveLength(1);
+  });
+
+  test("un bocal neuf n'a presque rien consommé de sa vie", () => {
+    constater("sauce-bolognaise", 8, "congelo");
+    const { vie } = ligneDe("sauce-bolognaise");
+    expect(vie?.fraction).toBeCloseTo(0.1, 5);
+    expect(vie?.depasse).toBe(false);
+  });
+
+  test("une DLUO gagne sur la fenêtre du type, et la carcasse survit", () => {
+    // Le seul nombre VRAI de toute l'horloge : une date imprimée sur une boîte.
+    // Elle passe donc devant un ordre de grandeur posé à vue. Ici une carcasse
+    // de cinq jours — bien au-delà des deux du corpus, donc morte sans DLUO —
+    // reste en jeu parce que la boîte, elle, dit octobre.
+    constater("carcasse-volaille", 4, "frigo");
+    expect(ligneDe("carcasse-volaille").vie?.depasse).toBe(true);
+
+    constater("carcasse-volaille", 4, "frigo", "2026-10-01");
+    const { vie } = ligneDe("carcasse-volaille");
+    expect(vie?.source).toBe("dluo");
+    expect(vie?.depasse).toBe(false);
+    poser(0, "diner", "soupe-de-poule");
+    expect(calculer(jeu).chaine).toHaveLength(1);
+  });
+
+  test("zéro jour de frigo sur un congelable veut dire « pas au frigo », pas « à jeter »", () => {
+    // MESURÉ, ET C'EST UNE CORRECTION DU TICKET. Les trois emits à zéro jour du
+    // corpus sont trois desserts glacés, tous `congelo: true`. Personne ne fait
+    // refroidir une glace au frigo : leur horloge est celle du congélateur, et
+    // les périmer à J+1 les ferait disparaître le lendemain de leur cuisson.
+    poser(0, "diner", "petits-pots-creme-glacee");
+    const c = calculer(jeu);
+    const lot = c.depot.lignes.find((l) => l.type === "creme-glacee");
+    expect(lot?.gardeFrigo).toBe(0);
+    expect(c.depot.vie(lot!, LUNDI)?.source).toBe("congelateur");
+  });
+});
+
 describe("les minutes se comptent par journée", () => {
   test("trois plats tenables séparément peuvent faire une journée intenable", () => {
     poser(0, "dejeuner", "pates-bolognaise");
