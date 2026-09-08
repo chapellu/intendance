@@ -29,7 +29,7 @@ const plat = (p: Partial<Plat> & { id: string }): Plat =>
 
 const denree = (p: Partial<Denree> & { ingredient: string }): Denree => ({
   zone: "placard-haut", unites: 1, parUnite: null, poidsG: null, etat: "sec",
-  sensible: [], incompatibles: [], urgence: "basse", nature: "autre",
+  sensible: [], incompatibles: [], urgence: "basse", nature: "autre", usage: null,
   conservations: [], note: null,
   ...p,
 });

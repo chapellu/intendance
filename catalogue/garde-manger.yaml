@@ -172,6 +172,28 @@ zones:
 #   pomme de terre CRUE congelée devient farineuse et noircit : le congélateur
 #   s'applique à tout, sauf à elle. Une règle générale qui a une exception vaut
 #   mieux qu'une règle spéciale par denrée, à condition d'écrire l'exception.
+#
+# ── `usage` — CE À QUOI LA CHOSE SERT, QUAND CE N'EST PAS UN PLAT (T40) ──────
+#
+# CE N'EST NI UN RAYON NI UNE NATURE, et c'est pour ça qu'il fallait un champ.
+# `rayons.ordre` dit OÙ ÇA S'ACHÈTE — les fruits secs s'achètent en épicerie,
+# comme le riz, et ça ne les rend pas interchangeables. `nature` dit ce que la
+# chose EST, pour décider des méthodes de conservation. Ni l'un ni l'autre ne
+# sait dire « ça, c'est pour l'apéro ».
+#
+# ET L'APÉRO N'EST PAS UN PLAT NON PLUS : `creneaux.yaml` fait 21 créneaux, sept
+# jours × trois repas, et rien d'autre. Lui inventer un vingt-deuxième créneau
+# reviendrait à demander à quelqu'un de PLANIFIER ses apéros, ce que personne ne
+# fait — on veut juste qu'il en reste.
+#
+# D'où un usage posé sur des denrées qui existent déjà, et une seule
+# conséquence : ces denrées peuvent porter un plancher, donc produire une ligne
+# de courses. Jamais une carte, jamais un point de score.
+#
+# MESURÉ, ET C'EST CE QUI EN FAIT UNE PREUVE : ces six denrées sont citées par
+# ZÉRO des 86 recettes du corpus. Aucune ne peut donc gagner quoi que ce soit par
+# le scoring, ni maintenant ni par accident — si elles apparaissent un jour à
+# l'écran, c'est que le plancher a marché tout seul, sans le plan de la semaine.
 denrees:
   # ── zone 1 · étagère ouverte ─────────────────────────────────────────────
   - {ingredient: mais, zone: etagere-ouverte, unites: 4, par_unite: {amount: 285, unit: g}, etat: conserve}
@@ -186,7 +208,7 @@ denrees:
   # LA SEULE DENRÉE QUE SA ZONE ABÎME, et le vérificateur le dit. Très gras, donc
   # rancit vite ; posé en pleine lumière, à côté de la bouilloire.
   - {ingredient: pignons-pin, zone: etagere-ouverte, unites: 1, par_unite: {amount: 50, unit: g},
-     etat: sec, nature: gras, sensible: [lumiere, chaleur]}
+     etat: sec, nature: gras, sensible: [lumiere, chaleur], usage: apero}
   - {ingredient: cocktail-fruits, zone: etagere-ouverte, unites: 2, par_unite: {amount: 825, unit: g}, etat: conserve}
   - {ingredient: creme-dessert-chocolat, zone: etagere-ouverte, unites: 1, par_unite: {amount: 570, unit: g}, etat: conserve}
   - {ingredient: confiture-orange, zone: etagere-ouverte, unites: 1, par_unite: null, etat: bocal}
@@ -215,13 +237,13 @@ denrees:
   - {ingredient: vermicelles, zone: demi-lune-haute, unites: 1, par_unite: null, etat: sec}
   - {ingredient: feuilles-nori, zone: demi-lune-haute, unites: 2, par_unite: null, etat: sec, sensible: [humidite]}
   - {ingredient: lentilles-seches, zone: demi-lune-haute, unites: 1, par_unite: {amount: 500, unit: g}, etat: sec}
-  - {ingredient: graines-courge, zone: demi-lune-haute, unites: 1, par_unite: {amount: 200, unit: g}, etat: sec, nature: gras, sensible: [lumiere]}
-  - {ingredient: tomates-sechees, zone: demi-lune-haute, unites: 1, par_unite: {amount: 280, unit: g}, etat: conserve}
+  - {ingredient: graines-courge, zone: demi-lune-haute, unites: 1, par_unite: {amount: 200, unit: g}, etat: sec, nature: gras, sensible: [lumiere], usage: apero}
+  - {ingredient: tomates-sechees, zone: demi-lune-haute, unites: 1, par_unite: {amount: 280, unit: g}, etat: conserve, usage: apero}
   - {ingredient: concentre-tomate, zone: demi-lune-haute, unites: 2, par_unite: null, etat: conserve}
   - {ingredient: sauce-bolognaise-bocal, zone: demi-lune-haute, unites: 1, par_unite: {amount: 300, unit: g}, etat: bocal}
-  - {ingredient: guacamole, zone: demi-lune-haute, unites: 1, par_unite: null, etat: bocal}
+  - {ingredient: guacamole, zone: demi-lune-haute, unites: 1, par_unite: null, etat: bocal, usage: apero}
   - {ingredient: compote, zone: demi-lune-haute, unites: 3, par_unite: {amount: 710, unit: g}, etat: bocal}
-  - {ingredient: terrine-campagne, zone: demi-lune-haute, unites: 1, par_unite: {amount: 180, unit: g}, etat: conserve}
+  - {ingredient: terrine-campagne, zone: demi-lune-haute, unites: 1, par_unite: {amount: 180, unit: g}, etat: conserve, usage: apero}
 
   # ── zone 4 · placard haut — le poste de pâtisserie ───────────────────────
   # LES DEUX ÉPEAUTRES SONT DES FARINES COMPLÈTES : elles gardent le germe, donc
@@ -240,7 +262,7 @@ denrees:
   - {ingredient: sucre-blanc, zone: placard-haut, unites: 1, par_unite: null, etat: bocal, note: distributeur}
   - {ingredient: riz-rond, zone: placard-haut, unites: 1, par_unite: null, etat: bocal, note: à racheter — bocal vide}
   - {ingredient: fruits-secs-melange, zone: placard-haut, unites: 1, par_unite: null, etat: bocal,
-     note: raisins secs et chips de banane — acheté en vrac, le bocal EST le stock}
+     usage: apero, note: raisins secs et chips de banane — acheté en vrac, le bocal EST le stock}
   - {ingredient: poudre-amande, zone: placard-haut, unites: 1, par_unite: null, etat: entame, nature: gras}
   - {ingredient: preparation-amandine, zone: placard-haut, unites: 1, par_unite: null, etat: sec}
   - {ingredient: sucre-vanille, zone: placard-haut, unites: 1, par_unite: null, etat: sec}

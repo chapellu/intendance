@@ -19,11 +19,12 @@ import { chargerCatalogue } from "../model/catalogue";
 import { creerJeu, joue, type Choix, type Jeu } from "../model/jeu";
 import type { Catalogue, Plat } from "../model/types";
 import { contexte, cuissonsRecentes, rejouer, type Evenement, type Rejeu } from "../model/journal";
+import type { PlancherDenree } from "../model/plancherGardeManger";
 import { passeDuJour } from "../model/questions";
 import type { Savoir } from "../model/scoring";
 import { lireCourses } from "./courses";
 import { lireJournal } from "./journal";
-import { lireDecisions, validesParmi } from "./planchers";
+import { lireDecisions, lirePlanchersDenrees, validesParmi } from "./planchers";
 import { base, jourISO, type EtatCourse, type LotStock } from "./schema";
 import { amorcer, hydraterStock } from "./stock";
 import { hydrater, oublier, poser, prevoirGamelle, reglerParts } from "./semaine";
@@ -277,4 +278,18 @@ export function useSavoir(
  */
 export function usePlanchers(): Map<string, number | null> | undefined {
   return useLiveQuery(() => lireDecisions(base), []);
+}
+
+/**
+ * Les planchers posés sur des denrées — T39.
+ *
+ * UN HOOK À PART, PARCE QUE CE SONT DEUX LECTEURS DIFFÉRENTS. Les planchers du
+ * congélateur nourrissent le SCORE, donc `useSavoir` les attend avant de rendre
+ * une main. Ceux-ci ne nourrissent que la LISTE DE COURSES : les servir en
+ * retard ne peut pas fabriquer une main qu'on sait fausse, tout au plus une
+ * ligne qui apparaît une frame après les autres. Les brancher dans `useSavoir`
+ * aurait rendu la proposition bloquante sur une donnée qu'elle n'utilise pas.
+ */
+export function usePlanchersDenrees(): PlancherDenree[] | undefined {
+  return useLiveQuery(() => lirePlanchersDenrees(base), []);
 }

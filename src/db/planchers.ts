@@ -19,6 +19,7 @@
 // celui-là, et ne redemande pas ».
 
 import type { Plancher } from "../model/plancher";
+import type { PlancherDenree } from "../model/plancherGardeManger";
 import type { Base } from "./schema";
 
 /** La clé porte le TYPE ÉMIS, jamais le plat : c'est T34, jusque dans la base.
@@ -76,3 +77,62 @@ export async function poserPlancher(
     maj: Date.now(),
   });
 }
+
+/* ══════════════════════════════════ le garde-manger — T39, l'autre moitié */
+
+// DEUX ESPACES DE CLÉS, ET PAS UN CHAMP « côté ». Un plancher de congélateur
+// porte un TYPE ÉMIS (`sauce-bolognaise`), un plancher de garde-manger porte un
+// INGRÉDIENT (`sauce-bolognaise-bocal`) : ce sont deux vocabulaires distincts,
+// qui se ressemblent assez pour se confondre — c'est l'exemple même de T41. Les
+// mélanger dans un seul préfixe voudrait dire qu'une collision de nom entre les
+// deux vocabulaires écraserait silencieusement une décision par l'autre.
+//
+// `plancher-denree|` ne commence PAS par `plancher|` : les deux lectures à
+// préfixe restent donc étanches sans que rien n'ait à filtrer après coup.
+export const clePlancherDenree = (ingredient: string): string => `plancher-denree|${ingredient}`;
+
+const PREFIXE_DENREE = "plancher-denree|";
+
+/**
+ * Les planchers posés sur des denrées, par ingrédient.
+ *
+ * PAS DE REFUS ICI, ET L'ASYMÉTRIE AVEC LE CONGÉLATEUR EST VOULUE. Là-bas l'app
+ * PROPOSE — d'où un « non merci » qu'il faut écrire, sans quoi la proposition
+ * revient à chaque ouverture de l'écran. Ici rien ne propose : un plancher de
+ * garde-manger se pose à la main, sur une denrée qu'on a sous les yeux. Il n'y a
+ * donc rien à faire taire, et un état « refusé » serait une décision que
+ * personne n'aurait jamais prise. T45 rouvrira la question le jour où le niveau
+ * de réappro se proposera tout seul.
+ */
+export async function lirePlanchersDenrees(base: Base): Promise<PlancherDenree[]> {
+  const lignes = await base.reglages.where("cle").startsWith(PREFIXE_DENREE).toArray();
+  return lignes
+    .map((l) => ({
+      ingredient: l.cle.slice(PREFIXE_DENREE.length),
+      niveau: (l.valeur as DecisionPlancher | null)?.niveau ?? 0,
+    }))
+    .filter((p) => p.niveau > 0)
+    .sort((a, b) => a.ingredient.localeCompare(b.ingredient, "fr"));
+}
+
+/** Poser, ou changer le niveau. Un plancher à zéro n'existe pas : « j'en veux
+ *  toujours zéro » est la façon compliquée de dire qu'on n'en veut pas de
+ *  plancher, donc c'est un retrait. */
+export async function poserPlancherDenree(
+  base: Base,
+  ingredient: string,
+  niveau: number,
+): Promise<void> {
+  if (niveau <= 0) return retirerPlancherDenree(base, ingredient);
+  await base.reglages.put({
+    cle: clePlancherDenree(ingredient),
+    valeur: { niveau } satisfies DecisionPlancher,
+    maj: Date.now(),
+  });
+}
+
+/** ON EFFACE VRAIMENT, contrairement au congélateur. Sans proposition à faire
+ *  taire, garder la trace d'un plancher retiré ne servirait qu'à empêcher de le
+ *  reposer un jour où l'on aurait changé d'avis. */
+export const retirerPlancherDenree = (base: Base, ingredient: string): Promise<void> =>
+  base.reglages.delete(clePlancherDenree(ingredient));

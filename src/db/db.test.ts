@@ -7,7 +7,16 @@ import { Base, VERSION, cleCreneau, jourISO, schemaDeclare } from "./schema";
 import { cocher, lireCourses, rentrer, rentrerLesCoches, viderCourses } from "./courses";
 import { hydrater, lireSemaine, oublier, poser, reglerParts } from "./semaine";
 import { ajouterLot, amorcer, auModele, corrigerLot, hydraterStock, lireStock, reamorcer, retirerLot } from "./stock";
-import { clePlancher, lireDecisions, poserPlancher, validesParmi } from "./planchers";
+import {
+  clePlancher,
+  clePlancherDenree,
+  lireDecisions,
+  lirePlanchersDenrees,
+  poserPlancher,
+  poserPlancherDenree,
+  retirerPlancherDenree,
+  validesParmi,
+} from "./planchers";
 import { calculer } from "../model/calcul";
 
 const catalogue: Catalogue = lireCatalogue(
@@ -341,5 +350,52 @@ describe("un plancher est une décision, donc il survit", () => {
     await base.reglages.put({ cle: "stock.amorce", valeur: 1, maj: 1 });
     await poserPlancher(base, "sauce-bolognaise", 2);
     expect([...(await lireDecisions(base)).keys()]).toEqual(["sauce-bolognaise"]);
+  });
+});
+
+/* ═══════════ les planchers du garde-manger, persistés — T39 ══════════════ */
+
+describe("un plancher de denrée est une décision à part", () => {
+  test("une base neuve n'en porte aucun", async () => {
+    expect(await lirePlanchersDenrees(base)).toEqual([]);
+  });
+
+  test("posé, il se relit en unités d'achat", async () => {
+    await poserPlancherDenree(base, "mais", 3);
+    expect(await lirePlanchersDenrees(base)).toEqual([{ ingredient: "mais", niveau: 3 }]);
+  });
+
+  test("les deux vocabulaires ne se marchent pas dessus", async () => {
+    // LE CAS QUE T41 NOMME. `sauce-bolognaise` est une base cuisinée du dépôt ;
+    // `sauce-bolognaise-bocal` est un bocal du garde-manger. Deux espaces de
+    // clés, donc aucune décision ne peut en écraser une autre — et `plancher|`
+    // n'est pas un préfixe de `plancher-denree|`.
+    await poserPlancher(base, "sauce-bolognaise", 2);
+    await poserPlancherDenree(base, "sauce-bolognaise", 5);
+
+    expect((await lireDecisions(base)).get("sauce-bolognaise")).toBe(2);
+    expect(await lirePlanchersDenrees(base)).toEqual([
+      { ingredient: "sauce-bolognaise", niveau: 5 },
+    ]);
+    // Et la lecture du congélateur ne ramasse pas celle du placard.
+    expect([...(await lireDecisions(base)).keys()]).toEqual(["sauce-bolognaise"]);
+  });
+
+  test("retirer efface vraiment — il n'y a aucune proposition à faire taire", async () => {
+    // L'ASYMÉTRIE AVEC LE CONGÉLATEUR EST VOULUE. Là-bas un refus s'écrit, sinon
+    // la proposition revient ; ici rien ne propose, donc garder la trace d'un
+    // plancher retiré ne servirait qu'à empêcher de le reposer.
+    await poserPlancherDenree(base, "mais", 3);
+    await retirerPlancherDenree(base, "mais");
+    expect(await lirePlanchersDenrees(base)).toEqual([]);
+    expect(await base.reglages.get(clePlancherDenree("mais"))).toBeUndefined();
+  });
+
+  test("un plancher à zéro est un retrait, pas un plancher", async () => {
+    // « J'en veux toujours zéro » est la façon compliquée de dire qu'on n'en
+    // veut pas — et un zéro persisté produirait une ligne de courses de 0.
+    await poserPlancherDenree(base, "mais", 2);
+    await poserPlancherDenree(base, "mais", 0);
+    expect(await lirePlanchersDenrees(base)).toEqual([]);
   });
 });

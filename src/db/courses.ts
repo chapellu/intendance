@@ -12,6 +12,7 @@
 import { journaliserEntree } from "./journal";
 import { cleArticle, type Base, type EtatCourse } from "./schema";
 import type { LignePanier } from "../model/calcul";
+import { UNITE_PLANCHER } from "../model/plancherGardeManger";
 
 export const cleDeLArticle = (a: LignePanier): string => cleArticle(a.id, a.unit);
 
@@ -88,7 +89,13 @@ async function entrerAuStock(base: Base, lignes: readonly LignePanier[]): Promis
     base,
     lignes.map((l) => ({
       ingredient: l.id,
-      unites: 1,
+      // UNE LIGNE DE PLANCHER COMPTE DÉJÀ EN UNITÉS, ET C'EST LA SEULE QUI LE
+      // FASSE (T41). « Il en manque 2 » veut dire deux boîtes ; les rentrer
+      // comme un seul lot perdrait la moitié de ce que le doigt vient de dire,
+      // et le plancher redemanderait aussitôt ce qu'on vient de poser dans le
+      // placard. Partout ailleurs le raisonnement du dessous tient : la liste
+      // dit « 500 g de pâtes », pas « un paquet de 500 g ».
+      unites: l.unit === UNITE_PLANCHER ? Math.max(1, Math.round(l.qty)) : 1,
       parUnite: EN_MASSE.has(l.unit) ? { amount: l.qty, unit: l.unit } : null,
       zone: null,
       etat: "sec" as const,

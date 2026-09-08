@@ -16,7 +16,7 @@
 
 import type {
   Accept, Agression, Catalogue, Denree, Emit, EmitKind, Espace, Etape, Etat, Forme, Foyer,
-  GardeManger, Ingredient, LigneStock, Nature, Plat, Provenance, Quantite, Urgence, Zone,
+  GardeManger, Ingredient, LigneStock, Nature, Plat, Provenance, Quantite, Urgence, Usage, Zone,
 } from "./types";
 
 const ESPACES: readonly Espace[] = ["frigo", "congelo", "placard"];
@@ -29,6 +29,7 @@ const ETATS: readonly Etat[] = ["conserve", "bocal", "sec", "entame", "frais"];
 const FORMES: readonly Forme[] = ["rectangle", "demi-lune"];
 const URGENCES: readonly Urgence[] = ["haute", "moyenne", "basse"];
 const NATURES: readonly Nature[] = ["legume-cru", "fruit", "herbe", "sec", "gras", "plat", "autre"];
+const USAGES: readonly Usage[] = ["apero"];
 
 /** Les deux repas que le code nomme en dur : `gamelles()` cherche « le dîner de
  *  la veille », et l'équilibre se mesure sur les repas principaux. Le reste de
@@ -350,6 +351,11 @@ function denree(v: unknown, ou: string): Denree {
     incompatibles: listeDeTextes(o["incompatibles"] ?? [], `${ou}.incompatibles`),
     urgence: parmi(o["urgence"], URGENCES, `${ou}.urgence`),
     nature: parmi(o["nature"], NATURES, `${ou}.nature`),
+    // ABSENT ET `null` SONT LA MÊME RÉPONSE, et c'est le cas de 47 denrées sur
+    // 53 : cette chose sert à cuisiner. Un usage écrit, en revanche, doit être
+    // connu — une faute de frappe y serait silencieuse et ferait simplement
+    // disparaître la denrée de la liste d'apéro, sans que rien ne le dise.
+    usage: o["usage"] == null ? null : parmi(o["usage"], USAGES, `${ou}.usage`),
     conservations: tableau(o["conservations"] ?? [], `${ou}.conservations`).map((x, i) => {
       const c = obj(x, `${ou}.conservations[${i}]`);
       return {

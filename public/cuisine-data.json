@@ -20748,6 +20748,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -20784,6 +20785,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -20820,6 +20822,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -20856,6 +20859,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -20892,6 +20896,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -20928,6 +20933,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -20964,6 +20970,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -21000,6 +21007,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -21036,6 +21044,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -21075,6 +21084,7 @@
     "incompatibles": [],
     "urgence": "haute",
     "nature": "gras",
+    "usage": "apero",
     "conservations": [
      {
       "id": "congeler",
@@ -21111,6 +21121,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -21147,6 +21158,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -21180,6 +21192,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -21213,6 +21226,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -21246,6 +21260,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -21279,6 +21294,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -21314,6 +21330,7 @@
     "incompatibles": [],
     "urgence": "moyenne",
     "nature": "sec",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -21349,6 +21366,7 @@
     "incompatibles": [],
     "urgence": "moyenne",
     "nature": "sec",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -21384,6 +21402,7 @@
     "incompatibles": [],
     "urgence": "moyenne",
     "nature": "sec",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -21420,6 +21439,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -21456,6 +21476,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -21489,6 +21510,7 @@
     "incompatibles": [],
     "urgence": "moyenne",
     "nature": "sec",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -21522,6 +21544,7 @@
     "incompatibles": [],
     "urgence": "moyenne",
     "nature": "sec",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -21555,6 +21578,7 @@
     "incompatibles": [],
     "urgence": "moyenne",
     "nature": "sec",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -21588,6 +21612,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -21621,6 +21646,7 @@
     "incompatibles": [],
     "urgence": "moyenne",
     "nature": "sec",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -21654,6 +21680,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -21687,6 +21714,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -21722,6 +21750,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -21758,6 +21787,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -21796,6 +21826,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "gras",
+    "usage": "apero",
     "conservations": [
      {
       "id": "congeler",
@@ -21832,6 +21863,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": "apero",
     "conservations": [
      {
       "id": "congeler",
@@ -21865,6 +21897,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -21901,6 +21934,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -21934,6 +21968,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": "apero",
     "conservations": [
      {
       "id": "congeler",
@@ -21970,6 +22005,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -22006,6 +22042,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": "apero",
     "conservations": [
      {
       "id": "congeler",
@@ -22044,6 +22081,7 @@
     "incompatibles": [],
     "urgence": "moyenne",
     "nature": "sec",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -22082,6 +22120,7 @@
     "incompatibles": [],
     "urgence": "moyenne",
     "nature": "sec",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -22118,6 +22157,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -22151,6 +22191,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -22184,6 +22225,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -22217,6 +22259,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -22250,6 +22293,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -22283,6 +22327,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": "apero",
     "conservations": [
      {
       "id": "congeler",
@@ -22316,6 +22361,7 @@
     "incompatibles": [],
     "urgence": "moyenne",
     "nature": "gras",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -22349,6 +22395,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -22382,6 +22429,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -22415,6 +22463,7 @@
     "incompatibles": [],
     "urgence": "basse",
     "nature": "autre",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -22455,6 +22504,7 @@
     ],
     "urgence": "haute",
     "nature": "legume-cru",
+    "usage": null,
     "conservations": [
      {
       "id": "sous-vide-frigo",
@@ -22508,6 +22558,7 @@
     "incompatibles": [],
     "urgence": "haute",
     "nature": "legume-cru",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -22570,6 +22621,7 @@
     "incompatibles": [],
     "urgence": "haute",
     "nature": "legume-cru",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",
@@ -22632,6 +22684,7 @@
     "incompatibles": [],
     "urgence": "haute",
     "nature": "legume-cru",
+    "usage": null,
     "conservations": [
      {
       "id": "congeler",

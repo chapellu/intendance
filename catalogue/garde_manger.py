@@ -92,6 +92,18 @@ def urgence(denree: dict, zone: dict) -> str:
 
 NATURES = ("legume-cru", "fruit", "herbe", "sec", "gras", "plat", "autre")
 
+# À quoi la chose sert, quand ce n'est pas à faire un plat — T40.
+#
+# UNE ÉNUMÉRATION FERMÉE, ET DÉLIBÉRÉMENT COURTE. Un champ libre ici deviendrait
+# une deuxième taxonomie officieuse à côté des rayons et des natures, avec ses
+# fautes de frappe silencieuses : `apéro` et `apero` seraient deux usages, et
+# rien ne le dirait. Le vérificateur refuse donc ce qu'il ne connaît pas, comme
+# il le fait déjà des états et des natures.
+#
+# `None` est la réponse normale : 47 des 53 denrées relevées ne servent à rien de
+# particulier, elles servent à cuisiner.
+USAGES = ("apero",)
+
 # Le défaut d'acidité vient de `conservation.yaml` (`defaut_acidite: basse`) et
 # c'est un choix de SÉCURITÉ. Voir l'avertissement botulisme en tête de ce
 # fichier-là : le bain-marie ne stérilise que les aliments acides, et sur un
@@ -336,6 +348,8 @@ def verifier_garde_manger(gm: dict, rayons: dict) -> tuple:
             err.append(f"{ou} : état « {d.get('etat')} » inconnu — attendu parmi {list(ETATS)}")
         if d.get("nature", "autre") not in NATURES:
             err.append(f"{ou} : nature « {d.get('nature')} » inconnue — attendu parmi {list(NATURES)}")
+        if d.get("usage") is not None and d["usage"] not in USAGES:
+            err.append(f"{ou} : usage « {d['usage']} » inconnu — attendu parmi {list(USAGES)}")
         if d.get("acidite", ACIDITE_DEFAUT) not in ("basse", "haute"):
             err.append(f"{ou} : acidité « {d.get('acidite')} » inconnue — attendu `basse` ou `haute`")
         for s in d.get("sensible") or []:
