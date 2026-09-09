@@ -8,9 +8,30 @@
 
 import { expect, type Page } from "@playwright/test";
 
-/** La première case libre de la semaine, dépliée. Renvoie le nom du plat qu'on
- *  vient d'y poser. */
-export async function poserUnPlat(page: Page): Promise<string> {
+/**
+ * La première case libre de la semaine, dépliée. Renvoie le nom du plat qu'on
+ * vient d'y poser.
+ *
+ * `convient` FILTRE LA MAIN, ET IL EXISTE PARCE QU'UN PARCOURS A MENTI SUR CE
+ * DONT IL AVAIT BESOIN. `stock-descend` affirmait tenir « quel que soit le plat
+ * que Poser a tiré » ; en vérité sa seconde promesse — la confiance du placard
+ * se dépense — n'a de sens que si le plat tiré TOUCHE le garde-manger, et 24 des
+ * 86 plats du corpus n'y touchent pas. Il passait parce que l'ancien bonus
+ * placard faisait remonter les plats à oignon en tête de la main ; le jour où
+ * T60 a cessé de payer l'oignon, il a tiré une quiche aux poireaux et il est
+ * tombé. Un parcours qui dépend d'une propriété doit la DEMANDER, sans quoi il
+ * teste la chance qu'il a eue.
+ *
+ * ON REPIOCHE PLUTÔT QUE DE FOUILLER : « Repiocher » est le geste que l'app
+ * offre pour changer de main, et s'en servir garde le parcours dans les clous du
+ * doigt. Le plafond de tours n'est pas un garde-fou de politesse — s'il faut
+ * huit mains pour trouver un plat qui touche le placard, c'est une information
+ * sur la proposition, et le parcours doit s'arrêter en le disant.
+ */
+export async function poserUnPlat(
+  page: Page,
+  convient?: (titre: string) => boolean,
+): Promise<string> {
   await page.goto("/#/cuisine/semaine");
   await attendreLApp(page);
 
@@ -24,15 +45,25 @@ export async function poserUnPlat(page: Page): Promise<string> {
 
   await repondreAuxQuestions(page);
 
-  const carte = page.locator(".co-jouable").first();
-  await expect(carte).toBeVisible();
-  const titre = (await carte.locator(".tete .nom").innerText()).trim();
-  await carte.getByRole("button", { name: "Poser sur ce créneau" }).click();
+  const cartes = page.locator(".co-jouable");
+  await expect(cartes.first()).toBeVisible();
 
-  // `jouer` renvoie sur la semaine une fois l'écriture faite : c'est là qu'on
-  // sait que le tour est complet, base comprise.
-  await expect(page.locator(".co-slots").first()).toBeVisible();
-  return titre;
+  for (let tour = 0; tour < 8; tour++) {
+    const titres = await cartes.locator(".tete .nom").allInnerTexts();
+    const n = titres.findIndex((t) => !convient || convient(t.trim()));
+    if (n >= 0) {
+      const titre = titres[n]!.trim();
+      await cartes.nth(n).getByRole("button", { name: "Poser sur ce créneau" }).click();
+      // `jouer` renvoie sur la semaine une fois l'écriture faite : c'est là
+      // qu'on sait que le tour est complet, base comprise.
+      await expect(page.locator(".co-slots").first()).toBeVisible();
+      return titre;
+    }
+    await page.getByRole("button", { name: /Repiocher/ }).click();
+    await expect(cartes.first()).toBeVisible();
+  }
+
+  throw new Error("huit mains sans un seul plat qui convienne — la proposition a changé de nature");
 }
 
 /**

@@ -141,18 +141,36 @@ function Fiche({
 
   // Un plat sans étapes n'a pas de mode guidé — il n'a qu'une liste. La fiche
   // s'ouvre alors dessus, plutôt que sur un écran vide.
+  //
+  // ⚠ ET IL POUVAIT ALORS N'ÊTRE JAMAIS TERMINÉ, ce qui est un trou dans la
+  // promesse centrale de l'app. « Terminer » est le SEUL endroit où le stock
+  // descend, et il ne vivait que dans le mode guidé : les 15 plats du corpus
+  // sans `steps` — la bolognaise, le poulet rôti, la quiche aux poireaux —
+  // pouvaient être cuisinés sans que rien ne soit jamais journalisé. Le parcours
+  // e2e ne l'a pas vu pendant des mois parce qu'il tirait toujours une carte qui,
+  // elle, avait des étapes ; c'est un simple changement de classement qui a fini
+  // par lui en tirer une autre. Trouvé et bouché en marge de Workspace#50.
   if (ingr || !steps.length)
     return (
       <>
         {tete}
         <Ingredients p={p} parts={parts} f={f} catalogue={jeu.catalogue} />
-        {steps.length ? (
-          <div style={{ padding: "0 var(--space-4) var(--space-4)" }}>
+        <div style={{ padding: "0 var(--space-4) var(--space-4)" }}>
+          {steps.length ? (
             <button className="btn btn-secondary btn-block" onClick={() => setIngr(false)}>
               Revenir à l’étape {etape + 1}
             </button>
-          </div>
-        ) : null}
+          ) : (
+            // Le même geste et le même mot que la dernière étape du guide, parce
+            // que c'est le même événement : ce plat n'a qu'une étape, la faire.
+            <button
+              className="btn btn-primary btn-block"
+              onClick={() => void terminer().finally(sortir)}
+            >
+              Terminer
+            </button>
+          )}
+        </div>
       </>
     );
 

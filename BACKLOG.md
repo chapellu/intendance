@@ -1249,7 +1249,8 @@ bocal distributeur — un objet physique, pas une cible. La cible s'appelle donc
       que neuf poids : `proteine_manquante`, `proteine_saturee`,
       `famille_legume_neuve`, `repetition_feculent`, `repetition_profil`,
       `chaine_couverte`, `chaine_manquante`, `mal_transporte`,
-      `article_marginal`, plus les `ecoule_placard_*` via `bonusPlacard`. Sont
+      `article_marginal`, plus `ecoule` via `bonusPlacard` (les `ecoule_placard_*`
+      qu'il lisait ont fusionné dedans en T57/T59). Sont
       parsés et **jamais lus** : `plancher_congelo`, `ecoule_frigo`,
       `ecoule_congelo`, `congelateur.plancher`, `main.taille` (le code code 4 en
       dur), `main.cooldown_jours`. Ce n'est pas une série d'oublis épars — c'est
@@ -1519,9 +1520,12 @@ suit ne s'est décidé sur la seule lecture du code :
 - **L'horloge manquante du congélateur est un court-circuit d'une ligne** —
   `depot.ts:225`, `ligne.location === "congelo" || age <= this.fenetre`.
 - **`bonusPlacard` est en pratique un bonus de +5 pour « contient un oignon ».**
-  5 denrées `haute` sur 53 ; **4 le sont parce qu'elles sont sous l'évier** ; la
-  cinquième (pignons) n'est dans **aucun** plat ; et **40 plats sur 86**
-  contiennent oignon ou ail.
+  5 denrées `haute` sur 53 ; la cinquième (pignons) n'est dans **aucun** plat ;
+  et **40 plats sur 86** contiennent oignon ou ail. ⚠ **La raison écrite ici —
+  « 4 le sont parce qu'elles sont sous l'évier » — est fausse, et T60 s'est
+  cassé les dents dessus** : ces quatre légumes sont `etat: frais`, et
+  `urgence()` tranche sur le frais avant de regarder la zone. Le constat tenait,
+  son explication non, et le remède qu'elle a dicté était un no-op.
 
 - [x] **T54 — Le frigo compte par plat, plus par foyer.** `gardeFrigo` (78
       valeurs saisies à la main, de 0 à 7 jours) devient l'horloge réelle ;
@@ -1606,26 +1610,42 @@ suit ne s'est décidé sur la seule lecture du code :
       et non depuis aujourd'hui, sinon la fraction de vie consommée repartirait
       de zéro chaque matin.
 
-- [ ] **T57 — Un axe, deux mots.** Les urgences du garde-manger se **projettent**
+- [x] **T57 — Un axe, deux mots.** Les urgences du garde-manger se **projettent**
       sur le même axe 0–1 que la fraction du dépôt : `haute` = 1,0,
       `moyenne` = 0,4, `basse` **hors échelle**. Ces valeurs ne sont pas
-      inventées — elles reproduisent exactement `ecoule_placard_urgent: 5` et
-      `ecoule_placard_entame: 2`, donc **le placard ne bouge pas**, seul le dépôt
-      gagne une horloge. `garde_manger.py` **garde ses trois urgences et ses
-      zéro date** : son objection (« inventer une échéance pour pouvoir compter
-      dessus serait le genre de chiffre qui a l'air juste et ne l'est jamais »)
-      tient, et le relevé ne porte ni DLC, ni DLUO, ni date d'ouverture.
-      L'affichage prend les seuils de **Don't Starve** — 50 % et 20 % — et
-      **jette sa jauge** : le dénominateur de Don't Starve est une constante de
-      jeu, le nôtre est deviné, donc une barre afficherait une précision qu'on
-      n'a pas. Trois points, deux mots : rien / **à manger** / **urgent**.
-      **L'absence de marque EST l'état frais**, comme *Fresh* n'a pas de préfixe
-      dans le jeu. `haute`/`moyenne`/`basse` sortent des écrans de décision ;
-      ils restent en donnée, et « L'inventaire » reste le bon endroit pour les
-      voir crus, étant une vue de diagnostic. Sur 3 mois ça prévient à **six
-      semaines** puis à **deux mois et demi** ; sur le frigo les mêmes seuils
-      tombent à J+1,5 et J+2,4, trop fin pour être dit — **seul le franchissement
-      compte**.
+      inventées — avec `ecoule: 5` elles reproduisent exactement
+      `ecoule_placard_urgent: 5` et `ecoule_placard_entame: 2`, donc **le placard
+      ne bouge pas**, il gagne une échelle. `garde_manger.py` **garde ses trois
+      urgences et ses zéro date** : son objection (« inventer une échéance pour
+      pouvoir compter dessus serait le genre de chiffre qui a l'air juste et ne
+      l'est jamais ») tient, et le relevé ne porte ni DLC, ni DLUO, ni date
+      d'ouverture. L'affichage prend les seuils de **Don't Starve** — 50 % et
+      20 % de vie restante, soit 0,5 et 0,8 de vie consommée — et **jette sa
+      jauge** : le dénominateur de Don't Starve est une constante de jeu, le
+      nôtre est deviné. Trois points, deux mots : rien / **à manger** /
+      **urgent**. **L'absence de marque EST l'état frais**, comme *Fresh* n'a
+      pas de préfixe dans le jeu.
+
+      **`basse` EST HORS ÉCHELLE, PAS À ZÉRO**, et le typage l'impose (`null`).
+      Zéro l'aurait fait entrer dans les sommes de T59 comme un terme nul — vrai
+      par accident, faux dès qu'on aurait voulu compter les articles sauvés.
+
+      **CE QUE LA MARQUE AJOUTE À LA PHRASE DE T58, SANS LA REMPLACER.** Elles ne
+      parlent pas du même lot : `horloge` est une phrase réservée au congelé
+      dépassé, qui dit *pourquoi il est encore là* ; la marque est un état, porté
+      par tout lot **encore en jeu**, qui dit *où il en est*. D'où une règle que
+      le ticket n'avait pas prévue : **un reste de frigo périmé ne porte AUCUNE
+      marque**. « urgent » veut dire « mange-le maintenant » ; l'écrire sur ce
+      que le modèle vient de refuser de proposer pour raison de sécurité serait
+      exactement le contraire du service. Frigo dur, congélateur mou, jusque dans
+      les mots.
+
+      **Mesuré** (`npm run ecoulement`) : sur 3 mois ça prévient à J+45 puis
+      J+72 ; sur le défaut du foyer à J+2 et J+3,2 ; sur la carcasse de volaille
+      à **J+1 et J+1,6** — elle franchit les deux seuils dans sa première
+      journée. C'est cette dernière ligne qui justifie de n'afficher aucun
+      pourcentage : il serait faux à la décimale près. Seul le franchissement se
+      dit.
 
 - [x] **T58 — Frigo dur, congélateur mou.** Passé sa fenêtre un reste de frigo
       **sort du jeu**, comme avant : c'est une question de sécurité. Passé trois
@@ -1650,7 +1670,7 @@ suit ne s'est décidé sur la seule lecture du code :
       La refaire à l'écran donnerait deux constantes libres de diverger, pour
       gagner un « 4 mois » à la place d'un « 128 j ».
 
-- [ ] **T59 — Le score cumule, plafonné à trois articles.** `ecoule: 5`, somme
+- [x] **T59 — Le score cumule, plafonné à trois articles.** `ecoule: 5`, somme
       des fractions sur **au plus trois** articles, **pas de dégressivité**.
       **La règle « un seul bonus par plat » de `gardeManger.ts:122` est
       abandonnée** : un plat qui sauve trois choses vaut mieux qu'un plat qui en
@@ -1666,21 +1686,104 @@ suit ne s'est décidé sur la seule lecture du code :
       passant devant la protéine manquante n'est pas un déséquilibre, c'est
       l'app qui fait son travail. **Débloque T47.**
 
-- [ ] **T60 — Assainir la source du bonus placard.** Deux gestes, opposés et
-      délibérés. (a) **Une denrée qu'aucun plat ne consomme sort du score** :
-      4 des 10 `moyenne` sont dans zéro plat — cracotte, krisprolls,
-      blé-lentilles, farine d'épeautre, du petit-déjeuner qu'aucune recette de
-      dîner ne mange. Elle ne peut pas être sauvée en cuisinant, donc la payer ne
-      fait que bruiter le classement ; elle **reste dans la liste « à sauver »**,
-      qui est faite pour être lue. (b) **L'artefact du sous-évier n'est pas
-      neutralisé, il est déplacé** : l'app a raison de dire que ces oignons
-      courent, mais c'est un problème de **rangement**, pas de dîner. Il sort en
-      geste (« sors les légumes de sous l'évier »), pas en +5 sur 40 plats.
-      **Conséquence à garder en tête** : une fois le rangement corrigé il ne
-      resterait aucune denrée `haute`, et la seule qui subsiste n'est dans aucun
-      plat — donc **en régime normal le signal vient du dépôt**, c'est-à-dire de
-      l'horloge que T54–T55 installent. Le placard n'en fournissait presque
-      aucun.
+      **L'ARGUMENT QUE LA RÈGLE ABANDONNÉE PORTAIT ÉTAIT JUSTE ; SON REMÈDE
+      VISAIT À CÔTÉ.** Le commentaire de `bonusPlacard` défendait le forfait par
+      le bruit du cumul : l'oignon dans 42 % des plats, l'ail dans 19 %, donc
+      +10 sur presque tout. Vrai — mais ce qui bruitait n'était pas le cumul,
+      c'était que le frais ubiquitaire soit payé **du tout**. T60 le retire à la
+      source, et le remède n'a plus rien à soigner.
+
+      **LE PLAFOND NE MORD PAS ENCORE, et c'est un fait sur le placard, pas sur
+      la règle.** Mesuré : **aucun des 86 plats n'écoule plus d'UN article** —
+      le placard n'offre plus que des paquets entamés, à 0,4, et aucune recette
+      n'en cite deux. Le terme plafonne donc en pratique à **2 points**, sous
+      `proteine_manquante: 6`. Conséquence pour le garde-fou « le placard
+      départage, il ne commande pas » : il ne se lit **plus sur les poids** — la
+      lecture « 5 < 6 donc il départage » est morte le jour où le terme s'est mis
+      à cumuler — il se **mesure sur le corpus**, et son test tombera le jour où
+      T47 versera le dépôt dans la même somme. C'est exactement ce qu'on lui
+      demande.
+
+      **Les plus pressés d'abord** quand il y en a plus de trois, à égalité par
+      nom : le plafond doit couper la queue de la liste, pas retenir ce que
+      l'ordre des lignes de la recette met en tête — ce serait un fait sur la
+      rédaction du fichier, pas sur ce que le plat sauve. Et **tous les sauvés
+      restent nommés**, même au-delà du plafond : la phrase dit ce que le plat
+      sauve, le score dit ce que ça vaut ; n'en nommer que trois ferait mentir
+      la première pour justifier le second.
+
+- [x] **T60 — Assainir la source du bonus placard.** L'intention est tenue et le
+      résultat annoncé est atteint — **plus aucune denrée `haute` ne paie**, et
+      le score pousse **9 plats sur 86 (10 %) au lieu de 50 (58 %)**. Mais
+      **AUCUN DES DEUX GESTES DEMANDÉS N'AURAIT RIEN FAIT**, et c'est la mesure
+      qui l'a dit, pas la relecture.
+
+      **(a) « Une denrée qu'aucun plat ne consomme sort du score » ÉTAIT DÉJÀ
+      VRAI**, par la forme de la boucle et non par un filtre : `bonusPlacard`
+      part des lignes du **plat** et cherche dedans, jamais l'inverse. Les quatre
+      `moyenne` hors recette — cracotte, krisprolls, blé-lentilles, farine
+      d'épeautre — ne pouvaient rien bruiter. Le ticket décrivait un filtre à
+      écrire ; il n'y en avait pas à écrire. Une propriété vraie par accident se
+      perd au premier refactor, donc **un test l'épingle** désormais, et elles
+      restent dans la liste « à sauver », qui est faite pour être lue.
+
+      **(b) « L'artefact du sous-évier est déplacé, pas neutralisé » VISAIT LA
+      MAUVAISE CAUSE.** Le ticket affirmait que 4 des 5 `haute` le sont « parce
+      qu'elles sont sous l'évier ». Mesuré, les quatre légumes sont
+      `etat: frais`, et `urgence()` tranche sur le frais **avant même de regarder
+      la zone** : ils seraient tout aussi `haute` dans une cave sèche. Retirer
+      « la cause zone » aurait donc laissé le +5 sur l'oignon **intact**, et le
+      ticket clos à tort. Le seul `haute` purement dû à sa zone est le sachet de
+      pignons — qui n'est dans aucun plat, donc n'avait jamais rien payé.
+
+      **CE QUI A ÉTÉ FAIT À LA PLACE, EN UNE RÈGLE : le score ne paie que la
+      barrière rompue** (`etat: entame`). C'est la seule horloge du placard que
+      cuisiner arrête, et `garde_manger.py` le disait déjà mot pour mot. Les deux
+      exclusions du ticket y tombent ensemble, plus la vraie. L'argument de fond
+      est celui que `gardeManger.ts` écrivait en tête depuis T22 : un terme qui
+      tire sur 42 % du corpus ne départage rien, quel qu'en soit le motif.
+
+      **L'APP N'ARRÊTE PAS DE LE DIRE, ELLE ARRÊTE DE LE PAYER.** Le frais reste
+      dans « À manger en premier » ; le mauvais rangement reste le geste « pomme
+      de terre, oignon… — dans un endroit humide (sous-évier) », qui existe
+      depuis T31 et que ce ticket n'a donc pas eu à créer. La note de l'écran,
+      elle, devenait fausse — « Poser un plat remonte les recettes qui les
+      mangent » ne vaut plus que pour les paquets entamés — et a été réécrite.
+
+      **Conséquence, confirmée** : en régime normal le signal ne vient plus du
+      placard mais du **dépôt**, c'est-à-dire de l'horloge de T54–T55.
+
+      ⚠ **CE QUE ÇA NE FERME PAS.** Le vrai axe n'est pas l'état, c'est
+      l'ubiquité. Le mesurer demanderait de comparer *ce qu'on a* à *ce qu'un
+      plat prend*, et le relevé ne porte pas les quantités du frais
+      (`par_unite: null`). L'état est le meilleur proxy disponible ; il coûte une
+      courgette fraîche qui, elle, mériterait d'être payée — et on la perdra sans
+      le voir jusqu'à ce que les quantités existent.
+
+### Trouvé en marge de #50, et corrigé au passage
+
+**UN PLAT SANS ÉTAPES NE POUVAIT JAMAIS ÊTRE TERMINÉ.** « Terminer » est le seul
+endroit de l'app où le stock descend, et il ne vivait que dans le mode guidé de
+`Cuisiner.tsx` : les **15 plats du corpus sans `steps`** — la bolognaise, le
+poulet rôti, la quiche aux poireaux, les lasagnes — s'ouvraient sur leur liste
+d'ingrédients et **rien ne les journalisait jamais**. Un trou dans la promesse
+centrale de T25–T32, resté invisible parce que le parcours e2e tirait toujours
+une carte qui, elle, avait des étapes. Bouché : la fiche sans étapes porte le
+même bouton « Terminer » et le même événement.
+
+**ET LE PARCOURS `stock-descend` MENTAIT SUR CE DONT IL AVAIT BESOIN.** Il
+affirmait tenir « quel que soit le plat que Poser a tiré » ; sa seconde promesse
+— la confiance du placard se dépense — n'a de sens que si le plat **touche** le
+garde-manger, ce que **24 des 86 plats** ne font pas. Il passait par un effet de
+bord du classement : l'ancien bonus placard remontait les plats à oignon en tête
+de la main. T60 ayant cessé de payer l'oignon, il a tiré une quiche aux poireaux
+et il est tombé. `poserUnPlat` prend désormais un filtre, dérivé du corpus et non
+recopié à la main, et repioche jusqu'à trouver — un parcours qui dépend d'une
+propriété doit la demander, sans quoi il teste la chance qu'il a eue.
+
+**Les deux se sont vus le même jour, et pour la même raison** : changer un
+classement change ce qu'un parcours traverse. C'est un argument pour garder ces
+huit parcours, pas contre.
 
 ### Laissé ouvert par #50
 

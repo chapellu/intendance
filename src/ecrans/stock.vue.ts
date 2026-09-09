@@ -15,6 +15,7 @@
 //
 // Port de `apps/proto-shell/comptoir.js` (`ecranStock`, `fiabilite`).
 
+import { marque, type Marque } from "../model/axe";
 import type { BilanEspace, Calcul } from "../model/calcul";
 import type { Depot, LigneDepot } from "../model/depot";
 import type { Jeu } from "../model/jeu";
@@ -446,6 +447,26 @@ export interface LotVue {
    * diverger pour gagner un « 4 mois » à la place d'un « 128 j ».
    */
   horloge: string;
+  /**
+   * Où en est ce lot sur l'axe, en un mot ou zéro — T57.
+   *
+   * DEUX MOTS, ET LE SILENCE EST LE TROISIÈME POINT. « à manger » à mi-vie,
+   * « urgent » aux quatre cinquièmes, rien avant : l'absence de marque EST
+   * l'état frais, et c'est le cas de la grande majorité des lots. Un mot pour
+   * dire « tout va bien » serait affiché en permanence sur tout le dépôt, et il
+   * ne se remarquerait plus le jour où il change.
+   *
+   * ELLE NE REMPLACE PAS `horloge`, ELLE LA COMPLÈTE, ET LES DEUX NE PARLENT PAS
+   * DU MÊME LOT. `horloge` est une phrase, réservée au congelé dépassé, qui dit
+   * pourquoi un lot qu'on croirait mort est encore servi. La marque est un état,
+   * porté par tous les lots datés, y compris ceux qui vont très bien — elle
+   * répond « où en est-il », l'autre répond « pourquoi est-il encore là ».
+   *
+   * PAS DE POURCENTAGE, ET C'EST DÉLIBÉRÉ : voir `axe.ts`. Sur une carcasse de
+   * volaille à deux jours, les seuils tombent à J+1 et J+1,6 — un chiffre y
+   * serait faux à la décimale près. Seul le franchissement se dit.
+   */
+  marque: Marque;
 }
 
 export function lots(
@@ -481,6 +502,19 @@ export function lots(
           v && !v.dur && v.depasse
             ? `au congélateur depuis ${v.age} j, au-delà des ${v.fenetre} prévus — encore bon à jouer`
             : "",
+        // ELLE SE TAIT SUR UN LOT SORTI DU JEU, et c'est la même règle que la
+        // phrase juste au-dessus, appliquée à l'envers. « urgent » veut dire
+        // « mange-le maintenant » : l'écrire sur un reste de frigo périmé serait
+        // inviter à cuisiner ce que le modèle vient de refuser de proposer pour
+        // une question de sécurité. Le congelé dépassé, lui, reste marqué —
+        // il reste servi, donc il reste sur l'axe. Frigo dur, congélateur mou,
+        // jusque dans les mots.
+        //
+        // Un lot sans naissance n'a pas de `vie` non plus, donc pas de marque :
+        // le dépôt n'en produit pas aujourd'hui — constatés comme cuisinés, tous
+        // naissent — mais inventer un âge pour pouvoir marquer serait exactement
+        // le chiffre qui a l'air juste et ne l'est jamais.
+        marque: v && !(v.dur && v.depasse) ? marque(v.fraction) : "",
       };
     });
 }

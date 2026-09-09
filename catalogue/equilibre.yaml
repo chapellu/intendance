@@ -49,17 +49,29 @@ poids:
   chaine_couverte: 4         # sa base est déjà cuite plus tôt dans la semaine
   ecoule_frigo: 5            # consomme un reste qui dort au frigo
   ecoule_congelo: 3          # sort une portion d'urgence du congélateur
-  # LE PLACARD SE VIDE AUSSI, ET IL SE GÂTE. Mêmes poids que `ecoule_frigo`,
-  # parce que c'est la même idée : une denrée qui se dégrade vaut d'être mangée
-  # avant une denrée qui attend tranquillement.
+  # UN SEUL POIDS POUR TOUT CE QUI S'ÉCOULE — T57 et T59, Workspace#50.
+  #
+  # Il remplace la paire `ecoule_placard_urgent: 5` / `ecoule_placard_entame: 2`,
+  # qui classait par RANG là où on sait maintenant classer par FRACTION DE VIE
+  # CONSOMMÉE. Le score vaut `ecoule × somme des fractions`, sur au plus trois
+  # articles : 1,0 rend exactement l'ancien 5 et 0,4 l'ancien 2. Ce ticket donne
+  # donc une échelle au placard, il ne change pas ce qu'il pèse.
+  #
+  # `ecoule_frigo` et `ecoule_congelo` ci-dessus sont ses deux autres moitiés et
+  # tombent avec T47 : classer par ENDROIT est un proxy grossier de l'urgence —
+  # « une bolognaise un peu vieille au congélateur est plus urgente qu'un truc
+  # frais au frigo ». Elles restent le temps que le modèle Python, qui les lit,
+  # suive ; rien côté app ne les lit, et T48 les compte comme mortes.
   #
   # SEULES LES DENRÉES À RISQUE SONT PAYÉES, et c'est tout le point. Utiliser une
   # boîte de conserve qui tient trois ans n'a rien d'urgent — et c'est déjà
   # récompensé ailleurs, par `article_marginal` qui ne monte pas quand
   # l'ingrédient est au placard. Payer aussi le maïs ferait gagner les plats à
   # longue liste d'épicerie, ce qui est l'inverse du service rendu.
-  ecoule_placard_urgent: 5   # frais, ou en train de s'abîmer là où il est rangé
-  ecoule_placard_entame: 2   # paquet ouvert : la barrière est rompue
+  #
+  # Valeur posée à vue, à régler à l'usage — et c'est ICI que se corrigerait un
+  # écoulement trop dominant, jamais dans un mécanisme de plus.
+  ecoule: 5                  # × la fraction de vie consommée, cumulée sur 3 max
   chaine_manquante: -8       # exige une base que rien ne produit avant
   hors_budget: -4
   # LES DEUX PLANCHERS SONT DEUX MÉCANIQUES, DONC DEUX POIDS (T36). Le premier

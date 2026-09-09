@@ -12,8 +12,36 @@
 // ici, c'est que TERMINER UNE RECETTE journalise, ce qui est une tout autre
 // affirmation.
 
+import { readFileSync } from "node:fs";
 import { expect, test } from "@playwright/test";
 import { attendreLApp, poserUnPlat } from "./parcours";
+
+/**
+ * Les plats qui consomment vraiment quelque chose du garde-manger.
+ *
+ * DÉRIVÉ DU CORPUS, JAMAIS ÉNUMÉRÉ À LA MAIN. Une liste de titres recopiée ici
+ * vieillirait à côté du catalogue et personne ne le verrait ; ce calcul, lui,
+ * suit la recette qu'on ajoutera demain. C'est le même parti que
+ * `mise-a-jour.spec.ts`, seul autre parcours à lire un fichier du dépôt.
+ *
+ * Le `placard` des rayons est exclu : le sel et l'huile sont une appartenance —
+ * « on en a toujours » — et ils ne portent aucune confiance à dépenser.
+ */
+function platsQuiTouchentLePlacard(): Set<string> {
+  const c = JSON.parse(readFileSync("public/cuisine-data.json", "utf8")) as any;
+  const alias = (id: string): string => c.rayons.aliases[id] ?? id;
+  const gm = new Set<string>(c.gardeManger.denrees.map((d: any) => alias(d.ingredient)));
+  const toujours = new Set<string>(c.rayons.placard);
+  return new Set(
+    c.plats
+      .filter((p: any) =>
+        p.ingredients.some(
+          (i: any) => !i.base && gm.has(alias(i.id)) && !toujours.has(alias(i.id)),
+        ),
+      )
+      .map((p: any) => p.titre),
+  );
+}
 
 test("terminer une recette journalise, et la confiance du placard se dépense", async ({ page }) => {
   // LE PLUS LONG PARCOURS DE LA SUITE, et il l'est pour une raison : il traverse
@@ -28,7 +56,14 @@ test("terminer une recette journalise, et la confiance du placard se dépense", 
   // pas pour ici.
   test.setTimeout(180_000);
 
-  const titre = await poserUnPlat(page);
+  // ON DEMANDE UN PLAT QUI TOUCHE LE PLACARD, au lieu de l'espérer. La seconde
+  // moitié de ce parcours — « la confiance du placard se dépense » — n'a
+  // simplement pas de sens sur un plat qui n'y prend rien, et 24 des 86 plats du
+  // corpus sont dans ce cas. Ça passait par un effet de bord du classement, que
+  // T60 a supprimé : l'ancien bonus placard remontait les plats à oignon, donc
+  // « le premier de la main » touchait presque toujours le garde-manger.
+  const auPlacard = platsQuiTouchentLePlacard();
+  const titre = await poserUnPlat(page, (t) => auPlacard.has(t));
 
   // ON LIT LE CRÉNEAU SUR LE SLOT POSÉ. Le lien « En cuisine » vit sur l'écran
   // « Aujourd'hui », donc seulement pour les créneaux du jour, alors que le
@@ -52,10 +87,11 @@ test("terminer une recette journalise, et la confiance du placard se dépense", 
   // qui en pèse 2,75 ») — donc un parcours qui compte des lots dépend du plat
   // que « Poser » a tiré, et se met à rougir sans qu'aucun code ait changé.
   //
-  // Ce qui est vrai QUEL QUE SOIT LE PLAT, c'est l'asymétrie de T30 : cuisiner
-  // n'est pas observer, donc ça DÉPENSE la confiance. Journal vide, tout le
-  // garde-manger date du relevé et se lit « vu » ; après une cuisson, ce que le
-  // plat a touché ne se lit plus « vu ».
+  // Ce qu'on mesure, c'est l'asymétrie de T30 : cuisiner n'est pas observer,
+  // donc ça DÉPENSE la confiance. Journal vide, tout le garde-manger date du
+  // relevé et se lit « vu » ; après une cuisson, ce que le plat a touché ne se
+  // lit plus « vu ». ⚠ Cette phrase disait « QUEL QUE SOIT LE PLAT » et c'était
+  // faux — voir le filtre passé à `poserUnPlat` plus haut.
   const lignes = page.locator('.co-espace:has-text("Relever") .src');
   await page.goto("/#/cuisine/stock");
   await attendreLApp(page);
