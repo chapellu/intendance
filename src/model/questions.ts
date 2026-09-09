@@ -252,7 +252,7 @@ export function bloque(catalogue: Catalogue, ctx: Contexte, passe: Passe) {
  *
  * UN PLAT POSÉ COMPTE UNE FOIS PAR INGRÉDIENT, jamais par ligne : une recette
  * qui cite le riz deux fois n'en mange pas deux paquets, et payer la façon dont
- * elle est écrite est l'erreur que `bonusPlacard` a déjà eu à corriger.
+ * elle est écrite est l'erreur que `placardDuPlat` a déjà eu à corriger.
  */
 export function depenses(
   catalogue: Catalogue,

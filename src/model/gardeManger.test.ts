@@ -2,13 +2,12 @@ import { readFileSync } from "node:fs";
 import { describe, expect, test } from "vitest";
 import { lireCatalogue } from "./catalogue";
 import { fractionDe } from "./axe";
-import { aEcouler, aSauver, bonusPlacard, PLAFOND_ARTICLES } from "./gardeManger";
+import { aEcouler, aSauver, placardDuPlat } from "./gardeManger";
 import type { Catalogue, Plat } from "./types";
 
 const catalogue: Catalogue = lireCatalogue(
   JSON.parse(readFileSync("public/cuisine-data.json", "utf8")) as unknown,
 );
-const poids = catalogue.equilibre.poids;
 
 const platAvec = (ids: string[], base: string[] = []): Plat =>
   ({
@@ -64,86 +63,36 @@ describe("ce que le placard offre à écouler", () => {
   });
 });
 
-describe("ce qu'un plat sauve", () => {
+describe("ce que le plat prend au placard", () => {
   const u = aEcouler(catalogue);
+  const ids = (p: Plat) => placardDuPlat(catalogue, p, u).map((a) => a.id);
 
-  test("un plat qui ne touche à rien ne gagne rien", () => {
-    expect(bonusPlacard(catalogue, platAvec(["saumon", "creme"]), u, poids)).toMatchObject({
-      score: 0,
-      noms: [],
-      urgent: false,
-    });
+  test("CETTE FONCTION NE NOTE PLUS RIEN, ET C'EST LE CŒUR DE T47", () => {
+    // Elle rendait un score, un plafond et une phrase. Le plafond est désormais
+    // PARTAGÉ avec le dépôt — trois articles pour les deux stocks, pas trois
+    // chacun — donc il ne peut plus se poser ici sans mentir. Ne reste que la
+    // collecte, et `ecoulement()` tranche sur la somme entière.
+    const un = placardDuPlat(catalogue, platAvec(["pates"]), u);
+    expect(un).toEqual([{ id: "pates", fraction: fractionDe("moyenne"), ou: "placard" }]);
+  });
+
+  test("TOUT CE QUI SORT D'ICI EST MARQUÉ `placard`, et la phrase en dépend", () => {
+    // Le score ne regarde plus d'où ça vient ; la PHRASE, si. L'app ne peut pas
+    // dire « finit des paquets entamés : sauce bolognaise », donc chaque article
+    // porte sa provenance jusqu'au bout.
+    for (const p of catalogue.plats)
+      for (const a of placardDuPlat(catalogue, p, u)) expect(a.ou).toBe("placard");
+  });
+
+  test("un plat qui ne touche à rien ne rapporte rien", () => {
+    expect(placardDuPlat(catalogue, platAvec(["saumon", "creme"]), u)).toEqual([]);
   });
 
   test("une conserve ne paie pas : elle attendra", () => {
     // C'est le point du terme. `article_marginal` récompense déjà l'usage du
     // placard ; payer une deuxième fois le maïs ferait gagner les plats à
     // longue liste d'épicerie.
-    expect(bonusPlacard(catalogue, platAvec(["mais", "thon-boite"]), u, poids).score).toBe(0);
-  });
-
-  test("LE PLACARD VAUT EXACTEMENT CE QU'IL VALAIT AVANT L'AXE", () => {
-    // La promesse de T57 : 0,4 × `ecoule: 5` rend l'ancien
-    // `ecoule_placard_entame: 2`, au point près. Ce bloc donne une échelle au
-    // placard, il ne lui donne pas un poids neuf — et le jour où l'on voudra
-    // qu'il pèse plus, ça se décidera dans `equilibre.yaml`.
-    expect(bonusPlacard(catalogue, platAvec(["pates"]), u, poids).score).toBe(2);
-  });
-
-  test("LE SCORE CUMULE — un plat qui sauve trois choses vaut mieux qu'un qui en sauve une", () => {
-    // La règle « un seul bonus par plat » est abandonnée (T59). Elle défendait
-    // contre le bruit des aromates ubiquitaires ; T60 les a retirés à la source,
-    // et le remède n'a plus rien à soigner.
-    const un = bonusPlacard(catalogue, platAvec(["pates"]), u, poids).score;
-    const trois = bonusPlacard(
-      catalogue,
-      platAvec(["pates", "biscottes", "poudre-amande"]),
-      u,
-      poids,
-    ).score;
-    expect(trois).toBe(3 * un);
-  });
-
-  test("PAS DE DÉGRESSIVITÉ : les trois premiers comptent plein", () => {
-    const forte = new Map([["a", 1], ["b", 1], ["c", 1]]);
-    expect(bonusPlacard(catalogue, platAvec(["a", "b", "c"]), forte, poids).score).toBe(
-      3 * (poids["ecoule"] ?? 0),
-    );
-  });
-
-  test("au-delà de trois articles le plat ne gagne plus rien", () => {
-    // Le quatrième ne dit plus rien de neuf sur ce plat-là : il dit qu'il a une
-    // longue liste d'ingrédients, et `article_marginal` la fait déjà payer.
-    const m = new Map([["a", 1], ["b", 1], ["c", 1], ["d", 1]]);
-    const trois = bonusPlacard(catalogue, platAvec(["a", "b", "c"]), m, poids);
-    const cinq = bonusPlacard(catalogue, platAvec(["a", "b", "c", "d", "e"]), m, poids);
-    expect(cinq.score).toBe(trois.score);
-    // Mais la LISTE, elle, dit tout ce que le plat sauve : la phrase ne ment pas
-    // pour justifier le chiffre.
-    expect(cinq.noms).toHaveLength(4);
-    expect(PLAFOND_ARTICLES).toBe(3);
-  });
-
-  test("le plafond coupe la queue de la liste, pas un article au hasard", () => {
-    // Les plus pressés d'abord. Sans cet ordre, le plafond retiendrait ce que
-    // l'ordre des lignes de la recette met en tête — un fait sur la rédaction du
-    // fichier, pas sur ce que le plat sauve.
-    const m = new Map([
-      ["tard", 0.4],
-      ["tot", 1],
-      ["milieu", 0.8],
-    ]);
-    const c = bonusPlacard(catalogue, platAvec(["tard", "tot", "milieu", "absent"]), m, poids);
-    expect(c.noms).toEqual(["tot", "milieu", "tard"]);
-    expect(c.score).toBe(11);
-  });
-
-  test("le mot suit le même axe que le chiffre", () => {
-    // `urgent` n'est pas un rang à part : c'est le seuil haut de T57, franchi par
-    // le plus pressé des articles. Le placard seul ne l'atteint plus — il n'offre
-    // que des paquets entamés à 0,4 — et c'est le dépôt qui le fera, avec T47.
-    expect(bonusPlacard(catalogue, platAvec(["pates"]), u, poids).urgent).toBe(false);
-    expect(bonusPlacard(catalogue, platAvec(["a"]), new Map([["a", 1]]), poids).urgent).toBe(true);
+    expect(placardDuPlat(catalogue, platAvec(["mais", "thon-boite"]), u)).toEqual([]);
   });
 
   test("UNE DENRÉE QU'AUCUN PLAT NE CONSOMME NE PEUT RIEN BRUITER", () => {
@@ -154,30 +103,24 @@ describe("ce qu'un plat sauve", () => {
     // mange : elles ne peuvent pas être sauvées en cuisinant.
     const horsRecette = ["cracotte", "krisprolls", "ble-lentilles", "farine-epeautre"];
     for (const id of horsRecette) expect(aEcouler(catalogue).has(id)).toBe(true);
-    for (const p of catalogue.plats) {
-      const noms = bonusPlacard(catalogue, p, u, poids).noms;
-      for (const id of horsRecette) expect(noms).not.toContain(id.replace(/-/g, " "));
-    }
+    for (const p of catalogue.plats)
+      for (const id of horsRecette) expect(ids(p)).not.toContain(id);
   });
 
   test("un ingrédient cité deux fois ne compte qu'une", () => {
     // Une recette peut nommer les pâtes dans le plat ET dans la garniture.
-    // Les payer deux fois récompenserait la façon dont la recette est écrite.
-    const deux = bonusPlacard(catalogue, platAvec(["pates", "pates"]), u, poids);
-    expect(deux.noms).toEqual(["pates"]);
-    expect(deux.score).toBe(2);
+    // Les compter deux fois récompenserait la façon dont la recette est écrite —
+    // et, depuis que le plafond est partagé, ça volerait en plus une place au
+    // dépôt.
+    expect(ids(platAvec(["pates", "pates"]))).toEqual(["pates"]);
   });
 
   test("une ligne `from_accepts` est ignorée", () => {
     // Elle réclame une base cuisinée — « 250 g de lentilles cuites » — pas une
-    // matière première. Le chaînage a ses propres poids pour ça.
-    expect(bonusPlacard(catalogue, platAvec([], ["pates"]), u, poids).score).toBe(0);
-  });
-
-  test("les noms sortent lisibles, pas en identifiants", () => {
-    expect(bonusPlacard(catalogue, platAvec(["poudre-amande"]), u, poids).noms).toEqual([
-      "poudre amande",
-    ]);
+    // matière première. Le DÉPÔT la compte de son côté, avec la vraie horloge du
+    // lot ; la payer ici aussi la compterait deux fois dans la même somme, ce qui
+    // n'était qu'un doublon avant T47 et serait maintenant une erreur.
+    expect(placardDuPlat(catalogue, platAvec([], ["pates"]), u)).toEqual([]);
   });
 });
 

@@ -47,27 +47,38 @@ poids:
   repetition_feculent: -3
   repetition_profil: -4      # l'axe « varier les plaisirs », renforcé
   chaine_couverte: 4         # sa base est déjà cuite plus tôt dans la semaine
-  ecoule_frigo: 5            # consomme un reste qui dort au frigo
-  ecoule_congelo: 3          # sort une portion d'urgence du congélateur
-  # UN SEUL POIDS POUR TOUT CE QUI S'ÉCOULE — T57 et T59, Workspace#50.
+  # UN SEUL POIDS POUR TOUT CE QUI S'ÉCOULE — T47, T57 et T59 (Workspace#50).
   #
-  # Il remplace la paire `ecoule_placard_urgent: 5` / `ecoule_placard_entame: 2`,
-  # qui classait par RANG là où on sait maintenant classer par FRACTION DE VIE
-  # CONSOMMÉE. Le score vaut `ecoule × somme des fractions`, sur au plus trois
-  # articles : 1,0 rend exactement l'ancien 5 et 0,4 l'ancien 2. Ce ticket donne
-  # donc une échelle au placard, il ne change pas ce qu'il pèse.
+  # IL EN A REMPLACÉ QUATRE. `ecoule_placard_urgent: 5` et `ecoule_placard_entame:
+  # 2` classaient le garde-manger par RANG (T57) ; `ecoule_frigo: 5` et
+  # `ecoule_congelo: 3` classaient le dépôt par ENDROIT (T47). Quatre barèmes pour
+  # une seule question — « ça court, ou pas ? » — et aucun des quatre ne savait
+  # lire un ÂGE. Le score vaut maintenant `ecoule × la somme des fractions de vie
+  # consommée`, sur au plus trois articles, tous stocks confondus.
   #
-  # `ecoule_frigo` et `ecoule_congelo` ci-dessus sont ses deux autres moitiés et
-  # tombent avec T47 : classer par ENDROIT est un proxy grossier de l'urgence —
-  # « une bolognaise un peu vieille au congélateur est plus urgente qu'un truc
-  # frais au frigo ». Elles restent le temps que le modèle Python, qui les lit,
-  # suive ; rien côté app ne les lit, et T48 les compte comme mortes.
+  # LA CONTINUITÉ EST EXACTE POUR LE PLACARD : 1,0 rend l'ancien 5 et 0,4 l'ancien
+  # 2. Ces deux échelles-là ont reçu un dénominateur, pas un nouveau poids.
   #
-  # SEULES LES DENRÉES À RISQUE SONT PAYÉES, et c'est tout le point. Utiliser une
-  # boîte de conserve qui tient trois ans n'a rien d'urgent — et c'est déjà
-  # récompensé ailleurs, par `article_marginal` qui ne monte pas quand
-  # l'ingrédient est au placard. Payer aussi le maïs ferait gagner les plats à
-  # longue liste d'épicerie, ce qui est l'inverse du service rendu.
+  # CE QUE LA PAIRE DU DÉPÔT FAISAIT VRAIMENT, ET QUI N'EST PAS CE QUI EST ÉCRIT
+  # ICI DEPUIS LE PROTOTYPE. Les commentaires disaient « 5 au frigo, 3 au
+  # congélo » ; le code de référence testait les deux INDÉPENDAMMENT, donc un
+  # bocal du congélateur touchait 5 + 3 = 8 contre 5 pour un reste du frigo. Le
+  # congélo passait déjà devant — l'inverse de ce que ce fichier annonçait. Ce que
+  # la paire ne savait pas faire était dans l'adjectif de la demande, « une
+  # bolognaise un peu VIEILLE » : un bocal congelé hier valait ses 8 points comme
+  # un bocal de quatre mois.
+  #
+  # SEUL CE QUI EST À RISQUE EST PAYÉ, et c'est tout le point. Utiliser une boîte
+  # de conserve qui tient trois ans n'a rien d'urgent — et c'est déjà récompensé
+  # ailleurs, par `article_marginal` qui ne monte pas quand l'ingrédient est au
+  # placard. Payer aussi le maïs ferait gagner les plats à longue liste
+  # d'épicerie, ce qui est l'inverse du service rendu.
+  #
+  # RECONSTITUER EST UN FORFAIT, ÉCOULER EST UNE RAMPE, et le croisement se
+  # calcule : avec 5, écouler passe devant `plancher_type` à 0,60 de vie
+  # consommée, devant `plancher_congelo` et `chaine_couverte` à 0,80 — c'est-à-dire
+  # au seuil « urgent » de l'axe. Aucun des quatre nombres n'a été posé pour ça ;
+  # l'alignement est un constat, et il tombe si l'un d'eux bouge.
   #
   # Valeur posée à vue, à régler à l'usage — et c'est ICI que se corrigerait un
   # écoulement trop dominant, jamais dans un mécanisme de plus.

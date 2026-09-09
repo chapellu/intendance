@@ -261,62 +261,120 @@ describe("la liste de courses suit le magasin", () => {
 });
 
 describe("l'anti-gaspi entre dans le score", () => {
+  const premierDiner = () => jeu.creneaux.findIndex((c) => c.repas === "diner");
+
   test("un plat qui finit un paquet entamé le dit, et le dit en français", () => {
-    const slot = jeu.creneaux.findIndex((c) => c.repas === "diner");
-    const carte = offre(jeu, jeu.choix, slot).find((c) => c.plat.id === "pates-bolognaise");
-    expect(carte?.placard).toContain("pates");
+    const carte = offre(jeu, jeu.choix, premierDiner()).find((c) => c.plat.id === "pates-bolognaise");
+    expect(carte?.ecoule.map((a) => a.id)).toContain("pates");
     expect(carte?.pourquoi.some((p) => p.startsWith("finit des paquets entamés"))).toBe(true);
   });
 
-  test("PLUS AUCUNE CARTE NE CRIE AU GASPILLAGE, ET C'EST LE RÉSULTAT DE T60", () => {
-    // Avant, `sauve` était vrai sur les 40 plats qui contiennent un oignon ou de
-    // l'ail — c'est-à-dire que la phrase forte était presque toujours affichée,
-    // donc ne se remarquait jamais. Le frais n'étant plus payé, le placard seul
-    // n'atteint plus le seuil haut : il n'offre que des paquets entamés, à 0,4.
-    // La phrase urgente attend le dépôt, que T47 versera dans la même somme.
-    const slot = jeu.creneaux.findIndex((c) => c.repas === "diner");
-    const cartes = offre(jeu, jeu.choix, slot);
-    expect(cartes.some((c) => c.placard.length)).toBe(true);
+  test("LE PLACARD ET LE DÉPÔT SONT DANS LA MÊME SOMME — T47", () => {
+    // Le même plat écoule un paquet de pâtes ouvert (garde-manger, 0,4 projeté)
+    // ET le bocal de bolognaise de l'amorce (dépôt, sa vraie fraction de vie).
+    // Avant ce ticket les deux étaient comptés par deux mécaniques qui ne se
+    // parlaient pas — l'une cumulait sur trois articles, l'autre payait un
+    // forfait selon l'ENDROIT du lot.
+    const carte = offre(jeu, jeu.choix, premierDiner()).find((c) => c.plat.id === "pates-bolognaise")!;
+    expect(carte.ecoule.map((a) => a.ou).sort()).toEqual(["depot", "placard"]);
+    // Et l'ordre est celui de l'urgence, pas celui des sources : au démarrage à
+    // froid le paquet entamé (0,4) passe devant le bocal congelé (0,32).
+    expect(carte.ecoule[0]!.id).toBe("pates");
+  });
+
+  test("AUCUNE CARTE NE CRIE AU GASPILLAGE AU DÉMARRAGE À FROID", () => {
+    // Avant T60, `sauve` était vrai sur les 40 plats qui contiennent un oignon ou
+    // de l'ail — la phrase forte était presque toujours affichée, donc ne se
+    // remarquait jamais.
+    //
+    // ELLE RESTE MUETTE ICI, MAIS PLUS POUR LA MÊME RAISON, et la nuance vaut le
+    // test : ce n'est plus parce que le seuil haut serait hors d'atteinte, c'est
+    // parce que RIEN NE COURT ENCORE. Le placard n'offre que des paquets entamés
+    // (0,4) et le seul lot vivant de l'amorce est un bocal congelé à un tiers de
+    // ses trois mois. Le test suivant montre la même phrase se déclencher dès
+    // qu'un lot vieillit.
+    const cartes = offre(jeu, jeu.choix, premierDiner());
+    expect(cartes.some((c) => c.ecoule.length)).toBe(true);
     expect(cartes.every((c) => !c.sauve)).toBe(true);
+  });
+
+  test("UNE RAMPE, PAS UN FORFAIT : le même plat monte à mesure que le lot vieillit", () => {
+    // LA PROMESSE ENTIÈRE DE T47, sur le corpus réel. On pose des lentilles
+    // mijotées lundi soir ; elles laissent 400 g de `lentilles-vertes-cuites`,
+    // qui tiennent 4 jours au frigo. La carte qui les mange vaut de plus en plus
+    // cher chaque jour, et le mot ne change qu'au dernier — celui d'après, le
+    // frigo étant DUR (T58), le lot sort du jeu et la carte cesse de chaîner.
+    //
+    // C'est le cas que la paire abandonnée ne savait PAS noter du tout : elle ne
+    // payait que les lots présents avant la semaine. Un reste produit mardi et
+    // oublié jusqu'à samedi ne valait rien de plus que le mercredi.
+    poser(0, "diner", "lentilles-mijotees");
+    const vu: [number, boolean][] = [];
+    for (const jour of [1, 2, 3, 4]) {
+      const c = offre(jeu, jeu.choix, creneau(jour, "diner")).find(
+        (x) => x.plat.id === "burgers-de-lentilles",
+      )!;
+      expect(c.chaine).toBe(true);
+      expect(c.ecoule.map((a) => a.id)).toEqual(["lentilles-vertes-cuites"]);
+      vu.push([c.ecoule[0]!.fraction, c.sauve]);
+    }
+    expect(vu.map(([f]) => f)).toEqual([0.25, 0.5, 0.75, 1]);
+    // Le mot arrive au dernier jour, et à lui seul.
+    expect(vu.map(([, s]) => s)).toEqual([false, false, false, true]);
   });
 
   test("deux phrases, parce que ce sont deux gestes", () => {
     // « Se perdent » appelle à cuisiner ce soir ; « entamés » dit seulement
     // qu'un paquet est ouvert et qu'autant le finir. Les confondre ferait crier
     // au gaspillage sous un paquet de biscottes.
-    const slot = jeu.creneaux.findIndex((c) => c.repas === "diner");
-    const cartes = offre(jeu, jeu.choix, slot).filter((c) => c.placard.length);
-    for (const c of cartes) {
-      const dit = c.pourquoi.find((p) => p.includes("placard") || p.includes("sauve") || p.includes("entamés"));
-      expect(dit?.startsWith(c.sauve ? "sauve ce qui se perd" : "finit des paquets entamés")).toBe(true);
+    //
+    // LE PARTAGE N'EST PLUS CELUI DU STOCK, C'EST CELUI DE L'AXE : la phrase
+    // urgente parle de tout ce qui a franchi la ligne, d'où que ça vienne.
+    for (const c of offre(jeu, jeu.choix, premierDiner()).filter((x) => x.ecoule.length)) {
+      const dit = c.pourquoi.filter((p) => p.includes("sauve ce qui se perd") || p.includes("entamés"));
+      if (c.sauve) expect(dit.some((p) => p.startsWith("sauve ce qui se perd"))).toBe(true);
+      else expect(dit.every((p) => p.startsWith("finit des paquets entamés"))).toBe(true);
     }
   });
 
-  test("le placard départage, il ne commande pas — MESURÉ, plus déduit des poids", () => {
-    // LE GARDE-FOU DU TERME, ET IL A CHANGÉ DE NATURE AVEC T59. Il se lisait sur
-    // les poids — « le bonus vaut 5, `proteine_manquante` vaut 6, donc il
-    // départage » — et cette lecture est morte le jour où le terme s'est mis à
-    // cumuler : trois articles pleins valent 15, au-dessus de tout le reste.
-    // C'est assumé (Workspace#41 demande d'encourager « au maximum » les stocks)
-    // et ça ne se vérifie donc plus dans `equilibre.yaml` mais sur le corpus :
-    // aucun plat du relevé du 26/08 n'écoule plus d'un article, donc le terme
-    // plafonne en pratique à 2 et reste sous `proteine_manquante`.
-    //
-    // Ce test tombera le jour où le dépôt entrera dans la même somme (T47), et
-    // c'est exactement ce qu'on veut de lui : il dit qu'aujourd'hui le placard
-    // ne commande pas, pas qu'il ne le pourra jamais.
-    const slot = jeu.creneaux.findIndex((c) => c.repas === "diner");
-    const p = catalogue.equilibre.poids;
-    const cartes = offre(jeu, jeu.choix, slot);
-    expect(Math.max(...cartes.map((c) => c.placard.length))).toBe(1);
-    expect(p["ecoule"]! * 0.4).toBeLessThan(p["proteine_manquante"]!);
+  test("UN BOCAL JEUNE COMPTE SANS SE RÉPÉTER : `recit` le dit déjà", () => {
+    // Il vaut ses points — la fraction est petite, pas nulle — mais il ne prend
+    // pas une deuxième ligne dans `pourquoi`. La carte annonce déjà « 700 g du
+    // congélo » par `recit`, que l'écran affiche en toutes lettres depuis le
+    // prototype, et le redire en « finit des paquets entamés : sauce bolognaise »
+    // serait faux deux fois : ce n'est pas un paquet, et ce n'est pas entamé.
+    const c = offre(jeu, jeu.choix, premierDiner()).find((x) => x.plat.id === "lasagnes")!;
+    expect(c.ecoule.map((a) => a.id)).toEqual(["sauce-bolognaise"]);
+    expect(c.ecoule[0]!.fraction).toBeGreaterThan(0);
+    expect(c.pourquoi.some((p) => p.includes("entamés") || p.includes("sauve"))).toBe(false);
+    expect(c.recit).toContain("congélo");
   });
 
-  test("un plat qui ne touche pas au placard n'est pas puni", () => {
+  test("l'écoulement départage, il ne commande pas — MESURÉ, plus déduit des poids", () => {
+    // LE GARDE-FOU DU TERME, ET IL A CHANGÉ DE NATURE DEUX FOIS. Il se lisait sur
+    // les poids — « le bonus vaut 5, `proteine_manquante` vaut 6, donc il
+    // départage » — et cette lecture est morte le jour où le terme s'est mis à
+    // cumuler (T59). Il se mesure donc sur le corpus, et le chiffre a bougé avec
+    // T47 : le maximum d'articles écoulés par un plat est passé de 1 à 2, le
+    // second étant le bocal du dépôt.
+    //
+    // TANT QUE C'EST 2 le terme plafonne sous `proteine_manquante`, parce qu'un
+    // seul de ces deux articles peut atteindre 1,0. Ce test tombera le jour où un
+    // plat en écoulera trois, et c'est ce qu'on lui demande : il dit qu'aujourd'hui
+    // l'écoulement ne commande pas, pas qu'il ne le pourra jamais — Workspace#41
+    // demande justement d'encourager « au maximum » l'utilisation des stocks.
+    const p = catalogue.equilibre.poids;
+    const cartes = offre(jeu, jeu.choix, premierDiner());
+    expect(cartes.length).toBeGreaterThan(0);
+    expect(Math.max(...cartes.map((c) => c.ecoule.length))).toBe(2);
+    const pire = Math.max(...cartes.map((c) => c.ecoule.reduce((s, a) => s + a.fraction, 0)));
+    expect(p["ecoule"]! * pire).toBeLessThan(p["proteine_manquante"]!);
+  });
+
+  test("un plat qui n'écoule rien n'est pas puni", () => {
     // Un bonus absent n'est pas une pénalité : le score reste celui des autres
-    // termes, et rien dans `pourquoi` ne parle du placard.
-    const slot = jeu.creneaux.findIndex((c) => c.repas === "diner");
-    const sans = offre(jeu, jeu.choix, slot).filter((c) => !c.placard.length);
+    // termes, et rien dans `pourquoi` ne parle de stock.
+    const sans = offre(jeu, jeu.choix, premierDiner()).filter((c) => !c.ecoule.length);
     expect(sans.length).toBeGreaterThan(0);
     expect(sans.every((c) => !c.pourquoi.some((x) => x.includes("sauve") || x.includes("entamés")))).toBe(true);
   });

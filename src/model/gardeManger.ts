@@ -49,7 +49,8 @@
 // aromates. C'est elle qu'il faut lire pour savoir quoi cuisiner ce soir.
 // ────────────────────────────────────────────────────────────────────────────
 
-import { fractionDe, marque } from "./axe";
+import { fractionDe } from "./axe";
+import type { Ecoulable } from "./ecoulement";
 import type { Catalogue, ConservationDenree, Denree, Etat, Plat, Urgence } from "./types";
 
 /** Du plus pressé au moins. Ne sert plus qu'à ORDONNER la liste « à sauver » :
@@ -122,7 +123,7 @@ const ECOULEMENT: Partial<Record<Etat, Urgence>> = { entame: "moyenne" };
  * entamée n'est mal rangée — et c'est justement pourquoi elle est écrite.
  *
  * UNE DENRÉE QUE NUL PLAT NE CONSOMME N'Y ARRIVE JAMAIS, sans qu'on ait à la
- * filtrer : `bonusPlacard` part des lignes du PLAT et cherche dedans, jamais
+ * filtrer : `placardDuPlat` part des lignes du PLAT et cherche dedans, jamais
  * l'inverse. Les quatre `moyenne` hors recette du relevé — cracotte, krisprolls,
  * blé-lentilles, farine d'épeautre — ne peuvent donc rien bruiter, et le volet
  * (a) de T60 était déjà tenu par la forme de la boucle. Un test le tient
@@ -142,24 +143,8 @@ export function aEcouler(catalogue: Catalogue): Map<string, number> {
   return par;
 }
 
-/** Au-delà, le plat ne gagne plus rien — T59. Trois articles sauvés valent trois
- *  fois un article ; le quatrième ne dit plus rien de neuf sur ce plat-là, il
- *  dit qu'il a une longue liste d'ingrédients, ce que `article_marginal` fait
- *  déjà payer. Le plafond n'est PAS une dégressivité : les trois premiers
- *  comptent plein, ce qui était la demande explicite du ticket. */
-export const PLAFOND_ARTICLES = 3;
-
-export interface BonusPlacard {
-  /** Ce que ça vaut au score. Zéro quand le plat ne sauve rien. */
-  score: number;
-  /** Les ingrédients sauvés, tels qu'on les dira à l'écran. */
-  noms: string[];
-  /** Y en a-t-il un qui est vraiment pressé ? Décide de la phrase. */
-  urgent: boolean;
-}
-
 /**
- * Ce qu'un plat rattrape du placard.
+ * Ce que CE PLAT écoulerait du placard, sur l'axe 0–1.
  *
  * ON COMPTE DES INGRÉDIENTS DISTINCTS, JAMAIS DES LIGNES. Une recette peut citer
  * l'oignon deux fois — dans la garniture et dans la sauce — et le payer deux
@@ -167,15 +152,21 @@ export interface BonusPlacard {
  * ce qu'elle mange.
  *
  * Les lignes `from_accepts` sont ignorées : elles réclament une base cuisinée
- * (« 250 g de lentilles cuites »), pas une matière première, et le chaînage a
- * déjà ses propres poids pour ça.
+ * (« 250 g de lentilles cuites »), pas une matière première. Le dépôt les compte
+ * de son côté, avec la vraie horloge du lot — c'est ce que T47 a branché, et
+ * c'est pourquoi les payer ici les compterait deux fois.
+ *
+ * ⚠ CETTE FONCTION NE NOTE PLUS RIEN — T47. Elle rendait un score, un plafond et
+ * une phrase ; le plafond est maintenant PARTAGÉ avec le dépôt, donc il ne peut
+ * plus se poser ici sans mentir. Ne reste que la collecte, et `ecoulement()`
+ * tranche sur la somme entière. C'est la règle qui a coûté le plus cher à ce
+ * ticket : deux plafonds de trois articles, c'en est six.
  */
-export function bonusPlacard(
+export function placardDuPlat(
   catalogue: Catalogue,
   plat: Plat,
   pressees: ReadonlyMap<string, number>,
-  poids: Record<string, number>,
-): BonusPlacard {
+): Ecoulable[] {
   const vus = new Map<string, number>();
   for (const ing of plat.ingredients) {
     if (ing.base) continue;
@@ -186,51 +177,7 @@ export function bonusPlacard(
     if (f == null) continue;
     vus.set(id, f);
   }
-
-  // LE SCORE CUMULE ENFIN, ET C'EST L'ABANDON D'UNE RÈGLE ÉCRITE ICI — T59.
-  //
-  // La version d'avant payait un forfait par plat, jamais par ingrédient, parce
-  // que cumuler donnait +10 à presque tout ce qui contient un oignon et de l'ail
-  // et faisait gagner les plats à LONGUE LISTE D'INGRÉDIENTS. L'argument était
-  // juste, le remède visait à côté : ce qui bruitait n'était pas le cumul, c'était
-  // que le frais ubiquitaire soit payé du tout. T60 le retire à la source, et le
-  // cumul redevient ce qu'il aurait toujours dû être — un plat qui sauve trois
-  // choses vaut mieux qu'un plat qui en sauve une.
-  //
-  // L'OBJECTION D'ÉQUILIBRAGE A ÉTÉ SOULEVÉE ET ÉCARTÉE, et elle vaut d'être
-  // relue avant d'être ressortie : un plafond à +15 dépasse `proteine_manquante:
-  // 6`. Trois raisons. Le levier de correction est le nombre `ecoule` lui-même et
-  // non un mécanisme de plus (`equilibre.yaml` : « valeur posée à vue, à régler à
-  // l'usage »). Le mode d'échec redouté — la répétition — est déjà défendu trois
-  // fois : `repetition_profil: -4`, `repetition_feculent: -3`, `cooldown_jours:
-  // 10` depuis T52. Et surtout LA DOMINATION EST LE CAHIER DES CHARGES :
-  // Workspace#41 demande d'encourager « au maximum » l'utilisation des stocks,
-  // donc l'écoulement qui passe devant la protéine manquante n'est pas un
-  // déséquilibre, c'est l'app qui fait son travail.
-  //
-  // LES PLUS PRESSÉS D'ABORD, quand il y en a plus de trois : le plafond doit
-  // couper la queue de la liste, pas un article au hasard de l'ordre des lignes
-  // de la recette. À égalité on tranche par nom, pour que deux rendus de la même
-  // semaine donnent le même score.
-  const classes = [...vus].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "fr"));
-  const payes = classes.slice(0, PLAFOND_ARTICLES);
-  const score = (poids["ecoule"] ?? 0) * payes.reduce((s, [, f]) => s + f, 0);
-
-  return {
-    // Arrondi au dixième comme le score entier : 5 × 0,4 doit donner 2 et non
-    // 2,0000000000000004, sans quoi un test de non-régression du placard
-    // deviendrait un test de virgule flottante.
-    score: Math.round(score * 10) / 10,
-    // TOUS LES SAUVÉS SONT NOMMÉS, MÊME AU-DELÀ DU PLAFOND. La phrase dit ce que
-    // le plat sauve, le score dit ce que ça vaut ; n'en nommer que trois ferait
-    // mentir la première pour justifier le second.
-    noms: classes.map(([id]) => id.replace(/-/g, " ")),
-    // La même échelle décide du chiffre ET du mot : `urgent` est vrai quand le
-    // plus pressé des articles a franchi le seuil haut de T57. Sur le relevé du
-    // 26/08 il ne l'est jamais — le placard n'offre plus que des paquets entamés,
-    // à 0,4 — et la phrase urgente attend le dépôt, que T47 branchera ici.
-    urgent: marque(classes[0]?.[1] ?? null) === "urgent",
-  };
+  return [...vus].map(([id, fraction]) => ({ id, fraction, ou: "placard" }));
 }
 
 export interface ASauver {

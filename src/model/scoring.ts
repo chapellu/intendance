@@ -13,8 +13,10 @@
 // Port de `apps/proto-shell/semaine.js` (`couverture`, `categorie`, `offre`,
 // `main`, `alea`, `parRayon`).
 
+import { marque } from "./axe";
 import { articles, calculer, type LignePanier } from "./calcul";
-import { aEcouler, bonusPlacard } from "./gardeManger";
+import { ecoulement, nom, type Ecoulable } from "./ecoulement";
+import { aEcouler, placardDuPlat } from "./gardeManger";
 import { convient, joue, type Choix, type Jeu } from "./jeu";
 import { contexte, type Rejeu } from "./journal";
 import { gamelles } from "./offres";
@@ -155,11 +157,21 @@ export interface Carte {
    *  confondait avec « il y en a ». */
   partiel: boolean;
   plein: boolean;
-  /** Les denrées à risque du placard que ce plat mangerait. Vide quand il n'en
-   *  sauve aucune — ce qui est le cas le plus fréquent, et normal. */
-  placard: string[];
-  /** L'une d'elles est-elle vraiment pressée ? `false` = seulement des paquets
-   *  entamés, ce qui n'appelle pas le même geste. */
+  /**
+   * Ce que ce plat écoulerait, du plus pressé au moins — placard ET dépôt
+   * confondus depuis T47. Vide quand il n'écoule rien, ce qui est le cas le plus
+   * fréquent, et normal.
+   *
+   * LE CHAMP S'APPELAIT `placard` ET NE POUVAIT PLUS. Il ne portait que le
+   * garde-manger ; y verser un bocal du congélateur sous ce nom aurait fait
+   * mentir chacun de ses lecteurs sans qu'aucun ne rougisse. Chaque article dit
+   * d'où il vient (`ou`), parce que la PHRASE en dépend encore même si le SCORE
+   * n'en dépend plus.
+   */
+  ecoule: Ecoulable[];
+  /** L'un d'eux a-t-il franchi la ligne « urgent » de T57 ? `false` = seulement
+   *  des paquets entamés et des bocaux jeunes, ce qui n'appelle pas le même
+   *  geste. */
   sauve: boolean;
   /**
    * Les types que ce plat remonterait vers leur plancher — T34.
@@ -295,31 +307,55 @@ export function offre(jeu: Jeu, choix: Choix[], slot: number, savoir?: Savoir): 
         pourquoi.push(`demande ${p.accepts.map((acc) => acc.type ?? `un ${acc.kind}`).join(", ")}`);
       }
 
-      // CE QUE LE PLAT SAUVE DU PLACARD. Après les autres termes, parce qu'il
-      // départage deux plats également bons plutôt qu'il ne rachète un mauvais
-      // plat : un plat qui sature une protéine reste mauvais même s'il vide le
-      // bac à légumes.
+      // CE QUE LE PLAT ÉCOULE — placard ET dépôt, DANS LA MÊME SOMME (T47).
+      //
+      // Après les autres termes, parce qu'il départage deux plats également bons
+      // plutôt qu'il ne rachète un mauvais plat : un plat qui sature une protéine
+      // reste mauvais même s'il vide le bac à légumes.
       //
       // « DERNIER RECOURS » N'EST PLUS TOUT À FAIT VRAI DEPUIS T59, et il faut le
       // dire ici plutôt que de laisser la phrase vieillir. Le terme cumule
-      // maintenant jusqu'à trois articles, donc jusqu'à +15 en théorie — au-dessus
-      // de `proteine_manquante: 6`. C'est assumé et c'est le cahier des charges
+      // jusqu'à trois articles, donc jusqu'à +15 en théorie — au-dessus de
+      // `proteine_manquante: 6`. C'est assumé et c'est le cahier des charges
       // (Workspace#41 : encourager « au maximum » l'utilisation des stocks) ; voir
-      // l'objection d'équilibrage, soulevée et écartée, dans `bonusPlacard`. En
-      // pratique le placard seul n'atteint jamais ce plafond : il n'offre plus que
-      // des paquets entamés à 0,4, et aucun plat du corpus n'en cite plus d'un. Le
-      // plafond attend le dépôt, que T47 versera dans la même somme.
-      const placard = bonusPlacard(jeu.catalogue, p, pressees, poids);
-      if (placard.score) {
-        score += placard.score;
-        // Deux phrases, parce que ce sont deux gestes. « Se perdent » appelle à
-        // cuisiner ce soir ; « entamés » dit seulement qu'un paquet est ouvert
-        // et qu'autant le finir.
-        pourquoi.push(
-          placard.urgent
-            ? `sauve ce qui se perd : ${placard.noms.join(", ")}`
-            : `finit des paquets entamés : ${placard.noms.join(", ")}`,
+      // l'objection d'équilibrage, soulevée et écartée, dans `ecoulement.ts`.
+      //
+      // UN SEUL PLAFOND POUR LES DEUX STOCKS, et c'est la vraie difficulté du
+      // ticket. Laisser le placard plafonner de son côté et le dépôt du sien
+      // aurait fait six articles là où la règle en promet trois, et le plafond
+      // aurait cessé d'être un plafond sans qu'aucune ligne ne change de sens.
+      // D'où `placardDuPlat`, qui a perdu sa notation en route.
+      //
+      // LES LOTS DE LA SEMAINE COMPTENT COMME LES AUTRES, et ce n'est pas un
+      // oubli. `chaineIci` porte aussi bien le bocal de l'amorce que la sauce
+      // qu'on a posée mardi ; leur appliquer deux barèmes ferait revenir par
+      // l'ORIGINE exactement ce que T47 chasse par l'ENDROIT. Un lot cuisiné
+      // hier vaut sa fraction, qui est petite, et personne n'a eu à l'écrire.
+      const duDepot: Ecoulable[] = chaineIci
+        .filter((c) => c.fraction != null)
+        .map((c) => ({ id: c.type, fraction: c.fraction!, ou: "depot" }));
+      const eco = ecoulement([...placardDuPlat(jeu.catalogue, p, pressees), ...duDepot], poids);
+      if (eco.score) {
+        score += eco.score;
+
+        // DEUX PHRASES, PARCE QUE CE SONT DEUX GESTES — et le partage n'est plus
+        // celui du stock, c'est celui de l'axe. « Se perdent » appelle à cuisiner
+        // ce soir, quoi que ce soit et où que ce soit rangé ; « entamés » dit
+        // seulement qu'un paquet est ouvert et qu'autant le finir.
+        const presses = eco.articles.filter((a) => marque(a.fraction) === "urgent");
+        if (presses.length) pourquoi.push(`sauve ce qui se perd : ${presses.map(nom).join(", ")}`);
+
+        // Le reste du PLACARD se dit ; le reste du DÉPÔT se tait, parce qu'il est
+        // déjà dit ailleurs et mieux. Un bocal jeune est annoncé par `recit` —
+        // « 700 g du congélo », « du frigo (J-2) » — que la carte affiche en
+        // toutes lettres depuis le prototype. Le répéter en « finit des paquets
+        // entamés : sauce bolognaise » serait faux deux fois : ce n'est pas un
+        // paquet, et ce n'est pas entamé.
+        const entames = eco.articles.filter(
+          (a) => a.ou === "placard" && marque(a.fraction) !== "urgent",
         );
+        if (entames.length)
+          pourquoi.push(`finit des paquets entamés : ${entames.map(nom).join(", ")}`);
       }
 
       // CE QUE LE PLAT REMET AU CONGÉLATEUR — T34 à T38. Après le placard,
@@ -342,8 +378,8 @@ export function offre(jeu: Jeu, choix: Choix[], slot: number, savoir?: Savoir): 
         score: Math.round(score * 10) / 10,
         marginal,
         pourquoi,
-        placard: placard.noms,
-        sauve: placard.urgent,
+        ecoule: eco.articles,
+        sauve: eco.marque === "urgent",
         plancher: plancher.types,
         paris: savoir && ctx ? paris(jeu.catalogue, ctx, savoir.rejeu, p) : [],
         malTransporte,
