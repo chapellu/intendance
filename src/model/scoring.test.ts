@@ -261,12 +261,23 @@ describe("la liste de courses suit le magasin", () => {
 });
 
 describe("l'anti-gaspi entre dans le score", () => {
-  test("un plat qui sauve une denrée pressée le dit, et le dit en français", () => {
+  test("un plat qui finit un paquet entamé le dit, et le dit en français", () => {
     const slot = jeu.creneaux.findIndex((c) => c.repas === "diner");
-    const carte = offre(jeu, jeu.choix, slot).find((c) => c.plat.id === "omelette-du-potager");
-    expect(carte?.placard).toContain("pomme de terre");
-    expect(carte?.sauve).toBe(true);
-    expect(carte?.pourquoi.some((p) => p.startsWith("sauve ce qui se perd"))).toBe(true);
+    const carte = offre(jeu, jeu.choix, slot).find((c) => c.plat.id === "pates-bolognaise");
+    expect(carte?.placard).toContain("pates");
+    expect(carte?.pourquoi.some((p) => p.startsWith("finit des paquets entamés"))).toBe(true);
+  });
+
+  test("PLUS AUCUNE CARTE NE CRIE AU GASPILLAGE, ET C'EST LE RÉSULTAT DE T60", () => {
+    // Avant, `sauve` était vrai sur les 40 plats qui contiennent un oignon ou de
+    // l'ail — c'est-à-dire que la phrase forte était presque toujours affichée,
+    // donc ne se remarquait jamais. Le frais n'étant plus payé, le placard seul
+    // n'atteint plus le seuil haut : il n'offre que des paquets entamés, à 0,4.
+    // La phrase urgente attend le dépôt, que T47 versera dans la même somme.
+    const slot = jeu.creneaux.findIndex((c) => c.repas === "diner");
+    const cartes = offre(jeu, jeu.choix, slot);
+    expect(cartes.some((c) => c.placard.length)).toBe(true);
+    expect(cartes.every((c) => !c.sauve)).toBe(true);
   });
 
   test("deux phrases, parce que ce sont deux gestes", () => {
@@ -281,14 +292,24 @@ describe("l'anti-gaspi entre dans le score", () => {
     }
   });
 
-  test("le placard départage, il ne commande pas", () => {
-    // LE GARDE-FOU DU TERME. Un plat qui vide le bac à légumes mais sature une
-    // protéine doit rester derrière un plat qui comble un manque : l'anti-gaspi
-    // est un argument de dernier recours, pas le premier critère. Le bonus vaut
-    // 5 quand `proteine_manquante` vaut 6 et `chaine_manquante` −8.
+  test("le placard départage, il ne commande pas — MESURÉ, plus déduit des poids", () => {
+    // LE GARDE-FOU DU TERME, ET IL A CHANGÉ DE NATURE AVEC T59. Il se lisait sur
+    // les poids — « le bonus vaut 5, `proteine_manquante` vaut 6, donc il
+    // départage » — et cette lecture est morte le jour où le terme s'est mis à
+    // cumuler : trois articles pleins valent 15, au-dessus de tout le reste.
+    // C'est assumé (Workspace#41 demande d'encourager « au maximum » les stocks)
+    // et ça ne se vérifie donc plus dans `equilibre.yaml` mais sur le corpus :
+    // aucun plat du relevé du 26/08 n'écoule plus d'un article, donc le terme
+    // plafonne en pratique à 2 et reste sous `proteine_manquante`.
+    //
+    // Ce test tombera le jour où le dépôt entrera dans la même somme (T47), et
+    // c'est exactement ce qu'on veut de lui : il dit qu'aujourd'hui le placard
+    // ne commande pas, pas qu'il ne le pourra jamais.
+    const slot = jeu.creneaux.findIndex((c) => c.repas === "diner");
     const p = catalogue.equilibre.poids;
-    expect(p["ecoule_placard_urgent"]).toBeLessThan(p["proteine_manquante"]!);
-    expect(p["ecoule_placard_entame"]).toBeLessThan(p["ecoule_placard_urgent"]!);
+    const cartes = offre(jeu, jeu.choix, slot);
+    expect(Math.max(...cartes.map((c) => c.placard.length))).toBe(1);
+    expect(p["ecoule"]! * 0.4).toBeLessThan(p["proteine_manquante"]!);
   });
 
   test("un plat qui ne touche pas au placard n'est pas puni", () => {

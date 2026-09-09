@@ -14,7 +14,7 @@
 // `main`, `alea`, `parRayon`).
 
 import { articles, calculer, type LignePanier } from "./calcul";
-import { bonusPlacard, urgences } from "./gardeManger";
+import { aEcouler, bonusPlacard } from "./gardeManger";
 import { convient, joue, type Choix, type Jeu } from "./jeu";
 import { contexte, type Rejeu } from "./journal";
 import { gamelles } from "./offres";
@@ -205,7 +205,7 @@ export function offre(jeu: Jeu, choix: Choix[], slot: number, savoir?: Savoir): 
 
   // Le placard ne change pas d'un plat à l'autre : on le lit une fois pour la
   // proposition entière, pas 86 fois. Même raison pour le contexte du journal.
-  const pressees = urgences(jeu.catalogue);
+  const pressees = aEcouler(jeu.catalogue);
   // LE CONGÉLATEUR SE LIT AVANT LA CARTE, ET UNE SEULE FOIS. Le lire par
   // candidat le mesurerait 86 fois pour un tiroir qui ne bouge pas d'un plat à
   // l'autre — et surtout, il doit être lu AVANT de poser la carte : un plat qui
@@ -295,10 +295,20 @@ export function offre(jeu: Jeu, choix: Choix[], slot: number, savoir?: Savoir): 
         pourquoi.push(`demande ${p.accepts.map((acc) => acc.type ?? `un ${acc.kind}`).join(", ")}`);
       }
 
-      // CE QUE LE PLAT SAUVE DU PLACARD. Après les autres termes, parce que
-      // c'est un argument de dernier recours : il ne fait pas d'un mauvais plat
-      // un bon, il départage deux plats également bons. Un plat qui sature une
-      // protéine reste mauvais même s'il vide le bac à légumes.
+      // CE QUE LE PLAT SAUVE DU PLACARD. Après les autres termes, parce qu'il
+      // départage deux plats également bons plutôt qu'il ne rachète un mauvais
+      // plat : un plat qui sature une protéine reste mauvais même s'il vide le
+      // bac à légumes.
+      //
+      // « DERNIER RECOURS » N'EST PLUS TOUT À FAIT VRAI DEPUIS T59, et il faut le
+      // dire ici plutôt que de laisser la phrase vieillir. Le terme cumule
+      // maintenant jusqu'à trois articles, donc jusqu'à +15 en théorie — au-dessus
+      // de `proteine_manquante: 6`. C'est assumé et c'est le cahier des charges
+      // (Workspace#41 : encourager « au maximum » l'utilisation des stocks) ; voir
+      // l'objection d'équilibrage, soulevée et écartée, dans `bonusPlacard`. En
+      // pratique le placard seul n'atteint jamais ce plafond : il n'offre plus que
+      // des paquets entamés à 0,4, et aucun plat du corpus n'en cite plus d'un. Le
+      // plafond attend le dépôt, que T47 versera dans la même somme.
       const placard = bonusPlacard(jeu.catalogue, p, pressees, poids);
       if (placard.score) {
         score += placard.score;

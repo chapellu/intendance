@@ -442,9 +442,11 @@ function GardeManger({
             </div>
           ))}
           <div className="co-note" style={{ margin: "var(--space-2) var(--space-1) var(--space-3)" }}>
-            « Poser un plat » remonte les recettes qui les mangent. Un aromate qu’on met partout —
-            l’oignon est dans 42&nbsp;% des plats — sera consommé de toute façon&nbsp;: c’est le reste
-            de cette liste qui se perd vraiment.
+            « Poser un plat » remonte les recettes qui finissent les <b>paquets entamés</b> — et
+            eux seuls, depuis T60. Le frais reste nommé ici, il n’est plus payé au classement&nbsp;:
+            un aromate qu’on met partout — l’oignon est dans 42&nbsp;% des plats — sera consommé de
+            toute façon, et le pousser revenait à pousser tout ce qui contient un oignon. Mal rangé
+            se lit plus haut, dans « À déplacer »&nbsp;: c’est un geste de rangement, pas un dîner.
           </div>
         </>
       ) : null}
@@ -779,6 +781,14 @@ function Lot({ lot, retirer }: { lot: LotVue; retirer: (ref: string) => Promise<
       <span>
         <div className="q">{lot.quantite}</div>
         <div className={`src ${lot.fiabilite.classe}`}>{lot.fiabilite.label}</div>
+        {/* LES DEUX MOTS DE L'AXE — T57. Sous la fiabilité, parce que ce sont
+            deux lectures du même lot et qu'elles se répondent : « compté » dit
+            ce que l'app SAIT, « urgent » dit où le lot EN EST. Rien ne s'affiche
+            tant que le lot va bien, et c'est le cas de la plupart : un mot
+            permanent ne se remarque plus le jour où il change. */}
+        {lot.marque ? (
+          <div className={`src ${lot.marque === "urgent" ? "estime" : ""}`}>{lot.marque}</div>
+        ) : null}
       </span>
     </div>
   );

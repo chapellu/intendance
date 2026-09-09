@@ -240,6 +240,94 @@ describe("les lots", () => {
   });
 });
 
+/* ═════════════════════════ T57 — un axe, deux mots ══════════════════════ */
+
+describe("les deux mots de l'axe", () => {
+  /**
+   * Le seul lot du dépôt, né il y a `ilYA` jours.
+   *
+   * ⚠ IL EN PARAÎT UN DE PLUS, ET C'EST VOULU. `LUNDI` est à midi tandis qu'une
+   * date de naissance se lit à minuit : un lot né il y a n jours en compte n+0,5,
+   * arrondis à n+1. Le décalage est antérieur à ce ticket ; les nombres
+   * ci-dessous sont donc choisis pour tomber franchement d'un côté d'un seuil,
+   * jamais dessus.
+   */
+  const ne = (type: string, ilYA: number, location: "frigo" | "congelo", ref: string) => {
+    const d = new Date(LUNDI);
+    d.setDate(d.getDate() - ilYA);
+    jeu.stock = [
+      {
+        type, kind: "base", qty: { amount: 700, unit: "g" },
+        qty_band: "2-repas", born: d.toISOString().slice(0, 10), location, ref,
+      },
+    ];
+    return lots(jeu, calculer(jeu).depot, null, LUNDI).find((l) => l.ref === ref);
+  };
+
+  /** Forfait congélateur : 90 j. Seuils à J+45 et J+72. */
+  const congele = (ilYA: number) => ne("sauce-bolognaise", ilYA, "congelo", "7");
+
+  /** La carcasse tient DEUX jours au frigo, pas les quatre du foyer (T54). */
+  const carcasse = (ilYA: number) => ne("carcasse-volaille", ilYA, "frigo", "9")?.marque;
+
+  test("un lot frais ne porte AUCUNE marque, et c'est le troisième point", () => {
+    // L'absence de marque EST l'état frais, comme *Fresh* n'a pas de préfixe
+    // dans Don't Starve. Un mot pour dire « tout va bien » serait affiché sur la
+    // quasi-totalité du dépôt en permanence, et ne se remarquerait plus.
+    expect(congele(10)?.marque).toBe("");
+  });
+
+  test("à mi-vie il passe « à manger »", () => {
+    expect(congele(43)?.marque).toBe("");
+    expect(congele(46)?.marque).toBe("à manger");
+  });
+
+  test("aux quatre cinquièmes il passe « urgent »", () => {
+    expect(congele(70)?.marque).toBe("à manger");
+    expect(congele(72)?.marque).toBe("urgent");
+  });
+
+  test("un congelé au-delà du forfait reste « urgent » et ne monte pas plus haut", () => {
+    // La fraction plafonne à 1 (T58) : sans ce plafond un bocal oublié
+    // grimperait sans fin, et il n'y a de toute façon pas de mot au-dessus
+    // d'« urgent ». CONGÉLATEUR MOU : il dépasse, il reste sur l'axe.
+    expect(congele(245)?.marque).toBe("urgent");
+    // La marque dit OÙ IL EN EST, la phrase dit POURQUOI IL EST ENCORE LÀ.
+    // Elles ne se remplacent pas.
+    expect(congele(245)?.horloge).toContain("encore bon à jouer");
+  });
+
+  test("LA MARQUE ET LA PHRASE NE PARLENT PAS DU MÊME LOT", () => {
+    // C'est ce qui justifie qu'elles coexistent. `horloge` est réservée au
+    // congelé dépassé — un seul cas, rare. La marque porte sur tout lot encore
+    // en jeu, y compris ceux qui vont bien.
+    const vu = congele(60);
+    expect(vu?.marque).toBe("à manger");
+    expect(vu?.horloge).toBe("");
+  });
+
+  test("la même échelle vaut au frigo, sur une fenêtre quarante-cinq fois plus courte", () => {
+    // TOUT STOCK A UNE HORLOGE, TOUTES LES HORLOGES SE LISENT SUR LE MÊME AXE.
+    // La carcasse tient deux jours : elle franchit les DEUX seuils dans sa
+    // première journée. C'est précisément pourquoi on affiche deux mots et
+    // aucune jauge — un pourcentage serait ici faux à la décimale près, alors
+    // que le franchissement, lui, se dit.
+    expect(carcasse(0)).toBe("à manger");
+    expect(carcasse(1)).toBe("urgent");
+  });
+
+  test("FRIGO DUR : passé sa fenêtre, il ne dit plus rien du tout", () => {
+    // « urgent » veut dire « mange-le maintenant ». L'écrire sur un reste de
+    // frigo périmé inviterait à cuisiner ce que le modèle vient justement de
+    // refuser de proposer, pour une question de sécurité. Silence, comme la
+    // phrase de T58 — et à l'inverse exact du congelé dépassé, qui reste marqué
+    // parce qu'il reste servi.
+    expect(carcasse(2)).toBe("");
+    poser(0, "diner", "soupe-de-poule");
+    expect(calculer(jeu).chaine).toHaveLength(0);
+  });
+});
+
 describe("la vue entière", () => {
   test("un filtre qui ne montre plus rien se relâche tout seul", () => {
     // Le dernier lot du congélo retiré : le bouton disparaît, et l'écran ne

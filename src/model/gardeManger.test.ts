@@ -1,7 +1,8 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, test } from "vitest";
 import { lireCatalogue } from "./catalogue";
-import { aSauver, bonusPlacard, urgences } from "./gardeManger";
+import { fractionDe } from "./axe";
+import { aEcouler, aSauver, bonusPlacard, PLAFOND_ARTICLES } from "./gardeManger";
 import type { Catalogue, Plat } from "./types";
 
 const catalogue: Catalogue = lireCatalogue(
@@ -18,31 +19,53 @@ const platAvec = (ids: string[], base: string[] = []): Plat =>
     ],
   }) as unknown as Plat;
 
-describe("l'urgence par ingrédient", () => {
-  test("le lot le plus pressé commande", () => {
-    // Trois fonds de paquet de pâtes entamés et rien d'autre : `pates` court.
-    // S'il y avait aussi un paquet neuf, c'est encore l'entamé qui compte —
-    // c'est lui qui a une horloge.
-    expect(urgences(catalogue).get("pates")).toBe("moyenne");
+describe("ce que le placard offre à écouler", () => {
+  test("un paquet entamé porte une horloge, et c'est la seule que cuisiner arrête", () => {
+    // Trois fonds de paquet de pâtes entamés et rien d'autre. `moyenne` se
+    // projette à 0,4 : la barrière est rompue, l'horloge tourne, et finir le
+    // paquet ce soir l'arrête pour de bon.
+    expect(aEcouler(catalogue).get("pates")).toBe(fractionDe("moyenne"));
   });
 
-  test("le frais et l'abîmé passent en haute", () => {
-    const u = urgences(catalogue);
-    expect(u.get("pomme-de-terre")).toBe("haute");
-    expect(u.get("pignons-pin")).toBe("haute");
+  test("le frais du primeur est nommé mais plus payé", () => {
+    // T60. L'app a raison de dire que ces oignons courent — ils restent dans
+    // « à sauver » — mais les pousser au dîner revenait à pousser les 42 % de
+    // plats qui contiennent un oignon.
+    expect(aEcouler(catalogue).has("pomme-de-terre")).toBe(false);
+    expect(aSauver(catalogue).some((s) => s.ingredient === "pomme-de-terre")).toBe(true);
   });
 
-  test("une conserve scellée reste basse", () => {
-    expect(urgences(catalogue).get("mais")).toBe("basse");
+  test("LE SOUS-ÉVIER N'EST PAS LA RAISON, ET C'EST LA MESURE QUI LE DIT", () => {
+    // Le ticket voulait écarter du score « ce que la zone abîme ». Sur le relevé
+    // du 26/08 ce geste-là ne fait rien : les quatre légumes sous l'évier sont
+    // `frais`, et l'export tranche sur le frais AVANT de regarder la zone. Ils
+    // seraient tout aussi pressés dans une cave sèche. Si ce test tombe un jour,
+    // c'est que le relevé a changé — pas que la règle est fausse.
+    const sousEvier = catalogue.gardeManger.denrees.filter((d) => d.zone === "sous-evier");
+    expect(sousEvier).toHaveLength(4);
+    expect(sousEvier.every((d) => d.etat === "frais")).toBe(true);
+  });
+
+  test("un sachet que sa zone abîme ne paie pas non plus : c'est un geste de rangement", () => {
+    // Les pignons sont secs et scellés ; s'ils pressent, c'est la lumière et la
+    // bouilloire. Ça se corrige en les déplaçant, pas en dînant — et l'app le dit
+    // déjà, à sa place, dans « À déplacer ».
+    expect(aEcouler(catalogue).has("pignons-pin")).toBe(false);
+    expect(catalogue.gardeManger.alertes.some((a) => a.includes("pignons"))).toBe(true);
+  });
+
+  test("une conserve scellée n'entre pas sur l'axe", () => {
+    // Elle n'est pas « au début de sa vie » : elle n'a pas d'horloge du tout.
+    expect(aEcouler(catalogue).has("mais")).toBe(false);
   });
 
   test("un ingrédient absent du placard n'a pas d'entrée", () => {
-    expect(urgences(catalogue).has("saumon")).toBe(false);
+    expect(aEcouler(catalogue).has("saumon")).toBe(false);
   });
 });
 
 describe("ce qu'un plat sauve", () => {
-  const u = urgences(catalogue);
+  const u = aEcouler(catalogue);
 
   test("un plat qui ne touche à rien ne gagne rien", () => {
     expect(bonusPlacard(catalogue, platAvec(["saumon", "creme"]), u, poids)).toMatchObject({
@@ -59,54 +82,101 @@ describe("ce qu'un plat sauve", () => {
     expect(bonusPlacard(catalogue, platAvec(["mais", "thon-boite"]), u, poids).score).toBe(0);
   });
 
-  test("un paquet entamé paie moins qu'une denrée pressée", () => {
-    const entame = bonusPlacard(catalogue, platAvec(["farine-epeautre"]), u, poids);
-    const presse = bonusPlacard(catalogue, platAvec(["pomme-de-terre"]), u, poids);
-    expect(entame.score).toBe(poids["ecoule_placard_entame"]);
-    expect(presse.score).toBe(poids["ecoule_placard_urgent"]);
-    expect(presse.score).toBeGreaterThan(entame.score);
-    expect(entame.urgent).toBe(false);
-    expect(presse.urgent).toBe(true);
+  test("LE PLACARD VAUT EXACTEMENT CE QU'IL VALAIT AVANT L'AXE", () => {
+    // La promesse de T57 : 0,4 × `ecoule: 5` rend l'ancien
+    // `ecoule_placard_entame: 2`, au point près. Ce bloc donne une échelle au
+    // placard, il ne lui donne pas un poids neuf — et le jour où l'on voudra
+    // qu'il pèse plus, ça se décidera dans `equilibre.yaml`.
+    expect(bonusPlacard(catalogue, platAvec(["pates"]), u, poids).score).toBe(2);
   });
 
-  test("LE BONUS NE SE CUMULE PAS — un plat, un bonus", () => {
-    // Mesuré sur le corpus : l'oignon est dans 42 % des 86 plats, l'ail dans
-    // 19 %. Cumuler donnait +10 à presque tout ce qui contient les deux, et
-    // faisait gagner les longues listes d'ingrédients — l'inverse du service.
-    const un = bonusPlacard(catalogue, platAvec(["oignon"]), u, poids);
-    const quatre = bonusPlacard(
+  test("LE SCORE CUMULE — un plat qui sauve trois choses vaut mieux qu'un qui en sauve une", () => {
+    // La règle « un seul bonus par plat » est abandonnée (T59). Elle défendait
+    // contre le bruit des aromates ubiquitaires ; T60 les a retirés à la source,
+    // et le remède n'a plus rien à soigner.
+    const un = bonusPlacard(catalogue, platAvec(["pates"]), u, poids).score;
+    const trois = bonusPlacard(
       catalogue,
-      platAvec(["oignon", "ail", "pomme-de-terre", "echalote"]),
+      platAvec(["pates", "biscottes", "poudre-amande"]),
       u,
       poids,
-    );
-    expect(quatre.score).toBe(un.score);
-    // Mais la LISTE, elle, dit bien tout ce que le plat mange.
-    expect(quatre.noms).toHaveLength(4);
+    ).score;
+    expect(trois).toBe(3 * un);
   });
 
-  test("une denrée pressée l'emporte sur un simple entamé", () => {
-    const melange = bonusPlacard(catalogue, platAvec(["farine-epeautre", "pomme-de-terre"]), u, poids);
-    expect(melange.score).toBe(poids["ecoule_placard_urgent"]);
-    expect(melange.urgent).toBe(true);
+  test("PAS DE DÉGRESSIVITÉ : les trois premiers comptent plein", () => {
+    const forte = new Map([["a", 1], ["b", 1], ["c", 1]]);
+    expect(bonusPlacard(catalogue, platAvec(["a", "b", "c"]), forte, poids).score).toBe(
+      3 * (poids["ecoule"] ?? 0),
+    );
+  });
+
+  test("au-delà de trois articles le plat ne gagne plus rien", () => {
+    // Le quatrième ne dit plus rien de neuf sur ce plat-là : il dit qu'il a une
+    // longue liste d'ingrédients, et `article_marginal` la fait déjà payer.
+    const m = new Map([["a", 1], ["b", 1], ["c", 1], ["d", 1]]);
+    const trois = bonusPlacard(catalogue, platAvec(["a", "b", "c"]), m, poids);
+    const cinq = bonusPlacard(catalogue, platAvec(["a", "b", "c", "d", "e"]), m, poids);
+    expect(cinq.score).toBe(trois.score);
+    // Mais la LISTE, elle, dit tout ce que le plat sauve : la phrase ne ment pas
+    // pour justifier le chiffre.
+    expect(cinq.noms).toHaveLength(4);
+    expect(PLAFOND_ARTICLES).toBe(3);
+  });
+
+  test("le plafond coupe la queue de la liste, pas un article au hasard", () => {
+    // Les plus pressés d'abord. Sans cet ordre, le plafond retiendrait ce que
+    // l'ordre des lignes de la recette met en tête — un fait sur la rédaction du
+    // fichier, pas sur ce que le plat sauve.
+    const m = new Map([
+      ["tard", 0.4],
+      ["tot", 1],
+      ["milieu", 0.8],
+    ]);
+    const c = bonusPlacard(catalogue, platAvec(["tard", "tot", "milieu", "absent"]), m, poids);
+    expect(c.noms).toEqual(["tot", "milieu", "tard"]);
+    expect(c.score).toBe(11);
+  });
+
+  test("le mot suit le même axe que le chiffre", () => {
+    // `urgent` n'est pas un rang à part : c'est le seuil haut de T57, franchi par
+    // le plus pressé des articles. Le placard seul ne l'atteint plus — il n'offre
+    // que des paquets entamés à 0,4 — et c'est le dépôt qui le fera, avec T47.
+    expect(bonusPlacard(catalogue, platAvec(["pates"]), u, poids).urgent).toBe(false);
+    expect(bonusPlacard(catalogue, platAvec(["a"]), new Map([["a", 1]]), poids).urgent).toBe(true);
+  });
+
+  test("UNE DENRÉE QU'AUCUN PLAT NE CONSOMME NE PEUT RIEN BRUITER", () => {
+    // T60 (a). Ce n'est pas un filtre, c'est la forme de la boucle : on part des
+    // lignes du PLAT et on cherche dedans, jamais l'inverse. Une propriété vraie
+    // par accident se perd au premier refactor, donc on l'épingle ici. Les quatre
+    // du relevé du 26/08 sont du petit-déjeuner qu'aucune recette de dîner ne
+    // mange : elles ne peuvent pas être sauvées en cuisinant.
+    const horsRecette = ["cracotte", "krisprolls", "ble-lentilles", "farine-epeautre"];
+    for (const id of horsRecette) expect(aEcouler(catalogue).has(id)).toBe(true);
+    for (const p of catalogue.plats) {
+      const noms = bonusPlacard(catalogue, p, u, poids).noms;
+      for (const id of horsRecette) expect(noms).not.toContain(id.replace(/-/g, " "));
+    }
   });
 
   test("un ingrédient cité deux fois ne compte qu'une", () => {
-    // Une recette peut nommer l'oignon dans la garniture ET dans la sauce.
-    // Le payer deux fois récompenserait la façon dont la recette est écrite.
-    const deux = bonusPlacard(catalogue, platAvec(["oignon", "oignon"]), u, poids);
-    expect(deux.noms).toEqual(["oignon"]);
+    // Une recette peut nommer les pâtes dans le plat ET dans la garniture.
+    // Les payer deux fois récompenserait la façon dont la recette est écrite.
+    const deux = bonusPlacard(catalogue, platAvec(["pates", "pates"]), u, poids);
+    expect(deux.noms).toEqual(["pates"]);
+    expect(deux.score).toBe(2);
   });
 
   test("une ligne `from_accepts` est ignorée", () => {
     // Elle réclame une base cuisinée — « 250 g de lentilles cuites » — pas une
     // matière première. Le chaînage a ses propres poids pour ça.
-    expect(bonusPlacard(catalogue, platAvec([], ["pomme-de-terre"]), u, poids).score).toBe(0);
+    expect(bonusPlacard(catalogue, platAvec([], ["pates"]), u, poids).score).toBe(0);
   });
 
   test("les noms sortent lisibles, pas en identifiants", () => {
-    expect(bonusPlacard(catalogue, platAvec(["pomme-de-terre"]), u, poids).noms).toEqual([
-      "pomme de terre",
+    expect(bonusPlacard(catalogue, platAvec(["poudre-amande"]), u, poids).noms).toEqual([
+      "poudre amande",
     ]);
   });
 });
