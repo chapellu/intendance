@@ -383,6 +383,56 @@ describe("chaque lot a son horloge", () => {
     expect(vie?.depasse).toBe(false);
   });
 
+  test("LA LIGNE DE CHAÎNAGE PORTE SA FRACTION, PARCE QUE L'ÂGE SEUL NE DIT RIEN", () => {
+    // T47. « J-8 » est une bonne nouvelle sur un bocal du congélateur et deux
+    // fois le dernier jour d'une carcasse de volaille ; c'est la FENÊTRE qui
+    // tranche, et elle ne se lisait nulle part sur cette ligne. Le score en avait
+    // besoin pour cesser de classer l'urgence par ENDROIT.
+    constater("sauce-bolognaise", 8, "congelo");
+    poser(0, "diner", "pates-bolognaise");
+    const l = calculer(jeu).chaine[0]!;
+    expect(l.age).toBe(9); // le demi-jour, cf. le commentaire de `constater`
+    expect(l.fraction).toBeCloseTo(0.1, 5);
+  });
+
+  test("deux bocaux dans la même prise : on garde le PLUS AVANCÉ", () => {
+    // Une prise peut traverser deux lots. Ce qui presse est le plus vieux des
+    // deux, et le moyenner l'endormirait sous le neuf — c'est justement le
+    // reproche fait au forfait par endroit, en plus petit.
+    const ne = (ilYA: number) => ({
+      type: "sauce-bolognaise",
+      kind: "base" as const,
+      qty: { amount: 300, unit: "g" },
+      qty_band: "1-repas",
+      born: new Date(LUNDI.getTime() - ilYA * 86_400_000).toISOString().slice(0, 10),
+      location: "congelo" as const,
+    });
+    // Le jeune d'abord dans la liste : sans le `max`, c'est lui qu'on lirait.
+    jeu.stock = [ne(8), ne(80)];
+    poser(0, "diner", "pates-bolognaise");
+    const l = calculer(jeu).chaine[0]!;
+    // 500 g demandés, 300 dans le premier bocal : la prise a bien traversé les
+    // deux, et le second n'a été entamé que de 200.
+    expect(l.pris).toBe(500);
+    expect(l.recit).toContain(" + ");
+    expect(l.fraction).toBeCloseTo(0.9, 5);
+  });
+
+  test("sur le corpus, aucune ligne de chaînage n'est sans fraction", () => {
+    // `fraction` est déclarée `null`able parce que `Depot.ajouter` accepte un lot
+    // sans date de naissance. Aucun chemin de `calculer` n'en produit — la table
+    // `stock` impose `born` et la semaine date ce qu'elle range — donc le score
+    // n'a jamais à composer avec un trou. Si ce test tombe, c'est qu'un lot est
+    // entré sans date, et il faudra décider ce qu'il vaut plutôt que le laisser
+    // valoir zéro en silence.
+    poser(0, "diner", "sauce-bolognaise");
+    poser(1, "diner", "pates-bolognaise");
+    poser(2, "diner", "lasagnes");
+    const c = calculer(jeu);
+    expect(c.chaine.length).toBeGreaterThan(0);
+    expect(c.chaine.every((l) => l.fraction != null)).toBe(true);
+  });
+
   test("une DLUO gagne sur la fenêtre du type, et la carcasse survit", () => {
     // Le seul nombre VRAI de toute l'horloge : une date imprimée sur une boîte.
     // Elle passe donc devant un ordre de grandeur posé à vue. Ici une carcasse

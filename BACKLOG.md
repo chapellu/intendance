@@ -799,7 +799,7 @@ classes comptées **sont** l'épicerie.
       utile dans les mots du modèle — « la barrière est rompue, l'horloge
       tourne » — et `garde_manger.py:76` la lit **déjà** pour faire monter
       `urgence` à `moyenne`. Cuisiner des pâtes rend donc le paquet plus
-      pressant, ce qui remonte au score par `bonusPlacard`, sans un gramme
+      pressant, ce qui remonte au score par `placardDuPlat`, sans un gramme
       inventé.
 
       Ordre de service, tranché par le fichier lui-même (« LE BOCAL EST UN
@@ -1225,37 +1225,97 @@ bocal distributeur — un objet physique, pas une cible. La cible s'appelle donc
       la prose du ticket nommait. Ce qui est écarté est **nommé à l'écran avec sa
       raison** : un bouton absent sans un mot ressemble à une panne.
 
-- [ ] **T47 — UNE SEULE ÉCHELLE : la vie qui reste.** C'est la correction de
+- [x] **T47 — UNE SEULE ÉCHELLE : la vie qui reste.** C'est la correction de
       l'utilisateur, et elle unifie trois mécaniques en une. `ecoule_frigo: 5` et
       `ecoule_congelo: 3` classent par **endroit**, et l'endroit n'est qu'un
       proxy grossier de l'urgence : « si j'ai une bolognaise un peu vieille au
       congélateur c'est plus urgent qu'un truc frais au frigo ». Les deux
       constantes sont **supprimées comme paire** et remplacées par un seul poids
-      `ecoule`, modulé par la **fraction de vie consommée** du lot — ce qui est
-      déjà la discipline de `urgences()` / `bonusPlacard`. Reconstituer devient
-      une valeur **constante**, écouler une valeur **qui monte avec le temps** :
-      tôt dans la vie d'un lot reconstituer gagne, tard écouler gagne, et
-      l'arbitrage cesse d'être une règle. `article_marginal: -0.4` fait déjà
+      `ecoule`, modulé par la **fraction de vie consommée** du lot. Reconstituer
+      devient une valeur **constante**, écouler une valeur **qui monte avec le
+      temps** : tôt dans la vie d'un lot reconstituer gagne, tard écouler gagne,
+      et l'arbitrage cesse d'être une règle. `article_marginal: -0.4` fait déjà
       payer un plat de reconstitution pour chaque article qu'il ajoute au panier,
       donc reconstituer un bouillon (qui n'exige rien) bat naturellement
       reconstituer une bolognaise (qui exige de la viande).
-      **Débloqué** : [Workspace#50](https://github.com/chapellu/Workspace/issues/50)
-      a donné son dénominateur à cette échelle (T54–T60). La fraction de vie
-      consommée se lit sur `gardeFrigo` au frigo et sur le forfait de 3 mois au
-      congélateur, et les urgences du placard s'y projettent à 1,0 / 0,4 / hors
-      échelle.
+
+      **Fait le 09/09/2026.** `src/model/ecoulement.ts` (le barème unique),
+      `LigneChaine.fraction` dans `calcul.ts`, `bonusPlacard` réduit à
+      `placardDuPlat` (la collecte, sans notation), et `scoring.ts` qui verse les
+      deux stocks dans **une seule somme plafonnée**. Plus `npm run ecoulement`,
+      étendu au dépôt et à la rampe.
+
+      **L'EXEMPLE DU TICKET EST FAUX, ET DE DEUX FAÇONS.** Le grief — « ça classe
+      par endroit » — est juste ; l'illustration ne l'est pas.
+
+      - **La paire ne faisait pas ce que le catalogue annonçait.** Lue dans
+        `equilibre.yaml` elle se lit « 5 au frigo, 3 au congélo », donc le frigo
+        gagne. Lue dans `semaine_model._score`, les deux tests sont
+        **indépendants** : `ecoule_frigo` tombe sur n'importe quel lot
+        préexistant et `ecoule_congelo` **s'ajoute** quand ce lot est au
+        congélateur. Le congélo valait donc **8 contre 5** — l'inverse de ce que
+        le fichier annonçait depuis le prototype. Le foyer avait déjà ce qu'il
+        demandait, et personne ne pouvait le savoir en lisant le catalogue.
+      - **Ce que la paire ne savait vraiment pas faire est dans l'adjectif, pas
+        dans le lieu :** « une bolognaise un peu **vieille** ». Un bocal congelé
+        hier touchait les mêmes 8 points qu'un bocal de quatre mois, et un reste
+        du frigo à son dernier jour les mêmes 5 qu'un reste de la veille. Le
+        défaut n'est pas que l'endroit soit mal classé, c'est que **l'âge
+        n'entrait nulle part** — et c'est exactement ce que la fraction répare.
+
+      **LE PLAFOND EST PARTAGÉ, ET C'EST LA VRAIE DIFFICULTÉ DU TICKET.** Laisser
+      le placard plafonner de son côté et le dépôt du sien aurait fait **six**
+      articles là où T59 en promet trois, sans qu'aucune ligne ne change de sens
+      ni qu'aucun écran ne rougisse. D'où `bonusPlacard` → `placardDuPlat`, qui a
+      perdu sa notation en route : un seul endroit trie, coupe et note.
+
+      **LES LOTS DE LA SEMAINE COMPTENT COMME CEUX DE L'AMORCE**, et ce n'est pas
+      un débordement de périmètre : leur appliquer deux barèmes ferait revenir par
+      l'**origine** exactement ce que le ticket chasse par l'**endroit**. C'est
+      d'ailleurs le cas le plus visible — **la paire abandonnée ne le notait pas
+      du tout**, elle ne payait que le stock antérieur à la semaine. Mesuré sur
+      des lentilles mijotées posées lundi soir : la carte qui les mange vaut
+      **+1,3 puis +2,5 puis +3,8 puis +5,0** du mardi au vendredi, dit « sauve ce
+      qui se perd » au dernier jour, et disparaît le samedi — le frigo est DUR
+      (T58). C'est la rampe entière, sur le corpus réel.
+
+      **LE POINT DE BASCULE TOMBE SUR `SEUIL_URGENT`, ET C'EST UN CONSTAT.** Avec
+      `ecoule: 5`, écouler passe devant `plancher_type` (3) à 0,60 de vie
+      consommée, et devant `plancher_congelo` (4) comme `chaine_couverte` (4) à
+      **0,80** — le seuil « urgent » de T57. Les quatre nombres ont été posés à
+      vue, à des mois d'écart, sans que personne vise cet alignement : c'est à
+      relire plutôt qu'à recopier si l'un d'eux bouge, et un test le tient sur les
+      poids pour qu'on le relise.
+
+      **CE QUE ÇA CHANGE, MESURÉ.** Au premier dîner, 8 cartes sur 64 écoulent
+      quelque chose. Le maximum d'articles par plat passe de **1 à 2**
+      (`pates-bolognaise` : un paquet de pâtes ouvert + le bocal de l'amorce),
+      donc **le plafond de trois ne mord toujours pas** — il mordra quand une
+      semaine posée laissera deux restes derrière elle en plus d'un paquet
+      ouvert. Et un seul article ne peut jamais passer devant
+      `proteine_manquante` : il faudrait une fraction de 1,20 quand elle plafonne
+      à 1.
+
+      **LE PROTOTYPE PYTHON GARDE LE FORFAIT**, et c'est écrit dans son code : il
+      n'a pas d'horloge par lot — une fenêtre de foyer et un `_stock_has` binaire
+      — donc moduler par un âge qu'il lit mal donnerait un chiffre plus faux que
+      le forfait. Il lit désormais `ecoule` au lieu de la paire disparue. **L'app
+      est en avance sur le modèle de référence sur ce terme**, ce qui n'était
+      jamais arrivé ; `catalogue/README.md` dit depuis longtemps que les deux
+      doivent fusionner.
 
 - [ ] **T48 — Le trou de portage est plus large qu'annoncé.** `scoring.ts` ne lit
       que neuf poids : `proteine_manquante`, `proteine_saturee`,
       `famille_legume_neuve`, `repetition_feculent`, `repetition_profil`,
       `chaine_couverte`, `chaine_manquante`, `mal_transporte`,
-      `article_marginal`, plus `ecoule` via `bonusPlacard` (les `ecoule_placard_*`
-      qu'il lisait ont fusionné dedans en T57/T59). Sont
-      parsés et **jamais lus** : `plancher_congelo`, `ecoule_frigo`,
+      `article_marginal`, plus `ecoule` via `ecoulement()` (les `ecoule_placard_*`
+      y ont fusionné en T57/T59, la paire `ecoule_frigo`/`ecoule_congelo` en T47).
+      Sont parsés et **jamais lus** : `plancher_congelo`, `ecoule_frigo`,
       `ecoule_congelo`, `congelateur.plancher`, `main.taille` (le code code 4 en
       dur), `main.cooldown_jours`. Ce n'est pas une série d'oublis épars — c'est
       toute la moitié « stock et congélateur » du score qui n'a jamais été
       portée. T36 et T47 en reprennent trois ; les trois autres restent.
+      ⚠ **Cette liste est incomplète — voir l'audit de T47 plus bas.**
 
       **T52 en a rendu trois au catalogue** — `main.taille` (5 au lieu du 4 en
       dur), `main.cooldown_jours` (branché sur le journal des cuissons, faute de
@@ -1271,6 +1331,32 @@ bocal distributeur — un objet physique, pas une cible. La cible s'appelle donc
       `congelateur.plancher` sont lus, et le premier paie enfin quelque chose.
       **Restent `ecoule_frigo` et `ecoule_congelo`**, que T47 supprimera comme
       paire — ils attendent l'horloge de Workspace#50, pas un branchement.
+
+      **T47 les a supprimés, ET CE TICKET N'EST PAS CLOS POUR AUTANT : SA LISTE
+      ÉTAIT INCOMPLÈTE.** Audit refait le 09/09/2026 en balayant `src/**` clé par
+      clé, plutôt qu'en relisant la prose ci-dessus. Restent **quatre réglages
+      parsés et jamais lus**, dont ce ticket n'en nommait **aucun** :
+
+      - `hors_budget: -4` — le modèle Python pénalise un plat qui déborde le
+        budget de temps du créneau ; l'app n'a pas de budget de temps du tout.
+        C'est une fonctionnalité manquante, pas un branchement oublié.
+      - `anticipation_ratee: -5` — « le trempage était pour hier soir ». Demande
+        les échéances et l'agenda, et
+        [Workspace#48](https://github.com/chapellu/Workspace/issues/48) n'a pas
+        tranché ; l'agenda est d'ailleurs un mécanisme du **shell**, pas de la
+        cuisine.
+      - `congelateur.portions_par_tiroir: 6` — les plafonds d'espace se lisent en
+        fait sur `foyer.espaces`, qui les porte déjà. Doublon, pas oubli.
+      - `congelateur.reste_ne_compte_pas_dans_les_plafonds: true` — **le cas T52 à
+        l'identique** : `couverture()` implémente le comportement **en dur**
+        (`surReste`) sans lire le drapeau. Un réglage mort qui donne par hasard la
+        bonne réponse reste un réglage mort, et celui-ci a survécu à deux audits
+        pour cette raison exacte.
+
+      **La leçon vaut plus que la liste :** ce ticket a été écrit en relisant le
+      code et il s'est trompé trois fois de suite sur son propre inventaire (les
+      trois de T52, puis ceux-ci). Le prochain qui le reprend commence par
+      **balayer les clés**, pas par relire ce paragraphe.
 
 ### Ce que les planchers ont coûté et appris
 
@@ -1340,13 +1426,33 @@ et pas du bruit. Et `equilibre.yaml` gagne quatre nombres (`diversite_min`,
 `plafond_apports`, `plafond_diners`, `plancher_type`), tous **posés à vue**,
 dans le registre que le fichier emploie déjà pour son propre 4.
 
+### Trouvé en marge de T47, et noté au passage
+
+**LE LOT DE LENTILLES DE L'AMORCE EST HORS JEU DEPUIS T54, ET RIEN NE LE DIT.**
+`stock.yaml` porte 400 g de `lentilles-vertes-cuites` nées le 06/08 ; le type
+tient **4 jours** au frigo, et le frigo est DUR depuis T58. Sur la semaine de
+référence des tests (17/08) le lot a **douze jours** : il sort du jeu, sans un
+mot, et le seul stock vivant de l'amorce est le bocal de bolognaise. Ce n'est pas
+un bug — c'est exactement ce que T54 et T58 demandent — mais **c'est une amorce
+qui vieillit toute seule** : elle a été écrite quand le frigo n'avait pas
+d'horloge. `npm run ecoulement` l'affiche maintenant en clair (⛔ HORS JEU). À
+trancher : rafraîchir les dates de `stock.yaml`, ou assumer que l'amorce montre
+aussi ce qui est périmé.
+
+**LA RESTRICTION DES PLANCHERS AU CONGÉLATEUR N'EST PLUS DÉFENDUE PAR CE QUI LA
+DÉFENDAIT.** Voir juste en dessous : sa condition de réouverture est remplie.
+
 ### Laissé ouvert par T34–T38
 
 - **Un plancher ne compte que ce qui est AU CONGÉLATEUR.** Les 400 g de
   lentilles cuites de l'amorce sont au frigo et ne comptent pour aucun plancher.
-  C'est volontaire — un reste qui tient trois jours n'est pas une réserve, et le
-  poser en cible ferait réclamer de cuisiner tous les trois jours — mais c'est
-  une restriction, pas une vérité : elle se rouvre avec l'horloge de T54.
+  C'était volontaire — un reste qui tient trois jours n'est pas une réserve, et le
+  poser en cible ferait réclamer de cuisiner tous les trois jours — et c'était une
+  restriction, pas une vérité : « elle se rouvre avec l'horloge de T54 ».
+  ⚠ **T54 est fait, et personne n'a rouvert.** Chaque type porte sa fenêtre
+  depuis Workspace#50 ; le frigo est devenu comptable. La restriction tient
+  toujours dans le code et n'est plus adossée qu'à un choix que rien n'a
+  réexaminé. `planchables()` le dit maintenant dans son en-tête.
 - **On ne peut pas défaire un plancher accepté.** Le refus s'écrit et tient ;
   l'acceptation, elle, n'a pas de bouton pour revenir en arrière. C'est T44 —
   « un plancher que les faits contredisent se retire » — et tant qu'il n'existe

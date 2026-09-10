@@ -439,7 +439,7 @@ const poidsUnite = (l: LotPlacard): number | null =>
  *    les mots du modèle — « la barrière est rompue, l'horloge tourne » — et
  *    `garde_manger.py` la lit DÉJÀ pour faire monter `urgence` à `moyenne`.
  *    Cuisiner des pâtes rend donc le paquet plus pressant, ce qui remonte au
- *    score par `bonusPlacard`, sans un chiffre faux.
+ *    score par `placardDuPlat`, sans un chiffre faux.
  *
  * Le mode non chiffré est PERMANENT, pas transitoire : trois des quatre canaux
  * du foyer livrent du non pesé, et le vrac (« le bocal EST le stock ») ne le

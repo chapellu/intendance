@@ -99,6 +99,24 @@ export function echelle(qty: number, unit: string, f: number): number {
 export const echelleTexte = (ing: Ingredient, f: number): string =>
   `${String(echelle(ing.qty, ing.unit, f)).replace(".", ",")} ${ing.unit}`;
 
+/**
+ * Où en sont, dans leur vie, les lots que cette prise a vidés — T47.
+ *
+ * ÇA SE LIT ICI ET NULLE PART AILLEURS, parce que c'est le seul endroit où l'on
+ * sait à la fois QUELS lots ont été pris et à QUELLE DATE. Une fois `calculer`
+ * rendu, le dépôt ne porte plus que des lignes `epuise: true` sans mémoire de
+ * qui les a vidées ni quand — le score aurait dû redériver l'appariement, donc
+ * le refaire faux.
+ */
+function fractionDeLaPrise(depot: Depot, pr: Prise, date: Date): number | null {
+  let max: number | null = null;
+  for (const s of pr.sources) {
+    const v = depot.vie(s.ligne, date);
+    if (v && (max == null || v.fraction > max)) max = v.fraction;
+  }
+  return max;
+}
+
 /* ─────────────────────────────────────────────────────────── les résultats */
 
 export interface LigneChaine {
@@ -106,6 +124,28 @@ export interface LigneChaine {
   type: string;
   depuis: string | null;
   age: number | null;
+  /**
+   * La part de vie consommée du lot le plus avancé où cette prise a puisé, sur
+   * l'axe 0–1 de T57.
+   *
+   * `null` QUAND AUCUN LOT PRIS NE PORTE DE DATE — ce qu'aucun chemin de
+   * `calculer` ne produit aujourd'hui : la table `stock` impose `born` et la
+   * semaine date ce qu'elle range. Le cas est déclaré parce que `Depot.ajouter`
+   * accepte un lot sans naissance, et un test le vérifie sur le corpus : si un
+   * jour il tombe, il faudra décider ce que vaut un lot sans âge plutôt que le
+   * laisser valoir zéro en silence.
+   *
+   * L'ÂGE SEUL NE DIT RIEN, ET C'EST POUR ÇA QUE CE CHAMP EXISTE — T47. « J-3 »
+   * est une bonne nouvelle sur un bocal du congélateur et le dernier jour d'un
+   * reste de poisson ; c'est la fenêtre qui tranche, et elle ne se lisait nulle
+   * part sur cette ligne. Le score en avait besoin pour cesser de classer
+   * l'urgence par ENDROIT.
+   *
+   * ON GARDE LE PLUS AVANCÉ, PAS LA MOYENNE. Une prise peut traverser deux
+   * bocaux ; ce qui presse est le plus vieux des deux, et le moyenner
+   * l'endormirait sous le neuf.
+   */
+  fraction: number | null;
   pris: number | null;
   unite: string | null;
   manque: number;
@@ -243,6 +283,7 @@ export function calculer(
           type: pr.out!.type,
           depuis: pr.out!.from,
           age: pr.age,
+          fraction: fractionDeLaPrise(depot, pr, date),
           pris: pr.pris,
           unite: pr.unite,
           manque: pr.manque,

@@ -150,8 +150,10 @@ describe("T34 — le plancher se pose sur ce qu'un plat produit", () => {
   });
 
   test("mais il ne touche qu'un bonus, pas un par type", () => {
-    // La leçon de `bonusPlacard` : cumuler ferait gagner les recettes à longue
-    // liste d'emits plutôt que celles qui rendent service.
+    // Cumuler ferait gagner les recettes à longue liste d'emits plutôt que celles
+    // qui rendent service. Le terme d'écoulement cumule, lui, depuis T59 — et la
+    // raison de la différence est dans l'en-tête de `bonusPlancher` : le plancher
+    // paie une mécanique, l'axe paie des objets.
     const p = catalogue.plats.find(
       (x) => new Set(x.emits.filter((e) => e.congelo).map((e) => e.type)).size > 1,
     );

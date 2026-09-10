@@ -827,10 +827,24 @@ def _score(ctx: Contexte, ligne: dict, cov: dict, cong: dict = None) -> tuple:
 
     if ligne["chaine"]:
         s += w["chaine_couverte"]
+    # T47 — un seul poids, et ce prototype n'en lit que la moitié.
+    #
+    # `ecoule_frigo` et `ecoule_congelo` ont disparu d'`equilibre.yaml`. Ils
+    # classaient l'urgence par ENDROIT, et ce fichier le faisait d'ailleurs
+    # autrement que ce que le catalogue annonçait : les deux tests étant
+    # indépendants, un bocal du congélo touchait 5 + 3 = 8 contre 5 pour un reste
+    # du frigo, alors que les commentaires se lisaient « 5 au frigo, 3 au congélo ».
+    #
+    # LE FORFAIT RESTE ICI PARCE QU'IL N'Y A PAS D'HORLOGE PAR LOT. La fraction de
+    # vie consommée vient de `depot.vie()`, côté app, où chaque lot sait sur
+    # quelle fenêtre il court (T54–T58) ; ici il n'y a qu'une fenêtre de foyer et
+    # un `_stock_has` binaire. Moduler par un âge qu'on lit mal donnerait un
+    # chiffre plus faux que le forfait. L'app est donc en avance sur le modèle de
+    # référence SUR CE TERME, et c'est écrit pour que personne ne prenne le TUI
+    # pour l'arbitre.
     if ligne["ecoule"]:
-        s += w["ecoule_frigo"]
+        s += w["ecoule"]
     if ligne.get("congelo"):
-        s += w.get("ecoule_congelo", 0)
         why.append("sort une portion du congélo")
     # Standing bill: while the emergency drawer is under its floor, a dish that
     # refills it is worth more than one that merely feeds tonight.

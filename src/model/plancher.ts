@@ -45,11 +45,14 @@
 // ici parce qu'un jour quelqu'un relira #43 et croira ces trois phrases.
 //
 // ────────────────────────────────────────────────────────────────────────────
-// CE QUI N'EST PAS ICI. L'écoulement (T47) attend son dénominateur — l'horloge
-// de Workspace#50 — et la saison (T42), la fenêtre de fermeture (T43) et le
-// retrait d'un plancher démenti (T44) sont des tickets à part. Ce fichier ne
-// sait dire qu'une chose : ce qui manque au congélateur, et quel plat le
-// remonterait.
+// CE QUI N'EST PAS ICI. L'écoulement a reçu son dénominateur (T47) et vit dans
+// `ecoulement.ts` ; la saison (T42), la fenêtre de fermeture (T43) et le retrait
+// d'un plancher démenti (T44) sont des tickets à part. Ce fichier ne sait dire
+// qu'une chose : ce qui manque au congélateur, et quel plat le remonterait.
+//
+// LES DEUX SE CROISENT MAINTENANT DANS LE SCORE, et c'est voulu : reconstituer
+// est un forfait, écouler est une rampe, et l'un passe devant l'autre quand le
+// lot qu'on remplacerait a consommé 0,80 de sa vie. Voir `ecoulement.ts`.
 
 import { bandRepas, type LigneDepot } from "./depot";
 import type { Evenement } from "./journal";
@@ -115,8 +118,14 @@ export function producteurs(catalogue: Catalogue): Map<string, string[]> {
  * compte des portions au congélateur ; le poser sur un reste qui tient trois
  * jours au frigo fabriquerait une cible impossible à tenir, qui réclamerait de
  * cuisiner tous les trois jours pour rien. C'est le même arbitrage que T46 rend
- * côté garde-manger — un plancher n'existe que là où l'app sait compter — et il
- * se rouvrira le jour où Workspace#50 aura donné une horloge au frigo.
+ * côté garde-manger — un plancher n'existe que là où l'app sait compter.
+ *
+ * ⚠ LA CONDITION DE RÉOUVERTURE EST REMPLIE, ET PERSONNE N'A ENCORE DÉCIDÉ.
+ * Cette phrase disait « il se rouvrira le jour où Workspace#50 aura donné une
+ * horloge au frigo » : c'est fait depuis T54, chaque type porte sa fenêtre. Le
+ * frigo est donc devenu comptable, et la restriction ci-dessus n'est plus
+ * défendue par une impossibilité mais par un choix que rien n'a réexaminé. Noté
+ * au backlog plutôt que tranché ici.
  *
  * Mesuré : 50 des 78 emits se congèlent, sur 46 des 86 plats.
  */
@@ -270,10 +279,19 @@ const VIDE: BonusPlancher = { score: 0, types: [], raisons: [] };
  * 48 des 74 types se congèlent, et 48 planchers à une seule portion
  * réclameraient 48 places pour les 18 qui existent.
  *
- * UN BONUS PAR MÉCANIQUE, JAMAIS UN PAR TYPE — la leçon que `bonusPlacard` a
- * déjà payée. Cumuler par type ferait gagner les recettes à longue liste
- * d'emits (un rôti en produit trois) plutôt que celles qui rendent service, ce
- * qui est exactement ce que `article_marginal` existe pour éviter.
+ * UN BONUS PAR MÉCANIQUE, JAMAIS UN PAR TYPE. Cumuler par type ferait gagner les
+ * recettes à longue liste d'emits (un rôti en produit trois) plutôt que celles
+ * qui rendent service, ce qui est exactement ce que `article_marginal` existe
+ * pour éviter.
+ *
+ * ⚠ L'ÉCOULEMENT A PRIS LE CHEMIN INVERSE (T59), ET CE N'EST PAS UNE
+ * INCOHÉRENCE. `ecoulement()` cumule article par article, plafonné à trois ; ce
+ * fichier paie un forfait. La différence est dans ce que chacun désigne : le
+ * plancher paie une MÉCANIQUE — « le tiroir est sous son seuil » — qui est vraie
+ * une fois, quel que soit le nombre de types qui la rendent vraie. L'axe, lui,
+ * paie des OBJETS, et deux bocaux qui courent sont deux problèmes. Ce fichier a
+ * donc raison de ne pas cumuler pour la raison même qui donne raison à l'autre
+ * de le faire.
  *
  * LE PLAFOND ÉTEINT LE BONUS, IL N'INVENTE PAS DE MALUS (T38). Au-dessus de son
  * plancher, un type ne coûte rien : un plancher est un SEUIL, pas une bande. En
