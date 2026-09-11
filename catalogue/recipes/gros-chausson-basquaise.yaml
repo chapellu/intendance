@@ -1,0 +1,89 @@
+# Marie Chioca, p. 98. Reformulée, cf. cadre de licence carte #26.
+#
+# TROIS ARÊTES, ET UNE OPTIMISATION DE FOUR EXPLICITE : l'autrice conseille de
+# cuire la frittata de la page précédente EN MÊME TEMPS — 180 °C tous les deux,
+# « deux déjeuners tout prêts en deux temps trois mouvements ». Le compilateur
+# raisonne plat par plat et ne verra jamais ça ; c'est une des choses que le
+# livre sait et que le modèle ne sait pas.
+recipe:
+  id: gros-chausson-basquaise
+  title: Gros chausson façon basquaise
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 98"
+    source_id: chioca-meme-au-boulot
+    page: 98
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 1}
+  time_min_total: 30
+  active_min: 5
+
+  accepts:
+    - type: pate-brisee-portion
+      qty: {amount: 1, unit: pièce}
+      required: true
+      fallback_recipe: pate-brisee-faineants
+    - type: piperade
+      qty: {amount: 125, unit: g}
+      required: false
+    - type: poulet-cuit
+      qty: {amount: 100, unit: g}
+      required: false
+
+  sans_reste:
+    temps_min: 60
+    ingredients:
+      - {id: pate-brisee, name: "à défaut de pâton maison, une pâte brisée du commerce", qty: 1, unit: pièce}
+      - {id: sauce-tomate, name: "à défaut de piperade maison, un bocal", qty: 125, unit: g}
+      - {id: poulet-filets, name: "à défaut de rôti, un blanc de poulet à cuire", qty: 100, unit: g}
+
+  apports:
+    proteine: viande-blanche
+    feculent: pate-brisee
+    legumes: [solanacee]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: pate-brisee-portion, name: "portion de pâte brisée, à l'origan de préférence", qty: 1, unit: pièce, from_accepts: true}
+    - {id: poulet-cuit, name: poulet déjà cuit, qty: 100, unit: g, from_accepts: true}
+    - {id: piperade, name: piperade, qty: 125, unit: g, from_accepts: true}
+
+  steps:
+    - id: prechauffer-chausson
+      action: "Préchauffer le four à 180 °C — et si possible enfourner la frittata p. 97 en même temps : deux déjeuners d'un coup"
+      needs: [bake]
+      time_min: 1
+      attended: false
+    - id: etaler-chausson
+      action: "Étaler la pâte en un cercle d'environ 24 cm"
+      needs: []
+      time_min: 4
+    - id: garnir-chausson
+      action: "Couper le poulet en petits cubes, le mélanger à la piperade et répartir la garniture sur la MOITIÉ de la pâte, en laissant 3 cm de pâte nue sur le bord"
+      needs: []
+      time_min: 4
+    - id: souder-chausson
+      action: "Replier le disque pour former le chausson, puis souder et rouloter les bords"
+      needs: []
+      time_min: 3
+    - id: cuire-chausson
+      action: "Enfourner 25 min assez bas, jusqu'à ce que la pâte soit bien dorée"
+      needs: [bake]
+      time_min: 25
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: chausson-basquaise
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+      note: "se mange à la main, avec une salade de crudités"
+
+  plan_b:
+    - swap:
+        step: garnir-chausson
+        action: "Version végétarienne : 65 g de tomme de brebis ou de chèvre râpée à la place du poulet"
+        saves_min: 2
+      effect: "variante de l'autrice ; elle en donne aussi une au thon et une vegan au seitan"

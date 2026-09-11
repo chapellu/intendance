@@ -1,0 +1,69 @@
+# Marie Chioca, p. 83. Reformulée, cf. cadre de licence carte #26.
+recipe:
+  id: salade-lentilles-amelioree
+  title: Salade de lentilles améliorée
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 83"
+    source_id: chioca-meme-au-boulot
+    page: 83
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 1}
+  time_min_total: 5
+  active_min: 5
+
+  accepts:
+    - type: lentilles-vertes-cuites
+      qty: {amount: 300, unit: g}
+      required: true
+      fallback_recipe: mitonnee-lentilles
+
+  sans_reste:
+    temps_min: 60
+    ingredients:
+      - {id: lentilles-seches, name: "à défaut de mitonnée, des lentilles vertes sèches", qty: 130, unit: g}
+
+  apports:
+    proteine: legumineuse
+    feculent: legumineuse
+    legumes: [solanacee]
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: lentilles-vertes-cuites, name: mitonnée de lentilles, qty: 300, unit: g, from_accepts: true}
+    - {id: jambon, name: talon de jambon cuit, qty: 150, unit: g}
+    - {id: tomates-cerises, name: tomates-cerises, qty: 10, unit: pièce}
+    - {id: persil, name: "persil finement ciselé", qty: 1, unit: petit bouquet}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: vinaigre, name: vinaigre de cidre, qty: 1, unit: c. à s.}
+    - {id: levure-biere, name: levure de bière, qty: 1, unit: c. à c.}
+    - {id: moutarde, name: moutarde à l'ancienne, qty: 1, unit: c. à c.}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre-5-baies, name: poivre 5 baies, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: tailler-salade-lentilles
+      action: "Découper le talon de jambon en petits cubes et les tomates-cerises en deux"
+      needs: []
+      time_min: 3
+    - id: brasser-salade-lentilles
+      action: "Saler, puis mélanger avec les lentilles et tous les autres ingrédients en brassant bien le tout"
+      needs: []
+      time_min: 2
+      seasoning_gate: true
+
+  baby_portion:
+    take: "2 c. à s. de lentilles nature, avant l'assaisonnement (le jambon est trop salé)"
+    prep: "écraser à la fourchette"
+    needs: []
+    depuis: []
+
+  emits:
+    - kind: reste-plat
+      type: salade-lentilles
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

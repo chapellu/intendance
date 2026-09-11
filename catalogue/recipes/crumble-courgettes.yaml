@@ -1,0 +1,83 @@
+# Marie Chioca, p. 77. Reformulée, cf. cadre de licence carte #26.
+#
+# LE TASSAGE DU CRUMBLE EST UN ARBITRAGE DE TRANSPORT, pas de goût : non tassé
+# il est plus sablonneux et croustillant, tassé il forme une croûte qui tient
+# au chahut du trajet. C'est la première fois qu'une recette du catalogue offre
+# un choix de texture INDEXÉ SUR LE VOYAGE.
+recipe:
+  id: crumble-courgettes
+  title: Crumble aux courgettes
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 77"
+    source_id: chioca-meme-au-boulot
+    page: 77
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 1}
+  time_min_total: 35
+  active_min: 10
+
+  accepts:
+    - type: poelee-legumes-verts
+      qty: {amount: 275, unit: g}
+      required: true
+      fallback_recipe: wok-legumes-verts
+
+  sans_reste:
+    temps_min: 60
+    ingredients:
+      - {id: courgettes, name: "à défaut de poêlée, des courgettes à faire revenir", qty: 400, unit: g}
+
+  apports:
+    proteine: fromage
+    feculent: avoine
+    legumes: [cucurbitacee]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: poelee-legumes-verts, name: "poêlée de courgettes, ou un autre légume vert de la p. 72", qty: 275, unit: g, from_accepts: true}
+    - {id: flocons-avoine, name: flocons d'avoine, qty: 40, unit: g}
+    - {id: parmesan, name: "parmesan, ou Cantal, tomme de chèvre ou de brebis, emmental", qty: 50, unit: g}
+    - {id: farine-epeautre, name: farine T110 de grand épeautre, qty: 50, unit: g}
+    - {id: origan, name: origan séché, qty: 1, unit: c. à c.}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: vin-blanc-sec, name: vin blanc, qty: 2, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: prechauffer-crumble
+      action: "Préchauffer le four à 180 °C"
+      needs: [bake]
+      time_min: 1
+      attended: false
+    - id: lit-de-courgettes
+      action: "Étaler la poêlée dans un plat individuel plutôt LARGE — le crumble y sera plus croustillant"
+      needs: []
+      time_min: 3
+    - id: sabler-le-crumble
+      action: "Mixer tous les autres ingrédients par brèves impulsions jusqu'à texture sablée, sel compris"
+      needs: [chop-coarse]
+      time_min: 5
+      seasoning_gate: true
+    - id: cuire-crumble
+      action: "Étaler le sablé sur les courgettes — sans tasser pour un crumble sablonneux, légèrement tassé pour une croûte qui résiste au transport — puis enfourner 25 min"
+      needs: [bake]
+      time_min: 25
+      attended: false
+
+  baby_portion:
+    take: "2 c. à s. de poêlée de courgettes, avant que le sablé soit salé"
+    prep: "écraser à la fourchette"
+    needs: []
+    depuis: []
+
+  emits:
+    - kind: reste-plat
+      type: crumble-courgettes
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+      note: "s'emporte tel quel dans son plat une fois refroidi"
+
+  plan_b: []

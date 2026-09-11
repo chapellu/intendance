@@ -1,0 +1,167 @@
+# ---------------------------------------------------------------------------
+# SOURCE — index bibliographique d'un livre du foyer.
+#
+# CE FICHIER N'EST PAS UN CATALOGUE, exactement comme
+# `chioca-cuisine-bio-quotidien.yaml` : il vit hors de `recipes/`, donc
+# `charger_recettes()` ne le lit pas.
+#
+# CE QU'IL A DE DIFFÉRENT DE SON AÎNÉ, ET C'EST TOUT LE POINT : celui-là avait
+# été relevé SUR LE SOMMAIRE, donc il ne portait que saison, titre et page, et
+# son en-tête disait « 60 sur 100 » en expliquant que le compte se périme. Ici
+# le relevé a été fait SUR LES PAGES elles-mêmes — 53 clichés — et les 45
+# recettes du livre plus ses 8 pages-souches sont saisies. Le sommaire
+# ci-dessous n'est donc pas une promesse de saisie : il est DÉRIVÉ du corpus,
+# régénéré depuis les blocs `source:` des recettes. Chaque ligne porte un
+# `catalogue_id` parce qu'il n'existe pas de ligne sans recette.
+#
+# Le compte exact se calcule toujours de la même façon — le nombre d'entrées
+# portant un `catalogue_id` — et il vaut ici le nombre total d'entrées.
+#
+# CE QUE CE LIVRE APPORTE ET QUE LE MODÈLE N'AVAIT PAS :
+#
+# 1. LE DÉJEUNER EMPORTÉ COMME GENRE. `creneaux.yaml` sait déjà que mardi et
+#    jeudi sont des jours de coworking et qu'un plat qui voyage mal n'y a pas sa
+#    place (`mal_transporte: -6`). Il n'avait aucun corpus en face. Les 45
+#    recettes de ce livre sont TOUTES des déjeuners transportables, et
+#    plusieurs portent des contraintes de transport qu'aucun champ ne sait
+#    encore dire : les croûtons de la p. 59 voyagent hors du frigo quand le
+#    reste du repas y reste ; la sauce de la p. 93 part dans une bouteille à
+#    part ; le fromage de la p. 91 ne rejoint le thermos qu'à midi ; les
+#    tartines de la p. 48 se transportent en pièces détachées.
+#
+# 2. LA SOUCHE ASSUMÉE. Huit pages « À partir de… » dont dérivent vingt-deux
+#    plats. Le chaînage `emits`/`accepts` du ticket #30 avait été construit pour
+#    modéliser des restes ; ici l'autrice cuisine DÉLIBÉRÉMENT pour sa sortie, et
+#    range son livre autour de ça. C'est le premier corpus qui valide la
+#    mécanique au lieu de simplement s'y prêter.
+#
+# 3. DEUX ARÊTES QUI ÉTAIENT ORPHELINES SE FERMENT. `pois-chiches-cuits` était
+#    `accepts` par les falafels p. 81 et la salade p. 36 sans qu'aucune recette
+#    ne l'émette : la souche p. 86 le produit enfin. Et `lentilles-vertes-cuites`,
+#    `pate-a-pizza`, `ratatouille`, `roti-froid` et `poulet-cuit` ont désormais
+#    DEUX émetteurs chacun — la preuve que `accepts` désigne bien une matière et
+#    non une recette.
+#
+# CADRE DE LICENCE (celui de la carte #26) : un sommaire est une donnée
+# factuelle de référence — auteur, titre, page. Aucune prose, aucune photo n'est
+# reproduite, ni ici ni dans les recettes, dont la formulation est refaite.
+# ---------------------------------------------------------------------------
+
+source:
+  id: chioca-meme-au-boulot
+  type: livre
+  author: Marie Chioca
+  title: "Je mange sain et bio, même au boulot !"
+  subtitle: "45 recettes et 120 variantes de déjeuners à emporter"
+  publisher: Terre vivante
+  lang: fr
+  releve: photos des pages, 2026-09-10 et 2026-09-11
+  encodage: >-
+    corpus complet (45 recettes + 8 pages-souches), saisi et reformulé dans
+    `recipes/`. Ni prose ni photo d'origine.
+
+# CE QUI MANQUE ENCORE, ET C'EST PEU :
+#   - p. 46, les CINQ VARIANTES du cake aux légumes : la page de droite est
+#     coupée au cadrage et on n'en lit que les amorces (« Potimarron et… »,
+#     « Carotte et em… », « Courge butte… », « Céleri-rave et… », « Panais,
+#     mozz… »). Non saisies : les inventer produirait cinq entrées fausses.
+#   - p. 110, le FOLIO des madeleines est masqué par la main sur la photo. La
+#     page est déduite de sa position entre la p. 108 et les « bonnes adresses »
+#     p. 114 ; c'est la seule source du corpus incertaine à la page près.
+#   - p. 13, l'encadré « du bon usage d'un thermos », cité par la p. 67.
+#   - p. 114, les « bonnes adresses », citées par les p. 84 et 98.
+lacunes:
+  - {page: 46, quoi: "les 5 variantes du cake aux légumes", cause: "page coupée au cadrage"}
+  - {page: 110, quoi: "le folio exact des madeleines", cause: "masqué par la main"}
+  - {page: 13, quoi: "encadré « du bon usage d'un thermos »", cause: "non photographiée"}
+  - {page: 114, quoi: "bonnes adresses", cause: "non photographiée"}
+
+# Le livre est organisé par CHAPITRE, pas par saison — c'est sa différence avec
+# « La cuisine bio du quotidien », dont les quatre bornes de pagination faisaient
+# une table de saisonnalité. Ici les bornes ne disent rien du calendrier : elles
+# disent un MOMENT DE LA JOURNÉE et un degré de préparation.
+chapitres:
+  bases_saines: {de: 17, a: 29, quoi: "pains, pâtes et fonds qui servent aux autres chapitres"}
+  vite_fait: {de: 31, a: 53, quoi: "déjeuners montés sans souche, en 5 à 15 minutes"}
+  petits_plats_futes: {de: 55, a: 98, quoi: "les 22 plats dérivés des 8 souches « À partir de… »"}
+  gouters_nomades: {de: 101, a: 110, quoi: "goûters de sac, sans sucre raffiné"}
+
+# Les huit pages-souches et ce qu'elles émettent. C'est la colonne vertébrale du
+# chapitre « Petits plats futés » : chaque plat de la p. 57 à la p. 98 puise
+# dans l'une d'elles.
+souches:
+  - {page: 56, titre: "À partir d'un poulet rôti", catalogue_id: poulet-roti-du-dimanche, emet: [poulet-cuit, carcasse-volaille]}
+  # LA SEULE SOUCHE NON SAISIE, ET C'EST VOLONTAIRE : le catalogue avait déjà
+  # `pot-au-feu-traditionnel` (l'autre livre, p. 182), qui émet exactement les
+  # trois sorties dont les p. 63, 65 et 67 ont besoin. En saisir un second
+  # aurait dédoublé un plat identique ; les trois dérivés s'y branchent.
+  - {page: 62, titre: "À partir d'un pot-au-feu (ou d'une poule au pot)", catalogue_id: pot-au-feu-traditionnel, emet: [bouillon-pot-au-feu, viande-pot-au-feu, legumes-pot-au-feu], note: "déjà au catalogue via l'autre livre — non dédoublée"}
+  - {page: 68, titre: "À partir d'un rôti cuit au bouillon (comme un jambon)", catalogue_id: roti-cuit-au-bouillon, emet: [roti-froid]}
+  - {page: 72, titre: "À partir d'un wok de légumes verts", catalogue_id: wok-legumes-verts, emet: [poelee-legumes-verts]}
+  - {page: 82, titre: "À partir d'une mitonnée de lentilles", catalogue_id: mitonnee-lentilles, emet: [lentilles-vertes-cuites]}
+  - {page: 86, titre: "À partir d'une casserole de pois chiches ou de haricots", catalogue_id: legumineuses-mitonnees, emet: [pois-chiches-cuits, haricots-blancs-cuits]}
+  - {page: 90, titre: "À partir d'une céréale", catalogue_id: cereale-cuite-en-avance, emet: [cereale-cuite]}
+  - {page: 96, titre: "À partir d'une piperade (ou d'une ratatouille)", catalogue_id: piperade-legumes-ete, emet: [piperade, ratatouille]}
+
+# Sommaire dérivé du corpus : régénéré depuis les blocs `source:` des recettes,
+# donc il ne peut pas diverger d'elles.
+sommaire:
+  bases_saines:
+    - {page: 19, titre: "Pain de mie facile au son d'avoine", catalogue_id: pain-de-mie-son-avoine}
+    - {page: 20, titre: "Pain de mie moelleux à la machine à pain", catalogue_id: pain-de-mie-machine}
+    - {page: 22, titre: "Pâte brisée des fainéants (souche)", catalogue_id: pate-brisee-faineants}
+    - {page: 25, titre: "Pâte à wraps (souche)", catalogue_id: pate-a-wraps}
+    - {page: 26, titre: "Pains suédois très simplifiés (souche)", catalogue_id: pains-suedois}
+    - {page: 28, titre: "Pâte à pizza ou à fougasse (souche)", catalogue_id: pate-a-pizza-fougasse}
+
+  vite_fait:
+    - {page: 32, titre: "Sandwichs nordiques", catalogue_id: sandwichs-nordiques}
+    - {page: 35, titre: "Salade de riz « qui change »", catalogue_id: salade-de-riz-qui-change}
+    - {page: 37, titre: "Rillettes de saumon « terre et mer »", catalogue_id: rillettes-saumon-terre-et-mer}
+    - {page: 38, titre: "Wraps végétariens", catalogue_id: wraps-vegetariens}
+    - {page: 41, titre: "Wraps « gourmets »", catalogue_id: wraps-gourmets}
+    - {page: 43, titre: "Cookies-repas au chèvre et aux flocons d'avoine", catalogue_id: cookies-repas-chevre-avoine}
+    - {page: 44, titre: "Muffins au chèvre frais", catalogue_id: muffins-chevre-frais}
+    - {page: 46, titre: "Cake aux légumes bien protéiné", catalogue_id: cake-legumes-proteine}
+    - {page: 48, titre: "Tartines de « fromage » végétal", catalogue_id: tartines-fromage-vegetal}
+    - {page: 51, titre: "Croquettes végétariennes au kasha", catalogue_id: croquettes-kasha}
+    - {page: 52, titre: "Salade « 12 minutes chrono »", catalogue_id: salade-12-minutes-chrono}
+    - {page: 53, titre: "Detox-water pomelo, fraise et menthe", catalogue_id: detox-water}
+
+  petits_plats_futes:
+    - {page: 56, titre: "Poulet rôti du dimanche (souche)", catalogue_id: poulet-roti-du-dimanche}  # souche
+    - {page: 57, titre: "Chili-con-poulet", catalogue_id: chili-con-poulet}
+    - {page: 59, titre: "Salade César (ou presque)", catalogue_id: salade-cesar-ou-presque}
+    - {page: 60, titre: "Pizza-repas à la ratatouille et au poulet rôti", catalogue_id: pizza-ratatouille-poulet}
+    - {page: 63, titre: "Aspic de bœuf aux légumes", catalogue_id: aspic-boeuf-legumes}
+    - {page: 65, titre: "Salade de pot-au-feu", catalogue_id: salade-de-pot-au-feu}
+    - {page: 67, titre: "Bouillon chaud aux nouilles soba", catalogue_id: bouillon-nouilles-soba}
+    - {page: 68, titre: "Rôti de porc cuit au bouillon, comme un jambon (souche)", catalogue_id: roti-cuit-au-bouillon}  # souche
+    - {page: 69, titre: "Pasta-box au rôti, gouda et légumes-racine", catalogue_id: pasta-box-roti-gouda}
+    - {page: 70, titre: "« Jambon-beurre » revisité", catalogue_id: jambon-beurre-revisite}
+    - {page: 72, titre: "Grand wok de légumes verts (souche)", catalogue_id: wok-legumes-verts}  # souche
+    - {page: 73, titre: "Flamiche sans pâte au tofu fumé", catalogue_id: flamiche-sans-pate-tofu}
+    - {page: 75, titre: "Terrine légère de poulet et poireaux", catalogue_id: terrine-poulet-poireaux}
+    - {page: 77, titre: "Crumble aux courgettes", catalogue_id: crumble-courgettes}
+    - {page: 78, titre: "La tourte la plus simple du monde", catalogue_id: tourte-la-plus-simple}
+    - {page: 81, titre: "« Pissaladière » aux légumes verts", catalogue_id: pissaladiere-legumes-verts}
+    - {page: 82, titre: "Mitonnée de lentilles vertes du Puy (souche)", catalogue_id: mitonnee-lentilles}  # souche
+    - {page: 83, titre: "Salade de lentilles améliorée", catalogue_id: salade-lentilles-amelioree}
+    - {page: 84, titre: "Pâté de lentilles à la noisette grillée", catalogue_id: pate-lentilles-noisette}
+    - {page: 86, titre: "Casserole de pois chiches ou de haricots (souche)", catalogue_id: legumineuses-mitonnees}  # souche
+    - {page: 87, titre: "Houmous et compagnie", catalogue_id: houmous-et-compagnie}
+    - {page: 88, titre: "Salade végétarienne de haricots blancs", catalogue_id: salade-haricots-blancs}
+    - {page: 90, titre: "Grande casserole de céréale cuite d'avance (souche)", catalogue_id: cereale-cuite-en-avance}  # souche
+    - {page: 91, titre: "Mijoté d'avoine aux champignons", catalogue_id: mijote-avoine-champignons}
+    - {page: 93, titre: "Niçoise de petit épeautre « in a jar »", catalogue_id: nicoise-petit-epeautre-jar}
+    - {page: 95, titre: "Salade d'orge à la feta et aux aubergines", catalogue_id: salade-orge-feta-aubergines}
+    - {page: 96, titre: "Piperade ou ratatouille de légumes d'été (souche)", catalogue_id: piperade-legumes-ete}  # souche
+    - {page: 97, titre: "Frittata végétarienne", catalogue_id: frittata-vegetarienne}
+    - {page: 98, titre: "Gros chausson façon basquaise", catalogue_id: gros-chausson-basquaise}
+
+  gouters_nomades:
+    - {page: 103, titre: "Les cookies les plus simples du monde", catalogue_id: cookies-les-plus-simples}
+    - {page: 105, titre: "Le petit bocal qui fait du bien", catalogue_id: petit-bocal-qui-fait-du-bien}
+    - {page: 106, titre: "Mugcakes au chocolat", catalogue_id: mugcakes-chocolat}
+    - {page: 108, titre: "Mini-cakes aux fruits séchés", catalogue_id: mini-cakes-fruits-seches}
+    - {page: 110, titre: "Madeleines au yaourt", catalogue_id: madeleines-au-yaourt}

@@ -76,6 +76,12 @@ centraux:
     - cracotte
     - krisprolls
     - puree-mousline
+    - quinoa
+    - lentilles-corail
+    - petit-epeautre
+    - gruau-avoine
+    - nouilles-soba
+    - baguette
 
 aliases:
   oignons: oignon
@@ -159,6 +165,27 @@ rayons:
     - mures
     - groseilles
     - courge
+    # Arrivés avec « Je mange sain et bio, même au boulot ! ». Les deux souches
+    # p. 72 et p. 86 amènent chacune un ingrédient d'un genre nouveau :
+    # `legumes-verts-saison` est une CLASSE (l'autrice écrit « seuls ou en
+    # mélange, en fonction de la saison » — l'ingrédient EST la substitution,
+    # même parti que `fruits-frais`), et `sarriette` est une aromatique
+    # fonctionnelle : elle est là pour la digestion des légumineuses, pas pour
+    # le parfum.
+    - legumes-verts-saison
+    - sarriette
+    # Arrivés avec « Je mange sain et bio, même au boulot ! ». Le fenouil-bulbe
+    # est un id à part de `fenouil-sauvage` et de `graines-fenouil` : trois
+    # produits, trois lignes de courses.
+    # `avocat` et `pomelo` sont les deux premiers fruits d'import du catalogue —
+    # ils ne viennent d'aucun jardin de Francheville, et le modèle n'a pas d'axe
+    # pour le dire.
+    - fenouil
+    - avocat
+    - pomelo
+    - menthe
+    - radis
+    - jeunes-pousses
   boucherie:
     - boeuf-hache
     - agneau-collier
@@ -174,6 +201,12 @@ rayons:
     - saumon
     - colin-surgele
     - sardines-boite
+    # Poissons fumés du chapitre lunchbox : ils se mangent froids, sans
+    # cuisson, ce qui est exactement ce qu'un déjeuner emporté demande.
+    - saumon-fume
+    - truite-fumee
+    - cabillaud
+    - anchois
   crèmerie:
     - oeufs
     - fromage-rape
@@ -195,12 +228,18 @@ rayons:
     - yaourt-soja
     - yaourt-brebis
     - yaourt-nature
+    - chevre-frais
+    - gouda
+    - etorki
   frais:
     - tofu-fume
     - gnocchis
     - pate-brisee
     - pate-feuilletee
     - feuilles-brick
+    # `tofu-lactofermente` reste DISTINCT de `tofu-fume` : l'autrice le choisit
+    # pour sa digestibilité, pas pour son goût, et les deux ne se remplacent pas.
+    - tofu-lactofermente
   épicerie:
     - lentilles-seches
     - pates
@@ -321,6 +360,39 @@ rayons:
     - riz-rond
     - fruits-secs-melange
     - preparation-amandine
+    # Arrivés avec « même au boulot ! ». `laitue-de-mer` est la première algue
+    # du catalogue — conservée au sel, elle demande trois rinçages, ce que la
+    # recette p. 37 porte en étape.
+    # `olives-vertes` complète `olives-noires` : les deux se retrouvent dans la
+    # même semaine et ne s'achètent pas ensemble.
+    - laitue-de-mer
+    - tapenade
+    - pistaches
+    - olives-vertes
+    - noisettes
+    - quinoa
+    - lentilles-corail
+    - haricots-blancs
+    - petit-epeautre
+    - gruau-avoine
+    - puree-noisette
+    - levure-biere
+    - baguette
+    - jus-orange
+    - huile-essentielle-orange
+    - figues-seches
+    - raisins-secs
+    - jus-pomme
+    - nouilles-soba
+    # `tomates-cerises-confites` et `fruits-secs-panaches` sont distincts de
+    # `tomates-sechees` et `fruits-secs-melange`, qui portent `usage: apero` au
+    # garde-manger. Ce ne sont pas les mêmes produits — les cerises confites à
+    # l'huile de la p. 44 et le panachage à pâtisser de la p. 108 ne sont pas un
+    # bocal d'apéritif — et les confondre casserait la promesse de T40 : aucune
+    # recette ne cite une denrée d'apéro, c'est ce qui prouve que le plancher du
+    # placard agit sans passer par le scoring.
+    - tomates-cerises-confites
+    - fruits-secs-panaches
 
 placard:
   - huile-olive

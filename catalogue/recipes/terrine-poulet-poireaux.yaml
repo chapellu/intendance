@@ -1,0 +1,88 @@
+# Marie Chioca, p. 75. Reformulée, cf. cadre de licence carte #26.
+#
+# LA CUISSON EN BOCAL A DEUX RÈGLES DE SÉCURITÉ, ET ELLES SONT DANS L'ÉTAPE :
+# jamais plus de 150 °C, et enfourner à four FROID — sinon le choc thermique
+# fait éclater le verre. Le foyer a déjà `sterilisation-bain-marie` par sa
+# cocotte ; ceci est autre chose, une cuisson au four dans le contenant final.
+#
+# LE BOCAL EST AUSSI LE MOYEN DE TRANSPORT : on l'emballe dans un torchon et il
+# part tel quel. La terrine se mange à la fourchette DANS le pot — elle est trop
+# peu grasse pour s'étaler comme un pâté.
+recipe:
+  id: terrine-poulet-poireaux
+  title: Terrine légère de poulet et poireaux
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 75"
+    source_id: chioca-meme-au-boulot
+    page: 75
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 2}
+  time_min_total: 55
+  active_min: 5
+
+  accepts:
+    - type: poelee-legumes-verts
+      qty: {amount: 400, unit: g}
+      required: true
+      fallback_recipe: wok-legumes-verts
+
+  sans_reste:
+    temps_min: 80
+    ingredients:
+      - {id: poireau, name: "à défaut de poêlée, des poireaux à faire revenir", qty: 600, unit: g}
+
+  apports:
+    proteine: viande-blanche
+    feculent: aucun
+    legumes: [allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: poelee-legumes-verts, name: "poêlée de poireaux, ou un autre légume de la p. 72", qty: 400, unit: g, from_accepts: true}
+    - {id: poulet-filets, name: blancs de poulet bio ou fermier, qty: 400, unit: g}
+    - {id: son-avoine, name: son d'avoine, qty: 25, unit: g}
+    - {id: citron, name: citron, qty: 1, unit: pièce}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre-5-baies, name: poivre 5 baies, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: hacher-la-terrine
+      action: "Mixer par brèves impulsions tous les ingrédients, de façon à conserver des petits morceaux"
+      needs: [chop-coarse]
+      time_min: 4
+    - id: saler-terrine
+      action: "Saler et poivrer l'appareil"
+      needs: []
+      time_min: 1
+      seasoning_gate: true
+    - id: remplir-les-bocaux
+      action: "Répartir entre deux bocaux de 50 cl et les déposer sur la grille du four, COUVERCLE OUVERT"
+      needs: []
+      time_min: 3
+    - id: cuire-en-bocal
+      action: "Allumer le four à 150 °C en chaleur tournante et cuire 50 min : ne jamais dépasser 150 °C et toujours enfourner à four FROID, sous peine de faire éclater les bocaux"
+      needs: [bake]
+      time_min: 50
+      attended: false
+    - id: fermer-les-bocaux
+      action: "Fermer les pots à la sortie du four et laisser tiédir"
+      needs: []
+      time_min: 2
+
+  baby_portion:
+    take: "2 c. à s. d'appareil poulet-poireaux, AVANT salage"
+    prep: "cuire à part en ramequin au même moment, puis écraser à la fourchette"
+    needs: [bake]
+    depuis: [hacher-la-terrine]
+
+  emits:
+    - kind: reste-plat
+      type: terrine-poulet
+      qty_band: 2-repas
+      keeps: {frigo_days: 5, congelo: true}
+      note: "se transporte en bocal, emballé dans un torchon ; se mange à la fourchette dans le pot"
+
+  plan_b: []

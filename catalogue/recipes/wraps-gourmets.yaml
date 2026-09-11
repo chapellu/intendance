@@ -1,0 +1,71 @@
+# Marie Chioca, p. 41. Reformulée, cf. cadre de licence carte #26.
+#
+# UNE SECONDE MÉTHODE DE ROULAGE, ET C'EST TOUT L'OBJET DE LA PAGE : celle-ci
+# rabat les deux côtés avant d'enrouler, donc elle « enferme » mieux une
+# garniture faite de beaucoup de petits morceaux. Son prix est une contrainte
+# de FRAÎCHEUR — elle exige des crêpes du jour, souples ; raidies, elles se
+# fendillent aux pliures. C'est une dépendance à l'âge de la base que le
+# chaînage ne sait pas exprimer : `accepts` sait dire « il en faut 2 », pas
+# « il les faut d'aujourd'hui ». Noté ici faute d'un champ pour le dire.
+recipe:
+  id: wraps-gourmets
+  title: Wraps « gourmets »
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 41"
+    source_id: chioca-meme-au-boulot
+    page: 41
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 1}
+  time_min_total: 10
+  active_min: 10
+
+  accepts:
+    - type: crepes-wraps
+      qty: {amount: 2, unit: pièce}
+      required: true
+      fallback_recipe: pate-a-wraps
+
+  sans_reste:
+    temps_min: 65
+    ingredients:
+      - {id: tortillas, name: "à défaut de crêpes maison, 2 tortillas du commerce", qty: 2, unit: pièce}
+
+  apports:
+    proteine: fromage
+    feculent: farine
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: crepes-wraps, name: "crêpes à wraps, du jour de préférence", qty: 2, unit: pièce, from_accepts: true}
+    - {id: tapenade, name: tapenade, qty: 2, unit: c. à s.}
+    - {id: jambon, name: tranche de jambon, qty: 1, unit: pièce}
+    - {id: chevre-frais, name: fromage de chèvre frais, qty: 40, unit: g}
+    - {id: basilic, name: feuilles de basilic, qty: 20, unit: pièce}
+
+  steps:
+    - id: garnir-gourmet
+      action: "Tartiner la crêpe de tapenade en laissant le dernier tiers vide, puis disposer le jambon, le chèvre émietté et le basilic — ne PAS saler ni huiler, la tapenade suffit"
+      needs: []
+      time_min: 5
+    - id: rabattre-enrouler
+      action: "Rabattre les deux côtés du wrap, puis enrouler en serrant bien et recouper au milieu"
+      needs: []
+      time_min: 5
+
+  emits:
+    - kind: reste-plat
+      type: wraps-gourmets
+      qty_band: lunchbox
+      keeps: {frigo_days: 1, congelo: false}
+      note: "à manger le jour même : le basilic noircit ensuite"
+
+  plan_b:
+    - swap:
+        step: garnir-gourmet
+        action: "Variante fraîche : tzatziki à la place de la tapenade et saumon à la place du jambon"
+        saves_min: 0
+      effect: "même temps, autre plat — l'autrice donne trois variantes de garniture"

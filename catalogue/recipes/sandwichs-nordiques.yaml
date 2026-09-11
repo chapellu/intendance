@@ -1,0 +1,90 @@
+# Marie Chioca, p. 32. Reformulée, cf. cadre de licence carte #26.
+recipe:
+  id: sandwichs-nordiques
+  title: Sandwichs nordiques
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 32"
+    source_id: chioca-meme-au-boulot
+    page: 32
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 1}
+  time_min_total: 18
+  active_min: 10
+
+  accepts:
+    - type: pains-suedois
+      qty: {amount: 2, unit: pièce}
+      required: true
+      fallback_recipe: pains-suedois
+
+  sans_reste:
+    temps_min: 115
+    ingredients:
+      - {id: pain-levain, name: "à défaut de pains suédois, 2 tranches de bon pain complet", qty: 120, unit: g}
+
+  apports:
+    proteine: poisson
+    feculent: pain
+    legumes: [allium]
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: pains-suedois, name: pains suédois, qty: 2, unit: pièce, from_accepts: true}
+    - {id: oeufs, name: œuf, qty: 1, unit: pièce}
+    - {id: fenouil, name: gros bulbe de fenouil, qty: 1, unit: pièce}
+    - {id: citron, name: citron, qty: 1, unit: pièce}
+    - {id: creme, name: crème fraîche bio, qty: 2, unit: c. à s.}
+    - {id: ciboulette, name: ciboulette, qty: 1, unit: petit bouquet}
+    - id: saumon-fume
+      name: "saumon fumé, ou autre poisson fumé au choix"
+      qty: 100
+      unit: g
+      subs:
+        - {name: truite fumée, note: "l'autrice donne truite, maquereau au poivre ou haddock", ratio: 1.0}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre-5-baies, name: poivre 5 baies, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: cuire-oeuf-nordique
+      action: "Cuire l'œuf 8 minutes chrono à l'eau bouillante, puis l'écaler et le trancher"
+      needs: [simmer]
+      time_min: 10
+      attended: false
+    - id: preparer-fenouil
+      action: "Ôter les 2 ou 3 grosses feuilles extérieures du fenouil, filandreuses, puis recouper le cœur en tranches très fines"
+      needs: []
+      time_min: 5
+      parallel_with: cuire-oeuf-nordique
+    - id: lier-au-fenouil
+      action: "Mélanger le fenouil avec le jus de citron, la crème, la ciboulette ciselée et le poivre"
+      needs: []
+      time_min: 3
+    - id: saler-fenouil
+      action: "Saler la préparation au fenouil"
+      needs: []
+      time_min: 1
+      seasoning_gate: true
+    - id: monter-sandwichs
+      action: "Ouvrir les pains en deux, tartiner les bases de préparation au fenouil, ajouter les tranches d'œuf et le poisson fumé, refermer, puis recouper chaque sandwich en diagonale"
+      needs: []
+      time_min: 4
+
+  baby_portion:
+    take: "quelques lamelles de fenouil et un quart d'œuf, avant salage"
+    prep: "écraser le fenouil et l'œuf à la fourchette avec une pointe de crème"
+    needs: []
+    depuis: [preparer-fenouil, cuire-oeuf-nordique]
+
+  emits: []
+  plan_b:
+    - swap:
+        step: cuire-oeuf-nordique
+        action: "Supprimer l'œuf et doubler la part de poisson fumé"
+        saves_min: 10
+      effect: "sandwich plus salé et un peu moins équilibré"
+
+  # 24 h maximum au frais, l'autrice est formelle : le fenouil crémé rend de l'eau.
+  conservation_h: 24

@@ -1,0 +1,71 @@
+# Marie Chioca, p. 108. Reformulée, cf. cadre de licence carte #26.
+#
+# LE MIEL REMPLACE LE SUCRE ET LES FRUITS SÉCHÉS REMPLACENT LES FRUITS CONFITS —
+# « tellement plus goûteux », dit l'autrice. Ni beurre, ni farine raffinée.
+recipe:
+  id: mini-cakes-fruits-seches
+  title: Mini-cakes aux fruits séchés
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 108"
+    source_id: chioca-meme-au-boulot
+    page: 108
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 6}
+  time_min_total: 30
+  active_min: 10
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: farine T110 de grand épeautre, qty: 125, unit: g}
+    - {id: poudre-a-lever, name: poudre à lever, qty: 1, unit: c. à c.}
+    - {id: miel-acacia, name: miel d'acacia, qty: 55, unit: g}
+    - {id: jus-orange, name: jus d'orange, qty: 50, unit: ml}
+    - {id: huile-tournesol, name: huile végétale neutre, qty: 50, unit: ml}
+    - {id: rhum, name: rhum, qty: 2, unit: c. à s.}
+    - {id: oeufs, name: œufs, qty: 3, unit: pièce}
+    - {id: fruits-secs-panaches, name: "fruits secs au choix, en panachant fruits séchés (abricots bruns, figues, pruneaux, cranberries, raisins secs) et oléagineux grossièrement concassés (noisettes, amandes, noix de cajou)", qty: 100, unit: g}
+    - {id: caissettes, name: caissettes en carton, qty: 6, unit: pièce}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: prechauffer-mini-cakes
+      action: "Préchauffer le four à 180 °C, si possible en chaleur tournante"
+      needs: [bake]
+      time_min: 1
+      attended: false
+    - id: melanger-secs-mini-cakes
+      action: "Mélanger la farine, la poudre à lever et le sel, puis faire un puits"
+      needs: []
+      time_min: 2
+      seasoning_gate: true
+    - id: appareil-mini-cakes
+      action: "Ajouter le miel, le jus d'orange, l'huile, le rhum et les œufs, puis mélanger jusqu'à une pâte bien homogène"
+      needs: []
+      time_min: 4
+    - id: incorporer-les-fruits
+      action: "Ajouter les fruits, bien mélanger, puis répartir la pâte dans 6 caissettes en carton ou 6 moules à muffins moyens"
+      needs: []
+      time_min: 4
+      kid: {age_min_months: 30, task: "remplir les caissettes à la cuillère"}
+    - id: cuire-mini-cakes
+      action: "Enfourner 20 min"
+      needs: [bake]
+      time_min: 20
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: mini-cakes-fruits
+      qty_band: 3-repas
+      keeps: {frigo_days: 1, congelo: true}
+      note: "24 h à température ambiante en sachet, ou au congélateur — c'est la congélation qui les garde"
+
+  plan_b: []

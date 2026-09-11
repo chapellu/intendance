@@ -1,0 +1,86 @@
+# Marie Chioca, p. 37. Reformulée, cf. cadre de licence carte #26.
+#
+# LA LAITUE DE MER SE RINCE DANS TROIS EAUX, ET C'EST UNE ÉTAPE, PAS UN DÉTAIL :
+# l'algue est conservée au sel. Sautée, elle rendrait le plat immangeable.
+#
+# `chop-coarse` PLUTÔT QUE `blend-smooth`, ET L'AUTRICE PROPOSE ELLE-MÊME LE
+# REPLI MANUEL : « ou mieux : écraser grossièrement à l'écumoire ou au
+# presse-purée ». C'est exactement ce que la chaîne de repli fait déjà.
+recipe:
+  id: rillettes-saumon-terre-et-mer
+  title: Rillettes de saumon « terre et mer »
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 37"
+    source_id: chioca-meme-au-boulot
+    page: 37
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 2}
+  time_min_total: 25
+  active_min: 12
+
+  apports:
+    proteine: poisson
+    feculent: aucun
+    legumes: [allium, racine]
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: poireau, name: blanc de poireau, qty: 1, unit: pièce}
+    - {id: oignon, name: "oignon, pas trop gros", qty: 1, unit: pièce}
+    - {id: carottes, name: carotte, qty: 1, unit: pièce}
+    - {id: saumon, name: "saumon sauvage frais ou surgelé, sans peau ni arêtes", qty: 250, unit: g}
+    - {id: vin-blanc-sec, name: "vin blanc sec, ou de l'eau", qty: 100, unit: ml}
+    - {id: laitue-de-mer, name: "laitue de mer fraîche au sel, rincée dans trois eaux différentes", qty: 25, unit: g}
+    - {id: creme, name: crème fraîche épaisse, qty: 1, unit: c. à s.}
+    - {id: ciboulette, name: ciboulette, qty: 1, unit: petit bouquet}
+    - {id: huile-olive, name: huile d'olive, qty: 1, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: rincer-l-algue
+      action: "Rincer la laitue de mer dans trois eaux différentes — elle est conservée au sel, et ce rinçage n'est pas facultatif"
+      needs: []
+      time_min: 4
+    - id: dorer-les-legumes
+      action: "Émincer finement poireau et oignon, tailler la carotte en petits cubes, puis les faire revenir à l'huile d'olive dans une petite cocotte jusqu'à légère coloration des sucs"
+      needs: [pan-fry]
+      time_min: 8
+      attended: true
+    - id: saler-mouiller
+      action: "Ajouter le saumon, mouiller au vin blanc, saler et poivrer"
+      needs: []
+      time_min: 2
+      seasoning_gate: true
+    - id: mijoter-saumon
+      action: "Couvrir et mijoter une dizaine de minutes, jusqu'à cuisson complète du poisson"
+      needs: [simmer]
+      time_min: 10
+      attended: false
+    - id: hacher-rillettes
+      action: "Hors du feu, ajouter crème, ciboulette ciselée et laitue de mer, puis hacher grossièrement en gardant des petits morceaux"
+      needs: [chop-coarse]
+      time_min: 3
+
+  baby_portion:
+    take: "un morceau de saumon et quelques cubes de carotte, avant que le plat soit salé"
+    prep: "écraser à la fourchette avec un peu de crème"
+    needs: []
+    depuis: [dorer-les-legumes]
+
+  emits:
+    - kind: base
+      type: rillettes-poisson
+      qty_band: 2-repas
+      keeps: {frigo_days: 2, congelo: false}
+      note: "48 h maximum, l'autrice est nette là-dessus ; même type que les rillettes p. 75 de l'autre livre"
+
+  plan_b:
+    - swap:
+        step: mijoter-saumon
+        action: "Version « express » sans cuisson : mixer grossièrement 125 g de thon germon égoutté avec 2 c. à s. d'huile d'olive, 6 pistaches et 6 olives vertes"
+        saves_min: 20
+      effect: "autre plat, mais l'autrice le donne elle-même comme repli d'un repas"

@@ -1,0 +1,90 @@
+# Souche — Marie Chioca, p. 68. Reformulée, cf. cadre de licence carte #26.
+#
+# POURQUOI CETTE SOUCHE EXISTE, SELON L'AUTRICE : le jambon est la protéine par
+# défaut des lunchbox, et c'est celle qu'elle refuse — cher au kilo, et chargé
+# d'adjuvants (dextrose, arômes, conservateurs, salpêtre, et sel nitrité quand
+# il n'est pas bio). Ce rôti mijoté au bouillon salé le remplace poste pour
+# poste : il se tranche fin pour les sandwichs, se cube pour les salades.
+#
+# `roti-froid` EST UN TYPE QUI EXISTE DÉJÀ — `roti-bouillon-herbes` (l'autre
+# livre, p. 55) l'émet. On le réutilise au lieu d'en inventer un jumeau : les
+# deux plats produisent bien la même chose du point de vue de qui la consomme,
+# une pièce de viande froide qui se tranche. Ce que le présent rôti a en propre
+# (la saumure au vinaigre de cidre, les 30 g de gros sel) change son goût, pas
+# son rôle dans le chaînage.
+
+recipe:
+  id: roti-cuit-au-bouillon
+  title: Rôti de porc cuit au bouillon, comme un jambon (souche)
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 68"
+    source_id: chioca-meme-au-boulot
+    page: 68
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8
+  time_min_total: 80
+  active_min: 15
+
+  apports:
+    proteine: viande-blanche
+    feculent: aucun
+    legumes: [racine, allium]
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: roti-porc, name: "rôti de porc fermier (épaule ou jambon, au choix)", qty: 1000, unit: g}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: celeri-branche, name: "branche de céleri, ou une tranche de céleri-rave", qty: 1, unit: pièce}
+    - {id: carottes, name: carotte, qty: 1, unit: pièce}
+    - {id: laurier, name: feuilles de laurier, qty: 3, unit: pièce}
+    - {id: clous-girofle, name: clou de girofle, qty: 1, unit: pièce}
+    - {id: thym, name: brins de thym, qty: 2, unit: pièce}
+    - {id: vinaigre, name: vinaigre de cidre, qty: 2, unit: c. à s.}
+    - {id: eau, name: eau, qty: 2000, unit: ml}
+    - {id: gros-sel, name: gros sel gris, qty: 30, unit: g, seasoning: true}
+
+  steps:
+    - id: monter-le-bouillon
+      action: "Réunir dans une grande casserole le rôti, l'oignon, le céleri, la carotte, le laurier, le clou de girofle, le thym, le vinaigre de cidre et l'eau"
+      needs: []
+      time_min: 10
+    - id: saler-le-bouillon
+      action: "Saler le bouillon au gros sel gris — c'est lui qui fait le goût de « jambon »"
+      needs: []
+      time_min: 2
+      seasoning_gate: true
+    - id: cuire
+      action: "Porter à ébullition, puis compter 1 h de cuisson"
+      needs: [simmer-large]
+      time_min: 60
+      attended: false
+    - id: refroidir-dans-le-bouillon
+      action: "Laisser le rôti refroidir DANS son bouillon, au frais — c'est ce qui le garde moelleux et parfumé"
+      needs: []
+      time_min: 3
+      attente_min: 720
+      attente_raison: "une nuit de refroidissement dans le bouillon, au frais"
+      attended: false
+
+  baby_portion:
+    take: "un morceau de rôti cru, avant que le bouillon soit salé"
+    prep: "cuire à part dans un peu d'eau, puis mixer avec une rondelle de carotte"
+    needs: [blend-smooth]
+    depuis: []
+
+  emits:
+    - kind: reste-plat
+      type: roti-froid
+      qty_band: 3-repas
+      qty: {amount: 800, unit: g}
+      keeps: {frigo_days: 4, congelo: true}
+      note: "se tranche fin pour les sandwichs (p. 70), se cube pour les salades (p. 69)"
+
+  plan_b:
+    - drop: refroidir-dans-le-bouillon
+      saves_min: 3
+      effect: "rôti plus sec et moins parfumé : c'est le refroidissement dans la saumure qui fait le « jambon »"

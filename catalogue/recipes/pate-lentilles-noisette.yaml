@@ -1,0 +1,81 @@
+# Marie Chioca, p. 84. Reformulée, cf. cadre de licence carte #26.
+#
+# UN CONSEIL DE PRÉLÈVEMENT QUI PARLE À LA SOUCHE, PAS À CETTE RECETTE : le pâté
+# est meilleur si, en prenant sa part de lentilles dans la mitonnée p. 82, on
+# « pioche » aussi des bouts de carotte, d'oignon et de poireau. Autrement dit
+# la QUALITÉ de la sortie dépend de la façon dont on la prélève. Le chaînage
+# transporte une quantité et un type ; il n'a rien pour transporter ça.
+recipe:
+  id: pate-lentilles-noisette
+  title: Pâté de lentilles à la noisette grillée
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 84"
+    source_id: chioca-meme-au-boulot
+    page: 84
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 1}
+  time_min_total: 12
+  active_min: 8
+
+  accepts:
+    - type: lentilles-vertes-cuites
+      qty: {amount: 150, unit: g}
+      required: true
+      fallback_recipe: mitonnee-lentilles
+
+  sans_reste:
+    temps_min: 60
+    ingredients:
+      - {id: lentilles-seches, name: "à défaut de mitonnée, des lentilles vertes sèches", qty: 65, unit: g}
+
+  apports:
+    proteine: legumineuse
+    feculent: legumineuse
+    legumes: [allium]
+    profil: poele
+    origine: francais
+
+  ingredients:
+    - {id: lentilles-vertes-cuites, name: "mitonnée de lentilles — en piochant aussi des bouts de carotte, d'oignon et de poireau", qty: 150, unit: g, from_accepts: true}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: puree-noisette, name: "purée de noisette grillée, cuillerée un peu bombée", qty: 1, unit: c. à s.}
+    - {id: noisettes, name: "noisettes, facultatives", qty: 6, unit: pièce}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: dorer-l-oignon
+      action: "Éplucher et émincer l'oignon, le découper en petits cubes et le faire dorer dans une petite cocotte avec l'huile d'olive et une pincée de sel"
+      needs: [pan-fry]
+      time_min: 6
+      attended: true
+      seasoning_gate: true
+    - id: reunir-le-pate
+      action: "Quand les sucs sont bien dorés mais surtout PAS brûlés, transférer avec l'huile de cuisson dans le bol du robot, puis ajouter les lentilles, la purée de noisette, un peu de sel et de poivre"
+      needs: []
+      time_min: 3
+    - id: mixer-le-pate
+      action: "Mixer en 3 ou 4 brèves impulsions pour garder des petits morceaux — surtout pas de bouillie — puis ajouter les noisettes très grossièrement concassées"
+      needs: [chop-coarse]
+      time_min: 3
+
+  baby_portion:
+    take: "2 c. à s. de lentilles nature, avant que l'oignon soit salé"
+    prep: "écraser à la fourchette avec une pointe de purée de noisette"
+    needs: []
+    depuis: []
+
+  emits:
+    - kind: base
+      type: pate-vegetal
+      qty_band: 2-repas
+      keeps: {frigo_days: 5, congelo: false}
+      note: "en bocal hermétique ; l'accord parfait de l'autrice est 80 g de pain des fleurs au sarrasin"
+
+  plan_b:
+    - drop: mixer-le-pate
+      saves_min: 3
+      effect: "lentilles simplement écrasées : c'est mangeable, mais ce n'est plus un pâté"

@@ -1,0 +1,84 @@
+# Marie Chioca, p. 38. Reformulée, cf. cadre de licence carte #26.
+#
+# L'ERREUR À NE PAS FAIRE EST DANS LA RECETTE, ET ELLE EST STRUCTURELLE : trop
+# de garniture, et la crêpe ne se roule plus. Toujours laisser une partie nue,
+# celle qu'on roule en dernier. C'est une consigne de GESTE que le modèle ne
+# sait pas porter ailleurs que dans la phrase.
+recipe:
+  id: wraps-vegetariens
+  title: Wraps végétariens
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 38"
+    source_id: chioca-meme-au-boulot
+    page: 38
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 1}
+  time_min_total: 10
+  active_min: 10
+
+  accepts:
+    - type: crepes-wraps
+      qty: {amount: 2, unit: pièce}
+      required: true
+      fallback_recipe: pate-a-wraps
+
+  sans_reste:
+    temps_min: 65
+    ingredients:
+      - {id: tortillas, name: "à défaut de crêpes maison, 2 tortillas du commerce", qty: 2, unit: pièce}
+
+  apports:
+    proteine: tofu-soja
+    feculent: farine
+    legumes: [racine]
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: crepes-wraps, name: crêpes à wraps, qty: 2, unit: pièce, from_accepts: true}
+    - {id: carottes, name: carotte, qty: 1, unit: pièce}
+    - {id: avocat, name: avocat Haas mûr à point, qty: 1, unit: pièce}
+    - {id: citron, name: citron, qty: 1, unit: pièce}
+    - {id: tofu-lactofermente, name: tofu lactofermenté au tamari, qty: 100, unit: g}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: raper-carotte
+      action: "Râper la carotte"
+      needs: []
+      time_min: 2
+      kid: {age_min_months: 30, task: "tourner la manivelle du râpe-légumes"}
+    - id: ecraser-avocat
+      action: "Écraser l'avocat à la fourchette avec le jus de citron, un peu de sel et de poivre"
+      needs: []
+      time_min: 3
+      seasoning_gate: true
+    - id: emietter-tofu
+      action: "Émietter le tofu lactofermenté à la fourchette"
+      needs: []
+      time_min: 2
+    - id: rouler
+      action: "Tartiner la crêpe de purée d'avocat, répartir carotte et tofu, TASSER la garniture, puis rouler en terminant par la partie laissée nue ; recouper en deux et emballer chaque wrap"
+      needs: []
+      time_min: 5
+
+  baby_portion:
+    take: "un quart d'avocat, avant d'y mettre sel et poivre"
+    prep: "écraser à la fourchette avec une pointe de jus de citron"
+    needs: []
+    depuis: []
+
+  emits:
+    - kind: reste-plat
+      type: wraps-vegetariens
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: false}
+      note: "2 à 3 jours bien emballés ; l'avocat noircit, ils ne se congèlent pas"
+
+  plan_b:
+    - drop: raper-carotte
+      saves_min: 2
+      effect: "wrap sans croquant et sans crudité — il ne reste que le gras et la protéine"
