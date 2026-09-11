@@ -1,0 +1,85 @@
+# Marie Chioca, p. 93. Reformulée, cf. cadre de licence carte #26.
+#
+# L'ORDRE D'EMPILAGE EST LA RECETTE. « In a jar » n'est pas une présentation :
+# la céréale au fond, puis les légumes résistants, puis le thon, l'œuf, et le
+# mesclun EN DERNIER, tout en haut, loin de la sauce. C'est ce qui fait qu'une
+# salade préparée à 7 h n'est pas flétrie à 13 h. La sauce voyage à part.
+#
+# UN ORDRE D'ÉTAPES QUI COMPTE, DONC, et le modèle sait le porter : les étapes
+# sont ordonnées. Ce qu'il ne sait pas porter, c'est que l'ordre est ici la
+# raison d'être du plat et non une commodité.
+recipe:
+  id: nicoise-petit-epeautre-jar
+  title: Niçoise de petit épeautre « in a jar »
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 93"
+    source_id: chioca-meme-au-boulot
+    page: 93
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 1}
+  time_min_total: 23
+  active_min: 15
+
+  accepts:
+    - type: cereale-cuite
+      qty: {amount: 200, unit: g}
+      required: true
+      fallback_recipe: cereale-cuite-en-avance
+
+  sans_reste:
+    temps_min: 70
+    ingredients:
+      - {id: petit-epeautre, name: "à défaut de céréale déjà cuite, du petit épeautre", qty: 90, unit: g}
+
+  apports:
+    proteine: poisson
+    feculent: orge
+    legumes: [cucurbitacee, solanacee, racine]
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: cereale-cuite, name: "petit épeautre cuit — ou gruau d'avoine, riz complet, orge mondé", qty: 200, unit: g, from_accepts: true}
+    - {id: oeufs, name: œuf, qty: 1, unit: pièce}
+    - {id: concombre, name: concombre, qty: 70, unit: g}
+    - {id: radis, name: radis, qty: 70, unit: g}
+    - {id: poivron, name: "poivron rouge, vert ou jaune", qty: 70, unit: g}
+    - {id: tomates-cerises, name: tomates-cerises, qty: 70, unit: g}
+    - {id: thon-boite, name: "thon au naturel, bien égoutté", qty: 200, unit: g}
+    - {id: salade-verte, name: mesclun, qty: 1, unit: petit bouquet}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: vinaigre-balsamique, name: vinaigre balsamique, qty: 1, unit: c. à s.}
+    - {id: origan, name: origan séché, qty: 1, unit: c. à c.}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: cuire-oeuf-nicoise
+      action: "Cuire l'œuf 8 minutes chrono à l'eau bouillante"
+      needs: [simmer]
+      time_min: 10
+      attended: false
+    - id: tailler-nicoise
+      action: "Laver et éplucher les légumes : concombre et radis en fines tranches, poivron en petits cubes, tomates-cerises en deux"
+      needs: []
+      time_min: 8
+      parallel_with: cuire-oeuf-nicoise
+    - id: empiler-le-bocal
+      action: "Empiler dans un grand bocal d'un litre, DANS CET ORDRE : le petit épeautre, puis concombre, radis, poivron, tomates, le thon émietté, l'œuf coupé en quatre, et ENFIN le mesclun tout en haut — c'est cet ordre qui évite que la salade arrive flétrie"
+      needs: []
+      time_min: 4
+    - id: sauce-a-part
+      action: "Mélanger huile, vinaigre, origan et sel, puis verser dans une petite bouteille À PART — la sauce ne rejoint la salade qu'au moment de savourer"
+      needs: []
+      time_min: 3
+      seasoning_gate: true
+
+  baby_portion:
+    take: "2 c. à s. de céréale cuite et un quart d'œuf, avant que la sauce soit salée"
+    prep: "écraser à la fourchette"
+    needs: []
+    depuis: []
+
+  emits: []
+  plan_b: []

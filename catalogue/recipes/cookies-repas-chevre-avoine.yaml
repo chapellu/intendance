@@ -1,0 +1,77 @@
+# Marie Chioca, p. 43. Reformulée, cf. cadre de licence carte #26.
+#
+# UN PLAT QUI TIENT DANS UNE MAIN ET SE MANGE SANS COUVERTS : neuf cookies
+# salés valent un déjeuner. Les 70 g de chèvre sont la protéine du repas, pas
+# un assaisonnement — d'où `proteine: fromage`.
+recipe:
+  id: cookies-repas-chevre-avoine
+  title: Cookies-repas au chèvre et aux flocons d'avoine
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 43"
+    source_id: chioca-meme-au-boulot
+    page: 43
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 1}
+  time_min_total: 35
+  active_min: 15
+
+  apports:
+    proteine: fromage
+    feculent: avoine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: flocons-avoine, name: petits flocons d'avoine, qty: 50, unit: g}
+    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 30, unit: g}
+    - {id: chevre-buche, name: bûche de chèvre bio, qty: 70, unit: g}
+    - {id: origan, name: origan séché, qty: 1, unit: c. à c.}
+    - {id: olives-noires, name: "olives noires dénoyautées, en tranches fines", qty: 8, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 15, unit: g}
+    - {id: poudre-a-lever, name: poudre à lever, qty: 1, unit: c. à c.}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: piment-espelette, name: piment d'Espelette, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: prechauffer-cookies
+      action: "Préchauffer le four à 180 °C, si possible en chaleur tournante"
+      needs: [bake]
+      time_min: 1
+      attended: false
+    - id: malaxer-cookies
+      action: "Malaxer à la main tous les ingrédients dans un petit saladier, jusqu'à une pâte très malléable qui ne colle pas"
+      needs: []
+      time_min: 8
+      seasoning_gate: true
+      kid: {age_min_months: 24, task: "malaxer la pâte avec les mains propres"}
+    - id: former-cookies
+      action: "Diviser en 9 boules de la taille d'une prune, puis les écraser assez finement sur une plaque chemisée"
+      needs: []
+      time_min: 6
+      kid: {age_min_months: 24, task: "écraser les boules avec la paume"}
+    - id: cuire-cookies
+      action: "Enfourner environ 20 min, jusqu'à ce que le BORD des cookies soit bien doré — c'est lui qui dit la cuisson, et il varie beaucoup d'un four à l'autre"
+      needs: [bake]
+      time_min: 20
+      attended: false
+
+  baby_portion:
+    take: "une cuillerée de flocons d'avoine et un morceau de chèvre, avant salage et piment"
+    prep: "cuire les flocons dans un peu d'eau, puis y écraser le fromage"
+    needs: [simmer]
+    depuis: []
+
+  emits:
+    - kind: reste-plat
+      type: cookies-repas-chevre
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+      note: "se transportent sans boîte et se mangent à la main"
+
+  plan_b:
+    - drop: former-cookies
+      saves_min: 6
+      effect: "cuire la pâte en une seule galette : moins de bords dorés, donc moins de croustillant"

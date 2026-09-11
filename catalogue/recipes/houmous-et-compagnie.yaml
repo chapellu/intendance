@@ -1,0 +1,70 @@
+# Marie Chioca, p. 87. Reformulée, cf. cadre de licence carte #26.
+#
+# LA RECETTE LA PLUS COURTE DU CATALOGUE : une étape, trois minutes. Elle vaut
+# surtout pour l'arête qu'elle ferme — `pois-chiches-cuits` avait deux
+# consommateurs et aucun émetteur avant la souche p. 86.
+#
+# UNE CONTRAINTE SOCIALE, ET C'EST LA PREMIÈRE : l'ail est « facultatif, à cause
+# des collègues ». Un déjeuner emporté se mange dans un bureau partagé — le
+# modèle sait qu'un plat voyage mal, pas qu'il sent fort.
+recipe:
+  id: houmous-et-compagnie
+  title: Houmous et compagnie
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 87"
+    source_id: chioca-meme-au-boulot
+    page: 87
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 2}
+  time_min_total: 3
+  active_min: 3
+
+  accepts:
+    - type: pois-chiches-cuits
+      qty: {amount: 350, unit: g}
+      required: true
+      fallback_recipe: legumineuses-mitonnees
+
+  sans_reste:
+    temps_min: 5
+    ingredients:
+      - {id: pois-chiches, name: "à défaut de casserole maison, un bocal de pois chiches", qty: 350, unit: g}
+
+  apports:
+    proteine: legumineuse
+    feculent: legumineuse
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: pois-chiches-cuits, name: pois chiches déjà cuits, qty: 350, unit: g, from_accepts: true}
+    - {id: huile-olive, name: "huile d'olive — ou du tahin, pour la version la plus traditionnelle", qty: 5, unit: c. à s.}
+    - {id: ail, name: "petite gousse d'ail, facultative à cause des collègues", qty: 1, unit: gousse}
+    - {id: citron, name: citron, qty: 1, unit: pièce}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: mixer-le-houmous
+      action: "Mixer soigneusement tous les ingrédients, sel compris. C'est prêt"
+      needs: [blend-smooth]
+      time_min: 3
+      seasoning_gate: true
+
+  baby_portion:
+    take: "2 c. à s. de pois chiches cuits nature, avant salage"
+    prep: "mixer avec un filet d'huile d'olive et un peu d'eau"
+    needs: [blend-smooth]
+    depuis: []
+
+  emits:
+    - kind: base
+      type: tartinade-legumineuse
+      qty_band: 2-repas
+      keeps: {frigo_days: 4, congelo: false}
+      note: "la moitié avec 80 g de pain complet ou de tartines craquantes au sarrasin fait un repas"
+
+  plan_b: []

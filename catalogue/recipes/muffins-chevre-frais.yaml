@@ -1,0 +1,78 @@
+# Marie Chioca, p. 44. Reformulée, cf. cadre de licence carte #26.
+recipe:
+  id: muffins-chevre-frais
+  title: Muffins au chèvre frais
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 44"
+    source_id: chioca-meme-au-boulot
+    page: 44
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 2}
+  time_min_total: 30
+  active_min: 10
+
+  apports:
+    proteine: fromage
+    feculent: farine
+    legumes: [solanacee]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: farine complète de grand épeautre, qty: 120, unit: g}
+    - {id: poudre-a-lever, name: poudre à lever, qty: 1, unit: c. à c.}
+    - {id: oeufs, name: œufs, qty: 3, unit: pièce}
+    - {id: huile-olive, name: "huile d'olive, un demi-pot à yaourt", qty: 50, unit: g}
+    - {id: yaourt-soja, name: yaourt de soja, qty: 100, unit: g}
+    - {id: tomates-cerises-confites, name: tomates-cerises séchées à l'huile d'olive, qty: 20, unit: pièce}
+    - {id: parmesan, name: "parmesan ou tomme de chèvre râpée", qty: 30, unit: g}
+    - {id: chevre-frais, name: fromage de chèvre frais, qty: 70, unit: g}
+    - {id: sarriette, name: "sarriette fraîche, ou 1 c. à c. de sarriette séchée", qty: 1, unit: petit bouquet}
+    - {id: ail, name: "gousse d'ail, facultative", qty: 1, unit: gousse}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: prechauffer-muffins
+      action: "Préchauffer le four à 180 °C"
+      needs: [bake]
+      time_min: 1
+      attended: false
+    - id: melanger-secs-muffins
+      action: "Mélanger farine, sel, poivre et poudre à lever dans un saladier, puis faire un puits"
+      needs: []
+      time_min: 3
+      seasoning_gate: true
+    - id: appareil-muffins
+      action: "Dans un bol à part, mélanger œufs, huile, yaourt de soja, sarriette ciselée, ail écrasé, tomates-cerises en morceaux (en garder 6 pour décorer) et parmesan, puis verser sur la farine et mélanger rapidement au fouet"
+      needs: []
+      time_min: 5
+    - id: ajouter-le-chevre
+      action: "Ajouter le chèvre en petits cubes et mélanger DÉLICATEMENT à la cuillère en bois, pour ne pas briser ces morceaux fragiles — c'est de leur intégrité que dépend la texture"
+      needs: []
+      time_min: 2
+    - id: cuire-muffins
+      action: "Répartir dans 6 caissettes à muffins et enfourner 20 min"
+      needs: [bake]
+      time_min: 20
+      attended: false
+
+  baby_portion:
+    take: "un morceau de chèvre frais et une cuillerée de yaourt de soja, avant que la pâte soit salée"
+    prep: "mélanger les deux, sans cuisson"
+    needs: []
+    depuis: []
+
+  emits:
+    - kind: reste-plat
+      type: muffins-chevre
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+      note: "6 muffins = 2 repas ; 3 ou 4 muffins avec des crudités font le déjeuner"
+
+  plan_b:
+    - drop: ajouter-le-chevre
+      saves_min: 2
+      effect: "muffins uniformément fromagers au lieu de porter des poches de chèvre fondant"

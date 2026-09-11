@@ -1,0 +1,94 @@
+# Marie Chioca, p. 103. Reformulée, cf. cadre de licence carte #26.
+#
+# AUCUN SUCRE AJOUTÉ, ET CE N'EST PAS UN SLOGAN : le sucre du biscuit vient
+# entièrement des figues, des raisins et du jus de pomme. Aucun ingrédient de la
+# liste n'est un sucre.
+#
+# DEUX CONSIGNES DE MIXAGE QUI DISENT LA MÊME CHOSE — « attention à ne pas faire
+# de bouillie », « ne pas trop mixer afin de garder des petits morceaux ». C'est
+# `chop-coarse`, et la chaîne de repli du foyer (pas de robot) l'obtient déjà en
+# allongeant le geste.
+#
+# LE REFROIDISSEMENT SUR GRILLE EST UNE ÉTAPE, PAS UN RANGEMENT : sur le papier
+# cuisson les biscuits gardent leur vapeur et restent mous ; sur grille ils
+# deviennent croustillants dehors et moelleux dedans.
+recipe:
+  id: cookies-les-plus-simples
+  title: Les cookies les plus simples du monde
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 103"
+    source_id: chioca-meme-au-boulot
+    page: 103
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 6}
+  time_min_total: 35
+  active_min: 12
+
+  apports:
+    proteine: aucune
+    feculent: biscuit
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: figues-seches, name: figues sèches, qty: 135, unit: g}
+    - {id: raisins-secs, name: raisins secs, qty: 100, unit: g}
+    - {id: farine-epeautre, name: farine complète de grand épeautre ou de blé, qty: 190, unit: g}
+    - {id: son-avoine, name: son d'avoine, qty: 70, unit: g}
+    - {id: huile-tournesol, name: huile neutre, qty: 85, unit: g}
+    - {id: noisettes, name: noisettes, qty: 100, unit: g}
+    - {id: jus-pomme, name: jus de pomme, qty: 100, unit: g}
+    - {id: poudre-a-lever, name: poudre à lever, qty: 1, unit: c. à c.}
+    - {id: fleur-de-sel, name: fleur de sel, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: prechauffer-cookies-simples
+      action: "Préchauffer le four à 180 °C, si possible en chaleur tournante"
+      needs: [bake]
+      time_min: 1
+      attended: false
+    - id: hacher-les-fruits
+      action: "Mixer figues et raisins par brèves impulsions, jusqu'à des morceaux de la taille d'un petit raisin sec — attention à ne pas faire de bouillie"
+      needs: [chop-coarse]
+      time_min: 4
+    - id: faire-la-pate-cookies
+      action: "Ajouter tous les autres ingrédients, fleur de sel comprise, et mixer toujours en mode impulsions jusqu'à une pâte homogène et bien malléable, en gardant des morceaux de noisette et de fruit"
+      needs: [chop-coarse]
+      time_min: 5
+      seasoning_gate: true
+    - id: predecouper
+      action: "Étaler la pâte sur une plaque chemisée, en une épaisseur d'environ 7 mm, puis prédécouper les biscuits à la roulette à pizza en barres de 4 × 8 cm"
+      needs: []
+      time_min: 6
+      kid: {age_min_months: 30, task: "passer la roulette sur la pâte, en suivant une règle"}
+    - id: cuire-cookies-simples
+      action: "Enfourner 10 min à 180 °C, puis baisser à 150 °C pour la fin de la cuisson"
+      needs: [bake]
+      time_min: 20
+      attended: false
+    - id: refroidir-sur-grille
+      action: "Laisser un peu tiédir, détacher les gâteaux, puis les laisser refroidir SUR UNE GRILLE et non sur le papier cuisson : c'est ce qui les rend croustillants dehors et moelleux dedans"
+      needs: []
+      time_min: 4
+      attended: false
+
+  baby_portion:
+    take: "une figue sèche et quelques raisins, avant que la pâte soit salée"
+    prep: "les réhydrater à l'eau chaude et les écraser à la fourchette"
+    needs: []
+    depuis: []
+
+  emits:
+    - kind: reste-plat
+      type: cookies-figues-noisettes
+      qty_band: 3-repas
+      keeps: {frigo_days: 7, congelo: true}
+      note: "au moins une semaine en boîte métal ou en pot de verre — ce sont des goûters de sac"
+
+  plan_b:
+    - drop: refroidir-sur-grille
+      saves_min: 4
+      effect: "biscuits mous : ils gardent leur vapeur sur le papier cuisson"

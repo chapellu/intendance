@@ -1,0 +1,90 @@
+# Marie Chioca, p. 105. Reformulée, cf. cadre de licence carte #26.
+#
+# UNE SEMI-CONSERVE, ET LE CATALOGUE A DÉJÀ UN AVERTISSEMENT POUR ÇA. Le vide
+# d'air se fait en vissant les couvercles sur les pots BRÛLANTS, et l'autrice
+# donne le contrôle : capsule convexe, centre du couvercle « enfoncé », une fois
+# le bocal entièrement refroidi. Si le vide ne s'est pas fait, on mange le
+# gâteau dans la semaine.
+#
+# CE N'EST PAS UNE STÉRILISATION AU BAIN-MARIE — la capacité
+# `sterilisation-bain-marie` du foyer ne s'applique pas ici, et c'est important :
+# `conservation.yaml` réserve le placard aux bocaux stérilisés d'aliments
+# ACIDES. Un gâteau ne l'est pas. On range donc la sortie au placard sur la
+# foi du vide d'air, avec sa vérification, et le `note:` porte la réserve.
+recipe:
+  id: petit-bocal-qui-fait-du-bien
+  title: Le petit bocal qui fait du bien
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 105"
+    source_id: chioca-meme-au-boulot
+    page: 105
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 6}
+  time_min_total: 55
+  active_min: 12
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 125, unit: g}
+    - {id: son-avoine, name: son d'avoine, qty: 50, unit: g}
+    - {id: poudre-a-lever, name: poudre à lever, qty: 1, unit: pièce}
+    - {id: yaourt-soja, name: yaourt de soja, qty: 100, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave, un pot à yaourt", qty: 100, unit: g}
+    - {id: jus-orange, name: "jus d'orange, un pot à yaourt", qty: 100, unit: ml}
+    - {id: huile-olive, name: "huile d'olive, un pot à yaourt", qty: 100, unit: g}
+    - {id: oeufs, name: œufs, qty: 2, unit: pièce}
+    - {id: cannelle, name: "cannelle, cuillerée bombée", qty: 1, unit: c. à s.}
+    - {id: chocolat-noir, name: pépites de chocolat noir, qty: 100, unit: g}
+    - {id: huile-essentielle-orange, name: huile essentielle d'orange, qty: 15, unit: pièce}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: prechauffer-bocal
+      action: "Préchauffer le four à 150 °C"
+      needs: [bake]
+      time_min: 1
+      attended: false
+    - id: melanger-secs-bocal
+      action: "Mélanger la farine, le son d'avoine, le sel et la poudre à lever, puis faire un puits"
+      needs: []
+      time_min: 3
+      seasoning_gate: true
+    - id: appareil-bocal
+      action: "Ajouter le yaourt et tous les autres ingrédients dans le puits, puis mélanger au fouet"
+      needs: []
+      time_min: 5
+    - id: cuire-en-pots
+      action: "Répartir la pâte dans 6 pots de confiture et les enfourner SANS leur couvercle, 40 min"
+      needs: [bake]
+      time_min: 40
+      attended: false
+    - id: visser-a-chaud
+      action: "Visser les couvercles sur les pots JUSTE SORTIS DU FOUR, avec des maniques — c'est ce geste qui crée le vide d'air en refroidissant"
+      needs: []
+      time_min: 3
+      attended: true
+    - id: verifier-le-vide
+      action: "Laisser refroidir à température ambiante, puis vérifier que la capsule est bien convexe, le centre du couvercle un peu « enfoncé » : c'est la preuve que le vide s'est fait. À défaut, consommer le gâteau dans la semaine"
+      needs: []
+      time_min: 2
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: gateau-en-bocal
+      qty_band: 3-repas
+      keeps: {frigo_days: 7, congelo: false}
+      note: "plusieurs semaines à température ambiante SI le vide d'air s'est fait ; ce n'est pas une stérilisation, d'où la vérification de la capsule"
+
+  plan_b:
+    - drop: visser-a-chaud
+      saves_min: 3
+      effect: "pas de vide d'air : les bocaux se gardent une semaine au lieu de plusieurs, et pas au placard"

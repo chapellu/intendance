@@ -1,0 +1,99 @@
+# Encodage structuré et reformulé d'une PAGE-SOUCHE de Marie Chioca, selon le
+# cadre de licence de la carte #26 : le plat, les quantités et le procédé
+# relèvent du savoir-faire non protégeable ; sa prose et ses photos ne sont PAS
+# reproduites.
+#
+# CE QUE CETTE PAGE EST, ET QUE LE CATALOGUE N'AVAIT PAS ENCORE. Ce n'est pas
+# une recette de dîner qui laisse un reste par accident : c'est une souche
+# CUISINÉE POUR SA SORTIE. L'autrice range sept pages comme celle-ci en tête de
+# son chapitre (p. 56, 62, 68, 72, 82, 86, 90) et fait dériver vingt-deux plats
+# d'elles. C'est exactement l'arête `emits` → `accepts` du ticket #30, mais
+# assumée par l'auteure au lieu d'être reconstruite par nous.
+
+recipe:
+  id: poulet-roti-du-dimanche
+  title: Poulet rôti du dimanche (souche)
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 56"
+    source_id: chioca-meme-au-boulot
+    page: 56
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6
+  # Bâti sur UN poulet entier, comme `poulet-roti` du répertoire : le lot est
+  # indivisible, mais son calibre a du jeu — on prend un poulet plus gros
+  # plutôt que d'en rôtir deux.
+  lot_entier: true
+  lot_calibre:
+    facteur_max: 1.6
+    note: "prendre un poulet plus gros plutôt que d'en rôtir deux"
+  time_min_total: 100
+  active_min: 10
+
+  apports:
+    proteine: viande-blanche
+    feculent: aucun
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: poulet, name: poulet entier bio ou fermier, qty: 1, unit: pièce}
+    - {id: citron, name: citron (pour badigeonner la peau), qty: 1, unit: pièce}
+    - {id: herbes-fraiches, name: "herbes aromatiques, pour farcir la volaille", qty: 1, unit: petit bouquet}
+    - {id: sel, name: sel, qty: 2, unit: c. à c., seasoning: true}
+
+  steps:
+    - id: preparer-volaille
+      action: "Couper les liens du poulet — les jointures des cuisses cuisent mieux détachées — et le farcir de quelques herbes aromatiques"
+      needs: []
+      time_min: 5
+    - id: saler-badigeonner
+      action: "Saler le poulet, puis badigeonner la peau de jus de citron : c'est ce qui la rend dorée sans être grasse"
+      needs: []
+      time_min: 3
+      seasoning_gate: true
+    - id: rotir
+      action: "Rôtir à 180 °C, si possible en chaleur tournante, 1 h 30"
+      needs: [bake]
+      time_min: 90
+      attended: false
+    - id: detacher
+      action: "Détacher la chair encore tiède : ce qui n'est pas servi le soir même devient la base des plats à emporter de la semaine"
+      needs: []
+      time_min: 8
+
+  # Prélevée sur la chair, avant tout assaisonnement de plat dérivé. Le poulet
+  # lui-même est salé à l'étape 2, donc le prélèvement se fait sur l'ingrédient
+  # AVANT cuisson — d'où `depuis: []`.
+  baby_portion:
+    take: "un morceau de blanc, avant salage"
+    prep: "cuire à part en ramequin avec un fond d'eau, puis écraser à la fourchette"
+    needs: [bake]
+    depuis: []
+
+  emits:
+    - kind: base
+      # `poulet-cuit` EXISTE DÉJÀ — `poulet-roti` du répertoire l'émet. On s'y
+      # branche au lieu d'inventer `poulet-roti-cuit` : les trois plats dérivés
+      # de la p. 56 acceptent donc aussi bien la chair du rôti du dimanche que
+      # celle d'un poulet du répertoire, ce qui est exactement la vérité de
+      # cuisine.
+      type: poulet-cuit
+      qty_band: 2-repas
+      qty: {amount: 500, unit: g}
+      keeps: {frigo_days: 3, congelo: true}
+      note: "la chair détachée une fois le dîner servi — trois plats du livre en vivent (p. 57, 59, 60)"
+    - kind: base
+      type: carcasse-volaille
+      qty_band: 1-repas
+      qty: {amount: 1, unit: pièce}   # une carcasse, et il n'y en a qu'une
+      keeps: {frigo_days: 2, congelo: true}
+      note: "la carcasse fait un bouillon ; même type que celle de `poulet-cocotte-olives-citron`"
+
+  plan_b:
+    - drop: preparer-volaille
+      saves_min: 5
+      effect: "cuisses moins bien cuites aux jointures, et pas de parfum d'herbes"

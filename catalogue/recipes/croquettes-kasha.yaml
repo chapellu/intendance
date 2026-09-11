@@ -1,0 +1,83 @@
+# Marie Chioca, p. 51. Reformulée, cf. cadre de licence carte #26.
+#
+# LE KASHA CUIT AVEC LES PETITS POIS DONNE UNE PRÉPARATION QUI SE MODÈLE : c'est
+# le tout l'intérêt de la page. Une croquette qui s'effrite ne survit pas au
+# transport, et l'autrice choisit ses deux ingrédients pour la tenue autant que
+# pour le goût. Le kasha est par ailleurs une des rares céréales non raffinées
+# à cuire en moins de dix minutes.
+#
+# `kasha-cuit` A UN CONSOMMATEUR ET AUCUN ÉMETTEUR : `crockasha-echalote-
+# ciboulette` (autre livre, p. 40) l'`accepts`. Cette recette-ci ne l'émet PAS
+# non plus — elle consomme tout son kasha en croquettes. Le trou reste ouvert,
+# et il vaut mieux le dire que le combler par une sortie inventée.
+recipe:
+  id: croquettes-kasha
+  title: Croquettes végétariennes au kasha
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 51"
+    source_id: chioca-meme-au-boulot
+    page: 51
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 1}
+  time_min_total: 25
+  active_min: 15
+
+  apports:
+    proteine: fromage
+    feculent: sarrasin
+    legumes: [legumineuse]
+    profil: poele
+    origine: francais
+
+  ingredients:
+    - {id: kasha, name: kasha, qty: 85, unit: g}
+    - {id: petits-pois, name: petits pois surgelés, qty: 50, unit: g}
+    - {id: eau, name: eau bouillante, qty: 200, unit: ml}
+    - {id: chevre-demi-sec, name: fromage de chèvre demi-sec, qty: 50, unit: g}
+    - {id: ciboulette, name: ciboulette, qty: 1, unit: petit bouquet}
+    - {id: farine, name: "farine de blé ou d'épeautre — ou de riz, pour une version totalement sans gluten", qty: 2, unit: c. à s.}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: cuire-kasha
+      action: "Mettre kasha et petits pois dans une petite casserole avec l'eau bouillante et un peu de sel, puis cuire à feu doux environ 8 min en mélangeant SOUVENT : la préparation boit vite toute son eau"
+      needs: [simmer]
+      time_min: 8
+      attended: true
+      seasoning_gate: true
+    - id: lier-croquettes
+      action: "Ajouter le fromage en petits cubes, la ciboulette ciselée et un peu de poivre, puis mixer LÉGÈREMENT par brèves impulsions — surtout pas de bouillie, il faut garder des petits morceaux"
+      needs: [chop-coarse]
+      time_min: 3
+    - id: faconner-croquettes
+      action: "Façonner à la main 6 croquettes de 45 à 50 g, puis les fariner légèrement"
+      needs: []
+      time_min: 6
+      kid: {age_min_months: 24, task: "rouler les croquettes dans l'assiette de farine"}
+    - id: dorer-croquettes
+      action: "Faire dorer à l'huile chaude jusqu'à ce que chaque face soit bien croustillante"
+      needs: [pan-fry]
+      time_min: 8
+      attended: true
+
+  baby_portion:
+    take: "2 c. à s. de kasha et de petits pois, avant salage"
+    prep: "mixer avec un peu d'eau de cuisson"
+    needs: [blend-smooth]
+    depuis: []
+
+  emits:
+    - kind: reste-plat
+      type: croquettes-kasha
+      qty_band: lunchbox
+      keeps: {frigo_days: 4, congelo: true}
+      note: "ne craignent pas la température ambiante quelques heures — l'autrice le dit, et c'est rare"
+
+  plan_b:
+    - drop: faconner-croquettes
+      saves_min: 6
+      effect: "verser la préparation à la cuillère dans la poêle : galettes rustiques au lieu de croquettes"

@@ -1,0 +1,108 @@
+# Souche — Marie Chioca, p. 86. Reformulée, cf. cadre de licence carte #26.
+#
+# CETTE SOUCHE COMBLE UN TROU DU CATALOGUE. `pois-chiches-cuits` était
+# `accepts` par DEUX recettes déjà saisies — les falafels p. 81 et la salade
+# aux œufs mollets p. 36 — sans qu'aucune recette ne l'émette : les deux
+# vivaient sur leur `sans_reste`, c'est-à-dire sur la boîte de conserve. La
+# page 86 est la première à produire la matière, donc la première à leur
+# rendre la remise du chaînage.
+#
+# LE TREMPAGE EST DE L'ANTICIPATION, PAS DU TEMPS DE CUISINE. Huit à douze
+# heures a minima, vingt-quatre au mieux — c'est `attente_min`, la seconde
+# horloge : ce plat doit être annoncé la veille, et son coût ne doit pas être
+# facturé au repas.
+#
+# LE TEMPS DE CUISSON EST UN INTERVALLE, ET L'AUTRICE REFUSE DE LE FERMER :
+# « on ne peut vraiment pas donner de temps de cuisson précis ». 35 min à 1 h
+# selon la légumineuse, son trempage et son degré de séchage à l'achat. On
+# retient la borne haute — un `time_min` trop court ferait promettre au
+# planificateur une soirée qu'il ne tiendra pas.
+
+recipe:
+  id: legumineuses-mitonnees
+  title: Casserole de pois chiches ou de haricots (souche)
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 86"
+    source_id: chioca-meme-au-boulot
+    page: 86
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6
+  time_min_total: 75
+  active_min: 10
+
+  apports:
+    proteine: legumineuse
+    feculent: legumineuse
+    legumes: [allium]
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - id: pois-chiches
+      name: "pois chiches secs, ou haricots blancs ou rouges secs"
+      qty: 500
+      unit: g
+      subs:
+        - {name: haricots blancs secs, note: "même procédé, même conservation", ratio: 1.0}
+        - {name: haricots rouges secs, note: "même procédé, même conservation", ratio: 1.0}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: clous-girofle, name: clou de girofle, qty: 1, unit: pièce}
+    - {id: laurier, name: feuilles de laurier, qty: 3, unit: pièce}
+    - id: sarriette
+      name: "sarriette et/ou sauge, quelques brins"
+      qty: 1
+      unit: petit bouquet
+      subs:
+        - {name: sauge seule, note: "l'autrice donne les deux au choix", ratio: 1.0}
+    - {id: eau, name: eau froide, qty: 3000, unit: ml}
+
+  steps:
+    - id: tremper
+      action: "Faire tremper les légumineuses au grand minimum une nuit — au mieux 24 h, elles cuiront alors encore plus vite"
+      needs: []
+      time_min: 3
+      attente_min: 720
+      attente_raison: "trempage d'une nuit, à lancer la veille au soir"
+      attended: false
+    - id: rincer
+      action: "Rincer abondamment les légumineuses trempées"
+      needs: []
+      time_min: 3
+      kid: {age_min_months: 30, task: "rincer les pois chiches dans la passoire"}
+    - id: cuire
+      action: "Les mettre dans un faitout d'eau FROIDE avec l'oignon, le clou de girofle, le laurier et la sarriette, puis cuire de 35 min à 1 h en goûtant régulièrement — aucun temps précis n'est donnable, cela dépend de la légumineuse et de son degré de séchage à l'achat"
+      needs: [simmer-large]
+      time_min: 60
+      attended: false
+
+  # PAS DE `seasoning_gate` ICI, ET C'EST VOULU : la page 86 ne sale à aucun
+  # moment. Le sel des légumineuses arrive dans le plat dérivé (houmous p. 87,
+  # salade p. 88), jamais dans la souche. `depuis:` porte donc seul le
+  # prélèvement, exactement comme le yaourt de soja p. 159 de l'autre livre.
+  baby_portion:
+    take: "3 c. à s. de légumineuses cuites nature, sans aromates"
+    prep: "écraser à la fourchette avec un peu d'eau de cuisson"
+    needs: [blend-smooth]
+    depuis: [cuire]
+
+  emits:
+    - kind: base
+      type: pois-chiches-cuits
+      qty_band: 3-repas
+      qty: {amount: 1000, unit: g}
+      keeps: {frigo_days: 5, congelo: true}
+      note: "la sarriette et la sauge ne sont pas décoratives : l'autrice les met pour la digestion des légumineuses"
+    - kind: base
+      type: haricots-blancs-cuits
+      qty_band: 3-repas
+      qty: {amount: 1000, unit: g}
+      keeps: {frigo_days: 5, congelo: true}
+      note: "même casserole, autre légumineuse — la salade p. 88 en réclame 300 g"
+
+  plan_b:
+    - drop: rincer
+      saves_min: 3
+      effect: "eau de trempage mal éliminée : les composés qui gênent la digestion restent"

@@ -1,0 +1,87 @@
+# Marie Chioca, p. 97. Reformulée, cf. cadre de licence carte #26.
+#
+# LE PLAT INDIVIDUEL EST LE CONTENANT DE TRANSPORT : on l'emballe dans un sachet
+# et il part tel quel. Même mécanique que les bocaux de la p. 75 — cuire dans ce
+# qui voyagera évite un transvasement et une boîte de plus. Le pool de
+# contenants d'`household.yaml` ne compte pas les plats à four ; ils font
+# pourtant le même travail ici.
+recipe:
+  id: frittata-vegetarienne
+  title: Frittata végétarienne
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 97"
+    source_id: chioca-meme-au-boulot
+    page: 97
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 1}
+  time_min_total: 15
+  active_min: 5
+
+  accepts:
+    - type: piperade
+      qty: {amount: 150, unit: g}
+      required: true
+      fallback_recipe: piperade-legumes-ete
+
+  sans_reste:
+    temps_min: 45
+    ingredients:
+      - {id: sauce-tomate, name: "à défaut de piperade maison, un bocal de ratatouille", qty: 150, unit: g}
+
+  apports:
+    proteine: oeuf
+    feculent: aucun
+    legumes: [solanacee]
+    profil: four
+    origine: italien
+
+  ingredients:
+    - {id: piperade, name: "piperade, ou ratatouille", qty: 150, unit: g, from_accepts: true}
+    - {id: oeufs, name: œufs, qty: 2, unit: pièce}
+    - {id: etorki, name: Etorki, qty: 30, unit: g}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+    - {id: piment-espelette, name: "piment d'Espelette, facultatif", qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: prechauffer-frittata
+      action: "Préchauffer le four à 180 °C"
+      needs: [bake]
+      time_min: 1
+      attended: false
+    - id: battre-les-oeufs
+      action: "Battre les œufs avec le sel, le poivre et éventuellement un peu de piment"
+      needs: []
+      time_min: 2
+      seasoning_gate: true
+    - id: monter-la-frittata
+      action: "Mélanger à la piperade, verser dans un petit plat à œuf individuel — celui-là même qui partira au bureau — et déposer le fromage en lamelles par-dessus"
+      needs: []
+      time_min: 3
+    - id: cuire-frittata
+      action: "Enfourner 10 min"
+      needs: [bake]
+      time_min: 10
+      attended: false
+
+  baby_portion:
+    take: "2 c. à s. de piperade, avant que les œufs soient salés"
+    prep: "mixer finement — la peau des poivrons ne passe pas à la fourchette"
+    needs: [blend-smooth]
+    depuis: []
+
+  emits:
+    - kind: reste-plat
+      type: frittata
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: false}
+      note: "48 h ; s'emporte dans son plat, emballé dans un sachet"
+
+  plan_b:
+    - swap:
+        step: cuire-frittata
+        action: "Cuire à la poêle comme une omelette, puis transporter dans la lunchbox"
+        saves_min: 5
+      effect: "repli donné par l'autrice pour qui ne veut pas allumer le four"

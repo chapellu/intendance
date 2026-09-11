@@ -135,22 +135,29 @@ recipe:
     - kind: base
       type: bouillon-pot-au-feu
       qty_band: 2-repas
-      # PAS DE `qty:`, DÉLIBÉRÉMENT. Le chiffre n'aurait aucun consommateur pour
-      # le confronter : la soupe de crêpes p. 192, que l'autrice désigne
-      # elle-même, n'est pas saisie. Poser « 2500 ml » maintenant serait une
-      # estimation inventée qui aurait l'air d'une mesure — exactement ce que le
-      # 1500 ml du rôti p. 55 évite en étant, lui, adossé au besoin de la soupe
-      # d'orge. À chiffrer le jour où la p. 192 entre.
+      # CHIFFRÉ LE 2026-09-10, ET C'EST LA CONDITION QUE CE COMMENTAIRE POSAIT
+      # LUI-MÊME. Il disait : pas de `qty:` tant qu'aucun consommateur ne vient
+      # le confronter, « à chiffrer le jour où la p. 192 entre ». Ce n'est pas
+      # la p. 192 qui est arrivée mais trois plats de « même au boulot ! » —
+      # l'aspic p. 63, la salade p. 65 et le bouillon aux soba p. 67 — dont le
+      # dernier réclame 500 ml nommément. La condition est remplie : il y a
+      # désormais un besoin en face du chiffre.
+      qty: {amount: 2500, unit: ml}
       keeps: {frigo_days: 3, congelo: true}
       note: "le repas du soir selon l'autrice : le bouillon avec des petites pâtes, ou des lanières de crêpes (p. 192)"
     - kind: reste-plat
       type: viande-pot-au-feu
       qty_band: 2-repas
+      # 1,2 kg de jarret cru rendent environ 800 g de viande cuite ; le dîner en
+      # prend le gros, et c'est ce qui reste que les p. 63, 65 et 67 se
+      # partagent. Estimation, mais adossée à un besoin : 250 + 125 + 100 g.
+      qty: {amount: 600, unit: g}
       keeps: {frigo_days: 3, congelo: true}
       note: "le lendemain, en hachis Parmentier (p. 199) ou froide à la vinaigrette"
     - kind: reste-plat
       type: legumes-pot-au-feu
       qty_band: 2-repas
+      qty: {amount: 800, unit: g}
       keeps: {frigo_days: 3, congelo: false}
       note: "pommes de terre et navets cuits à l'eau : ils se délitent à la décongélation, ils restent au frigo"
 

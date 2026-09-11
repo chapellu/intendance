@@ -162,13 +162,22 @@ describe("T46 — un plancher n'existe que sur ce que l'app sait compter", () =>
 /* ═════════════════ T40 — l'apéro, et c'est la preuve du mécanisme ═════════ */
 
 describe("T40 — `usage: apero` est la preuve que le plancher est indépendant du scoring", () => {
-  test("six denrées portent l'usage, et le reste n'en porte aucun", () => {
+  // ELLES ÉTAIENT SIX, ELLES SONT CINQ DEPUIS LE 2026-09-11. `pignons-pin` a
+  // perdu son `usage: apero` en saisissant « Je mange sain et bio, même au
+  // boulot ! » : la tourte p. 78 en met une cuillerée à soupe, et il n'y avait
+  // pas de découpage honnête à faire — ce sont les mêmes pignons. Les tomates
+  // séchées et le mélange de fruits secs, eux, ont gardé l'usage parce que
+  // leurs homonymes de pâtisserie sont d'autres produits, qui ont reçu leurs
+  // propres ids (`tomates-cerises-confites`, `fruits-secs-panaches`).
+  //
+  // Ce que le ticket demande est qu'il EXISTE des denrées qu'aucune recette
+  // n'atteint, pas qu'elles soient six : le test suivant reste la vraie preuve.
+  test("cinq denrées portent l'usage, et le reste n'en porte aucun", () => {
     const par = usages(catalogue);
     expect([...par.keys()].sort()).toEqual([
       "fruits-secs-melange",
       "graines-courge",
       "guacamole",
-      "pignons-pin",
       "terrine-campagne",
       "tomates-sechees",
     ]);
@@ -181,6 +190,10 @@ describe("T40 — `usage: apero` est la preuve que le plancher est indépendant 
     // apparaissent un jour dans l'app, c'est que le plancher a marché tout seul,
     // sans passer par le plan de la semaine.
     const alias = (id: string): string => catalogue.rayons.aliases[id] ?? id;
+    // Garde-fou : une liste vide ferait passer la boucle sans rien prouver, et
+    // la liste vient de RÉTRÉCIR une fois. Si elle tombe à zéro, ce test doit
+    // rougir plutôt que mentir.
+    expect(usages(catalogue).size).toBeGreaterThan(0);
     for (const id of usages(catalogue).keys())
       expect(
         catalogue.plats.some((p) => p.ingredients.some((i) => alias(i.id) === id)),
