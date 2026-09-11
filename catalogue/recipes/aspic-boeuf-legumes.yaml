@@ -1,0 +1,85 @@
+# Marie Chioca, p. 63. Reformulée, cf. cadre de licence carte #26.
+#
+# UN INTERDIT CHIMIQUE, PAS UN GOÛT : ni câpres ni cornichons DANS la terrine,
+# leur acidité empêcherait l'agar-agar de prendre. On les sert à côté. C'est la
+# première fois que le catalogue porte une incompatibilité d'ingrédients dont
+# la raison est la structure du plat et non la saveur — et elle n'a aucun champ
+# pour se dire, donc elle est dans l'étape, en majuscules.
+recipe:
+  id: aspic-boeuf-legumes
+  title: Aspic de bœuf aux légumes
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 63"
+    source_id: chioca-meme-au-boulot
+    page: 63
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 2}
+  time_min_total: 15
+  active_min: 5
+
+  accepts:
+    - type: bouillon-pot-au-feu
+      qty: {amount: 300, unit: ml}
+      required: true
+      fallback_recipe: pot-au-feu-traditionnel
+    - type: viande-pot-au-feu
+      qty: {amount: 250, unit: g}
+      required: false
+    - type: legumes-pot-au-feu
+      qty: {amount: 400, unit: g}
+      required: false
+
+  sans_reste:
+    temps_min: 180
+    ingredients:
+      - {id: jarret-boeuf, name: "à défaut de pot-au-feu, du jarret à faire cuire", qty: 300, unit: g}
+      - {id: bouillon-legumes, name: "à défaut de bouillon maison, un cube", qty: 1, unit: pièce}
+
+  apports:
+    proteine: viande-rouge
+    feculent: aucun
+    legumes: [racine, allium]
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: bouillon-pot-au-feu, name: bouillon de pot-au-feu, qty: 300, unit: ml, from_accepts: true}
+    - {id: viande-pot-au-feu, name: bœuf de pot-au-feu, qty: 250, unit: g, from_accepts: true}
+    - {id: legumes-pot-au-feu, name: "légumes de pot-au-feu, mais pas de pommes de terre", qty: 400, unit: g, from_accepts: true}
+    - {id: eau, name: eau froide, qty: 100, unit: ml}
+    - {id: agar-agar, name: agar-agar, qty: 2, unit: g}
+    - {id: persil, name: persil, qty: 1, unit: petit bouquet}
+
+  steps:
+    - id: porter-a-ebullition
+      action: "Porter le bouillon à ébullition avec le bœuf et les légumes coupés en petits morceaux et le persil finement ciselé"
+      needs: [simmer]
+      time_min: 8
+      attended: true
+    - id: gelifier
+      action: "Bien délayer l'agar-agar dans l'eau FROIDE, verser dans la casserole, mélanger et compter 1 minute de cuisson après reprise de l'ébullition — ne mettre NI câpres NI cornichons dans la terrine, leur acidité empêcherait la prise ; les servir à côté"
+      needs: [simmer]
+      time_min: 4
+      attended: true
+    - id: mouler-aspic
+      action: "Verser dans un moule à cake chemisé de papier cuisson"
+      needs: []
+      time_min: 3
+    - id: prendre-au-frais
+      action: "Mettre au frais avant de démouler et de découper en tranches"
+      needs: []
+      time_min: 1
+      attente_min: 720
+      attente_raison: "une nuit de prise au frais avant démoulage"
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: aspic-boeuf
+      qty_band: 2-repas
+      keeps: {frigo_days: 2, congelo: false}
+      note: "48 h maximum ; un aspic à l'agar-agar ne se congèle pas, il rend son eau"
+
+  plan_b: []

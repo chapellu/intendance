@@ -1,0 +1,88 @@
+# Marie Chioca, p. 88. Reformulée, cf. cadre de licence carte #26.
+#
+# LE BASILIC EST FONCTIONNEL, PAS DÉCORATIF : il renforce l'effet
+# anti-ballonnements de la sarriette et de la sauge ajoutées à la cuisson des
+# haricots (p. 86). Deux recettes qui se répondent à deux pages d'écart sur un
+# argument de digestion — c'est le genre de lien que le chaînage transporte
+# sans le savoir.
+recipe:
+  id: salade-haricots-blancs
+  title: Salade végétarienne de haricots blancs
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 88"
+    source_id: chioca-meme-au-boulot
+    page: 88
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 1}
+  time_min_total: 18
+  active_min: 10
+
+  accepts:
+    - type: haricots-blancs-cuits
+      qty: {amount: 300, unit: g}
+      required: true
+      fallback_recipe: legumineuses-mitonnees
+
+  sans_reste:
+    temps_min: 20
+    ingredients:
+      - {id: haricots-blancs, name: "à défaut de casserole maison, un bocal de haricots blancs", qty: 300, unit: g}
+
+  apports:
+    proteine: legumineuse
+    feculent: legumineuse
+    legumes: [solanacee]
+    profil: cru
+    origine: italien
+
+  ingredients:
+    - {id: haricots-blancs-cuits, name: haricots blancs cuits, qty: 300, unit: g, from_accepts: true}
+    - {id: oeufs, name: œuf extra-frais, qty: 1, unit: pièce}
+    - {id: tomates-roma, name: tomate Roma, qty: 1, unit: pièce}
+    - {id: basilic, name: feuilles de basilic frais, qty: 18, unit: pièce}
+    - {id: olives-noires, name: olives noires dénoyautées, qty: 6, unit: pièce}
+    - {id: parmesan, name: parmesan, qty: 30, unit: g}
+    - {id: capres, name: câpres, qty: 1, unit: c. à s.}
+    - {id: vinaigre-balsamique, name: vinaigre balsamique, qty: 1, unit: c. à s.}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: piment-espelette, name: piment d'Espelette, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: cuire-oeuf-haricots
+      action: "Cuire l'œuf 8 min à l'eau bouillante, puis l'écaler et le couper en tranches"
+      needs: [simmer]
+      time_min: 10
+      attended: false
+    - id: tailler-salade-haricots
+      action: "Découper la tomate en petits cubes, ciseler le basilic, détailler les olives en rondelles et le parmesan en copeaux"
+      needs: []
+      time_min: 6
+      parallel_with: cuire-oeuf-haricots
+    - id: assaisonner-haricots
+      action: "Saler et pimenter, puis mélanger tous les ingrédients et mettre en bocal ou en lunchbox"
+      needs: []
+      time_min: 3
+      seasoning_gate: true
+
+  baby_portion:
+    take: "2 c. à s. de haricots nature et un quart d'œuf, avant assaisonnement"
+    prep: "écraser à la fourchette"
+    needs: []
+    depuis: []
+
+  emits:
+    - kind: reste-plat
+      type: salade-haricots-blancs
+      qty_band: lunchbox
+      keeps: {frigo_days: 1, congelo: false}
+      note: "24 h maximum"
+
+  plan_b:
+    - swap:
+        step: cuire-oeuf-haricots
+        action: "Remplacer l'œuf par des « lardons » de blanc de poulet"
+        saves_min: 10
+      effect: "variante donnée par l'autrice : plus rapide, et le plat n'est plus végétarien"

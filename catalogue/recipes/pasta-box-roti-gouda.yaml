@@ -1,0 +1,77 @@
+# Marie Chioca, p. 69. Reformulée, cf. cadre de licence carte #26.
+#
+# LES PÂTES SONT PESÉES CUITES, ET C'EST À RETENIR : 200 g cuits ≈ 100 g crus.
+# Le catalogue pèse partout des ingrédients crus ; ici l'autrice donne le poids
+# cuit parce que la pasta-box se monte avec un reste de pâtes, pas avec un
+# paquet. La ligne le dit en clair pour que la liste de courses ne double pas.
+recipe:
+  id: pasta-box-roti-gouda
+  title: Pasta-box au rôti, gouda et légumes-racine
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 69"
+    source_id: chioca-meme-au-boulot
+    page: 69
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 1}
+  time_min_total: 10
+  active_min: 10
+
+  accepts:
+    - type: roti-froid
+      qty: {amount: 100, unit: g}
+      required: true
+      fallback_recipe: roti-cuit-au-bouillon
+
+  sans_reste:
+    temps_min: 85
+    ingredients:
+      - {id: jambon, name: "à défaut de rôti maison, du jambon blanc", qty: 100, unit: g}
+
+  apports:
+    proteine: viande-blanche
+    feculent: pates
+    legumes: [racine]
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: roti-froid, name: "rôti de porc cuit comme du jambon", qty: 100, unit: g, from_accepts: true}
+    - {id: gouda, name: "gouda ou mimolette", qty: 30, unit: g}
+    - {id: celeri-rave, name: céleri-rave cru, qty: 150, unit: g}
+    - {id: carottes, name: carottes crues, qty: 150, unit: g}
+    - {id: pates, name: "pâtes complètes d'épeautre ou de blé, pesées CUITES (≈ 100 g crues)", qty: 200, unit: g}
+    - {id: capres, name: câpres, qty: 1, unit: c. à s.}
+    - {id: graines-fenouil, name: "cumin ou carvi", qty: 1, unit: c. à c.}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: vinaigre-balsamique, name: vinaigre balsamique, qty: 1, unit: c. à s.}
+    - {id: levure-biere, name: levure de bière maltée, qty: 1, unit: c. à c.}
+    - {id: ciboulette, name: "ciboulette finement ciselée, facultative", qty: 1, unit: petit bouquet}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: tailler-pasta-box
+      action: "Découper le rôti et le fromage en petits cubes, le céleri et les carottes en bâtonnets"
+      needs: []
+      time_min: 7
+    - id: assaisonner-pasta-box
+      action: "Saler, puis mélanger tous les ingrédients et mettre au frais jusqu'au repas"
+      needs: []
+      time_min: 3
+      seasoning_gate: true
+
+  baby_portion:
+    take: "quelques bâtonnets de carotte et un cube de fromage, avant assaisonnement"
+    prep: "cuire la carotte à la vapeur et l'écraser avec le fromage"
+    needs: [steam]
+    depuis: [tailler-pasta-box]
+
+  emits:
+    - kind: reste-plat
+      type: pasta-box
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

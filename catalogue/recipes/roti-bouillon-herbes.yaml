@@ -90,6 +90,10 @@ recipe:
     - kind: reste-plat
       type: roti-froid
       qty_band: 2-repas
+      # Chiffré le 2026-09-10 : la pasta-box p. 69 en réclame 100 g et le
+      # « jambon-beurre » p. 70 en réclame 150. Même unité que le rôti p. 68,
+      # qui émet désormais le même type.
+      qty: {amount: 500, unit: g}
       keeps: {frigo_days: 3, congelo: true}
       note: "se tranche fin et se mange froid — le déjeuner nomade du lendemain"
 

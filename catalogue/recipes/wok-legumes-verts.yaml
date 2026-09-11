@@ -1,0 +1,96 @@
+# Souche — Marie Chioca, p. 72. Reformulée, cf. cadre de licence carte #26.
+#
+# LA SOUCHE LA PLUS FÉCONDE DU LIVRE : cinq plats en dérivent (p. 73, 77, 78,
+# 81, et une variante du chausson p. 98). C'est aussi celle dont l'autrice
+# assume le mieux la raison d'être — les repas pris « sur le pouce » manquent
+# de fibres et de minéraux, et un grand wok cuit d'avance est ce qui les y
+# remet sans y penser le matin.
+#
+# UNE EXCLUSION QUI EST UNE DONNÉE, PAS UN GOÛT : épinards et blettes sont
+# écartés parce que, très riches en acide oxalique, ils se conservent mal
+# au-delà de quelques heures. Une souche se juge sur sa tenue au frigo, pas sur
+# sa tenue à l'assiette — c'est la première fois que le catalogue rencontre un
+# ingrédient refusé pour un motif de conservation.
+
+recipe:
+  id: wok-legumes-verts
+  title: Grand wok de légumes verts (souche)
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 72"
+    source_id: chioca-meme-au-boulot
+    page: 72
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6
+  time_min_total: 35
+  active_min: 20
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: [cucurbitacee, crucifere, allium]
+    profil: poele
+    origine: francais
+
+  ingredients:
+    # L'ingrédient EST la substitution : l'autrice écrit « seuls ou en mélange,
+    # en fonction de la saison ». Même parti que `fruits-frais` sur la p. 101 de
+    # l'autre livre.
+    - id: legumes-verts-saison
+      name: "légumes verts de saison (courgettes, brocoli, poireaux, chou chinois, fenouil…), seuls ou en mélange"
+      qty: 1500
+      unit: g
+      subs:
+        - {name: courgettes seules, note: "la version d'été la plus simple", ratio: 1.0}
+        - {name: chou chinois seul, note: "la version d'hiver", ratio: 1.0}
+    - {id: oignon, name: oignons, qty: 3, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+
+  steps:
+    - id: laver-emincer
+      action: "Laver les légumes et les émincer ; éviter épinards et blettes, trop riches en acide oxalique pour se conserver plus de quelques heures"
+      needs: []
+      time_min: 15
+      kid: {age_min_months: 30, task: "laver les légumes dans la passoire"}
+    - id: blondir-oignons
+      action: "Faire revenir les oignons émincés dans l'huile d'olive"
+      needs: [pan-fry]
+      time_min: 5
+      attended: true
+    - id: cuire-a-couvert
+      action: "Ajouter les légumes, couvrir et mener la cuisson jusqu'à ce qu'ils soient tendres"
+      needs: [pan-fry]
+      time_min: 10
+      attended: false
+    - id: assecher
+      action: "Découvrir et laisser cuire quelques minutes de plus, le temps de bien faire évaporer le jus de cuisson — une poêlée qui rend de l'eau détrempe les tourtes et les pizzas qu'elle garnira"
+      needs: [pan-fry]
+      time_min: 5
+      attended: true
+    - id: saler-poelee
+      action: "Saler la poêlée"
+      needs: []
+      time_min: 1
+      seasoning_gate: true
+
+  baby_portion:
+    take: "3 c. à s. de légumes, prélevées après l'assèchement et AVANT le salage"
+    prep: "mixer avec un filet d'huile d'olive"
+    needs: [blend-smooth]
+    depuis: [cuire-a-couvert, assecher]
+
+  emits:
+    - kind: base
+      type: poelee-legumes-verts
+      qty_band: 3-repas
+      qty: {amount: 1200, unit: g}
+      keeps: {frigo_days: 3, congelo: true}
+      note: "cinq plats du livre en vivent : p. 73, 77, 78, 81, et la variante végétarienne du chausson p. 98"
+
+  plan_b:
+    - drop: assecher
+      saves_min: 5
+      effect: "poêlée plus humide — encore bonne telle quelle, mais elle détrempera la tourte p. 78 et la pissaladière p. 81"

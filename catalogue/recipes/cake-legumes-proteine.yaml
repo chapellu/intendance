@@ -1,0 +1,86 @@
+# Marie Chioca, p. 46. Reformulée, cf. cadre de licence carte #26.
+#
+# AUCUNE MATIÈRE GRASSE AJOUTÉE, ET C'EST LE POINT DE LA RECETTE : ni huile ni
+# beurre. Ce sont les 250 g de courgettes râpées qui apportent tout le moelleux.
+# Une substitution du légume par un légume sec ou peu aqueux casserait le plat,
+# pas seulement son goût.
+#
+# ⚠ SAISIE INCOMPLÈTE : les cinq variantes de la p. 46 sont ILLISIBLES sur la
+# photo disponible (page de droite coupée au cadrage). On n'en lit que les
+# amorces — « Potimarron et… », « Carotte et em… », « Courge butte… »,
+# « Céleri-rave et… », « Panais, mozz… ». Elles ne sont donc PAS saisies : les
+# inventer produirait cinq entrées fausses là où il n'y a rien.
+recipe:
+  id: cake-legumes-proteine
+  title: Cake aux légumes bien protéiné
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 46"
+    source_id: chioca-meme-au-boulot
+    page: 46
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine ; variantes non saisies, page illisible
+  yields: {portions_eq: 4}
+  time_min_total: 60
+  active_min: 10
+
+  apports:
+    proteine: fromage
+    feculent: farine
+    legumes: [cucurbitacee]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 250, unit: g}
+    - {id: poudre-a-lever, name: poudre à lever, qty: 1, unit: pièce}
+    - {id: courgettes, name: courgettes râpées, qty: 250, unit: g}
+    - {id: tomme-savoie, name: tomme de chèvre râpée, qty: 200, unit: g}
+    - {id: oeufs, name: œufs, qty: 4, unit: pièce}
+    - {id: sel, name: sel fin, qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: prechauffer-cake
+      action: "Préchauffer le four à 180 °C, si possible en chaleur tournante"
+      needs: [bake]
+      time_min: 1
+      attended: false
+    - id: melanger-secs-cake
+      action: "Bien mélanger au fouet la farine, le sel et la poudre à lever"
+      needs: []
+      time_min: 2
+      seasoning_gate: true
+    - id: malaxer-cake
+      action: "Ajouter courgettes râpées, fromage, œufs et poivre, puis malaxer à la main jusqu'à consistance bien homogène"
+      needs: []
+      time_min: 7
+      kid: {age_min_months: 30, task: "râper les courgettes au râpe-légumes"}
+    - id: cuire-cake
+      action: "Verser dans un moule à cake d'environ 25 × 12 cm chemisé de papier cuisson, bien égaliser, puis enfourner 50 min et vérifier à la pique"
+      needs: [bake]
+      time_min: 50
+      attended: false
+    - id: refroidir-cake
+      action: "Laisser ENTIÈREMENT refroidir avant de démouler et de découper : les tranches ne tiennent pas si le cake est tranché chaud"
+      needs: []
+      time_min: 5
+      attended: false
+
+  baby_portion:
+    take: "2 c. à s. de courgette râpée et un peu de fromage, avant que la pâte soit salée"
+    prep: "cuire à part en ramequin avec un œuf battu"
+    needs: [bake]
+    depuis: []
+
+  emits:
+    - kind: reste-plat
+      type: cake-legumes
+      qty_band: 3-repas
+      keeps: {frigo_days: 5, congelo: true}
+      note: "5 à 6 jours bien emballé, ou plusieurs semaines au congélateur"
+
+  plan_b:
+    - drop: refroidir-cake
+      saves_min: 5
+      effect: "le cake s'émiette à la découpe et ne se transporte plus en tranches"

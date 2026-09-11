@@ -1,0 +1,66 @@
+# Marie Chioca, p. 25. Reformulée, cf. cadre de licence carte #26.
+#
+# LA POÊLE EST UNE CONTRAINTE DE MATIÈRE, PAS DE TAILLE : « céramique, fonte ou
+# tôle noire, surtout pas d'inox ». Le foyer a une poêle inox 30 et deux
+# Ingenio — et rien ne dit dans `household.yaml` de quel revêtement sont les
+# Ingenio. `pan-fry` ne sait pas exprimer ça : la chaîne choisira peut-être
+# l'inox, que la recette exclut nommément. Limite connue, laissée dans l'étape
+# en toutes lettres faute d'un axe « matière » dans le modèle.
+recipe:
+  id: pate-a-wraps
+  title: Pâte à wraps (souche)
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 25"
+    source_id: chioca-meme-au-boulot
+    page: 25
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6
+  time_min_total: 65
+  active_min: 35
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: poele
+    origine: francais
+
+  ingredients:
+    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 500, unit: g}
+    - {id: eau, name: eau, qty: 1000, unit: ml}
+    - {id: oeufs, name: œufs, qty: 2, unit: pièce}
+    - {id: huile-olive, name: "huile d'olive, plus un peu pour la première crêpe", qty: 4, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: faire-la-pate-wraps
+      action: "Mélanger la farine et le sel, faire un puits, ajouter le reste en fouettant jusqu'à ce qu'il n'y ait plus de grumeaux"
+      needs: []
+      time_min: 5
+    - id: reposer
+      action: "Laisser reposer la pâte"
+      needs: []
+      time_min: 1
+      attente_min: 30
+      attended: false
+    - id: cuire-les-crepes
+      action: "Préchauffer une poêle de 20 à 22 cm en céramique, fonte ou tôle noire — surtout pas d'inox — l'huiler au pinceau, verser une louchée, étaler finement et cuire les deux faces ; une fois la poêle bien chaude, inutile de huiler entre chaque crêpe"
+      needs: [pan-fry]
+      time_min: 30
+      attended: true
+
+  emits:
+    - kind: base
+      type: crepes-wraps
+      qty_band: 3-repas
+      qty: {amount: 12, unit: pièce}
+      keeps: {frigo_days: 4, congelo: true}
+      note: "les wraps p. 38 et p. 41 en prennent 2 chacun ; la p. 41 les veut « du jour », elles se fendillent une fois raidies"
+
+  plan_b:
+    - drop: reposer
+      saves_min: 1
+      effect: "pâte moins souple : les crêpes se déchirent à l'étalement"

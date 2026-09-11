@@ -207,8 +207,19 @@ denrees:
   - {ingredient: concentre-tomate, zone: etagere-ouverte, unites: 3, par_unite: {amount: 70, unit: g}, etat: conserve}
   # LA SEULE DENRÉE QUE SA ZONE ABÎME, et le vérificateur le dit. Très gras, donc
   # rancit vite ; posé en pleine lumière, à côté de la bouilloire.
+  #
+  # `usage: apero` RETIRÉ LE 2026-09-11, et c'est le corpus qui l'a démenti. Le
+  # classement disait comment CE bocal-là se mange chez nous ; il ne disait pas
+  # ce qu'est un pignon de pin. La tourte p. 78 de « même au boulot ! » en met
+  # une cuillerée à soupe, et il n'y avait aucun découpage honnête à faire — ce
+  # sont les mêmes pignons, contrairement aux tomates séchées et au mélange de
+  # fruits secs, dont les homonymes de pâtisserie ont pu recevoir leur propre id.
+  #
+  # Les cinq denrées qui gardent l'usage suffisent à porter la preuve de T40 :
+  # ce qu'il faut, c'est qu'il existe des denrées qu'aucune recette n'atteint,
+  # pas qu'elles soient six.
   - {ingredient: pignons-pin, zone: etagere-ouverte, unites: 1, par_unite: {amount: 50, unit: g},
-     etat: sec, nature: gras, sensible: [lumiere, chaleur], usage: apero}
+     etat: sec, nature: gras, sensible: [lumiere, chaleur]}
   - {ingredient: cocktail-fruits, zone: etagere-ouverte, unites: 2, par_unite: {amount: 825, unit: g}, etat: conserve}
   - {ingredient: creme-dessert-chocolat, zone: etagere-ouverte, unites: 1, par_unite: {amount: 570, unit: g}, etat: conserve}
   - {ingredient: confiture-orange, zone: etagere-ouverte, unites: 1, par_unite: null, etat: bocal}

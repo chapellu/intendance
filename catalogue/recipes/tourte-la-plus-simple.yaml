@@ -1,0 +1,94 @@
+# Marie Chioca, p. 78. Reformulée, cf. cadre de licence carte #26.
+#
+# LE REFROIDISSEMENT EST CE QUI REND LA TOURTE MANGEABLE À LA MAIN, sans
+# couverts — donc mangeable au bureau. Découpée chaude, elle s'effondre. C'est
+# la même mécanique que le cake p. 46 : le froid est une étape, pas une suite.
+#
+# DEUX ARÊTES : un pâton de la p. 22 et la poêlée de la p. 72.
+recipe:
+  id: tourte-la-plus-simple
+  title: La tourte la plus simple du monde
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 78"
+    source_id: chioca-meme-au-boulot
+    page: 78
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 1}
+  time_min_total: 35
+  active_min: 8
+
+  accepts:
+    - type: pate-brisee-portion
+      qty: {amount: 1, unit: pièce}
+      required: true
+      fallback_recipe: pate-brisee-faineants
+    - type: poelee-legumes-verts
+      qty: {amount: 350, unit: g}
+      required: false
+
+  sans_reste:
+    temps_min: 65
+    ingredients:
+      - {id: pate-brisee, name: "à défaut de pâton maison, une pâte brisée du commerce", qty: 1, unit: pièce}
+      - {id: courgettes, name: "à défaut de poêlée, des légumes verts à faire revenir", qty: 500, unit: g}
+
+  apports:
+    proteine: fromage
+    feculent: pate-brisee
+    legumes: [cucurbitacee]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: pate-brisee-portion, name: "portion de pâte brisée des fainéants", qty: 1, unit: pièce, from_accepts: true}
+    - {id: poelee-legumes-verts, name: "poêlée de légumes verts au choix, bien égouttée", qty: 350, unit: g, from_accepts: true}
+    - {id: oeufs, name: œuf, qty: 1, unit: pièce}
+    - {id: parmesan, name: parmesan, qty: 50, unit: g}
+    - {id: pignons-pin, name: pignons de pin, qty: 1, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: prechauffer-tourte
+      action: "Préchauffer le four à 200 °C en chaleur tournante, grille assez bas"
+      needs: [bake]
+      time_min: 1
+      attended: false
+    - id: foncer-la-tourte
+      action: "Étaler le pâton finement à même un papier cuisson, en un disque de 18 à 20 cm, puis le faire glisser dans un petit plat rond d'environ 17 cm et appuyer pour tapisser le fond — la pâte déborde un peu, c'est normal"
+      needs: []
+      time_min: 6
+    - id: garnir-tourte
+      action: "Mélanger tous les autres ingrédients dans un bol, saler et poivrer, verser sur la pâte et rabattre les bords sur la garniture"
+      needs: []
+      time_min: 4
+      seasoning_gate: true
+    - id: cuire-tourte
+      action: "Enfourner 25 min"
+      needs: [bake]
+      time_min: 25
+      attended: false
+    - id: refroidir-tourte
+      action: "Laisser ENTIÈREMENT refroidir avant de découper en quatre parts : c'est ce qui rend la tourte mangeable à la main, sans couverts"
+      needs: []
+      time_min: 3
+      attended: false
+
+  baby_portion:
+    take: "2 c. à s. de poêlée de légumes, avant salage de la garniture"
+    prep: "écraser à la fourchette avec un peu de parmesan"
+    needs: []
+    depuis: []
+
+  emits:
+    - kind: reste-plat
+      type: tourte-legumes-verts
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b:
+    - drop: refroidir-tourte
+      saves_min: 3
+      effect: "tourte qui s'effondre à la découpe : elle demande alors des couverts"

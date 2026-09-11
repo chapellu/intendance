@@ -1,0 +1,57 @@
+# Marie Chioca, p. 53. Reformulée, cf. cadre de licence carte #26.
+#
+# LA PREMIÈRE BOISSON DU CATALOGUE, ET ELLE EST PRESQUE TOUT ATTENTE : dix
+# minutes de gestes, puis quatre à vingt-quatre heures d'infusion au frais.
+# `attente_min` porte les quatre heures — la borne basse, celle que l'autrice
+# donne comme minimum — et l'`attente_raison` dit qu'on la lance la veille,
+# parce que c'est à douze ou vingt-quatre heures qu'elle est bonne.
+#
+# `profil: cru` ET AUCUNE PROTÉINE : ce n'est pas un repas, c'est ce qui
+# l'accompagne. La p. 88 la désigne nommément pour aller avec sa salade.
+recipe:
+  id: detox-water
+  title: Detox-water pomelo, fraise et menthe
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 53"
+    source_id: chioca-meme-au-boulot
+    page: 53
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 2}
+  time_min_total: 10
+  active_min: 10
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: pomelo, name: pomelo rose de Corse, qty: 1, unit: pièce}
+    - {id: fraises, name: "fraises locales et de saison, bien mûres", qty: 100, unit: g}
+    - {id: menthe, name: feuilles de menthe fraîche, qty: 7, unit: pièce}
+    - {id: eau, name: eau de source, qty: 500, unit: ml}
+
+  steps:
+    - id: preparer-agrume
+      action: "Détailler la moitié du pomelo en quartiers et les peler à vif ; presser l'autre moitié"
+      needs: []
+      time_min: 6
+    - id: preparer-fruits
+      action: "Couper les fraises en deux ou en quatre et froisser légèrement les feuilles de menthe — c'est le froissage qui libère l'huile essentielle"
+      needs: []
+      time_min: 3
+      kid: {age_min_months: 24, task: "froisser les feuilles de menthe entre les mains"}
+    - id: infuser
+      action: "Réunir le tout dans une bouteille à large ouverture, fermer, bien secouer et laisser infuser au réfrigérateur"
+      needs: []
+      time_min: 1
+      attente_min: 240
+      attente_raison: "infusion au frais : 4 h au minimum, bien meilleure à 12 ou 24 h"
+      attended: false
+
+  emits: []
+  plan_b: []

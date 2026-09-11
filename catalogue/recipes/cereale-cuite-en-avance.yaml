@@ -1,0 +1,81 @@
+# Souche — Marie Chioca, p. 90. Reformulée, cf. cadre de licence carte #26.
+#
+# CE QUE CETTE PAGE DÉFEND : les céréales « spéciale cuisson rapide » (riz,
+# pâtes, couscous, quinoa, kasha) sont pratiques, mais une grande casserole de
+# céréale LONGUE cuite d'avance — gruau d'avoine, orge, petit épeautre — se
+# pioche toute la semaine. Trois plats du livre s'y servent : p. 91, 93 et 95.
+#
+# UN DÉTAIL DE CUISSON QUI EST UNE VRAIE INFORMATION, ET QUE SEULE UNE SOUCHE
+# PEUT PORTER : « il vaut mieux que la céréale soit un tantinet trop cuite que
+# pas assez, car le grain a tendance à gagner en fermeté une fois passé au
+# frais ». C'est une consigne qui n'a de sens que parce que la céréale est
+# cuite pour être mangée FROIDE, trois jours plus tard. Aucune recette de dîner
+# ne l'aurait dite.
+
+recipe:
+  id: cereale-cuite-en-avance
+  title: Grande casserole de céréale cuite d'avance (souche)
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 90"
+    source_id: chioca-meme-au-boulot
+    page: 90
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6
+  time_min_total: 50
+  active_min: 8
+
+  apports:
+    proteine: aucune
+    feculent: orge
+    legumes: []
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - id: orge
+      name: "céréale à cuisson longue : gruau d'avoine, orge mondé ou petit épeautre"
+      qty: 500
+      unit: g
+      subs:
+        - {name: gruau d'avoine, note: "le mijoté p. 91 en réclame 200 g cuits", ratio: 1.0}
+        - {name: petit épeautre, note: "la niçoise p. 93 en réclame 200 g cuits", ratio: 1.0}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: eau, name: eau, qty: 2000, unit: ml}
+
+  steps:
+    - id: tremper-le-grain
+      action: "Faire tremper le grain au moins 8 heures"
+      needs: []
+      time_min: 2
+      attente_min: 480
+      attente_raison: "trempage du grain, à lancer la veille"
+      attended: false
+    - id: rincer-le-grain
+      action: "Rincer le grain trempé"
+      needs: []
+      time_min: 2
+    - id: cuire-le-grain
+      action: "Cuire de 25 à 40 min selon la céréale, en goûtant pour juger — viser un grain un tantinet TROP cuit plutôt que pas assez, car il raffermit une fois passé au frais"
+      needs: [simmer-large]
+      time_min: 40
+      attended: false
+    - id: egoutter-huiler
+      action: "Égoutter, ajouter un filet d'huile d'olive — c'est ce qui empêche le grain de se coller en bloc au frigo — puis conserver au frais"
+      needs: []
+      time_min: 4
+
+  emits:
+    - kind: base
+      type: cereale-cuite
+      qty_band: 3-repas
+      qty: {amount: 1200, unit: g}
+      keeps: {frigo_days: 4, congelo: true}
+      note: "se pioche froide toute la semaine : mijoté p. 91, niçoise p. 93, salade d'orge p. 95"
+
+  plan_b:
+    - drop: tremper-le-grain
+      saves_min: 2
+      effect: "sans trempage la cuisson s'allonge nettement — l'autrice le donne comme l'étape à anticiper, pas comme une option"

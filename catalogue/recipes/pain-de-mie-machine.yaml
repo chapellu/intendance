@@ -1,0 +1,79 @@
+# Marie Chioca, p. 20. Reformulée, cf. cadre de licence carte #26.
+#
+# CETTE RECETTE NE SE FAIT PAS CHEZ CE FOYER, ET C'EST LE MODÈLE QUI DOIT LE
+# DIRE. Le foyer n'a pas de machine à pain (#29 : « small kitchen, the compiler
+# must never suggest a purchase »). Écrire la recette sans le signaler la
+# rendrait proposable ; l'omettre du catalogue effacerait une page du livre.
+#
+# La troisième voie est celle qu'a ouverte le gaufrier de la p. 111 : déclarer
+# une capacité `machine-a-pain` dont le seul outil est un outil que le foyer ne
+# possède pas. `resolve_capability` renvoie alors (None, None) et `compile.py`
+# marque l'étape « aucune solution avec l'équipement du foyer ». La recette est
+# saisie, honnête, et injouable — ce qui est exactement sa situation.
+#
+# PLAN A DE REMPLACEMENT : la p. 19, le même pain sans machine.
+recipe:
+  id: pain-de-mie-machine
+  title: Pain de mie moelleux à la machine à pain
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 20"
+    source_id: chioca-meme-au-boulot
+    page: 20
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 5
+  time_min_total: 185
+  active_min: 5
+
+  apports:
+    proteine: aucune
+    feculent: pain
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: farine T130 ou T150 de grand épeautre ou de blé, qty: 500, unit: g}
+    - {id: eau, name: "eau tiède, 40 °C au maximum", qty: 400, unit: ml}
+    - {id: levure-boulangere, name: levure de boulanger déshydratée, qty: 1, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: sirop-agave, name: sirop d'agave, qty: 2, unit: c. à s.}
+    - {id: sel, name: sel fin, qty: 10, unit: g, seasoning: true}
+
+  steps:
+    - id: charger-la-cuve
+      action: "Mettre tous les ingrédients dans la cuve et lancer le programme « basique » ou « pain normal »"
+      needs: [machine-a-pain]
+      time_min: 5
+    - id: retirer-la-pale
+      action: "Si la machine sonne en fin de pétrissage, retirer la pâle — sinon elle reste imprimée dans la mie et on perd deux ou trois tranches"
+      needs: [machine-a-pain]
+      time_min: 2
+      attended: true
+    - id: cuire-en-machine
+      action: "Laisser le programme aller à son terme"
+      needs: [machine-a-pain]
+      time_min: 175
+      attended: false
+    - id: refroidir-machine
+      action: "Laisser le pain refroidir entièrement avant de le trancher"
+      needs: []
+      time_min: 5
+      attended: false
+
+  emits:
+    - kind: base
+      type: pain-de-mie-maison
+      qty_band: 3-repas
+      qty: {amount: 900, unit: g}
+      keeps: {frigo_days: 5, congelo: true}
+      note: "mie serrée, exprès : c'est ce qui empêche la garniture des sandwichs de couler"
+
+  plan_b:
+    - swap:
+        step: charger-la-cuve
+        action: "Faire plutôt le pain de mie de la p. 19, qui ne demande qu'un four"
+        saves_min: 0
+      effect: "seule voie praticable ici : ce foyer n'a pas de machine à pain"

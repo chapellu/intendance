@@ -1,0 +1,81 @@
+# Marie Chioca, p. 70. Reformulée, cf. cadre de licence carte #26.
+#
+# L'AUTRICE DÉFEND LE BEURRE, ET C'EST UNE POSITION, PAS UN OUBLI : un peu de
+# bon beurre bio, idéalement cru, entre dans une alimentation saine et vaut
+# mieux que la margarine. Elle en fait un rythme — une ou deux fois par semaine
+# dans les sandwichs, en alternant les autres jours avec des tartinades
+# végétales (p. 48). C'est une contrainte de FRÉQUENCE, l'axe que
+# `equilibre.yaml` sait exprimer pour les protéines et pas pour les gras.
+recipe:
+  id: jambon-beurre-revisite
+  title: « Jambon-beurre » revisité
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 70"
+    source_id: chioca-meme-au-boulot
+    page: 70
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 1}
+  time_min_total: 10
+  active_min: 10
+
+  accepts:
+    - type: roti-froid
+      qty: {amount: 150, unit: g}
+      required: true
+      fallback_recipe: roti-cuit-au-bouillon
+
+  sans_reste:
+    temps_min: 85
+    ingredients:
+      - {id: jambon, name: "à défaut de rôti maison, du jambon blanc", qty: 150, unit: g}
+
+  apports:
+    proteine: viande-blanche
+    feculent: pain
+    legumes: [racine, feuille]
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: roti-froid, name: rôti cuit comme un jambon, qty: 150, unit: g, from_accepts: true}
+    - {id: baguette, name: "baguette de campagne, la moins blanche possible", qty: 200, unit: g}
+    - {id: beurre, name: beurre bio demi-sel, qty: 20, unit: g}
+    - {id: radis, name: radis roses, qty: 4, unit: pièce}
+    - {id: cornichons, name: cornichons, qty: 4, unit: pièce}
+    - {id: jeunes-pousses, name: "jeunes pousses au choix selon la saison : roquette, mesclun, épinards, cresson, mâche, basilic", qty: 1, unit: petit bouquet}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: trancher-le-roti
+      action: "Découper le rôti en tranches très fines"
+      needs: []
+      time_min: 4
+    - id: laver-la-verdure
+      action: "Laver les radis et les jeunes pousses"
+      needs: []
+      time_min: 3
+      kid: {age_min_months: 30, task: "laver les radis dans la passoire"}
+    - id: monter-le-sandwich
+      action: "Ouvrir la baguette, retirer un peu de mie, beurrer les deux faces, puis disposer la salade, les radis émincés et les tranches de rôti"
+      needs: []
+      time_min: 4
+    - id: saler-sandwich
+      action: "Saler et poivrer, refermer, bien emballer et garder au frais"
+      needs: []
+      time_min: 2
+      seasoning_gate: true
+
+  baby_portion:
+    take: "un morceau de rôti et un peu de mie de pain, avant salage"
+    prep: "émietter la mie et hacher finement le rôti"
+    needs: []
+    depuis: [trancher-le-roti]
+
+  emits: []
+  plan_b:
+    - drop: laver-la-verdure
+      saves_min: 3
+      effect: "sandwich sans crudité : il faut alors une salade à côté"

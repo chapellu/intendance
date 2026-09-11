@@ -1,0 +1,68 @@
+# Marie Chioca, p. 28. Reformulée, cf. cadre de licence carte #26.
+#
+# SECOND ÉMETTEUR DE `pate-a-pizza`, après `pate-a-pizza-pique-nique` (l'autre
+# livre, p. 96). La pizza p. 60 et la pissaladière p. 81 de CE livre s'y
+# servent, mais rien n'empêche la focaccia p. 100 de l'autre livre d'y puiser
+# aussi : c'est la matière qui compte, pas la provenance.
+recipe:
+  id: pate-a-pizza-fougasse
+  title: Pâte à pizza ou à fougasse (souche)
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 28"
+    source_id: chioca-meme-au-boulot
+    page: 28
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 2
+  time_min_total: 105
+  active_min: 12
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: italien
+
+  ingredients:
+    - {id: farine-epeautre, name: farine T110 de grand épeautre, qty: 250, unit: g}
+    - {id: sel, name: sel, qty: 5, unit: g, seasoning: true}
+    - {id: levure-boulangere, name: levure de boulanger déshydratée, qty: 1, unit: pièce}
+    - {id: eau, name: "eau tiède, 40 °C au maximum", qty: 180, unit: ml}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+
+  steps:
+    - id: puits
+      action: "Mélanger la farine et le sel, puis faire un puits"
+      needs: []
+      time_min: 2
+    - id: delayer-pizza
+      action: "Délayer la levure dans l'eau tiède — jamais plus de 40 °C — l'ajouter dans le puits avec l'huile d'olive, puis mélanger à la cuillère en bois ou au robot"
+      needs: []
+      time_min: 6
+    - id: lever-pizza
+      action: "Retourner une assiette sur le saladier et laisser lever au tiède"
+      needs: []
+      time_min: 1
+      attente_min: 90
+      attente_raison: "levée d'une heure à une heure et demie, à lancer avant de partir"
+      attended: false
+    - id: etaler-pizza
+      action: "Étaler la pâte à la main en un disque d'environ 25 cm, sur un papier cuisson huilé et fariné"
+      needs: []
+      time_min: 6
+
+  emits:
+    - kind: base
+      type: pate-a-pizza
+      qty_band: 2-repas
+      qty: {amount: 1, unit: pâte}
+      keeps: {frigo_days: 3, congelo: true}
+      note: "une demi-pizza ≈ 125 g de farine semi-complète ; garnie p. 60 et p. 81"
+
+  plan_b:
+    - drop: lever-pizza
+      saves_min: 1
+      effect: "pâte non levée : galette dense au lieu d'une pâte à pizza"

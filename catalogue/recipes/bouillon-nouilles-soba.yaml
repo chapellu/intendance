@@ -1,0 +1,83 @@
+# Marie Chioca, p. 67. Reformulée, cf. cadre de licence carte #26.
+#
+# LE THERMOS SE PRÉCHAUFFE, ET C'EST UNE ÉTAPE À PART ENTIÈRE : eau bouillante
+# dedans le matin, vidée juste avant d'y verser la soupe brûlante. Sans ça, le
+# récipient froid mange la chaleur du repas.
+#
+# UNE CONTRAINTE DE PROPORTION QUI EST UNE VRAIE RÈGLE : si les glucides
+# paraissent légers, on ajoute UNE POMME DE TERRE, surtout pas de nouilles —
+# elles boiraient tout le bouillon. Le modèle sait mettre à l'échelle un plat ;
+# il ne sait pas qu'ici un seul ingrédient ne se met pas à l'échelle.
+recipe:
+  id: bouillon-nouilles-soba
+  title: Bouillon chaud aux nouilles soba
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 67"
+    source_id: chioca-meme-au-boulot
+    page: 67
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 1}
+  time_min_total: 12
+  active_min: 8
+
+  accepts:
+    - type: bouillon-pot-au-feu
+      qty: {amount: 500, unit: ml}
+      required: true
+      fallback_recipe: pot-au-feu-traditionnel
+    - type: viande-pot-au-feu
+      qty: {amount: 100, unit: g}
+      required: false
+    - type: legumes-pot-au-feu
+      qty: {amount: 200, unit: g}
+      required: false
+
+  sans_reste:
+    temps_min: 20
+    ingredients:
+      - {id: bouillon-legumes, name: "à défaut de bouillon de pot-au-feu, un cube bio", qty: 1, unit: pièce}
+      - {id: jarret-boeuf, name: "à défaut de viande de pot-au-feu, du bœuf à mijoter", qty: 120, unit: g}
+
+  apports:
+    proteine: viande-rouge
+    feculent: sarrasin
+    legumes: [racine, allium]
+    profil: soupe
+    origine: japonais
+
+  ingredients:
+    - {id: bouillon-pot-au-feu, name: bouillon de pot-au-feu, qty: 500, unit: ml, from_accepts: true}
+    - {id: legumes-pot-au-feu, name: "légumes de pot-au-feu au choix, mais pas de pommes de terre", qty: 200, unit: g, from_accepts: true}
+    - {id: viande-pot-au-feu, name: bœuf de pot-au-feu, qty: 100, unit: g, from_accepts: true}
+    - {id: pomme-de-terre, name: pomme de terre, qty: 1, unit: pièce}
+    - {id: nouilles-soba, name: "nouilles soba au sarrasin", qty: 50, unit: g}
+
+  steps:
+    - id: prechauffer-thermos
+      action: "Le matin avant de partir, verser de l'eau bouillante à hauteur dans le thermos et le fermer — un thermos froid mange la chaleur du repas"
+      needs: []
+      time_min: 2
+    - id: monter-le-bouillon-soba
+      action: "Porter le bouillon à ébullition ; pendant ce temps, découper légumes et bœuf en petits cubes et casser les nouilles pour qu'elles soient moins longues"
+      needs: [simmer]
+      time_min: 6
+      attended: true
+    - id: cuire-les-soba
+      action: "Ajouter tous les ingrédients dans le bouillon et cuire 3 min après reprise de l'ébullition"
+      needs: [simmer]
+      time_min: 4
+      attended: true
+    - id: remplir-le-thermos
+      action: "Vider l'eau bouillante du thermos, y verser la soupe brûlante et fermer aussitôt"
+      needs: []
+      time_min: 2
+
+  emits: []
+  plan_b:
+    - swap:
+        step: cuire-les-soba
+        action: "Ajouter une pomme de terre plutôt que davantage de nouilles si la portion de glucides paraît légère"
+        saves_min: 0
+      effect: "règle de l'autrice : plus de nouilles boiraient tout le bouillon"

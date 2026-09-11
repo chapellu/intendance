@@ -1,0 +1,83 @@
+# Marie Chioca, p. 106. Reformulée, cf. cadre de licence carte #26.
+#
+# CUIT À LA VAPEUR, SANS ALLUMER LE FOUR, et l'autrice en fait un argument de
+# COHABITATION : on pose les tasses dans le panier vapeur d'un faitout où cuit
+# déjà une céréale ou un plat de légumes, « ça ne change rien au goût ». C'est
+# la souche p. 90 qui est visée — quarante minutes de cuisson passive sous
+# lesquelles ce goûter se glisse gratuitement. Le modèle sait faire cuire deux
+# étapes en parallèle DANS une recette (`parallel_with`), pas deux recettes dans
+# le même faitout.
+#
+# LA TASSE EST LE CONTENANT DE TRANSPORT, et elle voyage dans un sachet au fond
+# du lunchbag rembourré. Surtout PAS au frais : le froid durcit le mugcake.
+recipe:
+  id: mugcakes-chocolat
+  title: Mugcakes au chocolat
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 106"
+    source_id: chioca-meme-au-boulot
+    page: 106
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 2}
+  time_min_total: 25
+  active_min: 5
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: rapide
+    origine: francais
+
+  ingredients:
+    - {id: lait-soja-vanille, name: lait de soja-vanille, qty: 50, unit: ml}
+    - {id: sirop-agave, name: sirop d'agave, qty: 50, unit: g}
+    - {id: huile-coco, name: huile de coco vierge, qty: 30, unit: g}
+    - {id: chocolat-noir, name: chocolat noir pâtissier à 70 %, qty: 60, unit: g}
+    - {id: oeufs, name: œuf, qty: 1, unit: pièce}
+    - {id: farine-epeautre, name: farine demi-complète de grand épeautre ou de blé, qty: 30, unit: g}
+    - {id: poudre-a-lever, name: poudre à lever, qty: 1, unit: c. à c.}
+    - {id: fleur-de-sel, name: fleur de sel, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: fondre-le-chocolat
+      action: "Faire chauffer le lait, le sirop d'agave et l'huile de coco dans une petite casserole, y casser le chocolat et bien mélanger pour le faire fondre"
+      needs: [simmer]
+      time_min: 4
+      attended: true
+    - id: finir-la-pate-mugcake
+      action: "Ajouter l'œuf, la farine, la poudre à lever et la fleur de sel, puis bien mélanger au fouet"
+      needs: []
+      time_min: 3
+      seasoning_gate: true
+    - id: remplir-les-tasses
+      action: "Verser dans deux tasses à thé solides d'environ 20 cl"
+      needs: []
+      time_min: 2
+    - id: cuire-vapeur-mugcake
+      action: "Déposer les tasses dans le panier vapeur d'un faitout d'eau bouillante — on peut profiter de la cuisson d'une céréale ou d'un plat de légumes déjà en cours — poser un couvercle et compter 20 min"
+      needs: [steam]
+      time_min: 20
+      attended: false
+
+  baby_portion:
+    take: "une cuillerée de lait de soja-vanille et un peu de farine, avant la fleur de sel"
+    prep: "cuire en ramequin à la vapeur avec les mugcakes, sans chocolat"
+    needs: [steam]
+    depuis: []
+
+  emits:
+    - kind: reste-plat
+      type: mugcake-chocolat
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: false}
+      note: "se garde à TEMPÉRATURE AMBIANTE — le frais durcirait le mugcake ; la tasse part emballée dans un sachet"
+
+  plan_b:
+    - swap:
+        step: cuire-vapeur-mugcake
+        action: "Version « fondant » : 8 minutes de cuisson précises, pas une de plus"
+        saves_min: 12
+      effect: "l'œuf reste mi-cuit : dans ce cas les mugcakes se conservent au frais, contrairement à la version cuite"
