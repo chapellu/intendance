@@ -1820,6 +1820,173 @@ achète ou ce qu'on mange a échoué, même s'il est par ailleurs juste.**
   même problème que les `apports`, et même goulot — c'est du jugement, pas de
   l'extraction.
 
+## Le chargeur cesse de jeter — [Workspace#41](https://github.com/chapellu/Workspace/issues/41), écart de port n° 2
+
+**L'export est plus riche que l'app, et l'app jette la différence en un seul
+endroit.** Le premier écart de port était celui des cinq réglages parsés et
+jamais lus (#43, #45, #50) ; celui-ci est de la même espèce mais il se voit à
+l'usage, et c'est l'utilisateur qui l'a trouvé en cuisinant, pas un test :
+
+> *« J'ai fait les lentilles et si j'avais suivi bêtement les étapes j'aurais
+> attendu 30 minutes que les lentilles soient cuites avant de faire cuire les
+> carottes et la quantité à préparer n'est pas affiché dans l'écran. »*
+
+`lentilles-mijotees` porte pourtant `parallel_with: lancer-mijotage` sur l'étape
+des carottes, et le texte de l'étape commence par *« Pendant le mijotage : »*.
+Le champ est écrit à la main, **validé** par `verifier.py:74`, lu par
+`compile.py:304`, exclu de la somme des gestes par `anticipation.py:188`,
+exporté sous `enParallele` par `export_json.py:149` — et `Etape` dans
+`src/model/types.ts` ne le déclare pas. Le guide a donc fait attendre un temps
+que sa propre donnée disait de ne pas attendre.
+
+La mesure, sur les **419 étapes** de `public/cuisine-data.json` :
+
+| Champ exporté | Étapes | Ce que c'est | Lu par l'app |
+|---|---|---|---|
+| `uses` | **126** | les ids d'ingrédients qu'une étape consomme — donc la quantité de l'étape, une fois mise à l'échelle | non |
+| `enParallele` | **42** | l'étape avec laquelle celle-ci tourne | non |
+| `attente` / `attenteRaison` | **30** | du temps mort qui a une raison — trempage 720 min, prise au frais 240, repos 10 | non |
+| `rattrapage` | **6** | le repli quand l'anticipation a été manquée, avec son `cout_min` et son `effet` honnête | non |
+
+**CE BLOC NE DESSINE RIEN.** Il n'ajoute pas une ligne à l'écran de cuisine, et
+c'est sa seule raison de pouvoir être pris maintenant : *comment* montrer deux
+étapes simultanées, où mettre la quantité d'une étape et quoi faire d'un
+trempage de douze heures sont trois questions ouvertes sur
+[Workspace#57](https://github.com/chapellu/Workspace/issues/57) et
+[#58](https://github.com/chapellu/Workspace/issues/58). Aucune d'elles ne peut
+être répondue par un écran qui n'a pas la donnée. On rend donc la donnée
+disponible et testée, et les écrans suivent quand la carte a tranché — le même
+ordre que T46 avant T42–T45.
+
+- [ ] **T72 — Le modèle d'étape retrouve ses quatre champs.** `Etape` déclare
+      `uses`, `enParallele`, `attente`, `attenteRaison`, `attenteSouple` et
+      `rattrapage` ; `chargerEtape` les lit. Rien d'autre ne change.
+
+      **Pas d'union, et c'est la règle du fichier qui le dit** : *« UNE UNION EST
+      UNE PROMESSE QUE L'EXPORT NE CHANGERA PAS »*, donc on n'en fait que là où
+      le code BRANCHE sur la valeur. `attenteRaison` (`trempage`,
+      `refroidissement`, `prise-au-frais`, `repos`) reste `string` — le jour où
+      le corpus en gagne une cinquième, l'app doit l'afficher, pas planter.
+      `rattrapage` est un objet, pas une chaîne : `{action, coutMin, effet}`.
+
+      **`uses` garde son nom anglais.** Tout le reste du modèle miroite la clé
+      JSON (`porteAssaisonnement`, `enfantDes`) et renommer ici en `consomme`
+      ferait de cette ligne la seule à mentir sur sa source. Le coût est une
+      incohérence de langue déjà présente dans l'export ; le corriger est un
+      geste de corpus, pas de chargeur.
+
+      **Une promesse à tenir par un test, et une seule qui vaille :**
+      `enParallele` **désigne une étape du même plat, et une étape antérieure**.
+      `verifier.py` le garantit à l'écriture, mais rien ne le garantit à la
+      lecture, et une référence pendante casserait silencieusement le premier
+      écran qui s'en sert — c'est-à-dire pas celui-ci, donc personne ne le
+      verrait. Le test balaie les 86 plats et résout les 42 références. Deuxième
+      promesse, du même genre bon marché : chaque id de `uses` existe dans les
+      `ingredients` du plat.
+
+      Mesurer AVANT d'écrire le compte dans le test : les 126 / 42 / 30 / 6
+      ci-dessus viennent de `public/cuisine-data.json` au 2026-09-12 et
+      bougeront dès que #47 dictera les 15 plats du répertoire. Un test qui
+      **imprime** les tailles à côté de ses promesses vieillit mieux qu'un test
+      qui les code en dur.
+
+- [ ] **T73 — La provenance traverse l'export, et se lit sur la fiche.**
+      *« L'origine je parlait de la provenance (auteur, ouvrage, url) »*
+      (2026-09-12,
+      [Workspace#56](https://github.com/chapellu/Workspace/issues/56)). Le
+      `source:` des recettes n'est **pas exporté du tout** : c'est le seul champ
+      de ce bloc qui manque des deux côtés.
+
+      Mesuré : **65 plats sur 86 portent un `source:`**, et les 21 autres sont
+      exactement les plats du foyer — les 15 de `_repertoire.yaml` plus
+      `gratin-de-pates-tomates`, `lentilles-mijotees`, `omelette-courgettes`,
+      `ratatouille-minute`, `reste-de-la-veille`, `veloute-de-courgettes`.
+      Sur les 65 : `author` 65, `work` 65, `encoding` 65, `source_id` 64,
+      `saison` 64, `page` 60, `url` **5**.
+
+      **`work` est déjà une phrase affichable, page comprise** — *« La cuisine
+      bio du quotidien, Terre vivante, p. 116 »*. Donc pas de gabarit à
+      composer : `author` + `work`, et l'`url` quand elle existe. `page` reste
+      structuré et non affiché — il double `work`.
+
+      **Les 21 plats du foyer disent « recette du foyer »**, ils ne se taisent
+      pas. Le silence se lirait comme une donnée manquante alors que c'est une
+      réponse : ces plats n'ont pas de source parce qu'ils sont à nous. (Retenu
+      contre l'autre option — ne rien afficher — parce qu'un champ vide sur un
+      quart du catalogue ressemble à un bug.)
+
+      **CRÉDITER N'EST PAS REPUBLIER, et c'est ce qui autorise ce ticket.** Le
+      cadre de Workspace#26 interdit de recopier la prose et les photos, jamais
+      de nommer l'auteur ; les 65 recettes portent d'ailleurs chacune la trace
+      de leur conformité dans `encoding: re-worded structured steps; no original
+      prose or photos`. Les 5 `url` pointent là où #26 a délibérément laissé la
+      prose — *« les étapes restent donc à leur place — sur le blog, derrière le
+      champ `url` »* : y renvoyer est le comportement voulu.
+
+      **`saison` arrive gratuitement avec le bloc, et ne doit rien piloter.**
+      64 valeurs entrent dans le modèle ; Workspace#41 a tranché que la
+      saisonnalité roule sur le plancher (#43) et pas sur la planification. Donc
+      un no-op **déclaré** : parsé, jamais lu par le score. L'écrire en
+      commentaire, sinon le prochain lecteur le branchera en croyant bien faire.
+
+      **La porte qui mord ici : `catalogue:verifie`.** Toucher
+      `export_json.py` oblige à régénérer `public/cuisine-data.json` **et à le
+      committer** — la porte compare au JSON commité, et elle rougit jusque-là.
+      Ce n'est pas une panne.
+
+- [ ] **T74 — La vaisselle du plat, en tête de fiche.** *« J'aimerai bien aussi
+      que tu m'indique quel outil utiliser et de quelle taille. »* La moitié de
+      la réponse est déjà calculée et jamais montrée : `plat.vaisselle` est
+      résolu sur **44 plats sur 86**, avec la taille dans le libellé —
+      `sauteuse 28 cm` (30), `cocotte 7,5 L` (12),
+      `casseroles 2,6 L / 1,6 L` (2).
+
+      Aujourd'hui l'écran montre `chauffeDe()` à la place, qui écrase `needs` en
+      un niveau de feu et **jette l'ustensile** : `simmer-large` devient « Feu
+      vif » et la cocotte de 7,5 L que ça désigne disparaît.
+
+      Une ligne « à sortir avant de commencer », sur la fiche et non sur
+      l'étape. **Ça ne préjuge pas de
+      [Workspace#57](https://github.com/chapellu/Workspace/issues/57) ni de
+      [#59](https://github.com/chapellu/Workspace/issues/59)** : l'outil *par
+      étape* demande une règle de résolution (quel ustensile quand trois
+      portent la même capacité, et lequel selon la taille du lot) et cette
+      règle n'est pas tranchée. Le `vaisselle` du plat, lui, est déjà résolu par
+      le compilateur — on l'affiche, on ne le calcule pas.
+
+      **À MESURER AVANT D'ÉCRIRE UNE PHRASE SUR `facteurMax`** : la fiche dit
+      déjà *« on en cuisine M »*, et `vaisselle.facteurMax` dit à partir de quel
+      facteur le lot ne tient plus dans le récipient. Avant d'ajouter un
+      avertissement, chercher **qui lit déjà `facteurMax`** — si `calcul.ts`
+      plafonne l'échelle en amont, le cas ne peut pas se produire et la phrase
+      serait un ornement. Le dépôt s'est déjà trompé quatre fois en croyant un
+      commentaire plutôt que le code.
+
+      Les 42 plats sans `vaisselle` ne montrent rien. Silence délibéré, pas
+      oubli : le compilateur n'a pas trouvé d'ustensile à nommer, et en inventer
+      un serait pire que se taire.
+
+### Laissé ouvert par ce bloc
+
+- **Tout l'affichage du modèle d'étape.** T72 rend `uses`, `enParallele`,
+  `attente` et `rattrapage` lisibles par l'app et n'en montre aucun. Le guide
+  reste un curseur linéaire qui additionne des minutes superposées : sur
+  `lentilles-mijotees`, trois étapes de 30 + 15 + 2 face à un plat déclaré à
+  40 min dont 10 actives, donc un « reste 47 min » faux. C'est Workspace#57.
+- **La quantité par étape**, qui est `uses` × le facteur que l'écran tient déjà.
+  Workspace#58 doit d'abord dire si elle s'affiche toujours ou à la demande —
+  la thèse de l'écran est que *« tout ce qui n'est pas l'étape en cours est du
+  bruit »*, et la quantité, elle, **est** l'étape en cours.
+- **L'outil par étape**, gaté sur la règle de résolution de Workspace#59.
+- **L'alarme du minuteur.** Zéro occurrence de son, de vibration ou de
+  notification dans tout `src/` : elle n'a jamais été câblée. Le modèle du
+  minuteur est sain — une échéance, pas un compteur, précisément pour survivre
+  à un téléphone verrouillé — seul l'avertissement manque, et ce qu'un PWA peut
+  faire écran verrouillé se mesure sur le téléphone avant de se promettre :
+  Workspace#61.
+- **La validation d'une cuisson sans créneau**, qui est la cause du stock qui ne
+  descend pas et qui touche au modèle, pas au chargeur : Workspace#60.
+
 ## Sortie
 
 **Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`
