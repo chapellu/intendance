@@ -31418,7 +31418,11 @@
     "pomelo",
     "menthe",
     "radis",
-    "jeunes-pousses"
+    "jeunes-pousses",
+    "melon",
+    "framboises",
+    "raisins",
+    "mirabelles"
    ],
    "boucherie": [
     "boeuf-hache",
@@ -31430,7 +31434,9 @@
     "jambon-cru",
     "jarret-boeuf",
     "os-a-moelle",
-    "saucisse-fumee"
+    "saucisse-fumee",
+    "roti-veau",
+    "saucisson-sec"
    ],
    "poissonnerie": [
     "saumon",
@@ -31584,7 +31590,8 @@
     "jus-pomme",
     "nouilles-soba",
     "tomates-cerises-confites",
-    "fruits-secs-panaches"
+    "fruits-secs-panaches",
+    "nectar-mangue"
    ]
   },
   "placard": [
