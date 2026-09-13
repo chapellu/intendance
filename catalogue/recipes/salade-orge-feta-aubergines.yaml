@@ -1,0 +1,93 @@
+# Marie Chioca, p. 95. Reformulée, cf. cadre de licence carte #26.
+#
+# TROIS TEMPÉRATURES DE SERVICE ANNONCÉES COMME ÉQUIVALENTES : froide, à
+# température ambiante ou réchauffée. C'est rare, et c'est précieux pour un
+# déjeuner emporté — le plat ne dépend ni d'un micro-ondes au bureau ni d'un
+# thermos.
+recipe:
+  id: salade-orge-feta-aubergines
+  title: Salade d'orge à la feta et aux aubergines
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 95"
+    source_id: chioca-meme-au-boulot
+    page: 95
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 1}
+  time_min_total: 25
+  active_min: 12
+
+  accepts:
+    - type: cereale-cuite
+      qty: {amount: 200, unit: g}
+      required: true
+      fallback_recipe: cereale-cuite-en-avance
+
+  sans_reste:
+    temps_min: 70
+    ingredients:
+      - {id: orge, name: "à défaut de céréale déjà cuite, de l'orge mondé", qty: 90, unit: g}
+
+  apports:
+    proteine: viande-rouge
+    feculent: orge
+    legumes: [solanacee, allium]
+    profil: poele
+    origine: francais
+
+  ingredients:
+    - {id: cereale-cuite, name: orge mondé cuit, qty: 200, unit: g, from_accepts: true}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: boeuf-hache, name: steak haché bio, qty: 100, unit: g}
+    - {id: aubergine, name: aubergine, qty: 1, unit: pièce}
+    - {id: tomates-cerises, name: tomates-cerises, qty: 10, unit: pièce}
+    - {id: olives-noires, name: olives noires dénoyautées, qty: 6, unit: pièce}
+    - {id: persil, name: persil, qty: 1, unit: petit bouquet}
+    - {id: origan, name: origan séché, qty: 1, unit: pincée}
+    - {id: feta, name: feta, qty: 30, unit: g}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: dorer-oignon-steak
+      action: "Faire revenir l'oignon en cubes dans une petite cocotte avec l'huile d'olive, ajouter le steak, saler, laisser dorer quelques minutes puis émietter le steak en gros morceaux à la cuillère en bois"
+      needs: [pan-fry]
+      time_min: 8
+      attended: true
+      seasoning_gate: true
+    - id: tailler-salade-orge
+      action: "Pendant ce temps, découper l'aubergine en petits cubes, les tomates-cerises et les olives en deux, et ciseler le persil"
+      needs: []
+      time_min: 7
+      parallel_with: dorer-oignon-steak
+    - id: mijoter-aubergine
+      action: "Quand l'oignon et le steak sont bien dorés, ajouter l'aubergine, l'origan et un demi-verre d'eau, mélanger, couvrir et mijoter une dizaine de minutes"
+      needs: [simmer]
+      time_min: 10
+      attended: false
+    - id: assembler-salade-orge
+      action: "Quand les aubergines sont tendres et rissolent sans fond d'eau, stopper la cuisson et mélanger tous les ingrédients de la salade"
+      needs: []
+      time_min: 3
+
+  baby_portion:
+    take: "2 c. à s. d'orge cuit et un morceau d'aubergine, avant salage"
+    prep: "écraser à la fourchette avec un filet d'huile d'olive"
+    needs: []
+    depuis: []
+
+  emits:
+    - kind: reste-plat
+      type: salade-orge-aubergines
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: false}
+      note: "se sert froide, à température ambiante ou réchauffée — les trois marchent"
+
+  plan_b:
+    - swap:
+        step: dorer-oignon-steak
+        action: "Version végétarienne : 50 g de feta au lieu de 30, et un œuf mollet à la place du steak"
+        saves_min: 3
+      effect: "variante de l'autrice, gourmande et bien équilibrée"

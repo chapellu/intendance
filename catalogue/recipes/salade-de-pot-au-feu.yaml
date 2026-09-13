@@ -1,0 +1,89 @@
+# Marie Chioca, p. 65. Reformulée, cf. cadre de licence carte #26.
+#
+# UNE SALADE DE « CUIDITÉS », ET C'EST UN SERVICE MÉDICAL AUTANT QUE CULINAIRE :
+# tout est cuit, donc elle passe là où les crudités ne passent pas.
+#
+# L'IG DES POMMES DE TERRE EST ABAISSÉ PAR DEUX MÉCANISMES QUE LA RECETTE
+# EMPLOIE EXPRÈS : l'acidité (câpres et vinaigre) et le PASSAGE AU FRAIS, qui
+# modifie les molécules d'amidon. Un plat froid n'est pas ici un plat tiède
+# qu'on a laissé refroidir : le froid fait partie de la recette.
+recipe:
+  id: salade-de-pot-au-feu
+  title: Salade de pot-au-feu
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 65"
+    source_id: chioca-meme-au-boulot
+    page: 65
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 1}
+  time_min_total: 10
+  active_min: 10
+
+  accepts:
+    - type: viande-pot-au-feu
+      qty: {amount: 125, unit: g}
+      required: true
+      fallback_recipe: pot-au-feu-traditionnel
+    - type: legumes-pot-au-feu
+      qty: {amount: 400, unit: g}
+      required: false
+
+  sans_reste:
+    temps_min: 180
+    ingredients:
+      - {id: jarret-boeuf, name: "à défaut de pot-au-feu, du jarret à faire cuire", qty: 150, unit: g}
+      - {id: pomme-de-terre, name: pommes de terre nouvelles, qty: 200, unit: g}
+
+  apports:
+    proteine: viande-rouge
+    feculent: pommes-de-terre
+    legumes: [racine, allium]
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: viande-pot-au-feu, name: bœuf de pot-au-feu, qty: 125, unit: g, from_accepts: true}
+    - {id: legumes-pot-au-feu, name: "légumes et pommes de terre de pot-au-feu, idéalement des pommes de terre nouvelles", qty: 400, unit: g, from_accepts: true}
+    - {id: persil, name: persil, qty: 1, unit: petit bouquet}
+    - {id: capres, name: câpres, qty: 2, unit: c. à s.}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: vinaigre, name: vinaigre de vin, qty: 2, unit: c. à s.}
+    - {id: moutarde, name: moutarde, qty: 1, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: cuber-le-pot-au-feu
+      action: "Découper bœuf, légumes et pommes de terre en cubes de 2 à 3 cm"
+      needs: []
+      time_min: 5
+    - id: sauce-au-persil
+      action: "Hacher le persil avec les câpres, l'huile, le vinaigre, la moutarde et le poivre"
+      needs: [chop-coarse]
+      time_min: 3
+    - id: saler-salade-paf
+      action: "Saler la sauce, puis mélanger tous les ingrédients"
+      needs: []
+      time_min: 2
+      seasoning_gate: true
+
+  baby_portion:
+    take: "un cube de viande et quelques cubes de légumes, avant d'ajouter la sauce"
+    prep: "écraser à la fourchette avec un peu de bouillon"
+    needs: []
+    depuis: [cuber-le-pot-au-feu]
+
+  emits:
+    - kind: reste-plat
+      type: salade-pot-au-feu
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b:
+    - swap:
+        step: sauce-au-persil
+        action: "Ciseler le persil aux ciseaux et ajouter les câpres entières, pour ne pas salir le mixeur"
+        saves_min: 1
+      effect: "variante donnée par l'autrice — même sauce, moins de vaisselle"

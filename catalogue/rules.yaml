@@ -58,6 +58,19 @@ capabilities:
   # dans le modèle.
   gaufrier: [{tool: gaufrier}]
 
+  # SECONDE CAPACITÉ SANS REPLI, ET POUR LA MÊME RAISON QUE LE GAUFRIER : la
+  # p. 20 de « même au boulot ! » cuit son pain de mie EN MACHINE, et ce foyer
+  # n'en a pas. Un pain à la machine n'a pas de repli au four — ce serait un
+  # autre pain, avec un autre procédé et d'autres temps, et c'est justement la
+  # p. 19. Déclarer l'outil sans que le foyer le possède est ce qui fait dire au
+  # compilateur « aucune solution avec l'équipement du foyer » au lieu de
+  # bricoler une équivalence qui n'existe pas.
+  #
+  # La différence avec le gaufrier vaut d'être notée : la gaufre p. 111 n'avait
+  # AUCUNE autre voie, alors qu'ici le livre fournit lui-même le plan A de
+  # remplacement à la page précédente. Le `plan_b` de la p. 20 y renvoie.
+  machine-a-pain: [{tool: machine-a-pain}]
+
   puree: [{tool: mixeur-plongeur}, {tool: presse-puree, rewrite: "au presse-purée", time_delta_min: 3}]
   weigh:
     - tool: balance-tefal

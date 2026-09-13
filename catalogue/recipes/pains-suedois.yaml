@@ -1,0 +1,76 @@
+# Marie Chioca, p. 26. Reformulée, cf. cadre de licence carte #26.
+#
+# DEUX LEVÉES, DONT UNE SEULE COUPE LA RECETTE. 1 h 15 puis 15 min : la
+# première dépasse largement la coupure de 90 min d'`anticipation.py` — non,
+# elle est juste en dessous (75 min), et c'est pourquoi elle ne porte pas
+# d'`attente_raison`. La seconde se joue pendant le préchauffage du four, donc
+# elle ne coûte rien : elle est écrite dans l'étape de cuisson.
+recipe:
+  id: pains-suedois
+  title: Pains suédois très simplifiés (souche)
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 26"
+    source_id: chioca-meme-au-boulot
+    page: 26
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4
+  time_min_total: 115
+  active_min: 15
+
+  apports:
+    proteine: aucune
+    feculent: pain
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-complete, name: farine de blé ou d'épeautre demi-complète, qty: 500, unit: g}
+    - {id: sel, name: sel fin, qty: 10, unit: g, seasoning: true}
+    - {id: levure-boulangere, name: levure de boulanger déshydratée, qty: 1, unit: pièce}
+    - {id: sucre-complet, name: sucre complet, qty: 15, unit: g}
+    - {id: yaourt-brebis, name: yaourt de brebis, qty: 125, unit: g}
+    - {id: eau, name: eau tiède, qty: 375, unit: ml}
+    - {id: huile-olive, name: huile au choix, qty: 40, unit: g}
+
+  steps:
+    - id: melanger-farine-sel
+      action: "Mélanger la farine et le sel fin"
+      needs: []
+      time_min: 2
+    - id: delayer
+      action: "Délayer la levure, le sucre complet et le yaourt dans l'eau tiède, puis verser sur la farine avec l'huile et mélanger jusqu'à obtenir une pâte homogène"
+      needs: []
+      time_min: 6
+    - id: etaler-dans-le-cadre
+      action: "Poser un papier cuisson sur une plaque, y installer un cadre à pâtisserie réglable de 30 cm de côté (ou un plat de même taille chemisé), verser la pâte et la répartir au dos d'une cuillère huilée"
+      needs: []
+      time_min: 6
+    - id: premiere-levee
+      action: "Couvrir et laisser lever au tiède"
+      needs: []
+      time_min: 1
+      attente_min: 75
+      attended: false
+    - id: piquer-et-cuire
+      action: "Piquer la pâte tous les 3 cm à la fourchette huilée, la laisser lever encore un quart d'heure pendant que le four préchauffe à 240 °C, puis enfourner assez bas 12 min chrono"
+      needs: [bake]
+      time_min: 27
+      attended: false
+    - id: decouper-en-carres
+      action: "Laisser refroidir puis découper en 9 carrés"
+      needs: []
+      time_min: 3
+
+  emits:
+    - kind: base
+      type: pains-suedois
+      qty_band: 3-repas
+      qty: {amount: 9, unit: pièce}
+      keeps: {frigo_days: 2, congelo: true}
+      note: "les sandwichs nordiques p. 32 en prennent 2 ; s'ouvrent en deux avant d'être garnis"
+
+  plan_b: []

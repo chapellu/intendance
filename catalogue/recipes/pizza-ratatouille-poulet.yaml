@@ -1,0 +1,100 @@
+# Marie Chioca, p. 60. Reformulée, cf. cadre de licence carte #26.
+#
+# TROIS ARÊTES SUR UN SEUL PLAT — pâte, poulet, ratatouille — et c'est le
+# premier du catalogue dans ce cas. Quand les trois bases sont au frigo, la
+# pizza coûte 25 minutes et zéro article ; sans aucune, elle en coûte trois et
+# près de deux heures. C'est exactement l'écart que `semaine_model` doit rendre
+# lisible au moment de choisir.
+recipe:
+  id: pizza-ratatouille-poulet
+  title: Pizza-repas à la ratatouille et au poulet rôti
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 60"
+    source_id: chioca-meme-au-boulot
+    page: 60
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 2}
+  time_min_total: 45
+  active_min: 10
+
+  accepts:
+    - type: pate-a-pizza
+      qty: {amount: 1, unit: pâte}
+      required: true
+      fallback_recipe: pate-a-pizza-fougasse
+    - type: poulet-cuit
+      qty: {amount: 200, unit: g}
+      required: false
+    - type: ratatouille
+      qty: {amount: 400, unit: g}
+      required: false
+
+  sans_reste:
+    temps_min: 150
+    ingredients:
+      - {id: poulet-filets, name: "à défaut de rôti, des blancs de poulet à cuire", qty: 200, unit: g}
+      - {id: sauce-tomate, name: "à défaut de ratatouille maison, un bocal", qty: 400, unit: g}
+
+  apports:
+    proteine: viande-blanche
+    feculent: farine
+    legumes: [solanacee, cucurbitacee]
+    profil: four
+    origine: italien
+
+  ingredients:
+    - {id: pate-a-pizza, name: pâte à pizza, qty: 1, unit: pâte, from_accepts: true}
+    - {id: ratatouille, name: ratatouille, qty: 400, unit: g, from_accepts: true}
+    - {id: poulet-cuit, name: poulet rôti, qty: 200, unit: g, from_accepts: true}
+    - {id: tomme-savoie, name: "fromage à pâte dure au choix : tomme de chèvre, Etorki, Cantal, Beaufort", qty: 80, unit: g}
+    - {id: olives-noires, name: olives, qty: 10, unit: pièce}
+    - {id: capres, name: câpres, qty: 1, unit: c. à s.}
+    - {id: origan, name: origan, qty: 1, unit: pincée}
+    - {id: piment-espelette, name: "piment d'Espelette, facultatif", qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: prechauffer-pizza
+      action: "Préchauffer le four à 240 °C, grille sur le cran le plus bas, juste au-dessus de la sole"
+      needs: [bake]
+      time_min: 1
+      attended: false
+    - id: garnir-pizza
+      action: "Étaler la pâte en disque d'environ 25 cm sur un papier huilé et fariné, étaler la ratatouille, ajouter le poulet en morceaux, les olives, les câpres et le fromage"
+      needs: []
+      time_min: 8
+    - id: saupoudrer-pizza
+      action: "Assaisonner : saupoudrer d'origan et de piment d'Espelette"
+      needs: []
+      time_min: 1
+      seasoning_gate: true
+    - id: relever-pizza
+      action: "Laisser lever encore une vingtaine de minutes — facultatif, mais c'est mieux"
+      needs: []
+      time_min: 1
+      attente_min: 20
+      attended: false
+    - id: cuire-pizza
+      action: "Enfourner 15 min, puis laisser tiédir avant de mettre au frais"
+      needs: [bake]
+      time_min: 15
+      attended: false
+
+  baby_portion:
+    take: "2 c. à s. de ratatouille et un morceau de poulet, avant l'origan et le piment"
+    prep: "écraser à la fourchette"
+    needs: []
+    depuis: []
+
+  emits:
+    - kind: reste-plat
+      type: pizza-ratatouille
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+      note: "petit appétit ou journée sédentaire : le tiers de la pizza peut suffire"
+
+  plan_b:
+    - drop: relever-pizza
+      saves_min: 1
+      effect: "pâte un peu moins aérée — l'autrice donne cette levée comme facultative"

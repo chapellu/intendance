@@ -1,0 +1,73 @@
+# Marie Chioca, p. 48. Reformulée, cf. cadre de licence carte #26.
+#
+# LE TRANSPORT EN « PIÈCES DÉTACHÉES » EST UNE INSTRUCTION DE LA RECETTE : le
+# pain d'un côté, le pot de tartinade de l'autre, et le couteau à tartiner. Une
+# tartine montée le matin est détrempée à midi. Le modèle n'a pas d'axe pour
+# « se transporte en deux contenants », mais il a `transportable`, et la
+# réponse ici est oui — à condition de ne pas monter la tartine.
+recipe:
+  id: tartines-fromage-vegetal
+  title: Tartines de « fromage » végétal
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 48"
+    source_id: chioca-meme-au-boulot
+    page: 48
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 2}
+  time_min_total: 5
+  active_min: 5
+
+  apports:
+    proteine: tofu-soja
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: tofu-lactofermente, name: tofu lactofermenté au tamari, qty: 200, unit: g}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: pistaches, name: pistaches décortiquées, qty: 50, unit: g}
+    - {id: olives-vertes, name: olives vertes dénoyautées, qty: 100, unit: g}
+    - {id: piment-espelette, name: "piment d'Espelette, facultatif", qty: 1, unit: pincée, seasoning: true}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: mixer-le-tofu
+      action: "Mettre le tofu en cubes avec l'huile, le sel, le poivre et le piment dans le bol du robot"
+      needs: []
+      time_min: 2
+      seasoning_gate: true
+    - id: rendre-cremeux
+      action: "Mixer soigneusement jusqu'à consistance crémeuse"
+      needs: [blend-smooth]
+      time_min: 2
+    - id: concasser
+      action: "Ajouter pistaches et olives, puis donner 2 ou 3 impulsions seulement pour les hacher en gros morceaux"
+      needs: [chop-coarse]
+      time_min: 1
+    - id: mettre-en-bocaux
+      action: "Transférer dans deux petits bocaux individuels bien fermés — un par repas — et mettre au frais"
+      needs: []
+      time_min: 2
+
+  baby_portion:
+    take: "2 c. à s. de tofu nature, avant sel, poivre et piment"
+    prep: "mixer avec un filet d'huile d'olive"
+    needs: [blend-smooth]
+    depuis: []
+
+  emits:
+    - kind: base
+      type: tartinade-vegetale
+      qty_band: 2-repas
+      keeps: {frigo_days: 5, congelo: false}
+      note: "environ 5 jours en bocaux fermés ; se transporte à part du pain, jamais tartinée d'avance"
+
+  plan_b:
+    - drop: concasser
+      saves_min: 1
+      effect: "tartinade lisse : on perd le contraste de texture qui fait la recette"

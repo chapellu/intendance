@@ -1,0 +1,100 @@
+# Marie Chioca, p. 57. Reformulée, cf. cadre de licence carte #26.
+#
+# LE PREMIER DÉRIVÉ DE LA SOUCHE P. 56, et il se mange CHAUD — en lunchbox
+# isotherme. C'est un cas que `transportable` ne distingue pas : le plat voyage
+# très bien, mais il voyage en thermos, pas en boîte froide.
+recipe:
+  id: chili-con-poulet
+  title: Chili-con-poulet
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 57"
+    source_id: chioca-meme-au-boulot
+    page: 57
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 1}
+  time_min_total: 20
+  active_min: 10
+
+  accepts:
+    - type: poulet-cuit
+      qty: {amount: 100, unit: g}
+      required: true
+      fallback_recipe: poulet-roti-du-dimanche
+
+  sans_reste:
+    temps_min: 25
+    ingredients:
+      - {id: poulet-filets, name: "à défaut de poulet déjà rôti, un blanc de poulet cru", qty: 100, unit: g}
+
+  apports:
+    proteine: viande-blanche
+    feculent: riz
+    legumes: [solanacee, racine, allium]
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: poulet-cuit, name: poulet déjà rôti, qty: 100, unit: g, from_accepts: true}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: poivron, name: poivron rouge, qty: 1, unit: pièce}
+    - {id: carottes, name: carotte, qty: 1, unit: pièce}
+    - {id: haricots-rouges, name: "haricots rouges en bocal, bien égouttés", qty: 100, unit: g}
+    - id: sauce-tomate
+      name: "sauce tomate ou ratatouille en bocal"
+      qty: 200
+      unit: g
+      subs:
+        - {name: piperade maison p. 96, note: "l'autrice le dit : avec une piperade prête, il ne reste qu'à assembler", ratio: 1.0}
+    - {id: riz, name: riz, qty: 120, unit: g}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: lancer-le-riz
+      action: "Mettre le riz à cuire : il démarre en début de recette et sera prêt en même temps que le reste"
+      needs: [simmer]
+      time_min: 18
+      attended: false
+    - id: hacher-le-tout
+      action: "Éplucher l'oignon, découper tous les légumes crus en gros morceaux, puis les hacher grossièrement avec le poulet"
+      needs: [chop-coarse]
+      time_min: 6
+      parallel_with: lancer-le-riz
+    - id: dorer-le-hachis
+      action: "Faire revenir le hachis à la poêle dans l'huile d'olive, jusqu'à ce que les sucs soient bien dorés"
+      needs: [pan-fry]
+      time_min: 6
+      attended: true
+    - id: assaisonner-chili
+      action: "Ajouter haricots, sauce tomate, poivre et épices, puis saler"
+      needs: []
+      time_min: 2
+      seasoning_gate: true
+    - id: mijoter-chili
+      action: "Couvrir et laisser mijoter 5 à 10 min"
+      needs: [simmer]
+      time_min: 8
+      attended: false
+
+  baby_portion:
+    take: "2 c. à s. de légumes hachés et de poulet, prélevées après le dorage et AVANT le salage"
+    prep: "mixer avec un peu d'eau tiède"
+    needs: [blend-smooth]
+    depuis: [dorer-le-hachis]
+
+  emits:
+    - kind: reste-plat
+      type: chili-con-poulet
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+      note: "meilleur chaud, en lunchbox isotherme"
+
+  plan_b:
+    - swap:
+        step: lancer-le-riz
+        action: "Supprimer le riz et doubler les haricots rouges"
+        saves_min: 18
+      effect: "l'autrice donne elle-même cette variante : les haricots font alors tout le féculent"

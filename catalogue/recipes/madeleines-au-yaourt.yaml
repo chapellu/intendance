@@ -1,0 +1,83 @@
+# Marie Chioca, p. 110. Reformulée, cf. cadre de licence carte #26.
+#
+# ⚠ NUMÉRO DE PAGE APPROXIMATIF : le folio est masqué par la main sur la seule
+# photo disponible. La page se situe entre la p. 108 (mini-cakes) et la p. 114
+# (« bonnes adresses »), et 110 est le folio de recette le plus plausible dans
+# la grille du livre. À corriger le livre en main — c'est la seule entrée du
+# corpus dont la source n'est pas certaine à la page près.
+#
+# CHALEUR STATIQUE, PAS TOURNANTE, ET C'EST ÉCRIT POUR LES MADELEINES : le choc
+# thermique d'un four très chaud fait la bosse. La chaleur tournante la rate.
+# Le catalogue n'a pas d'axe « mode de four » — `bake` est fourni par le four à
+# chaleur tournante du foyer, qui sait aussi faire du statique. Dit dans l'étape.
+#
+# LA TAILLE DE L'EMPREINTE DÉCIDE DU MOELLEUX : plus elle est large et profonde,
+# plus les madeleines sont moelleuses. Celles de l'autrice font 8 × 5 × 1,5 cm.
+recipe:
+  id: madeleines-au-yaourt
+  title: Madeleines au yaourt
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 110 environ"
+    source_id: chioca-meme-au-boulot
+    page: 110
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine ; folio masqué sur la photo, page approximative
+  yields: {portions_eq: 6}
+  time_min_total: 25
+  active_min: 12
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: yaourt-soja, name: yaourt de soja, qty: 100, unit: g}
+    - {id: farine-petit-epeautre, name: "farine T80 ou T110 de petit épeautre, 3 pots à yaourt", qty: 300, unit: g}
+    - {id: sucre-roux, name: "cassonade — ou sucre de coco ou de bouleau, pour un IG plus bas", qty: 100, unit: g}
+    - {id: poudre-a-lever, name: poudre à lever, qty: 1, unit: c. à c.}
+    - {id: oeufs, name: œufs, qty: 3, unit: pièce}
+    - {id: huile-tournesol, name: "huile végétale au choix : tournesol désodorisé, olive ou noix", qty: 75, unit: ml}
+    - {id: citron, name: "citron, son jus et son zeste finement râpé", qty: 1, unit: pièce}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: prechauffer-madeleines
+      action: "Préchauffer le four à 240 °C en CHALEUR STATIQUE — pas de chaleur tournante pour les madeleines, c'est le choc thermique qui fait la bosse"
+      needs: [bake]
+      time_min: 1
+      attended: false
+    - id: melanger-secs-madeleines
+      action: "Mettre farine, sucre, sel et poudre à lever dans un saladier, mélanger et faire un puits"
+      needs: []
+      time_min: 3
+      seasoning_gate: true
+    - id: appareil-madeleines
+      action: "Verser les œufs, l'huile, le yaourt, le zeste et le jus de citron, puis bien mélanger"
+      needs: []
+      time_min: 4
+    - id: cuire-madeleines
+      action: "Verser la pâte dans les empreintes bien huilées — plus elles sont larges et profondes, plus les madeleines sont moelleuses — et enfourner 12 minutes chrono, en surveillant : selon le four, 10 min peuvent suffire"
+      needs: [bake]
+      time_min: 12
+      attended: true
+    - id: seconde-fournee
+      action: "Faire si besoin une deuxième fournée avec la pâte restante"
+      needs: [bake]
+      time_min: 12
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: madeleines-yaourt
+      qty_band: 3-repas
+      keeps: {frigo_days: 2, congelo: true}
+      note: "2 jours en bocal hermétique, ou mieux congelées et sorties au fur et à mesure ; elles s'effritent bien moins qu'une tranche de cake, d'où le sac"
+
+  plan_b:
+    - drop: seconde-fournee
+      saves_min: 12
+      effect: "moitié moins de madeleines : la pâte restante ne se garde pas crue"

@@ -98,13 +98,28 @@ describe("ce que le plat prend au placard", () => {
   test("UNE DENRÉE QU'AUCUN PLAT NE CONSOMME NE PEUT RIEN BRUITER", () => {
     // T60 (a). Ce n'est pas un filtre, c'est la forme de la boucle : on part des
     // lignes du PLAT et on cherche dedans, jamais l'inverse. Une propriété vraie
-    // par accident se perd au premier refactor, donc on l'épingle ici. Les quatre
-    // du relevé du 26/08 sont du petit-déjeuner qu'aucune recette de dîner ne
+    // par accident se perd au premier refactor, donc on l'épingle ici. Les trois
+    // qui restent du relevé du 26/08 sont du petit-déjeuner qu'aucune recette ne
     // mange : elles ne peuvent pas être sauvées en cuisinant.
-    const horsRecette = ["cracotte", "krisprolls", "ble-lentilles", "farine-epeautre"];
+    //
+    // ELLES ÉTAIENT QUATRE, ET LA QUATRIÈME EST LA RAISON DU GARDE-FOU CI-DESSOUS.
+    // T60 a écrit `farine-epeautre` ici sur un corpus de 86 plats où personne ne
+    // faisait de pâte ; la saisie de « Je mange sain et bio, même au boulot ! »
+    // en apporte SEPT qui en pétrissent — cookies, crumble, mini-cakes, muffins,
+    // mugcakes, pain de mie, pâte à pizza. L'épeautre ouvert peut donc être
+    // mangé, et la liste n'est pas une règle : c'est un FAIT DE CORPUS, qui se
+    // remesure à chaque livre qui entre.
+    const horsRecette = ["cracotte", "krisprolls", "ble-lentilles"];
     for (const id of horsRecette) expect(aEcouler(catalogue).has(id)).toBe(true);
     for (const p of catalogue.plats)
       for (const id of horsRecette) expect(ids(p)).not.toContain(id);
+
+    // Le garde-fou : sans lui, une `placardDuPlat()` qui ne rendrait plus jamais
+    // rien ferait passer les trois boucles ci-dessus en silence, et le test
+    // deviendrait vert par vacuité. On épingle donc ce qu'on vient de mesurer —
+    // cinq des huit écoulables ont un mangeur, et l'épeautre en a le plus.
+    const mangeurs = catalogue.plats.filter((p) => ids(p).includes("farine-epeautre"));
+    expect(mangeurs).toHaveLength(7);
   });
 
   test("un ingrédient cité deux fois ne compte qu'une", () => {

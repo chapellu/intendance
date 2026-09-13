@@ -1,0 +1,86 @@
+# Marie Chioca, p. 91. Reformulée, cf. cadre de licence carte #26.
+#
+# UNE RECETTE QUI SE CUISINE LA VEILLE AU SOIR ET SE RÉCHAUFFE LE MATIN : c'est
+# écrit dans les étapes, et `attente_min` le porte. Le plat part brûlant en
+# lunchbox isotherme.
+#
+# LE FROMAGE DE LA VARIANTE VÉGÉTARIENNE NE PART PAS LE MATIN, il s'ajoute au
+# moment de manger — le plat est resté assez chaud pour le fondre. Mis dans le
+# thermos à 8 h, il aurait filé. Détail de transport qu'aucun champ ne porte.
+recipe:
+  id: mijote-avoine-champignons
+  title: Mijoté d'avoine aux champignons
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 91"
+    source_id: chioca-meme-au-boulot
+    page: 91
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 1}
+  time_min_total: 30
+  active_min: 12
+
+  accepts:
+    - type: cereale-cuite
+      qty: {amount: 200, unit: g}
+      required: true
+      fallback_recipe: cereale-cuite-en-avance
+
+  sans_reste:
+    temps_min: 70
+    ingredients:
+      - {id: gruau-avoine, name: "à défaut de céréale déjà cuite, du gruau d'avoine", qty: 90, unit: g}
+
+  apports:
+    proteine: viande-blanche
+    feculent: avoine
+    legumes: [champignon, allium]
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: cereale-cuite, name: gruau d'avoine cuit, qty: 200, unit: g, from_accepts: true}
+    - {id: jambon-cru, name: jambon cru, qty: 100, unit: g}
+    - {id: champignons-conserve, name: "champignons émincés en conserve, pesés égouttés", qty: 200, unit: g}
+    - {id: poireau, name: blanc de poireau, qty: 1, unit: pièce}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: eau, name: "eau — ou un bouillon maison, de pot-au-feu ou au miso", qty: 300, unit: ml}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+
+  steps:
+    - id: dorer-les-sucs-avoine
+      action: "Émincer finement l'oignon et le poireau, les faire revenir à l'huile d'olive dans une petite cocotte, ajouter le jambon en lanières et laisser cuire jusqu'à ce que les sucs commencent à dorer"
+      needs: [pan-fry]
+      time_min: 10
+      attended: true
+    - id: mijoter-avoine
+      action: "Ajouter les champignons rincés et égouttés ainsi que l'avoine, mouiller avec le verre d'eau, puis mijoter 10 min — s'il reste du liquide, c'est normal, il épaissira en sauce crémeuse"
+      needs: [simmer]
+      time_min: 10
+      attended: false
+    - id: reposer-une-nuit
+      action: "Laisser au frais jusqu'au lendemain"
+      needs: []
+      time_min: 1
+      attente_min: 600
+      attente_raison: "cuisiné le soir, réchauffé et emporté brûlant le matin suivant"
+      attended: false
+    - id: rechauffer-et-partir
+      action: "Réchauffer le plat et le verser BRÛLANT dans une lunchbox isotherme"
+      needs: [reheat]
+      time_min: 6
+      attended: true
+
+  emits:
+    - kind: reste-plat
+      type: mijote-avoine
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: true}
+
+  plan_b:
+    - swap:
+        step: dorer-les-sucs-avoine
+        action: "Version végétarienne : supprimer le jambon et ajouter une belle portion de fromage râpé AU MOMENT DE MANGER, jamais le matin dans le thermos"
+        saves_min: 2
+      effect: "variante de l'autrice ; le plat reste assez chaud pour fondre le fromage à midi"

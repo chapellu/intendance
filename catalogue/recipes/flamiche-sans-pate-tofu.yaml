@@ -1,0 +1,78 @@
+# Marie Chioca, p. 73. Reformulée, cf. cadre de licence carte #26.
+#
+# DEUX CUISSONS POUR UN MÊME PLAT, ET LE CHOIX DÉPEND DE CE QUI EST DÉJÀ AU
+# FOUR : 50 min à 150 °C si elle accompagne les terrines de la p. 75, 30 min à
+# 180 °C si elle cuit seule. C'est une optimisation de four que l'autrice
+# répète de page en page et que le modèle ne sait pas planifier — il compile un
+# plat à la fois.
+recipe:
+  id: flamiche-sans-pate-tofu
+  title: Flamiche sans pâte au tofu fumé
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 73"
+    source_id: chioca-meme-au-boulot
+    page: 73
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 1}
+  time_min_total: 35
+  active_min: 5
+
+  accepts:
+    - type: poelee-legumes-verts
+      qty: {amount: 150, unit: g}
+      required: true
+      fallback_recipe: wok-legumes-verts
+
+  sans_reste:
+    temps_min: 60
+    ingredients:
+      - {id: poireau, name: "à défaut de poêlée, des poireaux à faire revenir", qty: 250, unit: g}
+
+  apports:
+    proteine: tofu-soja
+    feculent: aucun
+    legumes: [allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: poelee-legumes-verts, name: "poêlée de poireaux, ou un autre légume de la p. 72", qty: 150, unit: g, from_accepts: true}
+    - {id: tofu-fume, name: tofu fumé, qty: 100, unit: g}
+    - {id: oeufs, name: œuf, qty: 1, unit: pièce}
+    - {id: lait-avoine, name: lait d'avoine, qty: 100, unit: ml}
+    - {id: fromage-rape, name: fromage râpé, qty: 30, unit: g}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: tailler-le-tofu
+      action: "Découper le tofu fumé en « lardons »"
+      needs: []
+      time_min: 3
+    - id: melanger-flamiche
+      action: "Mélanger tous les ingrédients dans un grand bol, saler et poivrer, puis verser dans un plat à four individuel d'environ 14 cm"
+      needs: []
+      time_min: 4
+      seasoning_gate: true
+    - id: cuire-flamiche
+      action: "Cuire 30 min à 180 °C si la flamiche cuit seule — ou 50 min à 150 °C SANS préchauffage si elle partage le four avec les terrines de la p. 75"
+      needs: [bake]
+      time_min: 30
+      attended: false
+
+  baby_portion:
+    take: "2 c. à s. de poêlée de légumes, avant salage"
+    prep: "mixer avec un peu de lait d'avoine"
+    needs: [blend-smooth]
+    depuis: []
+
+  emits:
+    - kind: reste-plat
+      type: flamiche-tofu
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+      note: "se congèle très bien — l'autrice conseille de doubler ou tripler les proportions"
+
+  plan_b: []

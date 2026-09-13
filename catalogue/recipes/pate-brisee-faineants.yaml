@@ -1,0 +1,54 @@
+# Marie Chioca, p. 22. Reformulée, cf. cadre de licence carte #26.
+#
+# SOUCHE À PORTIONS : la recette produit quatre pâtons individuels, congelables
+# séparément. C'est ce que `qty: {amount: 4, unit: pièce}` dit, et c'est ce qui
+# permet à la tourte p. 78 et au chausson p. 98 d'en réclamer UN chacun.
+recipe:
+  id: pate-brisee-faineants
+  title: Pâte brisée des fainéants (souche)
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 22"
+    source_id: chioca-meme-au-boulot
+    page: 22
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4
+  time_min_total: 5
+  active_min: 5
+
+  apports:
+    proteine: aucune
+    feculent: pate-brisee
+    legumes: []
+    profil: rapide
+    origine: francais
+
+  ingredients:
+    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 360, unit: g}
+    - {id: eau, name: eau, qty: 140, unit: g}
+    - {id: huile-olive, name: huile d'olive, qty: 70, unit: g}
+    - {id: sel, name: sel fin, qty: 1, unit: c. à c., seasoning: true}
+    - {id: origan, name: "origan séché, pour la variante à l'origan", qty: 2, unit: c. à s.}
+
+  steps:
+    - id: malaxer
+      action: "Mettre tous les ingrédients « en vrac » dans un saladier et malaxer à la main juste ce qu'il faut pour obtenir une pâte homogène"
+      needs: []
+      time_min: 5
+      kid: {age_min_months: 24, task: "malaxer la pâte avec les mains propres"}
+    - id: diviser
+      action: "Découper la pâte en 4 pâtons — c'est en pâtons individuels qu'elle se congèle et se ressort un par un"
+      needs: []
+      time_min: 2
+
+  emits:
+    - kind: base
+      type: pate-brisee-portion
+      qty_band: 3-repas
+      qty: {amount: 4, unit: pièce}
+      keeps: {frigo_days: 5, congelo: true}
+      note: "la tourte p. 78 et le chausson p. 98 en prennent un pâton chacun ; la variante à l'origan est celle que réclame le chausson"
+
+  plan_b: []

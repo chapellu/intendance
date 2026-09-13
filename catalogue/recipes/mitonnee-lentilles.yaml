@@ -1,0 +1,84 @@
+# Souche — Marie Chioca, p. 82. Reformulée, cf. cadre de licence carte #26.
+#
+# ELLE ÉMET UN TYPE QUI EXISTE DÉJÀ : `lentilles-vertes-cuites`, celui que
+# `lentilles-mijotees` (souche maison du prototype) produit et que les burgers
+# du blog `accepts`. C'est la première fois que DEUX recettes du catalogue
+# alimentent la même arête, et c'est le comportement voulu : `accepts` désigne
+# une matière, pas une recette. Les burgers ne se soucient pas de savoir qui a
+# fait mijoter les lentilles.
+
+recipe:
+  id: mitonnee-lentilles
+  title: Mitonnée de lentilles vertes du Puy (souche)
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 82"
+    source_id: chioca-meme-au-boulot
+    page: 82
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6
+  time_min_total: 55
+  active_min: 12
+
+  apports:
+    proteine: legumineuse
+    feculent: legumineuse
+    legumes: [racine, allium]
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: lentilles-seches, name: lentilles vertes du Puy, qty: 500, unit: g}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: poireau, name: blanc de poireau, qty: 1, unit: pièce}
+    - {id: carottes, name: carottes, qty: 3, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 3, unit: c. à s.}
+    - {id: laurier, name: feuille de laurier, qty: 1, unit: pièce}
+    - {id: clous-girofle, name: clou de girofle, qty: 1, unit: pièce}
+    - {id: eau, name: eau, qty: 1500, unit: ml}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+
+  steps:
+    - id: dorer-les-sucs
+      action: "Faire revenir l'oignon et le blanc de poireau émincés dans l'huile d'olive, jusqu'à ce que les sucs soient bien dorés"
+      needs: [pan-fry]
+      time_min: 8
+      attended: true
+    - id: reunir
+      action: "Ajouter les carottes en rondelles, le laurier, le clou de girofle, les lentilles et l'eau"
+      needs: []
+      time_min: 4
+      kid: {age_min_months: 30, task: "verser les lentilles dans le faitout"}
+    - id: saler
+      action: "Saler d'une cuillerée à café légèrement bombée"
+      needs: []
+      time_min: 1
+      seasoning_gate: true
+    - id: mijoter
+      action: "Couvrir et laisser mijoter 40 min à feu doux, jusqu'à ce que les lentilles soient tendres et aient absorbé tout le jus de cuisson"
+      needs: [simmer-large]
+      time_min: 40
+      attended: false
+
+  baby_portion:
+    take: "3 c. à s. de lentilles et quelques rondelles de carotte, avant salage"
+    prep: "mixer avec un peu d'eau de cuisson tiède"
+    needs: [blend-smooth]
+    depuis: [reunir]
+
+  emits:
+    - kind: base
+      type: lentilles-vertes-cuites
+      qty_band: 3-repas
+      # 500 g secs ≈ 1200 g cuits ; le dîner familial en prend le gros, l'autrice
+      # insiste pour qu'on « en mette de côté » : c'est ce reste-là qui est chiffré.
+      qty: {amount: 450, unit: g}
+      keeps: {frigo_days: 4, congelo: true}
+      note: "l'autrice le dit en toutes lettres : en mettre de côté pour la salade p. 83 et le pâté p. 84"
+
+  plan_b:
+    - drop: dorer-les-sucs
+      saves_min: 8
+      effect: "lentilles correctes mais plates : les sucs dorés sont tout le goût de la mitonnée"

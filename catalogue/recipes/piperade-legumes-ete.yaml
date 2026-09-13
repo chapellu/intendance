@@ -1,0 +1,105 @@
+# Souche — Marie Chioca, p. 96. Reformulée, cf. cadre de licence carte #26.
+#
+# UN SEUL PROCÉDÉ, DEUX PLATS, MAIS UNE SEULE SORTIE PAR CASSEROLE : le même
+# geste donne une PIPERADE (moitié tomates, moitié poivrons) ou une RATATOUILLE
+# (moitié tomates, moitié courgettes-poivrons-aubergines), selon le panachage.
+# C'est le `subs:` de la ligne de légumes qui porte ce choix.
+#
+# ON N'ÉMET QUE `piperade`, ET LA PREMIÈRE VERSION ÉMETTAIT LES DEUX — À TORT.
+# D'abord parce qu'une casserole ne produit pas les deux à la fois : l'émettre
+# deux fois offrait au planificateur une matière qui n'existe pas. Ensuite parce
+# que `ratatouille` existe DÉJÀ, émis par `ratatouille-minute` en `reste-plat`,
+# quand je l'émettais ici en `base` — le même type tombait donc dans deux
+# populations de congélateur à la fois, et un test de T35 l'a épinglé. Un type
+# de chaînage appartient à une population et une seule.
+#
+# La voie « ratatouille » n'est pas perdue pour autant : `ratatouille-minute` la
+# couvre, et c'est elle que la pizza p. 60 consomme.
+#
+# LA SAUTEUSE EST NOMMÉE DANS LA RECETTE, ET LE FOYER L'A : « un wok ou une
+# large sauteuse (au moins 28 cm) ». La sauteuse 28 du foyer tombe pile sur la
+# borne. 2 kg de légumes qui réduisent de moitié y tiennent ; c'est le genre de
+# détail que `contenance` existe pour attraper.
+
+recipe:
+  id: piperade-legumes-ete
+  title: Piperade ou ratatouille de légumes d'été (souche)
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 96"
+    source_id: chioca-meme-au-boulot
+    page: 96
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6
+  time_min_total: 35
+  active_min: 20
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: [solanacee, allium, cucurbitacee]
+    profil: poele
+    origine: francais
+
+  ingredients:
+    - {id: oignon, name: gros oignons, qty: 3, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: tomates, name: tomates, qty: 1000, unit: g}
+    - id: poivron
+      name: "poivrons (version piperade), ou courgettes-poivrons-aubergines (version ratatouille)"
+      qty: 1000
+      unit: g
+      subs:
+        - {name: "courgettes, poivrons et aubergines à parts égales", note: "c'est ce panachage qui fait la ratatouille au lieu de la piperade", ratio: 1.0}
+    - {id: ail, name: gousses d'ail, qty: 3, unit: gousse}
+    - {id: herbes-provence, name: herbes au choix, qty: 1, unit: c. à c.}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: dorer-oignons
+      action: "Faire revenir les oignons émincés dans l'huile d'olive, au wok ou dans une large sauteuse d'au moins 28 cm"
+      needs: [pan-fry]
+      time_min: 8
+      attended: true
+    - id: decouper-legumes
+      action: "Pendant ce temps, découper les légumes d'été en gros morceaux, moitié tomates et moitié poivrons (piperade) ou moitié légumes de ratatouille"
+      needs: []
+      time_min: 12
+      parallel_with: dorer-oignons
+      kid: {age_min_months: 30, task: "déchirer les feuilles d'herbes au-dessus de la sauteuse"}
+    - id: reunir-legumes
+      action: "Ajouter les légumes quand les oignons sont bien dorés, puis l'ail émincé, les herbes et le poivre"
+      needs: []
+      time_min: 3
+    - id: saler-piperade
+      action: "Saler"
+      needs: []
+      time_min: 1
+      seasoning_gate: true
+    - id: reduire
+      action: "Mener la cuisson à feu ASSEZ VIF environ 15 min, jusqu'à ce que les légumes soient bien cuits et que le jus ait complètement réduit"
+      needs: [pan-fry]
+      time_min: 15
+      attended: true
+
+  baby_portion:
+    take: "3 c. à s. de légumes, prélevées après réunion et AVANT le salage"
+    prep: "mixer finement — la peau des poivrons ne passe pas à la fourchette"
+    needs: [blend-smooth]
+    depuis: [reunir-legumes]
+
+  emits:
+    - kind: base
+      type: piperade
+      qty_band: 3-repas
+      qty: {amount: 1000, unit: g}
+      keeps: {frigo_days: 4, congelo: true}
+      note: "frittata p. 97 (150 g), gros chausson p. 98 (125 g), et la variante « déjà prête » du chili p. 57"
+
+  plan_b:
+    - drop: reduire
+      saves_min: 15
+      effect: "légumes crus au cœur et jus non réduit : la garniture détremperait la pâte du chausson p. 98"

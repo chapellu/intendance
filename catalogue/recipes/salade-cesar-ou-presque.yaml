@@ -1,0 +1,87 @@
+# Marie Chioca, p. 59. Reformulée, cf. cadre de licence carte #26.
+#
+# TROIS TEMPÉRATURES DE TRANSPORT DANS UN SEUL REPAS, ET C'EST CE QUI FAIT LA
+# RECETTE : la boîte et le flacon de sauce au frais, les croûtons à température
+# ambiante. Un croûton dans une boîte froide est un croûton mou. Le modèle ne
+# sait pas dire « ce plat voyage en trois contenants dont un hors frigo » — la
+# consigne reste dans l'étape.
+recipe:
+  id: salade-cesar-ou-presque
+  title: Salade César (ou presque)
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 59"
+    source_id: chioca-meme-au-boulot
+    page: 59
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 1}
+  time_min_total: 17
+  active_min: 10
+
+  accepts:
+    - type: poulet-cuit
+      qty: {amount: 100, unit: g}
+      required: true
+      fallback_recipe: poulet-roti-du-dimanche
+    - type: pain-de-mie-maison
+      qty: {amount: 100, unit: g}
+      required: false
+
+  sans_reste:
+    temps_min: 30
+    ingredients:
+      - {id: poulet-filets, name: "à défaut de rôti, un blanc de poulet à cuire", qty: 100, unit: g}
+      - {id: pain-de-mie, name: "à défaut de pain maison, du pain de mie complet", qty: 100, unit: g}
+
+  apports:
+    proteine: viande-blanche
+    feculent: pain
+    legumes: [feuille]
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: poulet-cuit, name: blanc de poulet rôti, qty: 100, unit: g, from_accepts: true}
+    - {id: pain-de-mie-maison, name: tranches de pain de mie complet, qty: 100, unit: g, from_accepts: true}
+    - {id: oeufs, name: "œuf bio très frais", qty: 1, unit: pièce}
+    - {id: salade-verte, name: laitue lavée et essorée, qty: 1, unit: pièce}
+    - {id: parmesan, name: parmesan, qty: 20, unit: g}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: citron, name: citron, qty: 1, unit: pièce}
+    - {id: moutarde, name: moutarde, qty: 1, unit: c. à c.}
+    - {id: anchois, name: "filets d'anchois, à la place de la sauce Worcestershire", qty: 2, unit: pièce}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: oeuf-mollet-cesar
+      action: "Cuire l'œuf 7 minutes chrono à l'eau bouillante"
+      needs: [simmer]
+      time_min: 9
+      attended: false
+    - id: faire-les-croutons
+      action: "Passer les tranches de pain de mie au grille-pain, les couper en croûtons et les réserver dans un sachet hermétique — À TEMPÉRATURE AMBIANTE, jamais au frais"
+      needs: []
+      time_min: 4
+      parallel_with: oeuf-mollet-cesar
+    - id: monter-la-boite
+      action: "Mettre dans la boîte-repas la laitue en morceaux et le poulet en dés de 2 cm, ajouter l'œuf écalé coupé en quatre et des copeaux de parmesan faits à l'économe, puis fermer"
+      needs: []
+      time_min: 5
+    - id: sauce-cesar
+      action: "Mélanger huile, jus de citron, moutarde, anchois hachés très fin et sel, puis verser dans un petit flacon qui ferme bien — la sauce ne rejoint la salade qu'au moment de manger"
+      needs: []
+      time_min: 3
+      seasoning_gate: true
+
+  baby_portion:
+    take: "un morceau de poulet et un quart d'œuf, avant que la sauce soit salée"
+    prep: "écraser à la fourchette"
+    needs: []
+    depuis: []
+
+  emits: []
+  plan_b:
+    - drop: faire-les-croutons
+      saves_min: 4
+      effect: "salade sans féculent : il faut alors compter un pain à côté"

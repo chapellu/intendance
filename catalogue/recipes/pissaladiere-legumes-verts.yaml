@@ -1,0 +1,93 @@
+# Marie Chioca, p. 81. Reformulée, cf. cadre de licence carte #26.
+#
+# LA SEULE RECETTE DU LIVRE QUI CONSOMME UNE SOUCHE ENTIÈRE : l'autrice le dit
+# en toutes lettres, « cette recette utilisera la TOTALITÉ de votre poêlée de
+# légumes ». D'où deux portions-repas, dont une à congeler. `accepts` sait
+# chiffrer un besoin ; il ne sait pas dire « et il ne restera rien » — c'est le
+# genre d'information qui ne se voit qu'au moment de planifier la semaine, et
+# la note de l'arête est le seul endroit où la mettre.
+recipe:
+  id: pissaladiere-legumes-verts
+  title: « Pissaladière » aux légumes verts
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 81"
+    source_id: chioca-meme-au-boulot
+    page: 81
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 2}
+  time_min_total: 55
+  active_min: 20
+
+  accepts:
+    - type: pate-a-pizza
+      qty: {amount: 1, unit: pâte}
+      required: true
+      fallback_recipe: pate-a-pizza-fougasse
+    - type: poelee-legumes-verts
+      qty: {amount: 1200, unit: g}
+      required: false
+
+  sans_reste:
+    temps_min: 150
+    ingredients:
+      - {id: fenouil, name: "à défaut de poêlée, de gros bulbes de fenouils bien tendres", qty: 1200, unit: g}
+      - {id: oignon, name: oignons, qty: 4, unit: pièce}
+
+  apports:
+    proteine: poisson
+    feculent: farine
+    legumes: [allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: pate-a-pizza, name: pâte à pizza, qty: 1, unit: pâte, from_accepts: true}
+    - {id: poelee-legumes-verts, name: "poêlée de légumes — sublime au fenouil, dit l'autrice", qty: 1200, unit: g, from_accepts: true}
+    - {id: olives-noires, name: olives noires, qty: 7, unit: pièce}
+    - {id: anchois, name: filets d'anchois, qty: 6, unit: pièce}
+    - {id: origan, name: origan séché, qty: 1, unit: c. à c.}
+    - {id: thym-frais, name: "thym frais, facultatif", qty: 1, unit: petit bouquet}
+
+  steps:
+    - id: prechauffer-pissaladiere
+      action: "Préchauffer le four à 240 °C, grille sur le cran le plus bas"
+      needs: [bake]
+      time_min: 1
+      attended: false
+    - id: preparer-les-fenouils
+      action: "Si la poêlée est au fenouil : enlever les feuilles extérieures coriaces et filandreuses et recouper les tiges à ras — c'est ce qui fait la différence entre une poêlée tendre et une poêlée fibreuse"
+      needs: []
+      time_min: 10
+    - id: etaler-pissaladiere
+      action: "Étaler la pâte à la main en disque de 22 à 25 cm sur un papier huilé et fariné"
+      needs: []
+      time_min: 6
+    - id: garnir-pissaladiere
+      action: "Déposer la poêlée ENCORE CHAUDE mais non brûlante sur la pâte, ajouter olives et anchois en rosace, puis saupoudrer d'origan et de thym"
+      needs: []
+      time_min: 4
+    - id: relever-pissaladiere
+      action: "Laisser lever encore une vingtaine de minutes — facultatif"
+      needs: []
+      time_min: 1
+      attente_min: 20
+      attended: false
+    - id: cuire-pissaladiere
+      action: "Enfourner 15 min"
+      needs: [bake]
+      time_min: 15
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: pissaladiere
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: true}
+      note: "deux portions-repas, dont une à congeler — et la poêlée de la p. 72 y passe EN ENTIER"
+
+  plan_b:
+    - drop: relever-pissaladiere
+      saves_min: 1
+      effect: "pâte un peu plus dense — l'autrice donne cette levée comme facultative"

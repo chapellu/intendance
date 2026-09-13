@@ -1,0 +1,73 @@
+# Marie Chioca, p. 52. Reformulée, cf. cadre de licence carte #26.
+#
+# LA RECETTE TIENT SUR UNE COÏNCIDENCE DE CUISSON : quinoa et lentilles corail
+# ont exactement le même temps, douze minutes. C'est ce qui permet une seule
+# casserole, un seul minuteur, et un plat à IG très bas prêt en un quart
+# d'heure. Substituer l'une des deux casse l'astuce, pas seulement le goût.
+recipe:
+  id: salade-12-minutes-chrono
+  title: Salade « 12 minutes chrono »
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 52"
+    source_id: chioca-meme-au-boulot
+    page: 52
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 1}
+  time_min_total: 17
+  active_min: 5
+
+  apports:
+    proteine: poisson
+    feculent: legumineuse
+    legumes: [solanacee]
+    profil: rapide
+    origine: francais
+
+  ingredients:
+    - {id: quinoa, name: quinoa, qty: 50, unit: g}
+    - {id: lentilles-corail, name: lentilles corail, qty: 50, unit: g}
+    - {id: eau, name: eau, qty: 300, unit: ml}
+    - {id: truite-fumee, name: truite fumée, qty: 100, unit: g}
+    - {id: tomates-roma, name: tomate Roma, qty: 1, unit: pièce}
+    - {id: ciboulette, name: ciboulette, qty: 1, unit: petit bouquet}
+    - {id: noisettes, name: noisettes, qty: 30, unit: g}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: vinaigre-balsamique, name: vinaigre balsamique, qty: 2, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: cuire-12-min
+      action: "Mettre quinoa et lentilles corail dans une petite casserole avec l'eau et un peu de sel ; couvrir et compter 12 minutes chrono à feu doux après reprise de l'ébullition — les deux ont exactement le même temps de cuisson"
+      needs: [simmer]
+      time_min: 14
+      attended: false
+      seasoning_gate: true
+    - id: tailler-garniture
+      action: "Pendant ce temps : tomate en cubes, truite en gros morceaux, ciboulette ciselée"
+      needs: []
+      time_min: 5
+      parallel_with: cuire-12-min
+    - id: assembler-12-min
+      action: "Quand il n'y a plus d'eau dans la casserole, mélanger avec tous les autres ingrédients, puis conserver au frais jusqu'au repas"
+      needs: []
+      time_min: 3
+
+  baby_portion:
+    take: "2 c. à s. de quinoa et lentilles, avant salage"
+    prep: "écraser à la fourchette avec un filet d'huile d'olive"
+    needs: []
+    depuis: []
+
+  emits:
+    - kind: reste-plat
+      type: salade-quinoa-corail
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b:
+    - drop: tailler-garniture
+      saves_min: 5
+      effect: "il ne reste que la céréale : ce n'est plus un repas complet"

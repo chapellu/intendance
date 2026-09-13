@@ -1,0 +1,81 @@
+# Marie Chioca, p. 19. Reformulée, cf. cadre de licence carte #26.
+#
+# LE FOUR FROID EST UNE INSTRUCTION, PAS UNE APPROXIMATION : le pain finit de
+# lever pendant le préchauffage. `attente_min` porte la levée d'une heure ; les
+# 50 min de cuisson démarrent four éteint, ce que l'étape dit en clair parce
+# qu'aucun champ du modèle ne sait exprimer « enfourner à froid ».
+recipe:
+  id: pain-de-mie-son-avoine
+  title: Pain de mie facile au son d'avoine
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 19"
+    source_id: chioca-meme-au-boulot
+    page: 19
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 5
+  time_min_total: 120
+  active_min: 12
+
+  apports:
+    proteine: aucune
+    feculent: pain
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 375, unit: g}
+    - {id: son-avoine, name: son d'avoine, qty: 100, unit: g}
+    - {id: sel, name: sel fin, qty: 10, unit: g, seasoning: true}
+    - {id: levure-boulangere, name: levure de boulanger déshydratée, qty: 1, unit: pièce}
+    - {id: eau, name: "eau tiède, 40 °C au maximum", qty: 400, unit: ml}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: sirop-agave, name: "sirop d'agave, ou 3 c. à s. de miel", qty: 2, unit: c. à s.}
+
+  steps:
+    - id: melanger-secs
+      action: "Mélanger farine, son d'avoine et sel fin, puis faire un puits"
+      needs: []
+      time_min: 3
+    - id: delayer-levure
+      action: "Délayer la levure dans l'eau tiède — jamais au-delà de 40 °C, la chaleur tue la levure — puis verser dans le puits avec l'huile et le sirop d'agave"
+      needs: []
+      time_min: 3
+    - id: petrir
+      action: "Mélanger 3 min au robot ou à la cuillère en bois, puis verser dans un grand moule à cake (environ 30 cm de long, 11 cm de haut) chemisé de papier cuisson"
+      needs: []
+      time_min: 6
+    - id: lever
+      action: "Couvrir d'un torchon mouillé et laisser lever à température ambiante"
+      needs: []
+      time_min: 1
+      attente_min: 60
+      attended: false
+    - id: cuire-four-froid
+      action: "Vaporiser un peu d'eau, enfourner à FOUR FROID sans taper le moule, puis régler sur 180 °C en chaleur statique : le pain finit de lever pendant le préchauffage"
+      needs: [bake]
+      time_min: 50
+      attended: false
+    - id: refroidir
+      action: "Laisser entièrement refroidir avant de démouler — trancher chaud abîme la mie"
+      needs: []
+      time_min: 5
+      attended: false
+
+  emits:
+    - kind: base
+      type: pain-de-mie-maison
+      qty_band: 3-repas
+      qty: {amount: 900, unit: g}
+      keeps: {frigo_days: 4, congelo: true}
+      note: "4 jours dans un torchon, ou tranché puis congelé en sachet hermétique ; la salade César p. 59 en réclame 100 g"
+
+  plan_b:
+    - swap:
+        step: petrir
+        action: "Mélanger à la cuillère en bois plutôt qu'au robot"
+        saves_min: 0
+      effect: "aucun gain de temps : c'est le repli du foyer, qui n'a pas de robot pétrisseur"

@@ -1,0 +1,74 @@
+# Marie Chioca, p. 35. Reformulée, cf. cadre de licence carte #26.
+#
+# TOUT CUIT DANS LA MÊME CASSEROLE — légumes, poisson et riz ensemble. Ce n'est
+# pas une économie de vaisselle mais un choix de digestibilité : l'autrice la
+# donne pour « les intestins fragiles qui ne supportent pas les crudités ».
+# C'est le premier plat du catalogue dont l'argument est une contrainte
+# digestive plutôt qu'un goût ou un temps.
+recipe:
+  id: salade-de-riz-qui-change
+  title: Salade de riz « qui change »
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "Je mange sain et bio, même au boulot !, Terre vivante, p. 35"
+    source_id: chioca-meme-au-boulot
+    page: 35
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields: {portions_eq: 1}
+  time_min_total: 30
+  active_min: 10
+
+  apports:
+    proteine: poisson
+    feculent: riz
+    legumes: [racine, allium]
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: carottes, name: carotte, qty: 1, unit: pièce}
+    - {id: poireau, name: blanc de poireau, qty: 1, unit: pièce}
+    - {id: celeri-branche, name: branche de céleri, qty: 1, unit: pièce}
+    - {id: laurier, name: "feuille de laurier, facultative", qty: 1, unit: pièce}
+    - id: cabillaud
+      name: "filet de cabillaud sans arêtes, ultra-frais ou surgelé"
+      qty: 200
+      unit: g
+      subs:
+        - {name: saumon sauvage, note: "variante de l'autrice : vinaigre → citron, persil → aneth", ratio: 1.0}
+    - {id: riz, name: "riz basmati demi-complet, cuisson normale et non rapide", qty: 100, unit: g}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: vinaigre, name: vinaigre de cidre, qty: 2, unit: c. à s.}
+    - {id: moutarde, name: moutarde, qty: 1, unit: c. à s.}
+    - {id: persil, name: persil, qty: 1, unit: petit bouquet}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: lancer-la-casserole
+      action: "Émincer carotte, blanc de poireau et céleri, puis les mettre à cuire dans une casserole d'eau salée avec le laurier et le poisson"
+      needs: [simmer]
+      time_min: 8
+      attended: true
+    - id: ajouter-le-riz
+      action: "À l'ébullition, ajouter le riz et compter environ 20 min, en suivant les indications du paquet"
+      needs: [simmer]
+      time_min: 20
+      attended: false
+    - id: assaisonner-riz
+      action: "Égoutter, puis assaisonner d'huile, de vinaigre, de moutarde, de poivre et de persil ciselé ; conserver au frais jusqu'au repas"
+      needs: []
+      time_min: 5
+
+  emits:
+    - kind: reste-plat
+      type: salade-de-riz
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: false}
+      note: "se mange froide, c'est le principe — mais le riz refroidi ne se recongèle pas"
+
+  plan_b:
+    - drop: assaisonner-riz
+      saves_min: 5
+      effect: "salade fade : c'est la vinaigrette qui la fait"
