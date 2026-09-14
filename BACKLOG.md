@@ -2121,14 +2121,31 @@ exporté sous `enParallele` par `export_json.py:149` — et `Etape` dans
 `src/model/types.ts` ne le déclare pas. Le guide a donc fait attendre un temps
 que sa propre donnée disait de ne pas attendre.
 
-La mesure, sur les **419 étapes** de `public/cuisine-data.json` :
+La mesure, sur les **630 étapes** de `public/cuisine-data.json` (`npm run
+chargeur`) :
 
 | Champ exporté | Étapes | Ce que c'est | Lu par l'app |
 |---|---|---|---|
-| `uses` | **126** | les ids d'ingrédients qu'une étape consomme — donc la quantité de l'étape, une fois mise à l'échelle | non |
-| `enParallele` | **42** | l'étape avec laquelle celle-ci tourne | non |
-| `attente` / `attenteRaison` | **30** | du temps mort qui a une raison — trempage 720 min, prise au frais 240, repos 10 | non |
+| `uses` | **126** | les clés de **ligne** qu'une étape consomme — donc la quantité de l'étape, une fois mise à l'échelle | non |
+| `enParallele` | **50** | l'étape avec laquelle celle-ci tourne | non |
+| `attente` / `attenteRaison` | **42** / 37 | du temps mort qui a une raison — trempage 720 min, prise au frais 240, repos 10 | non |
 | `rattrapage` | **6** | le repli quand l'anticipation a été manquée, avec son `cout_min` et son `effet` honnête | non |
+| `ref` | **28 lignes** | la clé de ligne que `uses` vise, quand un plat porte deux fois le même id | non |
+
+**CE TABLEAU A ÉTÉ MESURÉ AVANT LA PR #20**, qui a ajouté 52 entrées, et trois
+de ses quatre comptes étaient faux quand ce bloc a été écrit : 419 étapes pour
+630, 86 plats pour 138, `enParallele` 42 pour 50, `attente` 30 pour 42. `uses`
+(126) et `rattrapage` (6) tenaient par coïncidence — les recettes de #20
+n'apportent ni l'un ni l'autre. Les valeurs ci-dessus sont celles du 2026-09-14.
+
+**La cinquième ligne ne figurait pas au ticket, et c'est la plus coûteuse.**
+`uses` cite des clés de LIGNE (`ref`), pas des clés d'ACHAT (`id`) — parce
+qu'onze plats portent deux lignes d'un même ingrédient, la farine de la pâte et
+celle de la crème. `ingredient()` ne lisait pas `ref` : sur 357 références,
+**29 réparties sur 9 plats** ne tombaient sur aucun `id`. Livrer `uses` sans
+`ref`, c'était livrer un lien mort sur un plat sur quinze, et aucun test ne
+l'aurait dit puisque le champ n'existait pas encore. Trouvé en écrivant
+`chargeur.test.ts`, pas en relisant le code.
 
 **CE BLOC NE DESSINE RIEN.** Il n'ajoute pas une ligne à l'écran de cuisine, et
 c'est sa seule raison de pouvoir être pris maintenant : *comment* montrer deux
@@ -2140,9 +2157,48 @@ trempage de douze heures sont trois questions ouvertes sur
 disponible et testée, et les écrans suivent quand la carte a tranché — le même
 ordre que T46 avant T42–T45.
 
-- [ ] **T72 — Le modèle d'étape retrouve ses quatre champs.** `Etape` déclare
+- [x] **T72 — Le modèle d'étape retrouve ses quatre champs.** `Etape` déclare
       `uses`, `enParallele`, `attente`, `attenteRaison`, `attenteSouple` et
       `rattrapage` ; `chargerEtape` les lit. Rien d'autre ne change.
+
+      **Un cinquième champ s'est ajouté en cours de route : `Ingredient.ref`**,
+      sans quoi `uses` ne se résout pas — voir plus haut. Ce n'est pas un
+      élargissement du ticket, c'est la même faute : un champ que l'export porte
+      et que le chargeur jette.
+
+      **`uses` est `string[] | null` et PAS `string[]`.** `[]` dit « rien à
+      verser ici » — on remue, on enfourne ; `null` dit « la recette n'a pas
+      encore le lien ». Mesuré : 406 `null`, 98 `[]`, 126 qui citent. Aplatir
+      les deux premiers ferait promettre à un écran qu'une étape ne consomme
+      rien alors qu'on l'ignore — exactement le mensonge plausible que ce
+      chargeur existe pour attraper. `export_json.py` le disait déjà en
+      commentaire ; c'est maintenant tenu des deux côtés.
+
+      **`enParallele` se vérifie dans `plat()`, pas dans `etape()`** : une étape
+      seule ne peut pas savoir si sa cible existe. Un id mort ne lèverait rien,
+      il produirait un appariement silencieusement vide — le bug d'origine,
+      revenu par une autre porte. Éprouvé non vide : le test falsifie un lien et
+      attend le refus.
+
+      **Le chargeur traduit un `cout_min` en `coutMin`**, seul snake_case que
+      l'export laisse passer, parce qu'`export_json.py` recopie l'objet YAML du
+      rattrapage tel quel au lieu de le recomposer champ par champ. Corrigé côté
+      chargeur plutôt qu'en amont : c'est là qu'est la frontière, et le ticket
+      avait promis de ne rien régénérer.
+
+      **Une règle du corpus réapprise en rougissant.** « Deux lignes d'un même
+      id portent toujours deux `ref` » est faux : `petits-pots-creme-glacee` et
+      `quiche-faisselle-cebettes` doublent un id sans porter le moindre `uses`.
+      `verifier.py:231` ne réclame un `ref` que là où une étape cite une ligne —
+      sans citation, rien n'a besoin d'être distingué. Onze plats doublent un
+      id, neuf ont des `uses`, et la promesse ne porte que sur ces neuf.
+
+      Portes : typecheck, 578 tests (11 nouveaux), build, 18 e2e,
+      `catalogue:verifie` 0 erreur. `npm run chargeur` imprime les tailles et le
+      témoin : sur `lentilles-mijotees`, 47 min de somme brute contre 32 hors
+      étapes parallèles, pour un plat déclaré à 40 — l'écart que l'utilisateur a
+      payé en attendant. **Le bloc ne le répare pas**, il rend la donnée
+      lisible ; le guide est Workspace#57.
 
       **Pas d'union, et c'est la règle du fichier qui le dit** : *« UNE UNION EST
       UNE PROMESSE QUE L'EXPORT NE CHANGERA PAS »*, donc on n'en fait que là où

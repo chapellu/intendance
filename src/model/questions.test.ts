@@ -20,7 +20,9 @@ import type { Catalogue, Denree, Ingredient, Plat } from "./types";
 /* ────────────────────────────────────────────────────────────── les fixtures */
 
 const ing = (p: Partial<Ingredient> & { id: string }): Ingredient => ({
-  nom: p.id, qty: 100, unit: "g", base: false, assaisonnement: false, central: false,
+  // `ref` par défaut = `id`, comme dans l'export : une fixture ne porte qu'une
+  // ligne par ingrédient, donc rien à distinguer.
+  ref: p.id, nom: p.id, qty: 100, unit: "g", base: false, assaisonnement: false, central: false,
   ...p,
 });
 
