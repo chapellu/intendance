@@ -189,6 +189,28 @@ describe("la main de cartes", () => {
     expect(main(jeu).length).toBeLessThanOrEqual(catalogue.equilibre.main.taille);
   });
 
+  // LE PLAT QUE L'APP N'A PAS LE DROIT DE PROPOSER, et elle l'a proposé.
+  // « Tu m'as encore fourni une recette sans étapes » (14/09/2026), devant les
+  // gnocchis poêlés, ouverts au moment de les faire. `cuisinable` existait
+  // pourtant sur tout le chemin — `est_cuisinable()` côté Python, le champ à
+  // l'export, le chargeur, le type — et rien ne le lisait.
+  //
+  // ÉPROUVÉ SUR UN PLAT FABRIQUÉ, parce qu'il n'en reste aucun dans le corpus :
+  // les quinze du répertoire ont leurs étapes depuis ce correctif, donc un test
+  // écrit sur le corpus passerait au vert sans rien prouver — il passerait
+  // aussi avec le filtre retiré. Celui-ci tombe si on le retire.
+  test("un plat sans étapes n'est jamais proposé", () => {
+    const muet = { ...catalogue.plats[0]!, id: "plat-niveau-plan", steps: [], cuisinable: false };
+    const truque: Catalogue = { ...catalogue, plats: [...catalogue.plats, muet] };
+    const j = creerJeu(truque, 7, LUNDI);
+    j.slot = j.creneaux.findIndex((c) => c.nature === "choisi");
+
+    // Il est bien DANS le catalogue — sans quoi ce test ne prouverait que son
+    // absence de la liste, ce qui est une autre chose.
+    expect(truque.plats.some((x) => x.id === muet.id)).toBe(true);
+    expect(offre(j, j.choix, j.slot).some((c) => c.plat.id === muet.id)).toBe(false);
+  });
+
   test("T52 — la taille et les enseignes garanties viennent du catalogue", () => {
     // TROIS RÉGLAGES LUS, TYPÉS, ET SANS EFFET jusqu'ici. La parité avec le
     // proto les gardait morts ; le proto est parti en T22, l'argument avec.

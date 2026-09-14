@@ -151,6 +151,23 @@ export function platDe(jeu: Jeu, i: number): Plat | null {
 export function convient(jeu: Jeu, plat: Plat, i: number): boolean {
   const c = jeu.creneaux[i];
   if (!c) return false;
+  // UN PLAT SANS ÉTAPES NE CONVIENT À AUCUN CRÉNEAU, et ce garde-fou a coûté
+  // un dîner. `cuisinable` traversait déjà tout le chemin — `est_cuisinable()`
+  // en Python, le champ à l'export, le chargeur, le type — et personne ne le
+  // LISAIT : exactement l'écart de port que T72 venait de fermer sur les
+  // étapes, refait un cran plus haut. Résultat le 14/09/2026, à l'heure de
+  // cuisiner : des gnocchis poêlés proposés, ouverts, et vides.
+  //
+  // C'EST UN FILTRE ET PAS UN MALUS, pour la raison de T33 : un plat qu'on ne
+  // peut pas exécuter ne mérite pas d'être classé dernier, il ne mérite pas
+  // d'être montré. Et c'est ici, dans `convient`, plutôt que dans `offre` :
+  // tout ce qui propose un plat passe par cette porte, y compris ce qui sera
+  // écrit après nous.
+  //
+  // Il ne retire rien aujourd'hui — les 138 plats du corpus ont leurs étapes,
+  // c'est une mesure et non un espoir. C'est un plancher, pas un changement de
+  // comportement : il attend la prochaine saisie « niveau plan ».
+  if (!plat.cuisinable) return false;
   const ok = plat.creneaux.length ? plat.creneaux : ["dejeuner", "diner"];
   return ok.includes(c.repas);
 }
