@@ -186,6 +186,29 @@ rayons:
     - menthe
     - radis
     - jeunes-pousses
+    # ── Arrivés avec un TICKET DE CAISSE (Grand Frais, 2026-09-12), ni avec une
+    # recette ni avec un relevé. C'est la SECONDE fois que le vocabulaire grandit
+    # sans qu'on cuisine — la première était le relevé du 26/08, quelques lignes
+    # plus haut — et cette fois c'est une ARRIVÉE qui nomme, pas un placard qu'on
+    # regarde.
+    #
+    # MESURÉ SUR LE TICKET : des 12 lignes, 7 n'avaient AUCUNE cible dans les 272
+    # ids du catalogue. Toutes les sept sont des produits qu'on ne cuisine pas —
+    # fruits mangés crus, apéro, une viande qu'aucun des 138 plats n'emploie.
+    # C'est la définition même d'un vocabulaire de RECETTES : il ne nomme que ce
+    # qui passe par une casserole, et il laisse sans nom la moitié d'un panier.
+    #
+    # Ces ids ne servent aucune recette, et c'est voulu. Ce qu'ils permettent,
+    # c'est qu'une arrivée et un garde-manger POINTENT VERS LE MÊME MOT que la
+    # liste de courses — exactement l'argument du bloc du 26/08.
+    #
+    # `raisins` et `mirabelles` sont le frais dont `raisins-secs` et `pruneaux`
+    # sont le sec : deux produits, deux lignes de courses, même règle que
+    # `tomates`/`tomates-sechees`.
+    - melon
+    - framboises
+    - raisins
+    - mirabelles
   boucherie:
     - boeuf-hache
     - agneau-collier
@@ -197,6 +220,13 @@ rayons:
     - jarret-boeuf
     - os-a-moelle
     - saucisse-fumee
+    # Ticket du 2026-09-12. `roti-veau` est un id à part de `roti-porc` : le
+    # catalogue ne cuisine AUCUN veau, donc rien ne les aliase, et un rôti de
+    # veau ne répond pas à une recette qui veut du porc. `saucisson-sec` est de
+    # l'apéro, comme `fruits-secs-panaches` — il entre dans la maison, il ne
+    # traverse aucune casserole.
+    - roti-veau
+    - saucisson-sec
   poissonnerie:
     - saumon
     - colin-surgele
@@ -393,6 +423,10 @@ rayons:
     # placard agit sans passer par le scoring.
     - tomates-cerises-confites
     - fruits-secs-panaches
+    # Ticket du 2026-09-12. Première BOISSON du vocabulaire : aucune recette n'en
+    # boit, et le modèle n'a pas de rayon pour elles — l'épicerie faute de mieux,
+    # comme les cueillettes sont au primeur faute de rayon « cueillette ».
+    - nectar-mangue
 
 placard:
   - huile-olive

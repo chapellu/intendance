@@ -2269,6 +2269,63 @@ ordre que T46 avant T42–T45.
 - **La validation d'une cuisson sans créneau**, qui est la cause du stock qui ne
   descend pas et qui touche au modèle, pas au chargeur : Workspace#60.
 
+### Le vocabulaire ne nommait que ce qu'on cuisine — T75
+
+**Un troisième écart de port, trouvé par un ticket de caisse.** Les deux
+premiers venaient de l'export ; celui-ci vient de la maison. Un ticket Grand
+Frais réel (samedi 2026-09-12, 12 articles, 71,74 €, transcrit dans
+`chapellu/Workspace`, `docs/supply/tickets/`) a été résolu à la main contre les
+272 ids d'ingrédient du catalogue : **7 lignes sur 11 ne tombaient sur aucun
+id** — melon, raisin de table, mirabelle, framboise, nectar de mangue, rôti de
+veau, saucisson sec.
+
+Aucune n'est un oubli de saisie. Ce sont toutes des choses **qu'on ne cuisine
+pas** : des fruits mangés crus, de l'apéro, et une viande qu'aucun des 138 plats
+n'emploie. C'est la définition d'un vocabulaire de RECETTES — il ne nomme que ce
+qui passe par une casserole, et il laisse sans nom la moitié d'un panier. Or
+`rayons.yaml` dit lui-même, depuis le premier jour, qu'il est *« the cheap
+stand-in for the typed ingredient vocabulary the corpus actually needs »*, et le
+relevé du 26/08 avait déjà dû l'élargir une première fois pour que le
+garde-manger puisse pointer vers les mêmes mots que la liste de courses.
+
+**Ce ticket est la seconde fois, et la première où c'est une ARRIVÉE qui nomme.**
+Sans ces ids, la table apprise de Workspace#44 (clé EAN exacte, clé libellé
+floue) n'a, sur un canal sans EAN, **aucune cible vers laquelle converger** pour
+la moitié d'un ticket : ce n'est pas un problème d'appariement, c'est un manque
+de vocabulaire, et il se règle par de la saisie.
+
+- [x] **T75 — Le vocabulaire nomme ce qui entre dans la maison.** Sept ids
+      ajoutés à `rayons.yaml` : `melon`, `framboises`, `raisins`, `mirabelles`
+      au primeur, `roti-veau` et `saucisson-sec` à la boucherie, `nectar-mangue`
+      à l'épicerie — première boisson du vocabulaire, rangée là faute de rayon
+      pour elles, comme les cueillettes sont au primeur faute de rayon
+      « cueillette ».
+
+      **Ces ids ne servent aucune recette, et c'est le point.** `raisins` et
+      `mirabelles` sont le frais dont `raisins-secs` et `pruneaux` sont le sec —
+      deux produits, deux lignes de courses, même règle que
+      `tomates`/`tomates-sechees`. `roti-veau` n'est PAS aliasé sur `roti-porc` :
+      le catalogue ne cuisine aucun veau, et un rôti de veau ne répond pas à une
+      recette qui veut du porc.
+
+      Le lecteur existe déjà : `contexte().rayonDe()` rend `null` sur un id
+      inconnu, et `verifier_garde_manger` refuse une denrée que le vocabulaire
+      ne nomme pas — donc ces sept produits **ne pouvaient pas être stockés**
+      avant ce ticket. `src/model/vocabulaire.test.ts` épingle le ticket entier
+      comme corpus : sur l'export d'avant, il rougit sur exactement ces 7 lignes.
+
+      **La douzième ligne reste non résolue, exprès.** `MELANGE VITALITE + 500`
+      est coupé à 22 caractères et vise trois ids existants qui ne désignent pas
+      la même chose (`fruits-secs-melange`, `fruits-secs-panaches`,
+      `cocktail-fruits`). Le test épingle l'ambiguïté au lieu de la trancher :
+      choisir ici serait une décision déguisée en saisie, et c'est le travail de
+      T64 — avec une question à l'utilisateur, pas une heuristique.
+
+      **Ce que ce ticket NE fait pas** : il ne range rien dans un stock. Le
+      relevé du garde-manger reste daté du 2026-08-26 et le rester est ce qui le
+      rend honnête ; les douze articles du 12 septembre n'ont toujours pas
+      d'endroit où exister tant que le bloc T61–T71 n'est pas construit.
+
 ## Sortie
 
 **Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`
