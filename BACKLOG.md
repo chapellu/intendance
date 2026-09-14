@@ -2424,6 +2424,112 @@ de vocabulaire, et il se règle par de la saisie.
       rend honnête ; les douze articles du 12 septembre n'ont toujours pas
       d'endroit où exister tant que le bloc T61–T71 n'est pas construit.
 
+## Un plat proposé est un plat qu'on peut faire — écart de port n° 3
+
+**Trouvé à l'usage, à l'heure de cuisiner, et pour la deuxième fois :**
+
+> *« J'ai un autre soucis. Tu m'as encore fourni une recette sans étapes.
+> Corrige moi ça tout de suite. »* (14/09/2026, devant `gnocchis-poelees`)
+
+**Le mot qui compte est « encore ».** #50 avait déjà croisé ces plats-là — *« un
+plat sans étapes ne pouvait jamais être terminé »* — et avait réparé le **bouton**
+sans voir que le trou était la **recette**. La fiche s'ouvrait donc proprement,
+journalisait proprement, et ne disait toujours pas comment faire le plat.
+
+**Deux causes indépendantes, et il fallait les deux pour arriver à l'écran.**
+
+**1. Quinze plats étaient entrés « niveau plan » et y étaient restés.**
+`_repertoire.yaml` a été saisi exprès sans étapes — *« pour planifier et faire
+les courses, on n'a pas besoin de la recette »* — et c'est ce raccourci qui a
+permis d'atteindre les trente plats sans lesquels le choix ne veut rien dire. La
+dette était **visible** : `verifier.py` l'imprime à chaque passage dans sa
+dernière ligne (« 138 recettes · 123 cuisinables, 15 au niveau plan »). Elle
+n'était réclamée par personne.
+
+**2. L'app savait, et ne s'en servait pas.** `catalogue.py` le dit en une ligne
+depuis le début — *« a plan-level entry has no steps: it can be planned, not
+cooked »* —, `export_json.py:241` sort le booléen, `catalogue.ts:301` le lit,
+`types.ts:252` le déclare. **Personne ne le lisait.** Il traverse la frontière
+depuis le 2026-08-19 (T3, le ticket qui a construit le chargeur) : vingt-six
+jours de donnée portée jusqu'à l'écran et ignorée une fois arrivée. C'est
+exactement l'écart de port n° 2, refait un cran plus haut — T72 rattrapait les
+champs d'une étape, celui-ci rattrape le champ qui dit s'il y a des étapes.
+
+- [x] **T76 — Les quinze plats du répertoire reçoivent leurs étapes.** 62
+      étapes écrites sur les quinze, `uses:` compris, ce qui fait passer le
+      corpus de **630 à 692 étapes**, `uses` de 126 à **179**, `enParallele` de
+      50 à **58**, et les plats au niveau plan de 15 à **0** (`npm run
+      chargeur`, `npm run catalogue:verifie`).
+
+      **Le temps déclaré est devenu vérifiable, et il vérifie.** Sur les quinze,
+      la somme des étapes **hors parallèle** tombe exactement sur le
+      `time_min_total` déjà annoncé — 25 pour les gnocchis, 80 pour le poulet,
+      45 pour la soupe. Ce n'est pas une coïncidence, c'est la contrainte qu'on
+      s'est donnée en les écrivant : un plat dont les étapes ne totalisent pas
+      ce que la carte promet fabrique la plainte des lentilles, où le guide
+      annonce 40 min et fait attendre 47.
+
+      **ÉCRIRE LES ÉTAPES A FAIT TOMBER UNE ERREUR QUE LEUR ABSENCE CACHAIT.**
+      `chili-sin-carne` s'est vu refuser au chargement : *« le lot courant (×1 de
+      6 parts) ne tient pas dans casseroles 2,6 L / 1,6 L »*. Le contrôle de
+      contenance ne s'arme qu'à partir des `needs:` des étapes — pas d'étapes,
+      pas de récipient, pas de contrôle : les quinze plats passaient parce qu'ils
+      ne demandaient rien. Et le refus était **juste dans sa mécanique et faux
+      dans sa conclusion** : la casserole ne tient pas six parts de chili, mais
+      elle ne tient jamais le chili — elle tient le riz posé à côté.
+      `charge_partielle: true` est précisément le champ écrit pour ça, et il est
+      posé sur les cinq casseroles annexes (les quatre riz, le panier vapeur du
+      brocoli). Dix autres recettes du corpus l'employaient déjà.
+
+      **Ce que ces étapes sont, et ce qu'elles ne sont pas.** Les quinze plats
+      sont **les plats du foyer** — ce sont exactement les 15 des 21 sans
+      `source:` de T73. Personne d'autre n'a de version à créditer, donc ces
+      gestes sont des **hypothèses de travail**, au même titre que les quantités
+      que l'en-tête du fichier annonce déjà comme « à corriger par
+      l'utilisateur ». Elles sont écrites pour être contredites geste par geste,
+      pas pour faire autorité. Aucune composition n'a été touchée : pas un
+      ingrédient ajouté, pas une quantité changée — la béchamel des lasagnes se
+      monte donc farine-dans-le-lait-froid, sans beurre, parce que c'est ce que
+      la liste de courses porte.
+
+- [x] **T77 — `cuisinable` cesse d'être décoratif.** `convient()` dans
+      `jeu.ts` refuse un plat sans étapes, et `convient()` est la porte par
+      laquelle passe tout ce qui propose un plat — `offre()` aujourd'hui, ce qui
+      sera écrit demain aussi.
+
+      **UN FILTRE, PAS UN MALUS**, pour la raison de T33 : un plat qu'on ne peut
+      pas exécuter ne mérite pas d'être classé dernier, il ne mérite pas d'être
+      montré.
+
+      **Il ne retire rien aujourd'hui, et c'est voulu.** Les 138 plats ont leurs
+      étapes depuis T76 — mesuré, pas espéré. Ce ticket est un **plancher** : il
+      attend la prochaine saisie « niveau plan », qui reste légitime et qui, sans
+      lui, reviendrait à l'écran par le même chemin.
+
+      **Deux promesses, et la seconde a dû être fabriquée.**
+      `catalogue.test.ts` épingle qu'aucun plat du corpus n'arrive sans étapes.
+      `scoring.test.ts` épingle qu'un plat sans étapes n'est jamais proposé — et
+      celui-là ne peut PAS s'écrire sur le corpus, puisqu'il n'en reste aucun :
+      un test écrit dessus passerait au vert avec le filtre retiré. Il monte donc
+      un plat truqué dans un catalogue truqué. **Éprouvé non vide** : filtre
+      retiré, il tombe.
+
+### Ce que cet écart laisse ouvert
+
+**Le troisième chemin n'est toujours pas écrit.** Face à un plat sans étapes il
+y en a trois : lui en donner (T76), ne pas le proposer (T77), ou **le proposer
+en le disant** — « ce plat n'a pas encore sa recette ». Le troisième est le seul
+qui garde le raccourci de saisie utilisable de bout en bout, et il n'existe pas.
+Tant qu'il n'existe pas, un plat entré en trente secondes est planifiable mais
+invisible à la proposition, ce qui est un compromis et pas une réponse.
+
+**Personne ne lit la dernière ligne de `verifier.py`.** Elle disait « 15 au
+niveau plan » à chaque passage du CI, pendant vingt-six jours, et le CI était
+vert — parce que c'est un compte, pas une erreur. Un chiffre qu'on imprime sans
+qu'il fasse rougir quoi que ce soit est un chiffre qu'on cesse de lire. Le test
+de `catalogue.test.ts` est ce qui le rend maintenant contraignant côté app ;
+côté catalogue, la ligne reste décorative.
+
 ## Sortie
 
 **Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`

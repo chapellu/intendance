@@ -211,7 +211,7 @@
    "titre": "Sauce bolognaise",
    "minutes": 60,
    "minutesSurPlace": 60,
-   "avanceMin": 0,
+   "avanceMin": 60,
    "anticipations": [],
    "portions": 6,
    "source": null,
@@ -298,7 +298,89 @@
      "central": false
     }
    ],
-   "steps": [],
+   "steps": [
+    {
+     "id": "tailler",
+     "action": "Émincer les oignons et l'ail, tailler les carottes en petits dés",
+     "minutes": 8,
+     "needs": [
+      "chop-coarse"
+     ],
+     "surveille": true,
+     "uses": [
+      "oignon",
+      "ail",
+      "carottes"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "revenir",
+     "action": "Chauffer l'huile à la cocotte, faire blondir oignons et ail, ajouter les carottes puis le bœuf haché en l'écrasant à la cuillère jusqu'à ce qu'il perde sa couleur",
+     "minutes": 10,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": true,
+     "uses": [
+      "huile-olive",
+      "boeuf-hache"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "mijoter",
+     "action": "Verser les tomates pelées, les écraser à la cuillère, porter à frémissement puis laisser mijoter à découvert — c'est en réduisant qu'elle devient une sauce",
+     "minutes": 40,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": false,
+     "uses": [
+      "tomates-pelees"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "saler",
+     "action": "Goûter et saler en fin de cuisson, jamais au début : la sauce réduit de moitié et le sel, lui, ne réduit pas",
+     "minutes": 2,
+     "needs": [],
+     "surveille": true,
+     "uses": [
+      "sel"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
    "bebe": null,
    "bebePrep": null,
    "bebeApres": null,
@@ -327,16 +409,20 @@
    ],
    "lotEntier": false,
    "calibreMax": null,
-   "vaisselle": null,
+   "vaisselle": {
+    "id": "cocotte-7.5l",
+    "label": "cocotte 7,5 L",
+    "facteurMax": 2.0
+   },
    "gainChainage": 0,
-   "cuisinable": false
+   "cuisinable": true
   },
   {
    "id": "pates-bolognaise",
    "titre": "Pâtes à la bolognaise",
    "minutes": 15,
    "minutesSurPlace": 15,
-   "avanceMin": 0,
+   "avanceMin": 15,
    "anticipations": [],
    "portions": 4,
    "source": null,
@@ -381,7 +467,84 @@
      "central": false
     }
    ],
-   "steps": [],
+   "steps": [
+    {
+     "id": "eau",
+     "action": "Porter une grande casserole d'eau salée à ébullition",
+     "minutes": 6,
+     "needs": [
+      "boil"
+     ],
+     "surveille": false,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "rechauffer-sauce",
+     "action": "Pendant que l'eau chauffe : réchauffer la sauce bolognaise à feu doux, à couvert",
+     "minutes": 8,
+     "needs": [
+      "simmer"
+     ],
+     "surveille": true,
+     "uses": [
+      "sauce-bolognaise-ing"
+     ],
+     "enParallele": "eau",
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cuire-pates",
+     "action": "Cuire les pâtes le temps indiqué sur le paquet, égoutter en gardant une louche d'eau de cuisson",
+     "minutes": 8,
+     "needs": [
+      "boil"
+     ],
+     "surveille": true,
+     "uses": [
+      "pates"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "servir",
+     "action": "Mêler les pâtes à la sauce hors du feu — un fond d'eau de cuisson si elle est trop épaisse — et servir avec le fromage râpé",
+     "minutes": 1,
+     "needs": [],
+     "surveille": true,
+     "uses": [
+      "fromage-rape"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
    "bebe": null,
    "bebePrep": null,
    "bebeApres": null,
@@ -430,16 +593,20 @@
    "emits": [],
    "lotEntier": false,
    "calibreMax": null,
-   "vaisselle": null,
+   "vaisselle": {
+    "id": "casseroles",
+    "label": "casseroles 2,6 L / 1,6 L",
+    "facteurMax": 1.25
+   },
    "gainChainage": 30,
-   "cuisinable": false
+   "cuisinable": true
   },
   {
    "id": "lasagnes",
    "titre": "Lasagnes",
    "minutes": 50,
    "minutesSurPlace": 50,
-   "avanceMin": 0,
+   "avanceMin": 50,
    "anticipations": [],
    "portions": 6,
    "source": null,
@@ -504,7 +671,71 @@
      "central": false
     }
    ],
-   "steps": [],
+   "steps": [
+    {
+     "id": "bechamel",
+     "action": "Préchauffer le four à 200 °C. Pendant qu'il monte, délayer la farine dans le lait FROID au fouet — à froid elle ne fait pas de grumeaux — puis chauffer à feu moyen sans cesser de remuer jusqu'à ce que la sauce nappe la cuillère",
+     "minutes": 10,
+     "needs": [
+      "simmer",
+      "bake"
+     ],
+     "surveille": true,
+     "uses": [
+      "farine",
+      "lait"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "monter",
+     "action": "Monter le plat : une louche de bolognaise au fond, une couche de plaques, de la béchamel, et recommencer en finissant par la béchamel — les plaques du dessus ne doivent jamais rester à sec, c'est là qu'elles restent dures",
+     "minutes": 10,
+     "needs": [
+      "gratin-vessel"
+     ],
+     "surveille": true,
+     "uses": [
+      "sauce-bolognaise-ing",
+      "pates-lasagne"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "enfourner",
+     "action": "Couvrir de comté râpé et enfourner à 200 °C jusqu'à ce que le dessus soit doré et qu'un couteau traverse les plaques sans résistance",
+     "minutes": 30,
+     "needs": [
+      "gratin"
+     ],
+     "surveille": false,
+     "uses": [
+      "fromage-rape"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
    "bebe": null,
    "bebePrep": null,
    "bebeApres": null,
@@ -564,16 +795,20 @@
    ],
    "lotEntier": false,
    "calibreMax": null,
-   "vaisselle": null,
+   "vaisselle": {
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.0
+   },
    "gainChainage": 0,
-   "cuisinable": false
+   "cuisinable": true
   },
   {
    "id": "gnocchis-poelees",
    "titre": "Gnocchis poêlés aux légumes",
    "minutes": 25,
    "minutesSurPlace": 25,
-   "avanceMin": 0,
+   "avanceMin": 25,
    "anticipations": [],
    "portions": 4,
    "source": null,
@@ -639,7 +874,85 @@
      "central": false
     }
    ],
-   "steps": [],
+   "steps": [
+    {
+     "id": "tailler",
+     "action": "Émincer l'oignon, tailler les courgettes en demi-rondelles",
+     "minutes": 6,
+     "needs": [],
+     "surveille": true,
+     "uses": [
+      "oignon",
+      "courgettes"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "poeler-legumes",
+     "action": "Chauffer l'huile dans la sauteuse, faire blondir l'oignon, ajouter les courgettes et les laisser colorer sans trop remuer",
+     "minutes": 12,
+     "needs": [
+      "pan-fry"
+     ],
+     "surveille": true,
+     "uses": [
+      "huile-olive"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "poeler-gnocchis",
+     "action": "Ajouter les gnocchis CRUS dans la poêle avec les légumes et les faire dorer sur toutes leurs faces — ceux à poêler ne passent pas par l'eau bouillante, c'est tout leur intérêt",
+     "minutes": 6,
+     "needs": [
+      "pan-fry"
+     ],
+     "surveille": true,
+     "uses": [
+      "gnocchis"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "parmesan",
+     "action": "Hors du feu, parsemer de parmesan et laisser fondre une minute avant de servir",
+     "minutes": 1,
+     "needs": [],
+     "surveille": true,
+     "uses": [
+      "fromage-rape"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
    "bebe": null,
    "bebePrep": null,
    "bebeApres": null,
@@ -654,16 +967,20 @@
    "emits": [],
    "lotEntier": false,
    "calibreMax": null,
-   "vaisselle": null,
+   "vaisselle": {
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.5
+   },
    "gainChainage": 0,
-   "cuisinable": false
+   "cuisinable": true
   },
   {
    "id": "poulet-roti",
    "titre": "Poulet rôti et pommes de terre",
    "minutes": 80,
    "minutesSurPlace": 80,
-   "avanceMin": 0,
+   "avanceMin": 80,
    "anticipations": [],
    "portions": 6,
    "source": null,
@@ -729,7 +1046,83 @@
      "central": false
     }
    ],
-   "steps": [],
+   "steps": [
+    {
+     "id": "prechauffer",
+     "action": "Préchauffer le four à 200 °C",
+     "minutes": 2,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "preparer-poulet",
+     "action": "Frotter le poulet d'huile d'olive, le parsemer de thym, le poser dans le plat cuisses vers le haut",
+     "minutes": 3,
+     "needs": [],
+     "surveille": true,
+     "uses": [
+      "poulet",
+      "huile-olive",
+      "thym"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "legumes-autour",
+     "action": "Pommes de terre en gros quartiers et oignons en demi-lunes, disposés autour du poulet : ils cuiront dans le gras qui tombe",
+     "minutes": 10,
+     "needs": [],
+     "surveille": true,
+     "uses": [
+      "pommes-de-terre",
+      "oignon"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "rotir",
+     "action": "Enfourner à 200 °C, arroser du jus à mi-cuisson et remuer les pommes de terre. Le poulet est cuit quand la cuisse se détache et que le jus qui sort est clair",
+     "minutes": 65,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
    "bebe": null,
    "bebePrep": null,
    "bebeApres": null,
@@ -773,14 +1166,14 @@
    "calibreMax": 1.6,
    "vaisselle": null,
    "gainChainage": 0,
-   "cuisinable": false
+   "cuisinable": true
   },
   {
    "id": "fajitas-poulet",
    "titre": "Fajitas au poulet",
    "minutes": 25,
    "minutesSurPlace": 25,
-   "avanceMin": 0,
+   "avanceMin": 25,
    "anticipations": [],
    "portions": 4,
    "source": null,
@@ -856,7 +1249,104 @@
      "central": false
     }
    ],
-   "steps": [],
+   "steps": [
+    {
+     "id": "tailler",
+     "action": "Poivrons et oignon en lanières",
+     "minutes": 8,
+     "needs": [],
+     "surveille": true,
+     "uses": [
+      "poivron",
+      "oignon"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "poeler",
+     "action": "Saisir les lanières à feu vif dans la sauteuse, sans les noyer : elles doivent rester croquantes",
+     "minutes": 10,
+     "needs": [
+      "pan-fry"
+     ],
+     "surveille": true,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "tiedir-tortillas",
+     "action": "Pendant que les légumes saisissent : tiédir les tortillas, à la poêle sèche ou au four éteint encore chaud",
+     "minutes": 5,
+     "needs": [
+      "pan-fry"
+     ],
+     "surveille": true,
+     "uses": [
+      "tortillas"
+     ],
+     "enParallele": "poeler",
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "rechauffer-poulet",
+     "action": "Ajouter le poulet effiloché juste le temps de le réchauffer — il est déjà cuit, le repasser à la poêle le dessèche",
+     "minutes": 4,
+     "needs": [
+      "pan-fry"
+     ],
+     "surveille": true,
+     "uses": [
+      "poulet-cuit-ing"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "servir",
+     "action": "Poser la poêle, la crème et le fromage râpé sur la table : chacun garnit sa tortilla",
+     "minutes": 3,
+     "needs": [],
+     "surveille": true,
+     "uses": [
+      "creme",
+      "fromage-rape"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
    "bebe": null,
    "bebePrep": null,
    "bebeApres": null,
@@ -893,16 +1383,20 @@
    "emits": [],
    "lotEntier": false,
    "calibreMax": null,
-   "vaisselle": null,
+   "vaisselle": {
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.5
+   },
    "gainChainage": 0,
-   "cuisinable": false
+   "cuisinable": true
   },
   {
    "id": "soupe-de-poule",
    "titre": "Soupe de poule aux vermicelles",
    "minutes": 45,
    "minutesSurPlace": 45,
-   "avanceMin": 0,
+   "avanceMin": 45,
    "anticipations": [],
    "portions": 4,
    "source": null,
@@ -958,7 +1452,101 @@
      "central": false
     }
    ],
-   "steps": [],
+   "steps": [
+    {
+     "id": "bouillon",
+     "action": "Couvrir la carcasse d'eau FROIDE à la cocotte, porter à frémissement et laisser tirer à petits bouillons, sans couvrir complètement",
+     "minutes": 30,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": false,
+     "uses": [
+      "carcasse-ing"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "legumes",
+     "action": "Pendant que le bouillon tire : carottes en rondelles, poireau en tronçons",
+     "minutes": 8,
+     "needs": [],
+     "surveille": true,
+     "uses": [
+      "carottes",
+      "poireau"
+     ],
+     "enParallele": "bouillon",
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "filtrer",
+     "action": "Retirer la carcasse, filtrer le bouillon, récupérer la chair qui se détache et la remettre dedans",
+     "minutes": 5,
+     "needs": [],
+     "surveille": true,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cuire-legumes",
+     "action": "Remettre le bouillon à frémir avec les légumes",
+     "minutes": 6,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": true,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "vermicelles",
+     "action": "Jeter les vermicelles dans le bouillon frémissant et compter le temps du paquet — pas plus, ils continuent de gonfler dans l'assiette",
+     "minutes": 4,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": true,
+     "uses": [
+      "vermicelles"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
    "bebe": null,
    "bebePrep": null,
    "bebeApres": null,
@@ -1001,16 +1589,20 @@
    "emits": [],
    "lotEntier": false,
    "calibreMax": null,
-   "vaisselle": null,
+   "vaisselle": {
+    "id": "cocotte-7.5l",
+    "label": "cocotte 7,5 L",
+    "facteurMax": 3.0
+   },
    "gainChainage": 0,
-   "cuisinable": false
+   "cuisinable": true
   },
   {
    "id": "curry-pois-chiches",
    "titre": "Curry de pois chiches au lait de coco",
    "minutes": 30,
    "minutesSurPlace": 30,
-   "avanceMin": 0,
+   "avanceMin": 30,
    "anticipations": [],
    "portions": 4,
    "source": null,
@@ -1086,7 +1678,90 @@
      "central": false
     }
    ],
-   "steps": [],
+   "steps": [
+    {
+     "id": "riz",
+     "action": "Mettre le riz à cuire : c'est lui qui donne le tempo du reste",
+     "minutes": 15,
+     "needs": [
+      "boil"
+     ],
+     "surveille": false,
+     "uses": [
+      "riz"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "oignon",
+     "action": "Pendant la cuisson du riz : émincer l'oignon, le faire revenir à la sauteuse, puis ajouter le curry et le laisser griller quelques secondes — c'est au contact du gras chaud qu'il libère son parfum, pas dans la sauce",
+     "minutes": 8,
+     "needs": [
+      "pan-fry"
+     ],
+     "surveille": true,
+     "uses": [
+      "oignon",
+      "curry"
+     ],
+     "enParallele": "riz",
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "mijoter",
+     "action": "Verser les tomates pelées et le lait de coco, laisser réduire à feu moyen",
+     "minutes": 10,
+     "needs": [
+      "simmer"
+     ],
+     "surveille": true,
+     "uses": [
+      "tomates-pelees",
+      "lait-coco"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "pois-chiches",
+     "action": "Ajouter les pois chiches égouttés et rincés, les réchauffer dans la sauce sans les faire éclater",
+     "minutes": 5,
+     "needs": [
+      "simmer"
+     ],
+     "surveille": true,
+     "uses": [
+      "pois-chiches"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
    "bebe": null,
    "bebePrep": null,
    "bebeApres": null,
@@ -1112,16 +1787,20 @@
    ],
    "lotEntier": false,
    "calibreMax": null,
-   "vaisselle": null,
+   "vaisselle": {
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.5
+   },
    "gainChainage": 0,
-   "cuisinable": false
+   "cuisinable": true
   },
   {
    "id": "saumon-riz-brocoli",
    "titre": "Pavé de saumon, riz et brocoli",
    "minutes": 25,
    "minutesSurPlace": 25,
-   "avanceMin": 0,
+   "avanceMin": 25,
    "anticipations": [],
    "portions": 4,
    "source": null,
@@ -1176,7 +1855,86 @@
      "central": false
     }
    ],
-   "steps": [],
+   "steps": [
+    {
+     "id": "riz",
+     "action": "Mettre le riz à cuire",
+     "minutes": 15,
+     "needs": [
+      "boil"
+     ],
+     "surveille": false,
+     "uses": [
+      "riz"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "brocoli",
+     "action": "Pendant la cuisson du riz : détailler le brocoli en bouquets et le cuire à la vapeur, il doit rester ferme sous la pointe du couteau",
+     "minutes": 10,
+     "needs": [
+      "steam"
+     ],
+     "surveille": true,
+     "uses": [
+      "brocoli"
+     ],
+     "enParallele": "riz",
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "saumon",
+     "action": "Poêler les pavés côté peau d'abord, à feu moyen, et ne les retourner qu'une fois : le cœur doit rester rosé",
+     "minutes": 8,
+     "needs": [
+      "pan-fry"
+     ],
+     "surveille": true,
+     "uses": [
+      "saumon"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "citron",
+     "action": "Servir avec le citron en quartiers, à presser à table",
+     "minutes": 2,
+     "needs": [],
+     "surveille": true,
+     "uses": [
+      "citron"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
    "bebe": null,
    "bebePrep": null,
    "bebeApres": null,
@@ -1191,16 +1949,20 @@
    "emits": [],
    "lotEntier": false,
    "calibreMax": null,
-   "vaisselle": null,
+   "vaisselle": {
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.5
+   },
    "gainChainage": 0,
-   "cuisinable": false
+   "cuisinable": true
   },
   {
    "id": "quiche-poireaux",
    "titre": "Quiche aux poireaux",
    "minutes": 55,
    "minutesSurPlace": 55,
-   "avanceMin": 0,
+   "avanceMin": 55,
    "anticipations": [],
    "portions": 6,
    "source": null,
@@ -1265,7 +2027,103 @@
      "central": false
     }
    ],
-   "steps": [],
+   "steps": [
+    {
+     "id": "poireaux",
+     "action": "Émincer les poireaux et les faire fondre à la sauteuse à feu doux jusqu'à ce qu'ils rendent leur eau et deviennent tendres. Cette eau-là doit partir dans la poêle, sinon elle part dans la pâte",
+     "minutes": 12,
+     "needs": [
+      "pan-fry"
+     ],
+     "surveille": true,
+     "uses": [
+      "poireau"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "appareil",
+     "action": "Battre les œufs avec la crème, poivrer",
+     "minutes": 3,
+     "needs": [],
+     "surveille": true,
+     "uses": [
+      "oeufs",
+      "creme"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "foncer",
+     "action": "Préchauffer le four à 180 °C. Foncer le moule avec la pâte brisée et la piquer à la fourchette",
+     "minutes": 3,
+     "needs": [
+      "bake"
+     ],
+     "surveille": true,
+     "uses": [
+      "pate-brisee"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "garnir",
+     "action": "Étaler les poireaux sur la pâte, verser l'appareil par-dessus, couvrir de comté râpé",
+     "minutes": 2,
+     "needs": [],
+     "surveille": true,
+     "uses": [
+      "fromage-rape"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cuire",
+     "action": "Enfourner à 180 °C jusqu'à ce que le centre soit pris — il ne doit plus trembler quand on bouge le moule — et le dessus doré",
+     "minutes": 35,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
    "bebe": null,
    "bebePrep": null,
    "bebeApres": null,
@@ -1291,16 +2149,20 @@
    ],
    "lotEntier": false,
    "calibreMax": null,
-   "vaisselle": null,
+   "vaisselle": {
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.0
+   },
    "gainChainage": 0,
-   "cuisinable": false
+   "cuisinable": true
   },
   {
    "id": "chili-sin-carne",
    "titre": "Chili sin carne",
    "minutes": 40,
    "minutesSurPlace": 40,
-   "avanceMin": 0,
+   "avanceMin": 40,
    "anticipations": [],
    "portions": 6,
    "source": null,
@@ -1376,7 +2238,91 @@
      "central": false
     }
    ],
-   "steps": [],
+   "steps": [
+    {
+     "id": "riz",
+     "action": "Mettre le riz à cuire",
+     "minutes": 15,
+     "needs": [
+      "boil"
+     ],
+     "surveille": false,
+     "uses": [
+      "riz"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "revenir",
+     "action": "Pendant la cuisson du riz : oignon et poivron en dés, à faire revenir à la sauteuse jusqu'à ce que le poivron s'assouplisse",
+     "minutes": 10,
+     "needs": [
+      "chop-coarse",
+      "pan-fry"
+     ],
+     "surveille": true,
+     "uses": [
+      "oignon",
+      "poivron"
+     ],
+     "enParallele": "riz",
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "mijoter",
+     "action": "Ajouter les tomates pelées, les écraser à la cuillère, et laisser mijoter à découvert",
+     "minutes": 18,
+     "needs": [
+      "simmer"
+     ],
+     "surveille": true,
+     "uses": [
+      "tomates-pelees"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "finir",
+     "action": "Ajouter les haricots rouges et le maïs égouttés en fin de cuisson, juste pour les réchauffer : plus longtemps et les haricots se défont",
+     "minutes": 7,
+     "needs": [
+      "simmer"
+     ],
+     "surveille": true,
+     "uses": [
+      "haricots-rouges",
+      "mais"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
    "bebe": null,
    "bebePrep": null,
    "bebeApres": null,
@@ -1402,16 +2348,20 @@
    ],
    "lotEntier": false,
    "calibreMax": null,
-   "vaisselle": null,
+   "vaisselle": {
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.0
+   },
    "gainChainage": 0,
-   "cuisinable": false
+   "cuisinable": true
   },
   {
    "id": "gratin-courgettes-riz",
    "titre": "Gratin de courgettes au riz",
    "minutes": 50,
    "minutesSurPlace": 50,
-   "avanceMin": 0,
+   "avanceMin": 50,
    "anticipations": [],
    "portions": 4,
    "source": null,
@@ -1477,7 +2427,90 @@
      "central": false
     }
    ],
-   "steps": [],
+   "steps": [
+    {
+     "id": "riz",
+     "action": "Mettre le riz à cuire, deux minutes de moins que le temps du paquet : il finira de gonfler au four",
+     "minutes": 15,
+     "needs": [
+      "boil"
+     ],
+     "surveille": false,
+     "uses": [
+      "riz"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "courgettes",
+     "action": "Pendant la cuisson du riz : oignon émincé et courgettes en rondelles, à faire revenir à la sauteuse jusqu'à ce qu'elles aient rendu leur eau",
+     "minutes": 12,
+     "needs": [
+      "pan-fry"
+     ],
+     "surveille": true,
+     "uses": [
+      "courgettes",
+      "oignon"
+     ],
+     "enParallele": "riz",
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "melanger",
+     "action": "Préchauffer le four à 200 °C. Mêler le riz, les courgettes et les œufs battus, verser dans le plat à gratin",
+     "minutes": 6,
+     "needs": [
+      "bake",
+      "gratin-vessel"
+     ],
+     "surveille": true,
+     "uses": [
+      "oeufs"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "gratiner",
+     "action": "Couvrir de comté râpé et gratiner à 200 °C jusqu'à ce que le dessus prenne couleur",
+     "minutes": 29,
+     "needs": [
+      "gratin"
+     ],
+     "surveille": false,
+     "uses": [
+      "fromage-rape"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
    "bebe": null,
    "bebePrep": null,
    "bebeApres": null,
@@ -1492,16 +2525,20 @@
    "emits": [],
    "lotEntier": false,
    "calibreMax": null,
-   "vaisselle": null,
+   "vaisselle": {
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.5
+   },
    "gainChainage": 0,
-   "cuisinable": false
+   "cuisinable": true
   },
   {
    "id": "salade-lentilles-feta",
    "titre": "Salade de lentilles à la feta",
    "minutes": 15,
    "minutesSurPlace": 15,
-   "avanceMin": 0,
+   "avanceMin": 15,
    "anticipations": [],
    "portions": 4,
    "source": null,
@@ -1567,7 +2604,81 @@
      "central": false
     }
    ],
-   "steps": [],
+   "steps": [
+    {
+     "id": "lentilles",
+     "action": "Sortir les lentilles cuites et les laisser revenir à température — froides du frigo, elles ne prennent pas l'assaisonnement",
+     "minutes": 3,
+     "needs": [],
+     "surveille": true,
+     "uses": [
+      "lentilles-cuites"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "tailler",
+     "action": "Tomates en dés, oignon rouge en lamelles fines",
+     "minutes": 7,
+     "needs": [],
+     "surveille": true,
+     "uses": [
+      "tomates",
+      "oignon-rouge"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "assaisonner",
+     "action": "Mêler le tout à l'huile d'olive, saler, poivrer",
+     "minutes": 3,
+     "needs": [],
+     "surveille": true,
+     "uses": [
+      "huile-olive"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "feta",
+     "action": "Émietter la feta par-dessus au dernier moment, sans mélanger : elle sale déjà la salade, l'écraser dedans la sale deux fois",
+     "minutes": 2,
+     "needs": [],
+     "surveille": true,
+     "uses": [
+      "feta"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
    "bebe": null,
    "bebePrep": null,
    "bebeApres": null,
@@ -1606,14 +2717,14 @@
    "calibreMax": null,
    "vaisselle": null,
    "gainChainage": 20,
-   "cuisinable": false
+   "cuisinable": true
   },
   {
    "id": "croque-monsieur-salade",
    "titre": "Croque-monsieur et salade verte",
    "minutes": 20,
    "minutesSurPlace": 20,
-   "avanceMin": 0,
+   "avanceMin": 20,
    "anticipations": [],
    "portions": 4,
    "source": null,
@@ -1668,7 +2779,82 @@
      "central": false
     }
    ],
-   "steps": [],
+   "steps": [
+    {
+     "id": "prechauffer",
+     "action": "Préchauffer le four à 200 °C",
+     "minutes": 2,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "monter",
+     "action": "Monter les croques : une tranche, le jambon, le comté râpé, la seconde tranche, et encore un peu de fromage sur le dessus — c'est celui-là qui fait la croûte",
+     "minutes": 8,
+     "needs": [],
+     "surveille": true,
+     "uses": [
+      "pain-de-mie",
+      "jambon",
+      "fromage-rape"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cuire",
+     "action": "Enfourner jusqu'à ce que le dessus soit doré et que le fromage file",
+     "minutes": 10,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "salade",
+     "action": "Pendant la cuisson : laver la salade et l'assaisonner",
+     "minutes": 5,
+     "needs": [],
+     "surveille": true,
+     "uses": [
+      "salade-verte"
+     ],
+     "enParallele": "cuire",
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
    "bebe": null,
    "bebePrep": null,
    "bebeApres": null,
@@ -1685,14 +2871,14 @@
    "calibreMax": null,
    "vaisselle": null,
    "gainChainage": 0,
-   "cuisinable": false
+   "cuisinable": true
   },
   {
    "id": "tarte-tomates-moutarde",
    "titre": "Tarte tomates-moutarde",
    "minutes": 45,
    "minutesSurPlace": 45,
-   "avanceMin": 0,
+   "avanceMin": 45,
    "anticipations": [],
    "portions": 4,
    "source": null,
@@ -1747,7 +2933,84 @@
      "central": false
     }
    ],
-   "steps": [],
+   "steps": [
+    {
+     "id": "foncer",
+     "action": "Préchauffer le four à 200 °C. Foncer le moule avec la pâte brisée et la piquer à la fourchette",
+     "minutes": 4,
+     "needs": [
+      "bake"
+     ],
+     "surveille": true,
+     "uses": [
+      "pate-brisee"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "moutarde",
+     "action": "Étaler la moutarde au fond de la pâte, en couche fine : c'est elle qui tient l'eau des tomates à distance de la pâte",
+     "minutes": 2,
+     "needs": [],
+     "surveille": true,
+     "uses": [
+      "moutarde"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "tomates",
+     "action": "Tomates en rondelles, rangées en rosace sans se superposer — superposées elles cuisent à la vapeur au lieu de sécher",
+     "minutes": 7,
+     "needs": [],
+     "surveille": true,
+     "uses": [
+      "tomates"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cuire",
+     "action": "Couvrir de comté râpé et enfourner à 200 °C jusqu'à ce que les bords de la pâte soient dorés",
+     "minutes": 32,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "uses": [
+      "fromage-rape"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
    "bebe": null,
    "bebePrep": null,
    "bebeApres": null,
@@ -1764,7 +3027,7 @@
    "calibreMax": null,
    "vaisselle": null,
    "gainChainage": 0,
-   "cuisinable": false
+   "cuisinable": true
   },
   {
    "id": "accras-thon-pain-carottes",

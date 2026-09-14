@@ -30,6 +30,33 @@ describe("le catalogue réel", () => {
     }
   });
 
+  // AUCUN PLAT NE SE SERT SANS SES ÉTAPES, et c'est l'utilisateur qui a dû le
+  // dire : « tu m'as encore fourni une recette sans étapes » (14/09/2026),
+  // devant les gnocchis poêlés, à l'heure de les faire.
+  //
+  // Le dépôt le savait, en une ligne, depuis le début — `catalogue.py` :
+  // « a plan-level entry has no steps: it can be planned, not cooked ». Quinze
+  // plats de `_repertoire.yaml` étaient entrés à ce niveau-là, `verifier.py`
+  // les comptait en clair dans sa dernière ligne, et RIEN entre ce compte et
+  // l'écran n'en tenait compte : la fiche les ouvrait sur leur liste
+  // d'ingrédients, un bouton « Terminer », et pas un mot pour dire pourquoi.
+  // #50 avait déjà croisé ces quinze-là — mais pour un autre symptôme, le
+  // stock qui ne descendait pas — et avait réparé le bouton sans voir que le
+  // trou était la recette.
+  //
+  // LA SAISIE « NIVEAU PLAN » RESTE LÉGITIME : c'est elle qui a permis
+  // d'atteindre les trente plats sans lesquels le choix ne veut rien dire. Ce
+  // test ne l'interdit pas, il interdit de la LIVRER — un plat entré en trente
+  // secondes doit avoir ses étapes avant d'atteindre l'export, ou l'app doit
+  // apprendre à dire qu'il n'en a pas. Tant que le second chemin n'existe pas,
+  // c'est le premier qui tient, et ce test est ce qui le tient.
+  test("aucun plat ne peut se cuisiner sans étapes", () => {
+    const muets = lireCatalogue(brut())
+      .plats.filter((p) => p.steps.length === 0)
+      .map((p) => p.id);
+    expect(muets, `${muets.length} plat(s) servis sans étapes : ${muets.join(", ")}`).toEqual([]);
+  });
+
   test("les identifiants de plats sont uniques", () => {
     const ids = lireCatalogue(brut()).plats.map((p) => p.id);
     expect(new Set(ids).size).toBe(ids.length);
