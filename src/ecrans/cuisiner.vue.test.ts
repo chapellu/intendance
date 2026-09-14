@@ -3,9 +3,11 @@ import { describe, expect, test } from "vitest";
 import { lireCatalogue } from "../model/catalogue";
 import type { Catalogue, Etape } from "../model/types";
 import {
+  aSortir,
   avancement,
   basculerMinuteur,
   chauffeDe,
+  credit,
   minuteur,
   provenanceIngredient,
   SANS_FEU,
@@ -157,5 +159,107 @@ describe("l'avancement", () => {
     expect(avancement(steps, 0)).toEqual({ reste: 35, total: 35 });
     expect(avancement(steps, 1)).toEqual({ reste: 25, total: 35 });
     expect(avancement(steps, 2)).toEqual({ reste: 5, total: 35 });
+  });
+});
+
+/* ─────────────────────────────────────────────────────── T73 — le crédit */
+
+describe("la provenance d'une recette", () => {
+  // « L'origine je parlait de la provenance (auteur, ouvrage, url) »
+  // — 2026-09-12, Workspace#56.
+  const plats = catalogue.plats;
+
+  test("une recette d'auteur nomme son auteur et son ouvrage", () => {
+    const avec = plats.filter((p) => p.source !== null);
+    expect(avec.length).toBeGreaterThan(0);
+    for (const p of avec) {
+      const c = credit(p);
+      expect(c.texte).toContain(p.source!.auteur);
+      expect(c.texte).toContain(p.source!.ouvrage);
+    }
+  });
+
+  // LA PROMESSE QUI A DÉCIDÉ LE TICKET. Le silence se lirait comme une donnée
+  // manquante alors que c'est une réponse : ces plats n'ont pas de source parce
+  // qu'ils sont à nous. Un champ vide sur un quart du catalogue ressemble à un
+  // bug — c'est l'option écartée.
+  test("un plat du foyer le DIT, il ne se tait pas", () => {
+    const sans = plats.filter((p) => p.source === null);
+    expect(sans.length).toBeGreaterThan(0);
+    for (const p of sans) {
+      expect(credit(p).texte).toBe("Recette du foyer");
+      expect(credit(p).url).toBeNull();
+    }
+  });
+
+  test("aucune fiche ne reste sans phrase de provenance", () => {
+    for (const p of plats) expect(credit(p).texte.length).toBeGreaterThan(0);
+  });
+
+  // `work` porte déjà la page — « …, Terre vivante, p. 116 ». Si le crédit
+  // devait un jour la recomposer depuis `page`, deux orthographes du même
+  // nombre finiraient par diverger ; `page` reste donc hors de l'export.
+  test("la page vient de l'ouvrage, et rien ne la recompose", () => {
+    const avecPage = plats.filter((p) => /\bp\. ?\d+/.test(p.source?.ouvrage ?? ""));
+    expect(avecPage.length).toBeGreaterThan(0);
+    for (const p of avecPage) expect(credit(p).texte).toMatch(/\bp\. ?\d+/);
+  });
+
+  // L'url n'est portée que par 5 sources ; là où elle existe, c'est là que #26 a
+  // délibérément laissé la prose, et y renvoyer est le comportement voulu.
+  test("l'url ne sort que si la source en porte une", () => {
+    for (const p of plats) expect(credit(p).url).toBe(p.source?.url ?? null);
+  });
+
+  // Workspace#41 a tranché : la saisonnalité roule sur le plancher (#43), pas
+  // sur la planification. `saison` entre dans le modèle et n'en ressort nulle
+  // part — un no-op DÉCLARÉ, épinglé ici pour que le brancher au score soit un
+  // geste visible et non un oubli.
+  test("`saison` entre dans le modèle et ne pilote rien", () => {
+    const avecSaison = plats.filter((p) => p.source?.saison);
+    expect(avecSaison.length).toBeGreaterThan(0);
+    for (const p of avecSaison) expect(credit(p).texte).not.toContain(p.source!.saison!);
+  });
+});
+
+/* ────────────────────────────────────────────────── T74 — la vaisselle */
+
+describe("l'ustensile à sortir avant de commencer", () => {
+  // « J'aimerai bien aussi que tu m'indique quel outil utiliser et de quelle
+  // taille. » La moitié de la réponse était déjà calculée et jamais montrée.
+  test("la taille est dans le libellé, on ne la calcule pas", () => {
+    const avec = catalogue.plats.filter((p) => p.vaisselle !== null);
+    expect(avec.length).toBeGreaterThan(0);
+    for (const p of avec) expect(aSortir(p)).toBe(p.vaisselle!.label);
+    // Chaque libellé du corpus porte un nombre — 28 cm, 7,5 L. Si une vaisselle
+    // arrivait un jour sans taille, c'est le compilateur qu'il faudrait relire.
+    for (const p of avec) expect(aSortir(p)).toMatch(/\d/);
+  });
+
+  // Silence délibéré, pas oubli : le compilateur n'a pas trouvé d'ustensile à
+  // nommer, et en inventer un serait pire que se taire.
+  test("un plat sans vaisselle ne montre rien", () => {
+    const sans = catalogue.plats.filter((p) => p.vaisselle === null);
+    expect(sans.length).toBeGreaterThan(0);
+    for (const p of sans) expect(aSortir(p)).toBeNull();
+  });
+
+  // MESURÉ AVANT D'ÉCRIRE LA PHRASE, comme le ticket l'exigeait : trois
+  // endroits lisent `facteurMax` et deux l'écrivent déjà — `parts.vue.cuisson()`
+  // et `offres.reserves()`. La tête de fiche n'en fait pas un troisième libellé.
+  test("le débordement ne se dit pas ici — il se dit déjà ailleurs", () => {
+    for (const p of catalogue.plats) {
+      const t = aSortir(p);
+      if (t !== null) expect(t).not.toMatch(/⚠|au plus|tournée/);
+    }
+  });
+
+  // `chauffeDe` écrase `needs` en un niveau de feu et JETTE l'ustensile :
+  // `simmer-large` devient « Feu vif » et la cocotte de 7,5 L disparaît. Les
+  // deux répondent à deux questions et ne se remplacent pas.
+  test("l'ustensile ne se déduit pas de la chauffe", () => {
+    const cocotte = catalogue.plats.find((p) => p.vaisselle?.label.includes("cocotte"));
+    expect(cocotte).toBeDefined();
+    expect(aSortir(cocotte!)).toContain("cocotte");
   });
 });

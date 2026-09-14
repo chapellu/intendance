@@ -2228,19 +2228,22 @@ ordre que T46 avant T42–T45.
       **imprime** les tailles à côté de ses promesses vieillit mieux qu'un test
       qui les code en dur.
 
-- [ ] **T73 — La provenance traverse l'export, et se lit sur la fiche.**
+- [x] **T73 — La provenance traverse l'export, et se lit sur la fiche.**
       *« L'origine je parlait de la provenance (auteur, ouvrage, url) »*
       (2026-09-12,
       [Workspace#56](https://github.com/chapellu/Workspace/issues/56)). Le
       `source:` des recettes n'est **pas exporté du tout** : c'est le seul champ
       de ce bloc qui manque des deux côtés.
 
-      Mesuré : **65 plats sur 86 portent un `source:`**, et les 21 autres sont
+      Mesuré le 2026-09-14 : **117 plats sur 138 portent un `source:`** (le
+      ticket disait 65 sur 86, d'avant la PR #20), et les 21 autres sont
       exactement les plats du foyer — les 15 de `_repertoire.yaml` plus
       `gratin-de-pates-tomates`, `lentilles-mijotees`, `omelette-courgettes`,
       `ratatouille-minute`, `reste-de-la-veille`, `veloute-de-courgettes`.
-      Sur les 65 : `author` 65, `work` 65, `encoding` 65, `source_id` 64,
-      `saison` 64, `page` 60, `url` **5**.
+      **Ce fait-là a survécu à 52 recettes de plus, à l'identique** — c'est le
+      seul du bloc que la mesure n'a pas démenti. Sur les 117 : `author` 117,
+      `work` 117, `encoding` 117, `source_id` 116, `page` 112, `saison` 64,
+      `url` **5**.
 
       **`work` est déjà une phrase affichable, page comprise** — *« La cuisine
       bio du quotidien, Terre vivante, p. 116 »*. Donc pas de gabarit à
@@ -2272,7 +2275,22 @@ ordre que T46 avant T42–T45.
       committer** — la porte compare au JSON commité, et elle rougit jusque-là.
       Ce n'est pas une panne.
 
-- [ ] **T74 — La vaisselle du plat, en tête de fiche.** *« J'aimerai bien aussi
+      **Fait. Le code dit `credit()`, pas `provenance`** : le mot était déjà
+      pris par `provenanceIngredient`, qui répond à une tout autre question —
+      d'où sort un ingrédient, du placard ou des courses. L'utilisateur dit
+      « provenance » pour l'auteur ; deux sens du même mot dans un même fichier
+      se confondent toujours à la relecture.
+
+      **Le crédit FERME la fiche, il ne l'ouvre pas.** On vient y lire des
+      quantités, pas une bibliographie. Il est discret et lisible — créditer à
+      demi ne crédite pas — et il ne prend la place de rien.
+
+      **`page` et `source_id` restent hors de l'export.** `work` porte déjà la
+      page ; deux orthographes du même nombre finissent par diverger, et
+      `source_id` est une clé de corpus, pas une chose à lire. Sortent :
+      `auteur`, `ouvrage`, `url`, `saison`.
+
+- [x] **T74 — La vaisselle du plat, en tête de fiche.** *« J'aimerai bien aussi
       que tu m'indique quel outil utiliser et de quelle taille. »* La moitié de
       la réponse est déjà calculée et jamais montrée : `plat.vaisselle` est
       résolu sur **44 plats sur 86**, avec la taille dans le libellé —
@@ -2303,6 +2321,30 @@ ordre que T46 avant T42–T45.
       Les 42 plats sans `vaisselle` ne montrent rien. Silence délibéré, pas
       oubli : le compilateur n'a pas trouvé d'ustensile à nommer, et en inventer
       un serait pire que se taire.
+
+      **Fait — et la mesure exigée a bien changé le ticket.** `facteurMax` est
+      lu à TROIS endroits, et deux l'écrivent déjà à l'écran :
+      `parts.vue.cuisson()` dit « ⚠ Ça ne tient pas dans {label} — ×N au plus »
+      et `offres.reserves()` dit « il faut deux tournées ». L'avertissement
+      n'était donc pas à ajouter, il existait — et `vaisselle.label` était déjà
+      affiché, **mais seulement quand ça déborde**. Ce qui manquait n'était pas
+      l'alerte : c'était le nom de l'ustensile QUAND TOUT VA BIEN. La tête de
+      fiche ne dit donc rien du débordement ; en faire un troisième libellé du
+      même fait était précisément l'ornement que le ticket redoutait.
+
+      Mesuré : **66 plats sur 138** portent une vaisselle (le ticket disait
+      44 sur 86) — `sauteuse 28 cm` (49), `cocotte 7,5 L` (15),
+      `casseroles 2,6 L / 1,6 L` (2). Les 72 autres se taisent.
+
+      **Un bug latent réparé au passage, et c'est `ref` qui le permet.** La
+      liste d'ingrédients de la fiche portait `key={x.id}` : sur les onze plats
+      qui doublent un id — la farine de la pâte et celle de la crème — React
+      recevait deux fois la même clé. Rien ne pouvait le corriger avant T72,
+      puisque la clé qui les distingue n'existait pas côté app.
+
+      Portes pour T73 + T74 : typecheck, 588 tests (10 nouveaux), build,
+      **21 e2e** (3 nouveaux, `fiche-provenance.spec.ts`), `catalogue:verifie`
+      0 erreur avec le JSON régénéré et commité.
 
 ### Laissé ouvert par ce bloc
 

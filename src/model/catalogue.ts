@@ -16,8 +16,8 @@
 
 import type {
   Accept, Agression, Catalogue, Denree, Emit, EmitKind, Espace, Etape, Etat, Forme, Foyer,
-  GardeManger, Ingredient, LigneStock, Nature, Plat, Provenance, Quantite, Rattrapage, Urgence,
-  Usage, Zone,
+  GardeManger, Ingredient, LigneStock, Nature, Plat, Provenance, Quantite, Rattrapage, Source,
+  Urgence, Usage, Zone,
 } from "./types";
 
 const ESPACES: readonly Espace[] = ["frigo", "congelo", "placard"];
@@ -156,6 +156,22 @@ function rattrapage(v: unknown, ou: string): Rattrapage | null {
   };
 }
 
+// `auteur` et `ouvrage` sont EXIGÉS dès qu'une source existe, `url` et `saison`
+// non : une source sans crédit n'est pas une source, et laisser passer un
+// `auteur` absent produirait « Recette du foyer » sur une recette qui ne l'est
+// pas — le silence dirait le contraire de la vérité, sur un champ dont tout
+// l'intérêt est de créditer.
+function source(v: unknown, ou: string): Source | null {
+  if (v === null || v === undefined) return null;
+  const o = obj(v, ou);
+  return {
+    auteur: texte(o["auteur"], `${ou}.auteur`),
+    ouvrage: texte(o["ouvrage"], `${ou}.ouvrage`),
+    url: texteOuNull(o["url"] ?? null, `${ou}.url`),
+    saison: texteOuNull(o["saison"] ?? null, `${ou}.saison`),
+  };
+}
+
 function etape(v: unknown, ou: string): Etape {
   const o = obj(v, ou);
   return {
@@ -246,6 +262,7 @@ function plat(v: unknown, ou: string): Plat {
     titre: texte(o["titre"], `${ou}.titre`),
     minutes: nombre(o["minutes"], `${ou}.minutes`),
     portions,
+    source: source(o["source"] ?? null, `${ou}.source`),
     apports: {
       proteine: texte(apports["proteine"], `${ou}.apports.proteine`),
       feculent: texte(apports["feculent"], `${ou}.apports.feculent`),

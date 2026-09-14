@@ -6,7 +6,7 @@
 //
 // Port de `apps/proto-shell/comptoir.js` (`CHAUFFE`, `ecranCuisine`).
 
-import type { Catalogue, Etape, Ingredient } from "../model/types";
+import type { Catalogue, Etape, Ingredient, Plat } from "../model/types";
 
 /* ───────────────────────────────────────────────────────────────── la chauffe */
 
@@ -103,6 +103,70 @@ export function provenanceIngredient(catalogue: Catalogue, ing: Ingredient): Pro
   if (catalogue.gardeManger.denrees.some((d) => (catalogue.rayons.aliases[d.ingredient] ?? d.ingredient) === cid))
     return { label: "au garde-manger", acheter: false };
   return { label: "à acheter", acheter: true };
+}
+
+/* ─────────────────────────────────────────────────────────────────── le crédit */
+
+export interface Credit {
+  texte: string;
+  /** L'adresse où la prose est restée, quand il y en a une. 5 sources sur 117. */
+  url: string | null;
+}
+
+/**
+ * D'où vient la recette, en une phrase.
+ *
+ * LE MOT « PROVENANCE » ÉTAIT DÉJÀ PRIS par `provenanceIngredient`, qui répond à
+ * une tout autre question — d'où sort un ingrédient, du placard ou des courses.
+ * L'utilisateur dit « provenance » pour l'auteur et l'ouvrage ; le code dit
+ * `credit`, parce que deux sens du même mot dans un même fichier finissent
+ * toujours par se confondre à la relecture.
+ *
+ * PAS DE GABARIT À COMPOSER : `ouvrage` est déjà une phrase affichable, page
+ * comprise — « La cuisine bio du quotidien, Terre vivante, p. 116 ». `page`
+ * existe en structuré dans le corpus et reste hors de l'export, parce que deux
+ * orthographes du même nombre finissent par diverger.
+ *
+ * LES 21 PLATS DU FOYER DISENT QUELQUE CHOSE, ILS NE SE TAISENT PAS. Le silence
+ * se lirait comme une donnée manquante alors que c'est une réponse : ces plats
+ * n'ont pas de source parce qu'ils sont à nous. (Retenu contre l'autre option —
+ * ne rien afficher — parce qu'un champ vide sur un quart du catalogue ressemble
+ * à un bug.)
+ */
+export function credit(plat: Plat): Credit {
+  const s = plat.source;
+  if (!s) return { texte: "Recette du foyer", url: null };
+  return { texte: `${s.auteur} — ${s.ouvrage}`, url: s.url };
+}
+
+/* ────────────────────────────────────────────────────────────── la vaisselle */
+
+/**
+ * L'ustensile à sortir avant de commencer, taille comprise — ou rien.
+ *
+ * `plat.vaisselle` est résolu par le compilateur sur 66 des 138 plats, et la
+ * taille est DANS le libellé : « sauteuse 28 cm » (49), « cocotte 7,5 L » (15),
+ * « casseroles 2,6 L / 1,6 L » (2). On l'affiche, on ne le calcule pas.
+ *
+ * LES 72 PLATS SANS VAISSELLE NE MONTRENT RIEN. Silence délibéré : le
+ * compilateur n'a pas trouvé d'ustensile à nommer, et en inventer un serait
+ * pire que se taire.
+ *
+ * AUCUN AVERTISSEMENT DE DÉBORDEMENT ICI, ET C'EST UNE MESURE, PAS UN OUBLI.
+ * Le ticket demandait de chercher qui lit déjà `facteurMax` avant d'ajouter une
+ * phrase. Réponse : trois endroits le lisent, et deux l'ÉCRIVENT déjà —
+ * `parts.vue.cuisson()` dit « ⚠ Ça ne tient pas dans {label} — ×N au plus » et
+ * `offres.reserves()` dit « il faut deux tournées ». Le répéter en tête de fiche
+ * serait le troisième libellé du même fait. Ce qui manquait n'était pas
+ * l'alerte — elle existe depuis les offres — c'était le nom de l'ustensile
+ * quand tout va bien.
+ *
+ * Ça ne préjuge pas de Workspace#57 ni de #59 : l'outil PAR ÉTAPE demande une
+ * règle de résolution qui n'est pas tranchée. Le `vaisselle` du plat, lui, est
+ * déjà résolu.
+ */
+export function aSortir(plat: Plat): string | null {
+  return plat.vaisselle?.label ?? null;
 }
 
 /* ──────────────────────────────────────────────────────────────── l'avancement */

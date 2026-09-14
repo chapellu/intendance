@@ -199,11 +199,38 @@ export interface SansReste {
   ingredients: Ingredient[];
 }
 
+/**
+ * D'où vient la recette. `null` sur les 21 plats du foyer — et ce `null` se dit
+ * à l'écran (« Recette du foyer ») au lieu de se taire : un champ vide sur un
+ * quart du catalogue ressemble à un bug, alors que c'est une réponse.
+ *
+ * CRÉDITER N'EST PAS REPUBLIER. Le cadre de la carte Workspace#26 interdit de
+ * recopier la prose et les photos, jamais de nommer l'auteur ; les 5 `url`
+ * pointent là où #26 a délibérément laissé la prose.
+ */
+export interface Source {
+  auteur: string;
+  /** Déjà une phrase affichable, page comprise — « La cuisine bio du quotidien,
+   *  Terre vivante, p. 116 ». Rien à composer : on l'affiche telle quelle. */
+  ouvrage: string;
+  url: string | null;
+  /**
+   * LA SAISON NE PILOTE RIEN, ET C'EST UN NO-OP DÉCLARÉ.
+   *
+   * 64 des 117 sources en portent une, elle arrive gratuitement avec le champ,
+   * et aucun score ne la lit. Workspace#41 a tranché : la saisonnalité roule
+   * sur le plancher (#43), pas sur la planification. C'est écrit ici pour que
+   * le prochain lecteur ne la branche pas au classement en croyant bien faire.
+   */
+  saison: string | null;
+}
+
 export interface Plat {
   id: string;
   titre: string;
   minutes: number;
   portions: number;
+  source: Source | null;
   apports: Apports;
   ingredients: Ingredient[];
   steps: Etape[];

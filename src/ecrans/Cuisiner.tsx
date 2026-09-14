@@ -28,9 +28,11 @@ import { aller } from "../nav/useRoute";
 import { duree, fmt, hhmm, mmss } from "../ui/format";
 import { Icone } from "../ui/icones";
 import {
+  aSortir,
   avancement,
   basculerMinuteur,
   chauffeDe,
+  credit,
   minuteur,
   provenanceIngredient,
   type EtatMinuteur,
@@ -204,6 +206,8 @@ function Ingredients({
   catalogue: Jeu["catalogue"];
 }) {
   const produit = +(p.portions * f).toFixed(1);
+  const ustensile = aSortir(p);
+  const cr = credit(p);
   return (
     <div className="co-corps">
       <div className="co-encart">
@@ -219,17 +223,45 @@ function Ingredients({
             : ""}
         </span>
       </div>
+      {/* T74 — « à sortir avant de commencer », sur la FICHE et pas sur
+          l'étape : le guide se lit à bout de bras et tout ce qui n'est pas
+          l'étape en cours y est du bruit. Muet sur les 72 plats sans
+          vaisselle. */}
+      {ustensile && (
+        <div className="co-sortir">
+          <Icone nom="info" />
+          <span>
+            À sortir : <b>{ustensile}</b>
+          </span>
+        </div>
+      )}
       <div className="co-ing">
         {p.ingredients.map((x) => {
           const prov = provenanceIngredient(catalogue, x);
+          // `key` sur `ref` ET PAS SUR `id` : onze plats portent deux lignes du
+          // même ingrédient — la farine de la pâte et celle de la crème — et
+          // React recevait deux fois la même clé. C'est `ref` qui les
+          // distingue, et elle n'existait pas avant T72.
           return (
-            <div key={x.id} className="l">
+            <div key={x.ref} className="l">
               <span className="nom">{x.nom}</span>
               <span className="q">{echelleTexte(x, f)}</span>
               <span className={`p ${prov.acheter ? "acheter" : ""}`}>{prov.label}</span>
             </div>
           );
         })}
+      </div>
+      {/* T73 — le crédit ferme la fiche au lieu de l'ouvrir : on vient y lire
+          des quantités, pas une bibliographie. Il est là, lisible, et il ne
+          prend la place de rien. */}
+      <div className="co-credit">
+        {cr.url ? (
+          <a href={cr.url} target="_blank" rel="noreferrer">
+            {cr.texte}
+          </a>
+        ) : (
+          cr.texte
+        )}
       </div>
     </div>
   );

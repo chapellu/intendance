@@ -214,6 +214,7 @@
    "avanceMin": 0,
    "anticipations": [],
    "portions": 6,
+   "source": null,
    "apports": {
     "proteine": "viande-rouge",
     "feculent": "aucun",
@@ -338,6 +339,7 @@
    "avanceMin": 0,
    "anticipations": [],
    "portions": 4,
+   "source": null,
    "apports": {
     "proteine": "viande-rouge",
     "feculent": "pates",
@@ -440,6 +442,7 @@
    "avanceMin": 0,
    "anticipations": [],
    "portions": 6,
+   "source": null,
    "apports": {
     "proteine": "viande-rouge",
     "feculent": "pates",
@@ -573,6 +576,7 @@
    "avanceMin": 0,
    "anticipations": [],
    "portions": 4,
+   "source": null,
    "apports": {
     "proteine": "fromage",
     "feculent": "pommes-de-terre",
@@ -662,6 +666,7 @@
    "avanceMin": 0,
    "anticipations": [],
    "portions": 6,
+   "source": null,
    "apports": {
     "proteine": "viande-blanche",
     "feculent": "pommes-de-terre",
@@ -778,6 +783,7 @@
    "avanceMin": 0,
    "anticipations": [],
    "portions": 4,
+   "source": null,
    "apports": {
     "proteine": "viande-blanche",
     "feculent": "pain",
@@ -899,6 +905,7 @@
    "avanceMin": 0,
    "anticipations": [],
    "portions": 4,
+   "source": null,
    "apports": {
     "proteine": "viande-blanche",
     "feculent": "pates",
@@ -1006,6 +1013,7 @@
    "avanceMin": 0,
    "anticipations": [],
    "portions": 4,
+   "source": null,
    "apports": {
     "proteine": "legumineuse",
     "feculent": "riz",
@@ -1116,6 +1124,7 @@
    "avanceMin": 0,
    "anticipations": [],
    "portions": 4,
+   "source": null,
    "apports": {
     "proteine": "poisson",
     "feculent": "riz",
@@ -1194,6 +1203,7 @@
    "avanceMin": 0,
    "anticipations": [],
    "portions": 6,
+   "source": null,
    "apports": {
     "proteine": "oeuf",
     "feculent": "pate-brisee",
@@ -1293,6 +1303,7 @@
    "avanceMin": 0,
    "anticipations": [],
    "portions": 6,
+   "source": null,
    "apports": {
     "proteine": "legumineuse",
     "feculent": "riz",
@@ -1403,6 +1414,7 @@
    "avanceMin": 0,
    "anticipations": [],
    "portions": 4,
+   "source": null,
    "apports": {
     "proteine": "fromage",
     "feculent": "riz",
@@ -1492,6 +1504,7 @@
    "avanceMin": 0,
    "anticipations": [],
    "portions": 4,
+   "source": null,
    "apports": {
     "proteine": "legumineuse",
     "feculent": "legumineuse",
@@ -1603,6 +1616,7 @@
    "avanceMin": 0,
    "anticipations": [],
    "portions": 4,
+   "source": null,
    "apports": {
     "proteine": "fromage",
     "feculent": "pain",
@@ -1681,6 +1695,7 @@
    "avanceMin": 0,
    "anticipations": [],
    "portions": 4,
+   "source": null,
    "apports": {
     "proteine": "fromage",
     "feculent": "pate-brisee",
@@ -1769,6 +1784,12 @@
     }
    ],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 178",
+    "url": null,
+    "saison": "hiver"
+   },
    "apports": {
     "proteine": "poisson",
     "feculent": "pain",
@@ -2125,6 +2146,12 @@
     }
    ],
    "portions": 2,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 63",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "viande-rouge",
     "feculent": "aucun",
@@ -2358,6 +2385,12 @@
    "avanceMin": 14,
    "anticipations": [],
    "portions": 1,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 67",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "viande-rouge",
     "feculent": "sarrasin",
@@ -2570,6 +2603,12 @@
    "avanceMin": 33,
    "anticipations": [],
    "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "« Petits burgers pour grands gourmands », blog Saines Gourmandises, 23 février 2012",
+    "url": "https://saines-gourmandises.fr/comment-rendre-seduisant-au-possible-un-reste-de-lentilles/",
+    "saison": null
+   },
    "apports": {
     "proteine": "legumineuse",
     "feculent": "aucun",
@@ -2828,6 +2867,12 @@
    "avanceMin": 65,
    "anticipations": [],
    "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 46",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "fromage",
     "feculent": "farine",
@@ -3049,6 +3094,12 @@
     }
    ],
    "portions": 7,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 112",
+    "url": null,
+    "saison": "ete"
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "farine",
@@ -3365,6 +3416,12 @@
     }
    ],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 90",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "orge",
@@ -3516,6 +3573,12 @@
    "avanceMin": 59,
    "anticipations": [],
    "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 124",
+    "url": null,
+    "saison": "automne"
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "chataigne",
@@ -3677,6 +3740,12 @@
    "avanceMin": 20,
    "anticipations": [],
    "portions": 3,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "blog Saines Gourmandises",
+    "url": "https://saines-gourmandises.fr/mal-aime-etonner/",
+    "saison": "hiver"
+   },
    "apports": {
     "proteine": "fromage",
     "feculent": "aucun",
@@ -3899,6 +3968,12 @@
    "avanceMin": 34,
    "anticipations": [],
    "portions": 1,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 57",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "viande-blanche",
     "feculent": "riz",
@@ -4165,6 +4240,12 @@
    "avanceMin": 138,
    "anticipations": [],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 115",
+    "url": null,
+    "saison": "ete"
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "farine",
@@ -4432,6 +4513,12 @@
    "avanceMin": 22,
    "anticipations": [],
    "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 70",
+    "url": null,
+    "saison": "ete"
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "aucun",
@@ -4632,6 +4719,12 @@
    "avanceMin": 26,
    "anticipations": [],
    "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 35",
+    "url": null,
+    "saison": "printemps"
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "aucun",
@@ -4888,6 +4981,12 @@
    "avanceMin": 40,
    "anticipations": [],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 103",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "biscuit",
@@ -5130,6 +5229,12 @@
    "avanceMin": 35,
    "anticipations": [],
    "portions": 1,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 43",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "fromage",
     "feculent": "avoine",
@@ -5336,6 +5441,12 @@
    "avanceMin": 31,
    "anticipations": [],
    "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 26",
+    "url": null,
+    "saison": "printemps"
+   },
    "apports": {
     "proteine": "fromage",
     "feculent": "farine",
@@ -5546,6 +5657,12 @@
    "avanceMin": 53,
    "anticipations": [],
    "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 85",
+    "url": null,
+    "saison": "ete"
+   },
    "apports": {
     "proteine": "viande-rouge",
     "feculent": "riz",
@@ -5846,6 +5963,12 @@
    "avanceMin": 45,
    "anticipations": [],
    "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 40",
+    "url": null,
+    "saison": "printemps"
+   },
    "apports": {
     "proteine": "fromage",
     "feculent": "sarrasin",
@@ -6130,6 +6253,12 @@
    "avanceMin": 34,
    "anticipations": [],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 177",
+    "url": null,
+    "saison": "hiver"
+   },
    "apports": {
     "proteine": "fromage",
     "feculent": "pain",
@@ -6369,6 +6498,12 @@
    "avanceMin": 25,
    "anticipations": [],
    "portions": 1,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 51",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "fromage",
     "feculent": "sarrasin",
@@ -6583,6 +6718,12 @@
    "avanceMin": 34,
    "anticipations": [],
    "portions": 1,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 77",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "fromage",
     "feculent": "avoine",
@@ -6817,6 +6958,12 @@
     }
    ],
    "portions": 2,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 53",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "aucun",
@@ -6942,6 +7089,12 @@
    "avanceMin": 35,
    "anticipations": [],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 39",
+    "url": null,
+    "saison": "printemps"
+   },
    "apports": {
     "proteine": "oeuf",
     "feculent": "avoine",
@@ -7219,6 +7372,12 @@
    "avanceMin": 38,
    "anticipations": [],
    "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 81",
+    "url": null,
+    "saison": "ete"
+   },
    "apports": {
     "proteine": "legumineuse",
     "feculent": "legumineuse",
@@ -7487,6 +7646,12 @@
    "avanceMin": 34,
    "anticipations": [],
    "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 30",
+    "url": null,
+    "saison": "printemps"
+   },
    "apports": {
     "proteine": "oeuf",
     "feculent": "farine",
@@ -7746,6 +7911,12 @@
    "avanceMin": 37,
    "anticipations": [],
    "portions": 1,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 73",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "tofu-soja",
     "feculent": "aucun",
@@ -7938,6 +8109,12 @@
    "avanceMin": 40,
    "anticipations": [],
    "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 100",
+    "url": null,
+    "saison": "ete"
+   },
    "apports": {
     "proteine": "fromage",
     "feculent": "farine",
@@ -8237,6 +8414,12 @@
    "avanceMin": 16,
    "anticipations": [],
    "portions": 1,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 97",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "oeuf",
     "feculent": "aucun",
@@ -8437,6 +8620,12 @@
    "avanceMin": 99,
    "anticipations": [],
    "portions": 7,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 116",
+    "url": null,
+    "saison": "ete"
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "farine",
@@ -8837,6 +9026,12 @@
     }
    ],
    "portions": 12,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 61",
+    "url": null,
+    "saison": "printemps"
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "biscuit",
@@ -9035,6 +9230,12 @@
    "avanceMin": 102,
    "anticipations": [],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 111",
+    "url": null,
+    "saison": "ete"
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "pain",
@@ -9294,6 +9495,12 @@
     }
    ],
    "portions": 5,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 104",
+    "url": null,
+    "saison": "ete"
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "aucun",
@@ -9504,6 +9711,7 @@
    "avanceMin": 40,
    "anticipations": [],
    "portions": 4,
+   "source": null,
    "apports": {
     "proteine": "fromage",
     "feculent": "pates",
@@ -9712,6 +9920,12 @@
    "avanceMin": 43,
    "anticipations": [],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "blog Saines Gourmandises",
+    "url": "https://saines-gourmandises.fr/88076/",
+    "saison": "automne"
+   },
    "apports": {
     "proteine": "viande-rouge",
     "feculent": "pates",
@@ -10043,6 +10257,12 @@
    "avanceMin": 37,
    "anticipations": [],
    "portions": 1,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 98",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "viande-blanche",
     "feculent": "pate-brisee",
@@ -10263,6 +10483,12 @@
    "avanceMin": 3,
    "anticipations": [],
    "portions": 2,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 87",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "legumineuse",
     "feculent": "legumineuse",
@@ -10411,6 +10637,12 @@
    "avanceMin": 13,
    "anticipations": [],
    "portions": 1,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 70",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "viande-blanche",
     "feculent": "pain",
@@ -10617,6 +10849,12 @@
    "avanceMin": 10,
    "anticipations": [],
    "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 157",
+    "url": null,
+    "saison": "automne"
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "aucun",
@@ -10784,6 +11022,12 @@
     }
    ],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 86",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "legumineuse",
     "feculent": "legumineuse",
@@ -10964,6 +11208,7 @@
    "avanceMin": 32,
    "anticipations": [],
    "portions": 4,
+   "source": null,
    "apports": {
     "proteine": "legumineuse",
     "feculent": "legumineuse",
@@ -11134,6 +11379,12 @@
    "avanceMin": 60,
    "anticipations": [],
    "portions": 5,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 173",
+    "url": null,
+    "saison": "hiver"
+   },
    "apports": {
     "proteine": "legumineuse",
     "feculent": "legumineuse",
@@ -11342,6 +11593,12 @@
    "avanceMin": 32,
    "anticipations": [],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 110 environ",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "farine",
@@ -11556,6 +11813,12 @@
    "avanceMin": 24,
    "anticipations": [],
    "portions": 8,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 174",
+    "url": null,
+    "saison": "hiver"
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "aucun",
@@ -11783,6 +12046,12 @@
     }
    ],
    "portions": 1,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 91",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "viande-blanche",
     "feculent": "avoine",
@@ -12000,6 +12269,12 @@
    "avanceMin": 25,
    "anticipations": [],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 62",
+    "url": null,
+    "saison": "printemps"
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "farine",
@@ -12244,6 +12519,12 @@
    "avanceMin": 31,
    "anticipations": [],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 108",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "farine",
@@ -12476,6 +12757,12 @@
    "avanceMin": 53,
    "anticipations": [],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 82",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "legumineuse",
     "feculent": "legumineuse",
@@ -12692,6 +12979,12 @@
    "avanceMin": 39,
    "anticipations": [],
    "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "blog Saines Gourmandises",
+    "url": "https://saines-gourmandises.fr/mange-ta-soupe/",
+    "saison": "hiver"
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "aucun",
@@ -12912,6 +13205,12 @@
     }
    ],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 59",
+    "url": null,
+    "saison": "printemps"
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "aucun",
@@ -13143,6 +13442,12 @@
     }
    ],
    "portions": 8,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 107",
+    "url": null,
+    "saison": "ete"
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "aucun",
@@ -13397,6 +13702,12 @@
    "avanceMin": 31,
    "anticipations": [],
    "portions": 2,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 44",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "fromage",
     "feculent": "farine",
@@ -13651,6 +13962,12 @@
    "avanceMin": 32,
    "anticipations": [],
    "portions": 8,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 108",
+    "url": null,
+    "saison": "ete"
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "farine",
@@ -13877,6 +14194,12 @@
    "avanceMin": 29,
    "anticipations": [],
    "portions": 2,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 106",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "farine",
@@ -14077,6 +14400,12 @@
    "avanceMin": 70,
    "anticipations": [],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 41",
+    "url": null,
+    "saison": "printemps"
+   },
    "apports": {
     "proteine": "viande-rouge",
     "feculent": "pommes-de-terre",
@@ -14338,6 +14667,12 @@
    "avanceMin": 17,
    "anticipations": [],
    "portions": 1,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 93",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "poisson",
     "feculent": "orge",
@@ -14601,6 +14936,12 @@
     }
    ],
    "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 51",
+    "url": null,
+    "saison": "printemps"
+   },
    "apports": {
     "proteine": "poisson",
     "feculent": "pain",
@@ -14859,6 +15200,7 @@
    "avanceMin": 18,
    "anticipations": [],
    "portions": 4,
+   "source": null,
    "apports": {
     "proteine": "oeuf",
     "feculent": "aucun",
@@ -15015,6 +15357,12 @@
    "avanceMin": 40,
    "anticipations": [],
    "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 33",
+    "url": null,
+    "saison": "printemps"
+   },
    "apports": {
     "proteine": "oeuf",
     "feculent": "pommes-de-terre",
@@ -15320,6 +15668,12 @@
    "avanceMin": 35,
    "anticipations": [],
    "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 82",
+    "url": null,
+    "saison": "ete"
+   },
    "apports": {
     "proteine": "fromage",
     "feculent": "pates",
@@ -15615,6 +15969,12 @@
    "avanceMin": 187,
    "anticipations": [],
    "portions": 5,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 20",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "pain",
@@ -15796,6 +16156,12 @@
    "avanceMin": 128,
    "anticipations": [],
    "portions": 5,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 19",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "pain",
@@ -16025,6 +16391,12 @@
     }
    ],
    "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 90",
+    "url": null,
+    "saison": "ete"
+   },
    "apports": {
     "proteine": "viande-rouge",
     "feculent": "pain",
@@ -16431,6 +16803,12 @@
    "avanceMin": 120,
    "anticipations": [],
    "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 26",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "pain",
@@ -16650,6 +17028,12 @@
    "avanceMin": 65,
    "anticipations": [],
    "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 74",
+    "url": null,
+    "saison": "ete"
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "pain",
@@ -16893,6 +17277,12 @@
    "avanceMin": 10,
    "anticipations": [],
    "portions": 1,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 69",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "viande-blanche",
     "feculent": "pates",
@@ -17127,6 +17517,12 @@
    "avanceMin": 18,
    "anticipations": [],
    "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 52",
+    "url": null,
+    "saison": "printemps"
+   },
    "apports": {
     "proteine": "poisson",
     "feculent": "pates",
@@ -17407,6 +17803,12 @@
     }
    ],
    "portions": 2,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 28",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "farine",
@@ -17584,6 +17986,12 @@
     }
    ],
    "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 96",
+    "url": null,
+    "saison": "ete"
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "farine",
@@ -17739,6 +18147,12 @@
    "avanceMin": 66,
    "anticipations": [],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 25",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "farine",
@@ -17894,6 +18308,12 @@
    "avanceMin": 7,
    "anticipations": [],
    "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 22",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "pate-brisee",
@@ -18027,6 +18447,12 @@
    "avanceMin": 12,
    "anticipations": [],
    "portions": 1,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 84",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "legumineuse",
     "feculent": "legumineuse",
@@ -18225,6 +18651,12 @@
    "avanceMin": 54,
    "anticipations": [],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 105",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "farine",
@@ -18493,6 +18925,12 @@
    "avanceMin": 15,
    "anticipations": [],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 64",
+    "url": null,
+    "saison": "printemps"
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "aucun",
@@ -18681,6 +19119,12 @@
    "avanceMin": 27,
    "anticipations": [],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 96",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "aucun",
@@ -18904,6 +19348,12 @@
    "avanceMin": 57,
    "anticipations": [],
    "portions": 2,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 81",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "poisson",
     "feculent": "farine",
@@ -19153,6 +19603,12 @@
    "avanceMin": 71,
    "anticipations": [],
    "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 99",
+    "url": null,
+    "saison": "ete"
+   },
    "apports": {
     "proteine": "fromage",
     "feculent": "farine",
@@ -19499,6 +19955,12 @@
    "avanceMin": 46,
    "anticipations": [],
    "portions": 2,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 60",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "viande-blanche",
     "feculent": "farine",
@@ -19774,6 +20236,12 @@
     }
    ],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "blog Saines Gourmandises",
+    "url": "https://saines-gourmandises.fr/lorge-magnifique-cereale-a-redecouvrir/",
+    "saison": "automne"
+   },
    "apports": {
     "proteine": "viande-blanche",
     "feculent": "orge",
@@ -20051,6 +20519,12 @@
    "avanceMin": 170,
    "anticipations": [],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 182",
+    "url": null,
+    "saison": "hiver"
+   },
    "apports": {
     "proteine": "viande-rouge",
     "feculent": "pommes-de-terre",
@@ -20442,6 +20916,12 @@
    "avanceMin": 121,
    "anticipations": [],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 93",
+    "url": null,
+    "saison": "ete"
+   },
    "apports": {
     "proteine": "viande-blanche",
     "feculent": "aucun",
@@ -20755,6 +21235,12 @@
    "avanceMin": 106,
    "anticipations": [],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 56",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "viande-blanche",
     "feculent": "aucun",
@@ -20925,6 +21411,12 @@
    "avanceMin": 127,
    "anticipations": [],
    "portions": 8,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 166",
+    "url": null,
+    "saison": "automne"
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "farine",
@@ -21202,6 +21694,12 @@
    "avanceMin": 55,
    "anticipations": [],
    "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 29",
+    "url": null,
+    "saison": "printemps"
+   },
    "apports": {
     "proteine": "fromage",
     "feculent": "pate-brisee",
@@ -21532,6 +22030,7 @@
    "avanceMin": 35,
    "anticipations": [],
    "portions": 4,
+   "source": null,
    "apports": {
     "proteine": "aucune",
     "feculent": "aucun",
@@ -21749,6 +22248,7 @@
    "avanceMin": 10,
    "anticipations": [],
    "portions": 2.5,
+   "source": null,
    "apports": {
     "proteine": "aucune",
     "feculent": "aucun",
@@ -21842,6 +22342,12 @@
    "avanceMin": 25,
    "anticipations": [],
    "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 75",
+    "url": null,
+    "saison": "ete"
+   },
    "apports": {
     "proteine": "poisson",
     "feculent": "aucun",
@@ -22056,6 +22562,12 @@
    "avanceMin": 27,
    "anticipations": [],
    "portions": 2,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 37",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "poisson",
     "feculent": "aucun",
@@ -22307,6 +22819,12 @@
    "avanceMin": 46,
    "anticipations": [],
    "portions": 3.5,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 86",
+    "url": null,
+    "saison": "ete"
+   },
    "apports": {
     "proteine": "fromage",
     "feculent": "riz",
@@ -22596,6 +23114,12 @@
     }
    ],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 158",
+    "url": null,
+    "saison": "automne"
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "riz",
@@ -22821,6 +23345,12 @@
     }
    ],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 55",
+    "url": null,
+    "saison": "printemps"
+   },
    "apports": {
     "proteine": "viande-blanche",
     "feculent": "aucun",
@@ -23084,6 +23614,12 @@
     }
    ],
    "portions": 8,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 68",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "viande-blanche",
     "feculent": "aucun",
@@ -23308,6 +23844,12 @@
    "avanceMin": 94,
    "anticipations": [],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 95",
+    "url": null,
+    "saison": "ete"
+   },
    "apports": {
     "proteine": "viande-blanche",
     "feculent": "aucun",
@@ -23553,6 +24095,12 @@
    "avanceMin": 17,
    "anticipations": [],
    "portions": 1,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 52",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "poisson",
     "feculent": "legumineuse",
@@ -23767,6 +24315,12 @@
    "avanceMin": 17,
    "anticipations": [],
    "portions": 1,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 59",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "viande-blanche",
     "feculent": "pain",
@@ -24015,6 +24569,12 @@
    "avanceMin": 10,
    "anticipations": [],
    "portions": 1,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 65",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "viande-rouge",
     "feculent": "pommes-de-terre",
@@ -24245,6 +24805,12 @@
    "avanceMin": 33,
    "anticipations": [],
    "portions": 1,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 35",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "poisson",
     "feculent": "riz",
@@ -24472,6 +25038,12 @@
    "avanceMin": 13,
    "anticipations": [],
    "portions": 1,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 88",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "legumineuse",
     "feculent": "legumineuse",
@@ -24708,6 +25280,12 @@
    "avanceMin": 5,
    "anticipations": [],
    "portions": 1,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 83",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "legumineuse",
     "feculent": "legumineuse",
@@ -24912,6 +25490,12 @@
    "avanceMin": 21,
    "anticipations": [],
    "portions": 1,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 95",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "viande-rouge",
     "feculent": "orge",
@@ -25187,6 +25771,12 @@
     }
    ],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 92",
+    "url": null,
+    "saison": "ete"
+   },
    "apports": {
     "proteine": "poisson",
     "feculent": "orge",
@@ -25472,6 +26062,12 @@
    "avanceMin": 16,
    "anticipations": [],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 36",
+    "url": null,
+    "saison": "printemps"
+   },
    "apports": {
     "proteine": "legumineuse",
     "feculent": "legumineuse",
@@ -25714,6 +26310,12 @@
    "avanceMin": 112,
    "anticipations": [],
    "portions": 8,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 76-78",
+    "url": null,
+    "saison": "ete"
+   },
    "apports": {
     "proteine": "fromage",
     "feculent": "pate-brisee",
@@ -26094,6 +26696,12 @@
    "avanceMin": 18,
    "anticipations": [],
    "portions": 1,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 32",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "poisson",
     "feculent": "pain",
@@ -26352,6 +26960,12 @@
     }
    ],
    "portions": 8,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 159",
+    "url": null,
+    "saison": "automne"
+   },
    "apports": {
     "proteine": "tofu-soja",
     "feculent": "aucun",
@@ -26516,6 +27130,12 @@
    "avanceMin": 17,
    "anticipations": [],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 172",
+    "url": null,
+    "saison": "hiver"
+   },
    "apports": {
     "proteine": "legumineuse",
     "feculent": "pain",
@@ -26805,6 +27425,12 @@
     }
    ],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 56",
+    "url": null,
+    "saison": "printemps"
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "orge",
@@ -27046,6 +27672,12 @@
    "avanceMin": 115,
    "anticipations": [],
    "portions": 8,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 58",
+    "url": null,
+    "saison": "printemps"
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "pate-brisee",
@@ -27274,6 +27906,12 @@
    "avanceMin": 40,
    "anticipations": [],
    "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 73",
+    "url": null,
+    "saison": "ete"
+   },
    "apports": {
     "proteine": "fromage",
     "feculent": "pate-brisee",
@@ -27488,6 +28126,12 @@
    "avanceMin": 91,
    "anticipations": [],
    "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 181",
+    "url": null,
+    "saison": "hiver"
+   },
    "apports": {
     "proteine": "fromage",
     "feculent": "pommes-de-terre",
@@ -27848,6 +28492,12 @@
    "avanceMin": 7,
    "anticipations": [],
    "portions": 2,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 48",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "tofu-soja",
     "feculent": "aucun",
@@ -28034,6 +28684,12 @@
    "avanceMin": 60,
    "anticipations": [],
    "portions": 2,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 75",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "viande-blanche",
     "feculent": "aucun",
@@ -28250,6 +28906,12 @@
    "avanceMin": 63,
    "anticipations": [],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 88",
+    "url": null,
+    "saison": "ete"
+   },
    "apports": {
     "proteine": "fromage",
     "feculent": "aucun",
@@ -28498,6 +29160,12 @@
    "avanceMin": 67,
    "anticipations": [],
    "portions": 8,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 160",
+    "url": null,
+    "saison": "automne"
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "farine",
@@ -28808,6 +29476,12 @@
    "avanceMin": 92,
    "anticipations": [],
    "portions": 7,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 123",
+    "url": null,
+    "saison": "automne"
+   },
    "apports": {
     "proteine": "fromage",
     "feculent": "pate-brisee",
@@ -29168,6 +29842,12 @@
    "avanceMin": 39,
    "anticipations": [],
    "portions": 1,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 78",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "fromage",
     "feculent": "pate-brisee",
@@ -29411,6 +30091,12 @@
    "avanceMin": 98,
    "anticipations": [],
    "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 87",
+    "url": null,
+    "saison": "ete"
+   },
    "apports": {
     "proteine": "fromage",
     "feculent": "pate-brisee",
@@ -29791,6 +30477,7 @@
    "avanceMin": 27,
    "anticipations": [],
    "portions": 4,
+   "source": null,
    "apports": {
     "proteine": "aucune",
     "feculent": "pommes-de-terre",
@@ -29948,6 +30635,12 @@
    "avanceMin": 34,
    "anticipations": [],
    "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 34",
+    "url": null,
+    "saison": "printemps"
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "pommes-de-terre",
@@ -30184,6 +30877,12 @@
    "avanceMin": 60,
    "anticipations": [],
    "portions": 8,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 127",
+    "url": null,
+    "saison": "automne"
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "aucun",
@@ -30407,6 +31106,12 @@
    "avanceMin": 36,
    "anticipations": [],
    "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 72",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "aucune",
     "feculent": "aucun",
@@ -30592,6 +31297,12 @@
    "avanceMin": 10,
    "anticipations": [],
    "portions": 1,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 41",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "fromage",
     "feculent": "farine",
@@ -30744,6 +31455,12 @@
    "avanceMin": 12,
    "anticipations": [],
    "portions": 1,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 38",
+    "url": null,
+    "saison": null
+   },
    "apports": {
     "proteine": "tofu-soja",
     "feculent": "farine",
@@ -30976,6 +31693,12 @@
     }
    ],
    "portions": 10,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 101",
+    "url": null,
+    "saison": "ete"
+   },
    "apports": {
     "proteine": "fromage",
     "feculent": "aucun",
