@@ -11,6 +11,7 @@ import {
   minuteur,
   provenanceIngredient,
   SANS_FEU,
+  sansRecette,
   type EtatMinuteur,
 } from "./cuisiner.vue";
 
@@ -261,5 +262,47 @@ describe("l'ustensile à sortir avant de commencer", () => {
     const cocotte = catalogue.plats.find((p) => p.vaisselle?.label.includes("cocotte"));
     expect(cocotte).toBeDefined();
     expect(aSortir(cocotte!)).toContain("cocotte");
+  });
+});
+
+describe("le plat qu'on n'a pas encore écrit", () => {
+  // TROISIÈME CHEMIN — T78. Deux autres avaient été construits devant la
+  // plainte du 14/09 : écrire les étapes (T76) et filtrer le plat (T77, retiré
+  // ici). L'utilisateur a tranché le 15/09 pour « proposer en le disant ».
+
+  test("le corpus entier se tait, et c'est la mesure de T76", () => {
+    // Les quinze plats du répertoire ont reçu leurs étapes ; s'il en restait
+    // un, ce serait une régression de T76 et pas un cas à afficher.
+    for (const p of catalogue.plats) expect(sansRecette(p)).toBeNull();
+  });
+
+  test("un plat entré au niveau plan dit ce qui lui manque", () => {
+    const muet = { ...catalogue.plats[0]!, steps: [], cuisinable: false };
+    const dit = sansRecette(muet);
+    expect(dit).not.toBeNull();
+    expect(dit!.court.length).toBeGreaterThan(0);
+    expect(dit!.long.length).toBeGreaterThan(0);
+  });
+
+  // CE QUI MANQUE EST LA RECETTE, PAS LE PLAT, et la phrase doit le porter.
+  // Le temps, les quantités et les apports viennent du même catalogue que les
+  // autres et ont passé le même `verifier.py` ; une formule du genre « plat
+  // incomplet » salirait des données qui ne le sont pas. Ce test épingle le
+  // vocabulaire parce que c'est précisément ce que le ticket décide.
+  test("elle parle de la recette, jamais du plat", () => {
+    const dit = sansRecette({ ...catalogue.plats[0]!, steps: [], cuisinable: false })!;
+    for (const texte of [dit.court, dit.long]) {
+      expect(texte).toMatch(/recette|étapes|pas-à-pas/);
+      expect(texte).not.toMatch(/incomplet|invalide|erreur|manquant|indisponible/i);
+    }
+  });
+
+  // ELLE LIT LE DRAPEAU, PAS LA LONGUEUR. `cuisinable` porte la définition du
+  // catalogue ; la redériver ici la ferait diverger le jour où elle bougera.
+  // Le chargeur interdit par ailleurs aux deux de se contredire, donc ce cas ne
+  // peut venir que d'un objet fabriqué — comme celui-ci.
+  test("c'est `cuisinable` qui décide", () => {
+    const p = catalogue.plats.find((x) => x.steps.length > 0)!;
+    expect(sansRecette({ ...p, cuisinable: false })).not.toBeNull();
   });
 });

@@ -298,8 +298,35 @@ function plat(v: unknown, ou: string): Plat {
       };
     })(),
     gainChainage: nombre(o["gainChainage"], `${ou}.gainChainage`),
-    cuisinable: booleen(o["cuisinable"], `${ou}.cuisinable`),
+    cuisinable: cuisinable(o["cuisinable"], steps, ou),
   };
+}
+
+/**
+ * `cuisinable` DOIT DIRE LA MÊME CHOSE QUE `steps`, sinon il ne sert à rien.
+ *
+ * Le champ porte la définition du catalogue — `est_cuisinable()` : « a
+ * plan-level entry has no steps: it can be planned, not cooked ». L'app s'en
+ * sert pour dire à l'écran qu'un plat n'a pas sa recette, et c'est le seul
+ * endroit où elle le dit. Un export où les deux divergent produirait donc
+ * exactement le mensonge plausible que ce chargeur existe pour attraper : un
+ * plat annoncé cuisinable qui s'ouvre sur rien, ou l'étiquette « sans recette »
+ * sur un plat qui a ses étapes.
+ *
+ * Le contrôle est ici et pas dans un test parce que la divergence viendrait de
+ * l'EXPORT, pas du code : la dériver à la lecture (`steps.length > 0`) la
+ * masquerait au lieu de la signaler, et le champ déclaré cesserait d'être lu —
+ * ce qui est précisément l'état dont on sort.
+ */
+function cuisinable(v: unknown, steps: Etape[], ou: string): boolean {
+  const dit = booleen(v, `${ou}.cuisinable`);
+  if (dit !== steps.length > 0)
+    throw new CatalogueInvalide(
+      `${ou}.cuisinable`,
+      `${steps.length > 0} — le plat porte ${steps.length} étape(s)`,
+      dit,
+    );
+  return dit;
 }
 
 function foyer(v: unknown, ou: string): Foyer {

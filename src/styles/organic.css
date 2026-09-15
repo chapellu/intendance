@@ -528,6 +528,23 @@ button { font-family: var(--font-body); color: inherit; }
   background: var(--color-surface); color: var(--color-text);
 }
 
+/* T78 — le plat qu'on n'a pas encore écrit, sur la fiche.
+   MÊME SURFACE QUE `.co-sortir`, ET SURTOUT PAS LES TONS D'ALERTE. C'est une
+   consigne de lecture — « il n'y a pas de pas-à-pas ici » —, pas un incident :
+   les quantités, le temps et les apports sont justes. Un fond ambre ou rouge
+   dirait qu'il y a un problème avec le plat, et le problème est avec nous. */
+.co-sansrecette {
+  display: flex; gap: 10px; align-items: flex-start; border-radius: var(--radius-md);
+  padding: var(--space-3); margin: var(--space-3) var(--space-4) 0; font-size: 13.5px;
+  line-height: 1.4; background: var(--color-surface); color: var(--color-text);
+}
+
+/* T78 — le même fait, sur la carte, dans la ligne du temps.
+   Il partage `.meta` avec la durée et le coût en articles : même taille, même
+   gris. Le mettre en valeur en ferait une raison de ne pas poser ce plat, et
+   c'en est une de le poser en connaissance de cause. */
+.co-muet { font-style: italic; }
+
 /* T73 — le crédit. Il ferme la fiche, discret : on vient lire des quantités,
    pas une bibliographie. Mais il est lisible — créditer à demi ne crédite
    pas. */

@@ -151,23 +151,25 @@ export function platDe(jeu: Jeu, i: number): Plat | null {
 export function convient(jeu: Jeu, plat: Plat, i: number): boolean {
   const c = jeu.creneaux[i];
   if (!c) return false;
-  // UN PLAT SANS ÉTAPES NE CONVIENT À AUCUN CRÉNEAU, et ce garde-fou a coûté
-  // un dîner. `cuisinable` traversait déjà tout le chemin — `est_cuisinable()`
-  // en Python, le champ à l'export, le chargeur, le type — et personne ne le
-  // LISAIT : exactement l'écart de port que T72 venait de fermer sur les
-  // étapes, refait un cran plus haut. Résultat le 14/09/2026, à l'heure de
-  // cuisiner : des gnocchis poêlés proposés, ouverts, et vides.
+  // UN PLAT SANS ÉTAPES EST PROPOSÉ, ET L'ÉCRAN LE DIT. Il y avait trois
+  // chemins devant la plainte du 14/09 (« tu m'as encore fourni une recette
+  // sans étapes ») : écrire les étapes (T76), filtrer le plat (T77), ou le
+  // proposer en le disant. L'utilisateur a tranché pour le troisième le
+  // 15/09 — le filtre de T77 vivait ici, il est retiré, et `sansRecette()`
+  // dans `cuisiner.vue.ts` est ce qui le remplace.
   //
-  // C'EST UN FILTRE ET PAS UN MALUS, pour la raison de T33 : un plat qu'on ne
-  // peut pas exécuter ne mérite pas d'être classé dernier, il ne mérite pas
-  // d'être montré. Et c'est ici, dans `convient`, plutôt que dans `offre` :
-  // tout ce qui propose un plat passe par cette porte, y compris ce qui sera
-  // écrit après nous.
+  // POURQUOI LE FILTRE ÉTAIT LE MAUVAIS OUTIL, alors qu'il citait T33 pour se
+  // justifier : T33 dit qu'on ne montre pas un plat qu'on ne peut pas
+  // EXÉCUTER. Un plat sans recette écrite s'exécute très bien — ce sont les
+  // plats du foyer, la maison sait les faire. Ce qui manque est le pas-à-pas,
+  // pas le dîner. Filtrer rétrécissait donc la semaine pour une lacune de
+  // saisie, ce que T33 refuse par ailleurs explicitement sur les paris :
+  // « retirer ces plats ferait rétrécir les propositions à mesure que la
+  // confiance vieillit ».
   //
-  // Il ne retire rien aujourd'hui — les 138 plats du corpus ont leurs étapes,
-  // c'est une mesure et non un espoir. C'est un plancher, pas un changement de
-  // comportement : il attend la prochaine saisie « niveau plan ».
-  if (!plat.cuisinable) return false;
+  // Ce qui reste vrai de T77 : `cuisinable` ne doit plus JAMAIS être un champ
+  // que personne ne lit. Il est lu — par la carte et par la fiche — et le
+  // chargeur refuse maintenant un export où il contredit `steps`.
   const ok = plat.creneaux.length ? plat.creneaux : ["dejeuner", "diner"];
   return ok.includes(c.repas);
 }
