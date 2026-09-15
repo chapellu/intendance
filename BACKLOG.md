@@ -2726,6 +2726,177 @@ d'affilée parce qu'il note mal. C'est la même famille de trous que celui de
 l'écart n° 3 — l'app est honnête quand on l'interroge, muette quand on ne
 l'interroge pas.
 
+## Le minuteur sonne pour de bon — [Workspace#61](https://github.com/chapellu/Workspace/issues/61)
+
+**Dit le 14/09/2026, puis redemandé le 15 :**
+
+> *« Le timer aujourd'hui ne déclenche aucune alarme c'est dommage. »*
+> — et, pour cadrer la plateforme : *« l'app est installée en PWA sur mon
+> iPhone ».*
+
+**Mesuré, et c'était une omission complète.** `grep -rniE "new Audio|navigator
+\.vibrate|new Notification|showNotification|AudioContext" src/` rendait **zéro
+résultat**. Tout ce que produisait `m.sonne` était l'encart « Minuteur
+terminé. » — visible par quelqu'un qui regarde déjà l'écran, c'est-à-dire par
+quelqu'un qui n'avait pas besoin qu'on le prévienne. Pire, `useHorloge` arrête
+délibérément son battement de 250 ms quand aucun minuteur ne court : **à la
+seconde de l'échéance, l'app était conçue pour ne rien faire.**
+
+**Et le minuteur, lui, est sain — le ticket ne le touche pas.** T12 range une
+ÉCHÉANCE et pas un compteur, avec la raison écrite : *« le proto décrémentait
+une seconde par `setInterval` ; c'est faux dès que l'onglet passe en
+arrière-plan, où les navigateurs mobiles ralentissent les timers à un battement
+par minute — le minuteur d'une cuisine, précisément quand on repose le
+téléphone. »* L'état survit donc déjà à un verrouillage. **Rien ne l'annonçait.**
+Ce bloc ajoute la moitié qui manquait, et elle seule.
+
+**Le minuteur est offert partout : 692 étapes sur 692 portent des minutes.** La
+médiane est courte, mais **74 étapes dépassent 15 min, 27 dépassent 30 min, 7
+dépassent l'heure**, et la plus longue est le pain de mie en machine à **175
+min**. C'est l'intervalle que l'alarme doit tenir — et c'est exactement
+l'intervalle pendant lequel personne ne reste devant l'écran.
+
+### Le problème est une contrainte de plateforme, pas un choix de conception
+
+Sur un iPhone, une PWA en arrière-plan ou écran verrouillé voit son **JavaScript
+gelé**. Un `setTimeout` de trente minutes n'est donc pas une alarme : c'est une
+promesse tenue seulement dans le cas où l'on n'en avait pas besoin. Il faut que
+quelque chose d'autre que le fil JS porte l'échéance. D'où **trois couches**, et
+chacune existe pour une raison que les autres ne couvrent pas :
+
+1. **La sonnerie est PROGRAMMÉE DANS LE GRAPHE AUDIO**, pas déclenchée à
+   l'échéance. `oscillateur.start(t)` est honoré par le **thread audio**, qui
+   n'est pas le thread JS : les bips sont posés à l'armement, à la seconde près,
+   et ils partent même si plus une ligne de JavaScript ne s'exécute. C'est la
+   seule couche qui mérite le mot « alarme ».
+2. **Une veilleuse tient la sortie audio ouverte** — une boucle quasi muette
+   (−90 dBFS, fabriquée en RIFF dans le code plutôt que livrée dans `public/`,
+   où elle entrerait au précache). Un contexte audio qui ne produit rien se fait
+   suspendre, et un contexte suspendu ne programme plus rien.
+3. **Un bandeau système**, par le service worker, déclenché par la minuterie JS.
+   Redondant quand tout va bien, et c'est le but : il rattrape le téléphone en
+   silencieux et il **laisse une trace** — revenu dix minutes plus tard, on voit
+   que ça a sonné.
+
+**LA COUCHE 2 EST LE COÛT DU TICKET, ET IL EST RÉEL.** Le téléphone se croit en
+train de lire de l'audio tant que le minuteur tourne : commandes sur l'écran
+verrouillé, et une musique en cours peut se faire interrompre. Rien de moins
+cher n'a été trouvé, et la raison est structurelle — **pour qu'un son sorte dans
+trente minutes, la chaîne audio doit être vivante pendant ces trente minutes.**
+
+- [x] **T82 — L'alarme du minuteur.** `src/pwa/alarme.ts` : le motif, le graphe,
+      la veilleuse, le bandeau. La règle « quand armer » (`aArmer`) reste dans
+      `cuisiner.vue.ts` avec le reste du minuteur ; seul le **comment sonner**
+      est côté plateforme, dans le même dossier que le service worker et le
+      manifeste — c'est le seul endroit du dépôt qui connaisse `AudioContext`.
+
+      **Vingt-deux secondes — 32 bips, 5,8 s de son, le reste en blancs — et
+      deux hauteurs qui alternent.** Une note tenue s'entend comme un appareil en panne — le frigo,
+      la hotte — et une cuisine apprend en quelques jours à ne plus l'entendre ;
+      un mur de son empêche de se parler par-dessus et se fait couper avant
+      d'avoir servi. La durée est la raison d'être du ticket : l'encart de T12
+      suffisait déjà à qui regardait l'écran, et ce qu'on ajoute ne sert qu'à
+      celui qui est dans une autre pièce. **Elle s'éteint ensuite toute seule** —
+      une alarme qu'on doit courir arrêter est une alarme qu'on désarme le
+      lendemain.
+
+      **AVANCER D'UNE ÉTAPE NE DÉSARME RIEN, et c'est la décision qui compte.**
+      La clé du minuteur est par étape depuis T12 — *« pour qu'avancer dans la
+      recette ne traîne pas la sonnerie de la précédente »* — mais ça vaut pour
+      l'AFFICHAGE, pas pour l'alarme : lancer un mijotage puis passer à l'étape
+      suivante est le cas **normal**, c'est même ce que « sans surveiller »
+      invite à faire. L'alarme vit donc dans un module et non dans le composant,
+      sans nettoyage au démontage. Ce qui la décroche, c'est la pause, le
+      relancement, ou l'échéance atteinte — et `e2e/alarme.spec.ts` tient les
+      deux sens : `annules` vaut **0** après un changement d'étape et **32**
+      après une pause.
+
+      **`armer` est idempotente sur l'échéance**, parce qu'elle est appelée deux
+      fois : par le doigt, puis par l'effet qui voit le minuteur courir au
+      montage. Sans ce garde-fou, le second appel désarmerait les bips que le
+      premier venait de poser — et l'alarme n'existerait que dans le cas où
+      personne ne regarde. C'est aussi ce qui permet le **réarmement partiel**
+      d'une app rouverte sur un minuteur en cours : le bandeau se réarme sans
+      geste, le son non, parce que la politique d'autoplay ne regarde pas
+      l'intention mais la pile d'appels.
+
+      **La permission se demande au PREMIER DOIGT SUR LE MINUTEUR**, pas à
+      l'ouverture de l'app. iOS ne l'accorde que sous une interaction, et **un
+      refus y est définitif** — il ne se redemande pas, il se répare dans les
+      réglages du téléphone. Posée à l'ouverture, la question ressemblerait à une
+      quête de permission ; posée là, elle a une réponse évidente.
+
+      **`promesse()` DIT CE QUE LA PLATEFORME NE TIENT PAS, et se tait sinon.**
+      C'est la doctrine de T78 appliquée à une capacité au lieu d'une lacune du
+      corpus : on ne retire pas le minuteur là où il ne peut pas sonner, et on
+      ne le laisse pas non plus promettre une alarme que le téléphone n'a pas.
+      Trois aveux et un silence — bandeau refusé (« ça se répare dans les
+      réglages »), bandeau **absent** (« installe l'app à l'écran d'accueil » :
+      sur iOS l'API n'existe que dans une app installée, et dire
+      « indisponible » présenterait comme une fatalité ce qui est à deux touches
+      d'être levé), pas de son du tout, et **rien quand tout va bien** — parce
+      qu'une ligne « alarme armée » affichée à chaque minuteur serait lue trois
+      fois puis jamais plus, sur un écran qui se lit à bout de bras.
+
+      **« Arrêter » ne remet pas le minuteur à zéro** : il fait taire, et le
+      minuteur reste « terminé », relançable par son propre bouton comme avant.
+      Le bouton vit dans l'encart qui annonce la fin et pas dans la barre du
+      bas, dont les deux boutons font avancer la recette.
+
+      **PAS DE `navigator.vibrate` : il n'existe pas sur iOS Safari**, et c'est
+      le seul téléphone de la maison. Une ligne qui ne peut pas s'exécuter sur
+      l'appareil visé n'est pas une couche de secours, c'est du code mort qu'on
+      croirait vivant le jour où l'alarme ne sonne pas.
+
+      **Ce qui se teste, et ce qui ne se teste pas.** Aucun test de ce dépôt ne
+      peut vérifier qu'un son sort d'un iPhone verrouillé : c'est WebKit et
+      l'interrupteur de sonnerie qui en décident. Ce qui se vérifie est le motif
+      (`sonnerie()` est pure), les aveux (`promesse()` aussi), la règle
+      d'armement (`aArmer`), et — dans un vrai navigateur — que **les bips sont
+      posés à l'instant du doigt, décalés de la durée de l'étape**. C'est la
+      thèse du ticket, et c'est ce parcours qui doit rougir si quelqu'un
+      « simplifie » un jour tout ça en un `setTimeout` qui joue un son.
+
+      Portes : typecheck, **629 tests** (15 nouveaux), build, **29 e2e** (3
+      nouveaux, `alarme.spec.ts`), `catalogue:verifie` 0 erreur — le catalogue
+      n'est pas touché.
+
+### Ce que ce bloc NE promet pas
+
+**RIEN ICI NE SURVIT À UNE APP TUÉE PAR LE SYSTÈME.** Si iOS récupère la mémoire
+de la PWA, les trois couches meurent ensemble. L'échéance, elle, reste en base
+et l'écran la retrouve — mais personne n'aura été prévenu. Le seul mécanisme qui
+tienne ce cas est une notification **poussée par un serveur**, donc un serveur de
+push pour un minuteur de cuisine. Workspace#61 le pose comme *« la grosse réponse
+à la petite question »* ; on ne l'écrit pas tant que la petite n'a pas été
+mesurée.
+
+**ET RIEN N'A ÉTÉ MESURÉ SUR L'IPHONE DE LA MAISON.** Le dépôt exige qu'une
+affirmation chiffrée se mesure avant de s'écrire ; les affirmations de ce bloc
+sur le comportement d'iOS sont des **décisions de conception appuyées sur le
+comportement documenté de WebKit**, pas des relevés. Workspace#61 reste ouvert et
+se réduit maintenant à une liste de choses à essayer, téléphone en main, minuteur
+d'une minute lancé :
+
+1. **Écran verrouillé** — ça sonne, ou pas ?
+2. **App en arrière-plan, écran allumé** — ça sonne ?
+3. **Interrupteur physique sur silencieux** — ça sonne quand même ? (C'est ce que
+   `audioSession.type = "playback"` est censé obtenir, et c'est le bon compromis
+   pour une alarme : se taire parce qu'un interrupteur est sur silencieux serait
+   la pire des deux erreurs.)
+4. **Le bandeau arrive-t-il**, et le toucher ramène-t-il à l'étape en cours ?
+5. **Que devient une musique en cours** pendant les trente minutes de veilleuse ?
+   C'est le coût annoncé plus haut ; s'il est insupportable à l'usage, la
+   réponse n'est pas de retirer la veilleuse (ce serait retirer l'alarme) mais
+   de rendre l'armement explicite — un minuteur « qui sonne » distinct d'un
+   minuteur « qui compte ».
+
+**La seconde horloge n'a toujours pas d'alarme.** 42 étapes portent une
+`attente` — trempage à 720 min, prise au frais à 240 — et elle ne passe pas par
+le minuteur : elle décide à quelle heure s'y mettre, pas quand revenir. Une
+notification le lendemain matin est un autre mécanisme que des bips dans trente
+minutes ; ça reste du ressort de Workspace#57, avec la donnée.
+
 ## Sortie
 
 **Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`

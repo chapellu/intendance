@@ -79,6 +79,27 @@ export function basculerMinuteur(
   return { fin: maintenant + minutes * 60 * 1000 };
 }
 
+/**
+ * L'échéance à laquelle une alarme doit être armée — ou rien.
+ *
+ * LA RÈGLE EST ICI ET LE BRUIT EST DANS `pwa/alarme.ts`. Ce qui décide qu'il y
+ * a quelque chose à annoncer appartient au minuteur ; ce qui sait comment un
+ * téléphone fait du bruit appartient à la plateforme. Séparées, la première se
+ * teste sans haut-parleur — et c'est elle qui se trompe.
+ *
+ * UNE ÉCHÉANCE DÉJÀ PASSÉE N'ARME RIEN, et ce n'est pas une garde défensive :
+ * c'est le cas de tous les jours. On revient sur une fiche dont le minuteur a
+ * sonné pendant qu'on était ailleurs ; le rouvrir ne doit pas faire sonner la
+ * cuisine pour un événement d'il y a une heure.
+ *
+ * UN MINUTEUR EN PAUSE NON PLUS. Une pause n'a pas d'échéance du tout — c'est
+ * exactement ce que dit la forme `{ reste }` — et lui en inventer une
+ * réintroduirait le compteur que T12 a refusé.
+ */
+export function aArmer(etat: EtatMinuteur, maintenant: number): number | null {
+  return etat && "fin" in etat && etat.fin > maintenant ? etat.fin : null;
+}
+
 /* ─────────────────────────────────────────────────────────── les ingrédients */
 
 export interface Provenance {

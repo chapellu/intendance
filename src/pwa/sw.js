@@ -59,6 +59,23 @@ self.addEventListener("message", (e) => {
   if (e.data === "passe") void self.skipWaiting();
 });
 
+// T82 — TOUCHER LE BANDEAU DU MINUTEUR RAMÈNE À L'APP, il ne l'ouvre pas une
+// seconde fois. `focus()` sur un client existant plutôt qu'`openWindow` : on a
+// posé le téléphone au milieu d'une recette, et retrouver l'app sur l'écran
+// d'ouverture — avancement perdu de vue, étape à rechercher — serait pire que
+// pas de bandeau du tout. `openWindow` ne sert que le cas où plus rien n'est
+// ouvert, où il n'y a justement plus rien à préserver.
+self.addEventListener("notificationclick", (e) => {
+  e.notification.close();
+  e.waitUntil(
+    (async () => {
+      const ouverts = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+      for (const c of ouverts) if ("focus" in c) return c.focus();
+      return self.clients.openWindow("/");
+    })(),
+  );
+});
+
 self.addEventListener("fetch", (e) => {
   const requete = e.request;
   if (requete.method !== "GET") return;
