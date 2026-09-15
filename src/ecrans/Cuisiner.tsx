@@ -22,7 +22,7 @@ import { base } from "../db/schema";
 import { echelleTexte, facteurAffiche, type Calcul } from "../model/calcul";
 import { joue, type Jeu } from "../model/jeu";
 import { heureDe } from "../model/heures";
-import type { Etape, Plat } from "../model/types";
+import type { Etape, Foyer, Plat } from "../model/types";
 import type { CleCreneau } from "../nav/routes";
 import { aller } from "../nav/useRoute";
 import { armer, arreter, demanderBandeau, desarmer, plateforme, promesse } from "../pwa/alarme";
@@ -36,6 +36,8 @@ import {
   chauffeDe,
   credit,
   minuteur,
+  minuteurUtile,
+  outilDe,
   provenanceIngredient,
   sansRecette,
   type EtatMinuteur,
@@ -204,6 +206,7 @@ function Fiche({
       {tete}
       <Guide
         p={p}
+        foyer={jeu.catalogue.foyer}
         steps={steps}
         etape={etape}
         repas={creneau.repas}
@@ -294,6 +297,7 @@ function Ingredients({
 
 function Guide({
   p,
+  foyer,
   steps,
   etape,
   repas,
@@ -302,6 +306,7 @@ function Guide({
   terminer,
 }: {
   p: Plat;
+  foyer: Foyer;
   steps: Etape[];
   etape: number;
   repas: string;
@@ -330,6 +335,10 @@ function Guide({
 
   const { reste, total } = avancement(steps, etape);
   const chauffe = chauffeDe(e);
+  const outil = outilDe(foyer, e);
+  // Le minuteur demande DEUX conditions, et elles ne disent pas la même chose :
+  // qu'il y ait une durée à compter, et que la compter serve à quelque chose.
+  const avecMinuteur = e.minutes > 0 && minuteurUtile(e);
   const m = minuteur(etat ?? null, e.minutes, maintenant);
   const dernier = etape === steps.length - 1;
 
@@ -393,7 +402,25 @@ function Guide({
 
       <div style={{ flex: 1 }} />
 
-      {chauffe.niveau > 0 || e.minutes > 0 ? (
+      {/* L'OUTIL SE LIT AU-DESSUS DES RÉGLAGES, PAS DANS LA LIGNE DU GESTE.
+          Les deux derniers blocs de l'écran sont ceux sur lesquels la main
+          part — le récipient qu'on attrape, le feu qu'on règle, le minuteur
+          qu'on lance — et les garder ensemble en bas les met dans le pouce.
+          Complémentaire de « Chauffe » plutôt que redondant : l'une dit la
+          source de chaleur, l'autre dit dans quoi on met. Muet sur 374 étapes
+          des 692. */}
+      {outil ? (
+        <div className="co-outil">
+          <Icone nom="ustensile" />
+          <span>
+            <span className="co-kicker">Outil</span>
+            <br />
+            {outil.methode ? outil.texte : <b>{outil.texte}</b>}
+          </span>
+        </div>
+      ) : null}
+
+      {chauffe.niveau > 0 || avecMinuteur ? (
         <div className="co-reglages">
           {chauffe.niveau > 0 ? (
             <div>
@@ -406,7 +433,7 @@ function Guide({
               </div>
             </div>
           ) : null}
-          {e.minutes > 0 ? (
+          {avecMinuteur ? (
             <button
               className={`co-minuteur${m.actif ? " actif" : ""}`}
               onClick={() => {

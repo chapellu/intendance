@@ -2897,6 +2897,130 @@ le minuteur : elle décide à quelle heure s'y mettre, pas quand revenir. Une
 notification le lendemain matin est un autre mécanisme que des bips dans trente
 minutes ; ça reste du ressort de Workspace#57, avec la donnée.
 
+## Le guide règle ce qu'il faut régler — T83 et T84
+
+**Dit le 15/09/2026, captures d'écran de la sauce bolognaise à l'appui :**
+
+> *« Tu mets en permanence un timer alors que je n'ai pas besoin de timer pour
+> couper des légumes. »* (étape 1)
+> *« Sur l'étape 2 il me manquerait la casserole à utiliser. Inspire toi du
+> fonctionnement du thermomix et des étapes des accessoires. »*
+
+**Les deux retours sont le même défaut vu des deux côtés : l'écran montre ce
+qu'il a plutôt que ce que l'étape demande.** Il posait un minuteur sur les 692
+étapes du corpus parce que les 692 portent des minutes, et il ne nommait aucun
+ustensile alors que la table de résolution voyage dans l'export depuis T74. Le
+modèle du Thermomix que l'utilisateur donne en référence dit exactement ça : la
+machine n'affiche un réglage que quand il y a un réglage, et elle nomme
+l'accessoire au moment où la main doit l'attraper.
+
+- [x] **T83 — Le minuteur ne s'affiche que quand le temps agit sur le plat.**
+      La condition était `e.minutes > 0`, c'est-à-dire **692 étapes sur 692** :
+      un minuteur partout est un minuteur nulle part.
+
+      **LA RÈGLE N'EST PAS « Y A-T-IL DES MINUTES ? » MAIS « LE TEMPS AGIT-IL
+      SUR LE PLAT ? »** Les 8 minutes d'un émincé sont une **estimation** —
+      celle qui sert à `anticipation.py` pour dire à quelle heure s'y mettre ;
+      les 40 minutes d'un mijotage sont une **cuisson**, et la dépasser change
+      le plat. Un chronomètre ne sait mesurer que la seconde.
+
+      Trois façons pour le temps d'agir, toutes déjà déclarées dans le modèle :
+      la **chauffe** (`chauffeDe(e).niveau > 0`), l'**attente** (la seconde
+      horloge — un trempage, une pousse, une prise au frais, et
+      `attenteSouple: false` dit même que la dépasser abîme) et
+      **`surveille: false`** (on s'en va : c'est précisément le cas où il faut
+      être rappelé, et le seul champ qui le déclare).
+
+      **Mesuré : 317 étapes gardent leur minuteur, 375 le perdent.** Aucune des
+      375 n'est une cuisson — ce sont des tailles, des façonnages, des montages,
+      des assaisonnements de fin. L'invariant est épinglé dans les deux sens par
+      un test sur le corpus entier : toute étape qui perd son minuteur est sans
+      feu, sans attente et surveillée.
+
+      **On cache le chronomètre, pas la durée.** Les minutes restent écrites
+      sous le geste : les retirer aurait résolu la plainte en supprimant
+      l'information, ce qui est l'autre façon de se tromper. Le parcours e2e le
+      vérifie explicitement.
+
+      **UN OUBLI TROUVÉ EN ÉCRIVANT LA RÈGLE, et c'est elle qui l'a rendu
+      visible.** `grill` et `gaufrier` tombaient en « Sans feu » — faux devant
+      une résistance de voûte à 240 °C — et la nouvelle condition leur aurait
+      donc retiré le minuteur au passage. Les deux entrent dans la table de
+      chauffe. `machine-a-pain` reste dehors : ce foyer n'en a pas, et
+      `compile.py` marque déjà ces 3 étapes « aucune solution avec l'équipement
+      du foyer ».
+
+- [x] **T84 — L'outil de l'étape, résolu par le foyer.** Workspace#59, que T74
+      avait explicitement laissé ouvert faute d'une règle de résolution.
+
+      **LA RÈGLE EXISTAIT ; ELLE VIVAIT DU MAUVAIS CÔTÉ DU MUR.**
+      `resolve_capability()` l'applique depuis #29, `compile.py` l'imprime sur
+      le plan texte (*« Chauffer l'huile — cocotte 7,5 L »*), `export_json.py`
+      en publie la table complète dans **`foyer.outils`** — et le chargeur la
+      jetait. Même geste que les six champs d'étape de T72, même réparation :
+      l'app lisait `pan-fry` et n'avait aucun moyen de dire « sauteuse 28 cm ».
+      La refaire côté JS l'aurait fait diverger de celle que le plan texte
+      imprime ; on la lit, on ne la recalcule pas — et l'indirection capacités →
+      outils de #29, celle qui permet à une recette écrite pour une autre
+      cuisine de compiler contre celle-ci, reste intacte.
+
+      **CE QUE LE TICKET AJOUTE VRAIMENT À LA RÉSOLUTION : UNE SEULE RÈGLE, ET
+      C'EST LA QUESTION 2 DE #59.** Quand une étape déclare deux capacités, **le
+      récipient l'emporte sur l'appareil**. `bake` + `gratin-vessel` résout sur
+      le four ET sur les plats à gratin ; nommer le four serait dire deux fois
+      la même chose, puisque la case d'à côté affiche déjà « Chauffe : Four ».
+      Les deux lignes sont complémentaires — l'une dit la source de chaleur,
+      l'autre dit dans quoi on met. Quatre étapes du corpus déclarent plusieurs
+      besoins : c'est peu, mais la règle qui les départage doit se dire plutôt
+      que se subir. L'`id` de l'outil sort donc aussi de l'export, parce que
+      c'est lui qui dit si l'outil retenu figure dans `vaisselle`, la liste des
+      équipements à contenance.
+
+      **LA RÉÉCRITURE L'EMPORTE SUR LE LIBELLÉ.** Un repli ne se résume pas à
+      son nom : *« au petit blender, en 2–3 fois, par impulsions courtes »* est
+      l'instruction, *« petit blender du mixeur plongeur »* n'en est que le
+      sujet. 44 étapes sont dans ce cas, et l'écran ne met en gras que les noms.
+
+      **Mesuré : 318 étapes nomment un outil, 374 se taisent** — 370 n'ont aucun
+      `needs` (un montage, un assaisonnement, un service) et 4 en portent un que
+      ce foyer ne possède pas (le gaufrier, la machine à pain). Le silence est
+      celui de T74, délibéré : nommer un ustensile qu'on n'a pas serait pire que
+      se taire.
+
+      **Une ligne pleine largeur au-dessus des réglages, et pas une troisième
+      case.** « casseroles 2,6 L / 1,6 L » ne tient pas dans un tiers de 390 px,
+      et une case qui ne se touche pas n'a rien à faire dans une rangée de
+      commandes. Les trois derniers blocs de l'écran sont ceux sur lesquels la
+      main part — le récipient qu'on attrape, le feu qu'on règle, le minuteur
+      qu'on lance — et les garder ensemble en bas les met dans le pouce.
+
+      Portes pour T83 + T84 : typecheck, **645 tests** (16 nouveaux : 14 sur la vue cuisine, 2 sur le chargeur), build,
+      **31 e2e** (2 nouveaux, `etape-outil.spec.ts`, plus le plat témoin de
+      `alarme.spec.ts` qui ne peut plus se choisir sur `minutes > 0` seul),
+      `catalogue:verifie` 0 erreur avec le JSON régénéré et commité.
+
+### Ce que ce bloc laisse ouvert
+
+- **`deltaMin` n'est appliqué nulle part côté app.** Un repli coûte des minutes
+  — 3 pour le petit blender — et `compile.py` les ajoute (`eff_time`) là où
+  `export_json.py` publie `time_min` brut. L'app affiche donc 8 min là où le
+  plan texte en annonce 11, sur 44 étapes. Ce n'est pas un défaut introduit
+  ici, c'est un désaccord que T84 rend visible en affichant enfin le repli à
+  côté de la durée. Le corriger touche `avancement()` et la somme du plat, donc
+  Workspace#57.
+- **`chop-coarse` résout sur le petit blender, pas sur le couteau** — la chaîne
+  de `rules.yaml` place `mini-blender` avant `couteau`, et le foyer possède le
+  premier. Le commentaire d'`export_json.py` croit pourtant que la réécriture
+  retenue est *« au couteau, sur une planche »* : l'un des deux a tort, et c'est
+  une décision de corpus, pas d'écran. 25 étapes concernées, toutes des tailles
+  de légumes. À trancher avec l'utilisateur avant de toucher à l'ordre.
+- **L'outil se répète à chaque étape** plutôt que de n'apparaître que lorsqu'il
+  change. C'est ce que fait le Thermomix, et c'est ce qui survit à une reprise
+  au milieu de la recette — mais sur un plat qui mijote en quatre étapes dans la
+  même cocotte, la ligne est lue une fois puis ignorée. À mesurer à l'usage.
+- **La quantité par étape** reste Workspace#58, inchangée : `uses` × le facteur
+  que l'écran tient déjà.
+
 ## Sortie
 
 **Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`

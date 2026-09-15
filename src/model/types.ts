@@ -285,6 +285,33 @@ export interface Recipient {
   exemplaires: number;
 }
 
+/**
+ * L'outil du foyer qui porte une capacité — `pan-fry` → « sauteuse 28 cm ».
+ *
+ * RÉSOLU UNE FOIS, EN AMONT, ET SEULEMENT LU ICI. `needs:` est en capacités et
+ * jamais en outils : c'est le pari anti-explosion de #31, et il permet à une
+ * recette écrite pour une autre cuisine de compiler contre celle-ci. Refaire la
+ * résolution côté app la ferait diverger de celle que `compile.py` imprime déjà
+ * sur le plan texte ; `export_json.py` la calcule donc une fois et l'exporte.
+ */
+export interface Outil {
+  /** L'id de l'équipement retenu — c'est lui qui dit si l'outil est un
+   *  RÉCIPIENT (il figure alors dans `Foyer.vaisselle`) ou un appareil.
+   *  `null` quand la résolution n'atterrit sur aucun outil possédé. */
+  id: string | null;
+  /** `null` quand AUCUN outil du foyer ne porte la capacité — le gaufrier, la
+   *  machine à pain. L'étape est alors impossible telle qu'écrite, et se taire
+   *  vaut mieux que nommer un ustensile qu'on n'a pas. */
+  label: string | null;
+  /** La vraie instruction quand l'outil retenu est un repli : « au petit
+   *  blender, en 2–3 fois, par impulsions courtes ». Elle remplace le libellé,
+   *  parce qu'un nom d'outil seul ne dit pas comment s'en servir autrement. */
+  reecrit: string | null;
+  /** Ce que le repli coûte en minutes. Lu nulle part pour l'instant — l'app
+   *  affiche `Etape.minutes` brut, comme l'export. Voir le backlog. */
+  deltaMin: number;
+}
+
 export interface Foyer {
   nom: string;
   parts: number;
@@ -295,6 +322,9 @@ export interface Foyer {
   espaces: Record<Espace, EspaceConfig>;
   contenants: Contenant[];
   vaisselle: Recipient[];
+  /** Capacité → l'outil de CE foyer qui la porte. Clés : le vocabulaire de
+   *  `Etape.needs`. */
+  outils: Record<string, Outil>;
 }
 
 export interface Repas {

@@ -42,6 +42,10 @@ const D = {
   cloche: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10 21h4"/>',
   info: '<circle cx="12" cy="12" r="9"/><path d="M12 8h.01"/><path d="M11 12h1v4h1"/>',
   enfant: '<circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>',
+  // Lucide `cooking-pot` — l'ustensile de l'étape (l'outil résolu par le foyer),
+  // à ne pas confondre avec `four`, qui dit la source de chaleur.
+  ustensile:
+    '<path d="M2 12h20"/><path d="M20 12v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8"/><path d="m4 8 16-4"/><path d="m8.86 6.78-.45-1.81a2 2 0 0 1 1.45-2.43l1.94-.48a2 2 0 0 1 2.43 1.46l.45 1.8"/>',
   four:
     '<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18"/><path d="M8 6h.01"/><path d="M12 6h.01"/><circle cx="12" cy="15" r="2.5"/>',
 } as const;

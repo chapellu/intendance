@@ -52,81 +52,97 @@
   },
   "outils": {
    "bake": {
+    "id": "four-chaleur-tournante",
     "label": "four chaleur tournante",
     "reecrit": null,
     "deltaMin": 0
    },
    "blend-smooth": {
+    "id": "mixeur-plongeur",
     "label": "mixeur plongeur",
     "reecrit": "au mixeur plongeur, directement dans le récipient",
     "deltaMin": 0
    },
    "boil": {
+    "id": "induction-3-feux",
     "label": "plaque induction 3 feux",
     "reecrit": null,
     "deltaMin": 0
    },
    "chop-coarse": {
+    "id": "mini-blender",
     "label": "petit blender du mixeur plongeur",
     "reecrit": "au petit blender, en 2–3 fois, par impulsions courtes",
     "deltaMin": 3
    },
    "congeler": {
+    "id": "congelateur-3-tiroirs",
     "label": "congélateur 3 tiroirs",
     "reecrit": null,
     "deltaMin": 0
    },
    "gaufrier": {
+    "id": null,
     "label": null,
     "reecrit": null,
     "deltaMin": 0
    },
    "gratin": {
+    "id": "four-chaleur-tournante",
     "label": "four chaleur tournante",
     "reecrit": null,
     "deltaMin": 0
    },
    "gratin-vessel": {
+    "id": "plats-a-gratin",
     "label": "plats à gratin 35×18 / 32×20",
     "reecrit": null,
     "deltaMin": 0
    },
    "grill": {
+    "id": "four-chaleur-tournante",
     "label": "four chaleur tournante",
     "reecrit": null,
     "deltaMin": 0
    },
    "machine-a-pain": {
+    "id": null,
     "label": null,
     "reecrit": null,
     "deltaMin": 0
    },
    "pan-fry": {
+    "id": "sauteuse-28",
     "label": "sauteuse 28 cm",
     "reecrit": null,
     "deltaMin": 0
    },
    "reheat": {
+    "id": "micro-ondes",
     "label": "micro-ondes",
     "reecrit": null,
     "deltaMin": 0
    },
    "simmer": {
+    "id": "casseroles",
     "label": "casseroles 2,6 L / 1,6 L",
     "reecrit": null,
     "deltaMin": 0
    },
    "simmer-large": {
+    "id": "cocotte-7.5l",
     "label": "cocotte 7,5 L",
     "reecrit": null,
     "deltaMin": 0
    },
    "steam": {
+    "id": "cocotte-7.5l",
     "label": "cocotte 7,5 L",
     "reecrit": "dans le panier vapeur de la cocotte, 2 cm d'eau au fond",
     "deltaMin": 0
    },
    "weigh": {
+    "id": "balance-tefal",
     "label": "balance de cuisine",
     "reecrit": null,
     "deltaMin": 0

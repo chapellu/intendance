@@ -80,11 +80,23 @@ def main():
     # c'est « sauteuse 28 cm », et pour `chop-coarse` c'est la RÉÉCRITURE qui est
     # la vraie instruction — « au couteau, sur une planche ». La table se calcule
     # ici parce qu'elle ne dépend que du foyer, qui est statique côté proto.
+    #
+    # L'`id` SORT AUSSI, ET PAS SEULEMENT POUR FAIRE JOLI : c'est lui qui dit si
+    # l'outil retenu est un RÉCIPIENT — il se retrouve alors dans `vaisselle`,
+    # la liste des équipements à contenance — ou un appareil. L'écran s'en sert
+    # pour départager une étape qui déclare deux capacités : `bake` nomme le
+    # four, `gratin-vessel` nomme le plat à gratin, et c'est le plat qu'on veut
+    # lire puisque la chauffe dit déjà « Four ». Il vaut `null` quand la
+    # résolution n'atterrit sur aucun outil du foyer (une réécriture « au
+    # couteau », un outil non possédé).
+    par_label = {(eq.get("label") or eq["id"]): eq["id"]
+                 for eq in foyer.get("equipment", [])}
     outils = {}
     for cap in sorted({c for r in cat.values() for s in r.get("steps", [])
                        for c in s.get("needs", [])}):
         label, reecrit, delta = rc.resolve_capability(cap, foyer, rules)
-        outils[cap] = {"label": label, "reecrit": reecrit, "deltaMin": delta}
+        outils[cap] = {"id": par_label.get(label), "label": label,
+                       "reecrit": reecrit, "deltaMin": delta}
 
     plats = []
     for rid, r in cat.items():

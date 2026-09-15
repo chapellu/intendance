@@ -16,8 +16,8 @@
 
 import type {
   Accept, Agression, Catalogue, Denree, Emit, EmitKind, Espace, Etape, Etat, Forme, Foyer,
-  GardeManger, Ingredient, LigneStock, Nature, Plat, Provenance, Quantite, Rattrapage, Source,
-  Urgence, Usage, Zone,
+  GardeManger, Ingredient, LigneStock, Nature, Outil, Plat, Provenance, Quantite, Rattrapage,
+  Source, Urgence, Usage, Zone,
 } from "./types";
 
 const ESPACES: readonly Espace[] = ["frigo", "congelo", "placard"];
@@ -329,6 +329,23 @@ function cuisinable(v: unknown, steps: Etape[], ou: string): boolean {
   return dit;
 }
 
+/** Capacité → outil. Les CLÉS sont le vocabulaire de `needs`, donc libres :
+ *  on ne les contraint pas, on vérifie la forme de ce qu'elles portent. */
+function outils(v: unknown, ou: string): Record<string, Outil> {
+  const o = obj(v, ou);
+  const table: Record<string, Outil> = {};
+  for (const [cap, brut] of Object.entries(o)) {
+    const t = obj(brut, `${ou}.${cap}`);
+    table[cap] = {
+      id: texteOuNull(t["id"], `${ou}.${cap}.id`),
+      label: texteOuNull(t["label"], `${ou}.${cap}.label`),
+      reecrit: texteOuNull(t["reecrit"], `${ou}.${cap}.reecrit`),
+      deltaMin: nombre(t["deltaMin"], `${ou}.${cap}.deltaMin`),
+    };
+  }
+  return table;
+}
+
 function foyer(v: unknown, ou: string): Foyer {
   const o = obj(v, ou);
   const espacesBruts = obj(o["espaces"], `${ou}.espaces`);
@@ -382,6 +399,11 @@ function foyer(v: unknown, ou: string): Foyer {
         exemplaires: nombre(w["exemplaires"], `${ou}.vaisselle[${i}].exemplaires`),
       };
     }),
+    // LA TABLE ÉTAIT EXPORTÉE DEPUIS LE DÉBUT, ET LE CHARGEUR LA JETAIT — même
+    // geste que les six champs d'étape de T72. `export_json.py` résout chaque
+    // capacité sur l'outil du foyer et l'écrit dans `foyer.outils` ; l'app
+    // lisait « pan-fry » et n'avait aucun moyen de dire « sauteuse 28 cm ».
+    outils: outils(o["outils"], `${ou}.outils`),
   };
 }
 

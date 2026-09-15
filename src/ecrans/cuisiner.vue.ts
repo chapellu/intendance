@@ -6,7 +6,7 @@
 //
 // Port de `apps/proto-shell/comptoir.js` (`CHAUFFE`, `ecranCuisine`).
 
-import type { Catalogue, Etape, Ingredient, Plat } from "../model/types";
+import type { Catalogue, Etape, Foyer, Ingredient, Outil, Plat } from "../model/types";
 
 /* ───────────────────────────────────────────────────────────────── la chauffe */
 
@@ -21,11 +21,18 @@ export interface Chauffe {
 // est la seule chose qui le traduise en quelque chose qu'une main comprenne.
 const TABLE: { quand: string[]; chauffe: Chauffe }[] = [
   { quand: ["bake", "gratin"], chauffe: { nom: "Four", niveau: 3 } },
+  // Le gril est une résistance de voûte, pas la chaleur tournante — `rules.yaml`
+  // en fait une capacité distincte et l'écran doit suivre. Il tombait ici en
+  // « Sans feu », ce qui est faux devant un plat qui colore sous 240 °C.
+  { quand: ["grill"], chauffe: { nom: "Gril", niveau: 4 } },
   { quand: ["boil", "simmer-large"], chauffe: { nom: "Feu vif", niveau: 4 } },
   { quand: ["pan-fry"], chauffe: { nom: "Feu moyen", niveau: 3 } },
   { quand: ["simmer"], chauffe: { nom: "Feu doux", niveau: 2 } },
   { quand: ["steam"], chauffe: { nom: "Vapeur", niveau: 2 } },
   { quand: ["reheat"], chauffe: { nom: "Réchauffe", niveau: 1 } },
+  // Un gaufrier chauffe, même si ce foyer n'en a pas : l'étape reste une
+  // cuisson, et c'est à `outilDe` de dire qu'aucun outil ne la porte.
+  { quand: ["gaufrier"], chauffe: { nom: "Gaufrier", niveau: 3 } },
 ];
 
 export const SANS_FEU: Chauffe = { nom: "Sans feu", niveau: 0 };
@@ -98,6 +105,90 @@ export function basculerMinuteur(
  */
 export function aArmer(etat: EtatMinuteur, maintenant: number): number | null {
   return etat && "fin" in etat && etat.fin > maintenant ? etat.fin : null;
+}
+
+/**
+ * Est-ce que CETTE étape mérite un minuteur ?
+ *
+ * DEMANDÉ LE 15/09/2026, DEVANT LA BOLOGNAISE : « tu mets en permanence un
+ * timer alors que je n'ai pas besoin de timer pour couper des légumes ». Le
+ * guide en posait un dès que `minutes > 0`, c'est-à-dire sur 692 étapes sur
+ * 692 — et le rendait donc invisible là où il compte.
+ *
+ * LA RÈGLE EST « LE TEMPS AGIT-IL SUR LE PLAT ? », PAS « Y A-T-IL DES MINUTES ? »
+ * Les 8 minutes d'un émincé sont une ESTIMATION, celle qui sert à dire à quelle
+ * heure s'y mettre ; les 40 minutes d'un mijotage sont une CUISSON, et la
+ * dépasser change le plat. Un minuteur ne sait mesurer que la seconde. Les
+ * minutes restent écrites sous le geste dans les deux cas : on ne cache pas la
+ * durée, on cache le chronomètre.
+ *
+ * Trois façons pour le temps d'agir, et elles se lisent toutes dans le modèle :
+ *
+ * - **la chauffe** — quelque chose est sur le feu ou au four ;
+ * - **l'attente** — la seconde horloge, un trempage, une pousse, une prise au
+ *   frais. Le plat travaille tout seul, et `attenteSouple: false` dit même que
+ *   le dépassement l'abîme ;
+ * - **`surveille: false`** — on s'en va. C'est précisément le cas où il faut
+ *   être rappelé, et le seul champ qui le déclare.
+ *
+ * Mesuré sur le corpus : 317 étapes sur 692 gardent un minuteur, 375 le
+ * perdent. Aucune des 375 n'est une cuisson — ce sont des tailles, des
+ * façonnages, des montages, des assaisonnements de fin.
+ */
+export function minuteurUtile(e: Etape): boolean {
+  return chauffeDe(e).niveau > 0 || e.attente !== null || !e.surveille;
+}
+
+/* ────────────────────────────────────────────────────────── l'outil de l'étape */
+
+export interface OutilEtape {
+  /** Ce qui s'affiche. */
+  texte: string;
+  /** Vrai quand `texte` est une MANIÈRE DE FAIRE et non un nom d'ustensile —
+   *  l'écran ne met en gras que les noms. */
+  methode: boolean;
+}
+
+/**
+ * Quel ustensile, pour cette étape-ci.
+ *
+ * DEMANDÉ LE MÊME JOUR, SUR L'ÉTAPE 2 DE LA BOLOGNAISE : « il me manquerait la
+ * casserole à utiliser ». T74 avait posé la vaisselle DU PLAT en tête de fiche,
+ * en laissant ouvert l'outil par étape (Workspace#59) faute d'une règle de
+ * résolution. La règle existait déjà — elle vivait juste du mauvais côté du
+ * mur : `compile.py` l'applique depuis toujours et l'imprime sur le plan texte
+ * (« Chauffer l'huile — cocotte 7,5 L »), `export_json.py` en publie la table
+ * dans `foyer.outils`, et le chargeur la jetait.
+ *
+ * LE RÉCIPIENT L'EMPORTE SUR L'APPAREIL quand l'étape déclare deux capacités.
+ * `bake` + `gratin-vessel` résout sur le four ET sur les plats à gratin ; le
+ * four est le moins utile des deux, parce que la ligne d'à côté dit déjà
+ * « Chauffe : Four ». Les deux lignes sont complémentaires — l'une dit la
+ * source de chaleur, l'autre dit dans quoi on met. Sans cette préférence le
+ * premier besoin gagnerait, comme pour la chauffe, et nommerait deux fois la
+ * même chose. Quatre étapes du corpus déclarent plusieurs besoins ; c'est peu,
+ * mais la règle qui les départage doit se dire, pas se subir.
+ *
+ * LA RÉÉCRITURE L'EMPORTE SUR LE LIBELLÉ, parce qu'un repli ne se résume pas à
+ * son nom : « au petit blender, en 2–3 fois, par impulsions courtes » est
+ * l'instruction, « petit blender du mixeur plongeur » n'en est que le sujet.
+ * 44 étapes sont dans ce cas.
+ *
+ * SILENCE SUR 374 ÉTAPES, ET C'EST LE MÊME SILENCE DÉLIBÉRÉ QUE T74 : 370
+ * n'ont aucun `needs` — un montage, un assaisonnement —, et 4 en ont un que ce
+ * foyer ne porte pas (le gaufrier, la machine à pain). Nommer un ustensile
+ * qu'on n'a pas serait pire que se taire, et `compile.py` marque déjà ces
+ * étapes « aucune solution avec l'équipement du foyer ».
+ */
+export function outilDe(foyer: Foyer, e: Etape): OutilEtape | null {
+  const dits = e.needs
+    .map((n) => foyer.outils[n])
+    .filter((o): o is Outil => o !== undefined && (o.label !== null || o.reecrit !== null));
+  const recipient = dits.find((o) => foyer.vaisselle.some((v) => v.id === o.id));
+  const o = recipient ?? dits[0];
+  if (!o) return null;
+  if (o.reecrit) return { texte: o.reecrit, methode: true };
+  return { texte: o.label as string, methode: false };
 }
 
 /* ─────────────────────────────────────────────────────────── les ingrédients */
