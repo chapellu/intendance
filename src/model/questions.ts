@@ -223,6 +223,43 @@ export interface Passe {
 
 export const PASSE_VIDE: Passe = { repondu: new Map(), depense: new Map() };
 
+/** Une ligne qui met un plat hors-jeu, et la réponse qui l'y met. */
+export interface Blocage {
+  /** Le nom de la ligne, tel que la question l'a posé — « tomates pelées ». */
+  nom: string;
+  reponse: Reste;
+}
+
+/**
+ * Ce qui met un plat hors-jeu pour cette passe, ligne par ligne.
+ *
+ * LE PRÉDICAT NE SUFFISAIT PLUS À PARTIR DE T80. Tant que le blocage ne servait
+ * qu'à filtrer, un booléen disait tout ; la recherche, elle, MONTRE le plat
+ * écarté et doit dire pourquoi — et le dire à partir de la même lecture, sinon
+ * l'écran expliquerait un retrait que le modèle a décidé autrement. D'où cette
+ * fonction, et `bloque` qui n'est plus qu'elle, lue en booléen.
+ */
+export function blocages(
+  catalogue: Catalogue,
+  ctx: Contexte,
+  passe: Passe,
+): (plat: Plat) => Blocage[] {
+  // Rien répondu, rien à bloquer : la fonction constante évite de reconstruire
+  // les tables de centralité pour les 86 plats d'une proposition ordinaire, qui
+  // est le cas de très loin le plus fréquent.
+  if (!passe.repondu.size) return () => [];
+  const central = centralite(catalogue, ctx);
+  return (plat: Plat): Blocage[] =>
+    lignesInterrogeables(ctx, plat)
+      .filter(central)
+      .flatMap((ligne) => {
+        const id = ctx.alias(ligne.id);
+        const reponse = passe.repondu.get(id);
+        if (reponse === undefined || (passe.depense.get(id) ?? 0) < BUDGET[reponse]) return [];
+        return [{ nom: ligne.nom, reponse }];
+      });
+}
+
 /**
  * Un plat est-il hors-jeu pour cette passe ?
  *
@@ -232,19 +269,8 @@ export const PASSE_VIDE: Passe = { repondu: new Map(), depense: new Map() };
  * carte tirée à sa place l'est sur un placard qu'on vient de vérifier.
  */
 export function bloque(catalogue: Catalogue, ctx: Contexte, passe: Passe) {
-  // Rien répondu, rien à bloquer : le prédicat constant évite de reconstruire
-  // les tables de centralité pour les 86 plats d'une proposition ordinaire, qui
-  // est le cas de très loin le plus fréquent.
-  if (!passe.repondu.size) return () => false;
-  const central = centralite(catalogue, ctx);
-  return (plat: Plat): boolean =>
-    lignesInterrogeables(ctx, plat)
-      .filter(central)
-      .some((ligne) => {
-        const id = ctx.alias(ligne.id);
-        const reponse = passe.repondu.get(id);
-        return reponse !== undefined && (passe.depense.get(id) ?? 0) >= BUDGET[reponse];
-      });
+  const quoi = blocages(catalogue, ctx, passe);
+  return (plat: Plat): boolean => quoi(plat).length > 0;
 }
 
 /**

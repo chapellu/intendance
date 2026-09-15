@@ -14,7 +14,7 @@
 //
 // Port de `apps/proto-shell/comptoir.js` (`ecranPoser`, `carteJouable`).
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { indexDuCreneau } from "../db";
 import { useCatalogue, useSavoir, useSemaine } from "../db/hooks";
 import { cleRepioche, poserReglage, useNombre } from "../db/reglages";
@@ -28,6 +28,7 @@ import { aller } from "../nav/useRoute";
 import { Demande, Jouable } from "../ui/Cartes";
 import { Corps } from "../ui/Coquille";
 import { fmt } from "../ui/format";
+import { chercher, normaliser, REQUETE_MIN } from "./poser.vue";
 import { chiffresDeLaSemaine } from "./semaine.vue";
 
 export function Poser({ creneau }: { creneau: CleCreneau }) {
@@ -76,6 +77,19 @@ function Contenu({
   const saute = jeu.choix[i] === SAUTE;
 
   const chiffres = useMemo(() => chiffresDeLaSemaine(jeu, calc), [jeu, calc]);
+
+  // LA FRAPPE VIT DANS L'ÉCRAN, PAS DANS LA BASE — T80. Une recherche n'est pas
+  // une décision : elle ne survit pas au créneau, elle ne se rejoue pas, et la
+  // ranger à côté des repioches aurait fait d'un mot tapé au passage un réglage
+  // qu'on retrouve trois jours plus tard sans savoir qui l'a mis là.
+  const [requete, setRequete] = useState("");
+  const recherche = useMemo(
+    () =>
+      saute || normaliser(requete).length < REQUETE_MIN
+        ? null
+        : chercher(jeu, jeu.choix, i, requete, savoir),
+    [jeu, i, requete, saute, savoir],
+  );
 
   // LE CALCUL LE PLUS CHER DE L'APP : `main` rejoue `calculer` pour chacun des
   // 51 plats candidats, parce que le coût marginal d'une carte ne se lit nulle
@@ -161,12 +175,59 @@ function Contenu({
           )}
         </div>
 
+        {/* LE CHAMP EST TOUJOURS LÀ, ET IL PASSE DEVANT LA QUESTION. Le
+            réserver aux créneaux sans question l'aurait retiré exactement quand
+            on en a le plus besoin : quelqu'un qui sait déjà ce qu'il veut faire
+            n'a aucune raison de payer trois relevés de placard d'abord. La
+            question revient dès que le champ est vide — elle n'est pas
+            annulée, elle attend. */}
+        {saute ? null : (
+          <div className="co-chercher">
+            <input
+              type="search"
+              value={requete}
+              onChange={(e) => setRequete(e.target.value)}
+              placeholder="Chercher un plat…"
+              aria-label="chercher un plat par son nom"
+            />
+            {requete ? (
+              <button className="btn btn-ghost" onClick={() => setRequete("")}>
+                Effacer
+              </button>
+            ) : null}
+          </div>
+        )}
+
         {/* LA QUESTION PASSE DEVANT LES CARTES, ET SEULE. Répondre change la
             main qui suit : montrer les deux ensemble, c'est montrer une main
             qu'on sait fausse — l'erreur qui a coûté les variantes B et C du
             rail (Workspace#45). */}
         {saute ? (
           <div className="co-vide">Repas sauté — rien à cuisiner, rien à acheter.</div>
+        ) : recherche ? (
+          recherche.trouvailles.length ? (
+            <>
+              {recherche.trouvailles.map((t) => (
+                <Jouable
+                  key={t.carte.plat.id}
+                  carte={t.carte}
+                  ecarts={t.ecarts}
+                  creneau={creneau}
+                  jouer={jouer}
+                />
+              ))}
+              {/* ON DIT CE QU'ON N'A PAS MONTRÉ. Une liste coupée en silence
+                  fait chercher deux fois le plat qui n'y était pas. */}
+              {recherche.total > recherche.trouvailles.length ? (
+                <div className="co-note">
+                  {recherche.total - recherche.trouvailles.length} autres plats portent ce nom —
+                  précisez.
+                </div>
+              ) : null}
+            </>
+          ) : (
+            <div className="co-vide">Aucun plat ne porte ce nom.</div>
+          )
         ) : aDemander[0] ? (
           <Demande question={aDemander[0]} reste={aDemander.length - 1} />
         ) : cartes.length ? (

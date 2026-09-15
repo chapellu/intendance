@@ -400,6 +400,35 @@ button { font-family: var(--font-body); color: inherit; }
 .co-jouable .pied { display: flex; gap: var(--space-2); margin-top: var(--space-3); }
 .co-pari { margin-top: var(--space-2); font-size: 12px; line-height: 1.35; color: var(--color-neutral-700); }
 
+/* T80 — l'écart : pourquoi la proposition n'a pas montré ce plat.
+   MÊME REGISTRE QUE `.co-sansrecette`, ET POUR LA MÊME RAISON. Ce n'est ni une
+   erreur ni un refus : c'est un avis, sur une carte dont le bouton reste actif.
+   Les tons d'alerte en auraient fait un mur, et un mur ne s'assume pas — on le
+   contourne ou on renonce, ce qui est exactement ce que T78 a refusé.
+   Le fond est le crème du fil et non le sable de la carte : l'écart doit se
+   détacher DANS la carte, qui est déjà sur fond sable. */
+.co-ecart {
+  display: flex; gap: 8px; align-items: flex-start; margin-top: var(--space-2);
+  padding: var(--space-2); border-radius: var(--radius-md);
+  background: var(--color-bg); color: var(--color-neutral-700);
+  font-size: 12.5px; line-height: 1.35;
+}
+.co-ecart + .co-ecart { margin-top: 5px; }
+
+/* T80 — le champ de recherche, au-dessus des cartes.
+   PLEINE LARGEUR, ET AU FORMAT DU POUCE (16 px : en dessous, iOS zoome sur le
+   champ au premier tap et ne dézoome jamais). Il ne se distingue pas comme un
+   outil d'expert — c'est le second chemin normal de l'écran, à côté de la
+   main. */
+.co-chercher { display: flex; gap: var(--space-2); margin-bottom: var(--space-3); }
+.co-chercher input {
+  flex: 1; min-width: 0; font: inherit; font-size: 16px;
+  padding: var(--space-2) var(--space-3); border-radius: var(--radius-md);
+  border: 1px solid var(--color-neutral-200); background: var(--color-surface);
+  color: var(--color-text);
+}
+.co-chercher input::placeholder { color: var(--color-neutral-700); }
+
 /* — la question de T33 —
    ELLE A SA PROPRE CLASSE, ET CE N'EST PAS COSMÉTIQUE. Une question occupe la
    place d'une carte mais n'en est pas une : lui laisser `.co-jouable` rendait
