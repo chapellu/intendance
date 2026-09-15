@@ -3,6 +3,7 @@ import { describe, expect, test } from "vitest";
 import { lireCatalogue } from "../model/catalogue";
 import type { Catalogue, Etape } from "../model/types";
 import {
+  aArmer,
   aSortir,
   avancement,
   basculerMinuteur,
@@ -94,6 +95,45 @@ describe("le minuteur", () => {
     const fini = basculerMinuteur(null, 12, T0 - 20 * 60_000);
     expect(minuteur(fini, 12, T0).sonne).toBe(true);
     expect(minuteur(basculerMinuteur(fini, 12, T0), 12, T0).reste).toBe(720);
+  });
+});
+
+describe("ce qui déclenche une alarme — T82", () => {
+  const T0 = 1_800_000_000_000;
+
+  test("un minuteur lancé arme l'échéance que le doigt vient d'écrire", () => {
+    // Pas « dans douze minutes » mais « à cette date-là » : c'est le même objet
+    // que celui qui part en base, et c'est ce qui rend `armer` idempotente —
+    // le geste et l'effet de montage arment la MÊME chose, pas deux délais
+    // calculés à deux instants différents.
+    const lance = basculerMinuteur(null, 12, T0);
+    expect(aArmer(lance, T0)).toBe(T0 + 12 * 60_000);
+  });
+
+  test("un minuteur neuf n'arme rien : rien n'a encore été demandé", () => {
+    expect(aArmer(null, T0)).toBeNull();
+  });
+
+  test("une pause n'a pas d'échéance, donc rien à annoncer", () => {
+    // C'est la forme `{ reste }` qui le dit. Lui inventer une échéance
+    // réintroduirait le compteur que T12 a refusé.
+    const pause = basculerMinuteur(basculerMinuteur(null, 12, T0), 12, T0 + 60_000);
+    expect(aArmer(pause, T0 + 60_000)).toBeNull();
+  });
+
+  test("ROUVRIR UNE FICHE NE FAIT PAS SONNER LA CUISINE POUR HIER", () => {
+    // Le cas de tous les jours, pas une garde défensive : le minuteur a sonné
+    // pendant qu'on était ailleurs, l'état reste en base, et l'écran se
+    // remonte. Sans ça, chaque retour sur la fiche réarmerait une alarme pour
+    // un événement déjà passé — et `armer` la ferait partir aussitôt.
+    const fini = basculerMinuteur(null, 12, T0 - 20 * 60_000);
+    expect(minuteur(fini, 12, T0).sonne).toBe(true);
+    expect(aArmer(fini, T0)).toBeNull();
+  });
+
+  test("relancer un minuteur sonné arme la nouvelle échéance, pas l'ancienne", () => {
+    const fini = basculerMinuteur(null, 12, T0 - 20 * 60_000);
+    expect(aArmer(basculerMinuteur(fini, 12, T0), T0)).toBe(T0 + 12 * 60_000);
   });
 });
 

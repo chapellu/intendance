@@ -25,9 +25,11 @@ import { heureDe } from "../model/heures";
 import type { Etape, Plat } from "../model/types";
 import type { CleCreneau } from "../nav/routes";
 import { aller } from "../nav/useRoute";
+import { armer, arreter, demanderBandeau, desarmer, plateforme, promesse } from "../pwa/alarme";
 import { duree, fmt, hhmm, mmss } from "../ui/format";
 import { Icone } from "../ui/icones";
 import {
+  aArmer,
   aSortir,
   avancement,
   basculerMinuteur,
@@ -311,6 +313,21 @@ function Guide({
   const etat = useObjet<EtatMinuteur>(cleM);
   const maintenant = useHorloge(!!etat && etat !== null && "fin" in etat);
 
+  // T82 — l'app rouverte sur un minuteur qui courait déjà. `armer` est
+  // idempotente sur l'échéance, donc cet effet ne défait pas ce que le doigt
+  // vient de faire ; `false` dit qu'aucun geste ne le porte, et seul le bandeau
+  // s'arme alors — le son, lui, exige une interaction et ne se rattrape pas.
+  //
+  // AUCUN NETTOYAGE AU DÉMONTAGE, ET C'EST LE POINT DU TICKET. Avancer d'une
+  // étape pendant que la casserole mijote est le cas NORMAL — c'est même ce que
+  // « sans surveiller » invite à faire. Désarmer en quittant l'étape retirerait
+  // l'alarme exactement quand elle sert ; ce qui la retire, c'est la pause, le
+  // relancement, ou l'échéance atteinte.
+  useEffect(() => {
+    const fin = aArmer(etat ?? null, Date.now());
+    if (fin !== null) armer(cleM, fin, false);
+  }, [cleM, etat]);
+
   const { reste, total } = avancement(steps, etape);
   const chauffe = chauffeDe(e);
   const m = minuteur(etat ?? null, e.minutes, maintenant);
@@ -392,9 +409,20 @@ function Guide({
           {e.minutes > 0 ? (
             <button
               className={`co-minuteur${m.actif ? " actif" : ""}`}
-              onClick={() =>
-                void poserReglage(cleM, basculerMinuteur(etat ?? null, e.minutes, Date.now()))
-              }
+              onClick={() => {
+                const t = Date.now();
+                const suivant = basculerMinuteur(etat ?? null, e.minutes, t);
+                // TOUT SE FAIT DANS LE GESTE, AVANT L'ÉCRITURE EN BASE. La
+                // politique d'autoplay ne regarde pas l'intention mais la pile
+                // d'appels : la même demande de son, passée de l'autre côté
+                // d'un `await` de Dexie, est refusée. Même raison pour la
+                // permission du bandeau, qu'iOS n'accorde que sous un doigt.
+                demanderBandeau();
+                const fin = aArmer(suivant, t);
+                if (fin !== null) armer(cleM, fin, true);
+                else desarmer(cleM);
+                void poserReglage(cleM, suivant);
+              }}
             >
               <span
                 className="k"
@@ -425,12 +453,27 @@ function Guide({
         </div>
       ) : null}
 
+      {/* T82 — ce que l'alarme NE peut pas faire ici, et seulement ça. Muette
+          quand tout va bien : une ligne qui dirait « armée » à chaque minuteur
+          serait lue trois fois puis jamais plus, et cet écran se lit à bout de
+          bras. Voir `promesse()` — c'est la doctrine de T78 appliquée à une
+          capacité de plateforme plutôt qu'à une lacune du corpus. */}
+      {m.actif ? <Aveu /> : null}
+
       {m.sonne ? (
-        <div className="co-encart enfant" style={{ marginTop: "var(--space-2)" }}>
+        <div className="co-encart enfant co-sonne" style={{ marginTop: "var(--space-2)" }}>
           <Icone nom="cloche" />
           <span>
             <b>Minuteur terminé.</b>
           </span>
+          {/* « Arrêter » est ICI et pas dans la barre du bas : les deux boutons
+              du bas font avancer la recette, et un geste qui ne la fait pas
+              avancer n'y a pas sa place. Il ne touche pas au minuteur — celui-ci
+              reste « terminé », et se relance par son propre bouton, comme
+              avant. Faire taire n'est pas remettre à zéro. */}
+          <button className="btn btn-secondary" onClick={() => arreter()}>
+            Arrêter
+          </button>
         </div>
       ) : null}
 
@@ -444,6 +487,16 @@ function Guide({
       </div>
     </div>
   );
+}
+
+/** Ce que la plateforme sous l'app ne sait pas faire, quand il y a quelque
+ *  chose à en dire. Relu à chaque rendu, et c'est voulu : la permission du
+ *  bandeau change SOUS l'écran — elle est demandée au premier doigt sur le
+ *  minuteur et la réponse arrive une seconde plus tard. L'horloge de 250 ms
+ *  qui bat déjà pendant qu'un minuteur court suffit à l'afficher. */
+function Aveu() {
+  const dire = promesse(plateforme());
+  return dire ? <div className="co-promesse">{dire}</div> : null;
 }
 
 /** Une horloge qui ne bat QUE pendant qu'un minuteur court. Un `setInterval`
