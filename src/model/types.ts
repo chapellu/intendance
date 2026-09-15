@@ -58,7 +58,24 @@ export interface Quantite {
 }
 
 export interface Ingredient {
+  /** La clé d'ACHAT : `huile-olive`, commune aux deux lignes d'huile d'une même
+   *  recette. C'est elle qui va au stock et à la liste. */
   id: string;
+  /**
+   * La clé de LIGNE, celle que `Etape.uses` vise. Vaut `id` par défaut, et en
+   * diffère sur 28 lignes du corpus.
+   *
+   * DEUX CLÉS PARCE QUE CE SONT DEUX QUESTIONS, et `uses` est inutilisable sans
+   * celle-ci. Onze plats portent deux lignes d'un même id — la farine de la
+   * pâte et celle de la crème, le sel de la farce et celui de la garniture — et
+   * `uses: [farine-pate]` ne tombe alors sur aucun `id`. Mesuré : 29 des 357
+   * références de `uses`, sur 9 plats, ne se résolvent QUE par `ref` ; avec
+   * elle, 357 sur 357.
+   *
+   * `export_json.py` la porte depuis toujours ; c'est le chargeur qui la
+   * jetait, du même geste qu'il jetait les six champs d'étape.
+   */
+  ref: string;
   nom: string;
   qty: number;
   unit: string;
@@ -77,6 +94,17 @@ export interface Ingredient {
   central: boolean;
 }
 
+/** Le repli quand l'anticipation a été manquée : six étapes en portent un, et
+ *  toutes les six sont des trempages ou une marinade. L'`effet` est écrit
+ *  honnête — il dit ce qu'on perd, il ne rassure pas. */
+export interface Rattrapage {
+  action: string;
+  /** Ce que le repli coûte, en minutes. Un trempage de 12 h se rattrape en 1 h
+   *  de pousse à température ambiante : 720 deviennent 60, pas 0. */
+  coutMin: number;
+  effet: string;
+}
+
 export interface Etape {
   id: string;
   action: string;
@@ -87,6 +115,35 @@ export interface Etape {
   /** `false` = le temps passe sans qu'on reste devant. C'est ce qui sépare une
    *  journée de 90 minutes tenable d'une autre qui ne l'est pas. */
   surveille: boolean;
+  /** Les ids de lignes d'ingrédient que CETTE étape consomme — donc, mis à
+   *  l'échelle, la quantité du geste en cours.
+   *
+   *  `null` ET `[]` NE SONT PAS LA MÊME CHOSE, et c'est pour ça que ce champ
+   *  n'est pas `string[]`. `[]` dit « rien à verser ici » — on remue, on
+   *  enfourne ; `null` dit « la recette n'a pas encore le lien ». Mesuré sur
+   *  l'export : 406 `null`, 98 `[]`, 126 non vides. Aplatir les deux premiers
+   *  ferait promettre à un écran qu'une étape ne consomme rien alors qu'on
+   *  l'ignore, ce qui est exactement le mensonge plausible que ce chargeur
+   *  existe pour attraper. `export_json.py` le dit déjà en commentaire ; on le
+   *  tient de ce côté-ci. */
+  uses: string[] | null;
+  /** L'id de l'étape — du MÊME plat — que celle-ci accompagne. Les carottes de
+   *  `lentilles-mijotees` portent `enParallele: lancer-mijotage` et leur texte
+   *  commence par « Pendant le mijotage : » ; le guide les a pourtant mises à
+   *  la queue leu leu et a fait attendre 30 minutes de trop. */
+  enParallele: string | null;
+  /** Du temps mort, en minutes : trempage 720, prise au frais 240, repos 10.
+   *  LA SECONDE HORLOGE — elle ne compte pas dans les gestes (`anticipation.py`
+   *  l'exclut de la somme) mais elle décide à quelle heure s'y mettre. */
+  attente: number | null;
+  /** Pourquoi on attend. `null` sur 5 des 42 attentes — toutes des levées de
+   *  pâte, où l'action le dit déjà. */
+  attenteRaison: string | null;
+  /** `false` = dépasser l'attente abîme le plat. Trois étapes seulement : deux
+   *  refroidissements et un repos de mousse. Le défaut est `true` — une pâte
+   *  qui lève une heure de trop lève, elle ne casse pas. */
+  attenteSouple: boolean;
+  rattrapage: Rattrapage | null;
   enfant: string | null;
   /** Âge en mois à partir duquel le geste enfant est possible. */
   enfantDes: number | null;
@@ -142,11 +199,38 @@ export interface SansReste {
   ingredients: Ingredient[];
 }
 
+/**
+ * D'où vient la recette. `null` sur les 21 plats du foyer — et ce `null` se dit
+ * à l'écran (« Recette du foyer ») au lieu de se taire : un champ vide sur un
+ * quart du catalogue ressemble à un bug, alors que c'est une réponse.
+ *
+ * CRÉDITER N'EST PAS REPUBLIER. Le cadre de la carte Workspace#26 interdit de
+ * recopier la prose et les photos, jamais de nommer l'auteur ; les 5 `url`
+ * pointent là où #26 a délibérément laissé la prose.
+ */
+export interface Source {
+  auteur: string;
+  /** Déjà une phrase affichable, page comprise — « La cuisine bio du quotidien,
+   *  Terre vivante, p. 116 ». Rien à composer : on l'affiche telle quelle. */
+  ouvrage: string;
+  url: string | null;
+  /**
+   * LA SAISON NE PILOTE RIEN, ET C'EST UN NO-OP DÉCLARÉ.
+   *
+   * 64 des 117 sources en portent une, elle arrive gratuitement avec le champ,
+   * et aucun score ne la lit. Workspace#41 a tranché : la saisonnalité roule
+   * sur le plancher (#43), pas sur la planification. C'est écrit ici pour que
+   * le prochain lecteur ne la branche pas au classement en croyant bien faire.
+   */
+  saison: string | null;
+}
+
 export interface Plat {
   id: string;
   titre: string;
   minutes: number;
   portions: number;
+  source: Source | null;
   apports: Apports;
   ingredients: Ingredient[];
   steps: Etape[];

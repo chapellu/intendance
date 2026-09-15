@@ -16,7 +16,8 @@
 
 import type {
   Accept, Agression, Catalogue, Denree, Emit, EmitKind, Espace, Etape, Etat, Forme, Foyer,
-  GardeManger, Ingredient, LigneStock, Nature, Plat, Provenance, Quantite, Urgence, Usage, Zone,
+  GardeManger, Ingredient, LigneStock, Nature, Plat, Provenance, Quantite, Rattrapage, Source,
+  Urgence, Usage, Zone,
 } from "./types";
 
 const ESPACES: readonly Espace[] = ["frigo", "congelo", "placard"];
@@ -121,6 +122,11 @@ function ingredient(v: unknown, ou: string, defauts = false): Ingredient {
     o[cle] === undefined && defauts ? false : booleen(o[cle], `${ou}.${cle}`);
   return {
     id: texte(o["id"], `${ou}.id`),
+    // L'export résout déjà le défaut (`i.get("ref") or i["id"]`), donc `ref`
+    // est toujours là ; le `??` couvre la ligne de `sansReste`, qui n'a pas la
+    // même forme — voir plus haut. Sans ce champ, `uses` ne se résout pas sur
+    // les 9 plats à composants multiples.
+    ref: texte(o["ref"] ?? o["id"], `${ou}.ref`),
     nom: texte(o["nom"], `${ou}.nom`),
     qty: nombre(o["qty"], `${ou}.qty`),
     unit: texte(o["unit"], `${ou}.unit`),
@@ -133,6 +139,39 @@ function ingredient(v: unknown, ou: string, defauts = false): Ingredient {
   };
 }
 
+// `rattrapage` EST LE SEUL ENDROIT OÙ L'EXPORT LAISSE PASSER DU SNAKE_CASE.
+// `export_json.py` recopie l'objet YAML tel quel (`s.get("rattrapage")`) au lieu
+// de le recomposer champ par champ comme il le fait partout ailleurs — d'où
+// `cout_min` au milieu de `attenteRaison` et `porteAssaisonnement`. Renommer en
+// amont obligerait à régénérer l'export pour un ticket qui a promis de ne rien
+// changer d'autre ; le chargeur est de toute façon l'endroit où le vocabulaire
+// du dehors devient celui du dedans. On traduit ici, et on le dit.
+function rattrapage(v: unknown, ou: string): Rattrapage | null {
+  if (v === null || v === undefined) return null;
+  const o = obj(v, ou);
+  return {
+    action: texte(o["action"], `${ou}.action`),
+    coutMin: nombre(o["cout_min"], `${ou}.cout_min`),
+    effet: texte(o["effet"], `${ou}.effet`),
+  };
+}
+
+// `auteur` et `ouvrage` sont EXIGÉS dès qu'une source existe, `url` et `saison`
+// non : une source sans crédit n'est pas une source, et laisser passer un
+// `auteur` absent produirait « Recette du foyer » sur une recette qui ne l'est
+// pas — le silence dirait le contraire de la vérité, sur un champ dont tout
+// l'intérêt est de créditer.
+function source(v: unknown, ou: string): Source | null {
+  if (v === null || v === undefined) return null;
+  const o = obj(v, ou);
+  return {
+    auteur: texte(o["auteur"], `${ou}.auteur`),
+    ouvrage: texte(o["ouvrage"], `${ou}.ouvrage`),
+    url: texteOuNull(o["url"] ?? null, `${ou}.url`),
+    saison: texteOuNull(o["saison"] ?? null, `${ou}.saison`),
+  };
+}
+
 function etape(v: unknown, ou: string): Etape {
   const o = obj(v, ou);
   return {
@@ -141,6 +180,16 @@ function etape(v: unknown, ou: string): Etape {
     minutes: nombre(o["minutes"], `${ou}.minutes`),
     needs: listeDeTextes(o["needs"] ?? [], `${ou}.needs`),
     surveille: booleen(o["surveille"], `${ou}.surveille`),
+    // Pas de `?? []` ici, contrairement à `needs` : l'absence est une donnée.
+    // Voir le commentaire de `Etape.uses`.
+    uses: o["uses"] == null ? null : listeDeTextes(o["uses"], `${ou}.uses`),
+    enParallele: texteOuNull(o["enParallele"] ?? null, `${ou}.enParallele`),
+    attente: nombreOuNull(o["attente"] ?? null, `${ou}.attente`),
+    attenteRaison: texteOuNull(o["attenteRaison"] ?? null, `${ou}.attenteRaison`),
+    // `attente_souple` a un défaut côté Python (`True`) et l'export le résout
+    // toujours : ici on exige le booléen, comme pour `surveille`.
+    attenteSouple: booleen(o["attenteSouple"], `${ou}.attenteSouple`),
+    rattrapage: rattrapage(o["rattrapage"] ?? null, `${ou}.rattrapage`),
     enfant: texteOuNull(o["enfant"] ?? null, `${ou}.enfant`),
     enfantDes: nombreOuNull(o["enfantDes"] ?? null, `${ou}.enfantDes`),
     porteAssaisonnement: booleen(o["porteAssaisonnement"], `${ou}.porteAssaisonnement`),
@@ -188,11 +237,32 @@ function plat(v: unknown, ou: string): Plat {
   const origine = apports["origine"];
   const vaisselleBrute = o["vaisselle"];
 
+  // `enParallele` EST UNE RÉFÉRENCE, DONC ELLE SE VÉRIFIE ICI ET PAS DANS
+  // `etape()` : une étape seule ne peut pas savoir si sa cible existe. C'est
+  // exactement le genre d'invariant que l'en-tête de ce fichier réclame — un
+  // id mort ne lèverait rien, il produirait un appariement silencieusement
+  // vide, et le guide remettrait les deux gestes à la queue leu leu sans
+  // jamais dire pourquoi. `verifier.py` tient déjà la règle en amont ; le
+  // corpus passe (0 orphelin sur 50 liens), et ce mur est là pour le jour où
+  // une recette renomme une étape sans renommer ce qui la vise.
+  const steps = tableau(o["steps"] ?? [], `${ou}.steps`).map((x, i) =>
+    etape(x, `${ou}.steps[${i}]`),
+  );
+  const idsEtapes = new Set(steps.map((s) => s.id));
+  for (const [i, s] of steps.entries())
+    if (s.enParallele !== null && !idsEtapes.has(s.enParallele))
+      throw new CatalogueInvalide(
+        `${ou}.steps[${i}].enParallele`,
+        "l'id d'une étape du même plat",
+        s.enParallele,
+      );
+
   return {
     id: texte(o["id"], `${ou}.id`),
     titre: texte(o["titre"], `${ou}.titre`),
     minutes: nombre(o["minutes"], `${ou}.minutes`),
     portions,
+    source: source(o["source"] ?? null, `${ou}.source`),
     apports: {
       proteine: texte(apports["proteine"], `${ou}.apports.proteine`),
       feculent: texte(apports["feculent"], `${ou}.apports.feculent`),
@@ -202,7 +272,7 @@ function plat(v: unknown, ou: string): Plat {
     },
     ingredients: tableau(o["ingredients"], `${ou}.ingredients`)
       .map((x, i) => ingredient(x, `${ou}.ingredients[${i}]`)),
-    steps: tableau(o["steps"] ?? [], `${ou}.steps`).map((x, i) => etape(x, `${ou}.steps[${i}]`)),
+    steps,
     bebe: texteOuNull(o["bebe"] ?? null, `${ou}.bebe`),
     actifMin: nombreOuNull(o["actifMin"] ?? null, `${ou}.actifMin`),
     accepts: tableau(o["accepts"], `${ou}.accepts`).map((x, i) => accept(x, `${ou}.accepts[${i}]`)),
@@ -228,8 +298,35 @@ function plat(v: unknown, ou: string): Plat {
       };
     })(),
     gainChainage: nombre(o["gainChainage"], `${ou}.gainChainage`),
-    cuisinable: booleen(o["cuisinable"], `${ou}.cuisinable`),
+    cuisinable: cuisinable(o["cuisinable"], steps, ou),
   };
+}
+
+/**
+ * `cuisinable` DOIT DIRE LA MÊME CHOSE QUE `steps`, sinon il ne sert à rien.
+ *
+ * Le champ porte la définition du catalogue — `est_cuisinable()` : « a
+ * plan-level entry has no steps: it can be planned, not cooked ». L'app s'en
+ * sert pour dire à l'écran qu'un plat n'a pas sa recette, et c'est le seul
+ * endroit où elle le dit. Un export où les deux divergent produirait donc
+ * exactement le mensonge plausible que ce chargeur existe pour attraper : un
+ * plat annoncé cuisinable qui s'ouvre sur rien, ou l'étiquette « sans recette »
+ * sur un plat qui a ses étapes.
+ *
+ * Le contrôle est ici et pas dans un test parce que la divergence viendrait de
+ * l'EXPORT, pas du code : la dériver à la lecture (`steps.length > 0`) la
+ * masquerait au lieu de la signaler, et le champ déclaré cesserait d'être lu —
+ * ce qui est précisément l'état dont on sort.
+ */
+function cuisinable(v: unknown, steps: Etape[], ou: string): boolean {
+  const dit = booleen(v, `${ou}.cuisinable`);
+  if (dit !== steps.length > 0)
+    throw new CatalogueInvalide(
+      `${ou}.cuisinable`,
+      `${steps.length > 0} — le plat porte ${steps.length} étape(s)`,
+      dit,
+    );
+  return dit;
 }
 
 function foyer(v: unknown, ou: string): Foyer {

@@ -109,6 +109,31 @@ def main():
                 for s in an.anticipations(r)
             ],
             "portions": r.get("yields", {}).get("portions_eq", 4),
+            # LA PROVENANCE, ET CRÉDITER N'EST PAS REPUBLIER. Le cadre de
+            # licence de la carte #26 interdit de recopier la prose et les
+            # photos — jamais de nommer l'auteur ; chaque recette porte
+            # d'ailleurs la trace de sa conformité dans `encoding`. Les 5 `url`
+            # pointent là où #26 a délibérément laissé la prose : « les étapes
+            # restent donc à leur place — sur le blog, derrière le champ `url` ».
+            #
+            # `work` EST DÉJÀ UNE PHRASE AFFICHABLE, page comprise — « La cuisine
+            # bio du quotidien, Terre vivante, p. 116 ». Donc pas de gabarit à
+            # composer côté app, et `page` reste ici sans sortir : il double
+            # `work`, et deux orthographes du même nombre finiraient par
+            # diverger. `source_id` non plus — c'est une clé de corpus, pas une
+            # chose à lire.
+            #
+            # `saison` sort, et NE DOIT RIEN PILOTER. 64 valeurs entrent dans le
+            # modèle ; Workspace#41 a tranché que la saisonnalité roule sur le
+            # plancher (#43) et pas sur la planification. C'est un no-op DÉCLARÉ
+            # — sans ce commentaire, le prochain lecteur le branchera au score en
+            # croyant bien faire.
+            "source": (lambda s: None if not s else {
+                "auteur": s.get("author"),
+                "ouvrage": s.get("work"),
+                "url": s.get("url"),
+                "saison": s.get("saison"),
+            })(r.get("source")),
             "apports": r.get("apports", {}),
             "ingredients": [
                 # `ref` est la clé de LIGNE (défaut : l'id), celle que `uses:`

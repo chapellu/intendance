@@ -28,11 +28,14 @@ import { aller } from "../nav/useRoute";
 import { duree, fmt, hhmm, mmss } from "../ui/format";
 import { Icone } from "../ui/icones";
 import {
+  aSortir,
   avancement,
   basculerMinuteur,
   chauffeDe,
+  credit,
   minuteur,
   provenanceIngredient,
+  sansRecette,
   type EtatMinuteur,
 } from "./cuisiner.vue";
 
@@ -150,10 +153,30 @@ function Fiche({
   // e2e ne l'a pas vu pendant des mois parce qu'il tirait toujours une carte qui,
   // elle, avait des étapes ; c'est un simple changement de classement qui a fini
   // par lui en tirer une autre. Trouvé et bouché en marge de Workspace#50.
+  const muet = sansRecette(p);
+
   if (ingr || !steps.length)
     return (
       <>
         {tete}
+        {/* LA FICHE LE DIT AVANT LA LISTE, PAS APRÈS. C'est la plainte du
+            14/09 : « tu m'as encore fourni une recette sans étapes ». L'écran
+            ne mentait pas — il n'avait simplement rien à dire, et un écran qui
+            se tait sur ce qui lui manque se lit comme un écran cassé. La
+            phrase se pose donc là où l'œil arrive, entre le titre et les
+            quantités, et pas en bas près du bouton où elle ressemblerait à un
+            avertissement de dernière minute.
+
+            On l'affiche même quand l'utilisateur est venu voir la liste d'un
+            plat qui A des étapes : `sansRecette` rend `null` dans ce cas, donc
+            la condition tient toute seule et il n'y a pas deux chemins à
+            garder d'accord. */}
+        {muet ? (
+          <div className="co-sansrecette">
+            <Icone nom="info" />
+            <span>{muet.long}</span>
+          </div>
+        ) : null}
         <Ingredients p={p} parts={parts} f={f} catalogue={jeu.catalogue} />
         <div style={{ padding: "0 var(--space-4) var(--space-4)" }}>
           {steps.length ? (
@@ -204,6 +227,8 @@ function Ingredients({
   catalogue: Jeu["catalogue"];
 }) {
   const produit = +(p.portions * f).toFixed(1);
+  const ustensile = aSortir(p);
+  const cr = credit(p);
   return (
     <div className="co-corps">
       <div className="co-encart">
@@ -219,17 +244,45 @@ function Ingredients({
             : ""}
         </span>
       </div>
+      {/* T74 — « à sortir avant de commencer », sur la FICHE et pas sur
+          l'étape : le guide se lit à bout de bras et tout ce qui n'est pas
+          l'étape en cours y est du bruit. Muet sur les 72 plats sans
+          vaisselle. */}
+      {ustensile && (
+        <div className="co-sortir">
+          <Icone nom="info" />
+          <span>
+            À sortir : <b>{ustensile}</b>
+          </span>
+        </div>
+      )}
       <div className="co-ing">
         {p.ingredients.map((x) => {
           const prov = provenanceIngredient(catalogue, x);
+          // `key` sur `ref` ET PAS SUR `id` : onze plats portent deux lignes du
+          // même ingrédient — la farine de la pâte et celle de la crème — et
+          // React recevait deux fois la même clé. C'est `ref` qui les
+          // distingue, et elle n'existait pas avant T72.
           return (
-            <div key={x.id} className="l">
+            <div key={x.ref} className="l">
               <span className="nom">{x.nom}</span>
               <span className="q">{echelleTexte(x, f)}</span>
               <span className={`p ${prov.acheter ? "acheter" : ""}`}>{prov.label}</span>
             </div>
           );
         })}
+      </div>
+      {/* T73 — le crédit ferme la fiche au lieu de l'ouvrir : on vient y lire
+          des quantités, pas une bibliographie. Il est là, lisible, et il ne
+          prend la place de rien. */}
+      <div className="co-credit">
+        {cr.url ? (
+          <a href={cr.url} target="_blank" rel="noreferrer">
+            {cr.texte}
+          </a>
+        ) : (
+          cr.texte
+        )}
       </div>
     </div>
   );

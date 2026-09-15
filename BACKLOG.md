@@ -2121,14 +2121,31 @@ exporté sous `enParallele` par `export_json.py:149` — et `Etape` dans
 `src/model/types.ts` ne le déclare pas. Le guide a donc fait attendre un temps
 que sa propre donnée disait de ne pas attendre.
 
-La mesure, sur les **419 étapes** de `public/cuisine-data.json` :
+La mesure, sur les **630 étapes** de `public/cuisine-data.json` (`npm run
+chargeur`) :
 
 | Champ exporté | Étapes | Ce que c'est | Lu par l'app |
 |---|---|---|---|
-| `uses` | **126** | les ids d'ingrédients qu'une étape consomme — donc la quantité de l'étape, une fois mise à l'échelle | non |
-| `enParallele` | **42** | l'étape avec laquelle celle-ci tourne | non |
-| `attente` / `attenteRaison` | **30** | du temps mort qui a une raison — trempage 720 min, prise au frais 240, repos 10 | non |
+| `uses` | **126** | les clés de **ligne** qu'une étape consomme — donc la quantité de l'étape, une fois mise à l'échelle | non |
+| `enParallele` | **50** | l'étape avec laquelle celle-ci tourne | non |
+| `attente` / `attenteRaison` | **42** / 37 | du temps mort qui a une raison — trempage 720 min, prise au frais 240, repos 10 | non |
 | `rattrapage` | **6** | le repli quand l'anticipation a été manquée, avec son `cout_min` et son `effet` honnête | non |
+| `ref` | **28 lignes** | la clé de ligne que `uses` vise, quand un plat porte deux fois le même id | non |
+
+**CE TABLEAU A ÉTÉ MESURÉ AVANT LA PR #20**, qui a ajouté 52 entrées, et trois
+de ses quatre comptes étaient faux quand ce bloc a été écrit : 419 étapes pour
+630, 86 plats pour 138, `enParallele` 42 pour 50, `attente` 30 pour 42. `uses`
+(126) et `rattrapage` (6) tenaient par coïncidence — les recettes de #20
+n'apportent ni l'un ni l'autre. Les valeurs ci-dessus sont celles du 2026-09-14.
+
+**La cinquième ligne ne figurait pas au ticket, et c'est la plus coûteuse.**
+`uses` cite des clés de LIGNE (`ref`), pas des clés d'ACHAT (`id`) — parce
+qu'onze plats portent deux lignes d'un même ingrédient, la farine de la pâte et
+celle de la crème. `ingredient()` ne lisait pas `ref` : sur 357 références,
+**29 réparties sur 9 plats** ne tombaient sur aucun `id`. Livrer `uses` sans
+`ref`, c'était livrer un lien mort sur un plat sur quinze, et aucun test ne
+l'aurait dit puisque le champ n'existait pas encore. Trouvé en écrivant
+`chargeur.test.ts`, pas en relisant le code.
 
 **CE BLOC NE DESSINE RIEN.** Il n'ajoute pas une ligne à l'écran de cuisine, et
 c'est sa seule raison de pouvoir être pris maintenant : *comment* montrer deux
@@ -2140,9 +2157,48 @@ trempage de douze heures sont trois questions ouvertes sur
 disponible et testée, et les écrans suivent quand la carte a tranché — le même
 ordre que T46 avant T42–T45.
 
-- [ ] **T72 — Le modèle d'étape retrouve ses quatre champs.** `Etape` déclare
+- [x] **T72 — Le modèle d'étape retrouve ses quatre champs.** `Etape` déclare
       `uses`, `enParallele`, `attente`, `attenteRaison`, `attenteSouple` et
       `rattrapage` ; `chargerEtape` les lit. Rien d'autre ne change.
+
+      **Un cinquième champ s'est ajouté en cours de route : `Ingredient.ref`**,
+      sans quoi `uses` ne se résout pas — voir plus haut. Ce n'est pas un
+      élargissement du ticket, c'est la même faute : un champ que l'export porte
+      et que le chargeur jette.
+
+      **`uses` est `string[] | null` et PAS `string[]`.** `[]` dit « rien à
+      verser ici » — on remue, on enfourne ; `null` dit « la recette n'a pas
+      encore le lien ». Mesuré : 406 `null`, 98 `[]`, 126 qui citent. Aplatir
+      les deux premiers ferait promettre à un écran qu'une étape ne consomme
+      rien alors qu'on l'ignore — exactement le mensonge plausible que ce
+      chargeur existe pour attraper. `export_json.py` le disait déjà en
+      commentaire ; c'est maintenant tenu des deux côtés.
+
+      **`enParallele` se vérifie dans `plat()`, pas dans `etape()`** : une étape
+      seule ne peut pas savoir si sa cible existe. Un id mort ne lèverait rien,
+      il produirait un appariement silencieusement vide — le bug d'origine,
+      revenu par une autre porte. Éprouvé non vide : le test falsifie un lien et
+      attend le refus.
+
+      **Le chargeur traduit un `cout_min` en `coutMin`**, seul snake_case que
+      l'export laisse passer, parce qu'`export_json.py` recopie l'objet YAML du
+      rattrapage tel quel au lieu de le recomposer champ par champ. Corrigé côté
+      chargeur plutôt qu'en amont : c'est là qu'est la frontière, et le ticket
+      avait promis de ne rien régénérer.
+
+      **Une règle du corpus réapprise en rougissant.** « Deux lignes d'un même
+      id portent toujours deux `ref` » est faux : `petits-pots-creme-glacee` et
+      `quiche-faisselle-cebettes` doublent un id sans porter le moindre `uses`.
+      `verifier.py:231` ne réclame un `ref` que là où une étape cite une ligne —
+      sans citation, rien n'a besoin d'être distingué. Onze plats doublent un
+      id, neuf ont des `uses`, et la promesse ne porte que sur ces neuf.
+
+      Portes : typecheck, 578 tests (11 nouveaux), build, 18 e2e,
+      `catalogue:verifie` 0 erreur. `npm run chargeur` imprime les tailles et le
+      témoin : sur `lentilles-mijotees`, 47 min de somme brute contre 32 hors
+      étapes parallèles, pour un plat déclaré à 40 — l'écart que l'utilisateur a
+      payé en attendant. **Le bloc ne le répare pas**, il rend la donnée
+      lisible ; le guide est Workspace#57.
 
       **Pas d'union, et c'est la règle du fichier qui le dit** : *« UNE UNION EST
       UNE PROMESSE QUE L'EXPORT NE CHANGERA PAS »*, donc on n'en fait que là où
@@ -2172,19 +2228,22 @@ ordre que T46 avant T42–T45.
       **imprime** les tailles à côté de ses promesses vieillit mieux qu'un test
       qui les code en dur.
 
-- [ ] **T73 — La provenance traverse l'export, et se lit sur la fiche.**
+- [x] **T73 — La provenance traverse l'export, et se lit sur la fiche.**
       *« L'origine je parlait de la provenance (auteur, ouvrage, url) »*
       (2026-09-12,
       [Workspace#56](https://github.com/chapellu/Workspace/issues/56)). Le
       `source:` des recettes n'est **pas exporté du tout** : c'est le seul champ
       de ce bloc qui manque des deux côtés.
 
-      Mesuré : **65 plats sur 86 portent un `source:`**, et les 21 autres sont
+      Mesuré le 2026-09-14 : **117 plats sur 138 portent un `source:`** (le
+      ticket disait 65 sur 86, d'avant la PR #20), et les 21 autres sont
       exactement les plats du foyer — les 15 de `_repertoire.yaml` plus
       `gratin-de-pates-tomates`, `lentilles-mijotees`, `omelette-courgettes`,
       `ratatouille-minute`, `reste-de-la-veille`, `veloute-de-courgettes`.
-      Sur les 65 : `author` 65, `work` 65, `encoding` 65, `source_id` 64,
-      `saison` 64, `page` 60, `url` **5**.
+      **Ce fait-là a survécu à 52 recettes de plus, à l'identique** — c'est le
+      seul du bloc que la mesure n'a pas démenti. Sur les 117 : `author` 117,
+      `work` 117, `encoding` 117, `source_id` 116, `page` 112, `saison` 64,
+      `url` **5**.
 
       **`work` est déjà une phrase affichable, page comprise** — *« La cuisine
       bio du quotidien, Terre vivante, p. 116 »*. Donc pas de gabarit à
@@ -2216,7 +2275,22 @@ ordre que T46 avant T42–T45.
       committer** — la porte compare au JSON commité, et elle rougit jusque-là.
       Ce n'est pas une panne.
 
-- [ ] **T74 — La vaisselle du plat, en tête de fiche.** *« J'aimerai bien aussi
+      **Fait. Le code dit `credit()`, pas `provenance`** : le mot était déjà
+      pris par `provenanceIngredient`, qui répond à une tout autre question —
+      d'où sort un ingrédient, du placard ou des courses. L'utilisateur dit
+      « provenance » pour l'auteur ; deux sens du même mot dans un même fichier
+      se confondent toujours à la relecture.
+
+      **Le crédit FERME la fiche, il ne l'ouvre pas.** On vient y lire des
+      quantités, pas une bibliographie. Il est discret et lisible — créditer à
+      demi ne crédite pas — et il ne prend la place de rien.
+
+      **`page` et `source_id` restent hors de l'export.** `work` porte déjà la
+      page ; deux orthographes du même nombre finissent par diverger, et
+      `source_id` est une clé de corpus, pas une chose à lire. Sortent :
+      `auteur`, `ouvrage`, `url`, `saison`.
+
+- [x] **T74 — La vaisselle du plat, en tête de fiche.** *« J'aimerai bien aussi
       que tu m'indique quel outil utiliser et de quelle taille. »* La moitié de
       la réponse est déjà calculée et jamais montrée : `plat.vaisselle` est
       résolu sur **44 plats sur 86**, avec la taille dans le libellé —
@@ -2247,6 +2321,30 @@ ordre que T46 avant T42–T45.
       Les 42 plats sans `vaisselle` ne montrent rien. Silence délibéré, pas
       oubli : le compilateur n'a pas trouvé d'ustensile à nommer, et en inventer
       un serait pire que se taire.
+
+      **Fait — et la mesure exigée a bien changé le ticket.** `facteurMax` est
+      lu à TROIS endroits, et deux l'écrivent déjà à l'écran :
+      `parts.vue.cuisson()` dit « ⚠ Ça ne tient pas dans {label} — ×N au plus »
+      et `offres.reserves()` dit « il faut deux tournées ». L'avertissement
+      n'était donc pas à ajouter, il existait — et `vaisselle.label` était déjà
+      affiché, **mais seulement quand ça déborde**. Ce qui manquait n'était pas
+      l'alerte : c'était le nom de l'ustensile QUAND TOUT VA BIEN. La tête de
+      fiche ne dit donc rien du débordement ; en faire un troisième libellé du
+      même fait était précisément l'ornement que le ticket redoutait.
+
+      Mesuré : **66 plats sur 138** portent une vaisselle (le ticket disait
+      44 sur 86) — `sauteuse 28 cm` (49), `cocotte 7,5 L` (15),
+      `casseroles 2,6 L / 1,6 L` (2). Les 72 autres se taisent.
+
+      **Un bug latent réparé au passage, et c'est `ref` qui le permet.** La
+      liste d'ingrédients de la fiche portait `key={x.id}` : sur les onze plats
+      qui doublent un id — la farine de la pâte et celle de la crème — React
+      recevait deux fois la même clé. Rien ne pouvait le corriger avant T72,
+      puisque la clé qui les distingue n'existait pas côté app.
+
+      Portes pour T73 + T74 : typecheck, 588 tests (10 nouveaux), build,
+      **21 e2e** (3 nouveaux, `fiche-provenance.spec.ts`), `catalogue:verifie`
+      0 erreur avec le JSON régénéré et commité.
 
 ### Laissé ouvert par ce bloc
 
@@ -2325,6 +2423,183 @@ de vocabulaire, et il se règle par de la saisie.
       relevé du garde-manger reste daté du 2026-08-26 et le rester est ce qui le
       rend honnête ; les douze articles du 12 septembre n'ont toujours pas
       d'endroit où exister tant que le bloc T61–T71 n'est pas construit.
+
+## Un plat proposé est un plat qu'on peut faire — écart de port n° 3
+
+**Trouvé à l'usage, à l'heure de cuisiner, et pour la deuxième fois :**
+
+> *« J'ai un autre soucis. Tu m'as encore fourni une recette sans étapes.
+> Corrige moi ça tout de suite. »* (14/09/2026, devant `gnocchis-poelees`)
+
+**Le mot qui compte est « encore ».** #50 avait déjà croisé ces plats-là — *« un
+plat sans étapes ne pouvait jamais être terminé »* — et avait réparé le **bouton**
+sans voir que le trou était la **recette**. La fiche s'ouvrait donc proprement,
+journalisait proprement, et ne disait toujours pas comment faire le plat.
+
+**Deux causes indépendantes, et il fallait les deux pour arriver à l'écran.**
+
+**1. Quinze plats étaient entrés « niveau plan » et y étaient restés.**
+`_repertoire.yaml` a été saisi exprès sans étapes — *« pour planifier et faire
+les courses, on n'a pas besoin de la recette »* — et c'est ce raccourci qui a
+permis d'atteindre les trente plats sans lesquels le choix ne veut rien dire. La
+dette était **visible** : `verifier.py` l'imprime à chaque passage dans sa
+dernière ligne (« 138 recettes · 123 cuisinables, 15 au niveau plan »). Elle
+n'était réclamée par personne.
+
+**2. L'app savait, et ne s'en servait pas.** `catalogue.py` le dit en une ligne
+depuis le début — *« a plan-level entry has no steps: it can be planned, not
+cooked »* —, `export_json.py:241` sort le booléen, `catalogue.ts:301` le lit,
+`types.ts:252` le déclare. **Personne ne le lisait.** Il traverse la frontière
+depuis le 2026-08-19 (T3, le ticket qui a construit le chargeur) : vingt-six
+jours de donnée portée jusqu'à l'écran et ignorée une fois arrivée. C'est
+exactement l'écart de port n° 2, refait un cran plus haut — T72 rattrapait les
+champs d'une étape, celui-ci rattrape le champ qui dit s'il y a des étapes.
+
+- [x] **T76 — Les quinze plats du répertoire reçoivent leurs étapes.** 62
+      étapes écrites sur les quinze, `uses:` compris, ce qui fait passer le
+      corpus de **630 à 692 étapes**, `uses` de 126 à **179**, `enParallele` de
+      50 à **58**, et les plats au niveau plan de 15 à **0** (`npm run
+      chargeur`, `npm run catalogue:verifie`).
+
+      **Le temps déclaré est devenu vérifiable, et il vérifie.** Sur les quinze,
+      la somme des étapes **hors parallèle** tombe exactement sur le
+      `time_min_total` déjà annoncé — 25 pour les gnocchis, 80 pour le poulet,
+      45 pour la soupe. Ce n'est pas une coïncidence, c'est la contrainte qu'on
+      s'est donnée en les écrivant : un plat dont les étapes ne totalisent pas
+      ce que la carte promet fabrique la plainte des lentilles, où le guide
+      annonce 40 min et fait attendre 47.
+
+      **ÉCRIRE LES ÉTAPES A FAIT TOMBER UNE ERREUR QUE LEUR ABSENCE CACHAIT.**
+      `chili-sin-carne` s'est vu refuser au chargement : *« le lot courant (×1 de
+      6 parts) ne tient pas dans casseroles 2,6 L / 1,6 L »*. Le contrôle de
+      contenance ne s'arme qu'à partir des `needs:` des étapes — pas d'étapes,
+      pas de récipient, pas de contrôle : les quinze plats passaient parce qu'ils
+      ne demandaient rien. Et le refus était **juste dans sa mécanique et faux
+      dans sa conclusion** : la casserole ne tient pas six parts de chili, mais
+      elle ne tient jamais le chili — elle tient le riz posé à côté.
+      `charge_partielle: true` est précisément le champ écrit pour ça, et il est
+      posé sur les cinq casseroles annexes (les quatre riz, le panier vapeur du
+      brocoli). Dix autres recettes du corpus l'employaient déjà.
+
+      **Ce que ces étapes sont, et ce qu'elles ne sont pas.** Les quinze plats
+      sont **les plats du foyer** — ce sont exactement les 15 des 21 sans
+      `source:` de T73. Personne d'autre n'a de version à créditer, donc ces
+      gestes sont des **hypothèses de travail**, au même titre que les quantités
+      que l'en-tête du fichier annonce déjà comme « à corriger par
+      l'utilisateur ». Elles sont écrites pour être contredites geste par geste,
+      pas pour faire autorité. Aucune composition n'a été touchée : pas un
+      ingrédient ajouté, pas une quantité changée — la béchamel des lasagnes se
+      monte donc farine-dans-le-lait-froid, sans beurre, parce que c'est ce que
+      la liste de courses porte.
+
+- [~] **T77 — `cuisinable` cesse d'être décoratif.** *Filtre posé le 14/09,
+      **retiré le 15/09** : l'utilisateur a choisi le troisième chemin. Ce qui
+      survit du ticket, c'est que le champ soit lu — il l'est, par la carte et
+      par la fiche, et le chargeur refuse maintenant un export où il contredit
+      `steps`. Ce qui tombe, c'est le filtre.*
+
+      **POURQUOI LE FILTRE ÉTAIT LE MAUVAIS OUTIL, alors qu'il citait T33 pour
+      se justifier.** T33 dit qu'on ne montre pas un plat qu'on ne peut pas
+      **exécuter**. Un plat sans recette écrite s'exécute très bien : ce sont
+      les plats du foyer, la maison sait les faire. Ce qui manque est le
+      pas-à-pas, pas le dîner. Le ticket a lu « qu'on ne peut pas exécuter »
+      comme « dont l'app n'a pas les étapes », et ce n'est pas la même chose.
+
+      Et T33 dit par ailleurs l'inverse, explicitement, sur les paris :
+      *« retirer ces plats ferait rétrécir les propositions à mesure que la
+      confiance vieillit »*. Filtrer rétrécissait la semaine pour une lacune de
+      saisie.
+
+- [x] **T78 — Proposer en le disant.** *« Proposer en le disant »* (15/09/2026).
+      Le troisième chemin, celui que T76 et T77 laissaient ouvert. Le filtre
+      sort de `convient()` ; `sansRecette()` dans `cuisiner.vue.ts` le remplace,
+      et c'est la **même règle pour les deux écrans** — la carte dans « Poser »
+      et le fil, la fiche dans « Cuisiner ». Une seule fonction, parce que c'est
+      exactement la raison d'être de `ui/Cartes.tsx` : *« deux écrans qui
+      proposent le même plat en n'en disant pas la même chose »*.
+
+      **CE QUI MANQUE EST LA RECETTE, PAS LE PLAT, et la phrase le dit dans cet
+      ordre.** Le temps, les quantités et les apports viennent du même catalogue
+      que les autres et ont passé le même `verifier.py`. « Plat incomplet »
+      salirait des données qui ne le sont pas. Un test épingle le vocabulaire —
+      la phrase doit parler de *recette*, *étapes* ou *pas-à-pas*, et jamais
+      d'*incomplet*, d'*invalide* ou de *manquant* : c'est précisément ce que ce
+      ticket décide, donc c'est ce qui doit rougir si quelqu'un le réécrit.
+
+      **NI ALERTE NI BANDEAU.** Sur la carte, la mention partage la ligne du
+      temps et du coût en articles — même taille, même gris : c'est une
+      propriété du plat, pas un incident, et on la lit **avant** de poser, seul
+      moment où elle change une décision. Sur la fiche, elle se pose entre le
+      titre et les quantités, sur la surface neutre de `.co-sortir` — au-dessus,
+      parce qu'un écran qui se tait sur ce qui lui manque se lit comme un écran
+      cassé, et en bas près du bouton elle ressemblerait à un avertissement de
+      dernière minute.
+
+      **UNE SEULE VÉRITÉ, TENUE À LA FRONTIÈRE.** `sansRecette()` lit
+      `cuisinable` et non `steps.length`, parce que c'est le catalogue qui porte
+      la définition (`est_cuisinable()`) et que la redériver la ferait diverger
+      le jour où elle bougera. Pour que ce choix soit sûr, `lireCatalogue` refuse
+      désormais un export où les deux se contredisent — **dans les deux sens**,
+      parce qu'ils mentent différemment : un plat qui a ses étapes et se déclare
+      non cuisinable afficherait « sans recette écrite » au-dessus d'un guide
+      complet ; l'inverse rouvre la plainte du 14/09.
+
+      **LA PROMESSE DE CORPUS DE T77 A ÉTÉ RETIRÉE, ET C'EST LE CŒUR DE LA
+      DÉCISION.** « Aucun plat ne peut se cuisiner sans étapes » interdisait de
+      **livrer** une saisie « niveau plan ». La garder en même temps que
+      l'affichage rendrait l'affichage inatteignable pour toujours — du code mort
+      protégé par un test qui garantit qu'on ne l'atteindra jamais. Ce qui reste
+      est plus faible et plus juste : le drapeau et les étapes disent la même
+      chose. **La saisie en trente secondes redevient utilisable de bout en
+      bout**, ce qui était son but.
+
+      **Éprouvé jusqu'à l'œil, sur un catalogue truqué.** Le corpus n'a plus un
+      seul plat sans étapes depuis T76 : un parcours écrit dessus serait vert
+      sans rien traverser, et **le resterait si on retirait l'affichage**.
+      `e2e/sans-recette.spec.ts` intercepte donc `/cuisine-data.json` et rend un
+      corpus ramené au niveau plan — l'état dans lequel `_repertoire.yaml` a vécu
+      un mois. Deux détails qui ont coûté : le **service worker** sert le vrai
+      catalogue depuis son précache et rendrait le parcours vert pour la mauvaise
+      raison (`test.use({ serviceWorkers: "block" })`), et **tous** les plats
+      sont truqués plutôt qu'un seul, sinon le parcours dépendrait du score pour
+      que le bon plat tombe dans la main — la dépendance cachée que #18 a déjà
+      fait payer une fois.
+
+- [x] **T79 — Un parcours ne code pas la date en dur.** Trouvé en faisant
+      tourner les portes le 15 au matin : les **trois** tests de
+      `fiche-provenance.spec.ts`, écrits et verts la veille, tombaient tous sur
+      *« Le diner du 2026-09-14 est sorti de la semaine affichée »*. Rien n'avait
+      changé dans l'app — le lien profond portait `/2026-09-14/`, et la semaine
+      affichée se calcule autour d'aujourd'hui.
+
+      C'est la faute que `parcours.ts` raconte déjà à propos de `convient` — *un
+      parcours qui dépend d'une propriété doit la DEMANDER* — appliquée au temps.
+      `aujourdhuiISO()` vit maintenant à côté d'elle, avec le même calcul local
+      que `jourISO` côté app.
+
+      **Un test qui pourrit pendant la nuit est pire qu'un test absent** : il
+      était vert au moment d'ouvrir la PR #24, et rouge avant qu'elle soit
+      relue.
+
+### Ce que cet écart laisse ouvert
+
+**Les trois chemins ont été écrits, et le troisième a gagné.** T76 donne leurs
+étapes aux quinze ; T77 filtrait, et a été retiré ; T78 propose en le disant.
+Le raccourci de saisie est de nouveau utilisable de bout en bout.
+
+**Ce qui n'est PAS résolu : rien ne réclame jamais les étapes d'un plat entré au
+niveau plan.** L'app le dit désormais à qui ouvre la fiche, ce qui est
+honnête ; elle ne le dit à personne au moment où on pourrait y remédier, c'est-
+à-dire à froid. Un plat peut donc rester « sans recette écrite » indéfiniment
+sans que ça gêne assez pour être corrigé — c'est exactement ce qui s'est passé
+pendant un mois, à ceci près que ça se voyait encore moins.
+
+**Personne ne lit la dernière ligne de `verifier.py`.** Elle disait « 15 au
+niveau plan » à chaque passage du CI, pendant vingt-six jours, et le CI était
+vert — parce que c'est un compte, pas une erreur. Un chiffre qu'on imprime sans
+qu'il fasse rougir quoi que ce soit est un chiffre qu'on cesse de lire. Le test
+de `catalogue.test.ts` est ce qui le rend maintenant contraignant côté app ;
+côté catalogue, la ligne reste décorative.
 
 ## Sortie
 

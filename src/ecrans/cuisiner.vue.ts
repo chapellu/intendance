@@ -6,7 +6,7 @@
 //
 // Port de `apps/proto-shell/comptoir.js` (`CHAUFFE`, `ecranCuisine`).
 
-import type { Catalogue, Etape, Ingredient } from "../model/types";
+import type { Catalogue, Etape, Ingredient, Plat } from "../model/types";
 
 /* ───────────────────────────────────────────────────────────────── la chauffe */
 
@@ -105,6 +105,70 @@ export function provenanceIngredient(catalogue: Catalogue, ing: Ingredient): Pro
   return { label: "à acheter", acheter: true };
 }
 
+/* ─────────────────────────────────────────────────────────────────── le crédit */
+
+export interface Credit {
+  texte: string;
+  /** L'adresse où la prose est restée, quand il y en a une. 5 sources sur 117. */
+  url: string | null;
+}
+
+/**
+ * D'où vient la recette, en une phrase.
+ *
+ * LE MOT « PROVENANCE » ÉTAIT DÉJÀ PRIS par `provenanceIngredient`, qui répond à
+ * une tout autre question — d'où sort un ingrédient, du placard ou des courses.
+ * L'utilisateur dit « provenance » pour l'auteur et l'ouvrage ; le code dit
+ * `credit`, parce que deux sens du même mot dans un même fichier finissent
+ * toujours par se confondre à la relecture.
+ *
+ * PAS DE GABARIT À COMPOSER : `ouvrage` est déjà une phrase affichable, page
+ * comprise — « La cuisine bio du quotidien, Terre vivante, p. 116 ». `page`
+ * existe en structuré dans le corpus et reste hors de l'export, parce que deux
+ * orthographes du même nombre finissent par diverger.
+ *
+ * LES 21 PLATS DU FOYER DISENT QUELQUE CHOSE, ILS NE SE TAISENT PAS. Le silence
+ * se lirait comme une donnée manquante alors que c'est une réponse : ces plats
+ * n'ont pas de source parce qu'ils sont à nous. (Retenu contre l'autre option —
+ * ne rien afficher — parce qu'un champ vide sur un quart du catalogue ressemble
+ * à un bug.)
+ */
+export function credit(plat: Plat): Credit {
+  const s = plat.source;
+  if (!s) return { texte: "Recette du foyer", url: null };
+  return { texte: `${s.auteur} — ${s.ouvrage}`, url: s.url };
+}
+
+/* ────────────────────────────────────────────────────────────── la vaisselle */
+
+/**
+ * L'ustensile à sortir avant de commencer, taille comprise — ou rien.
+ *
+ * `plat.vaisselle` est résolu par le compilateur sur 66 des 138 plats, et la
+ * taille est DANS le libellé : « sauteuse 28 cm » (49), « cocotte 7,5 L » (15),
+ * « casseroles 2,6 L / 1,6 L » (2). On l'affiche, on ne le calcule pas.
+ *
+ * LES 72 PLATS SANS VAISSELLE NE MONTRENT RIEN. Silence délibéré : le
+ * compilateur n'a pas trouvé d'ustensile à nommer, et en inventer un serait
+ * pire que se taire.
+ *
+ * AUCUN AVERTISSEMENT DE DÉBORDEMENT ICI, ET C'EST UNE MESURE, PAS UN OUBLI.
+ * Le ticket demandait de chercher qui lit déjà `facteurMax` avant d'ajouter une
+ * phrase. Réponse : trois endroits le lisent, et deux l'ÉCRIVENT déjà —
+ * `parts.vue.cuisson()` dit « ⚠ Ça ne tient pas dans {label} — ×N au plus » et
+ * `offres.reserves()` dit « il faut deux tournées ». Le répéter en tête de fiche
+ * serait le troisième libellé du même fait. Ce qui manquait n'était pas
+ * l'alerte — elle existe depuis les offres — c'était le nom de l'ustensile
+ * quand tout va bien.
+ *
+ * Ça ne préjuge pas de Workspace#57 ni de #59 : l'outil PAR ÉTAPE demande une
+ * règle de résolution qui n'est pas tranchée. Le `vaisselle` du plat, lui, est
+ * déjà résolu.
+ */
+export function aSortir(plat: Plat): string | null {
+  return plat.vaisselle?.label ?? null;
+}
+
 /* ──────────────────────────────────────────────────────────────── l'avancement */
 
 /** Ce qu'il reste à faire, et sur combien. Les minutes des étapes DÉJÀ faites
@@ -114,5 +178,54 @@ export function avancement(steps: Etape[], etape: number): { reste: number; tota
   return {
     reste: steps.slice(etape).reduce((a, x) => a + x.minutes, 0),
     total: steps.reduce((a, x) => a + x.minutes, 0),
+  };
+}
+
+/* ────────────────────────────────────────────────── le plat qu'on n'a pas écrit */
+
+export interface SansRecette {
+  /** L'étiquette de la carte, courte : elle partage la ligne avec le reste. */
+  court: string;
+  /** Ce que la fiche en dit, en entier. */
+  long: string;
+}
+
+/**
+ * Ce qu'on dit d'un plat entré « niveau plan » — titre, temps, ingrédients,
+ * apports, et pas d'étapes.
+ *
+ * TROISIÈME CHEMIN, CHOISI PAR L'UTILISATEUR LE 15/09/2026. Il y en avait trois
+ * devant un plat sans étapes : lui en écrire (T76, fait pour les quinze du
+ * répertoire), ne pas le proposer (T77, qui filtrait), ou **le proposer en le
+ * disant**. Le filtre est retiré ; cette fonction est ce qui le remplace.
+ *
+ * ET C'EST LE RAISONNEMENT DES PARIS DE T33, APPLIQUÉ AUX ÉTAPES. Le dépôt
+ * l'avait déjà écrit pour le placard : « retirer ces plats ferait rétrécir les
+ * propositions à mesure que la confiance vieillit ; substituer en silence
+ * produirait un plat qu'on ne peut pas contredire. On parie donc, et on
+ * l'écrit. » Un plat sans recette est le même cas : le retirer rétrécit la
+ * semaine pour une lacune de saisie, et le servir muet est ce qui a produit la
+ * plainte du 14/09.
+ *
+ * CE QUI MANQUE EST LA RECETTE, PAS LE PLAT — et la phrase doit le dire dans cet
+ * ordre. Le temps, les quantités et les apports sont justes : ils viennent du
+ * même catalogue que les autres, ils ont passé le même `verifier.py`. Une
+ * formule du genre « plat incomplet » salirait des données qui ne le sont pas.
+ * Ce sont d'ailleurs des plats du foyer, que la maison sait déjà faire ; le
+ * guide pas-à-pas est un confort, pas une condition.
+ *
+ * ELLE S'APPUIE SUR `cuisinable` ET PAS SUR `steps.length`, alors que l'export
+ * dérive le premier du second. Deux raisons : c'est le champ que le catalogue
+ * DÉCLARE — `est_cuisinable()` porte la définition, et la dupliquer ici la
+ * ferait diverger le jour où elle bougera —, et le chargeur refuse désormais un
+ * export où les deux se contredisent, ce qui fait qu'il n'y a qu'une vérité.
+ */
+export function sansRecette(plat: Plat): SansRecette | null {
+  if (plat.cuisinable) return null;
+  return {
+    court: "sans recette écrite",
+    long:
+      "Ce plat n’a pas encore ses étapes. Les ingrédients, les quantités et le " +
+      "temps sont justes — c’est le pas-à-pas qui manque.",
   };
 }

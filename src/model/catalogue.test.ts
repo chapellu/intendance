@@ -30,6 +30,25 @@ describe("le catalogue réel", () => {
     }
   });
 
+  // `cuisinable` ET `steps` NE PEUVENT PAS SE CONTREDIRE, et c'est tout ce
+  // qu'on exige du corpus sur ce point.
+  //
+  // LA PROMESSE PRÉCÉDENTE ÉTAIT PLUS FORTE ET ELLE A ÉTÉ RETIRÉE : « aucun
+  // plat ne peut se cuisiner sans étapes » interdisait de LIVRER une saisie
+  // « niveau plan ». C'était le deuxième des trois chemins ; l'utilisateur a
+  // choisi le troisième le 15/09/2026 — proposer en le disant — et la saisie en
+  // trente secondes redevient donc utilisable de bout en bout. Garder les deux
+  // reviendrait à rendre l'affichage inatteignable pour toujours.
+  //
+  // Ce qui reste, c'est l'unique vérité : le drapeau déclaré et les étapes
+  // portées disent la même chose. `sansRecette()` lit le drapeau ; s'ils
+  // divergeaient, l'écran annoncerait « sans recette écrite » sur un plat qui a
+  // ses étapes, ou se tairait sur un plat qui n'en a pas.
+  test("aucun plat ne se déclare cuisinable autrement que ses étapes", () => {
+    for (const p of lireCatalogue(brut()).plats)
+      expect(p.cuisinable, `${p.id} porte ${p.steps.length} étape(s)`).toBe(p.steps.length > 0);
+  });
+
   test("les identifiants de plats sont uniques", () => {
     const ids = lireCatalogue(brut()).plats.map((p) => p.id);
     expect(new Set(ids).size).toBe(ids.length);
@@ -53,6 +72,28 @@ describe("un export qui a dérivé échoue bruyamment", () => {
     });
     expect(casse).toThrow(CatalogueInvalide);
     expect(casse).toThrow(/espace/);
+  });
+
+  // LES DEUX SENS, PARCE QUE LES DEUX MENTENT DIFFÉREMMENT. Un plat qui a ses
+  // étapes mais se déclare non cuisinable porterait « sans recette écrite » à
+  // l'écran au-dessus d'un guide complet ; l'inverse rouvre exactement la
+  // plainte du 14/09 — une fiche vide qui ne dit pas pourquoi.
+  test("un plat qui a ses étapes et se déclare non cuisinable", () => {
+    const casse = abime((c) => {
+      const plats = c["plats"] as Record<string, unknown>[];
+      plats.find((x) => (x["steps"] as unknown[]).length > 0)!["cuisinable"] = false;
+    });
+    expect(casse).toThrow(CatalogueInvalide);
+    expect(casse).toThrow(/cuisinable/);
+  });
+
+  test("un plat sans étapes qui se déclare cuisinable", () => {
+    const casse = abime((c) => {
+      const p = (c["plats"] as Record<string, unknown>[])[0]!;
+      p["steps"] = [];
+      p["cuisinable"] = true;
+    });
+    expect(casse).toThrow(/cuisinable/);
   });
 
   test("un plat à zéro portion — le facteur d'échelle divise par là", () => {
