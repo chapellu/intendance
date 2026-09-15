@@ -5,7 +5,7 @@ import { lireCatalogue } from "./catalogue";
 import { creerJeu, type Jeu } from "./jeu";
 import { contexte, rejouer } from "./journal";
 import { centralite, questions, type Reste } from "./questions";
-import { categorie, couverture, main, offre, parRayon } from "./scoring";
+import { categorie, comptoir, couverture, main, offre, parRayon } from "./scoring";
 import type { Catalogue } from "./types";
 
 const LUNDI = new Date("2026-08-17T12:00:00Z");
@@ -483,5 +483,116 @@ describe("T33 — ce que la proposition sait", () => {
     for (const q of qs) expect(estCentral({ id: q.ingredient, central: false })).toBe(true);
     const d = qs.map((q) => q.debloque);
     expect([...d].sort((a, b) => b - a)).toEqual(d);
+  });
+});
+
+/* ════════════════════ T80 — ce qui écarte, et qui doit savoir le dire ═════ */
+
+describe("T80 — l'écart est la raison, et c'est la même des deux côtés", () => {
+  const ctx = contexte(catalogue);
+  const rejeu = rejouer(catalogue, [], ctx, "2026-08-17");
+  const savoirAvec = (repondu: Record<string, Reste>, depense: Record<string, number> = {}) => ({
+    rejeu,
+    passe: { repondu: new Map(Object.entries(repondu)), depense: new Map(Object.entries(depense)) },
+    cuisinesRecemment: new Set<string>(),
+    planchers: [],
+  });
+
+  // LA PROMESSE QUI JUSTIFIE LE REFACTOR. Tant que `offre` portait son propre
+  // prédicat, l'écran pouvait expliquer un retrait que le modèle avait décidé
+  // autrement, et personne n'aurait rougi. Les deux ensembles sont vérifiés NON
+  // VIDES : sans ça, le test passerait sur un créneau où tout est jouable.
+  test("un plat est dans l'offre si et seulement s'il n'a aucun écart", () => {
+    const slot = creneau(0, "diner");
+    poser(1, "diner", "pates-bolognaise");
+    const savoir = savoirAvec({ "boeuf-hache": "non" });
+    const c = comptoir(jeu, jeu.choix, slot, savoir)!;
+    const dedans = new Set(offre(jeu, jeu.choix, slot, savoir).map((x) => x.plat.id));
+
+    const sans = catalogue.plats.filter((p) => !c.ecarts(p).length);
+    const avec = catalogue.plats.filter((p) => c.ecarts(p).length);
+    expect(sans.length).toBeGreaterThan(0);
+    expect(avec.length).toBeGreaterThan(0);
+    for (const p of sans) expect(dedans.has(p.id), `${p.id} sans écart, hors de l'offre`).toBe(true);
+    for (const p of avec) expect(dedans.has(p.id), `${p.id} écarté, mais dans l'offre`).toBe(false);
+  });
+
+  test("un comptoir sans créneau ne rend rien du tout", () => {
+    expect(comptoir(jeu, jeu.choix, jeu.creneaux.length, undefined)).toBe(null);
+  });
+
+  test("le plat déjà posé dit OÙ il l'est, et ailleurs se distingue d'ici", () => {
+    const slot = creneau(0, "diner");
+    poser(3, "diner", "pates-bolognaise");
+    const c = comptoir(jeu, jeu.choix, slot)!;
+    const ailleurs = c.ecarts(catalogue.plats.find((p) => p.id === "pates-bolognaise")!);
+    expect(ailleurs.map((e) => e.cle)).toContain("deja");
+    expect(ailleurs[0]!.texte).toContain(jeu.jours[jeu.creneaux[creneau(3, "diner")]!.jour]!.nom);
+
+    poser(0, "diner", "pates-bolognaise");
+    const ici = comptoir(jeu, jeu.choix, slot)!.ecarts(
+      catalogue.plats.find((p) => p.id === "pates-bolognaise")!,
+    );
+    expect(ici[0]!.texte).toMatch(/ce créneau/);
+  });
+
+  test("le mauvais repas se dit avec le nom du repas, pas avec un code", () => {
+    const slot = creneau(0, "diner");
+    // Un plat qui ne se sert PAS au dîner — le corpus en porte, et s'il cessait
+    // d'en porter, c'est ce test qu'il faudrait relire, pas la phrase.
+    const ailleurs = catalogue.plats.find(
+      (p) => p.creneaux.length && !p.creneaux.includes("diner"),
+    )!;
+    expect(ailleurs).toBeDefined();
+    const e = comptoir(jeu, jeu.choix, slot)!.ecarts(ailleurs).find((x) => x.cle === "creneau")!;
+    expect(e).toBeDefined();
+    expect(e.texte).toContain(catalogue.creneaux.repas[ailleurs.creneaux[0]!]!.label);
+    expect(e.texte).toContain("dîner");
+  });
+
+  test("un central dit absent se dit par son nom de cuisine", () => {
+    const slot = creneau(0, "diner");
+    const c = comptoir(jeu, jeu.choix, slot, savoirAvec({ "boeuf-hache": "non" }))!;
+    const viande = catalogue.plats.find((p) =>
+      p.ingredients.some((i) => i.id === "boeuf-hache" && !i.base),
+    )!;
+    const e = c.ecarts(viande).find((x) => x.cle === "bloque")!;
+    expect(e).toBeDefined();
+    // Le NOM de la ligne, celui que la question a posé — pas l'identifiant.
+    expect(e.texte).toContain(
+      viande.ingredients.find((i) => i.id === "boeuf-hache")!.nom,
+    );
+    expect(e.texte).not.toContain("boeuf-hache");
+  });
+
+  test("« peu » déjà dépensé se dit autrement qu'« absent »", () => {
+    const slot = creneau(0, "diner");
+    const c = comptoir(
+      jeu, jeu.choix, slot,
+      savoirAvec({ "boeuf-hache": "peu" }, { "boeuf-hache": 1 }),
+    )!;
+    const viande = catalogue.plats.find((p) =>
+      p.ingredients.some((i) => i.id === "boeuf-hache" && !i.base),
+    )!;
+    const e = c.ecarts(viande).find((x) => x.cle === "bloque")!;
+    expect(e.texte).toMatch(/il reste peu/);
+    expect(e.texte).not.toMatch(/plus de/);
+  });
+
+  // ÉPROUVÉ NON VIDE : `noter` qui filtrerait rendrait `undefined` ici, et la
+  // recherche n'aurait rien à montrer du plat qu'on vient de lui nommer.
+  test("noter note un plat que l'offre a écarté, carte entière", () => {
+    const slot = creneau(0, "diner");
+    const savoir = savoirAvec({ "boeuf-hache": "non" });
+    const c = comptoir(jeu, jeu.choix, slot, savoir)!;
+    const viande = catalogue.plats.find((p) =>
+      p.ingredients.some((i) => i.id === "boeuf-hache" && !i.base),
+    )!;
+    expect(offre(jeu, jeu.choix, slot, savoir).some((x) => x.plat.id === viande.id)).toBe(false);
+
+    const carte = c.noter(viande);
+    expect(carte.plat.id).toBe(viande.id);
+    expect(carte.minutes).toBeGreaterThan(0);
+    expect(carte.marginal).toBeGreaterThanOrEqual(0);
   });
 });

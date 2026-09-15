@@ -12,7 +12,7 @@ import { useState } from "react";
 import { base } from "../db";
 import { observerIngredient } from "../db/journal";
 import type { Question, Reste } from "../model/questions";
-import type { Carte } from "../model/scoring";
+import type { Carte, Ecart } from "../model/scoring";
 import { chemin, type CleCreneau } from "../nav/routes";
 import { duree } from "./format";
 import { Icone } from "./icones";
@@ -89,10 +89,16 @@ export function Jouable({
   carte,
   creneau,
   jouer,
+  ecarts = [],
 }: {
   carte: Carte;
   creneau: CleCreneau;
   jouer: (id: string) => void;
+  /**
+   * Pourquoi la proposition n'a pas montré ce plat — vide pour les cartes de
+   * la main, qui n'ont par construction aucun écart (T80).
+   */
+  ecarts?: readonly Ecart[];
 }) {
   const p = carte.plat;
   const entrees = entreesDeLaCarte(carte);
@@ -115,6 +121,19 @@ export function Jouable({
           {muet ? <span className="co-muet">{muet.court}</span> : null}
         </span>
       </div>
+
+      {/* L'ÉCART SE LIT AVANT LE COÛT, parce qu'il change ce qu'on fait du
+          reste de la carte : savoir que les tomates ont été dites absentes
+          rend la ligne « 3 articles de plus au panier » lisible, et l'inverse
+          fait relire deux fois. Le ton est celui de `.co-sansrecette` et pas
+          celui d'une alerte — ce n'est pas une panne, c'est une raison, et
+          elle se répare ou s'assume. */}
+      {ecarts.map((e) => (
+        <div key={e.cle} className="co-ecart">
+          <Icone nom="info" />
+          <span>{e.texte}</span>
+        </div>
+      ))}
 
       <div className="co-flux">
         <div className="co-kicker">Consomme</div>
@@ -160,8 +179,13 @@ export function Jouable({
       </div>
 
       <div className="pied">
+        {/* « QUAND MÊME » EST LE MOT QUI TIENT LA PROMESSE. Le bouton reste
+            primaire et reste actif : la recherche montre un plat écarté pour
+            qu'on puisse le poser, pas pour qu'on constate qu'on ne peut pas.
+            Il change seulement de nom, pour que le doigt sache qu'il passe
+            devant un avis. */}
         <button className="btn btn-primary" style={{ flex: 1 }} onClick={() => jouer(p.id)}>
-          Poser sur ce créneau
+          {ecarts.length ? "Poser quand même" : "Poser sur ce créneau"}
         </button>
         {/* LA FICHE DU CANDIDAT, pas celle du créneau : on lit la recette
             avant de choisir, et le créneau porte peut-être encore autre chose. */}

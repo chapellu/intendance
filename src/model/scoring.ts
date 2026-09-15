@@ -21,7 +21,7 @@ import { convient, joue, type Choix, type Jeu } from "./jeu";
 import { contexte, type Rejeu } from "./journal";
 import { gamelles } from "./offres";
 import { bonusPlancher, etatDuCongelo, type Plancher } from "./plancher";
-import { bloque, paris, type Passe } from "./questions";
+import { blocages, paris, type Passe, type Reste } from "./questions";
 import type { Catalogue, Plat } from "./types";
 
 /**
@@ -192,28 +192,68 @@ export interface Carte {
    */
   paris: string[];
 }
+/* ────────────────────────────────────────────── ce qui écarte, ce qui note */
+
+/** Pourquoi un plat n'est pas dans la proposition de ce créneau. */
+export interface Ecart {
+  /**
+   * `recent` n'est PAS produit ici : le cooldown écarte de la main, pas de
+   * l'offre, et c'est la recherche qui l'ajoute (`chercher`, T80). Il vit dans
+   * cette union parce que l'écran affiche les quatre de la même façon — ce sont
+   * toutes des réponses à « pourquoi ne me l'a-t-on pas proposé ».
+   */
+  cle: "deja" | "creneau" | "bloque" | "recent";
+  /** Dit à la première personne de l'app, prêt à être affiché tel quel. */
+  texte: string;
+}
+
+/** Ce qu'un créneau sait faire de n'importe quel plat du catalogue. */
+export interface Comptoir {
+  /** Vide = le plat est dans l'offre. */
+  ecarts: (p: Plat) => Ecart[];
+  noter: (p: Plat) => Carte;
+}
 
 /**
- * Tous les plats jouables sur un créneau, notés et triés.
+ * Le comptoir d'un créneau : ce qui note les plats, et ce qui les écarte.
  *
- * `calculer` est rejoué pour CHAQUE plat candidat, parce que le coût marginal
- * d'une carte ne se lit nulle part ailleurs : il faut poser le plat et regarder
- * ce que le panier devient.
+ * UN SEUL ENDROIT DIT POURQUOI UN PLAT N'EST PAS PROPOSÉ. `offre` filtrait sur
+ * un prédicat écrit dans sa chaîne ; il filtre maintenant sur `ecarts`, parce
+ * que T80 donne à l'écran de quoi AFFICHER ces raisons. Deux listes — une qui
+ * retire, une qui explique — auraient divergé au premier ticket suivant, et la
+ * divergence se serait lue comme un écran qui ment sur sa propre décision.
+ * La promesse est tenue par un test : un plat est dans l'offre SI ET SEULEMENT
+ * SI il n'a aucun écart.
+ *
+ * `noter` NE FILTRE RIEN, et c'est tout l'intérêt de l'avoir séparé : la
+ * recherche note des plats que l'offre a écartés, justement pour dire ce
+ * qu'ils coûteraient ici. Une carte reste une carte, écart ou pas.
+ *
+ * `calculer` est rejoué pour CHAQUE plat noté, parce que le coût marginal d'une
+ * carte ne se lit nulle part ailleurs : il faut poser le plat et regarder ce
+ * que le panier devient.
  *
  * ON A LONGTEMPS CRU QUE C'ÉTAIT CHER. Mesuré (T17, `npm run perf`) : un appel
  * coûte 1 ms pour 29 candidats, et poser les quatorze créneaux d'une semaine en
  * coûte 12. Rien à mémoïser — et surtout rien à mémoïser « au cas où », ce qui
  * aurait ajouté une invalidation à tenir juste pour un problème inexistant.
+ *
+ * `null` quand le créneau n'existe pas : il n'y a alors ni note ni écart à
+ * rendre, et un comptoir vide se serait fait passer pour un créneau sans plat.
  */
-export function offre(jeu: Jeu, choix: Choix[], slot: number, savoir?: Savoir): Carte[] {
+export function comptoir(
+  jeu: Jeu,
+  choix: Choix[],
+  slot: number,
+  savoir?: Savoir,
+): Comptoir | null {
   const base = calculer(jeu, choix);
   const nBase = base.panier.size;
-  const deja = new Set(choix.filter(Boolean));
   const cov = couverture(jeu, choix);
   const poids = jeu.catalogue.equilibre.poids;
   const rep = jeu.catalogue.equilibre.cibles.repetition_max;
   const cr = jeu.creneaux[slot];
-  if (!cr) return [];
+  if (!cr) return null;
 
   // Le placard ne change pas d'un plat à l'autre : on le lit une fois pour la
   // proposition entière, pas 86 fois. Même raison pour le contexte du journal.
@@ -226,7 +266,7 @@ export function offre(jeu: Jeu, choix: Choix[], slot: number, savoir?: Savoir): 
   const congelo = etatDuCongelo(jeu.catalogue, base.depot.lignes);
   const planchers = savoir?.planchers ?? [];
   const ctx = savoir ? contexte(jeu.catalogue) : null;
-  const horsJeu = savoir && ctx ? bloque(jeu.catalogue, ctx, savoir.passe) : () => false;
+  const bloquants = savoir && ctx ? blocages(jeu.catalogue, ctx, savoir.passe) : () => [];
 
   // Ce créneau est-il le dîner qui précède un déjeuner de coworking encore vide ?
   const gamelleDemain =
@@ -234,166 +274,231 @@ export function offre(jeu: Jeu, choix: Choix[], slot: number, savoir?: Savoir): 
       ? (gamelles(jeu, choix).find((g) => g.veille === slot && !g.fait)?.jour ?? null)
       : null;
 
-  return jeu.catalogue.plats
+
+  // OÙ le plat est déjà posé, et pas seulement QU'IL l'est. Le filtre n'avait
+  // besoin que du booléen ; « c'est déjà le dîner de jeudi » a besoin du
+  // créneau, et c'est la phrase qui évite d'aller chercher soi-même dans la
+  // grille pourquoi un plat cherché ne se propose plus.
+  const poses = new Map<string, number>();
+  choix.forEach((rid, i) => {
+    if (joue(rid) && !poses.has(rid)) poses.set(rid, i);
+  });
+  const repas = (r: string): string => jeu.catalogue.creneaux.repas[r]?.label ?? r;
+
+  const ecarts = (p: Plat): Ecart[] => {
+    const e: Ecart[] = [];
+
+    const ou = poses.get(p.id);
+    if (ou !== undefined) {
+      const autre = jeu.creneaux[ou];
+      e.push({
+        cle: "deja",
+        texte:
+          ou === slot
+            ? "c’est déjà le plat de ce créneau"
+            : `déjà posé — ${jeu.jours[autre?.jour ?? 0]?.nom ?? "cette semaine"}, ${autre?.label ?? ""}`,
+      });
+    }
+
+    if (!convient(jeu, p, slot))
+      e.push({
+        cle: "creneau",
+        texte: `prévu pour ${p.creneaux.map(repas).join(", ")}, pas pour ${repas(cr.repas)}`,
+      });
+
     // LE BLOCAGE EST UN FILTRE, PAS UN MALUS, et c'est le « retire ou substitue
     // AVANT qu'il soit proposé » de T33. Un plat dont un central vient d'être
     // dit absent ne mérite pas d'être classé dernier : il ne mérite pas d'être
-    // montré, et la carte tirée à sa place l'est sur un placard vérifié.
-    .filter((p) => !deja.has(p.id) && convient(jeu, p, slot) && !horsJeu(p))
-    .map((p): Carte => {
-      const essai = [...choix];
-      essai[slot] = p.id;
-      const apres = calculer(jeu, essai);
-      const chaineIci = apres.chaine.filter((c) => c.creneau === slot);
-      const pleinIci = apres.pleinTarif.filter((c) => c.creneau === slot);
-      const a = p.apports;
-      const surReste = p.ingredients.some((x) => x.base);
-      const malTransporte = cr.emporte && p.transportable === false;
+    // proposé, et la carte tirée à sa place l'est sur un placard vérifié.
+    const dus = bloquants(p);
+    if (dus.length) {
+      const noms = (r: Reste): string[] => [
+        ...new Set(dus.filter((b) => b.reponse === r).map((b) => b.nom)),
+      ];
+      const absents = noms("non");
+      const rares = noms("peu");
+      e.push({
+        cle: "bloque",
+        texte: absents.length
+          ? `vous avez dit qu'il n'y avait plus de ${absents.join(", ")}`
+          : `il reste peu de ${rares.join(", ")}, et un autre repas y compte déjà`,
+      });
+    }
 
-      let score = 0;
-      const pourquoi: string[] = [];
+    return e;
+  };
 
-      if (a.proteine && a.proteine !== "aucune") {
-        if (cov.manques[a.proteine]) {
-          score += poids["proteine_manquante"] ?? 0;
-          pourquoi.push(`apporte ${a.proteine}, qui manque`);
-        } else if (cov.satures[a.proteine] && !surReste) {
-          score += poids["proteine_saturee"] ?? 0;
-          pourquoi.push(`${a.proteine} déjà servi assez`);
-        } else if (cov.satures[a.proteine]) {
-          pourquoi.push(`${a.proteine} déjà pris, mais celle-ci est déjà payée`);
-        }
+  const noter = (p: Plat): Carte => {
+    const essai = [...choix];
+    essai[slot] = p.id;
+    const apres = calculer(jeu, essai);
+    const chaineIci = apres.chaine.filter((c) => c.creneau === slot);
+    const pleinIci = apres.pleinTarif.filter((c) => c.creneau === slot);
+    const a = p.apports;
+    const surReste = p.ingredients.some((x) => x.base);
+    const malTransporte = cr.emporte && p.transportable === false;
+
+    let score = 0;
+    const pourquoi: string[] = [];
+
+    if (a.proteine && a.proteine !== "aucune") {
+      if (cov.manques[a.proteine]) {
+        score += poids["proteine_manquante"] ?? 0;
+        pourquoi.push(`apporte ${a.proteine}, qui manque`);
+      } else if (cov.satures[a.proteine] && !surReste) {
+        score += poids["proteine_saturee"] ?? 0;
+        pourquoi.push(`${a.proteine} déjà servi assez`);
+      } else if (cov.satures[a.proteine]) {
+        pourquoi.push(`${a.proteine} déjà pris, mais celle-ci est déjà payée`);
       }
+    }
 
-      const neuves = a.legumes.filter((f) => !cov.familles.has(f));
-      if (neuves.length) {
-        score += (poids["famille_legume_neuve"] ?? 0) * neuves.length;
-        pourquoi.push("légumes nouveaux : " + neuves.join(", "));
-      }
+    const neuves = a.legumes.filter((f) => !cov.familles.has(f));
+    if (neuves.length) {
+      score += (poids["famille_legume_neuve"] ?? 0) * neuves.length;
+      pourquoi.push("légumes nouveaux : " + neuves.join(", "));
+    }
 
-      if (a.feculent && (cov.feculent[a.feculent] ?? 0) >= (rep["feculent"] ?? Infinity))
-        score += poids["repetition_feculent"] ?? 0;
+    if (a.feculent && (cov.feculent[a.feculent] ?? 0) >= (rep["feculent"] ?? Infinity))
+      score += poids["repetition_feculent"] ?? 0;
 
-      if (a.profil && (cov.profil[a.profil] ?? 0) >= (rep["profil"] ?? Infinity)) {
-        score += poids["repetition_profil"] ?? 0;
-        pourquoi.push(`encore du ${a.profil}`);
-      }
+    if (a.profil && (cov.profil[a.profil] ?? 0) >= (rep["profil"] ?? Infinity)) {
+      score += poids["repetition_profil"] ?? 0;
+      pourquoi.push(`encore du ${a.profil}`);
+    }
 
-      if (chaineIci.length) score += poids["chaine_couverte"] ?? 0;
+    if (chaineIci.length) score += poids["chaine_couverte"] ?? 0;
 
-      // Gamelle : un plat qui voyage mal n'est pas interdit, juste moins bon.
-      if (malTransporte) {
-        score += poids["mal_transporte"] ?? -6;
-        pourquoi.push("voyage mal en gamelle");
-      }
+    // Gamelle : un plat qui voyage mal n'est pas interdit, juste moins bon.
+    if (malTransporte) {
+      score += poids["mal_transporte"] ?? -6;
+      pourquoi.push("voyage mal en gamelle");
+    }
 
-      // Le dîner de la veille d'un jour de coworking a un second métier : il
-      // fabrique la gamelle. Un plat qui voyage et laisse un reste vaut mieux
-      // là qu'ailleurs — même poids que le chaînage, parce que c'en est un.
-      if (
-        gamelleDemain &&
-        p.transportable !== false &&
-        p.emits.some((e) => e.kind === "reste-plat")
-      ) {
-        score += poids["chaine_couverte"] ?? 0;
-        pourquoi.push(`laisse la gamelle de ${gamelleDemain}`);
-      }
+    // Le dîner de la veille d'un jour de coworking a un second métier : il
+    // fabrique la gamelle. Un plat qui voyage et laisse un reste vaut mieux
+    // là qu'ailleurs — même poids que le chaînage, parce que c'en est un.
+    if (
+      gamelleDemain &&
+      p.transportable !== false &&
+      p.emits.some((e) => e.kind === "reste-plat")
+    ) {
+      score += poids["chaine_couverte"] ?? 0;
+      pourquoi.push(`laisse la gamelle de ${gamelleDemain}`);
+    }
 
-      // Un `accepts` requis que rien ne couvre reste une mauvaise idée.
-      const requisNonCouvert =
-        p.accepts.some((acc) => acc.requis) && !chaineIci.length && !p.sansReste;
-      if (requisNonCouvert) {
-        score += poids["chaine_manquante"] ?? 0;
-        pourquoi.push(`demande ${p.accepts.map((acc) => acc.type ?? `un ${acc.kind}`).join(", ")}`);
-      }
+    // Un `accepts` requis que rien ne couvre reste une mauvaise idée.
+    const requisNonCouvert =
+      p.accepts.some((acc) => acc.requis) && !chaineIci.length && !p.sansReste;
+    if (requisNonCouvert) {
+      score += poids["chaine_manquante"] ?? 0;
+      pourquoi.push(`demande ${p.accepts.map((acc) => acc.type ?? `un ${acc.kind}`).join(", ")}`);
+    }
 
-      // CE QUE LE PLAT ÉCOULE — placard ET dépôt, DANS LA MÊME SOMME (T47).
-      //
-      // Après les autres termes, parce qu'il départage deux plats également bons
-      // plutôt qu'il ne rachète un mauvais plat : un plat qui sature une protéine
-      // reste mauvais même s'il vide le bac à légumes.
-      //
-      // « DERNIER RECOURS » N'EST PLUS TOUT À FAIT VRAI DEPUIS T59, et il faut le
-      // dire ici plutôt que de laisser la phrase vieillir. Le terme cumule
-      // jusqu'à trois articles, donc jusqu'à +15 en théorie — au-dessus de
-      // `proteine_manquante: 6`. C'est assumé et c'est le cahier des charges
-      // (Workspace#41 : encourager « au maximum » l'utilisation des stocks) ; voir
-      // l'objection d'équilibrage, soulevée et écartée, dans `ecoulement.ts`.
-      //
-      // UN SEUL PLAFOND POUR LES DEUX STOCKS, et c'est la vraie difficulté du
-      // ticket. Laisser le placard plafonner de son côté et le dépôt du sien
-      // aurait fait six articles là où la règle en promet trois, et le plafond
-      // aurait cessé d'être un plafond sans qu'aucune ligne ne change de sens.
-      // D'où `placardDuPlat`, qui a perdu sa notation en route.
-      //
-      // LES LOTS DE LA SEMAINE COMPTENT COMME LES AUTRES, et ce n'est pas un
-      // oubli. `chaineIci` porte aussi bien le bocal de l'amorce que la sauce
-      // qu'on a posée mardi ; leur appliquer deux barèmes ferait revenir par
-      // l'ORIGINE exactement ce que T47 chasse par l'ENDROIT. Un lot cuisiné
-      // hier vaut sa fraction, qui est petite, et personne n'a eu à l'écrire.
-      const duDepot: Ecoulable[] = chaineIci
-        .filter((c) => c.fraction != null)
-        .map((c) => ({ id: c.type, fraction: c.fraction!, ou: "depot" }));
-      const eco = ecoulement([...placardDuPlat(jeu.catalogue, p, pressees), ...duDepot], poids);
-      if (eco.score) {
-        score += eco.score;
+    // CE QUE LE PLAT ÉCOULE — placard ET dépôt, DANS LA MÊME SOMME (T47).
+    //
+    // Après les autres termes, parce qu'il départage deux plats également bons
+    // plutôt qu'il ne rachète un mauvais plat : un plat qui sature une protéine
+    // reste mauvais même s'il vide le bac à légumes.
+    //
+    // « DERNIER RECOURS » N'EST PLUS TOUT À FAIT VRAI DEPUIS T59, et il faut le
+    // dire ici plutôt que de laisser la phrase vieillir. Le terme cumule
+    // jusqu'à trois articles, donc jusqu'à +15 en théorie — au-dessus de
+    // `proteine_manquante: 6`. C'est assumé et c'est le cahier des charges
+    // (Workspace#41 : encourager « au maximum » l'utilisation des stocks) ; voir
+    // l'objection d'équilibrage, soulevée et écartée, dans `ecoulement.ts`.
+    //
+    // UN SEUL PLAFOND POUR LES DEUX STOCKS, et c'est la vraie difficulté du
+    // ticket. Laisser le placard plafonner de son côté et le dépôt du sien
+    // aurait fait six articles là où la règle en promet trois, et le plafond
+    // aurait cessé d'être un plafond sans qu'aucune ligne ne change de sens.
+    // D'où `placardDuPlat`, qui a perdu sa notation en route.
+    //
+    // LES LOTS DE LA SEMAINE COMPTENT COMME LES AUTRES, et ce n'est pas un
+    // oubli. `chaineIci` porte aussi bien le bocal de l'amorce que la sauce
+    // qu'on a posée mardi ; leur appliquer deux barèmes ferait revenir par
+    // l'ORIGINE exactement ce que T47 chasse par l'ENDROIT. Un lot cuisiné
+    // hier vaut sa fraction, qui est petite, et personne n'a eu à l'écrire.
+    const duDepot: Ecoulable[] = chaineIci
+      .filter((c) => c.fraction != null)
+      .map((c) => ({ id: c.type, fraction: c.fraction!, ou: "depot" }));
+    const eco = ecoulement([...placardDuPlat(jeu.catalogue, p, pressees), ...duDepot], poids);
+    if (eco.score) {
+      score += eco.score;
 
-        // DEUX PHRASES, PARCE QUE CE SONT DEUX GESTES — et le partage n'est plus
-        // celui du stock, c'est celui de l'axe. « Se perdent » appelle à cuisiner
-        // ce soir, quoi que ce soit et où que ce soit rangé ; « entamés » dit
-        // seulement qu'un paquet est ouvert et qu'autant le finir.
-        const presses = eco.articles.filter((a) => marque(a.fraction) === "urgent");
-        if (presses.length) pourquoi.push(`sauve ce qui se perd : ${presses.map(nom).join(", ")}`);
+      // DEUX PHRASES, PARCE QUE CE SONT DEUX GESTES — et le partage n'est plus
+      // celui du stock, c'est celui de l'axe. « Se perdent » appelle à cuisiner
+      // ce soir, quoi que ce soit et où que ce soit rangé ; « entamés » dit
+      // seulement qu'un paquet est ouvert et qu'autant le finir.
+      const presses = eco.articles.filter((a) => marque(a.fraction) === "urgent");
+      if (presses.length) pourquoi.push(`sauve ce qui se perd : ${presses.map(nom).join(", ")}`);
 
-        // Le reste du PLACARD se dit ; le reste du DÉPÔT se tait, parce qu'il est
-        // déjà dit ailleurs et mieux. Un bocal jeune est annoncé par `recit` —
-        // « 700 g du congélo », « du frigo (J-2) » — que la carte affiche en
-        // toutes lettres depuis le prototype. Le répéter en « finit des paquets
-        // entamés : sauce bolognaise » serait faux deux fois : ce n'est pas un
-        // paquet, et ce n'est pas entamé.
-        const entames = eco.articles.filter(
-          (a) => a.ou === "placard" && marque(a.fraction) !== "urgent",
-        );
-        if (entames.length)
-          pourquoi.push(`finit des paquets entamés : ${entames.map(nom).join(", ")}`);
-      }
+      // Le reste du PLACARD se dit ; le reste du DÉPÔT se tait, parce qu'il est
+      // déjà dit ailleurs et mieux. Un bocal jeune est annoncé par `recit` —
+      // « 700 g du congélo », « du frigo (J-2) » — que la carte affiche en
+      // toutes lettres depuis le prototype. Le répéter en « finit des paquets
+      // entamés : sauce bolognaise » serait faux deux fois : ce n'est pas un
+      // paquet, et ce n'est pas entamé.
+      const entames = eco.articles.filter(
+        (a) => a.ou === "placard" && marque(a.fraction) !== "urgent",
+      );
+      if (entames.length)
+        pourquoi.push(`finit des paquets entamés : ${entames.map(nom).join(", ")}`);
+    }
 
-      // CE QUE LE PLAT REMET AU CONGÉLATEUR — T34 à T38. Après le placard,
-      // parce que c'est le même registre : un argument qui départage deux plats
-      // également bons, pas un argument qui rend bon un mauvais plat. Et avant
-      // `article_marginal`, qui va faire payer à ce plat de reconstitution
-      // chaque article qu'il ajoute au panier — c'est ainsi que reconstituer un
-      // bouillon (qui n'exige rien) bat naturellement reconstituer une
-      // bolognaise (qui exige de la viande), sans qu'aucune règle le dise.
-      const plancher = bonusPlancher(p, congelo, planchers, poids);
-      score += plancher.score;
-      pourquoi.push(...plancher.raisons);
+    // CE QUE LE PLAT REMET AU CONGÉLATEUR — T34 à T38. Après le placard,
+    // parce que c'est le même registre : un argument qui départage deux plats
+    // également bons, pas un argument qui rend bon un mauvais plat. Et avant
+    // `article_marginal`, qui va faire payer à ce plat de reconstitution
+    // chaque article qu'il ajoute au panier — c'est ainsi que reconstituer un
+    // bouillon (qui n'exige rien) bat naturellement reconstituer une
+    // bolognaise (qui exige de la viande), sans qu'aucune règle le dise.
+    const plancher = bonusPlancher(p, congelo, planchers, poids);
+    score += plancher.score;
+    pourquoi.push(...plancher.raisons);
 
-      const marginal = apres.panier.size - nBase;
-      score += (poids["article_marginal"] ?? 0) * marginal;
+    const marginal = apres.panier.size - nBase;
+    score += (poids["article_marginal"] ?? 0) * marginal;
 
-      return {
-        plat: p,
-        categorie: categorie(p),
-        score: Math.round(score * 10) / 10,
-        marginal,
-        pourquoi,
-        ecoule: eco.articles,
-        sauve: eco.marque === "urgent",
-        plancher: plancher.types,
-        paris: savoir && ctx ? paris(jeu.catalogue, ctx, savoir.rejeu, p) : [],
-        malTransporte,
-        manque: requisNonCouvert,
-        minutes: p.minutes + (pleinIci[0]?.minutes ?? 0),
-        chaine: chaineIci.length > 0,
-        depuis: chaineIci[0]?.depuis ?? null,
-        recit: chaineIci[0]?.recit ?? null,
-        partiel: chaineIci.some((c) => c.manque > 1e-9),
-        plein: pleinIci.length > 0,
-      };
-    })
+    return {
+      plat: p,
+      categorie: categorie(p),
+      score: Math.round(score * 10) / 10,
+      marginal,
+      pourquoi,
+      ecoule: eco.articles,
+      sauve: eco.marque === "urgent",
+      plancher: plancher.types,
+      paris: savoir && ctx ? paris(jeu.catalogue, ctx, savoir.rejeu, p) : [],
+      malTransporte,
+      manque: requisNonCouvert,
+      minutes: p.minutes + (pleinIci[0]?.minutes ?? 0),
+      chaine: chaineIci.length > 0,
+      depuis: chaineIci[0]?.depuis ?? null,
+      recit: chaineIci[0]?.recit ?? null,
+      partiel: chaineIci.some((c) => c.manque > 1e-9),
+      plein: pleinIci.length > 0,
+    };
+  };
+
+  return { ecarts, noter };
+}
+
+/**
+ * Tous les plats jouables sur un créneau, notés et triés.
+ *
+ * Le tri est le classement du score, et il ne descend pas jusqu'à l'écran tel
+ * quel : `main` en tire quelques cartes avec une garantie de variété.
+ */
+export function offre(jeu: Jeu, choix: Choix[], slot: number, savoir?: Savoir): Carte[] {
+  const c = comptoir(jeu, choix, slot, savoir);
+  if (!c) return [];
+  return jeu.catalogue.plats
+    .filter((p) => !c.ecarts(p).length)
+    .map(c.noter)
     .sort((x, y) => y.score - x.score);
 }
+
 
 /* ──────────────────────────────────────────────────────── la main de cartes */
 

@@ -2601,6 +2601,131 @@ qu'il fasse rougir quoi que ce soit est un chiffre qu'on cesse de lire. Le test
 de `catalogue.test.ts` est ce qui le rend maintenant contraignant côté app ;
 côté catalogue, la ligne reste décorative.
 
+## Nommer le plat qu'on a déjà en tête
+
+**Trouvé en relisant ce que l'app sait faire, le 15/09/2026 :**
+
+> *« Est-ce que tu as rajouté l'option pour chercher une recette ? »*
+> — puis, devant les deux formes proposées : *« Il me faudrait les deux mais
+> commence par 1 et oui il faut montrer le détail je suis d'accord. »*
+
+**Non. Et rien au backlog ne s'en approchait.** Le seul mot « recherche » écrit
+jusqu'ici est celui de **T63**, qui porte sur les ids `primeur` d'une arrivée de
+marché — l'entrée du stock, pas le choix du dîner.
+
+**L'app est bâtie pour PROPOSER, et c'est son cœur.** « Poser » tire **quatre
+cartes sur cent trente-huit plats**, avec une garantie de variété et un score
+qui dit ce que chacune coûte ici. Le Fil enchaîne ces mains créneau par créneau.
+C'est le bon outil pour *« qu'est-ce qu'on mange »*, et c'est toute la promesse
+du comptoir.
+
+**Mais « je sais déjà ce que je veux faire » n'a AUCUN chemin.** Aucun écran ne
+liste les cent trente-huit plats, et rien ne permet d'en taper le nom. Envie de
+gnocchis ce soir : repiocher jusqu'à ce qu'ils tombent — et ils peuvent ne
+jamais tomber, puisque le score les écarte peut-être exprès, pour un ingrédient
+dit absent ou un féculent déjà servi. **L'outil ne dit pas non ; il ne dit
+rien**, ce qui est la façon la plus coûteuse de refuser.
+
+- [x] **T80 — Chercher, dans « Poser ».** Un champ au-dessus des cartes, la
+      recherche prend la place de la main tant qu'elle dure, et **le plat trouvé
+      est une carte entière** — ce qu'il consomme, ce qu'il produit, ce qu'il
+      ajoute au panier — avec le bouton pour le poser.
+
+      **ON MONTRE LE PLAT ÉCARTÉ, ET ON DIT POURQUOI** (*« oui il faut montrer le
+      détail »*). C'est la règle de T78 appliquée à la recherche : on ne retire
+      pas ce que quelqu'un vient de NOMMER. Quatre raisons possibles, dites en
+      toutes lettres sur la carte — *« c'est déjà le dîner de jeudi »*, *« prévu
+      pour le goûter, pas pour le dîner »*, *« vous avez dit qu'il n'y avait plus
+      de bœuf haché »*, *« cuisiné il y a moins de 10 jours »* — et le bouton
+      devient **« Poser quand même »** sans jamais se désactiver. Le taire
+      laisserait croire que le plat n'existe plus ; le montrer sans le poser
+      serait un filtre poli, c'est-à-dire le chemin que T78 a écarté.
+
+      **UN SEUL ENDROIT DIT POURQUOI UN PLAT N'EST PAS PROPOSÉ.** `offre` portait
+      son prédicat dans sa chaîne ; il est coupé en `comptoir(jeu, choix, slot)`,
+      qui rend `ecarts` et `noter`, et `offre` filtre désormais **sur la liste
+      que l'écran affiche**. Deux listes auraient divergé au ticket suivant, et
+      la divergence se serait lue comme un écran qui ment sur sa propre décision.
+      Un test tient l'équivalence dans les deux sens, sur les 138 plats, avec les
+      deux ensembles vérifiés non vides. `noter` ne filtre rien, exprès : c'est
+      ce qui permet de chiffrer un plat que l'offre a écarté.
+
+      **LE COOLDOWN EST AJOUTÉ PAR LA RECHERCHE, PAS PAR LE COMPTOIR**, parce
+      qu'il écarte de la **main** et non de l'**offre** — le mettre avec les
+      autres aurait cassé l'équivalence ci-dessus. Et c'est souvent LUI la vraie
+      réponse à « pourquoi ne me l'a-t-on jamais proposé ».
+
+      **L'ORDRE NE DÉPEND PAS DU SCORE, ET C'ÉTAIT LA DÉCISION DU TICKET.**
+      Trier les trouvailles par note aurait donné deux réponses différentes à la
+      même question sur deux créneaux — l'inverse exact de ce qu'on attend d'une
+      recherche, qu'on ouvre justement parce qu'on a déjà décidé. On trie par ce
+      que la frappe dit (le titre commence par ce qu'on a tapé, puis son premier
+      mot, puis le reste) et on départage alphabétiquement. Ce que le plat vaut
+      ICI reste écrit sur sa carte, où il a toujours été.
+
+      **Mesuré sur les 138 titres, et les seuils en viennent :** « salade » 11,
+      « poulet » 7, « riz » 4, « gratin » 3, « gnocchi » 1 — d'où le plafond à
+      **huit cartes**, qui ne coupe presque jamais et dit combien il a laissé
+      quand il coupe. « a » en ramènerait **83** et « e » **34** — d'où les
+      **deux caractères** minimum : une lettre ne cherche pas, elle feuillette.
+      Par **début de mot** et non par sous-chaîne : « ri » vaut 7 plats par
+      préfixe contre 24 par sous-chaîne, et les 17 autres sont des « grillées »,
+      des « frisé », des « crémeux » — une liste qu'on ne s'explique pas est une
+      liste qu'on cesse de lire. **Titres seulement** : chercher dans les
+      ingrédients répondrait à « qu'est-ce que je peux faire avec ce qui me
+      reste », qui est une autre question, et à laquelle la proposition répond
+      déjà mieux en notant l'écoulement.
+
+      **LE CHAMP PASSE DEVANT LA FILE DE QUESTIONS.** Le réserver aux créneaux
+      sans question l'aurait retiré exactement quand il sert le plus : sur une app
+      neuve, tout central est inconnu, donc la première passe EST une file de
+      relevés. Quelqu'un qui sait déjà ce qu'il veut faire n'a aucune raison de
+      les payer d'abord. La question n'est pas annulée, elle attend — elle revient
+      dès que le champ est vide, et le parcours e2e le vérifie dans les deux sens.
+
+      Le coût du découpage a été mesuré (`npm run perf`) : `offre()` passe de
+      **8,5 à 8,7 ms** sur un créneau, soit 83 → 85 µs par carte. Dans le bruit.
+
+- [ ] **T81 — « Le répertoire » : les 138 plats, consultables.** La seconde
+      moitié de la demande du 15/09 — *« il me faudrait les deux »*. T80 sert
+      celui qui a un nom en tête ET un créneau sous les yeux ; il ne sert pas
+      celui qui veut **voir ce que la maison sait faire**, ni relire une recette
+      un dimanche après-midi sans rien planifier du tout.
+
+      **CE N'EST PAS UN CINQUIÈME ONGLET PAR DÉFAUT, ET C'EST LA VRAIE QUESTION
+      DU TICKET.** L'app a quatre facettes et T61 a refusé d'en ajouter une pour
+      l'approvisionnement, au motif qu'un onglet annonce un MODE. Un répertoire
+      consultable est le premier écran de l'app qui ne servirait **aucune
+      décision de la semaine** — il se lit, il ne pose rien — et c'est
+      précisément ce qui en fait une décision de **shell** et pas seulement un
+      ticket de cuisine. À trancher avant d'écrire une ligne : est-ce une entrée
+      de « La cuisine », un geste sur « Aujourd'hui », ou autre chose ?
+
+      Ce que T80 lui laisse déjà tout fait : `trouver()` (la frappe, les
+      accents, l'ordre), `comptoir()` (la carte d'un plat quelconque sur un
+      créneau quelconque) et la fiche, qui sait déjà s'ouvrir sur un plat qui
+      n'est posé nulle part — c'est ce que fait le bouton « Fiche » des cartes.
+
+      **Reste ouvert, et à trancher dans le ticket :** filtrer par autre chose
+      que le titre — protéine, temps, famille de légumes, « ce que je peux faire
+      avec ce qui me reste ». La dernière est la plus demandée et la plus
+      risquée : c'est la question à laquelle le score répond déjà, mieux, et la
+      poser autrement ferait deux réponses concurrentes à la même question.
+
+### Ce que T80 laisse ouvert
+
+**La recherche est dans « Poser » et nulle part ailleurs.** Le Fil montre les
+mêmes cartes, par le même composant, mais il enchaîne les créneaux plein écran et
+un champ y poserait une autre question de rythme — *« un pas à la fois »*. À
+reprendre quand T81 aura tranché où vit le répertoire, parce que les deux
+écrans se répondent.
+
+**Rien ne dit qu'un plat n'a JAMAIS été proposé.** L'écart explique le créneau
+qu'on regarde ; il ne dit pas qu'un plat est resté invisible six semaines
+d'affilée parce qu'il note mal. C'est la même famille de trous que celui de
+l'écart n° 3 — l'app est honnête quand on l'interroge, muette quand on ne
+l'interroge pas.
+
 ## Sortie
 
 **Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`
