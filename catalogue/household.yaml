@@ -135,6 +135,19 @@ household:
     - id: mini-blender
       label: petit blender du mixeur plongeur
       capabilities: [chop-coarse-small, blend-small]
+    # LE COUTEAU ÉTAIT DANS LA CHAÎNE DE REPLI ET PAS DANS L'INVENTAIRE, ce qui
+    # revenait à dire que cette cuisine n'en a pas. `resolve_capability` ne
+    # retient que les outils POSSÉDÉS : `chop-coarse` sautait donc le couteau et
+    # tombait sur le petit blender, et le guide disait « au petit blender, en
+    # 2–3 fois » sur vingt-cinq tailles de légumes dont la prose dit « émincer »
+    # et « tailler en petits dés ». Tranché par l'utilisateur le 15/09/2026.
+    #
+    # Rien ne l'avait vu parce que rien n'affichait l'outil par étape : le fait
+    # était dans l'export depuis T74 et le chargeur le jetait. C'est T84 qui
+    # l'a mis sous les yeux.
+    - id: couteau
+      label: couteau et planche
+      capabilities: [chop-coarse]
     - id: balance-tefal
       label: balance de cuisine
       capabilities: [weigh]

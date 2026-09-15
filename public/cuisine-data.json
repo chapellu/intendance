@@ -70,10 +70,10 @@
     "deltaMin": 0
    },
    "chop-coarse": {
-    "id": "mini-blender",
-    "label": "petit blender du mixeur plongeur",
-    "reecrit": "au petit blender, en 2–3 fois, par impulsions courtes",
-    "deltaMin": 3
+    "id": "couteau",
+    "label": "couteau et planche",
+    "reecrit": "au couteau, sur une planche",
+    "deltaMin": 5
    },
    "congeler": {
     "id": "congelateur-3-tiroirs",

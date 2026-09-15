@@ -2981,6 +2981,21 @@ l'accessoire au moment où la main doit l'attraper.
       l'instruction, *« petit blender du mixeur plongeur »* n'en est que le
       sujet. 44 étapes sont dans ce cas, et l'écran ne met en gras que les noms.
 
+      **LE COUTEAU N'ÉTAIT PAS DANS L'INVENTAIRE, ET L'ÉCRAN L'A RÉVÉLÉ.** Une
+      fois la ligne affichée, les 25 tailles de légumes annonçaient *« au petit
+      blender, en 2–3 fois, par impulsions courtes »* sur une prose qui dit
+      « émincer » et « tailler en petits dés ». La cause n'était pas la règle de
+      résolution mais `household.yaml` : `couteau` figurait dans la chaîne de
+      repli de `chop-coarse` et **nulle part dans `equipment`**, or
+      `resolve_capability()` ne retient que les outils possédés — la chaîne le
+      sautait donc et tombait sur le blender. Tranché par l'utilisateur le
+      15/09 : le couteau est déclaré, et passe devant le blender dans la chaîne
+      (le blender hache, il ne taille pas ; il reste derrière, pour une purée de
+      racines). Le commentaire d'`export_json.py` disait depuis toujours que la
+      réécriture retenue était *« au couteau, sur une planche »* — il avait
+      raison sur l'intention et tort sur les faits, et rien ne pouvait le voir
+      tant que l'outil par étape ne s'affichait pas.
+
       **Mesuré : 318 étapes nomment un outil, 374 se taisent** — 370 n'ont aucun
       `needs` (un montage, un assaisonnement, un service) et 4 en portent un que
       ce foyer ne possède pas (le gaufrier, la machine à pain). Le silence est
@@ -3008,12 +3023,6 @@ l'accessoire au moment où la main doit l'attraper.
   ici, c'est un désaccord que T84 rend visible en affichant enfin le repli à
   côté de la durée. Le corriger touche `avancement()` et la somme du plat, donc
   Workspace#57.
-- **`chop-coarse` résout sur le petit blender, pas sur le couteau** — la chaîne
-  de `rules.yaml` place `mini-blender` avant `couteau`, et le foyer possède le
-  premier. Le commentaire d'`export_json.py` croit pourtant que la réécriture
-  retenue est *« au couteau, sur une planche »* : l'un des deux a tort, et c'est
-  une décision de corpus, pas d'écran. 25 étapes concernées, toutes des tailles
-  de légumes. À trancher avec l'utilisateur avant de toucher à l'ordre.
 - **L'outil se répète à chaque étape** plutôt que de n'apparaître que lorsqu'il
   change. C'est ce que fait le Thermomix, et c'est ce qui survit à une reprise
   au milieu de la recette — mais sur un plat qui mijote en quatre étapes dans la

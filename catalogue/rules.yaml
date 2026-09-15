@@ -7,14 +7,24 @@
 # `rewrite` replaces the step's tool phrase; `time_delta_min` adjusts the step timer.
 
 capabilities:
+  # LE COUTEAU PASSE DEVANT LE PETIT BLENDER, et c'est une décision du 15/09/2026
+  # prise en voyant l'écran : le guide annonçait « au petit blender » sur des
+  # étapes qui disent « émincer les oignons » et « tailler les carottes en petits
+  # dés ». Le blender hache, il ne taille pas — sur un émincé, c'est le repli qui
+  # abîme le plus le résultat, et l'ordre d'une chaîne de repli dit lequel on
+  # préfère. Il reste dans la chaîne, derrière : une purée de légumes racines
+  # s'en accommode très bien.
+  #
+  # Les deux `time_delta_min` sont relatifs au plan A (le robot ménager), que ce
+  # foyer n'a pas ; ils ne changent pas avec l'ordre.
   chop-coarse:
     - tool: food-processor
-    - tool: mini-blender
-      rewrite: "au petit blender, en 2–3 fois, par impulsions courtes"
-      time_delta_min: 3
     - tool: couteau
       rewrite: "au couteau, sur une planche"
       time_delta_min: 5
+    - tool: mini-blender
+      rewrite: "au petit blender, en 2–3 fois, par impulsions courtes"
+      time_delta_min: 3
 
   blend-smooth:
     - tool: blender
