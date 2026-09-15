@@ -151,6 +151,25 @@ export function platDe(jeu: Jeu, i: number): Plat | null {
 export function convient(jeu: Jeu, plat: Plat, i: number): boolean {
   const c = jeu.creneaux[i];
   if (!c) return false;
+  // UN PLAT SANS ÉTAPES EST PROPOSÉ, ET L'ÉCRAN LE DIT. Il y avait trois
+  // chemins devant la plainte du 14/09 (« tu m'as encore fourni une recette
+  // sans étapes ») : écrire les étapes (T76), filtrer le plat (T77), ou le
+  // proposer en le disant. L'utilisateur a tranché pour le troisième le
+  // 15/09 — le filtre de T77 vivait ici, il est retiré, et `sansRecette()`
+  // dans `cuisiner.vue.ts` est ce qui le remplace.
+  //
+  // POURQUOI LE FILTRE ÉTAIT LE MAUVAIS OUTIL, alors qu'il citait T33 pour se
+  // justifier : T33 dit qu'on ne montre pas un plat qu'on ne peut pas
+  // EXÉCUTER. Un plat sans recette écrite s'exécute très bien — ce sont les
+  // plats du foyer, la maison sait les faire. Ce qui manque est le pas-à-pas,
+  // pas le dîner. Filtrer rétrécissait donc la semaine pour une lacune de
+  // saisie, ce que T33 refuse par ailleurs explicitement sur les paris :
+  // « retirer ces plats ferait rétrécir les propositions à mesure que la
+  // confiance vieillit ».
+  //
+  // Ce qui reste vrai de T77 : `cuisinable` ne doit plus JAMAIS être un champ
+  // que personne ne lit. Il est lu — par la carte et par la fiche — et le
+  // chargeur refuse maintenant un export où il contredit `steps`.
   const ok = plat.creneaux.length ? plat.creneaux : ["dejeuner", "diner"];
   return ok.includes(c.repas);
 }

@@ -38,6 +38,28 @@ recipes:
       - {id: ail, name: ail, qty: 2, unit: gousse}
       - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
       - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    steps:
+      - id: tailler
+        action: "Émincer les oignons et l'ail, tailler les carottes en petits dés"
+        needs: [chop-coarse]
+        time_min: 8
+        uses: [oignon, ail, carottes]
+      - id: revenir
+        action: "Chauffer l'huile à la cocotte, faire blondir oignons et ail, ajouter les carottes puis le bœuf haché en l'écrasant à la cuillère jusqu'à ce qu'il perde sa couleur"
+        needs: [simmer-large]
+        time_min: 10
+        uses: [huile-olive, boeuf-hache]
+      - id: mijoter
+        action: "Verser les tomates pelées, les écraser à la cuillère, porter à frémissement puis laisser mijoter à découvert — c'est en réduisant qu'elle devient une sauce"
+        needs: [simmer-large]
+        time_min: 40
+        attended: false
+        uses: [tomates-pelees]
+      - id: saler
+        action: "Goûter et saler en fin de cuisson, jamais au début : la sauce réduit de moitié et le sel, lui, ne réduit pas"
+        needs: []
+        time_min: 2
+        uses: [sel]
     emits:
       - kind: base
         type: sauce-bolognaise
@@ -73,6 +95,29 @@ recipes:
       - {id: sauce-bolognaise-ing, name: sauce bolognaise, qty: 500, unit: g, from_accepts: true}
       - {id: pates, name: "pâtes longues (spaghetti, linguine)", qty: 350, unit: g}
       - {id: fromage-rape, name: parmesan ou comté râpé, qty: 60, unit: g}
+    steps:
+      - id: eau
+        action: "Porter une grande casserole d'eau salée à ébullition"
+        needs: [boil]
+        time_min: 6
+        attended: false
+        uses: []
+      - id: rechauffer-sauce
+        action: "Pendant que l'eau chauffe : réchauffer la sauce bolognaise à feu doux, à couvert"
+        needs: [simmer]
+        time_min: 8
+        parallel_with: eau
+        uses: [sauce-bolognaise-ing]
+      - id: cuire-pates
+        action: "Cuire les pâtes le temps indiqué sur le paquet, égoutter en gardant une louche d'eau de cuisson"
+        needs: [boil]
+        time_min: 8
+        uses: [pates]
+      - id: servir
+        action: "Mêler les pâtes à la sauce hors du feu — un fond d'eau de cuisson si elle est trop épaisse — et servir avec le fromage râpé"
+        needs: []
+        time_min: 1
+        uses: [fromage-rape]
 
   - id: lasagnes
     title: Lasagnes
@@ -101,6 +146,23 @@ recipes:
       - {id: lait, name: lait, qty: 50, unit: cl}
       - {id: farine, name: farine, qty: 4, unit: c. à s.}
       - {id: fromage-rape, name: comté râpé, qty: 100, unit: g}
+    steps:
+      - id: bechamel
+        action: "Préchauffer le four à 200 °C. Pendant qu'il monte, délayer la farine dans le lait FROID au fouet — à froid elle ne fait pas de grumeaux — puis chauffer à feu moyen sans cesser de remuer jusqu'à ce que la sauce nappe la cuillère"
+        needs: [simmer, bake]
+        time_min: 10
+        uses: [farine, lait]
+      - id: monter
+        action: "Monter le plat : une louche de bolognaise au fond, une couche de plaques, de la béchamel, et recommencer en finissant par la béchamel — les plaques du dessus ne doivent jamais rester à sec, c'est là qu'elles restent dures"
+        needs: [gratin-vessel]
+        time_min: 10
+        uses: [sauce-bolognaise-ing, pates-lasagne]
+      - id: enfourner
+        action: "Couvrir de comté râpé et enfourner à 200 °C jusqu'à ce que le dessus soit doré et qu'un couteau traverse les plaques sans résistance"
+        needs: [gratin]
+        time_min: 30
+        attended: false
+        uses: [fromage-rape]
     emits:
       - kind: reste-plat
         type: lasagnes
@@ -123,6 +185,27 @@ recipes:
       - {id: oignon, name: oignon, qty: 1, unit: pièce}
       - {id: fromage-rape, name: parmesan râpé, qty: 60, unit: g}
       - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    steps:
+      - id: tailler
+        action: "Émincer l'oignon, tailler les courgettes en demi-rondelles"
+        needs: []
+        time_min: 6
+        uses: [oignon, courgettes]
+      - id: poeler-legumes
+        action: "Chauffer l'huile dans la sauteuse, faire blondir l'oignon, ajouter les courgettes et les laisser colorer sans trop remuer"
+        needs: [pan-fry]
+        time_min: 12
+        uses: [huile-olive]
+      - id: poeler-gnocchis
+        action: "Ajouter les gnocchis CRUS dans la poêle avec les légumes et les faire dorer sur toutes leurs faces — ceux à poêler ne passent pas par l'eau bouillante, c'est tout leur intérêt"
+        needs: [pan-fry]
+        time_min: 6
+        uses: [gnocchis]
+      - id: parmesan
+        action: "Hors du feu, parsemer de parmesan et laisser fondre une minute avant de servir"
+        needs: []
+        time_min: 1
+        uses: [fromage-rape]
 
   - id: poulet-roti
     title: Poulet rôti et pommes de terre
@@ -150,6 +233,29 @@ recipes:
       - {id: oignon, name: oignon, qty: 2, unit: pièce}
       - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
       - {id: thym, name: thym, qty: 1, unit: c. à c., seasoning: true}
+    steps:
+      - id: prechauffer
+        action: "Préchauffer le four à 200 °C"
+        needs: [bake]
+        time_min: 2
+        attended: false
+        uses: []
+      - id: preparer-poulet
+        action: "Frotter le poulet d'huile d'olive, le parsemer de thym, le poser dans le plat cuisses vers le haut"
+        needs: []
+        time_min: 3
+        uses: [poulet, huile-olive, thym]
+      - id: legumes-autour
+        action: "Pommes de terre en gros quartiers et oignons en demi-lunes, disposés autour du poulet : ils cuiront dans le gras qui tombe"
+        needs: []
+        time_min: 10
+        uses: [pommes-de-terre, oignon]
+      - id: rotir
+        action: "Enfourner à 200 °C, arroser du jus à mi-cuisson et remuer les pommes de terre. Le poulet est cuit quand la cuisse se détache et que le jus qui sort est clair"
+        needs: [bake]
+        time_min: 65
+        attended: false
+        uses: []
     emits:
       - kind: base
         type: poulet-cuit
@@ -188,6 +294,33 @@ recipes:
       - {id: oignon, name: oignon, qty: 1, unit: pièce}
       - {id: creme, name: crème fraîche, qty: 10, unit: cl}
       - {id: fromage-rape, name: fromage râpé, qty: 80, unit: g}
+    steps:
+      - id: tailler
+        action: "Poivrons et oignon en lanières"
+        needs: []
+        time_min: 8
+        uses: [poivron, oignon]
+      - id: poeler
+        action: "Saisir les lanières à feu vif dans la sauteuse, sans les noyer : elles doivent rester croquantes"
+        needs: [pan-fry]
+        time_min: 10
+        uses: []
+      - id: tiedir-tortillas
+        action: "Pendant que les légumes saisissent : tiédir les tortillas, à la poêle sèche ou au four éteint encore chaud"
+        needs: [pan-fry]
+        time_min: 5
+        parallel_with: poeler
+        uses: [tortillas]
+      - id: rechauffer-poulet
+        action: "Ajouter le poulet effiloché juste le temps de le réchauffer — il est déjà cuit, le repasser à la poêle le dessèche"
+        needs: [pan-fry]
+        time_min: 4
+        uses: [poulet-cuit-ing]
+      - id: servir
+        action: "Poser la poêle, la crème et le fromage râpé sur la table : chacun garnit sa tortilla"
+        needs: []
+        time_min: 3
+        uses: [creme, fromage-rape]
 
   - id: soupe-de-poule
     title: Soupe de poule aux vermicelles
@@ -214,6 +347,34 @@ recipes:
       - {id: carottes, name: carottes, qty: 3, unit: pièce}
       - {id: poireau, name: poireau, qty: 1, unit: pièce}
       - {id: vermicelles, name: vermicelles, qty: 100, unit: g}
+    steps:
+      - id: bouillon
+        action: "Couvrir la carcasse d'eau FROIDE à la cocotte, porter à frémissement et laisser tirer à petits bouillons, sans couvrir complètement"
+        needs: [simmer-large]
+        time_min: 30
+        attended: false
+        uses: [carcasse-ing]
+      - id: legumes
+        action: "Pendant que le bouillon tire : carottes en rondelles, poireau en tronçons"
+        needs: []
+        time_min: 8
+        parallel_with: bouillon
+        uses: [carottes, poireau]
+      - id: filtrer
+        action: "Retirer la carcasse, filtrer le bouillon, récupérer la chair qui se détache et la remettre dedans"
+        needs: []
+        time_min: 5
+        uses: []
+      - id: cuire-legumes
+        action: "Remettre le bouillon à frémir avec les légumes"
+        needs: [simmer-large]
+        time_min: 6
+        uses: []
+      - id: vermicelles
+        action: "Jeter les vermicelles dans le bouillon frémissant et compter le temps du paquet — pas plus, ils continuent de gonfler dans l'assiette"
+        needs: [simmer-large]
+        time_min: 4
+        uses: [vermicelles]
 
   - id: curry-pois-chiches
     title: Curry de pois chiches au lait de coco
@@ -232,6 +393,30 @@ recipes:
       - {id: oignon, name: oignon, qty: 1, unit: pièce}
       - {id: riz, name: riz basmati, qty: 250, unit: g}
       - {id: curry, name: curry doux en poudre, qty: 2, unit: c. à c., seasoning: true}
+    steps:
+      - id: riz
+        action: "Mettre le riz à cuire : c'est lui qui donne le tempo du reste"
+        needs: [boil]
+        time_min: 15
+        charge_partielle: true   # la casserole tient cet ingrédient, pas le plat
+        attended: false
+        uses: [riz]
+      - id: oignon
+        action: "Pendant la cuisson du riz : émincer l'oignon, le faire revenir à la sauteuse, puis ajouter le curry et le laisser griller quelques secondes — c'est au contact du gras chaud qu'il libère son parfum, pas dans la sauce"
+        needs: [pan-fry]
+        time_min: 8
+        parallel_with: riz
+        uses: [oignon, curry]
+      - id: mijoter
+        action: "Verser les tomates pelées et le lait de coco, laisser réduire à feu moyen"
+        needs: [simmer]
+        time_min: 10
+        uses: [tomates-pelees, lait-coco]
+      - id: pois-chiches
+        action: "Ajouter les pois chiches égouttés et rincés, les réchauffer dans la sauce sans les faire éclater"
+        needs: [simmer]
+        time_min: 5
+        uses: [pois-chiches]
     emits:
       - kind: reste-plat
         type: curry-pois-chiches
@@ -253,6 +438,31 @@ recipes:
       - {id: riz, name: riz, qty: 250, unit: g}
       - {id: brocoli, name: brocoli, qty: 1, unit: pièce}
       - {id: citron, name: citron, qty: 1, unit: pièce}
+    steps:
+      - id: riz
+        action: "Mettre le riz à cuire"
+        needs: [boil]
+        time_min: 15
+        charge_partielle: true   # la casserole tient cet ingrédient, pas le plat
+        attended: false
+        uses: [riz]
+      - id: brocoli
+        action: "Pendant la cuisson du riz : détailler le brocoli en bouquets et le cuire à la vapeur, il doit rester ferme sous la pointe du couteau"
+        needs: [steam]
+        time_min: 10
+        charge_partielle: true   # la casserole tient cet ingrédient, pas le plat
+        parallel_with: riz
+        uses: [brocoli]
+      - id: saumon
+        action: "Poêler les pavés côté peau d'abord, à feu moyen, et ne les retourner qu'une fois : le cœur doit rester rosé"
+        needs: [pan-fry]
+        time_min: 8
+        uses: [saumon]
+      - id: citron
+        action: "Servir avec le citron en quartiers, à presser à table"
+        needs: []
+        time_min: 2
+        uses: [citron]
 
   - id: quiche-poireaux
     title: Quiche aux poireaux
@@ -270,6 +480,33 @@ recipes:
       - {id: oeufs, name: œufs, qty: 3, unit: pièce}
       - {id: creme, name: crème fraîche, qty: 20, unit: cl}
       - {id: fromage-rape, name: comté râpé, qty: 80, unit: g}
+    steps:
+      - id: poireaux
+        action: "Émincer les poireaux et les faire fondre à la sauteuse à feu doux jusqu'à ce qu'ils rendent leur eau et deviennent tendres. Cette eau-là doit partir dans la poêle, sinon elle part dans la pâte"
+        needs: [pan-fry]
+        time_min: 12
+        uses: [poireau]
+      - id: appareil
+        action: "Battre les œufs avec la crème, poivrer"
+        needs: []
+        time_min: 3
+        uses: [oeufs, creme]
+      - id: foncer
+        action: "Préchauffer le four à 180 °C. Foncer le moule avec la pâte brisée et la piquer à la fourchette"
+        needs: [bake]
+        time_min: 3
+        uses: [pate-brisee]
+      - id: garnir
+        action: "Étaler les poireaux sur la pâte, verser l'appareil par-dessus, couvrir de comté râpé"
+        needs: []
+        time_min: 2
+        uses: [fromage-rape]
+      - id: cuire
+        action: "Enfourner à 180 °C jusqu'à ce que le centre soit pris — il ne doit plus trembler quand on bouge le moule — et le dessus doré"
+        needs: [bake]
+        time_min: 35
+        attended: false
+        uses: []
     emits:
       - kind: reste-plat
         type: quiche
@@ -293,6 +530,30 @@ recipes:
       - {id: poivron, name: poivron, qty: 1, unit: pièce}
       - {id: oignon, name: oignon, qty: 1, unit: pièce}
       - {id: riz, name: riz, qty: 250, unit: g}
+    steps:
+      - id: riz
+        action: "Mettre le riz à cuire"
+        needs: [boil]
+        time_min: 15
+        charge_partielle: true   # la casserole tient cet ingrédient, pas le plat
+        attended: false
+        uses: [riz]
+      - id: revenir
+        action: "Pendant la cuisson du riz : oignon et poivron en dés, à faire revenir à la sauteuse jusqu'à ce que le poivron s'assouplisse"
+        needs: [chop-coarse, pan-fry]
+        time_min: 10
+        parallel_with: riz
+        uses: [oignon, poivron]
+      - id: mijoter
+        action: "Ajouter les tomates pelées, les écraser à la cuillère, et laisser mijoter à découvert"
+        needs: [simmer]
+        time_min: 18
+        uses: [tomates-pelees]
+      - id: finir
+        action: "Ajouter les haricots rouges et le maïs égouttés en fin de cuisson, juste pour les réchauffer : plus longtemps et les haricots se défont"
+        needs: [simmer]
+        time_min: 7
+        uses: [haricots-rouges, mais]
     emits:
       - kind: reste-plat
         type: chili
@@ -315,6 +576,31 @@ recipes:
       - {id: oeufs, name: œufs, qty: 2, unit: pièce}
       - {id: fromage-rape, name: comté râpé, qty: 80, unit: g}
       - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    steps:
+      - id: riz
+        action: "Mettre le riz à cuire, deux minutes de moins que le temps du paquet : il finira de gonfler au four"
+        needs: [boil]
+        time_min: 15
+        charge_partielle: true   # la casserole tient cet ingrédient, pas le plat
+        attended: false
+        uses: [riz]
+      - id: courgettes
+        action: "Pendant la cuisson du riz : oignon émincé et courgettes en rondelles, à faire revenir à la sauteuse jusqu'à ce qu'elles aient rendu leur eau"
+        needs: [pan-fry]
+        time_min: 12
+        parallel_with: riz
+        uses: [courgettes, oignon]
+      - id: melanger
+        action: "Préchauffer le four à 200 °C. Mêler le riz, les courgettes et les œufs battus, verser dans le plat à gratin"
+        needs: [bake, gratin-vessel]
+        time_min: 6
+        uses: [oeufs]
+      - id: gratiner
+        action: "Couvrir de comté râpé et gratiner à 200 °C jusqu'à ce que le dessus prenne couleur"
+        needs: [gratin]
+        time_min: 29
+        attended: false
+        uses: [fromage-rape]
 
   - id: salade-lentilles-feta
     title: Salade de lentilles à la feta
@@ -341,6 +627,27 @@ recipes:
       - {id: tomates, name: tomates, qty: 3, unit: pièce}
       - {id: oignon-rouge, name: oignon rouge, qty: 1, unit: pièce}
       - {id: huile-olive, name: huile d'olive, qty: 3, unit: c. à s.}
+    steps:
+      - id: lentilles
+        action: "Sortir les lentilles cuites et les laisser revenir à température — froides du frigo, elles ne prennent pas l'assaisonnement"
+        needs: []
+        time_min: 3
+        uses: [lentilles-cuites]
+      - id: tailler
+        action: "Tomates en dés, oignon rouge en lamelles fines"
+        needs: []
+        time_min: 7
+        uses: [tomates, oignon-rouge]
+      - id: assaisonner
+        action: "Mêler le tout à l'huile d'olive, saler, poivrer"
+        needs: []
+        time_min: 3
+        uses: [huile-olive]
+      - id: feta
+        action: "Émietter la feta par-dessus au dernier moment, sans mélanger : elle sale déjà la salade, l'écraser dedans la sale deux fois"
+        needs: []
+        time_min: 2
+        uses: [feta]
 
   - id: croque-monsieur-salade
     title: Croque-monsieur et salade verte
@@ -357,6 +664,30 @@ recipes:
       - {id: jambon, name: jambon blanc, qty: 4, unit: pièce}
       - {id: fromage-rape, name: comté râpé, qty: 100, unit: g}
       - {id: salade-verte, name: salade verte, qty: 1, unit: pièce}
+    steps:
+      - id: prechauffer
+        action: "Préchauffer le four à 200 °C"
+        needs: [bake]
+        time_min: 2
+        attended: false
+        uses: []
+      - id: monter
+        action: "Monter les croques : une tranche, le jambon, le comté râpé, la seconde tranche, et encore un peu de fromage sur le dessus — c'est celui-là qui fait la croûte"
+        needs: []
+        time_min: 8
+        uses: [pain-de-mie, jambon, fromage-rape]
+      - id: cuire
+        action: "Enfourner jusqu'à ce que le dessus soit doré et que le fromage file"
+        needs: [bake]
+        time_min: 10
+        attended: false
+        uses: []
+      - id: salade
+        action: "Pendant la cuisson : laver la salade et l'assaisonner"
+        needs: []
+        time_min: 5
+        parallel_with: cuire
+        uses: [salade-verte]
 
   - id: tarte-tomates-moutarde
     title: Tarte tomates-moutarde
@@ -373,3 +704,26 @@ recipes:
       - {id: tomates, name: tomates, qty: 5, unit: pièce}
       - {id: moutarde, name: moutarde, qty: 2, unit: c. à s., seasoning: true}
       - {id: fromage-rape, name: comté râpé, qty: 80, unit: g}
+
+    steps:
+      - id: foncer
+        action: "Préchauffer le four à 200 °C. Foncer le moule avec la pâte brisée et la piquer à la fourchette"
+        needs: [bake]
+        time_min: 4
+        uses: [pate-brisee]
+      - id: moutarde
+        action: "Étaler la moutarde au fond de la pâte, en couche fine : c'est elle qui tient l'eau des tomates à distance de la pâte"
+        needs: []
+        time_min: 2
+        uses: [moutarde]
+      - id: tomates
+        action: "Tomates en rondelles, rangées en rosace sans se superposer — superposées elles cuisent à la vapeur au lieu de sécher"
+        needs: []
+        time_min: 7
+        uses: [tomates]
+      - id: cuire
+        action: "Couvrir de comté râpé et enfourner à 200 °C jusqu'à ce que les bords de la pâte soient dorés"
+        needs: [bake]
+        time_min: 32
+        attended: false
+        uses: [fromage-rape]

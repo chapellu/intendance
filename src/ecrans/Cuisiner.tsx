@@ -35,6 +35,7 @@ import {
   credit,
   minuteur,
   provenanceIngredient,
+  sansRecette,
   type EtatMinuteur,
 } from "./cuisiner.vue";
 
@@ -152,10 +153,30 @@ function Fiche({
   // e2e ne l'a pas vu pendant des mois parce qu'il tirait toujours une carte qui,
   // elle, avait des étapes ; c'est un simple changement de classement qui a fini
   // par lui en tirer une autre. Trouvé et bouché en marge de Workspace#50.
+  const muet = sansRecette(p);
+
   if (ingr || !steps.length)
     return (
       <>
         {tete}
+        {/* LA FICHE LE DIT AVANT LA LISTE, PAS APRÈS. C'est la plainte du
+            14/09 : « tu m'as encore fourni une recette sans étapes ». L'écran
+            ne mentait pas — il n'avait simplement rien à dire, et un écran qui
+            se tait sur ce qui lui manque se lit comme un écran cassé. La
+            phrase se pose donc là où l'œil arrive, entre le titre et les
+            quantités, et pas en bas près du bouton où elle ressemblerait à un
+            avertissement de dernière minute.
+
+            On l'affiche même quand l'utilisateur est venu voir la liste d'un
+            plat qui A des étapes : `sansRecette` rend `null` dans ce cas, donc
+            la condition tient toute seule et il n'y a pas deux chemins à
+            garder d'accord. */}
+        {muet ? (
+          <div className="co-sansrecette">
+            <Icone nom="info" />
+            <span>{muet.long}</span>
+          </div>
+        ) : null}
         <Ingredients p={p} parts={parts} f={f} catalogue={jeu.catalogue} />
         <div style={{ padding: "0 var(--space-4) var(--space-4)" }}>
           {steps.length ? (

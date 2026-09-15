@@ -17,6 +17,7 @@ import { chemin, type CleCreneau } from "../nav/routes";
 import { duree } from "./format";
 import { Icone } from "./icones";
 import { classeEtat, entreesDeLaCarte, sortiesDeLaCarte } from "../ecrans/poser.vue";
+import { sansRecette } from "../ecrans/cuisiner.vue";
 import { constatDe, enjeu, raison, REPONSES, titre } from "../ecrans/questions.vue";
 
 /**
@@ -96,6 +97,7 @@ export function Jouable({
   const p = carte.plat;
   const entrees = entreesDeLaCarte(carte);
   const sorties = sortiesDeLaCarte(p);
+  const muet = sansRecette(p);
 
   return (
     <div className="co-jouable">
@@ -104,6 +106,13 @@ export function Jouable({
         <span className="meta">
           <span>{duree(carte.minutes)}</span>
           <span>+{carte.marginal} art.</span>
+          {/* DANS LA MÊME LIGNE QUE LE TEMPS, et pas en bandeau. C'est une
+              propriété du plat au même titre que sa durée, pas un incident :
+              le bandeau en ferait un avertissement, et il n'y a rien à
+              craindre — les quantités et le temps sont justes, c'est le
+              pas-à-pas qui manque. On le lit AVANT de poser, ce qui est le
+              seul moment où ça change une décision. */}
+          {muet ? <span className="co-muet">{muet.court}</span> : null}
         </span>
       </div>
 

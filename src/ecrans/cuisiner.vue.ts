@@ -180,3 +180,52 @@ export function avancement(steps: Etape[], etape: number): { reste: number; tota
     total: steps.reduce((a, x) => a + x.minutes, 0),
   };
 }
+
+/* ────────────────────────────────────────────────── le plat qu'on n'a pas écrit */
+
+export interface SansRecette {
+  /** L'étiquette de la carte, courte : elle partage la ligne avec le reste. */
+  court: string;
+  /** Ce que la fiche en dit, en entier. */
+  long: string;
+}
+
+/**
+ * Ce qu'on dit d'un plat entré « niveau plan » — titre, temps, ingrédients,
+ * apports, et pas d'étapes.
+ *
+ * TROISIÈME CHEMIN, CHOISI PAR L'UTILISATEUR LE 15/09/2026. Il y en avait trois
+ * devant un plat sans étapes : lui en écrire (T76, fait pour les quinze du
+ * répertoire), ne pas le proposer (T77, qui filtrait), ou **le proposer en le
+ * disant**. Le filtre est retiré ; cette fonction est ce qui le remplace.
+ *
+ * ET C'EST LE RAISONNEMENT DES PARIS DE T33, APPLIQUÉ AUX ÉTAPES. Le dépôt
+ * l'avait déjà écrit pour le placard : « retirer ces plats ferait rétrécir les
+ * propositions à mesure que la confiance vieillit ; substituer en silence
+ * produirait un plat qu'on ne peut pas contredire. On parie donc, et on
+ * l'écrit. » Un plat sans recette est le même cas : le retirer rétrécit la
+ * semaine pour une lacune de saisie, et le servir muet est ce qui a produit la
+ * plainte du 14/09.
+ *
+ * CE QUI MANQUE EST LA RECETTE, PAS LE PLAT — et la phrase doit le dire dans cet
+ * ordre. Le temps, les quantités et les apports sont justes : ils viennent du
+ * même catalogue que les autres, ils ont passé le même `verifier.py`. Une
+ * formule du genre « plat incomplet » salirait des données qui ne le sont pas.
+ * Ce sont d'ailleurs des plats du foyer, que la maison sait déjà faire ; le
+ * guide pas-à-pas est un confort, pas une condition.
+ *
+ * ELLE S'APPUIE SUR `cuisinable` ET PAS SUR `steps.length`, alors que l'export
+ * dérive le premier du second. Deux raisons : c'est le champ que le catalogue
+ * DÉCLARE — `est_cuisinable()` porte la définition, et la dupliquer ici la
+ * ferait diverger le jour où elle bougera —, et le chargeur refuse désormais un
+ * export où les deux se contredisent, ce qui fait qu'il n'y a qu'une vérité.
+ */
+export function sansRecette(plat: Plat): SansRecette | null {
+  if (plat.cuisinable) return null;
+  return {
+    court: "sans recette écrite",
+    long:
+      "Ce plat n’a pas encore ses étapes. Les ingrédients, les quantités et le " +
+      "temps sont justes — c’est le pas-à-pas qui manque.",
+  };
+}

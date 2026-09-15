@@ -189,6 +189,26 @@ describe("la main de cartes", () => {
     expect(main(jeu).length).toBeLessThanOrEqual(catalogue.equilibre.main.taille);
   });
 
+  // LE PLAT SANS RECETTE EST PROPOSÉ, ET C'EST LE TROISIÈME CHEMIN.
+  // T77 le filtrait ici même, en citant T33 — « un plat qu'on ne peut pas
+  // exécuter ne mérite pas d'être montré ». L'argument était mal appliqué : un
+  // plat sans recette ÉCRITE s'exécute très bien, ce sont les plats du foyer.
+  // Ce qui manque est le pas-à-pas, pas le dîner. L'utilisateur a tranché pour
+  // « proposer en le disant » le 15/09/2026 ; ce que l'écran en dit vit dans
+  // `sansRecette()` et se vérifie jusqu'à l'œil dans `e2e/sans-recette`.
+  //
+  // ÉPROUVÉ SUR UN PLAT FABRIQUÉ, parce qu'il n'en reste aucun dans le corpus :
+  // les quinze du répertoire ont leurs étapes depuis T76, donc un test écrit
+  // sur le corpus ne traverserait rien.
+  test("un plat sans étapes reste proposé", () => {
+    const muet = { ...catalogue.plats[0]!, id: "plat-niveau-plan", steps: [], cuisinable: false };
+    const truque: Catalogue = { ...catalogue, plats: [...catalogue.plats, muet] };
+    const j = creerJeu(truque, 7, LUNDI);
+    j.slot = j.creneaux.findIndex((c) => c.nature === "choisi");
+
+    expect(offre(j, j.choix, j.slot).some((c) => c.plat.id === muet.id)).toBe(true);
+  });
+
   test("T52 — la taille et les enseignes garanties viennent du catalogue", () => {
     // TROIS RÉGLAGES LUS, TYPÉS, ET SANS EFFET jusqu'ici. La parité avec le
     // proto les gardait morts ; le proto est parti en T22, l'argument avec.
