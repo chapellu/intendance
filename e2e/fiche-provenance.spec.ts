@@ -18,6 +18,7 @@
 
 import { readFileSync } from "node:fs";
 import { expect, test } from "@playwright/test";
+import { aujourdhuiISO } from "./parcours";
 
 interface PlatExport {
   id: string;
@@ -44,7 +45,7 @@ const duFoyer = plats.find((p) => p.source === null)!;
  *  seconde frappe tombe sur le bouton que la première vient de faire
  *  apparaître. Le dépôt a payé ce bug trois fois. */
 async function ouvrirLesIngredients(page: import("@playwright/test").Page, plat: string) {
-  await page.goto(`/#/cuisine/cuisiner/2026-09-14/diner/${plat}`);
+  await page.goto(`/#/cuisine/cuisiner/${aujourdhuiISO()}/diner/${plat}`);
   // PAS `attendreLApp` ICI : il attend `.co-barre`, et la fiche est le seul
   // écran qui sorte de la coquille — elle n'a pas de barre du bas. On attend sa
   // propre tête, qui est ce que cet écran monte en premier.

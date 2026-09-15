@@ -143,3 +143,25 @@ export async function attendreLeWorker(page: Page): Promise<void> {
     return !!navigator.serviceWorker.controller;
   }, null, { timeout: 30_000 });
 }
+
+/**
+ * Le jour d'aujourd'hui, comme l'app l'écrit dans ses URL.
+ *
+ * ÉCRIT EN DUR, UN PARCOURS POURRIT PENDANT LA NUIT. `fiche-provenance` est né
+ * le 14/09 avec `/2026-09-14/` dans ses trois liens profonds ; il est passé au
+ * vert ce soir-là, et le 15 au matin ses trois tests tombaient sur « Le diner
+ * du 2026-09-14 est sorti de la semaine affichée ». Rien n'avait changé dans
+ * l'app. C'est la même faute que celle que ce fichier raconte plus haut à
+ * propos de `convient` — un parcours qui dépend d'une propriété doit la
+ * DEMANDER —, appliquée au temps : la semaine affichée est calculée autour
+ * d'aujourd'hui, donc c'est aujourd'hui qu'il faut viser.
+ *
+ * Même calcul que `jourISO` côté app (`db/schema.ts`), en local et pas en UTC :
+ * le navigateur de Playwright tourne sur cette machine, avec ce fuseau.
+ */
+export function aujourdhuiISO(): string {
+  const d = new Date();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const jj = String(d.getDate()).padStart(2, "0");
+  return `${d.getFullYear()}-${mm}-${jj}`;
+}
