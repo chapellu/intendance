@@ -10,6 +10,8 @@ import {
   chauffeDe,
   credit,
   minuteur,
+  minuteurUtile,
+  outilDe,
   provenanceIngredient,
   SANS_FEU,
   sansRecette,
@@ -344,5 +346,133 @@ describe("le plat qu'on n'a pas encore écrit", () => {
   test("c'est `cuisinable` qui décide", () => {
     const p = catalogue.plats.find((x) => x.steps.length > 0)!;
     expect(sansRecette({ ...p, cuisinable: false })).not.toBeNull();
+  });
+});
+
+/* ──────────────────── 15/09 — le minuteur permanent et l'outil qui manquait */
+
+const bolo = catalogue.plats.find((p) => p.id === "sauce-bolognaise")!;
+const pas = (id: string): Etape => bolo.steps.find((s) => s.id === id)!;
+
+describe("le minuteur ne s'affiche que quand le temps agit sur le plat", () => {
+  // « Tu mets en permanence un timer alors que je n'ai pas besoin de timer pour
+  // couper des légumes. » Capture d'écran à l'appui, étape 1 de la bolognaise.
+  test("couper des légumes n'en demande pas", () => {
+    const tailler = pas("tailler");
+    expect(tailler.minutes).toBeGreaterThan(0); // la durée existe…
+    expect(minuteurUtile(tailler)).toBe(false); // …ce n'est pas une cuisson
+  });
+
+  test("mais la cuisson qui suit, oui", () => {
+    expect(minuteurUtile(pas("revenir"))).toBe(true);
+    expect(minuteurUtile(pas("mijoter"))).toBe(true);
+  });
+
+  // Les trois portes, une par une, sur des étapes fabriquées : chacune doit
+  // suffire À ELLE SEULE, sinon la règle dépend d'un hasard du corpus.
+  test("l'attente suffit, sans le moindre feu", () => {
+    const trempage = { ...etape([], 5), attente: 720, attenteRaison: "trempage" };
+    expect(chauffeDe(trempage)).toEqual(SANS_FEU);
+    expect(minuteurUtile(trempage)).toBe(true);
+  });
+
+  test("s'en aller suffit : c'est le cas où il faut être rappelé", () => {
+    const refroidir = { ...etape([], 20), surveille: false };
+    expect(chauffeDe(refroidir)).toEqual(SANS_FEU);
+    expect(minuteurUtile(refroidir)).toBe(true);
+  });
+
+  test("la chauffe suffit", () => {
+    expect(minuteurUtile(etape(["bake"], 30))).toBe(true);
+  });
+
+  // L'INVARIANT QUI PROTÈGE LE TICKET DANS LES DEUX SENS. On ne retire un
+  // minuteur QUE sur des gestes — jamais sur une cuisson, jamais sur une
+  // attente, jamais sur une étape qu'on laisse. Et on en retire vraiment.
+  test("aucune cuisson du corpus ne perd son minuteur", () => {
+    const steps = catalogue.plats.flatMap((p) => p.steps);
+    const perdues = steps.filter((e) => !minuteurUtile(e));
+    expect(perdues.length).toBeGreaterThan(0);
+    expect(perdues.length).toBeLessThan(steps.length);
+    for (const e of perdues) {
+      expect(chauffeDe(e)).toEqual(SANS_FEU);
+      expect(e.attente).toBeNull();
+      expect(e.surveille).toBe(true);
+    }
+  });
+
+  // LE GRIL ET LE GAUFRIER TOMBAIENT EN « SANS FEU », ce qui est faux devant
+  // une résistance de voûte, et leur aurait retiré le minuteur au passage.
+  // Trouvé en écrivant la règle ci-dessus : c'est elle qui rend l'oubli visible.
+  test("le gril et le gaufrier sont des cuissons", () => {
+    expect(chauffeDe(etape(["grill"])).niveau).toBeGreaterThan(0);
+    expect(chauffeDe(etape(["gaufrier"])).niveau).toBeGreaterThan(0);
+    expect(minuteurUtile(etape(["grill"], 5))).toBe(true);
+    expect(minuteurUtile(etape(["gaufrier"], 25))).toBe(true);
+  });
+});
+
+describe("l'outil de l'étape", () => {
+  const foyer = catalogue.foyer;
+
+  // « Sur l'étape 2 il me manquerait la casserole à utiliser. » La réponse
+  // était déjà résolue par `compile.py` et jetée par le chargeur.
+  test("l'étape 2 de la bolognaise nomme la cocotte", () => {
+    const o = outilDe(foyer, pas("revenir"));
+    expect(o).toEqual({ texte: "cocotte 7,5 L", methode: false });
+  });
+
+  test("une étape sans besoin ne dit rien", () => {
+    expect(pas("saler").needs).toEqual([]);
+    expect(outilDe(foyer, pas("saler"))).toBeNull();
+  });
+
+  // Nommer un ustensile qu'on n'a pas serait pire que se taire : `compile.py`
+  // marque déjà ces étapes « aucune solution avec l'équipement du foyer ».
+  test("une capacité que le foyer ne porte pas se tait", () => {
+    expect(foyer.outils["gaufrier"]?.label).toBeNull();
+    expect(outilDe(foyer, etape(["gaufrier"]))).toBeNull();
+  });
+
+  // Un repli ne se résume pas à son nom : c'est la manière de faire qui est
+  // l'instruction. L'écran ne la met donc pas en gras — d'où `methode`.
+  test("la réécriture l'emporte sur le libellé", () => {
+    const o = outilDe(foyer, etape(["chop-coarse"]))!;
+    expect(o.methode).toBe(true);
+    expect(o.texte).toBe(foyer.outils["chop-coarse"]!.reecrit);
+  });
+
+  // LA RÈGLE QUI DÉPARTAGE, et la seule chose que ce ticket ajoute à la
+  // résolution : la ligne d'à côté dit déjà « Chauffe : Four », alors nommer le
+  // four ici serait dire deux fois la même chose. Le récipient, lui, est l'autre
+  // moitié de la question.
+  test("le récipient l'emporte sur l'appareil", () => {
+    expect(outilDe(foyer, etape(["bake", "gratin-vessel"]))!.texte).toContain("gratin");
+    expect(outilDe(foyer, etape(["bake"]))!.texte).toBe("four chaleur tournante");
+  });
+
+  test("aucun outil inventé : tout ce qui sort vient de la table du foyer", () => {
+    const dits = new Set<string>();
+    for (const o of Object.values(foyer.outils)) {
+      if (o.label) dits.add(o.label);
+      if (o.reecrit) dits.add(o.reecrit);
+    }
+    let vus = 0;
+    for (const p of catalogue.plats)
+      for (const e of p.steps) {
+        const o = outilDe(foyer, e);
+        if (o === null) continue;
+        vus++;
+        expect(dits.has(o.texte)).toBe(true);
+      }
+    expect(vus).toBeGreaterThan(0);
+  });
+
+  // La taille est DANS le libellé, comme sur la fiche — c'est la seconde
+  // moitié de la demande de T74, « et de quelle taille ».
+  test("les récipients gardent leur taille", () => {
+    expect(outilDe(foyer, etape(["simmer"]))!.texte).toMatch(/\d/);
+    expect(outilDe(foyer, etape(["simmer-large"]))!.texte).toMatch(/\d/);
+    expect(outilDe(foyer, etape(["pan-fry"]))!.texte).toMatch(/\d/);
   });
 });

@@ -19,11 +19,13 @@
 
 import { readFileSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
+import { minuteurUtile } from "../src/ecrans/cuisiner.vue";
+import type { Etape } from "../src/model/types";
 import { aujourdhuiISO } from "./parcours";
 
 interface PlatExport {
   id: string;
-  steps: { minutes: number }[];
+  steps: Etape[];
 }
 
 const plats: PlatExport[] = JSON.parse(readFileSync("public/cuisine-data.json", "utf8")).plats;
@@ -31,8 +33,14 @@ const plats: PlatExport[] = JSON.parse(readFileSync("public/cuisine-data.json", 
 /** Un plat dont la PREMIÈRE étape porte un minuteur : la fiche s'ouvre dessus,
  *  et le parcours n'a pas à traverser la recette pour trouver le bouton.
  *  Dérivé du corpus et jamais énuméré à la main — une liste de titres recopiée
- *  ici vieillirait à côté du catalogue sans que personne ne le voie. */
-const guide = plats.find((p) => (p.steps[0]?.minutes ?? 0) > 0)!;
+ *  ici vieillirait à côté du catalogue sans que personne ne le voie.
+ *
+ *  `minutes > 0` NE SUFFIT PLUS DEPUIS QUE LE MINUTEUR SE TAIT SUR LES GESTES :
+ *  la moitié des premières étapes du corpus sont des tailles de légumes, et ce
+ *  parcours serait allé chercher un bouton qui n'existe plus. On importe la
+ *  règle de l'écran plutôt que de la recopier — une seconde copie de
+ *  `minuteurUtile` ici dériverait au premier ajustement. */
+const guide = plats.find((p) => (p.steps[0]?.minutes ?? 0) > 0 && minuteurUtile(p.steps[0]!))!;
 const minutes = guide.steps[0]!.minutes;
 
 /**

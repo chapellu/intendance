@@ -516,6 +516,17 @@ button { font-family: var(--font-body); color: inherit; }
   background: var(--color-accent-2-200); color: var(--color-accent-2-900);
 }
 .co-encart.enfant { background: var(--color-accent-200); color: var(--color-accent-900); }
+/* L'outil de l'étape — même surface que « À sortir » sur la fiche, parce que
+   c'est le même fait vu de plus près : là-bas ce qu'on pose sur le plan de
+   travail avant de commencer, ici ce qu'on attrape pour CE geste. Une ligne
+   pleine largeur et pas une troisième case de `.co-reglages` : « casseroles
+   2,6 L / 1,6 L » ne tient pas dans un tiers de 390 px, et une case qui ne se
+   touche pas n'a rien à faire dans une rangée de commandes. */
+.co-outil {
+  display: flex; gap: 10px; align-items: center; border-radius: var(--radius-md);
+  padding: var(--space-3); margin-bottom: var(--space-2); font-size: 13.5px;
+  line-height: 1.35; background: var(--color-surface); color: var(--color-text);
+}
 .co-reglages { display: flex; gap: var(--space-2); align-items: stretch; }
 .co-reglages > * {
   flex: 1; background: var(--color-surface); border-radius: var(--radius-md);

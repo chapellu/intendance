@@ -49,6 +49,17 @@ describe("le catalogue réel", () => {
       expect(p.cuisinable, `${p.id} porte ${p.steps.length} étape(s)`).toBe(p.steps.length > 0);
   });
 
+  // LA TABLE DES OUTILS ÉTAIT EXPORTÉE ET JETÉE ICI — même geste que les six
+  // champs d'étape de T72. Ce test épingle qu'elle traverse, et qu'elle couvre
+  // vraiment le vocabulaire de `needs` : une capacité absente de la table
+  // produirait une étape muette plutôt qu'une erreur.
+  test("chaque capacité que les étapes réclament a son entrée dans la table", () => {
+    const c = lireCatalogue(brut());
+    const besoins = new Set(c.plats.flatMap((p) => p.steps.flatMap((e) => e.needs)));
+    expect(besoins.size).toBeGreaterThan(0);
+    for (const n of besoins) expect(c.foyer.outils[n]).toBeDefined();
+  });
+
   test("les identifiants de plats sont uniques", () => {
     const ids = lireCatalogue(brut()).plats.map((p) => p.id);
     expect(new Set(ids).size).toBe(ids.length);
@@ -94,6 +105,19 @@ describe("un export qui a dérivé échoue bruyamment", () => {
       p["cuisinable"] = true;
     });
     expect(casse).toThrow(/cuisinable/);
+  });
+
+  // Un `label` renommé en amont passerait en `undefined` et l'écran dirait
+  // « Outil : » suivi de rien — le mensonge plausible que ce chargeur existe
+  // pour attraper. `null` reste licite : c'est « aucun outil du foyer ».
+  test("un outil dont le libellé a disparu", () => {
+    const casse = abime((c) => {
+      const foyer = c["foyer"] as Record<string, unknown>;
+      const outils = foyer["outils"] as Record<string, Record<string, unknown>>;
+      delete outils[Object.keys(outils)[0]!]!["label"];
+    });
+    expect(casse).toThrow(CatalogueInvalide);
+    expect(casse).toThrow(/outils/);
   });
 
   test("un plat à zéro portion — le facteur d'échelle divise par là", () => {
