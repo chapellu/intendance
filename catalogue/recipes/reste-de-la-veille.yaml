@@ -45,11 +45,13 @@ recipe:
   # et ne se cuisinait pas du tout.
   steps:
     - id: sortir
-      action: "Sortir le reste du frigo, vérifier qu'il sent bon et qu'il est dans la fenêtre."
+      action: "Sortir le reste du frigo"
+      astuce: "Vérifier qu'il sent bon et qu'il est dans la fenêtre."
       needs: []
       time_min: 1
     - id: rechauffer
-      action: "Réchauffer à couvert — micro-ondes pour une portion, poêle ou casserole au-delà."
+      action: "Réchauffer à couvert"
+      astuce: "Micro-ondes pour une portion, poêle ou casserole au-delà."
       needs: [reheat]
       time_min: 8
       attended: false

@@ -57,11 +57,11 @@ recipe:
       needs: []
       time_min: 2
     - id: cuire-vapeur-mugcake
-      action: "Déposer les tasses dans le panier vapeur d'un faitout d'eau bouillante — on peut profiter de la cuisson d'une céréale ou d'un plat de légumes déjà en cours — poser un couvercle et compter 20 min"
+      action: "Déposer les tasses dans le panier vapeur d'un faitout d'eau bouillante, poser un couvercle et compter 20 min"
+      astuce: "On peut profiter de la cuisson d'une céréale ou d'un plat de légumes déjà en cours."
       needs: [steam]
       time_min: 20
       attended: false
-
   baby_portion:
     take: "une cuillerée de lait de soja-vanille et un peu de farine, avant la fleur de sel"
     prep: "cuire en ramequin à la vapeur avec les mugcakes, sans chocolat"

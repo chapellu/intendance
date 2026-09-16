@@ -72,7 +72,8 @@ recipe:
       time_min: 3
       kid: {age_min_months: 30, task: "râper le chocolat à l'économe, sous surveillance"}
     - id: incorporer
-      action: "Incorporer délicatement les copeaux de chocolat et la sauce cacao à la chantilly, en s'aidant idéalement d'une spatule souple pour soulever le mélange dans un mouvement tournant"
+      action: "Incorporer délicatement les copeaux de chocolat et la sauce cacao à la chantilly"
+      astuce: "À la spatule souple, en soulevant le mélange dans un mouvement tournant : fouettée, la chantilly retombe."
       needs: []
       uses: []
       time_min: 5

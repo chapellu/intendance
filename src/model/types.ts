@@ -115,6 +115,20 @@ export interface Etape {
   /** `false` = le temps passe sans qu'on reste devant. C'est ce qui sépare une
    *  journée de 90 minutes tenable d'une autre qui ne l'est pas. */
   surveille: boolean;
+  /**
+   * Le POURQUOI du geste, séparé du geste.
+   *
+   * 196 étapes sur 692 le portaient soudé à `action`, après un « : » ou un
+   * « — », faute d'un champ où le mettre — et le guide rend `action` en gros
+   * titre. « Goûter et saler en fin de cuisson, jamais au début : la sauce
+   * réduit de moitié et le sel, lui, ne réduit pas » arrivait donc à l'écran
+   * en six lignes de Caprasimo dont la moitié n'était pas l'instruction.
+   *
+   * `null` QUAND L'ÉTAPE N'A RIEN À AJOUTER, et c'est le cas le plus fréquent.
+   * Se taire est une réponse ; remplir chaque étape d'un conseil serait
+   * l'ornement que cet écran passe son temps à refuser.
+   */
+  astuce: string | null;
   /** Les ids de lignes d'ingrédient que CETTE étape consomme — donc, mis à
    *  l'échelle, la quantité du geste en cours.
    *

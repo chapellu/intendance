@@ -69,13 +69,22 @@ recipe:
       uses: [aubergine, courgettes, poivron, tomates-roma, oignon]
       time_min: 15
     - id: brasser
-      action: "Mettre les légumes dans un grand saladier avec le sel, le parmesan, le thym ciselé, les gousses d'ail émincées et l'huile d'olive ; bien brasser le tout pour mélanger parfaitement, puis répartir sur une lèchefrite"
+      action: "Mettre les légumes dans un grand saladier avec le sel, le parmesan, le thym ciselé, l'ail émincé et l'huile d'olive, puis bien brasser"
+      astuce: "Brasser vraiment : l'huile doit toucher chaque face, sinon le tian sèche par plaques."
       needs: []
       uses: [fleur-de-sel, parmesan, thym-frais, ail, huile-olive]
-      time_min: 6
-      kid: {age_min_months: 30, task: "brasser les légumes à la cuillère dans le grand saladier"}
+      time_min: 4
+      kid:
+        age_min_months: 30
+        task: "brasser les légumes à la cuillère dans le grand saladier"
+    - id: repartir-tian
+      action: "Répartir sur une lèchefrite"
+      needs: []
+      uses: []
+      time_min: 2
     - id: cuire
-      action: "Enfourner 30 à 45 minutes, jusqu'à ce que les légumes soient bien dorés et qu'il n'y ait plus de jus sur la lèchefrite"
+      action: "Enfourner 30 à 45 minutes"
+      astuce: "Jusqu'à ce que les légumes soient bien dorés et qu'il n'y ait plus de jus sur la lèchefrite."
       needs: [bake]
       uses: []
       time_min: 40

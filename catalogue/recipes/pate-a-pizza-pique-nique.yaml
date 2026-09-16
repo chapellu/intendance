@@ -61,11 +61,17 @@ recipe:
     - {id: sel, name: sel, qty: 10, unit: g, seasoning: true}
 
   steps:
-    - id: melanger
-      action: "Mélanger la farine et le sel, faire un puits ; délayer la levure dans l'eau tiède — jamais plus de 45 °C —, puis l'ajouter dans le puits avec l'huile d'olive"
+    - id: melanger-secs-pizza
+      action: "Mélanger la farine et le sel, puis faire un puits"
       needs: []
-      uses: [farine-complete, sel, levure-boulangere, eau, huile-olive]
-      time_min: 5
+      uses: [farine-complete, sel]
+      time_min: 2
+    - id: melanger
+      action: "Délayer la levure dans l'eau tiède, puis l'ajouter dans le puits avec l'huile d'olive"
+      astuce: "Jamais plus de 45 °C : au-delà, la chaleur tue la levure."
+      needs: []
+      uses: [levure-boulangere, eau, huile-olive]
+      time_min: 3
       # PAS DE PÉTRISSAGE, et c'est la thèse de la recette : « sans pétrissage,
       # cette pâte se mélange à la cuillère et s'étale avec les mains ». Le repos
       # d'une nuit REMPLACE le pétrissage. Une attente qui se substitue à un

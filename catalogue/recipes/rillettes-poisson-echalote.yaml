@@ -47,10 +47,15 @@ recipe:
     # `piquant` est une exclusion du foyer (household.yaml).
 
   steps:
+    - id: tailler-rillettes
+      action: "Émincer les échalotes et couper la carotte en petits cubes"
+      needs: []
+      time_min: 3
     - id: suer
-      action: "Émincer les échalotes, couper la carotte en petits cubes et les faire revenir à l'huile d'olive dans une petite cocotte jusqu'à ce que les sucs prennent une légère coloration"
+      action: "Les faire revenir à l'huile d'olive dans une petite cocotte"
+      astuce: "Jusqu'à ce que les sucs prennent une légère coloration : c'est eux qui portent le goût."
       needs: [pan-fry]
-      time_min: 8
+      time_min: 5
       attended: true
     - id: mijoter
       action: "Ajouter le saumon, mouiller au vin blanc, saler, couvrir et laisser mijoter une dizaine de minutes jusqu'à ce que le poisson soit bien cuit"

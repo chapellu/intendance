@@ -44,13 +44,15 @@ recipe:
 
   steps:
     - id: cuire-kasha
-      action: "Mettre kasha et petits pois dans une petite casserole avec l'eau bouillante et un peu de sel, puis cuire à feu doux environ 8 min en mélangeant SOUVENT : la préparation boit vite toute son eau"
+      action: "Mettre kasha et petits pois dans une petite casserole avec l'eau bouillante et un peu de sel, puis cuire à feu doux environ 8 min en mélangeant SOUVENT"
+      astuce: "La préparation boit vite toute son eau : sans remuer, elle attache."
       needs: [simmer]
       time_min: 8
       attended: true
       seasoning_gate: true
     - id: lier-croquettes
-      action: "Ajouter le fromage en petits cubes, la ciboulette ciselée et un peu de poivre, puis mixer LÉGÈREMENT par brèves impulsions — surtout pas de bouillie, il faut garder des petits morceaux"
+      action: "Ajouter le fromage en petits cubes, la ciboulette ciselée et un peu de poivre, puis mixer LÉGÈREMENT par brèves impulsions"
+      astuce: "Surtout pas de bouillie : il faut garder des petits morceaux."
       needs: [chop-coarse]
       time_min: 3
     - id: faconner-croquettes

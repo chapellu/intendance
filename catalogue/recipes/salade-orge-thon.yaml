@@ -68,7 +68,8 @@ recipe:
         cout_min: 60
         effet: "grain moins tendre et cuisson un peu plus longue, mais la salade se fait le jour même"
     - id: cuire-orge
-      action: "Le jour même, égoutter l'orge et jeter cette eau, puis la mettre dans un grand faitout d'eau froide légèrement salée — au moins 2 l — ; porter à ébullition et compter 15 minutes de cuisson"
+      action: "Le jour même, égoutter l'orge et jeter cette eau, puis la cuire dans un grand faitout d'eau froide légèrement salée : 15 minutes à partir de l'ébullition"
+      astuce: "Au moins 2 l d'eau, et l'eau de trempage se jette."
       needs: [simmer-large]
       uses: [sel-cuisson]
       time_min: 18

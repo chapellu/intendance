@@ -78,26 +78,31 @@ recipe:
 
   steps:
     - id: lancer
-      action: "Mettre la viande et l'os à moelle dans 3,5 l d'eau froide avec le gros sel, les oignons, les carottes, éventuellement les panais, le laurier, la coriandre, les herbes et les clous de girofle"
+      action: "Mettre la viande et l'os à moelle dans 3,5 l d'eau froide, avec le gros sel et la garniture aromatique"
+      astuce: "Oignons, carottes, laurier, coriandre, herbes, clous de girofle — et les panais, éventuellement."
       needs: [simmer-large]
-      uses: [jarret-boeuf, os-a-moelle, eau, gros-sel, oignon, carottes, panais,
-             laurier, graines-coriandre, thym, clous-girofle]
+      uses: [jarret-boeuf, os-a-moelle, eau, gros-sel, oignon, carottes, panais, laurier, graines-coriandre, thym, clous-girofle]
       time_min: 10
     - id: precuire
-      action: "Couvrir, porter à ébullition, puis compter 2 heures de cuisson — à tout petit feu, car mener la cuisson tambour battant ne sert à rien"
+      action: "Couvrir, porter à ébullition, puis compter 2 heures de cuisson à tout petit feu"
+      astuce: "Mener la cuisson tambour battant ne sert à rien : le collagène ne se défait qu'à feu doux."
       needs: [simmer-large]
       uses: []
       time_min: 120
       attended: false
     - id: preparer-legumes
-      action: "Pendant la précuisson : éplucher et préparer les autres légumes — recouper les poireaux et les navets en deux, le potimarron et le céleri-rave en six, laisser les pommes de terre entières"
+      action: "Pendant la précuisson : éplucher et préparer les autres légumes"
+      astuce: "Poireaux et navets recoupés en deux, potimarron et céleri-rave en six, pommes de terre entières."
       needs: []
       uses: [poireau, navets, potimarron, celeri-rave, pomme-de-terre]
       time_min: 15
-      parallel_with: precuire
-      kid: {age_min_months: 30, task: "laver les poireaux sous l'eau et compter les pommes de terre"}
+      parallel_with: "precuire"
+      kid:
+        age_min_months: 30
+        task: "laver les poireaux sous l'eau et compter les pommes de terre"
     - id: ajouter-legumes
-      action: "Au bout des 2 heures, ajouter dans la marmite DANS CET ORDRE : le céleri-rave, les poireaux, les navets, les pommes de terre, puis le potimarron — les légumes coriaces doivent être parfaitement immergés, le potimarron et la pomme de terre cuisent quasiment à la vapeur au-dessus"
+      action: "Au bout des 2 heures, ajouter DANS CET ORDRE : céleri-rave, poireaux, navets, pommes de terre, puis potimarron"
+      astuce: "L'ordre fait la cuisson : les légumes coriaces doivent être parfaitement immergés, tandis que potimarron et pomme de terre cuisent quasiment à la vapeur au-dessus."
       needs: [simmer-large]
       uses: []
       time_min: 5
@@ -108,18 +113,11 @@ recipe:
       time_min: 30
       attended: false
     - id: servir
-      action: "Sortir la viande et les légumes à l'écumoire, les disposer dans un plat et servir aussitôt, avec un filet d'huile d'olive et du poivre du moulin sur chaque assiette"
+      action: "Sortir la viande et les légumes à l'écumoire, les disposer dans un plat et servir aussitôt"
+      astuce: "Un filet d'huile d'olive et du poivre du moulin sur chaque assiette."
       needs: []
       uses: [huile-olive, poivre]
       time_min: 5
-      # L'AUTRICE DONNE DEUX FINITIONS ET PRÉFÈRE LA SECONDE : huile et poivre,
-      # « ou une bonne vinaigrette aux câpres et au persil frais (le top !) ».
-      # Seule la première est encodée, parce qu'un « ou » de garniture n'a
-      # aucune représentation : `plan_b` échange une étape pour gagner des
-      # minutes, `sans_reste` rachète une base absente, et ni l'un ni l'autre ne
-      # sait dire « deux fins possibles, à choisir à table ». Encoder les deux
-      # ferait acheter des câpres pour rien une fois sur deux.
-
   # PAS DE PRÉLÈVEMENT BÉBÉ, ET C'EST LE MÊME CAS EXACT QUE LE RÔTI P. 55 :
   # 2 c. à s. de gros sel dans l'eau froide à la minute zéro. Ce n'est pas une
   # négligence de l'autrice, c'est la technique — saler l'eau est ce qui

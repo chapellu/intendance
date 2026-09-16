@@ -53,11 +53,11 @@ recipe:
       time_min: 6
       kid: {age_min_months: 24, task: "écraser les boules avec la paume"}
     - id: cuire-cookies
-      action: "Enfourner environ 20 min, jusqu'à ce que le BORD des cookies soit bien doré — c'est lui qui dit la cuisson, et il varie beaucoup d'un four à l'autre"
+      action: "Enfourner environ 20 min, jusqu'à ce que le BORD des cookies soit bien doré"
+      astuce: "C'est le bord qui dit la cuisson, et il varie beaucoup d'un four à l'autre."
       needs: [bake]
       time_min: 20
       attended: false
-
   baby_portion:
     take: "une cuillerée de flocons d'avoine et un morceau de chèvre, avant salage et piment"
     prep: "cuire les flocons dans un peu d'eau, puis y écraser le fromage"

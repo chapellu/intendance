@@ -47,10 +47,11 @@ recipe:
       time_min: 15
       attended: false
     - id: laver-feuilles
-      action: "Pendant la cuisson : laver les orties (ou les feuilles choisies) — avec des gants pour les orties"
+      action: "Pendant la cuisson : laver les orties, ou les feuilles choisies"
+      astuce: "Avec des gants pour les orties."
       needs: []
       time_min: 5
-      parallel_with: cuire-pommes-de-terre
+      parallel_with: "cuire-pommes-de-terre"
     - id: ajouter-feuilles
       action: "Dès que les cubes de pomme de terre sont bien tendres, ajouter les feuilles et poursuivre 10 min"
       needs: [simmer-large]

@@ -54,14 +54,15 @@ recipe:
       attended: true
       seasoning_gate: true
     - id: reunir-le-pate
-      action: "Quand les sucs sont bien dorés mais surtout PAS brûlés, transférer avec l'huile de cuisson dans le bol du robot, puis ajouter les lentilles, la purée de noisette, un peu de sel et de poivre"
+      action: "Transférer les sucs avec leur huile de cuisson dans le bol du robot, puis ajouter les lentilles, la purée de noisette, un peu de sel et de poivre"
+      astuce: "Attendre que les sucs soient bien dorés, mais surtout PAS brûlés : un suc brûlé est amer et le pâté entier le prend."
       needs: []
       time_min: 3
     - id: mixer-le-pate
-      action: "Mixer en 3 ou 4 brèves impulsions pour garder des petits morceaux — surtout pas de bouillie — puis ajouter les noisettes très grossièrement concassées"
+      action: "Mixer en 3 ou 4 brèves impulsions, puis ajouter les noisettes très grossièrement concassées"
+      astuce: "Des petits morceaux, surtout pas de bouillie."
       needs: [chop-coarse]
       time_min: 3
-
   baby_portion:
     take: "2 c. à s. de lentilles nature, avant que l'oignon soit salé"
     prep: "écraser à la fourchette avec une pointe de purée de noisette"

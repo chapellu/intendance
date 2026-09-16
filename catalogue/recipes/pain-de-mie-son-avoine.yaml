@@ -41,7 +41,8 @@ recipe:
       needs: []
       time_min: 3
     - id: delayer-levure
-      action: "Délayer la levure dans l'eau tiède — jamais au-delà de 40 °C, la chaleur tue la levure — puis verser dans le puits avec l'huile et le sirop d'agave"
+      action: "Délayer la levure dans l'eau tiède, puis verser dans le puits avec l'huile et le sirop d'agave"
+      astuce: "Jamais au-delà de 40 °C : la chaleur tue la levure."
       needs: []
       time_min: 3
     - id: petrir
@@ -60,11 +61,11 @@ recipe:
       time_min: 50
       attended: false
     - id: refroidir
-      action: "Laisser entièrement refroidir avant de démouler — trancher chaud abîme la mie"
+      action: "Laisser entièrement refroidir avant de démouler"
+      astuce: "Trancher chaud abîme la mie."
       needs: []
       time_min: 5
       attended: false
-
   emits:
     - kind: base
       type: pain-de-mie-maison

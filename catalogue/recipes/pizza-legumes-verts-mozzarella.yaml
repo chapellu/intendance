@@ -83,7 +83,8 @@ recipe:
       # de légumes du catalogue dans un seul récipient. La sauteuse de 28 cm
       # passe au facteur 1 et pas au-delà, comme aux p. 85 et 181.
     - id: epinards
-      action: "Quand les courgettes sont à leur tour bien dorées, ajouter les épinards et le basilic, et faire « tomber » les feuilles jusqu'à ce qu'il n'y ait plus du tout d'eau — sinon la garniture détremperait la pâte"
+      action: "Quand les courgettes sont bien dorées, ajouter les épinards et le basilic et faire « tomber » les feuilles"
+      astuce: "Jusqu'à ce qu'il n'y ait plus du tout d'eau, sinon la garniture détremperait la pâte."
       needs: [pan-fry]
       uses: [pousses-epinards, basilic]
       time_min: 8
@@ -98,18 +99,26 @@ recipe:
       uses: [farine, huile-olive]
       time_min: 4
     - id: etaler
-      action: "Abaisser la pâte directement sur la lèchefrite avec les mains mouillées, étaler la garniture tiède, répartir par-dessus la mozzarella en tranches puis les olives, et laisser encore un peu lever le temps de préchauffer le four à 240 °C"
+      action: "Abaisser la pâte directement sur la lèchefrite, avec les mains mouillées"
+      astuce: "Les mains mouillées, pas farinées : la pâte s'étire au lieu de se rétracter."
+      needs: []
+      uses: []
+      time_min: 4
+    - id: garnir-pizza-verte
+      action: "Étaler la garniture tiède, répartir la mozzarella en tranches puis les olives, et laisser lever le temps de préchauffer le four à 240 °C"
       needs: [bake]
       uses: [mozzarella, olives-noires]
-      time_min: 10
-      kid: {age_min_months: 30, task: "poser les tranches de mozzarella et semer les olives sur la garniture"}
+      time_min: 6
+      kid:
+        age_min_months: 30
+        task: "poser les tranches de mozzarella et semer les olives sur la garniture"
     - id: cuire
-      action: "Enfourner assez bas — cran juste au-dessus de la sole — pendant 5 minutes, puis, sans ouvrir la porte, baisser la température du four à 150 °C et laisser cuire encore 12 minutes avant de servir"
+      action: "Enfourner assez bas 5 minutes, puis, sans ouvrir la porte, baisser à 150 °C et laisser cuire encore 12 minutes"
+      astuce: "Assez bas veut dire le cran juste au-dessus de la sole."
       needs: [bake]
       uses: []
       time_min: 17
       attended: true
-
   # PAS DE PRÉLÈVEMENT BÉBÉ : les oignons sont salés à la première minute et les
   # courgettes une deuxième fois juste après, exactement comme aux p. 85 et 181.
   # Le sel fait ici le même travail technique — faire rendre l'eau, sans quoi la

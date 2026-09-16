@@ -47,11 +47,18 @@ recipe:
     - {id: sucre-vanille, name: sucre vanillé, qty: 3, unit: sachet}
 
   steps:
-    - id: faire-la-pate
-      action: "Couper le beurre mou en petits morceaux, puis malaxer à la main farine, sel, sucre, beurre et petits suisses très soigneusement égouttés ; s'arrêter dès que la boule est formée — il doit rester des morceaux de beurre mal mélangés"
+    - id: couper-beurre
+      action: "Couper le beurre mou en petits morceaux"
       needs: []
-      time_min: 10
-      kid: {age_min_months: 30, task: "malaxer la pâte à la main"}
+      time_min: 2
+    - id: faire-la-pate
+      action: "Malaxer à la main farine, sel, sucre, beurre et petits suisses très soigneusement égouttés"
+      astuce: "S'arrêter dès que la boule est formée : il doit rester des morceaux de beurre mal mélangés."
+      needs: []
+      time_min: 8
+      kid:
+        age_min_months: 30
+        task: "malaxer la pâte à la main"
     - id: reposer
       action: "Couvrir et mettre au frais"
       needs: []
@@ -69,7 +76,8 @@ recipe:
       time_min: 22
       attended: false
     - id: refroidir
-      action: "Démouler et laisser refroidir sur une grille — hors du moule, la pâte reste bien plus croustillante"
+      action: "Démouler et laisser refroidir sur une grille"
+      astuce: "Hors du moule, la pâte reste bien plus croustillante."
       needs: []
       time_min: 5
     - id: chantilly

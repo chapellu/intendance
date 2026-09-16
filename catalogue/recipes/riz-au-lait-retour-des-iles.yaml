@@ -51,23 +51,25 @@ recipe:
 
   steps:
     - id: bouillir
-      action: "Porter le lait à ébullition dans une cocotte en fonte avec la gousse de vanille fendue en deux, le sel, la cannelle et le rhum, puis verser le riz en pluie en mélangeant au fouet"
+      action: "Porter le lait à ébullition en cocotte avec la gousse de vanille fendue, le sel, la cannelle et le rhum, puis verser le riz en pluie au fouet"
+      astuce: "En pluie et au fouet : versé d'un coup, le riz se colle au fond et attache."
       needs: [simmer]
       uses: [lait-soja-vanille, gousse-vanille, sel, cannelle, rhum, riz-arborio]
       time_min: 8
     - id: mijoter
-      action: "Poser un couvercle et baisser le feu au minimum, puis laisser mijoter 35 minutes à feu le plus doux possible, en mélangeant de temps en temps à la cuillère de bois"
+      action: "Poser un couvercle, baisser au minimum et laisser mijoter 35 minutes, en mélangeant de temps en temps"
+      astuce: "Au feu le plus doux possible : c'est un riz au lait, il attache sans prévenir."
       needs: [simmer]
       uses: []
       time_min: 35
-      attended: true        # « en mélangeant de temps en temps » : le lait végétal attache
+      attended: true
     - id: finir
-      action: "En fin de cuisson, ajouter hors du feu la crème de coco et le sucre, bien mélanger, poser un couvercle, porter de nouveau à ébullition, puis laisser complètement refroidir hors du feu"
+      action: "Hors du feu, ajouter la crème de coco et le sucre, bien mélanger, couvrir, porter de nouveau à ébullition, puis laisser refroidir hors du feu"
       needs: [simmer]
       uses: [creme-coco, sucre-roux]
       time_min: 8
       attente_min: 60
-      attente_raison: refroidissement
+      attente_raison: "refroidissement"
     - id: mettre-au-frais
       action: "Répartir dans des petits pots bien fermés et mettre au frais : le riz au lait s'épaissira alors et deviendra parfaitement crémeux"
       needs: []

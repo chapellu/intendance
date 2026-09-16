@@ -83,7 +83,8 @@ recipe:
       uses: [farine-complete, poudre-a-lever, sucre-roux, sucre-vanille, oeufs, beurre]
       time_min: 6
     - id: monter
-      action: "Disposer les poires entières dans un cercle à pâtisserie assez haut — au moins 10 cm — et de 18 à 20 cm de diamètre, en veillant à ce qu'elles ne se touchent pas, puis verser la pâte entre les poires et bien égaliser"
+      action: "Disposer les poires entières dans un cercle à pâtisserie de 18 à 20 cm, sans qu'elles se touchent, puis verser la pâte entre elles et bien égaliser"
+      astuce: "Un cercle assez haut — au moins 10 cm — sinon la pâte déborde en montant."
       needs: []
       uses: []
       time_min: 8
@@ -99,13 +100,13 @@ recipe:
       uses: [amandes-effilees]
       time_min: 2
     - id: verifier-cuisson
-      action: "Vérifier la cuisson en piquant le gâteau à cœur — le laisser encore 5 à 10 minutes si un peu de pâte crue adhère à la pique —, puis laisser refroidir, démouler et saupoudrer éventuellement de sucre glace"
+      action: "Vérifier la cuisson en piquant le gâteau à cœur, puis laisser refroidir, démouler et saupoudrer éventuellement de sucre glace"
+      astuce: "Le laisser encore 5 à 10 minutes si un peu de pâte crue adhère à la pique."
       needs: []
       uses: []
       time_min: 10
       attente_min: 45
-      attente_raison: refroidissement
-
+      attente_raison: "refroidissement"
   # PAS DE PRÉLÈVEMENT BÉBÉ : 180 g de sucre roux et 3 sachets de sucre vanillé
   # pour 8 parts, plus 180 g de beurre demi-sel. C'est un gâteau d'anniversaire
   # et il assume de l'être — l'autrice note que c'est l'une des rares recettes

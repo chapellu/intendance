@@ -312,6 +312,11 @@ def compile_recipe(recipe_id, household, rules, stock, time_budget=None,
             line += "  — sans surveillance"
         if impossible:
             line += "  ⚠ aucune solution avec l'équipement du foyer"
+        # L'ASTUCE SUR SA PROPRE LIGNE, jamais dans la phrase du geste : c'est
+        # tout l'objet du champ. Collée, elle allongeait l'instruction ; en
+        # dessous, elle se lit une fois qu'on a compris quoi faire.
+        if s.get("astuce"):
+            line += f"\n   • {s['astuce']}"
         if kids_mode and s.get("kid") and eldest_months and eldest_months >= s["kid"]["age_min_months"]:
             line += f"\n   👶 avec le grand : {s['kid']['task']}"
         steps_out.append(line)

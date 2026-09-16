@@ -46,7 +46,8 @@ recipe:
       time_min: 1
       attended: false
     - id: installer-caissettes
-      action: "Installer les caissettes dans une plaque à mini-muffins ou, à défaut, dans une plaque à œufs en carton en ne garnissant qu'une alvéole sur deux — cette plaque-là brunira et sera perdue"
+      action: "Installer les caissettes dans une plaque à mini-muffins"
+      astuce: "À défaut, une plaque à œufs en carton en ne garnissant qu'une alvéole sur deux — cette plaque-là brunira et sera perdue."
       needs: []
       time_min: 4
     - id: melange-sec
@@ -54,10 +55,15 @@ recipe:
       needs: []
       time_min: 2
     - id: fondre
-      action: "Faire fondre le chocolat au bain-marie avec le sirop d'agave et l'huile de coco ; hors du feu, ajouter la vanille et les œufs entiers, puis la farine, et bien mélanger"
+      action: "Faire fondre le chocolat au bain-marie avec le sirop d'agave et l'huile de coco"
       needs: [simmer]
-      time_min: 8
+      time_min: 4
       attended: true
+    - id: appareil-brownies
+      action: "Hors du feu, ajouter la vanille et les œufs entiers, puis la farine, et bien mélanger"
+      astuce: "Hors du feu, vraiment : sur le bain-marie, les œufs prennent en omelette."
+      needs: []
+      time_min: 4
     - id: remplir
       action: "Transférer la pâte dans un pichet verseur et remplir les caissettes aux trois quarts"
       needs: []

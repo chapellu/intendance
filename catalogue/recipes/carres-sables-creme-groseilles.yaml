@@ -83,25 +83,40 @@ recipe:
       # monde a. Pas de capacité déclarée : une centrifugeuse n'est pas dans ce
       # foyer, et le repli est ici dans la recette et non dans `rules.yaml`.
     - id: pate
-      action: "Mélanger dans un saladier tous les ingrédients de la pâte, puis bien tasser le mélange au fond d'un rectangle à pâtisserie d'environ 17 × 22 cm posé sur une plaque chemisée de papier cuisson"
+      action: "Mélanger dans un saladier tous les ingrédients de la pâte"
       needs: []
       uses: [farine-pate, coco-pate, sucre-complet, fleur-de-sel]
-      time_min: 6
-      kid: {age_min_months: 30, task: "tasser la pâte au fond du cadre avec le dos d'une cuillère"}
+      time_min: 2
+    - id: tasser
+      action: "Bien tasser le mélange au fond d'un rectangle à pâtisserie d'environ 17 × 22 cm, sur une plaque chemisée"
+      needs: []
+      uses: []
+      time_min: 4
+      kid:
+        age_min_months: 30
+        task: "tasser la pâte au fond du cadre avec le dos d'une cuillère"
     - id: cuire-biscuit
       action: "Enfourner 15 à 20 minutes, jusqu'à ce que la pâte soit bien dorée"
       needs: [bake]
       uses: []
       time_min: 18
       attended: false
-    - id: creme
-      action: "Pendant ce temps, fendre la gousse de vanille en deux, en gratter les graines, mettre le tout — gousse et graines — dans une casserole, et ajouter tous les autres ingrédients de la crème ; bien mélanger au fouet, sans s'inquiéter des petits grumeaux d'huile de coco, qui fondront à la cuisson"
+    - id: vanille
+      action: "Pendant ce temps, fendre la gousse de vanille, en gratter les graines et mettre gousse et graines dans une casserole"
       needs: []
-      uses: [gousse-vanille, sirop-agave, creme-coco, agar-agar, coco-creme, farine-creme]
-      time_min: 6
-      parallel_with: cuire-biscuit
+      uses: [gousse-vanille]
+      time_min: 2
+      parallel_with: "cuire-biscuit"
+    - id: creme
+      action: "Ajouter tous les autres ingrédients de la crème et bien mélanger au fouet"
+      astuce: "Sans s'inquiéter des petits grumeaux d'huile de coco : ils fondront à la cuisson."
+      needs: []
+      uses: [sirop-agave, creme-coco, agar-agar, coco-creme, farine-creme]
+      time_min: 4
+      parallel_with: "cuire-biscuit"
     - id: bouillir
-      action: "Faire chauffer à feu doux en mélangeant sans cesse au fouet ; dès que le mélange arrive à ébullition — on le voit aux grosses bulles qui font « blop » quand on cesse de mélanger — compter 1 minute de cuisson sans cesser de mélanger"
+      action: "Chauffer à feu doux en mélangeant sans cesse au fouet, puis compter 1 minute de cuisson depuis l'ébullition"
+      astuce: "L'ébullition se voit aux grosses bulles qui font « blop » quand on cesse de mélanger."
       needs: [simmer]
       uses: []
       time_min: 8
@@ -112,13 +127,13 @@ recipe:
       uses: []
       time_min: 5
     - id: prendre
-      action: "Mettre au frais jusqu'au lendemain, puis démouler et découper en carrés de la taille de votre choix — tout petits comme des mignardises, ou en plus grosses parts individuelles"
+      action: "Mettre au frais jusqu'au lendemain, puis démouler et découper en carrés"
+      astuce: "De la taille de votre choix : tout petits comme des mignardises, ou en parts individuelles."
       needs: []
       uses: []
       time_min: 6
       attente_min: 720
-      attente_raison: prise-au-frais
-
+      attente_raison: "prise-au-frais"
   # PAS DE PRÉLÈVEMENT BÉBÉ : 160 g de sirop d'agave dans la crème et 50 g de
   # sucre dans la pâte. Neuvième plat du corpus écarté pour du sucre ajouté.
 

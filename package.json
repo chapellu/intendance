@@ -17,7 +17,8 @@
     "planchers": "vite-node scripts/planchers.mjs",
     "preview": "vite preview",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "etapes": "python3 catalogue/garde_etapes.py"
   },
   "dependencies": {
     "dexie": "^4.4.5",

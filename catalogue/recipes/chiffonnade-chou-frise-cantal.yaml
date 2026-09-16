@@ -61,11 +61,11 @@ recipe:
       needs: []
       time_min: 2
     - id: assaisonner
-      action: "Assaisonner d'huile, de vinaigre, de sel et de poivre, brasser et servir aussitôt — le chou frisé est assez tendre pour se passer de marinade"
+      action: "Assaisonner d'huile, de vinaigre, de sel et de poivre, brasser et servir aussitôt"
+      astuce: "Le chou frisé est assez tendre pour se passer de marinade."
       needs: []
       time_min: 1
       seasoning_gate: true
-
   baby_portion:
     take: "quelques cubes de cantal et un peu de pruneau, AVANT l'assaisonnement"
     prep: "écraser le pruneau à la fourchette ; ni chou cru ni noix, ni jambon"

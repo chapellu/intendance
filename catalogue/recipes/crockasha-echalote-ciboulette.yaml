@@ -79,7 +79,8 @@ recipe:
       time_min: 8
       kid: {age_min_months: 30, task: "rouler les croquettes dans l'assiette de farine"}
     - id: dorer-croquettes
-      action: "Faire dorer les croquettes sur toutes leurs faces dans une grande poêle avec un fond d'huile, jusqu'à ce qu'elles soient croustillantes"
+      action: "Faire dorer les croquettes sur toutes leurs faces dans une grande poêle, avec un fond d'huile"
+      astuce: "Jusqu'à ce qu'elles soient croustillantes."
       needs: [pan-fry]
       time_min: 10
       attended: true

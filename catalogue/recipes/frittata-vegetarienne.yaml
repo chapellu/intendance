@@ -57,7 +57,8 @@ recipe:
       time_min: 2
       seasoning_gate: true
     - id: monter-la-frittata
-      action: "Mélanger à la piperade, verser dans un petit plat à œuf individuel — celui-là même qui partira au bureau — et déposer le fromage en lamelles par-dessus"
+      action: "Mélanger à la piperade, verser dans un petit plat à œuf individuel et déposer le fromage en lamelles par-dessus"
+      astuce: "Le plat individuel est celui-là même qui partira au bureau."
       needs: []
       time_min: 3
     - id: cuire-frittata

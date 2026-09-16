@@ -69,19 +69,27 @@ recipe:
       needs: [pan-fry]
       uses: [huile-olive, oignon, poireau, saucisse-fumee]
       time_min: 12
-    - id: mijoter
-      action: "Quand tout est bien doré, ajouter l'eau, les carottes en rondelles, le laurier et les clous de girofle, porter à ébullition, puis verser les lentilles en pluie ; bien mélanger, couvrir et laisser mijoter à tout petit feu pendant 45 minutes"
+    - id: mouiller
+      action: "Quand tout est bien doré, ajouter l'eau, les carottes en rondelles, le laurier et les clous de girofle, puis porter à ébullition"
       needs: [simmer-large]
-      uses: [eau, carottes, laurier, clous-girofle, lentilles-seches]
-      time_min: 45
+      uses: [eau, carottes, laurier, clous-girofle]
+      time_min: 4
+    - id: mijoter
+      action: "Verser les lentilles en pluie, bien mélanger, couvrir et laisser mijoter à tout petit feu"
+      astuce: "En pluie et dans l'eau déjà bouillante : jetées d'un coup, elles se tassent au fond et cuisent mal."
+      needs: [simmer-large]
+      uses: [lentilles-seches]
+      time_min: 41
       attended: false
-      kid: {age_min_months: 30, task: "verser les lentilles en pluie dans la cocotte à la petite louche"}
+      kid:
+        age_min_months: 30
+        task: "verser les lentilles en pluie dans la cocotte à la petite louche"
     - id: servir
-      action: "Servir chaud en plat principal, ou encore tiède en salade avec un peu de moutarde à l'ancienne, de l'huile d'olive, un trait de vinaigre de cidre et du persil haché"
+      action: "Servir chaud en plat principal"
+      astuce: "Ou tiède en salade, avec un peu de moutarde à l'ancienne, de l'huile d'olive, un trait de vinaigre de cidre et du persil haché."
       needs: []
       uses: []
       time_min: 3
-
   # PAS DE PRÉLÈVEMENT BÉBÉ DANS CETTE VERSION : la saucisse entre à la première
   # minute et sale tout le bain de cuisson des 45 minutes qui suivent — cas
   # identique au rôti p. 55 et au pot-au-feu p. 182. Voir l'en-tête : la version

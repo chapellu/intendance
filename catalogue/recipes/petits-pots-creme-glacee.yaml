@@ -52,15 +52,16 @@ recipe:
       time_min: 4
       kid: {age_min_months: 30, task: "équeuter les fraises avant de les mixer"}
     - id: marbrer
-      action: "Verser la purée de fraises dans la crème fouettée et mélanger en trois ou quatre coups de spatule — pas un de plus, sinon les marbrures disparaissent"
+      action: "Verser la purée de fraises dans la crème fouettée et mélanger en trois ou quatre coups de spatule"
+      astuce: "Pas un de plus : au-delà, les marbrures disparaissent."
       needs: []
       time_min: 2
     - id: congeler
-      action: "Répartir dans les 6 pots en carton et mettre au congélateur environ 2 h ; au-delà, les sortir un peu en avance pour qu'ils ne soient pas trop durs"
+      action: "Répartir dans les 6 pots en carton et mettre au congélateur environ 2 h"
+      astuce: "Au-delà, les sortir un peu en avance pour qu'ils ne soient pas trop durs."
       needs: [congeler]
       time_min: 4
       attended: false
-
   emits:
     - kind: reste-plat
       type: creme-glacee

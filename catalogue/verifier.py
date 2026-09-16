@@ -45,6 +45,11 @@ MOTS_ASSAISONNEMENT = re.compile(r"\bsel\b|sal|poivr|assaisonn|rectifi", re.I)
 # pain qu'on trempe 3 min et le plat « plus fade que la veille ». Trois faux
 # positifs sur quatre — le seuil à partir duquel un contrôle apprend à être
 # ignoré. Ne restent que les tournures qui annoncent VRAIMENT une attente.
+# Au-delà de ce seuil, une action n'est plus un geste : elle porte une
+# explication (qui appartient à `astuce:`) ou plusieurs gestes (qui
+# appartiennent à plusieurs étapes). Mesuré sur le corpus avant d'être posé —
+# médiane 98 caractères, troisième quartile 145, maximum 405.
+MAX_ACTION = 160
 MOTS_ATTENTE = re.compile(
     r"^\s*la veille\b|\ble lendemain\b|\btoute la nuit\b|\bune nuit\b"
     r"|\bd'avance\b|\bà l'avance\b|\d+\s*h\s*avant|\bà tremper\b|\btrempage\b"
@@ -84,6 +89,31 @@ def verifier(rid: str, r: dict, rayons: dict, rules: dict, cat: dict,
             warn.append(f"étape {s['id']} : {att} min d'attente coupent la recette en deux "
                         "séances, mais sans `attente_raison:` l'agenda ne saura pas dire "
                         "de quoi il s'agit")
+        # L'ASTUCE, ET LE SEUIL QUI LA REND NÉCESSAIRE.
+        #
+        # 196 étapes sur 692 portaient leur explication SOUDÉE à l'action, après
+        # un « : » ou un « — », faute d'un champ où la mettre — et l'écran de
+        # cuisine rend `action` en gros titre. La moitié du titre n'était donc
+        # pas le geste. `astuce:` est l'endroit ; ce seuil est ce qui empêche
+        # l'ancien réflexe de revenir.
+        #
+        # LE SEUIL EST MESURÉ, PAS CHOISI : la médiane des actions était à 98
+        # caractères et le troisième quartile à 145. 160 laisse passer une
+        # phrase d'instruction longue et attrape les deux tiers de ce qui
+        # dépasse — 188 actions au moment où le champ est créé, et c'est
+        # exactement la liste de travail.
+        astuce = s.get("astuce")
+        if astuce is not None and not (isinstance(astuce, str) and astuce.strip()):
+            err.append(f"étape {s['id']} : `astuce:` vide ou non textuelle — "
+                       "l'omettre dit la même chose sans occuper l'écran")
+        if isinstance(astuce, str) and astuce.strip() == s.get("action", "").strip():
+            err.append(f"étape {s['id']} : `astuce:` répète l'action mot pour mot")
+        if len(s.get("action", "")) > MAX_ACTION:
+            warn.append(f"étape {s['id']} : action de {len(s['action'])} caractères "
+                        f"(seuil {MAX_ACTION}) — soit elle porte une explication qui "
+                        "devrait être dans `astuce:`, soit elle enchaîne plusieurs "
+                        "gestes qui devraient être plusieurs étapes")
+
         rat = s.get("rattrapage")
         if rat and not (rat.get("action") and rat.get("cout_min")):
             err.append(f"étape {s['id']} : `rattrapage` demande une `action` et un "

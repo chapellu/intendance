@@ -68,26 +68,29 @@ recipe:
     - {id: noix, name: cerneaux de noix fraîchement décortiqués, qty: 35, unit: g}
 
   steps:
+    - id: tailler-pommes
+      action: "Éplucher les pommes, retirer les trognons et les couper en cubes"
+      needs: []
+      uses: [pommes]
+      time_min: 6
+      kid:
+        age_min_months: 30
+        task: "couper les quartiers de pomme épluchés en cubes au couteau à bout rond"
     - id: pommes
-      action: "Éplucher les pommes, retirer les trognons, les couper en cubes, puis les faire dorer à la poêle dans deux cuillerées à soupe d'huile, en mélangeant de temps en temps, jusqu'à obtention d'une appétissante coloration des sucs ; réserver"
+      action: "Les faire dorer à la poêle dans deux cuillerées d'huile, en mélangeant de temps en temps, puis réserver"
+      astuce: "Jusqu'à une appétissante coloration des sucs."
       needs: [pan-fry]
-      uses: [pommes, huile-garniture]
-      time_min: 15
-      # Huit petites pommes en cubes tiennent sans peine dans la sauteuse. Ce qui
-      # ne tient pas, c'est l'unité : `contenance` se compte en parts de REPAS
-      # adulte, et les « 6/8 parts » d'une tarte sont des parts de DESSERT, qui
-      # occupent trois fois moins de volume. Le marqueur contourne le calcul ;
-      # la vraie réparation serait de ne pas mesurer deux choses différentes
-      # avec le même mot.
+      uses: [huile-garniture]
+      time_min: 9
       charge_partielle: true
-      kid: {age_min_months: 30, task: "couper les quartiers de pomme épluchés en cubes au couteau à bout rond"}
     - id: prechauffer
-      action: "Préchauffer le four à 180 °C, si possible en chaleur tournante — en statique, compter quelques minutes de cuisson en plus"
+      action: "Préchauffer le four à 180 °C, si possible en chaleur tournante"
+      astuce: "En statique, compter quelques minutes de cuisson en plus."
       needs: [bake]
       uses: []
       time_min: 1
       attended: false
-      parallel_with: pommes
+      parallel_with: "pommes"
     - id: pate
       action: "Mettre tous les ingrédients de la pâte dans le bol d'un robot et mixer par brèves impulsions, jusqu'à obtention d'une texture très grossièrement sablonneuse"
       needs: [chop-coarse]
@@ -97,13 +100,19 @@ recipe:
       # Le foyer n'a pas de robot : `chop-coarse` se replie sur le petit blender
       # du mixeur plongeur, et le compilateur l'ANNONCE. À comparer au gaufrier
       # de la p. 177, qui n'est pas une capacité et se replie donc en silence.
-    - id: etaler
-      action: "Sortir la pâte du robot, l'amalgamer entre les mains en une boule bien souple, puis l'étaler directement sur une plaque chemisée de papier cuisson et y redécouper un cercle ou un carré bien régulier à la roulette"
+    - id: amalgamer-tourte
+      action: "Sortir la pâte du robot et l'amalgamer entre les mains en une boule bien souple"
       needs: []
       uses: []
-      time_min: 8
+      time_min: 3
+    - id: etaler
+      action: "L'étaler sur une plaque chemisée et y redécouper un cercle ou un carré bien régulier à la roulette"
+      needs: []
+      uses: []
+      time_min: 5
     - id: crumble
-      action: "Mixer les chutes de pâte avec les noix et 3 cuillerées à soupe de farine, de façon à obtenir un crumble à consistance sablonneuse ; ajouter la quatrième cuillerée si besoin, tout dépend de la quantité de chutes"
+      action: "Mixer les chutes de pâte avec les noix et 3 cuillerées de farine, jusqu'à une consistance sablonneuse"
+      astuce: "Ajouter la quatrième cuillerée si besoin : tout dépend de la quantité de chutes."
       needs: [chop-coarse]
       uses: [noix, farine]
       time_min: 4
@@ -114,11 +123,12 @@ recipe:
       time_min: 4
       kid: {age_min_months: 30, task: "semer le crumble à la main sur les pommes"}
     - id: cuire
-      action: "Enfourner assez bas dans le four, afin que le dessous de la tourte soit cuit, et laisser cuire 30 minutes — si au bout de 15 minutes le dessus dore trop vite, passer en chaleur tournante par le bas, ou à défaut baisser le four à 150 °C"
+      action: "Enfourner assez bas et laisser cuire 30 minutes"
+      astuce: "Assez bas pour que le dessous soit cuit. Si au bout de 15 min le dessus dore trop vite, passer en chaleur tournante par le bas, ou baisser à 150 °C."
       needs: [bake]
       uses: []
       time_min: 30
-      attended: true        # la décision de mi-cuisson se prend en regardant
+      attended: true
     - id: servir
       action: "Savourer tiède ou à température ambiante"
       needs: []

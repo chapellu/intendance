@@ -64,11 +64,19 @@ recipe:
     - {id: cacao, name: cacao pour saupoudrer, qty: 2, unit: c. à s.}
 
   steps:
-    - id: premiere-couche
-      action: "Poser un cercle à pâtisserie d'environ 26 cm directement sur le plat de service et le tapisser d'une couche de biscuits très rapidement trempés dans le sirop, bien serrés"
+    - id: poser-cercle
+      action: "Poser un cercle à pâtisserie d'environ 26 cm directement sur le plat de service"
+      astuce: "Sur le plat de service, parce que ce gâteau-là ne se déplace plus une fois monté."
       needs: []
-      time_min: 8
-      kid: {age_min_months: 30, task: "tremper les biscuits et les ranger côte à côte"}
+      time_min: 2
+    - id: premiere-couche
+      action: "Le tapisser d'une couche de biscuits très rapidement trempés dans le sirop, bien serrés"
+      astuce: "Très rapidement : trempés trop longtemps, ils se défont à la pose."
+      needs: []
+      time_min: 6
+      kid:
+        age_min_months: 30
+        task: "tremper les biscuits et les ranger côte à côte"
       # « Très rapidement » : un biscuit qui boit trop s'effondre.
     - id: premiere-mousse
       action: "Verser la moitié de la mousse encore tiède dans le cercle"

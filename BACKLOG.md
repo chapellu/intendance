@@ -3030,6 +3030,114 @@ l'accessoire au moment où la main doit l'attraper.
 - **La quantité par étape** reste Workspace#58, inchangée : `uses` × le facteur
   que l'écran tient déjà.
 
+## Le geste, et le pourquoi du geste — T85 et T86
+
+**Dit le 15/09/2026, après T83–T84 :**
+
+> *« Tu n'es pas limité qu'à 4 étapes. Tu peux mieux faire en terme
+> d'accompagnement pour les recettes je suis sûr. Tu peux ajouter des tips,
+> etc… »*
+
+**MESURÉ AVANT DE PROPOSER, ET LA MESURE A RETOURNÉ LA DEMANDE.** Il ne manquait
+pas de conseils au corpus : **196 étapes sur 692 en portaient déjà un**, soudé à
+l'action après un « : » ou un « — ». *« Goûter et saler en fin de cuisson,
+jamais au début : la sauce réduit de moitié et le sel, lui, ne réduit pas. »* Il
+manquait un **endroit où les mettre** — et faute de cet endroit, le conseil
+atterrissait dans `action`, que le guide rend en **Caprasimo 27 px**. La moitié
+du gros titre de la capture d'écran n'était pas l'instruction.
+
+Et *« pas limité à 4 étapes »* était plus juste que la formule ne le laissait
+croire : le problème n'était pas que la bolognaise ait quatre étapes, c'est que
+**241 actions sur 692 enchaînaient trois gestes ou plus**. Médiane 98
+caractères, troisième quartile 145, **maximum 405**.
+
+- [x] **T85 — `astuce:`, un champ d'étape de premier rang.** Il traverse tout :
+      `verifier.py` le valide, `compile.py` lui donne sa ligne sous le geste,
+      `export_json.py` l'émet, le chargeur le lit, l'écran le rend.
+
+      **EN CORPS DE TEXTE, SUR UNE BARRE D'ACCENT — NI TITRE, NI ENCART.** Le
+      geste se lit à bout de bras et doit tenir en un coup d'œil ; le pourquoi
+      se lit après, une fois qu'on sait quoi faire, et n'a pas à peser le même
+      poids typographique. Pas un encart coloré non plus : un encart dit
+      « attention », et une astuce ne prévient de rien.
+
+      **`MAX_ACTION = 160` EST MESURÉ, PAS CHOISI**, et il a rougi sur 131
+      étapes le jour de sa création. C'est ce qui en faisait une liste de
+      travail et non un bruit de fond — la leçon de `verifier.py` sur les
+      chiffres imprimés sans seuil, appliquée à lui-même. Il est à zéro.
+
+- [x] **T86 — Le corpus entier repris : 744 étapes, 229 astuces.**
+
+      | | avant | après |
+      |---|---|---|
+      | étapes | 692 | **744** |
+      | astuces | 0 (196 soudées) | **229** |
+      | action, médiane | 98 car. | **80** |
+      | action, q3 | 145 car. | **107** |
+      | action, maximum | **405** car. | **160** |
+      | actions > 160 car. | 131 | **0** |
+      | plats à ≤ 4 étapes | 65 | **55** |
+
+      **LES QUINZE PLATS DU RÉPERTOIRE ONT EU DROIT À DE LA PROSE NEUVE**, et
+      eux seuls : c'est la « première fournée » que l'utilisateur a demandée —
+      ce qu'on cuisine vraiment. Pourquoi l'eau des poireaux doit partir dans la
+      poêle plutôt que dans la pâte, pourquoi le curry grille dans le gras chaud
+      et pas dans la sauce, pourquoi la louche d'eau des pâtes se prélève AVANT
+      d'égoutter. Sur les 123 recettes d'ouvrage, **rien n'a été inventé** : la
+      prose de l'autrice a été déplacée, jamais complétée. La frontière est
+      celle de la carte #26 — le procédé se réencode, la prose ne se réécrit
+      pas, et inventer des conseils par-dessus une recette signée serait la
+      franchir dans l'autre sens.
+
+      **La bolognaise passe de 4 à 6 étapes** et sa seconde étape — six lignes
+      de titre sur la capture — en fait deux, dont un « faire blondir » qui a
+      enfin ses trois minutes à lui.
+
+### Le garde, et les trois fois où il a eu raison
+
+`catalogue/garde_etapes.py` (`npm run etapes`) compare le corpus du disque à une
+référence git, recette par recette, et n'autorise que ce qui ne perd rien :
+minutes, minutes sans surveillance, attente, `uses`, `needs`, portes
+d'assaisonnement, rattrapages, gestes d'enfant, et **toute référence d'id** —
+`parallel_with`, `plan_b`, `baby_portion.depuis`, qui désignent des étapes par
+leur nom et cassent en silence quand on en renomme une.
+
+Il a arrêté la campagne trois fois, et **les trois fois la règle était trop
+raide plutôt que la modification fausse** — ce qui est la bonne façon pour un
+garde d'avoir tort :
+
+1. **Le préchauffage extrait.** Isoler un préchauffage d'une étape composite
+   fait monter les minutes sans surveillance. Assoupli d'une quantité mesurée :
+   45 étapes du corpus préchauffent, celles qui le font SEULES coûtent 1 ou
+   2 minutes, jamais plus. Au-delà, c'est une cuisson qui bascule.
+2. **Le geste d'enfant dédoublé.** *« Poser les cornichons puis appuyer sur la
+   tranche du dessus »* est deux gestes : quand l'étape se coupe, la tâche suit
+   des deux côtés. Un `kid` peut désormais se multiplier, jamais disparaître.
+3. **`uses:` oublié sur la moitié neuve d'un recoupage** — celui-là, c'est
+   `verifier.py` qui l'a dit, et sa règle était juste : dès qu'une étape porte
+   un `uses:`, la couverture doit être totale, sinon l'écran affiche une partie
+   des quantités en ayant l'air de toutes les afficher.
+
+Portes : typecheck, **648 tests** (3 nouveaux), build, **32 e2e** (1 nouveau),
+`catalogue:verifie` 0 erreur et **0 avertissement de longueur** (6 restent, tous
+antérieurs et sans rapport), `npm run etapes` 0 casse sur 138 recettes.
+
+### Ce que ce bloc laisse ouvert
+
+- **195 actions enchaînent encore trois liaisons ou plus** (241 avant). Ce ne
+  sont plus des paragraphes — aucune ne dépasse 160 caractères — mais « saler,
+  poivrer et mélanger » reste trois verbes sur une ligne. Les couper encore
+  produirait des étapes d'une demi-minute, et le seuil ne sait pas distinguer
+  un enchaînement de gestes d'une liste d'ingrédients. À juger à l'usage, pas à
+  la mesure.
+- **Les 123 recettes d'ouvrage n'ont pas d'astuce neuve**, par choix de licence
+  autant que de méthode. Si l'usage montre qu'il en manque, c'est un ticket à
+  part — et il faudra dire où passe la frontière entre « repère de cuisson » et
+  « prose de l'autrice ».
+- **`astuce` ne pilote rien.** Elle s'affiche et c'est tout : ni le score, ni
+  l'anticipation, ni le plan B ne la lisent. C'est délibéré — un no-op déclaré,
+  comme `saison` en T73 — mais ça mérite d'être écrit plutôt que découvert.
+
 ## Sortie
 
 **Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`

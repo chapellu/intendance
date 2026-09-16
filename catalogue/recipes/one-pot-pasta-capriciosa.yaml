@@ -57,11 +57,16 @@ recipe:
     # AUCUNE LIGNE DE SEL, ET C'EST LA RECETTE : voir l'en-tête de ce fichier.
 
   steps:
+    - id: tailler-opp
+      action: "Peler et émincer l'oignon, découper le jambon cru en fines lanières et la carotte en petits cubes"
+      needs: []
+      uses: [oignon, jambon-cru, carottes]
+      time_min: 5
     - id: revenir
-      action: "Peler et émincer l'oignon, découper le jambon cru en fines lanières et la carotte en petits cubes, puis faire revenir le tout environ 5 minutes à l'huile d'olive dans un grand faitout"
+      action: "Faire revenir le tout environ 5 minutes à l'huile d'olive dans un grand faitout"
       needs: [pan-fry]
-      uses: [oignon, jambon-cru, carottes, huile-olive]
-      time_min: 10
+      uses: [huile-olive]
+      time_min: 5
     - id: preparer
       action: "Pendant ce temps : peler et découper les gousses d'ail en petits bouts, couper les tomates et les olives en deux"
       needs: []
@@ -70,7 +75,8 @@ recipe:
       parallel_with: revenir
       kid: {age_min_months: 30, task: "couper les tomates cerise en deux au couteau à bout rond"}
     - id: assembler
-      action: "Hors du feu, jeter les pâtes sur les oignons dorés, ajouter les tomates, le basilic, l'ail, les olives et les câpres — SANS SALER —, verser l'eau froide et remettre sur feu moyen avec un couvercle"
+      action: "Hors du feu, jeter les pâtes sur les oignons dorés, ajouter tomates, basilic, ail, olives et câpres, verser l'eau froide et remettre sur feu moyen à couvert"
+      astuce: "SANS SALER : les câpres, les olives et le jambon salent déjà, et l'eau va réduire entièrement."
       needs: []
       uses: [pates, tomates-cerises, basilic, ail, olives-noires, capres, eau]
       time_min: 3
@@ -87,16 +93,13 @@ recipe:
       time_min: 3
       parallel_with: cuire
     - id: finir
-      action: "Quand le plat est cuit — il doit rester un peu de sauce au fond de la casserole — ajouter la mozzarella et bien mélanger pour la faire fondre entièrement"
+      action: "Ajouter la mozzarella et bien mélanger pour la faire fondre entièrement"
+      astuce: "Le plat est cuit quand il reste un peu de sauce au fond de la casserole — à sec, les pâtes ont bu de trop."
       needs: []
       uses: []
       time_min: 2
-      # L'autrice est formelle : s'il reste trop de sauce, ne PAS prolonger la
-      # cuisson, laisser reposer quelques minutes suffit à l'épaissir. L'attente
-      # n'est donc pas du confort, c'est la dernière étape de la recette.
       attente_min: 10
-      attente_raison: repos
-
+      attente_raison: "repos"
   # PAS DE PRÉLÈVEMENT BÉBÉ : tout cuit ensemble dans le même liquide dès la
   # troisième étape — pâtes, jambon cru, olives, câpres — et il n'existe aucun
   # instant où quoi que ce soit soit nature. Cas identique au pot-au-feu p. 182,

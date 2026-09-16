@@ -77,36 +77,51 @@ recipe:
     - {id: mures, name: mûres, qty: 200, unit: g}
 
   steps:
-    - id: appareil
-      action: "Mélanger la farine avec la poudre à lever dans un saladier, puis faire un puits ; ajouter le lait, les œufs, le rhum, le sucre et l'huile, et bien mélanger au fouet"
+    - id: melanger-secs-gaufres
+      action: "Mélanger la farine avec la poudre à lever dans un saladier, puis faire un puits"
       needs: []
-      uses: [farine-complete, poudre-a-lever, lait-soja-vanille, oeufs, rhum, sucre-vanille, huile-tournesol]
-      time_min: 6
+      uses: [farine-complete, poudre-a-lever]
+      time_min: 2
+    - id: appareil
+      action: "Ajouter le lait, les œufs, le rhum, le sucre et l'huile, et bien mélanger au fouet"
+      needs: []
+      uses: [lait-soja-vanille, oeufs, rhum, sucre-vanille, huile-tournesol]
+      time_min: 4
     - id: imbiber
-      action: "Découper le pain en petits cubes d'environ 2 cm, les mettre dans le saladier, mélanger grossièrement à la cuillère de bois, puis laisser reposer pour imbiber le pain — 1 h si le pain est un peu rassis, jusqu'à 4 h s'il est très dur"
+      action: "Découper le pain en cubes d'environ 2 cm, les mettre dans le saladier, mélanger grossièrement, puis laisser reposer"
+      astuce: "1 h si le pain est un peu rassis, jusqu'à 4 h s'il est très dur."
       needs: []
       uses: [pain-rassis-ing]
       time_min: 4
       attente_min: 60
-      attente_raison: repos
+      attente_raison: "repos"
     - id: malaxer
-      action: "Malaxer la pâte avec les mains, en écrasant bien les gros morceaux de pain — inutile de mixer, il peut rester de tout petits morceaux qui « boiront » le jus des mûres"
+      action: "Malaxer la pâte avec les mains, en écrasant bien les gros morceaux de pain"
+      astuce: "Inutile de mixer : les tout petits morceaux qui restent « boiront » le jus des mûres."
       needs: []
       uses: []
       time_min: 5
-      kid: {age_min_months: 30, task: "écraser les morceaux de pain à la main dans le saladier"}
+      kid:
+        age_min_months: 30
+        task: "écraser les morceaux de pain à la main dans le saladier"
     - id: mures
       action: "Ajouter les mûres et mélanger délicatement à la cuillère"
       needs: []
       uses: [mures]
       time_min: 2
-    - id: cuire
-      action: "Faire chauffer un gaufrier, l'huiler assez généreusement au pinceau, verser un peu de pâte et faire cuire jusqu'à ce que la gaufre soit bien dorée et se décolle ; renouveler jusqu'à épuisement de la pâte, et savourer aussitôt"
+    - id: chauffer-gaufrier
+      action: "Faire chauffer un gaufrier et l'huiler assez généreusement au pinceau"
       needs: [gaufrier]
       uses: [huile-tournesol]
-      time_min: 25
+      time_min: 3
       attended: true
-
+    - id: cuire
+      action: "Verser un peu de pâte et cuire jusqu'à ce que la gaufre soit dorée et se décolle, puis renouveler jusqu'à épuisement"
+      astuce: "À savourer aussitôt : une gaufre attend mal."
+      needs: [gaufrier]
+      uses: []
+      time_min: 22
+      attended: true
   # PAS DE PRÉLÈVEMENT BÉBÉ : 2 c. à s. de rhum ambré dans une pâte cuite
   # quelques minutes seulement — bien moins que l'heure du clafoutis p. 115 —
   # plus 20 g de sucre vanillé. Septième plat du corpus écarté pour une raison

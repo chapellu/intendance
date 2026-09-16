@@ -61,11 +61,18 @@ recipe:
     # la main » : aucune capacité déclarée, comme au clafoutis p. 115. Déclarer
     # `blend-small` ferait résoudre vers le petit blender du foyer, qui salirait
     # un bol de plus pour un fouet de trois minutes.
-    - id: sauce
-      action: "Mélanger le jaune d'œuf avec la moutarde, le sel et le vinaigre ; tout en fouettant bien, ajouter l'huile en filet jusqu'à obtention d'une mayonnaise, puis ajouter le yaourt en mélangeant juste ce qu'il faut, pas plus"
+    - id: mayonnaise
+      action: "Mélanger le jaune d'œuf avec la moutarde, le sel et le vinaigre, puis ajouter l'huile en filet sans cesser de fouetter"
+      astuce: "En filet, vraiment : versée d'un coup, la mayonnaise ne prend pas."
       needs: []
-      uses: [oeufs, moutarde, sel, vinaigre, huile-tournesol, yaourt-brebis]
-      time_min: 8
+      uses: [oeufs, moutarde, sel, vinaigre, huile-tournesol]
+      time_min: 6
+    - id: sauce
+      action: "Ajouter le yaourt en mélangeant juste ce qu'il faut"
+      astuce: "Juste ce qu'il faut, pas plus : trop travaillée, la sauce se délie."
+      needs: []
+      uses: [yaourt-brebis]
+      time_min: 2
     - id: emincer
       action: "Émincer finement les légumes"
       needs: []
@@ -78,13 +85,11 @@ recipe:
       uses: []
       time_min: 3
     - id: servir
-      action: "Servir aussitôt pour une texture encore croquante, ou laisser reposer de 2 à 24 heures au frais pour attendrir un peu les légumes — tout dépend des goûts"
+      action: "Servir aussitôt, pour une texture encore croquante"
+      astuce: "Ou laisser reposer de 2 à 24 heures au frais pour attendrir un peu les légumes — tout dépend des goûts."
       needs: []
       uses: []
       time_min: 1
-      # PAS d'`attente_min` : voir l'en-tête. L'attente est un choix de texture,
-      # pas une contrainte, et le modèle ne sait déclarer que l'obligatoire.
-
   # PAS DE PRÉLÈVEMENT BÉBÉ, POUR DEUX RAISONS QUI SE CUMULENT. Le sel est dans
   # la sauce dès le premier geste, donc aucun légume assaisonné n'est jamais
   # nature. Et surtout la sauce contient un JAUNE D'ŒUF CRU, déconseillé avant

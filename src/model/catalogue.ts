@@ -180,6 +180,7 @@ function etape(v: unknown, ou: string): Etape {
     minutes: nombre(o["minutes"], `${ou}.minutes`),
     needs: listeDeTextes(o["needs"] ?? [], `${ou}.needs`),
     surveille: booleen(o["surveille"], `${ou}.surveille`),
+    astuce: texteOuNull(o["astuce"], `${ou}.astuce`),
     // Pas de `?? []` ici, contrairement à `needs` : l'absence est une donnée.
     // Voir le commentaire de `Etape.uses`.
     uses: o["uses"] == null ? null : listeDeTextes(o["uses"], `${ou}.uses`),

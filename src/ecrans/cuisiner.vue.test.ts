@@ -25,7 +25,7 @@ const catalogue: Catalogue = lireCatalogue(
 // `uses: null` et non `[]` : ce helper ne dit rien des ingrédients, il ne
 // prétend pas qu'il n'y en a aucun. Voir `Etape.uses`.
 const etape = (needs: string[], minutes = 0): Etape => ({
-  id: "e", action: "", minutes, needs, surveille: true,
+  id: "e", action: "", minutes, needs, surveille: true, astuce: null,
   uses: null, enParallele: null, attente: null, attenteRaison: null,
   attenteSouple: true, rattrapage: null,
   enfant: null, enfantDes: null, porteAssaisonnement: false,
@@ -474,5 +474,33 @@ describe("l'outil de l'étape", () => {
     expect(outilDe(foyer, etape(["simmer"]))!.texte).toMatch(/\d/);
     expect(outilDe(foyer, etape(["simmer-large"]))!.texte).toMatch(/\d/);
     expect(outilDe(foyer, etape(["pan-fry"]))!.texte).toMatch(/\d/);
+  });
+});
+
+/* ─────────────────────────────────────────────────── T85 — le pourquoi du geste */
+
+describe("l'astuce", () => {
+  const steps = catalogue.plats.flatMap((p) => p.steps);
+
+  test("le corpus en porte, et elles traversent le chargeur", () => {
+    const avec = steps.filter((e) => e.astuce !== null);
+    expect(avec.length).toBeGreaterThan(0);
+    for (const e of avec) expect(e.astuce!.length).toBeGreaterThan(0);
+  });
+
+  // LA PROMESSE DU TICKET, ET ELLE EST VÉRIFIABLE : une astuce est le POURQUOI,
+  // pas une seconde copie du geste. Si elle répétait l'action, elle ne ferait
+  // qu'allonger l'écran — c'est exactement l'état d'avant, avec une ligne de
+  // plus au lieu d'une phrase soudée.
+  test("elle ne répète jamais l'action", () => {
+    for (const e of steps) if (e.astuce) expect(e.astuce).not.toBe(e.action);
+  });
+
+  // Le geste doit tenir en un coup d'œil : c'est ce que `MAX_ACTION` tient
+  // côté corpus, et ce test est son écho côté app — si l'export laissait
+  // repasser une action-fleuve, le titre redeviendrait un paragraphe.
+  test("aucune action du corpus ne redevient un paragraphe", () => {
+    const longues = steps.filter((e) => e.action.length > 160);
+    expect(longues.map((e) => e.action.slice(0, 60))).toEqual([]);
   });
 });

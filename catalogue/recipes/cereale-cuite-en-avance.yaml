@@ -58,15 +58,16 @@ recipe:
       needs: []
       time_min: 2
     - id: cuire-le-grain
-      action: "Cuire de 25 à 40 min selon la céréale, en goûtant pour juger — viser un grain un tantinet TROP cuit plutôt que pas assez, car il raffermit une fois passé au frais"
+      action: "Cuire de 25 à 40 min selon la céréale, en goûtant pour juger"
+      astuce: "Viser un grain un tantinet TROP cuit plutôt que pas assez : il raffermit une fois passé au frais."
       needs: [simmer-large]
       time_min: 40
       attended: false
     - id: egoutter-huiler
-      action: "Égoutter, ajouter un filet d'huile d'olive — c'est ce qui empêche le grain de se coller en bloc au frigo — puis conserver au frais"
+      action: "Égoutter, ajouter un filet d'huile d'olive, puis conserver au frais"
+      astuce: "C'est l'huile qui empêche le grain de se coller en bloc au frigo."
       needs: []
       time_min: 4
-
   emits:
     - kind: base
       type: cereale-cuite

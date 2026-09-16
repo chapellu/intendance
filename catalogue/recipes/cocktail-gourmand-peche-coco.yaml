@@ -52,7 +52,8 @@ recipe:
       needs: []
       time_min: 4
     - id: reduire
-      action: "Porter à ébullition puis cuire 5 min à tout petit feu SANS COUVERCLE — c'est l'étape qui infuse la vanille et évapore l'essentiel de l'alcool ; couvrir la manquerait"
+      action: "Porter à ébullition puis cuire 5 min à tout petit feu, SANS COUVERCLE"
+      astuce: "C'est l'étape qui infuse la vanille et évapore l'essentiel de l'alcool ; couvrir la manquerait."
       needs: [simmer]
       time_min: 5
       attended: true

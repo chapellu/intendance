@@ -61,7 +61,7 @@ recipe:
       time_min: 1
       attended: false
     - id: garnir-pizza
-      action: "Étaler la pâte en disque d'environ 25 cm sur un papier huilé et fariné, étaler la ratatouille, ajouter le poulet en morceaux, les olives, les câpres et le fromage"
+      action: "Étaler la pâte en disque d'environ 25 cm sur un papier huilé et fariné, puis garnir de ratatouille, poulet en morceaux, olives, câpres et fromage"
       needs: []
       time_min: 8
     - id: saupoudrer-pizza
@@ -70,11 +70,12 @@ recipe:
       time_min: 1
       seasoning_gate: true
     - id: relever-pizza
-      action: "Laisser lever encore une vingtaine de minutes — facultatif, mais c'est mieux"
+      action: "Laisser lever encore une vingtaine de minutes"
+      astuce: "Facultatif, mais c'est mieux."
       needs: []
       time_min: 1
-      attente_min: 20
       attended: false
+      attente_min: 20
     - id: cuire-pizza
       action: "Enfourner 15 min, puis laisser tiédir avant de mettre au frais"
       needs: [bake]

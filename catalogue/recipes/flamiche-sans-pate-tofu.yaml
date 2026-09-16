@@ -57,11 +57,11 @@ recipe:
       time_min: 4
       seasoning_gate: true
     - id: cuire-flamiche
-      action: "Cuire 30 min à 180 °C si la flamiche cuit seule — ou 50 min à 150 °C SANS préchauffage si elle partage le four avec les terrines de la p. 75"
+      action: "Cuire 30 min à 180 °C"
+      astuce: "Ou 50 min à 150 °C SANS préchauffage si la flamiche partage le four avec les terrines de la p. 75."
       needs: [bake]
       time_min: 30
       attended: false
-
   baby_portion:
     take: "2 c. à s. de poêlée de légumes, avant salage"
     prep: "mixer avec un peu de lait d'avoine"

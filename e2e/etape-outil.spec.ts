@@ -41,6 +41,11 @@ const plat = catalogue.plats.find(
 const geste = plat.steps[0]!;
 const cuisson = plat.steps[1]!;
 
+/** Un plat dont la PREMIÈRE étape porte une astuce — 229 étapes sur 744 en ont
+ *  une, donc le corpus en fournit toujours un. Dérivé et jamais nommé à la
+ *  main, même parti que ci-dessus. */
+const commente = catalogue.plats.find((p) => p.steps[0]?.astuce)!;
+
 async function ouvrirLeGuide(page: Page): Promise<void> {
   await page.goto(`/#/cuisine/cuisiner/${aujourdhuiISO()}/diner/${plat.id}`);
   await expect(page.locator(".co-etape")).toBeVisible({ timeout: 30_000 });
@@ -70,4 +75,18 @@ test("la cuisson qui suit porte son minuteur ET son récipient", async ({ page }
 
   await expect(page.locator(".co-minuteur")).toBeVisible();
   await expect(page.locator(".co-outil")).toContainText(outilDe(foyer, cuisson)!.texte);
+});
+
+test("le pourquoi du geste se lit sous le geste, jamais dans le titre", async ({ page }) => {
+  await page.goto(`/#/cuisine/cuisiner/${aujourdhuiISO()}/diner/${commente.id}`);
+  await expect(page.locator(".co-etape")).toBeVisible({ timeout: 30_000 });
+
+  const astuce = commente.steps[0]!.astuce!;
+  await expect(page.locator(".co-astuce")).toHaveText(astuce);
+
+  // LA MOITIÉ QUI COMPTE, ET LA RAISON D'ÊTRE DU CHAMP. Avant T85 cette phrase
+  // vivait DANS `action`, donc dans le `.geste` — rendu en Caprasimo 27 px. Un
+  // titre de six lignes dont la moitié n'est pas l'instruction est exactement
+  // ce que la capture du 15/09 montrait.
+  await expect(page.locator(".co-etape .geste")).not.toContainText(astuce);
 });

@@ -62,34 +62,38 @@ recipe:
     - {id: fleur-de-sel, name: fleur de sel, qty: 1, unit: pincée, seasoning: true}
 
   steps:
-    - id: fondre-chocolat
-      action: "Chauffer la crème avec la vanille, la fleur de sel et l'huile de coco en surveillant que le fond n'attache pas, puis casser le chocolat dedans et le faire fondre hors du feu en mélangeant"
+    - id: chauffer-creme
+      action: "Chauffer la crème avec la vanille, la fleur de sel et l'huile de coco"
+      astuce: "En surveillant que le fond n'attache pas."
       needs: [simmer]
-      time_min: 6
+      time_min: 3
+      attended: true
+    - id: fondre-chocolat
+      action: "Casser le chocolat dedans et le faire fondre hors du feu, en mélangeant"
+      needs: []
+      time_min: 3
       attended: true
     - id: monter-en-neige
-      action: "Pendant ce temps : monter en neige les blancs d'œufs (ou le jus de pois chiches) en ajoutant le sucre en trois fois ; dans la version aux œufs, les jaunes vont dans le chocolat"
+      action: "Pendant ce temps : monter en neige les blancs d'œufs (ou le jus de pois chiches), en ajoutant le sucre en trois fois"
+      astuce: "Dans la version aux œufs, les jaunes vont dans le chocolat."
       needs: [blend-smooth]
       time_min: 6
-      parallel_with: fondre-chocolat
-      kid: {age_min_months: 30, task: "verser le sucre en trois fois pendant que ça monte"}
+      parallel_with: "fondre-chocolat"
+      kid:
+        age_min_months: 30
+        task: "verser le sucre en trois fois pendant que ça monte"
     - id: incorporer
       action: "Incorporer la neige au chocolat fondu à la spatule souple, en soulevant le mélange d'un mouvement tournant, sans le casser"
       needs: []
       time_min: 3
     - id: mettre-au-frais
-      action: "Verser aussitôt dans des petits pots et mettre au frais — au moins 4 h"
+      action: "Verser aussitôt dans des petits pots et mettre au frais"
+      astuce: "Au moins 4 h."
       needs: []
       time_min: 2
       attended: false
       attente_min: 240
-      attente_raison: repos
-      # 4 h de prise : la mousse se fait le matin pour le goûter, pas à 16 h.
-      # C'est aussi le plat qui porte les deux bouts de l'axe en même temps —
-      # sa PROPRE attente est de 4 h, et le gâteau de la p. 61 la réclame dans
-      # les 2 h, avant qu'elle prenne. Les deux contraintes sont vraies et ne
-      # se contredisent pas : ce sont deux usages différents du même bol.
-
+      attente_raison: "repos"
   # PAS DE `baby_portion` : chocolat noir à 70 % et sucre, plus des blancs
   # d'œufs crus dans une des deux versions. Ni l'un ni l'autre pour 12 mois.
 

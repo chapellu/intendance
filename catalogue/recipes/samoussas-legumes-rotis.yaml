@@ -76,7 +76,8 @@ recipe:
       time_min: 2
       attended: false
     - id: tailler-courgettes
-      action: "Couper les courgettes en tranches d'environ 8 mm, les brasser avec 2 c. à s. d'huile d'olive et un peu de sel, puis les étaler sur la lèchefrite en les serrant — elles peuvent se chevaucher un peu pour laisser la place aux autres légumes"
+      action: "Couper les courgettes en tranches d'environ 8 mm, les brasser avec 2 c. à s. d'huile d'olive et un peu de sel, puis les étaler sur la lèchefrite"
+      astuce: "En les serrant : elles peuvent se chevaucher un peu pour laisser la place aux autres légumes."
       needs: []
       time_min: 8
     - id: tailler-aubergine
@@ -89,7 +90,8 @@ recipe:
       time_min: 5
       kid: {age_min_months: 30, task: "ranger les tranches de tomate sur la plaque"}
     - id: rotir
-      action: "Enfourner environ 35 min, jusqu'à ce que les légumes soient bien dorés et qu'il ne reste plus d'eau au fond de la lèchefrite"
+      action: "Enfourner environ 35 min"
+      astuce: "Jusqu'à ce que les légumes soient bien dorés et qu'il ne reste plus d'eau au fond de la lèchefrite."
       needs: [bake]
       time_min: 35
       attended: false
@@ -100,7 +102,8 @@ recipe:
       needs: [chop-coarse]
       time_min: 5
     - id: garniture-poivron
-      action: "Ôter la peau du poivron — elle se retire toute seule après cuisson — et le mixer avec la moitié des tomates et la tomme de brebis, puis réserver"
+      action: "Ôter la peau du poivron et le mixer avec la moitié des tomates et la tomme de brebis, puis réserver"
+      astuce: "La peau se retire toute seule après cuisson."
       needs: [chop-coarse]
       time_min: 5
     - id: garniture-aubergine
@@ -110,11 +113,18 @@ recipe:
       # TROIS mixages successifs. Le foyer n'a que le petit bol du mixeur
       # plongeur : la chaîne `chop-coarse` bascule dessus et il faut le laver
       # entre chaque garniture. C'est la friction réelle de cette recette.
-    - id: plier
-      action: "Couper chaque feuille de brick en deux, replier la partie bombée pour obtenir un long rectangle, poser un peu de farce au bout et rabattre en triangle par un mouvement de balancier gauche-droite, en suivant le bord de la feuille comme un rail ; rentrer le bout restant dans un pli ou le replier dessous"
+    - id: preparer-bandes
+      action: "Couper chaque feuille de brick en deux et replier la partie bombée pour obtenir un long rectangle"
       needs: []
-      time_min: 20
-      kid: {age_min_months: 30, task: "poser la cuillerée de farce au bout de chaque bande"}
+      time_min: 6
+    - id: plier
+      action: "Poser un peu de farce au bout et rabattre en triangle par un mouvement de balancier gauche-droite"
+      astuce: "En suivant le bord de la feuille comme un rail. Le bout restant se rentre dans un pli, ou se replie dessous."
+      needs: []
+      time_min: 14
+      kid:
+        age_min_months: 30
+        task: "poser la cuillerée de farce au bout de chaque bande"
     - id: huiler
       action: "Ranger les samoussas sur une plaque de cuisson et les huiler au pinceau"
       needs: []

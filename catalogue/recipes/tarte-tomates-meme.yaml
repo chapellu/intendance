@@ -50,7 +50,8 @@ recipe:
       time_min: 1
       attended: false
     - id: foncer
-      action: "Étaler la pâte et la déposer dans un moule à tarte de 24 cm bien fariné — jamais sur un papier cuisson, qui retient l'humidité et détrempe le fond"
+      action: "Étaler la pâte et la déposer dans un moule à tarte de 24 cm bien fariné"
+      astuce: "Jamais sur un papier cuisson, qui retient l'humidité et détrempe le fond."
       needs: []
       time_min: 6
     - id: garnir

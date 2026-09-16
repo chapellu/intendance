@@ -47,25 +47,31 @@ recipe:
       time_min: 5
       kid: {age_min_months: 30, task: "effeuiller les brins de thym dans le saladier"}
     - id: amalgamer
-      action: "Amalgamer du bout des doigts et s'arrêter dès que la pâte tient : moins elle est travaillée, plus les cookies seront sablés"
+      action: "Amalgamer du bout des doigts et s'arrêter dès que la pâte tient"
+      astuce: "Moins elle est travaillée, plus les cookies seront sablés."
       needs: []
       time_min: 2
-      kid: {age_min_months: 30, task: "mélanger la pâte avec les mains"}
+      kid:
+        age_min_months: 30
+        task: "mélanger la pâte avec les mains"
     - id: former
-      action: "Former des boules de 30 g, les aplatir sur une plaque chemisée jusqu'à 7 mm d'épaisseur environ — plus elles sont fines, plus les cookies croustillent"
+      action: "Former des boules de 30 g, les aplatir sur une plaque chemisée jusqu'à 7 mm d'épaisseur environ"
+      astuce: "Plus elles sont fines, plus les cookies croustillent."
       needs: [weigh]
       time_min: 5
-      kid: {age_min_months: 30, task: "rouler les boules de pâte et les écraser"}
+      kid:
+        age_min_months: 30
+        task: "rouler les boules de pâte et les écraser"
     - id: cuire
       action: "Enfourner 15 à 20 min en surveillant, jusqu'à belle coloration"
       needs: [bake]
       time_min: 17
       attended: false
     - id: refroidir
-      action: "Débarrasser aussitôt sur une grille — pas sur le papier cuisson, qui garderait l'humidité et ramollirait les cookies"
+      action: "Débarrasser aussitôt sur une grille"
+      astuce: "Pas sur le papier cuisson, qui garderait l'humidité et ramollirait les cookies."
       needs: []
       time_min: 1
-
   # PAS DE `baby_portion` ET C'EST STRUCTUREL : la fleur de sel est dans la pâte,
   # pas ajoutée en fin de cuisson. Aucun prélèvement non salé n'est possible sans
   # faire une seconde pâte. Voir la note du README sur le `seasoning_gate`.

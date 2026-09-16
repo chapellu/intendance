@@ -59,7 +59,8 @@ recipe:
       needs: [chop-coarse]
       time_min: 5
     - id: mixer-pois-chiches
-      action: "Ajouter les pois chiches et la farine, puis mixer par brèves impulsions en gardant des petits morceaux — réduits en purée lisse, l'appareil devient trop souple et les boules ne tiennent plus"
+      action: "Ajouter les pois chiches et la farine, puis mixer par brèves impulsions en gardant des petits morceaux"
+      astuce: "Réduits en purée lisse, l'appareil devient trop souple et les boules ne tiennent plus."
       needs: [chop-coarse]
       time_min: 4
     - id: faconner
@@ -68,7 +69,8 @@ recipe:
       time_min: 10
       kid: {age_min_months: 30, task: "rouler les boules dans l'assiette de farine"}
     - id: poeler
-      action: "Chauffer un peu d'huile dans une poêle et cuire les falafels quelques minutes en les retournant de temps en temps, jusqu'à ce qu'ils soient bien dorés"
+      action: "Chauffer un peu d'huile dans une poêle et cuire les falafels en les retournant de temps en temps"
+      astuce: "Jusqu'à ce qu'ils soient bien dorés sur toutes leurs faces."
       needs: [pan-fry]
       time_min: 18
       attended: true
