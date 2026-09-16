@@ -171,6 +171,13 @@ def main():
                 {"id": s.get("id"), "action": s.get("action"),
                  "minutes": s.get("time_min"), "needs": s.get("needs", []),
                  "surveille": s.get("attended", True),
+                 # LE POURQUOI DU GESTE, SÉPARÉ DU GESTE. 196 étapes le
+                 # portaient soudé à `action`, après un « : » ou un « — »,
+                 # faute d'un champ où le mettre — et l'écran de cuisine rend
+                 # `action` en gros titre, donc la moitié du titre n'était pas
+                 # l'instruction. `null` quand l'étape n'a rien à ajouter : se
+                 # taire est une réponse, remplir serait un ornement.
+                 "astuce": s.get("astuce"),
                  # Ce que CETTE étape réclame, en références de ligne. Sans ce
                  # lien un écran de cuisson guidée ne peut pas montrer les
                  # quantités au moment où elles servent : il renvoie à la liste

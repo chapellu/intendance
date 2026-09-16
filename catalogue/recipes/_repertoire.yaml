@@ -41,25 +41,40 @@ recipes:
     steps:
       - id: tailler
         action: "Émincer les oignons et l'ail, tailler les carottes en petits dés"
+        astuce: "Les dés de carotte plus petits que l'oignon : la carotte est dure et met deux fois plus longtemps à fondre."
         needs: [chop-coarse]
-        time_min: 8
         uses: [oignon, ail, carottes]
+        time_min: 8
+      - id: suer
+        action: "Chauffer l'huile à la cocotte, y faire blondir oignons et ail"
+        astuce: "Blonds, pas dorés : l'ail qui brunit rendra toute la sauce amère, et elle a encore quarante minutes de cuisson devant elle."
+        needs: [simmer-large]
+        uses: [huile-olive]
+        time_min: 3
       - id: revenir
-        action: "Chauffer l'huile à la cocotte, faire blondir oignons et ail, ajouter les carottes puis le bœuf haché en l'écrasant à la cuillère jusqu'à ce qu'il perde sa couleur"
+        action: "Ajouter les carottes, puis le bœuf haché en l'écrasant à la cuillère jusqu'à ce qu'il perde sa couleur"
+        astuce: "L'écraser tant qu'il est cru : une fois saisi en blocs, il ne se défait plus et la sauce reste grumeleuse."
         needs: [simmer-large]
-        time_min: 10
-        uses: [huile-olive, boeuf-hache]
-      - id: mijoter
-        action: "Verser les tomates pelées, les écraser à la cuillère, porter à frémissement puis laisser mijoter à découvert — c'est en réduisant qu'elle devient une sauce"
+        uses: [boeuf-hache]
+        time_min: 7
+      - id: tomates
+        action: "Verser les tomates pelées, les écraser à la cuillère et porter à frémissement"
         needs: [simmer-large]
-        time_min: 40
-        attended: false
         uses: [tomates-pelees]
+        time_min: 3
+      - id: mijoter
+        action: "Laisser mijoter à découvert"
+        uses: []
+        astuce: "À découvert, et c'est tout l'enjeu : c'est en réduisant qu'elle devient une sauce. Couverte, elle reste une soupe de tomate."
+        needs: [simmer-large]
+        time_min: 37
+        attended: false
       - id: saler
-        action: "Goûter et saler en fin de cuisson, jamais au début : la sauce réduit de moitié et le sel, lui, ne réduit pas"
+        action: "Goûter et saler en fin de cuisson"
+        astuce: "Jamais au début : la sauce réduit de moitié et le sel, lui, ne réduit pas."
         needs: []
-        time_min: 2
         uses: [sel]
+        time_min: 2
     emits:
       - kind: base
         type: sauce-bolognaise

@@ -25,7 +25,7 @@ const catalogue: Catalogue = lireCatalogue(
 // `uses: null` et non `[]` : ce helper ne dit rien des ingrédients, il ne
 // prétend pas qu'il n'y en a aucun. Voir `Etape.uses`.
 const etape = (needs: string[], minutes = 0): Etape => ({
-  id: "e", action: "", minutes, needs, surveille: true,
+  id: "e", action: "", minutes, needs, surveille: true, astuce: null,
   uses: null, enParallele: null, attente: null, attenteRaison: null,
   attenteSouple: true, rattrapage: null,
   enfant: null, enfantDes: null, porteAssaisonnement: false,

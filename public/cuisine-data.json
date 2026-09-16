@@ -323,6 +323,7 @@
       "chop-coarse"
      ],
      "surveille": true,
+     "astuce": "Les dés de carotte plus petits que l'oignon : la carotte est dure et met deux fois plus longtemps à fondre.",
      "uses": [
       "oignon",
       "ail",
@@ -338,15 +339,36 @@
      "porteAssaisonnement": false
     },
     {
-     "id": "revenir",
-     "action": "Chauffer l'huile à la cocotte, faire blondir oignons et ail, ajouter les carottes puis le bœuf haché en l'écrasant à la cuillère jusqu'à ce qu'il perde sa couleur",
-     "minutes": 10,
+     "id": "suer",
+     "action": "Chauffer l'huile à la cocotte, y faire blondir oignons et ail",
+     "minutes": 3,
      "needs": [
       "simmer-large"
      ],
      "surveille": true,
+     "astuce": "Blonds, pas dorés : l'ail qui brunit rendra toute la sauce amère, et elle a encore quarante minutes de cuisson devant elle.",
      "uses": [
-      "huile-olive",
+      "huile-olive"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "revenir",
+     "action": "Ajouter les carottes, puis le bœuf haché en l'écrasant à la cuillère jusqu'à ce qu'il perde sa couleur",
+     "minutes": 7,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": true,
+     "astuce": "L'écraser tant qu'il est cru : une fois saisi en blocs, il ne se défait plus et la sauce reste grumeleuse.",
+     "uses": [
       "boeuf-hache"
      ],
      "enParallele": null,
@@ -359,13 +381,14 @@
      "porteAssaisonnement": false
     },
     {
-     "id": "mijoter",
-     "action": "Verser les tomates pelées, les écraser à la cuillère, porter à frémissement puis laisser mijoter à découvert — c'est en réduisant qu'elle devient une sauce",
-     "minutes": 40,
+     "id": "tomates",
+     "action": "Verser les tomates pelées, les écraser à la cuillère et porter à frémissement",
+     "minutes": 3,
      "needs": [
       "simmer-large"
      ],
-     "surveille": false,
+     "surveille": true,
+     "astuce": null,
      "uses": [
       "tomates-pelees"
      ],
@@ -379,11 +402,31 @@
      "porteAssaisonnement": false
     },
     {
+     "id": "mijoter",
+     "action": "Laisser mijoter à découvert",
+     "minutes": 37,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": false,
+     "astuce": "À découvert, et c'est tout l'enjeu : c'est en réduisant qu'elle devient une sauce. Couverte, elle reste une soupe de tomate.",
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
      "id": "saler",
-     "action": "Goûter et saler en fin de cuisson, jamais au début : la sauce réduit de moitié et le sel, lui, ne réduit pas",
+     "action": "Goûter et saler en fin de cuisson",
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": "Jamais au début : la sauce réduit de moitié et le sel, lui, ne réduit pas.",
      "uses": [
       "sel"
      ],
@@ -492,6 +535,7 @@
       "boil"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -510,6 +554,7 @@
       "simmer"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "sauce-bolognaise-ing"
      ],
@@ -530,6 +575,7 @@
       "boil"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "pates"
      ],
@@ -548,6 +594,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "fromage-rape"
      ],
@@ -697,6 +744,7 @@
       "bake"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "farine",
       "lait"
@@ -718,6 +766,7 @@
       "gratin-vessel"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "sauce-bolognaise-ing",
       "pates-lasagne"
@@ -739,6 +788,7 @@
       "gratin"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [
       "fromage-rape"
      ],
@@ -897,6 +947,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "oignon",
       "courgettes"
@@ -918,6 +969,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "huile-olive"
      ],
@@ -938,6 +990,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "gnocchis"
      ],
@@ -956,6 +1009,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "fromage-rape"
      ],
@@ -1071,6 +1125,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -1087,6 +1142,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "poulet",
       "huile-olive",
@@ -1107,6 +1163,7 @@
      "minutes": 10,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "pommes-de-terre",
       "oignon"
@@ -1128,6 +1185,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -1272,6 +1330,7 @@
      "minutes": 8,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "poivron",
       "oignon"
@@ -1293,6 +1352,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -1311,6 +1371,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "tortillas"
      ],
@@ -1331,6 +1392,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "poulet-cuit-ing"
      ],
@@ -1349,6 +1411,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "creme",
       "fromage-rape"
@@ -1477,6 +1540,7 @@
       "simmer-large"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [
       "carcasse-ing"
      ],
@@ -1495,6 +1559,7 @@
      "minutes": 8,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "carottes",
       "poireau"
@@ -1514,6 +1579,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -1532,6 +1598,7 @@
       "simmer-large"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -1550,6 +1617,7 @@
       "simmer-large"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "vermicelles"
      ],
@@ -1703,6 +1771,7 @@
       "boil"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [
       "riz"
      ],
@@ -1723,6 +1792,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "oignon",
       "curry"
@@ -1744,6 +1814,7 @@
       "simmer"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "tomates-pelees",
       "lait-coco"
@@ -1765,6 +1836,7 @@
       "simmer"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "pois-chiches"
      ],
@@ -1880,6 +1952,7 @@
       "boil"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [
       "riz"
      ],
@@ -1900,6 +1973,7 @@
       "steam"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "brocoli"
      ],
@@ -1920,6 +1994,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "saumon"
      ],
@@ -1938,6 +2013,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "citron"
      ],
@@ -2052,6 +2128,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "poireau"
      ],
@@ -2070,6 +2147,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "oeufs",
       "creme"
@@ -2091,6 +2169,7 @@
       "bake"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "pate-brisee"
      ],
@@ -2109,6 +2188,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "fromage-rape"
      ],
@@ -2129,6 +2209,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -2263,6 +2344,7 @@
       "boil"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [
       "riz"
      ],
@@ -2284,6 +2366,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "oignon",
       "poivron"
@@ -2305,6 +2388,7 @@
       "simmer"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "tomates-pelees"
      ],
@@ -2325,6 +2409,7 @@
       "simmer"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "haricots-rouges",
       "mais"
@@ -2452,6 +2537,7 @@
       "boil"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [
       "riz"
      ],
@@ -2472,6 +2558,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "courgettes",
       "oignon"
@@ -2494,6 +2581,7 @@
       "gratin-vessel"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "oeufs"
      ],
@@ -2514,6 +2602,7 @@
       "gratin"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [
       "fromage-rape"
      ],
@@ -2627,6 +2716,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "lentilles-cuites"
      ],
@@ -2645,6 +2735,7 @@
      "minutes": 7,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "tomates",
       "oignon-rouge"
@@ -2664,6 +2755,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "huile-olive"
      ],
@@ -2682,6 +2774,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "feta"
      ],
@@ -2804,6 +2897,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -2820,6 +2914,7 @@
      "minutes": 8,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "pain-de-mie",
       "jambon",
@@ -2842,6 +2937,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -2858,6 +2954,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "salade-verte"
      ],
@@ -2958,6 +3055,7 @@
       "bake"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "pate-brisee"
      ],
@@ -2976,6 +3074,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "moutarde"
      ],
@@ -2994,6 +3093,7 @@
      "minutes": 7,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "tomates"
      ],
@@ -3014,6 +3114,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [
       "fromage-rape"
      ],
@@ -3218,6 +3319,7 @@
      "minutes": 8,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "pain-rassis-ing",
       "eau",
@@ -3244,6 +3346,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -3260,6 +3363,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "carottes",
       "oignon"
@@ -3279,6 +3383,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "farine-complete",
       "poudre-a-lever",
@@ -3302,6 +3407,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "parmesan",
       "sel",
@@ -3322,6 +3428,7 @@
      "minutes": 10,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "huile-olive"
      ],
@@ -3342,6 +3449,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -3512,6 +3620,7 @@
       "simmer"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -3530,6 +3639,7 @@
       "simmer"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -3546,6 +3656,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -3562,6 +3673,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": 720,
@@ -3739,6 +3851,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -3757,6 +3870,7 @@
       "simmer"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -3775,6 +3889,7 @@
       "simmer"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -3791,6 +3906,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -3988,6 +4104,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -4006,6 +4123,7 @@
       "chop-coarse"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -4022,6 +4140,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -4038,6 +4157,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -4054,6 +4174,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -4072,6 +4193,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -4242,6 +4364,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -4258,6 +4381,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -4274,6 +4398,7 @@
      "minutes": 7,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -4292,6 +4417,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -4308,6 +4434,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -4507,6 +4634,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -4523,6 +4651,7 @@
      "minutes": 10,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "groseilles"
      ],
@@ -4541,6 +4670,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "farine-pate",
       "coco-pate",
@@ -4564,6 +4694,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -4580,6 +4711,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "gousse-vanille",
       "sirop-agave",
@@ -4605,6 +4737,7 @@
       "simmer"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -4621,6 +4754,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -4637,6 +4771,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": 720,
@@ -4747,6 +4882,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": 480,
@@ -4763,6 +4899,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -4781,6 +4918,7 @@
       "simmer-large"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -4797,6 +4935,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -4886,6 +5025,7 @@
       "boil"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -4902,6 +5042,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "chataignes"
      ],
@@ -4920,6 +5061,7 @@
      "minutes": 10,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -4938,6 +5080,7 @@
       "boil"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -4956,6 +5099,7 @@
       "bake"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -4972,6 +5116,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": 10,
@@ -5144,6 +5289,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -5162,6 +5308,7 @@
       "chop-coarse"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -5178,6 +5325,7 @@
      "minutes": 7,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -5194,6 +5342,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -5210,6 +5359,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -5375,6 +5525,7 @@
       "simmer"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -5393,6 +5544,7 @@
       "chop-coarse"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": "lancer-le-riz",
      "attente": null,
@@ -5411,6 +5563,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -5427,6 +5580,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -5445,6 +5599,7 @@
       "simmer"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -5631,6 +5786,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "abricots"
      ],
@@ -5651,6 +5807,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -5667,6 +5824,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -5683,6 +5841,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "lait-amande",
       "puree-amande-blanche",
@@ -5707,6 +5866,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "abricots",
       "amandes-effilees"
@@ -5728,6 +5888,7 @@
       "bake"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": 60,
@@ -5744,6 +5905,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -5874,6 +6036,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -5892,6 +6055,7 @@
       "simmer"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -5908,6 +6072,7 @@
      "minutes": 8,
      "needs": [],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -5924,6 +6089,7 @@
      "minutes": 8,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": "refroidir",
      "attente": null,
@@ -5942,6 +6108,7 @@
       "blend-smooth"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -5958,6 +6125,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -6124,6 +6292,7 @@
      "minutes": 8,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -6142,6 +6311,7 @@
       "simmer-large"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -6158,6 +6328,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -6174,6 +6345,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -6374,6 +6546,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -6392,6 +6565,7 @@
       "chop-coarse"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -6410,6 +6584,7 @@
       "chop-coarse"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -6426,6 +6601,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -6444,6 +6620,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -6460,6 +6637,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -6622,6 +6800,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -6638,6 +6817,7 @@
      "minutes": 8,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -6654,6 +6834,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -6672,6 +6853,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -6804,6 +6986,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -6820,6 +7003,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -6836,6 +7020,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -6854,6 +7039,7 @@
       "weigh"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -6872,6 +7058,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -6888,6 +7075,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -7083,6 +7271,7 @@
       "boil"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [
       "riz",
       "huile-olive"
@@ -7104,6 +7293,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "oignon",
       "boeuf-hache",
@@ -7126,6 +7316,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "courgettes",
       "sauce-tomate",
@@ -7150,6 +7341,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "parmesan"
      ],
@@ -7168,6 +7360,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "courgettes",
       "parmesan",
@@ -7190,6 +7383,7 @@
       "gratin"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -7358,6 +7552,7 @@
       "simmer"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -7376,6 +7571,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -7392,6 +7588,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -7408,6 +7605,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -7424,6 +7622,7 @@
      "minutes": 8,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -7442,6 +7641,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -7458,6 +7658,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -7626,6 +7827,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "oignon"
      ],
@@ -7646,6 +7848,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "oignon",
       "huile-olive",
@@ -7668,6 +7871,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": "fondue",
      "attente": null,
@@ -7684,6 +7888,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "tomme-savoie"
      ],
@@ -7702,6 +7907,7 @@
      "minutes": 8,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "pain-levain",
       "tomme-savoie",
@@ -7725,6 +7931,7 @@
       "bake"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -7893,6 +8100,7 @@
       "simmer"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -7911,6 +8119,7 @@
       "chop-coarse"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -7927,6 +8136,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -7945,6 +8155,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -8103,6 +8314,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -8119,6 +8331,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -8137,6 +8350,7 @@
       "chop-coarse"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -8155,6 +8369,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -8299,6 +8514,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -8315,6 +8531,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -8331,6 +8548,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": 240,
@@ -8495,6 +8713,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -8513,6 +8732,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -8531,6 +8751,7 @@
       "bake"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": "cuire-champignons",
      "attente": null,
@@ -8549,6 +8770,7 @@
       "chop-coarse"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -8565,6 +8787,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -8581,6 +8804,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -8599,6 +8823,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -8768,6 +8993,7 @@
       "chop-coarse"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -8786,6 +9012,7 @@
       "chop-coarse"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -8804,6 +9031,7 @@
       "weigh"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -8822,6 +9050,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -8838,6 +9067,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -9070,6 +9300,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -9088,6 +9319,7 @@
       "blend-smooth"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -9104,6 +9336,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -9122,6 +9355,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -9138,6 +9372,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -9284,6 +9519,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -9300,6 +9536,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -9318,6 +9555,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -9525,6 +9763,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -9541,6 +9780,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "pate-a-pizza-ing",
       "huile-olive",
@@ -9563,6 +9803,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "oignon",
       "huile-olive",
@@ -9583,6 +9824,7 @@
      "minutes": 8,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "tomates-cerises",
       "chevre-buche",
@@ -9608,6 +9850,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -9779,6 +10022,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -9795,6 +10039,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -9811,6 +10056,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -9829,6 +10075,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -10093,6 +10340,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -10109,6 +10357,7 @@
      "minutes": 8,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "farine-complete",
       "sucre-roux",
@@ -10135,6 +10384,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -10151,6 +10401,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": 45,
@@ -10167,6 +10418,7 @@
      "minutes": 8,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "peches",
       "abricots",
@@ -10187,6 +10439,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "miel-sirop",
       "eau",
@@ -10208,6 +10461,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "creme-coco",
       "miel-chantilly",
@@ -10228,6 +10482,7 @@
      "minutes": 10,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -10244,6 +10499,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -10367,6 +10623,7 @@
      "minutes": 8,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -10383,6 +10640,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -10399,6 +10657,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -10415,6 +10674,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": 720,
@@ -10621,6 +10881,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "farine-complete",
       "poudre-a-lever",
@@ -10645,6 +10906,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "pain-rassis-ing"
      ],
@@ -10663,6 +10925,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -10679,6 +10942,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "mures"
      ],
@@ -10699,6 +10963,7 @@
       "gaufrier"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "huile-tournesol"
      ],
@@ -10866,6 +11131,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "creme-coco"
      ],
@@ -10884,6 +11150,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "cacao",
       "extrait-vanille",
@@ -10906,6 +11173,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "chocolat-noir"
      ],
@@ -10924,6 +11192,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -10942,6 +11211,7 @@
       "congeler"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": 240,
@@ -11093,6 +11363,7 @@
       "simmer"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -11111,6 +11382,7 @@
       "boil"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": "sauce",
      "attente": null,
@@ -11129,6 +11401,7 @@
       "gratin-vessel"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -11147,6 +11420,7 @@
       "gratin"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -11326,6 +11600,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -11342,6 +11617,7 @@
      "minutes": 8,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": "revenir-oignons",
      "attente": null,
@@ -11360,6 +11636,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -11376,6 +11653,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -11394,6 +11672,7 @@
       "pan-fry"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -11412,6 +11691,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -11430,6 +11710,7 @@
       "simmer-large"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": "mijoter",
      "attente": null,
@@ -11448,6 +11729,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": "mijoter",
      "attente": null,
@@ -11466,6 +11748,7 @@
       "gratin-vessel"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -11484,6 +11767,7 @@
       "gratin"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -11592,6 +11876,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -11608,6 +11893,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -11624,6 +11910,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -11640,6 +11927,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -11658,6 +11946,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -11846,6 +12135,7 @@
       "blend-smooth"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -12021,6 +12311,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -12037,6 +12328,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -12053,6 +12345,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -12069,6 +12362,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -12190,6 +12484,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "banane"
      ],
@@ -12210,6 +12505,7 @@
       "simmer"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "lait-soja-vanille"
      ],
@@ -12230,6 +12526,7 @@
       "blend-smooth"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "banane",
       "cacao",
@@ -12250,6 +12547,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -12385,6 +12683,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": 720,
@@ -12401,6 +12700,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -12419,6 +12719,7 @@
       "simmer-large"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -12559,6 +12860,7 @@
       "simmer-large"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -12577,6 +12879,7 @@
       "steam"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": "lancer-mijotage",
      "attente": null,
@@ -12593,6 +12896,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -12775,6 +13079,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "huile-olive",
       "oignon",
@@ -12798,6 +13103,7 @@
       "simmer-large"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [
       "eau",
       "carottes",
@@ -12820,6 +13126,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -12976,6 +13283,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -12992,6 +13300,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -13008,6 +13317,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -13026,6 +13336,7 @@
       "bake"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -13044,6 +13355,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -13207,6 +13519,7 @@
      "minutes": 8,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "oeufs",
       "moutarde",
@@ -13230,6 +13543,7 @@
      "minutes": 12,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "chou-rouge",
       "celeri-rave",
@@ -13250,6 +13564,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -13266,6 +13581,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -13422,6 +13738,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -13440,6 +13757,7 @@
       "simmer"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -13456,6 +13774,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": 600,
@@ -13474,6 +13793,7 @@
       "reheat"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -13662,6 +13982,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -13678,6 +13999,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -13694,6 +14016,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -13712,6 +14035,7 @@
       "simmer"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -13728,6 +14052,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -13746,6 +14071,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -13922,6 +14248,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -13938,6 +14265,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -13954,6 +14282,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -13970,6 +14299,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -13988,6 +14318,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -14153,6 +14484,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -14169,6 +14501,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -14185,6 +14518,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -14203,6 +14537,7 @@
       "simmer-large"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -14354,6 +14689,7 @@
      "minutes": 10,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -14372,6 +14708,7 @@
       "simmer-large"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -14388,6 +14725,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -14406,6 +14744,7 @@
       "blend-smooth"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -14578,6 +14917,7 @@
       "simmer"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -14596,6 +14936,7 @@
       "blend-smooth"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": "fondre-chocolat",
      "attente": null,
@@ -14612,6 +14953,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -14628,6 +14970,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": 240,
@@ -14805,6 +15148,7 @@
       "weigh"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "peches"
      ],
@@ -14825,6 +15169,7 @@
       "blend-smooth"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "agar-agar",
       "agave-mousse"
@@ -14846,6 +15191,7 @@
       "simmer"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -14862,6 +15208,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": 45,
@@ -14878,6 +15225,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "creme-coco"
      ],
@@ -14896,6 +15244,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -14912,6 +15261,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": 360,
@@ -14930,6 +15280,7 @@
       "blend-smooth"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "fraises",
       "agave-coulis"
@@ -15127,6 +15478,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -15143,6 +15495,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -15159,6 +15512,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -15175,6 +15529,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -15193,6 +15548,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -15347,6 +15703,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -15363,6 +15720,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "courgettes"
      ],
@@ -15381,6 +15739,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "farine-complete",
       "poudre-a-lever",
@@ -15407,6 +15766,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [
       "caissettes"
      ],
@@ -15425,6 +15785,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -15577,6 +15938,7 @@
       "simmer"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -15593,6 +15955,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -15609,6 +15972,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -15627,6 +15991,7 @@
       "steam"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -15806,6 +16171,7 @@
      "minutes": 15,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -15824,6 +16190,7 @@
       "simmer-large"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -15840,6 +16207,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -15858,6 +16226,7 @@
       "simmer-large"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -15876,6 +16245,7 @@
       "simmer-large"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -15894,6 +16264,7 @@
       "simmer-large"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -16094,6 +16465,7 @@
       "simmer"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -16110,6 +16482,7 @@
      "minutes": 8,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": "cuire-oeuf-nicoise",
      "attente": null,
@@ -16126,6 +16499,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -16142,6 +16516,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -16327,6 +16702,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": 120,
@@ -16347,6 +16723,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -16363,6 +16740,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -16381,6 +16759,7 @@
       "chop-coarse"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -16397,6 +16776,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -16413,6 +16793,7 @@
      "minutes": 8,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -16431,6 +16812,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -16561,6 +16943,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -16577,6 +16960,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -16595,6 +16979,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -16804,6 +17189,7 @@
      "minutes": 10,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -16822,6 +17208,7 @@
       "pan-fry"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -16838,6 +17225,7 @@
      "minutes": 8,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": "cuire-racines",
      "attente": null,
@@ -16856,6 +17244,7 @@
       "pan-fry"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -16872,6 +17261,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": "ajouter-verts",
      "attente": null,
@@ -16890,6 +17280,7 @@
       "pan-fry"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -16906,6 +17297,7 @@
      "minutes": 10,
      "needs": [],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -17095,6 +17487,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "oignon",
       "jambon-cru",
@@ -17116,6 +17509,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "ail",
       "tomates-cerises",
@@ -17136,6 +17530,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "pates",
       "tomates-cerises",
@@ -17162,6 +17557,7 @@
       "simmer-large"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -17178,6 +17574,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "mozzarella"
      ],
@@ -17196,6 +17593,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": 10,
@@ -17332,6 +17730,7 @@
       "machine-a-pain"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -17350,6 +17749,7 @@
       "machine-a-pain"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -17368,6 +17768,7 @@
       "machine-a-pain"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -17384,6 +17785,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -17527,6 +17929,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -17543,6 +17946,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -17559,6 +17963,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -17575,6 +17980,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": 60,
@@ -17593,6 +17999,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -17609,6 +18016,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -17845,6 +18253,7 @@
      "minutes": 8,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "pain-rassis-ing",
       "sauce-tomate",
@@ -17871,6 +18280,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -17889,6 +18299,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [
       "aubergine",
       "huile-aubergines"
@@ -17908,6 +18319,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "creme-soja",
       "fromage-rape",
@@ -17931,6 +18343,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "oignon",
       "huile-viande",
@@ -17956,6 +18369,7 @@
       "chop-coarse"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -17974,6 +18388,7 @@
       "gratin-vessel"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -17992,6 +18407,7 @@
       "gratin"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -18008,6 +18424,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -18174,6 +18591,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -18190,6 +18608,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -18206,6 +18625,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -18222,6 +18642,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": 75,
@@ -18240,6 +18661,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -18256,6 +18678,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -18433,6 +18856,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -18449,6 +18873,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -18465,6 +18890,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -18481,6 +18907,7 @@
      "minutes": 7,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -18497,6 +18924,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": 45,
@@ -18710,6 +19138,7 @@
      "minutes": 7,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -18726,6 +19155,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -18932,6 +19362,7 @@
       "simmer-large"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -18950,6 +19381,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": "cuire-pates",
      "attente": null,
@@ -18966,6 +19398,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": "cuire-pates",
      "attente": null,
@@ -18984,6 +19417,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -19002,6 +19436,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -19018,6 +19453,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -19154,6 +19590,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -19170,6 +19607,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -19186,6 +19624,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": 90,
@@ -19202,6 +19641,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -19337,6 +19777,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "farine-complete",
       "sel",
@@ -19359,6 +19800,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -19375,6 +19817,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": 720,
@@ -19498,6 +19941,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -19514,6 +19958,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": 30,
@@ -19532,6 +19977,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -19659,6 +20105,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -19675,6 +20122,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -19822,6 +20270,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -19838,6 +20287,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -19856,6 +20306,7 @@
       "chop-coarse"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -20074,6 +20525,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -20090,6 +20542,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -20106,6 +20559,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -20124,6 +20578,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -20140,6 +20595,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -20156,6 +20612,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -20298,6 +20755,7 @@
       "blend-smooth"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -20316,6 +20774,7 @@
       "blend-smooth"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -20332,6 +20791,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -20350,6 +20810,7 @@
       "congeler"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -20506,6 +20967,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -20522,6 +20984,7 @@
      "minutes": 12,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": "dorer-oignons",
      "attente": null,
@@ -20538,6 +21001,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -20554,6 +21018,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -20572,6 +21037,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -20713,6 +21179,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -20729,6 +21196,7 @@
      "minutes": 10,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -20745,6 +21213,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -20761,6 +21230,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -20777,6 +21247,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": 20,
@@ -20795,6 +21266,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -21028,6 +21500,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "pate-a-pizza-ing"
      ],
@@ -21048,6 +21521,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "oignon",
       "huile-olive",
@@ -21070,6 +21544,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "courgettes"
      ],
@@ -21090,6 +21565,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "pousses-epinards",
       "basilic"
@@ -21109,6 +21585,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "ail",
       "poivre"
@@ -21128,6 +21605,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "farine",
       "huile-olive"
@@ -21149,6 +21627,7 @@
       "bake"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "mozzarella",
       "olives-noires"
@@ -21170,6 +21649,7 @@
       "bake"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -21341,6 +21821,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -21357,6 +21838,7 @@
      "minutes": 8,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -21373,6 +21855,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -21389,6 +21872,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": 20,
@@ -21407,6 +21891,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -21640,6 +22125,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": 720,
@@ -21660,6 +22146,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -21678,6 +22165,7 @@
       "simmer-large"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -21696,6 +22184,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": "cuire-orge",
      "attente": null,
@@ -21714,6 +22203,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": "cuire-orge",
      "attente": null,
@@ -21730,6 +22220,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -21746,6 +22237,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -22007,6 +22499,7 @@
       "simmer-large"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "jarret-boeuf",
       "os-a-moelle",
@@ -22037,6 +22530,7 @@
       "simmer-large"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -22053,6 +22547,7 @@
      "minutes": 15,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "poireau",
       "navets",
@@ -22077,6 +22572,7 @@
       "simmer-large"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -22095,6 +22591,7 @@
       "simmer-large"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -22111,6 +22608,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "huile-olive",
       "poivre"
@@ -22341,6 +22839,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "oignon",
       "huile-olive"
@@ -22362,6 +22861,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "poulet"
      ],
@@ -22382,6 +22882,7 @@
       "simmer-large"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "ail",
       "herbes-fraiches",
@@ -22410,6 +22911,7 @@
       "simmer-large"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -22428,6 +22930,7 @@
       "simmer-large"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "citron"
      ],
@@ -22446,6 +22949,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -22576,6 +23080,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -22592,6 +23097,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -22610,6 +23116,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -22626,6 +23133,7 @@
      "minutes": 8,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -22794,6 +23302,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -22812,6 +23321,7 @@
       "simmer"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "beurre"
      ],
@@ -22830,6 +23340,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "poires"
      ],
@@ -22848,6 +23359,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "farine-complete",
       "poudre-a-lever",
@@ -22871,6 +23383,7 @@
      "minutes": 8,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -22889,6 +23402,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -22907,6 +23421,7 @@
       "bake"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "amandes-effilees"
      ],
@@ -22925,6 +23440,7 @@
      "minutes": 10,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": 45,
@@ -23137,6 +23653,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -23155,6 +23672,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -23173,6 +23691,7 @@
       "pan-fry"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -23189,6 +23708,7 @@
      "minutes": 8,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": "poeler-cebettes",
      "attente": null,
@@ -23205,6 +23725,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": "poeler-cebettes",
      "attente": null,
@@ -23223,6 +23744,7 @@
       "blend-smooth"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -23239,6 +23761,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -23257,6 +23780,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -23420,6 +23944,7 @@
      "minutes": 10,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -23438,6 +23963,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -23456,6 +23982,7 @@
       "simmer"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -23472,6 +23999,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -23542,6 +24070,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -23560,6 +24089,7 @@
       "reheat"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -23576,6 +24106,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -23738,6 +24269,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -23756,6 +24288,7 @@
       "simmer"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -23772,6 +24305,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -23790,6 +24324,7 @@
       "chop-coarse"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -23976,6 +24511,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -23994,6 +24530,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -24010,6 +24547,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -24028,6 +24566,7 @@
       "simmer"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -24046,6 +24585,7 @@
       "chop-coarse"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -24225,6 +24765,7 @@
       "grill"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "poivron"
      ],
@@ -24245,6 +24786,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "oignon",
       "huile-olive"
@@ -24266,6 +24808,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "riz-arborio"
      ],
@@ -24284,6 +24827,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "poivron"
      ],
@@ -24304,6 +24848,7 @@
       "simmer"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "bouillon-legumes"
      ],
@@ -24322,6 +24867,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "concentre-tomate",
       "sel",
@@ -24497,6 +25043,7 @@
       "simmer"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "lait-soja-vanille",
       "gousse-vanille",
@@ -24522,6 +25069,7 @@
       "simmer"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -24540,6 +25088,7 @@
       "simmer"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "creme-coco",
       "sucre-roux"
@@ -24559,6 +25108,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": 240,
@@ -24760,6 +25310,7 @@
      "minutes": 10,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -24778,6 +25329,7 @@
       "simmer-large"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -24796,6 +25348,7 @@
       "simmer-large"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -24812,6 +25365,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": 720,
@@ -25018,6 +25572,7 @@
      "minutes": 10,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -25034,6 +25589,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -25052,6 +25608,7 @@
       "simmer-large"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -25068,6 +25625,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": 720,
@@ -25229,6 +25787,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -25245,6 +25804,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "roti-porc"
      ],
@@ -25263,6 +25823,7 @@
      "minutes": 8,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "herbes-fraiches",
       "sauge",
@@ -25287,6 +25848,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "sel"
      ],
@@ -25307,6 +25869,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -25323,6 +25886,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -25510,6 +26074,7 @@
       "simmer"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -25526,6 +26091,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": "cuire-12-min",
      "attente": null,
@@ -25542,6 +26108,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -25720,6 +26287,7 @@
       "simmer"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -25736,6 +26304,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": "oeuf-mollet-cesar",
      "attente": null,
@@ -25752,6 +26321,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -25768,6 +26338,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -25963,6 +26534,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -25981,6 +26553,7 @@
       "chop-coarse"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -25997,6 +26570,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -26231,6 +26805,7 @@
       "simmer"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -26249,6 +26824,7 @@
       "simmer"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -26265,6 +26841,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -26453,6 +27030,7 @@
       "simmer"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -26469,6 +27047,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": "cuire-oeuf-haricots",
      "attente": null,
@@ -26485,6 +27064,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -26683,6 +27263,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -26699,6 +27280,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -26916,6 +27498,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -26932,6 +27515,7 @@
      "minutes": 7,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": "dorer-oignon-steak",
      "attente": null,
@@ -26950,6 +27534,7 @@
       "simmer"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -26966,6 +27551,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -27185,6 +27771,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "orge"
      ],
@@ -27209,6 +27796,7 @@
       "simmer-large"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [
       "sel-cuisson"
      ],
@@ -27229,6 +27817,7 @@
       "boil"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "oeufs"
      ],
@@ -27247,6 +27836,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "huile-olive",
       "vinaigre",
@@ -27269,6 +27859,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "tomates-cerises",
       "thon-boite",
@@ -27289,6 +27880,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -27448,6 +28040,7 @@
       "simmer"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -27464,6 +28057,7 @@
      "minutes": 8,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": "cuire-oeufs",
      "attente": null,
@@ -27480,6 +28074,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -27496,6 +28091,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -27512,6 +28108,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -27757,6 +28354,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -27773,6 +28371,7 @@
      "minutes": 8,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -27789,6 +28388,7 @@
      "minutes": 7,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -27805,6 +28405,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -27823,6 +28424,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -27841,6 +28443,7 @@
       "chop-coarse"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -27859,6 +28462,7 @@
       "chop-coarse"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -27877,6 +28481,7 @@
       "chop-coarse"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -27893,6 +28498,7 @@
      "minutes": 20,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -27909,6 +28515,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -27927,6 +28534,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -28091,6 +28699,7 @@
       "simmer"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -28107,6 +28716,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": "cuire-oeuf-nordique",
      "attente": null,
@@ -28123,6 +28733,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -28139,6 +28750,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -28155,6 +28767,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -28283,6 +28896,7 @@
       "simmer"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "lait-soja-vanille"
      ],
@@ -28301,6 +28915,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "yaourt-soja-ing"
      ],
@@ -28319,6 +28934,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": 480,
@@ -28335,6 +28951,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": 240,
@@ -28523,6 +29140,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "pois-chiches"
      ],
@@ -28543,6 +29161,7 @@
       "simmer-large"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "eau",
       "sauce-tomate",
@@ -28566,6 +29185,7 @@
       "simmer-large"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -28582,6 +29202,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "sel",
       "poivre"
@@ -28601,6 +29222,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "pain-rassis-ing"
      ],
@@ -28619,6 +29241,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "huile-olive"
      ],
@@ -28789,6 +29412,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": 720,
@@ -28809,6 +29433,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -28825,6 +29450,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -28843,6 +29469,7 @@
       "simmer-large"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -28861,6 +29488,7 @@
       "simmer-large"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": "cuire-orge",
      "attente": null,
@@ -28877,6 +29505,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -29053,6 +29682,7 @@
      "minutes": 10,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -29069,6 +29699,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": 60,
@@ -29087,6 +29718,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -29103,6 +29735,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -29121,6 +29754,7 @@
       "blend-smooth"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -29137,6 +29771,7 @@
      "minutes": 8,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -29291,6 +29926,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -29307,6 +29943,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -29323,6 +29960,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -29339,6 +29977,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -29357,6 +29996,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -29550,6 +30190,7 @@
      "minutes": 15,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "pomme-de-terre",
       "topinambours"
@@ -29569,6 +30210,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "oignon"
      ],
@@ -29589,6 +30231,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "beurre",
       "pomme-de-terre",
@@ -29611,6 +30254,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "noix",
       "fromage-rape"
@@ -29632,6 +30276,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": "poeler",
      "attente": null,
@@ -29648,6 +30293,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "vin-blanc-sec",
       "huile-olive",
@@ -29669,6 +30315,7 @@
      "minutes": 12,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -29685,6 +30332,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -29703,6 +30351,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -29719,6 +30368,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -29863,6 +30513,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -29881,6 +30532,7 @@
       "blend-smooth"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -29899,6 +30551,7 @@
       "chop-coarse"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -29915,6 +30568,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -30049,6 +30703,7 @@
       "chop-coarse"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -30065,6 +30720,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -30081,6 +30737,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -30099,6 +30756,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -30115,6 +30773,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -30313,6 +30972,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -30329,6 +30989,7 @@
      "minutes": 15,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "aubergine",
       "courgettes",
@@ -30351,6 +31012,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "fleur-de-sel",
       "parmesan",
@@ -30375,6 +31037,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -30391,6 +31054,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -30573,6 +31237,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "pommes",
       "huile-garniture"
@@ -30594,6 +31259,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": "pommes",
      "attente": null,
@@ -30612,6 +31278,7 @@
       "chop-coarse"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "farine-petit-epeautre",
       "huile-pate",
@@ -30636,6 +31303,7 @@
      "minutes": 8,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -30654,6 +31322,7 @@
       "chop-coarse"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "noix",
       "farine"
@@ -30673,6 +31342,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -30691,6 +31361,7 @@
       "bake"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -30707,6 +31378,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -30902,6 +31574,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "oignon",
       "poireau",
@@ -30923,6 +31596,7 @@
      "minutes": 15,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "courge"
      ],
@@ -30943,6 +31617,7 @@
       "simmer-large"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "eau"
      ],
@@ -30961,6 +31636,7 @@
      "minutes": 8,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "concentre-tomate",
       "vin-blanc-sec",
@@ -30985,6 +31661,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": "mijoter",
      "attente": null,
@@ -31001,6 +31678,7 @@
      "minutes": 8,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -31017,6 +31695,7 @@
      "minutes": 10,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -31033,6 +31712,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "parmesan"
      ],
@@ -31051,6 +31731,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -31069,6 +31750,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -31217,6 +31899,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -31233,6 +31916,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -31249,6 +31933,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -31267,6 +31952,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -31283,6 +31969,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -31517,6 +32204,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -31533,6 +32221,7 @@
      "minutes": 10,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "oignon",
       "courgettes"
@@ -31554,6 +32243,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "huile-olive-farce",
       "oignon",
@@ -31574,6 +32264,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "farine-complete",
       "sel-pate",
@@ -31595,6 +32286,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": "poeler",
      "attente": null,
@@ -31611,6 +32303,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "parmesan",
       "riz",
@@ -31632,6 +32325,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "sel-farce"
      ],
@@ -31650,6 +32344,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -31666,6 +32361,7 @@
      "minutes": 6,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "huile-olive-pate"
      ],
@@ -31686,6 +32382,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -31704,6 +32401,7 @@
       "grill"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -31828,6 +32526,7 @@
       "simmer"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -31846,6 +32545,7 @@
       "blend-smooth"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -31862,6 +32562,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -32021,6 +32722,7 @@
       "simmer-large"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -32039,6 +32741,7 @@
       "simmer-large"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -32055,6 +32758,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": "cuire-pommes-de-terre",
      "attente": null,
@@ -32073,6 +32777,7 @@
       "simmer-large"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -32091,6 +32796,7 @@
       "blend-smooth"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -32254,6 +32960,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "oignon",
       "huile-olive"
@@ -32275,6 +32982,7 @@
       "simmer-large"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "courge",
       "eau",
@@ -32298,6 +33006,7 @@
       "simmer-large"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -32316,6 +33025,7 @@
       "blend-smooth"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "poivre"
      ],
@@ -32334,6 +33044,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -32451,6 +33162,7 @@
      "minutes": 15,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -32469,6 +33181,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -32487,6 +33200,7 @@
       "pan-fry"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -32505,6 +33219,7 @@
       "pan-fry"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -32521,6 +33236,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -32648,6 +33364,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -32664,6 +33381,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -32828,6 +33546,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -32844,6 +33563,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -32860,6 +33580,7 @@
      "minutes": 2,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -32876,6 +33597,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -33036,6 +33758,7 @@
       "simmer"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "fruits-frais",
       "sucre-roux"
@@ -33055,6 +33778,7 @@
      "minutes": 5,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": 20,
@@ -33073,6 +33797,7 @@
       "bake"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -33091,6 +33816,7 @@
       "simmer"
      ],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "lait"
      ],
@@ -33109,6 +33835,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [
       "yaourt-soja-ing"
      ],
@@ -33127,6 +33854,7 @@
      "minutes": 4,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -33145,6 +33873,7 @@
       "bake"
      ],
      "surveille": false,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -33161,6 +33890,7 @@
      "minutes": 1,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": 420,
@@ -33177,6 +33907,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
+     "astuce": null,
      "uses": [],
      "enParallele": null,
      "attente": 240,

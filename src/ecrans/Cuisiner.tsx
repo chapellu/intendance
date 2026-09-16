@@ -378,6 +378,15 @@ function Guide({
         {e.minutes ? `${e.minutes} min.` : ""}
       </div>
 
+      {/* L'ASTUCE SOUS LE GESTE, EN CORPS DE TEXTE, ET JAMAIS DANS LE TITRE.
+          Elle y était : 196 étapes du corpus portaient leur explication soudée
+          à `action`, que cet écran rend en Caprasimo 27 px. Le geste se lit à
+          bout de bras et doit tenir en un coup d'œil ; le pourquoi se lit
+          après, une fois qu'on sait quoi faire, et n'a pas à peser le même
+          poids typographique. Pas un encart coloré non plus — un encart dit
+          « attention », et une astuce ne prévient de rien. */}
+      {e.astuce ? <div className="co-astuce">{e.astuce}</div> : null}
+
       {e.enfant ? (
         <div className="co-encart enfant">
           <Icone nom="enfant" />
