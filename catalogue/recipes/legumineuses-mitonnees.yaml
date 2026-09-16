@@ -61,23 +61,28 @@ recipe:
 
   steps:
     - id: tremper
-      action: "Faire tremper les légumineuses au grand minimum une nuit — au mieux 24 h, elles cuiront alors encore plus vite"
+      action: "Faire tremper les légumineuses au grand minimum une nuit"
+      astuce: "Au mieux 24 h : elles cuiront alors encore plus vite."
       needs: []
       time_min: 3
+      attended: false
       attente_min: 720
       attente_raison: "trempage d'une nuit, à lancer la veille au soir"
-      attended: false
     - id: rincer
       action: "Rincer abondamment les légumineuses trempées"
       needs: []
       time_min: 3
       kid: {age_min_months: 30, task: "rincer les pois chiches dans la passoire"}
-    - id: cuire
-      action: "Les mettre dans un faitout d'eau FROIDE avec l'oignon, le clou de girofle, le laurier et la sarriette, puis cuire de 35 min à 1 h en goûtant régulièrement — aucun temps précis n'est donnable, cela dépend de la légumineuse et de son degré de séchage à l'achat"
+    - id: mettre-a-cuire
+      action: "Les mettre dans un faitout d'eau FROIDE avec l'oignon, le clou de girofle, le laurier et la sarriette"
       needs: [simmer-large]
-      time_min: 60
+      time_min: 3
+    - id: cuire
+      action: "Cuire de 35 min à 1 h, en goûtant régulièrement"
+      astuce: "Aucun temps précis n'est donnable : cela dépend de la légumineuse et de son degré de séchage à l'achat."
+      needs: [simmer-large]
+      time_min: 57
       attended: false
-
   # PAS DE `seasoning_gate` ICI, ET C'EST VOULU : la page 86 ne sale à aucun
   # moment. Le sel des légumineuses arrive dans le plat dérivé (houmous p. 87,
   # salade p. 88), jamais dans la souche. `depuis:` porte donc seul le

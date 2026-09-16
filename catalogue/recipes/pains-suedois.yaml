@@ -46,7 +46,8 @@ recipe:
       needs: []
       time_min: 6
     - id: etaler-dans-le-cadre
-      action: "Poser un papier cuisson sur une plaque, y installer un cadre à pâtisserie réglable de 30 cm de côté (ou un plat de même taille chemisé), verser la pâte et la répartir au dos d'une cuillère huilée"
+      action: "Poser un papier cuisson sur une plaque, y installer un cadre à pâtisserie de 30 cm de côté, verser la pâte et la répartir au dos d'une cuillère huilée"
+      astuce: "À défaut de cadre, un plat de même taille chemisé fait l'affaire."
       needs: []
       time_min: 6
     - id: premiere-levee
@@ -56,9 +57,14 @@ recipe:
       attente_min: 75
       attended: false
     - id: piquer-et-cuire
-      action: "Piquer la pâte tous les 3 cm à la fourchette huilée, la laisser lever encore un quart d'heure pendant que le four préchauffe à 240 °C, puis enfourner assez bas 12 min chrono"
+      action: "Piquer la pâte tous les 3 cm à la fourchette huilée, puis la laisser lever encore un quart d'heure pendant que le four préchauffe à 240 °C"
       needs: [bake]
-      time_min: 27
+      time_min: 15
+      attended: false
+    - id: cuire-pains-suedois
+      action: "Enfourner assez bas, 12 min chrono"
+      needs: [bake]
+      time_min: 12
       attended: false
     - id: decouper-en-carres
       action: "Laisser refroidir puis découper en 9 carrés"

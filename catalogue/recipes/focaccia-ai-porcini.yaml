@@ -95,11 +95,18 @@ recipe:
       uses: [oignon, huile-olive, reste-roti-ing]
       time_min: 10
     - id: garnir
-      action: "Étaler le tout sur la pâte, ajouter les tomates cerise coupées en deux et le fromage de chèvre émietté, saler, poivrer, ciseler le romarin par-dessus et terminer avec un filet de jus de citron"
+      action: "Étaler le tout sur la pâte, ajouter les tomates cerise coupées en deux et le fromage de chèvre émietté"
       needs: []
-      uses: [tomates-cerises, chevre-buche, sel, poivre, romarin, citron]
-      time_min: 8
-      kid: {age_min_months: 30, task: "émietter le fromage de chèvre à la main sur la focaccia"}
+      uses: [tomates-cerises, chevre-buche]
+      time_min: 5
+      kid:
+        age_min_months: 30
+        task: "émietter le fromage de chèvre à la main sur la focaccia"
+    - id: assaisonner-focaccia
+      action: "Saler, poivrer, ciseler le romarin par-dessus et terminer d'un filet de jus de citron"
+      needs: []
+      uses: [sel, poivre, romarin, citron]
+      time_min: 3
     - id: cuire
       action: "Enfourner environ 15 minutes, et savourer encore tiède avec une grande salade estivale"
       needs: [bake]

@@ -56,7 +56,8 @@ recipe:
       needs: []
       time_min: 1
     - id: cuire-orge
-      action: "Cuire l'orge 15 min dans un grand faitout d'eau bouillante salée — le temps se compte à partir de la reprise de l'ébullition"
+      action: "Cuire l'orge 15 min dans un grand faitout d'eau bouillante salée"
+      astuce: "Le temps se compte à partir de la reprise de l'ébullition."
       needs: [simmer-large]
       time_min: 15
       attended: false
@@ -67,11 +68,12 @@ recipe:
       parallel_with: cuire-orge
       attended: true
     - id: sauter-champignons
-      action: "Ajouter les champignons frais émincés et les champignons en conserve bien rincés et égouttés, puis faire sauter à feu vif 10 à 15 min, le temps qu'ils soient bien dorés"
+      action: "Ajouter les champignons frais émincés et ceux en conserve, bien rincés, puis faire sauter à feu vif"
+      astuce: "10 à 15 min, le temps qu'ils soient bien dorés."
       needs: [pan-fry]
       time_min: 13
-      parallel_with: cuire-orge
       attended: true
+      parallel_with: "cuire-orge"
       # À feu vif et sans couvrir : c'est ce qui fait dorer plutôt que bouillir.
     - id: assaisonner
       action: "Ajouter l'ail écrasé, poivrer, effeuiller le thym et bien mélanger"

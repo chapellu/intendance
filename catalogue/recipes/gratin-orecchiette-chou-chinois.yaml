@@ -48,11 +48,14 @@ recipe:
       time_min: 6
       attended: true
     - id: emincer-chou
-      action: "Pendant ce temps : émincer le chou chinois — des tranches de 3 cm côté feuilles, mais de plus en plus fines à mesure qu'on approche du trognon, sinon la texture reste filandreuse après cuisson"
+      action: "Pendant ce temps : émincer le chou chinois en tranches de 3 cm côté feuilles, de plus en plus fines vers le trognon"
+      astuce: "Sinon la texture reste filandreuse après cuisson : le trognon est bien plus dur que la feuille."
       needs: []
       time_min: 8
-      parallel_with: revenir-oignons
-      kid: {age_min_months: 30, task: "détacher les feuilles du chou une à une"}
+      parallel_with: "revenir-oignons"
+      kid:
+        age_min_months: 30
+        task: "détacher les feuilles du chou une à une"
     - id: dorer-chou
       action: "Faire dorer le chou avec les oignons et la viande"
       needs: [pan-fry]
@@ -88,10 +91,13 @@ recipe:
       parallel_with: mijoter
       attended: false
     - id: monter
-      action: "Dans un grand plat à gratin : la moitié des pâtes, toute la poêlée au chou, la moitié du parmesan, le reste des pâtes, le reste du parmesan, un peu de thym et d'origan"
+      action: "Dans un grand plat à gratin : la moitié des pâtes, toute la poêlée au chou, la moitié du parmesan, le reste des pâtes et le reste du parmesan"
+      astuce: "Un peu de thym et d'origan pour finir."
       needs: [gratin-vessel]
       time_min: 6
-      kid: {age_min_months: 30, task: "saupoudrer le parmesan entre les couches"}
+      kid:
+        age_min_months: 30
+        task: "saupoudrer le parmesan entre les couches"
     - id: gratiner
       action: "Enfourner quelques minutes, juste le temps de faire dorer le dessus"
       needs: [gratin]

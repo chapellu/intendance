@@ -63,11 +63,12 @@ recipe:
 
   steps:
     - id: griller-poivrons
-      action: "Couper les poivrons en deux dans le sens de la longueur, les disposer face coupée vers le bas sur une plaque garnie de papier cuisson et enfourner 10 minutes sous le gril, jusqu'à ce que la peau noircisse et se boursoufle"
+      action: "Couper les poivrons en deux dans la longueur, les poser face coupée vers le bas sur une plaque chemisée et enfourner 10 minutes sous le gril"
+      astuce: "Jusqu'à ce que la peau noircisse et se boursoufle : c'est ce qui permet de la retirer."
       needs: [grill]
       uses: [poivron]
       time_min: 12
-      attended: true        # sous le gril, dix minutes suffisent à passer de noirci à brûlé
+      attended: true
     - id: oignon
       action: "Pendant ce temps, couper l'oignon en petits cubes et le faire revenir avec l'huile d'olive dans une cocotte"
       needs: [pan-fry]
@@ -85,18 +86,24 @@ recipe:
       uses: [poivron]
       time_min: 6
     - id: mouiller
-      action: "Ajouter une louche de bouillon chaud et mélanger à la cuillère de bois jusqu'à absorption complète, puis recommencer, et ainsi de suite jusqu'à ce que le riz soit parfaitement cuit et crémeux — environ 20 minutes, mais cela dépend du riz et il n'y a pas de temps précis"
+      action: "Ajouter une louche de bouillon chaud, mélanger à la cuillère de bois jusqu'à absorption complète, puis recommencer"
+      astuce: "Environ 20 minutes, jusqu'à un riz parfaitement cuit et crémeux — mais cela dépend du riz, il n'y a pas de temps précis."
       needs: [simmer]
       uses: [bouillon-legumes]
       time_min: 20
-      attended: true        # c'est la définition du risotto : on ne le quitte pas
-    - id: finir
-      action: "Peu avant la fin de la cuisson, ajouter le concentré de tomate, un peu de sel, le piment et les olives noires émincées ; terminer en ajoutant le mascarpone, bien mélanger, rectifier l'assaisonnement et servir aussitôt"
+      attended: true
+    - id: relever
+      action: "Peu avant la fin, ajouter le concentré de tomate, un peu de sel, le piment et les olives noires émincées"
       needs: []
-      uses: [concentre-tomate, sel, piment-espelette, olives-noires, mascarpone]
-      time_min: 5
+      uses: [concentre-tomate, sel, piment-espelette, olives-noires]
+      time_min: 3
       seasoning_gate: true
-
+    - id: finir
+      action: "Terminer par le mascarpone, bien mélanger, rectifier l'assaisonnement et servir aussitôt"
+      astuce: "Aussitôt : un risotto qui attend se fige."
+      needs: []
+      uses: [mascarpone]
+      time_min: 2
   baby_portion:
     take: "une petite louche de risotto crémeux, AVANT le sel, le piment et les olives"
     prep: "écraser à la fourchette et allonger d'un peu d'eau claire"

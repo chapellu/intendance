@@ -66,7 +66,8 @@ recipe:
       time_min: 10
       attended: false
     - id: assecher
-      action: "Découvrir et laisser cuire quelques minutes de plus, le temps de bien faire évaporer le jus de cuisson — une poêlée qui rend de l'eau détrempe les tourtes et les pizzas qu'elle garnira"
+      action: "Découvrir et laisser cuire quelques minutes de plus, le temps de bien faire évaporer le jus de cuisson"
+      astuce: "Une poêlée qui rend de l'eau détrempe les tourtes et les pizzas qu'elle garnira."
       needs: [pan-fry]
       time_min: 5
       attended: true

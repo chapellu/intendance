@@ -69,7 +69,8 @@ recipe:
       needs: []
       time_min: 1
     - id: completer
-      action: "Mesurer le bouillon restant et compléter d'eau pour arriver à 1,8 l dans le faitout ; retirer le laurier et les tiges d'herbes, mais garder les morceaux de légumes"
+      action: "Mesurer le bouillon restant et compléter d'eau pour arriver à 1,8 l dans le faitout"
+      astuce: "Retirer le laurier et les tiges d'herbes, mais garder les morceaux de légumes."
       needs: []
       time_min: 4
       # Garder les légumes du bouillon est ce qui fait le corps de la soupe :
@@ -80,11 +81,12 @@ recipe:
       time_min: 15
       attended: false
     - id: petits-pois
-      action: "7 min avant la fin, ajouter les petits pois — plus tôt ils cuisent, moins ils restent verts"
+      action: "7 min avant la fin, ajouter les petits pois"
+      astuce: "Plus tôt ils cuisent, moins ils restent verts."
       needs: [simmer-large]
       time_min: 7
-      parallel_with: cuire-orge
       attended: false
+      parallel_with: "cuire-orge"
     - id: rectifier
       action: "Goûter et rectifier le sel, puis parsemer de ciboulette à l'assiette"
       needs: []

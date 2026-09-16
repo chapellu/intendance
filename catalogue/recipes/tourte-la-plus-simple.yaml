@@ -56,10 +56,15 @@ recipe:
       needs: [bake]
       time_min: 1
       attended: false
-    - id: foncer-la-tourte
-      action: "Étaler le pâton finement à même un papier cuisson, en un disque de 18 à 20 cm, puis le faire glisser dans un petit plat rond d'environ 17 cm et appuyer pour tapisser le fond — la pâte déborde un peu, c'est normal"
+    - id: etaler-la-tourte
+      action: "Étaler le pâton finement à même un papier cuisson, en un disque de 18 à 20 cm"
       needs: []
-      time_min: 6
+      time_min: 3
+    - id: foncer-la-tourte
+      action: "Le faire glisser dans un petit plat rond d'environ 17 cm et appuyer pour tapisser le fond"
+      astuce: "La pâte déborde un peu : c'est normal."
+      needs: []
+      time_min: 3
     - id: garnir-tourte
       action: "Mélanger tous les autres ingrédients dans un bol, saler et poivrer, verser sur la pâte et rabattre les bords sur la garniture"
       needs: []
@@ -71,11 +76,11 @@ recipe:
       time_min: 25
       attended: false
     - id: refroidir-tourte
-      action: "Laisser ENTIÈREMENT refroidir avant de découper en quatre parts : c'est ce qui rend la tourte mangeable à la main, sans couverts"
+      action: "Laisser ENTIÈREMENT refroidir avant de découper en quatre parts"
+      astuce: "C'est ce qui rend la tourte mangeable à la main, sans couverts."
       needs: []
       time_min: 3
       attended: false
-
   baby_portion:
     take: "2 c. à s. de poêlée de légumes, avant salage de la garniture"
     prep: "écraser à la fourchette avec un peu de parmesan"

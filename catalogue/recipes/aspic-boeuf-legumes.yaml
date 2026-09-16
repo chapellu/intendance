@@ -59,12 +59,14 @@ recipe:
       time_min: 8
       attended: true
     - id: gelifier
-      action: "Bien délayer l'agar-agar dans l'eau FROIDE, verser dans la casserole, mélanger et compter 1 minute de cuisson après reprise de l'ébullition — ne mettre NI câpres NI cornichons dans la terrine, leur acidité empêcherait la prise ; les servir à côté"
+      action: "Bien délayer l'agar-agar dans l'eau FROIDE, verser dans la casserole, mélanger et compter 1 minute de cuisson après reprise de l'ébullition"
+      astuce: "L'agar-agar ne prend que s'il a bouilli une minute pleine, et il ne se délaie qu'à froid."
       needs: [simmer]
       time_min: 4
       attended: true
     - id: mouler-aspic
       action: "Verser dans un moule à cake chemisé de papier cuisson"
+      astuce: "Ni câpres ni cornichons dans la terrine : leur acidité empêcherait la prise. Les servir à côté."
       needs: []
       time_min: 3
     - id: prendre-au-frais

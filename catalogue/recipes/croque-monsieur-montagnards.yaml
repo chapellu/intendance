@@ -59,7 +59,8 @@ recipe:
       uses: [oignon]
       time_min: 6
     - id: fondue
-      action: "Faire revenir les oignons dans l'huile d'olive avec une pincée de sel — sans trop saler, le jambon l'est déjà — en petite cocotte, jusqu'à obtenir des notes bien caramélisées, et sans jamais les laisser brûler : c'est le goût de la fondue d'oignons qui se joue là"
+      action: "Faire revenir les oignons en petite cocotte, dans l'huile d'olive avec une pincée de sel, jusqu'à des notes bien caramélisées"
+      astuce: "Sans trop saler — le jambon l'est déjà — et sans jamais les laisser brûler : c'est là que se joue le goût de la fondue d'oignons."
       needs: [pan-fry]
       uses: [oignon, huile-olive, sel]
       time_min: 10
@@ -77,18 +78,28 @@ recipe:
       time_min: 2
       parallel_with: fondue
     - id: monter
-      action: "Sur une première tranche de pain, poser une tranchette de tomme, une tranche de speck, deux cuillerées à soupe de fondue d'oignons et 2 à 3 cornichons recoupés en deux ; couvrir de la seconde tranche et bien appuyer. Procéder de même pour les six"
+      action: "Sur une première tranche de pain : une tranchette de tomme, une tranche de speck, deux cuillerées de fondue d'oignons, 2 à 3 cornichons recoupés"
       needs: []
       uses: [pain-levain, tomme-savoie, jambon-cru, cornichons]
-      time_min: 8
-      kid: {age_min_months: 30, task: "poser les cornichons coupés sur le fromage, puis appuyer sur la tranche du dessus"}
+      time_min: 5
+      kid:
+        age_min_months: 30
+        task: "poser les cornichons coupés sur le fromage"
+    - id: fermer
+      action: "Couvrir de la seconde tranche et bien appuyer, puis faire de même pour les six"
+      needs: []
+      uses: []
+      time_min: 3
+      kid:
+        age_min_months: 30
+        task: "appuyer sur la tranche du dessus"
     - id: cuire
-      action: "Enfourner sur une plaque de cuisson 10 min : le pain doit être bien doré et le fromage coulant à cœur"
+      action: "Enfourner sur une plaque de cuisson 10 min"
+      astuce: "Le pain doit être bien doré et le fromage coulant à cœur."
       needs: [bake]
       uses: []
       time_min: 10
-      attended: true        # 240 °C sur du pain : ça passe de doré à noir sans prévenir
-
+      attended: true
   # PAS DE PRÉLÈVEMENT BÉBÉ, ET IL EST IMPOSSIBLE PAR CONSTRUCTION — même cas
   # que le velouté p. 34 et le rôti p. 55, pas un oubli. Le sel entre dans la
   # cocotte à la première minute, avec les oignons crus : il n'existe aucun

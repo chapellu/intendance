@@ -78,15 +78,13 @@ recipe:
       uses: [oignon, courgettes]
       time_min: 10
     - id: poeler
-      action: "Faire revenir l'oignon quelques minutes dans l'huile d'olive, ajouter les courgettes et les laisser dorer à feu vif jusqu'à ce qu'elles soient colorées et aient rendu toute leur eau"
+      action: "Faire revenir l'oignon quelques minutes dans l'huile, ajouter les courgettes et les laisser dorer à feu vif"
+      astuce: "Jusqu'à ce qu'elles soient colorées et aient rendu toute leur eau."
       needs: [pan-fry]
       uses: [huile-olive-farce, oignon, courgettes]
       time_min: 15
-      # Le refroidissement n'est pas du confort : l'œuf arrive ensuite et
-      # coagulerait dans une poêlée brûlante. Court (sous la coupure de 90 min),
-      # donc il ne scinde pas la recette — on le passe à étaler la pâte.
       attente_min: 10
-      attente_raison: refroidissement
+      attente_raison: "refroidissement"
     - id: faire-la-pate
       action: "Pendant la poêlée : mélanger la farine et le sel, verser l'eau et l'huile, pétrir énergiquement, puis diviser en deux pâtons dont l'un un peu plus petit"
       needs: []

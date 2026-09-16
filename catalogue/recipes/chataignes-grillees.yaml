@@ -65,13 +65,17 @@ recipe:
       attended: false
       charge_partielle: true
     - id: trier
-      action: "Faire tremper les châtaignes dans une bassine d'eau et jeter celles qui surnagent : elles sont véreuses"
+      action: "Faire tremper les châtaignes dans une bassine d'eau et jeter celles qui surnagent"
+      astuce: "Celles qui flottent sont véreuses."
       needs: []
       uses: [chataignes]
       time_min: 3
-      kid: {age_min_months: 30, task: "repêcher à l'écumoire les châtaignes qui flottent"}
+      kid:
+        age_min_months: 30
+        task: "repêcher à l'écumoire les châtaignes qui flottent"
     - id: inciser
-      action: "Inciser avec précaution le dessus de chaque châtaigne en croix, au couteau d'office à lame bien lisse ; veiller à réellement inciser la première peau, sinon les châtaignes exploseront à la cuisson"
+      action: "Inciser le dessus de chaque châtaigne en croix, au couteau d'office à lame bien lisse"
+      astuce: "Veiller à réellement inciser la première peau : sans ça, les châtaignes explosent à la cuisson."
       needs: []
       uses: []
       time_min: 10
@@ -82,19 +86,20 @@ recipe:
       time_min: 10
       charge_partielle: true
     - id: griller
-      action: "Les faire griller 15 minutes au four préchauffé à 240 °C — l'autrice propose aussi de les verser dans une poêle à châtaignes, à trous, et de les griller 10 min sur la flamme d'une cheminée ou sur le feu de la cuisinière, en secouant régulièrement"
+      action: "Les faire griller 15 minutes au four préchauffé à 240 °C"
+      astuce: "L'autrice propose aussi la poêle à châtaignes, à trous : 10 min sur la flamme d'une cheminée ou sur le feu, en secouant régulièrement."
       needs: [bake]
       uses: []
       time_min: 15
       attended: true
     - id: reposer
-      action: "Les transférer dans un sac en papier kraft — surtout pas dans du papier journal, dont les encres peuvent être toxiques au contact de la chaleur — et laisser reposer 10 minutes au chaud sous une couverture, pour faciliter l'épluchage"
+      action: "Les transférer dans un sac en papier kraft et laisser reposer 10 minutes au chaud sous une couverture"
+      astuce: "Surtout pas de papier journal, dont les encres peuvent être toxiques au contact de la chaleur. Le repos est ce qui facilite l'épluchage."
       needs: []
       uses: []
       time_min: 3
       attente_min: 10
-      attente_raison: repos
-
+      attente_raison: "repos"
   baby_portion:
     take: "quelques châtaignes grillées et épluchées"
     prep: "écraser à la fourchette avec un peu d'eau tiède — jamais entières, elles étouffent"

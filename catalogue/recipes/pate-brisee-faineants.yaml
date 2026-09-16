@@ -34,15 +34,18 @@ recipe:
 
   steps:
     - id: malaxer
-      action: "Mettre tous les ingrédients « en vrac » dans un saladier et malaxer à la main juste ce qu'il faut pour obtenir une pâte homogène"
+      action: "Mettre tous les ingrédients « en vrac » dans un saladier et malaxer à la main"
+      astuce: "Juste ce qu'il faut pour obtenir une pâte homogène : trop travaillée, elle devient élastique."
       needs: []
       time_min: 5
-      kid: {age_min_months: 24, task: "malaxer la pâte avec les mains propres"}
+      kid:
+        age_min_months: 24
+        task: "malaxer la pâte avec les mains propres"
     - id: diviser
-      action: "Découper la pâte en 4 pâtons — c'est en pâtons individuels qu'elle se congèle et se ressort un par un"
+      action: "Découper la pâte en 4 pâtons"
+      astuce: "C'est en pâtons individuels qu'elle se congèle et se ressort un par un."
       needs: []
       time_min: 2
-
   emits:
     - kind: base
       type: pate-brisee-portion

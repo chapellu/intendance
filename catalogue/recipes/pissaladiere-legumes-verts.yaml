@@ -57,7 +57,8 @@ recipe:
       time_min: 1
       attended: false
     - id: preparer-les-fenouils
-      action: "Si la poêlée est au fenouil : enlever les feuilles extérieures coriaces et filandreuses et recouper les tiges à ras — c'est ce qui fait la différence entre une poêlée tendre et une poêlée fibreuse"
+      action: "Si la poêlée est au fenouil : enlever les feuilles extérieures coriaces et recouper les tiges à ras"
+      astuce: "C'est ce qui fait la différence entre une poêlée tendre et une poêlée fibreuse."
       needs: []
       time_min: 10
     - id: etaler-pissaladiere
@@ -69,11 +70,12 @@ recipe:
       needs: []
       time_min: 4
     - id: relever-pissaladiere
-      action: "Laisser lever encore une vingtaine de minutes — facultatif"
+      action: "Laisser lever encore une vingtaine de minutes"
+      astuce: "Facultatif."
       needs: []
       time_min: 1
-      attente_min: 20
       attended: false
+      attente_min: 20
     - id: cuire-pissaladiere
       action: "Enfourner 15 min"
       needs: [bake]

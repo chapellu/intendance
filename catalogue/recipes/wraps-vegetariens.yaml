@@ -61,10 +61,10 @@ recipe:
       needs: []
       time_min: 2
     - id: rouler
-      action: "Tartiner la crêpe de purée d'avocat, répartir carotte et tofu, TASSER la garniture, puis rouler en terminant par la partie laissée nue ; recouper en deux et emballer chaque wrap"
+      action: "Tartiner la crêpe de purée d'avocat, répartir carotte et tofu, TASSER la garniture, puis rouler en terminant par la partie nue"
+      astuce: "Recouper en deux et emballer chaque wrap."
       needs: []
       time_min: 5
-
   baby_portion:
     take: "un quart d'avocat, avant d'y mettre sel et poivre"
     prep: "écraser à la fourchette avec une pointe de jus de citron"

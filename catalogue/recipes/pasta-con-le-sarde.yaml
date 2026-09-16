@@ -48,11 +48,12 @@ recipe:
       time_min: 10
       attended: false
     - id: fondre-oignons
-      action: "Pendant ce temps : détailler les oignons en petits cubes et les faire revenir à l'huile d'olive dans une petite cocotte avec un peu de sel, l'origan et le fenouil ciselé, jusqu'à ce qu'ils soient tendres et bien dorés — sans les laisser brûler"
+      action: "Pendant ce temps : détailler les oignons en petits cubes et les faire revenir à l'huile en petite cocotte, avec un peu de sel, l'origan et le fenouil ciselé"
+      astuce: "Jusqu'à ce qu'ils soient tendres et bien dorés, sans jamais les laisser brûler."
       needs: [pan-fry]
       time_min: 10
-      parallel_with: cuire-pates
       attended: true
+      parallel_with: "cuire-pates"
     - id: persillade
       action: "Hacher l'ail et le persil"
       needs: []

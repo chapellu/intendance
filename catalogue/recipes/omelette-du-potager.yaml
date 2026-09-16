@@ -50,7 +50,8 @@ recipe:
       time_min: 10
       kid: {age_min_months: 30, task: "brosser les légumes sous l'eau"}
     - id: cuire-racines
-      action: "Faire revenir les racines à l'huile d'olive dans une grande poêle en fonte ou céramique — l'inox accroche trop — saler, couvrir et compter 10 min en remuant de temps en temps"
+      action: "Faire revenir les racines à l'huile d'olive dans une grande poêle en fonte ou céramique, saler, couvrir et compter 10 min en remuant de temps en temps"
+      astuce: "Surtout pas d'inox : il accroche trop pour cette cuisson-là."
       needs: [pan-fry]
       time_min: 10
       attended: false

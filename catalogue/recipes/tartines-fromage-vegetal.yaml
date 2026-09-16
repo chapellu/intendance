@@ -50,10 +50,10 @@ recipe:
       needs: [chop-coarse]
       time_min: 1
     - id: mettre-en-bocaux
-      action: "Transférer dans deux petits bocaux individuels bien fermés — un par repas — et mettre au frais"
+      action: "Transférer dans deux petits bocaux individuels bien fermés et mettre au frais"
+      astuce: "Un bocal par repas."
       needs: []
       time_min: 2
-
   baby_portion:
     take: "2 c. à s. de tofu nature, avant sel, poivre et piment"
     prep: "mixer avec un filet d'huile d'olive"

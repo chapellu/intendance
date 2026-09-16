@@ -45,7 +45,8 @@ recipe:
       time_min: 5
       attended: true
     - id: cuire-champignons
-      action: "Émincer les champignons, les ajouter avec l'ail émincé et les cuire à feu vif jusqu'à ce qu'ils aient rendu toute leur eau et soient bien dorés"
+      action: "Émincer les champignons, les ajouter avec l'ail émincé et les cuire à feu vif"
+      astuce: "Jusqu'à ce qu'ils aient rendu toute leur eau et soient bien dorés — tant qu'il reste du liquide, ils bouillent."
       needs: [pan-fry]
       time_min: 10
       attended: true
@@ -57,7 +58,8 @@ recipe:
       time_min: 1
       parallel_with: cuire-champignons
     - id: mixer
-      action: "Réunir la poêlée, les œufs, le persil, les flocons et l'emmental râpé, et mixer par impulsions courtes : une pâte homogène qui garde des morceaux, surtout pas une bouillie"
+      action: "Réunir la poêlée, les œufs, le persil, les flocons et l'emmental râpé, et mixer par impulsions courtes"
+      astuce: "Une pâte homogène qui garde des morceaux, surtout pas une bouillie."
       needs: [chop-coarse]
       time_min: 5
       # Le livre dit « le bol d'un robot ». Le foyer n'en a pas : la chaîne de

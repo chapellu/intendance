@@ -53,7 +53,8 @@ recipe:
       time_min: 1
       attended: false
     - id: lit-de-courgettes
-      action: "Étaler la poêlée dans un plat individuel plutôt LARGE — le crumble y sera plus croustillant"
+      action: "Étaler la poêlée dans un plat individuel plutôt LARGE"
+      astuce: "Large, le crumble est plus croustillant : plus de surface au four."
       needs: []
       time_min: 3
     - id: sabler-le-crumble
@@ -62,11 +63,11 @@ recipe:
       time_min: 5
       seasoning_gate: true
     - id: cuire-crumble
-      action: "Étaler le sablé sur les courgettes — sans tasser pour un crumble sablonneux, légèrement tassé pour une croûte qui résiste au transport — puis enfourner 25 min"
+      action: "Étaler le sablé sur les courgettes, puis enfourner 25 min"
+      astuce: "Sans tasser pour un crumble sablonneux, légèrement tassé pour une croûte qui résiste au transport."
       needs: [bake]
       time_min: 25
       attended: false
-
   baby_portion:
     take: "2 c. à s. de poêlée de courgettes, avant que le sablé soit salé"
     prep: "écraser à la fourchette"

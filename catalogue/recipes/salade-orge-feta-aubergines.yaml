@@ -52,7 +52,8 @@ recipe:
 
   steps:
     - id: dorer-oignon-steak
-      action: "Faire revenir l'oignon en cubes dans une petite cocotte avec l'huile d'olive, ajouter le steak, saler, laisser dorer quelques minutes puis émietter le steak en gros morceaux à la cuillère en bois"
+      action: "Faire revenir l'oignon en cubes en petite cocotte avec l'huile, ajouter le steak, saler, laisser dorer, puis l'émietter en gros morceaux à la cuillère de bois"
+      astuce: "L'émietter après la coloration, pas avant : haché cru, il rend son eau et ne dore plus."
       needs: [pan-fry]
       time_min: 8
       attended: true

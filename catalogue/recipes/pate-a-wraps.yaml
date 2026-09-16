@@ -37,7 +37,8 @@ recipe:
 
   steps:
     - id: faire-la-pate-wraps
-      action: "Mélanger la farine et le sel, faire un puits, ajouter le reste en fouettant jusqu'à ce qu'il n'y ait plus de grumeaux"
+      action: "Mélanger la farine et le sel, faire un puits, ajouter le reste en fouettant"
+      astuce: "Jusqu'à ce qu'il n'y ait plus le moindre grumeau."
       needs: []
       time_min: 5
     - id: reposer
@@ -46,12 +47,17 @@ recipe:
       time_min: 1
       attente_min: 30
       attended: false
-    - id: cuire-les-crepes
-      action: "Préchauffer une poêle de 20 à 22 cm en céramique, fonte ou tôle noire — surtout pas d'inox — l'huiler au pinceau, verser une louchée, étaler finement et cuire les deux faces ; une fois la poêle bien chaude, inutile de huiler entre chaque crêpe"
+    - id: chauffer-poele-wraps
+      action: "Préchauffer une poêle de 20 à 22 cm en céramique, fonte ou tôle noire, et l'huiler au pinceau"
+      astuce: "Surtout pas d'inox. Et une fois la poêle bien chaude, inutile de huiler entre chaque crêpe."
       needs: [pan-fry]
-      time_min: 30
+      time_min: 4
       attended: true
-
+    - id: cuire-les-crepes
+      action: "Verser une louchée, étaler finement et cuire les deux faces, puis recommencer"
+      needs: [pan-fry]
+      time_min: 26
+      attended: true
   emits:
     - kind: base
       type: crepes-wraps

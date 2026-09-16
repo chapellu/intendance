@@ -39,7 +39,8 @@ recipe:
       needs: []
       time_min: 2
     - id: delayer-pizza
-      action: "Délayer la levure dans l'eau tiède — jamais plus de 40 °C — l'ajouter dans le puits avec l'huile d'olive, puis mélanger à la cuillère en bois ou au robot"
+      action: "Délayer la levure dans l'eau tiède, l'ajouter dans le puits avec l'huile d'olive, puis mélanger à la cuillère en bois ou au robot"
+      astuce: "Jamais plus de 40 °C : au-delà, la chaleur tue la levure."
       needs: []
       time_min: 6
     - id: lever-pizza

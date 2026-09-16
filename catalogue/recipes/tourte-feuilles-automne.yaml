@@ -73,29 +73,31 @@ recipe:
       # accuser la sauteuse à tort.
       charge_partielle: true
     - id: courge
-      action: "Pendant ce temps, découper la courge en gros morceaux — certaines variétés comme le potimarron ou la butternut ne s'épluchent pas"
+      action: "Pendant ce temps, découper la courge en gros morceaux"
+      astuce: "Certaines variétés, comme le potimarron ou la butternut, ne s'épluchent pas."
       needs: []
       uses: [courge]
       time_min: 15
-      parallel_with: revenir
+      parallel_with: "revenir"
     - id: mijoter
-      action: "Quand la poêlée de poireaux commence à bien dorer, ajouter les cubes de potiron et un verre d'eau, mélanger, poser un couvercle et laisser mijoter environ 10 minutes — le temps de faire la pâte"
-      # `simmer-large` ET NON `pan-fry` : à couvert, avec un verre d'eau, ce
-      # n'est plus une poêlée mais un mijotage — et c'est LUI qui porte les
-      # 1,5 kg de courge, donc la cocotte. J'avais d'abord écrit `pan-fry` puis
-      # « corrigé » l'inventaire du foyer en donnant `pan-fry` à la cocotte ;
-      # c'était un pansement sur une erreur de saisie, et il rendait les
-      # escalopes p. 39 faisables en lot et demi alors qu'une cocotte donne du
-      # VOLUME et pas de la SURFACE. Un test de l'app l'a attrapé.
+      action: "Quand la poêlée de poireaux commence à bien dorer, ajouter les cubes de potiron et un verre d'eau, couvrir et laisser mijoter environ 10 minutes"
+      astuce: "Le temps de faire la pâte."
       needs: [simmer-large]
       uses: [eau]
       time_min: 12
-    - id: pate
-      action: "Diluer le double concentré de tomate dans le vin blanc, puis mélanger dans un saladier avec tous les autres ingrédients de la pâte, en la travaillant juste ce qu'il faut pour former une boule homogène ; la diviser en deux pâtons « deux tiers / un tiers »"
+    - id: diluer-concentre
+      action: "Diluer le double concentré de tomate dans le vin blanc"
       needs: []
-      uses: [concentre-tomate, vin-blanc-sec, farine-complete, huile-pate, sel]
-      time_min: 8
-      parallel_with: mijoter
+      uses: [concentre-tomate, vin-blanc-sec]
+      time_min: 2
+      parallel_with: "mijoter"
+    - id: pate
+      action: "Mélanger dans un saladier avec les autres ingrédients de la pâte, puis la diviser en deux pâtons « deux tiers / un tiers »"
+      astuce: "La travailler juste ce qu'il faut pour former une boule homogène."
+      needs: []
+      uses: [farine-complete, huile-pate, sel]
+      time_min: 6
+      parallel_with: "mijoter"
     - id: prechauffer
       action: "Préchauffer le four"
       needs: [bake]
@@ -115,7 +117,8 @@ recipe:
       time_min: 10
       kid: {age_min_months: 30, task: "découper les feuilles à l'emporte-pièce et dessiner les nervures à la fourchette"}
     - id: garnir
-      action: "Quand la chair du potiron commence un peu à se défaire, ajouter 150 g de parmesan et bien mélanger ; en garnir le fond de tarte, puis saupoudrer avec le parmesan restant"
+      action: "Ajouter 150 g de parmesan, bien mélanger, en garnir le fond de tarte, puis saupoudrer du parmesan restant"
+      astuce: "Attendre que la chair du potiron commence un peu à se défaire."
       needs: []
       uses: [parmesan]
       time_min: 6

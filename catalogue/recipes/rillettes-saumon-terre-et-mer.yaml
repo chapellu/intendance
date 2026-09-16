@@ -42,13 +42,19 @@ recipe:
 
   steps:
     - id: rincer-l-algue
-      action: "Rincer la laitue de mer dans trois eaux différentes — elle est conservée au sel, et ce rinçage n'est pas facultatif"
+      action: "Rincer la laitue de mer dans trois eaux différentes"
+      astuce: "Elle est conservée au sel, et ce rinçage n'est pas facultatif."
       needs: []
       time_min: 4
+    - id: tailler-saumon-tm
+      action: "Émincer finement poireau et oignon, tailler la carotte en petits cubes"
+      needs: []
+      time_min: 3
     - id: dorer-les-legumes
-      action: "Émincer finement poireau et oignon, tailler la carotte en petits cubes, puis les faire revenir à l'huile d'olive dans une petite cocotte jusqu'à légère coloration des sucs"
+      action: "Les faire revenir à l'huile d'olive dans une petite cocotte"
+      astuce: "Jusqu'à légère coloration des sucs."
       needs: [pan-fry]
-      time_min: 8
+      time_min: 5
       attended: true
     - id: saler-mouiller
       action: "Ajouter le saumon, mouiller au vin blanc, saler et poivrer"

@@ -49,13 +49,19 @@ recipe:
     - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
 
   steps:
+    - id: emincer-avoine
+      action: "Émincer finement l'oignon et le poireau"
+      needs: []
+      time_min: 3
     - id: dorer-les-sucs-avoine
-      action: "Émincer finement l'oignon et le poireau, les faire revenir à l'huile d'olive dans une petite cocotte, ajouter le jambon en lanières et laisser cuire jusqu'à ce que les sucs commencent à dorer"
+      action: "Les faire revenir à l'huile d'olive en petite cocotte, ajouter le jambon en lanières et laisser cuire"
+      astuce: "Jusqu'à ce que les sucs commencent à dorer : c'est eux qui feront le goût du mijoté."
       needs: [pan-fry]
-      time_min: 10
+      time_min: 7
       attended: true
     - id: mijoter-avoine
-      action: "Ajouter les champignons rincés et égouttés ainsi que l'avoine, mouiller avec le verre d'eau, puis mijoter 10 min — s'il reste du liquide, c'est normal, il épaissira en sauce crémeuse"
+      action: "Ajouter les champignons rincés et égouttés ainsi que l'avoine, mouiller du verre d'eau, puis mijoter 10 min"
+      astuce: "S'il reste du liquide, c'est normal : il épaissira en sauce crémeuse."
       needs: [simmer]
       time_min: 10
       attended: false

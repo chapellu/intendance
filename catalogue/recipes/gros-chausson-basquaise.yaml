@@ -52,7 +52,8 @@ recipe:
 
   steps:
     - id: prechauffer-chausson
-      action: "Préchauffer le four à 180 °C — et si possible enfourner la frittata p. 97 en même temps : deux déjeuners d'un coup"
+      action: "Préchauffer le four à 180 °C"
+      astuce: "Si possible, enfourner la frittata p. 97 en même temps : deux déjeuners d'un coup."
       needs: [bake]
       time_min: 1
       attended: false

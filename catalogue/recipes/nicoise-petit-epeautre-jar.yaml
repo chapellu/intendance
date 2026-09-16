@@ -66,15 +66,16 @@ recipe:
       time_min: 8
       parallel_with: cuire-oeuf-nicoise
     - id: empiler-le-bocal
-      action: "Empiler dans un grand bocal d'un litre, DANS CET ORDRE : le petit épeautre, puis concombre, radis, poivron, tomates, le thon émietté, l'œuf coupé en quatre, et ENFIN le mesclun tout en haut — c'est cet ordre qui évite que la salade arrive flétrie"
+      action: "Empiler dans un grand bocal d'un litre : petit épeautre, concombre, radis, poivron, tomates, thon, œuf, mesclun"
+      astuce: "Dans cet ordre, et il n'est pas décoratif : c'est lui qui évite que la salade arrive flétrie — le mesclun ne doit toucher ni la sauce ni le jus des tomates."
       needs: []
       time_min: 4
     - id: sauce-a-part
-      action: "Mélanger huile, vinaigre, origan et sel, puis verser dans une petite bouteille À PART — la sauce ne rejoint la salade qu'au moment de savourer"
+      action: "Mélanger huile, vinaigre, origan et sel, puis verser dans une petite bouteille À PART"
+      astuce: "La sauce ne rejoint la salade qu'au moment de savourer."
       needs: []
       time_min: 3
       seasoning_gate: true
-
   baby_portion:
     take: "2 c. à s. de céréale cuite et un quart d'œuf, avant que la sauce soit salée"
     prep: "écraser à la fourchette"

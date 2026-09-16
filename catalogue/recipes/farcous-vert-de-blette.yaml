@@ -48,7 +48,8 @@ recipe:
       time_min: 6
       kid: {age_min_months: 30, task: "tourner l'essoreuse à salade"}
     - id: mixer
-      action: "Mixer ensemble les feuilles, la cébette, le persil, l'ail, les œufs, la farine, le lait, la poudre à lever et le fromage, jusqu'à une pâte à crêpes verte et bien épaisse"
+      action: "Mixer les feuilles, la cébette, le persil, l'ail, les œufs, la farine, le lait, la poudre à lever et le fromage"
+      astuce: "Jusqu'à une pâte à crêpes verte et bien épaisse."
       needs: [blend-smooth]
       time_min: 5
       # FRICTION RÉELLE : environ 1,4 kg de pâte très épaisse. Le foyer n'a qu'un
@@ -60,7 +61,8 @@ recipe:
       time_min: 1
       seasoning_gate: true    # le prélèvement bébé est injecté AVANT cette étape
     - id: cuire-poelees
-      action: "Cuire par poêlées dans une grande poêle bien huilée, en versant de petites louches comme des blinis, 2 à 3 min par face jusqu'à ce qu'ils soient bien dorés"
+      action: "Cuire par poêlées dans une grande poêle bien huilée, en versant de petites louches comme des blinis"
+      astuce: "2 à 3 min par face, jusqu'à ce qu'ils soient bien dorés."
       needs: [pan-fry]
       time_min: 20
       attended: true

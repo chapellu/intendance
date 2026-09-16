@@ -47,11 +47,13 @@ recipe:
 
   steps:
     - id: preparer-volaille
-      action: "Couper les liens du poulet — les jointures des cuisses cuisent mieux détachées — et le farcir de quelques herbes aromatiques"
+      action: "Couper les liens du poulet et le farcir de quelques herbes aromatiques"
+      astuce: "Les jointures des cuisses cuisent mieux détachées."
       needs: []
       time_min: 5
     - id: saler-badigeonner
-      action: "Saler le poulet, puis badigeonner la peau de jus de citron : c'est ce qui la rend dorée sans être grasse"
+      action: "Saler le poulet, puis badigeonner la peau de jus de citron"
+      astuce: "C'est ce qui la rend dorée sans être grasse."
       needs: []
       time_min: 3
       seasoning_gate: true

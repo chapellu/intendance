@@ -60,20 +60,22 @@ recipe:
       time_min: 9
       attended: false
     - id: faire-les-croutons
-      action: "Passer les tranches de pain de mie au grille-pain, les couper en croûtons et les réserver dans un sachet hermétique — À TEMPÉRATURE AMBIANTE, jamais au frais"
+      action: "Passer les tranches de pain de mie au grille-pain, les couper en croûtons et les réserver dans un sachet hermétique"
+      astuce: "À TEMPÉRATURE AMBIANTE, jamais au frais : le froid les ramollit."
       needs: []
       time_min: 4
-      parallel_with: oeuf-mollet-cesar
+      parallel_with: "oeuf-mollet-cesar"
     - id: monter-la-boite
-      action: "Mettre dans la boîte-repas la laitue en morceaux et le poulet en dés de 2 cm, ajouter l'œuf écalé coupé en quatre et des copeaux de parmesan faits à l'économe, puis fermer"
+      action: "Mettre dans la boîte-repas la laitue en morceaux et le poulet en dés de 2 cm, puis l'œuf écalé en quartiers et des copeaux de parmesan"
+      astuce: "Les copeaux se font à l'économe."
       needs: []
       time_min: 5
     - id: sauce-cesar
-      action: "Mélanger huile, jus de citron, moutarde, anchois hachés très fin et sel, puis verser dans un petit flacon qui ferme bien — la sauce ne rejoint la salade qu'au moment de manger"
+      action: "Mélanger huile, jus de citron, moutarde, anchois hachés très fin et sel, puis verser dans un petit flacon qui ferme bien"
+      astuce: "La sauce ne rejoint la salade qu'au moment de manger."
       needs: []
       time_min: 3
       seasoning_gate: true
-
   baby_portion:
     take: "un morceau de poulet et un quart d'œuf, avant que la sauce soit salée"
     prep: "écraser à la fourchette"

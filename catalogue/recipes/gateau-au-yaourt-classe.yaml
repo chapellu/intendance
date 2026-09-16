@@ -86,14 +86,22 @@ recipe:
       uses: []
       time_min: 1
       attended: false
-    - id: pate
-      action: "Mettre la farine, le sucre, le sel et la poudre à lever dans un saladier, mélanger et faire un puits ; y verser les œufs, l'huile et le yaourt, puis bien mélanger"
+    - id: melanger-secs-gateau
+      action: "Mettre la farine, le sucre, le sel et la poudre à lever dans un saladier, mélanger et faire un puits"
       needs: []
-      uses: [farine-complete, sucre-roux, sel, poudre-a-lever, oeufs, huile-olive, yaourt-nature]
-      time_min: 8
-      kid: {age_min_months: 30, task: "vider les pots de farine dans le saladier et compter à voix haute"}
+      uses: [farine-complete, sucre-roux, sel, poudre-a-lever]
+      time_min: 3
+      kid:
+        age_min_months: 30
+        task: "vider les pots de farine dans le saladier et compter à voix haute"
+    - id: pate
+      action: "Verser les œufs, l'huile et le yaourt dans le puits, puis bien mélanger"
+      needs: []
+      uses: [oeufs, huile-olive, yaourt-nature]
+      time_min: 5
     - id: cuire
-      action: "Verser la pâte dans un moule à couronne ou à savarin — donc avec un trou au milieu — d'environ 24 cm de diamètre, puis enfourner environ 25 minutes"
+      action: "Verser la pâte dans un moule à couronne d'environ 24 cm, puis enfourner environ 25 minutes"
+      astuce: "Un moule à couronne ou à savarin — donc avec un trou au milieu."
       needs: [bake]
       uses: []
       time_min: 25
@@ -123,11 +131,21 @@ recipe:
       needs: []
       uses: [creme-coco, miel-chantilly, vanille-chantilly]
       time_min: 6
-    - id: monter
-      action: "Quand le gâteau est démoulé et bien refroidi, l'ouvrir en deux et réserver le haut ; poser la base sur une assiette, l'imbiber avec la moitié du sirop, disposer les morceaux de fruits bien serrés, étaler la chantilly par-dessus, poser le haut du gâteau et l'imbiber avec le reste de sirop"
+    - id: ouvrir
+      action: "Quand le gâteau est démoulé et bien refroidi, l'ouvrir en deux et réserver le haut"
       needs: []
       uses: []
-      time_min: 10
+      time_min: 2
+    - id: garnir-gateau
+      action: "Poser la base sur une assiette, l'imbiber de la moitié du sirop et disposer les morceaux de fruits bien serrés"
+      needs: []
+      uses: []
+      time_min: 5
+    - id: monter
+      action: "Étaler la chantilly par-dessus, poser le haut du gâteau et l'imbiber du reste de sirop"
+      needs: []
+      uses: []
+      time_min: 3
     - id: servir
       action: "Juste avant de servir, saupoudrer éventuellement de sucre glace"
       needs: []

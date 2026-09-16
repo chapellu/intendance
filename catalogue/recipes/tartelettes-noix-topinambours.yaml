@@ -88,11 +88,17 @@ recipe:
       needs: []
       uses: [oignon]
       time_min: 3
-    - id: poeler
-      action: "Faire colorer l'oignon avec le beurre dans une grande sauteuse, ajouter les pommes de terre et les topinambours, saler, poivrer, et faire dorer le tout une douzaine de minutes sans laisser noircir le beurre ; couper le feu quand les pommes de terre sont presque cuites, encore un peu fermes"
+    - id: colorer-oignon
+      action: "Faire colorer l'oignon avec le beurre dans une grande sauteuse"
       needs: [pan-fry]
-      uses: [beurre, pomme-de-terre, topinambours, sel-garniture, poivre]
-      time_min: 15
+      uses: [beurre]
+      time_min: 3
+    - id: poeler
+      action: "Ajouter les pommes de terre et les topinambours, saler, poivrer, et faire dorer une douzaine de minutes"
+      astuce: "Sans laisser noircir le beurre. Couper le feu quand les pommes de terre sont presque cuites, encore un peu fermes."
+      needs: [pan-fry]
+      uses: [pomme-de-terre, topinambours, sel-garniture, poivre]
+      time_min: 12
       # LA RECETTE LA PLUS SERRÉE DU CATALOGUE CÔTÉ VAISSELLE. 1,25 kg de
       # tubercules en tranches dans la sauteuse de 28 cm : `facteur_max_vaisselle`
       # donne 1,5 fois le lot de base, donc ça passe une fois et JAMAIS DEUX.
@@ -113,7 +119,8 @@ recipe:
       attended: false
       parallel_with: poeler
     - id: pate
-      action: "Mélanger le vin, l'huile et le sel, puis verser d'un coup sur la farine et travailler la pâte juste ce qu'il faut pour l'amalgamer, sans insister"
+      action: "Mélanger le vin, l'huile et le sel, puis verser d'un coup sur la farine et amalgamer la pâte"
+      astuce: "Juste ce qu'il faut pour l'amalgamer, sans insister."
       needs: []
       uses: [vin-blanc-sec, huile-olive, sel-pate, farine-complete]
       time_min: 6

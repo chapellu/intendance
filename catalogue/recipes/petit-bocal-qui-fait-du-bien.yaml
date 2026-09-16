@@ -67,16 +67,17 @@ recipe:
       time_min: 40
       attended: false
     - id: visser-a-chaud
-      action: "Visser les couvercles sur les pots JUSTE SORTIS DU FOUR, avec des maniques — c'est ce geste qui crée le vide d'air en refroidissant"
+      action: "Visser les couvercles sur les pots JUSTE SORTIS DU FOUR, avec des maniques"
+      astuce: "C'est ce geste qui crée le vide d'air en refroidissant."
       needs: []
       time_min: 3
       attended: true
     - id: verifier-le-vide
-      action: "Laisser refroidir à température ambiante, puis vérifier que la capsule est bien convexe, le centre du couvercle un peu « enfoncé » : c'est la preuve que le vide s'est fait. À défaut, consommer le gâteau dans la semaine"
+      action: "Laisser refroidir à température ambiante, puis vérifier que le centre du couvercle est un peu « enfoncé »"
+      astuce: "C'est la preuve que le vide s'est fait. À défaut, consommer le gâteau dans la semaine."
       needs: []
       time_min: 2
       attended: false
-
   emits:
     - kind: reste-plat
       type: gateau-en-bocal

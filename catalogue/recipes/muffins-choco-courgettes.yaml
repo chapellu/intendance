@@ -74,11 +74,16 @@ recipe:
       uses: [courgettes]
       time_min: 4
       kid: {age_min_months: 30, task: "tourner la manivelle de la râpe à courgette"}
-    - id: melanger
-      action: "Mélanger la farine et la levure, faire un puits, y verser tous les autres ingrédients des muffins — la courgette râpée, le chocolat, le lait, le sirop d'agave et les œufs — puis bien mélanger au fouet"
+    - id: melanger-secs-muffins
+      action: "Mélanger la farine et la levure, puis faire un puits"
       needs: []
-      uses: [farine-complete, poudre-a-lever, courgettes, chocolat-noir, lait-avoine, sirop-agave, oeufs]
-      time_min: 6
+      uses: [farine-complete, poudre-a-lever]
+      time_min: 2
+    - id: melanger
+      action: "Verser dans le puits la courgette râpée, le chocolat, le lait, le sirop d'agave et les œufs, puis bien mélanger au fouet"
+      needs: []
+      uses: [courgettes, chocolat-noir, lait-avoine, sirop-agave, oeufs]
+      time_min: 4
       # Voir l'en-tête : le sort du chocolat n'est pas écrit dans le livre.
     - id: cuire
       action: "Verser dans 8 petites caissettes cartonnées à muffins et enfourner 20 minutes"

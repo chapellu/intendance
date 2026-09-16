@@ -113,27 +113,30 @@ recipes:
     steps:
       - id: eau
         action: "Porter une grande casserole d'eau salée à ébullition"
+        astuce: "Salée comme l'eau de mer, et salée MAINTENANT : c'est le seul moment où les pâtes peuvent prendre du sel."
         needs: [boil]
+        uses: []
         time_min: 6
         attended: false
-        uses: []
       - id: rechauffer-sauce
         action: "Pendant que l'eau chauffe : réchauffer la sauce bolognaise à feu doux, à couvert"
+        astuce: "À couvert et doux : une sauce qui rebout réduit une seconde fois et devient pâteuse."
         needs: [simmer]
-        time_min: 8
-        parallel_with: eau
         uses: [sauce-bolognaise-ing]
+        time_min: 8
+        parallel_with: "eau"
       - id: cuire-pates
         action: "Cuire les pâtes le temps indiqué sur le paquet, égoutter en gardant une louche d'eau de cuisson"
+        astuce: "Prélever la louche AVANT d'égoutter : c'est le geste qu'on oublie, et il n'a pas de rattrapage."
         needs: [boil]
-        time_min: 8
         uses: [pates]
+        time_min: 8
       - id: servir
-        action: "Mêler les pâtes à la sauce hors du feu — un fond d'eau de cuisson si elle est trop épaisse — et servir avec le fromage râpé"
+        action: "Mêler les pâtes à la sauce hors du feu, servir avec le fromage râpé"
+        astuce: "Un fond d'eau de cuisson si la sauce est trop épaisse : son amidon la lie, là où l'eau claire la délave."
         needs: []
-        time_min: 1
         uses: [fromage-rape]
-
+        time_min: 1
   - id: lasagnes
     title: Lasagnes
     yields: {portions_eq: 6}
@@ -162,22 +165,31 @@ recipes:
       - {id: farine, name: farine, qty: 4, unit: c. à s.}
       - {id: fromage-rape, name: comté râpé, qty: 100, unit: g}
     steps:
+      - id: prechauffer
+        action: "Préchauffer le four à 200 °C"
+        needs: [bake]
+        uses: []
+        time_min: 1
+        attended: false
       - id: bechamel
-        action: "Préchauffer le four à 200 °C. Pendant qu'il monte, délayer la farine dans le lait FROID au fouet — à froid elle ne fait pas de grumeaux — puis chauffer à feu moyen sans cesser de remuer jusqu'à ce que la sauce nappe la cuillère"
-        needs: [simmer, bake]
-        time_min: 10
+        action: "Délayer la farine dans le lait FROID au fouet, puis chauffer à feu moyen sans cesser de remuer jusqu'à ce que la sauce nappe la cuillère"
+        astuce: "À froid, la farine ne fait pas de grumeaux — c'est toute la raison de commencer par le lait froid plutôt que par un roux."
+        needs: [simmer]
         uses: [farine, lait]
+        time_min: 9
       - id: monter
-        action: "Monter le plat : une louche de bolognaise au fond, une couche de plaques, de la béchamel, et recommencer en finissant par la béchamel — les plaques du dessus ne doivent jamais rester à sec, c'est là qu'elles restent dures"
+        action: "Monter le plat : une louche de bolognaise au fond, une couche de plaques, de la béchamel, et recommencer en finissant par la béchamel"
+        astuce: "Les plaques du dessus ne doivent jamais rester à sec : c'est là qu'elles restent dures."
         needs: [gratin-vessel]
-        time_min: 10
         uses: [sauce-bolognaise-ing, pates-lasagne]
+        time_min: 10
       - id: enfourner
-        action: "Couvrir de comté râpé et enfourner à 200 °C jusqu'à ce que le dessus soit doré et qu'un couteau traverse les plaques sans résistance"
+        action: "Couvrir de comté râpé et enfourner à 200 °C"
+        astuce: "Prêtes quand le dessus est doré ET qu'un couteau traverse les plaques sans résistance — la couleur seule ment."
         needs: [gratin]
+        uses: [fromage-rape]
         time_min: 30
         attended: false
-        uses: [fromage-rape]
     emits:
       - kind: reste-plat
         type: lasagnes
@@ -207,15 +219,17 @@ recipes:
         time_min: 6
         uses: [oignon, courgettes]
       - id: poeler-legumes
-        action: "Chauffer l'huile dans la sauteuse, faire blondir l'oignon, ajouter les courgettes et les laisser colorer sans trop remuer"
+        action: "Chauffer l'huile dans la sauteuse, faire blondir l'oignon, ajouter les courgettes et les laisser colorer"
+        astuce: "Sans trop remuer : une courgette qu'on retourne sans arrêt rend son eau et bout au lieu de dorer."
         needs: [pan-fry]
-        time_min: 12
         uses: [huile-olive]
+        time_min: 12
       - id: poeler-gnocchis
-        action: "Ajouter les gnocchis CRUS dans la poêle avec les légumes et les faire dorer sur toutes leurs faces — ceux à poêler ne passent pas par l'eau bouillante, c'est tout leur intérêt"
+        action: "Ajouter les gnocchis CRUS dans la poêle avec les légumes et les faire dorer sur toutes leurs faces"
+        astuce: "Ceux à poêler ne passent pas par l'eau bouillante — c'est tout leur intérêt, et les y passer les rend collants."
         needs: [pan-fry]
-        time_min: 6
         uses: [gnocchis]
+        time_min: 6
       - id: parmesan
         action: "Hors du feu, parsemer de parmesan et laisser fondre une minute avant de servir"
         needs: []
@@ -261,16 +275,18 @@ recipes:
         time_min: 3
         uses: [poulet, huile-olive, thym]
       - id: legumes-autour
-        action: "Pommes de terre en gros quartiers et oignons en demi-lunes, disposés autour du poulet : ils cuiront dans le gras qui tombe"
+        action: "Pommes de terre en gros quartiers et oignons en demi-lunes, disposés autour du poulet"
+        astuce: "Autour et pas dessous : ils cuisent dans le gras qui tombe, et sous le poulet ils cuiraient à la vapeur."
         needs: []
-        time_min: 10
         uses: [pommes-de-terre, oignon]
+        time_min: 10
       - id: rotir
-        action: "Enfourner à 200 °C, arroser du jus à mi-cuisson et remuer les pommes de terre. Le poulet est cuit quand la cuisse se détache et que le jus qui sort est clair"
+        action: "Enfourner à 200 °C, arroser du jus à mi-cuisson et remuer les pommes de terre"
+        astuce: "Cuit quand la cuisse se détache et que le jus qui sort est clair. Rose, il faut prolonger — le four ne dessèche pas un poulet arrosé."
         needs: [bake]
+        uses: []
         time_min: 65
         attended: false
-        uses: []
     emits:
       - kind: base
         type: poulet-cuit
@@ -316,10 +332,11 @@ recipes:
         time_min: 8
         uses: [poivron, oignon]
       - id: poeler
-        action: "Saisir les lanières à feu vif dans la sauteuse, sans les noyer : elles doivent rester croquantes"
+        action: "Saisir les lanières à feu vif dans la sauteuse, sans les noyer"
+        astuce: "Elles doivent rester croquantes : à feu doux, ou en trop grande quantité, elles rendent leur eau et bouillent."
         needs: [pan-fry]
-        time_min: 10
         uses: []
+        time_min: 10
       - id: tiedir-tortillas
         action: "Pendant que les légumes saisissent : tiédir les tortillas, à la poêle sèche ou au four éteint encore chaud"
         needs: [pan-fry]
@@ -327,16 +344,17 @@ recipes:
         parallel_with: poeler
         uses: [tortillas]
       - id: rechauffer-poulet
-        action: "Ajouter le poulet effiloché juste le temps de le réchauffer — il est déjà cuit, le repasser à la poêle le dessèche"
+        action: "Ajouter le poulet effiloché, juste le temps de le réchauffer"
+        astuce: "Il est déjà cuit : le repasser vraiment à la poêle le dessèche."
         needs: [pan-fry]
-        time_min: 4
         uses: [poulet-cuit-ing]
+        time_min: 4
       - id: servir
-        action: "Poser la poêle, la crème et le fromage râpé sur la table : chacun garnit sa tortilla"
+        action: "Poser la poêle, la crème et le fromage râpé sur la table"
+        astuce: "Chacun garnit sa tortilla : ce plat se finit à table, et garni en cuisine il arrive mou."
         needs: []
-        time_min: 3
         uses: [creme, fromage-rape]
-
+        time_min: 3
   - id: soupe-de-poule
     title: Soupe de poule aux vermicelles
     yields: {portions_eq: 4}
@@ -365,10 +383,11 @@ recipes:
     steps:
       - id: bouillon
         action: "Couvrir la carcasse d'eau FROIDE à la cocotte, porter à frémissement et laisser tirer à petits bouillons, sans couvrir complètement"
+        astuce: "L'eau froide au départ, c'est ce qui fait la différence : à l'eau chaude, la carcasse se referme et garde son goût."
         needs: [simmer-large]
+        uses: [carcasse-ing]
         time_min: 30
         attended: false
-        uses: [carcasse-ing]
       - id: legumes
         action: "Pendant que le bouillon tire : carottes en rondelles, poireau en tronçons"
         needs: []
@@ -386,11 +405,11 @@ recipes:
         time_min: 6
         uses: []
       - id: vermicelles
-        action: "Jeter les vermicelles dans le bouillon frémissant et compter le temps du paquet — pas plus, ils continuent de gonfler dans l'assiette"
+        action: "Jeter les vermicelles dans le bouillon frémissant et compter le temps du paquet"
+        astuce: "Pas une minute de plus : ils continuent de gonfler dans l'assiette."
         needs: [simmer-large]
-        time_min: 4
         uses: [vermicelles]
-
+        time_min: 4
   - id: curry-pois-chiches
     title: Curry de pois chiches au lait de coco
     yields: {portions_eq: 4}
@@ -410,28 +429,36 @@ recipes:
       - {id: curry, name: curry doux en poudre, qty: 2, unit: c. à c., seasoning: true}
     steps:
       - id: riz
-        action: "Mettre le riz à cuire : c'est lui qui donne le tempo du reste"
+        action: "Mettre le riz à cuire"
+        astuce: "C'est lui qui donne le tempo du reste : tout ce qui suit se cale sur son minuteur."
         needs: [boil]
-        time_min: 15
-        charge_partielle: true   # la casserole tient cet ingrédient, pas le plat
-        attended: false
         uses: [riz]
+        time_min: 15
+        attended: false
+        charge_partielle: true
       - id: oignon
-        action: "Pendant la cuisson du riz : émincer l'oignon, le faire revenir à la sauteuse, puis ajouter le curry et le laisser griller quelques secondes — c'est au contact du gras chaud qu'il libère son parfum, pas dans la sauce"
+        action: "Pendant la cuisson du riz : émincer l'oignon et le faire revenir à la sauteuse"
         needs: [pan-fry]
-        time_min: 8
-        parallel_with: riz
-        uses: [oignon, curry]
+        uses: [oignon]
+        time_min: 6
+        parallel_with: "riz"
+      - id: curry
+        action: "Ajouter le curry et le laisser griller quelques secondes"
+        astuce: "C'est au contact du gras chaud qu'il libère son parfum, pas dans la sauce — jeté dans les tomates, il reste poudreux."
+        needs: [pan-fry]
+        uses: [curry]
+        time_min: 2
       - id: mijoter
         action: "Verser les tomates pelées et le lait de coco, laisser réduire à feu moyen"
         needs: [simmer]
         time_min: 10
         uses: [tomates-pelees, lait-coco]
       - id: pois-chiches
-        action: "Ajouter les pois chiches égouttés et rincés, les réchauffer dans la sauce sans les faire éclater"
+        action: "Ajouter les pois chiches égouttés et rincés, les réchauffer dans la sauce"
+        astuce: "Rincés, vraiment : l'eau de conserve est saumâtre et se sent dans toute la sauce."
         needs: [simmer]
-        time_min: 5
         uses: [pois-chiches]
+        time_min: 5
     emits:
       - kind: reste-plat
         type: curry-pois-chiches
@@ -462,17 +489,19 @@ recipes:
         attended: false
         uses: [riz]
       - id: brocoli
-        action: "Pendant la cuisson du riz : détailler le brocoli en bouquets et le cuire à la vapeur, il doit rester ferme sous la pointe du couteau"
+        action: "Pendant la cuisson du riz : détailler le brocoli en bouquets et le cuire à la vapeur"
+        astuce: "Ferme sous la pointe du couteau, pas tendre : il finit de cuire dans l'assiette."
         needs: [steam]
-        time_min: 10
-        charge_partielle: true   # la casserole tient cet ingrédient, pas le plat
-        parallel_with: riz
         uses: [brocoli]
+        time_min: 10
+        charge_partielle: true
+        parallel_with: "riz"
       - id: saumon
-        action: "Poêler les pavés côté peau d'abord, à feu moyen, et ne les retourner qu'une fois : le cœur doit rester rosé"
+        action: "Poêler les pavés côté peau d'abord, à feu moyen, et ne les retourner qu'une fois"
+        astuce: "Le cœur doit rester rosé. Un saumon cuit à cœur est un saumon sec, et il continue de cuire hors du feu."
         needs: [pan-fry]
-        time_min: 8
         uses: [saumon]
+        time_min: 8
       - id: citron
         action: "Servir avec le citron en quartiers, à presser à table"
         needs: []
@@ -497,31 +526,40 @@ recipes:
       - {id: fromage-rape, name: comté râpé, qty: 80, unit: g}
     steps:
       - id: poireaux
-        action: "Émincer les poireaux et les faire fondre à la sauteuse à feu doux jusqu'à ce qu'ils rendent leur eau et deviennent tendres. Cette eau-là doit partir dans la poêle, sinon elle part dans la pâte"
+        action: "Émincer les poireaux et les faire fondre à la sauteuse à feu doux jusqu'à ce qu'ils rendent leur eau et deviennent tendres"
+        astuce: "Cette eau-là doit partir dans la poêle — sinon elle part dans la pâte, et la quiche a un fond détrempé."
         needs: [pan-fry]
-        time_min: 12
         uses: [poireau]
+        time_min: 12
       - id: appareil
         action: "Battre les œufs avec la crème, poivrer"
         needs: []
         time_min: 3
         uses: [oeufs, creme]
-      - id: foncer
-        action: "Préchauffer le four à 180 °C. Foncer le moule avec la pâte brisée et la piquer à la fourchette"
+      - id: prechauffer
+        action: "Préchauffer le four à 180 °C"
         needs: [bake]
-        time_min: 3
+        uses: []
+        time_min: 1
+        attended: false
+      - id: foncer
+        action: "Foncer le moule avec la pâte brisée et la piquer à la fourchette"
+        astuce: "La piquer, vraiment : sans ça elle gonfle en cloques sous l'appareil et la garniture glisse."
+        needs: []
         uses: [pate-brisee]
+        time_min: 2
       - id: garnir
         action: "Étaler les poireaux sur la pâte, verser l'appareil par-dessus, couvrir de comté râpé"
         needs: []
         time_min: 2
         uses: [fromage-rape]
       - id: cuire
-        action: "Enfourner à 180 °C jusqu'à ce que le centre soit pris — il ne doit plus trembler quand on bouge le moule — et le dessus doré"
+        action: "Enfourner à 180 °C jusqu'à ce que le centre soit pris et le dessus doré"
+        astuce: "« Pris » veut dire qu'il ne tremble plus quand on bouge le moule."
         needs: [bake]
+        uses: []
         time_min: 35
         attended: false
-        uses: []
     emits:
       - kind: reste-plat
         type: quiche
@@ -554,21 +592,24 @@ recipes:
         attended: false
         uses: [riz]
       - id: revenir
-        action: "Pendant la cuisson du riz : oignon et poivron en dés, à faire revenir à la sauteuse jusqu'à ce que le poivron s'assouplisse"
+        action: "Pendant la cuisson du riz : oignon et poivron en dés, à faire revenir à la sauteuse"
+        astuce: "Jusqu'à ce que le poivron s'assouplisse — encore ferme, il reste croquant au milieu du chili."
         needs: [chop-coarse, pan-fry]
-        time_min: 10
-        parallel_with: riz
         uses: [oignon, poivron]
+        time_min: 10
+        parallel_with: "riz"
       - id: mijoter
         action: "Ajouter les tomates pelées, les écraser à la cuillère, et laisser mijoter à découvert"
+        astuce: "À découvert : un chili doit épaissir. Couvert, il reste une soupe de haricots."
         needs: [simmer]
-        time_min: 18
         uses: [tomates-pelees]
+        time_min: 18
       - id: finir
-        action: "Ajouter les haricots rouges et le maïs égouttés en fin de cuisson, juste pour les réchauffer : plus longtemps et les haricots se défont"
+        action: "Ajouter les haricots rouges et le maïs égouttés, juste pour les réchauffer"
+        astuce: "En toute fin de cuisson : plus longtemps et les haricots se défont en purée."
         needs: [simmer]
-        time_min: 7
         uses: [haricots-rouges, mais]
+        time_min: 7
     emits:
       - kind: reste-plat
         type: chili
@@ -593,23 +634,32 @@ recipes:
       - {id: oignon, name: oignon, qty: 1, unit: pièce}
     steps:
       - id: riz
-        action: "Mettre le riz à cuire, deux minutes de moins que le temps du paquet : il finira de gonfler au four"
+        action: "Mettre le riz à cuire, deux minutes de moins que le temps du paquet"
+        astuce: "Il finira de gonfler au four. À temps plein, le gratin sort pâteux."
         needs: [boil]
-        time_min: 15
-        charge_partielle: true   # la casserole tient cet ingrédient, pas le plat
-        attended: false
         uses: [riz]
+        time_min: 15
+        attended: false
+        charge_partielle: true
       - id: courgettes
-        action: "Pendant la cuisson du riz : oignon émincé et courgettes en rondelles, à faire revenir à la sauteuse jusqu'à ce qu'elles aient rendu leur eau"
+        action: "Pendant la cuisson du riz : oignon émincé et courgettes en rondelles, à faire revenir à la sauteuse"
+        astuce: "Jusqu'à ce qu'elles aient rendu leur eau — sinon elle ressort au four et le gratin nage."
         needs: [pan-fry]
-        time_min: 12
-        parallel_with: riz
         uses: [courgettes, oignon]
+        time_min: 12
+        parallel_with: "riz"
+      - id: prechauffer
+        action: "Préchauffer le four à 200 °C"
+        needs: [bake]
+        uses: []
+        time_min: 1
+        attended: false
       - id: melanger
-        action: "Préchauffer le four à 200 °C. Mêler le riz, les courgettes et les œufs battus, verser dans le plat à gratin"
-        needs: [bake, gratin-vessel]
-        time_min: 6
+        action: "Mêler le riz, les courgettes et les œufs battus, verser dans le plat à gratin"
+        astuce: "Les œufs dans un mélange TIÈDE, pas brûlant : versés sur le riz sortant de la casserole, ils coagulent en filaments."
+        needs: [gratin-vessel]
         uses: [oeufs]
+        time_min: 5
       - id: gratiner
         action: "Couvrir de comté râpé et gratiner à 200 °C jusqu'à ce que le dessus prenne couleur"
         needs: [gratin]
@@ -644,10 +694,11 @@ recipes:
       - {id: huile-olive, name: huile d'olive, qty: 3, unit: c. à s.}
     steps:
       - id: lentilles
-        action: "Sortir les lentilles cuites et les laisser revenir à température — froides du frigo, elles ne prennent pas l'assaisonnement"
+        action: "Sortir les lentilles cuites et les laisser revenir à température"
+        astuce: "Froides du frigo, elles ne prennent pas l'assaisonnement : le gras fige au lieu de les enrober."
         needs: []
-        time_min: 3
         uses: [lentilles-cuites]
+        time_min: 3
       - id: tailler
         action: "Tomates en dés, oignon rouge en lamelles fines"
         needs: []
@@ -659,11 +710,11 @@ recipes:
         time_min: 3
         uses: [huile-olive]
       - id: feta
-        action: "Émietter la feta par-dessus au dernier moment, sans mélanger : elle sale déjà la salade, l'écraser dedans la sale deux fois"
+        action: "Émietter la feta par-dessus au dernier moment, sans mélanger"
+        astuce: "Elle sale déjà la salade : l'écraser dedans la sale deux fois."
         needs: []
-        time_min: 2
         uses: [feta]
-
+        time_min: 2
   - id: croque-monsieur-salade
     title: Croque-monsieur et salade verte
     yields: {portions_eq: 4}
@@ -687,10 +738,11 @@ recipes:
         attended: false
         uses: []
       - id: monter
-        action: "Monter les croques : une tranche, le jambon, le comté râpé, la seconde tranche, et encore un peu de fromage sur le dessus — c'est celui-là qui fait la croûte"
+        action: "Monter les croques : une tranche, le jambon, le comté râpé, la seconde tranche, et encore un peu de fromage dessus"
+        astuce: "C'est le fromage du dessus qui fait la croûte — celui de l'intérieur ne fait que filer."
         needs: []
-        time_min: 8
         uses: [pain-de-mie, jambon, fromage-rape]
+        time_min: 8
       - id: cuire
         action: "Enfourner jusqu'à ce que le dessus soit doré et que le fromage file"
         needs: [bake]
@@ -721,21 +773,29 @@ recipes:
       - {id: fromage-rape, name: comté râpé, qty: 80, unit: g}
 
     steps:
-      - id: foncer
-        action: "Préchauffer le four à 200 °C. Foncer le moule avec la pâte brisée et la piquer à la fourchette"
+      - id: prechauffer
+        action: "Préchauffer le four à 200 °C"
         needs: [bake]
-        time_min: 4
+        uses: []
+        time_min: 1
+        attended: false
+      - id: foncer
+        action: "Foncer le moule avec la pâte brisée et la piquer à la fourchette"
+        needs: []
         uses: [pate-brisee]
+        time_min: 3
       - id: moutarde
-        action: "Étaler la moutarde au fond de la pâte, en couche fine : c'est elle qui tient l'eau des tomates à distance de la pâte"
+        action: "Étaler la moutarde au fond de la pâte, en couche fine"
+        astuce: "C'est elle qui tient l'eau des tomates à distance de la pâte."
         needs: []
-        time_min: 2
         uses: [moutarde]
+        time_min: 2
       - id: tomates
-        action: "Tomates en rondelles, rangées en rosace sans se superposer — superposées elles cuisent à la vapeur au lieu de sécher"
+        action: "Tomates en rondelles, rangées en rosace sans se superposer"
+        astuce: "Superposées, elles cuisent à la vapeur au lieu de sécher."
         needs: []
-        time_min: 7
         uses: [tomates]
+        time_min: 7
       - id: cuire
         action: "Couvrir de comté râpé et enfourner à 200 °C jusqu'à ce que les bords de la pâte soient dorés"
         needs: [bake]

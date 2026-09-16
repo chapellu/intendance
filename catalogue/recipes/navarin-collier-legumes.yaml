@@ -48,10 +48,16 @@ recipe:
       kid: {age_min_months: 30, task: "brosser les carottes et les navets sous l'eau"}
       # L'essuyage est ce qui permet la coloration : des légumes humides
       # bouillent au lieu de dorer.
-    - id: sauter-legumes
-      action: "Faire revenir les échalotes émincées à l'huile dans une grande cocotte, ajouter carottes, navets et pommes de terre, et les faire caraméliser 10 min à feu vif en remuant souvent ; ils doivent être presque cuits à cœur"
+    - id: revenir-echalotes
+      action: "Faire revenir les échalotes émincées à l'huile dans une grande cocotte"
       needs: [simmer-large]
-      time_min: 10
+      time_min: 3
+      attended: true
+    - id: sauter-legumes
+      action: "Ajouter carottes, navets et pommes de terre, et les faire caraméliser à feu vif en remuant souvent"
+      astuce: "Ils doivent être presque cuits à cœur avant le mouillage : c'est là que se fait la couleur du navarin."
+      needs: [simmer-large]
+      time_min: 7
       attended: true
     - id: reserver-legumes
       action: "Saler, poivrer, retirer les légumes à l'écumoire et les réserver"

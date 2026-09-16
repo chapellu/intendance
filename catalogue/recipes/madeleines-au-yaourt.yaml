@@ -46,7 +46,8 @@ recipe:
 
   steps:
     - id: prechauffer-madeleines
-      action: "Préchauffer le four à 240 °C en CHALEUR STATIQUE — pas de chaleur tournante pour les madeleines, c'est le choc thermique qui fait la bosse"
+      action: "Préchauffer le four à 240 °C en CHALEUR STATIQUE"
+      astuce: "Pas de chaleur tournante pour les madeleines : c'est le choc thermique qui fait la bosse."
       needs: [bake]
       time_min: 1
       attended: false
@@ -59,10 +60,16 @@ recipe:
       action: "Verser les œufs, l'huile, le yaourt, le zeste et le jus de citron, puis bien mélanger"
       needs: []
       time_min: 4
+    - id: remplir-empreintes
+      action: "Verser la pâte dans les empreintes bien huilées"
+      astuce: "Plus elles sont larges et profondes, plus les madeleines sont moelleuses."
+      needs: []
+      time_min: 2
     - id: cuire-madeleines
-      action: "Verser la pâte dans les empreintes bien huilées — plus elles sont larges et profondes, plus les madeleines sont moelleuses — et enfourner 12 minutes chrono, en surveillant : selon le four, 10 min peuvent suffire"
+      action: "Enfourner 12 minutes chrono, en surveillant"
+      astuce: "Selon le four, 10 min peuvent suffire."
       needs: [bake]
-      time_min: 12
+      time_min: 10
       attended: true
     - id: seconde-fournee
       action: "Faire si besoin une deuxième fournée avec la pâte restante"

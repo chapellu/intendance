@@ -54,7 +54,8 @@ recipe:
 
   steps:
     - id: lancer-le-riz
-      action: "Mettre le riz à cuire : il démarre en début de recette et sera prêt en même temps que le reste"
+      action: "Mettre le riz à cuire"
+      astuce: "Il démarre en début de recette et sera prêt en même temps que le reste."
       needs: [simmer]
       time_min: 18
       attended: false

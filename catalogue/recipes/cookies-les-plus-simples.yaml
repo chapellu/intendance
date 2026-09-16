@@ -51,11 +51,13 @@ recipe:
       time_min: 1
       attended: false
     - id: hacher-les-fruits
-      action: "Mixer figues et raisins par brèves impulsions, jusqu'à des morceaux de la taille d'un petit raisin sec — attention à ne pas faire de bouillie"
+      action: "Mixer figues et raisins par brèves impulsions, jusqu'à des morceaux de la taille d'un petit raisin sec"
+      astuce: "Attention à ne pas faire de bouillie."
       needs: [chop-coarse]
       time_min: 4
     - id: faire-la-pate-cookies
-      action: "Ajouter tous les autres ingrédients, fleur de sel comprise, et mixer toujours en mode impulsions jusqu'à une pâte homogène et bien malléable, en gardant des morceaux de noisette et de fruit"
+      action: "Ajouter tous les autres ingrédients, fleur de sel comprise, et mixer par impulsions jusqu'à une pâte homogène et malléable"
+      astuce: "En gardant des morceaux de noisette et de fruit."
       needs: [chop-coarse]
       time_min: 5
       seasoning_gate: true
@@ -70,11 +72,11 @@ recipe:
       time_min: 20
       attended: false
     - id: refroidir-sur-grille
-      action: "Laisser un peu tiédir, détacher les gâteaux, puis les laisser refroidir SUR UNE GRILLE et non sur le papier cuisson : c'est ce qui les rend croustillants dehors et moelleux dedans"
+      action: "Laisser un peu tiédir, détacher les gâteaux, puis les laisser refroidir SUR UNE GRILLE"
+      astuce: "Et non sur le papier cuisson : c'est ce qui les rend croustillants dehors et moelleux dedans."
       needs: []
       time_min: 4
       attended: false
-
   baby_portion:
     take: "une figue sèche et quelques raisins, avant que la pâte soit salée"
     prep: "les réhydrater à l'eau chaude et les écraser à la fourchette"

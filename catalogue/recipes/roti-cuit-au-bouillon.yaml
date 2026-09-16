@@ -53,7 +53,8 @@ recipe:
       needs: []
       time_min: 10
     - id: saler-le-bouillon
-      action: "Saler le bouillon au gros sel gris — c'est lui qui fait le goût de « jambon »"
+      action: "Saler le bouillon au gros sel gris"
+      astuce: "C'est lui qui fait le goût de « jambon »."
       needs: []
       time_min: 2
       seasoning_gate: true
@@ -63,13 +64,13 @@ recipe:
       time_min: 60
       attended: false
     - id: refroidir-dans-le-bouillon
-      action: "Laisser le rôti refroidir DANS son bouillon, au frais — c'est ce qui le garde moelleux et parfumé"
+      action: "Laisser le rôti refroidir DANS son bouillon, au frais"
+      astuce: "C'est ce qui le garde moelleux et parfumé."
       needs: []
       time_min: 3
+      attended: false
       attente_min: 720
       attente_raison: "une nuit de refroidissement dans le bouillon, au frais"
-      attended: false
-
   baby_portion:
     take: "un morceau de rôti cru, avant que le bouillon soit salé"
     prep: "cuire à part dans un peu d'eau, puis mixer avec une rondelle de carotte"

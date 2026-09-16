@@ -48,7 +48,8 @@ recipe:
 
   steps:
     - id: garnir-gourmet
-      action: "Tartiner la crêpe de tapenade en laissant le dernier tiers vide, puis disposer le jambon, le chèvre émietté et le basilic — ne PAS saler ni huiler, la tapenade suffit"
+      action: "Tartiner la crêpe de tapenade en laissant le dernier tiers vide, puis disposer le jambon, le chèvre émietté et le basilic"
+      astuce: "Ne PAS saler ni huiler : la tapenade suffit."
       needs: []
       time_min: 5
     - id: rabattre-enrouler

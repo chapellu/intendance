@@ -101,12 +101,13 @@ recipe:
       uses: [yaourt-soja-ing]
       time_min: 5
     - id: fermenter
-      action: "Installer les pots dans le fond d'une cocotte ou d'un faitout placé dans un sac isotherme, verser entre les pots de l'eau bien chaude du robinet, fermer le sac et laisser fermenter — l'autrice propose aussi, selon la saison, les pots sur un radiateur couverts d'une couverture (automne et hiver), ou une journée entière dans une voiture au soleil (été, à condition que la température ne dépasse pas 55 °C)"
+      action: "Installer les pots au fond d'une cocotte placée dans un sac isotherme, verser entre les pots de l'eau bien chaude du robinet, fermer le sac et laisser fermenter"
+      astuce: "L'autrice propose aussi, selon la saison : les pots sur un radiateur couverts d'une couverture (automne et hiver), ou une journée entière dans une voiture au soleil (été, tant que la température ne dépasse pas 55 °C)."
       needs: []
       uses: []
       time_min: 5
       attente_min: 480
-      attente_raison: fermentation
+      attente_raison: "fermentation"
     - id: refroidir
       action: "Une fois la fermentation terminée, mettre au réfrigérateur et attendre que les yaourts soient bien frais avant de les savourer"
       needs: []

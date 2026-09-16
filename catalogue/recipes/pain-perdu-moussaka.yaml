@@ -88,16 +88,19 @@ recipe:
 
   steps:
     - id: tremper
-      action: "Découper le pain en petits morceaux d'environ 3 cm et les mettre dans un petit saladier ; ajouter la sauce tomate, puis remplir à demi le bocal vide d'eau, bien le secouer et verser sur le pain — cela évite de gaspiller la sauce restée sur les parois. Mélanger, puis laisser le pain s'imbiber"
+      action: "Découper le pain en morceaux d'environ 3 cm, les mettre dans un petit saladier et ajouter la sauce tomate"
+      astuce: "Remplir à demi le bocal vide d'eau, bien le secouer et verser sur le pain : rien de la sauce ne reste sur les parois."
       needs: []
       uses: [pain-rassis-ing, sauce-tomate, eau]
-      time_min: 8
+      time_min: 4
+    - id: imbiber-pain
+      action: "Mélanger, puis laisser le pain s'imbiber"
+      needs: []
+      uses: []
+      time_min: 4
       attente_min: 720
-      attente_raison: trempage
+      attente_raison: "trempage"
       rattrapage:
-        # L'autrice l'écrit elle-même : « la veille, OU DU MOINS quelques heures
-        # avant ». C'est le premier rattrapage du corpus donné par l'ouvrage et
-        # non inventé par nous.
         action: "À défaut : laisser le pain s'imbiber quelques heures seulement"
         cout_min: 180
         effet: "le pain reste un peu plus ferme sous la dent, la recette se fait le jour même"
@@ -108,7 +111,8 @@ recipe:
       time_min: 1
       attended: false
     - id: aubergines
-      action: "Découper les aubergines en tranches de 1 cm d'épaisseur et les déposer sur une lèchefrite chemisée de papier cuisson bien huilé ; huiler aussi le dessus des tranches au pinceau, puis enfourner 20 minutes"
+      action: "Découper les aubergines en tranches de 1 cm, les déposer sur une lèchefrite chemisée et bien huilée, huiler aussi le dessus au pinceau, puis enfourner 20 min"
+      astuce: "Des deux côtés : une tranche sèche sur le dessus reste coriace au centre du plat."
       needs: [bake]
       uses: [aubergine, huile-aubergines]
       time_min: 22
@@ -120,21 +124,27 @@ recipe:
       time_min: 4
       parallel_with: aubergines
     - id: viande
-      action: "Faire revenir l'oignon émincé dans deux cuillerées à soupe d'huile d'olive avec la viande ; saler, poivrer, ajouter une bonne pincée d'origan et laisser cuire jusqu'à ce que la viande soit bien dorée"
+      action: "Faire revenir l'oignon émincé dans deux cuillerées d'huile d'olive avec la viande ; saler, poivrer, ajouter une bonne pincée d'origan"
+      astuce: "Laisser cuire jusqu'à ce que la viande soit bien dorée, pas seulement grise."
       needs: [pan-fry]
       uses: [oignon, huile-viande, boeuf-hache, sel-viande, poivre-viande, origan]
       time_min: 12
-      parallel_with: aubergines
+      parallel_with: "aubergines"
     - id: mixer
       action: "Transférer dans un robot mixeur avec le pain à la sauce tomate, et mixer le tout"
       needs: [chop-coarse]
       uses: []
       time_min: 5
     - id: monter
-      action: "Tasser la moitié de la farce au fond d'un plat à gratin de taille moyenne, recouvrir de tranches d'aubergine grillées, puis verser la moitié de la crème au fromage ; tasser le reste de la farce, disposer par-dessus le restant des aubergines, et recouvrir de la crème au fromage"
+      action: "Tasser la moitié de la farce au fond d'un plat à gratin moyen, recouvrir de tranches d'aubergine, verser la moitié de la crème au fromage"
       needs: [gratin-vessel]
       uses: []
-      time_min: 8
+      time_min: 4
+    - id: seconde-couche
+      action: "Tasser le reste de la farce, disposer le restant des aubergines et recouvrir de la crème au fromage"
+      needs: []
+      uses: []
+      time_min: 4
     - id: gratiner
       action: "Enfourner 20 minutes"
       needs: [gratin]
@@ -142,11 +152,11 @@ recipe:
       time_min: 20
       attended: false
     - id: servir
-      action: "Servir avec une salade verte et un peu de riz complet ou de semoule de couscous — la quantité de pain de la recette ne suffit pas aux besoins en glucides d'un repas de midi"
+      action: "Servir avec une salade verte et un peu de riz complet ou de semoule"
+      astuce: "La quantité de pain de la recette ne suffit pas aux besoins en glucides d'un repas de midi."
       needs: []
       uses: []
       time_min: 2
-
   # PAS DE PRÉLÈVEMENT BÉBÉ : le sel entre dans la crème au fromage ET dans la
   # viande, chaque fois au début de leur étape, et les deux préparations sont
   # ensuite mixées ensemble. Aucun moment nature, comme aux p. 85, 99 et 181.

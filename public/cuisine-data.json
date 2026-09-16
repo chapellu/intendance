@@ -535,7 +535,7 @@
       "boil"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "Salée comme l'eau de mer, et salée MAINTENANT : c'est le seul moment où les pâtes peuvent prendre du sel.",
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -554,7 +554,7 @@
       "simmer"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "À couvert et doux : une sauce qui rebout réduit une seconde fois et devient pâteuse.",
      "uses": [
       "sauce-bolognaise-ing"
      ],
@@ -575,7 +575,7 @@
       "boil"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Prélever la louche AVANT d'égoutter : c'est le geste qu'on oublie, et il n'a pas de rattrapage.",
      "uses": [
       "pates"
      ],
@@ -590,11 +590,11 @@
     },
     {
      "id": "servir",
-     "action": "Mêler les pâtes à la sauce hors du feu — un fond d'eau de cuisson si elle est trop épaisse — et servir avec le fromage râpé",
+     "action": "Mêler les pâtes à la sauce hors du feu, servir avec le fromage râpé",
      "minutes": 1,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Un fond d'eau de cuisson si la sauce est trop épaisse : son amidon la lie, là où l'eau claire la délave.",
      "uses": [
       "fromage-rape"
      ],
@@ -736,15 +736,33 @@
    ],
    "steps": [
     {
-     "id": "bechamel",
-     "action": "Préchauffer le four à 200 °C. Pendant qu'il monte, délayer la farine dans le lait FROID au fouet — à froid elle ne fait pas de grumeaux — puis chauffer à feu moyen sans cesser de remuer jusqu'à ce que la sauce nappe la cuillère",
-     "minutes": 10,
+     "id": "prechauffer",
+     "action": "Préchauffer le four à 200 °C",
+     "minutes": 1,
      "needs": [
-      "simmer",
       "bake"
      ],
-     "surveille": true,
+     "surveille": false,
      "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "bechamel",
+     "action": "Délayer la farine dans le lait FROID au fouet, puis chauffer à feu moyen sans cesser de remuer jusqu'à ce que la sauce nappe la cuillère",
+     "minutes": 9,
+     "needs": [
+      "simmer"
+     ],
+     "surveille": true,
+     "astuce": "À froid, la farine ne fait pas de grumeaux — c'est toute la raison de commencer par le lait froid plutôt que par un roux.",
      "uses": [
       "farine",
       "lait"
@@ -760,13 +778,13 @@
     },
     {
      "id": "monter",
-     "action": "Monter le plat : une louche de bolognaise au fond, une couche de plaques, de la béchamel, et recommencer en finissant par la béchamel — les plaques du dessus ne doivent jamais rester à sec, c'est là qu'elles restent dures",
+     "action": "Monter le plat : une louche de bolognaise au fond, une couche de plaques, de la béchamel, et recommencer en finissant par la béchamel",
      "minutes": 10,
      "needs": [
       "gratin-vessel"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Les plaques du dessus ne doivent jamais rester à sec : c'est là qu'elles restent dures.",
      "uses": [
       "sauce-bolognaise-ing",
       "pates-lasagne"
@@ -782,13 +800,13 @@
     },
     {
      "id": "enfourner",
-     "action": "Couvrir de comté râpé et enfourner à 200 °C jusqu'à ce que le dessus soit doré et qu'un couteau traverse les plaques sans résistance",
+     "action": "Couvrir de comté râpé et enfourner à 200 °C",
      "minutes": 30,
      "needs": [
       "gratin"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "Prêtes quand le dessus est doré ET qu'un couteau traverse les plaques sans résistance — la couleur seule ment.",
      "uses": [
       "fromage-rape"
      ],
@@ -963,13 +981,13 @@
     },
     {
      "id": "poeler-legumes",
-     "action": "Chauffer l'huile dans la sauteuse, faire blondir l'oignon, ajouter les courgettes et les laisser colorer sans trop remuer",
+     "action": "Chauffer l'huile dans la sauteuse, faire blondir l'oignon, ajouter les courgettes et les laisser colorer",
      "minutes": 12,
      "needs": [
       "pan-fry"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Sans trop remuer : une courgette qu'on retourne sans arrêt rend son eau et bout au lieu de dorer.",
      "uses": [
       "huile-olive"
      ],
@@ -984,13 +1002,13 @@
     },
     {
      "id": "poeler-gnocchis",
-     "action": "Ajouter les gnocchis CRUS dans la poêle avec les légumes et les faire dorer sur toutes leurs faces — ceux à poêler ne passent pas par l'eau bouillante, c'est tout leur intérêt",
+     "action": "Ajouter les gnocchis CRUS dans la poêle avec les légumes et les faire dorer sur toutes leurs faces",
      "minutes": 6,
      "needs": [
       "pan-fry"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Ceux à poêler ne passent pas par l'eau bouillante — c'est tout leur intérêt, et les y passer les rend collants.",
      "uses": [
       "gnocchis"
      ],
@@ -1159,11 +1177,11 @@
     },
     {
      "id": "legumes-autour",
-     "action": "Pommes de terre en gros quartiers et oignons en demi-lunes, disposés autour du poulet : ils cuiront dans le gras qui tombe",
+     "action": "Pommes de terre en gros quartiers et oignons en demi-lunes, disposés autour du poulet",
      "minutes": 10,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Autour et pas dessous : ils cuisent dans le gras qui tombe, et sous le poulet ils cuiraient à la vapeur.",
      "uses": [
       "pommes-de-terre",
       "oignon"
@@ -1179,13 +1197,13 @@
     },
     {
      "id": "rotir",
-     "action": "Enfourner à 200 °C, arroser du jus à mi-cuisson et remuer les pommes de terre. Le poulet est cuit quand la cuisse se détache et que le jus qui sort est clair",
+     "action": "Enfourner à 200 °C, arroser du jus à mi-cuisson et remuer les pommes de terre",
      "minutes": 65,
      "needs": [
       "bake"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "Cuit quand la cuisse se détache et que le jus qui sort est clair. Rose, il faut prolonger — le four ne dessèche pas un poulet arrosé.",
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -1346,13 +1364,13 @@
     },
     {
      "id": "poeler",
-     "action": "Saisir les lanières à feu vif dans la sauteuse, sans les noyer : elles doivent rester croquantes",
+     "action": "Saisir les lanières à feu vif dans la sauteuse, sans les noyer",
      "minutes": 10,
      "needs": [
       "pan-fry"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Elles doivent rester croquantes : à feu doux, ou en trop grande quantité, elles rendent leur eau et bouillent.",
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -1386,13 +1404,13 @@
     },
     {
      "id": "rechauffer-poulet",
-     "action": "Ajouter le poulet effiloché juste le temps de le réchauffer — il est déjà cuit, le repasser à la poêle le dessèche",
+     "action": "Ajouter le poulet effiloché, juste le temps de le réchauffer",
      "minutes": 4,
      "needs": [
       "pan-fry"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Il est déjà cuit : le repasser vraiment à la poêle le dessèche.",
      "uses": [
       "poulet-cuit-ing"
      ],
@@ -1407,11 +1425,11 @@
     },
     {
      "id": "servir",
-     "action": "Poser la poêle, la crème et le fromage râpé sur la table : chacun garnit sa tortilla",
+     "action": "Poser la poêle, la crème et le fromage râpé sur la table",
      "minutes": 3,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Chacun garnit sa tortilla : ce plat se finit à table, et garni en cuisine il arrive mou.",
      "uses": [
       "creme",
       "fromage-rape"
@@ -1540,7 +1558,7 @@
       "simmer-large"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "L'eau froide au départ, c'est ce qui fait la différence : à l'eau chaude, la carcasse se referme et garde son goût.",
      "uses": [
       "carcasse-ing"
      ],
@@ -1611,13 +1629,13 @@
     },
     {
      "id": "vermicelles",
-     "action": "Jeter les vermicelles dans le bouillon frémissant et compter le temps du paquet — pas plus, ils continuent de gonfler dans l'assiette",
+     "action": "Jeter les vermicelles dans le bouillon frémissant et compter le temps du paquet",
      "minutes": 4,
      "needs": [
       "simmer-large"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Pas une minute de plus : ils continuent de gonfler dans l'assiette.",
      "uses": [
       "vermicelles"
      ],
@@ -1686,7 +1704,7 @@
    "titre": "Curry de pois chiches au lait de coco",
    "minutes": 30,
    "minutesSurPlace": 30,
-   "avanceMin": 30,
+   "avanceMin": 32,
    "anticipations": [],
    "portions": 4,
    "source": null,
@@ -1765,13 +1783,13 @@
    "steps": [
     {
      "id": "riz",
-     "action": "Mettre le riz à cuire : c'est lui qui donne le tempo du reste",
+     "action": "Mettre le riz à cuire",
      "minutes": 15,
      "needs": [
       "boil"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "C'est lui qui donne le tempo du reste : tout ce qui suit se cale sur son minuteur.",
      "uses": [
       "riz"
      ],
@@ -1786,18 +1804,38 @@
     },
     {
      "id": "oignon",
-     "action": "Pendant la cuisson du riz : émincer l'oignon, le faire revenir à la sauteuse, puis ajouter le curry et le laisser griller quelques secondes — c'est au contact du gras chaud qu'il libère son parfum, pas dans la sauce",
-     "minutes": 8,
+     "action": "Pendant la cuisson du riz : émincer l'oignon et le faire revenir à la sauteuse",
+     "minutes": 6,
      "needs": [
       "pan-fry"
      ],
      "surveille": true,
      "astuce": null,
      "uses": [
-      "oignon",
-      "curry"
+      "oignon"
      ],
      "enParallele": "riz",
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "curry",
+     "action": "Ajouter le curry et le laisser griller quelques secondes",
+     "minutes": 2,
+     "needs": [
+      "pan-fry"
+     ],
+     "surveille": true,
+     "astuce": "C'est au contact du gras chaud qu'il libère son parfum, pas dans la sauce — jeté dans les tomates, il reste poudreux.",
+     "uses": [
+      "curry"
+     ],
+     "enParallele": null,
      "attente": null,
      "attenteRaison": null,
      "attenteSouple": true,
@@ -1830,13 +1868,13 @@
     },
     {
      "id": "pois-chiches",
-     "action": "Ajouter les pois chiches égouttés et rincés, les réchauffer dans la sauce sans les faire éclater",
+     "action": "Ajouter les pois chiches égouttés et rincés, les réchauffer dans la sauce",
      "minutes": 5,
      "needs": [
       "simmer"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Rincés, vraiment : l'eau de conserve est saumâtre et se sent dans toute la sauce.",
      "uses": [
       "pois-chiches"
      ],
@@ -1967,13 +2005,13 @@
     },
     {
      "id": "brocoli",
-     "action": "Pendant la cuisson du riz : détailler le brocoli en bouquets et le cuire à la vapeur, il doit rester ferme sous la pointe du couteau",
+     "action": "Pendant la cuisson du riz : détailler le brocoli en bouquets et le cuire à la vapeur",
      "minutes": 10,
      "needs": [
       "steam"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Ferme sous la pointe du couteau, pas tendre : il finit de cuire dans l'assiette.",
      "uses": [
       "brocoli"
      ],
@@ -1988,13 +2026,13 @@
     },
     {
      "id": "saumon",
-     "action": "Poêler les pavés côté peau d'abord, à feu moyen, et ne les retourner qu'une fois : le cœur doit rester rosé",
+     "action": "Poêler les pavés côté peau d'abord, à feu moyen, et ne les retourner qu'une fois",
      "minutes": 8,
      "needs": [
       "pan-fry"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Le cœur doit rester rosé. Un saumon cuit à cœur est un saumon sec, et il continue de cuire hors du feu.",
      "uses": [
       "saumon"
      ],
@@ -2122,13 +2160,13 @@
    "steps": [
     {
      "id": "poireaux",
-     "action": "Émincer les poireaux et les faire fondre à la sauteuse à feu doux jusqu'à ce qu'ils rendent leur eau et deviennent tendres. Cette eau-là doit partir dans la poêle, sinon elle part dans la pâte",
+     "action": "Émincer les poireaux et les faire fondre à la sauteuse à feu doux jusqu'à ce qu'ils rendent leur eau et deviennent tendres",
      "minutes": 12,
      "needs": [
       "pan-fry"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Cette eau-là doit partir dans la poêle — sinon elle part dans la pâte, et la quiche a un fond détrempé.",
      "uses": [
       "poireau"
      ],
@@ -2162,14 +2200,31 @@
      "porteAssaisonnement": false
     },
     {
-     "id": "foncer",
-     "action": "Préchauffer le four à 180 °C. Foncer le moule avec la pâte brisée et la piquer à la fourchette",
-     "minutes": 3,
+     "id": "prechauffer",
+     "action": "Préchauffer le four à 180 °C",
+     "minutes": 1,
      "needs": [
       "bake"
      ],
-     "surveille": true,
+     "surveille": false,
      "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "foncer",
+     "action": "Foncer le moule avec la pâte brisée et la piquer à la fourchette",
+     "minutes": 2,
+     "needs": [],
+     "surveille": true,
+     "astuce": "La piquer, vraiment : sans ça elle gonfle en cloques sous l'appareil et la garniture glisse.",
      "uses": [
       "pate-brisee"
      ],
@@ -2203,13 +2258,13 @@
     },
     {
      "id": "cuire",
-     "action": "Enfourner à 180 °C jusqu'à ce que le centre soit pris — il ne doit plus trembler quand on bouge le moule — et le dessus doré",
+     "action": "Enfourner à 180 °C jusqu'à ce que le centre soit pris et le dessus doré",
      "minutes": 35,
      "needs": [
       "bake"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "« Pris » veut dire qu'il ne tremble plus quand on bouge le moule.",
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -2359,14 +2414,14 @@
     },
     {
      "id": "revenir",
-     "action": "Pendant la cuisson du riz : oignon et poivron en dés, à faire revenir à la sauteuse jusqu'à ce que le poivron s'assouplisse",
+     "action": "Pendant la cuisson du riz : oignon et poivron en dés, à faire revenir à la sauteuse",
      "minutes": 10,
      "needs": [
       "chop-coarse",
       "pan-fry"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Jusqu'à ce que le poivron s'assouplisse — encore ferme, il reste croquant au milieu du chili.",
      "uses": [
       "oignon",
       "poivron"
@@ -2388,7 +2443,7 @@
       "simmer"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "À découvert : un chili doit épaissir. Couvert, il reste une soupe de haricots.",
      "uses": [
       "tomates-pelees"
      ],
@@ -2403,13 +2458,13 @@
     },
     {
      "id": "finir",
-     "action": "Ajouter les haricots rouges et le maïs égouttés en fin de cuisson, juste pour les réchauffer : plus longtemps et les haricots se défont",
+     "action": "Ajouter les haricots rouges et le maïs égouttés, juste pour les réchauffer",
      "minutes": 7,
      "needs": [
       "simmer"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "En toute fin de cuisson : plus longtemps et les haricots se défont en purée.",
      "uses": [
       "haricots-rouges",
       "mais"
@@ -2531,13 +2586,13 @@
    "steps": [
     {
      "id": "riz",
-     "action": "Mettre le riz à cuire, deux minutes de moins que le temps du paquet : il finira de gonfler au four",
+     "action": "Mettre le riz à cuire, deux minutes de moins que le temps du paquet",
      "minutes": 15,
      "needs": [
       "boil"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "Il finira de gonfler au four. À temps plein, le gratin sort pâteux.",
      "uses": [
       "riz"
      ],
@@ -2552,13 +2607,13 @@
     },
     {
      "id": "courgettes",
-     "action": "Pendant la cuisson du riz : oignon émincé et courgettes en rondelles, à faire revenir à la sauteuse jusqu'à ce qu'elles aient rendu leur eau",
+     "action": "Pendant la cuisson du riz : oignon émincé et courgettes en rondelles, à faire revenir à la sauteuse",
      "minutes": 12,
      "needs": [
       "pan-fry"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Jusqu'à ce qu'elles aient rendu leur eau — sinon elle ressort au four et le gratin nage.",
      "uses": [
       "courgettes",
       "oignon"
@@ -2573,15 +2628,33 @@
      "porteAssaisonnement": false
     },
     {
-     "id": "melanger",
-     "action": "Préchauffer le four à 200 °C. Mêler le riz, les courgettes et les œufs battus, verser dans le plat à gratin",
-     "minutes": 6,
+     "id": "prechauffer",
+     "action": "Préchauffer le four à 200 °C",
+     "minutes": 1,
      "needs": [
-      "bake",
+      "bake"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "melanger",
+     "action": "Mêler le riz, les courgettes et les œufs battus, verser dans le plat à gratin",
+     "minutes": 5,
+     "needs": [
       "gratin-vessel"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Les œufs dans un mélange TIÈDE, pas brûlant : versés sur le riz sortant de la casserole, ils coagulent en filaments.",
      "uses": [
       "oeufs"
      ],
@@ -2712,11 +2785,11 @@
    "steps": [
     {
      "id": "lentilles",
-     "action": "Sortir les lentilles cuites et les laisser revenir à température — froides du frigo, elles ne prennent pas l'assaisonnement",
+     "action": "Sortir les lentilles cuites et les laisser revenir à température",
      "minutes": 3,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Froides du frigo, elles ne prennent pas l'assaisonnement : le gras fige au lieu de les enrober.",
      "uses": [
       "lentilles-cuites"
      ],
@@ -2770,11 +2843,11 @@
     },
     {
      "id": "feta",
-     "action": "Émietter la feta par-dessus au dernier moment, sans mélanger : elle sale déjà la salade, l'écraser dedans la sale deux fois",
+     "action": "Émietter la feta par-dessus au dernier moment, sans mélanger",
      "minutes": 2,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Elle sale déjà la salade : l'écraser dedans la sale deux fois.",
      "uses": [
       "feta"
      ],
@@ -2910,11 +2983,11 @@
     },
     {
      "id": "monter",
-     "action": "Monter les croques : une tranche, le jambon, le comté râpé, la seconde tranche, et encore un peu de fromage sur le dessus — c'est celui-là qui fait la croûte",
+     "action": "Monter les croques : une tranche, le jambon, le comté râpé, la seconde tranche, et encore un peu de fromage dessus",
      "minutes": 8,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "C'est le fromage du dessus qui fait la croûte — celui de l'intérieur ne fait que filer.",
      "uses": [
       "pain-de-mie",
       "jambon",
@@ -3048,12 +3121,29 @@
    ],
    "steps": [
     {
-     "id": "foncer",
-     "action": "Préchauffer le four à 200 °C. Foncer le moule avec la pâte brisée et la piquer à la fourchette",
-     "minutes": 4,
+     "id": "prechauffer",
+     "action": "Préchauffer le four à 200 °C",
+     "minutes": 1,
      "needs": [
       "bake"
      ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "foncer",
+     "action": "Foncer le moule avec la pâte brisée et la piquer à la fourchette",
+     "minutes": 3,
+     "needs": [],
      "surveille": true,
      "astuce": null,
      "uses": [
@@ -3070,11 +3160,11 @@
     },
     {
      "id": "moutarde",
-     "action": "Étaler la moutarde au fond de la pâte, en couche fine : c'est elle qui tient l'eau des tomates à distance de la pâte",
+     "action": "Étaler la moutarde au fond de la pâte, en couche fine",
      "minutes": 2,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "C'est elle qui tient l'eau des tomates à distance de la pâte.",
      "uses": [
       "moutarde"
      ],
@@ -3089,11 +3179,11 @@
     },
     {
      "id": "tomates",
-     "action": "Tomates en rondelles, rangées en rosace sans se superposer — superposées elles cuisent à la vapeur au lieu de sécher",
+     "action": "Tomates en rondelles, rangées en rosace sans se superposer",
      "minutes": 7,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Superposées, elles cuisent à la vapeur au lieu de sécher.",
      "uses": [
       "tomates"
      ],
@@ -3378,15 +3468,33 @@
      "porteAssaisonnement": false
     },
     {
+     "id": "melanger-secs",
+     "action": "Mélanger à part la farine et la poudre à lever",
+     "minutes": 1,
+     "needs": [],
+     "surveille": true,
+     "astuce": "À part, et c'est le geste qui compte : la poudre à lever se répartit dans la farine sèche ; jetée dans la pâte, elle fait des poches.",
+     "uses": [
+      "farine-complete",
+      "poudre-a-lever"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
      "id": "melanger",
-     "action": "Mélanger à part la farine et la poudre à lever, puis les verser dans le saladier avec la carotte, l'oignon, le thon égoutté et le jus de citron ; malaxer à la main",
-     "minutes": 5,
+     "action": "Les verser dans le saladier avec la carotte, l'oignon, le thon égoutté et le jus de citron, puis malaxer à la main",
+     "minutes": 4,
      "needs": [],
      "surveille": true,
      "astuce": null,
      "uses": [
-      "farine-complete",
-      "poudre-a-lever",
       "carottes",
       "oignon",
       "thon-boite",
@@ -3443,13 +3551,13 @@
     },
     {
      "id": "cuire",
-     "action": "Enfourner 15 min, jusqu'à ce que les accras soient bien dorés — et les savourer tout chauds",
+     "action": "Enfourner 15 min, jusqu'à ce que les accras soient bien dorés",
      "minutes": 15,
      "needs": [
       "bake"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "À savourer tout chauds.",
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -3633,13 +3741,13 @@
     },
     {
      "id": "gelifier",
-     "action": "Bien délayer l'agar-agar dans l'eau FROIDE, verser dans la casserole, mélanger et compter 1 minute de cuisson après reprise de l'ébullition — ne mettre NI câpres NI cornichons dans la terrine, leur acidité empêcherait la prise ; les servir à côté",
+     "action": "Bien délayer l'agar-agar dans l'eau FROIDE, verser dans la casserole, mélanger et compter 1 minute de cuisson après reprise de l'ébullition",
      "minutes": 4,
      "needs": [
       "simmer"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "L'agar-agar ne prend que s'il a bouilli une minute pleine, et il ne se délaie qu'à froid.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -3656,7 +3764,7 @@
      "minutes": 3,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Ni câpres ni cornichons dans la terrine : leur acidité empêcherait la prise. Les servir à côté.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -3773,7 +3881,7 @@
    "titre": "Bouillon chaud aux nouilles soba",
    "minutes": 12,
    "minutesSurPlace": 12,
-   "avanceMin": 14,
+   "avanceMin": 10,
    "anticipations": [],
    "portions": 1,
    "source": {
@@ -3847,9 +3955,28 @@
    "steps": [
     {
      "id": "prechauffer-thermos",
-     "action": "Le matin avant de partir, verser de l'eau bouillante à hauteur dans le thermos et le fermer — un thermos froid mange la chaleur du repas",
+     "action": "Le matin avant de partir, verser de l'eau bouillante à hauteur dans le thermos et le fermer",
      "minutes": 2,
      "needs": [],
+     "surveille": true,
+     "astuce": "Un thermos froid mange la chaleur du repas.",
+     "uses": null,
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "monter-le-bouillon-soba",
+     "action": "Porter le bouillon à ébullition",
+     "minutes": 2,
+     "needs": [
+      "simmer"
+     ],
      "surveille": true,
      "astuce": null,
      "uses": null,
@@ -3863,16 +3990,14 @@
      "porteAssaisonnement": false
     },
     {
-     "id": "monter-le-bouillon-soba",
-     "action": "Porter le bouillon à ébullition ; pendant ce temps, découper légumes et bœuf en petits cubes et casser les nouilles pour qu'elles soient moins longues",
-     "minutes": 6,
-     "needs": [
-      "simmer"
-     ],
+     "id": "tailler-soba",
+     "action": "Pendant ce temps, découper légumes et bœuf en petits cubes et casser les nouilles",
+     "minutes": 4,
+     "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Cassées, elles tiennent dans le thermos et se mangent à la cuillère.",
      "uses": null,
-     "enParallele": null,
+     "enParallele": "monter-le-bouillon-soba",
      "attente": null,
      "attenteRaison": null,
      "attenteSouple": true,
@@ -4487,7 +4612,9 @@
       "prechauffer",
       "presser",
       "pate",
+      "tasser",
       "cuire-biscuit",
+      "vanille",
       "creme",
       "bouillir",
       "napper",
@@ -4666,8 +4793,8 @@
     },
     {
      "id": "pate",
-     "action": "Mélanger dans un saladier tous les ingrédients de la pâte, puis bien tasser le mélange au fond d'un rectangle à pâtisserie d'environ 17 × 22 cm posé sur une plaque chemisée de papier cuisson",
-     "minutes": 6,
+     "action": "Mélanger dans un saladier tous les ingrédients de la pâte",
+     "minutes": 2,
      "needs": [],
      "surveille": true,
      "astuce": null,
@@ -4677,6 +4804,23 @@
       "sucre-complet",
       "fleur-de-sel"
      ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "tasser",
+     "action": "Bien tasser le mélange au fond d'un rectangle à pâtisserie d'environ 17 × 22 cm, sur une plaque chemisée",
+     "minutes": 4,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
      "enParallele": null,
      "attente": null,
      "attenteRaison": null,
@@ -4706,14 +4850,32 @@
      "porteAssaisonnement": false
     },
     {
-     "id": "creme",
-     "action": "Pendant ce temps, fendre la gousse de vanille en deux, en gratter les graines, mettre le tout — gousse et graines — dans une casserole, et ajouter tous les autres ingrédients de la crème ; bien mélanger au fouet, sans s'inquiéter des petits grumeaux d'huile de coco, qui fondront à la cuisson",
-     "minutes": 6,
+     "id": "vanille",
+     "action": "Pendant ce temps, fendre la gousse de vanille, en gratter les graines et mettre gousse et graines dans une casserole",
+     "minutes": 2,
      "needs": [],
      "surveille": true,
      "astuce": null,
      "uses": [
-      "gousse-vanille",
+      "gousse-vanille"
+     ],
+     "enParallele": "cuire-biscuit",
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "creme",
+     "action": "Ajouter tous les autres ingrédients de la crème et bien mélanger au fouet",
+     "minutes": 4,
+     "needs": [],
+     "surveille": true,
+     "astuce": "Sans s'inquiéter des petits grumeaux d'huile de coco : ils fondront à la cuisson.",
+     "uses": [
       "sirop-agave",
       "creme-coco",
       "agar-agar",
@@ -4731,13 +4893,13 @@
     },
     {
      "id": "bouillir",
-     "action": "Faire chauffer à feu doux en mélangeant sans cesse au fouet ; dès que le mélange arrive à ébullition — on le voit aux grosses bulles qui font « blop » quand on cesse de mélanger — compter 1 minute de cuisson sans cesser de mélanger",
+     "action": "Chauffer à feu doux en mélangeant sans cesse au fouet, puis compter 1 minute de cuisson depuis l'ébullition",
      "minutes": 8,
      "needs": [
       "simmer"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "L'ébullition se voit aux grosses bulles qui font « blop » quand on cesse de mélanger.",
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -4767,11 +4929,11 @@
     },
     {
      "id": "prendre",
-     "action": "Mettre au frais jusqu'au lendemain, puis démouler et découper en carrés de la taille de votre choix — tout petits comme des mignardises, ou en plus grosses parts individuelles",
+     "action": "Mettre au frais jusqu'au lendemain, puis démouler et découper en carrés",
      "minutes": 6,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "De la taille de votre choix : tout petits comme des mignardises, ou en parts individuelles.",
      "uses": [],
      "enParallele": null,
      "attente": 720,
@@ -4912,13 +5074,13 @@
     },
     {
      "id": "cuire-le-grain",
-     "action": "Cuire de 25 à 40 min selon la céréale, en goûtant pour juger — viser un grain un tantinet TROP cuit plutôt que pas assez, car il raffermit une fois passé au frais",
+     "action": "Cuire de 25 à 40 min selon la céréale, en goûtant pour juger",
      "minutes": 40,
      "needs": [
       "simmer-large"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "Viser un grain un tantinet TROP cuit plutôt que pas assez : il raffermit une fois passé au frais.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -4931,11 +5093,11 @@
     },
     {
      "id": "egoutter-huiler",
-     "action": "Égoutter, ajouter un filet d'huile d'olive — c'est ce qui empêche le grain de se coller en bloc au frigo — puis conserver au frais",
+     "action": "Égoutter, ajouter un filet d'huile d'olive, puis conserver au frais",
      "minutes": 4,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "C'est l'huile qui empêche le grain de se coller en bloc au frigo.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -5038,11 +5200,11 @@
     },
     {
      "id": "trier",
-     "action": "Faire tremper les châtaignes dans une bassine d'eau et jeter celles qui surnagent : elles sont véreuses",
+     "action": "Faire tremper les châtaignes dans une bassine d'eau et jeter celles qui surnagent",
      "minutes": 3,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Celles qui flottent sont véreuses.",
      "uses": [
       "chataignes"
      ],
@@ -5057,11 +5219,11 @@
     },
     {
      "id": "inciser",
-     "action": "Inciser avec précaution le dessus de chaque châtaigne en croix, au couteau d'office à lame bien lisse ; veiller à réellement inciser la première peau, sinon les châtaignes exploseront à la cuisson",
+     "action": "Inciser le dessus de chaque châtaigne en croix, au couteau d'office à lame bien lisse",
      "minutes": 10,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Veiller à réellement inciser la première peau : sans ça, les châtaignes explosent à la cuisson.",
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -5093,13 +5255,13 @@
     },
     {
      "id": "griller",
-     "action": "Les faire griller 15 minutes au four préchauffé à 240 °C — l'autrice propose aussi de les verser dans une poêle à châtaignes, à trous, et de les griller 10 min sur la flamme d'une cheminée ou sur le feu de la cuisinière, en secouant régulièrement",
+     "action": "Les faire griller 15 minutes au four préchauffé à 240 °C",
      "minutes": 15,
      "needs": [
       "bake"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "L'autrice propose aussi la poêle à châtaignes, à trous : 10 min sur la flamme d'une cheminée ou sur le feu, en secouant régulièrement.",
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -5112,11 +5274,11 @@
     },
     {
      "id": "reposer",
-     "action": "Les transférer dans un sac en papier kraft — surtout pas dans du papier journal, dont les encres peuvent être toxiques au contact de la chaleur — et laisser reposer 10 minutes au chaud sous une couverture, pour faciliter l'épluchage",
+     "action": "Les transférer dans un sac en papier kraft et laisser reposer 10 minutes au chaud sous une couverture",
      "minutes": 3,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Surtout pas de papier journal, dont les encres peuvent être toxiques au contact de la chaleur. Le repos est ce qui facilite l'épluchage.",
      "uses": [],
      "enParallele": null,
      "attente": 10,
@@ -5355,11 +5517,11 @@
     },
     {
      "id": "assaisonner",
-     "action": "Assaisonner d'huile, de vinaigre, de sel et de poivre, brasser et servir aussitôt — le chou frisé est assez tendre pour se passer de marinade",
+     "action": "Assaisonner d'huile, de vinaigre, de sel et de poivre, brasser et servir aussitôt",
      "minutes": 1,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Le chou frisé est assez tendre pour se passer de marinade.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -5519,13 +5681,13 @@
    "steps": [
     {
      "id": "lancer-le-riz",
-     "action": "Mettre le riz à cuire : il démarre en début de recette et sera prêt en même temps que le reste",
+     "action": "Mettre le riz à cuire",
      "minutes": 18,
      "needs": [
       "simmer"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "Il démarre en début de recette et sera prêt en même temps que le reste.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -5782,11 +5944,11 @@
    "steps": [
     {
      "id": "denoyauter",
-     "action": "Dénoyauter les fruits et les recouper : en quatre pour des abricots, en deux pour des prunes, en huit pour des pêches",
+     "action": "Dénoyauter les fruits et les recouper",
      "minutes": 6,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "En quatre pour des abricots, en deux pour des prunes, en huit pour des pêches.",
      "uses": [
       "abricots"
      ],
@@ -5801,13 +5963,13 @@
     },
     {
      "id": "prechauffer",
-     "action": "Préchauffer le four à 150 °C, en chaleur tournante de préférence — en statique, compter quelques minutes de cuisson en plus",
+     "action": "Préchauffer le four à 150 °C, en chaleur tournante de préférence",
      "minutes": 1,
      "needs": [
       "bake"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "En statique, compter quelques minutes de cuisson en plus.",
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -5820,11 +5982,11 @@
     },
     {
      "id": "huiler-moule",
-     "action": "Huiler un grand moule à clafoutis, ou 6 gros ramequins, ou 4 plats à gratin individuels — beurré plutôt qu'huilé, c'est meilleur, si le lactose n'est pas un sujet",
+     "action": "Huiler un grand moule à clafoutis, ou 6 gros ramequins, ou 4 plats à gratin individuels",
      "minutes": 2,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Beurré plutôt qu'huilé, c'est meilleur, si le lactose n'est pas un sujet.",
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -5837,11 +5999,11 @@
     },
     {
      "id": "appareil",
-     "action": "Fouetter ensemble le lait d'amande, la purée d'amande, les œufs, la farine, le miel, le rhum et l'extrait d'amande amère, jusqu'à ce qu'il ne reste aucun grumeau",
+     "action": "Fouetter le lait d'amande, la purée d'amande, les œufs, la farine, le miel, le rhum et l'extrait d'amande amère",
      "minutes": 5,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Jusqu'à ce qu'il ne reste aucun grumeau.",
      "uses": [
       "lait-amande",
       "puree-amande-blanche",
@@ -5882,13 +6044,13 @@
     },
     {
      "id": "cuire",
-     "action": "Enfourner — environ 30 min en ramequins, 45 min en plats individuels, 1 h en grand moule. C'est cuit quand l'appareil est bien pris et commence à dorer jusqu'au centre ; les fours varient, il faut surveiller",
+     "action": "Enfourner : environ 30 min en ramequins, 45 min en plats individuels, 1 h en grand moule",
      "minutes": 60,
      "needs": [
       "bake"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "C'est cuit quand l'appareil est bien pris et commence à dorer jusqu'au centre. Les fours varient, il faut surveiller.",
      "uses": [],
      "enParallele": null,
      "attente": 60,
@@ -6049,13 +6211,13 @@
     },
     {
      "id": "reduire",
-     "action": "Porter à ébullition puis cuire 5 min à tout petit feu SANS COUVERCLE — c'est l'étape qui infuse la vanille et évapore l'essentiel de l'alcool ; couvrir la manquerait",
+     "action": "Porter à ébullition puis cuire 5 min à tout petit feu, SANS COUVERCLE",
      "minutes": 5,
      "needs": [
       "simmer"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "C'est l'étape qui infuse la vanille et évapore l'essentiel de l'alcool ; couvrir la manquerait.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -6559,13 +6721,13 @@
     },
     {
      "id": "hacher-les-fruits",
-     "action": "Mixer figues et raisins par brèves impulsions, jusqu'à des morceaux de la taille d'un petit raisin sec — attention à ne pas faire de bouillie",
+     "action": "Mixer figues et raisins par brèves impulsions, jusqu'à des morceaux de la taille d'un petit raisin sec",
      "minutes": 4,
      "needs": [
       "chop-coarse"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Attention à ne pas faire de bouillie.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -6578,13 +6740,13 @@
     },
     {
      "id": "faire-la-pate-cookies",
-     "action": "Ajouter tous les autres ingrédients, fleur de sel comprise, et mixer toujours en mode impulsions jusqu'à une pâte homogène et bien malléable, en gardant des morceaux de noisette et de fruit",
+     "action": "Ajouter tous les autres ingrédients, fleur de sel comprise, et mixer par impulsions jusqu'à une pâte homogène et malléable",
      "minutes": 5,
      "needs": [
       "chop-coarse"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "En gardant des morceaux de noisette et de fruit.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -6633,11 +6795,11 @@
     },
     {
      "id": "refroidir-sur-grille",
-     "action": "Laisser un peu tiédir, détacher les gâteaux, puis les laisser refroidir SUR UNE GRILLE et non sur le papier cuisson : c'est ce qui les rend croustillants dehors et moelleux dedans",
+     "action": "Laisser un peu tiédir, détacher les gâteaux, puis les laisser refroidir SUR UNE GRILLE",
      "minutes": 4,
      "needs": [],
      "surveille": false,
-     "astuce": null,
+     "astuce": "Et non sur le papier cuisson : c'est ce qui les rend croustillants dehors et moelleux dedans.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -6847,13 +7009,13 @@
     },
     {
      "id": "cuire-cookies",
-     "action": "Enfourner environ 20 min, jusqu'à ce que le BORD des cookies soit bien doré — c'est lui qui dit la cuisson, et il varie beaucoup d'un four à l'autre",
+     "action": "Enfourner environ 20 min, jusqu'à ce que le BORD des cookies soit bien doré",
      "minutes": 20,
      "needs": [
       "bake"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "C'est le bord qui dit la cuisson, et il varie beaucoup d'un four à l'autre.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -7016,11 +7178,11 @@
     },
     {
      "id": "amalgamer",
-     "action": "Amalgamer du bout des doigts et s'arrêter dès que la pâte tient : moins elle est travaillée, plus les cookies seront sablés",
+     "action": "Amalgamer du bout des doigts et s'arrêter dès que la pâte tient",
      "minutes": 2,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Moins elle est travaillée, plus les cookies seront sablés.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -7033,13 +7195,13 @@
     },
     {
      "id": "former",
-     "action": "Former des boules de 30 g, les aplatir sur une plaque chemisée jusqu'à 7 mm d'épaisseur environ — plus elles sont fines, plus les cookies croustillent",
+     "action": "Former des boules de 30 g, les aplatir sur une plaque chemisée jusqu'à 7 mm d'épaisseur environ",
      "minutes": 5,
      "needs": [
       "weigh"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Plus elles sont fines, plus les cookies croustillent.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -7071,11 +7233,11 @@
     },
     {
      "id": "refroidir",
-     "action": "Débarrasser aussitôt sur une grille — pas sur le papier cuisson, qui garderait l'humidité et ramollirait les cookies",
+     "action": "Débarrasser aussitôt sur une grille",
      "minutes": 1,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Pas sur le papier cuisson, qui garderait l'humidité et ramollirait les cookies.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -7265,13 +7427,13 @@
    "steps": [
     {
      "id": "riz",
-     "action": "Faire cuire le riz dans un faitout d'eau bouillante salée selon la variété choisie, l'égoutter, puis y ajouter 2 cuillerées à soupe d'huile d'olive pour l'empêcher de coller",
+     "action": "Cuire le riz à l'eau bouillante salée selon la variété, l'égoutter, puis y ajouter 2 cuillerées à soupe d'huile d'olive",
      "minutes": 20,
      "needs": [
       "boil"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "L'huile sur le riz chaud l'empêche de coller en bloc.",
      "uses": [
       "riz",
       "huile-olive"
@@ -7310,19 +7472,39 @@
     },
     {
      "id": "courgettes",
-     "action": "Quand tout est bien doré, ajouter les courgettes en tranches — en réserver une demi-courgette pour la décoration —, la sauce tomate, les gousses d'ail émincées, les herbes, 12 olives recoupées en petits morceaux, un peu de sel et de poivre, puis laisser cuire à feu assez vif en mélangeant de temps en temps",
-     "minutes": 15,
+     "action": "Quand tout est bien doré, ajouter les courgettes en tranches, la sauce tomate, l'ail émincé, les herbes et 12 olives recoupées",
+     "minutes": 5,
+     "needs": [
+      "pan-fry"
+     ],
+     "surveille": true,
+     "astuce": "Réserver une demi-courgette pour la décoration.",
+     "uses": [
+      "courgettes",
+      "sauce-tomate",
+      "ail",
+      "herbes-provence",
+      "olives-noires"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cuire-courgettes",
+     "action": "Saler, poivrer, puis laisser cuire à feu assez vif en mélangeant de temps en temps",
+     "minutes": 10,
      "needs": [
       "pan-fry"
      ],
      "surveille": true,
      "astuce": null,
      "uses": [
-      "courgettes",
-      "sauce-tomate",
-      "ail",
-      "herbes-provence",
-      "olives-noires",
       "sel",
       "poivre"
      ],
@@ -7337,11 +7519,11 @@
     },
     {
      "id": "parmesan",
-     "action": "Quand la viande et les légumes sont bien dorés et qu'il ne reste plus de jus au fond du wok, ajouter les deux tiers du parmesan, mélanger, puis répartir dans 4 plats individuels ou un seul grand plat",
+     "action": "Ajouter les deux tiers du parmesan, mélanger, puis répartir dans 4 plats individuels ou un grand plat",
      "minutes": 5,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Attendre que la viande et les légumes soient bien dorés et qu'il ne reste plus de jus au fond du wok.",
      "uses": [
       "parmesan"
      ],
@@ -7635,13 +7817,13 @@
     },
     {
      "id": "dorer-croquettes",
-     "action": "Faire dorer les croquettes sur toutes leurs faces dans une grande poêle avec un fond d'huile, jusqu'à ce qu'elles soient croustillantes",
+     "action": "Faire dorer les croquettes sur toutes leurs faces dans une grande poêle, avec un fond d'huile",
      "minutes": 10,
      "needs": [
       "pan-fry"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Jusqu'à ce qu'elles soient croustillantes.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -7842,13 +8024,13 @@
     },
     {
      "id": "fondue",
-     "action": "Faire revenir les oignons dans l'huile d'olive avec une pincée de sel — sans trop saler, le jambon l'est déjà — en petite cocotte, jusqu'à obtenir des notes bien caramélisées, et sans jamais les laisser brûler : c'est le goût de la fondue d'oignons qui se joue là",
+     "action": "Faire revenir les oignons en petite cocotte, dans l'huile d'olive avec une pincée de sel, jusqu'à des notes bien caramélisées",
      "minutes": 10,
      "needs": [
       "pan-fry"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Sans trop saler — le jambon l'est déjà — et sans jamais les laisser brûler : c'est là que se joue le goût de la fondue d'oignons.",
      "uses": [
       "oignon",
       "huile-olive",
@@ -7903,8 +8085,8 @@
     },
     {
      "id": "monter",
-     "action": "Sur une première tranche de pain, poser une tranchette de tomme, une tranche de speck, deux cuillerées à soupe de fondue d'oignons et 2 à 3 cornichons recoupés en deux ; couvrir de la seconde tranche et bien appuyer. Procéder de même pour les six",
-     "minutes": 8,
+     "action": "Sur une première tranche de pain : une tranchette de tomme, une tranche de speck, deux cuillerées de fondue d'oignons, 2 à 3 cornichons recoupés",
+     "minutes": 5,
      "needs": [],
      "surveille": true,
      "astuce": null,
@@ -7919,19 +8101,36 @@
      "attenteRaison": null,
      "attenteSouple": true,
      "rattrapage": null,
-     "enfant": "poser les cornichons coupés sur le fromage, puis appuyer sur la tranche du dessus",
+     "enfant": "poser les cornichons coupés sur le fromage",
+     "enfantDes": 30,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "fermer",
+     "action": "Couvrir de la seconde tranche et bien appuyer, puis faire de même pour les six",
+     "minutes": 3,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "appuyer sur la tranche du dessus",
      "enfantDes": 30,
      "porteAssaisonnement": false
     },
     {
      "id": "cuire",
-     "action": "Enfourner sur une plaque de cuisson 10 min : le pain doit être bien doré et le fromage coulant à cœur",
+     "action": "Enfourner sur une plaque de cuisson 10 min",
      "minutes": 10,
      "needs": [
       "bake"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Le pain doit être bien doré et le fromage coulant à cœur.",
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -8094,13 +8293,13 @@
    "steps": [
     {
      "id": "cuire-kasha",
-     "action": "Mettre kasha et petits pois dans une petite casserole avec l'eau bouillante et un peu de sel, puis cuire à feu doux environ 8 min en mélangeant SOUVENT : la préparation boit vite toute son eau",
+     "action": "Mettre kasha et petits pois dans une petite casserole avec l'eau bouillante et un peu de sel, puis cuire à feu doux environ 8 min en mélangeant SOUVENT",
      "minutes": 8,
      "needs": [
       "simmer"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "La préparation boit vite toute son eau : sans remuer, elle attache.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -8113,13 +8312,13 @@
     },
     {
      "id": "lier-croquettes",
-     "action": "Ajouter le fromage en petits cubes, la ciboulette ciselée et un peu de poivre, puis mixer LÉGÈREMENT par brèves impulsions — surtout pas de bouillie, il faut garder des petits morceaux",
+     "action": "Ajouter le fromage en petits cubes, la ciboulette ciselée et un peu de poivre, puis mixer LÉGÈREMENT par brèves impulsions",
      "minutes": 3,
      "needs": [
       "chop-coarse"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Surtout pas de bouillie : il faut garder des petits morceaux.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -8327,11 +8526,11 @@
     },
     {
      "id": "lit-de-courgettes",
-     "action": "Étaler la poêlée dans un plat individuel plutôt LARGE — le crumble y sera plus croustillant",
+     "action": "Étaler la poêlée dans un plat individuel plutôt LARGE",
      "minutes": 3,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Large, le crumble est plus croustillant : plus de surface au four.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -8363,13 +8562,13 @@
     },
     {
      "id": "cuire-crumble",
-     "action": "Étaler le sablé sur les courgettes — sans tasser pour un crumble sablonneux, légèrement tassé pour une croûte qui résiste au transport — puis enfourner 25 min",
+     "action": "Étaler le sablé sur les courgettes, puis enfourner 25 min",
      "minutes": 25,
      "needs": [
       "bake"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "Sans tasser pour un crumble sablonneux, légèrement tassé pour une croûte qui résiste au transport.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -8527,11 +8726,11 @@
     },
     {
      "id": "preparer-fruits",
-     "action": "Couper les fraises en deux ou en quatre et froisser légèrement les feuilles de menthe — c'est le froissage qui libère l'huile essentielle",
+     "action": "Couper les fraises en deux ou en quatre et froisser légèrement les feuilles de menthe",
      "minutes": 3,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "C'est le froissage qui libère l'huile essentielle.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -8726,13 +8925,13 @@
     },
     {
      "id": "cuire-champignons",
-     "action": "Émincer les champignons, les ajouter avec l'ail émincé et les cuire à feu vif jusqu'à ce qu'ils aient rendu toute leur eau et soient bien dorés",
+     "action": "Émincer les champignons, les ajouter avec l'ail émincé et les cuire à feu vif",
      "minutes": 10,
      "needs": [
       "pan-fry"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Jusqu'à ce qu'ils aient rendu toute leur eau et soient bien dorés — tant qu'il reste du liquide, ils bouillent.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -8764,13 +8963,13 @@
     },
     {
      "id": "mixer",
-     "action": "Réunir la poêlée, les œufs, le persil, les flocons et l'emmental râpé, et mixer par impulsions courtes : une pâte homogène qui garde des morceaux, surtout pas une bouillie",
+     "action": "Réunir la poêlée, les œufs, le persil, les flocons et l'emmental râpé, et mixer par impulsions courtes",
      "minutes": 5,
      "needs": [
       "chop-coarse"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Une pâte homogène qui garde des morceaux, surtout pas une bouillie.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -9006,13 +9205,13 @@
     },
     {
      "id": "mixer-pois-chiches",
-     "action": "Ajouter les pois chiches et la farine, puis mixer par brèves impulsions en gardant des petits morceaux — réduits en purée lisse, l'appareil devient trop souple et les boules ne tiennent plus",
+     "action": "Ajouter les pois chiches et la farine, puis mixer par brèves impulsions en gardant des petits morceaux",
      "minutes": 4,
      "needs": [
       "chop-coarse"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Réduits en purée lisse, l'appareil devient trop souple et les boules ne tiennent plus.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -9044,13 +9243,13 @@
     },
     {
      "id": "poeler",
-     "action": "Chauffer un peu d'huile dans une poêle et cuire les falafels quelques minutes en les retournant de temps en temps, jusqu'à ce qu'ils soient bien dorés",
+     "action": "Chauffer un peu d'huile dans une poêle et cuire les falafels en les retournant de temps en temps",
      "minutes": 18,
      "needs": [
       "pan-fry"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Jusqu'à ce qu'ils soient bien dorés sur toutes leurs faces.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -9313,13 +9512,13 @@
     },
     {
      "id": "mixer",
-     "action": "Mixer ensemble les feuilles, la cébette, le persil, l'ail, les œufs, la farine, le lait, la poudre à lever et le fromage, jusqu'à une pâte à crêpes verte et bien épaisse",
+     "action": "Mixer les feuilles, la cébette, le persil, l'ail, les œufs, la farine, le lait, la poudre à lever et le fromage",
      "minutes": 5,
      "needs": [
       "blend-smooth"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Jusqu'à une pâte à crêpes verte et bien épaisse.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -9349,13 +9548,13 @@
     },
     {
      "id": "cuire-poelees",
-     "action": "Cuire par poêlées dans une grande poêle bien huilée, en versant de petites louches comme des blinis, 2 à 3 min par face jusqu'à ce qu'ils soient bien dorés",
+     "action": "Cuire par poêlées dans une grande poêle bien huilée, en versant de petites louches comme des blinis",
      "minutes": 20,
      "needs": [
       "pan-fry"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "2 à 3 min par face, jusqu'à ce qu'ils soient bien dorés.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -9549,13 +9748,13 @@
     },
     {
      "id": "cuire-flamiche",
-     "action": "Cuire 30 min à 180 °C si la flamiche cuit seule — ou 50 min à 150 °C SANS préchauffage si elle partage le four avec les terrines de la p. 75",
+     "action": "Cuire 30 min à 180 °C",
      "minutes": 30,
      "needs": [
       "bake"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "Ou 50 min à 150 °C SANS préchauffage si la flamiche partage le four avec les terrines de la p. 75.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -9820,14 +10019,32 @@
     },
     {
      "id": "garnir",
-     "action": "Étaler le tout sur la pâte, ajouter les tomates cerise coupées en deux et le fromage de chèvre émietté, saler, poivrer, ciseler le romarin par-dessus et terminer avec un filet de jus de citron",
-     "minutes": 8,
+     "action": "Étaler le tout sur la pâte, ajouter les tomates cerise coupées en deux et le fromage de chèvre émietté",
+     "minutes": 5,
      "needs": [],
      "surveille": true,
      "astuce": null,
      "uses": [
       "tomates-cerises",
-      "chevre-buche",
+      "chevre-buche"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "émietter le fromage de chèvre à la main sur la focaccia",
+     "enfantDes": 30,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "assaisonner-focaccia",
+     "action": "Saler, poivrer, ciseler le romarin par-dessus et terminer d'un filet de jus de citron",
+     "minutes": 3,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
       "sel",
       "poivre",
       "romarin",
@@ -9838,8 +10055,8 @@
      "attenteRaison": null,
      "attenteSouple": true,
      "rattrapage": null,
-     "enfant": "émietter le fromage de chèvre à la main sur la focaccia",
-     "enfantDes": 30,
+     "enfant": null,
+     "enfantDes": null,
      "porteAssaisonnement": false
     },
     {
@@ -10052,11 +10269,11 @@
     },
     {
      "id": "monter-la-frittata",
-     "action": "Mélanger à la piperade, verser dans un petit plat à œuf individuel — celui-là même qui partira au bureau — et déposer le fromage en lamelles par-dessus",
+     "action": "Mélanger à la piperade, verser dans un petit plat à œuf individuel et déposer le fromage en lamelles par-dessus",
      "minutes": 3,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Le plat individuel est celui-là même qui partira au bureau.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -10352,9 +10569,9 @@
      "porteAssaisonnement": false
     },
     {
-     "id": "pate",
-     "action": "Mettre la farine, le sucre, le sel et la poudre à lever dans un saladier, mélanger et faire un puits ; y verser les œufs, l'huile et le yaourt, puis bien mélanger",
-     "minutes": 8,
+     "id": "melanger-secs-gateau",
+     "action": "Mettre la farine, le sucre, le sel et la poudre à lever dans un saladier, mélanger et faire un puits",
+     "minutes": 3,
      "needs": [],
      "surveille": true,
      "astuce": null,
@@ -10362,10 +10579,7 @@
       "farine-complete",
       "sucre-roux",
       "sel",
-      "poudre-a-lever",
-      "oeufs",
-      "huile-olive",
-      "yaourt-nature"
+      "poudre-a-lever"
      ],
      "enParallele": null,
      "attente": null,
@@ -10377,14 +10591,35 @@
      "porteAssaisonnement": false
     },
     {
+     "id": "pate",
+     "action": "Verser les œufs, l'huile et le yaourt dans le puits, puis bien mélanger",
+     "minutes": 5,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "oeufs",
+      "huile-olive",
+      "yaourt-nature"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
      "id": "cuire",
-     "action": "Verser la pâte dans un moule à couronne ou à savarin — donc avec un trou au milieu — d'environ 24 cm de diamètre, puis enfourner environ 25 minutes",
+     "action": "Verser la pâte dans un moule à couronne d'environ 24 cm, puis enfourner environ 25 minutes",
      "minutes": 25,
      "needs": [
       "bake"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "Un moule à couronne ou à savarin — donc avec un trou au milieu.",
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -10477,9 +10712,43 @@
      "porteAssaisonnement": false
     },
     {
+     "id": "ouvrir",
+     "action": "Quand le gâteau est démoulé et bien refroidi, l'ouvrir en deux et réserver le haut",
+     "minutes": 2,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "garnir-gateau",
+     "action": "Poser la base sur une assiette, l'imbiber de la moitié du sirop et disposer les morceaux de fruits bien serrés",
+     "minutes": 5,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
      "id": "monter",
-     "action": "Quand le gâteau est démoulé et bien refroidi, l'ouvrir en deux et réserver le haut ; poser la base sur une assiette, l'imbiber avec la moitié du sirop, disposer les morceaux de fruits bien serrés, étaler la chantilly par-dessus, poser le haut du gâteau et l'imbiber avec le reste de sirop",
-     "minutes": 10,
+     "action": "Étaler la chantilly par-dessus, poser le haut du gâteau et l'imbiber du reste de sirop",
+     "minutes": 3,
      "needs": [],
      "surveille": true,
      "astuce": null,
@@ -10549,6 +10818,7 @@
    "anticipations": [
     {
      "gestes": [
+      "poser-cercle",
       "premiere-couche",
       "premiere-mousse",
       "seconde-couche",
@@ -10618,12 +10888,29 @@
    ],
    "steps": [
     {
-     "id": "premiere-couche",
-     "action": "Poser un cercle à pâtisserie d'environ 26 cm directement sur le plat de service et le tapisser d'une couche de biscuits très rapidement trempés dans le sirop, bien serrés",
-     "minutes": 8,
+     "id": "poser-cercle",
+     "action": "Poser un cercle à pâtisserie d'environ 26 cm directement sur le plat de service",
+     "minutes": 2,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Sur le plat de service, parce que ce gâteau-là ne se déplace plus une fois monté.",
+     "uses": null,
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "premiere-couche",
+     "action": "Le tapisser d'une couche de biscuits très rapidement trempés dans le sirop, bien serrés",
+     "minutes": 6,
+     "needs": [],
+     "surveille": true,
+     "astuce": "Très rapidement : trempés trop longtemps, ils se défont à la pose.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -10876,15 +11163,33 @@
    ],
    "steps": [
     {
-     "id": "appareil",
-     "action": "Mélanger la farine avec la poudre à lever dans un saladier, puis faire un puits ; ajouter le lait, les œufs, le rhum, le sucre et l'huile, et bien mélanger au fouet",
-     "minutes": 6,
+     "id": "melanger-secs-gaufres",
+     "action": "Mélanger la farine avec la poudre à lever dans un saladier, puis faire un puits",
+     "minutes": 2,
      "needs": [],
      "surveille": true,
      "astuce": null,
      "uses": [
       "farine-complete",
-      "poudre-a-lever",
+      "poudre-a-lever"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "appareil",
+     "action": "Ajouter le lait, les œufs, le rhum, le sucre et l'huile, et bien mélanger au fouet",
+     "minutes": 4,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
       "lait-soja-vanille",
       "oeufs",
       "rhum",
@@ -10902,11 +11207,11 @@
     },
     {
      "id": "imbiber",
-     "action": "Découper le pain en petits cubes d'environ 2 cm, les mettre dans le saladier, mélanger grossièrement à la cuillère de bois, puis laisser reposer pour imbiber le pain — 1 h si le pain est un peu rassis, jusqu'à 4 h s'il est très dur",
+     "action": "Découper le pain en cubes d'environ 2 cm, les mettre dans le saladier, mélanger grossièrement, puis laisser reposer",
      "minutes": 4,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "1 h si le pain est un peu rassis, jusqu'à 4 h s'il est très dur.",
      "uses": [
       "pain-rassis-ing"
      ],
@@ -10921,11 +11226,11 @@
     },
     {
      "id": "malaxer",
-     "action": "Malaxer la pâte avec les mains, en écrasant bien les gros morceaux de pain — inutile de mixer, il peut rester de tout petits morceaux qui « boiront » le jus des mûres",
+     "action": "Malaxer la pâte avec les mains, en écrasant bien les gros morceaux de pain",
      "minutes": 5,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Inutile de mixer : les tout petits morceaux qui restent « boiront » le jus des mûres.",
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -10956,9 +11261,9 @@
      "porteAssaisonnement": false
     },
     {
-     "id": "cuire",
-     "action": "Faire chauffer un gaufrier, l'huiler assez généreusement au pinceau, verser un peu de pâte et faire cuire jusqu'à ce que la gaufre soit bien dorée et se décolle ; renouveler jusqu'à épuisement de la pâte, et savourer aussitôt",
-     "minutes": 25,
+     "id": "chauffer-gaufrier",
+     "action": "Faire chauffer un gaufrier et l'huiler assez généreusement au pinceau",
+     "minutes": 3,
      "needs": [
       "gaufrier"
      ],
@@ -10967,6 +11272,25 @@
      "uses": [
       "huile-tournesol"
      ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cuire",
+     "action": "Verser un peu de pâte et cuire jusqu'à ce que la gaufre soit dorée et se décolle, puis renouveler jusqu'à épuisement",
+     "minutes": 22,
+     "needs": [
+      "gaufrier"
+     ],
+     "surveille": true,
+     "astuce": "À savourer aussitôt : une gaufre attend mal.",
+     "uses": [],
      "enParallele": null,
      "attente": null,
      "attenteRaison": null,
@@ -11188,11 +11512,11 @@
     },
     {
      "id": "incorporer",
-     "action": "Incorporer délicatement les copeaux de chocolat et la sauce cacao à la chantilly, en s'aidant idéalement d'une spatule souple pour soulever le mélange dans un mouvement tournant",
+     "action": "Incorporer délicatement les copeaux de chocolat et la sauce cacao à la chantilly",
      "minutes": 5,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "À la spatule souple, en soulevant le mélange dans un mouvement tournant : fouettée, la chantilly retombe.",
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -11613,11 +11937,11 @@
     },
     {
      "id": "emincer-chou",
-     "action": "Pendant ce temps : émincer le chou chinois — des tranches de 3 cm côté feuilles, mais de plus en plus fines à mesure qu'on approche du trognon, sinon la texture reste filandreuse après cuisson",
+     "action": "Pendant ce temps : émincer le chou chinois en tranches de 3 cm côté feuilles, de plus en plus fines vers le trognon",
      "minutes": 8,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Sinon la texture reste filandreuse après cuisson : le trognon est bien plus dur que la feuille.",
      "uses": null,
      "enParallele": "revenir-oignons",
      "attente": null,
@@ -11742,13 +12066,13 @@
     },
     {
      "id": "monter",
-     "action": "Dans un grand plat à gratin : la moitié des pâtes, toute la poêlée au chou, la moitié du parmesan, le reste des pâtes, le reste du parmesan, un peu de thym et d'origan",
+     "action": "Dans un grand plat à gratin : la moitié des pâtes, toute la poêlée au chou, la moitié du parmesan, le reste des pâtes et le reste du parmesan",
      "minutes": 6,
      "needs": [
       "gratin-vessel"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Un peu de thym et d'origan pour finir.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -11870,13 +12194,13 @@
    "steps": [
     {
      "id": "prechauffer-chausson",
-     "action": "Préchauffer le four à 180 °C — et si possible enfourner la frittata p. 97 en même temps : deux déjeuners d'un coup",
+     "action": "Préchauffer le four à 180 °C",
      "minutes": 1,
      "needs": [
       "bake"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "Si possible, enfourner la frittata p. 97 en même temps : deux déjeuners d'un coup.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -12679,11 +13003,11 @@
    "steps": [
     {
      "id": "tremper",
-     "action": "Faire tremper les légumineuses au grand minimum une nuit — au mieux 24 h, elles cuiront alors encore plus vite",
+     "action": "Faire tremper les légumineuses au grand minimum une nuit",
      "minutes": 3,
      "needs": [],
      "surveille": false,
-     "astuce": null,
+     "astuce": "Au mieux 24 h : elles cuiront alors encore plus vite.",
      "uses": null,
      "enParallele": null,
      "attente": 720,
@@ -12712,14 +13036,33 @@
      "porteAssaisonnement": false
     },
     {
+     "id": "mettre-a-cuire",
+     "action": "Les mettre dans un faitout d'eau FROIDE avec l'oignon, le clou de girofle, le laurier et la sarriette",
+     "minutes": 3,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": null,
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
      "id": "cuire",
-     "action": "Les mettre dans un faitout d'eau FROIDE avec l'oignon, le clou de girofle, le laurier et la sarriette, puis cuire de 35 min à 1 h en goûtant régulièrement — aucun temps précis n'est donnable, cela dépend de la légumineuse et de son degré de séchage à l'achat",
-     "minutes": 60,
+     "action": "Cuire de 35 min à 1 h, en goûtant régulièrement",
+     "minutes": 57,
      "needs": [
       "simmer-large"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "Aucun temps précis n'est donnable : cela dépend de la légumineuse et de son degré de séchage à l'achat.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -13096,19 +13439,39 @@
      "porteAssaisonnement": false
     },
     {
-     "id": "mijoter",
-     "action": "Quand tout est bien doré, ajouter l'eau, les carottes en rondelles, le laurier et les clous de girofle, porter à ébullition, puis verser les lentilles en pluie ; bien mélanger, couvrir et laisser mijoter à tout petit feu pendant 45 minutes",
-     "minutes": 45,
+     "id": "mouiller",
+     "action": "Quand tout est bien doré, ajouter l'eau, les carottes en rondelles, le laurier et les clous de girofle, puis porter à ébullition",
+     "minutes": 4,
      "needs": [
       "simmer-large"
      ],
-     "surveille": false,
+     "surveille": true,
      "astuce": null,
      "uses": [
       "eau",
       "carottes",
       "laurier",
-      "clous-girofle",
+      "clous-girofle"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "mijoter",
+     "action": "Verser les lentilles en pluie, bien mélanger, couvrir et laisser mijoter à tout petit feu",
+     "minutes": 41,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": false,
+     "astuce": "En pluie et dans l'eau déjà bouillante : jetées d'un coup, elles se tassent au fond et cuisent mal.",
+     "uses": [
       "lentilles-seches"
      ],
      "enParallele": null,
@@ -13122,11 +13485,11 @@
     },
     {
      "id": "servir",
-     "action": "Servir chaud en plat principal, ou encore tiède en salade avec un peu de moutarde à l'ancienne, de l'huile d'olive, un trait de vinaigre de cidre et du persil haché",
+     "action": "Servir chaud en plat principal",
      "minutes": 3,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Ou tiède en salade, avec un peu de moutarde à l'ancienne, de l'huile d'olive, un trait de vinaigre de cidre et du persil haché.",
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -13277,13 +13640,13 @@
    "steps": [
     {
      "id": "prechauffer-madeleines",
-     "action": "Préchauffer le four à 240 °C en CHALEUR STATIQUE — pas de chaleur tournante pour les madeleines, c'est le choc thermique qui fait la bosse",
+     "action": "Préchauffer le four à 240 °C en CHALEUR STATIQUE",
      "minutes": 1,
      "needs": [
       "bake"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "Pas de chaleur tournante pour les madeleines : c'est le choc thermique qui fait la bosse.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -13329,14 +13692,31 @@
      "porteAssaisonnement": false
     },
     {
+     "id": "remplir-empreintes",
+     "action": "Verser la pâte dans les empreintes bien huilées",
+     "minutes": 2,
+     "needs": [],
+     "surveille": true,
+     "astuce": "Plus elles sont larges et profondes, plus les madeleines sont moelleuses.",
+     "uses": null,
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
      "id": "cuire-madeleines",
-     "action": "Verser la pâte dans les empreintes bien huilées — plus elles sont larges et profondes, plus les madeleines sont moelleuses — et enfourner 12 minutes chrono, en surveillant : selon le four, 10 min peuvent suffire",
-     "minutes": 12,
+     "action": "Enfourner 12 minutes chrono, en surveillant",
+     "minutes": 10,
      "needs": [
       "bake"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Selon le four, 10 min peuvent suffire.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -13514,18 +13894,36 @@
    ],
    "steps": [
     {
-     "id": "sauce",
-     "action": "Mélanger le jaune d'œuf avec la moutarde, le sel et le vinaigre ; tout en fouettant bien, ajouter l'huile en filet jusqu'à obtention d'une mayonnaise, puis ajouter le yaourt en mélangeant juste ce qu'il faut, pas plus",
-     "minutes": 8,
+     "id": "mayonnaise",
+     "action": "Mélanger le jaune d'œuf avec la moutarde, le sel et le vinaigre, puis ajouter l'huile en filet sans cesser de fouetter",
+     "minutes": 6,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "En filet, vraiment : versée d'un coup, la mayonnaise ne prend pas.",
      "uses": [
       "oeufs",
       "moutarde",
       "sel",
       "vinaigre",
-      "huile-tournesol",
+      "huile-tournesol"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "sauce",
+     "action": "Ajouter le yaourt en mélangeant juste ce qu'il faut",
+     "minutes": 2,
+     "needs": [],
+     "surveille": true,
+     "astuce": "Juste ce qu'il faut, pas plus : trop travaillée, la sauce se délie.",
+     "uses": [
       "yaourt-brebis"
      ],
      "enParallele": null,
@@ -13577,11 +13975,11 @@
     },
     {
      "id": "servir",
-     "action": "Servir aussitôt pour une texture encore croquante, ou laisser reposer de 2 à 24 heures au frais pour attendrir un peu les légumes — tout dépend des goûts",
+     "action": "Servir aussitôt, pour une texture encore croquante",
      "minutes": 1,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Ou laisser reposer de 2 à 24 heures au frais pour attendrir un peu les légumes — tout dépend des goûts.",
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -13630,6 +14028,7 @@
    "anticipations": [
     {
      "gestes": [
+      "emincer-avoine",
       "dorer-les-sucs-avoine",
       "mijoter-avoine",
       "reposer-une-nuit"
@@ -13731,12 +14130,10 @@
    ],
    "steps": [
     {
-     "id": "dorer-les-sucs-avoine",
-     "action": "Émincer finement l'oignon et le poireau, les faire revenir à l'huile d'olive dans une petite cocotte, ajouter le jambon en lanières et laisser cuire jusqu'à ce que les sucs commencent à dorer",
-     "minutes": 10,
-     "needs": [
-      "pan-fry"
-     ],
+     "id": "emincer-avoine",
+     "action": "Émincer finement l'oignon et le poireau",
+     "minutes": 3,
+     "needs": [],
      "surveille": true,
      "astuce": null,
      "uses": null,
@@ -13750,14 +14147,33 @@
      "porteAssaisonnement": false
     },
     {
+     "id": "dorer-les-sucs-avoine",
+     "action": "Les faire revenir à l'huile d'olive en petite cocotte, ajouter le jambon en lanières et laisser cuire",
+     "minutes": 7,
+     "needs": [
+      "pan-fry"
+     ],
+     "surveille": true,
+     "astuce": "Jusqu'à ce que les sucs commencent à dorer : c'est eux qui feront le goût du mijoté.",
+     "uses": null,
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
      "id": "mijoter-avoine",
-     "action": "Ajouter les champignons rincés et égouttés ainsi que l'avoine, mouiller avec le verre d'eau, puis mijoter 10 min — s'il reste du liquide, c'est normal, il épaissira en sauce crémeuse",
+     "action": "Ajouter les champignons rincés et égouttés ainsi que l'avoine, mouiller du verre d'eau, puis mijoter 10 min",
      "minutes": 10,
      "needs": [
       "simmer"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "S'il reste du liquide, c'est normal : il épaissira en sauce crémeuse.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -13995,11 +14411,11 @@
     },
     {
      "id": "installer-caissettes",
-     "action": "Installer les caissettes dans une plaque à mini-muffins ou, à défaut, dans une plaque à œufs en carton en ne garnissant qu'une alvéole sur deux — cette plaque-là brunira et sera perdue",
+     "action": "Installer les caissettes dans une plaque à mini-muffins",
      "minutes": 4,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "À défaut, une plaque à œufs en carton en ne garnissant qu'une alvéole sur deux — cette plaque-là brunira et sera perdue.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -14029,13 +14445,30 @@
     },
     {
      "id": "fondre",
-     "action": "Faire fondre le chocolat au bain-marie avec le sirop d'agave et l'huile de coco ; hors du feu, ajouter la vanille et les œufs entiers, puis la farine, et bien mélanger",
-     "minutes": 8,
+     "action": "Faire fondre le chocolat au bain-marie avec le sirop d'agave et l'huile de coco",
+     "minutes": 4,
      "needs": [
       "simmer"
      ],
      "surveille": true,
      "astuce": null,
+     "uses": null,
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "appareil-brownies",
+     "action": "Hors du feu, ajouter la vanille et les œufs entiers, puis la farine, et bien mélanger",
+     "minutes": 4,
+     "needs": [],
+     "surveille": true,
+     "astuce": "Hors du feu, vraiment : sur le bain-marie, les œufs prennent en omelette.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -14811,6 +15244,7 @@
    "anticipations": [
     {
      "gestes": [
+      "chauffer-creme",
       "fondre-chocolat",
       "monter-en-neige",
       "incorporer",
@@ -14910,12 +15344,29 @@
    ],
    "steps": [
     {
-     "id": "fondre-chocolat",
-     "action": "Chauffer la crème avec la vanille, la fleur de sel et l'huile de coco en surveillant que le fond n'attache pas, puis casser le chocolat dedans et le faire fondre hors du feu en mélangeant",
-     "minutes": 6,
+     "id": "chauffer-creme",
+     "action": "Chauffer la crème avec la vanille, la fleur de sel et l'huile de coco",
+     "minutes": 3,
      "needs": [
       "simmer"
      ],
+     "surveille": true,
+     "astuce": "En surveillant que le fond n'attache pas.",
+     "uses": null,
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "fondre-chocolat",
+     "action": "Casser le chocolat dedans et le faire fondre hors du feu, en mélangeant",
+     "minutes": 3,
+     "needs": [],
      "surveille": true,
      "astuce": null,
      "uses": null,
@@ -14930,13 +15381,13 @@
     },
     {
      "id": "monter-en-neige",
-     "action": "Pendant ce temps : monter en neige les blancs d'œufs (ou le jus de pois chiches) en ajoutant le sucre en trois fois ; dans la version aux œufs, les jaunes vont dans le chocolat",
+     "action": "Pendant ce temps : monter en neige les blancs d'œufs (ou le jus de pois chiches), en ajoutant le sucre en trois fois",
      "minutes": 6,
      "needs": [
       "blend-smooth"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Dans la version aux œufs, les jaunes vont dans le chocolat.",
      "uses": null,
      "enParallele": "fondre-chocolat",
      "attente": null,
@@ -14966,11 +15417,11 @@
     },
     {
      "id": "mettre-au-frais",
-     "action": "Verser aussitôt dans des petits pots et mettre au frais — au moins 4 h",
+     "action": "Verser aussitôt dans des petits pots et mettre au frais",
      "minutes": 2,
      "needs": [],
      "surveille": false,
-     "astuce": null,
+     "astuce": "Au moins 4 h.",
      "uses": null,
      "enParallele": null,
      "attente": 240,
@@ -15204,11 +15655,11 @@
     },
     {
      "id": "tiedir",
-     "action": "Laisser tiédir jusqu'à ce que la préparation soit à peine plus chaude que le doigt, environ 35 °C — plus chaude elle ferait fondre la chantilly, plus froide l'agar-agar la ferait prendre en bloc",
+     "action": "Laisser tiédir jusqu'à ce que la préparation soit à peine plus chaude que le doigt, environ 35 °C",
      "minutes": 2,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Plus chaude, elle ferait fondre la chantilly ; plus froide, l'agar-agar la ferait prendre en bloc.",
      "uses": [],
      "enParallele": null,
      "attente": 45,
@@ -15240,11 +15691,11 @@
     },
     {
      "id": "incorporer",
-     "action": "Incorporer la chantilly à la crème de pêche tiède, très rapidement, en travaillant au fouet et non à la spatule, juste ce qu'il faut pour bien mélanger — trop fouetter ferait retomber la chantilly",
+     "action": "Incorporer la chantilly à la crème de pêche tiède, très rapidement, au fouet et non à la spatule",
      "minutes": 4,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Juste ce qu'il faut pour bien mélanger : trop fouetter ferait retomber la chantilly.",
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -15508,8 +15959,25 @@
     },
     {
      "id": "appareil-muffins",
-     "action": "Dans un bol à part, mélanger œufs, huile, yaourt de soja, sarriette ciselée, ail écrasé, tomates-cerises en morceaux (en garder 6 pour décorer) et parmesan, puis verser sur la farine et mélanger rapidement au fouet",
-     "minutes": 5,
+     "action": "Dans un bol à part, mélanger œufs, huile, yaourt de soja, sarriette ciselée, ail écrasé, tomates-cerises en morceaux et parmesan",
+     "minutes": 3,
+     "needs": [],
+     "surveille": true,
+     "astuce": "En garder 6 tomates-cerises pour décorer.",
+     "uses": null,
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "reunir-muffins",
+     "action": "Verser sur la farine et mélanger rapidement au fouet",
+     "minutes": 2,
      "needs": [],
      "surveille": true,
      "astuce": null,
@@ -15525,11 +15993,11 @@
     },
     {
      "id": "ajouter-le-chevre",
-     "action": "Ajouter le chèvre en petits cubes et mélanger DÉLICATEMENT à la cuillère en bois, pour ne pas briser ces morceaux fragiles — c'est de leur intégrité que dépend la texture",
+     "action": "Ajouter le chèvre en petits cubes et mélanger DÉLICATEMENT à la cuillère en bois",
      "minutes": 2,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Pour ne pas briser ces morceaux fragiles : c'est de leur intégrité que dépend la texture.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -15734,15 +16202,33 @@
      "porteAssaisonnement": false
     },
     {
-     "id": "melanger",
-     "action": "Mélanger la farine et la levure, faire un puits, y verser tous les autres ingrédients des muffins — la courgette râpée, le chocolat, le lait, le sirop d'agave et les œufs — puis bien mélanger au fouet",
-     "minutes": 6,
+     "id": "melanger-secs-muffins",
+     "action": "Mélanger la farine et la levure, puis faire un puits",
+     "minutes": 2,
      "needs": [],
      "surveille": true,
      "astuce": null,
      "uses": [
       "farine-complete",
-      "poudre-a-lever",
+      "poudre-a-lever"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "melanger",
+     "action": "Verser dans le puits la courgette râpée, le chocolat, le lait, le sirop d'agave et les œufs, puis bien mélanger au fouet",
+     "minutes": 4,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
       "courgettes",
       "chocolat-noir",
       "lait-avoine",
@@ -15985,13 +16471,13 @@
     },
     {
      "id": "cuire-vapeur-mugcake",
-     "action": "Déposer les tasses dans le panier vapeur d'un faitout d'eau bouillante — on peut profiter de la cuisson d'une céréale ou d'un plat de légumes déjà en cours — poser un couvercle et compter 20 min",
+     "action": "Déposer les tasses dans le panier vapeur d'un faitout d'eau bouillante, poser un couvercle et compter 20 min",
      "minutes": 20,
      "needs": [
       "steam"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "On peut profiter de la cuisson d'une céréale ou d'un plat de légumes déjà en cours.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -16183,14 +16669,33 @@
      "porteAssaisonnement": false
     },
     {
-     "id": "sauter-legumes",
-     "action": "Faire revenir les échalotes émincées à l'huile dans une grande cocotte, ajouter carottes, navets et pommes de terre, et les faire caraméliser 10 min à feu vif en remuant souvent ; ils doivent être presque cuits à cœur",
-     "minutes": 10,
+     "id": "revenir-echalotes",
+     "action": "Faire revenir les échalotes émincées à l'huile dans une grande cocotte",
+     "minutes": 3,
      "needs": [
       "simmer-large"
      ],
      "surveille": true,
      "astuce": null,
+     "uses": null,
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "sauter-legumes",
+     "action": "Ajouter carottes, navets et pommes de terre, et les faire caraméliser à feu vif en remuant souvent",
+     "minutes": 7,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": true,
+     "astuce": "Ils doivent être presque cuits à cœur avant le mouillage : c'est là que se fait la couleur du navarin.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -16495,11 +17000,11 @@
     },
     {
      "id": "empiler-le-bocal",
-     "action": "Empiler dans un grand bocal d'un litre, DANS CET ORDRE : le petit épeautre, puis concombre, radis, poivron, tomates, le thon émietté, l'œuf coupé en quatre, et ENFIN le mesclun tout en haut — c'est cet ordre qui évite que la salade arrive flétrie",
+     "action": "Empiler dans un grand bocal d'un litre : petit épeautre, concombre, radis, poivron, tomates, thon, œuf, mesclun",
      "minutes": 4,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Dans cet ordre, et il n'est pas décoratif : c'est lui qui évite que la salade arrive flétrie — le mesclun ne doit toucher ni la sauce ni le jus des tomates.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -16512,11 +17017,11 @@
     },
     {
      "id": "sauce-a-part",
-     "action": "Mélanger huile, vinaigre, origan et sel, puis verser dans une petite bouteille À PART — la sauce ne rejoint la salade qu'au moment de savourer",
+     "action": "Mélanger huile, vinaigre, origan et sel, puis verser dans une petite bouteille À PART",
      "minutes": 3,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "La sauce ne rejoint la salade qu'au moment de savourer.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -17202,13 +17707,13 @@
     },
     {
      "id": "cuire-racines",
-     "action": "Faire revenir les racines à l'huile d'olive dans une grande poêle en fonte ou céramique — l'inox accroche trop — saler, couvrir et compter 10 min en remuant de temps en temps",
+     "action": "Faire revenir les racines à l'huile d'olive dans une grande poêle en fonte ou céramique, saler, couvrir et compter 10 min en remuant de temps en temps",
      "minutes": 10,
      "needs": [
       "pan-fry"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "Surtout pas d'inox : il accroche trop pour cette cuisson-là.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -17480,18 +17985,36 @@
    ],
    "steps": [
     {
+     "id": "tailler-opp",
+     "action": "Peler et émincer l'oignon, découper le jambon cru en fines lanières et la carotte en petits cubes",
+     "minutes": 5,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "oignon",
+      "jambon-cru",
+      "carottes"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
      "id": "revenir",
-     "action": "Peler et émincer l'oignon, découper le jambon cru en fines lanières et la carotte en petits cubes, puis faire revenir le tout environ 5 minutes à l'huile d'olive dans un grand faitout",
-     "minutes": 10,
+     "action": "Faire revenir le tout environ 5 minutes à l'huile d'olive dans un grand faitout",
+     "minutes": 5,
      "needs": [
       "pan-fry"
      ],
      "surveille": true,
      "astuce": null,
      "uses": [
-      "oignon",
-      "jambon-cru",
-      "carottes",
       "huile-olive"
      ],
      "enParallele": null,
@@ -17526,11 +18049,11 @@
     },
     {
      "id": "assembler",
-     "action": "Hors du feu, jeter les pâtes sur les oignons dorés, ajouter les tomates, le basilic, l'ail, les olives et les câpres — SANS SALER —, verser l'eau froide et remettre sur feu moyen avec un couvercle",
+     "action": "Hors du feu, jeter les pâtes sur les oignons dorés, ajouter tomates, basilic, ail, olives et câpres, verser l'eau froide et remettre sur feu moyen à couvert",
      "minutes": 3,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "SANS SALER : les câpres, les olives et le jambon salent déjà, et l'eau va réduire entièrement.",
      "uses": [
       "pates",
       "tomates-cerises",
@@ -17589,11 +18112,11 @@
     },
     {
      "id": "finir",
-     "action": "Quand le plat est cuit — il doit rester un peu de sauce au fond de la casserole — ajouter la mozzarella et bien mélanger pour la faire fondre entièrement",
+     "action": "Ajouter la mozzarella et bien mélanger pour la faire fondre entièrement",
      "minutes": 2,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Le plat est cuit quand il reste un peu de sauce au fond de la casserole — à sec, les pâtes ont bu de trop.",
      "uses": [],
      "enParallele": null,
      "attente": 10,
@@ -17743,13 +18266,13 @@
     },
     {
      "id": "retirer-la-pale",
-     "action": "Si la machine sonne en fin de pétrissage, retirer la pâle — sinon elle reste imprimée dans la mie et on perd deux ou trois tranches",
+     "action": "Si la machine sonne en fin de pétrissage, retirer la pâle",
      "minutes": 2,
      "needs": [
       "machine-a-pain"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Sinon elle reste imprimée dans la mie, et on perd deux ou trois tranches.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -17942,11 +18465,11 @@
     },
     {
      "id": "delayer-levure",
-     "action": "Délayer la levure dans l'eau tiède — jamais au-delà de 40 °C, la chaleur tue la levure — puis verser dans le puits avec l'huile et le sirop d'agave",
+     "action": "Délayer la levure dans l'eau tiède, puis verser dans le puits avec l'huile et le sirop d'agave",
      "minutes": 3,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Jamais au-delà de 40 °C : la chaleur tue la levure.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -18012,11 +18535,11 @@
     },
     {
      "id": "refroidir",
-     "action": "Laisser entièrement refroidir avant de démouler — trancher chaud abîme la mie",
+     "action": "Laisser entièrement refroidir avant de démouler",
      "minutes": 5,
      "needs": [],
      "surveille": false,
-     "astuce": null,
+     "astuce": "Trancher chaud abîme la mie.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -18069,7 +18592,8 @@
    "anticipations": [
     {
      "gestes": [
-      "tremper"
+      "tremper",
+      "imbiber-pain"
      ],
      "minutes": 8,
      "attente": 720,
@@ -18249,16 +18773,33 @@
    "steps": [
     {
      "id": "tremper",
-     "action": "Découper le pain en petits morceaux d'environ 3 cm et les mettre dans un petit saladier ; ajouter la sauce tomate, puis remplir à demi le bocal vide d'eau, bien le secouer et verser sur le pain — cela évite de gaspiller la sauce restée sur les parois. Mélanger, puis laisser le pain s'imbiber",
-     "minutes": 8,
+     "action": "Découper le pain en morceaux d'environ 3 cm, les mettre dans un petit saladier et ajouter la sauce tomate",
+     "minutes": 4,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Remplir à demi le bocal vide d'eau, bien le secouer et verser sur le pain : rien de la sauce ne reste sur les parois.",
      "uses": [
       "pain-rassis-ing",
       "sauce-tomate",
       "eau"
      ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "imbiber-pain",
+     "action": "Mélanger, puis laisser le pain s'imbiber",
+     "minutes": 4,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
      "enParallele": null,
      "attente": 720,
      "attenteRaison": "trempage",
@@ -18293,13 +18834,13 @@
     },
     {
      "id": "aubergines",
-     "action": "Découper les aubergines en tranches de 1 cm d'épaisseur et les déposer sur une lèchefrite chemisée de papier cuisson bien huilé ; huiler aussi le dessus des tranches au pinceau, puis enfourner 20 minutes",
+     "action": "Découper les aubergines en tranches de 1 cm, les déposer sur une lèchefrite chemisée et bien huilée, huiler aussi le dessus au pinceau, puis enfourner 20 min",
      "minutes": 22,
      "needs": [
       "bake"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "Des deux côtés : une tranche sèche sur le dessus reste coriace au centre du plat.",
      "uses": [
       "aubergine",
       "huile-aubergines"
@@ -18337,13 +18878,13 @@
     },
     {
      "id": "viande",
-     "action": "Faire revenir l'oignon émincé dans deux cuillerées à soupe d'huile d'olive avec la viande ; saler, poivrer, ajouter une bonne pincée d'origan et laisser cuire jusqu'à ce que la viande soit bien dorée",
+     "action": "Faire revenir l'oignon émincé dans deux cuillerées d'huile d'olive avec la viande ; saler, poivrer, ajouter une bonne pincée d'origan",
      "minutes": 12,
      "needs": [
       "pan-fry"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Laisser cuire jusqu'à ce que la viande soit bien dorée, pas seulement grise.",
      "uses": [
       "oignon",
       "huile-viande",
@@ -18382,11 +18923,28 @@
     },
     {
      "id": "monter",
-     "action": "Tasser la moitié de la farce au fond d'un plat à gratin de taille moyenne, recouvrir de tranches d'aubergine grillées, puis verser la moitié de la crème au fromage ; tasser le reste de la farce, disposer par-dessus le restant des aubergines, et recouvrir de la crème au fromage",
-     "minutes": 8,
+     "action": "Tasser la moitié de la farce au fond d'un plat à gratin moyen, recouvrir de tranches d'aubergine, verser la moitié de la crème au fromage",
+     "minutes": 4,
      "needs": [
       "gratin-vessel"
      ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "seconde-couche",
+     "action": "Tasser le reste de la farce, disposer le restant des aubergines et recouvrir de la crème au fromage",
+     "minutes": 4,
+     "needs": [],
      "surveille": true,
      "astuce": null,
      "uses": [],
@@ -18420,11 +18978,11 @@
     },
     {
      "id": "servir",
-     "action": "Servir avec une salade verte et un peu de riz complet ou de semoule de couscous — la quantité de pain de la recette ne suffit pas aux besoins en glucides d'un repas de midi",
+     "action": "Servir avec une salade verte et un peu de riz complet ou de semoule",
      "minutes": 2,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "La quantité de pain de la recette ne suffit pas aux besoins en glucides d'un repas de midi.",
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -18621,11 +19179,11 @@
     },
     {
      "id": "etaler-dans-le-cadre",
-     "action": "Poser un papier cuisson sur une plaque, y installer un cadre à pâtisserie réglable de 30 cm de côté (ou un plat de même taille chemisé), verser la pâte et la répartir au dos d'une cuillère huilée",
+     "action": "Poser un papier cuisson sur une plaque, y installer un cadre à pâtisserie de 30 cm de côté, verser la pâte et la répartir au dos d'une cuillère huilée",
      "minutes": 6,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "À défaut de cadre, un plat de même taille chemisé fait l'affaire.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -18655,8 +19213,27 @@
     },
     {
      "id": "piquer-et-cuire",
-     "action": "Piquer la pâte tous les 3 cm à la fourchette huilée, la laisser lever encore un quart d'heure pendant que le four préchauffe à 240 °C, puis enfourner assez bas 12 min chrono",
-     "minutes": 27,
+     "action": "Piquer la pâte tous les 3 cm à la fourchette huilée, puis la laisser lever encore un quart d'heure pendant que le four préchauffe à 240 °C",
+     "minutes": 15,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": null,
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cuire-pains-suedois",
+     "action": "Enfourner assez bas, 12 min chrono",
+     "minutes": 12,
      "needs": [
       "bake"
      ],
@@ -19375,13 +19952,13 @@
     },
     {
      "id": "fondre-oignons",
-     "action": "Pendant ce temps : détailler les oignons en petits cubes et les faire revenir à l'huile d'olive dans une petite cocotte avec un peu de sel, l'origan et le fenouil ciselé, jusqu'à ce qu'ils soient tendres et bien dorés — sans les laisser brûler",
+     "action": "Pendant ce temps : détailler les oignons en petits cubes et les faire revenir à l'huile en petite cocotte, avec un peu de sel, l'origan et le fenouil ciselé",
      "minutes": 10,
      "needs": [
       "pan-fry"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Jusqu'à ce qu'ils soient tendres et bien dorés, sans jamais les laisser brûler.",
      "uses": null,
      "enParallele": "cuire-pates",
      "attente": null,
@@ -19603,11 +20180,11 @@
     },
     {
      "id": "delayer-pizza",
-     "action": "Délayer la levure dans l'eau tiède — jamais plus de 40 °C — l'ajouter dans le puits avec l'huile d'olive, puis mélanger à la cuillère en bois ou au robot",
+     "action": "Délayer la levure dans l'eau tiède, l'ajouter dans le puits avec l'huile d'olive, puis mélanger à la cuillère en bois ou au robot",
      "minutes": 6,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Jamais plus de 40 °C : au-delà, la chaleur tue la levure.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -19694,6 +20271,7 @@
    "anticipations": [
     {
      "gestes": [
+      "melanger-secs-pizza",
       "melanger",
       "travailler",
       "lever"
@@ -19772,15 +20350,33 @@
    ],
    "steps": [
     {
-     "id": "melanger",
-     "action": "Mélanger la farine et le sel, faire un puits ; délayer la levure dans l'eau tiède — jamais plus de 45 °C —, puis l'ajouter dans le puits avec l'huile d'olive",
-     "minutes": 5,
+     "id": "melanger-secs-pizza",
+     "action": "Mélanger la farine et le sel, puis faire un puits",
+     "minutes": 2,
      "needs": [],
      "surveille": true,
      "astuce": null,
      "uses": [
       "farine-complete",
-      "sel",
+      "sel"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "melanger",
+     "action": "Délayer la levure dans l'eau tiède, puis l'ajouter dans le puits avec l'huile d'olive",
+     "minutes": 3,
+     "needs": [],
+     "surveille": true,
+     "astuce": "Jamais plus de 45 °C : au-delà, la chaleur tue la levure.",
+     "uses": [
       "levure-boulangere",
       "eau",
       "huile-olive"
@@ -19937,11 +20533,11 @@
    "steps": [
     {
      "id": "faire-la-pate-wraps",
-     "action": "Mélanger la farine et le sel, faire un puits, ajouter le reste en fouettant jusqu'à ce qu'il n'y ait plus de grumeaux",
+     "action": "Mélanger la farine et le sel, faire un puits, ajouter le reste en fouettant",
      "minutes": 5,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Jusqu'à ce qu'il n'y ait plus le moindre grumeau.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -19970,9 +20566,28 @@
      "porteAssaisonnement": false
     },
     {
+     "id": "chauffer-poele-wraps",
+     "action": "Préchauffer une poêle de 20 à 22 cm en céramique, fonte ou tôle noire, et l'huiler au pinceau",
+     "minutes": 4,
+     "needs": [
+      "pan-fry"
+     ],
+     "surveille": true,
+     "astuce": "Surtout pas d'inox. Et une fois la poêle bien chaude, inutile de huiler entre chaque crêpe.",
+     "uses": null,
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
      "id": "cuire-les-crepes",
-     "action": "Préchauffer une poêle de 20 à 22 cm en céramique, fonte ou tôle noire — surtout pas d'inox — l'huiler au pinceau, verser une louchée, étaler finement et cuire les deux faces ; une fois la poêle bien chaude, inutile de huiler entre chaque crêpe",
-     "minutes": 30,
+     "action": "Verser une louchée, étaler finement et cuire les deux faces, puis recommencer",
+     "minutes": 26,
      "needs": [
       "pan-fry"
      ],
@@ -20101,11 +20716,11 @@
    "steps": [
     {
      "id": "malaxer",
-     "action": "Mettre tous les ingrédients « en vrac » dans un saladier et malaxer à la main juste ce qu'il faut pour obtenir une pâte homogène",
+     "action": "Mettre tous les ingrédients « en vrac » dans un saladier et malaxer à la main",
      "minutes": 5,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Juste ce qu'il faut pour obtenir une pâte homogène : trop travaillée, elle devient élastique.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -20118,11 +20733,11 @@
     },
     {
      "id": "diviser",
-     "action": "Découper la pâte en 4 pâtons — c'est en pâtons individuels qu'elle se congèle et se ressort un par un",
+     "action": "Découper la pâte en 4 pâtons",
      "minutes": 2,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "C'est en pâtons individuels qu'elle se congèle et se ressort un par un.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -20283,11 +20898,11 @@
     },
     {
      "id": "reunir-le-pate",
-     "action": "Quand les sucs sont bien dorés mais surtout PAS brûlés, transférer avec l'huile de cuisson dans le bol du robot, puis ajouter les lentilles, la purée de noisette, un peu de sel et de poivre",
+     "action": "Transférer les sucs avec leur huile de cuisson dans le bol du robot, puis ajouter les lentilles, la purée de noisette, un peu de sel et de poivre",
      "minutes": 3,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Attendre que les sucs soient bien dorés, mais surtout PAS brûlés : un suc brûlé est amer et le pâté entier le prend.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -20300,13 +20915,13 @@
     },
     {
      "id": "mixer-le-pate",
-     "action": "Mixer en 3 ou 4 brèves impulsions pour garder des petits morceaux — surtout pas de bouillie — puis ajouter les noisettes très grossièrement concassées",
+     "action": "Mixer en 3 ou 4 brèves impulsions, puis ajouter les noisettes très grossièrement concassées",
      "minutes": 3,
      "needs": [
       "chop-coarse"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Des petits morceaux, surtout pas de bouillie.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -20591,11 +21206,11 @@
     },
     {
      "id": "visser-a-chaud",
-     "action": "Visser les couvercles sur les pots JUSTE SORTIS DU FOUR, avec des maniques — c'est ce geste qui crée le vide d'air en refroidissant",
+     "action": "Visser les couvercles sur les pots JUSTE SORTIS DU FOUR, avec des maniques",
      "minutes": 3,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "C'est ce geste qui crée le vide d'air en refroidissant.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -20608,11 +21223,11 @@
     },
     {
      "id": "verifier-le-vide",
-     "action": "Laisser refroidir à température ambiante, puis vérifier que la capsule est bien convexe, le centre du couvercle un peu « enfoncé » : c'est la preuve que le vide s'est fait. À défaut, consommer le gâteau dans la semaine",
+     "action": "Laisser refroidir à température ambiante, puis vérifier que le centre du couvercle est un peu « enfoncé »",
      "minutes": 2,
      "needs": [],
      "surveille": false,
-     "astuce": null,
+     "astuce": "C'est la preuve que le vide s'est fait. À défaut, consommer le gâteau dans la semaine.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -20787,11 +21402,11 @@
     },
     {
      "id": "marbrer",
-     "action": "Verser la purée de fraises dans la crème fouettée et mélanger en trois ou quatre coups de spatule — pas un de plus, sinon les marbrures disparaissent",
+     "action": "Verser la purée de fraises dans la crème fouettée et mélanger en trois ou quatre coups de spatule",
      "minutes": 2,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Pas un de plus : au-delà, les marbrures disparaissent.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -20804,13 +21419,13 @@
     },
     {
      "id": "congeler",
-     "action": "Répartir dans les 6 pots en carton et mettre au congélateur environ 2 h ; au-delà, les sortir un peu en avance pour qu'ils ne soient pas trop durs",
+     "action": "Répartir dans les 6 pots en carton et mettre au congélateur environ 2 h",
      "minutes": 4,
      "needs": [
       "congeler"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "Au-delà, les sortir un peu en avance pour qu'ils ne soient pas trop durs.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -21192,11 +21807,11 @@
     },
     {
      "id": "preparer-les-fenouils",
-     "action": "Si la poêlée est au fenouil : enlever les feuilles extérieures coriaces et filandreuses et recouper les tiges à ras — c'est ce qui fait la différence entre une poêlée tendre et une poêlée fibreuse",
+     "action": "Si la poêlée est au fenouil : enlever les feuilles extérieures coriaces et recouper les tiges à ras",
      "minutes": 10,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "C'est ce qui fait la différence entre une poêlée tendre et une poêlée fibreuse.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -21243,11 +21858,11 @@
     },
     {
      "id": "relever-pissaladiere",
-     "action": "Laisser lever encore une vingtaine de minutes — facultatif",
+     "action": "Laisser lever encore une vingtaine de minutes",
      "minutes": 1,
      "needs": [],
      "surveille": false,
-     "astuce": null,
+     "astuce": "Facultatif.",
      "uses": null,
      "enParallele": null,
      "attente": 20,
@@ -21559,13 +22174,13 @@
     },
     {
      "id": "epinards",
-     "action": "Quand les courgettes sont à leur tour bien dorées, ajouter les épinards et le basilic, et faire « tomber » les feuilles jusqu'à ce qu'il n'y ait plus du tout d'eau — sinon la garniture détremperait la pâte",
+     "action": "Quand les courgettes sont bien dorées, ajouter les épinards et le basilic et faire « tomber » les feuilles",
      "minutes": 8,
      "needs": [
       "pan-fry"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Jusqu'à ce qu'il n'y ait plus du tout d'eau, sinon la garniture détremperait la pâte.",
      "uses": [
       "pousses-epinards",
       "basilic"
@@ -21621,8 +22236,25 @@
     },
     {
      "id": "etaler",
-     "action": "Abaisser la pâte directement sur la lèchefrite avec les mains mouillées, étaler la garniture tiède, répartir par-dessus la mozzarella en tranches puis les olives, et laisser encore un peu lever le temps de préchauffer le four à 240 °C",
-     "minutes": 10,
+     "action": "Abaisser la pâte directement sur la lèchefrite, avec les mains mouillées",
+     "minutes": 4,
+     "needs": [],
+     "surveille": true,
+     "astuce": "Les mains mouillées, pas farinées : la pâte s'étire au lieu de se rétracter.",
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "garnir-pizza-verte",
+     "action": "Étaler la garniture tiède, répartir la mozzarella en tranches puis les olives, et laisser lever le temps de préchauffer le four à 240 °C",
+     "minutes": 6,
      "needs": [
       "bake"
      ],
@@ -21643,13 +22275,13 @@
     },
     {
      "id": "cuire",
-     "action": "Enfourner assez bas — cran juste au-dessus de la sole — pendant 5 minutes, puis, sans ouvrir la porte, baisser la température du four à 150 °C et laisser cuire encore 12 minutes avant de servir",
+     "action": "Enfourner assez bas 5 minutes, puis, sans ouvrir la porte, baisser à 150 °C et laisser cuire encore 12 minutes",
      "minutes": 17,
      "needs": [
       "bake"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Assez bas veut dire le cran juste au-dessus de la sole.",
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -21834,7 +22466,7 @@
     },
     {
      "id": "garnir-pizza",
-     "action": "Étaler la pâte en disque d'environ 25 cm sur un papier huilé et fariné, étaler la ratatouille, ajouter le poulet en morceaux, les olives, les câpres et le fromage",
+     "action": "Étaler la pâte en disque d'environ 25 cm sur un papier huilé et fariné, puis garnir de ratatouille, poulet en morceaux, olives, câpres et fromage",
      "minutes": 8,
      "needs": [],
      "surveille": true,
@@ -21868,11 +22500,11 @@
     },
     {
      "id": "relever-pizza",
-     "action": "Laisser lever encore une vingtaine de minutes — facultatif, mais c'est mieux",
+     "action": "Laisser lever encore une vingtaine de minutes",
      "minutes": 1,
      "needs": [],
      "surveille": false,
-     "astuce": null,
+     "astuce": "Facultatif, mais c'est mieux.",
      "uses": null,
      "enParallele": null,
      "attente": 20,
@@ -22159,13 +22791,13 @@
     },
     {
      "id": "cuire-orge",
-     "action": "Cuire l'orge 15 min dans un grand faitout d'eau bouillante salée — le temps se compte à partir de la reprise de l'ébullition",
+     "action": "Cuire l'orge 15 min dans un grand faitout d'eau bouillante salée",
      "minutes": 15,
      "needs": [
       "simmer-large"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "Le temps se compte à partir de la reprise de l'ébullition.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -22197,13 +22829,13 @@
     },
     {
      "id": "sauter-champignons",
-     "action": "Ajouter les champignons frais émincés et les champignons en conserve bien rincés et égouttés, puis faire sauter à feu vif 10 à 15 min, le temps qu'ils soient bien dorés",
+     "action": "Ajouter les champignons frais émincés et ceux en conserve, bien rincés, puis faire sauter à feu vif",
      "minutes": 13,
      "needs": [
       "pan-fry"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "10 à 15 min, le temps qu'ils soient bien dorés.",
      "uses": null,
      "enParallele": "cuire-orge",
      "attente": null,
@@ -22493,13 +23125,13 @@
    "steps": [
     {
      "id": "lancer",
-     "action": "Mettre la viande et l'os à moelle dans 3,5 l d'eau froide avec le gros sel, les oignons, les carottes, éventuellement les panais, le laurier, la coriandre, les herbes et les clous de girofle",
+     "action": "Mettre la viande et l'os à moelle dans 3,5 l d'eau froide, avec le gros sel et la garniture aromatique",
      "minutes": 10,
      "needs": [
       "simmer-large"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Oignons, carottes, laurier, coriandre, herbes, clous de girofle — et les panais, éventuellement.",
      "uses": [
       "jarret-boeuf",
       "os-a-moelle",
@@ -22524,13 +23156,13 @@
     },
     {
      "id": "precuire",
-     "action": "Couvrir, porter à ébullition, puis compter 2 heures de cuisson — à tout petit feu, car mener la cuisson tambour battant ne sert à rien",
+     "action": "Couvrir, porter à ébullition, puis compter 2 heures de cuisson à tout petit feu",
      "minutes": 120,
      "needs": [
       "simmer-large"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "Mener la cuisson tambour battant ne sert à rien : le collagène ne se défait qu'à feu doux.",
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -22543,11 +23175,11 @@
     },
     {
      "id": "preparer-legumes",
-     "action": "Pendant la précuisson : éplucher et préparer les autres légumes — recouper les poireaux et les navets en deux, le potimarron et le céleri-rave en six, laisser les pommes de terre entières",
+     "action": "Pendant la précuisson : éplucher et préparer les autres légumes",
      "minutes": 15,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Poireaux et navets recoupés en deux, potimarron et céleri-rave en six, pommes de terre entières.",
      "uses": [
       "poireau",
       "navets",
@@ -22566,13 +23198,13 @@
     },
     {
      "id": "ajouter-legumes",
-     "action": "Au bout des 2 heures, ajouter dans la marmite DANS CET ORDRE : le céleri-rave, les poireaux, les navets, les pommes de terre, puis le potimarron — les légumes coriaces doivent être parfaitement immergés, le potimarron et la pomme de terre cuisent quasiment à la vapeur au-dessus",
+     "action": "Au bout des 2 heures, ajouter DANS CET ORDRE : céleri-rave, poireaux, navets, pommes de terre, puis potimarron",
      "minutes": 5,
      "needs": [
       "simmer-large"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "L'ordre fait la cuisson : les légumes coriaces doivent être parfaitement immergés, tandis que potimarron et pomme de terre cuisent quasiment à la vapeur au-dessus.",
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -22604,11 +23236,11 @@
     },
     {
      "id": "servir",
-     "action": "Sortir la viande et les légumes à l'écumoire, les disposer dans un plat et servir aussitôt, avec un filet d'huile d'olive et du poivre du moulin sur chaque assiette",
+     "action": "Sortir la viande et les légumes à l'écumoire, les disposer dans un plat et servir aussitôt",
      "minutes": 5,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Un filet d'huile d'olive et du poivre du moulin sur chaque assiette.",
      "uses": [
       "huile-olive",
       "poivre"
@@ -22876,22 +23508,42 @@
     },
     {
      "id": "reunir",
-     "action": "Remettre l'oignon dans la cocotte avec le poulet doré, ajouter les gousses d'ail en chemise (non épluchées), les herbes, la sauge, les olives, le jus du citron, le sel et le poivre, puis verser deux verres d'eau",
-     "minutes": 6,
+     "action": "Remettre l'oignon dans la cocotte avec le poulet doré, ajouter l'ail en chemise, les herbes, la sauge et les olives",
+     "minutes": 4,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": true,
+     "astuce": "« En chemise » veut dire non épluchées : la peau garde l'ail fondant au lieu de le laisser brûler.",
+     "uses": [
+      "ail",
+      "herbes-fraiches",
+      "sauge",
+      "olives-noires",
+      "laurier"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "mouiller-cocotte",
+     "action": "Presser le citron dessus, saler, poivrer, puis verser deux verres d'eau",
+     "minutes": 2,
      "needs": [
       "simmer-large"
      ],
      "surveille": true,
      "astuce": null,
      "uses": [
-      "ail",
-      "herbes-fraiches",
-      "sauge",
-      "olives-noires",
       "citron",
       "sel",
       "poivre",
-      "laurier",
       "eau"
      ],
      "enParallele": null,
@@ -22905,13 +23557,13 @@
     },
     {
      "id": "mijoter",
-     "action": "Continuer la cuisson à très petit feu pendant 1 h 30 environ, en surveillant de temps en temps que le fond n'accroche pas ; si besoin, ajouter un peu d'eau, car il doit toujours y avoir de la sauce au fond de la cocotte",
+     "action": "Continuer la cuisson à très petit feu pendant 1 h 30 environ, en surveillant que le fond n'accroche pas",
      "minutes": 90,
      "needs": [
       "simmer-large"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Ajouter un peu d'eau si besoin : il doit toujours y avoir de la sauce au fond de la cocotte.",
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -22924,13 +23576,13 @@
     },
     {
      "id": "zeste",
-     "action": "Cinq minutes avant la fin de la cuisson, ajouter dans le fond de la cocotte le zeste du citron très finement râpé — sans mettre de peau blanche, trop amère — et mélanger",
+     "action": "Cinq minutes avant la fin, ajouter dans le fond de la cocotte le zeste du citron très finement râpé, et mélanger",
      "minutes": 4,
      "needs": [
       "simmer-large"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Sans peau blanche : elle est trop amère.",
      "uses": [
       "citron"
      ],
@@ -22945,11 +23597,11 @@
     },
     {
      "id": "servir",
-     "action": "Le poulet est cuit quand il se découpe facilement aux jointures, même sans couteau",
+     "action": "Servir",
      "minutes": 5,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Le poulet est cuit quand il se découpe facilement aux jointures, même sans couteau.",
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -23076,11 +23728,11 @@
    "steps": [
     {
      "id": "preparer-volaille",
-     "action": "Couper les liens du poulet — les jointures des cuisses cuisent mieux détachées — et le farcir de quelques herbes aromatiques",
+     "action": "Couper les liens du poulet et le farcir de quelques herbes aromatiques",
      "minutes": 5,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Les jointures des cuisses cuisent mieux détachées.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -23093,11 +23745,11 @@
     },
     {
      "id": "saler-badigeonner",
-     "action": "Saler le poulet, puis badigeonner la peau de jus de citron : c'est ce qui la rend dorée sans être grasse",
+     "action": "Saler le poulet, puis badigeonner la peau de jus de citron",
      "minutes": 3,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "C'est ce qui la rend dorée sans être grasse.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -23379,11 +24031,11 @@
     },
     {
      "id": "monter",
-     "action": "Disposer les poires entières dans un cercle à pâtisserie assez haut — au moins 10 cm — et de 18 à 20 cm de diamètre, en veillant à ce qu'elles ne se touchent pas, puis verser la pâte entre les poires et bien égaliser",
+     "action": "Disposer les poires entières dans un cercle à pâtisserie de 18 à 20 cm, sans qu'elles se touchent, puis verser la pâte entre elles et bien égaliser",
      "minutes": 8,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Un cercle assez haut — au moins 10 cm — sinon la pâte déborde en montant.",
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -23436,11 +24088,11 @@
     },
     {
      "id": "verifier-cuisson",
-     "action": "Vérifier la cuisson en piquant le gâteau à cœur — le laisser encore 5 à 10 minutes si un peu de pâte crue adhère à la pique —, puis laisser refroidir, démouler et saupoudrer éventuellement de sucre glace",
+     "action": "Vérifier la cuisson en piquant le gâteau à cœur, puis laisser refroidir, démouler et saupoudrer éventuellement de sucre glace",
      "minutes": 10,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Le laisser encore 5 à 10 minutes si un peu de pâte crue adhère à la pique.",
      "uses": [],
      "enParallele": null,
      "attente": 45,
@@ -23649,11 +24301,11 @@
    "steps": [
     {
      "id": "egoutter",
-     "action": "Renverser la faisselle dans une passoire et la laisser s'égoutter — c'est ce qui décide de la tenue de l'appareil",
+     "action": "Renverser la faisselle dans une passoire et la laisser s'égoutter",
      "minutes": 2,
      "needs": [],
      "surveille": false,
-     "astuce": null,
+     "astuce": "C'est ce qui décide de la tenue de l'appareil.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -23684,9 +24336,9 @@
      "porteAssaisonnement": false
     },
     {
-     "id": "poeler-cebettes",
-     "action": "Ôter la première feuille des cébettes, les coucher à plat dans une grande poêle huilée, saler, les faire dorer 5 min à feu doux ; ajouter un verre d'eau, couvrir et étuver 10 min",
-     "minutes": 17,
+     "id": "dorer-cebettes",
+     "action": "Ôter la première feuille des cébettes, les coucher à plat dans une grande poêle huilée, saler et faire dorer 5 min à feu doux",
+     "minutes": 6,
      "needs": [
       "pan-fry"
      ],
@@ -23703,12 +24355,31 @@
      "porteAssaisonnement": false
     },
     {
+     "id": "poeler-cebettes",
+     "action": "Ajouter un verre d'eau, couvrir et étuver 10 min",
+     "minutes": 11,
+     "needs": [
+      "pan-fry"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": null,
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
      "id": "faire-la-pate",
-     "action": "Pendant l'étuvée : mélanger poudre d'amande, farine et fleur de sel, incorporer l'huile jusqu'à une texture sablonneuse, verser l'eau d'un coup et amalgamer sans travailler la pâte",
+     "action": "Pendant l'étuvée : mélanger poudre d'amande, farine et fleur de sel, incorporer l'huile jusqu'à une texture sablonneuse, puis verser l'eau d'un coup",
      "minutes": 8,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Amalgamer sans travailler la pâte : c'est une pâte sablée, pas une pâte à pain.",
      "uses": null,
      "enParallele": "poeler-cebettes",
      "attente": null,
@@ -24066,11 +24737,11 @@
    "steps": [
     {
      "id": "sortir",
-     "action": "Sortir le reste du frigo, vérifier qu'il sent bon et qu'il est dans la fenêtre.",
+     "action": "Sortir le reste du frigo",
      "minutes": 1,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Vérifier qu'il sent bon et qu'il est dans la fenêtre.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -24083,13 +24754,13 @@
     },
     {
      "id": "rechauffer",
-     "action": "Réchauffer à couvert — micro-ondes pour une portion, poêle ou casserole au-delà.",
+     "action": "Réchauffer à couvert",
      "minutes": 8,
      "needs": [
       "reheat"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "Micro-ondes pour une portion, poêle ou casserole au-delà.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -24262,14 +24933,31 @@
    ],
    "steps": [
     {
+     "id": "tailler-rillettes",
+     "action": "Émincer les échalotes et couper la carotte en petits cubes",
+     "minutes": 3,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": null,
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
      "id": "suer",
-     "action": "Émincer les échalotes, couper la carotte en petits cubes et les faire revenir à l'huile d'olive dans une petite cocotte jusqu'à ce que les sucs prennent une légère coloration",
-     "minutes": 8,
+     "action": "Les faire revenir à l'huile d'olive dans une petite cocotte",
+     "minutes": 5,
      "needs": [
       "pan-fry"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Jusqu'à ce que les sucs prennent une légère coloration : c'est eux qui portent le goût.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -24507,8 +25195,25 @@
    "steps": [
     {
      "id": "rincer-l-algue",
-     "action": "Rincer la laitue de mer dans trois eaux différentes — elle est conservée au sel, et ce rinçage n'est pas facultatif",
+     "action": "Rincer la laitue de mer dans trois eaux différentes",
      "minutes": 4,
+     "needs": [],
+     "surveille": true,
+     "astuce": "Elle est conservée au sel, et ce rinçage n'est pas facultatif.",
+     "uses": null,
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "tailler-saumon-tm",
+     "action": "Émincer finement poireau et oignon, tailler la carotte en petits cubes",
+     "minutes": 3,
      "needs": [],
      "surveille": true,
      "astuce": null,
@@ -24524,13 +25229,13 @@
     },
     {
      "id": "dorer-les-legumes",
-     "action": "Émincer finement poireau et oignon, tailler la carotte en petits cubes, puis les faire revenir à l'huile d'olive dans une petite cocotte jusqu'à légère coloration des sucs",
-     "minutes": 8,
+     "action": "Les faire revenir à l'huile d'olive dans une petite cocotte",
+     "minutes": 5,
      "needs": [
       "pan-fry"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Jusqu'à légère coloration des sucs.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -24759,13 +25464,13 @@
    "steps": [
     {
      "id": "griller-poivrons",
-     "action": "Couper les poivrons en deux dans le sens de la longueur, les disposer face coupée vers le bas sur une plaque garnie de papier cuisson et enfourner 10 minutes sous le gril, jusqu'à ce que la peau noircisse et se boursoufle",
+     "action": "Couper les poivrons en deux dans la longueur, les poser face coupée vers le bas sur une plaque chemisée et enfourner 10 minutes sous le gril",
      "minutes": 12,
      "needs": [
       "grill"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Jusqu'à ce que la peau noircisse et se boursoufle : c'est ce qui permet de la retirer.",
      "uses": [
       "poivron"
      ],
@@ -24842,13 +25547,13 @@
     },
     {
      "id": "mouiller",
-     "action": "Ajouter une louche de bouillon chaud et mélanger à la cuillère de bois jusqu'à absorption complète, puis recommencer, et ainsi de suite jusqu'à ce que le riz soit parfaitement cuit et crémeux — environ 20 minutes, mais cela dépend du riz et il n'y a pas de temps précis",
+     "action": "Ajouter une louche de bouillon chaud, mélanger à la cuillère de bois jusqu'à absorption complète, puis recommencer",
      "minutes": 20,
      "needs": [
       "simmer"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Environ 20 minutes, jusqu'à un riz parfaitement cuit et crémeux — mais cela dépend du riz, il n'y a pas de temps précis.",
      "uses": [
       "bouillon-legumes"
      ],
@@ -24862,9 +25567,9 @@
      "porteAssaisonnement": false
     },
     {
-     "id": "finir",
-     "action": "Peu avant la fin de la cuisson, ajouter le concentré de tomate, un peu de sel, le piment et les olives noires émincées ; terminer en ajoutant le mascarpone, bien mélanger, rectifier l'assaisonnement et servir aussitôt",
-     "minutes": 5,
+     "id": "relever",
+     "action": "Peu avant la fin, ajouter le concentré de tomate, un peu de sel, le piment et les olives noires émincées",
+     "minutes": 3,
      "needs": [],
      "surveille": true,
      "astuce": null,
@@ -24872,8 +25577,7 @@
       "concentre-tomate",
       "sel",
       "piment-espelette",
-      "olives-noires",
-      "mascarpone"
+      "olives-noires"
      ],
      "enParallele": null,
      "attente": null,
@@ -24883,6 +25587,25 @@
      "enfant": null,
      "enfantDes": null,
      "porteAssaisonnement": true
+    },
+    {
+     "id": "finir",
+     "action": "Terminer par le mascarpone, bien mélanger, rectifier l'assaisonnement et servir aussitôt",
+     "minutes": 2,
+     "needs": [],
+     "surveille": true,
+     "astuce": "Aussitôt : un risotto qui attend se fige.",
+     "uses": [
+      "mascarpone"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
     }
    ],
    "bebe": "une petite louche de risotto crémeux, AVANT le sel, le piment et les olives",
@@ -25037,13 +25760,13 @@
    "steps": [
     {
      "id": "bouillir",
-     "action": "Porter le lait à ébullition dans une cocotte en fonte avec la gousse de vanille fendue en deux, le sel, la cannelle et le rhum, puis verser le riz en pluie en mélangeant au fouet",
+     "action": "Porter le lait à ébullition en cocotte avec la gousse de vanille fendue, le sel, la cannelle et le rhum, puis verser le riz en pluie au fouet",
      "minutes": 8,
      "needs": [
       "simmer"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "En pluie et au fouet : versé d'un coup, le riz se colle au fond et attache.",
      "uses": [
       "lait-soja-vanille",
       "gousse-vanille",
@@ -25063,13 +25786,13 @@
     },
     {
      "id": "mijoter",
-     "action": "Poser un couvercle et baisser le feu au minimum, puis laisser mijoter 35 minutes à feu le plus doux possible, en mélangeant de temps en temps à la cuillère de bois",
+     "action": "Poser un couvercle, baisser au minimum et laisser mijoter 35 minutes, en mélangeant de temps en temps",
      "minutes": 35,
      "needs": [
       "simmer"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Au feu le plus doux possible : c'est un riz au lait, il attache sans prévenir.",
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -25082,7 +25805,7 @@
     },
     {
      "id": "finir",
-     "action": "En fin de cuisson, ajouter hors du feu la crème de coco et le sucre, bien mélanger, poser un couvercle, porter de nouveau à ébullition, puis laisser complètement refroidir hors du feu",
+     "action": "Hors du feu, ajouter la crème de coco et le sucre, bien mélanger, couvrir, porter de nouveau à ébullition, puis laisser refroidir hors du feu",
      "minutes": 8,
      "needs": [
       "simmer"
@@ -25585,11 +26308,11 @@
     },
     {
      "id": "saler-le-bouillon",
-     "action": "Saler le bouillon au gros sel gris — c'est lui qui fait le goût de « jambon »",
+     "action": "Saler le bouillon au gros sel gris",
      "minutes": 2,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "C'est lui qui fait le goût de « jambon ».",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -25621,11 +26344,11 @@
     },
     {
      "id": "refroidir-dans-le-bouillon",
-     "action": "Laisser le rôti refroidir DANS son bouillon, au frais — c'est ce qui le garde moelleux et parfumé",
+     "action": "Laisser le rôti refroidir DANS son bouillon, au frais",
      "minutes": 3,
      "needs": [],
      "surveille": false,
-     "astuce": null,
+     "astuce": "C'est ce qui le garde moelleux et parfumé.",
      "uses": null,
      "enParallele": null,
      "attente": 720,
@@ -25819,11 +26542,11 @@
     },
     {
      "id": "garnir",
-     "action": "Ciseler les herbes et la sauge et les répartir dessus avec les gousses d'ail préalablement émincées et les graines de fenouil ; saler, poivrer généreusement, et ajouter éventuellement un peu de piment",
+     "action": "Ciseler les herbes et la sauge, les répartir dessus avec l'ail émincé et les graines de fenouil, puis saler et poivrer généreusement",
      "minutes": 8,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Un peu de piment d'Espelette, éventuellement.",
      "uses": [
       "herbes-fraiches",
       "sauge",
@@ -25844,11 +26567,11 @@
     },
     {
      "id": "rouler",
-     "action": "Rouler le rôti bien serré, puis le ficeler — facultatif, car roulé bien serré il gardera sa forme à la cuisson —, et bien le saler sur le dessus",
+     "action": "Rouler le rôti bien serré, le ficeler, et bien le saler sur le dessus",
      "minutes": 5,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "La ficelle est facultative : roulé bien serré, il garde sa forme à la cuisson.",
      "uses": [
       "sel"
      ],
@@ -26067,13 +26790,13 @@
    ],
    "steps": [
     {
-     "id": "cuire-12-min",
-     "action": "Mettre quinoa et lentilles corail dans une petite casserole avec l'eau et un peu de sel ; couvrir et compter 12 minutes chrono à feu doux après reprise de l'ébullition — les deux ont exactement le même temps de cuisson",
-     "minutes": 14,
+     "id": "lancer-12-min",
+     "action": "Mettre quinoa et lentilles corail dans une petite casserole avec l'eau et un peu de sel",
+     "minutes": 2,
      "needs": [
       "simmer"
      ],
-     "surveille": false,
+     "surveille": true,
      "astuce": null,
      "uses": null,
      "enParallele": null,
@@ -26084,6 +26807,25 @@
      "enfant": null,
      "enfantDes": null,
      "porteAssaisonnement": true
+    },
+    {
+     "id": "cuire-12-min",
+     "action": "Couvrir et compter 12 minutes chrono à feu doux, après reprise de l'ébullition",
+     "minutes": 12,
+     "needs": [
+      "simmer"
+     ],
+     "surveille": false,
+     "astuce": "Les deux ont exactement le même temps de cuisson : c'est toute l'astuce de cette salade.",
+     "uses": null,
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
     },
     {
      "id": "tailler-garniture",
@@ -26104,11 +26846,11 @@
     },
     {
      "id": "assembler-12-min",
-     "action": "Quand il n'y a plus d'eau dans la casserole, mélanger avec tous les autres ingrédients, puis conserver au frais jusqu'au repas",
+     "action": "Mélanger avec tous les autres ingrédients, puis conserver au frais jusqu'au repas",
      "minutes": 3,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Attendre qu'il n'y ait plus d'eau dans la casserole.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -26300,11 +27042,11 @@
     },
     {
      "id": "faire-les-croutons",
-     "action": "Passer les tranches de pain de mie au grille-pain, les couper en croûtons et les réserver dans un sachet hermétique — À TEMPÉRATURE AMBIANTE, jamais au frais",
+     "action": "Passer les tranches de pain de mie au grille-pain, les couper en croûtons et les réserver dans un sachet hermétique",
      "minutes": 4,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "À TEMPÉRATURE AMBIANTE, jamais au frais : le froid les ramollit.",
      "uses": null,
      "enParallele": "oeuf-mollet-cesar",
      "attente": null,
@@ -26317,11 +27059,11 @@
     },
     {
      "id": "monter-la-boite",
-     "action": "Mettre dans la boîte-repas la laitue en morceaux et le poulet en dés de 2 cm, ajouter l'œuf écalé coupé en quatre et des copeaux de parmesan faits à l'économe, puis fermer",
+     "action": "Mettre dans la boîte-repas la laitue en morceaux et le poulet en dés de 2 cm, puis l'œuf écalé en quartiers et des copeaux de parmesan",
      "minutes": 5,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Les copeaux se font à l'économe.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -26334,11 +27076,11 @@
     },
     {
      "id": "sauce-cesar",
-     "action": "Mélanger huile, jus de citron, moutarde, anchois hachés très fin et sel, puis verser dans un petit flacon qui ferme bien — la sauce ne rejoint la salade qu'au moment de manger",
+     "action": "Mélanger huile, jus de citron, moutarde, anchois hachés très fin et sel, puis verser dans un petit flacon qui ferme bien",
      "minutes": 3,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "La sauce ne rejoint la salade qu'au moment de manger.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -27492,13 +28234,13 @@
    "steps": [
     {
      "id": "dorer-oignon-steak",
-     "action": "Faire revenir l'oignon en cubes dans une petite cocotte avec l'huile d'olive, ajouter le steak, saler, laisser dorer quelques minutes puis émietter le steak en gros morceaux à la cuillère en bois",
+     "action": "Faire revenir l'oignon en cubes en petite cocotte avec l'huile, ajouter le steak, saler, laisser dorer, puis l'émietter en gros morceaux à la cuillère de bois",
      "minutes": 8,
      "needs": [
       "pan-fry"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "L'émietter après la coloration, pas avant : haché cru, il rend son eau et ne dore plus.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -27790,13 +28532,13 @@
     },
     {
      "id": "cuire-orge",
-     "action": "Le jour même, égoutter l'orge et jeter cette eau, puis la mettre dans un grand faitout d'eau froide légèrement salée — au moins 2 l — ; porter à ébullition et compter 15 minutes de cuisson",
+     "action": "Le jour même, égoutter l'orge et jeter cette eau, puis la cuire dans un grand faitout d'eau froide légèrement salée : 15 minutes à partir de l'ébullition",
      "minutes": 18,
      "needs": [
       "simmer-large"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "Au moins 2 l d'eau, et l'eau de trempage se jette.",
      "uses": [
       "sel-cuisson"
      ],
@@ -28367,11 +29109,11 @@
     },
     {
      "id": "tailler-courgettes",
-     "action": "Couper les courgettes en tranches d'environ 8 mm, les brasser avec 2 c. à s. d'huile d'olive et un peu de sel, puis les étaler sur la lèchefrite en les serrant — elles peuvent se chevaucher un peu pour laisser la place aux autres légumes",
+     "action": "Couper les courgettes en tranches d'environ 8 mm, les brasser avec 2 c. à s. d'huile d'olive et un peu de sel, puis les étaler sur la lèchefrite",
      "minutes": 8,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "En les serrant : elles peuvent se chevaucher un peu pour laisser la place aux autres légumes.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -28418,13 +29160,13 @@
     },
     {
      "id": "rotir",
-     "action": "Enfourner environ 35 min, jusqu'à ce que les légumes soient bien dorés et qu'il ne reste plus d'eau au fond de la lèchefrite",
+     "action": "Enfourner environ 35 min",
      "minutes": 35,
      "needs": [
       "bake"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "Jusqu'à ce que les légumes soient bien dorés et qu'il ne reste plus d'eau au fond de la lèchefrite.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -28456,13 +29198,13 @@
     },
     {
      "id": "garniture-poivron",
-     "action": "Ôter la peau du poivron — elle se retire toute seule après cuisson — et le mixer avec la moitié des tomates et la tomme de brebis, puis réserver",
+     "action": "Ôter la peau du poivron et le mixer avec la moitié des tomates et la tomme de brebis, puis réserver",
      "minutes": 5,
      "needs": [
       "chop-coarse"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "La peau se retire toute seule après cuisson.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -28493,12 +29235,29 @@
      "porteAssaisonnement": false
     },
     {
-     "id": "plier",
-     "action": "Couper chaque feuille de brick en deux, replier la partie bombée pour obtenir un long rectangle, poser un peu de farce au bout et rabattre en triangle par un mouvement de balancier gauche-droite, en suivant le bord de la feuille comme un rail ; rentrer le bout restant dans un pli ou le replier dessous",
-     "minutes": 20,
+     "id": "preparer-bandes",
+     "action": "Couper chaque feuille de brick en deux et replier la partie bombée pour obtenir un long rectangle",
+     "minutes": 6,
      "needs": [],
      "surveille": true,
      "astuce": null,
+     "uses": null,
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "plier",
+     "action": "Poser un peu de farce au bout et rabattre en triangle par un mouvement de balancier gauche-droite",
+     "minutes": 14,
+     "needs": [],
+     "surveille": true,
+     "astuce": "En suivant le bord de la feuille comme un rail. Le bout restant se rentre dans un pli, ou se replie dessous.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -28763,11 +29522,11 @@
     },
     {
      "id": "monter-sandwichs",
-     "action": "Ouvrir les pains en deux, tartiner les bases de préparation au fenouil, ajouter les tranches d'œuf et le poisson fumé, refermer, puis recouper chaque sandwich en diagonale",
+     "action": "Ouvrir les pains, tartiner les bases de préparation au fenouil, ajouter l'œuf en tranches et le poisson fumé, refermer",
      "minutes": 4,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Recouper chaque sandwich en diagonale.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -28930,11 +29689,11 @@
     },
     {
      "id": "fermenter",
-     "action": "Installer les pots dans le fond d'une cocotte ou d'un faitout placé dans un sac isotherme, verser entre les pots de l'eau bien chaude du robinet, fermer le sac et laisser fermenter — l'autrice propose aussi, selon la saison, les pots sur un radiateur couverts d'une couverture (automne et hiver), ou une journée entière dans une voiture au soleil (été, à condition que la température ne dépasse pas 55 °C)",
+     "action": "Installer les pots au fond d'une cocotte placée dans un sac isotherme, verser entre les pots de l'eau bien chaude du robinet, fermer le sac et laisser fermenter",
      "minutes": 5,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "L'autrice propose aussi, selon la saison : les pots sur un radiateur couverts d'une couverture (automne et hiver), ou une journée entière dans une voiture au soleil (été, tant que la température ne dépasse pas 55 °C).",
      "uses": [],
      "enParallele": null,
      "attente": 480,
@@ -29446,11 +30205,11 @@
     },
     {
      "id": "completer",
-     "action": "Mesurer le bouillon restant et compléter d'eau pour arriver à 1,8 l dans le faitout ; retirer le laurier et les tiges d'herbes, mais garder les morceaux de légumes",
+     "action": "Mesurer le bouillon restant et compléter d'eau pour arriver à 1,8 l dans le faitout",
      "minutes": 4,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Retirer le laurier et les tiges d'herbes, mais garder les morceaux de légumes.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -29482,13 +30241,13 @@
     },
     {
      "id": "petits-pois",
-     "action": "7 min avant la fin, ajouter les petits pois — plus tôt ils cuisent, moins ils restent verts",
+     "action": "7 min avant la fin, ajouter les petits pois",
      "minutes": 7,
      "needs": [
       "simmer-large"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "Plus tôt ils cuisent, moins ils restent verts.",
      "uses": null,
      "enParallele": "cuire-orge",
      "attente": null,
@@ -29677,12 +30436,29 @@
    ],
    "steps": [
     {
-     "id": "faire-la-pate",
-     "action": "Couper le beurre mou en petits morceaux, puis malaxer à la main farine, sel, sucre, beurre et petits suisses très soigneusement égouttés ; s'arrêter dès que la boule est formée — il doit rester des morceaux de beurre mal mélangés",
-     "minutes": 10,
+     "id": "couper-beurre",
+     "action": "Couper le beurre mou en petits morceaux",
+     "minutes": 2,
      "needs": [],
      "surveille": true,
      "astuce": null,
+     "uses": null,
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "faire-la-pate",
+     "action": "Malaxer à la main farine, sel, sucre, beurre et petits suisses très soigneusement égouttés",
+     "minutes": 8,
+     "needs": [],
+     "surveille": true,
+     "astuce": "S'arrêter dès que la boule est formée : il doit rester des morceaux de beurre mal mélangés.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -29731,11 +30507,11 @@
     },
     {
      "id": "refroidir",
-     "action": "Démouler et laisser refroidir sur une grille — hors du moule, la pâte reste bien plus croustillante",
+     "action": "Démouler et laisser refroidir sur une grille",
      "minutes": 5,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Hors du moule, la pâte reste bien plus croustillante.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -29939,11 +30715,11 @@
     },
     {
      "id": "foncer",
-     "action": "Étaler la pâte et la déposer dans un moule à tarte de 24 cm bien fariné — jamais sur un papier cuisson, qui retient l'humidité et détrempe le fond",
+     "action": "Étaler la pâte et la déposer dans un moule à tarte de 24 cm bien fariné",
      "minutes": 6,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Jamais sur un papier cuisson, qui retient l'humidité et détrempe le fond.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -30224,16 +31000,36 @@
      "porteAssaisonnement": false
     },
     {
-     "id": "poeler",
-     "action": "Faire colorer l'oignon avec le beurre dans une grande sauteuse, ajouter les pommes de terre et les topinambours, saler, poivrer, et faire dorer le tout une douzaine de minutes sans laisser noircir le beurre ; couper le feu quand les pommes de terre sont presque cuites, encore un peu fermes",
-     "minutes": 15,
+     "id": "colorer-oignon",
+     "action": "Faire colorer l'oignon avec le beurre dans une grande sauteuse",
+     "minutes": 3,
      "needs": [
       "pan-fry"
      ],
      "surveille": true,
      "astuce": null,
      "uses": [
-      "beurre",
+      "beurre"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "poeler",
+     "action": "Ajouter les pommes de terre et les topinambours, saler, poivrer, et faire dorer une douzaine de minutes",
+     "minutes": 12,
+     "needs": [
+      "pan-fry"
+     ],
+     "surveille": true,
+     "astuce": "Sans laisser noircir le beurre. Couper le feu quand les pommes de terre sont presque cuites, encore un peu fermes.",
+     "uses": [
       "pomme-de-terre",
       "topinambours",
       "sel-garniture",
@@ -30289,11 +31085,11 @@
     },
     {
      "id": "pate",
-     "action": "Mélanger le vin, l'huile et le sel, puis verser d'un coup sur la farine et travailler la pâte juste ce qu'il faut pour l'amalgamer, sans insister",
+     "action": "Mélanger le vin, l'huile et le sel, puis verser d'un coup sur la farine et amalgamer la pâte",
      "minutes": 6,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Juste ce qu'il faut pour l'amalgamer, sans insister.",
      "uses": [
       "vin-blanc-sec",
       "huile-olive",
@@ -30564,11 +31360,11 @@
     },
     {
      "id": "mettre-en-bocaux",
-     "action": "Transférer dans deux petits bocaux individuels bien fermés — un par repas — et mettre au frais",
+     "action": "Transférer dans deux petits bocaux individuels bien fermés et mettre au frais",
      "minutes": 2,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Un bocal par repas.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -30750,13 +31546,13 @@
     },
     {
      "id": "cuire-en-bocal",
-     "action": "Allumer le four à 150 °C en chaleur tournante et cuire 50 min : ne jamais dépasser 150 °C et toujours enfourner à four FROID, sous peine de faire éclater les bocaux",
+     "action": "Allumer le four à 150 °C en chaleur tournante et cuire 50 min",
      "minutes": 50,
      "needs": [
       "bake"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "Ne jamais dépasser 150 °C, et toujours enfourner à four FROID : sinon les bocaux éclatent.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -31008,11 +31804,11 @@
     },
     {
      "id": "brasser",
-     "action": "Mettre les légumes dans un grand saladier avec le sel, le parmesan, le thym ciselé, les gousses d'ail émincées et l'huile d'olive ; bien brasser le tout pour mélanger parfaitement, puis répartir sur une lèchefrite",
-     "minutes": 6,
+     "action": "Mettre les légumes dans un grand saladier avec le sel, le parmesan, le thym ciselé, l'ail émincé et l'huile d'olive, puis bien brasser",
+     "minutes": 4,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Brasser vraiment : l'huile doit toucher chaque face, sinon le tian sèche par plaques.",
      "uses": [
       "fleur-de-sel",
       "parmesan",
@@ -31030,14 +31826,31 @@
      "porteAssaisonnement": false
     },
     {
+     "id": "repartir-tian",
+     "action": "Répartir sur une lèchefrite",
+     "minutes": 2,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
      "id": "cuire",
-     "action": "Enfourner 30 à 45 minutes, jusqu'à ce que les légumes soient bien dorés et qu'il n'y ait plus de jus sur la lèchefrite",
+     "action": "Enfourner 30 à 45 minutes",
      "minutes": 40,
      "needs": [
       "bake"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "Jusqu'à ce que les légumes soient bien dorés et qu'il n'y ait plus de jus sur la lèchefrite.",
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -31230,17 +32043,14 @@
    ],
    "steps": [
     {
-     "id": "pommes",
-     "action": "Éplucher les pommes, retirer les trognons, les couper en cubes, puis les faire dorer à la poêle dans deux cuillerées à soupe d'huile, en mélangeant de temps en temps, jusqu'à obtention d'une appétissante coloration des sucs ; réserver",
-     "minutes": 15,
-     "needs": [
-      "pan-fry"
-     ],
+     "id": "tailler-pommes",
+     "action": "Éplucher les pommes, retirer les trognons et les couper en cubes",
+     "minutes": 6,
+     "needs": [],
      "surveille": true,
      "astuce": null,
      "uses": [
-      "pommes",
-      "huile-garniture"
+      "pommes"
      ],
      "enParallele": null,
      "attente": null,
@@ -31252,14 +32062,35 @@
      "porteAssaisonnement": false
     },
     {
+     "id": "pommes",
+     "action": "Les faire dorer à la poêle dans deux cuillerées d'huile, en mélangeant de temps en temps, puis réserver",
+     "minutes": 9,
+     "needs": [
+      "pan-fry"
+     ],
+     "surveille": true,
+     "astuce": "Jusqu'à une appétissante coloration des sucs.",
+     "uses": [
+      "huile-garniture"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
      "id": "prechauffer",
-     "action": "Préchauffer le four à 180 °C, si possible en chaleur tournante — en statique, compter quelques minutes de cuisson en plus",
+     "action": "Préchauffer le four à 180 °C, si possible en chaleur tournante",
      "minutes": 1,
      "needs": [
       "bake"
      ],
      "surveille": false,
-     "astuce": null,
+     "astuce": "En statique, compter quelques minutes de cuisson en plus.",
      "uses": [],
      "enParallele": "pommes",
      "attente": null,
@@ -31298,9 +32129,26 @@
      "porteAssaisonnement": false
     },
     {
+     "id": "amalgamer-tourte",
+     "action": "Sortir la pâte du robot et l'amalgamer entre les mains en une boule bien souple",
+     "minutes": 3,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
      "id": "etaler",
-     "action": "Sortir la pâte du robot, l'amalgamer entre les mains en une boule bien souple, puis l'étaler directement sur une plaque chemisée de papier cuisson et y redécouper un cercle ou un carré bien régulier à la roulette",
-     "minutes": 8,
+     "action": "L'étaler sur une plaque chemisée et y redécouper un cercle ou un carré bien régulier à la roulette",
+     "minutes": 5,
      "needs": [],
      "surveille": true,
      "astuce": null,
@@ -31316,13 +32164,13 @@
     },
     {
      "id": "crumble",
-     "action": "Mixer les chutes de pâte avec les noix et 3 cuillerées à soupe de farine, de façon à obtenir un crumble à consistance sablonneuse ; ajouter la quatrième cuillerée si besoin, tout dépend de la quantité de chutes",
+     "action": "Mixer les chutes de pâte avec les noix et 3 cuillerées de farine, jusqu'à une consistance sablonneuse",
      "minutes": 4,
      "needs": [
       "chop-coarse"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Ajouter la quatrième cuillerée si besoin : tout dépend de la quantité de chutes.",
      "uses": [
       "noix",
       "farine"
@@ -31355,13 +32203,13 @@
     },
     {
      "id": "cuire",
-     "action": "Enfourner assez bas dans le four, afin que le dessous de la tourte soit cuit, et laisser cuire 30 minutes — si au bout de 15 minutes le dessus dore trop vite, passer en chaleur tournante par le bas, ou à défaut baisser le four à 150 °C",
+     "action": "Enfourner assez bas et laisser cuire 30 minutes",
      "minutes": 30,
      "needs": [
       "bake"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Assez bas pour que le dessous soit cuit. Si au bout de 15 min le dessus dore trop vite, passer en chaleur tournante par le bas, ou baisser à 150 °C.",
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -31592,11 +32440,11 @@
     },
     {
      "id": "courge",
-     "action": "Pendant ce temps, découper la courge en gros morceaux — certaines variétés comme le potimarron ou la butternut ne s'épluchent pas",
+     "action": "Pendant ce temps, découper la courge en gros morceaux",
      "minutes": 15,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Certaines variétés, comme le potimarron ou la butternut, ne s'épluchent pas.",
      "uses": [
       "courge"
      ],
@@ -31611,13 +32459,13 @@
     },
     {
      "id": "mijoter",
-     "action": "Quand la poêlée de poireaux commence à bien dorer, ajouter les cubes de potiron et un verre d'eau, mélanger, poser un couvercle et laisser mijoter environ 10 minutes — le temps de faire la pâte",
+     "action": "Quand la poêlée de poireaux commence à bien dorer, ajouter les cubes de potiron et un verre d'eau, couvrir et laisser mijoter environ 10 minutes",
      "minutes": 12,
      "needs": [
       "simmer-large"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Le temps de faire la pâte.",
      "uses": [
       "eau"
      ],
@@ -31631,15 +32479,33 @@
      "porteAssaisonnement": false
     },
     {
-     "id": "pate",
-     "action": "Diluer le double concentré de tomate dans le vin blanc, puis mélanger dans un saladier avec tous les autres ingrédients de la pâte, en la travaillant juste ce qu'il faut pour former une boule homogène ; la diviser en deux pâtons « deux tiers / un tiers »",
-     "minutes": 8,
+     "id": "diluer-concentre",
+     "action": "Diluer le double concentré de tomate dans le vin blanc",
+     "minutes": 2,
      "needs": [],
      "surveille": true,
      "astuce": null,
      "uses": [
       "concentre-tomate",
-      "vin-blanc-sec",
+      "vin-blanc-sec"
+     ],
+     "enParallele": "mijoter",
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "pate",
+     "action": "Mélanger dans un saladier avec les autres ingrédients de la pâte, puis la diviser en deux pâtons « deux tiers / un tiers »",
+     "minutes": 6,
+     "needs": [],
+     "surveille": true,
+     "astuce": "La travailler juste ce qu'il faut pour former une boule homogène.",
+     "uses": [
       "farine-complete",
       "huile-pate",
       "sel"
@@ -31708,11 +32574,11 @@
     },
     {
      "id": "garnir",
-     "action": "Quand la chair du potiron commence un peu à se défaire, ajouter 150 g de parmesan et bien mélanger ; en garnir le fond de tarte, puis saupoudrer avec le parmesan restant",
+     "action": "Ajouter 150 g de parmesan, bien mélanger, en garnir le fond de tarte, puis saupoudrer du parmesan restant",
      "minutes": 6,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Attendre que la chair du potiron commence un peu à se défaire.",
      "uses": [
       "parmesan"
      ],
@@ -31911,12 +32777,29 @@
      "porteAssaisonnement": false
     },
     {
-     "id": "foncer-la-tourte",
-     "action": "Étaler le pâton finement à même un papier cuisson, en un disque de 18 à 20 cm, puis le faire glisser dans un petit plat rond d'environ 17 cm et appuyer pour tapisser le fond — la pâte déborde un peu, c'est normal",
-     "minutes": 6,
+     "id": "etaler-la-tourte",
+     "action": "Étaler le pâton finement à même un papier cuisson, en un disque de 18 à 20 cm",
+     "minutes": 3,
      "needs": [],
      "surveille": true,
      "astuce": null,
+     "uses": null,
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "foncer-la-tourte",
+     "action": "Le faire glisser dans un petit plat rond d'environ 17 cm et appuyer pour tapisser le fond",
+     "minutes": 3,
+     "needs": [],
+     "surveille": true,
+     "astuce": "La pâte déborde un peu : c'est normal.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -31965,11 +32848,11 @@
     },
     {
      "id": "refroidir-tourte",
-     "action": "Laisser ENTIÈREMENT refroidir avant de découper en quatre parts : c'est ce qui rend la tourte mangeable à la main, sans couverts",
+     "action": "Laisser ENTIÈREMENT refroidir avant de découper en quatre parts",
      "minutes": 3,
      "needs": [],
      "surveille": false,
-     "astuce": null,
+     "astuce": "C'est ce qui rend la tourte mangeable à la main, sans couverts.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -32237,13 +33120,13 @@
     },
     {
      "id": "poeler",
-     "action": "Faire revenir l'oignon quelques minutes dans l'huile d'olive, ajouter les courgettes et les laisser dorer à feu vif jusqu'à ce qu'elles soient colorées et aient rendu toute leur eau",
+     "action": "Faire revenir l'oignon quelques minutes dans l'huile, ajouter les courgettes et les laisser dorer à feu vif",
      "minutes": 15,
      "needs": [
       "pan-fry"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Jusqu'à ce qu'elles soient colorées et aient rendu toute leur eau.",
      "uses": [
       "huile-olive-farce",
       "oignon",
@@ -32754,11 +33637,11 @@
     },
     {
      "id": "laver-feuilles",
-     "action": "Pendant la cuisson : laver les orties (ou les feuilles choisies) — avec des gants pour les orties",
+     "action": "Pendant la cuisson : laver les orties, ou les feuilles choisies",
      "minutes": 5,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Avec des gants pour les orties.",
      "uses": null,
      "enParallele": "cuire-pommes-de-terre",
      "attente": null,
@@ -32954,13 +33837,13 @@
    "steps": [
     {
      "id": "caraméliser",
-     "action": "Émincer les oignons, puis les faire dorer à l'huile d'olive dans une cocotte jusqu'à obtenir une légère caramélisation des sucs — c'est le premier secret de la recette",
+     "action": "Émincer les oignons, puis les faire dorer à l'huile d'olive dans une cocotte jusqu'à une légère caramélisation des sucs",
      "minutes": 12,
      "needs": [
       "pan-fry"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "C'est le premier secret de la recette.",
      "uses": [
       "oignon",
       "huile-olive"
@@ -32976,13 +33859,13 @@
     },
     {
      "id": "potiron",
-     "action": "Éplucher le potiron — ou pas, tout dépend de la variété —, jeter les graines, le couper en gros morceaux, et le mettre dans la cocotte avec l'eau, le sel et la sauce tomate",
+     "action": "Éplucher le potiron, jeter les graines, le couper en gros morceaux, puis le mettre dans la cocotte avec l'eau, le sel et la sauce tomate",
      "minutes": 15,
      "needs": [
       "simmer-large"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Ou pas éplucher, tout dépend de la variété.",
      "uses": [
       "courge",
       "eau",
@@ -33213,13 +34096,13 @@
     },
     {
      "id": "assecher",
-     "action": "Découvrir et laisser cuire quelques minutes de plus, le temps de bien faire évaporer le jus de cuisson — une poêlée qui rend de l'eau détrempe les tourtes et les pizzas qu'elle garnira",
+     "action": "Découvrir et laisser cuire quelques minutes de plus, le temps de bien faire évaporer le jus de cuisson",
      "minutes": 5,
      "needs": [
       "pan-fry"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Une poêlée qui rend de l'eau détrempe les tourtes et les pizzas qu'elle garnira.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -33360,11 +34243,11 @@
    "steps": [
     {
      "id": "garnir-gourmet",
-     "action": "Tartiner la crêpe de tapenade en laissant le dernier tiers vide, puis disposer le jambon, le chèvre émietté et le basilic — ne PAS saler ni huiler, la tapenade suffit",
+     "action": "Tartiner la crêpe de tapenade en laissant le dernier tiers vide, puis disposer le jambon, le chèvre émietté et le basilic",
      "minutes": 5,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Ne PAS saler ni huiler : la tapenade suffit.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -33593,11 +34476,11 @@
     },
     {
      "id": "rouler",
-     "action": "Tartiner la crêpe de purée d'avocat, répartir carotte et tofu, TASSER la garniture, puis rouler en terminant par la partie laissée nue ; recouper en deux et emballer chaque wrap",
+     "action": "Tartiner la crêpe de purée d'avocat, répartir carotte et tofu, TASSER la garniture, puis rouler en terminant par la partie nue",
      "minutes": 5,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "Recouper en deux et emballer chaque wrap.",
      "uses": null,
      "enParallele": null,
      "attente": null,
@@ -33669,6 +34552,7 @@
    "anticipations": [
     {
      "gestes": [
+      "tailler-fruits",
       "compotee",
       "repartir",
       "chauffer-four",
@@ -33751,17 +34635,14 @@
    ],
    "steps": [
     {
-     "id": "compotee",
-     "action": "Découper les fruits en petits morceaux, les mettre dans une grande casserole avec le sucre et faire chauffer en mélangeant de temps en temps jusqu'à ce que les fruits rendent leur jus ; continuer la cuisson environ 10 minutes, jusqu'à ce que les liquides soient complètement évaporés — on obtient une texture épaisse évoquant la confiture",
-     "minutes": 16,
-     "needs": [
-      "simmer"
-     ],
+     "id": "tailler-fruits",
+     "action": "Découper les fruits en petits morceaux",
+     "minutes": 4,
+     "needs": [],
      "surveille": true,
      "astuce": null,
      "uses": [
-      "fruits-frais",
-      "sucre-roux"
+      "fruits-frais"
      ],
      "enParallele": null,
      "attente": null,
@@ -33773,12 +34654,33 @@
      "porteAssaisonnement": false
     },
     {
+     "id": "compotee",
+     "action": "Les mettre dans une grande casserole avec le sucre et cuire en mélangeant, jusqu'à ce que les liquides soient complètement évaporés",
+     "minutes": 12,
+     "needs": [
+      "simmer"
+     ],
+     "surveille": true,
+     "astuce": "Compter une dizaine de minutes après que les fruits ont rendu leur jus. On obtient une texture épaisse, qui évoque la confiture.",
+     "uses": [
+      "sucre-roux"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
      "id": "repartir",
-     "action": "Répartir la compotée entre les pots, puis la laisser un peu refroidir — c'est elle au fond qui empêche le lait de cailler pendant la fermentation, et qui fait toute la réussite de la recette",
+     "action": "Répartir la compotée entre les pots, puis la laisser un peu refroidir",
      "minutes": 5,
      "needs": [],
      "surveille": true,
-     "astuce": null,
+     "astuce": "C'est elle, au fond, qui empêche le lait de cailler pendant la fermentation : toute la réussite de la recette tient là.",
      "uses": [],
      "enParallele": null,
      "attente": 20,
@@ -33810,13 +34712,13 @@
     },
     {
      "id": "bouillir-lait",
-     "action": "Prélever 40 cl de lait — 50 cl si le lait sort du réfrigérateur — et le porter à ébullition",
+     "action": "Prélever 40 cl de lait et le porter à ébullition",
      "minutes": 7,
      "needs": [
       "simmer"
      ],
      "surveille": true,
-     "astuce": null,
+     "astuce": "50 cl si le lait sort du réfrigérateur.",
      "uses": [
       "lait"
      ],

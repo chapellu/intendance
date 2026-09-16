@@ -26,6 +26,10 @@ from pathlib import Path
 import yaml
 
 HERE = Path(__file__).parent
+
+# Voir `minutes_libres` plus bas : la seule hausse licite est un préchauffage
+# qu'on extrait d'une étape composite, et aucun n'en coûte davantage.
+PREHEAT_MAX = 2
 RECETTES = HERE / "recipes"
 
 
@@ -144,11 +148,33 @@ def main() -> int:
                 # la vérité de la cuisine. L'inverse serait une promesse neuve :
                 # dire « sans surveiller » d'un geste qui n'était pas déclaré
                 # libre, c'est inventer du temps de repos qu'on n'a pas mesuré.
-                if b[cle] > a[cle]:
+                #
+                # SAUF DE DEUX MINUTES, ET C'EST MESURÉ. Le seul cas légitime
+                # de hausse est le préchauffage qu'un recoupage extrait d'une
+                # étape composite : 45 étapes du corpus préchauffent, et celles
+                # qui le font SEULES coûtent 1 ou 2 minutes, jamais plus. Les
+                # extraire ne crée pas du repos, ça le classe enfin — la minute
+                # était déjà là, comptée par erreur comme du geste. Au-delà,
+                # c'est une cuisson qui bascule, donc une promesse neuve.
+                if b[cle] > a[cle] + PREHEAT_MAX:
                     casses.append(f"{rid} : minutes sans surveillance en hausse "
-                                  f"{a[cle]} → {b[cle]} — personne n'a mesuré ce repos")
+                                  f"{a[cle]} → {b[cle]} — au-delà d'un préchauffage "
+                                  "extrait, personne n'a mesuré ce repos")
+                elif b[cle] > a[cle]:
+                    gagne.append(f"{rid} : {b[cle] - a[cle]} min de préchauffage "
+                                 "enfin comptées sans surveillance")
                 else:
                     gagne.append(f"{rid} : {a[cle] - b[cle]} min rendues à la surveillance")
+            elif cle == "enfants":
+                # UN GESTE D'ENFANT PEUT SE DÉDOUBLER, IL NE PEUT PAS DISPARAÎTRE.
+                # « poser les cornichons puis appuyer sur la tranche du dessus »
+                # est deux gestes : quand l'étape se coupe en deux, la tâche
+                # suit des deux côtés, et c'est le but. La perdre, en revanche,
+                # retire une place à table sans que rien ne le dise.
+                if b[cle] < a[cle]:
+                    casses.append(f"{rid} : geste(s) d'enfant perdu(s) {a[cle]} → {b[cle]}")
+                else:
+                    gagne.append(f"{rid} : geste d'enfant réparti sur {b[cle]} étapes")
             else:
                 casses.append(f"{rid} : {cle} {a[cle]} → {b[cle]}")
 

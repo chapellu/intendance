@@ -63,7 +63,8 @@ recipe:
       needs: []
       time_min: 3
     - id: cuire-en-bocal
-      action: "Allumer le four à 150 °C en chaleur tournante et cuire 50 min : ne jamais dépasser 150 °C et toujours enfourner à four FROID, sous peine de faire éclater les bocaux"
+      action: "Allumer le four à 150 °C en chaleur tournante et cuire 50 min"
+      astuce: "Ne jamais dépasser 150 °C, et toujours enfourner à four FROID : sinon les bocaux éclatent."
       needs: [bake]
       time_min: 50
       attended: false

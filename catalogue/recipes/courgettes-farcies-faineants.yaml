@@ -60,7 +60,8 @@ recipe:
 
   steps:
     - id: riz
-      action: "Faire cuire le riz dans un faitout d'eau bouillante salée selon la variété choisie, l'égoutter, puis y ajouter 2 cuillerées à soupe d'huile d'olive pour l'empêcher de coller"
+      action: "Cuire le riz à l'eau bouillante salée selon la variété, l'égoutter, puis y ajouter 2 cuillerées à soupe d'huile d'olive"
+      astuce: "L'huile sur le riz chaud l'empêche de coller en bloc."
       needs: [boil]
       uses: [riz, huile-olive]
       time_min: 20
@@ -72,15 +73,22 @@ recipe:
       time_min: 10
       parallel_with: riz
     - id: courgettes
-      action: "Quand tout est bien doré, ajouter les courgettes en tranches — en réserver une demi-courgette pour la décoration —, la sauce tomate, les gousses d'ail émincées, les herbes, 12 olives recoupées en petits morceaux, un peu de sel et de poivre, puis laisser cuire à feu assez vif en mélangeant de temps en temps"
+      action: "Quand tout est bien doré, ajouter les courgettes en tranches, la sauce tomate, l'ail émincé, les herbes et 12 olives recoupées"
+      astuce: "Réserver une demi-courgette pour la décoration."
       needs: [pan-fry]
-      uses: [courgettes, sauce-tomate, ail, herbes-provence, olives-noires, sel, poivre]
-      time_min: 15
+      uses: [courgettes, sauce-tomate, ail, herbes-provence, olives-noires]
+      time_min: 5
+    - id: cuire-courgettes
+      action: "Saler, poivrer, puis laisser cuire à feu assez vif en mélangeant de temps en temps"
+      needs: [pan-fry]
+      uses: [sel, poivre]
+      time_min: 10
       # 1,2 kg de courgettes plus 400 g de viande dans la sauteuse de 28 cm :
       # `facteur_max_vaisselle` donne 1,5 lot, donc ça passe une fois. Doubler
       # pour recevoir ne passe pas — même verdict qu'aux tartelettes p. 181.
     - id: parmesan
-      action: "Quand la viande et les légumes sont bien dorés et qu'il ne reste plus de jus au fond du wok, ajouter les deux tiers du parmesan, mélanger, puis répartir dans 4 plats individuels ou un seul grand plat"
+      action: "Ajouter les deux tiers du parmesan, mélanger, puis répartir dans 4 plats individuels ou un grand plat"
+      astuce: "Attendre que la viande et les légumes soient bien dorés et qu'il ne reste plus de jus au fond du wok."
       needs: []
       uses: [parmesan]
       time_min: 5

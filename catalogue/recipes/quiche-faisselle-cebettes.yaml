@@ -45,7 +45,8 @@ recipe:
 
   steps:
     - id: egoutter
-      action: "Renverser la faisselle dans une passoire et la laisser s'égoutter — c'est ce qui décide de la tenue de l'appareil"
+      action: "Renverser la faisselle dans une passoire et la laisser s'égoutter"
+      astuce: "C'est ce qui décide de la tenue de l'appareil."
       needs: []
       time_min: 2
       attended: false
@@ -54,17 +55,25 @@ recipe:
       needs: [bake]
       time_min: 1
       attended: false
-    - id: poeler-cebettes
-      action: "Ôter la première feuille des cébettes, les coucher à plat dans une grande poêle huilée, saler, les faire dorer 5 min à feu doux ; ajouter un verre d'eau, couvrir et étuver 10 min"
+    - id: dorer-cebettes
+      action: "Ôter la première feuille des cébettes, les coucher à plat dans une grande poêle huilée, saler et faire dorer 5 min à feu doux"
       needs: [pan-fry]
-      time_min: 17
+      time_min: 6
       attended: false
-      kid: {age_min_months: 30, task: "éplucher la première feuille des cébettes"}
+      kid:
+        age_min_months: 30
+        task: "éplucher la première feuille des cébettes"
+    - id: poeler-cebettes
+      action: "Ajouter un verre d'eau, couvrir et étuver 10 min"
+      needs: [pan-fry]
+      time_min: 11
+      attended: false
     - id: faire-la-pate
-      action: "Pendant l'étuvée : mélanger poudre d'amande, farine et fleur de sel, incorporer l'huile jusqu'à une texture sablonneuse, verser l'eau d'un coup et amalgamer sans travailler la pâte"
+      action: "Pendant l'étuvée : mélanger poudre d'amande, farine et fleur de sel, incorporer l'huile jusqu'à une texture sablonneuse, puis verser l'eau d'un coup"
+      astuce: "Amalgamer sans travailler la pâte : c'est une pâte sablée, pas une pâte à pain."
       needs: []
       time_min: 8
-      parallel_with: poeler-cebettes
+      parallel_with: "poeler-cebettes"
     - id: foncer
       action: "Étaler la pâte au rouleau sur un papier cuisson, la transférer dans un moule d'environ 30 cm avec son papier, puis recouper les bords"
       needs: []

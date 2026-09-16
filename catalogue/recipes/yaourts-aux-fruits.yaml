@@ -82,27 +82,37 @@ recipe:
     - {id: lait, name: "lait entier (ou de soja)", qty: 1, unit: l}
 
   steps:
+    - id: tailler-fruits
+      action: "Découper les fruits en petits morceaux"
+      needs: []
+      uses: [fruits-frais]
+      time_min: 4
+      kid:
+        age_min_months: 30
+        task: "équeuter les fraises ou dénoyauter les abricots"
     - id: compotee
-      action: "Découper les fruits en petits morceaux, les mettre dans une grande casserole avec le sucre et faire chauffer en mélangeant de temps en temps jusqu'à ce que les fruits rendent leur jus ; continuer la cuisson environ 10 minutes, jusqu'à ce que les liquides soient complètement évaporés — on obtient une texture épaisse évoquant la confiture"
+      action: "Les mettre dans une grande casserole avec le sucre et cuire en mélangeant, jusqu'à ce que les liquides soient complètement évaporés"
+      astuce: "Compter une dizaine de minutes après que les fruits ont rendu leur jus. On obtient une texture épaisse, qui évoque la confiture."
       needs: [simmer]
-      uses: [fruits-frais, sucre-roux]
-      time_min: 16
-      charge_partielle: true   # 500 g de fruits, pas dix parts de repas — cf. p. 159
-      kid: {age_min_months: 30, task: "équeuter les fraises ou dénoyauter les abricots"}
+      uses: [sucre-roux]
+      time_min: 12
+      charge_partielle: true
     - id: repartir
-      action: "Répartir la compotée entre les pots, puis la laisser un peu refroidir — c'est elle au fond qui empêche le lait de cailler pendant la fermentation, et qui fait toute la réussite de la recette"
+      action: "Répartir la compotée entre les pots, puis la laisser un peu refroidir"
+      astuce: "C'est elle, au fond, qui empêche le lait de cailler pendant la fermentation : toute la réussite de la recette tient là."
       needs: []
       uses: []
       time_min: 5
       attente_min: 20
-      attente_raison: refroidissement
+      attente_raison: "refroidissement"
     - id: chauffer-four
       action: "Pendant ce temps, faire chauffer de l'eau à la casserole ou à la bouilloire, et préchauffer le four à 50 °C"
       needs: [bake]
       uses: []
       time_min: 5
     - id: bouillir-lait
-      action: "Prélever 40 cl de lait — 50 cl si le lait sort du réfrigérateur — et le porter à ébullition"
+      action: "Prélever 40 cl de lait et le porter à ébullition"
+      astuce: "50 cl si le lait sort du réfrigérateur."
       needs: [simmer]
       uses: [lait]
       time_min: 7

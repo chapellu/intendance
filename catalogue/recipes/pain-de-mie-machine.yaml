@@ -48,7 +48,8 @@ recipe:
       needs: [machine-a-pain]
       time_min: 5
     - id: retirer-la-pale
-      action: "Si la machine sonne en fin de pétrissage, retirer la pâle — sinon elle reste imprimée dans la mie et on perd deux ou trois tranches"
+      action: "Si la machine sonne en fin de pétrissage, retirer la pâle"
+      astuce: "Sinon elle reste imprimée dans la mie, et on perd deux ou trois tranches."
       needs: [machine-a-pain]
       time_min: 2
       attended: true

@@ -46,11 +46,17 @@ recipe:
       time_min: 3
       seasoning_gate: true
     - id: appareil-muffins
-      action: "Dans un bol à part, mélanger œufs, huile, yaourt de soja, sarriette ciselée, ail écrasé, tomates-cerises en morceaux (en garder 6 pour décorer) et parmesan, puis verser sur la farine et mélanger rapidement au fouet"
+      action: "Dans un bol à part, mélanger œufs, huile, yaourt de soja, sarriette ciselée, ail écrasé, tomates-cerises en morceaux et parmesan"
+      astuce: "En garder 6 tomates-cerises pour décorer."
       needs: []
-      time_min: 5
+      time_min: 3
+    - id: reunir-muffins
+      action: "Verser sur la farine et mélanger rapidement au fouet"
+      needs: []
+      time_min: 2
     - id: ajouter-le-chevre
-      action: "Ajouter le chèvre en petits cubes et mélanger DÉLICATEMENT à la cuillère en bois, pour ne pas briser ces morceaux fragiles — c'est de leur intégrité que dépend la texture"
+      action: "Ajouter le chèvre en petits cubes et mélanger DÉLICATEMENT à la cuillère en bois"
+      astuce: "Pour ne pas briser ces morceaux fragiles : c'est de leur intégrité que dépend la texture."
       needs: []
       time_min: 2
     - id: cuire-muffins

@@ -69,16 +69,20 @@ recipe:
       uses: [roti-porc]
       time_min: 2
     - id: garnir
-      action: "Ciseler les herbes et la sauge et les répartir dessus avec les gousses d'ail préalablement émincées et les graines de fenouil ; saler, poivrer généreusement, et ajouter éventuellement un peu de piment"
+      action: "Ciseler les herbes et la sauge, les répartir dessus avec l'ail émincé et les graines de fenouil, puis saler et poivrer généreusement"
+      astuce: "Un peu de piment d'Espelette, éventuellement."
       needs: []
       uses: [herbes-fraiches, sauge, ail, graines-fenouil, sel, poivre-5-baies, piment-espelette]
       time_min: 8
     - id: rouler
-      action: "Rouler le rôti bien serré, puis le ficeler — facultatif, car roulé bien serré il gardera sa forme à la cuisson —, et bien le saler sur le dessus"
+      action: "Rouler le rôti bien serré, le ficeler, et bien le saler sur le dessus"
+      astuce: "La ficelle est facultative : roulé bien serré, il garde sa forme à la cuisson."
       needs: []
       uses: [sel]
       time_min: 5
-      kid: {age_min_months: 30, task: "tenir le bout de la ficelle pendant que l'adulte roule"}
+      kid:
+        age_min_months: 30
+        task: "tenir le bout de la ficelle pendant que l'adulte roule"
     - id: cuire
       action: "Enfourner 1 h 15"
       needs: [bake]

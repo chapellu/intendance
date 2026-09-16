@@ -87,13 +87,14 @@ recipe:
       time_min: 6
       charge_partielle: true   # 800 g de purée, pas huit parts de repas — cf. p. 159 et 166
     - id: tiedir
-      action: "Laisser tiédir jusqu'à ce que la préparation soit à peine plus chaude que le doigt, environ 35 °C — plus chaude elle ferait fondre la chantilly, plus froide l'agar-agar la ferait prendre en bloc"
+      action: "Laisser tiédir jusqu'à ce que la préparation soit à peine plus chaude que le doigt, environ 35 °C"
+      astuce: "Plus chaude, elle ferait fondre la chantilly ; plus froide, l'agar-agar la ferait prendre en bloc."
       needs: []
       uses: []
       time_min: 2
       attente_min: 45
-      attente_raison: refroidissement
-      attente_souple: false    # la fenêtre se referme des deux côtés : ni avant, ni après
+      attente_raison: "refroidissement"
+      attente_souple: false
     - id: chantilly
       action: "Fouetter la crème en chantilly bien ferme"
       needs: []
@@ -103,7 +104,8 @@ recipe:
       # liquéfierait la crème au lieu de la monter — même décision qu'à la glace
       # p. 104 et à la tourte p. 87.
     - id: incorporer
-      action: "Incorporer la chantilly à la crème de pêche tiède, très rapidement, en travaillant au fouet et non à la spatule, juste ce qu'il faut pour bien mélanger — trop fouetter ferait retomber la chantilly"
+      action: "Incorporer la chantilly à la crème de pêche tiède, très rapidement, au fouet et non à la spatule"
+      astuce: "Juste ce qu'il faut pour bien mélanger : trop fouetter ferait retomber la chantilly."
       needs: []
       uses: []
       time_min: 4

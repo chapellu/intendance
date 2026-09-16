@@ -70,27 +70,35 @@ recipe:
       uses: [poulet]
       time_min: 10
     - id: reunir
-      action: "Remettre l'oignon dans la cocotte avec le poulet doré, ajouter les gousses d'ail en chemise (non épluchées), les herbes, la sauge, les olives, le jus du citron, le sel et le poivre, puis verser deux verres d'eau"
+      action: "Remettre l'oignon dans la cocotte avec le poulet doré, ajouter l'ail en chemise, les herbes, la sauge et les olives"
+      astuce: "« En chemise » veut dire non épluchées : la peau garde l'ail fondant au lieu de le laisser brûler."
       needs: [simmer-large]
-      uses: [ail, herbes-fraiches, sauge, olives-noires, citron, sel, poivre, laurier, eau]
-      time_min: 6
+      uses: [ail, herbes-fraiches, sauge, olives-noires, laurier]
+      time_min: 4
+    - id: mouiller-cocotte
+      action: "Presser le citron dessus, saler, poivrer, puis verser deux verres d'eau"
+      needs: [simmer-large]
+      uses: [citron, sel, poivre, eau]
+      time_min: 2
     - id: mijoter
-      action: "Continuer la cuisson à très petit feu pendant 1 h 30 environ, en surveillant de temps en temps que le fond n'accroche pas ; si besoin, ajouter un peu d'eau, car il doit toujours y avoir de la sauce au fond de la cocotte"
+      action: "Continuer la cuisson à très petit feu pendant 1 h 30 environ, en surveillant que le fond n'accroche pas"
+      astuce: "Ajouter un peu d'eau si besoin : il doit toujours y avoir de la sauce au fond de la cocotte."
       needs: [simmer-large]
       uses: []
       time_min: 90
-      attended: true        # « en surveillant de temps en temps » : elle l'écrit
+      attended: true
     - id: zeste
-      action: "Cinq minutes avant la fin de la cuisson, ajouter dans le fond de la cocotte le zeste du citron très finement râpé — sans mettre de peau blanche, trop amère — et mélanger"
+      action: "Cinq minutes avant la fin, ajouter dans le fond de la cocotte le zeste du citron très finement râpé, et mélanger"
+      astuce: "Sans peau blanche : elle est trop amère."
       needs: [simmer-large]
       uses: [citron]
       time_min: 4
     - id: servir
-      action: "Le poulet est cuit quand il se découpe facilement aux jointures, même sans couteau"
+      action: "Servir"
+      astuce: "Le poulet est cuit quand il se découpe facilement aux jointures, même sans couteau."
       needs: []
       uses: []
       time_min: 5
-
   # PAS DE PRÉLÈVEMENT BÉBÉ : le sel entre avec le bouillon au début des 1 h 30,
   # exactement comme au rôti p. 55, au pot-au-feu p. 182 et aux lentilles p. 173.
   # C'est désormais la forme la plus fréquente du corpus — quatre plats mijotés

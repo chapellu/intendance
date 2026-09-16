@@ -96,11 +96,17 @@ recipe:
       needs: []
       uses: [carottes, oignon]
       time_min: 6
-    - id: melanger
-      action: "Mélanger à part la farine et la poudre à lever, puis les verser dans le saladier avec la carotte, l'oignon, le thon égoutté et le jus de citron ; malaxer à la main"
+    - id: melanger-secs
+      action: "Mélanger à part la farine et la poudre à lever"
+      astuce: "À part, et c'est le geste qui compte : la poudre à lever se répartit dans la farine sèche ; jetée dans la pâte, elle fait des poches."
       needs: []
-      uses: [farine-complete, poudre-a-lever, carottes, oignon, thon-boite, citron]
-      time_min: 5
+      uses: [farine-complete, poudre-a-lever]
+      time_min: 1
+    - id: melanger
+      action: "Les verser dans le saladier avec la carotte, l'oignon, le thon égoutté et le jus de citron, puis malaxer à la main"
+      needs: []
+      uses: [carottes, oignon, thon-boite, citron]
+      time_min: 4
     # L'AUTRICE MET TOUT EN MÊME TEMPS — « ajouter tous les autres ingrédients
     # (sauf l'huile) » — et l'assaisonnement part donc dans la masse avec le
     # reste. Le découpage en deux étapes est de nous, et il est fait POUR QUE LE
@@ -125,12 +131,12 @@ recipe:
       time_min: 10
       kid: {age_min_months: 30, task: "rouler les boules entre ses paumes et passer le pinceau à huile dessus"}
     - id: cuire
-      action: "Enfourner 15 min, jusqu'à ce que les accras soient bien dorés — et les savourer tout chauds"
+      action: "Enfourner 15 min, jusqu'à ce que les accras soient bien dorés"
+      astuce: "À savourer tout chauds."
       needs: [bake]
       uses: []
       time_min: 15
       attended: false
-
   baby_portion:
     take: "deux ou trois boules formées à partir de la masse AVANT le parmesan et le sel"
     prep: "les cuire avec les autres, puis les écraser à la fourchette"
