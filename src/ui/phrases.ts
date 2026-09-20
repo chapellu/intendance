@@ -7,6 +7,7 @@
 
 import type { Manque } from "../model/calcul";
 import type { Espace } from "../model/types";
+import { JOURS_VISIBLES } from "../nav/jours";
 import { fmt } from "./format";
 
 /**
@@ -29,3 +30,29 @@ export const phraseManque = (m: Manque): string =>
  */
 export const nomEspace = (e: Espace): string =>
   e === "congelo" ? "Congélo" : e === "placard" ? "Placard" : "Frigo";
+
+/**
+ * Le bouton primaire d'une carte jouable.
+ *
+ * ICI ET PAS DANS `Cartes.tsx`, PARCE QUE LES PARCOURS E2E LE DÉSIGNENT PAR SON
+ * NOM. Un libellé écrit dans le composant et recopié dans quatre `.spec.ts` est
+ * un libellé qu'on ne peut plus changer : le jour où il change, ce sont les
+ * parcours qui rougissent, et on croit à une régression de l'app.
+ *
+ * SANS LES JOURS, IL NE PEUT PLUS DIRE « CE CRÉNEAU » — il n'y en a plus à
+ * l'écran, et nommer une case qu'on ne montre nulle part est la meilleure façon
+ * de faire chercher où elle est. Le geste n'a pas changé pour autant : le plat
+ * se pose toujours sur le pas courant du fil, en silence. Voir `nav/jours.ts`.
+ *
+ * « QUAND MÊME » EST LE MOT QUI TIENT LA PROMESSE de T80 : la recherche montre
+ * un plat écarté pour qu'on puisse le poser, pas pour qu'on constate qu'on ne
+ * peut pas. Le bouton change de nom, jamais d'état.
+ */
+export const libellePoser = (ecarte: boolean): string =>
+  JOURS_VISIBLES
+    ? ecarte
+      ? "Poser quand même"
+      : "Poser sur ce créneau"
+    : ecarte
+      ? "Je fais ça quand même"
+      : "Je fais ça";

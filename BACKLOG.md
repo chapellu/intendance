@@ -3198,6 +3198,64 @@ temps — le contraire exact de ce que T47 et T57 avaient construit.
       l'index `espace` : relever le congélateur le soir aurait effacé le bocal
       cuisiné le matin sans l'avoir jamais vu.
 
+- [x] **T88 — Les jours se cachent derrière un interrupteur.** `nav/jours.ts`,
+      un seul drapeau. S'éteignent : la sous-navigation « Aujourd'hui · La
+      semaine · À prévoir », le sous-titre « semaine du 17 au 23 septembre », la
+      barre de points du fil, le nom du jour en tête de chaque pas, et la
+      pastille de la facette cuisine. S'allument à la place : **« Proposer ·
+      Stock · Courses »**, une boucle et non un calendrier — ce qu'on a, ce
+      qu'on peut en faire, ce qu'il faut aller chercher. L'inventaire n'était
+      jusqu'ici atteignable que par le lien « à vérifier » d'une carte,
+      c'est-à-dire seulement quand l'app avait un doute.
+
+      **ON CACHE, ON NE SUPPRIME PAS, et la différence est tout le ticket.** Les
+      créneaux restent le seul index du modèle : `choix[i]`, `parts[i]`,
+      `gamelles`, la liste de courses qui dérive des repas posés, la clé
+      `(jour, repas)` en base. Les arracher serait réécrire l'app pour un essai
+      d'une semaine. Poser un plat continue donc de le poser SUR un créneau —
+      celui où le fil en est — et plus rien ne le montre ni ne le demande. Les
+      écrans éteints restent montés et leurs URL valides.
+
+      **CE QUE L'AGENDA COÛTAIT, DIT PAR CELUI QUI L'A PAYÉ.** La barre de
+      points promettait de revenir sur un repas nommé ; en pratique elle offrait
+      surtout d'en CHANGER au milieu d'une décision. Or une main est tirée pour
+      un créneau : la toucher retirait les cartes qu'on regardait et relançait
+      la file de questions du créneau d'à côté. Le choix du créneau n'était
+      jamais la décision qu'on voulait prendre — c'était le prix d'entrée pour
+      en prendre une autre.
+
+      **`#/cuisine` EST DEVENU UNE PORTE, PAS UN ÉCRAN.** Il désignait
+      « Aujourd'hui » en dur, si bien qu'éteindre les jours aurait fait du lien
+      le plus court de l'app une impasse. Il suit `ENTREE_CUISINE`, et
+      « Aujourd'hui » a désormais `#/cuisine/aujourdhui` — sans quoi `chemin` et
+      `lireRoute` cesseraient d'être réciproques, ce que le test de
+      l'aller-retour dit en une ligne.
+
+      **LE LIBELLÉ DU BOUTON A DÉMÉNAGÉ DANS `phrases.ts`**, avec ses deux
+      raisons : il change avec les jours (« Poser sur ce créneau » ne peut pas
+      nommer une case qu'on ne montre nulle part — il dit « Je fais ça »), et
+      **quatre parcours e2e le désignaient par son nom**. Un libellé recopié
+      dans quatre `.spec.ts` est un libellé qu'on ne peut plus changer : le jour
+      où il change, ce sont les parcours qui rougissent, et on croit à une
+      régression de l'app.
+
+### Ce que ce bloc laisse ouvert
+
+- **Les offres et les gamelles ne sont plus atteignables.** « À prévoir » est
+  éteint, et sa pastille avec lui — une pastille qui n'ouvre rien est pire
+  qu'une pastille qui compte mal. Ce n'est pas une perte silencieuse : une
+  gamelle est le midi de demain pris sur le dîner de ce soir, c'est-à-dire un
+  objet de calendrier de part en part. S'il faut les garder sans les jours, il
+  faudra d'abord dire ce qu'elles deviennent.
+- **La liste de courses dérive toujours des créneaux posés**, donc du fil. C'est
+  ce qui a fait préférer « poser en silence » à « cuisiner tout de suite » :
+  journaliser la cuisson au clic aurait vidé les courses de leur source. La
+  question revient entière le jour où le fil disparaît lui aussi.
+- **`espace` ne porte plus aucune information que `congelo` ne porte déjà** —
+  mesuré, les 126 emits sont d'accord deux à deux. Le jour où une recette voudra
+  ranger au placard ce qui ne se congèle pas, c'est le corpus qu'il faudra
+  regarder, pas le code.
+
 ## Sortie
 
 **Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`

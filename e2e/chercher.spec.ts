@@ -17,6 +17,7 @@
 // faudrait relire, et le message d'erreur le dira.
 
 import { expect, test } from "@playwright/test";
+import { libellePoser } from "../src/ui/phrases";
 import { attendreLApp } from "./parcours";
 
 const PLAT = "Gnocchis poêlés aux légumes";
@@ -70,7 +71,7 @@ test("le plat cherché se pose, et il se retrouve en disant qu'il est déjà là
 
   // `dispatchEvent` et pas `.click()` : poser remplace tout le bloc sous le
   // doigt, et Playwright réessaierait sur l'élément détaché.
-  await carte.getByRole("button", { name: "Poser sur ce créneau" }).dispatchEvent("click");
+  await carte.getByRole("button", { name: libellePoser(false) }).dispatchEvent("click");
   await expect(page.locator(".co-slots").first()).toBeVisible();
 
   // LA CASE SUIVANTE, ET LE MÊME PLAT. C'est le cas qui a motivé l'écart :
@@ -87,7 +88,7 @@ test("le plat cherché se pose, et il se retrouve en disant qu'il est déjà là
   // ET LE GESTE RESTE OFFERT — « quand même » est le mot qui tient la promesse.
   // Montrer un plat pour constater qu'on ne peut pas le poser aurait été un
   // filtre poli, c'est-à-dire le chemin que T78 a écarté.
-  await expect(revu.getByRole("button", { name: "Poser quand même" })).toBeEnabled();
+  await expect(revu.getByRole("button", { name: libellePoser(true) })).toBeEnabled();
 });
 
 test("une frappe qui ne ramène rien le dit, et une trop large dit ce qu'elle coupe", async ({

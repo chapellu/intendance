@@ -25,6 +25,7 @@ import {
   CLE_FIL, CRANS, cleDuPas, decidesDuFil, itineraire, pasSuivant, premierPas, type Fil as Passe,
 } from "../model/fil";
 import { SAUTE, type Jeu } from "../model/jeu";
+import { JOURS_VISIBLES } from "../nav/jours";
 import { contexte } from "../model/journal";
 import { questions } from "../model/questions";
 import { main, offre, type Savoir } from "../model/scoring";
@@ -125,10 +126,10 @@ function Ouverture({ jeu }: { jeu: Jeu }) {
 
       <a
         className="btn btn-ghost btn-block"
-        href={chemin({ ecran: "semaine" })}
+        href={chemin(JOURS_VISIBLES ? { ecran: "semaine" } : { ecran: "stock" })}
         style={{ marginTop: "var(--space-3)" }}
       >
-        Voir la semaine
+        {JOURS_VISIBLES ? "Voir la semaine" : "Voir l’inventaire"}
       </a>
     </Corps>
   );
@@ -189,8 +190,11 @@ function Fin({ passe, faits }: { passe: Passe; faits: number }) {
       >
         Voir la liste
       </a>
-      <a className="btn btn-secondary btn-block" href={chemin({ ecran: "semaine" })}>
-        Voir la semaine
+      <a
+        className="btn btn-secondary btn-block"
+        href={chemin(JOURS_VISIBLES ? { ecran: "semaine" } : { ecran: "stock" })}
+      >
+        {JOURS_VISIBLES ? "Voir la semaine" : "Voir l’inventaire"}
       </a>
       <button
         className="btn btn-ghost btn-block"
@@ -286,10 +290,18 @@ function Pas({
 
   return (
     <Corps>
-      <Points points={points} />
+      {/* LA BARRE DE POINTS EST L'AGENDA, ET C'EST ELLE QU'ON A DEMANDÉ DE
+          CACHER. Elle promettait de revenir sur un repas nommé ; en pratique
+          elle offrait surtout de CHANGER de créneau au milieu d'une décision, et
+          une main est tirée pour un créneau — la toucher retirait les cartes
+          qu'on regardait. Voir `nav/jours.ts`. */}
+      {JOURS_VISIBLES ? <Points points={points} /> : null}
 
       <div className="co-note" style={{ marginBottom: "var(--space-2)" }}>
-        {jour.nom} {c.label}
+        {/* Le nom du jour part avec le reste ; « doit voyager » reste, parce
+            qu'il ne dit pas une date mais une contrainte du plat — ça se mange
+            ailleurs, donc ça doit tenir dans une boîte. */}
+        {JOURS_VISIBLES ? `${jour.nom} ${c.label}` : "À poser"}
         {c.emporte ? " · doit voyager" : ""} — {avancement(passe.creneaux.length, decides.size)}
       </div>
 

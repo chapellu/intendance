@@ -7,6 +7,7 @@
 // fait.
 
 import { expect, type Page } from "@playwright/test";
+import { libellePoser } from "../src/ui/phrases";
 
 /**
  * La première case libre de la semaine, dépliée. Renvoie le nom du plat qu'on
@@ -53,7 +54,7 @@ export async function poserUnPlat(
     const n = titres.findIndex((t) => !convient || convient(t.trim()));
     if (n >= 0) {
       const titre = titres[n]!.trim();
-      await cartes.nth(n).getByRole("button", { name: "Poser sur ce créneau" }).click();
+      await cartes.nth(n).getByRole("button", { name: libellePoser(false) }).click();
       // `jouer` renvoie sur la semaine une fois l'écriture faite : c'est là
       // qu'on sait que le tour est complet, base comprise.
       await expect(page.locator(".co-slots").first()).toBeVisible();
