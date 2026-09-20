@@ -86,6 +86,25 @@ describe("le chaînage se compte en grandeur, pas en jetons", () => {
     expect(c.chaine[0]?.recit).toContain("500 g");
   });
 
+  test("un lot du placard ne s'annonce pas « du frigo »", () => {
+    // TROIS ESPACES, TROIS PHRASES. `raconte()` n'en connaissait que deux : le
+    // congélo, et TOUT LE RESTE en « du frigo (J-n) ». Un bocal stérilisé de la
+    // réserve — qui n'a jamais vu le frigo — s'annonçait donc au frigo, avec un
+    // âge compté sur une horloge qui n'est pas la sienne. C'est la même famille
+    // d'erreur que celle du congélo en T87 : l'écran affirmait un rangement au
+    // lieu de le lire.
+    jeu.stock = [
+      {
+        type: "sauce-bolognaise", kind: "base", qty: { amount: 700, unit: "g" },
+        qty_band: "2-repas", born: "2026-08-16", location: "placard",
+      },
+    ];
+    poser(0, "diner", "pates-bolognaise");
+    const c = calculer(jeu);
+    expect(c.chaine[0]?.recit).toContain("du placard");
+    expect(c.chaine[0]?.recit).not.toContain("du frigo");
+  });
+
   test("une prise qui traverse deux lots les nomme tous les deux", () => {
     // Les pâtes entament le bocal du congélo (500 sur 700). Mardi produit un
     // lot de sauce. Mercredi, les lasagnes en réclament 700 : elles finissent

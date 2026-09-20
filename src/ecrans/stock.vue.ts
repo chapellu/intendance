@@ -123,7 +123,14 @@ export function categories(lignes: readonly LigneDepot[]): Categorie[] {
     };
   };
 
-  return ESPACES.map((espace) => [espace, lignes.filter((l) => l.espace === espace)] as const)
+  // PAR `location`, PAS PAR `espace` : ces trois entêtes sont des PORTES qu'on
+  // va ouvrir. Ranger un lot sous « Congélo » parce que sa recette dit qu'il se
+  // congèle envoie chercher au congélateur ce qui refroidit sur le plan de
+  // travail — voir `LotStock.location`. Le budget de rangement, lui, continue de
+  // se compter sur `espace`, et c'est `espaces()` qui le montre.
+  return ESPACES.map(
+    (espace) => [espace, lignes.filter((l) => l.location === espace)] as const,
+  )
     .filter(([, dedans]) => dedans.length > 0)
     .map(([espace, dedans]) => vue(espace, dedans));
 }
@@ -477,17 +484,17 @@ export function lots(
 ): LotVue[] {
   return depot.lignes
     .map((l, i) => ({ l, i }))
-    .filter(({ l }) => !filtre || l.espace === filtre)
+    .filter(({ l }) => !filtre || l.location === filtre)
     .map(({ l, i }) => {
       const q = l.qty?.amount ?? null;
       const entame = l.reste != null && q != null && l.reste < q - 1e-9;
       const v = depot.vie(l, aujourdhui);
       return {
         cle: l.ref ?? `d${i}`,
-        espace: l.espace,
+        espace: l.location,
         nom: l.type,
         ou: [
-          nomEspace(l.espace),
+          nomEspace(l.location),
           l.from ? `cuisiné cette semaine (${jeu.plats[l.from]?.titre ?? l.from})` : "déjà là avant la semaine",
           entame ? `reste ${fmt(l.reste!)} ${l.unite ?? ""}`.trim() : "",
           l.epuise ? "mangé par la semaine" : "",

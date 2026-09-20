@@ -68,7 +68,33 @@ export interface LotStock {
   unite: string | null;
   /** En repas — l'unité du budget de rangement. */
   band: string;
+  /** Où ça SE RANGE — la destination que la recette déclare. Le budget de
+   *  rangement le compte, et c'est tout ce qu'il fait. */
   espace: Espace;
+  /**
+   * Où ça SE TROUVE, maintenant. Décide de laquelle des deux horloges compte.
+   *
+   * LA TABLE CONFONDAIT LES DEUX, ET C'EST CE QUI FAISAIT MENTIR LES CARTES.
+   * `model/depot.ts` distingue `espace` et `location` depuis toujours ; la base,
+   * elle, n'avait qu'un champ, et `journaliserCuisson` y écrivait la
+   * DESTINATION. Mesuré sur le corpus : **81 emits sur 126 déclarent
+   * `espace: congelo`**, donc près des deux tiers de ce qu'on cuisine entrait en
+   * base comme étant déjà au congélateur — alors qu'on venait de le poser sur le
+   * plan de travail. Deux conséquences, et la seconde est la pire : la carte
+   * annonçait « 250 g du congélo » d'un bocal qui n'y est pas, et le lot courait
+   * sur les 90 jours du congélateur au lieu de sa vraie fenêtre (médiane de ces
+   * 81 emits : **3 jours**), donc ne vieillissait jamais et ne remontait jamais
+   * comme urgent.
+   *
+   * OPTIONNEL, ET SANS MIGRATION. Même geste que `dluo` : Dexie n'indexe que ce
+   * que `SCHEMAS` déclare, un champ non indexé s'ajoute sans version. Les lots
+   * écrits avant retombent sur `espace` — ce qui est JUSTE pour l'amorce du
+   * catalogue (elle porte un `location` réel) et faux pour ce qu'une cuisson a
+   * produit avant ce correctif. On ne réécrit pas ces lots-là : personne ne sait
+   * si le bocal de mardi a fini au congélateur ou non, et le deviner à leur
+   * place fabriquerait la même certitude fausse dans l'autre sens.
+   */
+  location?: Espace;
   /** Date locale `AAAA-MM-JJ` : le jour où le lot est né. */
   born: string;
   /**

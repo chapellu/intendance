@@ -92,10 +92,19 @@ export async function journaliserCuisson(
 
     // ── effet 3 : ce que le plat produit entre au dépôt ─────────────────────
     //
-    // `location: "frigo"` et pas l'espace de destination : ce qu'on vient de
-    // cuisiner refroidit au frigo, même quand ça se congèle. Congeler est un
-    // geste qu'on n'a pas encore fait, et le modèle a toujours dit ça —
-    // `Depot.ajouter` porte le même défaut, pour la même raison.
+    // `location: "frigo"` ET `espace: e.espace`, ET LES DEUX SONT NÉCESSAIRES.
+    // Ce commentaire disait déjà « pas l'espace de destination : ce qu'on vient
+    // de cuisiner refroidit au frigo, même quand ça se congèle » — mais le code
+    // en dessous n'écrivait qu'un seul champ, et c'était la destination. La
+    // table n'en avait pas d'autre (voir `LotStock.location`), donc la phrase
+    // était vraie du modèle et fausse de la base depuis T26.
+    //
+    // CE QUE ÇA CORRIGEAIT DANS L'ÉCRAN : 81 des 126 emits du corpus déclarent
+    // `espace: congelo`. Cuisiner des lentilles mijotées les faisait donc
+    // apparaître au congélateur à la seconde où on cochait « fait », et la carte
+    // du plat suivant annonçait « 250 g du congélo » — une provenance que le
+    // foyer n'avait pas. Congeler reste un geste qu'on n'a pas encore fait ;
+    // c'est l'inventaire qui l'enregistrera quand un doigt le dira.
     for (const e of plat.emits) {
       await base.stock.add({
         type: e.type,
@@ -104,6 +113,7 @@ export async function journaliserCuisson(
         unite: e.qty ? e.qty.unit : null,
         band: e.band,
         espace: e.espace,
+        location: "frigo",
         born: jour,
         origine: plat.id,
         maj,
@@ -216,8 +226,14 @@ export async function releverDepot(
 ): Promise<void> {
   const garde = new Set(gardes);
   await base.transaction("rw", base.stock, async () => {
-    const lots = await base.stock.where("espace").equals(espace).toArray();
-    const partis = lots.filter((l) => l.id != null && !garde.has(l.id));
+    // SUR `location`, PAS SUR L'INDEX `espace`. Relever une zone, c'est ouvrir
+    // une porte et regarder : ce qui compte est où le lot EST, pas où sa recette
+    // voulait qu'il aille. L'index ne sert donc plus ici, et on balaye — la
+    // table tient les lots d'un seul foyer, jamais plus de quelques dizaines.
+    const lots = await base.stock.toArray();
+    const partis = lots.filter(
+      (l) => l.id != null && (l.location ?? l.espace) === espace && !garde.has(l.id),
+    );
     await base.stock.bulkDelete(partis.map((l) => l.id!));
   });
 }

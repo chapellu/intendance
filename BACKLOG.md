@@ -3138,6 +3138,66 @@ antérieurs et sans rapport), `npm run etapes` 0 casse sur 138 recettes.
   l'anticipation, ni le plan B ne la lisent. C'est délibéré — un no-op déclaré,
   comme `saison` en T73 — mais ça mérite d'être écrit plutôt que découvert.
 
+## Le stock plutôt que les jours — T87 et T88, écart de port n° 4
+
+**Dit le 20/09/2026, deuxième journée d'usage réel, capture à l'appui :**
+
+> *« Est-ce que tu peux cacher pour le moment cet agenda de la semaine. Ça ne me
+> sert à rien actuellement et ça me complique plus les choses. Je me retrouve
+> dans des situations où je réponds à des questions sur les stocks et j'ai des
+> propositions de recettes. Je clique pour les poser le soir plutôt que le midi
+> et hop on me repose des questions. J'ai quitté le flow au milieu et je ne peux
+> plus les rejouer… j'aimerais plutôt me focus sur un flow autour de la gestion
+> des stocks que sur des jours. Sur l'origine des ingrédients j'ai aussi des
+> aberrations comme le screen qui me dit que l'ingrédient doit forcément venir
+> du congélateur. »*
+
+**DEUX DEMANDES, ET LA SECONDE EST UN BUG QUE LA PREMIÈRE RENDAIT VISIBLE.** La
+capture montre une carte de burgers de lentilles qui annonce « 250 g du
+congélo » en « PAS ASSEZ ». Ce n'est pas une formule maladroite : c'est la base
+qui croyait le bocal au congélateur.
+
+**LE MÉCANISME, ET IL ÉTAIT ÉCRIT EN TOUTES LETTRES AU-DESSUS DU CODE FAUTIF.**
+`model/depot.ts` distingue depuis toujours `espace` — où ça SE RANGE, ce que le
+budget de rangement compte — et `location` — où ça SE TROUVE, ce qui décide de
+l'horloge. `LotStock` n'avait qu'un champ. `journaliserCuisson` y écrivait la
+DESTINATION, sous un commentaire qui promettait l'inverse depuis T26 : *«
+`location: "frigo"` et pas l'espace de destination : ce qu'on vient de cuisiner
+refroidit au frigo, même quand ça se congèle. »* La phrase était vraie du modèle
+et fausse de la base, et rien ne les comparait.
+
+**MESURÉ : 81 DES 126 EMITS DU CORPUS DÉCLARENT `espace: congelo`** — près des
+deux tiers de ce qu'on cuisine entrait au congélateur d'un clic sur « fait ». Et
+`espace: congelo` ⟺ `congelo: true` sur les 126, sans une exception : le champ ne
+portait aucune information que le drapeau ne portait déjà, ce qui explique que
+personne ne l'ait relu. La conséquence coûteuse n'est pas la phrase de la carte
+mais **l'horloge** : ces lots couraient sur les 90 jours du congélateur alors que
+la médiane de leurs `gardeFrigo` est de **3 jours**. Un reste de trois jours qui
+en vit quatre-vingt-dix ne remonte jamais comme urgent, donc ne se mange jamais à
+temps — le contraire exact de ce que T47 et T57 avaient construit.
+
+- [x] **T87 — La base apprend où sont ses lots.** `LotStock.location`, optionnel
+      et sans migration (même geste que `dluo` : Dexie n'indexe que ce que
+      `SCHEMAS` déclare). `journaliserCuisson` l'écrit à `frigo`, l'amorce le
+      recopie du catalogue — c'est le seul endroit de l'app où les deux champs
+      valent la même chose, parce que l'amorce EST un relevé. `auModele` le
+      transmet au dépôt, avec repli sur `espace` pour les lots d'avant.
+
+      **ON NE RÉÉCRIT PAS LES LOTS DÉJÀ EN BASE.** Personne ne sait si le bocal
+      de mardi a fini au congélateur ou sur une étagère ; le deviner à leur
+      place fabriquerait la même certitude fausse dans l'autre sens. Le repli
+      les laisse là où leur amorce disait qu'ils étaient.
+
+      **TROIS CORRECTIFS QUI TOMBENT AVEC.** `raconte()` ne connaissait que deux
+      espaces et rangeait tout le reste en « du frigo (J-n) », bocal du placard
+      compris — un `Espace` est une union fermée justement pour que le troisième
+      cas ne se perde pas dans un `else`. L'inventaire groupait ses trois
+      entêtes sur `espace`, c'est-à-dire qu'il envoyait chercher au congélateur
+      ce qui refroidit sur le plan de travail ; ce sont des PORTES qu'on va
+      ouvrir, elles se groupent sur `location`. Et `releverDepot` interrogeait
+      l'index `espace` : relever le congélateur le soir aurait effacé le bocal
+      cuisiné le matin sans l'avoir jamais vu.
+
 ## Sortie
 
 **Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`

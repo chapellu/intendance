@@ -34,7 +34,11 @@ export async function amorcer(base: Base, catalogue: Catalogue): Promise<boolean
         qty: o.qty.amount,
         unite: o.qty.unit,
         band: o.qty_band,
+        // L'amorce est un RELEVÉ : le catalogue dit où le lot se trouvait le
+        // jour de l'export, pas où il ira. Les deux champs valent donc la même
+        // chose ici, et c'est le seul endroit de l'app où c'est vrai.
         espace: o.location,
+        location: o.location,
         born: o.born,
         origine: null,
         maj,
@@ -99,7 +103,10 @@ export const auModele = (l: LotStock): LotInitial => ({
   qty: l.qty != null && l.unite ? { amount: l.qty, unit: l.unite } : null,
   qty_band: l.band,
   born: l.born,
-  location: l.espace,
+  // `location` DÉCIDE DE L'HORLOGE, donc on ne la devine pas depuis la
+  // destination : voir `LotStock.location`. Le repli sur `espace` ne sert que
+  // les lots écrits avant que le champ existe.
+  location: l.location ?? l.espace,
   ...(l.id == null ? {} : { ref: String(l.id) }),
   // La DLUO n'est portée que par les lots qui en ont une, et ils sont rares :
   // elle n'arrive jamais qu'à l'œil d'un scan ou d'un événement `entree`, et
