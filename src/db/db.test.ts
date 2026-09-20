@@ -269,6 +269,33 @@ describe("le stock", () => {
     expect(vu.qty).toEqual({ amount: lot.qty, unit: lot.unite });
   });
 
+  test("le modèle reçoit OÙ EST le lot, pas où il devrait aller — T87", async () => {
+    // `espace` et `location` répondent à deux questions différentes, et c'est
+    // `location` qui décide de l'horloge. Un lot déclaré rangé au placard et
+    // dont la place est au congélateur ne doit pas arriver au modèle congelé.
+    const id = await ajouterLot(base, {
+      type: "sauce-bolognaise", kind: "base", qty: 700, unite: "g",
+      band: "2-repas", espace: "congelo", location: "placard", origine: null,
+    });
+    const lot = (await lireStock(base)).find((l) => l.id === id)!;
+    expect(auModele(lot).location).toBe("placard");
+  });
+
+  test("un lot écrit avant que `location` existe retombe sur son espace", async () => {
+    // LE REPLI EST POUR LES LOTS D'AVANT, ET POUR EUX SEULS. Le champ s'ajoute
+    // sans migration (voir `LotStock.location`) : une base déjà remplie porte
+    // des lots qui n'en ont pas. Les lire `undefined` les ferait sortir du
+    // dépôt en silence, ce qui est pire que de les ranger là où leur amorce
+    // disait déjà qu'ils étaient.
+    const id = await ajouterLot(base, {
+      type: "reste-gratin", kind: "reste-plat", qty: null, unite: null,
+      band: "1-repas", espace: "frigo", origine: null,
+    });
+    const lot = (await lireStock(base)).find((l) => l.id === id)!;
+    expect(lot.location).toBeUndefined();
+    expect(auModele(lot).location).toBe("frigo");
+  });
+
   test("une quantité sans unité ne chiffre rien — le lot part en bloc", async () => {
     // « 3 » face à « 400 g » n'est pas une comparaison. Le dépôt le sait faire
     // (il sert la ligne entière) à condition qu'on ne lui mente pas sur ce

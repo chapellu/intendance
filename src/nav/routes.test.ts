@@ -1,5 +1,6 @@
 import { describe, expect, test } from "vitest";
-import { chemin, dansCuisine, lireRoute, pleinEcran, ROUTE_DEFAUT, type Route } from "./routes";
+import { ENTREE_CUISINE, chemin, dansCuisine, lireRoute, pleinEcran, ROUTE_DEFAUT, type Route } from "./routes";
+import { JOURS_VISIBLES } from "./jours";
 
 const TOUTES: Route[] = [
   { ecran: "cockpit" },
@@ -50,6 +51,24 @@ describe("les routes", () => {
     expect(lireRoute("#/cuisine/poser/demain/diner")).toEqual(ROUTE_DEFAUT);
     expect(lireRoute("#/cuisine/poser/2026-8-19/diner")).toEqual(ROUTE_DEFAUT);
     expect(lireRoute("#/cuisine/parts/2026-08-19/")).toEqual(ROUTE_DEFAUT);
+  });
+
+  test("`#/cuisine` est la PORTE de la facette, pas un écran — T88", () => {
+    // Elle désignait « Aujourd'hui » en dur. Éteindre les jours aurait donc
+    // fait du lien le plus court de l'app une impasse : le bouton de la barre
+    // du bas, le raccourci mis en favori et la notification auraient tous
+    // ouvert un écran qu'on ne montre plus. Voir `nav/jours.ts`.
+    expect(lireRoute("#/cuisine")).toEqual(ENTREE_CUISINE);
+    expect(ENTREE_CUISINE.ecran).toBe(JOURS_VISIBLES ? "aujourdhui" : "fil");
+  });
+
+  test("« Aujourd'hui » garde une URL à lui, éteint ou non", () => {
+    // CE QU'ON CACHE RESTE ADRESSABLE, et c'est ce qui distingue un
+    // interrupteur d'une amputation : `#/cuisine/aujourdhui` s'ouvre encore si
+    // on la tape. Sans ce chemin propre, `chemin` et `lireRoute` cesseraient
+    // d'être réciproques dès que l'entrée change de destination.
+    expect(chemin({ ecran: "aujourdhui" })).toBe("#/cuisine/aujourdhui");
+    expect(lireRoute("#/cuisine/aujourdhui")).toEqual({ ecran: "aujourdhui" });
   });
 
   test("la racine ouvre le cockpit — la coquille montre la journée, pas la facette", () => {

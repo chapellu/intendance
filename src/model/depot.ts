@@ -282,7 +282,12 @@ export class Prise {
 
   /** D'où sort ce que le plat a pris, MORCEAU PAR MORCEAU. Annoncer le total
    *  sur le premier bocal quand la prise a traversé deux lots est un mensonge,
-   *  et c'est exactement ce que disait le message d'avant. */
+   *  et c'est exactement ce que disait le message d'avant.
+   *
+   *  LES TROIS ESPACES, PAS DEUX. La phrase n'avait que « congélo » et « frigo »,
+   *  et tout ce qui n'était pas congelé s'annonçait « du frigo (J-n) » — un lot
+   *  du placard compris. Un `Espace` est une union fermée justement pour que le
+   *  troisième cas ne se perde pas dans un `else`. */
   raconte(): string {
     return this.sources
       .map((s) => {
@@ -290,7 +295,9 @@ export class Prise {
           ? `du lot « ${s.ligne.from} »`
           : s.ligne.location === "congelo"
             ? "du congélo"
-            : `du frigo (J-${s.age})`;
+            : s.ligne.location === "placard"
+              ? "du placard"
+              : `du frigo (J-${s.age})`;
         return `${s.pris == null ? s.ligne.type : fmtQte(s.pris, this.unite)} ${ou}`;
       })
       .join(" + ");

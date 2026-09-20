@@ -99,6 +99,24 @@ describe("les rangements", () => {
     expect(cat?.barres).toBe(4);
   });
 
+  test("un lot de la semaine se range là où il EST — T87", () => {
+    // LES TROIS ENTÊTES SONT DES PORTES QU'ON VA OUVRIR. Un plat cuisiné cette
+    // semaine sort au frigo (`Depot.ajouter` : « congeler est un geste qu'on n'a
+    // pas encore fait ») tout en gardant sa destination au congélateur, qui est
+    // ce que le budget de rangement compte. Grouper sur `espace` envoyait donc
+    // chercher au congélateur ce qui refroidit sur le plan de travail.
+    jeu.stock = [];
+    poser(0, "diner", "sauce-bolognaise");
+    const lignes = calculer(jeu).depot.lignes;
+    const produit = lignes.find((l) => l.from === "sauce-bolognaise")!;
+    expect(produit.espace).toBe("congelo");
+    expect(produit.location).toBe("frigo");
+
+    const cats = categories(lignes);
+    expect(cats.find((c) => c.espace === "frigo")?.vivants).toBe(1);
+    expect(cats.find((c) => c.espace === "congelo")).toBeUndefined();
+  });
+
   test("un rangement vide ne s'affiche pas", () => {
     jeu.stock = [];
     // Une semaine sans plat ne produit rien : les trois rangements sont vides.

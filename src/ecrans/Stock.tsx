@@ -124,6 +124,10 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
       unite: retire.unite,
       band: retire.band,
       espace: retire.espace,
+      // ET SON RANGEMENT AVEC. Un lot rendu sans sa `location` repartirait sur
+      // l'horloge de sa destination, c'est-à-dire qu'annuler une bévue au frigo
+      // le ressusciterait au congélateur.
+      ...(retire.location ? { location: retire.location } : {}),
       born: retire.born,
       origine: retire.origine,
     });

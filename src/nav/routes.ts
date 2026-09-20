@@ -27,6 +27,7 @@
 // ────────────────────────────────────────────────────────────────────────────
 
 import type { RepasId } from "../model/types";
+import { JOURS_VISIBLES } from "./jours";
 
 /** Un créneau, tel qu'une URL et une base savent le nommer. */
 export interface CleCreneau {
@@ -61,6 +62,18 @@ export type Ecran = Route["ecran"];
  *  promesse de la coquille, et donc ce qu'on voit en lançant l'app. */
 export const ROUTE_DEFAUT: Route = { ecran: "cockpit" };
 
+/**
+ * Par où l'on entre dans la cuisine — `#/cuisine`, et le bouton de la barre du
+ * bas.
+ *
+ * SANS LES JOURS, C'EST LE FIL ET NON « AUJOURD'HUI ». L'écran d'ouverture
+ * d'une facette est sa thèse : « Aujourd'hui » ouvrait sur ce soir, demain et
+ * le geste du jour, c'est-à-dire sur trois façons de dire la date. Le fil ouvre
+ * sur « combien de repas », qui ne demande pas un jour mais un nombre.
+ * Voir `nav/jours.ts`.
+ */
+export const ENTREE_CUISINE: Route = JOURS_VISIBLES ? { ecran: "aujourdhui" } : { ecran: "fil" };
+
 /** Les écrans qui appartiennent à la facette cuisine — ceux qui portent
  *  l'en-tête et la sous-navigation. */
 const DANS_CUISINE: ReadonlySet<Ecran> = new Set<Ecran>([
@@ -79,7 +92,14 @@ const SANS_PARAM: Record<string, Ecran> = {
   "": "cockpit",
   cockpit: "cockpit",
   jardin: "jardin",
-  "cuisine": "aujourdhui",
+  // `#/cuisine` EST UN ALIAS DE L'ENTRÉE, PAS UN ÉCRAN, et c'est ce qui a
+  // changé : il adressait « Aujourd'hui » en dur, si bien qu'éteindre les jours
+  // aurait fait de la porte de la facette une impasse. Il suit désormais
+  // `ENTREE_CUISINE`, et « Aujourd'hui » a un chemin à lui — sans quoi `chemin`
+  // et `lireRoute` cesseraient d'être réciproques, ce que le test de
+  // l'aller-retour dit en une ligne.
+  "cuisine": ENTREE_CUISINE.ecran,
+  "cuisine/aujourdhui": "aujourdhui",
   "cuisine/semaine": "semaine",
   "cuisine/prevoir": "prevoir",
   "cuisine/courses": "courses",
@@ -99,7 +119,7 @@ export function chemin(r: Route): string {
   switch (r.ecran) {
     case "cockpit": return "#/cockpit";
     case "jardin": return "#/jardin";
-    case "aujourdhui": return "#/cuisine";
+    case "aujourdhui": return "#/cuisine/aujourdhui";
     case "semaine": return "#/cuisine/semaine";
     case "prevoir": return "#/cuisine/prevoir";
     case "courses": return "#/cuisine/courses";

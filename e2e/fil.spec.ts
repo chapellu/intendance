@@ -8,27 +8,37 @@
 // précisément ce qu'il ne monte pas.
 
 import { expect, test, type Page } from "@playwright/test";
+import { libellePoser } from "../src/ui/phrases";
 import { attendreLApp, repondreAuxQuestions } from "./parcours";
 
 const question = (page: Page) => page.locator(".co-question");
 const carte = (page: Page) => page.locator(".co-jouable");
-const points = (page: Page) => page.locator(".co-points .pt");
 
-/** Lance une passe de N repas depuis « La semaine ». */
+/**
+ * Le pas courant, quelle que soit sa forme — une question ou une main.
+ *
+ * C'ÉTAIT `.co-points` AVANT T88, et c'est tout ce que le ticket a changé ici.
+ * La barre de points était le seul repère stable du parcours ; en la cachant on
+ * lui retire son point d'appui, pas ses promesses. Ce qu'on attend désormais est
+ * ce qu'un doigt attend : que le pas s'affiche.
+ */
+const pas = (page: Page) => page.locator(".co-question, .co-jouable");
+
+/** Lance une passe de N repas par la PORTE DE LA FACETTE — `#/cuisine`, qui est
+ *  ce que touche le bouton de la barre du bas. */
 async function lancer(page: Page, repas: string): Promise<void> {
-  await page.goto("/#/cuisine/semaine");
+  await page.goto("/#/cuisine");
   await attendreLApp(page);
-  await page.getByRole("link", { name: "Lancer une passe" }).click();
   await expect(page.getByText("Combien de repas ?")).toBeVisible();
   await page.getByRole("button", { name: repas, exact: true }).dispatchEvent("click");
-  await expect(page.locator(".co-points")).toBeVisible({ timeout: 30_000 });
+  await expect(pas(page).first()).toBeVisible({ timeout: 30_000 });
 }
 
 /** Règle le pas courant en posant la première carte, et attend d'avoir bougé. */
 async function poserLePas(page: Page): Promise<void> {
   await repondreAuxQuestions(page);
   const avant = (await carte(page).first().locator(".tete .nom").innerText()).trim();
-  await carte(page).first().getByRole("button", { name: "Poser sur ce créneau" }).dispatchEvent("click");
+  await carte(page).first().getByRole("button", { name: libellePoser(false) }).dispatchEvent("click");
   await page.waitForFunction(
     (x) => {
       const n = document.querySelector(".co-jouable .tete .nom");
@@ -43,15 +53,26 @@ async function poserLePas(page: Page): Promise<void> {
 test("l’horizon se choisit avant de commencer, et il fixe la longueur du rail", async ({ page }) => {
   await lancer(page, "3 repas");
 
-  // TROIS POINTS DE CRÉNEAU, ET C'EST L'HORIZON QUI LES A COMPTÉS. Une question
-  // peut s'y ajouter — elle est un pas — donc on compte ceux qui mènent
-  // quelque part.
-  const destinations = page.locator('.co-points a.pt');
-  await expect(destinations).toHaveCount(3);
+  // TROIS PAS, ET C'EST L'HORIZON QUI LES A COMPTÉS. Le compte se lisait sur la
+  // barre de points ; il se lit maintenant en toutes lettres, ce qui est la
+  // seule chose que le fil ait jamais comptée pour de bon (`avancement`).
+  await expect(page.getByText("0 sur 3")).toBeVisible();
+});
 
-  // Aucun n'est encore « fait » : la passe vient de commencer.
-  await expect(points(page).first()).toBeVisible();
-  await expect(page.locator(".co-points .pt.fait")).toHaveCount(0);
+test("l’agenda de la semaine ne s’affiche nulle part — T88", async ({ page }) => {
+  // LA PROMESSE EST « CACHÉ », PAS « SUPPRIMÉ », et c'est pour ça qu'elle se
+  // teste : `JOURS_VISIBLES` rallume tout, et ce parcours est ce qui rend le
+  // rallumage délibéré plutôt qu'accidentel. Demandé le 20/09/2026 — « ça ne me
+  // sert à rien actuellement et ça me complique plus les choses ».
+  await lancer(page, "3 repas");
+
+  // Plus de barre de créneaux : c'est elle qui offrait de sauter du déjeuner au
+  // dîner au milieu d'une décision, et donc de perdre la main qu'on regardait.
+  await expect(page.locator(".co-points")).toHaveCount(0);
+  // Plus de sous-titre de semaine, et plus d'onglets de calendrier.
+  await expect(page.locator(".co-tete .sous")).toHaveCount(0);
+  const sousnav = page.locator(".co-sousnav a");
+  await expect(sousnav).toHaveText(["Proposer", "Stock", "Courses"]);
 });
 
 test("une question est un PAS du fil, et la main attend derrière elle", async ({ page }) => {
@@ -65,14 +86,10 @@ test("une question est un PAS du fil, et la main attend derrière elle", async (
   // du rail, qui montraient les cartes pendant qu'elles demandaient.
   await expect(carte(page)).toHaveCount(0);
 
-  // Et elle porte son propre point de progression, en pointillé et courant —
-  // c'est ce qui en fait un PAS et non un bandeau posé au-dessus des cartes.
-  const pointQuestion = page.locator(".co-points .pt.question").first();
-  await expect(pointQuestion).toBeVisible();
-  await expect(pointQuestion).toHaveClass(/courant/);
-  // Le point du créneau, lui, attend son tour : deux points allumés mentiraient
-  // sur l'endroit où l'on est.
-  await expect(page.locator(".co-points a.pt").first()).not.toHaveClass(/courant/);
+  // Et elle NE FAIT PAS AVANCER LE COMPTE : une question est un pas du fil, mais
+  // elle ne règle aucun repas. Le compte du haut dit ce qui est décidé, et rien
+  // n'est encore décidé.
+  await expect(page.getByText("0 sur 3")).toBeVisible();
 });
 
 test("le rail avance d’un pas à la fois et se termine sur une fin", async ({ page }) => {
@@ -93,7 +110,8 @@ test("une passe rouverte reprend où elle en était, sans redemander l’horizon
   // PAS L'ÉCRAN D'OUVERTURE. Redemander « combien de repas » au milieu d'une
   // passe la recommencerait, et effacerait l'itinéraire qu'on avait arrêté.
   await expect(page.getByText("Combien de repas ?")).toHaveCount(0);
-  await expect(page.locator(".co-points .pt.fait").first()).toBeVisible({ timeout: 30_000 });
+  // Et elle reprend AVEC SON COMPTE : un repas de posé, deux qui attendent.
+  await expect(page.getByText("1 sur 3")).toBeVisible({ timeout: 30_000 });
 });
 
 test("« Pas celui-là » n’écrit rien : le créneau reste libre dans la semaine", async ({ page }) => {
@@ -110,7 +128,7 @@ test("« Pas celui-là » n’écrit rien : le créneau reste libre dans la sema
   await attendreLApp(page);
   await repondreAuxQuestions(page);
   await page.getByRole("button", { name: "Pas celui-là" }).dispatchEvent("click");
-  await expect(page.locator(".co-points")).toBeVisible();
+  await expect(pas(page).first()).toBeVisible({ timeout: 30_000 });
 
   // T51 : ce bouton raccourcit la passe, c'est de la navigation. Rien n'a été
   // décidé, donc rien ne doit avoir changé dans la semaine.

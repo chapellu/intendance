@@ -23,6 +23,7 @@
 
 import { readFileSync } from "node:fs";
 import { expect, test } from "@playwright/test";
+import { libellePoser } from "../src/ui/phrases";
 import { attendreLApp, aujourdhuiISO, repondreAuxQuestions } from "./parcours";
 
 // SANS SERVICE WORKER POUR CE FICHIER. Il sert `cuisine-data.json` depuis son
@@ -75,7 +76,7 @@ test("la carte dit qu'un plat n'a pas sa recette, sans cesser de le proposer", a
   // ET LE GESTE RESTE OFFERT. Un plat qu'on annonce sans recette doit pouvoir
   // se poser quand même, sinon on a filtré en le disant.
   await expect(
-    cartes.first().getByRole("button", { name: "Poser sur ce créneau" }),
+    cartes.first().getByRole("button", { name: libellePoser(false) }),
   ).toBeEnabled();
 });
 

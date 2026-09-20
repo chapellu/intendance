@@ -16,6 +16,7 @@ import type { Carte, Ecart } from "../model/scoring";
 import { chemin, type CleCreneau } from "../nav/routes";
 import { duree } from "./format";
 import { Icone } from "./icones";
+import { libellePoser } from "./phrases";
 import { classeEtat, entreesDeLaCarte, sortiesDeLaCarte } from "../ecrans/poser.vue";
 import { sansRecette } from "../ecrans/cuisiner.vue";
 import { constatDe, enjeu, raison, REPONSES, titre } from "../ecrans/questions.vue";
@@ -179,13 +180,10 @@ export function Jouable({
       </div>
 
       <div className="pied">
-        {/* « QUAND MÊME » EST LE MOT QUI TIENT LA PROMESSE. Le bouton reste
-            primaire et reste actif : la recherche montre un plat écarté pour
-            qu'on puisse le poser, pas pour qu'on constate qu'on ne peut pas.
-            Il change seulement de nom, pour que le doigt sache qu'il passe
-            devant un avis. */}
+        {/* LE LIBELLÉ VIT DANS `phrases.ts`, avec ses deux raisons : il change
+            avec les jours, et quatre parcours e2e le désignent par son nom. */}
         <button className="btn btn-primary" style={{ flex: 1 }} onClick={() => jouer(p.id)}>
-          {ecarts.length ? "Poser quand même" : "Poser sur ce créneau"}
+          {libellePoser(ecarts.length > 0)}
         </button>
         {/* LA FICHE DU CANDIDAT, pas celle du créneau : on lit la recette
             avant de choisir, et le créneau porte peut-être encore autre chose. */}

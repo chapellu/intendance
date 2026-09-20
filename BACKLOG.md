@@ -3138,6 +3138,124 @@ antérieurs et sans rapport), `npm run etapes` 0 casse sur 138 recettes.
   l'anticipation, ni le plan B ne la lisent. C'est délibéré — un no-op déclaré,
   comme `saison` en T73 — mais ça mérite d'être écrit plutôt que découvert.
 
+## Le stock plutôt que les jours — T87 et T88, écart de port n° 4
+
+**Dit le 20/09/2026, deuxième journée d'usage réel, capture à l'appui :**
+
+> *« Est-ce que tu peux cacher pour le moment cet agenda de la semaine. Ça ne me
+> sert à rien actuellement et ça me complique plus les choses. Je me retrouve
+> dans des situations où je réponds à des questions sur les stocks et j'ai des
+> propositions de recettes. Je clique pour les poser le soir plutôt que le midi
+> et hop on me repose des questions. J'ai quitté le flow au milieu et je ne peux
+> plus les rejouer… j'aimerais plutôt me focus sur un flow autour de la gestion
+> des stocks que sur des jours. Sur l'origine des ingrédients j'ai aussi des
+> aberrations comme le screen qui me dit que l'ingrédient doit forcément venir
+> du congélateur. »*
+
+**DEUX DEMANDES, ET LA SECONDE EST UN BUG QUE LA PREMIÈRE RENDAIT VISIBLE.** La
+capture montre une carte de burgers de lentilles qui annonce « 250 g du
+congélo » en « PAS ASSEZ ». Ce n'est pas une formule maladroite : c'est la base
+qui croyait le bocal au congélateur.
+
+**LE MÉCANISME, ET IL ÉTAIT ÉCRIT EN TOUTES LETTRES AU-DESSUS DU CODE FAUTIF.**
+`model/depot.ts` distingue depuis toujours `espace` — où ça SE RANGE, ce que le
+budget de rangement compte — et `location` — où ça SE TROUVE, ce qui décide de
+l'horloge. `LotStock` n'avait qu'un champ. `journaliserCuisson` y écrivait la
+DESTINATION, sous un commentaire qui promettait l'inverse depuis T26 : *«
+`location: "frigo"` et pas l'espace de destination : ce qu'on vient de cuisiner
+refroidit au frigo, même quand ça se congèle. »* La phrase était vraie du modèle
+et fausse de la base, et rien ne les comparait.
+
+**MESURÉ : 81 DES 126 EMITS DU CORPUS DÉCLARENT `espace: congelo`** — près des
+deux tiers de ce qu'on cuisine entrait au congélateur d'un clic sur « fait ». Et
+`espace: congelo` ⟺ `congelo: true` sur les 126, sans une exception : le champ ne
+portait aucune information que le drapeau ne portait déjà, ce qui explique que
+personne ne l'ait relu. La conséquence coûteuse n'est pas la phrase de la carte
+mais **l'horloge** : ces lots couraient sur les 90 jours du congélateur alors que
+la médiane de leurs `gardeFrigo` est de **3 jours**. Un reste de trois jours qui
+en vit quatre-vingt-dix ne remonte jamais comme urgent, donc ne se mange jamais à
+temps — le contraire exact de ce que T47 et T57 avaient construit.
+
+- [x] **T87 — La base apprend où sont ses lots.** `LotStock.location`, optionnel
+      et sans migration (même geste que `dluo` : Dexie n'indexe que ce que
+      `SCHEMAS` déclare). `journaliserCuisson` l'écrit à `frigo`, l'amorce le
+      recopie du catalogue — c'est le seul endroit de l'app où les deux champs
+      valent la même chose, parce que l'amorce EST un relevé. `auModele` le
+      transmet au dépôt, avec repli sur `espace` pour les lots d'avant.
+
+      **ON NE RÉÉCRIT PAS LES LOTS DÉJÀ EN BASE.** Personne ne sait si le bocal
+      de mardi a fini au congélateur ou sur une étagère ; le deviner à leur
+      place fabriquerait la même certitude fausse dans l'autre sens. Le repli
+      les laisse là où leur amorce disait qu'ils étaient.
+
+      **TROIS CORRECTIFS QUI TOMBENT AVEC.** `raconte()` ne connaissait que deux
+      espaces et rangeait tout le reste en « du frigo (J-n) », bocal du placard
+      compris — un `Espace` est une union fermée justement pour que le troisième
+      cas ne se perde pas dans un `else`. L'inventaire groupait ses trois
+      entêtes sur `espace`, c'est-à-dire qu'il envoyait chercher au congélateur
+      ce qui refroidit sur le plan de travail ; ce sont des PORTES qu'on va
+      ouvrir, elles se groupent sur `location`. Et `releverDepot` interrogeait
+      l'index `espace` : relever le congélateur le soir aurait effacé le bocal
+      cuisiné le matin sans l'avoir jamais vu.
+
+- [x] **T88 — Les jours se cachent derrière un interrupteur.** `nav/jours.ts`,
+      un seul drapeau. S'éteignent : la sous-navigation « Aujourd'hui · La
+      semaine · À prévoir », le sous-titre « semaine du 17 au 23 septembre », la
+      barre de points du fil, le nom du jour en tête de chaque pas, et la
+      pastille de la facette cuisine. S'allument à la place : **« Proposer ·
+      Stock · Courses »**, une boucle et non un calendrier — ce qu'on a, ce
+      qu'on peut en faire, ce qu'il faut aller chercher. L'inventaire n'était
+      jusqu'ici atteignable que par le lien « à vérifier » d'une carte,
+      c'est-à-dire seulement quand l'app avait un doute.
+
+      **ON CACHE, ON NE SUPPRIME PAS, et la différence est tout le ticket.** Les
+      créneaux restent le seul index du modèle : `choix[i]`, `parts[i]`,
+      `gamelles`, la liste de courses qui dérive des repas posés, la clé
+      `(jour, repas)` en base. Les arracher serait réécrire l'app pour un essai
+      d'une semaine. Poser un plat continue donc de le poser SUR un créneau —
+      celui où le fil en est — et plus rien ne le montre ni ne le demande. Les
+      écrans éteints restent montés et leurs URL valides.
+
+      **CE QUE L'AGENDA COÛTAIT, DIT PAR CELUI QUI L'A PAYÉ.** La barre de
+      points promettait de revenir sur un repas nommé ; en pratique elle offrait
+      surtout d'en CHANGER au milieu d'une décision. Or une main est tirée pour
+      un créneau : la toucher retirait les cartes qu'on regardait et relançait
+      la file de questions du créneau d'à côté. Le choix du créneau n'était
+      jamais la décision qu'on voulait prendre — c'était le prix d'entrée pour
+      en prendre une autre.
+
+      **`#/cuisine` EST DEVENU UNE PORTE, PAS UN ÉCRAN.** Il désignait
+      « Aujourd'hui » en dur, si bien qu'éteindre les jours aurait fait du lien
+      le plus court de l'app une impasse. Il suit `ENTREE_CUISINE`, et
+      « Aujourd'hui » a désormais `#/cuisine/aujourdhui` — sans quoi `chemin` et
+      `lireRoute` cesseraient d'être réciproques, ce que le test de
+      l'aller-retour dit en une ligne.
+
+      **LE LIBELLÉ DU BOUTON A DÉMÉNAGÉ DANS `phrases.ts`**, avec ses deux
+      raisons : il change avec les jours (« Poser sur ce créneau » ne peut pas
+      nommer une case qu'on ne montre nulle part — il dit « Je fais ça »), et
+      **quatre parcours e2e le désignaient par son nom**. Un libellé recopié
+      dans quatre `.spec.ts` est un libellé qu'on ne peut plus changer : le jour
+      où il change, ce sont les parcours qui rougissent, et on croit à une
+      régression de l'app.
+
+### Ce que ce bloc laisse ouvert
+
+- **Les offres et les gamelles ne sont plus atteignables.** « À prévoir » est
+  éteint, et sa pastille avec lui — une pastille qui n'ouvre rien est pire
+  qu'une pastille qui compte mal. Ce n'est pas une perte silencieuse : une
+  gamelle est le midi de demain pris sur le dîner de ce soir, c'est-à-dire un
+  objet de calendrier de part en part. S'il faut les garder sans les jours, il
+  faudra d'abord dire ce qu'elles deviennent.
+- **La liste de courses dérive toujours des créneaux posés**, donc du fil. C'est
+  ce qui a fait préférer « poser en silence » à « cuisiner tout de suite » :
+  journaliser la cuisson au clic aurait vidé les courses de leur source. La
+  question revient entière le jour où le fil disparaît lui aussi.
+- **`espace` ne porte plus aucune information que `congelo` ne porte déjà** —
+  mesuré, les 126 emits sont d'accord deux à deux. Le jour où une recette voudra
+  ranger au placard ce qui ne se congèle pas, c'est le corpus qu'il faudra
+  regarder, pas le code.
+
 ## Sortie
 
 **Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`
