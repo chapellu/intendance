@@ -6,8 +6,8 @@ import { creerJeu, type Jeu } from "../model/jeu";
 import type { Catalogue, Denree, Zone } from "../model/types";
 import { contexte, rejouer, type Evenement } from "../model/journal";
 import {
-  agressions, categories, espaces, fiabilite, gardeManger, lots, vueDeLInventaire,
-  vueDesPlanchers, vueDesPlanchersDenrees, zones,
+  agressions, baisserPlancher, categories, espaces, fiabilite, gardeManger, lots,
+  vueDeLInventaire, vueDesPlanchers, vueDesPlanchersDenrees, zones,
 } from "./stock.vue";
 
 const LUNDI = new Date("2026-08-17T12:00:00Z");
@@ -594,6 +594,51 @@ describe("ce qu'on veut toujours avoir", () => {
 
   test("un congélateur qui a de la place ne raconte pas qu'il est plein", () => {
     expect(vueDesPlanchers(jeu, calculer(jeu), new Map(), []).plein).toBe("");
+  });
+});
+
+/* ═════════ poser un plancher de dépôt à la main — T89 ═════════════════════ */
+
+describe("en poser un sans attendre la proposition", () => {
+  test("une base neuve ne propose rien, et offre quand même tout le congélable", () => {
+    // L'ÉCART QUE LE TICKET CORRIGE. Avant lui ces deux listes étaient vides
+    // ensemble, et « je veux toujours deux bolognaises » était une phrase que
+    // l'écran ne savait pas entendre.
+    const vue = vueDesPlanchers(jeu, calculer(jeu), new Map(), []);
+    expect(vue.propositions).toEqual([]);
+    expect(vue.libres.length).toBeGreaterThan(0);
+  });
+
+  test("un posable se lit en français : le titre du plat, pas son identifiant", () => {
+    const vue = vueDesPlanchers(jeu, calculer(jeu), new Map(), []);
+    const bolo = vue.libres.find((p) => p.type === "sauce-bolognaise")!;
+    const plat = catalogue.plats.find((p) => p.emits.some((e) => e.type === "sauce-bolognaise"))!;
+    expect(bolo.nom).toBe("sauce bolognaise");
+    expect(bolo.plats).toContain(plat.titre);
+    expect(bolo.a).toBe(2);
+  });
+
+  test("ce qui porte déjà un niveau sort de la liste et entre dans les posés", () => {
+    const vue = vueDesPlanchers(jeu, calculer(jeu), new Map([["sauce-bolognaise", 2]]), []);
+    expect(vue.libres.some((p) => p.type === "sauce-bolognaise")).toBe(false);
+    expect(vue.poses.some((p) => p.type === "sauce-bolognaise")).toBe(true);
+  });
+
+  test("un refus quitte les propositions et reste posable, marqué", () => {
+    const plat = catalogue.plats.find((p) => p.emits.some((e) => e.type === "sauce-bolognaise"))!;
+    const evts = [cuisine(plat.id, "2026-08-10"), cuisine(plat.id, "2026-08-17")];
+    const decisions = new Map<string, number | null>([["sauce-bolognaise", null]]);
+    const vue = vueDesPlanchers(jeu, calculer(jeu), decisions, evts);
+    expect(vue.propositions.some((p) => p.type === "sauce-bolognaise")).toBe(false);
+    expect(vue.libres.find((p) => p.type === "sauce-bolognaise")!.refuse).toBe(true);
+  });
+
+  test("le « − » s'arrête à un : un plancher à zéro n'existe pas", () => {
+    // ET IL NE RETIRE PAS. Retirer est `niveau: null`, donc un refus ; le
+    // faire prendre par le douzième appui sur « − » serait décider « ne
+    // redemande jamais » sans l'avoir dit.
+    expect(baisserPlancher(3)).toBe(2);
+    expect(baisserPlancher(1)).toBe(1);
   });
 });
 

@@ -20,6 +20,7 @@ import {
   etatDuCongelo,
   planchables,
   populationDe,
+  posablesAuDepot,
   producteurs,
   propositions,
   reglagesDuCongelo,
@@ -421,5 +422,90 @@ describe("la proposition le dit sur la carte", () => {
     );
     expect(dites.length).toBeGreaterThan(0);
     for (const c of dites) expect(c.plat.emits.some((e2) => e2.congelo)).toBe(true);
+  });
+});
+
+/* ═══════════════════ T89 — ce sur quoi on peut en poser un À LA MAIN ══════ */
+
+describe("poser un plancher sans attendre que l'app le propose", () => {
+  const vide = new Map<string, number | null>();
+
+  test("tout ce qui se congèle est posable, dès le premier jour", () => {
+    // LE DÉMARRAGE À FROID NE VAUT QUE POUR CE QUE L'APP DEVINE. Le journal est
+    // vide, donc `propositions` ne rend rien ; la liste des posables, elle, est
+    // pleine — elle ne prétend rien savoir des habitudes, elle dit seulement sur
+    // quoi la phrase aurait un sens.
+    expect(propositions(catalogue, [], new Set())).toEqual([]);
+    const libres = posablesAuDepot(catalogue, etat([]), vide);
+    expect(libres.length).toBe(planchables(catalogue).size);
+  });
+
+  test("ce qui ne se congèle pas n'est jamais posable", () => {
+    const libres = posablesAuDepot(catalogue, etat([]), vide);
+    const dessus = new Set(libres.map((p) => p.type));
+    for (const plat of catalogue.plats)
+      for (const e of plat.emits)
+        if (!e.congelo && !planchables(catalogue).has(e.type)) expect(dessus.has(e.type)).toBe(false);
+  });
+
+  test("chaque posable nomme ce qui le recharge, et sa population", () => {
+    // C'est tout T34 vu depuis l'écran : accepter un plancher, c'est accepter de
+    // revoir ces plats-là, donc la liste doit les montrer AVANT le geste.
+    const libres = posablesAuDepot(catalogue, etat([]), vide);
+    for (const p of libres) {
+      expect(p.plats.length).toBeGreaterThan(0);
+      expect(p.nom).not.toContain("-");
+    }
+    const bolo = libres.find((p) => p.type === "sauce-bolognaise")!;
+    expect(bolo.population).toBe("apport");
+    expect(bolo.plats).toContain(producteurDe("sauce-bolognaise").id);
+  });
+
+  test("un posable dit ce qu'il y en a déjà", () => {
+    const libres = posablesAuDepot(catalogue, etat([lot("ratatouille", "reste-plat", 3)]), vide);
+    expect(libres.find((p) => p.type === "ratatouille")!.a).toBe(3);
+    expect(libres.find((p) => p.type === "sauce-bolognaise")!.a).toBe(0);
+  });
+
+  test("ce qui porte déjà un niveau n'est plus dans la liste", () => {
+    // Il est ailleurs à l'écran, avec son − et son +. L'y laisser offrirait deux
+    // gestes contradictoires sur le même type dans le même écran.
+    const libres = posablesAuDepot(
+      catalogue,
+      etat([]),
+      new Map<string, number | null>([["sauce-bolognaise", 2]]),
+    );
+    expect(libres.some((p) => p.type === "sauce-bolognaise")).toBe(false);
+  });
+
+  test("un refus reste posable, marqué, et rangé à la fin", () => {
+    // « NON MERCI » ÉTEINT LA PROPOSITION, PAS LE DROIT DE CHANGER D'AVIS. Le
+    // refus existe pour faire taire l'app ; en faire un interdit ferait payer
+    // une porte fermée pour un geste qui ne demandait que le silence.
+    const decisions = new Map<string, number | null>([["sauce-bolognaise", null]]);
+    const libres = posablesAuDepot(catalogue, etat([]), decisions);
+    const bolo = libres.find((p) => p.type === "sauce-bolognaise")!;
+    expect(bolo.refuse).toBe(true);
+    expect(libres.indexOf(bolo)).toBe(libres.length - 1);
+    expect(libres.filter((p) => !p.refuse).every((p) => libres.indexOf(p) < libres.indexOf(bolo)))
+      .toBe(true);
+  });
+
+  test("la liste est triée par nom, comme celle du placard", () => {
+    const noms = posablesAuDepot(catalogue, etat([]), vide)
+      .filter((p) => !p.refuse)
+      .map((p) => p.nom);
+    expect(noms).toEqual([...noms].sort((a, b) => a.localeCompare(b, "fr")));
+  });
+
+  test("un plancher posé à la main paie exactement comme un plancher accepté", () => {
+    // LA PROMESSE DU TICKET. Rien en aval ne sait par quel geste le plancher est
+    // né : s'il payait moins, « le dire soi-même » serait une deuxième classe de
+    // décision, et l'écran mentirait sur ce qu'il propose.
+    const plat = producteurDe("sauce-bolognaise");
+    const planchers: Plancher[] = [{ type: "sauce-bolognaise", niveau: 2 }];
+    const b = bonusPlancher(plat, etat(REPOSE), planchers, poids);
+    expect(b.score).toBeGreaterThan(0);
+    expect(b.types).toContain("sauce bolognaise");
   });
 });

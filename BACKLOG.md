@@ -3256,6 +3256,105 @@ temps — le contraire exact de ce que T47 et T57 avaient construit.
   ranger au placard ce qui ne se congèle pas, c'est le corpus qu'il faudra
   regarder, pas le code.
 
+## Le seuil se dit au lieu de s'attendre — T89
+
+**Dit le 20/09/2026, en demandant comment on met en place la gestion de seuil :**
+
+> *« Le plus simple ne serait il de pouvoir configurer ça depuis l'application
+> ingrédients par ingrédients ? Voir même certaines recettes comme la
+> bolognaise, les pâtes à tarte etc… »*
+
+**LA MOITIÉ PLACARD ÉTAIT DÉJÀ FAITE, ET C'EST LA MOITIÉ DÉPÔT QUI MANQUAIT.**
+T39 donne au garde-manger exactement ce que la demande décrit : une denrée, un
+niveau, un − et un +, et la ligne part dans « Courses » sans qu'aucun plat ne la
+réclame. Le congélateur, lui, n'avait que T37 — *l'app propose à la deuxième
+cuisson, l'utilisateur confirme* — et rien d'autre. Sur une app neuve le journal
+est vide : **il n'existait aucune suite de gestes menant à un plancher posé.**
+
+**LES DEUX EXEMPLES TOMBENT PILE SUR LE MÉCANISME, ET C'EST MESURÉ.**
+`sauce-bolognaise` (`kind: base`, congelable, un seul plat producteur),
+`pate-brisee-portion` et `pate-a-pizza` sont des **types émis** planchables,
+parmi **73** (`npm run planchers`). La demande dit « certaines recettes » ; le
+modèle répond en types, comme T34 l'a tranché — un plancher sur la recette
+voudrait dire qu'un poulet en cocotte ne recharge pas le même `reste-roti` qu'un
+rôti roulé. Sur la bolognaise la distinction ne se voit pas, un seul plat la
+produit. Sur la pâte à tarte elle donne **deux planchers au lieu d'un** — une
+pâte brisée n'est pas une pâte à pizza — et `pate-a-pizza` est justement un des
+**10 types que plusieurs recettes rechargent** : fougasse et pique-nique
+remontent le même plancher, ce qu'un plancher par recette aurait rendu faux.
+
+- [x] **T89 — Un plancher de dépôt se pose à la main.** `posablesAuDepot()` rend
+      les 73 types congelables avec ce qu'il y en a, ce qui les recharge et leur
+      population ; l'écran en fait la liste « Sur quoi ? », sous le même bouton
+      « En ajouter » qu'au placard. Les planchers posés gagnent le − , le + et
+      le « Ne plus suivre » que les denrées avaient depuis T39.
+
+      **LE DÉMARRAGE À FROID NE VALAIT QUE POUR CE QUE L'APP DEVINE.** *« Un
+      journal vide ne dit rien des habitudes de personne »* est vrai de la
+      PROPOSITION et faux de la décision : « je veux toujours deux bolognaises
+      d'avance » est une phrase entière, et la refuser tant qu'on n'a pas été
+      observé deux fois fait attendre l'app pour apprendre ce qu'on est prêt à
+      lui dire. Les deux voies coexistent — la proposition sert les 72 autres
+      types, auxquels personne ne pensera jamais tout seul.
+
+      **RETIRER, C'EST REFUSER — `niveau: null`, la même écriture que « Non
+      merci ».** Cesser de suivre un type qu'on suivait est la réponse la plus
+      informée qu'on puisse donner sur lui ; le reproposer à la cuisson suivante
+      serait redemander ce qu'on vient d'entendre. Il n'y a donc pas de
+      troisième valeur à inventer, et **T44 garde son objet entier** : ce n'est
+      pas le geste de retrait qui lui manquait, c'est le moment où l'APP le
+      propose.
+
+      **UN REFUS N'EST PAS UN INTERDIT.** Un type écarté reste posable à la
+      main, marqué « déjà écarté » et rangé en fin de liste. « Non merci » existe
+      pour faire taire l'app ; en faire une porte fermée ferait payer très cher
+      un geste qui ne demandait que le silence.
+
+      **LE « − » S'ARRÊTE À UN, ET IL NE RETIRE PAS.** Au placard, descendre à
+      zéro EST le retrait — rien n'y propose, donc effacer suffit. Ici zéro
+      n'aurait pas ce sens : le retrait est un refus, et laisser un bouton de
+      réglage décider « ne redemande jamais » au douzième appui serait faire
+      prendre par un geste de réglage une décision qui a son propre bouton. Un
+      plancher à zéro serait de toute façon pire qu'inutile : toujours tenu,
+      jamais sous son seuil, il occuperait une ligne à prétendre qu'on suit
+      quelque chose.
+
+      **LES DEUX BOUTONS « EN AJOUTER » SE NOMMENT.** Deux boutons de même nom à
+      trois écrans de distance se lisent très bien à l'œil — la section au-dessus
+      dit laquelle — et sont indiscernables pour qui n'entend que le bouton,
+      lecteur d'écran ou parcours. Le rangement va dans le nom accessible, pas
+      dans le texte : « En ajouter au congélateur » déborderait la ligne du
+      titre. `plancher-garde-manger.spec.ts` désigne le sien depuis ce ticket.
+
+      **UN CHIFFRE PÉRIMÉ CORRIGÉ AU PASSAGE.** L'en-tête de `plancher.ts`
+      annonçait « 50 des 78 emits se congèlent, sur 46 des 86 plats » — c'était
+      vrai à T34 et le corpus a doublé depuis : **81 emits congelables sur 126,
+      75 plats sur 138, 73 types planchables**. Le fichier prévient lui-même
+      qu'on relira ses phrases en les croyant ; `npm run planchers` les imprime,
+      et c'est lui qui fait foi.
+
+      Portes : typecheck, **670 tests** (13 nouveaux : 8 sur `posablesAuDepot`,
+      5 sur la vue), build, **36 e2e** (3 nouveaux, `plancher-depot.spec.ts`),
+      `catalogue:verifie` 0 erreur.
+
+### Ce que ce bloc laisse ouvert
+
+- **Le frigo reste hors du plancher, et plus personne ne défend la barrière.**
+  `plancher.ts` le dit de lui-même : sa restriction « seulement ce qui se
+  congèle » tenait à ce que le frigo ne savait pas compter le temps, et T54 lui a
+  donné une horloge. La condition de réouverture est remplie depuis ; ce ticket
+  ne l'a pas rouverte parce qu'elle mérite sa propre décision, pas parce qu'elle
+  tient encore.
+- **T45 passe devant T42–T44.** Un plancher dit *que* tu es en dessous, jamais
+  *combien* mettre dans le caddie — et maintenant que les planchers se posent
+  sans attendre, il va y en avoir. Plancher maïs à 2, il en reste 1 : racheter 1
+  remet sous le seuil à la première boîte ouverte.
+- **73 types dans une seule liste à plat.** C'est le même choix qu'au placard et
+  ses 41 denrées comptables, et il tiendra tant qu'on cherche un nom qu'on a déjà
+  en tête. Le jour où il faudra PARCOURIR la liste, c'est par population qu'elle
+  se coupera — « de quoi accélérer un soir » et « un dîner d'avance » sont déjà
+  la phrase de chaque ligne.
+
 ## Sortie
 
 **Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`

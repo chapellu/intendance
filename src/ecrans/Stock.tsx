@@ -47,6 +47,7 @@ import { Corps } from "../ui/Coquille";
 import { Icone, iconeEspace } from "../ui/icones";
 import { fmt } from "../ui/format";
 import {
+  baisserPlancher,
   vueDeLInventaire,
   vueDesPlanchers,
   vueDesPlanchersDenrees,
@@ -283,11 +284,37 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
  * et un soir qui peut s'effondrer.
  */
 function Planchers({ vue }: { vue: PlanchersVue | null }) {
+  const [ouvert, setOuvert] = useState(false);
   if (!vue) return null;
   return (
     <>
-      <div className="co-kicker" style={{ margin: "var(--space-4) var(--space-1) var(--space-2)" }}>
-        Ce qu’on veut toujours avoir
+      <div
+        style={{
+          display: "flex",
+          alignItems: "baseline",
+          justifyContent: "space-between",
+          margin: "var(--space-4) var(--space-1) var(--space-2)",
+        }}
+      >
+        <span className="co-kicker">Ce qu’on veut toujours avoir</span>
+        {/* T89 — LE MÊME BOUTON QU'AU PLACARD, ET AU MÊME ENDROIT. « En
+            ajouter » est le geste qui manquait : sans lui, un plancher de dépôt
+            ne pouvait naître que d'une proposition, donc jamais avant que le
+            journal ait vu deux cuissons.
+
+            IL EST NOMMÉ, PARCE QU'IL Y EN A DEUX. Deux boutons « En ajouter » à
+            trois écrans de distance se lisent très bien à l'œil — la section
+            au-dessus dit laquelle — et sont indiscernables pour qui n'entend que
+            le bouton, lecteur d'écran ou parcours. Le rangement va donc dans le
+            nom accessible, jamais dans le texte : « En ajouter au congélateur »
+            écrit en toutes lettres déborderait la ligne du titre. */}
+        <button
+          className="co-retour"
+          aria-label={ouvert ? "fermer les planchers du congélateur" : "en ajouter un au congélateur"}
+          onClick={() => setOuvert(!ouvert)}
+        >
+          {ouvert ? "Fermer" : "En ajouter"}
+        </button>
       </div>
 
       <div className="co-espace">
@@ -311,6 +338,37 @@ function Planchers({ vue }: { vue: PlanchersVue | null }) {
             <div className="ou">
               {p.population === "apport" ? "de quoi accélérer un soir" : "un dîner d’avance"}
               {p.plats.length ? ` · se recharge en cuisinant ${p.plats.join(", ")}` : ""}
+            </div>
+            <div style={{ display: "flex", gap: "var(--space-1)", marginTop: 4 }}>
+              {/* LE NIVEAU SE RÈGLE DEVANT LE TIROIR, comme celui d'une denrée
+                  se règle devant le placard. « Deux, finalement » se pense le
+                  soir où la dernière portion part et où il n'en reste pas. */}
+              <button
+                className="btn btn-secondary"
+                style={{ fontSize: 12, padding: "2px 8px" }}
+                onClick={() => void poserPlancher(base, p.type, baisserPlancher(p.niveau))}
+              >
+                −
+              </button>
+              <button
+                className="btn btn-secondary"
+                style={{ fontSize: 12, padding: "2px 8px" }}
+                onClick={() => void poserPlancher(base, p.type, p.niveau + 1)}
+              >
+                +
+              </button>
+              {/* RETIRER ICI, C'EST REFUSER — `niveau: null`, la même écriture
+                  que « Non merci ». Un type qu'on cesse de suivre après l'avoir
+                  suivi n'a aucune raison de revenir en proposition à la
+                  prochaine cuisson : ce serait redemander ce qu'on vient de
+                  répondre. Il reste posable à la main, en bas de « Sur quoi ? ». */}
+              <button
+                className="btn btn-ghost"
+                style={{ fontSize: 12, padding: "2px 8px" }}
+                onClick={() => void poserPlancher(base, p.type, null)}
+              >
+                Ne plus suivre
+              </button>
             </div>
           </span>
           <span>
@@ -350,10 +408,47 @@ function Planchers({ vue }: { vue: PlanchersVue | null }) {
         </div>
       ))}
 
+      {ouvert ? (
+        <div className="co-espace" style={{ marginTop: "var(--space-2)" }}>
+          <div className="nom">Sur quoi&nbsp;?</div>
+          {vue.libres.map((p) => (
+            <div key={p.type} className="co-lot">
+              <span style={{ flex: 1 }}>
+                <div className="nom">{p.nom}</div>
+                <div className="ou">
+                  {p.refuse ? "déjà écarté · " : ""}
+                  {p.population === "apport" ? "de quoi accélérer un soir" : "un dîner d’avance"}
+                  {p.plats.length ? ` · ${p.plats.join(", ")}` : ""}
+                </div>
+              </span>
+              <span style={{ display: "flex", alignItems: "center", gap: "var(--space-1)" }}>
+                <span className="q">{p.a}</span>
+                <button
+                  className="btn btn-secondary"
+                  style={{ fontSize: 12, padding: "2px 8px" }}
+                  onClick={() => void poserPlancher(base, p.type, 1)}
+                >
+                  En garder 1
+                </button>
+              </span>
+            </div>
+          ))}
+          {/* CE QUI N'EST PAS DANS LA LISTE SE DIT, comme T46 le dit au placard.
+              Ici la barrière n'est pas une classe mais le froid : un plancher
+              compte des portions au congélateur, et le poser sur un reste qui
+              tient trois jours au frigo fabriquerait une cible qui réclamerait
+              de cuisiner tous les trois jours pour rien. */}
+          <div className="co-note" style={{ marginTop: "var(--space-2)" }}>
+            Pas de plancher sur ce qui ne se congèle pas&nbsp;: un plancher compte des portions
+            au tiroir, et une cible qu’on ne peut pas tenir réclamerait de cuisiner pour rien.
+          </div>
+        </div>
+      ) : null}
+
       <div className="co-note" style={{ margin: "var(--space-2) var(--space-1) 0" }}>
         Un plancher est une <b>hypothèse sur une habitude</b>&nbsp;: l’app la propose à la deuxième
-        cuisson, jamais avant. En dessous, les plats qui le rechargent remontent dans la main&nbsp;;
-        au-dessus, rien ne coûte — un plancher est un seuil, pas une cible.
+        cuisson, et on peut la lui dire avant. En dessous, les plats qui le rechargent remontent
+        dans la main&nbsp;; au-dessus, rien ne coûte — un plancher est un seuil, pas une cible.
       </div>
     </>
   );
@@ -512,7 +607,14 @@ function PlanchersDenrees({ vue }: { vue: PlanchersDenreesVue | null }) {
             deux mécanismes — l'un pousse un plat, l'autre une ligne de courses.
             Le titre doit porter la différence, puisque c'est tout T41. */}
         <span className="co-kicker">Ce qu’on veut toujours au placard</span>
-        <button className="co-retour" onClick={() => setOuvert(!ouvert)}>
+        {/* NOMMÉ DEPUIS T89, pour la raison écrite en face : le congélateur a
+            gagné le même bouton, et deux « En ajouter » anonymes sur un écran
+            ne se distinguent que par l'œil. */}
+        <button
+          className="co-retour"
+          aria-label={ouvert ? "fermer les planchers du placard" : "en ajouter un au placard"}
+          onClick={() => setOuvert(!ouvert)}
+        >
           {ouvert ? "Fermer" : "En ajouter"}
         </button>
       </div>

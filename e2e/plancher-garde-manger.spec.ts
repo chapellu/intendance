@@ -38,7 +38,12 @@ test("un plancher posé au placard part tout seul dans les courses", async ({ pa
   await expect(page.getByText("Ce qu’on veut toujours au placard")).toBeVisible();
   await expect(page.getByRole("button", { name: "Ne plus suivre" })).toHaveCount(0);
 
-  await page.getByRole("button", { name: "En ajouter" }).dispatchEvent("click");
+  // LE BOUTON SE DÉSIGNE PAR SON RANGEMENT DEPUIS T89 : le congélateur a gagné
+  // le même « En ajouter » quelques centimètres plus haut, et un nom partagé par
+  // deux boutons ne désigne plus rien.
+  await page
+    .getByRole("button", { name: "en ajouter un au placard" })
+    .dispatchEvent("click");
 
   // T46 — CE QUI EST INTERDIT EST NOMMÉ. L'oignon n'a pas de bouton, et l'app
   // dit pourquoi plutôt que de laisser un trou dans la liste.
