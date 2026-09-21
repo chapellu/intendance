@@ -24,6 +24,7 @@ import type { Evenement, Rejeu } from "../model/journal";
 import {
   etatDuCongelo,
   nomDuType,
+  posablesAuDepot,
   producteurs,
   propositions,
   type Population,
@@ -229,6 +230,26 @@ export interface PlancherVue {
   plats: string[];
 }
 
+/**
+ * Un type sur lequel on peut poser un plancher à la main — T89.
+ *
+ * MÊME FORME QUE `Posable` AU PLACARD, ET C'EST VOULU : c'est la même phrase,
+ * dite sur l'autre rangement. Ce qui change est ce qu'elle déclenche — ici un
+ * plat qui remonte dans la main, là-bas une ligne de courses — et l'écran le dit
+ * sur chaque ligne plutôt que de le laisser deviner.
+ */
+export interface TypePosableVue {
+  type: string;
+  nom: string;
+  population: Population;
+  /** Ce qu'il y en a en ce moment, en portions. */
+  a: number;
+  /** Ce qui le recharge, en titres lisibles. */
+  plats: string[];
+  /** Déjà écarté une fois (T37). Dit, pas caché. */
+  refuse: boolean;
+}
+
 export interface PropositionVue {
   type: string;
   nom: string;
@@ -246,11 +267,30 @@ export interface PlanchersVue {
   populations: string;
   poses: PlancherVue[];
   propositions: PropositionVue[];
+  /** Ce sur quoi on peut en poser un sans attendre que l'app le propose — T89. */
+  libres: TypePosableVue[];
   /** Ce qui prend la place, quand il n'y en a plus — T38. Vide sinon. */
   plein: string;
 }
 
 const portions = (n: number): string => `${n} portion${n > 1 ? "s" : ""}`;
+
+/**
+ * Ce que le « − » descend, et où il s'arrête — T89.
+ *
+ * IL S'ARRÊTE À UN, ET IL NE RETIRE PAS. Au placard, descendre à zéro EST le
+ * retrait : « j'en veux toujours zéro » est la façon compliquée de dire qu'on
+ * n'en veut pas de plancher, et rien ne propose là-bas, donc effacer suffit.
+ * Ici zéro n'aurait pas ce sens : un plancher de dépôt se retire en `niveau:
+ * null`, c'est-à-dire en « non merci », c'est-à-dire en éteignant aussi la
+ * proposition. Laisser un bouton « − » décider ça au douzième appui serait faire
+ * prendre par un geste de réglage une décision qui a son propre bouton.
+ *
+ * Un plancher à zéro, lui, serait pire qu'inutile : toujours tenu, jamais sous
+ * son seuil, il ne paierait plus rien et occuperait une ligne de l'écran à
+ * prétendre qu'on suit quelque chose.
+ */
+export const baisserPlancher = (niveau: number): number => Math.max(1, niveau - 1);
 
 export function vueDesPlanchers(
   jeu: Jeu,
@@ -299,6 +339,10 @@ export function vueDesPlanchers(
       nom: nomDuType(p.type),
       niveau: p.niveau,
       cuissons: p.cuissons,
+      plats: titres(p.type),
+    })),
+    libres: posablesAuDepot(catalogue, etat, decisions).map((p) => ({
+      ...p,
       plats: titres(p.type),
     })),
     plein:

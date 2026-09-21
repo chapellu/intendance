@@ -127,7 +127,10 @@ export function producteurs(catalogue: Catalogue): Map<string, string[]> {
  * défendue par une impossibilité mais par un choix que rien n'a réexaminé. Noté
  * au backlog plutôt que tranché ici.
  *
- * Mesuré : 50 des 78 emits se congèlent, sur 46 des 86 plats.
+ * Mesuré le 20/09/2026, et les chiffres de T34 avaient DOUBLÉ sans que la phrase
+ * bouge : 81 des 126 emits se congèlent, sur 75 des 138 plats, ce qui fait 73
+ * types planchables sur 115. `npm run planchers` les imprime — c'est lui qui
+ * fait foi, et c'est pour ça qu'ils ne sont pas figés dans un test.
  */
 export function planchables(catalogue: Catalogue): Map<string, Population> {
   const par = new Map<string, Population>();
@@ -418,4 +421,80 @@ export function propositions(
     out.push({ type, niveau: 1, cuissons: n, plats: qui.get(type) ?? [] });
   }
   return out.sort((a, b) => b.cuissons - a.cuissons || a.type.localeCompare(b.type, "fr"));
+}
+
+/* ═════════════════════════════════════════════════ poser à la main — T89 */
+
+/**
+ * Un type sur lequel un plancher peut se poser MAINTENANT.
+ *
+ * T37 A UNE MOITIÉ MANQUANTE, ET ELLE NE SE VOYAIT PAS. « L'app propose,
+ * l'utilisateur confirme » est juste tant qu'il s'agit de couvrir 50 types dont
+ * personne ne pensera jamais à parler ; c'est faux dès qu'on a une phrase à
+ * dire. « Je veux toujours deux bolognaises d'avance » est une décision entière,
+ * et jusqu'ici elle ne pouvait pas s'écrire : il fallait d'abord que le journal
+ * ait vu deux cuissons. Un démarrage à froid ne dit rien des habitudes de
+ * personne — c'est vrai de ce que l'app DEVINE, pas de ce qu'on lui DIT.
+ *
+ * LE GARDE-MANGER AVAIT DÉJÀ RAISON. `posables()` rend depuis T39 tout ce sur
+ * quoi un plancher de denrée peut naître, et l'écran en fait une liste « Sur
+ * quoi ? ». Ce ticket ne fait que rendre le dépôt symétrique, avec la même
+ * forme et le même mot.
+ */
+export interface TypePosable {
+  type: string;
+  nom: string;
+  population: Population;
+  /** Ce qu'il y en a en ce moment, en portions. Zéro est la réponse ordinaire,
+   *  et c'est même le cas où poser un plancher sert le plus. */
+  a: number;
+  /** Ce qui le recharge — dérivé (T34), en ids ; l'écran les rend en titres. */
+  plats: string[];
+  /**
+   * Ce type a reçu un « non merci » (T37).
+   *
+   * IL RESTE POSABLE, ET C'EST LE POINT. Le refus éteint la PROPOSITION — « ne
+   * redemande pas » — il n'interdit pas de changer d'avis en le disant soi-même.
+   * Traiter un refus comme un interdit ferait d'un geste destiné à faire taire
+   * l'app une porte qu'on ne peut plus rouvrir.
+   */
+  refuse: boolean;
+}
+
+/**
+ * Tout ce sur quoi un plancher de dépôt peut naître, à la main.
+ *
+ * CE QUI PORTE DÉJÀ UN NIVEAU EN EST ABSENT, parce qu'il est ailleurs à l'écran,
+ * avec son − et son +. Ce qui a été refusé y reste, rangé à la fin : c'est
+ * toujours une réponse possible, ce n'est simplement plus une réponse que l'app
+ * pose elle-même.
+ */
+export function posablesAuDepot(
+  catalogue: Catalogue,
+  etat: EtatCongelo,
+  decisions: ReadonlyMap<string, number | null>,
+): TypePosable[] {
+  const qui = producteurs(catalogue);
+  const out: TypePosable[] = [];
+
+  for (const [type, population] of planchables(catalogue)) {
+    const decide = decisions.get(type);
+    if (typeof decide === "number") continue;
+    out.push({
+      type,
+      nom: nomDuType(type),
+      population,
+      a: etat.portions.get(type) ?? 0,
+      plats: qui.get(type) ?? [],
+      refuse: decide === null,
+    });
+  }
+
+  // LES REFUSÉS À LA FIN, JAMAIS CACHÉS. On les a écartés une fois ; les
+  // reproposer en tête de liste serait reproduire exactement le bruit que « non
+  // merci » existe pour éteindre, et les supprimer de la liste transformerait un
+  // refus en interdit.
+  return out.sort(
+    (a, b) => Number(a.refuse) - Number(b.refuse) || a.nom.localeCompare(b.nom, "fr"),
+  );
 }

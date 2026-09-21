@@ -63,8 +63,14 @@ export const validesParmi = (decisions: ReadonlyMap<string, number | null>): Pla
  * PAS DE SUPPRESSION ICI, ET C'EST VOLONTAIRE. `poserReglage` efface la clé
  * quand la valeur est `null` ou `false` ; ce serait exactement le mauvais
  * comportement — effacer un refus le transforme en « jamais demandé », donc en
- * proposition qui revient. Retirer un plancher est un troisième geste, et c'est
- * T44 qui le tranchera.
+ * proposition qui revient.
+ *
+ * D'OÙ LE FAIT QUE RETIRER À LA MAIN S'ÉCRIVE `niveau: null` (T89), c'est-à-dire
+ * exactement comme un refus. Cesser de suivre un type qu'on suivait est la
+ * réponse la plus informée qu'on puisse donner sur lui ; le reproposer à la
+ * cuisson suivante serait redemander ce qu'on vient d'entendre. Il n'y a donc
+ * pas de troisième valeur à inventer, et T44 garde son objet entier : ce n'est
+ * pas le geste de retrait qui lui manque, c'est le moment où l'APP le propose.
  */
 export async function poserPlancher(
   base: Base,
