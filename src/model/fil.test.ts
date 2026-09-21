@@ -7,7 +7,9 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, test } from "vitest";
 import { lireCatalogue } from "./catalogue";
-import { CRANS, cleDuPas, decidesDuFil, itineraire, pasSuivant, premierPas, type Fil } from "./fil";
+import {
+  CRANS, cleDuPas, decidesDuFil, itineraire, pasSuivant, perimesDuFil, premierPas, type Fil,
+} from "./fil";
 import { creerJeu, SAUTE, type Jeu } from "./jeu";
 import type { Catalogue } from "./types";
 
@@ -160,5 +162,61 @@ describe("ce que la passe compte comme fait", () => {
     );
     jeu.choix[dehors] = catalogue.plats[0]!.id;
     expect(decidesDuFil(jeu, fil).size).toBe(0);
+  });
+});
+
+describe("une passe que la semaine a dépassée", () => {
+  // LE BUG DU 21/09, ÉPINGLÉ AU JOUR PRÈS. Une passe ouverte le jeudi 17,
+  // rouverte le lundi 21 : ses trois créneaux sont derrière la fenêtre, et
+  // `decidesDuFil` — qui ne parcourt que la semaine — ne les voit ni décidés ni
+  // nulle part. `premierPas` renvoyait donc éternellement sur le déjeuner du 17.
+  const JEUDI = new Date("2026-09-17T12:00:00");
+  const LUNDI_SUIVANT = new Date("2026-09-21T12:00:00");
+
+  const filDuJeudi = (): { fil: Fil; lundi: Jeu } => {
+    const jeudi = creerJeu(catalogue, 7, JEUDI);
+    return {
+      fil: { horizon: 3, creneaux: itineraire(jeudi, 3) },
+      lundi: creerJeu(catalogue, 7, LUNDI_SUIVANT),
+    };
+  };
+
+  test("ses créneaux sont périmés, pas en attente", () => {
+    const { fil, lundi } = filDuJeudi();
+    expect(perimesDuFil(lundi, fil).size).toBe(fil.creneaux.length);
+  });
+
+  test("elle ne renvoie plus sur un jour qui n'existe plus", () => {
+    const { fil, lundi } = filDuJeudi();
+    const enjambes = perimesDuFil(lundi, fil);
+    expect(premierPas(fil, decidesDuFil(lundi, fil), enjambes)).toBeNull();
+  });
+
+  test("le jour même, rien n'est périmé", () => {
+    // La contre-épreuve : sans elle, `perimesDuFil` pourrait tout déclarer
+    // périmé et les deux tests au-dessus passeraient encore.
+    const jeudi = creerJeu(catalogue, 7, JEUDI);
+    const fil: Fil = { horizon: 3, creneaux: itineraire(jeudi, 3) };
+    expect(perimesDuFil(jeudi, fil).size).toBe(0);
+    expect(premierPas(fil, decidesDuFil(jeudi, fil), perimesDuFil(jeudi, fil))).toEqual(
+      fil.creneaux[0],
+    );
+  });
+
+  test("une passe à cheval garde ce qui lui reste de semaine", () => {
+    // Le lendemain, pas la semaine suivante : le premier créneau est tombé, les
+    // autres sont encore là, et la passe continue sur le suivant plutôt que de
+    // se fermer.
+    const jeudi = creerJeu(catalogue, 7, JEUDI);
+    const fil: Fil = { horizon: 3, creneaux: itineraire(jeudi, 3) };
+    const vendredi = creerJeu(catalogue, 7, new Date("2026-09-18T12:00:00"));
+
+    const enjambes = perimesDuFil(vendredi, fil);
+    expect(enjambes.size).toBeGreaterThan(0);
+    expect(enjambes.size).toBeLessThan(fil.creneaux.length);
+
+    const suite = premierPas(fil, decidesDuFil(vendredi, fil), enjambes);
+    expect(suite).not.toBeNull();
+    expect(enjambes.has(cleDuPas(suite!))).toBe(false);
   });
 });

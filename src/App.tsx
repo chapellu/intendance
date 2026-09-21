@@ -9,7 +9,8 @@
 import { indexDuCreneau } from "./db";
 import { useAmorce, useCatalogue, useSemaine } from "./db/hooks";
 import { vueAPrevoir } from "./ecrans/prevoir.vue";
-import { pleinEcran, type Route } from "./nav/routes";
+import { chemin, ENTREE_CUISINE, pleinEcran, type Route } from "./nav/routes";
+import { JOURS_VISIBLES } from "./nav/jours";
 import { useRoute } from "./nav/useRoute";
 import { Coquille, Corps, type Pastilles } from "./ui/Coquille";
 import { Aujourdhui } from "./ecrans/Aujourdhui";
@@ -89,13 +90,17 @@ function rendre(route: Route, jeu: Jeu) {
     case "stock": return <Stock />;
     // Le fil sans créneau est son ouverture : il n'y a rien à valider, et il
     // sait lui-même s'il doit demander l'horizon ou reprendre une passe.
+    //
+    // ET LE FIL AVEC UN CRÉNEAU DISPARU N'EST PAS UNE IMPASSE — c'est la seule
+    // des quatre routes à créneau qui sache se rattraper. `Fil` teste déjà
+    // l'index et retombe sur sa reprise ; le garde qui était ici arrivait avant
+    // lui et rendait ce rattrapage inatteignable. Une passe qui a vieilli d'un
+    // jour visait alors un créneau sorti de la fenêtre, on affichait « ce
+    // créneau n'est plus là », et le seul bouton de sortie renvoyait sur la
+    // semaine — d'où l'on relançait une passe qui reprenait le même créneau
+    // mort. Le 21/09, ça fermait la cuisine entière : sa porte ouvre sur le fil.
     case "fil":
-      if (!route.creneau) return <Fil />;
-      return indexDuCreneau(jeu, route.creneau.jour, route.creneau.repas) < 0 ? (
-        <HorsSemaine jour={route.creneau.jour} repas={route.creneau.repas} />
-      ) : (
-        <Fil creneau={route.creneau} />
-      );
+      return route.creneau ? <Fil creneau={route.creneau} /> : <Fil />;
     // Les trois écrans qui visent un créneau. Un lien d'hier rouvert
     // aujourd'hui désigne un jour sorti de la fenêtre : on le dit, plutôt que
     // d'ouvrir l'écran sur un créneau fantôme.
@@ -131,15 +136,28 @@ const Panne = ({ message }: { message: string }) => (
   </div>
 );
 
+/**
+ * Un lien d'hier, rouvert aujourd'hui sur un jour sorti de la fenêtre.
+ *
+ * SA SORTIE SUIT `ENTREE_CUISINE` ET N'EST PLUS ÉCRITE EN DUR. Elle adressait
+ * `#/cuisine/semaine`, si bien que le seul bouton de cet écran rallumait à la
+ * main l'agenda que T88 venait d'éteindre — la capture du 21/09 montre les deux
+ * écrans à la suite. Une impasse qui renvoie sur un écran caché est une impasse
+ * deux fois.
+ */
 const HorsSemaine = ({ jour, repas }: { jour: string; repas: string }) => (
   <Corps plat>
     <div className="co-h">Ce créneau n’est plus là</div>
     <p className="co-note">
-      Le {repas} du {jour} est sorti de la semaine affichée. La décision qu’il portait
-      n’est pas perdue&nbsp;: elle attend son tour, rangée sous son jour.
+      Le {repas} du {jour} est {JOURS_VISIBLES ? "sorti de la semaine affichée" : "passé"}. La
+      décision qu’il portait n’est pas perdue&nbsp;: elle attend son tour, rangée sous son jour.
     </p>
-    <a className="btn btn-primary btn-block" href="#/cuisine/semaine" style={{ marginTop: "var(--space-3)" }}>
-      Revenir à la semaine
+    <a
+      className="btn btn-primary btn-block"
+      href={chemin(ENTREE_CUISINE)}
+      style={{ marginTop: "var(--space-3)" }}
+    >
+      {JOURS_VISIBLES ? "Revenir à la semaine" : "Revenir à la cuisine"}
     </a>
   </Corps>
 );

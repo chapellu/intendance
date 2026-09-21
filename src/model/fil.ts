@@ -111,6 +111,33 @@ export const premierPas = (
   passes: ReadonlySet<string>,
 ): CleCreneau | null => pasSuivant(fil, decides, passes, null);
 
+/**
+ * Les créneaux du fil que la fenêtre a laissés derrière elle.
+ *
+ * UNE PASSE PORTE DES DATES, ET LA SEMAINE EST UN RAIL GLISSANT de sept jours
+ * qui commence aujourd'hui (`creerJeu`). Une passe ouverte jeudi vise donc des
+ * créneaux dont les premiers sont HORS de la semaine dès le lendemain — ils ne
+ * sont pas « en attente », ils n'existent plus.
+ *
+ * SANS CETTE NOTION, `premierPas` RENVOIE ÉTERNELLEMENT SUR LE PREMIER D'ENTRE
+ * EUX : `decidesDuFil` ne parcourt que `jeu.creneaux`, donc un créneau disparu
+ * n'y est jamais « décidé », donc il reste le prochain pas à faire, donc la
+ * reprise y retourne à chaque ouverture. C'est ce qui a fermé la cuisine le
+ * 21/09 : la porte de la facette ouvre sur le fil, le fil reprenait une passe
+ * du 17, et le 17 n'était plus là.
+ *
+ * Un créneau périmé se traite comme un créneau passé au doigt (T51) : on
+ * l'enjambe, on n'écrit rien. Il n'y a rien à décider sur un jour révolu.
+ */
+export function perimesDuFil(jeu: Jeu, fil: Fil): Set<string> {
+  const vivants = new Set<string>();
+  for (const c of jeu.creneaux) {
+    const j = jeu.jours[c.jour];
+    if (j) vivants.add(cleDuPas({ jour: jourISO(j.date), repas: c.repas }));
+  }
+  return new Set(fil.creneaux.map(cleDuPas).filter((cle) => !vivants.has(cle)));
+}
+
 /** Les créneaux du fil qu'un doigt a réglés — posés ou sautés. C'est la seule
  *  mesure d'avancement : le fil ne tient aucun compteur à lui. */
 export function decidesDuFil(jeu: Jeu, fil: Fil): Set<string> {

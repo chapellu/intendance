@@ -22,7 +22,8 @@ import { indexDuCreneau, jourISO } from "../db";
 import { useCatalogue, useSavoir, useSemaine } from "../db/hooks";
 import { cleRepioche, poserReglage, useNombre, useObjet } from "../db/reglages";
 import {
-  CLE_FIL, CRANS, cleDuPas, decidesDuFil, itineraire, pasSuivant, premierPas, type Fil as Passe,
+  CLE_FIL, CRANS, cleDuPas, decidesDuFil, itineraire, pasSuivant, perimesDuFil, premierPas,
+  type Fil as Passe,
 } from "../model/fil";
 import { SAUTE, type Jeu } from "../model/jeu";
 import { JOURS_VISIBLES } from "../nav/jours";
@@ -53,12 +54,19 @@ export function Fil({ creneau }: { creneau?: CleCreneau }) {
   if (!jeu || !savoir || passe === undefined) return null;
   if (!passe) return <Ouverture jeu={jeu} />;
 
-  const decides = decidesDuFil(jeu, passe);
+  // CE QUE LA FENÊTRE A LAISSÉ DERRIÈRE ELLE s'enjambe exactement comme un
+  // créneau qu'un doigt a passé : ce n'est pas un état de plus, c'est de la
+  // navigation. Voir `perimesDuFil`.
+  const perimes = perimesDuFil(jeu, passe);
+  if (perimes.size === passe.creneaux.length) return <Perimee />;
 
-  if (!creneau) return <Reprise passe={passe} decides={decides} passes={passes} />;
+  const decides = decidesDuFil(jeu, passe);
+  const enjambes = new Set([...passes, ...perimes]);
+
+  if (!creneau) return <Reprise passe={passe} decides={decides} passes={enjambes} />;
 
   const i = indexDuCreneau(jeu, creneau.jour, creneau.repas);
-  if (i < 0) return <Reprise passe={passe} decides={decides} passes={passes} />;
+  if (i < 0) return <Reprise passe={passe} decides={decides} passes={enjambes} />;
 
   return (
     <Pas
@@ -73,6 +81,28 @@ export function Fil({ creneau }: { creneau?: CleCreneau }) {
       poserPlat={poserPlat}
     />
   );
+}
+
+/**
+ * Une passe dont plus aucun créneau n'existe : on la ferme, et le fil rouvre
+ * sur « Combien de repas ? ».
+ *
+ * PAS « LA PASSE EST FINIE », qui annoncerait « 0 repas posé sur 3 » à quelqu'un
+ * qui vient d'ouvrir sa cuisine — un bilan d'échec sur une semaine dont il ne
+ * reste rien à poser. Rien n'a échoué : les jours visés sont passés, et la seule
+ * chose qu'on puisse encore faire est celle qu'on aurait proposée de toute
+ * façon.
+ *
+ * On efface plutôt que d'ignorer, parce qu'une passe qu'on garderait en base
+ * sans jamais pouvoir la reprendre se rappellerait à nous au prochain bug.
+ * On ne rend rien pendant ce temps : la suppression rouvre l'écran par le haut,
+ * sans clignotement d'une ouverture qu'on remplacerait aussitôt.
+ */
+function Perimee() {
+  useEffect(() => {
+    void poserReglage(CLE_FIL, null);
+  }, []);
+  return null;
 }
 
 /* ═══════════════════════════════════════════════════════════ l'ouverture */
