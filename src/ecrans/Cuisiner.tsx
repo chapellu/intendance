@@ -181,7 +181,7 @@ function Fiche({
             <span>{muet.long}</span>
           </div>
         ) : null}
-        <Ingredients p={p} parts={parts} f={f} catalogue={jeu.catalogue} />
+        <Ingredients p={p} parts={parts} f={f} jeu={jeu} />
         <div style={{ padding: "0 var(--space-4) var(--space-4)" }}>
           {steps.length ? (
             <button className="btn btn-secondary btn-block" onClick={() => setIngr(false)}>
@@ -224,12 +224,14 @@ function Ingredients({
   p,
   parts,
   f,
-  catalogue,
+  jeu,
 }: {
   p: Plat;
   parts: number;
   f: number;
-  catalogue: Jeu["catalogue"];
+  // LE JEU, ET PLUS LE SEUL CATALOGUE : la provenance d'un ingrédient dépend de
+  // ce qu'il reste au garde-manger, que le rejeu du journal repose sur le jeu.
+  jeu: Jeu;
 }) {
   const produit = +(p.portions * f).toFixed(1);
   const ustensile = aSortir(p);
@@ -263,7 +265,7 @@ function Ingredients({
       )}
       <div className="co-ing">
         {p.ingredients.map((x) => {
-          const prov = provenanceIngredient(catalogue, x);
+          const prov = provenanceIngredient(jeu, x);
           // `key` sur `ref` ET PAS SUR `id` : onze plats portent deux lignes du
           // même ingrédient — la farine de la pâte et celle de la crème — et
           // React recevait deux fois la même clé. C'est `ref` qui les

@@ -2,7 +2,8 @@ import { readFileSync } from "node:fs";
 import { beforeEach, describe, expect, test } from "vitest";
 import { lireCatalogue } from "./catalogue";
 import { articles, calculer, cleDuCreneau, echelle, facteur, minutesParJour } from "./calcul";
-import { creerJeu, SAUTE, type Jeu } from "./jeu";
+import { contexte, rejouer, type Evenement } from "./journal";
+import { creerJeu, idsDuReleve, SAUTE, type Jeu } from "./jeu";
 import type { Catalogue } from "./types";
 
 // UNE DATE FIXE, et c'est une correction du proto. Son smoke lisait `new Date()`
@@ -599,6 +600,132 @@ describe("le garde-manger ne s'achète pas les yeux fermés", () => {
     const c = calculer(jeu);
     for (const [cid, v] of c.aVerifier)
       if (catalogue.rayons.placard.includes(cid)) expect(v.prov).toBe("placard");
+  });
+});
+
+/* ══════════════════ « vous en avez » cesse quand il n'y en a plus ═════════ */
+
+// LA MOITIÉ QUE T24 N'AVAIT PAS BRANCHÉE. Il a fait passer `provenance()` du
+// rayon au relevé — mais au relevé DE L'EXPORT, qui ne bouge plus jamais. Un id
+// entré là n'en sortait pas : on pouvait relever la zone à vide, et la ligne
+// restait dans « Vous en avez — vérifiez la quantité » sur un placard qu'on
+// venait de constater vide. Le bug s'est vu à l'usage, le 21/09, sur des
+// tagliatelles qu'on n'avait plus.
+describe("un garde-manger vidé renvoie ses ingrédients aux courses", () => {
+  const jour = "2026-08-17";
+  // La vraie source, pas une liste posée à la main : c'est le rejeu du journal
+  // qui décide, donc c'est lui qu'on fait parler. `hydraterGardeManger` ne fait
+  // rien d'autre que cette ligne — voir `db/gardeManger.ts`.
+  const apresLeJournal = (jeu: Jeu, evts: Evenement[]): Jeu => {
+    const r = rejouer(catalogue, evts, contexte(catalogue), jour);
+    jeu.gardeManger = jeu.gardeManger.filter((id) => r.parIngredient.has(id));
+    return jeu;
+  };
+  const releveAVide = (zone: string): Evenement[] => [
+    { sorte: "observation", portee: "zone", zone, jour, saisi: jour, constats: [], maj: 1 },
+  ];
+  const chili = (): Jeu => {
+    const j = creerJeu(catalogue, 7, LUNDI);
+    j.choix[j.creneaux.findIndex((c) => c.repas === "diner")] = "chili-sin-carne";
+    return j;
+  };
+
+  test("un journal vide calcule exactement ce que le catalogue calculait", () => {
+    // LA PROPRIÉTÉ QUI REND LE FILTRE SÛR, et elle se mesure : l'amorce de
+    // `rejouer()` part des mêmes denrées que `idsDuReleve()`, donc un journal
+    // vide ne retire rien. Une base neuve voit la liste qu'elle voyait avant ce
+    // correctif — sinon on n'aurait pas réparé un mensonge, on en aurait
+    // déplacé un.
+    expect(new Set(apresLeJournal(chili(), []).gardeManger)).toEqual(
+      new Set(idsDuReleve(catalogue)),
+    );
+    const avant = calculer(chili());
+    const apres = calculer(apresLeJournal(chili(), []));
+    expect([...apres.aVerifier.keys()]).toEqual([...avant.aVerifier.keys()]);
+    expect([...apres.panier.keys()]).toEqual([...avant.panier.keys()]);
+  });
+
+  test("relever la zone à vide fait passer le maïs de « à vérifier » au panier", () => {
+    // LE GESTE EXACT DE L'UTILISATEUR : ouvrir le placard, constater, relever.
+    // Les quatre boîtes de maïs de T24 sont sur l'étagère ouverte ; une fois la
+    // zone relevée à vide, le chili doit les ACHETER.
+    const c = calculer(apresLeJournal(chili(), releveAVide("etagere-ouverte")));
+    expect([...c.aVerifier.keys()]).not.toContain("mais");
+    expect([...c.panier.values()].map((a) => a.id)).toContain("mais");
+  });
+
+  test("la ligne revient au panier avec sa grandeur", () => {
+    // Un ingrédient qui repasse aux courses doit y repasser ENTIER : un id sans
+    // quantité ferait une ligne qu'on ne sait pas acheter.
+    const c = calculer(apresLeJournal(chili(), releveAVide("etagere-ouverte")));
+    const mais = [...c.panier.values()].find((a) => a.id === "mais")!;
+    expect(mais.qty).toBeGreaterThan(0);
+    expect(mais.n).toBeGreaterThan(0);
+  });
+
+  test("relever une zone ne touche pas les denrées des AUTRES zones", () => {
+    // Un relevé est l'observation d'UNE zone, pas une remise à zéro du placard.
+    // L'oignon est sous l'évier : vider l'étagère ouverte ne doit rien lui
+    // faire, sinon un quart d'heure de relevé enverrait tout le placard au
+    // magasin — l'exact symétrique du bug qu'on répare.
+    const c = calculer(apresLeJournal(chili(), releveAVide("etagere-ouverte")));
+    expect([...c.aVerifier.keys()]).toContain("oignon");
+    expect([...c.panier.values()].map((a) => a.id)).not.toContain("oignon");
+  });
+
+  test("rentrer ses courses ne fait pas disparaître la ligne qu'on range", () => {
+    // LE PIÈGE QUE LE PARCOURS E2E A ATTRAPÉ, épinglé ici où il se lit. Rentrer
+    // un article le met au placard — c'est la boucle que T27 a refermée — donc
+    // un filtre qui prendrait `parIngredient` tel quel ferait du saumon qu'on
+    // vient de ranger une denrée de garde-manger, et sa ligne s'effacerait sous
+    // le doigt de quelqu'un en train de vider son cabas.
+    //
+    // L'INTERSECTION L'INTERDIT PAR CONSTRUCTION : `hydraterGardeManger` filtre
+    // l'amorce, il ne la remplace pas. Ce qui n'a jamais été relevé ne peut pas
+    // le devenir en cours de semaine.
+    const avant = [...calculer(chili()).panier.values()].map((a) => a.id);
+    // Une entrée sur CHAQUE ingrédient du panier — le pire cas, celui où l'on
+    // vient de tout rentrer d'un coup.
+    const entrees: Evenement[] = [
+      {
+        sorte: "entree",
+        jour,
+        saisi: jour,
+        lignes: avant.map((ingredient) => ({
+          ingredient, unites: 1, parUnite: null, zone: null, etat: "sec" as const,
+        })),
+        maj: 1,
+      },
+    ];
+    const apres = [...calculer(apresLeJournal(chili(), entrees)).panier.values()].map((a) => a.id);
+    expect(apres).toEqual(avant);
+  });
+
+  test("le filtre ne peut qu'ajouter des lignes, jamais en retirer", () => {
+    // LA PROPRIÉTÉ EN UNE PHRASE, et sur le corpus entier plutôt que sur un
+    // plat. C'est elle qui rend ce correctif relisable : quoi que porte le
+    // journal, la liste d'avant est incluse dans la liste d'après.
+    const jeu = creerJeu(catalogue, 7, LUNDI);
+    jeu.creneaux.forEach((c, i) => {
+      if (c.nature === "choisi") jeu.choix[i] = catalogue.plats[i % catalogue.plats.length]!.id;
+    });
+    const avant = new Set(calculer(jeu).panier.keys());
+    const apres = new Set(calculer({ ...jeu, gardeManger: [] }).panier.keys());
+    for (const cle of avant) expect(apres.has(cle)).toBe(true);
+    expect(apres.size).toBeGreaterThan(avant.size);
+  });
+
+  test("le fond de placard survit à un garde-manger entièrement vide", () => {
+    // `placard` est une APPARTENANCE, pas un stock : le sel et l'huile ne
+    // passent par aucun relevé. On tient l'ordre de `provenance()` au cas le
+    // plus brutal — plus rien, nulle part.
+    const jeu = chili();
+    jeu.gardeManger = [];
+    const c = calculer(jeu);
+    const achats = [...c.panier.values()].map((a) => a.id);
+    for (const [cid, v] of c.aVerifier)
+      if (catalogue.rayons.placard.includes(cid)) expect(v.prov).toBe("placard");
+    for (const fond of catalogue.rayons.placard) expect(achats).not.toContain(fond);
   });
 });
 

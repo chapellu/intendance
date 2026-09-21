@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, test } from "vitest";
 import { lireCatalogue } from "../model/catalogue";
+import { creerJeu } from "../model/jeu";
 import type { Catalogue, Etape } from "../model/types";
 import {
   aArmer,
@@ -143,27 +144,33 @@ describe("la provenance vue de la fiche", () => {
   const ing = (id: string, base = false) =>
     ({ id, nom: id, qty: null, base, assaisonnement: false }) as never;
 
+  // LA FICHE LIT LE JEU, PAS LE CATALOGUE — et `creerJeu` amorce le
+  // garde-manger avec le relevé de l'export, donc un jeu neuf répond ce que
+  // le catalogue répondait avant. C'est tout l'intérêt de l'amorce : les
+  // promesses ci-dessous n'ont pas eu à changer de valeur attendue.
+  const jeu = creerJeu(catalogue);
+
   test("ce qui dort au placard ne part pas aux courses", () => {
     const p = catalogue.plats.find((x) => x.id === "sauce-bolognaise")!;
     const huile = p.ingredients.find((x) => x.id === "huile-olive")!;
-    expect(provenanceIngredient(catalogue, huile)).toEqual({ label: "placard", acheter: false });
+    expect(provenanceIngredient(jeu, huile)).toEqual({ label: "placard", acheter: false });
   });
 
   test("une base vient d'un autre plat, et se marque comme telle", () => {
     const p = catalogue.plats.find((x) => x.id === "pates-bolognaise")!;
     const base = p.ingredients.find((x) => x.base)!;
-    expect(provenanceIngredient(catalogue, base).label).toBe("base");
+    expect(provenanceIngredient(jeu, base).label).toBe("base");
     // Une base « s'achète » au sens de la fiche : elle n'est pas au placard. La
     // semaine, elle, sait qu'on ne l'achète pas — voir `calcul.provenance`.
-    expect(provenanceIngredient(catalogue, base).acheter).toBe(true);
+    expect(provenanceIngredient(jeu, base).acheter).toBe(true);
   });
 
   test("un alias de rayon désigne la même chose que sa cible", () => {
     // « oignons » et « oignon » ne doivent pas tomber dans deux rayons
     // différents, sinon la moitié d'une liste se dédouble.
     const [id, cible] = Object.entries(catalogue.rayons.aliases)[0]!;
-    expect(provenanceIngredient(catalogue, ing(id))).toEqual(
-      provenanceIngredient(catalogue, ing(cible)),
+    expect(provenanceIngredient(jeu, ing(id))).toEqual(
+      provenanceIngredient(jeu, ing(cible)),
     );
   });
 
@@ -172,14 +179,14 @@ describe("la provenance vue de la fiche", () => {
     // que le garde-manger est branché sur `provenance`, ce n'est plus la bonne
     // réponse : il traîne trois fonds de paquets en demi-lune haute. La fiche ne
     // promet pas la quantité — personne ne la suit —, elle dit d'aller voir.
-    expect(provenanceIngredient(catalogue, ing("pates"))).toEqual({
+    expect(provenanceIngredient(jeu, ing("pates"))).toEqual({
       label: "au garde-manger",
       acheter: false,
     });
   });
 
   test("ce qui n'est ni au placard ni au relevé part aux courses", () => {
-    expect(provenanceIngredient(catalogue, ing("saumon"))).toEqual({
+    expect(provenanceIngredient(jeu, ing("saumon"))).toEqual({
       label: "à acheter",
       acheter: true,
     });
@@ -190,7 +197,27 @@ describe("la provenance vue de la fiche", () => {
     // on a TOUJOURS du sel, tandis qu'on a QUATRE BOÎTES de maïs. Pour le sel,
     // « combien m'en reste-t-il » n'est pas une question qui se pose.
     const fond = catalogue.rayons.placard[0]!;
-    expect(provenanceIngredient(catalogue, ing(fond)).label).toBe("placard");
+    expect(provenanceIngredient(jeu, ing(fond)).label).toBe("placard");
+  });
+
+  test("un garde-manger vidé fait repasser la ligne à « à acheter »", () => {
+    // LE JUMEAU DU BUG DE LA LISTE DE COURSES. La fiche interrogeait elle aussi
+    // la liste figée de l'export : elle écrivait « au garde-manger » en face de
+    // pâtes dont l'utilisateur venait de constater qu'il n'en restait rien.
+    // C'est la fiche qu'on lit au moment de cuisiner — c'est là que le mensonge
+    // coûte le dîner, pas juste un passage au magasin.
+    const vide: typeof jeu = { ...jeu, gardeManger: [] };
+    expect(provenanceIngredient(vide, ing("pates"))).toEqual({
+      label: "à acheter",
+      acheter: true,
+    });
+  });
+
+  test("vider le garde-manger n'envoie pas le fond de placard aux courses", () => {
+    // Le sel n'est pas au relevé, il est une APPARTENANCE : les deux sources
+    // sont distinctes, et l'ordre du test le tient.
+    const vide: typeof jeu = { ...jeu, gardeManger: [] };
+    expect(provenanceIngredient(vide, ing(catalogue.rayons.placard[0]!)).label).toBe("placard");
   });
 });
 
