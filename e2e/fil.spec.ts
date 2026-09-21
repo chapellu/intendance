@@ -71,8 +71,16 @@ test("l’agenda de la semaine ne s’affiche nulle part — T88", async ({ page
   await expect(page.locator(".co-points")).toHaveCount(0);
   // Plus de sous-titre de semaine, et plus d'onglets de calendrier.
   await expect(page.locator(".co-tete .sous")).toHaveCount(0);
+  // « POSÉS » S'EST AJOUTÉ LE 21/09 ET NE ROUVRE PAS L'AGENDA. La promesse de
+  // ce test est « aucun calendrier », pas « trois onglets » : une liste de ce
+  // qu'on a décidé n'est pas une grille de sept jours, elle n'a ni date ni case
+  // vide. C'est l'énumération qu'on remesure, pas la promesse qu'on assouplit —
+  // et les deux onglets de calendrier de T88, « Aujourd'hui » et « La semaine »,
+  // restent absents.
   const sousnav = page.locator(".co-sousnav a");
-  await expect(sousnav).toHaveText(["Proposer", "Stock", "Courses"]);
+  await expect(sousnav).toHaveText(["Proposer", "Posés", "Stock", "Courses"]);
+  await expect(sousnav.filter({ hasText: "La semaine" })).toHaveCount(0);
+  await expect(sousnav.filter({ hasText: "Aujourd’hui" })).toHaveCount(0);
 });
 
 test("une question est un PAS du fil, et la main attend derrière elle", async ({ page }) => {

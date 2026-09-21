@@ -41,6 +41,7 @@ export type Route =
   | { ecran: "jardin" }
   | { ecran: "aujourdhui" }
   | { ecran: "semaine" }
+  | { ecran: "poses" }
   | { ecran: "prevoir" }
   | { ecran: "courses" }
   | { ecran: "stock" }
@@ -77,7 +78,7 @@ export const ENTREE_CUISINE: Route = JOURS_VISIBLES ? { ecran: "aujourdhui" } : 
 /** Les écrans qui appartiennent à la facette cuisine — ceux qui portent
  *  l'en-tête et la sous-navigation. */
 const DANS_CUISINE: ReadonlySet<Ecran> = new Set<Ecran>([
-  "aujourdhui", "semaine", "prevoir", "courses", "stock", "poser", "parts", "fil",
+  "aujourdhui", "semaine", "poses", "prevoir", "courses", "stock", "poser", "parts", "fil",
 ]);
 
 export const dansCuisine = (r: Route): boolean => DANS_CUISINE.has(r.ecran);
@@ -101,6 +102,7 @@ const SANS_PARAM: Record<string, Ecran> = {
   "cuisine": ENTREE_CUISINE.ecran,
   "cuisine/aujourdhui": "aujourdhui",
   "cuisine/semaine": "semaine",
+  "cuisine/poses": "poses",
   "cuisine/prevoir": "prevoir",
   "cuisine/courses": "courses",
   "cuisine/stock": "stock",
@@ -121,6 +123,7 @@ export function chemin(r: Route): string {
     case "jardin": return "#/jardin";
     case "aujourdhui": return "#/cuisine/aujourdhui";
     case "semaine": return "#/cuisine/semaine";
+    case "poses": return "#/cuisine/poses";
     case "prevoir": return "#/cuisine/prevoir";
     case "courses": return "#/cuisine/courses";
     case "stock": return "#/cuisine/stock";

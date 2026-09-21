@@ -22,6 +22,7 @@ import { Jardin } from "./ecrans/Jardin";
 import { Parts } from "./ecrans/Parts";
 import { Poser } from "./ecrans/Poser";
 import { Prevoir } from "./ecrans/Prevoir";
+import { Poses } from "./ecrans/Poses";
 import { Semaine } from "./ecrans/Semaine";
 import { Stock } from "./ecrans/Stock";
 import "./styles/organic.css";
@@ -85,6 +86,7 @@ function rendre(route: Route, jeu: Jeu) {
     case "jardin": return <Jardin />;
     case "aujourdhui": return <Aujourdhui />;
     case "semaine": return <Semaine />;
+    case "poses": return <Poses />;
     case "prevoir": return <Prevoir />;
     case "courses": return <Courses />;
     case "stock": return <Stock />;

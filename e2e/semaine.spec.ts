@@ -13,6 +13,13 @@ import { attendreLApp, poserUnPlat } from "./parcours";
 test("poser un plat, le retrouver après rechargement", async ({ page }) => {
   const titre = await poserUnPlat(page);
 
+  // POSER NE DÉPOSE PLUS SUR LA GRILLE — depuis le 21/09 on atterrit sur
+  // « Posés », qui est l'écran qu'un onglet nomme. On vient donc ici
+  // délibérément : la grille reste montée derrière son interrupteur, et ce
+  // parcours est ce qui garantit qu'elle n'est pas devenue du code mort.
+  await page.goto("/#/cuisine/semaine");
+  await attendreLApp(page);
+
   // Le créneau porte le plat, et il n’est plus libre.
   await expect(page.locator(".co-slot").filter({ hasText: titre }).first()).toBeVisible();
 

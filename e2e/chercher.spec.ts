@@ -72,7 +72,11 @@ test("le plat cherché se pose, et il se retrouve en disant qu'il est déjà là
   // `dispatchEvent` et pas `.click()` : poser remplace tout le bloc sous le
   // doigt, et Playwright réessaierait sur l'élément détaché.
   await carte.getByRole("button", { name: libellePoser(false) }).dispatchEvent("click");
-  await expect(page.locator(".co-slots").first()).toBeVisible();
+  // On atterrit sur « Posés » depuis le 21/09 ; la suite du parcours a besoin
+  // de la grille, qui est l'écran d'où l'on ouvre une case précise.
+  await expect(page.locator(".co-lot").filter({ hasText: PLAT })).toBeVisible();
+  await page.goto("/#/cuisine/semaine");
+  await attendreLApp(page);
 
   // LA CASE SUIVANTE, ET LE MÊME PLAT. C'est le cas qui a motivé l'écart :
   // l'app ne le reproposera plus de la semaine, et sans un mot on croirait
