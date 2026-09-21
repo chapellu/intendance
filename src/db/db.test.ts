@@ -18,6 +18,9 @@ import {
   validesParmi,
 } from "./planchers";
 import { calculer } from "../model/calcul";
+import { contexte, rejouer } from "../model/journal";
+import { hydraterGardeManger } from "./gardeManger";
+import { lireJournal, releverZone } from "./journal";
 
 const catalogue: Catalogue = lireCatalogue(
   JSON.parse(readFileSync("public/cuisine-data.json", "utf8")) as unknown,
@@ -424,5 +427,44 @@ describe("un plancher de denrée est une décision à part", () => {
     await poserPlancherDenree(base, "mais", 2);
     await poserPlancherDenree(base, "mais", 0);
     expect(await lirePlanchersDenrees(base)).toEqual([]);
+  });
+});
+
+/* ═══════════════ le placard relevé commande la liste de courses ═══════════ */
+
+// LE FIL COMPLET DU CORRECTIF, DE BOUT EN BOUT, comme « retirer un lot le retire
+// du calcul » le fait pour le dépôt. Le geste est celui de l'utilisateur : il
+// ouvre le placard, il relève la zone à vide, et il veut voir l'ingrédient sur
+// sa liste. Tant que `provenance()` lisait `catalogue.gardeManger.denrees`, ce
+// parcours ne changeait RIEN — la ligne restait dans « Vous en avez ».
+describe("relever une zone à vide met ses denrées sur la liste", () => {
+  const aJour = async (j: Jeu): Promise<Jeu> =>
+    hydraterGardeManger(j, rejouer(catalogue, await lireJournal(base), contexte(catalogue), jourISO(MARDI)));
+
+  test("le maïs quitte « à vérifier » et entre au panier", async () => {
+    jeu.choix[creneau(jeu, 0, "diner")] = "chili-sin-carne";
+
+    // Avant : les quatre boîtes du relevé du 26/08 sont là, donc on ne les
+    // achète pas — c'est la promesse de T24 et elle doit tenir.
+    const avant = calculer(await aJour(jeu));
+    expect([...avant.aVerifier.keys()]).toContain("mais");
+
+    await releverZone(base, "etagere-ouverte", [], MARDI);
+
+    const apres = calculer(await aJour(jeu));
+    expect([...apres.aVerifier.keys()]).not.toContain("mais");
+    expect([...apres.panier.values()].map((a) => a.id)).toContain("mais");
+  });
+
+  test("relever la zone à ce qu'on voit vraiment la laisse « à vérifier »", async () => {
+    // LE CAS SYMÉTRIQUE, et c'est lui qui interdit la surcorrection : relever
+    // n'est pas vider. Une zone relevée AVEC ses boîtes ne doit rien envoyer au
+    // magasin, sinon le quart d'heure de relevé coûterait un caddie entier.
+    jeu.choix[creneau(jeu, 0, "diner")] = "chili-sin-carne";
+    await releverZone(base, "etagere-ouverte", [{ ingredient: "mais", unites: 2 }], MARDI);
+
+    const c = calculer(await aJour(jeu));
+    expect([...c.aVerifier.keys()]).toContain("mais");
+    expect([...c.panier.values()].map((a) => a.id)).not.toContain("mais");
   });
 });

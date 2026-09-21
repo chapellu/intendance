@@ -38,6 +38,32 @@ import type {
 // L'ordre les départage : ce qu'on a TOUJOURS l'emporte sur ce qu'on a EN CE
 // MOMENT. Le jour où un paquet de sel entre au relevé, « placard » reste la
 // bonne réponse, parce que « combien m'en reste-t-il » ne se pose pas pour lui.
+//
+// ────────────────────────────────────────────────────────────────────────────
+// `gardeManger` DIT « IL EN RESTE », PAS « IL EN A EXISTÉ ».
+//
+// C'est la moitié que T24 n'avait pas branchée. Il a fait passer `provenance()`
+// du rayon au RELEVÉ, et la phrase du dessus est devenue vraie — mais le relevé
+// qu'il lisait était `catalogue.gardeManger.denrees`, c'est-à-dire l'instantané
+// de l'export, qui ne bouge plus jamais. Un id entré là n'en sortait pas : on
+// pouvait relever la zone à vide et lire quand même « Vous en avez — vérifiez la
+// quantité » sur un placard qu'on venait de constater vide. Le commentaire
+// ci-dessous promettait « dont le relevé dit qu'il en reste quelque chose »
+// depuis T24, au-dessus d'un code qui ne le faisait pas — le motif du dépôt : un
+// commentaire juste au-dessus d'un code faux ne se lit pas.
+//
+// L'ensemble vient donc de `jeu.gardeManger`, que le rejeu du journal écrase dès
+// qu'il y a une base (voir `model/jeu.ts` et `db/gardeManger.ts`). Un id épuisé
+// retombe sur `courses`, et la semaine l'achète.
+//
+// ÉCARTÉ : GATER SUR LA CONFIANCE. `journal.confiance()` sait dire qu'un niveau
+// a vieilli, et on pouvait n'acheter que sur un zéro « sûr ». Mais la confiance
+// mesure l'ÂGE du compte, pas la présence de la chose — et surtout les deux
+// erreurs ne se valent pas : un deuxième paquet de pâtes coûte un euro et se
+// range, un dîner sans pâtes ne se rattrape pas au magasin fermé. `db/courses.ts`
+// tranche déjà dans ce sens — « la liste mentirait par omission, ce qui est la
+// pire façon de mentir pour une liste de courses ».
+// ────────────────────────────────────────────────────────────────────────────
 function provenance(
   catalogue: Catalogue,
   ing: Ingredient,
@@ -53,13 +79,6 @@ function provenance(
   if (catalogue.rayons.placard.includes(cid)) return "placard";
   return gardeManger.has(cid) ? "garde-manger" : "courses";
 }
-
-/** Les ingrédients dont le relevé dit qu'il en reste quelque chose, alias
- *  résolus. Construit une fois par calcul : `calculer` traverse jusqu'à
- *  vingt-et-un plats, et refaire l'ensemble à chaque ligne serait le refaire
- *  quelques centaines de fois pour rien. */
-const idsGardeManger = (catalogue: Catalogue): ReadonlySet<string> =>
-  new Set(catalogue.gardeManger.denrees.map((d) => alias(catalogue, d.ingredient)));
 
 const alias = (catalogue: Catalogue, id: string): string => catalogue.rayons.aliases[id] ?? id;
 
@@ -255,7 +274,10 @@ export function calculer(
   // « on en a toujours » de « il t'en reste », qui n'appellent pas le même coup
   // d'œil au rayon.
   const aVerifier = new Map<string, { nom: string; prov: Provenance }>();
-  const gardeManger = idsGardeManger(catalogue);
+  // Construit une fois par calcul : `calculer` traverse jusqu'à vingt-et-un
+  // plats, et refaire l'ensemble à chaque ligne serait le refaire quelques
+  // centaines de fois pour rien.
+  const gardeManger = new Set(jeu.gardeManger);
   const chaine: LigneChaine[] = [];
   const pleinTarif: PleinTarif[] = [];
   const manques: Manque[] = [];

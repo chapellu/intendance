@@ -67,6 +67,29 @@ export interface Jeu {
    * lot qu'on a fini n'existe plus, quoi qu'en dise l'export.
    */
   stock: LotInitial[];
+  /**
+   * LES IDS DU GARDE-MANGER QUI ONT ENCORE QUELQUE CHOSE — et pas ceux que le
+   * relevé nommait le jour de l'export.
+   *
+   * MÊME BASCULE QUE `stock` CI-DESSUS, À UNE NUANCE PRÈS. `creerJeu` l'amorce
+   * avec les denrées du catalogue, pour qu'un jeu construit sans base reste
+   * calculable ; dès qu'il y a une base, le rejeu du journal le FILTRE — il ne
+   * le remplace pas (voir `db/gardeManger.ts`, qui dit pourquoi). Le niveau du
+   * placard n'est stocké nulle part, c'est tout T25 : le catalogue dit ce que
+   * le placard EST, le rejeu dit ce qu'il en RESTE.
+   *
+   * CE QUE ÇA RÉPARE. `provenance()` demandait « cet id est-il au garde-manger ? »
+   * à `catalogue.gardeManger.denrees`, une liste figée à l'export : un id qui y
+   * figure n'en sortait JAMAIS. Relever la zone à zéro ne changeait rien, et la
+   * ligne restait dans « Vous en avez — vérifiez la quantité » alors qu'il n'y
+   * avait plus rien à vérifier. Mesuré sur le relevé du 26/08 : 45 ids, dont 18
+   * qu'une recette peut citer, et un seul relevé à vide de `demi-lune-haute` en
+   * vide 12 — `pates`, `vermicelles`, `lentilles-seches` parmi ceux que le
+   * corpus cite — sans qu'une seule ligne de courses bouge.
+   *
+   * L'APPARTENANCE DIT « IL EN RESTE », ELLE NE DIT PLUS « IL EN A EXISTÉ ».
+   */
+  gardeManger: string[];
   /** Les plats par identifiant — `catalogue.plats` est une liste, et l'écran
    *  fait des lookups par id à chaque rendu. */
   plats: Record<string, Plat>;
@@ -81,6 +104,24 @@ export interface Jeu {
   slot: number;
   repioches: number[];
 }
+
+/**
+ * L'amorce du garde-manger : les ids que le relevé de l'export portait.
+ *
+ * ALIAS RÉSOLUS ICI, parce que c'est le vocabulaire des RECETTES qui
+ * interrogera cet ensemble — `oignons` au relevé, `oignon` à la recette. Sans ce
+ * passage le rapprochement échoue en silence, ce que `gardeManger.ts` paie déjà
+ * ailleurs. `journal.amorce()` applique le même alias sur les mêmes denrées :
+ * les deux ensembles vivent donc dans le même espace de clés, et c'est ce qui
+ * permet au rejeu de remplacer cette amorce sans traduction.
+ */
+export const idsDuReleve = (catalogue: Catalogue): string[] => [
+  ...new Set(
+    catalogue.gardeManger.denrees.map(
+      (d) => catalogue.rayons.aliases[d.ingredient] ?? d.ingredient,
+    ),
+  ),
+];
 
 export function creerJeu(catalogue: Catalogue, nJours = 7, aujourdhui = new Date()): Jeu {
   const cfg = catalogue.creneaux;
@@ -117,6 +158,7 @@ export function creerJeu(catalogue: Catalogue, nJours = 7, aujourdhui = new Date
   return {
     catalogue,
     stock: [...catalogue.stock],
+    gardeManger: idsDuReleve(catalogue),
     plats: Object.fromEntries(catalogue.plats.map((p) => [p.id, p])),
     jours,
     creneaux,

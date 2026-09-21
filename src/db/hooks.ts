@@ -23,6 +23,7 @@ import type { PlancherDenree } from "../model/plancherGardeManger";
 import { passeDuJour } from "../model/questions";
 import type { Savoir } from "../model/scoring";
 import { lireCourses } from "./courses";
+import { hydraterGardeManger } from "./gardeManger";
 import { lireJournal } from "./journal";
 import { lireDecisions, lirePlanchersDenrees, validesParmi } from "./planchers";
 import { base, jourISO, type EtatCourse, type LotStock } from "./schema";
@@ -130,13 +131,25 @@ export function useSemaine(catalogue: Catalogue | null, aujourdhui = new Date())
   // qui part aux courses.
   const lots = useStock();
 
+  // LE GARDE-MANGER AUSSI, ET POUR EXACTEMENT LA MÊME RAISON. Ce n'est pas la
+  // matière du seul écran « L'inventaire » : c'est lui qui décide si une ligne
+  // de recette part aux courses ou finit dans « Vous en avez ». Tant qu'il
+  // venait du catalogue, un placard vidé ne changeait rien à la liste.
+  //
+  // ON ATTEND QU'IL AIT RÉPONDU, comme pour `cuisines` plus bas : calculer avec
+  // l'amorce du catalogue en attendant le rejeu afficherait « vous en avez »
+  // pendant un rendu, puis ferait sauter la ligne dans la liste — le
+  // clignotement que `useCuisines` décrit déjà mot pour mot.
+  const placard = usePlacard(catalogue, aujourdhui);
+
   const jeu = useMemo(() => {
-    if (!squelette || !decisions || !lots) return null;
+    if (!squelette || !decisions || !lots || !placard) return null;
     const frais = creerJeu(squelette.catalogue, 7, new Date(aujourdhui));
     hydraterStock(frais, lots);
+    hydraterGardeManger(frais, placard);
     return hydrater(frais, new Map(decisions.map((d) => [d.cle, d])));
     // eslint-disable-next-line react-hooks/exhaustive-deps -- même raison que ci-dessus
-  }, [squelette, decisions, lots, jour0]);
+  }, [squelette, decisions, lots, placard, jour0]);
 
   // LES CRÉNEAUX DÉJÀ CUISINÉS SONT UNE ENTRÉE DU CALCUL. Sans eux, `calculer`
   // reprojette une cuisson dont les effets sont DÉJÀ dans la base, et compte la
@@ -176,7 +189,12 @@ export function useSemaine(catalogue: Catalogue | null, aujourdhui = new Date())
   return {
     jeu,
     calc,
-    chargement: !catalogue || decisions === undefined || lots === undefined || cuisines === undefined,
+    chargement:
+      !catalogue ||
+      decisions === undefined ||
+      lots === undefined ||
+      placard === null ||
+      cuisines === undefined,
     poserPlat,
     reglerLesParts,
     prevoirLaGamelle,

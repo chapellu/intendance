@@ -6,7 +6,8 @@
 //
 // Port de `apps/proto-shell/comptoir.js` (`CHAUFFE`, `ecranCuisine`).
 
-import type { Catalogue, Etape, Foyer, Ingredient, Outil, Plat } from "../model/types";
+import type { Jeu } from "../model/jeu";
+import type { Etape, Foyer, Ingredient, Outil, Plat } from "../model/types";
 
 /* ───────────────────────────────────────────────────────────────── la chauffe */
 
@@ -205,15 +206,22 @@ export interface Provenance {
  * Version courte de `calcul.provenance` : ici on n'a pas le dépôt sous la main,
  * et on ne prétend pas savoir si le lot existe. « base » veut dire « ça vient
  * d'un autre plat » — la fiche dit quoi acheter, la semaine dit si c'est là.
+ *
+ * ELLE PREND LE JEU, ET PLUS LE CATALOGUE. Le garde-manger de la fiche était le
+ * JUMEAU du bug de `calcul.provenance` : les deux interrogeaient la liste figée
+ * de l'export, donc la fiche écrivait « au garde-manger » en face d'un
+ * ingrédient dont l'utilisateur venait de constater qu'il n'en restait rien.
+ * Réparer la liste de courses sans réparer la fiche aurait laissé les deux
+ * écrans se contredire — et c'est la fiche qu'on lit au moment de cuisiner.
  */
-export function provenanceIngredient(catalogue: Catalogue, ing: Ingredient): Provenance {
+export function provenanceIngredient(jeu: Jeu, ing: Ingredient): Provenance {
+  const { catalogue } = jeu;
   if (ing.base) return { label: "base", acheter: true };
   const cid = catalogue.rayons.aliases[ing.id] ?? ing.id;
   if (catalogue.rayons.placard.includes(cid)) return { label: "placard", acheter: false };
   // Le relevé dit qu'il en reste. La fiche ne promet pas la quantité — elle ne
   // la connaît pas —, elle dit seulement d'aller voir avant de partir acheter.
-  if (catalogue.gardeManger.denrees.some((d) => (catalogue.rayons.aliases[d.ingredient] ?? d.ingredient) === cid))
-    return { label: "au garde-manger", acheter: false };
+  if (jeu.gardeManger.includes(cid)) return { label: "au garde-manger", acheter: false };
   return { label: "à acheter", acheter: true };
 }
 
