@@ -146,3 +146,34 @@ test("un créneau vide ne réclame rien dans la semaine — T51", async ({ page 
   await expect(page.locator(".co-slot.libre").first()).toBeVisible();
   await expect(page.getByText("à poser")).toHaveCount(0);
 });
+
+test("une passe que la semaine a dépassée ne ferme pas la cuisine", async ({ page }) => {
+  // LE BUG DU 21/09, DE BOUT EN BOUT, ET IL FALLAIT L'HORLOGE POUR L'AVOIR.
+  //
+  // La semaine est un rail glissant de sept jours qui commence AUJOURD'HUI. Une
+  // passe ouverte jeudi vise donc, le lundi suivant, trois créneaux qui
+  // n'existent plus — et le fil y renvoyait à chaque ouverture, sur un écran
+  // dont le seul bouton ramenait à la semaine. Comme la porte de la facette
+  // ouvre sur le fil depuis T88, la cuisine entière devenait une boucle :
+  // impossible de lancer une passe.
+  //
+  // C'est une promesse du TEMPS, pas d'un écran : elle ne peut se vérifier
+  // qu'en faisant vieillir l'app sous une passe ouverte, ce qu'aucun test
+  // unitaire ne monte (routeur + Dexie + rendu).
+  await page.clock.install();
+  await lancer(page, "3 repas");
+
+  // Quatre jours passent, la passe reste ouverte sur le créneau où on l'a
+  // laissée — c'est l'onglet que le téléphone a gardé.
+  await page.clock.fastForward(4 * 24 * 60 * 60 * 1000);
+  await page.reload();
+  await attendreLApp(page);
+
+  await expect(page.getByText("Ce créneau n’est plus là")).toHaveCount(0);
+  // Pas d'agenda non plus : l'impasse renvoyait sur la semaine, que T88 cache.
+  await expect(page.locator(".co-slots")).toHaveCount(0);
+  // Et on peut relancer une passe, ce qui est tout ce qu'on demandait.
+  await expect(page.getByText("Combien de repas ?")).toBeVisible({ timeout: 30_000 });
+  await page.getByRole("button", { name: "3 repas", exact: true }).dispatchEvent("click");
+  await expect(pas(page).first()).toBeVisible({ timeout: 30_000 });
+});

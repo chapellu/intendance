@@ -7,6 +7,7 @@
 // qu'il ne traverse justement pas.
 
 import { expect, test } from "@playwright/test";
+import { chemin, ENTREE_CUISINE } from "../src/nav/routes";
 import { attendreLApp, poserUnPlat } from "./parcours";
 
 test("poser un plat, le retrouver après rechargement", async ({ page }) => {
@@ -58,6 +59,15 @@ test("un lien profond vers un jour sorti de la semaine se dit au lieu de mentir"
   await page.goto("/#/cuisine/poser/2020-01-01/diner");
   await attendreLApp(page);
   await expect(page.getByText("Ce créneau n’est plus là")).toBeVisible();
-  await page.getByRole("link", { name: "Revenir à la semaine" }).click();
-  await expect(page.locator(".co-slots").first()).toBeVisible();
+
+  // SA SORTIE SUIT LA PORTE DE LA FACETTE, elle ne vise plus la semaine en dur.
+  // Ce test disait « Revenir à la semaine » et atterrissait sur `.co-slots` :
+  // avec les jours cachés (T88), c'était le seul bouton de l'app à rallumer
+  // l'agenda à la main, et la capture du 21/09 montre un doigt qui s'y perd. Ce
+  // qu'on protège n'a pas changé — il y a une sortie, et elle ouvre sur la
+  // cuisine ; c'est l'écran de destination qui suit désormais `ENTREE_CUISINE`.
+  await page.getByRole("link", { name: /^Revenir/ }).click();
+  await expect(page.getByText("Ce créneau n’est plus là")).toHaveCount(0);
+  await expect(page.locator(".co-sousnav")).toBeVisible();
+  expect(page.url()).toContain(chemin(ENTREE_CUISINE));
 });
