@@ -119,11 +119,33 @@ export function useSemaine(catalogue: Catalogue | null, aujourdhui = new Date())
   const debut = bornes[0] ?? "";
   const fin = bornes.at(-1) ?? "";
 
-  const decisions = useLiveQuery(
+  // LA RÉPONSE PORTE LES BORNES QU'ELLE A LUES — correctif du 22/09, et c'est
+  // la seule façon de distinguer « rien de posé » de « pas encore lu ».
+  //
+  // `useLiveQuery` GARDE LE RÉSULTAT PRÉCÉDENT PENDANT QU'IL REJOUE LA REQUÊTE
+  // sur de nouvelles bornes. Or les bornes sont vides tant que le catalogue
+  // n'est pas là, et une requête sans bornes répond `[]` : à l'instant où le
+  // squelette arrive, `decisions` vaut donc un tableau VIDE lu sur une AUTRE
+  // fenêtre. Le `jeu` se construisait dessus, sans aucune décision, et le
+  // rendait à des écrans qui le croyaient complet — `Fil` y lisait « rien n'est
+  // posé », renvoyait sur un créneau déjà décidé, et le plat suivant écrasait
+  // le précédent. Un tableau vide n'est pas une réponse d'attente : il se lit
+  // comme une semaine nue, ce qu'aucun appelant ne peut deviner.
+  const lues = useLiveQuery(
     async () =>
-      debut ? await base.creneaux.where("jour").between(debut, fin, true, true).toArray() : [],
+      debut
+        ? {
+            debut,
+            fin,
+            lignes: await base.creneaux.where("jour").between(debut, fin, true, true).toArray(),
+          }
+        : undefined,
     [debut, fin],
   );
+
+  // Une réponse qui vise d'autres bornes est une réponse qu'on n'a pas encore :
+  // `undefined`, comme avant la première lecture, et tout le hook attend déjà ça.
+  const decisions = lues && lues.debut === debut && lues.fin === fin ? lues.lignes : undefined;
 
   // LE STOCK EST UNE ENTRÉE DU CALCUL, au même titre que les décisions. Il n'est
   // pas là pour le seul écran « L'inventaire » : c'est lui que le dépôt sert,

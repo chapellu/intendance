@@ -222,15 +222,22 @@ function Fin({ passe, faits }: { passe: Passe; faits: number }) {
       </a>
       <a
         className="btn btn-secondary btn-block"
-        href={chemin(JOURS_VISIBLES ? { ecran: "semaine" } : { ecran: "stock" })}
+        href={chemin(JOURS_VISIBLES ? { ecran: "semaine" } : { ecran: "poses" })}
       >
-        {JOURS_VISIBLES ? "Voir la semaine" : "Voir l’inventaire"}
+        {JOURS_VISIBLES ? "Voir la semaine" : "Voir les posés"}
       </a>
+      {/* LE MÊME GESTE QUE LE BOUTON QUI MÈNE ICI, SOUS LE MÊME NOM. « Poser un
+          plat de plus » (écran « Posés ») ouvre le fil ; le fil retrouve une
+          passe terminée et affiche cet écran ; et la seule sortie s'appelait
+          « Fermer le fil », qui nomme la plomberie et pas l'intention. On
+          arrivait donc sur un cul-de-sac en ayant demandé exactement ce que le
+          bouton d'à côté faisait. Fermer la passe EST la façon d'en rouvrir
+          une : `poserReglage(null)` rend la main à « Combien de repas ? ». */}
       <button
-        className="btn btn-ghost btn-block"
+        className="btn btn-secondary btn-block"
         onClick={() => void poserReglage(CLE_FIL, null).then(() => aller({ ecran: "fil" }, true))}
       >
-        Fermer le fil
+        Poser un plat de plus
       </button>
     </Corps>
   );
