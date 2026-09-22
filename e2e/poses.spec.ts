@@ -11,8 +11,9 @@
 // depuis toujours — c'est la NAVIGATION. Un test unitaire l'aurait déclaré vert
 // tout du long.
 
-import { expect, test } from "@playwright/test";
-import { attendreLApp, poserUnPlat } from "./parcours";
+import { expect, test, type Page } from "@playwright/test";
+import { attendreLApp, poserUnPlat, repondreAuxQuestions } from "./parcours";
+import { libellePoser } from "../src/ui/phrases";
 
 test("les plats posés se relisent depuis un onglet, sans grille ni agenda", async ({ page }) => {
   const un = await poserUnPlat(page);
@@ -55,4 +56,66 @@ test("un dessert se compte à part d'un repas", async ({ page }) => {
   // ajouter un sont le même geste, à une seconde d'intervalle.
   await page.getByRole("link", { name: "Poser un plat de plus" }).click();
   await expect(page.getByText("Combien de repas ?")).toBeVisible();
+});
+
+/**
+ * Poser un plat depuis le fil DÉJÀ OUVERT — l'horizon, puis une carte.
+ *
+ * `poserUnPlat` passe par `#/cuisine/semaine`, qui est l'écran que T88 a éteint :
+ * il ne traverse donc ni l'horizon, ni la passe persistée, ni la reprise — soit
+ * exactement les trois pièces qui ont écrasé un plat le 22/09. Le chemin du
+ * doigt réel est celui-ci.
+ */
+async function poserParLeFil(page: Page): Promise<string> {
+  // ON ATTEND L'OUVERTURE, ON NE LA DEVINE PAS. Un `isVisible()` conditionnel
+  // rend ici un parcours qui SAUTE le cran quand le fil n'a pas fini de se
+  // rendre, puis attend des cartes sur un écran qui n'en montrera jamais.
+  await expect(page.getByText("Combien de repas ?")).toBeVisible();
+  await page.getByRole("button", { name: "1 repas", exact: true }).dispatchEvent("click");
+
+  await repondreAuxQuestions(page);
+
+  const cartes = page.locator(".co-jouable");
+  await expect(cartes.first()).toBeVisible();
+  const titre = (await cartes.first().locator(".tete .nom").innerText()).trim();
+  await cartes.first().getByRole("button", { name: libellePoser(false) }).dispatchEvent("click");
+
+  // La passe d'un seul repas se termine sur le plat qu'on vient de poser.
+  await expect(page.getByText("La passe est finie")).toBeVisible();
+  return titre;
+}
+
+test("un plat de plus s'ajoute aux posés, il ne les remplace pas", async ({ page }) => {
+  // LE BUG DU 22/09, ET IL TENAIT À UN TABLEAU VIDE. `useSemaine` construisait
+  // un `jeu` sur des décisions lues pour une AUTRE fenêtre — celle, sans
+  // bornes, d'avant le catalogue, qui répond `[]`. Le fil y lisait « rien n'est
+  // posé », sa reprise renvoyait donc sur le premier créneau de la passe, qui
+  // était déjà décidé, et le plat suivant écrasait le précédent. Vu de l'écran
+  // « Posés » : la liste ne grandissait jamais, elle se remplaçait.
+  await page.goto("/#/cuisine/fil");
+  await attendreLApp(page);
+  const un = await poserParLeFil(page);
+
+  await page.goto("/#/cuisine/poses");
+  await attendreLApp(page);
+  await expect(page.locator(".co-lot")).toHaveCount(1);
+
+  // Le geste tel qu'il se fait : le bouton du bas de « Posés ».
+  await page.getByRole("link", { name: "Poser un plat de plus" }).dispatchEvent("click");
+
+  // ON NE RETOMBE PAS SUR UN CRÉNEAU DÉJÀ DÉCIDÉ. C'est l'assertion du
+  // correctif : avant lui, la reprise redirigeait ici même sur le déjeuner
+  // qu'on venait de poser, sans rien dire, et la main affichée reposait dessus.
+  await expect(page.getByText("La passe est finie")).toBeVisible();
+  await page.getByRole("button", { name: "Poser un plat de plus" }).dispatchEvent("click");
+  await expect(page.getByText("Combien de repas ?")).toBeVisible();
+
+  const deux = await poserParLeFil(page);
+  expect(deux).not.toBe(un);
+
+  await page.goto("/#/cuisine/poses");
+  await attendreLApp(page);
+  await expect(page.locator(".co-lot")).toHaveCount(2);
+  await expect(page.locator(".co-lot").filter({ hasText: un })).toBeVisible();
+  await expect(page.locator(".co-lot").filter({ hasText: deux })).toBeVisible();
 });
