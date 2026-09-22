@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, test } from "vitest";
 import { lireCatalogue } from "../model/catalogue";
-import { creerJeu } from "../model/jeu";
+import { creerJeu, SAUTE } from "../model/jeu";
 import type { Catalogue, Etape } from "../model/types";
 import {
   aArmer,
@@ -13,9 +13,11 @@ import {
   minuteur,
   minuteurUtile,
   outilDe,
+  pourLire,
   provenanceIngredient,
   SANS_FEU,
   sansRecette,
+  tempsDuPlat,
   type EtatMinuteur,
 } from "./cuisiner.vue";
 
@@ -529,5 +531,69 @@ describe("l'astuce", () => {
   test("aucune action du corpus ne redevient un paragraphe", () => {
     const longues = steps.filter((e) => e.action.length > 160);
     expect(longues.map((e) => e.action.slice(0, 60))).toEqual([]);
+  });
+});
+
+
+/* ──────────────────────────────────────── T91 — lire une recette, ou la faire */
+
+describe("lire, ou cuisiner", () => {
+  // La fiche du créneau : personne n'a nommé de plat dans l'URL, c'est celui
+  // que le créneau porte, et on vient le cuisiner.
+  test("« En cuisine » ne nomme pas de plat, et ouvre le guide", () => {
+    expect(pourLire(undefined, "sauce-bolognaise")).toBe(false);
+    expect(pourLire(undefined, null)).toBe(false);
+  });
+
+  test("le bouton « Fiche » d'une carte ouvre une lecture", () => {
+    // Le créneau est libre, ou porte autre chose : dans les deux cas on lit un
+    // plat qu'on n'a pas posé.
+    expect(pourLire("dahl-de-lentilles", null)).toBe(true);
+    expect(pourLire("dahl-de-lentilles", "sauce-bolognaise")).toBe(true);
+    expect(pourLire("dahl-de-lentilles", SAUTE)).toBe(true);
+  });
+
+  // LE CAS QUI A MOTIVÉ LA FONCTION, ET LE SEUL QUI NE SOIT PAS ÉVIDENT. Un
+  // lien profond vers le plat qu'on a DÉJÀ posé n'est pas une lecture : c'est
+  // la même fiche que « En cuisine », écrite autrement. La traiter en lecture
+  // retirerait « Terminer » au cuisinier qui s'y rend par son historique.
+  test("le plat que le créneau porte déjà se cuisine, même nommé dans l'URL", () => {
+    expect(pourLire("sauce-bolognaise", "sauce-bolognaise")).toBe(false);
+  });
+});
+
+describe("le temps d'un plat, et ce qu'il demande de présence", () => {
+  const surveillee = (minutes: number) => etape([], minutes);
+  const libre = (minutes: number) => ({ ...etape([], minutes), surveille: false });
+
+  test("le total est celui de l'avancement, pas une seconde addition", () => {
+    const steps = [surveillee(10), libre(45), surveillee(5)];
+    expect(tempsDuPlat(steps).total).toBe(avancement(steps, 0).total);
+  });
+
+  // « 1 h, dont 45 min sans surveiller » est une autre phrase que « 1 h », et
+  // c'est elle qui fait poser un plat un mardi soir.
+  test("la part sans surveillance se compte à part", () => {
+    expect(tempsDuPlat([surveillee(10), libre(45), surveillee(5)])).toEqual({
+      total: 60,
+      libre: 45,
+    });
+  });
+
+  test("un plat où l'on reste devant du début à la fin ne promet rien", () => {
+    expect(tempsDuPlat([surveillee(10), surveillee(5)]).libre).toBe(0);
+  });
+
+  test("un plat sans étapes ne compte ni l'un ni l'autre", () => {
+    expect(tempsDuPlat([])).toEqual({ total: 0, libre: 0 });
+  });
+
+  // Le corpus, et pas un plat fabriqué : `libre` est une somme de minutes
+  // d'étapes réelles, et elle ne peut jamais dépasser le temps du plat.
+  test("sur tout le catalogue, la part libre tient dans le total", () => {
+    for (const p of catalogue.plats) {
+      const t = tempsDuPlat(p.steps);
+      expect(t.libre, p.id).toBeLessThanOrEqual(t.total);
+    }
   });
 });

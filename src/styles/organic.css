@@ -493,6 +493,11 @@ button { font-family: var(--font-body); color: inherit; }
   padding: var(--space-1) var(--space-4) var(--space-2);
 }
 .co-fiche-tete .t { flex: 1; font-size: 13px; font-weight: 700; text-align: center; }
+/* T91 — le temps, à la place qu'occupe la bascule « Ingrédients » dans le mode
+   guidé. Le résumé n'a pas de bascule (ses quantités sont déjà là) et la tête
+   garderait sinon un trou à droite, qui décentrerait le titre. Ton de note,
+   pas de bouton : on ne le touche pas. */
+.co-fiche-tete .d { font-size: 12px; font-weight: 700; color: var(--color-neutral-700); }
 .co-retour {
   background: transparent; border: 0; padding: 0; cursor: pointer;
   font-size: 13px; font-weight: 700; color: var(--color-accent-700);
@@ -582,6 +587,23 @@ button { font-family: var(--font-body); color: inherit; }
 .co-ing .p { font-size: 11px; border-radius: 999px; padding: 2px 9px; white-space: nowrap;
   background: var(--color-accent-2-200); color: var(--color-accent-2-900); }
 .co-ing .p.acheter { background: var(--color-accent-200); color: var(--color-accent-900); }
+
+/* T91 — le déroulé, quand on lit une recette au lieu de la cuisiner.
+   MÊME SURFACE QUE `.co-ing`, parce que c'est la même question posée d'un cran
+   plus haut : ce que le plat demande. Mais une colonne de numéros au lieu d'une
+   colonne de quantités, et le geste qui peut passer à la ligne — ce bloc se lit
+   assis, en décidant, et pas à bout de bras au-dessus d'une casserole. */
+.co-etapes { background: var(--color-surface); border-radius: var(--radius-md); overflow: hidden; margin-top: var(--space-3); }
+.co-etapes .tete {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-2);
+  padding: var(--space-3) var(--space-3) var(--space-1);
+}
+.co-etapes .tete .d { font-size: 12.5px; line-height: 1.35; color: var(--color-neutral-700); }
+.co-etapes .l { display: flex; align-items: baseline; gap: var(--space-3); padding: var(--space-2) var(--space-3); }
+.co-etapes .l + .l { border-top: 1px solid color-mix(in srgb, var(--color-text) 7%, transparent); }
+.co-etapes .n { min-width: 14px; font-size: 12px; font-weight: 700; color: var(--color-accent-700); }
+.co-etapes .a { flex: 1; font-size: 14px; line-height: 1.4; }
+.co-etapes .m { font-size: 12.5px; font-weight: 700; color: var(--color-neutral-700); white-space: nowrap; }
 
 /* T74 — « à sortir avant de commencer ». Même forme que `.co-encart`, ton
    neutre : c'est une consigne, pas une alerte. L'avertissement de débordement

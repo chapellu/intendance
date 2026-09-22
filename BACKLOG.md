@@ -3435,6 +3435,132 @@ et c'est T81, qui reste posé.
   quatre et six jours plus tard, parce qu'un humain les a cherchés. Un écran
   qu'aucun lien n'atteint plus est une chose qu'un test pourrait dire.
 
+## Lire une recette n'est pas la cuisiner — T91
+
+*« Quand je check la fiche d'une recette lors d'une passe, est-ce que je peux
+avoir une vue résumé plutôt que la vue cuisine ? »* — 22/09/2026.
+
+**LE BOUTON « FICHE » DES CARTES OUVRAIT LE MODE GUIDÉ.** Il l'ouvrait depuis
+T11, et personne ne l'avait relu depuis : la route `cuisiner` nomme le plat
+candidat (« la fiche s'ouvre depuis une carte qu'on n'a pas posée, pour la lire
+avant de choisir »), mais l'écran au bout, lui, ne connaissait qu'un métier —
+cuisiner. On arrivait donc sur l'étape 1 sur 9, en plein écran, hors de la
+coquille, avec un minuteur et une chauffe, pour répondre à une question qui est
+l'inverse de celle-là : *qu'est-ce qu'il y a dans ce plat, et est-ce que je le
+pose ?*
+
+**DEUX GESTES QUI N'ONT QUE L'ÉCRAN EN COMMUN, ET C'EST TOUT LE TICKET.** Lire
+pour décider veut tout d'un coup d'œil — les quantités mises à l'échelle, ce
+qu'il faut sortir, la suite des gestes, le temps — et rend la main tout de
+suite. Cuisiner veut une étape à la fois, à bout de bras, et ne montre rien
+d'autre. Le second est un couloir ; le premier est une page.
+
+### Ce que l'URL disait déjà
+
+**AUCUN CHAMP NOUVEAU, AUCUN ÉTAT DE PLUS.** `pourLire(platUrl, pose)` compare
+le plat nommé dans l'URL à celui que le créneau porte : un plat nommé qui n'est
+pas le sien est, par construction, un plat qu'on lit sans l'avoir posé. C'est
+exactement la distinction que T11 avait écrite dans la route sans lui donner
+d'écran — « En cuisine » ne nomme rien et laisse le créneau répondre, « Fiche »
+nomme le candidat. Il n'y a donc rien à garder d'accord entre deux endroits, et
+le lien profond d'un parcours tombe du bon côté tout seul.
+
+### Ce que le résumé dit, et pourquoi dans cet ordre
+
+Les quantités d'abord (elles étaient déjà là, derrière une bascule), puis le
+déroulé, puis le crédit qui ferme la fiche — T73 tient toujours. Le déroulé ne
+reprend que les gestes et leurs minutes : ni astuce, ni encart enfant, ni
+chauffe. Le guide les donne au moment où ils servent ; les empiler ici rendrait
+douze écrans en un seul, et la question n'est pas *comment on fait* mais *ce que
+ça me demande*.
+
+**« DONT 37 MIN SANS SURVEILLER » EST LA MOITIÉ DE LA DÉCISION.** Le corpus
+porte `surveille` depuis toujours et le guide le dit étape par étape — donc trop
+tard, puisque au moment de choisir on n'a pas ouvert les neuf écrans.
+`tempsDuPlat()` le somme : « 1 h 10 » se lit comme un refus un mardi soir,
+« 1 h 10, dont 55 min sans surveiller » est une autre phrase. Son `total` passe
+par `avancement()` au lieu de refaire l'addition, pour qu'il n'y ait jamais deux
+chiffres du même temps.
+
+### Le guide reste à une poignée, et il le fallait
+
+On peut vouloir faire un plat sans l'avoir posé — la cuisine ne demande pas la
+permission du planning, et c'était déjà vrai avant ce ticket. Le résumé porte
+donc un bouton secondaire, en bas, qui ouvre le pas-à-pas. **Ce qui change est
+l'ordre :** le guide s'ouvre parce qu'on l'a demandé, au lieu d'accueillir
+quelqu'un qui venait lire.
+
+Ce n'est pas une politesse envers les parcours e2e, mais ce sont eux qui l'ont
+rendu nécessaire : `alarme` et `etape-outil` ont besoin d'un plat PRÉCIS — une
+étape sans minuteur suivie d'une cuisson qui en porte un — qu'aucune main tirée
+par le score ne leur donnera. Ils passent par le lien profond, et maintenant par
+la porte. Six parcours rouges ont dit en une fois ce qu'un ticket n'avait pas
+vu : cette URL portait deux usages.
+
+### Le bug que le ticket a trouvé en chemin
+
+**« TERMINER » POUVAIT JOURNALISER UN PLAT QUE PERSONNE N'AVAIT POSÉ.** La garde
+de T26 disait `if (i < 0) return` et se croyait en train de dire *« seulement
+sur un créneau posé »* ; elle disait en fait *« seulement sur un créneau de la
+semaine affichée »*, ce qui est vrai pendant toute une passe. Lire un candidat
+sur le dîner de jeudi, c'était donc `i >= 0` — et le stock descendait pour avoir
+feuilleté une recette. Le commentaire au-dessus annonçait le contraire depuis
+des mois (« sans cette garde, feuilleter une recette viderait le placard »),
+avec l'aplomb d'une chose vérifiée.
+
+Le cas se touchait au doigt sur les plats sans étapes, dont la fiche s'ouvre
+droit sur son bouton — et `sans-recette.spec.ts` l'affirmait même en toutes
+lettres, en attendant « Terminer » sur une fiche ouverte par lien profond sur un
+créneau vide. **Un parcours vert décrivait un bug.** Il pose maintenant le plat
+avant de le terminer, comme dans la vraie vie.
+
+La garde reste, exacte cette fois : un écran n'est pas un verrou, et c'est la
+seule écriture irréversible de l'app.
+
+- [x] **T91 — Le résumé d'une recette, quand on vient la lire.** `pourLire()` et
+      `tempsDuPlat()` dans `cuisiner.vue`, un bloc `Deroule` et un `.co-etapes`
+      dans la fiche, la garde de « Terminer » corrigée. `Ingredients` accueille
+      un enfant pour que le déroulé se glisse AVANT le crédit — posé après, il
+      passerait devant la bibliographie ; posé avant la liste, il couperait la
+      lecture en deux.
+
+      **LE RÉSUMÉ RESTE HORS COQUILLE**, comme le guide, et ce n'était pas
+      évident : on le lit assis, pas les mains sales, donc la barre du bas ne
+      dérangerait personne. Mais `pleinEcran()` ne voit que la route, et la
+      route ne sait pas si le plat qu'elle nomme est celui du créneau — la
+      réponse vit dans le jeu. Un écran dont le châssis dépend d'une donnée que
+      le routeur n'a pas est une mécanique à deux vérités ; « Revenir » en tête
+      suffit, et ramène là où la décision se prend.
+
+      **LA DÉCISION RESTE SUR LA CARTE.** Pas de « Poser » dans le résumé : le
+      geste appartient à la passe, qui sait ce qu'il coûte (les repioches, le
+      pas suivant du fil, la destination après l'écriture). `Jouable` reçoit son
+      `jouer` de l'écran qui l'affiche, et une fiche ouverte par une URL n'a
+      personne pour le lui donner. On revient choisir là où l'on choisissait.
+
+      Portes : typecheck, **702 tests** (8 nouveaux), build, **47 e2e** (4 de
+      plus : 3 dans `fiche-resume.spec.ts`, et `sans-recette` scindé en deux —
+      ce que la fiche DIT, et ce qu'elle termine une fois le plat posé),
+      `catalogue:verifie` 0 erreur. `creneauPose()` et `ouvrirLeGuide()`
+      rejoignent `parcours.ts` : trois fichiers refaisaient les mêmes gestes.
+
+### Ce que ce ticket laisse ouvert
+
+- **Le résumé ne sait pas d'où l'on vient.** Depuis le fil comme depuis
+  « Proposer », il dit « Revenir » et compte sur l'historique. C'est juste, et
+  c'est muet : rien à l'écran ne rappelle sur quel repas on était en train de
+  décider.
+- **T81 y gagne son écran, et ne l'a toujours pas.** Le répertoire consultable
+  attendait « la fiche, qui sait déjà s'ouvrir sur un plat qui n'est posé nulle
+  part » ; elle sait maintenant s'y ouvrir SANS proposer de le cuisiner, ce qui
+  est exactement ce qu'un répertoire demande. Reste entière la question du
+  ticket : où vit-il ?
+- **Rien ne compte les chemins.** Encore, et T90 le disait déjà des deux trous
+  de T88. Ici ce n'est pas un écran devenu inatteignable mais une URL qui
+  portait deux usages sans que rien ne le dise ; ce sont six parcours rouges qui
+  l'ont appris au ticket, ce qui est cher payé pour une chose qu'un inventaire
+  des liens montrerait d'avance.
+
 ## Sortie
 
 **Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`

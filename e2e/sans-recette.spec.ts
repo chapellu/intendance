@@ -24,7 +24,13 @@
 import { readFileSync } from "node:fs";
 import { expect, test } from "@playwright/test";
 import { libellePoser } from "../src/ui/phrases";
-import { attendreLApp, aujourdhuiISO, repondreAuxQuestions } from "./parcours";
+import {
+  attendreLApp,
+  aujourdhuiISO,
+  creneauPose,
+  poserUnPlat,
+  repondreAuxQuestions,
+} from "./parcours";
 
 // SANS SERVICE WORKER POUR CE FICHIER. Il sert `cuisine-data.json` depuis son
 // précache — c'est tout l'objet de T18 — et il le servirait donc PAR-DESSUS
@@ -80,7 +86,7 @@ test("la carte dit qu'un plat n'a pas sa recette, sans cesser de le proposer", a
   ).toBeEnabled();
 });
 
-test("la fiche le dit au-dessus des quantités, et se termine quand même", async ({ page }) => {
+test("la fiche le dit au-dessus des quantités", async ({ page }) => {
   const plat = VRAI.plats[0].id;
   await page.goto(`/#/cuisine/cuisiner/${aujourdhuiISO()}/diner/${plat}`);
   // PAS `attendreLApp` : la fiche est le seul écran qui sorte de la coquille,
@@ -92,10 +98,37 @@ test("la fiche le dit au-dessus des quantités, et se termine quand même", asyn
   await expect(phrase).toContainText("n’a pas encore ses étapes");
 
   // CE QUI MANQUE EST LA RECETTE, PAS LE PLAT. Les quantités sont là, sous la
-  // phrase, et c'est ce que la phrase promet.
+  // phrase, et c'est ce que la phrase promet. Rien n'est posé sur ce créneau,
+  // donc c'est le résumé de T91 qu'on lit — et il dit la phrase au même
+  // endroit, entre le titre et les quantités.
   await expect(page.locator(".co-ing")).toBeVisible();
+});
 
-  // « Terminer » reste le seul endroit où le stock descend. #50 l'avait
-  // rétabli sur les fiches sans étapes ; ce ticket ne doit pas le reprendre.
+// « Terminer » RESTE LE SEUL ENDROIT OÙ LE STOCK DESCEND, et #50 l'avait
+// rétabli sur les fiches sans étapes, qui n'ont pas de mode guidé pour le
+// porter. Ce parcours tient cette promesse-là.
+//
+// IL POSE LE PLAT, ET C'EST T91 QUI L'Y OBLIGE. Il ouvrait la fiche par lien
+// profond sur un créneau vide et y attendait « Terminer » — ce qui passait,
+// mais décrivait un bug plutôt qu'une promesse : ce bouton journalisait alors
+// la cuisson d'un plat que personne n'avait posé, et le placard descendait
+// pour avoir feuilleté une recette. Lire n'engage plus rien ; terminer demande
+// donc d'abord de poser, comme dans la vraie vie.
+test("et elle se termine quand même, une fois le plat posé", async ({ page }) => {
+  // Le budget de `stock-descend`, et pour la même raison : une passe complète
+  // avec ses questions coûte des dizaines de secondes sur un runner froid.
+  test.setTimeout(180_000);
+
+  // AUCUN FILTRE SUR LA MAIN : ici tout le corpus est au niveau plan, donc
+  // n'importe quelle carte fait l'affaire — c'est même tout l'intérêt du
+  // catalogue truqué de ce fichier.
+  const titre = await poserUnPlat(page);
+  const { jour, repas } = await creneauPose(page, titre);
+
+  // SANS PLAT DANS L'URL : c'est la fiche du créneau, donc celle qu'on ouvre
+  // pour cuisiner. C'est le chemin du lien « En cuisine » d'« Aujourd'hui ».
+  await page.goto(`/#/cuisine/cuisiner/${jour}/${repas}`);
+  await expect(page.locator(".co-fiche-tete")).toBeVisible({ timeout: 30_000 });
+  await expect(page.locator(".co-sansrecette")).toBeVisible();
   await expect(page.getByRole("button", { name: "Terminer" })).toBeVisible();
 });

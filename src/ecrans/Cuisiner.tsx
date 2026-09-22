@@ -13,7 +13,7 @@
 //
 // Port de `apps/proto-shell/comptoir.js` (`ecranCuisine`).
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { indexDuCreneau } from "../db";
 import { useCatalogue, useSemaine } from "../db/hooks";
 import { dejaCuisine, journaliserCuisson } from "../db/journal";
@@ -38,8 +38,10 @@ import {
   minuteur,
   minuteurUtile,
   outilDe,
+  pourLire,
   provenanceIngredient,
   sansRecette,
+  tempsDuPlat,
   type EtatMinuteur,
 } from "./cuisiner.vue";
 
@@ -49,13 +51,25 @@ export function Cuisiner({ creneau, plat }: { creneau: CleCreneau; plat?: string
   if (!jeu || !calc) return null;
 
   const i = indexDuCreneau(jeu, creneau.jour, creneau.repas);
+  // `?? null` PARCE QU'UN INDEX HORS SEMAINE NE REND RIEN : « pas de créneau »
+  // et « un créneau qui ne porte rien » se cuisinent pareil — pas du tout.
+  const pose = (i >= 0 ? jeu.choix[i] : null) ?? null;
   // Sans plat dans l'URL, c'est celui du créneau ; avec, c'est le candidat
   // qu'on est venu lire depuis « Poser ».
-  const rid = plat ?? (i >= 0 ? jeu.choix[i] : null);
+  const rid = plat ?? pose;
   const p = joue(rid ?? null) ? jeu.plats[rid as string] : undefined;
   if (!p) return <Introuvable />;
 
-  return <Fiche jeu={jeu} calc={calc} i={i} creneau={creneau} p={p} />;
+  return (
+    <Fiche
+      jeu={jeu}
+      calc={calc}
+      i={i}
+      creneau={creneau}
+      p={p}
+      lecture={pourLire(plat, pose)}
+    />
+  );
 }
 
 const Introuvable = () => (
@@ -79,14 +93,22 @@ function Fiche({
   i,
   creneau,
   p,
+  lecture,
 }: {
   jeu: Jeu;
   calc: Calcul;
   i: number;
   creneau: CleCreneau;
   p: Plat;
+  /** On est venu LIRE cette recette pour décider, pas la cuisiner — T91. */
+  lecture: boolean;
 }) {
   const [ingr, setIngr] = useState(false);
+  // LA PORTE DU GUIDE, DEPUIS UN RÉSUMÉ — T91. Un regard, donc un état de
+  // composant et pas un réglage persisté : rouvrir cette fiche demain, c'est
+  // revenir décider, pas reprendre une cuisson qu'on n'avait pas commencée.
+  // (Ce qui se persiste ici est un AVANCEMENT — voir l'en-tête du fichier.)
+  const [guide, setGuide] = useState(false);
   const cle = cleEtape(creneau.jour, creneau.repas, p.id);
   const range = useNombre(cle);
 
@@ -94,16 +116,26 @@ function Fiche({
   const steps = p.steps;
   const etape = Math.min(range, Math.max(0, steps.length - 1));
 
+  const temps = tempsDuPlat(steps);
   const parts = (i >= 0 ? jeu.parts[i] : undefined) ?? jeu.catalogue.foyer.parts;
   const f = (i >= 0 ? calc.facteurs[i] : undefined) || facteurAffiche(p, parts);
 
   /**
    * Terminer une recette JOURNALISE la cuisson — T26.
    *
-   * SEULEMENT SUR UN CRÉNEAU POSÉ (`i >= 0`). Ouverte depuis « Poser » pour
-   * lire un candidat, la fiche n'appartient à aucun créneau : la terminer n'est
-   * pas cuisiner, c'est finir de lire. Sans cette garde, feuilleter une recette
-   * viderait le placard.
+   * SEULEMENT SUR LE PLAT QUE LE CRÉNEAU PORTE. La garde disait `i >= 0` et
+   * croyait dire ça ; elle disait en fait « le créneau est dans la semaine »,
+   * ce qui est vrai pendant toute une passe. Lire un candidat sur le dîner de
+   * jeudi, c'était donc `i >= 0`, et « Terminer » y journalisait la cuisson
+   * d'un plat jamais posé — le placard descendait pour avoir feuilleté une
+   * recette. Le cas se touchait au doigt sur les plats sans étapes, dont la
+   * fiche s'ouvre directement sur son bouton.
+   *
+   * T91 ferme le chemin par en haut : une lecture n'ouvre plus le guide, donc
+   * plus de « Terminer » à toucher par accident. Elle le rouvre à la demande
+   * — `guide` —, et LÀ, terminer journalise pour de bon : faire un plat qu'on
+   * n'avait pas posé reste une cuisson, et le placard doit le savoir. La
+   * différence n'est pas le créneau, c'est qu'un doigt l'a demandé.
    *
    * `parts` est figé ICI, à l'instant où l'on cuisine, et pas relu du foyer plus
    * tard : un foyer qui grandit ne doit pas changer rétroactivement ce qui a
@@ -113,7 +145,7 @@ function Fiche({
    * un geste qu'on fait vraiment, et rien d'autre dans l'app ne le rattraperait.
    */
   const terminer = async () => {
-    if (i < 0) return;
+    if ((lecture && !guide) || i < 0) return;
     if (await dejaCuisine(base, creneau.jour, creneau.repas)) return;
     await journaliserCuisson(base, {
       jour: creneau.jour,
@@ -158,6 +190,47 @@ function Fiche({
   // elle, avait des étapes ; c'est un simple changement de classement qui a fini
   // par lui en tirer une autre. Trouvé et bouché en marge de Workspace#50.
   const muet = sansRecette(p);
+
+  // LE RÉSUMÉ, QUAND ON EST VENU LIRE — T91. Il passe AVANT la bascule
+  // « Ingrédients » et avant le guide, parce que ce n'est pas une troisième
+  // vue du même écran mais l'autre moitié de son métier : décider. Il n'a ni
+  // segments d'avancement (rien n'est commencé), ni minuteur, ni « Terminer ».
+  if (lecture && !guide)
+    return (
+      <>
+        <div className="co-fiche-tete">
+          {/* « REVENIR » ET PAS « SORTIR ». On n'est entré nulle part : on est
+              allé voir, et le mot doit ramener là où la décision se prend —
+              c'est `sortir()` qui sait où, par l'histoire de navigation. */}
+          <button className="co-retour" onClick={sortir}>
+            ‹ Revenir
+          </button>
+          <span className="t">{p.titre}</span>
+          <span className="d">{duree(temps.total)}</span>
+        </div>
+        {muet ? (
+          <div className="co-sansrecette">
+            <Icone nom="info" />
+            <span>{muet.long}</span>
+          </div>
+        ) : null}
+        <Ingredients p={p} parts={parts} f={f} jeu={jeu}>
+          <Deroule steps={steps} temps={temps} />
+        </Ingredients>
+        {/* LE GUIDE RESTE ATTEIGNABLE, ET C'EST UNE PORTE, PLUS UN COULOIR.
+            On peut décider de faire ce plat SANS l'avoir posé — c'était déjà
+            vrai avant ce ticket, et la cuisine ne demande pas la permission du
+            planning. Ce qui change est l'ordre : le pas-à-pas s'ouvre parce
+            qu'on l'a demandé, au lieu d'accueillir quelqu'un qui venait lire.
+            Secondaire, et en bas : la sortie de cet écran est « Revenir », en
+            haut, parce que neuf fois sur dix on repart choisir. */}
+        <div style={{ padding: "0 var(--space-4) var(--space-4)" }}>
+          <button className="btn btn-secondary btn-block" onClick={() => setGuide(true)}>
+            {steps.length ? "Ouvrir le guide" : "Cuisiner ce plat"}
+          </button>
+        </div>
+      </>
+    );
 
   if (ingr || !steps.length)
     return (
@@ -225,6 +298,7 @@ function Ingredients({
   parts,
   f,
   jeu,
+  children,
 }: {
   p: Plat;
   parts: number;
@@ -232,6 +306,11 @@ function Ingredients({
   // LE JEU, ET PLUS LE SEUL CATALOGUE : la provenance d'un ingrédient dépend de
   // ce qu'il reste au garde-manger, que le rejeu du journal repose sur le jeu.
   jeu: Jeu;
+  /** Ce que le résumé glisse entre la liste et le crédit — T91. Un enfant
+   *  plutôt qu'un second bloc collé dessous, parce que le crédit FERME la
+   *  fiche : posé après le déroulé, il resterait dernier ; posé avant, il
+   *  couperait la lecture en deux. */
+  children?: ReactNode;
 }) {
   const produit = +(p.portions * f).toFixed(1);
   const ustensile = aSortir(p);
@@ -279,6 +358,7 @@ function Ingredients({
           );
         })}
       </div>
+      {children}
       {/* T73 — le crédit ferme la fiche au lieu de l'ouvrir : on vient y lire
           des quantités, pas une bibliographie. Il est là, lisible, et il ne
           prend la place de rien. */}
@@ -291,6 +371,56 @@ function Ingredients({
           cr.texte
         )}
       </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────── le déroulé, en lecture */
+
+/**
+ * La suite des gestes, sans les faire — T91.
+ *
+ * LES GESTES ET LEURS MINUTES, RIEN DE PLUS. Pas d'astuce, pas d'encart
+ * enfant, pas de chauffe : le guide les donne au moment où ils servent, c'est-
+ * à-dire l'étape sous la main, et les empiler ici rendrait douze écrans en un
+ * seul. La question du résumé n'est pas « comment on fait » mais « qu'est-ce
+ * que ça me demande » — et ça, ça tient dans une liste numérotée.
+ *
+ * MUET SANS ÉTAPES, et la fiche l'a déjà dit plus haut : le plat entré « niveau
+ * plan » porte sa phrase entre le titre et les quantités (T78). Un bloc
+ * « Le déroulé » vide juste en dessous répéterait le manque en ayant l'air
+ * d'une panne.
+ */
+function Deroule({
+  steps,
+  temps,
+}: {
+  steps: Etape[];
+  temps: { total: number; libre: number };
+}) {
+  if (!steps.length) return null;
+  return (
+    <div className="co-etapes">
+      <div className="tete">
+        {/* LE TEMPS N'EST PAS DANS LE KICKER, et ce n'est pas un détail de
+            goût : `.co-kicker` passe en capitales, et « 1 h » y devient
+            « 1 H ». Un titre de bloc se crie, une durée se lit. */}
+        <span className="co-kicker">Le déroulé</span>
+        <span className="d">
+          {steps.length} étape{steps.length > 1 ? "s" : ""} · {duree(temps.total)}
+          {/* CE QUI FAIT DIRE OUI UN MARDI SOIR. Voir `tempsDuPlat` : le total
+              seul se lit comme un refus, alors que l'essentiel de l'heure se
+              passe souvent sans personne devant. */}
+          {temps.libre ? `, dont ${duree(temps.libre)} sans surveiller` : ""}
+        </span>
+      </div>
+      {steps.map((e, n) => (
+        <div key={e.id} className="l">
+          <span className="n">{n + 1}</span>
+          <span className="a">{e.action}</span>
+          {e.minutes ? <span className="m">{duree(e.minutes)}</span> : null}
+        </div>
+      ))}
     </div>
   );
 }

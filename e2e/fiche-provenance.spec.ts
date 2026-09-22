@@ -38,27 +38,24 @@ const credite = plats.find((p) => p.source !== null && p.vaisselle !== null)!;
  *  taire : c'est la décision du ticket, et c'est ce qui se vérifie ici. */
 const duFoyer = plats.find((p) => p.source === null)!;
 
-/** Ouvre la fiche d'un plat et déplie ses ingrédients.
+/** Ouvre la fiche d'un plat, ingrédients à l'écran.
  *
- *  `dispatchEvent("click")` ET PAS `.click()` : Playwright réessaie quand
- *  l'élément se détache sous lui, ce que chaque re-rendu React provoque, et la
- *  seconde frappe tombe sur le bouton que la première vient de faire
- *  apparaître. Le dépôt a payé ce bug trois fois. */
+ *  PLUS RIEN À DÉPLIER DEPUIS T91. Ce lien profond vise un créneau qui ne porte
+ *  pas ce plat : c'est une LECTURE, et le résumé montre les quantités
+ *  d'emblée. La bascule « Ingrédients » n'existe plus que dans le mode guidé,
+ *  où elle a un écran d'étape à recouvrir — il fallait auparavant la trouver,
+ *  puis se garder de la toucher sur les plats qui s'ouvraient déjà dessus.
+ *
+ *  Le nom de la fonction ne bouge pas : ce qu'elle promet à ses trois
+ *  appelants — « les quantités sont à l'écran » — n'a pas changé, c'est le
+ *  chemin pour y arriver qui a disparu. */
 async function ouvrirLesIngredients(page: import("@playwright/test").Page, plat: string) {
   await page.goto(`/#/cuisine/cuisiner/${aujourdhuiISO()}/diner/${plat}`);
   // PAS `attendreLApp` ICI : il attend `.co-barre`, et la fiche est le seul
   // écran qui sorte de la coquille — elle n'a pas de barre du bas. On attend sa
   // propre tête, qui est ce que cet écran monte en premier.
   await expect(page.locator(".co-fiche-tete")).toBeVisible({ timeout: 30_000 });
-  const bascule = page.getByRole("button", { name: "Ingrédients" });
-  await expect(bascule).toBeVisible({ timeout: 30_000 });
-  // Un plat sans `steps` s'ouvre DÉJÀ sur ses ingrédients : basculer le
-  // refermerait. On ne bascule que si la liste n'est pas là.
-  const liste = page.locator(".co-ing");
-  if (!(await liste.isVisible())) {
-    await bascule.dispatchEvent("click");
-    await expect(liste).toBeVisible();
-  }
+  await expect(page.locator(".co-ing")).toBeVisible({ timeout: 30_000 });
 }
 
 test("une recette d'auteur crédite son auteur, et nomme ce qu'il faut sortir", async ({
