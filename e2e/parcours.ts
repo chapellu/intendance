@@ -71,6 +71,66 @@ export async function poserUnPlat(
 }
 
 /**
+ * Le mode guidé d'un plat, par lien profond — donc sur un créneau qui ne le
+ * porte pas.
+ *
+ * IL PASSE PAR LE RÉSUMÉ DEPUIS T91, ET C'EST LE TICKET QUI LE VEUT : cette URL
+ * ouvrait le pas-à-pas, elle ouvre maintenant la fiche en lecture, et le guide
+ * est derrière un bouton.
+ *
+ * LE LIEN PROFOND RESTE LEUR PORTE D'ENTRÉE, faute de mieux et sans regret. Les
+ * parcours qui testent le guide ont besoin d'un plat PRÉCIS — une étape sans
+ * minuteur suivie d'une cuisson qui en porte un, une première étape commentée —
+ * et aucun ne peut l'obtenir de la main, qui est tirée par le score. Poser par
+ * la recherche de T90 coûterait une passe entière par test pour vérifier un
+ * minuteur.
+ */
+export async function ouvrirLeGuide(page: Page, plat: string): Promise<void> {
+  await page.goto(`/#/cuisine/cuisiner/${aujourdhuiISO()}/diner/${plat}`);
+  // PAS `attendreLApp` : la fiche est le seul écran qui sorte de la coquille,
+  // elle n'a pas de barre du bas. On attend sa tête, qu'elle monte en premier.
+  await expect(page.locator(".co-fiche-tete")).toBeVisible({ timeout: 30_000 });
+  // `dispatchEvent` plutôt que `.click()`, comme partout ici : le bouton
+  // disparaît sous le doigt — c'est tout son effet — et un clic retenté
+  // chercherait un élément que le rendu suivant n'a plus.
+  await page
+    .getByRole("button", { name: /Ouvrir le guide|Cuisiner ce plat/ })
+    .dispatchEvent("click");
+  await expect(page.locator(".co-etape")).toBeVisible({ timeout: 30_000 });
+}
+
+/**
+ * Le créneau (jour, repas) sur lequel un plat a été posé.
+ *
+ * ON LE LIT SUR LE SLOT, ET PAS SUR UN LIEN « EN CUISINE ». Celui-ci vit sur
+ * l'écran « Aujourd'hui », donc seulement pour les créneaux du jour, alors que
+ * le plat qu'on vient de poser peut tomber n'importe quand dans la semaine. Le
+ * href de « régler les parts » porte le couple (jour, repas) — la même clé que
+ * la base — et c'est elle qui ouvre la fiche.
+ *
+ * LA GRILLE SE DEMANDE DEPUIS LE 21/09 : poser dépose sur « Posés », qui ne
+ * porte pas le réglage des parts. C'est la semaine qui porte le couple, donc
+ * c'est elle qu'on ouvre.
+ */
+export async function creneauPose(
+  page: Page,
+  titre: string,
+): Promise<{ jour: string; repas: string }> {
+  await page.goto("/#/cuisine/semaine");
+  await attendreLApp(page);
+  const slot = page.locator(".co-slot").filter({ hasText: titre }).first();
+  await slot.locator("button.resume").click();
+  const href = await page
+    .locator(".co-slot.ouvert")
+    .getByRole("link", { name: "régler les parts" })
+    .getAttribute("href");
+  const creneau = /#\/cuisine\/parts\/(\d{4}-\d{2}-\d{2})\/([^/]+)/.exec(href ?? "");
+  expect(creneau, `href inattendu : ${href}`).not.toBeNull();
+  const [, jour, repas] = creneau!;
+  return { jour: jour!, repas: repas! };
+}
+
+/**
  * On répond « oui » à tout ce que l'app demande avant de montrer sa main — T33.
  *
  * SUR UNE APP NEUVE, C'EST LE CAS NORMAL ET NON UN CAS LIMITE : rien n'a jamais

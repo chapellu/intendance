@@ -14,7 +14,7 @@
 
 import { readFileSync } from "node:fs";
 import { expect, test } from "@playwright/test";
-import { attendreLApp, poserUnPlat } from "./parcours";
+import { attendreLApp, creneauPose, poserUnPlat } from "./parcours";
 
 /**
  * Les plats qui consomment vraiment quelque chose du garde-manger.
@@ -65,26 +65,9 @@ test("terminer une recette journalise, et la confiance du placard se dépense", 
   const auPlacard = platsQuiTouchentLePlacard();
   const titre = await poserUnPlat(page, (t) => auPlacard.has(t));
 
-  // ON LIT LE CRÉNEAU SUR LE SLOT POSÉ. Le lien « En cuisine » vit sur l'écran
-  // « Aujourd'hui », donc seulement pour les créneaux du jour, alors que le
-  // plat qu'on vient de poser peut tomber n'importe quand dans la semaine. Le
-  // href de « régler les parts » porte le couple (jour, repas) — la même clé
-  // que la base — et c'est elle qui ouvre la fiche.
-  //
-  // La grille se demande depuis le 21/09 : poser dépose sur « Posés », qui ne
-  // porte pas le réglage des parts. C'est elle qui porte le couple, donc c'est
-  // elle qu'on ouvre.
-  await page.goto("/#/cuisine/semaine");
-  await attendreLApp(page);
-  const slot = page.locator(".co-slot").filter({ hasText: titre }).first();
-  await slot.locator("button.resume").click();
-  const href = await page
-    .locator(".co-slot.ouvert")
-    .getByRole("link", { name: "régler les parts" })
-    .getAttribute("href");
-  const creneau = /#\/cuisine\/parts\/(\d{4}-\d{2}-\d{2})\/([^/]+)/.exec(href ?? "");
-  expect(creneau, `href inattendu : ${href}`).not.toBeNull();
-  const [, jour, repas] = creneau!;
+  // Le créneau se lit sur le slot posé — voir `creneauPose`, qui dit pourquoi
+  // là et pas ailleurs. Partagé avec `sans-recette` depuis T91.
+  const { jour, repas } = await creneauPose(page, titre);
 
   // L'INVENTAIRE AVANT, ET CE QU'ON Y MESURE.
   //

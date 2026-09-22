@@ -17,10 +17,10 @@
 // récipient nommé — et le corpus fournit l'exemplaire.
 
 import { readFileSync } from "node:fs";
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { minuteurUtile, outilDe } from "../src/ecrans/cuisiner.vue";
 import { lireCatalogue } from "../src/model/catalogue";
-import { aujourdhuiISO } from "./parcours";
+import { ouvrirLeGuide } from "./parcours";
 
 const catalogue = lireCatalogue(
   JSON.parse(readFileSync("public/cuisine-data.json", "utf8")) as unknown,
@@ -46,13 +46,8 @@ const cuisson = plat.steps[1]!;
  *  main, même parti que ci-dessus. */
 const commente = catalogue.plats.find((p) => p.steps[0]?.astuce)!;
 
-async function ouvrirLeGuide(page: Page): Promise<void> {
-  await page.goto(`/#/cuisine/cuisiner/${aujourdhuiISO()}/diner/${plat.id}`);
-  await expect(page.locator(".co-etape")).toBeVisible({ timeout: 30_000 });
-}
-
 test("un geste n'ouvre pas de minuteur, mais garde sa durée", async ({ page }) => {
-  await ouvrirLeGuide(page);
+  await ouvrirLeGuide(page, plat.id);
 
   await expect(page.locator(".co-etape .geste")).toHaveText(geste.action);
   await expect(page.locator(".co-minuteur")).toHaveCount(0);
@@ -64,7 +59,7 @@ test("un geste n'ouvre pas de minuteur, mais garde sa durée", async ({ page }) 
 });
 
 test("la cuisson qui suit porte son minuteur ET son récipient", async ({ page }) => {
-  await ouvrirLeGuide(page);
+  await ouvrirLeGuide(page, plat.id);
 
   // `dispatchEvent` et jamais `.click()` : Playwright réessaie quand l'élément
   // se détache sous lui, ce que chaque re-rendu React provoque. Et on attend un
@@ -78,8 +73,7 @@ test("la cuisson qui suit porte son minuteur ET son récipient", async ({ page }
 });
 
 test("le pourquoi du geste se lit sous le geste, jamais dans le titre", async ({ page }) => {
-  await page.goto(`/#/cuisine/cuisiner/${aujourdhuiISO()}/diner/${commente.id}`);
-  await expect(page.locator(".co-etape")).toBeVisible({ timeout: 30_000 });
+  await ouvrirLeGuide(page, commente.id);
 
   const astuce = commente.steps[0]!.astuce!;
   await expect(page.locator(".co-astuce")).toHaveText(astuce);

@@ -6,7 +6,7 @@
 //
 // Port de `apps/proto-shell/comptoir.js` (`CHAUFFE`, `ecranCuisine`).
 
-import type { Jeu } from "../model/jeu";
+import type { Choix, Jeu } from "../model/jeu";
 import type { Etape, Foyer, Ingredient, Outil, Plat } from "../model/types";
 
 /* ───────────────────────────────────────────────────────────────── la chauffe */
@@ -347,5 +347,54 @@ export function sansRecette(plat: Plat): SansRecette | null {
     long:
       "Ce plat n’a pas encore ses étapes. Les ingrédients, les quantités et le " +
       "temps sont justes — c’est le pas-à-pas qui manque.",
+  };
+}
+/* ────────────────────────────────────────────────────────── lire, ou cuisiner */
+
+/**
+ * La fiche est-elle ouverte pour LIRE une recette, ou pour cuisiner ce que le
+ * créneau porte ? — T91.
+ *
+ * DEUX GESTES QUI N'ONT QUE L'ÉCRAN EN COMMUN. Depuis une carte de « Proposer »
+ * ou du fil, on ouvre une recette pour DÉCIDER de la poser : on veut les
+ * quantités, le temps et la suite des gestes d'un coup d'œil, et on repart
+ * choisir. Depuis « Aujourd'hui », on l'ouvre les mains dans la farine : une
+ * étape par écran, un minuteur, et le stock qui descend à la fin. Servir le
+ * mode guidé au lecteur lui demandait de feuilleter neuf écrans pour savoir ce
+ * qu'il y a dans le plat.
+ *
+ * C'EST L'URL QUI PORTE LA DIFFÉRENCE, ET ELLE LA PORTAIT DÉJÀ. Le bouton
+ * « Fiche » des cartes nomme le plat parce que le créneau porte peut-être
+ * encore autre chose (T11) ; « En cuisine », lui, ne nomme rien et laisse le
+ * créneau répondre. Un plat nommé qui n'est pas celui du créneau est donc, par
+ * construction, un plat qu'on lit sans l'avoir posé — aucun champ nouveau, et
+ * rien à garder d'accord entre deux endroits.
+ *
+ * `pose` VAUT `null` HORS SEMAINE, et c'est le bon défaut : un créneau sorti de
+ * la fenêtre glissante ne porte rien qu'on puisse cuisiner, donc tout ce qu'on
+ * peut y faire est lire.
+ */
+export function pourLire(platUrl: string | undefined, pose: Choix): boolean {
+  return platUrl !== undefined && platUrl !== pose;
+}
+
+/**
+ * Le temps d'un plat, et la part qui ne demande à personne d'être là.
+ *
+ * `libre` EST LA MOITIÉ DE LA DÉCISION, pas un ornement. « 1 h 10 » se lit
+ * comme un refus un mardi soir ; « 1 h 10, dont 55 min sans surveiller » se lit
+ * comme un plat qu'on lance et qu'on oublie. Le guide le dit déjà, mais étape
+ * par étape (« Sans surveiller. ») et donc trop tard : au moment de choisir, on
+ * n'a pas ouvert les neuf écrans. Le résumé doit le dire d'un coup, sinon il
+ * cache exactement ce qui fait poser ou non.
+ *
+ * `total` PASSE PAR `avancement` plutôt que de refaire la somme : deux
+ * additions du même temps finiraient par ne plus dire le même chiffre le jour
+ * où l'une des deux apprendrait quelque chose (un repos, une attente).
+ */
+export function tempsDuPlat(steps: Etape[]): { total: number; libre: number } {
+  return {
+    total: avancement(steps, 0).total,
+    libre: steps.reduce((a, x) => a + (x.surveille ? 0 : x.minutes), 0),
   };
 }

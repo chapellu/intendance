@@ -21,7 +21,7 @@ import { readFileSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
 import { minuteurUtile } from "../src/ecrans/cuisiner.vue";
 import type { Etape } from "../src/model/types";
-import { aujourdhuiISO } from "./parcours";
+import { ouvrirLeGuide } from "./parcours";
 
 interface PlatExport {
   id: string;
@@ -79,20 +79,12 @@ async function ecouterLeGraphe(page: Page): Promise<void> {
   });
 }
 
-/** La fiche, ouverte par lien profond sur son mode guidé. Pas `attendreLApp` :
- *  la fiche est le seul écran qui sorte de la coquille, elle n'a pas de barre
- *  du bas. */
-async function ouvrirLeGuide(page: Page): Promise<void> {
-  await page.goto(`/#/cuisine/cuisiner/${aujourdhuiISO()}/diner/${guide.id}`);
-  await expect(page.locator(".co-etape")).toBeVisible({ timeout: 30_000 });
-}
-
 test("lancer le minuteur pose toute la sonnerie d'avance, à l'échéance", async ({ page }) => {
   const pannes: string[] = [];
   page.on("pageerror", (e) => pannes.push(e.message));
 
   await ecouterLeGraphe(page);
-  await ouvrirLeGuide(page);
+  await ouvrirLeGuide(page, guide.id);
 
   // `dispatchEvent` et jamais `.click()` : Playwright réessaie quand l'élément
   // se détache sous lui, ce que chaque re-rendu React provoque, et la seconde
@@ -125,7 +117,7 @@ test("lancer le minuteur pose toute la sonnerie d'avance, à l'échéance", asyn
 
 test("AVANCER D'UNE ÉTAPE NE DÉCROCHE PAS L'ALARME QUI COURT", async ({ page }) => {
   await ecouterLeGraphe(page);
-  await ouvrirLeGuide(page);
+  await ouvrirLeGuide(page, guide.id);
 
   await page.locator(".co-minuteur").dispatchEvent("click");
   await expect(page.locator(".co-minuteur")).toHaveClass(/actif/);
@@ -145,7 +137,7 @@ test("mettre en pause décroche la sonnerie — sinon elle partirait sans minute
   page,
 }) => {
   await ecouterLeGraphe(page);
-  await ouvrirLeGuide(page);
+  await ouvrirLeGuide(page, guide.id);
 
   const bouton = page.locator(".co-minuteur");
   await bouton.dispatchEvent("click");
