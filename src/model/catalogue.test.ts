@@ -60,6 +60,18 @@ describe("le catalogue réel", () => {
     for (const n of besoins) expect(c.foyer.outils[n]).toBeDefined();
   });
 
+  // L'ASSIETTE TRAVERSE, ET SON ABSENCE AUSSI. Un plat muet rend `[]` — « la
+  // recette ne dit pas avec quoi la servir » — et surtout pas une erreur : 120
+  // des 138 plats sont dans ce cas, et le seront longtemps.
+  test("l’accompagnement traverse l’export, et se tait quand il n’y en a pas", () => {
+    const plats = lireCatalogue(brut()).plats;
+    const escalopes = plats.find((p) => p.id === "escalopes-emmental-champignons")!;
+    expect(escalopes.avec.map((a) => a.id)).toEqual(["riz", "salade-verte"]);
+    expect(escalopes.avec[0]).toMatchObject({ nom: "riz", qty: 300, unit: "g" });
+    expect(plats.find((p) => p.id === "gratin-de-pates-tomates")!.avec).toEqual([]);
+    for (const p of plats) expect(Array.isArray(p.avec)).toBe(true);
+  });
+
   test("les identifiants de plats sont uniques", () => {
     const ids = lireCatalogue(brut()).plats.map((p) => p.id);
     expect(new Set(ids).size).toBe(ids.length);
@@ -133,6 +145,20 @@ describe("un export qui a dérivé échoue bruyamment", () => {
       (p["ingredients"] as Record<string, unknown>[])[0]!["qty"] = "400";
     });
     expect(casse).toThrow(/qty/);
+  });
+
+  // UNE LIGNE D'ACCOMPAGNEMENT SANS QUANTITÉ afficherait « NaN g de riz » et
+  // ajouterait un NaN au panier, qui contaminerait le total de la ligne. Les
+  // quatre champs sont donc obligatoires, alors que l'export n'a aucune raison
+  // de les omettre — c'est justement la dérive qu'on veut voir échouer ici.
+  test("un accompagnement sans quantité", () => {
+    const casse = abime((c) => {
+      const plats = c["plats"] as Record<string, unknown>[];
+      const p = plats.find((x) => (x["avec"] as unknown[]).length > 0)!;
+      delete (p["avec"] as Record<string, unknown>[])[0]!["qty"];
+    });
+    expect(casse).toThrow(CatalogueInvalide);
+    expect(casse).toThrow(/avec/);
   });
 
   test("un NaN, qui contaminerait chaque somme qu'il touche", () => {

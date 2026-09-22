@@ -3560,6 +3560,138 @@ seule écriture irréversible de l'app.
   portait deux usages sans que rien ne le dise ; ce sont six parcours rouges qui
   l'ont appris au ticket, ce qui est cher payé pour une chose qu'un inventaire
   des liens montrerait d'avance.
+## Un plat ne remplit pas l'assiette tout seul — T92
+
+**Dit le 22/09/2026, quatrième journée d'usage réel :**
+
+> *« J'ai ajouté la recette des escalopes végétariennes mais il manque toujours
+> les accompagnements, je n'ai pas un repas complet. »*
+
+**LA RECETTE ÉTAIT ENTIÈRE ET L'ASSIETTE À MOITIÉ VIDE.** Les escalopes p. 39
+s'arrêtent sur *« enfourner 10 min, jusqu'à ce qu'elles commencent à dorer »*, et
+rien après. La même autrice, pour sa version du même plat — p. 96 de « 19h25 !
+Qu'est-ce qu'on va manger ? » —, écrit une étape 6 : *« servir aussitôt avec une
+salade verte et du riz »*. **Cette phrase-là n'avait aucun endroit où aller** :
+ni dans `ingredients`, qui décrit ce qu'on met DANS le plat, ni dans une étape,
+qui décrit un geste qu'on fait avant de servir.
+
+**ET `apports` RÉPONDAIT QUE L'ASSIETTE ÉTAIT PLEINE.** C'est ce qui rend la
+panne difficile à voir : les escalopes cochent les trois cases — œuf, avoine,
+champignons — donc aucun contrôle du corpus n'avait rien à dire. Mesuré : leurs
+120 g de flocons font **20 g de céréales sèches par personne**, là où le MÉMO
+p. 97 de la même autrice en demande **50 à 100 g**. Quatre autres plats du corpus
+déclarent un féculent qu'ils servent sous les 50 g secs. `apports` est une
+couverture par CATÉGORIES — son propre en-tête le dit, dans `equilibre.yaml` —
+et une catégorie cochée n'a jamais été une assiette remplie.
+
+**L'AUTRE MOITIÉ DE LA MESURE EST PLUS BRUTALE : 43 des 138 plats** qui se posent
+sur un déjeuner ou un dîner n'ont **ni féculent ni légumes déclarés** — le rôti,
+la ratatouille, le velouté de potiron, le wok de légumes verts. Ceux-là, le
+modèle les comptait déjà pour des dîners complets.
+
+**LE CORPUS LE SAVAIT ET L'AVAIT ÉCRIT.** En tête de `tian-ratatouille-parmesan`,
+depuis sa saisie : *« Le rôle d'un plat — plat, accompagnement, entrée —
+n'existe nulle part dans le modèle. Trois recettes de ce lot le réclament sous
+trois formes. »* Ce ticket ne tranche pas le RÔLE. Il répond à la demande, qui
+est plus étroite et plus urgente : dire ce qu'il MANQUE à côté.
+
+- [x] **T92 — `avec:`, ce qui se sert à côté.** Un champ de premier rang, de la
+      même forme qu'une ligne d'ingrédient — `{id, name, qty, unit}` — et qui
+      traverse tout : `verifier.py` le contrôle, `compile.py` lui donne sa
+      section « À TABLE, À CÔTÉ » après les étapes, `export_json.py` l'émet, le
+      chargeur le lit, le panier l'achète, la fiche le montre.
+
+      **QUATRE CHAMPS, ET LES AUTRES SONT ABSENTS EXPRÈS.** Pas de `ref` :
+      aucun `uses:` ne vise un accompagnement, puisqu'il n'entre dans aucune
+      étape. Pas de `base` ni d'`assaisonnement` : rien ne le produit en amont,
+      et on ne le sale pas à l'intérieur du plat. Ces quatre-là sont remplis à
+      un seul endroit, `commeIngredient()`, plutôt que publiés dans l'export où
+      ils vaudraient faux sur chaque ligne de riz du corpus.
+
+      **IL SUIT LES PARTS DU SOIR, PAS LE LOT QU'ON CUISINE.** C'est la seule
+      subtilité du ticket et elle se voit sur le plat qui l'a déclenché : les
+      escalopes se gardent (`emits: reste-plat`), donc `facteur` les fait pour
+      SIX même dans un foyer de 2,5 — couper un lot qui part au congélateur ne
+      gagne que du travail. Le riz, lui, se fait pour ceux qui sont à table ce
+      soir : **130 g et pas 300**. Le reste d'escalopes sera un autre repas, sur
+      un autre créneau, qui portera son propre accompagnement. Deux facteurs
+      parce que ce sont deux questions — combien on en cuisine, et combien on en
+      mange ce soir.
+
+      **UN ACCOMPAGNEMENT QUI EST DÉJÀ UN INGRÉDIENT EST UNE ERREUR**, pas un
+      avertissement : il serait acheté deux fois et rien dans le panier ne
+      dirait lequel des deux nombres est le bon. Le contrôle a servi dès
+      l'écriture — le chili p. 57 porte son riz dans la recette, et sa ligne
+      « servir avec ~100 à 150 g de riz » n'avait donc rien à faire ici.
+
+      **18 PLATS DISENT DÉSORMAIS AVEC QUOI LES SERVIR, ET 16 LE TIENNENT DE
+      LA LIGNE « ÉQUILIBRE » DE LEUR PAGE.** « Je mange sain et bio, même au boulot ! » porte une ligne
+      **« Équilibre »** par recette, où l'autrice nomme elle-même ce qui manque
+      — *« manque de féculents — servir avec 100 à 120 g de pain grillé »*
+      (p. 75), *« servir avec une salade et environ 200 g de féculents pesés
+      cuits »* (p. 73). Trente et une de ces lignes existent ; seize nomment un
+      accompagnement qu'un plat de repas peut porter, et ce sont exactement
+      celles qui sont encodées. Restent dehors les GARNITURES d'une souche — une
+      pâte à pizza se garnit, elle ne s'accompagne pas — et les fruits d'un
+      goûter, qui ne complètent pas une assiette. **Ce qui
+      entre est la donnée, jamais la prose** : un id, une quantité, une unité —
+      le cadre de licence de la carte #26, inchangé. Le tian tient la sienne de
+      sa propre page (*« que se servir avec du riz ou des pâtes »*), les
+      escalopes de la p. 96 de l'autre ouvrage.
+
+      **LES POIDS SONT DES POIDS SECS, PARCE QUE C'EST CE QUI S'ACHÈTE.** La
+      p. 73 dit « 200 g de féculents pesés CUITS » : ce sont 80 g de lentilles
+      sèches qui entrent dans `avec:`, et la ligne de courses est juste.
+
+      **DEUX LISTES SUR LA FICHE, PAS UNE.** Ce qui est au-dessus se pèse et se
+      mélange ; ce qui est en dessous se pose sur la table. Elles partagent leur
+      forme et **pas leur classe CSS** — la première version réutilisait
+      `.co-ing`, et un parcours e2e qui cherchait « la liste des ingrédients » en
+      a trouvé deux. Un test déjà écrit a dit non.
+
+      **MUET SUR LES 120 PLATS QUI NE LE DISENT PAS.** Se taire dit « on ne sait
+      pas » ; une section vide dirait « rien à ajouter », ce qui est faux 34
+      fois sur 120.
+
+      Portes : typecheck, **710 tests** (8 nouveaux : 2 sur le chargeur, 3 sur le
+      panier, 3 sur la fiche), build, **49 e2e** (2 nouveaux dans
+      `fiche-provenance.spec.ts`), `catalogue:verifie` 0 erreur avec le JSON
+      régénéré et commité.
+
+      **REBASÉ SUR T91, ET LES DEUX SE CROISENT SUR LA FICHE.** « Lire une
+      recette n'est pas la cuisiner » a coupé l'écran en deux et donné des
+      `children` à `Ingredients` : « À table, à côté » se pose APRÈS le déroulé
+      du résumé, comme la section de `compile.py` se pose après les étapes.
+      C'est le dernier geste du repas, il se lit en dernier.
+
+### Ce que ce bloc laisse ouvert
+
+- **Le RÔLE d'un plat n'existe toujours pas.** `avec:` dit ce qui manque à une
+  assiette ; il ne dit pas qu'un tian EST un accompagnement. La p. 88 compte
+  donc encore pour six dîners dans l'équilibre de la semaine, et le planificateur
+  peut toujours proposer une ratatouille en plat unique. C'est la demande que le
+  corpus formule depuis sa saisie, et elle reste entière.
+- **Un accompagnement ne peut pas être un plat du catalogue.** La « grande
+  casserole de céréale cuite d'avance » (p. 90) EST un accompagnement, et rien
+  ne permet de l'écrire dans `avec:` — donc pas de chaînage, pas de
+  `reste-plat` réutilisé, pas de « la semoule de mardi va avec le tajine de
+  jeudi ». Le champ achète des ingrédients ; il ne cuisine rien.
+- **Les minutes de l'accompagnement ne sont comptées nulle part.** Faire cuire
+  du riz prend vingt minutes de plus, et le plan compilé annonce toujours 43.
+  C'est le même trou que le `deltaMin` laissé ouvert par T84, et il se rouvre au
+  même endroit : `avancement()` et la somme du plat.
+- **Le modèle ne sait pas porter un CHOIX.** La p. 97 propose « une salade de
+  pâtes, de pommes de terre, du riz ou du pain » : une seule des quatre voies
+  est écrite, et c'est arbitraire. Une liste d'options demanderait à l'écran de
+  poser une question, ce qu'aucune ligne de `avec:` ne sait faire.
+- **34 plats de repas restent muets**, et le vérificateur les compte sans les
+  nommer un par un. Ce qu'il faudrait écrire — « servir avec du riz » — est une
+  décision du foyer ou une phrase d'ouvrage ; un contrôle qui réclame trente-
+  quatre fois ce qu'il ne sait pas deviner s'apprend à être ignoré.
+- **`apports` ne pèse toujours rien.** Les cinq plats qui déclarent un féculent
+  sous les 50 g secs par personne le déclarent encore, et rien dans le corpus ne
+  le dit. La mesure a été faite à la main pour ce ticket ; l'automatiser demande
+  une classe « féculent » dans `rayons.yaml`, qui n'existe pas.
 
 ## Sortie
 

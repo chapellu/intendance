@@ -579,14 +579,30 @@ button { font-family: var(--font-body); color: inherit; }
   flex: 1; height: 64px; border-radius: 999px; border: 0; cursor: pointer;
   background: var(--color-accent); color: var(--color-bg); font-size: 16px; font-weight: 700;
 }
-.co-ing { background: var(--color-surface); border-radius: var(--radius-md); overflow: hidden; margin-top: var(--space-3); }
-.co-ing .l { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2) var(--space-3); }
-.co-ing .l + .l { border-top: 1px solid color-mix(in srgb, var(--color-text) 7%, transparent); }
-.co-ing .nom { flex: 1; font-size: 14px; }
-.co-ing .q { font-size: 14px; font-weight: 700; }
-.co-ing .p { font-size: 11px; border-radius: 999px; padding: 2px 9px; white-space: nowrap;
+/* LES DEUX LISTES DE LA FICHE PARTAGENT LEUR FORME, PAS LEUR CLASSE. Ce qui
+   entre dans le plat et ce qui se sert à côté se lisent pareil — un nom, une
+   quantité, où le trouver —, mais `.co-atable` reste une classe à part : un
+   parcours qui cherchait « la liste des ingrédients » en trouvait deux le jour
+   où la seconde a réutilisé la première, et c'est un e2e qui l'a dit. */
+.co-ing, .co-atable { background: var(--color-surface); border-radius: var(--radius-md); overflow: hidden; margin-top: var(--space-3); }
+.co-ing .l, .co-atable .l { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2) var(--space-3); }
+.co-ing .l + .l, .co-atable .l + .l { border-top: 1px solid color-mix(in srgb, var(--color-text) 7%, transparent); }
+.co-ing .nom, .co-atable .nom { flex: 1; font-size: 14px; }
+.co-ing .q, .co-atable .q { font-size: 14px; font-weight: 700; }
+.co-ing .p, .co-atable .p { font-size: 11px; border-radius: 999px; padding: 2px 9px; white-space: nowrap;
   background: var(--color-accent-2-200); color: var(--color-accent-2-900); }
-.co-ing .p.acheter { background: var(--color-accent-200); color: var(--color-accent-900); }
+.co-ing .p.acheter, .co-atable .p.acheter { background: var(--color-accent-200); color: var(--color-accent-900); }
+
+/* L'ASSIETTE — ce qui se sert à côté, sur la même surface que les ingrédients
+   parce que c'est la même chose qu'on lit : un nom, une quantité, où le
+   trouver. Seul le titre les sépare, et il tient en une ligne : deux encadrés
+   de formes différentes sur la même fiche feraient croire à deux natures de
+   données. */
+.co-atable .tt {
+  font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+  padding: var(--space-2) var(--space-3) 0;
+  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+}
 
 /* T91 — le déroulé, quand on lit une recette au lieu de la cuisiner.
    MÊME SURFACE QUE `.co-ing`, parce que c'est la même question posée d'un cran

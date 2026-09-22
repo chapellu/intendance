@@ -24,6 +24,7 @@ interface PlatExport {
   id: string;
   source: { auteur: string; ouvrage: string } | null;
   vaisselle: { label: string } | null;
+  avec: { nom: string }[];
 }
 
 const plats: PlatExport[] = JSON.parse(
@@ -94,4 +95,35 @@ test("un plat sans vaisselle ne montre rien plutôt que d'inventer", async ({ pa
   // pire que se taire — et la fiche reste par ailleurs complète.
   await expect(page.locator(".co-sortir")).toHaveCount(0);
   await expect(page.locator(".co-credit")).toBeVisible();
+});
+
+// ─────────────────────────────────────────────────────────── à table, à côté
+//
+// « Il manque toujours les accompagnements, je n'ai pas un repas complet »
+// (22/09/2026). `aTable()` est tenu par `cuisiner.vue.test.ts` ; ce que lui
+// seul ne peut pas dire, c'est que la liste arrive jusqu'à l'œil — elle est
+// rendue par le même composant que les ingrédients, sous la même bascule, et
+// c'est exactement le trajet qui manquait.
+
+/** Le premier plat du corpus qui dise avec quoi le servir. Dérivé, jamais
+ *  énuméré : le jour où c'est un autre plat, le parcours suit. */
+const servi = plats.find((p) => p.avec.length > 0)!;
+
+test("la fiche dit avec quoi servir le plat", async ({ page }) => {
+  await ouvrirLesIngredients(page, servi.id);
+
+  const table = page.locator(".co-atable");
+  await expect(table).toBeVisible();
+  for (const a of servi.avec) await expect(table).toContainText(a.nom);
+});
+
+test("un plat qui ne le dit pas ne montre pas de section vide", async ({ page }) => {
+  const muet = plats.find((p) => p.avec.length === 0);
+  test.skip(!muet, "tout le corpus dit désormais avec quoi le servir");
+  await ouvrirLesIngredients(page, muet!.id);
+
+  // SE TAIRE N'EST PAS « RIEN À AJOUTER ». Un titre suivi du vide promettrait
+  // que l'assiette est pleine ; 120 plats sur 138 n'en savent rien encore.
+  await expect(page.locator(".co-atable")).toHaveCount(0);
+  await expect(page.locator(".co-ing")).toBeVisible();
 });

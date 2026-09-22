@@ -46,6 +46,12 @@ recipe:
     - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
     - {id: poivre, name: poivre du moulin, qty: 1, unit: pincée, seasoning: true}
 
+  # p. 84 : « avec environ 80 g de “pain des fleurs” au sarrasin ». Le foyer
+  # n'a pas ce produit au vocabulaire ; c'est du pain complet qui est acheté, à
+  # la même quantité — un pâté sans pain n'est pas un repas.
+  avec:
+    - {id: pain-levain, name: pain complet, qty: 80, unit: g}
+
   steps:
     - id: dorer-l-oignon
       action: "Éplucher et émincer l'oignon, le découper en petits cubes et le faire dorer dans une petite cocotte avec l'huile d'olive et une pincée de sel"

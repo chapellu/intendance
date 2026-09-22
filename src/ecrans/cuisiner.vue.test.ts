@@ -5,6 +5,7 @@ import { creerJeu, SAUTE } from "../model/jeu";
 import type { Catalogue, Etape } from "../model/types";
 import {
   aArmer,
+  aTable,
   aSortir,
   avancement,
   basculerMinuteur,
@@ -139,6 +140,33 @@ describe("ce qui déclenche une alarme — T82", () => {
   test("relancer un minuteur sonné arme la nouvelle échéance, pas l'ancienne", () => {
     const fini = basculerMinuteur(null, 12, T0 - 20 * 60_000);
     expect(aArmer(basculerMinuteur(fini, 12, T0), T0)).toBe(T0 + 12 * 60_000);
+  });
+});
+
+describe("à table, à côté", () => {
+  const jeu = creerJeu(catalogue);
+  const escalopes = catalogue.plats.find((x) => x.id === "escalopes-emmental-champignons")!;
+
+  test("la fiche dit avec quoi servir le plat, à l’échelle de la tablée", () => {
+    // 300 g de riz pour six parts : à 2,5, la fiche en annonce 130 — et pas
+    // 300, qui est ce que le LOT d'escalopes réclame en champignons.
+    expect(aTable(jeu, escalopes, 2.5).map((l) => [l.nom, l.quantite])).toEqual([
+      ["riz", "130 g"],
+      ["salade verte", "0,5 pièce"],
+    ]);
+    expect(aTable(jeu, escalopes, 6).map((l) => l.quantite)).toEqual(["300 g", "1 pièce"]);
+  });
+
+  test("et dit d’où ça sort, comme pour un ingrédient", () => {
+    expect(aTable(jeu, escalopes, 6)[0]!.prov.acheter).toBe(true);
+  });
+
+  // SE TAIRE N'EST PAS « RIEN À AJOUTER ». 120 plats sur 138 ne disent pas
+  // encore avec quoi les servir ; la fiche n'affiche alors aucune section,
+  // plutôt qu'une section vide qui promettrait que l'assiette est pleine.
+  test("elle se tait sur un plat qui ne le dit pas", () => {
+    const gratin = catalogue.plats.find((x) => x.id === "gratin-de-pates-tomates")!;
+    expect(aTable(jeu, gratin, 2.5)).toEqual([]);
   });
 });
 

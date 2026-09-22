@@ -6,6 +6,7 @@
 //
 // Port de `apps/proto-shell/comptoir.js` (`CHAUFFE`, `ecranCuisine`).
 
+import { commeIngredient, echelleTexte } from "../model/calcul";
 import type { Choix, Jeu } from "../model/jeu";
 import type { Etape, Foyer, Ingredient, Outil, Plat } from "../model/types";
 
@@ -223,6 +224,38 @@ export function provenanceIngredient(jeu: Jeu, ing: Ingredient): Provenance {
   // la connaît pas —, elle dit seulement d'aller voir avant de partir acheter.
   if (jeu.gardeManger.includes(cid)) return { label: "au garde-manger", acheter: false };
   return { label: "à acheter", acheter: true };
+}
+
+/* ──────────────────────────────────────────────────────────────── à table */
+
+export interface LigneATable {
+  id: string;
+  nom: string;
+  /** Déjà mis à l'échelle, prêt à afficher — « 125 g ». */
+  quantite: string;
+  prov: Provenance;
+}
+
+/**
+ * Ce qui se sert À CÔTÉ, pour que le plat fasse un repas.
+ *
+ * DEMANDÉ LE 22/09/2026 : « il manque toujours les accompagnements, je n'ai pas
+ * un repas complet ». La fiche s'arrêtait à la dernière étape — pour les
+ * escalopes, « enfourner 10 min » — alors que le livre, lui, finit par
+ * « servir avec une salade verte et du riz ».
+ *
+ * L'ÉCHELLE N'EST PAS CELLE DU PLAT, et c'est la même règle qu'au panier. Un
+ * plat qui se garde se cuisine en LOT ENTIER (`facteur`), six escalopes pour un
+ * foyer de deux et demi ; le riz, lui, se fait pour ceux qui sont à table ce
+ * soir. Passer `f` ici afficherait « 300 g de riz » sous une assiette qui en
+ * demande 125.
+ */
+export function aTable(jeu: Jeu, p: Plat, parts: number): LigneATable[] {
+  const f = parts / p.portions;
+  return p.avec.map((a) => {
+    const ing = commeIngredient(a);
+    return { id: a.id, nom: a.nom, quantite: echelleTexte(ing, f), prov: provenanceIngredient(jeu, ing) };
+  });
 }
 
 /* ─────────────────────────────────────────────────────────────────── le crédit */

@@ -45,6 +45,13 @@ recipe:
     - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
     - {id: piment-espelette, name: "piment d'Espelette, facultatif", qty: 1, unit: pincée, seasoning: true}
 
+  # p. 97 : « avec une salade de pâtes, de pommes de terre, du riz ou du pain,
+  # pour compléter l'apport en glucides ». Quatre voies, une seule écrite —
+  # le modèle ne sait pas encore porter un choix d'accompagnement, et le riz
+  # est celle qui ne demande rien d'autre.
+  avec:
+    - {id: riz, name: riz, qty: 50, unit: g}
+
   steps:
     - id: prechauffer-frittata
       action: "Préchauffer le four à 180 °C"

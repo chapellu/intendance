@@ -35,6 +35,12 @@ recipe:
     - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
     - {id: piment-espelette, name: piment d'Espelette, qty: 1, unit: pincée, seasoning: true}
 
+  # p. 43 : « déjà bien équilibrés en protéines et glucides ; accompagner d'une
+  # généreuse salade de crudités ». Généreuse : une demi-salade par personne,
+  # le double de la portion d'appoint des autres pages.
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
   steps:
     - id: prechauffer-cookies
       action: "Préchauffer le four à 180 °C, si possible en chaleur tournante"

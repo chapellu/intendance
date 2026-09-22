@@ -31,6 +31,7 @@ import { Icone } from "../ui/icones";
 import {
   aArmer,
   aSortir,
+  aTable,
   avancement,
   basculerMinuteur,
   chauffeDe,
@@ -315,6 +316,7 @@ function Ingredients({
   const produit = +(p.portions * f).toFixed(1);
   const ustensile = aSortir(p);
   const cr = credit(p);
+  const table = aTable(jeu, p, parts);
   return (
     <div className="co-corps">
       <div className="co-encart">
@@ -359,6 +361,30 @@ function Ingredients({
         })}
       </div>
       {children}
+      {/* À TABLE — ce qu'il faut À CÔTÉ, sous les ingrédients et pas dedans.
+          « Il manque toujours les accompagnements, je n'ai pas un repas
+          complet » (22/09) : la fiche listait ce qui entre dans le plat et
+          s'arrêtait là, alors que le riz et la salade verte des escalopes
+          décident autant du repas que les 500 g de champignons.
+
+          DEUX LISTES ET PAS UNE, parce que ce ne sont pas les mêmes gestes ni
+          les mêmes quantités : ce qui est au-dessus se pèse et se mélange, ce
+          qui est ici se pose sur la table à côté, et se compte pour ceux qui
+          sont là ce soir plutôt que pour le lot cuisiné (cf. `aTable`).
+          Muet sur les plats qui ne le disent pas — se taire dit « on ne sait
+          pas », une section vide dirait « rien à ajouter ». */}
+      {table.length > 0 && (
+        <div className="co-atable">
+          <div className="tt">À table, à côté</div>
+          {table.map((x) => (
+            <div key={x.id} className="l">
+              <span className="nom">{x.nom}</span>
+              <span className="q">{x.quantite}</span>
+              <span className={`p ${x.prov.acheter ? "acheter" : ""}`}>{x.prov.label}</span>
+            </div>
+          ))}
+        </div>
+      )}
       {/* T73 — le crédit ferme la fiche au lieu de l'ouvrir : on vient y lire
           des quantités, pas une bibliographie. Il est là, lisible, et il ne
           prend la place de rien. */}

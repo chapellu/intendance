@@ -47,6 +47,11 @@ recipe:
     - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
     - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
 
+  # p. 87 : « la moitié de cette préparation avec environ 80 g de pain complet,
+  # ou de tartines craquantes au sarrasin ».
+  avec:
+    - {id: pain-levain, name: pain complet, qty: 160, unit: g}
+
   steps:
     - id: mixer-le-houmous
       action: "Mixer soigneusement tous les ingrédients, sel compris. C'est prêt"

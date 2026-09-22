@@ -314,6 +314,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "tailler",
@@ -526,6 +527,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "eau",
@@ -734,6 +736,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "prechauffer",
@@ -958,6 +961,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "tailler",
@@ -1134,6 +1138,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "prechauffer",
@@ -1341,6 +1346,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "tailler",
@@ -1549,6 +1555,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "bouillon",
@@ -1780,6 +1787,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "riz",
@@ -1981,6 +1989,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "riz",
@@ -2157,6 +2166,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "poireaux",
@@ -2390,6 +2400,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "riz",
@@ -2583,6 +2594,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "riz",
@@ -2782,6 +2794,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "lentilles",
@@ -2961,6 +2974,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "prechauffer",
@@ -3119,6 +3133,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "prechauffer",
@@ -3402,6 +3417,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "tremper-pain",
@@ -3719,6 +3735,14 @@
      "central": false
     }
    ],
+   "avec": [
+    {
+     "id": "pomme-de-terre",
+     "nom": "pommes de terre nouvelles",
+     "qty": 400,
+     "unit": "g"
+    }
+   ],
    "steps": [
     {
      "id": "porter-a-ebullition",
@@ -3952,6 +3976,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "prechauffer-thermos",
@@ -4220,6 +4245,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "dorer",
@@ -4478,6 +4504,26 @@
      "base": false,
      "assaisonnement": true,
      "central": false
+    }
+   ],
+   "avec": [
+    {
+     "id": "carottes",
+     "nom": "carotte",
+     "qty": 4,
+     "unit": "pièce"
+    },
+    {
+     "id": "mais",
+     "nom": "maïs en conserve",
+     "qty": 120,
+     "unit": "g"
+    },
+    {
+     "id": "haricots-rouges",
+     "nom": "haricots rouges en bocal",
+     "qty": 160,
+     "unit": "g"
     }
    ],
    "steps": [
@@ -4752,6 +4798,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "prechauffer",
@@ -5037,6 +5084,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "tremper-le-grain",
@@ -5178,6 +5226,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "bouillir",
@@ -5444,6 +5493,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "parer-chou",
@@ -5678,6 +5728,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "lancer-le-riz",
@@ -5941,6 +5992,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "denoyauter",
@@ -6191,6 +6243,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "infuser",
@@ -6447,6 +6500,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "laver",
@@ -6699,6 +6753,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "prechauffer-cookies-simples",
@@ -6953,6 +7008,14 @@
      "central": false
     }
    ],
+   "avec": [
+    {
+     "id": "salade-verte",
+     "nom": "salade verte",
+     "qty": 0.5,
+     "unit": "pièce"
+    }
+   ],
    "steps": [
     {
      "id": "prechauffer-cookies",
@@ -7139,6 +7202,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "prechauffer",
@@ -7424,6 +7488,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "riz",
@@ -7725,6 +7790,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "cuire-kasha",
@@ -8002,6 +8068,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "emincer",
@@ -8290,6 +8357,14 @@
      "central": false
     }
    ],
+   "avec": [
+    {
+     "id": "salade-verte",
+     "nom": "salade verte",
+     "qty": 0.25,
+     "unit": "pièce"
+    }
+   ],
    "steps": [
     {
      "id": "cuire-kasha",
@@ -8504,6 +8579,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "prechauffer-crumble",
@@ -8706,6 +8782,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "preparer-agrume",
@@ -8901,6 +8978,20 @@
      "base": false,
      "assaisonnement": true,
      "central": false
+    }
+   ],
+   "avec": [
+    {
+     "id": "riz",
+     "nom": "riz",
+     "qty": 300,
+     "unit": "g"
+    },
+    {
+     "id": "salade-verte",
+     "nom": "salade verte",
+     "qty": 1,
+     "unit": "pièce"
     }
    ],
    "steps": [
@@ -9183,6 +9274,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "mixer-herbes",
@@ -9492,6 +9584,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "laver-essorer",
@@ -9709,6 +9802,20 @@
      "base": false,
      "assaisonnement": true,
      "central": false
+    }
+   ],
+   "avec": [
+    {
+     "id": "lentilles-seches",
+     "nom": "lentilles vertes",
+     "qty": 80,
+     "unit": "g"
+    },
+    {
+     "id": "salade-verte",
+     "nom": "salade verte",
+     "qty": 0.25,
+     "unit": "pièce"
     }
    ],
    "steps": [
@@ -9953,6 +10060,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "prechauffer",
@@ -10228,6 +10336,14 @@
      "base": false,
      "assaisonnement": true,
      "central": false
+    }
+   ],
+   "avec": [
+    {
+     "id": "riz",
+     "nom": "riz",
+     "qty": 50,
+     "unit": "g"
     }
    ],
    "steps": [
@@ -10548,6 +10664,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "prechauffer",
@@ -10886,6 +11003,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "poser-cercle",
@@ -11161,6 +11279,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "melanger-secs-gaufres",
@@ -11448,6 +11567,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "monter",
@@ -11677,6 +11797,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "sauce",
@@ -11915,6 +12036,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "revenir-oignons",
@@ -12191,6 +12313,14 @@
      "central": false
     }
    ],
+   "avec": [
+    {
+     "id": "salade-verte",
+     "nom": "salade verte",
+     "qty": 0.25,
+     "unit": "pièce"
+    }
+   ],
    "steps": [
     {
      "id": "prechauffer-chausson",
@@ -12450,6 +12580,14 @@
      "central": false
     }
    ],
+   "avec": [
+    {
+     "id": "pain-levain",
+     "nom": "pain complet",
+     "qty": 160,
+     "unit": "g"
+    }
+   ],
    "steps": [
     {
      "id": "mixer-le-houmous",
@@ -12628,6 +12766,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "trancher-le-roti",
@@ -12801,6 +12940,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "eplucher",
@@ -13000,6 +13140,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "tremper",
@@ -13194,6 +13335,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "lancer-mijotage",
@@ -13413,6 +13555,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "revenir",
@@ -13637,6 +13780,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "prechauffer-madeleines",
@@ -13892,6 +14036,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "mayonnaise",
@@ -14128,6 +14273,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "emincer-avoine",
@@ -14389,6 +14535,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "prechauffer",
@@ -14672,6 +14819,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "prechauffer-mini-cakes",
@@ -14908,6 +15056,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "dorer-les-sucs",
@@ -15115,6 +15264,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "tailler",
@@ -15342,6 +15492,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "chauffer-creme",
@@ -15590,6 +15741,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "peser",
@@ -15920,6 +16072,14 @@
      "central": false
     }
    ],
+   "avec": [
+    {
+     "id": "salade-verte",
+     "nom": "salade verte",
+     "qty": 0.5,
+     "unit": "pièce"
+    }
+   ],
    "steps": [
     {
      "id": "prechauffer-muffins",
@@ -16162,6 +16322,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "prechauffer",
@@ -16415,6 +16576,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "fondre-le-chocolat",
@@ -16650,6 +16812,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "tailler-legumes",
@@ -16961,6 +17124,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "cuire-oeuf-nicoise",
@@ -17200,6 +17364,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "mariner",
@@ -17439,6 +17604,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "revenir",
@@ -17687,6 +17853,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "tailler-racines",
@@ -17983,6 +18150,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "tailler-opp",
@@ -18244,6 +18412,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "charger-la-cuve",
@@ -18445,6 +18614,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "melanger-secs",
@@ -18770,6 +18940,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "tremper",
@@ -19142,6 +19313,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "melanger-farine-sel",
@@ -19426,6 +19598,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "griller-tremper",
@@ -19708,6 +19881,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "tailler-pasta-box",
@@ -19930,6 +20104,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "cuire-pates",
@@ -20160,6 +20335,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "puits",
@@ -20348,6 +20524,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "melanger-secs-pizza",
@@ -20530,6 +20707,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "faire-la-pate-wraps",
@@ -20713,6 +20891,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "malaxer",
@@ -20874,6 +21053,14 @@
      "base": false,
      "assaisonnement": true,
      "central": false
+    }
+   ],
+   "avec": [
+    {
+     "id": "pain-levain",
+     "nom": "pain complet",
+     "qty": 80,
+     "unit": "g"
     }
    ],
    "steps": [
@@ -21131,6 +21318,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "prechauffer-bocal",
@@ -21361,6 +21549,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "fouetter",
@@ -21573,6 +21762,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "dorer-oignons",
@@ -21783,6 +21973,14 @@
      "base": false,
      "assaisonnement": false,
      "central": false
+    }
+   ],
+   "avec": [
+    {
+     "id": "oeufs",
+     "nom": "œufs à faire durcir",
+     "qty": 4,
+     "unit": "pièce"
     }
    ],
    "steps": [
@@ -22108,6 +22306,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "sortir-pate",
@@ -22444,6 +22643,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "prechauffer-pizza",
@@ -22750,6 +22950,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "tremper",
@@ -23122,6 +23323,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "lancer",
@@ -23462,6 +23664,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "dorer-oignon",
@@ -23725,6 +23928,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "preparer-volaille",
@@ -23945,6 +24149,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "prechauffer",
@@ -24298,6 +24503,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "egoutter",
@@ -24608,6 +24814,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "tailler",
@@ -24734,6 +24941,7 @@
     "profil": "reste"
    },
    "ingredients": [],
+   "avec": [],
    "steps": [
     {
      "id": "sortir",
@@ -24931,6 +25139,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "tailler-rillettes",
@@ -25192,6 +25401,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "rincer-l-algue",
@@ -25461,6 +25671,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "griller-poivrons",
@@ -25757,6 +25968,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "bouillir",
@@ -26026,6 +26238,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "tailler",
@@ -26288,6 +26501,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "monter-le-bouillon",
@@ -26501,6 +26715,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "prechauffer",
@@ -26788,6 +27003,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "lancer-12-min",
@@ -27020,6 +27236,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "oeuf-mollet-cesar",
@@ -27269,6 +27486,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "cuber-le-pot-au-feu",
@@ -27538,6 +27756,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "lancer-la-casserole",
@@ -27763,6 +27982,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "cuire-oeuf-haricots",
@@ -27998,6 +28218,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "tailler-salade-lentilles",
@@ -28231,6 +28452,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "dorer-oignon-steak",
@@ -28506,6 +28728,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "tremper",
@@ -28773,6 +28996,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "cuire-oeufs",
@@ -29087,6 +29311,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "prechauffer",
@@ -29449,6 +29674,14 @@
      "central": false
     }
    ],
+   "avec": [
+    {
+     "id": "salade-verte",
+     "nom": "salade verte",
+     "qty": 0.25,
+     "unit": "pièce"
+    }
+   ],
    "steps": [
     {
      "id": "cuire-oeuf-nordique",
@@ -29646,6 +29879,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "tiedir",
@@ -29892,6 +30126,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "rincer",
@@ -30164,6 +30399,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "tremper",
@@ -30434,6 +30670,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "couper-beurre",
@@ -30693,6 +30930,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "prechauffer",
@@ -30959,6 +31197,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "eplucher",
@@ -31302,6 +31541,20 @@
      "central": false
     }
    ],
+   "avec": [
+    {
+     "id": "pain-levain",
+     "nom": "pain complet",
+     "qty": 220,
+     "unit": "g"
+    },
+    {
+     "id": "salade-verte",
+     "nom": "salade verte",
+     "qty": 0.5,
+     "unit": "pièce"
+    }
+   ],
    "steps": [
     {
      "id": "mixer-le-tofu",
@@ -31488,6 +31741,14 @@
      "base": false,
      "assaisonnement": true,
      "central": false
+    }
+   ],
+   "avec": [
+    {
+     "id": "pain-levain",
+     "nom": "pain complet à griller",
+     "qty": 220,
+     "unit": "g"
     }
    ],
    "steps": [
@@ -31757,6 +32018,14 @@
      "base": false,
      "assaisonnement": true,
      "central": false
+    }
+   ],
+   "avec": [
+    {
+     "id": "riz",
+     "nom": "riz",
+     "qty": 300,
+     "unit": "g"
     }
    ],
    "steps": [
@@ -32041,6 +32310,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "tailler-pommes",
@@ -32413,6 +32683,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "revenir",
@@ -32756,6 +33027,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "prechauffer-tourte",
@@ -33078,6 +33350,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "prechauffer",
@@ -33400,6 +33673,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "cuire",
@@ -33596,6 +33870,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "blondir-oignons",
@@ -33834,6 +34109,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "caraméliser",
@@ -34038,6 +34314,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "laver-emincer",
@@ -34240,6 +34517,20 @@
      "central": false
     }
    ],
+   "avec": [
+    {
+     "id": "salade-verte",
+     "nom": "salade verte",
+     "qty": 0.25,
+     "unit": "pièce"
+    },
+    {
+     "id": "fruits-frais",
+     "nom": "fruit frais",
+     "qty": 1,
+     "unit": "pièce"
+    }
+   ],
    "steps": [
     {
      "id": "garnir-gourmet",
@@ -34420,6 +34711,14 @@
      "base": false,
      "assaisonnement": true,
      "central": false
+    }
+   ],
+   "avec": [
+    {
+     "id": "salade-verte",
+     "nom": "salade verte",
+     "qty": 0.25,
+     "unit": "pièce"
     }
    ],
    "steps": [
@@ -34633,6 +34932,7 @@
      "central": false
     }
    ],
+   "avec": [],
    "steps": [
     {
      "id": "tailler-fruits",

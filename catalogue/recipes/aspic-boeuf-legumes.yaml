@@ -52,6 +52,13 @@ recipe:
     - {id: agar-agar, name: agar-agar, qty: 2, unit: g}
     - {id: persil, name: persil, qty: 1, unit: petit bouquet}
 
+  # p. 63 : « la moitié de la terrine avec une salade de pommes de terre
+  # nouvelles (éventuellement cuites dans le pot-au-feu) aux câpres et à la
+  # vinaigrette ». 200 g de tubercule par personne, sous les 300 g du MÉMO
+  # p. 97 parce que la terrine en apporte déjà.
+  avec:
+    - {id: pomme-de-terre, name: pommes de terre nouvelles, qty: 400, unit: g}
+
   steps:
     - id: porter-a-ebullition
       action: "Porter le bouillon à ébullition avec le bœuf et les légumes coupés en petits morceaux et le persil finement ciselé"

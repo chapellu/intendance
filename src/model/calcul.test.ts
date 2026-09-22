@@ -212,6 +212,43 @@ describe("les parts commandent le panier", () => {
   });
 });
 
+describe("l’accompagnement fait partie des courses", () => {
+  // « Il manque toujours les accompagnements, je n'ai pas un repas complet »
+  // (22/09/2026). Une recette qui dit « avec du riz » sans que le riz n'arrive
+  // dans la liste laisse exactement le trou qu'elle prétend combler.
+  test("ce qui se sert à côté entre au panier comme le reste", () => {
+    poser(0, "diner", "escalopes-emmental-champignons");
+    const panier = calculer(jeu).panier;
+    expect([...panier.values()].map((l) => l.id)).toContain("riz");
+    expect([...panier.values()].map((l) => l.id)).toContain("salade-verte");
+  });
+
+  // LE PLAT SE CUISINE EN LOT, L'ASSIETTE SE SERT POUR CEUX QUI SONT LÀ, et
+  // c'est tout l'objet du facteur séparé. Les escalopes se gardent (`emits`
+  // reste-plat), donc elles se font pour six même à deux parts et demie : 500 g
+  // de champignons. Le riz, lui, se compte sur les 2,5 parts du soir — 130 g et
+  // pas 300. Suivre le facteur du plat ferait acheter du riz pour six.
+  test("il suit les parts du soir, pas le lot qu'on cuisine", () => {
+    poser(0, "diner", "escalopes-emmental-champignons");
+    const p = jeu.plats["escalopes-emmental-champignons"]!;
+    expect(facteur(p, catalogue.foyer.parts)).toBe(1);
+
+    const panier = calculer(jeu).panier;
+    const ligne = (id: string) => [...panier.values()].find((l) => l.id === id);
+    expect(ligne("champignons-paris")?.qty).toBe(500);
+    expect(ligne("riz")?.qty).toBe(echelle(300, "g", catalogue.foyer.parts / p.portions));
+    expect(ligne("riz")?.qty).toBe(130);
+  });
+
+  test("et il double avec les parts, comme le plat", () => {
+    poser(0, "diner", "escalopes-emmental-champignons");
+    const i = creneau(0, "diner");
+    jeu.parts[i] = 6;
+    const ligne = [...calculer(jeu).panier.values()].find((l) => l.id === "riz");
+    expect(ligne?.qty).toBe(300);
+  });
+});
+
 describe("les quantités sont exécutables", () => {
   test("les grammes s'arrondissent à ce qu'une balance sait peser", () => {
     expect(echelle(140, "g", 0.42)).toBe(60);

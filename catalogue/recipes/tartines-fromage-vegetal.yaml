@@ -35,6 +35,12 @@ recipe:
     - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
     - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
 
+  # p. 48 : « avec 100 à 120 g de bon pain complet et une salade de crudités ».
+  # Sans le pain, ces tartines n'ont pas de tartine : le plat EST la garniture.
+  avec:
+    - {id: pain-levain, name: pain complet, qty: 220, unit: g}
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
   steps:
     - id: mixer-le-tofu
       action: "Mettre le tofu en cubes avec l'huile, le sel, le poivre et le piment dans le bol du robot"

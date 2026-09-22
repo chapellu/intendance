@@ -46,6 +46,11 @@ recipe:
     - {id: chevre-frais, name: fromage de chèvre frais, qty: 40, unit: g}
     - {id: basilic, name: feuilles de basilic, qty: 20, unit: pièce}
 
+  # p. 41 : « savourer les 4 wraps avec un fruit et une salade de crudités ».
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.25, unit: pièce}
+    - {id: fruits-frais, name: fruit frais, qty: 1, unit: pièce}
+
   steps:
     - id: garnir-gourmet
       action: "Tartiner la crêpe de tapenade en laissant le dernier tiers vide, puis disposer le jambon, le chèvre émietté et le basilic"
