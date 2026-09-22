@@ -41,6 +41,7 @@ import type { Calcul } from "../model/calcul";
 import type { Jeu } from "../model/jeu";
 import type { Confiance, EtatIngredient, Rejeu } from "../model/journal";
 import type { Espace } from "../model/types";
+import { JOURS_VISIBLES } from "../nav/jours";
 import { chemin } from "../nav/routes";
 import { aller } from "../nav/useRoute";
 import { Corps } from "../ui/Coquille";
@@ -137,9 +138,17 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
 
   return (
     <Corps plat>
-      <button className="co-retour" onClick={() => aller({ ecran: "semaine" })}>
-        ‹ La semaine
-      </button>
+      {/* LE SEUL CHEMIN QUI RESTAIT VERS LA GRILLE, ET IL MENTAIT DEUX FOIS.
+          T88 a éteint l'agenda en pensant que plus rien n'y menait ; ce
+          bouton-ci y menait encore, et il a été pendant trois jours la seule
+          façon d'atteindre la liste de ses plats posés. Un chevron de retour
+          en tête d'un ONGLET est de toute façon faux — l'inventaire ne s'ouvre
+          plus depuis la semaine, il s'ouvre depuis la barre. */}
+      {JOURS_VISIBLES ? (
+        <button className="co-retour" onClick={() => aller({ ecran: "semaine" })}>
+          ‹ La semaine
+        </button>
+      ) : null}
       <div className="co-h" style={{ marginTop: "var(--space-2)" }}>L’inventaire</div>
       <div className="co-note" style={{ marginTop: "var(--space-1)" }}>
         {vue.nomDuFiltre
@@ -240,14 +249,14 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
           pourquoi certaines lignes n'ont pas de bouton. */}
       {vue.lots.some((l) => !l.ref) ? (
         <div className="co-note" style={{ margin: "var(--space-2) var(--space-1) 0" }}>
-          Les lots cuisinés cette semaine sont calculés&nbsp;: ils se retirent en changeant la
-          semaine, pas ici.{" "}
+          Les lots cuisinés cette semaine sont calculés&nbsp;: ils se retirent en changeant ce
+          qui est posé, pas ici.{" "}
           <a
             className="btn btn-ghost"
             style={{ fontSize: 12.5, padding: "2px 8px" }}
-            href={chemin({ ecran: "semaine" })}
+            href={chemin(JOURS_VISIBLES ? { ecran: "semaine" } : { ecran: "poses" })}
           >
-            La semaine ›
+            {JOURS_VISIBLES ? "La semaine ›" : "Les posés ›"}
           </a>
         </div>
       ) : null}

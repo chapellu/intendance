@@ -18,6 +18,7 @@ import { indexDuCreneau } from "../db";
 import { useCatalogue, useSemaine } from "../db/hooks";
 import type { Calcul } from "../model/calcul";
 import { SAUTE, type Jeu } from "../model/jeu";
+import { JOURS_VISIBLES } from "../nav/jours";
 import { chemin, type CleCreneau } from "../nav/routes";
 import { aller } from "../nav/useRoute";
 import { Corps } from "../ui/Coquille";
@@ -62,11 +63,11 @@ export function Parts({ creneau }: { creneau: CleCreneau }) {
 
 /** « Retour » rend la main à ce qui a ouvert l'écran : depuis « Poser » on
  *  revient aux cartes, depuis « La semaine » à la grille. Sans histoire —
- *  l'URL ouverte directement — on retombe sur la semaine, qui est l'endroit
- *  d'où l'on règle des parts. */
+ *  l'URL ouverte directement — on retombe sur l'écran d'où l'on règle des
+ *  parts, qui est la grille quand les jours sont là et « Posés » sinon. */
 function retour() {
   if (window.history.length > 1) window.history.back();
-  else aller({ ecran: "semaine" });
+  else aller(JOURS_VISIBLES ? { ecran: "semaine" } : { ecran: "poses" });
 }
 
 function Contenu({

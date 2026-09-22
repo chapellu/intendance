@@ -70,6 +70,12 @@ test("terminer une recette journalise, et la confiance du placard se dépense", 
   // plat qu'on vient de poser peut tomber n'importe quand dans la semaine. Le
   // href de « régler les parts » porte le couple (jour, repas) — la même clé
   // que la base — et c'est elle qui ouvre la fiche.
+  //
+  // La grille se demande depuis le 21/09 : poser dépose sur « Posés », qui ne
+  // porte pas le réglage des parts. C'est elle qui porte le couple, donc c'est
+  // elle qu'on ouvre.
+  await page.goto("/#/cuisine/semaine");
+  await attendreLApp(page);
   const slot = page.locator(".co-slot").filter({ hasText: titre }).first();
   await slot.locator("button.resume").click();
   const href = await page

@@ -55,9 +55,12 @@ export async function poserUnPlat(
     if (n >= 0) {
       const titre = titres[n]!.trim();
       await cartes.nth(n).getByRole("button", { name: libellePoser(false) }).click();
-      // `jouer` renvoie sur la semaine une fois l'écriture faite : c'est là
-      // qu'on sait que le tour est complet, base comprise.
-      await expect(page.locator(".co-slots").first()).toBeVisible();
+      // `jouer` renvoie sur ce qu'on vient de décider une fois l'écriture
+      // faite : c'est là qu'on sait que le tour est complet, base comprise.
+      // La destination suit `JOURS_VISIBLES` — la grille quand les jours sont
+      // là, « Posés » sinon — donc on attend le plat qu'on vient de poser
+      // plutôt qu'un conteneur d'écran, qui changerait avec l'interrupteur.
+      await expect(page.locator(".co-lot, .co-slots").first()).toBeVisible();
       return titre;
     }
     await page.getByRole("button", { name: /Repiocher/ }).click();

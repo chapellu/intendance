@@ -23,6 +23,7 @@ import { SAUTE, type Jeu } from "../model/jeu";
 import { contexte } from "../model/journal";
 import { questions } from "../model/questions";
 import { main, offre, type Savoir } from "../model/scoring";
+import { JOURS_VISIBLES } from "../nav/jours";
 import { chemin, type CleCreneau } from "../nav/routes";
 import { aller } from "../nav/useRoute";
 import { Demande, Jouable } from "../ui/Cartes";
@@ -120,7 +121,13 @@ function Contenu({
   }, [jeu, i, cartes, savoir, saute]);
 
   const jouer = (id: string) => {
-    void poserPlat(i, id).then(() => aller({ ecran: "semaine" }));
+    // ON ATTERRIT SUR CE QU'ON VIENT DE DÉCIDER. T88 a éteint l'agenda mais a
+    // laissé ce `aller` viser la grille : poser un plat déposait donc sur un
+    // écran que plus aucun onglet ne nommait, d'où l'on ne pouvait plus
+    // revenir qu'en passant par la barre du bas. C'est la moitié invisible du
+    // retour du 21/09 — « nowhere to check them » se dit aussi d'un écran
+    // qu'on voit une seconde sans pouvoir le retrouver.
+    void poserPlat(i, id).then(() => aller(JOURS_VISIBLES ? { ecran: "semaine" } : { ecran: "poses" }));
   };
 
   return (

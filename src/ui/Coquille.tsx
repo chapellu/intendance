@@ -35,14 +35,26 @@ const SOUS_NAV_JOURS: { route: Route; nom: string }[] = [
 /**
  * Les vues de la cuisine sans les jours — voir `nav/jours.ts`.
  *
- * TROIS ONGLETS, ET C'EST UNE BOUCLE PLUTÔT QU'UN CALENDRIER : ce qu'on a
- * (Stock), ce qu'on peut en faire (Proposer), ce qu'il faut aller chercher
+ * UNE BOUCLE PLUTÔT QU'UN CALENDRIER : ce qu'on a (Stock), ce qu'on peut en
+ * faire (Proposer), ce qu'on a décidé (Posés), ce qu'il faut aller chercher
  * (Courses). L'inventaire n'était jusqu'ici atteignable que par le lien « à
  * vérifier » d'une carte, c'est-à-dire seulement quand l'app avait un doute —
  * alors que c'est l'écran autour duquel le foyer veut tourner.
+ *
+ * « POSÉS » EST ARRIVÉ QUATRIÈME, LE 21/09, ET IL MANQUAIT DEPUIS T88. Trois
+ * onglets disaient ce qu'on a, ce qu'on peut faire et ce qu'il faut acheter —
+ * aucun ne disait ce qu'on a DÉCIDÉ. En éteignant l'agenda on avait éteint le
+ * seul écran qui nommait les plats posés, et ce qui restait les comptait sans
+ * jamais les dire : « 2/14 répondus », « 12 repas à poser ». D'où le retour,
+ * mot pour mot : « I've selected 3 recipes but I have nowhere to check them. »
+ *
+ * IL SE PLACE APRÈS « PROPOSER », parce que c'est l'ordre du geste : on
+ * propose, puis on relit ce qu'on a posé. Le mettre en tête ouvrirait la
+ * cuisine sur une liste vide tant qu'on n'a rien décidé.
  */
 const SOUS_NAV_STOCK: { route: Route; nom: string }[] = [
   { route: { ecran: "fil" }, nom: "Proposer" },
+  { route: { ecran: "poses" }, nom: "Posés" },
   { route: { ecran: "stock" }, nom: "Stock" },
   { route: { ecran: "courses" }, nom: "Courses" },
 ];

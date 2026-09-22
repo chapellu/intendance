@@ -12,7 +12,7 @@
 import { cleCreneau, jourISO } from "../db";
 import { articles, minutesParJour, type Calcul, type LigneChaine } from "../model/calcul";
 import { joue, SAUTE, sePioche, type Jeu } from "../model/jeu";
-import type { Emit, Plat } from "../model/types";
+import type { Emit, NatureCreneau, Plat } from "../model/types";
 import type { CleCreneau, Route } from "../nav/routes";
 import { duree } from "../ui/format";
 import { phraseManque } from "../ui/phrases";
@@ -28,6 +28,16 @@ export interface VueSlot {
   id: string;
   creneau: CleCreneau;
   label: string;
+  /**
+   * `choisi` ou `optionnel` — jamais `routine`, que `vueDeLaSemaine` écarte.
+   *
+   * PORTÉ JUSQU'À L'ÉCRAN DEPUIS « LES POSÉS », parce que le label ne suffit
+   * pas à distinguer un repas d'un à-côté : « dessert » et « dîner » se lisent
+   * pareil, et c'est la NATURE qui dit lequel des deux compte comme un repas.
+   * La grille n'en avait pas besoin — elle montre les cases dans leur journée,
+   * où l'ordre parle tout seul — mais une liste à plat, si.
+   */
+  nature: NatureCreneau;
   /** Ce repas part en gamelle. */
   emporte: boolean;
   saute: boolean;
@@ -111,6 +121,7 @@ function slot(jeu: Jeu, calc: Calcul, i: number, jour: string): VueSlot {
     id: cleCreneau(jour, c.repas),
     creneau: { jour, repas: c.repas },
     label: c.label,
+    nature: c.nature,
     emporte: c.emporte,
     saute: rid === SAUTE,
     plat,
