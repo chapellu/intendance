@@ -2720,6 +2720,11 @@ un champ y poserait une autre question de rythme — *« un pas à la fois »*. 
 reprendre quand T81 aura tranché où vit le répertoire, parce que les deux
 écrans se répondent.
 
+> **Fermé par T90 le 22/09, et pas par T81 :** attendre le répertoire supposait
+> que « Poser » gardait une porte. T88 la lui a retirée cinq jours plus tard en
+> cachant la grille, et la recherche est devenue inatteignable sans que rien ne
+> le signale. Voir « La recherche suit là où l'on propose ».
+
 **Rien ne dit qu'un plat n'a JAMAIS été proposé.** L'écart explique le créneau
 qu'on regarde ; il ne dit pas qu'un plat est resté invisible six semaines
 d'affilée parce qu'il note mal. C'est la même famille de trous que celui de
@@ -3354,6 +3359,81 @@ remontent le même plancher, ce qu'un plancher par recette aurait rendu faux.
   en tête. Le jour où il faudra PARCOURIR la liste, c'est par population qu'elle
   se coupera — « de quoi accélérer un soir » et « un dîner d'avance » sont déjà
   la phrase de chaque ligne.
+
+## La recherche suit là où l'on propose — T90
+
+**Dit le 22/09/2026, et c'est la deuxième fois que la demande est formulée :**
+
+> *« Peux-tu ajouter une option pour chercher une recette dans proposer.
+> Celle-ci a disparu. »*
+
+**ELLE N'A PAS DISPARU, ELLE A PERDU SA PORTE.** Le champ de T80 est intact, ses
+trois parcours sont verts, et `chercher()` n'a pas bougé d'une ligne : il vit
+dans « Poser », et « Poser » ne s'ouvre que depuis une case de la grille. **T88 a
+caché la grille.** Le seul chemin qui restait est « Posés › Changer », qui
+suppose un plat DÉJÀ posé — c'est-à-dire l'inverse de la question qu'on se pose
+en cherchant. Un écran vivant, testé, déployé, et zéro doigt capable de
+l'atteindre.
+
+**LE BACKLOG L'AVAIT ÉCRIT D'AVANCE, ET A QUAND MÊME LAISSÉ PASSER.** « Ce que
+T80 laisse ouvert » disait, le 15/09 : *« La recherche est dans "Poser" et nulle
+part ailleurs […] à reprendre quand T81 aura tranché où vit le répertoire. »*
+C'était une bonne décision sous une hypothèse que personne n'a relue cinq jours
+plus tard : que « Poser » garde une porte. **Motif à retenir, et c'est le même
+que « Posés » le 21/09 :** un interrupteur qui éteint un écran éteint aussi tout
+ce qui n'était atteignable que par lui, et rien dans le dépôt ne compte les
+chemins. Deux fois en deux jours — l'agenda nommait les plats posés, la grille
+ouvrait la recherche.
+
+**LA QUESTION DE RYTHME AVAIT UNE RÉPONSE, ET C'EST L'USAGE QUI L'A DONNÉE.**
+T80 hésitait à mettre un champ dans le fil parce que *« un pas à la fois »* est
+une promesse de rythme. Elle interdit de FEUILLETER, pas de NOMMER : un champ
+vide ne propose rien, ne pousse à rien et ne coûte pas une ligne d'écran ;
+rempli, il répond exactement à la question du pas — *qu'est-ce que je mets là* —
+par l'autre bout. Ce qui aurait cassé le rythme, c'est une liste de 138 plats,
+et c'est T81, qui reste posé.
+
+- [x] **T90 — Chercher, dans « Proposer ».** Le champ de T80, à l'identique, dans
+      le pas du fil : même `aria-label`, même « Effacer », même place — devant la
+      file de questions, à la place de la main tant que la frappe dure.
+
+      **AUCUNE LIGNE DE MODÈLE.** `chercher()`, `trouver()`, `normaliser()`,
+      `REQUETE_MIN`, `TROUVAILLES_MAX` et le cooldown ajouté hors comptoir sont
+      ceux de T80, importés depuis `poser.vue`. Le ticket est un branchement
+      d'écran, et c'est exactement ce que le découpage de T80 avait acheté : le
+      jour où la recherche a dû changer d'écran, elle n'a rien eu à réapprendre.
+
+      **LA FRAPPE NE SURVIT PAS AU PAS, ET C'EST LA SEULE VRAIE DÉCISION DU
+      TICKET.** Dans « Poser » la question ne se posait pas : on quitte l'écran
+      pour changer de créneau. Le fil, lui, enchaîne les pas SANS démonter le
+      composant — poser le plat cherché et voir le pas suivant s'ouvrir sur la
+      même requête, donc sur les mêmes cartes, aurait montré une main que
+      personne n'a demandée, pour un repas qu'on n'a pas encore regardé. Une clé
+      React sur le créneau le dit en un mot, et le parcours e2e le tient.
+
+      **« REPIOCHER » DISPARAÎT SOUS UNE RECHERCHE.** Il changerait la main que
+      les trouvailles cachent, et on ne s'en apercevrait qu'en effaçant le
+      champ. Il ne s'affichait déjà pas sous une question, pour la même raison.
+
+      Portes : typecheck, **694 tests** (aucun nouveau — le modèle n'a pas
+      bougé, et la promesse neuve est un enchaînement d'écrans qu'aucun test
+      unitaire ne monte), build, **42 e2e** (2 nouveaux dans
+      `chercher.spec.ts`), `catalogue:verifie` 0 erreur.
+
+### Ce que ce ticket laisse ouvert
+
+- **L'écart « déjà posé » nomme un jour que l'app cache.** `comptoir()` écrit
+  *« déjà posé — jeudi, dîner »*, et c'est maintenant lisible depuis un écran
+  qui, lui, dit « À poser ». La phrase n'est pas fausse et son test porte une
+  décision de T80 — *dire OÙ il l'est* — donc elle n'a pas été touchée ici :
+  la réécrire est une décision de rédaction, pas un effet de bord d'un champ.
+  `phrases.ts` et `Poses.tsx` montrent le patron du jour où on la prendra.
+- **T81 reste posé, et il ne l'est pas moins.** Ce ticket sert celui qui a un nom
+  en tête ET un pas sous les yeux. Voir ce que la maison sait faire, sans rien
+  planifier, n'a toujours aucun écran.
+- **Rien ne compte les chemins.** Les deux trous de T88 se sont vus à l'usage,
+  quatre et six jours plus tard, parce qu'un humain les a cherchés. Un écran
+  qu'aucun lien n'atteint plus est une chose qu'un test pourrait dire.
 
 ## Sortie
 

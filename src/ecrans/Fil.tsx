@@ -16,6 +16,14 @@
 // Les points de progression en haut sont des BOUTONS : on retourne à *jeudi
 // déjeuner*, on ne recule pas « d'un ». C'est pour ça qu'il n'y a pas de bouton
 // « précédent » sur cet écran, et que son absence est une décision.
+//
+// ET UN QUATRIÈME POINT DEPUIS T90 : LE CHAMP DE RECHERCHE. T80 l'avait laissé
+// hors du fil exprès — « un pas à la fois » est une question de rythme, et un
+// champ posait celle d'un écran qui feuillette. T88 a tranché à sa place en
+// cachant les jours : « Poser », qui portait le champ, ne s'ouvrait plus que
+// depuis la grille, et la grille n'a plus d'onglet. La recherche n'a pas changé
+// d'avis, elle a perdu sa porte. Elle reprend donc la place qu'elle a toujours
+// eue — devant la file de questions, à la place de la main tant qu'elle dure.
 
 import { useEffect, useMemo, useState } from "react";
 import { indexDuCreneau, jourISO } from "../db";
@@ -35,6 +43,7 @@ import { aller } from "../nav/useRoute";
 import { Demande, Jouable } from "../ui/Cartes";
 import { Corps } from "../ui/Coquille";
 import { avancement, libelleCran, pointsDuFil, resteAPoser } from "./fil.vue";
+import { chercher, normaliser, REQUETE_MIN } from "./poser.vue";
 
 type Poser = (i: number, plat: string | null) => Promise<void>;
 
@@ -70,6 +79,12 @@ export function Fil({ creneau }: { creneau?: CleCreneau }) {
 
   return (
     <Pas
+      // UN PAS EST UN PAS, ET LA FRAPPE NE LUI SURVIT PAS. Sans cette clé, React
+      // garderait le même composant d'un créneau au suivant : on poserait le
+      // plat cherché et le pas d'après s'ouvrirait sur la même requête, donc sur
+      // les mêmes cartes — une main qu'on n'a pas demandée, pour un repas qu'on
+      // n'a pas encore regardé. Une recherche ne se rejoue pas (T80).
+      key={cleDuPas(creneau)}
       jeu={jeu}
       savoir={savoir}
       passe={passe}
@@ -263,6 +278,19 @@ function Pas({
   const c = jeu.creneaux[i]!;
   const jour = jeu.jours[c.jour]!;
 
+  // LA FRAPPE VIT DANS L'ÉCRAN, PAS DANS LA BASE — la règle de T80, et elle vaut
+  // mot pour mot ici : une recherche n'est pas une décision, elle ne se rejoue
+  // pas, et la ranger à côté des repioches ferait d'un mot tapé au passage un
+  // réglage qu'on retrouve trois jours plus tard sans savoir qui l'a mis là.
+  const [requete, setRequete] = useState("");
+  const recherche = useMemo(
+    () =>
+      normaliser(requete).length < REQUETE_MIN
+        ? null
+        : chercher(jeu, jeu.choix, i, requete, savoir),
+    [jeu, i, requete, savoir],
+  );
+
   const cartes = useMemo(() => {
     if (repioches === undefined) return [];
     jeu.slot = i;
@@ -335,10 +363,57 @@ function Pas({
         {c.emporte ? " · doit voyager" : ""} — {avancement(passe.creneaux.length, decides.size)}
       </div>
 
+      {/* LE CHAMP EST TOUJOURS LÀ, ET IL PASSE DEVANT LA QUESTION — T80, et
+          la raison n'a pas bougé en venant ici : le réserver aux pas sans
+          question le retirerait exactement quand il sert le plus. Sur une app
+          neuve tout central est inconnu, donc le premier pas EST une file de
+          relevés, et quelqu'un qui sait déjà ce qu'il veut faire n'a aucune
+          raison de les payer d'abord. La question n'est pas annulée, elle
+          attend — elle revient dès que le champ est vide. */}
+      <div className="co-chercher">
+        <input
+          type="search"
+          value={requete}
+          onChange={(e) => setRequete(e.target.value)}
+          placeholder="Chercher un plat…"
+          aria-label="chercher un plat par son nom"
+        />
+        {requete ? (
+          <button className="btn btn-ghost" onClick={() => setRequete("")}>
+            Effacer
+          </button>
+        ) : null}
+      </div>
+
       {/* LA QUESTION PREND L'ÉCRAN, LA MAIN ATTEND DERRIÈRE — T50. C'est la
           règle qui a fait gagner la variante A : afficher les cartes pendant
-          qu'on demande, c'est afficher une main qu'on sait fausse. */}
-      {aDemander[0] ? (
+          qu'on demande, c'est afficher une main qu'on sait fausse. La recherche
+          passe devant les deux : elle est ce qu'on vient de demander. */}
+      {recherche ? (
+        recherche.trouvailles.length ? (
+          <>
+            {recherche.trouvailles.map((t) => (
+              <Jouable
+                key={t.carte.plat.id}
+                carte={t.carte}
+                ecarts={t.ecarts}
+                creneau={creneau}
+                jouer={poser}
+              />
+            ))}
+            {/* ON DIT CE QU'ON N'A PAS MONTRÉ. Une liste coupée en silence fait
+                chercher deux fois le plat qui n'y était pas. */}
+            {recherche.total > recherche.trouvailles.length ? (
+              <div className="co-note">
+                {recherche.total - recherche.trouvailles.length} autres plats portent ce nom —
+                précisez.
+              </div>
+            ) : null}
+          </>
+        ) : (
+          <div className="co-vide">Aucun plat ne porte ce nom.</div>
+        )
+      ) : aDemander[0] ? (
         <Demande question={aDemander[0]} reste={aDemander.length - 1} />
       ) : cartes.length ? (
         cartes.map((carte) => (
@@ -364,7 +439,11 @@ function Pas({
         >
           Pas celui-là
         </button>
-        {aDemander.length ? null : (
+        {/* RIEN À REPIOCHER SOUS UNE RECHERCHE : le bouton changerait la main
+            qui est justement cachée derrière les trouvailles, et on ne le
+            verrait qu'en effaçant le champ. Même raison que pour la question,
+            qu'il n'accompagnait déjà pas. */}
+        {aDemander.length || recherche ? null : (
           <button
             className="btn btn-ghost"
             onClick={() =>
