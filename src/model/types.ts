@@ -247,6 +247,9 @@ export interface Plat {
   source: Source | null;
   apports: Apports;
   ingredients: Ingredient[];
+  /** Ce qu'il faut à côté — vide quand la recette ne le dit pas, ce qui n'est
+   *  pas la même chose que « rien à ajouter ». */
+  avec: Accompagnement[];
   steps: Etape[];
   bebe: string | null;
   actifMin: number | null;
@@ -264,6 +267,23 @@ export interface Plat {
   vaisselle: Vaisselle | null;
   gainChainage: number;
   cuisinable: boolean;
+}
+
+/**
+ * Ce qui se sert À CÔTÉ pour que le plat fasse un repas — le riz et la salade
+ * verte des escalopes.
+ *
+ * CE N'EST PAS UN INGRÉDIENT, ET LES CHAMPS ABSENTS LE DISENT. Pas de `ref` :
+ * aucun `uses:` ne le vise, puisqu'il n'entre dans aucune étape. Pas de `base`
+ * ni d'`assaisonnement` : rien ne le produit en amont et on ne le sale pas à
+ * l'intérieur du plat. Ce qu'il partage avec un ingrédient est le seul voyage
+ * qui compte ici — mis à l'échelle du foyer, puis au panier.
+ */
+export interface Accompagnement {
+  id: string;
+  nom: string;
+  qty: number;
+  unit: string;
 }
 
 export interface Mangeur {

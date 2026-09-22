@@ -50,6 +50,12 @@ recipe:
     - {id: origan, name: origan séché, qty: 1, unit: c. à c.}
     - {id: thym-frais, name: "thym frais, facultatif", qty: 1, unit: petit bouquet}
 
+  # p. 81 : « peu de protéines — compléter par 2 œufs durs, ou une belle
+  # portion de fromage de chèvre ». Les œufs sont la première des deux voies ;
+  # elle chiffre, l'autre pas.
+  avec:
+    - {id: oeufs, name: œufs à faire durcir, qty: 4, unit: pièce}
+
   steps:
     - id: prechauffer-pissaladiere
       action: "Préchauffer le four à 240 °C, grille sur le cran le plus bas"

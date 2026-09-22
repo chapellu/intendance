@@ -47,6 +47,11 @@ recipe:
     - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
     - {id: poivre-5-baies, name: poivre 5 baies, qty: 1, unit: pincée, seasoning: true}
 
+  # p. 32 : « 2 pains ≈ 110 g de céréales sèches ; ajouter juste une salade ».
+  # Les glucides sont dans les pains suédois, il ne manque que le végétal.
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.25, unit: pièce}
+
   steps:
     - id: cuire-oeuf-nordique
       action: "Cuire l'œuf 8 minutes chrono à l'eau bouillante, puis l'écaler et le trancher"

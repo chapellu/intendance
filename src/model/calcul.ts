@@ -14,7 +14,7 @@
 import { bandRepas, Depot, horlogesDu, qteDe, type LigneDepot, type Prise } from "./depot";
 import { dateDe, joue, type Jeu } from "./jeu";
 import type {
-  Accept, Catalogue, CauseLimite, Espace, Ingredient, Plat, Provenance,
+  Accept, Accompagnement, Catalogue, CauseLimite, Espace, Ingredient, Plat, Provenance,
 } from "./types";
 
 /* ────────────────────────────────────────────────────────────── provenance */
@@ -117,6 +117,23 @@ export function echelle(qty: number, unit: string, f: number): number {
 
 export const echelleTexte = (ing: Ingredient, f: number): string =>
   `${String(echelle(ing.qty, ing.unit, f)).replace(".", ",")} ${ing.unit}`;
+
+/**
+ * Un accompagnement sous la forme que lisent `provenance` et `echelleTexte`.
+ *
+ * LES QUATRE CHAMPS AJOUTÉS VALENT FAUX, TOUJOURS, et c'est pour ça qu'ils sont
+ * ici et pas dans l'export : publier `base: false` sur chaque ligne de riz du
+ * corpus serait publier une information qu'aucune donnée ne porte. Un
+ * accompagnement ne sort d'aucune chaîne — on ne chaîne pas du riz, on le fait
+ * cuire —, n'est visé par aucun `uses:` et ne franchit aucune porte de sel.
+ */
+export const commeIngredient = (a: Accompagnement): Ingredient => ({
+  ...a,
+  ref: a.id,
+  base: false,
+  assaisonnement: false,
+  central: false,
+});
 
 /**
  * Où en sont, dans leur vie, les lots que cette prise a vidés — T47.
@@ -325,26 +342,42 @@ export function calculer(
       }
     }
 
-    const f = facteur(p, parts[i] ?? catalogue.foyer.parts);
+    const besoin = parts[i] ?? catalogue.foyer.parts;
+    const f = facteur(p, besoin);
     facteurs[i] = f;
     const lignes = [...p.ingredients];
     if (plein && p.sansReste) lignes.push(...p.sansReste.ingredients);
 
-    for (const ing of lignes) {
+    const auPanier = (ing: Ingredient, echelleLigne: number) => {
       const cid = alias(catalogue, ing.id);
       const prov = provenance(catalogue, ing, cid, prises, gardeManger);
       provenances[prov] = (provenances[prov] ?? 0) + 1;
-      if (catalogue.horsCourses.includes(prov)) continue;
+      if (catalogue.horsCourses.includes(prov)) return;
       if (prov === "placard" || prov === "garde-manger") {
         aVerifier.set(cid, { nom: ing.nom, prov });
-        continue;
+        return;
       }
       const cle = `${cid}|${ing.unit}`;
       const slot = panier.get(cle) ?? { nom: ing.nom, qty: 0, n: 0, id: cid, unit: ing.unit };
-      slot.qty += echelle(ing.qty, ing.unit, f);
+      slot.qty += echelle(ing.qty, ing.unit, echelleLigne);
       slot.n += 1;
       panier.set(cle, slot);
-    }
+    };
+
+    for (const ing of lignes) auPanier(ing, f);
+
+    // L'ACCOMPAGNEMENT EST UNE COURSE COMME UNE AUTRE, et c'est la moitié du
+    // service rendu : une recette qui dit « avec du riz » sans que le riz
+    // n'arrive dans la liste laisse exactement le trou qu'elle prétend combler.
+    //
+    // MAIS IL NE SUIT PAS LE FACTEUR DU PLAT, ET C'EST LA SUBTILITÉ. `facteur`
+    // arrondit au LOT — un plat qui se garde se cuisine en entier même pour
+    // deux parts et demie, parce que couper un lot qui part au congélateur ne
+    // fait gagner que du travail. Le riz, lui, se fait pour ceux qui sont à
+    // table ce soir : le reste d'escalopes sera un autre repas, sur un autre
+    // créneau, qui portera son propre accompagnement. Suivre `f` ferait acheter
+    // du riz pour six un soir où l'on est deux et demi.
+    for (const a of p.avec) auPanier(commeIngredient(a), besoin / p.portions);
 
     for (const e of p.emits) {
       const [amount, unit] = qteDe(e);

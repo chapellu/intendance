@@ -46,6 +46,14 @@ recipe:
     - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
     - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
 
+  # p. 73 : « servir avec une salade et environ 200 g de féculents pesés cuits
+  # au choix (lentilles ou haricots blancs par exemple) ». 200 g cuits ≈ 80 g
+  # de lentilles sèches — c'est le poids SEC qui s'achète, donc c'est lui qui
+  # est écrit ici.
+  avec:
+    - {id: lentilles-seches, name: lentilles vertes, qty: 80, unit: g}
+    - {id: salade-verte, name: salade verte, qty: 0.25, unit: pièce}
+
   steps:
     - id: tailler-le-tofu
       action: "Découper le tofu fumé en « lardons »"

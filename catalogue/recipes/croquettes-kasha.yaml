@@ -42,6 +42,10 @@ recipe:
     - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
     - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
 
+  # p. 51 : « avec une salade ou des bâtonnets de crudités ».
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.25, unit: pièce}
+
   steps:
     - id: cuire-kasha
       action: "Mettre kasha et petits pois dans une petite casserole avec l'eau bouillante et un peu de sel, puis cuire à feu doux environ 8 min en mélangeant SOUVENT"

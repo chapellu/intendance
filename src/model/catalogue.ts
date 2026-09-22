@@ -15,7 +15,7 @@
 // possible. Un champ qu'aucun calcul ne lit peut manquer sans dommage.
 
 import type {
-  Accept, Agression, Catalogue, Denree, Emit, EmitKind, Espace, Etape, Etat, Forme, Foyer,
+  Accept, Accompagnement, Agression, Catalogue, Denree, Emit, EmitKind, Espace, Etape, Etat, Forme, Foyer,
   GardeManger, Ingredient, LigneStock, Nature, Outil, Plat, Provenance, Quantite, Rattrapage,
   Source, Urgence, Usage, Zone,
 } from "./types";
@@ -136,6 +136,26 @@ function ingredient(v: unknown, ou: string, defauts = false): Ingredient {
     // compris sur les lignes pleines, contrairement aux deux drapeaux
     // au-dessus. Le rayon reste alors seul juge, ce qui est le défaut voulu.
     central: o["central"] === undefined ? false : booleen(o["central"], `${ou}.central`),
+  };
+}
+
+/**
+ * Une ligne d'accompagnement — quatre champs, et pas un de plus.
+ *
+ * ON NE LA FAIT PAS PASSER PAR `ingredient()`, qui remplirait `ref`, `base`,
+ * `assaisonnement` et `central` de valeurs que rien ne lit : un
+ * accompagnement n'entre dans aucune étape, donc aucun `uses:` ne le vise, et
+ * aucune chaîne ne le produit. Quatre champs obligatoires rendent aussi le
+ * contrôle plus sévère que le défaut — une ligne sans `qty` se verrait ici, au
+ * chargement, et pas à l'écran sous la forme d'un « NaN g de riz ».
+ */
+function accompagnement(v: unknown, ou: string): Accompagnement {
+  const o = obj(v, ou);
+  return {
+    id: texte(o["id"], `${ou}.id`),
+    nom: texte(o["nom"], `${ou}.nom`),
+    qty: nombre(o["qty"], `${ou}.qty`),
+    unit: texte(o["unit"], `${ou}.unit`),
   };
 }
 
@@ -273,6 +293,12 @@ function plat(v: unknown, ou: string): Plat {
     },
     ingredients: tableau(o["ingredients"], `${ou}.ingredients`)
       .map((x, i) => ingredient(x, `${ou}.ingredients[${i}]`)),
+    // `?? []` PARCE QUE LE JSON COMMITÉ PEUT ÊTRE PLUS VIEUX QUE CE CHAMP —
+    // un service worker sert le vidage qu'il a en cache, et une app qui se met
+    // à jour avant son catalogue ne doit pas s'ouvrir sur une erreur de
+    // chargement pour une ligne d'accompagnement.
+    avec: tableau(o["avec"] ?? [], `${ou}.avec`)
+      .map((x, i) => accompagnement(x, `${ou}.avec[${i}]`)),
     steps,
     bebe: texteOuNull(o["bebe"] ?? null, `${ou}.bebe`),
     actifMin: nombreOuNull(o["actifMin"] ?? null, `${ou}.actifMin`),

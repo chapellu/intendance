@@ -50,6 +50,10 @@ recipe:
     - {id: poulet-cuit, name: poulet déjà cuit, qty: 100, unit: g, from_accepts: true}
     - {id: piperade, name: piperade, qty: 125, unit: g, from_accepts: true}
 
+  # p. 98 : « avec une salade de crudités ».
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.25, unit: pièce}
+
   steps:
     - id: prechauffer-chausson
       action: "Préchauffer le four à 180 °C"

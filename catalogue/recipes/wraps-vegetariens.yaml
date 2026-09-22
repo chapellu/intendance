@@ -45,6 +45,11 @@ recipe:
     - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
     - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
 
+  # p. 38 : « 2 crêpes garnies donnent déjà protéines et glucides ; ajouter une
+  # salade pour compléter les crudités ».
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.25, unit: pièce}
+
   steps:
     - id: raper-carotte
       action: "Râper la carotte"

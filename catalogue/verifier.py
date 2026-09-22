@@ -35,6 +35,12 @@ BANDES = {"1-repas", "2-repas", "3-repas", "lunchbox"}
 # le code qui le lit.
 CHAMPS_INGREDIENT = {"id", "name", "qty", "unit", "seasoning", "ref",
                      "from_accepts", "subs"}
+# L'ASSIETTE — ce qui se sert À CÔTÉ, et qui n'est pas un ingrédient du plat.
+# Même forme qu'une ligne d'ingrédient, moins tout ce qui n'a de sens que
+# dedans : un accompagnement n'est visé par aucun `uses:` (il n'entre dans
+# aucune étape), ne franchit aucune porte d'assaisonnement, et ne sort d'aucun
+# `accepts` — on ne chaîne pas du riz, on le fait cuire.
+CHAMPS_ACCOMPAGNEMENT = {"id", "name", "qty", "unit"}
 MOTS_ASSAISONNEMENT = re.compile(r"\bsel\b|sal|poivr|assaisonn|rectifi", re.I)
 # Une attente écrite DANS la phrase est invisible au modèle : c'est exactement
 # la faute que `attente_min` répare, et elle a été commise huit fois avant
@@ -151,6 +157,51 @@ def verifier(rid: str, r: dict, rayons: dict, rules: dict, cat: dict,
         cid = alias.get(ing["id"], ing["id"])
         if cid not in ids_connus:
             err.append(f"ingrédient « {cid} » sans rayon (à ajouter dans rayons.yaml)")
+
+    # ────────────────────────────────────────────────────── l'assiette
+    #
+    # `avec:` EST CE QUI MANQUE À L'ASSIETTE, ET C'EST UNE DONNÉE D'ACHAT.
+    #
+    # Dit le 22/09/2026 : « il manque toujours les accompagnements, je n'ai pas
+    # un repas complet ». Les escalopes p. 39 s'arrêtent au four ; le livre,
+    # lui, finissait par « servir avec une salade verte et du riz ». Cette
+    # phrase-là n'avait aucun endroit où aller — ni dans `ingredients`, qui
+    # décrit ce qu'on met DANS le plat, ni dans une étape, qui décrit un geste.
+    #
+    # Les contrôles sont ceux des ingrédients, pour une raison simple : ces
+    # lignes finissent dans le même panier, à la même échelle. Une seule leur
+    # est propre — un id déjà présent dans `ingredients` ferait acheter deux
+    # fois la même chose, et personne ne relirait le total.
+    ids_du_plat = {alias.get(i["id"], i["id"]) for i in r.get("ingredients", [])}
+    vus_avec = set()
+    for ing in r.get("avec", []):
+        if not isinstance(ing, dict):
+            err.append(f"`avec:` n'est pas une ligne d'accompagnement : {ing!r}")
+            continue
+        manquants = {"id", "name", "qty", "unit"} - set(ing)
+        if manquants:
+            err.append(f"accompagnement « {ing.get('id', '?')} » : champ(s) "
+                       f"{sorted(manquants)} manquant(s) — sans quantité ni unité il "
+                       "ne peut ni s'afficher à l'échelle du foyer, ni entrer au panier")
+            continue
+        inconnues = set(ing) - CHAMPS_ACCOMPAGNEMENT
+        if inconnues:
+            err.append(f"accompagnement « {ing['id']} » : champ(s) inconnu(s) "
+                       f"{sorted(inconnues)} — même piège que les ingrédients, "
+                       "une virgule non quotée dans `name:`")
+        if not isinstance(ing["qty"], (int, float)) or ing["qty"] <= 0:
+            err.append(f"accompagnement « {ing['id']} » : `qty` doit être un nombre > 0 "
+                       f"(lu : {ing['qty']!r})")
+        cid = alias.get(ing["id"], ing["id"])
+        if cid not in ids_connus:
+            err.append(f"accompagnement « {cid} » sans rayon (à ajouter dans rayons.yaml)")
+        if cid in ids_du_plat:
+            err.append(f"accompagnement « {cid} » est déjà un ingrédient du plat — "
+                       "il serait acheté deux fois, et le panier ne dirait pas lequel "
+                       "des deux nombres est le bon")
+        if cid in vus_avec:
+            err.append(f"accompagnement « {cid} » en double dans `avec:`")
+        vus_avec.add(cid)
 
     # Chaînage. Un `accepts` demande soit un `type:` exact (« sauce-bolognaise »),
     # soit un `kind:`, c'est-à-dire une CLASSE de sorties (« n'importe quel
@@ -478,6 +529,33 @@ def main() -> int:
     if sans_depuis:
         print(f"  ({len(sans_depuis)} baby_portion sans `depuis:` — porte contrôlée "
               f"par heuristique, pas par la structure)")
+
+    # L'ASSIETTE QUI N'EST PAS PLEINE, et une ligne plutôt que quarante-trois
+    # avertissements — même geste que la dette de `depuis:` juste au-dessus.
+    #
+    # LE CONTRÔLE EST GROSSIER, ET IL LE RESTE EXPRÈS. `apports` est une
+    # couverture par CATÉGORIES (cf. l'en-tête d'`equilibre.yaml`) : il dit
+    # qu'un féculent est coché, jamais combien il y en a dans l'assiette. Les
+    # escalopes p. 39 — le plat qui a déclenché tout ce bloc — cochent les trois
+    # cases avec 20 g de flocons d'avoine par personne, là où le MÉMO p. 97 de
+    # la même autrice en demande 50 à 100 g secs. Elles ne sont donc PAS dans
+    # cette liste, et c'est la limite qu'il faut connaître avant de la lire : un
+    # zéro ici ne voudrait pas dire que toutes les assiettes sont pleines.
+    #
+    # Ne pas en faire un avertissement par recette est délibéré. Ce qu'il
+    # faudrait écrire — « servir avec du riz » — est une décision du foyer ou
+    # une phrase de l'ouvrage, pas quelque chose qu'un vérificateur puisse
+    # deviner ; un contrôle qui réclame quarante-trois fois ce qu'il ne sait pas
+    # nommer s'apprend à être ignoré.
+    creuses = sorted(rid for rid in cibles if rid in cat
+                     and not cat[rid].get("avec")
+                     and ({"dejeuner", "diner"} & set(cat[rid].get("creneaux")
+                                                      or ["dejeuner", "diner"]))
+                     and (((cat[rid].get("apports") or {}).get("feculent") in (None, "aucun"))
+                          or not (cat[rid].get("apports") or {}).get("legumes")))
+    avec = sum(1 for rid in cibles if rid in cat and cat[rid].get("avec"))
+    print(f"  ({avec} plats disent avec quoi les servir · {len(creuses)} plats de repas "
+          f"sans `avec:` à qui il manque un féculent ou des légumes déclarés)")
     return 1 if n_err else 0
 
 

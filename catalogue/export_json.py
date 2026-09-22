@@ -164,6 +164,16 @@ def main():
                  "central": bool(i.get("central"))}
                 for i in r.get("ingredients", [])
             ],
+            # L'ASSIETTE — ce qui se sert À CÔTÉ pour que ce plat soit un
+            # repas. Même forme qu'un ingrédient parce que c'est le même
+            # voyage : mis à l'échelle du foyer, puis au panier. Sans `base`
+            # ni `assaisonnement` — on n'assaisonne pas un accompagnement et
+            # aucune chaîne ne le produit — et sans `ref`, qu'aucun `uses:` ne
+            # vise puisque l'accompagnement n'entre dans aucune étape.
+            "avec": [
+                {"id": i["id"], "nom": i["name"], "qty": i["qty"], "unit": i["unit"]}
+                for i in r.get("avec", [])
+            ],
             # Les étapes, pour que l'écran puisse montrer la recette et pas
             # seulement la carte. `needs` reste en CAPACITÉS : c'est l'outil du
             # foyer qui s'y branche, jamais l'inverse.

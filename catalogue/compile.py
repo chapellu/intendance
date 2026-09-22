@@ -187,6 +187,20 @@ def compile_recipe(recipe_id, household, rules, stock, time_budget=None,
             line += f"  [à défaut : {subs[0]['name']} — {subs[0]['note']}]"
         ingredients.append(line)
 
+    # L'ASSIETTE — ce qui se sert à côté, à la même échelle que le reste.
+    # Le livre finit ses recettes par là (« servir avec une salade verte et du
+    # riz ») ; le plan compilé s'arrêtait au four, et ce qui n'est écrit nulle
+    # part ne s'achète pas.
+    a_table = []
+    for ing in r.get("avec", []):
+        q, u = scale_qty(ing["qty"], ing["unit"], factor)
+        line = f"{q} {u} — {ing['name']}"
+        cid = aliases.get(ing["id"], ing["id"])
+        prov = ch.provenance(ing, cid, placard_ids, prises)
+        if rayons is not None or prov != ch.COURSES:
+            line += f"  ({ch.ETIQUETTES[prov]})"
+        a_table.append(line)
+
     # --- steps: equipment resolution, plan B, baby set-aside, kid annotations
     plan_b_applied = []
     steps = list(r["steps"])
@@ -374,6 +388,13 @@ def compile_recipe(recipe_id, household, rules, stock, time_budget=None,
     out += ([f"  {s}" for s in steps_out] or
             ["  — rien à cuisiner le jour même : tout est fait la veille —"])
     out.append("")
+    if a_table:
+        # APRÈS LES ÉTAPES, PAS AVEC LES INGRÉDIENTS. C'est le dernier geste du
+        # repas, celui que la recette du livre porte en étape 6 ; le remonter
+        # dans la liste des courses le ferait lire au marché et oublier à table.
+        out.append("À TABLE, À CÔTÉ :")
+        out += [f"  🍽 {a}" for a in a_table]
+        out.append("")
     out.append(f"Temps à l'heure du repas : {total} min")
     if sessions:
         # « 25 min » ne dit pas à quelle heure s'y mettre quand la pâte repose

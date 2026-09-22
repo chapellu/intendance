@@ -34,6 +34,12 @@ recipe:
     - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
     - {id: poivre, name: poivre du moulin, qty: 1, unit: pincée, seasoning: true}
 
+  # p. 44 : « 3 ou 4 muffins + quelques crudités = un repas complet ». Le
+  # « repas complet » de la page est donc à deux morceaux, et le second
+  # n'existait nulle part dans le modèle.
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
   steps:
     - id: prechauffer-muffins
       action: "Préchauffer le four à 180 °C"

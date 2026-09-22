@@ -40,6 +40,16 @@ recipe:
     - {id: sel, name: sel fin, qty: 1, unit: c. à c., seasoning: true}
     - {id: poivre, name: poivre du moulin, qty: 1, unit: pincée, seasoning: true}
 
+  # p. 46 : « les glucides sont un peu faibles pour un déjeuner (~62 g de
+  # céréales pesées sèches) : ajouter une salade composée (carotte, un peu de
+  # maïs, poignée de haricots rouges en bocal bien rincés), ou à défaut un
+  # fruit frais ». Les trois lignes sont la salade composée, par personne : une
+  # carotte, une cuillerée de maïs, une poignée de haricots.
+  avec:
+    - {id: carottes, name: carotte, qty: 4, unit: pièce}
+    - {id: mais, name: maïs en conserve, qty: 120, unit: g}
+    - {id: haricots-rouges, name: haricots rouges en bocal, qty: 160, unit: g}
+
   steps:
     - id: prechauffer-cake
       action: "Préchauffer le four à 180 °C, si possible en chaleur tournante"
