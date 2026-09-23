@@ -8,7 +8,15 @@
 // LA GRILLE N'EST PAS RALLUMÉE POUR AUTANT — voir `poses.vue.ts`. Quatorze
 // cases dont douze vides, c'est précisément ce dont on a demandé à être
 // débarrassé ; trois lignes, c'est ce qu'on demande à relire.
+//
+// C'EST DEVENU LA LISTE QUI DURE — 23/09/2026, « only clean recipes when I say
+// I'm done ». `db/report.ts` fait qu'elle ne se vide plus toute seule à minuit ;
+// cet écran porte les DEUX gestes qui la vident, et ils sont les seuls : le
+// « Retirer » d'une ligne, et le « J'ai fini » du bas. Une liste qui ne peut
+// plus rien perdre a besoin qu'on puisse la fermer, sans quoi on a échangé une
+// perte silencieuse contre un encombrement définitif.
 
+import { useState } from "react";
 import { useCatalogue, useSemaine } from "../db/hooks";
 import { JOURS_VISIBLES } from "../nav/jours";
 import { chemin } from "../nav/routes";
@@ -18,7 +26,13 @@ import { phraseDesPoses, vueDesPoses } from "./poses.vue";
 
 export function Poses() {
   const { catalogue } = useCatalogue();
-  const { jeu, calc } = useSemaine(catalogue);
+  const { jeu, calc, oublierCreneau, toutOublierLesPoses } = useSemaine(catalogue);
+  // DEUX TEMPS POUR UN GESTE IRRÉVERSIBLE, et pas un `confirm()` : l'app est
+  // installée à l'écran d'accueil d'un iPhone, où la boîte du navigateur
+  // s'affiche au nom du site et se lit comme une alerte système. Le second
+  // bouton est ici, dans l'écran, à l'endroit exact où le doigt vient de
+  // frapper.
+  const [demande, setDemande] = useState(false);
   if (!jeu || !calc) return null;
   const vue = vueDesPoses(jeu, calc);
 
@@ -68,6 +82,18 @@ export function Poses() {
               >
                 Changer
               </a>
+              {/* RETIRER EST LE « J'AI FINI » D'UNE SEULE LIGNE. « Changer »
+                  mène à la main et suppose qu'on veut autre chose à la place ;
+                  ici on ne veut plus rien, et jusqu'au 23/09 la seule façon de
+                  le dire était d'attendre minuit — ce qui n'est plus une façon
+                  de le dire. */}
+              <button
+                className="btn btn-ghost"
+                style={{ fontSize: 12, padding: "2px 8px" }}
+                onClick={() => void oublierCreneau(s.i)}
+              >
+                Retirer
+              </button>
             </div>
           </span>
           <span>
@@ -90,6 +116,46 @@ export function Poses() {
         <div className="co-note" style={{ margin: "var(--space-2) var(--space-1) 0" }}>
           {vue.restent > 1 ? `${vue.restent} repas restent` : "1 repas reste"} sans décision. Rien
           ne les réclame&nbsp;: ce que le fil ne couvre pas reste hors du plan.
+        </div>
+      ) : null}
+
+      {/* LE SEUL GESTE QUI EFFACE TOUT, ET IL EST EN BAS. Ce qui est posé
+          traverse maintenant les nuits (`db/report.ts`) : la liste ne se ferme
+          donc que là où on l'a lue, une fois qu'on a vu ce qu'on s'apprête à
+          jeter. Le mettre en tête d'écran le placerait sous le pouce avant la
+          liste elle-même. */}
+      {vue.lignes.length ? (
+        <div style={{ marginTop: "var(--space-5)" }}>
+          {demande ? (
+            <>
+              <div className="co-note" style={{ margin: "0 var(--space-1) var(--space-2)" }}>
+                {vue.lignes.length > 1
+                  ? `Les ${vue.lignes.length} plats posés s’effacent, avec les parts réglées.`
+                  : "Le plat posé s’efface, avec les parts réglées."}{" "}
+                Rien n’est gardé ailleurs.
+              </div>
+              <button
+                className="btn btn-primary btn-block"
+                onClick={() => {
+                  void toutOublierLesPoses();
+                  setDemande(false);
+                }}
+              >
+                Oui, j’ai fini
+              </button>
+              <button
+                className="btn btn-ghost btn-block"
+                style={{ marginTop: "var(--space-1)" }}
+                onClick={() => setDemande(false)}
+              >
+                Annuler
+              </button>
+            </>
+          ) : (
+            <button className="btn btn-ghost btn-block" onClick={() => setDemande(true)}>
+              J’ai fini — tout effacer
+            </button>
+          )}
         </div>
       ) : null}
     </Corps>

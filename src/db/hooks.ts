@@ -28,7 +28,8 @@ import { lireJournal } from "./journal";
 import { lireDecisions, lirePlanchersDenrees, validesParmi } from "./planchers";
 import { base, jourISO, type EtatCourse, type LotStock } from "./schema";
 import { amorcer, hydraterStock } from "./stock";
-import { hydrater, oublier, poser, prevoirGamelle, reglerParts } from "./semaine";
+import { reporterLesPoses } from "./report";
+import { hydrater, oublier, poser, prevoirGamelle, reglerParts, toutOublier } from "./semaine";
 
 /** Le catalogue, chargé une fois pour la vie de l'onglet. Il ne change pas en
  *  cours de route : c'est un asset, pas une donnée vivante. */
@@ -82,6 +83,55 @@ export function useAmorce(catalogue: Catalogue | null): boolean {
   return faite;
 }
 
+/**
+ * LE REPORT DES POSÉS, et le fait de SAVOIR qu'il est passé — correctif du
+ * 23/09.
+ *
+ * Même forme que `useAmorce`, et pour la même raison : c'est une écriture qui
+ * doit être finie avant que quiconque lise. Voir `db/report.ts` pour ce qu'elle
+ * fait. Ce qui est propre à celle-ci, c'est qu'elle doit arriver AVANT la
+ * première lecture de la fenêtre et pas seulement avant le premier rendu : lire
+ * d'abord afficherait la liste amputée — exactement la panne qu'on répare —
+ * puis la ferait sauter d'un cran quand `useLiveQuery` reverrait la table.
+ *
+ * UNE SEULE FOIS PAR JOUR ET PAR ONGLET, quel que soit le nombre d'écrans
+ * montés. Deux `useSemaine` concurrents lanceraient deux reports, qui se
+ * partageraient les places libres avant que l'un ait écrit : le second
+ * poserait le plat d'à côté sur le créneau que le premier venait de prendre.
+ * La transaction protège la base, pas l'arithmétique des places.
+ */
+const REPORTS = new Map<string, Promise<unknown>>();
+
+export function useReport(squelette: Jeu | null): boolean {
+  const jour0 = squelette?.jours[0] ? jourISO(squelette.jours[0].date) : "";
+  const [fait, setFait] = useState("");
+
+  useEffect(() => {
+    if (!squelette || !jour0) return;
+    let vivant = true;
+    let p = REPORTS.get(jour0);
+    if (!p) {
+      // La veille n'a plus rien à nous dire : garder sa promesse ferait de
+      // cette table un journal de la durée de vie de l'onglet.
+      REPORTS.clear();
+      p = reporterLesPoses(base, squelette);
+      REPORTS.set(jour0, p);
+    }
+    // `finally` ET PAS `then` : un report qui échoue doit laisser l'app
+    // démarrer sur ce que la base porte déjà. Bloquer l'écran sur une écriture
+    // ratée coûterait la cuisine entière, là où l'échec ne coûte qu'une liste
+    // incomplète — et c'est le raisonnement de `useAmorce`, mot pour mot.
+    void p.finally(() => {
+      if (vivant) setFait(jour0);
+    });
+    return () => {
+      vivant = false;
+    };
+  }, [squelette, jour0]);
+
+  return fait !== "" && fait === jour0;
+}
+
 export interface SemaineVivante {
   jeu: Jeu | null;
   calc: Calcul | null;
@@ -93,6 +143,8 @@ export interface SemaineVivante {
    *  transaction, parce que l'une sans l'autre est un dégât. */
   prevoirLaGamelle: (midi: number, veille: number, parts: number, plat: string) => Promise<void>;
   oublierCreneau: (i: number) => Promise<void>;
+  /** « J'ai fini » : tout ce qui est posé s'efface. Rend ce qui a été effacé. */
+  toutOublierLesPoses: () => Promise<number>;
 }
 
 /**
@@ -116,8 +168,12 @@ export function useSemaine(catalogue: Catalogue | null, aujourdhui = new Date())
     () => (squelette ? squelette.jours.map((j) => jourISO(j.date)) : []),
     [squelette],
   );
-  const debut = bornes[0] ?? "";
-  const fin = bornes.at(-1) ?? "";
+  // ON NE LIT PAS AVANT D'AVOIR REPORTÉ. Des bornes vides tiennent tout le hook
+  // en `chargement` — la machinerie existe déjà, elle est juste en dessous —
+  // plutôt que d'afficher une fenêtre amputée le temps d'une frame.
+  const reporte = useReport(squelette);
+  const debut = reporte ? (bornes[0] ?? "") : "";
+  const fin = reporte ? (bornes.at(-1) ?? "") : "";
 
   // LA RÉPONSE PORTE LES BORNES QU'ELLE A LUES — correctif du 22/09, et c'est
   // la seule façon de distinguer « rien de posé » de « pas encore lu ».
@@ -207,12 +263,14 @@ export function useSemaine(catalogue: Catalogue | null, aujourdhui = new Date())
     },
     [jeu],
   );
+  const toutOublierLesPoses = useCallback(async () => (jeu ? toutOublier(base, jeu) : 0), [jeu]);
 
   return {
     jeu,
     calc,
     chargement:
       !catalogue ||
+      !reporte ||
       decisions === undefined ||
       lots === undefined ||
       placard === null ||
@@ -221,6 +279,7 @@ export function useSemaine(catalogue: Catalogue | null, aujourdhui = new Date())
     reglerLesParts,
     prevoirLaGamelle,
     oublierCreneau,
+    toutOublierLesPoses,
   };
 }
 

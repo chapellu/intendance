@@ -21,6 +21,16 @@
 //
 // Une décision appartient à « mercredi 19 août, dîner ». C'est ce couple qui
 // est stocké, et c'est au chargement qu'on le remet en face du bon index.
+//
+// CE QUI A CHANGÉ LE 20/09, ET QUE CE COMMENTAIRE NE DISAIT PAS ENCORE. La
+// phrase ci-dessus repose entièrement sur un fait : quelqu'un a CHOISI
+// mercredi. T88 a éteint l'agenda (`nav/jours.ts`), et depuis, personne ne
+// choisit plus de jour — poser un plat le pose sur le pas où le fil en est. La
+// clé reste juste, et pour la même raison qu'avant : l'index déménage, la date
+// non. Mais la date est devenue une COORDONNÉE INTERNE, et une coordonnée
+// interne n'a pas le droit de faire tomber une décision hors de la fenêtre
+// pendant la nuit. C'est ce que `db/report.ts` répare, et c'est là qu'il faut
+// lire la suite de cette histoire.
 // ────────────────────────────────────────────────────────────────────────────
 
 import Dexie, { type EntityTable } from "dexie";
