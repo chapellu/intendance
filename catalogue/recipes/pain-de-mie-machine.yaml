@@ -27,6 +27,9 @@ recipe:
   time_min_total: 185
   active_min: 5
 
+  # Chapitre « bases saines » — voir la p. 19, même rôle.
+  role: base
+
   apports:
     proteine: aucune
     feculent: pain

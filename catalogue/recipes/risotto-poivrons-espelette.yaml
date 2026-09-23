@@ -42,6 +42,10 @@ recipe:
   time_min_total: 35        # en-tête : 15 min de préparation + environ 20 min de cuisson
   active_min: 15
 
+  # « Pour 6 personnes, en accompagnement » — l'autrice compte ses parts dans ce
+  # rôle-là, et `portions_eq` les recopie.
+  role: accompagnement
+
   apports:
     proteine: fromage       # 150 g de mascarpone
     feculent: riz

@@ -21,6 +21,9 @@ recipe:
   time_min_total: 65
   active_min: 35
 
+  # Chapitre « bases saines » — les crêpes se garnissent (p. 38, p. 41).
+  role: base
+
   apports:
     proteine: aucune
     feculent: farine

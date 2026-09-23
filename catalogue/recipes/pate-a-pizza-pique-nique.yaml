@@ -46,6 +46,10 @@ recipe:
   time_min_total: 10        # en-tête : 5 min de préparation ; la cuisson appartient aux dérivés
   active_min: 5
 
+  # Une pâte, comme la p. 28 de l'autre ouvrage : elle entre dans un plat, elle
+  # n'en est pas un.
+  role: base
+
   apports:
     proteine: aucune
     feculent: farine

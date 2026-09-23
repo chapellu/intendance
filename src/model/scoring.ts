@@ -17,7 +17,7 @@ import { marque } from "./axe";
 import { articles, calculer, type LignePanier } from "./calcul";
 import { ecoulement, nom, type Ecoulable } from "./ecoulement";
 import { aEcouler, placardDuPlat } from "./gardeManger";
-import { convient, joue, type Choix, type Jeu } from "./jeu";
+import { convient, faitUnRepas, joue, ROLES, type Choix, type Jeu } from "./jeu";
 import { contexte, type Rejeu } from "./journal";
 import { gamelles } from "./offres";
 import { bonusPlancher, etatDuCongelo, type Plancher } from "./plancher";
@@ -202,7 +202,7 @@ export interface Ecart {
    * cette union parce que l'écran affiche les quatre de la même façon — ce sont
    * toutes des réponses à « pourquoi ne me l'a-t-on pas proposé ».
    */
-  cle: "deja" | "creneau" | "bloque" | "recent";
+  cle: "deja" | "creneau" | "role" | "bloque" | "recent";
   /** Dit à la première personne de l'app, prêt à être affiché tel quel. */
   texte: string;
 }
@@ -304,6 +304,27 @@ export function comptoir(
       e.push({
         cle: "creneau",
         texte: `prévu pour ${p.creneaux.map(repas).join(", ")}, pas pour ${repas(cr.repas)}`,
+      });
+
+    // LE RÔLE, ET IL NE MORD QUE SUR UN VRAI REPAS. Sur un créneau `choisi` —
+    // déjeuner, dîner — on ne propose que ce qui fait un repas : une pâte
+    // brisée et une detox-water s'y distribuaient parce que `creneaux:` ne
+    // parle que de l'heure, et qu'aucune heure ne dit qu'une carafe n'est pas
+    // un dîner. Mesuré le jour de la règle : 15 cartes sur 117.
+    //
+    // AILLEURS, ON NE TOUCHE À RIEN. Le dessert est `optionnel` et le goûter
+    // `routine` : le cocktail p. 107 est une boisson ET le goûter de quelqu'un,
+    // et lui refuser sa propre case au nom de son rôle serait remplacer un
+    // filtre trop large par un autre.
+    //
+    // UN ÉCART, PAS UN FILTRE MUET, et c'est ce qui distingue « proposer » de
+    // « chercher » depuis T80 : `offre` écarte la carte, la recherche la montre
+    // avec cette phrase. On peut toujours décider de dîner d'un tian ; ce qu'on
+    // ne subit plus, c'est qu'il soit PROPOSÉ comme un dîner.
+    if (cr.nature === "choisi" && !faitUnRepas(p))
+      e.push({
+        cle: "role",
+        texte: `c'est ${ROLES[p.role].un} ${ROLES[p.role].nom}, pas un ${repas(cr.repas)}`,
       });
 
     // LE BLOCAGE EST UN FILTRE, PAS UN MALUS, et c'est le « retire ou substitue

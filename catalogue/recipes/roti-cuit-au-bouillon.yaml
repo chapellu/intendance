@@ -28,6 +28,17 @@ recipe:
   time_min_total: 80
   active_min: 15
 
+  # p. 68, « comme un jambon » : l'autrice le fait cuire POUR EN TIRER des
+  # tranches et des cubes — « le jambon est LA protéine la plus répandue dans
+  # les sandwichs, salades et lunchbox, mais il est cher ». C'est une réserve de
+  # protéine, pas le dîner du soir.
+  #
+  # LE POT-AU-FEU DE LA P. 62 EST L'AUTRE CAS, ET IL RESTE `plat` : sa page dit
+  # « il reste de quoi faire un ou deux bons repas en famille ». Deux souches,
+  # deux rôles — ce n'est pas le chaînage qui décide, c'est ce qui arrive dans
+  # l'assiette.
+  role: base
+
   apports:
     proteine: viande-blanche
     feculent: aucun

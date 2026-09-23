@@ -27,6 +27,12 @@ recipe:
   time_min_total: 50
   active_min: 8
 
+  # p. 90 : une grande casserole d'orge ou de petit épeautre « dans laquelle
+  # piocher les jours suivants ». C'est le féculent d'un repas, c'est-à-dire
+  # très exactement ce que `avec:` réclame ailleurs — le jour où un `avec:`
+  # pourra viser un plat du catalogue, il visera celui-ci.
+  role: accompagnement
+
   apports:
     proteine: aucune
     feculent: orge

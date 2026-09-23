@@ -22,6 +22,10 @@ recipe:
   time_min_total: 10
   active_min: 10
 
+  # Une eau aromatisée. Elle était proposable pour un dîner : `creneaux:` ne
+  # parle que de l'heure, et rien ne disait qu'une carafe n'est pas un repas.
+  role: boisson
+
   apports:
     proteine: aucune
     feculent: aucun

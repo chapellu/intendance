@@ -33,6 +33,12 @@ recipe:
   time_min_total: 75
   active_min: 10
 
+  # p. 86 : « cuire soi-même ses légumineuses est bien plus économique » — une
+  # casserole de pois chiches nature est un ingrédient qu'on pioche, pas un
+  # repas. La mitonnée de lentilles p. 82 reste `plat`, elle, parce que sa page
+  # dit l'inverse en toutes lettres : « à savourer tel quel au repas du soir ».
+  role: base
+
   apports:
     proteine: legumineuse
     feculent: legumineuse

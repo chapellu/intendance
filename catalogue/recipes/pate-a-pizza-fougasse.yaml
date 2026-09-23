@@ -19,6 +19,9 @@ recipe:
   time_min_total: 105
   active_min: 12
 
+  # Chapitre « bases saines » — la pâte attend sa garniture (p. 60, p. 81).
+  role: base
+
   apports:
     proteine: aucune
     feculent: farine

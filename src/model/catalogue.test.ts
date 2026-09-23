@@ -60,6 +60,15 @@ describe("le catalogue réel", () => {
     for (const n of besoins) expect(c.foyer.outils[n]).toBeDefined();
   });
 
+  test("chaque plat porte un rôle, et le corpus en montre plusieurs", () => {
+    const plats = lireCatalogue(brut()).plats;
+    const roles = new Set(plats.map((p) => p.role));
+    expect(roles.size).toBeGreaterThan(1);
+    expect(roles.has("plat")).toBe(true);
+    // Le défaut est résolu À L'EXPORT : aucun plat ne peut arriver sans rôle.
+    for (const p of plats) expect(p.role, p.id).toBeTruthy();
+  });
+
   // L'ASSIETTE TRAVERSE, ET SON ABSENCE AUSSI. Un plat muet rend `[]` — « la
   // recette ne dit pas avec quoi la servir » — et surtout pas une erreur : 120
   // des 138 plats sont dans ce cas, et le seront longtemps.
@@ -145,6 +154,18 @@ describe("un export qui a dérivé échoue bruyamment", () => {
       (p["ingredients"] as Record<string, unknown>[])[0]!["qty"] = "400";
     });
     expect(casse).toThrow(/qty/);
+  });
+
+  // UN RÔLE INCONNU NE SE LAISSE PAS LIRE COMME UN PLAT. Le défaut vit dans
+  // `export_json.py` ; si l'export écrivait autre chose — une faute de frappe,
+  // une valeur retirée de l'union — le chargeur le dirait plutôt que de rendre
+  // au dîner une pâte brisée.
+  test("un rôle que l'union ne connaît pas", () => {
+    const casse = abime((c) => {
+      (c["plats"] as Record<string, unknown>[])[0]!["role"] = "apéritif";
+    });
+    expect(casse).toThrow(CatalogueInvalide);
+    expect(casse).toThrow(/role/);
   });
 
   // UNE LIGNE D'ACCOMPAGNEMENT SANS QUANTITÉ afficherait « NaN g de riz » et

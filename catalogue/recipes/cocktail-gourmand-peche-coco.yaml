@@ -31,6 +31,10 @@ recipe:
 
   creneaux: [gouter]        # boisson, pas un repas — cf. les desserts du printemps
 
+  # Son `creneaux:` portait déjà le commentaire « boisson, pas un repas » : la
+  # phrase existait, le champ non.
+  role: boisson
+
   apports:
     proteine: aucune
     feculent: aucun

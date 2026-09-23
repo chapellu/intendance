@@ -27,6 +27,7 @@
 // amputation.
 
 import type { Calcul } from "../model/calcul";
+import { faitUnRepas, ROLES } from "../model/jeu";
 import type { Jeu } from "../model/jeu";
 import { vueDeLaSemaine, type VueSlot } from "./semaine.vue";
 
@@ -68,11 +69,35 @@ export function vueDesPoses(jeu: Jeu, calc: Calcul): VuePoses {
       // sous « Posés » ferait compter quatre choix là où il y en a trois.
       if (s.plat) lignes.push({ slot: s, jour: `${j.nom} ${j.date.getDate()}/${j.date.getMonth() + 1}` });
 
-  const repas = lignes.filter((l) => l.slot.nature === "choisi").length;
+  // CE QUI COMPTE POUR UN REPAS, ET CE QUI COMPTE À CÔTÉ — deux raisons de ne
+  // pas compter, désormais, et elles ne se recouvrent pas.
+  //
+  // LA PREMIÈRE EST LE CRÉNEAU (#33, le 21/09) : un dessert posé sur la case
+  // « dessert » n'est pas un dîner de plus. LA SECONDE EST LE RÔLE : un tian
+  // posé sur un dîner n'en est pas un non plus, et il est POSÉ SUR un créneau
+  // de repas, donc la nature du créneau ne peut rien en dire. La plainte
+  // d'origine — « j'ai sélectionné 3 recettes, l'une était un dessert et pas
+  // un plat » — vaut mot pour mot du jour où l'on posera un accompagnement.
+  //
+  // On ne propose plus d'accompagnement pour un dîner (`comptoir`, écart
+  // `role`), mais on peut toujours en CHERCHER un et le poser : le compte doit
+  // tenir dans ce cas-là, qui est justement celui où l'on doute de ce qu'on a
+  // fait.
+  const estUnRepas = (l: LignePosee): boolean =>
+    l.slot.nature === "choisi" && (!l.slot.plat || faitUnRepas(l.slot.plat));
+  const repas = lignes.filter(estUnRepas).length;
 
   const parLabel = new Map<string, number>();
   for (const l of lignes)
-    if (l.slot.nature !== "choisi") parLabel.set(l.slot.label, (parLabel.get(l.slot.label) ?? 0) + 1);
+    if (!estUnRepas(l)) {
+      // Le créneau nomme l'à-côté quand c'est lui qui le fait (« dessert ») ;
+      // sinon c'est le rôle du plat (« accompagnement »).
+      const quoi =
+        l.slot.nature === "choisi" && l.slot.plat
+          ? ROLES[l.slot.plat.role].nom
+          : l.slot.label;
+      parLabel.set(quoi, (parLabel.get(quoi) ?? 0) + 1);
+    }
 
   const restent = jeu.creneaux.filter((c, i) => c.nature === "choisi" && jeu.choix[i] == null).length;
 

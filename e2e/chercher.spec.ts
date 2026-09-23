@@ -177,3 +177,23 @@ test("le plat cherché se pose, le fil avance, et la frappe ne le suit pas", asy
   await attendreLApp(page);
   await expect(page.locator(".co-lot").filter({ hasText: PLAT })).toBeVisible({ timeout: 30_000 });
 });
+
+/* ───────────────────────────────────── le rôle, vu du champ de recherche */
+
+// LE RÔLE EST UN ÉCART, PAS UN FILTRE — T93. Un accompagnement ne se propose
+// plus pour un dîner ; il se CHERCHE, il dit pourquoi il n'était pas dans la
+// main, et il se pose quand même. C'est la promesse de T80 appliquée à une
+// règle neuve, et c'est aussi la seule façon de voir à l'écran que la règle
+// existe : les plats qu'elle retire, par construction, ne s'affichent nulle
+// part ailleurs.
+test("un accompagnement cherché dit qu'il n'est pas un dîner, et se pose quand même", async ({
+  page,
+}) => {
+  await ouvrirPoser(page);
+  await page.getByLabel("chercher un plat par son nom").fill("tian");
+
+  const carte = page.locator(".co-jouable").first();
+  await expect(carte.locator(".tete .nom")).toContainText("Tian");
+  await expect(carte.locator(".co-ecart")).toContainText("accompagnement");
+  await expect(carte.getByRole("button", { name: libellePoser(true) })).toBeEnabled();
+});

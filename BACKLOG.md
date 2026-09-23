@@ -3693,6 +3693,139 @@ est plus étroite et plus urgente : dire ce qu'il MANQUE à côté.
   le dit. La mesure a été faite à la main pour ce ticket ; l'automatiser demande
   une classe « féculent » dans `rayons.yaml`, qui n'existe pas.
 
+## Ce qu'un plat EST dans un repas — T93
+
+**Demandé le 23/09/2026, en une ligne :** *« attaque le problème du rôle d'un
+plat »*. **Le corpus, lui, le demandait depuis le 13/08**, en tête de
+`tian-ratatouille-parmesan` et dans ces termes :
+
+> *« Le rôle d'un plat — plat, accompagnement, entrée — n'existe nulle part dans
+> le modèle. Trois recettes de ce lot le réclament sous trois formes. »*
+
+**CE QUE L'ABSENCE COÛTAIT, MESURÉ : 117 plats tiennent dans un créneau de
+repas, et 15 n'en sont pas.** Sept pâtes et pains — dont une **pâte brisée
+crue** —, une casserole de pois chiches nature, un rôti que son autrice fait
+cuire pour en tirer des tranches de sandwich, quatre accompagnements, une entrée,
+et **une carafe d'eau aromatisée**. Tous distribuables comme dîner, tous notés
+par le score comme des dîners.
+
+**POURQUOI `creneaux:` NE POUVAIT PAS LE DIRE, ET C'EST LA MOITIÉ DU TICKET.**
+Un créneau est une HEURE — déjeuner, dîner, goûter. Une pâte brisée n'en a
+aucune : elle n'est pas « prévue pour le goûter », elle n'est le repas de
+personne. Et `creneaux: []` ne l'aurait pas dit non plus, puisque le chargeur lit
+le silence comme « déjeuner et dîner » (`convient()`, depuis le port). Il fallait
+un second champ, qui dit la PLACE et non le MOMENT.
+
+**LA NOTE DE 2026-08 AVAIT RAISON ET NE COUVRAIT QU'UN CAS.** En tête de
+`tarte-aux-fraises`, premier dessert du catalogue : *« J'avais écrit ici qu'il
+fallait un champ `role:` — c'était faux : le levier existe déjà. `convient()` lit
+un `creneaux:` par recette, et `equilibre_sur` limite la mesure au déjeuner et au
+dîner. »* C'est vrai d'un dessert, qui se mange à une heure. Ça ne l'est pas
+d'une pâte à pizza. **`dessert` n'est donc PAS une valeur de rôle** : deux champs
+qui portent la même information finissent par se contredire, et le dépôt l'a déjà
+payé une fois avec `espace` et `congelo`.
+
+**ET LE CORPUS PORTAIT DÉJÀ SIX FOURCHETTES DE CONVIVES QUI DISENT LE RÔLE SANS
+LE NOMMER.** *« 4 parts en plat principal, 6 à 8 en entrée »* (quiche p. 29),
+*« 6 samoussas par personne en plat, 3 en entrée »*, *« en entrée d'après le
+livre ; doubler pour un plat »* (cookies salés p. 45), et la plus explicite, en
+tête de la pizza p. 60 : **« ce n'est pas l'appétit qui varie, c'est le RÔLE du
+plat »**. `portions_eq` est un nombre dont le sens dépend d'un champ qui
+n'existait pas.
+
+- [x] **T93 — `role:`, cinq valeurs et un défaut.** `plat` (121 recettes),
+      `accompagnement` (4), `base` (9), `boisson` (3), `entree` (1). Le défaut
+      est résolu **à l'export**, pas dans l'app : le chargeur lit une valeur, il
+      ne devine pas une absence — et un rôle hors de l'union fait échouer le
+      chargement plutôt que de rendre une pâte brisée au dîner.
+
+      **`base` EST DANS DEUX UNIONS ET NE DIT PAS LA MÊME CHOSE.** Un `EmitKind`
+      « base » veut dire *ce plat LAISSE quelque chose pour un autre* ; un `Role`
+      « base » veut dire *ce plat ne se mange pas tel quel*. Le grand wok de
+      légumes verts est le premier sans être le second — il se mange, à côté.
+      Les huit souches « À partir de… » de la p. 56 à la p. 96 se répartissent
+      d'ailleurs sur trois rôles, et c'est ce qui prouve que les deux axes sont
+      distincts : le pot-au-feu reste un `plat` (*« il reste de quoi faire un ou
+      deux bons repas en famille »*), la mitonnée de lentilles aussi (*« à
+      savourer tel quel au repas du soir »*), le rôti au bouillon est une `base`
+      (*« le jambon est LA protéine la plus répandue dans les sandwichs »*).
+
+      **LE RÔLE NE SE DEVINE PAS, IL SE CITE.** Chaque valeur non-`plat` porte en
+      commentaire la phrase qui la justifie : le chapitre « bases saines » de
+      l'autrice (*« pains, pâtes et fonds qui servent aux autres chapitres »*)
+      pour les sept pâtes et pains, la parenthèse « (en accompagnement) » pour le
+      tian et le risotto, *« il sert de base à de nombreux plats »* pour le wok.
+      **Les 121 autres restent `plat`**, y compris les 35 dont T92 dit que
+      l'assiette n'est pas pleine : un plat dont il manque le féculent n'est pas
+      pour autant un accompagnement, et le deviner remplacerait une lacune par
+      une erreur.
+
+- [x] **T93b — ce que le rôle change, et rien d'autre.** Trois endroits, choisis
+      parce que ce sont les trois où l'absence se voyait.
+
+      **UN ÉCART, PAS UN FILTRE MUET.** Sur un créneau `choisi` — déjeuner, dîner
+      — seul un `plat` se propose ; les 15 autres sortent de `offre` et donc de
+      la main. Mais ils restent CHERCHABLES, et la carte dit *« c'est un
+      accompagnement, pas un dîner »*. C'est la distinction de T80 entre
+      proposer et chercher, appliquée à une règle neuve : on peut toujours
+      décider de dîner d'un tian ; ce qu'on ne subit plus, c'est qu'il soit
+      proposé comme un dîner.
+
+      **AILLEURS, ON NE TOUCHE À RIEN.** Le dessert est `optionnel`, le goûter
+      `routine` : le cocktail p. 107 est une boisson ET le goûter de quelqu'un,
+      et lui refuser sa case au nom de son rôle remplacerait un filtre trop large
+      par un autre.
+
+      **« POSÉS » COMPTE DEUX SORTES D'À-CÔTÉ.** La première est le créneau
+      (#33) : un dessert posé sur la case dessert n'est pas un dîner de plus. La
+      seconde est le rôle, et elle était indicible : un tian est posé SUR un
+      dîner, donc la nature du créneau ne peut rien en dire. La liste écrit
+      maintenant « 1 repas · 1 accompagnement », mot pour mot la plainte du 21/09
+      transposée.
+
+      **LA FICHE DIT DANS QUEL RÔLE SES PARTS SE COMPTENT.** « on en cuisine 6 »
+      ne veut pas dire six dîners quand la recette compte en accompagnement.
+      Muette sur les 121 `plat` — répéter « c'est un plat » sous chaque fiche
+      apprendrait à ne plus lire la ligne.
+
+      **LE GARDE A MORDU LE JOUR OÙ IL A ÉTÉ ÉCRIT, ET SUR LE TICKET DE LA
+      VEILLE.** La règle « un accompagnement n'a pas d'accompagnement » a refusé
+      le `avec: riz` que T92 avait posé sur le tian. Elle a raison : la phrase de
+      l'autrice — *« que se servir avec du riz ou des pâtes pour un repas
+      végétarien (dans ce cas, doublez les proportions de fromage) »* — ne décrit
+      pas l'assiette de ce plat, elle décrit sa CONVERSION en plat. Le riz est
+      retiré, et ce que le modèle ne sait toujours pas dire est écrit dans la
+      recette.
+
+      Portes : typecheck, **722 tests** (12 nouveaux : 2 sur le chargeur, 4 sur
+      le score, 2 sur les posés, 3 sur la fiche, 1 sur le corpus), build,
+      **50 e2e** (1 nouveau dans `chercher.spec.ts` — le seul endroit où une
+      carte écartée s'affiche encore), `catalogue:verifie` 0 erreur.
+
+### Ce que ce bloc laisse ouvert
+
+- **Un créneau ne porte toujours qu'un plat.** Poser un accompagnement occupe un
+  dîner entier : le compte des repas qui restent le retire de la liste des soirs
+  à décider alors qu'il n'y a pas de dîner. Un test l'épingle plutôt que de le
+  taire. C'est la même question que « un plat + son accompagnement », et elle
+  demande une clé de créneau qui accepte plusieurs plats — soit la table
+  `creneaux` de la base, donc une migration Dexie.
+- **`avec:` ne peut toujours pas viser un plat du catalogue**, et le rôle rend
+  le manque plus visible : `cereale-cuite-en-avance` EST le féculent qui manque à
+  trente-cinq assiettes, et aucun `avec:` ne peut le nommer. Les deux champs se
+  regardent sans pouvoir se parler.
+- **L'équilibre de la semaine compte encore un accompagnement comme un repas.**
+  `couverture()` filtre sur `equilibreSur`, c'est-à-dire sur le CRÉNEAU ; un tian
+  posé sur un dîner y verse ses apports comme un dîner. La correction est d'une
+  ligne, mais elle change les cibles de la semaine, donc elle se mesure avant.
+- **`portions_eq` ne se convertit pas d'un rôle à l'autre.** Les six fourchettes
+  du corpus donnent les deux nombres (« 4 en plat, 6 à 8 en entrée ») ; le champ
+  n'en porte qu'un, celui du rôle déclaré, et la fiche dit lequel. Convertir
+  demanderait un ratio que personne n'a mesuré.
+- **Rien ne relit les 121 `plat` par défaut.** Le rôle n'a été posé que là où une
+  source le dit. Les 35 plats de la dette de T92 sont le premier endroit où
+  regarder, mais ce sont des lectures de recettes, pas un contrôle qu'on écrit.
+
 ## Sortie
 
 **Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`

@@ -20,6 +20,10 @@ recipe:
   time_min_total: 115
   active_min: 15
 
+  # Chapitre « bases saines » — se garnissent, cf. les sandwichs nordiques
+  # p. 32 qui les consomment.
+  role: base
+
   apports:
     proteine: aucune
     feculent: pain

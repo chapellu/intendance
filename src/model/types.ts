@@ -247,6 +247,8 @@ export interface Plat {
   source: Source | null;
   apports: Apports;
   ingredients: Ingredient[];
+  /** Ce que ce plat est dans un repas. `plat` par défaut, résolu à l'export. */
+  role: Role;
   /** Ce qu'il faut à côté — vide quand la recette ne le dit pas, ce qui n'est
    *  pas la même chose que « rien à ajouter ». */
   avec: Accompagnement[];
@@ -268,6 +270,20 @@ export interface Plat {
   gainChainage: number;
   cuisinable: boolean;
 }
+
+/**
+ * Ce qu'un plat EST dans un repas, et non ce qu'il contient.
+ *
+ * `plat` fait un repas à soi seul ; les quatre autres valeurs répondent non,
+ * chacune pour une raison différente — à côté, avant, dedans, dans un verre.
+ * C'est la seule question que le rôle tranche, et c'est elle qui décide si une
+ * carte se propose pour un dîner.
+ *
+ * `dessert` N'EST PAS UN RÔLE : `creneaux:` dit déjà le MOMENT où un plat se
+ * mange, et deux champs qui portent la même information finissent par se
+ * contredire. Le rôle dit la PLACE dans le repas.
+ */
+export type Role = "plat" | "accompagnement" | "entree" | "base" | "boisson";
 
 /**
  * Ce qui se sert À CÔTÉ pour que le plat fasse un repas — le riz et la salade

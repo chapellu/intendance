@@ -17,11 +17,16 @@
 import type {
   Accept, Accompagnement, Agression, Catalogue, Denree, Emit, EmitKind, Espace, Etape, Etat, Forme, Foyer,
   GardeManger, Ingredient, LigneStock, Nature, Outil, Plat, Provenance, Quantite, Rattrapage,
-  Source, Urgence, Usage, Zone,
+  Role, Source, Urgence, Usage, Zone,
 } from "./types";
 
 const ESPACES: readonly Espace[] = ["frigo", "congelo", "placard"];
 const EMIT_KINDS: readonly EmitKind[] = ["base", "parure", "portion-bebe", "reste-plat"];
+// `base` EST DANS LES DEUX LISTES ET NE DIT PAS LA MÊME CHOSE. Un `EmitKind`
+// « base » veut dire « ce plat LAISSE quelque chose pour un autre » ; un `Role`
+// « base » veut dire « ce plat ne se mange pas tel quel ». Le grand wok de
+// légumes verts est le premier sans être le second — il se mange, à côté.
+const ROLES: readonly Role[] = ["plat", "accompagnement", "entree", "base", "boisson"];
 const PROVENANCES: readonly Provenance[] = [
   "placard", "garde-manger", "chaine", "frigo", "courses", "absent",
 ];
@@ -293,6 +298,11 @@ function plat(v: unknown, ou: string): Plat {
     },
     ingredients: tableau(o["ingredients"], `${ou}.ingredients`)
       .map((x, i) => ingredient(x, `${ou}.ingredients[${i}]`)),
+    // PAS DE `?? "plat"` ICI : l'export résout le défaut, et un chargeur qui le
+    // redéviné couvrirait une dérive au lieu de la dire. C'est l'inverse du
+    // `?? []` de `avec` juste en dessous — une liste vide est une VALEUR, un
+    // rôle absent est un export qui n'a pas fait son travail.
+    role: parmi(o["role"], ROLES, `${ou}.role`),
     // `?? []` PARCE QUE LE JSON COMMITÉ PEUT ÊTRE PLUS VIEUX QUE CE CHAMP —
     // un service worker sert le vidage qu'il a en cache, et une app qui se met
     // à jour avant son catalogue ne doit pas s'ouvrir sur une erreur de

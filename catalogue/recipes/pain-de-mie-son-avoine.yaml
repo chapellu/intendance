@@ -19,6 +19,11 @@ recipe:
   time_min_total: 120
   active_min: 12
 
+  # Chapitre « bases saines » (p. 17 à 29), que l'autrice résume elle-même :
+  # « pains, pâtes et fonds qui servent aux autres chapitres ». Un pain de mie
+  # se garnit, il ne fait pas un dîner.
+  role: base
+
   apports:
     proteine: aucune
     feculent: pain

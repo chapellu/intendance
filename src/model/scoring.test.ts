@@ -488,6 +488,58 @@ describe("T33 — ce que la proposition sait", () => {
 
 /* ════════════════════ T80 — ce qui écarte, et qui doit savoir le dire ═════ */
 
+describe("le rôle — ce qui fait un repas, et ce qui n'en fait pas", () => {
+  const unRole = (role: string) => catalogue.plats.find((p) => p.role === role)!;
+
+  test("le corpus porte les cinq rôles, et le défaut est `plat`", () => {
+    const parRole = new Map<string, number>();
+    for (const p of catalogue.plats) parRole.set(p.role, (parRole.get(p.role) ?? 0) + 1);
+    expect(parRole.get("plat")).toBeGreaterThan(100);
+    for (const r of ["accompagnement", "entree", "base", "boisson"])
+      expect(parRole.get(r), `aucun plat de rôle ${r}`).toBeGreaterThan(0);
+  });
+
+  // LE PLAT QUI A DÉCLENCHÉ LE TICKET : une pâte brisée se distribuait pour un
+  // dîner parce que `creneaux:` ne parle que de l'heure.
+  test("une base ne se propose pas pour un dîner, et le dit quand on la cherche", () => {
+    const slot = creneau(0, "diner");
+    const pate = unRole("base");
+    expect(offre(jeu, jeu.choix, slot).map((c) => c.plat.id)).not.toContain(pate.id);
+
+    const e = comptoir(jeu, jeu.choix, slot)!.ecarts(pate);
+    expect(e.map((x) => x.cle)).toContain("role");
+    expect(e.find((x) => x.cle === "role")!.texte).toMatch(/c’est une base|c'est une base/);
+  });
+
+  test("un accompagnement non plus, et l'écart nomme le rôle", () => {
+    const slot = creneau(0, "diner");
+    const tian = catalogue.plats.find((p) => p.id === "tian-ratatouille-parmesan")!;
+    expect(tian.role).toBe("accompagnement");
+    expect(offre(jeu, jeu.choix, slot).map((c) => c.plat.id)).not.toContain(tian.id);
+    const e = comptoir(jeu, jeu.choix, slot)!.ecarts(tian);
+    expect(e.find((x) => x.cle === "role")!.texte).toContain("accompagnement");
+  });
+
+  // AILLEURS, LA RÈGLE NE MORD PAS. Le dessert est `optionnel`, le goûter
+  // `routine` : une boisson y est chez elle, et l'écarter au nom de son rôle
+  // remplacerait un filtre trop large par un autre.
+  test("une boisson garde son goûter", () => {
+    const gouter = jeu.creneaux.findIndex((c) => c.repas === "gouter");
+    const cocktail = catalogue.plats.find((p) => p.id === "cocktail-gourmand-peche-coco")!;
+    expect(cocktail.role).toBe("boisson");
+    const e = comptoir(jeu, jeu.choix, gouter)!.ecarts(cocktail);
+    expect(e.map((x) => x.cle)).not.toContain("role");
+  });
+
+  // LA MAIN EST TIRÉE DE L'OFFRE, donc la règle la traverse — mais le dire
+  // explicitement est ce qui empêche qu'un futur tirage repêche les écartés.
+  test("aucune carte de la main ne sort du rôle", () => {
+    const cartes = main(jeu);
+    expect(cartes.length).toBeGreaterThan(0);
+    for (const c of cartes) expect(c.plat.role, c.plat.id).toBe("plat");
+  });
+});
+
 describe("T80 — l'écart est la raison, et c'est la même des deux côtés", () => {
   const ctx = contexte(catalogue);
   const rejeu = rejouer(catalogue, [], ctx, "2026-08-17");

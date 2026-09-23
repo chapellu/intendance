@@ -164,6 +164,11 @@ def main():
                  "central": bool(i.get("central"))}
                 for i in r.get("ingredients", [])
             ],
+            # LE RÔLE — ce que ce plat EST dans un repas, et ce qui décide
+            # s'il se propose pour un dîner. Le défaut est résolu ICI et pas
+            # dans l'app : 121 recettes sur 138 ne portent pas le champ, et le
+            # chargeur doit lire une valeur, pas deviner une absence.
+            "role": r.get("role", "plat"),
             # L'ASSIETTE — ce qui se sert À CÔTÉ pour que ce plat soit un
             # repas. Même forme qu'un ingrédient parce que c'est le même
             # voyage : mis à l'échelle du foyer, puis au panier. Sans `base`
