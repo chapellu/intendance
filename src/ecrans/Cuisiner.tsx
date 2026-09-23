@@ -39,6 +39,7 @@ import {
   minuteur,
   minuteurUtile,
   outilDe,
+  phraseDuRole,
   pourLire,
   provenanceIngredient,
   sansRecette,
@@ -329,7 +330,12 @@ function Ingredients({
             ? p.lotEntier
               ? "Le lot ne se coupe pas."
               : "Ça se garde, autant faire le lot."
-            : ""}
+            : ""}{" "}
+          {/* LE RÔLE, DANS LA LIGNE QUI PORTE DÉJÀ LES PARTS, parce que c'est
+              cette phrase-là qu'il corrige : « on en cuisine 6 » ne veut pas
+              dire six dîners quand la recette compte ses parts en
+              accompagnement. Muette sur un plat — 121 fiches sur 138. */}
+          {phraseDuRole(p)}
         </span>
       </div>
       {/* T74 — « à sortir avant de commencer », sur la FICHE et pas sur

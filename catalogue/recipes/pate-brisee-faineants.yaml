@@ -18,6 +18,11 @@ recipe:
   time_min_total: 5
   active_min: 5
 
+  # Chapitre « bases saines ». Une pâte à tarte crue n'est pas un repas, et
+  # c'est le plat que la main proposait pour un dîner sans que rien ne s'en
+  # étonne.
+  role: base
+
   apports:
     proteine: aucune
     feculent: pate-brisee

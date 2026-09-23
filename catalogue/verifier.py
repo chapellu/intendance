@@ -16,6 +16,7 @@ don't obey them blindly.
     python3 verifier.py <id> ...   # named recipes only
 """
 
+import collections
 import re
 import sys
 from pathlib import Path
@@ -35,6 +36,20 @@ BANDES = {"1-repas", "2-repas", "3-repas", "lunchbox"}
 # le code qui le lit.
 CHAMPS_INGREDIENT = {"id", "name", "qty", "unit", "seasoning", "ref",
                      "from_accepts", "subs"}
+# LES RÔLES — ce que ce plat est DANS un repas, et non ce qu'il contient.
+#
+# UNION FERMÉE, DÉFAUT `plat`. Cinq valeurs pour la seule question qui commande
+# une décision : est-ce que ça fait un repas à soi seul ? `plat` répond oui,
+# les quatre autres répondent non, chacune pour une raison différente — à côté,
+# avant, dedans, dans un verre.
+#
+# `dessert` N'EN EST PAS UNE, ET C'EST DÉLIBÉRÉ. Le moment où un plat se mange
+# est déjà dit par `creneaux:` (15 plats portent `[gouter, dessert]`), et deux
+# champs qui portent la même information finissent par se contredire — le
+# dépôt l'a payé une fois avec `espace` et `congelo`. Le rôle dit la PLACE dans
+# le repas, `creneaux` dit le MOMENT dans la journée.
+ROLES = {"plat", "accompagnement", "entree", "base", "boisson"}
+
 # L'ASSIETTE — ce qui se sert À CÔTÉ, et qui n'est pas un ingrédient du plat.
 # Même forme qu'une ligne d'ingrédient, moins tout ce qui n'a de sens que
 # dedans : un accompagnement n'est visé par aucun `uses:` (il n'entre dans
@@ -157,6 +172,24 @@ def verifier(rid: str, r: dict, rayons: dict, rules: dict, cat: dict,
         cid = alias.get(ing["id"], ing["id"])
         if cid not in ids_connus:
             err.append(f"ingrédient « {cid} » sans rayon (à ajouter dans rayons.yaml)")
+
+    # ────────────────────────────────────────────────────────── le rôle
+    #
+    # « LE RÔLE D'UN PLAT N'EXISTE NULLE PART DANS LE MODÈLE », écrit en tête de
+    # `tian-ratatouille-parmesan` le jour de sa saisie et resté vrai six
+    # semaines. Sans lui, `creneaux:` était le seul filtre, et il ne parle que
+    # de l'heure : une pâte brisée et une detox-water se proposaient pour le
+    # dîner, parce que rien ne disait qu'elles ne sont pas des dîners.
+    role = r.get("role", "plat")
+    if role not in ROLES:
+        err.append(f"rôle « {role} » inconnu — attendu l'un de {sorted(ROLES)}")
+    # UN ACCOMPAGNEMENT N'A PAS D'ACCOMPAGNEMENT. `avec:` dit ce qu'il manque à
+    # une assiette ; sur un plat qui EST ce qui manque à une autre, la question
+    # ne se pose pas, et la réponse s'additionnerait deux fois au panier le jour
+    # où les deux plats seront posés ensemble.
+    if role != "plat" and r.get("avec"):
+        err.append(f"un plat de rôle « {role} » porte un `avec:` — seul un `plat` "
+                   "peut réclamer quelque chose à côté")
 
     # ────────────────────────────────────────────────────── l'assiette
     #
@@ -553,6 +586,18 @@ def main() -> int:
                                                       or ["dejeuner", "diner"]))
                      and (((cat[rid].get("apports") or {}).get("feculent") in (None, "aucun"))
                           or not (cat[rid].get("apports") or {}).get("legumes")))
+    # LE RÔLE, ET CE QU'IL RETIRE DE LA MAIN. Un plat se propose pour un repas
+    # s'il tient dans le créneau ET s'il fait un repas ; le second membre
+    # n'existait pas. Le compte des deux est la seule façon de voir ce que la
+    # règle coûte — 15 cartes le jour où elle est écrite, sur 117.
+    par_role = collections.Counter(cat[rid].get("role", "plat") for rid in cibles if rid in cat)
+    repas = [rid for rid in cibles if rid in cat
+             and ({"dejeuner", "diner"} & set(cat[rid].get("creneaux") or ["dejeuner", "diner"]))]
+    hors = [rid for rid in repas if cat[rid].get("role", "plat") != "plat"]
+    print("  (" + " · ".join(f"{n} {r}" for r, n in par_role.most_common()) + ")")
+    print(f"  ({len(repas)} plats tiennent dans un créneau de repas, dont {len(hors)} "
+          f"que leur rôle en écarte)")
+
     avec = sum(1 for rid in cibles if rid in cat and cat[rid].get("avec"))
     print(f"  ({avec} plats disent avec quoi les servir · {len(creuses)} plats de repas "
           f"sans `avec:` à qui il manque un féculent ou des légumes déclarés)")

@@ -6,6 +6,7 @@ import type { Catalogue, Etape } from "../model/types";
 import {
   aArmer,
   aTable,
+  phraseDuRole,
   aSortir,
   avancement,
   basculerMinuteur,
@@ -140,6 +141,31 @@ describe("ce qui déclenche une alarme — T82", () => {
   test("relancer un minuteur sonné arme la nouvelle échéance, pas l'ancienne", () => {
     const fini = basculerMinuteur(null, 12, T0 - 20 * 60_000);
     expect(aArmer(basculerMinuteur(fini, 12, T0), T0)).toBe(T0 + 12 * 60_000);
+  });
+});
+
+describe("ce que la fiche dit du rôle", () => {
+  const parRole = (role: string) => catalogue.plats.find((p) => p.role === role)!;
+
+  // `portions_eq` EST UN NOMBRE DONT LE SENS DÉPEND DU RÔLE. La fiche affiche
+  // « on en cuisine 6 » ; sur le tian, ces six parts sont six ACCOMPAGNEMENTS,
+  // et c'était écrit dans un commentaire faute d'un champ pour le dire.
+  test("un accompagnement dit dans quel rôle ses parts se comptent", () => {
+    expect(phraseDuRole(parRole("accompagnement"))).toBe(
+      "Ces parts se comptent en accompagnement.",
+    );
+    expect(phraseDuRole(parRole("entree"))).toBe("Ces parts se comptent en entrée.");
+  });
+
+  test("une base et une boisson disent autre chose, parce que ce n'est pas la même chose", () => {
+    // Compter les parts d'une pâte brisée « en base » n'aurait aucun sens :
+    // ce qui manque à qui la lit, c'est de savoir qu'elle entre ailleurs.
+    expect(phraseDuRole(parRole("base"))).toMatch(/entre dans un autre plat/);
+    expect(phraseDuRole(parRole("boisson"))).toMatch(/pas un repas/);
+  });
+
+  test("et elle se tait sur un plat, qui est le cas des 121 autres", () => {
+    expect(phraseDuRole(parRole("plat"))).toBe(null);
   });
 });
 

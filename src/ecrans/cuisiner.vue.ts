@@ -7,7 +7,7 @@
 // Port de `apps/proto-shell/comptoir.js` (`CHAUFFE`, `ecranCuisine`).
 
 import { commeIngredient, echelleTexte } from "../model/calcul";
-import type { Choix, Jeu } from "../model/jeu";
+import { ROLES, type Choix, type Jeu } from "../model/jeu";
 import type { Etape, Foyer, Ingredient, Outil, Plat } from "../model/types";
 
 /* ───────────────────────────────────────────────────────────────── la chauffe */
@@ -224,6 +224,29 @@ export function provenanceIngredient(jeu: Jeu, ing: Ingredient): Provenance {
   // la connaît pas —, elle dit seulement d'aller voir avant de partir acheter.
   if (jeu.gardeManger.includes(cid)) return { label: "au garde-manger", acheter: false };
   return { label: "à acheter", acheter: true };
+}
+
+/* ────────────────────────────────────────────────────────────────── le rôle */
+
+/**
+ * Ce que la fiche dit du rôle, ou rien.
+ *
+ * `portions_eq` EST UN NOMBRE DONT LE SENS DÉPEND DU RÔLE, et c'était déjà
+ * écrit six fois dans le corpus avant que le champ existe : « 4 en plat
+ * principal, 6 à 8 en entrée » (p. 29), « 6 samoussas par personne en plat, 3
+ * en entrée », « en entrée d'après le livre ; doubler pour un plat » (p. 45).
+ * La fiche affiche « on en cuisine 6 » : sans cette phrase, ces six parts se
+ * lisent comme six dîners.
+ *
+ * MUETTE SUR UN `plat`, qui est 121 recettes sur 138 : répéter « c'est un
+ * plat » sous chaque fiche apprendrait à ne plus lire la ligne, et c'est
+ * justement le jour où elle dit autre chose qu'elle doit se voir.
+ */
+export function phraseDuRole(p: Plat): string | null {
+  if (p.role === "plat") return null;
+  if (p.role === "base") return "C’est une base : elle entre dans un autre plat.";
+  if (p.role === "boisson") return "C’est une boisson, pas un repas.";
+  return `Ces parts se comptent en ${ROLES[p.role].nom}.`;
 }
 
 /* ──────────────────────────────────────────────────────────────── à table */

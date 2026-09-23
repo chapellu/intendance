@@ -27,6 +27,11 @@ recipe:
   time_min_total: 35
   active_min: 20
 
+  # p. 72 : « il SERT DE BASE à de nombreux plats vite préparés et apporte
+  # fibres, minéraux et substances protectrices qui manquent aux repas pris sur
+  # le pouce ». Un grand wok de légumes verts se mange — à côté.
+  role: accompagnement
+
   apports:
     proteine: aucune
     feculent: aucun

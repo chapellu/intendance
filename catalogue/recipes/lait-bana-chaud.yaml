@@ -37,6 +37,10 @@ recipe:
 
   creneaux: [petit-dejeuner, gouter]
 
+  # Un verre de lait à la banane — son en-tête disait déjà « une fraction d'un
+  # repas » faute d'un mot pour le dire.
+  role: boisson
+
   apports:
     proteine: aucune
     feculent: aucun

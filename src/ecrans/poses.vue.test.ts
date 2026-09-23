@@ -34,9 +34,18 @@ const poser = (jour: number, repas: string, rid: string) => {
 const vue = () => vueDesPoses(jeu, calculer(jeu));
 
 /** Un plat qui accepte ce créneau — le corpus décide, jamais une liste d'ids
- *  recopiée ici, qui vieillirait à côté du catalogue sans qu'on le voie. */
+ *  recopiée ici, qui vieillirait à côté du catalogue sans qu'on le voie.
+ *
+ *  `role === "plat"` DEPUIS T93 : ce helper sert les promesses qui comptent des
+ *  REPAS, et le premier plat du corpus à accepter un dîner pourrait demain être
+ *  une base ou un accompagnement. Le compte basculerait alors en silence, et
+ *  c'est le test qui aurait l'air faux. */
 const platPour = (repas: string): string =>
-  catalogue.plats.find((p) => (p.creneaux.length ? p.creneaux : ["dejeuner", "diner"]).includes(repas))!.id;
+  catalogue.plats.find(
+    (p) =>
+      p.role === "plat" &&
+      (p.creneaux.length ? p.creneaux : ["dejeuner", "diner"]).includes(repas),
+  )!.id;
 
 describe("la liste des posés", () => {
   test("ne montre que ce qui porte un plat", () => {
@@ -79,6 +88,37 @@ describe("la liste des posés", () => {
     expect(un).toBe(jeu.plats[platPour("dejeuner")]!.minutes);
     poser(1, "diner", platPour("diner"));
     expect(vue().minutes).toBe(un + jeu.plats[platPour("diner")]!.minutes);
+  });
+});
+
+describe("un accompagnement posé sur un dîner n'est pas un dîner", () => {
+  // LE DESSERT SE DISTINGUAIT PAR SON CRÉNEAU ; UN ACCOMPAGNEMENT, NON. Il est
+  // posé SUR un dîner — c'est même la seule façon de le poser — donc la nature
+  // du créneau ne peut rien en dire. Sans le rôle, la liste annonçait « 2
+  // repas » là où il y a un dîner et un tian.
+  test("il se compte à part, sous le nom de son rôle", () => {
+    poser(0, "diner", platPour("diner"));
+    poser(1, "diner", "tian-ratatouille-parmesan");
+    const v = vue();
+    expect(v.lignes).toHaveLength(2);
+    expect(v.repas).toBe(1);
+    expect(v.extras).toEqual([{ label: "accompagnement", n: 1 }]);
+    expect(phraseDesPoses(v)).toBe("1 repas · 1 accompagnement");
+  });
+
+  // IL RESTE UN CHOIX QU'ON A PRIS, et le créneau reste OCCUPÉ — un plat par
+  // créneau, c'est le modèle depuis le port. Le compte des repas qui manquent
+  // ne le sait donc pas : poser un tian sur mardi soir retire mardi soir de la
+  // liste des soirs à décider, alors qu'il n'y a pas encore de dîner. C'est la
+  // limite connue de ce ticket, épinglée ici pour qu'elle se voie le jour où un
+  // créneau pourra porter deux plats.
+  test("il occupe quand même son créneau, faute de pouvoir en partager un", () => {
+    poser(1, "diner", "tian-ratatouille-parmesan");
+    const v = vue();
+    expect(v.lignes).toHaveLength(1);
+    expect(v.lignes[0]!.slot.plat?.id).toBe("tian-ratatouille-parmesan");
+    expect(v.repas).toBe(0);
+    expect(v.restent).toBe(jeu.creneaux.filter((c) => c.nature === "choisi").length - 1);
   });
 });
 

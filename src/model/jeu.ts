@@ -13,7 +13,7 @@
 // reposait sur `undefined` là où TypeScript demande une décision.
 
 import type { LotInitial } from "./depot";
-import type { Catalogue, NatureCreneau, Plat, RepasId } from "./types";
+import type { Catalogue, NatureCreneau, Plat, RepasId, Role } from "./types";
 
 const JOURS = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"] as const;
 
@@ -187,6 +187,34 @@ export function platDe(jeu: Jeu, i: number): Plat | null {
   const rid = jeu.choix[i];
   return joue(rid ?? null) ? (jeu.plats[rid as string] ?? null) : null;
 }
+
+/**
+ * Le rôle en toutes lettres — le nom, et son article.
+ *
+ * ICI ET PAS DANS `ui/phrases.ts` parce que le modèle écrit la phrase le
+ * premier : c'est `comptoir()` qui dit « c'est un accompagnement, pas un
+ * dîner », et un écran qui referait le mot pour sa propre étiquette finirait
+ * par en dire un autre. Même raison que l'en-tête de `phrases.ts`, appliquée
+ * dans l'autre sens.
+ */
+export const ROLES: Record<Role, { nom: string; un: string }> = {
+  plat: { nom: "plat", un: "un" },
+  accompagnement: { nom: "accompagnement", un: "un" },
+  entree: { nom: "entrée", un: "une" },
+  base: { nom: "base", un: "une" },
+  boisson: { nom: "boisson", un: "une" },
+};
+
+/**
+ * Ce plat fait-il un repas à soi seul ?
+ *
+ * LA QUESTION QUE `creneaux:` NE POUVAIT PAS POSER. Un créneau dit une HEURE —
+ * déjeuner, dîner, goûter — et une pâte brisée n'en a aucune : elle n'est pas
+ * « prévue pour le goûter », elle n'est le repas de personne. `creneaux: []`
+ * ne l'aurait pas dit non plus, puisque le silence y vaut « déjeuner et
+ * dîner ». Il fallait un second champ, et c'est celui-ci.
+ */
+export const faitUnRepas = (plat: Plat): boolean => plat.role === "plat";
 
 /** Un plat déclare les créneaux qui lui vont ; le silence vaut « repas
  *  principal ». */

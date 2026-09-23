@@ -20,6 +20,12 @@ recipe:
   time_min_total: 30
   active_min: 10
 
+  # « En entrée, d'après le livre ; doubler pour un plat » — c'était déjà écrit
+  # à côté de `portions_eq`, et c'est le cas qui montre pourquoi le rôle compte :
+  # ces 4 parts sont 4 ENTRÉES. Proposé pour un dîner, ce plat promettait de
+  # nourrir quatre personnes avec la moitié de ce qu'il faut.
+  role: entree
+
   apports:
     proteine: fromage
     feculent: farine
