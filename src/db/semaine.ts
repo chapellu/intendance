@@ -139,8 +139,35 @@ export async function oublier(base: Base, jeu: Jeu, i: number): Promise<void> {
   jeu.parts[i] = jeu.catalogue.foyer.parts;
 }
 
-/** Les décisions passées, pour le ménage. Rien ne les efface automatiquement :
- *  une semaine écoulée est un journal, et c'est au foyer de dire quand il
- *  cesse de l'intéresser. */
+/**
+ * « J'AI FINI » — le seul geste qui efface en gros, et il est demandé.
+ *
+ * DEMANDÉ LE 23/09/2026, dans la même phrase que le report : « Only clean
+ * recipes when I say I'm done. » Le report (`db/report.ts`) tient la première
+ * moitié — rien ne disparaît tout seul ; celui-ci tient la seconde, sans quoi
+ * la liste ne ferait que grossir et on aurait échangé une perte silencieuse
+ * contre un encombrement définitif.
+ *
+ * TOUTE LA TABLE, PAS LA SEULE FENÊTRE. Ce qui est resté en amont faute de
+ * place libre (voir `Report.bloquees`) est justement ce qu'on ne voit pas :
+ * l'épargner ici le ferait revenir demain, après qu'on a dit avoir fini. Un
+ * geste qui laisse derrière lui ce qu'il promettait d'effacer est pire que pas
+ * de geste.
+ *
+ * Rend le nombre de lignes effacées — l'écran s'en sert pour dire ce qu'il
+ * vient de faire, et c'est la seule confirmation qu'un geste irréversible
+ * puisse donner après coup.
+ */
+export async function toutOublier(base: Base, jeu: Jeu): Promise<number> {
+  const n = await base.creneaux.count();
+  await base.creneaux.clear();
+  jeu.choix.fill(null);
+  jeu.parts.fill(jeu.catalogue.foyer.parts);
+  return n;
+}
+
+/** Les décisions posées en amont de la fenêtre. Rien ne les efface
+ *  automatiquement : `db/report.ts` les RAMÈNE, et c'est au foyer de dire
+ *  quand il a fini. */
 export const decisionsAvant = (base: Base, jour: string): Promise<DecisionCreneau[]> =>
   base.creneaux.where("jour").below(jour).toArray();

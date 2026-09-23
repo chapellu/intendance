@@ -3826,6 +3826,114 @@ n'existait pas.
   source le dit. Les 35 plats de la dette de T92 sont le premier endroit où
   regarder, mais ce sont des lectures de recettes, pas un contrôle qu'on écrit.
 
+## Ce qui est posé ne vieillit pas — T94
+
+**Dit le 23/09/2026, quatrième journée d'usage réel :**
+
+> *« Can you disable link between days and recipe please. I lost recipes I
+> selected yesterday because under the hood they were linked to yesterday
+> diner. Only clean recipes when I say I'm done. »*
+
+**LE DIAGNOSTIC EST DANS LA PHRASE, ET IL EST JUSTE.** La fenêtre du modèle est
+un rail glissant de sept jours qui commence AUJOURD'HUI (`creerJeu`), et
+`useSemaine` ne lit que cette plage. Un plat posé la veille sur le jour 0 passe
+donc sous la borne basse à minuit. Il n'est pas effacé — `decisionsAvant` promet
+depuis T51 qu'on le retrouve en base — mais plus aucun écran ne peut l'atteindre,
+et vu du téléphone ça ne se distingue en rien d'une perte. **Une journée
+d'avance se payait d'une journée de choix.**
+
+**DEUX FICHIERS SE CONTREDISAIENT DEPUIS TROIS JOURS, ET LES DEUX AVAIENT
+RAISON QUAND ILS ONT ÉTÉ ÉCRITS.** `db/schema.ts` défend la clé `(jour, repas)`
+par un argument imparable : *« une décision appartient à mercredi 19 août,
+dîner »*, donc persister l'index ferait déménager le gratin quand la semaine
+roule. Cet argument repose entièrement sur un fait — **quelqu'un a CHOISI
+mercredi**. T88 a éteint l'agenda le 20/09, et depuis, personne ne choisit plus :
+poser un plat le pose sur le pas où le fil en est, en silence, `nav/jours.ts` le
+dit noir sur blanc. **La prémisse est tombée ce jour-là, et le commentaire est
+resté.** La clé reste juste, pour la même raison qu'avant ; ce qui a changé,
+c'est que la date est devenue une COORDONNÉE INTERNE — et une coordonnée interne
+n'a pas le droit de détruire une décision pendant la nuit.
+
+**MOTIF, ET C'EST LE TROISIÈME DE LA MÊME FAMILLE EN TROIS JOURS.** T88 a éteint
+des CHEMINS (#33, « Posés »), puis une PORTE (T90, la recherche), et ici une
+GARANTIE : le jour n'était plus montré, mais il continuait de trancher. Les trois
+fois, l'interrupteur a fait plus que ce qu'il annonçait, et les trois fois ça
+s'est vu à l'usage, entre un et six jours plus tard. **Rien dans le dépôt ne
+relit les prémisses d'un commentaire quand un interrupteur les périme.**
+
+**ON REPORTE, ON NE RALLONGE PAS LA FENÊTRE.** L'autre chemin — faire commencer
+la semaine au plus vieux jour encore posé — rallume ce que T88 a éteint : le fil
+proposerait des créneaux d'hier, « aujourd'hui » désignerait avant-hier, et la
+fraîcheur du chaînage se compterait depuis une date qu'on aurait rendue présente.
+On déplace donc la DÉCISION vers la fenêtre, et c'est le seul des deux gestes qui
+laisse les dates dire la vérité.
+
+- [x] **T94 — Le report des posés.** `db/report.ts` : à l'ouverture, tout ce qui
+      est posé en amont de la fenêtre est ramené dedans, sur le PREMIER créneau
+      libre du même repas — un dîner redevient un dîner — avec ses parts réglées.
+      `useReport` a la forme de `useAmorce` et tient les bornes de lecture à vide
+      tant qu'il n'a pas fini : lire d'abord afficherait la liste amputée, puis
+      la ferait sauter d'un cran quand `useLiveQuery` reverrait la table.
+
+      **TROIS CHOSES S'EFFACENT, ET C'EST TOUT.** Un créneau DÉJÀ CUISINÉ (le
+      journal en porte l'événement ; le reporter le remettrait en « à cuisiner »
+      et la liste de courses le recompterait — **cuisiner EST le « j'ai fini »
+      d'un plat, dit par le geste**), un repas SAUTÉ, une ligne qui ne porte que
+      des parts. Ni l'un ni l'autre n'est une recette.
+
+      **CE QUI NE TROUVE PAS DE PLACE N'EST PAS SUPPRIMÉ** — une fenêtre
+      entièrement posée n'a nulle part où reporter, la ligne attend le report
+      suivant. Perdre en silence est ce qu'on répare : on ne le refait pas à
+      l'autre bout.
+
+      **UNE SEULE FOIS PAR JOUR ET PAR ONGLET.** La transaction protège la base,
+      pas l'arithmétique des places : deux `useSemaine` concurrents se
+      partageraient les créneaux libres avant que l'un ait écrit.
+
+- [x] **T94b — « J'ai fini », le seul geste qui efface en gros.** L'autre moitié
+      de la phrase. Une liste qui ne peut plus rien perdre doit pouvoir se
+      fermer, sinon on a échangé une perte silencieuse contre un encombrement
+      définitif. Deux gestes sur « Posés », et il n'y en a pas d'autres :
+      **« Retirer »** sur une ligne (`oublier`, qui existait et n'avait pas de
+      bouton — la seule façon de dire « je ne veux plus ce plat » était
+      d'attendre minuit, ce qui n'en est plus une), et **« J'ai fini — tout
+      effacer »** en pied d'écran, `toutOublier`, en deux temps.
+
+      **PAS UN `confirm()`** : l'app est installée à l'écran d'accueil d'un
+      iPhone, où la boîte du navigateur s'affiche au nom du site et se lit comme
+      une alerte système. Le second bouton est dans l'écran, là où le doigt vient
+      de frapper. **TOUTE LA TABLE, PAS LA SEULE FENÊTRE** : ce qui est resté en
+      amont faute de place est justement ce qu'on ne voit pas, et l'épargner le
+      ferait revenir demain, après qu'on a dit avoir fini.
+
+      Portes : typecheck, **737 tests** (15 nouveaux, `db/report.test.ts` — tous
+      font passer au moins une nuit), build, **52 e2e** (2 nouveaux dans
+      `poses.spec.ts`), `catalogue:verifie` 0 erreur. **Le parcours de l'horloge
+      a été vérifié ROUGE avant d'être vérifié vert** : report neutralisé, il
+      tombe sur la ligne qui cherche le plat de la veille.
+
+### Ce que ce bloc laisse ouvert
+
+- **La liste n'a pas de plafond.** Rien ne se vide plus tout seul, et rien ne
+  dit non plus « tu as quatorze plats posés et sept créneaux ». Le compte de
+  `Report.bloquees` existe et personne ne l'affiche : c'est le premier endroit
+  où regarder si l'encombrement se signale un jour.
+- **Les parts voyagent avec le plat, et le foyer peut avoir changé.** « On est
+  six ce soir » réglé pour mardi suit le plat jusqu'à vendredi. C'est le bon
+  défaut — le dîner n'a pas changé — mais rien ne le redemande, et un reste de
+  week-end s'appliquerait à un mardi tout seul.
+- **Le report ne sait rien des gamelles, et peut les INVERSER.** `prevoirGamelle`
+  lie le dîner de la veille au midi du lendemain dans une seule transaction ;
+  reportés, chacun va au premier créneau libre de son repas, donc le midi passe
+  DEVANT le dîner qui devait le nourrir. Le lien n'est persisté nulle part — il
+  n'y a rien à préserver, il faudrait le reconstruire. **Sans conséquence
+  aujourd'hui** : « À prévoir » est un des écrans que T88 a éteints, et c'est le
+  seul qui propose une gamelle. À reprendre le jour où il se rallume.
+- **Rien ne relit les prémisses d'un commentaire.** Le motif de ce ticket est le
+  troisième du genre en trois jours, et la seule chose qui l'a attrapé les trois
+  fois est l'usage réel. Un interrupteur qui périme un raisonnement écrit
+  ailleurs ne laisse aucune trace mécanique.
+
 ## Sortie
 
 **Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`

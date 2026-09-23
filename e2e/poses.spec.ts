@@ -119,3 +119,74 @@ test("un plat de plus s'ajoute aux posés, il ne les remplace pas", async ({ pag
   await expect(page.locator(".co-lot").filter({ hasText: un })).toBeVisible();
   await expect(page.locator(".co-lot").filter({ hasText: deux })).toBeVisible();
 });
+
+test("un plat posé hier est encore là ce matin", async ({ page }) => {
+  // LE BUG DU 23/09, DE BOUT EN BOUT, ET IL FALLAIT L'HORLOGE POUR L'AVOIR.
+  //
+  // « I lost recipes I selected yesterday because under the hood they were
+  // linked to yesterday diner. » La fenêtre du modèle commence AUJOURD'HUI ;
+  // un plat posé la veille passait sous la borne basse à minuit et plus aucun
+  // écran ne pouvait l'atteindre. C'est une promesse du TEMPS, pas d'un écran :
+  // les onze tests de `poses.vue.test.ts` étaient verts pendant les trois jours
+  // où la panne a duré, parce qu'ils posent et relisent le même jour.
+  await page.clock.install();
+  const un = await poserUnPlat(page);
+
+  // Une nuit passe. C'est l'onglet que le téléphone a gardé ouvert.
+  await page.clock.fastForward(24 * 60 * 60 * 1000);
+  await page.reload();
+
+  await page.goto("/#/cuisine/poses");
+  await attendreLApp(page);
+  await expect(page.locator(".co-lot").filter({ hasText: un })).toBeVisible();
+
+  // ET IL EST VRAIMENT REPOSÉ, PAS SEULEMENT AFFICHÉ : sa recette s'ouvre.
+  // L'URL porte le créneau, donc une ligne qu'on montrerait sans l'avoir
+  // déplacée mènerait à « ce créneau n'est plus là » — la panne d'à côté, que
+  // le correctif du 21/09 a déjà payée une fois.
+  await page
+    .locator(".co-lot")
+    .filter({ hasText: un })
+    .getByRole("link", { name: "Voir la recette" })
+    .click();
+  await expect(page.getByText("Ce créneau n’est plus là")).toHaveCount(0);
+  await expect(page.getByText(un, { exact: false }).first()).toBeVisible();
+});
+
+test("« j’ai fini » est le seul geste qui vide la liste", async ({ page }) => {
+  // L'AUTRE MOITIÉ DE LA PHRASE : « only clean recipes when I say I'm done. »
+  // Une liste qui ne peut plus rien perdre doit pouvoir se fermer, sinon on a
+  // échangé une perte silencieuse contre un encombrement définitif.
+  const un = await poserUnPlat(page);
+  const deux = await poserUnPlat(page);
+
+  await page.goto("/#/cuisine/poses");
+  await attendreLApp(page);
+  await expect(page.locator(".co-lot")).toHaveCount(2);
+
+  // « Retirer » n'enlève QUE sa ligne.
+  await page
+    .locator(".co-lot")
+    .filter({ hasText: un })
+    .getByRole("button", { name: "Retirer" })
+    .dispatchEvent("click");
+  await expect(page.locator(".co-lot")).toHaveCount(1);
+  await expect(page.locator(".co-lot").filter({ hasText: deux })).toBeVisible();
+
+  // EN DEUX TEMPS, et le premier ne détruit rien : un geste irréversible sous
+  // le pouce, sur un écran de 390 px, se frappe par accident.
+  await page.getByRole("button", { name: "J’ai fini — tout effacer" }).dispatchEvent("click");
+  await expect(page.locator(".co-lot")).toHaveCount(1);
+  await page.getByRole("button", { name: "Annuler" }).dispatchEvent("click");
+  await expect(page.locator(".co-lot")).toHaveCount(1);
+
+  await page.getByRole("button", { name: "J’ai fini — tout effacer" }).dispatchEvent("click");
+  await page.getByRole("button", { name: "Oui, j’ai fini" }).dispatchEvent("click");
+  await expect(page.locator(".co-lot")).toHaveCount(0);
+  await expect(page.getByText("Rien de posé pour l’instant.")).toBeVisible();
+
+  // ET ÇA TIENT AU RECHARGEMENT : la base est vide, pas seulement l'écran.
+  await page.reload();
+  await attendreLApp(page);
+  await expect(page.locator(".co-lot")).toHaveCount(0);
+});

@@ -32,6 +32,15 @@
 //     gamelles qu'on ne peut plus atteindre. Une pastille qui n'ouvre rien est
 //     pire qu'une pastille qui compte mal.
 //
+// CE QUE ÇA A COÛTÉ, ET QUI NE SE VOYAIT PAS D'ICI. Cacher le jour ne le
+// retire pas de la clé de base, et la fenêtre du modèle reste un rail glissant
+// de sept jours : un plat posé hier tombait donc sous la borne basse à minuit,
+// sans que personne ait choisi ce jour-là ni ait été prévenu qu'il comptait.
+// Signalé le 23/09 — « I lost recipes I selected yesterday because under the
+// hood they were linked to yesterday diner » — et réparé par `db/report.ts`,
+// qui ramène les posés dans la fenêtre. La règle à retenir tient en une ligne :
+// UNE COORDONNÉE QU'ON NE MONTRE PLUS NE PEUT PLUS RIEN DÉTRUIRE.
+//
 // Les écrans eux-mêmes restent montés et leurs URL restent valides : `#/cuisine
 // /semaine` s'ouvre encore si on la tape, et les parcours e2e qui en dépendent
 // ne mentent pas sur du code mort. Remettre `true` ici rallume tout.
