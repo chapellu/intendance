@@ -160,6 +160,25 @@ export const CULTURES: Culture[] = [
     // sortie de l'hiver au lieu de décembre. Fermer la fenêtre au 30 septembre
     // confondait « trop tard pour manger en décembre » avec « trop tard », et
     // fabriquait un arbitrage avec les tomates qui n'existe pas.
+    //
+    // ────────────────────────────────────────────────────────────────────────
+    // MAIS LE 20 OCTOBRE EST UNE BORNE MOLLE, ET ELLE EST ÉCRITE ICI COMME
+    // TELLE PLUTÔT QUE DÉCOUVERTE PLUS TARD.
+    //
+    // L'ouvrage qui avait servi à ouvrir la fenêtre SE CONTREDIT : sa page
+    // d'octobre fait semer de la mâche, son tableau récapitulatif arrête les
+    // semis en septembre. Une source qui se dément sur le point exact qu'on
+    // lui empruntait ne fonde rien, et c'est le seul argument qu'on avait.
+    //
+    // Ce qui SURVIT à la contradiction, et qui est l'essentiel : distinguer la
+    // fenêtre du seuil, et faire GLISSER la récolte au lieu de la faire
+    // échouer. Ce mécanisme rend justement la borne peu porteuse — semée tard,
+    // la mâche se mange plus tard, et le verdict le dit. Ce qui reste suspendu
+    // est la date exacte, qui se tranchera soit par le calendrier DRAAF
+    // (Workspace#19, e-mail rédigé, pas encore envoyé), soit par la première
+    // observation réelle de ce jardin — et la seconde vaut mieux que la
+    // première pour CETTE terrasse.
+    // ────────────────────────────────────────────────────────────────────────
     fenetre: { du: "08-15", au: "10-20" },
     seuil: { cible: "faite", parForme: { graine: 40 } },
     libere: { le: "02-28", anneeSuivante: true },

@@ -4216,6 +4216,15 @@ Trois manques que sa lecture a rendus visibles :
 
 ### Ce que ce bloc laisse ouvert
 
+- **La borne d'octobre de la mâche est molle, et le dire ici est le ticket.**
+  La source qui avait servi à ouvrir la fenêtre en T97 **se contredit** — sa
+  page d'octobre sème de la mâche, son tableau récapitulatif arrête les semis
+  en septembre. Le mécanisme de T97 survit entier (fenêtre ≠ seuil, la récolte
+  glisse au lieu d'échouer) et rend même la borne peu porteuse ; la DATE, elle,
+  n'est plus fondée. Elle se tranchera par Workspace#19 ou par la première
+  observation de ce jardin. **Motif : une source qui se dément sur le point
+  exact qu'on lui empruntait ne fonde rien**, et c'est le genre de chose qu'on
+  découvre en lisant la deuxième moitié d'un ouvrage.
 - **La table des cultures fait onze lignes, et il en faudrait cent.** C'est une
   amorce assumée : Workspace#4 chiffre une table complète à 80-100 h de travail
   ORIGINAL, parce qu'aucune source n'est réutilisable — USDA PLANTS n'a pas les
