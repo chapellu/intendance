@@ -3934,6 +3934,338 @@ laisse les dates dire la vérité.
   fois est l'usage réel. Un interrupteur qui périme un raisonnement écrit
   ailleurs ne laisse aucune trace mécanique.
 
+## Le jardin ouvre — T95 et T96
+
+**Demandé le 24/09/2026, au moment d'aller acheter de quoi planter :**
+
+> *« Je souhaiterais aller à botanic ce matin pour acheter de quoi planter cet
+> automne. La grande question est donc qu'est-ce qu'on plante ? » … « Je pense
+> que tout est un peu en test au vu de mon expérience. »*
+
+La facette jardin existait depuis T13 pour que la barre du bas ne soit pas un
+mensonge — une coquille à trois facettes dont deux n'ouvrent rien ne se juge
+pas. Elle porte maintenant un modèle. **Deux tickets, parce que la carte et le
+verdict répondent à deux questions différentes** : *où ça se passe* et *qu'est-ce
+qui peut y entrer*.
+
+- [x] **T95 — La carte de la terrasse.** Neuf cellules en plan, pas en liste.
+      Un jardin est un objet SPATIAL — « le carré du milieu », « le pot du
+      bout » sont les noms qu'on lui donne vraiment — et Workspace#16 avait
+      laissé l'intérieur du jardin ouvert en notant que la carte de la variante
+      B était le candidat sérieux, compatible avec la coquille de la variante
+      A. C'est ce collage qu'on essaie ici. **La facette reprend
+      `--color-accent-2`**, celui que la barre du bas lui donne déjà : la
+      coquille tient la typo, le chrome et la nav, la facette choisit son
+      accent — c'est le verdict de Workspace#16 rendu visible.
+
+      **LE BAC 2 EST TROIS CELLULES, ET C'EST LA DÉCISION LA PLUS CHARGÉE DU
+      TICKET.** 100 × 40 cm font « à peu près trois carrés de 33 × 40 »
+      (Workspace#2), et la granularité est le seul actif du site : en un seul
+      tenant, une solanacée y coûterait TOUTE la surface potagère pendant
+      quatre ans (Workspace#12). En trois carrés, elle en coûte un. C'est aussi
+      ce qui rend l'échappatoire du pot lisible d'un coup d'œil — trois carrés
+      pris, deux pots libres, ça se voit sur un plan et pas dans une liste.
+
+      Trois états, trois fonds, et **« permanent » n'est pas « occupée »** : un
+      bac de lilas ne se libérera pas en octobre, il ne se libérera jamais. Les
+      confondre ferait espérer le bac 1 à chaque changement de saison.
+
+- [x] **T96 — Le verdict de cellule.** Pour UNE cellule, à UNE date, un verdict
+      par culture : statut, bande de résultat attendu, et **toutes** les
+      raisons actives. C'est le mécanisme dont l'app est née (Workspace#9), et
+      le mot « arbre » en a été retiré exprès — il n'y a aucune arête autorée,
+      aucun nœud qu'on débloque, c'est une fonction `(cellule, date) →
+      verdict[]`. **9 cellules × 10 cultures = 90 verdicts**, recalculés à
+      chaque rendu.
+
+      **RIEN N'EST JAMAIS BLOQUÉ.** La règle CLASSE, elle n'interdit pas : une
+      carotte dans un pot de 20 cm s'affiche avec sa condition au lieu de
+      disparaître. C'est la doctrine déjà écrite pour les plats sans recette
+      (T78) et pour les paris de T33 — **on ne retire pas une proposition pour
+      une lacune, on l'annonce** — et elle vaut ici mot pour mot.
+
+      **DEUX AXES ORTHOGONAUX, et les confondre était l'erreur à éviter.** Ce
+      qui MANQUE (*prête · agir · attendre · jamais ici*, chacun nommé par ce
+      qui le lèverait) et ce qu'on ATTEND (*belle récolte → échec probable*).
+      Une culture peut être **prête et attendue maigre** : c'est exactement les
+      trois tomates du bac 2, 3 h de soleil pour 6 demandées, et c'est le cas
+      qui a fait écrire le modèle. La barre de couleur d'une fiche porte donc
+      le STATUT, jamais la bande.
+
+- [x] **T97 — Deux façons de passer l'hiver.** Correction de T96, provoquée le
+      24/09 par un ouvrage du foyer (*Mon carré potager au fil des mois*,
+      C. Delvaux) que l'utilisateur a photographié après coup. **Le livre n'a
+      rien appris au modèle ; il a montré où le modèle mentait**, ce qui est le
+      seul usage qu'on en fera — voir la note de licence plus bas.
+
+      `saisonDeLaDemande` dit quand la LUMIÈRE se paie. T96 s'en servait aussi
+      pour décider quand la RÉCOLTE tombe : **un champ pour deux questions**,
+      le même défaut de forme que `espace`/`location` en T87 et que les deux
+      `base` de T93. `seuil.cible` répond maintenant à la seconde, et prend
+      deux valeurs — `faite` (on la mange PENDANT la fenêtre noire, donc à
+      ~75 % avant le 4 novembre) et `installee` (on la mange au printemps, il
+      lui suffit d'être enracinée). Quatre cultures sur dix changent de camp.
+
+- [x] **T98 — Une cellule occupée n'est pas forcément prise.** Choisi par
+      l'utilisateur le 24/09 parmi quatre manques, et c'est le bon sur ce
+      site : **sur 0,4 m² et trois carrés, l'espace est la contrainte qui mord
+      le plus fort, et c'est la seule mécanique du modèle qui en FABRIQUE.**
+
+      Deux champs neufs. `emprisePleineJours` — le jour où la culture occupe
+      TOUTE la cellule — et `cycleJours`, sa durée entière. Une cellule cesse
+      d'être prise ou libre : elle est prise **à partir d'une date**. Un pied
+      de tomate mis en terre le 15 mai est minuscule pendant cinq semaines, et
+      pendant ces cinq semaines la cellule peut porter autre chose qui aura
+      fini avant qu'il en ait besoin.
+
+      **Une ligne neuve dans la table, et une seule : le radis.** Cycle 28 j,
+      emprise 15 j — c'est la seule culture dont le cycle court EST la raison
+      d'être. Ses chiffres sont écrits d'après la connaissance générale d'un
+      légume de quatre semaines, pas relevés dans un ouvrage : la note de
+      licence plus bas n'a pas bougé.
+
+### Le prédicat, pris par ses deux bouts
+
+**Sens 1 — la cellule occupée.** La règle 5 regarde l'intervalle AVANT de
+déclarer un blocage. Sans ça, le modèle refuse une plantation que la place
+autorise, ce qui est le pire défaut qu'il puisse avoir ici.
+
+**Sens 2 — la plantation.** Sur toute culture lente, une raison dit la place
+qu'elle laissera. **C'est celui des deux qu'on lira le plus souvent**, parce
+que le conseil arrive au moment utile — devant le rayon, pas six semaines plus
+tard devant un carré à moitié vide.
+
+**Deux conditions, et aucune n'est une préférence.** Le CYCLE ENTIER doit tenir
+(une culture qu'on arrache à moitié faite pour laisser la place n'est pas une
+récolte, c'est une perte) et l'invitée doit être PLUS BASSE que son hôte, sinon
+elle lui fait de l'ombre au moment précis où il démarre. **Ce n'est pas du
+compagnonnage** : on n'affirme rien sur ce que les deux se font l'une à
+l'autre — ce que Workspace#9 a écarté faute de source — seulement qu'elles ne
+se disputent ni la place ni la lumière.
+
+### Trois résultats que personne n'a écrits
+
+**Les carrés A et B répondent différemment le même jour, et c'est juste.** Le
+carré A porte une tomate ET un basilic plantés ensemble ; le basilic prend sa
+place en 25 jours là où la tomate en met 35. **C'est donc le basilic qui ferme
+l'intervalle**, et le radis n'y tient pas — alors qu'il tient dans le carré B,
+qui n'a que la tomate. Le minimum sur les occupants n'a pas été écrit pour ce
+cas ; il le produit.
+
+**Une culture d'intervalle DÉPENSE de la rotation.** Un radis sous une tomate
+est une brassicacée de plus dans ce carré, et la règle 4 le verra l'an
+prochain. Aucune règle spéciale n'a été écrite — c'est exactement ce qu'on veut
+d'un modèle : que ses règles se parlent sans qu'on les présente. Un test le
+tient.
+
+**Et l'intervalle se referme vite** : douze jours après la mise en terre de la
+tomate, le conseil est déjà faux. Un modèle qui dirait « semez un radis au
+pied » toute la saison serait pire qu'un modèle muet.
+
+### La correction, et ce qu'elle dit de la première version
+
+**T96 fabriquait un arbitrage qui n'existait pas, et c'était son exemple
+phare.** La mâche avait une fenêtre fermée au 30 septembre ; les tomates
+tenant le carré jusqu'au 15 octobre, le modèle en tirait un tonitruant
+*« c'est l'un ou l'autre »*. Le dilemme était un artefact : **la mâche se sème
+encore en octobre**. Ce qui se ferme fin septembre, ce n'est pas la culture,
+c'est la récolte de DÉCEMBRE — semée plus tard, elle se mange en février.
+La fenêtre portait un coût qui appartenait au seuil.
+
+Conséquence sur la règle : **l'échéance ne fait plus échouer, elle fait
+GLISSER.** Une graine qui lèvera n'est pas un `échec`, quelle que soit la date ;
+la bande baisse d'un cran et la raison dit de quel côté de l'hiver on mangera.
+Annoncer « échec » de quelque chose qui pousse est un mensonge que le premier
+hiver démentirait — et c'est la même famille que la règle du dépôt sur les
+propositions : **on n'annonce pas un refus quand on peut annoncer un coût.**
+
+Deux gardes ajoutés pendant qu'on y était : la règle ne se pose que si la
+culture **passe l'hiver en place** (`libere.anneeSuivante` — une tomate de mai
+n'a rien à voir avec le 4 novembre) et **que si la fenêtre est ouverte** — sur
+ce qu'on ne peut pas mettre en terre aujourd'hui, l'échéance n'a rien à
+trancher. Un test de régression nommé porte le dilemme disparu.
+
+**Motif à retenir, et c'est le troisième de la même famille dans ce dépôt :
+un modèle qui INVENTE une contrainte est pire qu'un modèle qui n'en trouve
+aucune.** Une contrainte fausse est confiante, elle ferme une option, et rien
+dans l'app ne la contredit — il a fallu un livre posé sur la table.
+
+### La règle qui justifie tout le fichier
+
+**Une cellule tenue trop tard n'est pas « à attendre », elle est « à
+arracher ».** Les tomates tiennent le carré jusqu'au 15 octobre ; la fenêtre de
+mise en place du kale ferme le 5. Attendre libère la cellule APRÈS coup —
+conseiller d'attendre reviendrait à conseiller poliment de rater la saison. Le
+manque cesse d'être du TEMPS et devient un GESTE, et le statut bascule de
+`attendre` à `agir` en le disant : *« Tomate et Basilic tiennent la cellule
+jusqu'au 15 octobre, la fenêtre ferme le 5 octobre : c'est l'un ou l'autre. »*
+
+C'est le seul arbitrage que la conversation du 24/09 a produit et que personne
+n'avait posé comme une question. Il n'existe que parce que la fenêtre et
+l'occupation sont deux règles SÉPARÉES qui se rencontrent.
+
+### Le 4 novembre décide de la forme d'achat, et c'est la réponse du rayon
+
+`PERSEPHONE.debut` — le jour où la durée du jour passe sous 10 h à Francheville
+(Workspace#3, d'après Eliot Coleman). En dessous, la croissance s'arrête
+quasiment quelle que soit la lumière : **l'hiver ici se TIENT, il ne se pousse
+pas**, le modèle est la récolte sur pied constitué.
+
+Conséquence que le ticket n'avait pas prévue et qui est devenue sa sortie la
+plus utile : une culture d'hiver ne se juge pas sur « la fenêtre est-elle
+ouverte » mais sur « reste-t-il assez de jours pour qu'elle soit FAITE avant ».
+Ce calcul répond à **« graines ou godets ? »**, qui est la question qu'on se
+pose devant le rayon et qui n'est écrite sur aucun sachet. Mesuré au 24/09 —
+41 jours restants : le kale demande 75 jours en semis et 40 en godet, donc
+*« en godet, pas en graine »* ; la mâche tient encore en semis, à 40 jours pour
+41 ; et au 20 octobre plus aucune forme ne tient, la bande tombe à `échec`.
+
+### Ce que le modèle refuse d'inventer
+
+**`lumiere.hiver` vaut `null`, et ce n'est pas un trou de saisie.** L'arc sud
+(SE 135° → SO 225°) n'a jamais été relevé — c'est Workspace#18, sept mesures au
+téléphone, dix minutes, toujours ouvert. Écrire ici un 2 plausible ferait
+disparaître **la seule question du jardin qu'un doigt peut fermer aujourd'hui**,
+et elle décide six cultures sur dix.
+
+Le modèle rend donc une **demande d'observation** plutôt qu'une affirmation —
+la réponse prévue par Workspace#9 quand la confiance sur le critère décisif est
+faible. Elle est la seule raison de la liste à porter un fond : le reste
+explique, celle-ci demande. **Une culture viable à 1 h n'en reçoit pas** (la
+mâche passe quel que soit l'arc sud) — la coller partout diluerait la seule qui
+compte.
+
+Même famille de refus : **l'ail se juge sur le PRINTEMPS.** Il est en terre
+d'octobre à juin, mais l'hiver il s'enracine et vernalise sans rien demander ;
+sa lumière se paie en mars-juin, quand le soleil culmine à 44°→68° et a dépassé
+l'ouest. Le juger sur décembre le condamnerait à tort — d'où `saisonDeLaDemande`,
+qui n'est pas la saison d'occupation.
+
+### Le compagnonnage est hors sujet, l'ombre portée ne l'est pas
+
+~625 paires à inventer, aucune source réutilisable (Workspace#9) : le
+compagnonnage ne sera pas modélisé. Ne restent que les interactions
+**physiques** — profondeur de racine, occupation, et hauteur. Un pied de 55 cm
+dans un bac de trois carrés porte donc une **consigne de placement** et non une
+dégradation : *« à mettre au carré le plus éloigné du sud, sinon son ombre
+traverse les 2 autres »*. La bande n'en bouge pas.
+
+### Ce que ce bloc ne fait PAS
+
+- **Il ne consigne rien.** Aucune plantation ne s'enregistre, aucune
+  observation ne se note, **la base n'est pas touchée, aucune version de schéma
+  n'est ajoutée**. La ligne de base année-0 (Workspace#13) n'est pas tranchée —
+  on ne sait pas encore si une cellule démarre à zéro, si le jardinier l'estime
+  ou si l'app l'infère — et écrire en base une réponse qu'on n'a pas est le
+  genre de dette qu'on retrouve dans six mois sans savoir qui l'a créée.
+  `model/terrasse.ts` est une **amorce qui se lit**. Le jour où #13 tranche,
+  elle devient la valeur par défaut d'une table et rien d'autre ne bouge.
+- **Le jardin ne produit toujours aucune tâche de cockpit**, et ce n'est pas un
+  reste à faire. Un verdict est une réponse à une question POSÉE, pas une
+  échéance : « le kale est en arbitrage avec les tomates » est vrai tous les
+  jours de septembre, et une ligne vraie tous les jours apprend à ne plus lire
+  le cockpit (T16). La carte de la facette, elle, cesse de dire « sans
+  modèle » : elle compte des **emplacements**, parce que c'est ce qu'un
+  jardinier compte devant sa terrasse.
+
+Portes : typecheck, **776 tests** (39 neufs), build, **58 e2e** (6 neufs),
+`catalogue:verifie` 0 erreur — le corpus cuisine n'est pas touché.
+
+### Ce que le livre a montré et qu'on ne construit PAS
+
+**Note de licence, d'abord.** *Mon carré potager au fil des mois* est un
+ouvrage commercial. Le **droit sui generis** (CPI L.342-1) protège le contenu
+d'un catalogue indépendamment du droit d'auteur : « les dates de semis sont
+des faits » n'autorise rien. **Aucun chiffre de ce livre n'entre dans
+`cultures.ts`** — c'est la même frontière que le corpus cuisine tient pour ses
+123 recettes d'ouvrage. Il sert à trouver où le modèle est faux, ce qui est
+libre, pas à le remplir.
+
+Trois manques que sa lecture a rendus visibles :
+
+- **Le matériel n'existe pas dans le modèle.** Un voile de forçage change le
+  verdict de plusieurs cultures, et Workspace#9 avait tranché que **le matériel
+  gate une culture, jamais la compétence**. `Cellule` n'a aucun inventaire, et
+  aucune raison ne peut donc dire « sous voile ». C'est le premier vrai manque,
+  devant les quatre-vingt-dix lignes de table.
+- **Une fenêtre à deux bornes ne suffit pas toujours.** Il existe des cultures
+  qu'on veut attraper EN COURS de croissance : semée trop tôt elle monte en
+  graine avant l'hiver, trop tard elle ne donne rien, et entre les deux on
+  obtient une case figée par le froid qu'on consomme jusqu'en janvier. Notre
+  `fenetre` dit « du…au » et ne sait pas exprimer un optimum au milieu.
+- **L'intervalle ne se PROPOSE pas encore.** Il se lit sur la fiche d'une
+  culture qu'on a ouverte ; rien ne dit « pendant que tu plantes cette tomate,
+  sème un radis ». Les deux gestes sont pourtant le même geste, et c'est comme
+  ça que l'ouvrage les présente. Le jour où l'écran sait consigner une
+  plantation (Workspace#13), c'est là que l'offre doit tomber.
+- **Un godet n'est pas toujours mieux qu'une graine, et le modèle le croit.**
+  Passé le début mai, un plant repiqué reprend mal à la chaleur là où un semis
+  en place réussit — l'avantage s'INVERSE. `seuil.parForme` ne sait exprimer
+  qu'un classement fixe.
+- **Une fenêtre à deux bornes ne dit pas un seuil de température.** Février se
+  joue au thermomètre et pas au calendrier. Open-Meteo est la source choisie
+  depuis Workspace#5 et n'est branchée nulle part.
+- **L'eau n'existe pas dans le modèle, et c'est ce qui tue en conteneur.** Ce
+  qui fait disparaître un pied l'hiver, ce n'est pas le gel mais
+  l'engorgement — 280 L de substrat sous la pluie de décembre. Rien ne porte le
+  drainage, et c'est ce qui donnerait son sens au sable sous l'ail.
+- **Un amendement peut être une condition de mise en place**, pas seulement un
+  état de sol : du sable au fond d'une case avant l'ail, c'est du drainage sans
+  lequel un bulbe pourrit en conteneur. Le modèle de sol de Workspace#8 parle
+  de fertilité, jamais de structure à la plantation.
+
+### Ce que ce bloc laisse ouvert
+
+- **La borne d'octobre de la mâche est molle, et le dire ici est le ticket.**
+  La source qui avait servi à ouvrir la fenêtre en T97 **se contredit** — sa
+  page d'octobre sème de la mâche, son tableau récapitulatif arrête les semis
+  en septembre. Le mécanisme de T97 survit entier (fenêtre ≠ seuil, la récolte
+  glisse au lieu d'échouer) et rend même la borne peu porteuse ; la DATE, elle,
+  n'est plus fondée. Elle se tranchera par Workspace#19 ou par la première
+  observation de ce jardin. **Motif : une source qui se dément sur le point
+  exact qu'on lui empruntait ne fonde rien**, et c'est le genre de chose qu'on
+  découvre en lisant la deuxième moitié d'un ouvrage.
+- **La table des cultures fait onze lignes, et il en faudrait cent.** C'est une
+  amorce assumée : Workspace#4 chiffre une table complète à 80-100 h de travail
+  ORIGINAL, parce qu'aucune source n'est réutilisable — USDA PLANTS n'a pas les
+  légumes, OpenFarm est mort, et la presse jardin française est fermée par le
+  **droit sui generis** (CPI L.342-1), qui protège le contenu d'un catalogue
+  indépendamment du droit d'auteur. Dix lignes suffisent à juger la MÉCANIQUE,
+  qui est ce qu'on cherchait ; elles ne suffisent à rien d'autre.
+- **Aucun chiffre de la table n'a de provenance par champ.** La politique de
+  licence de Workspace#2 l'exige *dès la première ligne* parce que la
+  rétrofitter est impossible — et elle n'est pas appliquée ici. C'est la dette
+  la plus urgente du fichier, et elle grandit à chaque ligne ajoutée.
+- **L'état du sol n'existe pas.** Les six dimensions de Workspace#8 (N, P, K,
+  vie du sol, pH, profondeur d'enracinement) ne sont ni stockées ni simulées ;
+  le verdict ne lit donc jamais la fertilité, alors que c'est la moitié de la
+  question d'origine — *« en fonction de mon niveau de sol et de ce qu'il y
+  avait avant »*. La rotation, elle, est là. **Rappel de Workspace#24 : la
+  cible pH en conteneur est 5,5-6,0, pas 6,5-7,0** — les bandes de pleine terre
+  ne transfèrent pas, la densité apparente diffère d'un facteur ~5.
+- **`passages` est vide partout, et c'est un fait et non un oubli.** Rien n'a
+  été consigné avant l'app. La rotation ne voit donc que ce qui est DEBOUT — une
+  tomate en place dit qu'on est en solanacées, un carré vidé l'an dernier ne
+  dit rien. C'est le problème de l'année 0 en entier, et il attend #13.
+- **L'orientation du bac 2 n'est pas connue.** La consigne d'ombre dit « le
+  carré le plus éloigné du sud » sans savoir lequel c'est, parce que le sens du
+  grand côté n'est écrit nulle part. Une donnée à relever en même temps que les
+  sept mesures de #18 — c'est le même déplacement.
+- **La carte ne se modifie pas.** On ne peut ni ajouter un pot, ni déplacer une
+  cellule, ni corriger une dimension. Un pot est pourtant MOBILE par définition
+  — c'est ce qui en fait l'échappatoire — et rien ne permet de le faire courir
+  après la lumière.
+- **`fil.spec.ts:125` a rougi une fois sur deux passages complets**, et passe
+  seul à tous les coups. Rien dans ce bloc ne touche au fil — c'est un
+  intermittent préexistant, noté ici parce qu'un rouge vu une fois et tu par
+  commodité est exactement ce que ce dépôt refuse. À reprendre avec
+  `--repeat-each`, et en vérifiant d'abord le port 4173, qui est partagé entre
+  worktrees.
+- **La sélection de cellule n'est pas dans l'URL.** Choisir une cellule est un
+  `useState` : un lien gardé sur le téléphone rouvre toujours le carré A. À
+  trancher quand on saura si la carte est la bonne forme — poser une route par
+  cellule maintenant, ce serait tenir un état avant de savoir ça.
+
 ## Sortie
 
 **Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`
