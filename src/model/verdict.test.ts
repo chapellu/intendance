@@ -6,8 +6,8 @@
 // modèle dont TOUTES les règles sont des dates y est bien plus exposé.
 
 import { describe, expect, test } from "vitest";
-import { culture } from "./cultures";
-import { cellule } from "./terrasse";
+import { CULTURES, culture, culturesDIntervalle } from "./cultures";
+import { cellule, type Cellule } from "./terrasse";
 import { verdict, verdictsDe, type Raison } from "./verdict";
 
 /** Le jour où ce ticket a été écrit : six semaines avant Perséphone, les
@@ -200,6 +200,68 @@ describe("deux façons de passer l'hiver, et deux seuils", () => {
   });
 });
 
+describe("une cellule occupée n'est pas forcément prise — T98", () => {
+  // Cinq jours après la mise en terre de la tomate : elle est minuscule, et
+  // un radis a le temps de faire son cycle entier avant qu'elle en ait besoin.
+  const CINQ_JOURS_APRES = new Date(2026, 4, 20);
+  const DIX_SEPT_JOURS_APRES = new Date(2026, 5, 1);
+
+  test("un pied encore jeune laisse la place, et le verdict le voit", () => {
+    const r = v("bac2-b", "radis", CINQ_JOURS_APRES);
+    expect(r.statut).toBe("prete");
+    expect(axes(r.raisons)).toContain("intervalle");
+    expect(textes(r.raisons)).toContain("elle a le temps");
+  });
+
+  test("l'intervalle se referme, et vite — douze jours suffisent", () => {
+    // Le conseil n'a de valeur qu'AU MOMENT DE LA PLANTATION. Douze jours plus
+    // tard il est faux, et le modèle doit redire non.
+    expect(v("bac2-b", "radis", DIX_SEPT_JOURS_APRES).statut).toBe("agir");
+  });
+
+  test("LE PREMIER OCCUPANT QUI REMPLIT LA CELLULE LA FERME POUR TOUT LE MONDE", () => {
+    // Le carré A porte une tomate ET un basilic, plantés le même jour. Le
+    // basilic prend sa place en 25 jours là où la tomate en met 35 : c'est
+    // donc lui qui décide, et l'intervalle tombe sous le cycle du radis.
+    // Deux carrés voisins, même date, deux réponses — et c'est juste.
+    expect(v("bac2-b", "radis", CINQ_JOURS_APRES).statut).toBe("prete");
+    expect(v("bac2-a", "radis", CINQ_JOURS_APRES).statut).toBe("agir");
+  });
+
+  test("une invitée doit rester PLUS BASSE que son hôte", () => {
+    // Sinon elle lui fait de l'ombre au moment précis où il démarre. Sous une
+    // mâche de 8 cm, personne ne tient — pas faute de temps, faute de hauteur.
+    expect(culturesDIntervalle(culture("mache")!, 90)).toHaveLength(0);
+  });
+
+  test("c'est le CYCLE ENTIER qui doit tenir, pas le temps de levée", () => {
+    // Une culture qu'on arrache à moitié faite pour laisser la place n'est pas
+    // une récolte, c'est une perte.
+    const radis = culture("radis")!;
+    expect(culturesDIntervalle(culture("tomate")!, radis.cycleJours - 1)).not.toContain(radis);
+    expect(culturesDIntervalle(culture("tomate")!, radis.cycleJours)).toContain(radis);
+  });
+
+  test("la place qu'une culture laissera se dit AU MOMENT DE LA PLANTER", () => {
+    // C'est celui des deux sens qu'on lit le plus souvent : le conseil arrive
+    // devant le rayon, pas six semaines plus tard devant un carré à moitié vide.
+    expect(textes(v("pot-1", "ail").raisons)).toContain("y tient en attendant");
+  });
+
+  test("une culture d'intervalle DÉPENSE de la rotation, et rien n'a été écrit pour ça", () => {
+    // Un radis sous une tomate est une brassicacée de plus dans ce carré. La
+    // règle de rotation le verra l'an prochain sans qu'on l'ait prévenue —
+    // c'est exactement ce qu'on veut d'un modèle : que ses règles se parlent.
+    const apresRadis: Cellule = {
+      ...cellule("bac2-b")!,
+      occupants: [],
+      passages: [{ famille: "brassicacees", annee: 2026 }],
+    };
+    const r = verdict(apresRadis, culture("kale")!, new Date(2027, 8, 1));
+    expect(textes(r.raisons)).toContain("ne reviennent pas avant 2029");
+  });
+});
+
 describe("l'ombre portée — la seule interaction de voisinage qui reste", () => {
   test("un pied haut porte une consigne de placement, pas une dégradation", () => {
     const r = v("bac2-a", "kale");
@@ -217,7 +279,10 @@ describe("la terrasse entière", () => {
   test("chaque cellule rend un verdict par culture, toujours le même nombre", () => {
     // Un écran ne choisit jamais ses cultures : il serait le second endroit à
     // savoir lesquelles existent, et le premier à s'en désaligner.
-    expect(verdictsDe(cellule("bac2-a")!, LE_24_SEPTEMBRE)).toHaveLength(10);
-    expect(verdictsDe(cellule("bac1")!, LE_24_SEPTEMBRE)).toHaveLength(10);
+    // Compté sur la table, pas sur un littéral : un nombre écrit en dur ici
+    // rougirait à chaque ligne ajoutée, et on prendrait l'habitude de le
+    // corriger sans le lire.
+    expect(verdictsDe(cellule("bac2-a")!, LE_24_SEPTEMBRE)).toHaveLength(CULTURES.length);
+    expect(verdictsDe(cellule("bac1")!, LE_24_SEPTEMBRE)).toHaveLength(CULTURES.length);
   });
 });

@@ -27,8 +27,18 @@
 // portée, profondeur de racine, occupation.
 // ════════════════════════════════════════════════════════════════════════════
 
-import { CULTURES, NOM_FAMILLE, PERSEPHONE, ROTATION, nomDe, type Culture, type Forme } from "./cultures";
-import { voisinesDuBac, type Cellule } from "./terrasse";
+import {
+  CULTURES,
+  NOM_FAMILLE,
+  PERSEPHONE,
+  ROTATION,
+  culture as cultureDe,
+  culturesDIntervalle,
+  nomDe,
+  type Culture,
+  type Forme,
+} from "./cultures";
+import { voisinesDuBac, type Cellule, type Occupant } from "./terrasse";
 
 /** CE QUI MANQUE, nommé par ce qui le lèverait. */
 export type Statut =
@@ -45,7 +55,15 @@ export type Statut =
  *  une précision qu'aucune donnée de ce dépôt ne soutient. */
 export type Bande = "belle" | "correcte" | "maigre" | "echec";
 
-export type Axe = "attendre" | "agir" | "jamais-ici" | "bande" | "observer";
+export type Axe =
+  | "attendre"
+  | "agir"
+  | "jamais-ici"
+  | "bande"
+  | "observer"
+  /** De la place qu'on ne voyait pas. Ne change jamais le statut — c'est une
+   *  offre, pas un manque. */
+  | "intervalle";
 
 export interface Raison {
   axe: Axe;
@@ -193,7 +211,8 @@ export function verdict(c: Cellule, cu: Culture, aujourdhui: Date): Verdict {
     raisons.push({ axe: "bande", texte: "En pot : substrat renouvelable, la rotation ne s'applique pas." });
   }
 
-  // ── 5. L'OCCUPATION, ET L'ARBITRAGE QU'ELLE FABRIQUE.
+  // ── 5. L'OCCUPATION, L'ARBITRAGE QU'ELLE FABRIQUE, ET LA PLACE QU'ELLE
+  // LAISSE POURTANT.
   //
   // C'EST LA RÈGLE QUI JUSTIFIE TOUT LE FICHIER. Une cellule tenue jusqu'au
   // 15 octobre par des tomates n'est pas simplement « à attendre » pour un
@@ -201,22 +220,40 @@ export function verdict(c: Cellule, cu: Culture, aujourdhui: Date): Verdict {
   // cesse d'être du temps et devient un GESTE — arracher — et le verdict doit
   // basculer de « attendre » à « agir », sinon il conseille poliment de rater
   // la saison.
+  //
+  // MAIS UNE CELLULE OCCUPÉE N'EST PAS FORCÉMENT PRISE, et T98 est né de là.
+  // Un pied mis en terre il y a huit jours est minuscule : il occupe la
+  // cellule au sens du registre, pas au sens de la place. Tant qu'il n'a pas
+  // atteint son emprise pleine, une culture à cycle court peut tenir dessous
+  // ET AVOIR FINI avant qu'il en ait besoin. On regarde donc l'intervalle
+  // AVANT de déclarer un blocage — sans quoi le modèle refuse une plantation
+  // que la place autorise, ce qui est le pire défaut qu'il puisse avoir sur
+  // 0,4 m².
   const tenue = c.occupants.filter((o) => o.jusqu !== null && o.jusqu > iso(aujourdhui));
   if (tenue.length) {
     const fin = tenue.map((o) => o.jusqu!).sort().at(-1)!;
     const finDate = new Date(`${fin}T12:00:00`);
     const quoi = liste(tenue.map((o) => nomDe(o.culture)));
-    const tropTard = mmjj(finDate) > cu.fenetre.au && ouverte;
-    if (tropTard)
+    const place = intervalleRestant(tenue, aujourdhui);
+
+    if (place && cu.cycleJours <= place.jours && cu.hauteurCm < place.hauteurMin) {
       raisons.push({
-        axe: "agir",
-        texte: `${quoi} ${tenue.length > 1 ? "tiennent" : "tient"} la cellule jusqu'au ${enFrancais(finDate)}, la fenêtre ferme le ${jolieFenetre(cu.fenetre.au)} : c'est l'un ou l'autre.`,
+        axe: "intervalle",
+        texte: `${quoi} ${tenue.length > 1 ? "ne prennent" : "ne prend"} toute la cellule que dans ${place.jours} jours : son cycle en demande ${cu.cycleJours}, elle a le temps.`,
       });
-    else
-      raisons.push({
-        axe: "attendre",
-        texte: `${quoi} jusqu'au ${enFrancais(finDate)}.`,
-      });
+    } else {
+      const tropTard = mmjj(finDate) > cu.fenetre.au && ouverte;
+      if (tropTard)
+        raisons.push({
+          axe: "agir",
+          texte: `${quoi} ${tenue.length > 1 ? "tiennent" : "tient"} la cellule jusqu'au ${enFrancais(finDate)}, la fenêtre ferme le ${jolieFenetre(cu.fenetre.au)} : c'est l'un ou l'autre.`,
+        });
+      else
+        raisons.push({
+          axe: "attendre",
+          texte: `${quoi} jusqu'au ${enFrancais(finDate)}.`,
+        });
+    }
   }
 
   // ── 6. LA LUMIÈRE, ET CE QU'ON N'EN SAIT PAS.
@@ -312,6 +349,26 @@ export function verdict(c: Cellule, cu: Culture, aujourdhui: Date): Verdict {
       texte: `${cu.hauteurCm} cm de haut : à mettre au carré le plus éloigné du sud, sinon son ombre traverse les ${voisinesDuBac(c).length} autres.`,
     });
 
+  // ── 9. LA PLACE QU'ELLE LAISSERA, dite au moment où on la plante.
+  //
+  // C'est le même prédicat que la règle 5, pris par l'autre bout — et c'est
+  // celui des deux qu'on lit le plus souvent, parce que le conseil arrive au
+  // moment utile : devant le rayon, pas six semaines plus tard devant un
+  // carré à moitié vide. Elle s'émet que la fenêtre soit ouverte ou non, comme
+  // la consigne d'ombre : c'est un fait sur la culture, pas un état du jour.
+  //
+  // CE N'EST PAS GRATUIT, et le modèle le fait respecter tout seul : la
+  // culture d'intervalle laisse sa FAMILLE dans la cellule, donc elle dépense
+  // de la rotation. Un radis sous une tomate, c'est une brassicacée de plus
+  // dans ce carré. Aucune règle spéciale n'a été écrite pour ça — la règle 4
+  // le verra l'an prochain, ce qui est exactement ce qu'on veut.
+  const invitees = culturesDIntervalle(cu, cu.emprisePleineJours);
+  if (invitees.length)
+    raisons.push({
+      axe: "intervalle",
+      texte: `Elle ne prend toute la cellule qu'au bout de ${cu.emprisePleineJours} jours : ${liste(invitees.map((f) => `${f.nom.toLowerCase()} (${f.cycleJours} j)`))} y ${invitees.length > 1 ? "tiennent" : "tient"} en attendant.`,
+    });
+
   return { culture: cu, statut: statutDe(raisons), bande, forme, confiance, raisons };
 }
 
@@ -332,6 +389,32 @@ function statutDe(raisons: Raison[]): Statut {
 /** Les jours qu'il faut à cette forme pour atteindre le seuil de la culture.
  *  `0` quand la forme n'est pas déclarée — une forme qu'on ne vend pas ne se
  *  compare à rien. */
+/**
+ * Ce qu'il reste de place partagée sous les occupants en place.
+ *
+ * `null` dès qu'un occupant a atteint son emprise pleine — c'est-à-dire dès
+ * que la cellule est VRAIMENT prise. Le minimum sur tous les occupants, parce
+ * que le premier qui remplit la cellule ferme l'intervalle pour tout le monde.
+ * `hauteurMin` sert à la seconde condition : une invitée doit rester plus
+ * basse que le plus petit de ses hôtes, sinon elle lui fait de l'ombre au
+ * moment précis où il démarre.
+ */
+function intervalleRestant(
+  tenue: Occupant[],
+  aujourdhui: Date,
+): { jours: number; hauteurMin: number } | null {
+  let jours = Infinity;
+  let hauteurMin = Infinity;
+  for (const o of tenue) {
+    const h = cultureDe(o.culture);
+    // Un occupant sans fiche est du mobilier déguisé : il ne laisse rien.
+    if (!h) return null;
+    jours = Math.min(jours, h.emprisePleineJours - joursEntre(new Date(`${o.depuis}T12:00:00`), aujourdhui));
+    hauteurMin = Math.min(hauteurMin, h.hauteurCm);
+  }
+  return jours > 0 ? { jours, hauteurMin } : null;
+}
+
 const joursDe = (cu: Culture, f: Forme): number => cu.seuil.parForme[f] ?? 0;
 
 const familleDe = (id: string): string | undefined => CULTURES.find((c) => c.id === id)?.famille;

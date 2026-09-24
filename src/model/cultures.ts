@@ -44,6 +44,25 @@ export interface Culture {
   profondeurCm: number;
   /** cm de haut, une fois faite. C'est l'ombre qu'elle porte sur ses voisines. */
   hauteurCm: number;
+  /**
+   * Jours entre la mise en place et le moment où la culture occupe TOUTE la
+   * cellule.
+   *
+   * ────────────────────────────────────────────────────────────────────────
+   * C'EST LE CHAMP QUI CRÉE DE LA PLACE LÀ OÙ IL N'Y EN A PAS.
+   *
+   * Une cellule n'est pas prise ou libre : elle est prise À PARTIR D'UNE
+   * DATE. Un pied de tomate mis en terre le 15 mai est minuscule pendant cinq
+   * semaines, et pendant ces cinq semaines la cellule peut porter autre chose
+   * qui aura fini avant qu'il en ait besoin. Sur 0,4 m² et trois carrés,
+   * l'espace est la contrainte qui mord le plus fort — c'est la seule
+   * mécanique du modèle qui en FABRIQUE.
+   * ────────────────────────────────────────────────────────────────────────
+   */
+  emprisePleineJours: number;
+  /** Jours entre la mise en place et la fin de la récolte — le cycle entier.
+   *  C'est lui qui doit tenir dans un intervalle, pas le temps de levée. */
+  cycleJours: number;
   /** La fenêtre de mise en place, `MM-JJ` inclus. */
   fenetre: { du: string; au: string };
   /**
@@ -133,6 +152,8 @@ export const CULTURES: Culture[] = [
     saisonDeLaDemande: "hiver",
     profondeurCm: 15,
     hauteurCm: 8,
+    emprisePleineJours: 30,
+    cycleJours: 90,
     // LA FENÊTRE VA JUSQU'EN OCTOBRE, et c'est le seuil qui porte le coût —
     // pas la fenêtre. Une mâche semée le 10 octobre pousse très bien ; elle
     // n'est simplement pas FAITE pour le 4 novembre, donc elle se mange à la
@@ -156,6 +177,8 @@ export const CULTURES: Culture[] = [
     saisonDeLaDemande: "printemps",
     profondeurCm: 20,
     hauteurCm: 30,
+    emprisePleineJours: 60,
+    cycleJours: 270,
     fenetre: { du: "10-01", au: "11-30" },
     seuil: { cible: "installee", parForme: { bulbe: 25 } },
     libere: { le: "06-30", anneeSuivante: true },
@@ -170,6 +193,8 @@ export const CULTURES: Culture[] = [
     saisonDeLaDemande: "hiver",
     profondeurCm: 30,
     hauteurCm: 55,
+    emprisePleineJours: 45,
+    cycleJours: 180,
     fenetre: { du: "08-01", au: "10-05" },
     seuil: { cible: "faite", parForme: { graine: 75, godet: 40 } },
     libere: { le: "03-31", anneeSuivante: true },
@@ -184,6 +209,8 @@ export const CULTURES: Culture[] = [
     saisonDeLaDemande: "hiver",
     profondeurCm: 30,
     hauteurCm: 40,
+    emprisePleineJours: 40,
+    cycleJours: 120,
     fenetre: { du: "08-01", au: "10-05" },
     seuil: { cible: "faite", parForme: { graine: 70, godet: 40 } },
     libere: { le: "05-31", anneeSuivante: true },
@@ -198,6 +225,8 @@ export const CULTURES: Culture[] = [
     saisonDeLaDemande: "hiver",
     profondeurCm: 20,
     hauteurCm: 25,
+    emprisePleineJours: 35,
+    cycleJours: 100,
     fenetre: { du: "08-15", au: "10-05" },
     seuil: { cible: "faite", parForme: { graine: 60, godet: 35 } },
     libere: { le: "04-30", anneeSuivante: true },
@@ -212,6 +241,8 @@ export const CULTURES: Culture[] = [
     saisonDeLaDemande: "hiver",
     profondeurCm: 20,
     hauteurCm: 20,
+    emprisePleineJours: 35,
+    cycleJours: 180,
     fenetre: { du: "08-15", au: "10-10" },
     seuil: { cible: "installee", parForme: { graine: 45, godet: 25 } },
     libere: { le: "04-15", anneeSuivante: true },
@@ -231,6 +262,8 @@ export const CULTURES: Culture[] = [
     saisonDeLaDemande: "printemps",
     profondeurCm: 30,
     hauteurCm: 80,
+    emprisePleineJours: 40,
+    cycleJours: 200,
     fenetre: { du: "10-15", au: "11-15" },
     seuil: { cible: "installee", parForme: { graine: 25 } },
     libere: { le: "06-15", anneeSuivante: true },
@@ -248,9 +281,30 @@ export const CULTURES: Culture[] = [
     // c'est un fait sur LA CELLULE, pas un manque du jardinier.
     profondeurCm: 40,
     hauteurCm: 25,
+    emprisePleineJours: 40,
+    cycleJours: 100,
     fenetre: { du: "03-15", au: "07-15" },
     seuil: { cible: "faite", parForme: { graine: 100 } },
     libere: { le: "10-31", anneeSuivante: false },
+  },
+  {
+    id: "radis",
+    nom: "Radis",
+    famille: "brassicacees",
+    formes: ["graine"],
+    soleilH: 3,
+    saisonDeLaDemande: "ete",
+    profondeurCm: 15,
+    hauteurCm: 15,
+    // LES DEUX CHIFFRES QUI FONT DE LUI UNE CULTURE D'INTERVALLE : il a fini
+    // avant que le pied qu'il accompagne ait besoin de la place. C'est la
+    // seule ligne de la table dont le cycle court est la raison d'être.
+    emprisePleineJours: 15,
+    cycleJours: 28,
+    fenetre: { du: "03-15", au: "09-30" },
+    seuil: { cible: "faite", parForme: { graine: 28 } },
+    libere: { le: "10-28", anneeSuivante: false },
+    note: "Se sème au pied d'un pied lent pour occuper la place le temps qu'il grossisse — et il l'aura libérée avant.",
   },
   {
     id: "tomate",
@@ -264,6 +318,8 @@ export const CULTURES: Culture[] = [
     saisonDeLaDemande: "ete",
     profondeurCm: 40,
     hauteurCm: 150,
+    emprisePleineJours: 35,
+    cycleJours: 150,
     fenetre: { du: "05-11", au: "06-15" },
     seuil: { cible: "faite", parForme: { godet: 70 } },
     libere: { le: "10-15", anneeSuivante: false },
@@ -278,11 +334,29 @@ export const CULTURES: Culture[] = [
     saisonDeLaDemande: "ete",
     profondeurCm: 20,
     hauteurCm: 40,
+    emprisePleineJours: 25,
+    cycleJours: 120,
     fenetre: { du: "05-11", au: "07-15" },
     seuil: { cible: "faite", parForme: { graine: 60, godet: 25 } },
     libere: { le: "10-15", anneeSuivante: false },
   },
 ];
+
+/**
+ * Les cultures qui tiennent sous `hote` pendant `jours` — les « cultures
+ * d'intervalle ».
+ *
+ * DEUX CONDITIONS, ET AUCUNE N'EST UNE PRÉFÉRENCE. Le CYCLE ENTIER doit tenir
+ * dans l'intervalle (une culture qu'on arrache à moitié faite pour laisser la
+ * place n'est pas une récolte, c'est une perte), et elle doit être PLUS BASSE
+ * que son hôte, sinon elle lui fait de l'ombre au moment précis où il démarre.
+ *
+ * Ce n'est PAS du compagnonnage — on n'affirme rien sur ce que les deux se
+ * font l'une à l'autre, ce que Workspace#9 a écarté faute de source. On dit
+ * seulement qu'elles ne se disputent ni la place ni la lumière.
+ */
+export const culturesDIntervalle = (hote: Culture, jours: number): Culture[] =>
+  CULTURES.filter((f) => f.id !== hote.id && f.cycleJours <= jours && f.hauteurCm < hote.hauteurCm);
 
 export const culture = (id: string): Culture | undefined => CULTURES.find((c) => c.id === id);
 
