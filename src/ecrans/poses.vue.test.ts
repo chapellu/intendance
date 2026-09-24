@@ -7,6 +7,7 @@
 
 import { readFileSync } from "node:fs";
 import { beforeEach, describe, expect, test } from "vitest";
+import { cleCreneau, jourISO } from "../db";
 import { calculer } from "../model/calcul";
 import { lireCatalogue } from "../model/catalogue";
 import { creerJeu, SAUTE, type Jeu } from "../model/jeu";
@@ -31,7 +32,10 @@ const creneau = (jour: number, repas: string): number => {
 const poser = (jour: number, repas: string, rid: string) => {
   jeu.choix[creneau(jour, repas)] = rid;
 };
-const vue = () => vueDesPoses(jeu, calculer(jeu));
+/** La liste, telle qu'elle est quand rien n'a encore été cuisiné — le cas de
+ *  presque toutes les promesses ci-dessous. Celles qui parlent du journal
+ *  passent leur propre ensemble. */
+const vue = (cuits: string[] = []) => vueDesPoses(jeu, calculer(jeu), new Set(cuits));
 
 /** Un plat qui accepte ce créneau — le corpus décide, jamais une liste d'ids
  *  recopiée ici, qui vieillirait à côté du catalogue sans qu'on le voie.
@@ -40,6 +44,12 @@ const vue = () => vueDesPoses(jeu, calculer(jeu));
  *  REPAS, et le premier plat du corpus à accepter un dîner pourrait demain être
  *  une base ou un accompagnement. Le compte basculerait alors en silence, et
  *  c'est le test qui aurait l'air faux. */
+/** La clé (jour, repas) d'un créneau, telle que le journal la porte. */
+const cle = (jour: number, repas: string): string => {
+  const c = jeu.creneaux[creneau(jour, repas)]!;
+  return cleCreneau(jourISO(jeu.jours[c.jour]!.date), c.repas);
+};
+
 const platPour = (repas: string): string =>
   catalogue.plats.find(
     (p) =>
@@ -177,5 +187,63 @@ describe("ce qui reste à décider", () => {
     expect(vue().restent).toBe(avant);
     poser(0, "dejeuner", platPour("dejeuner"));
     expect(vue().restent).toBe(avant - 1);
+  });
+});
+
+describe("T100 — ce qui est cuisiné quitte la liste", () => {
+  // « Cela permet aussi de valider la réalisation de la recette […] et
+  // d'enlever la recette de la liste des choses à faire » (24/09). Le geste
+  // existait — `db/report.ts` n'a jamais reporté un créneau cuisiné — mais il
+  // ne regardait que les événements EN AMONT de la fenêtre : un plat fait ce
+  // soir restait affiché jusqu'à ce que son jour sorte par le bas.
+
+  test("un plat cuisiné sort de la liste et se compte à part", () => {
+    poser(0, "dejeuner", platPour("dejeuner"));
+    poser(1, "diner", platPour("diner"));
+    const v = vue([cle(0, "dejeuner")]);
+    expect(v.lignes).toHaveLength(1);
+    expect(v.cuisines).toBe(1);
+  });
+
+  test("une liste entièrement cuisinée n'est pas une liste vide", () => {
+    // LES DEUX SE RESSEMBLENT À L'ÉCRAN ET NE SE DISENT PAS PAREIL. « Rien de
+    // posé » invite à poser ; « tout est cuisiné » ferme une journée. Sans le
+    // compte, l'écran n'aurait aucun moyen de faire la différence.
+    poser(0, "dejeuner", platPour("dejeuner"));
+    const v = vue([cle(0, "dejeuner")]);
+    expect(v.lignes).toHaveLength(0);
+    expect(v.cuisines).toBe(1);
+  });
+
+  test("le temps de cuisine ne compte plus ce qui est déjà cuisiné", () => {
+    poser(0, "dejeuner", platPour("dejeuner"));
+    const avant = vue().minutes;
+    expect(avant).toBeGreaterThan(0);
+    expect(vue([cle(0, "dejeuner")]).minutes).toBe(0);
+  });
+
+  test("un créneau cuisiné qui ne porte plus de plat ne compte rien", () => {
+    // Le journal garde l'événement même si la décision a été retirée depuis.
+    // Compter ce créneau ferait dire « un plat cuisiné est sorti de la liste »
+    // à un écran où il n'y en a jamais eu.
+    expect(vue([cle(0, "dejeuner")]).cuisines).toBe(0);
+  });
+
+  test("le compte des repas ne retient que ce qui reste à faire", () => {
+    poser(0, "dejeuner", platPour("dejeuner"));
+    poser(1, "diner", platPour("diner"));
+    expect(vue().repas).toBe(2);
+    expect(vue([cle(1, "diner")]).repas).toBe(1);
+  });
+});
+
+describe("les deux façons d'être vide", () => {
+  test("une liste jamais remplie invite à poser", () => {
+    expect(phraseDesPoses(vue())).toBe("Rien de posé pour l’instant.");
+  });
+
+  test("une liste vidée par la cuisine ferme la journée", () => {
+    poser(0, "dejeuner", platPour("dejeuner"));
+    expect(phraseDesPoses(vue([cle(0, "dejeuner")]))).toBe("Rien à faire — tout est cuisiné.");
   });
 });

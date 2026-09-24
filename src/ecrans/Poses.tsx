@@ -26,28 +26,51 @@ import { phraseDesPoses, vueDesPoses } from "./poses.vue";
 
 export function Poses() {
   const { catalogue } = useCatalogue();
-  const { jeu, calc, oublierCreneau, toutOublierLesPoses } = useSemaine(catalogue);
+  const { jeu, calc, oublierCreneau, toutOublierLesPoses, cuisines } = useSemaine(catalogue);
   // DEUX TEMPS POUR UN GESTE IRRÉVERSIBLE, et pas un `confirm()` : l'app est
   // installée à l'écran d'accueil d'un iPhone, où la boîte du navigateur
   // s'affiche au nom du site et se lit comme une alerte système. Le second
   // bouton est ici, dans l'écran, à l'endroit exact où le doigt vient de
   // frapper.
   const [demande, setDemande] = useState(false);
-  if (!jeu || !calc) return null;
-  const vue = vueDesPoses(jeu, calc);
+  // ON ATTEND LE JOURNAL — T100. Un ensemble vide se lit « rien n'est
+  // cuisiné » : afficher la liste avant que la base ait répondu montrerait la
+  // ratatouille d'hier soir, puis la ferait disparaître sous le pouce.
+  if (!jeu || !calc || !cuisines) return null;
+  const vue = vueDesPoses(jeu, calc, cuisines);
 
   return (
     <Corps>
       <div className="co-kicker">{phraseDesPoses(vue)}</div>
-      <div className="co-note" style={{ margin: "var(--space-1) var(--space-1) var(--space-3)" }}>
-        {vue.lignes.length
-          ? /* LE TEMPS TOTAL EST LA SEULE AGRÉGATION QUI VAILLE ICI. « 2 h de
-               cuisine » est ce qu'on veut savoir en relisant ses choix — le
-               reste (articles, lots) a déjà ses écrans, et les répéter ferait
-               de celui-ci un second cockpit. */
-            `${duree(vue.minutes)} de cuisine en tout.`
-          : "Le fil pose les repas un par un ; ce qu’il pose s’affichera ici."}
-      </div>
+      {/* MUET QUAND TOUT EST CUISINÉ : le kicker vient de le dire, et la
+          phrase du dessous — « un plat cuisiné est sorti de la liste » — le
+          dit encore. Trois façons d'annoncer le même vide feraient chercher
+          trois informations. */}
+      {vue.lignes.length || !vue.cuisines ? (
+        <div className="co-note" style={{ margin: "var(--space-1) var(--space-1) var(--space-3)" }}>
+          {vue.lignes.length
+            ? /* LE TEMPS TOTAL EST LA SEULE AGRÉGATION QUI VAILLE ICI. « 2 h de
+                 cuisine » est ce qu'on veut savoir en relisant ses choix — le
+                 reste (articles, lots) a déjà ses écrans, et les répéter ferait
+                 de celui-ci un second cockpit. */
+              `${duree(vue.minutes)} de cuisine en tout.`
+            : "Le fil pose les repas un par un ; ce qu’il pose s’affichera ici."}
+        </div>
+      ) : null}
+
+      {/* CE QUI EST SORTI DE LA LISTE, DIT PAR LA LISTE — T100. Un plat cuisiné
+          quitte cet écran, et c'est ce qu'on a demandé ; mais une ligne qui
+          disparaît sans un mot est la perte silencieuse que T94 venait de
+          réparer à l'autre bout. Une phrase, pas une section : ce qui est fait
+          n'a plus de geste à offrir, et lui rendre des boutons rouvrirait une
+          liste qu'on vient de fermer. */}
+      {vue.cuisines ? (
+        <div className="co-note" style={{ margin: "0 var(--space-1) var(--space-3)" }}>
+          {vue.cuisines > 1
+            ? `${vue.cuisines} plats cuisinés sont sortis de la liste.`
+            : "Un plat cuisiné est sorti de la liste."}
+        </div>
+      ) : null}
 
       {vue.lignes.map(({ slot: s, jour }) => (
         <div key={s.id} className="co-lot">
@@ -125,7 +148,7 @@ export function Poses() {
           jeter. Le mettre en tête d'écran le placerait sous le pouce avant la
           liste elle-même. */}
       {vue.lignes.length ? (
-        <div style={{ marginTop: "var(--space-5)" }}>
+        <div style={{ marginTop: "var(--space-6)" }}>
           {demande ? (
             <>
               <div className="co-note" style={{ margin: "0 var(--space-1) var(--space-2)" }}>
