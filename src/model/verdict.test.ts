@@ -145,11 +145,58 @@ describe("le 4 novembre choisit la forme d'achat", () => {
     expect(v("bac2-a", "mache").forme).toBe("graine");
   });
 
-  test("passé l'échéance, aucune forme ne tient et la bande tombe à échec", () => {
-    const r = v("pot-1", "kale", new Date(2026, 9, 20));
-    expect(r.forme).toBeNull();
-    expect(r.bande).toBe("echec");
-    expect(textes(r.raisons)).toContain("L'hiver se tient, il ne se rattrape pas");
+  test("passé l'échéance, la récolte GLISSE — elle n'échoue pas", () => {
+    // Une mâche semée le 10 octobre lève très bien. Elle n'est simplement pas
+    // FAITE pour le 4 novembre, donc elle se mange en février au lieu de
+    // décembre. Annoncer « échec » d'une graine qui lèvera est un mensonge que
+    // le premier hiver démentirait.
+    const r = v("pot-1", "mache", new Date(2026, 9, 10));
+    expect(r.forme).toBe("graine");
+    expect(r.bande).toBe("correcte");
+    expect(textes(r.raisons)).toContain("la récolte glisse à la sortie de l'hiver");
+  });
+});
+
+describe("deux façons de passer l'hiver, et deux seuils", () => {
+  test("ce qui se mange AU PRINTEMPS n'est pas jugé sur le seuil de la mâche", () => {
+    // LA CORRECTION QUI A SUIVI LA PREMIÈRE VERSION. Une laitue d'hiver pomme
+    // en avril : l'hiver, il lui suffit d'être enracinée. Lui appliquer le
+    // « être faite à 75 % » de la mâche la déclarerait hors délai à tort — et
+    // c'est exactement ce que faisait `saisonDeLaDemande`, un champ pour deux
+    // questions.
+    expect(culture("laitue-hiver")!.seuil.cible).toBe("installee");
+    expect(culture("mache")!.seuil.cible).toBe("faite");
+    // Le seuil d'installation est plus bas que celui de la mâche, à la journée
+    // près : 45 jours de semis contre 75 pour un kale qu'on mangera en hiver.
+    expect(culture("laitue-hiver")!.seuil.parForme.graine).toBeLessThan(
+      culture("kale")!.seuil.parForme.graine!,
+    );
+  });
+
+  test("ce qu'on met en terre pour le printemps le DIT", () => {
+    // La déception la plus probable de la table : croire qu'une laitue
+    // d'hiver se mange en hiver.
+    expect(textes(v("pot-1", "laitue-hiver").raisons)).toContain("se mange au printemps");
+    expect(textes(v("pot-1", "mache").raisons)).not.toContain("se mange au printemps");
+  });
+
+  test("l'échéance ne se pose pas sur une culture qui ne passe pas l'hiver", () => {
+    // Une tomate de mai n'a rien à voir avec le 4 novembre. La règle se gate
+    // sur `libere.anneeSuivante`, pas sur la saison de la demande.
+    expect(textes(v("bac2-b", "tomate", new Date(2030, 4, 20)).raisons)).not.toContain("4 novembre");
+  });
+
+  test("LA MÂCHE N'EST PAS EN ARBITRAGE AVEC LES TOMATES — régression", () => {
+    // La première version fermait sa fenêtre au 30 septembre et en tirait un
+    // « c'est l'un ou l'autre » avec les tomates du carré. Le dilemme était
+    // FABRIQUÉ : la mâche se sème encore en octobre, elle attend simplement
+    // que le carré se libère le 15. Un modèle qui invente un arbitrage est
+    // pire qu'un modèle qui n'en trouve aucun.
+    const r = v("bac2-a", "mache");
+    expect(r.statut).toBe("attendre");
+    expect(textes(r.raisons)).not.toContain("c'est l'un ou l'autre");
+    // Le kale, lui, est vraiment en arbitrage : sa fenêtre ferme le 5.
+    expect(v("bac2-a", "kale").statut).toBe("agir");
   });
 });
 

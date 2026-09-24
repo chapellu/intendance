@@ -3992,6 +3992,48 @@ qui peut y entrer*.
       qui a fait écrire le modèle. La barre de couleur d'une fiche porte donc
       le STATUT, jamais la bande.
 
+- [x] **T97 — Deux façons de passer l'hiver.** Correction de T96, provoquée le
+      24/09 par un ouvrage du foyer (*Mon carré potager au fil des mois*,
+      C. Delvaux) que l'utilisateur a photographié après coup. **Le livre n'a
+      rien appris au modèle ; il a montré où le modèle mentait**, ce qui est le
+      seul usage qu'on en fera — voir la note de licence plus bas.
+
+      `saisonDeLaDemande` dit quand la LUMIÈRE se paie. T96 s'en servait aussi
+      pour décider quand la RÉCOLTE tombe : **un champ pour deux questions**,
+      le même défaut de forme que `espace`/`location` en T87 et que les deux
+      `base` de T93. `seuil.cible` répond maintenant à la seconde, et prend
+      deux valeurs — `faite` (on la mange PENDANT la fenêtre noire, donc à
+      ~75 % avant le 4 novembre) et `installee` (on la mange au printemps, il
+      lui suffit d'être enracinée). Quatre cultures sur dix changent de camp.
+
+### La correction, et ce qu'elle dit de la première version
+
+**T96 fabriquait un arbitrage qui n'existait pas, et c'était son exemple
+phare.** La mâche avait une fenêtre fermée au 30 septembre ; les tomates
+tenant le carré jusqu'au 15 octobre, le modèle en tirait un tonitruant
+*« c'est l'un ou l'autre »*. Le dilemme était un artefact : **la mâche se sème
+encore en octobre**. Ce qui se ferme fin septembre, ce n'est pas la culture,
+c'est la récolte de DÉCEMBRE — semée plus tard, elle se mange en février.
+La fenêtre portait un coût qui appartenait au seuil.
+
+Conséquence sur la règle : **l'échéance ne fait plus échouer, elle fait
+GLISSER.** Une graine qui lèvera n'est pas un `échec`, quelle que soit la date ;
+la bande baisse d'un cran et la raison dit de quel côté de l'hiver on mangera.
+Annoncer « échec » de quelque chose qui pousse est un mensonge que le premier
+hiver démentirait — et c'est la même famille que la règle du dépôt sur les
+propositions : **on n'annonce pas un refus quand on peut annoncer un coût.**
+
+Deux gardes ajoutés pendant qu'on y était : la règle ne se pose que si la
+culture **passe l'hiver en place** (`libere.anneeSuivante` — une tomate de mai
+n'a rien à voir avec le 4 novembre) et **que si la fenêtre est ouverte** — sur
+ce qu'on ne peut pas mettre en terre aujourd'hui, l'échéance n'a rien à
+trancher. Un test de régression nommé porte le dilemme disparu.
+
+**Motif à retenir, et c'est le troisième de la même famille dans ce dépôt :
+un modèle qui INVENTE une contrainte est pire qu'un modèle qui n'en trouve
+aucune.** Une contrainte fausse est confiante, elle ferme une option, et rien
+dans l'app ne la contredit — il a fallu un livre posé sur la table.
+
 ### La règle qui justifie tout le fichier
 
 **Une cellule tenue trop tard n'est pas « à attendre », elle est « à
@@ -4070,8 +4112,35 @@ traverse les 2 autres »*. La bande n'en bouge pas.
   modèle » : elle compte des **emplacements**, parce que c'est ce qu'un
   jardinier compte devant sa terrasse.
 
-Portes : typecheck, **765 tests** (28 neufs), build, **58 e2e** (6 neufs),
+Portes : typecheck, **769 tests** (32 neufs), build, **58 e2e** (6 neufs),
 `catalogue:verifie` 0 erreur — le corpus cuisine n'est pas touché.
+
+### Ce que le livre a montré et qu'on ne construit PAS
+
+**Note de licence, d'abord.** *Mon carré potager au fil des mois* est un
+ouvrage commercial. Le **droit sui generis** (CPI L.342-1) protège le contenu
+d'un catalogue indépendamment du droit d'auteur : « les dates de semis sont
+des faits » n'autorise rien. **Aucun chiffre de ce livre n'entre dans
+`cultures.ts`** — c'est la même frontière que le corpus cuisine tient pour ses
+123 recettes d'ouvrage. Il sert à trouver où le modèle est faux, ce qui est
+libre, pas à le remplir.
+
+Trois manques que sa lecture a rendus visibles :
+
+- **Le matériel n'existe pas dans le modèle.** Un voile de forçage change le
+  verdict de plusieurs cultures, et Workspace#9 avait tranché que **le matériel
+  gate une culture, jamais la compétence**. `Cellule` n'a aucun inventaire, et
+  aucune raison ne peut donc dire « sous voile ». C'est le premier vrai manque,
+  devant les quatre-vingt-dix lignes de table.
+- **Une fenêtre à deux bornes ne suffit pas toujours.** Il existe des cultures
+  qu'on veut attraper EN COURS de croissance : semée trop tôt elle monte en
+  graine avant l'hiver, trop tard elle ne donne rien, et entre les deux on
+  obtient une case figée par le froid qu'on consomme jusqu'en janvier. Notre
+  `fenetre` dit « du…au » et ne sait pas exprimer un optimum au milieu.
+- **Un amendement peut être une condition de mise en place**, pas seulement un
+  état de sol : du sable au fond d'une case avant l'ail, c'est du drainage sans
+  lequel un bulbe pourrit en conteneur. Le modèle de sol de Workspace#8 parle
+  de fertilité, jamais de structure à la plantation.
 
 ### Ce que ce bloc laisse ouvert
 
@@ -4105,6 +4174,12 @@ Portes : typecheck, **765 tests** (28 neufs), build, **58 e2e** (6 neufs),
   cellule, ni corriger une dimension. Un pot est pourtant MOBILE par définition
   — c'est ce qui en fait l'échappatoire — et rien ne permet de le faire courir
   après la lumière.
+- **`fil.spec.ts:125` a rougi une fois sur deux passages complets**, et passe
+  seul à tous les coups. Rien dans ce bloc ne touche au fil — c'est un
+  intermittent préexistant, noté ici parce qu'un rouge vu une fois et tu par
+  commodité est exactement ce que ce dépôt refuse. À reprendre avec
+  `--repeat-each`, et en vérifiant d'abord le port 4173, qui est partagé entre
+  worktrees.
 - **La sélection de cellule n'est pas dans l'URL.** Choisir une cellule est un
   `useState` : un lien gardé sur le téléphone rouvre toujours le carré A. À
   trancher quand on saura si la carte est la bonne forme — poser une route par

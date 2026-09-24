@@ -46,9 +46,27 @@ export interface Culture {
   hauteurCm: number;
   /** La fenêtre de mise en place, `MM-JJ` inclus. */
   fenetre: { du: string; au: string };
-  /** Combien de jours pour être faite à ~75 %, depuis un semis et depuis un
-   *  godet. C'est ce qui se compare à l'échéance d'hiver. */
-  joursPourEtrePrete: { graine: number; godet: number };
+  /**
+   * CE QUE LA CULTURE DOIT AVOIR ATTEINT AU 4 NOVEMBRE, et en combien de jours
+   * selon la forme achetée.
+   *
+   * ────────────────────────────────────────────────────────────────────────
+   * DEUX SEUILS, PARCE QU'IL Y A DEUX FAÇONS DE PASSER L'HIVER — et les
+   * confondre était le défaut de la première version de ce fichier.
+   *
+   * `faite` : on la MANGE pendant la fenêtre noire, donc elle doit être à
+   * ~75 % de sa taille avant que la croissance s'arrête. La mâche, le kale.
+   *
+   * `installee` : on la mange AU PRINTEMPS ; l'hiver, elle a seulement besoin
+   * d'être enracinée et de survivre. Un plant de poireau, une échalote, une
+   * laitue d'hiver qui pommera en avril n'ont aucune raison d'être « faits »
+   * en novembre — leur seuil est bien plus bas, et le leur appliquer celui de
+   * la mâche les déclarerait hors délai à tort.
+   *
+   * `parForme` est partiel : un bulbe n'est ni une graine ni un godet.
+   * ────────────────────────────────────────────────────────────────────────
+   */
+  seuil: { cible: "faite" | "installee"; parForme: Partial<Record<Forme, number>> };
   /** Le mois-jour où la cellule se libère, l'année suivante si `anneeSuivante`. */
   libere: { le: string; anneeSuivante: boolean };
   /** Une phrase, quand la culture a une raison d'exister que les chiffres ne
@@ -115,8 +133,14 @@ export const CULTURES: Culture[] = [
     saisonDeLaDemande: "hiver",
     profondeurCm: 15,
     hauteurCm: 8,
-    fenetre: { du: "08-15", au: "09-30" },
-    joursPourEtrePrete: { graine: 40, godet: 30 },
+    // LA FENÊTRE VA JUSQU'EN OCTOBRE, et c'est le seuil qui porte le coût —
+    // pas la fenêtre. Une mâche semée le 10 octobre pousse très bien ; elle
+    // n'est simplement pas FAITE pour le 4 novembre, donc elle se mange à la
+    // sortie de l'hiver au lieu de décembre. Fermer la fenêtre au 30 septembre
+    // confondait « trop tard pour manger en décembre » avec « trop tard », et
+    // fabriquait un arbitrage avec les tomates qui n'existe pas.
+    fenetre: { du: "08-15", au: "10-20" },
+    seuil: { cible: "faite", parForme: { graine: 40 } },
     libere: { le: "02-28", anneeSuivante: true },
     note: "Se sème à la volée, dense : c'est un tapis par nature, on ne l'éclaircit pas.",
   },
@@ -133,7 +157,7 @@ export const CULTURES: Culture[] = [
     profondeurCm: 20,
     hauteurCm: 30,
     fenetre: { du: "10-01", au: "11-30" },
-    joursPourEtrePrete: { graine: 0, godet: 0 },
+    seuil: { cible: "installee", parForme: { bulbe: 25 } },
     libere: { le: "06-30", anneeSuivante: true },
     note: "Les caïeux s'achètent dès maintenant ; ils se plantent à partir d'octobre. De l'ail de semence, pas celui du supermarché.",
   },
@@ -147,7 +171,7 @@ export const CULTURES: Culture[] = [
     profondeurCm: 30,
     hauteurCm: 55,
     fenetre: { du: "08-01", au: "10-05" },
-    joursPourEtrePrete: { graine: 75, godet: 40 },
+    seuil: { cible: "faite", parForme: { graine: 75, godet: 40 } },
     libere: { le: "03-31", anneeSuivante: true },
     note: "Aucune feuille neuve avant février : on récolte avec parcimonie pendant la fenêtre noire, puis ça repart.",
   },
@@ -161,7 +185,7 @@ export const CULTURES: Culture[] = [
     profondeurCm: 30,
     hauteurCm: 40,
     fenetre: { du: "08-01", au: "10-05" },
-    joursPourEtrePrete: { graine: 70, godet: 40 },
+    seuil: { cible: "faite", parForme: { graine: 70, godet: 40 } },
     libere: { le: "05-31", anneeSuivante: true },
     note: "Le RHS la cite pour les sites ombragés. Elle disparaît sous une forte gelée et repart de la souche en février-mars.",
   },
@@ -175,7 +199,7 @@ export const CULTURES: Culture[] = [
     profondeurCm: 20,
     hauteurCm: 25,
     fenetre: { du: "08-15", au: "10-05" },
-    joursPourEtrePrete: { graine: 60, godet: 35 },
+    seuil: { cible: "faite", parForme: { graine: 60, godet: 35 } },
     libere: { le: "04-30", anneeSuivante: true },
     note: "Doit avoir 4 à 6 vraies feuilles début novembre, sinon il ne s'installe pas.",
   },
@@ -189,8 +213,9 @@ export const CULTURES: Culture[] = [
     profondeurCm: 20,
     hauteurCm: 20,
     fenetre: { du: "08-15", au: "10-10" },
-    joursPourEtrePrete: { graine: 60, godet: 35 },
+    seuil: { cible: "installee", parForme: { graine: 45, godet: 25 } },
     libere: { le: "04-15", anneeSuivante: true },
+    note: "Une laitue d'hiver ne se mange pas en hiver : elle passe la fenêtre noire en rosette et pomme en avril.",
   },
   {
     id: "feve",
@@ -207,7 +232,7 @@ export const CULTURES: Culture[] = [
     profondeurCm: 30,
     hauteurCm: 80,
     fenetre: { du: "10-15", au: "11-15" },
-    joursPourEtrePrete: { graine: 30, godet: 20 },
+    seuil: { cible: "installee", parForme: { graine: 25 } },
     libere: { le: "06-15", anneeSuivante: true },
   },
   {
@@ -224,7 +249,7 @@ export const CULTURES: Culture[] = [
     profondeurCm: 40,
     hauteurCm: 25,
     fenetre: { du: "03-15", au: "07-15" },
-    joursPourEtrePrete: { graine: 100, godet: 90 },
+    seuil: { cible: "faite", parForme: { graine: 100 } },
     libere: { le: "10-31", anneeSuivante: false },
   },
   {
@@ -240,7 +265,7 @@ export const CULTURES: Culture[] = [
     profondeurCm: 40,
     hauteurCm: 150,
     fenetre: { du: "05-11", au: "06-15" },
-    joursPourEtrePrete: { graine: 120, godet: 70 },
+    seuil: { cible: "faite", parForme: { godet: 70 } },
     libere: { le: "10-15", anneeSuivante: false },
     note: "La fenêtre s'ouvre aux saints de glace (11-13 mai), pas avant : la dernière gelée tombe mi-avril.",
   },
@@ -254,7 +279,7 @@ export const CULTURES: Culture[] = [
     profondeurCm: 20,
     hauteurCm: 40,
     fenetre: { du: "05-11", au: "07-15" },
-    joursPourEtrePrete: { graine: 60, godet: 25 },
+    seuil: { cible: "faite", parForme: { graine: 60, godet: 25 } },
     libere: { le: "10-15", anneeSuivante: false },
   },
 ];

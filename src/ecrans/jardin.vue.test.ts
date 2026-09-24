@@ -44,11 +44,11 @@ describe("la carte dit l'état d'une cellule en un mot", () => {
 
 describe("l'horizon est un curseur, pas un écran de plus", () => {
   test("la même cellule, une autre date, d'autres verdicts", () => {
-    // La mâche se met en place jusqu'au 30 septembre. Deux semaines plus tard,
-    // ce n'est plus un arbitrage avec les tomates, c'est une année à attendre.
-    const mache = (d: Date) => vue("bac2-a", d).verdicts.find((x) => x.culture.id === "mache")!;
-    expect(mache(LE_24_SEPTEMBRE).statut).toBe("agir");
-    expect(mache(decale(LE_24_SEPTEMBRE, 14)).statut).toBe("attendre");
+    // La fenêtre du kale ferme le 5 octobre. Aujourd'hui c'est un arbitrage
+    // avec les tomates ; un mois plus tard c'est une année à attendre.
+    const kale = (d: Date) => vue("bac2-a", d).verdicts.find((x) => x.culture.id === "kale")!;
+    expect(kale(LE_24_SEPTEMBRE).statut).toBe("agir");
+    expect(kale(decale(LE_24_SEPTEMBRE, 30)).statut).toBe("attendre");
   });
 
   test("`decale` traverse les mois sans les compter à la main", () => {
