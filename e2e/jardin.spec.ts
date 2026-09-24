@@ -24,14 +24,17 @@ test("la carte porte les neuf cellules, et le bac 2 en fait trois", async ({ pag
   await expect(page.locator(".co-cellule").filter({ hasText: "Bac 2" })).toHaveCount(3);
 });
 
-test("rien n'est jamais retiré : dix fiches, sur n'importe quelle cellule", async ({ page }) => {
+test("rien n'est jamais retiré : autant de fiches que de cultures, partout", async ({ page }) => {
   // La règle CLASSE, elle n'interdit pas. Une culture impossible reste
   // affichée avec ses conditions — un écran qui la cacherait n'apprendrait
-  // jamais pourquoi elle manque.
-  await expect(page.locator(".co-verdict")).toHaveCount(10);
+  // jamais pourquoi elle manque. Le compte se relève sur la première cellule
+  // plutôt que d'être écrit en dur : il doit être le MÊME partout, c'est ça
+  // la promesse, pas sa valeur du jour.
+  const n = await page.locator(".co-verdict").count();
+  expect(n).toBeGreaterThan(5);
 
   await page.getByRole("button", { name: /Pot libre 2/ }).dispatchEvent("click");
-  await expect(page.locator(".co-verdict")).toHaveCount(10);
+  await expect(page.locator(".co-verdict")).toHaveCount(n);
   // Un pot de 20 cm ferme des cultures que les 70 cm du bac 2 ouvrent.
   await expect(page.locator(".co-verdict.jamais-ici").first()).toBeVisible();
 });

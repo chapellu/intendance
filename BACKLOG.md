@@ -4006,6 +4006,62 @@ qui peut y entrer*.
       ~75 % avant le 4 novembre) et `installee` (on la mange au printemps, il
       lui suffit d'être enracinée). Quatre cultures sur dix changent de camp.
 
+- [x] **T98 — Une cellule occupée n'est pas forcément prise.** Choisi par
+      l'utilisateur le 24/09 parmi quatre manques, et c'est le bon sur ce
+      site : **sur 0,4 m² et trois carrés, l'espace est la contrainte qui mord
+      le plus fort, et c'est la seule mécanique du modèle qui en FABRIQUE.**
+
+      Deux champs neufs. `emprisePleineJours` — le jour où la culture occupe
+      TOUTE la cellule — et `cycleJours`, sa durée entière. Une cellule cesse
+      d'être prise ou libre : elle est prise **à partir d'une date**. Un pied
+      de tomate mis en terre le 15 mai est minuscule pendant cinq semaines, et
+      pendant ces cinq semaines la cellule peut porter autre chose qui aura
+      fini avant qu'il en ait besoin.
+
+      **Une ligne neuve dans la table, et une seule : le radis.** Cycle 28 j,
+      emprise 15 j — c'est la seule culture dont le cycle court EST la raison
+      d'être. Ses chiffres sont écrits d'après la connaissance générale d'un
+      légume de quatre semaines, pas relevés dans un ouvrage : la note de
+      licence plus bas n'a pas bougé.
+
+### Le prédicat, pris par ses deux bouts
+
+**Sens 1 — la cellule occupée.** La règle 5 regarde l'intervalle AVANT de
+déclarer un blocage. Sans ça, le modèle refuse une plantation que la place
+autorise, ce qui est le pire défaut qu'il puisse avoir ici.
+
+**Sens 2 — la plantation.** Sur toute culture lente, une raison dit la place
+qu'elle laissera. **C'est celui des deux qu'on lira le plus souvent**, parce
+que le conseil arrive au moment utile — devant le rayon, pas six semaines plus
+tard devant un carré à moitié vide.
+
+**Deux conditions, et aucune n'est une préférence.** Le CYCLE ENTIER doit tenir
+(une culture qu'on arrache à moitié faite pour laisser la place n'est pas une
+récolte, c'est une perte) et l'invitée doit être PLUS BASSE que son hôte, sinon
+elle lui fait de l'ombre au moment précis où il démarre. **Ce n'est pas du
+compagnonnage** : on n'affirme rien sur ce que les deux se font l'une à
+l'autre — ce que Workspace#9 a écarté faute de source — seulement qu'elles ne
+se disputent ni la place ni la lumière.
+
+### Trois résultats que personne n'a écrits
+
+**Les carrés A et B répondent différemment le même jour, et c'est juste.** Le
+carré A porte une tomate ET un basilic plantés ensemble ; le basilic prend sa
+place en 25 jours là où la tomate en met 35. **C'est donc le basilic qui ferme
+l'intervalle**, et le radis n'y tient pas — alors qu'il tient dans le carré B,
+qui n'a que la tomate. Le minimum sur les occupants n'a pas été écrit pour ce
+cas ; il le produit.
+
+**Une culture d'intervalle DÉPENSE de la rotation.** Un radis sous une tomate
+est une brassicacée de plus dans ce carré, et la règle 4 le verra l'an
+prochain. Aucune règle spéciale n'a été écrite — c'est exactement ce qu'on veut
+d'un modèle : que ses règles se parlent sans qu'on les présente. Un test le
+tient.
+
+**Et l'intervalle se referme vite** : douze jours après la mise en terre de la
+tomate, le conseil est déjà faux. Un modèle qui dirait « semez un radis au
+pied » toute la saison serait pire qu'un modèle muet.
+
 ### La correction, et ce qu'elle dit de la première version
 
 **T96 fabriquait un arbitrage qui n'existait pas, et c'était son exemple
@@ -4112,7 +4168,7 @@ traverse les 2 autres »*. La bande n'en bouge pas.
   modèle » : elle compte des **emplacements**, parce que c'est ce qu'un
   jardinier compte devant sa terrasse.
 
-Portes : typecheck, **769 tests** (32 neufs), build, **58 e2e** (6 neufs),
+Portes : typecheck, **776 tests** (39 neufs), build, **58 e2e** (6 neufs),
 `catalogue:verifie` 0 erreur — le corpus cuisine n'est pas touché.
 
 ### Ce que le livre a montré et qu'on ne construit PAS
@@ -4137,6 +4193,22 @@ Trois manques que sa lecture a rendus visibles :
   graine avant l'hiver, trop tard elle ne donne rien, et entre les deux on
   obtient une case figée par le froid qu'on consomme jusqu'en janvier. Notre
   `fenetre` dit « du…au » et ne sait pas exprimer un optimum au milieu.
+- **L'intervalle ne se PROPOSE pas encore.** Il se lit sur la fiche d'une
+  culture qu'on a ouverte ; rien ne dit « pendant que tu plantes cette tomate,
+  sème un radis ». Les deux gestes sont pourtant le même geste, et c'est comme
+  ça que l'ouvrage les présente. Le jour où l'écran sait consigner une
+  plantation (Workspace#13), c'est là que l'offre doit tomber.
+- **Un godet n'est pas toujours mieux qu'une graine, et le modèle le croit.**
+  Passé le début mai, un plant repiqué reprend mal à la chaleur là où un semis
+  en place réussit — l'avantage s'INVERSE. `seuil.parForme` ne sait exprimer
+  qu'un classement fixe.
+- **Une fenêtre à deux bornes ne dit pas un seuil de température.** Février se
+  joue au thermomètre et pas au calendrier. Open-Meteo est la source choisie
+  depuis Workspace#5 et n'est branchée nulle part.
+- **L'eau n'existe pas dans le modèle, et c'est ce qui tue en conteneur.** Ce
+  qui fait disparaître un pied l'hiver, ce n'est pas le gel mais
+  l'engorgement — 280 L de substrat sous la pluie de décembre. Rien ne porte le
+  drainage, et c'est ce qui donnerait son sens au sable sous l'ail.
 - **Un amendement peut être une condition de mise en place**, pas seulement un
   état de sol : du sable au fond d'une case avant l'ail, c'est du drainage sans
   lequel un bulbe pourrit en conteneur. Le modèle de sol de Workspace#8 parle
@@ -4144,7 +4216,7 @@ Trois manques que sa lecture a rendus visibles :
 
 ### Ce que ce bloc laisse ouvert
 
-- **La table des cultures fait dix lignes, et il en faudrait cent.** C'est une
+- **La table des cultures fait onze lignes, et il en faudrait cent.** C'est une
   amorce assumée : Workspace#4 chiffre une table complète à 80-100 h de travail
   ORIGINAL, parce qu'aucune source n'est réutilisable — USDA PLANTS n'a pas les
   légumes, OpenFarm est mort, et la presse jardin française est fermée par le
