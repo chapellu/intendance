@@ -244,22 +244,49 @@ export function verdict(c: Cellule, cu: Culture, aujourdhui: Date): Verdict {
 
   // ── 7. L'ÉCHÉANCE DE PERSÉPHONE, ET LA FORME D'ACHAT QUI EN DÉCOULE.
   //
-  // Le 4 novembre, le jour passe sous 10 h et la croissance s'arrête. Une
-  // culture d'hiver ne se juge donc pas sur « la fenêtre est-elle ouverte »
-  // mais sur « reste-t-il assez de jours pour qu'elle soit FAITE avant ».
-  // C'est ce calcul, et lui seul, qui répond à « graines ou godets ? » —
-  // la question qu'on se pose devant le rayon, pas devant le bac.
+  // Le 4 novembre, le jour passe sous 10 h et la croissance s'arrête.
+  //
+  // ────────────────────────────────────────────────────────────────────────
+  // CE N'EST PAS UNE ÉCHÉANCE UNIQUE, ET LA PREMIÈRE VERSION S'Y EST TROMPÉE.
+  //
+  // Elle imposait « être faite à ~75 % avant le 4 novembre » à TOUTE culture
+  // qui demandait sa lumière en hiver. C'est juste pour ce qu'on mange PENDANT
+  // la fenêtre noire ; c'est faux pour tout ce qui se récolte au printemps. Un
+  // plant de poireau mis en terre en septembre vise mai, une laitue d'hiver
+  // pomme en avril, une échalote se mange en vert au printemps : aucun n'a de
+  // raison d'être fait en novembre, il leur suffit d'être ENRACINÉS. Le
+  // modèle les déclarait hors délai, et se trompait.
+  //
+  // La cause était nommable : `saisonDeLaDemande` dit quand la LUMIÈRE se
+  // paie, et servait à décider quand la RÉCOLTE tombe. Un champ pour deux
+  // questions — le même défaut de forme que `espace` / `location` en T87 et
+  // que les deux `base` de T93. C'est `seuil.cible` qui répond maintenant.
+  //
+  // ET L'ÉCHÉANCE NE FAIT PLUS ÉCHOUER, ELLE FAIT GLISSER. Une mâche semée
+  // trop tard pour décembre n'est pas un échec : c'est une récolte de
+  // février-mars. Dire « échec » d'une graine qui lèvera est un mensonge que
+  // l'usage démentirait au premier hiver.
+  // ────────────────────────────────────────────────────────────────────────
+  //
+  // La règle ne se pose QUE pour ce qui passe l'hiver en place, et QUE si la
+  // fenêtre est ouverte : sur une culture qu'on ne peut pas mettre en terre
+  // aujourd'hui, l'échéance n'a rien à trancher.
   let forme: Forme | null = cu.formes[0] ?? null;
-  if (cu.saisonDeLaDemande === "hiver") {
+  if (cu.libere.anneeSuivante && ouverte) {
     const echeance = prochaine(aujourdhui, PERSEPHONE.debut);
     const reste = joursEntre(aujourdhui, echeance);
     const tenables = cu.formes.filter((f) => joursDe(cu, f) <= reste);
-    forme = tenables[0] ?? null;
-    if (!forme) {
-      bande = pire(bande, "echec");
+    forme = tenables[0] ?? cu.formes[0] ?? null;
+    if (!tenables.length) {
+      // On peut toujours l'acheter et la mettre en terre. Ce qui change, c'est
+      // de quel côté de l'hiver on la mange.
+      bande = pire(bande, "correcte");
       raisons.push({
         axe: "bande",
-        texte: `${reste} jours avant le 4 novembre : même en godet elle n'y sera pas. L'hiver se tient, il ne se rattrape pas.`,
+        texte:
+          cu.seuil.cible === "faite"
+            ? `${reste} jours avant le 4 novembre, il lui en faut ${joursDe(cu, cu.formes[0]!)} : elle ne sera pas faite à temps, la récolte glisse à la sortie de l'hiver.`
+            : `${reste} jours avant le 4 novembre : elle n'aura pas fini de s'enraciner, l'hiver sera plus dur à passer.`,
       });
     } else if (forme !== cu.formes[0]) {
       raisons.push({
@@ -267,6 +294,13 @@ export function verdict(c: Cellule, cu: Culture, aujourdhui: Date): Verdict {
         texte: `En ${forme}, pas en ${cu.formes[0]} : ${reste} jours avant le 4 novembre, et un semis en demande ${joursDe(cu, cu.formes[0]!)}.`,
       });
     }
+    // CE QU'ON ACHÈTE VISE UNE SAISON, et le dire évite la déception la plus
+    // probable du fichier : croire qu'une laitue d'hiver se mange en hiver.
+    if (cu.seuil.cible === "installee")
+      raisons.push({
+        axe: "bande",
+        texte: "Elle passe l'hiver sans être récoltée : ce qu'on met en terre maintenant se mange au printemps.",
+      });
   }
 
   // ── 8. L'OMBRE PORTÉE — la seule interaction de voisinage qui reste une
@@ -295,8 +329,10 @@ function statutDe(raisons: Raison[]): Statut {
   return "prete";
 }
 
-const joursDe = (cu: Culture, f: Forme): number =>
-  f === "godet" ? cu.joursPourEtrePrete.godet : cu.joursPourEtrePrete.graine;
+/** Les jours qu'il faut à cette forme pour atteindre le seuil de la culture.
+ *  `0` quand la forme n'est pas déclarée — une forme qu'on ne vend pas ne se
+ *  compare à rien. */
+const joursDe = (cu: Culture, f: Forme): number => cu.seuil.parForme[f] ?? 0;
 
 const familleDe = (id: string): string | undefined => CULTURES.find((c) => c.id === id)?.famille;
 
