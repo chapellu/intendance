@@ -314,8 +314,19 @@ def facteur_max_vaisselle(recipe, foyer):
     base = (recipe.get("yields") or {}).get("portions_eq") or 0
     if not besoins or not base:
         return None, None
+    # `sorted` ET PAS LE SET : deux capacités peuvent plafonner à la MÊME valeur
+    # — `gratin-vessel` tient 6 × 2 plats, la cocotte tient 12 — et le `<` strict
+    # ci-dessous garde alors la première vue. Sur un set de chaînes, « la
+    # première » change d'un run à l'autre (`PYTHONHASHSEED`), donc l'export
+    # sortait tantôt « plats à gratin », tantôt « cocotte 7,5 L » sur trois
+    # plats, et `catalogue:verifie` rougissait une fois sur deux. L'égalité est
+    # réelle (les deux bornent pareil, `facteurMax` est identique) ; seul le nom
+    # affiché se joue ici, et il doit se jouer toujours de la même façon.
+    #
+    # Latent depuis toujours, révélé par T101 : tant que `pan-fry` plafonnait à
+    # la sauteuse et ses 6 parts, aucune égalité ne se produisait.
     pire = None
-    for cap in besoins:
+    for cap in sorted(besoins):
         meilleur = None
         for eq in foyer.get("equipment", []):
             if cap not in eq.get("capabilities", []) or not eq.get("contenance"):
