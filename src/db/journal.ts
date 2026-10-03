@@ -21,12 +21,46 @@ export const journalDuJour = (base: Base, jour: string): Promise<Evenement[]> =>
 
 /* ══════════════════════════════════════════════════ l'événement cuisiné */
 
+/**
+ * Un lot que la SORTIE a décidé de ranger quelque part — T99.
+ *
+ * QUATRE CHAMPS, ET AUCUN QUI SE CALCULE. Le type, le `kind` et l'espace de
+ * destination se relisent sur `plat.emits[emit]` ; les boîtes à laver, elles,
+ * sont de l'affichage. Ce qui arrive ici est ce qu'un doigt a décidé : où c'est
+ * parti, en combien de morceaux, et de quelle taille.
+ */
+export interface RangementLot {
+  /** Le rang de l'emit dans `plat.emits`. */
+  emit: number;
+  /** Où le lot SE TROUVE ce soir — voir `LotStock.location`. */
+  location: LotStock["location"];
+  band: string;
+  qty: number | null;
+}
+
 export interface Cuisson {
   jour: string;
   repas: RepasId;
   plat: Plat;
   /** Les parts au moment de cuisiner. Figées ici, jamais relues du foyer. */
   parts: number;
+  /**
+   * Ce que la sortie a rangé, quand quelqu'un l'a dit — T99.
+   *
+   * ABSENT = LE VIEUX DÉFAUT, et c'est ce qui rend ce paramètre sûr : un lot
+   * par emit, au frigo, exactement comme avant. Les trois appels de test et le
+   * chemin « j'ai fait autrement » passent tous par là.
+   */
+  rangement?: readonly RangementLot[] | null;
+  /**
+   * La réponse à la proposition de rangement.
+   *
+   * POSÉE SUR L'ÉVÉNEMENT PARCE QU'ELLE MESURE L'APP, PAS LE FOYER. C'est le
+   * premier endroit où l'app apprend si son arithmétique est suivie ; sans ce
+   * champ, « deux bocaux au congélateur » resterait une suggestion dont
+   * personne ne saurait jamais si elle vaut quelque chose.
+   */
+  sortie?: EvtCuisine["sortie"];
 }
 
 /**
@@ -47,7 +81,7 @@ export interface Cuisson {
  */
 export async function journaliserCuisson(
   base: Base,
-  { jour, repas, plat, parts }: Cuisson,
+  { jour, repas, plat, parts, rangement, sortie }: Cuisson,
   aujourdhui = new Date(),
 ): Promise<number> {
   const saisi = jourISO(aujourdhui);
@@ -105,15 +139,23 @@ export async function journaliserCuisson(
     // du plat suivant annonçait « 250 g du congélo » — une provenance que le
     // foyer n'avait pas. Congeler reste un geste qu'on n'a pas encore fait ;
     // c'est l'inventaire qui l'enregistrera quand un doigt le dira.
-    for (const e of plat.emits) {
+    //
+    // T99 — ET LE DOIGT EXISTE DEPUIS LA SORTIE. Quand elle a été suivie, elle
+    // dit où chaque morceau est parti, et c'est la seule source qui puisse le
+    // dire. Sans elle, RIEN NE CHANGE : un lot par emit, au frigo, sur la bande
+    // que le corpus déclare. Le défaut reste donc la vieille prudence, et il
+    // reste écrit ici, en une ligne qu'on peut lire.
+    for (const r of rangement?.length ? rangement : defaut(plat, f)) {
+      const e = plat.emits[r.emit];
+      if (!e) continue;
       await base.stock.add({
         type: e.type,
         kind: e.kind,
-        qty: e.qty ? e.qty.amount * f : null,
+        qty: r.qty,
         unite: e.qty ? e.qty.unit : null,
-        band: e.band,
+        band: r.band,
         espace: e.espace,
-        location: "frigo",
+        location: r.location,
         born: jour,
         origine: plat.id,
         maj,
@@ -121,10 +163,24 @@ export async function journaliserCuisson(
     }
 
     // ── effet 1 : l'événement lui-même ─────────────────────────────────────
-    const evt: EvtCuisine = { sorte: "cuisine", jour, saisi, repas, plat: plat.id, parts, maj };
+    const evt: EvtCuisine = {
+      sorte: "cuisine", jour, saisi, repas, plat: plat.id, parts, maj,
+      ...(sortie ? { sortie } : {}),
+    };
     return (await base.evenements.add(evt as never)) as number;
   });
 }
+
+/** Le rangement de celui qui n'a rien rangé : un lot par emit, au frigo, sur la
+ *  bande du corpus. C'est ce que l'app écrit depuis T26, et ce qu'elle continue
+ *  d'écrire partout où la sortie ne s'est pas prononcée. */
+const defaut = (plat: Plat, f: number): RangementLot[] =>
+  plat.emits.map((e, emit) => ({
+    emit,
+    location: "frigo" as const,
+    band: e.band,
+    qty: e.qty ? e.qty.amount * f : null,
+  }));
 
 /**
  * Le créneau a-t-il déjà été cuisiné ? Marquer deux fois « fait » décrémenterait

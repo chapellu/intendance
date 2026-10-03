@@ -39,6 +39,15 @@ export interface LignePosee {
 
 export interface VuePoses {
   lignes: LignePosee[];
+  /**
+   * Combien de plats posés ont été CUISINÉS et ont donc quitté la liste — T100.
+   *
+   * RENDU, ET PAS SEULEMENT SOUSTRAIT. Une ligne qui disparaît sans un mot est
+   * exactement la perte silencieuse que T94 vient de réparer à l'autre bout ;
+   * le compte permet à l'écran de dire « il en est sorti deux » plutôt que de
+   * laisser croire à un oubli.
+   */
+  cuisines: number;
   /** Les repas au sens du modèle : `nature === "choisi"`. */
   repas: number;
   /** Ce qui est posé SANS être un repas, par label. Aujourd'hui : le dessert. */
@@ -57,17 +66,28 @@ export interface VuePoses {
  * déjà décidé là-bas, et une seconde implémentation finirait par diverger
  * exactement sur les cas rares qui font douter d'un écran.
  */
-export function vueDesPoses(jeu: Jeu, calc: Calcul): VuePoses {
+export function vueDesPoses(jeu: Jeu, calc: Calcul, cuits: ReadonlySet<string>): VuePoses {
   const jours = vueDeLaSemaine(jeu, calc);
 
   const lignes: LignePosee[] = [];
+  let cuisines = 0;
   for (const j of jours)
     for (const s of j.slots)
       // LE PLAT, ET PAS LA DÉCISION. Un créneau sauté est une décision prise —
       // et elle a sa place dans la grille, qui montre des cases. Ici on liste
       // des RECETTES : « on ne mange pas là » n'en est pas une, et l'aligner
       // sous « Posés » ferait compter quatre choix là où il y en a trois.
-      if (s.plat) lignes.push({ slot: s, jour: `${j.nom} ${j.date.getDate()}/${j.date.getMonth() + 1}` });
+      //
+      // ET PAS NON PLUS CE QUI EST DÉJÀ CUISINÉ — T100. « Enlever la recette de
+      // la liste des choses à faire » (24/09) : une ratatouille faite hier soir
+      // restait ici, indistinguable des deux plats qu'on n'a pas encore
+      // touchés. `db/report.ts` le savait déjà — « cuisiner EST le “j'ai fini”
+      // du plat, dit par le geste » — mais il ne regardait que les événements
+      // EN AMONT de la fenêtre, donc la ligne ne s'effaçait qu'une fois le jour
+      // sorti par le bas. Cet écran-ci lit le journal de la fenêtre, et la
+      // liste se ferme le soir même.
+      if (s.plat && cuits.has(s.id)) cuisines += 1;
+      else if (s.plat) lignes.push({ slot: s, jour: `${j.nom} ${j.date.getDate()}/${j.date.getMonth() + 1}` });
 
   // CE QUI COMPTE POUR UN REPAS, ET CE QUI COMPTE À CÔTÉ — deux raisons de ne
   // pas compter, désormais, et elles ne se recouvrent pas.
@@ -103,6 +123,7 @@ export function vueDesPoses(jeu: Jeu, calc: Calcul): VuePoses {
 
   return {
     lignes,
+    cuisines,
     repas,
     extras: [...parLabel].map(([label, n]) => ({ label, n })),
     minutes: lignes.reduce((m, l) => m + l.slot.minutes, 0),
@@ -124,7 +145,12 @@ export function vueDesPoses(jeu: Jeu, calc: Calcul): VuePoses {
  * « 2 unité ». Les labels, eux, s'accordent — « 2 desserts ».
  */
 export function phraseDesPoses(v: VuePoses): string {
-  if (!v.lignes.length) return "Rien de posé pour l’instant.";
+  // DEUX FAÇONS D'ÊTRE VIDE, ET ELLES N'APPELLENT PAS LE MÊME GESTE — T100.
+  // « Rien de posé » invite à poser ; « tout est cuisiné » ferme une journée.
+  // Les confondre ferait dire à l'écran qu'on n'a rien décidé le soir où l'on
+  // a tout fait.
+  if (!v.lignes.length)
+    return v.cuisines ? "Rien à faire — tout est cuisiné." : "Rien de posé pour l’instant.";
   const bouts = [`${v.repas} repas`];
   for (const e of v.extras) bouts.push(`${e.n} ${e.label}${e.n > 1 ? "s" : ""}`);
   return bouts.join(" · ");

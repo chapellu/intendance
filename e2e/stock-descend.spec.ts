@@ -142,11 +142,36 @@ test("terminer une recette journalise, et la confiance du placard se dépense", 
     await expect(etape).not.toHaveText(avant, { timeout: 15_000 });
   }
 
-  // ON ATTEND QUE LA FICHE SE FERME D'ELLE-MÊME. « Terminer » journalise, PUIS
+  // LA SORTIE S'OUVRE, ET C'EST ELLE QUI JOURNALISE — T99. « Terminer » ne
+  // décompte plus rien tout seul : il montre ce qu'il reste à ranger et pose la
+  // question. Le parcours passe donc par un écran de plus, et c'est très
+  // exactement le ticket — jusqu'ici, la fiche se fermait sans un mot et rien à
+  // l'écran ne distinguait une cuisson journalisée d'une cuisson refusée.
+  const ranger = page.getByRole("button", { name: /C’est rangé comme ça|C’est fait/ });
+  await expect(ranger).toBeVisible({ timeout: 15_000 });
+
+  // LA PHRASE QUI DIT CE QUE LE BOUTON FAIT. Elle est la moitié de la demande
+  // du 24/09 — « valider la réalisation, déduire les ingrédients, enlever la
+  // recette de la liste » —, et ces trois effets partaient jusque-là en
+  // silence. Vraie quel que soit le plat tiré, y compris ceux qui ne laissent
+  // rien à ranger.
+  await expect(page.getByText("quitte la liste des posés")).toBeVisible();
+
+  // ON ATTEND QUE LA FICHE SE FERME D'ELLE-MÊME. Répondre journalise, PUIS
   // sort — et la sortie est un `history.back()` asynchrone. Naviguer sans
   // attendre le ferait revenir en arrière par-dessus notre propre `goto`, ce qui
   // est exactement ce qui a fait échouer la première version de ce parcours.
+  await ranger.dispatchEvent("click");
   await expect(page).not.toHaveURL(/cuisine\/cuisiner/, { timeout: 15_000 });
+
+  // ET LE PLAT QUITTE « POSÉS » LE SOIR MÊME — T100. `db/report.ts` ne
+  // l'effaçait qu'une fois son jour sorti de la fenêtre par le bas ; la liste
+  // gardait donc jusqu'au lendemain une ligne qu'on venait de cuisiner, à côté
+  // de celles qu'on n'a pas touchées.
+  await page.goto("/#/cuisine/poses");
+  await attendreLApp(page);
+  await expect(page.locator(".co-lot").filter({ hasText: titre })).toHaveCount(0);
+  await expect(page.getByText(/sorti de la liste/)).toBeVisible({ timeout: 15_000 });
 
   // L'INVENTAIRE APRÈS. Au moins une denrée a cessé d'être « vue » : le journal
   // a reçu la cuisson, le rejeu l'a décrémentée, et la confiance s'est

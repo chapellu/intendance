@@ -16,7 +16,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { indexDuCreneau } from "../db";
 import { useCatalogue, useSemaine } from "../db/hooks";
-import { dejaCuisine, journaliserCuisson } from "../db/journal";
+import { dejaCuisine, journaliserCuisson, type RangementLot } from "../db/journal";
 import { cleEtape, cleMinuteur, poserReglage, useNombre, useObjet } from "../db/reglages";
 import { base } from "../db/schema";
 import { echelleTexte, facteurAffiche, type Calcul } from "../model/calcul";
@@ -27,7 +27,8 @@ import type { CleCreneau } from "../nav/routes";
 import { aller } from "../nav/useRoute";
 import { armer, arreter, demanderBandeau, desarmer, plateforme, promesse } from "../pwa/alarme";
 import { duree, fmt, hhmm, mmss } from "../ui/format";
-import { Icone } from "../ui/icones";
+import { Icone, iconeEspace } from "../ui/icones";
+import { nomEspace } from "../ui/phrases";
 import {
   aArmer,
   aSortir,
@@ -46,6 +47,7 @@ import {
   tempsDuPlat,
   type EtatMinuteur,
 } from "./cuisiner.vue";
+import { phraseDesBoites, quantiteDuLot, vueDeLaSortie } from "./sortie.vue";
 
 export function Cuisiner({ creneau, plat }: { creneau: CleCreneau; plat?: string }) {
   const { catalogue } = useCatalogue();
@@ -111,6 +113,11 @@ function Fiche({
   // revenir décider, pas reprendre une cuisson qu'on n'avait pas commencée.
   // (Ce qui se persiste ici est un AVANCEMENT — voir l'en-tête du fichier.)
   const [guide, setGuide] = useState(false);
+  // LA SORTIE — T99. Pas persistée, et l'avancement la rattrape : tant qu'on
+  // n'a pas répondu, l'étape reste la dernière, donc rouvrir la fiche ramène
+  // sur « Terminer », qui ramène ici. Persister cet écran-là ferait rouvrir
+  // demain matin une question sur une casserole qu'on a rangée hier soir.
+  const [sortie, setSortie] = useState(false);
   const cle = cleEtape(creneau.jour, creneau.repas, p.id);
   const range = useNombre(cle);
 
@@ -146,7 +153,7 @@ function Fiche({
    * `dejaCuisine` protège du double décrément — marquer deux fois « fait » est
    * un geste qu'on fait vraiment, et rien d'autre dans l'app ne le rattraperait.
    */
-  const terminer = async () => {
+  const terminer = async (rangement: RangementLot[] | null, marque?: "suivie" | "autre") => {
     if ((lecture && !guide) || i < 0) return;
     if (await dejaCuisine(base, creneau.jour, creneau.repas)) return;
     await journaliserCuisson(base, {
@@ -154,6 +161,30 @@ function Fiche({
       repas: creneau.repas,
       plat: p,
       parts,
+      rangement,
+      sortie: marque,
+    });
+  };
+
+  /**
+   * Répondre à la sortie EST le geste qui journalise — T99.
+   *
+   * LE DÉCOMPTE ARRIVE APRÈS LA QUESTION, ET PAS AVANT. Jusqu'ici « Terminer »
+   * engageait les trois effets puis sortait de l'écran sans un mot : les quatre
+   * issues possibles — journalisée, refusée parce qu'on lisait, refusée faute
+   * de créneau, refusée parce que déjà cuisinée — rendaient le MÊME écran, à
+   * savoir celui d'avant. « Même arrivé au bout de la recette je n'ai pas eu de
+   * message pour la clore » (24/09) ne dit pas que le décompte a raté : il dit
+   * qu'il n'avait aucun témoin.
+   *
+   * L'AVANCEMENT NE S'EFFACE QU'UNE FOIS LA RÉPONSE PARTIE. Quitter la sortie
+   * sans répondre laisse donc la fiche à sa dernière étape, et « Terminer » la
+   * rouvre. On ne perd pas une cuisson pour avoir posé le téléphone.
+   */
+  const repondre = (rangement: RangementLot[] | null, marque?: "suivie" | "autre") => {
+    void terminer(rangement, marque).finally(() => {
+      void poserReglage(cle, null);
+      sortir();
     });
   };
 
@@ -192,6 +223,21 @@ function Fiche({
   // elle, avait des étapes ; c'est un simple changement de classement qui a fini
   // par lui en tirer une autre. Trouvé et bouché en marge de Workspace#50.
   const muet = sansRecette(p);
+
+  // LA SORTIE PASSE AVANT TOUT LE RESTE — T99. C'est le dernier écran de la
+  // cuisson, et il n'a ni ingrédients, ni étapes, ni minuteur : la casserole
+  // est vide, il ne reste qu'à ranger.
+  if (sortie)
+    return (
+      <Sortie
+        p={p}
+        parts={parts}
+        f={f}
+        foyer={jeu.catalogue.foyer}
+        revenir={() => setSortie(false)}
+        repondre={repondre}
+      />
+    );
 
   // LE RÉSUMÉ, QUAND ON EST VENU LIRE — T91. Il passe AVANT la bascule
   // « Ingrédients » et avant le guide, parce que ce n'est pas une troisième
@@ -265,10 +311,9 @@ function Fiche({
           ) : (
             // Le même geste et le même mot que la dernière étape du guide, parce
             // que c'est le même événement : ce plat n'a qu'une étape, la faire.
-            <button
-              className="btn btn-primary btn-block"
-              onClick={() => void terminer().finally(sortir)}
-            >
+            // Et depuis T99 la même suite : un plat sans étapes laisse les mêmes
+            // bocaux sur le plan de travail qu'un plat qui en a douze.
+            <button className="btn btn-primary btn-block" onClick={() => setSortie(true)}>
               Terminer
             </button>
           )}
@@ -287,8 +332,147 @@ function Fiche({
         repas={creneau.repas}
         cle={cle}
         cleM={cleMinuteur(creneau.jour, creneau.repas, p.id, steps[etape]!.id)}
-        terminer={terminer}
+        fin={() => setSortie(true)}
       />
+    </>
+  );
+}
+
+/* ──────────────────────────────────────────────────────────────── la sortie */
+
+/**
+ * LE DERNIER ÉCRAN DE LA CUISSON — T99, demandé le 24/09 au sortir d'une
+ * ratatouille : « même arrivé au bout de la recette je n'ai pas eu de message
+ * pour la clore ».
+ *
+ * TROIS DESTINATIONS, ET L'ÉCRAN LES NOMME TOUTES LES TROIS. Les assiettes —
+ * les parts du soir, qu'on ne range pas —, le frigo pour ce qui se mange dans
+ * les jours qui viennent, le congélateur pour le surplus. C'est le découpage
+ * que la demande décrivait mot pour mot, et `sortie.vue.ts` le calcule à partir
+ * de ce que la recette et le foyer déclaraient déjà.
+ *
+ * LA QUESTION EST « AVEZ-VOUS SUIVI », PAS « AVEZ-VOUS CUISINÉ ». Les deux
+ * réponses journalisent : le plat a été fait dans les deux cas, et faire
+ * dépendre le décompte de l'obéissance à une suggestion serait la meilleure
+ * façon de perdre des cuissons. Ce qui change entre les deux, c'est ce que la
+ * base apprend du RANGEMENT — « suivie » écrit les `location` proposées, et
+ * c'est le seul chemin de l'app vers un `location: "congelo"` ; « autre » les
+ * laisse au frigo, là où la prudence de T87 les mettait déjà.
+ *
+ * PAS DE TROISIÈME BOUTON POUR PASSER. Un « plus tard » en un doigt rendrait
+ * exactement l'écran d'avant — celui qui ne disait rien — et c'est ce qu'on
+ * répare. La porte de sortie sans réponse existe quand même, et c'est
+ * « ‹ Le guide » : elle ne journalise rien et laisse la fiche à sa dernière
+ * étape, d'où « Terminer » ramène ici.
+ */
+function Sortie({
+  p,
+  parts,
+  f,
+  foyer,
+  revenir,
+  repondre,
+}: {
+  p: Plat;
+  parts: number;
+  f: number;
+  foyer: Foyer;
+  revenir: () => void;
+  repondre: (rangement: RangementLot[] | null, marque?: "suivie" | "autre") => void;
+}) {
+  const v = vueDeLaSortie(p, parts, f, foyer);
+  return (
+    <>
+      <div className="co-fiche-tete">
+        <button className="co-retour" onClick={revenir}>
+          ‹ Le guide
+        </button>
+        <span className="t">{p.titre}</span>
+      </div>
+      <div className="co-corps">
+        <div className="co-encart">
+          <Icone nom="info" />
+          <span>
+            <b>C’est prêt.</b> {fmt(v.table)} parts passent à table.
+          </span>
+        </div>
+
+        {v.rien ? (
+          /* 23 plats du corpus sur 138 ne déclarent aucun `emit`. Se taire ici
+             laisserait croire à un écran qui n'a pas fini de charger ; la
+             phrase dit que le vide est une réponse. */
+          <div className="co-note" style={{ margin: "var(--space-3) var(--space-1)" }}>
+            Rien à mettre de côté pour cette recette&nbsp;: tout part dans les assiettes.
+          </div>
+        ) : (
+          <>
+            <div className="co-kicker accent" style={{ margin: "var(--space-4) 0 var(--space-2)" }}>
+              Et le reste se range
+            </div>
+            {v.lots.map((l, n) => (
+              <div key={`${l.emit}-${l.location}-${n}`} className="co-lot">
+                <Icone nom={iconeEspace(l.location)} />
+                <span style={{ flex: 1 }}>
+                  <div className="nom">
+                    {nomEspace(l.location)} · {quantiteDuLot(l)}
+                  </div>
+                  {/* LE GESTE, ET PAS SEULEMENT LA DESTINATION. « Au congélateur »
+                      laisse la question qu'on se pose vraiment, les mains pleines :
+                      dans quoi. Muet quand le foyer n'a déclaré aucun contenant
+                      pour cet espace — inventer une boîte serait pire que de se
+                      taire. */}
+                  {l.boites.length ? <div className="ou">{phraseDesBoites(l.boites)}</div> : null}
+                  {/* La phrase de la recette, à l'instant où elle sert. */}
+                  {l.note ? <div className="ou">{l.note}</div> : null}
+                </span>
+                {l.garde != null ? (
+                  <span>
+                    <div className="q">{l.garde} j</div>
+                    <div className="src">à manger</div>
+                  </span>
+                ) : null}
+              </div>
+            ))}
+          </>
+        )}
+
+        <div style={{ marginTop: "var(--space-6)" }}>
+          {v.rien ? (
+            <button className="btn btn-primary btn-block" onClick={() => repondre(null)}>
+              C’est fait
+            </button>
+          ) : (
+            <>
+              <button
+                className="btn btn-primary btn-block"
+                onClick={() => repondre(v.lots, "suivie")}
+              >
+                C’est rangé comme ça
+              </button>
+              {/* MÊME POIDS DE DOIGT, MOINS DE POIDS À L'ŒIL. Les deux réponses
+                  ferment la recette ; celle-ci dit seulement qu'on ne sait pas
+                  où les boîtes sont parties, donc la base retombe sur sa
+                  prudence au lieu d'inscrire un congélateur qu'elle n'a pas vu. */}
+              <button
+                className="btn btn-secondary btn-block"
+                style={{ marginTop: "var(--space-2)" }}
+                onClick={() => repondre(null, "autre")}
+              >
+                J’ai fait autrement
+              </button>
+            </>
+          )}
+          {/* CE QUE LE BOUTON FAIT VRAIMENT, ÉCRIT SOUS LE BOUTON. C'est la
+              deuxième moitié de la demande du 24/09 — « valider la réalisation
+              de la recette, déduire les ingrédients des stocks et enlever la
+              recette de la liste des choses à faire » — et ces trois effets
+              partaient jusqu'ici sans que personne ne les annonce. */}
+          <div className="co-note" style={{ margin: "var(--space-2) var(--space-1) 0" }}>
+            Le plat est compté comme cuisiné&nbsp;: ses ingrédients descendent du placard, et il
+            quitte la liste des posés.
+          </div>
+        </div>
+      </div>
     </>
   );
 }
@@ -467,7 +651,7 @@ function Guide({
   repas,
   cle,
   cleM,
-  terminer,
+  fin,
 }: {
   p: Plat;
   foyer: Foyer;
@@ -476,7 +660,9 @@ function Guide({
   repas: string;
   cle: string;
   cleM: string;
-  terminer: () => Promise<void>;
+  /** La dernière étape est faite — T99. Le guide ne journalise plus rien
+   *  lui-même : il passe la main à la sortie, qui pose la question. */
+  fin: () => void;
 }) {
   const e = steps[etape]!;
   const etat = useObjet<EtatMinuteur>(cleM);
@@ -508,16 +694,17 @@ function Guide({
 
   const bouger = (d: number) => {
     if (d > 0 && dernier) {
-      // LE SEUL ENDROIT DE L'APP OÙ LE STOCK DESCEND. Terminer journalise la
-      // cuisson et engage ses trois effets ; l'avancement s'efface ensuite,
-      // parce que la prochaine ouverture de cette fiche sera pour la refaire.
+      // LA DERNIÈRE ÉTAPE OUVRE LA SORTIE, ELLE NE JOURNALISE PLUS — T99.
       //
-      // L'ordre compte : on sort APRÈS que l'écriture est partie, sinon un
-      // démontage de composant peut emporter la promesse avec lui.
-      void terminer().finally(() => {
-        void poserReglage(cle, null);
-        sortir();
-      });
+      // Le stock descend toujours en un seul endroit, mais ce n'est plus ici :
+      // c'est la réponse à la sortie. Ce bouton engageait les trois effets et
+      // rendait la main sans un mot, si bien qu'une cuisson journalisée et une
+      // cuisson refusée quittaient le même écran de la même façon.
+      //
+      // L'AVANCEMENT NE S'EFFACE PLUS ICI NON PLUS, et c'est ce qui rend cet
+      // écran rattrapable : tant que la sortie n'a pas répondu, la fiche est
+      // restée à sa dernière étape, donc « Terminer » y ramène.
+      fin();
       return;
     }
     void poserReglage(cle, Math.max(0, Math.min(steps.length - 1, etape + d)));

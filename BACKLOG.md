@@ -3934,6 +3934,159 @@ laisse les dates dire la vérité.
   fois est l'usage réel. Un interrupteur qui périme un raisonnement écrit
   ailleurs ne laisse aucune trace mécanique.
 
+## La sortie d'une recette — T99 et T100
+
+**Dit le 24/09/2026, cinquième journée d'usage réel, au sortir d'une
+ratatouille :**
+
+> *« J'ai cuisiné ce soir une ratatouille et même arrivé au bout de la recette
+> je n'ai pas eu de message pour la clore. J'aurais aimé une petite information
+> du style mettre une part (style 200 g) dans tel Tupperware. Deux parts dans
+> celui-ci et le reste dans les assiettes. Genre un Tupperware au frigo l'autre
+> au congélateur. Le tout avec une validation de ma part pour dire si j'ai suivi
+> la recommandation ou non. Cela permet aussi de valider la réalisation de la
+> recette, de déduire les ingrédients des stocks et d'enlever la recette de la
+> liste des choses à faire. »*
+
+**LE DÉCOMPTE MARCHAIT, IL N'AVAIT AUCUN TÉMOIN.** C'est le diagnostic, et il
+change ce qu'il y a à construire. « Terminer » engageait ses trois effets puis
+rendait la main par un `history.back()`, sans un mot — et `terminer()` porte
+trois sorties silencieuses (fiche ouverte en lecture, pas de créneau, plat déjà
+cuisiné). **Quatre issues, un seul écran : celui d'avant.** La phrase de
+l'utilisateur ne dit donc pas que le placard n'est pas descendu ; elle dit qu'on
+ne pouvait pas le savoir.
+
+**ET LES DEUX AUTRES TIERS DE LA DEMANDE ÉTAIENT DÉJÀ CÂBLÉS, DERRIÈRE LE MÊME
+ÉVÉNEMENT.** Déduire les ingrédients : `model/journal.ts::rejouer()` rejoue
+chaque `sorte: "cuisine"` sur le placard depuis T25 — le garde-manger n'est
+descriptif que dans le commentaire d'un fichier YAML qui n'a pas été relu depuis.
+Retirer le plat de la liste : `db/report.ts` n'a jamais reporté un créneau
+cuisiné, *« cuisiner EST le “j'ai fini” du plat, dit par le geste »*. Il restait
+à les DIRE, et à réparer la moitié de la seconde (T100).
+
+### Ce qui était là, et que personne n'affichait
+
+| Ce que le corpus porte | Qui le lisait |
+|---|---|
+| `Emit.qty`, `band`, `espace`, `gardeFrigo`, `congelo` — 126 emits | le budget de rangement, le chaînage |
+| `Foyer.contenants` — 8 boîtes (1 repas), 12 bocaux (2), 20 sacs (1) | **`EspaceConfig.contenants`, un NOMBRE** |
+| `Emit.note` — « meilleure réchauffée le lendemain » | personne |
+| `useCuisines(debut, fin)` | `calculer()`, et aucun écran |
+
+**`Contenant.portions` ET `band` SONT DANS LA MÊME UNITÉ**, et c'est ce qui rend
+la répartition calculable plutôt que devinée : le foyer déclare 32 places de
+contenant au frigo, qui sont exactement 8 × 1 + 12 × 2 (`npm run sortie` le
+vérifie sur les trois espaces). Une boîte était une capacité ; elle devient une
+destination.
+
+- [x] **T99 — La sortie, et sa validation.** `ecrans/sortie.vue.ts` +
+      l'écran `Sortie` dans `Cuisiner.tsx`. La dernière étape du guide n'engage
+      plus rien : elle ouvre un écran qui nomme les **trois destinations** de la
+      demande — les parts qui passent à table, ce qui va au frigo, ce qui va au
+      congélateur — avec le contenant à sortir et le nombre de jours que ça
+      tient.
+
+      **LA RÈGLE QUI COUPE : le premier repas reste au frigo, le surplus se
+      congèle.** Ce qu'on mange demain n'a pas à passer par le froid — c'est un
+      geste à défaire — et `gardeFrigo` dit jusqu'à quand (3 jours en médiane).
+      Mesuré : **43 des 126 emits partent en deux endroits à l'échelle 1**, les
+      83 autres en un seul. Une `lunchbox` est le déjeuner de demain : elle ne
+      se coupe jamais. `gardeFrigo: 0` — les trois desserts glacés — ne passe
+      pas par le frigo du tout.
+
+      **DEUX LOTS AU MAXIMUM, PAS UN PAR BOÎTE.** Le lot dit où une chose se
+      trouve et sur quelle horloge elle court ; deux bocaux côte à côte au
+      congélateur n'ont rien à dire de différent. La `band` se redécoupe quand
+      l'emit se sépare (`3-repas` → `1-repas` + `2-repas`), sans quoi le budget
+      de rangement compterait six places pour trois repas.
+
+      **LES DEUX RÉPONSES JOURNALISENT**, et c'est la décision qui compte :
+      le plat a été cuisiné dans les deux cas. Ce qui change est ce que la base
+      apprend du RANGEMENT — « c'est rangé comme ça » écrit les `location`
+      proposées et **c'est le seul chemin de l'app vers un
+      `location: "congelo"`** (T87 refroidit tout au frigo depuis, sous un
+      commentaire qui annonçait ce ticket : *« congeler reste un geste qu'on n'a
+      pas encore fait ; c'est l'inventaire qui l'enregistrera quand un doigt le
+      dira »*) ; « j'ai fait autrement » retombe sur cette prudence. La réponse
+      se garde sur l'événement (`EvtCuisine.sortie`), **et son absence est un
+      troisième état** : les cuissons d'avant ce ticket n'ont pas été
+      interrogées, les compter comme « autre » serait mentir.
+
+      **PAS DE BOUTON POUR PASSER.** Un « plus tard » en un doigt rendrait
+      l'écran qu'on répare. La porte sans réponse existe quand même — « ‹ Le
+      guide » —, elle ne journalise rien, et **l'avancement ne s'efface qu'une
+      fois la réponse partie** : reposer le téléphone laisse la fiche à sa
+      dernière étape, d'où « Terminer » ramène à la sortie. On ne perd pas une
+      cuisson pour être allé coucher un enfant.
+
+      **LE POIDS EST LE REPLI, PAS L'INVERSE.** La demande parlait de grammes ;
+      mesuré, **91 des 126 emits n'en portent aucun** — un reste de plat se
+      compte en repas dans ce corpus. Mener par le poids aurait tu l'écran sur
+      deux recettes sur trois. Le `200 g` demandé tombe d'ailleurs juste :
+      la ratatouille sort 500 g pour une lunchbox, et sur la bolognaise
+      (1 400 g, 2 repas) l'écran annonce 700 g par boîte.
+
+      Portes : typecheck, **769 tests** (32 neufs, dont les 19 de
+      `sortie.vue.test.ts`), build, **52 e2e** — `stock-descend` traverse
+      maintenant la sortie —, `catalogue:verifie` 0 erreur.
+      `npm run sortie` imprime le corpus à côté — c'est lui qui a retourné la
+      demande sur les grammes.
+
+- [x] **T100 — « Posés » sait ce qui est cuit.** `vueDesPoses` prend les
+      créneaux cuisinés de la fenêtre et les retire de la liste ; `useSemaine`
+      rend `cuisines`, qu'il calculait **déjà** pour `calculer()` sans qu'aucun
+      écran puisse le lire.
+
+      **LE GESTE EXISTAIT, IL REGARDAIT AU MAUVAIS ENDROIT.** `db/report.ts`
+      efface bien un créneau cuisiné, mais sur
+      `evenements.where("jour").below(debut)` — les événements **en amont de la
+      fenêtre**. Un plat fait ce soir est dans la fenêtre : sa ligne restait
+      donc affichée, indistinguable de celles qu'on n'a pas touchées, jusqu'à ce
+      que son jour sorte par le bas. La liste se ferme maintenant le soir même.
+
+      **ET `--space-5` N'EXISTE PAS.** Trouvé en regardant l'écran plutôt que
+      le code : les deux seules occurrences du dépôt — le pied de « Posés » et
+      le neuf de la sortie — résolvaient vers rien, et les boutons se collaient
+      à la dernière ligne. L'échelle est 1·2·3·4·6·8. Les deux sont passées à
+      `--space-6`.
+
+      **CE QUI SORT SE DIT.** Une ligne qui disparaît sans un mot est la perte
+      silencieuse que T94 venait de réparer à l'autre bout : l'écran compte ce
+      qui est parti (« un plat cuisiné est sorti de la liste »), et une liste
+      entièrement cuisinée ne se lit pas comme une liste vide. **Pas de section
+      « fait » pour autant** — ce qui est cuisiné n'a plus de geste à offrir, et
+      lui rendre des boutons rouvrirait la liste qu'on vient de fermer.
+
+      **L'ÉCRAN ATTEND LE JOURNAL.** Un ensemble vide se lit « rien n'est
+      cuisiné » : afficher avant que la base ait répondu montrerait la
+      ratatouille d'hier soir, puis la ferait sauter sous le pouce. C'est le
+      défaut que `useCuisines` décrit dans son propre commentaire, et
+      [[intendance-livequery-fenetre-perimee]] au Workspace.
+
+### Ce que ce bloc laisse ouvert
+
+- **Le plafond de rangement n'est pas consulté.** L'écran propose une boîte sans
+  savoir s'il en reste une de propre — `calcul.ts` sait pourtant dire « laver des
+  boîtes ». C'est le premier endroit où regarder quand quelqu'un se plaindra
+  qu'on lui demande un bocal qu'il n'a pas.
+- **« Le reste dans les assiettes » n'est pas compté.** L'écran nomme les parts
+  du soir et s'arrête là : ce qui est mangé ne produit aucun événement, et la
+  différence entre `portions × f` et les emits n'est réconciliée nulle part.
+- **Les trois sorties silencieuses de `terminer()` sont toujours silencieuses.**
+  Répondre à la sortie sans créneau posé (`i < 0`) ferme l'écran sans rien
+  journaliser. Le cas est rare — un créneau hors fenêtre — mais c'est le même
+  défaut d'un cran plus loin, et il attend la décision de Workspace#60 sur ce
+  qui marque un plat cuisiné hors plan.
+- **Rien ne relit `sortie` sur les événements.** Le champ mesure si l'app est
+  suivie ; personne ne l'affiche encore. Sans lecteur, il vieillira comme
+  `cuisinable` et `foyer.outils` avant lui — c'est le motif le plus constant du
+  dépôt.
+- **Le découpage en deux lots rend le chaînage un peu moins précis.** Une
+  recette qui accepte 400 g trouvera deux lots de 350 au lieu d'un de 700, et
+  `journaliserCuisson` n'en sert qu'un par `accept`. C'est plus vrai du monde
+  (il y a bien deux boîtes) et moins vrai du calcul ; le jour où ça se voit,
+  c'est `effet 2` qu'il faut apprendre à ouvrir deux boîtes.
+
 ## Sortie
 
 **Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`

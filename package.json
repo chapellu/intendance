@@ -16,6 +16,7 @@
     "perf": "vite-node scripts/perf.mjs",
     "planchers": "vite-node scripts/planchers.mjs",
     "preview": "vite preview",
+    "sortie": "vite-node scripts/sortie.mjs",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "etapes": "python3 catalogue/garde_etapes.py"

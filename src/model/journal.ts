@@ -80,6 +80,20 @@ export interface EvtCuisine extends Commun {
    * changer rétroactivement ce qui a été mangé.
    */
   parts: number;
+  /**
+   * La proposition de rangement a-t-elle été suivie — T99.
+   *
+   * TROIS ÉTATS, ET L'ABSENCE EN EST UN. `undefined` = la question n'a pas été
+   * posée : c'est le cas de toutes les cuissons d'avant la sortie, et ce serait
+   * mentir que de les compter comme « autre ». `suivie` veut dire que les lots
+   * de cet événement portent des `location` qu'un doigt a confirmées ; `autre`
+   * qu'on a rangé sans le dire, donc que le dépôt retombe sur sa prudence.
+   *
+   * CE CHAMP NE SE REJOUE PAS ET NE CHANGE RIEN AU PLACARD. Il ne sert qu'à
+   * mesurer l'app : une proposition qu'on ne suit jamais est une proposition à
+   * refaire, et sans ce champ personne ne le saurait.
+   */
+  sortie?: "suivie" | "autre";
 }
 
 /**

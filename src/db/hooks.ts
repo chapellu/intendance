@@ -145,6 +145,19 @@ export interface SemaineVivante {
   oublierCreneau: (i: number) => Promise<void>;
   /** « J'ai fini » : tout ce qui est posé s'efface. Rend ce qui a été effacé. */
   toutOublierLesPoses: () => Promise<number>;
+  /**
+   * Les créneaux déjà cuisinés de la fenêtre, en clés `(jour, repas)` — T100.
+   *
+   * IL ÉTAIT DÉJÀ CALCULÉ ICI, ET AUCUN ÉCRAN NE POUVAIT LE LIRE. `useCuisines`
+   * existait pour `calculer()`, qui s'en sert à ne pas reprojeter une cuisson
+   * déjà faite ; le rendre ne coûte donc pas une requête de plus, et c'est ce
+   * qui permet à « Posés » de rayer ce qui est fait sans rouvrir le journal.
+   *
+   * `undefined` TANT QUE LA BASE N'A PAS RÉPONDU, et l'appelant doit attendre :
+   * un ensemble vide se lit « rien n'est cuisiné », ce qui est justement l'état
+   * qu'on affiche à tort pendant un rendu.
+   */
+  cuisines: ReadonlySet<string> | undefined;
 }
 
 /**
@@ -280,6 +293,7 @@ export function useSemaine(catalogue: Catalogue | null, aujourdhui = new Date())
     prevoirLaGamelle,
     oublierCreneau,
     toutOublierLesPoses,
+    cuisines,
   };
 }
 

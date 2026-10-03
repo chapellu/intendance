@@ -222,3 +222,87 @@ describe("T27 — le poids se dérive, il ne se saisit pas", () => {
     expect(poidsConnu(catalogue, [], "pates")).toBeNull();
   });
 });
+
+describe("T99 — la sortie range, et la base l'apprend", () => {
+  // LE SEUL ENDROIT DE L'APP QUI PUISSE ÉCRIRE UN `location: "congelo"`.
+  // `journaliserCuisson` refroidit tout au frigo depuis T87, sous un commentaire
+  // qui dit pourquoi : congeler est un geste que personne n'avait jamais pu
+  // déclarer. La sortie le déclare.
+
+  test("la sortie suivie coupe l'emit en deux lots, et le congélateur en reçoit un", async () => {
+    await journaliserCuisson(base, {
+      jour: "2026-09-24", repas: "diner", plat: bolognaise, parts: 4,
+      sortie: "suivie",
+      rangement: [
+        { emit: 0, location: "frigo", band: "1-repas", qty: 350 },
+        { emit: 0, location: "congelo", band: "1-repas", qty: 350 },
+      ],
+    });
+    const stock = await base.stock.toArray();
+    expect(stock.map((l) => [l.location, l.qty, l.band])).toEqual([
+      ["frigo", 350, "1-repas"],
+      ["congelo", 350, "1-repas"],
+    ]);
+    // La DESTINATION ne bouge pas pour autant : les deux lots se rangent au
+    // congélateur, c'est le budget qui le dit, et l'un des deux n'y est pas
+    // encore. Les deux champs, et ils ne disent pas la même chose.
+    expect(stock.every((l) => l.espace === "congelo")).toBe(true);
+    expect(stock.every((l) => l.type === "sauce-bolognaise" && l.origine === "sauce-bolognaise")).toBe(true);
+  });
+
+  test("sans sortie, rien ne change — un lot par emit, au frigo", async () => {
+    // LA PROMESSE QUI PROTÈGE LE RESTE DE L'APP. Le paramètre est arrivé après
+    // dix-huit écrans ; s'il changeait quoi que ce soit quand personne ne le
+    // passe, il casserait des chemins que rien ici ne traverse.
+    await journaliserCuisson(base, { jour: "2026-09-24", repas: "diner", plat: bolognaise, parts: 4 });
+    const stock = await base.stock.toArray();
+    expect(stock).toHaveLength(1);
+    expect(stock[0]!.location).toBe("frigo");
+    expect(stock[0]!.band).toBe("2-repas");
+    expect(stock[0]!.qty).toBe(700);
+  });
+
+  test("un rangement vide vaut « personne n'a répondu », pas « rien à ranger »", async () => {
+    // Une liste vide est ce que rend un écran qui n'a pas fini de calculer.
+    // La lire comme un rangement ferait disparaître les bocaux en silence.
+    await journaliserCuisson(base, {
+      jour: "2026-09-24", repas: "diner", plat: bolognaise, parts: 4, rangement: [],
+    });
+    expect(await base.stock.count()).toBe(1);
+  });
+
+  test("la réponse se garde sur l'événement, et son absence en est une", async () => {
+    await journaliserCuisson(base, {
+      jour: "2026-09-24", repas: "diner", plat: bolognaise, parts: 4, sortie: "autre",
+    });
+    await journaliserCuisson(base, {
+      jour: "2026-09-23", repas: "diner", plat: bolognaise, parts: 4,
+    });
+    const evts = (await lireJournal(base)).filter((e) => e.sorte === "cuisine");
+    expect(evts.map((e) => (e as { sortie?: string }).sortie)).toEqual([undefined, "autre"]);
+  });
+
+  test("annuler une cuisson rend les DEUX lots qu'elle a posés", async () => {
+    // `annulerCuisson` retrouve ses lots par (origine, born) : couper un emit
+    // en deux ne lui fait pas en oublier un.
+    const id = await journaliserCuisson(base, {
+      jour: "2026-09-24", repas: "diner", plat: bolognaise, parts: 4,
+      sortie: "suivie",
+      rangement: [
+        { emit: 0, location: "frigo", band: "1-repas", qty: 350 },
+        { emit: 0, location: "congelo", band: "1-repas", qty: 350 },
+      ],
+    });
+    expect(await base.stock.count()).toBe(2);
+    await annulerCuisson(base, id);
+    expect(await base.stock.count()).toBe(0);
+  });
+
+  test("un emit qui n'existe pas ne fabrique pas de lot fantôme", async () => {
+    await journaliserCuisson(base, {
+      jour: "2026-09-24", repas: "diner", plat: bolognaise, parts: 4,
+      rangement: [{ emit: 7, location: "congelo", band: "1-repas", qty: 100 }],
+    });
+    expect(await base.stock.count()).toBe(0);
+  });
+});
