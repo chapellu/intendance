@@ -71,6 +71,32 @@ MOTS_ASSAISONNEMENT = re.compile(r"\bsel\b|sal|poivr|assaisonn|rectifi", re.I)
 # appartiennent à plusieurs étapes). Mesuré sur le corpus avant d'être posé —
 # médiane 98 caractères, troisième quartile 145, maximum 405.
 MAX_ACTION = 160
+# LA PROSE NOMME UN RÉCIPIENT, ET LE MODÈLE EN NOMME UN AUTRE. Deux phrases
+# disaient l'ustensile sans se parler : `action:` (celle de l'ouvrage) et la
+# résolution de `needs:` sur `rules.yaml`. Tant que rien n'affichait l'outil par
+# étape, l'écart n'existait que sur le plan texte ; T84 l'a mis en gros sous les
+# yeux, et le velouté p. 127 a fait « cocotte » d'un côté, « sauteuse » de
+# l'autre. `meme_recipient_que:` ferme le cas où les deux DOIVENT coïncider —
+# ce contrôle liste ce qui reste.
+#
+# UN AVERTISSEMENT, PAS UNE ERREUR, et le vocabulaire est volontairement étroit.
+# « poêle » et « wok » sont génériques — une sauteuse EST une poêle, et ce foyer
+# n'a pas de wok —, les signaler ferait onze faux positifs, soit exactement le
+# bruit qui apprend à ignorer un contrôle. Ne restent que les quatre mots qui
+# désignent un ustensile précis de cette cuisine.
+RECIPIENTS_DITS = {
+    "cocotte-7.5l": re.compile(r"\bcocotte", re.I),
+    "casseroles": re.compile(r"\bcasserole", re.I),
+    "sauteuse-28": re.compile(r"\bsauteuse|\bsautoir", re.I),
+    "plats-a-gratin": re.compile(r"\bplat [àa] gratin", re.I),
+}
+# ET « PETITE COCOTTE » NE DÉSIGNE PAS CELLE-CI. Sept recettes de l'ouvrage
+# font suer deux échalotes « en petite cocotte » : l'autrice en a une, ce foyer
+# n'a qu'un fait-tout de 7,5 L, et répondre « sauteuse 28 cm » sur une portion
+# est la bonne réponse, pas un écart à signaler. Sans cette exception le
+# contrôle rendait treize lignes dont sept à ignorer — le ratio exact qui
+# apprend à ne plus lire les avertissements de ce fichier.
+PAS_DE_CE_FOYER = {"cocotte-7.5l": re.compile(r"\bpetite?s?\s+cocotte", re.I)}
 MOTS_ATTENTE = re.compile(
     r"^\s*la veille\b|\ble lendemain\b|\btoute la nuit\b|\bune nuit\b"
     r"|\bd'avance\b|\bà l'avance\b|\d+\s*h\s*avant|\bà tremper\b|\btrempage\b"
@@ -100,6 +126,49 @@ def verifier(rid: str, r: dict, rayons: dict, rules: dict, cat: dict,
         p = s.get("parallel_with")
         if p and p not in vus:
             err.append(f"étape {s['id']} : parallel_with « {p} » ne précède pas cette étape")
+
+        # LE MÊME RÉCIPIENT, ET LE CONTRÔLE QUI REND SA PERTE BRUYANTE.
+        # `pan-fry` avait été posé sur la cocotte en 08/2026 puis perdu dans un
+        # déménagement de fichier ; il a fallu un mois et une capture d'écran
+        # pour le voir, parce qu'un inventaire faux ne rend pas d'erreur — il
+        # rend un plan plausible. Neuf étapes déclarent désormais cuisiner dans
+        # le récipient de leur voisine : si le foyer reperd la capacité, c'est
+        # ici que ça rougit, et non à l'écran six semaines plus tard.
+        mr = s.get("meme_recipient_que")
+        if mr:
+            ancre = next((x for x in etapes if isinstance(x, dict) and x.get("id") == mr), None)
+            if ancre is None:
+                err.append(f"étape {s['id']} : meme_recipient_que « {mr} » "
+                           "ne désigne aucune étape de cette recette")
+            elif ancre.get("meme_recipient_que"):
+                err.append(f"étape {s['id']} : meme_recipient_que « {mr} » vise une étape "
+                           "qui hérite elle-même — le champ nomme l'ANCRE, pas un maillon")
+            elif not s.get("needs"):
+                err.append(f"étape {s['id']} : meme_recipient_que sans `needs:` — "
+                           "rien à résoudre, donc rien à hériter")
+            else:
+                o = rc.outil_etape(r, s, foyer, rules)
+                if o.contredit:
+                    tenu = rc._resolution_directe(ancre, foyer, rules)
+                    err.append(
+                        f"étape {s['id']} : le récipient de « {mr} » "
+                        f"({tenu.label or 'aucun'}) ne porte pas "
+                        f"{sorted(s['needs'])} — soit l'inventaire du foyer est "
+                        "incomplet, soit ces deux gestes ne tiennent pas dans un "
+                        "seul récipient et le champ est de trop")
+
+        if s.get("needs"):
+            act = s.get("action", "")
+            dits = {tid for tid, rx in RECIPIENTS_DITS.items()
+                    if rx.search(act) and not (tid in PAS_DE_CE_FOYER
+                                               and PAS_DE_CE_FOYER[tid].search(act))}
+            o = rc.outil_etape(r, s, foyer, rules)
+            if dits and o.eq_id is not None and o.eq_id not in dits:
+                warn.append(
+                    f"étape {s['id']} : la phrase dit « {'/'.join(sorted(dits))} » et le "
+                    f"modèle résout sur « {o.label} » — si les deux gestes doivent se "
+                    "faire dans le même récipient, c'est `meme_recipient_que:` ; sinon "
+                    "la cuisine n'a pas cet ustensile et la phrase mérite d'être relue")
 
         # L'attente, seconde horloge du modèle (cf. `anticipation.py`).
         att = s.get("attente_min")

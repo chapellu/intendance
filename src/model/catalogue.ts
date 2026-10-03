@@ -16,7 +16,7 @@
 
 import type {
   Accept, Accompagnement, Agression, Catalogue, Denree, Emit, EmitKind, Espace, Etape, Etat, Forme, Foyer,
-  GardeManger, Ingredient, LigneStock, Nature, Outil, Plat, Provenance, Quantite, Rattrapage,
+  GardeManger, Ingredient, LigneStock, Nature, Outil, OutilEtape, Plat, Provenance, Quantite, Rattrapage,
   Role, Source, Urgence, Usage, Zone,
 } from "./types";
 
@@ -206,6 +206,10 @@ function etape(v: unknown, ou: string): Etape {
     needs: listeDeTextes(o["needs"] ?? [], `${ou}.needs`),
     surveille: booleen(o["surveille"], `${ou}.surveille`),
     astuce: texteOuNull(o["astuce"], `${ou}.astuce`),
+    // L'exception nommée, et elle est STRICTE une fois présente : un objet mal
+    // formé jette plutôt que de se taire. Se taire rendrait la sauteuse sur une
+    // étape qui a dit la cocotte — le bug que ce champ existe pour fermer.
+    outil: o["outil"] == null ? null : outilEtape(o["outil"], `${ou}.outil`),
     // Pas de `?? []` ici, contrairement à `needs` : l'absence est une donnée.
     // Voir le commentaire de `Etape.uses`.
     uses: o["uses"] == null ? null : listeDeTextes(o["uses"], `${ou}.uses`),
@@ -381,6 +385,16 @@ function outils(v: unknown, ou: string): Record<string, Outil> {
     };
   }
   return table;
+}
+
+/** L'outil posé par l'étape elle-même — `Outil` sans son `deltaMin`. */
+function outilEtape(v: unknown, ou: string): OutilEtape {
+  const t = obj(v, ou);
+  return {
+    id: texteOuNull(t["id"], `${ou}.id`),
+    label: texteOuNull(t["label"], `${ou}.label`),
+    reecrit: texteOuNull(t["reecrit"], `${ou}.reecrit`),
+  };
 }
 
 function foyer(v: unknown, ou: string): Foyer {

@@ -4087,6 +4087,162 @@ destination.
   (il y a bien deux boîtes) et moins vrai du calcul ; le jour où ça se voit,
   c'est `effet 2` qu'il faut apprendre à ouvrir deux boîtes.
 
+## On ne change pas de récipient en cours de route — T101
+
+**Dit le 03/10/2026, capture d'écran à l'appui, sur l'étape 1 du velouté de
+potiron :**
+
+> *« Le texte dit cocotte mais tu proposes la sauteuse »*
+
+Les deux phrases étaient à l'écran l'une sous l'autre. En gros titre, le geste :
+*« Émincer les oignons, puis les faire dorer à l'huile d'olive dans une
+**cocotte** jusqu'à une légère caramélisation des sucs »*. Dans l'encadré
+**OUTIL**, trois centimètres plus bas : *« sauteuse 28 cm »*.
+
+**DEUX SOURCES DISAIENT L'USTENSILE, ET ELLES NE SE PARLAIENT PAS.** La prose de
+`action:` vient de l'ouvrage ; l'encadré vient de la résolution de `needs:` sur
+la chaîne de `rules.yaml`, qui est GLOBALE et répond « sauteuse » pour
+`pan-fry`. Rien ne les comparait, parce que jusqu'à T84 rien n'affichait
+l'ustensile par étape : l'écart vivait sur le plan texte, où personne ne le
+lisait. T84 l'a mis sous les yeux, et il s'est mis à mentir.
+
+Et il mentait deux fois, parce que la ligne suivante de la même recette dit mot
+pour mot *« puis le mettre dans la **cocotte** avec l'eau, le sel et la sauce
+tomate »* (`simmer-large` → cocotte 7,5 L). **Le guide faisait donc
+transvaser** : rissoler dans la sauteuse, verser dans la cocotte — et les sucs
+caramélisés, que l'`astuce:` de cette étape-là appelle *« le premier secret de
+la recette »*, restaient au fond de la poêle qu'on abandonne.
+
+### La régression qui dormait sous le bug
+
+L'en-tête de `veloute-potiron.yaml` annonçait pourtant la réponse : *« c'est ce
+trio qui a fait ajouter `pan-fry` aux capacités de la cocotte dans
+`household.yaml` »*. C'est vrai, et c'est daté — Workspace, 26/08/2026, commit
+`518e7f9`, *« l'inventaire du foyer était faux »*. Une cocotte en fonte rissole,
+trois recettes l'écrivent (p. 93, 123, 127).
+
+**Le fichier, lui, ne le portait plus.** Le déménagement du catalogue chez
+`intendance` a importé une copie ANTÉRIEURE de `household.yaml` ; le correctif du
+couteau (15/09) s'est écrit par-dessus la copie déjà régressée. Un mois sans que
+rien ne sonne, exactement comme le commentaire perdu l'annonçait :
+
+> *« C'est plus inquiétant qu'un contrôle faux. UN INVENTAIRE FAUX NE SE SIGNALE
+> JAMAIS TOUT SEUL : il rend simplement des plats infaisables, et on conclut que
+> la cuisine est trop petite. »*
+
+**Mesuré au retour : 29 plats étaient plafonnés à la moitié de leur lot
+possible.** `facteur_max_vaisselle` ne voyait, pour faire revenir quoi que ce
+soit, que la sauteuse et ses six parts.
+
+| | avant | après |
+|---|---|---|
+| `poulet-cocotte-olives-citron` | sauteuse 28 cm, ×1 | cocotte 7,5 L, ×2 |
+| `lentilles-paysanne` | sauteuse 28 cm, ×1,2 | cocotte 7,5 L, ×2,4 |
+| `escalopes-emmental-champignons` | sauteuse 28 cm, ×1 | cocotte 7,5 L, ×2 |
+| …26 autres | | |
+
+### Rendre la capacité ne suffisait pas
+
+Le commit d'origine le disait déjà noir sur blanc : *« la chaîne `pan-fry` de
+`rules.yaml` reste dans l'ordre sauteuse → poêles, donc le texte compilé
+continue d'annoncer "sauteuse 28 cm" même quand seul le volume de la cocotte
+rend le lot possible. Les deux fichiers répondent à deux questions différentes
+et ils divergent ici pour la première fois. »* La divergence était CONNUE et
+ASSUMÉE — à une époque où elle ne se voyait pas.
+
+Et on ne peut pas la régler en réordonnant la chaîne : mettre la cocotte devant
+ferait annoncer *« cocotte 7,5 L »* sur « poêler les gnocchis ». **La chaîne est
+globale, le récipient est une affaire de plat.** Aucun ordre ne dit les deux.
+
+- [x] **T101 — `meme_recipient_que:`, et l'ancre qui décide.** Un troisième
+      champ d'étape, qui ne nomme pas un outil — ce serait rouvrir l'explosion
+      combinatoire de #31 — mais **l'étape qui tient le récipient**. La
+      résolution va chercher l'ustensile de celle-là et vérifie qu'il porte bien
+      les capacités de celle-ci.
+
+      **L'ANCRE N'EST PAS TOUJOURS DANS LE MÊME SENS, et c'est ce qui rend le
+      champ nécessaire plutôt qu'une heuristique.** Sur la p. 127 c'est le
+      mijotage qui décide (`simmer-large` → la cocotte, seule assez grande pour
+      1,5 kg de courge et 1,5 L d'eau) et le rissolage s'y range ; sur le
+      risotto p. 86 c'est l'inverse — le riz nacre dans la sauteuse et c'est le
+      mouillage, louche après louche, qui suit. Le champ pointe, il ne suppose
+      aucun sens.
+
+      **Neuf étapes sur 744**, sur huit plats. L'exception est nommée et le
+      défaut reste la table : un test tombe si le champ se met à proliférer,
+      parce que ce serait le signe qu'il faut corriger la chaîne, pas annoter
+      les recettes une par une.
+
+      **Résolu une fois, côté Python.** `compile.py::outil_etape()` est le seul
+      endroit où la règle est écrite ; le plan texte et `export_json.py` la
+      lisent, et l'app reçoit `Etape.outil` déjà tranché. La préférence
+      *récipient > appareil* vivait en double (la DERNIÈRE capacité côté
+      compilateur, le récipient côté `cuisiner.vue.ts`) — elle n'a plus qu'un
+      domicile.
+
+      **ET LE CONTRÔLE QUI REND LA RÉGRESSION BRUYANTE.** Si le récipient de
+      l'ancre ne porte pas les capacités de l'étape, `verifier.py` lève une
+      ERREUR. Vérifié en retirant `pan-fry` de la cocotte : quatre erreurs
+      immédiates, là où il avait fallu un mois et une capture d'écran.
+
+- [x] **T101 (b) — `boil` n'avait aucune chaîne.** Trouvé en cherchant pourquoi
+      la p. 127 annonçait la sauteuse : **une capacité sans chaîne tombe sur le
+      PREMIER équipement qui la déclare**, et la plaque induction ouvre
+      l'inventaire. *« Porter une grande casserole d'eau salée à ébullition »*
+      s'entendait donc répondre **« plaque induction 3 feux »**, sur les onze
+      étapes qui cuisent du riz, des pâtes ou des œufs. La plaque chauffe, elle
+      ne contient pas. Même faute que la p. 127, par l'autre bout : là une
+      chaîne mal ordonnée, ici une chaîne absente.
+
+      Les trois autres capacités sans chaîne (`gratin-vessel`, `congeler`,
+      `reheat`) tombaient juste — par accident, parce que le bon outil se trouve
+      être le premier déclaré. Elles restent telles quelles ; c'est noté
+      ci-dessous.
+
+### Le port e2e, parce que le vert n'en était pas un
+
+`playwright.config.ts` câblait `PORT = 4173` en dur avec `reuseExistingServer`
+vrai hors CI. Un autre worktree servait déjà sur ce port pendant ce ticket :
+`npm run e2e` serait passé au vert **contre le `dist/` d'une autre branche**.
+`PORT_E2E` permet d'en sortir ; le défaut ne bouge pas pour la CI, seule sur sa
+machine. Le dépôt avait déjà payé ce faux vert une fois.
+
+Portes : typecheck, **774 tests** (5 nouveaux), build, **53 e2e** (1 nouveau,
+lancé sur `PORT_E2E=4179` pour ne pas tester la branche du voisin),
+`catalogue:verifie` 0 erreur, `npm run etapes` 0 casse sur 138 recettes.
+
+### Ce que ce bloc laisse ouvert
+
+- **Six étapes nomment encore un récipient que le modèle ne retient pas**, et
+  c'est le nouvel avertissement de `verifier.py` qui les liste. Aucune n'est un
+  transvasement caché — ce sont des prose/foyer : la p. 99 dit *« une grande
+  cocotte »* pour quatre parts, la p. 158 dit *« en cocotte »* pour un riz au
+  lait que les casseroles tiennent. **Le vrai correctif est ailleurs** : une
+  `action:` ne devrait nommer AUCUN ustensile, puisque `needs:` le dit déjà et
+  que c'est ce qui permet à une recette écrite pour une autre cuisine de
+  compiler contre celle-ci. Les en retirer est une passe de corpus à part — et
+  il faudra décider quoi faire de « dans le panier vapeur de la cocotte », où
+  l'ustensile EST l'instruction.
+- **« Petite cocotte » est exclu du contrôle à la main.** Sept recettes font
+  suer deux échalotes dans une cocotte que ce foyer n'a pas ; les signaler
+  faisait treize avertissements dont sept à ignorer, soit le ratio qui apprend à
+  ne plus lire ce fichier. L'exception est une liste de mots, donc elle
+  vieillira — le jour où le foyer achète une petite cocotte, elle devient fausse
+  dans l'autre sens.
+- **`meme_recipient_que:` ne parle pas à `facteur_max_vaisselle`.** Deux étapes
+  qui partagent un récipient devraient additionner ce qu'elles y mettent ; le
+  calcul de contenance continue de les voir séparément. Ça ne mord nulle part
+  aujourd'hui (les lots passent), mais les deux mécanismes parlent du même
+  récipient sans se connaître.
+- **Les chaînes absentes restent absentes.** `gratin-vessel`, `congeler` et
+  `reheat` résolvent correctement par hasard d'ordre de déclaration. Le jour où
+  l'inventaire se réordonne, elles se mettront à mentir en silence — comme
+  `boil`. Une chaîne par capacité utilisée serait la règle ; trois lignes.
+- **`Outil.deltaMin` n'est toujours lu par personne**, et `Etape.outil` ne le
+  porte même pas. Hériter d'un récipient ne dégrade aucun geste, donc la
+  question ne se pose pas encore — elle se posera si un jour une étape hérite
+  d'un outil de repli.
+
 ## Sortie
 
 **Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`

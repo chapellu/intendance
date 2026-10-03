@@ -64,6 +64,7 @@ recipe:
     - id: mijoter-saumon
       action: "Couvrir et mijoter une dizaine de minutes, jusqu'à cuisson complète du poisson"
       needs: [simmer]
+      meme_recipient_que: dorer-les-legumes
       time_min: 10
       attended: false
     - id: hacher-rillettes

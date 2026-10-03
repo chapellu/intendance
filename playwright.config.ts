@@ -14,7 +14,12 @@
 
 import { defineConfig } from "@playwright/test";
 
-const PORT = 4173;
+// LE PORT EST EN DUR ET `reuseExistingServer` EST VRAI HORS CI : deux worktrees
+// qui lancent `npm run e2e` en même temps se testent donc l'un l'autre, et le
+// second passe au vert contre le `dist/` du premier. Le dépôt a déjà payé ce
+// faux vert ; `PORT_E2E=4174 npm run e2e` suffit à s'en sortir, et le défaut ne
+// bouge pas pour la CI, qui est seule sur sa machine.
+const PORT = Number(process.env["PORT_E2E"] ?? 4173);
 const executablePath = process.env["CHROMIUM"];
 
 export default defineConfig({

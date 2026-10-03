@@ -66,6 +66,7 @@ recipe:
     - id: mijoter-aubergine
       action: "Quand l'oignon et le steak sont bien dorés, ajouter l'aubergine, l'origan et un demi-verre d'eau, mélanger, couvrir et mijoter une dizaine de minutes"
       needs: [simmer]
+      meme_recipient_que: dorer-oignon-steak
       time_min: 10
       attended: false
     - id: assembler-salade-orge

@@ -98,6 +98,17 @@ def main():
         outils[cap] = {"id": par_label.get(label), "label": label,
                        "reecrit": reecrit, "deltaMin": delta}
 
+    def outil_surcharge(recette, etape, foyer, rules):
+        if not etape.get("meme_recipient_que"):
+            return None
+        o = rc.outil_etape(recette, etape, foyer, rules)
+        # `contredit` veut dire que le foyer ne sait pas faire ce geste dans ce
+        # récipient-là. `verifier.py` en fait une erreur ; ici on se tait et on
+        # laisse la table répondre, plutôt que d'exporter un outil faux.
+        if o.contredit or o.label is None:
+            return None
+        return {"id": o.eq_id, "label": o.label, "reecrit": o.reecrit}
+
     plats = []
     for rid, r in cat.items():
         # La contenance du récipient le plus contraignant, précalculée : elle ne
@@ -193,6 +204,14 @@ def main():
                  # l'instruction. `null` quand l'étape n'a rien à ajouter : se
                  # taire est une réponse, remplir serait un ornement.
                  "astuce": s.get("astuce"),
+                 # L'USTENSILE DE CETTE ÉTAPE-CI, quand il ne se déduit pas de
+                 # la table. `foyer.outils` répond par capacité et c'est le bon
+                 # défaut ; il ne peut pas savoir que la p. 127 rissole DANS la
+                 # cocotte où le velouté mijotera ensuite. `meme_recipient_que:`
+                 # le dit, `outil_etape()` le résout, et le champ sort ici déjà
+                 # tranché pour que l'app n'ait pas deux fois la même règle.
+                 # `null` partout ailleurs — la table suffit sur 735 étapes.
+                 "outil": outil_surcharge(r, s, foyer, rules),
                  # Ce que CETTE étape réclame, en références de ligne. Sans ce
                  # lien un écran de cuisson guidée ne peut pas montrer les
                  # quantités au moment où elles servent : il renvoie à la liste

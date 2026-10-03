@@ -60,6 +60,7 @@ recipe:
     - id: mijoter
       action: "Ajouter le saumon, mouiller au vin blanc, saler, couvrir et laisser mijoter une dizaine de minutes jusqu'à ce que le poisson soit bien cuit"
       needs: [simmer]
+      meme_recipient_que: suer
       time_min: 12
       attended: false
     - id: finir

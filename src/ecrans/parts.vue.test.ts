@@ -129,14 +129,19 @@ describe("ce qu'on cuisine vraiment", () => {
     expect(cuisson(plat("lentilles-mijotees"), 4).pourquoi).toBe("");
   });
 
+  // LE PLAFOND A DOUBLÉ LE 03/10, ET C'EST LE FAIT QUI A CHANGÉ, PAS LA RÈGLE.
+  // Ce test disait « sauteuse 28 cm, ×1 au plus » parce que la cocotte de 7,5 L
+  // avait perdu `pan-fry` dans un déménagement de fichier : le modèle ne voyait
+  // donc, pour faire revenir des escalopes, que la sauteuse et ses six parts.
+  // La capacité rendue, c'est la cocotte qui borne — douze parts, ×2. Le plat
+  // n'a pas changé de taille ; l'inventaire a cessé d'être faux.
   test("la vaisselle borne, et la phrase dit la limite au lieu de la promettre", () => {
-    // La sauteuse tient un lot d'escalopes, pas un lot et demi.
     const p = plat("escalopes-emmental-champignons");
     expect(cuisson(p, 6).tient).toBe(true);
-    const trop = cuisson(p, 9);
+    const trop = cuisson(p, 13);
     expect(trop.tient).toBe(false);
-    expect(trop.reserve).toContain("sauteuse 28 cm");
-    expect(trop.reserve).toContain("×1 au plus");
+    expect(trop.reserve).toContain("cocotte 7,5 L");
+    expect(trop.reserve).toContain("×2 au plus");
   });
 
   test("un plat que rien ne borne le dit aussi", () => {

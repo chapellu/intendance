@@ -67,6 +67,7 @@ recipe:
     - id: revenir
       action: "Faire revenir à l'huile d'olive, dans une grande cocotte, les oignons et le poireau émincés avec les « lardons » ou la saucisse fumée coupée en tranches"
       needs: [pan-fry]
+      meme_recipient_que: mouiller
       uses: [huile-olive, oignon, poireau, saucisse-fumee]
       time_min: 12
     - id: mouiller

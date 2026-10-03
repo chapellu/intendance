@@ -104,7 +104,25 @@ household:
       # donc la conservation en bocal est DÉJÀ à portée, mais uniquement pour
       # les aliments acides. Voir l'avertissement de conservation.yaml.
       contenance: 12
-      capabilities: [simmer-large, steam, sterilisation-bain-marie]
+      # `pan-fry` AJOUTÉ APRÈS TROIS RECETTES QUI L'ÉCRIVENT : « dans une cocotte
+      # en fonte, faire dorer l'oignon » (p. 93), « les faire revenir avec les
+      # lardons » sur 1,5 kg de courge (p. 123), « les faire dorer à l'huile
+      # d'olive dans une cocotte » (p. 127). Une cocotte en fonte rissole, c'est
+      # même ce pour quoi on l'achète, et l'oublier faisait refuser ces plats :
+      # `facteur_max_vaisselle` ne voyait que la sauteuse de 28 cm, et 1,5 kg de
+      # courge n'y tient pas.
+      #
+      # ET IL A ÉTÉ PERDU UNE FOIS, CE QUI EST LA MOITIÉ INTÉRESSANTE DE
+      # L'HISTOIRE. Posé chez Workspace le 26/08/2026 (« l'inventaire du foyer
+      # était faux »), il n'a PAS suivi le déménagement du catalogue : la
+      # migration a importé une copie antérieure du fichier, et le correctif du
+      # couteau (15/09) s'est écrit par-dessus sans que rien ne sonne. Mesuré au
+      # retour : la perte plafonnait 29 plats à la moitié de leur lot possible.
+      # C'est exactement ce que le commentaire d'origine annonçait — « un
+      # inventaire faux ne se signale jamais tout seul ». Il se signale
+      # maintenant : `meme_recipient_que:` fait ÉCHOUER `verifier.py` dès que la
+      # cocotte reperd `pan-fry`, parce que quatre étapes déclarent y rissoler.
+      capabilities: [simmer-large, steam, sterilisation-bain-marie, pan-fry]
     - id: congelateur-3-tiroirs
       label: congélateur 3 tiroirs
       capabilities: [congeler]

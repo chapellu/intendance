@@ -62,11 +62,15 @@ recipe:
     - id: dorer-oignon
       action: "Dans une cocotte en fonte, faire dorer l'oignon émincé dans l'huile d'olive, puis le retirer"
       needs: [pan-fry]
+      # Le plat s'appelle « cocotte » et sa prose la nomme six fois : les deux
+      # dorages et les quatre étapes de mijotage sont UN seul récipient.
+      meme_recipient_que: reunir
       uses: [oignon, huile-olive]
       time_min: 6
     - id: dorer-poulet
       action: "Mettre le poulet dans la cocotte et le faire dorer sur toutes ses faces"
       needs: [pan-fry]
+      meme_recipient_que: reunir
       uses: [poulet]
       time_min: 10
     - id: reunir

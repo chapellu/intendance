@@ -64,6 +64,11 @@ recipe:
       action: "Émincer les oignons, puis les faire dorer à l'huile d'olive dans une cocotte jusqu'à une légère caramélisation des sucs"
       astuce: "C'est le premier secret de la recette."
       needs: [pan-fry]
+      # ON RISSOLE DANS LA COCOTTE OÙ LE VELOUTÉ MIJOTERA — l'étape d'après dit
+      # « le mettre dans la cocotte », et les sucs caramélisés sont le premier
+      # secret de la recette : les laisser au fond d'une poêle qu'on abandonne,
+      # c'est jeter l'étape. La chaîne `pan-fry` nommait la sauteuse.
+      meme_recipient_que: potiron
       uses: [oignon, huile-olive]
       time_min: 12
       charge_partielle: true

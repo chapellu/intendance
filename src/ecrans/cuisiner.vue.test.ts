@@ -30,7 +30,7 @@ const catalogue: Catalogue = lireCatalogue(
 // `uses: null` et non `[]` : ce helper ne dit rien des ingrédients, il ne
 // prétend pas qu'il n'y en a aucun. Voir `Etape.uses`.
 const etape = (needs: string[], minutes = 0): Etape => ({
-  id: "e", action: "", minutes, needs, surveille: true, astuce: null,
+  id: "e", action: "", minutes, needs, surveille: true, astuce: null, outil: null,
   uses: null, enParallele: null, attente: null, attenteRaison: null,
   attenteSouple: true, rattrapage: null,
   enfant: null, enfantDes: null, porteAssaisonnement: false,
@@ -557,6 +557,76 @@ describe("l'outil de l'étape", () => {
     expect(outilDe(foyer, etape(["simmer"]))!.texte).toMatch(/\d/);
     expect(outilDe(foyer, etape(["simmer-large"]))!.texte).toMatch(/\d/);
     expect(outilDe(foyer, etape(["pan-fry"]))!.texte).toMatch(/\d/);
+  });
+});
+
+/* ──────────────────────────── 03/10 — « le texte dit cocotte, tu dis sauteuse » */
+
+describe("on ne change pas de récipient en cours de route", () => {
+  const foyer = catalogue.foyer;
+  const plat = (id: string) => catalogue.plats.find((p) => p.id === id)!;
+  const geste = (pid: string, sid: string) => plat(pid).steps.find((s) => s.id === sid)!;
+
+  // LE BUG, TEL QU'IL S'EST VU À L'ÉCRAN. L'étape dit « les faire dorer dans
+  // une cocotte » et l'encadré OUTIL répondait « sauteuse 28 cm », parce que la
+  // chaîne `pan-fry` de `rules.yaml` est globale et nomme la sauteuse. L'étape
+  // d'après dit « le mettre dans la cocotte » : le guide faisait donc
+  // transvaser, et les sucs caramélisés — « le premier secret de la recette »,
+  // dit l'astuce de cette étape-là — restaient dans la poêle abandonnée.
+  test("le velouté de potiron rissole dans la cocotte où il mijotera", () => {
+    const e = geste("veloute-potiron", "caraméliser");
+    expect(e.action).toContain("cocotte");
+    expect(e.needs).toEqual(["pan-fry"]);
+    expect(outilDe(foyer, e)).toEqual({ texte: "cocotte 7,5 L", methode: false });
+    // …et la chaîne, elle, dit toujours la sauteuse : c'est bien l'étape qui
+    // l'emporte, pas la table qu'on aurait réécrite.
+    expect(foyer.outils["pan-fry"]!.label).toBe("sauteuse 28 cm");
+  });
+
+  // L'INVARIANT QUI VAUT MIEUX QUE N'IMPORTE QUEL CAS : un plat dont la prose
+  // ne nomme qu'un récipient ne doit en annoncer qu'un. Le poulet « cocotte »
+  // le dit six fois et comptait deux ustensiles.
+  test("le poulet cocotte n'a plus qu'un seul récipient", () => {
+    const recipients = new Set(
+      plat("poulet-cocotte-olives-citron").steps
+        .map((e) => outilDe(foyer, e))
+        .filter((o): o is NonNullable<typeof o> => o !== null && !o.methode)
+        .map((o) => o.texte),
+    );
+    expect([...recipients]).toEqual(["cocotte 7,5 L"]);
+  });
+
+  // L'ANCRE N'EST PAS TOUJOURS LE MIJOTAGE. Un risotto se mouille dans la
+  // poêle où le riz a nacré : ici c'est le rissolage qui tient le récipient et
+  // `simmer` qui s'y range, l'inverse exact du velouté. Le champ pointe, il ne
+  // suppose aucun sens — c'est tout ce qui lui permet de dire les deux.
+  test("et sur un risotto, c'est le rissolage qui décide", () => {
+    const e = geste("risotto-poivrons-espelette", "mouiller");
+    expect(e.needs).toEqual(["simmer"]);
+    expect(foyer.outils["simmer"]!.label).toContain("casserole");
+    expect(outilDe(foyer, e)!.texte).toBe("sauteuse 28 cm");
+  });
+
+  // L'exception reste une EXCEPTION : la table répond sur l'immense majorité
+  // des étapes, et ce test tombe le jour où le champ se mettrait à proliférer
+  // — ce serait le signe que c'est la chaîne qu'il faut corriger, pas les
+  // recettes qu'il faut annoter une par une.
+  test("neuf étapes la portent, le reste lit la table", () => {
+    const steps = catalogue.plats.flatMap((p) => p.steps);
+    const portees = steps.filter((e) => e.outil !== null);
+    expect(portees.length).toBe(9);
+    expect(portees.length).toBeLessThan(steps.length / 50);
+    for (const e of portees) expect(e.needs.length).toBeGreaterThan(0);
+  });
+
+  // « Porter une grande casserole d'eau à ébullition » annonçait « plaque
+  // induction 3 feux » : `boil` n'avait aucune chaîne, et une capacité sans
+  // chaîne tombe sur le premier équipement qui la déclare. La plaque chauffe,
+  // elle ne contient pas.
+  test("on fait bouillir l'eau dans une casserole, pas sur une plaque", () => {
+    const e = geste("pates-bolognaise", "eau");
+    expect(e.action).toContain("casserole");
+    expect(outilDe(foyer, e)!.texte).toContain("casserole");
   });
 });
 

@@ -112,6 +112,22 @@ export interface Etape {
   /** Le matériel et le geste : `bake`, `simmer`, `chop-coarse`… L'écran en
    *  dérive la chauffe ; le vocabulaire appartient au compilateur de recettes. */
   needs: string[];
+  /**
+   * L'ustensile de CETTE étape, quand la table du foyer ne peut pas le deviner.
+   *
+   * `Foyer.outils` répond par capacité — `pan-fry` → « sauteuse 28 cm » — et
+   * c'est le bon défaut sur un gnocchi poêlé. Mais le velouté de potiron fait
+   * dorer ses oignons DANS la cocotte où il mijotera ensuite, et l'étape
+   * suivante dit mot pour mot « le mettre dans la cocotte ». La chaîne est
+   * globale, le récipient est une affaire de plat : aucun ordre de chaîne ne
+   * dit les deux. La recette le déclare (`meme_recipient_que:`), le
+   * compilateur le résout, et le champ arrive ici déjà tranché.
+   *
+   * `null` SUR 735 ÉTAPES SUR 744 — lire la table est la règle, ce champ est
+   * l'exception nommée. Il ne porte pas de `deltaMin` : hériter d'un récipient
+   * ne dégrade aucun geste.
+   */
+  outil: OutilEtape | null;
   /** `false` = le temps passe sans qu'on reste devant. C'est ce qui sépare une
    *  journée de 90 minutes tenable d'une autre qui ne l'est pas. */
   surveille: boolean;
@@ -361,6 +377,11 @@ export interface Outil {
    *  affiche `Etape.minutes` brut, comme l'export. Voir le backlog. */
   deltaMin: number;
 }
+
+/** L'outil d'une étape : le même objet que `Outil`, sans le `deltaMin` —
+ *  hériter du récipient de l'étape d'à côté ne dégrade aucun geste, donc il n'y
+ *  a pas de minutes à ajouter. */
+export type OutilEtape = Omit<Outil, "deltaMin">;
 
 export interface Foyer {
   nom: string;

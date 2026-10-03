@@ -43,6 +43,15 @@ capabilities:
 
   pan-fry: [{tool: sauteuse-28}, {tool: poele-inox-30}, {tool: poeles-ingenio}]
   simmer: [{tool: casseroles}, {tool: sauteuse-28}]
+  # `boil` N'AVAIT AUCUNE CHAÎNE, et une capacité sans chaîne tombe sur le
+  # PREMIER équipement qui la déclare — ici la plaque induction, parce qu'elle
+  # ouvre l'inventaire. Les onze étapes qui cuisent du riz, des pâtes ou des
+  # œufs annonçaient donc « plaque induction 3 feux ». La plaque chauffe, elle
+  # ne contient pas : au moment de remplir d'eau, ce qu'on veut lire est le
+  # récipient. Trouvé en cherchant pourquoi la p. 127 annonçait la sauteuse —
+  # c'est la même faute, par l'autre bout : là une chaîne mal ordonnée, ici une
+  # chaîne absente, et dans les deux cas l'écran nomme autre chose que le texte.
+  boil: [{tool: casseroles}, {tool: cocotte-7.5l}]
   simmer-large: [{tool: cocotte-7.5l}]
   bake: [{tool: four-chaleur-tournante}]
   gratin: [{tool: four-chaleur-tournante}]

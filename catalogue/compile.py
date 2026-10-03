@@ -16,6 +16,7 @@ Usage:
 import argparse
 import datetime as dt
 import sys
+from collections import namedtuple
 from pathlib import Path
 
 import yaml
@@ -69,6 +70,90 @@ def resolve_capability(cap, household, rules):
             eq = native[tid]
             return eq.get("label", eq["id"]), candidate.get("rewrite"), candidate.get("time_delta_min", 0)
     return None, None, 0
+
+
+# ------------------------------------------------- l'ustensile d'UNE étape
+
+OutilEtape = namedtuple("OutilEtape", "label reecrit delta eq_id impossible contredit")
+
+
+def _recipients(household):
+    """Les équipements qui CONTIENNENT — ceux qui portent une contenance. C'est
+    la même liste que `vaisselle` côté app."""
+    return {eq["id"] for eq in household.get("equipment", []) if eq.get("contenance")}
+
+
+def _resolution_directe(step, household, rules):
+    """Les capacités de l'étape, chacune sur sa chaîne.
+
+    LE RÉCIPIENT L'EMPORTE SUR L'APPAREIL quand l'étape en déclare plusieurs :
+    `bake` + `gratin-vessel` résolvent sur le four ET sur le plat à gratin, et
+    c'est le plat qu'on veut lire puisque la ligne d'à côté dit déjà « Four ».
+    La règle vivait en double — ici en prenant la DERNIÈRE capacité, dans
+    `cuisiner.vue.ts` en préférant le récipient. Elle n'a plus qu'un endroit.
+    """
+    par_label = {(eq.get("label") or eq["id"]): eq["id"]
+                 for eq in household.get("equipment", [])}
+    recipients = _recipients(household)
+    dits, delta, impossible = [], 0, False
+    for cap in step.get("needs", []):
+        label, reecrit, d = resolve_capability(cap, household, rules)
+        if label is None and reecrit is None:
+            impossible = True
+            continue
+        delta += d
+        dits.append((label, reecrit, par_label.get(label)))
+    choisi = next((x for x in dits if x[2] in recipients), None) or (dits[0] if dits else None)
+    if choisi is None:
+        return OutilEtape(None, None, delta, None, impossible, False)
+    return OutilEtape(choisi[0], choisi[1], delta, choisi[2], impossible, False)
+
+
+def outil_etape(recipe, step, household, rules):
+    """L'ustensile de CETTE étape — la chaîne, sauf quand la recette dit qu'on
+    ne change pas de récipient.
+
+    POURQUOI LA CHAÎNE NE POUVAIT PAS SUFFIRE. `rules.yaml` répond à « quel
+    outil pour `pan-fry`, en général » et il répond « sauteuse 28 cm », ce qui
+    est le bon défaut sur un gnocchi poêlé. Mais la p. 127 fait dorer ses
+    oignons DANS LA COCOTTE où le velouté mijotera ensuite, et l'étape d'après
+    dit mot pour mot « le mettre dans la cocotte ». Le guide annonçait donc
+    sauteuse puis cocotte : un transvasement que le livre ne demande pas, et
+    les sucs caramélisés — « le premier secret de la recette », dit l'astuce —
+    restent au fond de la poêle qu'on abandonne.
+
+    La chaîne est GLOBALE et le récipient est une affaire de PLAT : aucun ordre
+    de chaîne ne peut dire les deux à la fois. `meme_recipient_que:` nomme donc
+    l'étape qui décide du récipient, et celle-ci s'y range.
+
+    L'ANCRE EST L'ÉTAPE LA PLUS CONTRAIGNANTE, pas la première : sur la p. 127
+    c'est le mijotage (`simmer-large` → la cocotte, seule assez grande pour
+    1,5 kg de courge et 1,5 L d'eau) et le rissolage la suit ; sur un risotto
+    c'est l'inverse — c'est le rissolage qui tient la sauteuse, et le mouillage
+    la suit. Le champ pointe, il ne suppose pas de sens.
+
+    QUAND LE FOYER NE SAIT PAS, ON NE MENT PAS. Si le récipient de l'ancre ne
+    porte pas les capacités de cette étape-ci, on retombe sur la chaîne et on
+    lève `contredit` : `verifier.py` en fait une ERREUR. C'est ce drapeau qui
+    rend la perte de `pan-fry` sur la cocotte impossible à refaire en silence —
+    la régression de 2026-09 avait tenu un mois sans que rien ne la voie.
+    """
+    direct = _resolution_directe(step, household, rules)
+    ancre_id = step.get("meme_recipient_que")
+    if not ancre_id:
+        return direct
+    ancre = next((s for s in recipe.get("steps", []) if s.get("id") == ancre_id), None)
+    if ancre is None:
+        return direct._replace(contredit=True)
+    tenu = _resolution_directe(ancre, household, rules)
+    eq = owned_tools(household).get(tenu.eq_id)
+    if eq is None or not set(step.get("needs", [])) <= set(eq.get("capabilities", [])):
+        return direct._replace(contredit=True)
+    # `delta` reste celui de la chaîne : un `time_delta_min` décrit la
+    # dégradation du GESTE (hacher au couteau plutôt qu'au robot), pas celle du
+    # récipient. Les neuf étapes qui héritent aujourd'hui sont toutes à 0.
+    return OutilEtape(eq.get("label", eq["id"]), None, direct.delta, eq["id"],
+                      direct.impossible, False)
 
 
 # ---------------------------------------------------------------- portions
@@ -302,18 +387,13 @@ def compile_recipe(recipe_id, household, rules, stock, time_budget=None,
         n += 1
         rangs_rendus[s.get("id")] = n
         time = s["time_min"]
-        tool_txt = ""
-        impossible = False
-        for cap in s.get("needs", []):
-            label, rewrite, delta = resolve_capability(cap, hh, rules)
-            if label is None and rewrite is None:
-                impossible = True
-                continue
-            time += delta
-            if rewrite:
-                tool_txt = f" — {rewrite}"
-            elif label:
-                tool_txt = f" — {label}"
+        o = outil_etape(r, s, hh, rules)
+        time += o.delta
+        impossible = o.impossible
+        # LA RÉÉCRITURE L'EMPORTE SUR LE LIBELLÉ : un repli ne se résume pas à
+        # son nom — « au couteau, sur une planche » est l'instruction, « couteau
+        # et planche » n'en est que le sujet.
+        tool_txt = f" — {o.reecrit}" if o.reecrit else (f" — {o.label}" if o.label else "")
         line = f"{n}. {s['action']}{tool_txt}  ⏱ {time} min"
         if s.get("parallel_with"):
             # Numéroter l'étape visée plutôt que dire « la précédente » : dès

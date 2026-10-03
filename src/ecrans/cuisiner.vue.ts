@@ -143,7 +143,9 @@ export function minuteurUtile(e: Etape): boolean {
 
 /* ────────────────────────────────────────────────────────── l'outil de l'étape */
 
-export interface OutilEtape {
+/** CE QUI S'AFFICHE, et pas ce que le modèle a résolu — `Etape.outil` et
+ *  `Foyer.outils` portent un ustensile, celui-ci porte une ligne de texte. */
+export interface OutilAffiche {
   /** Ce qui s'affiche. */
   texte: string;
   /** Vrai quand `texte` est une MANIÈRE DE FAIRE et non un nom d'ustensile —
@@ -182,7 +184,16 @@ export interface OutilEtape {
  * qu'on n'a pas serait pire que se taire, et `compile.py` marque déjà ces
  * étapes « aucune solution avec l'équipement du foyer ».
  */
-export function outilDe(foyer: Foyer, e: Etape): OutilEtape | null {
+export function outilDe(foyer: Foyer, e: Etape): OutilAffiche | null {
+  // L'ÉTAPE PASSE AVANT LA TABLE quand elle porte son propre ustensile. La
+  // table répond par capacité et ne peut pas savoir qu'on reste dans le même
+  // récipient qu'au geste d'à côté ; la recette, elle, le dit. Résolu à
+  // l'export, lu ici — la règle n'a qu'un seul endroit, côté compilateur.
+  if (e.outil?.label || e.outil?.reecrit) {
+    return e.outil.reecrit
+      ? { texte: e.outil.reecrit, methode: true }
+      : { texte: e.outil.label as string, methode: false };
+  }
   const dits = e.needs
     .map((n) => foyer.outils[n])
     .filter((o): o is Outil => o !== undefined && (o.label !== null || o.reecrit !== null));

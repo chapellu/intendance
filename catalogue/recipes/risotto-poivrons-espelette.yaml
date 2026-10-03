@@ -93,6 +93,9 @@ recipe:
       action: "Ajouter une louche de bouillon chaud, mélanger à la cuillère de bois jusqu'à absorption complète, puis recommencer"
       astuce: "Environ 20 minutes, jusqu'à un riz parfaitement cuit et crémeux — mais cela dépend du riz, il n'y a pas de temps précis."
       needs: [simmer]
+      # Un risotto se mouille dans la poêle où le riz a nacré, louche après
+      # louche. `simmer` seul envoyait vers les casseroles.
+      meme_recipient_que: oignon
       uses: [bouillon-legumes]
       time_min: 20
       attended: true

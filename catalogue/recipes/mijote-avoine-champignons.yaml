@@ -63,6 +63,7 @@ recipe:
       action: "Ajouter les champignons rincés et égouttés ainsi que l'avoine, mouiller du verre d'eau, puis mijoter 10 min"
       astuce: "S'il reste du liquide, c'est normal : il épaissira en sauce crémeuse."
       needs: [simmer]
+      meme_recipient_que: dorer-les-sucs-avoine
       time_min: 10
       attended: false
     - id: reposer-une-nuit
