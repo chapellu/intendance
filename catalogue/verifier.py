@@ -127,13 +127,10 @@ def verifier(rid: str, r: dict, rayons: dict, rules: dict, cat: dict,
         if p and p not in vus:
             err.append(f"étape {s['id']} : parallel_with « {p} » ne précède pas cette étape")
 
-        # LE MÊME RÉCIPIENT, ET LE CONTRÔLE QUI REND SA PERTE BRUYANTE.
-        # `pan-fry` avait été posé sur la cocotte en 08/2026 puis perdu dans un
-        # déménagement de fichier ; il a fallu un mois et une capture d'écran
-        # pour le voir, parce qu'un inventaire faux ne rend pas d'erreur — il
-        # rend un plan plausible. Neuf étapes déclarent désormais cuisiner dans
-        # le récipient de leur voisine : si le foyer reperd la capacité, c'est
-        # ici que ça rougit, et non à l'écran six semaines plus tard.
+        # LE MÊME RÉCIPIENT — le champ ne demande rien aux capacités de l'ancre
+        # (voir `outil_etape`), donc il ne reste à tenir que sa forme : une
+        # étape qui existe, qui n'hérite pas elle-même, et qui tient bien un
+        # RÉCIPIENT. Hériter du four ou du mixeur plongeur ne voudrait rien dire.
         mr = s.get("meme_recipient_que")
         if mr:
             ancre = next((x for x in etapes if isinstance(x, dict) and x.get("id") == mr), None)
@@ -145,17 +142,15 @@ def verifier(rid: str, r: dict, rayons: dict, rules: dict, cat: dict,
                            "qui hérite elle-même — le champ nomme l'ANCRE, pas un maillon")
             elif not s.get("needs"):
                 err.append(f"étape {s['id']} : meme_recipient_que sans `needs:` — "
-                           "rien à résoudre, donc rien à hériter")
+                           "l'étape ne cuisine rien, il n'y a pas de récipient à nommer")
             else:
                 o = rc.outil_etape(r, s, foyer, rules)
                 if o.contredit:
                     tenu = rc._resolution_directe(ancre, foyer, rules)
                     err.append(
-                        f"étape {s['id']} : le récipient de « {mr} » "
-                        f"({tenu.label or 'aucun'}) ne porte pas "
-                        f"{sorted(s['needs'])} — soit l'inventaire du foyer est "
-                        "incomplet, soit ces deux gestes ne tiennent pas dans un "
-                        "seul récipient et le champ est de trop")
+                        f"étape {s['id']} : « {mr} » ne tient aucun récipient "
+                        f"({tenu.label or 'rien'} n'a pas de contenance) — "
+                        "il n'y a rien à partager, viser l'étape qui porte la cuisson")
 
         if s.get("needs"):
             act = s.get("action", "")

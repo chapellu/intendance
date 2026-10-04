@@ -104,25 +104,24 @@ household:
       # donc la conservation en bocal est DÉJÀ à portée, mais uniquement pour
       # les aliments acides. Voir l'avertissement de conservation.yaml.
       contenance: 12
-      # `pan-fry` AJOUTÉ APRÈS TROIS RECETTES QUI L'ÉCRIVENT : « dans une cocotte
-      # en fonte, faire dorer l'oignon » (p. 93), « les faire revenir avec les
-      # lardons » sur 1,5 kg de courge (p. 123), « les faire dorer à l'huile
-      # d'olive dans une cocotte » (p. 127). Une cocotte en fonte rissole, c'est
-      # même ce pour quoi on l'achète, et l'oublier faisait refuser ces plats :
-      # `facteur_max_vaisselle` ne voyait que la sauteuse de 28 cm, et 1,5 kg de
-      # courge n'y tient pas.
+      # PAS DE `pan-fry` ICI, ET C'EST UNE DÉCISION QUI A DÉJÀ ÉTÉ REPRISE DEUX
+      # FOIS. Elle y a été mise le 26/08/2026 pour faire passer la tourte
+      # p. 123, puis retirée le même jour au déménagement du catalogue : une
+      # cocotte donne du VOLUME, pas de la SURFACE, et `facteur_max_vaisselle`
+      # ne sait pas faire la différence — il lisait les 12 parts du fait-tout
+      # comme 12 parts de poêlée, et rendait les escalopes p. 39 faisables en
+      # lot et demi. `parts.vue.test.ts` l'a attrapé ; les vraies fautes étaient
+      # deux erreurs de saisie dans la p. 123.
       #
-      # ET IL A ÉTÉ PERDU UNE FOIS, CE QUI EST LA MOITIÉ INTÉRESSANTE DE
-      # L'HISTOIRE. Posé chez Workspace le 26/08/2026 (« l'inventaire du foyer
-      # était faux »), il n'a PAS suivi le déménagement du catalogue : la
-      # migration a importé une copie antérieure du fichier, et le correctif du
-      # couteau (15/09) s'est écrit par-dessus sans que rien ne sonne. Mesuré au
-      # retour : la perte plafonnait 29 plats à la moitié de leur lot possible.
-      # C'est exactement ce que le commentaire d'origine annonçait — « un
-      # inventaire faux ne se signale jamais tout seul ». Il se signale
-      # maintenant : `meme_recipient_que:` fait ÉCHOUER `verifier.py` dès que la
-      # cocotte reperd `pan-fry`, parce que quatre étapes déclarent y rissoler.
-      capabilities: [simmer-large, steam, sterilisation-bain-marie, pan-fry]
+      # REMISE UNE TROISIÈME FOIS LE 03/10/2026, PUIS RETIRÉE À NOUVEAU, en
+      # croyant réparer une perte de migration — l'en-tête de la p. 127 annonce
+      # toujours l'ajout, ce qui donne le change. La capacité n'est PAS le bon
+      # endroit pour dire « on rissole dans la cocotte » : ça, c'est
+      # `meme_recipient_que:` sur l'étape, qui nomme un récipient sans rien
+      # promettre sur ce qui y tient. Les deux questions sont distinctes — quel
+      # ustensile nommer, et qu'est-ce qui rentre — et c'est de les avoir
+      # confondues que vient l'aller-retour.
+      capabilities: [simmer-large, steam, sterilisation-bain-marie]
     - id: congelateur-3-tiroirs
       label: congélateur 3 tiroirs
       capabilities: [congeler]

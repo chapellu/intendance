@@ -1082,9 +1082,9 @@
    "lotEntier": false,
    "calibreMax": null,
    "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 3.0
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.5
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -1520,9 +1520,9 @@
    "lotEntier": false,
    "calibreMax": null,
    "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 3.0
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.5
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -2139,9 +2139,9 @@
    "lotEntier": false,
    "calibreMax": null,
    "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 3.0
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.5
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -2369,9 +2369,9 @@
    "lotEntier": false,
    "calibreMax": null,
    "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 2.0
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.0
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -2784,9 +2784,9 @@
    "lotEntier": false,
    "calibreMax": null,
    "vaisselle": {
-    "id": "plats-a-gratin",
-    "label": "plats à gratin 35×18 / 32×20",
-    "facteurMax": 3.0
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.5
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -4515,9 +4515,9 @@
    "lotEntier": false,
    "calibreMax": null,
    "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 3.0
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.5
    },
    "gainChainage": 5,
    "cuisinable": true
@@ -8450,9 +8450,9 @@
    "lotEntier": false,
    "calibreMax": null,
    "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 2.0
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.0
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -9388,9 +9388,9 @@
    "lotEntier": false,
    "calibreMax": null,
    "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 2.0
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.0
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -9674,9 +9674,9 @@
    "lotEntier": false,
    "calibreMax": null,
    "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 3.0
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.5
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -9951,9 +9951,9 @@
    "lotEntier": false,
    "calibreMax": null,
    "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 3.0
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.5
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -10506,9 +10506,9 @@
    "lotEntier": true,
    "calibreMax": null,
    "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 3.0
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.5
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -12565,9 +12565,9 @@
    "lotEntier": false,
    "calibreMax": null,
    "vaisselle": {
-    "id": "plats-a-gratin",
-    "label": "plats à gratin 35×18 / 32×20",
-    "facteurMax": 2.0
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.0
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -14020,9 +14020,9 @@
    "lotEntier": false,
    "calibreMax": null,
    "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 2.4
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.2
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -15552,9 +15552,9 @@
    "lotEntier": false,
    "calibreMax": null,
    "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 2.0
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.0
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -18133,9 +18133,9 @@
    "lotEntier": false,
    "calibreMax": null,
    "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 3.0
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.5
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -18460,9 +18460,9 @@
    "lotEntier": false,
    "calibreMax": null,
    "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 3.0
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.5
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -18794,9 +18794,9 @@
    "lotEntier": false,
    "calibreMax": null,
    "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 3.0
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.5
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -19709,9 +19709,9 @@
    "lotEntier": false,
    "calibreMax": null,
    "vaisselle": {
-    "id": "plats-a-gratin",
-    "label": "plats à gratin 35×18 / 32×20",
-    "facteurMax": 3.0
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.5
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -20763,9 +20763,9 @@
    "lotEntier": false,
    "calibreMax": null,
    "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 3.0
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.5
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -21346,9 +21346,9 @@
    "lotEntier": false,
    "calibreMax": null,
    "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 2.0
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.0
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -21710,9 +21710,9 @@
    "lotEntier": false,
    "calibreMax": null,
    "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 12.0
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 6.0
    },
    "gainChainage": 48,
    "cuisinable": true
@@ -22443,9 +22443,9 @@
    "lotEntier": false,
    "calibreMax": null,
    "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 2.0
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.0
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -23107,9 +23107,9 @@
    "lotEntier": true,
    "calibreMax": null,
    "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 3.0
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.5
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -23699,9 +23699,9 @@
    "lotEntier": false,
    "calibreMax": null,
    "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 2.0
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.0
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -24472,9 +24472,9 @@
    "lotEntier": false,
    "calibreMax": null,
    "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 2.0
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.0
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -25333,9 +25333,9 @@
    "lotEntier": false,
    "calibreMax": null,
    "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 3.0
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.5
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -32254,9 +32254,9 @@
    "lotEntier": true,
    "calibreMax": null,
    "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 3.0
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.5
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -34461,9 +34461,9 @@
    "lotEntier": true,
    "calibreMax": null,
    "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 3.0
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.5
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -35329,9 +35329,9 @@
    "lotEntier": false,
    "calibreMax": null,
    "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 2.0
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.0
    },
    "gainChainage": 0,
    "cuisinable": true

@@ -22,8 +22,14 @@
 # l'ouvrage en donne une, et de voir qu'elle ne cadre pas avec les étapes.
 #
 # Troisième plat du corpus à dire « faire dorer les oignons dans une cocotte »,
-# avec les p. 93 et 123 — c'est ce trio qui a fait ajouter `pan-fry` aux
-# capacités de la cocotte dans `household.yaml`.
+# avec les p. 93 et 123. Ce trio a fait ajouter `pan-fry` aux capacités de la
+# cocotte dans `household.yaml` le 26/08/2026 — PUIS RETIRER LE MÊME JOUR, et
+# cette phrase a continué d'annoncer le contraire pendant six semaines, au point
+# de faire reprendre le raccourci le 03/10. Elle est donc rectifiée ici : un
+# fait-tout de 7,5 L donne du VOLUME et pas de la SURFACE, et lui donner
+# `pan-fry` fait croire à `facteur_max_vaisselle` qu'on y poêle douze parts
+# d'escalopes. Ce que ce trio a VRAIMENT obtenu, c'est `meme_recipient_que:` —
+# nommer le récipient de l'étape voisine sans rien promettre sur ce qui y tient.
 
 recipe:
   id: veloute-potiron

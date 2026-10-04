@@ -323,8 +323,12 @@ def facteur_max_vaisselle(recipe, foyer):
     # réelle (les deux bornent pareil, `facteurMax` est identique) ; seul le nom
     # affiché se joue ici, et il doit se jouer toujours de la même façon.
     #
-    # Latent depuis toujours, révélé par T101 : tant que `pan-fry` plafonnait à
-    # la sauteuse et ses 6 parts, aucune égalité ne se produisait.
+    # AUCUNE ÉGALITÉ NE SE PRODUIT DANS LE CORPUS D'AUJOURD'HUI — le défaut est
+    # latent, et il l'a toujours été. Il s'est montré une heure durant T101, le
+    # temps qu'une capacité de trop sur la cocotte crée trois égalités et fasse
+    # rougir `catalogue:verifie` une fois sur deux. La capacité est repartie ;
+    # le `sorted` reste, parce qu'un export doit rendre le même octet à chaque
+    # run, et que la prochaine égalité ne préviendra pas non plus.
     pire = None
     for cap in sorted(besoins):
         meilleur = None

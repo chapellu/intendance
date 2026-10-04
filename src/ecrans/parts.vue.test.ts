@@ -129,19 +129,22 @@ describe("ce qu'on cuisine vraiment", () => {
     expect(cuisson(plat("lentilles-mijotees"), 4).pourquoi).toBe("");
   });
 
-  // LE PLAFOND A DOUBLÉ LE 03/10, ET C'EST LE FAIT QUI A CHANGÉ, PAS LA RÈGLE.
-  // Ce test disait « sauteuse 28 cm, ×1 au plus » parce que la cocotte de 7,5 L
-  // avait perdu `pan-fry` dans un déménagement de fichier : le modèle ne voyait
-  // donc, pour faire revenir des escalopes, que la sauteuse et ses six parts.
-  // La capacité rendue, c'est la cocotte qui borne — douze parts, ×2. Le plat
-  // n'a pas changé de taille ; l'inventaire a cessé d'être faux.
+  // CE TEST EST UN GARDE, ET IL A SERVI DEUX FOIS. Il tombe dès qu'on donne
+  // `pan-fry` à la cocotte de 7,5 L pour arranger une recette qui dit
+  // « cocotte » : les escalopes deviennent alors faisables en lot et demi,
+  // parce que `facteur_max_vaisselle` lit les 12 parts du fait-tout comme
+  // 12 parts de POÊLÉE. Un fait-tout donne du volume, pas de la surface. Si
+  // vous le voyez rougir, le correctif n'est pas ici — c'est que quelqu'un
+  // vient de reprendre le raccourci, et `meme_recipient_que:` est la bonne
+  // façon de nommer un récipient sans promettre ce qui y tient.
   test("la vaisselle borne, et la phrase dit la limite au lieu de la promettre", () => {
+    // La sauteuse tient un lot d'escalopes, pas un lot et demi.
     const p = plat("escalopes-emmental-champignons");
     expect(cuisson(p, 6).tient).toBe(true);
-    const trop = cuisson(p, 13);
+    const trop = cuisson(p, 9);
     expect(trop.tient).toBe(false);
-    expect(trop.reserve).toContain("cocotte 7,5 L");
-    expect(trop.reserve).toContain("×2 au plus");
+    expect(trop.reserve).toContain("sauteuse 28 cm");
+    expect(trop.reserve).toContain("×1 au plus");
   });
 
   test("un plat que rien ne borne le dit aussi", () => {

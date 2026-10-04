@@ -132,11 +132,21 @@ def outil_etape(recipe, step, household, rules):
     c'est l'inverse — c'est le rissolage qui tient la sauteuse, et le mouillage
     la suit. Le champ pointe, il ne suppose pas de sens.
 
-    QUAND LE FOYER NE SAIT PAS, ON NE MENT PAS. Si le récipient de l'ancre ne
-    porte pas les capacités de cette étape-ci, on retombe sur la chaîne et on
-    lève `contredit` : `verifier.py` en fait une ERREUR. C'est ce drapeau qui
-    rend la perte de `pan-fry` sur la cocotte impossible à refaire en silence —
-    la régression de 2026-09 avait tenu un mois sans que rien ne la voie.
+    ET IL NE DEMANDE RIEN AUX CAPACITÉS DE L'ANCRE, ce qui est tout l'intérêt.
+    Une première version exigeait que le récipient hérité porte les `needs:` de
+    l'étape — donc, pour la p. 127, que la cocotte déclare `pan-fry`. C'est
+    précisément le raccourci que ce dépôt a déjà pris puis défait deux fois :
+    `facteur_max_vaisselle` lit les capacités d'un récipient pour savoir ce qui
+    y TIENT, et donner `pan-fry` à un fait-tout de 7,5 L lui fait croire qu'on
+    y poêle douze parts d'escalopes. Un fait-tout donne du volume, pas de la
+    surface.
+
+    NOMMER ET DIMENSIONNER SONT DEUX QUESTIONS. Celle-ci ne répond qu'à la
+    première : la recette affirme que ces deux gestes se font dans le même
+    récipient — c'est l'ouvrage qui le dit, et il se cuisine — et l'écran le
+    répète. Ce qui tient dans quoi continue de se lire dans `capabilities`, que
+    ce champ ne touche pas. C'est aussi pourquoi il ne peut pas rendre un plat
+    faisable qui ne l'était pas : il ne crée aucune contenance.
     """
     direct = _resolution_directe(step, household, rules)
     ancre_id = step.get("meme_recipient_que")
@@ -147,7 +157,9 @@ def outil_etape(recipe, step, household, rules):
         return direct._replace(contredit=True)
     tenu = _resolution_directe(ancre, household, rules)
     eq = owned_tools(household).get(tenu.eq_id)
-    if eq is None or not set(step.get("needs", [])) <= set(eq.get("capabilities", [])):
+    # L'ancre doit tenir un RÉCIPIENT : hériter d'un mixeur plongeur ou d'un
+    # four ne veut rien dire, et c'est le seul abus que le champ rend possible.
+    if eq is None or not eq.get("contenance"):
         return direct._replace(contredit=True)
     # `delta` reste celui de la chaîne : un `time_delta_min` décrit la
     # dégradation du GESTE (hacher au couteau plutôt qu'au robot), pas celle du
