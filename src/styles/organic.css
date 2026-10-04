@@ -737,6 +737,42 @@ button { font-family: var(--font-body); color: inherit; }
 .co-lot .src.estime { color: var(--color-accent-800); }
 .co-lot.mange { opacity: .55; }
 
+/* T102 — LA SORTIE QU'ON CORRIGE. Les deux leviers d'un lot vivent SOUS son
+   nom, dans la colonne qui s'étire, et pas à droite où la fenêtre de garde se
+   lit : une ligne de lot fait 3 à 4 lignes de haut en correction, et empiler
+   les crans à côté du « 3 j » les écraserait sur un écran de 390 px.
+   `flex-wrap` parce que « Congélateur » + un cran de 34 px dépassent sur les
+   petites largeurs, et qu'un bouton coupé est un bouton qu'on ne touche pas. */
+.co-lot .retouche {
+  display: flex; align-items: center; gap: var(--space-2) var(--space-3);
+  margin-top: var(--space-2); flex-wrap: wrap;
+}
+.co-lot .retouche .co-seg { background: var(--color-bg); }
+.co-lot .retouche .co-seg button { padding: 5px 12px; font-size: 12px; }
+.co-lot .retouche .co-seg button.on { background: var(--color-accent-200); color: var(--color-accent-900); }
+/* Un segment inerte se grise AVEC son fond : un lot qu'on ne garde pas n'a plus
+   de destination, et laisser le choix allumé laisserait croire qu'il range. */
+.co-lot .retouche .co-seg button:disabled { opacity: .38; cursor: default; }
+.co-pas { display: flex; align-items: center; gap: var(--space-1); }
+/* 34 px, et c'est le minimum qu'on se permet ici. Les ronds de « les parts »
+   font 64 px parce que l'écran n'a QU'EUX ; ici il y en a deux par lot et
+   jusqu'à trois lots, donc la cible se resserre — au prix d'un pouce un peu
+   plus précis, sur un geste qu'on fait une fois le plat déjà rangé. */
+.co-pas button {
+  width: 34px; height: 34px; flex: none; border: 0; border-radius: 999px;
+  background: var(--color-bg); color: var(--color-text);
+  font-family: var(--font-heading); font-size: 18px; line-height: 1; cursor: pointer;
+}
+/* Au plancher comme au plafond, le cran se voit désactivé plutôt que muet —
+   même raison qu'au rond de « les parts » : un bouton qui ne fait rien se lit
+   comme une panne, grisé il se lit comme une borne. */
+.co-pas button:disabled { opacity: .38; cursor: default; }
+.co-pas .n { font-size: 13px; font-weight: 700; min-width: 56px; text-align: center; }
+/* « Pas gardé » : la ligne reste là, lisible et remontable. L'effacer ferait
+   disparaître le seul endroit d'où l'on peut revenir sur le cran de trop. */
+.co-lot.vide { opacity: .6; }
+.co-lot.vide .retouche { opacity: 1; }
+
 /* — écran « les parts » — */
 .co-parts { background: var(--color-surface); border-radius: var(--radius-lg); padding: var(--space-4); }
 .co-parts .ligne { display: flex; align-items: center; gap: var(--space-4); margin-top: var(--space-3); }

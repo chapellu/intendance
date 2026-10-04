@@ -17,7 +17,8 @@ import { readFileSync } from "node:fs";
 const brut = JSON.parse(readFileSync(new URL("../public/cuisine-data.json", import.meta.url), "utf8"));
 
 const { lireCatalogue } = await import("../src/model/catalogue.ts");
-const { vueDeLaSortie, phraseDesBoites, quantiteDuLot } = await import("../src/ecrans/sortie.vue.ts");
+const { vueDeLaSortie, phraseDesBoites, quantiteDuLot, retouchesDe, rangerAilleurs, vueRetouchee, phraseHorsBoite } =
+  await import("../src/ecrans/sortie.vue.ts");
 
 const catalogue = lireCatalogue(brut);
 const foyer = catalogue.foyer;
@@ -96,6 +97,51 @@ for (const id of ["ratatouille-minute", "sauce-bolognaise", "lentilles-mijotees"
         `${phraseDesBoites(l.boites) || "(aucun contenant déclaré)"}` +
         `${l.garde != null ? ` · ${l.garde} j` : ""}`,
     );
+}
+
+/* ── 4 bis. Ce que « j'ai fait autrement » a à corriger — T102 ───────────── */
+
+titre("ce que la correction a sous le doigt");
+
+let lots = 0;
+let seuls = 0;
+let crans = 0;
+let atteignable = 0;
+for (const p of catalogue.plats) {
+  const v = vueDeLaSortie(p, foyer.parts, 1, foyer);
+  if (!v.rien) atteignable += 1;
+  for (const l of v.lots) {
+    lots += 1;
+    if (l.repas === l.total) seuls += 1;
+    if (l.total > 1) crans += 1;
+  }
+}
+console.log(
+  `${lots} lots à l'échelle 1, sur ${atteignable} des ${catalogue.plats.length} plats.\n` +
+    `${lots - seuls} partagent le plafond de leur emit avec un autre morceau ; ` +
+    `${seuls} le tiennent seuls.\n` +
+    `${crans} lots ont plus d'un repas à déplacer — les ${lots - crans} autres ` +
+    `n'ont que « gardé / pas gardé ».`,
+);
+console.log(
+  "\nLA DESTINATION, ELLE, EST TOUJOURS UN TAP : les deux boutons sont là sur\n" +
+    "les " + lots + " lots, parce que « j'ai tout mis au congélo » ne dépend d'aucune\n" +
+    "propriété de la recette — c'est un fait sur ce qu'un bras a fait.",
+);
+
+const rata = catalogue.plats.find((x) => x.id === "ratatouille-minute");
+if (rata) {
+  const base = vueDeLaSortie(rata, foyer.parts, 1, foyer).lots;
+  const c = vueRetouchee(rata, 1, foyer, base, rangerAilleurs(retouchesDe(base), 0, "congelo"));
+  console.log(`\n  ${rata.titre}, corrigée d'un tap :`);
+  for (const l of c.gardes)
+    console.log(
+      `    ${l.location.padEnd(8)} ${quantiteDuLot(l).padEnd(10)} ` +
+        `${phraseDesBoites(l.boites) || "(aucun contenant déclaré)"}` +
+        `${l.garde != null ? ` · ${l.garde} j` : " · pas de fenêtre de frigo"}`,
+    );
+  const vide = vueRetouchee(rata, 1, foyer, base, retouchesDe(base).map((r) => ({ ...r, repas: 0 })));
+  console.log(`    rien gardé → ${vide.gardes.length} lot en base · ${phraseHorsBoite(vide.horsBoite)}`);
 }
 
 /* ── 5. Là où l'écran n'aura rien à dire ──────────────────────────────────── */

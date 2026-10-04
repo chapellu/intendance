@@ -48,8 +48,14 @@ export interface Cuisson {
    * Ce que la sortie a rangé, quand quelqu'un l'a dit — T99.
    *
    * ABSENT = LE VIEUX DÉFAUT, et c'est ce qui rend ce paramètre sûr : un lot
-   * par emit, au frigo, exactement comme avant. Les trois appels de test et le
-   * chemin « j'ai fait autrement » passent tous par là.
+   * par emit, au frigo, exactement comme avant. Les trois appels de test
+   * passent par là, et les cuissons d'avant T99 y sont déjà passées.
+   *
+   * `[]` = « JE N'AI RIEN GARDÉ », ET CE N'EST PAS LA MÊME CHOSE — T102. La
+   * liste vide était confondue avec l'absence (`rangement?.length ? … : défaut`),
+   * si bien que « tout a été mangé » remplissait le frigo de lots fantômes
+   * qu'aucun relevé n'irait chercher. Depuis que la sortie se corrige, ce vide
+   * est une réponse qu'un doigt a donnée, et elle vaut les autres.
    */
   rangement?: readonly RangementLot[] | null;
   /**
@@ -145,7 +151,12 @@ export async function journaliserCuisson(
     // dire. Sans elle, RIEN NE CHANGE : un lot par emit, au frigo, sur la bande
     // que le corpus déclare. Le défaut reste donc la vieille prudence, et il
     // reste écrit ici, en une ligne qu'on peut lire.
-    for (const r of rangement?.length ? rangement : defaut(plat, f)) {
+    //
+    // T102 — ET `??`, PAS `?.length`. Un tableau vide est maintenant une
+    // réponse (« rien de gardé ») au lieu d'un synonyme de silence ; les deux
+    // se lisaient pareil, et le seul geste qui pouvait les distinguer n'existait
+    // pas encore.
+    for (const r of rangement ?? defaut(plat, f)) {
       const e = plat.emits[r.emit];
       if (!e) continue;
       await base.stock.add({

@@ -4087,6 +4087,155 @@ destination.
   (il y a bien deux boîtes) et moins vrai du calcul ; le jour où ça se voit,
   c'est `effet 2` qu'il faut apprendre à ouvrir deux boîtes.
 
+## « J'ai fait autrement » devient une saisie — T102
+
+**Dit le 03/10/2026, au sortir d'une recette — quatorzième journée d'usage réel,
+et neuf jours après la livraison de la sortie :**
+
+> *« I just finished cooking a recipe. I had the finish screen that's better but
+> when I clicked on I did otherwise to store the leftover nothing was offered. »*
+
+L'écran de fin est jugé **meilleur** — c'est T99 qui tient — et c'est son second
+bouton qui ne tient pas : on l'a touché pour RANGER LE RESTE, et il n'a rien
+proposé.
+
+**LE BOUTON N'ÉTAIT PAS UNE SAISIE, C'ÉTAIT UN REPLI, ET IL FAISAIT EXACTEMENT
+CE QUI ÉTAIT ÉCRIT.** `Cuisiner.tsx` appelait `repondre(null, "autre")` :
+la cuisson se journalisait, la proposition était jetée, et
+`journaliserCuisson` retombait sur sa prudence — un lot par emit, au frigo. Le
+ticket T99 l'assume mot pour mot (*« “j'ai fait autrement” retombe sur cette
+prudence »*) et son propre commentaire le dit encore mieux : *« celle-ci dit
+seulement qu'on ne sait pas où les boîtes sont parties »*. **Le mot « autrement »
+promettait donc une question que l'écran ne posait jamais.**
+
+**CE N'EST PAS DANS LA LISTE DE CE QUE T99 LAISSAIT OUVERT**, et c'est le fait
+intéressant du ticket. Les cinq trous que le bloc s'était notés — le plafond de
+rangement, les assiettes non comptées, les trois sorties silencieuses, personne
+ne relit `sortie`, le chaînage moins précis — sont tous vrais et tous ailleurs.
+Celui-ci était invisible depuis le code parce qu'il n'y avait **rien à voir** :
+le chemin marchait, journalisait, fermait l'écran. Il ne manquait qu'à l'endroit
+où un doigt l'attendait. **Motif du dépôt, pris par l'autre bout : on sait
+chercher le commentaire juste au-dessus d'un code faux
+([[intendance-jours-caches]], #31, #32) ; ici le commentaire ET le code étaient
+justes, et c'est la PROMESSE DU LIBELLÉ qui était fausse.**
+
+### Deux leviers, et pas un de plus
+
+**TRANCHÉ PAR L'UTILISATEUR LE 03/10** entre trois formes proposées : corriger
+la proposition (destination seule), corriger **la destination ET les
+quantités**, ou une saisie libre partant de zéro. **La deuxième.** La première
+ne sait pas dire « j'en ai mangé un de plus que prévu » ; la troisième jette
+l'arithmétique qui marche — 43 des 126 emits se coupent en deux endroits, et
+c'est juste — pour la faire retaper à quelqu'un qui a les mains grasses.
+
+**ON PART DE LA PROPOSITION.** Corriger, c'est bouger ce que l'app a calculé.
+`retouchesDe()` prend la vue de T99 comme point de départ, et les deux seuls
+leviers sont ceux que la base retient d'un lot : **où**, et **combien**. Les
+boîtes et la fenêtre de garde ne se saisissent pas — elles se recalculent à
+chaque cran, et c'est `vueRetouchee()` qui les refait toutes les deux.
+
+### Ce que le corpus donne à corriger (`npm run sortie`)
+
+| | |
+|---|---|
+| lots à l'échelle 1 | **169**, sur **115 des 138 plats** (23 ne laissent rien) |
+| lots qui partagent le plafond de leur emit | **86** — l'autre morceau doit redescendre pour qu'ils montent |
+| lots qui le tiennent seuls | **83** |
+| lots avec plus d'un repas à déplacer | **108** ; les **61** autres n'ont que « gardé / pas gardé » |
+| destination | **toujours un tap, sur les 169** — « j'ai tout mis au congélo » ne dépend d'aucune propriété de la recette |
+
+**LA RATATOUILLE DU 24/09 EST LE CAS LE PLUS PAUVRE QUI SOIT**, et il valait la
+peine de le mesurer : une `lunchbox` de 500 g, un seul lot, rien à couper.
+Sur elle, « j'ai fait autrement » n'a jamais eu qu'**un** geste à offrir — la
+destination — et c'est justement celui qui n'existait pas.
+
+- [x] **T102 — la sortie se corrige, en deux leviers par lot.**
+      `ecrans/sortie.vue.ts` : `Retouche`, `retouchesDe`, `plafondDuLot`,
+      `bougerLeLot`, `rangerAilleurs`, `vueRetouchee`, `phraseHorsBoite` ;
+      l'écran `Sortie` de `Cuisiner.tsx` a deux temps, et le second est **la
+      même liste**, corrigeable.
+
+      **LE PLAFOND EST CELUI DE L'EMIT, PARTAGÉ ENTRE SES LOTS.** Un emit de
+      3 repas coupé en 1 + 2 laisse le premier monter à 2 — tant que le second
+      redescend. Sans ce partage, deux crans sur deux lignes rangeraient six
+      repas d'un plat qui en a laissé trois, et le budget de rangement les
+      compterait tous les six. C'est `LotSortie.total` qui le porte, parce que
+      `repasDeLEmit` **arrondit** : le recalculer dans l'écran en ferait une
+      seconde vérité.
+
+      **ZÉRO VEUT DIRE « PAS GARDÉ », ET C'EST UNE RÉPONSE.** Mangé, donné,
+      jeté. La ligne reste à l'écran — c'est le seul endroit d'où l'on peut
+      revenir sur le cran de trop — et ne part pas en base. **Ce qui n'est rangé
+      nulle part SE DIT** : une ligne qui rétrécit sans un mot est la perte
+      silencieuse que T100 venait de réparer à l'autre bout, et il n'existe
+      aucun événement « mangé » dans ce dépôt pour la rattraper.
+
+      **`[]` ET `null` NE SE LISAIENT PAS DIFFÉREMMENT, ET MAINTENANT SI.**
+      `journaliserCuisson` testait `rangement?.length`, donc une liste vide
+      valait silence et déclenchait le défaut : « je n'ai rien gardé » aurait
+      rempli le frigo de bocaux fantômes qu'aucun relevé n'irait chercher.
+      Passé à `rangement ?? defaut(plat, f)`. **La promesse du test a donc
+      changé de sens** — elle disait « un rangement vide vaut personne n'a
+      répondu », ce qui était vrai tant qu'aucun geste de l'app ne pouvait
+      produire un `[]`. L'absence, elle, vaut toujours le défaut, et c'est le
+      test juste au-dessus qui protège les dix-huit écrans qui ne passent rien.
+
+      **`placard` N'EST PAS UNE DESTINATION DE FIN DE CUISSON.** Les 12 bocaux
+      Le Parfait le déclarent — c'est vrai d'un bocal vide et de conserves
+      stérilisées — mais rien dans le corpus ne dit qu'une ratatouille du soir
+      se stérilise, et l'offrir en un tap ferait affirmer à la base une
+      conservation que personne n'a mesurée.
+
+      **LA PHRASE EST SORTIE DU JSX APRÈS AVOIR ÉCRIT « 1 REPAS NE EST
+      RANGÉ ».** Trois ternaires imbriqués entre deux accolades ne se relisent
+      pas, et le parcours qui cherchait la phrase par son texte ne trouvait même
+      pas les morceaux. `phraseHorsBoite()` est une valeur, et se teste comme
+      les autres.
+
+      **LE RETOUR, EN CORRIGEANT, RAMÈNE À LA PROPOSITION** et pas au guide :
+      c'est l'annulation du geste qu'on vient de faire. La porte sans réponse de
+      T99 n'est pas perdue, elle est un tap plus loin. Et la correction **ne se
+      persiste pas** — ce qui se range dans cet écran est un AVANCEMENT ;
+      reposer le téléphone ramène sur la proposition, qui est juste, plutôt que
+      sur deux crans à demi bougés dont on ne saurait plus demain s'ils
+      décrivent le frigo.
+
+      **LE PARCOURS A ÉTÉ VÉRIFIÉ ROUGE AVANT D'ÊTRE VÉRIFIÉ VERT**, en
+      remettant l'ancien `repondre(null, "autre")` sous le bouton : il tombe sur
+      `.co-pas` → 0, c'est-à-dire **sur la phrase de l'utilisateur**, « rien ne
+      m'a été proposé ». `e2e/sortie-autrement.spec.ts` truque le corpus comme
+      `sans-recette.spec.ts` — trois repas congelables sur chaque plat, aucune
+      étape — pour arriver à la sortie sans la boucle de dix-huit clics dont
+      `stock-descend` fait déjà la preuve, et pour ne pas dépendre du plat que la
+      main tire (#18 → `stock-descend`).
+
+      Cinq portes : typecheck, **782 tests** (13 neufs), build, **53 e2e**
+      (1 neuf), `catalogue:verifie` 0 erreur. `npm run sortie` imprime ce que la
+      correction a sous le doigt.
+
+### Ce que ce ticket laisse ouvert
+
+- **Un lot ne se coupe pas en deux à la main.** Les deux morceaux viennent de
+  `couper()` ; un emit non congelable qui sort un seul lot de 3 repas ne peut
+  pas se déclarer « 2 au frigo, 1 au congélo » — seulement se déplacer en
+  entier. Le cas existe — **45 emits non congelables, dont 20 portent plus d'un
+  repas** (19 à deux, un à trois) — et personne ne l'a encore demandé.
+- **Deux lots du même emit peuvent finir au même endroit**, et la base écrira
+  deux lignes. C'est vrai du monde — il y a bien deux boîtes — et ça reste moins
+  vrai du calcul, pour la raison que T99 s'était déjà notée : `effet 2` ne sert
+  qu'un lot par `accept`.
+- **Rien ne relit `sortie` sur les événements**, toujours. Le champ mesure si
+  l'app est suivie, et il a maintenant un second état utile — « autre AVEC un
+  rangement » dit *où* l'app s'est trompée, pas seulement qu'elle s'est trompée.
+  Sans lecteur, il vieillira comme `cuisinable` et `foyer.outils` avant lui.
+- **Le plafond de rangement n'est toujours pas consulté** — ni par la
+  proposition, ni par la correction. L'écran laisse monter un lot à trois bocaux
+  sans savoir s'il en reste trois de propres.
+- **Les contenants ne se saisissent pas.** « J'ai pris un bocal au lieu de deux »
+  se dit par la quantité, pas par la boîte : `RangementLot` ne porte aucun
+  contenant, et lui en ajouter un demanderait de décider si une boîte sale est
+  un fait du dépôt.
+
 ## Sortie
 
 **Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`

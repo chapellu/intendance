@@ -47,7 +47,19 @@ import {
   tempsDuPlat,
   type EtatMinuteur,
 } from "./cuisiner.vue";
-import { phraseDesBoites, quantiteDuLot, vueDeLaSortie } from "./sortie.vue";
+import {
+  bougerLeLot,
+  DESTINATIONS,
+  phraseDesBoites,
+  phraseHorsBoite,
+  plafondDuLot,
+  quantiteDuLot,
+  rangerAilleurs,
+  retouchesDe,
+  vueDeLaSortie,
+  vueRetouchee,
+  type Retouche,
+} from "./sortie.vue";
 
 export function Cuisiner({ creneau, plat }: { creneau: CleCreneau; plat?: string }) {
   const { catalogue } = useCatalogue();
@@ -355,9 +367,15 @@ function Fiche({
  * réponses journalisent : le plat a été fait dans les deux cas, et faire
  * dépendre le décompte de l'obéissance à une suggestion serait la meilleure
  * façon de perdre des cuissons. Ce qui change entre les deux, c'est ce que la
- * base apprend du RANGEMENT — « suivie » écrit les `location` proposées, et
- * c'est le seul chemin de l'app vers un `location: "congelo"` ; « autre » les
- * laisse au frigo, là où la prudence de T87 les mettait déjà.
+ * base apprend du RANGEMENT.
+ *
+ * ET « AUTREMENT » EST DEVENU UNE SAISIE — T102, dit le 03/10 : « quand j'ai
+ * cliqué sur "j'ai fait autrement" pour ranger le reste, rien ne m'a été
+ * proposé ». T99 en avait fait un REPLI : il journalisait la cuisson, jetait la
+ * proposition, et laissait `journaliserCuisson` retomber sur sa prudence — un
+ * lot par emit, au frigo. Le mot promettait une question qui n'était jamais
+ * posée. L'écran a donc deux temps, et le second est la MÊME liste, corrigeable
+ * à deux leviers : où, et combien.
  *
  * PAS DE TROISIÈME BOUTON POUR PASSER. Un « plus tard » en un doigt rendrait
  * exactement l'écran d'avant — celui qui ne disait rien — et c'est ce qu'on
@@ -381,11 +399,28 @@ function Sortie({
   repondre: (rangement: RangementLot[] | null, marque?: "suivie" | "autre") => void;
 }) {
   const v = vueDeLaSortie(p, parts, f, foyer);
+  /**
+   * LA CORRECTION, ET `null` VEUT DIRE « ON LIT LA PROPOSITION » — T102.
+   *
+   * Un état de composant, comme la sortie elle-même : ce qui se persiste dans
+   * cet écran est un AVANCEMENT (voir l'en-tête du fichier), et une correction
+   * à moitié faite n'en est pas un. Reposer le téléphone pendant qu'on corrige
+   * ramène sur la proposition, qui est juste — pas sur deux crans à demi
+   * bougés dont on ne saurait plus demain s'ils décrivent le frigo.
+   */
+  const [retouches, setRetouches] = useState<Retouche[] | null>(null);
+  const corrige = retouches ? vueRetouchee(p, f, foyer, v.lots, retouches) : null;
+  const lots = corrige ? corrige.lots : v.lots;
+
   return (
     <>
       <div className="co-fiche-tete">
-        <button className="co-retour" onClick={revenir}>
-          ‹ Le guide
+        {/* EN CORRIGEANT, LE RETOUR RAMÈNE À LA PROPOSITION, pas au guide. C'est
+            l'annulation du geste qu'on vient de faire, et c'est ce qu'un pouce
+            cherche en haut à gauche. La porte sans réponse n'est pas perdue :
+            elle est un tap plus loin, derrière cette proposition. */}
+        <button className="co-retour" onClick={corrige ? () => setRetouches(null) : revenir}>
+          {corrige ? "‹ La proposition" : "‹ Le guide"}
         </button>
         <span className="t">{p.titre}</span>
       </div>
@@ -407,25 +442,79 @@ function Sortie({
         ) : (
           <>
             <div className="co-kicker accent" style={{ margin: "var(--space-4) 0 var(--space-2)" }}>
-              Et le reste se range
+              {corrige ? "Où c’est vraiment parti" : "Et le reste se range"}
             </div>
-            {v.lots.map((l, n) => (
-              <div key={`${l.emit}-${l.location}-${n}`} className="co-lot">
+            {lots.map((l, n) => (
+              <div
+                key={`${l.emit}-${n}`}
+                className={`co-lot${corrige && l.repas === 0 ? " vide" : ""}`}
+              >
                 <Icone nom={iconeEspace(l.location)} />
                 <span style={{ flex: 1 }}>
+                  {/* EN CORRECTION, LE TITRE NE RÉPÈTE PAS LE LEVIER. Le cran
+                      dit déjà « 2 repas » ; l'écrire deux fois ferait douter de
+                      savoir lequel des deux commande. Le poids, lui, reste —
+                      c'est la seule chose que le cran ne sait pas dire, et il
+                      manque sur 91 des 126 emits du corpus. */}
                   <div className="nom">
-                    {nomEspace(l.location)} · {quantiteDuLot(l)}
+                    {corrige && l.repas === 0
+                      ? "Pas gardé"
+                      : corrige && l.qty == null
+                        ? nomEspace(l.location)
+                        : `${nomEspace(l.location)} · ${quantiteDuLot(l)}`}
                   </div>
-                  {/* LE GESTE, ET PAS SEULEMENT LA DESTINATION. « Au congélateur »
-                      laisse la question qu'on se pose vraiment, les mains pleines :
-                      dans quoi. Muet quand le foyer n'a déclaré aucun contenant
-                      pour cet espace — inventer une boîte serait pire que de se
-                      taire. */}
-                  {l.boites.length ? <div className="ou">{phraseDesBoites(l.boites)}</div> : null}
-                  {/* La phrase de la recette, à l'instant où elle sert. */}
-                  {l.note ? <div className="ou">{l.note}</div> : null}
+                  {l.repas > 0 && l.boites.length ? (
+                    /* LE GESTE, ET PAS SEULEMENT LA DESTINATION. « Au congélateur »
+                       laisse la question qu'on se pose vraiment, les mains pleines :
+                       dans quoi. Muet quand le foyer n'a déclaré aucun contenant
+                       pour cet espace — inventer une boîte serait pire que de se
+                       taire. */
+                    <div className="ou">{phraseDesBoites(l.boites)}</div>
+                  ) : null}
+                  {/* La phrase de la recette, à l'instant où elle sert. Elle
+                      parle du reste : un lot qu'on ne garde pas n'en a plus
+                      l'usage. */}
+                  {l.note && l.repas > 0 ? <div className="ou">{l.note}</div> : null}
+
+                  {corrige && retouches ? (
+                    <div className="retouche">
+                      {/* LES DEUX SEULS LEVIERS : où, et combien. Ce sont les
+                          deux choses que la base retienne d'un lot ; le reste
+                          — la boîte, la fenêtre de garde — se recalcule à
+                          chaque cran, et c'est `vueRetouchee` qui le refait. */}
+                      <div className="co-seg">
+                        {DESTINATIONS.map((e) => (
+                          <button
+                            key={e}
+                            className={l.location === e ? "on" : ""}
+                            disabled={l.repas === 0}
+                            onClick={() => setRetouches(rangerAilleurs(retouches, n, e))}
+                          >
+                            {nomEspace(e)}
+                          </button>
+                        ))}
+                      </div>
+                      <div className="co-pas">
+                        <button
+                          disabled={l.repas <= 0}
+                          onClick={() => setRetouches(bougerLeLot(v.lots, retouches, n, -1))}
+                        >
+                          −
+                        </button>
+                        <span className="n">
+                          {l.repas} repas
+                        </span>
+                        <button
+                          disabled={l.repas >= plafondDuLot(v.lots, retouches, n)}
+                          onClick={() => setRetouches(bougerLeLot(v.lots, retouches, n, +1))}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  ) : null}
                 </span>
-                {l.garde != null ? (
+                {l.garde != null && l.repas > 0 ? (
                   <span>
                     <div className="q">{l.garde} j</div>
                     <div className="src">à manger</div>
@@ -436,10 +525,31 @@ function Sortie({
           </>
         )}
 
+        {/* CE QUI N'EST RANGÉ NULLE PART SE DIT — T102. Descendre un lot de
+            deux repas à un, c'est déclarer qu'on en a mangé un de plus ; une
+            ligne qui rétrécit sans un mot est la perte silencieuse que T100
+            venait de réparer à l'autre bout de l'app. */}
+        {corrige && corrige.horsBoite > 0 ? (
+          <div className="co-note" style={{ margin: "var(--space-3) var(--space-1) 0" }}>
+            {phraseHorsBoite(corrige.horsBoite)}
+          </div>
+        ) : null}
+
         <div style={{ marginTop: "var(--space-6)" }}>
           {v.rien ? (
             <button className="btn btn-primary btn-block" onClick={() => repondre(null)}>
               C’est fait
+            </button>
+          ) : corrige ? (
+            /* LA MÊME RÉPONSE QUE « AUTREMENT », ET C'EST LE POINT DU TICKET :
+               la marque dit qu'on n'a pas suivi la proposition, et le rangement
+               dit ce qu'on a fait à la place. Avant T102, seule la marque
+               partait, et elle mesurait un écart dont la base ignorait tout. */
+            <button
+              className="btn btn-primary btn-block"
+              onClick={() => repondre(corrige.gardes, "autre")}
+            >
+              C’est bien ça
             </button>
           ) : (
             <>
@@ -450,13 +560,14 @@ function Sortie({
                 C’est rangé comme ça
               </button>
               {/* MÊME POIDS DE DOIGT, MOINS DE POIDS À L'ŒIL. Les deux réponses
-                  ferment la recette ; celle-ci dit seulement qu'on ne sait pas
-                  où les boîtes sont parties, donc la base retombe sur sa
-                  prudence au lieu d'inscrire un congélateur qu'elle n'a pas vu. */}
+                  ferment la recette ; celle-ci ouvre la correction au lieu de
+                  fermer l'écran — c'est tout T102, et le mot n'a pas changé
+                  parce que c'est le mot qui était juste. Ce qui manquait était
+                  derrière. */}
               <button
                 className="btn btn-secondary btn-block"
                 style={{ marginTop: "var(--space-2)" }}
-                onClick={() => repondre(null, "autre")}
+                onClick={() => setRetouches(retouchesDe(v.lots))}
               >
                 J’ai fait autrement
               </button>

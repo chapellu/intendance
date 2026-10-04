@@ -54,6 +54,17 @@ export interface LotSortie {
   location: Espace;
   /** En repas — l'unité du budget de rangement, celle que `band` compte. */
   repas: number;
+  /**
+   * Ce que l'emit ENTIER a laissé, en repas — le plafond du lot, pas sa taille.
+   *
+   * DE L'AFFICHAGE, ET LA SEULE BORNE QUE LA CORRECTION DE T102 POSSÈDE. Deux
+   * lots nés du même emit se partagent ce nombre : laisser chacun monter
+   * jusqu'à 3 repas sur un emit qui en a produit 3 ferait ranger six repas qui
+   * n'ont jamais existé. Il est porté ici plutôt que recalculé dans l'écran
+   * parce que `repasDeLEmit` ARRONDIT : le refaire ailleurs en ferait une
+   * seconde vérité, et c'est elle qui divergerait.
+   */
+  total: number;
   /** La bande de CE lot, redécoupée quand l'emit se sépare en deux endroits. */
   band: string;
   qty: number | null;
@@ -97,6 +108,7 @@ export function vueDeLaSortie(p: Plat, parts: number, f: number, foyer: Foyer): 
         kind: e.kind,
         location: part.location,
         repas: part.repas,
+        total,
         band: part.repas === total ? e.band : `${part.repas}-repas`,
         // AU PRORATA DES REPAS, et seulement quand l'emit chiffre quelque
         // chose : 91 des 126 emits du corpus ont `qty: null` — un reste de plat
@@ -238,3 +250,185 @@ export const quantiteDuLot = (l: LotSortie): string =>
   l.qty != null
     ? `${Math.round(l.qty)} ${l.unite ?? ""}`.trim()
     : `${l.repas} repas`;
+
+/* ───────────────────────────────────────────────── la sortie qu'on corrige */
+
+/**
+ * CE QUE « J'AI FAIT AUTREMENT » DOIT POUVOIR DIRE — T102.
+ *
+ * DIT LE 03/10/2026, AU SORTIR D'UNE RECETTE :
+ *
+ *   « J'ai eu l'écran de fin, qui est mieux, mais quand j'ai cliqué sur "j'ai
+ *     fait autrement" pour ranger le reste, rien ne m'a été proposé. »
+ *
+ * LE BOUTON N'ÉTAIT PAS UNE SAISIE, C'ÉTAIT UN REPLI. T99 l'a câblé sur
+ * `repondre(null, "autre")` : la cuisson se journalisait, la proposition était
+ * jetée, et `journaliserCuisson` retombait sur sa prudence — un lot par emit,
+ * au frigo. L'écran se fermait donc sur le seul geste qu'il avait à offrir.
+ * « Autrement » nommait un fait sans jamais demander lequel.
+ *
+ * DEUX LEVIERS PAR LOT, ET PAS UN DE PLUS : où c'est parti, et combien on en a
+ * rangé. Ce sont les deux seules choses que la base retienne (`RangementLot`
+ * porte `location` et `qty`/`band`) ; les boîtes, elles, sont de l'affichage et
+ * se recalculent. Tout le reste de l'écart au réel — « j'ai pris un bocal au
+ * lieu de deux », « j'en ai donné à la voisine » — se dit déjà avec ces deux-là.
+ *
+ * ON PART DE LA PROPOSITION, ON NE REPART PAS DE ZÉRO. Une saisie vide
+ * jetterait l'arithmétique qui marche (43 des 126 emits se coupent en deux
+ * endroits, et c'est juste) pour la faire retaper à quelqu'un qui a les mains
+ * grasses. Corriger deux crans vaut mieux que déclarer trois lots.
+ */
+export interface Retouche {
+  location: Espace;
+  /** En repas, et `0` VEUT DIRE « PAS GARDÉ » — mangé ce soir, donné, jeté.
+   *  C'est une réponse, pas un trou : le lot ne part pas en base, et l'écran
+   *  compte ce qui n'est rangé nulle part plutôt que de le laisser filer. */
+  repas: number;
+}
+
+/**
+ * Les deux destinations d'une casserole qu'on vient de vider.
+ *
+ * `placard` EST UN ESPACE DU FOYER ET N'EST PAS UNE DESTINATION ICI. Les 12
+ * bocaux Le Parfait le déclarent — c'est vrai d'un bocal vide, et de conserves
+ * stérilisées — mais rien dans le corpus ne dit qu'une ratatouille du soir se
+ * stérilise, et l'offrir en un tap ferait affirmer à la base une conservation
+ * que personne n'a mesurée. Le relevé du dépôt sait déjà le rattraper.
+ */
+export const DESTINATIONS: readonly Espace[] = ["frigo", "congelo"];
+
+/** La proposition, prise comme point de départ de la correction. */
+export const retouchesDe = (lots: readonly LotSortie[]): Retouche[] =>
+  lots.map((l) => ({ location: l.location, repas: l.repas }));
+
+/**
+ * Combien de repas ce lot peut encore porter.
+ *
+ * LE PLAFOND EST CELUI DE L'EMIT, PARTAGÉ ENTRE SES LOTS. Un emit de 3 repas
+ * coupé en 1 + 2 laisse le premier monter à 2 — tant que le second redescend.
+ * Sans ce partage, deux crans sur deux lignes rangeraient six repas d'un plat
+ * qui en a laissé trois, et le budget de rangement les compterait tous les six.
+ */
+export function plafondDuLot(
+  lots: readonly LotSortie[],
+  retouches: readonly Retouche[],
+  n: number,
+): number {
+  const l = lots[n]!;
+  const ailleurs = lots.reduce(
+    (somme, x, k) => (k !== n && x.emit === l.emit ? somme + (retouches[k]?.repas ?? 0) : somme),
+    0,
+  );
+  return Math.max(0, l.total - ailleurs);
+}
+
+/** Un cran de plus ou de moins sur un lot, borné par son plafond et par zéro. */
+export const bougerLeLot = (
+  lots: readonly LotSortie[],
+  retouches: readonly Retouche[],
+  n: number,
+  pas: number,
+): Retouche[] =>
+  retouches.map((r, k) =>
+    k === n
+      ? { ...r, repas: Math.max(0, Math.min(plafondDuLot(lots, retouches, n), r.repas + pas)) }
+      : r,
+  );
+
+/**
+ * Changer la destination d'un lot — et ÇA NE TOUCHE PAS SA TAILLE.
+ *
+ * « Tout est allé au congélateur » est le cas le plus courant de l'écart, et
+ * c'est un seul tap : la quantité n'a pas bougé, c'est l'endroit qui a changé.
+ */
+export const rangerAilleurs = (
+  retouches: readonly Retouche[],
+  n: number,
+  location: Espace,
+): Retouche[] => retouches.map((r, k) => (k === n ? { ...r, location } : r));
+
+export interface VueRetouchee {
+  /** Tous les lots, corrigés — y compris ceux qu'on a ramenés à zéro, qui
+   *  restent à l'écran pour qu'on puisse les remonter. */
+  lots: LotSortie[];
+  /** Ce qui part en base. C'est `[]` quand on n'a rien gardé, et ce vide est
+   *  une réponse — voir `journaliserCuisson`, qui ne le confond plus avec
+   *  l'absence de réponse. */
+  gardes: LotSortie[];
+  /** En repas, ce qui n'est rangé nulle part : mangé, donné, jeté. Compté par
+   *  emit, pour qu'un lot descendu de 2 à 1 le dise au lieu de l'effacer. */
+  horsBoite: number;
+}
+
+/**
+ * La proposition relue à travers une correction.
+ *
+ * TOUT SE RECALCULE, PARCE QUE TOUT EN DÉPEND. Baisser un lot de 2 repas à 1
+ * change son poids (au prorata, comme `vueDeLaSortie`), sa bande (ce que le
+ * budget compte), et la boîte à sortir ; le passer au congélateur lui retire
+ * sa fenêtre de garde, qui est une affaire de frigo. Un écran qui n'en
+ * recalculerait qu'une partie afficherait « 1 repas · 2 × boîtes », et c'est
+ * précisément le genre de ligne qui fait douter de tout le reste.
+ */
+export function vueRetouchee(
+  p: Plat,
+  f: number,
+  foyer: Foyer,
+  lots: readonly LotSortie[],
+  retouches: readonly Retouche[],
+): VueRetouchee {
+  const corriges = lots.map((l, n) => {
+    const r = retouches[n] ?? { location: l.location, repas: l.repas };
+    const e = p.emits[l.emit]!;
+    return {
+      ...l,
+      location: r.location,
+      repas: r.repas,
+      // UN LOT À ZÉRO GARDE SA BANDE, et c'est volontaire : « 0-repas » serait
+      // un budget de rangement nul pour une place qu'on n'occupe pas du tout.
+      // Il ne part pas en base, donc la question ne se pose jamais là-bas ;
+      // elle se posait ici, et la réponse est de ne rien inventer.
+      band: r.repas === 0 ? l.band : r.repas === l.total ? e.band : `${r.repas}-repas`,
+      qty: e.qty ? (e.qty.amount * f * r.repas) / l.total : null,
+      garde: r.location === "frigo" ? e.gardeFrigo : null,
+      boites: r.repas > 0 ? boitesPour(foyer, r.location, r.repas) : [],
+    };
+  });
+  return {
+    lots: corriges,
+    gardes: corriges.filter((l) => l.repas > 0),
+    horsBoite: horsBoite(lots, corriges),
+  };
+}
+
+/**
+ * Ce qui n'est rangé nulle part, en une phrase.
+ *
+ * ICI ET PAS DANS LE JSX, parce que la première version y était et qu'elle
+ * disait « 1 repas ne est rangé » : trois ternaires imbriqués entre deux
+ * accolades ne se relisent pas, et un parcours qui cherche la phrase par son
+ * texte ne trouve même pas les morceaux. Une phrase est une valeur ; elle se
+ * teste comme les autres.
+ *
+ * ET ELLE DIT CE QUE LA BASE N'APPRENDRA PAS. Un repas mangé de plus que prévu
+ * ne laisse aucune trace — il n'y a pas d'événement « mangé » dans ce dépôt —
+ * donc l'écran le dit au lieu de le laisser croire rangé quelque part.
+ */
+export const phraseHorsBoite = (repas: number): string =>
+  repas === 1
+    ? "1 repas n’est rangé nulle part : mangé, donné ou jeté. Le placard n’en gardera pas la trace."
+    : `${repas} repas ne sont rangés nulle part : mangés, donnés ou jetés. Le placard n’en gardera pas la trace.`;
+
+/** Ce qu'aucune boîte ne reçoit, emit par emit — et jamais en dessous de zéro :
+ *  le plafond l'interdit déjà, et un reste négatif se lirait comme un bug. */
+const horsBoite = (lots: readonly LotSortie[], corriges: readonly LotSortie[]): number => {
+  const vus = new Set<number>();
+  let somme = 0;
+  lots.forEach((l) => {
+    if (vus.has(l.emit)) return;
+    vus.add(l.emit);
+    const garde = corriges.reduce((s, c) => (c.emit === l.emit ? s + c.repas : s), 0);
+    somme += Math.max(0, l.total - garde);
+  });
+  return somme;
+};

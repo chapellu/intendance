@@ -262,13 +262,38 @@ describe("T99 — la sortie range, et la base l'apprend", () => {
     expect(stock[0]!.qty).toBe(700);
   });
 
-  test("un rangement vide vaut « personne n'a répondu », pas « rien à ranger »", async () => {
-    // Une liste vide est ce que rend un écran qui n'a pas fini de calculer.
-    // La lire comme un rangement ferait disparaître les bocaux en silence.
+  test("un rangement vide vaut « je n'ai rien gardé », et le placard n'invente pas de bocal", async () => {
+    // CETTE PROMESSE A CHANGÉ DE SENS EN T102, ET C'EST LE TICKET QUI LE VEUT.
+    // Elle disait « une liste vide vaut personne n'a répondu », parce qu'aucun
+    // geste de l'app ne pouvait produire un rangement vide : le seul `[]`
+    // possible venait d'un écran qui n'avait pas fini de calculer. La sortie
+    // qui se corrige en produit un vrai — « tout a été mangé, je n'ai rien mis
+    // de côté » — et le confondre avec le silence remplissait le frigo de
+    // deux bocaux que personne n'irait jamais chercher.
+    //
+    // L'ABSENCE, ELLE, VAUT TOUJOURS LE DÉFAUT : c'est le test juste au-dessus,
+    // et c'est lui qui protège les dix-huit écrans qui ne passent rien.
     await journaliserCuisson(base, {
-      jour: "2026-09-24", repas: "diner", plat: bolognaise, parts: 4, rangement: [],
+      jour: "2026-09-24", repas: "diner", plat: bolognaise, parts: 4, rangement: [], sortie: "autre",
     });
-    expect(await base.stock.count()).toBe(1);
+    expect(await base.stock.count()).toBe(0);
+    // La cuisson, elle, est bien journalisée : ne rien garder n'est pas ne rien
+    // avoir cuisiné, et le placard doit descendre dans les deux cas.
+    expect(await base.evenements.count()).toBe(1);
+  });
+
+  test("un rangement corrigé écrit ce qu'un doigt a dit, congélateur compris", async () => {
+    // LE CHEMIN QUE T102 OUVRE, DE BOUT EN BOUT. « J'ai tout mis au congélo »
+    // était indicible : la sortie suivie écrivait la proposition, et « autrement »
+    // jetait tout pour retomber au frigo. Les deux seuls leviers de la
+    // correction — où, et combien — arrivent ici, et nulle part ailleurs.
+    await journaliserCuisson(base, {
+      jour: "2026-09-24", repas: "diner", plat: bolognaise, parts: 4,
+      sortie: "autre",
+      rangement: [{ emit: 0, location: "congelo", band: "1-repas", qty: 350 }],
+    });
+    const stock = await base.stock.toArray();
+    expect(stock.map((l) => [l.location, l.band, l.qty])).toEqual([["congelo", "1-repas", 350]]);
   });
 
   test("la réponse se garde sur l'événement, et son absence en est une", async () => {
