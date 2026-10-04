@@ -831,3 +831,106 @@ a.co-apercu { color: inherit; text-decoration: none; }
 }
 .co-sousnav a.actif { background: var(--color-accent); color: var(--color-bg); }
 .co-sousnav a.actif .co-pastille { background: var(--color-accent-200); color: var(--color-accent-900); }
+
+/* — facette jardin : la carte de la terrasse et le verdict de cellule — */
+/* LA FACETTE A SA PROPRE COULEUR, ET C'EST LE VERDICT DE Workspace#16 rendu
+   visible : la coquille tient la typo, le chrome et la barre du bas, chaque
+   facette choisit son accent. `--color-accent-2` est déjà celui que la barre
+   du bas donne au jardin — l'intérieur le reprend au lieu d'en inventer un. */
+.co-pilule.actif { background: var(--color-accent-2); color: var(--color-bg); }
+
+.co-terrasse {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+  margin-bottom: var(--space-2);
+}
+.co-cellule {
+  position: relative; display: flex; flex-direction: column; gap: 2px;
+  min-height: 74px; padding: var(--space-2); text-align: left;
+  border: 2px solid transparent; border-radius: var(--radius-md);
+  background: var(--color-surface); color: var(--color-text);
+}
+/* Trois états, trois fonds — et « permanent » est délibérément le plus terne :
+   un bac de lilas n'est pas une occasion qui se libérera, et la carte ne doit
+   pas le faire espérer. */
+.co-cellule.libre { background: var(--color-accent-2-100); }
+.co-cellule.occupee { background: var(--color-accent-100); }
+.co-cellule.permanent { background: var(--color-neutral-100); color: var(--color-neutral-700); }
+.co-cellule.choisie { border-color: var(--color-accent-2); }
+/* La pastille est en position absolue dans le coin : sans cette marge,
+   un nom de trois mots passe dessous. */
+.co-cellule .nom { font-size: 12px; font-weight: 700; line-height: 1.2; padding-right: 20px; }
+.co-cellule .quoi { font-size: 11px; line-height: 1.3; color: var(--color-neutral-700); }
+.co-cellule .co-pastille { position: absolute; top: 6px; right: 6px; }
+
+.co-plan-note { font-size: 11.5px; line-height: 1.5; color: var(--color-neutral-700); margin: 0; }
+
+.co-faits {
+  display: flex; flex-direction: column; gap: 3px; margin-bottom: var(--space-3);
+  font-size: 12.5px; line-height: 1.4; color: var(--color-neutral-700);
+}
+.co-faits b { color: var(--color-accent-2-900); }
+
+.co-verdicts { display: flex; flex-direction: column; gap: var(--space-2); }
+.co-verdict {
+  border-radius: var(--radius-md); background: var(--color-surface);
+  padding: var(--space-3); border-left: 3px solid var(--color-neutral-300);
+}
+/* La barre de gauche porte CE QUI MANQUE, jamais la bande : une tomate
+   « prête, maigre » reste verte, parce qu'elle est plantable. Mélanger les
+   deux axes dans une seule couleur est précisément l'erreur que le modèle
+   refuse de commettre. */
+.co-verdict.prete { border-left-color: var(--color-accent-2-500); }
+.co-verdict.agir { border-left-color: var(--color-accent-500); }
+.co-verdict.attendre { border-left-color: var(--color-neutral-400); }
+.co-verdict.jamais-ici { border-left-color: var(--color-neutral-200); opacity: .72; }
+.co-verdict .tete { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-2); }
+.co-verdict .tete .nom { font-family: var(--font-heading); font-size: 19px; line-height: 1.1; }
+.co-verdict .tete .statut {
+  flex: none; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em;
+  color: var(--color-neutral-700);
+}
+.co-verdict.prete .tete .statut { color: var(--color-accent-2-800); }
+.co-verdict.agir .tete .statut { color: var(--color-accent-800); }
+
+.co-verdict .bandes { display: flex; flex-wrap: wrap; gap: 5px; margin: 7px 0 0; }
+.co-verdict .bandes > span {
+  border-radius: 999px; padding: 3px 9px; font-size: 11px; font-weight: 700;
+  background: var(--color-neutral-100); color: var(--color-neutral-800);
+}
+.co-verdict .bande.belle { background: var(--color-accent-2-200); color: var(--color-accent-2-900); }
+.co-verdict .bande.correcte { background: var(--color-accent-2-100); color: var(--color-accent-2-900); }
+.co-verdict .bande.maigre { background: var(--color-accent-100); color: var(--color-accent-900); }
+.co-verdict .bande.echec { background: var(--color-neutral-200); color: var(--color-neutral-800); }
+.co-verdict .bandes .observer { background: var(--color-accent-200); color: var(--color-accent-900); }
+
+.co-verdict .raisons { list-style: none; margin: var(--space-2) 0 0; padding: 0; }
+.co-verdict .raisons li {
+  position: relative; padding-left: 14px; margin-top: 5px;
+  font-size: 12.5px; line-height: 1.45; color: var(--color-neutral-800);
+}
+.co-verdict .raisons li::before {
+  content: "·"; position: absolute; left: 3px; font-weight: 700;
+  color: var(--color-neutral-400);
+}
+/* Une demande d'observation n'est pas une raison de plus : c'est la seule de
+   la liste qu'un doigt peut fermer, et elle se voit. */
+/* UNE DEMANDE D'OBSERVATION N'EST PAS UNE RAISON DE PLUS. C'est la seule de
+   la liste qu'un doigt peut fermer — dix minutes sur la terrasse — et elle
+   décide six cultures d'un coup. Elle porte donc un fond, ce qu'aucune autre
+   raison n'a : le reste de la liste explique, celle-ci demande. */
+.co-verdict .raisons li.observer {
+  color: var(--color-accent-900); font-weight: 600;
+  background: var(--color-accent-100); border-radius: var(--radius-sm);
+  padding: 5px 9px 5px 18px; margin-left: -4px;
+}
+.co-verdict .raisons li.observer::before { content: "?"; color: var(--color-accent-600); }
+.co-verdict .raisons li.agir::before { content: "!"; color: var(--color-accent-600); }
+/* DE LA PLACE QU'ON NE VOYAIT PAS. Seule raison de la liste qui OUVRE quelque
+   chose au lieu d'expliquer une restriction — elle prend donc l'accent de la
+   facette, et le signe « + » plutôt qu'une puce. */
+.co-verdict .raisons li.intervalle { color: var(--color-accent-2-900); font-weight: 600; }
+.co-verdict .raisons li.intervalle::before { content: "+"; color: var(--color-accent-2-600); }
+.co-verdict .note {
+  margin: var(--space-2) 0 0; font-size: 12px; line-height: 1.45; font-style: italic;
+  color: var(--color-neutral-700);
+}

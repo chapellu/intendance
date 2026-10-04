@@ -23,6 +23,7 @@ import { Corps } from "../ui/Coquille";
 import { majuscule } from "../ui/format";
 import { gesteDuJour } from "./aujourdhui.vue";
 import { vueDuCockpit, type CarteFacette, type Tache, type VueCockpit } from "./cockpit.vue";
+import { entree as entreeDuJardin, vueDeLaTerrasse } from "./jardin.vue";
 
 /**
  * La vue du cockpit, montée sur la base.
@@ -80,20 +81,14 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
 
       <Facette nom="Cuisine" classe="cuisine" href={chemin({ ecran: "aujourdhui" })} carte={vue?.cuisine} />
 
-      {/* Le jardin garde sa carte et n'annonce aucun chiffre : voir
-          `cockpit.vue.ts`. Une facette qui existe sans modèle le dit — c'est
-          plus honnête que trois quêtes de décor, et ça se voit tout autant. */}
-      <Facette
-        nom="Jardin"
-        classe="jardin"
-        href={chemin({ ecran: "jardin" })}
-        carte={{
-          etat: "sans modèle",
-          resume:
-            "La facette est ouverte, son modèle n'est pas écrit. Elle n'annoncera rien tant qu'elle n'aura pas de quoi le dire.",
-          chiffres: [],
-        }}
-      />
+      {/* Le jardin a maintenant un modèle (T95/T96) et sa carte le dit — mais
+          il ne produit TOUJOURS AUCUNE TÂCHE, et ce n'est pas un reste à
+          faire. Un verdict est une réponse à une question qu'on pose, pas une
+          échéance : « le kale est en arbitrage avec les tomates » est vrai
+          tous les jours de septembre, et une ligne vraie tous les jours
+          apprend à ne plus lire le cockpit (T16). Le chiffre, lui, se calcule
+          — aucune base à lire, `vueDeLaTerrasse` est une fonction pure. */}
+      <Facette nom="Jardin" classe="jardin" href={chemin({ ecran: "jardin" })} carte={carteDuJardin()} />
 
       <div className="co-facette dort">
         <span className="tete">
@@ -110,6 +105,19 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
       </div>
     </Corps>
   );
+}
+
+/** L'état de la facette jardin, en une ligne. Il compte des EMPLACEMENTS, pas
+ *  des cultures : c'est ce qu'un jardinier compte devant sa terrasse. */
+function carteDuJardin(): CarteFacette {
+  const vues = vueDeLaTerrasse(new Date());
+  const ouvertes = vues.filter((v) => v.ouvertes > 0).length;
+  return {
+    etat: `${vues.length} cellules`,
+    resume: entreeDuJardin(vues),
+    // Un zéro n'est pas un chiffre à afficher — même règle que pour la cuisine.
+    chiffres: ouvertes ? [`${ouvertes} ouvertes`] : [],
+  };
 }
 
 /** Une chose qui vous attend. C'est une ANCRE : une tâche qui ne s'ouvre pas
