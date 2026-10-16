@@ -174,6 +174,8 @@ export function questions({
       if (repondu.has(id)) continue;
       const { confiance, vuLe } = etat(rejeu, id);
       if (confiance === "sur") continue;
+      // RENTRÉ CETTE SEMAINE, C'EST DÉJÀ RÉPONDU — T111. Voir `rentreEnVie`.
+      if (rejeu.parIngredient.get(id)?.rentreEnVie) continue;
       const vue = par.get(id);
       if (vue) {
         if (!vue.plats.includes(p.id)) vue.plats.push(p.id);

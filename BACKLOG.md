@@ -4766,12 +4766,50 @@ Ce que T109 laisse ouvert :
       tests propres aux jours ne tournent plus que l'interrupteur allumé
       (`test.runIf`), les nouveaux que l'interrupteur éteint : chacun tourne
       sur l'interrupteur tel qu'il est.
-- [ ] **T111 — Rentrer des courses répond aux questions.** T33 promettait que
+- [x] **T111 — Rentrer des courses répond aux questions.** T33 promettait que
       le volume décroît : il descend bien à 5, 7, 9 après la première passe,
       puis remonte et se tient à ~20 par passe hebdomadaire (1 303 réponses dans
       l'année). Les réponses vivent dans la passe (`passe.repondu`), et un
       article rentré n'en est pas une. Un article rentré doit valoir « oui » sur
       son ingrédient tant que sa vie le permet.
+
+      **MESURÉ D'ABORD, ET L'HYPOTHÈSE N'ÉTAIT QUE LA MOINDRE DES DEUX
+      CAUSES.** Une année rejouée AU MODÈLE (52 passes de sept repas, placard
+      relevé à zéro au jour 0, réponses tirées d'un registre d'achats, courses
+      rentrées à chaque passe, cuissons journalisées) redonne la courbe de
+      l'année simulée : 26, 12, 10, 8… puis 20 à 28, **967 questions, médiane
+      19**. Classées par cause au moment où elles se posent :
+      **566 portaient sur un ingrédient répondu « non », sans lot et sans
+      cuisson depuis.** C'est la DÉRIVE : un ingrédient qui en a appris une
+      (deux comptes qui ne s'expliquent pas, typiquement un lot non pesé que
+      la cuisson ne vide jamais puis un « non ») voyait son doute grandir de
+      `dérive × jours` — sur un placard vide — et `sur` exige un doute nul :
+      il retombait à « probable » dès le lendemain et se redemandait à chaque
+      passe, pour toujours. Le nombre d'ingrédients ainsi marqués ne fait que
+      croître, d'où la remontée. **L'hypothèse du ticket est vraie mais
+      seconde** : un article rentré n'était jamais une réponse (un test le
+      reproduit, rouge avant : la crème rentrée hier redemandée), ~280
+      questions de l'année portaient sur un lot rentré encore là.
+
+      **DEUX CORRECTIFS, MESURÉS UN À UN.** La dérive ne s'applique plus qu'à
+      un ingrédient qui a des lots (967 → 511, médiane 10) ; un lot rentré
+      encore présent au rejeu et dans sa vie vaut « oui » pour la question
+      (511 → 384, **médiane 7, plus de remontée** : 26, 10, 8, 6… et 3 à 11
+      jusqu'au bout). `EtatIngredient.rentreEnVie` : la vie est
+      `foyer.fenetreFrigo` (4 j) pour le frais court et le primeur, sans borne
+      pour l'épicerie et le congélateur. **CE N'EST PAS UNE OBSERVATION** : la
+      confiance ne bouge pas, et la règle « rentrer n'est pas observer le
+      placard » tient pour le chiffre — on sait qu'il y en a, pas combien.
+
+      Les cinq tests (`questions.test.ts`) ont été vus **rouges avant le
+      correctif** pour les trois qui portent une promesse neuve.
+
+      **Ce qui reste ouvert.** Le frais acheté le samedi est redemandé le
+      samedi suivant : sa vie de 4 j est celle d'un reste cuisiné, empruntée
+      faute d'une durée par ingrédient brut — les œufs vivent un mois. Et les
+      questions restantes sont surtout « vu, puis servi » : une cuisson dépense
+      la confiance qu'une réponse a restaurée, ce qui est la règle de T33, et
+      la mesure ne dit pas encore si c'est trop.
 
 ### Cuisiner : le résumé d'abord, la quantité à chaque étape — T112 et T113
 
