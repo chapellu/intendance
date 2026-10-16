@@ -35,22 +35,26 @@ recipe:
 
   steps:
     - id: sauce
+      uses: [oignon, ail, huile-olive, tomates-pelees, herbes-provence]
       action: "Faire revenir l'oignon et l'ail, ajouter les tomates pelées écrasées et les herbes ; laisser réduire"
       needs: [pan-fry, simmer]
       time_min: 15
       attended: false
     - id: pates
+      uses: [pates]
       action: "Cuire les pâtes très al dente (2 min de moins que le paquet) et les égoutter"
       needs: [boil]
       time_min: 8
       parallel_with: sauce
     - id: assembler
+      uses: [sel, fromage-rape]
       action: "Mélanger pâtes et sauce, verser dans le plat, saler puis couvrir de fromage râpé"
       needs: [gratin-vessel]
       time_min: 5
       seasoning_gate: true
       kid: {age_min_months: 24, task: "parsemer le fromage sur le dessus"}
     - id: gratiner
+      uses: []
       action: "Enfourner jusqu'à ce que le dessus soit doré"
       needs: [gratin]
       time_min: 20

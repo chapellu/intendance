@@ -948,3 +948,16 @@ a.co-apercu { color: inherit; text-decoration: none; }
 .co-mep .temps > div { flex: 1; background: var(--color-surface); border-radius: var(--radius-md); padding: var(--space-3); }
 .co-mep .temps .v { font-family: var(--font-heading); font-size: 24px; line-height: 1.1; margin-top: 2px; }
 .co-mep > .co-note { margin: var(--space-2) var(--space-1) 0; }
+
+/* T113 — la quantité de l'étape, sous le geste. La quantité DEVANT le nom et
+   en gras : c'est elle qu'on cherche, la main sur la balance. 16 px, parce que
+   l'étape se lit à bout de bras ; la surface de `.co-ing`, parce que c'est la
+   même liste vue d'un cran plus près. La phrase de l'étape sans lien est en
+   corps de note : elle informe, elle n'alerte pas. */
+.co-qetape { background: var(--color-surface); border-radius: var(--radius-md); margin-top: var(--space-3); overflow: hidden; }
+.co-qetape .l { display: flex; align-items: baseline; gap: var(--space-3); padding: var(--space-2) var(--space-3); font-size: 16px; line-height: 1.35; }
+.co-qetape .l + .l { border-top: 1px solid color-mix(in srgb, var(--color-text) 7%, transparent); }
+.co-qetape .q { font-weight: 700; white-space: nowrap; min-width: 72px; }
+.co-qetape .nom { flex: 1; }
+.co-qetape .aussi { font-size: 13px; color: var(--color-neutral-700); }
+.co-qetape-muet { margin-top: var(--space-3); font-size: 12.5px; line-height: 1.45; color: var(--color-neutral-700); }

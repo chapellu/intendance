@@ -597,3 +597,76 @@ export function montrerMiseEnPlace(steps: Etape[], etape: number, passee: boolea
   if (!steps.length) return true;
   return !passee && etape === 0;
 }
+
+/* ─────────────────────────────────────────────────── la quantité de l'étape */
+
+export interface LigneEtape {
+  ref: string;
+  nom: string;
+  /** Mise à l'échelle comme la liste des ingrédients — « 250 g ». */
+  quantite: string;
+  /** Les AUTRES étapes (numérotées à partir de 1) qui nomment la même ligne. */
+  aussi: number[];
+}
+
+/**
+ * Ce que l'étape `n` prend, aux parts du créneau — T113.
+ *
+ * `uses` VOYAGEAIT DEPUIS T72 ET AUCUN ÉCRAN NE LE LISAIT. Le chargeur le
+ * garde — l'export le porte sur 213 étapes de 56 plats (198 sur 50 avant T113), et `Ingredient.ref`
+ * existe précisément pour qu'il se résolve —, mais le guide n'en faisait rien :
+ * on lisait « Ajouter les lentilles » et il fallait ouvrir « Ingrédients » pour
+ * savoir combien. C'est Workspace#58, laissé ouvert par T84 dans ces termes :
+ * « `uses` × le facteur que l'écran tient déjà ».
+ *
+ * LA MÊME ÉCHELLE QUE LA LISTE, SANS EXCEPTION. `echelleTexte(x, f)` avec le
+ * `f` de la fiche : une quantité d'étape qui ne retomberait pas sur celle de la
+ * liste ferait douter des deux.
+ *
+ * UNE LIGNE NOMMÉE PAR PLUSIEURS ÉTAPES GARDE SA QUANTITÉ ENTIÈRE, ET LE DIT.
+ * 26 lignes du corpus sont dans ce cas, et `uses` ne porte aucune fraction. La
+ * plupart sont un même ingrédient préparé puis versé — les carottes râpées à
+ * l'étape 1 et mélangées à l'étape 3 : c'est bien la quantité entière, deux
+ * fois. Quelques-unes sont partagées — l'huile du riz et celle des légumes —,
+ * et là, couper en parts égales inventerait un chiffre que la recette ne donne
+ * pas. On affiche donc la ligne entière avec « aussi à l'étape N » : vrai dans
+ * le premier cas, et dans le second ça dit de ne pas tout verser.
+ *
+ * TROIS RÉPONSES, PAS DEUX, comme le champ lui-même (voir `Etape.uses`) :
+ * `null` quand la recette n'a pas le lien — l'écran le dit —, `[]` quand l'étape
+ * ne verse rien, et la liste sinon. Une référence qui ne se résout pas est
+ * sautée plutôt qu'inventée ; `verifier.py` les refuse toutes à l'entrée.
+ */
+export function quantitesDeLEtape(p: Plat, n: number, f: number): LigneEtape[] | null {
+  const e = p.steps[n];
+  if (!e || e.uses === null) return null;
+  return e.uses.flatMap((ref) => {
+    const x = p.ingredients.find((i) => i.ref === ref);
+    if (!x) return [];
+    const aussi = p.steps
+      .map((s, k) => (k !== n && s.uses?.includes(ref) ? k + 1 : 0))
+      .filter((k) => k > 0);
+    return [{ ref, nom: x.nom, quantite: echelleTexte(x, f), aussi }];
+  });
+}
+
+/** « aussi à l'étape 3 », « aussi aux étapes 1 et 4 ». */
+export function phraseAussi(aussi: readonly number[]): string {
+  if (!aussi.length) return "";
+  if (aussi.length === 1) return `aussi à l’étape ${aussi[0]}`;
+  return `aussi aux étapes ${aussi.slice(0, -1).join(", ")} et ${aussi[aussi.length - 1]}`;
+}
+
+/**
+ * Ce que dit une étape dont la recette n'a pas encore le lien — T113.
+ *
+ * « PROPOSER EN LE DISANT », la règle de T78 appliquée à une étape. 404 étapes
+ * sur 744 ont `uses: null` : se taire sous elles laisserait croire, à côté des
+ * 213 qui affichent leurs quantités, que celles-ci n'en prennent aucune. La
+ * phrase dit où trouver la réponse, sans faire de l'étape une étape cassée.
+ *
+ * L'ÉTAPE `[]` SE TAIT, ELLE. La recette y déclare qu'on ne verse rien — on
+ * remue, on enfourne —, et dire « rien à peser » sous 127 étapes serait le
+ * minuteur partout de T83 : une ligne lue trois fois puis jamais plus.
+ */
+export const SANS_USES = "Les quantités de cette étape ne sont pas notées — elles sont dans « Ingrédients ».";

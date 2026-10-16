@@ -50,9 +50,12 @@ import {
   miseEnPlace,
   montrerMiseEnPlace,
   outilDe,
+  phraseAussi,
   phraseDuRole,
   pourLire,
   provenanceIngredient,
+  quantitesDeLEtape,
+  SANS_USES,
   sansRecette,
   tempsDuPlat,
   type EtatMinuteur,
@@ -347,6 +350,7 @@ function Fiche({
         cleM={cleMinuteur(creneau.jour, creneau.repas, p.id, steps[etape]!.id)}
         fin={() => setSortie(true)}
         avant={() => void poserReglage(cleP, null)}
+        f={f}
       />
     </>
   );
@@ -808,6 +812,7 @@ function Guide({
   cleM,
   fin,
   avant,
+  f,
 }: {
   p: Plat;
   foyer: Foyer;
@@ -821,6 +826,8 @@ function Guide({
   fin: () => void;
   /** « ‹ » sur l'étape 1 : revenir à la mise en place — T112. */
   avant: () => void;
+  /** Le facteur de la fiche — celui de la liste des ingrédients — T113. */
+  f: number;
 }) {
   const e = steps[etape]!;
   const etat = useObjet<EtatMinuteur>(cleM);
@@ -849,6 +856,7 @@ function Guide({
   const avecMinuteur = e.minutes > 0 && minuteurUtile(e);
   const m = minuteur(etat ?? null, e.minutes, maintenant);
   const dernier = etape === steps.length - 1;
+  const quantites = quantitesDeLEtape(p, etape, f);
 
   const bouger = (d: number) => {
     if (d > 0 && dernier) {
@@ -901,6 +909,26 @@ function Guide({
           après, une fois qu'on sait quoi faire, et n'a pas à peser le même
           poids typographique. Pas un encart coloré non plus — un encart dit
           « attention », et une astuce ne prévient de rien. */}
+      {/* CE QUE L'ÉTAPE PREND, SOUS LE GESTE — T113. Avant l'astuce : on
+          verse avant de se demander pourquoi. Même échelle que la liste des
+          ingrédients (`quantitesDeLEtape`). `null` le dit en une ligne
+          discrète, `[]` se tait — voir `SANS_USES`. */}
+      {quantites === null ? (
+        <div className="co-qetape-muet">{SANS_USES}</div>
+      ) : quantites.length ? (
+        <div className="co-qetape">
+          {quantites.map((x) => (
+            <div key={x.ref} className="l">
+              <span className="q">{x.quantite}</span>
+              <span className="nom">
+                {x.nom}
+                {x.aussi.length ? <span className="aussi"> · {phraseAussi(x.aussi)}</span> : null}
+              </span>
+            </div>
+          ))}
+        </div>
+      ) : null}
+
       {e.astuce ? <div className="co-astuce">{e.astuce}</div> : null}
 
       {e.enfant ? (

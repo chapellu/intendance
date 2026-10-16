@@ -45,17 +45,20 @@ recipe:
   # et ne se cuisinait pas du tout.
   steps:
     - id: sortir
+      uses: []
       action: "Sortir le reste du frigo"
       astuce: "Vérifier qu'il sent bon et qu'il est dans la fenêtre."
       needs: []
       time_min: 1
     - id: rechauffer
+      uses: []
       action: "Réchauffer à couvert"
       astuce: "Micro-ondes pour une portion, poêle ou casserole au-delà."
       needs: [reheat]
       time_min: 8
       attended: false
     - id: rectifier
+      uses: []
       action: "Goûter et rectifier le sel : un plat réchauffé rend plus fade que la veille."
       needs: []
       time_min: 1

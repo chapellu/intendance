@@ -32,15 +32,18 @@ recipe:
 
   steps:
     - id: cuire
+      uses: [courgettes, pomme-de-terre, oignon]
       action: "Couvrir courgettes en tronçons, pomme de terre en cubes et oignon d'eau ; cuire à frémissement"
       needs: [simmer]
       time_min: 20
       attended: false
     - id: mixer
+      uses: []
       action: "Mixer finement avec un peu d'eau de cuisson jusqu'à texture lisse"
       needs: [blend-smooth]
       time_min: 4
     - id: assaisonner
+      uses: [bouillon-legumes, creme]
       action: "Ajouter le bouillon émietté et la crème, rectifier"
       needs: []
       time_min: 3

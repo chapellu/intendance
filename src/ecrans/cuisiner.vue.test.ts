@@ -3,7 +3,7 @@ import { describe, expect, test } from "vitest";
 import { lireCatalogue } from "../model/catalogue";
 import { creerJeu, SAUTE } from "../model/jeu";
 import type { Catalogue, Etape } from "../model/types";
-import { facteurAffiche } from "../model/calcul";
+import { echelleTexte, facteurAffiche } from "../model/calcul";
 import { vueDeLaSortie } from "./sortie.vue";
 import {
   aArmer,
@@ -19,7 +19,9 @@ import {
   miseEnPlace,
   montrerMiseEnPlace,
   outilDe,
+  phraseAussi,
   pourLire,
+  quantitesDeLEtape,
   provenanceIngredient,
   recipient,
   SANS_FEU,
@@ -748,5 +750,63 @@ describe("quand la mise en place s'affiche — T112", () => {
   // Elle porte alors le « Terminer » du plat.
   test("un plat sans étapes n'a qu'elle", () => {
     expect(montrerMiseEnPlace([], 0, true)).toBe(true);
+  });
+});
+
+describe("la quantité de chaque étape — T113", () => {
+  // La même échelle que la liste, sans exception : une quantité d'étape qui ne
+  // retomberait pas sur celle de la liste ferait douter des deux.
+  test("chaque quantité d'étape est celle de la liste des ingrédients", () => {
+    let vues = 0;
+    for (const p of catalogue.plats) {
+      const f = facteurAffiche(p, 2.5);
+      p.steps.forEach((_, n) => {
+        for (const l of quantitesDeLEtape(p, n, f) ?? []) {
+          const x = p.ingredients.find((i) => i.ref === l.ref)!;
+          expect(l.quantite, `${p.id} ${l.ref}`).toBe(echelleTexte(x, f));
+          vues += 1;
+        }
+      });
+    }
+    expect(vues).toBeGreaterThan(0);
+  });
+
+  // Trois réponses, comme le champ : on ne sait pas, rien à verser, la liste.
+  test("`null` reste « on ne sait pas », `[]` reste « rien »", () => {
+    for (const p of catalogue.plats)
+      p.steps.forEach((e, n) => {
+        const q = quantitesDeLEtape(p, n, 1);
+        if (e.uses === null) expect(q, `${p.id} ${e.id}`).toBeNull();
+        else expect(q!.length, `${p.id} ${e.id}`).toBe(e.uses.length);
+      });
+  });
+
+  // `uses` ne porte aucune fraction : la ligne entière, et l'autre étape nommée.
+  test("une ligne nommée par deux étapes garde sa quantité et dit l'autre", () => {
+    const p = catalogue.plats.find((x) =>
+      x.steps.some((e, n) => e.uses?.some((u) => x.steps.some((o, k) => k !== n && o.uses?.includes(u)))),
+    )!;
+    const n = p.steps.findIndex((e, i) =>
+      e.uses?.some((u) => p.steps.some((o, k) => k !== i && o.uses?.includes(u))),
+    );
+    const ligne = quantitesDeLEtape(p, n, 1)!.find((l) => l.aussi.length)!;
+    expect(ligne.aussi).not.toContain(n + 1);
+    expect(ligne.quantite).toBe(echelleTexte(p.ingredients.find((i) => i.ref === ligne.ref)!, 1));
+  });
+
+  test("« aussi » se dit en français", () => {
+    expect(phraseAussi([])).toBe("");
+    expect(phraseAussi([3])).toBe("aussi à l’étape 3");
+    expect(phraseAussi([1, 4])).toBe("aussi aux étapes 1 et 4");
+    expect(phraseAussi([1, 2, 5])).toBe("aussi aux étapes 1, 2 et 5");
+  });
+
+  // LE CORPUS DU FOYER EST COMPLET ; LES OUVRAGES NE SONT PAS TOUCHÉS. Les 21
+  // plats sans `source` sont à nous — c'est là, et là seulement, que T113 a
+  // écrit des `uses:` (la frontière de licence de la carte #26).
+  test("tous les plats du foyer disent ce que prend chaque étape", () => {
+    const foyer = catalogue.plats.filter((p) => p.source === null);
+    expect(foyer).toHaveLength(21);
+    for (const p of foyer) for (const e of p.steps) expect(e.uses, `${p.id} ${e.id}`).not.toBeNull();
   });
 });
