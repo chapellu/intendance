@@ -73,6 +73,18 @@ export async function corrigerLot(base: Base, id: number, patch: Partial<LotStoc
 /** Retire un lot : on l'a fini, ou il n'a jamais existé que dans la base. */
 export const retirerLot = (base: Base, id: number): Promise<void> => base.stock.delete(id);
 
+/**
+ * Retire plusieurs lots d'un seul geste — « c'est jeté » (T103), « tout est
+ * perdu » (T105).
+ *
+ * LE MÊME CHEMIN QUE « JE N'EN AI PLUS », EN UNE ÉCRITURE. Un `retirerLot` par
+ * lot laisserait la requête vive repeindre l'écran entre deux suppressions —
+ * la tâche du cockpit qui passe de 5 à 4 à 3 sous le pouce — et une coupure au
+ * milieu laisserait la moitié des lots. `bulkDelete` est atomique.
+ */
+export const retirerLots = (base: Base, ids: readonly number[]): Promise<void> =>
+  base.stock.bulkDelete([...ids]);
+
 /** Remet le stock à l'amorce du catalogue. Réservé aux réglages — c'est le
  *  geste « je repars de l'export », et il jette ce que le foyer a constaté. */
 export async function reamorcer(base: Base, catalogue: Catalogue): Promise<void> {

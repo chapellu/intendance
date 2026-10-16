@@ -49,6 +49,7 @@ import { Icone, iconeEspace } from "../ui/icones";
 import { fmt } from "../ui/format";
 import {
   baisserPlancher,
+  PERIME,
   resteAuPlacard,
   vueDeLInventaire,
   vueDesPlanchers,
@@ -931,8 +932,8 @@ function Lot({ lot, retirer }: { lot: LotVue; retirer: (ref: string) => Promise<
         {/* L'HORLOGE NE PARLE QUE QUAND ELLE A QUELQUE CHOSE À DIRE, c'est-à-dire
             sur un lot congelé au-delà de son forfait. Il reste servi — son mode
             d'échec est la qualité et non la sécurité — donc la phrase informe :
-            elle ne barre pas la ligne et n'offre aucun geste. Un reste de frigo
-            périmé, lui, n'a pas de phrase, parce qu'il est déjà sorti du jeu. */}
+            elle ne barre pas la ligne et n'offre aucun geste. Le reste de frigo
+            périmé parle à droite, à la place de la marque (T103). */}
         {lot.horloge ? <div className="ou">{lot.horloge}</div> : null}
         {ref ? (
           <button
@@ -952,7 +953,12 @@ function Lot({ lot, retirer }: { lot: LotVue; retirer: (ref: string) => Promise<
             ce que l'app SAIT, « urgent » dit où le lot EN EST. Rien ne s'affiche
             tant que le lot va bien, et c'est le cas de la plupart : un mot
             permanent ne se remarque plus le jour où il change. */}
-        {lot.marque ? (
+        {lot.perime ? (
+          // À LA PLACE DE LA MARQUE, PAS EN PLUS : les deux répondent « où en
+          // est-il », et un lot passé n'est plus sur l'axe. Sans la couleur
+          // d'« urgent » — ce n'est pas à manger vite, c'est à ne pas manger.
+          <div className="src">{PERIME}</div>
+        ) : lot.marque ? (
           <div className={`src ${lot.marque === "urgent" ? "estime" : ""}`}>{lot.marque}</div>
         ) : null}
       </span>

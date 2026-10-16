@@ -7,7 +7,7 @@ import type { Catalogue, Denree, Zone } from "../model/types";
 import { contexte, rejouer, type Evenement } from "../model/journal";
 import {
   agressions, baisserPlancher, categories, espaces, fiabilite, gardeManger, lots,
-  resteAuPlacard, vueDeLInventaire, vueDesPlanchers, vueDesPlanchersDenrees, zones,
+  PERIME, resteAuPlacard, restesPerimes, vueDeLInventaire, vueDesPlanchers, vueDesPlanchersDenrees, zones,
 } from "./stock.vue";
 
 const LUNDI = new Date("2026-08-17T12:00:00Z");
@@ -69,9 +69,10 @@ describe("les rangements", () => {
     // les mangés. Les deux nombres se disent, et leur somme est la liste.
     poser(0, "diner", "pates-bolognaise");
     const c = calculer(jeu);
-    for (const cat of categories(c.depot.lignes)) {
+    for (const cat of categories(c.depot.lignes, (l) => c.depot.perime(l, LUNDI))) {
       const dedans = lots(jeu, c.depot, cat.espace, LUNDI);
-      expect(cat.vivants + cat.manges).toBe(dedans.length);
+      expect(cat.vivants + cat.manges + cat.perimes).toBe(dedans.length);
+      expect(cat.perimes).toBe(dedans.filter((l) => l.perime).length);
       expect(cat.manges).toBe(dedans.filter((l) => l.epuise).length);
     }
   });
@@ -248,16 +249,71 @@ describe("les lots", () => {
     expect(lots(jeu, calculer(jeu).depot, null, LUNDI).find((l) => l.ref === "7")?.horloge).toBe("");
   });
 
-  test("un reste de frigo périmé n'a pas de phrase : il n'est plus là", () => {
-    // FRIGO DUR. Il sort du jeu en silence, et c'est le bon comportement pour
-    // une question de sécurité — il n'y a rien à proposer sur un lot qu'on ne
-    // propose plus.
+});
+
+/* ═══════════════════ T103 — un reste de frigo passé, à jeter ════════════ */
+
+describe("un reste de frigo passé", () => {
+  /** Une carcasse (2 jours au frigo) née le 10/08 : passée au 17/08. Et une
+   *  bolognaise congelée de huit mois, passée elle aussi — mais au congélateur,
+   *  où l'horloge est molle. Les deux cas que « frigo dur, congélateur mou »
+   *  sépare, côte à côte. */
+  const deuxVieux = () => {
     jeu.stock = [
       { type: "carcasse-volaille", kind: "base", qty: { amount: 1, unit: "pièce" }, qty_band: "1-repas", born: "2026-08-10", location: "frigo", ref: "9" },
+      { type: "sauce-bolognaise", kind: "base", qty: { amount: 700, unit: "g" }, qty_band: "2-repas", born: "2026-01-05", location: "congelo", ref: "7" },
     ];
-    expect(lots(jeu, calculer(jeu).depot, null, LUNDI).find((l) => l.ref === "9")?.horloge).toBe("");
+  };
+
+  test("il ne se sert plus — la règle de T58, inchangée", () => {
+    deuxVieux();
     poser(0, "diner", "soupe-de-poule");
-    expect(calculer(jeu).chaine).toHaveLength(0);
+    expect(calculer(jeu).chaine.filter((c) => c.type === "carcasse-volaille")).toHaveLength(0);
+  });
+
+  test("il ne prend plus de place au budget de rangement", () => {
+    // LE CŒUR DU TICKET. Un lot assez mort pour ne plus être proposé restait
+    // assez vivant pour occuper une étagère : « ça déborde » de décembre à
+    // septembre sur l'année simulée.
+    deuxVieux();
+    expect(calculer(jeu).stockage.frigo.debut).toBe(0);
+    // Le même lot né la veille compte, lui : c'est l'âge qui le sort, pas le type.
+    jeu.stock = [{ ...jeu.stock[0]!, born: "2026-08-16" }];
+    expect(calculer(jeu).stockage.frigo.debut).toBe(1);
+  });
+
+  test("le congelé dépassé, lui, garde sa place — il reste servi", () => {
+    deuxVieux();
+    expect(calculer(jeu).stockage.congelo.debut).toBe(2);
+  });
+
+  test("la liste le DIT : « périmé · à jeter », et jamais « urgent »", () => {
+    // Ni silencieux — il ressemblerait à un lot qu'on mange — ni « urgent »,
+    // qui dirait de le manger vite. Il dit le geste.
+    deuxVieux();
+    const vus = lots(jeu, calculer(jeu).depot, null, LUNDI);
+    const carcasse = vus.find((l) => l.ref === "9");
+    expect(carcasse?.perime).toBe(true);
+    expect(carcasse?.marque).toBe("");
+    expect(PERIME).toBe("périmé · à jeter");
+    // Le congelé dépassé n'est pas périmé : il garde sa marque et sa phrase.
+    const bocal = vus.find((l) => l.ref === "7");
+    expect(bocal?.perime).toBe(false);
+    expect(bocal?.marque).toBe("urgent");
+  });
+
+  test("le rangement le compte à part, et la somme reste la liste qu'il ouvre", () => {
+    deuxVieux();
+    const vue = vueDeLInventaire(jeu, calculer(jeu), "frigo");
+    const frigo = vue.categories.find((c) => c.espace === "frigo")!;
+    expect(frigo).toMatchObject({ vivants: 0, perimes: 1, barres: 0 });
+    expect(frigo.note).toContain("1 à jeter");
+    expect(frigo.vivants + frigo.manges + frigo.perimes).toBe(vue.lots.length);
+  });
+
+  test("ce qu'on peut jeter : les constatés passés du frigo, et eux seuls", () => {
+    deuxVieux();
+    expect(restesPerimes(calculer(jeu).depot, LUNDI).map((l) => l.ref)).toEqual(["9"]);
   });
 });
 

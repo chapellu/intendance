@@ -4439,7 +4439,7 @@ Les tickets sont groupés par CHANTIER, et un chantier = une branche. Les
 
 ### Le frigo qui oublie — T103 à T105
 
-- [ ] **T103 — Un reste de frigo périmé sort aussi de la liste et du budget.**
+- [x] **T103 — Un reste de frigo périmé sort aussi de la liste et du budget.**
       `Depot.vie` le sort du jeu (« frigo dur ») et le commentaire de
       `stock.vue.ts` dit qu'il « n'est plus là » ; mais `lots()` ne le filtre
       pas, `marque` est vidée pour lui, et `bilanStockage` compte toute la table
@@ -4450,6 +4450,27 @@ Les tickets sont groupés par CHANTIER, et un chantier = une branche. Les
       une tâche de cockpit « N restes ont passé leur date » qui se règle d'un
       seul geste (« c'est jeté »). **Un commentaire juste au-dessus d'un code
       faux, encore une fois.**
+
+      **FAIT — `Depot.perime()` EST LA SEULE DÉFINITION DU PÉRIMÉ.** La règle
+      « frigo dur » ne vivait que dans `age()`, privée : seul le chaînage la
+      connaissait. Elle est publique, et le budget (`bilanStockage` compte
+      `depot.initiales` moins les périmés **à aujourd'hui**, pas à dimanche :
+      un reste qui passera jeudi occupe sa place jusqu'à ce qu'on l'ait jeté),
+      l'inventaire (`LotVue.perime`, `Categorie.perimes`, « N à jeter » dans la
+      note du rangement), le cadran « lots » de `semaine.vue.ts` et le cockpit
+      la lisent. La tâche « N restes ont passé leur date » porte les clés à
+      jeter et se règle sur place par « C'est jeté » (`retirerLots`, le
+      `bulkDelete` de « Je n'en ai plus », atomique) — **sans confirmation** :
+      ce qu'elle retire est déjà sorti du jeu.
+
+      **MESURÉ EN PASSANT : LE FIXTURE DE TOUS LES TESTS PORTAIT UN LOT MORT.**
+      L'amorce du catalogue a des lentilles cuites nées le 06/08 qui tiennent
+      4 jours ; au `LUNDI` des tests (17/08) elles sont passées depuis une
+      semaine, et `semaine.vue.test.ts` les comptait dans « 2 lots ». C'est
+      « 1 lot ». Le même fait rend le parcours `restes-passes` possible sans
+      semer la base ni fixer l'horloge : sur une base neuve, ces lentilles sont
+      passées à toute date future. Le test du budget a été vu rouge avant le
+      correctif.
 - [ ] **T104 — Un lot dit son âge et sa quantité en mots.** Tout lot cuisiné lit
       « déjà là avant la semaine » (le libellé suit `l.from`, qu'un lot
       journalisé n'a jamais) ; les bandes sortent brutes (`lunchbox`,

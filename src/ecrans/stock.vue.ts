@@ -76,6 +76,9 @@ export interface Categorie {
   vivants: number;
   /** Ceux que la semaine a mangés. */
   manges: number;
+  /** Les restes de frigo passés — là, mais à jeter (T103). Ni vivants ni
+   *  mangés : ils ne se servent plus, et ils n'ont pas encore quitté l'étagère. */
+  perimes: number;
   /** Barres allumées sur quatre — un niveau, pas un compte exact. */
   barres: number;
   /** Le plus bas des niveaux de l'espace : un seul chiffre douteux suffit à
@@ -97,10 +100,18 @@ const pluriel = (n: number, mot: string): string => `${n} ${mot}${n > 1 ? "s" : 
  * nombres sont dits, parce que les deux existent : ce qui reste, et ce que la
  * semaine a mangé.
  */
-export function categories(lignes: readonly LigneDepot[]): Categorie[] {
+export function categories(
+  lignes: readonly LigneDepot[],
+  perime: (l: LigneDepot) => boolean = () => false,
+): Categorie[] {
   const vue = (espace: Espace, dedans: LigneDepot[]): Categorie => {
-    const vivants = dedans.filter((l) => !l.epuise).length;
-    const manges = dedans.length - vivants;
+    // TROIS ÉTATS, PLUS DEUX — T103. « 37 lots » sous « Frigo », c'est ce que
+    // l'année simulée a lu en septembre pour quatre boîtes réelles : le compte
+    // des vivants prenait les périmés, et les barres de la jauge avec. Ils se
+    // comptent maintenant à part, et la somme reste la liste qu'on ouvre.
+    const manges = dedans.filter((l) => l.epuise).length;
+    const perimes = dedans.filter((l) => !l.epuise && perime(l)).length;
+    const vivants = dedans.length - manges - perimes;
     const niveaux = dedans.map((l) => fiabilite(l).niveau);
     const etats = [...new Set(dedans.map((l) => fiabilite(l).label))];
     return {
@@ -108,6 +119,7 @@ export function categories(lignes: readonly LigneDepot[]): Categorie[] {
       nom: nomEspace(espace),
       vivants,
       manges,
+      perimes,
       barres: Math.min(4, vivants),
       conf: niveaux.includes("basse")
         ? "basse"
@@ -117,6 +129,7 @@ export function categories(lignes: readonly LigneDepot[]): Categorie[] {
       note: [
         pluriel(vivants, "lot"),
         manges ? `${manges} mangé${manges > 1 ? "s" : ""}` : "",
+        perimes ? `${perimes} à jeter` : "",
         ...etats,
       ]
         .filter(Boolean)
@@ -493,12 +506,10 @@ export interface LotVue {
    * Ce que l'horloge a à dire de ce lot, ou « » quand elle n'a rien à dire.
    *
    * ELLE NE PARLE QUE DU CONGÉLATEUR DÉPASSÉ, et c'est la moitié visible de
-   * « frigo dur, congélateur mou ». Un reste de frigo périmé n'a pas de phrase
-   * parce qu'il n'est plus là — il est sorti du jeu, en silence, et c'est le
-   * bon comportement pour une question de sécurité. Un bocal congelé de quatre
-   * mois, lui, reste servi : le taire en ferait un lot comme un autre, le
-   * retirer fabriquerait de l'archéologie de congélateur. Il reste, et il le
-   * dit.
+   * « frigo dur, congélateur mou ». Un bocal congelé de quatre mois reste
+   * servi : le taire en ferait un lot comme un autre, le retirer fabriquerait
+   * de l'archéologie de congélateur. Il reste, et il le dit. Le reste de frigo
+   * périmé a son propre mot, `perime` — voir plus bas.
    *
    * EN JOURS, PAS EN MOIS. La conversion vit du côté Python, une seule fois
    * (`JOURS_PAR_MOIS`) ; la refaire ici donnerait deux constantes libres de
@@ -525,6 +536,36 @@ export interface LotVue {
    * serait faux à la décimale près. Seul le franchissement se dit.
    */
   marque: Marque;
+  /**
+   * Un reste de frigo passé : là sur l'étagère, sorti du jeu — T103.
+   *
+   * CE COMMENTAIRE DISAIT « IL N'EST PLUS LÀ », ET LE CODE EN DESSOUS LE
+   * LISTAIT. Sorti du jeu, oui : le chaînage ne le sert plus depuis T58. Mais
+   * l'écran le montrait comme un lot ordinaire, sans un mot — le pire des deux
+   * mondes : ni absent, ni signalé. Sur l'année simulée, 37 lignes au frigo
+   * pour 4 boîtes réelles.
+   *
+   * NI SILENCIEUX NI « URGENT ». Le taire laisse croire qu'il se mange ;
+   * « urgent » dirait de le manger maintenant, c'est-à-dire de cuisiner ce que
+   * le modèle refuse de proposer pour une question de sécurité. Il dit ce qu'il
+   * faut en faire : `PERIME`.
+   */
+  perime: boolean;
+}
+
+/** Ce qu'on dit d'un reste de frigo passé. Une phrase qui commande un geste,
+ *  pas un état sur l'axe — voir `LotVue.perime`. */
+export const PERIME = "périmé · à jeter";
+
+/**
+ * Les restes de frigo passés que le foyer peut jeter — T103.
+ *
+ * SEULEMENT LES CONSTATÉS : un lot que la semaine produit naît dans le futur et
+ * ne peut pas être passé, et s'il l'était il se retirerait en changeant la
+ * semaine. `ref` est ce qu'un doigt touche.
+ */
+export function restesPerimes(depot: Depot, aujourdhui: Date): LigneDepot[] {
+  return depot.initiales.filter((l) => l.ref !== null && depot.perime(l, aujourdhui));
 }
 
 export function lots(
@@ -540,6 +581,7 @@ export function lots(
       const q = l.qty?.amount ?? null;
       const entame = l.reste != null && q != null && l.reste < q - 1e-9;
       const v = depot.vie(l, aujourdhui);
+      const perime = depot.perime(l, aujourdhui);
       return {
         cle: l.ref ?? `d${i}`,
         espace: l.location,
@@ -560,19 +602,19 @@ export function lots(
           v && !v.dur && v.depasse
             ? `au congélateur depuis ${v.age} j, au-delà des ${v.fenetre} prévus — encore bon à jouer`
             : "",
-        // ELLE SE TAIT SUR UN LOT SORTI DU JEU, et c'est la même règle que la
-        // phrase juste au-dessus, appliquée à l'envers. « urgent » veut dire
-        // « mange-le maintenant » : l'écrire sur un reste de frigo périmé serait
-        // inviter à cuisiner ce que le modèle vient de refuser de proposer pour
-        // une question de sécurité. Le congelé dépassé, lui, reste marqué —
-        // il reste servi, donc il reste sur l'axe. Frigo dur, congélateur mou,
-        // jusque dans les mots.
+        // ELLE SE TAIT SUR UN LOT SORTI DU JEU — ET C'EST `perime` QUI PARLE À
+        // SA PLACE. « urgent » veut dire « mange-le maintenant » : l'écrire sur
+        // un reste de frigo périmé serait inviter à cuisiner ce que le modèle
+        // vient de refuser de proposer pour une question de sécurité. Le congelé
+        // dépassé, lui, reste marqué — il reste servi, donc il reste sur l'axe.
+        // Frigo dur, congélateur mou, jusque dans les mots.
         //
         // Un lot sans naissance n'a pas de `vie` non plus, donc pas de marque :
         // le dépôt n'en produit pas aujourd'hui — constatés comme cuisinés, tous
         // naissent — mais inventer un âge pour pouvoir marquer serait exactement
         // le chiffre qui a l'air juste et ne l'est jamais.
-        marque: v && !(v.dur && v.depasse) ? marque(v.fraction) : "",
+        marque: v && !perime ? marque(v.fraction) : "",
+        perime,
       };
     });
 }
@@ -953,15 +995,16 @@ export interface Inventaire {
 
 export function vueDeLInventaire(jeu: Jeu, calc: Calcul, voulu: Espace | null): Inventaire {
   const lignes = calc.depot.lignes;
-  const cats = categories(lignes);
+  // La date de référence est le PREMIER JOUR DE LA FENÊTRE, c'est-à-dire
+  // aujourd'hui : l'inventaire dit ce qu'il y a maintenant, pas ce qu'il en
+  // restera dimanche.
+  const aujourdhui = jeu.jours[0]?.date ?? new Date();
+  const cats = categories(lignes, (l) => calc.depot.perime(l, aujourdhui));
   const filtre = cats.some((c) => c.espace === voulu) ? voulu : null;
   return {
     categories: cats,
     espaces: espaces(calc.stockage),
-    // La date de référence est le PREMIER JOUR DE LA FENÊTRE, c'est-à-dire
-    // aujourd'hui : l'inventaire dit ce qu'il y a maintenant, pas ce qu'il en
-    // restera dimanche.
-    lots: lots(jeu, calc.depot, filtre, jeu.jours[0]?.date ?? new Date()),
+    lots: lots(jeu, calc.depot, filtre, aujourdhui),
     // LE GARDE-MANGER NE SE FILTRE PAS PAR ESPACE, et c'est délibéré : ses sept
     // zones tombent toutes sur `placard`, donc le filtre ne trierait rien. Il se
     // lit par rangement, ce qui est la seule question qu'on se pose devant un

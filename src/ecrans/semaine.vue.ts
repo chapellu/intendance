@@ -177,7 +177,11 @@ export interface Chiffre {
 export function chiffresDeLaSemaine(jeu: Jeu, calc: Calcul): Chiffre[] {
   const arts = articles(calc.panier).length;
   const minutes = minutesParJour(jeu, jeu.choix).reduce((a, b) => a + b, 0);
-  const lots = calc.depot.lignes.filter((l) => !l.epuise).length;
+  // Un reste de frigo passé n'est pas un lot qu'on a (T103) : il attend la
+  // poubelle. Le compter ici ferait dire au cadran l'inverse de l'inventaire
+  // qu'il ouvre.
+  const auj = jeu.jours[0]?.date;
+  const lots = calc.depot.lignes.filter((l) => !l.epuise && !(auj && calc.depot.perime(l, auj))).length;
   return [
     { cle: arts > 1 ? "articles" : "article", valeur: String(arts) },
     { cle: "de cuisine", valeur: duree(minutes) },

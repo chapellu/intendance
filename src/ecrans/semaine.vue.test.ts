@@ -196,11 +196,14 @@ describe("où poser le prochain plat", () => {
 describe("les trois chiffres", () => {
   test("ils sont nommés, et s'accordent", () => {
     // Une semaine vide ne demande rien — « 0 article », au singulier, comme le
-    // veut le français — mais le placard du foyer porte déjà plusieurs lots.
+    // veut le français. L'amorce du catalogue porte DEUX lots, mais les
+    // lentilles cuites du 06/08 (4 jours au frigo) sont passées depuis le 10 :
+    // au 17/08 il n'en reste qu'un qu'on puisse manger — T103. Ce test en
+    // comptait deux depuis qu'il existe ; il comptait un lot mort.
     const c = chiffresDeLaSemaine(jeu, calculer(jeu));
-    expect(c.map((x) => x.cle)).toEqual(["article", "de cuisine", "lots"]);
+    expect(c.map((x) => x.cle)).toEqual(["article", "de cuisine", "lot"]);
     expect(c[0]?.valeur).toBe("0");
-    expect(Number(c[2]?.valeur)).toBeGreaterThan(1);
+    expect(c[2]?.valeur).toBe("1");
   });
 
   test("ils comptent ce que la semaine posée demande", () => {
