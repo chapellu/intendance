@@ -268,13 +268,18 @@ describe("les quantités sont exécutables", () => {
 });
 
 describe("la cuisine n'est pas infinie", () => {
-  test("chaque espace porte ses deux plafonds et dit lequel mord", () => {
+  test("chaque espace porte ses plafonds et dit lequel mord", () => {
+    // Le placard du foyer réel n'a AUCUN contenant de reste (les bocaux tiennent
+    // la farine) : il n'est borné que par ses étagères.
     const { stockage } = calculer(jeu);
     for (const e of ["frigo", "congelo", "placard"] as const) {
       expect(stockage[e].places).toBeGreaterThan(0);
-      expect(stockage[e].contenants).toBeGreaterThan(0);
       expect(["place", "contenant"]).toContain(stockage[e].cause);
     }
+    expect(stockage.frigo.contenants).toBeGreaterThan(0);
+    expect(stockage.congelo.contenants).toBeGreaterThan(0);
+    expect(stockage.placard.contenants).toBeNull();
+    expect(stockage.placard.cause).toBe("place");
   });
 
   test("ce que la semaine range monte le niveau", () => {

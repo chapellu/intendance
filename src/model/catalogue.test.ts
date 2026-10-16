@@ -14,12 +14,16 @@ describe("le catalogue réel", () => {
     expect(c.creneaux.repas["diner"]).toBeDefined();
   });
 
-  test("porte les trois espaces, chacun avec ses deux plafonds", () => {
+  test("porte les trois espaces, chacun avec ses étagères, et ses boîtes là où il en va", () => {
     const { espaces } = lireCatalogue(brut()).foyer;
     for (const e of ["frigo", "congelo", "placard"] as const) {
       expect(espaces[e].places).toBeGreaterThan(0);
-      expect(espaces[e].contenants).toBeGreaterThan(0);
     }
+    expect(espaces.frigo.contenants).toBeGreaterThan(0);
+    expect(espaces.congelo.contenants).toBeGreaterThan(0);
+    // Aucun contenant de reste ne va au placard : `null`, pas zéro — zéro
+    // dirait « toutes les boîtes sont prises ».
+    expect(espaces.placard.contenants).toBeNull();
   });
 
   test("chaque plat sait ce qu'il produit et ce qu'il attend", () => {

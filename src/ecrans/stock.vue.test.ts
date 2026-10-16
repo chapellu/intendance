@@ -131,10 +131,13 @@ describe("les deux plafonds", () => {
       const commande = v.plafonds.filter((p) => p.commande);
       expect(commande).toHaveLength(1);
     }
-    // Le catalogue actuel fait mordre les étagères partout.
+    // LE FOYER RÉEL, DEPUIS LE 2026-10-16 : quatre boîtes pour huit étagères de
+    // frigo, donc ce sont les boîtes qui mordent au frigo — « laver des
+    // boîtes » et non « dégager une étagère ». Le placard n'a qu'un plafond.
     expect(vues.map((v) => v.plafonds.find((p) => p.commande)?.nom)).toEqual([
-      "étagères", "étagères", "étagères",
+      "contenants", "étagères", "étagères",
     ]);
+    expect(vues.find((v) => v.espace === "placard")!.plafonds.map((p) => p.nom)).toEqual(["étagères"]);
   });
 
   test("aucun geste tant qu'il reste de la place", () => {

@@ -33,19 +33,19 @@
   "espaces": {
    "frigo": {
     "places": 10,
-    "contenants": 32.0,
-    "limite": 10,
-    "cause": "place"
+    "contenants": 4.0,
+    "limite": 4.0,
+    "cause": "contenant"
    },
    "congelo": {
     "places": 18,
-    "contenants": 28.0,
+    "contenants": 24.0,
     "limite": 18,
     "cause": "place"
    },
    "placard": {
     "places": 20,
-    "contenants": 24.0,
+    "contenants": null,
     "limite": 20,
     "cause": "place"
    }
@@ -151,25 +151,13 @@
   "contenants": [
    {
     "id": "boites-hermetiques",
-    "label": "boîtes hermétiques 0,5 / 1 L",
-    "nombre": 8,
+    "label": "boîtes IKEA 0,8 L",
+    "nombre": 4,
     "portions": 1,
-    "volumeMl": 500,
+    "volumeMl": 800,
     "espaces": [
      "frigo",
      "congelo"
-    ],
-    "consommable": false
-   },
-   {
-    "id": "bocaux-le-parfait",
-    "label": "bocaux Le Parfait 0,75 L",
-    "nombre": 12,
-    "portions": 2,
-    "volumeMl": 750,
-    "espaces": [
-     "frigo",
-     "placard"
     ],
     "consommable": false
    },

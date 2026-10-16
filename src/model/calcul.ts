@@ -217,7 +217,7 @@ export interface LignePanier {
  *  y prend, et lequel de ses deux plafonds mord. */
 export interface BilanEspace {
   places: number;
-  contenants: number;
+  contenants: number | null;
   limite: number;
   cause: CauseLimite;
   debut: number;

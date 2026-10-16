@@ -187,12 +187,19 @@ export function espaces(stockage: Record<Espace, BilanEspace>): EspaceVue[] {
       nom: nomEspace(espace),
       plafonds: [
         { nom: "étagères", libres: libres(s.places, s.fin), part: part(s.fin, s.places), commande: !boites },
-        {
-          nom: "contenants",
-          libres: libres(s.contenants, s.fin),
-          part: part(s.fin, s.contenants),
-          commande: boites,
-        },
+        // UN ESPACE SANS CONTENANT N'A QU'UN PLAFOND : afficher « contenants 0
+        // libres » sur le placard dirait qu'il manque des boîtes là où il n'en
+        // faut aucune.
+        ...(s.contenants == null
+          ? []
+          : [
+              {
+                nom: "contenants",
+                libres: libres(s.contenants, s.fin),
+                part: part(s.fin, s.contenants),
+                commande: boites,
+              },
+            ]),
       ],
       deborde: s.deborde,
       geste: s.deborde
