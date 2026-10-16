@@ -205,23 +205,49 @@ test("relever une zone remet le placard à ce que l'œil voit", async ({ page })
   await page.goto("/#/cuisine/stock");
   await attendreLApp(page);
 
-  // La première zone du garde-manger, et son relevé.
-  const relever = page.getByRole("button", { name: "Relever" }).first();
-  await expect(relever).toBeVisible();
-  await relever.click();
+  // LA ZONE QU'ON RELÈVE, ET C'EST SUR ELLE QU'ON CONCLUT — T107. Ce parcours
+  // attendait « Rien de relevé ici. » sur `.first()` des zones qui le disent ;
+  // le tiroir à épices, qui n'a aucune denrée au relevé du 26/08, le dit
+  // toujours, et le parcours passait sur une zone que personne n'avait touchée
+  // pendant que la zone relevée affichait encore « mais · 4 × 285 g ». On
+  // retient donc le NOM de la zone ouverte, et on revient à elle.
+  const relevable = page
+    .locator(".co-espace")
+    .filter({ has: page.getByRole("button", { name: "Relever" }) })
+    .first();
+  await expect(relevable).toBeVisible();
+  const nom = (await relevable.locator(".nom > span").first().innerText()).trim();
+  const zone = page.locator(".co-espace").filter({ hasText: nom });
+  await expect(zone).toHaveCount(1);
+  // Elle porte quelque chose avant : sans ça, « vide » serait vrai d'avance.
+  await expect(zone.locator(".co-lot").first()).toBeVisible();
+
+  await zone.getByRole("button", { name: "Relever" }).dispatchEvent("click");
+  const valider = zone.getByRole("button", { name: /Valider le relevé/ });
+  await expect(valider).toBeVisible();
 
   // Tout descendre à zéro : la zone est déclarée vide, ce qui est le geste que
   // rien d'autre dans l'app ne sait faire — dire « il n'y en a plus » sans
-  // énumérer les absents.
-  const moins = page.getByRole("button", { name: "−" });
-  const n = await moins.count();
+  // énumérer les absents. UN CLIC, PUIS LE COMPTE QUI A BOUGÉ : deux lignes du
+  // même ingrédient partagent un compteur, donc on relit le chiffre à chaque
+  // ligne au lieu de le supposer.
+  const lignes = zone.locator(".co-lot");
+  const n = await lignes.count();
   expect(n).toBeGreaterThan(0);
-  for (let i = 0; i < n; i += 1) for (let k = 0; k < 12; k += 1) await moins.nth(i).click();
+  for (let i = 0; i < n; i += 1) {
+    const compte = lignes.nth(i).locator("b");
+    for (let reste = Number(await compte.innerText()); reste > 0; reste -= 1) {
+      await lignes.nth(i).getByRole("button", { name: "−" }).dispatchEvent("click");
+      await expect(compte).toHaveText(String(reste - 1));
+    }
+  }
 
-  await page.getByRole("button", { name: /Valider le relevé/ }).click();
+  await valider.dispatchEvent("click");
+  await expect(zone.getByRole("button", { name: "Relever" })).toBeVisible();
 
-  // La zone ne porte plus rien, et ça survit au rechargement.
+  // LA ZONE RELEVÉE ne porte plus rien, et ça survit au rechargement.
   await page.reload();
   await attendreLApp(page);
-  await expect(page.locator(".co-espace", { hasText: "Rien de relevé ici." }).first()).toBeVisible();
+  await expect(zone.getByText("Rien de relevé ici.")).toBeVisible({ timeout: 15_000 });
+  await expect(zone.locator(".co-lot")).toHaveCount(0);
 });

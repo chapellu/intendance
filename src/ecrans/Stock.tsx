@@ -39,7 +39,7 @@ import { releverZone } from "../db/journal";
 import { poserPlancher, poserPlancherDenree, retirerPlancherDenree } from "../db/planchers";
 import type { Calcul } from "../model/calcul";
 import type { Jeu } from "../model/jeu";
-import type { Confiance, EtatIngredient, Rejeu } from "../model/journal";
+import type { Confiance, Rejeu } from "../model/journal";
 import type { Espace } from "../model/types";
 import { JOURS_VISIBLES } from "../nav/jours";
 import { chemin } from "../nav/routes";
@@ -54,6 +54,7 @@ import {
   vueDesPlanchers,
   vueDesPlanchersDenrees,
   type LotVue,
+  type MesureZone,
   type PlanchersDenreesVue,
   type PlanchersVue,
   type ResteAuPlacard,
@@ -586,7 +587,13 @@ function GardeManger({
       <PlanchersDenrees vue={planchers} />
 
       {vue.zones.map((z) => (
-        <Zone key={z.id} z={z} placard={placard} />
+        <Zone
+          key={z.id}
+          z={z}
+          placard={placard}
+          dedans={reste?.parZone.get(z.id) ?? null}
+          poids={reste?.poidsParZone.get(z.id) ?? ""}
+        />
       ))}
 
       <div className="co-encart" style={{ marginTop: "var(--space-2)" }}>
@@ -764,7 +771,20 @@ const MOT_CONFIANCE: Record<Confiance, string> = {
  * tout le reste n'y est plus. C'est le seul geste capable de dire « il n'y en a
  * plus » sans énumérer les absents.
  */
-function Zone({ z, placard }: { z: ZoneVue; placard: Rejeu | null }) {
+function Zone({
+  z,
+  placard,
+  dedans,
+  poids,
+}: {
+  z: ZoneVue;
+  placard: Rejeu | null;
+  /** Ce qui reste DANS cette zone, par ingrédient — `null` tant que le journal
+   *  n'a pas répondu. Voir `parZoneDu`. */
+  dedans: ReadonlyMap<string, MesureZone> | null;
+  /** Le poids de ce qui y reste, pas celui du relevé. */
+  poids: string;
+}) {
   const [releve, setReleve] = useState<Map<string, number> | null>(null);
 
   const etatDe = (ing: string) => placard?.parIngredient.get(ing) ?? null;
@@ -802,7 +822,7 @@ function Zone({ z, placard }: { z: ZoneVue; placard: Rejeu | null }) {
       <div className="co-note">
         {z.cotes}
         {z.ambiance ? ` · ${z.ambiance}` : ""}
-        {z.poids ? ` · ${z.poids}` : ""}
+        {poids ? ` · ${poids}` : ""}
       </div>
 
       {releve ? (
@@ -851,9 +871,16 @@ function Zone({ z, placard }: { z: ZoneVue; placard: Rejeu | null }) {
             Valider le relevé — ce qui est à 0 n’y est plus
           </button>
         </>
-      ) : z.denrees.length ? (
-        z.denrees.map((d) => {
+      ) : !dedans ? null : z.denrees.some((d) => dedans.has(d.ingredient)) ? (
+        // CE QUI RESTE ICI, ET RIEN D'AUTRE — T107. La ligne retombait sur
+        // `d.quantite` quand le rejeu ne portait plus l'ingrédient : la zone
+        // qu'on venait de déclarer vide relisait son contenu du 26/08. Le
+        // relevé du catalogue dit ce que la zone EST — c'est la liste que
+        // l'éditeur ouvre, pour qu'on puisse y remettre ce qui revient — pas
+        // ce qu'il en reste.
+        z.denrees.filter((d) => dedans.has(d.ingredient)).map((d) => {
           const e = etatDe(d.ingredient);
+          const m = dedans.get(d.ingredient)!;
           return (
             <div key={d.cle} className="co-lot">
               <span style={{ flex: 1 }}>
@@ -869,7 +896,7 @@ function Zone({ z, placard }: { z: ZoneVue; placard: Rejeu | null }) {
                 {e?.vuLe ? <div className="ou">vu le {e.vuLe}</div> : null}
               </span>
               <span>
-                <div className="q">{e ? quantiteDite(e) : d.quantite}</div>
+                <div className="q">{quantiteDite(m)}</div>
                 <div className={`src ${e && e.confiance !== "sur" ? "estime" : ""}`}>
                   {e ? MOT_CONFIANCE[e.confiance] : d.etat}
                 </div>
@@ -886,7 +913,7 @@ function Zone({ z, placard }: { z: ZoneVue; placard: Rejeu | null }) {
 
 /** Ce qu'on sait dire d'un ingrédient rejoué : des grammes quand tout est
  *  chiffré, un compte sinon. « 1 » est une information, pas un tiret. */
-function quantiteDite(e: EtatIngredient): string {
+function quantiteDite(e: MesureZone): string {
   if (e.grammes == null) return `${e.unites}`;
   return e.grammes >= 1000 ? `${fmt(e.grammes / 1000)} kg` : `${fmt(e.grammes)} g`;
 }

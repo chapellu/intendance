@@ -4472,7 +4472,7 @@ Les tickets sont groupés par CHANTIER, et un chantier = une branche. Les
       score cette fois — l'intersection avec `rejeu.parIngredient` comme
       `hydraterGardeManger`. La phrase de synthèse (« 53 denrées … 16 kg ») est
       aussi celle du catalogue.
-- [ ] **T107 — Une zone relevée vide le dit, et le parcours qui le prouve peut
+- [x] **T107 — Une zone relevée vide le dit, et le parcours qui le prouve peut
       échouer.** Dans `Zone`, un ingrédient absent du rejeu retombe sur
       `d.quantite` : après « Valider le relevé — ce qui est à 0 n'y est plus »,
       la zone lit « mais · 4 × 285 g · CONSERVE ». Le parcours *relever une zone
@@ -4508,6 +4508,39 @@ Les tickets sont groupés par CHANTIER, et un chantier = une branche. Les
   ingrédient) ; **10,8 kg et non 16 kg**, parce que la farine (4 kg), le sucre
   (1 kg) et le concentré (210 g) ont chacun un second lot non pesé — leur poids
   partiel se lisait comme un total.
+
+#### T107, fait — ce que la mesure a corrigé
+
+- **ROUGE D'ABORD.** Le parcours retient le NOM de la zone qu'il relève
+  (l'étagère ouverte) et conclut sur elle, plus sur `.first()` — le tiroir à
+  épices n'a aucune denrée au 26/08 et disait « Rien de relevé ici. » quoi
+  qu'il arrive. Joué contre l'écran non corrigé, il rougit sur la bonne ligne :
+  le relevé passe, la zone relit son contenu après rechargement. Puis vert.
+  Les `.click()` du parcours sont devenus des `dispatchEvent`, chacun suivi du
+  compteur qui a bougé.
+- **Retirer le repli sur `d.quantite` ne suffisait pas**, et c'est la mesure
+  qui l'a dit : le concentré de tomate est relevé dans DEUX zones (étagère
+  ouverte, demi-lune haute ; la farine et le sucre aussi, demi-lune basse et
+  placard haut). Vider l'étagère le laisse dans le rejeu par l'autre zone, et
+  l'étagère aurait montré le total de la demi-lune. Une zone ne montre donc que
+  les lots rangés EN ELLE (`parZoneDu`, mesuré par `mesurer()` extrait de
+  `rejouer` — une seule formule pour « 1 » et « 285 g »). Le poids d'en-tête de
+  zone suit, puisqu'il disait lui aussi le relevé.
+- **Un lot sans place connue va à la première zone qui nomme son ingrédient.**
+  Une course rentrée n'a pas de rangement (`zone: null` → `placard-haut`) ; en
+  zone stricte, des pâtes rachetées seraient invisibles partout.
+
+### Ce que T106 et T107 laissent ouvert
+
+- **L'éditeur d'une zone propose le compte de l'INGRÉDIENT entier**, pas celui
+  de la zone : un constat porte sur un ingrédient (`ajusterUnites`), et
+  proposer le compte de la zone puis valider sans toucher retirerait les unités
+  des autres zones. Les trois ingrédients à deux zones lisent donc un chiffre
+  dans la liste et un autre dans l'éditeur, jusqu'à ce qu'un constat sache
+  porter une zone.
+- **Les pâtes : un paquet entamé fini, le scellé restant, paie encore.**
+  L'intersection est par ingrédient, comme celle de #32 ; la finesse par lot
+  demanderait de lire `etat` sur le rejeu, écarté plus haut.
 
 ### La sortie compte ce qui part dans les assiettes — T108 et T109
 

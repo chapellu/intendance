@@ -540,6 +540,48 @@ describe("ce qu'il reste au garde-manger, en une phrase — T106", () => {
   });
 });
 
+describe("une zone ne montre que ce qui reste en elle — T107", () => {
+  const jour = "2026-10-16";
+  const vider = (zone: string, maj = 0): Evenement => ({
+    sorte: "observation", portee: "zone", zone, constats: [], jour, saisi: jour, maj,
+  });
+  const reste = (evts: Evenement[]) =>
+    resteAuPlacard(catalogue, rejouer(catalogue, evts, contexte(catalogue), jour));
+
+  test("sur une base neuve, chaque zone porte toutes ses denrées", () => {
+    const r = reste([]);
+    for (const z of catalogue.gardeManger.zones) {
+      const ids = new Set(catalogue.gardeManger.denrees.filter((d) => d.zone === z.id).map((d) => d.ingredient));
+      expect([...r.parZone.get(z.id)!.keys()].sort()).toEqual([...ids].sort());
+    }
+  });
+
+  test("UNE ZONE RELEVÉE VIDE EST VIDE, même si l'ingrédient vit dans une autre zone", () => {
+    // Le concentré de tomate est relevé dans l'étagère ET dans la demi-lune
+    // haute : le rejeu le garde, l'étagère ne doit plus le montrer.
+    const r = reste([vider("etagere-ouverte")]);
+    expect(r.parZone.get("etagere-ouverte")!.size).toBe(0);
+    expect(r.poidsParZone.get("etagere-ouverte")).toBe("");
+    expect(r.parZone.get("demi-lune-haute")!.has("concentre-tomate")).toBe(true);
+    // Et l'unité qui reste est celle de la demi-lune, pas le total d'avant.
+    const avant = reste([]).parZone.get("demi-lune-haute")!.get("concentre-tomate")!;
+    expect(r.parZone.get("demi-lune-haute")!.get("concentre-tomate")).toEqual(avant);
+  });
+
+  test("UNE COURSE RENTRÉE SANS RANGEMENT SE RETROUVE, UNE SEULE FOIS", () => {
+    // Le rejeu pose une entrée sans zone en `placard-haut`, qui n'a aucune
+    // ligne de pâtes. Filtrer par zone stricte la rendrait invisible partout.
+    const entree: Evenement = {
+      sorte: "entree", jour, saisi: jour, maj: 99,
+      lignes: [{ ingredient: "pates", unites: 2, parUnite: { amount: 500, unit: "g" }, zone: null, etat: "sec" }],
+    };
+    const r = reste([...catalogue.gardeManger.zones.map((z, i) => vider(z.id, i)), entree]);
+    const ou = [...r.parZone].filter(([, m]) => m.has("pates")).map(([z]) => z);
+    expect(ou).toEqual(["demi-lune-haute"]);
+    expect(r.parZone.get("demi-lune-haute")!.get("pates")).toEqual({ grammes: 1000, unites: 2 });
+  });
+});
+
 describe("le garde-manger entier", () => {
   test("« À manger en premier » ne garde que ce qui reste", () => {
     const tout = gardeManger(catalogue, idsDuReleve(catalogue));
