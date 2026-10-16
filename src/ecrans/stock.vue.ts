@@ -1007,6 +1007,53 @@ function parZoneDu(
   return { parZone, poidsParZone };
 }
 
+/**
+ * « Tout ce qui était au congélo est perdu » — T105.
+ *
+ * UN GESTE PAR RANGEMENT, PARCE QUE LA PANNE EST PAR RANGEMENT. Sur l'année
+ * simulée, la coupure de courant a coûté 19 « Je n'en ai plus », la panne de
+ * frigo 36 — un par lot, pour dire une seule chose.
+ *
+ * FRIGO ET CONGÉLO, PAS LE PLACARD. Ce qui vide un rangement d'un coup est une
+ * panne de froid ; un placard ne tombe pas en panne, et un bouton qui le
+ * viderait n'aurait pas d'autre usage que l'erreur.
+ *
+ * SEULEMENT LES CONSTATÉS, MANGÉS PAR LA SEMAINE COMPRIS. Ce que la semaine
+ * projette n'est pas encore cuisiné, donc pas perdu ; ce qu'elle prévoit de
+ * manger jeudi est, ce soir, dans le congélateur en panne.
+ *
+ * DERRIÈRE UNE CONFIRMATION QUI DIT LE NOMBRE, et c'est la différence avec
+ * « c'est jeté » (T103) : ici on retire des lots VIVANTS, ceux que le chaînage
+ * sert. La phrase qui confirme porte le compte, parce que « tout » est le mot
+ * qu'un pouce valide sans lire ; « 12 lots » se lit.
+ */
+export interface PerteVue {
+  espace: Espace;
+  bouton: string;
+  question: string;
+  confirmer: string;
+  /** Les clés de base à retirer. */
+  refs: string[];
+}
+
+export function perte(depot: Depot, filtre: Espace | null): PerteVue | null {
+  if (filtre !== "frigo" && filtre !== "congelo") return null;
+  const refs = depot.initiales
+    .filter((l) => l.ref !== null && l.location === filtre)
+    .map((l) => l.ref!);
+  if (!refs.length) return null;
+  const ou = filtre === "congelo" ? "au congélo" : "au frigo";
+  const n = refs.length;
+  const lots = n > 1 ? `les ${n} lots` : "le lot";
+  return {
+    espace: filtre,
+    bouton: `Tout ce qui était ${ou} est perdu`,
+    question: `${n > 1 ? `Les ${n} lots` : "Le lot"} ${ou} ${n > 1 ? "vont" : "va"} sortir de l’inventaire.`,
+    confirmer: `Oui, retirer ${lots}`,
+    refs,
+  };
+}
+
 export interface Inventaire {
   categories: Categorie[];
   espaces: EspaceVue[];
@@ -1024,6 +1071,8 @@ export interface Inventaire {
   filtre: Espace | null;
   /** Le rangement ouvert, en toutes lettres, ou `null`. */
   nomDuFiltre: string | null;
+  /** Le geste « tout est perdu » du rangement ouvert, ou `null` (T105). */
+  perte: PerteVue | null;
   /** Les lots que la base porte — ceux dont le foyer répond. Zéro veut dire
    *  que tout ce qu'on voit sort de la semaine, ce qui est une information. */
   constates: number;
@@ -1048,6 +1097,7 @@ export function vueDeLInventaire(jeu: Jeu, calc: Calcul, voulu: Espace | null): 
     gardeManger: gardeManger(jeu.catalogue, jeu.gardeManger),
     filtre,
     nomDuFiltre: filtre ? nomEspace(filtre) : null,
+    perte: perte(calc.depot, filtre),
     constates: lignes.filter((l) => l.ref !== null).length,
   };
 }

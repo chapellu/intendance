@@ -26,7 +26,7 @@
 // Port de `apps/proto-shell/comptoir.js` (`ecranStock`).
 
 import { useMemo, useState } from "react";
-import { ajouterLot, base, retirerLot, type LotStock } from "../db";
+import { ajouterLot, base, retirerLot, retirerLots, type LotStock } from "../db";
 import {
   useCatalogue,
   useJournal,
@@ -80,7 +80,15 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
   // doigt sur un téléphone qu'on tient d'une main est un lot supprimé par
   // erreur une fois sur dix ; il n'existe aucun ailleurs où aller le rechercher.
   // La mémoire est celle de l'écran : quitter l'inventaire vaut confirmation.
-  const [retire, setRetire] = useState<LotStock | null>(null);
+  //
+  // UNE LISTE, DEPUIS T105 : « tout est perdu » retire un rangement entier, et
+  // se raviser doit le rendre entier aussi.
+  const [retire, setRetire] = useState<LotStock[] | null>(null);
+
+  // LA QUESTION DE « TOUT EST PERDU », POSÉE DANS LA PAGE. Pas de `confirm()` :
+  // une boîte du navigateur ne dit pas le nombre dans la langue de l'écran, et
+  // un parcours ne peut pas la lire. Changer de rangement la referme.
+  const [confirme, setConfirme] = useState<Espace | null>(null);
 
   const vue = useMemo(() => vueDeLInventaire(jeu, calc, filtre), [jeu, calc, filtre]);
 
@@ -121,11 +129,24 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
     const lot = await base.stock.get(id);
     if (!lot) return;
     await retirerLot(base, id);
-    setRetire(lot);
+    setRetire([lot]);
+  };
+
+  const toutPerdre = async (refs: readonly string[]) => {
+    const ids = refs.map(Number);
+    const perdus = (await base.stock.bulkGet(ids)).filter((l): l is LotStock => !!l);
+    await retirerLots(base, ids);
+    setConfirme(null);
+    setRetire(perdus);
   };
 
   const rendre = async () => {
     if (!retire) return;
+    for (const lot of retire) await rendreUn(lot);
+    setRetire(null);
+  };
+
+  const rendreUn = async (retire: LotStock) => {
     // Le lot revient avec son contenu et sa date de naissance — pas celle
     // d'aujourd'hui : annuler une bévue ne doit pas rajeunir un bocal de trois
     // semaines et le remettre dans la fenêtre de fraîcheur.
@@ -143,7 +164,6 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
       born: retire.born,
       origine: retire.origine,
     });
-    setRetire(null);
   };
 
   return (
@@ -239,11 +259,45 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
         <div className="co-vide">Rien ici.</div>
       )}
 
+      {/* T105 — UN GESTE PAR RANGEMENT, sous la liste qu'il vide : on voit ce
+          qui part avant de le dire parti. */}
+      {vue.perte ? (
+        confirme === vue.perte.espace ? (
+          <div className="co-note" style={{ marginTop: "var(--space-3)" }}>
+            {vue.perte.question}{" "}
+            <button
+              className="btn btn-ghost"
+              style={{ fontSize: 12.5, padding: "2px 8px" }}
+              onClick={() => void toutPerdre(vue.perte!.refs)}
+            >
+              {vue.perte.confirmer}
+            </button>{" "}
+            <button
+              className="btn btn-ghost"
+              style={{ fontSize: 12.5, padding: "2px 8px" }}
+              onClick={() => setConfirme(null)}
+            >
+              Non
+            </button>
+          </div>
+        ) : (
+          <button
+            className="btn btn-ghost"
+            style={{ fontSize: 12.5, padding: "2px 8px", marginTop: "var(--space-3)" }}
+            onClick={() => setConfirme(vue.perte!.espace)}
+          >
+            {vue.perte.bouton}
+          </button>
+        )
+      ) : null}
+
       {/* LE RETOUR EN ARRIÈRE, tant qu'on est sur l'écran. Il dit ce qui est
           parti : « retiré » sans nom laisse chercher lequel. */}
       {retire ? (
         <div className="co-note" style={{ marginTop: "var(--space-3)" }}>
-          « {retire.type} » retiré de l’inventaire.{" "}
+          {retire.length === 1
+            ? `« ${retire[0]!.type} » retiré de l’inventaire.`
+            : `${retire.length} lots retirés de l’inventaire.`}{" "}
           <button
             className="btn btn-ghost"
             style={{ fontSize: 12.5, padding: "2px 8px" }}

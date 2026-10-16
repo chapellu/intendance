@@ -4487,11 +4487,43 @@ Les tickets sont groupés par CHANTIER, et un chantier = une branche. Les
       de l'être avec T114. Les bandes sortent en mots dans l'unité de la
       sortie de T99 : « 2 repas », et `lunchbox` → « une gamelle », le mot que
       l'app emploie déjà pour le midi qui voyage.
-- [ ] **T105 — « Tout ce qui était au congélo est perdu. »** La coupure de
+- [x] **T105 — « Tout ce qui était au congélo est perdu. »** La coupure de
       courant a coûté 19 « Je n'en ai plus », la panne de frigo 36, un par lot.
       Un geste par rangement, derrière une confirmation qui dit combien de lots
       partent. (Le frais acheté qui n'est pas un lot — beurre, crème — reste
       hors de portée : c'est T114.)
+
+      **FAIT, SOUS LA LISTE DU RANGEMENT OUVERT.** `stock.vue.ts::perte()` :
+      frigo et congélo seulement — une panne est une panne de froid, un bouton
+      qui viderait le placard n'aurait d'autre usage que l'erreur. Il prend
+      les lots constatés du rangement, **ceux que la semaine prévoit de manger
+      compris** (ce soir ils sont dans la panne), jamais ce qu'elle projette.
+      La question est posée dans la page et porte le nombre (« Les 12 lots au
+      congélo vont sortir de l'inventaire. ») ; c'est la différence avec
+      « c'est jeté », qui retire des lots déjà morts sans rien demander.
+      « Annuler » rend le rangement entier — la mémoire du retrait est devenue
+      une liste.
+
+#### Ce que ce chantier laisse ouvert
+
+- **L'horloge de vie arrondit un fuseau.** `Depot.vie` compte l'âge entre
+  `born` (minuit UTC) et l'heure qu'il est : passé 14 h à Paris, un lot gagne un
+  jour. T104 l'a contourné pour la phrase (`joursDepuis`), pas pour l'axe ni
+  pour le périmé — une carcasse de deux jours devient « à jeter » l'après-midi
+  du deuxième jour au lieu du lendemain. Le corriger déplace tous les seuils
+  d'un demi-jour ; c'est une décision sur le modèle.
+- **Le budget sort le périmé à aujourd'hui, pas au jour où il passe.** Un reste
+  qui passe jeudi compte jusqu'à dimanche dans `fin`. C'est voulu (il occupe
+  l'étagère tant qu'on ne l'a pas jeté), mais la projection de la semaine
+  surestime donc le frigo du nombre de restes qui vont mourir d'ici là.
+- **« C'est jeté » n'a pas d'annulation.** Le geste est au cockpit, qui n'a pas
+  de mémoire d'écran ; ce qu'il retire est déjà sorti du jeu, d'où le choix.
+  Si quelqu'un jette par erreur, le lot ne revient que par une cuisson.
+- **Le lot ne nomme pas son plat.** `LotStock.origine` porte l'id du plat
+  cuisiné, mais `auModele` ne le transmet pas : « cuisiné il y a 3 j » ne dit
+  pas « (Ratatouille) » comme le fait un lot projeté. Quatre lignes de
+  plomberie (`LotInitial`, `LigneDepot`, `Depot`, `auModele`), laissées pour ne
+  pas élargir le ticket.
 
 ### Ce que le placard EST n'est pas ce qu'il en RESTE — T106 et T107
 

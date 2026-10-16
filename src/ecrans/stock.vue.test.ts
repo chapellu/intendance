@@ -7,7 +7,7 @@ import type { Catalogue, Denree, Zone } from "../model/types";
 import { contexte, rejouer, type Evenement } from "../model/journal";
 import {
   agressions, baisserPlancher, categories, espaces, fiabilite, gardeManger, lots,
-  PERIME, resteAuPlacard, restesPerimes, vueDeLInventaire, vueDesPlanchers, vueDesPlanchersDenrees, zones,
+  perte, PERIME, resteAuPlacard, restesPerimes, vueDeLInventaire, vueDesPlanchers, vueDesPlanchersDenrees, zones,
 } from "./stock.vue";
 
 const LUNDI = new Date("2026-08-17T12:00:00Z");
@@ -919,5 +919,59 @@ describe("ce qu'un lot dit de lui-même", () => {
     // Les quatre bandes que les 126 emits déclarent : lunchbox, 1, 2, 3 repas.
     const bandes = new Set(catalogue.plats.flatMap((p) => p.emits.map((e) => e.band)));
     for (const b of bandes) expect(ne("2026-08-16", b).quantite).not.toMatch(/-|lunchbox/);
+  });
+});
+
+/* ═══════════════ T105 — « tout ce qui était au congélo est perdu » ═══════ */
+
+describe("un rangement perdu d'un coup", () => {
+  const remplir = () => {
+    jeu.stock = [
+      { type: "sauce-bolognaise", kind: "base", qty: { amount: 700, unit: "g" }, qty_band: "2-repas", born: "2026-08-10", location: "congelo", ref: "1" },
+      { type: "bouillon", kind: "base", qty: null, qty_band: "1-repas", born: "2026-08-12", location: "congelo", ref: "2" },
+      { type: "ratatouille", kind: "reste-plat", qty: null, qty_band: "1-repas", born: "2026-08-16", location: "frigo", ref: "3" },
+    ];
+  };
+
+  test("le geste est celui du rangement ouvert, et il en dit le nombre", () => {
+    remplir();
+    const p = vueDeLInventaire(jeu, calculer(jeu), "congelo").perte;
+    expect(p?.bouton).toBe("Tout ce qui était au congélo est perdu");
+    expect(p?.question).toBe("Les 2 lots au congélo vont sortir de l’inventaire.");
+    expect(p?.confirmer).toBe("Oui, retirer les 2 lots");
+    // Le frigo n'est pas touché par la panne du congélateur.
+    expect(p?.refs).toEqual(["1", "2"]);
+  });
+
+  test("un lot seul se dit au singulier", () => {
+    remplir();
+    expect(vueDeLInventaire(jeu, calculer(jeu), "frigo").perte).toMatchObject({
+      bouton: "Tout ce qui était au frigo est perdu",
+      question: "Le lot au frigo va sortir de l’inventaire.",
+      refs: ["3"],
+    });
+  });
+
+  test("ce que la semaine va manger est perdu aussi — ce soir il est dans la panne", () => {
+    remplir();
+    poser(0, "diner", "pates-bolognaise");
+    const c = calculer(jeu);
+    expect(c.depot.lignes.find((l) => l.ref === "1")?.epuise).toBe(false);
+    expect(perte(c.depot, "congelo")?.refs).toContain("1");
+  });
+
+  test("ce que la semaine projette n'est pas perdu : il n'est pas encore cuit", () => {
+    poser(0, "diner", "sauce-bolognaise");
+    jeu.stock = [];
+    expect(perte(calculer(jeu).depot, "frigo")).toBeNull();
+  });
+
+  test("ni geste sans filtre, ni au placard, ni sur un rangement vide", () => {
+    remplir();
+    const c = calculer(jeu);
+    expect(vueDeLInventaire(jeu, c, null).perte).toBeNull();
+    expect(perte(c.depot, "placard")).toBeNull();
+    jeu.stock = [];
+    expect(perte(calculer(jeu).depot, "congelo")).toBeNull();
   });
 });
