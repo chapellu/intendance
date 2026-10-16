@@ -22,7 +22,8 @@
 
 import { jourISO, type EtatCourse } from "../db";
 import { minutesParJour, type Calcul } from "../model/calcul";
-import type { Jeu } from "../model/jeu";
+import { SAUTE, type Jeu } from "../model/jeu";
+import { JOURS_VISIBLES } from "../nav/jours";
 import type { Route } from "../nav/routes";
 import { duree } from "../ui/format";
 import { detailDuGeste, gesteDuJour, titreDuGeste } from "./aujourdhui.vue";
@@ -74,7 +75,12 @@ export interface EtatDuJour {
 
 export function vueDuCockpit(jeu: Jeu, calc: Calcul, etat: EtatDuJour): VueCockpit {
   const courses = vueDesCourses(jeu.catalogue, calc.panier, etat.courses);
-  const enAttente = vueAPrevoir(jeu, calc).enAttente;
+  // SANS LES JOURS, AUCUNE OFFRE N'ATTEND — T110. « À prévoir » est éteint
+  // (T88), donc une offre comptée ici est une offre à laquelle on ne peut pas
+  // répondre : l'année simulée l'a vue en tête du cockpit 65 jours sur 365,
+  // menant à un écran qu'aucun onglet n'ouvre. Le chiffre de la carte et sa
+  // phrase tombent avec, pour la même raison que la pastille de la coquille.
+  const enAttente = JOURS_VISIBLES ? vueAPrevoir(jeu, calc).enAttente : 0;
   // LE DERNIER JOUR DE LA FENÊTRE, pas « dimanche » : la semaine part
   // d'aujourd'hui. Aucune valeur de repli ici — un nom de jour inventé serait
   // exactement le bug du proto, en plus discret.
@@ -87,11 +93,17 @@ export function vueDuCockpit(jeu: Jeu, calc: Calcul, etat: EtatDuJour): VueCockp
   // mange pas là » est une réponse, et elle ne réclame plus rien.
   const repondus = choisis.filter((x) => jeu.choix[x.i] != null).length;
   const aPoser = choisis.length - repondus;
+  const poses = jeu.choix.filter((c) => c != null && c !== SAUTE).length;
 
   const taches: Tache[] = [];
 
   // 1. CE SOIR. C'est la seule chose de la liste dont l'échéance est ce soir :
   // elle passe donc devant, y compris devant les courses.
+  //
+  // ELLE SURVIT AUX JOURS CACHÉS, ET C'EST JUSTIFIÉ (balayage de T110). « Ce
+  // soir » n'est pas une case de l'agenda, c'est le dîner qui va avoir lieu ;
+  // et « Poser » n'est pas éteint — « Posés › Changer » l'ouvre, et il rend la
+  // main à « Posés » sans les jours (`Poser.tsx`).
   const soir = jeu.creneaux.findIndex((c) => c.jour === 0 && c.repas === "diner");
   const jour0 = jeu.jours[0];
   if (soir >= 0 && jour0 && jeu.choix[soir] == null)
@@ -109,13 +121,18 @@ export function vueDuCockpit(jeu: Jeu, calc: Calcul, etat: EtatDuJour): VueCockp
   // 2. LE GESTE DU JOUR. Il concerne demain, mais il se fait ce soir : un lot
   // sorti demain matin est encore un bloc à 19 h.
   const geste = gesteDuJour(jeu, calc);
-  if (geste && !etat.gesteFait)
+  //
+  // ÉTEINT AVEC LES JOURS — T110. Le geste ne se coche que sur « Aujourd'hui »,
+  // et il porte sur « le dîner de demain », c'est-à-dire sur un jour que l'app
+  // ne montre plus : une coordonnée qu'on ne montre plus ne peut plus rien
+  // réclamer (la règle de T94, dans l'autre sens).
+  if (JOURS_VISIBLES && geste && !etat.gesteFait)
     taches.push({
       cle: `geste|${geste.type}`,
       facette: "Cuisine",
       titre: titreDuGeste(geste),
       detail: detailDuGeste(geste),
-      route: { ecran: "aujourdhui" },
+      route: { ecran: "aujourdhui" }, // gardé par JOURS_VISIBLES, quatre lignes plus haut
     });
 
   // 3. CE QUI EST PASSÉ AU FRIGO — T103. Après le geste du jour parce que c'est
@@ -156,7 +173,7 @@ export function vueDuCockpit(jeu: Jeu, calc: Calcul, etat: EtatDuJour): VueCockp
       facette: "Cuisine",
       titre: enAttente > 1 ? `${enAttente} offres attendent une réponse` : "Une offre attend une réponse",
       detail: "Agrandir un lot d'avance, ou prévoir une gamelle pour un midi.",
-      route: { ecran: "prevoir" },
+      route: { ecran: "prevoir" }, // enAttente vaut 0 sans JOURS_VISIBLES
     });
 
   return {
@@ -166,8 +183,12 @@ export function vueDuCockpit(jeu: Jeu, calc: Calcul, etat: EtatDuJour): VueCockp
       // Le proto affichait « 14 créneaux » — le nombre de créneaux
       // CHOISISSABLES de la semaine, qui ne bouge jamais. Un chiffre constant
       // déguisé en état ; ce qui bouge, c'est ce à quoi on a répondu.
-      etat: `${repondus}/${choisis.length} répondus`,
-      resume: resumeCuisine(aPoser, dernier, enAttente),
+      //
+      // SANS LES JOURS, NI CRÉNEAU NI JOUR — T110. « 14 créneaux restent à
+      // poser d'ici jeudi » nommait deux choses que T88 a cachées. Ce qui reste
+      // lisible, ce sont les plats posés : c'est ce que « Posés » montre.
+      etat: JOURS_VISIBLES ? `${repondus}/${choisis.length} répondus` : poses > 1 ? `${poses} posés` : `${poses} posé`,
+      resume: JOURS_VISIBLES ? resumeCuisine(aPoser, dernier, enAttente) : resumeSansJours(poses),
       // UN ZÉRO N'EST PAS UN CHIFFRE À AFFICHER. Vu au navigateur sur une
       // semaine vide : « 0 article » et « 0 min de cuisine » en pastilles, ce
       // qui donne trois choses à lire pour n'en dire aucune. Le proto ne
@@ -226,6 +247,13 @@ export function resumeCuisine(aPoser: number, dernier: string, enAttente: number
   const offres =
     enAttente === 0 ? "" : enAttente > 1 ? ` ${enAttente} offres attendent votre réponse.` : " Une offre attend votre réponse.";
   return semaine + offres;
+}
+
+/** L'état de la cuisine quand les jours sont cachés : ce qui est décidé, et
+ *  rien qui compte des cases qu'on ne voit pas. */
+export function resumeSansJours(poses: number): string {
+  if (poses === 0) return "Rien n'est posé — « Proposer » tire une main sur ce que vous avez.";
+  return poses === 1 ? "Un plat posé, à cuisiner quand vous voulez." : `${poses} plats posés, à cuisiner quand vous voulez.`;
 }
 
 /** Ce qui compte pour la pastille du cockpit : la liste elle-même. Un compte

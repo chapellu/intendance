@@ -75,6 +75,21 @@ export const ROUTE_DEFAUT: Route = { ecran: "cockpit" };
  */
 export const ENTREE_CUISINE: Route = JOURS_VISIBLES ? { ecran: "aujourdhui" } : { ecran: "fil" };
 
+/**
+ * Les écrans que `JOURS_VISIBLES` éteint — T110.
+ *
+ * ILS RESTENT MONTÉS ET LEURS URL VALIDES (voir `nav/jours.ts`) ; ce qu'on
+ * interdit, c'est d'y ENVOYER. Quatre fois un interrupteur a laissé derrière
+ * lui un chemin vers ce qu'il venait d'éteindre (#33, T90, T94, puis la tâche
+ * « Une offre attend une réponse », tâche de tête 65 jours sur 365 de l'année
+ * simulée), et chaque fois c'est l'usage qui l'a vu. `nav/chemins.test.ts`
+ * compte désormais les chemins à la place de l'usage.
+ */
+export const ECRANS_DES_JOURS: ReadonlySet<Ecran> = new Set<Ecran>(["aujourdhui", "semaine", "prevoir"]);
+
+/** Cette route mène-t-elle à un écran éteint, l'interrupteur tel qu'il est ? */
+export const eteint = (r: Route): boolean => !JOURS_VISIBLES && ECRANS_DES_JOURS.has(r.ecran);
+
 /** Les écrans qui appartiennent à la facette cuisine — ceux qui portent
  *  l'en-tête et la sous-navigation. */
 const DANS_CUISINE: ReadonlySet<Ecran> = new Set<Ecran>([

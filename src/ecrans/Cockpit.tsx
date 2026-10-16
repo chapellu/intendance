@@ -18,7 +18,7 @@ import { useCatalogue, useCourses, useSemaine } from "../db/hooks";
 import { cleGeste, useDrapeau } from "../db/reglages";
 import type { Calcul } from "../model/calcul";
 import type { Jeu } from "../model/jeu";
-import { chemin } from "../nav/routes";
+import { chemin, ENTREE_CUISINE } from "../nav/routes";
 import { Corps } from "../ui/Coquille";
 import { majuscule } from "../ui/format";
 import { gesteDuJour } from "./aujourdhui.vue";
@@ -79,7 +79,9 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
         Vos facettes
       </div>
 
-      <Facette nom="Cuisine" classe="cuisine" href={chemin({ ecran: "aujourdhui" })} carte={vue?.cuisine} />
+      {/* L'ENTRÉE, PAS « AUJOURD'HUI » EN DUR — T110 : sans les jours, la carte
+          de la facette ouvrait un écran éteint. */}
+      <Facette nom="Cuisine" classe="cuisine" href={chemin(ENTREE_CUISINE)} carte={vue?.cuisine} />
 
       {/* Le jardin a maintenant un modèle (T95/T96) et sa carte le dit — mais
           il ne produit TOUJOURS AUCUNE TÂCHE, et ce n'est pas un reste à
