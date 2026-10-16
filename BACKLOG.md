@@ -4471,11 +4471,22 @@ Les tickets sont groupés par CHANTIER, et un chantier = une branche. Les
       semer la base ni fixer l'horloge : sur une base neuve, ces lentilles sont
       passées à toute date future. Le test du budget a été vu rouge avant le
       correctif.
-- [ ] **T104 — Un lot dit son âge et sa quantité en mots.** Tout lot cuisiné lit
+- [x] **T104 — Un lot dit son âge et sa quantité en mots.** Tout lot cuisiné lit
       « déjà là avant la semaine » (le libellé suit `l.from`, qu'un lot
       journalisé n'a jamais) ; les bandes sortent brutes (`lunchbox`,
       `1-repas`, `2-repas`). Dire « cuisiné il y a 3 j » depuis `born`, et une
       quantité lisible (« 1 repas », « une boîte repas »).
+
+      **FAIT, ET L'ÂGE N'EST PAS CELUI DE `Depot.vie`.** Mesuré avant d'écrire :
+      `vie` arrondit une différence d'horodatages entre `born` (minuit UTC) et
+      l'heure qu'il est ; passé 14 h à Paris un lot né le jour même compte
+      0,5 j, arrondi à 1 — le plat du soir se serait dit « cuisiné hier ».
+      `joursDepuis` compte en jours de calendrier : « aujourd'hui », « hier »,
+      « il y a 3 j ». Le libellé « cuisiné » est vrai par construction (seules
+      une cuisson et l'amorce du relevé écrivent la table `stock`) et cessera
+      de l'être avec T114. Les bandes sortent en mots dans l'unité de la
+      sortie de T99 : « 2 repas », et `lunchbox` → « une gamelle », le mot que
+      l'app emploie déjà pour le midi qui voyage.
 - [ ] **T105 — « Tout ce qui était au congélo est perdu. »** La coupure de
       courant a coûté 19 « Je n'en ai plus », la panne de frigo 36, un par lot.
       Un geste par rangement, derrière une confirmation qui dit combien de lots

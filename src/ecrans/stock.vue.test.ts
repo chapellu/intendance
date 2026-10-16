@@ -59,7 +59,7 @@ describe("d'où vient un chiffre", () => {
     const l = c.depot.lignes[0]!;
     expect(fiabilite(l)).toMatchObject({ label: "en bloc", classe: "", niveau: "basse" });
     // Et la quantité affichée retombe sur la bande de repas, pas sur « — ».
-    expect(lots(jeu, c.depot, null, LUNDI)[0]?.quantite).toBe("2-repas");
+    expect(lots(jeu, c.depot, null, LUNDI)[0]?.quantite).toBe("2 repas");
   });
 });
 
@@ -200,7 +200,8 @@ describe("les lots", () => {
     const bocal = vus.find((l) => l.nom === "sauce-bolognaise");
     expect(bocal?.ou).toContain("reste 200 g");
     expect(bocal?.ou).toContain("Congélo");
-    expect(bocal?.ou).toContain("déjà là avant la semaine");
+    // Née le 20/07 à l'amorce : vingt-huit jours de calendrier au 17/08 (T104).
+    expect(bocal?.ou).toContain("cuisiné il y a 28 j");
     expect(bocal?.epuise).toBe(false);
   });
 
@@ -862,5 +863,61 @@ describe("ce qu'on veut toujours avoir, au placard", () => {
     ]);
     expect(vue.poses[0]!.fiabilite).toBe("jamais vu");
     expect(vue.poses[0]!.a).toBe(0);
+  });
+});
+
+/* ═══════════════════ T104 — un lot dit son âge et sa quantité ═══════════ */
+
+describe("ce qu'un lot dit de lui-même", () => {
+  const ne = (born: string, qty_band = "2-repas") => {
+    jeu.stock = [
+      { type: "ratatouille", kind: "reste-plat", qty: null, qty_band, born, location: "frigo", ref: "3" },
+    ];
+    return lots(jeu, calculer(jeu).depot, null, LUNDI).find((l) => l.ref === "3")!;
+  };
+
+  test("un lot journalisé ne lit plus « déjà là avant la semaine »", () => {
+    // LE DÉFAUT MESURÉ : le libellé suivait `from`, qu'une cuisson faite n'a
+    // jamais. Le plat de ce soir se disait d'avant la semaine.
+    expect(ne("2026-08-17").ou).not.toContain("avant la semaine");
+  });
+
+  test("le plat de ce soir ne se dit pas « hier » l'après-midi", () => {
+    // MESURÉ AVANT LE CODE : `LUNDI` est midi UTC, et l'âge de `Depot.vie`
+    // y compte un lot né le jour même à 0,5 jour, arrondi à 1. Lire l'âge là
+    // aurait dit « cuisiné hier » d'une cuisson de 19 h.
+    const soir = new Date(2026, 7, 17, 19, 0);
+    jeu.stock = [
+      { type: "ratatouille", kind: "reste-plat", qty: null, qty_band: "1-repas", born: "2026-08-17", location: "frigo", ref: "3" },
+    ];
+    expect(lots(jeu, calculer(jeu).depot, null, soir)[0]?.ou).toContain("cuisiné aujourd’hui");
+  });
+
+  test("il dit son âge depuis sa naissance, en jours", () => {
+    expect(ne("2026-08-17").ou).toContain("cuisiné aujourd’hui");
+    expect(ne("2026-08-16").ou).toContain("cuisiné hier");
+    expect(ne("2026-08-14").ou).toContain("cuisiné il y a 3 j");
+  });
+
+  test("ce que la semaine projette garde son plat, pas un âge", () => {
+    poser(0, "diner", "sauce-bolognaise");
+    const titre = catalogue.plats.find((p) => p.id === "sauce-bolognaise")?.titre;
+    const depot = calculer(jeu).depot;
+    const projetes = depot.lignes.filter((l) => l.from !== null).length;
+    expect(projetes).toBeGreaterThan(0);
+    const dits = lots(jeu, depot, null, LUNDI).filter((l) => l.ou.includes(`cuisiné cette semaine (${titre})`));
+    expect(dits).toHaveLength(projetes);
+  });
+
+  test("une bande se lit en mots, jamais en identifiant", () => {
+    expect(ne("2026-08-16", "2-repas").quantite).toBe("2 repas");
+    expect(ne("2026-08-16", "1-repas").quantite).toBe("1 repas");
+    expect(ne("2026-08-16", "lunchbox").quantite).toBe("une gamelle");
+  });
+
+  test("aucune bande du corpus ne sort brute", () => {
+    // Les quatre bandes que les 126 emits déclarent : lunchbox, 1, 2, 3 repas.
+    const bandes = new Set(catalogue.plats.flatMap((p) => p.emits.map((e) => e.band)));
+    for (const b of bandes) expect(ne("2026-08-16", b).quantite).not.toMatch(/-|lunchbox/);
   });
 });

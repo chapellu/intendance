@@ -37,7 +37,7 @@ import {
 } from "../model/plancherGardeManger";
 import type { Catalogue, Denree, Espace, GardeManger, Urgence, Zone } from "../model/types";
 import { fmt } from "../ui/format";
-import { nomEspace } from "../ui/phrases";
+import { bandeEnMots, depuis, nomEspace } from "../ui/phrases";
 
 /** L'ordre des espaces, du plus consulté au moins. Le même partout : une
  *  cuisine ne se relit pas dans un ordre différent d'un écran à l'autre. */
@@ -568,6 +568,25 @@ export function restesPerimes(depot: Depot, aujourdhui: Date): LigneDepot[] {
   return depot.initiales.filter((l) => l.ref !== null && depot.perime(l, aujourdhui));
 }
 
+/**
+ * Combien de jours de CALENDRIER séparent la naissance d'un lot d'aujourd'hui.
+ *
+ * PAS L'ÂGE DE `Depot.vie`, ET C'EST MESURÉ. `vie` arrondit une différence
+ * d'horodatages : `born` est minuit UTC (une date ISO lue par `new Date`),
+ * aujourd'hui est l'heure qu'il est. Passé midi UTC — 14 h à Paris — la
+ * différence dépasse un demi-jour et s'arrondit à 1 : le plat cuisiné ce soir
+ * se serait dit « cuisiné hier ». C'est le décalage que `stock.vue.test.ts`
+ * documente déjà pour l'axe (« IL EN PARAÎT UN DE PLUS »). Une phrase en mots
+ * du calendrier ne peut pas se le permettre ; l'horloge de vie, elle, n'est pas
+ * corrigée ici — c'est une décision sur le modèle, notée au backlog.
+ */
+const JOUR_MS = 86_400_000;
+export const joursDepuis = (aujourdhui: Date, born: Date): number =>
+  Math.round(
+    (Date.UTC(aujourdhui.getFullYear(), aujourdhui.getMonth(), aujourdhui.getDate()) - born.getTime()) /
+      JOUR_MS,
+  );
+
 export function lots(
   jeu: Jeu,
   depot: Depot,
@@ -588,13 +607,30 @@ export function lots(
         nom: l.type,
         ou: [
           nomEspace(l.location),
-          l.from ? `cuisiné cette semaine (${jeu.plats[l.from]?.titre ?? l.from})` : "déjà là avant la semaine",
+          // T104 — LE LIBELLÉ SUIVAIT `from`, QU'UN LOT JOURNALISÉ N'A JAMAIS.
+          // `from` ne marque que ce que la PROJECTION de la semaine produit ;
+          // une cuisson faite entre en base, revient par `auModele` sans lui,
+          // et lisait donc « déjà là avant la semaine » — y compris le plat de
+          // ce soir. L'âge se dit depuis `born`, que tout lot constaté porte.
+          //
+          // « CUISINÉ », ET C'EST VRAI PAR CONSTRUCTION : la table `stock`
+          // n'est écrite que par une cuisson et par l'amorce du relevé, qui
+          // ne porte que des préparations. Le jour où une porte d'entrée hors
+          // liste (T114) y fera entrer des courgettes crues, ce mot sera faux
+          // — c'est ici qu'il faudra lire l'origine.
+          l.from
+            ? `cuisiné cette semaine (${jeu.plats[l.from]?.titre ?? l.from})`
+            : l.born
+              ? `cuisiné ${depuis(joursDepuis(aujourdhui, l.born))}`
+              : "déjà là avant la semaine",
           entame ? `reste ${fmt(l.reste!)} ${l.unite ?? ""}`.trim() : "",
           l.epuise ? "mangé par la semaine" : "",
         ]
           .filter(Boolean)
           .join(" · "),
-        quantite: q != null ? `${fmt(q)} ${l.unite ?? ""}`.trim() : l.band || "—",
+        // La bande en mots (T104) : « lunchbox » et « 2-repas » sont des
+        // identifiants du corpus, pas du français.
+        quantite: q != null ? `${fmt(q)} ${l.unite ?? ""}`.trim() : bandeEnMots(l.band),
         fiabilite: fiabilite(l),
         epuise: l.epuise,
         ref: l.ref,
