@@ -2686,7 +2686,7 @@ rien**, ce qui est la façon la plus coûteuse de refuser.
       Le coût du découpage a été mesuré (`npm run perf`) : `offre()` passe de
       **8,5 à 8,7 ms** sur un créneau, soit 83 → 85 µs par carte. Dans le bruit.
 
-- [ ] **T81 — « Le répertoire » : les 138 plats, consultables.** La seconde
+- [x] **T81 — « Le répertoire » : les 138 plats, consultables.** La seconde
       moitié de la demande du 15/09 — *« il me faudrait les deux »*. T80 sert
       celui qui a un nom en tête ET un créneau sous les yeux ; il ne sert pas
       celui qui veut **voir ce que la maison sait faire**, ni relire une recette
@@ -4927,6 +4927,56 @@ T81 reste le ticket. La demande du 2026-10-16 (« une vue résumée des
 recettes ») tranche la question qui le bloquait — **il vit dans la
 sous-navigation cuisine**, à côté de « Proposer · Posés · Stock · Courses » —
 et T91 lui a déjà donné sa fiche de lecture.
+
+**IL N'A AUCUN SCORE, ET C'EST LA DÉCISION QUI COMMANDE LES AUTRES.** Même
+famille que la règle de T80 : une note dépend du créneau, du stock, du journal,
+et dirait autre chose demain pour la même liste. Un répertoire qui se réordonne
+d'un jour à l'autre est un répertoire où l'on ne retrouve pas le plat vu hier —
+et il répondrait en douce à « qu'est-ce qu'on mange », que le fil tranche déjà.
+Six groupes par **place dans le repas** (T93) — les repas (102), les goûters,
+desserts et petits-déjeuners (19), accompagnements (4), entrée (1), bases (9),
+boissons (3) —, alphabétiques dedans, comme un index de livre. La protéine et le
+temps sont écrits sur chaque ligne ; on les lit, on n'y range rien.
+
+**PAS DE FILTRE, ET C'EST MESURÉ.** Le rôle, les groupes le disent déjà. « ≤ 30
+min » garderait 50 plats sur 138 — un vrai tri, mais c'est la question du mardi
+soir, donc celle du fil : la poser ici ferait deux réponses à la même question,
+le risque que T81 nommait dès le 15/09. La recherche est `trouver()` de T80, mot
+pour mot ; elle **amincit** sans réordonner et sans plafond (une ligne coûte un
+huitième d'écran, pas un écran).
+
+**LE TEMPS DE LA LIGNE EST CELUI DE LA FICHE QU'ELLE OUVRE.** Mesuré le 16/10 :
+`plat.minutes` (la carte) diffère de la somme des étapes sur **110 plats sur
+138**, et `actifMin`, que rien ne lisait, ne tombe sur « total moins sans
+surveiller » que **18 fois sur 122**. Le répertoire prend `tempsDuPlat()`, pour
+ne jamais lire 15 min sur la ligne et 23 une seconde plus tard.
+
+**LA FICHE N'A TOUJOURS PAS D'URL SANS CRÉNEAU.** `creneauDeLecture()` vise un
+créneau qui ne porte pas le plat, et `pourLire()` fait le reste : résumé,
+jamais guide. De préférence un créneau VIDE — un créneau qui porte un autre plat
+prêterait son `calc.facteurs[i]` à la fiche, et « on en cuisine 9 » se lirait
+sous une recette qui en fait 4. La ligne est une ancre : « ‹ Revenir » remonte
+l'histoire jusqu'au répertoire, qui a gardé la frappe et le défilement (un
+regard en mémoire de module, pas un réglage).
+
+**CINQ ONGLETS EN 390 PX.** « Recettes », dernier — la boucle des quatre autres
+n'est pas coupée — et dans les deux rangées, jours visibles ou non. La première
+capture mesurait 458 px de rangée et coupait l'onglet allumé à « Rec » ; les
+pastilles resserrées (13 px, 10 px de marge) la ramènent à 394 dont 16 de marge
+finale. Trié sur le titre brut, la liste s'ouvrait aussi sur trois titres entre
+guillemets : la clé de tri est `normaliser()`.
+
+- [x] **T81, livré** — `repertoire.vue.ts` (groupes, ligne, temps,
+      `creneauDeLecture`), l'écran `Repertoire.tsx`, la route
+      `#/cuisine/repertoire`. Portes : typecheck, **830 tests** (22 nouveaux),
+      build, **59 e2e** (1 nouveau, `repertoire.spec.ts` ; `fil.spec` remesure
+      la rangée), `catalogue:verifie` 0 erreur.
+
+**Ce qu'il laisse ouvert.** Les sorties et les prises se disent par leur type
+d'export (« pate a pizza », « roti froid ») : sans accent, faute d'un nom dans le
+corpus. Les trois temps d'un plat restent à réconcilier — un ticket de corpus.
+Et « Rien ne compte les chemins » tient toujours : ce parcours dit qu'un doigt
+atteint le répertoire, rien ne le dit des autres écrans.
 
 ### Les décisions — T114 à T122
 

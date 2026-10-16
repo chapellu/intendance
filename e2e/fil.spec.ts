@@ -76,9 +76,10 @@ test("l’agenda de la semaine ne s’affiche nulle part — T88", async ({ page
   // qu'on a décidé n'est pas une grille de sept jours, elle n'a ni date ni case
   // vide. C'est l'énumération qu'on remesure, pas la promesse qu'on assouplit —
   // et les deux onglets de calendrier de T88, « Aujourd'hui » et « La semaine »,
-  // restent absents.
+  // restent absents. « Recettes » (T81, 16/10) non plus n'est pas un
+  // calendrier : c'est le répertoire, qui n'a ni jour ni créneau à montrer.
   const sousnav = page.locator(".co-sousnav a");
-  await expect(sousnav).toHaveText(["Proposer", "Posés", "Stock", "Courses"]);
+  await expect(sousnav).toHaveText(["Proposer", "Posés", "Stock", "Courses", "Recettes"]);
   await expect(sousnav.filter({ hasText: "La semaine" })).toHaveCount(0);
   await expect(sousnav.filter({ hasText: "Aujourd’hui" })).toHaveCount(0);
 });
