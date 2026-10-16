@@ -70,6 +70,7 @@ recipe:
   emits:
     - kind: base
       type: pain-de-mie-maison
+      hors_table: true   # T108 — préparation : le pain sort entier
       qty_band: 3-repas
       qty: {amount: 900, unit: g}
       keeps: {frigo_days: 5, congelo: true}

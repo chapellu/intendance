@@ -163,6 +163,7 @@ function Fiche({
       parts,
       rangement,
       sortie: marque,
+      foyer: jeu.catalogue.foyer,
     });
   };
 

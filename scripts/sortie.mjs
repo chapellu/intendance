@@ -98,6 +98,22 @@ for (const id of ["ratatouille-minute", "sauce-bolognaise", "lentilles-mijotees"
     );
 }
 
+/* ── 4 bis. Les invités mangent leur part — T108 ──────────────────────────── */
+
+titre("le reste suit les portions qui restent (T108)");
+
+const { facteur } = await import("../src/model/calcul.ts");
+const { restesApresTable, mangeALaTable } = await import("../src/model/restes.ts");
+console.log(
+  `${emits.filter((e) => !mangeALaTable(e)).length} emits que la table ne mange pas (horsTable, parure, portion-bebe) · ` +
+    `${catalogue.plats.filter((p) => p.emits.length && p.portions <= foyer.parts).length} plats que le foyer vide à lui seul`,
+);
+for (const parts of [foyer.parts, 2, 4, 8]) {
+  let restent = 0;
+  for (const p of catalogue.plats) restent += restesApresTable(p, facteur(p, parts), parts, foyer).length;
+  console.log(`  ${String(parts).padEnd(4)} parts à table : ${restent} emits laissent quelque chose, sur ${emits.length}`);
+}
+
 /* ── 5. Là où l'écran n'aura rien à dire ──────────────────────────────────── */
 
 titre("les trous que ce ticket ne bouche pas");

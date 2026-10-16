@@ -118,6 +118,7 @@ recipe:
       # `carcasse-poulet` aurait créé une arête orpheline à côté d'une arête
       # identique qui marche — la faute exacte que `aliases` répare côté courses.
       type: carcasse-volaille
+      hors_table: true   # T108 — sous-produit : la table mange le poulet, pas sa carcasse
       qty_band: 2-repas
       qty: {amount: 1, unit: pièce}    # l'unité de `poulet-roti`, sinon l'arête ne matche pas
       keeps: {frigo_days: 2, congelo: true}

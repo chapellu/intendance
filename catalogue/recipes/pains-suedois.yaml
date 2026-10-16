@@ -78,6 +78,7 @@ recipe:
   emits:
     - kind: base
       type: pains-suedois
+      hors_table: true   # T108 — préparation : les pains sortent entiers
       qty_band: 3-repas
       qty: {amount: 9, unit: pièce}
       keeps: {frigo_days: 2, congelo: true}

@@ -25,6 +25,7 @@
 // dire qu'un bocal est parti au congélateur.
 
 import { bandRepas } from "../model/depot";
+import { restesApresTable } from "../model/restes";
 import type { Contenant, Emit, EmitKind, Espace, Foyer, Plat } from "../model/types";
 
 /** Un contenant du foyer, et combien il en faut. */
@@ -82,14 +83,16 @@ export interface VueSortie {
  *
  * `parts` EST CE QUI PASSE À TABLE, `f` CE QU'ON A CUISINÉ. Les deux sont déjà
  * sur la fiche — « Pour 2,5 parts · on en cuisine 4 » — et c'est la différence
- * entre les deux que cet écran range. On ne la recalcule pas : `emits` la porte
- * déjà, mesurée recette par recette (« sur 4 parts, c'est ce qui reste une fois
- * le dîner servi », dit `ratatouille-minute` dans son propre fichier).
+ * entre les deux que cet écran range. `emits` la porte, mesurée recette par
+ * recette (« sur 4 parts, c'est ce qui reste une fois le dîner servi », dit
+ * `ratatouille-minute`) — MAIS POUR LE FOYER : T108 retranche les bouches de
+ * plus, et c'est `restesApresTable` qui le fait, pour cet écran ET pour la
+ * base (`journaliserCuisson`), afin que les deux n'écrivent jamais deux restes.
  */
 export function vueDeLaSortie(p: Plat, parts: number, f: number, foyer: Foyer): VueSortie {
   const lots: LotSortie[] = [];
-  p.emits.forEach((e, rang) => {
-    const total = repasDeLEmit(e, f);
+  restesApresTable(p, f, parts, foyer).forEach(({ emit: rang, repas: total, qty }) => {
+    const e = p.emits[rang]!;
     couper(e, total).forEach((part, n) => {
       lots.push({
         emit: rang,
@@ -97,13 +100,13 @@ export function vueDeLaSortie(p: Plat, parts: number, f: number, foyer: Foyer): 
         kind: e.kind,
         location: part.location,
         repas: part.repas,
-        band: part.repas === total ? e.band : `${part.repas}-repas`,
+        band: bandeDuLot(e, part.repas, total),
         // AU PRORATA DES REPAS, et seulement quand l'emit chiffre quelque
         // chose : 91 des 126 emits du corpus ont `qty: null` — un reste de plat
         // se compte en repas, pas en grammes. L'écran qui réclamait « 200 g »
         // n'aura donc un poids que sur un emit sur trois, et il vaut mieux
         // n'en afficher aucun que d'en inventer un.
-        qty: e.qty ? (e.qty.amount * f * part.repas) / total : null,
+        qty: qty != null ? (qty * part.repas) / total : null,
         unite: e.qty ? e.qty.unit : null,
         garde: part.location === "frigo" ? e.gardeFrigo : null,
         note: n === 0 ? e.note : null,
@@ -115,15 +118,12 @@ export function vueDeLaSortie(p: Plat, parts: number, f: number, foyer: Foyer): 
 }
 
 /**
- * Combien de repas cet emit met sur le plan de travail.
- *
- * ARRONDI, ET JAMAIS EN DESSOUS D'UN : on range des boîtes, pas des fractions
- * de boîte, et un emit qui existe occupe au moins une place. C'est déjà la
- * règle de `bandRepas` (« une bande illisible vaut un repas ») — ici c'est
- * l'échelle qui peut produire le 0,5.
+ * La bande d'un lot : celle du corpus quand le lot porte tout l'emit tel que
+ * déclaré, `N-repas` sinon. Une bande « 3-repas » sur un lot qui n'en porte
+ * plus que deux ferait compter au budget de rangement des invités partis.
  */
-const repasDeLEmit = (e: Emit, f: number): number =>
-  Math.max(1, Math.round(bandRepas(e.band) * f));
+export const bandeDuLot = (e: Emit, repas: number, total: number): string =>
+  repas === total && total === bandRepas(e.band) ? e.band : `${repas}-repas`;
 
 interface Part {
   repas: number;

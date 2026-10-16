@@ -78,6 +78,7 @@ recipe:
   emits:
     - kind: base
       type: pate-vegetal
+      hors_table: true   # T108 — préparation : un pot à tartiner pour la semaine, la table ne le vide pas
       qty_band: 2-repas
       keeps: {frigo_days: 5, congelo: false}
       note: "en bocal hermétique ; l'accord parfait de l'autrice est 80 g de pain des fleurs au sarrasin"

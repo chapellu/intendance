@@ -259,7 +259,11 @@ def main():
                  "qty": _qty(e), "band": e.get("qty_band"),
                  "espace": ch.espace_de(e), "note": e.get("note"),
                  "gardeFrigo": (e.get("keeps") or {}).get("frigo_days"),
-                 "congelo": bool(e.get("keeps", {}).get("congelo"))}
+                 "congelo": bool(e.get("keeps", {}).get("congelo")),
+                 # T108 — ce que la table ne mange pas : un sous-produit (une
+                 # carcasse, un bouillon) ou une préparation qui sort entière
+                 # (une pâte, un pain). Les invités n'y touchent pas.
+                 "horsTable": bool(e.get("hors_table"))}
                 for e in r.get("emits", [])
             ],
             # Un lot qui ne se coupe pas en deux : « faire 0,42 poulet rôti »

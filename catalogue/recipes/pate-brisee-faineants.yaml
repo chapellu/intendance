@@ -54,6 +54,7 @@ recipe:
   emits:
     - kind: base
       type: pate-brisee-portion
+      hors_table: true   # T108 — préparation : les pâtons sortent entiers
       qty_band: 3-repas
       qty: {amount: 4, unit: pièce}
       keeps: {frigo_days: 5, congelo: true}

@@ -90,6 +90,7 @@ recipe:
   emits:
     - kind: base
       type: jus-pois-chiches
+      hors_table: true   # T108 — sous-produit : l'eau d'égouttage ne passe pas à table
       qty_band: 1-repas
       qty: {amount: 15, unit: cl}
       keeps: {frigo_days: 3, congelo: true}

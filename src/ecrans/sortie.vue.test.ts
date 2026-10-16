@@ -27,6 +27,7 @@ const emit = (o: Partial<Emit>): Emit => ({
   note: null,
   gardeFrigo: 3,
   congelo: true,
+  horsTable: false,
   ...o,
 });
 
@@ -206,5 +207,64 @@ describe("le conseil de la recette, au moment où il sert", () => {
       foyer,
     );
     expect(v.lots.map((l) => l.note)).toEqual(["meilleure réchauffée le lendemain", null]);
+  });
+});
+
+describe("T108 — les invités mangent leur part", () => {
+  // LE RESTE DU CATALOGUE EST CELUI DU FOYER. `emits` dit ce que laisse un lot
+  // de `portions` quand `Foyer.parts` (2,5) est à table ; chaque bouche de plus
+  // le prend dans la cocotte, pas dans un lot imaginaire.
+  const mitonnee = catalogue.plats.find((x) => x.id === "mitonnee-lentilles")!;
+
+  test("pour le foyer seul, rien ne change : c'est le cas que le catalogue décrit", () => {
+    const v = vueDeLaSortie(mitonnee, foyer.parts, 1, foyer);
+    expect(v.lots.map((l) => [l.location, l.qty])).toEqual([
+      ["frigo", 150],
+      ["congelo", 300],
+    ]);
+  });
+
+  test("huit à table sur un lot de huit : tout part dans les assiettes", () => {
+    // La Toussaint de l'année simulée rangeait 150 g + 450 g de cette
+    // mitonnée. Le lot faisait 8 portions et 8 parts étaient servies.
+    const v = vueDeLaSortie(mitonnee, 8, 8 / 6, foyer);
+    expect(v.rien).toBe(true);
+  });
+
+  test("une bouche de moins laisse plus, une de plus laisse moins", () => {
+    const deux = vueDeLaSortie(plat([emit({ band: "3-repas", qty: { amount: 450, unit: "g" } })]), 2, 1, foyer);
+    const quatre = vueDeLaSortie(plat([emit({ band: "3-repas", qty: { amount: 450, unit: "g" } })]), 3, 1, foyer);
+    const total = (v: typeof deux) => v.lots.reduce((n, l) => n + (l.qty ?? 0), 0);
+    // portions 4, foyer 2,5 : le reste déclaré vaut 1,5 portion.
+    expect(total(deux)).toBeCloseTo(450 * (2 / 1.5));
+    expect(total(quatre)).toBeCloseTo(450 * (1 / 1.5));
+  });
+
+  test("un reste plus petit que la part du bébé se finit, il ne se range pas", () => {
+    // 3,75 parts sur un lot de 4 : 0,25 portion de reste déclaré à 1,5.
+    const v = vueDeLaSortie(plat([emit({ band: "lunchbox" })]), 3.8, 1, foyer);
+    expect(v.rien).toBe(true);
+  });
+
+  test("ce que la table ne mange pas ne se retranche pas", () => {
+    // Le bouillon du pot-au-feu sort entier, même à huit : la table mange la
+    // viande et les légumes, pas le bouillon.
+    const p = catalogue.plats.find((x) => x.id === "pot-au-feu-traditionnel")!;
+    const v = vueDeLaSortie(p, 8, 8 / 6, foyer);
+    const bouillon = v.lots.filter((l) => l.type === "bouillon-pot-au-feu");
+    expect(bouillon.reduce((n, l) => n + (l.qty ?? 0), 0)).toBeCloseTo(2500 * (8 / 6));
+    expect(v.lots.some((l) => l.type === "viande-pot-au-feu")).toBe(false);
+  });
+
+  test("un lot que le foyer vide à lui seul garde l'ancien calcul", () => {
+    // Une salade d'une portion pour 2,5 parts : l'emit déclaré ne peut pas
+    // être un reste de la table, on ne lui en invente pas un.
+    const p = { ...plat([emit({ band: "lunchbox", congelo: false, espace: "frigo" })]), portions: 1 } as Plat;
+    expect(vueDeLaSortie(p, 2.5, 2.5, foyer).lots[0]!.repas).toBe(3);
+  });
+
+  test("un lot qui garde toute sa bande garde son nom, un lot réduit est recompté", () => {
+    const v = vueDeLaSortie(plat([emit({ band: "3-repas", congelo: false, espace: "frigo" })]), 3, 1, foyer);
+    expect(v.lots[0]!.band).toBe("2-repas");
   });
 });

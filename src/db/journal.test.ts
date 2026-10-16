@@ -61,11 +61,27 @@ describe("T26 — trois effets, une seule transaction", () => {
     // déstocke la dernière bolognaise, il faut encourager d'en refaire ».
   });
 
-  test("les parts mettent la production à l'échelle", async () => {
+  test("T108 — sans sortie, la base range ce que l'écran aurait montré", async () => {
+    // AVANT : `qty × parts / portions` sur la bande brute, soit 350 g pour
+    // deux parts d'une bolognaise qui se cuisine EN LOT ENTIER (elle se
+    // congèle) — l'écran, lui, disait 700. Maintenant les deux lisent
+    // `restesApresTable` : un lot de 4, 2 à table pour un foyer de 2,5, il
+    // reste plus que ce que le foyer laisse — 700 × 2 / 1,5.
     await journaliserCuisson(base, {
       jour: "2026-09-01", repas: "diner", plat: bolognaise, parts: 2,
+      foyer: { parts: 2.5, mangeurs: [] },
     });
-    expect((await base.stock.toArray())[0]!.qty).toBe(350);
+    const [l] = await base.stock.toArray();
+    expect(l!.qty).toBeCloseTo((700 * 2) / 1.5);
+    expect(l!.band).toBe("3-repas");
+  });
+
+  test("T108 — des invités qui vident la cocotte ne laissent rien en base", async () => {
+    await journaliserCuisson(base, {
+      jour: "2026-09-01", repas: "diner", plat: bolognaise, parts: 8,
+      foyer: { parts: 2.5, mangeurs: [] },
+    });
+    expect(await base.stock.count()).toBe(0);
   });
 
   test("EFFET 2 : le bocal quitte VRAIMENT la base", async () => {

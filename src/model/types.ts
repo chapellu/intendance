@@ -176,6 +176,16 @@ export interface Emit {
   note: string | null;
   gardeFrigo: number;
   congelo: boolean;
+  /**
+   * T108 — la table n'en mange rien : un sous-produit (carcasse, bouillon,
+   * aquafaba) ou une préparation qui sort entière (pâte, pain, yaourts).
+   *
+   * C'EST LA SEULE CHOSE QUE LE CATALOGUE DEVAIT AJOUTER POUR QUE LE RESTE SE
+   * CALCULE. Tout le reste — `portions`, `band`, `Foyer.parts` — y était déjà ;
+   * mais retrancher les invités d'une carcasse donnerait « pas de carcasse » à
+   * huit, et rien ne distinguait un bouillon d'une mitonnée.
+   */
+  horsTable: boolean;
 }
 
 export interface Accept {

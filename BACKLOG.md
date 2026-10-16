@@ -4544,7 +4544,7 @@ Les tickets sont groupés par CHANTIER, et un chantier = une branche. Les
 
 ### La sortie compte ce qui part dans les assiettes — T108 et T109
 
-- [ ] **T108 — Les invités mangent leur part.** `vueDeLaSortie` multiplie
+- [x] **T108 — Les invités mangent leur part.** `vueDeLaSortie` multiplie
       chaque emit par le facteur (`qty × f`) sans retrancher les bouches de
       plus : la Toussaint à 8 a rangé 150 g au frigo et 450 g au congélo, quand
       le même plat pour le foyer en range 150 et 300. Le reste est celui du
@@ -4561,6 +4561,61 @@ Les tickets sont groupés par CHANTIER, et un chantier = une branche. Les
       les contenants occupés retirés — avec une phrase quand il n'en reste pas
       assez (« il manque 2 boîtes : sacs congélation ? »). C'est l'item « le
       plafond de rangement n'est pas consulté » laissé ouvert par T99.
+
+#### T108, fait — le reste suit les portions qui restent
+
+**LA FORMULE, TIRÉE DE CE QUE LE CATALOGUE DÉCLARE.** Un emit est ce que laisse
+UN lot de `portions` quand `Foyer.parts` (2,5) est à table — « sur 4 parts,
+c'est ce qui reste une fois le dîner servi ». L'emit se multiplie donc par
+`r = (portions × f − parts) / (portions − Foyer.parts)` au lieu de `f`
+(`model/restes.ts`). Pour le foyer seul, r = 1 : **0 emit sur 126 ne change au
+foyer**, le cas que le catalogue décrit reste exact.
+
+**LE TICKET SE TROMPAIT SUR LE CHIFFRE ATTENDU.** Il voulait « 150 + 300 » à la
+Toussaint, le reste du foyer. Mais `facteur` cuisine 8/6 du lot pour 8 parts :
+8 portions dans la cocotte, 8 dans les assiettes, **il ne reste rien**, et c'est
+ce que la sortie dit maintenant (« tout part dans les assiettes »). Garder le
+reste du foyer EN PLUS des invités serait une décision de planification —
+cuisiner `(parts + reste) / portions` —, pas de sortie.
+
+**IL A FALLU UN CHAMP AU CATALOGUE, ET UN SEUL : `hors_table`.** Retrancher les
+invités d'une carcasse donnait « pas de carcasse » à huit, et rien ne
+distinguait le bouillon du pot-au-feu de la mitonnée. 25 emits sont marqués
+(carcasses, aquafaba, bouillons, pâtes, pains, yaourts, mousse, céréale et
+légumineuses cuites d'avance, rillettes et tartinades), plus les 2 `parure` et
+la `portion-bebe` par leur `kind` : **28 emits sur 126 suivent `f` sans
+retrancher personne**. Les rillettes ont été trouvées par la mesure : sans
+marque, c'était le seul emit qui disparaissait au foyer (lot non gardé,
+f = 0,625, 2,5 portions servies à 2,5 parts).
+
+**29 PLATS SONT VIDÉS PAR LE FOYER À LUI SEUL** (`portions ≤ 2,5` : les
+salades-lunchbox d'une portion, les recettes pour deux). Le dénominateur est
+nul ou négatif — leur emit ne PEUT PAS être un reste de table — et ils gardent
+l'ancien calcul. Le seuil : un reste sous la plus petite part déclarée (le bébé,
+0,25) se finit au lieu de se ranger.
+
+Mesuré sur le corpus (`npm run sortie`) : à 2 parts, 18 emits laissent plus ; à
+4 parts, 60 changent et 26 disparaissent ; à 8 parts, 74 changent, 67
+disparaissent (13 sur des `lotEntier`, dont le facteur arrondi au poulet
+laisse quand même de quoi ranger).
+
+**`journaliserCuisson` N'ÉCRIVAIT PAS CE QUE L'ÉCRAN MONTRAIT, MÊME POUR LE
+FOYER.** Son défaut (« j'ai fait autrement ») prenait `qty × parts / portions`
+sur la bande brute, l'écran `qty × facteur(plat, parts)` : **34 emits pesés
+différents au foyer, 28 bandes différentes** — la mitonnée affichait 450 g et la
+base en écrivait 188 sur « 3-repas ». Les deux passent par `restesApresTable`
+au même facteur ; `Cuisiner` donne le foyer à la cuisson.
+
+Ce que T108 laisse ouvert :
+- **La projection ne retranche toujours personne.** `calculer()` met encore
+  `qty × f` au dépôt projeté et `bilanStockage` compte `band × f` en entrée :
+  la semaine planifiée avec invités annonce plus de restes que la sortie n'en
+  rangera.
+- **L'effet 2 garde `parts / portions`** pour ce qu'un `accepts` prend, quand
+  la fiche affiche `facteur`. Même désaccord, sur ce qui sort du dépôt.
+- **Les 29 plats vidés par le foyer** : leur emit dit « ça part en lunchbox »,
+  pas « il en reste » ; la sortie annonce donc encore 2,5 parts à table ET
+  3 lunchbox au frigo pour une salade d'une portion.
 
 ### Ce que l'app demande, et où elle envoie — T110 et T111
 

@@ -7,9 +7,11 @@
 // qu'on ne découvre qu'un mois plus tard, devant un congélateur qui ne
 // ressemble pas à l'écran.
 
-import { accepte } from "../model/depot";
+import { facteur } from "../model/calcul";
+import { accepte, bandRepas } from "../model/depot";
 import type { Constat, Evenement, EvtCuisine, LigneEntree } from "../model/journal";
-import type { Catalogue, Plat, RepasId } from "../model/types";
+import { restesApresTable } from "../model/restes";
+import type { Catalogue, Foyer, Plat, RepasId } from "../model/types";
 import { jourISO, type Base, type LotStock } from "./schema";
 
 export const lireJournal = (base: Base): Promise<Evenement[]> =>
@@ -61,6 +63,15 @@ export interface Cuisson {
    * personne ne saurait jamais si elle vaut quelque chose.
    */
   sortie?: EvtCuisine["sortie"];
+  /**
+   * Le foyer contre lequel les `emits` ont été déclarés — T108.
+   *
+   * C'EST LUI QUI DIT COMBIEN LES INVITÉS ONT MANGÉ. Un emit est le reste du
+   * foyer ; sans savoir qui est le foyer, on ne sait pas qui est de plus. Absent
+   * (les tests du journal), LA TABLE EST PRISE POUR LE FOYER : personne n'est
+   * de plus, et le reste suit le seul facteur du lot.
+   */
+  foyer?: Pick<Foyer, "parts" | "mangeurs">;
 }
 
 /**
@@ -81,7 +92,7 @@ export interface Cuisson {
  */
 export async function journaliserCuisson(
   base: Base,
-  { jour, repas, plat, parts, rangement, sortie }: Cuisson,
+  { jour, repas, plat, parts, rangement, sortie, foyer }: Cuisson,
   aujourdhui = new Date(),
 ): Promise<number> {
   const saisi = jourISO(aujourdhui);
@@ -145,7 +156,7 @@ export async function journaliserCuisson(
     // dire. Sans elle, RIEN NE CHANGE : un lot par emit, au frigo, sur la bande
     // que le corpus déclare. Le défaut reste donc la vieille prudence, et il
     // reste écrit ici, en une ligne qu'on peut lire.
-    for (const r of rangement?.length ? rangement : defaut(plat, f)) {
+    for (const r of rangement?.length ? rangement : defaut(plat, parts, foyer ?? { parts, mangeurs: [] })) {
       const e = plat.emits[r.emit];
       if (!e) continue;
       await base.stock.add({
@@ -171,16 +182,31 @@ export async function journaliserCuisson(
   });
 }
 
-/** Le rangement de celui qui n'a rien rangé : un lot par emit, au frigo, sur la
- *  bande du corpus. C'est ce que l'app écrit depuis T26, et ce qu'elle continue
- *  d'écrire partout où la sortie ne s'est pas prononcée. */
-const defaut = (plat: Plat, f: number): RangementLot[] =>
-  plat.emits.map((e, emit) => ({
-    emit,
-    location: "frigo" as const,
-    band: e.band,
-    qty: e.qty ? e.qty.amount * f : null,
-  }));
+/**
+ * Le rangement de celui qui n'a rien rangé : un lot par emit, au frigo. C'est
+ * ce que l'app écrit depuis T26, et ce qu'elle continue d'écrire partout où la
+ * sortie ne s'est pas prononcée (« j'ai fait autrement »).
+ *
+ * T108 — LES MÊMES QUANTITÉS QUE L'ÉCRAN, PAR LA MÊME FONCTION. Ce défaut
+ * écrivait `qty × parts / portions` sur la bande BRUTE du corpus, quand l'écran
+ * affichait `qty × facteur(plat, parts)` : pour le foyer devant une mitonnée
+ * pour 6, l'écran disait 450 g et la base en écrivait 188, sur une bande
+ * « 3-repas ». Les deux lisent maintenant `restesApresTable` au facteur que
+ * `calculer()` donne au créneau — celui que la fiche montre.
+ *
+ * (L'EFFET 2, LUI, GARDE `parts / portions` : c'est ce qu'un `accepts` prend,
+ * et c'est une autre question, laissée ouverte au backlog.)
+ */
+const defaut = (plat: Plat, parts: number, foyer: Pick<Foyer, "parts" | "mangeurs">): RangementLot[] =>
+  restesApresTable(plat, facteur(plat, parts), parts, foyer).map(({ emit, repas, qty }) => {
+    const e = plat.emits[emit]!;
+    return {
+      emit,
+      location: "frigo" as const,
+      band: repas === bandRepas(e.band) ? e.band : `${repas}-repas`,
+      qty,
+    };
+  });
 
 /**
  * Le créneau a-t-il déjà été cuisiné ? Marquer deux fois « fait » décrémenterait

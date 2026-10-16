@@ -102,12 +102,14 @@ recipe:
   emits:
     - kind: base
       type: pois-chiches-cuits
+      hors_table: true   # T108 — préparation : les deux bandes font les six portions du lot
       qty_band: 3-repas
       qty: {amount: 1000, unit: g}
       keeps: {frigo_days: 5, congelo: true}
       note: "la sarriette et la sauge ne sont pas décoratives : l'autrice les met pour la digestion des légumineuses"
     - kind: base
       type: haricots-blancs-cuits
+      hors_table: true   # T108 — préparation : les deux bandes font les six portions du lot
       qty_band: 3-repas
       qty: {amount: 1000, unit: g}
       keeps: {frigo_days: 5, congelo: true}

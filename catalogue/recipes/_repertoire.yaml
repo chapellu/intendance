@@ -295,6 +295,7 @@ recipes:
         keeps: {frigo_days: 3, congelo: true}
       - kind: base
         type: carcasse-volaille
+        hors_table: true   # T108 — sous-produit : la table mange le poulet, pas sa carcasse
         qty_band: 1-repas
         qty: {amount: 1, unit: pièce}   # une carcasse, et il n'y en a qu'une
         keeps: {frigo_days: 2}

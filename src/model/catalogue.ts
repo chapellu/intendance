@@ -233,6 +233,7 @@ function emit(v: unknown, ou: string): Emit {
     note: texteOuNull(o["note"] ?? null, `${ou}.note`),
     gardeFrigo: nombre(o["gardeFrigo"], `${ou}.gardeFrigo`),
     congelo: booleen(o["congelo"], `${ou}.congelo`),
+    horsTable: booleen(o["horsTable"], `${ou}.horsTable`),
   };
 }
 
