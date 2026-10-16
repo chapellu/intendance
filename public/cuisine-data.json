@@ -154,6 +154,7 @@
     "label": "boîtes hermétiques 0,5 / 1 L",
     "nombre": 8,
     "portions": 1,
+    "volumeMl": 500,
     "espaces": [
      "frigo",
      "congelo"
@@ -165,6 +166,7 @@
     "label": "bocaux Le Parfait 0,75 L",
     "nombre": 12,
     "portions": 2,
+    "volumeMl": 750,
     "espaces": [
      "frigo",
      "placard"
@@ -176,6 +178,7 @@
     "label": "sacs congélation",
     "nombre": 20,
     "portions": 1,
+    "volumeMl": null,
     "espaces": [
      "congelo"
     ],

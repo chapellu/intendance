@@ -4550,7 +4550,7 @@ Les tickets sont groupés par CHANTIER, et un chantier = une branche. Les
       le même plat pour le foyer en range 150 et 300. Le reste est celui du
       foyer, pas celui du lot. (C'est l'item « le reste dans les assiettes
       n'est pas compté » laissé ouvert par T99.)
-- [ ] **T109 — Une boîte a un volume, et elle peut être prise.** Mesuré sur le
+- [x] **T109 — Une boîte a un volume, et elle peut être prise.** Mesuré sur le
       pot-au-feu pour le foyer : « 1 250 ml → 1 × boîtes hermétiques 0,5 / 1 L »,
       « 800 g → 1 × bocaux 0,75 L » — les contenants se comptent en portions,
       jamais en litres. Et `boitesPour` puise dans les contenants DÉCLARÉS, pas
@@ -4616,6 +4616,52 @@ Ce que T108 laisse ouvert :
 - **Les 29 plats vidés par le foyer** : leur emit dit « ça part en lunchbox »,
   pas « il en reste » ; la sortie annonce donc encore 2,5 parts à table ET
   3 lunchbox au frigo pour une salade d'une portion.
+
+#### T109, fait — une boîte a un volume, et elle peut être prise
+
+**`volume_ml` PAR FAMILLE, LU SUR LE LABEL.** Bocaux 750 ; boîtes 500 — la
+famille « 0,5 / 1 L » mêle les deux tailles sans dire combien de chaque, et
+0,5 L est la boîte que `portions: 1` décrit (un repas) : un lot calculé pour
+elle tient dans l'une comme dans l'autre, au prix de proposer parfois une boîte
+de trop. Les sacs n'ont aucun chiffre : pas de volume, portions seules.
+
+**CE QU'UNE BOÎTE PREND EST LA PLUS PETITE DE DEUX PARTS** — ses portions sur
+les repas du lot, son volume sur celui du lot. Les grammes comptent 1 g/ml :
+c'est une HYPOTHÈSE, exacte pour les sauces et optimiste pour les morceaux.
+Mesuré : 19 emits sur 126 sont en grammes, 4 en volume ; à 0,7 g/ml, **3 lots
+pesés sur 36** demanderaient une boîte de plus. Le choix en dépend peu.
+
+**ON NE PUISE QUE DANS CE QUI EST LIBRE.** `contenantsLibres` redonne leurs
+boîtes aux lots du dépôt, dans l'ordre de la base, par la même règle — dérivé,
+pas persisté : un lot ne dit pas où il dort, et « il faut deux bocaux » reste un
+calcul. Les lots d'une même sortie puisent l'un après l'autre. Quand le pool ne
+suffit pas, le lot le DIT : « il manque 2 × bocaux Le Parfait 0,75 L : sacs
+congélation ? » (le sac, consommable, est proposé là où il n'est pas déclaré),
+sinon « laver des boîtes », le geste de l'inventaire. `boitesPour` garde son
+nom et ses trois premiers paramètres pour la mise en place (T112).
+
+**LE POT-AU-FEU, AVANT ET APRÈS, pour le foyer :**
+
+| lot | avant | après |
+|---|---|---|
+| bouillon frigo 1 250 ml | 1 boîte | 1 bocal + 1 boîte |
+| bouillon congélo 1 250 ml | 1 boîte | 3 boîtes |
+| viande frigo / congélo 300 g | 1 boîte chacun | 1 boîte chacun |
+| légumes frigo 800 g | 1 bocal | 1 bocal + 1 boîte |
+| **total** | 4 boîtes, 1 bocal | **7 boîtes sur 8**, 2 bocaux |
+
+Le retour d'usage tient dans ce tableau : à lui seul, le pot-au-feu prend sept
+des huit boîtes. Sur l'amorce du catalogue (2 boîtes et 1 bocal déjà pris), les
+légumes passent en 2 bocaux ; avec un dépôt plein, chaque lot du frigo dit ce
+qui manque et le congélateur part en sacs.
+
+Ce que T109 laisse ouvert :
+- **L'inventaire compte autrement.** Son plafond « contenants » est en places
+  par espace, semaine planifiée comprise, et une boîte frigo/congélo y compte
+  deux fois ; la sortie compte des boîtes, rangées maintenant. Les deux
+  nombres peuvent différer — un seul modèle du pool serait plus juste.
+- **La densité n'est pas mesurée**, et le partage 0,5 L / 1 L des boîtes non
+  plus : deux nombres à relever dans la cuisine, pas dans le dépôt.
 
 ### Ce que l'app demande, et où elle envoie — T110 et T111
 

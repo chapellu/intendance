@@ -47,7 +47,7 @@ import {
   tempsDuPlat,
   type EtatMinuteur,
 } from "./cuisiner.vue";
-import { phraseDesBoites, quantiteDuLot, vueDeLaSortie } from "./sortie.vue";
+import { phraseDesBoites, phraseDuManque, quantiteDuLot, vueDeLaSortie } from "./sortie.vue";
 
 export function Cuisiner({ creneau, plat }: { creneau: CleCreneau; plat?: string }) {
   const { catalogue } = useCatalogue();
@@ -235,6 +235,7 @@ function Fiche({
         parts={parts}
         f={f}
         foyer={jeu.catalogue.foyer}
+        stock={jeu.stock}
         revenir={() => setSortie(false)}
         repondre={repondre}
       />
@@ -371,6 +372,7 @@ function Sortie({
   parts,
   f,
   foyer,
+  stock,
   revenir,
   repondre,
 }: {
@@ -378,10 +380,12 @@ function Sortie({
   parts: number;
   f: number;
   foyer: Foyer;
+  /** Ce que le dépôt porte déjà — ses boîtes ne sont pas libres (T109). */
+  stock: Jeu["stock"];
   revenir: () => void;
   repondre: (rangement: RangementLot[] | null, marque?: "suivie" | "autre") => void;
 }) {
-  const v = vueDeLaSortie(p, parts, f, foyer);
+  const v = vueDeLaSortie(p, parts, f, foyer, stock);
   return (
     <>
       <div className="co-fiche-tete">
@@ -423,6 +427,9 @@ function Sortie({
                       pour cet espace — inventer une boîte serait pire que de se
                       taire. */}
                   {l.boites.length ? <div className="ou">{phraseDesBoites(l.boites)}</div> : null}
+                  {/* T109 — LE MANQUE SE DIT, au lieu de proposer une boîte
+                      qu'on n'a plus : « il manque 2 × … : sacs congélation ? ». */}
+                  {l.manque ? <div className="ou">⚠ {phraseDuManque(l.manque)}</div> : null}
                   {/* La phrase de la recette, à l'instant où elle sert. */}
                   {l.note ? <div className="ou">{l.note}</div> : null}
                 </span>

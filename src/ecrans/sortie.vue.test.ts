@@ -10,8 +10,17 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, test } from "vitest";
 import { lireCatalogue } from "../model/catalogue";
+import type { LotInitial } from "../model/depot";
 import type { Catalogue, Emit, Plat } from "../model/types";
-import { boitesPour, phraseDesBoites, quantiteDuLot, vueDeLaSortie } from "./sortie.vue";
+import {
+  boitesPour,
+  contenantsLibres,
+  phraseDesBoites,
+  phraseDuManque,
+  quantiteDuLot,
+  rangerDans,
+  vueDeLaSortie,
+} from "./sortie.vue";
 
 const catalogue: Catalogue = lireCatalogue(
   JSON.parse(readFileSync("public/cuisine-data.json", "utf8")) as unknown,
@@ -266,5 +275,76 @@ describe("T108 — les invités mangent leur part", () => {
   test("un lot qui garde toute sa bande garde son nom, un lot réduit est recompté", () => {
     const v = vueDeLaSortie(plat([emit({ band: "3-repas", congelo: false, espace: "frigo" })]), 3, 1, foyer);
     expect(v.lots[0]!.band).toBe("2-repas");
+  });
+});
+
+describe("T109 — une boîte a un volume, et elle peut être prise", () => {
+  const potAuFeu = catalogue.plats.find((x) => x.id === "pot-au-feu-traditionnel")!;
+  const lot = (o: Partial<LotInitial>): LotInitial => ({
+    type: "x", kind: "reste-plat", qty: null, qty_band: "1-repas", born: "2026-10-01", location: "frigo", ...o,
+  });
+
+  test("1 250 ml de bouillon ne tiennent pas dans une boîte de 0,5 L", () => {
+    // Le cas mesuré du ticket : « 1 250 ml → 1 × boîtes hermétiques ».
+    expect(boitesPour(foyer, "congelo", 1, { amount: 1250, unit: "ml" })).toEqual([
+      { label: "boîtes hermétiques 0,5 / 1 L", nombre: 3 },
+    ]);
+  });
+
+  test("au frigo, le bocal prend le gros et une boîte le reste", () => {
+    expect(boitesPour(foyer, "frigo", 1, { amount: 1250, unit: "ml" })).toEqual([
+      { label: "bocaux Le Parfait 0,75 L", nombre: 1 },
+      { label: "boîtes hermétiques 0,5 / 1 L", nombre: 1 },
+    ]);
+  });
+
+  test("les grammes comptent pour des millilitres", () => {
+    // 800 g de légumes : un bocal de 0,75 L ne suffit plus.
+    expect(boitesPour(foyer, "frigo", 2, { amount: 800, unit: "g" })).toEqual([
+      { label: "bocaux Le Parfait 0,75 L", nombre: 1 },
+      { label: "boîtes hermétiques 0,5 / 1 L", nombre: 1 },
+    ]);
+  });
+
+  test("ce que le dépôt occupe n'est plus libre", () => {
+    const stock = Array.from({ length: 8 }, () => lot({ location: "congelo" }));
+    const libres = contenantsLibres(foyer, stock);
+    // Les 8 boîtes dorment au congélateur : le prochain lot va dans un sac.
+    expect(libres.get("boites-hermetiques")).toBe(0);
+    expect(boitesPour(foyer, "congelo", 1, null, libres)).toEqual([{ label: "sacs congélation", nombre: 1 }]);
+  });
+
+  test("quand il n'en reste pas assez, la sortie le dit — et propose un sac au frigo", () => {
+    const stock = [
+      ...Array.from({ length: 8 }, () => lot({ location: "frigo" })),
+      ...Array.from({ length: 6 }, () => lot({ location: "frigo", qty_band: "2-repas" })),
+    ];
+    const libres = contenantsLibres(foyer, stock);
+    expect(libres.get("bocaux-le-parfait")).toBe(6);
+    const r = rangerDans(foyer, "frigo", 1, { amount: 1250, unit: "ml" }, new Map([...libres, ["bocaux-le-parfait", 0]]));
+    expect(r.boites).toEqual([]);
+    expect(r.manque).toEqual({ nombre: 2, label: "bocaux Le Parfait 0,75 L", repli: "sacs congélation" });
+    expect(phraseDuManque(r.manque!)).toBe("il manque 2 × bocaux Le Parfait 0,75 L : sacs congélation ?");
+  });
+
+  test("deux lots d'une même sortie ne prennent jamais la même boîte", () => {
+    const v = vueDeLaSortie(potAuFeu, foyer.parts, 1, foyer);
+    const boites = v.lots.flatMap((l) => l.boites).filter((b) => b.label.startsWith("boîtes"));
+    expect(boites.reduce((n, b) => n + b.nombre, 0)).toBeLessThanOrEqual(8);
+  });
+
+  test("le pot-au-feu d'un dépôt déjà plein dit ce qui manque", () => {
+    // Retour d'usage : « pas assez de boîtes ». Les 8 boîtes et les 12 bocaux
+    // dorment au frigo : ce qui va au frigo manque, ce qui va au congélateur
+    // part en sacs.
+    const stock = [
+      ...Array.from({ length: 8 }, () => lot({ location: "frigo" })),
+      ...Array.from({ length: 12 }, () => lot({ location: "frigo", qty_band: "2-repas" })),
+    ];
+    const v = vueDeLaSortie(potAuFeu, foyer.parts, 1, foyer, stock);
+    const frigo = v.lots.filter((l) => l.location === "frigo");
+    expect(frigo.every((l) => l.manque?.repli === "sacs congélation")).toBe(true);
+    const congelo = v.lots.filter((l) => l.location === "congelo");
+    expect(congelo.every((l) => l.boites.every((b) => b.label === "sacs congélation"))).toBe(true);
   });
 });

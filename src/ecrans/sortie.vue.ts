@@ -26,7 +26,8 @@
 
 import { bandRepas } from "../model/depot";
 import { restesApresTable } from "../model/restes";
-import type { Contenant, Emit, EmitKind, Espace, Foyer, Plat } from "../model/types";
+import type { LotInitial } from "../model/depot";
+import type { Contenant, Emit, EmitKind, Espace, Foyer, Plat, Quantite } from "../model/types";
 
 /** Un contenant du foyer, et combien il en faut. */
 export interface Boite {
@@ -68,6 +69,8 @@ export interface LotSortie {
    *  boîte, et l'écrire deux fois ferait croire à deux conseils. */
   note: string | null;
   boites: Boite[];
+  /** Ce qui manque quand le pool libre ne suffit pas — T109. `null` sinon. */
+  manque: Manque | null;
 }
 
 export interface VueSortie {
@@ -89,11 +92,22 @@ export interface VueSortie {
  * plus, et c'est `restesApresTable` qui le fait, pour cet écran ET pour la
  * base (`journaliserCuisson`), afin que les deux n'écrivent jamais deux restes.
  */
-export function vueDeLaSortie(p: Plat, parts: number, f: number, foyer: Foyer): VueSortie {
+export function vueDeLaSortie(
+  p: Plat,
+  parts: number,
+  f: number,
+  foyer: Foyer,
+  stock: readonly LotInitial[] = [],
+): VueSortie {
   const lots: LotSortie[] = [];
+  // T109 — LES LOTS DE LA SORTIE PUISENT L'UN APRÈS L'AUTRE dans ce que le
+  // dépôt laisse libre : deux lots ne prennent jamais la même boîte.
+  const libres = contenantsLibres(foyer, stock);
   restesApresTable(p, f, parts, foyer).forEach(({ emit: rang, repas: total, qty }) => {
     const e = p.emits[rang]!;
     couper(e, total).forEach((part, n) => {
+      // AU PRORATA DES REPAS, et seulement quand l'emit chiffre quelque chose.
+      const qtyDuLot = qty != null && e.qty ? { amount: (qty * part.repas) / total, unit: e.qty.unit } : null;
       lots.push({
         emit: rang,
         type: e.type,
@@ -106,11 +120,11 @@ export function vueDeLaSortie(p: Plat, parts: number, f: number, foyer: Foyer): 
         // se compte en repas, pas en grammes. L'écran qui réclamait « 200 g »
         // n'aura donc un poids que sur un emit sur trois, et il vaut mieux
         // n'en afficher aucun que d'en inventer un.
-        qty: qty != null ? (qty * part.repas) / total : null,
+        qty: qtyDuLot?.amount ?? null,
         unite: e.qty ? e.qty.unit : null,
         garde: part.location === "frigo" ? e.gardeFrigo : null,
         note: n === 0 ? e.note : null,
-        boites: boitesPour(foyer, part.location, part.repas),
+        ...rangerEtPrendre(foyer, part.location, part.repas, qtyDuLot, libres),
       });
     });
   });
@@ -163,55 +177,187 @@ function couper(e: Emit, total: number): Part[] {
 }
 
 /**
- * Quelles boîtes, et combien — le glouton, du plus gros au plus petit.
+ * Combien de millilitres un lot occupe — `null` quand on ne sait pas le dire.
  *
- * DEUX RÈGLES, ET LA PREMIÈRE N'EST PAS UNE OPTIMISATION. Un contenant
- * `consommable` — les 20 sacs congélation — est une ligne de courses à racheter ;
- * le proposer d'abord dépenserait un stock en silence pour épargner une
- * vaisselle. Les boîtes qui se lavent passent donc devant, et un sac n'apparaît
- * que là où rien d'autre ne va.
- *
- * ENSUITE LE PLUS GROS QUI TIENT, parce que c'est ce qu'on lave le moins et ce
- * que le plafond de rangement compte le mieux : `Contenant.portions` est dans
- * la MÊME unité que `band` — le foyer déclare 32 places au frigo, qui sont
- * 8 boîtes × 1 + 12 bocaux × 2.
- *
- * LE DERNIER RESTE ARRONDIT VERS LE HAUT : une boîte à moitié pleine est une
- * boîte. Sans cette ligne, un reste de 1 repas face à des bocaux de 2 ne
- * recevrait aucun contenant et l'écran se tairait sur le seul geste qu'il a à
- * donner.
- *
- * AUCUN CONTENANT POUR CET ESPACE ⇒ ON NE DIT RIEN, et l'écran dira la quantité
- * sans la boîte. Inventer un contenant que le foyer n'a pas déclaré serait la
- * faute que tout ce dépôt passe son temps à réparer.
+ * LES GRAMMES COMPTENT POUR DES MILLILITRES (1 g/ml), et c'est une hypothèse,
+ * pas une mesure : le dépôt ne connaît aucune densité. Elle est exacte pour ce
+ * qui se range en sauce, en soupe, en purée ; elle est OPTIMISTE pour les
+ * morceaux (viande, légumes entiers), qui laissent du vide entre eux et
+ * prennent plus de place que leur poids. Mesuré sur le corpus : 19 emits sur
+ * 126 sont en grammes, et 3 lots pesés sur 36 changeraient de nombre de boîtes
+ * à 0,7 g/ml (`npm run sortie`). Les pièces, pâtes, pots et lots n'ont pas de
+ * volume : ils se rangent en portions seules.
  */
-export function boitesPour(foyer: Foyer, espace: Espace, repas: number): Boite[] {
-  const dispo = foyer.contenants
-    .filter((c) => c.portions > 0 && c.espaces.includes(espace))
-    .sort(ordreDesContenants);
-  if (!dispo.length) return [];
-
-  const prises: Boite[] = [];
-  let reste = repas;
-  for (const c of dispo) {
-    if (reste <= 0) break;
-    const n = Math.floor(reste / c.portions);
-    if (n > 0) {
-      prises.push({ label: c.label, nombre: n });
-      reste -= n * c.portions;
-    }
+export function volumeDe(q: Quantite | null): number | null {
+  if (!q) return null;
+  switch (q.unit.toLowerCase()) {
+    case "ml":
+      return q.amount;
+    case "cl":
+      return q.amount * 10;
+    case "l":
+      return q.amount * 1000;
+    case "g":
+      return q.amount * DENSITE;
+    case "kg":
+      return q.amount * 1000 * DENSITE;
+    default:
+      return null;
   }
-  if (reste > 0) {
-    const petit = dispo.reduce((min, c) => (c.portions < min.portions ? c : min), dispo[0]!);
-    const deja = prises.find((b) => b.label === petit.label);
-    if (deja) deja.nombre += 1;
-    else prises.push({ label: petit.label, nombre: 1 });
-  }
-  return prises;
 }
 
-const ordreDesContenants = (a: Contenant, b: Contenant): number =>
-  a.consommable === b.consommable ? b.portions - a.portions : a.consommable ? 1 : -1;
+/** Grammes par millilitre — voir `volumeDe`. */
+export const DENSITE = 1;
+
+/** Ce qu'il reste de propre, par famille : `id` → nombre. */
+export type Libres = Map<string, number>;
+
+/** Ce qui manque quand le pool ne suffit pas — T109. */
+export interface Manque {
+  nombre: number;
+  /** La famille qu'on aurait prise. */
+  label: string;
+  /** Un consommable libre que le foyer n'a pas déclaré pour cet espace — un
+   *  sac au frigo. Une question, pas une consigne. */
+  repli: string | null;
+}
+
+export interface Rangement {
+  boites: Boite[];
+  manque: Manque | null;
+}
+
+/**
+ * Quelles boîtes, et combien — T99, repris par T109.
+ *
+ * CE QU'UNE BOÎTE PREND D'UN LOT EST LA PLUS PETITE DE DEUX PARTS : ses
+ * portions sur les repas du lot, son volume sur celui du lot. Avant T109, seul
+ * le premier comptait, et « 1 250 ml → 1 × boîtes hermétiques 0,5 / 1 L »
+ * s'affichait sans ciller.
+ *
+ * LES BOÎTES QUI SE LAVENT PASSENT DEVANT LES SACS QU'ON RACHÈTE — la règle de
+ * T99, inchangée : un sac n'apparaît que là où plus rien d'autre ne va.
+ * Ensuite, tant qu'aucune boîte ne prend tout ce qui reste, LA PLUS GROSSE ; dès
+ * qu'une le peut, LA PLUS PETITE QUI LE PEUT — une boîte à moitié pleine est
+ * une boîte, mais on ne sort pas un bocal pour un fond.
+ *
+ * ON NE PUISE QUE DANS CE QUI EST LIBRE. `libres` est le pool après ce que le
+ * dépôt occupe déjà (`contenantsLibres`) ; sans lui, tout ce que le foyer
+ * déclare est supposé propre — au mieux. Quand le pool s'épuise, la réponse le
+ * DIT (`manque`) au lieu de proposer une boîte qu'on n'a pas : c'était le
+ * pot-au-feu qui « n'avait pas assez de boîtes ».
+ *
+ * NE MODIFIE PAS `libres` : c'est `prendre` qui retire ce qu'on a choisi.
+ */
+export function rangerDans(
+  foyer: Foyer,
+  espace: Espace,
+  repas: number,
+  qty: Quantite | null = null,
+  libres?: ReadonlyMap<string, number>,
+): Rangement {
+  const declares = foyer.contenants.filter((c) => c.portions > 0 && c.espaces.includes(espace));
+  if (!declares.length) return { boites: [], manque: null };
+
+  const vol = volumeDe(qty);
+  const part = (c: Contenant): number =>
+    Math.min(c.portions / Math.max(repas, 1e-9), c.volumeMl != null && vol ? c.volumeMl / vol : Infinity);
+  const reste = new Map(declares.map((c) => [c.id, libres?.get(c.id) ?? c.nombre]));
+
+  const prises: Boite[] = [];
+  let a = 1;
+  while (a > 1e-9) {
+    const dispo = declares.filter((c) => (reste.get(c.id) ?? 0) > 0);
+    if (!dispo.length) break;
+    const lavables = dispo.filter((c) => !c.consommable);
+    const classe = lavables.length ? lavables : dispo;
+    const tient = classe.filter((c) => part(c) >= a - 1e-9);
+    const c = tient.length
+      ? tient.reduce((m, x) => (part(x) < part(m) ? x : m))
+      : classe.reduce((m, x) => (part(x) > part(m) ? x : m));
+    reste.set(c.id, reste.get(c.id)! - 1);
+    a -= part(c);
+    const deja = prises.find((b) => b.label === c.label);
+    if (deja) deja.nombre += 1;
+    else prises.push({ label: c.label, nombre: 1 });
+  }
+  if (a <= 1e-9) return { boites: prises, manque: null };
+
+  // LE MANQUE SE COMPTE DANS LA FAMILLE QU'ON AURAIT PRISE : la plus grosse
+  // des boîtes qui se lavent, faute de quoi la plus grosse tout court.
+  const lavables = declares.filter((c) => !c.consommable);
+  const ref = (lavables.length ? lavables : declares).reduce((m, x) => (part(x) > part(m) ? x : m));
+  const repli = foyer.contenants.find(
+    (c) => c.consommable && !c.espaces.includes(espace) && (libres?.get(c.id) ?? c.nombre) > 0,
+  );
+  return {
+    boites: prises,
+    manque: { nombre: Math.ceil(a / part(ref) - 1e-9), label: ref.label, repli: repli?.label ?? null },
+  };
+}
+
+/**
+ * Quelles boîtes, et combien — la réponse courte de `rangerDans`.
+ *
+ * GARDÉE SOUS CE NOM ET CETTE FORME parce que la mise en place (T112) la lit
+ * pour dire quelles boîtes sortir avant de commencer. Les deux derniers
+ * paramètres sont facultatifs : sans eux, c'est le comportement de T99 plafonné
+ * au nombre déclaré.
+ */
+export const boitesPour = (
+  foyer: Foyer,
+  espace: Espace,
+  repas: number,
+  qty: Quantite | null = null,
+  libres?: ReadonlyMap<string, number>,
+): Boite[] => rangerDans(foyer, espace, repas, qty, libres).boites;
+
+/** Retire du pool les boîtes qu'on vient de prendre. MUTE `libres`. */
+export function prendre(foyer: Foyer, libres: Libres, boites: readonly Boite[]): void {
+  for (const b of boites) {
+    const c = foyer.contenants.find((x) => x.label === b.label);
+    if (c) libres.set(c.id, Math.max(0, (libres.get(c.id) ?? c.nombre) - b.nombre));
+  }
+}
+
+/**
+ * Ce qui reste de propre — le pool, moins ce que le dépôt occupe.
+ *
+ * DÉRIVÉ, PAS PERSISTÉ. Un lot ne dit pas dans quelles boîtes il dort : on les
+ * lui RE-DONNE, dans l'ordre de la base, par la même règle que la sortie. C'est
+ * une estimation — quelqu'un a pu mettre la ratatouille dans un bocal — mais
+ * c'est celle que la sortie avait proposée, et persister « il faut deux bocaux »
+ * ferait d'un calcul une seconde vérité.
+ *
+ * L'INVENTAIRE COMPTE AUTREMENT, ET LES DEUX NOMBRES PEUVENT DIFFÉRER : son
+ * plafond « contenants » est en PLACES par espace, avec la semaine planifiée
+ * dedans, et une boîte qui va au frigo comme au congélateur y compte deux fois.
+ * Ici une boîte est une boîte, et seul compte ce qui est rangé maintenant.
+ */
+export function contenantsLibres(foyer: Foyer, stock: readonly LotInitial[]): Libres {
+  const libres: Libres = new Map(foyer.contenants.map((c) => [c.id, c.nombre]));
+  for (const l of stock) {
+    const { boites } = rangerDans(foyer, l.location, bandRepas(l.qty_band), l.qty, libres);
+    prendre(foyer, libres, boites);
+  }
+  return libres;
+}
+
+/**
+ * « il manque 2 × boîtes hermétiques 0,5 / 1 L : sacs congélation ? »
+ *
+ * LA QUESTION QUAND IL Y A UN REPLI, LE GESTE SINON — et le geste est celui
+ * que l'inventaire nomme déjà (`laver des boîtes`), pour que les deux écrans
+ * disent la même chose du même manque.
+ */
+export const phraseDuManque = (m: Manque): string =>
+  `il manque ${m.nombre} × ${m.label} : ${m.repli ? `${m.repli} ?` : "laver des boîtes"}`;
+
+const rangerEtPrendre = (foyer: Foyer, espace: Espace, repas: number, qty: Quantite | null, libres: Libres): Rangement => {
+  const r = rangerDans(foyer, espace, repas, qty, libres);
+  prendre(foyer, libres, r.boites);
+  return r;
+};
 
 /**
  * « 2 × bocaux Le Parfait 0,75 L ».

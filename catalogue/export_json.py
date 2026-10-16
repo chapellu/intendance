@@ -338,6 +338,9 @@ def main():
             "contenants": [
                 {"id": c["id"], "label": c.get("label") or c["id"],
                  "nombre": c.get("nombre", 0), "portions": c.get("portions", 0),
+                 # T109 — le volume d'UNE boîte, en ml ; None quand le label
+                 # n'en dit rien (les sacs).
+                 "volumeMl": c.get("volume_ml"),
                  # Un bocal ne devient une place de placard que si la
                  # stérilisation est acquise ; sinon il reste une boîte de
                  # frigo, ce qui est exactement la vérité physique.

@@ -52,16 +52,27 @@ household:
   # La contrainte qui mord dans une vraie cuisine n'est presque jamais « le
   # congélateur est plein » : c'est « les six boîtes sont au frigo avec la
   # ratatouille de mardi dedans ».
+  #
+  # `volume_ml` (T109) : ce qu'UNE boîte de la famille contient. Les portions
+  # disaient combien de repas, jamais combien de litres — et 1 250 ml de
+  # bouillon partaient « dans 1 boîte » de 0,5 L. Lu sur le LABEL, faute de
+  # mieux : la famille des boîtes mêle des 0,5 L et des 1 L sans dire combien
+  # de chaque, et c'est 0,5 L qui est retenu — c'est la boîte que `portions: 1`
+  # décrit (un repas), et un lot calculé pour elle tient dans l'une comme dans
+  # l'autre. Les sacs n'ont aucun chiffre sur le label : pas de volume, ils se
+  # comptent en portions seules.
   contenants:
     - id: boites-hermetiques
       label: boîtes hermétiques 0,5 / 1 L
       nombre: 8
       portions: 1
+      volume_ml: 500
       espaces: [frigo, congelo]
     - id: bocaux-le-parfait
       label: bocaux Le Parfait 0,75 L
       nombre: 12
       portions: 2
+      volume_ml: 750
       espaces: [frigo, placard]
       # Le placard n'est ouvert qu'aux bocaux STÉRILISÉS, et la stérilisation
       # au bain-marie ne vaut que pour les acides — voir l'avertissement en tête

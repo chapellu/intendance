@@ -334,6 +334,9 @@ export interface Contenant {
   label: string;
   nombre: number;
   portions: number;
+  /** T109 — ce qu'une boîte contient, en ml. `null` quand le label ne le dit
+   *  pas (les sacs) : on se contente alors des portions. */
+  volumeMl: number | null;
   espaces: Espace[];
   consommable: boolean;
 }

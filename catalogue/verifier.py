@@ -465,6 +465,10 @@ def verifier_foyer(foyer: dict, equilibre: dict, capacites: set) -> tuple:
         if not c.get("nombre") or not c.get("portions"):
             err.append(f"contenant « {cid} » : il faut un `nombre` et des `portions` "
                        "non nuls, sinon il n'offre aucune place")
+        vol = c.get("volume_ml")
+        if vol is not None and (not isinstance(vol, (int, float)) or vol <= 0):
+            err.append(f"contenant « {cid} » : `volume_ml` doit être un nombre positif "
+                       "(ou absent quand le label n'en dit rien)")
         inconnus = set(c.get("espaces", [])) - set(ch.ESPACES)
         if inconnus:
             err.append(f"contenant « {cid} » : espace(s) inconnu(s) {sorted(inconnus)} "

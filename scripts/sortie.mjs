@@ -122,8 +122,39 @@ let sansBoite = 0;
 for (const p of catalogue.plats)
   for (const l of vueDeLaSortie(p, foyer.parts, 1, foyer).lots) if (!l.boites.length) sansBoite += 1;
 console.log(`${sansBoite} lots sortiraient sans contenant à proposer.`);
-console.log(
-  "Le plafond de rangement n'est PAS consulté : l'écran propose une boîte sans\n" +
-    "savoir s'il en reste une de propre. C'est le premier endroit où regarder\n" +
-    "quand quelqu'un se plaindra qu'on lui demande un bocal qu'il n'a pas.",
-);
+
+/* ── 6. Le volume des boîtes — T109 ───────────────────────────────────────── */
+
+titre("une boîte a un volume (T109)");
+
+const { rangerDans, contenantsLibres, phraseDuManque } = await import("../src/ecrans/sortie.vue.ts");
+const enGrammes = emits.filter((e) => e.qty && e.qty.unit === "g").length;
+const enVolume = emits.filter((e) => e.qty && ["ml", "cl", "l"].includes(e.qty.unit)).length;
+console.log(`${enGrammes} emits en grammes (comptés 1 g/ml), ${enVolume} en volume, le reste en portions seules`);
+// LA DENSITÉ N'EST PAS MESURÉE : on dit combien de choix elle décide. À
+// 0,7 g/ml — des morceaux qui laissent du vide —, combien de lots demanderaient
+// une boîte de plus ?
+const nb = (r) => r.boites.reduce((n, b) => n + b.nombre, 0);
+let sensibles = 0, pesés = 0;
+for (const p of catalogue.plats)
+  for (const l of vueDeLaSortie(p, foyer.parts, 1, foyer).lots) {
+    if (l.qty == null || l.unite !== "g") continue;
+    pesés += 1;
+    const a1 = rangerDans(foyer, l.location, l.repas, { amount: l.qty, unit: "g" });
+    const a7 = rangerDans(foyer, l.location, l.repas, { amount: l.qty / 0.7, unit: "g" });
+    if (nb(a7) !== nb(a1)) sensibles += 1;
+  }
+console.log(`${sensibles} lots pesés sur ${pesés} changeraient de nombre de boîtes à 0,7 g/ml`);
+
+const pot = catalogue.plats.find((x) => x.id === "pot-au-feu-traditionnel");
+if (pot) {
+  for (const [nom, stock] of [["dépôt vide", []], ["amorce du catalogue", catalogue.stock]]) {
+    const libres = contenantsLibres(foyer, stock);
+    console.log(`\n  pot-au-feu, ${nom} — libres : ` + foyer.contenants.map((c) => `${libres.get(c.id)} ${c.id}`).join(" · "));
+    for (const l of vueDeLaSortie(pot, foyer.parts, 1, foyer, stock).lots)
+      console.log(
+        `    ${l.location.padEnd(8)} ${quantiteDuLot(l).padEnd(9)} ${phraseDesBoites(l.boites) || "—"}` +
+          `${l.manque ? ` · ${phraseDuManque(l.manque)}` : ""}`,
+      );
+  }
+}

@@ -423,6 +423,7 @@ function foyer(v: unknown, ou: string): Foyer {
         label: texte(c["label"], `${ou}.contenants[${i}].label`),
         nombre: nombre(c["nombre"], `${ou}.contenants[${i}].nombre`),
         portions: nombre(c["portions"], `${ou}.contenants[${i}].portions`),
+        volumeMl: nombreOuNull(c["volumeMl"] ?? null, `${ou}.contenants[${i}].volumeMl`),
         espaces: tableau(c["espaces"], `${ou}.contenants[${i}].espaces`)
           .map((e, j) => parmi(e, ESPACES, `${ou}.contenants[${i}].espaces[${j}]`)),
         consommable: booleen(c["consommable"], `${ou}.contenants[${i}].consommable`),
