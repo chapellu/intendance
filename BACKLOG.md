@@ -4463,7 +4463,7 @@ Les tickets sont groupés par CHANTIER, et un chantier = une branche. Les
 
 ### Ce que le placard EST n'est pas ce qu'il en RESTE — T106 et T107
 
-- [ ] **T106 — L'écoulement lit le rejeu, pas le relevé du 26/08.**
+- [x] **T106 — L'écoulement lit le rejeu, pas le relevé du 26/08.**
       `aEcouler(jeu.catalogue)` construit la pression depuis
       `catalogue.gardeManger.denrees` : un placard relevé à zéro au jour 0 et
       jamais réapprovisionné a fait dire « finit des paquets entamés : farine
@@ -4479,6 +4479,35 @@ Les tickets sont groupés par CHANTIER, et un chantier = une branche. Les
       remet le placard à ce que l'œil voit* attend « Rien de relevé ici. » sur
       `.first()` — et la zone 5, qui n'a aucune denrée, le dit toujours : il ne
       peut pas rougir. Le vérifier ROUGE avant de le vérifier vert.
+
+#### T106, fait — ce que la mesure a corrigé
+
+- **La source est `jeu.gardeManger`, pas un second rejeu.** `useSemaine` y pose
+  déjà l'intersection de `hydraterGardeManger` avant que le jeu n'arrive au
+  score ; `aEcouler(catalogue, reste)` la lit, et `reste` est OBLIGATOIRE — une
+  valeur par défaut aurait laissé tout appel oublié retomber sur le relevé, le
+  bug lui-même rendu invisible. Un jeu sans base porte `idsDuReleve` : il
+  calcule ce qu'il calculait.
+- **Mesuré avant le correctif** : les sept zones relevées à vide, le rejeu ne
+  porte plus un seul id, et **14 des 101 cartes** d'un dîner disaient encore
+  « finit des paquets entamés » (pâtes, farine d'épeautre, biscottes, poudre
+  d'amande). Après : 0. Le bocal du dépôt, lui, compte toujours.
+- **L'intersection ne peut qu'ÔTER une pression, jamais en ajouter** — le
+  pendant de « ne peut qu'ajouter des lignes de courses » de #32. Lire `etat`
+  sur les lots rejoués est écarté : `retirer()` passe un lot non chiffré de
+  `sec` à `entame` à la première cuisson, donc tout paquet rentré des courses
+  puis servi une fois se serait mis à pousser son plat.
+- **« sauve ce qui se perd : ail, oignon » ne venait PAS du score.** Depuis T60
+  le placard plafonne à 0,4, sous le seuil urgent de 0,8 : le score ne peut pas
+  le dire. C'est « À manger en premier » (`aSauver`) qui nommait l'ail et
+  l'oignon d'un sous-évier relevé vide ; il prend le même `reste`.
+- **La phrase de synthèse dit ce qui reste, et nomme le relevé** : « 45 des 45
+  denrées du relevé du 26/08 sont encore là, dont 18 pesées pour 10,8 kg ».
+  Deux chiffres changent sur une base neuve, et c'est voulu : **45 et non 53**,
+  parce que le rejeu tient un état par ingrédient (quatre lignes de pâtes, un
+  ingrédient) ; **10,8 kg et non 16 kg**, parce que la farine (4 kg), le sucre
+  (1 kg) et le concentré (210 g) ont chacun un second lot non pesé — leur poids
+  partiel se lisait comme un total.
 
 ### La sortie compte ce qui part dans les assiettes — T108 et T109
 

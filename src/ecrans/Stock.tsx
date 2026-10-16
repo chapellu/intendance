@@ -49,12 +49,14 @@ import { Icone, iconeEspace } from "../ui/icones";
 import { fmt } from "../ui/format";
 import {
   baisserPlancher,
+  resteAuPlacard,
   vueDeLInventaire,
   vueDesPlanchers,
   vueDesPlanchersDenrees,
   type LotVue,
   type PlanchersDenreesVue,
   type PlanchersVue,
+  type ResteAuPlacard,
   type ZoneVue,
 } from "./stock.vue";
 
@@ -83,6 +85,12 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
   // LE PLACARD REJOUÉ. Rien de ce qu'il rend n'existe en base : c'est l'amorce
   // du catalogue plus le journal, et c'est là que T25 devient visible à l'œil.
   const placard = usePlacard(jeu.catalogue);
+  // CE QU'IL EN RESTE, en une phrase — T106. `null` tant que le journal n'a pas
+  // répondu : la phrase se tait plutôt que de dire le relevé du 26/08 une frame.
+  const reste = useMemo(
+    () => (placard ? resteAuPlacard(jeu.catalogue, placard) : null),
+    [jeu.catalogue, placard],
+  );
 
   // LES PLANCHERS — T34 à T38. Le journal dit ce qui a été cuisiné, donc ce qui
   // se propose ; les décisions disent ce qu'un doigt en a fait. `null` tant que
@@ -270,7 +278,12 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
         </span>
       </div>
 
-      <GardeManger vue={vue.gardeManger} placard={placard} planchers={planchersDenrees} />
+      <GardeManger
+        vue={vue.gardeManger}
+        placard={placard}
+        reste={reste}
+        planchers={planchersDenrees}
+      />
     </Corps>
   );
 }
@@ -480,10 +493,12 @@ function Planchers({ vue }: { vue: PlanchersVue | null }) {
 function GardeManger({
   vue,
   placard,
+  reste,
   planchers,
 }: {
   vue: ReturnType<typeof vueDeLInventaire>["gardeManger"];
   placard: Rejeu | null;
+  reste: ResteAuPlacard | null;
   planchers: PlanchersDenreesVue | null;
 }) {
   if (!vue.zones.length) return null;
@@ -492,10 +507,19 @@ function GardeManger({
       <div className="co-kicker" style={{ margin: "var(--space-4) var(--space-1) var(--space-2)" }}>
         Le garde-manger
       </div>
-      <div className="co-note" style={{ margin: "0 var(--space-1) var(--space-2)" }}>
-        {vue.denrees} denrées dans {vue.zones.length} rangements
-        {vue.volume ? `, ${vue.volume} mesurés` : ""}. {vue.pesees} sont pesées, pour {vue.poids}.
-      </div>
+      {/* CE QU'IL EN RESTE, PUIS CE QU'IL EST — T106. La phrase disait « 53
+          denrées … 16 kg » : c'était le relevé du 26/08, lu comme l'état du
+          placard, et un placard relevé vide la gardait mot pour mot. Le chiffre
+          vient maintenant du rejeu, et le relevé est nommé comme tel : c'est
+          lui qui donne le « sur combien ». */}
+      {reste ? (
+        <div className="co-note" style={{ margin: "0 var(--space-1) var(--space-2)" }}>
+          {reste.restent} des {reste.relevees} denrées du relevé
+          {reste.releve ? ` du ${reste.releve}` : ""} sont encore là
+          {reste.pesees ? `, dont ${reste.pesees} pesées pour ${reste.poids}` : ""}.{" "}
+          {vue.zones.length} rangements{vue.volume ? `, ${vue.volume} mesurés` : ""}.
+        </div>
+      ) : null}
 
       {/* UNE ALERTE PAR LIGNE, PARCE QU'UNE ALERTE EST UN GESTE. Enfilées avec
           des points médians elles formaient un pavé de sept lignes qu'on ne lit
