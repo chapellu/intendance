@@ -4680,7 +4680,7 @@ Ce que T109 laisse ouvert :
 
 ### Cuisiner : le résumé d'abord, la quantité à chaque étape — T112 et T113
 
-- [ ] **T112 — Une séance de cuisine s'ouvre sur sa mise en place.** Demandé
+- [x] **T112 — Une séance de cuisine s'ouvre sur sa mise en place.** Demandé
       le 2026-10-16. Avant l'étape 1 du guide — quand on CUISINE, pas quand on
       vient lire (ça, c'est T91) — un écran qui dit tout ce qu'il faut sortir :
       les ingrédients aux parts du créneau, l'ustensile **et s'il tient**
@@ -4688,6 +4688,48 @@ Ce que T109 laisse ouvert :
       rien ne rejoint sans « Changer » ; la Toussaint a passé la mitonnée dans
       une sauteuse ×1 sans un mot), les boîtes à prévoir pour la sortie, le temps
       total et le temps actif. Un bouton « C'est parti » ouvre l'étape 1.
+
+      **AUCUN CHIFFRE NOUVEAU : TOUT ÉTAIT CALCULÉ, AILLEURS.** `miseEnPlace()`
+      dans `cuisiner.vue` assemble ce qui existait — les quantités
+      d'`Ingredients` au `f` de la fiche, le temps de `tempsDuPlat`, les boîtes
+      de `vueDeLaSortie` appelée telle quelle. La mise en place annonce donc
+      les boîtes que la sortie demandera, par la même fonction : si T109 lui
+      apprend les volumes et les contenants pris, l'écran du début l'apprend
+      avec elle. Un test le tient sur les 138 plats.
+
+      **LE TEMPS ACTIF EST `total − libre`, PAS `actifMin`.** Mesuré : le
+      `active_min` de l'ouvrage existe sur 122 plats et ne coïncide avec la
+      somme des étapes surveillées que sur **18**. L'afficher à côté d'un total
+      tiré des étapes mettrait deux chiffres qui ne s'additionnent pas sur le
+      même écran — ce que `tempsDuPlat` refuse depuis T91. L'écran dit « En
+      tout » et « Devant le feu », puis « dont 1 h sans surveiller ».
+
+      **LE DÉBORDEMENT SE DIT ICI, ET SEULEMENT ICI.** `aSortir()` refusait un
+      troisième libellé du fait que `parts` et les offres disaient déjà ; son
+      commentaire est complété plutôt que contredit : il tenait pour la fiche,
+      mais ces deux écrans ne se traversent plus en cuisinant. `recipient()`
+      parle au facteur que la fiche affiche (`calc.facteurs[i]`), et compte ses
+      tournées au lieu de les promettre à deux. Mesuré : aux 2,5 parts du
+      foyer, **aucun des 77 plats à vaisselle ne déborde** ; à 8, **61 sur
+      77**. La ligne « À sortir » de la fiche et du résumé reste neutre ; seule
+      la mise en place passe au ton accent (`.co-sortir.deborde`).
+
+      **PERSISTÉE COMME L'AVANCEMENT, DONT ELLE EST LE PREMIER CRAN.**
+      `cleMiseEnPlace` vit sous le préfixe `etape|`, est posée par « C'est
+      parti » et effacée avec l'avancement quand la sortie a répondu. Elle ne
+      s'affiche qu'à l'étape 0 : une cuisson commencée avant ce ticket, à
+      l'étape 5, ne la revoit pas. « ‹ », grisé jusqu'ici sur l'étape 1, y
+      ramène — le seul chemin pour revoir ce qu'il fallait sortir sans quitter
+      la cuisson.
+
+      **UN PLAT SANS ÉTAPES N'A QUE SA MISE EN PLACE**, qui porte son
+      « Terminer » et la phrase de T78 ; elle remplace la liste nue qui tenait
+      ce rôle.
+
+      Portes : typecheck, **819 tests** (11 nouveaux), build, **61 e2e** (3
+      nouveaux dans `mise-en-place.spec.ts` ; `ouvrirLeGuide` et
+      `stock-descend` passent par `passerLaMiseEnPlace`), `catalogue:verifie`
+      0 erreur, `etapes` 0 casse.
 - [ ] **T113 — Chaque étape dit les quantités qu'elle prend.** Demandé le
       2026-10-16. `uses:` existe dans l'export (198 étapes sur 744, 50 plats
       sur 138) et **aucun écran ne le lit** — encore une donnée sans lecteur.

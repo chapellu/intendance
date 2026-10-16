@@ -17,7 +17,15 @@ import { useEffect, useState, type ReactNode } from "react";
 import { indexDuCreneau } from "../db";
 import { useCatalogue, useSemaine } from "../db/hooks";
 import { dejaCuisine, journaliserCuisson, type RangementLot } from "../db/journal";
-import { cleEtape, cleMinuteur, poserReglage, useNombre, useObjet } from "../db/reglages";
+import {
+  cleEtape,
+  cleMinuteur,
+  cleMiseEnPlace,
+  poserReglage,
+  useDrapeau,
+  useNombre,
+  useObjet,
+} from "../db/reglages";
 import { base } from "../db/schema";
 import { echelleTexte, facteurAffiche, type Calcul } from "../model/calcul";
 import { joue, type Jeu } from "../model/jeu";
@@ -39,6 +47,8 @@ import {
   credit,
   minuteur,
   minuteurUtile,
+  miseEnPlace,
+  montrerMiseEnPlace,
   outilDe,
   phraseDuRole,
   pourLire,
@@ -46,6 +56,7 @@ import {
   sansRecette,
   tempsDuPlat,
   type EtatMinuteur,
+  type Recipient,
 } from "./cuisiner.vue";
 import { phraseDesBoites, phraseDuManque, quantiteDuLot, vueDeLaSortie } from "./sortie.vue";
 
@@ -120,8 +131,14 @@ function Fiche({
   const [sortie, setSortie] = useState(false);
   const cle = cleEtape(creneau.jour, creneau.repas, p.id);
   const range = useNombre(cle);
+  // LA MISE EN PLACE PASSÉE — T112. Persistée comme l'avancement, et pour la
+  // même raison : c'en est le premier cran. Un regard (`ingr`) se perd sans
+  // dommage ; revoir la liste de ce qu'on a déjà sorti, la casserole sur le feu,
+  // serait l'écran qui fait sortir du guide au mauvais moment.
+  const cleP = cleMiseEnPlace(creneau.jour, creneau.repas, p.id);
+  const passee = useDrapeau(cleP);
 
-  if (range === undefined) return null;
+  if (range === undefined || passee === undefined) return null;
   const steps = p.steps;
   const etape = Math.min(range, Math.max(0, steps.length - 1));
 
@@ -184,8 +201,9 @@ function Fiche({
    */
   const repondre = (rangement: RangementLot[] | null, marque?: "suivie" | "autre") => {
     void terminer(rangement, marque).finally(() => {
-      void poserReglage(cle, null);
-      sortir();
+      // La mise en place s'efface AVEC l'avancement : la prochaine cuisson du
+      // même plat sur le même créneau — une seconde fournée — repart du début.
+      void Promise.all([poserReglage(cle, null), poserReglage(cleP, null)]).finally(sortir);
     });
   };
 
@@ -213,7 +231,8 @@ function Fiche({
   );
 
   // Un plat sans étapes n'a pas de mode guidé — il n'a qu'une liste. La fiche
-  // s'ouvre alors dessus, plutôt que sur un écran vide.
+  // s'ouvre alors dessus, plutôt que sur un écran vide ; depuis T112, cette
+  // liste est sa mise en place, qui porte son « Terminer ».
   //
   // ⚠ ET IL POUVAIT ALORS N'ÊTRE JAMAIS TERMINÉ, ce qui est un trou dans la
   // promesse centrale de l'app. « Terminer » est le SEUL endroit où le stock
@@ -282,43 +301,35 @@ function Fiche({
       </>
     );
 
-  if (ingr || !steps.length)
+  // LA MISE EN PLACE, AVANT L'ÉTAPE 1 — T112. Après la lecture (une lecture ne
+  // cuisine pas : elle y arrive par « Ouvrir le guide ») et avant la bascule
+  // « Ingrédients », qui est un regard en cours de route. Un plat sans étapes
+  // n'a qu'elle, et elle porte alors son « Terminer » — voir
+  // `montrerMiseEnPlace`.
+  if (!ingr && montrerMiseEnPlace(steps, range, passee))
+    return (
+      <MiseEnPlace
+        p={p}
+        parts={parts}
+        f={f}
+        jeu={jeu}
+        commencer={() => void poserReglage(cleP, true)}
+        terminer={() => setSortie(true)}
+      />
+    );
+
+  // LA LISTE, EN COURS DE ROUTE. Seulement sur un plat qui a des étapes : celui
+  // qui n'en a pas reste sur sa mise en place, qui porte déjà la phrase de T78
+  // (« ce plat n'a pas encore ses étapes ») et son « Terminer ».
+  if (ingr)
     return (
       <>
         {tete}
-        {/* LA FICHE LE DIT AVANT LA LISTE, PAS APRÈS. C'est la plainte du
-            14/09 : « tu m'as encore fourni une recette sans étapes ». L'écran
-            ne mentait pas — il n'avait simplement rien à dire, et un écran qui
-            se tait sur ce qui lui manque se lit comme un écran cassé. La
-            phrase se pose donc là où l'œil arrive, entre le titre et les
-            quantités, et pas en bas près du bouton où elle ressemblerait à un
-            avertissement de dernière minute.
-
-            On l'affiche même quand l'utilisateur est venu voir la liste d'un
-            plat qui A des étapes : `sansRecette` rend `null` dans ce cas, donc
-            la condition tient toute seule et il n'y a pas deux chemins à
-            garder d'accord. */}
-        {muet ? (
-          <div className="co-sansrecette">
-            <Icone nom="info" />
-            <span>{muet.long}</span>
-          </div>
-        ) : null}
         <Ingredients p={p} parts={parts} f={f} jeu={jeu} />
         <div style={{ padding: "0 var(--space-4) var(--space-4)" }}>
-          {steps.length ? (
-            <button className="btn btn-secondary btn-block" onClick={() => setIngr(false)}>
-              Revenir à l’étape {etape + 1}
-            </button>
-          ) : (
-            // Le même geste et le même mot que la dernière étape du guide, parce
-            // que c'est le même événement : ce plat n'a qu'une étape, la faire.
-            // Et depuis T99 la même suite : un plat sans étapes laisse les mêmes
-            // bocaux sur le plan de travail qu'un plat qui en a douze.
-            <button className="btn btn-primary btn-block" onClick={() => setSortie(true)}>
-              Terminer
-            </button>
-          )}
+          <button className="btn btn-secondary btn-block" onClick={() => setIngr(false)}>
+            Revenir à l’étape {etape + 1}
+          </button>
         </div>
       </>
     );
@@ -335,7 +346,134 @@ function Fiche({
         cle={cle}
         cleM={cleMinuteur(creneau.jour, creneau.repas, p.id, steps[etape]!.id)}
         fin={() => setSortie(true)}
+        avant={() => void poserReglage(cleP, null)}
       />
+    </>
+  );
+}
+
+/* ───────────────────────────────────────────────────────── la mise en place */
+
+/**
+ * LE PREMIER ÉCRAN D'UNE CUISSON — T112, demandé le 2026-10-16 : « un écran
+ * résumé au début d'une séance de cuisine ».
+ *
+ * CE N'EST PAS LE RÉSUMÉ DE T91, ET IL N'EN REPREND PAS LA FORME. Le résumé
+ * répond à « est-ce que je le pose ? » : il a le déroulé, et rend la main. La
+ * mise en place répond à « qu'est-ce que je sors avant d'allumer le feu ? » :
+ * les quantités aux parts du créneau, le récipient et s'il suffit, les boîtes
+ * qu'il faudra au bout, et le temps qu'on y passera devant. Pas de déroulé — le
+ * guide le donne une étape à la fois, et c'est le bouton d'en bas.
+ *
+ * LES BOÎTES SONT ANNONCÉES AVANT, PARCE QUE C'EST LÀ QU'ON PEUT ENCORE LES
+ * CHERCHER. La sortie de T99 les nomme quand la casserole est pleine et les
+ * mains occupées ; les découvrir sales au fond de l'évier à ce moment-là est
+ * exactement le retour d'usage du pot-au-feu (« pas assez de boîtes »).
+ *
+ * UN PLAT SANS ÉTAPES N'A QUE CET ÉCRAN, et il y garde son « Terminer » : le
+ * même geste que la dernière étape du guide, qui mène à la même sortie.
+ */
+function MiseEnPlace({
+  p,
+  parts,
+  f,
+  jeu,
+  commencer,
+  terminer,
+}: {
+  p: Plat;
+  parts: number;
+  f: number;
+  jeu: Jeu;
+  /** « C'est parti » — passe la mise en place, ouvre l'étape 1. */
+  commencer: () => void;
+  /** Le plat sans étapes : directement la sortie. */
+  terminer: () => void;
+}) {
+  const m = miseEnPlace(p, parts, f, jeu.catalogue.foyer);
+  const muet = sansRecette(p);
+  const avecEtapes = p.steps.length > 0;
+  return (
+    <>
+      <div className="co-fiche-tete">
+        <button className="co-retour" onClick={sortir}>
+          ‹ Sortir
+        </button>
+        <span className="t">{p.titre}</span>
+      </div>
+      {/* LA FICHE LE DIT AVANT LA LISTE, PAS APRÈS — la plainte du 14/09, « tu
+          m'as encore fourni une recette sans étapes ». Un écran qui se tait sur
+          ce qui lui manque se lit comme un écran cassé ; la phrase se pose là
+          où l'œil arrive, entre le titre et les quantités, et pas près du
+          bouton où elle ressemblerait à un avertissement de dernière minute.
+          (Venue de l'ancienne liste des plats sans étapes, que cet écran
+          remplace.) */}
+      {muet ? (
+        <div className="co-sansrecette">
+          <Icone nom="info" />
+          <span>{muet.long}</span>
+        </div>
+      ) : null}
+      <Ingredients p={p} parts={parts} f={f} jeu={jeu} tient={m.recipient}>
+        {/* LE TEMPS, PUIS LA SORTIE — sous la liste, parce que la liste est ce
+            qu'on sort en premier et que l'œil y arrive directement. */}
+        <div className="co-mep">
+          {avecEtapes ? (
+            <div className="temps">
+              <div>
+                <span className="co-kicker">En tout</span>
+                <div className="v">{duree(m.total)}</div>
+              </div>
+              <div>
+                {/* « DEVANT LE FEU », pas « actif » : c'est la question qu'on
+                    se pose — combien de temps je ne peux pas quitter la
+                    cuisine. Le reste se dit dessous, avec le même mot que le
+                    guide. */}
+                <span className="co-kicker">Devant le feu</span>
+                <div className="v">{duree(m.actif)}</div>
+              </div>
+            </div>
+          ) : null}
+          {avecEtapes && m.libre ? (
+            <div className="co-note">dont {duree(m.libre)} sans surveiller, à côté.</div>
+          ) : null}
+          <div className="co-kicker accent" style={{ margin: "var(--space-4) 0 var(--space-2)" }}>
+            Pour ranger à la fin
+          </div>
+          {m.rien ? (
+            <div className="co-note">Rien à mettre de côté : tout part dans les assiettes.</div>
+          ) : (
+            m.ranger.map((l, n) => (
+              <div key={`${l.location}-${n}`} className="co-lot">
+                <Icone nom={iconeEspace(l.location)} />
+                <span style={{ flex: 1 }}>
+                  <div className="nom">
+                    {nomEspace(l.location)} · {l.quantite}
+                  </div>
+                  {/* Muet quand le foyer n'a déclaré aucun contenant pour cet
+                      espace — même silence que la sortie. */}
+                  {l.boites ? <div className="ou">{l.boites}</div> : null}
+                </span>
+              </div>
+            ))
+          )}
+        </div>
+      </Ingredients>
+      <div style={{ padding: "0 var(--space-4) var(--space-4)" }}>
+        {avecEtapes ? (
+          <button className="btn btn-primary btn-block" onClick={commencer}>
+            C’est parti
+          </button>
+        ) : (
+          // Le même geste et le même mot que la dernière étape du guide, parce
+          // que c'est le même événement : ce plat n'a qu'une étape, la faire.
+          // Et depuis T99 la même suite : un plat sans étapes laisse les mêmes
+          // bocaux sur le plan de travail qu'un plat qui en a douze.
+          <button className="btn btn-primary btn-block" onClick={terminer}>
+            Terminer
+          </button>
+        )}
+      </div>
     </>
   );
 }
@@ -492,6 +630,7 @@ function Ingredients({
   parts,
   f,
   jeu,
+  tient,
   children,
 }: {
   p: Plat;
@@ -505,6 +644,10 @@ function Ingredients({
    *  fiche : posé après le déroulé, il resterait dernier ; posé avant, il
    *  couperait la lecture en deux. */
   children?: ReactNode;
+  /** L'ustensile ET s'il tient — T112, sur la mise en place seulement. Absent,
+   *  la ligne « À sortir » reste neutre, comme T74 l'a voulue pour la fiche et
+   *  le résumé (voir `aSortir`). */
+  tient?: Recipient | null;
 }) {
   const produit = +(p.portions * f).toFixed(1);
   const ustensile = aSortir(p);
@@ -535,10 +678,14 @@ function Ingredients({
           l'étape en cours y est du bruit. Muet sur les 72 plats sans
           vaisselle. */}
       {ustensile && (
-        <div className="co-sortir">
-          <Icone nom="info" />
+        <div className={`co-sortir${tient && !tient.tient ? " deborde" : ""}`}>
+          <Icone nom={tient && !tient.tient ? "alerte" : "info"} />
           <span>
             À sortir : <b>{ustensile}</b>
+            {/* LA MÊME LIGNE, PAS UNE SECONDE. Le récipient et la question de
+                savoir s'il suffit se lisent ensemble, au moment où la main va
+                le chercher dans le placard. */}
+            {tient ? <span className="tient">{tient.phrase}</span> : null}
           </span>
         </div>
       )}
@@ -660,6 +807,7 @@ function Guide({
   cle,
   cleM,
   fin,
+  avant,
 }: {
   p: Plat;
   foyer: Foyer;
@@ -671,6 +819,8 @@ function Guide({
   /** La dernière étape est faite — T99. Le guide ne journalise plus rien
    *  lui-même : il passe la main à la sortie, qui pose la question. */
   fin: () => void;
+  /** « ‹ » sur l'étape 1 : revenir à la mise en place — T112. */
+  avant: () => void;
 }) {
   const e = steps[etape]!;
   const etat = useObjet<EtatMinuteur>(cleM);
@@ -713,6 +863,13 @@ function Guide({
       // écran rattrapable : tant que la sortie n'a pas répondu, la fiche est
       // restée à sa dernière étape, donc « Terminer » y ramène.
       fin();
+      return;
+    }
+    // « ‹ » SUR L'ÉTAPE 1 RAMÈNE À LA MISE EN PLACE — T112. Le bouton était
+    // grisé là, faute d'avant ; il y en a un maintenant, et c'est le seul
+    // chemin pour revoir ce qu'il fallait sortir sans quitter la cuisson.
+    if (d < 0 && etape === 0) {
+      avant();
       return;
     }
     void poserReglage(cle, Math.max(0, Math.min(steps.length - 1, etape + d)));
@@ -873,7 +1030,7 @@ function Guide({
       ) : null}
 
       <div className="co-pas">
-        <button className="prec" onClick={() => bouger(-1)} disabled={etape === 0}>
+        <button className="prec" aria-label="Étape précédente" onClick={() => bouger(-1)}>
           ‹
         </button>
         <button className="suiv" onClick={() => bouger(1)}>

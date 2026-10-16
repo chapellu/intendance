@@ -34,6 +34,14 @@ export const cleRepioche = (jour: string, repas: string): string => `repioche|${
 export const cleEtape = (jour: string, repas: string, plat: string): string =>
   `etape|${jour}|${repas}|${plat}`;
 
+/** La mise en place d'une recette a été passée — T112. Sous le préfixe de
+ *  `cleEtape` et sur la même clé de cuisson, parce que c'est le même avancement
+ *  d'un cran plus tôt : sans elle, poser le téléphone à l'étape 1 et le
+ *  reprendre ramènerait à la liste de ce qu'on a déjà sorti. Effacée avec
+ *  l'avancement, quand la sortie a répondu. */
+export const cleMiseEnPlace = (jour: string, repas: string, plat: string): string =>
+  `etape|${jour}|${repas}|${plat}|mise-en-place`;
+
 /** Le minuteur d'UNE étape. Par étape, pour qu'avancer dans la recette ne
  *  traîne pas la sonnerie de la précédente. */
 export const cleMinuteur = (jour: string, repas: string, plat: string, etape: string): string =>

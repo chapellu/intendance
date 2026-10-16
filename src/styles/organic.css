@@ -934,3 +934,17 @@ a.co-apercu { color: inherit; text-decoration: none; }
   margin: var(--space-2) 0 0; font-size: 12px; line-height: 1.45; font-style: italic;
   color: var(--color-neutral-700);
 }
+
+/* T112 — la mise en place, le premier écran d'une cuisson.
+   `.co-sortir.deborde` : LE SEUL TON D'ALERTE DE LA FICHE, et il est réservé
+   au récipient qui ne suffit pas — un débordement se découvre sur le feu, et
+   c'est le dernier moment où en sortir un autre ne coûte rien. Les tons de
+   `.co-encart.enfant`, déjà ceux de l'accent : pas de rouge inventé ici.
+   `.tient` passe à la ligne sous le nom de l'ustensile, en corps de texte. */
+.co-sortir.deborde { background: var(--color-accent-200); color: var(--color-accent-900); align-items: flex-start; }
+.co-sortir .tient { display: block; margin-top: 2px; font-size: 13px; line-height: 1.4; }
+.co-mep { margin-top: var(--space-4); }
+.co-mep .temps { display: flex; gap: var(--space-2); }
+.co-mep .temps > div { flex: 1; background: var(--color-surface); border-radius: var(--radius-md); padding: var(--space-3); }
+.co-mep .temps .v { font-family: var(--font-heading); font-size: 24px; line-height: 1.1; margin-top: 2px; }
+.co-mep > .co-note { margin: var(--space-2) var(--space-1) 0; }

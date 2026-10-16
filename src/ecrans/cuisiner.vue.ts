@@ -8,7 +8,9 @@
 
 import { commeIngredient, echelleTexte } from "../model/calcul";
 import { ROLES, type Choix, type Jeu } from "../model/jeu";
-import type { Etape, Foyer, Ingredient, Outil, Plat } from "../model/types";
+import type { Espace, Etape, Foyer, Ingredient, Outil, Plat } from "../model/types";
+import { fmt } from "../ui/format";
+import { phraseDesBoites, quantiteDuLot, vueDeLaSortie } from "./sortie.vue";
 
 /* ───────────────────────────────────────────────────────────────── la chauffe */
 
@@ -337,6 +339,16 @@ export function credit(plat: Plat): Credit {
  * l'alerte — elle existe depuis les offres — c'était le nom de l'ustensile
  * quand tout va bien.
  *
+ * ⚠ CE RAISONNEMENT TENAIT POUR LA FICHE, ET IL A LAISSÉ UN TROU — T112. Les
+ * deux libellés qui existaient vivent sur des écrans qu'on ne traverse plus en
+ * cuisinant : l'écran des parts ne se rejoint que par « Changer », les offres
+ * par une passe. L'année simulée a passé la mitonnée de la Toussaint, à 8, dans
+ * une sauteuse prévue pour ×1, sans qu'aucun écran le dise. Le fait se dit donc
+ * désormais une troisième fois, mais à UN endroit choisi — la mise en place,
+ * juste avant d'attraper le récipient — et par `recipient()`, pas ici : cette
+ * fonction reste un libellé, et la fiche comme le résumé gardent leur ligne
+ * neutre.
+ *
  * Ça ne préjuge pas de Workspace#57 ni de #59 : l'outil PAR ÉTAPE demande une
  * règle de résolution qui n'est pas tranchée. Le `vaisselle` du plat, lui, est
  * déjà résolu.
@@ -453,4 +465,135 @@ export function tempsDuPlat(steps: Etape[]): { total: number; libre: number } {
     total: avancement(steps, 0).total,
     libre: steps.reduce((a, x) => a + (x.surveille ? 0 : x.minutes), 0),
   };
+}
+
+/* ──────────────────────────────────────────────────────────── la mise en place */
+
+export interface Recipient {
+  /** Le libellé du catalogue, taille comprise — « cocotte 7,5 L ». */
+  label: string;
+  tient: boolean;
+  /** Combien de fois il faut remplir le récipient. 1 quand ça tient. */
+  tournees: number;
+  /** Ce que la mise en place en dit, prêt à afficher. */
+  phrase: string;
+}
+
+/**
+ * L'ustensile du plat ET S'IL TIENT, au facteur qu'on cuisine vraiment — T112.
+ *
+ * LE DÉBORDEMENT NE SE DISAIT QUE SUR L'ÉCRAN DES PARTS, ET PLUS RIEN NE Y
+ * MÈNE SANS « CHANGER ». `parts.vue.cuisson()` et `offres.reserves()` l'écrivent
+ * tous les deux, et `aSortir()` refusait d'en faire un troisième libellé — voir
+ * son commentaire, qui raisonnait juste pour la FICHE. L'année simulée a montré
+ * ce que ce raisonnement laissait passer : la Toussaint à 8 a cuisiné la
+ * mitonnée dans une sauteuse prévue pour ×1, et aucun écran de la cuisson ne
+ * l'a dit. La mise en place est le dernier moment où sortir un autre récipient
+ * ne coûte rien ; c'est donc là que le fait se dit, et seulement là.
+ *
+ * `f` EST LE FACTEUR QUE LA FICHE AFFICHE — `calc.facteurs[i]`, qui sait qu'une
+ * offre a agrandi le lot —, pas celui que `cuisson()` recalcule depuis les
+ * parts. La même phrase sur deux facteurs différents dirait deux choses.
+ *
+ * LE NOMBRE DE TOURNÉES EST CALCULÉ, PAS PROMIS À DEUX. `offres.reserves()`
+ * écrit « il faut deux tournées » parce qu'une offre ne dépasse jamais du
+ * double ; une table de huit sur un plat à ×1 en demande trois.
+ *
+ * MESURÉ LE 2026-10-16 : aux 2,5 parts du foyer, aucun des 77 plats à
+ * vaisselle ne déborde — la phrase ne parle donc que le jour où l'on reçoit. À
+ * 8, 61 sur 77 débordent, tous en deux tournées.
+ *
+ * `null` SUR LES 61 PLATS SANS VAISSELLE : rien ne les borne, et inventer un
+ * récipient serait pire que se taire — même silence que `aSortir()`.
+ */
+export function recipient(p: Plat, f: number): Recipient | null {
+  const v = p.vaisselle;
+  if (!v) return null;
+  const tient = f <= v.facteurMax + 1e-9;
+  const tournees = tient ? 1 : Math.ceil(f / v.facteurMax - 1e-9);
+  return {
+    label: v.label,
+    tient,
+    tournees,
+    phrase: tient
+      ? `Ça tient : ×${fmt(f)} pour ×${fmt(v.facteurMax)} au plus.`
+      : `⚠ Ça ne tient pas dans ${v.label} — ×${fmt(v.facteurMax)} au plus, et on en ` +
+        `cuisine ×${fmt(f)} : il faut ${tournees} tournées, ou un plus grand récipient.`,
+  };
+}
+
+/** Une destination de la sortie, vue d'AVANT la cuisson : ce qu'on y mettra, et
+ *  dans quoi. */
+export interface ARanger {
+  location: Espace;
+  /** « 500 g » ou « 2 repas » — `quantiteDuLot`, le même mot que la sortie. */
+  quantite: string;
+  /** « 2 × bocaux Le Parfait 0,75 L », ou `null` quand le foyer n'a déclaré
+   *  aucun contenant pour cet espace. */
+  boites: string | null;
+}
+
+export interface MiseEnPlace {
+  /** Les minutes des étapes, comme le résumé de T91 et le bandeau du guide. */
+  total: number;
+  /** Les minutes où quelqu'un doit être devant : `total − libre`. */
+  actif: number;
+  libre: number;
+  recipient: Recipient | null;
+  ranger: ARanger[];
+  /** Le plat ne laisse rien : la sortie dira « tout part dans les assiettes ». */
+  rien: boolean;
+}
+
+/**
+ * Tout ce qu'il faut sortir avant l'étape 1 — T112, demandé le 2026-10-16.
+ *
+ * AUCUN CHIFFRE NOUVEAU : TOUT ÉTAIT CALCULÉ, AILLEURS. Les ingrédients aux
+ * parts du créneau sont ceux d'`Ingredients` (l'écran les rend lui-même, avec
+ * `echelleTexte` et le même `f`) ; le temps vient de `tempsDuPlat` ; les boîtes
+ * viennent de `vueDeLaSortie`, appelée telle quelle — c'est la sortie de T99
+ * vue d'avant, et la même fonction garantit que la mise en place annonce les
+ * boîtes que la sortie demandera. Si la sortie apprend à compter ses
+ * contenants (T109), la mise en place l'apprend avec elle.
+ *
+ * LE TEMPS ACTIF EST `total − libre`, ET PAS `actifMin`. Le corpus porte un
+ * `active_min` déclaré par l'ouvrage sur 122 plats ; mesuré le 2026-10-16, il
+ * ne coïncide avec la somme des étapes surveillées que sur 18 d'entre eux — les
+ * carrés sablés disent 2 min actives pour 41 min de gestes surveillés. Afficher
+ * `actifMin` à côté d'un total tiré des étapes mettrait sur le même écran deux
+ * chiffres qui ne s'additionnent pas, ce que `tempsDuPlat` refuse déjà (« deux
+ * additions du même temps finiraient par ne plus dire le même chiffre »).
+ */
+export function miseEnPlace(p: Plat, parts: number, f: number, foyer: Foyer): MiseEnPlace {
+  const t = tempsDuPlat(p.steps);
+  const v = vueDeLaSortie(p, parts, f, foyer);
+  return {
+    total: t.total,
+    actif: t.total - t.libre,
+    libre: t.libre,
+    recipient: recipient(p, f),
+    ranger: v.lots.map((l) => ({
+      location: l.location,
+      quantite: quantiteDuLot(l),
+      boites: l.boites.length ? phraseDesBoites(l.boites) : null,
+    })),
+    rien: v.rien,
+  };
+}
+
+/**
+ * La mise en place a-t-elle encore quelque chose à dire ? — T112.
+ *
+ * ELLE NE S'AFFICHE QU'AVANT LA PREMIÈRE ÉTAPE, ET UNE SEULE FOIS. `passee` est
+ * le réglage persisté par « C'est parti » ; `etape` est l'avancement que le
+ * guide persiste déjà. Les deux sont lus parce qu'une cuisson commencée AVANT
+ * ce ticket n'a jamais posé le premier : quelqu'un rouvrant sa fiche à l'étape
+ * 5 sur 9 n'a pas à repasser par la liste de ce qu'il a déjà sorti.
+ *
+ * UN PLAT SANS ÉTAPES N'A QUE SA MISE EN PLACE, et elle reste donc affichée :
+ * c'est l'écran qui porte son « Terminer ».
+ */
+export function montrerMiseEnPlace(steps: Etape[], etape: number, passee: boolean): boolean {
+  if (!steps.length) return true;
+  return !passee && etape === 0;
 }

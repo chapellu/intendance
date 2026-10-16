@@ -3,6 +3,8 @@ import { describe, expect, test } from "vitest";
 import { lireCatalogue } from "../model/catalogue";
 import { creerJeu, SAUTE } from "../model/jeu";
 import type { Catalogue, Etape } from "../model/types";
+import { facteurAffiche } from "../model/calcul";
+import { vueDeLaSortie } from "./sortie.vue";
 import {
   aArmer,
   aTable,
@@ -14,9 +16,12 @@ import {
   credit,
   minuteur,
   minuteurUtile,
+  miseEnPlace,
+  montrerMiseEnPlace,
   outilDe,
   pourLire,
   provenanceIngredient,
+  recipient,
   SANS_FEU,
   sansRecette,
   tempsDuPlat,
@@ -373,6 +378,8 @@ describe("l'ustensile à sortir avant de commencer", () => {
   // MESURÉ AVANT D'ÉCRIRE LA PHRASE, comme le ticket l'exigeait : trois
   // endroits lisent `facteurMax` et deux l'écrivent déjà — `parts.vue.cuisson()`
   // et `offres.reserves()`. La tête de fiche n'en fait pas un troisième libellé.
+  // Depuis T112 la mise en place le dit — mais par `recipient()`, et ce libellé
+  // reste celui, neutre, de la fiche et du résumé.
   test("le débordement ne se dit pas ici — il se dit déjà ailleurs", () => {
     for (const p of catalogue.plats) {
       const t = aSortir(p);
@@ -649,5 +656,97 @@ describe("le temps d'un plat, et ce qu'il demande de présence", () => {
       const t = tempsDuPlat(p.steps);
       expect(t.libre, p.id).toBeLessThanOrEqual(t.total);
     }
+  });
+});
+
+describe("la mise en place — T112", () => {
+  const pot = catalogue.plats.find((p) => p.vaisselle !== null)!;
+  const max = pot.vaisselle!.facteurMax;
+
+  // « La Toussaint a passé la mitonnée dans une sauteuse ×1 sans un mot » :
+  // la phrase doit parler au facteur qu'on cuisine, et seulement au-delà.
+  test("l'ustensile dit s'il tient, au facteur qu'on cuisine", () => {
+    expect(recipient(pot, max)!.tient).toBe(true);
+    expect(recipient(pot, max)!.phrase).not.toMatch(/⚠/);
+    const trop = recipient(pot, max * 1.5)!;
+    expect(trop.tient).toBe(false);
+    expect(trop.phrase).toContain("⚠ Ça ne tient pas dans " + pot.vaisselle!.label);
+    expect(trop.tournees).toBe(2);
+  });
+
+  // `offres.reserves()` écrit « deux tournées » parce qu'une offre ne dépasse
+  // jamais du double ; une table de huit peut en demander trois.
+  test("le nombre de tournées se calcule, il n'est pas promis à deux", () => {
+    expect(recipient(pot, max * 2.5)!.tournees).toBe(3);
+    expect(recipient(pot, max * 2.5)!.phrase).toContain("3 tournées");
+  });
+
+  test("un plat sans vaisselle ne promet aucun récipient", () => {
+    const sans = catalogue.plats.find((p) => p.vaisselle === null)!;
+    expect(recipient(sans, 1)).toBeNull();
+  });
+
+  // Mesuré pour le backlog : la phrase ne parle que quand on reçoit.
+  test("aux parts du foyer, rien ne déborde ; à huit, la plupart", () => {
+    const parts = catalogue.foyer.parts;
+    const avec = catalogue.plats.filter((p) => p.vaisselle !== null);
+    expect(avec.filter((p) => !recipient(p, facteurAffiche(p, parts))!.tient)).toHaveLength(0);
+    expect(avec.filter((p) => !recipient(p, facteurAffiche(p, 8))!.tient).length).toBeGreaterThan(0);
+  });
+
+  // Le temps actif est la différence des deux autres, jamais `actifMin` : ce
+  // champ déclaré par l'ouvrage ne coïncide avec les étapes que sur 18 plats.
+  test("le temps devant le feu et le temps libre font le total", () => {
+    for (const p of catalogue.plats) {
+      const m = miseEnPlace(p, 2.5, facteurAffiche(p, 2.5), catalogue.foyer);
+      expect(m.actif + m.libre, p.id).toBe(m.total);
+      expect(m.total, p.id).toBe(tempsDuPlat(p.steps).total);
+    }
+  });
+
+  // LA MISE EN PLACE ANNONCE LES BOÎTES QUE LA SORTIE DEMANDERA — la même
+  // fonction, appelée avec les mêmes arguments. Deux calculs finiraient par
+  // annoncer trois bocaux au début et en demander quatre à la fin.
+  test("les boîtes à prévoir sont celles de la sortie", () => {
+    for (const p of catalogue.plats) {
+      const f = facteurAffiche(p, 2.5);
+      const m = miseEnPlace(p, 2.5, f, catalogue.foyer);
+      const v = vueDeLaSortie(p, 2.5, f, catalogue.foyer);
+      expect(m.rien, p.id).toBe(v.rien);
+      expect(m.ranger.map((l) => l.location), p.id).toEqual(v.lots.map((l) => l.location));
+      for (const [n, l] of m.ranger.entries())
+        expect(l.boites === null, p.id).toBe(v.lots[n]!.boites.length === 0);
+    }
+  });
+
+  test("un plat sans emit le dit, au lieu d'une section vide", () => {
+    const sans = catalogue.plats.find((p) => p.emits.length === 0)!;
+    const m = miseEnPlace(sans, 2.5, facteurAffiche(sans, 2.5), catalogue.foyer);
+    expect(m.rien).toBe(true);
+    expect(m.ranger).toEqual([]);
+  });
+});
+
+describe("quand la mise en place s'affiche — T112", () => {
+  const steps = [etape([], 5), etape([], 10)];
+
+  test("une cuisson qui commence l'affiche", () => {
+    expect(montrerMiseEnPlace(steps, 0, false)).toBe(true);
+  });
+
+  // Poser le téléphone à l'étape 1 et le reprendre ne ramène pas à la liste de
+  // ce qu'on a déjà sorti.
+  test("« C'est parti » la fait disparaître, même à l'étape 1", () => {
+    expect(montrerMiseEnPlace(steps, 0, true)).toBe(false);
+  });
+
+  // Une cuisson commencée avant ce ticket n'a jamais posé le drapeau.
+  test("une cuisson déjà avancée ne la revoit pas", () => {
+    expect(montrerMiseEnPlace(steps, 1, false)).toBe(false);
+  });
+
+  // Elle porte alors le « Terminer » du plat.
+  test("un plat sans étapes n'a qu'elle", () => {
+    expect(montrerMiseEnPlace([], 0, true)).toBe(true);
   });
 });
