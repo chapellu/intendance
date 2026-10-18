@@ -10,6 +10,11 @@ import { readFileSync, writeFileSync, appendFileSync, existsSync, mkdirSync } fr
 
 let graine = 20261016;
 const hasard = () => ((graine = (graine * 1103515245 + 12345) % 2147483648) / 2147483648);
+// PERSONA=moi : le foyer tel qu'il se décrit le 2026-10-16 — pas de semaine
+// planifiée, le dîner décidé ET lancé à 15 h (télétravail) pour 18 h, courses
+// le mercredi et le samedi, les légumineuses d'abord, les plats aimés reviennent,
+// et quand rien ne va : pâtes ou gnocchis, comme avant.
+const MOI = process.env.PERSONA === "moi";
 const URL = process.env.URL || "http://localhost:4193";
 const OUT = process.env.OUT;
 const PROFILE = process.env.PROFILE;
@@ -149,13 +154,19 @@ function choisir(cartes, j, ev) {
     const p = platParTitre.get(c.titre);
     const pourquoi = [];
     if (DESSERT.test(c.titre) || (p && p.role && p.role !== "plat")) pourquoi.push("pas un repas");
-    if (sem && c.minutes > 75) pourquoi.push("trop long un soir de semaine");
-    if (etat.recents.includes(c.titre)) pourquoi.push("déjà mangé récemment");
+    if (!MOI && sem && c.minutes > 75) pourquoi.push("trop long un soir de semaine");
+    if (MOI && c.minutes > 170) pourquoi.push("pas prêt pour 18 h en lançant à 15 h");
+    if (!MOI && etat.recents.includes(c.titre)) pourquoi.push("déjà mangé récemment");
+    if (MOI && etat.recents.slice(-3).includes(c.titre)) pourquoi.push("mangé ces trois derniers jours");
+    const art = +(/\+(\d+)\s*art/.exec(c.meta ?? "")?.[1] ?? 0);
+    if (MOI && ![3, 6].includes(new Date(j).getDay()) && art > 1) pourquoi.push(`${art} articles à acheter un jour sans courses`);
     if (four && p && (p.vaisselle?.id ?? "").match(/plat|moule|four|cocotte/) ) pourquoi.push("demande le four");
     raisons.push(`${c.titre}: ${pourquoi.join(", ") || "ok"}`);
     return { n, ok: !pourquoi.length, pourquoi };
   });
-  return { choix: ok.find((x) => x.ok)?.n ?? -1, raisons, ok };
+  const legume = (n) => { const p = platParTitre.get(cartes[n].titre); return p && (p.apports?.proteine === "legumineuse" || p.apports?.feculent === "legumineuse"); };
+  const prefere = MOI ? (ok.find((x) => x.ok && legume(x.n)) ?? ok.find((x) => x.ok)) : ok.find((x) => x.ok);
+  return { choix: prefere?.n ?? -1, raisons, ok };
 }
 const minutes = (t) => { const h = /(\d+)\s*h\s*(\d+)?/.exec(t); if (h) return +h[1] * 60 + +(h[2] ?? 0); const m = /(\d+)\s*min/.exec(t); return m ? +m[1] : 0; };
 
@@ -221,6 +232,8 @@ async function passe(j, nRepas, ev, stats) {
       repioches++; await tap(page.getByRole("button", { name: /Repiocher/ })); continue;
     }
     // Rien ne convient : on prend quand même la première carte qui est un repas, sinon on passe.
+    // LE FOYER RÉEL NE TRANSIGE PAS : sans carte qui tienne, ce sont des pâtes.
+    if (MOI) { stats.repliRaisons = raisons.join(" ; ").slice(0, 500); ignores++; await tap(page.getByRole("button", { name: "Pas celui-là" })); break; }
     const repli = lues.findIndex((l) => !DESSERT.test(l.titre));
     if (repli >= 0) {
       stats.compromis = [...(stats.compromis ?? []), raisons.join(" ; ").slice(0, 400)];
@@ -322,6 +335,9 @@ async function cuisiner(j, ev, stats, { autrement = false, parts = 2.75 } = {}) 
   const ouvrir = page.getByRole("button", { name: /Ouvrir le guide|Cuisiner ce plat/ });
   if (await ouvrir.count()) await tap(ouvrir);
   await page.waitForTimeout(400);
+  // T112 : la mise en place passe avant l'étape 1.
+  const parti = page.getByRole("button", { name: /C.est parti/ });
+  if (await parti.count()) { stats.miseEnPlace = (stats.miseEnPlace ?? 0) + 1; await tap(parti); await page.waitForTimeout(300); }
   let etapes = 0;
   for (let k = 0; k < 60; k++) {
     const sortie = page.getByRole("button", { name: /C’est rangé comme ça|C’est fait$/ });
@@ -339,7 +355,8 @@ async function cuisiner(j, ev, stats, { autrement = false, parts = 2.75 } = {}) 
   const sortieTxt = await texte();
   const lots = [];
   const ls = page.locator(".co-corps .co-lot");
-  for (let k = 0; k < (await ls.count()); k++) lots.push({ nom: (await ls.nth(k).locator(".nom").innerText()).trim(), garde: (await ls.nth(k).locator(".q").innerText().catch(() => "")).trim() });
+  for (let k = 0; k < (await ls.count()); k++) lots.push({ nom: (await ls.nth(k).locator(".nom").innerText()).trim(), garde: (await ls.nth(k).locator(".q").innerText().catch(() => "")).trim(), tout: (await ls.nth(k).innerText()).replace(/\n/g, " | ") });
+  for (const l of lots) if (/il manque/.test(l.tout)) stats.manques = [...(stats.manques ?? []), l.tout.slice(0, 160)];
   const range = page.getByRole("button", { name: "C’est rangé comme ça" });
   const autre = page.getByRole("button", { name: "J’ai fait autrement" });
   const fait = page.getByRole("button", { name: "C’est fait", exact: true });
@@ -560,9 +577,132 @@ async function journee(idx) {
   console.log(`${j} ${["dim", "lun", "mar", "mer", "jeu", "ven", "sam"][dow]} taps=${taps} ${stats.secondes}s dîner=${stats.diner ?? "-"} ${stats.planifie ? `plan=${stats.planifie} posés=${stats.passePoses} q=${stats.questions} art=${stats.articles}` : ""} ${ev.map((e) => e.type).join(",")}`);
 }
 
+// Le fond de roulement (docs/cuisine/fond-de-roulement.md dans Workspace), posé
+// au jour 0 avec ce que l'app sait suivre : les planchers du garde-manger.
+const FOND = { "pates": 2, "lentilles seches": 1, "pois chiches": 1, "riz rond": 1, "semoule": 1, "pomme de terre": 1, "concentre tomate": 1, "thon boite": 2, "maquereaux boite": 1, "mais": 1, "oignon": 3, "ail": 1 };
+async function poserFond(j) {
+  await aller("cuisine/stock"); await attendre(".co-barre"); await page.waitForTimeout(800);
+  const ouvrir = page.getByRole("button", { name: "en ajouter un au placard" });
+  if (!(await ouvrir.count())) { note(j, "fond", "pas de bouton pour poser un plancher au placard"); return; }
+  await tap(ouvrir); await page.waitForTimeout(500);
+  const poses = [], absents = [];
+  for (const [nom, niveau] of Object.entries(FOND)) {
+    const ligne = page.locator(".co-lot").filter({ has: page.locator(".nom", { hasText: new RegExp(`^${nom}$`, "i") }) }).filter({ has: page.getByRole("button", { name: "En garder 1" }) }).first();
+    if (!(await ligne.count())) { absents.push(nom); continue; }
+    await tap(ligne.getByRole("button", { name: "En garder 1" })); await page.waitForTimeout(300);
+    for (let k = 1; k < niveau; k++) {
+      const suivi = page.locator(".co-lot").filter({ has: page.locator(".nom", { hasText: new RegExp(`^${nom}$`, "i") }) }).filter({ hasText: /Ne plus suivre/ }).first();
+      await tap(suivi.getByRole("button", { name: "+" })); await page.waitForTimeout(200);
+    }
+    poses.push(`${nom} ${niveau}`);
+  }
+  note(j, "fond", `fond de roulement posé au placard : ${poses.join(", ")}${absents.length ? ` — introuvables : ${absents.join(", ")}` : ""} ; hors de portée de l'app : lentilles corail, pois cassés, haricots blancs et rouges, gnocchis, avoine, surgelés, conserves de tomates, lait de coco, œufs, carottes, laitages (T114)`);
+}
+
+// ───────────────────────────────────────────────────────────── une journée, comme chez moi
+async function journee2(idx) {
+  const d = new Date(DEBUT); d.setDate(d.getDate() + idx);
+  const j = iso(d);
+  jourCourant = j;
+  const dow = d.getDay();
+  const ev = evenements(j);
+  const stats = { j, dow, ev: ev.map((e) => e.quoi), persona: "moi" };
+  taps = 0; erreurs.length = 0;
+  const t0 = Date.now();
+  await ouvrirJour(j);
+  const cockpit = await texte();
+  stats.cockpit = (/aujourd'hui\.\n\n([\s\S]*?)\nVOS FACETTES/.exec(cockpit)?.[1] ?? "").replace(/\n/g, " / ").slice(0, 250);
+  const absent = ev.some((e) => e.type === "absent");
+
+  pourrirLeFrais(j);
+  for (const r of etat.restes) {
+    const age = (d - new Date(r.le)) / 864e5;
+    if (!r.jete && r.portions > 0 && age > r.garde) { r.jete = j; etat.compte.jetes++; stats.restesPerimes = (stats.restesPerimes ?? 0) + 1; }
+  }
+  // T103 : ce qui a passé sa date se jette depuis le cockpit, d'un seul geste.
+  const jete = page.getByRole("button", { name: /C.est jeté/ });
+  if (!absent && (await jete.count())) { stats.cestJete = (/(\d+|Un) restes? ont? passé/.exec(cockpit)?.[1] ?? "?"); await tap(jete); await page.waitForTimeout(500); }
+
+  for (const e of ev.filter((e) => e.type === "panne-congelo" || e.type === "panne-frigo")) {
+    const lieu = e.type === "panne-congelo" ? "congélo" : "frigo";
+    await aller("cuisine/stock"); await attendre(".co-barre");
+    await page.waitForTimeout(500);
+    const filtre = page.locator("button", { hasText: lieu === "frigo" ? /^Frigo/ : /^Congélo/ }).first();
+    await tap(filtre); await page.waitForTimeout(400);
+    const perdu = page.getByRole("button", { name: new RegExp(`Tout ce qui était au ${lieu} est perdu`) });
+    if (await perdu.count()) {
+      await tap(perdu); await page.waitForTimeout(300);
+      const oui = page.getByRole("button", { name: /Oui|Confirmer|perdu/ }).last();
+      await tap(oui); await page.waitForTimeout(600);
+      note(j, "panne", `${e.quoi} : « Tout ce qui était au ${lieu} est perdu » (T105), un geste et une confirmation`);
+    } else note(j, "panne", `${e.quoi} : le geste T105 est introuvable`);
+    for (const r of etat.restes) if (!r.jete && r.portions > 0 && r.ou.toLowerCase().startsWith(lieu.slice(0, 5))) { r.jete = j; }
+  }
+  if (ev.some((e) => e.type === "don")) {
+    note(j, "don", "courgettes et tomates offertes : toujours aucune porte d'entrée hors liste (T114)");
+    for (const id of ["courgette", "tomate"]) etat.reel[id] = { q: (etat.reel[id]?.q ?? 0) + 1500, achete: 1500, le: j, frais: true };
+  }
+
+  if (idx === 0) await poserFond(j);
+  // Les jours de courses, le fond se recharge le matin, avant toute décision.
+  if (!absent && [3, 6].includes(dow)) { await page.clock.setFixedTime(new Date(`${j}T10:00:00`)); await courses(j, ev, stats); stats.coursesDuMatin = stats.articles; }
+
+  if (absent) { stats.absent = true; }
+  else {
+    // Le midi, en télétravail : un reste du frigo s'il y en a.
+    const r = etat.restes.find((x) => !x.jete && x.portions > 0 && x.ou === "Frigo");
+    if (r) {
+      r.portions -= 2; etat.compte.restesManges++; stats.midi = `reste : ${r.plat}`;
+      if (r.portions <= 0) { const t = await plusDe((x) => r.types.some((ty) => x.includes(ty)) && x.includes("Frigo")); stats.resteRetire = !!t; }
+    } else stats.midi = "pas de reste — sandwich, hors app";
+
+    // 15 h : la pause. Décider, et lancer.
+    await page.clock.setFixedTime(new Date(`${j}T15:00:00`));
+    const dehors = ev.some((e) => e.type === "dehors"), malade = ev.some((e) => e.type === "malade");
+    if (dehors) stats.diner = "dehors";
+    else if (malade) stats.diner = "pâtes (malade)";
+    else {
+      let poses = await lirePoses();
+      if (!poses.length) { await passe(j, 1, ev, stats); poses = await lirePoses(); }
+      if (!poses.length) {
+        stats.diner = "repli : pâtes ou gnocchis";
+        etat.compte.replis = (etat.compte.replis ?? 0) + 1;
+      } else {
+        if ([3, 6].includes(dow) || true) await courses(j, ev, stats);
+        for (const e of ev.filter((e) => (e.type === "invites" && e.repas === "diner") || e.type === "deux")) await reglerParts(j, e.parts, stats);
+        const invite = ev.find((e) => (e.type === "invites") || e.type === "deux");
+        const t = await cuisiner(j, ev, stats, { autrement: ev.some((e) => e.type === "rate") || hasard() < 0.05, parts: invite?.parts ?? 2.5 });
+        stats.diner = t ?? "rien";
+        const p = t && platParTitre.get(t);
+        stats.legume = !!(p && (p.apports?.proteine === "legumineuse" || p.apports?.feculent === "legumineuse"));
+        if (t) etat.recents = [...etat.recents.slice(-10), t];
+      }
+    }
+  }
+
+  if (dow === 0 || idx === N - 1) {
+    const lots = await lireStock();
+    stats.inventaire = {
+      app: lots.map((l) => `${l.nom} | ${l.ou} | ${l.q} | ${l.src}`),
+      reel: etat.restes.filter((x) => !x.jete && x.portions > 0).map((r) => `${r.plat} | ${r.ou} | ${r.portions} parts | depuis ${r.le}`),
+    };
+    const st = await texte();
+    stats.stockEcran = {
+      planchers: (/Le stock d’urgence\n([^\n]*)\n([^\n]*)/.exec(st) ?? []).slice(1).join(" / "),
+      plafonds: (/LA CUISINE EST UN LIEU FINI\n([\s\S]*?)Deux plafonds/.exec(st)?.[1] ?? "").replace(/\n/g, " "),
+    };
+  }
+  if (idx % 30 === 0 || ev.length) { await aller("cuisine/stock"); await page.waitForTimeout(800); await capture(`${j}-stock`); await aller("cockpit"); await page.waitForTimeout(600); await capture(`${j}-cockpit`); }
+  stats.taps = taps; stats.secondes = Math.round((Date.now() - t0) / 1000);
+  if (erreurs.length) stats.erreurs = [...new Set(erreurs)].slice(0, 5);
+  appendFileSync(JOURNAL, JSON.stringify(stats) + "\n");
+  console.log(`${j} ${["dim", "lun", "mar", "mer", "jeu", "ven", "sam"][dow]} taps=${taps} ${stats.secondes}s dîner=${stats.diner ?? "-"}${stats.legume ? " (légumineuses)" : ""} q=${stats.questions ?? 0} art=${stats.articles ?? 0} ${ev.map((e) => e.type).join(",")}`);
+}
+
+
 try {
   for (; etat.jour < N; etat.jour++) {
-    try { await journee(etat.jour); }
+    try { await (MOI ? journee2 : journee)(etat.jour); }
     catch (e) {
       note(jourCourant, "crash", String(e).slice(0, 400));
       await capture(`${jourCourant}-crash`);
