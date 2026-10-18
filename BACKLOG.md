@@ -4766,6 +4766,15 @@ Ce que T109 laisse ouvert :
       tests propres aux jours ne tournent plus que l'interrupteur allumé
       (`test.runIf`), les nouveaux que l'interrupteur éteint : chacun tourne
       sur l'interrupteur tel qu'il est.
+
+      **LE GESTE RALLUMÉ, VERS LE PLAT (18/10, validé par l'utilisateur).**
+      L'éteindre perdait le rappel de décongélation, qui ne porte pas sur une
+      case d'agenda mais sur un bocal à sortir pour un plat POSÉ. Sans les
+      jours, la tâche ouvre la fiche de ce plat (`cuisiner` sur son créneau,
+      celle que « Posés » ouvre), dit « Pour <plat>, un de vos plats posés »
+      au lieu de « dîner de demain », et porte un « Fait » sur place — le même
+      drapeau (`cleGeste`) que celui d'« Aujourd'hui », sans quoi ce serait
+      une tâche qu'on ne peut pas finir. Avec les jours, rien ne change.
 - [x] **T111 — Rentrer des courses répond aux questions.** T33 promettait que
       le volume décroît : il descend bien à 5, 7, 9 après la première passe,
       puis remonte et se tient à ~20 par passe hebdomadaire (1 303 réponses dans

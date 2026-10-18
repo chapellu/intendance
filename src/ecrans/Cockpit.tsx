@@ -15,7 +15,7 @@
 
 import { base, jourISO, retirerLots } from "../db";
 import { useCatalogue, useCourses, useSemaine } from "../db/hooks";
-import { cleGeste, useDrapeau } from "../db/reglages";
+import { cleGeste, poserReglage, useDrapeau } from "../db/reglages";
 import type { Calcul } from "../model/calcul";
 import type { Jeu } from "../model/jeu";
 import { chemin, ENTREE_CUISINE } from "../nav/routes";
@@ -128,9 +128,12 @@ function Ligne({ tache }: { tache: Tache }) {
   // UNE TÂCHE QUI SE RÈGLE SUR PLACE N'EST PAS UNE ANCRE — T103. Un bouton dans
   // un lien est un HTML que le navigateur résout à sa façon (le clic part sur
   // les deux) ; la ligne devient donc un bloc, et le texte reste un lien vers
-  // l'inventaire pour qui veut voir lesquels avant de jeter.
+  // l'inventaire pour qui veut voir lesquels avant de jeter. Même forme pour le
+  // geste du jour sans les jours : le texte ouvre la fiche du plat, « Fait » le
+  // coche.
   const jeter = tache.jeter;
-  if (jeter?.length)
+  const cocher = tache.cocher;
+  if (jeter?.length || cocher)
     return (
       <div className="co-tache">
         <span className="p">{tache.facette}</span>
@@ -147,13 +150,25 @@ function Ligne({ tache }: { tache: Tache }) {
             rien ne le compte. Se tromper coûte une ligne d'inventaire, pas un
             plat — et une question de plus sur un geste quotidien apprend à
             répondre « oui » sans lire. */}
-        <button
-          className="btn btn-ghost"
-          style={{ fontSize: 12.5, padding: "2px 8px" }}
-          onClick={() => void retirerLots(base, jeter.map(Number))}
-        >
-          C’est jeté
-        </button>
+        {jeter?.length ? (
+          <button
+            className="btn btn-ghost"
+            style={{ fontSize: 12.5, padding: "2px 8px" }}
+            onClick={() => void retirerLots(base, jeter.map(Number))}
+          >
+            C’est jeté
+          </button>
+        ) : cocher ? (
+          // Le même drapeau que le « Fait » d'« Aujourd'hui » : cocher ici ou
+          // là-bas est un seul geste, et la clé porte le jour.
+          <button
+            className="btn btn-ghost"
+            style={{ fontSize: 12.5, padding: "2px 8px" }}
+            onClick={() => void poserReglage(cocher, true)}
+          >
+            Fait
+          </button>
+        ) : null}
       </div>
     );
   return (

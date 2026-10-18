@@ -21,12 +21,13 @@
 // Port de `apps/proto-shell/comptoir.js` (`ecranCockpit`).
 
 import { jourISO, type EtatCourse } from "../db";
+import { cleGeste } from "../db/reglages";
 import { minutesParJour, type Calcul } from "../model/calcul";
 import { SAUTE, type Jeu } from "../model/jeu";
 import { JOURS_VISIBLES } from "../nav/jours";
 import type { Route } from "../nav/routes";
 import { duree } from "../ui/format";
-import { detailDuGeste, gesteDuJour, titreDuGeste } from "./aujourdhui.vue";
+import { detailDuGeste, detailDuGesteSansJours, gesteDuJour, titreDuGeste } from "./aujourdhui.vue";
 import { vueDesCourses } from "./courses.vue";
 import { vueAPrevoir } from "./prevoir.vue";
 import { restesPerimes } from "./stock.vue";
@@ -50,6 +51,17 @@ export interface Tache {
    * l'oubli du modèle.
    */
   jeter?: string[];
+  /**
+   * La clé du drapeau que « Fait » pose, quand le geste du jour se coche sur
+   * place — sans les jours seulement. Avec, il se coche sur « Aujourd'hui »,
+   * où la tâche envoie.
+   *
+   * SANS CE BOUTON, LE GESTE RALLUMÉ SERAIT UNE TÂCHE QU'ON NE PEUT PAS FINIR :
+   * le seul « Fait » de l'app vit sur un écran éteint, et la fiche du plat ne
+   * le connaît pas. Une ligne qui reste toute la soirée après qu'on a sorti le
+   * bocal apprend à ne plus lire le cockpit (T16).
+   */
+  cocher?: string;
 }
 
 export interface CarteFacette {
@@ -122,17 +134,20 @@ export function vueDuCockpit(jeu: Jeu, calc: Calcul, etat: EtatDuJour): VueCockp
   // sorti demain matin est encore un bloc à 19 h.
   const geste = gesteDuJour(jeu, calc);
   //
-  // ÉTEINT AVEC LES JOURS — T110. Le geste ne se coche que sur « Aujourd'hui »,
-  // et il porte sur « le dîner de demain », c'est-à-dire sur un jour que l'app
-  // ne montre plus : une coordonnée qu'on ne montre plus ne peut plus rien
-  // réclamer (la règle de T94, dans l'autre sens).
-  if (JOURS_VISIBLES && geste && !etat.gesteFait)
+  // SANS LES JOURS, IL ENVOIE AU PLAT. T110 l'avait éteint avec les jours,
+  // parce qu'il menait à « Aujourd'hui » ; mais ce qu'il réclame n'est pas une
+  // case de l'agenda, c'est un bocal à sortir pour un plat POSÉ — et un bloc de
+  // sauce à 19 h est le même, qu'on montre le jour ou non. Il ouvre donc la
+  // fiche du plat (celle que « Posés » ouvre), nomme le plat et pas « demain »,
+  // et se coche sur place.
+  if (geste && !etat.gesteFait)
     taches.push({
       cle: `geste|${geste.type}`,
       facette: "Cuisine",
       titre: titreDuGeste(geste),
-      detail: detailDuGeste(geste),
-      route: { ecran: "aujourdhui" }, // gardé par JOURS_VISIBLES, quatre lignes plus haut
+      detail: JOURS_VISIBLES ? detailDuGeste(geste) : detailDuGesteSansJours(geste),
+      route: JOURS_VISIBLES ? { ecran: "aujourdhui" } : { ecran: "cuisiner", creneau: geste.creneau },
+      ...(!JOURS_VISIBLES && jour0 ? { cocher: cleGeste(jourISO(jour0.date), geste.type) } : {}),
     });
 
   // 3. CE QUI EST PASSÉ AU FRIGO — T103. Après le geste du jour parce que c'est

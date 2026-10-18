@@ -277,12 +277,31 @@ describe("le cockpit n'envoie pas vers un écran éteint — T110", () => {
     for (const t of v.taches) expect(eteint(t.route), t.cle).toBe(false);
   });
 
-  test.runIf(!JOURS_VISIBLES)("sans les jours, ni offre ni geste du jour — ils ne se répondent que sur un écran éteint", () => {
+  test.runIf(!JOURS_VISIBLES)("sans les jours, pas d'offre — elle ne se répond que sur un écran éteint", () => {
     semaineChargee();
     expect(vueAPrevoir(jeu, calculer(jeu)).enAttente).toBeGreaterThan(0);
     const v = vue();
-    expect(v.taches.map((t) => t.cle).filter((c) => c === "prevoir" || c.startsWith("geste|"))).toEqual([]);
+    expect(v.taches.map((t) => t.cle)).not.toContain("prevoir");
     expect(v.cuisine.chiffres.some((c) => /offre/.test(c))).toBe(false);
+  });
+
+  // Le geste du jour, lui, survit aux jours cachés : il réclame un bocal à
+  // sortir pour un plat POSÉ, pas une case de l'agenda. Il envoie au plat.
+  test.runIf(!JOURS_VISIBLES)("sans les jours, le geste du jour ouvre la fiche du plat posé, et se coche sur place", () => {
+    poser(0, "diner", "poulet-roti");
+    poser(1, "diner", "pates-bolognaise");
+    const t = vue().taches.find((x) => x.cle.startsWith("geste|"));
+    expect(t?.titre).toBe("Sortir sauce-bolognaise du congélo");
+    // La fiche que « Posés » ouvre pour ce plat : son créneau nommé.
+    expect(t?.route).toEqual({ ecran: "cuisiner", creneau: { jour: "2026-08-18", repas: "diner" } });
+    expect(eteint(t!.route)).toBe(false);
+    // Le plat, pas le jour : « demain » nomme ce que l'app ne montre plus.
+    expect(t?.detail).toContain(jeu.plats["pates-bolognaise"]!.titre);
+    expect(t?.detail).not.toMatch(/demain|déjeuner|dîner|lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche/);
+    // Le même drapeau que le « Fait » d'« Aujourd'hui », au jour d'aujourd'hui.
+    expect(t?.cocher).toBe("geste|2026-08-17|sauce-bolognaise");
+    // Coché, il s'en va — comme avec les jours.
+    expect(vue(new Map(), true).taches.some((x) => x.cle.startsWith("geste|"))).toBe(false);
   });
 
   test.runIf(!JOURS_VISIBLES)("sans les jours, la carte ne compte ni créneaux ni jours", () => {
