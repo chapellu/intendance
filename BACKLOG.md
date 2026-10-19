@@ -4419,6 +4419,164 @@ destination.
   (il y a bien deux boîtes) et moins vrai du calcul ; le jour où ça se voit,
   c'est `effet 2` qu'il faut apprendre à ouvrir deux boîtes.
 
+## Une année simulée — T103 à T122
+
+Le 2026-10-15, un foyer simulé (deux adultes, un petit) a mené la cuisine
+**un an** par l'app — du 16/10/2026 au 15/10/2027, placard vide au jour 0 —
+au doigt, sur le build de production, l'horloge avancée jour par jour. Un
+registre du monde réel tenu à côté a permis de comparer l'app à la maison
+chaque dimanche. Harnais : branche `sim/annee-simulee` (`sim/annee.mjs`,
+`sim/bilan.py`) ; revue : https://claude.ai/artifact/3hXmN87YwAWVSd1zAYjPZy.
+
+**Ce qui tient** : 406 cuissons, 16 gestes par jour, aucune erreur JS en 365
+jours, les courses cocher/rentrer sans une ligne perdue, le congélateur juste à
+quelques lots près toute l'année. **Ce qui casse, c'est le stock dans la
+durée** : en septembre l'app voyait 37 lots au frigo pour 4 réels, et criait
+« ça déborde » depuis décembre.
+
+Les tickets sont groupés par CHANTIER, et un chantier = une branche. Les
+« décisions » (T114 à T122) ne se construisent pas avant d'être tranchées.
+
+### Le frigo qui oublie — T103 à T105
+
+- [ ] **T103 — Un reste de frigo périmé sort aussi de la liste et du budget.**
+      `Depot.vie` le sort du jeu (« frigo dur ») et le commentaire de
+      `stock.vue.ts` dit qu'il « n'est plus là » ; mais `lots()` ne le filtre
+      pas, `marque` est vidée pour lui, et `bilanStockage` compte toute la table
+      `stock` dans `debut` sans regarder l'âge. Mesuré : 37 lots affichés pour 4
+      réels, « ça déborde » de décembre à septembre, 33 lots au frigo pendant
+      trois semaines de maison vide. Attendu : ne plus le compter dans le
+      budget, l'afficher « périmé · à jeter » (ni silencieux ni « urgent »), et
+      une tâche de cockpit « N restes ont passé leur date » qui se règle d'un
+      seul geste (« c'est jeté »). **Un commentaire juste au-dessus d'un code
+      faux, encore une fois.**
+- [ ] **T104 — Un lot dit son âge et sa quantité en mots.** Tout lot cuisiné lit
+      « déjà là avant la semaine » (le libellé suit `l.from`, qu'un lot
+      journalisé n'a jamais) ; les bandes sortent brutes (`lunchbox`,
+      `1-repas`, `2-repas`). Dire « cuisiné il y a 3 j » depuis `born`, et une
+      quantité lisible (« 1 repas », « une boîte repas »).
+- [ ] **T105 — « Tout ce qui était au congélo est perdu. »** La coupure de
+      courant a coûté 19 « Je n'en ai plus », la panne de frigo 36, un par lot.
+      Un geste par rangement, derrière une confirmation qui dit combien de lots
+      partent. (Le frais acheté qui n'est pas un lot — beurre, crème — reste
+      hors de portée : c'est T114.)
+
+### Ce que le placard EST n'est pas ce qu'il en RESTE — T106 et T107
+
+- [ ] **T106 — L'écoulement lit le rejeu, pas le relevé du 26/08.**
+      `aEcouler(jeu.catalogue)` construit la pression depuis
+      `catalogue.gardeManger.denrees` : un placard relevé à zéro au jour 0 et
+      jamais réapprovisionné a fait dire « finit des paquets entamés : farine
+      epeautre » à 64 cartes dans l'année, et « sauve ce qui se perd : ail,
+      oignon » vient du sous-évier d'août. Même confusion que la PR #32, dans le
+      score cette fois — l'intersection avec `rejeu.parIngredient` comme
+      `hydraterGardeManger`. La phrase de synthèse (« 53 denrées … 16 kg ») est
+      aussi celle du catalogue.
+- [ ] **T107 — Une zone relevée vide le dit, et le parcours qui le prouve peut
+      échouer.** Dans `Zone`, un ingrédient absent du rejeu retombe sur
+      `d.quantite` : après « Valider le relevé — ce qui est à 0 n'y est plus »,
+      la zone lit « mais · 4 × 285 g · CONSERVE ». Le parcours *relever une zone
+      remet le placard à ce que l'œil voit* attend « Rien de relevé ici. » sur
+      `.first()` — et la zone 5, qui n'a aucune denrée, le dit toujours : il ne
+      peut pas rougir. Le vérifier ROUGE avant de le vérifier vert.
+
+### La sortie compte ce qui part dans les assiettes — T108 et T109
+
+- [ ] **T108 — Les invités mangent leur part.** `vueDeLaSortie` multiplie
+      chaque emit par le facteur (`qty × f`) sans retrancher les bouches de
+      plus : la Toussaint à 8 a rangé 150 g au frigo et 450 g au congélo, quand
+      le même plat pour le foyer en range 150 et 300. Le reste est celui du
+      foyer, pas celui du lot. (C'est l'item « le reste dans les assiettes
+      n'est pas compté » laissé ouvert par T99.)
+- [ ] **T109 — Une boîte a un volume, et elle peut être prise.** Mesuré sur le
+      pot-au-feu pour le foyer : « 1 250 ml → 1 × boîtes hermétiques 0,5 / 1 L »,
+      « 800 g → 1 × bocaux 0,75 L » — les contenants se comptent en portions,
+      jamais en litres. Et `boitesPour` puise dans les contenants DÉCLARÉS, pas
+      dans ceux qui restent : l'inventaire disait « contenants 0 libres » depuis
+      juin et la sortie proposait encore des boîtes. Retour d'usage réel : le
+      pot-au-feu « n'avait pas assez de boîtes ». Attendu : une contenance par
+      famille de contenant dans `household.yaml`, le volume dans le choix, et
+      les contenants occupés retirés — avec une phrase quand il n'en reste pas
+      assez (« il manque 2 boîtes : sacs congélation ? »). C'est l'item « le
+      plafond de rangement n'est pas consulté » laissé ouvert par T99.
+
+### Ce que l'app demande, et où elle envoie — T110 et T111
+
+- [ ] **T110 — Le cockpit n'envoie plus vers un écran éteint.** « Une offre
+      attend une réponse » a été la tâche de tête 65 jours sur 365, et elle mène
+      à `prevoir`, que T88 a retiré de la sous-navigation : `cockpit.vue.ts`
+      compte `enAttente` sans lire `JOURS_VISIBLES`. La carte de facette dit
+      encore « 14 créneaux restent à poser d'ici jeudi ». Quatrième fuite de T88
+      après #33, T90 et T94 — balayer les autres routes vers un écran éteint.
+- [ ] **T111 — Rentrer des courses répond aux questions.** T33 promettait que
+      le volume décroît : il descend bien à 5, 7, 9 après la première passe,
+      puis remonte et se tient à ~20 par passe hebdomadaire (1 303 réponses dans
+      l'année). Les réponses vivent dans la passe (`passe.repondu`), et un
+      article rentré n'en est pas une. Un article rentré doit valoir « oui » sur
+      son ingrédient tant que sa vie le permet.
+
+### Cuisiner : le résumé d'abord, la quantité à chaque étape — T112 et T113
+
+- [ ] **T112 — Une séance de cuisine s'ouvre sur sa mise en place.** Demandé
+      le 2026-10-16. Avant l'étape 1 du guide — quand on CUISINE, pas quand on
+      vient lire (ça, c'est T91) — un écran qui dit tout ce qu'il faut sortir :
+      les ingrédients aux parts du créneau, l'ustensile **et s'il tient**
+      (`facteurMax` ne s'affiche aujourd'hui que sur l'écran des parts, que plus
+      rien ne rejoint sans « Changer » ; la Toussaint a passé la mitonnée dans
+      une sauteuse ×1 sans un mot), les boîtes à prévoir pour la sortie, le temps
+      total et le temps actif. Un bouton « C'est parti » ouvre l'étape 1.
+- [ ] **T113 — Chaque étape dit les quantités qu'elle prend.** Demandé le
+      2026-10-16. `uses:` existe dans l'export (198 étapes sur 744, 50 plats
+      sur 138) et **aucun écran ne le lit** — encore une donnée sans lecteur.
+      L'afficher sous l'action, aux parts du créneau. Les étapes sans `uses`
+      le disent plutôt que de se taire (« proposer en le disant »). Compléter
+      `uses:` sur les 15 plats du foyer seulement : sur les recettes d'ouvrage,
+      la frontière de licence de la carte #26 tient, on n'y ajoute rien sans le
+      redemander.
+
+### Le répertoire — T81, repris
+
+T81 reste le ticket. La demande du 2026-10-16 (« une vue résumée des
+recettes ») tranche la question qui le bloquait — **il vit dans la
+sous-navigation cuisine**, à côté de « Proposer · Posés · Stock · Courses » —
+et T91 lui a déjà donné sa fiche de lecture.
+
+### Les décisions — T114 à T122
+
+Ce que l'année a vu et pour quoi l'app n'a aucun geste. Rien ne se construit
+avant d'être tranché.
+
+- [ ] **T114 — Une porte d'entrée hors liste.** Les courgettes du voisin
+      (quatre mercredis de juillet), un article « pas trouvé » en rayon (deux
+      fois), un achat d'impulsion : rien ne fait entrer de la nourriture sauf
+      une ligne de courses rentrée.
+- [ ] **T115 — « On s'absente. »** Quatre absences ; les posés se reportent de
+      jour en jour (T94) et leur frais tourne pendant ce temps.
+- [ ] **T116 — Un repas hors catalogue se journalise.** Trois soirs de pâtes
+      au beurre (le petit malade) ont disparu. Rejoint Workspace#60.
+- [ ] **T117 — « On en a mangé deux parts. »** Un lot se mange tout ou rien ;
+      la gamelle du midi est presque toujours une moitié.
+- [ ] **T118 — La boucle des lentilles.** 52 plats cuisinés sur 138, 31 % des
+      cuissons aux lentilles (réveillon compris) : chaque plat de lentilles émet
+      `lentilles-vertes-cuites`, que la passe suivante paie pour écouler. Le
+      chaînage fait ce qu'on lui demande ; la variété n'a pas de terme.
+- [ ] **T119 — Un congélo plein pousse les restes.** Plancher voulu 4, tenu
+      39 à 57 portions d'avril à septembre, 41 lots passés à 90 jours, 20
+      « Reste réchauffé » posés dans l'année. Au-dessus du plancher rien ne
+      coûte — donc rien ne pousse à manger.
+- [ ] **T120 — Un équilibre à la semaine.** Poisson 20 cuissons et 20 semaines
+      sur 50 ; feuilles 45, crucifères 26 sur l'année. `apports` dit une
+      catégorie, jamais une semaine.
+- [ ] **T121 — Les soirs chargés.** Sans les jours, l'app ne sait pas qu'un
+      mardi est court : 230 dîners de semaine, 33 au-delà de 45 min, 14
+      au-delà de 75. Rejoint « l'agenda est inter-facettes » (le shell).
+- [ ] **T122 — Le pot-au-feu ne tient pas dans la cocotte.** Retour d'usage :
+      trop gros pour la cocotte 7,5 L ; le corpus déclare `facteurMax: 2.0`.
+      **Gaté sur une mesure du foyer** (à quel facteur ça déborde), puis
+      relire les autres `facteurMax` de la cocotte. La saisonnalité
+      (Workspace#41 : 75 % des cuissons datées hors saison, soit le hasard) est
+      à rouvrir au même moment.
+
 ## Sortie
 
 **Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`
