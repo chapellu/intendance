@@ -5191,6 +5191,21 @@ Branche `cuisine/a-la-pause-retouches`, sur `cuisine/a-la-pause`.
       « Fait » de la veille ferme la boucle : `useSortisLaVeille` rend le lot
       cuisinable le lendemain. À confirmer à l'usage : le poulet cuit et les
       galettes congelées comptés « la veille ».
+- [x] **T134 — Le fond se recharge.** Année simulée n° 3 : 75 hachis de
+      lentilles, « Rien à acheter » toute l'année, liste à 0–1 ligne. Deux
+      causes au rejeu : le mode non chiffré de `retirer` n'ôtait jamais une
+      unité (le fond rentré par la liste est en `unité`, sans poids) — un
+      paquet `sec` s'ouvre, le paquet `entame` se finit, une conserve ou du
+      frais part d'un coup ; et un ingrédient épuisé gardait sa clé vide dans
+      `parIngredient`, donc restait « ici » par l'intersection de #32 (qui
+      teste `has`) — il en sort désormais, ce qui ne peut qu'ajouter des lignes.
+      Le plancher (strictement sous le niveau) fait alors la ligne, dite
+      « pour le fond » (`LignePlancher.fond`). Et « Je lance ça » (cockpit, « Ce
+      soir ») pose par `poserCeSoir`, qui relit ce soir à l'horloge du doigt
+      au lieu de l'index de la fenêtre en cache. Harnais : les lignes du fond
+      entrent au grand livre en unités de recette, la persona ne lance pas un
+      plat dont un ingrédient est à zéro un jour sans courses (« manque
+      réel »). À mesurer sur l'année entière.
 
 ## Sortie
 

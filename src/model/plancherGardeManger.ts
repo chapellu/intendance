@@ -254,6 +254,8 @@ export interface LignePlancher {
   vuLe: string | null;
   /** T40 : dire pourquoi cette ligne existe alors qu'aucun plat ne la demande. */
   usage: Usage | null;
+  /** T134 : la denrée est du fond de roulement — la liste le dit « pour le fond ». */
+  fond: boolean;
 }
 
 /**
@@ -275,6 +277,7 @@ export function sousLeurPlancher(
   planchers: readonly PlancherDenree[],
 ): LignePlancher[] {
   const par = usages(catalogue);
+  const duFond = minimumsDuFond(catalogue);
   const lignes: LignePlancher[] = [];
 
   for (const p of planchers) {
@@ -294,6 +297,7 @@ export function sousLeurPlancher(
       confiance: e?.confiance ?? "inconnu",
       vuLe: e?.vuLe ?? null,
       usage: par.get(p.ingredient) ?? null,
+      fond: duFond.has(p.ingredient),
     });
   }
 

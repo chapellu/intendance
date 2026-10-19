@@ -231,6 +231,7 @@ describe("T41 — aucun arbitrage cuisiner/acheter, l'objet dicte le canal", () 
     expect(Object.keys(ligne!).sort()).toEqual([
       "a",
       "confiance",
+      "fond",
       "ingredient",
       "manque",
       "niveau",
