@@ -68,6 +68,7 @@ recipe:
   emits:
     - kind: base
       type: tartinade-legumineuse
+      hors_table: true   # T108 — préparation : un pot à tartiner pour la semaine, la table ne le vide pas
       qty_band: 2-repas
       keeps: {frigo_days: 4, congelo: false}
       note: "la moitié avec 80 g de pain complet ou de tartines craquantes au sarrasin fait un repas"

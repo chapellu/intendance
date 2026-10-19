@@ -33,19 +33,19 @@
   "espaces": {
    "frigo": {
     "places": 10,
-    "contenants": 32.0,
-    "limite": 10,
-    "cause": "place"
+    "contenants": 4.0,
+    "limite": 4.0,
+    "cause": "contenant"
    },
    "congelo": {
     "places": 18,
-    "contenants": 28.0,
+    "contenants": 24.0,
     "limite": 18,
     "cause": "place"
    },
    "placard": {
     "places": 20,
-    "contenants": 24.0,
+    "contenants": null,
     "limite": 20,
     "cause": "place"
    }
@@ -151,23 +151,13 @@
   "contenants": [
    {
     "id": "boites-hermetiques",
-    "label": "boîtes hermétiques 0,5 / 1 L",
-    "nombre": 8,
+    "label": "boîtes IKEA 0,8 L",
+    "nombre": 4,
     "portions": 1,
+    "volumeMl": 800,
     "espaces": [
      "frigo",
      "congelo"
-    ],
-    "consommable": false
-   },
-   {
-    "id": "bocaux-le-parfait",
-    "label": "bocaux Le Parfait 0,75 L",
-    "nombre": 12,
-    "portions": 2,
-    "espaces": [
-     "frigo",
-     "placard"
     ],
     "consommable": false
    },
@@ -176,6 +166,7 @@
     "label": "sacs congélation",
     "nombre": 20,
     "portions": 1,
+    "volumeMl": null,
     "espaces": [
      "congelo"
     ],
@@ -465,7 +456,8 @@
      "espace": "congelo",
      "note": null,
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -880,7 +872,8 @@
      "espace": "congelo",
      "note": null,
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -1248,7 +1241,8 @@
      "espace": "congelo",
      "note": null,
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     },
     {
      "type": "carcasse-volaille",
@@ -1261,7 +1255,8 @@
      "espace": "frigo",
      "note": null,
      "gardeFrigo": 2,
-     "congelo": false
+     "congelo": false,
+     "horsTable": true
     }
    ],
    "lotEntier": true,
@@ -1924,7 +1919,8 @@
      "espace": "congelo",
      "note": null,
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -2316,7 +2312,8 @@
      "espace": "congelo",
      "note": null,
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -2521,7 +2518,8 @@
      "espace": "congelo",
      "note": null,
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -3643,7 +3641,8 @@
      "espace": "congelo",
      "note": "cuits au four et non frits : ils se repassent au four sans devenir gras, et la gamelle froide tient debout",
      "gardeFrigo": 2,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -3904,7 +3903,8 @@
      "espace": "frigo",
      "note": "48 h maximum ; un aspic à l'agar-agar ne se congèle pas, il rend son eau",
      "gardeFrigo": 2,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -4417,7 +4417,8 @@
      "espace": "congelo",
      "note": "très bons froids — format boîte coworking",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -4657,7 +4658,8 @@
      "espace": "congelo",
      "note": "5 à 6 jours bien emballé, ou plusieurs semaines au congélateur",
      "gardeFrigo": 5,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -5033,7 +5035,8 @@
      "espace": "frigo",
      "note": "l'agar-agar tient au frais plusieurs jours, et les carrés se découpent au fur et à mesure — la taille de la part est décidée après coup, ce que `qty_band` ne sait pas dire",
      "gardeFrigo": 4,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": true,
@@ -5202,7 +5205,8 @@
      "espace": "congelo",
      "note": "se pioche froide toute la semaine : mijoté p. 91, niçoise p. 93, salade d'orge p. 95",
      "gardeFrigo": 4,
-     "congelo": true
+     "congelo": true,
+     "horsTable": true
     }
    ],
    "lotEntier": false,
@@ -5381,7 +5385,8 @@
      "espace": "congelo",
      "note": "épluchées, elles se congèlent très bien — mais l'autrice insiste pour les manger vite, et c'est l'INGRÉDIENT qu'elle veut frais, pas le plat",
      "gardeFrigo": 2,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -5891,7 +5896,8 @@
      "espace": "congelo",
      "note": "meilleur chaud, en lunchbox isotherme",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -6177,7 +6183,8 @@
      "espace": "frigo",
      "note": "un appareil à base d'œufs et de lait végétal rend son eau à la décongélation — il se garde au frigo, il ne se congèle pas",
      "gardeFrigo": 2,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -6655,7 +6662,8 @@
      "espace": "congelo",
      "note": "base pour des coquillettes, un risotto, un court-bouillon ou une soupe de vermicelles",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": true
     }
    ],
    "lotEntier": false,
@@ -6915,7 +6923,8 @@
      "espace": "congelo",
      "note": "au moins une semaine en boîte métal ou en pot de verre — ce sont des goûters de sac",
      "gardeFrigo": 7,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -7140,7 +7149,8 @@
      "espace": "congelo",
      "note": "se transportent sans boîte et se mangent à la main",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -7364,7 +7374,8 @@
      "espace": "congelo",
      "note": null,
      "gardeFrigo": 7,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -7694,7 +7705,8 @@
      "espace": "congelo",
      "note": "l'autrice la donne bonne froide en pique-nique — la gamelle de coworking est dans la recette",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -7993,7 +8005,8 @@
      "espace": "congelo",
      "note": "à repasser à la poêle pour retrouver le croustillant",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -8263,7 +8276,8 @@
      "espace": "frigo",
      "note": "se repasse au four, jamais au micro-ondes — le pain y devient mou, et c'est le croustillant qui fait le plat",
      "gardeFrigo": 2,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -8496,7 +8510,8 @@
      "espace": "congelo",
      "note": "ne craignent pas la température ambiante quelques heures — l'autrice le dit, et c'est rare",
      "gardeFrigo": 4,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -8734,7 +8749,8 @@
      "espace": "congelo",
      "note": "s'emporte tel quel dans son plat une fois refroidi",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -9183,7 +9199,8 @@
      "espace": "congelo",
      "note": "l'autrice les fait exprès en avance ; réchauffage à la poêle, pas au micro-ondes",
      "gardeFrigo": 5,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -9451,7 +9468,8 @@
      "espace": "congelo",
      "note": "à repasser à la poêle : au micro-ondes ils ramollissent",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     },
     {
      "type": "jus-pois-chiches",
@@ -9464,7 +9482,8 @@
      "espace": "congelo",
      "note": null,
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": true
     }
    ],
    "lotEntier": false,
@@ -9736,7 +9755,8 @@
      "espace": "congelo",
      "note": "à repasser à la poêle plutôt qu'au micro-ondes : ils ramollissent",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -9956,7 +9976,8 @@
      "espace": "congelo",
      "note": "se congèle très bien — l'autrice conseille de doubler ou tripler les proportions",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -10282,7 +10303,8 @@
      "espace": "frigo",
      "note": null,
      "gardeFrigo": 2,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": true,
@@ -10505,7 +10527,8 @@
      "espace": "frigo",
      "note": "48 h ; s'emporte dans son plat, emballé dans un sachet",
      "gardeFrigo": 2,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -10961,7 +10984,8 @@
      "espace": "frigo",
      "note": "monté avec chantilly et fruits frais imbibés : il se mange le jour même ou le lendemain, et ne voyage pas",
      "gardeFrigo": 2,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": true,
@@ -11202,7 +11226,8 @@
      "espace": "frigo",
      "note": null,
      "gardeFrigo": 2,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -11734,7 +11759,8 @@
      "espace": "congelo",
      "note": "elle VIT au congélateur : `congelo: true` ne dit pas ici « on peut la congeler » mais « elle n'existe pas ailleurs », et rien dans le modèle ne distingue les deux",
      "gardeFrigo": 0,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -11945,7 +11971,8 @@
      "espace": "congelo",
      "note": "se réchauffe bien au four ou à la poêle",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -12294,7 +12321,8 @@
      "espace": "congelo",
      "note": null,
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -12538,7 +12566,8 @@
      "espace": "congelo",
      "note": "se mange à la main, avec une salade de crudités",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -12702,7 +12731,8 @@
      "espace": "frigo",
      "note": "la moitié avec 80 g de pain complet ou de tartines craquantes au sarrasin fait un repas",
      "gardeFrigo": 4,
-     "congelo": false
+     "congelo": false,
+     "horsTable": true
     }
    ],
    "lotEntier": false,
@@ -13292,7 +13322,8 @@
      "espace": "congelo",
      "note": "la sarriette et la sauge ne sont pas décoratives : l'autrice les met pour la digestion des légumineuses",
      "gardeFrigo": 5,
-     "congelo": true
+     "congelo": true,
+     "horsTable": true
     },
     {
      "type": "haricots-blancs-cuits",
@@ -13305,7 +13336,8 @@
      "espace": "congelo",
      "note": "même casserole, autre légumineuse — la salade p. 88 en réclame 300 g",
      "gardeFrigo": 5,
-     "congelo": true
+     "congelo": true,
+     "horsTable": true
     }
    ],
    "lotEntier": false,
@@ -13471,7 +13503,8 @@
      "espace": "congelo",
      "note": null,
      "gardeFrigo": 4,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     },
     {
      "type": "puree-lentilles-carottes",
@@ -13481,7 +13514,8 @@
      "espace": "frigo",
      "note": null,
      "gardeFrigo": 2,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -13720,7 +13754,8 @@
      "espace": "congelo",
      "note": "l'autrice les donne aussi tièdes en salade le lendemain — le reste a déjà sa recette",
      "gardeFrigo": 4,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -13968,7 +14003,8 @@
      "espace": "congelo",
      "note": "2 jours en bocal hermétique, ou mieux congelées et sorties au fur et à mesure ; elles s'effritent bien moins qu'une tranche de cake, d'où le sac",
      "gardeFrigo": 2,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -14213,7 +14249,8 @@
      "espace": "frigo",
      "note": "24 heures au frais et pas plus, à cause du jaune d'œuf cru — c'est l'autrice qui pose la limite et qui en donne la raison",
      "gardeFrigo": 1,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -14468,7 +14505,8 @@
      "espace": "congelo",
      "note": null,
      "gardeFrigo": 2,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -14743,7 +14781,8 @@
      "espace": "congelo",
      "note": null,
      "gardeFrigo": 7,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -14992,7 +15031,8 @@
      "espace": "congelo",
      "note": "24 h à température ambiante en sachet, ou au congélateur — c'est la congélation qui les garde",
      "gardeFrigo": 1,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -15216,7 +15256,8 @@
      "espace": "congelo",
      "note": "l'autrice le dit en toutes lettres : en mettre de côté pour la salade p. 83 et le pâté p. 84",
      "gardeFrigo": 4,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -15422,7 +15463,8 @@
      "espace": "congelo",
      "note": null,
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     },
     {
      "type": "parures-legumes",
@@ -15435,7 +15477,8 @@
      "espace": "frigo",
      "note": "le vert de poireau écarté ici va aussi au bouillon",
      "gardeFrigo": 3,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -15693,7 +15736,8 @@
      "espace": "frigo",
      "note": "le gâteau de la p. 61 la veut ENCORE TIÈDE — voir l'avertissement là-bas",
      "gardeFrigo": 2,
-     "congelo": false
+     "congelo": false,
+     "horsTable": true
     }
    ],
    "lotEntier": true,
@@ -15983,7 +16027,8 @@
      "espace": "frigo",
      "note": "déjà en ramequins individuels à la fin de la recette, comme le riz au lait p. 158 — huit places de frigo d'un coup",
      "gardeFrigo": 3,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -16274,7 +16319,8 @@
      "espace": "congelo",
      "note": "6 muffins = 2 repas ; 3 ou 4 muffins avec des crudités font le déjeuner",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -16531,7 +16577,8 @@
      "espace": "congelo",
      "note": "à garder à température ambiante : le frigo leur fait perdre le moelleux, et c'est l'autrice qui le dit",
      "gardeFrigo": 0,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": true,
@@ -16739,7 +16786,8 @@
      "espace": "frigo",
      "note": "se garde à TEMPÉRATURE AMBIANTE — le frais durcirait le mugcake ; la tasse part emballée dans un sachet",
      "gardeFrigo": 3,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -17033,7 +17081,8 @@
      "espace": "congelo",
      "note": "meilleur réchauffé, mais les légumes perdent leur tenue",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -17585,7 +17634,8 @@
      "espace": "frigo",
      "note": "poisson pané : à manger le lendemain au plus tard, et repassé au four",
      "gardeFrigo": 2,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -18390,7 +18440,8 @@
      "espace": "frigo",
      "note": "des pâtes en sauce avec de la mozzarella fondue : la congélation les rend farineuses, le frigo leur va",
      "gardeFrigo": 2,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -18587,7 +18638,8 @@
      "espace": "congelo",
      "note": "mie serrée, exprès : c'est ce qui empêche la garniture des sandwichs de couler",
      "gardeFrigo": 5,
-     "congelo": true
+     "congelo": true,
+     "horsTable": true
     }
    ],
    "lotEntier": false,
@@ -18820,7 +18872,8 @@
      "espace": "congelo",
      "note": "4 jours dans un torchon, ou tranché puis congelé en sachet hermétique ; la salade César p. 59 en réclame 100 g",
      "gardeFrigo": 4,
-     "congelo": true
+     "congelo": true,
+     "horsTable": true
     }
    ],
    "lotEntier": false,
@@ -19284,7 +19337,8 @@
      "espace": "congelo",
      "note": null,
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -19540,7 +19594,8 @@
      "espace": "congelo",
      "note": "les sandwichs nordiques p. 32 en prennent 2 ; s'ouvrent en deux avant d'être garnis",
      "gardeFrigo": 2,
-     "congelo": true
+     "congelo": true,
+     "horsTable": true
     }
    ],
    "lotEntier": false,
@@ -20040,7 +20095,8 @@
      "espace": "frigo",
      "note": null,
      "gardeFrigo": 2,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -20318,7 +20374,8 @@
      "espace": "frigo",
      "note": "pâtes au poisson : le lendemain au plus tard",
      "gardeFrigo": 2,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -20511,7 +20568,8 @@
      "espace": "congelo",
      "note": "une demi-pizza ≈ 125 g de farine semi-complète ; garnie p. 60 et p. 81",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": true
     }
    ],
    "lotEntier": false,
@@ -20708,7 +20766,8 @@
      "espace": "congelo",
      "note": "consommée par la grande pizza p. 99 et par la focaccia p. 100, toutes deux désignées par l'autrice",
      "gardeFrigo": 2,
-     "congelo": true
+     "congelo": true,
+     "horsTable": true
     }
    ],
    "lotEntier": true,
@@ -20889,7 +20948,8 @@
      "espace": "congelo",
      "note": "les wraps p. 38 et p. 41 en prennent 2 chacun ; la p. 41 les veut « du jour », elles se fendillent une fois raidies",
      "gardeFrigo": 4,
-     "congelo": true
+     "congelo": true,
+     "horsTable": true
     }
    ],
    "lotEntier": false,
@@ -21036,7 +21096,8 @@
      "espace": "congelo",
      "note": "la tourte p. 78 et le chausson p. 98 en prennent un pâton chacun ; la variante à l'origan est celle que réclame le chausson",
      "gardeFrigo": 5,
-     "congelo": true
+     "congelo": true,
+     "horsTable": true
     }
    ],
    "lotEntier": false,
@@ -21248,7 +21309,8 @@
      "espace": "frigo",
      "note": "en bocal hermétique ; l'accord parfait de l'autrice est 80 g de pain des fleurs au sarrasin",
      "gardeFrigo": 5,
-     "congelo": false
+     "congelo": false,
+     "horsTable": true
     }
    ],
    "lotEntier": false,
@@ -21534,7 +21596,8 @@
      "espace": "frigo",
      "note": "plusieurs semaines à température ambiante SI le vide d'air s'est fait ; ce n'est pas une stérilisation, d'où la vérification de la capsule",
      "gardeFrigo": 7,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -21734,7 +21797,8 @@
      "espace": "congelo",
      "note": null,
      "gardeFrigo": 0,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -21966,7 +22030,8 @@
      "espace": "congelo",
      "note": "frittata p. 97 (150 g), gros chausson p. 98 (125 g), et la variante « déjà prête » du chili p. 57",
      "gardeFrigo": 4,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -22240,7 +22305,8 @@
      "espace": "congelo",
      "note": "deux portions-repas, dont une à congeler — et la poêlée de la p. 72 y passe EN ENTIER",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -22615,7 +22681,8 @@
      "espace": "frigo",
      "note": "l'autrice range cette pâte au rayon « spéciale pique-nique » : la pizza froide voyage, c'est sa raison d'être",
      "gardeFrigo": 2,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": true,
@@ -22897,7 +22964,8 @@
      "espace": "congelo",
      "note": "petit appétit ou journée sédentaire : le tiers de la pizza peut suffire",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -23195,7 +23263,8 @@
      "espace": "congelo",
      "note": "se mange aussi bien froide en salade le lendemain",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -23574,7 +23643,8 @@
      "espace": "congelo",
      "note": "le repas du soir selon l'autrice : le bouillon avec des petites pâtes, ou des lanières de crêpes (p. 192)",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": true
     },
     {
      "type": "viande-pot-au-feu",
@@ -23587,7 +23657,8 @@
      "espace": "congelo",
      "note": "le lendemain, en hachis Parmentier (p. 199) ou froide à la vinaigrette",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     },
     {
      "type": "legumes-pot-au-feu",
@@ -23600,7 +23671,8 @@
      "espace": "frigo",
      "note": "pommes de terre et navets cuits à l'eau : ils se délitent à la décongélation, ils restent au frigo",
      "gardeFrigo": 3,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -23934,7 +24006,8 @@
      "espace": "congelo",
      "note": "l'autrice range le poulet restant avec les restes de rôti — c'est ce que la focaccia p. 100 réclame",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     },
     {
      "type": "carcasse-volaille",
@@ -23947,7 +24020,8 @@
      "espace": "congelo",
      "note": "l'autrice renvoie au cock-a-leekie p. 141, non saisi ; en attendant, `soupe-de-poule` du répertoire la consomme déjà",
      "gardeFrigo": 2,
-     "congelo": true
+     "congelo": true,
+     "horsTable": true
     }
    ],
    "lotEntier": false,
@@ -24120,7 +24194,8 @@
      "espace": "congelo",
      "note": "la chair détachée une fois le dîner servi — trois plats du livre en vivent (p. 57, 59, 60)",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     },
     {
      "type": "carcasse-volaille",
@@ -24133,7 +24208,8 @@
      "espace": "congelo",
      "note": "la carcasse fait un bouillon ; même type que celle de `poulet-cocotte-olives-citron`",
      "gardeFrigo": 2,
-     "congelo": true
+     "congelo": true,
+     "horsTable": true
     }
    ],
    "lotEntier": true,
@@ -24426,7 +24502,8 @@
      "espace": "congelo",
      "note": "un quatre-quarts se congèle en parts et se sort une par une pour un goûter",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": true,
@@ -24787,7 +24864,8 @@
      "espace": "congelo",
      "note": "très bonne froide — le déjeuner nomade évident",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -25011,7 +25089,8 @@
      "espace": "congelo",
      "note": "meilleure réchauffée le lendemain",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -25353,7 +25432,8 @@
      "espace": "frigo",
      "note": "2 à 3 jours en pot fermé — de quoi garnir les sandwichs de la semaine",
      "gardeFrigo": 3,
-     "congelo": false
+     "congelo": false,
+     "horsTable": true
     }
    ],
    "lotEntier": false,
@@ -25634,7 +25714,8 @@
      "espace": "frigo",
      "note": "48 h maximum, l'autrice est nette là-dessus ; même type que les rillettes p. 75 de l'autre livre",
      "gardeFrigo": 2,
-     "congelo": false
+     "congelo": false,
+     "horsTable": true
     }
    ],
    "lotEntier": false,
@@ -25942,7 +26023,8 @@
      "espace": "frigo",
      "note": "un risotto réchauffé n'est plus un risotto — il se mange le lendemain, il ne se congèle pas",
      "gardeFrigo": 2,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -26179,7 +26261,8 @@
      "espace": "frigo",
      "note": "déjà en pots individuels fermés à la fin de la recette — le dessert de la gamelle sans un geste de plus",
      "gardeFrigo": 3,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -26441,7 +26524,8 @@
      "espace": "congelo",
      "note": "volontairement très salé et concentré : à DILUER avant de l'employer ailleurs",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": true
     },
     {
      "type": "roti-froid",
@@ -26454,7 +26538,8 @@
      "espace": "congelo",
      "note": "se tranche fin et se mange froid — le déjeuner nomade du lendemain",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -26703,7 +26788,8 @@
      "espace": "congelo",
      "note": "se tranche fin pour les sandwichs (p. 70), se cube pour les salades (p. 69)",
      "gardeFrigo": 4,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -26966,7 +27052,8 @@
      "espace": "congelo",
      "note": "l'autrice le dit : il se conserve plusieurs jours au frais et se congèle en tranches — et la focaccia p. 100 le réclame nommément",
      "gardeFrigo": 4,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -27206,7 +27293,8 @@
      "espace": "frigo",
      "note": null,
      "gardeFrigo": 2,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -27711,7 +27799,8 @@
      "espace": "frigo",
      "note": null,
      "gardeFrigo": 2,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -27945,7 +28034,8 @@
      "espace": "frigo",
      "note": "se mange froide, c'est le principe — mais le riz refroidi ne se recongèle pas",
      "gardeFrigo": 2,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -28192,7 +28282,8 @@
      "espace": "frigo",
      "note": "24 h maximum",
      "gardeFrigo": 1,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -28410,7 +28501,8 @@
      "espace": "frigo",
      "note": null,
      "gardeFrigo": 2,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -28683,7 +28775,8 @@
      "espace": "frigo",
      "note": "se sert froide, à température ambiante ou réchauffée — les trois marchent",
      "gardeFrigo": 2,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -28992,7 +29085,8 @@
      "espace": "frigo",
      "note": "l'œuf mollet limite à deux jours, et une salade ne se congèle pas — mais elle se mange « tiède ou bien frais », donc la gamelle ne demande aucun réchauffage",
      "gardeFrigo": 2,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -29247,7 +29341,8 @@
      "espace": "congelo",
      "note": "aquafaba : se monte en neige comme des blancs d'œufs",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": true
     }
    ],
    "lotEntier": false,
@@ -29667,7 +29762,8 @@
      "espace": "congelo",
      "note": "l'autrice les fait exprès à l'avance ; réchauffage impératif à 200 °C quelques minutes, sinon la brick reste molle",
      "gardeFrigo": 2,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -30121,7 +30217,8 @@
      "espace": "frigo",
      "note": "sept pots se mangent, le huitième ensemence la fournée suivante — c'est l'arête qui referme le cycle",
      "gardeFrigo": 7,
-     "congelo": false
+     "congelo": false,
+     "horsTable": true
     }
    ],
    "lotEntier": true,
@@ -30410,7 +30507,8 @@
      "espace": "congelo",
      "note": "le pain grillé se refait à la minute — c'est la soupe seule qui se garde, et elle se congèle très bien",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -30675,7 +30773,8 @@
      "espace": "congelo",
      "note": null,
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -30938,7 +31037,8 @@
      "espace": "frigo",
      "note": "24 h maximum, bien couverte au frais — au-delà la pâte se détrempe",
      "gardeFrigo": 1,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -31165,7 +31265,8 @@
      "espace": "frigo",
      "note": "se mange froide en pique-nique, mais la pâte perd son croustillant",
      "gardeFrigo": 2,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -31559,7 +31660,8 @@
      "espace": "frigo",
      "note": "l'autrice le dit elle-même : on peut les préparer LA VEILLE et les réchauffer 10 min à 180 °C — le plat entier est anticipable, ce qu'aucun champ ne sait déclarer autrement qu'en imposant l'attente",
      "gardeFrigo": 2,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": true,
@@ -31774,7 +31876,8 @@
      "espace": "frigo",
      "note": "environ 5 jours en bocaux fermés ; se transporte à part du pain, jamais tartinée d'avance",
      "gardeFrigo": 5,
-     "congelo": false
+     "congelo": false,
+     "horsTable": true
     }
    ],
    "lotEntier": false,
@@ -32010,7 +32113,8 @@
      "espace": "congelo",
      "note": "se transporte en bocal, emballé dans un torchon ; se mange à la fourchette dans le pot",
      "gardeFrigo": 5,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -32288,7 +32392,8 @@
      "espace": "congelo",
      "note": "l'autrice le sert tiède ou à température ambiante : il ne demande même pas à être réchauffé",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -32649,7 +32754,8 @@
      "espace": "frigo",
      "note": "un crumble décongelé rend son eau et perd le sablé : elle se garde au frais, elle ne se congèle pas",
      "gardeFrigo": 3,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": true,
@@ -33041,7 +33147,8 @@
      "espace": "congelo",
      "note": "une tourte à la courge se réchauffe au four sans rien perdre — la part de gamelle est dans la recette",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": true,
@@ -33318,7 +33425,8 @@
      "espace": "congelo",
      "note": null,
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -33713,7 +33821,8 @@
      "espace": "congelo",
      "note": "l'autrice la donne pour bonne froide : en refroidissant la pâte perd son croquant et devient moelleuse comme une pâte à pain — le déjeuner de coworking évident",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": true,
@@ -33876,7 +33985,8 @@
      "espace": "congelo",
      "note": "bon froid en été — format bouteille pour la lunchbox",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -34112,7 +34222,8 @@
      "espace": "congelo",
      "note": null,
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     },
     {
      "type": "parures-legumes",
@@ -34125,7 +34236,8 @@
      "espace": "frigo",
      "note": "épluchures lavées, en boîte hermétique — 2 à 3 jours selon l'autrice",
      "gardeFrigo": 3,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -34361,7 +34473,8 @@
      "espace": "congelo",
      "note": "huit parts pour un foyer de 2,5 : c'est un plat souche déguisé en soupe, et il remplit le congélateur en portions de secours",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -34559,7 +34672,8 @@
      "espace": "congelo",
      "note": "cinq plats du livre en vivent : p. 73, 77, 78, 81, et la variante végétarienne du chausson p. 98",
      "gardeFrigo": 3,
-     "congelo": true
+     "congelo": true,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -34738,7 +34852,8 @@
      "espace": "frigo",
      "note": "à manger le jour même : le basilic noircit ensuite",
      "gardeFrigo": 1,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -34963,7 +35078,8 @@
      "espace": "frigo",
      "note": "2 à 3 jours bien emballés ; l'avocat noircit, ils ne se congèlent pas",
      "gardeFrigo": 3,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": false,
@@ -35295,7 +35411,8 @@
      "espace": "frigo",
      "note": "dix pots dans le frigo pour la semaine — soit la totalité des huit boîtes hermétiques si on ne possède pas de pots à yaourt dédiés",
      "gardeFrigo": 7,
-     "congelo": false
+     "congelo": false,
+     "horsTable": false
     }
    ],
    "lotEntier": true,

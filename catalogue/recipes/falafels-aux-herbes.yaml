@@ -104,6 +104,7 @@ recipe:
     # (p. 59) monte en neige — même sous-produit que la salade de la p. 36.
     - kind: base
       type: jus-pois-chiches
+      hors_table: true   # T108 — sous-produit : l'eau d'égouttage ne passe pas à table
       qty_band: 1-repas
       qty: {amount: 15, unit: cl}     # l'aquafaba de 500 g de pois chiches égouttés
       keeps: {frigo_days: 3, congelo: true}

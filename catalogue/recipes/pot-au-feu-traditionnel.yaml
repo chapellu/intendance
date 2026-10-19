@@ -132,6 +132,7 @@ recipe:
   emits:
     - kind: base
       type: bouillon-pot-au-feu
+      hors_table: true   # T108 — sous-produit : la table mange la viande et les légumes, le bouillon sort entier
       qty_band: 2-repas
       # CHIFFRÉ LE 2026-09-10, ET C'EST LA CONDITION QUE CE COMMENTAIRE POSAIT
       # LUI-MÊME. Il disait : pas de `qty:` tant qu'aucun consommateur ne vient

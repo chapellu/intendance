@@ -69,6 +69,7 @@ recipe:
   emits:
     - kind: base
       type: tartinade-vegetale
+      hors_table: true   # T108 — préparation : un pot à tartiner pour la semaine, la table ne le vide pas
       qty_band: 2-repas
       keeps: {frigo_days: 5, congelo: false}
       note: "environ 5 jours en bocaux fermés ; se transporte à part du pain, jamais tartinée d'avance"

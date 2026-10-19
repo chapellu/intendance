@@ -3,20 +3,44 @@
 // Une seule phrase à tenir, celle du 24/09 : « mettre une part dans tel
 // Tupperware, deux parts dans celui-ci, un au frigo l'autre au congélateur ».
 // Les promesses ci-dessous la découpent en règles, et chacune est écrite contre
-// le foyer RÉEL — ses 8 boîtes, ses 12 bocaux, ses 20 sacs — parce qu'une
+// le foyer RÉEL — ses 4 boîtes IKEA de 0,8 L et ses sacs — parce qu'une
 // répartition juste sur des contenants inventés ne dit rien de celle qu'on
 // lira ce soir.
+//
+// SAUF LA MÉCANIQUE DU CHOIX, ÉCRITE CONTRE UN FOYER À TROIS FAMILLES
+// (`foyerMixte`). Le foyer réel n'a plus qu'une famille de boîtes depuis le
+// 2026-10-16 (les bocaux tiennent la farine) : « le plus gros qui tient passe
+// devant » ou « la boîte avant le sac » n'y auraient plus rien à départager, et
+// ces règles resteraient vraies sans qu'aucun test ne puisse le dire.
 
 import { readFileSync } from "node:fs";
 import { describe, expect, test } from "vitest";
 import { lireCatalogue } from "../model/catalogue";
+import type { LotInitial } from "../model/depot";
 import type { Catalogue, Emit, Plat } from "../model/types";
-import { boitesPour, phraseDesBoites, quantiteDuLot, vueDeLaSortie } from "./sortie.vue";
+import {
+  boitesPour,
+  contenantsLibres,
+  phraseDesBoites,
+  phraseDuManque,
+  quantiteDuLot,
+  rangerDans,
+  vueDeLaSortie,
+} from "./sortie.vue";
 
 const catalogue: Catalogue = lireCatalogue(
   JSON.parse(readFileSync("public/cuisine-data.json", "utf8")) as unknown,
 );
 const foyer = catalogue.foyer;
+const sacs = foyer.contenants.find((c) => c.id === "sacs-congelation")!;
+const foyerMixte = {
+  ...foyer,
+  contenants: [
+    { id: "boites-hermetiques", label: "boîtes hermétiques 0,5 / 1 L", nombre: 8, portions: 1, volumeMl: 500, espaces: ["frigo", "congelo"], consommable: false },
+    { id: "bocaux-le-parfait", label: "bocaux Le Parfait 0,75 L", nombre: 12, portions: 2, volumeMl: 750, espaces: ["frigo"], consommable: false },
+    sacs,
+  ],
+} as typeof foyer;
 
 const emit = (o: Partial<Emit>): Emit => ({
   type: "ratatouille",
@@ -27,6 +51,7 @@ const emit = (o: Partial<Emit>): Emit => ({
   note: null,
   gardeFrigo: 3,
   congelo: true,
+  horsTable: false,
   ...o,
 });
 
@@ -129,28 +154,28 @@ describe("ce qu'on met dans la boîte", () => {
   });
 });
 
-describe("les contenants du foyer", () => {
+describe("les contenants du foyerMixte", () => {
   test("le plus gros qui tient passe devant, puis on complète", () => {
-    // Le foyer déclare des bocaux de 2 portions et des boîtes de 1.
-    expect(boitesPour(foyer, "frigo", 3)).toEqual([
+    // Le foyerMixte déclare des bocaux de 2 portions et des boîtes de 1.
+    expect(boitesPour(foyerMixte, "frigo", 3)).toEqual([
       { label: "bocaux Le Parfait 0,75 L", nombre: 1 },
       { label: "boîtes hermétiques 0,5 / 1 L", nombre: 1 },
     ]);
   });
 
   test("les boîtes qui se lavent passent devant les sacs qu'on rachète", () => {
-    // Au congélateur, le foyer a 8 boîtes hermétiques et 20 sacs — tous deux
+    // Au congélateur, le foyerMixte a 8 boîtes hermétiques et 20 sacs — tous deux
     // d'une portion. Proposer le sac d'abord dépenserait un consommable pour
     // épargner une vaisselle.
-    expect(boitesPour(foyer, "congelo", 2)).toEqual([
+    expect(boitesPour(foyerMixte, "congelo", 2)).toEqual([
       { label: "boîtes hermétiques 0,5 / 1 L", nombre: 2 },
     ]);
   });
 
   test("un reste plus petit qu'un contenant en reçoit quand même un", () => {
     const foyerAuxBocaux = {
-      ...foyer,
-      contenants: foyer.contenants.filter((c) => c.portions === 2),
+      ...foyerMixte,
+      contenants: foyerMixte.contenants.filter((c) => c.portions === 2),
     };
     expect(boitesPour(foyerAuxBocaux, "frigo", 1)).toEqual([
       { label: "bocaux Le Parfait 0,75 L", nombre: 1 },
@@ -158,12 +183,12 @@ describe("les contenants du foyer", () => {
   });
 
   test("un espace sans contenant déclaré ne reçoit aucune boîte", () => {
-    // On se tait plutôt que d'inventer un contenant que le foyer n'a pas.
-    expect(boitesPour({ ...foyer, contenants: [] }, "congelo", 2)).toEqual([]);
+    // On se tait plutôt que d'inventer un contenant que le foyerMixte n'a pas.
+    expect(boitesPour({ ...foyerMixte, contenants: [] }, "congelo", 2)).toEqual([]);
   });
 
   test("le compte se lit « 2 × », sans accorder un pluriel qu'on n'a pas saisi", () => {
-    expect(phraseDesBoites(boitesPour(foyer, "frigo", 3))).toBe(
+    expect(phraseDesBoites(boitesPour(foyerMixte, "frigo", 3))).toBe(
       "1 × bocaux Le Parfait 0,75 L + 1 × boîtes hermétiques 0,5 / 1 L",
     );
   });
@@ -191,7 +216,7 @@ describe("ce que la sortie dit du reste", () => {
     expect(v.lots[0]!.location).toBe("frigo");
     expect(v.lots[0]!.garde).toBe(3);
     expect(quantiteDuLot(v.lots[0]!)).toBe("500 g");
-    expect(phraseDesBoites(v.lots[0]!.boites)).toBe("1 × boîtes hermétiques 0,5 / 1 L");
+    expect(phraseDesBoites(v.lots[0]!.boites)).toBe("1 × boîtes IKEA 0,8 L");
   });
 });
 
@@ -208,3 +233,154 @@ describe("le conseil de la recette, au moment où il sert", () => {
     expect(v.lots.map((l) => l.note)).toEqual(["meilleure réchauffée le lendemain", null]);
   });
 });
+
+describe("T108 — les invités mangent leur part", () => {
+  // LE RESTE DU CATALOGUE EST CELUI DU FOYER. `emits` dit ce que laisse un lot
+  // de `portions` quand `Foyer.parts` (2,5) est à table ; chaque bouche de plus
+  // le prend dans la cocotte, pas dans un lot imaginaire.
+  const mitonnee = catalogue.plats.find((x) => x.id === "mitonnee-lentilles")!;
+
+  test("pour le foyer seul, rien ne change : c'est le cas que le catalogue décrit", () => {
+    const v = vueDeLaSortie(mitonnee, foyer.parts, 1, foyer);
+    expect(v.lots.map((l) => [l.location, l.qty])).toEqual([
+      ["frigo", 150],
+      ["congelo", 300],
+    ]);
+  });
+
+  test("huit à table sur un lot de huit : tout part dans les assiettes", () => {
+    // La Toussaint de l'année simulée rangeait 150 g + 450 g de cette
+    // mitonnée. Le lot faisait 8 portions et 8 parts étaient servies.
+    const v = vueDeLaSortie(mitonnee, 8, 8 / 6, foyer);
+    expect(v.rien).toBe(true);
+  });
+
+  test("une bouche de moins laisse plus, une de plus laisse moins", () => {
+    const deux = vueDeLaSortie(plat([emit({ band: "3-repas", qty: { amount: 450, unit: "g" } })]), 2, 1, foyer);
+    const quatre = vueDeLaSortie(plat([emit({ band: "3-repas", qty: { amount: 450, unit: "g" } })]), 3, 1, foyer);
+    const total = (v: typeof deux) => v.lots.reduce((n, l) => n + (l.qty ?? 0), 0);
+    // portions 4, foyer 2,5 : le reste déclaré vaut 1,5 portion.
+    expect(total(deux)).toBeCloseTo(450 * (2 / 1.5));
+    expect(total(quatre)).toBeCloseTo(450 * (1 / 1.5));
+  });
+
+  test("un reste plus petit que la part du bébé se finit, il ne se range pas", () => {
+    // 3,75 parts sur un lot de 4 : 0,25 portion de reste déclaré à 1,5.
+    const v = vueDeLaSortie(plat([emit({ band: "lunchbox" })]), 3.8, 1, foyer);
+    expect(v.rien).toBe(true);
+  });
+
+  test("ce que la table ne mange pas ne se retranche pas", () => {
+    // Le bouillon du pot-au-feu sort entier, même à huit : la table mange la
+    // viande et les légumes, pas le bouillon.
+    const p = catalogue.plats.find((x) => x.id === "pot-au-feu-traditionnel")!;
+    const v = vueDeLaSortie(p, 8, 8 / 6, foyer);
+    const bouillon = v.lots.filter((l) => l.type === "bouillon-pot-au-feu");
+    expect(bouillon.reduce((n, l) => n + (l.qty ?? 0), 0)).toBeCloseTo(2500 * (8 / 6));
+    expect(v.lots.some((l) => l.type === "viande-pot-au-feu")).toBe(false);
+  });
+
+  test("un lot que le foyer vide à lui seul garde l'ancien calcul", () => {
+    // Une salade d'une portion pour 2,5 parts : l'emit déclaré ne peut pas
+    // être un reste de la table, on ne lui en invente pas un.
+    const p = { ...plat([emit({ band: "lunchbox", congelo: false, espace: "frigo" })]), portions: 1 } as Plat;
+    expect(vueDeLaSortie(p, 2.5, 2.5, foyer).lots[0]!.repas).toBe(3);
+  });
+
+  test("un lot qui garde toute sa bande garde son nom, un lot réduit est recompté", () => {
+    const v = vueDeLaSortie(plat([emit({ band: "3-repas", congelo: false, espace: "frigo" })]), 3, 1, foyer);
+    expect(v.lots[0]!.band).toBe("2-repas");
+  });
+});
+
+describe("T109 — une boîte a un volume, et elle peut être prise", () => {
+  const potAuFeu = catalogue.plats.find((x) => x.id === "pot-au-feu-traditionnel")!;
+  const lot = (o: Partial<LotInitial>): LotInitial => ({
+    type: "x", kind: "reste-plat", qty: null, qty_band: "1-repas", born: "2026-10-01", location: "frigo", ...o,
+  });
+
+  test("1 250 ml de bouillon ne tiennent pas dans une boîte de 0,5 L", () => {
+    // Le cas mesuré du ticket : « 1 250 ml → 1 × boîtes hermétiques ».
+    expect(boitesPour(foyerMixte, "congelo", 1, { amount: 1250, unit: "ml" })).toEqual([
+      { label: "boîtes hermétiques 0,5 / 1 L", nombre: 3 },
+    ]);
+  });
+
+  test("au frigo, le bocal prend le gros et une boîte le reste", () => {
+    expect(boitesPour(foyerMixte, "frigo", 1, { amount: 1250, unit: "ml" })).toEqual([
+      { label: "bocaux Le Parfait 0,75 L", nombre: 1 },
+      { label: "boîtes hermétiques 0,5 / 1 L", nombre: 1 },
+    ]);
+  });
+
+  test("les grammes comptent pour des millilitres", () => {
+    // 800 g de légumes : un bocal de 0,75 L ne suffit plus.
+    expect(boitesPour(foyerMixte, "frigo", 2, { amount: 800, unit: "g" })).toEqual([
+      { label: "bocaux Le Parfait 0,75 L", nombre: 1 },
+      { label: "boîtes hermétiques 0,5 / 1 L", nombre: 1 },
+    ]);
+  });
+
+  test("ce que le dépôt occupe n'est plus libre", () => {
+    const stock = Array.from({ length: 8 }, () => lot({ location: "congelo" }));
+    const libres = contenantsLibres(foyerMixte, stock);
+    // Les 8 boîtes dorment au congélateur : le prochain lot va dans un sac.
+    expect(libres.get("boites-hermetiques")).toBe(0);
+    expect(boitesPour(foyerMixte, "congelo", 1, null, libres)).toEqual([{ label: "sacs congélation", nombre: 1 }]);
+  });
+
+  test("quand il n'en reste pas assez, la sortie le dit — et propose un sac au frigo", () => {
+    const stock = [
+      ...Array.from({ length: 8 }, () => lot({ location: "frigo" })),
+      ...Array.from({ length: 6 }, () => lot({ location: "frigo", qty_band: "2-repas" })),
+    ];
+    const libres = contenantsLibres(foyerMixte, stock);
+    expect(libres.get("bocaux-le-parfait")).toBe(6);
+    const r = rangerDans(foyerMixte, "frigo", 1, { amount: 1250, unit: "ml" }, new Map([...libres, ["bocaux-le-parfait", 0]]));
+    expect(r.boites).toEqual([]);
+    expect(r.manque).toEqual({ nombre: 2, label: "bocaux Le Parfait 0,75 L", repli: "sacs congélation" });
+    expect(phraseDuManque(r.manque!)).toBe("il manque 2 × bocaux Le Parfait 0,75 L : sacs congélation ?");
+  });
+
+  test("deux lots d'une même sortie ne prennent jamais la même boîte", () => {
+    const v = vueDeLaSortie(potAuFeu, foyer.parts, 1, foyerMixte);
+    const boites = v.lots.flatMap((l) => l.boites).filter((b) => b.label.startsWith("boîtes"));
+    expect(boites.reduce((n, b) => n + b.nombre, 0)).toBeLessThanOrEqual(8);
+  });
+
+  test("le pot-au-feu d'un dépôt déjà plein dit ce qui manque", () => {
+    // Retour d'usage : « pas assez de boîtes ». Les 8 boîtes et les 12 bocaux
+    // dorment au frigo : ce qui va au frigo manque, ce qui va au congélateur
+    // part en sacs.
+    const stock = [
+      ...Array.from({ length: 8 }, () => lot({ location: "frigo" })),
+      ...Array.from({ length: 12 }, () => lot({ location: "frigo", qty_band: "2-repas" })),
+    ];
+    const v = vueDeLaSortie(potAuFeu, foyer.parts, 1, foyerMixte, stock);
+    const frigo = v.lots.filter((l) => l.location === "frigo");
+    expect(frigo.every((l) => l.manque?.repli === "sacs congélation")).toBe(true);
+    const congelo = v.lots.filter((l) => l.location === "congelo");
+    expect(congelo.every((l) => l.boites.every((b) => b.label === "sacs congélation"))).toBe(true);
+  });
+});
+
+describe("le foyer réel, quatre boîtes de 0,8 L", () => {
+  test("le pot-au-feu remplit les quatre boîtes avec son seul bouillon, et le dit", () => {
+    // LE RETOUR D'USAGE QUI A OUVERT T109, CONTRE LE VRAI FOYER : « pas assez
+    // de boîtes pour le ranger ». Les 2,5 L de bouillon prennent les quatre
+    // boîtes ; la viande et les légumes qui restent au frigo n'ont plus rien,
+    // et l'écran le dit au lieu de proposer une boîte qui n'existe pas.
+    const p = catalogue.plats.find((x) => x.id === "pot-au-feu-traditionnel")!;
+    const v = vueDeLaSortie(p, foyer.parts, 1, foyer);
+    const boites = v.lots
+      .flatMap((l) => l.boites)
+      .filter((b) => b.label === "boîtes IKEA 0,8 L")
+      .reduce((n, b) => n + b.nombre, 0);
+    expect(boites).toBe(4);
+    const bouillon = v.lots.filter((l) => l.type === "bouillon-pot-au-feu");
+    expect(bouillon.every((l) => phraseDesBoites(l.boites) === "2 × boîtes IKEA 0,8 L")).toBe(true);
+    const sansBoite = v.lots.filter((l) => l.location === "frigo" && l.manque);
+    expect(sansBoite.map((l) => l.type)).toEqual(["viande-pot-au-feu", "legumes-pot-au-feu"]);
+  });
+});
+

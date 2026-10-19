@@ -233,6 +233,7 @@ function emit(v: unknown, ou: string): Emit {
     note: texteOuNull(o["note"] ?? null, `${ou}.note`),
     gardeFrigo: nombre(o["gardeFrigo"], `${ou}.gardeFrigo`),
     congelo: booleen(o["congelo"], `${ou}.congelo`),
+    horsTable: booleen(o["horsTable"], `${ou}.horsTable`),
   };
 }
 
@@ -391,7 +392,7 @@ function foyer(v: unknown, ou: string): Foyer {
     const c = obj(espacesBruts[e], `${ou}.espaces.${e}`);
     espaces[e] = {
       places: nombre(c["places"], `${ou}.espaces.${e}.places`),
-      contenants: nombre(c["contenants"], `${ou}.espaces.${e}.contenants`),
+      contenants: nombreOuNull(c["contenants"] ?? null, `${ou}.espaces.${e}.contenants`),
       limite: nombre(c["limite"], `${ou}.espaces.${e}.limite`),
       cause: parmi(c["cause"], ["place", "contenant"] as const, `${ou}.espaces.${e}.cause`),
     };
@@ -422,6 +423,7 @@ function foyer(v: unknown, ou: string): Foyer {
         label: texte(c["label"], `${ou}.contenants[${i}].label`),
         nombre: nombre(c["nombre"], `${ou}.contenants[${i}].nombre`),
         portions: nombre(c["portions"], `${ou}.contenants[${i}].portions`),
+        volumeMl: nombreOuNull(c["volumeMl"] ?? null, `${ou}.contenants[${i}].volumeMl`),
         espaces: tableau(c["espaces"], `${ou}.contenants[${i}].espaces`)
           .map((e, j) => parmi(e, ESPACES, `${ou}.contenants[${i}].espaces[${j}]`)),
         consommable: booleen(c["consommable"], `${ou}.contenants[${i}].consommable`),

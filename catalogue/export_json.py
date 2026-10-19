@@ -259,7 +259,11 @@ def main():
                  "qty": _qty(e), "band": e.get("qty_band"),
                  "espace": ch.espace_de(e), "note": e.get("note"),
                  "gardeFrigo": (e.get("keeps") or {}).get("frigo_days"),
-                 "congelo": bool(e.get("keeps", {}).get("congelo"))}
+                 "congelo": bool(e.get("keeps", {}).get("congelo")),
+                 # T108 — ce que la table ne mange pas : un sous-produit (une
+                 # carcasse, un bouillon) ou une préparation qui sort entière
+                 # (une pâte, un pain). Les invités n'y touchent pas.
+                 "horsTable": bool(e.get("hors_table"))}
                 for e in r.get("emits", [])
             ],
             # Un lot qui ne se coupe pas en deux : « faire 0,42 poulet rôti »
@@ -334,6 +338,9 @@ def main():
             "contenants": [
                 {"id": c["id"], "label": c.get("label") or c["id"],
                  "nombre": c.get("nombre", 0), "portions": c.get("portions", 0),
+                 # T109 — le volume d'UNE boîte, en ml ; None quand le label
+                 # n'en dit rien (les sacs).
+                 "volumeMl": c.get("volume_ml"),
                  # Un bocal ne devient une place de placard que si la
                  # stérilisation est acquise ; sinon il reste une boîte de
                  # frigo, ce qui est exactement la vérité physique.

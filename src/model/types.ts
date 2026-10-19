@@ -176,6 +176,16 @@ export interface Emit {
   note: string | null;
   gardeFrigo: number;
   congelo: boolean;
+  /**
+   * T108 — la table n'en mange rien : un sous-produit (carcasse, bouillon,
+   * aquafaba) ou une préparation qui sort entière (pâte, pain, yaourts).
+   *
+   * C'EST LA SEULE CHOSE QUE LE CATALOGUE DEVAIT AJOUTER POUR QUE LE RESTE SE
+   * CALCULE. Tout le reste — `portions`, `band`, `Foyer.parts` — y était déjà ;
+   * mais retrancher les invités d'une carcasse donnerait « pas de carcasse » à
+   * huit, et rien ne distinguait un bouillon d'une mitonnée.
+   */
+  horsTable: boolean;
 }
 
 export interface Accept {
@@ -314,7 +324,10 @@ export interface Mangeur {
  *  des boîtes ne sont pas le même geste. */
 export interface EspaceConfig {
   places: number;
-  contenants: number;
+  /** `null` : AUCUN CONTENANT DE RESTE NE VA DANS CET ESPACE — le placard du
+   *  foyer réel, depuis que les bocaux sont rendus à la farine. L'espace n'est
+   *  alors borné que par ses étagères, et l'écran ne montre qu'un plafond. */
+  contenants: number | null;
   limite: number;
   cause: CauseLimite;
 }
@@ -324,6 +337,9 @@ export interface Contenant {
   label: string;
   nombre: number;
   portions: number;
+  /** T109 — ce qu'une boîte contient, en ml. `null` quand le label ne le dit
+   *  pas (les sacs) : on se contente alors des portions. */
+  volumeMl: number | null;
   espaces: Espace[];
   consommable: boolean;
 }

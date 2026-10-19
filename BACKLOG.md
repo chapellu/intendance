@@ -4544,13 +4544,13 @@ Les tickets sont groupés par CHANTIER, et un chantier = une branche. Les
 
 ### La sortie compte ce qui part dans les assiettes — T108 et T109
 
-- [ ] **T108 — Les invités mangent leur part.** `vueDeLaSortie` multiplie
+- [x] **T108 — Les invités mangent leur part.** `vueDeLaSortie` multiplie
       chaque emit par le facteur (`qty × f`) sans retrancher les bouches de
       plus : la Toussaint à 8 a rangé 150 g au frigo et 450 g au congélo, quand
       le même plat pour le foyer en range 150 et 300. Le reste est celui du
       foyer, pas celui du lot. (C'est l'item « le reste dans les assiettes
       n'est pas compté » laissé ouvert par T99.)
-- [ ] **T109 — Une boîte a un volume, et elle peut être prise.** Mesuré sur le
+- [x] **T109 — Une boîte a un volume, et elle peut être prise.** Mesuré sur le
       pot-au-feu pour le foyer : « 1 250 ml → 1 × boîtes hermétiques 0,5 / 1 L »,
       « 800 g → 1 × bocaux 0,75 L » — les contenants se comptent en portions,
       jamais en litres. Et `boitesPour` puise dans les contenants DÉCLARÉS, pas
@@ -4561,6 +4561,107 @@ Les tickets sont groupés par CHANTIER, et un chantier = une branche. Les
       les contenants occupés retirés — avec une phrase quand il n'en reste pas
       assez (« il manque 2 boîtes : sacs congélation ? »). C'est l'item « le
       plafond de rangement n'est pas consulté » laissé ouvert par T99.
+
+#### T108, fait — le reste suit les portions qui restent
+
+**LA FORMULE, TIRÉE DE CE QUE LE CATALOGUE DÉCLARE.** Un emit est ce que laisse
+UN lot de `portions` quand `Foyer.parts` (2,5) est à table — « sur 4 parts,
+c'est ce qui reste une fois le dîner servi ». L'emit se multiplie donc par
+`r = (portions × f − parts) / (portions − Foyer.parts)` au lieu de `f`
+(`model/restes.ts`). Pour le foyer seul, r = 1 : **0 emit sur 126 ne change au
+foyer**, le cas que le catalogue décrit reste exact.
+
+**LE TICKET SE TROMPAIT SUR LE CHIFFRE ATTENDU.** Il voulait « 150 + 300 » à la
+Toussaint, le reste du foyer. Mais `facteur` cuisine 8/6 du lot pour 8 parts :
+8 portions dans la cocotte, 8 dans les assiettes, **il ne reste rien**, et c'est
+ce que la sortie dit maintenant (« tout part dans les assiettes »). Garder le
+reste du foyer EN PLUS des invités serait une décision de planification —
+cuisiner `(parts + reste) / portions` —, pas de sortie.
+
+**IL A FALLU UN CHAMP AU CATALOGUE, ET UN SEUL : `hors_table`.** Retrancher les
+invités d'une carcasse donnait « pas de carcasse » à huit, et rien ne
+distinguait le bouillon du pot-au-feu de la mitonnée. 25 emits sont marqués
+(carcasses, aquafaba, bouillons, pâtes, pains, yaourts, mousse, céréale et
+légumineuses cuites d'avance, rillettes et tartinades), plus les 2 `parure` et
+la `portion-bebe` par leur `kind` : **28 emits sur 126 suivent `f` sans
+retrancher personne**. Les rillettes ont été trouvées par la mesure : sans
+marque, c'était le seul emit qui disparaissait au foyer (lot non gardé,
+f = 0,625, 2,5 portions servies à 2,5 parts).
+
+**29 PLATS SONT VIDÉS PAR LE FOYER À LUI SEUL** (`portions ≤ 2,5` : les
+salades-lunchbox d'une portion, les recettes pour deux). Le dénominateur est
+nul ou négatif — leur emit ne PEUT PAS être un reste de table — et ils gardent
+l'ancien calcul. Le seuil : un reste sous la plus petite part déclarée (le bébé,
+0,25) se finit au lieu de se ranger.
+
+Mesuré sur le corpus (`npm run sortie`) : à 2 parts, 18 emits laissent plus ; à
+4 parts, 60 changent et 26 disparaissent ; à 8 parts, 74 changent, 67
+disparaissent (13 sur des `lotEntier`, dont le facteur arrondi au poulet
+laisse quand même de quoi ranger).
+
+**`journaliserCuisson` N'ÉCRIVAIT PAS CE QUE L'ÉCRAN MONTRAIT, MÊME POUR LE
+FOYER.** Son défaut (« j'ai fait autrement ») prenait `qty × parts / portions`
+sur la bande brute, l'écran `qty × facteur(plat, parts)` : **34 emits pesés
+différents au foyer, 28 bandes différentes** — la mitonnée affichait 450 g et la
+base en écrivait 188 sur « 3-repas ». Les deux passent par `restesApresTable`
+au même facteur ; `Cuisiner` donne le foyer à la cuisson.
+
+Ce que T108 laisse ouvert :
+- **La projection ne retranche toujours personne.** `calculer()` met encore
+  `qty × f` au dépôt projeté et `bilanStockage` compte `band × f` en entrée :
+  la semaine planifiée avec invités annonce plus de restes que la sortie n'en
+  rangera.
+- **L'effet 2 garde `parts / portions`** pour ce qu'un `accepts` prend, quand
+  la fiche affiche `facteur`. Même désaccord, sur ce qui sort du dépôt.
+- **Les 29 plats vidés par le foyer** : leur emit dit « ça part en lunchbox »,
+  pas « il en reste » ; la sortie annonce donc encore 2,5 parts à table ET
+  3 lunchbox au frigo pour une salade d'une portion.
+
+#### T109, fait — une boîte a un volume, et elle peut être prise
+
+**`volume_ml` PAR FAMILLE, LU SUR LE LABEL.** Bocaux 750 ; boîtes 500 — la
+famille « 0,5 / 1 L » mêle les deux tailles sans dire combien de chaque, et
+0,5 L est la boîte que `portions: 1` décrit (un repas) : un lot calculé pour
+elle tient dans l'une comme dans l'autre, au prix de proposer parfois une boîte
+de trop. Les sacs n'ont aucun chiffre : pas de volume, portions seules.
+
+**CE QU'UNE BOÎTE PREND EST LA PLUS PETITE DE DEUX PARTS** — ses portions sur
+les repas du lot, son volume sur celui du lot. Les grammes comptent 1 g/ml :
+c'est une HYPOTHÈSE, exacte pour les sauces et optimiste pour les morceaux.
+Mesuré : 19 emits sur 126 sont en grammes, 4 en volume ; à 0,7 g/ml, **3 lots
+pesés sur 36** demanderaient une boîte de plus. Le choix en dépend peu.
+
+**ON NE PUISE QUE DANS CE QUI EST LIBRE.** `contenantsLibres` redonne leurs
+boîtes aux lots du dépôt, dans l'ordre de la base, par la même règle — dérivé,
+pas persisté : un lot ne dit pas où il dort, et « il faut deux bocaux » reste un
+calcul. Les lots d'une même sortie puisent l'un après l'autre. Quand le pool ne
+suffit pas, le lot le DIT : « il manque 2 × bocaux Le Parfait 0,75 L : sacs
+congélation ? » (le sac, consommable, est proposé là où il n'est pas déclaré),
+sinon « laver des boîtes », le geste de l'inventaire. `boitesPour` garde son
+nom et ses trois premiers paramètres pour la mise en place (T112).
+
+**LE POT-AU-FEU, AVANT ET APRÈS, pour le foyer :**
+
+| lot | avant | après |
+|---|---|---|
+| bouillon frigo 1 250 ml | 1 boîte | 1 bocal + 1 boîte |
+| bouillon congélo 1 250 ml | 1 boîte | 3 boîtes |
+| viande frigo / congélo 300 g | 1 boîte chacun | 1 boîte chacun |
+| légumes frigo 800 g | 1 bocal | 1 bocal + 1 boîte |
+| **total** | 4 boîtes, 1 bocal | **7 boîtes sur 8**, 2 bocaux |
+
+Le retour d'usage tient dans ce tableau : à lui seul, le pot-au-feu prend sept
+des huit boîtes. Sur l'amorce du catalogue (2 boîtes et 1 bocal déjà pris), les
+légumes passent en 2 bocaux ; avec un dépôt plein, chaque lot du frigo dit ce
+qui manque et le congélateur part en sacs.
+
+Ce que T109 laisse ouvert :
+- **L'inventaire compte autrement.** Son plafond « contenants » est en places
+  par espace, semaine planifiée comprise, et une boîte frigo/congélo y compte
+  deux fois ; la sortie compte des boîtes, rangées maintenant. Les deux
+  nombres peuvent différer — un seul modèle du pool serait plus juste.
+- **La densité n'est pas mesurée**, et le partage 0,5 L / 1 L des boîtes non
+  plus : deux nombres à relever dans la cuisine, pas dans le dépôt.
 
 ### Ce que l'app demande, et où elle envoie — T110 et T111
 

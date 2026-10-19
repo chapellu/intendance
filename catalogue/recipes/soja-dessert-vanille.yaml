@@ -131,6 +131,7 @@ recipe:
   emits:
     - kind: base
       type: yaourt-soja
+      hors_table: true   # T108 — préparation : les huit pots sortent entiers
       qty_band: 2-repas
       qty: {amount: 8, unit: pot}
       keeps: {frigo_days: 7, congelo: false}

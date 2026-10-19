@@ -97,6 +97,7 @@ recipe:
   emits:
     - kind: base
       type: pate-a-pizza
+      hors_table: true   # T108 — préparation : la pâte sort entière, rien n'en passe à table
       qty_band: 2-repas
       qty: {amount: 1, unit: pâte}
       keeps: {frigo_days: 2, congelo: true}

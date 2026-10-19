@@ -64,6 +64,7 @@ recipe:
   emits:
     - kind: base
       type: crepes-wraps
+      hors_table: true   # T108 — préparation : les crêpes sortent entières
       qty_band: 3-repas
       qty: {amount: 12, unit: pièce}
       keeps: {frigo_days: 4, congelo: true}

@@ -82,6 +82,7 @@ recipe:
   emits:
     - kind: base
       type: rillettes-poisson
+      hors_table: true   # T108 — préparation : un pot à tartiner pour la semaine, la table ne le vide pas
       qty_band: 2-repas
       keeps: {frigo_days: 3, congelo: false}
       note: "2 à 3 jours en pot fermé — de quoi garnir les sandwichs de la semaine"

@@ -95,6 +95,7 @@ recipe:
   emits:
     - kind: base
       type: bouillon-maison
+      hors_table: true   # T108 — préparation : tout le lot est la base
       qty_band: 2-repas
       keeps: {frigo_days: 3, congelo: true}
       note: "base pour des coquillettes, un risotto, un court-bouillon ou une soupe de vermicelles"

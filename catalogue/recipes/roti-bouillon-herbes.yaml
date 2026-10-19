@@ -83,6 +83,7 @@ recipe:
   emits:
     - kind: base
       type: bouillon-herbes
+      hors_table: true   # T108 — sous-produit concentré : il ne se boit pas tel quel
       qty_band: 2-repas
       qty: {amount: 1500, unit: ml}   # concentré : la soupe d'orge en réclame 1500 après dilution
       keeps: {frigo_days: 3, congelo: true}
