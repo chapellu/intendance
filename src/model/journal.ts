@@ -175,6 +175,7 @@ export type Classe =
   | "fruits-legumes"
   | "frais-court"
   | "epicerie"
+  | "de-garde"
   | "non-suivi";
 
 /**
@@ -297,6 +298,10 @@ const TOLERANCE: Record<Classe, number> = {
   "fond-de-placard": Number.POSITIVE_INFINITY,
   congelateur: 6,
   epicerie: 4,
+  // LE FRAIS QUI SE GARDE DES SEMAINES — un filet d'oignons, une boîte d'œufs.
+  // Il se compte d'un œil comme l'épicerie, mais il s'entame à la pièce sans
+  // qu'on le note : deux décréments, et on retourne voir.
+  "de-garde": 2,
   "frais-court": 1,
   "fruits-legumes": 0,
   "non-suivi": 0,
@@ -318,6 +323,9 @@ export interface Contexte {
   rayonDe: (id: string) => string | null;
   espaceDe: (zone: string) => Espace;
   placard: ReadonlySet<string>;
+  /** Les ids qu'une famille de garde `fond: true` déclare tenir des semaines
+   *  au moins (`conservation.yaml:familles`). */
+  deGarde: ReadonlySet<string>;
   /** Le jour du relevé d'amorce — la première observation du journal. */
   releve: string | null;
 }
@@ -334,9 +342,27 @@ export function contexte(catalogue: Catalogue): Contexte {
     rayonDe: (id) => parIngredient.get(alias(id)) ?? null,
     espaceDe: (zone) => zones.get(zone) ?? "placard",
     placard: new Set(catalogue.rayons.placard),
+    // `?? []` POUR LES CATALOGUES FABRIQUÉS À LA MAIN DES TESTS, qui datent
+    // d'avant la garde : le chargeur, lui, résout toujours le champ.
+    deGarde: new Set(
+      (catalogue.garde ?? [])
+        .filter((f) => f.fond && f.fenetreJours >= SEMAINES_DE_GARDE * 7)
+        .flatMap((f) => f.ids),
+    ),
     releve: catalogue.gardeManger.releve,
   };
 }
+
+/**
+ * À partir de combien de semaines un frais cesse d'être « frais court ».
+ *
+ * DEUX, ET C'EST LE MOT DE L'UTILISATEUR (2026-10-18) : pommes de terre,
+ * oignons, ail, carottes et œufs « se gardent des semaines ». Ce n'est pas une
+ * liste d'ids : c'est la famille de garde qui dit combien ça tient, et la
+ * classe qui s'en déduit — le jour où le céleri-rave entre dans une famille à
+ * trois semaines, il devient comptable sans une ligne de code.
+ */
+export const SEMAINES_DE_GARDE = 2;
 
 /* ═══════════════════════════════════════════════════════════ les classes */
 
@@ -357,6 +383,16 @@ export function classeDe(ctx: Contexte, ingredient: string, lots: readonly LotPl
   // dit ; ils remontent d'eux-mêmes dans le « je suis 3 des 11 » des cartes.
   if (rayon === null) return "non-suivi";
   if (lots.some((l) => ctx.espaceDe(l.zone) === "congelo")) return "congelateur";
+  // LES SURGELÉS DU COMMERCE VIVENT AU CONGÉLATEUR AVANT MÊME D'Y AVOIR UN
+  // LOT. Sans cette ligne, un sachet d'épinards jamais relevé serait de
+  // l'« épicerie » — comptable aussi, mais avec la mauvaise horloge.
+  if (rayon === "surgelés") return "congelateur";
+  // LE FRAIS QUI SE GARDE N'EST PAS DU FRAIS COURT (2026-10-18). Avant cette
+  // ligne, l'oignon tombait dans « les fruits et légumes ne s'estiment pas »,
+  // et l'app refusait le plancher sur ce que le foyer a TOUJOURS — c'était
+  // T46, une position de départ « à revoir à l'usage ». L'usage a parlé. Seul
+  // le frais vraiment fragile (salade, courgettes, viande) reste refusé.
+  if ((rayon === "primeur" || RAYONS_FRAIS.has(rayon)) && ctx.deGarde.has(id)) return "de-garde";
   if (rayon === "primeur") return "fruits-legumes";
   if (lots.some((l) => l.court || l.etat === "frais")) return "frais-court";
   if (RAYONS_FRAIS.has(rayon)) return "frais-court";
