@@ -5,7 +5,9 @@ import { articles, calculer, type Calcul } from "../model/calcul";
 import { lireCatalogue } from "../model/catalogue";
 import { creerJeu, SAUTE, type Jeu } from "../model/jeu";
 import type { Catalogue } from "../model/types";
-import { aFaire, detailDesCourses, resumeCuisine, vueDuCockpit } from "./cockpit.vue";
+import { JOURS_VISIBLES } from "../nav/jours";
+import { eteint } from "../nav/routes";
+import { aFaire, detailDesCourses, resumeCuisine, resumeSansJours, vueDuCockpit } from "./cockpit.vue";
 import { vueAPrevoir } from "./prevoir.vue";
 
 const LUNDI = new Date("2026-08-17T12:00:00Z");
@@ -77,7 +79,8 @@ describe("le geste du jour", () => {
     poser(1, "diner", "pates-bolognaise");
   });
 
-  test("il paraît au cockpit avec les mots de « Aujourd'hui »", () => {
+  // Une promesse DES JOURS : elle ne vaut que l'interrupteur allumé.
+  test.runIf(JOURS_VISIBLES)("il paraît au cockpit avec les mots de « Aujourd'hui »", () => {
     const t = vue().taches.find((x) => x.cle.startsWith("geste|"));
     expect(t?.titre).toBe("Sortir sauce-bolognaise du congélo");
     expect(t?.route).toEqual({ ecran: "aujourdhui" });
@@ -128,10 +131,14 @@ describe("le compte de la journée", () => {
     const v = vue();
     expect(aFaire(v)).toBe(v.taches.length);
     // Et la phrase d'entrée compte la même chose que la pastille.
-    expect(v.entree).toBe(`${v.taches.length} choses vous attendent aujourd'hui.`);
+    expect(v.taches.length).toBeGreaterThan(0);
+    expect(v.entree).toBe(
+      v.taches.length === 1 ? "Une chose vous attend aujourd'hui." : `${v.taches.length} choses vous attendent aujourd'hui.`,
+    );
   });
 
-  test("les offres se comptent là où l'on y répond", () => {
+  // Une promesse DES JOURS : elle ne vaut que l'interrupteur allumé.
+  test.runIf(JOURS_VISIBLES)("les offres se comptent là où l'on y répond", () => {
     // Une semaine qui réclame plus de sauce qu'il n'en existe : le modèle
     // propose d'agrandir le lot amont. Voir `prevoir.vue.test.ts`.
     poser(0, "diner", "sauce-bolognaise");
@@ -161,7 +168,8 @@ describe("le compte de la journée", () => {
 });
 
 describe("la carte de la cuisine", () => {
-  test("elle compte les créneaux RÉPONDUS, pas les créneaux de la semaine", () => {
+  // Une promesse DES JOURS : elle ne vaut que l'interrupteur allumé.
+  test.runIf(JOURS_VISIBLES)("elle compte les créneaux RÉPONDUS, pas les créneaux de la semaine", () => {
     // Le proto affichait « 14 créneaux » — un nombre qui ne bougeait jamais.
     const total = jeu.creneaux.filter((c) => c.nature === "choisi").length;
     expect(vue().cuisine.etat).toBe(`0/${total} répondus`);
@@ -177,7 +185,8 @@ describe("la carte de la cuisine", () => {
     expect(resumeCuisine(0, "dimanche", 2)).toContain("2 offres attendent votre réponse.");
   });
 
-  test("le dernier jour est celui de la fenêtre, pas « dimanche » en dur", () => {
+  // Une promesse DES JOURS : elle ne vaut que l'interrupteur allumé.
+  test.runIf(JOURS_VISIBLES)("le dernier jour est celui de la fenêtre, pas « dimanche » en dur", () => {
     // La semaine part d'aujourd'hui. Ouverte un mercredi, elle finit un mardi —
     // et le proto promettait quand même « posée jusqu'à dimanche ».
     jeu = creerJeu(catalogue, 7, new Date("2026-08-19T12:00:00Z"));
@@ -246,5 +255,64 @@ describe("les restes passés", () => {
     poser(0, "diner", "lasagnes");
     const avecGeste = vue().taches.filter((t) => t.jeter);
     expect(avecGeste.map((t) => t.cle)).toEqual(["perimes"]);
+  });
+});
+
+describe("le cockpit n'envoie pas vers un écran éteint — T110", () => {
+  // Écrits pour l'interrupteur TEL QU'IL EST : allumé, ils ne disent rien de
+  // plus que les tests du dessus ; éteint, ils sont la promesse du ticket.
+  const semaineChargee = () => {
+    // Tout ce qui produit une tâche : ce soir vide, un geste demain (la sauce
+    // au congélo), des courses, et des offres en attente.
+    poser(1, "diner", "pates-bolognaise");
+    poser(1, "dejeuner", "pates-bolognaise");
+    poser(2, "diner", "lasagnes");
+    poser(2, "dejeuner", "pates-bolognaise");
+  };
+
+  test("aucune tâche n'ouvre un écran que l'interrupteur a éteint", () => {
+    semaineChargee();
+    const v = vue();
+    expect(v.taches.length).toBeGreaterThan(0);
+    for (const t of v.taches) expect(eteint(t.route), t.cle).toBe(false);
+  });
+
+  test.runIf(!JOURS_VISIBLES)("sans les jours, pas d'offre — elle ne se répond que sur un écran éteint", () => {
+    semaineChargee();
+    expect(vueAPrevoir(jeu, calculer(jeu)).enAttente).toBeGreaterThan(0);
+    const v = vue();
+    expect(v.taches.map((t) => t.cle)).not.toContain("prevoir");
+    expect(v.cuisine.chiffres.some((c) => /offre/.test(c))).toBe(false);
+  });
+
+  // Le geste du jour, lui, survit aux jours cachés : il réclame un bocal à
+  // sortir pour un plat POSÉ, pas une case de l'agenda. Il envoie au plat.
+  test.runIf(!JOURS_VISIBLES)("sans les jours, le geste du jour ouvre la fiche du plat posé, et se coche sur place", () => {
+    poser(0, "diner", "poulet-roti");
+    poser(1, "diner", "pates-bolognaise");
+    const t = vue().taches.find((x) => x.cle.startsWith("geste|"));
+    expect(t?.titre).toBe("Sortir sauce-bolognaise du congélo");
+    // La fiche que « Posés » ouvre pour ce plat : son créneau nommé.
+    expect(t?.route).toEqual({ ecran: "cuisiner", creneau: { jour: "2026-08-18", repas: "diner" } });
+    expect(eteint(t!.route)).toBe(false);
+    // Le plat, pas le jour : « demain » nomme ce que l'app ne montre plus.
+    expect(t?.detail).toContain(jeu.plats["pates-bolognaise"]!.titre);
+    expect(t?.detail).not.toMatch(/demain|déjeuner|dîner|lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche/);
+    // Le même drapeau que le « Fait » d'« Aujourd'hui », au jour d'aujourd'hui.
+    expect(t?.cocher).toBe("geste|2026-08-17|sauce-bolognaise");
+    // Coché, il s'en va — comme avec les jours.
+    expect(vue(new Map(), true).taches.some((x) => x.cle.startsWith("geste|"))).toBe(false);
+  });
+
+  test.runIf(!JOURS_VISIBLES)("sans les jours, la carte ne compte ni créneaux ni jours", () => {
+    // « 14 créneaux restent à poser d'ici jeudi », vu sur la carte pendant
+    // toute l'année simulée.
+    expect(vue().cuisine.resume).toBe(resumeSansJours(0));
+    poser(0, "diner", "lasagnes");
+    jeu.choix[creneau(1, "diner")] = SAUTE;
+    const v = vue();
+    expect(v.cuisine.etat).toBe("1 posé");
+    expect(v.cuisine.resume).toBe("Un plat posé, à cuisiner quand vous voulez.");
+    expect(v.cuisine.resume).not.toMatch(/créneau|d'ici|lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche/);
   });
 });

@@ -6,14 +6,22 @@
 // le bocal du congélo » finissent par le déduire différemment — l'un le montre,
 // l'autre pas, et on ne sait plus lequel a raison.
 
+import { jourISO } from "../db";
 import type { Calcul } from "../model/calcul";
 import { joue, type Jeu } from "../model/jeu";
+import type { CleCreneau } from "../nav/routes";
 
 export interface GesteDuJour {
   /** Le type de sortie à aller chercher — c'est aussi la clé du « fait ». */
   type: string;
   quand: string;
   titre: string;
+  /**
+   * Le créneau du plat qui prend dans le lot — de quoi ouvrir SA fiche. Sans
+   * les jours, c'est là que le cockpit envoie : « Aujourd'hui » est éteint, le
+   * plat posé ne l'est pas.
+   */
+  creneau: CleCreneau;
 }
 
 /**
@@ -31,7 +39,14 @@ export function gesteDuJour(jeu: Jeu, calc: Calcul): GesteDuJour | null {
     if (!ch) continue;
     const lot = calc.depot.lignes.find((l) => l.type === ch.type && l.espace === "congelo");
     if (!lot) continue;
-    return { type: ch.type, quand: `${c.label} de demain`, titre: jeu.plats[rid as string]?.titre ?? "" };
+    const jour = jeu.jours[c.jour];
+    if (!jour) continue;
+    return {
+      type: ch.type,
+      quand: `${c.label} de demain`,
+      titre: jeu.plats[rid as string]?.titre ?? "",
+      creneau: { jour: jourISO(jour.date), repas: c.repas },
+    };
   }
   return null;
 }
@@ -41,3 +56,8 @@ export function gesteDuJour(jeu: Jeu, calc: Calcul): GesteDuJour | null {
  *  un geste reformulé se lit comme un second geste. */
 export const titreDuGeste = (g: GesteDuJour): string => `Sortir ${g.type} du congélo`;
 export const detailDuGeste = (g: GesteDuJour): string => `Pour ${g.titre} — ${g.quand}`;
+
+/** Le même geste quand les jours sont cachés : le plat, sans « demain ». Un
+ *  jour qu'on ne montre plus ne se nomme plus (T110) ; le plat posé, lui, se
+ *  voit dans « Posés ». */
+export const detailDuGesteSansJours = (g: GesteDuJour): string => `Pour ${g.titre}, un de vos plats posés`;

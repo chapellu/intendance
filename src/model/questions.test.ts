@@ -461,3 +461,58 @@ describe("le volume de questions DOIT décroître à l'usage", () => {
     expect(passeDe(evts, 7)).toBeLessThan(trois);
   });
 });
+
+describe("rentrer des courses répond aux questions — T111", () => {
+  // MESURÉ AVANT D'ÉCRIRE : sur une année rejouée au modèle (52 passes de sept
+  // repas, placard relevé à zéro au jour 0, courses rentrées à chaque passe,
+  // cuissons journalisées), 967 questions, médiane 19 par passe, et la courbe
+  // de l'année simulée : 26, 12, 10, 8… puis ~20. Deux causes, mesurées une à
+  // une : la dérive qui rongeait un placard vide (967 → 511), et l'article
+  // rentré qui ne valait rien (511 → 384, médiane 7, plus de remontée).
+  const creme = plat({ id: "gratin", ingredients: [ing({ id: "creme" })] });
+  const pates = plat({ id: "pates-au-four", ingredients: [ing({ id: "pates" })] });
+  const entree = (id: string, jour: string, parUnite: { amount: number; unit: string } | null = null): Evenement => ({
+    sorte: "entree", jour, saisi: jour, maj: Date.parse(jour),
+    lignes: [{ ingredient: id, unites: 1, parUnite, zone: null, etat: "sec" }],
+  });
+  const vu = (id: string, jour: string, unites: number | null, reste?: Reste): Evenement => ({
+    sorte: "observation", portee: "ingredient", zone: null, jour, saisi: jour, maj: Date.parse(jour),
+    constats: [{ ingredient: id, unites, ...(reste ? { reste } : {}) }],
+  });
+  const demande = (p: Plat, evts: Evenement[], jour: string) => {
+    const { catalogue: c, ctx, rejeu } = monde({ plats: [p] }, evts, jour);
+    return noms(questions({ catalogue: c, ctx, rejeu, proposes: [p], candidats: [p], repondu: new Map() }));
+  };
+
+  test("la crème rentrée hier ne se redemande pas — c'était le « Des œufs ? » d'après les courses", () => {
+    // Rouge avant le correctif : jamais observée, la crème rentrée restait
+    // « inconnu », donc demandée le lendemain même des courses.
+    expect(demande(creme, [entree("creme", "2026-09-01")], "2026-09-02")).toEqual([]);
+  });
+
+  test("passé sa vie de frigo, le frais rentré se redemande", () => {
+    expect(demande(creme, [entree("creme", "2026-09-01")], "2026-09-08")).toEqual(["creme"]);
+  });
+
+  test("l'épicerie rentrée vaut « oui » tant que le rejeu en garde un lot", () => {
+    const evts = [entree("pates", "2026-09-01", { amount: 500, unit: "g" })];
+    expect(demande(pates, evts, "2026-10-01")).toEqual([]);
+  });
+
+  test("un « non » après les courses l'emporte : l'article n'est plus là", () => {
+    const evts = [entree("pates", "2026-09-01", { amount: 500, unit: "g" }), vu("pates", "2026-09-03", 0, "non")];
+    const { rejeu } = monde({ plats: [pates] }, evts, "2026-09-04");
+    expect(rejeu.parIngredient.has("pates")).toBe(false);
+  });
+
+  test("la dérive ne ronge pas un placard qu'on a dit vide", () => {
+    // Deux comptes qui apprennent une dérive (2 → 0 en sept jours, sans
+    // cuisson), puis un « non ». Rouge avant le correctif : « probable » dès le
+    // lendemain, donc redemandé à chaque passe, pour toujours.
+    const evts = [vu("pates", "2026-09-01", 2), vu("pates", "2026-09-08", 0, "non")];
+    const { rejeu } = monde({ plats: [pates] }, evts, "2026-09-15");
+    expect(rejeu.vus.get("pates")!.derive).toBeGreaterThan(0);
+    expect(rejeu.vus.get("pates")!.confiance).toBe("sur");
+    expect(demande(pates, evts, "2026-09-15")).toEqual([]);
+  });
+});

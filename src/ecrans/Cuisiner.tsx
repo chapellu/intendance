@@ -31,7 +31,7 @@ import { echelleTexte, facteurAffiche, type Calcul } from "../model/calcul";
 import { joue, type Jeu } from "../model/jeu";
 import { heureDe } from "../model/heures";
 import type { Etape, Foyer, Plat } from "../model/types";
-import type { CleCreneau } from "../nav/routes";
+import { ENTREE_CUISINE, type CleCreneau } from "../nav/routes";
 import { aller } from "../nav/useRoute";
 import { armer, arreter, demanderBandeau, desarmer, plateforme, promesse } from "../pwa/alarme";
 import { duree, fmt, hhmm, mmss } from "../ui/format";
@@ -97,12 +97,13 @@ const Introuvable = () => (
 );
 
 /** « Sortir » rend la main à ce qu'on faisait avant, quel que soit l'écran qui
- *  a ouvert la fiche : depuis « Poser » on revient choisir, depuis
- *  « Aujourd'hui » on revient à la journée. Sans histoire — la fiche ouverte
- *  directement par son URL — on retombe sur la journée. */
+ *  a ouvert la fiche : depuis « Poser » on revient choisir, depuis le fil on
+ *  revient au pas. Sans histoire — la fiche ouverte directement par son URL —
+ *  on retombe sur l'ENTRÉE de la cuisine, pas sur « Aujourd'hui » en dur : sans
+ *  les jours, c'était un renvoi vers un écran éteint (balayage de T110). */
 function sortir() {
   if (window.history.length > 1) window.history.back();
-  else aller({ ecran: "aujourdhui" });
+  else aller(ENTREE_CUISINE);
 }
 
 function Fiche({

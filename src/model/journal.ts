@@ -226,6 +226,21 @@ export interface EtatIngredient {
   /** Total en grammes quand tout est chiffré, `null` dès qu'un lot ne l'est pas. */
   grammes: number | null;
   unites: number;
+  /**
+   * UN ARTICLE RENTRÉ VAUT « OUI » TANT QUE SA VIE LE PERMET — T111.
+   *
+   * Vrai quand un lot rentré des courses est encore là au rejeu ET qu'il n'a
+   * pas dépassé sa vie : `foyer.fenetreFrigo` pour ce qui ne se parie jamais
+   * sans l'avoir vu (frais court), aucune borne pour l'épicerie et le
+   * congélateur, que rien ne fait tourner en une semaine.
+   *
+   * CE N'EST PAS UNE OBSERVATION, ET LA CONFIANCE NE BOUGE PAS. Rentrer dit
+   * qu'il Y EN A — la seule chose que demande « Des œufs ? » — et ne dit rien de
+   * ce qui s'y trouvait déjà, ni de combien il en reste : la règle de l'entrée
+   * plus bas tient toujours, pour le chiffre. Ce drapeau ne sert qu'à la
+   * question.
+   */
+  rentreEnVie: boolean;
 }
 
 /** Ce qu'un décrément a réellement fait — pour que l'app puisse le DIRE. */
@@ -301,6 +316,9 @@ const TOLERANCE: Record<Classe, number> = {
   "fruits-legumes": 0,
   "non-suivi": 0,
 };
+
+/** Les classes dont la vie se compte en jours de frigo — T111. */
+const RAYONS_FRAIS_CLASSES: ReadonlySet<Classe> = new Set<Classe>(["frais-court", "fruits-legumes"]);
 
 /** Les rayons dont rien ne se parie sans l'avoir vu. */
 const RAYONS_FRAIS = new Set(["crèmerie", "boucherie", "poissonnerie", "frais"]);
@@ -628,6 +646,8 @@ interface Suivi {
   derives: number[];
   /** Les unités prédites au moment de la dernière observation. */
   predit: number | null;
+  /** Le jour de la dernière entrée par les courses — T111. */
+  rentreLe?: string;
 }
 
 /**
@@ -645,6 +665,8 @@ export function rejouer(
   aujourdhui: string,
 ): Rejeu {
   const lots = amorce(ctx, catalogue.gardeManger.denrees);
+  // `?? 4` : des fixtures de test construisent un catalogue sans foyer.
+  const fenetreFrigo = catalogue.foyer?.fenetreFrigo ?? 4;
   const suivi = new Map<string, Suivi>();
   const retraits: Retrait[] = [];
 
@@ -703,6 +725,7 @@ export function rejouer(
           court: false,
         });
         lots.set(id, l);
+        suiviDe(id).rentreLe = e.jour;
         // RENTRER N'EST PAS OBSERVER LE PLACARD. On sait ce qu'on vient d'y
         // poser ; on ne sait pas mieux ce qui s'y trouvait déjà. La confiance
         // ne se restaure donc pas ici — seule une observation le fait.
@@ -773,7 +796,17 @@ export function rejouer(
       ? s.derives.reduce((a, b) => a + b, 0) / s.derives.length
       : 0;
     const jours = s.vuLe ? joursEntre(s.vuLe, aujourdhui) : 0;
-    const d = s.vuLe === null ? Number.POSITIVE_INFINITY : doute(s.depuisVu, derive, jours);
+    // LA DÉRIVE NE MANGE PAS UN PLACARD VIDE — T111. Elle dit « il disparaît
+    // plus que ce que les cuissons expliquent » ; sur un ingrédient sans lot,
+    // il n'y a rien à faire disparaître. Mesuré sur une année rejouée au modèle
+    // (passes hebdomadaires de sept repas) : 566 des 967 questions portaient sur
+    // un ingrédient répondu « non », sans lot, sans cuisson depuis, que la seule
+    // dérive faisait retomber à « probable » dès le lendemain — `sur` exige un
+    // doute nul, donc un ingrédient qui a appris une dérive se redemandait À
+    // CHAQUE PASSE, pour toujours. C'est ce qui faisait remonter le volume.
+    const d = s.vuLe === null ? Number.POSITIVE_INFINITY : doute(s.depuisVu, l.length ? derive : 0, jours);
+    const vie = s.rentreLe && RAYONS_FRAIS_CLASSES.has(classe) ? fenetreFrigo : Number.POSITIVE_INFINITY;
+    const rentreEnVie = l.length > 0 && !!s.rentreLe && joursEntre(s.rentreLe, aujourdhui) <= vie;
     return {
       ingredient: id,
       lots: l.map(cloner),
@@ -783,6 +816,7 @@ export function rejouer(
       depuisVu: s.depuisVu,
       derive,
       ...mesurer(l),
+      rentreEnVie,
     };
   };
 

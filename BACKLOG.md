@@ -4729,18 +4729,96 @@ Ce que T109 laisse ouvert :
 
 ### Ce que l'app demande, et où elle envoie — T110 et T111
 
-- [ ] **T110 — Le cockpit n'envoie plus vers un écran éteint.** « Une offre
+- [x] **T110 — Le cockpit n'envoie plus vers un écran éteint.** « Une offre
       attend une réponse » a été la tâche de tête 65 jours sur 365, et elle mène
       à `prevoir`, que T88 a retiré de la sous-navigation : `cockpit.vue.ts`
       compte `enAttente` sans lire `JOURS_VISIBLES`. La carte de facette dit
       encore « 14 créneaux restent à poser d'ici jeudi ». Quatrième fuite de T88
       après #33, T90 et T94 — balayer les autres routes vers un écran éteint.
-- [ ] **T111 — Rentrer des courses répond aux questions.** T33 promettait que
+
+      **QUATRE FUITES, PAS UNE, ET LE BALAYAGE LES A TROUVÉES SEUL.** Outre
+      l'offre, le cockpit portait le **geste du jour** (route `aujourdhui`, le
+      seul écran où il se coche), la **carte de la facette** elle-même
+      (`href` sur « Aujourd'hui » en dur), et la fiche « En cuisine » ouverte
+      par son URL retombait sur « Aujourd'hui » en sortant. Les quatre suivent
+      maintenant l'interrupteur : l'offre et le geste s'éteignent avec les
+      jours (ils ne se répondent que sur un écran éteint, et le geste porte sur
+      « demain » — une coordonnée qu'on ne montre plus ne réclame plus rien),
+      la carte et la sortie de la fiche visent `ENTREE_CUISINE`. La carte dit
+      « 1 posé » et « Un plat posé, à cuisiner quand vous voulez » au lieu de
+      « 2/14 répondus » et « 14 créneaux restent à poser d'ici jeudi ».
+
+      **CE QUI RESTE, ET POURQUOI.** « Poser le dîner de ce soir » garde sa
+      route vers `poser` : « ce soir » est le dîner qui va avoir lieu, pas une
+      case d'agenda, et « Poser » n'est pas éteint (« Posés › Changer »
+      l'ouvre, il rend la main à « Posés »). Les liens internes d'«
+      Aujourd'hui », « La semaine » et « À prévoir » ne partent que d'écrans
+      éteints ; `SOUS_NAV_JOURS`, le retour de l'inventaire, les liens « Voir
+      la semaine » du fil, de « Poser » et de « Parts » lisaient déjà
+      `JOURS_VISIBLES`.
+
+      **LES CHEMINS SE COMPTENT ENFIN.** `ECRANS_DES_JOURS` et `eteint()` dans
+      `nav/routes.ts` ; `nav/chemins.test.ts` lit les sources et exige que
+      toute route littérale vers un écran des jours soit sur une ligne qui lit
+      `JOURS_VISIBLES` ou dans un fichier qu'on n'atteint que les jours
+      allumés. **Vérifié rouge avant d'être vert** : à sa première exécution il
+      a nommé les trois lignes du cockpit et le retour de l'inventaire. Les
+      tests propres aux jours ne tournent plus que l'interrupteur allumé
+      (`test.runIf`), les nouveaux que l'interrupteur éteint : chacun tourne
+      sur l'interrupteur tel qu'il est.
+
+      **LE GESTE RALLUMÉ, VERS LE PLAT (18/10, validé par l'utilisateur).**
+      L'éteindre perdait le rappel de décongélation, qui ne porte pas sur une
+      case d'agenda mais sur un bocal à sortir pour un plat POSÉ. Sans les
+      jours, la tâche ouvre la fiche de ce plat (`cuisiner` sur son créneau,
+      celle que « Posés » ouvre), dit « Pour <plat>, un de vos plats posés »
+      au lieu de « dîner de demain », et porte un « Fait » sur place — le même
+      drapeau (`cleGeste`) que celui d'« Aujourd'hui », sans quoi ce serait
+      une tâche qu'on ne peut pas finir. Avec les jours, rien ne change.
+- [x] **T111 — Rentrer des courses répond aux questions.** T33 promettait que
       le volume décroît : il descend bien à 5, 7, 9 après la première passe,
       puis remonte et se tient à ~20 par passe hebdomadaire (1 303 réponses dans
       l'année). Les réponses vivent dans la passe (`passe.repondu`), et un
       article rentré n'en est pas une. Un article rentré doit valoir « oui » sur
       son ingrédient tant que sa vie le permet.
+
+      **MESURÉ D'ABORD, ET L'HYPOTHÈSE N'ÉTAIT QUE LA MOINDRE DES DEUX
+      CAUSES.** Une année rejouée AU MODÈLE (52 passes de sept repas, placard
+      relevé à zéro au jour 0, réponses tirées d'un registre d'achats, courses
+      rentrées à chaque passe, cuissons journalisées) redonne la courbe de
+      l'année simulée : 26, 12, 10, 8… puis 20 à 28, **967 questions, médiane
+      19**. Classées par cause au moment où elles se posent :
+      **566 portaient sur un ingrédient répondu « non », sans lot et sans
+      cuisson depuis.** C'est la DÉRIVE : un ingrédient qui en a appris une
+      (deux comptes qui ne s'expliquent pas, typiquement un lot non pesé que
+      la cuisson ne vide jamais puis un « non ») voyait son doute grandir de
+      `dérive × jours` — sur un placard vide — et `sur` exige un doute nul :
+      il retombait à « probable » dès le lendemain et se redemandait à chaque
+      passe, pour toujours. Le nombre d'ingrédients ainsi marqués ne fait que
+      croître, d'où la remontée. **L'hypothèse du ticket est vraie mais
+      seconde** : un article rentré n'était jamais une réponse (un test le
+      reproduit, rouge avant : la crème rentrée hier redemandée), ~280
+      questions de l'année portaient sur un lot rentré encore là.
+
+      **DEUX CORRECTIFS, MESURÉS UN À UN.** La dérive ne s'applique plus qu'à
+      un ingrédient qui a des lots (967 → 511, médiane 10) ; un lot rentré
+      encore présent au rejeu et dans sa vie vaut « oui » pour la question
+      (511 → 384, **médiane 7, plus de remontée** : 26, 10, 8, 6… et 3 à 11
+      jusqu'au bout). `EtatIngredient.rentreEnVie` : la vie est
+      `foyer.fenetreFrigo` (4 j) pour le frais court et le primeur, sans borne
+      pour l'épicerie et le congélateur. **CE N'EST PAS UNE OBSERVATION** : la
+      confiance ne bouge pas, et la règle « rentrer n'est pas observer le
+      placard » tient pour le chiffre — on sait qu'il y en a, pas combien.
+
+      Les cinq tests (`questions.test.ts`) ont été vus **rouges avant le
+      correctif** pour les trois qui portent une promesse neuve.
+
+      **Ce qui reste ouvert.** Le frais acheté le samedi est redemandé le
+      samedi suivant : sa vie de 4 j est celle d'un reste cuisiné, empruntée
+      faute d'une durée par ingrédient brut — les œufs vivent un mois. Et les
+      questions restantes sont surtout « vu, puis servi » : une cuisson dépense
+      la confiance qu'une réponse a restaurée, ce qui est la règle de T33, et
+      la mesure ne dit pas encore si c'est trop.
 
 ### Cuisiner : le résumé d'abord, la quantité à chaque étape — T112 et T113
 

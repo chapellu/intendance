@@ -175,7 +175,7 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
           en tête d'un ONGLET est de toute façon faux — l'inventaire ne s'ouvre
           plus depuis la semaine, il s'ouvre depuis la barre. */}
       {JOURS_VISIBLES ? (
-        <button className="co-retour" onClick={() => aller({ ecran: "semaine" })}>
+        <button className="co-retour" onClick={() => aller({ ecran: "semaine" })} /* sous JOURS_VISIBLES, ligne du dessus */>
           ‹ La semaine
         </button>
       ) : null}
