@@ -5200,7 +5200,11 @@ Branche `cuisine/a-la-pause-retouches`, sur `cuisine/a-la-pause`.
       `parIngredient`, donc restait « ici » par l'intersection de #32 (qui
       teste `has`) — il en sort désormais, ce qui ne peut qu'ajouter des lignes.
       Le plancher (strictement sous le niveau) fait alors la ligne, dite
-      « pour le fond » (`LignePlancher.fond`). Et « Je lance ça » (cockpit, « Ce
+      « pour le fond » (`LignePlancher.fond`). Troisième cause, vue au premier
+      passage de 40 jours : l'état d'une ligne `id|unité` ne changeait jamais
+      de clé, donc les carottes rentrées samedi restaient « déjà rentré » à
+      chaque liste — il ne survit plus à son jour (`vueDesCourses(…, depuis)`,
+      `majEtat`). Et « Je lance ça » (cockpit, « Ce
       soir ») pose par `poserCeSoir`, qui relit ce soir à l'horloge du doigt
       au lieu de l'index de la fenêtre en cache. Harnais : les lignes du fond
       entrent au grand livre en unités de recette, la persona ne lance pas un

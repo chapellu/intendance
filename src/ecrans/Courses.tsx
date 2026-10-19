@@ -70,7 +70,7 @@ function Contenu({
   // économise.
   const [mode, setMode] = useState<Mode>("magasin");
   const vue = useMemo(
-    () => vueDesCourses(jeu.catalogue, calc.panier, etats, sous),
+    () => vueDesCourses(jeu.catalogue, calc.panier, etats, sous, new Date().setHours(0, 0, 0, 0)),
     [jeu.catalogue, calc.panier, etats, sous],
   );
   const hors = useMemo(

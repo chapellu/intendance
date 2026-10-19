@@ -137,6 +137,22 @@ describe("T41 — la liste vit sans plan", () => {
     expect(v.parPlancher).toBe(1);
   });
 
+  test("T134 — rentrée un autre jour et revenue sous son plancher, elle se rachète", async () => {
+    // La clé `id|unité` ne change jamais : sans date, les graines rentrées
+    // samedi restaient « déjà rentré » à chaque liste suivante.
+    const cle = `graines-courge|${UNITE_PLANCHER}`;
+    await base.courses.put({ cle, coche: false, rentre: true, maj: 1_000 });
+    const etats = await lireCourses(base);
+    const ligne = (depuis: number) =>
+      vueDesCourses(catalogue, calc.panier, etats, [sous({ ingredient: "graines-courge" })], depuis)
+        .articles.find((a) => a.ligne.id === "graines-courge")!;
+    expect(ligne(0).rentre).toBe(true);
+    expect(ligne(2_000).rentre).toBe(false);
+    // Et cocher puis tout rentrer la fait bien entrer, au lieu de la sauter.
+    await cocher(base, cle, true);
+    expect(await rentrerLesCoches(base)).toBe(1);
+  });
+
   test("elle se range dans son rayon, pas dans une section à part", async () => {
     // Un rayon se traverse UNE FOIS. Une seconde liste obligerait à revenir sur
     // ses pas devant les conserves.
