@@ -4680,7 +4680,7 @@ Ce que T109 laisse ouvert :
 
 ### Cuisiner : le résumé d'abord, la quantité à chaque étape — T112 et T113
 
-- [ ] **T112 — Une séance de cuisine s'ouvre sur sa mise en place.** Demandé
+- [x] **T112 — Une séance de cuisine s'ouvre sur sa mise en place.** Demandé
       le 2026-10-16. Avant l'étape 1 du guide — quand on CUISINE, pas quand on
       vient lire (ça, c'est T91) — un écran qui dit tout ce qu'il faut sortir :
       les ingrédients aux parts du créneau, l'ustensile **et s'il tient**
@@ -4688,7 +4688,49 @@ Ce que T109 laisse ouvert :
       rien ne rejoint sans « Changer » ; la Toussaint a passé la mitonnée dans
       une sauteuse ×1 sans un mot), les boîtes à prévoir pour la sortie, le temps
       total et le temps actif. Un bouton « C'est parti » ouvre l'étape 1.
-- [ ] **T113 — Chaque étape dit les quantités qu'elle prend.** Demandé le
+
+      **AUCUN CHIFFRE NOUVEAU : TOUT ÉTAIT CALCULÉ, AILLEURS.** `miseEnPlace()`
+      dans `cuisiner.vue` assemble ce qui existait — les quantités
+      d'`Ingredients` au `f` de la fiche, le temps de `tempsDuPlat`, les boîtes
+      de `vueDeLaSortie` appelée telle quelle. La mise en place annonce donc
+      les boîtes que la sortie demandera, par la même fonction : si T109 lui
+      apprend les volumes et les contenants pris, l'écran du début l'apprend
+      avec elle. Un test le tient sur les 138 plats.
+
+      **LE TEMPS ACTIF EST `total − libre`, PAS `actifMin`.** Mesuré : le
+      `active_min` de l'ouvrage existe sur 122 plats et ne coïncide avec la
+      somme des étapes surveillées que sur **18**. L'afficher à côté d'un total
+      tiré des étapes mettrait deux chiffres qui ne s'additionnent pas sur le
+      même écran — ce que `tempsDuPlat` refuse depuis T91. L'écran dit « En
+      tout » et « Devant le feu », puis « dont 1 h sans surveiller ».
+
+      **LE DÉBORDEMENT SE DIT ICI, ET SEULEMENT ICI.** `aSortir()` refusait un
+      troisième libellé du fait que `parts` et les offres disaient déjà ; son
+      commentaire est complété plutôt que contredit : il tenait pour la fiche,
+      mais ces deux écrans ne se traversent plus en cuisinant. `recipient()`
+      parle au facteur que la fiche affiche (`calc.facteurs[i]`), et compte ses
+      tournées au lieu de les promettre à deux. Mesuré : aux 2,5 parts du
+      foyer, **aucun des 77 plats à vaisselle ne déborde** ; à 8, **61 sur
+      77**. La ligne « À sortir » de la fiche et du résumé reste neutre ; seule
+      la mise en place passe au ton accent (`.co-sortir.deborde`).
+
+      **PERSISTÉE COMME L'AVANCEMENT, DONT ELLE EST LE PREMIER CRAN.**
+      `cleMiseEnPlace` vit sous le préfixe `etape|`, est posée par « C'est
+      parti » et effacée avec l'avancement quand la sortie a répondu. Elle ne
+      s'affiche qu'à l'étape 0 : une cuisson commencée avant ce ticket, à
+      l'étape 5, ne la revoit pas. « ‹ », grisé jusqu'ici sur l'étape 1, y
+      ramène — le seul chemin pour revoir ce qu'il fallait sortir sans quitter
+      la cuisson.
+
+      **UN PLAT SANS ÉTAPES N'A QUE SA MISE EN PLACE**, qui porte son
+      « Terminer » et la phrase de T78 ; elle remplace la liste nue qui tenait
+      ce rôle.
+
+      Portes : typecheck, **819 tests** (11 nouveaux), build, **61 e2e** (3
+      nouveaux dans `mise-en-place.spec.ts` ; `ouvrirLeGuide` et
+      `stock-descend` passent par `passerLaMiseEnPlace`), `catalogue:verifie`
+      0 erreur, `etapes` 0 casse.
+- [x] **T113 — Chaque étape dit les quantités qu'elle prend.** Demandé le
       2026-10-16. `uses:` existe dans l'export (198 étapes sur 744, 50 plats
       sur 138) et **aucun écran ne le lit** — encore une donnée sans lecteur.
       L'afficher sous l'action, aux parts du créneau. Les étapes sans `uses`
@@ -4696,6 +4738,46 @@ Ce que T109 laisse ouvert :
       `uses:` sur les 15 plats du foyer seulement : sur les recettes d'ouvrage,
       la frontière de licence de la carte #26 tient, on n'y ajoute rien sans le
       redemander.
+
+      **LE CHARGEUR NE JETAIT RIEN, CETTE FOIS.** Vérifié avant d'écrire :
+      `catalogue.ts` garde `uses` depuis T72, avec `Ingredient.ref` pour le
+      résoudre. La donnée était chargée et sans lecteur, pas perdue.
+
+      **LES 15 DU RÉPERTOIRE ÉTAIENT DÉJÀ COMPLETS — MESURÉ, ET LE TICKET SE
+      TROMPAIT DE CIBLE.** T76 a écrit `uses:` sur leurs 64 étapes. Les plats
+      du foyer sont 21 (T73) : ce sont les six autres —
+      `gratin-de-pates-tomates`, `lentilles-mijotees`, `omelette-courgettes`,
+      `ratatouille-minute`, `reste-de-la-veille`, `veloute-de-courgettes`, 20
+      étapes — qui n'en avaient aucun. Ils sont sans `source`, donc du même
+      côté de la frontière de licence ; c'est eux qui sont complétés, et
+      aucune recette d'ouvrage n'est touchée. L'export passe de 198 à **213
+      étapes non vides sur 744, 56 plats sur 138** (404 `null`, 127 `[]`).
+      Un test tient les 21 plats du foyer complets.
+
+      **SOUS LE GESTE, AVANT L'ASTUCE, LA QUANTITÉ DEVANT LE NOM.** On verse
+      avant de se demander pourquoi, et c'est le nombre qu'on cherche la main
+      sur la balance. `quantitesDeLEtape()` passe par `echelleTexte` et le `f`
+      de la fiche : un test vérifie sur tout le corpus que chaque quantité
+      d'étape est celle de la liste.
+
+      **UNE LIGNE NOMMÉE PAR PLUSIEURS ÉTAPES GARDE SA QUANTITÉ ENTIÈRE, ET
+      DIT « AUSSI À L'ÉTAPE N ».** 26 lignes du corpus sont dans ce cas, et
+      `uses` ne porte aucune fraction. La plupart sont préparées puis versées
+      (les carottes râpées, puis mélangées) — la quantité entière est juste
+      deux fois ; quelques-unes sont partagées (l'huile du riz et des
+      légumes), et couper en parts égales inventerait un chiffre. « Aussi »
+      est vrai dans le premier cas et, dans le second, dit de ne pas tout
+      verser.
+
+      **TROIS RÉPONSES, COMME LE CHAMP.** `null` dit en une ligne de note
+      « les quantités de cette étape ne sont pas notées — elles sont dans
+      « Ingrédients » » (proposer en le disant) ; `[]` se tait — on remue, on
+      enfourne, et « rien à peser » sous 127 étapes serait le minuteur
+      partout de T83.
+
+      Portes : typecheck, **824 tests** (5 nouveaux), build, **63 e2e** (2
+      nouveaux dans `etape-quantites.spec.ts`), `catalogue:verifie` 0 erreur
+      avec le JSON régénéré et commité, `etapes` 5 recettes bougées · 0 casse.
 
 ### Le répertoire — T81, repris
 

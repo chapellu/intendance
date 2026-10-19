@@ -31,21 +31,25 @@ recipe:
 
   steps:
     - id: tailler
+      uses: [courgettes, aubergine, poivron, tomates, oignon, ail]
       action: "Tailler courgettes, aubergine, poivron et tomates en cubes réguliers ; émincer l'oignon et l'ail"
       needs: []
       time_min: 10
       kid: {age_min_months: 30, task: "rincer les légumes et les tendre un par un"}
     - id: dorer
+      uses: [huile-olive]
       action: "Faire revenir l'oignon et l'aubergine dans l'huile d'olive jusqu'à coloration"
       needs: [pan-fry]
       time_min: 8
       attended: true
     - id: mijoter
+      uses: [thym]
       action: "Ajouter courgettes, poivron, tomates, ail et thym ; couvrir et laisser mijoter"
       needs: [simmer]
       time_min: 15
       attended: false
     - id: assaisonner
+      uses: [sel]
       action: "Goûter et saler"
       needs: []
       time_min: 2

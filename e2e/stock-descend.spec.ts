@@ -14,7 +14,7 @@
 
 import { readFileSync } from "node:fs";
 import { expect, test } from "@playwright/test";
-import { attendreLApp, creneauPose, poserUnPlat } from "./parcours";
+import { attendreLApp, creneauPose, passerLaMiseEnPlace, poserUnPlat } from "./parcours";
 
 /**
  * Les plats qui consomment vraiment quelque chose du garde-manger.
@@ -87,7 +87,11 @@ test("terminer une recette journalise, et la confiance du placard se dépense", 
   await expect(lignes.first()).toBeVisible();
   expect(await lignes.filter({ hasText: /estimé|à vérifier/ }).count()).toBe(0);
 
+  // LA FICHE DU CRÉNEAU S'OUVRE SUR SA MISE EN PLACE — T112 —, et on la passe
+  // comme un doigt la passe. Tous les plats du corpus ont des étapes depuis
+  // T76, donc « C'est parti » est toujours là.
   await page.goto(`/#/cuisine/cuisiner/${jour}/${repas}`);
+  await passerLaMiseEnPlace(page);
   await expect(page.getByRole("button", { name: /C’est fait|Terminer/ })).toBeVisible({
     timeout: 30_000,
   });

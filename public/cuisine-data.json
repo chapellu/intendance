@@ -11883,7 +11883,13 @@
      ],
      "surveille": false,
      "astuce": null,
-     "uses": null,
+     "uses": [
+      "oignon",
+      "ail",
+      "huile-olive",
+      "tomates-pelees",
+      "herbes-provence"
+     ],
      "enParallele": null,
      "attente": null,
      "attenteRaison": null,
@@ -11902,7 +11908,9 @@
      ],
      "surveille": true,
      "astuce": null,
-     "uses": null,
+     "uses": [
+      "pates"
+     ],
      "enParallele": "sauce",
      "attente": null,
      "attenteRaison": null,
@@ -11921,7 +11929,10 @@
      ],
      "surveille": true,
      "astuce": null,
-     "uses": null,
+     "uses": [
+      "sel",
+      "fromage-rape"
+     ],
      "enParallele": null,
      "attente": null,
      "attenteRaison": null,
@@ -11940,7 +11951,7 @@
      ],
      "surveille": false,
      "astuce": null,
-     "uses": null,
+     "uses": [],
      "enParallele": null,
      "attente": null,
      "attenteRaison": null,
@@ -13433,7 +13444,11 @@
      ],
      "surveille": false,
      "astuce": null,
-     "uses": null,
+     "uses": [
+      "lentilles-seches",
+      "oignon",
+      "laurier"
+     ],
      "enParallele": null,
      "attente": null,
      "attenteRaison": null,
@@ -13452,7 +13467,9 @@
      ],
      "surveille": true,
      "astuce": null,
-     "uses": null,
+     "uses": [
+      "carottes"
+     ],
      "enParallele": "lancer-mijotage",
      "attente": null,
      "attenteRaison": null,
@@ -13469,7 +13486,9 @@
      "needs": [],
      "surveille": true,
      "astuce": null,
-     "uses": null,
+     "uses": [
+      "sel"
+     ],
      "enParallele": null,
      "attente": null,
      "attenteRaison": null,
@@ -17737,7 +17756,11 @@
      ],
      "surveille": true,
      "astuce": null,
-     "uses": null,
+     "uses": [
+      "courgettes",
+      "oignon",
+      "huile-olive"
+     ],
      "enParallele": null,
      "attente": null,
      "attenteRaison": null,
@@ -17754,7 +17777,9 @@
      "needs": [],
      "surveille": true,
      "astuce": null,
-     "uses": null,
+     "uses": [
+      "oeufs"
+     ],
      "enParallele": null,
      "attente": null,
      "attenteRaison": null,
@@ -17773,7 +17798,10 @@
      ],
      "surveille": true,
      "astuce": null,
-     "uses": null,
+     "uses": [
+      "sel",
+      "poivre-5-baies"
+     ],
      "enParallele": null,
      "attente": null,
      "attenteRaison": null,
@@ -25000,7 +25028,14 @@
      "needs": [],
      "surveille": true,
      "astuce": null,
-     "uses": null,
+     "uses": [
+      "courgettes",
+      "aubergine",
+      "poivron",
+      "tomates",
+      "oignon",
+      "ail"
+     ],
      "enParallele": null,
      "attente": null,
      "attenteRaison": null,
@@ -25019,7 +25054,9 @@
      ],
      "surveille": true,
      "astuce": null,
-     "uses": null,
+     "uses": [
+      "huile-olive"
+     ],
      "enParallele": null,
      "attente": null,
      "attenteRaison": null,
@@ -25038,7 +25075,9 @@
      ],
      "surveille": false,
      "astuce": null,
-     "uses": null,
+     "uses": [
+      "thym"
+     ],
      "enParallele": null,
      "attente": null,
      "attenteRaison": null,
@@ -25055,7 +25094,9 @@
      "needs": [],
      "surveille": true,
      "astuce": null,
-     "uses": null,
+     "uses": [
+      "sel"
+     ],
      "enParallele": null,
      "attente": null,
      "attenteRaison": null,
@@ -25129,7 +25170,7 @@
      "needs": [],
      "surveille": true,
      "astuce": "Vérifier qu'il sent bon et qu'il est dans la fenêtre.",
-     "uses": null,
+     "uses": [],
      "enParallele": null,
      "attente": null,
      "attenteRaison": null,
@@ -25148,7 +25189,7 @@
      ],
      "surveille": false,
      "astuce": "Micro-ondes pour une portion, poêle ou casserole au-delà.",
-     "uses": null,
+     "uses": [],
      "enParallele": null,
      "attente": null,
      "attenteRaison": null,
@@ -25165,7 +25206,7 @@
      "needs": [],
      "surveille": true,
      "astuce": null,
-     "uses": null,
+     "uses": [],
      "enParallele": null,
      "attente": null,
      "attenteRaison": null,
@@ -33918,7 +33959,11 @@
      ],
      "surveille": false,
      "astuce": null,
-     "uses": null,
+     "uses": [
+      "courgettes",
+      "pomme-de-terre",
+      "oignon"
+     ],
      "enParallele": null,
      "attente": null,
      "attenteRaison": null,
@@ -33937,7 +33982,7 @@
      ],
      "surveille": true,
      "astuce": null,
-     "uses": null,
+     "uses": [],
      "enParallele": null,
      "attente": null,
      "attenteRaison": null,
@@ -33954,7 +33999,10 @@
      "needs": [],
      "surveille": true,
      "astuce": null,
-     "uses": null,
+     "uses": [
+      "bouillon-legumes",
+      "creme"
+     ],
      "enParallele": null,
      "attente": null,
      "attenteRaison": null,

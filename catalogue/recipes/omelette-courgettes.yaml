@@ -28,11 +28,13 @@ recipe:
 
   steps:
     - id: revenir
+      uses: [courgettes, oignon, huile-olive]
       action: "Faire revenir les courgettes en rondelles et l'oignon émincé dans l'huile d'olive"
       needs: [pan-fry]
       time_min: 10
       attended: true
     - id: battre
+      uses: [oeufs]
       action: "Battre les œufs en omelette"
       needs: []
       time_min: 2
@@ -41,6 +43,7 @@ recipe:
     # porte était posée sur une étape qui n'assaisonnait pas, donc « prélever
     # avant salage » ne voulait rien dire — on ne salait jamais.
     - id: cuire
+      uses: [sel, poivre-5-baies]
       action: "Saler et poivrer les légumes, verser les œufs battus dessus et cuire à feu doux jusqu'à prise"
       needs: [pan-fry]
       time_min: 6
