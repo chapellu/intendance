@@ -8,6 +8,7 @@
 
 import { jourISO } from "../db";
 import type { Calcul } from "../model/calcul";
+import { nomDuType } from "../model/plancher";
 import { joue, type Jeu } from "../model/jeu";
 import type { CleCreneau } from "../nav/routes";
 
@@ -54,7 +55,7 @@ export function gesteDuJour(jeu: Jeu, calc: Calcul): GesteDuJour | null {
 /** Ce que le geste demande, et pourquoi. Deux écrans le disent — l'un le fait
  *  cocher, l'autre le rappelle — et ils doivent le dire avec les mêmes mots :
  *  un geste reformulé se lit comme un second geste. */
-export const titreDuGeste = (g: GesteDuJour): string => `Sortir ${g.type} du congélo`;
+export const titreDuGeste = (g: Pick<GesteDuJour, "type">): string => `Sortir ${nomDuType(g.type)} du congélo`;
 export const detailDuGeste = (g: GesteDuJour): string => `Pour ${g.titre} — ${g.quand}`;
 
 /** Le même geste quand les jours sont cachés : le plat, sans « demain ». Un

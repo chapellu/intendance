@@ -287,7 +287,7 @@ function Fiche({
             <span>{muet.long}</span>
           </div>
         ) : null}
-        <Ingredients p={p} parts={parts} f={f} jeu={jeu}>
+        <Ingredients p={p} parts={parts} f={f} jeu={jeu} i={i}>
           <Deroule steps={steps} temps={temps} />
         </Ingredients>
         {/* LE GUIDE RESTE ATTEIGNABLE, ET C'EST UNE PORTE, PLUS UN COULOIR.
@@ -313,6 +313,7 @@ function Fiche({
   if (!ingr && montrerMiseEnPlace(steps, range, passee))
     return (
       <MiseEnPlace
+        i={i}
         p={p}
         parts={parts}
         f={f}
@@ -329,7 +330,7 @@ function Fiche({
     return (
       <>
         {tete}
-        <Ingredients p={p} parts={parts} f={f} jeu={jeu} />
+        <Ingredients p={p} parts={parts} f={f} jeu={jeu} i={i} />
         <div style={{ padding: "0 var(--space-4) var(--space-4)" }}>
           <button className="btn btn-secondary btn-block" onClick={() => setIngr(false)}>
             Revenir à l’étape {etape + 1}
@@ -379,6 +380,7 @@ function Fiche({
  * même geste que la dernière étape du guide, qui mène à la même sortie.
  */
 function MiseEnPlace({
+  i,
   p,
   parts,
   f,
@@ -386,6 +388,8 @@ function MiseEnPlace({
   commencer,
   terminer,
 }: {
+  /** Le créneau de la fiche — pour ce que la carte de 15 h disait là. */
+  i: number;
   p: Plat;
   parts: number;
   f: number;
@@ -419,7 +423,7 @@ function MiseEnPlace({
           <span>{muet.long}</span>
         </div>
       ) : null}
-      <Ingredients p={p} parts={parts} f={f} jeu={jeu} tient={m.recipient}>
+      <Ingredients p={p} parts={parts} f={f} jeu={jeu} i={i} tient={m.recipient}>
         {/* LE TEMPS, PUIS LA SORTIE — sous la liste, parce que la liste est ce
             qu'on sort en premier et que l'œil y arrive directement. */}
         <div className="co-mep">
@@ -635,9 +639,13 @@ function Ingredients({
   parts,
   f,
   jeu,
+  i,
   tient,
   children,
 }: {
+  /** Le créneau de la fiche : la provenance lit ce que la carte de 15 h y
+   *  disait là (`Jeu.dejaLa`), comme la liste de courses. */
+  i: number;
   p: Plat;
   parts: number;
   f: number;
@@ -657,7 +665,7 @@ function Ingredients({
   const produit = +(p.portions * f).toFixed(1);
   const ustensile = aSortir(p);
   const cr = credit(p);
-  const table = aTable(jeu, p, parts);
+  const table = aTable(jeu, p, parts, i);
   return (
     <div className="co-corps">
       <div className="co-encart">
@@ -696,7 +704,7 @@ function Ingredients({
       )}
       <div className="co-ing">
         {p.ingredients.map((x) => {
-          const prov = provenanceIngredient(jeu, x);
+          const prov = provenanceIngredient(jeu, x, { i, plat: p.id });
           // `key` sur `ref` ET PAS SUR `id` : onze plats portent deux lignes du
           // même ingrédient — la farine de la pâte et celle de la crème — et
           // React recevait deux fois la même clé. C'est `ref` qui les

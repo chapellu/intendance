@@ -2,7 +2,7 @@
 
 import { describe, expect, test } from "vitest";
 import type { CarteDuSoir, LotMange } from "../model/pause";
-import { ceQuiAttend, de, ligneAchats, ligneHeure, phraseDuLot, raison } from "./ceSoir.vue";
+import { ceQuiAttend, classeAchats, de, ligneAchats, ligneHeure, nomCourt, phraseDuLot, raison } from "./ceSoir.vue";
 
 const lot = (o: Partial<LotMange>): LotMange => ({
   type: "lentilles",
@@ -17,6 +17,7 @@ const carte = (o: Partial<CarteDuSoir>): CarteDuSoir =>
   ({
     plat: { titre: "Un plat", apports: { proteine: "aucune", feculent: "aucun", legumes: [] }, format: null },
     manque: [],
+    horsSaison: [],
     aCote: [],
     presse: null,
     attend: null,
@@ -67,6 +68,36 @@ describe("la ligne qui décide à 15 h : ce qu'il faut acheter", () => {
     expect(
       ligneAchats(carte({ manque: [{ id: "a", nom: "crème" }, { id: "b", nom: "lardons" }] })),
     ).toBe("il manque : crème et lardons");
+  });
+});
+
+describe("un nom d'article tient sur une ligne — capture du 19/10", () => {
+  const ORTIES = "pointes d'orties (ou fanes de navets ou de radis, ou jeunes pousses d'épinards, ou roquette)";
+
+  test("les alternatives se disent en deux mots et un « … »", () => {
+    expect(nomCourt(ORTIES)).toBe("orties (ou fanes, épinards…)");
+  });
+
+  test("ce qui tient reste tel quel", () => {
+    expect(nomCourt("parmesan ou comté râpé")).toBe("parmesan ou comté râpé");
+    expect(nomCourt("courge butternut (ou potimarron)")).toBe("courge butternut (ou potimarron)");
+  });
+
+  test("une glose après un tiret tombe, l'alternative reste", () => {
+    expect(nomCourt("parmesan râpé (ou Grana Padano) — 150 g dans la garniture, 50 g sur le dessus")).toBe(
+      "parmesan râpé (ou Grana Padano)",
+    );
+    expect(
+      nomCourt("jarret de bœuf avec l'os (ou gîte, paleron — des morceaux « à braiser », donc à cuire longtemps)"),
+    ).toBe("jarret de bœuf avec l'os (ou gîte, paleron)");
+  });
+
+  test("hors saison, la ligne le dit, en court", () => {
+    const orties = { id: "orties", nom: ORTIES };
+    const c = carte({ manque: [orties], horsSaison: [orties] });
+    expect(ligneAchats(c)).toBe("il manque : orties (ou fanes, épinards…), hors saison");
+    // L'œil lit la couleur avant les mots : ce n'est pas « un article ».
+    expect(classeAchats(c)).toBe("plusieurs");
   });
 });
 

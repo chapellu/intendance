@@ -161,3 +161,33 @@ export function ceQuiManque(
     aCote: manquants(plat.avec.map(commeIngredient)).filter((a) => !dejaDits.has(a.id)),
   };
 }
+
+/**
+ * Ce que la carte dit « ici » pour ce plat — tout ce qu'elle ne réclame pas.
+ *
+ * LE COMPLÉMENT EXACT DE `ceQuiManque`, sur les mêmes lignes : les ingrédients
+ * (et ceux du « sans reste » quand le plat s'y résout), l'accompagnement, moins
+ * les bases (le dépôt les porte, pas les courses), moins ce qui manque et ce qui
+ * va à côté sans y être. L'assaisonnement y est : la carte le tient pour là, la
+ * liste ne doit pas le réclamer à sa place.
+ *
+ * C'est l'instantané que « Je lance ça » écrit sur le créneau
+ * (`DecisionCreneau.ici`), pour que la liste ne demande que ce que la carte a
+ * dit manquer.
+ */
+export function ceQueLaCarteDitIci(catalogue: Catalogue, plat: Plat, manque: CeQuiManque, plein = false): string[] {
+  const alias = (id: string): string => catalogue.rayons.aliases[id] ?? id;
+  const exclus = new Set([...manque.ingredients, ...manque.aCote].map((a) => a.id));
+  const lignes = [
+    ...plat.ingredients,
+    ...(plein && plat.sansReste ? plat.sansReste.ingredients : []),
+    ...plat.avec.map(commeIngredient),
+  ];
+  const ids = new Set<string>();
+  for (const ing of lignes) {
+    if (ing.base) continue;
+    const id = alias(ing.id);
+    if (!exclus.has(id)) ids.add(id);
+  }
+  return [...ids].sort();
+}

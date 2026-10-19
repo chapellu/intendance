@@ -56,14 +56,18 @@ export function hydrater(jeu: Jeu, decisions: Map<string, DecisionCreneau>): Jeu
     if (!d) return;
     jeu.choix[i] = d.plat as Choix;
     if (d.parts != null) jeu.parts[i] = d.parts;
+    jeu.dejaLa[i] = d.ici && d.plat ? { plat: d.plat, ids: d.ici } : null;
   });
   return jeu;
 }
 
 /** Écrit la décision d'un créneau. `plat` à `null` efface le choix sans oublier
  *  les parts : on peut avoir réglé « 4,5 parts » avant de changer d'avis sur le
- *  plat, et retaper le chiffre serait une punition. */
-export async function poser(base: Base, jeu: Jeu, i: number, plat: Choix): Promise<void> {
+ *  plat, et retaper le chiffre serait une punition.
+ *
+ *  `ici` : ce que la carte de 15 h disait déjà là (`DecisionCreneau.ici`).
+ *  Absent, l'instantané précédent tombe avec l'ancien plat. */
+export async function poser(base: Base, jeu: Jeu, i: number, plat: Choix, ici?: readonly string[]): Promise<void> {
   const c = jeu.creneaux[i];
   const cle = cleDuCreneau(jeu, i);
   if (!c || !cle) throw new RangeError(`créneau ${i} hors de la semaine`);
@@ -75,9 +79,11 @@ export async function poser(base: Base, jeu: Jeu, i: number, plat: Choix): Promi
     repas: c.repas,
     plat,
     parts: existant?.parts ?? null,
+    ...(ici && plat ? { ici: [...ici] } : {}),
     maj: Date.now(),
   });
   jeu.choix[i] = plat;
+  jeu.dejaLa[i] = ici && plat ? { plat, ids: [...ici] } : null;
 }
 
 /** Règle les parts d'un créneau. `null` remet le créneau aux parts du foyer —
@@ -101,6 +107,8 @@ export async function reglerParts(
     repas: c.repas,
     plat: existant?.plat ?? null,
     parts,
+    // Régler les parts ne change pas ce que la carte disait là.
+    ...(existant?.ici ? { ici: existant.ici } : {}),
     maj: Date.now(),
   });
   jeu.parts[i] = parts ?? jeu.catalogue.foyer.parts;
@@ -137,6 +145,7 @@ export async function oublier(base: Base, jeu: Jeu, i: number): Promise<void> {
   await base.creneaux.delete(cle);
   jeu.choix[i] = null;
   jeu.parts[i] = jeu.catalogue.foyer.parts;
+  jeu.dejaLa[i] = null;
 }
 
 /**
@@ -162,6 +171,7 @@ export async function toutOublier(base: Base, jeu: Jeu): Promise<number> {
   const n = await base.creneaux.count();
   await base.creneaux.clear();
   jeu.choix.fill(null);
+  jeu.dejaLa.fill(null);
   jeu.parts.fill(jeu.catalogue.foyer.parts);
   return n;
 }

@@ -25,6 +25,7 @@ import { cleGeste } from "../db/reglages";
 import { minutesParJour, type Calcul } from "../model/calcul";
 import { joue, SAUTE, type Jeu } from "../model/jeu";
 import { heureDuDiner, horaire, type PropositionDuSoir } from "../model/pause";
+import { nomDuType } from "../model/plancher";
 import { JOURS_VISIBLES } from "../nav/jours";
 import type { Route } from "../nav/routes";
 import { duree, hhmm } from "../ui/format";
@@ -73,6 +74,9 @@ export interface Tache {
    * première carte sans détour, pour le jour où elle est la bonne.
    */
   lancer?: string;
+  /** Ce que la carte du plat à lancer disait là — posé avec lui, pour que la
+   *  liste ne demande que ce qui manque (`DecisionCreneau.ici`). */
+  ici?: string[];
 }
 
 export interface CarteFacette {
@@ -158,6 +162,7 @@ export function vueDuCockpit(jeu: Jeu, calc: Calcul, etat: EtatDuJour): VueCockp
             detail: propose.detail,
             route: { ecran: "ce-soir" },
             lancer: etat.soir.cartes[0]!.plat.id,
+            ici: etat.soir.cartes[0]!.ici,
           }
         : {
             cle: "ce-soir",
@@ -199,6 +204,24 @@ export function vueDuCockpit(jeu: Jeu, calc: Calcul, etat: EtatDuJour): VueCockp
   // sauce à 19 h est le même, qu'on montre le jour ou non. Il ouvre donc la
   // fiche du plat (celle que « Posés » ouvre), nomme le plat et pas « demain »,
   // et se coche sur place.
+  //
+  // SANS PLAT POSÉ DEMAIN, IL VIENT DE LA PROPOSITION DE 15 H. Un bloc du
+  // congélateur qui ne décongèle pas d'ici 18 h ne fait aucune carte du soir
+  // (`pause.aDecongelerLaVeille`) ; il se sort ce soir, au frigo, pour demain,
+  // et se coche sur place comme l'autre. Une seule ligne de geste : le hook
+  // du cockpit lit le drapeau de ce type-là (`typeDuGeste`).
+  const aSortir = !geste ? etat.soir?.aSortir[0] : undefined;
+  if (aSortir && !etat.gesteFait)
+    taches.push({
+      cle: `geste|${aSortir.lot.type}`,
+      facette: "Cuisine",
+      titre: titreDuGeste(aSortir.lot),
+      detail: aSortir.plat
+        ? `Pour demain : ${aSortir.plat.titre} — une nuit au frigo, il sera prêt.`
+        : "Pour demain — une nuit au frigo, et il se réchauffe tel quel.",
+      route: { ecran: "ce-soir" },
+      ...(jour0 ? { cocher: cleGeste(jourISO(jour0.date), aSortir.lot.type) } : {}),
+    });
   if (geste && !etat.gesteFait)
     taches.push({
       cle: `geste|${geste.type}`,
@@ -222,7 +245,10 @@ export function vueDuCockpit(jeu: Jeu, calc: Calcul, etat: EtatDuJour): VueCockp
         perimes.length > 1
           ? `${perimes.length} restes ont passé leur date`
           : "Un reste a passé sa date",
-      detail: `${nomsCourts(perimes.map((l) => l.type))} — plus proposé, à jeter.`,
+      // LE LIBELLÉ, PAS L'ID. « lentilles-vertes-cuites — plus proposé » s'est
+      // lu tel quel sur le cockpit (capture du 19/10) : un id d'émission n'est
+      // pas une phrase, et c'est la seule ligne du cockpit qui l'oubliait.
+      detail: `${nomsCourts(perimes.map((l) => nomDuType(l.type)))} — plus proposé, à jeter.`,
       route: { ecran: "stock" },
       jeter: perimes.map((l) => l.ref!),
     });
@@ -277,6 +303,14 @@ export function vueDuCockpit(jeu: Jeu, calc: Calcul, etat: EtatDuJour): VueCockp
     },
   };
 }
+
+/**
+ * Le type dont le cockpit coche le geste du jour : celui du plat posé demain,
+ * sinon le premier bloc à sortir ce soir. Le hook et la vue doivent nommer le
+ * même, sinon « Fait » cocherait un geste qu'on ne montre pas.
+ */
+export const typeDuGeste = (geste: { type: string } | null, soir?: PropositionDuSoir | null): string | null =>
+  geste?.type ?? soir?.aSortir[0]?.lot.type ?? null;
 
 /** Trois noms au plus, puis le compte du reste : la ligne du cockpit tient sur
  *  un téléphone, et la liste entière est dans l'inventaire. Les doublons se

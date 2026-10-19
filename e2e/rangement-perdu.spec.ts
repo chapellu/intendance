@@ -14,7 +14,7 @@ test("un congélateur perdu se vide d'un geste confirmé, et se rend d'un autre"
   await page.goto("/#/cuisine/stock");
   await attendreLApp(page);
 
-  const bocal = page.locator(".co-lot").filter({ hasText: "sauce-bolognaise" });
+  const bocal = page.locator(".co-lot").filter({ hasText: /^sauce bolognaise(?! bocal)/ });
   await page.locator(".co-cats button").filter({ hasText: "Congélo" }).dispatchEvent("click");
   await expect(bocal).toHaveCount(1);
 
@@ -24,7 +24,7 @@ test("un congélateur perdu se vide d'un geste confirmé, et se rend d'un autre"
   await expect(bocal).toHaveCount(1);
 
   await page.getByRole("button", { name: "Oui, retirer le lot" }).dispatchEvent("click");
-  await expect(page.getByText("« sauce-bolognaise » retiré de l’inventaire.")).toBeVisible();
+  await expect(page.getByText("« sauce bolognaise » retiré de l’inventaire.")).toBeVisible();
   await expect(bocal).toHaveCount(0);
 
   await page.getByRole("button", { name: "Annuler" }).dispatchEvent("click");

@@ -12,7 +12,7 @@
 // on juge ce qu'elle vaut, et le second appelle le premier — jamais l'inverse.
 
 import { bandRepas, Depot, horlogesDu, qteDe, type LigneDepot, type Prise } from "./depot";
-import { dateDe, joue, type Jeu } from "./jeu";
+import { dateDe, dejaLaPour, joue, type Jeu } from "./jeu";
 import type {
   Accept, Accompagnement, Catalogue, CauseLimite, Espace, Ingredient, Plat, Provenance,
 } from "./types";
@@ -342,6 +342,12 @@ export function calculer(
       }
     }
 
+    // CE QUE LA CARTE DE 15 H DISAIT LÀ, pour CE plat — `Jeu.dejaLa`. Une
+    // réunion avec l'intersection de #32, jamais un remplacement : l'instantané
+    // est figé au geste, donc rentrer un achat ensuite ne retire aucune ligne.
+    const deja = dejaLaPour(jeu, i, rid);
+    const ici: ReadonlySet<string> = deja.length ? new Set([...gardeManger, ...deja]) : gardeManger;
+
     const besoin = parts[i] ?? catalogue.foyer.parts;
     const f = facteur(p, besoin);
     facteurs[i] = f;
@@ -350,7 +356,7 @@ export function calculer(
 
     const auPanier = (ing: Ingredient, echelleLigne: number) => {
       const cid = alias(catalogue, ing.id);
-      const prov = provenance(catalogue, ing, cid, prises, gardeManger);
+      const prov = provenance(catalogue, ing, cid, prises, ici);
       provenances[prov] = (provenances[prov] ?? 0) + 1;
       if (catalogue.horsCourses.includes(prov)) return;
       if (prov === "placard" || prov === "garde-manger") {

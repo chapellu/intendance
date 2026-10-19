@@ -11,7 +11,7 @@ import type { Savoir } from "../model/scoring";
 import type { Catalogue } from "../model/types";
 import { JOURS_VISIBLES } from "../nav/jours";
 import { eteint } from "../nav/routes";
-import { aFaire, detailDesCourses, resumeCuisine, resumeSansJours, vueDuCockpit } from "./cockpit.vue";
+import { aFaire, detailDesCourses, resumeCuisine, resumeSansJours, typeDuGeste, vueDuCockpit } from "./cockpit.vue";
 import { vueAPrevoir } from "./prevoir.vue";
 
 const LUNDI = new Date("2026-08-17T12:00:00Z");
@@ -122,6 +122,29 @@ describe("T129 — la ligne « Ce soir » nomme le plat, et ce qui attend", () =
     const { vue: v } = avecProposition(new Set(["2026-08-17|diner"]));
     expect(v.taches.find((x) => x.cle === "ce-soir")).toBeUndefined();
   });
+  test("un bloc qui demande la veille fait le geste du jour : « à sortir ce soir pour demain »", () => {
+    jeu.stock = [
+      { type: "lasagnes", kind: "reste-plat", qty: null, qty_band: "3-repas", born: "2026-08-10", location: "congelo", ref: "8" },
+    ];
+    const { soir, vue: v } = avecProposition();
+    expect(soir.aSortir.map((a) => a.lot.type)).toEqual(["lasagnes"]);
+    const t = v.taches.find((x) => x.cle.startsWith("geste|"))!;
+    expect(t.titre).toBe("Sortir lasagnes du congélo");
+    expect(t.detail).toMatch(/^Pour demain/);
+    // Il se coche sur place, sous la clé que le hook lit (`typeDuGeste`).
+    expect(t.cocher).toBe("geste|2026-08-17|lasagnes");
+    expect(typeDuGeste(null, soir)).toBe("lasagnes");
+    // La ligne « Ce soir » ne le répète pas dans ce qui attend.
+    expect(v.taches.find((x) => x.cle === "ce-soir")!.detail).not.toMatch(/lasagnes/);
+  });
+
+  test("le geste d'un plat posé demain passe devant celui de la proposition", () => {
+    jeu.stock = [
+      { type: "lasagnes", kind: "reste-plat", qty: null, qty_band: "3-repas", born: "2026-08-10", location: "congelo", ref: "8" },
+    ];
+    const { soir } = avecProposition();
+    expect(typeDuGeste({ type: "sauce-bolognaise" }, soir)).toBe("sauce-bolognaise");
+  });
 });
 
 describe("le geste du jour", () => {
@@ -135,7 +158,7 @@ describe("le geste du jour", () => {
   // Une promesse DES JOURS : elle ne vaut que l'interrupteur allumé.
   test.runIf(JOURS_VISIBLES)("il paraît au cockpit avec les mots de « Aujourd'hui »", () => {
     const t = vue().taches.find((x) => x.cle.startsWith("geste|"));
-    expect(t?.titre).toBe("Sortir sauce-bolognaise du congélo");
+    expect(t?.titre).toBe("Sortir sauce bolognaise du congélo");
     expect(t?.route).toEqual({ ecran: "aujourdhui" });
   });
 
@@ -279,7 +302,9 @@ describe("les restes passés", () => {
     passes();
     const t = vue().taches.find((x) => x.cle === "perimes");
     expect(t?.titre).toBe("2 restes ont passé leur date");
-    expect(t?.detail).toContain("carcasse-volaille, lentilles-vertes-cuites");
+    expect(t?.detail).toContain("carcasse volaille, lentilles vertes cuites");
+    // Capture du 19/10 : l'id d'émission s'affichait tel quel.
+    expect(t?.detail).not.toMatch(/\w-\w/);
     // Le geste ne demande rien de plus que ce que la tâche porte.
     expect(t?.jeter).toEqual(["9", "12"]);
   });
@@ -344,7 +369,7 @@ describe("le cockpit n'envoie pas vers un écran éteint — T110", () => {
     poser(0, "diner", "poulet-roti");
     poser(1, "diner", "pates-bolognaise");
     const t = vue().taches.find((x) => x.cle.startsWith("geste|"));
-    expect(t?.titre).toBe("Sortir sauce-bolognaise du congélo");
+    expect(t?.titre).toBe("Sortir sauce bolognaise du congélo");
     // La fiche que « Posés » ouvre pour ce plat : son créneau nommé.
     expect(t?.route).toEqual({ ecran: "cuisiner", creneau: { jour: "2026-08-18", repas: "diner" } });
     expect(eteint(t!.route)).toBe(false);

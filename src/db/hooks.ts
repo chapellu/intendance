@@ -137,7 +137,8 @@ export interface SemaineVivante {
   calc: Calcul | null;
   /** `true` tant que la base n'a pas répondu : distinct d'une semaine vide. */
   chargement: boolean;
-  poserPlat: (i: number, plat: Choix) => Promise<void>;
+  /** `ici` : ce que la carte de 15 h disait là — voir `DecisionCreneau.ici`. */
+  poserPlat: (i: number, plat: Choix, ici?: readonly string[]) => Promise<void>;
   reglerLesParts: (i: number, parts: number | null) => Promise<void>;
   /** Le dîner de la veille grossit ET le midi part sur le reste : une seule
    *  transaction, parce que l'une sans l'autre est un dégât. */
@@ -253,8 +254,8 @@ export function useSemaine(catalogue: Catalogue | null, aujourdhui = new Date())
   );
 
   const poserPlat = useCallback(
-    async (i: number, plat: Choix) => {
-      if (jeu) await poser(base, jeu, i, plat);
+    async (i: number, plat: Choix, ici?: readonly string[]) => {
+      if (jeu) await poser(base, jeu, i, plat, ici);
     },
     [jeu],
   );

@@ -7,7 +7,7 @@
 // Port de `apps/proto-shell/comptoir.js` (`CHAUFFE`, `ecranCuisine`).
 
 import { commeIngredient, echelleTexte } from "../model/calcul";
-import { ROLES, type Choix, type Jeu } from "../model/jeu";
+import { dejaLaPour, ROLES, type Choix, type Jeu } from "../model/jeu";
 import type { Espace, Etape, Foyer, Ingredient, Outil, Plat } from "../model/types";
 import { fmt } from "../ui/format";
 import { phraseDesBoites, quantiteDuLot, vueDeLaSortie } from "./sortie.vue";
@@ -217,7 +217,13 @@ export interface Provenance {
  * Réparer la liste de courses sans réparer la fiche aurait laissé les deux
  * écrans se contredire — et c'est la fiche qu'on lit au moment de cuisiner.
  */
-export function provenanceIngredient(jeu: Jeu, ing: Ingredient): Provenance {
+export function provenanceIngredient(
+  jeu: Jeu,
+  ing: Ingredient,
+  /** Le créneau et le plat de la fiche, pour lire ce que la carte de 15 h
+   *  disait là (`Jeu.dejaLa`) — la liste le lit, la fiche doit dire pareil. */
+  ou?: { i: number; plat: string },
+): Provenance {
   const { catalogue } = jeu;
   if (ing.base) return { label: "base", acheter: true };
   const cid = catalogue.rayons.aliases[ing.id] ?? ing.id;
@@ -225,6 +231,7 @@ export function provenanceIngredient(jeu: Jeu, ing: Ingredient): Provenance {
   // Le relevé dit qu'il en reste. La fiche ne promet pas la quantité — elle ne
   // la connaît pas —, elle dit seulement d'aller voir avant de partir acheter.
   if (jeu.gardeManger.includes(cid)) return { label: "au garde-manger", acheter: false };
+  if (ou && dejaLaPour(jeu, ou.i, ou.plat).includes(cid)) return { label: "déjà là", acheter: false };
   return { label: "à acheter", acheter: true };
 }
 
@@ -275,11 +282,11 @@ export interface LigneATable {
  * soir. Passer `f` ici afficherait « 300 g de riz » sous une assiette qui en
  * demande 125.
  */
-export function aTable(jeu: Jeu, p: Plat, parts: number): LigneATable[] {
+export function aTable(jeu: Jeu, p: Plat, parts: number, i = -1): LigneATable[] {
   const f = parts / p.portions;
   return p.avec.map((a) => {
     const ing = commeIngredient(a);
-    return { id: a.id, nom: a.nom, quantite: echelleTexte(ing, f), prov: provenanceIngredient(jeu, ing) };
+    return { id: a.id, nom: a.nom, quantite: echelleTexte(ing, f), prov: provenanceIngredient(jeu, ing, { i, plat: p.id }) };
   });
 }
 

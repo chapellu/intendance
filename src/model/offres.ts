@@ -18,6 +18,7 @@
 import { accepte, qteDe } from "./depot";
 import type { BilanEspace, Calcul } from "./calcul";
 import { joue, sePioche, type Choix, type Jeu } from "./jeu";
+import { nomDuType } from "./plancher";
 import type { CauseLimite, Espace, Plat, Vaisselle } from "./types";
 
 /** Unités qui comptent des OBJETS : on ne récupère pas 1,4 carcasse. */
@@ -132,7 +133,7 @@ export class Offre {
   }
 
   get deQuoi(): string {
-    return `+${Math.round(this.manque * 10) / 10} ${this.unite} de ${this.type}`;
+    return `+${Math.round(this.manque * 10) / 10} ${this.unite} de ${nomDuType(this.type)}`;
   }
 
   phrase(): string {

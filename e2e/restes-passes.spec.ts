@@ -22,12 +22,12 @@ test("« c'est jeté » retire les restes passés, du cockpit comme de l'inventa
 
   const tache = page.locator(".co-tache").filter({ hasText: /passé sa date/ });
   await expect(tache).toHaveCount(1);
-  await expect(tache).toContainText("lentilles-vertes-cuites");
+  await expect(tache).toContainText("lentilles vertes cuites");
 
   // L'INVENTAIRE LE DIT AVANT LE GESTE — et il le dit à jeter, pas « urgent ».
   await page.goto("/#/cuisine/stock");
   await attendreLApp(page);
-  const lot = page.locator(".co-lot").filter({ hasText: "lentilles-vertes-cuites" });
+  const lot = page.locator(".co-lot").filter({ hasText: "lentilles vertes cuites" });
   await expect(lot).toContainText("périmé · à jeter");
 
   await page.goto("/");
@@ -40,6 +40,6 @@ test("« c'est jeté » retire les restes passés, du cockpit comme de l'inventa
   await attendreLApp(page);
   // La sauce de l'amorce, elle, est toujours là : on a jeté ce qui était passé,
   // pas le contenu du frigo.
-  await expect(page.locator(".co-lot").filter({ hasText: "sauce-bolognaise" }).first()).toBeVisible();
+  await expect(page.locator(".co-lot").filter({ hasText: "sauce bolognaise" }).first()).toBeVisible();
   await expect(lot).toHaveCount(0);
 });

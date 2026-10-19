@@ -45,8 +45,8 @@
 
 import { marque, SEUIL_A_MANGER } from "./axe";
 import { calculer } from "./calcul";
-import type { LigneDepot } from "./depot";
-import { ceQuiEstIci, ceQuiManque, type Article } from "./ici";
+import type { LigneDepot, LotInitial } from "./depot";
+import { ceQuiEstIci, ceQuiManque, ceQueLaCarteDitIci, type Article } from "./ici";
 import { HEURE } from "./heures";
 import type { Jeu } from "./jeu";
 import { deSaison, saisonDuPlat } from "./saisons";
@@ -156,6 +156,54 @@ export const minuteDuJour = (d: Date): number => d.getHours() * 60 + d.getMinute
 /** L'heure du dîner de ce foyer, en minutes depuis minuit — `heures.ts`. */
 export const heureDuDiner = (): number => HEURE["diner"] ?? 18 * 60;
 
+/* ══════════════════════════════════════════════════ la décongélation */
+
+/**
+ * Les formats dont une portion congelée va DIRECTEMENT dans la casserole.
+ *
+ * TROIS HEURES NE DÉCONGÈLENT PAS UN BLOC. La proposition comptait toute
+ * portion du congélateur comme cuisinable le soir même (« à sortir
+ * maintenant ») — vrai pour une soupe, une sauce, un mijoté, qui se
+ * réchauffent à feu doux depuis le bloc ; faux pour un gratin, une quiche, un
+ * poulet cuit, qu'on ne sert pas à 18 h s'ils sortent à 15 h.
+ *
+ * AUCUNE DONNÉE PAR PLAT NE LE DIT. Le catalogue porte une chaîne de repli du
+ * FOYER (`rules.yaml`, `decongeler` : micro-ondes une demi-heure, sinon une
+ * nuit au frigo), que l'export ne transporte pas et qui ne distingue pas un
+ * velouté d'un gratin ; les sorties (`emits`) ne portent ni geste de
+ * réchauffage ni durée de décongélation. D'où la règle par défaut, dite par
+ * l'utilisateur le 19/10 : sauces, soupes et mijotés vont du congélo au feu ;
+ * le reste demande la veille.
+ */
+export const FORMATS_DIRECT_AU_FEU: ReadonlySet<string> = new Set(["soupe", "mijote"]);
+
+/** Ce que le NOM d'une sortie suffit à dire — une sauce, un bouillon, un
+ *  velouté se réchauffent depuis le bloc, quel que soit le plat qui les a
+ *  faits (la carcasse, elle, est une base de bouillon et pas un bouillon) ; des
+ *  légumineuses ou une céréale cuites passent du sachet à la poêle. */
+const NOMS_DIRECT_AU_FEU = /^(?:sauce|bouillon|soupe|veloute|potage|jus|bolognaise)-|^(?:lentilles|pois-chiches|haricots|cereale)-.*cuite?s?$/;
+
+/**
+ * Une portion congelée de ce type peut-elle aller du congélo à la casserole
+ * ce soir ? Sinon, elle demande une nuit au frigo.
+ *
+ * LU SUR LES PLATS QUI LA PRODUISENT : un type émis par une soupe ou un mijoté
+ * (`format`) se réchauffe depuis le bloc ; un type que seuls des gratins, des
+ * quiches ou des pièces produisent, non. Un type que rien ne produit au
+ * catalogue retombe sur la prudence — la veille.
+ */
+export function directAuFeu(catalogue: Catalogue, type: string): boolean {
+  if (NOMS_DIRECT_AU_FEU.test(type)) return true;
+  return catalogue.plats.some(
+    (p) => p.format !== null && FORMATS_DIRECT_AU_FEU.has(p.format) && p.emits.some((e) => e.type === type),
+  );
+}
+
+/** Un lot du congélateur qui ne se cuisine pas ce soir : il se sort ce soir,
+ *  au frigo, pour demain. */
+export const aDecongelerLaVeille = (catalogue: Catalogue, l: Pick<LotInitial, "type" | "location">): boolean =>
+  l.location === "congelo" && !directAuFeu(catalogue, l.type);
+
 /* ═══════════════════════════════════════════ la saison et le format */
 
 /**
@@ -210,8 +258,22 @@ export interface CarteDuSoir {
   carte: Carte;
   /** Ce qu'il faut acheter pour la lancer. */
   manque: Article[];
+  /**
+   * Ceux de `manque` qui sont HORS SAISON ce mois-ci — des orties en octobre.
+   *
+   * ILS NE S'ACHÈTENT PAS, ET LA CARTE NE SE FAIT DONC PAS CE SOIR. Vu le 19/10 :
+   * « Velouté d'ortie » sortait deuxième, « il manque : pointes d'orties »,
+   * compté comme un seul article à prendre en passant. Un article qu'on ne
+   * trouvera nulle part n'est pas un article à acheter : la carte passe sous
+   * tout ce qui se fait (`ordre`) et sort de la main (`proposerCeSoir`).
+   */
+  horsSaison: Article[];
   /** L'accompagnement absent — dit, pas compté (voir `fond.ceQuiManque`). */
   aCote: Article[];
+  /** Ce que la carte tient pour là — l'instantané que « Je lance ça » écrit
+   *  sur le créneau (`DecisionCreneau.ici`), pour que la liste de courses ne
+   *  demande que `manque` (et `aCote`, qu'elle dit). */
+  ici: string[];
   /** Ce que ce plat sauve, quand il sauve quelque chose : rang 1. */
   presse: LotMange | { placard: string } | null;
   /** Le lot qui attend sans presser et que ce plat mangerait. */
@@ -229,6 +291,14 @@ export interface CarteDuSoir {
   score: number;
 }
 
+/** Un lot à sortir ce soir pour demain, et le plat qui le mangerait. */
+export interface ASortir {
+  lot: LotMange;
+  /** Le plat qui le finit le mieux demain — `null` quand aucun ne le prend
+   *  expressément (un reste se réchauffe alors tel quel). */
+  plat: Plat | null;
+}
+
 export interface PropositionDuSoir {
   /** L'index du dîner de ce soir dans `jeu.creneaux`, -1 s'il n'existe pas. */
   soir: number;
@@ -239,6 +309,12 @@ export interface PropositionDuSoir {
   plus: CarteDuSoir[];
   /** Ce qui attend dans le dépôt, du plus pressé au moins — pour le cockpit. */
   attend: LotMange[];
+  /**
+   * Ce qui ne se décongèle pas d'ici 18 h et se sort donc CE SOIR, au frigo,
+   * pour demain — le plus pressé d'abord. Ces lots ne font aucune carte du
+   * soir ; ils font le geste du jour quand aucun plat posé n'en appelle un.
+   */
+  aSortir: ASortir[];
 }
 
 export interface EntreeDuSoir {
@@ -249,6 +325,13 @@ export interface EntreeDuSoir {
   maintenant: Date;
   /** Pour les tests ; par défaut, `JOURS_DE_COURSES`. */
   joursDeCourses?: readonly string[];
+  /**
+   * Les types SORTIS DU CONGÉLATEUR HIER SOIR — le « Fait » du geste du jour
+   * de la veille (`cleGeste`). Ils ont passé la nuit au frigo : ce soir, ils
+   * se cuisinent comme un lot du frigo. Sans eux, le geste ne fermerait
+   * jamais la boucle — le gratin sorti hier resterait « à sortir » demain.
+   */
+  sortis?: ReadonlySet<string>;
 }
 
 /** Le dîner de ce soir — le premier jour de la fenêtre glissante. */
@@ -309,12 +392,20 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
   const soir = soirDe(jeu);
   const jour0 = jeu.jours[0];
   const jourDeCourses = !!jour0 && (e.joursDeCourses ?? JOURS_DE_COURSES).includes(jour0.nom);
-  if (soir < 0 || !jour0) return { soir, jourDeCourses, cartes: [], plus: [], attend: [] };
+  if (soir < 0 || !jour0) return { soir, jourDeCourses, cartes: [], plus: [], attend: [], aSortir: [] };
 
   const choix = [...jeu.choix];
   choix[soir] = null;
-  const comp = comptoir(jeu, choix, soir, savoir);
-  if (!comp) return { soir, jourDeCourses, cartes: [], plus: [], attend: [] };
+  // CE SOIR, LE CONGÉLATEUR NE DONNE QUE CE QUI VA DIRECTEMENT AU FEU. Un
+  // gratin congelé n'est pas là pour 18 h : le comptoir le voit absent, et le
+  // plat qui l'exige s'écarte comme s'il manquait (`carte.manque`). Le dépôt
+  // ENTIER sert encore à dire ce qui attend, et ce qu'il faut sortir.
+  const sortis = e.sortis ?? new Set<string>();
+  const bloque = (l: Pick<LotInitial, "type" | "location">): boolean =>
+    aDecongelerLaVeille(catalogue, l) && !sortis.has(l.type);
+  const ceSoir: Jeu = { ...jeu, stock: jeu.stock.filter((l) => !bloque(l)) };
+  const comp = comptoir(ceSoir, choix, soir, savoir);
+  if (!comp) return { soir, jourDeCourses, cartes: [], plus: [], attend: [], aSortir: [] };
 
   const base = calculer(jeu, choix);
   const date = jour0.date;
@@ -335,6 +426,22 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
 
   const lotDe = (type: string): LigneDepot | null => vivants.find((l) => l.type === type) ?? null;
 
+  // À SORTIR CE SOIR POUR DEMAIN : chaque bloc du congélateur qui ne se
+  // décongèle pas d'ici 18 h, nommé avec le plat qui le prend expressément —
+  // celui qui demande le moins d'achats. Un reste sans plat dédié se réchauffe
+  // tel quel, et la phrase le dit sans plat.
+  const vusASortir = new Set<string>();
+  const aSortir: ASortir[] = [];
+  for (const x of attend) {
+    if (!bloque(x) || vusASortir.has(x.type)) continue;
+    vusASortir.add(x.type);
+    const preneurs = catalogue.plats
+      .filter((p) => p.creneaux.includes("diner") && p.accepts.some((a) => a.type === x.type))
+      .map((p) => ({ p, n: ceQuiManque(catalogue, p, ici).ingredients.length }))
+      .sort((a, b) => a.n - b.n || a.p.titre.localeCompare(b.p.titre, "fr"));
+    aSortir.push({ lot: x, plat: preneurs[0]?.p ?? null });
+  }
+
   const cartes: CarteDuSoir[] = [];
   for (const p of catalogue.plats) {
     const ecarts = comp.ecarts(p);
@@ -347,6 +454,7 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
     if (carte.manque) continue;
 
     const { ingredients: manque, aCote } = ceQuiManque(catalogue, p, ici, carte.plein);
+    const horsSaison = manque.filter((a) => deSaison(catalogue, a.id, mois) === false);
 
     let presse: CarteDuSoir["presse"] = null;
     let attendIci: LotMange | null = null;
@@ -387,7 +495,9 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
       plat: p,
       carte,
       manque,
+      horsSaison,
       aCote,
+      ici: ceQueLaCarteDitIci(catalogue, p, { ingredients: manque, aCote }, carte.plein),
       presse,
       attend: attendIci,
       horaire: h,
@@ -402,8 +512,11 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
   cartes.sort(ordre(jourDeCourses));
 
   // LA MAIN : les trois premiers que l'on peut faire ce soir. Un jour sans
-  // courses, « faire ce soir » exclut ce qui demande deux achats ou plus.
-  const faisable = (c: CarteDuSoir): boolean => jourDeCourses || c.manque.length <= 1;
+  // courses, « faire ce soir » exclut ce qui demande deux achats ou plus ; et
+  // aucun jour ne fait ce qui attend un légume hors saison — le marché du
+  // samedi n'a pas d'orties en octobre.
+  const faisable = (c: CarteDuSoir): boolean =>
+    c.horsSaison.length === 0 && (jourDeCourses || c.manque.length <= 1);
   const main = cartes.filter(faisable).slice(0, TAILLE);
 
   // LA QUATRIÈME PLACE EST AUX LÉGUMINEUSES, et seulement quand aucune des
@@ -417,7 +530,7 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
   }
 
   const dans = new Set(main.map((c) => c.plat.id));
-  return { soir, jourDeCourses, cartes: main, plus: cartes.filter((c) => !dans.has(c.plat.id)), attend };
+  return { soir, jourDeCourses, cartes: main, plus: cartes.filter((c) => !dans.has(c.plat.id)), attend, aSortir };
 }
 
 /**
@@ -431,6 +544,11 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
 export const ordre =
   (jourDeCourses: boolean) =>
   (a: CarteDuSoir, b: CarteDuSoir): number => {
+    // AVANT TOUT, CE QUI NE SE FAIT PAS : un article hors saison ne s'achète ni
+    // ce soir ni un jour de courses. Même un plat qui sauverait un reste passe
+    // sous les autres — il ne le sauvera pas, faute du légume.
+    const introuvable = Number(a.horsSaison.length > 0) - Number(b.horsSaison.length > 0);
+    if (introuvable) return introuvable;
     const presse = Number(b.presse !== null) - Number(a.presse !== null);
     if (presse) return presse;
     if (!jourDeCourses) {

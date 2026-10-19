@@ -14,6 +14,7 @@
 
 import { useMemo, useState } from "react";
 import { useCatalogue, useSemaine } from "../db/hooks";
+import { nomDuType } from "../model/plancher";
 import type { Calcul } from "../model/calcul";
 import { SAUTE, type Choix, type Jeu } from "../model/jeu";
 import { chemin } from "../nav/routes";
@@ -191,12 +192,12 @@ function Slot({
         <div className="detail">
           {s.recoit.map((x) => (
             <span key={x.type} className="recoit">
-              ↩ {x.recit || x.type}
+              ↩ {x.recit || nomDuType(x.type)}
             </span>
           ))}
           {s.donne.map((e, n) => (
             <span key={`${e.type}-${n}`} className="donne">
-              ↪ donne {e.type}
+              ↪ donne {nomDuType(e.type)}
               {e.congelo ? " (se congèle)" : e.gardeFrigo ? ` (${e.gardeFrigo} j au frigo)` : ""}
             </span>
           ))}
