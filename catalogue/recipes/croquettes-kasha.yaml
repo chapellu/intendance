@@ -13,6 +13,7 @@
 recipe:
   id: croquettes-kasha
   title: Croquettes végétariennes au kasha
+  format: galettes
   lang: fr
   source:
     author: Marie Chioca

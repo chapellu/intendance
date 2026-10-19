@@ -5,6 +5,7 @@
 recipe:
   id: moulinee-legumes-hiver
   title: Moulinée toute blanche de légumes d'hiver au beurre salé
+  format: soupe
   lang: fr
   source:
     author: Marie Chioca

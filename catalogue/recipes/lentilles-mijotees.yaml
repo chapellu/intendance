@@ -5,6 +5,7 @@
 recipe:
   id: lentilles-mijotees
   title: Lentilles vertes mijotées aux carottes
+  format: mijote
   lang: fr
   yields:
     portions_eq: 4          # adult-equivalents at base quantities

@@ -8,6 +8,7 @@
 recipe:
   id: pate-lentilles-noisette
   title: Pâté de lentilles à la noisette grillée
+  format: tartine
   lang: fr
   source:
     author: Marie Chioca

@@ -28,6 +28,7 @@
 recipe:
   id: focaccia-ai-porcini
   title: Focaccia ai porcini
+  format: pizza
   lang: fr
   source:
     author: Marie Chioca

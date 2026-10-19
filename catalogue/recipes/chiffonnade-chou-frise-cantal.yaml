@@ -5,6 +5,7 @@
 recipe:
   id: chiffonnade-chou-frise-cantal
   title: Chiffonnade de chou frisé au cantal, noix et jambon cru
+  format: salade
   lang: fr
   source:
     author: Marie Chioca

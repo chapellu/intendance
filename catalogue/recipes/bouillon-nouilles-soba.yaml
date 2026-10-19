@@ -11,6 +11,7 @@
 recipe:
   id: bouillon-nouilles-soba
   title: Bouillon chaud aux nouilles soba
+  format: soupe
   lang: fr
   source:
     author: Marie Chioca

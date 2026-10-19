@@ -5,6 +5,7 @@
 recipe:
   id: veloute-ortie
   title: Velouté d'ortie (ou de fanes, ou de jeunes pousses d'épinards)
+  format: soupe
   lang: fr
   source:
     author: Marie Chioca

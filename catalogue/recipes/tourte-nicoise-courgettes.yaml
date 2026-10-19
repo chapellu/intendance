@@ -5,6 +5,7 @@
 recipe:
   id: tourte-nicoise-courgettes
   title: Tourte niçoise aux courgettes
+  format: quiche
   lang: fr
   source:
     author: Marie Chioca

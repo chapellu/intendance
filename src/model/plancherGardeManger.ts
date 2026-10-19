@@ -65,6 +65,7 @@
 //    restera : c'est ce trou-là que le canal d'achat referme, et l'apéro n'en
 //    est que le cas nommé.
 
+import { classeDe, contexte } from "./journal";
 import type { Classe, EtatIngredient, Rejeu } from "./journal";
 import type { Catalogue, Usage } from "./types";
 
@@ -82,6 +83,11 @@ export const COMPTABLES: ReadonlySet<Classe> = new Set<Classe>([
   "fond-de-placard",
   "epicerie",
   "congelateur",
+  // AJOUTÉE LE 2026-10-18, et c'est exactement le cas que la phrase du dessus
+  // prévoyait : quelqu'un a dit qu'elle se compte. Les pommes de terre, les
+  // oignons, l'ail, les carottes et les œufs « se gardent des semaines » —
+  // une famille de garde le chiffre, la classe le dérive (`journal.ts`).
+  "de-garde",
 ]);
 
 export const comptable = (classe: Classe): boolean => COMPTABLES.has(classe);
@@ -144,6 +150,15 @@ export const UNITE_PLANCHER = "unité";
  * le jour où le bocal est vide, sinon le plancher perdrait sa raison d'être
  * exactement quand il devient utile.
  */
+/** Ingrédient (alias résolu) → minimum du fond de roulement. `?? []` pour les
+ *  catalogues fabriqués à la main des tests, antérieurs au fond. */
+export function minimumsDuFond(catalogue: Catalogue): Map<string, number> {
+  const aliases = catalogue.rayons.aliases;
+  return new Map(
+    (catalogue.fond?.denrees ?? []).map((d) => [aliases[d.ingredient] ?? d.ingredient, d.minimum]),
+  );
+}
+
 export function usages(catalogue: Catalogue): Map<string, Usage> {
   const aliases = catalogue.rayons.aliases;
   const par = new Map<string, Usage>();
@@ -165,10 +180,21 @@ export interface Posable {
   /** Ce qu'il y en a en ce moment, en unités d'achat. */
   a: number;
   usage: Usage | null;
+  /** Le minimum que le fond de roulement propose, en unités d'achat — une
+   *  PROPOSITION à valider d'un doigt, jamais un plancher posé tout seul.
+   *  `null` hors du fond. */
+  minimumDuFond: number | null;
 }
 
 /**
  * Tout ce dont le placard a des nouvelles, avec le droit d'y poser un plancher.
+ *
+ * ET TOUT LE FOND DE ROULEMENT, MÊME JAMAIS VU (2026-10-18). Les lentilles
+ * corail, les pois cassés, les surgelés n'étaient dans aucun relevé : le geste
+ * n'existait donc pas sur eux, alors que ce sont précisément les denrées qu'on
+ * a décidé de toujours avoir. Une denrée du fond sans nouvelles est rendue à
+ * zéro — c'est vrai, l'app n'en connaît aucune unité — avec sa classe dérivée
+ * comme les autres.
  *
  * LES DEUX CARTES DU REJEU, PARCE QUE CE SONT DEUX CONNAISSANCES. `parIngredient`
  * dit ce qui EST LÀ ; `vus` dit ce dont on a des nouvelles sans qu'il en reste —
@@ -183,19 +209,25 @@ export interface Posable {
  */
 export function posables(catalogue: Catalogue, rejeu: Rejeu): Posable[] {
   const par = usages(catalogue);
-  const vu = (e: EtatIngredient): Posable => ({
-    ingredient: e.ingredient,
-    nom: nomDeLaDenree(e.ingredient),
-    classe: e.classe,
-    comptable: comptable(e.classe),
-    raison: pourquoiPasDePlancher(e.classe),
-    a: e.unites,
-    usage: par.get(e.ingredient) ?? null,
+  const minimums = minimumsDuFond(catalogue);
+  const posable = (ingredient: string, classe: Classe, a: number): Posable => ({
+    ingredient,
+    nom: nomDeLaDenree(ingredient),
+    classe,
+    comptable: comptable(classe),
+    raison: pourquoiPasDePlancher(classe),
+    a,
+    usage: par.get(ingredient) ?? null,
+    minimumDuFond: minimums.get(ingredient) ?? null,
   });
+  const vu = (e: EtatIngredient): Posable => posable(e.ingredient, e.classe, e.unites);
 
   const out = new Map<string, Posable>();
   for (const e of rejeu.parIngredient.values()) out.set(e.ingredient, vu(e));
   for (const e of rejeu.vus.values()) if (!out.has(e.ingredient)) out.set(e.ingredient, vu(e));
+  const ctx = contexte(catalogue);
+  for (const id of minimums.keys())
+    if (!out.has(id)) out.set(id, posable(id, classeDe(ctx, id, []), 0));
   return [...out.values()].sort((a, b) => a.nom.localeCompare(b.nom, "fr"));
 }
 

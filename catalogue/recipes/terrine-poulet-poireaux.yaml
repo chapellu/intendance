@@ -11,6 +11,7 @@
 recipe:
   id: terrine-poulet-poireaux
   title: Terrine légère de poulet et poireaux
+  format: terrine
   lang: fr
   source:
     author: Marie Chioca

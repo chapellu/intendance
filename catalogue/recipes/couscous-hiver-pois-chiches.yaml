@@ -1,0 +1,90 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-18 — aucune source
+# extérieure. Mijoté d'hiver : le fond, plus DES navets.
+#
+# UN COUSCOUS DE SEMAINE, PAS DE FÊTE : légumes et pois chiches mijotés dans
+# une sauce tomate épicée, semoule gonflée à l'eau bouillante. Le cube de
+# bouillon entre après le prélèvement du petit, comme dans les soupes.
+
+recipe:
+  id: couscous-hiver-pois-chiches
+  title: Couscous de légumes d'hiver aux pois chiches
+  lang: fr
+  format: mijote
+  yields:
+    portions_eq: 5
+  time_min_total: 50
+  active_min: 15
+
+  apports:
+    proteine: legumineuse
+    feculent: semoule
+    legumes: [racine, crucifere, solanacee, allium]
+    profil: mijote
+    origine: maghrebin
+
+  ingredients:
+    - {id: navets, name: navets, qty: 3, unit: pièce}
+    - {id: carottes, name: carottes, qty: 4, unit: pièce}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: pois-chiches, name: "pois chiches cuits, en bocal", qty: 400, unit: g}
+    - {id: tomates-pelees, name: tomates pelées en conserve, qty: 400, unit: g}
+    - {id: concentre-tomate, name: concentré de tomate, qty: 1, unit: c. à s.}
+    - {id: cumin, name: cumin, qty: 1, unit: c. à c.}
+    - {id: curcuma, name: curcuma, qty: 1, unit: c. à c.}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: eau, name: eau, qty: 1, unit: l}
+    - {id: semoule, name: semoule de blé moyenne, qty: 300, unit: g}
+    - {id: bouillon-legumes, name: cube de bouillon de légumes, qty: 1, unit: pièce, seasoning: true}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: tailler
+      action: "Oignon émincé, carottes et navets en gros tronçons"
+      needs: [chop-coarse]
+      uses: [oignon, carottes, navets]
+      time_min: 10
+    - id: suer
+      action: "Faire suer l'oignon à l'huile dans la cocotte avec le cumin et le curcuma"
+      needs: [simmer-large]
+      uses: [huile-olive, cumin, curcuma]
+      time_min: 4
+    - id: cuire
+      action: "Ajouter carottes, navets, tomates, concentré et eau ; cuire à couvert"
+      needs: [simmer-large]
+      uses: [tomates-pelees, concentre-tomate, eau]
+      time_min: 25
+      attended: false
+    - id: semoule
+      action: "Pendant ce temps : semoule dans un saladier, couverte du même volume d'eau bouillante, puis égrenée"
+      astuce: "Cinq minutes sous une assiette, puis une cuillère d'huile et la fourchette : elle ne colle plus."
+      needs: []
+      uses: [semoule]
+      time_min: 7
+      parallel_with: cuire
+    - id: pois-chiches
+      action: "Ajouter les pois chiches égouttés et laisser reprendre 5 minutes"
+      needs: [simmer-large]
+      uses: [pois-chiches]
+      time_min: 5
+      kid: {age_min_months: 30, task: "rincer les pois chiches dans la passoire"}
+    - id: saler
+      action: "Délayer le cube de bouillon, goûter et saler si besoin"
+      needs: []
+      uses: [bouillon-legumes, sel]
+      time_min: 2
+      seasoning_gate: true
+
+  baby_portion:
+    take: "quelques légumes, des pois chiches et un peu de semoule, avant le cube et le sel"
+    prep: "écraser à la fourchette"
+    needs: []
+    depuis: [pois-chiches, semoule]
+
+  emits:
+    - kind: reste-plat
+      type: couscous-legumes
+      qty_band: 1-repas
+      keeps: {frigo_days: 3, congelo: true}
+      note: "les légumes et le bouillon se congèlent ; la semoule se refait en cinq minutes"
+
+  plan_b: []

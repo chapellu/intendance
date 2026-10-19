@@ -1,0 +1,108 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-18 — aucune source
+# extérieure. Gratin d'été : le fond, plus DES aubergines.
+#
+# LES AUBERGINES RÔTIES, PAS FRITES. La moussaka classique les frit et boit
+# l'huile ; au four sur une plaque, elles cuisent seules pendant que la sauce
+# de lentilles mijote. La crème du dessus est au yaourt — le fond n'a ni lait
+# ni beurre pour une béchamel.
+
+recipe:
+  id: moussaka-lentilles-aubergines
+  title: Moussaka de lentilles aux aubergines
+  lang: fr
+  format: gratin
+  yields:
+    portions_eq: 5
+  time_min_total: 80
+  active_min: 20
+
+  apports:
+    proteine: legumineuse
+    feculent: legumineuse
+    legumes: [solanacee, allium]
+    profil: four
+    origine: grec
+
+  ingredients:
+    - {id: aubergine, name: aubergines, qty: 3, unit: pièce}
+    - {id: huile-olive, ref: huile-four, name: huile d'olive (aubergines), qty: 4, unit: c. à s.}
+    - {id: lentilles-seches, name: lentilles vertes sèches, qty: 200, unit: g}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: ail, name: ail, qty: 2, unit: gousse}
+    - {id: tomates-pelees, name: tomates pelées en conserve, qty: 400, unit: g}
+    - {id: concentre-tomate, name: concentré de tomate, qty: 1, unit: c. à s.}
+    - {id: cannelle, name: cannelle, qty: 1, unit: pincée}
+    - {id: huile-olive, name: huile d'olive, qty: 1, unit: c. à s.}
+    - {id: eau, name: eau, qty: 0.5, unit: l}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    - {id: yaourt-nature, name: yaourts nature, qty: 2, unit: pièce}
+    - {id: oeufs, name: œuf, qty: 1, unit: pièce}
+    - {id: fromage-rape, name: fromage râpé, qty: 60, unit: g}
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 200 °C"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: aubergines
+      action: "Aubergines en tranches d'un centimètre, badigeonnées d'huile, au four sur une plaque"
+      astuce: "Rôties plutôt que frites : la moitié de l'huile, et personne devant la poêle."
+      needs: [bake]
+      uses: [aubergine, huile-four]
+      time_min: 25
+      attended: false
+    - id: tailler
+      action: "Pendant ce temps, émincer l'oignon et l'ail, rincer les lentilles"
+      needs: [chop-coarse]
+      uses: [oignon, ail, lentilles-seches]
+      time_min: 5
+      parallel_with: aubergines
+      kid: {age_min_months: 30, task: "rincer les lentilles dans la passoire"}
+    - id: sauce
+      action: "À la sauteuse, faire fondre oignon et ail à l'huile, ajouter lentilles, tomates, concentré, cannelle et eau ; mijoter à couvert"
+      needs: [pan-fry, simmer]
+      uses: [huile-olive, tomates-pelees, concentre-tomate, cannelle, eau]
+      time_min: 30
+      attended: false
+    - id: saler
+      action: "Goûter et saler la sauce"
+      needs: []
+      uses: [sel]
+      time_min: 1
+      seasoning_gate: true
+    - id: creme
+      action: "Battre les yaourts avec l'œuf et la moitié du fromage"
+      needs: []
+      uses: [yaourt-nature, oeufs, fromage-rape]
+      time_min: 3
+      kid: {age_min_months: 30, task: "fouetter la crème de yaourt"}
+    - id: monter
+      action: "Dans le plat : une couche d'aubergines, la sauce, le reste des aubergines, puis la crème de yaourt et le fromage"
+      needs: [gratin-vessel]
+      uses: []
+      time_min: 5
+    - id: gratiner
+      action: "Gratiner jusqu'à ce que le dessus soit doré"
+      needs: [gratin]
+      uses: []
+      time_min: 25
+      attended: false
+
+  baby_portion:
+    take: "2 c. à s. de sauce aux lentilles et une tranche d'aubergine, avant salage"
+    prep: "écraser à la fourchette"
+    needs: []
+    depuis: [aubergines, sauce]
+
+  emits:
+    - kind: reste-plat
+      type: moussaka-lentilles
+      qty_band: 1-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b:
+    - drop: gratiner
+      saves_min: 25
+      effect: "sauce et aubergines servies côte à côte, la crème de yaourt froide par-dessus"

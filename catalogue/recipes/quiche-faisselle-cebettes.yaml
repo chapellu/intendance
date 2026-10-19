@@ -5,6 +5,7 @@
 recipe:
   id: quiche-faisselle-cebettes
   title: Quiche à la faisselle et aux cébettes
+  format: quiche
   lang: fr
   source:
     author: Marie Chioca

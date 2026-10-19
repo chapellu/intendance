@@ -21,7 +21,12 @@
 #    because deriving it from `apports` would need a `viande-rouge → boeuf-hache`
 #    table, which is judgement, i.e. data entry in disguise.
 
-ordre: [primeur, boucherie, poissonnerie, crèmerie, frais, épicerie]
+#
+# `surgelés` EN DERNIER, ET C'EST LE SEUL ORDRE QUI TIENNE LA CHAÎNE DU FROID :
+# on passe au bac à la fin, juste avant la caisse. Rayon né du fond de roulement
+# (2026-10-18) — le congélateur du foyer est plein de légumes ACHETÉS surgelés,
+# et l'app n'avait aucun mot pour eux.
+ordre: [primeur, boucherie, poissonnerie, crèmerie, frais, épicerie, surgelés]
 
 # Ce dont un plat ne se fait pas. Quand la confiance est basse sur l'un d'eux,
 # l'app demande ; sur tout le reste elle parie en silence.
@@ -427,6 +432,21 @@ rayons:
     # boit, et le modèle n'a pas de rayon pour elles — l'épicerie faute de mieux,
     # comme les cueillettes sont au primeur faute de rayon « cueillette ».
     - nectar-mangue
+    # ── Arrivés avec le FOND DE ROULEMENT (2026-10-18). La troisième fois que le
+    # vocabulaire grandit sans recette : ici c'est un MINIMUM qu'on veut tenir
+    # qui nomme. Les pois cassés étaient la seule légumineuse du fond sans id.
+    - pois-casses
+  # LES LÉGUMES ACHETÉS SURGELÉS, distincts de leurs homonymes frais —
+  # `petits-pois` (primeur, mai–juillet) et `petits-pois-surgeles` ne
+  # s'achètent ni au même rayon ni au même moment, et l'un tient trois jours
+  # quand l'autre tient des mois. Les aliaser ferait dire au calendrier des
+  # saisons que le sachet du congélateur est « hors saison » en novembre.
+  surgelés:
+    - epinards-surgeles
+    - petits-pois-surgeles
+    - haricots-verts-surgeles
+    - champignons-surgeles
+    - legumes-surgeles
 
 placard:
   - huile-olive
@@ -451,5 +471,11 @@ placard:
   - cannelle
   - piment-espelette
   - graines-fenouil
+  # Les trois épices du fond de roulement qu'aucune recette n'avait encore
+  # nommées. Le fond les dit « toujours là » : elles se vérifient, elles ne
+  # s'achètent pas chaque semaine.
+  - cumin
+  - paprika
+  - curcuma
   - glacons        # se font, ne s'achètent pas
   - eau            # ne s'achète pas ; listé pour ne pas polluer la liste

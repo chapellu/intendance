@@ -27,6 +27,9 @@ import { expect, test } from "@playwright/test";
 import { libellePoser } from "../src/ui/phrases";
 import { attendreLApp } from "./parcours";
 
+// « gnocchi leg » ET NON PLUS « gnocchi » : depuis le fond de roulement
+// (2026-10-18) deux plats de gnocchis existent, et le parcours veut UNE carte.
+// Même raison pour « tian rata » plus bas — le tian de navets est arrivé.
 const PLAT = "Gnocchis poêlés aux légumes";
 
 /** Ouvre « Poser » sur la première case libre de la semaine, SANS répondre aux
@@ -51,7 +54,7 @@ test("le champ passe devant la file de questions", async ({ page }) => {
   // déjà ce qu'il veut faire.
   await expect(page.locator(".co-question")).toBeVisible({ timeout: 30_000 });
 
-  await page.getByLabel("chercher un plat par son nom").fill("gnocchi");
+  await page.getByLabel("chercher un plat par son nom").fill("gnocchi leg");
 
   const cartes = page.locator(".co-jouable");
   await expect(cartes).toHaveCount(1);
@@ -68,7 +71,7 @@ test("le plat cherché se pose, et il se retrouve en disant qu'il est déjà là
   page,
 }) => {
   await ouvrirPoser(page);
-  await page.getByLabel("chercher un plat par son nom").fill("gnocchi");
+  await page.getByLabel("chercher un plat par son nom").fill("gnocchi leg");
 
   const carte = page.locator(".co-jouable").first();
   await expect(carte.locator(".tete .nom")).toHaveText(PLAT);
@@ -90,7 +93,7 @@ test("le plat cherché se pose, et il se retrouve en disant qu'il est déjà là
   // qu'il a disparu du catalogue.
   await page.locator(".co-slot.libre").first().locator("button.resume").click();
   await page.locator(".co-slot.ouvert").getByRole("link", { name: "poser un plat" }).click();
-  await page.getByLabel("chercher un plat par son nom").fill("gnocchi");
+  await page.getByLabel("chercher un plat par son nom").fill("gnocchi leg");
 
   const revu = page.locator(".co-jouable").first();
   await expect(revu.locator(".tete .nom")).toHaveText(PLAT);
@@ -142,7 +145,7 @@ test("dans « Proposer », le champ passe lui aussi devant la file de questions"
   // pas sans question l'aurait retirée.
   await expect(page.locator(".co-question")).toBeVisible({ timeout: 30_000 });
 
-  await page.getByLabel("chercher un plat par son nom").fill("gnocchi");
+  await page.getByLabel("chercher un plat par son nom").fill("gnocchi leg");
 
   const cartes = page.locator(".co-jouable");
   await expect(cartes).toHaveCount(1);
@@ -157,7 +160,7 @@ test("dans « Proposer », le champ passe lui aussi devant la file de questions"
 test("le plat cherché se pose, le fil avance, et la frappe ne le suit pas", async ({ page }) => {
   await ouvrirLeFil(page);
   const champ = page.getByLabel("chercher un plat par son nom");
-  await champ.fill("gnocchi");
+  await champ.fill("gnocchi leg");
 
   const carte = page.locator(".co-jouable").first();
   await expect(carte.locator(".tete .nom")).toHaveText(PLAT);
@@ -190,7 +193,7 @@ test("un accompagnement cherché dit qu'il n'est pas un dîner, et se pose quand
   page,
 }) => {
   await ouvrirPoser(page);
-  await page.getByLabel("chercher un plat par son nom").fill("tian");
+  await page.getByLabel("chercher un plat par son nom").fill("tian rata");
 
   const carte = page.locator(".co-jouable").first();
   await expect(carte.locator(".tete .nom")).toContainText("Tian");

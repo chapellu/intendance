@@ -8,6 +8,7 @@
 recipe:
   id: frittata-vegetarienne
   title: Frittata végétarienne
+  format: omelette
   lang: fr
   source:
     author: Marie Chioca

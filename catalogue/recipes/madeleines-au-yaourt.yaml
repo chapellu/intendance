@@ -16,6 +16,7 @@
 recipe:
   id: madeleines-au-yaourt
   title: Madeleines au yaourt
+  format: cake
   lang: fr
   source:
     author: Marie Chioca

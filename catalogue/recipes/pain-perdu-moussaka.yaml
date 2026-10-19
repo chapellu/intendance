@@ -31,6 +31,7 @@
 recipe:
   id: pain-perdu-moussaka
   title: Pain perdu façon moussaka
+  format: gratin
   lang: fr
   source:
     author: Marie Chioca

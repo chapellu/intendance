@@ -5,6 +5,7 @@
 recipe:
   id: omelette-courgettes
   title: Omelette aux courgettes
+  format: omelette
   lang: fr
   yields:
     portions_eq: 4

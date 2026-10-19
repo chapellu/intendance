@@ -1,0 +1,98 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-18 — aucune source
+# extérieure. Quiche d'été : le fond, plus UN légume du primeur.
+#
+# UNE QUICHE SANS BEURRE, SANS CRÈME ET SANS LAIT. Le fond n'en tient aucun :
+# la pâte est à l'huile d'olive (farine, huile, eau, sel — tout est au
+# placard), et l'appareil prend ses yaourts nature à la place de la crème.
+# Une pâte à l'huile n'a pas besoin de repos, ce qui la rend faisable à la
+# pause de 15 h sans y penser la veille.
+
+recipe:
+  id: quiche-courgettes-yaourt
+  title: Quiche aux courgettes, pâte à l'huile
+  lang: fr
+  format: quiche
+  yields:
+    portions_eq: 6
+  time_min_total: 65
+  active_min: 25
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: [cucurbitacee, allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine, name: farine, qty: 250, unit: g}
+    - {id: huile-olive, ref: huile-pate, name: huile d'olive (pâte), qty: 6, unit: c. à s.}
+    - {id: eau, name: eau tiède, qty: 0.1, unit: l}
+    - {id: sel, ref: sel-pate, name: sel (pâte), qty: 1, unit: pincée, seasoning: true}
+    - {id: courgettes, name: courgettes, qty: 3, unit: pièce}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 1, unit: c. à s.}
+    - {id: oeufs, name: œufs, qty: 4, unit: pièce}
+    - {id: yaourt-nature, name: yaourts nature, qty: 2, unit: pièce}
+    - {id: herbes-provence, name: herbes de Provence, qty: 1, unit: c. à c.}
+    - {id: fromage-rape, name: fromage râpé, qty: 80, unit: g}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 190 °C"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: pate
+      action: "Mêler farine et sel, verser l'huile et l'eau tiède, pétrir juste le temps d'obtenir une boule lisse"
+      astuce: "Sans beurre, elle n'a pas besoin de repos : elle s'étale tout de suite."
+      needs: []
+      uses: [farine, sel-pate, huile-pate, eau]
+      time_min: 5
+      kid: {age_min_months: 30, task: "malaxer la pâte à pleines mains"}
+    - id: foncer
+      action: "L'étaler au rouleau, ou directement du bout des doigts dans le moule huilé, et la piquer"
+      needs: []
+      uses: []
+      time_min: 5
+    - id: courgettes
+      action: "Courgettes en rondelles et oignon émincé, revenus à l'huile jusqu'à ce qu'ils aient rendu leur eau"
+      astuce: "C'est l'eau des courgettes qui détrempe les quiches : elle doit partir dans la poêle, pas au four."
+      needs: [pan-fry]
+      uses: [courgettes, oignon, huile-olive]
+      time_min: 10
+    - id: appareil
+      action: "Battre œufs, yaourts et herbes, saler et poivrer"
+      needs: []
+      uses: [oeufs, yaourt-nature, herbes-provence, sel, poivre]
+      time_min: 3
+      seasoning_gate: true
+    - id: garnir
+      action: "Étaler les courgettes sur la pâte, verser l'appareil, parsemer de fromage"
+      needs: []
+      uses: [fromage-rape]
+      time_min: 3
+    - id: cuire
+      action: "Enfourner jusqu'à ce que le centre soit pris et le dessus doré"
+      needs: [bake]
+      uses: []
+      time_min: 35
+      attended: false
+
+  baby_portion:
+    take: "quelques rondelles de courgettes fondues, avant salage"
+    prep: "écraser à la fourchette"
+    needs: []
+    depuis: [courgettes]
+
+  emits:
+    - kind: reste-plat
+      type: quiche-courgettes
+      qty_band: 1-repas
+      keeps: {frigo_days: 3, congelo: true}
+      note: "une part froide se glisse dans la boîte du déjeuner"
+
+  plan_b: []

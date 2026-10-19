@@ -23,6 +23,7 @@
 recipe:
   id: pot-au-feu-traditionnel
   title: Pot-au-feu traditionnel
+  format: mijote
   lang: fr
   source:
     author: Marie Chioca

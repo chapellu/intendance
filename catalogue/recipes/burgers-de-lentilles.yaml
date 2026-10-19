@@ -5,6 +5,7 @@
 recipe:
   id: burgers-de-lentilles
   title: Petits burgers de lentilles au tofu fumé
+  format: galettes
   lang: fr
   source:
     author: Marie Chioca

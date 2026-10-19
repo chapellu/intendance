@@ -5,6 +5,7 @@
 recipe:
   id: ratatouille-minute
   title: Ratatouille minute
+  format: mijote
   lang: fr
   yields:
     portions_eq: 4

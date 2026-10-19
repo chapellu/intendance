@@ -1,0 +1,102 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-18 — aucune source
+# extérieure. Deuxième dîner du fond de roulement.
+#
+# LES PÂTES RESTENT, LA VIANDE PART. C'est le compromis que le fond demande :
+# « moins de pâtes sans tout changer ». La bolognaise est la routine du foyer ;
+# les lentilles vertes y prennent la place du bœuf haché, gardent leur forme
+# et donnent la même mâche — pour le prix d'un paquet de 500 g.
+#
+# NE REMPLACE PAS `pates-bolognaise` NI `sauce-bolognaise` : ceux-là restent les
+# plats à la viande. Deux ids, deux plats.
+
+recipe:
+  id: pates-bolognaise-lentilles
+  title: Pâtes à la bolognaise de lentilles
+  lang: fr
+  format: pates
+  yields:
+    portions_eq: 5
+  time_min_total: 55
+  active_min: 18
+
+  apports:
+    proteine: legumineuse
+    feculent: pates
+    legumes: [solanacee, racine, allium]
+    profil: mijote
+    origine: italien
+
+  ingredients:
+    - {id: lentilles-seches, name: lentilles vertes sèches, qty: 250, unit: g}
+    - {id: carottes, name: carottes, qty: 2, unit: pièce}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: ail, name: ail, qty: 2, unit: gousse}
+    - {id: tomates-pelees, name: tomates pelées en conserve, qty: 800, unit: g}
+    - {id: concentre-tomate, name: concentré de tomate, qty: 2, unit: c. à s.}
+    - {id: herbes-provence, name: herbes de Provence, qty: 1, unit: c. à c.}
+    - {id: laurier, name: feuille de laurier, qty: 1, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: eau, name: eau, qty: 0.6, unit: l}
+    - {id: pates, name: "pâtes (spaghettis, coquillettes)", qty: 400, unit: g}
+    - {id: fromage-rape, name: fromage râpé, qty: 60, unit: g}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+
+  steps:
+    - id: tailler
+      action: "Émincer l'oignon et l'ail, tailler les carottes en tout petits dés"
+      astuce: "Plus petits que l'oignon : la carotte fond moins vite, et les enfants ne la trient pas."
+      needs: [chop-coarse]
+      uses: [oignon, ail, carottes]
+      time_min: 8
+    - id: rincer
+      action: "Rincer les lentilles dans une passoire"
+      needs: []
+      uses: [lentilles-seches]
+      time_min: 2
+      kid: {age_min_months: 30, task: "rincer les lentilles et chercher les petits cailloux"}
+    - id: suer
+      action: "Faire suer oignon, ail et carottes à l'huile dans la cocotte"
+      needs: [simmer-large]
+      uses: [huile-olive]
+      time_min: 5
+    - id: mijoter
+      action: "Ajouter les lentilles, les tomates écrasées, le concentré, les herbes, le laurier et l'eau ; mijoter à couvert"
+      astuce: "Les lentilles vertes gardent leur forme : c'est elles qui font la mâche de la viande hachée."
+      needs: [simmer-large]
+      uses: [tomates-pelees, concentre-tomate, herbes-provence, laurier, eau]
+      time_min: 35
+      attended: false
+    - id: pates
+      action: "Dans les dix dernières minutes, cuire les pâtes"
+      needs: [boil]
+      uses: [pates]
+      time_min: 10
+      attended: false
+      charge_partielle: true
+      parallel_with: mijoter
+    - id: saler
+      action: "Retirer le laurier, goûter et saler la sauce"
+      needs: []
+      uses: [sel]
+      time_min: 2
+      seasoning_gate: true
+    - id: servir
+      action: "Servir la sauce sur les pâtes, le fromage râpé à table"
+      needs: []
+      uses: [fromage-rape]
+      time_min: 1
+
+  baby_portion:
+    take: "2 c. à s. de sauce et quelques pâtes, avant salage et sans fromage"
+    prep: "écraser à la fourchette"
+    needs: []
+    depuis: [mijoter, pates]
+
+  emits:
+    - kind: reste-plat
+      type: bolognaise-lentilles
+      qty_band: 1-repas
+      keeps: {frigo_days: 4, congelo: true}
+      note: "garder la sauce à part des pâtes : seule, elle se congèle et se réchauffe sans coller"
+
+  plan_b: []

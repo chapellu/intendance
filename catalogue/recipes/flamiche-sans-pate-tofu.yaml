@@ -8,6 +8,7 @@
 recipe:
   id: flamiche-sans-pate-tofu
   title: Flamiche sans pâte au tofu fumé
+  format: quiche
   lang: fr
   source:
     author: Marie Chioca

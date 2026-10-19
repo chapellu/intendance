@@ -21,6 +21,7 @@
 recipe:
   id: soupe-cretoise-3-min
   title: Soupe crétoise « 3 min chrono »
+  format: soupe
   lang: fr
   source:
     author: Marie Chioca

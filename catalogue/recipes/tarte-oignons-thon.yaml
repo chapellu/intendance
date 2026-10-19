@@ -1,0 +1,91 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-18 — aucune source
+# extérieure. Tarte de toute l'année, faite avec le fond SEUL.
+#
+# L'OIGNON EST LE LÉGUME. Quatre oignons fondus à couvert donnent leur sucre à
+# la tarte : c'est le plat qui transforme le filet d'un kilo du fond, qui se
+# garde des semaines, en repas.
+
+recipe:
+  id: tarte-oignons-thon
+  title: Tarte aux oignons confits et au thon
+  lang: fr
+  format: quiche
+  yields:
+    portions_eq: 6
+  time_min_total: 65
+  active_min: 18
+
+  apports:
+    proteine: poisson
+    feculent: farine
+    legumes: [allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: oignon, name: oignons, qty: 4, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: thym, name: thym, qty: 1, unit: c. à c.}
+    - {id: farine, name: farine, qty: 250, unit: g}
+    - {id: huile-olive, ref: huile-pate, name: huile d'olive (pâte), qty: 6, unit: c. à s.}
+    - {id: eau, name: eau tiède, qty: 0.1, unit: l}
+    - {id: sel, ref: sel-pate, name: sel (pâte), qty: 1, unit: pincée, seasoning: true}
+    - {id: moutarde, name: moutarde, qty: 2, unit: c. à s.}
+    - {id: thon-boite, name: thon au naturel, qty: 140, unit: g}
+    - {id: oeufs, name: œufs, qty: 2, unit: pièce}
+    - {id: yaourt-nature, name: yaourt nature, qty: 1, unit: pièce}
+    - {id: fromage-rape, name: fromage râpé, qty: 50, unit: g}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 190 °C"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: oignons
+      action: "Oignons émincés, fondus à l'huile avec le thym, à couvert et à feu doux, jusqu'à devenir confits"
+      astuce: "Couverts et à feu doux, ils fondent sans brûler : c'est leur sucre qui fait la tarte."
+      needs: [pan-fry]
+      uses: [oignon, huile-olive, thym]
+      time_min: 25
+      attended: false
+    - id: pate
+      action: "Pendant ce temps, mêler farine et sel, verser l'huile et l'eau tiède, pétrir en boule"
+      needs: []
+      uses: [farine, sel-pate, huile-pate, eau]
+      time_min: 5
+      parallel_with: oignons
+      kid: {age_min_months: 30, task: "malaxer la pâte à pleines mains"}
+    - id: foncer
+      action: "Étaler la pâte dans le moule huilé, la piquer, et la tartiner de moutarde"
+      needs: []
+      uses: [moutarde]
+      time_min: 5
+      parallel_with: oignons
+    - id: appareil
+      action: "Battre œufs et yaourt, saler, poivrer, puis y mêler les oignons et le thon émietté"
+      needs: []
+      uses: [oeufs, yaourt-nature, thon-boite, sel, poivre]
+      time_min: 4
+    - id: garnir
+      action: "Verser sur la pâte et parsemer de fromage"
+      needs: []
+      uses: [fromage-rape]
+      time_min: 2
+    - id: cuire
+      action: "Enfourner jusqu'à ce que la pâte soit dorée sur les bords"
+      needs: [bake]
+      uses: []
+      time_min: 30
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: tarte-oignons-thon
+      qty_band: 1-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

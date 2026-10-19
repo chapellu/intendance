@@ -211,7 +211,12 @@ def _fenetre(f) -> str:
 # donnée d'entrée n'a pas.
 JOURS_PAR_MOIS = 30
 
-_EN_JOURS = {"jours": 1, "mois": JOURS_PAR_MOIS}
+# `semaines` et `ans` ARRIVENT AVEC LA GARDE DES DENRÉES (2026-10-18). Les
+# méthodes de transformation se disaient en jours et en mois ; une pomme de
+# terre se garde « des semaines » et une conserve « des années » — c'est la
+# même horloge (Workspace#50), seulement plus longue. Une année vaut 365 jours,
+# avec la même absence de prétention que le mois de trente.
+_EN_JOURS = {"jours": 1, "semaines": 7, "mois": JOURS_PAR_MOIS, "ans": 365}
 
 
 def fenetre_jours(f):

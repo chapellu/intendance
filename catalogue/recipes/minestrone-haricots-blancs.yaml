@@ -1,0 +1,104 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-18 — aucune source
+# extérieure. Soupe d'été et de début d'automne : le fond, plus DES courgettes.
+#
+# UNE SOUPE-REPAS À L'ITALIENNE : haricots, légumes et petites pâtes dans le
+# même bouillon. Les haricots trempent la veille ; l'après-midi, ils cuisent
+# sans qu'on les regarde.
+
+recipe:
+  id: minestrone-haricots-blancs
+  title: Minestrone aux haricots blancs
+  lang: fr
+  format: soupe
+  yields:
+    portions_eq: 6
+  time_min_total: 95        # hors trempage, lancé la veille
+  active_min: 15
+
+  apports:
+    proteine: legumineuse
+    feculent: pates
+    legumes: [cucurbitacee, racine, solanacee, allium]
+    profil: soupe
+    origine: italien
+
+  ingredients:
+    - {id: haricots-blancs, name: haricots blancs secs, qty: 200, unit: g}
+    - {id: courgettes, name: courgettes, qty: 2, unit: pièce}
+    - {id: carottes, name: carottes, qty: 2, unit: pièce}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: ail, name: ail, qty: 2, unit: gousse}
+    - {id: tomates-pelees, name: tomates pelées en conserve, qty: 400, unit: g}
+    - {id: herbes-provence, name: herbes de Provence, qty: 1, unit: c. à c.}
+    - {id: eau, name: eau, qty: 2, unit: l}
+    - {id: pates, name: "petites pâtes (coquillettes, étoiles)", qty: 100, unit: g}
+    - {id: bouillon-legumes, name: cube de bouillon de légumes, qty: 1, unit: pièce, seasoning: true}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: fromage-rape, name: fromage râpé, qty: 40, unit: g}
+
+  steps:
+    - id: tremper
+      action: "Couvrir les haricots blancs de trois fois leur volume d'eau froide"
+      needs: []
+      uses: [haricots-blancs]
+      time_min: 2
+      attended: false
+      attente_min: 720
+      attente_raison: "trempage d'une nuit, à lancer la veille au soir"
+      kid: {age_min_months: 24, task: "verser les haricots dans le saladier d'eau"}
+    - id: bouillir
+      action: "Égoutter, couvrir d'eau fraîche dans la cocotte, porter à gros bouillons et les y tenir 10 minutes"
+      astuce: "Une vraie ébullition au départ : c'est ce qui rend les haricots secs digestes."
+      needs: [simmer-large]
+      uses: [eau]
+      time_min: 15
+    - id: cuire
+      action: "Baisser le feu et cuire à frémissement, à couvert"
+      needs: [simmer-large]
+      uses: []
+      time_min: 45
+      attended: false
+    - id: tailler
+      action: "Pendant ce temps : oignon et ail émincés, carottes et courgettes en petits dés"
+      needs: [chop-coarse]
+      uses: [oignon, ail, carottes, courgettes]
+      time_min: 10
+      parallel_with: cuire
+    - id: legumes
+      action: "Ajouter les légumes, les tomates écrasées et les herbes ; cuire encore à couvert"
+      needs: [simmer-large]
+      uses: [tomates-pelees, herbes-provence]
+      time_min: 20
+      attended: false
+    - id: pates
+      action: "Ajouter les pâtes et cuire le temps indiqué sur le paquet"
+      needs: [simmer-large]
+      uses: [pates]
+      time_min: 10
+    - id: saler
+      action: "Délayer le cube, goûter et saler si besoin"
+      needs: []
+      uses: [bouillon-legumes, sel]
+      time_min: 2
+      seasoning_gate: true
+    - id: servir
+      action: "Servir avec un filet d'huile d'olive et le fromage râpé à table"
+      needs: []
+      uses: [huile-olive, fromage-rape]
+      time_min: 1
+
+  baby_portion:
+    take: "une louche de légumes, haricots et pâtes, avant le cube et le sel"
+    prep: "écraser à la fourchette"
+    needs: []
+    depuis: [pates]
+
+  emits:
+    - kind: reste-plat
+      type: minestrone
+      qty_band: 1-repas
+      keeps: {frigo_days: 3, congelo: true}
+      note: "les pâtes gonflent dans le reste : ajouter un peu d'eau au réchauffage"
+
+  plan_b: []

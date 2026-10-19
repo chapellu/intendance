@@ -21,6 +21,7 @@
 recipe:
   id: one-pot-pasta-capriciosa
   title: One pot pasta capriciosa
+  format: pates
   lang: fr
   source:
     author: Marie Chioca

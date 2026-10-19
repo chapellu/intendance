@@ -10,6 +10,7 @@
 recipe:
   id: wraps-gourmets
   title: Wraps « gourmets »
+  format: tartine
   lang: fr
   source:
     author: Marie Chioca

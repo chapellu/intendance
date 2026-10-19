@@ -15,6 +15,7 @@
 recipe:
   id: cookies-les-plus-simples
   title: Les cookies les plus simples du monde
+  format: cake
   lang: fr
   source:
     author: Marie Chioca

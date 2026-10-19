@@ -1,0 +1,89 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-18 — aucune source
+# extérieure. Gratin d'été et d'automne : le fond, plus UN brocoli.
+#
+# DES PÂTES, MAIS AVEC UN LÉGUME DEDANS. Le brocoli cuit dans l'eau des pâtes,
+# les quatre dernières minutes : une casserole, un plat, et un légume que les
+# enfants mangent parce qu'il est gratiné.
+
+recipe:
+  id: gratin-pates-brocoli-thon
+  title: Gratin de pâtes au brocoli et au thon
+  lang: fr
+  format: gratin
+  yields:
+    portions_eq: 5
+  time_min_total: 45
+  active_min: 15
+
+  apports:
+    proteine: poisson
+    feculent: pates
+    legumes: [crucifere, allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: pates, name: "pâtes courtes (penne, coquillettes)", qty: 300, unit: g}
+    - {id: brocoli, name: brocoli, qty: 1, unit: pièce}
+    - {id: thon-boite, name: thon au naturel, qty: 280, unit: g}
+    - {id: oeufs, name: œufs, qty: 2, unit: pièce}
+    - {id: yaourt-nature, name: yaourts nature, qty: 2, unit: pièce}
+    - {id: ail, name: ail, qty: 1, unit: gousse}
+    - {id: fromage-rape, name: fromage râpé, qty: 80, unit: g}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 200 °C"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: bouquets
+      action: "Détailler le brocoli en petits bouquets"
+      needs: []
+      uses: [brocoli]
+      time_min: 4
+      kid: {age_min_months: 30, task: "détacher les bouquets du brocoli avec les doigts"}
+    - id: cuire
+      action: "Cuire les pâtes ; quatre minutes avant la fin, ajouter le brocoli dans la même eau"
+      astuce: "Même eau, même casserole : une vaisselle de moins, et le brocoli reste vert."
+      needs: [boil]
+      uses: [pates]
+      time_min: 12
+      attended: false
+    - id: sauce
+      action: "Battre yaourts, œufs et ail râpé, saler et poivrer"
+      needs: []
+      uses: [yaourt-nature, oeufs, ail, sel, poivre]
+      time_min: 3
+      seasoning_gate: true
+    - id: monter
+      action: "Égoutter, mêler pâtes, brocoli, thon émietté et sauce dans le plat, fromage par-dessus"
+      needs: [gratin-vessel]
+      uses: [thon-boite, fromage-rape]
+      time_min: 4
+    - id: gratiner
+      action: "Gratiner jusqu'à ce que le dessus soit doré"
+      needs: [gratin]
+      uses: []
+      time_min: 20
+      attended: false
+
+  baby_portion:
+    take: "quelques pâtes et bouquets de brocoli, avant la sauce salée"
+    prep: "écraser à la fourchette"
+    needs: []
+    depuis: [cuire]
+
+  emits:
+    - kind: reste-plat
+      type: gratin-pates-brocoli
+      qty_band: 1-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b:
+    - drop: gratiner
+      saves_min: 20
+      effect: "pâtes au brocoli et au thon, la sauce au yaourt mêlée à chaud"
