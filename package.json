@@ -13,6 +13,7 @@
     "e2e": "playwright test",
     "ecoulement": "vite-node scripts/ecoulement.mjs",
     "horloges": "vite-node scripts/horloges.mjs",
+    "pause": "vite-node scripts/pause.mjs",
     "perf": "vite-node scripts/perf.mjs",
     "planchers": "vite-node scripts/planchers.mjs",
     "preview": "vite preview",
