@@ -737,6 +737,16 @@ button { font-family: var(--font-body); color: inherit; }
 .co-lot .src.estime { color: var(--color-accent-800); }
 .co-lot.mange { opacity: .55; }
 
+/* — écran « le répertoire » (T81) — des `.co-lot` qui sont des liens. Rien de
+   neuf à part ce qu'une ancre impose (couleur, soulignement) et la colonne du
+   temps, alignée en haut : sur une ligne de quatre rangs, un temps centré
+   flotterait à mi-hauteur sans appartenir à rien. */
+.co-rep { color: inherit; text-decoration: none; align-items: flex-start; }
+.co-rep .temps { flex: none; text-align: right; }
+.co-rep .actif { font-size: 11.5px; color: var(--color-neutral-700); margin-top: 2px; white-space: nowrap; }
+.co-rep-groupe { margin-top: var(--space-4); }
+.co-rep-groupe > .co-kicker { margin: 0 var(--space-1) var(--space-2); }
+
 /* — écran « les parts » — */
 .co-parts { background: var(--color-surface); border-radius: var(--radius-lg); padding: var(--space-4); }
 .co-parts .ligne { display: flex; align-items: center; gap: var(--space-4); margin-top: var(--space-3); }
@@ -830,6 +840,14 @@ a.co-apercu { color: inherit; text-decoration: none; }
   background: var(--color-surface); color: var(--color-text);
 }
 .co-sousnav a.actif { background: var(--color-accent); color: var(--color-bg); }
+/* CINQ ONGLETS DEPUIS T81, ET ILS DOIVENT TENIR EN 390 PX. Mesuré à la
+   première capture : 458 px de rangée pour 390 d'écran, « Recettes » coupé à
+   « Rec » — l'onglet allumé était précisément celui qu'on ne lisait pas.
+   Resserrées, la rangée mesure 394 px dont les 16 de marge finale : les cinq
+   se lisent entiers. Des
+   pastilles plus serrées plutôt qu'un défilement : un onglet qu'il faut aller
+   chercher en glissant est un onglet qu'on ne sait pas là. */
+.co-sousnav a { font-size: 13px; padding: 8px 10px; }
 .co-sousnav a.actif .co-pastille { background: var(--color-accent-200); color: var(--color-accent-900); }
 
 /* — facette jardin : la carte de la terrasse et le verdict de cellule — */

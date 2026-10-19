@@ -23,6 +23,7 @@ import { Parts } from "./ecrans/Parts";
 import { Poser } from "./ecrans/Poser";
 import { Prevoir } from "./ecrans/Prevoir";
 import { Poses } from "./ecrans/Poses";
+import { Repertoire } from "./ecrans/Repertoire";
 import { Semaine } from "./ecrans/Semaine";
 import { Stock } from "./ecrans/Stock";
 import "./styles/organic.css";
@@ -90,6 +91,7 @@ function rendre(route: Route, jeu: Jeu) {
     case "prevoir": return <Prevoir />;
     case "courses": return <Courses />;
     case "stock": return <Stock />;
+    case "repertoire": return <Repertoire />;
     // Le fil sans créneau est son ouverture : il n'y a rien à valider, et il
     // sait lui-même s'il doit demander l'horizon ou reprendre une passe.
     //

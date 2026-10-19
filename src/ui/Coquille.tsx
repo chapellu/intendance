@@ -23,6 +23,29 @@ interface Onglet {
 /** Les écrans qui sont encore « Proposer », vus de la sous-navigation. */
 const EN_PASSE: ReadonlySet<Route["ecran"]> = new Set<Route["ecran"]>(["poser", "parts"]);
 
+/**
+ * Le répertoire — T81. LE MÊME ONGLET DANS LES DEUX SOUS-NAVIGATIONS, ET
+ * TOUJOURS LE DERNIER.
+ *
+ * T81 refusait d'en faire « un cinquième onglet par défaut » au motif qu'un
+ * onglet annonce un MODE, et c'est vrai : celui-ci annonce le seul mode de la
+ * cuisine qui ne décide rien. La demande du 16/10 a tranché pour la
+ * sous-navigation, pas pour la barre du bas — une facette de plus aurait mis le
+ * répertoire au rang du jardin, alors qu'il n'est qu'une autre façon de
+ * regarder les plats de la cuisine.
+ *
+ * DERNIER, parce que les quatre autres sont une BOUCLE — on propose, on relit
+ * ce qu'on a posé, on regarde le stock, on fait les courses — et que celui-ci
+ * n'en fait pas partie. Le glisser au milieu couperait le geste en deux ; en
+ * bout de rangée, il se lit comme ce qu'il est : à côté.
+ *
+ * « RECETTES » ET PAS « RÉPERTOIRE » : c'est le mot de la demande (« a summary
+ * view of recipes »), et c'est le plus court des deux dans une rangée qui
+ * défile déjà sur 390 px. Le ticket garde son nom ; l'onglet prend celui du
+ * foyer.
+ */
+const REPERTOIRE: { route: Route; nom: string } = { route: { ecran: "repertoire" }, nom: "Recettes" };
+
 /** Les vues de la cuisine quand les jours sont là : trois lectures du calendrier
  *  et la liste qui en tombe. */
 const SOUS_NAV_JOURS: { route: Route; nom: string }[] = [
@@ -30,6 +53,7 @@ const SOUS_NAV_JOURS: { route: Route; nom: string }[] = [
   { route: { ecran: "semaine" }, nom: "La semaine" },
   { route: { ecran: "prevoir" }, nom: "À prévoir" },
   { route: { ecran: "courses" }, nom: "Courses" },
+  REPERTOIRE,
 ];
 
 /**
@@ -57,6 +81,7 @@ const SOUS_NAV_STOCK: { route: Route; nom: string }[] = [
   { route: { ecran: "poses" }, nom: "Posés" },
   { route: { ecran: "stock" }, nom: "Stock" },
   { route: { ecran: "courses" }, nom: "Courses" },
+  REPERTOIRE,
 ];
 
 const SOUS_NAV = JOURS_VISIBLES ? SOUS_NAV_JOURS : SOUS_NAV_STOCK;
