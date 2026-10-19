@@ -417,9 +417,25 @@ export function bilanStockage(
     acc[e] = (acc[e] ?? 0) + n;
   };
 
-  for (const o of jeu.stock) {
-    if (jetes.includes(o.type)) continue;
-    add(debut, o.location, bandRepas(o.qty_band));
+  // CE QUI EST LÀ AU DÉPART, MOINS CE QUI EST PÉRIMÉ — T103. Ce terme comptait
+  // toute la table `stock`, sans regarder l'âge, alors que le chaînage avait
+  // depuis T58 cessé de servir un reste de frigo passé : un lot assez mort pour
+  // ne plus être proposé restait assez vivant pour occuper une étagère. Sur
+  // l'année simulée, c'est ce qui a fait crier « ça déborde » de décembre à
+  // septembre, avec 33 lots au frigo pendant trois semaines de maison vide.
+  //
+  // AUJOURD'HUI, PAS DIMANCHE. Un reste qui passera jeudi occupe encore sa
+  // place jusqu'à ce qu'on l'ait jeté ; le sortir du budget d'avance ferait
+  // annoncer de la place qu'on n'a pas encore faite.
+  //
+  // Les lots écartés par `jetes` ne sont déjà pas dans le dépôt : `calculer`
+  // le construit filtré. Le test reste ici pour qui appellerait ce bilan avec
+  // un dépôt construit autrement.
+  const aujourdhui = jeu.jours[0]?.date;
+  for (const l of depot.initiales) {
+    if (jetes.includes(l.type)) continue;
+    if (aujourdhui && depot.perime(l, aujourdhui)) continue;
+    add(debut, l.location, bandRepas(l.band));
   }
 
   choix.forEach((rid, i) => {

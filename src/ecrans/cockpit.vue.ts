@@ -28,6 +28,7 @@ import { duree } from "../ui/format";
 import { detailDuGeste, gesteDuJour, titreDuGeste } from "./aujourdhui.vue";
 import { vueDesCourses } from "./courses.vue";
 import { vueAPrevoir } from "./prevoir.vue";
+import { restesPerimes } from "./stock.vue";
 
 export interface Tache {
   cle: string;
@@ -37,6 +38,17 @@ export interface Tache {
   detail: string;
   /** Où l'on répond. Une tâche qui n'ouvre rien est une plainte. */
   route: Route;
+  /**
+   * Les clés de base que « c'est jeté » retire, quand la tâche se règle sur
+   * place — T103. Absent partout ailleurs.
+   *
+   * LA SEULE TÂCHE QUI SE RÈGLE SANS ALLER NULLE PART, et c'est voulu : il n'y
+   * a rien à décider sur un reste passé, seulement à le dire jeté. L'envoyer
+   * sur l'inventaire pour taper « Je n'en ai plus » N fois — 36 fois, pendant
+   * la panne de frigo de l'année simulée — serait faire payer au doigt
+   * l'oubli du modèle.
+   */
+  jeter?: string[];
 }
 
 export interface CarteFacette {
@@ -106,7 +118,25 @@ export function vueDuCockpit(jeu: Jeu, calc: Calcul, etat: EtatDuJour): VueCockp
       route: { ecran: "aujourdhui" },
     });
 
-  // 3. LES COURSES. Le proto écrivait « rien de rentré au stock » quel que soit
+  // 3. CE QUI EST PASSÉ AU FRIGO — T103. Après le geste du jour parce que c'est
+  // le même voyage, au frigo, et avant les courses parce qu'il libère la place
+  // où elles vont. La tâche ne paraît que s'il y a quelque chose à jeter : un
+  // « 0 reste passé » permanent apprendrait à ne plus lire le cockpit.
+  const perimes = jour0 ? restesPerimes(calc.depot, jour0.date) : [];
+  if (perimes.length)
+    taches.push({
+      cle: "perimes",
+      facette: "Cuisine",
+      titre:
+        perimes.length > 1
+          ? `${perimes.length} restes ont passé leur date`
+          : "Un reste a passé sa date",
+      detail: `${nomsCourts(perimes.map((l) => l.type))} — plus proposé, à jeter.`,
+      route: { ecran: "stock" },
+      jeter: perimes.map((l) => l.ref!),
+    });
+
+  // 4. LES COURSES. Le proto écrivait « rien de rentré au stock » quel que soit
   // le nombre d'articles rentrés — il lisait les cochés et concluait sur les
   // rentrés. Une ligne qui contredit l'écran qu'elle ouvre ne se rattrape pas.
   if (courses.articles.length && courses.rentres < courses.articles.length)
@@ -118,7 +148,7 @@ export function vueDuCockpit(jeu: Jeu, calc: Calcul, etat: EtatDuJour): VueCockp
       route: { ecran: "courses" },
     });
 
-  // 4. CE QUI ATTEND UNE RÉPONSE. Le compte vient de « À prévoir », comme la
+  // 5. CE QUI ATTEND UNE RÉPONSE. Le compte vient de « À prévoir », comme la
   // pastille de la sous-navigation : un seul endroit sait compter les offres.
   if (enAttente)
     taches.push({
@@ -151,6 +181,16 @@ export function vueDuCockpit(jeu: Jeu, calc: Calcul, etat: EtatDuJour): VueCockp
       ],
     },
   };
+}
+
+/** Trois noms au plus, puis le compte du reste : la ligne du cockpit tient sur
+ *  un téléphone, et la liste entière est dans l'inventaire. Les doublons se
+ *  disent une fois — deux boîtes de lentilles sont « lentilles » à la poubelle. */
+export function nomsCourts(types: readonly string[]): string {
+  const uniques = [...new Set(types)];
+  const dits = uniques.slice(0, 3).join(", ");
+  const reste = uniques.length - 3;
+  return reste > 0 ? `${dits} et ${reste} autre${reste > 1 ? "s" : ""}` : dits;
 }
 
 /** Où en est la liste, dit dans l'ordre où on la vit : on coche au magasin,

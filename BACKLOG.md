@@ -4439,7 +4439,7 @@ Les tickets sont groupés par CHANTIER, et un chantier = une branche. Les
 
 ### Le frigo qui oublie — T103 à T105
 
-- [ ] **T103 — Un reste de frigo périmé sort aussi de la liste et du budget.**
+- [x] **T103 — Un reste de frigo périmé sort aussi de la liste et du budget.**
       `Depot.vie` le sort du jeu (« frigo dur ») et le commentaire de
       `stock.vue.ts` dit qu'il « n'est plus là » ; mais `lots()` ne le filtre
       pas, `marque` est vidée pour lui, et `bilanStockage` compte toute la table
@@ -4450,16 +4450,80 @@ Les tickets sont groupés par CHANTIER, et un chantier = une branche. Les
       une tâche de cockpit « N restes ont passé leur date » qui se règle d'un
       seul geste (« c'est jeté »). **Un commentaire juste au-dessus d'un code
       faux, encore une fois.**
-- [ ] **T104 — Un lot dit son âge et sa quantité en mots.** Tout lot cuisiné lit
+
+      **FAIT — `Depot.perime()` EST LA SEULE DÉFINITION DU PÉRIMÉ.** La règle
+      « frigo dur » ne vivait que dans `age()`, privée : seul le chaînage la
+      connaissait. Elle est publique, et le budget (`bilanStockage` compte
+      `depot.initiales` moins les périmés **à aujourd'hui**, pas à dimanche :
+      un reste qui passera jeudi occupe sa place jusqu'à ce qu'on l'ait jeté),
+      l'inventaire (`LotVue.perime`, `Categorie.perimes`, « N à jeter » dans la
+      note du rangement), le cadran « lots » de `semaine.vue.ts` et le cockpit
+      la lisent. La tâche « N restes ont passé leur date » porte les clés à
+      jeter et se règle sur place par « C'est jeté » (`retirerLots`, le
+      `bulkDelete` de « Je n'en ai plus », atomique) — **sans confirmation** :
+      ce qu'elle retire est déjà sorti du jeu.
+
+      **MESURÉ EN PASSANT : LE FIXTURE DE TOUS LES TESTS PORTAIT UN LOT MORT.**
+      L'amorce du catalogue a des lentilles cuites nées le 06/08 qui tiennent
+      4 jours ; au `LUNDI` des tests (17/08) elles sont passées depuis une
+      semaine, et `semaine.vue.test.ts` les comptait dans « 2 lots ». C'est
+      « 1 lot ». Le même fait rend le parcours `restes-passes` possible sans
+      semer la base ni fixer l'horloge : sur une base neuve, ces lentilles sont
+      passées à toute date future. Le test du budget a été vu rouge avant le
+      correctif.
+- [x] **T104 — Un lot dit son âge et sa quantité en mots.** Tout lot cuisiné lit
       « déjà là avant la semaine » (le libellé suit `l.from`, qu'un lot
       journalisé n'a jamais) ; les bandes sortent brutes (`lunchbox`,
       `1-repas`, `2-repas`). Dire « cuisiné il y a 3 j » depuis `born`, et une
       quantité lisible (« 1 repas », « une boîte repas »).
-- [ ] **T105 — « Tout ce qui était au congélo est perdu. »** La coupure de
+
+      **FAIT, ET L'ÂGE N'EST PAS CELUI DE `Depot.vie`.** Mesuré avant d'écrire :
+      `vie` arrondit une différence d'horodatages entre `born` (minuit UTC) et
+      l'heure qu'il est ; passé 14 h à Paris un lot né le jour même compte
+      0,5 j, arrondi à 1 — le plat du soir se serait dit « cuisiné hier ».
+      `joursDepuis` compte en jours de calendrier : « aujourd'hui », « hier »,
+      « il y a 3 j ». Le libellé « cuisiné » est vrai par construction (seules
+      une cuisson et l'amorce du relevé écrivent la table `stock`) et cessera
+      de l'être avec T114. Les bandes sortent en mots dans l'unité de la
+      sortie de T99 : « 2 repas », et `lunchbox` → « une gamelle », le mot que
+      l'app emploie déjà pour le midi qui voyage.
+- [x] **T105 — « Tout ce qui était au congélo est perdu. »** La coupure de
       courant a coûté 19 « Je n'en ai plus », la panne de frigo 36, un par lot.
       Un geste par rangement, derrière une confirmation qui dit combien de lots
       partent. (Le frais acheté qui n'est pas un lot — beurre, crème — reste
       hors de portée : c'est T114.)
+
+      **FAIT, SOUS LA LISTE DU RANGEMENT OUVERT.** `stock.vue.ts::perte()` :
+      frigo et congélo seulement — une panne est une panne de froid, un bouton
+      qui viderait le placard n'aurait d'autre usage que l'erreur. Il prend
+      les lots constatés du rangement, **ceux que la semaine prévoit de manger
+      compris** (ce soir ils sont dans la panne), jamais ce qu'elle projette.
+      La question est posée dans la page et porte le nombre (« Les 12 lots au
+      congélo vont sortir de l'inventaire. ») ; c'est la différence avec
+      « c'est jeté », qui retire des lots déjà morts sans rien demander.
+      « Annuler » rend le rangement entier — la mémoire du retrait est devenue
+      une liste.
+
+#### Ce que ce chantier laisse ouvert
+
+- **L'horloge de vie arrondit un fuseau.** `Depot.vie` compte l'âge entre
+  `born` (minuit UTC) et l'heure qu'il est : passé 14 h à Paris, un lot gagne un
+  jour. T104 l'a contourné pour la phrase (`joursDepuis`), pas pour l'axe ni
+  pour le périmé — une carcasse de deux jours devient « à jeter » l'après-midi
+  du deuxième jour au lieu du lendemain. Le corriger déplace tous les seuils
+  d'un demi-jour ; c'est une décision sur le modèle.
+- **Le budget sort le périmé à aujourd'hui, pas au jour où il passe.** Un reste
+  qui passe jeudi compte jusqu'à dimanche dans `fin`. C'est voulu (il occupe
+  l'étagère tant qu'on ne l'a pas jeté), mais la projection de la semaine
+  surestime donc le frigo du nombre de restes qui vont mourir d'ici là.
+- **« C'est jeté » n'a pas d'annulation.** Le geste est au cockpit, qui n'a pas
+  de mémoire d'écran ; ce qu'il retire est déjà sorti du jeu, d'où le choix.
+  Si quelqu'un jette par erreur, le lot ne revient que par une cuisson.
+- **Le lot ne nomme pas son plat.** `LotStock.origine` porte l'id du plat
+  cuisiné, mais `auModele` ne le transmet pas : « cuisiné il y a 3 j » ne dit
+  pas « (Ratatouille) » comme le fait un lot projeté. Quatre lignes de
+  plomberie (`LotInitial`, `LigneDepot`, `Depot`, `auModele`), laissées pour ne
+  pas élargir le ticket.
 
 ### Ce que le placard EST n'est pas ce qu'il en RESTE — T106 et T107
 

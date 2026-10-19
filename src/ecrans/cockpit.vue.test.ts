@@ -200,3 +200,51 @@ describe("les chiffres de la carte", () => {
     expect(c.some((x) => x.endsWith("de cuisine"))).toBe(true);
   });
 });
+
+/* ═══════════════════ T103 — « c'est jeté », d'un seul geste ═════════════ */
+
+describe("les restes passés", () => {
+  /** Deux boîtes constatées au frigo, nées le 10/08 — passées au 17/08 (la
+   *  carcasse tient 2 jours, les lentilles 4). */
+  const passes = () => {
+    jeu.stock = [
+      { type: "carcasse-volaille", kind: "base", qty: null, qty_band: "1-repas", born: "2026-08-10", location: "frigo", ref: "9" },
+      { type: "lentilles-vertes-cuites", kind: "base", qty: null, qty_band: "2-repas", born: "2026-08-10", location: "frigo", ref: "12" },
+    ];
+  };
+
+  test("ils font UNE tâche, qui porte de quoi les jeter tous", () => {
+    passes();
+    const t = vue().taches.find((x) => x.cle === "perimes");
+    expect(t?.titre).toBe("2 restes ont passé leur date");
+    expect(t?.detail).toContain("carcasse-volaille, lentilles-vertes-cuites");
+    // Le geste ne demande rien de plus que ce que la tâche porte.
+    expect(t?.jeter).toEqual(["9", "12"]);
+  });
+
+  test("un seul se dit au singulier", () => {
+    passes();
+    jeu.stock = jeu.stock.slice(0, 1);
+    expect(vue().taches.find((x) => x.cle === "perimes")?.titre).toBe("Un reste a passé sa date");
+  });
+
+  test("rien de passé, pas de tâche — et pas de « 0 reste »", () => {
+    passes();
+    jeu.stock = jeu.stock.map((l) => ({ ...l, born: "2026-08-16" }));
+    expect(vue().taches.some((x) => x.cle === "perimes")).toBe(false);
+  });
+
+  test("un congelé dépassé n'est pas à jeter : il reste servi", () => {
+    jeu.stock = [
+      { type: "sauce-bolognaise", kind: "base", qty: null, qty_band: "2-repas", born: "2026-01-05", location: "congelo", ref: "7" },
+    ];
+    expect(vue().taches.some((x) => x.cle === "perimes")).toBe(false);
+  });
+
+  test("c'est la seule tâche qui se règle sur place", () => {
+    passes();
+    poser(0, "diner", "lasagnes");
+    const avecGeste = vue().taches.filter((t) => t.jeter);
+    expect(avecGeste.map((t) => t.cle)).toEqual(["perimes"]);
+  });
+});

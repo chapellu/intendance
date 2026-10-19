@@ -13,7 +13,7 @@
 //
 // Port de `apps/proto-shell/comptoir.js` (`ecranCockpit`).
 
-import { jourISO } from "../db";
+import { base, jourISO, retirerLots } from "../db";
 import { useCatalogue, useCourses, useSemaine } from "../db/hooks";
 import { cleGeste, useDrapeau } from "../db/reglages";
 import type { Calcul } from "../model/calcul";
@@ -123,6 +123,37 @@ function carteDuJardin(): CarteFacette {
 /** Une chose qui vous attend. C'est une ANCRE : une tâche qui ne s'ouvre pas
  *  est une plainte, et le pouce n'a pas à chercher l'onglet correspondant. */
 function Ligne({ tache }: { tache: Tache }) {
+  // UNE TÂCHE QUI SE RÈGLE SUR PLACE N'EST PAS UNE ANCRE — T103. Un bouton dans
+  // un lien est un HTML que le navigateur résout à sa façon (le clic part sur
+  // les deux) ; la ligne devient donc un bloc, et le texte reste un lien vers
+  // l'inventaire pour qui veut voir lesquels avant de jeter.
+  const jeter = tache.jeter;
+  if (jeter?.length)
+    return (
+      <div className="co-tache">
+        <span className="p">{tache.facette}</span>
+        <a href={chemin(tache.route)} style={{ flex: 1, textDecoration: "none", color: "inherit" }}>
+          <span className="t" style={{ display: "block" }}>
+            {tache.titre}
+          </span>
+          <span className="d" style={{ display: "block" }}>
+            {tache.detail}
+          </span>
+        </a>
+        {/* PAS DE CONFIRMATION, ET C'EST LA DIFFÉRENCE AVEC « TOUT EST PERDU »
+            (T105). Ce qu'on retire ici est déjà sorti du jeu : rien ne le sert,
+            rien ne le compte. Se tromper coûte une ligne d'inventaire, pas un
+            plat — et une question de plus sur un geste quotidien apprend à
+            répondre « oui » sans lire. */}
+        <button
+          className="btn btn-ghost"
+          style={{ fontSize: 12.5, padding: "2px 8px" }}
+          onClick={() => void retirerLots(base, jeter.map(Number))}
+        >
+          C’est jeté
+        </button>
+      </div>
+    );
   return (
     <a className="co-tache" href={chemin(tache.route)} style={{ textDecoration: "none", color: "inherit" }}>
       <span className={`p${tache.facette === "Jardin" ? " jardin" : ""}`}>{tache.facette}</span>

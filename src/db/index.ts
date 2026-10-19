@@ -5,7 +5,7 @@ export { base, Base, VERSION, schemaDeclare, jourISO, cleCreneau, cleArticle } f
 export type { DecisionCreneau, EtatCourse, LotStock, Reglage } from "./schema";
 export { cleDuCreneau, indexDuCreneau, lireSemaine, hydrater, poser, reglerParts, prevoirGamelle, oublier, toutOublier, decisionsAvant } from "./semaine";
 export { cleDeLArticle, lireCourses, cocher, rentrer, rentrerLesCoches, viderCourses } from "./courses";
-export { lireStock, amorcer, ajouterLot, corrigerLot, retirerLot, reamorcer, auModele, hydraterStock } from "./stock";
+export { lireStock, amorcer, ajouterLot, corrigerLot, retirerLot, retirerLots, reamorcer, auModele, hydraterStock } from "./stock";
 export { reporterLesPoses } from "./report";
 export type { Report } from "./report";
 export { clePlancher, clePlancherDenree, lireDecisions, lirePlanchersDenrees, poserPlancher, poserPlancherDenree, retirerPlancherDenree, validesParmi } from "./planchers";
