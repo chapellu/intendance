@@ -25,6 +25,7 @@
 recipe:
   id: roti-roule-herbes-fenouil
   title: Rôti roulé aux herbes et au fenouil
+  format: piece
   lang: fr
   source:
     author: Marie Chioca

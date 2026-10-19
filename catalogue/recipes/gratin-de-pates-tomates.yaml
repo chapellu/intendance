@@ -5,6 +5,7 @@
 recipe:
   id: gratin-de-pates-tomates
   title: Gratin de pâtes à la tomate
+  format: gratin
   lang: fr
   yields:
     portions_eq: 4

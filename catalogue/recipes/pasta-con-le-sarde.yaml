@@ -8,6 +8,7 @@
 recipe:
   id: pasta-con-le-sarde
   title: Pasta con le sarde à ma façon
+  format: pates
   lang: fr
   source:
     author: Marie Chioca

@@ -23,6 +23,7 @@
 recipe:
   id: croque-monsieur-montagnards
   title: Croque-monsieur montagnards
+  format: tartine
   lang: fr
   source:
     author: Marie Chioca

@@ -249,6 +249,9 @@ export interface Plat {
   ingredients: Ingredient[];
   /** Ce que ce plat est dans un repas. `plat` par défaut, résolu à l'export. */
   role: Role;
+  /** La forme du plat sur la table. Exigée sur tout plat de dîner par le
+   *  vérificateur ; `null` ailleurs (desserts, bases), où elle ne se pose pas. */
+  format: Format | null;
   /** Ce qu'il faut à côté — vide quand la recette ne le dit pas, ce qui n'est
    *  pas la même chose que « rien à ajouter ». */
   avec: Accompagnement[];
@@ -284,6 +287,23 @@ export interface Plat {
  * contredire. Le rôle dit la PLACE dans le repas.
  */
 export type Role = "plat" | "accompagnement" | "entree" | "base" | "boisson";
+
+/**
+ * La FORME que prend un dîner, dans les mots du foyer — 2026-10-18.
+ *
+ * NI LE RÔLE NI LE PROFIL. Le rôle dit la place dans le repas ; `profil` dit
+ * le mode de cuisson (four, mijoté). Une quiche et un gratin sont tous deux
+ * `four`, et c'est pourtant la différence qui compte pour quelqu'un qui choisit
+ * à 15 h ce qu'il sait faire les yeux fermés : « encourager la quiche, la
+ * soupe, le gratin ».
+ *
+ * `piece` : une pièce (viande, poisson) et sa garniture. `galettes` : ce qui
+ * se façonne en portions (burgers, croquettes, falafels). `pizza` : toute pâte
+ * garnie qui n'est pas une tarte (focaccia, chausson, samoussas).
+ */
+export type Format =
+  | "quiche" | "soupe" | "gratin" | "poelee" | "mijote" | "salade" | "omelette"
+  | "pates" | "galettes" | "piece" | "tartine" | "pizza" | "cake" | "terrine";
 
 /**
  * Ce qui se sert À CÔTÉ pour que le plat fasse un repas — le riz et la salade
@@ -588,7 +608,74 @@ export interface Denree {
   usage: Usage | null;
   /** Ce qu'on peut en faire pour qu'elle tienne, acquis ou non. */
   conservations: ConservationDenree[];
+  /** L'id de sa famille de garde (`Catalogue.garde`), ou `null` quand aucune
+   *  ne la nomme — c'est ce qui permet d'afficher le conseil de rangement LÀ
+   *  où la denrée est rangée. */
+  garde: string | null;
   note: string | null;
+}
+
+/**
+ * Une famille de garde : combien tient une matière première bien rangée, et le
+ * geste qui la fait tenir — `conservation.yaml:familles`.
+ *
+ * LA MÊME HORLOGE QUE `Conservation`, D'AUTRES LONGUEURS (Workspace#50) : le
+ * frigo en jours, le congélateur en mois, les conserves en années. Les
+ * méthodes disent ce qu'une transformation fait gagner ; une famille dit ce
+ * que tient ce qu'on range sans le transformer.
+ */
+export interface FamilleDeGarde {
+  id: string;
+  label: string;
+  /** Tient assez pour être « toujours là » — donc porter un plancher. Faux sur
+   *  le frais fragile (salade, viande, herbes), qui reste hors du fond. */
+  fond: boolean;
+  espace: Espace;
+  /** Où et comment la ranger, en quelques mots. */
+  rangement: string;
+  /** La méthode de `conservation` qui relance l'horloge, s'il y en a une. */
+  methode: string | null;
+  /** EN JOURS, pour comparer — le pendant de `fenetre`, qui s'affiche. */
+  fenetreJours: number;
+  /** « 6 semaines », « 2 ans ». */
+  fenetre: string;
+  /** D'où vient la fenêtre. Presque toujours « ordre de grandeur » : un seul
+   *  chiffre est réglementaire (les œufs), et l'écran ne doit pas faire croire
+   *  le contraire. */
+  source: string;
+  /** Le geste, en une phrase qu'on lit debout devant le placard. */
+  conseil: string;
+  ids: string[];
+}
+
+/** Une denrée du fond de roulement : ce qu'on veut avoir, et combien au moins. */
+export interface DenreeDuFond {
+  ingredient: string;
+  /** En UNITÉS D'ACHAT, comme `PlancherDenree.niveau` — ce qu'un œil compte. */
+  minimum: number;
+  /** Ce qu'est une unité : « sachet de 500 g », « boîte de 6 ». */
+  unite: string;
+}
+
+/**
+ * Le fond de roulement — une INTENTION, ni un relevé ni un niveau.
+ *
+ * Le relevé reste `gardeManger` (ce que le placard ÉTAIT le 26/08) et le
+ * niveau reste le rejeu du journal (ce qu'il en RESTE). Le fond dit ce qu'on
+ * VEUT y avoir : c'est lui qui fait exister, comme stock, les lentilles corail
+ * et les surgelés qu'aucun relevé n'avait vus.
+ */
+export interface Fond {
+  date: string | null;
+  denrees: DenreeDuFond[];
+  /** Les dîners que le fond promet sans courses — le vérificateur les tient. */
+  diners: { plat: string; titre: string }[];
+}
+
+/** Le calendrier des saisons : ingrédient → mois (1 = janvier). */
+export interface Saisons {
+  region: string | null;
+  mois: Record<string, number[]>;
 }
 
 export interface GardeManger {
@@ -617,6 +704,10 @@ export interface Catalogue {
   conservation: Conservation[];
   stock: LigneStock[];
   gardeManger: GardeManger;
+  /** Combien tient une matière première, et comment la ranger. */
+  garde: FamilleDeGarde[];
+  fond: Fond;
+  saisons: Saisons;
   provenances: Record<Provenance, string>;
   /** Les provenances qui ne produisent pas de ligne de courses. */
   horsCourses: Provenance[];

@@ -11,6 +11,7 @@
 recipe:
   id: nicoise-petit-epeautre-jar
   title: Niçoise de petit épeautre « in a jar »
+  format: salade
   lang: fr
   source:
     author: Marie Chioca

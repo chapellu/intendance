@@ -5,6 +5,7 @@
 recipe:
   id: salade-pois-chiches-oeufs-mollets
   title: Salade de pois chiches aux œufs mollets et herbes sauvages
+  format: salade
   lang: fr
   source:
     author: Marie Chioca

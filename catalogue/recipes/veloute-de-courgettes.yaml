@@ -5,6 +5,7 @@
 recipe:
   id: veloute-de-courgettes
   title: Velouté de courgettes
+  format: soupe
   lang: fr
   yields:
     portions_eq: 4

@@ -7,6 +7,7 @@
 recipe:
   id: wraps-vegetariens
   title: Wraps végétariens
+  format: tartine
   lang: fr
   source:
     author: Marie Chioca

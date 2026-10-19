@@ -208,11 +208,14 @@ describe("ce que la recherche montre du plat qu'on a nommé", () => {
   });
 
   test("elle rend des cartes entières, prêtes à poser", () => {
+    // DEUX GNOCCHIS DEPUIS LE FOND DE ROULEMENT (2026-10-18) : la version aux
+    // courgettes et celle aux surgelés. Le fait remesuré, pas le test contourné.
     const r = chercher(jeu, jeu.choix, creneau(0, "diner"), "gnocchi");
-    expect(r.total).toBe(1);
-    expect(r.trouvailles[0]!.carte.plat.id).toBe("gnocchis-poelees");
-    expect(r.trouvailles[0]!.ecarts).toEqual([]);
-    expect(entreesDeLaCarte(r.trouvailles[0]!.carte).length).toBeGreaterThan(0);
+    expect(r.total).toBe(2);
+    const t = r.trouvailles.find((x) => x.carte.plat.id === "gnocchis-poelees")!;
+    expect(t).toBeDefined();
+    expect(t.ecarts).toEqual([]);
+    expect(entreesDeLaCarte(t.carte).length).toBeGreaterThan(0);
   });
 
   // LA PROMESSE DU TICKET. Le plat bloqué est TROUVÉ — c'est ce que T78 a

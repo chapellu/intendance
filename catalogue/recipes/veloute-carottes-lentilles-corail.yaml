@@ -1,0 +1,84 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-18 — aucune source
+# extérieure. Velouté de toute l'année, fait avec le fond SEUL.
+#
+# LES LENTILLES QU'ON NE VOIT PAS. Une poignée de lentilles corail cuites avec
+# les carottes disparaît au mixeur : le velouté a la couleur et le goût d'une
+# soupe de carottes, et nourrit comme un plat.
+
+recipe:
+  id: veloute-carottes-lentilles-corail
+  title: Velouté de carottes aux lentilles corail
+  lang: fr
+  format: soupe
+  yields:
+    portions_eq: 6
+  time_min_total: 40
+  active_min: 12
+
+  apports:
+    proteine: legumineuse
+    feculent: legumineuse
+    legumes: [racine, allium]
+    profil: soupe
+    origine: francais
+
+  ingredients:
+    - {id: carottes, name: carottes, qty: 6, unit: pièce}
+    - {id: lentilles-corail, name: lentilles corail, qty: 150, unit: g}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: cumin, name: cumin, qty: 1, unit: c. à c.}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: eau, name: eau, qty: 1.3, unit: l}
+    - {id: bouillon-legumes, name: cube de bouillon de légumes, qty: 1, unit: pièce, seasoning: true}
+    - {id: citron, name: citron, qty: 0.5, unit: pièce}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: rincer
+      action: "Rincer les lentilles corail dans une passoire"
+      needs: []
+      uses: [lentilles-corail]
+      time_min: 2
+      kid: {age_min_months: 30, task: "remuer les lentilles sous l'eau froide"}
+    - id: tailler
+      action: "Carottes en rondelles, oignon émincé"
+      needs: [chop-coarse]
+      uses: [carottes, oignon]
+      time_min: 6
+    - id: suer
+      action: "Faire suer l'oignon à l'huile dans la cocotte avec le cumin"
+      needs: [simmer-large]
+      uses: [huile-olive, cumin]
+      time_min: 4
+    - id: cuire
+      action: "Ajouter carottes, lentilles et eau ; cuire à couvert jusqu'à ce que les carottes s'écrasent"
+      needs: [simmer-large]
+      uses: [eau]
+      time_min: 20
+      attended: false
+    - id: mixer
+      action: "Mixer finement"
+      needs: [blend-smooth]
+      uses: []
+      time_min: 4
+    - id: saler
+      action: "Délayer le cube, saler si besoin et finir d'un trait de citron"
+      astuce: "Le citron réveille la douceur des carottes ; on le met à la fin, cuit il s'éteint."
+      needs: []
+      uses: [bouillon-legumes, sel, citron]
+      time_min: 2
+      seasoning_gate: true
+
+  baby_portion:
+    take: "un petit bol de velouté, avant le cube et le sel"
+    prep: "tiédir"
+    needs: []
+    depuis: [mixer]
+
+  emits:
+    - kind: reste-plat
+      type: veloute-carottes-corail
+      qty_band: 1-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

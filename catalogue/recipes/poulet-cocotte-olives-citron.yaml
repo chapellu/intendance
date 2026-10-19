@@ -24,6 +24,7 @@
 recipe:
   id: poulet-cocotte-olives-citron
   title: Poulet « cocotte » aux olives noires, citron et ail confit
+  format: piece
   lang: fr
   source:
     author: Marie Chioca

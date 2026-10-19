@@ -402,6 +402,7 @@ const denreeTest = (p: Partial<Denree> = {}): Denree => ({
   nature: "autre",
   usage: null,
   conservations: [],
+  garde: null,
   note: null,
   ...p,
 });

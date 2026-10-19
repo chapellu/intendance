@@ -8,6 +8,7 @@
 recipe:
   id: navarin-collier-legumes
   title: Navarin de collier aux légumes al dente
+  format: mijote
   lang: fr
   source:
     author: Marie Chioca

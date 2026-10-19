@@ -5,6 +5,7 @@
 recipe:
   id: falafels-aux-herbes
   title: Falafels poêlés aux herbes
+  format: galettes
   lang: fr
   source:
     author: Marie Chioca

@@ -10,6 +10,7 @@
 recipe:
   id: soupe-orge-petits-pois
   title: Soupe d'orge et de petits pois
+  format: soupe
   lang: fr
   source:
     author: Marie Chioca

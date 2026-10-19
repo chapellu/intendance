@@ -22,6 +22,7 @@
 recipe:
   id: salade-orge-thon
   title: Salade d'orge sympa
+  format: salade
   lang: fr
   source:
     author: Marie Chioca

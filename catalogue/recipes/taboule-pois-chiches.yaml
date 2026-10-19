@@ -1,0 +1,70 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-18 — aucune source
+# extérieure. Salade complète d'été : le fond, plus DES tomates.
+#
+# LE DÎNER QUI NE CHAUFFE PAS LA CUISINE. Une bouilloire, un saladier, et la
+# semoule gonfle dans le citron pendant qu'on coupe les tomates.
+
+recipe:
+  id: taboule-pois-chiches
+  title: Taboulé de semoule aux pois chiches et tomates
+  lang: fr
+  format: salade
+  yields:
+    portions_eq: 5
+  time_min_total: 40
+  active_min: 15
+
+  apports:
+    proteine: legumineuse
+    feculent: semoule
+    legumes: [solanacee, allium]
+    profil: cru
+    origine: libanais
+
+  ingredients:
+    - {id: semoule, name: semoule de blé moyenne, qty: 250, unit: g}
+    - {id: citron, name: citrons, qty: 2, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 5, unit: c. à s.}
+    - {id: tomates, name: tomates, qty: 4, unit: pièce}
+    - {id: oignon, name: oignon, qty: 0.5, unit: pièce}
+    - {id: pois-chiches, name: "pois chiches cuits, en bocal", qty: 400, unit: g}
+    - {id: cumin, name: cumin, qty: 1, unit: pincée}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: semoule
+      action: "Semoule dans un saladier, avec le jus des citrons, l'huile et le même volume d'eau bouillante ; couvrir"
+      needs: []
+      uses: [semoule, citron, huile-olive]
+      time_min: 5
+    - id: tailler
+      action: "Tomates en petits dés, oignon très finement émincé"
+      astuce: "L'oignon haché fin se perd dans la semoule ; en lamelles, les enfants le trient."
+      needs: [chop-coarse]
+      uses: [tomates, oignon]
+      time_min: 8
+    - id: melanger
+      action: "Égrener la semoule à la fourchette, ajouter tomates, pois chiches rincés et cumin, saler, poivrer"
+      needs: []
+      uses: [pois-chiches, cumin, sel, poivre]
+      time_min: 4
+      kid: {age_min_months: 30, task: "rincer les pois chiches et les verser dans le saladier"}
+    - id: reposer
+      action: "Laisser reposer au frais avant de servir"
+      needs: []
+      uses: []
+      time_min: 20
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: taboule
+      qty_band: lunchbox
+      keeps: {frigo_days: 2}
+      note: "le plat de déjeuner idéal : il se mange froid, dans sa boîte"
+
+  plan_b:
+    - drop: reposer
+      saves_min: 20
+      effect: "servi tiède, aussi bon — seulement moins frais"

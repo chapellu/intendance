@@ -27,6 +27,7 @@ import anticipation as an
 import catalogue
 import chainage as ch
 import compile as rc  # masque le `compile` natif dans ce module seulement
+import fond as fd
 import garde_manger as gm
 
 HERE = Path(__file__).parent
@@ -65,6 +66,10 @@ def main():
     rules = yaml.safe_load((HERE / "rules.yaml").read_text())
     pantry = gm.charger(HERE / "garde-manger.yaml")
     _zones = {z["id"]: z for z in pantry["zones"]}
+    fond = fd.charger_fond(HERE / "fond.yaml")
+    saisons = fd.charger_saisons(HERE / "saisons.yaml")
+    _garde = fd.famille_par_id(conserv)
+    _alias = rayons.get("aliases") or {}
 
     # Tout ce que le foyer sait faire — l'union des capacités de ses outils et
     # des chaînes de dégradation. C'est ce qui décide si un bocal est une place
@@ -140,6 +145,12 @@ def main():
             # plancher (#43) et pas sur la planification. C'est un no-op DÉCLARÉ
             # — sans ce commentaire, le prochain lecteur le branchera au score en
             # croyant bien faire.
+            #
+            # LA SAISON QUI PEUT SERVIR EST AILLEURS (2026-10-18). L'utilisateur
+            # a redemandé d'encourager les légumes de saison ; la réponse est
+            # `saisons.yaml`, une saison par INGRÉDIENT, qui note aussi les plats
+            # du foyer. Celle-ci reste ce qu'elle est : où un livre range sa
+            # recette.
             "source": (lambda s: None if not s else {
                 "auteur": s.get("author"),
                 "ouvrage": s.get("work"),
@@ -169,6 +180,10 @@ def main():
             # dans l'app : 121 recettes sur 138 ne portent pas le champ, et le
             # chargeur doit lire une valeur, pas deviner une absence.
             "role": r.get("role", "plat"),
+            # LE FORMAT — la forme du plat sur la table (quiche, soupe,
+            # gratin…). `None` hors des dîners : le vérificateur ne l'exige que
+            # là, et un dessert n'a pas à se faire inventer une forme.
+            "format": r.get("format"),
             # L'ASSIETTE — ce qui se sert À CÔTÉ pour que ce plat soit un
             # repas. Même forme qu'un ingrédient parce que c'est le même
             # voyage : mis à l'échelle du foyer, puis au panier. Sans `base`
@@ -405,6 +420,13 @@ def main():
                  # un nœud de compétence qu'on ne possède pas n'est pas une
                  # erreur à taire, c'est ce qu'il faudrait acquérir.
                  "conservations": gm.conservations(d, conserv["methodes"], capacites),
+                 # LA FAMILLE DE GARDE, POUR QUE LE CONSEIL S'AFFICHE LÀ OÙ LA
+                 # DENRÉE EST RANGÉE. L'id seulement : la famille elle-même sort
+                 # une fois, dans `garde`, et cinquante copies du même conseil
+                 # finiraient par ne plus dire la même chose. `None` quand
+                 # aucune famille ne la nomme — l'écran se tait.
+                 "garde": (_garde.get(_alias.get(d["ingredient"], d["ingredient"]))
+                           or {}).get("id"),
                  "note": d.get("note")}
                 for d in pantry["denrees"]
             ],
@@ -417,6 +439,18 @@ def main():
             # données mentirait le jour où on déplace le sachet sans l'effacer.
             "alertes": gm.alertes_rangement(pantry),
         },
+        # LA GARDE DES DENRÉES — combien une matière première tient, rangée
+        # comme il faut, et le geste qui la fait tenir. La même horloge que
+        # `conservation` juste au-dessus (Workspace#50), pour ce qu'on range
+        # au lieu de le transformer. Voir `conservation.yaml:familles`.
+        "garde": fd.exporter_familles(conserv),
+        # LE FOND DE ROULEMENT — ce qu'on veut toujours avoir, en unités
+        # d'achat. Une intention, pas un relevé : le relevé reste
+        # `gardeManger`, le niveau reste le rejeu du journal.
+        "fond": fd.exporter_fond(fond),
+        # LE CALENDRIER DES SAISONS, par ingrédient. Ne pilote rien ici : c'est
+        # la donnée du moteur de suggestion, pas un poids caché de l'export.
+        "saisons": saisons,
         # Une seule table de libellés pour les deux modèles : le Python et sa
         # transcription JS ne peuvent pas diverger sur ce que « à cuisiner
         # d'avance » veut dire.

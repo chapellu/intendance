@@ -1,0 +1,84 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-18 — aucune source
+# extérieure. Neuvième dîner du fond de roulement.
+#
+# LE CITRON, PAS LE VINAIGRE. Le fond tient deux citrons ; le vinaigre, lui,
+# est au rayon épicerie de l'app et non au placard. Ce dîner reste donc faisable
+# avec le fond seul, ce que le vérificateur exige des dix.
+
+recipe:
+  id: salade-tiede-lentilles-thon
+  title: Salade tiède de lentilles, carottes et thon
+  lang: fr
+  format: salade
+  yields:
+    portions_eq: 5
+  time_min_total: 40
+  active_min: 12
+
+  apports:
+    proteine: legumineuse
+    feculent: legumineuse
+    legumes: [racine, allium]
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: lentilles-seches, name: lentilles vertes sèches, qty: 300, unit: g}
+    - {id: carottes, name: carottes, qty: 3, unit: pièce}
+    - {id: oignon, name: oignon, qty: 0.5, unit: pièce}
+    - {id: thon-boite, name: thon au naturel, qty: 280, unit: g}
+    - {id: citron, name: citron, qty: 1, unit: pièce}
+    - {id: moutarde, name: moutarde, qty: 1, unit: c. à c.}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: laurier, name: feuille de laurier, qty: 1, unit: pièce}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: rincer
+      action: "Rincer les lentilles dans une passoire"
+      needs: []
+      uses: [lentilles-seches]
+      time_min: 2
+      kid: {age_min_months: 30, task: "rincer les lentilles et chercher les petits cailloux"}
+    - id: cuire
+      action: "Les cuire départ eau froide avec le laurier, à frémissement et sans saler"
+      astuce: "Le sel au début durcit la peau : on assaisonne à la vinaigrette."
+      needs: [simmer]
+      uses: [laurier]
+      time_min: 25
+      attended: false
+    - id: carottes
+      action: "Pendant ce temps, carottes en rondelles, cuites à la vapeur"
+      needs: [steam]
+      uses: [carottes]
+      time_min: 12
+      parallel_with: cuire
+    - id: vinaigrette
+      action: "Mélanger jus de citron, moutarde, huile, sel et poivre, puis y émincer l'oignon très finement"
+      astuce: "Cinq minutes dans le citron adoucissent l'oignon cru : les enfants ne le sentent presque plus."
+      needs: []
+      uses: [citron, moutarde, huile-olive, oignon, sel, poivre]
+      time_min: 5
+      seasoning_gate: true
+    - id: melanger
+      action: "Égoutter les lentilles, les mêler tièdes à la vinaigrette avec les carottes, émietter le thon dessus"
+      astuce: "Tièdes, elles boivent la vinaigrette ; froides, elles la laissent au fond du saladier."
+      needs: []
+      uses: [thon-boite]
+      time_min: 4
+
+  baby_portion:
+    take: "3 c. à s. de lentilles et quelques rondelles de carottes, avant la vinaigrette"
+    prep: "écraser avec un peu d'eau de cuisson"
+    needs: []
+    depuis: [cuire, carottes]
+
+  emits:
+    - kind: reste-plat
+      type: salade-lentilles-thon
+      qty_band: lunchbox
+      keeps: {frigo_days: 2}
+      note: "voyage bien dans une boîte pour le déjeuner"
+
+  plan_b: []

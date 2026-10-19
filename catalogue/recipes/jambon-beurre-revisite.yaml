@@ -9,6 +9,7 @@
 recipe:
   id: jambon-beurre-revisite
   title: « Jambon-beurre » revisité
+  format: tartine
   lang: fr
   source:
     author: Marie Chioca

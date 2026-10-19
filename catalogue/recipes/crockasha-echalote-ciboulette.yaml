@@ -5,6 +5,7 @@
 recipe:
   id: crockasha-echalote-ciboulette
   title: Croc'kasha à l'échalote et à la ciboulette
+  format: galettes
   lang: fr
   source:
     author: Marie Chioca

@@ -10,6 +10,7 @@
 recipe:
   id: roti-bouillon-herbes
   title: Rôti au bouillon d'herbes printanières
+  format: piece
   lang: fr
   source:
     author: Marie Chioca

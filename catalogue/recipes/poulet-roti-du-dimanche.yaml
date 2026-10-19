@@ -13,6 +13,7 @@
 recipe:
   id: poulet-roti-du-dimanche
   title: Poulet rôti du dimanche (souche)
+  format: piece
   lang: fr
   source:
     author: Marie Chioca

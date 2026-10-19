@@ -10,6 +10,7 @@
 recipe:
   id: houmous-et-compagnie
   title: Houmous et compagnie
+  format: tartine
   lang: fr
   source:
     author: Marie Chioca

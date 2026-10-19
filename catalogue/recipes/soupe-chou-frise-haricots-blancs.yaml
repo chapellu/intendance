@@ -1,0 +1,92 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-18 — aucune source
+# extérieure. Soupe d'hiver : le fond, plus UN chou frisé.
+#
+# UNE SOUPE PAYSANNE ÉPAISSE, de celles qui font un repas entier : haricots,
+# pommes de terre, carottes et chou, cuits longtemps à petit feu. Le chou
+# frisé est de saison quand plus rien d'autre ne pousse.
+
+recipe:
+  id: soupe-chou-frise-haricots-blancs
+  title: Soupe de chou frisé aux haricots blancs
+  lang: fr
+  format: soupe
+  yields:
+    portions_eq: 6
+  time_min_total: 90        # hors trempage, lancé la veille
+  active_min: 15
+
+  apports:
+    proteine: legumineuse
+    feculent: pommes-de-terre
+    legumes: [crucifere, racine, allium]
+    profil: soupe
+    origine: francais
+
+  ingredients:
+    - {id: haricots-blancs, name: haricots blancs secs, qty: 250, unit: g}
+    - {id: chou-frise, name: chou frisé, qty: 0.5, unit: pièce}
+    - {id: pomme-de-terre, name: pommes de terre, qty: 3, unit: pièce}
+    - {id: carottes, name: carottes, qty: 2, unit: pièce}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: ail, name: ail, qty: 2, unit: gousse}
+    - {id: laurier, name: feuille de laurier, qty: 1, unit: pièce}
+    - {id: thym, name: thym, qty: 1, unit: c. à c.}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: eau, name: eau, qty: 2, unit: l}
+    - {id: bouillon-legumes, name: cube de bouillon de légumes, qty: 1, unit: pièce, seasoning: true}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: tremper
+      action: "Couvrir les haricots blancs de trois fois leur volume d'eau froide"
+      needs: []
+      uses: [haricots-blancs]
+      time_min: 2
+      attended: false
+      attente_min: 720
+      attente_raison: "trempage d'une nuit, à lancer la veille au soir"
+      kid: {age_min_months: 24, task: "verser les haricots dans le saladier d'eau"}
+    - id: bouillir
+      action: "Égoutter, couvrir d'eau fraîche dans la cocotte avec le laurier, porter à gros bouillons 10 minutes"
+      needs: [simmer-large]
+      uses: [eau, laurier]
+      time_min: 15
+    - id: cuire
+      action: "Baisser le feu et cuire à frémissement, à couvert"
+      needs: [simmer-large]
+      uses: []
+      time_min: 40
+      attended: false
+    - id: tailler
+      action: "Pendant ce temps : chou émincé sans ses grosses côtes, pommes de terre et carottes en dés, oignon et ail émincés"
+      needs: [chop-coarse]
+      uses: [chou-frise, pomme-de-terre, carottes, oignon, ail]
+      time_min: 12
+      parallel_with: cuire
+    - id: legumes
+      action: "Ajouter les légumes, le thym et l'huile ; cuire encore à couvert jusqu'à ce que tout soit fondant"
+      needs: [simmer-large]
+      uses: [thym, huile-olive]
+      time_min: 30
+      attended: false
+    - id: saler
+      action: "Retirer le laurier, délayer le cube, saler si besoin et poivrer"
+      needs: []
+      uses: [bouillon-legumes, sel, poivre]
+      time_min: 2
+      seasoning_gate: true
+
+  baby_portion:
+    take: "une louche de légumes et de haricots, avant le cube et le sel"
+    prep: "mixer"
+    needs: [blend-smooth]
+    depuis: [legumes]
+
+  emits:
+    - kind: reste-plat
+      type: soupe-chou-haricots
+      qty_band: 1-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

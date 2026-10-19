@@ -8,6 +8,7 @@
 recipe:
   id: tartines-fromage-vegetal
   title: Tartines de « fromage » végétal
+  format: tartine
   lang: fr
   source:
     author: Marie Chioca

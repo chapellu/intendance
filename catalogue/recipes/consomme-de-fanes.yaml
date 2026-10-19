@@ -15,6 +15,7 @@
 recipe:
   id: consomme-de-fanes
   title: Consommé de fanes
+  format: soupe
   lang: fr
   source:
     author: Marie Chioca

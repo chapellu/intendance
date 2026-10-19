@@ -22,6 +22,7 @@
 recipes:
   - id: sauce-bolognaise
     title: Sauce bolognaise
+    format: mijote
     yields: {portions_eq: 6}
     time_min_total: 60
     apports:
@@ -87,6 +88,7 @@ recipes:
 
   - id: pates-bolognaise
     title: Pâtes à la bolognaise
+    format: pates
     yields: {portions_eq: 4}
     time_min_total: 15
     apports:
@@ -139,6 +141,7 @@ recipes:
         time_min: 1
   - id: lasagnes
     title: Lasagnes
+    format: gratin
     yields: {portions_eq: 6}
     time_min_total: 50
     apports:
@@ -198,6 +201,7 @@ recipes:
 
   - id: gnocchis-poelees
     title: Gnocchis poêlés aux légumes
+    format: poelee
     yields: {portions_eq: 4}
     time_min_total: 25
     apports:
@@ -238,6 +242,7 @@ recipes:
 
   - id: poulet-roti
     title: Poulet rôti et pommes de terre
+    format: piece
     yields: {portions_eq: 6}
     # Bâti sur UN poulet entier : ce lot ne se cuisine qu'en multiples
     # entiers. Rien ne le devine — « 1 pièce » qualifie aussi un oignon.
@@ -301,6 +306,7 @@ recipes:
 
   - id: fajitas-poulet
     title: Fajitas au poulet
+    format: tartine
     yields: {portions_eq: 4}
     time_min_total: 25
     apports:
@@ -357,6 +363,7 @@ recipes:
         time_min: 3
   - id: soupe-de-poule
     title: Soupe de poule aux vermicelles
+    format: soupe
     yields: {portions_eq: 4}
     time_min_total: 45
     apports:
@@ -412,6 +419,7 @@ recipes:
         time_min: 4
   - id: curry-pois-chiches
     title: Curry de pois chiches au lait de coco
+    format: mijote
     yields: {portions_eq: 4}
     time_min_total: 30
     apports:
@@ -467,6 +475,7 @@ recipes:
 
   - id: saumon-riz-brocoli
     title: Pavé de saumon, riz et brocoli
+    format: piece
     yields: {portions_eq: 4}
     time_min_total: 25
     apports:
@@ -510,6 +519,7 @@ recipes:
 
   - id: quiche-poireaux
     title: Quiche aux poireaux
+    format: quiche
     yields: {portions_eq: 6}
     time_min_total: 55
     apports:
@@ -568,6 +578,7 @@ recipes:
 
   - id: chili-sin-carne
     title: Chili sin carne
+    format: mijote
     yields: {portions_eq: 6}
     time_min_total: 40
     apports:
@@ -618,6 +629,7 @@ recipes:
 
   - id: gratin-courgettes-riz
     title: Gratin de courgettes au riz
+    format: gratin
     yields: {portions_eq: 4}
     time_min_total: 50
     apports:
@@ -669,6 +681,7 @@ recipes:
 
   - id: salade-lentilles-feta
     title: Salade de lentilles à la feta
+    format: salade
     yields: {portions_eq: 4}
     time_min_total: 15
     apports:
@@ -717,6 +730,7 @@ recipes:
         time_min: 2
   - id: croque-monsieur-salade
     title: Croque-monsieur et salade verte
+    format: tartine
     yields: {portions_eq: 4}
     time_min_total: 20
     apports:
@@ -758,6 +772,7 @@ recipes:
 
   - id: tarte-tomates-moutarde
     title: Tarte tomates-moutarde
+    format: quiche
     yields: {portions_eq: 4}
     time_min_total: 45
     apports:

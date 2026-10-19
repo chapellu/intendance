@@ -7,6 +7,7 @@
 recipe:
   id: crumble-courgettes
   title: Crumble aux courgettes
+  format: gratin
   lang: fr
   source:
     author: Marie Chioca

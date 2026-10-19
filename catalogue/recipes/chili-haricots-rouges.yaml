@@ -1,0 +1,117 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-18 — aucune source
+# extérieure. Sixième dîner du fond de roulement.
+#
+# ⚠ SÉCURITÉ — LES HARICOTS ROUGES CRUS SONT TOXIQUES. Ils portent une lectine
+# (la phytohémagglutinine) que seule une VRAIE ÉBULLITION détruit : dix minutes
+# à gros bouillons, après trempage. Un frémissement, une mijoteuse ou une
+# cuisson trop douce ne suffisent pas, et peuvent même aggraver les choses en
+# chauffant sans détruire. C'est pour ça que `bouillir` est une étape à part,
+# surveillée, et non une ligne noyée dans le mijotage.
+#
+# NE REMPLACE PAS `chili-sin-carne` : celui-là part de haricots déjà cuits et
+# d'un poivron du primeur. Celui-ci part du sachet sec du fond, et ne demande
+# rien d'autre — au prix d'un trempage lancé la veille au soir.
+
+recipe:
+  id: chili-haricots-rouges
+  title: Chili de haricots rouges au riz
+  lang: fr
+  format: mijote
+  yields:
+    portions_eq: 5
+  time_min_total: 80        # hors trempage, qui se lance la veille
+  active_min: 22
+
+  apports:
+    proteine: legumineuse
+    feculent: riz
+    legumes: [solanacee, racine, allium]
+    profil: mijote
+    origine: mexicain
+
+  ingredients:
+    - {id: haricots-rouges, name: haricots rouges secs, qty: 300, unit: g}
+    - {id: tomates-pelees, name: tomates pelées en conserve, qty: 800, unit: g}
+    - {id: concentre-tomate, name: concentré de tomate, qty: 1, unit: c. à s.}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: ail, name: ail, qty: 2, unit: gousse}
+    - {id: carottes, name: carottes, qty: 2, unit: pièce}
+    - {id: mais, name: maïs en conserve, qty: 140, unit: g}
+    - {id: cumin, name: cumin, qty: 2, unit: c. à c.}
+    - {id: paprika, name: paprika doux, qty: 1, unit: c. à c.}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: riz, name: riz, qty: 250, unit: g}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+
+  steps:
+    - id: tremper
+      action: "Couvrir les haricots rouges de trois fois leur volume d'eau froide"
+      needs: []
+      uses: [haricots-rouges]
+      time_min: 2
+      attended: false
+      attente_min: 720
+      attente_raison: "trempage d'une nuit, à lancer la veille au soir"
+      kid: {age_min_months: 24, task: "verser les haricots dans le saladier d'eau"}
+    - id: bouillir
+      action: "Égoutter, couvrir d'eau fraîche, porter à gros bouillons et les y tenir 10 minutes"
+      astuce: "Non négociable : seule une vraie ébullition rend les haricots rouges sans danger. Un frémissement n'y suffit pas."
+      needs: [simmer-large]
+      uses: []
+      time_min: 15
+    - id: cuire
+      action: "Baisser le feu et cuire à frémissement, à couvert, jusqu'à ce qu'ils s'écrasent sous la langue"
+      astuce: "Sans sel dans l'eau : on sale le chili à la fin."
+      needs: [simmer-large]
+      uses: []
+      time_min: 50
+      attended: false
+    - id: tailler
+      action: "Pendant ce temps : oignon, ail et carottes en petits dés"
+      needs: [chop-coarse]
+      uses: [oignon, ail, carottes]
+      time_min: 8
+      parallel_with: cuire
+    - id: sauce
+      action: "À la sauteuse, faire revenir les dés à l'huile avec le cumin et le paprika, puis ajouter tomates et concentré"
+      astuce: "À découvert : la sauce doit compoter et épaissir pendant que les haricots finissent."
+      needs: [pan-fry, simmer]
+      uses: [huile-olive, cumin, paprika, tomates-pelees, concentre-tomate]
+      time_min: 25
+      attended: false
+      parallel_with: cuire
+    - id: riz
+      action: "Cuire le riz"
+      needs: [boil]
+      uses: [riz]
+      time_min: 15
+      attended: false
+      charge_partielle: true
+      parallel_with: cuire
+    - id: assembler
+      action: "Égoutter les haricots, les verser dans la sauce avec le maïs, et laisser 10 minutes à petit feu"
+      needs: [simmer]
+      uses: [mais]
+      time_min: 10
+      attended: false
+    - id: saler
+      action: "Goûter et saler"
+      needs: []
+      uses: [sel]
+      time_min: 2
+      seasoning_gate: true
+
+  baby_portion:
+    take: "2 c. à s. de chili, avant salage"
+    prep: "écraser finement : la peau des haricots passe mal à cet âge"
+    needs: []
+    depuis: [assembler]
+
+  emits:
+    - kind: reste-plat
+      type: chili-haricots-rouges
+      qty_band: 1-repas
+      keeps: {frigo_days: 3, congelo: true}
+      note: "meilleur le lendemain ; deux boîtes de 0,8 L"
+
+  plan_b: []
