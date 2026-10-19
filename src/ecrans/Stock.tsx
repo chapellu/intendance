@@ -39,7 +39,7 @@ import { releverZone } from "../db/journal";
 import { poserPlancher, poserPlancherDenree, retirerPlancherDenree } from "../db/planchers";
 import type { Calcul } from "../model/calcul";
 import type { Jeu } from "../model/jeu";
-import type { Confiance, EtatIngredient, Rejeu } from "../model/journal";
+import type { Confiance, Rejeu } from "../model/journal";
 import type { Espace } from "../model/types";
 import { JOURS_VISIBLES } from "../nav/jours";
 import { chemin } from "../nav/routes";
@@ -49,12 +49,15 @@ import { Icone, iconeEspace } from "../ui/icones";
 import { fmt } from "../ui/format";
 import {
   baisserPlancher,
+  resteAuPlacard,
   vueDeLInventaire,
   vueDesPlanchers,
   vueDesPlanchersDenrees,
   type LotVue,
+  type MesureZone,
   type PlanchersDenreesVue,
   type PlanchersVue,
+  type ResteAuPlacard,
   type ZoneVue,
 } from "./stock.vue";
 
@@ -83,6 +86,12 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
   // LE PLACARD REJOUÉ. Rien de ce qu'il rend n'existe en base : c'est l'amorce
   // du catalogue plus le journal, et c'est là que T25 devient visible à l'œil.
   const placard = usePlacard(jeu.catalogue);
+  // CE QU'IL EN RESTE, en une phrase — T106. `null` tant que le journal n'a pas
+  // répondu : la phrase se tait plutôt que de dire le relevé du 26/08 une frame.
+  const reste = useMemo(
+    () => (placard ? resteAuPlacard(jeu.catalogue, placard) : null),
+    [jeu.catalogue, placard],
+  );
 
   // LES PLANCHERS — T34 à T38. Le journal dit ce qui a été cuisiné, donc ce qui
   // se propose ; les décisions disent ce qu'un doigt en a fait. `null` tant que
@@ -270,7 +279,12 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
         </span>
       </div>
 
-      <GardeManger vue={vue.gardeManger} placard={placard} planchers={planchersDenrees} />
+      <GardeManger
+        vue={vue.gardeManger}
+        placard={placard}
+        reste={reste}
+        planchers={planchersDenrees}
+      />
     </Corps>
   );
 }
@@ -480,10 +494,12 @@ function Planchers({ vue }: { vue: PlanchersVue | null }) {
 function GardeManger({
   vue,
   placard,
+  reste,
   planchers,
 }: {
   vue: ReturnType<typeof vueDeLInventaire>["gardeManger"];
   placard: Rejeu | null;
+  reste: ResteAuPlacard | null;
   planchers: PlanchersDenreesVue | null;
 }) {
   if (!vue.zones.length) return null;
@@ -492,10 +508,19 @@ function GardeManger({
       <div className="co-kicker" style={{ margin: "var(--space-4) var(--space-1) var(--space-2)" }}>
         Le garde-manger
       </div>
-      <div className="co-note" style={{ margin: "0 var(--space-1) var(--space-2)" }}>
-        {vue.denrees} denrées dans {vue.zones.length} rangements
-        {vue.volume ? `, ${vue.volume} mesurés` : ""}. {vue.pesees} sont pesées, pour {vue.poids}.
-      </div>
+      {/* CE QU'IL EN RESTE, PUIS CE QU'IL EST — T106. La phrase disait « 53
+          denrées … 16 kg » : c'était le relevé du 26/08, lu comme l'état du
+          placard, et un placard relevé vide la gardait mot pour mot. Le chiffre
+          vient maintenant du rejeu, et le relevé est nommé comme tel : c'est
+          lui qui donne le « sur combien ». */}
+      {reste ? (
+        <div className="co-note" style={{ margin: "0 var(--space-1) var(--space-2)" }}>
+          {reste.restent} des {reste.relevees} denrées du relevé
+          {reste.releve ? ` du ${reste.releve}` : ""} sont encore là
+          {reste.pesees ? `, dont ${reste.pesees} pesées pour ${reste.poids}` : ""}.{" "}
+          {vue.zones.length} rangements{vue.volume ? `, ${vue.volume} mesurés` : ""}.
+        </div>
+      ) : null}
 
       {/* UNE ALERTE PAR LIGNE, PARCE QU'UNE ALERTE EST UN GESTE. Enfilées avec
           des points médians elles formaient un pavé de sept lignes qu'on ne lit
@@ -562,7 +587,13 @@ function GardeManger({
       <PlanchersDenrees vue={planchers} />
 
       {vue.zones.map((z) => (
-        <Zone key={z.id} z={z} placard={placard} />
+        <Zone
+          key={z.id}
+          z={z}
+          placard={placard}
+          dedans={reste?.parZone.get(z.id) ?? null}
+          poids={reste?.poidsParZone.get(z.id) ?? ""}
+        />
       ))}
 
       <div className="co-encart" style={{ marginTop: "var(--space-2)" }}>
@@ -740,7 +771,20 @@ const MOT_CONFIANCE: Record<Confiance, string> = {
  * tout le reste n'y est plus. C'est le seul geste capable de dire « il n'y en a
  * plus » sans énumérer les absents.
  */
-function Zone({ z, placard }: { z: ZoneVue; placard: Rejeu | null }) {
+function Zone({
+  z,
+  placard,
+  dedans,
+  poids,
+}: {
+  z: ZoneVue;
+  placard: Rejeu | null;
+  /** Ce qui reste DANS cette zone, par ingrédient — `null` tant que le journal
+   *  n'a pas répondu. Voir `parZoneDu`. */
+  dedans: ReadonlyMap<string, MesureZone> | null;
+  /** Le poids de ce qui y reste, pas celui du relevé. */
+  poids: string;
+}) {
   const [releve, setReleve] = useState<Map<string, number> | null>(null);
 
   const etatDe = (ing: string) => placard?.parIngredient.get(ing) ?? null;
@@ -778,7 +822,7 @@ function Zone({ z, placard }: { z: ZoneVue; placard: Rejeu | null }) {
       <div className="co-note">
         {z.cotes}
         {z.ambiance ? ` · ${z.ambiance}` : ""}
-        {z.poids ? ` · ${z.poids}` : ""}
+        {poids ? ` · ${poids}` : ""}
       </div>
 
       {releve ? (
@@ -827,9 +871,16 @@ function Zone({ z, placard }: { z: ZoneVue; placard: Rejeu | null }) {
             Valider le relevé — ce qui est à 0 n’y est plus
           </button>
         </>
-      ) : z.denrees.length ? (
-        z.denrees.map((d) => {
+      ) : !dedans ? null : z.denrees.some((d) => dedans.has(d.ingredient)) ? (
+        // CE QUI RESTE ICI, ET RIEN D'AUTRE — T107. La ligne retombait sur
+        // `d.quantite` quand le rejeu ne portait plus l'ingrédient : la zone
+        // qu'on venait de déclarer vide relisait son contenu du 26/08. Le
+        // relevé du catalogue dit ce que la zone EST — c'est la liste que
+        // l'éditeur ouvre, pour qu'on puisse y remettre ce qui revient — pas
+        // ce qu'il en reste.
+        z.denrees.filter((d) => dedans.has(d.ingredient)).map((d) => {
           const e = etatDe(d.ingredient);
+          const m = dedans.get(d.ingredient)!;
           return (
             <div key={d.cle} className="co-lot">
               <span style={{ flex: 1 }}>
@@ -845,7 +896,7 @@ function Zone({ z, placard }: { z: ZoneVue; placard: Rejeu | null }) {
                 {e?.vuLe ? <div className="ou">vu le {e.vuLe}</div> : null}
               </span>
               <span>
-                <div className="q">{e ? quantiteDite(e) : d.quantite}</div>
+                <div className="q">{quantiteDite(m)}</div>
                 <div className={`src ${e && e.confiance !== "sur" ? "estime" : ""}`}>
                   {e ? MOT_CONFIANCE[e.confiance] : d.etat}
                 </div>
@@ -862,7 +913,7 @@ function Zone({ z, placard }: { z: ZoneVue; placard: Rejeu | null }) {
 
 /** Ce qu'on sait dire d'un ingrédient rejoué : des grammes quand tout est
  *  chiffré, un compte sinon. « 1 » est une information, pas un tiret. */
-function quantiteDite(e: EtatIngredient): string {
+function quantiteDite(e: MesureZone): string {
   if (e.grammes == null) return `${e.unites}`;
   return e.grammes >= 1000 ? `${fmt(e.grammes / 1000)} kg` : `${fmt(e.grammes)} g`;
 }

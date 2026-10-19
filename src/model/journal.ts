@@ -774,7 +774,6 @@ export function rejouer(
       : 0;
     const jours = s.vuLe ? joursEntre(s.vuLe, aujourdhui) : 0;
     const d = s.vuLe === null ? Number.POSITIVE_INFINITY : doute(s.depuisVu, derive, jours);
-    const chiffre = l.every((x) => poidsUnite(x) != null);
     return {
       ingredient: id,
       lots: l.map(cloner),
@@ -783,10 +782,7 @@ export function rejouer(
       vuLe: s.vuLe,
       depuisVu: s.depuisVu,
       derive,
-      grammes: chiffre
-        ? l.reduce((g, x) => g + (x.entame ?? 0) + x.unites * (poidsUnite(x) ?? 0), 0)
-        : null,
-      unites: l.reduce((n, x) => n + x.unites + (x.entame != null ? 1 : 0), 0),
+      ...mesurer(l),
     };
   };
 
@@ -801,6 +797,25 @@ export function rejouer(
     if (s.vuLe !== null && !parIngredient.has(id)) vus.set(id, etatDe(id, []));
 
   return { parIngredient, vus, retraits };
+}
+
+/**
+ * Ce que pèse et compte une poignée de lots — la mesure d'`EtatIngredient`.
+ *
+ * EXPORTÉE POUR UNE SEULE RAISON : l'écran d'une ZONE ne montre que les lots
+ * rangés dans cette zone (T107), et recompter ces lots-là avec une seconde
+ * formule serait le second endroit où « 1 » et « 285 g » pourraient diverger.
+ * Les grammes sont `null` dès qu'un lot n'est pas chiffré : un total partiel se
+ * lirait comme un total.
+ */
+export function mesurer(lots: readonly LotPlacard[]): { grammes: number | null; unites: number } {
+  const chiffre = lots.every((x) => poidsUnite(x) != null);
+  return {
+    grammes: chiffre
+      ? lots.reduce((g, x) => g + (x.entame ?? 0) + x.unites * (poidsUnite(x) ?? 0), 0)
+      : null,
+    unites: lots.reduce((n, x) => n + x.unites + (x.entame != null ? 1 : 0), 0),
+  };
 }
 
 /**

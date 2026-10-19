@@ -289,6 +289,24 @@ describe("l'anti-gaspi entre dans le score", () => {
     expect(carte?.pourquoi.some((p) => p.startsWith("finit des paquets entamés"))).toBe(true);
   });
 
+  test("UN PLACARD RELEVÉ VIDE NE FAIT PLUS FINIR DE PAQUETS — T106", () => {
+    // Le score lisait le relevé du 26/08, pas ce qu'il en reste. Mesuré avant
+    // le correctif : les sept zones relevées à vide, le rejeu ne porte plus un
+    // seul id, et 14 cartes d'un dîner disaient encore « finit des paquets
+    // entamés ». `jeu.gardeManger` est l'intersection que `hydraterGardeManger`
+    // pose ; la vider ici, c'est ce que fait une base dont tout est relevé à 0.
+    const dit = () =>
+      offre(jeu, jeu.choix, premierDiner()).filter((c) =>
+        c.pourquoi.some((p) => p.startsWith("finit des paquets entamés")),
+      ).length;
+    expect(dit()).toBeGreaterThan(0);
+    jeu.gardeManger = [];
+    expect(dit()).toBe(0);
+    // Le dépôt, lui, n'a pas bougé : le bocal de l'amorce compte toujours.
+    const c = offre(jeu, jeu.choix, premierDiner()).find((x) => x.plat.id === "pates-bolognaise")!;
+    expect(c.ecoule.map((a) => a.ou)).toEqual(["depot"]);
+  });
+
   test("LE PLACARD ET LE DÉPÔT SONT DANS LA MÊME SOMME — T47", () => {
     // Le même plat écoule un paquet de pâtes ouvert (garde-manger, 0,4 projeté)
     // ET le bocal de bolognaise de l'amorce (dépôt, sa vraie fraction de vie).

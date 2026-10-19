@@ -18,9 +18,9 @@
 import { marque, type Marque } from "../model/axe";
 import type { BilanEspace, Calcul } from "../model/calcul";
 import type { Depot, LigneDepot } from "../model/depot";
-import type { Jeu } from "../model/jeu";
+import { idsDuReleve, type Jeu } from "../model/jeu";
 import { aSauver } from "../model/gardeManger";
-import type { Evenement, Rejeu } from "../model/journal";
+import { mesurer, type Evenement, type LotPlacard, type Rejeu } from "../model/journal";
 import {
   etatDuCongelo,
   nomDuType,
@@ -727,9 +727,9 @@ export interface ASauverVue {
  * lignes. Mais on ne cuisine pas « le deuxième paquet de pâtes » : on cuisine
  * des pâtes. Trois lignes identiques feraient croire à trois choses à faire.
  */
-export function aSauverVue(catalogue: Catalogue): ASauverVue[] {
+export function aSauverVue(catalogue: Catalogue, reste: Iterable<string>): ASauverVue[] {
   const par = new Map<string, ASauverVue & { zones: Set<string> }>();
-  for (const s of aSauver(catalogue)) {
+  for (const s of aSauver(catalogue, reste)) {
     const vu = par.get(s.ingredient);
     if (vu) {
       vu.zones.add(s.zone);
@@ -767,29 +767,159 @@ export interface GardeMangerVue {
   /** Ce qui se perd, du plus pressé au moins. L'autre moitié de l'anti-gaspi :
    *  « à déplacer » dit de ranger autrement, celle-ci dit de cuisiner. */
   aSauver: ASauverVue[];
-  /** Combien de denrées en tout, et combien pèsent quelque chose de connu. */
-  denrees: number;
-  pesees: number;
-  /** Le poids total constaté, en toutes lettres. */
-  poids: string;
   /** Le volume mesuré du garde-manger. Les zones non cotées n'y sont pas. */
   volume: string;
 }
 
-export function gardeManger(catalogue: Catalogue): GardeMangerVue {
+/**
+ * Le garde-manger tel que le catalogue le DÉFINIT, et ce qui s'y perd.
+ *
+ * `reste` : les ids du relevé qui ont encore quelque chose — `jeu.gardeManger`,
+ * la même intersection que le score et la liste (T106).
+ *
+ * LE COMPTE DES DENRÉES ET LEUR POIDS NE SONT PLUS ICI — T106. Ils venaient du
+ * relevé du 26/08 (« 53 denrées … 23 sont pesées, pour 16 kg ») et l'écran les
+ * affichait comme l'état du placard, sous un placard relevé vide. Ce qu'il en
+ * RESTE se lit sur le rejeu : voir `resteAuPlacard`.
+ */
+export function gardeManger(catalogue: Catalogue, reste: Iterable<string>): GardeMangerVue {
   const gm = catalogue.gardeManger;
-  const vues = zones(gm);
-  const poidsG = vues.reduce((s, z) => s + z.poidsG, 0);
   const volumeL = gm.zones.reduce((s, z) => s + (z.volumeL ?? 0), 0);
   return {
-    zones: vues,
+    zones: zones(gm),
     alertes: gm.alertes,
-    aSauver: aSauverVue(catalogue),
-    denrees: gm.denrees.length,
-    pesees: gm.denrees.filter((d) => d.poidsG != null).length,
-    poids: poidsG >= 1000 ? `${fmt(poidsG / 1000)} kg` : `${fmt(poidsG)} g`,
+    aSauver: aSauverVue(catalogue, reste),
     volume: volumeL === 0 ? "" : `${fmt(volumeL)} L`,
   };
+}
+
+export interface ResteAuPlacard {
+  /** Les ids du relevé dont le rejeu porte encore un lot. */
+  restent: number;
+  /** Les ids du relevé — ce que le placard EST. */
+  relevees: number;
+  /** Le jour du relevé, en `JJ/MM`, ou vide s'il n'est pas daté. */
+  releve: string;
+  /** Parmi ceux qui restent, ceux dont tous les lots sont chiffrés. */
+  pesees: number;
+  /** Leur poids, en toutes lettres — vide quand rien n'est pesé. */
+  poids: string;
+  /**
+   * Par zone, puis par ingrédient tel que le relevé l'écrit : ce qu'il en reste
+   * DANS CETTE ZONE — T107. Un ingrédient absent n'a pas d'entrée.
+   */
+  parZone: Map<string, Map<string, MesureZone>>;
+  /** Par zone, le poids de ce qui y reste et se pèse de bout en bout. */
+  poidsParZone: Map<string, string>;
+}
+
+export interface MesureZone {
+  grammes: number | null;
+  unites: number;
+}
+
+const enPoids = (g: number): string => (g >= 1000 ? `${fmt(g / 1000)} kg` : `${fmt(g)} g`);
+
+/**
+ * Ce qu'il RESTE au garde-manger, dit en une phrase — T106.
+ *
+ * LA MÊME INTERSECTION QUE `hydraterGardeManger`, ET PAS LE REJEU ENTIER. Le
+ * rejeu porte aussi ce qui rentre des courses — un saumon rangé en rentrant —
+ * qui n'est pas une denrée de placard. Compter `parIngredient` tel quel aurait
+ * fait grossir « le garde-manger » de toute la poissonnerie : c'est l'erreur
+ * symétrique que #32 a écartée, et elle s'écarte ici de la même façon.
+ *
+ * DES INGRÉDIENTS, PLUS DES LIGNES DE RELEVÉ. Le catalogue disait 53 parce
+ * qu'il compte les lignes — quatre paquets de pâtes, quatre lignes. Le rejeu
+ * tient un état par ingrédient, et ce qu'on se demande devant un placard est
+ * « est-ce qu'il y a des pâtes », pas « combien de lignes de pâtes ». Mesuré :
+ * 45 ids pour 53 lignes, donc la phrase dit 45 sur une base neuve.
+ *
+ * LE POIDS NE COMPTE QUE CE QUI EST CHIFFRÉ DE BOUT EN BOUT. Un ingrédient dont
+ * un seul lot n'est pas pesé n'a pas de total — `EtatIngredient.grammes` est
+ * alors `null` — et l'additionner quand même donnerait un poids qui a l'air
+ * d'un total et n'en est pas un.
+ */
+export function resteAuPlacard(catalogue: Catalogue, rejeu: Rejeu): ResteAuPlacard {
+  const ids = idsDuReleve(catalogue);
+  const la = ids.map((id) => rejeu.parIngredient.get(id)).filter((e) => e !== undefined);
+  const pesees = la.filter((e) => e.grammes != null);
+  const g = pesees.reduce((s, e) => s + (e.grammes ?? 0), 0);
+  const [, mm, jj] = (catalogue.gardeManger.releve ?? "").split("-");
+  const { parZone, poidsParZone } = parZoneDu(catalogue, rejeu);
+  return {
+    restent: la.length,
+    relevees: ids.length,
+    releve: jj && mm ? `${jj}/${mm}` : "",
+    pesees: pesees.length,
+    poids: pesees.length ? enPoids(g) : "",
+    parZone,
+    poidsParZone,
+  };
+}
+
+/**
+ * Ce qui reste, rangé zone par zone — T107.
+ *
+ * UNE ZONE NE MONTRE QUE LES LOTS RANGÉS EN ELLE. L'écran lisait l'état de
+ * l'INGRÉDIENT entier sous chaque ligne, et retombait sur la quantité du
+ * catalogue quand le rejeu ne le portait plus : une zone relevée à zéro lisait
+ * encore « mais · 4 × 285 g · CONSERVE ». Supprimer le seul repli ne suffisait
+ * pas, et c'est la mesure qui l'a dit : le concentré de tomate est relevé dans
+ * DEUX zones, l'étagère ouverte et la demi-lune haute. Vider l'étagère laisse
+ * l'ingrédient dans le rejeu par l'autre zone, et l'étagère aurait affiché le
+ * total de la demi-lune sous ses propres yeux de relevé.
+ *
+ * UN LOT SANS PLACE CONNUE VA À LA PREMIÈRE ZONE QUI NOMME SON INGRÉDIENT. Une
+ * course rentrée n'a pas de rangement (`zone: null`, que le rejeu pose en
+ * `placard-haut`) : des pâtes rachetées atterrissent dans une zone qui n'a
+ * aucune ligne de pâtes. Les filtrer par zone stricte les rendrait invisibles
+ * partout — un placard plein qui se lirait vide, l'erreur inverse. Elles vont
+ * donc là où le relevé range les pâtes, une seule fois, sans être recopiées
+ * sous chaque zone qui les nomme.
+ *
+ * LE COMPTE DE L'ÉDITEUR, LUI, RESTE CELUI DE L'INGRÉDIENT ENTIER : un constat
+ * porte sur un ingrédient (`ajusterUnites`), pas sur une zone. Proposer le
+ * compte de la zone puis valider sans rien toucher retirerait les unités des
+ * autres zones. Voir « Ce que ce bloc laisse ouvert ».
+ */
+function parZoneDu(
+  catalogue: Catalogue,
+  rejeu: Rejeu,
+): { parZone: Map<string, Map<string, MesureZone>>; poidsParZone: Map<string, string> } {
+  const gm = catalogue.gardeManger;
+  const alias = (id: string): string => catalogue.rayons.aliases[id] ?? id;
+  // Les zones qui nomment chaque ingrédient, dans l'ordre du relevé.
+  const places = new Map<string, string[]>();
+  for (const z of gm.zones)
+    for (const d of gm.denrees) {
+      if (d.zone !== z.id) continue;
+      const l = places.get(alias(d.ingredient)) ?? [];
+      if (!l.includes(z.id)) l.push(z.id);
+      places.set(alias(d.ingredient), l);
+    }
+  const lots = new Map<string, LotPlacard[]>(); // clé : `zone|id`
+  for (const [id, ou] of places) {
+    for (const lot of rejeu.parIngredient.get(id)?.lots ?? []) {
+      const zone = ou.includes(lot.zone) ? lot.zone : ou[0]!;
+      const cle = `${zone}|${id}`;
+      lots.set(cle, [...(lots.get(cle) ?? []), lot]);
+    }
+  }
+  const parZone = new Map<string, Map<string, MesureZone>>();
+  const poidsParZone = new Map<string, string>();
+  for (const z of gm.zones) {
+    const dedans = new Map<string, MesureZone>();
+    for (const d of gm.denrees) {
+      if (d.zone !== z.id || dedans.has(d.ingredient)) continue;
+      const l = lots.get(`${z.id}|${alias(d.ingredient)}`);
+      if (l?.length) dedans.set(d.ingredient, mesurer(l));
+    }
+    parZone.set(z.id, dedans);
+    const g = [...dedans.values()].reduce((s, m) => s + (m.grammes ?? 0), 0);
+    poidsParZone.set(z.id, g > 0 ? enPoids(g) : "");
+  }
+  return { parZone, poidsParZone };
 }
 
 export interface Inventaire {
@@ -829,7 +959,7 @@ export function vueDeLInventaire(jeu: Jeu, calc: Calcul, voulu: Espace | null): 
     // zones tombent toutes sur `placard`, donc le filtre ne trierait rien. Il se
     // lit par rangement, ce qui est la seule question qu'on se pose devant un
     // placard — « qu'est-ce qu'il y a dans celui-là ».
-    gardeManger: gardeManger(jeu.catalogue),
+    gardeManger: gardeManger(jeu.catalogue, jeu.gardeManger),
     filtre,
     nomDuFiltre: filtre ? nomEspace(filtre) : null,
     constates: lignes.filter((l) => l.ref !== null).length,

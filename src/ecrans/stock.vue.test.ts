@@ -2,12 +2,12 @@ import { readFileSync } from "node:fs";
 import { beforeEach, describe, expect, test } from "vitest";
 import { calculer } from "../model/calcul";
 import { lireCatalogue } from "../model/catalogue";
-import { creerJeu, type Jeu } from "../model/jeu";
+import { creerJeu, idsDuReleve, type Jeu } from "../model/jeu";
 import type { Catalogue, Denree, Zone } from "../model/types";
 import { contexte, rejouer, type Evenement } from "../model/journal";
 import {
   agressions, baisserPlancher, categories, espaces, fiabilite, gardeManger, lots,
-  vueDeLInventaire, vueDesPlanchers, vueDesPlanchersDenrees, zones,
+  resteAuPlacard, vueDeLInventaire, vueDesPlanchers, vueDesPlanchersDenrees, zones,
 } from "./stock.vue";
 
 const LUNDI = new Date("2026-08-17T12:00:00Z");
@@ -485,16 +485,112 @@ describe("les rangements", () => {
   });
 });
 
+describe("ce qu'il reste au garde-manger, en une phrase — T106", () => {
+  const jour = "2026-10-16";
+  const froid = () => rejouer(catalogue, [], contexte(catalogue), jour);
+  const releveVide = (): Evenement[] =>
+    catalogue.gardeManger.zones.map((z, i) => ({
+      sorte: "observation", portee: "zone", zone: z.id, constats: [], jour, saisi: jour, maj: i,
+    }));
+
+  test("sur une base neuve, tout le relevé est encore là, et il est nommé", () => {
+    const r = resteAuPlacard(catalogue, froid());
+    expect(r.restent).toBe(idsDuReleve(catalogue).length);
+    expect(r.relevees).toBe(r.restent);
+    expect(r.releve).toBe("26/08");
+    expect(r.pesees).toBeGreaterThan(0);
+    expect(r.pesees).toBeLessThan(r.restent);
+  });
+
+  test("UN PLACARD RELEVÉ VIDE LE DIT — la phrase gardait le relevé du 26/08 mot pour mot", () => {
+    const r = resteAuPlacard(catalogue, rejouer(catalogue, releveVide(), contexte(catalogue), jour));
+    expect(r.restent).toBe(0);
+    expect(r.relevees).toBe(idsDuReleve(catalogue).length);
+    expect(r.pesees).toBe(0);
+    expect(r.poids).toBe("");
+  });
+
+  test("CE QUI RENTRE DES COURSES N'EST PAS UNE DENRÉE DE PLACARD", () => {
+    // L'erreur symétrique que #32 a écartée : le rejeu porte aussi le saumon
+    // rangé en rentrant. Compter `parIngredient` tel quel l'aurait fait entrer
+    // dans « le garde-manger ».
+    const entree: Evenement = {
+      sorte: "entree", jour, saisi: jour, maj: 99,
+      lignes: [
+        { ingredient: "saumon", unites: 1, parUnite: { amount: 250, unit: "g" }, zone: null, etat: "frais" },
+        { ingredient: "pates", unites: 1, parUnite: { amount: 500, unit: "g" }, zone: null, etat: "sec" },
+      ],
+    };
+    const r = resteAuPlacard(
+      catalogue,
+      rejouer(catalogue, [...releveVide(), entree], contexte(catalogue), jour),
+    );
+    expect(r.restent).toBe(1);
+    expect(r.pesees).toBe(1);
+    expect(r.poids).toBe("500 g");
+  });
+
+  test("UN TOTAL PARTIEL NE SE LIT PAS COMME UN TOTAL", () => {
+    // La farine porte un sac de 4 kg pesé ET un bocal qui ne l'est pas. Le
+    // catalogue additionnait les 4 kg ; l'ingrédient n'a pourtant pas de poids
+    // connu, et c'est ce que `EtatIngredient.grammes` dit en rendant `null`.
+    expect(froid().parIngredient.get("farine")?.grammes).toBeNull();
+    const pesees = idsDuReleve(catalogue).filter((id) => froid().parIngredient.get(id)?.grammes != null);
+    expect(resteAuPlacard(catalogue, froid()).pesees).toBe(pesees.length);
+  });
+});
+
+describe("une zone ne montre que ce qui reste en elle — T107", () => {
+  const jour = "2026-10-16";
+  const vider = (zone: string, maj = 0): Evenement => ({
+    sorte: "observation", portee: "zone", zone, constats: [], jour, saisi: jour, maj,
+  });
+  const reste = (evts: Evenement[]) =>
+    resteAuPlacard(catalogue, rejouer(catalogue, evts, contexte(catalogue), jour));
+
+  test("sur une base neuve, chaque zone porte toutes ses denrées", () => {
+    const r = reste([]);
+    for (const z of catalogue.gardeManger.zones) {
+      const ids = new Set(catalogue.gardeManger.denrees.filter((d) => d.zone === z.id).map((d) => d.ingredient));
+      expect([...r.parZone.get(z.id)!.keys()].sort()).toEqual([...ids].sort());
+    }
+  });
+
+  test("UNE ZONE RELEVÉE VIDE EST VIDE, même si l'ingrédient vit dans une autre zone", () => {
+    // Le concentré de tomate est relevé dans l'étagère ET dans la demi-lune
+    // haute : le rejeu le garde, l'étagère ne doit plus le montrer.
+    const r = reste([vider("etagere-ouverte")]);
+    expect(r.parZone.get("etagere-ouverte")!.size).toBe(0);
+    expect(r.poidsParZone.get("etagere-ouverte")).toBe("");
+    expect(r.parZone.get("demi-lune-haute")!.has("concentre-tomate")).toBe(true);
+    // Et l'unité qui reste est celle de la demi-lune, pas le total d'avant.
+    const avant = reste([]).parZone.get("demi-lune-haute")!.get("concentre-tomate")!;
+    expect(r.parZone.get("demi-lune-haute")!.get("concentre-tomate")).toEqual(avant);
+  });
+
+  test("UNE COURSE RENTRÉE SANS RANGEMENT SE RETROUVE, UNE SEULE FOIS", () => {
+    // Le rejeu pose une entrée sans zone en `placard-haut`, qui n'a aucune
+    // ligne de pâtes. Filtrer par zone stricte la rendrait invisible partout.
+    const entree: Evenement = {
+      sorte: "entree", jour, saisi: jour, maj: 99,
+      lignes: [{ ingredient: "pates", unites: 2, parUnite: { amount: 500, unit: "g" }, zone: null, etat: "sec" }],
+    };
+    const r = reste([...catalogue.gardeManger.zones.map((z, i) => vider(z.id, i)), entree]);
+    const ou = [...r.parZone].filter(([, m]) => m.has("pates")).map(([z]) => z);
+    expect(ou).toEqual(["demi-lune-haute"]);
+    expect(r.parZone.get("demi-lune-haute")!.get("pates")).toEqual({ grammes: 1000, unites: 2 });
+  });
+});
+
 describe("le garde-manger entier", () => {
-  test("il compte ses denrées et distingue celles qui sont pesées", () => {
-    const vue = gardeManger(catalogue);
-    expect(vue.denrees).toBe(catalogue.gardeManger.denrees.length);
-    expect(vue.pesees).toBeGreaterThan(0);
-    expect(vue.pesees).toBeLessThan(vue.denrees);
+  test("« À manger en premier » ne garde que ce qui reste", () => {
+    const tout = gardeManger(catalogue, idsDuReleve(catalogue));
+    expect(tout.aSauver.length).toBeGreaterThan(0);
+    expect(gardeManger(catalogue, []).aSauver).toEqual([]);
   });
 
   test("le volume mesuré ignore les zones non cotées, sans les cacher", () => {
-    const vue = gardeManger(catalogue);
+    const vue = gardeManger(catalogue, idsDuReleve(catalogue));
     const cotees = catalogue.gardeManger.zones.filter((z) => z.volumeL != null);
     expect(cotees.length).toBeLessThan(vue.zones.length);
     expect(vue.volume).not.toBe("");
@@ -503,7 +599,7 @@ describe("le garde-manger entier", () => {
   test("les alertes du relevé remontent jusqu'à la vue", () => {
     // Le couple pommes de terre / oignons est la seule perte ACTIVE du relevé :
     // s'il cessait d'être signalé, l'écran mentirait par omission.
-    const vue = gardeManger(catalogue);
+    const vue = gardeManger(catalogue, idsDuReleve(catalogue));
     expect(
       vue.alertes.some((a) => a.includes("pomme de terre") && a.includes("voisiner")),
     ).toBe(true);
@@ -514,7 +610,7 @@ describe("le garde-manger entier", () => {
     // relevé produit sept lignes pour trois problèmes — les pignons comptent
     // double, et le sous-évier répète « humide » sous quatre légumes qu'on
     // sortira du même mouvement. Une liste de sept ne se lit pas.
-    const vue = gardeManger(catalogue);
+    const vue = gardeManger(catalogue, idsDuReleve(catalogue));
     expect(vue.alertes.length).toBeLessThanOrEqual(4);
     const humide = vue.alertes.find((a) => a.includes("endroit humide"));
     expect(humide).toContain("pomme de terre");

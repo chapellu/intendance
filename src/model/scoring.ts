@@ -257,7 +257,9 @@ export function comptoir(
 
   // Le placard ne change pas d'un plat à l'autre : on le lit une fois pour la
   // proposition entière, pas 86 fois. Même raison pour le contexte du journal.
-  const pressees = aEcouler(jeu.catalogue);
+  // CE QU'IL EN RESTE, PAS CE QU'IL EST — T106 : `jeu.gardeManger` porte déjà
+  // l'intersection avec le rejeu (voir `db/gardeManger.ts`).
+  const pressees = aEcouler(jeu.catalogue, jeu.gardeManger);
   // LE CONGÉLATEUR SE LIT AVANT LA CARTE, ET UNE SEULE FOIS. Le lire par
   // candidat le mesurerait 86 fois pour un tiroir qui ne bouge pas d'un plat à
   // l'autre — et surtout, il doit être lu AVANT de poser la carte : un plat qui

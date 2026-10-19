@@ -3,11 +3,16 @@ import { describe, expect, test } from "vitest";
 import { lireCatalogue } from "./catalogue";
 import { fractionDe } from "./axe";
 import { aEcouler, aSauver, placardDuPlat } from "./gardeManger";
+import { idsDuReleve } from "./jeu";
 import type { Catalogue, Plat } from "./types";
 
 const catalogue: Catalogue = lireCatalogue(
   JSON.parse(readFileSync("public/cuisine-data.json", "utf8")) as unknown,
 );
+
+/** Une base neuve : le rejeu à froid rend les ids du relevé, ni plus ni moins
+ *  (mesuré dans `db/gardeManger.ts`), donc c'est ce que porte `jeu.gardeManger`. */
+const tout = idsDuReleve(catalogue);
 
 const platAvec = (ids: string[], base: string[] = []): Plat =>
   ({
@@ -23,15 +28,15 @@ describe("ce que le placard offre à écouler", () => {
     // Trois fonds de paquet de pâtes entamés et rien d'autre. `moyenne` se
     // projette à 0,4 : la barrière est rompue, l'horloge tourne, et finir le
     // paquet ce soir l'arrête pour de bon.
-    expect(aEcouler(catalogue).get("pates")).toBe(fractionDe("moyenne"));
+    expect(aEcouler(catalogue, tout).get("pates")).toBe(fractionDe("moyenne"));
   });
 
   test("le frais du primeur est nommé mais plus payé", () => {
     // T60. L'app a raison de dire que ces oignons courent — ils restent dans
     // « à sauver » — mais les pousser au dîner revenait à pousser les 42 % de
     // plats qui contiennent un oignon.
-    expect(aEcouler(catalogue).has("pomme-de-terre")).toBe(false);
-    expect(aSauver(catalogue).some((s) => s.ingredient === "pomme-de-terre")).toBe(true);
+    expect(aEcouler(catalogue, tout).has("pomme-de-terre")).toBe(false);
+    expect(aSauver(catalogue, tout).some((s) => s.ingredient === "pomme-de-terre")).toBe(true);
   });
 
   test("LE SOUS-ÉVIER N'EST PAS LA RAISON, ET C'EST LA MESURE QUI LE DIT", () => {
@@ -49,22 +54,59 @@ describe("ce que le placard offre à écouler", () => {
     // Les pignons sont secs et scellés ; s'ils pressent, c'est la lumière et la
     // bouilloire. Ça se corrige en les déplaçant, pas en dînant — et l'app le dit
     // déjà, à sa place, dans « À déplacer ».
-    expect(aEcouler(catalogue).has("pignons-pin")).toBe(false);
+    expect(aEcouler(catalogue, tout).has("pignons-pin")).toBe(false);
     expect(catalogue.gardeManger.alertes.some((a) => a.includes("pignons"))).toBe(true);
   });
 
   test("une conserve scellée n'entre pas sur l'axe", () => {
     // Elle n'est pas « au début de sa vie » : elle n'a pas d'horloge du tout.
-    expect(aEcouler(catalogue).has("mais")).toBe(false);
+    expect(aEcouler(catalogue, tout).has("mais")).toBe(false);
   });
 
   test("un ingrédient absent du placard n'a pas d'entrée", () => {
-    expect(aEcouler(catalogue).has("saumon")).toBe(false);
+    expect(aEcouler(catalogue, tout).has("saumon")).toBe(false);
+  });
+});
+
+describe("ce qui est écoulable est ce qu'il RESTE, pas ce que le relevé nommait — T106", () => {
+  test("un paquet relevé entamé puis épuisé n'a plus rien à finir", () => {
+    // Le cas de l'année simulée : placard relevé à zéro au jour 0, jamais
+    // réapprovisionné en épeautre, et « finit des paquets entamés : farine
+    // epeautre » à 64 cartes. Le relevé dit que le paquet ÉTAIT entamé ; le
+    // rejeu dit qu'il n'y en a plus.
+    const sans = tout.filter((id) => id !== "farine-epeautre");
+    expect(aEcouler(catalogue, tout).has("farine-epeautre")).toBe(true);
+    expect(aEcouler(catalogue, sans).has("farine-epeautre")).toBe(false);
+    // Et rien d'autre ne bouge : le filtre ôte une denrée, pas le placard.
+    expect(aEcouler(catalogue, sans).size).toBe(aEcouler(catalogue, tout).size - 1);
+  });
+
+  test("un placard relevé vide n'offre rien à écouler", () => {
+    expect(aEcouler(catalogue, []).size).toBe(0);
+  });
+
+  test("L'INTERSECTION NE PEUT QU'ÔTER : ce qui rentre des courses n'ouvre aucun paquet", () => {
+    // Le pendant de la propriété de #32. Le rejeu porte aussi le saumon rangé en
+    // rentrant, et des pâtes ouvertes par une cuisson ; aucun des deux n'a été
+    // RELEVÉ entamé, donc aucun ne devient une pression.
+    const avec = [...tout, "saumon", "creme"];
+    expect([...aEcouler(catalogue, avec)]).toEqual([...aEcouler(catalogue, tout)]);
+  });
+
+  test("« À manger en premier » ne nomme plus un aromate qu'on n'a plus", () => {
+    // Mesuré : c'est cette liste — pas le score, plafonné à 0,4 depuis T60 —
+    // qui disait « ail, oignon » sous un sous-évier relevé vide.
+    const sousEvier = new Set(
+      catalogue.gardeManger.denrees.filter((d) => d.zone === "sous-evier").map((d) => d.ingredient),
+    );
+    expect(aSauver(catalogue, tout).some((s) => s.ingredient === "oignon")).toBe(true);
+    const restent = tout.filter((id) => !sousEvier.has(id));
+    expect(aSauver(catalogue, restent).some((s) => sousEvier.has(s.ingredient))).toBe(false);
   });
 });
 
 describe("ce que le plat prend au placard", () => {
-  const u = aEcouler(catalogue);
+  const u = aEcouler(catalogue, tout);
   const ids = (p: Plat) => placardDuPlat(catalogue, p, u).map((a) => a.id);
 
   test("CETTE FONCTION NE NOTE PLUS RIEN, ET C'EST LE CŒUR DE T47", () => {
@@ -110,7 +152,7 @@ describe("ce que le plat prend au placard", () => {
     // mangé, et la liste n'est pas une règle : c'est un FAIT DE CORPUS, qui se
     // remesure à chaque livre qui entre.
     const horsRecette = ["cracotte", "krisprolls", "ble-lentilles"];
-    for (const id of horsRecette) expect(aEcouler(catalogue).has(id)).toBe(true);
+    for (const id of horsRecette) expect(aEcouler(catalogue, tout).has(id)).toBe(true);
     for (const p of catalogue.plats)
       for (const id of horsRecette) expect(ids(p)).not.toContain(id);
 
@@ -141,7 +183,7 @@ describe("ce que le plat prend au placard", () => {
 
 describe("ce qui se perd", () => {
   test("les pressées d'abord, et rien de scellé", () => {
-    const l = aSauver(catalogue);
+    const l = aSauver(catalogue, tout);
     expect(l.length).toBeGreaterThan(0);
     expect(l.every((s) => s.urgence !== "basse")).toBe(true);
     const dernierHaut = l.map((s) => s.urgence).lastIndexOf("haute");
@@ -150,7 +192,7 @@ describe("ce qui se perd", () => {
   });
 
   test("la raison distingue « mange-le » de « range-le ailleurs »", () => {
-    const l = aSauver(catalogue);
+    const l = aSauver(catalogue, tout);
     // Les pignons sont secs et scellés : s'ils pressent, c'est la zone.
     expect(l.find((s) => s.ingredient === "pignons-pin")?.raison).toBe("s’abîme à la lumière");
     // Les pâtes ne craignent rien de leur zone : c'est le paquet qui est ouvert.
@@ -159,13 +201,13 @@ describe("ce qui se perd", () => {
 
   test("chaque ligne dit où aller chercher", () => {
     // On ne sauve pas ce qu'on ne retrouve pas.
-    expect(aSauver(catalogue).every((s) => s.zone.length > 0)).toBe(true);
-    expect(aSauver(catalogue).find((s) => s.ingredient === "pomme-de-terre")?.zone).toBe("sous-évier");
+    expect(aSauver(catalogue, tout).every((s) => s.zone.length > 0)).toBe(true);
+    expect(aSauver(catalogue, tout).find((s) => s.ingredient === "pomme-de-terre")?.zone).toBe("sous-évier");
   });
 });
 
 describe("l'autre issue : transformer au lieu de cuisiner", () => {
-  const l = aSauver(catalogue);
+  const l = aSauver(catalogue, tout);
   const de = (id: string) => l.find((s) => s.ingredient === id)!;
 
   test("LE BAIN-MARIE N'EST PROPOSÉ SUR AUCUNE DENRÉE PEU ACIDE", () => {
