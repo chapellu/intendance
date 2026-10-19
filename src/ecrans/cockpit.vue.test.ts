@@ -4,6 +4,10 @@ import { cleArticle, type EtatCourse } from "../db";
 import { articles, calculer, type Calcul } from "../model/calcul";
 import { lireCatalogue } from "../model/catalogue";
 import { creerJeu, SAUTE, type Jeu } from "../model/jeu";
+import { contexte, rejouer } from "../model/journal";
+import { proposerCeSoir } from "../model/pause";
+import { PASSE_VIDE } from "../model/questions";
+import type { Savoir } from "../model/scoring";
 import type { Catalogue } from "../model/types";
 import { JOURS_VISIBLES } from "../nav/jours";
 import { eteint } from "../nav/routes";
@@ -68,6 +72,55 @@ describe("ce qui vous attend aujourd'hui", () => {
   test("« on ne mange pas là » est une réponse : la tâche s'en va", () => {
     jeu.choix[creneau(0, "diner")] = SAUTE;
     expect(vue().taches.find((t) => t.cle === "ce-soir")).toBeUndefined();
+  });
+});
+
+/* ══════════════════════════ T129 — le cockpit dit la vérité sur le stock */
+
+describe("T129 — la ligne « Ce soir » nomme le plat, et ce qui attend", () => {
+  const A_15H = new Date("2026-08-17T15:00:00");
+  const avecProposition = (cuisines: ReadonlySet<string> = new Set()) => {
+    const rejeu = rejouer(catalogue, [], contexte(catalogue), "2026-08-17");
+    const savoir: Savoir = { rejeu, passe: PASSE_VIDE, cuisinesRecemment: new Set(), planchers: [] };
+    const soir = proposerCeSoir({ jeu, savoir, recents: new Set(), maintenant: A_15H });
+    return { soir, vue: vueDuCockpit(jeu, calculer(jeu), { courses: new Map(), gesteFait: false, soir, cuisines }) };
+  };
+
+  test("plus jamais « Rien n'est posé » : le meilleur plat de 15 h, et un bouton pour le lancer", () => {
+    // Trois portions d'un plat au congélateur, jeunes : elles ne pressent pas,
+    // mais elles attendent — et l'année simulée ne les a jamais vues nommées.
+    jeu.stock = [
+      { type: "curry-pois-chiches", kind: "reste-plat", qty: null, qty_band: "3-repas", born: "2026-08-10", location: "congelo", ref: "7" },
+    ];
+    const { soir, vue: v } = avecProposition();
+    const t = v.taches.find((x) => x.cle === "ce-soir")!;
+    expect(t.titre).toBe(`Ce soir : ${soir.cartes[0]!.plat.titre}`);
+    expect(t.detail).not.toMatch(/Rien n'est posé/);
+    expect(t.detail).toMatch(/3 repas de curry pois chiches au congélo/);
+    expect(t.route).toEqual({ ecran: "ce-soir" });
+    expect(t.lancer).toBe(soir.cartes[0]!.plat.id);
+  });
+
+  test("un dîner posé et pas encore fait se rappelle, avec l'heure où le lancer", () => {
+    poser(0, "diner", "lentilles-mijotees");
+    const t = avecProposition().vue.taches.find((x) => x.cle === "ce-soir")!;
+    expect(t.titre).toBe(`Ce soir : ${jeu.plats["lentilles-mijotees"]!.titre}`);
+    expect(t.detail).toMatch(/^posé — à lancer avant \d+h\d\d/);
+    expect(t.route).toEqual({ ecran: "cuisiner", creneau: { jour: "2026-08-17", repas: "diner" } });
+  });
+
+  test("la carte de la facette compte ce que la cuisine PEUT ce soir, pas le plan qu'on n'a pas fait", () => {
+    const { soir, vue: v } = avecProposition();
+    const libres = [...soir.cartes, ...soir.plus].filter((c) => c.manque.length === 0).length;
+    expect(v.cuisine.resume).not.toMatch(/Rien n'est posé/);
+    expect(v.cuisine.resume).toBe(resumeSansJours(0, soir));
+    if (libres > 1) expect(v.cuisine.resume).toBe(`Ce soir, ${libres} dîners se font sans rien acheter.`);
+  });
+
+  test("un dîner déjà cuisiné ne réclame plus rien", () => {
+    poser(0, "diner", "lentilles-mijotees");
+    const { vue: v } = avecProposition(new Set(["2026-08-17|diner"]));
+    expect(v.taches.find((x) => x.cle === "ce-soir")).toBeUndefined();
   });
 });
 

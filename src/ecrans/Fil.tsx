@@ -42,6 +42,7 @@ import { chemin, type CleCreneau } from "../nav/routes";
 import { aller } from "../nav/useRoute";
 import { Demande, Jouable } from "../ui/Cartes";
 import { Corps } from "../ui/Coquille";
+import { BlocDuSoir, useCeSoir } from "./CeSoir";
 import { avancement, libelleCran, pointsDuFil, resteAPoser } from "./fil.vue";
 import { chercher, normaliser, REQUETE_MIN } from "./poser.vue";
 
@@ -139,12 +140,22 @@ function Ouverture({ jeu }: { jeu: Jeu }) {
   };
 
   const libres = itineraire(jeu, 99).length;
+  // CE SOIR D'ABORD — T128. La porte de la facette ouvrait sur une passe de
+  // planification ; le foyer ne planifie pas, il décide à 15 h pour 18 h. La
+  // passe reste, en dessous : c'est « prévoir plusieurs repas », que
+  // Workspace#66 garde en option et que rien n'oblige à traverser.
+  const soir = useCeSoir();
 
   return (
     <Corps>
-      <div className="co-h">Combien de repas ?</div>
+      {soir ? <BlocDuSoir vivant={soir} /> : null}
+
+      <div className="co-h" style={soir ? { marginTop: "var(--space-6)" } : undefined}>
+        Combien de repas ?
+      </div>
       <p className="co-note">
-        Le fil pose les repas un par un, dans l’ordre. Ce qu’il ne couvre pas reste
+        {soir ? "Pour prévoir plusieurs repas d’un coup : le" : "Le"} fil pose les repas un
+        par un, dans l’ordre. Ce qu’il ne couvre pas reste
         hors du plan — sans rien réclamer.
       </p>
 

@@ -58,6 +58,15 @@ export const libellePoser = (ecarte: boolean): string =>
       : "Je fais ça";
 
 /**
+ * Le bouton d'une carte du soir — T128.
+ *
+ * « JE LANCE ÇA », ET PAS « JE FAIS ÇA » : la carte du fil POSE un plat pour
+ * plus tard, celle-ci le pose ET ouvre sa mise en place, maintenant. Deux
+ * gestes, deux mots — et le parcours e2e de la pause le désigne par celui-ci.
+ */
+export const LIBELLE_LANCER = "Je lance ça";
+
+/**
  * Depuis quand un lot est là, en jours — « aujourd'hui », « hier », « il y a
  * 3 j » — T104.
  *
