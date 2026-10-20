@@ -5237,6 +5237,19 @@ Branche `cuisine/a-la-pause-retouches`, sur `cuisine/a-la-pause`.
       s'entame au lieu de partir sous le premier plat — le sac de pommes de
       terre du relevé disparaissait sous une omelette, ce qui cassait
       `stock-descend.spec.ts:46` depuis T134.
+- [x] **T137 — Le fond à garde courte se finit par son âge.** Année simulée :
+      une boîte d'œufs rentrée le 17/10, servie une fois, jetée à 28 jours par
+      le foyer, restait « ici » au rejeu — œufs deux fois sur la liste en un
+      an, 256 « rien à acheter » faux (œufs, râpé, yaourt). `rejouer` sort de
+      `parIngredient` tout article dont la famille de garde `fond: true` tient
+      8 semaines au plus (`SEMAINES_FENETRE_COURTE`) et qui a été rentré il y a
+      plus que sa fenêtre ; il passe dans `rejeu.finis` (id → jours). Le sec,
+      les conserves, le surgelé ne bougent pas. L'horloge repart à une
+      observation postérieure à l'achat (« Des œufs ? oui ») : pas de nouvelle
+      UI. Le stock dit « acheté il y a N j — sans doute fini », jamais « à
+      jeter » (fenêtres approximatives, sauf les œufs). #32 tenu : la liste ne
+      fait que gagner. Et « jamais vu » sur une ligne de plancher achetée puis
+      mangée devient « à vérifier, rentré le … » (`rejeu.rentres`).
 
 ## Sortie
 

@@ -114,6 +114,7 @@ const sous = (p: Partial<LignePlancher> & { ingredient: string }): LignePlancher
   manque: 2,
   confiance: "sur",
   vuLe: "2026-08-26",
+  rentreLe: null,
   usage: null,
   fond: false,
   ...p,
