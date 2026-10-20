@@ -102,7 +102,22 @@ export const POIDS = {
   horsSaison: 0.5,
   /** Quiche, soupe, gratin. */
   format: 2,
+  /** T135 — PAR FOIS mangé ces `JOURS_DE_ROTATION` jours. S'ajoute à `recent` :
+   *  le foyer répète ses plats préférés, mais pas 41 fois l'an. Trois fois en
+   *  deux semaines coûtent autant qu'avant-hier. */
+  repetition: -2,
+  /** T135 — par soir des `JOURS_DE_FORMAT` derniers où ce FORMAT a été mangé :
+   *  pas trois soupes de suite. Plus doux que la répétition d'un plat. */
+  memeFormat: -1.5,
+  /** T135 — pas mangé depuis plus de `JOURS_D_OUBLI` jours, et faisable ce
+   *  soir : un petit rappel, pas une conversion. */
+  oublie: 1.5,
 } as const;
+
+/** T135 — la mémoire longue de la rotation. */
+export const JOURS_DE_ROTATION = 14;
+export const JOURS_DE_FORMAT = 2;
+export const JOURS_D_OUBLI = 30;
 
 /* ═══════════════════════════════════════════════════════════════ l'horaire */
 
@@ -332,6 +347,49 @@ export interface EntreeDuSoir {
    * jamais la boucle — le gratin sorti hier resterait « à sortir » demain.
    */
   sortis?: ReadonlySet<string>;
+  /**
+   * T135 — CE QUI A ÉTÉ MANGÉ, DATÉ : les cuissons du journal. La mémoire
+   * longue de la rotation (`POIDS.repetition`, `memeFormat`, `oublie`) ; sans
+   * elle, seul `recents` départage, et le rang 2-3 tourne sur quatre plats.
+   */
+  mange?: readonly { plat: string; jour: string }[];
+}
+
+/** Jours entiers de `de` à `a`, deux `AAAA-MM-JJ`. */
+const ecart = (de: string, a: string): number =>
+  Math.round((Date.parse(`${a}T12:00:00Z`) - Date.parse(`${de}T12:00:00Z`)) / 86_400_000);
+
+/**
+ * La rotation d'un plat ce soir — T135. Trois termes, tous dans le départage :
+ * aucun ne franchit un rang de `ordre`.
+ */
+export function scoreRotation(
+  catalogue: Catalogue,
+  plat: Plat,
+  mange: readonly { plat: string; jour: string }[],
+  aujourdhui: string,
+  faisable: boolean,
+): number {
+  let fois = 0;
+  let dernier = Number.POSITIVE_INFINITY;
+  const soirsDuFormat = new Set<string>();
+  for (const m of mange) {
+    const d = ecart(m.jour, aujourdhui);
+    if (d <= 0) continue;
+    if (m.plat === plat.id) {
+      dernier = Math.min(dernier, d);
+      if (d <= JOURS_DE_ROTATION) fois += 1;
+    }
+    if (plat.format && d <= JOURS_DE_FORMAT) {
+      const f = catalogue.plats.find((p) => p.id === m.plat)?.format;
+      if (f === plat.format) soirsDuFormat.add(m.jour);
+    }
+  }
+  return (
+    fois * POIDS.repetition +
+    soirsDuFormat.size * POIDS.memeFormat +
+    (faisable && mange.length > 0 && dernier > JOURS_D_OUBLI ? POIDS.oublie : 0)
+  );
 }
 
 /** Le dîner de ce soir — le premier jour de la fenêtre glissante. */
@@ -490,6 +548,11 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
         manque.filter((a) => deSaison(catalogue, a.id, mois) !== true).length;
     score += scoreSaison(catalogue, p, mois);
     score += scoreFormat(p);
+    if (e.mange)
+      score += scoreRotation(
+        catalogue, p, e.mange, isoLocal(maintenant),
+        horsSaison.length === 0 && (jourDeCourses || manque.length === 0),
+      );
 
     cartes.push({
       plat: p,

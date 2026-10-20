@@ -107,7 +107,8 @@ export function useProposition(jeu: Jeu | null): PropositionDuSoir | null {
     if (!jeu || !savoir || !evts || !sortis) return null;
     const maintenant = new Date();
     const recents = cuissonsRecentes(evts, jourISO(maintenant), JOURS_DE_VARIETE);
-    return proposerCeSoir({ jeu, savoir, recents, maintenant, sortis });
+    const mange = evts.flatMap((e) => (e.sorte === "cuisine" ? [{ plat: e.plat, jour: e.jour }] : []));
+    return proposerCeSoir({ jeu, savoir, recents, maintenant, sortis, mange });
   }, [jeu, savoir, evts, sortis]);
 }
 
