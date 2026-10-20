@@ -51,6 +51,15 @@ import type { Jeu } from "../model/jeu";
  * avant ce correctif.
  */
 export function hydraterGardeManger(jeu: Jeu, rejeu: Rejeu): Jeu {
-  jeu.gardeManger = jeu.gardeManger.filter((id) => rejeu.parIngredient.has(id));
+  // T139 — L'INTERSECTION RESTE, ET UNE SEULE PORTE S'Y AJOUTE : ce qu'un œil a
+  // constaté DANS une zone du garde-manger sans que le relevé le connaisse
+  // (`rejeu.ajoutes`). Ce n'est pas le saumon d'en haut — une course rentrée
+  // n'est vue dans aucune zone — c'est le sachet de noix qu'on vient de poser
+  // dans la demi-lune et de déclarer. Le catalogue dit toujours ce que le
+  // placard EST ; on y ajoute ce que l'utilisateur dit qu'il est AUSSI.
+  // La propriété d'en haut devient donc : rien ne retire une ligne de courses,
+  // sauf un œil qui a vu la denrée rangée — ce qui est exactement son rôle.
+  const ajoutes = [...rejeu.ajoutes.keys()].filter((id) => !jeu.gardeManger.includes(id));
+  jeu.gardeManger = [...jeu.gardeManger.filter((id) => rejeu.parIngredient.has(id)), ...ajoutes];
   return jeu;
 }

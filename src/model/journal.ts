@@ -131,7 +131,15 @@ export interface Constat {
 export interface EvtObservation extends Commun {
   sorte: "observation";
   portee: "ingredient" | "zone";
-  /** L'id de zone quand `portee === "zone"`, `null` sinon. */
+  /**
+   * L'id de zone quand `portee === "zone"`.
+   *
+   * T139 — SUR UNE CORRECTION (`portee === "ingredient"`), la zone RESTREINT le
+   * constat aux lots de l'ingrédient rangés là : corriger les concentrés de
+   * l'étagère ne touche pas ceux de la demi-lune. `null` : l'ingrédient entier,
+   * toutes zones — ce que « Des œufs ? » et la carte « À manger en premier »
+   * veulent dire.
+   */
   zone: string | null;
   constats: Constat[];
 }
@@ -302,6 +310,18 @@ export interface Rejeu {
   /** Le dernier jour d'entrée par les courses, par id — même quand le lot a
    *  été mangé depuis. Ce qui distingue « rentré le 17/10 » de « jamais vu ». */
   rentres: Map<string, string>;
+  /**
+   * T139 — CE QU'UN ŒIL A RANGÉ QUE LE RELEVÉ NE CONNAISSAIT PAS : id → zone.
+   *
+   * Le relevé du 26/08 dit ce que le placard EST, et l'intersection de #32 ne
+   * laisse passer que ses ids. Un sachet de noix posé dans la demi-lune n'y
+   * figurerait donc jamais, compté ou pas. Ce qui l'y fait entrer ici, c'est
+   * l'ENDROIT : une observation qui le constate DANS une zone du garde-manger
+   * (un relevé, ou la correction d'une ligne de zone). Une course rentrée n'en
+   * fait pas partie — elle n'a pas été vue au placard, c'est le saumon que
+   * `hydraterGardeManger` écarte. Seuls ceux dont un lot reste y figurent.
+   */
+  ajoutes: Map<string, string>;
 }
 
 /* ══════════════════════════════════════════════════════════ les constantes */
@@ -804,6 +824,9 @@ export function rejouer(
   aujourdhui: string,
 ): Rejeu {
   const lots = amorce(ctx, catalogue.gardeManger.denrees);
+  // Ce que le relevé connaît — pour reconnaître ce qu'un œil y ajoute (T139).
+  const connus = new Set(lots.keys());
+  const ajoutes = new Map<string, string>();
   // `?? 4` : des fixtures de test construisent un catalogue sans foyer.
   const fenetreFrigo = catalogue.foyer?.fenetreFrigo ?? 4;
   const suivi = new Map<string, Suivi>();
@@ -899,10 +922,18 @@ export function rejouer(
       }
     }
 
+    // T139 — UNE CORRECTION DE LIGNE DE ZONE ne voit que les lots rangés là.
+    // Les autres zones gardent les leurs, et c'est tout l'objet : corriger une
+    // ligne ne doit pas faire ce que fait un relevé.
+    const cadre = e.portee === "ingredient" ? e.zone : null;
+
     for (const c of e.constats) {
       const id = ctx.alias(c.ingredient);
       const s = suiviDe(id);
-      const avant = unitesDe(id);
+      const avant = cadre
+        ? mesurer((lots.get(id) ?? []).filter((x) => x.zone === cadre)).unites
+        : unitesDe(id);
+      if (e.zone && !connus.has(id) && c.unites !== 0) ajoutes.set(id, e.zone);
 
       // LA DÉRIVE SE MESURE ICI, ET NULLE PART AILLEURS : entre deux
       // observations, ce que les décréments connus n'expliquent pas.
@@ -921,9 +952,11 @@ export function rejouer(
         // avant le scellé. Une correction porte sur un INGRÉDIENT, jamais sur
         // un lot — c'est ce qu'un œil voit en ouvrant un placard : on compte
         // des boîtes de maïs, pas « le lot n°17 ».
-        ajusterUnites(l, id, c.unites, e.zone);
-        if (l.length === 0) lots.delete(id);
-        else lots.set(id, l);
+        const ici = cadre ? l.filter((x) => x.zone === cadre) : l;
+        ajusterUnites(ici, id, c.unites, e.zone);
+        const apres = cadre ? [...l.filter((x) => x.zone !== cadre), ...ici] : ici;
+        if (apres.length === 0) lots.delete(id);
+        else lots.set(id, apres);
       }
 
       s.vuLe = e.jour;
@@ -1000,7 +1033,9 @@ export function rejouer(
   const rentres = new Map<string, string>();
   for (const [id, s] of suivi) if (s.rentreLe) rentres.set(id, s.rentreLe);
 
-  return { parIngredient, vus, retraits, finis, rentres };
+  for (const id of [...ajoutes.keys()]) if (!parIngredient.has(id)) ajoutes.delete(id);
+
+  return { parIngredient, vus, retraits, finis, rentres, ajoutes };
 }
 
 /**

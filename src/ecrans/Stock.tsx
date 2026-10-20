@@ -35,7 +35,7 @@ import {
   usePlanchersDenrees,
   useSemaine,
 } from "../db/hooks";
-import { releverZone } from "../db/journal";
+import { corrigerLigne, releverZone } from "../db/journal";
 import { poserPlancher, poserPlancherDenree, retirerPlancherDenree } from "../db/planchers";
 import type { Calcul } from "../model/calcul";
 import { nomDuType } from "../model/plancher";
@@ -47,7 +47,6 @@ import { chemin } from "../nav/routes";
 import { aller } from "../nav/useRoute";
 import { Corps } from "../ui/Coquille";
 import { Icone, iconeEspace } from "../ui/icones";
-import { fmt } from "../ui/format";
 import {
   baisserPlancher,
   PERIME,
@@ -622,6 +621,12 @@ function GardeManger({
                     règle vient de #29 : l'app nomme ce qu'il faudrait savoir
                     faire, elle n'envoie personne au magasin. */}
                 {s.debloquer ? <div className="ou">à débloquer&nbsp;: {s.debloquer}</div> : null}
+                <Corriger
+                  nom={s.nom}
+                  ingredient={s.id}
+                  unites={placard?.parIngredient.get(s.id)?.unites ?? 0}
+                  zone={null}
+                />
               </span>
               <span>
                 <div className={`src ${s.urgence === "haute" ? "estime" : ""}`}>
@@ -649,6 +654,7 @@ function GardeManger({
           placard={placard}
           dedans={reste?.parZone.get(z.id) ?? null}
           poids={reste?.poidsParZone.get(z.id) ?? ""}
+          connus={vue.connus}
         />
       ))}
 
@@ -832,6 +838,7 @@ function Zone({
   placard,
   dedans,
   poids,
+  connus,
 }: {
   z: ZoneVue;
   placard: Rejeu | null;
@@ -840,13 +847,54 @@ function Zone({
   dedans: ReadonlyMap<string, MesureZone> | null;
   /** Le poids de ce qui y reste, pas celui du relevé. */
   poids: string;
+  /** Ce que l'éditeur peut ajouter (T139). */
+  connus: readonly { id: string; nom: string }[];
 }) {
   const [releve, setReleve] = useState<Map<string, number> | null>(null);
+  // T139 — les lignes que le relevé du catalogue ne porte pas : celles qu'un
+  // œil a déjà rangées ici, puis celles qu'on ajoute dans l'éditeur.
+  const [extras, setExtras] = useState<string[]>([]);
+  const [cherche, setCherche] = useState("");
 
   const etatDe = (ing: string) => placard?.parIngredient.get(ing) ?? null;
+  const ajoutes = dedans ? [...dedans].filter(([, m]) => m.ajoute).map(([id]) => id) : [];
+  const auReleve = new Set(z.denrees.map((d) => d.ingredient));
 
-  const ouvrir = () =>
-    setReleve(new Map(z.denrees.map((d) => [d.ingredient, etatDe(d.ingredient)?.unites ?? 0])));
+  const ouvrir = () => {
+    setExtras(ajoutes);
+    setCherche("");
+    setReleve(
+      new Map([
+        ...z.denrees.map((d): [string, number] => [d.ingredient, etatDe(d.ingredient)?.unites ?? 0]),
+        ...ajoutes.map((id): [string, number] => [id, dedans?.get(id)?.unites ?? 0]),
+      ]),
+    );
+  };
+
+  const ajouter = (id: string) => {
+    if (!releve) return;
+    if (!auReleve.has(id) && !extras.includes(id)) setExtras([...extras, id]);
+    setReleve(new Map(releve).set(id, Math.max(1, releve.get(id) ?? 0)));
+    setCherche("");
+  };
+  const q = cherche.trim().toLowerCase();
+  const trouves =
+    q.length < 2 ? [] : connus.filter((c) => c.nom.includes(q) || c.id.includes(q)).slice(0, 6);
+
+  // Une ligne de l'éditeur : − n +. Les denrées du relevé et les ajouts
+  // partagent le même geste, et le même compte en paquets.
+  const ligneDEditeur = (cle: string, ingredient: string, nom: string, note?: string) => (
+    <div key={cle} className="co-lot">
+      <span style={{ flex: 1 }}>
+        <div className="nom">{nom}</div>
+        {note ? <div className="ou">{note}</div> : null}
+      </span>
+      <Compteur
+        n={releve?.get(ingredient) ?? 0}
+        poser={(n) => releve && setReleve(new Map(releve).set(ingredient, n))}
+      />
+    </div>
+  );
 
   const valider = async () => {
     if (!releve) return;
@@ -883,41 +931,29 @@ function Zone({
 
       {releve ? (
         <>
-          {z.denrees.map((d) => (
-            <div key={d.cle} className="co-lot">
-              <span style={{ flex: 1 }}>
-                <div className="nom">{d.nom}</div>
-                {d.note ? <div className="ou">{d.note}</div> : null}
-              </span>
-              <span style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
-                <button
-                  className="btn btn-secondary"
-                  style={{ padding: "2px 10px" }}
-                  onClick={() =>
-                    setReleve(
-                      new Map(releve).set(
-                        d.ingredient,
-                        Math.max(0, (releve.get(d.ingredient) ?? 0) - 1),
-                      ),
-                    )
-                  }
-                >
-                  −
-                </button>
-                <b style={{ minWidth: "1.5em", textAlign: "center" }}>
-                  {releve.get(d.ingredient) ?? 0}
-                </b>
-                <button
-                  className="btn btn-secondary"
-                  style={{ padding: "2px 10px" }}
-                  onClick={() =>
-                    setReleve(new Map(releve).set(d.ingredient, (releve.get(d.ingredient) ?? 0) + 1))
-                  }
-                >
-                  +
-                </button>
-              </span>
-            </div>
+          {z.denrees.map((d) => ligneDEditeur(d.cle, d.ingredient, d.nom, d.note || undefined))}
+          {extras.map((id) => ligneDEditeur(`+${id}`, id, id.replace(/-/g, " "), "ajouté"))}
+          {/* T139 — CE QUE LE RELEVÉ DU 26/08 NE CONNAÎT PAS. On choisit dans
+              le catalogue, jamais en texte libre : un id qu'aucune recette ne
+              lit ne retirerait aucune ligne de courses. */}
+          <div className="co-chercher" style={{ marginTop: "var(--space-2)" }}>
+            <input
+              type="search"
+              aria-label={`ajouter une denrée à ${z.nom}`}
+              placeholder="Ajouter une denrée…"
+              value={cherche}
+              onChange={(ev) => setCherche(ev.target.value)}
+            />
+          </div>
+          {trouves.map((c) => (
+            <button
+              key={c.id}
+              className="btn btn-ghost"
+              style={{ fontSize: 12, padding: "2px 8px", marginTop: 4, marginRight: 4 }}
+              onClick={() => ajouter(c.id)}
+            >
+              + {c.nom}
+            </button>
           ))}
           <button
             className="btn btn-primary btn-block"
@@ -927,14 +963,25 @@ function Zone({
             Valider le relevé — ce qui est à 0 n’y est plus
           </button>
         </>
-      ) : !dedans ? null : z.denrees.some((d) => dedans.has(d.ingredient)) ? (
+      ) : !dedans ? null : dedans.size ? (
         // CE QUI RESTE ICI, ET RIEN D'AUTRE — T107. La ligne retombait sur
         // `d.quantite` quand le rejeu ne portait plus l'ingrédient : la zone
         // qu'on venait de déclarer vide relisait son contenu du 26/08. Le
         // relevé du catalogue dit ce que la zone EST — c'est la liste que
         // l'éditeur ouvre, pour qu'on puisse y remettre ce qui revient — pas
         // ce qu'il en reste.
-        z.denrees.filter((d) => dedans.has(d.ingredient)).map((d) => {
+        [
+          ...z.denrees.filter((d) => dedans.has(d.ingredient)),
+          // T139 — ce qu'un œil a rangé ici sans que le relevé le connaisse.
+          ...ajoutes.map((id) => ({
+            cle: `+${id}`,
+            ingredient: id,
+            nom: id.replace(/-/g, " "),
+            note: "ajouté au relevé",
+            alerte: "",
+            etat: "",
+          })),
+        ].map((d) => {
           const e = etatDe(d.ingredient);
           const m = dedans.get(d.ingredient)!;
           return (
@@ -950,9 +997,10 @@ function Zone({
                     qui remplace un score de confiance : trois mots se lisent,
                     un score se croit. */}
                 {e?.vuLe ? <div className="ou">vu le {e.vuLe}</div> : null}
+                <Corriger nom={d.nom} ingredient={e?.ingredient ?? d.ingredient} unites={m.unites} zone={m.zone} />
               </span>
               <span>
-                <div className="q">{quantiteDite(m)}</div>
+                <div className="q">{m.quantite}</div>
                 <div className={`src ${e && e.confiance !== "sur" ? "estime" : ""}`}>
                   {e ? MOT_CONFIANCE[e.confiance] : d.etat}
                 </div>
@@ -967,11 +1015,81 @@ function Zone({
   );
 }
 
-/** Ce qu'on sait dire d'un ingrédient rejoué : des grammes quand tout est
- *  chiffré, un compte sinon. « 1 » est une information, pas un tiret. */
-function quantiteDite(e: MesureZone): string {
-  if (e.grammes == null) return `${e.unites}`;
-  return e.grammes >= 1000 ? `${fmt(e.grammes / 1000)} kg` : `${fmt(e.grammes)} g`;
+/** − n + : un compte de PAQUETS entiers, jamais de grammes (T139). */
+function Compteur({ n, poser }: { n: number; poser: (n: number) => void }) {
+  return (
+    <span style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
+      <button
+        className="btn btn-secondary"
+        style={{ padding: "2px 10px" }}
+        onClick={() => poser(Math.max(0, n - 1))}
+      >
+        −
+      </button>
+      <b style={{ minWidth: "1.5em", textAlign: "center" }}>{n}</b>
+      <button
+        className="btn btn-secondary"
+        style={{ padding: "2px 10px" }}
+        onClick={() => poser(n + 1)}
+      >
+        +
+      </button>
+    </span>
+  );
+}
+
+/**
+ * Corriger UNE ligne du garde-manger, sur place — T139.
+ *
+ * « Je n'en ai plus » en un geste, comme sur un lot du dépôt ; « Corriger »
+ * ouvre le compte, prérempli de ce que le rejeu croit. L'un et l'autre écrivent
+ * une observation à UN constat (`corrigerLigne`) : les autres denrées de la
+ * zone ne bougent pas, ce que seul un relevé complet a le droit de faire.
+ */
+function Corriger({
+  nom,
+  ingredient,
+  unites,
+  zone,
+}: {
+  nom: string;
+  ingredient: string;
+  unites: number;
+  zone: string | null;
+}) {
+  const [n, setN] = useState<number | null>(null);
+  const poser = async (v: number) => {
+    await corrigerLigne(base, ingredient, v, zone);
+    setN(null);
+  };
+  const petit = { fontSize: 12, padding: "2px 8px" };
+  if (n === null)
+    return (
+      <div style={{ display: "flex", gap: "var(--space-1)", marginTop: 4 }}>
+        <button className="btn btn-ghost" style={petit} aria-label={`corriger : ${nom}`} onClick={() => setN(unites)}>
+          Corriger
+        </button>
+        <button
+          className="btn btn-ghost"
+          style={petit}
+          aria-label={`je n’en ai plus : ${nom}`}
+          onClick={() => void poser(0)}
+        >
+          Je n’en ai plus
+        </button>
+      </div>
+    );
+  return (
+    <div style={{ display: "flex", gap: "var(--space-1)", alignItems: "center", marginTop: 4 }}>
+      <Compteur n={n} poser={setN} />
+      <button className="btn btn-secondary" style={petit} onClick={() => void poser(n)}>
+        C’est ça
+      </button>
+      <button className="btn btn-ghost" style={petit} onClick={() => setN(null)}>
+        Annuler
+      </button>
+    </div>
+  );
 }
 
 function Lot({ lot, retirer }: { lot: LotVue; retirer: (ref: string) => Promise<void> }) {

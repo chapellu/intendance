@@ -5272,6 +5272,32 @@ Branche `cuisine/a-la-pause-retouches`, sur `cuisine/a-la-pause`.
       gardée. Corpus : 4 tickets sur 4, lignes et totaux exacts, idem en
       variante OCR abîmée.
 
+- [x] **T139 — Corriger une ligne du stock, sur place.** Signalé au
+      téléphone : « je mets à jour le stock mais je ne peux ni retirer ni
+      corriger ». Chaque ligne du garde-manger — cartes « À manger en premier »
+      et lignes de zone — porte « Corriger » (− / + en paquets entiers,
+      prérempli du rejeu, « C'est ça ») et « Je n'en ai plus » en un tap.
+      `corrigerLigne` écrit une observation `portee: "ingredient"` à UN
+      constat : les autres denrées de la zone ne bougent pas. Sa `zone`, quand
+      elle est donnée, restreint le constat aux lots rangés là (`rejouer`) —
+      seulement pour un ingrédient relevé dans plusieurs zones (concentré) ;
+      sinon l'ingrédient entier, pour atteindre aussi les courses rentrées
+      sans rangement. Le relevé de zone gagne « Ajouter une denrée… » (recherche
+      dans les ids du catalogue, jamais en texte libre). L'intersection de #32
+      reste : `rejeu.ajoutes` (id → zone) ne porte que ce qu'une observation a
+      constaté DANS une zone sans que le relevé le connaisse, et
+      `hydraterGardeManger` l'ajoute à `jeu.gardeManger` — une course rentrée
+      n'y entre toujours pas. « Pressé » ne se dit plus des denrées qui se
+      gardent : `aSauver` ne garde que la barrière rompue (entamé) et le frais
+      dont la famille de `conservation.yaml` tient moins de deux semaines ;
+      pomme de terre, oignon, échalote, ail (6 semaines) et les pignons (seule
+      leur zone les abîmait) sortent — le mauvais rangement est « À déplacer ».
+      Les quantités de zone se disent en paquets (`enPaquets` : « 4 boîtes »,
+      « 1 paquet · 3 entamés », mot pris dans `fond.yaml:unite` puis le relevé),
+      des grammes seulement pour le vrac. Reste ouvert : une course sans
+      rangement d'un ingrédient relevé dans deux zones se lit sous la première,
+      mais une correction de cette ligne-là ne l'atteint pas.
+
 ## Sortie
 
 **Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`

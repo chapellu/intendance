@@ -265,6 +265,38 @@ export async function observerIngredient(
 }
 
 /**
+ * La correction d'UNE ligne du garde-manger — T139.
+ *
+ * « J'en ai trois, pas cinq », « je n'en ai plus » : ce qu'un doigt fait en
+ * passant devant le placard, sans relever la zone entière. Une observation à un
+ * seul constat, donc les autres denrées de la zone ne bougent pas — c'est ce
+ * qui la distingue de `releverZone`, exhaustif par construction.
+ *
+ * `zone` RESTREINT le constat aux lots rangés là (voir `EvtObservation.zone`) :
+ * la ligne d'une zone ne dit que ce que cette zone contient. `null` pour
+ * l'ingrédient entier, toutes zones confondues.
+ */
+export async function corrigerLigne(
+  base: Base,
+  ingredient: string,
+  unites: number,
+  zone: string | null,
+  aujourdhui = new Date(),
+): Promise<number> {
+  const jour = jourISO(aujourdhui);
+  const evt: Evenement = {
+    sorte: "observation",
+    portee: "ingredient",
+    zone,
+    jour,
+    saisi: jour,
+    constats: [{ ingredient, unites }],
+    maj: Date.now(),
+  };
+  return (await base.evenements.add(evt as never)) as number;
+}
+
+/**
  * Un relevé de zone — le geste qui achète des semaines de silence.
  *
  * EXHAUSTIF : ce qui n'est pas dans `constats` n'est plus dans la zone. Zéro,

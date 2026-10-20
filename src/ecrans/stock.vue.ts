@@ -794,6 +794,8 @@ export function zones(gm: GardeManger): ZoneVue[] {
 
 export interface ASauverVue {
   cle: string;
+  /** L'id, alias résolu — celui du rejeu, que corrige `corrigerLigne` (T139). */
+  id: string;
   nom: string;
   urgence: Urgence;
   raison: string;
@@ -830,6 +832,7 @@ export function aSauverVue(catalogue: Catalogue, reste: Iterable<string>): ASauv
     }
     par.set(s.ingredient, {
       cle: s.ingredient,
+      id: catalogue.rayons.aliases[s.ingredient] ?? s.ingredient,
       nom: s.nom,
       urgence: s.urgence,
       raison: s.raison,
@@ -853,6 +856,25 @@ export function aSauverVue(catalogue: Catalogue, reste: Iterable<string>): ASauv
   return [...par.values()].map(({ zones, ...v }) => ({ ...v, ou: [...zones].join(" · ") }));
 }
 
+/**
+ * Ce qu'on peut ajouter à une zone — T139 : les ingrédients que le catalogue
+ * connaît, relevé ou rayons, alias résolus, par nom.
+ *
+ * LE CATALOGUE ET RIEN D'AUTRE. Un champ libre créerait des ids qu'aucune
+ * recette ne lit — « noix de cajou » à côté de `noix-cajou` — et la denrée
+ * ajoutée ne retirerait jamais une ligne de courses : on l'aurait dite pour rien.
+ */
+export function ingredientsConnus(catalogue: Catalogue): { id: string; nom: string }[] {
+  const alias = (id: string): string => catalogue.rayons.aliases[id] ?? id;
+  const ids = new Set([
+    ...Object.values(catalogue.rayons.rayons).flat().map(alias),
+    ...idsDuReleve(catalogue),
+  ]);
+  return [...ids]
+    .map((id) => ({ id, nom: nomDeLaDenree(id) }))
+    .sort((a, b) => a.nom.localeCompare(b.nom, "fr"));
+}
+
 export interface GardeMangerVue {
   zones: ZoneVue[];
   /** Les erreurs de rangement, calculées à l'export. */
@@ -860,6 +882,8 @@ export interface GardeMangerVue {
   /** Ce qui se perd, du plus pressé au moins. L'autre moitié de l'anti-gaspi :
    *  « à déplacer » dit de ranger autrement, celle-ci dit de cuisiner. */
   aSauver: ASauverVue[];
+  /** Ce qu'un relevé peut ajouter à une zone (T139). */
+  connus: { id: string; nom: string }[];
   /** Le volume mesuré du garde-manger. Les zones non cotées n'y sont pas. */
   volume: string;
 }
@@ -882,6 +906,7 @@ export function gardeManger(catalogue: Catalogue, reste: Iterable<string>): Gard
     zones: zones(gm),
     alertes: gm.alertes,
     aSauver: aSauverVue(catalogue, reste),
+    connus: ingredientsConnus(catalogue),
     volume: volumeL === 0 ? "" : `${fmt(volumeL)} L`,
   };
 }
@@ -909,9 +934,72 @@ export interface ResteAuPlacard {
 export interface MesureZone {
   grammes: number | null;
   unites: number;
+  /**
+   * T139 — LA PORTÉE D'UNE CORRECTION FAITE SUR CETTE LIGNE (`corrigerLigne`).
+   *
+   * L'id de la zone quand le relevé range l'ingrédient dans plusieurs zones :
+   * la ligne ne montre que ce qui est ici, sa correction ne touche que ce qui
+   * est ici. `null` quand il n'a qu'une place — tous ses lots s'y lisent, y
+   * compris ceux rentrés des courses sans rangement, et la correction doit les
+   * atteindre aussi.
+   */
+  zone: string | null;
+  /** Rangé là par un œil sans que le relevé le connaisse (`Rejeu.ajoutes`). */
+  ajoute: boolean;
+  /** Ce que la ligne affiche : « 4 boîtes », « 2 sachets · 1 entamé » — voir
+   *  `enPaquets`. Des grammes seulement pour ce qui s'achète au poids. */
+  quantite: string;
 }
 
 const enPoids = (g: number): string => (g >= 1000 ? `${fmt(g / 1000)} kg` : `${fmt(g)} g`);
+
+/** Les mots d'unité féminins — pour accorder « entamée ». */
+const FEMININS = new Set(["boîte", "brique", "tête", "pièce", "bouteille", "conserve"]);
+
+const auPluriel = (mot: string, n: number): string =>
+  n < 2 || /[sxz]$/.test(mot) ? mot : mot.endsWith("al") ? `${mot.slice(0, -2)}aux` : `${mot}s`;
+
+/**
+ * Le mot de l'unité d'achat d'un ingrédient, ou `null` s'il s'achète au poids
+ * ou se compte sans emballage — T139.
+ *
+ * `fond.yaml:unite` d'abord (« sachet de 500 g » → « sachet ») : c'est le mot
+ * que le foyer a écrit. À défaut, le relevé : une conserve est une boîte, un
+ * paquet pesé est un paquet. Ce qui reste — les courses en vrac — se dit en
+ * grammes, parce que c'est ainsi qu'on l'a acheté.
+ */
+export function motDuPaquet(catalogue: Catalogue, id: string): string | null {
+  const alias = (x: string): string => catalogue.rayons.aliases[x] ?? x;
+  const fond = (catalogue.fond?.denrees ?? []).find((d) => alias(d.ingredient) === id);
+  const mot = fond?.unite.trim().split(/\s+/)[0]?.toLowerCase();
+  if (mot) return mot;
+  const releve = catalogue.gardeManger.denrees.find((d) => alias(d.ingredient) === id);
+  if (!releve) return null;
+  if (releve.etat === "conserve") return "boîte";
+  return releve.parUnite ? "paquet" : null;
+}
+
+/**
+ * Une poignée de lots, dite en PAQUETS — T139.
+ *
+ * « 1 kg » de maïs sur quatre boîtes ne se vérifie pas devant le placard ; on y
+ * compte des boîtes. Les entamés se disent à part, parce que c'est ce que l'œil
+ * distingue : un bocal ouvert n'est pas une boîte de plus. Le compte rejoint
+ * celui de `mesurer` (un entamé vaut une unité), donc celui que corrigent les
+ * boutons − / + : on corrige le nombre qu'on lit.
+ */
+export function enPaquets(lots: readonly LotPlacard[], mot: string | null): string {
+  const m = mesurer(lots);
+  if (!mot) return m.grammes != null ? enPoids(m.grammes) : `${m.unites}`;
+  const entames = lots.reduce(
+    (n, l) => n + (l.entame != null ? 1 : 0) + (l.etat === "entame" ? l.unites : 0),
+    0,
+  );
+  const scelles = m.unites - entames;
+  const e = (n: number) => `${n} entamé${FEMININS.has(mot) ? "e" : ""}${n > 1 ? "s" : ""}`;
+  if (!scelles) return `${entames} ${auPluriel(mot, entames)} ${e(entames).replace(/^\d+ /, "")}`;
+  return `${scelles} ${auPluriel(mot, scelles)}${entames ? ` · ${e(entames)}` : ""}`;
+}
 
 /**
  * Ce qu'il RESTE au garde-manger, dit en une phrase — T106.
@@ -991,6 +1079,9 @@ function parZoneDu(
       if (!l.includes(z.id)) l.push(z.id);
       places.set(alias(d.ingredient), l);
     }
+  // T139 — ce qu'un œil a rangé sans que le relevé le connaisse a UNE place :
+  // celle où il l'a vu.
+  for (const [id, zone] of rejeu.ajoutes) if (!places.has(id)) places.set(id, [zone]);
   const lots = new Map<string, LotPlacard[]>(); // clé : `zone|id`
   for (const [id, ou] of places) {
     for (const lot of rejeu.parIngredient.get(id)?.lots ?? []) {
@@ -1005,8 +1096,25 @@ function parZoneDu(
     const dedans = new Map<string, MesureZone>();
     for (const d of gm.denrees) {
       if (d.zone !== z.id || dedans.has(d.ingredient)) continue;
-      const l = lots.get(`${z.id}|${alias(d.ingredient)}`);
-      if (l?.length) dedans.set(d.ingredient, mesurer(l));
+      const id = alias(d.ingredient);
+      const l = lots.get(`${z.id}|${id}`);
+      if (l?.length)
+        dedans.set(d.ingredient, {
+          ...mesurer(l),
+          zone: (places.get(id)?.length ?? 0) > 1 ? z.id : null,
+          ajoute: false,
+          quantite: enPaquets(l, motDuPaquet(catalogue, id)),
+        });
+    }
+    for (const [id, zone] of rejeu.ajoutes) {
+      const l = lots.get(`${z.id}|${id}`);
+      if (zone === z.id && l?.length && !dedans.has(id))
+        dedans.set(id, {
+          ...mesurer(l),
+          zone: null,
+          ajoute: true,
+          quantite: enPaquets(l, motDuPaquet(catalogue, id)),
+        });
     }
     parZone.set(z.id, dedans);
     const g = [...dedans.values()].reduce((s, m) => s + (m.grammes ?? 0), 0);

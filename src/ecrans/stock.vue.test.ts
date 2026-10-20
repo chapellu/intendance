@@ -7,7 +7,7 @@ import type { Catalogue, Denree, Zone } from "../model/types";
 import { contexte, rejouer, type Evenement } from "../model/journal";
 import {
   agressions, baisserPlancher, categories, espaces, fiabilite, gardeManger, lots,
-  perte, PERIME, resteAuPlacard, restesPerimes, vueDeLInventaire, vueDesPlanchers, vueDesPlanchersDenrees, zones,
+  enPaquets, ingredientsConnus, motDuPaquet, perte, PERIME, resteAuPlacard, restesPerimes, vueDeLInventaire, vueDesPlanchers, vueDesPlanchersDenrees, zones,
 } from "./stock.vue";
 
 const LUNDI = new Date("2026-08-17T12:00:00Z");
@@ -639,7 +639,56 @@ describe("une zone ne montre que ce qui reste en elle — T107", () => {
     const r = reste([...catalogue.gardeManger.zones.map((z, i) => vider(z.id, i)), entree]);
     const ou = [...r.parZone].filter(([, m]) => m.has("pates")).map(([z]) => z);
     expect(ou).toEqual(["demi-lune-haute"]);
-    expect(r.parZone.get("demi-lune-haute")!.get("pates")).toEqual({ grammes: 1000, unites: 2 });
+    expect(r.parZone.get("demi-lune-haute")!.get("pates")).toMatchObject({ grammes: 1000, unites: 2, quantite: "2 paquets" });
+  });
+
+  test("T139 — LE MAÏS SE COMPTE EN BOÎTES, PAS EN KILOS", () => {
+    const m = reste([]).parZone.get("etagere-ouverte")!.get("mais")!;
+    expect(m.grammes).not.toBeNull();
+    expect(m.quantite).toBe(`${m.unites} boîtes`);
+  });
+
+  test("T139 — une ligne d'un ingrédient relevé dans deux zones se corrige dans la sienne", () => {
+    const r = reste([]);
+    expect(r.parZone.get("etagere-ouverte")!.get("concentre-tomate")!.zone).toBe("etagere-ouverte");
+    expect(r.parZone.get("etagere-ouverte")!.get("mais")!.zone).toBeNull();
+  });
+
+  test("T139 — ce qu'un relevé ajoute à une zone s'y lit", () => {
+    const ajout: Evenement = {
+      sorte: "observation", portee: "zone", zone: "demi-lune-haute", jour, saisi: jour, maj: 1,
+      constats: [{ ingredient: "noix", unites: 2 }],
+    };
+    const m = reste([ajout]).parZone.get("demi-lune-haute")!.get("noix");
+    expect(m).toMatchObject({ unites: 2, ajoute: true, zone: null });
+  });
+});
+
+describe("T139 — dire en paquets, ajouter du catalogue", () => {
+  const lot = (p: Partial<Parameters<typeof enPaquets>[0][number]>) => ({
+    ingredient: "x", zone: "z", unites: 1, parUnite: { amount: 500, unit: "g" }, etat: "sec" as const,
+    entame: null, court: false, ...p,
+  });
+
+  test("l'entamé se dit à part, accordé", () => {
+    expect(enPaquets([lot({ unites: 3 }), lot({ unites: 0, entame: 120 })], "boîte")).toBe("3 boîtes · 1 entamée");
+    expect(enPaquets([lot({ unites: 1, etat: "entame" })], "paquet")).toBe("1 paquet entamé");
+  });
+
+  test("sans unité d'achat, le vrac se dit en grammes", () => {
+    expect(enPaquets([lot({ unites: 2 })], null)).toBe("1 kg");
+    expect(enPaquets([lot({ unites: 2, parUnite: null })], null)).toBe("2");
+  });
+
+  test("le mot vient du fond, puis du relevé", () => {
+    expect(motDuPaquet(catalogue, "mais")).toBe("boîte");
+    expect(motDuPaquet(catalogue, "inconnu-du-catalogue")).toBeNull();
+  });
+
+  test("on ajoute ce que le catalogue connaît, une fois chacun", () => {
+    const c = ingredientsConnus(catalogue);
+    expect(c.some((x) => x.id === "pates")).toBe(true);
+    expect(new Set(c.map((x) => x.id)).size).toBe(c.length);
   });
 });
 
