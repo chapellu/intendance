@@ -346,6 +346,9 @@ export interface Contexte {
   deGarde: ReadonlySet<string>;
   /** Le jour du relevé d'amorce — la première observation du journal. */
   releve: string | null;
+  /** T135 : ce que contient une unité d'achat du fond (`fond.yaml:unite`),
+   *  quand elle le dit — « sachet de 500 g », « boîte de 6 ». */
+  contenu: (id: string) => Quantite | null;
 }
 
 export function contexte(catalogue: Catalogue): Contexte {
@@ -368,8 +371,39 @@ export function contexte(catalogue: Catalogue): Contexte {
         .flatMap((f) => f.ids),
     ),
     releve: catalogue.gardeManger.releve,
+    contenu: (() => {
+      const par = new Map<string, Quantite>();
+      for (const d of catalogue.fond?.denrees ?? []) {
+        const q = contenuDUnite(d.unite);
+        if (q) par.set(alias(d.ingredient), q);
+      }
+      return (id: string) => par.get(alias(id)) ?? null;
+    })(),
   };
 }
+
+/**
+ * Ce que contient une unité d'achat, lu dans les mots du fond — T135.
+ *
+ * « sachet de 500 g » → 500 g ; « paquet de 1 kg » → 1000 g ; « boîte de 6 »,
+ * « pack de 4 » → 6, 4 pièces. Rien d'autre : « sachet », « tube », « filet de
+ * 1 kg » d'oignons (que les recettes comptent en pièces) ne se soustraient pas,
+ * ou pas dans la même unité, et `retirer` garde alors son mode non chiffré.
+ */
+export function contenuDUnite(unite: string): Quantite | null {
+  const nombre = (x: string): number => Number(x.replace(",", "."));
+  const kg = /(\d+(?:[.,]\d+)?)\s*kg\b/i.exec(unite);
+  if (kg) return { amount: nombre(kg[1]!) * 1000, unit: "g" };
+  const g = /(\d+(?:[.,]\d+)?)\s*g\b/i.exec(unite);
+  if (g) return { amount: nombre(g[1]!), unit: "g" };
+  const pieces = /\bde\s+(\d+)\s*$/i.exec(unite);
+  if (pieces) return { amount: nombre(pieces[1]!), unit: PIECE };
+  return null;
+}
+
+/** L'unité de compte des recettes : `pièce`, et `pot` pour un yaourt. */
+const PIECE = "pièce";
+const enPieces = (unit: string): boolean => unit === PIECE || unit === "piece" || unit === "pot";
 
 /**
  * À partir de combien de semaines un frais cesse d'être « frais court ».
@@ -496,6 +530,13 @@ const EN_GRAMMES = new Set(["g", "ml"]);
 const poidsUnite = (l: LotPlacard): number | null =>
   l.parUnite && EN_GRAMMES.has(l.parUnite.unit) ? l.parUnite.amount : null;
 
+/** Ce que contient une unité DANS L'UNITÉ DE LA DEMANDE — des grammes, ou des
+ *  pièces pour une boîte d'œufs (T135). Une autre unité : non chiffré. */
+const contenuUnite = (l: LotPlacard, unite: "g" | "pièce"): number | null => {
+  if (unite === "g") return poidsUnite(l);
+  return l.parUnite && enPieces(l.parUnite.unit) ? l.parUnite.amount : null;
+};
+
 /**
  * Retire `besoin` grammes d'un ingrédient, en mutant ses lots.
  *
@@ -522,6 +563,8 @@ export function retirer(
   lots: LotPlacard[],
   ingredient: string,
   besoin: number | null,
+  /** T135 : `pièce` quand `besoin` compte des œufs, des pots — pas des grammes. */
+  unite: "g" | "pièce" = "g",
 ): Retrait {
   const servis = ordreDeService(lots);
   let reste = besoin;
@@ -531,7 +574,7 @@ export function retirer(
 
   for (const lot of servis) {
     if (reste != null && reste <= 1e-9) break;
-    const pu = poidsUnite(lot);
+    const pu = contenuUnite(lot, unite);
 
     // ── mode non chiffré : on avance l'état, on n'invente rien ──────────────
     if (pu == null) {
@@ -638,6 +681,9 @@ export interface Demande {
   /** `null` quand l'unité n'est pas une masse — « 2 gousses » ne se soustrait
    *  pas d'un poids, et prétendre le contraire fabriquerait un faux chiffre. */
   grammes: number | null;
+  /** T135 : les œufs, les pots de yaourt — comptés, arrondis à la pièce
+   *  au-dessus (on ne casse pas 1,9 œuf). `null` pour une masse. */
+  pieces: number | null;
 }
 
 /**
@@ -656,6 +702,7 @@ export function demandes(plat: Plat, facteur: number): Demande[] {
     out.push({
       ingredient: ing.id,
       grammes: EN_GRAMMES.has(ing.unit) ? ing.qty * facteur : null,
+      pieces: enPieces(ing.unit) ? Math.ceil(ing.qty * facteur - 1e-9) : null,
     });
   }
   return out;
@@ -753,7 +800,9 @@ export function rejouer(
           suiviDe(id).depuisVu += 1;
           continue;
         }
-        retraits.push(retirer(l, id, d.grammes));
+        retraits.push(
+          d.pieces != null ? retirer(l, id, d.pieces, PIECE) : retirer(l, id, d.grammes),
+        );
         suiviDe(id).depuisVu += 1;
         // T134 — UN INGRÉDIENT ÉPUISÉ SORT DE `parIngredient`, comme après un
         // relevé ou une correction à zéro. Sinon sa clé vide y restait, et
@@ -773,7 +822,13 @@ export function rejouer(
           ingredient: id,
           zone: ligne.zone ?? "placard-haut",
           unites: ligne.unites,
-          parUnite: ligne.parUnite,
+          // T135 — UN SACHET DU FOND A UNE TAILLE, MÊME RENTRÉ SANS POIDS. La
+          // ligne de liste dit « 2 sachets » ; `fond.yaml` dit qu'un sachet
+          // fait 500 g. Sans ça, le mode non chiffré finissait un sac de 1 kg
+          // en deux dahls, et l'année simulée n° 4 terminait sur 12 kg de
+          // lentilles corail au placard — ou, à l'inverse, une boîte d'œufs
+          // survivait à n'importe quel nombre de quiches.
+          parUnite: ligne.parUnite ?? ctx.contenu(id),
           etat: ligne.etat,
           entame: null,
           court: false,

@@ -13,12 +13,12 @@ import { ligneAchats } from "../ecrans/ceSoir.vue";
 import { phraseDuPlancher } from "../ecrans/courses.vue";
 import { lireCatalogue } from "./catalogue";
 import { creerJeu } from "./jeu";
-import { contexte, rejouer, retirer, type Evenement } from "./journal";
+import { contenuDUnite, contexte, rejouer, retirer, type Evenement } from "./journal";
 import { proposerCeSoir } from "./pause";
 import { minimumsDuFond, sousLeurPlancher } from "./plancherGardeManger";
 import { PASSE_VIDE } from "./questions";
 import type { Savoir } from "./scoring";
-import type { Catalogue } from "./types";
+import type { Catalogue, Plat } from "./types";
 
 const catalogue: Catalogue = lireCatalogue(JSON.parse(readFileSync("public/cuisine-data.json", "utf8")));
 const ctx = contexte(catalogue);
@@ -66,8 +66,15 @@ describe("T134 — cuisiner un plat du fond le consomme, et la liste le recharge
     expect(carte?.manque.map((a) => a.id) ?? []).not.toContain("lentilles-seches");
   });
 
-  test("quatre hachis (le sachet du relevé, puis un des deux du fond) : il en reste un, la liste dit « pour le fond »", () => {
+  // T135 — 200 g par hachis (250 g pour 5 parts, cuisiné pour 4), sur 1,5 kg :
+  // le sachet du relevé (500 g) puis les deux du fond (500 g chacun).
+  test("quatre hachis (800 g) : un sachet entamé et un scellé, la liste ne demande rien", () => {
     const { liste } = apres(4);
+    expect(liste.map((l) => l.ingredient)).not.toContain("lentilles-seches");
+  });
+
+  test("six hachis (1,2 kg) : il reste un sachet entamé, la liste dit « pour le fond »", () => {
+    const { liste } = apres(6);
     const l = liste.find((x) => x.ingredient === "lentilles-seches");
     expect(l).toMatchObject({ a: 1, niveau: 2, manque: 1, fond: true });
     expect(phraseDuPlancher(l!, 0)).toContain("pour le fond");
@@ -91,5 +98,92 @@ describe("T134 — cuisiner un plat du fond le consomme, et la liste le recharge
     expect(retirer(paquet, "pates", 250).effet).toBe("etat");
     expect(retirer(paquet, "pates", 250).effet).toBe("unite");
     expect(paquet).toEqual([]);
+  });
+});
+
+// T135 — l'année simulée n° 4 : 12 kg de lentilles corail au placard en fin
+// d'année (un sachet « fini » en deux plats), et à l'inverse du fromage râpé,
+// des yaourts, des œufs à zéro pendant que la fiche disait « rien à acheter ».
+// Un paquet du fond rentré sans poids prend la taille que `fond.yaml` lui donne.
+describe("T135 — le fond se consomme à la quantité, pas au paquet", () => {
+  const platDe = (id: string, ingredient: string, qty: number, unit: string, portions = 4): Plat => ({
+    ...catalogue.plats[0]!,
+    id,
+    portions,
+    ingredients: [{ ...catalogue.plats[0]!.ingredients[0]!, id: ingredient, ref: ingredient, qty, unit, base: false, assaisonnement: false }],
+  });
+
+  /** Un paquet rentré sans poids, puis `n` cuissons ; le relevé de cet id est retiré. */
+  const rejeuDe = (cat: Catalogue, ingredient: string, plat: Plat, n: number, parts: number) => {
+    const c: Catalogue = {
+      ...cat,
+      plats: [...cat.plats, plat],
+      gardeManger: { ...cat.gardeManger, denrees: cat.gardeManger.denrees.filter((d) => d.ingredient !== ingredient) },
+    };
+    const entree: Evenement = {
+      sorte: "entree", jour: jourAvant(30), saisi: jourAvant(30), maj: 1,
+      lignes: [{ ingredient, unites: 1, parUnite: null, zone: "test", etat: "sec" }],
+    };
+    const cuissons: Evenement[] = Array.from({ length: n }, (_, i) => ({
+      sorte: "cuisine" as const, jour: jourAvant(29 - i), saisi: jourAvant(29 - i), maj: 2 + i,
+      repas: "diner" as const, plat: plat.id, parts,
+    }));
+    return { c, rejeu: rejouer(c, [entree, ...cuissons], contexte(c), jourAvant(0)) };
+  };
+
+  test("la taille d'une unité se lit dans les mots du fond", () => {
+    expect(contenuDUnite("sachet de 500 g")).toEqual({ amount: 500, unit: "g" });
+    expect(contenuDUnite("paquet de 1 kg")).toEqual({ amount: 1000, unit: "g" });
+    expect(contenuDUnite("sachet de 500 g ou bocal")).toEqual({ amount: 500, unit: "g" });
+    expect(contenuDUnite("boîte de 6")).toEqual({ amount: 6, unit: "pièce" });
+    expect(contenuDUnite("sachet")).toBeNull();
+    expect(ctx.contenu("fromage-rape")).toEqual({ amount: 200, unit: "g" });
+    expect(ctx.contenu("oeufs")).toEqual({ amount: 6, unit: "pièce" });
+  });
+
+  test("un sac de 1 kg de lentilles corail tient quatre dahls de 200 g, et la liste ne le demande qu'au cinquième", () => {
+    const dahl = platDe("dahl-test", "lentilles-corail", 200, "g");
+    const cat: Catalogue = {
+      ...catalogue,
+      fond: {
+        ...catalogue.fond,
+        denrees: catalogue.fond.denrees.map((d) =>
+          d.ingredient === "lentilles-corail" ? { ...d, minimum: 1, unite: "sac de 1 kg" } : d),
+      },
+    };
+    const plancher = [{ ingredient: "lentilles-corail", niveau: 1 }];
+    for (const n of [1, 2, 3, 4]) {
+      const { c, rejeu } = rejeuDe(cat, "lentilles-corail", dahl, n, 4);
+      expect(rejeu.parIngredient.get("lentilles-corail")?.grammes).toBeCloseTo(1000 - 200 * n);
+      expect(sousLeurPlancher(c, rejeu, plancher).map((l) => l.ingredient)).not.toContain("lentilles-corail");
+    }
+    const { c, rejeu } = rejeuDe(cat, "lentilles-corail", dahl, 5, 4);
+    expect(rejeu.parIngredient.has("lentilles-corail")).toBe(false);
+    expect(sousLeurPlancher(c, rejeu, plancher).find((l) => l.ingredient === "lentilles-corail"))
+      .toMatchObject({ a: 0, manque: 1 });
+  });
+
+  test("une boîte de 6 œufs : deux quiches à 3 œufs la vident, pas une de plus", () => {
+    const quiche = platDe("quiche-test", "oeufs", 3, "pièce");
+    expect(rejeuDe(catalogue, "oeufs", quiche, 1, 4).rejeu.parIngredient.get("oeufs")?.lots[0]?.entame).toBe(3);
+    expect(rejeuDe(catalogue, "oeufs", quiche, 2, 4).rejeu.parIngredient.has("oeufs")).toBe(false);
+  });
+
+  test("à l'échelle des parts, la pièce s'arrondit au-dessus : 3 œufs pour 4, cuisiné pour 5 → 4 œufs", () => {
+    const quiche = platDe("quiche-test", "oeufs", 3, "pièce");
+    expect(rejeuDe(catalogue, "oeufs", quiche, 1, 5).rejeu.parIngredient.get("oeufs")?.lots[0]?.entame).toBe(2);
+  });
+
+  test("un sachet de 200 g de fromage râpé s'épuise : 80 g, 80 g, puis plus rien", () => {
+    const gratin = platDe("gratin-test", "fromage-rape", 80, "g");
+    expect(rejeuDe(catalogue, "fromage-rape", gratin, 2, 4).rejeu.parIngredient.get("fromage-rape")?.grammes).toBeCloseTo(40);
+    expect(rejeuDe(catalogue, "fromage-rape", gratin, 3, 4).rejeu.parIngredient.has("fromage-rape")).toBe(false);
+  });
+
+  test("un paquet de taille inconnue garde l'heuristique de T134 (il s'ouvre, puis se finit)", () => {
+    const poelee = platDe("poelee-test", "champignons-surgeles", 300, "g");
+    expect(ctx.contenu("champignons-surgeles")).toBeNull();
+    expect(rejeuDe(catalogue, "champignons-surgeles", poelee, 1, 4).rejeu.parIngredient.get("champignons-surgeles")?.lots[0]?.etat).toBe("entame");
+    expect(rejeuDe(catalogue, "champignons-surgeles", poelee, 2, 4).rejeu.parIngredient.has("champignons-surgeles")).toBe(false);
   });
 });

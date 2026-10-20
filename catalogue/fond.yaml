@@ -68,7 +68,7 @@ denrees:
   - {ingredient: ail, minimum: 1, unite: tête}
   - {ingredient: carottes, minimum: 1, unite: sachet de 1 kg}
   - {ingredient: oeufs, minimum: 1, unite: boîte de 6}
-  - {ingredient: fromage-rape, minimum: 1, unite: sachet}
+  - {ingredient: fromage-rape, minimum: 1, unite: sachet de 200 g}
   - {ingredient: yaourt-nature, minimum: 1, unite: pack de 4}
   - {ingredient: citron, minimum: 2, unite: pièce}
 
