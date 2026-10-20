@@ -9,6 +9,7 @@
 recipe:
   id: panzanella-toscana
   title: Panzanella Toscana
+  format: salade
   lang: fr
   source:
     author: Marie Chioca

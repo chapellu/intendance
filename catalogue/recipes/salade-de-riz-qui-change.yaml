@@ -8,6 +8,7 @@
 recipe:
   id: salade-de-riz-qui-change
   title: Salade de riz « qui change »
+  format: salade
   lang: fr
   source:
     author: Marie Chioca

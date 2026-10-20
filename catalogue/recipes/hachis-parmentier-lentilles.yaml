@@ -1,0 +1,109 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-18 — aucune source
+# extérieure. Gratin de toute l'année, fait avec le fond SEUL.
+#
+# LE PLAT DE FAMILLE PAR EXCELLENCE, SANS LA VIANDE. Les lentilles mijotées à
+# la tomate prennent la place du hachis ; la purée est à l'huile d'olive et au
+# yaourt, parce que le fond n'a ni beurre ni lait.
+
+recipe:
+  id: hachis-parmentier-lentilles
+  title: Hachis parmentier de lentilles
+  lang: fr
+  format: gratin
+  yields:
+    portions_eq: 5
+  time_min_total: 75
+  active_min: 20
+
+  apports:
+    proteine: legumineuse
+    feculent: pommes-de-terre
+    legumes: [racine, solanacee, allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: lentilles-seches, name: lentilles vertes sèches, qty: 250, unit: g}
+    - {id: carottes, name: carottes, qty: 2, unit: pièce}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: ail, name: ail, qty: 1, unit: gousse}
+    - {id: tomates-pelees, name: tomates pelées en conserve, qty: 400, unit: g}
+    - {id: concentre-tomate, name: concentré de tomate, qty: 1, unit: c. à s.}
+    - {id: thym, name: thym, qty: 1, unit: c. à c.}
+    - {id: laurier, name: feuille de laurier, qty: 1, unit: pièce}
+    - {id: eau, name: eau, qty: 0.6, unit: l}
+    - {id: pomme-de-terre, name: pommes de terre à purée, qty: 1, unit: kg}
+    - {id: huile-olive, name: huile d'olive, qty: 3, unit: c. à s.}
+    - {id: yaourt-nature, name: yaourt nature, qty: 1, unit: pièce}
+    - {id: fromage-rape, name: fromage râpé, qty: 60, unit: g}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+
+  steps:
+    - id: tailler
+      action: "Carottes en petits dés, oignon et ail émincés, lentilles rincées"
+      needs: [chop-coarse]
+      uses: [carottes, oignon, ail, lentilles-seches]
+      time_min: 8
+      kid: {age_min_months: 30, task: "rincer les lentilles dans la passoire"}
+    - id: lentilles
+      action: "Dans la cocotte : lentilles, légumes, tomates, concentré, thym, laurier et eau ; mijoter à couvert"
+      astuce: "Elles doivent finir presque sèches : trop de jus détremperait la purée."
+      needs: [simmer-large]
+      uses: [tomates-pelees, concentre-tomate, thym, laurier, eau]
+      time_min: 35
+      attended: false
+    - id: pommes-de-terre
+      action: "Pendant ce temps, cuire les pommes de terre épluchées et coupées en morceaux à l'eau"
+      needs: [boil]
+      uses: [pomme-de-terre]
+      time_min: 25
+      attended: false
+      parallel_with: lentilles
+    - id: prechauffer
+      action: "Préchauffer le four à 200 °C"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+      parallel_with: lentilles
+    - id: puree
+      action: "Écraser les pommes de terre avec l'huile, le yaourt et un peu d'eau de cuisson"
+      needs: [puree]
+      uses: [huile-olive, yaourt-nature]
+      time_min: 5
+      kid: {age_min_months: 30, task: "aider à écraser au presse-purée"}
+    - id: saler
+      action: "Retirer le laurier, saler les lentilles et la purée"
+      needs: []
+      uses: [sel]
+      time_min: 2
+      seasoning_gate: true
+    - id: monter
+      action: "Lentilles au fond du plat, purée par-dessus, fromage râpé pour finir"
+      needs: [gratin-vessel]
+      uses: [fromage-rape]
+      time_min: 4
+    - id: gratiner
+      action: "Gratiner jusqu'à ce que le dessus soit doré"
+      needs: [gratin]
+      uses: []
+      time_min: 20
+      attended: false
+
+  baby_portion:
+    take: "2 c. à s. de lentilles et autant de purée, avant salage et sans fromage"
+    prep: "mélanger à la fourchette"
+    needs: []
+    depuis: [lentilles, puree]
+
+  emits:
+    - kind: reste-plat
+      type: hachis-lentilles
+      qty_band: 1-repas
+      keeps: {frigo_days: 3, congelo: true}
+      note: "se congèle en parts, directement dans les boîtes"
+
+  plan_b:
+    - drop: gratiner
+      saves_min: 20
+      effect: "lentilles et purée servies côte à côte, sans le gratiné"

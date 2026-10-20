@@ -5,6 +5,7 @@
 recipe:
   id: escalopes-emmental-champignons
   title: Escalopes végétariennes emmental-champignons
+  format: galettes
   lang: fr
   source:
     author: Marie Chioca

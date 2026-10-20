@@ -49,6 +49,11 @@ export type Route =
   // vise aucun créneau, c'est même tout ce qui le distingue. La fiche qu'il
   // ouvre, elle, en a un — voir `creneauDeLecture`.
   | { ecran: "repertoire" }
+  // CE SOIR, À LA PAUSE — T128. Sans paramètre : il ne vise pas un créneau
+  // qu'on choisit, il vise LE dîner de ce soir, que le modèle retrouve seul
+  // (premier jour de la fenêtre glissante). Un jour dans l'URL serait une date
+  // qui vieillit sous la fenêtre — le piège de #31.
+  | { ecran: "ce-soir" }
   // LE FIL A DEUX FORMES, ET C'EST LA MÊME ROUTE — T49. Sans créneau, c'est
   // l'ouverture : on choisit l'horizon, ou on reprend une passe commencée.
   // Avec, c'est un pas. Deux écrans auraient obligé chaque lien à savoir
@@ -98,6 +103,7 @@ export const eteint = (r: Route): boolean => !JOURS_VISIBLES && ECRANS_DES_JOURS
  *  l'en-tête et la sous-navigation. */
 const DANS_CUISINE: ReadonlySet<Ecran> = new Set<Ecran>([
   "aujourdhui", "semaine", "poses", "prevoir", "courses", "stock", "poser", "parts", "fil", "repertoire",
+  "ce-soir",
 ]);
 
 export const dansCuisine = (r: Route): boolean => DANS_CUISINE.has(r.ecran);
@@ -127,6 +133,7 @@ const SANS_PARAM: Record<string, Ecran> = {
   "cuisine/stock": "stock",
   "cuisine/fil": "fil",
   "cuisine/repertoire": "repertoire",
+  "cuisine/ce-soir": "ce-soir",
 };
 
 const AVEC_CRENEAU: Record<string, Extract<Ecran, "poser" | "parts" | "cuisiner" | "fil">> = {
@@ -148,6 +155,7 @@ export function chemin(r: Route): string {
     case "courses": return "#/cuisine/courses";
     case "stock": return "#/cuisine/stock";
     case "repertoire": return "#/cuisine/repertoire";
+    case "ce-soir": return "#/cuisine/ce-soir";
     case "fil":
       return r.creneau ? `#/cuisine/fil/${r.creneau.jour}/${r.creneau.repas}` : "#/cuisine/fil";
     case "poser": return `#/cuisine/poser/${r.creneau.jour}/${r.creneau.repas}`;

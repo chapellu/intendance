@@ -11,6 +11,7 @@ const TOUTES: Route[] = [
   { ecran: "courses" },
   { ecran: "stock" },
   { ecran: "repertoire" },
+  { ecran: "ce-soir" },
   { ecran: "fil" },
   { ecran: "fil", creneau: { jour: "2026-08-19", repas: "diner" } },
   { ecran: "poser", creneau: { jour: "2026-08-19", repas: "diner" } },

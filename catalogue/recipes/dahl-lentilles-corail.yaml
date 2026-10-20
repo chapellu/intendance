@@ -1,0 +1,96 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-18 — aucune source
+# extérieure, aucune prose d'ouvrage. Premier des dix dîners du fond de
+# roulement (`fond.yaml`) : il se cuisine avec le fond et le placard SEULS, et
+# le vérificateur le tient.
+#
+# LA LÉGUMINEUSE À DÉCOUVRIR EN PREMIER. Les lentilles corail cuisent en vingt
+# minutes sans trempage et se défont en purée : c'est la porte d'entrée des
+# légumineuses pour des enfants qui ne les connaissent pas, parce qu'on ne les
+# voit plus dans l'assiette.
+
+recipe:
+  id: dahl-lentilles-corail
+  title: Dahl de lentilles corail, coco et épinards
+  lang: fr
+  format: mijote
+  yields:
+    portions_eq: 5          # le soir pour 2,5, et deux boîtes de 0,8 L de reste
+  time_min_total: 40
+  active_min: 12
+
+  apports:
+    proteine: legumineuse
+    feculent: riz
+    legumes: [feuille, solanacee, allium]
+    profil: mijote
+    origine: indien
+
+  ingredients:
+    - {id: lentilles-corail, name: lentilles corail, qty: 300, unit: g}
+    - {id: tomates-pelees, name: tomates pelées en conserve, qty: 400, unit: g}
+    - {id: lait-coco, name: lait de coco, qty: 400, unit: ml}
+    - {id: epinards-surgeles, name: épinards hachés surgelés, qty: 300, unit: g}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: ail, name: ail, qty: 2, unit: gousse}
+    - {id: curry, name: curry doux, qty: 2, unit: c. à c.}
+    - {id: curcuma, name: curcuma, qty: 1, unit: c. à c.}
+    - {id: cumin, name: cumin, qty: 1, unit: c. à c.}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: eau, name: eau, qty: 0.8, unit: l}
+    - {id: riz, name: riz, qty: 250, unit: g}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+
+  steps:
+    - id: rincer
+      action: "Rincer les lentilles corail dans une passoire, jusqu'à ce que l'eau coule claire"
+      needs: []
+      uses: [lentilles-corail]
+      time_min: 2
+      kid: {age_min_months: 30, task: "remuer les lentilles sous l'eau froide, dans la passoire"}
+    - id: suer
+      action: "Émincer l'oignon et l'ail, les faire fondre à l'huile dans la cocotte avec les épices"
+      astuce: "Une minute d'épices dans le gras chaud suffit à libérer leur parfum ; au-delà, elles brûlent."
+      needs: [simmer-large]
+      uses: [oignon, ail, huile-olive, curry, curcuma, cumin]
+      time_min: 6
+    - id: mijoter
+      action: "Ajouter les lentilles, les tomates écrasées et l'eau, puis laisser mijoter à couvert en remuant de temps en temps"
+      astuce: "Elles se défont en vingt minutes, et c'est voulu : c'est ce qui épaissit le dahl."
+      needs: [simmer-large]
+      uses: [tomates-pelees, eau]
+      time_min: 20
+      attended: false
+    - id: riz
+      action: "Pendant ce temps, cuire le riz"
+      needs: [boil]
+      uses: [riz]
+      time_min: 15
+      attended: false
+      charge_partielle: true   # la casserole tient le riz, pas le plat
+      parallel_with: mijoter
+    - id: epinards
+      action: "Ajouter les épinards surgelés et le lait de coco, laisser reprendre le frémissement"
+      needs: [simmer-large]
+      uses: [epinards-surgeles, lait-coco]
+      time_min: 8
+    - id: saler
+      action: "Goûter et saler"
+      needs: []
+      uses: [sel]
+      time_min: 1
+      seasoning_gate: true
+
+  baby_portion:
+    take: "3 c. à s. de dahl, avant salage"
+    prep: "tel quel, détendu d'un peu d'eau s'il a épaissi — le curry doux convient, sans piment"
+    needs: []
+    depuis: [epinards]
+
+  emits:
+    - kind: reste-plat
+      type: dahl-lentilles-corail
+      qty_band: 1-repas
+      keeps: {frigo_days: 3, congelo: true}
+      note: "le reste remplit deux boîtes de 0,8 L ; le riz se recuit à part"
+
+  plan_b: []                # vingt minutes à couvert : rien à comprimer

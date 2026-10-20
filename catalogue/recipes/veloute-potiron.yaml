@@ -28,6 +28,7 @@
 recipe:
   id: veloute-potiron
   title: Le meilleur des veloutés de potiron
+  format: soupe
   lang: fr
   source:
     author: Marie Chioca

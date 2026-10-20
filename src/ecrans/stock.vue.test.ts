@@ -462,6 +462,7 @@ const denreeTest = (p: Partial<Denree> = {}): Denree => ({
   nature: "autre",
   usage: null,
   conservations: [],
+  garde: null,
   note: null,
   ...p,
 });
@@ -848,13 +849,16 @@ describe("ce qu'on veut toujours avoir, au placard", () => {
     expect(vue.poses[0]!.usage).toBe("pour l’apéro");
   });
 
-  test("ce qui ne peut pas porter de plancher est NOMMÉ, avec sa raison", () => {
-    // T46 — un placard où quatre denrées n'offrent pas le bouton, sans un mot,
-    // ressemble à une panne. Et la raison est la partie intéressante.
+  test("l'oignon a son bouton : le frais qui se garde porte un plancher", () => {
+    // T46 REFUSAIT LES QUATRE LÉGUMES DU SOUS-ÉVIER, « à revoir à l'usage ».
+    // L'usage a parlé le 2026-10-18 : ils se gardent des semaines. Mesuré sur
+    // le vrai catalogue, plus RIEN du relevé ni du fond n'est écarté — la
+    // phrase d'écart reste câblée pour le frais fragile (voir la règle de
+    // `pourquoiPasDePlancher`), elle n'a seulement personne à nommer ici.
     const vue = vueDesPlanchersDenrees(catalogue, placard(), []);
-    expect(vue.ecartes).toContain("oignon");
-    expect(vue.ecartes).toContain("s’estiment pas");
-    expect(vue.libres.some((p) => p.ingredient === "oignon")).toBe(false);
+    expect(vue.libres.some((p) => p.ingredient === "oignon")).toBe(true);
+    expect(vue.libres.some((p) => p.ingredient === "lentilles-corail")).toBe(true);
+    expect(vue.ecartes).toBe("");
   });
 
   test("un plancher qui a survécu à sa denrée se dit « jamais vu »", () => {

@@ -2,6 +2,7 @@
 recipe:
   id: sandwichs-nordiques
   title: Sandwichs nordiques
+  format: tartine
   lang: fr
   source:
     author: Marie Chioca

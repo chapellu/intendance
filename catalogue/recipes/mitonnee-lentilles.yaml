@@ -10,6 +10,7 @@
 recipe:
   id: mitonnee-lentilles
   title: Mitonnée de lentilles vertes du Puy (souche)
+  format: mijote
   lang: fr
   source:
     author: Marie Chioca

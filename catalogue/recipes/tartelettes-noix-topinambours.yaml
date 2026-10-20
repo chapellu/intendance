@@ -20,6 +20,7 @@
 recipe:
   id: tartelettes-noix-topinambours
   title: Tartelettes aux noix et topinambours
+  format: quiche
   lang: fr
   source:
     author: Marie Chioca

@@ -25,6 +25,7 @@ const denree = (p: Partial<Denree> & { ingredient: string }): Denree => ({
   nature: "autre",
   usage: null,
   conservations: [],
+  garde: null,
   note: null,
   ...p,
 });

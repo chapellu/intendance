@@ -1,0 +1,97 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-18 — aucune source
+# extérieure. Velouté d'automne : le fond, plus UNE courge.
+#
+# LES POIS CHICHES PAR-DESSUS, PAS DEDANS. Rôtis au four pendant que la soupe
+# cuit, ils croustillent : c'est la partie que les enfants réclament.
+# ⚠ Entiers et croquants, ils passent de travers chez les moins de quatre ans —
+# l'astuce le dit à l'étape.
+
+recipe:
+  id: veloute-butternut-coco-pois-chiches
+  title: Velouté de butternut au coco, pois chiches rôtis
+  lang: fr
+  format: soupe
+  yields:
+    portions_eq: 6
+  time_min_total: 50
+  active_min: 15
+
+  apports:
+    proteine: legumineuse
+    feculent: legumineuse
+    legumes: [cucurbitacee, allium]
+    profil: soupe
+    origine: francais
+
+  ingredients:
+    - {id: courge, name: "courge butternut (ou potimarron)", qty: 1.2, unit: kg}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: curry, name: curry doux, qty: 1, unit: c. à c.}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: eau, name: eau, qty: 1, unit: l}
+    - {id: lait-coco, name: lait de coco, qty: 200, unit: ml}
+    - {id: pois-chiches, name: "pois chiches cuits, en bocal", qty: 250, unit: g}
+    - {id: paprika, name: paprika doux, qty: 1, unit: c. à c.}
+    - {id: huile-olive, ref: huile-four, name: huile d'olive (pois chiches), qty: 1, unit: c. à s.}
+    - {id: bouillon-legumes, name: cube de bouillon de légumes, qty: 1, unit: pièce, seasoning: true}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 200 °C"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: tailler
+      action: "Éplucher la courge, la couper en dés ; émincer l'oignon"
+      astuce: "Une butternut s'épluche à l'économe ; un potimarron se cuit avec sa peau."
+      needs: [chop-coarse]
+      uses: [courge, oignon]
+      time_min: 10
+    - id: suer
+      action: "Faire suer l'oignon à l'huile dans la cocotte avec le curry"
+      needs: [simmer-large]
+      uses: [huile-olive, curry]
+      time_min: 4
+    - id: cuire
+      action: "Ajouter la courge et l'eau ; cuire à couvert jusqu'à ce qu'elle s'écrase"
+      needs: [simmer-large]
+      uses: [eau]
+      time_min: 25
+      attended: false
+    - id: pois-chiches
+      action: "Pendant ce temps : pois chiches égouttés, séchés, au four avec le paprika et l'huile jusqu'à croustiller"
+      astuce: "Pour les petits, les écraser : entiers et croquants, ils passent de travers."
+      needs: [bake]
+      uses: [pois-chiches, paprika, huile-four]
+      time_min: 20
+      attended: false
+      parallel_with: cuire
+      kid: {age_min_months: 30, task: "sécher les pois chiches en les roulant dans un torchon"}
+    - id: mixer
+      action: "Mixer la soupe avec le lait de coco"
+      needs: [blend-smooth]
+      uses: [lait-coco]
+      time_min: 4
+    - id: saler
+      action: "Délayer le cube, saler si besoin, servir avec les pois chiches par-dessus"
+      needs: []
+      uses: [bouillon-legumes, sel]
+      time_min: 2
+      seasoning_gate: true
+
+  baby_portion:
+    take: "un petit bol de velouté, avant le cube et le sel, sans pois chiches entiers"
+    prep: "tiédir"
+    needs: []
+    depuis: [mixer]
+
+  emits:
+    - kind: reste-plat
+      type: veloute-butternut-coco
+      qty_band: 1-repas
+      keeps: {frigo_days: 3, congelo: true}
+      note: "les pois chiches rôtis ramollissent en boîte : les garder à part, dans un bocal"
+
+  plan_b: []

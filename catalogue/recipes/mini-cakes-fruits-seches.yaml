@@ -5,6 +5,7 @@
 recipe:
   id: mini-cakes-fruits-seches
   title: Mini-cakes aux fruits séchés
+  format: cake
   lang: fr
   source:
     author: Marie Chioca

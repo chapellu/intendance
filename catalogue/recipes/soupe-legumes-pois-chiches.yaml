@@ -1,0 +1,86 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-18 — aucune source
+# extérieure. Dixième dîner du fond de roulement.
+#
+# LA SOUPE DU SOIR OÙ IL N'Y A PLUS DE FRAIS. Le sachet de légumes surgelés
+# fait tout le travail de découpe ; les pois chiches en bocal font le repas.
+# Les pois chiches secs du fond conviennent aussi, à condition d'en avoir
+# cuit d'avance (`legumineuses-mitonnees`).
+
+recipe:
+  id: soupe-legumes-pois-chiches
+  title: Soupe de légumes et pois chiches
+  lang: fr
+  format: soupe
+  yields:
+    portions_eq: 6
+  time_min_total: 45
+  active_min: 12
+
+  apports:
+    proteine: legumineuse
+    feculent: pommes-de-terre
+    legumes: [solanacee, racine, allium]
+    profil: soupe
+    origine: francais
+
+  ingredients:
+    - {id: legumes-surgeles, name: mélange de légumes surgelés, qty: 750, unit: g}
+    - {id: pois-chiches, name: "pois chiches cuits, en bocal", qty: 400, unit: g}
+    - {id: pomme-de-terre, name: pommes de terre, qty: 2, unit: pièce}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: ail, name: ail, qty: 1, unit: gousse}
+    - {id: tomates-pelees, name: tomates pelées en conserve, qty: 400, unit: g}
+    - {id: herbes-provence, name: herbes de Provence, qty: 1, unit: c. à c.}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: eau, name: eau, qty: 1.2, unit: l}
+    - {id: bouillon-legumes, name: cube de bouillon de légumes, qty: 1, unit: pièce, seasoning: true}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: rincer
+      action: "Égoutter et rincer les pois chiches"
+      needs: []
+      uses: [pois-chiches]
+      time_min: 2
+      kid: {age_min_months: 30, task: "rincer les pois chiches dans la passoire"}
+    - id: tailler
+      action: "Émincer l'oignon et l'ail, couper les pommes de terre en dés"
+      needs: [chop-coarse]
+      uses: [oignon, ail, pomme-de-terre]
+      time_min: 6
+    - id: suer
+      action: "Faire suer l'oignon et l'ail à l'huile dans la cocotte"
+      needs: [simmer-large]
+      uses: [huile-olive]
+      time_min: 4
+    - id: cuire
+      action: "Ajouter les légumes surgelés, les pommes de terre, les tomates, les herbes et l'eau ; cuire à couvert"
+      needs: [simmer-large]
+      uses: [legumes-surgeles, tomates-pelees, herbes-provence, eau]
+      time_min: 25
+      attended: false
+    - id: pois-chiches
+      action: "Ajouter les pois chiches et laisser reprendre 5 minutes"
+      needs: [simmer-large]
+      uses: []
+      time_min: 5
+    - id: saler
+      action: "Délayer le cube de bouillon, goûter et saler si besoin"
+      needs: []
+      uses: [bouillon-legumes, sel]
+      time_min: 2
+      seasoning_gate: true
+
+  baby_portion:
+    take: "un petit bol de soupe, avant le cube et le sel"
+    prep: "mixer"
+    needs: [blend-smooth]
+    depuis: [pois-chiches]
+
+  emits:
+    - kind: reste-plat
+      type: soupe-legumes-pois-chiches
+      qty_band: 1-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

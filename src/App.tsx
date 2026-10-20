@@ -14,6 +14,7 @@ import { JOURS_VISIBLES } from "./nav/jours";
 import { useRoute } from "./nav/useRoute";
 import { Coquille, Corps, type Pastilles } from "./ui/Coquille";
 import { Aujourdhui } from "./ecrans/Aujourdhui";
+import { CeSoir } from "./ecrans/CeSoir";
 import { Cockpit, useCockpit } from "./ecrans/Cockpit";
 import { Courses } from "./ecrans/Courses";
 import { Fil } from "./ecrans/Fil";
@@ -92,6 +93,7 @@ function rendre(route: Route, jeu: Jeu) {
     case "courses": return <Courses />;
     case "stock": return <Stock />;
     case "repertoire": return <Repertoire />;
+    case "ce-soir": return <CeSoir />;
     // Le fil sans créneau est son ouverture : il n'y a rien à valider, et il
     // sait lui-même s'il doit demander l'horizon ou reprendre une passe.
     //

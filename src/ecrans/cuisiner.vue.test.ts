@@ -803,10 +803,12 @@ describe("la quantité de chaque étape — T113", () => {
 
   // LE CORPUS DU FOYER EST COMPLET ; LES OUVRAGES NE SONT PAS TOUCHÉS. Les 21
   // plats sans `source` sont à nous — c'est là, et là seulement, que T113 a
-  // écrit des `uses:` (la frontière de licence de la carte #26).
+  // écrit des `uses:` (la frontière de licence de la carte #26). 47 depuis le
+  // fond de roulement : les 26 dîners du foyer qu'il apporte portent leurs
+  // `uses:` dès la saisie, et la promesse tient sans exception.
   test("tous les plats du foyer disent ce que prend chaque étape", () => {
     const foyer = catalogue.plats.filter((p) => p.source === null);
-    expect(foyer).toHaveLength(21);
+    expect(foyer).toHaveLength(47);
     for (const p of foyer) for (const e of p.steps) expect(e.uses, `${p.id} ${e.id}`).not.toBeNull();
   });
 });

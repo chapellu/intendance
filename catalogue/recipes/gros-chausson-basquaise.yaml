@@ -8,6 +8,7 @@
 recipe:
   id: gros-chausson-basquaise
   title: Gros chausson façon basquaise
+  format: pizza
   lang: fr
   source:
     author: Marie Chioca

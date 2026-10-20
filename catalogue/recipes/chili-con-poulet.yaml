@@ -6,6 +6,7 @@
 recipe:
   id: chili-con-poulet
   title: Chili-con-poulet
+  format: mijote
   lang: fr
   source:
     author: Marie Chioca

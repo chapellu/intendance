@@ -24,6 +24,7 @@
 recipe:
   id: piperade-legumes-ete
   title: Piperade ou ratatouille de légumes d'été (souche)
+  format: poelee
   lang: fr
   source:
     author: Marie Chioca

@@ -9,6 +9,7 @@
 recipe:
   id: pissaladiere-legumes-verts
   title: « Pissaladière » aux légumes verts
+  format: quiche
   lang: fr
   source:
     author: Marie Chioca

@@ -20,8 +20,10 @@ interface Onglet {
   pastille?: number;
 }
 
-/** Les écrans qui sont encore « Proposer », vus de la sous-navigation. */
-const EN_PASSE: ReadonlySet<Route["ecran"]> = new Set<Route["ecran"]>(["poser", "parts"]);
+/** Les écrans qui sont encore « Proposer », vus de la sous-navigation.
+ *  « Ce soir » en est (T128) : c'est la même question — qu'est-ce qu'on fait —
+ *  posée pour un seul dîner, et l'ouverture du fil la pose en premier. */
+const EN_PASSE: ReadonlySet<Route["ecran"]> = new Set<Route["ecran"]>(["poser", "parts", "ce-soir"]);
 
 /**
  * Le répertoire — T81. LE MÊME ONGLET DANS LES DEUX SOUS-NAVIGATIONS, ET

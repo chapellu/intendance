@@ -1,0 +1,84 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-18 — aucune source
+# extérieure. Quiche de toute l'année, faite avec le fond SEUL.
+#
+# SANS PÂTE, DONC SANS LE SEUL GESTE QUI DEMANDE DES MAINS LIBRES. L'appareil
+# prend une cuillerée de farine pour se tenir ; il cuit au plat à gratin. Les
+# épinards du congélateur font tout le légume.
+
+recipe:
+  id: quiche-epinards-thon-sans-pate
+  title: Quiche sans pâte aux épinards et au thon
+  lang: fr
+  format: quiche
+  yields:
+    portions_eq: 5
+  time_min_total: 50
+  active_min: 18
+
+  apports:
+    proteine: oeuf
+    feculent: aucun
+    legumes: [feuille, allium]
+    profil: four
+    origine: francais
+
+  avec:
+    - {id: pomme-de-terre, name: pommes de terre vapeur, qty: 600, unit: g}
+
+  ingredients:
+    - {id: epinards-surgeles, name: épinards hachés surgelés, qty: 450, unit: g}
+    - {id: thon-boite, name: thon au naturel, qty: 140, unit: g}
+    - {id: oeufs, name: œufs, qty: 5, unit: pièce}
+    - {id: yaourt-nature, name: yaourts nature, qty: 2, unit: pièce}
+    - {id: farine, name: farine, qty: 3, unit: c. à s.}
+    - {id: fromage-rape, name: fromage râpé, qty: 80, unit: g}
+    - {id: ail, name: ail, qty: 1, unit: gousse}
+    - {id: huile-olive, name: huile d'olive, qty: 1, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 180 °C"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: epinards
+      action: "Faire fondre les épinards surgelés à la poêle avec l'ail haché, jusqu'à ce qu'il ne reste plus d'eau"
+      astuce: "Ils doivent accrocher un peu au fond : l'eau qui reste ressortirait au four."
+      needs: [pan-fry]
+      uses: [epinards-surgeles, ail, huile-olive]
+      time_min: 12
+    - id: appareil
+      action: "Battre œufs, yaourts et farine, saler et poivrer"
+      needs: []
+      uses: [oeufs, yaourt-nature, farine, sel, poivre]
+      time_min: 4
+      seasoning_gate: true
+      kid: {age_min_months: 30, task: "fouetter l'appareil dans le saladier"}
+    - id: garnir
+      action: "Mêler épinards et thon émietté à l'appareil, verser dans le plat huilé, parsemer de fromage"
+      needs: [gratin-vessel]
+      uses: [thon-boite, fromage-rape]
+      time_min: 3
+    - id: cuire
+      action: "Enfourner jusqu'à ce que le centre ne tremble plus"
+      needs: [bake]
+      uses: []
+      time_min: 30
+      attended: false
+
+  baby_portion:
+    take: "2 c. à s. d'épinards fondus, avant salage"
+    prep: "mixer avec un peu d'eau"
+    needs: [blend-smooth]
+    depuis: [epinards]
+
+  emits:
+    - kind: reste-plat
+      type: quiche-epinards-thon
+      qty_band: 1-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

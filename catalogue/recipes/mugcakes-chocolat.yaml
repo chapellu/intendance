@@ -13,6 +13,7 @@
 recipe:
   id: mugcakes-chocolat
   title: Mugcakes au chocolat
+  format: cake
   lang: fr
   source:
     author: Marie Chioca

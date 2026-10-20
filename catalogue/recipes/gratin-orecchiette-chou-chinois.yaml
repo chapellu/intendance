@@ -9,6 +9,7 @@
 recipe:
   id: gratin-orecchiette-chou-chinois
   title: Gratin d'orecchiette au chou chinois et au bœuf
+  format: gratin
   lang: fr
   source:
     author: Marie Chioca

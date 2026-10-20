@@ -979,3 +979,25 @@ a.co-apercu { color: inherit; text-decoration: none; }
 .co-qetape .nom { flex: 1; }
 .co-qetape .aussi { font-size: 13px; color: var(--color-neutral-700); }
 .co-qetape-muet { margin-top: var(--space-3); font-size: 12.5px; line-height: 1.45; color: var(--color-neutral-700); }
+
+/* T128 — la carte du soir. PLUS COURTE QUE `.co-jouable`, et c'est voulu : trois
+   lignes qui décident (acheter, lancer, pourquoi) et un bouton. La ligne
+   d'achats porte la couleur, parce que c'est elle que l'œil doit lire en
+   premier à 15 h : vert-sauge pour « rien à acheter », sable pour un article,
+   neutre pour plusieurs. */
+.co-soir { background: var(--color-surface); border-radius: var(--radius-lg); padding: var(--space-3); }
+.co-soir + .co-soir { margin-top: var(--space-2); }
+.co-soir .tete { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-2); }
+.co-soir .nom { font-family: var(--font-heading); font-size: 19px; line-height: 1.15; }
+.co-soir .meta { flex: none; font-size: 11px; background: var(--color-neutral-200); border-radius: 999px; padding: 3px 9px; }
+.co-soir .achats {
+  display: inline-block; margin-top: var(--space-2); font-size: 12.5px; font-weight: 700;
+  border-radius: 999px; padding: 4px 11px;
+}
+.co-soir .achats.zero { background: var(--color-accent-2-200); color: var(--color-accent-2-900); }
+.co-soir .achats.un { background: var(--color-accent-200); color: var(--color-accent-900); }
+.co-soir .achats.plusieurs { background: var(--color-neutral-200); color: var(--color-neutral-800); }
+.co-soir .heure { margin-top: 6px; font-size: 13px; line-height: 1.35; color: var(--color-neutral-800); }
+.co-soir .pied { display: flex; gap: var(--space-2); margin-top: var(--space-3); }
+.co-soir.pose { background: var(--color-accent-2-100); }
+.co-soir.pose + .co-soir { margin-top: var(--space-3); }

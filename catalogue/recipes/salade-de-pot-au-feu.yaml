@@ -10,6 +10,7 @@
 recipe:
   id: salade-de-pot-au-feu
   title: Salade de pot-au-feu
+  format: salade
   lang: fr
   source:
     author: Marie Chioca

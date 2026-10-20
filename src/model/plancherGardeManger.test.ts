@@ -109,14 +109,26 @@ describe("T39 — le plancher du garde-manger porte sur l'ingrédient", () => {
 /* ═══════════ T46 — un plancher n'existe que sur ce qui se compte ══════════ */
 
 describe("T46 — un plancher n'existe que sur ce que l'app sait compter", () => {
-  test("l'oignon ne peut pas porter de plancher, et l'app dit pourquoi", () => {
-    // Le cas que la prose du ticket nomme : « toujours 3 oignons » serait une
-    // cible que l'app est structurellement incapable d'évaluer, parce que T30
-    // dit que les fruits & légumes ne s'estiment pas DU TOUT.
+  test("l'oignon porte un plancher depuis qu'on sait qu'il se garde des semaines", () => {
+    // T46 L'INTERDISAIT, « position de départ, à revoir à l'usage ». Revu le
+    // 2026-10-18 : oignons, ail, pommes de terre, carottes et œufs se gardent
+    // des semaines. La classe vient de la famille de garde, pas d'une liste.
     const oignon = posables(catalogue, placard()).find((p) => p.ingredient === "oignon");
     expect(oignon).toBeDefined();
-    expect(oignon!.comptable).toBe(false);
-    expect(oignon!.raison).not.toBe("");
+    expect(oignon!.classe).toBe("de-garde");
+    expect(oignon!.comptable).toBe(true);
+    expect(oignon!.raison).toBe("");
+  });
+
+  test("le frais fragile reste refusé, et l'app dit toujours pourquoi", () => {
+    // La barrière de T46 n'est pas tombée, elle s'est déplacée : une courgette
+    // tient cinq jours, et « toujours 3 courgettes » reste une cible que l'app
+    // ne sait pas évaluer.
+    const vu = placard([{ ...releve("sous-evier", [{ ingredient: "courgettes", unites: 3 }]) }]);
+    const courgette = posables(catalogue, vu).find((p) => p.ingredient === "courgettes");
+    expect(courgette).toBeDefined();
+    expect(courgette!.comptable).toBe(false);
+    expect(courgette!.raison).not.toBe("");
   });
 
   test("l'épicerie et le fond de placard, oui ; le primeur, le frais et le non-suivi, non", () => {
@@ -131,20 +143,14 @@ describe("T46 — un plancher n'existe que sur ce que l'app sait compter", () =>
     }
   });
 
-  test("sur ce relevé, la barrière n'attrape QUE le primeur", () => {
-    // MESURE, ET ELLE CORRIGE LE TICKET. T46 annonçait la barrière comme mordant
-    // aussi sur le frais court et sur « les 23 ids sans rayon » : au garde-manger
-    // il n'y a ni l'un ni l'autre — ces 23 ids sont des ids de RECETTES, et
-    // aucun n'est dans un placard. Elle n'écarte que les quatre alliacées et
-    // tubercules du sous-évier, c'est-à-dire précisément ce que sa prose nommait.
+  test("sur ce relevé et ce fond, la barrière n'attrape plus rien", () => {
+    // MESURE. Jusqu'au 2026-10-18 elle n'écartait que les quatre alliacées et
+    // tubercules du sous-évier ; tous les quatre sont maintenant de garde, et
+    // le fond ne liste que ce qui se garde (le vérificateur l'exige). Si une
+    // denrée refusée réapparaît ici, c'est qu'on a mis du frais fragile dans
+    // le fond ou dans un placard.
     const refuses = posables(catalogue, placard()).filter((p) => !p.comptable);
-    expect(refuses.map((p) => p.ingredient).sort()).toEqual([
-      "ail",
-      "echalote",
-      "oignon",
-      "pomme-de-terre",
-    ]);
-    expect(refuses.every((p) => p.classe === "fruits-legumes")).toBe(true);
+    expect(refuses.map((p) => p.ingredient)).toEqual([]);
   });
 
   test("ce qu'on a vu partir reste posable — c'est même là que ça sert", () => {

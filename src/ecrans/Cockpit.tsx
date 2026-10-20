@@ -13,9 +13,14 @@
 //
 // Port de `apps/proto-shell/comptoir.js` (`ecranCockpit`).
 
+import { useState } from "react";
 import { base, jourISO, retirerLots } from "../db";
-import { useCatalogue, useCourses, useSemaine } from "../db/hooks";
+import { useCatalogue, useCourses, useCuisines, useSemaine } from "../db/hooks";
 import { cleGeste, poserReglage, useDrapeau } from "../db/reglages";
+import { soirDe } from "../model/pause";
+import { aller } from "../nav/useRoute";
+import { LIBELLE_LANCER } from "../ui/phrases";
+import { useProposition } from "./CeSoir";
 import type { Calcul } from "../model/calcul";
 import type { Jeu } from "../model/jeu";
 import { chemin, ENTREE_CUISINE } from "../nav/routes";
@@ -41,8 +46,13 @@ export function useCockpit(jeu: Jeu, calc: Calcul): VueCockpit | null {
   // aujourd'hui, pas pour toujours. `null` quand il n'y a pas de geste — le
   // hook doit s'appeler à tous les rendus, même ceux où il n'a rien à lire.
   const fait = useDrapeau(geste && jour0 ? cleGeste(jourISO(jour0.date), geste.type) : null);
-  if (!courses || fait === undefined) return null;
-  return vueDuCockpit(jeu, calc, { courses, gesteFait: fait });
+  // LA PROPOSITION DE 15 H — T129. On l'attend comme le reste : une ligne
+  // « Ce soir » qui dirait « Poser le dîner » une frame, puis le nom d'un plat,
+  // serait une ligne qui se corrige sous les yeux.
+  const soir = useProposition(jeu);
+  const cuisines = useCuisines(jour0 ? jourISO(jour0.date) : "", jour0 ? jourISO(jour0.date) : "");
+  if (!courses || fait === undefined || !soir || !cuisines) return null;
+  return vueDuCockpit(jeu, calc, { courses, gesteFait: fait, soir, cuisines });
 }
 
 export function Cockpit() {
@@ -133,7 +143,8 @@ function Ligne({ tache }: { tache: Tache }) {
   // coche.
   const jeter = tache.jeter;
   const cocher = tache.cocher;
-  if (jeter?.length || cocher)
+  const lancer = tache.lancer;
+  if (jeter?.length || cocher || lancer)
     return (
       <div className="co-tache">
         <span className="p">{tache.facette}</span>
@@ -158,6 +169,11 @@ function Ligne({ tache }: { tache: Tache }) {
           >
             C’est jeté
           </button>
+        ) : lancer ? (
+          // POSER, PUIS OUVRIR LA MISE EN PLACE — le même geste que la carte de
+          // « Ce soir », sans passer par la liste. `Lancer` garde le doigt
+          // d'un double tap.
+          <Lancer plat={lancer} />
         ) : cocher ? (
           // Le même drapeau que le « Fait » d'« Aujourd'hui » : cocher ici ou
           // là-bas est un seul geste, et la clé porte le jour.
@@ -213,5 +229,37 @@ function Facette({
         </span>
       ) : null}
     </a>
+  );
+}
+
+/**
+ * « Je lance ça », depuis le cockpit — T129.
+ *
+ * LE MÊME GESTE QUE LA CARTE DU SOIR, ET IL PASSE PAR LA MÊME ÉCRITURE : poser
+ * sur le dîner de ce soir (`poserPlat`, qui sait la clé `(jour, repas)`), puis
+ * ouvrir la fiche du créneau — qui, le plat posé, s'ouvre sur sa mise en place
+ * et non sur un résumé de lecture.
+ */
+function Lancer({ plat }: { plat: string }) {
+  const { catalogue } = useCatalogue();
+  const { jeu, poserPlat } = useSemaine(catalogue);
+  const [enCours, setEnCours] = useState(false);
+  const soir = jeu ? soirDe(jeu) : -1;
+  return (
+    <button
+      className="btn btn-primary"
+      style={{ fontSize: 12.5, padding: "4px 10px", flex: "none" }}
+      disabled={!jeu || soir < 0 || enCours}
+      onClick={() => {
+        if (!jeu || soir < 0 || enCours) return;
+        setEnCours(true);
+        const jour = jourISO(jeu.jours[0]!.date);
+        void poserPlat(soir, plat)
+          .then(() => aller({ ecran: "cuisiner", creneau: { jour, repas: "diner" } }))
+          .finally(() => setEnCours(false));
+      }}
+    >
+      {LIBELLE_LANCER}
+    </button>
   );
 }

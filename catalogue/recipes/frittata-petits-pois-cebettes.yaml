@@ -1,0 +1,74 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-18 — aucune source
+# extérieure. Omelette de printemps : le fond, plus UNE botte de cébettes.
+#
+# PRISE À COUVERT, À FEU DOUX. Pas de retournement : le couvercle fait cuire le
+# dessus à la vapeur pendant que le dessous dore.
+
+recipe:
+  id: frittata-petits-pois-cebettes
+  title: Frittata aux petits pois et aux cébettes
+  lang: fr
+  format: omelette
+  yields:
+    portions_eq: 4
+  time_min_total: 35
+  active_min: 15
+
+  apports:
+    proteine: oeuf
+    feculent: pommes-de-terre
+    legumes: [allium, legumineuse]
+    profil: poele
+    origine: italien
+
+  ingredients:
+    - {id: pomme-de-terre, name: pommes de terre, qty: 2, unit: pièce}
+    - {id: cebette, name: cébettes, qty: 1, unit: botte}
+    - {id: petits-pois-surgeles, name: petits pois surgelés, qty: 200, unit: g}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: oeufs, name: œufs, qty: 6, unit: pièce}
+    - {id: fromage-rape, name: fromage râpé, qty: 40, unit: g}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: tailler
+      action: "Pommes de terre en fines lamelles, cébettes émincées avec leur vert"
+      needs: [chop-coarse]
+      uses: [pomme-de-terre, cebette]
+      time_min: 6
+    - id: cuire
+      action: "Cuire les pommes de terre à l'huile, à couvert, puis ajouter petits pois et cébettes pour 3 minutes"
+      needs: [pan-fry]
+      uses: [huile-olive, petits-pois-surgeles]
+      time_min: 15
+      attended: false
+    - id: battre
+      action: "Battre les œufs avec le fromage, saler et poivrer"
+      needs: []
+      uses: [oeufs, fromage-rape, sel, poivre]
+      time_min: 3
+      seasoning_gate: true
+      kid: {age_min_months: 30, task: "battre les œufs à la fourchette"}
+    - id: prendre
+      action: "Verser les œufs sur les légumes, couvrir et laisser prendre à feu doux"
+      astuce: "Feu doux et couvercle : le dessus prend à la vapeur, sans retourner."
+      needs: [pan-fry]
+      uses: []
+      time_min: 10
+      attended: false
+
+  baby_portion:
+    take: "quelques lamelles de pomme de terre et des petits pois, avant les œufs salés"
+    prep: "écraser à la fourchette"
+    needs: []
+    depuis: [cuire]
+
+  emits:
+    - kind: reste-plat
+      type: frittata
+      qty_band: lunchbox
+      keeps: {frigo_days: 2}
+      note: "se mange froide, en part, dans une boîte"
+
+  plan_b: []

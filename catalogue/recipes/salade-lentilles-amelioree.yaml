@@ -2,6 +2,7 @@
 recipe:
   id: salade-lentilles-amelioree
   title: Salade de lentilles améliorée
+  format: salade
   lang: fr
   source:
     author: Marie Chioca

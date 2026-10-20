@@ -5014,6 +5014,134 @@ avant d'être tranché.
       (Workspace#41 : 75 % des cuissons datées hors saison, soit le hasard) est
       à rouvrir au même moment.
 
+## Le fond de roulement — T123 à T126
+
+Workspace#67, et la demande du 18/10 : *« ma mère parle de fond de roulement :
+j'ai en stock ce que j'utilise le plus, et j'achète pour le reconstituer. »*
+Branche `catalogue/fond-saisons-familiers` (commits `a368218`, `00f1ff7`),
+fusionnée dans `cuisine/a-la-pause`. Le catalogue apprend ce que le foyer a
+TOUJOURS, combien ça tient, quand un légume est de saison et quelle forme
+prend un dîner — sans rien décider : c'est le bloc suivant qui classe.
+
+- [x] **T123 — Le fond de roulement entre au catalogue.** `fond.yaml` : les 30
+      denrées du brouillon du 18/10, minimum en unités d'achat, et les dix
+      dîners « sans courses », que le vérificateur exige cuisinables avec le
+      fond et le placard seuls. `posables()` rend les denrées du fond jamais
+      vues, à zéro, avec un `minimumDuFond` — une PROPOSITION, aucun plancher
+      ne se pose tout seul. Rayon `surgelés` (classe `congelateur` même sans
+      lot), `pois-casses`, cumin, paprika et curcuma au placard.
+- [x] **T124 — Le frais qui se garde porte un plancher.** T46 refusait
+      l'oignon, l'ail et la pomme de terre, « position de départ, à revoir à
+      l'usage » ; l'usage a parlé. Classe `de-garde` (tolérance 2), DÉRIVÉE de
+      la famille de garde (`fond: true`, deux semaines au moins), pas d'une
+      liste d'ids : oignon, ail, pomme de terre, carottes, œufs, fromage râpé,
+      yaourt. Le frais fragile reste derrière la barrière de T30.
+- [x] **T125 — Une seule horloge, des jours aux années (Workspace#50).**
+      `conservation.yaml:familles` : onze familles de garde, chacune avec son
+      rangement, un conseil de geste et la SOURCE de sa fenêtre. Une seule est
+      réglementaire (les œufs) ; les autres sont des ordres de grandeur, et
+      l'app ne s'en sert que pour ORDONNER, jamais pour dire « à jeter ».
+      `saisons.yaml` (autour de Lyon) et `saisons.ts` (`deSaison`,
+      `saisonDuPlat`, `familleDe`) : des lectures pures, sans poids ; douze
+      mois de calendrier n'est pas un signal de saison.
+- [x] **T126 — Le format des dîners, et 26 dîners du foyer.** `format:` sur
+      les 127 dîners (quiche, soupe, gratin, mijoté…), exigé par le
+      vérificateur. 26 recettes rédigées pour ce dépôt (aucune prose
+      d'ouvrage) : 18 aux légumineuses, 13 faisables avec le fond seul.
+      **Mesuré : 127 dîners, 17 se font avec le fond seul (4 avant), 23 à un
+      ingrédient près (10 avant).**
+
+**À la fusion**, deux reprises qui sont de la fusion et non du catalogue :
+`cuisine-data.json` régénéré (les dîners neufs n'avaient pas `horsTable`, T108)
+et T113 compte 47 plats du foyer au lieu de 21 — les 26 neufs ont leurs
+`uses:`, la promesse tient. `household.yaml` garde la version de la pile (quatre
+boîtes IKEA de 0,8 L).
+
+## Ce soir, à la pause de 15 h — T127 à T129
+
+Workspace#66 et #67, et la mesure qui les a rendus urgents : l'année du foyer
+simulé, deuxième passage (Workspace#71). **210 dîners sur 323 retombés sur les
+pâtes**, 1 026 des 1 035 cartes refusées pour « 4 à 8 articles à acheter un jour
+sans courses », et un cockpit qui a dit « Rien n'est posé — Poser un plat » 364
+jours sur 364 sans jamais nommer les trois portions qui attendaient au
+congélateur. Le foyer ne planifie pas : il décide ET lance le dîner à la pause
+de 15 h, pour 18 h. Branche `cuisine/a-la-pause`, sur `cuisine/le-repertoire`.
+
+**LE CLASSEMENT EST UN ORDRE, PAS UNE SOMME, et c'est la décision qui commande
+les autres.** Le score de `comptoir()` additionne des termes : un plat à six
+articles s'y rachète par trois bons arguments, et c'est ce qui a nourri les
+pâtes. Ici un rang ne se rachète pas :
+
+1. ce qui doit être mangé — un reste au frigo, un lot passé à mi-vie (`axe.ts`),
+   un paquet du placard qui se perd ;
+2. rien à acheter ;
+3. un seul article, NOMMÉ (« il manque : lait de coco ») ;
+4. prêt à 18 h si on le lance maintenant ;
+5. puis, à égalité seulement : pas mangé ces trois derniers jours, légumineuses
+   et légumes, saison, quiche-soupe-gratin, peu de temps devant le feu.
+
+Ce qui demande deux achats ou plus ne sort que le mercredi et le samedi, ou
+derrière « Voir plus » : on ne retire pas une proposition, on la range là où
+elle ne coûte pas un refus.
+
+- [x] **T127 — Ce qui est ici, et ce qu'il manque.** `model/ici.ts` :
+      `ceQuiEstIci()` réunit le placard « toujours là », `Jeu.gardeManger` et
+      le rejeu ENTIER (courses rentrées, fond compris) — le frais court
+      seulement dans sa vie de T111, le `de-garde` sans borne.
+      `ceQuiManque()` compte ce qu'il faut acheter pour lancer CE plat ; une
+      base n'y manque jamais (le plat s'écarte avant), un assaisonnement non
+      plus, l'accompagnement se DIT (« à côté : salade verte — ou ce que vous
+      avez ») sans compter. **CE N'EST PAS LA LISTE DE COURSES** :
+      `Jeu.gardeManger` reste l'intersection de #32, et `calculer` n'est pas
+      touché. `Carte.marginal` répondait à une autre question — ce que le
+      plat ajoute au panier de la semaine.
+- [x] **T128 — La proposition de 15 h.** `model/pause.ts` (`proposerCeSoir`,
+      `ordre`, `horaire`, `scoreSaison`, `scoreFormat`), l'écran « Ce soir »
+      (`#/cuisine/ce-soir`, `CeSoir.tsx`, `ceSoir.vue.ts`), et le même bloc en
+      tête de l'ouverture du fil — « Combien de repas ? » reste dessous, pour
+      prévoir plusieurs repas. Trois cartes, une quatrième réservée aux
+      légumineuses quand aucune des trois n'en est (#70). « Je lance ça » pose
+      le plat sur le dîner de ce soir et ouvre sa mise en place (T112). Le
+      temps vient des ÉTAPES (règle de T81), parallèles retranchées, attentes
+      comptées, trempage rattrapé dit. `Reste réchauffé`, déclaré pour le midi,
+      est levé au dîner ici seulement. Le dîner du foyer passe à **18 h**
+      (`heures.ts`, dit le 18/10). `npm run pause` imprime les tailles.
+- [x] **T129 — Le cockpit dit la vérité sur le stock.** La ligne « Ce soir »
+      nomme le meilleur plat, ce qu'il manque, l'heure où le lancer et ce qui
+      attend (« 2 repas de sauce bolognaise au congélo ») ; elle ouvre « Ce
+      soir » (deux taps) et porte un « Je lance ça » (un tap). Un dîner posé
+      se rappelle avec son heure, un dîner cuisiné ne réclame plus rien. La
+      carte de la facette dit « Ce soir, N dîners se font sans rien acheter »
+      au lieu de « Rien n'est posé ».
+
+**Mesuré sur le corpus fusionné, un lundi à 15 h** (`npm run pause`) : avec le
+relevé du 26/08 seul, 0 dîner à zéro article et 5 à un ; avec le fond rentré,
+**17 à zéro et 23 à un**, sur 126 dîners proposables — et la proposition ouvre
+sur trois plats à zéro article (hachis parmentier de lentilles, soupe de
+légumes aux pois chiches, soupe de pois cassés). Sur le même placard, les
+quatre cartes de tête d'`offre()` en demandent 5, 3, 3 et 2 : c'est le test
+« la mesure qui a ouvert le ticket ».
+
+Portes : typecheck, **962 tests** (39 nouveaux, 22 venus du catalogue), build, **69 e2e** (3 nouveaux,
+`a-la-pause.spec.ts` ; `fil.spec.ts:126` a floconné une fois, vert en trois
+passages isolés), `catalogue:verifie` 0 erreur.
+
+**Ce qu'il laisse ouvert, et ce qui attend une confirmation.**
+- Les assaisonnements ne comptent jamais comme un achat ; les
+  accompagnements se disent sans compter. Deux décisions de classement à faire
+  confirmer.
+- Les jours de courses (mercredi, samedi) et l'heure du dîner (18 h) sont des
+  constantes de code, pas des champs du foyer — même statut que `heures.ts`.
+- Un lot du congélateur est proposé le soir même (« à sortir maintenant ») :
+  à vérifier à l'usage qu'une portion décongèle en trois heures.
+- La liste de courses ne lit toujours pas ce qui est rentré hors du relevé :
+  poser un plat dont on vient d'acheter la crème la remet dans « Courses ».
+  C'est la question de #32, à trancher et pas à contourner.
+- `avanceMin` et `minutesSurPlace` sont exportés et jetés par le chargeur ;
+  la proposition relit les étapes à la place.
+- Aucune notification à 15 h : c'est Workspace#61, une mesure sur l'iPhone.
+- La persona de l'année simulée n'a pas été rejouée sur cette branche.
+
 ## Sortie
 
 **Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`

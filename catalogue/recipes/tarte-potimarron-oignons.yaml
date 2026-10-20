@@ -1,0 +1,103 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-18 — aucune source
+# extérieure. Tarte d'automne : le fond, plus UN potimarron.
+#
+# LE POTIMARRON NE S'ÉPLUCHE PAS. Sa peau cuit et fond ; c'est ce qui en fait
+# la courge de la pause de 15 h — on la coupe, on l'enfourne, et on fait la
+# pâte pendant qu'elle rôtit.
+
+recipe:
+  id: tarte-potimarron-oignons
+  title: Tarte au potimarron et aux oignons fondus
+  lang: fr
+  format: quiche
+  yields:
+    portions_eq: 6
+  time_min_total: 70
+  active_min: 22
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: [cucurbitacee, allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: potimarron, name: potimarron, qty: 1, unit: kg}
+    - {id: oignon, name: oignons, qty: 2, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 3, unit: c. à s.}
+    - {id: farine, name: farine, qty: 250, unit: g}
+    - {id: huile-olive, ref: huile-pate, name: huile d'olive (pâte), qty: 6, unit: c. à s.}
+    - {id: eau, name: eau tiède, qty: 0.1, unit: l}
+    - {id: sel, ref: sel-pate, name: sel (pâte), qty: 1, unit: pincée, seasoning: true}
+    - {id: oeufs, name: œufs, qty: 3, unit: pièce}
+    - {id: yaourt-nature, name: yaourt nature, qty: 1, unit: pièce}
+    - {id: thym, name: thym, qty: 1, unit: c. à c.}
+    - {id: fromage-rape, name: fromage râpé, qty: 60, unit: g}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 200 °C"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: potimarron
+      action: "Potimarron épépiné, en dés avec la peau, au four sur une plaque avec un filet d'huile"
+      astuce: "Sa peau fond à la cuisson : pas d'épluchage, c'est la moitié du temps gagné."
+      needs: [bake]
+      uses: [potimarron, huile-olive]
+      time_min: 20
+      attended: false
+      kid: {age_min_months: 30, task: "vider les graines à la cuillère"}
+    - id: pate
+      action: "Pendant ce temps, mêler farine et sel, verser l'huile et l'eau tiède, pétrir en boule"
+      needs: []
+      uses: [farine, sel-pate, huile-pate, eau]
+      time_min: 5
+      parallel_with: potimarron
+    - id: foncer
+      action: "Étaler la pâte dans le moule huilé et la piquer"
+      needs: []
+      uses: []
+      time_min: 4
+      parallel_with: potimarron
+    - id: oignons
+      action: "Faire fondre les oignons émincés à la poêle, à feu doux, jusqu'à ce qu'ils dorent"
+      needs: [pan-fry]
+      uses: [oignon]
+      time_min: 12
+      parallel_with: potimarron
+    - id: appareil
+      action: "Battre œufs, yaourt et thym, saler et poivrer"
+      needs: []
+      uses: [oeufs, yaourt-nature, thym, sel, poivre]
+      time_min: 3
+      seasoning_gate: true
+    - id: garnir
+      action: "Oignons puis potimarron sur la pâte, l'appareil par-dessus, le fromage pour finir"
+      needs: []
+      uses: [fromage-rape]
+      time_min: 3
+    - id: cuire
+      action: "Baisser à 180 °C et cuire jusqu'à ce que la pâte soit dorée sur les bords"
+      needs: [bake]
+      uses: []
+      time_min: 30
+      attended: false
+
+  baby_portion:
+    take: "quelques dés de potimarron rôti, avant salage"
+    prep: "écraser en purée"
+    needs: []
+    depuis: [potimarron]
+
+  emits:
+    - kind: reste-plat
+      type: tarte-potimarron
+      qty_band: 1-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

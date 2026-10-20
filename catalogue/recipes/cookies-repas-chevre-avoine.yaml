@@ -6,6 +6,7 @@
 recipe:
   id: cookies-repas-chevre-avoine
   title: Cookies-repas au chèvre et aux flocons d'avoine
+  format: cake
   lang: fr
   source:
     author: Marie Chioca
