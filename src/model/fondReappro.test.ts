@@ -99,6 +99,17 @@ describe("T134 — cuisiner un plat du fond le consomme, et la liste le recharge
     expect(retirer(paquet, "pates", 250).effet).toBe("unite");
     expect(paquet).toEqual([]);
   });
+
+  test("T136 — un frais constaté à l'unité s'entame, il ne part pas sous le premier plat", () => {
+    const sac = [{ ingredient: "pomme-de-terre", zone: "z", unites: 1, parUnite: null, etat: "frais" as const, entame: null, court: false }];
+    expect(retirer(sac, "pomme-de-terre", 3, "pièce").effet).toBe("etat");
+    expect(sac[0]).toMatchObject({ unites: 1, etat: "entame" });
+    expect(retirer(sac, "pomme-de-terre", 3, "pièce").effet).toBe("unite");
+    expect(sac).toEqual([]);
+    const trois = [{ ingredient: "courgettes", zone: "z", unites: 3, parUnite: null, etat: "frais" as const, entame: null, court: false }];
+    expect(retirer(trois, "courgettes", 1, "pièce").effet).toBe("unite");
+    expect(trois[0]!.unites).toBe(2);
+  });
 });
 
 // T135 — l'année simulée n° 4 : 12 kg de lentilles corail au placard en fin
@@ -186,4 +197,63 @@ describe("T135 — le fond se consomme à la quantité, pas au paquet", () => {
     expect(rejeuDe(catalogue, "champignons-surgeles", poelee, 1, 4).rejeu.parIngredient.get("champignons-surgeles")?.lots[0]?.etat).toBe("entame");
     expect(rejeuDe(catalogue, "champignons-surgeles", poelee, 2, 4).rejeu.parIngredient.has("champignons-surgeles")).toBe(false);
   });
+});
+
+// L'année simulée n° 5 : 275 « manques réels » sur œufs, yaourts et fromage
+// râpé, la fiche disant « rien à acheter ». Le modèle n'y est pour rien — c'est
+// ce que ce bloc établit, du bout de la liste à la carte du soir : la faute
+// était au grand livre du harnais, qui faisait pourrir ces trois denrées en
+// sept jours quand `conservation.yaml` leur en donne 28 et 21.
+describe("T136 — œufs, yaourts, fromage râpé : achetés par la liste, cuisinés, redemandés", () => {
+  /** Le fond rentré par la liste, les trois laitages retirés du relevé, puis `n` fois `plat` pour `parts`. */
+  function scenario(ingredient: string, plat: string, n: number, parts: number) {
+    const c: Catalogue = {
+      ...catalogue,
+      gardeManger: {
+        ...catalogue.gardeManger,
+        denrees: catalogue.gardeManger.denrees.filter((d) => !["oeufs", "fromage-rape", "yaourt-nature"].includes(d.ingredient)),
+      },
+    };
+    const cx = contexte(c);
+    const cuissons: Evenement[] = Array.from({ length: n }, (_, i) => ({
+      sorte: "cuisine" as const, jour: jourAvant(29 - i), saisi: jourAvant(29 - i), maj: 2 + i,
+      repas: "diner" as const, plat, parts,
+    }));
+    const rejeu = rejouer(c, [fondRentre, ...cuissons], cx, jourAvant(0));
+    const jeu = creerJeu(c, 7, LUNDI);
+    jeu.stock = [];
+    jeu.gardeManger = jeu.gardeManger.filter((id) => rejeu.parIngredient.has(id));
+    const savoir: Savoir = { rejeu, passe: PASSE_VIDE, cuisinesRecemment: new Set(), planchers: [] };
+    const p = proposerCeSoir({ jeu, savoir, recents: new Set(), maintenant: LUNDI, sortis: new Set() });
+    const carte = [...p.cartes, ...p.plus].find((x) => x.plat.id === plat);
+    const ligne = sousLeurPlancher(c, rejeu, planchers).find((l) => l.ingredient === ingredient);
+    return { rejeu, carte, ligne };
+  }
+
+  const cas = [
+    // quiche-poireaux : 6 parts, 3 œufs, 80 g de fromage râpé
+    { ingredient: "oeufs", nom: "œufs", plat: "quiche-poireaux", parts: 6, avant: 1, apres: 2 },
+    { ingredient: "fromage-rape", nom: "râpé", plat: "quiche-poireaux", parts: 6, avant: 2, apres: 3 },
+    // quiche-courgettes-yaourt : 6 parts, 2 yaourts
+    { ingredient: "yaourt-nature", nom: "yaourt", plat: "quiche-courgettes-yaourt", parts: 6, avant: 1, apres: 2 },
+  ];
+
+  for (const k of cas) {
+    test(`${k.ingredient} : ${k.avant} × ${k.plat} n'épuise pas l'unité, ${k.apres} la vident`, () => {
+      const avant = scenario(k.ingredient, k.plat, k.avant, k.parts);
+      expect(avant.rejeu.parIngredient.has(k.ingredient)).toBe(true);
+      expect(avant.ligne).toBeUndefined();
+
+      const { rejeu, carte, ligne } = scenario(k.ingredient, k.plat, k.apres, k.parts);
+      expect(rejeu.parIngredient.has(k.ingredient)).toBe(false);
+      expect(ligne).toMatchObject({ a: 0, manque: 1, fond: true });
+      expect(phraseDuPlancher(ligne!, 0)).toContain("pour le fond");
+      expect(carte).toBeDefined();
+      expect(carte!.manque.map((a) => a.id)).toContain(k.ingredient);
+      // La phrase de la carte tronque à deux noms (« et 2 autres ») ; la liste
+      // complète de ce qui manque est `carte.manque`.
+      expect(carte!.manque.map((a) => a.nom.toLowerCase()).join(" · ")).toContain(k.nom);
+      expect(ligneAchats(carte!)).toMatch(/^il manque : /);
+    });
+  }
 });

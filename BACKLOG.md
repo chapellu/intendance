@@ -5225,6 +5225,18 @@ Branche `cuisine/a-la-pause-retouches`, sur `cuisine/a-la-pause`.
       (entrée `mange`) ajoute `POIDS.repetition` −2 par fois en 14 jours,
       `memeFormat` −1,5 par soir du même format sur les 2 derniers, `oublie`
       +1,5 au-delà de 30 jours si faisable — dans le départage seul.
+- [x] **T136 — Œufs, yaourts, fromage râpé : le faux manque venait du
+      harnais.** Année simulée n° 5 : 275 « manques réels » sur ces trois
+      laitages, fiche « rien à acheter ». Le modèle les décompte bien (T135) :
+      `fondReappro.test.ts` le prouve de la liste à la carte (une boîte de 6,
+      deux quiches à 3 œufs → ligne « pour le fond » et « il manque » ; idem
+      sachet de 200 g et pack de 4). C'est `pourrirLeFrais` du grand livre
+      (`sim/annee.mjs`) qui les jetait au bout de 7 jours, sans geste à
+      rejouer ; il lit désormais `garde` (28 j œufs, 21 j laitier). Et
+      `retirer` : un frais constaté à l'unité (`unites: 1`, sans poids)
+      s'entame au lieu de partir sous le premier plat — le sac de pommes de
+      terre du relevé disparaissait sous une omelette, ce qui cassait
+      `stock-descend.spec.ts:46` depuis T134.
 
 ## Sortie
 
