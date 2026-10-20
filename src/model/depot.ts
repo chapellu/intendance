@@ -312,6 +312,17 @@ interface Ajout {
 
 export class Depot {
   readonly lignes: LigneDepot[] = [];
+  /**
+   * Les lignes déjà là quand la semaine commence — celles du constructeur, dans
+   * le même ordre, les mêmes objets que dans `lignes`.
+   *
+   * GARDÉES À PART POUR QUE PERSONNE N'AIT À LES RETROUVER. Le budget de
+   * rangement les compte au départ et doit savoir lesquelles sont périmées ;
+   * les reconnaître à `from === null` ou à leur rang dans `lignes` marcherait
+   * aujourd'hui, par accident de qui appelle `ajouter()`. Une liste nommée ne
+   * dépend de personne.
+   */
+  readonly initiales: readonly LigneDepot[];
 
   constructor(
     private readonly horloges: Horloges,
@@ -343,6 +354,7 @@ export class Depot {
         epuise: false,
       });
     }
+    this.initiales = [...this.lignes];
   }
 
   /** Range une sortie de plat. `location` vaut « frigo » par défaut, et c'est
@@ -442,7 +454,27 @@ export class Depot {
   private age(ligne: LigneDepot, date: Date): number | null {
     const v = this.vie(ligne, date);
     if (!v) return null;
-    return v.dur && v.depasse ? null : v.age;
+    return this.perime(ligne, date) ? null : v.age;
+  }
+
+  /**
+   * Ce lot est-il un reste de frigo PASSÉ — sorti du jeu, et à jeter ? — T103.
+   *
+   * PUBLIC, ET C'EST TOUT LE TICKET. Jusqu'ici la règle « frigo dur » ne vivait
+   * que dans `age()`, privée, donc seul le chaînage la connaissait : le budget
+   * de rangement, la liste de l'inventaire et le compte des lots continuaient
+   * de porter ce que le modèle venait de refuser de servir. L'année simulée l'a
+   * vu — 37 lots affichés pour 4 réels en septembre, « ça déborde » de décembre
+   * à septembre. UNE SEULE DÉFINITION DU PÉRIMÉ, ICI : la recopier dans chaque
+   * lecteur, c'est préparer le jour où deux d'entre eux ne seront plus d'accord
+   * sur le même bocal.
+   *
+   * Un lot sans naissance n'est jamais périmé : sans âge il n'y a rien à dire,
+   * et en inventer un pour pouvoir jeter serait pire que de garder.
+   */
+  perime(ligne: LigneDepot, date: Date): boolean {
+    const v = this.vie(ligne, date);
+    return !!v && v.dur && v.depasse;
   }
 
   private *candidats(acc: Accept, date: Date): Generator<[LigneDepot, number]> {

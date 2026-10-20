@@ -28,6 +28,7 @@
 recipe:
   id: lentilles-paysanne
   title: Lentilles vertes mijotées à la paysanne
+  format: mijote
   lang: fr
   source:
     author: Marie Chioca

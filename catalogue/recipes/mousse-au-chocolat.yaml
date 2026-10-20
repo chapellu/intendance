@@ -100,6 +100,7 @@ recipe:
   emits:
     - kind: base
       type: mousse-chocolat
+      hors_table: true   # T108 — préparation : « une recette » sort entière
       qty_band: 2-repas
       qty: {amount: 1, unit: recette}  # UNE recette — le gâteau p.61 en veut deux
       keeps: {frigo_days: 2, congelo: false}

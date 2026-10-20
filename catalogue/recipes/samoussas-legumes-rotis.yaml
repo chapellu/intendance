@@ -19,6 +19,7 @@
 recipe:
   id: samoussas-legumes-rotis
   title: Samoussas végétariens aux légumes rôtis
+  format: pizza
   lang: fr
   source:
     author: Marie Chioca

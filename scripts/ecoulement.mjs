@@ -36,7 +36,7 @@ import { readFileSync } from "node:fs";
 const brut = JSON.parse(readFileSync(new URL("../public/cuisine-data.json", import.meta.url), "utf8"));
 
 const { lireCatalogue } = await import("../src/model/catalogue.ts");
-const { creerJeu } = await import("../src/model/jeu.ts");
+const { creerJeu, idsDuReleve } = await import("../src/model/jeu.ts");
 const { calculer } = await import("../src/model/calcul.ts");
 const { horlogesDu, Depot } = await import("../src/model/depot.ts");
 const { aEcouler, placardDuPlat } = await import("../src/model/gardeManger.ts");
@@ -56,7 +56,7 @@ const titre = (s) => console.log(`\n── ${s} ${"─".repeat(Math.max(0, 68 - 
 
 titre("le garde-manger, par urgence — et qui paie");
 
-const axe = aEcouler(catalogue);
+const axe = aEcouler(catalogue, idsDuReleve(catalogue));
 const alias = (id) => catalogue.rayons.aliases[id] ?? id;
 const parUrgence = { haute: [], moyenne: [], basse: [] };
 for (const d of gm.denrees) parUrgence[d.urgence].push(d);

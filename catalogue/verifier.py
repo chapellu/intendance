@@ -25,6 +25,7 @@ import anticipation as an
 import catalogue
 import chainage as ch
 import compile as rc  # shadows the builtin `compile` in this module only
+import fond as fd
 import garde_manger as gm
 
 HERE = Path(__file__).parent
@@ -49,6 +50,26 @@ CHAMPS_INGREDIENT = {"id", "name", "qty", "unit", "seasoning", "ref",
 # dépôt l'a payé une fois avec `espace` et `congelo`. Le rôle dit la PLACE dans
 # le repas, `creneaux` dit le MOMENT dans la journée.
 ROLES = {"plat", "accompagnement", "entree", "base", "boisson"}
+
+# LE FORMAT — la FORME que le dîner prend sur la table, dans les mots du foyer.
+#
+# Dit le 2026-10-18 : « encourager la quiche, la soupe, le gratin », ces
+# formes-là que le foyer cuisine déjà les yeux fermés. Ni le rôle (la place
+# dans le repas) ni `apports.profil` (four, mijoté, cru — le MODE de cuisson)
+# ne le disaient : un gratin et une quiche sont tous deux `four`, et c'est
+# précisément la différence qui compte pour quelqu'un qui choisit à 15 h.
+#
+# UNION FERMÉE, comme `ROLES` : une faute de frappe ici ferait disparaître un
+# plat d'un filtre, sans un mot. OBLIGATOIRE sur tout `plat` qui peut se
+# proposer au dîner — c'est là que le moteur de suggestion le lira ; ailleurs
+# (desserts, bases, boissons) la question ne se pose pas.
+#
+# `piece` est « une pièce et sa garniture » (le poulet rôti, le pavé de
+# saumon) ; `galettes` couvre tout ce qui se façonne en portions et se poêle
+# ou s'enfourne (burgers, croquettes, falafels, nuggets) ; `pizza` toute pâte
+# garnie qui n'est pas une tarte (focaccia, chausson, samoussas).
+FORMATS = {"quiche", "soupe", "gratin", "poelee", "mijote", "salade", "omelette",
+           "pates", "galettes", "piece", "tartine", "pizza", "cake", "terrine"}
 
 # L'ASSIETTE — ce qui se sert À CÔTÉ, et qui n'est pas un ingrédient du plat.
 # Même forme qu'une ligne d'ingrédient, moins tout ce qui n'a de sens que
@@ -190,6 +211,15 @@ def verifier(rid: str, r: dict, rayons: dict, rules: dict, cat: dict,
     if role != "plat" and r.get("avec"):
         err.append(f"un plat de rôle « {role} » porte un `avec:` — seul un `plat` "
                    "peut réclamer quelque chose à côté")
+
+    # Le format — voir `FORMATS` en tête de fichier.
+    fmt = r.get("format")
+    if fmt is not None and fmt not in FORMATS:
+        err.append(f"format « {fmt} » inconnu — attendu l'un de {sorted(FORMATS)}")
+    if (fmt is None and role == "plat"
+            and "diner" in (r.get("creneaux") or ["dejeuner", "diner"])):
+        err.append("plat de dîner sans `format:` — le moteur de suggestion ne saurait "
+                   "pas dire si c'est une soupe ou un gratin")
 
     # ────────────────────────────────────────────────────── l'assiette
     #
@@ -465,6 +495,10 @@ def verifier_foyer(foyer: dict, equilibre: dict, capacites: set) -> tuple:
         if not c.get("nombre") or not c.get("portions"):
             err.append(f"contenant « {cid} » : il faut un `nombre` et des `portions` "
                        "non nuls, sinon il n'offre aucune place")
+        vol = c.get("volume_ml")
+        if vol is not None and (not isinstance(vol, (int, float)) or vol <= 0):
+            err.append(f"contenant « {cid} » : `volume_ml` doit être un nombre positif "
+                       "(ou absent quand le label n'en dit rien)")
         inconnus = set(c.get("espaces", [])) - set(ch.ESPACES)
         if inconnus:
             err.append(f"contenant « {cid} » : espace(s) inconnu(s) {sorted(inconnus)} "
@@ -533,6 +567,25 @@ def main() -> int:
                 print(f"  ✗ {e}")
             for w in warn:
                 print(f"  ⚠ {w}")
+
+        # Le fond de roulement, la garde des denrées, les saisons — trois
+        # fichiers du 2026-10-18, vérifiés ensemble parce que le fond s'appuie
+        # sur les deux autres : une denrée du fond sans famille de garde n'a
+        # ni fenêtre ni conseil.
+        conserv = rc.load(HERE / "conservation.yaml")
+        fond = fd.charger_fond(HERE / "fond.yaml")
+        for nom, (err, warn) in (
+                ("conservation.yaml (familles)", fd.verifier_familles(conserv, rayons)),
+                ("fond.yaml", fd.verifier_fond(fond, conserv, rayons, cat)),
+                ("saisons.yaml", fd.verifier_saisons(
+                    fd.charger_saisons(HERE / "saisons.yaml"), rayons))):
+            n_err += len(err); n_warn += len(warn)
+            if err or warn:
+                print(f"\n{nom}")
+                for e in err:
+                    print(f"  ✗ {e}")
+                for w in warn:
+                    print(f"  ⚠ {w}")
     for rid in cibles:
         if rid not in cat:
             print(f"✗ {rid} : absent du catalogue")
@@ -601,6 +654,16 @@ def main() -> int:
     avec = sum(1 for rid in cibles if rid in cat and cat[rid].get("avec"))
     print(f"  ({avec} plats disent avec quoi les servir · {len(creuses)} plats de repas "
           f"sans `avec:` à qui il manque un féculent ou des légumes déclarés)")
+
+    # CE QUE LE FOND PERMET, REMESURÉ À CHAQUE PASSAGE. Le chiffre de départ
+    # (2026-10-18, avant les recettes du foyer) : 101 dîners, 4 faisables avec
+    # le fond seul et 10 à un ingrédient près. Il n'a pas de seuil — la seule
+    # promesse qui rougit est celle des dix dîners, plus haut — mais le
+    # lire dit si le corpus va vers le fond ou s'en éloigne.
+    if not sys.argv[1:]:
+        m = fd.mesure(cat, fd.charger_fond(HERE / "fond.yaml"), rayons)
+        print(f"  ({m['diners']} dîners · {m['zero']} se font avec le fond seul · "
+              f"{m['un']} à un ingrédient près)")
     return 1 if n_err else 0
 
 

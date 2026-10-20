@@ -19,6 +19,7 @@
 recipe:
   id: accras-thon-pain-carottes
   title: Accras gourmands au thon, pain et carottes râpées
+  format: galettes
   lang: fr
   source:
     author: Marie Chioca

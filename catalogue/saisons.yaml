@@ -1,0 +1,97 @@
+# Le calendrier des saisons — fruits et légumes, mois par mois, autour de Lyon.
+#
+# POURQUOI CE FICHIER, ALORS QUE `source.saison` EXISTE. Les 64 `saison:` du
+# corpus disent quand un LIVRE place une recette (« automne »). Ils ne disent
+# rien de ce qu'on trouve au marché de Francheville en novembre, et ils ne
+# portent que sur les recettes d'ouvrage. Ici la saison est une propriété de
+# l'INGRÉDIENT : un plat est de saison parce que ses légumes le sont, et c'est
+# la seule forme qui note aussi un plat du foyer, sans source.
+#
+# REDEMANDÉ LE 2026-10-18 : « encourager les légumes de saison, pour faire
+# entrer des légumes ». Workspace#41 avait réservé la saisonnalité au plancher
+# et pas à la planification ; T122 notait qu'elle était à rouvrir (75 % des
+# cuissons de l'année simulée tombaient hors saison, soit le hasard). Ce
+# fichier ne branche RIEN au score : il donne la donnée, et c'est le moteur de
+# suggestion qui décidera de son poids.
+#
+# ⚠ ORDRES DE GRANDEUR, PAS UNE MESURE. Synthèse rédigée pour ce dépôt à partir
+# des calendriers de saison usuels pour la moitié nord de la France et la
+# région Rhône-Alpes (pleine terre et abri froid, pas la serre chauffée). Les
+# bornes bougent de deux à trois semaines d'une année à l'autre ; à corriger à
+# l'usage, comme les minimums du fond.
+#
+# LES MOIS SONT DES ENTIERS, 1 = janvier. Une liste et pas un intervalle, parce
+# que les saisons qui chevauchent l'hiver (`poireau: 9…4`) s'écrivent mal en
+# « de…à ».
+#
+# CE QUI TIENT DOUZE MOIS N'EST PAS UNE SAISON, C'EST UNE GARDE. Oignons,
+# ail, pommes de terre et carottes se récoltent à une saison et se mangent
+# toute l'année depuis le cellier : ils sont listés sur douze mois, et le
+# modèle (`saisons.ts`) ne les compte JAMAIS comme un signal de saison — un
+# plat aux oignons n'est pas « de saison » en janvier pour autant.
+#
+# ABSENTS EXPRÈS : les fruits d'import (citron, banane, avocat, pomelo), qui
+# n'ont pas de saison ici, et les surgelés, qui n'en ont plus. Un ingrédient
+# sans calendrier n'est ni de saison ni hors saison — il ne compte pas.
+
+region: Lyon et Rhône-Alpes
+
+mois:
+  # ── Légumes ──
+  ail: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+  aubergine: [7, 8, 9]
+  brocoli: [6, 7, 8, 9, 10, 11]
+  carottes: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+  cebette: [3, 4, 5, 6]
+  celeri-branche: [7, 8, 9, 10]
+  celeri-rave: [10, 11, 12, 1, 2, 3]
+  champignons-paris: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+  chou-chinois: [10, 11, 12, 1]
+  chou-frise: [11, 12, 1, 2, 3]
+  chou-rouge: [10, 11, 12, 1, 2, 3]
+  concombre: [6, 7, 8, 9]
+  courge: [9, 10, 11, 12, 1, 2]
+  courgettes: [6, 7, 8, 9]
+  echalote: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+  fenouil: [6, 7, 8, 9, 10]
+  jeunes-pousses: [3, 4, 5, 9, 10]
+  navet-primeur: [4, 5, 6]
+  navets: [10, 11, 12, 1, 2, 3]
+  navets-roses: [4, 5, 6]
+  oignon: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+  oignon-rouge: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+  panais: [10, 11, 12, 1, 2, 3]
+  petits-pois: [5, 6, 7]
+  poireau: [9, 10, 11, 12, 1, 2, 3, 4]
+  pois-gourmands: [5, 6, 7]
+  poivron: [7, 8, 9, 10]
+  pomme-de-terre: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+  potimarron: [9, 10, 11, 12, 1]
+  pousses-epinards: [3, 4, 5, 9, 10, 11]
+  radis: [4, 5, 6, 7, 8, 9]
+  salade-verte: [4, 5, 6, 7, 8, 9, 10]
+  tomates: [6, 7, 8, 9]
+  tomates-cerises: [6, 7, 8, 9]
+  tomates-roma: [7, 8, 9]
+  topinambours: [10, 11, 12, 1, 2, 3]
+  vert-de-blette: [5, 6, 7, 8, 9, 10, 11]
+  # ── Herbes ──
+  basilic: [6, 7, 8, 9]
+  ciboulette: [3, 4, 5, 6, 7, 8, 9, 10]
+  persil: [4, 5, 6, 7, 8, 9, 10]
+  # ── Cueillette ──
+  ail-des-ours: [3, 4]
+  orties: [3, 4, 5]
+  chataignes: [10, 11, 12]
+  # ── Fruits ──
+  abricots: [6, 7, 8]
+  fraises: [5, 6, 7]
+  framboises: [6, 7, 8, 9]
+  groseilles: [6, 7]
+  melon: [6, 7, 8, 9]
+  mirabelles: [8, 9]
+  mures: [8, 9]
+  peches: [6, 7, 8, 9]
+  poires: [8, 9, 10, 11, 12, 1]
+  pommes: [9, 10, 11, 12, 1, 2, 3]
+  raisins: [9, 10]

@@ -8,6 +8,7 @@
 recipe:
   id: salade-haricots-blancs
   title: Salade végétarienne de haricots blancs
+  format: salade
   lang: fr
   source:
     author: Marie Chioca

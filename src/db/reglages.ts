@@ -13,6 +13,20 @@ import { base } from "./schema";
  *  geste se reposera, et cochera à nouveau. */
 export const cleGeste = (jour: string, type: string): string => `geste|${jour}|${type}`;
 
+/** La veille d'un jour `AAAA-MM-JJ`, au calendrier local. */
+export function veilleDe(jour: string): string {
+  const [a, m, j] = jour.split("-").map(Number);
+  const d = new Date(a!, m! - 1, j! - 1);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+/** Les types dont le geste « sortir du congélo » a été coché la veille de
+ *  `jour` — ils ont passé la nuit au frigo. */
+export function typesSortis(reglages: readonly { cle: string; valeur: unknown }[], jour: string): Set<string> {
+  const prefixe = cleGeste(veilleDe(jour), "");
+  return new Set(reglages.filter((r) => r.cle.startsWith(prefixe) && r.valeur === true).map((r) => r.cle.slice(prefixe.length)));
+}
+
 /** Un rappel armé sur un créneau. Ce n'est pas encore une notification : le
  *  jour où c'en sera une, c'est cette clé qui dira lesquelles sont armées. */
 export const cleRappel = (jour: string, repas: string): string => `rappel|${jour}|${repas}`;
@@ -33,6 +47,14 @@ export const cleRepioche = (jour: string, repas: string): string => `repioche|${
  *  verrouille à l'étape 5 sur 9, avec une casserole sur le feu. */
 export const cleEtape = (jour: string, repas: string, plat: string): string =>
   `etape|${jour}|${repas}|${plat}`;
+
+/** La mise en place d'une recette a été passée — T112. Sous le préfixe de
+ *  `cleEtape` et sur la même clé de cuisson, parce que c'est le même avancement
+ *  d'un cran plus tôt : sans elle, poser le téléphone à l'étape 1 et le
+ *  reprendre ramènerait à la liste de ce qu'on a déjà sorti. Effacée avec
+ *  l'avancement, quand la sortie a répondu. */
+export const cleMiseEnPlace = (jour: string, repas: string, plat: string): string =>
+  `etape|${jour}|${repas}|${plat}|mise-en-place`;
 
 /** Le minuteur d'UNE étape. Par étape, pour qu'avancer dans la recette ne
  *  traîne pas la sonnerie de la précédente. */
@@ -68,4 +90,16 @@ export function useDrapeau(cle: string | null): boolean | undefined {
   const r = useLiveQuery(async () => (cle ? ((await base.reglages.get(cle)) ?? null) : null), [cle]);
   if (r === undefined) return undefined;
   return r !== null;
+}
+
+/**
+ * Ce qui a été sorti du congélateur hier soir — pour la proposition de 15 h.
+ * `undefined` tant que la base n'a pas répondu, comme les autres lectures.
+ */
+export function useSortisLaVeille(jour: string | null): ReadonlySet<string> | undefined {
+  return useLiveQuery(async () => {
+    if (!jour) return new Set<string>();
+    const prefixe = cleGeste(veilleDe(jour), "");
+    return typesSortis(await base.reglages.where("cle").startsWith(prefixe).toArray(), jour);
+  }, [jour]);
 }

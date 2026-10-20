@@ -1,0 +1,82 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-18 — aucune source
+# extérieure. Plat au four de printemps : le fond, plus UNE botte de navets
+# nouveaux.
+#
+# QUARANTE MINUTES DE FOUR, ZÉRO DE SURVEILLANCE. Tout se coupe, tout va dans
+# le plat, et le four fait le reste — le plat de la pause de 15 h type.
+
+recipe:
+  id: tian-printemps-navets-pois-chiches
+  title: Tian de navets nouveaux, carottes et pois chiches
+  lang: fr
+  format: gratin
+  yields:
+    portions_eq: 5
+  time_min_total: 65
+  active_min: 18
+
+  apports:
+    proteine: legumineuse
+    feculent: pommes-de-terre
+    legumes: [racine, crucifere, allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: navet-primeur, name: navets nouveaux, qty: 1, unit: botte}
+    - {id: carottes, name: carottes, qty: 4, unit: pièce}
+    - {id: pomme-de-terre, name: pommes de terre, qty: 3, unit: pièce}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: ail, name: ail, qty: 2, unit: gousse}
+    - {id: pois-chiches, name: "pois chiches cuits, en bocal", qty: 400, unit: g}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: thym, name: thym, qty: 1, unit: c. à c.}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    - {id: fromage-rape, name: fromage râpé, qty: 50, unit: g}
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 200 °C"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: tailler
+      action: "Navets, carottes et pommes de terre en quartiers, oignon en lamelles, ail écrasé"
+      astuce: "Les navets nouveaux ne s'épluchent pas : un coup de brosse suffit."
+      needs: [chop-coarse]
+      uses: [navet-primeur, carottes, pomme-de-terre, oignon, ail]
+      time_min: 12
+    - id: garnir
+      action: "Tout dans le plat avec les pois chiches égouttés, l'huile et le thym, et bien mélanger"
+      needs: [gratin-vessel]
+      uses: [pois-chiches, huile-olive, thym]
+      time_min: 3
+      kid: {age_min_months: 30, task: "mélanger les légumes à l'huile avec les mains"}
+    - id: rotir
+      action: "Rôtir en remuant une fois à mi-cuisson"
+      needs: [bake]
+      uses: []
+      time_min: 40
+      attended: false
+    - id: finir
+      action: "Saler, parsemer de fromage et remettre 5 minutes au four"
+      needs: [gratin]
+      uses: [sel, fromage-rape]
+      time_min: 6
+      seasoning_gate: true
+
+  baby_portion:
+    take: "quelques morceaux de légumes rôtis et de pois chiches, avant salage"
+    prep: "écraser à la fourchette — les pois chiches entiers passent de travers"
+    needs: []
+    depuis: [rotir]
+
+  emits:
+    - kind: reste-plat
+      type: tian-navets-pois-chiches
+      qty_band: 1-repas
+      keeps: {frigo_days: 3}
+      note: "se réchauffe au four ; froid, il fait une salade de déjeuner"
+
+  plan_b: []

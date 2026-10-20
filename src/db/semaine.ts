@@ -6,7 +6,8 @@
 // serait une seconde occasion de les désaligner.
 
 import { cleCreneau, jourISO, type Base, type DecisionCreneau } from "./schema";
-import type { Choix, Jeu } from "../model/jeu";
+import { creerJeu, type Choix, type Jeu } from "../model/jeu";
+import type { Catalogue } from "../model/types";
 
 /** La clé de base d'un créneau du modèle. */
 export function cleDuCreneau(jeu: Jeu, i: number): string | null {
@@ -56,14 +57,18 @@ export function hydrater(jeu: Jeu, decisions: Map<string, DecisionCreneau>): Jeu
     if (!d) return;
     jeu.choix[i] = d.plat as Choix;
     if (d.parts != null) jeu.parts[i] = d.parts;
+    jeu.dejaLa[i] = d.ici && d.plat ? { plat: d.plat, ids: d.ici } : null;
   });
   return jeu;
 }
 
 /** Écrit la décision d'un créneau. `plat` à `null` efface le choix sans oublier
  *  les parts : on peut avoir réglé « 4,5 parts » avant de changer d'avis sur le
- *  plat, et retaper le chiffre serait une punition. */
-export async function poser(base: Base, jeu: Jeu, i: number, plat: Choix): Promise<void> {
+ *  plat, et retaper le chiffre serait une punition.
+ *
+ *  `ici` : ce que la carte de 15 h disait déjà là (`DecisionCreneau.ici`).
+ *  Absent, l'instantané précédent tombe avec l'ancien plat. */
+export async function poser(base: Base, jeu: Jeu, i: number, plat: Choix, ici?: readonly string[]): Promise<void> {
   const c = jeu.creneaux[i];
   const cle = cleDuCreneau(jeu, i);
   if (!c || !cle) throw new RangeError(`créneau ${i} hors de la semaine`);
@@ -75,9 +80,37 @@ export async function poser(base: Base, jeu: Jeu, i: number, plat: Choix): Promi
     repas: c.repas,
     plat,
     parts: existant?.parts ?? null,
+    ...(ici && plat ? { ici: [...ici] } : {}),
     maj: Date.now(),
   });
   jeu.choix[i] = plat;
+  jeu.dejaLa[i] = ici && plat ? { plat, ids: [...ici] } : null;
+}
+
+/**
+ * « Je lance ça » — pose le plat sur le dîner de CE SOIR, ce soir étant lu sur
+ * l'horloge AU MOMENT DU DOIGT. Rend la clé du créneau écrit.
+ *
+ * T134 — PAS SUR LA FENÊTRE EN CACHE. Après trois jours sans geste, l'onglet
+ * resté ouvert, `useLiveQuery` rend encore l'ancienne fenêtre (voir
+ * `db/hooks.ts`) : `soirDe(jeu)` y désignait le dîner d'AVANT-HIER, le plat s'y
+ * posait, et la fiche ouvrait sur « ce créneau n'est plus là ». Le squelette de
+ * la semaine se reconstruit donc ici depuis `maintenant` ; seul le catalogue
+ * vient du jeu de l'écran, et il ne vieillit pas avec la date.
+ */
+export async function poserCeSoir(
+  base: Base,
+  catalogue: Catalogue,
+  plat: string,
+  ici?: readonly string[],
+  maintenant: Date = new Date(),
+): Promise<{ jour: string; repas: "diner" }> {
+  const frais = creerJeu(catalogue, 7, maintenant);
+  const i = frais.creneaux.findIndex((c) => c.jour === 0 && c.repas === "diner");
+  const cle = cleDuCreneau(frais, i);
+  if (i < 0 || !cle) throw new RangeError("pas de dîner ce soir dans la fenêtre");
+  await poser(base, frais, i, plat, ici);
+  return { jour: cle.split("|")[0]!, repas: "diner" };
 }
 
 /** Règle les parts d'un créneau. `null` remet le créneau aux parts du foyer —
@@ -101,6 +134,8 @@ export async function reglerParts(
     repas: c.repas,
     plat: existant?.plat ?? null,
     parts,
+    // Régler les parts ne change pas ce que la carte disait là.
+    ...(existant?.ici ? { ici: existant.ici } : {}),
     maj: Date.now(),
   });
   jeu.parts[i] = parts ?? jeu.catalogue.foyer.parts;
@@ -137,6 +172,7 @@ export async function oublier(base: Base, jeu: Jeu, i: number): Promise<void> {
   await base.creneaux.delete(cle);
   jeu.choix[i] = null;
   jeu.parts[i] = jeu.catalogue.foyer.parts;
+  jeu.dejaLa[i] = null;
 }
 
 /**
@@ -162,6 +198,7 @@ export async function toutOublier(base: Base, jeu: Jeu): Promise<number> {
   const n = await base.creneaux.count();
   await base.creneaux.clear();
   jeu.choix.fill(null);
+  jeu.dejaLa.fill(null);
   jeu.parts.fill(jeu.catalogue.foyer.parts);
   return n;
 }

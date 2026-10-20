@@ -1,0 +1,226 @@
+{
+  "enseigne": "Grand Frais",
+  "canal": "magasin",
+  "support": "ticket de caisse papier, photographié",
+  "magasin": {
+    "nom": "STE FOY LES LYON",
+    "adresse": "9/19 route de la Libération, 69110 Sainte-Foy-lès-Lyon",
+    "telephone": "04.78.68.07.29",
+    "siret": "52507984400011"
+  },
+  "date_achat": "2026-09-12",
+  "transcrit_le": "2026-09-13",
+  "lacunes": [
+    "heure d'achat : le ticket la porte, mais elle est hors cadre sur la photo — le manque vient du CLICHÉ, pas du format",
+    "date d'achat : idem — présente sur le papier, hors cadre sur la photo, redonnée par le foyer (samedi 12 septembre 2026)",
+    "le numéro de carte de fidélité imprimé sur le ticket n'est pas transcrit — identifiant client, même règle que le PDF non versionné des factures Carrefour",
+    "la photo source n'est pas versionnée, pour la même raison",
+    "le code-barres de pied de ticket n'a pas ses chiffres imprimés : rien ne permet de le lire sur la photo"
+  ],
+  "vendeurs": [
+    {
+      "code": "LES JARDINS DE ST FOY",
+      "metier": "fruits, légumes et marée",
+      "total_ttc": 24.47
+    },
+    {
+      "code": "CALSEC",
+      "metier": "épicerie sèche",
+      "total_ttc": 23.03
+    },
+    {
+      "code": "LDGF",
+      "metier": "boucherie et charcuterie",
+      "total_ttc": 24.24
+    }
+  ],
+  "lignes": [
+    {
+      "vendeur": "LES JARDINS DE ST FOY",
+      "libelle": "MELON CHARENTAIS JAUNE",
+      "libelle_tronque": false,
+      "poids_kg": 0.995,
+      "pu_kg": 2.99,
+      "prix_imprime_ttc": 2.98,
+      "tare_kg": 0.005,
+      "tare_ttc": -0.02,
+      "remise_ttc": 0,
+      "net_ttc": 2.96,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "LES JARDINS DE ST FOY",
+      "libelle": "TOMATE COTELEE JAUNE",
+      "libelle_tronque": false,
+      "poids_kg": 0.845,
+      "pu_kg": 5.99,
+      "prix_imprime_ttc": 5.06,
+      "tare_kg": 0.005,
+      "tare_ttc": -0.03,
+      "remise_ttc": 0,
+      "net_ttc": 5.03,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "LES JARDINS DE ST FOY",
+      "libelle": "OIGNON FILET 1,5KG",
+      "libelle_tronque": false,
+      "poids_kg": null,
+      "pu_kg": null,
+      "prix_imprime_ttc": 1.99,
+      "tare_kg": null,
+      "tare_ttc": 0,
+      "remise_ttc": 0,
+      "net_ttc": 1.99,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "LES JARDINS DE ST FOY",
+      "libelle": "RAISIN ITALIA MINI COL",
+      "libelle_tronque": true,
+      "prix_imprime_ttc": 3.99,
+      "poids_kg": null,
+      "pu_kg": null,
+      "tare_kg": null,
+      "tare_ttc": 0,
+      "remise_ttc": 0,
+      "net_ttc": 3.99,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "LES JARDINS DE ST FOY",
+      "libelle": "PRUNE MIRABELLE",
+      "libelle_tronque": false,
+      "poids_kg": 0.385,
+      "pu_kg": 4.99,
+      "prix_imprime_ttc": 1.92,
+      "tare_kg": 0.005,
+      "tare_ttc": -0.03,
+      "remise_ttc": 0,
+      "net_ttc": 1.89,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "LES JARDINS DE ST FOY",
+      "libelle": "FRAMBOISE FRANCE BQTE",
+      "libelle_tronque": false,
+      "poids_kg": null,
+      "pu_kg": null,
+      "prix_imprime_ttc": 3.5,
+      "tare_kg": null,
+      "tare_ttc": 0,
+      "remise_ttc": 0,
+      "net_ttc": 3.5,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "LES JARDINS DE ST FOY",
+      "libelle": "PAVE DE CABILLAUD SANS",
+      "libelle_tronque": true,
+      "poids_kg": null,
+      "pu_kg": null,
+      "prix_imprime_ttc": 5.11,
+      "tare_kg": null,
+      "tare_ttc": 0,
+      "remise_ttc": 0,
+      "net_ttc": 5.11,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "CALSEC",
+      "libelle": "NECTAR DE MANGUE BTL V",
+      "libelle_tronque": true,
+      "poids_kg": null,
+      "pu_kg": null,
+      "prix_imprime_ttc": 2.49,
+      "tare_kg": null,
+      "tare_ttc": 0,
+      "remise_ttc": 0,
+      "net_ttc": 2.49,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "CALSEC",
+      "libelle": "PISTACHE GRILLEE SALEE",
+      "libelle_tronque": false,
+      "poids_kg": null,
+      "pu_kg": null,
+      "prix_imprime_ttc": 10.49,
+      "tare_kg": null,
+      "tare_ttc": 0,
+      "remise_ttc": 0,
+      "net_ttc": 10.49,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "CALSEC",
+      "libelle": "MELANGE VITALITE + 500",
+      "libelle_tronque": true,
+      "poids_kg": null,
+      "pu_kg": null,
+      "prix_imprime_ttc": 10.05,
+      "tare_kg": null,
+      "tare_ttc": 0,
+      "remise_ttc": 0,
+      "net_ttc": 10.05,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "LDGF",
+      "libelle": "VEAU:ROTI MILANAIS",
+      "libelle_tronque": false,
+      "poids_kg": null,
+      "pu_kg": null,
+      "prix_imprime_ttc": 19.03,
+      "tare_kg": null,
+      "tare_ttc": 0,
+      "remise_ttc": -2.28,
+      "remise_libelle": "10620-Offre App milanais à rotir",
+      "remise_taux": 12.0,
+      "net_ttc": 16.75,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "LDGF",
+      "libelle": "SAUCISSON SEC PUR PORC",
+      "libelle_tronque": false,
+      "poids_kg": null,
+      "pu_kg": null,
+      "prix_imprime_ttc": 7.49,
+      "tare_kg": null,
+      "tare_ttc": 0,
+      "remise_ttc": 0,
+      "net_ttc": 7.49,
+      "tva": 5.5
+    }
+  ],
+  "reglements": [
+    {
+      "moyen": "Carte Bancaire",
+      "montant": 25.0
+    },
+    {
+      "moyen": "Carte Bancaire",
+      "montant": 46.74
+    }
+  ],
+  "tva": [
+    {
+      "code": 1,
+      "taux": 5.5,
+      "ht": 68.0,
+      "ttc": 71.74
+    }
+  ],
+  "totaux": {
+    "compteur_imprime": 15,
+    "articles": 12,
+    "lignes_tare": 3,
+    "panier_brut_ttc": 74.1,
+    "tares_ttc": -0.08,
+    "remises_ttc": -2.28,
+    "net_paye_ttc": 71.74
+  },
+  "jour_semaine": "samedi",
+  "contexte": "course d'occasion — invités pour le week-end ; le foyer déclare une fréquence faible sur ce canal"
+}

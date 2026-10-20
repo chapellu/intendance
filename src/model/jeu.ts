@@ -54,6 +54,19 @@ export interface CreneauSemaine {
   emporte: boolean;
 }
 
+/** Ce qu'une carte disait « ici » pour un plat posé — `Jeu.dejaLa`. */
+export interface DejaLa {
+  plat: string;
+  ids: readonly string[];
+}
+
+/** Les ids que la carte a dits « ici » pour le plat `rid` au créneau `i`, ou
+ *  rien — un autre plat sur le même créneau n'en hérite jamais. */
+export const dejaLaPour = (jeu: Pick<Jeu, "dejaLa">, i: number, rid: string): readonly string[] => {
+  const d = jeu.dejaLa?.[i];
+  return d && d.plat === rid ? d.ids : [];
+};
+
 export interface Jeu {
   catalogue: Catalogue;
   /**
@@ -97,6 +110,13 @@ export interface Jeu {
   creneaux: CreneauSemaine[];
   equilibreSur: RepasId[];
   choix: Choix[];
+  /**
+   * Par créneau, ce que la carte de 15 h disait « ici » au moment où le plat a
+   * été posé — voir `DecisionCreneau.ici`. `null` partout ailleurs. Il ne vaut
+   * QUE pour le plat qu'il nomme : un autre plat simulé sur ce créneau (le
+   * comptoir le fait pour chaque candidat) n'en hérite pas.
+   */
+  dejaLa: (DejaLa | null)[];
   /** Les parts se règlent PAR REPAS, pas une fois pour la semaine. Un dîner
    *  avec des amis, un midi tout seul et une gamelle à prévoir n'ont pas la
    *  même taille, et c'est la taille qui commande le panier et les restes. */
@@ -164,6 +184,7 @@ export function creerJeu(catalogue: Catalogue, nJours = 7, aujourdhui = new Date
     creneaux,
     equilibreSur: cfg.equilibre_sur.length ? cfg.equilibre_sur : ["dejeuner", "diner"],
     choix: Array<Choix>(creneaux.length).fill(null),
+    dejaLa: Array<DejaLa | null>(creneaux.length).fill(null),
     parts: Array<number>(creneaux.length).fill(catalogue.foyer.parts),
     // On démarre sur le premier créneau réellement choisi : personne ne pioche
     // une carte pour son petit-déjeuner.

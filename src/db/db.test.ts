@@ -56,11 +56,11 @@ describe("le schéma", () => {
     // Ce test n'a l'air de rien : sa seule raison d'être est de rougir le jour
     // où quelqu'un ajoute une table sans monter la version. C'est à ce
     // moment-là qu'il faut se souvenir d'écrire la migration.
-    expect(VERSION).toBe(2);
+    expect(VERSION).toBe(3);
     // `schemaDeclare()` rend le schéma CUMULÉ, pas le delta de la dernière
     // version : la v2 n'ajoute que `evenements`, mais la base porte les cinq.
     expect(Object.keys(schemaDeclare()).sort()).toEqual([
-      "courses", "creneaux", "evenements", "reglages", "stock",
+      "courses", "creneaux", "evenements", "libelles", "reglages", "stock",
     ]);
   });
 
@@ -131,6 +131,24 @@ describe("poser, régler, oublier", () => {
     const relu = await recharger(MARDI);
     expect(relu.parts[soir]).toBe(5);
     expect(relu.choix[soir]).toBe("poulet-roti");
+  });
+
+  test("ce que la carte de 15 h disait là se garde avec le plat, et tombe avec lui", async () => {
+    const soir = creneau(jeu, 0, "diner");
+    await poser(base, jeu, soir, "dahl-lentilles-corail", ["lentilles-corail", "oignon"]);
+    let relu = await recharger(MARDI);
+    expect(relu.dejaLa[soir]).toEqual({ plat: "dahl-lentilles-corail", ids: ["lentilles-corail", "oignon"] });
+
+    // Régler les parts ne change pas ce que la carte disait.
+    await reglerParts(base, jeu, soir, 4);
+    relu = await recharger(MARDI);
+    expect(relu.dejaLa[soir]?.ids).toEqual(["lentilles-corail", "oignon"]);
+
+    // Un autre plat, posé d'ailleurs, n'hérite pas de l'instantané.
+    await poser(base, jeu, soir, "poulet-roti");
+    relu = await recharger(MARDI);
+    expect(relu.dejaLa[soir]).toBeNull();
+    expect(jeu.dejaLa[soir]).toBeNull();
   });
 
   test("effacer le plat garde les parts, oublier le créneau efface tout", async () => {

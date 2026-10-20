@@ -1,0 +1,107 @@
+{
+  "enseigne": "Boucherie Despi",
+  "type": "talon",
+  "canal": "magasin",
+  "support": "talon de comptoir papier, photographié",
+  "magasin": {
+    "nom": "BOUCHERIE DESPI",
+    "adresse": "19 route de la Libération, 69110 Sainte-Foy-lès-Lyon",
+    "telephone": "04 78 68 14 32"
+  },
+  "date_achat": "2026-10-03",
+  "heure_achat": "16:03:09",
+  "transcrit_le": "2026-10-04",
+  "reference": {
+    "numero": "#2000107",
+    "rayon": 1,
+    "appareil": 2,
+    "vendeur_code": 5
+  },
+  "rattache_a": {
+    "fichier": "2026-10-03-grand-frais-ste-foy.json",
+    "libelle_ligne": "RAYON BOUCHERIE TRADIT",
+    "montant_ttc": 42.1,
+    "nature": "ce talon détaille la ligne opaque du ticket Grand Frais",
+    "preuve": "même jour, même rue, montant identique au centime (42,10 €), talon imprimé à 16:03:09 pour un passage en caisse à 16:28:14 — 25 minutes plus tôt. L'identification est une INFÉRENCE, très forte mais non imprimée : aucun des deux papiers ne cite l'autre."
+  },
+  "lacunes": [
+    "le nom de la personne qui a servi est imprimé sur le talon ; il n'est pas transcrit — c'est l'identifiant d'un employé, même posture que le numéro de carte de fidélité côté client. Le code vendeur (5) est conservé",
+    "le QR code du talon n'a pas été décodé : ce qu'il porte est inconnu",
+    "le HT n'est pas imprimé et n'est PAS reconstitué : le talon ne donne que « TVA 5.50% 2.19 ». Le déduire par 42,10 − 2,19 = 39,91 produit un nombre qui ne retombe pas sur ses pieds (39,91 × 1,055 = 42,105 → 42,11, un centime au-dessus du total réel). `ht` reste donc nul et c'est le MONTANT de TVA, lui imprimé, qui est stocké et vérifié",
+    "aucun règlement n'est imprimé, et c'est normal : un talon n'est pas un document de paiement. Il se règle en caisse Grand Frais, où il devient une ligne de 42,10 €",
+    "la photo source n'est pas versionnée, même règle que les autres tickets"
+  ],
+  "vendeurs": [
+    {
+      "code": "BOUCHERIE DESPI",
+      "metier": "boucherie et charcuterie",
+      "total_ttc": 42.1
+    }
+  ],
+  "lignes": [
+    {
+      "vendeur": "BOUCHERIE DESPI",
+      "libelle": "VIANDE BOVINE: PALERON",
+      "libelle_tronque": false,
+      "plu": 47,
+      "poids_kg": 0.705,
+      "pu_kg": 26.99,
+      "prix_imprime_ttc": 19.03,
+      "tare_kg": null,
+      "tare_ttc": 0,
+      "remise_ttc": 0,
+      "net_ttc": 19.03,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "BOUCHERIE DESPI",
+      "libelle": "VIANDE BOVINE: JARRET AVANT S/OS",
+      "libelle_tronque": false,
+      "plu": 55,
+      "poids_kg": 0.71,
+      "pu_kg": 24.99,
+      "prix_imprime_ttc": 17.74,
+      "tare_kg": null,
+      "tare_ttc": 0,
+      "remise_ttc": 0,
+      "net_ttc": 17.74,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "BOUCHERIE DESPI",
+      "libelle": "BOUDIN NOIR AUX OIGNONS",
+      "libelle_tronque": false,
+      "plu": 748,
+      "poids_kg": 0.41,
+      "pu_kg": 12.99,
+      "prix_imprime_ttc": 5.33,
+      "tare_kg": null,
+      "tare_ttc": 0,
+      "remise_ttc": 0,
+      "net_ttc": 5.33,
+      "tva": 5.5
+    }
+  ],
+  "reglements": [],
+  "tva": [
+    {
+      "code": null,
+      "taux": 5.5,
+      "ht": null,
+      "montant": 2.19,
+      "ttc": 42.1
+    }
+  ],
+  "totaux": {
+    "compteur_imprime": 3,
+    "compteur_libelle": "3 Pos",
+    "articles": 3,
+    "lignes_tare": 0,
+    "panier_brut_ttc": 42.1,
+    "tares_ttc": 0,
+    "remises_ttc": 0,
+    "net_paye_ttc": 42.1
+  },
+  "jour_semaine": "samedi",
+  "contexte": "détail du comptoir boucherie de la course Grand Frais du 2026-10-03, redonné par le foyer le lendemain comme annoncé"
+}

@@ -45,9 +45,16 @@ test("un plancher posé au placard part tout seul dans les courses", async ({ pa
     .getByRole("button", { name: "en ajouter un au placard" })
     .dispatchEvent("click");
 
-  // T46 — CE QUI EST INTERDIT EST NOMMÉ. L'oignon n'a pas de bouton, et l'app
-  // dit pourquoi plutôt que de laisser un trou dans la liste.
-  await expect(page.getByText(/Pas de plancher sur.*oignon/)).toBeVisible();
+  // T46 REFUSAIT L'OIGNON ; DEPUIS LE 2026-10-18 IL SE GARDE DES SEMAINES et
+  // porte son bouton, comme les lentilles corail du fond de roulement, qu'aucun
+  // relevé n'avait jamais vues.
+  await expect(
+    page.locator(".co-lot").filter({ hasText: /^oignon/ }).getByRole("button", { name: /En garder/ }),
+  ).toBeVisible();
+  await expect(
+    page.locator(".co-lot").filter({ hasText: "lentilles corail" }).getByRole("button", { name: /En garder/ }),
+  ).toBeVisible();
+  await expect(page.getByText(/Pas de plancher sur/)).toHaveCount(0);
 
   const candidat = page.locator(".co-lot").filter({ hasText: "graines courge" });
   await candidat.getByRole("button", { name: "En garder 1" }).dispatchEvent("click");

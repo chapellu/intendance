@@ -1,0 +1,89 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-18 — aucune source
+# extérieure. Troisième dîner du fond de roulement.
+#
+# LE CUBE DE BOUILLON ENTRE APRÈS LE PRÉLÈVEMENT. Un cube est salé : versé au
+# début avec l'eau, il ne laisserait aucun instant où la soupe soit nature pour
+# le petit (c'est exactement le cas du velouté de potiron p. 127). Ici les
+# légumes cuisent à l'eau, et le cube se délaye à la porte d'assaisonnement.
+
+recipe:
+  id: soupe-pois-casses-carottes
+  title: Soupe de pois cassés aux carottes
+  lang: fr
+  format: soupe
+  yields:
+    portions_eq: 6          # 2,5 ce soir ; le reste tient dans deux boîtes de 0,8 L
+  time_min_total: 75
+  active_min: 15
+
+  apports:
+    proteine: legumineuse
+    feculent: legumineuse
+    legumes: [racine, allium]
+    profil: soupe
+    origine: francais
+
+  ingredients:
+    - {id: pois-casses, name: pois cassés, qty: 300, unit: g}
+    - {id: carottes, name: carottes, qty: 3, unit: pièce}
+    - {id: pomme-de-terre, name: pommes de terre, qty: 2, unit: pièce}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: ail, name: ail, qty: 1, unit: gousse}
+    - {id: laurier, name: feuille de laurier, qty: 1, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 1, unit: c. à s.}
+    - {id: eau, name: eau, qty: 1.5, unit: l}
+    - {id: bouillon-legumes, name: cube de bouillon de légumes, qty: 1, unit: pièce, seasoning: true}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: rincer
+      action: "Rincer les pois cassés dans une passoire"
+      astuce: "Pas de trempage : les pois cassés sont déjà dépelliculés et fendus."
+      needs: []
+      uses: [pois-casses]
+      time_min: 2
+      kid: {age_min_months: 30, task: "rincer les pois cassés sous l'eau froide"}
+    - id: tailler
+      action: "Émincer l'oignon et l'ail, couper carottes et pommes de terre en morceaux"
+      needs: [chop-coarse]
+      uses: [oignon, ail, carottes, pomme-de-terre]
+      time_min: 8
+    - id: suer
+      action: "Faire suer l'oignon et l'ail à l'huile dans la cocotte"
+      needs: [simmer-large]
+      uses: [huile-olive]
+      time_min: 4
+    - id: cuire
+      action: "Ajouter pois cassés, légumes, laurier et eau ; cuire à couvert à petit frémissement"
+      astuce: "Petit frémissement, pas gros bouillon : les pois cassés attachent au fond quand ça bout fort."
+      needs: [simmer-large]
+      uses: [laurier, eau]
+      time_min: 50
+      attended: false
+    - id: mixer
+      action: "Retirer le laurier et mixer"
+      needs: [blend-smooth]
+      uses: []
+      time_min: 4
+    - id: saler
+      action: "Délayer le cube de bouillon, goûter et saler si besoin"
+      astuce: "Le cube sale déjà beaucoup : goûter avant d'ajouter la moindre pincée."
+      needs: []
+      uses: [bouillon-legumes, sel]
+      time_min: 2
+      seasoning_gate: true
+
+  baby_portion:
+    take: "un petit bol de soupe mixée, avant le cube et le sel"
+    prep: "tiédir"
+    needs: []
+    depuis: [mixer]
+
+  emits:
+    - kind: reste-plat
+      type: soupe-pois-casses
+      qty_band: 1-repas
+      keeps: {frigo_days: 3, congelo: true}
+      note: "elle épaissit en refroidissant : la détendre d'un peu d'eau au réchauffage"
+
+  plan_b: []

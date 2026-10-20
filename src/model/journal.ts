@@ -145,6 +145,9 @@ export interface LigneEntree {
   parUnite: Quantite | null;
   zone: string | null;
   etat: Etat;
+  /** Ce que la ligne a coûté, en euros TTC nets (tare et remise déduites),
+   *  quand un ticket l'a dit — T138. Absent partout ailleurs. */
+  prixTTC?: number;
 }
 
 export interface EvtEntree extends Commun {
@@ -175,6 +178,7 @@ export type Classe =
   | "fruits-legumes"
   | "frais-court"
   | "epicerie"
+  | "de-garde"
   | "non-suivi";
 
 /**
@@ -226,6 +230,21 @@ export interface EtatIngredient {
   /** Total en grammes quand tout est chiffré, `null` dès qu'un lot ne l'est pas. */
   grammes: number | null;
   unites: number;
+  /**
+   * UN ARTICLE RENTRÉ VAUT « OUI » TANT QUE SA VIE LE PERMET — T111.
+   *
+   * Vrai quand un lot rentré des courses est encore là au rejeu ET qu'il n'a
+   * pas dépassé sa vie : `foyer.fenetreFrigo` pour ce qui ne se parie jamais
+   * sans l'avoir vu (frais court), aucune borne pour l'épicerie et le
+   * congélateur, que rien ne fait tourner en une semaine.
+   *
+   * CE N'EST PAS UNE OBSERVATION, ET LA CONFIANCE NE BOUGE PAS. Rentrer dit
+   * qu'il Y EN A — la seule chose que demande « Des œufs ? » — et ne dit rien de
+   * ce qui s'y trouvait déjà, ni de combien il en reste : la règle de l'entrée
+   * plus bas tient toujours, pour le chiffre. Ce drapeau ne sert qu'à la
+   * question.
+   */
+  rentreEnVie: boolean;
 }
 
 /** Ce qu'un décrément a réellement fait — pour que l'app puisse le DIRE. */
@@ -266,6 +285,23 @@ export interface Rejeu {
   vus: Map<string, EtatIngredient>;
   /** Tous les retraits, dans l'ordre — la matière du « je suis 3 des 11 ». */
   retraits: Retrait[];
+  /**
+   * T137 — CE QUE SON ÂGE A FINI, SANS QU'UN ŒIL L'AIT VU PARTIR.
+   *
+   * Une boîte d'œufs rentrée le 17/10 est jetée par le foyer à 28 jours ; le
+   * rejeu, qui ne voit que les cuissons, la gardait pour toujours, et la liste
+   * ne redemandait jamais d'œufs. Passé la fenêtre de sa famille de garde
+   * (`conservation.yaml:familles`, 8 semaines au plus), un article du fond
+   * sort de `parIngredient` et vient ici : id → jours depuis l'achat.
+   *
+   * « SANS DOUTE FINI », JAMAIS « À JETER » : ces fenêtres sont des ordres de
+   * grandeur (seuls les œufs sont réglementaires). L'écran le dit au
+   * conditionnel ; une observation (« Des œufs ? oui ») relance l'horloge.
+   */
+  finis: Map<string, number>;
+  /** Le dernier jour d'entrée par les courses, par id — même quand le lot a
+   *  été mangé depuis. Ce qui distingue « rentré le 17/10 » de « jamais vu ». */
+  rentres: Map<string, string>;
 }
 
 /* ══════════════════════════════════════════════════════════ les constantes */
@@ -297,10 +333,17 @@ const TOLERANCE: Record<Classe, number> = {
   "fond-de-placard": Number.POSITIVE_INFINITY,
   congelateur: 6,
   epicerie: 4,
+  // LE FRAIS QUI SE GARDE DES SEMAINES — un filet d'oignons, une boîte d'œufs.
+  // Il se compte d'un œil comme l'épicerie, mais il s'entame à la pièce sans
+  // qu'on le note : deux décréments, et on retourne voir.
+  "de-garde": 2,
   "frais-court": 1,
   "fruits-legumes": 0,
   "non-suivi": 0,
 };
+
+/** Les classes dont la vie se compte en jours de frigo — T111. */
+const RAYONS_FRAIS_CLASSES: ReadonlySet<Classe> = new Set<Classe>(["frais-court", "fruits-legumes"]);
 
 /** Les rayons dont rien ne se parie sans l'avoir vu. */
 const RAYONS_FRAIS = new Set(["crèmerie", "boucherie", "poissonnerie", "frais"]);
@@ -318,8 +361,18 @@ export interface Contexte {
   rayonDe: (id: string) => string | null;
   espaceDe: (zone: string) => Espace;
   placard: ReadonlySet<string>;
+  /** Les ids qu'une famille de garde `fond: true` déclare tenir des semaines
+   *  au moins (`conservation.yaml:familles`). */
+  deGarde: ReadonlySet<string>;
+  /** T137 : la fenêtre en jours d'une famille de garde `fond: true` qui tient
+   *  8 semaines au plus — `null` pour le sec, les conserves, le surgelé, qui
+   *  ne disparaissent pas en silence. */
+  fenetreCourte: (id: string) => number | null;
   /** Le jour du relevé d'amorce — la première observation du journal. */
   releve: string | null;
+  /** T135 : ce que contient une unité d'achat du fond (`fond.yaml:unite`),
+   *  quand elle le dit — « sachet de 500 g », « boîte de 6 ». */
+  contenu: (id: string) => Quantite | null;
 }
 
 export function contexte(catalogue: Catalogue): Contexte {
@@ -334,9 +387,72 @@ export function contexte(catalogue: Catalogue): Contexte {
     rayonDe: (id) => parIngredient.get(alias(id)) ?? null,
     espaceDe: (zone) => zones.get(zone) ?? "placard",
     placard: new Set(catalogue.rayons.placard),
+    // `?? []` POUR LES CATALOGUES FABRIQUÉS À LA MAIN DES TESTS, qui datent
+    // d'avant la garde : le chargeur, lui, résout toujours le champ.
+    deGarde: new Set(
+      (catalogue.garde ?? [])
+        .filter((f) => f.fond && f.fenetreJours >= SEMAINES_DE_GARDE * 7)
+        .flatMap((f) => f.ids),
+    ),
+    fenetreCourte: (() => {
+      const par = new Map<string, number>();
+      for (const f of catalogue.garde ?? [])
+        if (f.fond && f.fenetreJours <= SEMAINES_FENETRE_COURTE * 7)
+          for (const id of f.ids) par.set(alias(id), f.fenetreJours);
+      return (id: string) => par.get(alias(id)) ?? null;
+    })(),
     releve: catalogue.gardeManger.releve,
+    contenu: (() => {
+      const par = new Map<string, Quantite>();
+      for (const d of catalogue.fond?.denrees ?? []) {
+        const q = contenuDUnite(d.unite);
+        if (q) par.set(alias(d.ingredient), q);
+      }
+      return (id: string) => par.get(alias(id)) ?? null;
+    })(),
   };
 }
+
+/**
+ * Ce que contient une unité d'achat, lu dans les mots du fond — T135.
+ *
+ * « sachet de 500 g » → 500 g ; « paquet de 1 kg » → 1000 g ; « boîte de 6 »,
+ * « pack de 4 » → 6, 4 pièces. Rien d'autre : « sachet », « tube », « filet de
+ * 1 kg » d'oignons (que les recettes comptent en pièces) ne se soustraient pas,
+ * ou pas dans la même unité, et `retirer` garde alors son mode non chiffré.
+ */
+export function contenuDUnite(unite: string): Quantite | null {
+  const nombre = (x: string): number => Number(x.replace(",", "."));
+  const kg = /(\d+(?:[.,]\d+)?)\s*kg\b/i.exec(unite);
+  if (kg) return { amount: nombre(kg[1]!) * 1000, unit: "g" };
+  const g = /(\d+(?:[.,]\d+)?)\s*g\b/i.exec(unite);
+  if (g) return { amount: nombre(g[1]!), unit: "g" };
+  const pieces = /\bde\s+(\d+)\s*$/i.exec(unite);
+  if (pieces) return { amount: nombre(pieces[1]!), unit: PIECE };
+  return null;
+}
+
+/** L'unité de compte des recettes : `pièce`, et `pot` pour un yaourt. */
+const PIECE = "pièce";
+const enPieces = (unit: string): boolean => unit === PIECE || unit === "piece" || unit === "pot";
+
+/**
+ * À partir de combien de semaines un frais cesse d'être « frais court ».
+ *
+ * DEUX, ET C'EST LE MOT DE L'UTILISATEUR (2026-10-18) : pommes de terre,
+ * oignons, ail, carottes et œufs « se gardent des semaines ». Ce n'est pas une
+ * liste d'ids : c'est la famille de garde qui dit combien ça tient, et la
+ * classe qui s'en déduit — le jour où le céleri-rave entre dans une famille à
+ * trois semaines, il devient comptable sans une ligne de code.
+ */
+export const SEMAINES_DE_GARDE = 2;
+
+/**
+ * T137 — au-delà, une famille ne « se finit » pas par son âge au rejeu. Le sec
+ * (12 mois), les conserves (2 ans), le surgelé (8 mois) ne doivent pas
+ * disparaître en silence d'un placard où ils sont sans doute encore.
+ */
+export const SEMAINES_FENETRE_COURTE = 8;
 
 /* ═══════════════════════════════════════════════════════════ les classes */
 
@@ -357,6 +473,16 @@ export function classeDe(ctx: Contexte, ingredient: string, lots: readonly LotPl
   // dit ; ils remontent d'eux-mêmes dans le « je suis 3 des 11 » des cartes.
   if (rayon === null) return "non-suivi";
   if (lots.some((l) => ctx.espaceDe(l.zone) === "congelo")) return "congelateur";
+  // LES SURGELÉS DU COMMERCE VIVENT AU CONGÉLATEUR AVANT MÊME D'Y AVOIR UN
+  // LOT. Sans cette ligne, un sachet d'épinards jamais relevé serait de
+  // l'« épicerie » — comptable aussi, mais avec la mauvaise horloge.
+  if (rayon === "surgelés") return "congelateur";
+  // LE FRAIS QUI SE GARDE N'EST PAS DU FRAIS COURT (2026-10-18). Avant cette
+  // ligne, l'oignon tombait dans « les fruits et légumes ne s'estiment pas »,
+  // et l'app refusait le plancher sur ce que le foyer a TOUJOURS — c'était
+  // T46, une position de départ « à revoir à l'usage ». L'usage a parlé. Seul
+  // le frais vraiment fragile (salade, courgettes, viande) reste refusé.
+  if ((rayon === "primeur" || RAYONS_FRAIS.has(rayon)) && ctx.deGarde.has(id)) return "de-garde";
   if (rayon === "primeur") return "fruits-legumes";
   if (lots.some((l) => l.court || l.etat === "frais")) return "frais-court";
   if (RAYONS_FRAIS.has(rayon)) return "frais-court";
@@ -442,6 +568,13 @@ const EN_GRAMMES = new Set(["g", "ml"]);
 const poidsUnite = (l: LotPlacard): number | null =>
   l.parUnite && EN_GRAMMES.has(l.parUnite.unit) ? l.parUnite.amount : null;
 
+/** Ce que contient une unité DANS L'UNITÉ DE LA DEMANDE — des grammes, ou des
+ *  pièces pour une boîte d'œufs (T135). Une autre unité : non chiffré. */
+const contenuUnite = (l: LotPlacard, unite: "g" | "pièce"): number | null => {
+  if (unite === "g") return poidsUnite(l);
+  return l.parUnite && enPieces(l.parUnite.unit) ? l.parUnite.amount : null;
+};
+
 /**
  * Retire `besoin` grammes d'un ingrédient, en mutant ses lots.
  *
@@ -468,6 +601,8 @@ export function retirer(
   lots: LotPlacard[],
   ingredient: string,
   besoin: number | null,
+  /** T135 : `pièce` quand `besoin` compte des œufs, des pots — pas des grammes. */
+  unite: "g" | "pièce" = "g",
 ): Retrait {
   const servis = ordreDeService(lots);
   let reste = besoin;
@@ -477,16 +612,34 @@ export function retirer(
 
   for (const lot of servis) {
     if (reste != null && reste <= 1e-9) break;
-    const pu = poidsUnite(lot);
+    const pu = contenuUnite(lot, unite);
 
     // ── mode non chiffré : on avance l'état, on n'invente rien ──────────────
     if (pu == null) {
       if (lot.unites <= 0) continue;
-      if (lot.etat === "sec" || lot.etat === "conserve" || lot.etat === "bocal") {
+      // T134 — MAIS UNE UNITÉ FINIT PAR SE VIDER. Avant, le mode non chiffré ne
+      // retirait JAMAIS rien : un sachet de lentilles rentré par la liste
+      // (`unité`, sans poids) survivait à 75 hachis, le plancher ne voyait
+      // aucune baisse et la liste du fond restait vide toute l'année. Toujours
+      // sans un gramme : on compte des UNITÉS, ce qu'un œil vérifie.
+      //   — `sec` : le paquet s'ouvre, rien ne part (il sert encore) ;
+      //   — `entame` : le paquet ouvert se finit — une unité part, la suivante
+      //     est scellée ;
+      //   — `conserve`, `bocal` : la boîte se vide d'un coup (même règle que
+      //     T29) ; `frais` n'attend pas un second plat…
+      //   — T136 : … SAUF UN FRAIS CONSTATÉ À L'UNITÉ (`unites: 1`, sans
+      //     poids). Le relevé y dit « il y en a », pas « une pièce » : le sac
+      //     de pommes de terre du sous-évier disparaissait sous une omelette de
+      //     trois pommes de terre, et le parcours `stock-descend` ne trouvait
+      //     plus une seule ligne « estimé ». Il s'entame, comme un paquet sec,
+      //     et c'est le plat suivant qui le finit.
+      if (lot.etat === "sec" || (lot.etat === "frais" && lot.unites === 1)) {
         lot.etat = "entame";
         effet ??= "etat";
       } else {
-        effet ??= "etat";
+        lot.unites -= 1;
+        if (lot.etat === "entame" && lot.unites > 0) lot.etat = "sec";
+        effet ??= "unite";
       }
       // Un lot non chiffré ne peut pas dire combien il a donné : la demande est
       // considérée servie, et le doute qui en résulte est exactement ce que la
@@ -572,6 +725,9 @@ export interface Demande {
   /** `null` quand l'unité n'est pas une masse — « 2 gousses » ne se soustrait
    *  pas d'un poids, et prétendre le contraire fabriquerait un faux chiffre. */
   grammes: number | null;
+  /** T135 : les œufs, les pots de yaourt — comptés, arrondis à la pièce
+   *  au-dessus (on ne casse pas 1,9 œuf). `null` pour une masse. */
+  pieces: number | null;
 }
 
 /**
@@ -590,6 +746,7 @@ export function demandes(plat: Plat, facteur: number): Demande[] {
     out.push({
       ingredient: ing.id,
       grammes: EN_GRAMMES.has(ing.unit) ? ing.qty * facteur : null,
+      pieces: enPieces(ing.unit) ? Math.ceil(ing.qty * facteur - 1e-9) : null,
     });
   }
   return out;
@@ -628,6 +785,8 @@ interface Suivi {
   derives: number[];
   /** Les unités prédites au moment de la dernière observation. */
   predit: number | null;
+  /** Le jour de la dernière entrée par les courses — T111. */
+  rentreLe?: string;
 }
 
 /**
@@ -645,6 +804,8 @@ export function rejouer(
   aujourdhui: string,
 ): Rejeu {
   const lots = amorce(ctx, catalogue.gardeManger.denrees);
+  // `?? 4` : des fixtures de test construisent un catalogue sans foyer.
+  const fenetreFrigo = catalogue.foyer?.fenetreFrigo ?? 4;
   const suivi = new Map<string, Suivi>();
   const retraits: Retrait[] = [];
 
@@ -683,8 +844,16 @@ export function rejouer(
           suiviDe(id).depuisVu += 1;
           continue;
         }
-        retraits.push(retirer(l, id, d.grammes));
+        retraits.push(
+          d.pieces != null ? retirer(l, id, d.pieces, PIECE) : retirer(l, id, d.grammes),
+        );
         suiviDe(id).depuisVu += 1;
+        // T134 — UN INGRÉDIENT ÉPUISÉ SORT DE `parIngredient`, comme après un
+        // relevé ou une correction à zéro. Sinon sa clé vide y restait, et
+        // `hydraterGardeManger` (qui teste `has`) le gardait « ici » : « Ce
+        // soir » disait « rien à acheter » sur des lentilles finies. S'il a
+        // été vu, il passe dans `vus` (connu, à zéro).
+        if (l.length === 0) lots.delete(id);
       }
       continue;
     }
@@ -697,12 +866,19 @@ export function rejouer(
           ingredient: id,
           zone: ligne.zone ?? "placard-haut",
           unites: ligne.unites,
-          parUnite: ligne.parUnite,
+          // T135 — UN SACHET DU FOND A UNE TAILLE, MÊME RENTRÉ SANS POIDS. La
+          // ligne de liste dit « 2 sachets » ; `fond.yaml` dit qu'un sachet
+          // fait 500 g. Sans ça, le mode non chiffré finissait un sac de 1 kg
+          // en deux dahls, et l'année simulée n° 4 terminait sur 12 kg de
+          // lentilles corail au placard — ou, à l'inverse, une boîte d'œufs
+          // survivait à n'importe quel nombre de quiches.
+          parUnite: ligne.parUnite ?? ctx.contenu(id),
           etat: ligne.etat,
           entame: null,
           court: false,
         });
         lots.set(id, l);
+        suiviDe(id).rentreLe = e.jour;
         // RENTRER N'EST PAS OBSERVER LE PLACARD. On sait ce qu'on vient d'y
         // poser ; on ne sait pas mieux ce qui s'y trouvait déjà. La confiance
         // ne se restaure donc pas ici — seule une observation le fait.
@@ -773,8 +949,17 @@ export function rejouer(
       ? s.derives.reduce((a, b) => a + b, 0) / s.derives.length
       : 0;
     const jours = s.vuLe ? joursEntre(s.vuLe, aujourdhui) : 0;
-    const d = s.vuLe === null ? Number.POSITIVE_INFINITY : doute(s.depuisVu, derive, jours);
-    const chiffre = l.every((x) => poidsUnite(x) != null);
+    // LA DÉRIVE NE MANGE PAS UN PLACARD VIDE — T111. Elle dit « il disparaît
+    // plus que ce que les cuissons expliquent » ; sur un ingrédient sans lot,
+    // il n'y a rien à faire disparaître. Mesuré sur une année rejouée au modèle
+    // (passes hebdomadaires de sept repas) : 566 des 967 questions portaient sur
+    // un ingrédient répondu « non », sans lot, sans cuisson depuis, que la seule
+    // dérive faisait retomber à « probable » dès le lendemain — `sur` exige un
+    // doute nul, donc un ingrédient qui a appris une dérive se redemandait À
+    // CHAQUE PASSE, pour toujours. C'est ce qui faisait remonter le volume.
+    const d = s.vuLe === null ? Number.POSITIVE_INFINITY : doute(s.depuisVu, l.length ? derive : 0, jours);
+    const vie = s.rentreLe && RAYONS_FRAIS_CLASSES.has(classe) ? fenetreFrigo : Number.POSITIVE_INFINITY;
+    const rentreEnVie = l.length > 0 && !!s.rentreLe && joursEntre(s.rentreLe, aujourdhui) <= vie;
     return {
       ingredient: id,
       lots: l.map(cloner),
@@ -783,12 +968,24 @@ export function rejouer(
       vuLe: s.vuLe,
       depuisVu: s.depuisVu,
       derive,
-      grammes: chiffre
-        ? l.reduce((g, x) => g + (x.entame ?? 0) + x.unites * (poidsUnite(x) ?? 0), 0)
-        : null,
-      unites: l.reduce((n, x) => n + x.unites + (x.entame != null ? 1 : 0), 0),
+      ...mesurer(l),
+      rentreEnVie,
     };
   };
+
+  // T137 — L'ÂGE FINIT CE QUE LES CUISSONS NE FINISSENT PAS. L'horloge part de
+  // l'achat, ou de la dernière observation qui l'a suivi : répondre « oui » à
+  // « Des œufs ? » est le geste de confirmation, et il existe déjà.
+  const finis = new Map<string, number>();
+  for (const [id, l] of lots) {
+    const s = suivi.get(id);
+    const fenetre = ctx.fenetreCourte(id);
+    if (!s?.rentreLe || fenetre === null || l.length === 0) continue;
+    const depuis = s.vuLe && s.vuLe > s.rentreLe ? s.vuLe : s.rentreLe;
+    if (joursEntre(depuis, aujourdhui) <= fenetre) continue;
+    finis.set(id, joursEntre(s.rentreLe, aujourdhui));
+    lots.delete(id);
+  }
 
   const parIngredient = new Map<string, EtatIngredient>();
   for (const [id, l] of lots) parIngredient.set(id, etatDe(id, l));
@@ -800,7 +997,29 @@ export function rejouer(
   for (const [id, s] of suivi)
     if (s.vuLe !== null && !parIngredient.has(id)) vus.set(id, etatDe(id, []));
 
-  return { parIngredient, vus, retraits };
+  const rentres = new Map<string, string>();
+  for (const [id, s] of suivi) if (s.rentreLe) rentres.set(id, s.rentreLe);
+
+  return { parIngredient, vus, retraits, finis, rentres };
+}
+
+/**
+ * Ce que pèse et compte une poignée de lots — la mesure d'`EtatIngredient`.
+ *
+ * EXPORTÉE POUR UNE SEULE RAISON : l'écran d'une ZONE ne montre que les lots
+ * rangés dans cette zone (T107), et recompter ces lots-là avec une seconde
+ * formule serait le second endroit où « 1 » et « 285 g » pourraient diverger.
+ * Les grammes sont `null` dès qu'un lot n'est pas chiffré : un total partiel se
+ * lirait comme un total.
+ */
+export function mesurer(lots: readonly LotPlacard[]): { grammes: number | null; unites: number } {
+  const chiffre = lots.every((x) => poidsUnite(x) != null);
+  return {
+    grammes: chiffre
+      ? lots.reduce((g, x) => g + (x.entame ?? 0) + x.unites * (poidsUnite(x) ?? 0), 0)
+      : null,
+    unites: lots.reduce((n, x) => n + x.unites + (x.entame != null ? 1 : 0), 0),
+  };
 }
 
 /**

@@ -1,0 +1,83 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-18 — aucune source
+# extérieure. Velouté d'hiver : le fond, plus UNE botte de poireaux.
+#
+# LE POIREAU-POMME DE TERRE QUE TOUT LE MONDE CONNAÎT, avec une poignée de
+# lentilles corail qui le fait passer de l'entrée au plat.
+
+recipe:
+  id: veloute-poireaux-pommes-de-terre-corail
+  title: Velouté poireaux-pommes de terre aux lentilles corail
+  lang: fr
+  format: soupe
+  yields:
+    portions_eq: 6
+  time_min_total: 45
+  active_min: 15
+
+  apports:
+    proteine: legumineuse
+    feculent: pommes-de-terre
+    legumes: [allium]
+    profil: soupe
+    origine: francais
+
+  ingredients:
+    - {id: poireau, name: poireaux, qty: 3, unit: pièce}
+    - {id: pomme-de-terre, name: pommes de terre, qty: 3, unit: pièce}
+    - {id: lentilles-corail, name: lentilles corail, qty: 100, unit: g}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: eau, name: eau, qty: 1.5, unit: l}
+    - {id: bouillon-legumes, name: cube de bouillon de légumes, qty: 1, unit: pièce, seasoning: true}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: laver
+      action: "Fendre les poireaux en long et les rincer feuille à feuille, puis les émincer"
+      astuce: "La terre se cache entre les blancs : c'est le seul lavage qui l'enlève."
+      needs: [chop-coarse]
+      uses: [poireau]
+      time_min: 8
+    - id: tailler
+      action: "Pommes de terre en morceaux, oignon émincé, lentilles rincées"
+      needs: [chop-coarse]
+      uses: [pomme-de-terre, oignon, lentilles-corail]
+      time_min: 6
+      kid: {age_min_months: 30, task: "rincer les lentilles dans la passoire"}
+    - id: suer
+      action: "Faire fondre oignon et poireaux à l'huile dans la cocotte, sans les laisser colorer"
+      needs: [simmer-large]
+      uses: [huile-olive]
+      time_min: 6
+    - id: cuire
+      action: "Ajouter pommes de terre, lentilles et eau ; cuire à couvert"
+      needs: [simmer-large]
+      uses: [eau]
+      time_min: 20
+      attended: false
+    - id: mixer
+      action: "Mixer"
+      needs: [blend-smooth]
+      uses: []
+      time_min: 3
+    - id: saler
+      action: "Délayer le cube, saler si besoin et poivrer"
+      needs: []
+      uses: [bouillon-legumes, sel, poivre]
+      time_min: 2
+      seasoning_gate: true
+
+  baby_portion:
+    take: "un petit bol de velouté, avant le cube et le sel"
+    prep: "tiédir"
+    needs: []
+    depuis: [mixer]
+
+  emits:
+    - kind: reste-plat
+      type: veloute-poireaux-corail
+      qty_band: 1-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

@@ -5,6 +5,7 @@
 recipe:
   id: nuggets-colin-four
   title: Nuggets de colin au four
+  format: galettes
   lang: fr
   source:
     author: Marie Chioca

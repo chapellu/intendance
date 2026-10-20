@@ -56,3 +56,39 @@ export const libellePoser = (ecarte: boolean): string =>
     : ecarte
       ? "Je fais ça quand même"
       : "Je fais ça";
+
+/**
+ * Le bouton d'une carte du soir — T128.
+ *
+ * « JE LANCE ÇA », ET PAS « JE FAIS ÇA » : la carte du fil POSE un plat pour
+ * plus tard, celle-ci le pose ET ouvre sa mise en place, maintenant. Deux
+ * gestes, deux mots — et le parcours e2e de la pause le désigne par celui-ci.
+ */
+export const LIBELLE_LANCER = "Je lance ça";
+
+/**
+ * Depuis quand un lot est là, en jours — « aujourd'hui », « hier », « il y a
+ * 3 j » — T104.
+ *
+ * EN JOURS DU CALENDRIER — voir `joursDepuis` dans `stock.vue.ts`, qui dit
+ * pourquoi ce n'est pas l'âge de `Depot.vie`. Un âge négatif — une naissance
+ * dans le futur, qu'aucun geste ne produit — se lit « aujourd'hui » plutôt que
+ * « dans 2 j ».
+ */
+export const depuis = (age: number): string =>
+  age <= 0 ? "aujourd’hui" : age === 1 ? "hier" : `il y a ${age} j`;
+
+/**
+ * Une bande de rangement en mots — « 2 repas », « une gamelle » — T104.
+ *
+ * LA MÊME UNITÉ QUE LA SORTIE (T99), qui écrit « 2 repas » : un lot rangé sous
+ * un nom et relu sous un autre ferait chercher deux boîtes. `lunchbox` est le
+ * déjeuner qui voyage — l'app l'appelle « gamelle » partout ailleurs (« prévoir
+ * une gamelle pour un midi »). Une bande illisible retombe sur la règle de
+ * `bandRepas` : un repas, jamais l'identifiant brut à l'écran.
+ */
+export const bandeEnMots = (band: string | null | undefined): string => {
+  if (band === "lunchbox") return "une gamelle";
+  const n = Number.parseInt(String(band ?? ""), 10);
+  return `${n > 0 ? n : 1} repas`;
+};

@@ -5,6 +5,7 @@
 recipe:
   id: poelee-orge-champignons
   title: Grande poêlée d'orge aux champignons, jambon fumé et thym frais
+  format: poelee
   lang: fr
   source:
     author: Marie Chioca

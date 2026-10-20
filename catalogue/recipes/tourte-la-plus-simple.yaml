@@ -8,6 +8,7 @@
 recipe:
   id: tourte-la-plus-simple
   title: La tourte la plus simple du monde
+  format: quiche
   lang: fr
   source:
     author: Marie Chioca

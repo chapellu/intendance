@@ -21,13 +21,19 @@
 // Port de `apps/proto-shell/comptoir.js` (`ecranCockpit`).
 
 import { jourISO, type EtatCourse } from "../db";
+import { cleGeste } from "../db/reglages";
 import { minutesParJour, type Calcul } from "../model/calcul";
-import type { Jeu } from "../model/jeu";
+import { joue, SAUTE, type Jeu } from "../model/jeu";
+import { heureDuDiner, horaire, type PropositionDuSoir } from "../model/pause";
+import { nomDuType } from "../model/plancher";
+import { JOURS_VISIBLES } from "../nav/jours";
 import type { Route } from "../nav/routes";
-import { duree } from "../ui/format";
-import { detailDuGeste, gesteDuJour, titreDuGeste } from "./aujourdhui.vue";
+import { duree, hhmm } from "../ui/format";
+import { ceQuiAttend, ligneDuCockpit } from "./ceSoir.vue";
+import { detailDuGeste, detailDuGesteSansJours, gesteDuJour, titreDuGeste } from "./aujourdhui.vue";
 import { vueDesCourses } from "./courses.vue";
 import { vueAPrevoir } from "./prevoir.vue";
+import { restesPerimes } from "./stock.vue";
 
 export interface Tache {
   cle: string;
@@ -37,6 +43,40 @@ export interface Tache {
   detail: string;
   /** Où l'on répond. Une tâche qui n'ouvre rien est une plainte. */
   route: Route;
+  /**
+   * Les clés de base que « c'est jeté » retire, quand la tâche se règle sur
+   * place — T103. Absent partout ailleurs.
+   *
+   * LA SEULE TÂCHE QUI SE RÈGLE SANS ALLER NULLE PART, et c'est voulu : il n'y
+   * a rien à décider sur un reste passé, seulement à le dire jeté. L'envoyer
+   * sur l'inventaire pour taper « Je n'en ai plus » N fois — 36 fois, pendant
+   * la panne de frigo de l'année simulée — serait faire payer au doigt
+   * l'oubli du modèle.
+   */
+  jeter?: string[];
+  /**
+   * La clé du drapeau que « Fait » pose, quand le geste du jour se coche sur
+   * place — sans les jours seulement. Avec, il se coche sur « Aujourd'hui »,
+   * où la tâche envoie.
+   *
+   * SANS CE BOUTON, LE GESTE RALLUMÉ SERAIT UNE TÂCHE QU'ON NE PEUT PAS FINIR :
+   * le seul « Fait » de l'app vit sur un écran éteint, et la fiche du plat ne
+   * le connaît pas. Une ligne qui reste toute la soirée après qu'on a sorti le
+   * bocal apprend à ne plus lire le cockpit (T16).
+   */
+  cocher?: string;
+  /**
+   * Le plat que « Je lance ça » pose sur le dîner de ce soir avant d'ouvrir sa
+   * mise en place — T129. Seulement sur la ligne « Ce soir ».
+   *
+   * UN TAP DEPUIS LE COCKPIT, ET C'EST LA PROMESSE DU TICKET. La ligne elle-même
+   * ouvre « Ce soir » (deux taps : la liste, puis le plat) ; le bouton prend la
+   * première carte sans détour, pour le jour où elle est la bonne.
+   */
+  lancer?: string;
+  /** Ce que la carte du plat à lancer disait là — posé avec lui, pour que la
+   *  liste ne demande que ce qui manque (`DecisionCreneau.ici`). */
+  ici?: string[];
 }
 
 export interface CarteFacette {
@@ -58,11 +98,26 @@ export interface EtatDuJour {
   courses: Map<string, EtatCourse>;
   /** Le geste du jour a été coché. Voir `cleGeste` : la clé porte le jour. */
   gesteFait: boolean;
+  /**
+   * La proposition de 15 h, quand l'écran a de quoi la calculer — T129.
+   *
+   * OPTIONNELLE, COMME `Savoir` POUR `offre` : sans elle, la ligne « Ce soir »
+   * dit ce qu'elle disait avant, et elle reste vraie.
+   */
+  soir?: PropositionDuSoir | null;
+  /** Les créneaux déjà cuisinés, en clés `(jour, repas)` — pour ne pas
+   *  réclamer un dîner qu'on a déjà fait. */
+  cuisines?: ReadonlySet<string>;
 }
 
 export function vueDuCockpit(jeu: Jeu, calc: Calcul, etat: EtatDuJour): VueCockpit {
   const courses = vueDesCourses(jeu.catalogue, calc.panier, etat.courses);
-  const enAttente = vueAPrevoir(jeu, calc).enAttente;
+  // SANS LES JOURS, AUCUNE OFFRE N'ATTEND — T110. « À prévoir » est éteint
+  // (T88), donc une offre comptée ici est une offre à laquelle on ne peut pas
+  // répondre : l'année simulée l'a vue en tête du cockpit 65 jours sur 365,
+  // menant à un écran qu'aucun onglet n'ouvre. Le chiffre de la carte et sa
+  // phrase tombent avec, pour la même raison que la pastille de la coquille.
+  const enAttente = JOURS_VISIBLES ? vueAPrevoir(jeu, calc).enAttente : 0;
   // LE DERNIER JOUR DE LA FENÊTRE, pas « dimanche » : la semaine part
   // d'aujourd'hui. Aucune valeur de repli ici — un nom de jour inventé serait
   // exactement le bug du proto, en plus discret.
@@ -75,38 +130,130 @@ export function vueDuCockpit(jeu: Jeu, calc: Calcul, etat: EtatDuJour): VueCockp
   // mange pas là » est une réponse, et elle ne réclame plus rien.
   const repondus = choisis.filter((x) => jeu.choix[x.i] != null).length;
   const aPoser = choisis.length - repondus;
+  const poses = jeu.choix.filter((c) => c != null && c !== SAUTE).length;
 
   const taches: Tache[] = [];
 
   // 1. CE SOIR. C'est la seule chose de la liste dont l'échéance est ce soir :
   // elle passe donc devant, y compris devant les courses.
+  //
+  // ELLE SURVIT AUX JOURS CACHÉS, ET C'EST JUSTIFIÉ (balayage de T110). « Ce
+  // soir » n'est pas une case de l'agenda, c'est le dîner qui va avoir lieu ;
+  // et « Poser » n'est pas éteint — « Posés › Changer » l'ouvre, et il rend la
+  // main à « Posés » sans les jours (`Poser.tsx`).
   const soir = jeu.creneaux.findIndex((c) => c.jour === 0 && c.repas === "diner");
   const jour0 = jeu.jours[0];
-  if (soir >= 0 && jour0 && jeu.choix[soir] == null)
-    taches.push({
-      cle: "ce-soir",
-      facette: "Cuisine",
-      titre: "Poser le dîner de ce soir",
-      detail: "Rien n'est posé — « Poser un plat » en propose quatre.",
-      route: {
-        ecran: "poser",
-        creneau: { jour: jourISO(jour0.date), repas: jeu.creneaux[soir]!.repas },
-      },
-    });
+  //
+  // DEPUIS T129, ELLE NOMME LE PLAT ET CE QUI ATTEND. « Rien n'est posé —
+  // Poser un plat » a été la tâche de tête 364 jours sur 364 de l'année
+  // simulée, sans un mot sur les portions qui attendaient au congélateur. Elle
+  // dit maintenant le meilleur plat de la proposition de 15 h, ce qu'il manque
+  // pour le faire, quand le lancer — et ouvre « Ce soir ».
+  const propose = etat.soir ? ligneDuCockpit(etat.soir) : null;
+  const pose = soir >= 0 ? jeu.choix[soir] : null;
+  const cleSoir = jour0 ? `${jourISO(jour0.date)}|diner` : "";
+  if (soir >= 0 && jour0 && pose == null)
+    taches.push(
+      propose && etat.soir
+        ? {
+            cle: "ce-soir",
+            facette: "Cuisine",
+            titre: propose.titre,
+            detail: propose.detail,
+            route: { ecran: "ce-soir" },
+            lancer: etat.soir.cartes[0]!.plat.id,
+            ici: etat.soir.cartes[0]!.ici,
+          }
+        : {
+            cle: "ce-soir",
+            facette: "Cuisine",
+            titre: "Poser le dîner de ce soir",
+            detail: "Rien n'est posé — « Poser un plat » en propose quatre.",
+            route: {
+              ecran: "poser",
+              creneau: { jour: jourISO(jour0.date), repas: jeu.creneaux[soir]!.repas },
+            },
+          },
+    );
+  // UN DÎNER POSÉ ET PAS ENCORE FAIT SE RAPPELLE, AVEC SON HEURE. Sans les
+  // jours, rien d'autre ne dit « ce soir, c'est la soupe » : « Posés » liste,
+  // il ne date pas. La ligne n'existe qu'avec `cuisines`, pour ne jamais
+  // réclamer un plat déjà cuisiné.
+  else if (soir >= 0 && jour0 && joue(pose ?? null) && etat.cuisines && !etat.cuisines.has(cleSoir)) {
+    const p = jeu.plats[pose as string];
+    if (p) {
+      const debut = heureDuDiner() - horaire(p).total;
+      const attend = etat.soir ? ceQuiAttend(etat.soir.attend) : "";
+      taches.push({
+        cle: "ce-soir",
+        facette: "Cuisine",
+        titre: `Ce soir : ${p.titre}`,
+        detail: [`posé — à lancer avant ${hhmm(debut)}`, attend].filter(Boolean).join(" · "),
+        route: { ecran: "cuisiner", creneau: { jour: jourISO(jour0.date), repas: "diner" } },
+      });
+    }
+  }
 
   // 2. LE GESTE DU JOUR. Il concerne demain, mais il se fait ce soir : un lot
   // sorti demain matin est encore un bloc à 19 h.
   const geste = gesteDuJour(jeu, calc);
+  //
+  // SANS LES JOURS, IL ENVOIE AU PLAT. T110 l'avait éteint avec les jours,
+  // parce qu'il menait à « Aujourd'hui » ; mais ce qu'il réclame n'est pas une
+  // case de l'agenda, c'est un bocal à sortir pour un plat POSÉ — et un bloc de
+  // sauce à 19 h est le même, qu'on montre le jour ou non. Il ouvre donc la
+  // fiche du plat (celle que « Posés » ouvre), nomme le plat et pas « demain »,
+  // et se coche sur place.
+  //
+  // SANS PLAT POSÉ DEMAIN, IL VIENT DE LA PROPOSITION DE 15 H. Un bloc du
+  // congélateur qui ne décongèle pas d'ici 18 h ne fait aucune carte du soir
+  // (`pause.aDecongelerLaVeille`) ; il se sort ce soir, au frigo, pour demain,
+  // et se coche sur place comme l'autre. Une seule ligne de geste : le hook
+  // du cockpit lit le drapeau de ce type-là (`typeDuGeste`).
+  const aSortir = !geste ? etat.soir?.aSortir[0] : undefined;
+  if (aSortir && !etat.gesteFait)
+    taches.push({
+      cle: `geste|${aSortir.lot.type}`,
+      facette: "Cuisine",
+      titre: titreDuGeste(aSortir.lot),
+      detail: aSortir.plat
+        ? `Pour demain : ${aSortir.plat.titre} — une nuit au frigo, il sera prêt.`
+        : "Pour demain — une nuit au frigo, et il se réchauffe tel quel.",
+      route: { ecran: "ce-soir" },
+      ...(jour0 ? { cocher: cleGeste(jourISO(jour0.date), aSortir.lot.type) } : {}),
+    });
   if (geste && !etat.gesteFait)
     taches.push({
       cle: `geste|${geste.type}`,
       facette: "Cuisine",
       titre: titreDuGeste(geste),
-      detail: detailDuGeste(geste),
-      route: { ecran: "aujourdhui" },
+      detail: JOURS_VISIBLES ? detailDuGeste(geste) : detailDuGesteSansJours(geste),
+      route: JOURS_VISIBLES ? { ecran: "aujourdhui" } : { ecran: "cuisiner", creneau: geste.creneau },
+      ...(!JOURS_VISIBLES && jour0 ? { cocher: cleGeste(jourISO(jour0.date), geste.type) } : {}),
     });
 
-  // 3. LES COURSES. Le proto écrivait « rien de rentré au stock » quel que soit
+  // 3. CE QUI EST PASSÉ AU FRIGO — T103. Après le geste du jour parce que c'est
+  // le même voyage, au frigo, et avant les courses parce qu'il libère la place
+  // où elles vont. La tâche ne paraît que s'il y a quelque chose à jeter : un
+  // « 0 reste passé » permanent apprendrait à ne plus lire le cockpit.
+  const perimes = jour0 ? restesPerimes(calc.depot, jour0.date) : [];
+  if (perimes.length)
+    taches.push({
+      cle: "perimes",
+      facette: "Cuisine",
+      titre:
+        perimes.length > 1
+          ? `${perimes.length} restes ont passé leur date`
+          : "Un reste a passé sa date",
+      // LE LIBELLÉ, PAS L'ID. « lentilles-vertes-cuites — plus proposé » s'est
+      // lu tel quel sur le cockpit (capture du 19/10) : un id d'émission n'est
+      // pas une phrase, et c'est la seule ligne du cockpit qui l'oubliait.
+      detail: `${nomsCourts(perimes.map((l) => nomDuType(l.type)))} — plus proposé, à jeter.`,
+      route: { ecran: "stock" },
+      jeter: perimes.map((l) => l.ref!),
+    });
+
+  // 4. LES COURSES. Le proto écrivait « rien de rentré au stock » quel que soit
   // le nombre d'articles rentrés — il lisait les cochés et concluait sur les
   // rentrés. Une ligne qui contredit l'écran qu'elle ouvre ne se rattrape pas.
   if (courses.articles.length && courses.rentres < courses.articles.length)
@@ -118,7 +265,7 @@ export function vueDuCockpit(jeu: Jeu, calc: Calcul, etat: EtatDuJour): VueCockp
       route: { ecran: "courses" },
     });
 
-  // 4. CE QUI ATTEND UNE RÉPONSE. Le compte vient de « À prévoir », comme la
+  // 5. CE QUI ATTEND UNE RÉPONSE. Le compte vient de « À prévoir », comme la
   // pastille de la sous-navigation : un seul endroit sait compter les offres.
   if (enAttente)
     taches.push({
@@ -126,7 +273,7 @@ export function vueDuCockpit(jeu: Jeu, calc: Calcul, etat: EtatDuJour): VueCockp
       facette: "Cuisine",
       titre: enAttente > 1 ? `${enAttente} offres attendent une réponse` : "Une offre attend une réponse",
       detail: "Agrandir un lot d'avance, ou prévoir une gamelle pour un midi.",
-      route: { ecran: "prevoir" },
+      route: { ecran: "prevoir" }, // enAttente vaut 0 sans JOURS_VISIBLES
     });
 
   return {
@@ -136,8 +283,12 @@ export function vueDuCockpit(jeu: Jeu, calc: Calcul, etat: EtatDuJour): VueCockp
       // Le proto affichait « 14 créneaux » — le nombre de créneaux
       // CHOISISSABLES de la semaine, qui ne bouge jamais. Un chiffre constant
       // déguisé en état ; ce qui bouge, c'est ce à quoi on a répondu.
-      etat: `${repondus}/${choisis.length} répondus`,
-      resume: resumeCuisine(aPoser, dernier, enAttente),
+      //
+      // SANS LES JOURS, NI CRÉNEAU NI JOUR — T110. « 14 créneaux restent à
+      // poser d'ici jeudi » nommait deux choses que T88 a cachées. Ce qui reste
+      // lisible, ce sont les plats posés : c'est ce que « Posés » montre.
+      etat: JOURS_VISIBLES ? `${repondus}/${choisis.length} répondus` : poses > 1 ? `${poses} posés` : `${poses} posé`,
+      resume: JOURS_VISIBLES ? resumeCuisine(aPoser, dernier, enAttente) : resumeSansJours(poses, etat.soir),
       // UN ZÉRO N'EST PAS UN CHIFFRE À AFFICHER. Vu au navigateur sur une
       // semaine vide : « 0 article » et « 0 min de cuisine » en pastilles, ce
       // qui donne trois choses à lire pour n'en dire aucune. Le proto ne
@@ -151,6 +302,24 @@ export function vueDuCockpit(jeu: Jeu, calc: Calcul, etat: EtatDuJour): VueCockp
       ],
     },
   };
+}
+
+/**
+ * Le type dont le cockpit coche le geste du jour : celui du plat posé demain,
+ * sinon le premier bloc à sortir ce soir. Le hook et la vue doivent nommer le
+ * même, sinon « Fait » cocherait un geste qu'on ne montre pas.
+ */
+export const typeDuGeste = (geste: { type: string } | null, soir?: PropositionDuSoir | null): string | null =>
+  geste?.type ?? soir?.aSortir[0]?.lot.type ?? null;
+
+/** Trois noms au plus, puis le compte du reste : la ligne du cockpit tient sur
+ *  un téléphone, et la liste entière est dans l'inventaire. Les doublons se
+ *  disent une fois — deux boîtes de lentilles sont « lentilles » à la poubelle. */
+export function nomsCourts(types: readonly string[]): string {
+  const uniques = [...new Set(types)];
+  const dits = uniques.slice(0, 3).join(", ");
+  const reste = uniques.length - 3;
+  return reste > 0 ? `${dits} et ${reste} autre${reste > 1 ? "s" : ""}` : dits;
 }
 
 /** Où en est la liste, dit dans l'ordre où on la vit : on coche au magasin,
@@ -186,6 +355,23 @@ export function resumeCuisine(aPoser: number, dernier: string, enAttente: number
   const offres =
     enAttente === 0 ? "" : enAttente > 1 ? ` ${enAttente} offres attendent votre réponse.` : " Une offre attend votre réponse.";
   return semaine + offres;
+}
+
+/** L'état de la cuisine quand les jours sont cachés : ce qui est décidé, et
+ *  rien qui compte des cases qu'on ne voit pas. */
+export function resumeSansJours(poses: number, soir?: PropositionDuSoir | null): string {
+  // RIEN DE POSÉ N'EST PAS RIEN À FAIRE — T129. Avec la proposition sous la
+  // main, la carte dit ce que la cuisine PEUT ce soir : combien de dîners se
+  // font avec ce qui est là. « Rien n'est posé » tous les jours ne disait que
+  // l'absence d'un plan que le foyer ne fera pas.
+  if (poses === 0 && soir) {
+    const libres = [...soir.cartes, ...soir.plus].filter((c) => c.manque.length === 0).length;
+    if (libres > 1) return `Ce soir, ${libres} dîners se font sans rien acheter.`;
+    if (libres === 1) return "Ce soir, un dîner se fait sans rien acheter.";
+    return "Ce soir, chaque dîner demande au moins un achat — « Ce soir » dit lequel.";
+  }
+  if (poses === 0) return "Rien n'est posé — « Proposer » tire une main sur ce que vous avez.";
+  return poses === 1 ? "Un plat posé, à cuisiner quand vous voulez." : `${poses} plats posés, à cuisiner quand vous voulez.`;
 }
 
 /** Ce qui compte pour la pastille du cockpit : la liste elle-même. Un compte

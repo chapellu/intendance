@@ -8,6 +8,7 @@
 recipe:
   id: aspic-boeuf-legumes
   title: Aspic de bœuf aux légumes
+  format: terrine
   lang: fr
   source:
     author: Marie Chioca

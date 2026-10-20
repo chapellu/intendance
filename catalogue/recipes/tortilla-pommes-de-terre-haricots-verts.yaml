@@ -1,0 +1,86 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-18 — aucune source
+# extérieure. Huitième dîner du fond de roulement.
+#
+# FINIE AU FOUR, PAS RETOURNÉE À LA POÊLE. Le geste classique de la tortilla —
+# la retourner sur une assiette — est le plus risqué de la recette et demande
+# quelqu'un devant le feu. Au plat à gratin, elle prend seule pendant qu'on
+# s'occupe des enfants.
+
+recipe:
+  id: tortilla-pommes-de-terre-haricots-verts
+  title: Omelette au four, pommes de terre et haricots verts
+  lang: fr
+  format: omelette
+  yields:
+    portions_eq: 4
+  time_min_total: 55
+  active_min: 15
+
+  apports:
+    proteine: oeuf
+    feculent: pommes-de-terre
+    legumes: [legumineuse, allium]
+    profil: four
+    origine: espagnol
+
+  ingredients:
+    - {id: pomme-de-terre, name: pommes de terre, qty: 600, unit: g}
+    - {id: haricots-verts-surgeles, name: haricots verts surgelés, qty: 250, unit: g}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: oeufs, name: œufs, qty: 6, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 3, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 180 °C"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: tailler
+      action: "Pommes de terre en fines rondelles, oignon émincé"
+      needs: [chop-coarse]
+      uses: [pomme-de-terre, oignon]
+      time_min: 8
+    - id: pommes-de-terre
+      action: "Cuire pommes de terre et oignon à l'huile, à couvert et à feu moyen, jusqu'à ce qu'elles soient tendres"
+      astuce: "Remuer de temps en temps ; elles doivent fondre, pas dorer."
+      needs: [pan-fry]
+      uses: [huile-olive]
+      time_min: 15
+      attended: false
+    - id: haricots
+      action: "Pendant ce temps, cuire les haricots verts surgelés à la vapeur, puis les couper en tronçons"
+      needs: [steam]
+      uses: [haricots-verts-surgeles]
+      time_min: 10
+      parallel_with: pommes-de-terre
+    - id: battre
+      action: "Battre les œufs en omelette et les saler"
+      needs: []
+      uses: [oeufs, sel]
+      time_min: 3
+      seasoning_gate: true
+      kid: {age_min_months: 30, task: "battre les œufs à la fourchette"}
+    - id: enfourner
+      action: "Mêler légumes et œufs dans le plat huilé, enfourner jusqu'à ce que le centre soit pris"
+      needs: [gratin-vessel, bake]
+      uses: []
+      time_min: 25
+      attended: false
+
+  baby_portion:
+    take: "quelques rondelles de pomme de terre et des haricots verts, avant les œufs salés"
+    prep: "écraser à la fourchette"
+    needs: []
+    depuis: [pommes-de-terre, haricots]
+
+  emits:
+    - kind: reste-plat
+      type: tortilla
+      qty_band: lunchbox
+      keeps: {frigo_days: 2}
+      note: "se mange froide, en part, dans une boîte"
+
+  plan_b: []

@@ -14,7 +14,10 @@ export const HEURE: Record<RepasId, number> = {
   "petit-dejeuner": 7 * 60 + 30,
   dejeuner: 12 * 60 + 30,
   gouter: 16 * 60 + 30,
-  diner: 19 * 60,
+  // 18 H, PAS 19 H — dit par le foyer le 18/10 : « les petits mangent à 18 h ».
+  // C'est l'heure que la proposition de 15 h vise (`model/pause.ts`), et celle
+  // que la fiche annonce en « À table ».
+  diner: 18 * 60,
 };
 
 /** L'heure de passage à table d'un repas, avec un repli qui ne ment pas :

@@ -80,6 +80,15 @@ export function vueDesCourses(
   panier: Map<string, LignePanier>,
   etats: Map<string, EtatCourse>,
   planchers: readonly LignePlancher[] = [],
+  /**
+   * T134 — le début du jour, en ms. Une ligne née du SEUL plancher dont l'état
+   * (coché, rentré) date d'avant n'en a plus : elle est revenue parce que la
+   * cuisine a remangé ce qu'on avait rentré. Sans ça, les carottes rentrées
+   * samedi restaient « déjà rentré » pour toujours — la clé `id|unité` ne
+   * change jamais — et le fond ne se rachetait plus. Les lignes de la semaine
+   * gardent leur état : elles ont leur propre « vider ».
+   */
+  depuis = 0,
 ): VueCourses {
   const parIngredient = new Map(planchers.map((p) => [p.ingredient, p]));
   const dejaDemandes = new Set([...panier.values()].map((l) => l.id));
@@ -109,7 +118,8 @@ export function vueDesCourses(
     articles: lignes.map((ligne) => {
       const cle = cleDeLArticle(ligne);
       vus.add(cle);
-      const e = etats.get(cle);
+      const brut = etats.get(cle);
+      const e = brut && ligne.unit === UNITE_PLANCHER && ligne.n === 0 && brut.maj < depuis ? undefined : brut;
       // UNE SEULE ANNOTATION PAR INGRÉDIENT. `farine` peut paraître en `g` et en
       // `kg` sur la même semaine ; répéter « sous son plancher » sur chaque
       // ligne ferait croire à deux manques.
@@ -125,7 +135,9 @@ export function vueDesCourses(
     articles,
     coches: articles.filter((a) => a.coche).length,
     rentres: articles.filter((a) => a.rentre).length,
-    orphelins: [...etats.values()].filter((e) => !vus.has(e.cle) && (e.coche || e.rentre)).length,
+    orphelins: [...etats.values()].filter(
+      (e) => !vus.has(e.cle) && (e.coche || e.rentre) && !(e.cle.endsWith(`|${UNITE_PLANCHER}`) && e.maj < depuis),
+    ).length,
     panier: complet,
     parPlancher: articles.filter((a) => a.plancher && a.ligne.n === 0).length,
   };
@@ -147,8 +159,14 @@ export function phraseDuPlancher(p: LignePlancher, plats: number): string {
   const bouts: string[] = [];
   if (plats > 0) bouts.push(plats > 1 ? `${plats} plats` : "1 plat");
   if (p.usage === "apero") bouts.push("pour l’apéro");
+  else if (p.fond) bouts.push("pour le fond");
   bouts.push(`sous son plancher — ${p.a} sur ${p.niveau}`);
-  if (p.confiance !== "sur") bouts.push(p.vuLe ? `à vérifier, vu le ${p.vuLe}` : "jamais vu");
+  // T137 — ACHETÉ N'EST PAS « JAMAIS VU ». Rentrer ne restaure pas la
+  // confiance (la règle de l'entrée tient), mais l'app sait d'où vient l'article.
+  if (p.confiance !== "sur")
+    bouts.push(
+      p.vuLe ? `à vérifier, vu le ${p.vuLe}` : p.rentreLe ? `à vérifier, rentré le ${p.rentreLe}` : "jamais vu",
+    );
   return bouts.join(" · ");
 }
 

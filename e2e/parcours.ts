@@ -96,6 +96,26 @@ export async function ouvrirLeGuide(page: Page, plat: string): Promise<void> {
   await page
     .getByRole("button", { name: /Ouvrir le guide|Cuisiner ce plat/ })
     .dispatchEvent("click");
+  await passerLaMiseEnPlace(page);
+  await expect(page.locator(".co-etape")).toBeVisible({ timeout: 30_000 });
+}
+
+/**
+ * La mise en place, traversée — T112.
+ *
+ * TOUTE CUISSON S'OUVRE DESSUS DEPUIS T112, donc tout parcours qui cuisine la
+ * traverse : le guide par lien profond, et la fiche du créneau dans
+ * `stock-descend`. Un seul endroit pour le geste, comme `ouvrirLeGuide`.
+ *
+ * ON ATTEND QU'ELLE SOIT LÀ AVANT DE TOUCHER, puis qu'elle soit PARTIE. « C'est
+ * parti » écrit un réglage, la requête vive repart, et le guide remplace
+ * l'écran : sans la seconde attente, l'appelant chercherait son étape dans un
+ * écran qui n'a pas encore changé.
+ */
+export async function passerLaMiseEnPlace(page: Page): Promise<void> {
+  const parti = page.getByRole("button", { name: "C’est parti" });
+  await expect(parti).toBeVisible({ timeout: 30_000 });
+  await parti.dispatchEvent("click");
   await expect(page.locator(".co-etape")).toBeVisible({ timeout: 30_000 });
 }
 

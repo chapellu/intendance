@@ -12,7 +12,7 @@
 // on juge ce qu'elle vaut, et le second appelle le premier — jamais l'inverse.
 
 import { bandRepas, Depot, horlogesDu, qteDe, type LigneDepot, type Prise } from "./depot";
-import { dateDe, joue, type Jeu } from "./jeu";
+import { dateDe, dejaLaPour, joue, type Jeu } from "./jeu";
 import type {
   Accept, Accompagnement, Catalogue, CauseLimite, Espace, Ingredient, Plat, Provenance,
 } from "./types";
@@ -217,7 +217,7 @@ export interface LignePanier {
  *  y prend, et lequel de ses deux plafonds mord. */
 export interface BilanEspace {
   places: number;
-  contenants: number;
+  contenants: number | null;
   limite: number;
   cause: CauseLimite;
   debut: number;
@@ -342,6 +342,12 @@ export function calculer(
       }
     }
 
+    // CE QUE LA CARTE DE 15 H DISAIT LÀ, pour CE plat — `Jeu.dejaLa`. Une
+    // réunion avec l'intersection de #32, jamais un remplacement : l'instantané
+    // est figé au geste, donc rentrer un achat ensuite ne retire aucune ligne.
+    const deja = dejaLaPour(jeu, i, rid);
+    const ici: ReadonlySet<string> = deja.length ? new Set([...gardeManger, ...deja]) : gardeManger;
+
     const besoin = parts[i] ?? catalogue.foyer.parts;
     const f = facteur(p, besoin);
     facteurs[i] = f;
@@ -350,7 +356,7 @@ export function calculer(
 
     const auPanier = (ing: Ingredient, echelleLigne: number) => {
       const cid = alias(catalogue, ing.id);
-      const prov = provenance(catalogue, ing, cid, prises, gardeManger);
+      const prov = provenance(catalogue, ing, cid, prises, ici);
       provenances[prov] = (provenances[prov] ?? 0) + 1;
       if (catalogue.horsCourses.includes(prov)) return;
       if (prov === "placard" || prov === "garde-manger") {
@@ -417,9 +423,25 @@ export function bilanStockage(
     acc[e] = (acc[e] ?? 0) + n;
   };
 
-  for (const o of jeu.stock) {
-    if (jetes.includes(o.type)) continue;
-    add(debut, o.location, bandRepas(o.qty_band));
+  // CE QUI EST LÀ AU DÉPART, MOINS CE QUI EST PÉRIMÉ — T103. Ce terme comptait
+  // toute la table `stock`, sans regarder l'âge, alors que le chaînage avait
+  // depuis T58 cessé de servir un reste de frigo passé : un lot assez mort pour
+  // ne plus être proposé restait assez vivant pour occuper une étagère. Sur
+  // l'année simulée, c'est ce qui a fait crier « ça déborde » de décembre à
+  // septembre, avec 33 lots au frigo pendant trois semaines de maison vide.
+  //
+  // AUJOURD'HUI, PAS DIMANCHE. Un reste qui passera jeudi occupe encore sa
+  // place jusqu'à ce qu'on l'ait jeté ; le sortir du budget d'avance ferait
+  // annoncer de la place qu'on n'a pas encore faite.
+  //
+  // Les lots écartés par `jetes` ne sont déjà pas dans le dépôt : `calculer`
+  // le construit filtré. Le test reste ici pour qui appellerait ce bilan avec
+  // un dépôt construit autrement.
+  const aujourdhui = jeu.jours[0]?.date;
+  for (const l of depot.initiales) {
+    if (jetes.includes(l.type)) continue;
+    if (aujourdhui && depot.perime(l, aujourdhui)) continue;
+    add(debut, l.location, bandRepas(l.band));
   }
 
   choix.forEach((rid, i) => {

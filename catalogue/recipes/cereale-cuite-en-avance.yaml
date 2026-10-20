@@ -77,6 +77,7 @@ recipe:
   emits:
     - kind: base
       type: cereale-cuite
+      hors_table: true   # T108 — préparation : cuite pour être mangée froide les jours suivants
       qty_band: 3-repas
       qty: {amount: 1200, unit: g}
       keeps: {frigo_days: 4, congelo: true}

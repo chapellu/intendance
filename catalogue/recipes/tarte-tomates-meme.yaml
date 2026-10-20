@@ -5,6 +5,7 @@
 recipe:
   id: tarte-tomates-meme
   title: Tarte aux tomates fraîches de Mémé
+  format: quiche
   lang: fr
   source:
     author: Marie Chioca

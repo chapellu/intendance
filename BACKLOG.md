@@ -2686,7 +2686,7 @@ rien**, ce qui est la façon la plus coûteuse de refuser.
       Le coût du découpage a été mesuré (`npm run perf`) : `offre()` passe de
       **8,5 à 8,7 ms** sur un créneau, soit 83 → 85 µs par carte. Dans le bruit.
 
-- [ ] **T81 — « Le répertoire » : les 138 plats, consultables.** La seconde
+- [x] **T81 — « Le répertoire » : les 138 plats, consultables.** La seconde
       moitié de la demande du 15/09 — *« il me faudrait les deux »*. T80 sert
       celui qui a un nom en tête ET un créneau sous les yeux ; il ne sert pas
       celui qui veut **voir ce que la maison sait faire**, ni relire une recette
@@ -4439,7 +4439,7 @@ Les tickets sont groupés par CHANTIER, et un chantier = une branche. Les
 
 ### Le frigo qui oublie — T103 à T105
 
-- [ ] **T103 — Un reste de frigo périmé sort aussi de la liste et du budget.**
+- [x] **T103 — Un reste de frigo périmé sort aussi de la liste et du budget.**
       `Depot.vie` le sort du jeu (« frigo dur ») et le commentaire de
       `stock.vue.ts` dit qu'il « n'est plus là » ; mais `lots()` ne le filtre
       pas, `marque` est vidée pour lui, et `bilanStockage` compte toute la table
@@ -4450,20 +4450,84 @@ Les tickets sont groupés par CHANTIER, et un chantier = une branche. Les
       une tâche de cockpit « N restes ont passé leur date » qui se règle d'un
       seul geste (« c'est jeté »). **Un commentaire juste au-dessus d'un code
       faux, encore une fois.**
-- [ ] **T104 — Un lot dit son âge et sa quantité en mots.** Tout lot cuisiné lit
+
+      **FAIT — `Depot.perime()` EST LA SEULE DÉFINITION DU PÉRIMÉ.** La règle
+      « frigo dur » ne vivait que dans `age()`, privée : seul le chaînage la
+      connaissait. Elle est publique, et le budget (`bilanStockage` compte
+      `depot.initiales` moins les périmés **à aujourd'hui**, pas à dimanche :
+      un reste qui passera jeudi occupe sa place jusqu'à ce qu'on l'ait jeté),
+      l'inventaire (`LotVue.perime`, `Categorie.perimes`, « N à jeter » dans la
+      note du rangement), le cadran « lots » de `semaine.vue.ts` et le cockpit
+      la lisent. La tâche « N restes ont passé leur date » porte les clés à
+      jeter et se règle sur place par « C'est jeté » (`retirerLots`, le
+      `bulkDelete` de « Je n'en ai plus », atomique) — **sans confirmation** :
+      ce qu'elle retire est déjà sorti du jeu.
+
+      **MESURÉ EN PASSANT : LE FIXTURE DE TOUS LES TESTS PORTAIT UN LOT MORT.**
+      L'amorce du catalogue a des lentilles cuites nées le 06/08 qui tiennent
+      4 jours ; au `LUNDI` des tests (17/08) elles sont passées depuis une
+      semaine, et `semaine.vue.test.ts` les comptait dans « 2 lots ». C'est
+      « 1 lot ». Le même fait rend le parcours `restes-passes` possible sans
+      semer la base ni fixer l'horloge : sur une base neuve, ces lentilles sont
+      passées à toute date future. Le test du budget a été vu rouge avant le
+      correctif.
+- [x] **T104 — Un lot dit son âge et sa quantité en mots.** Tout lot cuisiné lit
       « déjà là avant la semaine » (le libellé suit `l.from`, qu'un lot
       journalisé n'a jamais) ; les bandes sortent brutes (`lunchbox`,
       `1-repas`, `2-repas`). Dire « cuisiné il y a 3 j » depuis `born`, et une
       quantité lisible (« 1 repas », « une boîte repas »).
-- [ ] **T105 — « Tout ce qui était au congélo est perdu. »** La coupure de
+
+      **FAIT, ET L'ÂGE N'EST PAS CELUI DE `Depot.vie`.** Mesuré avant d'écrire :
+      `vie` arrondit une différence d'horodatages entre `born` (minuit UTC) et
+      l'heure qu'il est ; passé 14 h à Paris un lot né le jour même compte
+      0,5 j, arrondi à 1 — le plat du soir se serait dit « cuisiné hier ».
+      `joursDepuis` compte en jours de calendrier : « aujourd'hui », « hier »,
+      « il y a 3 j ». Le libellé « cuisiné » est vrai par construction (seules
+      une cuisson et l'amorce du relevé écrivent la table `stock`) et cessera
+      de l'être avec T114. Les bandes sortent en mots dans l'unité de la
+      sortie de T99 : « 2 repas », et `lunchbox` → « une gamelle », le mot que
+      l'app emploie déjà pour le midi qui voyage.
+- [x] **T105 — « Tout ce qui était au congélo est perdu. »** La coupure de
       courant a coûté 19 « Je n'en ai plus », la panne de frigo 36, un par lot.
       Un geste par rangement, derrière une confirmation qui dit combien de lots
       partent. (Le frais acheté qui n'est pas un lot — beurre, crème — reste
       hors de portée : c'est T114.)
 
+      **FAIT, SOUS LA LISTE DU RANGEMENT OUVERT.** `stock.vue.ts::perte()` :
+      frigo et congélo seulement — une panne est une panne de froid, un bouton
+      qui viderait le placard n'aurait d'autre usage que l'erreur. Il prend
+      les lots constatés du rangement, **ceux que la semaine prévoit de manger
+      compris** (ce soir ils sont dans la panne), jamais ce qu'elle projette.
+      La question est posée dans la page et porte le nombre (« Les 12 lots au
+      congélo vont sortir de l'inventaire. ») ; c'est la différence avec
+      « c'est jeté », qui retire des lots déjà morts sans rien demander.
+      « Annuler » rend le rangement entier — la mémoire du retrait est devenue
+      une liste.
+
+#### Ce que ce chantier laisse ouvert
+
+- **L'horloge de vie arrondit un fuseau.** `Depot.vie` compte l'âge entre
+  `born` (minuit UTC) et l'heure qu'il est : passé 14 h à Paris, un lot gagne un
+  jour. T104 l'a contourné pour la phrase (`joursDepuis`), pas pour l'axe ni
+  pour le périmé — une carcasse de deux jours devient « à jeter » l'après-midi
+  du deuxième jour au lieu du lendemain. Le corriger déplace tous les seuils
+  d'un demi-jour ; c'est une décision sur le modèle.
+- **Le budget sort le périmé à aujourd'hui, pas au jour où il passe.** Un reste
+  qui passe jeudi compte jusqu'à dimanche dans `fin`. C'est voulu (il occupe
+  l'étagère tant qu'on ne l'a pas jeté), mais la projection de la semaine
+  surestime donc le frigo du nombre de restes qui vont mourir d'ici là.
+- **« C'est jeté » n'a pas d'annulation.** Le geste est au cockpit, qui n'a pas
+  de mémoire d'écran ; ce qu'il retire est déjà sorti du jeu, d'où le choix.
+  Si quelqu'un jette par erreur, le lot ne revient que par une cuisson.
+- **Le lot ne nomme pas son plat.** `LotStock.origine` porte l'id du plat
+  cuisiné, mais `auModele` ne le transmet pas : « cuisiné il y a 3 j » ne dit
+  pas « (Ratatouille) » comme le fait un lot projeté. Quatre lignes de
+  plomberie (`LotInitial`, `LigneDepot`, `Depot`, `auModele`), laissées pour ne
+  pas élargir le ticket.
+
 ### Ce que le placard EST n'est pas ce qu'il en RESTE — T106 et T107
 
-- [ ] **T106 — L'écoulement lit le rejeu, pas le relevé du 26/08.**
+- [x] **T106 — L'écoulement lit le rejeu, pas le relevé du 26/08.**
       `aEcouler(jeu.catalogue)` construit la pression depuis
       `catalogue.gardeManger.denrees` : un placard relevé à zéro au jour 0 et
       jamais réapprovisionné a fait dire « finit des paquets entamés : farine
@@ -4472,7 +4536,7 @@ Les tickets sont groupés par CHANTIER, et un chantier = une branche. Les
       score cette fois — l'intersection avec `rejeu.parIngredient` comme
       `hydraterGardeManger`. La phrase de synthèse (« 53 denrées … 16 kg ») est
       aussi celle du catalogue.
-- [ ] **T107 — Une zone relevée vide le dit, et le parcours qui le prouve peut
+- [x] **T107 — Une zone relevée vide le dit, et le parcours qui le prouve peut
       échouer.** Dans `Zone`, un ingrédient absent du rejeu retombe sur
       `d.quantite` : après « Valider le relevé — ce qui est à 0 n'y est plus »,
       la zone lit « mais · 4 × 285 g · CONSERVE ». Le parcours *relever une zone
@@ -4480,15 +4544,77 @@ Les tickets sont groupés par CHANTIER, et un chantier = une branche. Les
       `.first()` — et la zone 5, qui n'a aucune denrée, le dit toujours : il ne
       peut pas rougir. Le vérifier ROUGE avant de le vérifier vert.
 
+#### T106, fait — ce que la mesure a corrigé
+
+- **La source est `jeu.gardeManger`, pas un second rejeu.** `useSemaine` y pose
+  déjà l'intersection de `hydraterGardeManger` avant que le jeu n'arrive au
+  score ; `aEcouler(catalogue, reste)` la lit, et `reste` est OBLIGATOIRE — une
+  valeur par défaut aurait laissé tout appel oublié retomber sur le relevé, le
+  bug lui-même rendu invisible. Un jeu sans base porte `idsDuReleve` : il
+  calcule ce qu'il calculait.
+- **Mesuré avant le correctif** : les sept zones relevées à vide, le rejeu ne
+  porte plus un seul id, et **14 des 101 cartes** d'un dîner disaient encore
+  « finit des paquets entamés » (pâtes, farine d'épeautre, biscottes, poudre
+  d'amande). Après : 0. Le bocal du dépôt, lui, compte toujours.
+- **L'intersection ne peut qu'ÔTER une pression, jamais en ajouter** — le
+  pendant de « ne peut qu'ajouter des lignes de courses » de #32. Lire `etat`
+  sur les lots rejoués est écarté : `retirer()` passe un lot non chiffré de
+  `sec` à `entame` à la première cuisson, donc tout paquet rentré des courses
+  puis servi une fois se serait mis à pousser son plat.
+- **« sauve ce qui se perd : ail, oignon » ne venait PAS du score.** Depuis T60
+  le placard plafonne à 0,4, sous le seuil urgent de 0,8 : le score ne peut pas
+  le dire. C'est « À manger en premier » (`aSauver`) qui nommait l'ail et
+  l'oignon d'un sous-évier relevé vide ; il prend le même `reste`.
+- **La phrase de synthèse dit ce qui reste, et nomme le relevé** : « 45 des 45
+  denrées du relevé du 26/08 sont encore là, dont 18 pesées pour 10,8 kg ».
+  Deux chiffres changent sur une base neuve, et c'est voulu : **45 et non 53**,
+  parce que le rejeu tient un état par ingrédient (quatre lignes de pâtes, un
+  ingrédient) ; **10,8 kg et non 16 kg**, parce que la farine (4 kg), le sucre
+  (1 kg) et le concentré (210 g) ont chacun un second lot non pesé — leur poids
+  partiel se lisait comme un total.
+
+#### T107, fait — ce que la mesure a corrigé
+
+- **ROUGE D'ABORD.** Le parcours retient le NOM de la zone qu'il relève
+  (l'étagère ouverte) et conclut sur elle, plus sur `.first()` — le tiroir à
+  épices n'a aucune denrée au 26/08 et disait « Rien de relevé ici. » quoi
+  qu'il arrive. Joué contre l'écran non corrigé, il rougit sur la bonne ligne :
+  le relevé passe, la zone relit son contenu après rechargement. Puis vert.
+  Les `.click()` du parcours sont devenus des `dispatchEvent`, chacun suivi du
+  compteur qui a bougé.
+- **Retirer le repli sur `d.quantite` ne suffisait pas**, et c'est la mesure
+  qui l'a dit : le concentré de tomate est relevé dans DEUX zones (étagère
+  ouverte, demi-lune haute ; la farine et le sucre aussi, demi-lune basse et
+  placard haut). Vider l'étagère le laisse dans le rejeu par l'autre zone, et
+  l'étagère aurait montré le total de la demi-lune. Une zone ne montre donc que
+  les lots rangés EN ELLE (`parZoneDu`, mesuré par `mesurer()` extrait de
+  `rejouer` — une seule formule pour « 1 » et « 285 g »). Le poids d'en-tête de
+  zone suit, puisqu'il disait lui aussi le relevé.
+- **Un lot sans place connue va à la première zone qui nomme son ingrédient.**
+  Une course rentrée n'a pas de rangement (`zone: null` → `placard-haut`) ; en
+  zone stricte, des pâtes rachetées seraient invisibles partout.
+
+### Ce que T106 et T107 laissent ouvert
+
+- **L'éditeur d'une zone propose le compte de l'INGRÉDIENT entier**, pas celui
+  de la zone : un constat porte sur un ingrédient (`ajusterUnites`), et
+  proposer le compte de la zone puis valider sans toucher retirerait les unités
+  des autres zones. Les trois ingrédients à deux zones lisent donc un chiffre
+  dans la liste et un autre dans l'éditeur, jusqu'à ce qu'un constat sache
+  porter une zone.
+- **Les pâtes : un paquet entamé fini, le scellé restant, paie encore.**
+  L'intersection est par ingrédient, comme celle de #32 ; la finesse par lot
+  demanderait de lire `etat` sur le rejeu, écarté plus haut.
+
 ### La sortie compte ce qui part dans les assiettes — T108 et T109
 
-- [ ] **T108 — Les invités mangent leur part.** `vueDeLaSortie` multiplie
+- [x] **T108 — Les invités mangent leur part.** `vueDeLaSortie` multiplie
       chaque emit par le facteur (`qty × f`) sans retrancher les bouches de
       plus : la Toussaint à 8 a rangé 150 g au frigo et 450 g au congélo, quand
       le même plat pour le foyer en range 150 et 300. Le reste est celui du
       foyer, pas celui du lot. (C'est l'item « le reste dans les assiettes
       n'est pas compté » laissé ouvert par T99.)
-- [ ] **T109 — Une boîte a un volume, et elle peut être prise.** Mesuré sur le
+- [x] **T109 — Une boîte a un volume, et elle peut être prise.** Mesuré sur le
       pot-au-feu pour le foyer : « 1 250 ml → 1 × boîtes hermétiques 0,5 / 1 L »,
       « 800 g → 1 × bocaux 0,75 L » — les contenants se comptent en portions,
       jamais en litres. Et `boitesPour` puise dans les contenants DÉCLARÉS, pas
@@ -4500,24 +4626,203 @@ Les tickets sont groupés par CHANTIER, et un chantier = une branche. Les
       assez (« il manque 2 boîtes : sacs congélation ? »). C'est l'item « le
       plafond de rangement n'est pas consulté » laissé ouvert par T99.
 
+#### T108, fait — le reste suit les portions qui restent
+
+**LA FORMULE, TIRÉE DE CE QUE LE CATALOGUE DÉCLARE.** Un emit est ce que laisse
+UN lot de `portions` quand `Foyer.parts` (2,5) est à table — « sur 4 parts,
+c'est ce qui reste une fois le dîner servi ». L'emit se multiplie donc par
+`r = (portions × f − parts) / (portions − Foyer.parts)` au lieu de `f`
+(`model/restes.ts`). Pour le foyer seul, r = 1 : **0 emit sur 126 ne change au
+foyer**, le cas que le catalogue décrit reste exact.
+
+**LE TICKET SE TROMPAIT SUR LE CHIFFRE ATTENDU.** Il voulait « 150 + 300 » à la
+Toussaint, le reste du foyer. Mais `facteur` cuisine 8/6 du lot pour 8 parts :
+8 portions dans la cocotte, 8 dans les assiettes, **il ne reste rien**, et c'est
+ce que la sortie dit maintenant (« tout part dans les assiettes »). Garder le
+reste du foyer EN PLUS des invités serait une décision de planification —
+cuisiner `(parts + reste) / portions` —, pas de sortie.
+
+**IL A FALLU UN CHAMP AU CATALOGUE, ET UN SEUL : `hors_table`.** Retrancher les
+invités d'une carcasse donnait « pas de carcasse » à huit, et rien ne
+distinguait le bouillon du pot-au-feu de la mitonnée. 25 emits sont marqués
+(carcasses, aquafaba, bouillons, pâtes, pains, yaourts, mousse, céréale et
+légumineuses cuites d'avance, rillettes et tartinades), plus les 2 `parure` et
+la `portion-bebe` par leur `kind` : **28 emits sur 126 suivent `f` sans
+retrancher personne**. Les rillettes ont été trouvées par la mesure : sans
+marque, c'était le seul emit qui disparaissait au foyer (lot non gardé,
+f = 0,625, 2,5 portions servies à 2,5 parts).
+
+**29 PLATS SONT VIDÉS PAR LE FOYER À LUI SEUL** (`portions ≤ 2,5` : les
+salades-lunchbox d'une portion, les recettes pour deux). Le dénominateur est
+nul ou négatif — leur emit ne PEUT PAS être un reste de table — et ils gardent
+l'ancien calcul. Le seuil : un reste sous la plus petite part déclarée (le bébé,
+0,25) se finit au lieu de se ranger.
+
+Mesuré sur le corpus (`npm run sortie`) : à 2 parts, 18 emits laissent plus ; à
+4 parts, 60 changent et 26 disparaissent ; à 8 parts, 74 changent, 67
+disparaissent (13 sur des `lotEntier`, dont le facteur arrondi au poulet
+laisse quand même de quoi ranger).
+
+**`journaliserCuisson` N'ÉCRIVAIT PAS CE QUE L'ÉCRAN MONTRAIT, MÊME POUR LE
+FOYER.** Son défaut (« j'ai fait autrement ») prenait `qty × parts / portions`
+sur la bande brute, l'écran `qty × facteur(plat, parts)` : **34 emits pesés
+différents au foyer, 28 bandes différentes** — la mitonnée affichait 450 g et la
+base en écrivait 188 sur « 3-repas ». Les deux passent par `restesApresTable`
+au même facteur ; `Cuisiner` donne le foyer à la cuisson.
+
+Ce que T108 laisse ouvert :
+- **La projection ne retranche toujours personne.** `calculer()` met encore
+  `qty × f` au dépôt projeté et `bilanStockage` compte `band × f` en entrée :
+  la semaine planifiée avec invités annonce plus de restes que la sortie n'en
+  rangera.
+- **L'effet 2 garde `parts / portions`** pour ce qu'un `accepts` prend, quand
+  la fiche affiche `facteur`. Même désaccord, sur ce qui sort du dépôt.
+- **Les 29 plats vidés par le foyer** : leur emit dit « ça part en lunchbox »,
+  pas « il en reste » ; la sortie annonce donc encore 2,5 parts à table ET
+  3 lunchbox au frigo pour une salade d'une portion.
+
+#### T109, fait — une boîte a un volume, et elle peut être prise
+
+**`volume_ml` PAR FAMILLE, LU SUR LE LABEL.** Bocaux 750 ; boîtes 500 — la
+famille « 0,5 / 1 L » mêle les deux tailles sans dire combien de chaque, et
+0,5 L est la boîte que `portions: 1` décrit (un repas) : un lot calculé pour
+elle tient dans l'une comme dans l'autre, au prix de proposer parfois une boîte
+de trop. Les sacs n'ont aucun chiffre : pas de volume, portions seules.
+
+**CE QU'UNE BOÎTE PREND EST LA PLUS PETITE DE DEUX PARTS** — ses portions sur
+les repas du lot, son volume sur celui du lot. Les grammes comptent 1 g/ml :
+c'est une HYPOTHÈSE, exacte pour les sauces et optimiste pour les morceaux.
+Mesuré : 19 emits sur 126 sont en grammes, 4 en volume ; à 0,7 g/ml, **3 lots
+pesés sur 36** demanderaient une boîte de plus. Le choix en dépend peu.
+
+**ON NE PUISE QUE DANS CE QUI EST LIBRE.** `contenantsLibres` redonne leurs
+boîtes aux lots du dépôt, dans l'ordre de la base, par la même règle — dérivé,
+pas persisté : un lot ne dit pas où il dort, et « il faut deux bocaux » reste un
+calcul. Les lots d'une même sortie puisent l'un après l'autre. Quand le pool ne
+suffit pas, le lot le DIT : « il manque 2 × bocaux Le Parfait 0,75 L : sacs
+congélation ? » (le sac, consommable, est proposé là où il n'est pas déclaré),
+sinon « laver des boîtes », le geste de l'inventaire. `boitesPour` garde son
+nom et ses trois premiers paramètres pour la mise en place (T112).
+
+**LE POT-AU-FEU, AVANT ET APRÈS, pour le foyer :**
+
+| lot | avant | après |
+|---|---|---|
+| bouillon frigo 1 250 ml | 1 boîte | 1 bocal + 1 boîte |
+| bouillon congélo 1 250 ml | 1 boîte | 3 boîtes |
+| viande frigo / congélo 300 g | 1 boîte chacun | 1 boîte chacun |
+| légumes frigo 800 g | 1 bocal | 1 bocal + 1 boîte |
+| **total** | 4 boîtes, 1 bocal | **7 boîtes sur 8**, 2 bocaux |
+
+Le retour d'usage tient dans ce tableau : à lui seul, le pot-au-feu prend sept
+des huit boîtes. Sur l'amorce du catalogue (2 boîtes et 1 bocal déjà pris), les
+légumes passent en 2 bocaux ; avec un dépôt plein, chaque lot du frigo dit ce
+qui manque et le congélateur part en sacs.
+
+Ce que T109 laisse ouvert :
+- **L'inventaire compte autrement.** Son plafond « contenants » est en places
+  par espace, semaine planifiée comprise, et une boîte frigo/congélo y compte
+  deux fois ; la sortie compte des boîtes, rangées maintenant. Les deux
+  nombres peuvent différer — un seul modèle du pool serait plus juste.
+- **La densité n'est pas mesurée**, et le partage 0,5 L / 1 L des boîtes non
+  plus : deux nombres à relever dans la cuisine, pas dans le dépôt.
+
 ### Ce que l'app demande, et où elle envoie — T110 et T111
 
-- [ ] **T110 — Le cockpit n'envoie plus vers un écran éteint.** « Une offre
+- [x] **T110 — Le cockpit n'envoie plus vers un écran éteint.** « Une offre
       attend une réponse » a été la tâche de tête 65 jours sur 365, et elle mène
       à `prevoir`, que T88 a retiré de la sous-navigation : `cockpit.vue.ts`
       compte `enAttente` sans lire `JOURS_VISIBLES`. La carte de facette dit
       encore « 14 créneaux restent à poser d'ici jeudi ». Quatrième fuite de T88
       après #33, T90 et T94 — balayer les autres routes vers un écran éteint.
-- [ ] **T111 — Rentrer des courses répond aux questions.** T33 promettait que
+
+      **QUATRE FUITES, PAS UNE, ET LE BALAYAGE LES A TROUVÉES SEUL.** Outre
+      l'offre, le cockpit portait le **geste du jour** (route `aujourdhui`, le
+      seul écran où il se coche), la **carte de la facette** elle-même
+      (`href` sur « Aujourd'hui » en dur), et la fiche « En cuisine » ouverte
+      par son URL retombait sur « Aujourd'hui » en sortant. Les quatre suivent
+      maintenant l'interrupteur : l'offre et le geste s'éteignent avec les
+      jours (ils ne se répondent que sur un écran éteint, et le geste porte sur
+      « demain » — une coordonnée qu'on ne montre plus ne réclame plus rien),
+      la carte et la sortie de la fiche visent `ENTREE_CUISINE`. La carte dit
+      « 1 posé » et « Un plat posé, à cuisiner quand vous voulez » au lieu de
+      « 2/14 répondus » et « 14 créneaux restent à poser d'ici jeudi ».
+
+      **CE QUI RESTE, ET POURQUOI.** « Poser le dîner de ce soir » garde sa
+      route vers `poser` : « ce soir » est le dîner qui va avoir lieu, pas une
+      case d'agenda, et « Poser » n'est pas éteint (« Posés › Changer »
+      l'ouvre, il rend la main à « Posés »). Les liens internes d'«
+      Aujourd'hui », « La semaine » et « À prévoir » ne partent que d'écrans
+      éteints ; `SOUS_NAV_JOURS`, le retour de l'inventaire, les liens « Voir
+      la semaine » du fil, de « Poser » et de « Parts » lisaient déjà
+      `JOURS_VISIBLES`.
+
+      **LES CHEMINS SE COMPTENT ENFIN.** `ECRANS_DES_JOURS` et `eteint()` dans
+      `nav/routes.ts` ; `nav/chemins.test.ts` lit les sources et exige que
+      toute route littérale vers un écran des jours soit sur une ligne qui lit
+      `JOURS_VISIBLES` ou dans un fichier qu'on n'atteint que les jours
+      allumés. **Vérifié rouge avant d'être vert** : à sa première exécution il
+      a nommé les trois lignes du cockpit et le retour de l'inventaire. Les
+      tests propres aux jours ne tournent plus que l'interrupteur allumé
+      (`test.runIf`), les nouveaux que l'interrupteur éteint : chacun tourne
+      sur l'interrupteur tel qu'il est.
+
+      **LE GESTE RALLUMÉ, VERS LE PLAT (18/10, validé par l'utilisateur).**
+      L'éteindre perdait le rappel de décongélation, qui ne porte pas sur une
+      case d'agenda mais sur un bocal à sortir pour un plat POSÉ. Sans les
+      jours, la tâche ouvre la fiche de ce plat (`cuisiner` sur son créneau,
+      celle que « Posés » ouvre), dit « Pour <plat>, un de vos plats posés »
+      au lieu de « dîner de demain », et porte un « Fait » sur place — le même
+      drapeau (`cleGeste`) que celui d'« Aujourd'hui », sans quoi ce serait
+      une tâche qu'on ne peut pas finir. Avec les jours, rien ne change.
+- [x] **T111 — Rentrer des courses répond aux questions.** T33 promettait que
       le volume décroît : il descend bien à 5, 7, 9 après la première passe,
       puis remonte et se tient à ~20 par passe hebdomadaire (1 303 réponses dans
       l'année). Les réponses vivent dans la passe (`passe.repondu`), et un
       article rentré n'en est pas une. Un article rentré doit valoir « oui » sur
       son ingrédient tant que sa vie le permet.
 
+      **MESURÉ D'ABORD, ET L'HYPOTHÈSE N'ÉTAIT QUE LA MOINDRE DES DEUX
+      CAUSES.** Une année rejouée AU MODÈLE (52 passes de sept repas, placard
+      relevé à zéro au jour 0, réponses tirées d'un registre d'achats, courses
+      rentrées à chaque passe, cuissons journalisées) redonne la courbe de
+      l'année simulée : 26, 12, 10, 8… puis 20 à 28, **967 questions, médiane
+      19**. Classées par cause au moment où elles se posent :
+      **566 portaient sur un ingrédient répondu « non », sans lot et sans
+      cuisson depuis.** C'est la DÉRIVE : un ingrédient qui en a appris une
+      (deux comptes qui ne s'expliquent pas, typiquement un lot non pesé que
+      la cuisson ne vide jamais puis un « non ») voyait son doute grandir de
+      `dérive × jours` — sur un placard vide — et `sur` exige un doute nul :
+      il retombait à « probable » dès le lendemain et se redemandait à chaque
+      passe, pour toujours. Le nombre d'ingrédients ainsi marqués ne fait que
+      croître, d'où la remontée. **L'hypothèse du ticket est vraie mais
+      seconde** : un article rentré n'était jamais une réponse (un test le
+      reproduit, rouge avant : la crème rentrée hier redemandée), ~280
+      questions de l'année portaient sur un lot rentré encore là.
+
+      **DEUX CORRECTIFS, MESURÉS UN À UN.** La dérive ne s'applique plus qu'à
+      un ingrédient qui a des lots (967 → 511, médiane 10) ; un lot rentré
+      encore présent au rejeu et dans sa vie vaut « oui » pour la question
+      (511 → 384, **médiane 7, plus de remontée** : 26, 10, 8, 6… et 3 à 11
+      jusqu'au bout). `EtatIngredient.rentreEnVie` : la vie est
+      `foyer.fenetreFrigo` (4 j) pour le frais court et le primeur, sans borne
+      pour l'épicerie et le congélateur. **CE N'EST PAS UNE OBSERVATION** : la
+      confiance ne bouge pas, et la règle « rentrer n'est pas observer le
+      placard » tient pour le chiffre — on sait qu'il y en a, pas combien.
+
+      Les cinq tests (`questions.test.ts`) ont été vus **rouges avant le
+      correctif** pour les trois qui portent une promesse neuve.
+
+      **Ce qui reste ouvert.** Le frais acheté le samedi est redemandé le
+      samedi suivant : sa vie de 4 j est celle d'un reste cuisiné, empruntée
+      faute d'une durée par ingrédient brut — les œufs vivent un mois. Et les
+      questions restantes sont surtout « vu, puis servi » : une cuisson dépense
+      la confiance qu'une réponse a restaurée, ce qui est la règle de T33, et
+      la mesure ne dit pas encore si c'est trop.
+
 ### Cuisiner : le résumé d'abord, la quantité à chaque étape — T112 et T113
 
-- [ ] **T112 — Une séance de cuisine s'ouvre sur sa mise en place.** Demandé
+- [x] **T112 — Une séance de cuisine s'ouvre sur sa mise en place.** Demandé
       le 2026-10-16. Avant l'étape 1 du guide — quand on CUISINE, pas quand on
       vient lire (ça, c'est T91) — un écran qui dit tout ce qu'il faut sortir :
       les ingrédients aux parts du créneau, l'ustensile **et s'il tient**
@@ -4525,7 +4830,49 @@ Les tickets sont groupés par CHANTIER, et un chantier = une branche. Les
       rien ne rejoint sans « Changer » ; la Toussaint a passé la mitonnée dans
       une sauteuse ×1 sans un mot), les boîtes à prévoir pour la sortie, le temps
       total et le temps actif. Un bouton « C'est parti » ouvre l'étape 1.
-- [ ] **T113 — Chaque étape dit les quantités qu'elle prend.** Demandé le
+
+      **AUCUN CHIFFRE NOUVEAU : TOUT ÉTAIT CALCULÉ, AILLEURS.** `miseEnPlace()`
+      dans `cuisiner.vue` assemble ce qui existait — les quantités
+      d'`Ingredients` au `f` de la fiche, le temps de `tempsDuPlat`, les boîtes
+      de `vueDeLaSortie` appelée telle quelle. La mise en place annonce donc
+      les boîtes que la sortie demandera, par la même fonction : si T109 lui
+      apprend les volumes et les contenants pris, l'écran du début l'apprend
+      avec elle. Un test le tient sur les 138 plats.
+
+      **LE TEMPS ACTIF EST `total − libre`, PAS `actifMin`.** Mesuré : le
+      `active_min` de l'ouvrage existe sur 122 plats et ne coïncide avec la
+      somme des étapes surveillées que sur **18**. L'afficher à côté d'un total
+      tiré des étapes mettrait deux chiffres qui ne s'additionnent pas sur le
+      même écran — ce que `tempsDuPlat` refuse depuis T91. L'écran dit « En
+      tout » et « Devant le feu », puis « dont 1 h sans surveiller ».
+
+      **LE DÉBORDEMENT SE DIT ICI, ET SEULEMENT ICI.** `aSortir()` refusait un
+      troisième libellé du fait que `parts` et les offres disaient déjà ; son
+      commentaire est complété plutôt que contredit : il tenait pour la fiche,
+      mais ces deux écrans ne se traversent plus en cuisinant. `recipient()`
+      parle au facteur que la fiche affiche (`calc.facteurs[i]`), et compte ses
+      tournées au lieu de les promettre à deux. Mesuré : aux 2,5 parts du
+      foyer, **aucun des 77 plats à vaisselle ne déborde** ; à 8, **61 sur
+      77**. La ligne « À sortir » de la fiche et du résumé reste neutre ; seule
+      la mise en place passe au ton accent (`.co-sortir.deborde`).
+
+      **PERSISTÉE COMME L'AVANCEMENT, DONT ELLE EST LE PREMIER CRAN.**
+      `cleMiseEnPlace` vit sous le préfixe `etape|`, est posée par « C'est
+      parti » et effacée avec l'avancement quand la sortie a répondu. Elle ne
+      s'affiche qu'à l'étape 0 : une cuisson commencée avant ce ticket, à
+      l'étape 5, ne la revoit pas. « ‹ », grisé jusqu'ici sur l'étape 1, y
+      ramène — le seul chemin pour revoir ce qu'il fallait sortir sans quitter
+      la cuisson.
+
+      **UN PLAT SANS ÉTAPES N'A QUE SA MISE EN PLACE**, qui porte son
+      « Terminer » et la phrase de T78 ; elle remplace la liste nue qui tenait
+      ce rôle.
+
+      Portes : typecheck, **819 tests** (11 nouveaux), build, **61 e2e** (3
+      nouveaux dans `mise-en-place.spec.ts` ; `ouvrirLeGuide` et
+      `stock-descend` passent par `passerLaMiseEnPlace`), `catalogue:verifie`
+      0 erreur, `etapes` 0 casse.
+- [x] **T113 — Chaque étape dit les quantités qu'elle prend.** Demandé le
       2026-10-16. `uses:` existe dans l'export (198 étapes sur 744, 50 plats
       sur 138) et **aucun écran ne le lit** — encore une donnée sans lecteur.
       L'afficher sous l'action, aux parts du créneau. Les étapes sans `uses`
@@ -4534,12 +4881,102 @@ Les tickets sont groupés par CHANTIER, et un chantier = une branche. Les
       la frontière de licence de la carte #26 tient, on n'y ajoute rien sans le
       redemander.
 
+      **LE CHARGEUR NE JETAIT RIEN, CETTE FOIS.** Vérifié avant d'écrire :
+      `catalogue.ts` garde `uses` depuis T72, avec `Ingredient.ref` pour le
+      résoudre. La donnée était chargée et sans lecteur, pas perdue.
+
+      **LES 15 DU RÉPERTOIRE ÉTAIENT DÉJÀ COMPLETS — MESURÉ, ET LE TICKET SE
+      TROMPAIT DE CIBLE.** T76 a écrit `uses:` sur leurs 64 étapes. Les plats
+      du foyer sont 21 (T73) : ce sont les six autres —
+      `gratin-de-pates-tomates`, `lentilles-mijotees`, `omelette-courgettes`,
+      `ratatouille-minute`, `reste-de-la-veille`, `veloute-de-courgettes`, 20
+      étapes — qui n'en avaient aucun. Ils sont sans `source`, donc du même
+      côté de la frontière de licence ; c'est eux qui sont complétés, et
+      aucune recette d'ouvrage n'est touchée. L'export passe de 198 à **213
+      étapes non vides sur 744, 56 plats sur 138** (404 `null`, 127 `[]`).
+      Un test tient les 21 plats du foyer complets.
+
+      **SOUS LE GESTE, AVANT L'ASTUCE, LA QUANTITÉ DEVANT LE NOM.** On verse
+      avant de se demander pourquoi, et c'est le nombre qu'on cherche la main
+      sur la balance. `quantitesDeLEtape()` passe par `echelleTexte` et le `f`
+      de la fiche : un test vérifie sur tout le corpus que chaque quantité
+      d'étape est celle de la liste.
+
+      **UNE LIGNE NOMMÉE PAR PLUSIEURS ÉTAPES GARDE SA QUANTITÉ ENTIÈRE, ET
+      DIT « AUSSI À L'ÉTAPE N ».** 26 lignes du corpus sont dans ce cas, et
+      `uses` ne porte aucune fraction. La plupart sont préparées puis versées
+      (les carottes râpées, puis mélangées) — la quantité entière est juste
+      deux fois ; quelques-unes sont partagées (l'huile du riz et des
+      légumes), et couper en parts égales inventerait un chiffre. « Aussi »
+      est vrai dans le premier cas et, dans le second, dit de ne pas tout
+      verser.
+
+      **TROIS RÉPONSES, COMME LE CHAMP.** `null` dit en une ligne de note
+      « les quantités de cette étape ne sont pas notées — elles sont dans
+      « Ingrédients » » (proposer en le disant) ; `[]` se tait — on remue, on
+      enfourne, et « rien à peser » sous 127 étapes serait le minuteur
+      partout de T83.
+
+      Portes : typecheck, **824 tests** (5 nouveaux), build, **63 e2e** (2
+      nouveaux dans `etape-quantites.spec.ts`), `catalogue:verifie` 0 erreur
+      avec le JSON régénéré et commité, `etapes` 5 recettes bougées · 0 casse.
+
 ### Le répertoire — T81, repris
 
 T81 reste le ticket. La demande du 2026-10-16 (« une vue résumée des
 recettes ») tranche la question qui le bloquait — **il vit dans la
 sous-navigation cuisine**, à côté de « Proposer · Posés · Stock · Courses » —
 et T91 lui a déjà donné sa fiche de lecture.
+
+**IL N'A AUCUN SCORE, ET C'EST LA DÉCISION QUI COMMANDE LES AUTRES.** Même
+famille que la règle de T80 : une note dépend du créneau, du stock, du journal,
+et dirait autre chose demain pour la même liste. Un répertoire qui se réordonne
+d'un jour à l'autre est un répertoire où l'on ne retrouve pas le plat vu hier —
+et il répondrait en douce à « qu'est-ce qu'on mange », que le fil tranche déjà.
+Six groupes par **place dans le repas** (T93) — les repas (102), les goûters,
+desserts et petits-déjeuners (19), accompagnements (4), entrée (1), bases (9),
+boissons (3) —, alphabétiques dedans, comme un index de livre. La protéine et le
+temps sont écrits sur chaque ligne ; on les lit, on n'y range rien.
+
+**PAS DE FILTRE, ET C'EST MESURÉ.** Le rôle, les groupes le disent déjà. « ≤ 30
+min » garderait 50 plats sur 138 — un vrai tri, mais c'est la question du mardi
+soir, donc celle du fil : la poser ici ferait deux réponses à la même question,
+le risque que T81 nommait dès le 15/09. La recherche est `trouver()` de T80, mot
+pour mot ; elle **amincit** sans réordonner et sans plafond (une ligne coûte un
+huitième d'écran, pas un écran).
+
+**LE TEMPS DE LA LIGNE EST CELUI DE LA FICHE QU'ELLE OUVRE.** Mesuré le 16/10 :
+`plat.minutes` (la carte) diffère de la somme des étapes sur **110 plats sur
+138**, et `actifMin`, que rien ne lisait, ne tombe sur « total moins sans
+surveiller » que **18 fois sur 122**. Le répertoire prend `tempsDuPlat()`, pour
+ne jamais lire 15 min sur la ligne et 23 une seconde plus tard.
+
+**LA FICHE N'A TOUJOURS PAS D'URL SANS CRÉNEAU.** `creneauDeLecture()` vise un
+créneau qui ne porte pas le plat, et `pourLire()` fait le reste : résumé,
+jamais guide. De préférence un créneau VIDE — un créneau qui porte un autre plat
+prêterait son `calc.facteurs[i]` à la fiche, et « on en cuisine 9 » se lirait
+sous une recette qui en fait 4. La ligne est une ancre : « ‹ Revenir » remonte
+l'histoire jusqu'au répertoire, qui a gardé la frappe et le défilement (un
+regard en mémoire de module, pas un réglage).
+
+**CINQ ONGLETS EN 390 PX.** « Recettes », dernier — la boucle des quatre autres
+n'est pas coupée — et dans les deux rangées, jours visibles ou non. La première
+capture mesurait 458 px de rangée et coupait l'onglet allumé à « Rec » ; les
+pastilles resserrées (13 px, 10 px de marge) la ramènent à 394 dont 16 de marge
+finale. Trié sur le titre brut, la liste s'ouvrait aussi sur trois titres entre
+guillemets : la clé de tri est `normaliser()`.
+
+- [x] **T81, livré** — `repertoire.vue.ts` (groupes, ligne, temps,
+      `creneauDeLecture`), l'écran `Repertoire.tsx`, la route
+      `#/cuisine/repertoire`. Portes : typecheck, **830 tests** (22 nouveaux),
+      build, **59 e2e** (1 nouveau, `repertoire.spec.ts` ; `fil.spec` remesure
+      la rangée), `catalogue:verifie` 0 erreur.
+
+**Ce qu'il laisse ouvert.** Les sorties et les prises se disent par leur type
+d'export (« pate a pizza », « roti froid ») : sans accent, faute d'un nom dans le
+corpus. Les trois temps d'un plat restent à réconcilier — un ticket de corpus.
+Et « Rien ne compte les chemins » tient toujours : ce parcours dit qu'un doigt
+atteint le répertoire, rien ne le dit des autres écrans.
 
 ### Les décisions — T114 à T122
 
@@ -4576,6 +5013,264 @@ avant d'être tranché.
       relire les autres `facteurMax` de la cocotte. La saisonnalité
       (Workspace#41 : 75 % des cuissons datées hors saison, soit le hasard) est
       à rouvrir au même moment.
+
+## Le fond de roulement — T123 à T126
+
+Workspace#67, et la demande du 18/10 : *« ma mère parle de fond de roulement :
+j'ai en stock ce que j'utilise le plus, et j'achète pour le reconstituer. »*
+Branche `catalogue/fond-saisons-familiers` (commits `a368218`, `00f1ff7`),
+fusionnée dans `cuisine/a-la-pause`. Le catalogue apprend ce que le foyer a
+TOUJOURS, combien ça tient, quand un légume est de saison et quelle forme
+prend un dîner — sans rien décider : c'est le bloc suivant qui classe.
+
+- [x] **T123 — Le fond de roulement entre au catalogue.** `fond.yaml` : les 30
+      denrées du brouillon du 18/10, minimum en unités d'achat, et les dix
+      dîners « sans courses », que le vérificateur exige cuisinables avec le
+      fond et le placard seuls. `posables()` rend les denrées du fond jamais
+      vues, à zéro, avec un `minimumDuFond` — une PROPOSITION, aucun plancher
+      ne se pose tout seul. Rayon `surgelés` (classe `congelateur` même sans
+      lot), `pois-casses`, cumin, paprika et curcuma au placard.
+- [x] **T124 — Le frais qui se garde porte un plancher.** T46 refusait
+      l'oignon, l'ail et la pomme de terre, « position de départ, à revoir à
+      l'usage » ; l'usage a parlé. Classe `de-garde` (tolérance 2), DÉRIVÉE de
+      la famille de garde (`fond: true`, deux semaines au moins), pas d'une
+      liste d'ids : oignon, ail, pomme de terre, carottes, œufs, fromage râpé,
+      yaourt. Le frais fragile reste derrière la barrière de T30.
+- [x] **T125 — Une seule horloge, des jours aux années (Workspace#50).**
+      `conservation.yaml:familles` : onze familles de garde, chacune avec son
+      rangement, un conseil de geste et la SOURCE de sa fenêtre. Une seule est
+      réglementaire (les œufs) ; les autres sont des ordres de grandeur, et
+      l'app ne s'en sert que pour ORDONNER, jamais pour dire « à jeter ».
+      `saisons.yaml` (autour de Lyon) et `saisons.ts` (`deSaison`,
+      `saisonDuPlat`, `familleDe`) : des lectures pures, sans poids ; douze
+      mois de calendrier n'est pas un signal de saison.
+- [x] **T126 — Le format des dîners, et 26 dîners du foyer.** `format:` sur
+      les 127 dîners (quiche, soupe, gratin, mijoté…), exigé par le
+      vérificateur. 26 recettes rédigées pour ce dépôt (aucune prose
+      d'ouvrage) : 18 aux légumineuses, 13 faisables avec le fond seul.
+      **Mesuré : 127 dîners, 17 se font avec le fond seul (4 avant), 23 à un
+      ingrédient près (10 avant).**
+
+**À la fusion**, deux reprises qui sont de la fusion et non du catalogue :
+`cuisine-data.json` régénéré (les dîners neufs n'avaient pas `horsTable`, T108)
+et T113 compte 47 plats du foyer au lieu de 21 — les 26 neufs ont leurs
+`uses:`, la promesse tient. `household.yaml` garde la version de la pile (quatre
+boîtes IKEA de 0,8 L).
+
+## Ce soir, à la pause de 15 h — T127 à T129
+
+Workspace#66 et #67, et la mesure qui les a rendus urgents : l'année du foyer
+simulé, deuxième passage (Workspace#71). **210 dîners sur 323 retombés sur les
+pâtes**, 1 026 des 1 035 cartes refusées pour « 4 à 8 articles à acheter un jour
+sans courses », et un cockpit qui a dit « Rien n'est posé — Poser un plat » 364
+jours sur 364 sans jamais nommer les trois portions qui attendaient au
+congélateur. Le foyer ne planifie pas : il décide ET lance le dîner à la pause
+de 15 h, pour 18 h. Branche `cuisine/a-la-pause`, sur `cuisine/le-repertoire`.
+
+**LE CLASSEMENT EST UN ORDRE, PAS UNE SOMME, et c'est la décision qui commande
+les autres.** Le score de `comptoir()` additionne des termes : un plat à six
+articles s'y rachète par trois bons arguments, et c'est ce qui a nourri les
+pâtes. Ici un rang ne se rachète pas :
+
+1. ce qui doit être mangé — un reste au frigo, un lot passé à mi-vie (`axe.ts`),
+   un paquet du placard qui se perd ;
+2. rien à acheter ;
+3. un seul article, NOMMÉ (« il manque : lait de coco ») ;
+4. prêt à 18 h si on le lance maintenant ;
+5. puis, à égalité seulement : pas mangé ces trois derniers jours, légumineuses
+   et légumes, saison, quiche-soupe-gratin, peu de temps devant le feu.
+
+Ce qui demande deux achats ou plus ne sort que le mercredi et le samedi, ou
+derrière « Voir plus » : on ne retire pas une proposition, on la range là où
+elle ne coûte pas un refus.
+
+- [x] **T127 — Ce qui est ici, et ce qu'il manque.** `model/ici.ts` :
+      `ceQuiEstIci()` réunit le placard « toujours là », `Jeu.gardeManger` et
+      le rejeu ENTIER (courses rentrées, fond compris) — le frais court
+      seulement dans sa vie de T111, le `de-garde` sans borne.
+      `ceQuiManque()` compte ce qu'il faut acheter pour lancer CE plat ; une
+      base n'y manque jamais (le plat s'écarte avant), un assaisonnement non
+      plus, l'accompagnement se DIT (« à côté : salade verte — ou ce que vous
+      avez ») sans compter. **CE N'EST PAS LA LISTE DE COURSES** :
+      `Jeu.gardeManger` reste l'intersection de #32, et `calculer` n'est pas
+      touché. `Carte.marginal` répondait à une autre question — ce que le
+      plat ajoute au panier de la semaine.
+- [x] **T128 — La proposition de 15 h.** `model/pause.ts` (`proposerCeSoir`,
+      `ordre`, `horaire`, `scoreSaison`, `scoreFormat`), l'écran « Ce soir »
+      (`#/cuisine/ce-soir`, `CeSoir.tsx`, `ceSoir.vue.ts`), et le même bloc en
+      tête de l'ouverture du fil — « Combien de repas ? » reste dessous, pour
+      prévoir plusieurs repas. Trois cartes, une quatrième réservée aux
+      légumineuses quand aucune des trois n'en est (#70). « Je lance ça » pose
+      le plat sur le dîner de ce soir et ouvre sa mise en place (T112). Le
+      temps vient des ÉTAPES (règle de T81), parallèles retranchées, attentes
+      comptées, trempage rattrapé dit. `Reste réchauffé`, déclaré pour le midi,
+      est levé au dîner ici seulement. Le dîner du foyer passe à **18 h**
+      (`heures.ts`, dit le 18/10). `npm run pause` imprime les tailles.
+- [x] **T129 — Le cockpit dit la vérité sur le stock.** La ligne « Ce soir »
+      nomme le meilleur plat, ce qu'il manque, l'heure où le lancer et ce qui
+      attend (« 2 repas de sauce bolognaise au congélo ») ; elle ouvre « Ce
+      soir » (deux taps) et porte un « Je lance ça » (un tap). Un dîner posé
+      se rappelle avec son heure, un dîner cuisiné ne réclame plus rien. La
+      carte de la facette dit « Ce soir, N dîners se font sans rien acheter »
+      au lieu de « Rien n'est posé ».
+
+**Mesuré sur le corpus fusionné, un lundi à 15 h** (`npm run pause`) : avec le
+relevé du 26/08 seul, 0 dîner à zéro article et 5 à un ; avec le fond rentré,
+**17 à zéro et 23 à un**, sur 126 dîners proposables — et la proposition ouvre
+sur trois plats à zéro article (hachis parmentier de lentilles, soupe de
+légumes aux pois chiches, soupe de pois cassés). Sur le même placard, les
+quatre cartes de tête d'`offre()` en demandent 5, 3, 3 et 2 : c'est le test
+« la mesure qui a ouvert le ticket ».
+
+Portes : typecheck, **962 tests** (39 nouveaux, 22 venus du catalogue), build, **69 e2e** (3 nouveaux,
+`a-la-pause.spec.ts` ; `fil.spec.ts:126` a floconné une fois, vert en trois
+passages isolés), `catalogue:verifie` 0 erreur.
+
+**Ce qu'il laisse ouvert, et ce qui attend une confirmation.**
+- Les assaisonnements ne comptent jamais comme un achat ; les
+  accompagnements se disent sans compter. Deux décisions de classement à faire
+  confirmer.
+- Les jours de courses (mercredi, samedi) et l'heure du dîner (18 h) sont des
+  constantes de code, pas des champs du foyer — même statut que `heures.ts`.
+- Un lot du congélateur est proposé le soir même (« à sortir maintenant ») :
+  à vérifier à l'usage qu'une portion décongèle en trois heures. **→ T133.**
+- La liste de courses ne lit toujours pas ce qui est rentré hors du relevé :
+  poser un plat dont on vient d'acheter la crème la remet dans « Courses ».
+  C'est la question de #32, à trancher et pas à contourner. **→ T132.**
+- `avanceMin` et `minutesSurPlace` sont exportés et jetés par le chargeur ;
+  la proposition relit les étapes à la place.
+- Aucune notification à 15 h : c'est Workspace#61, une mesure sur l'iPhone.
+- La persona de l'année simulée n'a pas été rejouée sur cette branche.
+
+### Retouches après les captures du 19/10 — T130 à T133
+
+Branche `cuisine/a-la-pause-retouches`, sur `cuisine/a-la-pause`.
+
+- [x] **T130 — Un id d'émission n'est pas une phrase.** Le cockpit écrivait
+      « lentilles-vertes-cuites — plus proposé, à jeter ». La tâche de T103
+      passe par `nomDuType` (une seule définition, `model/plancher.ts` ;
+      `ceSoir.vue` la réexporte), comme le titre du geste du jour (« Sortir
+      sauce bolognaise du congélo »), les sorties de la carte de « Poser »,
+      celles d'« Aujourd'hui » et `Offre.deQuoi`. L'accent ne vient toujours
+      pas : le catalogue n'a pas de libellé pour ce qu'un plat produit (T15).
+- [x] **T131 — Un article hors saison ne s'achète pas.** En octobre, « Velouté
+      d'ortie » sortait deuxième, « il manque : pointes d'orties » compté comme
+      un seul achat. `CarteDuSoir.horsSaison` (les manquants que
+      `saisons.deSaison` dit hors saison ce mois-ci) : la carte sort de la main
+      tous les jours, jour de courses compris, et `ordre` la range sous TOUT ce
+      qui se fait, avant même le rang « presse ». La ligne le dit (« il manque :
+      orties (ou fanes, épinards…), hors saison »). `nomCourt` raccourcit au-delà
+      de 40 caractères les noms à alternatives « (ou … ou …) » et coupe les
+      gloses après un tiret. Les alternatives ne sont pas structurées au
+      corpus : des épinards de saison ne rachètent pas le velouté.
+- [x] **T132 — La liste ne contredit plus la carte.** Choix : un INSTANTANÉ au
+      geste, pas un élargissement de `Jeu.gardeManger`. « Je lance ça » (écran
+      et cockpit) écrit sur le créneau `DecisionCreneau.ici` — ce que la carte
+      tenait pour là (`ici.ceQueLaCarteDitIci`, complément exact de
+      `ceQuiManque`, assaisonnements compris, bases exclues). `calculer` et la
+      fiche (`provenanceIngredient`, « déjà là ») le réunissent à
+      l'intersection pour CE plat sur CE créneau (`dejaLaPour`). Pourquoi c'est
+      sûr pour #32 : l'intersection n'est pas touchée et garde sa propriété ;
+      l'instantané est figé au tap, donc rentrer un achat ensuite ne retire
+      aucune ligne sous le doigt. Champ optionnel non indexé, sans migration ;
+      reposer un plat d'ailleurs l'efface, régler les parts et le report le
+      gardent. Reste vrai : un plat posé depuis le fil ou « Poser » lit toujours
+      la seule intersection. Et un instantané peut vieillir (la crème utilisée
+      ailleurs entre-temps) : il dit ce que la carte a promis, pas le stock.
+- [x] **T133 — Trois heures ne décongèlent pas un bloc.** Aucune donnée par
+      plat ne dit le réchauffage (`rules.yaml` porte une chaîne de repli du
+      FOYER — micro-ondes ½ h, sinon une nuit —, non exportée). Règle par
+      défaut, dite le 19/10 : `pause.directAuFeu` — un type produit par une
+      soupe ou un mijoté (`format`), ou nommé sauce, bouillon, velouté,
+      bolognaise, légumineuses ou céréale cuites, va du congélo au feu ; le
+      reste demande la veille. Ces lots-là sont retirés du dépôt du comptoir
+      pour ce soir et sortent en `PropositionDuSoir.aSortir` (le plat qui les
+      prend avec le moins d'achats) : une ligne « À sortir ce soir pour
+      demain » sur « Ce soir », et le geste du jour du cockpit quand aucun plat
+      posé demain n'en appelle un (`typeDuGeste`, même drapeau `cleGeste`). Le
+      « Fait » de la veille ferme la boucle : `useSortisLaVeille` rend le lot
+      cuisinable le lendemain. À confirmer à l'usage : le poulet cuit et les
+      galettes congelées comptés « la veille ».
+- [x] **T134 — Le fond se recharge.** Année simulée n° 3 : 75 hachis de
+      lentilles, « Rien à acheter » toute l'année, liste à 0–1 ligne. Deux
+      causes au rejeu : le mode non chiffré de `retirer` n'ôtait jamais une
+      unité (le fond rentré par la liste est en `unité`, sans poids) — un
+      paquet `sec` s'ouvre, le paquet `entame` se finit, une conserve ou du
+      frais part d'un coup ; et un ingrédient épuisé gardait sa clé vide dans
+      `parIngredient`, donc restait « ici » par l'intersection de #32 (qui
+      teste `has`) — il en sort désormais, ce qui ne peut qu'ajouter des lignes.
+      Le plancher (strictement sous le niveau) fait alors la ligne, dite
+      « pour le fond » (`LignePlancher.fond`). Troisième cause, vue au premier
+      passage de 40 jours : l'état d'une ligne `id|unité` ne changeait jamais
+      de clé, donc les carottes rentrées samedi restaient « déjà rentré » à
+      chaque liste — il ne survit plus à son jour (`vueDesCourses(…, depuis)`,
+      `majEtat`). Et « Je lance ça » (cockpit, « Ce
+      soir ») pose par `poserCeSoir`, qui relit ce soir à l'horloge du doigt
+      au lieu de l'index de la fenêtre en cache. Harnais : les lignes du fond
+      entrent au grand livre en unités de recette, la persona ne lance pas un
+      plat dont un ingrédient est à zéro un jour sans courses (« manque
+      réel »). À mesurer sur l'année entière.
+
+- [x] **T135 — Le fond se consomme à la quantité, et la rotation se
+      souvient.** Année simulée n° 4. (a) Le paquet non chiffré de T134 se
+      finissait en deux plats : 12 kg de lentilles corail, 11 kg de riz en fin
+      d'année — et une boîte d'œufs, un sachet de fromage râpé ne finissaient
+      jamais (42 « rien à acheter » sur un frigo vide). Une ligne rentrée sans
+      poids prend la taille de `fond.yaml:unite` (`contenuDUnite`), et
+      `retirer` soustrait la recette à l'échelle des parts ; œufs et pots à la
+      pièce, arrondis au-dessus. Taille inconnue : l'heuristique de T134.
+      `fromage-rape` : « sachet de 200 g » (à reporter au brouillon). (b) 20
+      dîners distincts sur 126, velouté et soupe de pois chiches 41 fois
+      chacun : le départage ne connaissait que trois jours. `scoreRotation`
+      (entrée `mange`) ajoute `POIDS.repetition` −2 par fois en 14 jours,
+      `memeFormat` −1,5 par soir du même format sur les 2 derniers, `oublie`
+      +1,5 au-delà de 30 jours si faisable — dans le départage seul.
+- [x] **T136 — Œufs, yaourts, fromage râpé : le faux manque venait du
+      harnais.** Année simulée n° 5 : 275 « manques réels » sur ces trois
+      laitages, fiche « rien à acheter ». Le modèle les décompte bien (T135) :
+      `fondReappro.test.ts` le prouve de la liste à la carte (une boîte de 6,
+      deux quiches à 3 œufs → ligne « pour le fond » et « il manque » ; idem
+      sachet de 200 g et pack de 4). C'est `pourrirLeFrais` du grand livre
+      (`sim/annee.mjs`) qui les jetait au bout de 7 jours, sans geste à
+      rejouer ; il lit désormais `garde` (28 j œufs, 21 j laitier). Et
+      `retirer` : un frais constaté à l'unité (`unites: 1`, sans poids)
+      s'entame au lieu de partir sous le premier plat — le sac de pommes de
+      terre du relevé disparaissait sous une omelette, ce qui cassait
+      `stock-descend.spec.ts:46` depuis T134.
+- [x] **T137 — Le fond à garde courte se finit par son âge.** Année simulée :
+      une boîte d'œufs rentrée le 17/10, servie une fois, jetée à 28 jours par
+      le foyer, restait « ici » au rejeu — œufs deux fois sur la liste en un
+      an, 256 « rien à acheter » faux (œufs, râpé, yaourt). `rejouer` sort de
+      `parIngredient` tout article dont la famille de garde `fond: true` tient
+      8 semaines au plus (`SEMAINES_FENETRE_COURTE`) et qui a été rentré il y a
+      plus que sa fenêtre ; il passe dans `rejeu.finis` (id → jours). Le sec,
+      les conserves, le surgelé ne bougent pas. L'horloge repart à une
+      observation postérieure à l'achat (« Des œufs ? oui ») : pas de nouvelle
+      UI. Le stock dit « acheté il y a N j — sans doute fini », jamais « à
+      jeter » (fenêtres approximatives, sauf les œufs). #32 tenu : la liste ne
+      fait que gagner. Et « jamais vu » sur une ligne de plancher achetée puis
+      mangée devient « à vérifier, rentré le … » (`rejeu.rentres`).
+
+- [x] **T138 — Le ticket photographié, lu sur le téléphone.** Remplace
+      l'hypothèse serveur de T71 : OCR `tesseract.js` (français `best_int`,
+      0,7 Mo) dans un worker, importé au seul scan, ses fichiers servis depuis
+      `/ocr/` (`src/pwa/ocr.ts`) — aucun CDN, aucune clé. Hors précache
+      (~12 Mo, trois cœurs selon SIMD) ; `sw.js` les garde au premier scan
+      dans `intendance-ocr-<empreinte>`, qui survit aux versions. Courses →
+      « Scanner un ticket » → barre de progression → revue : une rangée par
+      ligne, trois propositions (`suggerer`), « autre… », « pas pour la
+      cuisine », quantité et ignorer ; « Tout rentrer » passe par
+      `journaliserEntree` daté du jour d'ACHAT (saisi aujourd'hui), coche la
+      liste, garde `prixTTC` sur la ligne d'entrée. Table apprise Dexie v3
+      `libelles` : (enseigne, vendeur, libellé) → id ou `null` ; la fois
+      suivante, « reconnu ». `lireTicket` (pur) : code TVA Carrefour retiré,
+      tares et remises attachées, fidélité ignorée, vendeurs Grand Frais lus,
+      talon Despi avec PLU, repli générique ; somme des nets contre le total
+      imprimé, dite en clair. Sans date lue : « photo incomplète », date à la
+      main, la queue du code-barres seulement SUGGÉRÉE. Ligne de comptoir
+      (`RAYON …`) ignorée d'office : il faut le talon. La photo n'est jamais
+      gardée. Corpus : 4 tickets sur 4, lignes et totaux exacts, idem en
+      variante OCR abîmée.
 
 ## Sortie
 

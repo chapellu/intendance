@@ -1,0 +1,95 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-18 — aucune source
+# extérieure. Velouté de printemps (et d'automne) : le fond, plus DES épinards
+# frais.
+#
+# LES ÉPINARDS ENTRENT EN DERNIER, trois minutes à peine. C'est tout le secret
+# de la couleur : cuits longtemps, ils virent au kaki.
+
+recipe:
+  id: veloute-epinards-frais-corail
+  title: Velouté d'épinards frais aux lentilles corail
+  lang: fr
+  format: soupe
+  yields:
+    portions_eq: 6
+  time_min_total: 40
+  active_min: 12
+
+  apports:
+    proteine: legumineuse
+    feculent: pommes-de-terre
+    legumes: [feuille, allium]
+    profil: soupe
+    origine: francais
+
+  ingredients:
+    - {id: pousses-epinards, name: épinards frais, qty: 400, unit: g}
+    - {id: pomme-de-terre, name: pommes de terre, qty: 3, unit: pièce}
+    - {id: lentilles-corail, name: lentilles corail, qty: 100, unit: g}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: ail, name: ail, qty: 1, unit: gousse}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: eau, name: eau, qty: 1.2, unit: l}
+    - {id: bouillon-legumes, name: cube de bouillon de légumes, qty: 1, unit: pièce, seasoning: true}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: yaourt-nature, name: yaourt nature, qty: 1, unit: pièce}
+
+  steps:
+    - id: rincer
+      action: "Rincer les lentilles corail ; laver les épinards à grande eau"
+      needs: []
+      uses: [lentilles-corail, pousses-epinards]
+      time_min: 4
+      kid: {age_min_months: 30, task: "plonger les épinards dans la bassine d'eau froide"}
+    - id: tailler
+      action: "Pommes de terre en morceaux, oignon et ail émincés"
+      needs: [chop-coarse]
+      uses: [pomme-de-terre, oignon, ail]
+      time_min: 6
+    - id: suer
+      action: "Faire suer l'oignon et l'ail à l'huile dans la cocotte"
+      needs: [simmer-large]
+      uses: [huile-olive]
+      time_min: 4
+    - id: cuire
+      action: "Ajouter pommes de terre, lentilles et eau ; cuire à couvert"
+      needs: [simmer-large]
+      uses: [eau]
+      time_min: 20
+      attended: false
+    - id: epinards
+      action: "Ajouter les épinards et les laisser tomber 3 minutes"
+      astuce: "Pas plus : cuits longtemps, ils virent au kaki et prennent un goût métallique."
+      needs: [simmer-large]
+      uses: []
+      time_min: 3
+    - id: mixer
+      action: "Mixer finement"
+      needs: [blend-smooth]
+      uses: []
+      time_min: 3
+    - id: saler
+      action: "Délayer le cube, goûter et saler si besoin"
+      needs: []
+      uses: [bouillon-legumes, sel]
+      time_min: 2
+      seasoning_gate: true
+    - id: servir
+      action: "Une cuillerée de yaourt dans chaque bol"
+      needs: []
+      uses: [yaourt-nature]
+      time_min: 1
+
+  baby_portion:
+    take: "un petit bol de velouté, avant le cube et le sel"
+    prep: "tiédir"
+    needs: []
+    depuis: [mixer]
+
+  emits:
+    - kind: reste-plat
+      type: veloute-epinards-corail
+      qty_band: 1-repas
+      keeps: {frigo_days: 2, congelo: true}
+
+  plan_b: []

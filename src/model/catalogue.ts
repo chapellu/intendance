@@ -15,9 +15,9 @@
 // possible. Un champ qu'aucun calcul ne lit peut manquer sans dommage.
 
 import type {
-  Accept, Accompagnement, Agression, Catalogue, Denree, Emit, EmitKind, Espace, Etape, Etat, Forme, Foyer,
-  GardeManger, Ingredient, LigneStock, Nature, Outil, Plat, Provenance, Quantite, Rattrapage,
-  Role, Source, Urgence, Usage, Zone,
+  Accept, Accompagnement, Agression, Catalogue, Denree, Emit, EmitKind, Espace, Etape, Etat,
+  FamilleDeGarde, Fond, Format, Forme, Foyer, GardeManger, Ingredient, LigneStock, Nature, Outil,
+  Plat, Provenance, Quantite, Rattrapage, Role, Saisons, Source, Urgence, Usage, Zone,
 } from "./types";
 
 const ESPACES: readonly Espace[] = ["frigo", "congelo", "placard"];
@@ -27,6 +27,15 @@ const EMIT_KINDS: readonly EmitKind[] = ["base", "parure", "portion-bebe", "rest
 // « base » veut dire « ce plat ne se mange pas tel quel ». Le grand wok de
 // légumes verts est le premier sans être le second — il se mange, à côté.
 const ROLES: readonly Role[] = ["plat", "accompagnement", "entree", "base", "boisson"];
+// LA MÊME LISTE QUE `verifier.py:FORMATS`, et c'est voulu qu'elle soit écrite
+// deux fois : le vérificateur garde le corpus, ce chargeur garde l'export — et
+// un export plus vieux ou plus jeune que l'app est précisément le cas qu'il
+// attrape. Un format inconnu ici ferait sortir un plat de tous les filtres sans
+// un mot.
+const FORMATS: readonly Format[] = [
+  "quiche", "soupe", "gratin", "poelee", "mijote", "salade", "omelette",
+  "pates", "galettes", "piece", "tartine", "pizza", "cake", "terrine",
+];
 const PROVENANCES: readonly Provenance[] = [
   "placard", "garde-manger", "chaine", "frigo", "courses", "absent",
 ];
@@ -233,6 +242,7 @@ function emit(v: unknown, ou: string): Emit {
     note: texteOuNull(o["note"] ?? null, `${ou}.note`),
     gardeFrigo: nombre(o["gardeFrigo"], `${ou}.gardeFrigo`),
     congelo: booleen(o["congelo"], `${ou}.congelo`),
+    horsTable: booleen(o["horsTable"], `${ou}.horsTable`),
   };
 }
 
@@ -303,6 +313,10 @@ function plat(v: unknown, ou: string): Plat {
     // `?? []` de `avec` juste en dessous — une liste vide est une VALEUR, un
     // rôle absent est un export qui n'a pas fait son travail.
     role: parmi(o["role"], ROLES, `${ou}.role`),
+    // ABSENT ET `null` SONT LA MÊME RÉPONSE — l'export ne l'écrit que sur les
+    // dîners, et un JSON en cache peut être plus vieux que le champ. Écrit, en
+    // revanche, il doit être connu.
+    format: o["format"] == null ? null : parmi(o["format"], FORMATS, `${ou}.format`),
     // `?? []` PARCE QUE LE JSON COMMITÉ PEUT ÊTRE PLUS VIEUX QUE CE CHAMP —
     // un service worker sert le vidage qu'il a en cache, et une app qui se met
     // à jour avant son catalogue ne doit pas s'ouvrir sur une erreur de
@@ -391,7 +405,7 @@ function foyer(v: unknown, ou: string): Foyer {
     const c = obj(espacesBruts[e], `${ou}.espaces.${e}`);
     espaces[e] = {
       places: nombre(c["places"], `${ou}.espaces.${e}.places`),
-      contenants: nombre(c["contenants"], `${ou}.espaces.${e}.contenants`),
+      contenants: nombreOuNull(c["contenants"] ?? null, `${ou}.espaces.${e}.contenants`),
       limite: nombre(c["limite"], `${ou}.espaces.${e}.limite`),
       cause: parmi(c["cause"], ["place", "contenant"] as const, `${ou}.espaces.${e}.cause`),
     };
@@ -422,6 +436,7 @@ function foyer(v: unknown, ou: string): Foyer {
         label: texte(c["label"], `${ou}.contenants[${i}].label`),
         nombre: nombre(c["nombre"], `${ou}.contenants[${i}].nombre`),
         portions: nombre(c["portions"], `${ou}.contenants[${i}].portions`),
+        volumeMl: nombreOuNull(c["volumeMl"] ?? null, `${ou}.contenants[${i}].volumeMl`),
         espaces: tableau(c["espaces"], `${ou}.contenants[${i}].espaces`)
           .map((e, j) => parmi(e, ESPACES, `${ou}.contenants[${i}].espaces[${j}]`)),
         consommable: booleen(c["consommable"], `${ou}.contenants[${i}].consommable`),
@@ -524,6 +539,7 @@ function denree(v: unknown, ou: string): Denree {
         specifique: booleen(c["specifique"], `${ou}.conservations[${i}].specifique`),
       };
     }),
+    garde: texteOuNull(o["garde"] ?? null, `${ou}.garde`),
     note: note === undefined || note === null ? null : texte(note, `${ou}.note`),
   };
 }
@@ -557,6 +573,86 @@ function gardeManger(v: unknown, ou: string): GardeManger {
     denrees,
     alertes: listeDeTextes(o["alertes"] ?? [], `${ou}.alertes`),
   };
+}
+
+/* ─────────────────────────────────── la garde, le fond, les saisons (2026-10-18) */
+
+/**
+ * Les familles de garde, et l'invariant qui les rend lisibles : UN ID, UNE
+ * FAMILLE. Deux fenêtres pour la même denrée, et l'écran afficherait l'une ou
+ * l'autre selon l'ordre du fichier — le genre de mensonge plausible que cette
+ * frontière existe pour attraper.
+ */
+function garde(v: unknown, ou: string): FamilleDeGarde[] {
+  const familles = tableau(v, ou).map((x, i): FamilleDeGarde => {
+    const o = obj(x, `${ou}[${i}]`);
+    const jours = nombre(o["fenetreJours"], `${ou}[${i}].fenetreJours`);
+    // Une fenêtre nulle ferait périmer la denrée le jour de son arrivée.
+    if (jours <= 0) throw new CatalogueInvalide(`${ou}[${i}].fenetreJours`, "un nombre > 0", jours);
+    return {
+      id: texte(o["id"], `${ou}[${i}].id`),
+      label: texte(o["label"], `${ou}[${i}].label`),
+      fond: booleen(o["fond"], `${ou}[${i}].fond`),
+      espace: parmi(o["espace"], ESPACES, `${ou}[${i}].espace`),
+      rangement: texte(o["rangement"], `${ou}[${i}].rangement`),
+      methode: texteOuNull(o["methode"] ?? null, `${ou}[${i}].methode`),
+      fenetreJours: jours,
+      fenetre: texte(o["fenetre"], `${ou}[${i}].fenetre`),
+      source: texte(o["source"], `${ou}[${i}].source`),
+      conseil: texte(o["conseil"], `${ou}[${i}].conseil`),
+      ids: listeDeTextes(o["ids"], `${ou}[${i}].ids`),
+    };
+  });
+  const vus = new Set<string>();
+  for (const f of familles)
+    for (const id of f.ids) {
+      if (vus.has(id)) throw new CatalogueInvalide(ou, "un id dans une seule famille", id);
+      vus.add(id);
+    }
+  return familles;
+}
+
+function fond(v: unknown, ou: string): Fond {
+  const o = obj(v, ou);
+  return {
+    date: texteOuNull(o["date"] ?? null, `${ou}.date`),
+    denrees: tableau(o["denrees"] ?? [], `${ou}.denrees`).map((x, i) => {
+      const d = obj(x, `${ou}.denrees[${i}]`);
+      const minimum = nombre(d["minimum"], `${ou}.denrees[${i}].minimum`);
+      // EN UNITÉS D'ACHAT : « 1,5 sachet » n'est pas une chose qu'un œil
+      // vérifie, et zéro n'est pas un minimum.
+      if (!Number.isInteger(minimum) || minimum < 1)
+        throw new CatalogueInvalide(`${ou}.denrees[${i}].minimum`, "un entier ≥ 1", minimum);
+      return {
+        ingredient: texte(d["ingredient"], `${ou}.denrees[${i}].ingredient`),
+        minimum,
+        unite: texte(d["unite"], `${ou}.denrees[${i}].unite`),
+      };
+    }),
+    diners: tableau(o["diners"] ?? [], `${ou}.diners`).map((x, i) => {
+      const d = obj(x, `${ou}.diners[${i}]`);
+      return {
+        plat: texte(d["plat"], `${ou}.diners[${i}].plat`),
+        titre: texte(d["titre"], `${ou}.diners[${i}].titre`),
+      };
+    }),
+  };
+}
+
+function saisons(v: unknown, ou: string): Saisons {
+  const o = obj(v, ou);
+  const mois: Record<string, number[]> = {};
+  for (const [id, brut] of Object.entries(obj(o["mois"] ?? {}, `${ou}.mois`))) {
+    mois[id] = tableau(brut, `${ou}.mois.${id}`).map((m, j) => {
+      const n = nombre(m, `${ou}.mois.${id}[${j}]`);
+      // Un mois 13 ne serait jamais « maintenant » : l'ingrédient sortirait de
+      // toutes les saisons sans que rien le dise.
+      if (!Number.isInteger(n) || n < 1 || n > 12)
+        throw new CatalogueInvalide(`${ou}.mois.${id}[${j}]`, "un mois de 1 à 12", n);
+      return n;
+    });
+  }
+  return { region: texteOuNull(o["region"] ?? null, `${ou}.region`), mois };
 }
 
 /* ──────────────────────────────────────────────────────────── le catalogue */
@@ -645,6 +741,25 @@ export function lireCatalogue(brut: unknown): Catalogue {
     vus.add(p.id);
   }
 
+  // LES TROIS BLOCS DU 2026-10-18 ont un défaut VIDE, pour la raison de
+  // `avec` : un service worker peut servir un JSON plus vieux que l'app, et
+  // celle-ci ne doit pas refuser de s'ouvrir faute d'un calendrier des saisons.
+  const familles = garde(o["garde"] ?? [], "garde");
+  const leFond = fond(o["fond"] ?? {}, "fond");
+  const lesSaisons = saisons(o["saisons"] ?? {}, "saisons");
+  const lePlacard = gardeManger(o["gardeManger"] ?? {}, "gardeManger");
+
+  // DEUX RÉFÉRENCES QUI SE VÉRIFIENT ICI, parce qu'une seule pièce ne peut
+  // pas savoir si l'autre existe. Un dîner du fond qui ne désigne aucun plat
+  // ne s'afficherait nulle part ; une denrée qui vise une famille inconnue
+  // perdrait son conseil sans le dire.
+  for (const d of leFond.diners)
+    if (!vus.has(d.plat)) throw new CatalogueInvalide("fond.diners", "l'id d'un plat", d.plat);
+  const idsFamilles = new Set(familles.map((f) => f.id));
+  for (const d of lePlacard.denrees)
+    if (d.garde !== null && !idsFamilles.has(d.garde))
+      throw new CatalogueInvalide("gardeManger.denrees", "une famille de garde déclarée", d.garde);
+
   return {
     foyer: foyer(o["foyer"], "foyer"),
     plats,
@@ -694,7 +809,10 @@ export function lireCatalogue(brut: unknown): Catalogue {
       };
     }),
     stock: tableau(o["stock"] ?? [], "stock").map((x, i) => ligneStock(x, `stock[${i}]`)),
-    gardeManger: gardeManger(o["gardeManger"] ?? {}, "gardeManger"),
+    gardeManger: lePlacard,
+    garde: familles,
+    fond: leFond,
+    saisons: lesSaisons,
     provenances,
     horsCourses: tableau(o["horsCourses"], "horsCourses")
       .map((x, i) => parmi(x, PROVENANCES, `horsCourses[${i}]`)),

@@ -129,8 +129,36 @@ const ECOULEMENT: Partial<Record<Etat, Urgence>> = { entame: "moyenne" };
  * (a) de T60 était déjà tenu par la forme de la boucle. Un test le tient
  * maintenant explicitement, parce qu'une propriété vraie par accident se perd au
  * premier refactor.
+ *
+ * `reste` : LES IDS DU RELEVÉ QUI ONT ENCORE QUELQUE CHOSE — T106. C'est
+ * `jeu.gardeManger`, que `hydraterGardeManger` a déjà intersecté avec le rejeu
+ * avant que le jeu n'arrive au score ; on ne relit donc pas le journal ici, on
+ * lit la même intersection que la liste de courses. Deux sources pour une seule
+ * question finiraient par donner deux réponses.
+ *
+ * LE BUG QUE ÇA RÉPARE, MESURÉ. Cette fonction lisait les seules denrées du
+ * catalogue, c'est-à-dire ce que le placard EST — et un placard relevé à zéro
+ * ne change pas ce qu'il est. Sur les sept zones relevées à vide, le rejeu ne
+ * porte plus un seul id, et 14 des 101 cartes d'un dîner disaient encore
+ * « finit des paquets entamés » — pâtes, farine d'épeautre, biscottes, poudre
+ * d'amande. Sur l'année simulée, la farine d'épeautre l'a dit à 64 cartes.
+ *
+ * OBLIGATOIRE, ET C'EST LE GARDE-FOU. Un second paramètre optionnel aurait
+ * laissé tout appel oublié retomber en silence sur le relevé du 26/08 — le bug
+ * lui-même, rendu invisible par une valeur par défaut. Un jeu sans base porte
+ * les ids du relevé entiers (`idsDuReleve`) : il calcule ce qu'il calculait.
+ *
+ * L'INTERSECTION NE PEUT QU'ÔTER, JAMAIS AJOUTER — le pendant de la propriété de
+ * #32, qui ne pouvait qu'ajouter des lignes de courses. Une denrée devient
+ * écoulable parce que le RELEVÉ l'a vue entamée, jamais parce que le rejeu
+ * l'aurait ouverte. Lire `etat` sur les lots rejoués était l'autre chemin, et
+ * il est écarté : `retirer()` passe un lot non chiffré de `sec` à `entame` à la
+ * première cuisson, donc chaque paquet de pâtes rentré des courses puis servi
+ * une fois se mettrait à pousser les plats de pâtes. Ce serait un comportement
+ * nouveau, pas un correctif.
  */
-export function aEcouler(catalogue: Catalogue): Map<string, number> {
+export function aEcouler(catalogue: Catalogue, reste: Iterable<string>): Map<string, number> {
+  const restent = new Set(reste);
   const par = new Map<string, number>();
   for (const d of catalogue.gardeManger.denrees) {
     const u = ECOULEMENT[d.etat];
@@ -138,6 +166,10 @@ export function aEcouler(catalogue: Catalogue): Map<string, number> {
     const f = fractionDe(u);
     if (f == null) continue;
     const id = alias(catalogue, d.ingredient);
+    // CE QUE LE PLACARD EST, FILTRÉ PAR CE QU'IL EN RESTE — voir l'en-tête de
+    // la fonction. Une denrée relevée entamée le 26/08 et épuisée depuis n'a
+    // plus de paquet à finir.
+    if (!restent.has(id)) continue;
     par.set(id, Math.max(par.get(id) ?? 0, f));
   }
   return par;
@@ -209,8 +241,16 @@ export interface ASauver {
  * L'ÉCRAN NE PEUT PAS SE CONTENTER DE L'URGENCE. « pommes de terre : haute » ne
  * dit pas quoi faire. On rend la RAISON — frais, entamé, ou abîmé par sa zone —
  * parce que c'est elle qui distingue « mange-les » de « range-les ailleurs ».
+ *
+ * `reste` COMME POUR `aEcouler`, ET POUR LA MÊME RAISON — T106. Le ticket
+ * attribuait « sauve ce qui se perd : ail, oignon » au score ; mesuré, le score
+ * ne peut plus le dire depuis T60 (le placard plafonne à 0,4, sous le seuil
+ * urgent de 0,8). C'est CETTE liste-ci qui le disait — « À manger en premier :
+ * ail, oignon — frais, ne se garde pas · sous-évier » — sous un sous-évier
+ * relevé vide. Un aromate qu'on n'a plus ne se sauve pas.
  */
-export function aSauver(catalogue: Catalogue): ASauver[] {
+export function aSauver(catalogue: Catalogue, reste: Iterable<string>): ASauver[] {
+  const restent = new Set(reste);
   const zones = new Map(catalogue.gardeManger.zones.map((z) => [z.id, z]));
   const raison = (d: Denree): string => {
     const z = zones.get(d.zone);
@@ -223,7 +263,7 @@ export function aSauver(catalogue: Catalogue): ASauver[] {
     return "paquet entamé";
   };
   return catalogue.gardeManger.denrees
-    .filter((d) => d.urgence !== "basse")
+    .filter((d) => d.urgence !== "basse" && restent.has(alias(catalogue, d.ingredient)))
     .map((d) => ({
       ingredient: d.ingredient,
       nom: d.ingredient.replace(/-/g, " "),

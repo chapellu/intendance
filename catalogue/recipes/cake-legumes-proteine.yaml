@@ -13,6 +13,7 @@
 recipe:
   id: cake-legumes-proteine
   title: Cake aux légumes bien protéiné
+  format: cake
   lang: fr
   source:
     author: Marie Chioca

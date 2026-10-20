@@ -17,6 +17,7 @@ import { cleGeste, cleRappel, poserReglage, useDrapeau } from "../db/reglages";
 import { facteurAffiche, type Calcul } from "../model/calcul";
 import { heureDe } from "../model/heures";
 import { joue, SAUTE, type Jeu } from "../model/jeu";
+import { nomDuType } from "../model/plancher";
 import { chemin } from "../nav/routes";
 import { Corps } from "../ui/Coquille";
 import { duree, fmt, hhmm } from "../ui/format";
@@ -108,7 +109,7 @@ function CeSoir({ jeu, calc, i }: { jeu: Jeu; calc: Calcul; i: number }) {
   const sorties = p.emits.map((e) => {
     const q = e.qty?.amount != null ? ` · ${fmt(e.qty.amount * f)} ${e.qty.unit}` : "";
     const ou = e.congelo ? "se congèle" : e.gardeFrigo ? `${e.gardeFrigo} j au frigo` : "";
-    return { cle: e.type + q, texte: `${e.type}${q}${ou ? ` — ${ou}` : ""}`, manque: false };
+    return { cle: e.type + q, texte: `${nomDuType(e.type)}${q}${ou ? ` — ${ou}` : ""}`, manque: false };
   });
   for (const m of calc.manques.filter((x) => x.i === i))
     sorties.push({

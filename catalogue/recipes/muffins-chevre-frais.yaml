@@ -2,6 +2,7 @@
 recipe:
   id: muffins-chevre-frais
   title: Muffins au chèvre frais
+  format: cake
   lang: fr
   source:
     author: Marie Chioca

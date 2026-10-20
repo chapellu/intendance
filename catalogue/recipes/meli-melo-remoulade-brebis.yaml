@@ -23,6 +23,7 @@
 recipe:
   id: meli-melo-remoulade-brebis
   title: Méli-mélo en rémoulade légère au yaourt de brebis
+  format: salade
   lang: fr
   source:
     author: Marie Chioca

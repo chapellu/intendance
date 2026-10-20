@@ -33,6 +33,7 @@
 // lire la suite de cette histoire.
 // ────────────────────────────────────────────────────────────────────────────
 
+import type { Appris } from "../model/ticketCorrespondance";
 import Dexie, { type EntityTable } from "dexie";
 import type { Evenement } from "../model/journal";
 import type { EmitKind, Espace, RepasId } from "../model/types";
@@ -51,6 +52,28 @@ export interface DecisionCreneau {
   /** `null` = les parts du foyer, quelles qu'elles soient au moment du calcul.
    *  Stocker la valeur du foyer figerait un chiffre qui doit suivre le foyer. */
   parts: number | null;
+  /**
+   * CE QUE LA CARTE DE 15 H A DIT « ICI » quand ce plat a été posé depuis
+   * « Ce soir » — les ids d'achat, alias résolus. Absent partout ailleurs.
+   *
+   * LA LISTE NE DOIT DEMANDER QUE CE QUE LA CARTE A DIT MANQUER. « Il manque :
+   * crème » au-dessus d'une liste qui réclame aussi le lait de coco rentré
+   * samedi, c'est la carte et la liste qui se contredisent (19/10). La liste
+   * lit `Jeu.gardeManger`, l'intersection de #32, qui ne voit pas les achats
+   * rentrés — et c'est voulu : la faire lire le rejeu effacerait une ligne
+   * sous le doigt de qui range ses courses.
+   *
+   * UN INSTANTANÉ, ÉCRIT UNE FOIS, AU GESTE. C'est ce qui le rend sûr : rentrer
+   * un article APRÈS avoir posé le plat ne touche pas à cette liste, donc ne
+   * retire rien de « Courses ». L'intersection reste intacte et garde sa
+   * propriété (elle ne fait qu'ajouter des lignes) ; l'instantané ne retire que
+   * ce que la carte affichait comme là au moment du tap, pour CE plat sur CE
+   * créneau, et rien d'autre.
+   *
+   * OPTIONNEL, SANS MIGRATION : un champ non indexé s'ajoute sans version
+   * (même geste que `LotStock.dluo`). Reposer un plat sans lui l'efface.
+   */
+  ici?: string[];
   maj: number;
 }
 
@@ -149,7 +172,7 @@ export interface Reglage {
 // La v1 n'a pas d'`upgrade` : il ne s'exécuterait sur aucune base existante,
 // puisqu'il n'en existe aucune. Une migration vide écrite « pour la forme »
 // est une migration qu'on croit avoir testée.
-export const VERSION = 2;
+export const VERSION = 3;
 
 const SCHEMAS: Record<number, Record<string, string>> = {
   1: {
@@ -174,6 +197,12 @@ const SCHEMAS: Record<number, Record<string, string>> = {
   2: {
     evenements: "++id, jour, sorte",
   },
+  // v3 — LA TABLE APPRISE DES TICKETS (T138). (enseigne, vendeur, libellé) →
+  // ingrédient, ou `null` pour « pas pour la cuisine ». Elle démarre vide :
+  // aucune donnée à transformer, donc pas d'`upgrade`, même raison que la v2.
+  3: {
+    libelles: "cle",
+  },
 };
 
 export class Base extends Dexie {
@@ -182,6 +211,7 @@ export class Base extends Dexie {
   stock!: EntityTable<LotStock, "id">;
   reglages!: EntityTable<Reglage, "cle">;
   evenements!: EntityTable<Evenement & { id: number }, "id">;
+  libelles!: EntityTable<Appris, "cle">;
 
   constructor(nom = "intendance") {
     super(nom);

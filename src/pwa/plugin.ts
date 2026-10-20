@@ -28,7 +28,9 @@ import type { Plugin, ResolvedConfig } from "vite";
  */
 export function aPrecacher(fichiers: readonly string[]): string[] {
   return fichiers
-    .filter((f) => f !== "sw.js" && !f.endsWith(".map"))
+    // `ocr/` (T138) : ~12 Mo que le précache ferait retélécharger à chaque
+    // version. `sw.js` les garde au premier scan, dans un cache à part.
+    .filter((f) => f !== "sw.js" && !f.endsWith(".map") && !f.startsWith("ocr/"))
     .sort()
     .map((f) => `/${f}`);
 }
@@ -98,8 +100,13 @@ export function pwa(): Plugin {
       // `import.meta.url` : Vite compile sa configuration dans un fichier
       // temporaire posé à la racine, et c'est là que ce module se croirait.
       const modele = await readFile(join(config.root, "src/pwa/sw.js"), "utf8");
+      // Le cache de l'OCR porte l'empreinte de SES fichiers seulement : une
+      // version de l'app qui ne touche pas à tesseract garde les 4 Mo déjà
+      // téléchargés.
+      const ocr = empreinte(empreintes.filter(([f]) => f.startsWith("ocr/")));
       const source = modele
         .replace('"__VERSION__"', JSON.stringify(version))
+        .replace('"__OCR__"', JSON.stringify(ocr))
         .replace("__PRECACHE__", JSON.stringify(precache, null, 2));
 
       await writeFile(join(dist, "sw.js"), source);

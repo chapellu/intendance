@@ -13,6 +13,7 @@
     "e2e": "playwright test",
     "ecoulement": "vite-node scripts/ecoulement.mjs",
     "horloges": "vite-node scripts/horloges.mjs",
+    "pause": "vite-node scripts/pause.mjs",
     "perf": "vite-node scripts/perf.mjs",
     "planchers": "vite-node scripts/planchers.mjs",
     "preview": "vite preview",
@@ -22,10 +23,12 @@
     "etapes": "python3 catalogue/garde_etapes.py"
   },
   "dependencies": {
+    "@tesseract.js-data/fra": "^1.0.0",
     "dexie": "^4.4.5",
     "dexie-react-hooks": "^4.4.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "tesseract.js": "^7.0.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.62.1",

@@ -24,6 +24,10 @@
 const VERSION = "__VERSION__";
 const PRECACHE = __PRECACHE__;
 const CACHE = `intendance-${VERSION}`;
+// T138 — l'OCR (worker, cœur WebAssembly, français) n'est PAS précaché : ~12 Mo
+// pour un scan par semaine. Il entre dans ce cache-ci au premier scan, et y
+// reste d'une version de l'app à l'autre tant que ses fichiers ne changent pas.
+const OCR = `intendance-ocr-${"__OCR__"}`;
 
 self.addEventListener("install", (e) => {
   e.waitUntil(
@@ -41,7 +45,7 @@ self.addEventListener("install", (e) => {
 self.addEventListener("activate", (e) => {
   e.waitUntil(
     (async () => {
-      for (const k of await caches.keys()) if (k !== CACHE) await caches.delete(k);
+      for (const k of await caches.keys()) if (k !== CACHE && k !== OCR) await caches.delete(k);
       // Prendre la main tout de suite : sans ça, la toute première visite reste
       // non contrôlée, et l'app ne serait hors-ligne qu'au chargement suivant —
       // « installée mais pas encore utilisable » est le pire des deux états.
@@ -86,8 +90,20 @@ self.addEventListener("fetch", (e) => {
   // où elle le ferait, la laisser passer est le bon comportement par défaut.
   if (url.origin !== self.location.origin) return;
 
+  if (url.pathname.startsWith("/ocr/")) return e.respondWith(servirOcr(url.pathname, requete));
   e.respondWith(servir(requete.mode === "navigate" ? "/index.html" : url.pathname, requete));
 });
+
+// Gardé au premier passage — la seule exception à « on ne garde pas ce qu'on a
+// servi », et elle est bornée : cinq fichiers connus, sous `/ocr/`.
+async function servirOcr(cle, requete) {
+  const c = await caches.open(OCR);
+  const connue = await c.match(cle);
+  if (connue) return connue;
+  const r = await fetch(requete);
+  if (r.ok) await c.put(cle, r.clone());
+  return r;
+}
 
 async function servir(cle, requete) {
   const c = await caches.open(CACHE);

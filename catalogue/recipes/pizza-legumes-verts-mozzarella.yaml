@@ -18,6 +18,7 @@
 recipe:
   id: pizza-legumes-verts-mozzarella
   title: Grande pizza aux légumes verts, basilic et mozzarella
+  format: pizza
   lang: fr
   source:
     author: Marie Chioca

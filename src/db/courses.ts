@@ -22,7 +22,12 @@ export async function lireCourses(base: Base): Promise<Map<string, EtatCourse>> 
 }
 
 async function majEtat(base: Base, cle: string, patch: Partial<EtatCourse>): Promise<void> {
-  const e = await base.courses.get(cle);
+  const lu = await base.courses.get(cle);
+  // T134 — l'état d'une ligne de plancher ne survit pas à son jour (même règle
+  // que `vueDesCourses`) : sinon cocher les carottes revenues sous leur
+  // plancher gardait `rentre: true`, et « Tout rentrer » les sautait.
+  const perime = lu && cle.endsWith(`|${UNITE_PLANCHER}`) && lu.maj < new Date().setHours(0, 0, 0, 0);
+  const e = perime ? undefined : lu;
   await base.courses.put({
     cle,
     coche: patch.coche ?? e?.coche ?? false,

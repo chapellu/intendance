@@ -13,16 +13,21 @@
 //
 // Port de `apps/proto-shell/comptoir.js` (`ecranCockpit`).
 
-import { jourISO } from "../db";
-import { useCatalogue, useCourses, useSemaine } from "../db/hooks";
-import { cleGeste, useDrapeau } from "../db/reglages";
+import { useState } from "react";
+import { base, jourISO, poserCeSoir, retirerLots } from "../db";
+import { useCatalogue, useCourses, useCuisines, useSemaine } from "../db/hooks";
+import { cleGeste, poserReglage, useDrapeau } from "../db/reglages";
+import { soirDe } from "../model/pause";
+import { aller } from "../nav/useRoute";
+import { LIBELLE_LANCER } from "../ui/phrases";
+import { useProposition } from "./CeSoir";
 import type { Calcul } from "../model/calcul";
 import type { Jeu } from "../model/jeu";
-import { chemin } from "../nav/routes";
+import { chemin, ENTREE_CUISINE } from "../nav/routes";
 import { Corps } from "../ui/Coquille";
 import { majuscule } from "../ui/format";
 import { gesteDuJour } from "./aujourdhui.vue";
-import { vueDuCockpit, type CarteFacette, type Tache, type VueCockpit } from "./cockpit.vue";
+import { typeDuGeste, vueDuCockpit, type CarteFacette, type Tache, type VueCockpit } from "./cockpit.vue";
 import { entree as entreeDuJardin, vueDeLaTerrasse } from "./jardin.vue";
 
 /**
@@ -40,9 +45,16 @@ export function useCockpit(jeu: Jeu, calc: Calcul): VueCockpit | null {
   // La clé porte le jour : « sortir la sauce du congélo » est fait pour
   // aujourd'hui, pas pour toujours. `null` quand il n'y a pas de geste — le
   // hook doit s'appeler à tous les rendus, même ceux où il n'a rien à lire.
-  const fait = useDrapeau(geste && jour0 ? cleGeste(jourISO(jour0.date), geste.type) : null);
-  if (!courses || fait === undefined) return null;
-  return vueDuCockpit(jeu, calc, { courses, gesteFait: fait });
+  // LA PROPOSITION DE 15 H — T129. On l'attend comme le reste : une ligne
+  // « Ce soir » qui dirait « Poser le dîner » une frame, puis le nom d'un plat,
+  // serait une ligne qui se corrige sous les yeux.
+  const soir = useProposition(jeu);
+  // Sans plat posé demain, le geste vient du bloc à sortir ce soir.
+  const type = typeDuGeste(geste, soir);
+  const fait = useDrapeau(type && jour0 ? cleGeste(jourISO(jour0.date), type) : null);
+  const cuisines = useCuisines(jour0 ? jourISO(jour0.date) : "", jour0 ? jourISO(jour0.date) : "");
+  if (!courses || fait === undefined || !soir || !cuisines) return null;
+  return vueDuCockpit(jeu, calc, { courses, gesteFait: fait, soir, cuisines });
 }
 
 export function Cockpit() {
@@ -79,7 +91,9 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
         Vos facettes
       </div>
 
-      <Facette nom="Cuisine" classe="cuisine" href={chemin({ ecran: "aujourdhui" })} carte={vue?.cuisine} />
+      {/* L'ENTRÉE, PAS « AUJOURD'HUI » EN DUR — T110 : sans les jours, la carte
+          de la facette ouvrait un écran éteint. */}
+      <Facette nom="Cuisine" classe="cuisine" href={chemin(ENTREE_CUISINE)} carte={vue?.cuisine} />
 
       {/* Le jardin a maintenant un modèle (T95/T96) et sa carte le dit — mais
           il ne produit TOUJOURS AUCUNE TÂCHE, et ce n'est pas un reste à
@@ -123,6 +137,58 @@ function carteDuJardin(): CarteFacette {
 /** Une chose qui vous attend. C'est une ANCRE : une tâche qui ne s'ouvre pas
  *  est une plainte, et le pouce n'a pas à chercher l'onglet correspondant. */
 function Ligne({ tache }: { tache: Tache }) {
+  // UNE TÂCHE QUI SE RÈGLE SUR PLACE N'EST PAS UNE ANCRE — T103. Un bouton dans
+  // un lien est un HTML que le navigateur résout à sa façon (le clic part sur
+  // les deux) ; la ligne devient donc un bloc, et le texte reste un lien vers
+  // l'inventaire pour qui veut voir lesquels avant de jeter. Même forme pour le
+  // geste du jour sans les jours : le texte ouvre la fiche du plat, « Fait » le
+  // coche.
+  const jeter = tache.jeter;
+  const cocher = tache.cocher;
+  const lancer = tache.lancer;
+  if (jeter?.length || cocher || lancer)
+    return (
+      <div className="co-tache">
+        <span className="p">{tache.facette}</span>
+        <a href={chemin(tache.route)} style={{ flex: 1, textDecoration: "none", color: "inherit" }}>
+          <span className="t" style={{ display: "block" }}>
+            {tache.titre}
+          </span>
+          <span className="d" style={{ display: "block" }}>
+            {tache.detail}
+          </span>
+        </a>
+        {/* PAS DE CONFIRMATION, ET C'EST LA DIFFÉRENCE AVEC « TOUT EST PERDU »
+            (T105). Ce qu'on retire ici est déjà sorti du jeu : rien ne le sert,
+            rien ne le compte. Se tromper coûte une ligne d'inventaire, pas un
+            plat — et une question de plus sur un geste quotidien apprend à
+            répondre « oui » sans lire. */}
+        {jeter?.length ? (
+          <button
+            className="btn btn-ghost"
+            style={{ fontSize: 12.5, padding: "2px 8px" }}
+            onClick={() => void retirerLots(base, jeter.map(Number))}
+          >
+            C’est jeté
+          </button>
+        ) : lancer ? (
+          // POSER, PUIS OUVRIR LA MISE EN PLACE — le même geste que la carte de
+          // « Ce soir », sans passer par la liste. `Lancer` garde le doigt
+          // d'un double tap.
+          <Lancer plat={lancer} ici={tache.ici} />
+        ) : cocher ? (
+          // Le même drapeau que le « Fait » d'« Aujourd'hui » : cocher ici ou
+          // là-bas est un seul geste, et la clé porte le jour.
+          <button
+            className="btn btn-ghost"
+            style={{ fontSize: 12.5, padding: "2px 8px" }}
+            onClick={() => void poserReglage(cocher, true)}
+          >
+            Fait
+          </button>
+        ) : null}
+      </div>
+    );
   return (
     <a className="co-tache" href={chemin(tache.route)} style={{ textDecoration: "none", color: "inherit" }}>
       <span className={`p${tache.facette === "Jardin" ? " jardin" : ""}`}>{tache.facette}</span>
@@ -165,5 +231,37 @@ function Facette({
         </span>
       ) : null}
     </a>
+  );
+}
+
+/**
+ * « Je lance ça », depuis le cockpit — T129.
+ *
+ * LE MÊME GESTE QUE LA CARTE DU SOIR, ET IL PASSE PAR LA MÊME ÉCRITURE : poser
+ * sur le dîner de ce soir (`poserPlat`, qui sait la clé `(jour, repas)`), puis
+ * ouvrir la fiche du créneau — qui, le plat posé, s'ouvre sur sa mise en place
+ * et non sur un résumé de lecture.
+ */
+function Lancer({ plat, ici }: { plat: string; ici?: readonly string[] | undefined }) {
+  const { catalogue } = useCatalogue();
+  const { jeu } = useSemaine(catalogue);
+  const [enCours, setEnCours] = useState(false);
+  const soir = jeu ? soirDe(jeu) : -1;
+  return (
+    <button
+      className="btn btn-primary"
+      style={{ fontSize: 12.5, padding: "4px 10px", flex: "none" }}
+      disabled={!jeu || soir < 0 || enCours}
+      onClick={() => {
+        if (!jeu || soir < 0 || enCours) return;
+        setEnCours(true);
+        // L'horloge au doigt, pas la fenêtre en cache (T134, `poserCeSoir`).
+        void poserCeSoir(base, jeu.catalogue, plat, ici)
+          .then((creneau) => aller({ ecran: "cuisiner", creneau }))
+          .finally(() => setEnCours(false));
+      }}
+    >
+      {LIBELLE_LANCER}
+    </button>
   );
 }

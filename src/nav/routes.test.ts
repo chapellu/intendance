@@ -10,6 +10,8 @@ const TOUTES: Route[] = [
   { ecran: "prevoir" },
   { ecran: "courses" },
   { ecran: "stock" },
+  { ecran: "repertoire" },
+  { ecran: "ce-soir" },
   { ecran: "fil" },
   { ecran: "fil", creneau: { jour: "2026-08-19", repas: "diner" } },
   { ecran: "poser", creneau: { jour: "2026-08-19", repas: "diner" } },
@@ -89,6 +91,10 @@ describe("les routes", () => {
   test("la sous-navigation cuisine sait qui lui appartient", () => {
     expect(dansCuisine({ ecran: "aujourdhui" })).toBe(true);
     expect(dansCuisine({ ecran: "stock" })).toBe(true);
+    // Le répertoire porte la coquille : on le lit assis, et sa sous-navigation
+    // est la seule porte qui y mène — T81.
+    expect(dansCuisine({ ecran: "repertoire" })).toBe(true);
+    expect(pleinEcran({ ecran: "repertoire" })).toBe(false);
     expect(dansCuisine({ ecran: "cockpit" })).toBe(false);
     expect(dansCuisine({ ecran: "jardin" })).toBe(false);
     // « En cuisine » sort de la coquille : on le lit à bout de bras.

@@ -1,0 +1,80 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-18 — aucune source
+# extérieure. Quatrième dîner du fond de roulement.
+#
+# LA ROUTINE D'AUJOURD'HUI, AVEC LES LÉGUMES DU CONGÉLATEUR. Les gnocchis
+# restent — c'est ce que le foyer fait déjà — mais avec les deux sachets que le
+# fond tient toujours, à la place des courgettes de `gnocchis-poelees`, qui
+# demandent un passage au primeur. Le seul dîner « express » des dix : tout se
+# fait au feu, en une demi-heure.
+
+recipe:
+  id: gnocchis-petits-pois-champignons
+  title: Gnocchis poêlés, petits pois et champignons
+  lang: fr
+  format: poelee
+  yields:
+    portions_eq: 4
+  time_min_total: 30
+  active_min: 28
+
+  apports:
+    proteine: fromage
+    feculent: pommes-de-terre
+    legumes: [champignon, legumineuse, allium]
+    profil: poele
+    origine: italien
+
+  ingredients:
+    - {id: gnocchis, name: gnocchis, qty: 1000, unit: g}
+    - {id: petits-pois-surgeles, name: petits pois surgelés, qty: 300, unit: g}
+    - {id: champignons-surgeles, name: champignons surgelés, qty: 300, unit: g}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 3, unit: c. à s.}
+    - {id: fromage-rape, name: fromage râpé, qty: 80, unit: g}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: champignons
+      action: "Faire revenir l'oignon émincé à l'huile, puis les champignons surgelés à feu vif jusqu'à ce que leur eau s'évapore"
+      astuce: "Jetés encore gelés dans une poêle très chaude, ils dorent au lieu de bouillir."
+      needs: [pan-fry]
+      uses: [oignon, champignons-surgeles]
+      time_min: 10
+    - id: petits-pois
+      action: "Ajouter les petits pois surgelés et les laisser cuire 5 minutes"
+      needs: [pan-fry]
+      uses: [petits-pois-surgeles]
+      time_min: 5
+    - id: gnocchis
+      action: "Réserver les légumes, puis dorer les gnocchis à l'huile restante, sans les cuire à l'eau avant"
+      astuce: "En une seule couche : entassés, ils fument au lieu de dorer. En deux fois si la sauteuse est pleine."
+      needs: [pan-fry]
+      uses: [gnocchis, huile-olive]
+      time_min: 10
+    - id: saler
+      action: "Remettre les légumes, saler et poivrer"
+      needs: [pan-fry]
+      uses: [sel, poivre]
+      time_min: 2
+      seasoning_gate: true
+    - id: servir
+      action: "Parsemer de fromage râpé au moment de servir"
+      needs: []
+      uses: [fromage-rape]
+      time_min: 1
+
+  baby_portion:
+    take: "quelques petits pois et champignons, avant salage"
+    prep: "écraser à la fourchette ; un gnocchi entier se coupe en quatre, il passe de travers sinon"
+    needs: []
+    depuis: [petits-pois]
+
+  emits:
+    - kind: reste-plat
+      type: gnocchis-poeles
+      qty_band: lunchbox
+      keeps: {frigo_days: 2}
+      note: "se réchauffe à la poêle, pas au micro-ondes, où les gnocchis ramollissent"
+
+  plan_b: []

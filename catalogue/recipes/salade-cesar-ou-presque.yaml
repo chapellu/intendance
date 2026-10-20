@@ -8,6 +8,7 @@
 recipe:
   id: salade-cesar-ou-presque
   title: Salade César (ou presque)
+  format: salade
   lang: fr
   source:
     author: Marie Chioca

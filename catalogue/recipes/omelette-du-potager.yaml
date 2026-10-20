@@ -5,6 +5,7 @@
 recipe:
   id: omelette-du-potager
   title: Omelette du potager
+  format: omelette
   lang: fr
   source:
     author: Marie Chioca

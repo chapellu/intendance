@@ -5,6 +5,7 @@
 recipe:
   id: lentilles-mijotees
   title: Lentilles vertes mijotées aux carottes
+  format: mijote
   lang: fr
   yields:
     portions_eq: 4          # adult-equivalents at base quantities
@@ -27,17 +28,20 @@ recipe:
 
   steps:
     - id: lancer-mijotage
+      uses: [lentilles-seches, oignon, laurier]
       action: "Rincer les lentilles, les couvrir de 3 fois leur volume d'eau froide avec l'oignon émincé et le laurier, porter à frémissement puis laisser mijoter à couvert"
       needs: [simmer-large]
       time_min: 30
       attended: false
     - id: carottes-vapeur
+      uses: [carottes]
       action: "Pendant le mijotage : carottes en rondelles, cuites à la vapeur au-dessus des lentilles"
       needs: [steam]
       time_min: 15
       parallel_with: lancer-mijotage
       kid: {age_min_months: 30, task: "mettre les rondelles de carottes dans le panier"}
     - id: assaisonner
+      uses: [sel]
       action: "Égoutter, retirer le laurier, saler"
       needs: []
       time_min: 2

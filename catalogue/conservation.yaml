@@ -153,3 +153,223 @@ methodes:
       verrou: kit
       kit_manquant: déshydrateur (ou four à très basse température)
       acte: "sécher une récolte d'herbes du jardin et la mettre en bocal"
+
+# ---------------------------------------------------------------------------
+# LA GARDE DES DENRÉES — combien de temps une MATIÈRE PREMIÈRE tient, rangée
+# comme il faut. Arrivé avec le fond de roulement, le 2026-10-18.
+#
+# LA MÊME HORLOGE, D'AUTRES LONGUEURS. Workspace#50 a tranché avec l'utilisateur
+# qu'il n'y a qu'une horloge pour tous les stocks — le frigo en jours, le
+# congélateur en mois, les conserves en années. Les `methodes` ci-dessus
+# disent ce qu'une TRANSFORMATION fait gagner à une sortie de cuisine ; les
+# familles ci-dessous disent ce que tient une denrée qu'on ne transforme pas,
+# seulement qu'on RANGE bien. Même `fenetre`, mêmes unités, même conversion
+# (`garde_manger.fenetre_jours`) : un deuxième modèle de durée de vie serait
+# le deuxième chiffre qui finit par contredire le premier.
+#
+# PAS DE CAS SPÉCIAL POUR L'OIGNON. Dit le 2026-10-18 : les pommes de terre,
+# les oignons, l'ail et les carottes « tiennent des semaines », les secs des
+# mois, les surgelés des mois, les conserves des années, et les œufs aussi se
+# gardent en stock. Tout ce qui tient des semaines au moins est du FOND — de
+# quoi porter un plancher (`fond: true`). Seul le frais vraiment fragile —
+# salade, courgettes, herbes, poisson, viande — reste dehors (`fond: false`),
+# et c'est pour lui que le CONSEIL compte le plus : c'est lui qu'un bon geste
+# fait passer de trois jours à trois mois.
+#
+# `conseil` EST UN GESTE, PAS UNE DÉFINITION. L'app le montre là où la denrée
+# est rangée (l'écran du placard, la ligne du fond) : il doit tenir en une
+# phrase qu'on lit debout devant le placard ouvert. Rédigé pour ce foyer — les
+# bocaux Le Parfait qu'il possède déjà, ses sacs congélation.
+#
+# `methode` nomme, quand il y en a une, la méthode ci-dessus qui RELANCE
+# l'horloge (congeler la viande en portions). Absente, la garde est un simple
+# rangement : rien ne se transforme, on évite seulement d'abîmer.
+#
+# ⚠ LES FENÊTRES SONT DES ORDRES DE GRANDEUR, COMME CELLES DU HAUT, et chaque
+# famille dit d'où vient la sienne (`source`). Une seule est réglementaire —
+# les œufs. Partout ailleurs la date imprimée sur l'emballage fait foi, et ces
+# nombres ne servent qu'à dire « ça se garde des semaines » plutôt que « ça se
+# garde trois jours ». À confronter aux fiches ANSES / DGCCRF avant de s'en
+# servir pour jeter quoi que ce soit.
+#
+# UN ID N'APPARTIENT QU'À UNE FAMILLE — le vérificateur le tient. Deux fenêtres
+# pour la même denrée, et l'écran choisirait au hasard laquelle afficher.
+# ---------------------------------------------------------------------------
+
+familles:
+  - id: sec
+    label: épicerie sèche
+    fond: true
+    espace: placard
+    rangement: en bocal hermétique, au sec et à l'abri de la lumière
+    fenetre: {unite: mois, valeur: 12}
+    source: >-
+      ordre de grandeur, non sourcé — légumineuses, riz et pâtes tiennent un an
+      et plus fermés ; les farines COMPLÈTES rancissent en 3 à 6 mois une fois
+      ouvertes (le germe garde ses huiles). La date du paquet fait foi.
+    conseil: >-
+      Une fois le paquet ouvert, tout passe en bocal Le Parfait étiqueté de sa
+      date : ni mites alimentaires ni humidité, et le niveau se voit d'un coup
+      d'œil.
+    ids: [farine, farine-complete, farine-epeautre, farine-petit-epeautre,
+          lentilles-corail, lentilles-seches, pois-casses, pois-chiches,
+          haricots-blancs, haricots-rouges, riz, riz-rond, pates, semoule,
+          flocons-avoine]
+
+  - id: emballe
+    label: frais emballé longue garde
+    fond: true
+    espace: placard
+    rangement: dans son emballage fermé, au placard
+    fenetre: {unite: semaines, valeur: 8}
+    source: >-
+      ordre de grandeur — les gnocchis sous atmosphère se gardent à température
+      ambiante jusqu'à leur date, souvent plusieurs mois. Ouverts, deux à trois
+      jours au frigo.
+    conseil: >-
+      Ne pas ouvrir le paquet d'avance : c'est l'emballage qui le conserve.
+      Entamé, le refermer d'une pince et le finir dans les trois jours.
+    ids: [gnocchis]
+
+  - id: legume-de-garde
+    label: légumes de garde
+    fond: true
+    espace: placard
+    rangement: au sombre, au frais et au sec, chacun dans son panier
+    fenetre: {unite: semaines, valeur: 6}
+    source: >-
+      ordre de grandeur, non sourcé — un à deux mois pour les pommes de terre
+      et les oignons dans un endroit frais et sombre, davantage pour l'ail et
+      une courge entière.
+    conseil: >-
+      Pommes de terre d'un côté, oignons et ail de l'autre : les alliacées font
+      germer les tubercules. En panier ou en sac papier, jamais en sac
+      plastique fermé — et loin du sous-évier, trop humide.
+    ids: [pomme-de-terre, oignon, oignon-rouge, ail, echalote, courge, potimarron]
+
+  - id: legume-du-bac
+    label: légumes et fruits du bac
+    fond: true
+    espace: frigo
+    rangement: au bac à légumes du frigo, à l'air
+    fenetre: {unite: semaines, valeur: 3}
+    source: >-
+      ordre de grandeur, non sourcé — deux à quatre semaines au bac pour des
+      carottes sans fanes, un céleri-rave entier ou des pommes.
+    conseil: >-
+      Couper les fanes des carottes dès le retour des courses (elles tirent
+      l'eau de la racine), et laisser le bac respirer : un sac fermé fait
+      moisir.
+    ids: [carottes, celeri-rave, navets, pommes, citron]
+
+  - id: surgele
+    label: surgelés du commerce
+    fond: true
+    espace: congelo
+    rangement: au congélateur, sachet refermé
+    fenetre: {unite: mois, valeur: 8}
+    source: >-
+      ordre de grandeur — la date d'un sachet surgelé est souvent à un ou deux
+      ans ; une fois ouvert, la qualité baisse en quelques mois (le givre
+      dessèche). Pas un risque sanitaire tant que la chaîne du froid tient.
+    conseil: >-
+      Chasser l'air et refermer d'une pince à chaque usage : c'est le givre,
+      pas le temps, qui abîme. Un sachet décongelé ne repart pas au
+      congélateur.
+    ids: [epinards-surgeles, petits-pois-surgeles, haricots-verts-surgeles,
+          champignons-surgeles, legumes-surgeles]
+
+  - id: conserve
+    label: conserves
+    fond: true
+    espace: placard
+    rangement: au placard, boîtes fermées
+    fenetre: {unite: ans, valeur: 2}
+    source: >-
+      ordre de grandeur — la date d'une conserve va de deux à cinq ans selon le
+      produit ; lire la boîte. Une boîte bombée ou rouillée se jette.
+    conseil: >-
+      Une boîte entamée ne reste jamais dans le métal : transvaser dans une
+      boîte hermétique, au frigo, et finir dans les trois jours.
+    ids: [tomates-pelees, concentre-tomate, lait-coco, thon-boite,
+          maquereaux-boite, sardines-boite, mais]
+
+  - id: oeufs
+    label: œufs
+    fond: true
+    espace: frigo
+    rangement: dans leur boîte, au frigo ou au frais
+    fenetre: {unite: jours, valeur: 28}
+    source: >-
+      RÉGLEMENTAIRE — la date de durabilité minimale d'un œuf est fixée à
+      28 jours après la ponte (règlement CE n° 589/2008). La date de la boîte
+      fait foi.
+    conseil: >-
+      Les garder dans leur boîte, pointe en bas, sans les laver : la coquille
+      est poreuse, et la boîte la protège des odeurs du frigo.
+    ids: [oeufs]
+
+  - id: laitier
+    label: frais laitier
+    fond: true
+    espace: frigo
+    rangement: au frigo, fermé
+    fenetre: {unite: semaines, valeur: 3}
+    source: >-
+      ordre de grandeur — yaourts et fromage râpé fermés tiennent jusqu'à leur
+      date, souvent trois à quatre semaines. Ouvert, le fromage râpé tient
+      quelques jours.
+    conseil: >-
+      Un sachet de fromage râpé entamé se congèle tel quel et s'emploie sans
+      décongeler, directement sur le gratin.
+    ids: [fromage-rape, yaourt-nature]
+
+  # ── Le frais fragile : PAS du fond, et c'est là que le geste compte ──────
+
+  - id: viande-poisson
+    label: viande et poisson frais
+    fond: false
+    espace: frigo
+    rangement: au plus froid du frigo, dans son emballage
+    methode: congeler
+    fenetre: {unite: jours, valeur: 2}
+    source: >-
+      ordre de grandeur — un à deux jours pour la viande hachée et le poisson,
+      deux à trois pour une pièce entière. La date limite de l'étiquette fait
+      foi.
+    conseil: >-
+      Achetée en quantité, la partager dès le retour en portions d'un repas, à
+      plat dans des sacs congélation, air chassé, datés au feutre : à plat,
+      elle décongèle en une nuit au frigo.
+    ids: [boeuf-hache, poulet, poulet-filets, roti-porc, saumon, cabillaud]
+
+  - id: legume-fragile
+    label: légumes fragiles
+    fond: false
+    espace: frigo
+    rangement: au bac à légumes, à cuisiner dans la semaine
+    methode: congeler
+    fenetre: {unite: jours, valeur: 5}
+    source: >-
+      ordre de grandeur, non sourcé — trois jours pour une salade, une semaine
+      pour un poireau ou un brocoli.
+    conseil: >-
+      Pour en congeler : blanchir deux à trois minutes à l'eau bouillante,
+      plonger dans l'eau glacée, bien sécher, puis à plat en sachet. Sans
+      blanchiment, ils perdent couleur et goût en quelques semaines.
+    ids: [courgettes, salade-verte, tomates, poivron, aubergine, brocoli,
+          pousses-epinards, petits-pois, champignons-paris, poireau,
+          vert-de-blette, cebette, chou-frise]
+
+  - id: herbe
+    label: herbes fraîches
+    fond: false
+    espace: frigo
+    rangement: en bouquet dans un verre d'eau, ou dans un torchon humide au frigo
+    methode: congeler
+    fenetre: {unite: jours, valeur: 5}
+    source: ordre de grandeur, non sourcé.
+    conseil: >-
+      Le reste du bouquet se hache dans un bac à glaçons, se couvre d'huile
+      d'olive et se congèle : un cube suffit à finir une soupe ou une poêlée.
+    ids: [persil, ciboulette, basilic, menthe, thym-frais, herbes-fraiches]
