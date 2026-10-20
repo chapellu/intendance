@@ -72,8 +72,15 @@ export function RevueDuTicket({
     let vivant = true;
     setEtape({ sorte: "lecture", progres: 0 });
     (async () => {
-      const texte = await lireImage(image, (p) => vivant && setEtape({ sorte: "lecture", progres: p }));
-      const lu = lireTicket(texte);
+      const suivre = (p: number) => vivant && setEtape({ sorte: "lecture", progres: p });
+      let lu = lireTicket(await lireImage(image, suivre));
+      // L'EXIF PEUT MENTIR : orientation=6 sur des pixels déjà droits. Une
+      // lecture qui ne trouve aucune ligne est relue d'un quart de tour, dans
+      // un sens puis dans l'autre.
+      for (const tour of [-90, 90] as const) {
+        if (lu.lignes.length || !vivant) break;
+        lu = lireTicket(await lireImage(image, suivre, tour));
+      }
       const appris = await lireAppris(base);
       if (!vivant) return;
       if (!lu.lignes.length) {
@@ -208,7 +215,9 @@ export function RevueDuTicket({
                     {r.parUnite.unit}
                   </>
                 ) : (
-                  "pièce" + (r.unites > 1 ? "s" : "")
+                  // Vendu au poids sans poids imprimé (Carrefour) : on le dit
+                  // plutôt que de compter un poireau comme « 1 pièce ».
+                  /VRAC|\bKG\b/.test(r.libelle) ? "· poids non imprimé" : "pièce" + (r.unites > 1 ? "s" : "")
                 )}
               </span>
             ) : (

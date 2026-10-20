@@ -7,7 +7,15 @@
 // n'est ni stockée ni envoyée, et le texte brut — où figure le numéro de carte
 // de fidélité — ne sort pas de cette fonction autrement que vers `lireTicket`.
 
-export async function lireImage(image: Blob, progres: (p: number) => void): Promise<string> {
+import { preparerImage, type QuartDeTour } from "./preparer";
+
+export async function lireImage(
+  image: Blob,
+  progres: (p: number) => void,
+  tour: QuartDeTour = 0,
+): Promise<string> {
+  // Réduite à ~1 800 px, en gris contrasté, orientée : voir `preparer.ts`.
+  const preparee = await preparerImage(image, tour);
   const { createWorker, PSM } = await import("tesseract.js");
   const worker = await createWorker("fra", 1, {
     workerPath: "/ocr/worker.min.js",
@@ -29,7 +37,7 @@ export async function lireImage(image: Blob, progres: (p: number) => void): Prom
       tessedit_pageseg_mode: PSM.SINGLE_COLUMN,
       preserve_interword_spaces: "1",
     });
-    const { data } = await worker.recognize(image);
+    const { data } = await worker.recognize(preparee);
     return data.text;
   } finally {
     await worker.terminate();

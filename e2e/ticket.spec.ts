@@ -37,6 +37,7 @@ const CORPS = [
   "CARREFOUR",
   "FRANCHEVILLE",
   col("4 POIREAU VRAC", "4,66"),
+  "  0,932 kg x 5,00 EUR/kg",
   col("4 CAROTTES VRAC", "1,50"),
   "2 ARTICLES",
   col("TOTAL", "6,16"),
@@ -59,8 +60,9 @@ test("un ticket photographié arrive à la revue, puis rentre au stock", async (
   await expect(page.getByTestId("ticket-rangee")).toHaveCount(2);
   await expect(page.getByTestId("ticket-total")).toContainText("comme le ticket");
   const poireau = page.getByTestId("ticket-rangee").filter({ hasText: "POIREAU VRAC" });
-  await poireau.getByRole("button", { name: /^poireau/ }).first().dispatchEvent("click");
-  await expect(poireau.locator(".tk-puce.on")).toHaveCount(1);
+  // Présélectionné (le premier l'emporte nettement), et pesé : 932 g.
+  await expect(poireau.locator(".tk-puce.on")).toHaveText(/poireau/);
+  await expect(poireau.getByLabel("Poids par unité")).toHaveValue("932");
   await page.screenshot({ path: "/tmp/ticket-revue.png", fullPage: true });
 
   await expect(page.getByTestId("ticket-rentrer")).toBeEnabled();
@@ -89,4 +91,37 @@ test("une photo sans date réclame le haut ou le bas du ticket, ou la date à la
   const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
   await page.getByTestId("ticket-date").fill(iso);
   await expect(page.getByTestId("ticket-rentrer")).toBeEnabled();
+});
+
+/** Un JPEG dont l'EXIF dit « tourné de 90° » (orientation=6) sur des pixels
+ *  déjà droits — le mensonge relevé sur les photos de livres. */
+async function jpegQuiMent(page: Page, lignes: string[]): Promise<Buffer> {
+  const png = await photoDuTicket(page, lignes);
+  const b64 = await page.evaluate(async (src) => {
+    const img = new Image();
+    img.src = `data:image/png;base64,${src}`;
+    await img.decode();
+    const c = document.createElement("canvas");
+    c.width = img.width;
+    c.height = img.height;
+    c.getContext("2d")!.drawImage(img, 0, 0);
+    const blob: Blob = await new Promise((r) => c.toBlob((b) => r(b!), "image/jpeg", 0.92));
+    return btoa(String.fromCharCode(...new Uint8Array(await blob.arrayBuffer())));
+  }, png.toString("base64"));
+  const jpeg = Buffer.from(b64, "base64");
+  const tiff = Buffer.from([0x4d, 0x4d, 0, 0x2a, 0, 0, 0, 8, 0, 1, 0x01, 0x12, 0, 3, 0, 0, 0, 1, 0, 6, 0, 0, 0, 0, 0, 0]);
+  const charge = Buffer.concat([Buffer.from("Exif\0\0", "binary"), tiff]);
+  const app1 = Buffer.concat([Buffer.from([0xff, 0xe1, (charge.length + 2) >> 8, (charge.length + 2) & 0xff]), charge]);
+  return Buffer.concat([jpeg.subarray(0, 2), app1, jpeg.subarray(2)]);
+}
+
+test("un EXIF qui ment (orientation=6 sur une photo droite) n'empêche pas la lecture", async ({ page }) => {
+  test.setTimeout(120_000);
+  await page.goto("/#/cuisine/courses");
+  await attendreLApp(page);
+  const photo = await jpegQuiMent(page, [...CORPS, `${avantHier()} 16:28`]);
+  await page.getByTestId("ticket-photo").setInputFiles({ name: "ticket.jpg", mimeType: "image/jpeg", buffer: photo });
+  await expect(page.getByTestId("ticket-revue")).toBeVisible({ timeout: 90_000 });
+  await expect(page.getByTestId("ticket-rangee")).toHaveCount(2);
+  await expect(page.getByTestId("ticket-total")).toContainText("comme le ticket");
 });
