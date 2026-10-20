@@ -160,9 +160,16 @@ function reponse(nomQ) {
   if (!r || r.q <= 0) return "Non";
   return r.q < 0.3 * (r.achete || 1) ? "Il en reste peu" : "Oui";
 }
+// T136 — LE FRAIS NE POURRIT PAS TOUT EN SEPT JOURS. Une boîte d'œufs tient
+// 28 jours, yaourts et fromage râpé fermés trois semaines (`conservation.yaml`,
+// familles `fond: true`). À sept jours pour tout le rayon crèmerie, le grand
+// livre vidait ces trois denrées sans une cuisson : l'année n° 5 a compté 275
+// « manques réels » que l'app ne pouvait pas voir, faute d'un geste à rejouer.
+const GARDE_JOURS = new Map();
+for (const f of cat.garde ?? []) if (f.fond) for (const id of f.ids) GARDE_JOURS.set(id, f.fenetreJours);
 function pourrirLeFrais(j) {
   for (const [id, r] of Object.entries(etat.reel)) {
-    if (r.frais && r.q > 0 && (new Date(j) - new Date(r.le)) / 864e5 > 7) {
+    if (r.frais && r.q > 0 && (new Date(j) - new Date(r.le)) / 864e5 > (GARDE_JOURS.get(id) ?? 7)) {
       etat.compte.gaspilleG += r.q; r.q = 0;
     }
   }

@@ -588,8 +588,14 @@ export function retirer(
       //   — `entame` : le paquet ouvert se finit — une unité part, la suivante
       //     est scellée ;
       //   — `conserve`, `bocal` : la boîte se vide d'un coup (même règle que
-      //     T29) ; `frais` n'attend pas un second plat.
-      if (lot.etat === "sec") {
+      //     T29) ; `frais` n'attend pas un second plat…
+      //   — T136 : … SAUF UN FRAIS CONSTATÉ À L'UNITÉ (`unites: 1`, sans
+      //     poids). Le relevé y dit « il y en a », pas « une pièce » : le sac
+      //     de pommes de terre du sous-évier disparaissait sous une omelette de
+      //     trois pommes de terre, et le parcours `stock-descend` ne trouvait
+      //     plus une seule ligne « estimé ». Il s'entame, comme un paquet sec,
+      //     et c'est le plat suivant qui le finit.
+      if (lot.etat === "sec" || (lot.etat === "frais" && lot.unites === 1)) {
         lot.etat = "entame";
         effet ??= "etat";
       } else {
