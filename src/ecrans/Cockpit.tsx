@@ -14,7 +14,7 @@
 // Port de `apps/proto-shell/comptoir.js` (`ecranCockpit`).
 
 import { useState } from "react";
-import { base, jourISO, retirerLots } from "../db";
+import { base, jourISO, poserCeSoir, retirerLots } from "../db";
 import { useCatalogue, useCourses, useCuisines, useSemaine } from "../db/hooks";
 import { cleGeste, poserReglage, useDrapeau } from "../db/reglages";
 import { soirDe } from "../model/pause";
@@ -244,7 +244,7 @@ function Facette({
  */
 function Lancer({ plat, ici }: { plat: string; ici?: readonly string[] | undefined }) {
   const { catalogue } = useCatalogue();
-  const { jeu, poserPlat } = useSemaine(catalogue);
+  const { jeu } = useSemaine(catalogue);
   const [enCours, setEnCours] = useState(false);
   const soir = jeu ? soirDe(jeu) : -1;
   return (
@@ -255,9 +255,9 @@ function Lancer({ plat, ici }: { plat: string; ici?: readonly string[] | undefin
       onClick={() => {
         if (!jeu || soir < 0 || enCours) return;
         setEnCours(true);
-        const jour = jourISO(jeu.jours[0]!.date);
-        void poserPlat(soir, plat, ici)
-          .then(() => aller({ ecran: "cuisiner", creneau: { jour, repas: "diner" } }))
+        // L'horloge au doigt, pas la fenêtre en cache (T134, `poserCeSoir`).
+        void poserCeSoir(base, jeu.catalogue, plat, ici)
+          .then((creneau) => aller({ ecran: "cuisiner", creneau }))
           .finally(() => setEnCours(false));
       }}
     >

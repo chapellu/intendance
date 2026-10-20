@@ -536,11 +536,23 @@ export function retirer(
     // ── mode non chiffré : on avance l'état, on n'invente rien ──────────────
     if (pu == null) {
       if (lot.unites <= 0) continue;
-      if (lot.etat === "sec" || lot.etat === "conserve" || lot.etat === "bocal") {
+      // T134 — MAIS UNE UNITÉ FINIT PAR SE VIDER. Avant, le mode non chiffré ne
+      // retirait JAMAIS rien : un sachet de lentilles rentré par la liste
+      // (`unité`, sans poids) survivait à 75 hachis, le plancher ne voyait
+      // aucune baisse et la liste du fond restait vide toute l'année. Toujours
+      // sans un gramme : on compte des UNITÉS, ce qu'un œil vérifie.
+      //   — `sec` : le paquet s'ouvre, rien ne part (il sert encore) ;
+      //   — `entame` : le paquet ouvert se finit — une unité part, la suivante
+      //     est scellée ;
+      //   — `conserve`, `bocal` : la boîte se vide d'un coup (même règle que
+      //     T29) ; `frais` n'attend pas un second plat.
+      if (lot.etat === "sec") {
         lot.etat = "entame";
         effet ??= "etat";
       } else {
-        effet ??= "etat";
+        lot.unites -= 1;
+        if (lot.etat === "entame" && lot.unites > 0) lot.etat = "sec";
+        effet ??= "unite";
       }
       // Un lot non chiffré ne peut pas dire combien il a donné : la demande est
       // considérée servie, et le doute qui en résulte est exactement ce que la
@@ -743,6 +755,12 @@ export function rejouer(
         }
         retraits.push(retirer(l, id, d.grammes));
         suiviDe(id).depuisVu += 1;
+        // T134 — UN INGRÉDIENT ÉPUISÉ SORT DE `parIngredient`, comme après un
+        // relevé ou une correction à zéro. Sinon sa clé vide y restait, et
+        // `hydraterGardeManger` (qui teste `has`) le gardait « ici » : « Ce
+        // soir » disait « rien à acheter » sur des lentilles finies. S'il a
+        // été vu, il passe dans `vus` (connu, à zéro).
+        if (l.length === 0) lots.delete(id);
       }
       continue;
     }

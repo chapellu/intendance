@@ -110,12 +110,35 @@ async function ouvrirJour(j, heure = "07:30") {
 }
 
 // ───────────────────────────────────────────────────────────── le monde réel
+// T134 — UNE LIGNE « POUR LE FOND » SE COMPTE EN UNITÉS D'ACHAT (« 2 unités »),
+// et le grand livre en unités de recette. Sans conversion, deux sachets de
+// lentilles valaient 2 g et le premier hachis les vidait. Une unité du fond =
+// son poids quand `fond.yaml` le dit (« sachet de 500 g »), son compte (« boîte
+// de 6 »), une recette pour une boîte, une brique ou un tube, deux sinon.
+const UNITE_RECETTE = new Map(), QTE_RECETTE = new Map();
+for (const p of cat.plats) for (const i of p.ingredients) {
+  if (i.base || i.assaisonnement) continue;
+  const id = cat.rayons.aliases?.[i.id] ?? i.id;
+  if (!UNITE_RECETTE.has(id)) UNITE_RECETTE.set(id, i.unit);
+  QTE_RECETTE.set(id, Math.max(QTE_RECETTE.get(id) ?? 0, i.qty ?? 0));
+}
+const UNITE_FOND = new Map((cat.fond?.denrees ?? []).map((d) => [d.ingredient, d.unite ?? ""]));
+function parUniteDuFond(id) {
+  const u = UNITE_FOND.get(id); if (u === undefined) return null;
+  const typ = QTE_RECETTE.get(id) || 1;
+  const enMasse = /^(g|ml)$/.test(UNITE_RECETTE.get(id) ?? "");
+  const g = /(\d+(?:[.,]\d+)?)\s*(kg|g)\b/.exec(u);
+  if (g) { const grammes = parseFloat(g[1].replace(",", ".")) * (g[2] === "kg" ? 1000 : 1); return enMasse ? grammes : Math.max(1, Math.round(grammes / 150)); }
+  const n = /de (\d+)\b/.exec(u); if (n) return +n[1];
+  return /bo[iî]te|brique|bocal|tube/.test(u) ? typ : 2 * typ;
+}
 function acheter(nom, q, j) {
   const id = idParNom.get(norm(nom)) ?? norm(nom);
   const m = /([\d.,]+)\s*(kg|g|l|cl|ml)?/i.exec(q ?? "");
   let qte = m ? parseFloat(m[1].replace(",", ".")) : 1;
   const u = (m?.[2] ?? "u").toLowerCase();
   if (u === "kg" || u === "l") qte *= 1000; if (u === "cl") qte *= 10;
+  if (/unit[ée]/.test(q ?? "") && parUniteDuFond(id) != null) qte *= parUniteDuFond(id);
   const r = etat.reel[id] ?? { q: 0, achete: 0 };
   r.q += qte; r.achete = qte; r.le = j; r.frais = FRAIS.test(rayonDe.get(id) ?? "");
   etat.reel[id] = r;
@@ -686,6 +709,24 @@ function juger(c, j, ev) {
   if (![3, 6].includes(new Date(j).getDay()) && c.achats.n > 1) pourquoi.push(`${c.achats.n} articles à acheter un jour sans courses`);
   if (/prêt vers/.test(c.heure)) pourquoi.push("pas prêt pour 18 h en lançant à 15 h");
   if (four && p && (p.vaisselle?.id ?? "").match(/plat|moule|four|cocotte/)) pourquoi.push("demande le four");
+  // T134 — LE FOYER NE CUISINE PAS CE QU'IL N'A PAS. Un jour sans courses, au
+  // moment de lancer, on ouvre le placard : un ingrédient que le grand livre
+  // tient à zéro (et que la carte ne disait pas manquer, donc qu'on n'ira pas
+  // chercher) se découvre — noté, et on prend la carte suivante. Un id jamais
+  // acheté n'est pas au grand livre : on n'en sait rien, on ne l'invente pas.
+  if (!pourquoi.length && p && ![3, 6].includes(new Date(j).getDay())) {
+    // La carte dit les noms COURTS (« il manque : lentilles ») : un préfixe suffit.
+    const dits = c.achats.noms.map(norm);
+    const dit = (i) => dits.some((d) => norm(i.nom).startsWith(d) || norm(i.id).startsWith(d) || d.startsWith(norm(i.id)));
+    const vides = p.ingredients.filter((i) => !i.base && !i.assaisonnement && !toujours.has(i.id) && !dit(i)
+      && etat.reel[i.id] && etat.reel[i.id].q <= 0);
+    if (vides.length) {
+      const noms = [...new Set(vides.map((i) => i.id))];
+      pourquoi.push(`manque réel : ${noms.join(", ")}`);
+      note(j, "manque réel", `${c.titre} : ${noms.join(", ")} à zéro dans la cuisine, alors que la carte disait « ${c.achats.n ? c.achats.noms.join(", ") : "rien à acheter"} »`);
+      etat.compte.manquesReels = (etat.compte.manquesReels ?? 0) + 1;
+    }
+  }
   return pourquoi;
 }
 async function lireCartesDuSoir() {
@@ -823,7 +864,8 @@ async function journee2(idx) {
   }
 
   if (idx === 0) await poserFond(j);
-  // Les jours de courses, le fond se recharge le matin, avant toute décision.
+  // Les jours de courses, les courses du matin, avant toute décision. LE FOND NE SE
+  // RECHARGE QUE PAR LA LISTE DE L'APP (T134) : aucun réassort côté harnais.
   if (!absent && [3, 6].includes(dow)) { await page.clock.setFixedTime(new Date(`${j}T10:00:00`)); await courses(j, ev, stats); stats.coursesDuMatin = stats.articles; }
 
   if (absent) { stats.absent = true; }

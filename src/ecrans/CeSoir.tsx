@@ -11,7 +11,7 @@
 // il passe second : la porte de la facette s'ouvre sur ce soir.
 
 import { useMemo, useState } from "react";
-import { jourISO } from "../db";
+import { base, jourISO, poserCeSoir } from "../db";
 import { useCatalogue, useJournal, useSavoir, useSemaine } from "../db/hooks";
 import { useSortisLaVeille } from "../db/reglages";
 import { joue, type Jeu } from "../model/jeu";
@@ -62,7 +62,7 @@ export interface CeSoirVivant {
  */
 export function useCeSoir(): CeSoirVivant | null {
   const { catalogue } = useCatalogue();
-  const { jeu, poserPlat, cuisines } = useSemaine(catalogue);
+  const { jeu, cuisines } = useSemaine(catalogue);
   const proposition = useProposition(jeu);
 
   if (!jeu || !proposition || !cuisines || proposition.soir < 0) return null;
@@ -80,8 +80,10 @@ export function useCeSoir(): CeSoirVivant | null {
       // CE QUE LA CARTE DISAIT LÀ PART AVEC LE PLAT : la liste de courses ne
       // demandera que ce qu'elle disait manquer (`DecisionCreneau.ici`).
       const c = [...proposition.cartes, ...proposition.plus].find((x) => x.plat.id === plat);
-      await poserPlat(proposition.soir, plat, c?.ici);
-      aller({ ecran: "cuisiner", creneau });
+      // CE SOIR SE LIT SUR L'HORLOGE AU DOIGT, pas sur la fenêtre en cache
+      // (T134) : un onglet resté ouvert trois jours posait sur avant-hier.
+      const ceSoir = await poserCeSoir(base, jeu.catalogue, plat, c?.ici);
+      aller({ ecran: "cuisiner", creneau: ceSoir });
     },
   };
 }
