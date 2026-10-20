@@ -194,6 +194,15 @@ methodes:
 #
 # UN ID N'APPARTIENT QU'À UNE FAMILLE — le vérificateur le tient. Deux fenêtres
 # pour la même denrée, et l'écran choisirait au hasard laquelle afficher.
+#
+# `entame_se_finit: true` — T140, dit le 2026-10-20 : « je préfère utiliser la
+# boîte entière plutôt que les trois quarts et gérer un petit reste ». Une
+# boîte, une brique, un bocal, un paquet sous atmosphère ouverts ne se gardent
+# pas : quand la recette en demande une bonne part (un tiers, voir
+# `src/model/paquet.ts`), le plat la prend ENTIÈRE — au rejeu, à la liste, et
+# la fiche le dit. Il faut aussi que `fond.yaml:unite` dise le poids de la
+# boîte. ABSENT ailleurs, et c'est voulu : le sec se garde ouvert ; le fromage
+# râpé entamé se congèle (son conseil) et les yaourts se comptent au pot.
 # ---------------------------------------------------------------------------
 
 familles:
@@ -219,6 +228,7 @@ familles:
   - id: emballe
     label: frais emballé longue garde
     fond: true
+    entame_se_finit: true
     espace: placard
     rangement: dans son emballage fermé, au placard
     fenetre: {unite: semaines, valeur: 8}
@@ -282,6 +292,7 @@ familles:
   - id: conserve
     label: conserves
     fond: true
+    entame_se_finit: true
     espace: placard
     rangement: au placard, boîtes fermées
     fenetre: {unite: ans, valeur: 2}

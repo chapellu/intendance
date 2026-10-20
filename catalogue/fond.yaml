@@ -57,12 +57,16 @@ denrees:
   - {ingredient: champignons-surgeles, minimum: 1, unite: sachet}
   - {ingredient: legumes-surgeles, minimum: 1, unite: sachet de poêlée}
   # ── Conserves et bocaux
-  - {ingredient: tomates-pelees, minimum: 3, unite: boîte}
+  # T140 : le poids d'une boîte, pour que le plat la prenne ENTIÈRE (voir
+  # `conservation.yaml:entame_se_finit`). Maïs, thon, maquereaux : les boîtes
+  # du relevé du 26/08 ; tomates : le format de 400 g que le corpus appelle
+  # quinze fois. À reporter au brouillon. La brique de coco attend son volume.
+  - {ingredient: tomates-pelees, minimum: 3, unite: boîte de 400 g}
   - {ingredient: concentre-tomate, minimum: 1, unite: tube}
   - {ingredient: lait-coco, minimum: 2, unite: brique}
-  - {ingredient: thon-boite, minimum: 2, unite: boîte}
-  - {ingredient: maquereaux-boite, minimum: 1, unite: boîte}
-  - {ingredient: mais, minimum: 1, unite: boîte}
+  - {ingredient: thon-boite, minimum: 2, unite: boîte de 140 g}
+  - {ingredient: maquereaux-boite, minimum: 1, unite: boîte de 169 g}
+  - {ingredient: mais, minimum: 1, unite: boîte de 285 g}
   # ── Frais de base — rachetés le samedi, et qui se gardent des semaines
   - {ingredient: oignon, minimum: 1, unite: filet de 1 kg}
   - {ingredient: ail, minimum: 1, unite: tête}

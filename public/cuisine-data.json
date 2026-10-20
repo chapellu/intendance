@@ -46292,6 +46292,7 @@
    "id": "sec",
    "label": "épicerie sèche",
    "fond": true,
+   "entameSeFinit": false,
    "espace": "placard",
    "rangement": "en bocal hermétique, au sec et à l'abri de la lumière",
    "methode": null,
@@ -46321,6 +46322,7 @@
    "id": "emballe",
    "label": "frais emballé longue garde",
    "fond": true,
+   "entameSeFinit": true,
    "espace": "placard",
    "rangement": "dans son emballage fermé, au placard",
    "methode": null,
@@ -46336,6 +46338,7 @@
    "id": "legume-de-garde",
    "label": "légumes de garde",
    "fond": true,
+   "entameSeFinit": false,
    "espace": "placard",
    "rangement": "au sombre, au frais et au sec, chacun dans son panier",
    "methode": null,
@@ -46357,6 +46360,7 @@
    "id": "legume-du-bac",
    "label": "légumes et fruits du bac",
    "fond": true,
+   "entameSeFinit": false,
    "espace": "frigo",
    "rangement": "au bac à légumes du frigo, à l'air",
    "methode": null,
@@ -46376,6 +46380,7 @@
    "id": "surgele",
    "label": "surgelés du commerce",
    "fond": true,
+   "entameSeFinit": false,
    "espace": "congelo",
    "rangement": "au congélateur, sachet refermé",
    "methode": null,
@@ -46395,6 +46400,7 @@
    "id": "conserve",
    "label": "conserves",
    "fond": true,
+   "entameSeFinit": true,
    "espace": "placard",
    "rangement": "au placard, boîtes fermées",
    "methode": null,
@@ -46416,6 +46422,7 @@
    "id": "oeufs",
    "label": "œufs",
    "fond": true,
+   "entameSeFinit": false,
    "espace": "frigo",
    "rangement": "dans leur boîte, au frigo ou au frais",
    "methode": null,
@@ -46431,6 +46438,7 @@
    "id": "laitier",
    "label": "frais laitier",
    "fond": true,
+   "entameSeFinit": false,
    "espace": "frigo",
    "rangement": "au frigo, fermé",
    "methode": null,
@@ -46447,6 +46455,7 @@
    "id": "viande-poisson",
    "label": "viande et poisson frais",
    "fond": false,
+   "entameSeFinit": false,
    "espace": "frigo",
    "rangement": "au plus froid du frigo, dans son emballage",
    "methode": "congeler",
@@ -46467,6 +46476,7 @@
    "id": "legume-fragile",
    "label": "légumes fragiles",
    "fond": false,
+   "entameSeFinit": false,
    "espace": "frigo",
    "rangement": "au bac à légumes, à cuisiner dans la semaine",
    "methode": "congeler",
@@ -46494,6 +46504,7 @@
    "id": "herbe",
    "label": "herbes fraîches",
    "fond": false,
+   "entameSeFinit": false,
    "espace": "frigo",
    "rangement": "en bouquet dans un verre d'eau, ou dans un torchon humide au frigo",
    "methode": "congeler",
@@ -46602,7 +46613,7 @@
    {
     "ingredient": "tomates-pelees",
     "minimum": 3,
-    "unite": "boîte"
+    "unite": "boîte de 400 g"
    },
    {
     "ingredient": "concentre-tomate",
@@ -46617,17 +46628,17 @@
    {
     "ingredient": "thon-boite",
     "minimum": 2,
-    "unite": "boîte"
+    "unite": "boîte de 140 g"
    },
    {
     "ingredient": "maquereaux-boite",
     "minimum": 1,
-    "unite": "boîte"
+    "unite": "boîte de 169 g"
    },
    {
     "ingredient": "mais",
     "minimum": 1,
-    "unite": "boîte"
+    "unite": "boîte de 285 g"
    },
    {
     "ingredient": "oignon",

@@ -27,10 +27,10 @@ import {
   useObjet,
 } from "../db/reglages";
 import { base } from "../db/schema";
-import { echelleTexte, facteurAffiche, type Calcul } from "../model/calcul";
+import { facteurAffiche, quantiteACuire, type Calcul } from "../model/calcul";
 import { joue, type Jeu } from "../model/jeu";
 import { heureDe } from "../model/heures";
-import type { Etape, Foyer, Plat } from "../model/types";
+import type { Catalogue, Etape, Foyer, Plat } from "../model/types";
 import { ENTREE_CUISINE, type CleCreneau } from "../nav/routes";
 import { aller } from "../nav/useRoute";
 import { armer, arreter, demanderBandeau, desarmer, plateforme, promesse } from "../pwa/alarme";
@@ -345,6 +345,7 @@ function Fiche({
       <Guide
         p={p}
         foyer={jeu.catalogue.foyer}
+        catalogue={jeu.catalogue}
         steps={steps}
         etape={etape}
         repas={creneau.repas}
@@ -712,7 +713,7 @@ function Ingredients({
           return (
             <div key={x.ref} className="l">
               <span className="nom">{x.nom}</span>
-              <span className="q">{echelleTexte(x, f)}</span>
+              <span className="q">{quantiteACuire(jeu.catalogue, x, f)}</span>
               <span className={`p ${prov.acheter ? "acheter" : ""}`}>{prov.label}</span>
             </div>
           );
@@ -814,6 +815,7 @@ function Deroule({
 function Guide({
   p,
   foyer,
+  catalogue,
   steps,
   etape,
   repas,
@@ -825,6 +827,8 @@ function Guide({
 }: {
   p: Plat;
   foyer: Foyer;
+  /** T140 : pour dire « 1 boîte entière » à l'étape comme dans la liste. */
+  catalogue: Catalogue;
   steps: Etape[];
   etape: number;
   repas: string;
@@ -865,7 +869,7 @@ function Guide({
   const avecMinuteur = e.minutes > 0 && minuteurUtile(e);
   const m = minuteur(etat ?? null, e.minutes, maintenant);
   const dernier = etape === steps.length - 1;
-  const quantites = quantitesDeLEtape(p, etape, f);
+  const quantites = quantitesDeLEtape(p, etape, f, catalogue);
 
   const bouger = (d: number) => {
     if (d > 0 && dernier) {

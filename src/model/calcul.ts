@@ -13,6 +13,7 @@
 
 import { bandRepas, Depot, horlogesDu, qteDe, type LigneDepot, type Prise } from "./depot";
 import { dateDe, dejaLaPour, joue, type Jeu } from "./jeu";
+import { boitesDeLaLigne, boitesDuCatalogue, phraseBoites, type Boite } from "./paquet";
 import type {
   Accept, Accompagnement, Catalogue, CauseLimite, Espace, Ingredient, Plat, Provenance,
 } from "./types";
@@ -211,6 +212,9 @@ export interface LignePanier {
   unit: string;
   /** Combien de plats la réclament. */
   n: number;
+  /** T140 : la boîte de l'ingrédient, quand un plat la prend entière — la
+   *  ligne s'achète alors en boîtes (`quantiteDeLArticle`, `entrerAuStock`). */
+  boite?: Boite;
 }
 
 /** Le bilan d'un espace : ce qu'il portait, ce que la semaine y met, ce qu'elle
@@ -287,6 +291,7 @@ export function calculer(
   );
 
   const panier = new Map<string, LignePanier>();
+  const boiteDe = boitesDuCatalogue(catalogue);
   // La valeur porte la PROVENANCE en plus du nom : l'écran doit pouvoir séparer
   // « on en a toujours » de « il t'en reste », qui n'appellent pas le même coup
   // d'œil au rayon.
@@ -364,8 +369,15 @@ export function calculer(
         return;
       }
       const cle = `${cid}|${ing.unit}`;
-      const slot = panier.get(cle) ?? { nom: ing.nom, qty: 0, n: 0, id: cid, unit: ing.unit };
-      slot.qty += echelle(ing.qty, ing.unit, echelleLigne);
+      const slot: LignePanier = panier.get(cle) ?? { nom: ing.nom, qty: 0, n: 0, id: cid, unit: ing.unit };
+      // T140 — PLAT PAR PLAT, PAS SUR LA SEMAINE. Deux plats à 200 g de maïs
+      // ouvrent chacun leur boîte de 285 g : la semaine en achète deux, pas
+      // « 400 g ». Additionner d'abord puis arrondir ferait acheter une boîte
+      // et demie.
+      const boite = boiteDe(cid);
+      const entieres = boitesDeLaLigne(boite, ing.qty * echelleLigne, ing.unit);
+      slot.qty += entieres ? entieres.quantite : echelle(ing.qty, ing.unit, echelleLigne);
+      if (boite) slot.boite = boite;
       slot.n += 1;
       panier.set(cle, slot);
     };
@@ -511,6 +523,14 @@ export function articles(panier: Map<string, LignePanier>): LignePanier[] {
   }));
 }
 
+/** T140 — combien de boîtes une ligne fait acheter, quand elle se compte en
+ *  boîtes : au-dessus, car un usage partiel d'un autre plat ouvre aussi une
+ *  boîte. `null` pour une ligne qui se compte à la quantité. */
+export function boitesAAcheter(l: LignePanier): number | null {
+  if (!l.boite || l.unit !== l.boite.contenu.unit) return null;
+  return Math.max(1, Math.ceil(l.qty / l.boite.contenu.amount - 1e-9));
+}
+
 /** Minutes de cuisine par JOUR — pas par créneau. C'est la journée qui fatigue,
  *  pas le repas : trois plats qui tiennent chacun dans leur budget peuvent
  *  faire une journée intenable. */
@@ -524,4 +544,21 @@ export function minutesParJour(jeu: Jeu, choix = jeu.choix): number[] {
     parJour[c.jour] = (parJour[c.jour] ?? 0) + p.minutes;
   });
   return parJour;
+}
+
+/**
+ * La quantité d'une ligne de recette, dite au moment de cuisiner — T140.
+ *
+ * LA BOÎTE ENTIÈRE SE DIT. Quand le plat vide la boîte plutôt que d'en garder
+ * un petit reste (`paquet.ts`), la fiche écrit « 1 boîte entière (285 g, la
+ * recette en demande 200 g) » : on sait ce qu'on ouvre, et pourquoi ce n'est
+ * pas le chiffre du livre. La prose et les `uses:` de la recette ne bougent
+ * pas — ce sont les mots de l'ouvrage.
+ */
+export function quantiteACuire(catalogue: Catalogue, ing: Ingredient, f: number): string {
+  const boite = boitesDuCatalogue(catalogue)(alias(catalogue, ing.id));
+  const entieres = boitesDeLaLigne(boite, ing.qty * f, ing.unit);
+  if (!boite || !entieres) return echelleTexte(ing, f);
+  const contenu = `${String(entieres.quantite).replace(".", ",")} ${boite.contenu.unit}`;
+  return `${phraseBoites(boite.nom, entieres.boites)} (${contenu}, la recette en demande ${echelleTexte(ing, f)})`;
 }
