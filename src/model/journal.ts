@@ -282,6 +282,23 @@ export interface Rejeu {
   vus: Map<string, EtatIngredient>;
   /** Tous les retraits, dans l'ordre — la matière du « je suis 3 des 11 ». */
   retraits: Retrait[];
+  /**
+   * T137 — CE QUE SON ÂGE A FINI, SANS QU'UN ŒIL L'AIT VU PARTIR.
+   *
+   * Une boîte d'œufs rentrée le 17/10 est jetée par le foyer à 28 jours ; le
+   * rejeu, qui ne voit que les cuissons, la gardait pour toujours, et la liste
+   * ne redemandait jamais d'œufs. Passé la fenêtre de sa famille de garde
+   * (`conservation.yaml:familles`, 8 semaines au plus), un article du fond
+   * sort de `parIngredient` et vient ici : id → jours depuis l'achat.
+   *
+   * « SANS DOUTE FINI », JAMAIS « À JETER » : ces fenêtres sont des ordres de
+   * grandeur (seuls les œufs sont réglementaires). L'écran le dit au
+   * conditionnel ; une observation (« Des œufs ? oui ») relance l'horloge.
+   */
+  finis: Map<string, number>;
+  /** Le dernier jour d'entrée par les courses, par id — même quand le lot a
+   *  été mangé depuis. Ce qui distingue « rentré le 17/10 » de « jamais vu ». */
+  rentres: Map<string, string>;
 }
 
 /* ══════════════════════════════════════════════════════════ les constantes */
@@ -344,6 +361,10 @@ export interface Contexte {
   /** Les ids qu'une famille de garde `fond: true` déclare tenir des semaines
    *  au moins (`conservation.yaml:familles`). */
   deGarde: ReadonlySet<string>;
+  /** T137 : la fenêtre en jours d'une famille de garde `fond: true` qui tient
+   *  8 semaines au plus — `null` pour le sec, les conserves, le surgelé, qui
+   *  ne disparaissent pas en silence. */
+  fenetreCourte: (id: string) => number | null;
   /** Le jour du relevé d'amorce — la première observation du journal. */
   releve: string | null;
   /** T135 : ce que contient une unité d'achat du fond (`fond.yaml:unite`),
@@ -370,6 +391,13 @@ export function contexte(catalogue: Catalogue): Contexte {
         .filter((f) => f.fond && f.fenetreJours >= SEMAINES_DE_GARDE * 7)
         .flatMap((f) => f.ids),
     ),
+    fenetreCourte: (() => {
+      const par = new Map<string, number>();
+      for (const f of catalogue.garde ?? [])
+        if (f.fond && f.fenetreJours <= SEMAINES_FENETRE_COURTE * 7)
+          for (const id of f.ids) par.set(alias(id), f.fenetreJours);
+      return (id: string) => par.get(alias(id)) ?? null;
+    })(),
     releve: catalogue.gardeManger.releve,
     contenu: (() => {
       const par = new Map<string, Quantite>();
@@ -415,6 +443,13 @@ const enPieces = (unit: string): boolean => unit === PIECE || unit === "piece" |
  * trois semaines, il devient comptable sans une ligne de code.
  */
 export const SEMAINES_DE_GARDE = 2;
+
+/**
+ * T137 — au-delà, une famille ne « se finit » pas par son âge au rejeu. Le sec
+ * (12 mois), les conserves (2 ans), le surgelé (8 mois) ne doivent pas
+ * disparaître en silence d'un placard où ils sont sans doute encore.
+ */
+export const SEMAINES_FENETRE_COURTE = 8;
 
 /* ═══════════════════════════════════════════════════════════ les classes */
 
@@ -935,6 +970,20 @@ export function rejouer(
     };
   };
 
+  // T137 — L'ÂGE FINIT CE QUE LES CUISSONS NE FINISSENT PAS. L'horloge part de
+  // l'achat, ou de la dernière observation qui l'a suivi : répondre « oui » à
+  // « Des œufs ? » est le geste de confirmation, et il existe déjà.
+  const finis = new Map<string, number>();
+  for (const [id, l] of lots) {
+    const s = suivi.get(id);
+    const fenetre = ctx.fenetreCourte(id);
+    if (!s?.rentreLe || fenetre === null || l.length === 0) continue;
+    const depuis = s.vuLe && s.vuLe > s.rentreLe ? s.vuLe : s.rentreLe;
+    if (joursEntre(depuis, aujourdhui) <= fenetre) continue;
+    finis.set(id, joursEntre(s.rentreLe, aujourdhui));
+    lots.delete(id);
+  }
+
   const parIngredient = new Map<string, EtatIngredient>();
   for (const [id, l] of lots) parIngredient.set(id, etatDe(id, l));
 
@@ -945,7 +994,10 @@ export function rejouer(
   for (const [id, s] of suivi)
     if (s.vuLe !== null && !parIngredient.has(id)) vus.set(id, etatDe(id, []));
 
-  return { parIngredient, vus, retraits };
+  const rentres = new Map<string, string>();
+  for (const [id, s] of suivi) if (s.rentreLe) rentres.set(id, s.rentreLe);
+
+  return { parIngredient, vus, retraits, finis, rentres };
 }
 
 /**

@@ -132,11 +132,13 @@ describe("T135 — le fond se consomme à la quantité, pas au paquet", () => {
       gardeManger: { ...cat.gardeManger, denrees: cat.gardeManger.denrees.filter((d) => d.ingredient !== ingredient) },
     };
     const entree: Evenement = {
-      sorte: "entree", jour: jourAvant(30), saisi: jourAvant(30), maj: 1,
+      // T137 : rentré il y a 12 jours — en deçà de la fenêtre des œufs (28 j)
+      // et du râpé (21 j), que l'âge finirait sinon avant les cuissons.
+      sorte: "entree", jour: jourAvant(12), saisi: jourAvant(12), maj: 1,
       lignes: [{ ingredient, unites: 1, parUnite: null, zone: "test", etat: "sec" }],
     };
     const cuissons: Evenement[] = Array.from({ length: n }, (_, i) => ({
-      sorte: "cuisine" as const, jour: jourAvant(29 - i), saisi: jourAvant(29 - i), maj: 2 + i,
+      sorte: "cuisine" as const, jour: jourAvant(11 - i), saisi: jourAvant(11 - i), maj: 2 + i,
       repas: "diner" as const, plat: plat.id, parts,
     }));
     return { c, rejeu: rejouer(c, [entree, ...cuissons], contexte(c), jourAvant(0)) };
@@ -215,11 +217,13 @@ describe("T136 — œufs, yaourts, fromage râpé : achetés par la liste, cuisi
       },
     };
     const cx = contexte(c);
+    // T137 : rentré il y a 12 jours, sous la fenêtre de garde des laitages.
+    const rentre: Evenement = { ...fondRentre, jour: jourAvant(12), saisi: jourAvant(12) };
     const cuissons: Evenement[] = Array.from({ length: n }, (_, i) => ({
-      sorte: "cuisine" as const, jour: jourAvant(29 - i), saisi: jourAvant(29 - i), maj: 2 + i,
+      sorte: "cuisine" as const, jour: jourAvant(11 - i), saisi: jourAvant(11 - i), maj: 2 + i,
       repas: "diner" as const, plat, parts,
     }));
-    const rejeu = rejouer(c, [fondRentre, ...cuissons], cx, jourAvant(0));
+    const rejeu = rejouer(c, [rentre, ...cuissons], cx, jourAvant(0));
     const jeu = creerJeu(c, 7, LUNDI);
     jeu.stock = [];
     jeu.gardeManger = jeu.gardeManger.filter((id) => rejeu.parIngredient.has(id));
@@ -256,4 +260,84 @@ describe("T136 — œufs, yaourts, fromage râpé : achetés par la liste, cuisi
       expect(ligneAchats(carte!)).toMatch(/^il manque : /);
     });
   }
+});
+
+describe("T137 — un article du fond à garde courte se finit par son âge", () => {
+  /** Le fond rentré il y a `jours` jours (laitages et lentilles retirés du relevé), puis `autres` ; le rejeu au jour J. */
+  function rentreIlYA(jours: number, autres: Evenement[] = []) {
+    const c: Catalogue = {
+      ...catalogue,
+      gardeManger: {
+        ...catalogue.gardeManger,
+        denrees: catalogue.gardeManger.denrees.filter(
+          (d) => !["oeufs", "fromage-rape", "yaourt-nature", "lentilles-seches"].includes(d.ingredient)),
+      },
+    };
+    const rentre: Evenement = { ...fondRentre, jour: jourAvant(jours), saisi: jourAvant(jours) };
+    const rejeu = rejouer(c, [rentre, ...autres], contexte(c), jourAvant(0));
+    const jeu = creerJeu(c, 7, LUNDI);
+    jeu.stock = [];
+    const avant = new Set(jeu.gardeManger);
+    jeu.gardeManger = jeu.gardeManger.filter((id) => rejeu.parIngredient.has(id));
+    const savoir: Savoir = { rejeu, passe: PASSE_VIDE, cuisinesRecemment: new Set(), planchers: [] };
+    const p = proposerCeSoir({ jeu, savoir, recents: new Set(), maintenant: LUNDI, sortis: new Set() });
+    const carte = [...p.cartes, ...p.plus].find((x) => x.plat.id === "quiche-poireaux");
+    return { rejeu, jeu, avant, carte, liste: sousLeurPlancher(c, rejeu, planchers) };
+  }
+
+  test("des œufs achetés il y a 29 jours, jamais cuisinés : la liste les redemande et la quiche dit « il manque »", () => {
+    const { rejeu, carte, liste } = rentreIlYA(29);
+    expect(rejeu.parIngredient.has("oeufs")).toBe(false);
+    expect(rejeu.finis.get("oeufs")).toBe(29);
+    const l = liste.find((x) => x.ingredient === "oeufs");
+    expect(l).toMatchObject({ a: 0, fond: true });
+    expect(phraseDuPlancher(l!, 0)).toContain("pour le fond");
+    expect(phraseDuPlancher(l!, 0)).not.toContain("jeter");
+    expect(carte).toBeDefined();
+    expect(carte!.manque.map((a) => a.id)).toContain("oeufs");
+    expect(ligneAchats(carte!)).toMatch(/^il manque : /);
+  });
+
+  test("à 27 jours les œufs sont encore là", () => {
+    const { rejeu, liste } = rentreIlYA(27);
+    expect(rejeu.parIngredient.has("oeufs")).toBe(true);
+    expect(liste.map((l) => l.ingredient)).not.toContain("oeufs");
+  });
+
+  test("des lentilles achetées il y a 60 jours sont encore là : le sec ne disparaît pas en silence", () => {
+    const { rejeu, liste } = rentreIlYA(60);
+    expect(rejeu.parIngredient.has("lentilles-seches")).toBe(true);
+    expect(rejeu.finis.has("lentilles-seches")).toBe(false);
+    expect(liste.map((l) => l.ingredient)).not.toContain("lentilles-seches");
+    // …mais le râpé (21 j) et les pommes de terre (6 semaines), si.
+    expect(rejeu.finis.has("fromage-rape")).toBe(true);
+    expect(rejeu.finis.has("pomme-de-terre")).toBe(true);
+  });
+
+  test("une observation après l'achat relance l'horloge : « Des œufs ? oui » est la confirmation", () => {
+    const vu = {
+      sorte: "observation", jour: jourAvant(10), saisi: jourAvant(10), maj: 5,
+      portee: "ingredient", zone: null, constats: [{ ingredient: "oeufs", unites: 1 }],
+    } as unknown as Evenement;
+    expect(rentreIlYA(29, [vu]).rejeu.parIngredient.has("oeufs")).toBe(true);
+  });
+
+  test("#32 : la liste ne fait que gagner des lignes, et le garde-manger rien", () => {
+    const frais = rentreIlYA(1);
+    const vieux = rentreIlYA(60);
+    const ids = new Set(vieux.liste.map((l) => l.ingredient));
+    for (const l of frais.liste) expect(ids.has(l.ingredient)).toBe(true);
+    for (const id of vieux.jeu.gardeManger) expect(vieux.avant.has(id)).toBe(true);
+  });
+
+  test("acheté puis mangé n'est pas « jamais vu » : la ligne dit d'où vient l'article", () => {
+    const quiches: Evenement[] = [0, 1].map((i) => ({
+      sorte: "cuisine" as const, jour: jourAvant(5 - i), saisi: jourAvant(5 - i), maj: 2 + i,
+      repas: "diner" as const, plat: "quiche-poireaux", parts: 6,
+    }));
+    const l = rentreIlYA(6, quiches).liste.find((x) => x.ingredient === "oeufs");
+    expect(l).toMatchObject({ a: 0, rentreLe: jourAvant(6) });
+    expect(phraseDuPlancher(l!, 0)).not.toContain("jamais vu");
+    expect(phraseDuPlancher(l!, 0)).toContain(`rentré le ${jourAvant(6)}`);
+  });
 });

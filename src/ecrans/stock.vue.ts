@@ -434,7 +434,15 @@ export function vueDesPlanchersDenrees(
       // Le même vocabulaire que les lots du dépôt : « compté » quand l'app a vu,
       // « estimé » quand elle déduit. Un troisième mot ici pour dire la même
       // chose forcerait à apprendre deux échelles sur le même écran.
-      fiabilite: vu ? "compté" : "jamais vu",
+      // T137 — l'âge l'a sans doute fini : le dire au conditionnel, jamais
+      // « à jeter » — la fenêtre est un ordre de grandeur.
+      fiabilite: rejeu.finis?.has(p.ingredient)
+        ? `acheté il y a ${rejeu.finis.get(p.ingredient)} j — sans doute fini`
+        : vu
+          ? "compté"
+          : rejeu.rentres?.has(p.ingredient)
+            ? `rentré le ${rejeu.rentres.get(p.ingredient)}`
+            : "jamais vu",
       usage: vu?.usage === "apero" ? "pour l’apéro" : "",
     });
   }

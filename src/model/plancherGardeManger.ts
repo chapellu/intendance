@@ -252,6 +252,10 @@ export interface LignePlancher {
   confiance: EtatIngredient["confiance"];
   /** Le jour de la dernière observation, `null` si jamais vu. */
   vuLe: string | null;
+  /** T137 : le dernier jour d'entrée par les courses, `null` si jamais rentré.
+   *  Un article acheté puis mangé n'a jamais été « vu », mais il n'est pas
+   *  inconnu pour autant. */
+  rentreLe: string | null;
   /** T40 : dire pourquoi cette ligne existe alors qu'aucun plat ne la demande. */
   usage: Usage | null;
   /** T134 : la denrée est du fond de roulement — la liste le dit « pour le fond ». */
@@ -296,6 +300,7 @@ export function sousLeurPlancher(
       // dont l'app n'a aucune nouvelle est la faute que T30 existe pour éviter.
       confiance: e?.confiance ?? "inconnu",
       vuLe: e?.vuLe ?? null,
+      rentreLe: rejeu.rentres?.get(p.ingredient) ?? null,
       usage: par.get(p.ingredient) ?? null,
       fond: duFond.has(p.ingredient),
     });

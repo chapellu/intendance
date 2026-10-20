@@ -161,7 +161,12 @@ export function phraseDuPlancher(p: LignePlancher, plats: number): string {
   if (p.usage === "apero") bouts.push("pour l’apéro");
   else if (p.fond) bouts.push("pour le fond");
   bouts.push(`sous son plancher — ${p.a} sur ${p.niveau}`);
-  if (p.confiance !== "sur") bouts.push(p.vuLe ? `à vérifier, vu le ${p.vuLe}` : "jamais vu");
+  // T137 — ACHETÉ N'EST PAS « JAMAIS VU ». Rentrer ne restaure pas la
+  // confiance (la règle de l'entrée tient), mais l'app sait d'où vient l'article.
+  if (p.confiance !== "sur")
+    bouts.push(
+      p.vuLe ? `à vérifier, vu le ${p.vuLe}` : p.rentreLe ? `à vérifier, rentré le ${p.rentreLe}` : "jamais vu",
+    );
   return bouts.join(" · ");
 }
 

@@ -236,6 +236,7 @@ describe("T41 — aucun arbitrage cuisiner/acheter, l'objet dicte le canal", () 
       "manque",
       "niveau",
       "nom",
+      "rentreLe",
       "usage",
       "vuLe",
     ]);

@@ -840,6 +840,17 @@ describe("ce qu'on veut toujours avoir, au placard", () => {
     expect(vue.libres.some((p) => p.ingredient === "mais")).toBe(false);
   });
 
+  test("T137 — des œufs achetés il y a 29 jours : « sans doute fini », jamais « à jeter »", () => {
+    const entree: Evenement = {
+      sorte: "entree", jour: "2026-08-09", saisi: "2026-08-09", maj: 1,
+      lignes: [{ ingredient: "oeufs", unites: 1, parUnite: null, zone: null, etat: "sec" }],
+    };
+    const rejeu = rejouer(catalogue, [entree], contexte(catalogue), "2026-09-07");
+    const [p] = vueDesPlanchersDenrees(catalogue, rejeu, [{ ingredient: "oeufs", niveau: 1 }]).poses;
+    expect(p!.fiabilite).toBe("acheté il y a 29 j — sans doute fini");
+    expect(p!.sous).toBe(true);
+  });
+
   test("l'apéro se dit, parce que rien d'autre ne le dirait", () => {
     // Ces six denrées ne sont citées par aucune recette : hors de cette ligne,
     // elles n'ont aucune raison lisible d'être dans une liste de courses.
