@@ -3,7 +3,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, test } from "vitest";
 import { lireCatalogue } from "./catalogue";
-import type { LigneLue } from "./ticket";
+import { lireTicket, type LigneLue } from "./ticket";
 import { candidatsDu, cleDuLibelle, proposer, quantiteDe, suggerer, type Appris } from "./ticketCorrespondance";
 import type { Catalogue } from "./types";
 
@@ -81,4 +81,41 @@ describe("quantiteDe", () => {
   test("sans poids ni format, le nombre seul — non chiffré, pas inventé", () => {
     expect(quantiteDe(ligne("POIREAU VRAC"), "poireau", catalogue)).toEqual({ unites: 1, parUnite: null });
   });
+});
+
+describe("suggerer — des noms canoniques, rien qui ne s'achète pas", () => {
+  test("le nom d'une puce nomme l'ingrédient, pas la consigne de la recette", () => {
+    expect(candidats.find((c) => c.id === "poires")?.nom).toBe("poires");
+    expect(candidats.every((c) => c.nom.length <= 24 && !/[,(]/.test(c.nom))).toBe(true);
+  });
+  test("ni épluchures, ni fanes, ni parures, ni restes, ni « cuit »", () => {
+    const bannis = candidats.filter((c) => /(^|[\s-])(epluch\w*|fanes?|parures?|restes?|cuite?s?)([\s-]|$)/.test(`${c.id} ${c.nom.normalize("NFD").replace(/[\u0300-\u036f]/g, "")}`));
+    expect(bannis).toEqual([]);
+  });
+  test("POIREAU n'appelle pas les poires ; CAROTTES n'appelle que les carottes", () => {
+    expect(ids("POIREAU VRAC")).toEqual(["poireau"]);
+    expect(ids("CAROTTES VRAC")[0]).toBe("carottes");
+    expect(ids("CAROTTES VRAC")).not.toContain("petits-pois-carottes");
+    expect(ids("CAROTTE DES SABLES")[0]).toBe("carottes"); // singulier → pluriel
+  });
+  test("un premier net est présélectionné, un doute ne l'est pas", () => {
+    const l = (libelle: string) => proposer("grand-frais", ligne(libelle), new Map(), candidats).evidente?.id ?? null;
+    expect(l("POIREAU VRAC")).toBe("poireau");
+    expect(l("POTIMARRON")).toBe("potimarron");
+    expect(l("YAOURT A BOIRE PANACHE")).toBeNull(); // trois yaourts se valent
+  });
+});
+
+describe("quantiteDe — la pesée imprimée sous la ligne", () => {
+  test("le poireau pesé rentre en grammes, pas en « 1 pièce »", () => {
+    const lu = lireTicket("CARREFOUR\n4 POIREAU VRAC 4,66\n  0,932 kg x 5,00 EUR/kg\nTOTAL 4,66");
+    expect(quantiteDe(lu.lignes[0]!, "poireau", catalogue)).toEqual({ unites: 1, parUnite: { amount: 932, unit: "g" } });
+  });
+});
+
+test("une ligne vrac sans pesée ne prend pas le format du fond", () => {
+  const sac = catalogue.fond.denrees.find((d) => d.ingredient === "pomme-de-terre");
+  expect(sac?.unite).toMatch(/kg/);
+  expect(quantiteDe(ligne("POMME DE TERRE VRAC"), "pomme-de-terre", catalogue)).toEqual({ unites: 1, parUnite: null });
+  expect(quantiteDe(ligne("RAISIN SEC BIO KG"), "raisins-secs", catalogue).parUnite).toBeNull();
 });

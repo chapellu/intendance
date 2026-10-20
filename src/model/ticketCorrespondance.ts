@@ -30,16 +30,30 @@ export interface Appris {
 export const cleDuLibelle = (enseigne: Enseigne | string, vendeur: string, libelle: string): string =>
   `${enseigne}|${vendeur.trim().toUpperCase()}|${libelle.trim().toUpperCase()}`;
 
-/** Les ingrédients qu'on peut rentrer : ceux des plats, du placard et du fond.
- *  Le nom retenu est le plus court vu — « poivrons », pas une parenthèse. */
+/**
+ * Ce qui ne s'achète pas : un sous-produit (épluchures, fanes, parures, un
+ * reste) ou un état de cuisson (« lentilles cuites »). Un ticket ne rentre
+ * jamais ça, donc on ne le propose pas.
+ */
+const SOUS_PRODUIT = /(^|[\s-])(epluchures?|fanes?|parures?|restes?|cuit|cuits|cuite|cuites|cuisson)([\s-]|$)/;
+
+const plat = (s: string): string => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+
+/** Les ingrédients qu'on peut rentrer : ceux des plats, du placard et du fond,
+ *  sous leur nom CANONIQUE — « poires », pas « poires pas trop grosses ». */
 export function candidatsDu(catalogue: Catalogue): Candidat[] {
   const noms = new Map<string, string>();
   const vu = (id: string, nom?: string) => {
-    // Un nom de recette peut être une phrase (« poires pas trop grosses,
-    // mûres… ») : coupé à la première incise, et l'id s'il reste trop long —
-    // une puce de revue doit tenir sur une ligne de téléphone.
-    const court = nom?.split(/\s+[—(–]|,/)[0]?.trim();
-    const n = court && court.length <= 24 ? court : id.replace(/-/g, " ");
+    // L'id décide de l'exclusion ; un nom qui parle de cuisson (« … à la
+    // cuisson ») n'est qu'une consigne, et retombe sur l'id.
+    if (SOUS_PRODUIT.test(id)) return;
+    // Le nom de recette n'est gardé que s'il NOMME l'ingrédient : pas plus
+    // d'un mot de plus que l'id (« crème fraîche » pour `creme`), et court.
+    // Sinon c'est une consigne (« poires pas trop grosses, mûres… ») et le
+    // libellé du placard — l'id lui-même — dit mieux ce qu'on achète.
+    const parId = id.replace(/-/g, " ");
+    const n =
+      nom && !SOUS_PRODUIT.test(plat(nom)) && nom.length <= 24 && !/[,(—–]/.test(nom) && mots(nom).length <= mots(parId).length + 1 ? nom : parId;
     const avant = noms.get(id);
     if (!avant || n.length < avant.length) noms.set(id, n);
   };
@@ -86,7 +100,9 @@ function distance(a: string, b: string): number {
 function proche(a: string, b: string): number {
   if (a === b) return 1;
   if (a.length >= 3 && b.startsWith(a)) return 0.9; // libellé coupé : « COTELEE » / « CAB »
-  if (b.length >= 4 && a.startsWith(b)) return 0.8;
+  // Le libellé plus long que le mot : seulement un pluriel ou un accord
+  // (« CAROTTES » / carotte) — « POIREAU » n'est pas des poires.
+  if (b.length >= 4 && a.startsWith(b) && a.length - b.length <= 1) return 0.9;
   if (Math.min(a.length, b.length) >= 5 && distance(a, b) <= 1) return 0.8;
   return 0;
 }
@@ -117,14 +133,22 @@ function score(libelle: string[], c: Candidat): number {
 
 /** Les `n` ingrédients qui ressemblent le plus au libellé, du meilleur au moins bon. */
 export function suggerer(libelle: string, candidats: readonly Candidat[], n = 3): Candidat[] {
+  return classer(libelle, candidats, n).map(([c]) => c);
+}
+
+/**
+ * Les candidats et leur score. Un candidat bien en dessous du premier n'est
+ * pas proposé : « petits pois carottes » n'a rien à faire à côté de carottes.
+ */
+function classer(libelle: string, candidats: readonly Candidat[], n = 3): (readonly [Candidat, number])[] {
   const l = mots(libelle);
   if (!l.length) return [];
   return candidats
     .map((c) => [c, score(l, c)] as const)
     .filter(([, s]) => s > 0.2)
     .sort((a, b) => b[1] - a[1] || a[0].id.length - b[0].id.length)
-    .slice(0, n)
-    .map(([c]) => c);
+    .filter(([, s], _i, tous) => s >= 0.6 * tous[0]![1])
+    .slice(0, n);
 }
 
 /* ════════════════════════════════════════════════════════ proposition */
@@ -136,6 +160,8 @@ export interface Proposition {
   /** Vrai quand c'est la table apprise qui a répondu. */
   reconnu: boolean;
   suggestions: Candidat[];
+  /** Le premier, quand il l'emporte nettement : présélectionné à l'écran. */
+  evidente: Candidat | null;
 }
 
 export function proposer(
@@ -146,9 +172,12 @@ export function proposer(
 ): Proposition {
   const cle = cleDuLibelle(enseigne, ligne.vendeur, ligne.libelle);
   const a = appris.get(cle);
-  const suggestions = suggerer(ligne.libelle, candidats);
-  if (a) return { cle, ingredient: a.ingredient, reconnu: true, suggestions };
-  return { cle, ingredient: undefined, reconnu: false, suggestions };
+  const classes = classer(ligne.libelle, candidats);
+  const suggestions = classes.map(([c]) => c);
+  const [premier, second] = classes;
+  const evidente = premier && premier[1] >= 0.6 && (!second || premier[1] >= 1.4 * second[1]) ? premier[0] : null;
+  if (a) return { cle, ingredient: a.ingredient, reconnu: true, suggestions, evidente };
+  return { cle, ingredient: undefined, reconnu: false, suggestions, evidente };
 }
 
 /**
@@ -163,6 +192,9 @@ export function quantiteDe(
 ): { unites: number; parUnite: Quantite | null } {
   if (ligne.poidsKg) return { unites: 1, parUnite: { amount: Math.round(ligne.poidsKg * 1000), unit: "g" } };
   const fond = catalogue.fond.denrees.find((d) => d.ingredient === ingredient);
-  const format = formatDe(ligne.libelle) ?? (fond ? formatDe(fond.unite) : null);
+  // Le format du fond est celui d'un PAQUET : il ne dit rien d'une ligne
+  // vendue au poids (« CAROTTES VRAC » n'est pas un sac de 1 kg).
+  const vrac = /VRAC|\bKG\b/i.test(ligne.libelle);
+  const format = formatDe(ligne.libelle.replace(/\bKG\b/i, "")) ?? (fond && !vrac ? formatDe(fond.unite) : null);
   return { unites: Math.max(1, ligne.quantite), parUnite: format };
 }

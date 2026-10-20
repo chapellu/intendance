@@ -40,7 +40,10 @@ export function rangeesDu(
 ): Rangee[] {
   return lu.lignes.map((l) => {
     const p = proposer(lu.enseigne, l, appris, candidats);
-    const q = p.ingredient ? quantiteDe(l, p.ingredient, catalogue) : { unites: Math.max(1, l.quantite), parUnite: null };
+    // Un premier nettement devant est PRÉSÉLECTIONNÉ — toujours modifiable, et
+    // il n'est appris qu'au « Tout rentrer », donc vu par le doigt.
+    const ingredient = p.reconnu ? p.ingredient : (p.evidente?.id ?? undefined);
+    const q = ingredient ? quantiteDe(l, ingredient, catalogue) : { unites: Math.max(1, l.quantite), parUnite: null };
     return {
       rang: l.rang,
       cle: p.cle,
@@ -50,7 +53,7 @@ export function rangeesDu(
       douteux: l.douteux,
       opaque: l.opaque,
       reconnu: p.reconnu,
-      ingredient: p.ingredient,
+      ingredient,
       suggestions: p.suggestions,
       ...q,
       // Une ligne de comptoir n'a pas d'article : on ne la rentre pas à

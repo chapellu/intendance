@@ -214,3 +214,19 @@ describe("formatDe", () => {
     expect(formatDe("POIREAU VRAC")).toBeNull();
   });
 });
+
+describe("lireTicket — la pesée imprimée sous la ligne", () => {
+  test("« 4 POIREAU VRAC 4,66 » puis « 0,932 kg x 5,00 » : la ligne prend son poids", () => {
+    const lu = lireTicket("CARREFOUR\n4 POIREAU VRAC 4,66\n  0,932 kg x 5,00 EUR/kg\n4 CAROTTES VRAC 1,50\nTOTAL 6,16");
+    expect(lu.lignes).toMatchObject([
+      { libelle: "POIREAU VRAC", poidsKg: 0.932, puKg: 5, prix: 4.66 },
+      { libelle: "CAROTTES VRAC", poidsKg: null },
+    ]);
+    expect(lu.concorde).toBe(true);
+  });
+
+  test("une pesée dont le compte ne tombe pas n'est pas collée à la ligne d'avant", () => {
+    const lu = lireTicket("CARREFOUR\n4 POIREAU VRAC 4,66\n  0,500 kg x 2,00 EUR/kg\nTOTAL 4,66");
+    expect(lu.lignes[0]!.poidsKg).toBeNull();
+  });
+});

@@ -268,6 +268,17 @@ export function lireTicket(texte: string, aujourdhui = new Date()): TicketLu {
           plu: null,
           douteux: lu === null || Math.abs(lu - attendu) > 0.011,
         });
+      } else {
+        // LA PESÉE APRÈS LA LIGNE : « 4 POIREAU VRAC 4,66 » puis
+        // « 0,932 kg x 5,00 €/kg ». Elle donne son poids à la ligne d'avant
+        // si le compte tombe — sinon c'est une autre pesée, qu'on n'invente pas.
+        const d = derniere();
+        const poidsKg = nombre(pesee[1]!);
+        const puKg = nombre(pesee[2]!);
+        if (d && d.poidsKg === null && Math.abs(cents(poidsKg * puKg) - d.prix) <= 0.011) {
+          d.poidsKg = poidsKg;
+          d.puKg = puKg;
+        }
       }
       continue;
     }
