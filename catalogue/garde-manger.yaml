@@ -54,6 +54,7 @@ zones:
   - id: etagere-ouverte
     label: étagère ouverte
     espace: placard
+    plan: {mur: gauche, x: 4, y: 90, w: 80, h: 84, court: Étagère, teinte: bois-clair}
     niveaux: 2
     dimensions: {largeur_cm: 42, profondeur_cm: 30, hauteur_cm: 17}
     exposition: jour
@@ -68,6 +69,7 @@ zones:
   - id: dessus-etagere
     label: dessus de l'étagère ouverte
     espace: placard
+    plan: {mur: gauche, x: 4, y: 38, w: 80, h: 46, court: Dessus, teinte: bois-clair}
     niveaux: 1
     dimensions: {largeur_cm: 42, profondeur_cm: 30, hauteur_cm: null}
     exposition: jour
@@ -80,6 +82,7 @@ zones:
   - id: demi-lune-basse
     label: demi-lune basse
     espace: placard
+    plan: {mur: fond, x: 4, y: 180, w: 48, h: 52, court: "Coin, bas", teinte: bois-fonce}
     niveaux: 1
     dimensions: {largeur_cm: 70, profondeur_cm: 37, hauteur_cm: 26}
     forme: demi-lune
@@ -92,6 +95,7 @@ zones:
   - id: demi-lune-haute
     label: demi-lune haute
     espace: placard
+    plan: {mur: fond, x: 4, y: 124, w: 48, h: 52, court: "Coin, haut", teinte: bois}
     niveaux: 1
     dimensions: {largeur_cm: 70, profondeur_cm: 37, hauteur_cm: 33}
     forme: demi-lune
@@ -104,6 +108,7 @@ zones:
   - id: tiroir-epices
     label: tiroir à épices
     espace: placard
+    plan: {mur: fond, x: 4, y: 236, w: 48, h: 48, court: Tiroir épices, teinte: bois-fonce}
     niveaux: 2
     dimensions: {largeur_cm: null, profondeur_cm: null, hauteur_cm: null}
     exposition: sombre
@@ -117,6 +122,7 @@ zones:
   - id: placard-haut
     label: placard haut, étagère basse
     espace: placard
+    plan: {mur: fond, x: 4, y: 6, w: 48, h: 80, court: Placard haut, teinte: bois}
     niveaux: 1
     dimensions: {largeur_cm: 57, profondeur_cm: 32, hauteur_cm: 23.5}
     exposition: sombre
@@ -129,6 +135,7 @@ zones:
   - id: sous-evier
     label: sous-évier
     espace: placard
+    plan: {mur: fond, x: 138, y: 124, w: 46, h: 108, court: Sous-évier, teinte: bois-fonce}
     niveaux: 1
     dimensions: {largeur_cm: null, profondeur_cm: null, hauteur_cm: null}
     exposition: sombre
@@ -137,6 +144,51 @@ zones:
       Meuble bas sous l'évier, siphon et évacuations au-dessus. Le point le plus
       humide du logement, et c'est là que sont les légumes racines. La lessive
       vaisselle partage l'emplacement.
+
+# ── Le plan de la cuisine (T141) ────────────────────────────────────────────
+#
+# L'ÉCRAN STOCK S'OUVRE SUR UN DESSIN DE LA CUISINE, ET CE DESSIN EST UNE DONNÉE.
+# Chaque zone ci-dessus porte son `plan:` — le mur où elle est, sa place, son nom
+# court ; ce bloc-ci porte le reste : les deux murs, les appareils qui se
+# touchent sans être des zones du garde-manger, et le décor.
+#
+# DEUX MURS, VUS DEPUIS LA PORTE. `gauche` : les étagères en bois, dessinées en
+# perspective. `fond` : le mur de l'évier, à plat. Les cotes sont des pixels CSS
+# à l'échelle 1 — l'écran ne les agrandit pas, parce qu'à 360 px de large il n'a
+# plus rien à donner : gauche + fond = 324 px, la largeur utile d'un écran de
+# 360 px moins ses deux marges de 17,6 px. D'où la seule règle qui compte pour
+# un doigt, vérifiée par `verifier.py` : un rangement touchable fait au moins
+# 44 px dans les deux sens.
+#
+# UNE ZONE SANS `plan:` EST UNE ERREUR, PAS UN OUBLI. L'écran ne montre le
+# contenu d'un rangement qu'une fois touché sur le plan : une zone absente du
+# dessin serait une zone qu'on ne peut plus ouvrir.
+#
+# LES APPAREILS NE SONT PAS DES ZONES. Ce que le frigo et le congélateur portent
+# vient du DÉPÔT (`stock.yaml` et ce que la semaine cuisine), pas d'un relevé de
+# placard : ils ont une place sur le plan, un `espace`, et rien d'autre.
+#
+# LE DÉCOR SE VOIT ET NE SE TOUCHE PAS : placards du haut, plaques, four,
+# lave-vaisselle, casier à vin, étagère des laits. Sans eux on ne se repère pas —
+# un sous-évier flottant au milieu de rien ne ressemble à aucune cuisine.
+plan:
+  murs:
+    gauche: {w: 86, h: 290, label: les étagères en bois}
+    fond: {w: 238, h: 290, label: le mur de l'évier}
+  appareils:
+    - {id: frigo, espace: frigo, label: Frigo, mur: fond, x: 188, y: 6, w: 48, h: 140, court: Frigo, teinte: blanc}
+    - {id: congelo, espace: congelo, label: Congélateur, mur: fond, x: 188, y: 150, w: 48, h: 134, court: Congélo, teinte: froid}
+  decor:
+    - {mur: gauche, x: 4, y: 6, w: 80, h: 26, label: bocaux bébé}
+    - {mur: gauche, x: 4, y: 180, w: 80, h: 44, label: vins, teinte: mur-fonce}
+    - {mur: gauche, x: 4, y: 230, w: 80, h: 54, label: "laits, briques", teinte: mur-fonce}
+    - {mur: fond, x: 56, y: 6, w: 38, h: 80, label: ""}
+    - {mur: fond, x: 96, y: 6, w: 38, h: 80, label: ""}
+    - {mur: fond, x: 138, y: 6, w: 46, h: 80, label: ""}
+    - {mur: fond, x: 0, y: 112, w: 186, h: 8, label: "", teinte: plan-de-travail}
+    - {mur: fond, x: 56, y: 92, w: 78, h: 16, label: plaques, teinte: plaques}
+    - {mur: fond, x: 56, y: 124, w: 38, h: 108, label: four, teinte: electromenager}
+    - {mur: fond, x: 96, y: 124, w: 38, h: 108, label: lave-vaisselle, teinte: electromenager}
 
 # ── Ce qu'il y a dedans ─────────────────────────────────────────────────────
 #

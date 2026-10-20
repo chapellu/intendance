@@ -8,14 +8,14 @@
 // qu'elle.
 
 import { expect, test, type Page } from "@playwright/test";
-import { attendreLApp } from "./parcours";
+import { attendreLApp, ouvrirRangement } from "./parcours";
 
 /** Une carte « À manger en premier » : le nom d'abord, puis la raison. */
 const carte = (page: Page, nom: string) =>
   page.locator(".co-lot").filter({ hasText: "paquet entamé" }).filter({ hasText: new RegExp(`^${nom}`) });
 
-/** La carte d'une zone. */
-const zone = (page: Page, nom: string) => page.locator(".co-espace").filter({ hasText: nom }).first();
+/** La carte d'une zone — touchée sur le plan depuis T141. */
+const zone = (page: Page, nom: string) => ouvrirRangement(page, nom);
 
 test("corriger puis retirer une ligne depuis « À manger en premier »", async ({ page }) => {
   await page.goto("/#/cuisine/stock");
@@ -39,7 +39,7 @@ test("corriger puis retirer une ligne depuis « À manger en premier »", async 
   // zone. Les autres denrées de la zone restent : ce n'est pas un relevé.
   await carte(page, "biscottes").getByRole("button", { name: "je n’en ai plus : biscottes" }).click();
   await expect(carte(page, "biscottes")).toHaveCount(0);
-  const dessus = zone(page, "dessus de l");
+  const dessus = await zone(page, "dessus de l");
   await expect(dessus.locator(".co-lot").filter({ hasText: /^biscottes/ })).toHaveCount(0);
   await expect(dessus.locator(".co-lot").filter({ hasText: /^cracotte/ })).toHaveCount(1);
 });
@@ -47,7 +47,7 @@ test("corriger puis retirer une ligne depuis « À manger en premier »", async 
 test("ajouter à une zone ce que le relevé ne connaît pas", async ({ page }) => {
   await page.goto("/#/cuisine/stock");
   await attendreLApp(page);
-  const dessus = zone(page, "dessus de l");
+  const dessus = await zone(page, "dessus de l");
   await dessus.getByRole("button", { name: "Relever" }).click();
   await dessus.getByRole("searchbox").fill("lentilles cor");
   await dessus.getByRole("button", { name: "+ lentilles corail" }).click();

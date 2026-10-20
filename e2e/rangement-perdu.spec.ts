@@ -8,14 +8,15 @@
 // le rangement qu'on perd. Aucune date en jeu — le geste ne regarde pas l'âge.
 
 import { expect, test } from "@playwright/test";
-import { attendreLApp } from "./parcours";
+import { attendreLApp, ouvrirRangement } from "./parcours";
 
 test("un congélateur perdu se vide d'un geste confirmé, et se rend d'un autre", async ({ page }) => {
   await page.goto("/#/cuisine/stock");
   await attendreLApp(page);
 
   const bocal = page.locator(".co-lot").filter({ hasText: /^sauce bolognaise(?! bocal)/ });
-  await page.locator(".co-cats button").filter({ hasText: "Congélo" }).dispatchEvent("click");
+  // T141 — le congélateur se touche sur le plan.
+  await ouvrirRangement(page, "Congélateur");
   await expect(bocal).toHaveCount(1);
 
   await page.getByRole("button", { name: "Tout ce qui était au congélo est perdu" }).dispatchEvent("click");

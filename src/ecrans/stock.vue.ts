@@ -35,7 +35,9 @@ import {
   type PlancherDenree,
   type Posable,
 } from "../model/plancherGardeManger";
-import type { Catalogue, Denree, Espace, GardeManger, Urgence, Zone } from "../model/types";
+import type {
+  Catalogue, Denree, Espace, GardeManger, PlanCuisine, RangementDuPlan, Urgence, Zone,
+} from "../model/types";
 import { fmt } from "../ui/format";
 import { bandeEnMots, depuis, nomEspace } from "../ui/phrases";
 
@@ -87,7 +89,7 @@ export interface Categorie {
   note: string;
 }
 
-const pluriel = (n: number, mot: string): string => `${n} ${mot}${n > 1 ? "s" : ""}`;
+export const pluriel = (n: number, mot: string): string => `${n} ${mot}${n > 1 ? "s" : ""}`;
 
 /**
  * Les rangements, avec ce qu'ils portent et ce qu'on en sait.
@@ -1216,4 +1218,194 @@ export function vueDeLInventaire(jeu: Jeu, calc: Calcul, voulu: Espace | null): 
     perte: perte(calc.depot, filtre),
     constates: lignes.filter((l) => l.ref !== null).length,
   };
+}
+
+/* ─────────────────────────────────────────── le plan de la cuisine — T141 */
+
+/**
+ * Les trois choses qu'un rangement peut avoir à dire, et rien d'autre.
+ *
+ * TROIS GESTES, PAS TROIS NIVEAUX. « À manger vite » dit de cuisiner ;
+ * « entamé » dit de finir avant d'ouvrir le suivant ; « à déplacer » dit de
+ * ranger ailleurs. Le même oignon peut porter deux pastilles, et ce n'est pas
+ * une redite — c'est la règle de « À déplacer » et « À manger en premier ».
+ */
+export type Signal = "vite" | "entame" | "deplacer";
+
+export const SIGNAUX: readonly { genre: Signal; puce: string; puceLong: string; legende: string }[] = [
+  { genre: "vite", puce: "!", puceLong: "à manger vite", legende: "à manger vite" },
+  { genre: "entame", puce: "◐", puceLong: "entamés", legende: "entamé" },
+  { genre: "deplacer", puce: "↔", puceLong: "à déplacer", legende: "à déplacer" },
+];
+
+const aucun = (): Record<Signal, number> => ({ vite: 0, entame: 0, deplacer: 0 });
+
+export interface RangementVue extends RangementDuPlan {
+  /** Combien de produits portent chaque signal, ICI. */
+  signaux: Record<Signal, number>;
+  /** Ce qu'il y a dedans, en produits — `null` tant que le journal n'a pas parlé. */
+  produits: number | null;
+  /** Ce que lit un lecteur d'écran : le nom, le compte, les signaux. */
+  aria: string;
+}
+
+export interface PlanVue {
+  murs: PlanCuisine["murs"];
+  rangements: RangementVue[];
+  decor: PlanCuisine["decor"];
+  /**
+   * Les zones que le plan ne dessine pas. Vide avec le catalogue du dépôt —
+   * `verifier.py` le refuse —, mais un export plus vieux que l'écran ne doit pas
+   * rendre une zone inouvrable : elles se touchent alors sous le dessin.
+   */
+  horsPlan: RangementVue[];
+  totaux: Record<Signal, number>;
+  produits: number;
+}
+
+/**
+ * Ce qui est mal rangé, zone par zone, parmi ce qui RESTE — les ids.
+ *
+ * LA MÊME RÈGLE QUE LES ALERTES DE L'EXPORT (`alertes_rangement`) : une
+ * sensibilité que la zone contredit, ou un voisin incompatible. Recalculée ici
+ * parce que l'export l'écrit en phrases, et qu'une pomme de terre déclarée
+ * finie ne doit plus allumer le sous-évier.
+ */
+export function aDeplacer(catalogue: Catalogue, reste: Iterable<string>): Map<string, Set<string>> {
+  const alias = (id: string): string => catalogue.rayons.aliases[id] ?? id;
+  const restent = new Set(reste);
+  const zones = new Map(catalogue.gardeManger.zones.map((z) => [z.id, z]));
+  const presents = (zid: string): Set<string> =>
+    new Set(
+      catalogue.gardeManger.denrees
+        .filter((d) => d.zone === zid && restent.has(alias(d.ingredient)))
+        .map((d) => d.ingredient),
+    );
+  const par = new Map<string, Set<string>>();
+  for (const d of catalogue.gardeManger.denrees) {
+    const z = zones.get(d.zone);
+    if (!z || !restent.has(alias(d.ingredient))) continue;
+    const voisins = presents(d.zone);
+    if (agressions(d, z).length || d.incompatibles.some((i) => voisins.has(i))) {
+      if (!par.has(d.zone)) par.set(d.zone, new Set());
+      par.get(d.zone)!.add(alias(d.ingredient));
+    }
+  }
+  return par;
+}
+
+/** Les signaux des zones du garde-manger, comptés par produit et pas par lot :
+ *  trois fonds de paquets de pâtes sont UN produit entamé. */
+export function signauxDesZones(catalogue: Catalogue, reste: Iterable<string>): Map<string, Record<Signal, number>> {
+  const ids = [...reste];
+  const par = new Map<string, Record<Signal, number>>();
+  const de = (zid: string) => par.get(zid) ?? par.set(zid, aucun()).get(zid)!;
+  const vus = new Set<string>();
+  for (const s of aSauver(catalogue, ids)) {
+    const cle = `${s.zoneId}|${s.ingredient}`;
+    if (vus.has(cle)) continue;
+    vus.add(cle);
+    // LE PARTAGE DE « À MANGER EN PREMIER » : « pressé » d'un côté, « entamé »
+    // de l'autre — les deux mots que la liste écrit déjà à droite de la ligne.
+    de(s.zoneId)[s.urgence === "haute" ? "vite" : "entame"] += 1;
+  }
+  for (const [zid, mal] of aDeplacer(catalogue, ids)) de(zid).deplacer = mal.size;
+  return par;
+}
+
+/** Un lot du frigo ou du congélateur, compté sur le plan : là, et pas à jeter. */
+const vivant = (l: LotVue): boolean => !l.epuise && !l.perime;
+
+/**
+ * Le plan, prêt à dessiner.
+ *
+ * `lots` : TOUS les lots du dépôt (sans filtre) ; `produitsParZone` : ce que le
+ * rejeu dit qu'il reste dans chaque zone, ou `null` tant qu'il n'a pas répondu.
+ */
+export function vueDuPlan(
+  catalogue: Catalogue,
+  reste: Iterable<string>,
+  lots: readonly LotVue[],
+  produitsParZone: ReadonlyMap<string, number> | null,
+): PlanVue | null {
+  const plan = catalogue.gardeManger.plan;
+  if (!plan) return null;
+  const signaux = signauxDesZones(catalogue, reste);
+  const vue = (r: RangementDuPlan): RangementVue => {
+    const dedans = r.zone ? null : lots.filter((l) => l.espace === r.espace && vivant(l));
+    const s = r.zone
+      ? (signaux.get(r.zone) ?? aucun())
+      : { ...aucun(), vite: dedans!.filter((l) => l.marque === "urgent").length };
+    const produits = r.zone ? (produitsParZone ? (produitsParZone.get(r.zone) ?? 0) : null) : dedans!.length;
+    const dits = SIGNAUX.filter((x) => s[x.genre]).map((x) => `${s[x.genre]} ${x.legende}`);
+    return {
+      ...r,
+      signaux: s,
+      produits,
+      aria: [r.label, produits == null ? "" : pluriel(produits, "produit"), ...dits]
+        .filter(Boolean)
+        .join(", "),
+    };
+  };
+  const rangements = plan.rangements.map(vue);
+  const dessinees = new Set(plan.rangements.map((r) => r.zone));
+  const horsPlan = catalogue.gardeManger.zones
+    .filter((z) => !dessinees.has(z.id))
+    .map((z) =>
+      vue({ id: z.id, zone: z.id, espace: z.espace, label: z.label, court: z.label, teinte: "bois",
+        mur: "fond", x: 0, y: 0, w: 0, h: 0 }),
+    );
+  const tous = [...rangements, ...horsPlan];
+  const totaux = aucun();
+  for (const r of tous) for (const x of SIGNAUX) totaux[x.genre] += r.signaux[x.genre];
+  return {
+    murs: plan.murs,
+    rangements,
+    decor: plan.decor,
+    horsPlan,
+    totaux,
+    produits: tous.reduce((n, r) => n + (r.produits ?? 0), 0),
+  };
+}
+
+/** Un filtre éteint les rangements qui n'ont rien à dire sur lui — il ne les
+ *  cache pas : le plan reste le plan, on ne déplace pas les meubles. */
+export const eteint = (r: RangementVue, filtre: Signal | null): boolean =>
+  filtre !== null && r.signaux[filtre] === 0;
+
+/**
+ * Le conseil de rangement d'un rangement, en phrases — l'encart vert.
+ *
+ * D'ABORD CE QUI EST MAL RANGÉ ICI (les alertes de l'export, tant qu'il reste
+ * quelque chose à déplacer), PUIS LE GESTE DES FAMILLES DE GARDE de ce qui y
+ * est rangé — `conservation.yaml`. Deux au plus : un encart de cinq conseils
+ * est un encart qu'on saute. Le congélateur prend le conseil de sa famille ;
+ * le frigo n'en a pas, ses lots sont des plats, pas des denrées.
+ */
+export function conseilDe(catalogue: Catalogue, r: RangementVue, reste: Iterable<string>): string[] {
+  const familles = catalogue.garde ?? [];
+  if (!r.zone) return familles.filter((f) => f.espace === r.espace && r.espace === "congelo").map((f) => f.conseil);
+  const zone = catalogue.gardeManger.zones.find((z) => z.id === r.zone);
+  if (!zone) return [];
+  const alias = (id: string): string => catalogue.rayons.aliases[id] ?? id;
+  const restent = new Set(reste);
+  // « (sous-évier) » en fin d'alerte se tait : le panneau porte déjà le nom.
+  const fin = ` (${zone.label})`;
+  const alertes = r.signaux.deplacer
+    ? catalogue.gardeManger.alertes
+        .filter((a) => a.endsWith(fin))
+        .map((a) => `À déplacer : ${a.slice(0, -fin.length)}.`)
+    : [];
+  const ids = [
+    ...new Set(
+      catalogue.gardeManger.denrees
+        .filter((d) => d.zone === zone.id && d.garde && restent.has(alias(d.ingredient)))
+        .map((d) => d.garde!),
+    ),
+  ];
+  const gestes = ids
+    .map((id) => familles.find((f) => f.id === id)?.conseil)
+    .filter((c): c is string => !!c)
+    .slice(0, 2);
+  return [...alertes, ...gestes];
 }

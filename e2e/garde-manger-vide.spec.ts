@@ -15,7 +15,7 @@
 
 import { readFileSync } from "node:fs";
 import { expect, test } from "@playwright/test";
-import { attendreLApp, poserUnPlat } from "./parcours";
+import { attendreLApp, ouvrirRangement, poserUnPlat } from "./parcours";
 
 /**
  * Les plats qui puisent dans une zone du placard, et ce qu'ils y prennent.
@@ -78,7 +78,8 @@ test("relever une zone à vide met ce qui manque sur la liste de courses", async
   // LE GESTE : ouvrir le placard, constater qu'il n'y a plus rien, le dire.
   await page.goto("/#/cuisine/stock");
   await attendreLApp(page);
-  const carte = page.locator(".co-espace").filter({ hasText: zone }).first();
+  // T141 — la zone s'ouvre en la touchant sur le plan.
+  const carte = await ouvrirRangement(page, zone);
   await carte.getByRole("button", { name: "Relever" }).click();
 
   // Tout descendre à zéro. Douze coups par ligne : le relevé du 26/08 ne porte

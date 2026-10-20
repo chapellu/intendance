@@ -222,6 +222,8 @@ export interface ASauver {
   urgence: Urgence;
   /** Où c'est rangé, en toutes lettres — on ne sauve pas ce qu'on ne trouve pas. */
   zone: string;
+  /** La même, par son id — ce que le plan de la cuisine allume (T141). */
+  zoneId: string;
   /** Pourquoi ça presse, dit en français. */
   raison: string;
   /**
@@ -292,6 +294,7 @@ export function aSauver(catalogue: Catalogue, reste: Iterable<string>): ASauver[
       nom: d.ingredient.replace(/-/g, " "),
       urgence: d.urgence,
       zone: zones.get(d.zone)?.label ?? d.zone,
+      zoneId: d.zone,
       raison: raison(d),
       conserver: d.conservations.filter((c) => c.acquis),
       verrouille: d.conservations.filter((c) => !c.acquis),

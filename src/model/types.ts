@@ -713,6 +713,50 @@ export interface GardeManger {
   /** Les erreurs de RANGEMENT, calculées à l'export. Elles ne parlent pas des
    *  données mais de la cuisine : elles se corrigent en déplaçant un sachet. */
   alertes: string[];
+  /** Le dessin de la cuisine (T141), ou `null` sur un export qui n'en porte pas. */
+  plan: PlanCuisine | null;
+}
+
+export type Mur = "gauche" | "fond";
+export type TeinteRangement = "bois-clair" | "bois" | "bois-fonce" | "blanc" | "froid";
+export type TeinteDecor = "mur" | "mur-fonce" | "plan-de-travail" | "plaques" | "electromenager";
+
+/** Une place sur un mur, en pixels CSS à l'échelle 1. */
+export interface Cadre {
+  mur: Mur;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
+/**
+ * Ce qu'on touche sur le plan — T141.
+ *
+ * UNE ZONE DU GARDE-MANGER OU UN APPAREIL, et `zone` dit lequel : l'id de la
+ * zone, ou `null` pour le frigo et le congélateur, dont le contenu vient du
+ * dépôt par leur `espace`.
+ */
+export interface RangementDuPlan extends Cadre {
+  id: string;
+  zone: string | null;
+  espace: Espace;
+  /** Le titre du panneau : « sous-évier », « Congélateur ». */
+  label: string;
+  /** Le mot écrit sur le meuble : « Coin, haut ». */
+  court: string;
+  teinte: TeinteRangement;
+}
+
+export interface DecorDuPlan extends Cadre {
+  label: string;
+  teinte: TeinteDecor;
+}
+
+export interface PlanCuisine {
+  murs: Record<Mur, { w: number; h: number; label: string }>;
+  rangements: RangementDuPlan[];
+  decor: DecorDuPlan[];
 }
 
 export interface Catalogue {

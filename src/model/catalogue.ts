@@ -15,7 +15,8 @@
 // possible. Un champ qu'aucun calcul ne lit peut manquer sans dommage.
 
 import type {
-  Accept, Accompagnement, Agression, Catalogue, Denree, Emit, EmitKind, Espace, Etape, Etat,
+  Accept, Cadre, DecorDuPlan, Mur, PlanCuisine, RangementDuPlan, TeinteDecor, TeinteRangement,
+  Accompagnement, Agression, Catalogue, Denree, Emit, EmitKind, Espace, Etape, Etat,
   FamilleDeGarde, Fond, Format, Forme, Foyer, GardeManger, Ingredient, LigneStock, Nature, Outil,
   Plat, Provenance, Quantite, Rattrapage, Role, Saisons, Source, Urgence, Usage, Zone,
 } from "./types";
@@ -572,7 +573,66 @@ function gardeManger(v: unknown, ou: string): GardeManger {
     zones,
     denrees,
     alertes: listeDeTextes(o["alertes"] ?? [], `${ou}.alertes`),
+    plan: o["plan"] == null ? null : planCuisine(o["plan"], `${ou}.plan`, connues),
   };
+}
+
+const MURS: readonly Mur[] = ["gauche", "fond"];
+const TEINTES_RANGEMENT: readonly TeinteRangement[] = ["bois-clair", "bois", "bois-fonce", "blanc", "froid"];
+const TEINTES_DECOR: readonly TeinteDecor[] = ["mur", "mur-fonce", "plan-de-travail", "plaques", "electromenager"];
+
+function cadre(o: Record<string, unknown>, ou: string): Cadre {
+  return {
+    mur: parmi(o["mur"], MURS, `${ou}.mur`),
+    x: nombre(o["x"], `${ou}.x`),
+    y: nombre(o["y"], `${ou}.y`),
+    w: nombre(o["w"], `${ou}.w`),
+    h: nombre(o["h"], `${ou}.h`),
+  };
+}
+
+/**
+ * Le plan de la cuisine — T141.
+ *
+ * UN RANGEMENT QUI NOMME UNE ZONE INCONNUE EST REFUSÉ, pour la même raison que
+ * la denrée plus haut : il s'ouvrirait sur un panneau vide, qu'on lirait
+ * « il n'y a rien ici ».
+ */
+function planCuisine(v: unknown, ou: string, zones: ReadonlySet<string>): PlanCuisine {
+  const o = obj(v, ou);
+  const murs = obj(o["murs"], `${ou}.murs`);
+  const mur = (m: Mur) => {
+    const x = obj(murs[m], `${ou}.murs.${m}`);
+    return {
+      w: nombre(x["w"], `${ou}.murs.${m}.w`),
+      h: nombre(x["h"], `${ou}.murs.${m}.h`),
+      label: texte(x["label"], `${ou}.murs.${m}.label`),
+    };
+  };
+  const rangements = tableau(o["rangements"] ?? [], `${ou}.rangements`).map((x, i): RangementDuPlan => {
+    const r = obj(x, `${ou}.rangements[${i}]`);
+    const zone = texteOuNull(r["zone"] ?? null, `${ou}.rangements[${i}].zone`);
+    if (zone !== null && !zones.has(zone))
+      throw new CatalogueInvalide(`${ou}.rangements[${i}].zone`, "une zone déclarée", zone);
+    return {
+      ...cadre(r, `${ou}.rangements[${i}]`),
+      id: texte(r["id"], `${ou}.rangements[${i}].id`),
+      zone,
+      espace: parmi(r["espace"], ESPACES, `${ou}.rangements[${i}].espace`),
+      label: texte(r["label"], `${ou}.rangements[${i}].label`),
+      court: texte(r["court"], `${ou}.rangements[${i}].court`),
+      teinte: parmi(r["teinte"], TEINTES_RANGEMENT, `${ou}.rangements[${i}].teinte`),
+    };
+  });
+  const decor = tableau(o["decor"] ?? [], `${ou}.decor`).map((x, i): DecorDuPlan => {
+    const d = obj(x, `${ou}.decor[${i}]`);
+    return {
+      ...cadre(d, `${ou}.decor[${i}]`),
+      label: typeof d["label"] === "string" ? d["label"] : "",
+      teinte: parmi(d["teinte"] ?? "mur", TEINTES_DECOR, `${ou}.decor[${i}].teinte`),
+    };
+  });
+  return { murs: { gauche: mur("gauche"), fond: mur("fond") }, rangements, decor };
 }
 
 /* ─────────────────────────────────── la garde, le fond, les saisons (2026-10-18) */

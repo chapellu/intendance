@@ -44226,6 +44226,231 @@
     "note": "Meuble bas sous l'évier, siphon et évacuations au-dessus. Le point le plus humide du logement, et c'est là que sont les légumes racines. La lessive vaisselle partage l'emplacement."
    }
   ],
+  "plan": {
+   "murs": {
+    "gauche": {
+     "w": 86,
+     "h": 290,
+     "label": "les étagères en bois"
+    },
+    "fond": {
+     "w": 238,
+     "h": 290,
+     "label": "le mur de l'évier"
+    }
+   },
+   "rangements": [
+    {
+     "id": "etagere-ouverte",
+     "zone": "etagere-ouverte",
+     "espace": "placard",
+     "label": "étagère ouverte",
+     "court": "Étagère",
+     "mur": "gauche",
+     "x": 4,
+     "y": 90,
+     "w": 80,
+     "h": 84,
+     "teinte": "bois-clair"
+    },
+    {
+     "id": "dessus-etagere",
+     "zone": "dessus-etagere",
+     "espace": "placard",
+     "label": "dessus de l'étagère ouverte",
+     "court": "Dessus",
+     "mur": "gauche",
+     "x": 4,
+     "y": 38,
+     "w": 80,
+     "h": 46,
+     "teinte": "bois-clair"
+    },
+    {
+     "id": "demi-lune-basse",
+     "zone": "demi-lune-basse",
+     "espace": "placard",
+     "label": "demi-lune basse",
+     "court": "Coin, bas",
+     "mur": "fond",
+     "x": 4,
+     "y": 180,
+     "w": 48,
+     "h": 52,
+     "teinte": "bois-fonce"
+    },
+    {
+     "id": "demi-lune-haute",
+     "zone": "demi-lune-haute",
+     "espace": "placard",
+     "label": "demi-lune haute",
+     "court": "Coin, haut",
+     "mur": "fond",
+     "x": 4,
+     "y": 124,
+     "w": 48,
+     "h": 52,
+     "teinte": "bois"
+    },
+    {
+     "id": "tiroir-epices",
+     "zone": "tiroir-epices",
+     "espace": "placard",
+     "label": "tiroir à épices",
+     "court": "Tiroir épices",
+     "mur": "fond",
+     "x": 4,
+     "y": 236,
+     "w": 48,
+     "h": 48,
+     "teinte": "bois-fonce"
+    },
+    {
+     "id": "placard-haut",
+     "zone": "placard-haut",
+     "espace": "placard",
+     "label": "placard haut, étagère basse",
+     "court": "Placard haut",
+     "mur": "fond",
+     "x": 4,
+     "y": 6,
+     "w": 48,
+     "h": 80,
+     "teinte": "bois"
+    },
+    {
+     "id": "sous-evier",
+     "zone": "sous-evier",
+     "espace": "placard",
+     "label": "sous-évier",
+     "court": "Sous-évier",
+     "mur": "fond",
+     "x": 138,
+     "y": 124,
+     "w": 46,
+     "h": 108,
+     "teinte": "bois-fonce"
+    },
+    {
+     "id": "frigo",
+     "zone": null,
+     "espace": "frigo",
+     "label": "Frigo",
+     "court": "Frigo",
+     "mur": "fond",
+     "x": 188,
+     "y": 6,
+     "w": 48,
+     "h": 140,
+     "teinte": "blanc"
+    },
+    {
+     "id": "congelo",
+     "zone": null,
+     "espace": "congelo",
+     "label": "Congélateur",
+     "court": "Congélo",
+     "mur": "fond",
+     "x": 188,
+     "y": 150,
+     "w": 48,
+     "h": 134,
+     "teinte": "froid"
+    }
+   ],
+   "decor": [
+    {
+     "mur": "gauche",
+     "x": 4,
+     "y": 6,
+     "w": 80,
+     "h": 26,
+     "label": "bocaux bébé",
+     "teinte": "mur"
+    },
+    {
+     "mur": "gauche",
+     "x": 4,
+     "y": 180,
+     "w": 80,
+     "h": 44,
+     "label": "vins",
+     "teinte": "mur-fonce"
+    },
+    {
+     "mur": "gauche",
+     "x": 4,
+     "y": 230,
+     "w": 80,
+     "h": 54,
+     "label": "laits, briques",
+     "teinte": "mur-fonce"
+    },
+    {
+     "mur": "fond",
+     "x": 56,
+     "y": 6,
+     "w": 38,
+     "h": 80,
+     "label": "",
+     "teinte": "mur"
+    },
+    {
+     "mur": "fond",
+     "x": 96,
+     "y": 6,
+     "w": 38,
+     "h": 80,
+     "label": "",
+     "teinte": "mur"
+    },
+    {
+     "mur": "fond",
+     "x": 138,
+     "y": 6,
+     "w": 46,
+     "h": 80,
+     "label": "",
+     "teinte": "mur"
+    },
+    {
+     "mur": "fond",
+     "x": 0,
+     "y": 112,
+     "w": 186,
+     "h": 8,
+     "label": "",
+     "teinte": "plan-de-travail"
+    },
+    {
+     "mur": "fond",
+     "x": 56,
+     "y": 92,
+     "w": 78,
+     "h": 16,
+     "label": "plaques",
+     "teinte": "plaques"
+    },
+    {
+     "mur": "fond",
+     "x": 56,
+     "y": 124,
+     "w": 38,
+     "h": 108,
+     "label": "four",
+     "teinte": "electromenager"
+    },
+    {
+     "mur": "fond",
+     "x": 96,
+     "y": 124,
+     "w": 38,
+     "h": 108,
+     "label": "lave-vaisselle",
+     "teinte": "electromenager"
+    }
+   ]
+  },
   "denrees": [
    {
     "ingredient": "mais",

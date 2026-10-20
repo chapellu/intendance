@@ -228,3 +228,17 @@ describe("un export qui a dérivé échoue bruyamment", () => {
     expect(casse).toThrow(/plats\[3\]\.titre/);
   });
 });
+
+describe("le plan de la cuisine — T141", () => {
+  test("un rangement du plan qui nomme une zone inconnue est refusé", () => {
+    const b = brut() as { gardeManger: { plan: { rangements: { zone: string | null }[] } } };
+    b.gardeManger.plan.rangements[0]!.zone = "cave";
+    expect(() => lireCatalogue(b)).toThrow(CatalogueInvalide);
+  });
+
+  test("le plan se lit, appareils compris", () => {
+    const { plan } = lireCatalogue(brut()).gardeManger;
+    expect(plan?.murs.gauche.w).toBeGreaterThan(0);
+    expect(plan?.rangements.find((r) => r.id === "frigo")?.zone).toBeNull();
+  });
+});

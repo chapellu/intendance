@@ -8,6 +8,7 @@ import { contexte, rejouer, type Evenement } from "../model/journal";
 import {
   agressions, baisserPlancher, categories, espaces, fiabilite, gardeManger, lots,
   enPaquets, ingredientsConnus, motDuPaquet, perte, PERIME, resteAuPlacard, restesPerimes, vueDeLInventaire, vueDesPlanchers, vueDesPlanchersDenrees, zones,
+  conseilDe, eteint, vueDuPlan, type LotVue,
 } from "./stock.vue";
 
 const LUNDI = new Date("2026-08-17T12:00:00Z");
@@ -496,7 +497,7 @@ describe("ce que la zone fait subir à la denrée", () => {
 /** Une zone et ce qu'elle porte, vues. Le `!` est sûr : `zones()` rend une vue
  *  par zone, et on lui en donne exactement une. */
 const uneZone = (denrees: Denree[], z: Partial<Zone> = {}) =>
-  zones({ releve: "2026-08-26", zones: [zoneTest(z)], denrees, alertes: [] })[0]!;
+  zones({ releve: "2026-08-26", zones: [zoneTest(z)], denrees, alertes: [], plan: null })[0]!;
 
 const SANS_COTES = { largeur_cm: null, profondeur_cm: null, hauteur_cm: null };
 
@@ -1037,5 +1038,76 @@ describe("un rangement perdu d'un coup", () => {
     expect(perte(c.depot, "placard")).toBeNull();
     jeu.stock = [];
     expect(perte(calculer(jeu).depot, "congelo")).toBeNull();
+  });
+});
+
+describe("le plan de la cuisine — T141", () => {
+  const tout = () => idsDuReleve(catalogue);
+  const plan = (reste: Iterable<string> = tout(), lots: LotVue[] = []) =>
+    vueDuPlan(catalogue, reste, lots, null)!;
+  const r = (p: ReturnType<typeof plan>, id: string) => p.rangements.find((x) => x.id === id)!;
+
+  test("chaque zone du garde-manger a sa place, et le frigo et le congélateur aussi", () => {
+    const p = plan();
+    expect(p.horsPlan).toEqual([]);
+    for (const z of catalogue.gardeManger.zones) expect(r(p, z.id).zone).toBe(z.id);
+    expect(r(p, "frigo")).toMatchObject({ zone: null, espace: "frigo" });
+    expect(r(p, "congelo")).toMatchObject({ zone: null, espace: "congelo" });
+  });
+
+  test("les pastilles d'une zone : entamés, à déplacer — comptés par produit, pas par lot", () => {
+    const p = plan();
+    // Cracotte, krisprolls, biscottes : trois paquets entamés sur le dessus.
+    expect(r(p, "dessus-etagere").signaux).toEqual({ vite: 0, entame: 3, deplacer: 0 });
+    // Trois fonds de paquets de pâtes sont UN produit entamé.
+    expect(r(p, "demi-lune-haute").signaux.entame).toBe(2);
+    // Les quatre légumes du sous-évier sont à l'humidité.
+    expect(r(p, "sous-evier").signaux).toEqual({ vite: 0, entame: 0, deplacer: 4 });
+    expect(r(p, "etagere-ouverte").signaux.deplacer).toBe(1);
+    expect(r(p, "sous-evier").aria).toContain("4 à déplacer");
+    expect(p.totaux.deplacer).toBe(5);
+  });
+
+  test("ce qu'on a fini n'allume plus rien", () => {
+    const sans = tout().filter((id) => !["pomme-de-terre", "oignon", "echalote", "ail"].includes(id));
+    expect(r(plan(sans), "sous-evier").signaux.deplacer).toBe(0);
+  });
+
+  test("le frigo compte ses lots vivants, et allume « à manger vite » sur l'urgent seul", () => {
+    const lot = (o: Partial<LotVue>): LotVue => ({
+      cle: String(Math.random()), espace: "frigo", nom: "x", ou: "", quantite: "",
+      fiabilite: { label: "compté", classe: "compte", niveau: "haute" },
+      epuise: false, ref: "1", horloge: "", marque: "", perime: false, ...o,
+    });
+    const p = plan(tout(), [
+      lot({ marque: "urgent" }), lot({ marque: "à manger" }), lot({ epuise: true, marque: "urgent" }),
+      lot({ perime: true }), lot({ espace: "congelo" }),
+    ]);
+    expect(r(p, "frigo").signaux.vite).toBe(1);
+    expect(r(p, "frigo").produits).toBe(2);
+    expect(r(p, "congelo").produits).toBe(1);
+    // Une zone attend le rejeu pour dire combien elle porte.
+    expect(r(p, "sous-evier").produits).toBeNull();
+  });
+
+  test("un filtre éteint les rangements qui n'ont rien à dire, et seulement eux", () => {
+    const p = plan();
+    expect(eteint(r(p, "dessus-etagere"), "deplacer")).toBe(true);
+    expect(eteint(r(p, "sous-evier"), "deplacer")).toBe(false);
+    expect(eteint(r(p, "sous-evier"), "entame")).toBe(true);
+    expect(p.rangements.some((x) => eteint(x, null))).toBe(false);
+  });
+
+  test("le conseil du sous-évier : ce qu'il faut déplacer, puis le geste de la famille", () => {
+    const c = conseilDe(catalogue, r(plan(), "sous-evier"), tout());
+    expect(c[0]).toMatch(/^À déplacer : pomme de terre, oignon, echalote, ail — dans un endroit humide\.$/);
+    expect(c.some((x) => x.includes("loin du sous-évier"))).toBe(true);
+    const sans = tout().filter((id) => !["pomme-de-terre", "oignon", "echalote", "ail"].includes(id));
+    expect(conseilDe(catalogue, r(plan(sans), "sous-evier"), sans)).toEqual([]);
+  });
+
+  test("sans plan dans l'export, pas de plan — l'écran retombe sur la liste des zones", () => {
+    const vieux = { ...catalogue, gardeManger: { ...catalogue.gardeManger, plan: null } };
+    expect(vueDuPlan(vieux, tout(), [], null)).toBeNull();
   });
 });

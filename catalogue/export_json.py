@@ -401,6 +401,25 @@ def main():
                  "note": z.get("note")}
                 for z in pantry["zones"]
             ],
+            # LE PLAN DE LA CUISINE — T141. Une liste à plat de ce qu'on touche,
+            # zones et appareils mêlés, dans l'ordre du fichier ; le décor à
+            # part, parce qu'il ne se touche pas.
+            "plan": {
+                "murs": {m: {"w": v["w"], "h": v["h"], "label": v.get("label") or m}
+                         for m, v in (pantry["plan"].get("murs") or {}).items()},
+                "rangements": [
+                    {"id": r["id"], "zone": r["zone"], "espace": r["espace"],
+                     "label": r["label"], "court": r["court"], "mur": r["mur"],
+                     "x": r["x"], "y": r["y"], "w": r["w"], "h": r["h"],
+                     "teinte": r["teinte"]}
+                    for r in gm.rangements_du_plan(pantry)
+                ],
+                "decor": [
+                    {"mur": d["mur"], "x": d["x"], "y": d["y"], "w": d["w"], "h": d["h"],
+                     "label": d.get("label") or "", "teinte": d.get("teinte", "mur")}
+                    for d in pantry["plan"].get("decor") or []
+                ],
+            },
             "denrees": [
                 {"ingredient": d["ingredient"], "zone": d["zone"],
                  "unites": d.get("unites", 1),
