@@ -5271,6 +5271,22 @@ Branche `cuisine/a-la-pause-retouches`, sur `cuisine/a-la-pause`.
       (`RAYON …`) ignorée d'office : il faut le talon. La photo n'est jamais
       gardée. Corpus : 4 tickets sur 4, lignes et totaux exacts, idem en
       variante OCR abîmée.
+- [x] **T140 — La boîte entière.** Dit le 20/10 : « je préfère utiliser la
+      boîte entière plutôt que les trois quarts et gérer un petit reste ».
+      Une famille de garde `entame_se_finit: true` (conserve, emballé) dont
+      `fond.yaml:unite` dit le poids (maïs 285 g, thon 140 g, maquereaux
+      169 g, tomates 400 g — à reporter au brouillon ; la brique de coco
+      attend son volume) : dès que la recette prend au moins le tiers de la
+      dernière boîte (`PART_POUR_BOITE_ENTIERE`, `paquet.ts`), le plat la vide.
+      200 g sur 285 → une boîte, aucun reste ouvert ; 400 g → deux ; 50 g →
+      usage partiel, la boîte reste entamée. Au rejeu (`rejouer` arrondit la
+      demande ; `retirer` sert enfin plusieurs unités d'un même lot), à la
+      liste (plat par plat : deux plats à 200 g achètent « 2 boîtes
+      (570 g) », rentrées comme deux boîtes de 285 g), donc au fond ; sur la
+      fiche et à l'étape : « 1 boîte entière (285 g, la recette en demande
+      200 g) » — la prose et les `uses:` du livre ne bougent pas. Le sec se
+      garde ouvert et reste à la quantité ; le râpé entamé se congèle, les
+      yaourts se comptent au pot : hors règle.
 
 ## Sortie
 

@@ -88,6 +88,7 @@ def exporter_familles(conserv: dict) -> list:
     `fenetre` pour afficher — les deux formes de T55, pour la même raison."""
     return [{
         "id": f["id"], "label": f["label"], "fond": bool(f.get("fond")),
+        "entameSeFinit": bool(f.get("entame_se_finit")),
         "espace": f["espace"], "rangement": f["rangement"],
         "methode": f.get("methode"),
         "fenetreJours": gm.fenetre_jours(f.get("fenetre")),
@@ -125,6 +126,9 @@ def verifier_familles(conserv: dict, rayons: dict) -> tuple:
             err.append(f"{ou} : espace « {f.get('espace')} » inconnu — attendu parmi {list(ch.ESPACES)}")
         if not isinstance(f.get("fond"), bool):
             err.append(f"{ou} : `fond:` doit dire oui ou non — c'est lui qui décide du plancher")
+        if not isinstance(f.get("entame_se_finit", False), bool):
+            err.append(f"{ou} : `entame_se_finit:` doit dire oui ou non — c'est lui qui "
+                       "décide de la boîte entière (T140)")
         # UNE FENÊTRE QU'ON NE SAIT PAS CONVERTIR EST UNE FENÊTRE ABSENTE, et
         # `fenetre_jours` le dit en rendant `None` : l'app n'aurait rien à
         # comparer, et retomberait en silence sur un défaut.

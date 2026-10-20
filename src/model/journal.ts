@@ -37,6 +37,7 @@
 import type {
   Catalogue, Denree, Espace, Etat, Plat, Quantite, RepasId,
 } from "./types";
+import { boitesDeLaLigne, boitesDuCatalogue, contenuDUnite, type Boite } from "./paquet";
 
 /* ══════════════════════════════════════════════════════ les trois événements */
 
@@ -373,6 +374,9 @@ export interface Contexte {
   /** T135 : ce que contient une unité d'achat du fond (`fond.yaml:unite`),
    *  quand elle le dit — « sachet de 500 g », « boîte de 6 ». */
   contenu: (id: string) => Quantite | null;
+  /** T140 : la boîte d'un ingrédient dont une boîte entamée se finit
+   *  (`entame_se_finit`), quand le fond dit son poids — voir `paquet.ts`. */
+  boite: (id: string) => Boite | null;
 }
 
 export function contexte(catalogue: Catalogue): Contexte {
@@ -410,27 +414,13 @@ export function contexte(catalogue: Catalogue): Contexte {
       }
       return (id: string) => par.get(alias(id)) ?? null;
     })(),
+    boite: boitesDuCatalogue(catalogue, alias),
   };
 }
 
-/**
- * Ce que contient une unité d'achat, lu dans les mots du fond — T135.
- *
- * « sachet de 500 g » → 500 g ; « paquet de 1 kg » → 1000 g ; « boîte de 6 »,
- * « pack de 4 » → 6, 4 pièces. Rien d'autre : « sachet », « tube », « filet de
- * 1 kg » d'oignons (que les recettes comptent en pièces) ne se soustraient pas,
- * ou pas dans la même unité, et `retirer` garde alors son mode non chiffré.
- */
-export function contenuDUnite(unite: string): Quantite | null {
-  const nombre = (x: string): number => Number(x.replace(",", "."));
-  const kg = /(\d+(?:[.,]\d+)?)\s*kg\b/i.exec(unite);
-  if (kg) return { amount: nombre(kg[1]!) * 1000, unit: "g" };
-  const g = /(\d+(?:[.,]\d+)?)\s*g\b/i.exec(unite);
-  if (g) return { amount: nombre(g[1]!), unit: "g" };
-  const pieces = /\bde\s+(\d+)\s*$/i.exec(unite);
-  if (pieces) return { amount: nombre(pieces[1]!), unit: PIECE };
-  return null;
-}
+// `contenuDUnite` vit dans `paquet.ts` depuis T140 : la boîte entière en a
+// besoin, et le rejeu en dépend aussi.
+export { contenuDUnite };
 
 /** L'unité de compte des recettes : `pièce`, et `pot` pour un yaourt. */
 const PIECE = "pièce";
@@ -612,95 +602,102 @@ export function retirer(
 
   for (const lot of servis) {
     if (reste != null && reste <= 1e-9) break;
-    const pu = contenuUnite(lot, unite);
+    // T140 — UN LOT PEUT DONNER PLUSIEURS UNITÉS. Deux boîtes de maïs pour un
+    // plat qui en prend deux entières : avant, chaque lot ne servait qu'une
+    // unité par plat, et la seconde boîte restait au placard. Le tour reprend
+    // le même lot tant que la demande chiffrée n'est pas servie ; une demande
+    // inconnue (`null`) n'y fait qu'un passage, comme avant.
+    do {
+      const pu = contenuUnite(lot, unite);
 
-    // ── mode non chiffré : on avance l'état, on n'invente rien ──────────────
-    if (pu == null) {
-      if (lot.unites <= 0) continue;
-      // T134 — MAIS UNE UNITÉ FINIT PAR SE VIDER. Avant, le mode non chiffré ne
-      // retirait JAMAIS rien : un sachet de lentilles rentré par la liste
-      // (`unité`, sans poids) survivait à 75 hachis, le plancher ne voyait
-      // aucune baisse et la liste du fond restait vide toute l'année. Toujours
-      // sans un gramme : on compte des UNITÉS, ce qu'un œil vérifie.
-      //   — `sec` : le paquet s'ouvre, rien ne part (il sert encore) ;
-      //   — `entame` : le paquet ouvert se finit — une unité part, la suivante
-      //     est scellée ;
-      //   — `conserve`, `bocal` : la boîte se vide d'un coup (même règle que
-      //     T29) ; `frais` n'attend pas un second plat…
-      //   — T136 : … SAUF UN FRAIS CONSTATÉ À L'UNITÉ (`unites: 1`, sans
-      //     poids). Le relevé y dit « il y en a », pas « une pièce » : le sac
-      //     de pommes de terre du sous-évier disparaissait sous une omelette de
-      //     trois pommes de terre, et le parcours `stock-descend` ne trouvait
-      //     plus une seule ligne « estimé ». Il s'entame, comme un paquet sec,
-      //     et c'est le plat suivant qui le finit.
-      if (lot.etat === "sec" || (lot.etat === "frais" && lot.unites === 1)) {
-        lot.etat = "entame";
-        effet ??= "etat";
-      } else {
-        lot.unites -= 1;
-        if (lot.etat === "entame" && lot.unites > 0) lot.etat = "sec";
-        effet ??= "unite";
+      // ── mode non chiffré : on avance l'état, on n'invente rien ──────────────
+      if (pu == null) {
+        if (lot.unites <= 0) break;
+        // T134 — MAIS UNE UNITÉ FINIT PAR SE VIDER. Avant, le mode non chiffré ne
+        // retirait JAMAIS rien : un sachet de lentilles rentré par la liste
+        // (`unité`, sans poids) survivait à 75 hachis, le plancher ne voyait
+        // aucune baisse et la liste du fond restait vide toute l'année. Toujours
+        // sans un gramme : on compte des UNITÉS, ce qu'un œil vérifie.
+        //   — `sec` : le paquet s'ouvre, rien ne part (il sert encore) ;
+        //   — `entame` : le paquet ouvert se finit — une unité part, la suivante
+        //     est scellée ;
+        //   — `conserve`, `bocal` : la boîte se vide d'un coup (même règle que
+        //     T29) ; `frais` n'attend pas un second plat…
+        //   — T136 : … SAUF UN FRAIS CONSTATÉ À L'UNITÉ (`unites: 1`, sans
+        //     poids). Le relevé y dit « il y en a », pas « une pièce » : le sac
+        //     de pommes de terre du sous-évier disparaissait sous une omelette de
+        //     trois pommes de terre, et le parcours `stock-descend` ne trouvait
+        //     plus une seule ligne « estimé ». Il s'entame, comme un paquet sec,
+        //     et c'est le plat suivant qui le finit.
+        if (lot.etat === "sec" || (lot.etat === "frais" && lot.unites === 1)) {
+          lot.etat = "entame";
+          effet ??= "etat";
+        } else {
+          lot.unites -= 1;
+          if (lot.etat === "entame" && lot.unites > 0) lot.etat = "sec";
+          effet ??= "unite";
+        }
+        // Un lot non chiffré ne peut pas dire combien il a donné : la demande est
+        // considérée servie, et le doute qui en résulte est exactement ce que la
+        // confiance est là pour porter.
+        reste = 0;
+        break;
       }
-      // Un lot non chiffré ne peut pas dire combien il a donné : la demande est
-      // considérée servie, et le doute qui en résulte est exactement ce que la
-      // confiance est là pour porter.
-      reste = 0;
-      break;
-    }
 
-    // ── mode chiffré ───────────────────────────────────────────────────────
-    if (lot.entame != null && lot.entame > 1e-9) {
-      const pu2 = Math.min(reste ?? lot.entame, lot.entame);
-      lot.entame -= pu2;
-      pris += pu2;
-      if (reste != null) reste -= pu2;
-      effet ??= "grammes";
-      if (lot.entame <= 1e-9) lot.entame = null;
-      continue;
-    }
+      // ── mode chiffré ───────────────────────────────────────────────────────
+      if (lot.entame != null && lot.entame > 1e-9) {
+        const pu2 = Math.min(reste ?? lot.entame, lot.entame);
+        lot.entame -= pu2;
+        pris += pu2;
+        if (reste != null) reste -= pu2;
+        effet ??= "grammes";
+        if (lot.entame <= 1e-9) lot.entame = null;
+        continue;
+      }
 
-    if (lot.unites <= 0) continue;
+      if (lot.unites <= 0) break;
 
-    // T29 — OUVRIR UNE UNITÉ SCELLÉE LA CONSOMME EN ENTIER.
-    //
-    // C'est le comportement réel : on vide la boîte pour ne pas garder 85 g
-    // impossibles à passer. Ça ne vaut QUE pour ce qui est scellé et se vide
-    // d'un coup — une conserve, un bocal. Un paquet de pâtes s'entame.
-    const scelle = lot.etat === "conserve" || lot.etat === "bocal";
-    lot.unites -= 1;
+      // T29 — OUVRIR UNE UNITÉ SCELLÉE LA CONSOMME EN ENTIER.
+      //
+      // C'est le comportement réel : on vide la boîte pour ne pas garder 85 g
+      // impossibles à passer. Ça ne vaut QUE pour ce qui est scellé et se vide
+      // d'un coup — une conserve, un bocal. Un paquet de pâtes s'entame.
+      const scelle = lot.etat === "conserve" || lot.etat === "bocal";
+      lot.unites -= 1;
 
-    if (scelle) {
+      if (scelle) {
+        const consomme = Math.min(reste ?? pu, pu);
+        pris += consomme;
+        if (reste != null) reste -= consomme;
+        effet ??= "unite";
+        const laisse = pu - consomme;
+        if (laisse > pu * SEUIL_RESTE) {
+          // Le reste vaut d'être gardé : il devient un lot COURT, donc pressé,
+          // donc le score va chercher un plat qui le mange.
+          lots.push({
+            ingredient,
+            zone: lot.zone,
+            unites: 1,
+            parUnite: { amount: laisse, unit: lot.parUnite!.unit },
+            etat: "frais",
+            entame: laisse,
+            court: true,
+          });
+          restePose = laisse;
+        }
+        continue;
+      }
+
+      // Paquet sec : il s'entame, et son reste se compte.
       const consomme = Math.min(reste ?? pu, pu);
       pris += consomme;
       if (reste != null) reste -= consomme;
-      effet ??= "unite";
+      effet ??= "grammes";
       const laisse = pu - consomme;
-      if (laisse > pu * SEUIL_RESTE) {
-        // Le reste vaut d'être gardé : il devient un lot COURT, donc pressé,
-        // donc le score va chercher un plat qui le mange.
-        lots.push({
-          ingredient,
-          zone: lot.zone,
-          unites: 1,
-          parUnite: { amount: laisse, unit: lot.parUnite!.unit },
-          etat: "frais",
-          entame: laisse,
-          court: true,
-        });
-        restePose = laisse;
-      }
-      continue;
-    }
-
-    // Paquet sec : il s'entame, et son reste se compte.
-    const consomme = Math.min(reste ?? pu, pu);
-    pris += consomme;
-    if (reste != null) reste -= consomme;
-    effet ??= "grammes";
-    const laisse = pu - consomme;
-    lot.etat = "entame";
-    lot.entame = laisse > 1e-9 ? laisse : null;
-    if (laisse <= 1e-9) lot.etat = "sec";
+      lot.etat = "entame";
+      lot.entame = laisse > 1e-9 ? laisse : null;
+      if (laisse <= 1e-9) lot.etat = "sec";
+    } while (reste != null && reste > 1e-9);
   }
 
   // Les lots vidés s'en vont : un lot à zéro unité et sans entame n'existe plus.
@@ -728,6 +725,8 @@ export interface Demande {
   /** T135 : les œufs, les pots de yaourt — comptés, arrondis à la pièce
    *  au-dessus (on ne casse pas 1,9 œuf). `null` pour une masse. */
   pieces: number | null;
+  /** T140 : l'unité de la recette (`g`, `ml`…), pour la comparer à la boîte. */
+  unite: string;
 }
 
 /**
@@ -747,6 +746,7 @@ export function demandes(plat: Plat, facteur: number): Demande[] {
       ingredient: ing.id,
       grammes: EN_GRAMMES.has(ing.unit) ? ing.qty * facteur : null,
       pieces: enPieces(ing.unit) ? Math.ceil(ing.qty * facteur - 1e-9) : null,
+      unite: ing.unit,
     });
   }
   return out;
@@ -844,8 +844,14 @@ export function rejouer(
           suiviDe(id).depuisVu += 1;
           continue;
         }
+        // T140 — LA BOÎTE ENTIÈRE. 200 g de maïs sur une boîte de 285 g vident
+        // la boîte : le foyer ne garde pas 85 g au frigo. Le besoin s'arrondit
+        // aux boîtes avant de servir, et `retirer` ne laisse donc aucun reste
+        // ouvert ; un vrai usage partiel (50 g) reste, lui, à la quantité.
+        const entieres = d.grammes != null ? boitesDeLaLigne(ctx.boite(id), d.grammes, d.unite) : null;
+        const grammes = entieres ? entieres.quantite : d.grammes;
         retraits.push(
-          d.pieces != null ? retirer(l, id, d.pieces, PIECE) : retirer(l, id, d.grammes),
+          d.pieces != null ? retirer(l, id, d.pieces, PIECE) : retirer(l, id, grammes),
         );
         suiviDe(id).depuisVu += 1;
         // T134 — UN INGRÉDIENT ÉPUISÉ SORT DE `parIngredient`, comme après un

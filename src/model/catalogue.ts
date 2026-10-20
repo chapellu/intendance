@@ -593,6 +593,7 @@ function garde(v: unknown, ou: string): FamilleDeGarde[] {
       id: texte(o["id"], `${ou}[${i}].id`),
       label: texte(o["label"], `${ou}[${i}].label`),
       fond: booleen(o["fond"], `${ou}[${i}].fond`),
+      entameSeFinit: booleen(o["entameSeFinit"] ?? false, `${ou}[${i}].entameSeFinit`),
       espace: parmi(o["espace"], ESPACES, `${ou}[${i}].espace`),
       rangement: texte(o["rangement"], `${ou}[${i}].rangement`),
       methode: texteOuNull(o["methode"] ?? null, `${ou}[${i}].methode`),

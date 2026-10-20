@@ -646,6 +646,10 @@ export interface FamilleDeGarde {
   /** Tient assez pour être « toujours là » — donc porter un plancher. Faux sur
    *  le frais fragile (salade, viande, herbes), qui reste hors du fond. */
   fond: boolean;
+  /** T140 : une boîte entamée ne se garde pas — conserve, brique, bocal. Le
+   *  plat la prend ENTIÈRE dès qu'il en demande une bonne part (`paquet.ts`).
+   *  Faux pour le sec, qui se garde ouvert et se compte à la quantité. */
+  entameSeFinit: boolean;
   espace: Espace;
   /** Où et comment la ranger, en quelques mots. */
   rangement: string;
