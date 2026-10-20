@@ -14,6 +14,7 @@
 
 import type { Choix, Jeu } from "../model/jeu";
 import { comptoir, type Carte, type Ecart, type Savoir } from "../model/scoring";
+import { nomDuType } from "../model/plancher";
 import type { Plat } from "../model/types";
 import { fmt } from "../ui/format";
 import { iconeEspace, type NomIcone } from "../ui/icones";
@@ -87,7 +88,7 @@ export function sortiesDeLaCarte(p: Plat): Sortie[] {
     // Un reste de plat va au frigo, quoi qu'il arrive : on ne congèle pas une
     // assiette de la veille sans le décider.
     icone: iconeEspace(e.kind === "reste-plat" ? "frigo" : e.congelo ? "congelo" : "frigo"),
-    texte: `${e.type}${e.qty?.amount != null ? ` · ${fmt(e.qty.amount)} ${e.qty.unit} par lot` : ""}`,
+    texte: `${nomDuType(e.type)}${e.qty?.amount != null ? ` · ${fmt(e.qty.amount)} ${e.qty.unit} par lot` : ""}`,
   }));
   if (p.bebe) s.push({ icone: "bebe", texte: `portion bébé — ${p.bebe}` });
   return s;

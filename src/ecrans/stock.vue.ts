@@ -604,7 +604,7 @@ export function lots(
       return {
         cle: l.ref ?? `d${i}`,
         espace: l.location,
-        nom: l.type,
+        nom: nomDuType(l.type),
         ou: [
           nomEspace(l.location),
           // T104 — LE LIBELLÉ SUIVAIT `from`, QU'UN LOT JOURNALISÉ N'A JAMAIS.

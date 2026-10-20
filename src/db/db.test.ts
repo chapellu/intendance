@@ -133,6 +133,24 @@ describe("poser, régler, oublier", () => {
     expect(relu.choix[soir]).toBe("poulet-roti");
   });
 
+  test("ce que la carte de 15 h disait là se garde avec le plat, et tombe avec lui", async () => {
+    const soir = creneau(jeu, 0, "diner");
+    await poser(base, jeu, soir, "dahl-lentilles-corail", ["lentilles-corail", "oignon"]);
+    let relu = await recharger(MARDI);
+    expect(relu.dejaLa[soir]).toEqual({ plat: "dahl-lentilles-corail", ids: ["lentilles-corail", "oignon"] });
+
+    // Régler les parts ne change pas ce que la carte disait.
+    await reglerParts(base, jeu, soir, 4);
+    relu = await recharger(MARDI);
+    expect(relu.dejaLa[soir]?.ids).toEqual(["lentilles-corail", "oignon"]);
+
+    // Un autre plat, posé d'ailleurs, n'hérite pas de l'instantané.
+    await poser(base, jeu, soir, "poulet-roti");
+    relu = await recharger(MARDI);
+    expect(relu.dejaLa[soir]).toBeNull();
+    expect(jeu.dejaLa[soir]).toBeNull();
+  });
+
   test("effacer le plat garde les parts, oublier le créneau efface tout", async () => {
     const soir = creneau(jeu, 0, "diner");
     await poser(base, jeu, soir, "poulet-roti");

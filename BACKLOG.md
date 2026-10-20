@@ -5133,14 +5133,64 @@ passages isolés), `catalogue:verifie` 0 erreur.
 - Les jours de courses (mercredi, samedi) et l'heure du dîner (18 h) sont des
   constantes de code, pas des champs du foyer — même statut que `heures.ts`.
 - Un lot du congélateur est proposé le soir même (« à sortir maintenant ») :
-  à vérifier à l'usage qu'une portion décongèle en trois heures.
+  à vérifier à l'usage qu'une portion décongèle en trois heures. **→ T133.**
 - La liste de courses ne lit toujours pas ce qui est rentré hors du relevé :
   poser un plat dont on vient d'acheter la crème la remet dans « Courses ».
-  C'est la question de #32, à trancher et pas à contourner.
+  C'est la question de #32, à trancher et pas à contourner. **→ T132.**
 - `avanceMin` et `minutesSurPlace` sont exportés et jetés par le chargeur ;
   la proposition relit les étapes à la place.
 - Aucune notification à 15 h : c'est Workspace#61, une mesure sur l'iPhone.
 - La persona de l'année simulée n'a pas été rejouée sur cette branche.
+
+### Retouches après les captures du 19/10 — T130 à T133
+
+Branche `cuisine/a-la-pause-retouches`, sur `cuisine/a-la-pause`.
+
+- [x] **T130 — Un id d'émission n'est pas une phrase.** Le cockpit écrivait
+      « lentilles-vertes-cuites — plus proposé, à jeter ». La tâche de T103
+      passe par `nomDuType` (une seule définition, `model/plancher.ts` ;
+      `ceSoir.vue` la réexporte), comme le titre du geste du jour (« Sortir
+      sauce bolognaise du congélo »), les sorties de la carte de « Poser »,
+      celles d'« Aujourd'hui » et `Offre.deQuoi`. L'accent ne vient toujours
+      pas : le catalogue n'a pas de libellé pour ce qu'un plat produit (T15).
+- [x] **T131 — Un article hors saison ne s'achète pas.** En octobre, « Velouté
+      d'ortie » sortait deuxième, « il manque : pointes d'orties » compté comme
+      un seul achat. `CarteDuSoir.horsSaison` (les manquants que
+      `saisons.deSaison` dit hors saison ce mois-ci) : la carte sort de la main
+      tous les jours, jour de courses compris, et `ordre` la range sous TOUT ce
+      qui se fait, avant même le rang « presse ». La ligne le dit (« il manque :
+      orties (ou fanes, épinards…), hors saison »). `nomCourt` raccourcit au-delà
+      de 40 caractères les noms à alternatives « (ou … ou …) » et coupe les
+      gloses après un tiret. Les alternatives ne sont pas structurées au
+      corpus : des épinards de saison ne rachètent pas le velouté.
+- [x] **T132 — La liste ne contredit plus la carte.** Choix : un INSTANTANÉ au
+      geste, pas un élargissement de `Jeu.gardeManger`. « Je lance ça » (écran
+      et cockpit) écrit sur le créneau `DecisionCreneau.ici` — ce que la carte
+      tenait pour là (`ici.ceQueLaCarteDitIci`, complément exact de
+      `ceQuiManque`, assaisonnements compris, bases exclues). `calculer` et la
+      fiche (`provenanceIngredient`, « déjà là ») le réunissent à
+      l'intersection pour CE plat sur CE créneau (`dejaLaPour`). Pourquoi c'est
+      sûr pour #32 : l'intersection n'est pas touchée et garde sa propriété ;
+      l'instantané est figé au tap, donc rentrer un achat ensuite ne retire
+      aucune ligne sous le doigt. Champ optionnel non indexé, sans migration ;
+      reposer un plat d'ailleurs l'efface, régler les parts et le report le
+      gardent. Reste vrai : un plat posé depuis le fil ou « Poser » lit toujours
+      la seule intersection. Et un instantané peut vieillir (la crème utilisée
+      ailleurs entre-temps) : il dit ce que la carte a promis, pas le stock.
+- [x] **T133 — Trois heures ne décongèlent pas un bloc.** Aucune donnée par
+      plat ne dit le réchauffage (`rules.yaml` porte une chaîne de repli du
+      FOYER — micro-ondes ½ h, sinon une nuit —, non exportée). Règle par
+      défaut, dite le 19/10 : `pause.directAuFeu` — un type produit par une
+      soupe ou un mijoté (`format`), ou nommé sauce, bouillon, velouté,
+      bolognaise, légumineuses ou céréale cuites, va du congélo au feu ; le
+      reste demande la veille. Ces lots-là sont retirés du dépôt du comptoir
+      pour ce soir et sortent en `PropositionDuSoir.aSortir` (le plat qui les
+      prend avec le moins d'achats) : une ligne « À sortir ce soir pour
+      demain » sur « Ce soir », et le geste du jour du cockpit quand aucun plat
+      posé demain n'en appelle un (`typeDuGeste`, même drapeau `cleGeste`). Le
+      « Fait » de la veille ferme la boucle : `useSortisLaVeille` rend le lot
+      cuisinable le lendemain. À confirmer à l'usage : le poulet cuit et les
+      galettes congelées comptés « la veille ».
 
 ## Sortie
 

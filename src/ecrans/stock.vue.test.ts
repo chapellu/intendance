@@ -189,7 +189,7 @@ describe("les lots", () => {
     ];
     poser(0, "diner", "sauce-bolognaise");
     const vus = lots(jeu, calculer(jeu).depot, null, LUNDI);
-    expect(vus.find((l) => l.nom === "sauce-bolognaise" && l.ref === "42")).toBeTruthy();
+    expect(vus.find((l) => l.nom === "sauce bolognaise" && l.ref === "42")).toBeTruthy();
     expect(vus.filter((l) => l.ref === null).length).toBeGreaterThan(0);
   });
 
@@ -197,7 +197,7 @@ describe("les lots", () => {
     // Les pâtes du lundi entament le bocal du congélo : 500 g pris sur 700.
     poser(0, "diner", "pates-bolognaise");
     const vus = lots(jeu, calculer(jeu).depot, null, LUNDI);
-    const bocal = vus.find((l) => l.nom === "sauce-bolognaise");
+    const bocal = vus.find((l) => l.nom === "sauce bolognaise");
     expect(bocal?.ou).toContain("reste 200 g");
     expect(bocal?.ou).toContain("Congélo");
     // Née le 20/07 à l'amorce : vingt-huit jours de calendrier au 17/08 (T104).

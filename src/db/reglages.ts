@@ -13,6 +13,20 @@ import { base } from "./schema";
  *  geste se reposera, et cochera à nouveau. */
 export const cleGeste = (jour: string, type: string): string => `geste|${jour}|${type}`;
 
+/** La veille d'un jour `AAAA-MM-JJ`, au calendrier local. */
+export function veilleDe(jour: string): string {
+  const [a, m, j] = jour.split("-").map(Number);
+  const d = new Date(a!, m! - 1, j! - 1);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+/** Les types dont le geste « sortir du congélo » a été coché la veille de
+ *  `jour` — ils ont passé la nuit au frigo. */
+export function typesSortis(reglages: readonly { cle: string; valeur: unknown }[], jour: string): Set<string> {
+  const prefixe = cleGeste(veilleDe(jour), "");
+  return new Set(reglages.filter((r) => r.cle.startsWith(prefixe) && r.valeur === true).map((r) => r.cle.slice(prefixe.length)));
+}
+
 /** Un rappel armé sur un créneau. Ce n'est pas encore une notification : le
  *  jour où c'en sera une, c'est cette clé qui dira lesquelles sont armées. */
 export const cleRappel = (jour: string, repas: string): string => `rappel|${jour}|${repas}`;
@@ -76,4 +90,16 @@ export function useDrapeau(cle: string | null): boolean | undefined {
   const r = useLiveQuery(async () => (cle ? ((await base.reglages.get(cle)) ?? null) : null), [cle]);
   if (r === undefined) return undefined;
   return r !== null;
+}
+
+/**
+ * Ce qui a été sorti du congélateur hier soir — pour la proposition de 15 h.
+ * `undefined` tant que la base n'a pas répondu, comme les autres lectures.
+ */
+export function useSortisLaVeille(jour: string | null): ReadonlySet<string> | undefined {
+  return useLiveQuery(async () => {
+    if (!jour) return new Set<string>();
+    const prefixe = cleGeste(veilleDe(jour), "");
+    return typesSortis(await base.reglages.where("cle").startsWith(prefixe).toArray(), jour);
+  }, [jour]);
 }

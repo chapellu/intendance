@@ -38,6 +38,7 @@ import {
 import { releverZone } from "../db/journal";
 import { poserPlancher, poserPlancherDenree, retirerPlancherDenree } from "../db/planchers";
 import type { Calcul } from "../model/calcul";
+import { nomDuType } from "../model/plancher";
 import type { Jeu } from "../model/jeu";
 import type { Confiance, Rejeu } from "../model/journal";
 import type { Espace } from "../model/types";
@@ -296,7 +297,7 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
       {retire ? (
         <div className="co-note" style={{ marginTop: "var(--space-3)" }}>
           {retire.length === 1
-            ? `« ${retire[0]!.type} » retiré de l’inventaire.`
+            ? `« ${nomDuType(retire[0]!.type)} » retiré de l’inventaire.`
             : `${retire.length} lots retirés de l’inventaire.`}{" "}
           <button
             className="btn btn-ghost"

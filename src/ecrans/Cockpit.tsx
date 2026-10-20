@@ -27,7 +27,7 @@ import { chemin, ENTREE_CUISINE } from "../nav/routes";
 import { Corps } from "../ui/Coquille";
 import { majuscule } from "../ui/format";
 import { gesteDuJour } from "./aujourdhui.vue";
-import { vueDuCockpit, type CarteFacette, type Tache, type VueCockpit } from "./cockpit.vue";
+import { typeDuGeste, vueDuCockpit, type CarteFacette, type Tache, type VueCockpit } from "./cockpit.vue";
 import { entree as entreeDuJardin, vueDeLaTerrasse } from "./jardin.vue";
 
 /**
@@ -45,11 +45,13 @@ export function useCockpit(jeu: Jeu, calc: Calcul): VueCockpit | null {
   // La clé porte le jour : « sortir la sauce du congélo » est fait pour
   // aujourd'hui, pas pour toujours. `null` quand il n'y a pas de geste — le
   // hook doit s'appeler à tous les rendus, même ceux où il n'a rien à lire.
-  const fait = useDrapeau(geste && jour0 ? cleGeste(jourISO(jour0.date), geste.type) : null);
   // LA PROPOSITION DE 15 H — T129. On l'attend comme le reste : une ligne
   // « Ce soir » qui dirait « Poser le dîner » une frame, puis le nom d'un plat,
   // serait une ligne qui se corrige sous les yeux.
   const soir = useProposition(jeu);
+  // Sans plat posé demain, le geste vient du bloc à sortir ce soir.
+  const type = typeDuGeste(geste, soir);
+  const fait = useDrapeau(type && jour0 ? cleGeste(jourISO(jour0.date), type) : null);
   const cuisines = useCuisines(jour0 ? jourISO(jour0.date) : "", jour0 ? jourISO(jour0.date) : "");
   if (!courses || fait === undefined || !soir || !cuisines) return null;
   return vueDuCockpit(jeu, calc, { courses, gesteFait: fait, soir, cuisines });
@@ -173,7 +175,7 @@ function Ligne({ tache }: { tache: Tache }) {
           // POSER, PUIS OUVRIR LA MISE EN PLACE — le même geste que la carte de
           // « Ce soir », sans passer par la liste. `Lancer` garde le doigt
           // d'un double tap.
-          <Lancer plat={lancer} />
+          <Lancer plat={lancer} ici={tache.ici} />
         ) : cocher ? (
           // Le même drapeau que le « Fait » d'« Aujourd'hui » : cocher ici ou
           // là-bas est un seul geste, et la clé porte le jour.
@@ -240,7 +242,7 @@ function Facette({
  * ouvrir la fiche du créneau — qui, le plat posé, s'ouvre sur sa mise en place
  * et non sur un résumé de lecture.
  */
-function Lancer({ plat }: { plat: string }) {
+function Lancer({ plat, ici }: { plat: string; ici?: readonly string[] | undefined }) {
   const { catalogue } = useCatalogue();
   const { jeu, poserPlat } = useSemaine(catalogue);
   const [enCours, setEnCours] = useState(false);
@@ -254,7 +256,7 @@ function Lancer({ plat }: { plat: string }) {
         if (!jeu || soir < 0 || enCours) return;
         setEnCours(true);
         const jour = jourISO(jeu.jours[0]!.date);
-        void poserPlat(soir, plat)
+        void poserPlat(soir, plat, ici)
           .then(() => aller({ ecran: "cuisiner", creneau: { jour, repas: "diner" } }))
           .finally(() => setEnCours(false));
       }}

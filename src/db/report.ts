@@ -154,6 +154,8 @@ export async function reporterLesPoses(base: Base, jeu: Jeu): Promise<Report> {
         // coordonnée a bougé. Les remettre à `null` obligerait à retaper un
         // chiffre qu'on n'a jamais annulé.
         parts: d.parts,
+        // Ce que la carte disait là suit le plat, comme ses parts.
+        ...(d.ici ? { ici: d.ici } : {}),
         maj: Date.now(),
       });
       await base.creneaux.delete(d.cle);

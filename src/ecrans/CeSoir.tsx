@@ -13,6 +13,7 @@
 import { useMemo, useState } from "react";
 import { jourISO } from "../db";
 import { useCatalogue, useJournal, useSavoir, useSemaine } from "../db/hooks";
+import { useSortisLaVeille } from "../db/reglages";
 import { joue, type Jeu } from "../model/jeu";
 import { cuissonsRecentes } from "../model/journal";
 import { JOURS_DE_VARIETE, proposerCeSoir, type CarteDuSoir, type PropositionDuSoir } from "../model/pause";
@@ -21,7 +22,17 @@ import { aller } from "../nav/useRoute";
 import { Corps } from "../ui/Coquille";
 import { duree } from "../ui/format";
 import { LIBELLE_LANCER } from "../ui/phrases";
-import { chapeau, classeAchats, ceQuiAttend, ligneACote, ligneAchats, ligneHeure, raison } from "./ceSoir.vue";
+import {
+  attendSansASortir,
+  chapeau,
+  classeAchats,
+  ceQuiAttend,
+  ligneACote,
+  ligneAchats,
+  ligneASortir,
+  ligneHeure,
+  raison,
+} from "./ceSoir.vue";
 
 /** Combien de cartes « voir plus » déplie. Le reste du catalogue a sa
  *  recherche (le fil) et son index (le répertoire) : ici on choisit un dîner,
@@ -66,7 +77,10 @@ export function useCeSoir(): CeSoirVivant | null {
     pose: joue(choix) ? choix : null,
     cuisine: cuisines.has(`${creneau.jour}|${creneau.repas}`),
     lancer: async (plat: string) => {
-      await poserPlat(proposition.soir, plat);
+      // CE QUE LA CARTE DISAIT LÀ PART AVEC LE PLAT : la liste de courses ne
+      // demandera que ce qu'elle disait manquer (`DecisionCreneau.ici`).
+      const c = [...proposition.cartes, ...proposition.plus].find((x) => x.plat.id === plat);
+      await poserPlat(proposition.soir, plat, c?.ici);
       aller({ ecran: "cuisiner", creneau });
     },
   };
@@ -84,12 +98,15 @@ export function useCeSoir(): CeSoirVivant | null {
 export function useProposition(jeu: Jeu | null): PropositionDuSoir | null {
   const savoir = useSavoir(jeu?.catalogue ?? null, jeu);
   const evts = useJournal();
+  // CE QUI A ÉTÉ SORTI HIER SOIR a décongelé cette nuit : le « Fait » du geste
+  // de la veille rend le lot cuisinable ce soir.
+  const sortis = useSortisLaVeille(jeu ? jourISO(jeu.jours[0]!.date) : null);
   return useMemo(() => {
-    if (!jeu || !savoir || !evts) return null;
+    if (!jeu || !savoir || !evts || !sortis) return null;
     const maintenant = new Date();
     const recents = cuissonsRecentes(evts, jourISO(maintenant), JOURS_DE_VARIETE);
-    return proposerCeSoir({ jeu, savoir, recents, maintenant });
-  }, [jeu, savoir, evts]);
+    return proposerCeSoir({ jeu, savoir, recents, maintenant, sortis });
+  }, [jeu, savoir, evts, sortis]);
 }
 
 /** L'écran, par sa route `#/cuisine/ce-soir`. */
@@ -134,7 +151,8 @@ export function BlocDuSoir({ vivant }: { vivant: CeSoirVivant }) {
     );
 
   const platPose = pose ? jeu.plats[pose] : undefined;
-  const attend = ceQuiAttend(proposition.attend);
+  const attend = ceQuiAttend(attendSansASortir(proposition));
+  const sortir = ligneASortir(proposition);
   const autres = proposition.plus.slice(0, PLUS);
 
   return (
@@ -144,6 +162,13 @@ export function BlocDuSoir({ vivant }: { vivant: CeSoirVivant }) {
         {chapeau(proposition)}
         {attend ? ` En attente : ${attend}.` : ""}
       </p>
+      {/* CE QUI NE DÉCONGÈLE PAS D'ICI 18 H : pas une carte du soir, un geste
+          pour demain — le même que le cockpit rappelle. */}
+      {sortir ? (
+        <p className="co-action" style={{ margin: "0 0 var(--space-3)" }}>
+          {sortir}
+        </p>
+      ) : null}
 
       {platPose ? (
         <div className="co-soir pose">
