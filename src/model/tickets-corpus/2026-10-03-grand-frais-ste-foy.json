@@ -1,0 +1,294 @@
+{
+  "enseigne": "Grand Frais",
+  "canal": "magasin",
+  "support": "ticket de caisse papier, photographié",
+  "magasin": {
+    "nom": "STE FOY LES LYON",
+    "adresse": "9/19 route de la Libération, 69110 Sainte-Foy-lès-Lyon",
+    "telephone": "04.78.68.07.29",
+    "siret": "52507984400011"
+  },
+  "date_achat": "2026-10-03",
+  "heure_achat": "16:28:14",
+  "transcrit_le": "2026-10-03",
+  "lacunes": [
+    "aucune : contrairement au cliché du 12/09, le pied de ticket est dans le cadre — la date ET l'heure sont LUES, pas redonnées par le foyer",
+    "le motif de la course n'a pas été déclaré ; `contexte` reste nul plutôt que deviné depuis le panier",
+    "`RAYON BOUCHERIE TRADIT` à 42,10 € est un montant de comptoir SANS détail d'article : ni libellé produit, ni poids, ni prix au kilo — la moitié du panier est opaque SUR CE PAPIER. RÉSOLU le 2026-10-04 : le détail existait, sur un second document — le talon de la Boucherie Despi, transcrit dans `2026-10-03-despi-ste-foy.json`. Le panier est donc détaillé à 100 %, en deux papiers",
+    "le numéro de carte de fidélité imprimé sur le ticket n'est pas transcrit — identifiant client, même règle que le PDF non versionné des factures Carrefour",
+    "la photo source n'est pas versionnée, pour la même raison"
+  ],
+  "documents_lies": [
+    {
+      "fichier": "2026-10-03-despi-ste-foy.json",
+      "libelle_ligne": "RAYON BOUCHERIE TRADIT",
+      "montant_ttc": 42.1,
+      "nature": "talon du comptoir boucherie — détaille en trois pesées la ligne que cette caisse rend opaque"
+    }
+  ],
+  "vendeurs": [
+    {
+      "code": "LE FROMAGER DE ST FOY",
+      "metier": "crémerie et fromagerie",
+      "total_ttc": 10.76
+    },
+    {
+      "code": "LES JARDINS DE ST FOY",
+      "metier": "fruits, légumes et marée",
+      "total_ttc": 26.52
+    },
+    {
+      "code": "CALSEC",
+      "metier": "épicerie sèche",
+      "total_ttc": 3.78
+    },
+    {
+      "code": "LDGF",
+      "metier": "boucherie et charcuterie",
+      "total_ttc": 42.1
+    }
+  ],
+  "lignes": [
+    {
+      "vendeur": "LE FROMAGER DE ST FOY",
+      "libelle": "YAOURT A BOIRE PANACHE",
+      "libelle_tronque": false,
+      "poids_kg": null,
+      "pu_kg": null,
+      "prix_imprime_ttc": 2.89,
+      "tare_kg": null,
+      "tare_ttc": 0,
+      "remise_ttc": 0,
+      "net_ttc": 2.89,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "LE FROMAGER DE ST FOY",
+      "libelle": "YAOURT FRUITS JAUNES 6",
+      "libelle_tronque": true,
+      "poids_kg": null,
+      "pu_kg": null,
+      "prix_imprime_ttc": 3.39,
+      "tare_kg": null,
+      "tare_ttc": 0,
+      "remise_ttc": 0,
+      "net_ttc": 3.39,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "LE FROMAGER DE ST FOY",
+      "libelle": "BUCHE DE CHEVRE 180GR",
+      "libelle_tronque": false,
+      "poids_kg": null,
+      "pu_kg": null,
+      "prix_imprime_ttc": 2.49,
+      "tare_kg": null,
+      "tare_ttc": 0,
+      "remise_ttc": 0,
+      "net_ttc": 2.49,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "LE FROMAGER DE ST FOY",
+      "libelle": "CREME FRAICHE EPAISSE",
+      "libelle_tronque": false,
+      "poids_kg": null,
+      "pu_kg": null,
+      "prix_imprime_ttc": 1.99,
+      "tare_kg": null,
+      "tare_ttc": 0,
+      "remise_ttc": 0,
+      "net_ttc": 1.99,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "LES JARDINS DE ST FOY",
+      "libelle": "OEUFS DE TRUITE DE GAL",
+      "libelle_tronque": true,
+      "poids_kg": null,
+      "pu_kg": null,
+      "prix_imprime_ttc": 5.99,
+      "tare_kg": null,
+      "tare_ttc": 0,
+      "remise_ttc": 0,
+      "net_ttc": 5.99,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "LES JARDINS DE ST FOY",
+      "libelle": "BATAVIA ROUGE",
+      "libelle_tronque": false,
+      "poids_kg": null,
+      "pu_kg": null,
+      "prix_imprime_ttc": 1.69,
+      "tare_kg": null,
+      "tare_ttc": 0,
+      "remise_ttc": 0,
+      "net_ttc": 1.69,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "LES JARDINS DE ST FOY",
+      "libelle": "POTIMARRON",
+      "libelle_tronque": false,
+      "poids_kg": 1.06,
+      "pu_kg": 2.5,
+      "prix_imprime_ttc": 2.65,
+      "tare_kg": 0.005,
+      "tare_ttc": -0.02,
+      "remise_ttc": 0,
+      "net_ttc": 2.63,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "LES JARDINS DE ST FOY",
+      "libelle": "POELEE DE SAUMON",
+      "libelle_tronque": false,
+      "poids_kg": null,
+      "pu_kg": null,
+      "prix_imprime_ttc": 5.41,
+      "tare_kg": null,
+      "tare_ttc": 0,
+      "remise_ttc": 0,
+      "net_ttc": 5.41,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "LES JARDINS DE ST FOY",
+      "libelle": "CAROTTE DES SABLES",
+      "libelle_tronque": false,
+      "poids_kg": 0.915,
+      "pu_kg": 1.89,
+      "prix_imprime_ttc": 1.73,
+      "tare_kg": 0.005,
+      "tare_ttc": -0.01,
+      "remise_ttc": 0,
+      "net_ttc": 1.72,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "LES JARDINS DE ST FOY",
+      "libelle": "PERSIL FRISE BOTTE",
+      "libelle_tronque": false,
+      "poids_kg": null,
+      "pu_kg": null,
+      "prix_imprime_ttc": 0.99,
+      "tare_kg": null,
+      "tare_ttc": 0,
+      "remise_ttc": 0,
+      "net_ttc": 0.99,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "LES JARDINS DE ST FOY",
+      "libelle": "POTIMARRON",
+      "libelle_tronque": false,
+      "poids_kg": 1.19,
+      "pu_kg": 2.5,
+      "prix_imprime_ttc": 2.98,
+      "tare_kg": 0.005,
+      "tare_ttc": -0.02,
+      "remise_ttc": 0,
+      "net_ttc": 2.96,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "LES JARDINS DE ST FOY",
+      "libelle": "RAVE",
+      "libelle_tronque": false,
+      "poids_kg": 0.31,
+      "pu_kg": 2.99,
+      "prix_imprime_ttc": 0.93,
+      "tare_kg": 0.005,
+      "tare_ttc": -0.02,
+      "remise_ttc": 0,
+      "net_ttc": 0.91,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "LES JARDINS DE ST FOY",
+      "libelle": "POMME GALA",
+      "libelle_tronque": false,
+      "poids_kg": 2.125,
+      "pu_kg": 1.99,
+      "prix_imprime_ttc": 4.23,
+      "tare_kg": 0.005,
+      "tare_ttc": -0.01,
+      "remise_ttc": 0,
+      "net_ttc": 4.22,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "CALSEC",
+      "libelle": "POP CORN CARAMELISE PA",
+      "libelle_tronque": true,
+      "poids_kg": null,
+      "pu_kg": null,
+      "prix_imprime_ttc": 1.29,
+      "tare_kg": null,
+      "tare_ttc": 0,
+      "remise_ttc": 0,
+      "net_ttc": 1.29,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "CALSEC",
+      "libelle": "NOUILLE UDON SACHET 50",
+      "libelle_tronque": true,
+      "poids_kg": null,
+      "pu_kg": null,
+      "prix_imprime_ttc": 2.49,
+      "tare_kg": null,
+      "tare_ttc": 0,
+      "remise_ttc": 0,
+      "net_ttc": 2.49,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "LDGF",
+      "libelle": "RAYON BOUCHERIE TRADIT",
+      "libelle_tronque": true,
+      "poids_kg": null,
+      "pu_kg": null,
+      "prix_imprime_ttc": 42.1,
+      "tare_kg": null,
+      "tare_ttc": 0,
+      "remise_ttc": 0,
+      "net_ttc": 42.1,
+      "tva": 5.5
+    }
+  ],
+  "reglements": [
+    {
+      "moyen": "Carte Bancaire",
+      "montant": 25.0
+    },
+    {
+      "moyen": "Carte Bancaire",
+      "montant": 25.0
+    },
+    {
+      "moyen": "Carte Bancaire",
+      "montant": 33.16
+    }
+  ],
+  "tva": [
+    {
+      "code": 1,
+      "taux": 5.5,
+      "ht": 78.82,
+      "ttc": 83.16
+    }
+  ],
+  "totaux": {
+    "compteur_imprime": 21,
+    "articles": 16,
+    "lignes_tare": 5,
+    "panier_brut_ttc": 83.24,
+    "tares_ttc": -0.08,
+    "remises_ttc": 0,
+    "net_paye_ttc": 83.16
+  },
+  "jour_semaine": "samedi",
+  "contexte": null
+}

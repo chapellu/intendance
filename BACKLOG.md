@@ -5251,6 +5251,27 @@ Branche `cuisine/a-la-pause-retouches`, sur `cuisine/a-la-pause`.
       fait que gagner. Et « jamais vu » sur une ligne de plancher achetée puis
       mangée devient « à vérifier, rentré le … » (`rejeu.rentres`).
 
+- [x] **T138 — Le ticket photographié, lu sur le téléphone.** Remplace
+      l'hypothèse serveur de T71 : OCR `tesseract.js` (français `best_int`,
+      0,7 Mo) dans un worker, importé au seul scan, ses fichiers servis depuis
+      `/ocr/` (`src/pwa/ocr.ts`) — aucun CDN, aucune clé. Hors précache
+      (~12 Mo, trois cœurs selon SIMD) ; `sw.js` les garde au premier scan
+      dans `intendance-ocr-<empreinte>`, qui survit aux versions. Courses →
+      « Scanner un ticket » → barre de progression → revue : une rangée par
+      ligne, trois propositions (`suggerer`), « autre… », « pas pour la
+      cuisine », quantité et ignorer ; « Tout rentrer » passe par
+      `journaliserEntree` daté du jour d'ACHAT (saisi aujourd'hui), coche la
+      liste, garde `prixTTC` sur la ligne d'entrée. Table apprise Dexie v3
+      `libelles` : (enseigne, vendeur, libellé) → id ou `null` ; la fois
+      suivante, « reconnu ». `lireTicket` (pur) : code TVA Carrefour retiré,
+      tares et remises attachées, fidélité ignorée, vendeurs Grand Frais lus,
+      talon Despi avec PLU, repli générique ; somme des nets contre le total
+      imprimé, dite en clair. Sans date lue : « photo incomplète », date à la
+      main, la queue du code-barres seulement SUGGÉRÉE. Ligne de comptoir
+      (`RAYON …`) ignorée d'office : il faut le talon. La photo n'est jamais
+      gardée. Corpus : 4 tickets sur 4, lignes et totaux exacts, idem en
+      variante OCR abîmée.
+
 ## Sortie
 
 **Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`

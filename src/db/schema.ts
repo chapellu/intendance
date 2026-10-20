@@ -33,6 +33,7 @@
 // lire la suite de cette histoire.
 // ────────────────────────────────────────────────────────────────────────────
 
+import type { Appris } from "../model/ticketCorrespondance";
 import Dexie, { type EntityTable } from "dexie";
 import type { Evenement } from "../model/journal";
 import type { EmitKind, Espace, RepasId } from "../model/types";
@@ -171,7 +172,7 @@ export interface Reglage {
 // La v1 n'a pas d'`upgrade` : il ne s'exécuterait sur aucune base existante,
 // puisqu'il n'en existe aucune. Une migration vide écrite « pour la forme »
 // est une migration qu'on croit avoir testée.
-export const VERSION = 2;
+export const VERSION = 3;
 
 const SCHEMAS: Record<number, Record<string, string>> = {
   1: {
@@ -196,6 +197,12 @@ const SCHEMAS: Record<number, Record<string, string>> = {
   2: {
     evenements: "++id, jour, sorte",
   },
+  // v3 — LA TABLE APPRISE DES TICKETS (T138). (enseigne, vendeur, libellé) →
+  // ingrédient, ou `null` pour « pas pour la cuisine ». Elle démarre vide :
+  // aucune donnée à transformer, donc pas d'`upgrade`, même raison que la v2.
+  3: {
+    libelles: "cle",
+  },
 };
 
 export class Base extends Dexie {
@@ -204,6 +211,7 @@ export class Base extends Dexie {
   stock!: EntityTable<LotStock, "id">;
   reglages!: EntityTable<Reglage, "cle">;
   evenements!: EntityTable<Evenement & { id: number }, "id">;
+  libelles!: EntityTable<Appris, "cle">;
 
   constructor(nom = "intendance") {
     super(nom);

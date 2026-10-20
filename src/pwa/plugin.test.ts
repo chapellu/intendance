@@ -48,6 +48,11 @@ describe("aPrecacher", () => {
   it("rend le même ordre quel que soit celui du disque", () => {
     expect(aPrecacher(build)).toEqual(aPrecacher([...build].reverse()));
   });
+
+  it("l'OCR n'est pas précaché : il entre au cache au premier scan (T138)", () => {
+    const l = aPrecacher([...build, "ocr/worker.min.js", "ocr/lang/fra.traineddata.gz"]);
+    expect(l.some((f) => f.startsWith("/ocr/"))).toBe(false);
+  });
 });
 
 describe("empreinte", () => {

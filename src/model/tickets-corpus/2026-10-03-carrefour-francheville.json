@@ -1,0 +1,156 @@
+{
+  "enseigne": "Carrefour",
+  "type": "ticket",
+  "canal": "magasin",
+  "support": "ticket de caisse papier, photographié",
+  "magasin": {
+    "nom": "FRANCHEVILLE BIENVENUE",
+    "adresse": null,
+    "telephone": "04 72 16 39 79",
+    "siret": null,
+    "horaires": "lundi au samedi 8h30-21h00 ; jeudi-vendredi 8h30-21h30 ; dimanche 8h30-12h30"
+  },
+  "date_achat": "2026-10-03",
+  "heure_achat": null,
+  "transcrit_le": "2026-10-04",
+  "lacunes": [
+    "date d'achat : le bas du ticket est hors cadre sur la photo — le manque vient du CLICHÉ, pas du format. Redonnée par le foyer (samedi 3 octobre 2026), et corroborée par la queue du code-barres imprimé (`...261003 2022`, qui se lit AAMMJJ) — mais c'est une lecture d'inférence, la date n'est écrite en clair nulle part dans le cadre",
+    "heure d'achat : hors cadre également, et aucune inférence ne la donne",
+    "ce ticket n'imprime AUCUN poids, pas même pour `POIREAU VRAC` et `RAISIN SEC BIO KG` qui se vendent au kilo : ce canal ne permet donc aucun historique en €/kg, contrairement à Grand Frais et au talon Despi",
+    "aucun EAN, et aucun code article d'aucune sorte — ni PLU comme chez Despi. Le libellé est le seul identifiant",
+    "pas de SIRET imprimé, là où le ticket Grand Frais en porte un ; et pas d'adresse, seulement un nom de magasin et un téléphone — rien ne permet d'affirmer depuis ce papier qu'il s'agit du même établissement que le Drive de Francheville (storeRef 350) déjà relevé",
+    "le numéro de carte de fidélité imprimé n'est pas transcrit — même règle que les autres tickets",
+    "la photo source n'est pas versionnée, pour la même raison"
+  ],
+  "pieges_de_lecture": [
+    "LE CHIFFRE EN TÊTE DE LIGNE N'EST PAS UNE QUANTITÉ. Les cinq lignes commencent par « 4 » : c'est le CODE DE TVA, celui que le pied reprend en « TVA 4: 5,50% ». Lu comme une quantité, il ferait 20 articles d'un ticket qui en compte 5, et multiplierait par quatre tout ce qui rentre au stock."
+  ],
+  "vendeurs": [
+    {
+      "code": "FRANCHEVILLE BIENVENUE",
+      "metier": "hypermarché, entité unique",
+      "total_ttc": 18.0
+    }
+  ],
+  "regroupements": [
+    {
+      "libelle": "Total Alimentaire",
+      "total_ttc": 18.0,
+      "nature": "sous-total de catégorie fiscale, PAS un vendeur — tout le panier est alimentaire"
+    }
+  ],
+  "lignes": [
+    {
+      "vendeur": "FRANCHEVILLE BIENVENUE",
+      "libelle": "POIREAU VRAC",
+      "libelle_tronque": false,
+      "code_tva": 4,
+      "poids_kg": null,
+      "pu_kg": null,
+      "prix_imprime_ttc": 4.66,
+      "tare_kg": null,
+      "tare_ttc": 0,
+      "remise_ttc": 0,
+      "net_ttc": 4.66,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "FRANCHEVILLE BIENVENUE",
+      "libelle": "RAISIN SEC BIO KG",
+      "libelle_tronque": false,
+      "code_tva": 4,
+      "poids_kg": null,
+      "pu_kg": null,
+      "prix_imprime_ttc": 1.68,
+      "tare_kg": null,
+      "tare_ttc": 0,
+      "remise_ttc": 0,
+      "net_ttc": 1.68,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "FRANCHEVILLE BIENVENUE",
+      "libelle": "11G CIBOULETTE FLO",
+      "libelle_tronque": true,
+      "code_tva": 4,
+      "poids_kg": null,
+      "pu_kg": null,
+      "prix_imprime_ttc": 2.0,
+      "tare_kg": null,
+      "tare_ttc": 0,
+      "remise_ttc": 0,
+      "net_ttc": 2.0,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "FRANCHEVILLE BIENVENUE",
+      "libelle": "BANANE CHIPS BIO",
+      "libelle_tronque": false,
+      "code_tva": 4,
+      "poids_kg": null,
+      "pu_kg": null,
+      "prix_imprime_ttc": 1.47,
+      "tare_kg": null,
+      "tare_ttc": 0,
+      "remise_ttc": 0,
+      "net_ttc": 1.47,
+      "tva": 5.5
+    },
+    {
+      "vendeur": "FRANCHEVILLE BIENVENUE",
+      "libelle": "20X90G PP LPE POMA",
+      "libelle_tronque": true,
+      "code_tva": 4,
+      "poids_kg": null,
+      "pu_kg": null,
+      "prix_imprime_ttc": 8.19,
+      "tare_kg": null,
+      "tare_ttc": 0,
+      "remise_ttc": 0,
+      "net_ttc": 8.19,
+      "tva": 5.5
+    }
+  ],
+  "fidelite": {
+    "programme": "Carte Carrefour",
+    "cagnotte_avant": 6.52,
+    "cumule_sur_ce_ticket": 0.47,
+    "cagnotte_apres": 6.99,
+    "avantages": [
+      {
+        "libelle": "AVANTAGES -10% CLUB",
+        "ligne": "POIREAU VRAC",
+        "montant": 0.47
+      }
+    ],
+    "vignettes_digitalisees": 1,
+    "nature": "CRÉDITÉ À LA CAGNOTTE, PAS DÉDUIT DU TOTAL. Les 18,00 € payés sont exactement la somme des cinq lignes : l'avantage de 0,47 € n'a pas baissé le prix du poireau, il a grossi une réserve utilisable plus tard. C'est l'inverse de la remise de 12 % sur le rôti de veau du 12/09, qui, elle, était retranchée de la ligne — d'où `remise_ttc: 0` partout ici."
+  },
+  "reglements": [
+    {
+      "moyen": "Cartes Bancaires",
+      "montant": 18.0
+    }
+  ],
+  "tva": [
+    {
+      "code": 4,
+      "taux": 5.5,
+      "ht": 17.06,
+      "montant": 0.94,
+      "ttc": 18.0
+    }
+  ],
+  "totaux": {
+    "compteur_imprime": 5,
+    "compteur_libelle": "5 ARTICLES",
+    "articles": 5,
+    "lignes_tare": 0,
+    "panier_brut_ttc": 18.0,
+    "tares_ttc": 0,
+    "remises_ttc": 0,
+    "net_paye_ttc": 18.0
+  },
+  "jour_semaine": "samedi",
+  "contexte": "même samedi que la course Grand Frais / Despi du 2026-10-03 — deux enseignes le même jour"
+}

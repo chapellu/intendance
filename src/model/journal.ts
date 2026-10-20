@@ -145,6 +145,9 @@ export interface LigneEntree {
   parUnite: Quantite | null;
   zone: string | null;
   etat: Etat;
+  /** Ce que la ligne a coûté, en euros TTC nets (tare et remise déduites),
+   *  quand un ticket l'a dit — T138. Absent partout ailleurs. */
+  prixTTC?: number;
 }
 
 export interface EvtEntree extends Commun {

@@ -20,6 +20,8 @@ import type { Calcul } from "../model/calcul";
 import type { Jeu } from "../model/jeu";
 import { sousLeurPlancher } from "../model/plancherGardeManger";
 import { Corps } from "../ui/Coquille";
+import { BoutonScanner, RevueDuTicket } from "./Ticket";
+import { listeParIngredient } from "./ticket.vue";
 import {
   basculeDe,
   aVerifierParRaison, horsListe,
@@ -69,6 +71,8 @@ function Contenu({
   // la maison » parce qu'on y était samedi serait pire que le tap qu'on
   // économise.
   const [mode, setMode] = useState<Mode>("magasin");
+  // T138 — la photo du ticket vit ici, en mémoire, le temps de la revue.
+  const [photo, setPhoto] = useState<File | null>(null);
   const vue = useMemo(
     () => vueDesCourses(jeu.catalogue, calc.panier, etats, sous, new Date().setHours(0, 0, 0, 0)),
     [jeu.catalogue, calc.panier, etats, sous],
@@ -96,6 +100,20 @@ function Contenu({
       : cocher(base, a.cle, b.valeur));
   };
 
+  if (photo) {
+    return (
+      <Corps>
+        <RevueDuTicket
+          image={photo}
+          catalogue={jeu.catalogue}
+          liste={listeParIngredient(vue.articles)}
+          onFermer={() => setPhoto(null)}
+          onReprendre={setPhoto}
+        />
+      </Corps>
+    );
+  }
+
   return (
     <>
       <div className="co-tete" style={{ paddingTop: 0 }}>
@@ -118,6 +136,10 @@ function Contenu({
             ? "Au magasin, on coche : l’article est dans le caddie. Rien ne bouge d’autre tant qu’on n’est pas rentré."
             : "À la maison, on rentre : l’article est rangé, et il quitte le caddie."}
         </div>
+
+        {/* T138 — LE TICKET PHOTOGRAPHIÉ. À la maison, c'est l'autre façon de
+            vider le sac : ce qui a été acheté, daté et pesé par la caisse. */}
+        <BoutonScanner onImage={setPhoto} />
 
         {/* LE GESTE DE VIDER LE SAC. On ne rentre pas douze articles un par un
             en tenant un cabas ; c'est le seul endroit de l'app où une action

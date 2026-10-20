@@ -335,9 +335,12 @@ export async function journaliserEntree(
   base: Base,
   lignes: LigneEntree[],
   aujourdhui = new Date(),
+  // T138 — un ticket rentre à la date de l'ACHAT, saisi aujourd'hui : c'est
+  // l'achat qui fait vieillir le frais (T137), pas le jour de la photo.
+  saisiLe = aujourdhui,
 ): Promise<number> {
   const jour = jourISO(aujourdhui);
-  const evt: Evenement = { sorte: "entree", jour, saisi: jour, lignes, maj: Date.now() };
+  const evt: Evenement = { sorte: "entree", jour, saisi: jourISO(saisiLe), lignes, maj: Date.now() };
   return (await base.evenements.add(evt as never)) as number;
 }
 
