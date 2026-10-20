@@ -5211,6 +5211,21 @@ Branche `cuisine/a-la-pause-retouches`, sur `cuisine/a-la-pause`.
       plat dont un ingrédient est à zéro un jour sans courses (« manque
       réel »). À mesurer sur l'année entière.
 
+- [x] **T135 — Le fond se consomme à la quantité, et la rotation se
+      souvient.** Année simulée n° 4. (a) Le paquet non chiffré de T134 se
+      finissait en deux plats : 12 kg de lentilles corail, 11 kg de riz en fin
+      d'année — et une boîte d'œufs, un sachet de fromage râpé ne finissaient
+      jamais (42 « rien à acheter » sur un frigo vide). Une ligne rentrée sans
+      poids prend la taille de `fond.yaml:unite` (`contenuDUnite`), et
+      `retirer` soustrait la recette à l'échelle des parts ; œufs et pots à la
+      pièce, arrondis au-dessus. Taille inconnue : l'heuristique de T134.
+      `fromage-rape` : « sachet de 200 g » (à reporter au brouillon). (b) 20
+      dîners distincts sur 126, velouté et soupe de pois chiches 41 fois
+      chacun : le départage ne connaissait que trois jours. `scoreRotation`
+      (entrée `mange`) ajoute `POIDS.repetition` −2 par fois en 14 jours,
+      `memeFormat` −1,5 par soir du même format sur les 2 derniers, `oublie`
+      +1,5 au-delà de 30 jours si faisable — dans le départage seul.
+
 ## Sortie
 
 **Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`
