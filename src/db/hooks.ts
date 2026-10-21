@@ -28,6 +28,7 @@ import { lireJournal } from "./journal";
 import { lireDecisions, lirePlanchersDenrees, validesParmi } from "./planchers";
 import { base, jourISO, type EtatCourse, type LotStock } from "./schema";
 import { amorcer, hydraterStock } from "./stock";
+import { consommerLesRoutines } from "./routines";
 import { reporterLesPoses } from "./report";
 import { hydrater, oublier, poser, prevoirGamelle, reglerParts, toutOublier } from "./semaine";
 
@@ -73,9 +74,13 @@ export function useAmorce(catalogue: Catalogue | null): boolean {
   useEffect(() => {
     if (!catalogue) return;
     let vivant = true;
-    void amorcer(base, catalogue).finally(() => {
-      if (vivant) setFaite(true);
-    });
+    // T142 — puis ce que le petit-déjeuner et le goûter ont pris au dépôt
+    // depuis la dernière ouverture (le pain, la fournée).
+    void amorcer(base, catalogue)
+      .then(() => consommerLesRoutines(base, catalogue))
+      .finally(() => {
+        if (vivant) setFaite(true);
+      });
     return () => {
       vivant = false;
     };

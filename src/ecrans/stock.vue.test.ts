@@ -1100,7 +1100,13 @@ describe("le plan de la cuisine — T141", () => {
 
   test("le conseil du sous-évier : ce qu'il faut déplacer, puis le geste de la famille", () => {
     const c = conseilDe(catalogue, r(plan(), "sous-evier"), tout());
-    expect(c[0]).toMatch(/^À déplacer : pomme de terre, oignon, echalote, ail — dans un endroit humide\.$/);
+    // T142 — UNE SEULE LIGNE « À DÉPLACER » : les deux diagnostics derrière un
+    // seul en-tête, et le mot n'apparaît qu'une fois dans tout l'encart.
+    expect(c[0]).toBe(
+      "À déplacer : pomme de terre, oignon, echalote, ail — dans un endroit humide ; " +
+        "pomme de terre — ne devrait pas voisiner avec ail, echalote, oignon.",
+    );
+    expect(c.join(" ").match(/À déplacer/g)).toHaveLength(1);
     expect(c.some((x) => x.includes("loin du sous-évier"))).toBe(true);
     const sans = tout().filter((id) => !["pomme-de-terre", "oignon", "echalote", "ail"].includes(id));
     expect(conseilDe(catalogue, r(plan(sans), "sous-evier"), sans)).toEqual([]);

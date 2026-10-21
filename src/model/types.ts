@@ -186,6 +186,12 @@ export interface Emit {
    * huit, et rien ne distinguait un bouillon d'une mitonnée.
    */
   horsTable: boolean;
+  /**
+   * T142 — le reste mis de côté pour le déjeuner de demain (`repas.resteDuMidi`).
+   * Jamais au corpus : il naît quand « Je lance ça » agrandit le dîner. Sa
+   * bande EST le nombre de repas, elle ne suit ni le facteur ni la table.
+   */
+  midi?: boolean;
 }
 
 export interface Accept {
@@ -428,6 +434,23 @@ export interface ConfigCreneaux {
   /** Les repas qui partent en gamelle, par jour : `{ dejeuner: ["mardi"] }`. */
   emporte: Record<RepasId, string[]>;
   equilibre_sur: RepasId[];
+  /** T142 — ce que les repas `routine` consomment chaque jour. `?` : les
+   *  catalogues fabriqués à la main des tests datent d'avant. */
+  routines?: Routines;
+}
+
+/** Une routine : la ration d'un jour (une recette du foyer) et ce qu'elle
+ *  prend au dépôt. Voir `creneaux.yaml:routines`. */
+export interface Routine {
+  repas: RepasId;
+  recette: string;
+  duDepot: { types: string[]; parts: number } | null;
+}
+
+export interface Routines {
+  /** Le jour où les routines ont commencé à compter, `AAAA-MM-JJ`. */
+  depuis: string;
+  liste: Routine[];
 }
 
 export interface ConfigRayons {
@@ -622,6 +645,11 @@ export interface Denree {
   nature: Nature;
   /** Ce à quoi elle sert quand ce n'est pas à cuisiner. `null` par défaut. */
   usage: Usage | null;
+  /** T142 — un produit industriel que le foyer ne rachète plus (biscottes,
+   *  purée en flocons…). Le lot reste au stock ; l'écran le dit « à ne pas
+   *  racheter », et aucune proposition ne le remet au panier. `?` : les
+   *  catalogues fabriqués à la main des tests datent d'avant. */
+  industriel?: boolean;
   /** Ce qu'on peut en faire pour qu'elle tienne, acquis ou non. */
   conservations: ConservationDenree[];
   /** L'id de sa famille de garde (`Catalogue.garde`), ou `null` quand aucune
@@ -675,6 +703,13 @@ export interface DenreeDuFond {
   minimum: number;
   /** Ce qu'est une unité : « sachet de 500 g », « boîte de 6 ». */
   unite: string;
+  /** T142 — jusqu'où remonter en rachetant, en unités d'achat. `minimum`
+   *  déclenche la ligne, `jusqua` la chiffre. `null` : on remonte au minimum.
+   *  `?` pour les catalogues des tests, antérieurs au champ. */
+  jusqua?: number | null;
+  /** T142 — le frais de la semaine (fruits, yaourts, lait) : il se rachète
+   *  chaque semaine au lieu de se garder des mois. */
+  hebdo?: boolean;
 }
 
 /**

@@ -53,8 +53,9 @@ describe("le fond de roulement fait exister comme stock ce qu'aucun relevé n'av
     }
   });
 
-  test("les dix dîners du fond désignent des plats qui existent", () => {
-    expect(catalogue.fond.diners).toHaveLength(10);
+  // T142 : neuf — les gnocchis sont sortis du fond, et leur dîner avec eux.
+  test("les neuf dîners du fond désignent des plats qui existent", () => {
+    expect(catalogue.fond.diners).toHaveLength(9);
     for (const d of catalogue.fond.diners) expect(plat(d.plat), d.plat).toBeDefined();
   });
 

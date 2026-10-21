@@ -98,6 +98,8 @@ export function vueDeLaSortie(
   f: number,
   foyer: Foyer,
   stock: readonly LotInitial[] = [],
+  /** T142 — une fournée : ce qui part au congélateur va en sachets. */
+  sachets = false,
 ): VueSortie {
   const lots: LotSortie[] = [];
   // T109 — LES LOTS DE LA SORTIE PUISENT L'UN APRÈS L'AUTRE dans ce que le
@@ -124,7 +126,7 @@ export function vueDeLaSortie(
         unite: e.qty ? e.qty.unit : null,
         garde: part.location === "frigo" ? e.gardeFrigo : null,
         note: n === 0 ? e.note : null,
-        ...rangerEtPrendre(foyer, part.location, part.repas, qtyDuLot, libres),
+        ...rangerEtPrendre(foyer, part.location, part.repas, qtyDuLot, libres, sachets && part.location === "congelo"),
       });
     });
   });
@@ -255,6 +257,7 @@ export function rangerDans(
   repas: number,
   qty: Quantite | null = null,
   libres?: ReadonlyMap<string, number>,
+  sachets = false,
 ): Rangement {
   const declares = foyer.contenants.filter((c) => c.portions > 0 && c.espaces.includes(espace));
   if (!declares.length) return { boites: [], manque: null };
@@ -270,7 +273,10 @@ export function rangerDans(
     const dispo = declares.filter((c) => (reste.get(c.id) ?? 0) > 0);
     if (!dispo.length) break;
     const lavables = dispo.filter((c) => !c.consommable);
-    const classe = lavables.length ? lavables : dispo;
+    // T142 — UNE FOURNÉE PART EN SACHETS : les quatre boîtes du foyer portent
+    // les restes de la semaine, pas douze tranches de banana bread.
+    const sacs = sachets ? dispo.filter((c) => c.consommable) : [];
+    const classe = sacs.length ? sacs : lavables.length ? lavables : dispo;
     const tient = classe.filter((c) => part(c) >= a - 1e-9);
     const c = tient.length
       ? tient.reduce((m, x) => (part(x) < part(m) ? x : m))
@@ -353,8 +359,15 @@ export function contenantsLibres(foyer: Foyer, stock: readonly LotInitial[]): Li
 export const phraseDuManque = (m: Manque): string =>
   `il manque ${m.nombre} × ${m.label} : ${m.repli ? `${m.repli} ?` : "laver des boîtes"}`;
 
-const rangerEtPrendre = (foyer: Foyer, espace: Espace, repas: number, qty: Quantite | null, libres: Libres): Rangement => {
-  const r = rangerDans(foyer, espace, repas, qty, libres);
+const rangerEtPrendre = (
+  foyer: Foyer,
+  espace: Espace,
+  repas: number,
+  qty: Quantite | null,
+  libres: Libres,
+  sachets = false,
+): Rangement => {
+  const r = rangerDans(foyer, espace, repas, qty, libres, sachets);
   prendre(foyer, libres, r.boites);
   return r;
 };

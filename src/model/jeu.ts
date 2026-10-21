@@ -117,6 +117,14 @@ export interface Jeu {
    * comptoir le fait pour chaque candidat) n'en hérite pas.
    */
   dejaLa: (DejaLa | null)[];
+  /**
+   * T142 — par dîner, les parts mises de côté pour le déjeuner de demain
+   * (`DecisionCreneau.midi`), comprises dans `parts`. `?` : les jeux fabriqués
+   * à la main des tests datent d'avant.
+   */
+  midi?: (number | null)[];
+  /** T142 — par déjeuner « reste réchauffé », le plat de la veille qu'il finit. */
+  deLaVeille?: (string | null)[];
   /** Les parts se règlent PAR REPAS, pas une fois pour la semaine. Un dîner
    *  avec des amis, un midi tout seul et une gamelle à prévoir n'ont pas la
    *  même taille, et c'est la taille qui commande le panier et les restes. */
@@ -185,6 +193,8 @@ export function creerJeu(catalogue: Catalogue, nJours = 7, aujourdhui = new Date
     equilibreSur: cfg.equilibre_sur.length ? cfg.equilibre_sur : ["dejeuner", "diner"],
     choix: Array<Choix>(creneaux.length).fill(null),
     dejaLa: Array<DejaLa | null>(creneaux.length).fill(null),
+    midi: Array<number | null>(creneaux.length).fill(null),
+    deLaVeille: Array<string | null>(creneaux.length).fill(null),
     parts: Array<number>(creneaux.length).fill(catalogue.foyer.parts),
     // On démarre sur le premier créneau réellement choisi : personne ne pioche
     // une carte pour son petit-déjeuner.

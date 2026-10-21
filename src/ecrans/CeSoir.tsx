@@ -33,6 +33,8 @@ import {
   ligneHeure,
   raison,
 } from "./ceSoir.vue";
+import { ligneDeFournee, ligneMidi, partsPourDemain } from "./repas.vue";
+import { contenantsLibres } from "./sortie.vue";
 
 /** Combien de cartes « voir plus » déplie. Le reste du catalogue a sa
  *  recherche (le fil) et son index (le répertoire) : ici on choisit un dîner,
@@ -82,7 +84,9 @@ export function useCeSoir(): CeSoirVivant | null {
       const c = [...proposition.cartes, ...proposition.plus].find((x) => x.plat.id === plat);
       // CE SOIR SE LIT SUR L'HORLOGE AU DOIGT, pas sur la fenêtre en cache
       // (T134) : un onglet resté ouvert trois jours posait sur avant-hier.
-      const ceSoir = await poserCeSoir(base, jeu.catalogue, plat, c?.ici);
+      // T142 — ET DEMAIN MIDI, quand les boîtes le permettent : le dîner
+      // s'agrandit, le déjeuner de demain part sur son reste.
+      const ceSoir = await poserCeSoir(base, jeu.catalogue, plat, c?.ici, new Date(), partsPourDemain(c));
       aller({ ecran: "cuisiner", creneau: ceSoir });
     },
   };
@@ -108,7 +112,10 @@ export function useProposition(jeu: Jeu | null): PropositionDuSoir | null {
     const maintenant = new Date();
     const recents = cuissonsRecentes(evts, jourISO(maintenant), JOURS_DE_VARIETE);
     const mange = evts.flatMap((e) => (e.sorte === "cuisine" ? [{ plat: e.plat, jour: e.jour }] : []));
-    return proposerCeSoir({ jeu, savoir, recents, maintenant, sortis, mange });
+    // LES BOÎTES PROPRES, après ce que le dépôt occupe : c'est elles qui disent
+    // si demain midi se prend au dîner (T142).
+    const libres = contenantsLibres(jeu.catalogue.foyer, jeu.stock);
+    return proposerCeSoir({ jeu, savoir, recents, maintenant, sortis, mange, libres });
   }, [jeu, savoir, evts, sortis]);
 }
 
@@ -157,6 +164,7 @@ export function BlocDuSoir({ vivant }: { vivant: CeSoirVivant }) {
   const attend = ceQuiAttend(attendSansASortir(proposition));
   const sortir = ligneASortir(proposition);
   const autres = proposition.plus.slice(0, PLUS);
+  const fournee = proposition.fournee ? ligneDeFournee(proposition.fournee, creneau.jour) : null;
 
   return (
     <section aria-label="ce soir">
@@ -170,6 +178,20 @@ export function BlocDuSoir({ vivant }: { vivant: CeSoirVivant }) {
       {sortir ? (
         <p className="co-action" style={{ margin: "0 0 var(--space-3)" }}>
           {sortir}
+        </p>
+      ) : null}
+      {/* LA FOURNÉE DU GOÛTER (T142) : la pause est le moment où l'on décide de
+          ce qui cuit, et c'est ici qu'elle se propose — une recette, pas un
+          choix de plus. */}
+      {fournee ? (
+        <p className="co-action" style={{ margin: "0 0 var(--space-3)" }}>
+          {fournee.route ? (
+            <a href={chemin(fournee.route)} style={{ color: "inherit" }}>
+              {fournee.texte}
+            </a>
+          ) : (
+            fournee.texte
+          )}
         </p>
       ) : null}
 
@@ -247,6 +269,7 @@ function CarteSoir({
 }) {
   const pourquoi = raison(c);
   const aCote = ligneACote(c);
+  const midi = ligneMidi(c);
   return (
     <div className="co-soir">
       <div className="tete">
@@ -256,6 +279,7 @@ function CarteSoir({
       <div className={`achats ${classeAchats(c)}`}>{ligneAchats(c)}</div>
       <div className="heure">{ligneHeure(c)}</div>
       {aCote ? <div className="heure">{aCote}</div> : null}
+      {midi ? <div className="midi">{midi}</div> : null}
       {pourquoi ? <div className="co-action">{pourquoi}</div> : null}
       <div className="pied">
         <button className="btn btn-primary" style={{ flex: 1 }} disabled={enCours} onClick={() => jouer(c.plat.id)}>

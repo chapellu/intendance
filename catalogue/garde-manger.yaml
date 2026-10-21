@@ -281,10 +281,15 @@ denrees:
   # ── zone 1b · dessus de l'étagère ────────────────────────────────────────
   # Quantités non relevées : ce sont des paquets entamés, et personne ne compte
   # les biscottes qui restent.
-  - {ingredient: puree-mousline, zone: dessus-etagere, unites: 1, par_unite: null, etat: sec}
-  - {ingredient: cracotte, zone: dessus-etagere, unites: 1, par_unite: null, etat: entame, nature: sec, sensible: [humidite]}
-  - {ingredient: krisprolls, zone: dessus-etagere, unites: 1, par_unite: null, etat: entame, nature: sec, sensible: [humidite]}
-  - {ingredient: biscottes, zone: dessus-etagere, unites: 1, par_unite: null, etat: entame, nature: sec, sensible: [humidite]}
+  #
+  # T142 — `industriel: true` (décision du 2026-10-21 : « le moins de produits
+  # industriels possible », dans l'esprit de Marie Chioca). Les quatre paquets
+  # RESTENT au relevé — on finit ce qu'on a — mais l'écran Stock les dit « à ne
+  # pas racheter » et aucune proposition ne les remet au panier.
+  - {ingredient: puree-mousline, zone: dessus-etagere, unites: 1, par_unite: null, etat: sec, industriel: true}
+  - {ingredient: cracotte, zone: dessus-etagere, unites: 1, par_unite: null, etat: entame, nature: sec, sensible: [humidite], industriel: true}
+  - {ingredient: krisprolls, zone: dessus-etagere, unites: 1, par_unite: null, etat: entame, nature: sec, sensible: [humidite], industriel: true}
+  - {ingredient: biscottes, zone: dessus-etagere, unites: 1, par_unite: null, etat: entame, nature: sec, sensible: [humidite], industriel: true}
 
   # ── zone 2 · demi-lune basse — le lourd ──────────────────────────────────
   - {ingredient: farine, zone: demi-lune-basse, unites: 1, par_unite: {amount: 4000, unit: g}, etat: sec, note: T55, réserve}

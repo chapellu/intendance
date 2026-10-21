@@ -160,6 +160,7 @@ export function phraseDuPlancher(p: LignePlancher, plats: number): string {
   const bouts: string[] = [];
   if (plats > 0) bouts.push(plats > 1 ? `${plats} plats` : "1 plat");
   if (p.usage === "apero") bouts.push("pour l’apéro");
+  else if (p.hebdo) bouts.push("frais de la semaine");
   else if (p.fond) bouts.push("pour le fond");
   bouts.push(`sous son plancher — ${p.a} sur ${p.niveau}`);
   // T137 — ACHETÉ N'EST PAS « JAMAIS VU ». Rentrer ne restaure pas la

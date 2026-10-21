@@ -18,7 +18,7 @@ import type {
   Accept, Cadre, DecorDuPlan, Mur, PlanCuisine, RangementDuPlan, TeinteDecor, TeinteRangement,
   Accompagnement, Agression, Catalogue, Denree, Emit, EmitKind, Espace, Etape, Etat,
   FamilleDeGarde, Fond, Format, Forme, Foyer, GardeManger, Ingredient, LigneStock, Nature, Outil,
-  Plat, Provenance, Quantite, Rattrapage, Role, Saisons, Source, Urgence, Usage, Zone,
+  Plat, Provenance, Quantite, Rattrapage, Role, Routine, Routines, Saisons, Source, Urgence, Usage, Zone,
 } from "./types";
 
 const ESPACES: readonly Espace[] = ["frigo", "congelo", "placard"];
@@ -528,6 +528,7 @@ function denree(v: unknown, ou: string): Denree {
     // connu — une faute de frappe y serait silencieuse et ferait simplement
     // disparaître la denrée de la liste d'apéro, sans que rien ne le dise.
     usage: o["usage"] == null ? null : parmi(o["usage"], USAGES, `${ou}.usage`),
+    industriel: o["industriel"] == null ? false : booleen(o["industriel"], `${ou}.industriel`),
     conservations: tableau(o["conservations"] ?? [], `${ou}.conservations`).map((x, i) => {
       const c = obj(x, `${ou}.conservations[${i}]`);
       return {
@@ -684,10 +685,16 @@ function fond(v: unknown, ou: string): Fond {
       // vérifie, et zéro n'est pas un minimum.
       if (!Number.isInteger(minimum) || minimum < 1)
         throw new CatalogueInvalide(`${ou}.denrees[${i}].minimum`, "un entier ≥ 1", minimum);
+      const jusqua = d["jusqua"] == null ? null : nombre(d["jusqua"], `${ou}.denrees[${i}].jusqua`);
+      // AU-DESSUS DU MINIMUM, sinon « remonter jusqu'à » descendrait.
+      if (jusqua !== null && (!Number.isInteger(jusqua) || jusqua <= minimum))
+        throw new CatalogueInvalide(`${ou}.denrees[${i}].jusqua`, "un entier au-dessus du minimum", jusqua);
       return {
         ingredient: texte(d["ingredient"], `${ou}.denrees[${i}].ingredient`),
         minimum,
         unite: texte(d["unite"], `${ou}.denrees[${i}].unite`),
+        jusqua,
+        hebdo: d["hebdo"] == null ? false : booleen(d["hebdo"], `${ou}.denrees[${i}].hebdo`),
       };
     }),
     diners: tableau(o["diners"] ?? [], `${ou}.diners`).map((x, i) => {
@@ -698,6 +705,34 @@ function fond(v: unknown, ou: string): Fond {
       };
     }),
   };
+}
+
+/**
+ * T142 — les routines. La recette d'une ration doit exister : une routine qui
+ * ne retire rien se tairait, et le placard mentirait en silence.
+ */
+function routines(v: unknown, plats: ReadonlySet<string>): Routines {
+  const o = obj(v, "creneaux.routines");
+  const liste: Routine[] = [];
+  for (const [repas, brut] of Object.entries(o)) {
+    if (repas === "depuis") continue;
+    const ou = `creneaux.routines.${repas}`;
+    const r = obj(brut, ou);
+    const recette = texte(r["recette"], `${ou}.recette`);
+    if (!plats.has(recette)) throw new CatalogueInvalide(`${ou}.recette`, "l'id d'un plat", recette);
+    const dd = r["du_depot"] == null ? null : obj(r["du_depot"], `${ou}.du_depot`);
+    liste.push({
+      repas,
+      recette,
+      duDepot: dd
+        ? {
+            types: listeDeTextes(dd["types"] ?? [], `${ou}.du_depot.types`),
+            parts: dd["parts"] == null ? 1 : nombre(dd["parts"], `${ou}.du_depot.parts`),
+          }
+        : null,
+    });
+  }
+  return { depuis: texte(o["depuis"], "creneaux.routines.depuis"), liste };
 }
 
 function saisons(v: unknown, ou: string): Saisons {
@@ -832,6 +867,7 @@ export function lireCatalogue(brut: unknown): Catalogue {
       },
       emporte,
       equilibre_sur: listeDeTextes(creneauxBruts["equilibre_sur"], "creneaux.equilibre_sur"),
+      ...(creneauxBruts["routines"] != null ? { routines: routines(creneauxBruts["routines"], vus) } : {}),
     },
     rayons: {
       ordre: listeDeTextes(rayonsBruts["ordre"], "rayons.ordre"),

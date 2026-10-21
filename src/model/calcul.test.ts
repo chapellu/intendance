@@ -42,10 +42,11 @@ describe("la semaine", () => {
     expect([...jours].sort((a, b) => a - b)).toEqual(jours);
   });
 
-  test("mercredi a un goûter que les autres jours n'ont pas", () => {
+  // T142 (21/10) : le goûter des enfants est de tous les jours.
+  test("chaque jour a son goûter, une routine", () => {
     const gouters = jeu.creneaux.filter((c) => c.repas === "gouter");
-    expect(gouters).toHaveLength(1);
-    expect(jeu.jours[gouters[0]!.jour]?.nom).toBe("mercredi");
+    expect(gouters).toHaveLength(7);
+    expect(new Set(gouters.map((c) => c.nature))).toEqual(new Set(["routine"]));
   });
 
   test("chaque créneau démarre aux parts du foyer", () => {

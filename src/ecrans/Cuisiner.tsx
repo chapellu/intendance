@@ -28,6 +28,7 @@ import {
 } from "../db/reglages";
 import { base } from "../db/schema";
 import { facteurAffiche, quantiteACuire, type Calcul } from "../model/calcul";
+import { estUneFournee, platDuSoir } from "../model/repas";
 import { joue, type Jeu } from "../model/jeu";
 import { heureDe } from "../model/heures";
 import type { Catalogue, Etape, Foyer, Plat } from "../model/types";
@@ -149,6 +150,10 @@ function Fiche({
   const temps = tempsDuPlat(steps);
   const parts = (i >= 0 ? jeu.parts[i] : undefined) ?? jeu.catalogue.foyer.parts;
   const f = (i >= 0 ? calc.facteurs[i] : undefined) || facteurAffiche(p, parts);
+  // T142 — le midi de demain, mis de côté ce soir : compris dans `parts`, et
+  // c'est la sortie qui le range.
+  const midi = (i >= 0 && !lecture ? jeu.midi?.[i] : null) ?? 0;
+  const pSoir = platDuSoir(p, midi);
 
   /**
    * Terminer une recette JOURNALISE la cuisson — T26.
@@ -180,8 +185,9 @@ function Fiche({
     await journaliserCuisson(base, {
       jour: creneau.jour,
       repas: creneau.repas,
-      plat: p,
+      plat: pSoir,
       parts,
+      midi,
       rangement,
       sortie: marque,
       foyer: jeu.catalogue.foyer,
@@ -254,8 +260,9 @@ function Fiche({
   if (sortie)
     return (
       <Sortie
-        p={p}
-        parts={parts}
+        p={pSoir}
+        parts={parts - midi}
+        sachets={estUneFournee(jeu.catalogue, p)}
         f={f}
         foyer={jeu.catalogue.foyer}
         stock={jeu.stock}
@@ -521,6 +528,7 @@ function Sortie({
   f,
   foyer,
   stock,
+  sachets = false,
   revenir,
   repondre,
 }: {
@@ -530,10 +538,12 @@ function Sortie({
   foyer: Foyer;
   /** Ce que le dépôt porte déjà — ses boîtes ne sont pas libres (T109). */
   stock: Jeu["stock"];
+  /** T142 — une fournée part en sachets de congélation, pas en boîtes. */
+  sachets?: boolean;
   revenir: () => void;
   repondre: (rangement: RangementLot[] | null, marque?: "suivie" | "autre") => void;
 }) {
-  const v = vueDeLaSortie(p, parts, f, foyer, stock);
+  const v = vueDeLaSortie(p, parts, f, foyer, stock, sachets);
   return (
     <>
       <div className="co-fiche-tete">

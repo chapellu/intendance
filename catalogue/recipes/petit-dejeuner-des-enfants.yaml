@@ -1,0 +1,47 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-21 (T142) — aucune source
+# extérieure. CE N'EST PAS UNE CARTE : c'est la RATION D'UN MATIN pour les deux
+# enfants (12 et 30 mois), que le rejeu du placard retire chaque jour
+# (`creneaux.yaml:routines`). Le pain vient du dépôt (le pain maison congelé
+# en tranches), pas d'ici.
+#
+# Le porridge des petits flocons au lait de croissance et au fruit écrasé, une
+# tartine beurrée, un yaourt nature. Ni Blédine ni biscottes.
+
+recipe:
+  id: petit-dejeuner-des-enfants
+  title: Petit-déjeuner des enfants
+  lang: fr
+  yields:
+    portions_eq: 1
+  time_min_total: 10
+  active_min: 10
+
+  creneaux: [petit-dejeuner]
+
+  apports:
+    proteine: aucune
+    feculent: cereale
+    legumes: []
+    profil: routine
+    origine: francais
+
+  ingredients:
+    - {id: flocons-avoine, name: petits flocons d'avoine, qty: 40, unit: g}
+    - {id: lait-croissance, name: lait de croissance, qty: 400, unit: ml}
+    - {id: banane, name: banane écrasée dans le porridge, qty: 1, unit: pièce}
+    - {id: beurre, name: beurre des tartines, qty: 10, unit: g}
+    - {id: yaourt-nature, name: yaourts nature, qty: 2, unit: pot}
+
+  steps:
+    - id: porridge
+      action: "Cuire les flocons dans le lait trois minutes en remuant, puis y écraser la banane"
+      needs: [simmer]
+      uses: [flocons-avoine, lait-croissance, banane]
+      time_min: 6
+    - id: tartines
+      action: "Beurrer les tartines de pain maison, et sortir les yaourts"
+      needs: []
+      uses: [beurre, yaourt-nature]
+      time_min: 4
+
+  plan_b: []

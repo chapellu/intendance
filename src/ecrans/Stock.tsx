@@ -1232,6 +1232,8 @@ function Zone({
                     même zone se ressemblent à s’y méprendre. */}
                 {d.note ? <div className="ou">{d.note}</div> : null}
                 {d.alerte ? <div className="ou">⚠ {d.alerte}</div> : null}
+                {/* T142 — on finit ce qu'on a, on ne le rachète pas. */}
+                {"industriel" in d && d.industriel ? <div className="ou industriel">{d.industriel}</div> : null}
                 {/* LE CHIFFRE ET SA DATE, TOUJOURS LISIBLES DESSOUS. C'est ce
                     qui remplace un score de confiance : trois mots se lisent,
                     un score se croit. */}

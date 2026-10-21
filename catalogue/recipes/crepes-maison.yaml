@@ -1,0 +1,63 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-21 (T142) — aucune source
+# extérieure. Une fournée du goûter : les crêpes se congèlent empilées, séparées
+# d'un papier, et se réchauffent à la poêle en une minute.
+
+recipe:
+  id: crepes-maison
+  title: Crêpes semi-complètes
+  lang: fr
+  format: cake
+  yields:
+    portions_eq: 4          # 16 crêpes : quatre goûters de quatre
+  lot_entier: true
+  time_min_total: 75
+  active_min: 30
+
+  creneaux: [gouter, petit-dejeuner]
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: poele
+    origine: francais
+
+  ingredients:
+    - {id: farine-complete, name: farine semi-complète (T80), qty: 250, unit: g}
+    - {id: oeufs, name: œufs, qty: 3, unit: pièce}
+    - {id: lait, name: lait, qty: 500, unit: ml}
+    - {id: beurre, name: beurre fondu, qty: 30, unit: g}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: pate
+      action: "Fouetter la farine, les œufs et le sel, puis délayer peu à peu avec le lait et le beurre fondu"
+      needs: []
+      uses: [farine-complete, oeufs, lait, beurre, sel]
+      time_min: 8
+      kid: {age_min_months: 30, task: "verser le lait petit à petit pendant qu'un adulte fouette"}
+    - id: reposer
+      action: "Laisser reposer la pâte"
+      needs: []
+      uses: []
+      time_min: 30
+      attended: false
+    - id: cuire
+      action: "Cuire les crêpes une à une à la poêle chaude légèrement beurrée"
+      needs: [pan-fry]
+      uses: []
+      time_min: 30
+    - id: ranger
+      action: "Empiler en intercalant du papier cuisson, et congeler par quatre en sachet"
+      needs: []
+      uses: []
+      time_min: 4
+
+  emits:
+    - kind: reste-plat
+      type: crepes-maison
+      qty_band: 3-repas
+      keeps: {frigo_days: 2, congelo: true}
+      note: "quatre crêpes par sachet ; une minute à la poêle, sans décongeler"
+
+  plan_b: []

@@ -5339,6 +5339,70 @@ Branche `cuisine/a-la-pause-retouches`, sur `cuisine/a-la-pause`.
       derrière « Pourquoi ? ». Un export sans plan retombe sur la liste des
       zones.
 
+## Les trois autres repas — T142
+
+Décision du foyer, 2026-10-21 : l'app ne planifiait que le dîner. Les trois
+autres repas, dans l'esprit de Marie Chioca et le moins d'industriel possible —
+sans semaine planifiée. Branche `cuisine/trois-repas`, sur `cuisine/stock-plan`.
+
+- [x] **T142 — Le midi pris au dîner, les routines comptées, la fournée
+      proposée.** `model/repas.ts`.
+      **Le midi.** `midiDeDemain` : un déjeuner du foyer fait 3 parts
+      (`partsDuMidi` : adultes à leur part, enfants à une demi au moins), rangées
+      dans les boîtes IKEA LIBRES qui vont au frigo (`contenantsLibres`, les sacs
+      ne comptent pas). Tout ou rien : la carte du soir dit « + le déjeuner de
+      demain, 3 boîtes », ou « Boîtes pleines : ce soir seulement », ou se tait
+      (plat qui finit un reste, ne passe pas la nuit, ou casserole trop petite —
+      `vaisselle.facteurMax`, les pâtes bolognaise). « Je lance ça » (écran et
+      cockpit) écrit en une transaction le dîner à `parts + midi`
+      (`DecisionCreneau.midi`) et demain midi en « Reste réchauffé »
+      (`DecisionCreneau.de`) — jamais par-dessus un midi posé à la main ;
+      relancer n'empile pas. La table mange `parts − midi` : la sortie et le
+      journal rangent le reste (`platDuSoir` ajoute un reste `midi: true` aux
+      plats qui n'en déclarent pas ; ceux qui en déclarent un le voient grossir
+      par `restesApresTable`). Le cockpit dit « Demain midi : le reste de … ».
+      Le geste du jour lit où est le lot (`location`), plus où il ira : il
+      réclamait de « sortir du congélo » le reste de ce soir.
+      **Les routines.** Goûter tous les jours (`creneaux.yaml`). Bloc
+      `routines:` : depuis le 21/10, une ration par jour (recettes du foyer
+      `petit-dejeuner-des-enfants`, `gouter-des-enfants` : flocons, lait de
+      croissance, banane, beurre, yaourts, pomme) se REJOUE comme une cuisson
+      (`journal.evenementsDesRoutines`, en fin de journée, sans compter de
+      doute) ; le dépôt (pain maison, fournée, compote) est décompté une fois
+      par jour au démarrage (`db/routines.ts`, `prisesDesRoutines`, le plus
+      ancien d'abord). Cockpit : une ligne calme par repas, hors tâches
+      (« Goûter : banana bread (congélo, 3 restants), yaourt, fruit » ; midi :
+      le reste d'hier, sinon le déjeuner de Chioca du moins d'achats, hors
+      saison exclu).
+      **La fournée.** `fourneeAProposer` : sous 3 goûters au congélo ou des
+      fruits mûrs (moitié de la vie de leur famille), une recette — les fruits
+      mûrs d'abord, puis zéro/un/plusieurs achats, Chioca à achats égaux. Dite
+      à « Ce soir » et au cockpit ; ses portions partent en SACHETS
+      (`rangerDans(…, sachets)`). Quatre recettes du foyer : banana bread à
+      l'avoine, cookies à l'avoine, crêpes semi-complètes, compote
+      pommes-poires (aucun ajout aux recettes des livres).
+      **Le fond.** `jusqua` (le minimum déclenche, `jusqua` chiffre la ligne) et
+      `hebdo` (frais de la semaine : lait de croissance, yaourts, pommes — dit
+      sur la liste). Bases Chioca, dîner ×2, gnocchis sortis (et leur dîner :
+      neuf dîners promis), fromage en bloc de 400 g. Familles `brique-uht`,
+      `fruit-frais`. « brique de 1 L » se lit en ml.
+      **L'industriel.** Biscottes, cracottes, krisprolls, purée mousline :
+      `industriel: true` au relevé — « industriel — à ne pas racheter » au
+      Stock, aucun plancher proposé, sortis des `centraux`.
+      **Retouche** : l'encart du sous-évier ne dit plus « À déplacer » qu'une
+      fois.
+
+Portes : typecheck, **1 128 tests** (26 nouveaux, `repas.test.ts`,
+`db/ceSoir.test.ts`), build, **78 e2e** (2 nouveaux, `trois-repas.spec.ts`),
+`catalogue:verifie` 0 erreur.
+
+**Ce qui reste ouvert.** Les bandes du corpus plafonnent à `3-repas` : une
+fournée de 12 tranches se dit « 3 goûters ». Le reste d'un dîner déclaré
+`1-repas` (le dahl) reste sous-estimé par la donnée du corpus. Changer le plat
+du soir après coup laisse demain midi sur l'ancien reste. Le rejeu d'une
+brique entamée (lot `court`) mesure mal le jour même. Les rations sont
+posées à vue (40 g de flocons, 400 ml de lait le matin) : à corriger à l'usage.
+
 ## Sortie
 
 **Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`

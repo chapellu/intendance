@@ -685,7 +685,12 @@ export interface DenreeVue {
   /** Ce qui abîme cette denrée ICI, et rien quand la zone lui convient. */
   alerte: string;
   note: string | null;
+  /** T142 — « industriel — à ne pas racheter », ou vide. */
+  industriel?: string;
 }
+
+/** T142 — la phrase d'un produit industriel que le foyer ne rachète plus. */
+export const PHRASE_INDUSTRIEL = "industriel — à ne pas racheter";
 
 export interface ZoneVue {
   id: string;
@@ -744,6 +749,7 @@ function denreeVue(d: Denree, z: Zone, i: number): DenreeVue {
     etat: ETIQUETTE_ETAT[d.etat],
     alerte: agressions(d, z).join(" · "),
     note: d.note,
+    industriel: d.industriel ? PHRASE_INDUSTRIEL : "",
   };
 }
 
@@ -1391,11 +1397,14 @@ export function conseilDe(catalogue: Catalogue, r: RangementVue, reste: Iterable
   const restent = new Set(reste);
   // « (sous-évier) » en fin d'alerte se tait : le panneau porte déjà le nom.
   const fin = ` (${zone.label})`;
-  const alertes = r.signaux.deplacer
-    ? catalogue.gardeManger.alertes
-        .filter((a) => a.endsWith(fin))
-        .map((a) => `À déplacer : ${a.slice(0, -fin.length)}.`)
+  // UNE SEULE LIGNE « À DÉPLACER », quel que soit le nombre d'alertes (T142,
+  // vu sur le sous-évier : deux lignes qui commençaient pareil, au-dessus d'un
+  // conseil qui le redisait). Les diagnostics s'enchaînent derrière un seul
+  // en-tête ; le geste de la famille, dessous, ne le répète plus.
+  const diagnostics = r.signaux.deplacer
+    ? catalogue.gardeManger.alertes.filter((a) => a.endsWith(fin)).map((a) => a.slice(0, -fin.length))
     : [];
+  const alertes = diagnostics.length ? [`À déplacer : ${diagnostics.join(" ; ")}.`] : [];
   const ids = [
     ...new Set(
       catalogue.gardeManger.denrees

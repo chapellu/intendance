@@ -81,6 +81,10 @@ export function contenuDUnite(unite: string): Quantite | null {
   if (kg) return { amount: nombre(kg[1]!) * 1000, unit: "g" };
   const g = /(\d+(?:[.,]\d+)?)\s*g\b/i.exec(unite);
   if (g) return { amount: nombre(g[1]!), unit: "g" };
+  // T142 — « brique de 1 L » (le lait de croissance) : des millilitres, que le
+  // rejeu soustrait comme des grammes (`journal.EN_GRAMMES`).
+  const l = /(\d+(?:[.,]\d+)?)\s*l\b/i.exec(unite);
+  if (l) return { amount: nombre(l[1]!) * 1000, unit: "ml" };
   const pieces = /\bde\s+(\d+)\s*$/i.exec(unite);
   if (pieces) return { amount: nombre(pieces[1]!), unit: "pièce" };
   return null;

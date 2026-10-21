@@ -14,6 +14,7 @@
 import { bandRepas, Depot, horlogesDu, qteDe, type LigneDepot, type Prise } from "./depot";
 import { dateDe, dejaLaPour, joue, type Jeu } from "./jeu";
 import { boitesDeLaLigne, boitesDuCatalogue, phraseBoites, type Boite } from "./paquet";
+import { platDuSoir } from "./restes";
 import type {
   Accept, Accompagnement, Catalogue, CauseLimite, Espace, Ingredient, Plat, Provenance,
 } from "./types";
@@ -397,7 +398,9 @@ export function calculer(
     // du riz pour six un soir où l'on est deux et demi.
     for (const a of p.avec) auPanier(commeIngredient(a), besoin / p.portions);
 
-    for (const e of p.emits) {
+    // T142 — LE DÎNER AGRANDI POUR DEMAIN MIDI laisse son reste au dépôt, que
+    // le plat en déclare un ou non : c'est lui que « Reste réchauffé » prend.
+    for (const e of platDuSoir(p, jeu.midi?.[i]).emits) {
       const [amount, unit] = qteDe(e);
       depot.ajouter(
         { ...e, qty: amount == null ? null : { amount: amount * f, unit: unit! } },

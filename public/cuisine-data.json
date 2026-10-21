@@ -3941,6 +3941,238 @@
    "cuisinable": true
   },
   {
+   "id": "banana-bread-avoine",
+   "titre": "Banana bread à l'avoine",
+   "minutes": 60,
+   "minutesSurPlace": 60,
+   "avanceMin": 60,
+   "anticipations": [],
+   "portions": 4,
+   "source": null,
+   "apports": {
+    "proteine": "oeuf",
+    "feculent": "farine",
+    "legumes": [],
+    "profil": "four",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "banane",
+     "ref": "banane",
+     "nom": "bananes bien mûres",
+     "qty": 3,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "oeufs",
+     "ref": "oeufs",
+     "nom": "œufs",
+     "qty": 2,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "beurre",
+     "ref": "beurre",
+     "nom": "beurre fondu",
+     "qty": 60,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sucre-complet",
+     "ref": "sucre-complet",
+     "nom": "sucre complet",
+     "qty": 40,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "farine-complete",
+     "ref": "farine-complete",
+     "nom": "farine semi-complète (T80)",
+     "qty": 150,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "flocons-avoine",
+     "ref": "flocons-avoine",
+     "nom": "petits flocons d'avoine",
+     "qty": 80,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "poudre-a-lever",
+     "ref": "poudre-a-lever",
+     "nom": "levure chimique",
+     "qty": 1,
+     "unit": "sachet",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "cannelle",
+     "ref": "cannelle",
+     "nom": "cannelle",
+     "qty": 1,
+     "unit": "pincée",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": "cake",
+   "avec": [],
+   "steps": [
+    {
+     "id": "prechauffer",
+     "action": "Préchauffer le four à 180 °C et beurrer un moule à cake",
+     "minutes": 2,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "ecraser",
+     "action": "Écraser les bananes à la fourchette",
+     "minutes": 3,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "banane"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "écraser les bananes à la fourchette",
+     "enfantDes": 30,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "melanger",
+     "action": "Ajouter les œufs, le beurre fondu et le sucre, puis la farine, les flocons, la levure et la cannelle",
+     "minutes": 6,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "oeufs",
+      "beurre",
+      "sucre-complet",
+      "farine-complete",
+      "flocons-avoine",
+      "poudre-a-lever",
+      "cannelle"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cuire",
+     "action": "Verser dans le moule et cuire 45 minutes, jusqu'à ce qu'une lame ressorte sèche",
+     "minutes": 45,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "trancher",
+     "action": "Laisser refroidir sur une grille, trancher, et congeler les tranches par trois en sachet",
+     "minutes": 4,
+     "needs": [],
+     "surveille": true,
+     "astuce": "Trois tranches par sachet : un goûter pour les deux enfants, sorti la veille au soir.",
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 15,
+   "accepts": [],
+   "creneaux": [
+    "gouter",
+    "petit-dejeuner"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [
+    {
+     "type": "banana-bread",
+     "kind": "reste-plat",
+     "qty": null,
+     "band": "3-repas",
+     "espace": "congelo",
+     "note": "un sachet de trois tranches par goûter, sorti la veille au soir",
+     "gardeFrigo": 3,
+     "congelo": true,
+     "horsTable": false
+    }
+   ],
+   "lotEntier": true,
+   "calibreMax": null,
+   "vaisselle": null,
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
    "id": "bouillon-nouilles-soba",
    "titre": "Bouillon chaud aux nouilles soba",
    "minutes": 12,
@@ -6799,6 +7031,183 @@
    "cuisinable": true
   },
   {
+   "id": "compote-pommes-poires",
+   "titre": "Compote pommes-poires",
+   "minutes": 35,
+   "minutesSurPlace": 35,
+   "avanceMin": 37,
+   "anticipations": [],
+   "portions": 6,
+   "source": null,
+   "apports": {
+    "proteine": "aucune",
+    "feculent": "aucun",
+    "legumes": [],
+    "profil": "compote",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "pommes",
+     "ref": "pommes",
+     "nom": "pommes",
+     "qty": 1000,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "poires",
+     "ref": "poires",
+     "nom": "poires",
+     "qty": 500,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "eau",
+     "ref": "eau",
+     "nom": "eau",
+     "qty": 10,
+     "unit": "cl",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "cannelle",
+     "ref": "cannelle",
+     "nom": "cannelle",
+     "qty": 1,
+     "unit": "pincée",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": null,
+   "avec": [],
+   "steps": [
+    {
+     "id": "tailler",
+     "action": "Éplucher, épépiner et couper les fruits en morceaux",
+     "minutes": 12,
+     "needs": [
+      "chop-coarse"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "pommes",
+      "poires"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cuire",
+     "action": "Cuire à couvert avec l'eau et la cannelle, à feu doux, jusqu'à ce que les fruits s'écrasent",
+     "minutes": 20,
+     "needs": [
+      "simmer"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [
+      "eau",
+      "cannelle"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "ecraser",
+     "action": "Écraser au presse-purée, ou mixer pour le petit",
+     "minutes": 2,
+     "needs": [
+      "puree"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "portionner",
+     "action": "Laisser tiédir, puis congeler en portions, à plat en sachet",
+     "minutes": 3,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 15,
+   "accepts": [],
+   "creneaux": [
+    "gouter",
+    "dessert"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [
+    {
+     "type": "compote-maison",
+     "kind": "reste-plat",
+     "qty": null,
+     "band": "3-repas",
+     "espace": "congelo",
+     "note": "une portion par goûter, sortie la veille au soir",
+     "gardeFrigo": 4,
+     "congelo": true,
+     "horsTable": false
+    }
+   ],
+   "lotEntier": false,
+   "calibreMax": null,
+   "vaisselle": {
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.0
+   },
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
    "id": "consomme-de-fanes",
    "titre": "Consommé de fanes",
    "minutes": 25,
@@ -7065,6 +7474,232 @@
     "label": "cocotte 7,5 L",
     "facteurMax": 3.0
    },
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
+   "id": "cookies-avoine-maison",
+   "titre": "Cookies à l'avoine",
+   "minutes": 35,
+   "minutesSurPlace": 35,
+   "avanceMin": 29,
+   "anticipations": [],
+   "portions": 5,
+   "source": null,
+   "apports": {
+    "proteine": "oeuf",
+    "feculent": "cereale",
+    "legumes": [],
+    "profil": "four",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "flocons-avoine",
+     "ref": "flocons-avoine",
+     "nom": "petits flocons d'avoine",
+     "qty": 150,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "farine-complete",
+     "ref": "farine-complete",
+     "nom": "farine semi-complète (T80)",
+     "qty": 80,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "beurre",
+     "ref": "beurre",
+     "nom": "beurre mou",
+     "qty": 70,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sucre-complet",
+     "ref": "sucre-complet",
+     "nom": "sucre complet",
+     "qty": 50,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "oeufs",
+     "ref": "oeufs",
+     "nom": "œuf",
+     "qty": 1,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "poudre-a-lever",
+     "ref": "poudre-a-lever",
+     "nom": "levure chimique",
+     "qty": 0.5,
+     "unit": "sachet",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": "cake",
+   "avec": [],
+   "steps": [
+    {
+     "id": "prechauffer",
+     "action": "Préchauffer le four à 180 °C",
+     "minutes": 1,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cremer",
+     "action": "Mélanger le beurre mou et le sucre, puis l'œuf",
+     "minutes": 4,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "beurre",
+      "sucre-complet",
+      "oeufs"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "melanger",
+     "action": "Ajouter les flocons, la farine et la levure, et mélanger sans trop travailler",
+     "minutes": 3,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "flocons-avoine",
+      "farine-complete",
+      "poudre-a-lever"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "verser les flocons et mélanger à la cuillère",
+     "enfantDes": 30,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "former",
+     "action": "Former vingt petits tas sur une plaque, les aplatir du dos d'une cuillère",
+     "minutes": 6,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cuire",
+     "action": "Cuire 12 minutes : ils durcissent en refroidissant",
+     "minutes": 12,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "ranger",
+     "action": "Refroidir sur grille, puis congeler par quatre en sachet",
+     "minutes": 3,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 15,
+   "accepts": [],
+   "creneaux": [
+    "gouter"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [
+    {
+     "type": "cookies-avoine",
+     "kind": "reste-plat",
+     "qty": null,
+     "band": "3-repas",
+     "espace": "congelo",
+     "note": "quatre cookies par sachet : un goûter pour les deux enfants",
+     "gardeFrigo": 7,
+     "congelo": true,
+     "horsTable": false
+    }
+   ],
+   "lotEntier": true,
+   "calibreMax": null,
+   "vaisselle": null,
    "gainChainage": 0,
    "cuisinable": true
   },
@@ -8432,6 +9067,189 @@
     "id": "cocotte-7.5l",
     "label": "cocotte 7,5 L",
     "facteurMax": 2.4
+   },
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
+   "id": "crepes-maison",
+   "titre": "Crêpes semi-complètes",
+   "minutes": 75,
+   "minutesSurPlace": 75,
+   "avanceMin": 72,
+   "anticipations": [],
+   "portions": 4,
+   "source": null,
+   "apports": {
+    "proteine": "oeuf",
+    "feculent": "farine",
+    "legumes": [],
+    "profil": "poele",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "farine-complete",
+     "ref": "farine-complete",
+     "nom": "farine semi-complète (T80)",
+     "qty": 250,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "oeufs",
+     "ref": "oeufs",
+     "nom": "œufs",
+     "qty": 3,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "lait",
+     "ref": "lait",
+     "nom": "lait",
+     "qty": 500,
+     "unit": "ml",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "beurre",
+     "ref": "beurre",
+     "nom": "beurre fondu",
+     "qty": 30,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sel",
+     "ref": "sel",
+     "nom": "sel",
+     "qty": 1,
+     "unit": "pincée",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": "cake",
+   "avec": [],
+   "steps": [
+    {
+     "id": "pate",
+     "action": "Fouetter la farine, les œufs et le sel, puis délayer peu à peu avec le lait et le beurre fondu",
+     "minutes": 8,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "farine-complete",
+      "oeufs",
+      "lait",
+      "beurre",
+      "sel"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "verser le lait petit à petit pendant qu'un adulte fouette",
+     "enfantDes": 30,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "reposer",
+     "action": "Laisser reposer la pâte",
+     "minutes": 30,
+     "needs": [],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cuire",
+     "action": "Cuire les crêpes une à une à la poêle chaude légèrement beurrée",
+     "minutes": 30,
+     "needs": [
+      "pan-fry"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "ranger",
+     "action": "Empiler en intercalant du papier cuisson, et congeler par quatre en sachet",
+     "minutes": 4,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 30,
+   "accepts": [],
+   "creneaux": [
+    "gouter",
+    "petit-dejeuner"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [
+    {
+     "type": "crepes-maison",
+     "kind": "reste-plat",
+     "qty": null,
+     "band": "3-repas",
+     "espace": "congelo",
+     "note": "quatre crêpes par sachet ; une minute à la poêle, sans décongeler",
+     "gardeFrigo": 2,
+     "congelo": true,
+     "horsTable": false
+    }
+   ],
+   "lotEntier": true,
+   "calibreMax": null,
+   "vaisselle": {
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.5
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -13290,6 +14108,97 @@
     "label": "sauteuse 28 cm",
     "facteurMax": 1.5
    },
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
+   "id": "gouter-des-enfants",
+   "titre": "Goûter des enfants",
+   "minutes": 5,
+   "minutesSurPlace": 5,
+   "avanceMin": 5,
+   "anticipations": [],
+   "portions": 1,
+   "source": null,
+   "apports": {
+    "proteine": "aucune",
+    "feculent": "aucun",
+    "legumes": [],
+    "profil": "routine",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "yaourt-nature",
+     "ref": "yaourt-nature",
+     "nom": "yaourts nature",
+     "qty": 2,
+     "unit": "pot",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "pommes",
+     "ref": "pommes",
+     "nom": "pomme",
+     "qty": 1,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "lait-croissance",
+     "ref": "lait-croissance",
+     "nom": "lait de croissance",
+     "qty": 200,
+     "unit": "ml",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": null,
+   "avec": [],
+   "steps": [
+    {
+     "id": "servir",
+     "action": "Couper la pomme en quartiers, sortir les yaourts et la part de la fournée",
+     "minutes": 5,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "pommes",
+      "yaourt-nature",
+      "lait-croissance"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 5,
+   "accepts": [],
+   "creneaux": [
+    "gouter"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [],
+   "lotEntier": false,
+   "calibreMax": null,
+   "vaisselle": null,
    "gainChainage": 0,
    "cuisinable": true
   },
@@ -25260,6 +26169,143 @@
    "lotEntier": false,
    "calibreMax": null,
    "vaisselle": null,
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
+   "id": "petit-dejeuner-des-enfants",
+   "titre": "Petit-déjeuner des enfants",
+   "minutes": 10,
+   "minutesSurPlace": 10,
+   "avanceMin": 10,
+   "anticipations": [],
+   "portions": 1,
+   "source": null,
+   "apports": {
+    "proteine": "aucune",
+    "feculent": "cereale",
+    "legumes": [],
+    "profil": "routine",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "flocons-avoine",
+     "ref": "flocons-avoine",
+     "nom": "petits flocons d'avoine",
+     "qty": 40,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "lait-croissance",
+     "ref": "lait-croissance",
+     "nom": "lait de croissance",
+     "qty": 400,
+     "unit": "ml",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "banane",
+     "ref": "banane",
+     "nom": "banane écrasée dans le porridge",
+     "qty": 1,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "beurre",
+     "ref": "beurre",
+     "nom": "beurre des tartines",
+     "qty": 10,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "yaourt-nature",
+     "ref": "yaourt-nature",
+     "nom": "yaourts nature",
+     "qty": 2,
+     "unit": "pot",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": null,
+   "avec": [],
+   "steps": [
+    {
+     "id": "porridge",
+     "action": "Cuire les flocons dans le lait trois minutes en remuant, puis y écraser la banane",
+     "minutes": 6,
+     "needs": [
+      "simmer"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "flocons-avoine",
+      "lait-croissance",
+      "banane"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "tartines",
+     "action": "Beurrer les tartines de pain maison, et sortir les yaourts",
+     "minutes": 4,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "beurre",
+      "yaourt-nature"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 10,
+   "accepts": [],
+   "creneaux": [
+    "petit-dejeuner"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [],
+   "lotEntier": false,
+   "calibreMax": null,
+   "vaisselle": {
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 6.0
+   },
    "gainChainage": 0,
    "cuisinable": true
   },
@@ -43591,18 +44637,10 @@
    "defaut": [
     "petit-dejeuner",
     "dejeuner",
+    "gouter",
     "diner",
     "dessert"
-   ],
-   "exceptions": {
-    "mercredi": [
-     "petit-dejeuner",
-     "dejeuner",
-     "gouter",
-     "diner",
-     "dessert"
-    ]
-   }
+   ]
   },
   "emporte": {
    "dejeuner": [
@@ -43613,7 +44651,36 @@
   "equilibre_sur": [
    "dejeuner",
    "diner"
-  ]
+  ],
+  "routines": {
+   "depuis": "2026-10-21",
+   "petit-dejeuner": {
+    "recette": "petit-dejeuner-des-enfants",
+    "du_depot": {
+     "types": [
+      "pain-de-mie-maison"
+     ],
+     "parts": 1
+    }
+   },
+   "gouter": {
+    "recette": "gouter-des-enfants",
+    "du_depot": {
+     "types": [
+      "banana-bread",
+      "cookies-avoine",
+      "crepes-maison",
+      "compote-maison",
+      "muffins-choco-courgettes",
+      "quatre-quarts-poire",
+      "mini-brownies",
+      "cookies-figues-noisettes",
+      "mini-cakes-fruits"
+     ],
+     "parts": 1
+    }
+   }
+  }
  },
  "rayons": {
   "ordre": [
@@ -43652,10 +44719,6 @@
     "tortillas",
     "pain-de-mie",
     "pain-levain",
-    "biscottes",
-    "cracotte",
-    "krisprolls",
-    "puree-mousline",
     "quinoa",
     "lentilles-corail",
     "petit-epeautre",
@@ -43855,6 +44918,7 @@
     "ferments-yaourt",
     "creme-soja",
     "levure-boulangere",
+    "lait-croissance",
     "agar-agar",
     "lait-avoine",
     "eau-fleur-oranger",
@@ -44467,6 +45531,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -44505,6 +45570,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -44543,6 +45609,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -44581,6 +45648,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -44619,6 +45687,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -44657,6 +45726,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -44695,6 +45765,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -44733,6 +45804,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -44771,6 +45843,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -44812,6 +45885,7 @@
     "urgence": "haute",
     "nature": "gras",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -44850,6 +45924,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -44888,6 +45963,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -44923,6 +45999,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -44958,6 +46035,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -44993,6 +46071,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -45028,6 +46107,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": true,
     "conservations": [
      {
       "id": "congeler",
@@ -45065,6 +46145,7 @@
     "urgence": "moyenne",
     "nature": "sec",
     "usage": null,
+    "industriel": true,
     "conservations": [
      {
       "id": "congeler",
@@ -45102,6 +46183,7 @@
     "urgence": "moyenne",
     "nature": "sec",
     "usage": null,
+    "industriel": true,
     "conservations": [
      {
       "id": "congeler",
@@ -45139,6 +46221,7 @@
     "urgence": "moyenne",
     "nature": "sec",
     "usage": null,
+    "industriel": true,
     "conservations": [
      {
       "id": "congeler",
@@ -45177,6 +46260,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -45215,6 +46299,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -45250,6 +46335,7 @@
     "urgence": "moyenne",
     "nature": "sec",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -45285,6 +46371,7 @@
     "urgence": "moyenne",
     "nature": "sec",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -45320,6 +46407,7 @@
     "urgence": "moyenne",
     "nature": "sec",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -45355,6 +46443,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -45390,6 +46479,7 @@
     "urgence": "moyenne",
     "nature": "sec",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -45425,6 +46515,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -45460,6 +46551,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -45497,6 +46589,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -45535,6 +46628,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -45575,6 +46669,7 @@
     "urgence": "basse",
     "nature": "gras",
     "usage": "apero",
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -45613,6 +46708,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": "apero",
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -45648,6 +46744,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -45686,6 +46783,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -45721,6 +46819,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": "apero",
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -45759,6 +46858,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -45797,6 +46897,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": "apero",
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -45837,6 +46938,7 @@
     "urgence": "moyenne",
     "nature": "sec",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -45877,6 +46979,7 @@
     "urgence": "moyenne",
     "nature": "sec",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -45915,6 +47018,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -45950,6 +47054,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -45985,6 +47090,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -46020,6 +47126,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -46055,6 +47162,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -46090,6 +47198,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": "apero",
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -46125,6 +47234,7 @@
     "urgence": "moyenne",
     "nature": "gras",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -46160,6 +47270,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -46195,6 +47306,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -46230,6 +47342,7 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -46272,6 +47385,7 @@
     "urgence": "haute",
     "nature": "legume-cru",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "sous-vide-frigo",
@@ -46327,6 +47441,7 @@
     "urgence": "haute",
     "nature": "legume-cru",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -46391,6 +47506,7 @@
     "urgence": "haute",
     "nature": "legume-cru",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -46455,6 +47571,7 @@
     "urgence": "haute",
     "nature": "legume-cru",
     "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -46540,7 +47657,10 @@
     "riz-rond",
     "pates",
     "semoule",
-    "flocons-avoine"
+    "flocons-avoine",
+    "son-avoine",
+    "sucre-complet",
+    "levure-boulangere"
    ]
   },
   {
@@ -46673,7 +47793,41 @@
    "conseil": "Un sachet de fromage râpé entamé se congèle tel quel et s'emploie sans décongeler, directement sur le gratin.",
    "ids": [
     "fromage-rape",
-    "yaourt-nature"
+    "yaourt-nature",
+    "beurre"
+   ]
+  },
+  {
+   "id": "brique-uht",
+   "label": "lait en brique",
+   "fond": true,
+   "entameSeFinit": false,
+   "espace": "placard",
+   "rangement": "au placard, briques fermées ; ouverte, au frigo",
+   "methode": null,
+   "fenetreJours": 90,
+   "fenetre": "3 mois",
+   "source": "ordre de grandeur — la date d'une brique UHT fermée est à plusieurs mois ; ouverte, 48 heures au frigo selon les fabricants. La date de la brique fait foi.",
+   "conseil": "Ouvrir une brique à la fois et noter le jour dessus au feutre : deux briques entamées au frigo, c'est une de trop.",
+   "ids": [
+    "lait-croissance"
+   ]
+  },
+  {
+   "id": "fruit-frais",
+   "label": "fruits frais",
+   "fond": false,
+   "entameSeFinit": false,
+   "espace": "placard",
+   "rangement": "à l'air, dans une coupe, loin des pommes de terre",
+   "methode": null,
+   "fenetreJours": 7,
+   "fenetre": "7 jours",
+   "source": "ordre de grandeur, non sourcé — une banane mûrit en quelques jours à température ambiante, une poire aussi.",
+   "conseil": "Une banane tachée n'est pas perdue : c'est le banana bread de la fournée, ou le fruit écrasé du porridge de demain matin.",
+   "ids": [
+    "banane",
+    "poires"
    ]
   },
   {
@@ -46748,156 +47902,258 @@
   }
  ],
  "fond": {
-  "date": "2026-10-18",
+  "date": "2026-10-21",
   "denrees": [
    {
-    "ingredient": "lentilles-corail",
-    "minimum": 2,
-    "unite": "sachet de 500 g"
-   },
-   {
-    "ingredient": "lentilles-seches",
-    "minimum": 2,
-    "unite": "sachet de 500 g"
-   },
-   {
-    "ingredient": "pois-casses",
+    "ingredient": "farine-complete",
     "minimum": 1,
-    "unite": "sachet de 500 g"
+    "jusqua": 2,
+    "hebdo": false,
+    "unite": "sac de 2 kg (semi-complète T80 à T110)"
    },
    {
-    "ingredient": "pois-chiches",
-    "minimum": 2,
-    "unite": "sachet de 500 g ou bocal"
-   },
-   {
-    "ingredient": "haricots-blancs",
-    "minimum": 1,
-    "unite": "sachet de 500 g"
-   },
-   {
-    "ingredient": "haricots-rouges",
-    "minimum": 1,
-    "unite": "sachet de 500 g"
-   },
-   {
-    "ingredient": "pates",
-    "minimum": 2,
-    "unite": "paquet"
-   },
-   {
-    "ingredient": "gnocchis",
-    "minimum": 2,
-    "unite": "paquet"
-   },
-   {
-    "ingredient": "riz",
-    "minimum": 1,
-    "unite": "paquet de 1 kg"
-   },
-   {
-    "ingredient": "semoule",
-    "minimum": 1,
-    "unite": "paquet de 500 g"
+    "ingredient": "levure-boulangere",
+    "minimum": 4,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "sachet"
    },
    {
     "ingredient": "flocons-avoine",
     "minimum": 1,
+    "jusqua": 2,
+    "hebdo": false,
+    "unite": "paquet de 500 g (petits flocons)"
+   },
+   {
+    "ingredient": "son-avoine",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "paquet de 250 g"
+   },
+   {
+    "ingredient": "sucre-complet",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
     "unite": "paquet de 500 g"
    },
    {
-    "ingredient": "pomme-de-terre",
-    "minimum": 1,
-    "unite": "sac de 2 kg"
-   },
-   {
-    "ingredient": "epinards-surgeles",
+    "ingredient": "beurre",
     "minimum": 2,
-    "unite": "sachet"
-   },
-   {
-    "ingredient": "petits-pois-surgeles",
-    "minimum": 2,
-    "unite": "sachet"
-   },
-   {
-    "ingredient": "haricots-verts-surgeles",
-    "minimum": 1,
-    "unite": "sachet"
-   },
-   {
-    "ingredient": "champignons-surgeles",
-    "minimum": 1,
-    "unite": "sachet"
-   },
-   {
-    "ingredient": "legumes-surgeles",
-    "minimum": 1,
-    "unite": "sachet de poêlée"
-   },
-   {
-    "ingredient": "tomates-pelees",
-    "minimum": 3,
-    "unite": "boîte de 400 g"
-   },
-   {
-    "ingredient": "concentre-tomate",
-    "minimum": 1,
-    "unite": "tube"
-   },
-   {
-    "ingredient": "lait-coco",
-    "minimum": 2,
-    "unite": "brique"
-   },
-   {
-    "ingredient": "thon-boite",
-    "minimum": 2,
-    "unite": "boîte de 140 g"
-   },
-   {
-    "ingredient": "maquereaux-boite",
-    "minimum": 1,
-    "unite": "boîte de 169 g"
-   },
-   {
-    "ingredient": "mais",
-    "minimum": 1,
-    "unite": "boîte de 285 g"
-   },
-   {
-    "ingredient": "oignon",
-    "minimum": 1,
-    "unite": "filet de 1 kg"
-   },
-   {
-    "ingredient": "ail",
-    "minimum": 1,
-    "unite": "tête"
-   },
-   {
-    "ingredient": "carottes",
-    "minimum": 1,
-    "unite": "sachet de 1 kg"
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "plaquette de 250 g"
    },
    {
     "ingredient": "oeufs",
-    "minimum": 1,
+    "minimum": 3,
+    "jusqua": 4,
+    "hebdo": false,
     "unite": "boîte de 6"
    },
    {
     "ingredient": "fromage-rape",
     "minimum": 1,
-    "unite": "sachet de 200 g"
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "morceau de 400 g (en bloc, à râper)"
+   },
+   {
+    "ingredient": "lait-croissance",
+    "minimum": 6,
+    "jusqua": 10,
+    "hebdo": true,
+    "unite": "brique de 1 L"
    },
    {
     "ingredient": "yaourt-nature",
-    "minimum": 1,
+    "minimum": 3,
+    "jusqua": 9,
+    "hebdo": true,
     "unite": "pack de 4"
+   },
+   {
+    "ingredient": "pommes",
+    "minimum": 1,
+    "jusqua": 2,
+    "hebdo": true,
+    "unite": "sachet de 1,5 kg"
+   },
+   {
+    "ingredient": "lentilles-corail",
+    "minimum": 2,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "sachet de 500 g"
+   },
+   {
+    "ingredient": "lentilles-seches",
+    "minimum": 3,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "sachet de 500 g"
+   },
+   {
+    "ingredient": "pois-casses",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "sachet de 500 g"
+   },
+   {
+    "ingredient": "pois-chiches",
+    "minimum": 4,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "sachet de 500 g ou bocal"
+   },
+   {
+    "ingredient": "haricots-blancs",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "sachet de 500 g"
+   },
+   {
+    "ingredient": "haricots-rouges",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "sachet de 500 g"
+   },
+   {
+    "ingredient": "pates",
+    "minimum": 2,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "paquet de 500 g (demi-complètes)"
+   },
+   {
+    "ingredient": "riz",
+    "minimum": 1,
+    "jusqua": 2,
+    "hebdo": false,
+    "unite": "paquet de 1 kg (demi-complet)"
+   },
+   {
+    "ingredient": "semoule",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "paquet de 500 g"
+   },
+   {
+    "ingredient": "pomme-de-terre",
+    "minimum": 3,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "1 kg en vrac"
+   },
+   {
+    "ingredient": "epinards-surgeles",
+    "minimum": 2,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "sachet"
+   },
+   {
+    "ingredient": "petits-pois-surgeles",
+    "minimum": 2,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "sachet"
+   },
+   {
+    "ingredient": "haricots-verts-surgeles",
+    "minimum": 2,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "sachet"
+   },
+   {
+    "ingredient": "champignons-surgeles",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "sachet"
+   },
+   {
+    "ingredient": "legumes-surgeles",
+    "minimum": 2,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "sachet de poêlée"
+   },
+   {
+    "ingredient": "tomates-pelees",
+    "minimum": 6,
+    "jusqua": 10,
+    "hebdo": false,
+    "unite": "boîte de 400 g"
+   },
+   {
+    "ingredient": "concentre-tomate",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "tube"
+   },
+   {
+    "ingredient": "lait-coco",
+    "minimum": 3,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "brique"
+   },
+   {
+    "ingredient": "thon-boite",
+    "minimum": 4,
+    "jusqua": 6,
+    "hebdo": false,
+    "unite": "boîte de 140 g"
+   },
+   {
+    "ingredient": "maquereaux-boite",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "boîte de 169 g"
+   },
+   {
+    "ingredient": "mais",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "boîte de 285 g"
+   },
+   {
+    "ingredient": "oignon",
+    "minimum": 2,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "filet de 1 kg"
+   },
+   {
+    "ingredient": "ail",
+    "minimum": 2,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "tête"
+   },
+   {
+    "ingredient": "carottes",
+    "minimum": 2,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "sachet de 1 kg"
    },
    {
     "ingredient": "citron",
     "minimum": 2,
+    "jusqua": null,
+    "hebdo": false,
     "unite": "pièce"
    }
   ],
@@ -46913,10 +48169,6 @@
    {
     "plat": "soupe-pois-casses-carottes",
     "titre": "Soupe de pois cassés aux carottes"
-   },
-   {
-    "plat": "gnocchis-petits-pois-champignons",
-    "titre": "Gnocchis poêlés, petits pois et champignons surgelés, fromage râpé"
    },
    {
     "plat": "curry-pois-chiches",

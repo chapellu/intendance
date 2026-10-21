@@ -228,7 +228,18 @@ export function posables(catalogue: Catalogue, rejeu: Rejeu): Posable[] {
   const ctx = contexte(catalogue);
   for (const id of minimums.keys())
     if (!out.has(id)) out.set(id, posable(id, classeDe(ctx, id, []), 0));
+  // T142 — UN PRODUIT INDUSTRIEL N'A PAS DE PLANCHER À PROPOSER : un plancher,
+  // c'est une ligne de courses, et le foyer ne le rachète plus.
+  for (const id of industriels(catalogue)) out.delete(id);
   return [...out.values()].sort((a, b) => a.nom.localeCompare(b.nom, "fr"));
+}
+
+/** T142 — les ids du relevé que le foyer ne rachète plus (`industriel: true`). */
+export function industriels(catalogue: Catalogue): Set<string> {
+  const aliases = catalogue.rayons.aliases;
+  return new Set(
+    catalogue.gardeManger.denrees.filter((d) => d.industriel).map((d) => aliases[d.ingredient] ?? d.ingredient),
+  );
 }
 
 /* ═══════════════════════════════════════════════ ce qui part au magasin (T41) */
@@ -239,8 +250,11 @@ export interface LignePlancher {
   niveau: number;
   /** Ce qu'il y en a, en unités d'achat. */
   a: number;
-  /** Combien il en manque pour tenir le plancher. Toujours ≥ 1. */
+  /** Combien il en manque pour tenir le plancher — jusqu'au `jusqua` du fond
+   *  quand il en a un (T142). Toujours ≥ 1. */
   manque: number;
+  /** T142 — le frais de la semaine (`fond.yaml`, `hebdo: true`). */
+  hebdo?: boolean;
   /**
    * Peut-on croire le chiffre ?
    *
@@ -282,18 +296,25 @@ export function sousLeurPlancher(
 ): LignePlancher[] {
   const par = usages(catalogue);
   const duFond = minimumsDuFond(catalogue);
+  const aliases = catalogue.rayons.aliases;
+  const fond = new Map((catalogue.fond?.denrees ?? []).map((d) => [aliases[d.ingredient] ?? d.ingredient, d]));
   const lignes: LignePlancher[] = [];
 
   for (const p of planchers) {
     const e = rejeu.parIngredient.get(p.ingredient) ?? rejeu.vus.get(p.ingredient) ?? null;
     const a = e?.unites ?? 0;
     if (a >= p.niveau) continue;
+    // T142 — LE MINIMUM DÉCLENCHE, `jusqua` CHIFFRE. Sous le plancher, on
+    // remonte jusqu'où le fond le dit, jamais en dessous du plancher posé.
+    const d = fond.get(p.ingredient);
+    const cible = Math.max(p.niveau, d?.jusqua ?? 0);
     lignes.push({
       ingredient: p.ingredient,
       nom: nomDeLaDenree(p.ingredient),
       niveau: p.niveau,
       a,
-      manque: p.niveau - a,
+      manque: cible - a,
+      ...(d?.hebdo ? { hebdo: true } : {}),
       // JAMAIS VU DU TOUT = INCONNU, et pas « sûr » par défaut. Un plancher peut
       // survivre à la denrée sur laquelle il a été posé — le relevé d'une zone
       // efface les lots, pas les décisions — et prétendre être sûr d'un placard

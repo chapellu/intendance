@@ -47,6 +47,12 @@ export interface Cuisson {
   /** Les parts au moment de cuisiner. Figées ici, jamais relues du foyer. */
   parts: number;
   /**
+   * T142 — les parts mises de côté pour le déjeuner de demain, COMPRISES dans
+   * `parts` : la table en mange `parts − midi`. L'appelant passe le plat déjà
+   * augmenté de son reste du midi (`repas.platDuSoir`).
+   */
+  midi?: number;
+  /**
    * Ce que la sortie a rangé, quand quelqu'un l'a dit — T99.
    *
    * ABSENT = LE VIEUX DÉFAUT, et c'est ce qui rend ce paramètre sûr : un lot
@@ -92,7 +98,7 @@ export interface Cuisson {
  */
 export async function journaliserCuisson(
   base: Base,
-  { jour, repas, plat, parts, rangement, sortie, foyer }: Cuisson,
+  { jour, repas, plat, parts, rangement, sortie, foyer, midi = 0 }: Cuisson,
   aujourdhui = new Date(),
 ): Promise<number> {
   const saisi = jourISO(aujourdhui);
@@ -156,7 +162,7 @@ export async function journaliserCuisson(
     // dire. Sans elle, RIEN NE CHANGE : un lot par emit, au frigo, sur la bande
     // que le corpus déclare. Le défaut reste donc la vieille prudence, et il
     // reste écrit ici, en une ligne qu'on peut lire.
-    for (const r of rangement?.length ? rangement : defaut(plat, parts, foyer ?? { parts, mangeurs: [] })) {
+    for (const r of rangement?.length ? rangement : defaut(plat, parts, foyer ?? { parts, mangeurs: [] }, midi)) {
       const e = plat.emits[r.emit];
       if (!e) continue;
       await base.stock.add({
@@ -197,8 +203,8 @@ export async function journaliserCuisson(
  * (L'EFFET 2, LUI, GARDE `parts / portions` : c'est ce qu'un `accepts` prend,
  * et c'est une autre question, laissée ouverte au backlog.)
  */
-const defaut = (plat: Plat, parts: number, foyer: Pick<Foyer, "parts" | "mangeurs">): RangementLot[] =>
-  restesApresTable(plat, facteur(plat, parts), parts, foyer).map(({ emit, repas, qty }) => {
+const defaut = (plat: Plat, parts: number, foyer: Pick<Foyer, "parts" | "mangeurs">, midi = 0): RangementLot[] =>
+  restesApresTable(plat, facteur(plat, parts), parts - midi, foyer).map(({ emit, repas, qty }) => {
     const e = plat.emits[emit]!;
     return {
       emit,

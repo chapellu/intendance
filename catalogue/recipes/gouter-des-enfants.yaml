@@ -1,0 +1,37 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-21 (T142) — aucune source
+# extérieure. CE N'EST PAS UNE CARTE : c'est la RATION D'UN GOÛTER pour les deux
+# enfants, que le rejeu du placard retire chaque jour (`creneaux.yaml:routines`).
+# Le gâteau de la fournée ou la compote viennent du dépôt (le congélateur),
+# pas d'ici. Ni biscuits ni compotes du commerce.
+
+recipe:
+  id: gouter-des-enfants
+  title: Goûter des enfants
+  lang: fr
+  yields:
+    portions_eq: 1
+  time_min_total: 5
+  active_min: 5
+
+  creneaux: [gouter]
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: []
+    profil: routine
+    origine: francais
+
+  ingredients:
+    - {id: yaourt-nature, name: yaourts nature, qty: 2, unit: pot}
+    - {id: pommes, name: pomme, qty: 1, unit: pièce}
+    - {id: lait-croissance, name: lait de croissance, qty: 200, unit: ml}
+
+  steps:
+    - id: servir
+      action: "Couper la pomme en quartiers, sortir les yaourts et la part de la fournée"
+      needs: []
+      uses: [pommes, yaourt-nature, lait-croissance]
+      time_min: 5
+
+  plan_b: []

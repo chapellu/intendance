@@ -998,6 +998,8 @@ a.co-apercu { color: inherit; text-decoration: none; }
 .co-soir .achats.un { background: var(--color-accent-200); color: var(--color-accent-900); }
 .co-soir .achats.plusieurs { background: var(--color-neutral-200); color: var(--color-neutral-800); }
 .co-soir .heure { margin-top: 6px; font-size: 13px; line-height: 1.35; color: var(--color-neutral-800); }
+/* T142 — le déjeuner de demain pris au dîner, ou les boîtes pleines. */
+.co-soir .midi { margin-top: 6px; font-size: 13px; line-height: 1.35; color: var(--color-accent-2-900); font-weight: 500; }
 .co-soir .pied { display: flex; gap: var(--space-2); margin-top: var(--space-3); }
 .co-soir.pose { background: var(--color-accent-2-100); }
 .co-soir.pose + .co-soir { margin-top: var(--space-3); }

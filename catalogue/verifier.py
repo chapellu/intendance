@@ -577,6 +577,8 @@ def main() -> int:
         for nom, (err, warn) in (
                 ("conservation.yaml (familles)", fd.verifier_familles(conserv, rayons)),
                 ("fond.yaml", fd.verifier_fond(fond, conserv, rayons, cat)),
+                ("creneaux.yaml (routines)", fd.verifier_routines(
+                    rc.load(HERE / "creneaux.yaml"), cat)),
                 ("saisons.yaml", fd.verifier_saisons(
                     fd.charger_saisons(HERE / "saisons.yaml"), rayons))):
             n_err += len(err); n_warn += len(warn)

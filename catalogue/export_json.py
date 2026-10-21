@@ -440,6 +440,10 @@ def main():
                  # vide plutôt qu'omis, pour que le type côté app soit
                  # `usage: Usage | null` et non un champ optionnel de plus.
                  "usage": d.get("usage"),
+                 # T142 — UN PRODUIT INDUSTRIEL QUE LE FOYER NE RACHÈTE PLUS. Le
+                 # lot reste au stock (on ne jette pas ce qu'on a), mais aucune
+                 # proposition ne le remet dans un panier.
+                 "industriel": bool(d.get("industriel")),
                  # CE QU'ON PEUT EN FAIRE POUR ARRÊTER SON HORLOGE — la seconde
                  # réponse au gaspillage, celle que `conservation.yaml` porte
                  # depuis le prototype. Les méthodes verrouillées sont incluses :

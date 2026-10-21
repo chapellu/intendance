@@ -95,6 +95,12 @@ export interface EvtCuisine extends Commun {
    * refaire, et sans ce champ personne ne le saurait.
    */
   sortie?: "suivie" | "autre";
+  /**
+   * T142 — une ration de routine (petit-déjeuner, goûter), fabriquée par le
+   * rejeu et jamais écrite en base. Elle retire du placard sans compter comme
+   * un doute : une ration connue n'est pas une incertitude.
+   */
+  routine?: true;
 }
 
 /**
@@ -772,6 +778,50 @@ export function demandes(plat: Plat, facteur: number): Demande[] {
   return out;
 }
 
+/* ════════════════════════════════════════════════ les routines — T142 */
+
+const JOUR_MS_ROUTINE = 86_400_000;
+const jourSuivant = (iso: string): string =>
+  new Date(Date.parse(`${iso}T12:00:00Z`) + JOUR_MS_ROUTINE).toISOString().slice(0, 10);
+
+/** Les jours de `de` à `a`, bornes comprises, en `AAAA-MM-JJ`. */
+export function joursDe(de: string, a: string): string[] {
+  const out: string[] = [];
+  for (let j = de; j <= a && out.length < 3660; j = jourSuivant(j)) out.push(j);
+  return out;
+}
+
+/**
+ * Ce que les routines ont retiré du placard, en cuissons du jour.
+ *
+ * UNE RATION EST UNE RECETTE DU FOYER, ET SA CONSOMMATION UNE CUISSON. Le
+ * rejeu sait déjà retirer une recette du placard à la quantité, boîte entière
+ * comprise (T135, T140) ; la routine lui passe une cuisson par jour et par
+ * repas, depuis `routines.depuis` jusqu'à aujourd'hui inclus — le petit-
+ * déjeuner de 8 h est pris quand on ouvre l'app.
+ *
+ * `routine: true` : le rejeu ne compte pas ces retraits comme un doute
+ * (`depuisVu`). Une ration connue n'est pas une incertitude ; sans ça, l'app
+ * redemanderait « des yaourts ? » chaque matin.
+ */
+/** Les rations passent APRÈS les gestes du jour : les courses rentrées à
+ *  10 h nourrissent le goûter de 16 h. */
+const FIN_DU_JOUR = Number.MAX_SAFE_INTEGER;
+
+export function evenementsDesRoutines(catalogue: Catalogue, aujourdhui: string): EvtCuisine[] {
+  // `?.` : des fixtures de test construisent un catalogue sans créneaux.
+  const r = catalogue.creneaux?.routines;
+  if (!r || r.depuis > aujourdhui) return [];
+  const out: EvtCuisine[] = [];
+  for (const jour of joursDe(r.depuis, aujourdhui))
+    for (const x of r.liste) {
+      const p = catalogue.plats.find((q) => q.id === x.recette);
+      if (!p) continue;
+      out.push({ sorte: "cuisine", repas: x.repas, plat: p.id, parts: p.portions, jour, saisi: jour, maj: FIN_DU_JOUR, routine: true });
+    }
+  return out;
+}
+
 /* ═══════════════════════════════════════════════════════════════ le rejeu */
 
 const cloner = (l: LotPlacard): LotPlacard => ({ ...l, parUnite: l.parUnite ? { ...l.parUnite } : null });
@@ -845,7 +895,10 @@ export function rejouer(
   const unitesDe = (id: string): number =>
     (lots.get(id) ?? []).reduce((n, l) => n + l.unites + (l.entame != null ? 1 : 0), 0);
 
-  const ordonnes = [...evenements].sort(
+  // T142 — LES ROUTINES SE REJOUENT COMME DES CUISSONS, une par jour et par
+  // repas, depuis `creneaux.routines.depuis`. Rien n'est écrit en base : le
+  // jour où la ration change, le passé se recalcule avec elle.
+  const ordonnes = [...evenements, ...evenementsDesRoutines(catalogue, aujourdhui)].sort(
     (a, b) => a.jour.localeCompare(b.jour) || a.maj - b.maj,
   );
 
@@ -857,6 +910,9 @@ export function rejouer(
       for (const d of demandes(plat, f)) {
         const id = ctx.alias(d.ingredient);
         const l = lots.get(id);
+        // Une ration sans lot ne dit rien : le lait n'a jamais été rentré, le
+        // petit-déjeuner s'est fait sans l'app. Aucune croyance à dépenser.
+        if (e.routine && (!l || l.length === 0)) continue;
         if (!l || l.length === 0) {
           retraits.push({ ingredient: id, effet: "aucun", grammes: null, restePose: null });
           // AUCUN LOT À RETIRER NE VEUT PAS DIRE RIEN À DÉPENSER. Il n'y a pas
@@ -876,7 +932,7 @@ export function rejouer(
         retraits.push(
           d.pieces != null ? retirer(l, id, d.pieces, PIECE) : retirer(l, id, grammes),
         );
-        suiviDe(id).depuisVu += 1;
+        if (!e.routine) suiviDe(id).depuisVu += 1;
         // T134 — UN INGRÉDIENT ÉPUISÉ SORT DE `parIngredient`, comme après un
         // relevé ou une correction à zéro. Sinon sa clé vide y restait, et
         // `hydraterGardeManger` (qui teste `has`) le gardait « ici » : « Ce

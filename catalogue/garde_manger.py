@@ -389,6 +389,8 @@ def verifier_garde_manger(gm: dict, rayons: dict) -> tuple:
             err.append(f"{ou} : état « {d.get('etat')} » inconnu — attendu parmi {list(ETATS)}")
         if d.get("nature", "autre") not in NATURES:
             err.append(f"{ou} : nature « {d.get('nature')} » inconnue — attendu parmi {list(NATURES)}")
+        if not isinstance(d.get("industriel", False), bool):
+            err.append(f"{ou} : `industriel:` doit dire oui ou non (T142)")
         if d.get("usage") is not None and d["usage"] not in USAGES:
             err.append(f"{ou} : usage « {d['usage']} » inconnu — attendu parmi {list(USAGES)}")
         if d.get("acidite", ACIDITE_DEFAUT) not in ("basse", "haute"):

@@ -43,6 +43,7 @@
 // règle du dépôt : on n'enlève pas une proposition pour une lacune, on
 // l'annonce —, on le range là où il ne coûte pas un refus.
 
+import { dejeunerDeChioca, fourneeAProposer, fruitsMurs, midiDeDemain, type Fournee, type MidiDeDemain } from "./repas";
 import { marque, SEUIL_A_MANGER } from "./axe";
 import { calculer } from "./calcul";
 import type { LigneDepot, LotInitial } from "./depot";
@@ -304,6 +305,8 @@ export interface CarteDuSoir {
   recent: boolean;
   /** Le départage, à rang égal. */
   score: number;
+  /** T142 — ce que demain midi peut prendre à ce plat, boîtes comprises. */
+  midi: MidiDeDemain;
 }
 
 /** Un lot à sortir ce soir pour demain, et le plat qui le mangerait. */
@@ -330,6 +333,18 @@ export interface PropositionDuSoir {
    * soir ; ils font le geste du jour quand aucun plat posé n'en appelle un.
    */
   aSortir: ASortir[];
+  /**
+   * T142 — la fournée du goûter, quand le congélateur s'en vide ou que des
+   * fruits passent. Une seule recette, et seulement à la pause : c'est le
+   * moment où l'on décide de ce qui cuit. `null` sinon.
+   */
+  fournee: Fournee | null;
+  /**
+   * T142 — le déjeuner de Chioca pour aujourd'hui, au cas où le dîner d'hier
+   * n'a rien laissé (« Même au boulot » d'abord, le moins d'achats). `null`
+   * quand le catalogue n'en a aucun.
+   */
+  dejeuner: { plat: Plat; manque: number } | null;
 }
 
 export interface EntreeDuSoir {
@@ -353,6 +368,11 @@ export interface EntreeDuSoir {
    * elle, seul `recents` départage, et le rang 2-3 tourne sur quatre plats.
    */
   mange?: readonly { plat: string; jour: string }[];
+  /**
+   * T142 — les boîtes propres, après ce que le dépôt occupe
+   * (`sortie.vue.contenantsLibres`). Absent : toutes celles du foyer.
+   */
+  libres?: ReadonlyMap<string, number>;
 }
 
 /** Jours entiers de `de` à `a`, deux `AAAA-MM-JJ`. */
@@ -450,7 +470,7 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
   const soir = soirDe(jeu);
   const jour0 = jeu.jours[0];
   const jourDeCourses = !!jour0 && (e.joursDeCourses ?? JOURS_DE_COURSES).includes(jour0.nom);
-  if (soir < 0 || !jour0) return { soir, jourDeCourses, cartes: [], plus: [], attend: [], aSortir: [] };
+  if (soir < 0 || !jour0) return { soir, jourDeCourses, cartes: [], plus: [], attend: [], aSortir: [], fournee: null, dejeuner: null };
 
   const choix = [...jeu.choix];
   choix[soir] = null;
@@ -463,7 +483,7 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
     aDecongelerLaVeille(catalogue, l) && !sortis.has(l.type);
   const ceSoir: Jeu = { ...jeu, stock: jeu.stock.filter((l) => !bloque(l)) };
   const comp = comptoir(ceSoir, choix, soir, savoir);
-  if (!comp) return { soir, jourDeCourses, cartes: [], plus: [], attend: [], aSortir: [] };
+  if (!comp) return { soir, jourDeCourses, cartes: [], plus: [], attend: [], aSortir: [], fournee: null, dejeuner: null };
 
   const base = calculer(jeu, choix);
   const date = jour0.date;
@@ -569,6 +589,7 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
       pret: minuteDuJour(maintenant) + duree,
       recent,
       score: Math.round(score * 10) / 10,
+      midi: midiDeDemain(jeu, p, e.libres),
     });
   }
 
@@ -593,7 +614,9 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
   }
 
   const dans = new Set(main.map((c) => c.plat.id));
-  return { soir, jourDeCourses, cartes: main, plus: cartes.filter((c) => !dans.has(c.plat.id)), attend, aSortir };
+  const fournee = fourneeAProposer(catalogue, jeu.stock, fruitsMurs(catalogue, savoir.rejeu, iso), ici);
+  return { soir, jourDeCourses, cartes: main, plus: cartes.filter((c) => !dans.has(c.plat.id)), attend, aSortir, fournee,
+    dejeuner: dejeunerDeChioca(catalogue, ici, mois) };
 }
 
 /**
