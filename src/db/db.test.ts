@@ -467,7 +467,7 @@ describe("relever une zone à vide met ses denrées sur la liste", () => {
     const avant = calculer(await aJour(jeu));
     expect([...avant.aVerifier.keys()]).toContain("mais");
 
-    await releverZone(base, "etagere-ouverte", [], MARDI);
+    await releverZone(base, "etagere-basse", [], MARDI);
 
     const apres = calculer(await aJour(jeu));
     expect([...apres.aVerifier.keys()]).not.toContain("mais");
@@ -479,7 +479,7 @@ describe("relever une zone à vide met ses denrées sur la liste", () => {
     // n'est pas vider. Une zone relevée AVEC ses boîtes ne doit rien envoyer au
     // magasin, sinon le quart d'heure de relevé coûterait un caddie entier.
     jeu.choix[creneau(jeu, 0, "diner")] = "chili-sin-carne";
-    await releverZone(base, "etagere-ouverte", [{ ingredient: "mais", unites: 2 }], MARDI);
+    await releverZone(base, "etagere-basse", [{ ingredient: "mais", unites: 2 }], MARDI);
 
     const c = calculer(await aJour(jeu));
     expect([...c.aVerifier.keys()]).toContain("mais");

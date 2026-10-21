@@ -14,8 +14,9 @@ test("toucher le sous-évier sur le plan, puis « je n'en ai plus »", async ({ 
 
   const plan = page.getByRole("group", { name: /Plan de la cuisine/ });
   const sousEvier = plan.getByRole("button", { name: /^sous-évier/ });
-  // Quatre légumes à l'humidité : le meuble le dit avant qu'on l'ouvre.
-  await expect(sousEvier).toHaveAccessibleName(/4 à déplacer/);
+  // Les pommes de terre à l'humidité (T143 : oignons et ail en sont sortis) :
+  // le meuble le dit avant qu'on l'ouvre.
+  await expect(sousEvier).toHaveAccessibleName(/1 à déplacer/);
 
   const panneau = await ouvrirRangement(page, "sous-évier");
   await expect(sousEvier).toHaveAttribute("aria-pressed", "true");
@@ -27,8 +28,7 @@ test("toucher le sous-évier sur le plan, puis « je n'en ai plus »", async ({ 
 
   await panneau.getByRole("button", { name: "je n’en ai plus : pomme de terre" }).click();
   await expect(panneau.locator(".co-lot").filter({ hasText: /^pomme de terre/ })).toHaveCount(0);
-  await expect(panneau.locator(".co-lot").filter({ hasText: /^oignon/ })).toHaveCount(1);
-  await expect(sousEvier).toHaveAccessibleName(/3 à déplacer/);
+  await expect(sousEvier).not.toHaveAccessibleName(/à déplacer/);
 });
 
 test("un signal éteint les meubles qui n'ont rien à dire", async ({ page }) => {

@@ -178,6 +178,8 @@ describe("ce que la fiche dit du rôle", () => {
 
 describe("à table, à côté", () => {
   const jeu = creerJeu(catalogue);
+  // T143 : un demi-bocal de riz au relevé du 21/10 — on parle ici du riz absent.
+  jeu.gardeManger = jeu.gardeManger.filter((id) => id !== "riz");
   const escalopes = catalogue.plats.find((x) => x.id === "escalopes-emmental-champignons")!;
 
   test("la fiche dit avec quoi servir le plat, à l’échelle de la tablée", () => {

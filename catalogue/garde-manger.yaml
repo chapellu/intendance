@@ -39,7 +39,14 @@
 # C'est la réponse à l'objection que ce fichier s'était faite à lui-même — « un
 # chiffre qu'on croirait tenu à jour alors que rien ne le tient » : on ne rend
 # pas le chiffre plus juste, on le DATE, et l'app dit de quand il date.
-releve: 2026-08-26
+#
+# T143 — LE RELEVÉ DU 2026-10-21, dicté zone par zone. Il REMPLACE celui du
+# 26/08 pour les zones qu'il couvre : les étagères en bois (dessus et deux
+# niveaux), les deux demi-lunes, le placard haut. Le sous-évier et le tiroir à
+# épices n'ont pas été relevés : ils gardent leur date (`releve:` par zone), et
+# c'est elle que le rejeu lit pour eux. Le frigo et le congélateur ne sont pas
+# des zones du garde-manger (ils viennent du dépôt).
+releve: 2026-10-21
 
 # ── Les rangements physiques ────────────────────────────────────────────────
 #
@@ -52,19 +59,33 @@ releve: 2026-08-26
 # seule règle du fichier qui attrape une vraie erreur de rangement.
 zones:
   - id: etagere-ouverte
-    label: étagère ouverte
+    label: étagère en bois, 1er niveau
     espace: placard
-    plan: {mur: gauche, x: 4, y: 90, w: 80, h: 84, court: Étagère, teinte: bois-clair}
-    niveaux: 2
+    # T143 — l'étagère a TROIS niveaux (le dessus et deux étages) : celui-ci,
+    # sous le dessus, porte les confitures, le miel et les fruits au sirop.
+    plan: {mur: gauche, x: 4, y: 88, w: 80, h: 44, court: "Étagère 1", teinte: bois-clair}
+    niveaux: 1
     dimensions: {largeur_cm: 42, profondeur_cm: 30, hauteur_cm: 17}
     exposition: jour
     hygrometrie: sec
     chaleur: true
     note: >-
-      Présentoir bois à deux niveaux, sur le plan de travail, à côté de la
-      bouilloire. 17 cm : rien de haut n'y entre, d'où les secs relégués sur le
-      dessus. 30 cm de profondeur pour 17 de haut : le fond est borgne, c'est là
-      que les dates se périment sans se voir.
+      Présentoir bois sur le plan de travail, à côté de la bouilloire. 17 cm :
+      rien de haut n'y entre. 30 cm de profondeur pour 17 de haut : le fond est
+      borgne, c'est là que les dates se périment sans se voir.
+
+  - id: etagere-basse
+    label: étagère en bois, 2e niveau
+    espace: placard
+    plan: {mur: gauche, x: 4, y: 134, w: 80, h: 44, court: "Étagère 2", teinte: bois-clair}
+    niveaux: 1
+    dimensions: {largeur_cm: 42, profondeur_cm: 30, hauteur_cm: 17}
+    exposition: jour
+    hygrometrie: sec
+    chaleur: true
+    note: >-
+      Le niveau du bas du présentoir : les conserves — thon, maïs, ratatouille,
+      concentré de tomate — et le reste des confitures.
 
   - id: dessus-etagere
     label: dessus de l'étagère ouverte
@@ -106,6 +127,7 @@ zones:
       debout que l'étagère ouverte ne peut pas porter.
 
   - id: tiroir-epices
+    releve: 2026-08-26     # pas relevé le 21/10
     label: tiroir à épices
     espace: placard
     plan: {mur: fond, x: 4, y: 236, w: 48, h: 48, court: Tiroir épices, teinte: bois-fonce}
@@ -133,6 +155,7 @@ zones:
       qui ne sont pas des denrées et ne figurent pas ici.
 
   - id: sous-evier
+    releve: 2026-08-26     # pas relevé le 21/10 — les oignons, l'ail et l'échalote en sont sortis
     label: sous-évier
     espace: placard
     plan: {mur: fond, x: 138, y: 124, w: 46, h: 108, court: Sous-évier, teinte: bois-fonce}
@@ -247,108 +270,71 @@ plan:
 # le scoring, ni maintenant ni par accident — si elles apparaissent un jour à
 # l'écran, c'est que le plancher a marché tout seul, sans le plan de la semaine.
 denrees:
-  # ── zone 1 · étagère ouverte ─────────────────────────────────────────────
-  - {ingredient: mais, zone: etagere-ouverte, unites: 4, par_unite: {amount: 285, unit: g}, etat: conserve}
-  - {ingredient: petits-pois-carottes, zone: etagere-ouverte, unites: 1, par_unite: {amount: 465, unit: g}, etat: conserve}
-  - {ingredient: petits-pois-carottes, zone: etagere-ouverte, unites: 1, par_unite: {amount: 530, unit: g}, etat: conserve}
-  - {ingredient: pousses-haricots, zone: etagere-ouverte, unites: 2, par_unite: {amount: 90, unit: g}, etat: conserve}
-  - {ingredient: pois-chiches, zone: etagere-ouverte, unites: 1, par_unite: {amount: 265, unit: g}, etat: conserve}
-  - {ingredient: maquereaux-boite, zone: etagere-ouverte, unites: 1, par_unite: {amount: 169, unit: g}, etat: conserve}
-  - {ingredient: thon-boite, zone: etagere-ouverte, unites: 1, par_unite: {amount: 140, unit: g}, etat: conserve, note: au naturel}
-  - {ingredient: thon-boite, zone: etagere-ouverte, unites: 1, par_unite: {amount: 160, unit: g}, etat: conserve, note: à l'huile d'olive}
-  - {ingredient: concentre-tomate, zone: etagere-ouverte, unites: 3, par_unite: {amount: 70, unit: g}, etat: conserve}
-  # LA SEULE DENRÉE QUE SA ZONE ABÎME, et le vérificateur le dit. Très gras, donc
-  # rancit vite ; posé en pleine lumière, à côté de la bouilloire.
-  #
-  # `usage: apero` RETIRÉ LE 2026-09-11, et c'est le corpus qui l'a démenti. Le
-  # classement disait comment CE bocal-là se mange chez nous ; il ne disait pas
-  # ce qu'est un pignon de pin. La tourte p. 78 de « même au boulot ! » en met
-  # une cuillerée à soupe, et il n'y avait aucun découpage honnête à faire — ce
-  # sont les mêmes pignons, contrairement aux tomates séchées et au mélange de
-  # fruits secs, dont les homonymes de pâtisserie ont pu recevoir leur propre id.
-  #
-  # Les cinq denrées qui gardent l'usage suffisent à porter la preuve de T40 :
-  # ce qu'il faut, c'est qu'il existe des denrées qu'aucune recette n'atteint,
-  # pas qu'elles soient six.
-  - {ingredient: pignons-pin, zone: etagere-ouverte, unites: 1, par_unite: {amount: 50, unit: g},
-     etat: sec, nature: gras, sensible: [lumiere, chaleur]}
-  - {ingredient: cocktail-fruits, zone: etagere-ouverte, unites: 2, par_unite: {amount: 825, unit: g}, etat: conserve}
-  - {ingredient: creme-dessert-chocolat, zone: etagere-ouverte, unites: 1, par_unite: {amount: 570, unit: g}, etat: conserve}
+  # ── T143 · relevé du 2026-10-21, dicté ───────────────────────────────────
+  # `industriel: true` (T142) : on finit ce qu'on a, on ne le rachète pas —
+  # l'écran Stock le dit, la liste ne le demande jamais.
+
+  # ── dessus de l'étagère en bois (« en haut »)
+  - {ingredient: cracotte, zone: dessus-etagere, unites: 1, par_unite: null, etat: sec, nature: sec, sensible: [humidite], industriel: true, note: paquet neuf}
+  - {ingredient: cracotte, zone: dessus-etagere, unites: 1, par_unite: null, etat: entame, nature: sec, sensible: [humidite], industriel: true, note: deux tranches au fond du paquet}
+  - {ingredient: biscottes, zone: dessus-etagere, unites: 1, par_unite: null, etat: entame, nature: sec, sensible: [humidite], industriel: true, note: un quart de paquet}
+  - {ingredient: ratatouille-boite, zone: dessus-etagere, unites: 1, par_unite: {amount: 660, unit: g}, etat: conserve}
+  - {ingredient: tomates-pelees, zone: dessus-etagere, unites: 1, par_unite: {amount: 480, unit: g}, etat: conserve, note: poids égoutté}
+
+  # ── étagère en bois, 1er niveau
   - {ingredient: confiture-orange, zone: etagere-ouverte, unites: 1, par_unite: null, etat: bocal}
-  - {ingredient: miel, zone: etagere-ouverte, unites: 1, par_unite: null, etat: bocal}
-  - {ingredient: chocolat-poudre, zone: etagere-ouverte, unites: 1, par_unite: null, etat: sec}
+  - {ingredient: confiture-prune, zone: etagere-ouverte, unites: 1, par_unite: null, etat: bocal}
+  - {ingredient: cocktail-fruits, zone: etagere-ouverte, unites: 2, par_unite: {amount: 500, unit: g}, etat: conserve, industriel: true, note: au sirop}
+  - {ingredient: chocolat-poudre, zone: etagere-ouverte, unites: 1, par_unite: null, etat: entame, industriel: true, note: "Nesquik, un fond"}
+  - {ingredient: miel, zone: etagere-ouverte, unites: 3, par_unite: null, etat: bocal, note: deux gros pots et un petit}
+  - {ingredient: pate-a-tartiner, zone: etagere-ouverte, unites: 1, par_unite: null, etat: entame, industriel: true, note: "Lucien, un quart de pot"}
+  - {ingredient: maquereaux-boite, zone: etagere-ouverte, unites: 1, par_unite: {amount: 169, unit: g}, etat: conserve, note: moutarde à l'ancienne}
 
-  # ── zone 1b · dessus de l'étagère ────────────────────────────────────────
-  # Quantités non relevées : ce sont des paquets entamés, et personne ne compte
-  # les biscottes qui restent.
-  #
-  # T142 — `industriel: true` (décision du 2026-10-21 : « le moins de produits
-  # industriels possible », dans l'esprit de Marie Chioca). Les quatre paquets
-  # RESTENT au relevé — on finit ce qu'on a — mais l'écran Stock les dit « à ne
-  # pas racheter » et aucune proposition ne les remet au panier.
-  - {ingredient: puree-mousline, zone: dessus-etagere, unites: 1, par_unite: null, etat: sec, industriel: true}
-  - {ingredient: cracotte, zone: dessus-etagere, unites: 1, par_unite: null, etat: entame, nature: sec, sensible: [humidite], industriel: true}
-  - {ingredient: krisprolls, zone: dessus-etagere, unites: 1, par_unite: null, etat: entame, nature: sec, sensible: [humidite], industriel: true}
-  - {ingredient: biscottes, zone: dessus-etagere, unites: 1, par_unite: null, etat: entame, nature: sec, sensible: [humidite], industriel: true}
+  # ── étagère en bois, 2e niveau
+  - {ingredient: confiture-mirabelle, zone: etagere-basse, unites: 1, par_unite: null, etat: bocal}
+  - {ingredient: confiture-fraise, zone: etagere-basse, unites: 1, par_unite: null, etat: bocal}
+  - {ingredient: concentre-tomate, zone: etagere-basse, unites: 2, par_unite: {amount: 70, unit: g}, etat: conserve}
+  - {ingredient: thon-boite, zone: etagere-basse, unites: 1, par_unite: {amount: 140, unit: g}, etat: conserve, note: au naturel}
+  - {ingredient: thon-boite, zone: etagere-basse, unites: 1, par_unite: {amount: 104, unit: g}, etat: conserve, note: "à l'huile d'olive, égoutté"}
+  - {ingredient: pate-a-tartiner, zone: etagere-basse, unites: 1, par_unite: null, etat: bocal, industriel: true, note: autre marque}
+  - {ingredient: ratatouille-boite, zone: etagere-basse, unites: 2, par_unite: {amount: 660, unit: g}, etat: conserve}
+  - {ingredient: pousses-haricots, zone: etagere-basse, unites: 2, par_unite: {amount: 90, unit: g}, etat: conserve, note: "mungo, égoutté"}
+  - {ingredient: mais, zone: etagere-basse, unites: 3, par_unite: {amount: 285, unit: g}, etat: conserve}
 
-  # ── zone 2 · demi-lune basse — le lourd ──────────────────────────────────
-  - {ingredient: farine, zone: demi-lune-basse, unites: 1, par_unite: {amount: 4000, unit: g}, etat: sec, note: T55, réserve}
-  - {ingredient: sucre-blanc, zone: demi-lune-basse, unites: 1, par_unite: {amount: 1000, unit: g}, etat: sec}
-
-  # ── zone 2 · demi-lunes — répartition haute/basse non relevée ────────────
-  - {ingredient: pates, zone: demi-lune-haute, unites: 1, par_unite: null, etat: entame, nature: sec, note: torsades}
-  - {ingredient: pates, zone: demi-lune-haute, unites: 1, par_unite: null, etat: entame, nature: sec, note: coquillettes}
-  - {ingredient: pates, zone: demi-lune-haute, unites: 1, par_unite: null, etat: entame, nature: sec, note: spaghettis n°5}
-  - {ingredient: pates, zone: demi-lune-haute, unites: 1, par_unite: null, etat: sec, note: étoiles}
-  - {ingredient: ble-lentilles, zone: demi-lune-haute, unites: 1, par_unite: null, etat: entame, nature: sec}
-  - {ingredient: semoule, zone: demi-lune-haute, unites: 2, par_unite: null, etat: sec}
-  - {ingredient: vermicelles, zone: demi-lune-haute, unites: 1, par_unite: null, etat: sec}
-  - {ingredient: feuilles-nori, zone: demi-lune-haute, unites: 2, par_unite: null, etat: sec, sensible: [humidite]}
-  - {ingredient: lentilles-seches, zone: demi-lune-haute, unites: 1, par_unite: {amount: 500, unit: g}, etat: sec}
-  - {ingredient: graines-courge, zone: demi-lune-haute, unites: 1, par_unite: {amount: 200, unit: g}, etat: sec, nature: gras, sensible: [lumiere], usage: apero}
+  # ── demi-lune haute — l'échalote, pourrie, est jetée
+  - {ingredient: ail, zone: demi-lune-haute, unites: 4, par_unite: null, etat: frais, nature: legume-cru, note: têtes}
+  - {ingredient: pates, zone: demi-lune-haute, unites: 1, par_unite: null, etat: entame, nature: sec, note: "étoiles, un demi-paquet"}
+  - {ingredient: sirop-erable, zone: demi-lune-haute, unites: 1, par_unite: null, etat: bocal}
+  - {ingredient: terrine-campagne, zone: demi-lune-haute, unites: 1, par_unite: null, etat: conserve, usage: apero}
+  - {ingredient: sauce-bolognaise-bocal, zone: demi-lune-haute, unites: 1, par_unite: {amount: 300, unit: g}, etat: bocal, industriel: true, note: Barilla}
   - {ingredient: tomates-sechees, zone: demi-lune-haute, unites: 1, par_unite: {amount: 280, unit: g}, etat: conserve, usage: apero}
-  - {ingredient: concentre-tomate, zone: demi-lune-haute, unites: 2, par_unite: null, etat: conserve}
-  - {ingredient: sauce-bolognaise-bocal, zone: demi-lune-haute, unites: 1, par_unite: {amount: 300, unit: g}, etat: bocal}
-  - {ingredient: guacamole, zone: demi-lune-haute, unites: 1, par_unite: null, etat: bocal, usage: apero}
-  - {ingredient: compote, zone: demi-lune-haute, unites: 3, par_unite: {amount: 710, unit: g}, etat: bocal}
-  - {ingredient: terrine-campagne, zone: demi-lune-haute, unites: 1, par_unite: {amount: 180, unit: g}, etat: conserve, usage: apero}
+  - {ingredient: vermicelles, zone: demi-lune-haute, unites: 1, par_unite: {amount: 50, unit: g}, etat: entame, nature: sec}
+  - {ingredient: ble-lentilles, zone: demi-lune-haute, unites: 1, par_unite: {amount: 100, unit: g}, etat: sec}
+  - {ingredient: udon, zone: demi-lune-haute, unites: 1, par_unite: null, etat: sec, note: une portion}
+  - {ingredient: thym, zone: demi-lune-haute, unites: 1, par_unite: null, etat: sec}
+  - {ingredient: graines-courge, zone: demi-lune-haute, unites: 1, par_unite: {amount: 200, unit: g}, etat: sec, nature: gras, usage: apero, note: avec les graines de tournesol}
+  - {ingredient: graines-tournesol, zone: demi-lune-haute, unites: 1, par_unite: null, etat: sec, nature: gras, note: mêlées aux graines de courge}
+  - {ingredient: semoule, zone: demi-lune-haute, unites: 1, par_unite: null, etat: sec, note: fine}
+  - {ingredient: polenta, zone: demi-lune-haute, unites: 1, par_unite: null, etat: sec}
+  - {ingredient: couscous, zone: demi-lune-haute, unites: 1, par_unite: null, etat: sec, note: "grain moyen, plein"}
+  - {ingredient: pignons-pin, zone: demi-lune-haute, unites: 1, par_unite: {amount: 50, unit: g}, etat: sec, nature: gras, sensible: [lumiere, chaleur]}
 
-  # ── zone 4 · placard haut — le poste de pâtisserie ───────────────────────
-  # LES DEUX ÉPEAUTRES SONT DES FARINES COMPLÈTES : elles gardent le germe, donc
-  # les huiles, et rancissent en 3 à 6 mois une fois ouvertes. Ce sont aussi les
-  # seules farines du foyer sans contenant hermétique — sachet plus pince.
-  - {ingredient: farine-epeautre, zone: placard-haut, unites: 1, par_unite: {amount: 1000, unit: g},
-     etat: entame, nature: sec, sensible: [humidite]}
-  - {ingredient: farine-petit-epeautre, zone: placard-haut, unites: 1, par_unite: {amount: 500, unit: g},
-     etat: entame, nature: sec, sensible: [humidite], note: T110, meule de pierre}
-  - {ingredient: maizena, zone: placard-haut, unites: 1, par_unite: {amount: 400, unit: g}, etat: sec}
-  - {ingredient: chapelure, zone: placard-haut, unites: 1, par_unite: null, etat: sec}
-  # Les quatre bocaux. LE BOCAL EST UN DISTRIBUTEUR, pas une réserve : sa réserve
-  # est en demi-lune basse, et c'est pour ça qu'un fond de paquet y traîne — un
-  # kilo de farine occupe 1,8 L, un bocal en fait 1,2 à 1,5.
-  - {ingredient: farine, zone: placard-haut, unites: 1, par_unite: null, etat: bocal, note: distributeur, T55}
-  - {ingredient: sucre-blanc, zone: placard-haut, unites: 1, par_unite: null, etat: bocal, note: distributeur}
-  - {ingredient: riz-rond, zone: placard-haut, unites: 1, par_unite: null, etat: bocal, note: à racheter — bocal vide}
-  - {ingredient: fruits-secs-melange, zone: placard-haut, unites: 1, par_unite: null, etat: bocal,
-     usage: apero, note: raisins secs et chips de banane — acheté en vrac, le bocal EST le stock}
-  - {ingredient: poudre-amande, zone: placard-haut, unites: 1, par_unite: null, etat: entame, nature: gras}
-  - {ingredient: preparation-amandine, zone: placard-haut, unites: 1, par_unite: null, etat: sec}
-  - {ingredient: sucre-vanille, zone: placard-haut, unites: 1, par_unite: null, etat: sec}
-  - {ingredient: sirop-agave, zone: placard-haut, unites: 1, par_unite: null, etat: bocal}
+  # ── demi-lune basse — les oignons y sont arrivés du sous-évier
+  - {ingredient: pates, zone: demi-lune-basse, unites: 1, par_unite: {amount: 1000, unit: g}, etat: sec, nature: sec, note: "spaghetti n°5, neuf"}
+  - {ingredient: pates, zone: demi-lune-basse, unites: 1, par_unite: null, etat: entame, nature: sec, note: "spaghetti n°5, un demi-paquet"}
+  - {ingredient: feuilles-nori, zone: demi-lune-basse, unites: 2, par_unite: null, etat: sec, sensible: [humidite], note: à manger}
+  - {ingredient: oignon, zone: demi-lune-basse, unites: 1, par_unite: null, etat: frais, nature: legume-cru, note: un filet}
+  - {ingredient: farine, zone: demi-lune-basse, unites: 1, par_unite: {amount: 3000, unit: g}, etat: sec, note: T55}
+  - {ingredient: sucre-blanc, zone: demi-lune-basse, unites: 1, par_unite: {amount: 1000, unit: g}, etat: sec}
+  - {ingredient: compote, zone: demi-lune-basse, unites: 3, par_unite: {amount: 1000, unit: g}, etat: bocal, note: "de pommes, 3 kg"}
 
-  # ── zone 5 · sous-évier — les racines ────────────────────────────────────
-  # LES ALLIACÉES DÉGAGENT HUMIDITÉ ET ÉTHYLÈNE, et les pommes de terre y
-  # répondent en germant. Les quatre partagent la même zone : c'est la seule
-  # perte ACTIVE du relevé, et `incompatibles` est ce qui la rend visible.
-  # `conserve_mal: [congeler]` sur la pomme de terre : crue, elle devient
-  # farineuse et noircit au congélateur. C'est l'exception que le modèle général
-  # ne peut pas deviner, et la seule du relevé.
+  # ── placard haut, le vrac
+  - {ingredient: riz, zone: placard-haut, unites: 1, par_unite: null, etat: entame, nature: sec, note: un demi-bocal}
+  - {ingredient: flocons-avoine, zone: placard-haut, unites: 1, par_unite: null, etat: entame, nature: sec, note: un fond}
+  - {ingredient: farine-epeautre, zone: placard-haut, unites: 1, par_unite: null, etat: entame, nature: sec, sensible: [humidite], note: un fond}
+  - {ingredient: farine-petit-epeautre, zone: placard-haut, unites: 1, par_unite: {amount: 500, unit: g}, etat: entame, nature: sec, sensible: [humidite]}
+
+  # ── sous-évier — relevé du 26/08, non relevé le 21/10
   - {ingredient: pomme-de-terre, zone: sous-evier, unites: 1, par_unite: null, etat: frais,
      nature: legume-cru, conserve_mal: [congeler],
      sensible: [humidite, lumiere], incompatibles: [oignon, echalote, ail]}
-  - {ingredient: oignon, zone: sous-evier, unites: 1, par_unite: null, etat: frais,
-     nature: legume-cru, sensible: [humidite]}
-  - {ingredient: echalote, zone: sous-evier, unites: 1, par_unite: null, etat: frais,
-     nature: legume-cru, sensible: [humidite]}
-  - {ingredient: ail, zone: sous-evier, unites: 1, par_unite: null, etat: frais,
-     nature: legume-cru, sensible: [humidite]}

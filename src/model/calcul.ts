@@ -301,6 +301,9 @@ export function calculer(
   // plats, et refaire l'ensemble à chaque ligne serait le refaire quelques
   // centaines de fois pour rien.
   const gardeManger = new Set(jeu.gardeManger);
+  const industriels = new Set(
+    catalogue.gardeManger.denrees.filter((d) => d.industriel).map((d) => alias(catalogue, d.ingredient)),
+  );
   const chaine: LigneChaine[] = [];
   const pleinTarif: PleinTarif[] = [];
   const manques: Manque[] = [];
@@ -365,6 +368,12 @@ export function calculer(
       const prov = provenance(catalogue, ing, cid, prises, ici);
       provenances[prov] = (provenances[prov] ?? 0) + 1;
       if (catalogue.horsCourses.includes(prov)) return;
+      // T143 — UN INDUSTRIEL NE S'ACHÈTE PLUS. La recette le finit s'il est là
+      // (« à vérifier »), elle ne le remet jamais au panier.
+      if (industriels.has(cid)) {
+        if (prov === "garde-manger") aVerifier.set(cid, { nom: ing.nom, prov });
+        return;
+      }
       if (prov === "placard" || prov === "garde-manger") {
         aVerifier.set(cid, { nom: ing.nom, prov });
         return;

@@ -503,6 +503,7 @@ function zone(v: unknown, ou: string): Zone {
     volumeL: nombreOuNull(o["volumeL"] ?? null, `${ou}.volumeL`),
     exposition: parmi(o["exposition"], ["jour", "sombre"] as const, `${ou}.exposition`),
     hygrometrie: parmi(o["hygrometrie"], ["sec", "humide"] as const, `${ou}.hygrometrie`),
+    releve: texteOuNull(o["releve"] ?? null, `${ou}.releve`),
     chaleur: booleen(o["chaleur"], `${ou}.chaleur`),
     note: note === undefined || note === null ? null : texte(note, `${ou}.note`),
   };

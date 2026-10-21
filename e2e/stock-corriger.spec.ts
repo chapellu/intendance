@@ -28,11 +28,12 @@ test("corriger puis retirer une ligne depuis « À manger en premier »", async 
   // CORRIGER : un tap ouvre le compte, prérempli de ce que le rejeu croit.
   const pates = carte(page, "pates");
   await pates.getByRole("button", { name: "corriger : pates" }).click();
-  await expect(pates.locator("b")).toHaveText("4");
+  // Relevé du 21/10 (T143) : un paquet neuf, deux entamés.
+  await expect(pates.locator("b")).toHaveText("3");
   await pates.getByRole("button", { name: "−" }).click();
   await pates.getByRole("button", { name: "C’est ça" }).click();
   await pates.getByRole("button", { name: "corriger : pates" }).click();
-  await expect(pates.locator("b")).toHaveText("3");
+  await expect(pates.locator("b")).toHaveText("2");
   await pates.getByRole("button", { name: "Annuler" }).click();
 
   // JE N'EN AI PLUS : un seul tap, et la ligne sort — de la carte comme de sa
@@ -41,7 +42,10 @@ test("corriger puis retirer une ligne depuis « À manger en premier »", async 
   await expect(carte(page, "biscottes")).toHaveCount(0);
   const dessus = await zone(page, "dessus de l");
   await expect(dessus.locator(".co-lot").filter({ hasText: /^biscottes/ })).toHaveCount(0);
-  await expect(dessus.locator(".co-lot").filter({ hasText: /^cracotte/ })).toHaveCount(1);
+  // Deux lignes de cracottes au relevé du 21/10 : le fond et le paquet neuf.
+  await expect(dessus.locator(".co-lot").filter({ hasText: /^cracotte/ })).toHaveCount(2);
+  // T142 — on finit ce qu'on a, on ne le rachète pas.
+  await expect(dessus.locator(".co-lot").filter({ hasText: /^cracotte/ }).first()).toContainText("industriel — à ne pas racheter");
 });
 
 test("ajouter à une zone ce que le relevé ne connaît pas", async ({ page }) => {

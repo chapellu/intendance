@@ -484,13 +484,16 @@ describe("ce que la zone fait subir à la denrée", () => {
     expect(agressions(d, zoneTest({ exposition: "jour", chaleur: true }))).toHaveLength(2);
   });
 
-  test("les pignons de pin du relevé sont bien signalés", () => {
-    // Le cas réel, contre les vraies données : sachet gras, en pleine lumière,
-    // à côté de la bouilloire.
+  test("les pignons de pin, rangés à l'ombre depuis le relevé du 21/10, ne sont plus signalés", () => {
+    // Le cas réel, contre les vraies données : au 26/08, le sachet gras était
+    // en pleine lumière à côté de la bouilloire ; le 21/10 (T143), il est dans
+    // la demi-lune haute, au sombre. Sur l'étagère, il le serait encore.
     const gm = catalogue.gardeManger;
     const pignons = gm.denrees.find((d) => d.ingredient === "pignons-pin");
     const z = gm.zones.find((x) => x.id === pignons!.zone);
-    expect(agressions(pignons!, z!)).toEqual(["à la lumière", "près d’une source de chaleur"]);
+    expect(agressions(pignons!, z!)).toEqual([]);
+    const etagere = gm.zones.find((x) => x.id === "etagere-ouverte")!;
+    expect(agressions(pignons!, etagere)).toEqual(["à la lumière", "près d’une source de chaleur"]);
   });
 });
 
@@ -559,7 +562,7 @@ describe("ce qu'il reste au garde-manger, en une phrase — T106", () => {
     const r = resteAuPlacard(catalogue, froid());
     expect(r.restent).toBe(idsDuReleve(catalogue).length);
     expect(r.relevees).toBe(r.restent);
-    expect(r.releve).toBe("26/08");
+    expect(r.releve).toBe("21/10");
     expect(r.pesees).toBeGreaterThan(0);
     expect(r.pesees).toBeLessThan(r.restent);
   });
@@ -593,10 +596,10 @@ describe("ce qu'il reste au garde-manger, en une phrase — T106", () => {
   });
 
   test("UN TOTAL PARTIEL NE SE LIT PAS COMME UN TOTAL", () => {
-    // La farine porte un sac de 4 kg pesé ET un bocal qui ne l'est pas. Le
-    // catalogue additionnait les 4 kg ; l'ingrédient n'a pourtant pas de poids
-    // connu, et c'est ce que `EtatIngredient.grammes` dit en rendant `null`.
-    expect(froid().parIngredient.get("farine")?.grammes).toBeNull();
+    // Les pâtes portent un paquet de 1 kg pesé ET un demi-paquet qui ne l'est
+    // pas (relevé du 21/10). Additionner le kilo serait faux ; l'ingrédient n'a
+    // pas de poids connu, et `EtatIngredient.grammes` le dit en rendant `null`.
+    expect(froid().parIngredient.get("pates")?.grammes).toBeNull();
     const pesees = idsDuReleve(catalogue).filter((id) => froid().parIngredient.get(id)?.grammes != null);
     expect(resteAuPlacard(catalogue, froid()).pesees).toBe(pesees.length);
   });
@@ -619,15 +622,15 @@ describe("une zone ne montre que ce qui reste en elle — T107", () => {
   });
 
   test("UNE ZONE RELEVÉE VIDE EST VIDE, même si l'ingrédient vit dans une autre zone", () => {
-    // Le concentré de tomate est relevé dans l'étagère ET dans la demi-lune
-    // haute : le rejeu le garde, l'étagère ne doit plus le montrer.
-    const r = reste([vider("etagere-ouverte")]);
-    expect(r.parZone.get("etagere-ouverte")!.size).toBe(0);
-    expect(r.poidsParZone.get("etagere-ouverte")).toBe("");
-    expect(r.parZone.get("demi-lune-haute")!.has("concentre-tomate")).toBe(true);
-    // Et l'unité qui reste est celle de la demi-lune, pas le total d'avant.
-    const avant = reste([]).parZone.get("demi-lune-haute")!.get("concentre-tomate")!;
-    expect(r.parZone.get("demi-lune-haute")!.get("concentre-tomate")).toEqual(avant);
+    // La ratatouille est relevée sur le dessus ET au 2e niveau (21/10) : le
+    // rejeu la garde, le dessus ne doit plus la montrer.
+    const r = reste([vider("dessus-etagere")]);
+    expect(r.parZone.get("dessus-etagere")!.size).toBe(0);
+    expect(r.poidsParZone.get("dessus-etagere")).toBe("");
+    expect(r.parZone.get("etagere-basse")!.has("ratatouille-boite")).toBe(true);
+    // Et l'unité qui reste est celle du 2e niveau, pas le total d'avant.
+    const avant = reste([]).parZone.get("etagere-basse")!.get("ratatouille-boite")!;
+    expect(r.parZone.get("etagere-basse")!.get("ratatouille-boite")).toEqual(avant);
   });
 
   test("UNE COURSE RENTRÉE SANS RANGEMENT SE RETROUVE, UNE SEULE FOIS", () => {
@@ -639,20 +642,20 @@ describe("une zone ne montre que ce qui reste en elle — T107", () => {
     };
     const r = reste([...catalogue.gardeManger.zones.map((z, i) => vider(z.id, i)), entree]);
     const ou = [...r.parZone].filter(([, m]) => m.has("pates")).map(([z]) => z);
-    expect(ou).toEqual(["demi-lune-haute"]);
-    expect(r.parZone.get("demi-lune-haute")!.get("pates")).toMatchObject({ grammes: 1000, unites: 2, quantite: "2 paquets" });
+    expect(ou).toEqual(["demi-lune-basse"]);
+    expect(r.parZone.get("demi-lune-basse")!.get("pates")).toMatchObject({ grammes: 1000, unites: 2, quantite: "2 paquets" });
   });
 
   test("T139 — LE MAÏS SE COMPTE EN BOÎTES, PAS EN KILOS", () => {
-    const m = reste([]).parZone.get("etagere-ouverte")!.get("mais")!;
+    const m = reste([]).parZone.get("etagere-basse")!.get("mais")!;
     expect(m.grammes).not.toBeNull();
     expect(m.quantite).toBe(`${m.unites} boîtes`);
   });
 
   test("T139 — une ligne d'un ingrédient relevé dans deux zones se corrige dans la sienne", () => {
     const r = reste([]);
-    expect(r.parZone.get("etagere-ouverte")!.get("concentre-tomate")!.zone).toBe("etagere-ouverte");
-    expect(r.parZone.get("etagere-ouverte")!.get("mais")!.zone).toBeNull();
+    expect(r.parZone.get("etagere-basse")!.get("ratatouille-boite")!.zone).toBe("etagere-basse");
+    expect(r.parZone.get("etagere-basse")!.get("mais")!.zone).toBeNull();
   });
 
   test("T139 — ce qu'un relevé ajoute à une zone s'y lit", () => {
@@ -708,12 +711,12 @@ describe("le garde-manger entier", () => {
   });
 
   test("les alertes du relevé remontent jusqu'à la vue", () => {
-    // Le couple pommes de terre / oignons est la seule perte ACTIVE du relevé :
-    // s'il cessait d'être signalé, l'écran mentirait par omission.
+    // Les pommes de terre sous l'évier sont la seule perte ACTIVE du relevé
+    // (les oignons en sont sortis le 21/10, T143) : s'il cessait d'être
+    // signalé, l'écran mentirait par omission.
     const vue = gardeManger(catalogue, idsDuReleve(catalogue));
-    expect(
-      vue.alertes.some((a) => a.includes("pomme de terre") && a.includes("voisiner")),
-    ).toBe(true);
+    expect(vue.alertes.some((a) => a.includes("pomme de terre") && a.includes("humide"))).toBe(true);
+    expect(vue.alertes.some((a) => a.includes("voisiner"))).toBe(false);
   });
 
   test("ce qui se corrige d'un seul geste tient sur une seule alerte", () => {
@@ -725,7 +728,6 @@ describe("le garde-manger entier", () => {
     expect(vue.alertes.length).toBeLessThanOrEqual(4);
     const humide = vue.alertes.find((a) => a.includes("endroit humide"));
     expect(humide).toContain("pomme de terre");
-    expect(humide).toContain("ail");
   });
 
   test("la vue de l'inventaire porte le garde-manger", () => {
@@ -869,10 +871,11 @@ describe("ce qu'on veut toujours avoir, au placard", () => {
   test("un plancher posé dit ce qu'il y a et ce qu'on veut, en unités", () => {
     const vue = vueDesPlanchersDenrees(catalogue, placard(), [{ ingredient: "mais", niveau: 6 }]);
     const p = vue.poses.find((x) => x.ingredient === "mais")!;
-    expect(p.a).toBe(4);
+    // Trois boîtes au relevé du 21/10 (T143).
+    expect(p.a).toBe(3);
     expect(p.niveau).toBe(6);
     expect(p.sous).toBe(true);
-    expect(vue.manquent).toContain("2 à racheter");
+    expect(vue.manquent).toContain("3 à racheter");
   });
 
   test("un plancher tenu ne demande rien, et passe derrière ceux qui manquent", () => {
@@ -1057,19 +1060,20 @@ describe("le plan de la cuisine — T141", () => {
 
   test("les pastilles d'une zone : entamés, à déplacer — comptés par produit, pas par lot", () => {
     const p = plan();
-    // Cracotte, krisprolls, biscottes : trois paquets entamés sur le dessus.
-    expect(r(p, "dessus-etagere").signaux).toEqual({ vite: 0, entame: 3, deplacer: 0 });
+    // Cracottes (un fond et un neuf : UN produit) et biscottes, au 21/10.
+    expect(r(p, "dessus-etagere").signaux).toEqual({ vite: 0, entame: 2, deplacer: 0 });
     // Trois fonds de paquets de pâtes sont UN produit entamé.
     expect(r(p, "demi-lune-haute").signaux.entame).toBe(2);
-    // Les quatre légumes du sous-évier sont à l'humidité.
-    expect(r(p, "sous-evier").signaux).toEqual({ vite: 0, entame: 0, deplacer: 4 });
-    expect(r(p, "etagere-ouverte").signaux.deplacer).toBe(1);
-    expect(r(p, "sous-evier").aria).toContain("4 à déplacer");
-    expect(p.totaux.deplacer).toBe(5);
+    // Il ne reste que les pommes de terre sous l'évier (T143 : oignons et ail
+    // déménagés, échalote jetée), et les pignons ont quitté la lumière.
+    expect(r(p, "sous-evier").signaux).toEqual({ vite: 0, entame: 0, deplacer: 1 });
+    expect(r(p, "etagere-ouverte").signaux.deplacer).toBe(0);
+    expect(r(p, "sous-evier").aria).toContain("1 à déplacer");
+    expect(p.totaux.deplacer).toBe(1);
   });
 
   test("ce qu'on a fini n'allume plus rien", () => {
-    const sans = tout().filter((id) => !["pomme-de-terre", "oignon", "echalote", "ail"].includes(id));
+    const sans = tout().filter((id) => id !== "pomme-de-terre");
     expect(r(plan(sans), "sous-evier").signaux.deplacer).toBe(0);
   });
 
@@ -1102,13 +1106,10 @@ describe("le plan de la cuisine — T141", () => {
     const c = conseilDe(catalogue, r(plan(), "sous-evier"), tout());
     // T142 — UNE SEULE LIGNE « À DÉPLACER » : les deux diagnostics derrière un
     // seul en-tête, et le mot n'apparaît qu'une fois dans tout l'encart.
-    expect(c[0]).toBe(
-      "À déplacer : pomme de terre, oignon, echalote, ail — dans un endroit humide ; " +
-        "pomme de terre — ne devrait pas voisiner avec ail, echalote, oignon.",
-    );
+    expect(c[0]).toBe("À déplacer : pomme de terre — dans un endroit humide.");
     expect(c.join(" ").match(/À déplacer/g)).toHaveLength(1);
     expect(c.some((x) => x.includes("loin du sous-évier"))).toBe(true);
-    const sans = tout().filter((id) => !["pomme-de-terre", "oignon", "echalote", "ail"].includes(id));
+    const sans = tout().filter((id) => id !== "pomme-de-terre");
     expect(conseilDe(catalogue, r(plan(sans), "sous-evier"), sans)).toEqual([]);
   });
 

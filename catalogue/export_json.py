@@ -391,6 +391,12 @@ def main():
             "zones": [
                 {"id": z["id"], "label": z.get("label") or z["id"],
                  "espace": z["espace"],
+                 # T143 — LA DATE DU RELEVÉ DE CETTE ZONE : celle du fichier,
+                 # sauf pour une zone qu'un relevé plus récent n'a pas couverte.
+                 # Le rejeu fait gagner, zone par zone, le relevé le plus récent
+                 # sur les observations plus anciennes de l'appareil.
+                 "releve": (z["releve"].isoformat() if hasattr(z.get("releve"), "isoformat")
+                            else z.get("releve")) or pantry.get("releve"),
                  "niveaux": z.get("niveaux", 1),
                  "dimensions": z.get("dimensions") or {},
                  "forme": z.get("forme", "rectangle"),

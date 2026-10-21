@@ -51,7 +51,8 @@ describe("ce que le placard offre à écouler", () => {
     // seraient tout aussi pressés dans une cave sèche. Si ce test tombe un jour,
     // c'est que le relevé a changé — pas que la règle est fausse.
     const sousEvier = catalogue.gardeManger.denrees.filter((d) => d.zone === "sous-evier");
-    expect(sousEvier).toHaveLength(4);
+    // T143 : il n'y reste que les pommes de terre (oignons et ail déménagés).
+    expect(sousEvier).toHaveLength(1);
     expect(sousEvier.every((d) => d.etat === "frais")).toBe(true);
   });
 
@@ -59,8 +60,10 @@ describe("ce que le placard offre à écouler", () => {
     // Les pignons sont secs et scellés ; s'ils pressent, c'est la lumière et la
     // bouilloire. Ça se corrige en les déplaçant, pas en dînant — et l'app le dit
     // déjà, à sa place, dans « À déplacer ».
+    // T143 : rangés depuis dans la demi-lune haute, à l'ombre — l'alerte s'est
+    // tue parce que le geste a été fait.
     expect(aEcouler(catalogue, tout).has("pignons-pin")).toBe(false);
-    expect(catalogue.gardeManger.alertes.some((a) => a.includes("pignons"))).toBe(true);
+    expect(catalogue.gardeManger.alertes.some((a) => a.includes("pignons"))).toBe(false);
   });
 
   test("une conserve scellée n'entre pas sur l'axe", () => {
@@ -156,7 +159,9 @@ describe("ce que le plat prend au placard", () => {
     // mugcakes, pain de mie, pâte à pizza. L'épeautre ouvert peut donc être
     // mangé, et la liste n'est pas une règle : c'est un FAIT DE CORPUS, qui se
     // remesure à chaque livre qui entre.
-    const horsRecette = ["cracotte", "krisprolls", "ble-lentilles"];
+    // T143 : les krisprolls ont quitté le relevé du 21/10, et le blé-lentilles
+    // y est un sachet neuf.
+    const horsRecette = ["cracotte", "chocolat-poudre"];
     for (const id of horsRecette) expect(aEcouler(catalogue, tout).has(id)).toBe(true);
     for (const p of catalogue.plats)
       for (const id of horsRecette) expect(ids(p)).not.toContain(id);
@@ -201,7 +206,6 @@ describe("ce qui se perd", () => {
     // T139 — les pignons sont secs et scellés : s'ils pressaient, c'était la
     // zone. Un geste de rangement, donc « À déplacer », plus cette liste.
     expect(l.some((s) => s.ingredient === "pignons-pin")).toBe(false);
-    expect(catalogue.gardeManger.alertes.some((a) => a.startsWith("pignons"))).toBe(true);
     // Les pâtes ne craignent rien de leur zone : c'est le paquet qui est ouvert.
     expect(l.find((s) => s.ingredient === "pates")?.raison).toBe("paquet entamé");
   });

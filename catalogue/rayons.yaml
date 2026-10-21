@@ -363,6 +363,17 @@ rayons:
     - cocktail-fruits
     - creme-dessert-chocolat
     - confiture-orange
+    # T143 — arrivés avec le relevé dicté du 21/10.
+    - confiture-prune
+    - confiture-mirabelle
+    - confiture-fraise
+    - pate-a-tartiner
+    - sirop-erable
+    - ratatouille-boite
+    - polenta
+    - couscous
+    - udon
+    - graines-tournesol
     # `miel` est générique et reste DISTINCT de `miel-acacia`, que la p. 115
     # demande nommément. Les aliaser ferait croire qu'un pot de miel de placard
     # répond à une recette qui veut de l'acacia.

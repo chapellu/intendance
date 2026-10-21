@@ -232,16 +232,15 @@ describe("le fond et le stock de T142", () => {
     expect(phraseDuPlancher(l, 0)).toContain("frais de la semaine");
   });
 
-  test("biscottes, cracottes, krisprolls, purée en flocons : au stock, jamais proposés", async () => {
-    const { posables } = await import("./plancherGardeManger");
+  test("l'industriel du relevé : au stock, dit « à ne pas racheter », jamais proposé", async () => {
+    const { posables, industriels } = await import("./plancherGardeManger");
     const { zones } = await import("../ecrans/stock.vue");
     const r = rejouer(catalogue, [], contexte(catalogue), "2026-10-26");
+    const tags = ["biscottes", "chocolat-poudre", "cocktail-fruits", "cracotte", "pate-a-tartiner", "sauce-bolognaise-bocal"];
+    expect([...industriels(catalogue)].sort()).toEqual(tags);
     const ids = new Set(posables(catalogue, r).map((p) => p.ingredient));
-    for (const id of ["biscottes", "cracotte", "krisprolls", "puree-mousline"]) expect(ids.has(id)).toBe(false);
+    for (const id of tags) expect(ids.has(id)).toBe(false);
     const dessus = zones(catalogue.gardeManger).find((z) => z.id === "dessus-etagere")!;
-    expect(dessus.denrees.filter((d) => d.industriel).map((d) => d.ingredient).sort()).toEqual(
-      ["biscottes", "cracotte", "krisprolls", "puree-mousline"],
-    );
     expect(dessus.denrees.find((d) => d.ingredient === "biscottes")?.industriel).toBe("industriel — à ne pas racheter");
     expect(catalogue.fond.denrees.map((d) => d.ingredient)).not.toContain("gnocchis");
   });

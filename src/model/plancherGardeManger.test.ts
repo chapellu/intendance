@@ -64,13 +64,14 @@ describe("T39 — le plancher du garde-manger porte sur l'ingrédient", () => {
   });
 
   test("le compte est en unités d'achat, jamais en grammes", () => {
-    // 4 boîtes de maïs de 285 g : le plancher voit 4, pas 1140. « Trois boîtes
-    // de maïs » est une phrase qu'un œil vérifie devant l'étagère.
+    // 3 boîtes de maïs de 285 g (relevé du 21/10) : le plancher voit 3, pas
+    // 855. « Trois boîtes de maïs » est une phrase qu'un œil vérifie devant
+    // l'étagère.
     const e = placard().parIngredient.get("mais")!;
-    expect(e.unites).toBe(4);
-    expect(e.grammes).toBeGreaterThan(1000);
+    expect(e.unites).toBe(3);
+    expect(e.grammes).toBeGreaterThan(800);
     expect(sousLeurPlancher(catalogue, placard(), [{ ingredient: "mais", niveau: 5 }])[0]!.manque)
-      .toBe(1);
+      .toBe(2);
   });
 
   test("au-dessus de son plancher, une denrée ne dit rien", () => {
@@ -78,14 +79,14 @@ describe("T39 — le plancher du garde-manger porte sur l'ingrédient", () => {
     // congélateur. Quatre boîtes pour un plancher de deux ne produisent aucune
     // ligne, et surtout aucun « tu en as trop ».
     expect(sousLeurPlancher(catalogue, placard(), [{ ingredient: "mais", niveau: 2 }])).toEqual([]);
-    expect(sousLeurPlancher(catalogue, placard(), [{ ingredient: "mais", niveau: 4 }])).toEqual([]);
+    expect(sousLeurPlancher(catalogue, placard(), [{ ingredient: "mais", niveau: 3 }])).toEqual([]);
   });
 
   test("zéro n'est pas une absence de réponse, c'est la réponse", () => {
     // Un relevé de zone qui ne mentionne plus le maïs le retire du placard.
     // C'est le cas ordinaire d'une étagère qui se vide, et c'est exactement là
     // qu'un plancher sert : il manque tout son plancher.
-    const vide = placard([releve("etagere-ouverte", [])]);
+    const vide = placard([releve("etagere-basse", [])]);
     expect(vide.parIngredient.has("mais")).toBe(false);
 
     const [ligne] = sousLeurPlancher(catalogue, vide, [{ ingredient: "mais", niveau: 2 }]);
@@ -157,7 +158,7 @@ describe("T46 — un plancher n'existe que sur ce que l'app sait compter", () =>
     // Une denrée qu'un relevé a mise à zéro quitte `parIngredient` pour `vus`.
     // N'offrir le geste que sur ce qui reste en stock rendrait le plancher
     // indisponible au moment exact où il devient utile.
-    const vide = placard([releve("etagere-ouverte", [])]);
+    const vide = placard([releve("etagere-basse", [])]);
     const mais = posables(catalogue, vide).find((p) => p.ingredient === "mais");
     expect(mais).toBeDefined();
     expect(mais!.a).toBe(0);
@@ -178,15 +179,11 @@ describe("T40 — `usage: apero` est la preuve que le plancher est indépendant 
   //
   // Ce que le ticket demande est qu'il EXISTE des denrées qu'aucune recette
   // n'atteint, pas qu'elles soient six : le test suivant reste la vraie preuve.
-  test("cinq denrées portent l'usage, et le reste n'en porte aucun", () => {
+  test("trois denrées portent l'usage, et le reste n'en porte aucun", () => {
     const par = usages(catalogue);
-    expect([...par.keys()].sort()).toEqual([
-      "fruits-secs-melange",
-      "graines-courge",
-      "guacamole",
-      "terrine-campagne",
-      "tomates-sechees",
-    ]);
+    // T143 : le relevé du 21/10 n'a plus ni guacamole ni mélange de fruits
+    // secs — trois denrées gardent l'usage.
+    expect([...par.keys()].sort()).toEqual(["graines-courge", "terrine-campagne", "tomates-sechees"]);
     expect([...par.values()].every((u) => u === "apero")).toBe(true);
   });
 
@@ -260,7 +257,7 @@ describe("T41 — aucun arbitrage cuisiner/acheter, l'objet dicte le canal", () 
       { ingredient: "mais", niveau: 5 },
       { ingredient: "graines-courge", niveau: 4 },
     ] satisfies PlancherDenree[]);
-    expect(lignes.map((l) => l.manque)).toEqual([3, 1]);
+    expect(lignes.map((l) => l.manque)).toEqual([3, 2]);
   });
 
   test("l'unité des lignes n'existe nulle part dans le corpus", () => {

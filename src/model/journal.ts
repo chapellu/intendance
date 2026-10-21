@@ -222,6 +222,11 @@ export interface LotPlacard {
    * premier (voir `ordreDeService`).
    */
   entame: number | null;
+  /** T143 — rentré des courses sans rangement (`zone: null`, posé en
+   *  `placard-haut`). Un relevé plus récent ne l'efface que s'il compte cet
+   *  ingrédient quelque part : les surgelés rentrés samedi ne sont pas au
+   *  placard haut, et un relevé du placard haut ne dit rien d'eux. */
+  sansPlace?: true;
   /** Né d'un reste d'unité scellée (T29) : il court, donc il presse. */
   court: boolean;
 }
@@ -397,6 +402,9 @@ export interface Contexte {
   fenetreCourte: (id: string) => number | null;
   /** Le jour du relevé d'amorce — la première observation du journal. */
   releve: string | null;
+  /** T143 — le jour du relevé d'UNE zone (`Zone.releve`), à défaut celui du
+   *  fichier. `?` : les contextes fabriqués à la main des tests. */
+  releveDe?: (zone: string) => string | null;
   /** T135 : ce que contient une unité d'achat du fond (`fond.yaml:unite`),
    *  quand elle le dit — « sachet de 500 g », « boîte de 6 ». */
   contenu: (id: string) => Quantite | null;
@@ -432,6 +440,10 @@ export function contexte(catalogue: Catalogue): Contexte {
       return (id: string) => par.get(alias(id)) ?? null;
     })(),
     releve: catalogue.gardeManger.releve,
+    releveDe: (() => {
+      const par = new Map(catalogue.gardeManger.zones.map((z) => [z.id, z.releve ?? catalogue.gardeManger.releve]));
+      return (zone: string) => par.get(zone) ?? catalogue.gardeManger.releve;
+    })(),
     contenu: (() => {
       const par = new Map<string, Quantite>();
       for (const d of catalogue.fond?.denrees ?? []) {
@@ -884,8 +896,57 @@ export function rejouer(
 
   // L'amorce est une observation, datée du relevé. Sans date, elle ne restaure
   // rien : un stock d'origine inconnue ne vaut pas mieux qu'une estimation.
-  for (const id of lots.keys())
-    suivi.set(id, { vuLe: ctx.releve, depuisVu: 0, derives: [], predit: null });
+  // T143 — CHAQUE ZONE À LA DATE DE SON RELEVÉ : la pomme de terre du
+  // sous-évier date du 26/08, les conserves de l'étagère du 21/10.
+  const releveDe = (zone: string): string | null => ctx.releveDe?.(zone) ?? ctx.releve;
+  for (const [id, l] of lots) {
+    const dates = l.map((x) => releveDe(x.zone)).filter((d): d is string => !!d).sort();
+    suivi.set(id, { vuLe: dates.at(-1) ?? ctx.releve, depuisVu: 0, derives: [], predit: null });
+  }
+
+  // T143 — LE RELEVÉ DU CATALOGUE GAGNE, ZONE PAR ZONE, SUR CE QUI EST PLUS
+  // VIEUX QUE LUI. L'amorce n'était lue qu'en tête du rejeu : un relevé de zone
+  // fait sur le téléphone en septembre passait APRÈS elle et effaçait le relevé
+  // dicté le 21/10, et les cuissons d'avant le 21/10 décomptaient une seconde
+  // fois ce qu'il avait déjà vu. Chaque zone est donc RE-RELEVÉE à sa date, au
+  // milieu du journal : ce qui précède ne la touche plus, ce qui suit la
+  // corrige comme d'habitude. En tête de journée — une correction faite le
+  // même jour sur le téléphone passe après.
+  const amorceDe = new Map<string, LotPlacard[]>();
+  for (const l of lots.values())
+    for (const x of l) amorceDe.set(x.zone, [...(amorceDe.get(x.zone) ?? []), cloner(x)]);
+  const releves = [...new Set(catalogue.gardeManger.zones.map((z) => z.id))]
+    .map((zone) => ({ zone, jour: releveDe(zone) }))
+    .filter((r): r is { zone: string; jour: string } => !!r.jour)
+    .sort((a, b) => a.jour.localeCompare(b.jour));
+  const vusLe = new Map<string, Set<string>>();
+  for (const [zone, l] of amorceDe) {
+    const j = releveDe(zone);
+    if (!j) continue;
+    const ids = vusLe.get(j) ?? new Set<string>();
+    for (const x of l) ids.add(x.ingredient);
+    vusLe.set(j, ids);
+  }
+  let prochain = 0;
+  const releverJusquA = (jour: string): void => {
+    for (; prochain < releves.length && releves[prochain]!.jour <= jour; prochain++) {
+      const { zone, jour: j } = releves[prochain]!;
+      const comptes = vusLe.get(j) ?? new Set<string>();
+      for (const [id, l] of lots) {
+        const reste = l.filter((x) => (x.sansPlace ? !comptes.has(id) : x.zone !== zone));
+        if (reste.length) lots.set(id, reste);
+        else lots.delete(id);
+      }
+      for (const x of amorceDe.get(zone) ?? []) {
+        lots.set(x.ingredient, [...(lots.get(x.ingredient) ?? []), cloner(x)]);
+        connus.add(x.ingredient);
+        const s = suiviDe(x.ingredient);
+        s.vuLe = j;
+        s.depuisVu = 0;
+      }
+      for (const [id, z] of ajoutes) if (z === zone) ajoutes.delete(id);
+    }
+  };
 
   const suiviDe = (id: string): Suivi => {
     const s = suivi.get(id) ?? { vuLe: null, depuisVu: 0, derives: [], predit: null };
@@ -903,6 +964,7 @@ export function rejouer(
   );
 
   for (const e of ordonnes) {
+    releverJusquA(e.jour);
     if (e.sorte === "cuisine") {
       const plat = catalogue.plats.find((p) => p.id === e.plat);
       if (!plat) continue;
@@ -961,6 +1023,7 @@ export function rejouer(
           etat: ligne.etat,
           entame: null,
           court: false,
+          ...(ligne.zone ? {} : { sansPlace: true as const }),
         });
         lots.set(id, l);
         suiviDe(id).rentreLe = e.jour;
@@ -1036,6 +1099,9 @@ export function rejouer(
           s.depuisVu = 0;
         }
   }
+
+  // Les relevés d'ici aujourd'hui que le journal n'a pas encore croisés.
+  releverJusquA(aujourdhui);
 
   const etatDe = (id: string, l: LotPlacard[]): EtatIngredient => {
     const s = suiviDe(id);

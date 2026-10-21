@@ -66,19 +66,18 @@ describe("T134 — cuisiner un plat du fond le consomme, et la liste le recharge
     expect(carte?.manque.map((a) => a.id) ?? []).not.toContain("lentilles-seches");
   });
 
-  // T135 — 200 g par hachis (250 g pour 5 parts, cuisiné pour 4), sur 1,5 kg :
-  // le sachet du relevé (500 g) puis les deux du fond (500 g chacun).
-  test("quatre hachis (800 g) : un sachet entamé et un scellé, la liste ne demande rien", () => {
-    const { liste } = apres(4);
+  // T135 — 200 g par hachis (250 g pour 5 parts, cuisiné pour 4). T142 : le
+  // fond rentre trois sachets de 500 g ; T143 : le relevé du 21/10 n'a plus de
+  // lentilles vertes, c'est donc 1,5 kg en tout.
+  test("deux hachis (400 g) : un sachet entamé et deux scellés, la liste ne demande rien", () => {
+    const { liste } = apres(2);
     expect(liste.map((l) => l.ingredient)).not.toContain("lentilles-seches");
   });
 
-  // T142 — le fond monte à trois sachets (le dîner nourrit aussi le midi) :
-  // 2 kg en tout, le sachet du relevé compris.
-  test("six hachis (1,2 kg) : il reste un sachet entamé et un scellé, la liste dit « pour le fond »", () => {
+  test("six hachis (1,2 kg) : il reste un sachet entamé, la liste dit « pour le fond »", () => {
     const { liste } = apres(6);
     const l = liste.find((x) => x.ingredient === "lentilles-seches");
-    expect(l).toMatchObject({ a: 2, niveau: 3, manque: 1, fond: true });
+    expect(l).toMatchObject({ a: 1, niveau: 3, manque: 2, fond: true });
     expect(phraseDuPlancher(l!, 0)).toContain("pour le fond");
   });
 

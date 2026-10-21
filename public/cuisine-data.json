@@ -44929,6 +44929,16 @@
     "cocktail-fruits",
     "creme-dessert-chocolat",
     "confiture-orange",
+    "confiture-prune",
+    "confiture-mirabelle",
+    "confiture-fraise",
+    "pate-a-tartiner",
+    "sirop-erable",
+    "ratatouille-boite",
+    "polenta",
+    "couscous",
+    "udon",
+    "graines-tournesol",
     "miel",
     "chocolat-poudre",
     "puree-mousline",
@@ -45168,29 +45178,49 @@
   }
  ],
  "gardeManger": {
-  "releve": "2026-08-26",
+  "releve": "2026-10-21",
   "zones": [
    {
     "id": "etagere-ouverte",
-    "label": "étagère ouverte",
+    "label": "étagère en bois, 1er niveau",
     "espace": "placard",
-    "niveaux": 2,
+    "releve": "2026-10-21",
+    "niveaux": 1,
     "dimensions": {
      "largeur_cm": 42,
      "profondeur_cm": 30,
      "hauteur_cm": 17
     },
     "forme": "rectangle",
-    "volumeL": 42.8,
+    "volumeL": 21.4,
     "exposition": "jour",
     "hygrometrie": "sec",
     "chaleur": true,
-    "note": "Présentoir bois à deux niveaux, sur le plan de travail, à côté de la bouilloire. 17 cm : rien de haut n'y entre, d'où les secs relégués sur le dessus. 30 cm de profondeur pour 17 de haut : le fond est borgne, c'est là que les dates se périment sans se voir."
+    "note": "Présentoir bois sur le plan de travail, à côté de la bouilloire. 17 cm : rien de haut n'y entre. 30 cm de profondeur pour 17 de haut : le fond est borgne, c'est là que les dates se périment sans se voir."
+   },
+   {
+    "id": "etagere-basse",
+    "label": "étagère en bois, 2e niveau",
+    "espace": "placard",
+    "releve": "2026-10-21",
+    "niveaux": 1,
+    "dimensions": {
+     "largeur_cm": 42,
+     "profondeur_cm": 30,
+     "hauteur_cm": 17
+    },
+    "forme": "rectangle",
+    "volumeL": 21.4,
+    "exposition": "jour",
+    "hygrometrie": "sec",
+    "chaleur": true,
+    "note": "Le niveau du bas du présentoir : les conserves — thon, maïs, ratatouille, concentré de tomate — et le reste des confitures."
    },
    {
     "id": "dessus-etagere",
     "label": "dessus de l'étagère ouverte",
     "espace": "placard",
+    "releve": "2026-10-21",
     "niveaux": 1,
     "dimensions": {
      "largeur_cm": 42,
@@ -45208,6 +45238,7 @@
     "id": "demi-lune-basse",
     "label": "demi-lune basse",
     "espace": "placard",
+    "releve": "2026-10-21",
     "niveaux": 1,
     "dimensions": {
      "largeur_cm": 70,
@@ -45225,6 +45256,7 @@
     "id": "demi-lune-haute",
     "label": "demi-lune haute",
     "espace": "placard",
+    "releve": "2026-10-21",
     "niveaux": 1,
     "dimensions": {
      "largeur_cm": 70,
@@ -45242,6 +45274,7 @@
     "id": "tiroir-epices",
     "label": "tiroir à épices",
     "espace": "placard",
+    "releve": "2026-08-26",
     "niveaux": 2,
     "dimensions": {
      "largeur_cm": null,
@@ -45259,6 +45292,7 @@
     "id": "placard-haut",
     "label": "placard haut, étagère basse",
     "espace": "placard",
+    "releve": "2026-10-21",
     "niveaux": 1,
     "dimensions": {
      "largeur_cm": 57,
@@ -45276,6 +45310,7 @@
     "id": "sous-evier",
     "label": "sous-évier",
     "espace": "placard",
+    "releve": "2026-08-26",
     "niveaux": 1,
     "dimensions": {
      "largeur_cm": null,
@@ -45308,13 +45343,26 @@
      "id": "etagere-ouverte",
      "zone": "etagere-ouverte",
      "espace": "placard",
-     "label": "étagère ouverte",
-     "court": "Étagère",
+     "label": "étagère en bois, 1er niveau",
+     "court": "Étagère 1",
      "mur": "gauche",
      "x": 4,
-     "y": 90,
+     "y": 88,
      "w": 80,
-     "h": 84,
+     "h": 44,
+     "teinte": "bois-clair"
+    },
+    {
+     "id": "etagere-basse",
+     "zone": "etagere-basse",
+     "espace": "placard",
+     "label": "étagère en bois, 2e niveau",
+     "court": "Étagère 2",
+     "mur": "gauche",
+     "x": 4,
+     "y": 134,
+     "w": 80,
+     "h": 44,
      "teinte": "bois-clair"
     },
     {
@@ -45517,414 +45565,20 @@
   },
   "denrees": [
    {
-    "ingredient": "mais",
-    "zone": "etagere-ouverte",
-    "unites": 4,
-    "parUnite": {
-     "amount": 285,
-     "unit": "g"
-    },
-    "poidsG": 1140,
-    "etat": "conserve",
-    "sensible": [],
-    "incompatibles": [],
-    "urgence": "basse",
-    "nature": "autre",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": "conserve",
-    "note": null
-   },
-   {
-    "ingredient": "petits-pois-carottes",
-    "zone": "etagere-ouverte",
+    "ingredient": "cracotte",
+    "zone": "dessus-etagere",
     "unites": 1,
-    "parUnite": {
-     "amount": 465,
-     "unit": "g"
-    },
-    "poidsG": 465,
-    "etat": "conserve",
-    "sensible": [],
-    "incompatibles": [],
-    "urgence": "basse",
-    "nature": "autre",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": null,
-    "note": null
-   },
-   {
-    "ingredient": "petits-pois-carottes",
-    "zone": "etagere-ouverte",
-    "unites": 1,
-    "parUnite": {
-     "amount": 530,
-     "unit": "g"
-    },
-    "poidsG": 530,
-    "etat": "conserve",
-    "sensible": [],
-    "incompatibles": [],
-    "urgence": "basse",
-    "nature": "autre",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": null,
-    "note": null
-   },
-   {
-    "ingredient": "pousses-haricots",
-    "zone": "etagere-ouverte",
-    "unites": 2,
-    "parUnite": {
-     "amount": 90,
-     "unit": "g"
-    },
-    "poidsG": 180,
-    "etat": "conserve",
-    "sensible": [],
-    "incompatibles": [],
-    "urgence": "basse",
-    "nature": "autre",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": null,
-    "note": null
-   },
-   {
-    "ingredient": "pois-chiches",
-    "zone": "etagere-ouverte",
-    "unites": 1,
-    "parUnite": {
-     "amount": 265,
-     "unit": "g"
-    },
-    "poidsG": 265,
-    "etat": "conserve",
-    "sensible": [],
-    "incompatibles": [],
-    "urgence": "basse",
-    "nature": "autre",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": "sec",
-    "note": null
-   },
-   {
-    "ingredient": "maquereaux-boite",
-    "zone": "etagere-ouverte",
-    "unites": 1,
-    "parUnite": {
-     "amount": 169,
-     "unit": "g"
-    },
-    "poidsG": 169,
-    "etat": "conserve",
-    "sensible": [],
-    "incompatibles": [],
-    "urgence": "basse",
-    "nature": "autre",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": "conserve",
-    "note": null
-   },
-   {
-    "ingredient": "thon-boite",
-    "zone": "etagere-ouverte",
-    "unites": 1,
-    "parUnite": {
-     "amount": 140,
-     "unit": "g"
-    },
-    "poidsG": 140,
-    "etat": "conserve",
-    "sensible": [],
-    "incompatibles": [],
-    "urgence": "basse",
-    "nature": "autre",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": "conserve",
-    "note": "au naturel"
-   },
-   {
-    "ingredient": "thon-boite",
-    "zone": "etagere-ouverte",
-    "unites": 1,
-    "parUnite": {
-     "amount": 160,
-     "unit": "g"
-    },
-    "poidsG": 160,
-    "etat": "conserve",
-    "sensible": [],
-    "incompatibles": [],
-    "urgence": "basse",
-    "nature": "autre",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": "conserve",
-    "note": "à l'huile d'olive"
-   },
-   {
-    "ingredient": "concentre-tomate",
-    "zone": "etagere-ouverte",
-    "unites": 3,
-    "parUnite": {
-     "amount": 70,
-     "unit": "g"
-    },
-    "poidsG": 210,
-    "etat": "conserve",
-    "sensible": [],
-    "incompatibles": [],
-    "urgence": "basse",
-    "nature": "autre",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": "conserve",
-    "note": null
-   },
-   {
-    "ingredient": "pignons-pin",
-    "zone": "etagere-ouverte",
-    "unites": 1,
-    "parUnite": {
-     "amount": 50,
-     "unit": "g"
-    },
-    "poidsG": 50,
+    "parUnite": null,
+    "poidsG": null,
     "etat": "sec",
     "sensible": [
-     "lumiere",
-     "chaleur"
+     "humidite"
     ],
-    "incompatibles": [],
-    "urgence": "haute",
-    "nature": "gras",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": null,
-    "note": null
-   },
-   {
-    "ingredient": "cocktail-fruits",
-    "zone": "etagere-ouverte",
-    "unites": 2,
-    "parUnite": {
-     "amount": 825,
-     "unit": "g"
-    },
-    "poidsG": 1650,
-    "etat": "conserve",
-    "sensible": [],
     "incompatibles": [],
     "urgence": "basse",
-    "nature": "autre",
+    "nature": "sec",
     "usage": null,
-    "industriel": false,
+    "industriel": true,
     "conservations": [
      {
       "id": "congeler",
@@ -45946,17 +45600,93 @@
      }
     ],
     "garde": null,
-    "note": null
+    "note": "paquet neuf"
    },
    {
-    "ingredient": "creme-dessert-chocolat",
-    "zone": "etagere-ouverte",
+    "ingredient": "cracotte",
+    "zone": "dessus-etagere",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "entame",
+    "sensible": [
+     "humidite"
+    ],
+    "incompatibles": [],
+    "urgence": "moyenne",
+    "nature": "sec",
+    "usage": null,
+    "industriel": true,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
+    "garde": null,
+    "note": "deux tranches au fond du paquet"
+   },
+   {
+    "ingredient": "biscottes",
+    "zone": "dessus-etagere",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "entame",
+    "sensible": [
+     "humidite"
+    ],
+    "incompatibles": [],
+    "urgence": "moyenne",
+    "nature": "sec",
+    "usage": null,
+    "industriel": true,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
+    "garde": null,
+    "note": "un quart de paquet"
+   },
+   {
+    "ingredient": "ratatouille-boite",
+    "zone": "dessus-etagere",
     "unites": 1,
     "parUnite": {
-     "amount": 570,
+     "amount": 660,
      "unit": "g"
     },
-    "poidsG": 570,
+    "poidsG": 660,
     "etat": "conserve",
     "sensible": [],
     "incompatibles": [],
@@ -45986,6 +45716,45 @@
     ],
     "garde": null,
     "note": null
+   },
+   {
+    "ingredient": "tomates-pelees",
+    "zone": "dessus-etagere",
+    "unites": 1,
+    "parUnite": {
+     "amount": 480,
+     "unit": "g"
+    },
+    "poidsG": 480,
+    "etat": "conserve",
+    "sensible": [],
+    "incompatibles": [],
+    "urgence": "basse",
+    "nature": "autre",
+    "usage": null,
+    "industriel": false,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
+    "garde": "conserve",
+    "note": "poids égoutté"
    },
    {
     "ingredient": "confiture-orange",
@@ -46024,7 +45793,7 @@
     "note": null
    },
    {
-    "ingredient": "miel",
+    "ingredient": "confiture-prune",
     "zone": "etagere-ouverte",
     "unites": 1,
     "parUnite": null,
@@ -46060,8 +45829,899 @@
     "note": null
    },
    {
+    "ingredient": "cocktail-fruits",
+    "zone": "etagere-ouverte",
+    "unites": 2,
+    "parUnite": {
+     "amount": 500,
+     "unit": "g"
+    },
+    "poidsG": 1000,
+    "etat": "conserve",
+    "sensible": [],
+    "incompatibles": [],
+    "urgence": "basse",
+    "nature": "autre",
+    "usage": null,
+    "industriel": true,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
+    "garde": null,
+    "note": "au sirop"
+   },
+   {
     "ingredient": "chocolat-poudre",
     "zone": "etagere-ouverte",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "entame",
+    "sensible": [],
+    "incompatibles": [],
+    "urgence": "moyenne",
+    "nature": "autre",
+    "usage": null,
+    "industriel": true,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
+    "garde": null,
+    "note": "Nesquik, un fond"
+   },
+   {
+    "ingredient": "miel",
+    "zone": "etagere-ouverte",
+    "unites": 3,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "bocal",
+    "sensible": [],
+    "incompatibles": [],
+    "urgence": "basse",
+    "nature": "autre",
+    "usage": null,
+    "industriel": false,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
+    "garde": null,
+    "note": "deux gros pots et un petit"
+   },
+   {
+    "ingredient": "pate-a-tartiner",
+    "zone": "etagere-ouverte",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "entame",
+    "sensible": [],
+    "incompatibles": [],
+    "urgence": "moyenne",
+    "nature": "autre",
+    "usage": null,
+    "industriel": true,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
+    "garde": null,
+    "note": "Lucien, un quart de pot"
+   },
+   {
+    "ingredient": "maquereaux-boite",
+    "zone": "etagere-ouverte",
+    "unites": 1,
+    "parUnite": {
+     "amount": 169,
+     "unit": "g"
+    },
+    "poidsG": 169,
+    "etat": "conserve",
+    "sensible": [],
+    "incompatibles": [],
+    "urgence": "basse",
+    "nature": "autre",
+    "usage": null,
+    "industriel": false,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
+    "garde": "conserve",
+    "note": "moutarde à l'ancienne"
+   },
+   {
+    "ingredient": "confiture-mirabelle",
+    "zone": "etagere-basse",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "bocal",
+    "sensible": [],
+    "incompatibles": [],
+    "urgence": "basse",
+    "nature": "autre",
+    "usage": null,
+    "industriel": false,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
+    "garde": null,
+    "note": null
+   },
+   {
+    "ingredient": "confiture-fraise",
+    "zone": "etagere-basse",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "bocal",
+    "sensible": [],
+    "incompatibles": [],
+    "urgence": "basse",
+    "nature": "autre",
+    "usage": null,
+    "industriel": false,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
+    "garde": null,
+    "note": null
+   },
+   {
+    "ingredient": "concentre-tomate",
+    "zone": "etagere-basse",
+    "unites": 2,
+    "parUnite": {
+     "amount": 70,
+     "unit": "g"
+    },
+    "poidsG": 140,
+    "etat": "conserve",
+    "sensible": [],
+    "incompatibles": [],
+    "urgence": "basse",
+    "nature": "autre",
+    "usage": null,
+    "industriel": false,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
+    "garde": "conserve",
+    "note": null
+   },
+   {
+    "ingredient": "thon-boite",
+    "zone": "etagere-basse",
+    "unites": 1,
+    "parUnite": {
+     "amount": 140,
+     "unit": "g"
+    },
+    "poidsG": 140,
+    "etat": "conserve",
+    "sensible": [],
+    "incompatibles": [],
+    "urgence": "basse",
+    "nature": "autre",
+    "usage": null,
+    "industriel": false,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
+    "garde": "conserve",
+    "note": "au naturel"
+   },
+   {
+    "ingredient": "thon-boite",
+    "zone": "etagere-basse",
+    "unites": 1,
+    "parUnite": {
+     "amount": 104,
+     "unit": "g"
+    },
+    "poidsG": 104,
+    "etat": "conserve",
+    "sensible": [],
+    "incompatibles": [],
+    "urgence": "basse",
+    "nature": "autre",
+    "usage": null,
+    "industriel": false,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
+    "garde": "conserve",
+    "note": "à l'huile d'olive, égoutté"
+   },
+   {
+    "ingredient": "pate-a-tartiner",
+    "zone": "etagere-basse",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "bocal",
+    "sensible": [],
+    "incompatibles": [],
+    "urgence": "basse",
+    "nature": "autre",
+    "usage": null,
+    "industriel": true,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
+    "garde": null,
+    "note": "autre marque"
+   },
+   {
+    "ingredient": "ratatouille-boite",
+    "zone": "etagere-basse",
+    "unites": 2,
+    "parUnite": {
+     "amount": 660,
+     "unit": "g"
+    },
+    "poidsG": 1320,
+    "etat": "conserve",
+    "sensible": [],
+    "incompatibles": [],
+    "urgence": "basse",
+    "nature": "autre",
+    "usage": null,
+    "industriel": false,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
+    "garde": null,
+    "note": null
+   },
+   {
+    "ingredient": "pousses-haricots",
+    "zone": "etagere-basse",
+    "unites": 2,
+    "parUnite": {
+     "amount": 90,
+     "unit": "g"
+    },
+    "poidsG": 180,
+    "etat": "conserve",
+    "sensible": [],
+    "incompatibles": [],
+    "urgence": "basse",
+    "nature": "autre",
+    "usage": null,
+    "industriel": false,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
+    "garde": null,
+    "note": "mungo, égoutté"
+   },
+   {
+    "ingredient": "mais",
+    "zone": "etagere-basse",
+    "unites": 3,
+    "parUnite": {
+     "amount": 285,
+     "unit": "g"
+    },
+    "poidsG": 855,
+    "etat": "conserve",
+    "sensible": [],
+    "incompatibles": [],
+    "urgence": "basse",
+    "nature": "autre",
+    "usage": null,
+    "industriel": false,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
+    "garde": "conserve",
+    "note": null
+   },
+   {
+    "ingredient": "ail",
+    "zone": "demi-lune-haute",
+    "unites": 4,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "frais",
+    "sensible": [],
+    "incompatibles": [],
+    "urgence": "haute",
+    "nature": "legume-cru",
+    "usage": null,
+    "industriel": false,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     },
+     {
+      "id": "bocal-sous-pression",
+      "label": "en bocal, sous pression",
+      "acquis": false,
+      "fenetre": "12 mois",
+      "manque": "autocuiseur/stérilisateur avec manomètre",
+      "noeud": "Stériliser sous pression",
+      "specifique": false
+     },
+     {
+      "id": "lacto-fermentation",
+      "label": "en lacto-fermentation",
+      "acquis": false,
+      "fenetre": "6 mois",
+      "manque": "bocaux à joint caoutchouc",
+      "noeud": "Lacto-fermenter un légume",
+      "specifique": true
+     },
+     {
+      "id": "sechage",
+      "label": "séché",
+      "acquis": false,
+      "fenetre": "6 mois",
+      "manque": "déshydrateur (ou four à très basse température)",
+      "noeud": "Sécher herbes et légumes",
+      "specifique": true
+     }
+    ],
+    "garde": "legume-de-garde",
+    "note": "têtes"
+   },
+   {
+    "ingredient": "pates",
+    "zone": "demi-lune-haute",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "entame",
+    "sensible": [],
+    "incompatibles": [],
+    "urgence": "moyenne",
+    "nature": "sec",
+    "usage": null,
+    "industriel": false,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
+    "garde": "sec",
+    "note": "étoiles, un demi-paquet"
+   },
+   {
+    "ingredient": "sirop-erable",
+    "zone": "demi-lune-haute",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "bocal",
+    "sensible": [],
+    "incompatibles": [],
+    "urgence": "basse",
+    "nature": "autre",
+    "usage": null,
+    "industriel": false,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
+    "garde": null,
+    "note": null
+   },
+   {
+    "ingredient": "terrine-campagne",
+    "zone": "demi-lune-haute",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "conserve",
+    "sensible": [],
+    "incompatibles": [],
+    "urgence": "basse",
+    "nature": "autre",
+    "usage": "apero",
+    "industriel": false,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
+    "garde": null,
+    "note": null
+   },
+   {
+    "ingredient": "sauce-bolognaise-bocal",
+    "zone": "demi-lune-haute",
+    "unites": 1,
+    "parUnite": {
+     "amount": 300,
+     "unit": "g"
+    },
+    "poidsG": 300,
+    "etat": "bocal",
+    "sensible": [],
+    "incompatibles": [],
+    "urgence": "basse",
+    "nature": "autre",
+    "usage": null,
+    "industriel": true,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
+    "garde": null,
+    "note": "Barilla"
+   },
+   {
+    "ingredient": "tomates-sechees",
+    "zone": "demi-lune-haute",
+    "unites": 1,
+    "parUnite": {
+     "amount": 280,
+     "unit": "g"
+    },
+    "poidsG": 280,
+    "etat": "conserve",
+    "sensible": [],
+    "incompatibles": [],
+    "urgence": "basse",
+    "nature": "autre",
+    "usage": "apero",
+    "industriel": false,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
+    "garde": null,
+    "note": null
+   },
+   {
+    "ingredient": "vermicelles",
+    "zone": "demi-lune-haute",
+    "unites": 1,
+    "parUnite": {
+     "amount": 50,
+     "unit": "g"
+    },
+    "poidsG": 50,
+    "etat": "entame",
+    "sensible": [],
+    "incompatibles": [],
+    "urgence": "moyenne",
+    "nature": "sec",
+    "usage": null,
+    "industriel": false,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
+    "garde": null,
+    "note": null
+   },
+   {
+    "ingredient": "ble-lentilles",
+    "zone": "demi-lune-haute",
+    "unites": 1,
+    "parUnite": {
+     "amount": 100,
+     "unit": "g"
+    },
+    "poidsG": 100,
+    "etat": "sec",
+    "sensible": [],
+    "incompatibles": [],
+    "urgence": "basse",
+    "nature": "autre",
+    "usage": null,
+    "industriel": false,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
+    "garde": null,
+    "note": null
+   },
+   {
+    "ingredient": "udon",
+    "zone": "demi-lune-haute",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "sec",
+    "sensible": [],
+    "incompatibles": [],
+    "urgence": "basse",
+    "nature": "autre",
+    "usage": null,
+    "industriel": false,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
+    "garde": null,
+    "note": "une portion"
+   },
+   {
+    "ingredient": "thym",
+    "zone": "demi-lune-haute",
     "unites": 1,
     "parUnite": null,
     "poidsG": null,
@@ -46096,8 +46756,83 @@
     "note": null
    },
    {
-    "ingredient": "puree-mousline",
-    "zone": "dessus-etagere",
+    "ingredient": "graines-courge",
+    "zone": "demi-lune-haute",
+    "unites": 1,
+    "parUnite": {
+     "amount": 200,
+     "unit": "g"
+    },
+    "poidsG": 200,
+    "etat": "sec",
+    "sensible": [],
+    "incompatibles": [],
+    "urgence": "basse",
+    "nature": "gras",
+    "usage": "apero",
+    "industriel": false,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
+    "garde": null,
+    "note": "avec les graines de tournesol"
+   },
+   {
+    "ingredient": "graines-tournesol",
+    "zone": "demi-lune-haute",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "sec",
+    "sensible": [],
+    "incompatibles": [],
+    "urgence": "basse",
+    "nature": "gras",
+    "usage": null,
+    "industriel": false,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
+    "garde": null,
+    "note": "mêlées aux graines de courge"
+   },
+   {
+    "ingredient": "semoule",
+    "zone": "demi-lune-haute",
     "unites": 1,
     "parUnite": null,
     "poidsG": null,
@@ -46107,7 +46842,43 @@
     "urgence": "basse",
     "nature": "autre",
     "usage": null,
-    "industriel": true,
+    "industriel": false,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
+    "garde": "sec",
+    "note": "fine"
+   },
+   {
+    "ingredient": "polenta",
+    "zone": "demi-lune-haute",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "sec",
+    "sensible": [],
+    "incompatibles": [],
+    "urgence": "basse",
+    "nature": "autre",
+    "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -46132,20 +46903,60 @@
     "note": null
    },
    {
-    "ingredient": "cracotte",
-    "zone": "dessus-etagere",
+    "ingredient": "couscous",
+    "zone": "demi-lune-haute",
     "unites": 1,
     "parUnite": null,
     "poidsG": null,
-    "etat": "entame",
+    "etat": "sec",
+    "sensible": [],
+    "incompatibles": [],
+    "urgence": "basse",
+    "nature": "autre",
+    "usage": null,
+    "industriel": false,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
+    "garde": null,
+    "note": "grain moyen, plein"
+   },
+   {
+    "ingredient": "pignons-pin",
+    "zone": "demi-lune-haute",
+    "unites": 1,
+    "parUnite": {
+     "amount": 50,
+     "unit": "g"
+    },
+    "poidsG": 50,
+    "etat": "sec",
     "sensible": [
-     "humidite"
+     "lumiere",
+     "chaleur"
     ],
     "incompatibles": [],
-    "urgence": "moyenne",
-    "nature": "sec",
+    "urgence": "basse",
+    "nature": "gras",
     "usage": null,
-    "industriel": true,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -46170,20 +46981,21 @@
     "note": null
    },
    {
-    "ingredient": "krisprolls",
-    "zone": "dessus-etagere",
+    "ingredient": "pates",
+    "zone": "demi-lune-basse",
     "unites": 1,
-    "parUnite": null,
-    "poidsG": null,
-    "etat": "entame",
-    "sensible": [
-     "humidite"
-    ],
+    "parUnite": {
+     "amount": 1000,
+     "unit": "g"
+    },
+    "poidsG": 1000,
+    "etat": "sec",
+    "sensible": [],
     "incompatibles": [],
-    "urgence": "moyenne",
+    "urgence": "basse",
     "nature": "sec",
     "usage": null,
-    "industriel": true,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -46204,24 +47016,60 @@
       "specifique": false
      }
     ],
-    "garde": null,
-    "note": null
+    "garde": "sec",
+    "note": "spaghetti n°5, neuf"
    },
    {
-    "ingredient": "biscottes",
-    "zone": "dessus-etagere",
+    "ingredient": "pates",
+    "zone": "demi-lune-basse",
     "unites": 1,
     "parUnite": null,
     "poidsG": null,
     "etat": "entame",
-    "sensible": [
-     "humidite"
-    ],
+    "sensible": [],
     "incompatibles": [],
     "urgence": "moyenne",
     "nature": "sec",
     "usage": null,
-    "industriel": true,
+    "industriel": false,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
+    "garde": "sec",
+    "note": "spaghetti n°5, un demi-paquet"
+   },
+   {
+    "ingredient": "feuilles-nori",
+    "zone": "demi-lune-basse",
+    "unites": 2,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "sec",
+    "sensible": [
+     "humidite"
+    ],
+    "incompatibles": [],
+    "urgence": "basse",
+    "nature": "autre",
+    "usage": null,
+    "industriel": false,
     "conservations": [
      {
       "id": "congeler",
@@ -46243,17 +47091,80 @@
      }
     ],
     "garde": null,
-    "note": null
+    "note": "à manger"
+   },
+   {
+    "ingredient": "oignon",
+    "zone": "demi-lune-basse",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "frais",
+    "sensible": [],
+    "incompatibles": [],
+    "urgence": "haute",
+    "nature": "legume-cru",
+    "usage": null,
+    "industriel": false,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     },
+     {
+      "id": "bocal-sous-pression",
+      "label": "en bocal, sous pression",
+      "acquis": false,
+      "fenetre": "12 mois",
+      "manque": "autocuiseur/stérilisateur avec manomètre",
+      "noeud": "Stériliser sous pression",
+      "specifique": false
+     },
+     {
+      "id": "lacto-fermentation",
+      "label": "en lacto-fermentation",
+      "acquis": false,
+      "fenetre": "6 mois",
+      "manque": "bocaux à joint caoutchouc",
+      "noeud": "Lacto-fermenter un légume",
+      "specifique": true
+     },
+     {
+      "id": "sechage",
+      "label": "séché",
+      "acquis": false,
+      "fenetre": "6 mois",
+      "manque": "déshydrateur (ou four à très basse température)",
+      "noeud": "Sécher herbes et légumes",
+      "specifique": true
+     }
+    ],
+    "garde": "legume-de-garde",
+    "note": "un filet"
    },
    {
     "ingredient": "farine",
     "zone": "demi-lune-basse",
     "unites": 1,
     "parUnite": {
-     "amount": 4000,
+     "amount": 3000,
      "unit": "g"
     },
-    "poidsG": 4000,
+    "poidsG": 3000,
     "etat": "sec",
     "sensible": [],
     "incompatibles": [],
@@ -46324,534 +47235,14 @@
     "note": null
    },
    {
-    "ingredient": "pates",
-    "zone": "demi-lune-haute",
-    "unites": 1,
-    "parUnite": null,
-    "poidsG": null,
-    "etat": "entame",
-    "sensible": [],
-    "incompatibles": [],
-    "urgence": "moyenne",
-    "nature": "sec",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": "sec",
-    "note": "torsades"
-   },
-   {
-    "ingredient": "pates",
-    "zone": "demi-lune-haute",
-    "unites": 1,
-    "parUnite": null,
-    "poidsG": null,
-    "etat": "entame",
-    "sensible": [],
-    "incompatibles": [],
-    "urgence": "moyenne",
-    "nature": "sec",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": "sec",
-    "note": "coquillettes"
-   },
-   {
-    "ingredient": "pates",
-    "zone": "demi-lune-haute",
-    "unites": 1,
-    "parUnite": null,
-    "poidsG": null,
-    "etat": "entame",
-    "sensible": [],
-    "incompatibles": [],
-    "urgence": "moyenne",
-    "nature": "sec",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": "sec",
-    "note": "spaghettis n°5"
-   },
-   {
-    "ingredient": "pates",
-    "zone": "demi-lune-haute",
-    "unites": 1,
-    "parUnite": null,
-    "poidsG": null,
-    "etat": "sec",
-    "sensible": [],
-    "incompatibles": [],
-    "urgence": "basse",
-    "nature": "autre",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": "sec",
-    "note": "étoiles"
-   },
-   {
-    "ingredient": "ble-lentilles",
-    "zone": "demi-lune-haute",
-    "unites": 1,
-    "parUnite": null,
-    "poidsG": null,
-    "etat": "entame",
-    "sensible": [],
-    "incompatibles": [],
-    "urgence": "moyenne",
-    "nature": "sec",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": null,
-    "note": null
-   },
-   {
-    "ingredient": "semoule",
-    "zone": "demi-lune-haute",
-    "unites": 2,
-    "parUnite": null,
-    "poidsG": null,
-    "etat": "sec",
-    "sensible": [],
-    "incompatibles": [],
-    "urgence": "basse",
-    "nature": "autre",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": "sec",
-    "note": null
-   },
-   {
-    "ingredient": "vermicelles",
-    "zone": "demi-lune-haute",
-    "unites": 1,
-    "parUnite": null,
-    "poidsG": null,
-    "etat": "sec",
-    "sensible": [],
-    "incompatibles": [],
-    "urgence": "basse",
-    "nature": "autre",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": null,
-    "note": null
-   },
-   {
-    "ingredient": "feuilles-nori",
-    "zone": "demi-lune-haute",
-    "unites": 2,
-    "parUnite": null,
-    "poidsG": null,
-    "etat": "sec",
-    "sensible": [
-     "humidite"
-    ],
-    "incompatibles": [],
-    "urgence": "basse",
-    "nature": "autre",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": null,
-    "note": null
-   },
-   {
-    "ingredient": "lentilles-seches",
-    "zone": "demi-lune-haute",
-    "unites": 1,
-    "parUnite": {
-     "amount": 500,
-     "unit": "g"
-    },
-    "poidsG": 500,
-    "etat": "sec",
-    "sensible": [],
-    "incompatibles": [],
-    "urgence": "basse",
-    "nature": "autre",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": "sec",
-    "note": null
-   },
-   {
-    "ingredient": "graines-courge",
-    "zone": "demi-lune-haute",
-    "unites": 1,
-    "parUnite": {
-     "amount": 200,
-     "unit": "g"
-    },
-    "poidsG": 200,
-    "etat": "sec",
-    "sensible": [
-     "lumiere"
-    ],
-    "incompatibles": [],
-    "urgence": "basse",
-    "nature": "gras",
-    "usage": "apero",
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": null,
-    "note": null
-   },
-   {
-    "ingredient": "tomates-sechees",
-    "zone": "demi-lune-haute",
-    "unites": 1,
-    "parUnite": {
-     "amount": 280,
-     "unit": "g"
-    },
-    "poidsG": 280,
-    "etat": "conserve",
-    "sensible": [],
-    "incompatibles": [],
-    "urgence": "basse",
-    "nature": "autre",
-    "usage": "apero",
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": null,
-    "note": null
-   },
-   {
-    "ingredient": "concentre-tomate",
-    "zone": "demi-lune-haute",
-    "unites": 2,
-    "parUnite": null,
-    "poidsG": null,
-    "etat": "conserve",
-    "sensible": [],
-    "incompatibles": [],
-    "urgence": "basse",
-    "nature": "autre",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": "conserve",
-    "note": null
-   },
-   {
-    "ingredient": "sauce-bolognaise-bocal",
-    "zone": "demi-lune-haute",
-    "unites": 1,
-    "parUnite": {
-     "amount": 300,
-     "unit": "g"
-    },
-    "poidsG": 300,
-    "etat": "bocal",
-    "sensible": [],
-    "incompatibles": [],
-    "urgence": "basse",
-    "nature": "autre",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": null,
-    "note": null
-   },
-   {
-    "ingredient": "guacamole",
-    "zone": "demi-lune-haute",
-    "unites": 1,
-    "parUnite": null,
-    "poidsG": null,
-    "etat": "bocal",
-    "sensible": [],
-    "incompatibles": [],
-    "urgence": "basse",
-    "nature": "autre",
-    "usage": "apero",
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": null,
-    "note": null
-   },
-   {
     "ingredient": "compote",
-    "zone": "demi-lune-haute",
+    "zone": "demi-lune-basse",
     "unites": 3,
     "parUnite": {
-     "amount": 710,
+     "amount": 1000,
      "unit": "g"
     },
-    "poidsG": 2130,
+    "poidsG": 3000,
     "etat": "bocal",
     "sensible": [],
     "incompatibles": [],
@@ -46880,23 +47271,20 @@
      }
     ],
     "garde": null,
-    "note": null
+    "note": "de pommes, 3 kg"
    },
    {
-    "ingredient": "terrine-campagne",
-    "zone": "demi-lune-haute",
+    "ingredient": "riz",
+    "zone": "placard-haut",
     "unites": 1,
-    "parUnite": {
-     "amount": 180,
-     "unit": "g"
-    },
-    "poidsG": 180,
-    "etat": "conserve",
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "entame",
     "sensible": [],
     "incompatibles": [],
-    "urgence": "basse",
-    "nature": "autre",
-    "usage": "apero",
+    "urgence": "moyenne",
+    "nature": "sec",
+    "usage": null,
     "industriel": false,
     "conservations": [
      {
@@ -46918,18 +47306,51 @@
       "specifique": false
      }
     ],
-    "garde": null,
-    "note": null
+    "garde": "sec",
+    "note": "un demi-bocal"
+   },
+   {
+    "ingredient": "flocons-avoine",
+    "zone": "placard-haut",
+    "unites": 1,
+    "parUnite": null,
+    "poidsG": null,
+    "etat": "entame",
+    "sensible": [],
+    "incompatibles": [],
+    "urgence": "moyenne",
+    "nature": "sec",
+    "usage": null,
+    "industriel": false,
+    "conservations": [
+     {
+      "id": "congeler",
+      "label": "au congélateur",
+      "acquis": true,
+      "fenetre": "3 mois",
+      "manque": "congeler",
+      "noeud": "Congeler en portions utiles",
+      "specifique": false
+     },
+     {
+      "id": "sous-vide-frigo",
+      "label": "sous vide, au frigo",
+      "acquis": false,
+      "fenetre": "×2,5",
+      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
+      "noeud": "Mettre sous vide",
+      "specifique": false
+     }
+    ],
+    "garde": "sec",
+    "note": "un fond"
    },
    {
     "ingredient": "farine-epeautre",
     "zone": "placard-haut",
     "unites": 1,
-    "parUnite": {
-     "amount": 1000,
-     "unit": "g"
-    },
-    "poidsG": 1000,
+    "parUnite": null,
+    "poidsG": null,
     "etat": "entame",
     "sensible": [
      "humidite"
@@ -46960,7 +47381,7 @@
      }
     ],
     "garde": "sec",
-    "note": null
+    "note": "un fond"
    },
    {
     "ingredient": "farine-petit-epeautre",
@@ -47001,369 +47422,6 @@
      }
     ],
     "garde": "sec",
-    "note": "T110"
-   },
-   {
-    "ingredient": "maizena",
-    "zone": "placard-haut",
-    "unites": 1,
-    "parUnite": {
-     "amount": 400,
-     "unit": "g"
-    },
-    "poidsG": 400,
-    "etat": "sec",
-    "sensible": [],
-    "incompatibles": [],
-    "urgence": "basse",
-    "nature": "autre",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": null,
-    "note": null
-   },
-   {
-    "ingredient": "chapelure",
-    "zone": "placard-haut",
-    "unites": 1,
-    "parUnite": null,
-    "poidsG": null,
-    "etat": "sec",
-    "sensible": [],
-    "incompatibles": [],
-    "urgence": "basse",
-    "nature": "autre",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": null,
-    "note": null
-   },
-   {
-    "ingredient": "farine",
-    "zone": "placard-haut",
-    "unites": 1,
-    "parUnite": null,
-    "poidsG": null,
-    "etat": "bocal",
-    "sensible": [],
-    "incompatibles": [],
-    "urgence": "basse",
-    "nature": "autre",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": "sec",
-    "note": "distributeur"
-   },
-   {
-    "ingredient": "sucre-blanc",
-    "zone": "placard-haut",
-    "unites": 1,
-    "parUnite": null,
-    "poidsG": null,
-    "etat": "bocal",
-    "sensible": [],
-    "incompatibles": [],
-    "urgence": "basse",
-    "nature": "autre",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": null,
-    "note": "distributeur"
-   },
-   {
-    "ingredient": "riz-rond",
-    "zone": "placard-haut",
-    "unites": 1,
-    "parUnite": null,
-    "poidsG": null,
-    "etat": "bocal",
-    "sensible": [],
-    "incompatibles": [],
-    "urgence": "basse",
-    "nature": "autre",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": "sec",
-    "note": "à racheter — bocal vide"
-   },
-   {
-    "ingredient": "fruits-secs-melange",
-    "zone": "placard-haut",
-    "unites": 1,
-    "parUnite": null,
-    "poidsG": null,
-    "etat": "bocal",
-    "sensible": [],
-    "incompatibles": [],
-    "urgence": "basse",
-    "nature": "autre",
-    "usage": "apero",
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": null,
-    "note": "raisins secs et chips de banane — acheté en vrac"
-   },
-   {
-    "ingredient": "poudre-amande",
-    "zone": "placard-haut",
-    "unites": 1,
-    "parUnite": null,
-    "poidsG": null,
-    "etat": "entame",
-    "sensible": [],
-    "incompatibles": [],
-    "urgence": "moyenne",
-    "nature": "gras",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": null,
-    "note": null
-   },
-   {
-    "ingredient": "preparation-amandine",
-    "zone": "placard-haut",
-    "unites": 1,
-    "parUnite": null,
-    "poidsG": null,
-    "etat": "sec",
-    "sensible": [],
-    "incompatibles": [],
-    "urgence": "basse",
-    "nature": "autre",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": null,
-    "note": null
-   },
-   {
-    "ingredient": "sucre-vanille",
-    "zone": "placard-haut",
-    "unites": 1,
-    "parUnite": null,
-    "poidsG": null,
-    "etat": "sec",
-    "sensible": [],
-    "incompatibles": [],
-    "urgence": "basse",
-    "nature": "autre",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": null,
-    "note": null
-   },
-   {
-    "ingredient": "sirop-agave",
-    "zone": "placard-haut",
-    "unites": 1,
-    "parUnite": null,
-    "poidsG": null,
-    "etat": "bocal",
-    "sensible": [],
-    "incompatibles": [],
-    "urgence": "basse",
-    "nature": "autre",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     }
-    ],
-    "garde": null,
     "note": null
    },
    {
@@ -47426,207 +47484,10 @@
     ],
     "garde": "legume-de-garde",
     "note": null
-   },
-   {
-    "ingredient": "oignon",
-    "zone": "sous-evier",
-    "unites": 1,
-    "parUnite": null,
-    "poidsG": null,
-    "etat": "frais",
-    "sensible": [
-     "humidite"
-    ],
-    "incompatibles": [],
-    "urgence": "haute",
-    "nature": "legume-cru",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     },
-     {
-      "id": "bocal-sous-pression",
-      "label": "en bocal, sous pression",
-      "acquis": false,
-      "fenetre": "12 mois",
-      "manque": "autocuiseur/stérilisateur avec manomètre",
-      "noeud": "Stériliser sous pression",
-      "specifique": false
-     },
-     {
-      "id": "lacto-fermentation",
-      "label": "en lacto-fermentation",
-      "acquis": false,
-      "fenetre": "6 mois",
-      "manque": "bocaux à joint caoutchouc",
-      "noeud": "Lacto-fermenter un légume",
-      "specifique": true
-     },
-     {
-      "id": "sechage",
-      "label": "séché",
-      "acquis": false,
-      "fenetre": "6 mois",
-      "manque": "déshydrateur (ou four à très basse température)",
-      "noeud": "Sécher herbes et légumes",
-      "specifique": true
-     }
-    ],
-    "garde": "legume-de-garde",
-    "note": null
-   },
-   {
-    "ingredient": "echalote",
-    "zone": "sous-evier",
-    "unites": 1,
-    "parUnite": null,
-    "poidsG": null,
-    "etat": "frais",
-    "sensible": [
-     "humidite"
-    ],
-    "incompatibles": [],
-    "urgence": "haute",
-    "nature": "legume-cru",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     },
-     {
-      "id": "bocal-sous-pression",
-      "label": "en bocal, sous pression",
-      "acquis": false,
-      "fenetre": "12 mois",
-      "manque": "autocuiseur/stérilisateur avec manomètre",
-      "noeud": "Stériliser sous pression",
-      "specifique": false
-     },
-     {
-      "id": "lacto-fermentation",
-      "label": "en lacto-fermentation",
-      "acquis": false,
-      "fenetre": "6 mois",
-      "manque": "bocaux à joint caoutchouc",
-      "noeud": "Lacto-fermenter un légume",
-      "specifique": true
-     },
-     {
-      "id": "sechage",
-      "label": "séché",
-      "acquis": false,
-      "fenetre": "6 mois",
-      "manque": "déshydrateur (ou four à très basse température)",
-      "noeud": "Sécher herbes et légumes",
-      "specifique": true
-     }
-    ],
-    "garde": "legume-de-garde",
-    "note": null
-   },
-   {
-    "ingredient": "ail",
-    "zone": "sous-evier",
-    "unites": 1,
-    "parUnite": null,
-    "poidsG": null,
-    "etat": "frais",
-    "sensible": [
-     "humidite"
-    ],
-    "incompatibles": [],
-    "urgence": "haute",
-    "nature": "legume-cru",
-    "usage": null,
-    "industriel": false,
-    "conservations": [
-     {
-      "id": "congeler",
-      "label": "au congélateur",
-      "acquis": true,
-      "fenetre": "3 mois",
-      "manque": "congeler",
-      "noeud": "Congeler en portions utiles",
-      "specifique": false
-     },
-     {
-      "id": "sous-vide-frigo",
-      "label": "sous vide, au frigo",
-      "acquis": false,
-      "fenetre": "×2,5",
-      "manque": "machine à mise sous vide (à cloche ou à aspiration)",
-      "noeud": "Mettre sous vide",
-      "specifique": false
-     },
-     {
-      "id": "bocal-sous-pression",
-      "label": "en bocal, sous pression",
-      "acquis": false,
-      "fenetre": "12 mois",
-      "manque": "autocuiseur/stérilisateur avec manomètre",
-      "noeud": "Stériliser sous pression",
-      "specifique": false
-     },
-     {
-      "id": "lacto-fermentation",
-      "label": "en lacto-fermentation",
-      "acquis": false,
-      "fenetre": "6 mois",
-      "manque": "bocaux à joint caoutchouc",
-      "noeud": "Lacto-fermenter un légume",
-      "specifique": true
-     },
-     {
-      "id": "sechage",
-      "label": "séché",
-      "acquis": false,
-      "fenetre": "6 mois",
-      "manque": "déshydrateur (ou four à très basse température)",
-      "noeud": "Sécher herbes et légumes",
-      "specifique": true
-     }
-    ],
-    "garde": "legume-de-garde",
-    "note": null
    }
   ],
   "alertes": [
-   "pignons pin — à la lumière du jour et près d'une source de chaleur (étagère ouverte)",
-   "pomme de terre, oignon, echalote, ail — dans un endroit humide (sous-évier)",
-   "pomme de terre — ne devrait pas voisiner avec ail, echalote, oignon (sous-évier)"
+   "pomme de terre — dans un endroit humide (sous-évier)"
   ]
  },
  "garde": [

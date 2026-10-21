@@ -5403,6 +5403,41 @@ du soir après coup laisse demain midi sur l'ancien reste. Le rejeu d'une
 brique entamée (lot `court`) mesure mal le jour même. Les rations sont
 posées à vue (40 g de flocons, 400 ml de lait le matin) : à corriger à l'usage.
 
+## Le relevé dicté du 21/10 — T143
+
+- [x] **T143 — Le relevé du 21/10 remplace celui du 26/08, et il se voit sur
+      le téléphone.** `garde-manger.yaml` daté du 2026-10-21 pour les zones
+      relevées (dessus et deux niveaux de l'étagère en bois, les deux
+      demi-lunes, le placard haut) ; le sous-évier et le tiroir à épices
+      gardent le 26/08 (`releve:` par zone, exporté sur chaque zone). L'étagère
+      a TROIS niveaux : `etagere-ouverte` devient le 1er (confitures, miel,
+      fruits au sirop) et `etagere-basse` naît (conserves), plan redessiné à
+      44 px. Les oignons passent en demi-lune basse, l'ail en demi-lune haute,
+      l'échalote est jetée — le sous-évier ne garde que les pommes de terre, et
+      l'alerte « voisiner » s'éteint. Dix ids au vocabulaire (ratatouille en
+      boîte, trois confitures, pâte à tartiner, sirop d'érable, polenta,
+      couscous, udon, graines de tournesol). Industriels tagués : cracottes,
+      biscottes, Nesquik, pâte à tartiner, bolognaise Barilla, cocktail de
+      fruits — « à ne pas racheter » au Stock, aucun plancher, et `calculer` ne
+      les met jamais au panier (une recette les finit s'ils sont là).
+      **LE REJEU NE LISAIT L'AMORCE QU'EN TÊTE**, puis le journal du téléphone
+      par-dessus : un relevé de zone fait en septembre, ou les cuissons d'avant
+      le 21/10, auraient effacé ou décompté le relevé dicté. Chaque zone est
+      désormais RE-RELEVÉE à sa date au milieu du journal (en tête de journée,
+      une correction du même jour passe après) : ce qui précède ne la touche
+      plus, ce qui suit la corrige. Une course rentrée sans rangement
+      (`LotPlacard.sansPlace`) n'est effacée que si le relevé compte cet
+      ingrédient — les surgelés de samedi restent. Un rejeu daté d'avant le
+      21/10 ne voit pas le relevé à venir. `releve.test.ts`.
+
+Portes : typecheck, **1 136 tests** (8 nouveaux, une vingtaine recalés sur le
+nouveau relevé), build, **78 e2e** (`stock-plan`, `stock-corriger` recalés),
+`catalogue:verifie` 0 erreur.
+
+**Ouvert.** Une cuisson faite le 21/10 AVANT la dictée serait décomptée une
+seconde fois (le relevé passe en tête de journée). Les graines de courge et de
+tournesol sont mêlées dans un seul sachet de 200 g, porté par la courge.
+
 ## Sortie
 
 **Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`

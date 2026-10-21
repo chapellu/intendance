@@ -618,6 +618,10 @@ export interface Zone {
   hygrometrie: "sec" | "humide";
   chaleur: boolean;
   note: string | null;
+  /** T143 — le jour où CETTE zone a été relevée, `AAAA-MM-JJ`. Le relevé du
+   *  fichier, sauf pour une zone qu'il n'a pas couverte. `?` : les catalogues
+   *  des tests datent d'avant ; absent, on lit `GardeManger.releve`. */
+  releve?: string | null;
 }
 
 /** Une matière première rangée quelque part.
