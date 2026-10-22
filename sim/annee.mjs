@@ -38,7 +38,8 @@ const FRAIS = /frais|fruit|legume|boucher|poisson|cremerie|crèmerie|laitier|fro
 
 // ───────────────────────────────────────────────────────────── le calendrier
 const DEBUT = new Date("2026-10-16T00:00:00");
-const N = +(process.argv[2] ?? 365);
+// JOURS=30 : un essai court, sans toucher à la ligne de commande.
+const N = +(process.env.JOURS ?? process.argv[2] ?? 365);
 const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 const entre = (j, a, b) => j >= a && j <= b;
 
@@ -82,7 +83,7 @@ function evenements(j) {
 const etat = existsSync(ETAT)
   ? JSON.parse(readFileSync(ETAT, "utf8"))
   : { jour: 0, reel: {}, restes: [], recents: [], compte: { cuits: 0, restesManges: 0, jetes: 0, gaspilleG: 0 } };
-const sauver = () => writeFileSync(ETAT, JSON.stringify(etat));
+const sauver = () => { writeFileSync(ETAT, JSON.stringify(etat)); if (MOI) ecrireConso(); };
 const note = (j, type, texte, extra = {}) => { appendFileSync(NOTES, JSON.stringify({ j, type, texte, ...extra }) + "\n"); console.log(`  ⚑ ${type} — ${texte}`); };
 
 // ───────────────────────────────────────────────────────────── le navigateur
@@ -127,6 +128,9 @@ function parUniteDuFond(id) {
   const u = UNITE_FOND.get(id); if (u === undefined) return null;
   const typ = QTE_RECETTE.get(id) || 1;
   const enMasse = /^(g|ml)$/.test(UNITE_RECETTE.get(id) ?? "");
+  // « brique de 1 L » : un litre, pas « 1 » — sans quoi la brique de lait valait 1 ml.
+  const l = /(\d+(?:[.,]\d+)?)\s*(l|cl)\b/i.exec(u);
+  if (l && enMasse) return parseFloat(l[1].replace(",", ".")) * (/^cl$/i.test(l[2]) ? 10 : 1000);
   const g = /(\d+(?:[.,]\d+)?)\s*(kg|g)\b/.exec(u);
   if (g) { const grammes = parseFloat(g[1].replace(",", ".")) * (g[2] === "kg" ? 1000 : 1); return enMasse ? grammes : Math.max(1, Math.round(grammes / 150)); }
   const n = /de (\d+)\b/.exec(u); if (n) return +n[1];
@@ -142,14 +146,31 @@ function acheter(nom, q, j) {
   const r = etat.reel[id] ?? { q: 0, achete: 0 };
   r.q += qte; r.achete = qte; r.le = j; r.frais = FRAIS.test(rayonDe.get(id) ?? "");
   etat.reel[id] = r;
+  // T142 — « peu de produits industriels » : toute ligne achetée qui en est un se compte.
+  if (INDUSTRIEL.test(nom)) (etat.industriels ??= []).push({ j, nom, q });
 }
-function consommer(plat, parts) {
+const INDUSTRIEL = /biscuit|g[âa]teau|brioche|c[ée]r[ée]ales|bl[ée]dine|biscotte|pain de mie|p[âa]te à tartiner|compote|nugget|cordon|surimi|chips|plat pr[ée]par|soda|cr[èe]me dessert|pizza|knack|petits? pots?|gourde|madeleine|quatre[- ]quarts/i;
+/**
+ * La consommation par repas, au grand livre (unités de recette) : de quoi
+ * dériver le stock à tenir. `partMidi` : la part d'un dîner agrandi qui
+ * nourrira demain midi — elle se compte au midi.
+ */
+function compter(repas, id, q, partMidi = 0) {
+  if (!(q > 0)) return;
+  etat.conso ??= { diner: {}, midi: {}, petitDej: {}, gouter: {} };
+  const m = q * partMidi;
+  if (m) etat.conso.midi[id] = (etat.conso.midi[id] ?? 0) + m;
+  etat.conso[repas][id] = (etat.conso[repas][id] ?? 0) + q - m;
+}
+function consommer(plat, parts, repas = "diner", midi = 0) {
   const f = Math.max(0.5, parts / (plat.portions || 4));
   for (const i of plat.ingredients) {
     if (i.base || toujours.has(i.id)) continue;
     const r = etat.reel[i.id];
     if (!r) continue;
-    r.q = Math.max(0, r.q - (i.qty ?? 0) * Math.min(f, 2));
+    const pris = Math.min(r.q, (i.qty ?? 0) * Math.min(f, 2));
+    r.q -= pris;
+    compter(repas, i.id, pris, midi > 0 ? midi / parts : 0);
   }
 }
 function reponse(nomQ) {
@@ -359,7 +380,9 @@ async function reglerParts(j, voulu, stats) {
 }
 
 /** Cuisiner le premier posé, du guide à la sortie. */
-async function cuisiner(j, ev, stats, { autrement = false, parts = 2.75, deja = null } = {}) {
+// `repas` : à quel repas le grand livre compte les ingrédients ; `midi` : les
+// parts d'un dîner agrandi pour demain midi (T142) ; `fournee` : les sachets.
+async function cuisiner(j, ev, stats, { autrement = false, parts = 2.75, deja = null, repas = "diner", midi = 0, fournee = false } = {}) {
   let p0;
   if (deja) {
     // T128/T129 : « Je lance ça » a posé le plat ET ouvert sa fiche — on y est.
@@ -407,22 +430,40 @@ async function cuisiner(j, ev, stats, { autrement = false, parts = 2.75, deja = 
   else note(j, "sortie", "pas d'écran de sortie : " + sortieTxt.slice(0, 200).replace(/\n/g, " / "));
   await page.waitForURL((u) => !/cuisiner/.test(u.toString()), { timeout: 10_000 }).catch(() => note(j, "sortie", "la fiche ne s'est pas refermée"));
   const plat = platParTitre.get(p0.titre);
-  if (plat) consommer(plat, parts);
+  if (plat) consommer(plat, parts + midi, repas, midi);
   // Le monde réel mange aussi les restes que le plat réclame : la bolognaise
   // des pâtes, le poulet des fajitas, n'importe quel reste pour « Reste réchauffé ».
   for (const a of plat?.accepts ?? []) {
     const vivants = etat.restes.filter((r) => !r.jete && r.portions > 0);
     const pris = a.type
       ? vivants.filter((r) => r.types.includes(a.type)).sort((x, y) => (x.ou === "Frigo" ? -1 : 1) - (y.ou === "Frigo" ? -1 : 1))[0]
-      : vivants.filter((r) => r.ou === "Frigo")[0] ?? vivants[0];
+      : vivants.filter((r) => r.ou === "Frigo" && estUnRepas(r))[0] ?? vivants.filter(estUnRepas)[0];
     if (pris) { pris.portions = 0; pris.mangeLe = j; pris.parPlat = p0.titre; etat.compte.restesManges++; }
     else if (a.requis) note(j, "chaine", `« ${p0.titre} » réclame ${a.type ?? "un reste"} que la maison n'a pas (l'app l'a cru disponible)`);
   }
   // Le monde réel garde ce que la sortie a dit de ranger (ou tout au frigo si « autrement »).
   for (const l of lots) {
     const m = /^(Frigo|Congélo|Congélateur)[^·]*·\s*(.*)$/.exec(l.nom);
-    const portions = parseFloat((/([\d,]+)\s*(part|portion)/.exec(l.nom)?.[1] ?? "2").replace(",", "."));
-    etat.restes.push({ plat: p0.titre, types: (plat?.emits ?? []).map((e) => e.type), ou: autrement ? "Frigo" : (m?.[1] ?? "Frigo"), portions, le: j, garde: parseInt(l.garde) || (m?.[1] === "Frigo" ? 3 : 90), quoi: l.nom });
+    let portions = parseFloat((/([\d,]+)\s*(part|portion)/.exec(l.nom)?.[1] ?? "2").replace(",", "."));
+    const ou = autrement ? "Frigo" : (m?.[1] ?? "Frigo");
+    const boites = boitesDuLot(l.tout, ou);
+    const sachet = !boites && /\bsacs?\b/i.test(l.tout);
+    // T142 — « Frigo · 1 repas » : UN REPAS DU FOYER, soit un midi des quatre
+    // (PARTS_MIDI parts), un goûter ou un matin pour un lot de la fournée.
+    const nRepas = /(\d+(?:,\d+)?)\s*repas/.exec(l.nom)?.[1];
+    if (nRepas) portions = parseFloat(nRepas.replace(",", ".")) * ((plat?.emits ?? []).some((e) => TYPES_GOUTER.has(e.type) || TYPES_PAIN.has(e.type)) ? 1 : PARTS_MIDI);
+    etat.restes.push({ plat: p0.titre, types: (plat?.emits ?? []).map((e) => e.type), ou, portions, le: j, garde: parseInt(l.garde) || (m?.[1] === "Frigo" ? 3 : 90), quoi: l.nom, tout: l.tout.slice(0, 160), sachet, boites, repas });
+  }
+  // T142 — le reste du midi : le lot que la sortie dit « déjeuner de demain »,
+  // sinon le plus gros lot du frigo de ce soir. Au moins les parts mises de côté.
+  if (midi > 0) {
+    const ceSoir = etat.restes.filter((r) => r.le === j && r.plat === p0.titre && !r.jete);
+    const r = ceSoir.find((x) => /demain/.test(x.tout ?? "")) ?? ceSoir.filter((x) => x.ou === "Frigo").sort((a, b) => b.portions - a.portions)[0];
+    if (r) { r.midi = true; r.portions = Math.max(r.portions, midi); }
+    else {
+      etat.restes.push({ plat: p0.titre, types: [plat?.id ?? p0.titre], ou: "Frigo", portions: midi, le: j, garde: 2, quoi: "déjeuner de demain (hors sortie)", sachet: false, boites: Math.ceil(midi), midi: true, repas });
+      note(j, "midi", `« ${p0.titre} » agrandi pour demain midi, mais la sortie ne range aucun lot au frigo : ${lots.map((l) => l.tout).join(" ; ").slice(0, 200)}`);
+    }
   }
   etat.compte.cuits++;
   stats.cuits = [...(stats.cuits ?? []), { titre: p0.titre, etapes, reponse: reponseDonnee, lots: lots.map((l) => `${l.nom} ${l.garde}`) }];
@@ -564,7 +605,7 @@ async function journee(idx) {
         r.portions -= 2; etat.compte.restesManges++;
         stats.gamelle = r.plat;
         if (r.portions <= 0) {
-          const t = await plusDe((x) => r.types.some((ty) => x.includes(ty)) && x.includes("Frigo"));
+          const t = await plusDe((x) => r.types.some((ty) => norm(x).includes(norm(ty))) && x.includes("Frigo"));
           stats.gamelleRetiree = t ?? "introuvable";
           if (!t) note(j, "reste", `reste de « ${r.plat} » fini à la gamelle, mais l'app n'a pas de lot frigo à son nom (${r.types.join(",")})`);
         } else stats.gamellePartielle = `${r.plat} : il reste ${r.portions} parts — l'app ne sait pas qu'on en a mangé 2`;
@@ -743,6 +784,7 @@ async function lireCartesDuSoir() {
     achatsTxt: e.querySelector(".achats")?.textContent?.trim() ?? "",
     heure: [...e.querySelectorAll(".heure")].map((x) => x.textContent.trim()).join(" | "),
     raison: e.querySelector(".co-action")?.textContent?.trim() ?? "",
+    midi: e.querySelector(".midi")?.textContent?.trim() ?? "",
   })));
 }
 /**
@@ -824,6 +866,222 @@ async function pauseDe15hUneFois(j, ev, stats) {
   return null;
 }
 
+// ───────────────────────────────────────────────────────────── les trois autres repas (T142)
+// Le foyer mange quatre fois par jour à la maison, et le grand livre le sait :
+// le petit-déjeuner et le goûter des deux enfants (que l'app rejoue toute
+// seule, comme routines), le midi des quatre (≈ 3 parts adultes), le dîner.
+// Ce que l'app ne voit pas — le sandwich, le fruit qui manque — se compte ici.
+const PARTS_MIDI = cat.foyer.mangeurs.reduce((n, m) => (m.parts > 0 ? n + Math.max(m.parts, 0.5) : n), 0);
+const BOITES = cat.foyer.contenants.filter((c) => c.portions > 0 && !c.consommable && c.espaces.includes("frigo")).reduce((n, c) => n + c.nombre, 0);
+const POIDS_PIECE = { pommes: 150, poires: 150, banane: 120 };
+const routine = (r) => cat.plats.find((p) => p.id === cat.creneaux.routines?.[r]?.recette);
+const TYPES_GOUTER = new Set(cat.creneaux.routines?.gouter?.du_depot?.types ?? []);
+const TYPES_PAIN = new Set(cat.creneaux.routines?.["petit-dejeuner"]?.du_depot?.types ?? []);
+/** Une quantité de recette, dans l'unité du grand livre pour cet id. */
+function enUniteDuLivre(id, q, unit) {
+  const lu = UNITE_RECETTE.get(id) ?? unit;
+  if (lu === unit) return q;
+  const p = POIDS_PIECE[id] ?? 150;
+  if (/pi[èe]ce/.test(unit) && lu === "g") return q * p;
+  if (unit === "g" && /pi[èe]ce/.test(lu)) return q / p;
+  if (unit === "cl" && lu === "ml") return q * 10;
+  return q;
+}
+/** Prendre au grand livre ; rend false si la cuisine n'en a pas assez. */
+function prendre(repas, id, q, unit) {
+  const besoin = enUniteDuLivre(id, q, unit);
+  const r = etat.reel[id];
+  const dispo = r?.q ?? 0;
+  const pris = Math.min(dispo, besoin);
+  if (r) r.q -= pris;
+  compter(repas, id, pris);
+  return dispo >= besoin * 0.999;
+}
+const aAssez = (id, q, unit) => (etat.reel[id]?.q ?? 0) >= enUniteDuLivre(id, q, unit) * 0.999;
+/** Les boîtes qu'un lot de sortie occupe : ce qu'elle dit, sinon une par part au frigo. */
+// « 1 × boîtes IKEA 0,8 L » occupe une boîte ; « il manque 1 × boîtes… :
+// sacs congélation ? » n'en occupe aucune (le lot part en sac).
+function boitesDuLot(tout, ou) {
+  const t = (tout ?? "").replace(/il manque \d+\s*×\s*bo[iî]tes[^|]*/gi, "");
+  const n = /(\d+)\s*×\s*bo[iî]tes?/i.exec(t);
+  if (n) return +n[1];
+  if (/\bsacs?\b/i.test(t)) return 0;
+  return ou === "Frigo" ? 1 : 0;
+}
+const vivants = () => etat.restes.filter((r) => !r.jete && r.portions > 0);
+const boitesOccupees = () => vivants().reduce((n, r) => n + (r.boites ?? 0), 0);
+const estUnRepas = (r) => { const p = platParTitre.get(r.plat); return !DESSERT.test(r.plat) && !(r.types ?? []).some((t) => TYPES_GOUTER.has(t) || TYPES_PAIN.has(t)) && (!p || (p.role ?? "plat") === "plat"); };
+function manqueRepas(j, type, quoi, stats) {
+  etat.compte[type === "petit-dej" ? "manquesPetitDej" : "manquesGouter"] = (etat.compte[type === "petit-dej" ? "manquesPetitDej" : "manquesGouter"] ?? 0) + 1;
+  stats[type === "petit-dej" ? "manquePetitDej" : "manqueGouter"] = quoi;
+  note(j, type, `manque réel : ${quoi.join(", ")}`);
+}
+/** Les lignes calmes du cockpit (`.co-repas`) : texte et lien, par clé. */
+async function lireRepas() {
+  await page.locator(".co-repas").first().waitFor({ timeout: 5000 }).catch(() => {});
+  return page.evaluate(() => Object.fromEntries([...document.querySelectorAll(".co-repas [data-repas]")].map((e) => [e.dataset.repas, { texte: e.textContent.trim(), lien: !!e.querySelector("a") }])));
+}
+/** Le grand livre a-t-il tout ce que le plat demande (hors bases et placard) ? */
+const ceQuiManque = (p) => [...new Set(p.ingredients.filter((i) => !i.base && !i.assaisonnement && !toujours.has(i.id) && !((etat.reel[i.id]?.q ?? 0) > 0)).map((i) => i.id))];
+
+/** Le petit-déjeuner des enfants : la recette du foyer, plus une tranche de pain maison. */
+function petitDejeuner(j, stats) {
+  const p = routine("petit-dejeuner");
+  if (!p) return;
+  const manque = [];
+  for (const i of p.ingredients) {
+    if (i.base || toujours.has(i.id)) continue;
+    if (i.id === "banane") {
+      // Le fruit du porridge : une banane, sinon une pomme.
+      if (!prendre("petitDej", "banane", 1, "pièce") && !prendre("petitDej", "pommes", 1, "pièce")) manque.push("fruit");
+      continue;
+    }
+    if (!prendre("petitDej", i.id, i.qty ?? 0, i.unit)) manque.push(i.id);
+  }
+  const pain = vivants().filter((r) => r.types?.some((t) => TYPES_PAIN.has(t))).sort((a, b) => a.le.localeCompare(b.le))[0];
+  if (pain) { pain.portions -= 1; if (pain.portions <= 0) pain.mangeLe = j; stats.pain = true; }
+  else { etat.compte.matinsSansPain = (etat.compte.matinsSansPain ?? 0) + 1; stats.pain = false; }
+  if (manque.length) manqueRepas(j, "petit-dej", manque, stats);
+}
+
+/** Le goûter des enfants : une part de la fournée (congélo d'abord), yaourt, fruit, lait. */
+function gouter(j, stats) {
+  const p = routine("gouter");
+  const manque = [];
+  const lot = vivants().filter((r) => r.types?.some((t) => TYPES_GOUTER.has(t))).sort((a, b) => (a.ou === "Frigo" ? -1 : 1) - (b.ou === "Frigo" ? -1 : 1) || a.le.localeCompare(b.le))[0];
+  if (lot) { lot.portions -= 1; if (lot.portions <= 0) lot.mangeLe = j; stats.gouter = lot.plat; etat.compte.goutersFournee = (etat.compte.goutersFournee ?? 0) + 1; }
+  else { stats.gouter = "fruit et yaourt"; manque.push("rien de la fournée"); }
+  for (const i of p?.ingredients ?? []) {
+    if (i.base || toujours.has(i.id)) continue;
+    if (!prendre("gouter", i.id, i.qty ?? 0, i.unit)) manque.push(i.id);
+  }
+  if (manque.length) manqueRepas(j, "gouter", manque, stats);
+}
+
+/**
+ * Le midi des quatre : le reste du dîner mis de côté hier, sinon un reste du
+ * frigo, sinon la ligne « Midi : … (Chioca) » du cockpit quand la cuisine a
+ * tout, cuisinée par son lien ; sinon sandwich, hors app.
+ */
+async function dejeuner(j, ev, stats) {
+  await page.clock.setFixedTime(new Date(`${j}T11:30:00`));
+  await aller("cockpit"); await attendre(".co-barre", 20_000);
+  const lignes = await lireRepas();
+  stats.cockpitMidi = lignes.dejeuner?.texte ?? null;
+  const source = (s) => { stats.midiSource = s; etat.compte.midi ??= {}; etat.compte.midi[s] = (etat.compte.midi[s] ?? 0) + 1; };
+  const prevu = vivants().filter((r) => r.midi && r.ou === "Frigo").sort((a, b) => a.le.localeCompare(b.le))[0];
+  if (prevu) {
+    const pris = Math.min(prevu.portions, PARTS_MIDI);
+    prevu.portions -= pris; if (prevu.portions <= 0) prevu.mangeLe = j;
+    etat.compte.restesManges++; stats.midi = `reste prévu : ${prevu.plat} (${pris} parts)`;
+    if (!/reste/.test(lignes.dejeuner?.texte ?? "")) note(j, "midi", `le reste prévu (« ${prevu.plat} ») est au frigo, mais le cockpit dit « ${lignes.dejeuner?.texte ?? "rien"} »`);
+    return source("reste-prevu");
+  }
+  const r = vivants().filter((x) => x.ou === "Frigo" && estUnRepas(x)).sort((a, b) => a.le.localeCompare(b.le))[0];
+  if (r) {
+    const pris = Math.min(r.portions, PARTS_MIDI);
+    r.portions -= pris; etat.compte.restesManges++; stats.midi = `reste : ${r.plat} (${pris} parts)`;
+    if (r.portions <= 0) { r.mangeLe = j; const t = await plusDe((x) => r.types.some((ty) => norm(x).includes(norm(ty))) && x.includes("Frigo")); stats.resteRetire = !!t; }
+    return source("reste");
+  }
+  const l = lignes.dejeuner;
+  const m = l?.lien ? /^Midi : (.*?)(?: \(Chioca\))?(?: — (.*))?$/.exec(l.texte) : null;
+  const p = m && platParTitre.get(m[1].trim());
+  if (p) {
+    const manque = /rien à acheter/.test(m[2] ?? "") || !/Chioca/.test(l.texte) ? ceQuiManque(p) : ["(la ligne dit : " + m[2] + ")"];
+    if (!manque.length) {
+      const url = page.url();
+      await tap(page.locator(".co-repas [data-repas='dejeuner'] a"));
+      await page.waitForURL((u) => u.toString() !== url, { timeout: 10_000 }).catch(() => {});
+      const t = await cuisiner(j, ev, stats, { parts: PARTS_MIDI, deja: p.titre, repas: "midi" }).catch((e) => { note(j, "midi", `cuisiner « ${p.titre} » depuis la ligne du midi : ${String(e).slice(0, 160)}`); return null; });
+      if (t) { stats.midi = `Chioca : ${t}`; return source("chioca"); }
+    } else { stats.midiRefus = `${p.titre} — manque réel : ${manque.join(", ")}`; etat.compte.chiocaSansStock = (etat.compte.chiocaSansStock ?? 0) + 1; }
+  } else if (m) note(j, "midi", `la ligne du midi nomme « ${m[1]} », introuvable au catalogue`);
+  stats.midi = "sandwich, hors app";
+  return source("sandwich");
+}
+
+/** La fournée de 15 h, quand le cockpit la propose et que la cuisine a tout. */
+async function fourneeDe15h(j, ev, stats) {
+  await aller("cockpit"); await attendre(".co-barre", 20_000);
+  const l = (await lireRepas()).fournee;
+  if (!l) return null;
+  stats.fourneeProposee = l.texte.slice(0, 160);
+  etat.compte.fourneesProposees = (etat.compte.fourneesProposees ?? 0) + 1;
+  const m = /^Fournée : (.*?) — (.*?)(?: · il manque : (.*))?$/.exec(l.texte);
+  const p = m && platParTitre.get(m[1].trim());
+  if (!p || !l.lien) { note(j, "fournee", `ligne illisible ou sans lien : ${l.texte}`); return null; }
+  // Un jour de courses, ce que la ligne dit manquer est passé par la liste du
+  // matin ; un autre jour, on ne lance pas une fournée pour aller au magasin.
+  let manque = ceQuiManque(p);
+  // Un jour de courses, le foyer lit la ligne et prend au magasin ce qu'elle
+  // dit manquer (et ce que le placard réel n'a pas) — HORS de la liste : la
+  // liste de l'app ne porte pas la fournée.
+  if (manque.length && [3, 6].includes(new Date(j).getDay())) {
+    for (const id of manque) {
+      const i = p.ingredients.find((x) => x.id === id);
+      const r = etat.reel[id] ?? { q: 0, achete: 0 };
+      const q = Math.max(parUniteDuFond(id) ?? 0, (i?.qty ?? 1) * 2);
+      r.q += q; r.achete = q; r.le = j; r.frais = FRAIS.test(rayonDe.get(id) ?? ""); etat.reel[id] = r;
+    }
+    stats.achatsHorsApp = [...(stats.achatsHorsApp ?? []), ...manque];
+    stats.fourneeAchats = manque;
+    etat.compte.fourneeAchatsHorsApp = (etat.compte.fourneeAchatsHorsApp ?? 0) + manque.length;
+    manque = ceQuiManque(p);
+  }
+  if (manque.length) {
+    stats.fourneeRefus = `manque réel : ${manque.join(", ")}${m[3] ? ` (la ligne disait : ${m[3]})` : ""}`;
+    etat.compte.fourneesSansStock = (etat.compte.fourneesSansStock ?? 0) + 1;
+    return null;
+  }
+  const url = page.url();
+  await tap(page.locator(".co-repas [data-repas='fournee'] a"));
+  await page.waitForURL((u) => u.toString() !== url, { timeout: 10_000 }).catch(() => {});
+  const t = await cuisiner(j, ev, stats, { parts: p.portions || 4, deja: p.titre, repas: "gouter", fournee: true });
+  if (t) { etat.compte.fournees = (etat.compte.fournees ?? 0) + 1; stats.fournee = t; }
+  return t;
+}
+
+/**
+ * Le frais de la semaine (`fond.yaml`, `hebdo: true`), le samedi : la liste de
+ * l'app d'abord (elle est passée le matin) ; ce qu'il manque encore pour sept
+ * jours de routines s'achète quand même — hors app, et compté.
+ */
+function fraisDeLaSemaine(j, stats) {
+  const besoin = {};
+  for (const r of ["petit-dejeuner", "gouter"]) for (const i of routine(r)?.ingredients ?? []) {
+    if (i.base || toujours.has(i.id)) continue;
+    besoin[i.id] = (besoin[i.id] ?? 0) + enUniteDuLivre(i.id, i.qty ?? 0, i.unit) * 7;
+  }
+  const hors = [];
+  for (const d of cat.fond?.denrees ?? []) {
+    if (!d.hebdo) continue;
+    const id = d.ingredient, w = besoin[id] ?? 0, u = parUniteDuFond(id) || 1;
+    const r = etat.reel[id] ?? { q: 0, achete: 0 };
+    if (r.q >= w) continue;
+    const n = Math.ceil((w - r.q) / u);
+    r.q += n * u; r.achete = n * u; r.le = j; r.frais = true; etat.reel[id] = r;
+    hors.push(`${id} ×${n}`);
+  }
+  stats.hebdo = hors.length ? `hors liste : ${hors.join(", ")}` : "la liste suffisait";
+  if (hors.length) { etat.compte.hebdoHorsListe = (etat.compte.hebdoHorsListe ?? 0) + hors.length; stats.achatsHorsApp = [...(stats.achatsHorsApp ?? []), ...hors]; }
+}
+
+/** La consommation de l'année par repas, pour dériver le stock à tenir. */
+function ecrireConso() {
+  const c = etat.conso ?? {};
+  const ids = new Set(Object.values(c).flatMap((x) => Object.keys(x)));
+  const par = {};
+  for (const id of [...ids].sort()) {
+    const l = { unite: UNITE_RECETTE.get(id) ?? "?" };
+    let tot = 0;
+    for (const [rep, x] of Object.entries(c)) { const v = Math.round((x[id] ?? 0) * 10) / 10; if (v) { l[rep] = v; tot += v; } }
+    l.total = Math.round(tot * 10) / 10;
+    par[id] = l;
+  }
+  writeFileSync(`${OUT}/conso.json`, JSON.stringify({ jours: etat.jour, ingredients: par }, null, 1));
+}
+
 // ───────────────────────────────────────────────────────────── une journée, comme chez moi
 async function journee2(idx) {
   const d = new Date(DEBUT); d.setDate(d.getDate() + idx);
@@ -874,19 +1132,19 @@ async function journee2(idx) {
   // Les jours de courses, les courses du matin, avant toute décision. LE FOND NE SE
   // RECHARGE QUE PAR LA LISTE DE L'APP (T134) : aucun réassort côté harnais.
   if (!absent && [3, 6].includes(dow)) { await page.clock.setFixedTime(new Date(`${j}T10:00:00`)); await courses(j, ev, stats); stats.coursesDuMatin = stats.articles; }
+  // T142 — le frais de la semaine, le samedi, en plus du rythme des courses.
+  if (!absent && dow === 6) fraisDeLaSemaine(j, stats);
 
   if (absent) { stats.absent = true; }
   else {
-    // Le midi, en télétravail : un reste du frigo s'il y en a.
-    const r = etat.restes.find((x) => !x.jete && x.portions > 0 && x.ou === "Frigo");
-    if (r) {
-      r.portions -= 2; etat.compte.restesManges++; stats.midi = `reste : ${r.plat}`;
-      if (r.portions <= 0) r.mangeLe = j;
-      if (r.portions <= 0) { const t = await plusDe((x) => r.types.some((ty) => x.includes(ty)) && x.includes("Frigo")); stats.resteRetire = !!t; }
-    } else stats.midi = "pas de reste — sandwich, hors app";
+    // T142 — le petit-déjeuner des enfants, avant tout le reste.
+    petitDejeuner(j, stats);
+    // Le midi des quatre (T142) : le reste prévu, un reste, Chioca, ou sandwich.
+    await dejeuner(j, ev, stats);
 
-    // 15 h : la pause. Décider, et lancer.
+    // 15 h : la pause. La fournée d'abord si l'app la propose, puis le dîner.
     await page.clock.setFixedTime(new Date(`${j}T15:00:00`));
+    await fourneeDe15h(j, ev, stats).catch((e) => note(j, "fournee", `crash : ${String(e).slice(0, 200)}`));
     const dehors = ev.some((e) => e.type === "dehors"), malade = ev.some((e) => e.type === "malade");
     if (dehors) stats.diner = "dehors";
     else if (malade) stats.diner = "pâtes (malade)";
@@ -924,7 +1182,21 @@ async function journee2(idx) {
         }
         for (const e of invites) { await reglerParts(j, e.parts, stats); detour = true; }
         const invite = ev.find((e) => (e.type === "invites") || e.type === "deux");
-        const t = await cuisiner(j, ev, stats, { autrement: ev.some((e) => e.type === "rate") || hasard() < 0.05, parts: invite?.parts ?? 2.5, deja: detour || pris.par === "posé" ? null : pris.titre });
+        // T142 — la carte dit si demain midi se prend ce soir, et dans combien de boîtes.
+        const phrase = `${pris.midi ?? ""} ${pris.heure ?? ""} ${pris.raison ?? ""}`;
+        let midi = 0;
+        if (/déjeuner de demain/.test(phrase)) {
+          midi = PARTS_MIDI;
+          const voulu = +(/déjeuner de demain, (\d+)/.exec(phrase)?.[1] ?? Math.ceil(midi));
+          const libres = BOITES - boitesOccupees();
+          stats.midiPrevu = `oui, ${voulu} boîtes (${libres} libres au réel)`;
+          if (libres < voulu) { note(j, "boites", `la carte prend demain midi en ${voulu} boîtes, la cuisine n'en a que ${libres} de libres`); etat.compte.boitesReellesPleines = (etat.compte.boitesReellesPleines ?? 0) + 1; }
+        } else if (/Boîtes pleines/.test(phrase)) {
+          stats.midiPrevu = "boîtes pleines";
+          etat.compte.midiBoitesPleines = (etat.compte.midiBoitesPleines ?? 0) + 1;
+          note(j, "boites", `pas de midi demain : « ${/Boîtes pleines.*?seulement/.exec(phrase)[0]} » (${BOITES - boitesOccupees()} libres au réel)`);
+        } else stats.midiPrevu = "non";
+        const t = await cuisiner(j, ev, stats, { autrement: ev.some((e) => e.type === "rate") || hasard() < 0.05, parts: invite?.parts ?? 2.5, deja: detour || pris.par === "posé" ? null : pris.titre, midi });
         stats.diner = t ?? "rien";
         if (t) { etat.recents = [...etat.recents.slice(-10), t]; etat.manges = [...(etat.manges ?? []).slice(-20), { t, j }]; }
       }
@@ -948,6 +1220,9 @@ async function journee2(idx) {
     }
   }
 
+  // T142 — le goûter des enfants, à 16 h 30 (la fournée de 15 h y est déjà).
+  if (!absent) gouter(j, stats);
+
   if (dow === 0 || idx === N - 1) {
     const lots = await lireStock();
     stats.inventaire = {
@@ -964,7 +1239,7 @@ async function journee2(idx) {
   stats.taps = taps; stats.secondes = Math.round((Date.now() - t0) / 1000);
   if (erreurs.length) stats.erreurs = [...new Set(erreurs)].slice(0, 5);
   appendFileSync(JOURNAL, JSON.stringify(stats) + "\n");
-  console.log(`${j} ${["dim", "lun", "mar", "mer", "jeu", "ven", "sam"][dow]} taps=${taps} ${stats.secondes}s dîner=${stats.diner ?? "-"}${stats.carte ? ` [${stats.carte.par} #${stats.carte.pos}, ${stats.carte.achats} art.]` : ""}${stats.legume ? " (légumineuses)" : ""} q=${stats.questions ?? 0} art=${stats.articles ?? 0} refus=${(stats.refus ?? []).length} ${ev.map((e) => e.type).join(",")}`);
+  console.log(`${j} ${["dim", "lun", "mar", "mer", "jeu", "ven", "sam"][dow]} taps=${taps} ${stats.secondes}s midi=${stats.midiSource ?? "-"}${stats.fournee ? ` fournée=${stats.fournee}` : ""} dîner=${stats.diner ?? "-"}${stats.carte ? ` [${stats.carte.par} #${stats.carte.pos}, ${stats.carte.achats} art.]` : ""}${stats.legume ? " (légumineuses)" : ""} q=${stats.questions ?? 0} art=${stats.articles ?? 0} refus=${(stats.refus ?? []).length} ${ev.map((e) => e.type).join(",")}`);
 }
 
 

@@ -126,6 +126,15 @@ def un_run(d):
     r["carte prise"] = ", ".join(f"{k}: {v}" for k, v in sorted(pos.items(), key=lambda x: -x[1])) or "—"
     jours = collections.Counter(j["dow"] for j in diners)
     r["cuisiné par jour (lun→dim)"] = " ".join(f"{jours[k]}" for k in [1, 2, 3, 4, 5, 6, 0])
+    # T142 — les trois autres repas.
+    if any("midiSource" in j for j in J):
+        src = collections.Counter(j.get("midiSource") for j in J if j.get("midiSource"))
+        r["midi : reste prévu / reste / Chioca / sandwich"] = f"{src['reste-prevu']} / {src['reste']} / {src['chioca']} / {src['sandwich']}"
+        r["midi non pris faute de boîtes"] = sum(1 for j in J if j.get("midiPrevu") == "boîtes pleines")
+        r["petits-déj / goûters avec un manque"] = f"{sum(1 for j in J if j.get('manquePetitDej'))} / {sum(1 for j in J if j.get('manqueGouter'))}"
+        r["goûters de la fournée"] = sum(1 for j in J if j.get("gouter") and j["gouter"] != "fruit et yaourt")
+        r["fournées faites / proposées"] = f"{sum(1 for j in J if j.get('fournee'))} / {sum(1 for j in J if j.get('fourneeProposee'))}"
+        r["articles industriels achetés"] = len(E.get("industriels", []))
     r["_top"] = collections.Counter(titres).most_common(10)
     refus = collections.Counter()
     for j in J:
