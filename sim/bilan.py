@@ -83,7 +83,29 @@ erreurs = collections.Counter(e for j in jours for e in j.get("erreurs", []))
 cockpit = collections.Counter(re.sub(r"\d+", "N", j.get("cockpit", ""))[:120] for j in jours if not j.get("absent"))
 facette = [(j["j"], j.get("cuisineFacette", "")) for j in jours][::30]
 
+# T142 — les trois autres repas : le midi par source, les manques des
+# routines, les fournées, l'industriel acheté, la consommation par repas.
+import os
+midi = collections.Counter(j.get("midiSource") for j in jours if j.get("midiSource"))
+conso = json.load(open(f"{out}/conso.json")) if os.path.exists(f"{out}/conso.json") else {}
+trois = {
+    "midi": dict(midi),
+    "midiPrevu": dict(collections.Counter((j.get("midiPrevu") or "").split(",")[0] for j in jours if j.get("midiPrevu"))),
+    "manquesPetitDej": sum(1 for j in jours if j.get("manquePetitDej")),
+    "manquesGouter": sum(1 for j in jours if j.get("manqueGouter")),
+    "manquesParDenree": dict(collections.Counter(x for j in jours for x in (j.get("manquePetitDej") or []) + (j.get("manqueGouter") or [])).most_common()),
+    "matinsSansPain": sum(1 for j in jours if j.get("pain") is False),
+    "goutersFournee": sum(1 for j in jours if j.get("gouter") and j["gouter"] != "fruit et yaourt"),
+    "fourneesProposees": sum(1 for j in jours if j.get("fourneeProposee")),
+    "fournees": collections.Counter(j["fournee"] for j in jours if j.get("fournee")),
+    "fourneesRefusees": [f'{j["j"]} — {j["fourneeRefus"]}' for j in jours if j.get("fourneeRefus")][:6],
+    "hebdoHorsListe": [f'{j["j"]} — {j["hebdo"]}' for j in jours if j.get("hebdo", "").startswith("hors")][:8],
+    "industriels": etat.get("industriels", []),
+    "consoTop": sorted(((k, v) for k, v in conso.get("ingredients", {}).items()), key=lambda kv: -kv[1]["total"])[:15],
+}
+
 json.dump({
+    "troisRepas": trois,
     "jours": len(jours),
     "compte": etat["compte"],
     "mois": mois,
