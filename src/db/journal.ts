@@ -10,7 +10,7 @@
 import { facteur } from "../model/calcul";
 import { accepte, bandRepas } from "../model/depot";
 import type { Constat, Evenement, EvtCuisine, LigneEntree } from "../model/journal";
-import { restesApresTable } from "../model/restes";
+import { mangeALaTable, restesApresTable } from "../model/restes";
 import type { Catalogue, Foyer, Plat, RepasId } from "../model/types";
 import { jourISO, type Base, type LotStock } from "./schema";
 
@@ -46,6 +46,12 @@ export interface Cuisson {
   plat: Plat;
   /** Les parts au moment de cuisiner. Figées ici, jamais relues du foyer. */
   parts: number;
+  /**
+   * T142 — les parts mises de côté pour le déjeuner de demain, COMPRISES dans
+   * `parts` : la table en mange `parts − midi`. L'appelant passe le plat déjà
+   * augmenté de son reste du midi (`repas.platDuSoir`).
+   */
+  midi?: number;
   /**
    * Ce que la sortie a rangé, quand quelqu'un l'a dit — T99.
    *
@@ -92,7 +98,7 @@ export interface Cuisson {
  */
 export async function journaliserCuisson(
   base: Base,
-  { jour, repas, plat, parts, rangement, sortie, foyer }: Cuisson,
+  { jour, repas, plat, parts, rangement, sortie, foyer, midi = 0 }: Cuisson,
   aujourdhui = new Date(),
 ): Promise<number> {
   const saisi = jourISO(aujourdhui);
@@ -113,8 +119,16 @@ export async function journaliserCuisson(
     // recomputée à chaque rendu : le bocal de bolognaise n'était jamais retiré
     // de la base. C'est ici qu'il l'est, et c'est la seule différence qui
     // compte entre une prévision et un fait.
+    // T144 — UN « RESTE RÉCHAUFFÉ » PREND LE LOT MIS DE CÔTÉ POUR CE MIDI,
+    // puis un lot du frigo : `accepts: {kind: reste-plat}` attrapait sinon le
+    // premier lot venu — un sachet de banana bread au congélateur.
+    const servables = [...lots].sort(
+      (a, b) =>
+        Number(b.midiLe === jour) - Number(a.midiLe === jour) ||
+        Number((b.location ?? b.espace) === "frigo") - Number((a.location ?? a.espace) === "frigo"),
+    );
     for (const acc of plat.accepts) {
-      const trouve = lots.find(
+      const trouve = (acc.type ? lots : servables).find(
         (l) => !consomme.has(l.id!) && accepte({ type: l.type, kind: l.kind }, acc),
       );
       if (!trouve) continue;
@@ -156,19 +170,40 @@ export async function journaliserCuisson(
     // dire. Sans elle, RIEN NE CHANGE : un lot par emit, au frigo, sur la bande
     // que le corpus déclare. Le défaut reste donc la vieille prudence, et il
     // reste écrit ici, en une ligne qu'on peut lire.
-    for (const r of rangement?.length ? rangement : defaut(plat, parts, foyer ?? { parts, mangeurs: [] })) {
+    // T144 — LE MIDI DE DEMAIN EST DANS UN LOT, ET IL FAUT SAVOIR LEQUEL : le
+    // reste `midi: true` que `platDuSoir` ajoute, sinon le reste que la table
+    // entame (il a grossi des parts du midi). Le premier rangé au frigo.
+    const emitDuMidi = midi > 0 ? plat.emits.findIndex((e) => e.midi) : -1;
+    const rangDuMidi =
+      midi > 0
+        ? emitDuMidi >= 0
+          ? emitDuMidi
+          : plat.emits.findIndex((e) => e.kind === "reste-plat" && mangeALaTable(e))
+        : -1;
+    let midiPose = false;
+    for (const r of rangement?.length ? rangement : defaut(plat, parts, foyer ?? { parts, mangeurs: [] }, midi)) {
       const e = plat.emits[r.emit];
       if (!e) continue;
+      const porteLeMidi = !midiPose && r.emit === rangDuMidi && r.location === "frigo";
+      if (porteLeMidi) midiPose = true;
+      // T145 — LE LOT DU MIDI PORTE AU MOINS LE MIDI. Le dahl déclare un reste
+      // « 1-repas » que la table entame : agrandi de trois parts, il restait
+      // « 1 repas », donc une boîte, et un midi compté à une part.
+      const partsMidi = Math.max(1, Math.round(midi));
+      const band = porteLeMidi && bandRepas(r.band) < partsMidi ? `${partsMidi}-repas` : r.band;
       await base.stock.add({
         type: e.type,
         kind: e.kind,
         qty: r.qty,
         unite: e.qty ? e.qty.unit : null,
-        band: r.band,
+        band,
         espace: e.espace,
         location: r.location,
         born: jour,
         origine: plat.id,
+        ...(porteLeMidi
+          ? { midiLe: lendemain(jour), midi: partsMidi }
+          : {}),
         maj,
       } as LotStock);
     }
@@ -197,8 +232,8 @@ export async function journaliserCuisson(
  * (L'EFFET 2, LUI, GARDE `parts / portions` : c'est ce qu'un `accepts` prend,
  * et c'est une autre question, laissée ouverte au backlog.)
  */
-const defaut = (plat: Plat, parts: number, foyer: Pick<Foyer, "parts" | "mangeurs">): RangementLot[] =>
-  restesApresTable(plat, facteur(plat, parts), parts, foyer).map(({ emit, repas, qty }) => {
+const defaut = (plat: Plat, parts: number, foyer: Pick<Foyer, "parts" | "mangeurs">, midi = 0): RangementLot[] =>
+  restesApresTable(plat, facteur(plat, parts), parts - midi, foyer).map(({ emit, repas, qty }) => {
     const e = plat.emits[emit]!;
     return {
       emit,
@@ -259,6 +294,38 @@ export async function observerIngredient(
     jour,
     saisi: jour,
     constats: [{ ingredient, unites, ...(reste ? { reste } : {}) }],
+    maj: Date.now(),
+  };
+  return (await base.evenements.add(evt as never)) as number;
+}
+
+/**
+ * La correction d'UNE ligne du garde-manger — T139.
+ *
+ * « J'en ai trois, pas cinq », « je n'en ai plus » : ce qu'un doigt fait en
+ * passant devant le placard, sans relever la zone entière. Une observation à un
+ * seul constat, donc les autres denrées de la zone ne bougent pas — c'est ce
+ * qui la distingue de `releverZone`, exhaustif par construction.
+ *
+ * `zone` RESTREINT le constat aux lots rangés là (voir `EvtObservation.zone`) :
+ * la ligne d'une zone ne dit que ce que cette zone contient. `null` pour
+ * l'ingrédient entier, toutes zones confondues.
+ */
+export async function corrigerLigne(
+  base: Base,
+  ingredient: string,
+  unites: number,
+  zone: string | null,
+  aujourdhui = new Date(),
+): Promise<number> {
+  const jour = jourISO(aujourdhui);
+  const evt: Evenement = {
+    sorte: "observation",
+    portee: "ingredient",
+    zone,
+    jour,
+    saisi: jour,
+    constats: [{ ingredient, unites }],
     maj: Date.now(),
   };
   return (await base.evenements.add(evt as never)) as number;
@@ -365,3 +432,7 @@ export function poidsConnu(
   const d = catalogue.gardeManger.denrees.find((x) => x.ingredient === ingredient && x.parUnite);
   return d?.parUnite ?? null;
 }
+
+/** Le jour d'après, en `AAAA-MM-JJ`. */
+const lendemain = (iso: string): string =>
+  new Date(Date.parse(`${iso}T12:00:00Z`) + 86_400_000).toISOString().slice(0, 10);

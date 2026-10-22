@@ -20,7 +20,7 @@ import {
 import { calculer } from "../model/calcul";
 import { contexte, rejouer } from "../model/journal";
 import { hydraterGardeManger } from "./gardeManger";
-import { lireJournal, releverZone } from "./journal";
+import { corrigerLigne, lireJournal, releverZone } from "./journal";
 
 const catalogue: Catalogue = lireCatalogue(
   JSON.parse(readFileSync("public/cuisine-data.json", "utf8")) as unknown,
@@ -467,7 +467,7 @@ describe("relever une zone à vide met ses denrées sur la liste", () => {
     const avant = calculer(await aJour(jeu));
     expect([...avant.aVerifier.keys()]).toContain("mais");
 
-    await releverZone(base, "etagere-ouverte", [], MARDI);
+    await releverZone(base, "etagere-basse", [], MARDI);
 
     const apres = calculer(await aJour(jeu));
     expect([...apres.aVerifier.keys()]).not.toContain("mais");
@@ -479,10 +479,26 @@ describe("relever une zone à vide met ses denrées sur la liste", () => {
     // n'est pas vider. Une zone relevée AVEC ses boîtes ne doit rien envoyer au
     // magasin, sinon le quart d'heure de relevé coûterait un caddie entier.
     jeu.choix[creneau(jeu, 0, "diner")] = "chili-sin-carne";
-    await releverZone(base, "etagere-ouverte", [{ ingredient: "mais", unites: 2 }], MARDI);
+    await releverZone(base, "etagere-basse", [{ ingredient: "mais", unites: 2 }], MARDI);
 
     const c = calculer(await aJour(jeu));
     expect([...c.aVerifier.keys()]).toContain("mais");
     expect([...c.panier.values()].map((a) => a.id)).not.toContain("mais");
+  });
+  test("T139 — « je n'en ai plus » sur UNE ligne l'envoie au panier, sans toucher la zone", async () => {
+    jeu.choix[creneau(jeu, 0, "diner")] = "chili-sin-carne";
+    const avant = [...(await aJour(creerJeu(catalogue, 7, MARDI))).gardeManger];
+    await corrigerLigne(base, "mais", 0, null, MARDI);
+
+    const j = await aJour(jeu);
+    expect([...calculer(j).panier.values()].map((a) => a.id)).toContain("mais");
+    // Le reste de l'étagère ouverte est toujours là : seul le maïs est sorti.
+    expect(j.gardeManger).toEqual(avant.filter((id) => id !== "mais"));
+  });
+
+  test("T139 — une denrée ajoutée à une zone entre au garde-manger du jeu", async () => {
+    const id = "noix-cajou-essai";
+    await releverZone(base, "demi-lune-haute", [{ ingredient: id, unites: 1 }], MARDI);
+    expect((await aJour(jeu)).gardeManger).toContain(id);
   });
 });

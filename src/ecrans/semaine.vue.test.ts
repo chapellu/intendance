@@ -44,10 +44,10 @@ describe("la grille", () => {
   });
 
   test("les routines sont listées à part, jamais dans la grille", () => {
-    // Le petit-déj est une routine tous les jours ; le mercredi ajoute le
-    // goûter. Ni l'un ni l'autre ne se choisit, et aucun ne compte de minutes.
+    // Le petit-déj et le goûter sont des routines tous les jours (T142). Ni
+    // l'un ni l'autre ne se choisit, et aucun ne compte de minutes.
     const j = vue();
-    expect(j[0]?.routines).toEqual(["petit-déj"]);
+    expect(j[0]?.routines).toEqual(["petit-déj", "goûter"]);
     expect(j[2]?.routines).toEqual(["petit-déj", "goûter"]);
   });
 
@@ -59,11 +59,11 @@ describe("la grille", () => {
   });
 
   test("le fond de routine est ce que toutes les journées partagent", () => {
-    // Le petit-déj est de tous les jours ; le goûter n'est que du mercredi, et
-    // c'est justement ce qu'on veut voir ressortir.
+    // Depuis T142, petit-déj et goûter sont de tous les jours : le fond de
+    // routine les porte tous les deux, et aucune journée n'en ajoute.
     const j = vue();
-    expect(routinesDeFond(j)).toEqual(["petit-déj"]);
-    expect(j[2]?.routines.filter((r) => !routinesDeFond(j).includes(r))).toEqual(["goûter"]);
+    expect(routinesDeFond(j)).toEqual(["petit-déj", "goûter"]);
+    expect(j[2]?.routines.filter((r) => !routinesDeFond(j).includes(r))).toEqual([]);
   });
 });
 

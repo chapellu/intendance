@@ -1,0 +1,62 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-21 (T142) — aucune source
+# extérieure. La compote du goûter, sans sucre ajouté, congelée en portions :
+# elle remplace les gourdes du commerce.
+#
+# DES FRUITS DE SAISON, ET LES MOINS BEAUX. En octobre, pommes et poires ; une
+# pomme talée y trouve sa place, c'est la deuxième raison d'être de ce plat.
+
+recipe:
+  id: compote-pommes-poires
+  title: Compote pommes-poires
+  lang: fr
+  yields:
+    portions_eq: 6          # six goûters pour les deux enfants
+  time_min_total: 35
+  active_min: 15
+
+  creneaux: [gouter, dessert]
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: []
+    profil: compote
+    origine: francais
+
+  ingredients:
+    - {id: pommes, name: pommes, qty: 1000, unit: g}
+    - {id: poires, name: poires, qty: 500, unit: g}
+    - {id: eau, name: eau, qty: 10, unit: cl}
+    - {id: cannelle, name: cannelle, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: tailler
+      action: "Éplucher, épépiner et couper les fruits en morceaux"
+      needs: [chop-coarse]
+      uses: [pommes, poires]
+      time_min: 12
+    - id: cuire
+      action: "Cuire à couvert avec l'eau et la cannelle, à feu doux, jusqu'à ce que les fruits s'écrasent"
+      needs: [simmer]
+      uses: [eau, cannelle]
+      time_min: 20
+      attended: false
+    - id: ecraser
+      action: "Écraser au presse-purée, ou mixer pour le petit"
+      needs: [puree]
+      uses: []
+      time_min: 2
+    - id: portionner
+      action: "Laisser tiédir, puis congeler en portions, à plat en sachet"
+      needs: []
+      uses: []
+      time_min: 3
+
+  emits:
+    - kind: reste-plat
+      type: compote-maison
+      qty_band: 3-repas
+      keeps: {frigo_days: 4, congelo: true}
+      note: "une portion par goûter, sortie la veille au soir"
+
+  plan_b: []

@@ -34,9 +34,11 @@
 // de plus. Confondre les deux ferait rejouer six mois de cuisine pour savoir
 // s'il reste de la bolognaise, alors qu'il suffit d'ouvrir le tiroir.
 
+import { enUniteDeCompte } from "./unites";
 import type {
   Catalogue, Denree, Espace, Etat, Plat, Quantite, RepasId,
 } from "./types";
+import { boitesDeLaLigne, boitesDuCatalogue, contenuDUnite, type Boite } from "./paquet";
 
 /* ══════════════════════════════════════════════════════ les trois événements */
 
@@ -94,6 +96,12 @@ export interface EvtCuisine extends Commun {
    * refaire, et sans ce champ personne ne le saurait.
    */
   sortie?: "suivie" | "autre";
+  /**
+   * T142 — une ration de routine (petit-déjeuner, goûter), fabriquée par le
+   * rejeu et jamais écrite en base. Elle retire du placard sans compter comme
+   * un doute : une ration connue n'est pas une incertitude.
+   */
+  routine?: true;
 }
 
 /**
@@ -131,7 +139,15 @@ export interface Constat {
 export interface EvtObservation extends Commun {
   sorte: "observation";
   portee: "ingredient" | "zone";
-  /** L'id de zone quand `portee === "zone"`, `null` sinon. */
+  /**
+   * L'id de zone quand `portee === "zone"`.
+   *
+   * T139 — SUR UNE CORRECTION (`portee === "ingredient"`), la zone RESTREINT le
+   * constat aux lots de l'ingrédient rangés là : corriger les concentrés de
+   * l'étagère ne touche pas ceux de la demi-lune. `null` : l'ingrédient entier,
+   * toutes zones — ce que « Des œufs ? » et la carte « À manger en premier »
+   * veulent dire.
+   */
   zone: string | null;
   constats: Constat[];
 }
@@ -207,6 +223,11 @@ export interface LotPlacard {
    * premier (voir `ordreDeService`).
    */
   entame: number | null;
+  /** T143 — rentré des courses sans rangement (`zone: null`, posé en
+   *  `placard-haut`). Un relevé plus récent ne l'efface que s'il compte cet
+   *  ingrédient quelque part : les surgelés rentrés samedi ne sont pas au
+   *  placard haut, et un relevé du placard haut ne dit rien d'eux. */
+  sansPlace?: true;
   /** Né d'un reste d'unité scellée (T29) : il court, donc il presse. */
   court: boolean;
 }
@@ -302,6 +323,18 @@ export interface Rejeu {
   /** Le dernier jour d'entrée par les courses, par id — même quand le lot a
    *  été mangé depuis. Ce qui distingue « rentré le 17/10 » de « jamais vu ». */
   rentres: Map<string, string>;
+  /**
+   * T139 — CE QU'UN ŒIL A RANGÉ QUE LE RELEVÉ NE CONNAISSAIT PAS : id → zone.
+   *
+   * Le relevé du 26/08 dit ce que le placard EST, et l'intersection de #32 ne
+   * laisse passer que ses ids. Un sachet de noix posé dans la demi-lune n'y
+   * figurerait donc jamais, compté ou pas. Ce qui l'y fait entrer ici, c'est
+   * l'ENDROIT : une observation qui le constate DANS une zone du garde-manger
+   * (un relevé, ou la correction d'une ligne de zone). Une course rentrée n'en
+   * fait pas partie — elle n'a pas été vue au placard, c'est le saumon que
+   * `hydraterGardeManger` écarte. Seuls ceux dont un lot reste y figurent.
+   */
+  ajoutes: Map<string, string>;
 }
 
 /* ══════════════════════════════════════════════════════════ les constantes */
@@ -370,9 +403,15 @@ export interface Contexte {
   fenetreCourte: (id: string) => number | null;
   /** Le jour du relevé d'amorce — la première observation du journal. */
   releve: string | null;
+  /** T143 — le jour du relevé d'UNE zone (`Zone.releve`), à défaut celui du
+   *  fichier. `?` : les contextes fabriqués à la main des tests. */
+  releveDe?: (zone: string) => string | null;
   /** T135 : ce que contient une unité d'achat du fond (`fond.yaml:unite`),
    *  quand elle le dit — « sachet de 500 g », « boîte de 6 ». */
   contenu: (id: string) => Quantite | null;
+  /** T140 : la boîte d'un ingrédient dont une boîte entamée se finit
+   *  (`entame_se_finit`), quand le fond dit son poids — voir `paquet.ts`. */
+  boite: (id: string) => Boite | null;
 }
 
 export function contexte(catalogue: Catalogue): Contexte {
@@ -402,6 +441,10 @@ export function contexte(catalogue: Catalogue): Contexte {
       return (id: string) => par.get(alias(id)) ?? null;
     })(),
     releve: catalogue.gardeManger.releve,
+    releveDe: (() => {
+      const par = new Map(catalogue.gardeManger.zones.map((z) => [z.id, z.releve ?? catalogue.gardeManger.releve]));
+      return (zone: string) => par.get(zone) ?? catalogue.gardeManger.releve;
+    })(),
     contenu: (() => {
       const par = new Map<string, Quantite>();
       for (const d of catalogue.fond?.denrees ?? []) {
@@ -410,27 +453,13 @@ export function contexte(catalogue: Catalogue): Contexte {
       }
       return (id: string) => par.get(alias(id)) ?? null;
     })(),
+    boite: boitesDuCatalogue(catalogue, alias),
   };
 }
 
-/**
- * Ce que contient une unité d'achat, lu dans les mots du fond — T135.
- *
- * « sachet de 500 g » → 500 g ; « paquet de 1 kg » → 1000 g ; « boîte de 6 »,
- * « pack de 4 » → 6, 4 pièces. Rien d'autre : « sachet », « tube », « filet de
- * 1 kg » d'oignons (que les recettes comptent en pièces) ne se soustraient pas,
- * ou pas dans la même unité, et `retirer` garde alors son mode non chiffré.
- */
-export function contenuDUnite(unite: string): Quantite | null {
-  const nombre = (x: string): number => Number(x.replace(",", "."));
-  const kg = /(\d+(?:[.,]\d+)?)\s*kg\b/i.exec(unite);
-  if (kg) return { amount: nombre(kg[1]!) * 1000, unit: "g" };
-  const g = /(\d+(?:[.,]\d+)?)\s*g\b/i.exec(unite);
-  if (g) return { amount: nombre(g[1]!), unit: "g" };
-  const pieces = /\bde\s+(\d+)\s*$/i.exec(unite);
-  if (pieces) return { amount: nombre(pieces[1]!), unit: PIECE };
-  return null;
-}
+// `contenuDUnite` vit dans `paquet.ts` depuis T140 : la boîte entière en a
+// besoin, et le rejeu en dépend aussi.
+export { contenuDUnite };
 
 /** L'unité de compte des recettes : `pièce`, et `pot` pour un yaourt. */
 const PIECE = "pièce";
@@ -612,95 +641,102 @@ export function retirer(
 
   for (const lot of servis) {
     if (reste != null && reste <= 1e-9) break;
-    const pu = contenuUnite(lot, unite);
+    // T140 — UN LOT PEUT DONNER PLUSIEURS UNITÉS. Deux boîtes de maïs pour un
+    // plat qui en prend deux entières : avant, chaque lot ne servait qu'une
+    // unité par plat, et la seconde boîte restait au placard. Le tour reprend
+    // le même lot tant que la demande chiffrée n'est pas servie ; une demande
+    // inconnue (`null`) n'y fait qu'un passage, comme avant.
+    do {
+      const pu = contenuUnite(lot, unite);
 
-    // ── mode non chiffré : on avance l'état, on n'invente rien ──────────────
-    if (pu == null) {
-      if (lot.unites <= 0) continue;
-      // T134 — MAIS UNE UNITÉ FINIT PAR SE VIDER. Avant, le mode non chiffré ne
-      // retirait JAMAIS rien : un sachet de lentilles rentré par la liste
-      // (`unité`, sans poids) survivait à 75 hachis, le plancher ne voyait
-      // aucune baisse et la liste du fond restait vide toute l'année. Toujours
-      // sans un gramme : on compte des UNITÉS, ce qu'un œil vérifie.
-      //   — `sec` : le paquet s'ouvre, rien ne part (il sert encore) ;
-      //   — `entame` : le paquet ouvert se finit — une unité part, la suivante
-      //     est scellée ;
-      //   — `conserve`, `bocal` : la boîte se vide d'un coup (même règle que
-      //     T29) ; `frais` n'attend pas un second plat…
-      //   — T136 : … SAUF UN FRAIS CONSTATÉ À L'UNITÉ (`unites: 1`, sans
-      //     poids). Le relevé y dit « il y en a », pas « une pièce » : le sac
-      //     de pommes de terre du sous-évier disparaissait sous une omelette de
-      //     trois pommes de terre, et le parcours `stock-descend` ne trouvait
-      //     plus une seule ligne « estimé ». Il s'entame, comme un paquet sec,
-      //     et c'est le plat suivant qui le finit.
-      if (lot.etat === "sec" || (lot.etat === "frais" && lot.unites === 1)) {
-        lot.etat = "entame";
-        effet ??= "etat";
-      } else {
-        lot.unites -= 1;
-        if (lot.etat === "entame" && lot.unites > 0) lot.etat = "sec";
-        effet ??= "unite";
+      // ── mode non chiffré : on avance l'état, on n'invente rien ──────────────
+      if (pu == null) {
+        if (lot.unites <= 0) break;
+        // T134 — MAIS UNE UNITÉ FINIT PAR SE VIDER. Avant, le mode non chiffré ne
+        // retirait JAMAIS rien : un sachet de lentilles rentré par la liste
+        // (`unité`, sans poids) survivait à 75 hachis, le plancher ne voyait
+        // aucune baisse et la liste du fond restait vide toute l'année. Toujours
+        // sans un gramme : on compte des UNITÉS, ce qu'un œil vérifie.
+        //   — `sec` : le paquet s'ouvre, rien ne part (il sert encore) ;
+        //   — `entame` : le paquet ouvert se finit — une unité part, la suivante
+        //     est scellée ;
+        //   — `conserve`, `bocal` : la boîte se vide d'un coup (même règle que
+        //     T29) ; `frais` n'attend pas un second plat…
+        //   — T136 : … SAUF UN FRAIS CONSTATÉ À L'UNITÉ (`unites: 1`, sans
+        //     poids). Le relevé y dit « il y en a », pas « une pièce » : le sac
+        //     de pommes de terre du sous-évier disparaissait sous une omelette de
+        //     trois pommes de terre, et le parcours `stock-descend` ne trouvait
+        //     plus une seule ligne « estimé ». Il s'entame, comme un paquet sec,
+        //     et c'est le plat suivant qui le finit.
+        if (lot.etat === "sec" || (lot.etat === "frais" && lot.unites === 1)) {
+          lot.etat = "entame";
+          effet ??= "etat";
+        } else {
+          lot.unites -= 1;
+          if (lot.etat === "entame" && lot.unites > 0) lot.etat = "sec";
+          effet ??= "unite";
+        }
+        // Un lot non chiffré ne peut pas dire combien il a donné : la demande est
+        // considérée servie, et le doute qui en résulte est exactement ce que la
+        // confiance est là pour porter.
+        reste = 0;
+        break;
       }
-      // Un lot non chiffré ne peut pas dire combien il a donné : la demande est
-      // considérée servie, et le doute qui en résulte est exactement ce que la
-      // confiance est là pour porter.
-      reste = 0;
-      break;
-    }
 
-    // ── mode chiffré ───────────────────────────────────────────────────────
-    if (lot.entame != null && lot.entame > 1e-9) {
-      const pu2 = Math.min(reste ?? lot.entame, lot.entame);
-      lot.entame -= pu2;
-      pris += pu2;
-      if (reste != null) reste -= pu2;
-      effet ??= "grammes";
-      if (lot.entame <= 1e-9) lot.entame = null;
-      continue;
-    }
+      // ── mode chiffré ───────────────────────────────────────────────────────
+      if (lot.entame != null && lot.entame > 1e-9) {
+        const pu2 = Math.min(reste ?? lot.entame, lot.entame);
+        lot.entame -= pu2;
+        pris += pu2;
+        if (reste != null) reste -= pu2;
+        effet ??= "grammes";
+        if (lot.entame <= 1e-9) lot.entame = null;
+        continue;
+      }
 
-    if (lot.unites <= 0) continue;
+      if (lot.unites <= 0) break;
 
-    // T29 — OUVRIR UNE UNITÉ SCELLÉE LA CONSOMME EN ENTIER.
-    //
-    // C'est le comportement réel : on vide la boîte pour ne pas garder 85 g
-    // impossibles à passer. Ça ne vaut QUE pour ce qui est scellé et se vide
-    // d'un coup — une conserve, un bocal. Un paquet de pâtes s'entame.
-    const scelle = lot.etat === "conserve" || lot.etat === "bocal";
-    lot.unites -= 1;
+      // T29 — OUVRIR UNE UNITÉ SCELLÉE LA CONSOMME EN ENTIER.
+      //
+      // C'est le comportement réel : on vide la boîte pour ne pas garder 85 g
+      // impossibles à passer. Ça ne vaut QUE pour ce qui est scellé et se vide
+      // d'un coup — une conserve, un bocal. Un paquet de pâtes s'entame.
+      const scelle = lot.etat === "conserve" || lot.etat === "bocal";
+      lot.unites -= 1;
 
-    if (scelle) {
+      if (scelle) {
+        const consomme = Math.min(reste ?? pu, pu);
+        pris += consomme;
+        if (reste != null) reste -= consomme;
+        effet ??= "unite";
+        const laisse = pu - consomme;
+        if (laisse > pu * SEUIL_RESTE) {
+          // Le reste vaut d'être gardé : il devient un lot COURT, donc pressé,
+          // donc le score va chercher un plat qui le mange.
+          lots.push({
+            ingredient,
+            zone: lot.zone,
+            unites: 1,
+            parUnite: { amount: laisse, unit: lot.parUnite!.unit },
+            etat: "frais",
+            entame: laisse,
+            court: true,
+          });
+          restePose = laisse;
+        }
+        continue;
+      }
+
+      // Paquet sec : il s'entame, et son reste se compte.
       const consomme = Math.min(reste ?? pu, pu);
       pris += consomme;
       if (reste != null) reste -= consomme;
-      effet ??= "unite";
+      effet ??= "grammes";
       const laisse = pu - consomme;
-      if (laisse > pu * SEUIL_RESTE) {
-        // Le reste vaut d'être gardé : il devient un lot COURT, donc pressé,
-        // donc le score va chercher un plat qui le mange.
-        lots.push({
-          ingredient,
-          zone: lot.zone,
-          unites: 1,
-          parUnite: { amount: laisse, unit: lot.parUnite!.unit },
-          etat: "frais",
-          entame: laisse,
-          court: true,
-        });
-        restePose = laisse;
-      }
-      continue;
-    }
-
-    // Paquet sec : il s'entame, et son reste se compte.
-    const consomme = Math.min(reste ?? pu, pu);
-    pris += consomme;
-    if (reste != null) reste -= consomme;
-    effet ??= "grammes";
-    const laisse = pu - consomme;
-    lot.etat = "entame";
-    lot.entame = laisse > 1e-9 ? laisse : null;
-    if (laisse <= 1e-9) lot.etat = "sec";
+      lot.etat = "entame";
+      lot.entame = laisse > 1e-9 ? laisse : null;
+      if (laisse <= 1e-9) lot.etat = "sec";
+    } while (reste != null && reste > 1e-9);
   }
 
   // Les lots vidés s'en vont : un lot à zéro unité et sans entame n'existe plus.
@@ -728,6 +764,8 @@ export interface Demande {
   /** T135 : les œufs, les pots de yaourt — comptés, arrondis à la pièce
    *  au-dessus (on ne casse pas 1,9 œuf). `null` pour une masse. */
   pieces: number | null;
+  /** T140 : l'unité de la recette (`g`, `ml`…), pour la comparer à la boîte. */
+  unite: string;
 }
 
 /**
@@ -743,12 +781,59 @@ export function demandes(plat: Plat, facteur: number): Demande[] {
   const out: Demande[] = [];
   for (const ing of plat.ingredients) {
     if (ing.base || ing.assaisonnement) continue;
+    // T145 — le kilo et la pomme de terre à la pièce se retirent en grammes.
+    const u = enUniteDeCompte(ing.id, ing.qty, ing.unit);
     out.push({
       ingredient: ing.id,
-      grammes: EN_GRAMMES.has(ing.unit) ? ing.qty * facteur : null,
-      pieces: enPieces(ing.unit) ? Math.ceil(ing.qty * facteur - 1e-9) : null,
+      grammes: EN_GRAMMES.has(u.unit) ? u.qty * facteur : null,
+      pieces: enPieces(u.unit) ? Math.ceil(u.qty * facteur - 1e-9) : null,
+      unite: u.unit,
     });
   }
+  return out;
+}
+
+/* ════════════════════════════════════════════════ les routines — T142 */
+
+const JOUR_MS_ROUTINE = 86_400_000;
+const jourSuivant = (iso: string): string =>
+  new Date(Date.parse(`${iso}T12:00:00Z`) + JOUR_MS_ROUTINE).toISOString().slice(0, 10);
+
+/** Les jours de `de` à `a`, bornes comprises, en `AAAA-MM-JJ`. */
+export function joursDe(de: string, a: string): string[] {
+  const out: string[] = [];
+  for (let j = de; j <= a && out.length < 3660; j = jourSuivant(j)) out.push(j);
+  return out;
+}
+
+/**
+ * Ce que les routines ont retiré du placard, en cuissons du jour.
+ *
+ * UNE RATION EST UNE RECETTE DU FOYER, ET SA CONSOMMATION UNE CUISSON. Le
+ * rejeu sait déjà retirer une recette du placard à la quantité, boîte entière
+ * comprise (T135, T140) ; la routine lui passe une cuisson par jour et par
+ * repas, depuis `routines.depuis` jusqu'à aujourd'hui inclus — le petit-
+ * déjeuner de 8 h est pris quand on ouvre l'app.
+ *
+ * `routine: true` : le rejeu ne compte pas ces retraits comme un doute
+ * (`depuisVu`). Une ration connue n'est pas une incertitude ; sans ça, l'app
+ * redemanderait « des yaourts ? » chaque matin.
+ */
+/** Les rations passent APRÈS les gestes du jour : les courses rentrées à
+ *  10 h nourrissent le goûter de 16 h. */
+const FIN_DU_JOUR = Number.MAX_SAFE_INTEGER;
+
+export function evenementsDesRoutines(catalogue: Catalogue, aujourdhui: string): EvtCuisine[] {
+  // `?.` : des fixtures de test construisent un catalogue sans créneaux.
+  const r = catalogue.creneaux?.routines;
+  if (!r || r.depuis > aujourdhui) return [];
+  const out: EvtCuisine[] = [];
+  for (const jour of joursDe(r.depuis, aujourdhui))
+    for (const x of r.liste) {
+      const p = catalogue.plats.find((q) => q.id === x.recette);
+      if (!p) continue;
+      out.push({ sorte: "cuisine", repas: x.repas, plat: p.id, parts: p.portions, jour, saisi: jour, maj: FIN_DU_JOUR, routine: true });
+    }
   return out;
 }
 
@@ -762,15 +847,24 @@ function amorce(ctx: Contexte, denrees: readonly Denree[]): Map<string, LotPlaca
   for (const d of denrees) {
     const id = ctx.alias(d.ingredient);
     const lots = par.get(id) ?? [];
+    // T146 — LE DEMI-PAQUET DU RELEVÉ EST UN DEMI-PAQUET. « Spaghetti, un
+    // demi-paquet », sans poids : non chiffré, il servait un plat ENTIER
+    // (« la demande est considérée servie »), puis un second — deux demi-paquets
+    // valaient deux gratins, et l'année simulée tombait à zéro pâtes quand la
+    // carte disait « rien à acheter » (run 9, décembre). Quand le fond dit ce
+    // que pèse le paquet, le paquet ouvert en garde la moitié, chiffrée.
+    const paquet = d.parUnite == null && d.etat === "entame" && d.unites >= 1 ? ctx.contenu(id) : null;
+    const demi = paquet && EN_GRAMMES.has(paquet.unit) ? paquet : null;
     lots.push({
       ingredient: id,
       zone: d.zone,
-      unites: d.unites,
-      parUnite: d.parUnite,
+      unites: demi ? d.unites - 1 : d.unites,
+      parUnite: demi ? { ...demi } : d.parUnite,
       etat: d.etat,
       // Un lot déjà entamé au relevé n'a pas de reste chiffré : on a vu qu'il
-      // était ouvert, on n'a pas pesé ce qu'il restait dedans.
-      entame: null,
+      // était ouvert, on n'a pas pesé ce qu'il restait dedans — sauf le
+      // demi-paquet d'un paquet connu (ci-dessus).
+      entame: demi ? demi.amount / 2 : null,
       court: false,
     });
     par.set(id, lots);
@@ -804,6 +898,9 @@ export function rejouer(
   aujourdhui: string,
 ): Rejeu {
   const lots = amorce(ctx, catalogue.gardeManger.denrees);
+  // Ce que le relevé connaît — pour reconnaître ce qu'un œil y ajoute (T139).
+  const connus = new Set(lots.keys());
+  const ajoutes = new Map<string, string>();
   // `?? 4` : des fixtures de test construisent un catalogue sans foyer.
   const fenetreFrigo = catalogue.foyer?.fenetreFrigo ?? 4;
   const suivi = new Map<string, Suivi>();
@@ -811,8 +908,57 @@ export function rejouer(
 
   // L'amorce est une observation, datée du relevé. Sans date, elle ne restaure
   // rien : un stock d'origine inconnue ne vaut pas mieux qu'une estimation.
-  for (const id of lots.keys())
-    suivi.set(id, { vuLe: ctx.releve, depuisVu: 0, derives: [], predit: null });
+  // T143 — CHAQUE ZONE À LA DATE DE SON RELEVÉ : la pomme de terre du
+  // sous-évier date du 26/08, les conserves de l'étagère du 21/10.
+  const releveDe = (zone: string): string | null => ctx.releveDe?.(zone) ?? ctx.releve;
+  for (const [id, l] of lots) {
+    const dates = l.map((x) => releveDe(x.zone)).filter((d): d is string => !!d).sort();
+    suivi.set(id, { vuLe: dates.at(-1) ?? ctx.releve, depuisVu: 0, derives: [], predit: null });
+  }
+
+  // T143 — LE RELEVÉ DU CATALOGUE GAGNE, ZONE PAR ZONE, SUR CE QUI EST PLUS
+  // VIEUX QUE LUI. L'amorce n'était lue qu'en tête du rejeu : un relevé de zone
+  // fait sur le téléphone en septembre passait APRÈS elle et effaçait le relevé
+  // dicté le 21/10, et les cuissons d'avant le 21/10 décomptaient une seconde
+  // fois ce qu'il avait déjà vu. Chaque zone est donc RE-RELEVÉE à sa date, au
+  // milieu du journal : ce qui précède ne la touche plus, ce qui suit la
+  // corrige comme d'habitude. En tête de journée — une correction faite le
+  // même jour sur le téléphone passe après.
+  const amorceDe = new Map<string, LotPlacard[]>();
+  for (const l of lots.values())
+    for (const x of l) amorceDe.set(x.zone, [...(amorceDe.get(x.zone) ?? []), cloner(x)]);
+  const releves = [...new Set(catalogue.gardeManger.zones.map((z) => z.id))]
+    .map((zone) => ({ zone, jour: releveDe(zone) }))
+    .filter((r): r is { zone: string; jour: string } => !!r.jour)
+    .sort((a, b) => a.jour.localeCompare(b.jour));
+  const vusLe = new Map<string, Set<string>>();
+  for (const [zone, l] of amorceDe) {
+    const j = releveDe(zone);
+    if (!j) continue;
+    const ids = vusLe.get(j) ?? new Set<string>();
+    for (const x of l) ids.add(x.ingredient);
+    vusLe.set(j, ids);
+  }
+  let prochain = 0;
+  const releverJusquA = (jour: string): void => {
+    for (; prochain < releves.length && releves[prochain]!.jour <= jour; prochain++) {
+      const { zone, jour: j } = releves[prochain]!;
+      const comptes = vusLe.get(j) ?? new Set<string>();
+      for (const [id, l] of lots) {
+        const reste = l.filter((x) => (x.sansPlace ? !comptes.has(id) : x.zone !== zone));
+        if (reste.length) lots.set(id, reste);
+        else lots.delete(id);
+      }
+      for (const x of amorceDe.get(zone) ?? []) {
+        lots.set(x.ingredient, [...(lots.get(x.ingredient) ?? []), cloner(x)]);
+        connus.add(x.ingredient);
+        const s = suiviDe(x.ingredient);
+        s.vuLe = j;
+        s.depuisVu = 0;
+      }
+      for (const [id, z] of ajoutes) if (z === zone) ajoutes.delete(id);
+    }
+  };
 
   const suiviDe = (id: string): Suivi => {
     const s = suivi.get(id) ?? { vuLe: null, depuisVu: 0, derives: [], predit: null };
@@ -822,11 +968,15 @@ export function rejouer(
   const unitesDe = (id: string): number =>
     (lots.get(id) ?? []).reduce((n, l) => n + l.unites + (l.entame != null ? 1 : 0), 0);
 
-  const ordonnes = [...evenements].sort(
+  // T142 — LES ROUTINES SE REJOUENT COMME DES CUISSONS, une par jour et par
+  // repas, depuis `creneaux.routines.depuis`. Rien n'est écrit en base : le
+  // jour où la ration change, le passé se recalcule avec elle.
+  const ordonnes = [...evenements, ...evenementsDesRoutines(catalogue, aujourdhui)].sort(
     (a, b) => a.jour.localeCompare(b.jour) || a.maj - b.maj,
   );
 
   for (const e of ordonnes) {
+    releverJusquA(e.jour);
     if (e.sorte === "cuisine") {
       const plat = catalogue.plats.find((p) => p.id === e.plat);
       if (!plat) continue;
@@ -834,6 +984,9 @@ export function rejouer(
       for (const d of demandes(plat, f)) {
         const id = ctx.alias(d.ingredient);
         const l = lots.get(id);
+        // Une ration sans lot ne dit rien : le lait n'a jamais été rentré, le
+        // petit-déjeuner s'est fait sans l'app. Aucune croyance à dépenser.
+        if (e.routine && (!l || l.length === 0)) continue;
         if (!l || l.length === 0) {
           retraits.push({ ingredient: id, effet: "aucun", grammes: null, restePose: null });
           // AUCUN LOT À RETIRER NE VEUT PAS DIRE RIEN À DÉPENSER. Il n'y a pas
@@ -844,10 +997,16 @@ export function rejouer(
           suiviDe(id).depuisVu += 1;
           continue;
         }
+        // T140 — LA BOÎTE ENTIÈRE. 200 g de maïs sur une boîte de 285 g vident
+        // la boîte : le foyer ne garde pas 85 g au frigo. Le besoin s'arrondit
+        // aux boîtes avant de servir, et `retirer` ne laisse donc aucun reste
+        // ouvert ; un vrai usage partiel (50 g) reste, lui, à la quantité.
+        const entieres = d.grammes != null ? boitesDeLaLigne(ctx.boite(id), d.grammes, d.unite) : null;
+        const grammes = entieres ? entieres.quantite : d.grammes;
         retraits.push(
-          d.pieces != null ? retirer(l, id, d.pieces, PIECE) : retirer(l, id, d.grammes),
+          d.pieces != null ? retirer(l, id, d.pieces, PIECE) : retirer(l, id, grammes),
         );
-        suiviDe(id).depuisVu += 1;
+        if (!e.routine) suiviDe(id).depuisVu += 1;
         // T134 — UN INGRÉDIENT ÉPUISÉ SORT DE `parIngredient`, comme après un
         // relevé ou une correction à zéro. Sinon sa clé vide y restait, et
         // `hydraterGardeManger` (qui teste `has`) le gardait « ici » : « Ce
@@ -876,6 +1035,7 @@ export function rejouer(
           etat: ligne.etat,
           entame: null,
           court: false,
+          ...(ligne.zone ? {} : { sansPlace: true as const }),
         });
         lots.set(id, l);
         suiviDe(id).rentreLe = e.jour;
@@ -899,10 +1059,18 @@ export function rejouer(
       }
     }
 
+    // T139 — UNE CORRECTION DE LIGNE DE ZONE ne voit que les lots rangés là.
+    // Les autres zones gardent les leurs, et c'est tout l'objet : corriger une
+    // ligne ne doit pas faire ce que fait un relevé.
+    const cadre = e.portee === "ingredient" ? e.zone : null;
+
     for (const c of e.constats) {
       const id = ctx.alias(c.ingredient);
       const s = suiviDe(id);
-      const avant = unitesDe(id);
+      const avant = cadre
+        ? mesurer((lots.get(id) ?? []).filter((x) => x.zone === cadre)).unites
+        : unitesDe(id);
+      if (e.zone && !connus.has(id) && c.unites !== 0) ajoutes.set(id, e.zone);
 
       // LA DÉRIVE SE MESURE ICI, ET NULLE PART AILLEURS : entre deux
       // observations, ce que les décréments connus n'expliquent pas.
@@ -921,9 +1089,11 @@ export function rejouer(
         // avant le scellé. Une correction porte sur un INGRÉDIENT, jamais sur
         // un lot — c'est ce qu'un œil voit en ouvrant un placard : on compte
         // des boîtes de maïs, pas « le lot n°17 ».
-        ajusterUnites(l, id, c.unites, e.zone);
-        if (l.length === 0) lots.delete(id);
-        else lots.set(id, l);
+        const ici = cadre ? l.filter((x) => x.zone === cadre) : l;
+        ajusterUnites(ici, id, c.unites, e.zone);
+        const apres = cadre ? [...l.filter((x) => x.zone !== cadre), ...ici] : ici;
+        if (apres.length === 0) lots.delete(id);
+        else lots.set(id, apres);
       }
 
       s.vuLe = e.jour;
@@ -941,6 +1111,9 @@ export function rejouer(
           s.depuisVu = 0;
         }
   }
+
+  // Les relevés d'ici aujourd'hui que le journal n'a pas encore croisés.
+  releverJusquA(aujourdhui);
 
   const etatDe = (id: string, l: LotPlacard[]): EtatIngredient => {
     const s = suiviDe(id);
@@ -1000,7 +1173,9 @@ export function rejouer(
   const rentres = new Map<string, string>();
   for (const [id, s] of suivi) if (s.rentreLe) rentres.set(id, s.rentreLe);
 
-  return { parIngredient, vus, retraits, finis, rentres };
+  for (const id of [...ajoutes.keys()]) if (!parIngredient.has(id)) ajoutes.delete(id);
+
+  return { parIngredient, vus, retraits, finis, rentres, ajoutes };
 }
 
 /**

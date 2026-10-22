@@ -391,6 +391,12 @@ def main():
             "zones": [
                 {"id": z["id"], "label": z.get("label") or z["id"],
                  "espace": z["espace"],
+                 # T143 — LA DATE DU RELEVÉ DE CETTE ZONE : celle du fichier,
+                 # sauf pour une zone qu'un relevé plus récent n'a pas couverte.
+                 # Le rejeu fait gagner, zone par zone, le relevé le plus récent
+                 # sur les observations plus anciennes de l'appareil.
+                 "releve": (z["releve"].isoformat() if hasattr(z.get("releve"), "isoformat")
+                            else z.get("releve")) or pantry.get("releve"),
                  "niveaux": z.get("niveaux", 1),
                  "dimensions": z.get("dimensions") or {},
                  "forme": z.get("forme", "rectangle"),
@@ -401,6 +407,25 @@ def main():
                  "note": z.get("note")}
                 for z in pantry["zones"]
             ],
+            # LE PLAN DE LA CUISINE — T141. Une liste à plat de ce qu'on touche,
+            # zones et appareils mêlés, dans l'ordre du fichier ; le décor à
+            # part, parce qu'il ne se touche pas.
+            "plan": {
+                "murs": {m: {"w": v["w"], "h": v["h"], "label": v.get("label") or m}
+                         for m, v in (pantry["plan"].get("murs") or {}).items()},
+                "rangements": [
+                    {"id": r["id"], "zone": r["zone"], "espace": r["espace"],
+                     "label": r["label"], "court": r["court"], "mur": r["mur"],
+                     "x": r["x"], "y": r["y"], "w": r["w"], "h": r["h"],
+                     "teinte": r["teinte"]}
+                    for r in gm.rangements_du_plan(pantry)
+                ],
+                "decor": [
+                    {"mur": d["mur"], "x": d["x"], "y": d["y"], "w": d["w"], "h": d["h"],
+                     "label": d.get("label") or "", "teinte": d.get("teinte", "mur")}
+                    for d in pantry["plan"].get("decor") or []
+                ],
+            },
             "denrees": [
                 {"ingredient": d["ingredient"], "zone": d["zone"],
                  "unites": d.get("unites", 1),
@@ -421,6 +446,10 @@ def main():
                  # vide plutôt qu'omis, pour que le type côté app soit
                  # `usage: Usage | null` et non un champ optionnel de plus.
                  "usage": d.get("usage"),
+                 # T142 — UN PRODUIT INDUSTRIEL QUE LE FOYER NE RACHÈTE PLUS. Le
+                 # lot reste au stock (on ne jette pas ce qu'on a), mais aucune
+                 # proposition ne le remet dans un panier.
+                 "industriel": bool(d.get("industriel")),
                  # CE QU'ON PEUT EN FAIRE POUR ARRÊTER SON HORLOGE — la seconde
                  # réponse au gaspillage, celle que `conservation.yaml` porte
                  # depuis le prototype. Les méthodes verrouillées sont incluses :

@@ -42,10 +42,11 @@ describe("la semaine", () => {
     expect([...jours].sort((a, b) => a - b)).toEqual(jours);
   });
 
-  test("mercredi a un goûter que les autres jours n'ont pas", () => {
+  // T142 (21/10) : le goûter des enfants est de tous les jours.
+  test("chaque jour a son goûter, une routine", () => {
     const gouters = jeu.creneaux.filter((c) => c.repas === "gouter");
-    expect(gouters).toHaveLength(1);
-    expect(jeu.jours[gouters[0]!.jour]?.nom).toBe("mercredi");
+    expect(gouters).toHaveLength(7);
+    expect(new Set(gouters.map((c) => c.nature))).toEqual(new Set(["routine"]));
   });
 
   test("chaque créneau démarre aux parts du foyer", () => {
@@ -213,6 +214,11 @@ describe("les parts commandent le panier", () => {
 });
 
 describe("l’accompagnement fait partie des courses", () => {
+  // T143 : le relevé du 21/10 a vu un demi-bocal de riz. Ces tests parlent du
+  // riz qu'on n'a pas : on le retire du garde-manger, comme un relevé à vide.
+  beforeEach(() => {
+    jeu.gardeManger = jeu.gardeManger.filter((id) => id !== "riz");
+  });
   // « Il manque toujours les accompagnements, je n'ai pas un repas complet »
   // (22/09/2026). Une recette qui dit « avec du riz » sans que le riz n'arrive
   // dans la liste laisse exactement le trou qu'elle prétend combler.
@@ -689,9 +695,9 @@ describe("un garde-manger vidé renvoie ses ingrédients aux courses", () => {
 
   test("relever la zone à vide fait passer le maïs de « à vérifier » au panier", () => {
     // LE GESTE EXACT DE L'UTILISATEUR : ouvrir le placard, constater, relever.
-    // Les quatre boîtes de maïs de T24 sont sur l'étagère ouverte ; une fois la
+    // Les boîtes de maïs sont sur le 2e niveau de l'étagère (T143) ; une fois la
     // zone relevée à vide, le chili doit les ACHETER.
-    const c = calculer(apresLeJournal(chili(), releveAVide("etagere-ouverte")));
+    const c = calculer(apresLeJournal(chili(), releveAVide("etagere-basse")));
     expect([...c.aVerifier.keys()]).not.toContain("mais");
     expect([...c.panier.values()].map((a) => a.id)).toContain("mais");
   });
@@ -699,7 +705,7 @@ describe("un garde-manger vidé renvoie ses ingrédients aux courses", () => {
   test("la ligne revient au panier avec sa grandeur", () => {
     // Un ingrédient qui repasse aux courses doit y repasser ENTIER : un id sans
     // quantité ferait une ligne qu'on ne sait pas acheter.
-    const c = calculer(apresLeJournal(chili(), releveAVide("etagere-ouverte")));
+    const c = calculer(apresLeJournal(chili(), releveAVide("etagere-basse")));
     const mais = [...c.panier.values()].find((a) => a.id === "mais")!;
     expect(mais.qty).toBeGreaterThan(0);
     expect(mais.n).toBeGreaterThan(0);

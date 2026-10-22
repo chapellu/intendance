@@ -77,10 +77,10 @@ centraux:
     - tortillas
     - pain-de-mie
     - pain-levain
-    - biscottes
-    - cracotte
-    - krisprolls
-    - puree-mousline
+    # T142 — biscottes, cracottes, krisprolls et purée mousline SORTENT d'ici :
+    # ce sont des produits industriels que le foyer ne rachète plus
+    # (`garde-manger.yaml`, `industriel: true`). Demander « des biscottes ? »
+    # avant un plat reviendrait à les reproposer.
     - quinoa
     - lentilles-corail
     - petit-epeautre
@@ -345,6 +345,9 @@ rayons:
     - ferments-yaourt
     - creme-soja
     - levure-boulangere
+    # T142 — le lait de croissance des deux enfants, en briques UHT d'un litre
+    # (recommandation pédiatrique jusqu'à 3 ans) : rayon épicerie, pas crèmerie.
+    - lait-croissance
     - agar-agar
     - lait-avoine
     - eau-fleur-oranger
@@ -360,6 +363,17 @@ rayons:
     - cocktail-fruits
     - creme-dessert-chocolat
     - confiture-orange
+    # T143 — arrivés avec le relevé dicté du 21/10.
+    - confiture-prune
+    - confiture-mirabelle
+    - confiture-fraise
+    - pate-a-tartiner
+    - sirop-erable
+    - ratatouille-boite
+    - polenta
+    - couscous
+    - udon
+    - graines-tournesol
     # `miel` est générique et reste DISTINCT de `miel-acacia`, que la p. 115
     # demande nommément. Les aliaser ferait croire qu'un pot de miel de placard
     # répond à une recette qui veut de l'acacia.

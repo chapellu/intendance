@@ -17,6 +17,11 @@
 // ouvrant cet écran est « est-ce que ça tient ? » avant d'être « où est la
 // sauce ? ».
 //
+// T141 — L'ÉCRAN S'OUVRE SUR UN PLAN DE LA CUISINE, et l'ordre ci-dessus se
+// relit à la lumière du doigt : on touche d'abord un meuble (le frigo, par
+// défaut), on lit ce qu'il porte, et les lectures générales viennent ensuite.
+// Le dessin vient du catalogue (`garde-manger.yaml`, `plan:`), pas d'ici.
+//
 // UN SEUL GESTE, ET IL EST RÉVERSIBLE : « je n'en ai plus ». C'est le mensonge
 // que la persistance rendait possible — un bocal mangé hors de l'app reste au
 // congélo pour toujours, et l'app continue de chaîner dessus. Il ne s'offre que
@@ -25,7 +30,7 @@
 //
 // Port de `apps/proto-shell/comptoir.js` (`ecranStock`).
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { ajouterLot, base, retirerLot, retirerLots, type LotStock } from "../db";
 import {
   useCatalogue,
@@ -35,7 +40,7 @@ import {
   usePlanchersDenrees,
   useSemaine,
 } from "../db/hooks";
-import { releverZone } from "../db/journal";
+import { corrigerLigne, releverZone } from "../db/journal";
 import { poserPlancher, poserPlancherDenree, retirerPlancherDenree } from "../db/planchers";
 import type { Calcul } from "../model/calcul";
 import { nomDuType } from "../model/plancher";
@@ -47,15 +52,23 @@ import { chemin } from "../nav/routes";
 import { aller } from "../nav/useRoute";
 import { Corps } from "../ui/Coquille";
 import { Icone, iconeEspace } from "../ui/icones";
-import { fmt } from "../ui/format";
 import {
   baisserPlancher,
+  conseilDe,
+  eteint,
   PERIME,
+  perte,
+  pluriel,
   resteAuPlacard,
+  SIGNAUX,
   vueDeLInventaire,
   vueDesPlanchers,
   vueDesPlanchersDenrees,
+  vueDuPlan,
   type LotVue,
+  type PlanVue,
+  type RangementVue,
+  type Signal,
   type MesureZone,
   type PlanchersDenreesVue,
   type PlanchersVue,
@@ -71,11 +84,14 @@ export function Stock() {
 }
 
 function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
-  // LE RANGEMENT OUVERT EST UN REGARD, PAS UNE DÉCISION — donc rien en base,
-  // comme la case dépliée de « La semaine ». Rouvrir l'inventaire sur « Congélo »
-  // parce qu'on y avait jeté un œil mardi cacherait le frigo sans qu'on l'ait
-  // demandé.
-  const [filtre, setFiltre] = useState<Espace | null>(null);
+  // LE RANGEMENT TOUCHÉ SUR LE PLAN — T141. UN REGARD, PAS UNE DÉCISION — donc
+  // rien en base, comme la case dépliée de « La semaine ». L'écran s'ouvre sur le
+  // frigo : c'est là que vit ce qui se mange vite, et c'est la première porte
+  // qu'on ouvre en rentrant.
+  const [sel, setSel] = useState<string>("frigo");
+  // UN FILTRE ÉTEINT, IL NE CACHE PAS. Les meubles restent à leur place ; ceux
+  // qui n'ont rien à dire sur le signal choisi pâlissent.
+  const [signal, setSignal] = useState<Signal | null>(null);
 
   // CE QU'ON VIENT DE RETIRER, LE TEMPS DE SE RAVISER. Un lot supprimé d'un
   // doigt sur un téléphone qu'on tient d'une main est un lot supprimé par
@@ -91,7 +107,9 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
   // un parcours ne peut pas la lire. Changer de rangement la referme.
   const [confirme, setConfirme] = useState<Espace | null>(null);
 
-  const vue = useMemo(() => vueDeLInventaire(jeu, calc, filtre), [jeu, calc, filtre]);
+  // SANS FILTRE D'ESPACE, DEPUIS T141 : le plan compte les pastilles de tous
+  // les rangements à la fois, et c'est le rangement touché qui trie.
+  const vue = useMemo(() => vueDeLInventaire(jeu, calc, null), [jeu, calc]);
 
   // LE PLACARD REJOUÉ. Rien de ce qu'il rend n'existe en base : c'est l'amorce
   // du catalogue plus le journal, et c'est là que T25 devient visible à l'œil.
@@ -124,6 +142,30 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
     () => (placard && denrees ? vueDesPlanchersDenrees(jeu.catalogue, placard, denrees) : null),
     [jeu.catalogue, placard, denrees],
   );
+
+  // LE PLAN — T141. Les produits d'une zone sont ceux que le REJEU y voit, pas
+  // ceux du relevé : une zone relevée vide dit « 0 produit », pas « 6 ».
+  const plan = useMemo(
+    () =>
+      vueDuPlan(
+        jeu.catalogue,
+        jeu.gardeManger,
+        vue.lots,
+        reste ? new Map([...reste.parZone].map(([z, m]) => [z, m.size])) : null,
+      ),
+    [jeu.catalogue, jeu.gardeManger, vue.lots, reste],
+  );
+  const touchables = plan ? [...plan.rangements, ...plan.horsPlan] : [];
+  const choisi = touchables.find((r) => r.id === sel) ?? touchables[0] ?? null;
+  const zoneChoisie = choisi?.zone
+    ? (vue.gardeManger.zones.find((z) => z.id === choisi.zone) ?? null)
+    : null;
+  const conseil = choisi ? conseilDe(jeu.catalogue, choisi, jeu.gardeManger) : [];
+  // LES LOTS QUE LA SEMAINE A RANGÉS AU PLACARD n'ont pas de meuble sur le plan :
+  // ils ne sont pas du relevé, et aucune zone ne les porte. Ils gardent leur
+  // liste, sous le plan, tant qu'il y en a.
+  const auPlacard = vue.lots.filter((l) => l.espace === "placard");
+  const catPlacard = vue.categories.find((c) => c.espace === "placard") ?? null;
 
   const retirer = async (ref: string) => {
     const id = Number(ref);
@@ -167,6 +209,11 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
     });
   };
 
+  const choisir = (id: string) => {
+    setSel(id);
+    setConfirme(null);
+  };
+
   return (
     <Corps plat>
       {/* LE SEUL CHEMIN QUI RESTAIT VERS LA GRILLE, ET IL MENTAIT DEUX FOIS.
@@ -180,32 +227,108 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
           ‹ La semaine
         </button>
       ) : null}
-      <div className="co-h" style={{ marginTop: "var(--space-2)" }}>L’inventaire</div>
-      <div className="co-note" style={{ marginTop: "var(--space-1)" }}>
-        {vue.nomDuFiltre
-          ? `Ce que le ${vue.nomDuFiltre.toLowerCase()} porte, et d’où vient chaque chiffre.`
-          : "Ce qui est chez vous, par où c’est rangé. Chaque rangement porte en mots la fiabilité de son chiffre."}
+      <div className="st-tete">
+        <div className="co-h">Stock</div>
+        {plan ? <span className="co-note">{pluriel(plan.produits, "produit")} suivis</span> : null}
       </div>
 
-      <div className="co-cats">
-        {vue.categories.map((c) => (
-          <button
-            key={c.espace}
-            className={vue.filtre === c.espace ? "on" : ""}
-            onClick={() => setFiltre(vue.filtre === c.espace ? null : c.espace)}
-          >
-            <span style={{ flex: 1 }}>
-              <div className="nom">{c.nom}</div>
-              <div className="note">{c.note}</div>
-            </span>
-            <span className={`co-jauge ${c.conf}`}>
-              {[0, 1, 2, 3].map((k) => (
-                <i key={k} className={k < c.barres ? "on" : ""} />
-              ))}
-            </span>
+      {plan ? (
+        <>
+          <div className="st-chips" role="group" aria-label="Allumer sur le plan">
+            {SIGNAUX.map((x) => (
+              <button
+                key={x.genre}
+                className={`st-chip${signal === x.genre ? " on" : ""}`}
+                aria-pressed={signal === x.genre}
+                onClick={() => setSignal(signal === x.genre ? null : x.genre)}
+              >
+                <span className={`st-puce ${x.genre}`}>{plan.totaux[x.genre]}</span>
+                {x.puceLong}
+              </button>
+            ))}
+          </div>
+          <Plan vue={plan} sel={choisi?.id ?? null} signal={signal} choisir={choisir} />
+        </>
+      ) : null}
+
+      {/* LE RANGEMENT TOUCHÉ, ET LUI SEUL. */}
+      {zoneChoisie ? (
+        <Zone
+          key={zoneChoisie.id}
+          z={zoneChoisie}
+          placard={placard}
+          dedans={reste?.parZone.get(zoneChoisie.id) ?? null}
+          poids={reste?.poidsParZone.get(zoneChoisie.id) ?? ""}
+          connus={vue.gardeManger.connus}
+          conseil={conseil}
+        />
+      ) : choisi && !choisi.zone ? (
+        <Appareil
+          key={choisi.id}
+          nom={choisi.label}
+          espace={choisi.espace}
+          vue={vue}
+          conseil={conseil}
+          retirer={retirer}
+          confirme={confirme}
+          setConfirme={setConfirme}
+          toutPerdre={toutPerdre}
+          depot={calc}
+        />
+      ) : null}
+
+      {/* SANS PLAN — un export plus vieux que l'écran : les zones, toutes, comme avant. */}
+      {!plan
+        ? vue.gardeManger.zones.map((z) => (
+            <Zone
+              key={z.id}
+              z={z}
+              placard={placard}
+              dedans={reste?.parZone.get(z.id) ?? null}
+              poids={reste?.poidsParZone.get(z.id) ?? ""}
+              connus={vue.gardeManger.connus}
+              conseil={[]}
+            />
+          ))
+        : null}
+
+      {/* LE RETOUR EN ARRIÈRE, tant qu'on est sur l'écran — et HORS du panneau :
+          toucher un autre meuble ne doit pas faire oublier ce qu'on vient de
+          retirer. Il dit ce qui est parti : « retiré » sans nom laisse chercher
+          lequel. */}
+      {retire ? (
+        <div className="co-note" style={{ marginTop: "var(--space-3)" }}>
+          {retire.length === 1
+            ? `« ${nomDuType(retire[0]!.type)} » retiré de l’inventaire.`
+            : `${retire.length} lots retirés de l’inventaire.`}{" "}
+          <button className="btn btn-ghost st-petit" onClick={() => void rendre()}>
+            Annuler
           </button>
-        ))}
-      </div>
+        </div>
+      ) : null}
+
+      <GardeManger
+        vue={vue.gardeManger}
+        placard={placard}
+        reste={reste}
+        planchers={planchersDenrees}
+      />
+
+      {auPlacard.length ? (
+        <>
+          <div className="co-kicker" style={{ margin: "var(--space-4) var(--space-1) var(--space-2)" }}>
+            Lots au placard
+          </div>
+          {catPlacard ? (
+            <div className="co-note" style={{ margin: "0 var(--space-1) var(--space-2)" }}>
+              {catPlacard.note}
+            </div>
+          ) : null}
+          {auPlacard.map((l) => (
+            <Lot key={l.cle} lot={l} retirer={retirer} />
+          ))}
+        </>
+      ) : null}
 
       <div className="co-kicker" style={{ margin: "var(--space-4) var(--space-1) var(--space-2)" }}>
         La cuisine est un lieu fini
@@ -229,96 +352,234 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
           </div>
         ))}
       </div>
-      <div className="co-note" style={{ margin: "var(--space-2) var(--space-1) 0" }}>
+      <Pourquoi>
         Deux plafonds par espace&nbsp;: les étagères et les contenants. Le plus bas commande,
         et c’est lui qui passe en terre cuite — laver deux bocaux n’est pas dégager une étagère.
-      </div>
+      </Pourquoi>
 
       <Planchers vue={planchers} />
+    </Corps>
+  );
+}
 
+/* ──────────────────────────────────────────────── le plan de la cuisine — T141 */
+
+/**
+ * Deux murs vus depuis la porte : les étagères en bois à gauche, en
+ * perspective, et le mur de l'évier au fond, à plat.
+ *
+ * LE DESSIN VIENT DU CATALOGUE (`garde-manger.yaml`, `plan:`), PAS DU CODE.
+ * Déplacer un meuble est une ligne de YAML, que `verifier.py` relit : un
+ * rangement sous les 44 px d'un doigt, ou qui en chevauche un autre, ne passe
+ * pas. Chaque rangement est un vrai bouton — un lecteur d'écran lit son nom, ce
+ * qu'il porte et ses signaux.
+ */
+function Plan({
+  vue,
+  sel,
+  signal,
+  choisir,
+}: {
+  vue: PlanVue;
+  sel: string | null;
+  signal: Signal | null;
+  choisir: (id: string) => void;
+}) {
+  const { gauche, fond } = vue.murs;
+  const meuble = (r: RangementVue) => (
+    <button
+      key={r.id}
+      className={`st-meuble t-${r.teinte}${r.id === sel ? " sel" : ""}${eteint(r, signal) ? " eteint" : ""}`}
+      style={{ left: r.x, top: r.y, width: r.w, height: r.h }}
+      aria-label={r.aria}
+      aria-pressed={r.id === sel}
+      onClick={() => choisir(r.id)}
+    >
+      <span className="court">{r.court}</span>
+      <span className="puces" aria-hidden="true">
+        {SIGNAUX.filter((x) => r.signaux[x.genre]).map((x) => (
+          <span key={x.genre} className={`st-puce ${x.genre}`}>
+            {x.puce}
+            {r.signaux[x.genre] > 1 ? ` ${r.signaux[x.genre]}` : ""}
+          </span>
+        ))}
+      </span>
+    </button>
+  );
+  const mur = (m: "gauche" | "fond") => [
+    ...vue.decor
+      .filter((d) => d.mur === m)
+      .map((d, i) => (
+        <div
+          key={`d${i}`}
+          className={`st-decor t-${d.teinte}`}
+          style={{ left: d.x, top: d.y, width: d.w, height: d.h }}
+          aria-hidden="true"
+        >
+          {d.label}
+        </div>
+      )),
+    ...vue.rangements.filter((r) => r.mur === m).map(meuble),
+  ];
+  const haut = Math.max(gauche.h, fond.h);
+  return (
+    <>
       <div
-        style={{
-          display: "flex",
-          alignItems: "baseline",
-          justifyContent: "space-between",
-          margin: "var(--space-4) var(--space-1) var(--space-2)",
-        }}
+        className="st-plan"
+        role="group"
+        aria-label="Plan de la cuisine, touchez un rangement"
+        style={{ width: gauche.w + fond.w, height: haut + 56 }}
       >
-        <span className="co-kicker">
-          {vue.nomDuFiltre ? `Lots · ${vue.nomDuFiltre}` : "Tous les lots"}
-        </span>
-        {vue.filtre ? (
-          <button className="co-retour" onClick={() => setFiltre(null)}>
-            Tout voir
-          </button>
+        <div className="st-sol" />
+        <div className="st-mur gauche" style={{ width: gauche.w, height: gauche.h }}>
+          {mur("gauche")}
+        </div>
+        <div className="st-mur fond" style={{ left: gauche.w, width: fond.w, height: fond.h }}>
+          {mur("fond")}
+        </div>
+        <div className="st-murs">
+          À gauche&nbsp;: {gauche.label} · au fond&nbsp;: {fond.label}
+        </div>
+      </div>
+      {vue.horsPlan.length ? (
+        <div className="st-horsplan">
+          {vue.horsPlan.map((r) => (
+            <button
+              key={r.id}
+              className={`btn btn-secondary${r.id === sel ? " on" : ""}`}
+              aria-label={r.aria}
+              aria-pressed={r.id === sel}
+              onClick={() => choisir(r.id)}
+            >
+              {r.label}
+            </button>
+          ))}
+        </div>
+      ) : null}
+      <div className="st-legende">
+        {SIGNAUX.map((x) => (
+          <span key={x.genre}>
+            <span className={`st-puce ${x.genre}`}>{x.puce}</span>
+            {x.legende}
+          </span>
+        ))}
+      </div>
+    </>
+  );
+}
+
+/** Les notes longues, derrière un « Pourquoi ? » : elles restent là, elles ne
+ *  passent plus devant le plan. Fermées à chaque visite — c'est un regard. */
+function Pourquoi({ children }: { children: ReactNode }) {
+  const [ouvert, setOuvert] = useState(false);
+  return (
+    <div className="st-pourquoi">
+      <button className="btn btn-ghost st-petit" aria-expanded={ouvert} onClick={() => setOuvert(!ouvert)}>
+        Pourquoi&nbsp;?
+      </button>
+      {ouvert ? <div className="co-note">{children}</div> : null}
+    </div>
+  );
+}
+
+/** L'encart vert du panneau : le conseil de rangement de ce qui est ici. */
+function Conseil({ phrases }: { phrases: readonly string[] }) {
+  if (!phrases.length) return null;
+  return (
+    <div className="st-conseil">
+      {phrases.map((p) => (
+        <p key={p}>{p}</p>
+      ))}
+    </div>
+  );
+}
+
+/**
+ * Le frigo ou le congélateur, touché sur le plan : les lots du DÉPÔT rangés là.
+ *
+ * CE N'EST PAS UNE ZONE DU GARDE-MANGER, et le panneau ne fait pas semblant :
+ * pas de « Relever » (un lot se constate un par un), mais « Je n'en ai plus »
+ * sur chaque lot constaté et, depuis T105, « tout est perdu » pour la porte
+ * entière.
+ */
+function Appareil({
+  nom,
+  espace,
+  vue,
+  conseil,
+  retirer,
+  confirme,
+  setConfirme,
+  toutPerdre,
+  depot,
+}: {
+  nom: string;
+  espace: Espace;
+  vue: ReturnType<typeof vueDeLInventaire>;
+  conseil: readonly string[];
+  retirer: (ref: string) => Promise<void>;
+  confirme: Espace | null;
+  setConfirme: (e: Espace | null) => void;
+  toutPerdre: (refs: readonly string[]) => Promise<void>;
+  depot: Calcul;
+}) {
+  const ici = vue.lots.filter((l) => l.espace === espace);
+  const cat = vue.categories.find((c) => c.espace === espace) ?? null;
+  const p = perte(depot.depot, espace);
+  return (
+    <div className="co-espace st-panneau">
+      <div className="nom" style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+        <span>{nom}</span>
+        {cat ? (
+          <span className={`co-jauge ${cat.conf}`} aria-hidden="true">
+            {[0, 1, 2, 3].map((k) => (
+              <i key={k} className={k < cat.barres ? "on" : ""} />
+            ))}
+          </span>
         ) : null}
       </div>
+      <div className="co-note">{cat ? cat.note : "Rien de constaté ici."}</div>
+      <Conseil phrases={conseil} />
 
-      {vue.lots.length ? (
-        vue.lots.map((l) => <Lot key={l.cle} lot={l} retirer={retirer} />)
+      {ici.length ? (
+        ici.map((l) => <Lot key={l.cle} lot={l} retirer={retirer} />)
       ) : (
         <div className="co-vide">Rien ici.</div>
       )}
 
       {/* T105 — UN GESTE PAR RANGEMENT, sous la liste qu'il vide : on voit ce
           qui part avant de le dire parti. */}
-      {vue.perte ? (
-        confirme === vue.perte.espace ? (
+      {p ? (
+        confirme === p.espace ? (
           <div className="co-note" style={{ marginTop: "var(--space-3)" }}>
-            {vue.perte.question}{" "}
-            <button
-              className="btn btn-ghost"
-              style={{ fontSize: 12.5, padding: "2px 8px" }}
-              onClick={() => void toutPerdre(vue.perte!.refs)}
-            >
-              {vue.perte.confirmer}
+            {p.question}{" "}
+            <button className="btn btn-ghost st-petit" onClick={() => void toutPerdre(p.refs)}>
+              {p.confirmer}
             </button>{" "}
-            <button
-              className="btn btn-ghost"
-              style={{ fontSize: 12.5, padding: "2px 8px" }}
-              onClick={() => setConfirme(null)}
-            >
+            <button className="btn btn-ghost st-petit" onClick={() => setConfirme(null)}>
               Non
             </button>
           </div>
         ) : (
           <button
-            className="btn btn-ghost"
-            style={{ fontSize: 12.5, padding: "2px 8px", marginTop: "var(--space-3)" }}
-            onClick={() => setConfirme(vue.perte!.espace)}
+            className="btn btn-ghost st-petit"
+            style={{ marginTop: "var(--space-3)" }}
+            onClick={() => setConfirme(p.espace)}
           >
-            {vue.perte.bouton}
+            {p.bouton}
           </button>
         )
-      ) : null}
-
-      {/* LE RETOUR EN ARRIÈRE, tant qu'on est sur l'écran. Il dit ce qui est
-          parti : « retiré » sans nom laisse chercher lequel. */}
-      {retire ? (
-        <div className="co-note" style={{ marginTop: "var(--space-3)" }}>
-          {retire.length === 1
-            ? `« ${nomDuType(retire[0]!.type)} » retiré de l’inventaire.`
-            : `${retire.length} lots retirés de l’inventaire.`}{" "}
-          <button
-            className="btn btn-ghost"
-            style={{ fontSize: 12.5, padding: "2px 8px" }}
-            onClick={() => void rendre()}
-          >
-            Annuler
-          </button>
-        </div>
       ) : null}
 
       {/* CE QUE LA SEMAINE PRODUIT N'EST PAS À VOUS — au sens où aucun doigt ne
           l'a constaté. Le dire une fois vaut mieux que de laisser chercher
           pourquoi certaines lignes n'ont pas de bouton. */}
-      {vue.lots.some((l) => !l.ref) ? (
-        <div className="co-note" style={{ margin: "var(--space-2) var(--space-1) 0" }}>
+      {ici.some((l) => !l.ref) ? (
+        <div className="co-note" style={{ marginTop: "var(--space-2)" }}>
           Les lots cuisinés cette semaine sont calculés&nbsp;: ils se retirent en changeant ce
           qui est posé, pas ici.{" "}
           <a
-            className="btn btn-ghost"
-            style={{ fontSize: 12.5, padding: "2px 8px" }}
+            className="btn btn-ghost st-petit"
             href={chemin(JOURS_VISIBLES ? { ecran: "semaine" } : { ecran: "poses" })}
           >
             {JOURS_VISIBLES ? "La semaine ›" : "Les posés ›"}
@@ -326,22 +587,12 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
         </div>
       ) : null}
 
-      <div className="co-encart" style={{ marginTop: "var(--space-3)" }}>
-        <Icone nom="info" />
-        <span>
-          <b>Compté</b>&nbsp;: la quantité vient de l’export, elle est juste. <b>Estimé</b>&nbsp;:
-          déduite d’un plat cuisiné cette semaine, à vérifier de l’œil. <b>En bloc</b>&nbsp;: pas
-          compté du tout — on sait seulement que ça existe.
-        </span>
-      </div>
-
-      <GardeManger
-        vue={vue.gardeManger}
-        placard={placard}
-        reste={reste}
-        planchers={planchersDenrees}
-      />
-    </Corps>
+      <Pourquoi>
+        <b>Compté</b>&nbsp;: la quantité vient de l’export, elle est juste. <b>Estimé</b>&nbsp;:
+        déduite d’un plat cuisiné cette semaine, à vérifier de l’œil. <b>En bloc</b>&nbsp;: pas
+        compté du tout — on sait seulement que ça existe.
+      </Pourquoi>
+    </div>
   );
 }
 
@@ -534,18 +785,16 @@ function Planchers({ vue }: { vue: PlanchersVue | null }) {
 }
 
 /**
- * Le garde-manger — les placards eux-mêmes, et la matière première dedans.
+ * Le garde-manger — ce qui ne se lit pas rangement par rangement.
  *
- * IL VIENT APRÈS LES LOTS, ET L'ORDRE EST ENCORE L'ARGUMENT. Les lots sont ce
- * que la semaine bouge ; le garde-manger est ce qui ne bouge pas. On ouvre cet
- * écran pour savoir si la semaine tient, et la réponse est en haut ; on descend
- * ici pour savoir ce qu'il reste de farine, ce qui est une autre question et une
- * question plus rare.
+ * T141 : LES ZONES ONT QUITTÉ CETTE SECTION POUR LE PLAN. Restent ici les
+ * lectures transversales — ce qu'il en reste en une phrase, ce qui se mange en
+ * premier, ce qui est mal rangé, ce qu'on veut toujours avoir —, parce qu'elles
+ * traversent les placards et qu'aucun meuble ne les porte seul.
  *
- * LES ALERTES SONT EN TÊTE PARCE QU'ELLES NE PARLENT PAS DE DONNÉES. Tout le
- * reste de cet écran décrit un état ; ces lignes-là demandent d'aller déplacer un
- * sachet. C'est la seule chose de l'inventaire qui appelle un geste dans la
- * cuisine plutôt qu'un doigt sur le téléphone.
+ * LES ALERTES NE PARLENT PAS DE DONNÉES. Tout le reste de cet écran décrit un
+ * état ; ces lignes-là demandent d'aller déplacer un sachet. Le plan les montre
+ * déjà en ↔ ; la liste reste, parce qu'elle dit QUOI déplacer d'un seul regard.
  */
 function GardeManger({
   vue,
@@ -561,49 +810,13 @@ function GardeManger({
   if (!vue.zones.length) return null;
   return (
     <>
-      <div className="co-kicker" style={{ margin: "var(--space-4) var(--space-1) var(--space-2)" }}>
-        Le garde-manger
-      </div>
-      {/* CE QU'IL EN RESTE, PUIS CE QU'IL EST — T106. La phrase disait « 53
-          denrées … 16 kg » : c'était le relevé du 26/08, lu comme l'état du
-          placard, et un placard relevé vide la gardait mot pour mot. Le chiffre
-          vient maintenant du rejeu, et le relevé est nommé comme tel : c'est
-          lui qui donne le « sur combien ». */}
-      {reste ? (
-        <div className="co-note" style={{ margin: "0 var(--space-1) var(--space-2)" }}>
-          {reste.restent} des {reste.relevees} denrées du relevé
-          {reste.releve ? ` du ${reste.releve}` : ""} sont encore là
-          {reste.pesees ? `, dont ${reste.pesees} pesées pour ${reste.poids}` : ""}.{" "}
-          {vue.zones.length} rangements{vue.volume ? `, ${vue.volume} mesurés` : ""}.
-        </div>
-      ) : null}
-
-      {/* UNE ALERTE PAR LIGNE, PARCE QU'UNE ALERTE EST UN GESTE. Enfilées avec
-          des points médians elles formaient un pavé de sept lignes qu'on ne lit
-          pas — et une liste qu'on ne lit pas vaut une liste vide. */}
-      {vue.alertes.length ? (
-        <div className="co-encart" style={{ marginBottom: "var(--space-3)", display: "block" }}>
-          <div style={{ display: "flex", gap: "var(--space-1)", alignItems: "baseline" }}>
-            <Icone nom="info" />
-            <b>À déplacer</b>
-          </div>
-          <ul style={{ margin: "var(--space-1) 0 0", paddingLeft: "1.1em" }}>
-            {vue.alertes.map((a) => (
-              <li key={a} style={{ marginTop: 2 }}>
-                {a}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
-
       {/* DEUX LISTES, DEUX GESTES, ET IL NE FAUT PAS LES CONFONDRE. « À
           déplacer » dit de ranger autrement — un sachet à mettre ailleurs.
           « À manger en premier » dit de cuisiner. Le même oignon peut être dans
           les deux, et ce n'est pas une redite : il est mal rangé ET il court. */}
       {vue.aSauver.length ? (
         <>
-          <div className="co-kicker" style={{ margin: "0 var(--space-1) var(--space-2)" }}>
+          <div className="co-kicker" style={{ margin: "var(--space-4) var(--space-1) var(--space-2)" }}>
             À manger en premier
           </div>
           {vue.aSauver.map((s) => (
@@ -622,6 +835,12 @@ function GardeManger({
                     règle vient de #29 : l'app nomme ce qu'il faudrait savoir
                     faire, elle n'envoie personne au magasin. */}
                 {s.debloquer ? <div className="ou">à débloquer&nbsp;: {s.debloquer}</div> : null}
+                <Corriger
+                  nom={s.nom}
+                  ingredient={s.id}
+                  unites={placard?.parIngredient.get(s.id)?.unites ?? 0}
+                  zone={null}
+                />
               </span>
               <span>
                 <div className={`src ${s.urgence === "haute" ? "estime" : ""}`}>
@@ -630,37 +849,59 @@ function GardeManger({
               </span>
             </div>
           ))}
-          <div className="co-note" style={{ margin: "var(--space-2) var(--space-1) var(--space-3)" }}>
+          <Pourquoi>
             « Poser un plat » remonte les recettes qui finissent les <b>paquets entamés</b> — et
             eux seuls, depuis T60. Le frais reste nommé ici, il n’est plus payé au classement&nbsp;:
             un aromate qu’on met partout — l’oignon est dans 42&nbsp;% des plats — sera consommé de
             toute façon, et le pousser revenait à pousser tout ce qui contient un oignon. Mal rangé
-            se lit plus haut, dans « À déplacer »&nbsp;: c’est un geste de rangement, pas un dîner.
-          </div>
+            se lit plus bas, dans « À déplacer »&nbsp;: c’est un geste de rangement, pas un dîner.
+          </Pourquoi>
         </>
       ) : null}
 
-      <PlanchersDenrees vue={planchers} />
+      {/* UNE ALERTE PAR LIGNE, PARCE QU'UNE ALERTE EST UN GESTE. Enfilées avec
+          des points médians elles formaient un pavé de sept lignes qu'on ne lit
+          pas — et une liste qu'on ne lit pas vaut une liste vide. */}
+      {vue.alertes.length ? (
+        <div className="co-encart" style={{ margin: "var(--space-3) 0", display: "block" }}>
+          <div style={{ display: "flex", gap: "var(--space-1)", alignItems: "baseline" }}>
+            <Icone nom="info" />
+            <b>À déplacer</b>
+          </div>
+          <ul style={{ margin: "var(--space-1) 0 0", paddingLeft: "1.1em" }}>
+            {vue.alertes.map((a) => (
+              <li key={a} style={{ marginTop: 2 }}>
+                {a}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
 
-      {vue.zones.map((z) => (
-        <Zone
-          key={z.id}
-          z={z}
-          placard={placard}
-          dedans={reste?.parZone.get(z.id) ?? null}
-          poids={reste?.poidsParZone.get(z.id) ?? ""}
-        />
-      ))}
-
-      <div className="co-encart" style={{ marginTop: "var(--space-2)" }}>
-        <Icone nom="info" />
-        <span>
-          Ces chiffres sont <b>déduits</b>, pas relevés&nbsp;: le stock descend quand on termine une
-          recette, et rien d’autre ne le regarde. C’est pour ça que chaque ligne dit de quand elle
-          date. <b>Relever une zone</b> remet tout ce qu’elle contient à ce que vos yeux voient — un
-          quart d’heure achète des semaines de silence.
-        </span>
+      <div className="co-kicker" style={{ margin: "var(--space-4) var(--space-1) var(--space-2)" }}>
+        Le garde-manger
       </div>
+      {/* CE QU'IL EN RESTE, PUIS CE QU'IL EST — T106. La phrase disait « 53
+          denrées … 16 kg » : c'était le relevé du 26/08, lu comme l'état du
+          placard, et un placard relevé vide la gardait mot pour mot. Le chiffre
+          vient maintenant du rejeu, et le relevé est nommé comme tel : c'est
+          lui qui donne le « sur combien ». */}
+      {reste ? (
+        <div className="co-note" style={{ margin: "0 var(--space-1) var(--space-2)" }}>
+          {reste.restent} des {reste.relevees} denrées du relevé
+          {reste.releve ? ` du ${reste.releve}` : ""} sont encore là
+          {reste.pesees ? `, dont ${reste.pesees} pesées pour ${reste.poids}` : ""}.{" "}
+          {vue.zones.length} rangements{vue.volume ? `, ${vue.volume} mesurés` : ""}.
+        </div>
+      ) : null}
+      <Pourquoi>
+        Ces chiffres sont <b>déduits</b>, pas relevés&nbsp;: le stock descend quand on termine une
+        recette, et rien d’autre ne le regarde. C’est pour ça que chaque ligne dit de quand elle
+        date. <b>Relever une zone</b> remet tout ce qu’elle contient à ce que vos yeux voient — un
+        quart d’heure achète des semaines de silence.
+      </Pourquoi>
+
+      <PlanchersDenrees vue={planchers} />
     </>
   );
 }
@@ -832,6 +1073,8 @@ function Zone({
   placard,
   dedans,
   poids,
+  connus,
+  conseil,
 }: {
   z: ZoneVue;
   placard: Rejeu | null;
@@ -840,13 +1083,56 @@ function Zone({
   dedans: ReadonlyMap<string, MesureZone> | null;
   /** Le poids de ce qui y reste, pas celui du relevé. */
   poids: string;
+  /** Ce que l'éditeur peut ajouter (T139). */
+  connus: readonly { id: string; nom: string }[];
+  /** L'encart vert : comment ranger ce qui est ici (T141). */
+  conseil: readonly string[];
 }) {
   const [releve, setReleve] = useState<Map<string, number> | null>(null);
+  // T139 — les lignes que le relevé du catalogue ne porte pas : celles qu'un
+  // œil a déjà rangées ici, puis celles qu'on ajoute dans l'éditeur.
+  const [extras, setExtras] = useState<string[]>([]);
+  const [cherche, setCherche] = useState("");
 
   const etatDe = (ing: string) => placard?.parIngredient.get(ing) ?? null;
+  const ajoutes = dedans ? [...dedans].filter(([, m]) => m.ajoute).map(([id]) => id) : [];
+  const auReleve = new Set(z.denrees.map((d) => d.ingredient));
 
-  const ouvrir = () =>
-    setReleve(new Map(z.denrees.map((d) => [d.ingredient, etatDe(d.ingredient)?.unites ?? 0])));
+  const ouvrir = () => {
+    setExtras(ajoutes);
+    setCherche("");
+    setReleve(
+      new Map([
+        ...z.denrees.map((d): [string, number] => [d.ingredient, etatDe(d.ingredient)?.unites ?? 0]),
+        ...ajoutes.map((id): [string, number] => [id, dedans?.get(id)?.unites ?? 0]),
+      ]),
+    );
+  };
+
+  const ajouter = (id: string) => {
+    if (!releve) return;
+    if (!auReleve.has(id) && !extras.includes(id)) setExtras([...extras, id]);
+    setReleve(new Map(releve).set(id, Math.max(1, releve.get(id) ?? 0)));
+    setCherche("");
+  };
+  const q = cherche.trim().toLowerCase();
+  const trouves =
+    q.length < 2 ? [] : connus.filter((c) => c.nom.includes(q) || c.id.includes(q)).slice(0, 6);
+
+  // Une ligne de l'éditeur : − n +. Les denrées du relevé et les ajouts
+  // partagent le même geste, et le même compte en paquets.
+  const ligneDEditeur = (cle: string, ingredient: string, nom: string, note?: string) => (
+    <div key={cle} className="co-lot">
+      <span style={{ flex: 1 }}>
+        <div className="nom">{nom}</div>
+        {note ? <div className="ou">{note}</div> : null}
+      </span>
+      <Compteur
+        n={releve?.get(ingredient) ?? 0}
+        poser={(n) => releve && setReleve(new Map(releve).set(ingredient, n))}
+      />
+    </div>
+  );
 
   const valider = async () => {
     if (!releve) return;
@@ -861,8 +1147,8 @@ function Zone({
   };
 
   return (
-    <div className="co-espace" style={{ marginBottom: "var(--space-2)" }}>
-      <div className="nom" style={{ display: "flex", justifyContent: "space-between" }}>
+    <div className="co-espace st-panneau">
+      <div className="nom" style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
         <span>
           {z.nom}
           {z.volume ? <span className="co-note"> · {z.volume}</span> : null}
@@ -880,44 +1166,33 @@ function Zone({
         {z.ambiance ? ` · ${z.ambiance}` : ""}
         {poids ? ` · ${poids}` : ""}
       </div>
+      <Conseil phrases={conseil} />
 
       {releve ? (
         <>
-          {z.denrees.map((d) => (
-            <div key={d.cle} className="co-lot">
-              <span style={{ flex: 1 }}>
-                <div className="nom">{d.nom}</div>
-                {d.note ? <div className="ou">{d.note}</div> : null}
-              </span>
-              <span style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
-                <button
-                  className="btn btn-secondary"
-                  style={{ padding: "2px 10px" }}
-                  onClick={() =>
-                    setReleve(
-                      new Map(releve).set(
-                        d.ingredient,
-                        Math.max(0, (releve.get(d.ingredient) ?? 0) - 1),
-                      ),
-                    )
-                  }
-                >
-                  −
-                </button>
-                <b style={{ minWidth: "1.5em", textAlign: "center" }}>
-                  {releve.get(d.ingredient) ?? 0}
-                </b>
-                <button
-                  className="btn btn-secondary"
-                  style={{ padding: "2px 10px" }}
-                  onClick={() =>
-                    setReleve(new Map(releve).set(d.ingredient, (releve.get(d.ingredient) ?? 0) + 1))
-                  }
-                >
-                  +
-                </button>
-              </span>
-            </div>
+          {z.denrees.map((d) => ligneDEditeur(d.cle, d.ingredient, d.nom, d.note || undefined))}
+          {extras.map((id) => ligneDEditeur(`+${id}`, id, id.replace(/-/g, " "), "ajouté"))}
+          {/* T139 — CE QUE LE RELEVÉ DU 26/08 NE CONNAÎT PAS. On choisit dans
+              le catalogue, jamais en texte libre : un id qu'aucune recette ne
+              lit ne retirerait aucune ligne de courses. */}
+          <div className="co-chercher" style={{ marginTop: "var(--space-2)" }}>
+            <input
+              type="search"
+              aria-label={`ajouter une denrée à ${z.nom}`}
+              placeholder="Ajouter une denrée…"
+              value={cherche}
+              onChange={(ev) => setCherche(ev.target.value)}
+            />
+          </div>
+          {trouves.map((c) => (
+            <button
+              key={c.id}
+              className="btn btn-ghost"
+              style={{ fontSize: 12, padding: "2px 8px", marginTop: 4, marginRight: 4 }}
+              onClick={() => ajouter(c.id)}
+            >
+              + {c.nom}
+            </button>
           ))}
           <button
             className="btn btn-primary btn-block"
@@ -927,14 +1202,25 @@ function Zone({
             Valider le relevé — ce qui est à 0 n’y est plus
           </button>
         </>
-      ) : !dedans ? null : z.denrees.some((d) => dedans.has(d.ingredient)) ? (
+      ) : !dedans ? null : dedans.size ? (
         // CE QUI RESTE ICI, ET RIEN D'AUTRE — T107. La ligne retombait sur
         // `d.quantite` quand le rejeu ne portait plus l'ingrédient : la zone
         // qu'on venait de déclarer vide relisait son contenu du 26/08. Le
         // relevé du catalogue dit ce que la zone EST — c'est la liste que
         // l'éditeur ouvre, pour qu'on puisse y remettre ce qui revient — pas
         // ce qu'il en reste.
-        z.denrees.filter((d) => dedans.has(d.ingredient)).map((d) => {
+        [
+          ...z.denrees.filter((d) => dedans.has(d.ingredient)),
+          // T139 — ce qu'un œil a rangé ici sans que le relevé le connaisse.
+          ...ajoutes.map((id) => ({
+            cle: `+${id}`,
+            ingredient: id,
+            nom: id.replace(/-/g, " "),
+            note: "ajouté au relevé",
+            alerte: "",
+            etat: "",
+          })),
+        ].map((d) => {
           const e = etatDe(d.ingredient);
           const m = dedans.get(d.ingredient)!;
           return (
@@ -946,13 +1232,16 @@ function Zone({
                     même zone se ressemblent à s’y méprendre. */}
                 {d.note ? <div className="ou">{d.note}</div> : null}
                 {d.alerte ? <div className="ou">⚠ {d.alerte}</div> : null}
+                {/* T142 — on finit ce qu'on a, on ne le rachète pas. */}
+                {"industriel" in d && d.industriel ? <div className="ou industriel">{d.industriel}</div> : null}
                 {/* LE CHIFFRE ET SA DATE, TOUJOURS LISIBLES DESSOUS. C'est ce
                     qui remplace un score de confiance : trois mots se lisent,
                     un score se croit. */}
                 {e?.vuLe ? <div className="ou">vu le {e.vuLe}</div> : null}
+                <Corriger nom={d.nom} ingredient={e?.ingredient ?? d.ingredient} unites={m.unites} zone={m.zone} />
               </span>
               <span>
-                <div className="q">{quantiteDite(m)}</div>
+                <div className="q">{m.quantite}</div>
                 <div className={`src ${e && e.confiance !== "sur" ? "estime" : ""}`}>
                   {e ? MOT_CONFIANCE[e.confiance] : d.etat}
                 </div>
@@ -967,11 +1256,81 @@ function Zone({
   );
 }
 
-/** Ce qu'on sait dire d'un ingrédient rejoué : des grammes quand tout est
- *  chiffré, un compte sinon. « 1 » est une information, pas un tiret. */
-function quantiteDite(e: MesureZone): string {
-  if (e.grammes == null) return `${e.unites}`;
-  return e.grammes >= 1000 ? `${fmt(e.grammes / 1000)} kg` : `${fmt(e.grammes)} g`;
+/** − n + : un compte de PAQUETS entiers, jamais de grammes (T139). */
+function Compteur({ n, poser }: { n: number; poser: (n: number) => void }) {
+  return (
+    <span style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
+      <button
+        className="btn btn-secondary"
+        style={{ padding: "2px 10px" }}
+        onClick={() => poser(Math.max(0, n - 1))}
+      >
+        −
+      </button>
+      <b style={{ minWidth: "1.5em", textAlign: "center" }}>{n}</b>
+      <button
+        className="btn btn-secondary"
+        style={{ padding: "2px 10px" }}
+        onClick={() => poser(n + 1)}
+      >
+        +
+      </button>
+    </span>
+  );
+}
+
+/**
+ * Corriger UNE ligne du garde-manger, sur place — T139.
+ *
+ * « Je n'en ai plus » en un geste, comme sur un lot du dépôt ; « Corriger »
+ * ouvre le compte, prérempli de ce que le rejeu croit. L'un et l'autre écrivent
+ * une observation à UN constat (`corrigerLigne`) : les autres denrées de la
+ * zone ne bougent pas, ce que seul un relevé complet a le droit de faire.
+ */
+function Corriger({
+  nom,
+  ingredient,
+  unites,
+  zone,
+}: {
+  nom: string;
+  ingredient: string;
+  unites: number;
+  zone: string | null;
+}) {
+  const [n, setN] = useState<number | null>(null);
+  const poser = async (v: number) => {
+    await corrigerLigne(base, ingredient, v, zone);
+    setN(null);
+  };
+  const petit = { fontSize: 12, padding: "2px 8px" };
+  if (n === null)
+    return (
+      <div style={{ display: "flex", gap: "var(--space-1)", marginTop: 4 }}>
+        <button className="btn btn-ghost" style={petit} aria-label={`corriger : ${nom}`} onClick={() => setN(unites)}>
+          Corriger
+        </button>
+        <button
+          className="btn btn-ghost"
+          style={petit}
+          aria-label={`je n’en ai plus : ${nom}`}
+          onClick={() => void poser(0)}
+        >
+          Je n’en ai plus
+        </button>
+      </div>
+    );
+  return (
+    <div style={{ display: "flex", gap: "var(--space-1)", alignItems: "center", marginTop: 4 }}>
+      <Compteur n={n} poser={setN} />
+      <button className="btn btn-secondary" style={petit} onClick={() => void poser(n)}>
+        C’est ça
+      </button>
+      <button className="btn btn-ghost" style={petit} onClick={() => setN(null)}>
+        Annuler
+      </button>
+    </div>
+  );
 }
 
 function Lot({ lot, retirer }: { lot: LotVue; retirer: (ref: string) => Promise<void> }) {

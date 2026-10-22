@@ -34,6 +34,7 @@ import { detailDuGeste, detailDuGesteSansJours, gesteDuJour, titreDuGeste } from
 import { vueDesCourses } from "./courses.vue";
 import { vueAPrevoir } from "./prevoir.vue";
 import { restesPerimes } from "./stock.vue";
+import { partsPourDemain } from "./repas.vue";
 
 export interface Tache {
   cle: string;
@@ -77,6 +78,8 @@ export interface Tache {
   /** Ce que la carte du plat à lancer disait là — posé avec lui, pour que la
    *  liste ne demande que ce qui manque (`DecisionCreneau.ici`). */
   ici?: string[];
+  /** T142 — les parts que « Je lance ça » met de côté pour demain midi. */
+  midi?: number;
 }
 
 export interface CarteFacette {
@@ -163,6 +166,7 @@ export function vueDuCockpit(jeu: Jeu, calc: Calcul, etat: EtatDuJour): VueCockp
             route: { ecran: "ce-soir" },
             lancer: etat.soir.cartes[0]!.plat.id,
             ici: etat.soir.cartes[0]!.ici,
+            ...(partsPourDemain(etat.soir.cartes[0]) ? { midi: partsPourDemain(etat.soir.cartes[0])! } : {}),
           }
         : {
             cle: "ce-soir",

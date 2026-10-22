@@ -10,7 +10,8 @@
 
 import type { EtatCourse } from "../db";
 import { cleDeLArticle } from "../db";
-import type { LignePanier } from "../model/calcul";
+import { boitesAAcheter, type LignePanier } from "../model/calcul";
+import { pluriel } from "../model/paquet";
 import { UNITE_PLANCHER, type LignePlancher } from "../model/plancherGardeManger";
 import { parRayon } from "../model/scoring";
 import type { Catalogue, Provenance } from "../model/types";
@@ -159,8 +160,10 @@ export function phraseDuPlancher(p: LignePlancher, plats: number): string {
   const bouts: string[] = [];
   if (plats > 0) bouts.push(plats > 1 ? `${plats} plats` : "1 plat");
   if (p.usage === "apero") bouts.push("pour l’apéro");
+  else if (p.hebdo) bouts.push("frais de la semaine");
   else if (p.fond) bouts.push("pour le fond");
-  bouts.push(`sous son plancher — ${p.a} sur ${p.niveau}`);
+  // T144 — le fruit de la semaine n'a pas de plancher : la ligne dit ce qui reste.
+  bouts.push(p.sansPlancher ? `il en reste ${p.a}` : `sous son plancher — ${p.a} sur ${p.niveau}`);
   // T137 — ACHETÉ N'EST PAS « JAMAIS VU ». Rentrer ne restaure pas la
   // confiance (la règle de l'entrée tient), mais l'app sait d'où vient l'article.
   if (p.confiance !== "sur")
@@ -173,11 +176,16 @@ export function phraseDuPlancher(p: LignePlancher, plats: number): string {
 /** La quantité d'un article, dite comme elle se compte. Les unités d'achat
  *  s'accordent — « 2 unité » se lit comme un bug, et une liste de courses qui a
  *  l'air cassée ne se croit plus. Les autres unités ne s'accordent pas : on
- *  écrit « 500 g », jamais « 500 gs ». */
-export const quantiteDeLArticle = (l: LignePanier): string =>
-  l.unit === UNITE_PLANCHER
-    ? `${l.qty} ${UNITE_PLANCHER}${l.qty > 1 ? "s" : ""}`
-    : `${fmt(l.qty)} ${l.unit}`;
+ *  écrit « 500 g », jamais « 500 gs ».
+ *
+ *  T140 : une ligne qu'un plat prend en boîtes entières s'achète en boîtes —
+ *  « 2 boîtes (570 g) » —, puisque c'est ce qui partira dans la casserole. */
+export const quantiteDeLArticle = (l: LignePanier): string => {
+  if (l.unit === UNITE_PLANCHER) return `${l.qty} ${UNITE_PLANCHER}${l.qty > 1 ? "s" : ""}`;
+  const n = boitesAAcheter(l);
+  if (n != null && l.boite) return `${n} ${pluriel(l.boite.nom, n)} (${fmt(l.qty)} ${l.unit})`;
+  return `${fmt(l.qty)} ${l.unit}`;
+};
 
 /**
  * Ce que le doigt fait, selon l'endroit où l'on est.

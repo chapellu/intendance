@@ -24,6 +24,7 @@ import { bandeEnMots } from "../ui/phrases";
  *  UNE SEULE DÉFINITION, celle du plancher : deux copies finiraient par dire
  *  deux noms pour le même bocal. */
 export { nomDuType };
+import { phraseDuMidi } from "./repas.vue";
 
 /** « de lentilles », « d'escalopes » — l'élision que l'œil attend. */
 export const de = (nom: string): string => (/^[aeiouyéèêàâîôûœ]/i.test(nom) ? `d’${nom}` : `de ${nom}`);
@@ -209,6 +210,6 @@ export function ligneDuCockpit(p: PropositionDuSoir): { titre: string; detail: s
   const pourquoi = raison(c);
   return {
     titre: `Ce soir : ${c.plat.titre}`,
-    detail: [ligneAchats(c), ligneHeure(c), pourquoi, attend].filter(Boolean).join(" · "),
+    detail: [ligneAchats(c), ligneHeure(c), phraseDuMidi(c.midi), pourquoi, attend].filter(Boolean).join(" · "),
   };
 }

@@ -1,0 +1,77 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-21 (T142) — aucune source
+# extérieure. Une des fournées du goûter : cuite une fois, tranchée, congelée
+# en sachets, sortie la veille.
+#
+# LA BANANE TACHÉE EST L'INGRÉDIENT, PAS UN DÉFAUT. C'est elle qui sucre : le
+# sucre complet n'est là qu'en appoint, et c'est la recette que la fournée
+# propose quand les bananes de la coupe passent.
+
+recipe:
+  id: banana-bread-avoine
+  title: Banana bread à l'avoine
+  lang: fr
+  format: cake
+  yields:
+    portions_eq: 4          # 12 tranches : quatre goûters pour les deux enfants
+  lot_entier: true          # un moule à cake ne se coupe pas en deux
+  time_min_total: 60
+  active_min: 15
+
+  creneaux: [gouter, petit-dejeuner]
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: banane, name: bananes bien mûres, qty: 3, unit: pièce}
+    - {id: oeufs, name: œufs, qty: 2, unit: pièce}
+    - {id: beurre, name: beurre fondu, qty: 60, unit: g}
+    - {id: sucre-complet, name: sucre complet, qty: 40, unit: g}
+    - {id: farine-complete, name: farine semi-complète (T80), qty: 150, unit: g}
+    - {id: flocons-avoine, name: petits flocons d'avoine, qty: 80, unit: g}
+    - {id: poudre-a-lever, name: levure chimique, qty: 1, unit: sachet}
+    - {id: cannelle, name: cannelle, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 180 °C et beurrer un moule à cake"
+      needs: [bake]
+      uses: []
+      time_min: 2
+      attended: false
+    - id: ecraser
+      action: "Écraser les bananes à la fourchette"
+      needs: []
+      uses: [banane]
+      time_min: 3
+      kid: {age_min_months: 30, task: "écraser les bananes à la fourchette"}
+    - id: melanger
+      action: "Ajouter les œufs, le beurre fondu et le sucre, puis la farine, les flocons, la levure et la cannelle"
+      needs: []
+      uses: [oeufs, beurre, sucre-complet, farine-complete, flocons-avoine, poudre-a-lever, cannelle]
+      time_min: 6
+    - id: cuire
+      action: "Verser dans le moule et cuire 45 minutes, jusqu'à ce qu'une lame ressorte sèche"
+      needs: [bake]
+      uses: []
+      time_min: 45
+      attended: false
+    - id: trancher
+      action: "Laisser refroidir sur une grille, trancher, et congeler les tranches par trois en sachet"
+      astuce: "Trois tranches par sachet : un goûter pour les deux enfants, sorti la veille au soir."
+      needs: []
+      uses: []
+      time_min: 4
+
+  emits:
+    - kind: reste-plat
+      type: banana-bread
+      qty_band: 3-repas
+      keeps: {frigo_days: 3, congelo: true}
+      note: "un sachet de trois tranches par goûter, sorti la veille au soir"
+
+  plan_b: []

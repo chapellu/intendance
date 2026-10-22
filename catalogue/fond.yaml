@@ -33,46 +33,87 @@
 # LES ÉPICES ET LE FOND DE PLACARD (huile, sel, cumin, bouillon…) NE SONT PAS
 # ICI : ils sont dans `rayons.placard`, qu'on vérifie sans compter.
 
-date: 2026-10-18
+# T142 — RELU LE 2026-10-21 avec la décision des trois repas (petit-déjeuner et
+# goûter des enfants, déjeuner des quatre). À reporter au brouillon.
+date: 2026-10-21
 
 denrees:
-  # ── Légumineuses sèches — la base à découvrir
+  # T142 (décision du 2026-10-21) — LES TROIS AUTRES REPAS, dans l'esprit de
+  # Marie Chioca : petit-déjeuner et goûter des enfants faits maison, déjeuner
+  # des quatre sur le dîner de la veille. Le fond grossit en conséquence, et
+  # `jusqua` dit jusqu'où remonter quand on rachète : `minimum` déclenche la
+  # ligne, `jusqua` la chiffre. Absent, on remonte au minimum.
+  #
+  # `hebdo: true` — LE FRAIS DE LA SEMAINE (fruits, yaourts, lait). Il ne se
+  # garde pas des mois : il se rachète chaque semaine, et c'est la seule porte
+  # par laquelle une denrée d'une famille `fond: false` entre ici.
+
+  # ── Les bases de Chioca — pain, porridge, gâteaux du goûter
+  - {ingredient: farine-complete, minimum: 1, jusqua: 2, unite: sac de 2 kg (semi-complète T80 à T110)}
+  - {ingredient: levure-boulangere, minimum: 4, unite: sachet}
+  # T145 — l'année simulée : 21 matins sans flocons, 29 sans beurre. Le
+  # porridge prend 40 g par matin et les cookies en vident autant : 1 kg au
+  # moins, 1,5 kg au rachat. Le beurre : deux plaquettes au moins, trois.
+  - {ingredient: flocons-avoine, minimum: 2, jusqua: 3, unite: paquet de 500 g (petits flocons)}
+  - {ingredient: son-avoine, minimum: 1, unite: paquet de 250 g}
+  - {ingredient: sucre-complet, minimum: 1, unite: paquet de 500 g}
+  - {ingredient: beurre, minimum: 2, jusqua: 3, unite: plaquette de 250 g}
+  - {ingredient: oeufs, minimum: 3, jusqua: 4, unite: boîte de 6}
+  # Le fromage EN BLOC, râpé à la maison, remplace le sachet de fromage râpé :
+  # l'id reste `fromage-rape` parce que c'est ce que les recettes demandent.
+  - {ingredient: fromage-rape, minimum: 1, unite: "morceau de 400 g (en bloc, à râper)"}
+  - {ingredient: lait-croissance, minimum: 6, jusqua: 10, unite: brique de 1 L, hebdo: true}
+  # T145 — deux pots au matin, deux au goûter : ≈ 25 pots la semaine.
+  - {ingredient: yaourt-nature, minimum: 6, jusqua: 7, unite: pack de 4, hebdo: true}
+  # ── Les fruits de la semaine — le porridge, le goûter, la compote
+  # T145 — la pomme du goûter : un sachet de 1,5 kg la semaine, en saison. Sa
+  # ligne vient de `hebdo` (`fruitsDeLaSemaine`), comme la banane.
+  - {ingredient: pommes, minimum: 1, unite: "sachet de 1,5 kg", hebdo: true}
+  # T144 — LE FRUIT DU MATIN ET DU GOÛTER : ≈ 14 pièces la semaine pour deux
+  # enfants. Une banane écrasée dans le porridge chaque matin (sept), une pomme
+  # au goûter (le sachet ci-dessus), et des poires EN SAISON pour varier et pour
+  # la compote. Un fruit frais ne porte pas de plancher (il ne se compte pas au
+  # relevé) : la ligne vient de `hebdo`, et hors saison elle se tait.
+  - {ingredient: banane, minimum: 3, jusqua: 7, unite: pièce, hebdo: true}
+  - {ingredient: poires, minimum: 2, jusqua: 4, unite: pièce, hebdo: true}
+  # ── Légumineuses sèches — la base à découvrir (×2 : le dîner nourrit aussi le midi)
   - {ingredient: lentilles-corail, minimum: 2, unite: sachet de 500 g}
-  - {ingredient: lentilles-seches, minimum: 2, unite: sachet de 500 g}
+  - {ingredient: lentilles-seches, minimum: 3, unite: sachet de 500 g}
   - {ingredient: pois-casses, minimum: 1, unite: sachet de 500 g}
-  - {ingredient: pois-chiches, minimum: 2, unite: sachet de 500 g ou bocal}
+  # Deux sachets secs ET deux bocaux : un seul id au corpus, donc quatre unités.
+  - {ingredient: pois-chiches, minimum: 4, unite: sachet de 500 g ou bocal}
   - {ingredient: haricots-blancs, minimum: 1, unite: sachet de 500 g}
   - {ingredient: haricots-rouges, minimum: 1, unite: sachet de 500 g}
-  # ── Féculents — la routine, gardée
-  - {ingredient: pates, minimum: 2, unite: paquet}
-  - {ingredient: gnocchis, minimum: 2, unite: paquet}
-  - {ingredient: riz, minimum: 1, unite: paquet de 1 kg}
+  # ── Féculents — demi-complets ; les gnocchis sortent du fond (T142)
+  - {ingredient: pates, minimum: 2, unite: paquet de 500 g (demi-complètes)}
+  - {ingredient: riz, minimum: 1, jusqua: 2, unite: paquet de 1 kg (demi-complet)}
   - {ingredient: semoule, minimum: 1, unite: paquet de 500 g}
-  - {ingredient: flocons-avoine, minimum: 1, unite: paquet de 500 g}
-  - {ingredient: pomme-de-terre, minimum: 1, unite: sac de 2 kg}
+  - {ingredient: pomme-de-terre, minimum: 3, unite: 1 kg en vrac}
   # ── Congélateur — les légumes de toute la famille
   - {ingredient: epinards-surgeles, minimum: 2, unite: sachet}
   - {ingredient: petits-pois-surgeles, minimum: 2, unite: sachet}
-  - {ingredient: haricots-verts-surgeles, minimum: 1, unite: sachet}
+  - {ingredient: haricots-verts-surgeles, minimum: 2, unite: sachet}
   - {ingredient: champignons-surgeles, minimum: 1, unite: sachet}
-  - {ingredient: legumes-surgeles, minimum: 1, unite: sachet de poêlée}
+  - {ingredient: legumes-surgeles, minimum: 2, unite: sachet de poêlée}
   # ── Conserves et bocaux
-  - {ingredient: tomates-pelees, minimum: 3, unite: boîte}
+  # T140 : le poids d'une boîte, pour que le plat la prenne ENTIÈRE (voir
+  # `conservation.yaml:entame_se_finit`). Maïs, thon, maquereaux : les boîtes
+  # du relevé du 26/08 ; tomates : le format de 400 g que le corpus appelle
+  # quinze fois. À reporter au brouillon. La brique de coco attend son volume.
+  - {ingredient: tomates-pelees, minimum: 6, jusqua: 10, unite: boîte de 400 g}
   - {ingredient: concentre-tomate, minimum: 1, unite: tube}
-  - {ingredient: lait-coco, minimum: 2, unite: brique}
-  - {ingredient: thon-boite, minimum: 2, unite: boîte}
-  - {ingredient: maquereaux-boite, minimum: 1, unite: boîte}
-  - {ingredient: mais, minimum: 1, unite: boîte}
+  - {ingredient: lait-coco, minimum: 3, unite: brique}
+  - {ingredient: thon-boite, minimum: 4, jusqua: 6, unite: boîte de 140 g}
+  - {ingredient: maquereaux-boite, minimum: 1, unite: boîte de 169 g}
+  - {ingredient: mais, minimum: 1, unite: boîte de 285 g}
   # ── Frais de base — rachetés le samedi, et qui se gardent des semaines
-  - {ingredient: oignon, minimum: 1, unite: filet de 1 kg}
-  - {ingredient: ail, minimum: 1, unite: tête}
-  - {ingredient: carottes, minimum: 1, unite: sachet de 1 kg}
-  - {ingredient: oeufs, minimum: 1, unite: boîte de 6}
-  - {ingredient: fromage-rape, minimum: 1, unite: sachet de 200 g}
-  - {ingredient: yaourt-nature, minimum: 1, unite: pack de 4}
+  - {ingredient: oignon, minimum: 2, unite: filet de 1 kg}
+  - {ingredient: ail, minimum: 2, unite: tête}
+  - {ingredient: carottes, minimum: 2, unite: sachet de 1 kg}
   - {ingredient: citron, minimum: 2, unite: pièce}
 
-# Les dix dîners que le brouillon promet « sans courses ». CE N'EST PAS UNE
+# Les dîners que le brouillon promet (neuf depuis T142 : les gnocchis sont
+# sortis du fond, et leur dîner avec eux) « sans courses ». CE N'EST PAS UNE
 # LISTE DE SOUHAITS : le vérificateur exige que chacun se cuisine avec le fond
 # et le placard SEULS, sans un ingrédient de plus. Le jour où une recette
 # gagne un ingrédient hors fond, la promesse du brouillon devient fausse et
@@ -81,7 +122,6 @@ diners:
   - {plat: dahl-lentilles-corail, titre: "Dahl de lentilles corail, lait de coco, épinards surgelés, riz"}
   - {plat: pates-bolognaise-lentilles, titre: "Pâtes à la bolognaise de lentilles vertes et tomates pelées"}
   - {plat: soupe-pois-casses-carottes, titre: "Soupe de pois cassés aux carottes"}
-  - {plat: gnocchis-petits-pois-champignons, titre: "Gnocchis poêlés, petits pois et champignons surgelés, fromage râpé"}
   - {plat: curry-pois-chiches, titre: "Curry de pois chiches"}
   - {plat: chili-haricots-rouges, titre: "Chili de haricots rouges (trempés la veille), riz"}
   - {plat: haricots-blancs-tomate-oeufs, titre: "Haricots blancs mijotés à la tomate, œufs pochés dedans"}

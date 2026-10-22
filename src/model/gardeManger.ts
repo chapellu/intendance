@@ -106,6 +106,10 @@ const alias = (catalogue: Catalogue, id: string): string => catalogue.rayons.ali
  * peut-être d'être payée. On la perdra sans le voir jusqu'à ce que les quantités
  * existent.
  */
+/** T139 — au-delà de deux semaines de garde, une denrée fraîche n'est plus
+ *  « à manger en premier » : elle attend son plat sans se perdre. */
+const SE_GARDE_JOURS = 14;
+
 const ECOULEMENT: Partial<Record<Etat, Urgence>> = { entame: "moyenne" };
 
 /**
@@ -218,6 +222,8 @@ export interface ASauver {
   urgence: Urgence;
   /** Où c'est rangé, en toutes lettres — on ne sauve pas ce qu'on ne trouve pas. */
   zone: string;
+  /** La même, par son id — ce que le plan de la cuisine allume (T141). */
+  zoneId: string;
   /** Pourquoi ça presse, dit en français. */
   raison: string;
   /**
@@ -262,13 +268,33 @@ export function aSauver(catalogue: Catalogue, reste: Iterable<string>): ASauver[
     if (d.etat === "frais") return "frais, ne se garde pas";
     return "paquet entamé";
   };
+  // T139 — CE QUI SE GARDE NE PRESSE PAS. L'urgence de l'export dit « haute »
+  // sur la pomme de terre, l'échalote et les pignons — l'écran affichait
+  // « pressé » sur des denrées qui tiennent des semaines (légumes de garde) ou
+  // des mois (fruits secs). Elle mêle deux causes, et une seule est un dîner :
+  //   — la BARRIÈRE ROMPUE (paquet entamé) : on la finit, elle reste ici ;
+  //   — le FRAIS : seulement si sa famille de garde (`conservation.yaml`) tient
+  //     moins de deux semaines. Ail, oignon, échalote, pomme de terre tiennent
+  //     six semaines : ils sortent.
+  // Le MAUVAIS RANGEMENT (humidité du sous-évier, lumière de l'étagère) n'est
+  // pas une raison de manger : c'est « À déplacer », qui le dit déjà. Une
+  // denrée que seule sa zone abîme — les pignons — ne figure donc plus ici.
+  const tient = new Map<string, number>();
+  for (const f of catalogue.garde ?? [])
+    for (const id of f.ids) tient.set(alias(catalogue, id), f.fenetreJours);
+  const presse = (d: Denree): boolean =>
+    d.etat === "entame" ||
+    (d.etat === "frais" && (tient.get(alias(catalogue, d.ingredient)) ?? 0) < SE_GARDE_JOURS);
   return catalogue.gardeManger.denrees
-    .filter((d) => d.urgence !== "basse" && restent.has(alias(catalogue, d.ingredient)))
+    .filter(
+      (d) => d.urgence !== "basse" && presse(d) && restent.has(alias(catalogue, d.ingredient)),
+    )
     .map((d) => ({
       ingredient: d.ingredient,
       nom: d.ingredient.replace(/-/g, " "),
       urgence: d.urgence,
       zone: zones.get(d.zone)?.label ?? d.zone,
+      zoneId: d.zone,
       raison: raison(d),
       conserver: d.conservations.filter((c) => c.acquis),
       verrouille: d.conservations.filter((c) => !c.acquis),

@@ -68,6 +68,7 @@
 import { classeDe, contexte } from "./journal";
 import type { Classe, EtatIngredient, Rejeu } from "./journal";
 import type { Catalogue, Usage } from "./types";
+import { deSaison } from "./saisons";
 
 /* ════════════════════════════════════════════ ce que l'app sait compter (T46) */
 
@@ -226,9 +227,23 @@ export function posables(catalogue: Catalogue, rejeu: Rejeu): Posable[] {
   for (const e of rejeu.parIngredient.values()) out.set(e.ingredient, vu(e));
   for (const e of rejeu.vus.values()) if (!out.has(e.ingredient)) out.set(e.ingredient, vu(e));
   const ctx = contexte(catalogue);
+  // T144 — LE FRUIT DE LA SEMAINE N'EST PAS UN PLANCHER À PROPOSER : sa ligne
+  // vient de `hebdo` (`fruitsDeLaSemaine`), pas d'un doigt.
+  const hebdos = new Set((catalogue.fond?.denrees ?? []).filter((d) => d.hebdo).map((d) => catalogue.rayons.aliases[d.ingredient] ?? d.ingredient));
   for (const id of minimums.keys())
-    if (!out.has(id)) out.set(id, posable(id, classeDe(ctx, id, []), 0));
+    if (!out.has(id) && !fruitHebdo(catalogue, ctx, id, null, hebdos.has(id))) out.set(id, posable(id, classeDe(ctx, id, []), 0));
+  // T142 — UN PRODUIT INDUSTRIEL N'A PAS DE PLANCHER À PROPOSER : un plancher,
+  // c'est une ligne de courses, et le foyer ne le rachète plus.
+  for (const id of industriels(catalogue)) out.delete(id);
   return [...out.values()].sort((a, b) => a.nom.localeCompare(b.nom, "fr"));
+}
+
+/** T142 — les ids du relevé que le foyer ne rachète plus (`industriel: true`). */
+export function industriels(catalogue: Catalogue): Set<string> {
+  const aliases = catalogue.rayons.aliases;
+  return new Set(
+    catalogue.gardeManger.denrees.filter((d) => d.industriel).map((d) => aliases[d.ingredient] ?? d.ingredient),
+  );
 }
 
 /* ═══════════════════════════════════════════════ ce qui part au magasin (T41) */
@@ -239,8 +254,13 @@ export interface LignePlancher {
   niveau: number;
   /** Ce qu'il y en a, en unités d'achat. */
   a: number;
-  /** Combien il en manque pour tenir le plancher. Toujours ≥ 1. */
+  /** Combien il en manque pour tenir le plancher — jusqu'au `jusqua` du fond
+   *  quand il en a un (T142). Toujours ≥ 1. */
   manque: number;
+  /** T142 — le frais de la semaine (`fond.yaml`, `hebdo: true`). */
+  hebdo?: boolean;
+  /** T144 — une ligne du fruit de la semaine : aucun plancher ne la porte. */
+  sansPlancher?: boolean;
   /**
    * Peut-on croire le chiffre ?
    *
@@ -282,18 +302,25 @@ export function sousLeurPlancher(
 ): LignePlancher[] {
   const par = usages(catalogue);
   const duFond = minimumsDuFond(catalogue);
+  const aliases = catalogue.rayons.aliases;
+  const fond = new Map((catalogue.fond?.denrees ?? []).map((d) => [aliases[d.ingredient] ?? d.ingredient, d]));
   const lignes: LignePlancher[] = [];
 
   for (const p of planchers) {
     const e = rejeu.parIngredient.get(p.ingredient) ?? rejeu.vus.get(p.ingredient) ?? null;
     const a = e?.unites ?? 0;
     if (a >= p.niveau) continue;
+    // T142 — LE MINIMUM DÉCLENCHE, `jusqua` CHIFFRE. Sous le plancher, on
+    // remonte jusqu'où le fond le dit, jamais en dessous du plancher posé.
+    const d = fond.get(p.ingredient);
+    const cible = Math.max(p.niveau, d?.jusqua ?? 0);
     lignes.push({
       ingredient: p.ingredient,
       nom: nomDeLaDenree(p.ingredient),
       niveau: p.niveau,
       a,
-      manque: p.niveau - a,
+      manque: cible - a,
+      ...(d?.hebdo ? { hebdo: true } : {}),
       // JAMAIS VU DU TOUT = INCONNU, et pas « sûr » par défaut. Un plancher peut
       // survivre à la denrée sur laquelle il a été posé — le relevé d'une zone
       // efface les lots, pas les décisions — et prétendre être sûr d'un placard
@@ -310,4 +337,59 @@ export function sousLeurPlancher(
   // le rayon la réordonnera de toute façon ; cet ordre-ci est celui qui survit
   // quand on n'en montre que les trois premières lignes.
   return lignes.sort((a, b) => b.manque - a.manque || a.nom.localeCompare(b.nom, "fr"));
+}
+
+/** Une denrée du fond que seul `hebdo` fait entrer : elle ne se compte pas au
+ *  relevé, donc aucun plancher ne la porte (`fruitsDeLaSemaine`). */
+// T145 — ET LE FRUIT DE SAISON AUSSI, MÊME COMPTABLE. La pomme s'achète en
+// sachet, donc elle se comptait : sa ligne attendait un plancher validé d'un
+// doigt, que personne ne pose — 46 goûters sans pomme sur l'année simulée. Un
+// fruit `hebdo` qui a une saison (`saisons.yaml`) est du frais de la semaine.
+const fruitHebdo = (
+  catalogue: Catalogue,
+  ctx: ReturnType<typeof contexte>,
+  id: string,
+  e: EtatIngredient | null,
+  hebdo: boolean,
+): boolean => hebdo && (!comptable(e?.classe ?? classeDe(ctx, id, [])) || deSaison(catalogue, id, 1) !== null);
+
+/**
+ * LE FRUIT DE LA SEMAINE, SANS PLANCHER — T144.
+ *
+ * Une banane ne se compte pas au relevé (`comptable`), donc aucun plancher ne
+ * peut la porter — et 30 matins simulés sont passés sans fruit. Le fond la
+ * déclare `hebdo` : la ligne vient de lui, jusqu'à son `jusqua`, et pas hors
+ * saison (des poires en juin). Les denrées comptables du frais (lait, yaourts,
+ * pommes) restent des PROPOSITIONS de plancher, validées d'un doigt.
+ *
+ * La liste les met APRÈS les planchers : `[...sousLeurPlancher(…), ...ceci]`.
+ */
+export function fruitsDeLaSemaine(catalogue: Catalogue, rejeu: Rejeu, mois: number): LignePlancher[] {
+  const aliases = catalogue.rayons.aliases;
+  const par = usages(catalogue);
+  const ctx = contexte(catalogue);
+  const lignes: LignePlancher[] = [];
+  for (const d of catalogue.fond?.denrees ?? []) {
+    const id = aliases[d.ingredient] ?? d.ingredient;
+    const e = rejeu.parIngredient.get(id) ?? rejeu.vus.get(id) ?? null;
+    if (!fruitHebdo(catalogue, ctx, id, e, !!d.hebdo)) continue;
+    if (deSaison(catalogue, id, mois) === false) continue;
+    const a = e?.unites ?? 0;
+    if (a >= d.minimum) continue;
+    lignes.push({
+      ingredient: id,
+      nom: nomDeLaDenree(id),
+      niveau: d.minimum,
+      a,
+      manque: Math.max(d.minimum, d.jusqua ?? 0) - a,
+      hebdo: true,
+      sansPlancher: true,
+      confiance: e?.confiance ?? "inconnu",
+      vuLe: e?.vuLe ?? null,
+      rentreLe: rejeu.rentres?.get(id) ?? null,
+      usage: par.get(id) ?? null,
+      fond: true,
+    });
+  }
+  return lignes;
 }

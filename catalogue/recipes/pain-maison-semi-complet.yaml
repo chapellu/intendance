@@ -1,0 +1,87 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-22 (T144) — aucune source
+# extérieure. Le pain des tartines du matin : un pain semi-complet à la levure
+# de boulanger, cuit en moule, tranché refroidi et congelé en deux sachets. Une
+# tranche par enfant et par matin, sortie la veille ou grillée congelée.
+#
+# POURQUOI UNE RECETTE DE PLUS QUAND LA P. 19 DE CHIOCA EXISTE : son pain de mie
+# demande du son d'avoine et du sirop d'agave, et ne range qu'un lot de trois
+# repas. Celui-ci ne prend que le fond (farine T80 à T110, levure, sel) et
+# range deux sachets de six tranches — six matins.
+
+recipe:
+  id: pain-maison-semi-complet
+  title: Pain maison semi-complet
+  lang: fr
+  format: cake
+  yields:
+    portions_eq: 6          # 12 tranches : six matins pour les deux enfants
+  lot_entier: true          # un moule ne se coupe pas en deux
+  time_min_total: 150
+  active_min: 15
+
+  creneaux: [petit-dejeuner]
+
+  apports:
+    proteine: aucune
+    feculent: pain
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-complete, name: farine semi-complète (T80 à T110), qty: 500, unit: g}
+    - {id: levure-boulangere, name: levure de boulanger déshydratée, qty: 1, unit: sachet}
+    - {id: eau, name: eau tiède, qty: 330, unit: ml}
+    - {id: sel, name: sel fin, qty: 9, unit: g, seasoning: true}
+    - {id: huile-olive, name: huile d'olive, qty: 1, unit: c. à s., seasoning: true}
+
+  steps:
+    - id: delayer
+      action: "Délayer la levure dans l'eau tiède, puis la verser sur la farine et le sel"
+      astuce: "Jamais au-delà de 40 °C : la chaleur tue la levure."
+      needs: []
+      uses: [levure-boulangere, eau, farine-complete, sel]
+      time_min: 3
+    - id: petrir
+      action: "Pétrir dix minutes à la main, jusqu'à une pâte lisse, avec l'huile"
+      needs: []
+      uses: [huile-olive]
+      time_min: 10
+      kid: {age_min_months: 30, task: "pétrir un morceau de pâte"}
+    - id: lever
+      action: "Mettre en moule à cake huilé, couvrir d'un torchon et laisser doubler"
+      needs: []
+      uses: []
+      time_min: 2
+      attente_min: 75
+      attended: false
+    - id: cuire
+      action: "Cuire 40 minutes à 210 °C, jusqu'à ce que le dessous sonne creux"
+      needs: [bake]
+      uses: []
+      time_min: 40
+      attended: false
+    - id: trancher
+      action: "Laisser refroidir sur une grille, trancher, et congeler par six tranches en sachet"
+      astuce: "Une tranche par enfant et par matin : un sachet fait trois petits-déjeuners."
+      needs: []
+      uses: []
+      time_min: 5
+
+  emits:
+    - kind: base
+      type: pain-de-mie-maison
+      hors_table: true
+      qty_band: 3-repas
+      qty: {amount: 350, unit: g}
+      keeps: {frigo_days: 0, congelo: true}
+      note: "un sachet de six tranches, trois matins ; grillé congelé, ou sorti la veille"
+    - kind: base
+      type: pain-de-mie-maison
+      hors_table: true
+      qty_band: 3-repas
+      qty: {amount: 350, unit: g}
+      keeps: {frigo_days: 0, congelo: true}
+      note: "le second sachet de six tranches"
+
+  plan_b: []

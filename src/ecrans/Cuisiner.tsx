@@ -27,10 +27,11 @@ import {
   useObjet,
 } from "../db/reglages";
 import { base } from "../db/schema";
-import { echelleTexte, facteurAffiche, type Calcul } from "../model/calcul";
+import { facteurAffiche, quantiteACuire, type Calcul } from "../model/calcul";
+import { estUneFournee, lotsEnBoites, platDuSoir } from "../model/repas";
 import { joue, type Jeu } from "../model/jeu";
 import { heureDe } from "../model/heures";
-import type { Etape, Foyer, Plat } from "../model/types";
+import type { Catalogue, Etape, Foyer, Plat } from "../model/types";
 import { ENTREE_CUISINE, type CleCreneau } from "../nav/routes";
 import { aller } from "../nav/useRoute";
 import { armer, arreter, demanderBandeau, desarmer, plateforme, promesse } from "../pwa/alarme";
@@ -149,6 +150,10 @@ function Fiche({
   const temps = tempsDuPlat(steps);
   const parts = (i >= 0 ? jeu.parts[i] : undefined) ?? jeu.catalogue.foyer.parts;
   const f = (i >= 0 ? calc.facteurs[i] : undefined) || facteurAffiche(p, parts);
+  // T142 — le midi de demain, mis de côté ce soir : compris dans `parts`, et
+  // c'est la sortie qui le range.
+  const midi = (i >= 0 && !lecture ? jeu.midi?.[i] : null) ?? 0;
+  const pSoir = platDuSoir(p, midi);
 
   /**
    * Terminer une recette JOURNALISE la cuisson — T26.
@@ -180,8 +185,9 @@ function Fiche({
     await journaliserCuisson(base, {
       jour: creneau.jour,
       repas: creneau.repas,
-      plat: p,
+      plat: pSoir,
       parts,
+      midi,
       rangement,
       sortie: marque,
       foyer: jeu.catalogue.foyer,
@@ -254,11 +260,12 @@ function Fiche({
   if (sortie)
     return (
       <Sortie
-        p={p}
-        parts={parts}
+        p={pSoir}
+        parts={parts - midi}
+        sachets={estUneFournee(jeu.catalogue, p)}
         f={f}
         foyer={jeu.catalogue.foyer}
-        stock={jeu.stock}
+        stock={lotsEnBoites(jeu.catalogue, jeu.stock, new Date())}
         revenir={() => setSortie(false)}
         repondre={repondre}
       />
@@ -345,6 +352,7 @@ function Fiche({
       <Guide
         p={p}
         foyer={jeu.catalogue.foyer}
+        catalogue={jeu.catalogue}
         steps={steps}
         etape={etape}
         repas={creneau.repas}
@@ -520,6 +528,7 @@ function Sortie({
   f,
   foyer,
   stock,
+  sachets = false,
   revenir,
   repondre,
 }: {
@@ -529,10 +538,12 @@ function Sortie({
   foyer: Foyer;
   /** Ce que le dépôt porte déjà — ses boîtes ne sont pas libres (T109). */
   stock: Jeu["stock"];
+  /** T142 — une fournée part en sachets de congélation, pas en boîtes. */
+  sachets?: boolean;
   revenir: () => void;
   repondre: (rangement: RangementLot[] | null, marque?: "suivie" | "autre") => void;
 }) {
-  const v = vueDeLaSortie(p, parts, f, foyer, stock);
+  const v = vueDeLaSortie(p, parts, f, foyer, stock, sachets);
   return (
     <>
       <div className="co-fiche-tete">
@@ -712,7 +723,7 @@ function Ingredients({
           return (
             <div key={x.ref} className="l">
               <span className="nom">{x.nom}</span>
-              <span className="q">{echelleTexte(x, f)}</span>
+              <span className="q">{quantiteACuire(jeu.catalogue, x, f)}</span>
               <span className={`p ${prov.acheter ? "acheter" : ""}`}>{prov.label}</span>
             </div>
           );
@@ -814,6 +825,7 @@ function Deroule({
 function Guide({
   p,
   foyer,
+  catalogue,
   steps,
   etape,
   repas,
@@ -825,6 +837,8 @@ function Guide({
 }: {
   p: Plat;
   foyer: Foyer;
+  /** T140 : pour dire « 1 boîte entière » à l'étape comme dans la liste. */
+  catalogue: Catalogue;
   steps: Etape[];
   etape: number;
   repas: string;
@@ -865,7 +879,7 @@ function Guide({
   const avecMinuteur = e.minutes > 0 && minuteurUtile(e);
   const m = minuteur(etat ?? null, e.minutes, maintenant);
   const dernier = etape === steps.length - 1;
-  const quantites = quantitesDeLEtape(p, etape, f);
+  const quantites = quantitesDeLEtape(p, etape, f, catalogue);
 
   const bouger = (d: number) => {
     if (d > 0 && dernier) {

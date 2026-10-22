@@ -11,7 +11,7 @@
 
 import { journaliserEntree } from "./journal";
 import { cleArticle, type Base, type EtatCourse } from "./schema";
-import type { LignePanier } from "../model/calcul";
+import { boitesAAcheter, type LignePanier } from "../model/calcul";
 import { UNITE_PLANCHER } from "../model/plancherGardeManger";
 
 export const cleDeLArticle = (a: LignePanier): string => cleArticle(a.id, a.unit);
@@ -100,8 +100,14 @@ async function entrerAuStock(base: Base, lignes: readonly LignePanier[]): Promis
       // et le plancher redemanderait aussitôt ce qu'on vient de poser dans le
       // placard. Partout ailleurs le raisonnement du dessous tient : la liste
       // dit « 500 g de pâtes », pas « un paquet de 500 g ».
-      unites: l.unit === UNITE_PLANCHER ? Math.max(1, Math.round(l.qty)) : 1,
-      parUnite: EN_MASSE.has(l.unit) ? { amount: l.qty, unit: l.unit } : null,
+      // T140 : SAUF LES BOÎTES ENTIÈRES. Là, la liste a bien compté des
+      // boîtes — « 2 boîtes (570 g) » —, et le placard en reçoit deux de 285 g.
+      ...(boitesAAcheter(l) != null
+        ? { unites: boitesAAcheter(l)!, parUnite: { ...l.boite!.contenu } }
+        : {
+            unites: l.unit === UNITE_PLANCHER ? Math.max(1, Math.round(l.qty)) : 1,
+            parUnite: EN_MASSE.has(l.unit) ? { amount: l.qty, unit: l.unit } : null,
+          }),
       zone: null,
       etat: "sec" as const,
     })),

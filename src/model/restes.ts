@@ -52,6 +52,7 @@ export const mangeALaTable = (e: Emit): boolean =>
  * part des portions qui restent pour le reste.
  */
 export function multiplicateur(p: Plat, e: Emit, f: number, parts: number, foyerParts: number): number {
+  if (e.midi) return 1;
   if (!mangeALaTable(e)) return f;
   const avant = p.portions - foyerParts;
   if (avant <= 0) return f;
@@ -88,4 +89,37 @@ export function restesApresTable(
     });
   });
   return out;
+}
+
+/* ─────────────────────────────── le déjeuner de demain — T142 */
+
+/**
+ * Le reste du midi, quand le plat n'en déclare pas.
+ *
+ * Un dîner cuisiné plus grand laisse le midi dans la cocotte, que le plat ait
+ * prévu un reste ou non. Quand il en déclare un que la table entame
+ * (`mangeALaTable`), `restesApresTable` le fait déjà grossir : on n'ajoute
+ * rien, deux restes pour une seule cocotte se compteraient deux fois. Sinon,
+ * ce reste-ci, chiffré en repas (`midi: true` : il ne suit pas le facteur).
+ */
+export function resteDuMidi(p: Plat, parts: number): Emit {
+  return {
+    type: p.id,
+    kind: "reste-plat",
+    qty: null,
+    band: `${Math.max(1, Math.round(parts))}-repas`,
+    espace: "frigo",
+    note: "le déjeuner de demain",
+    gardeFrigo: 2,
+    congelo: false,
+    horsTable: false,
+    midi: true,
+  };
+}
+
+/** Le plat tel qu'on le cuisine ce soir : avec le reste du midi s'il le faut. */
+export function platDuSoir(p: Plat, midi: number | null | undefined): Plat {
+  if (!midi || midi <= 0) return p;
+  if (p.emits.some((e) => e.kind === "reste-plat" && mangeALaTable(e))) return p;
+  return { ...p, emits: [...p.emits, resteDuMidi(p, midi)] };
 }

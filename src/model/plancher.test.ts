@@ -401,7 +401,7 @@ describe("la proposition le dit sur la carte", () => {
     const rang = (l: typeof avant, id: string) => l.findIndex((c) => c.plat.id === id);
     const p = producteurDe("reste-roti");
     const apres = offre(jeu, jeu.choix, slot(), {
-      rejeu: { parIngredient: new Map(), vus: new Map(), retraits: [], finis: new Map(), rentres: new Map() },
+      rejeu: { parIngredient: new Map(), vus: new Map(), retraits: [], finis: new Map(), rentres: new Map(), ajoutes: new Map() },
       passe: { repondu: new Map(), depense: new Map() },
       cuisinesRecemment: new Set<string>(),
       planchers: [{ type: "reste-roti", niveau: 1 }],

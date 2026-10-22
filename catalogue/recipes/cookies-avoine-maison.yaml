@@ -1,0 +1,75 @@
+# Recette du foyer, rédigée pour ce dépôt le 2026-10-21 (T142) — aucune source
+# extérieure. Une fournée du goûter : vingt cookies, congelés crus ou cuits en
+# sachets, qui remplacent les biscuits du commerce.
+
+recipe:
+  id: cookies-avoine-maison
+  title: Cookies à l'avoine
+  lang: fr
+  format: cake
+  yields:
+    portions_eq: 5          # 20 cookies : cinq goûters de quatre
+  lot_entier: true
+  time_min_total: 35
+  active_min: 15
+
+  creneaux: [gouter]
+
+  apports:
+    proteine: oeuf
+    feculent: cereale
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: flocons-avoine, name: petits flocons d'avoine, qty: 150, unit: g}
+    - {id: farine-complete, name: farine semi-complète (T80), qty: 80, unit: g}
+    - {id: beurre, name: beurre mou, qty: 70, unit: g}
+    - {id: sucre-complet, name: sucre complet, qty: 50, unit: g}
+    - {id: oeufs, name: œuf, qty: 1, unit: pièce}
+    - {id: poudre-a-lever, name: levure chimique, qty: 0.5, unit: sachet}
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 180 °C"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: cremer
+      action: "Mélanger le beurre mou et le sucre, puis l'œuf"
+      needs: []
+      uses: [beurre, sucre-complet, oeufs]
+      time_min: 4
+    - id: melanger
+      action: "Ajouter les flocons, la farine et la levure, et mélanger sans trop travailler"
+      needs: []
+      uses: [flocons-avoine, farine-complete, poudre-a-lever]
+      time_min: 3
+      kid: {age_min_months: 30, task: "verser les flocons et mélanger à la cuillère"}
+    - id: former
+      action: "Former vingt petits tas sur une plaque, les aplatir du dos d'une cuillère"
+      needs: []
+      uses: []
+      time_min: 6
+    - id: cuire
+      action: "Cuire 12 minutes : ils durcissent en refroidissant"
+      needs: [bake]
+      uses: []
+      time_min: 12
+      attended: false
+    - id: ranger
+      action: "Refroidir sur grille, puis congeler par quatre en sachet"
+      needs: []
+      uses: []
+      time_min: 3
+
+  emits:
+    - kind: reste-plat
+      type: cookies-avoine
+      qty_band: 3-repas
+      keeps: {frigo_days: 7, congelo: true}
+      note: "quatre cookies par sachet : un goûter pour les deux enfants"
+
+  plan_b: []

@@ -66,25 +66,26 @@ describe("T134 — cuisiner un plat du fond le consomme, et la liste le recharge
     expect(carte?.manque.map((a) => a.id) ?? []).not.toContain("lentilles-seches");
   });
 
-  // T135 — 200 g par hachis (250 g pour 5 parts, cuisiné pour 4), sur 1,5 kg :
-  // le sachet du relevé (500 g) puis les deux du fond (500 g chacun).
-  test("quatre hachis (800 g) : un sachet entamé et un scellé, la liste ne demande rien", () => {
-    const { liste } = apres(4);
+  // T135 — 200 g par hachis (250 g pour 5 parts, cuisiné pour 4). T142 : le
+  // fond rentre trois sachets de 500 g ; T143 : le relevé du 21/10 n'a plus de
+  // lentilles vertes, c'est donc 1,5 kg en tout.
+  test("deux hachis (400 g) : un sachet entamé et deux scellés, la liste ne demande rien", () => {
+    const { liste } = apres(2);
     expect(liste.map((l) => l.ingredient)).not.toContain("lentilles-seches");
   });
 
   test("six hachis (1,2 kg) : il reste un sachet entamé, la liste dit « pour le fond »", () => {
     const { liste } = apres(6);
     const l = liste.find((x) => x.ingredient === "lentilles-seches");
-    expect(l).toMatchObject({ a: 1, niveau: 2, manque: 1, fond: true });
+    expect(l).toMatchObject({ a: 1, niveau: 3, manque: 2, fond: true });
     expect(phraseDuPlancher(l!, 0)).toContain("pour le fond");
   });
 
-  test("huit hachis : les lentilles sont épuisées au rejeu, et « Ce soir » le dit", () => {
-    const { rejeu, jeu, carte, liste } = apres(8);
+  test("dix hachis : les lentilles sont épuisées au rejeu, et « Ce soir » le dit", () => {
+    const { rejeu, jeu, carte, liste } = apres(10);
     expect(rejeu.parIngredient.has("lentilles-seches")).toBe(false);
     expect(jeu.gardeManger).not.toContain("lentilles-seches");
-    expect(liste.find((x) => x.ingredient === "lentilles-seches")).toMatchObject({ a: 0, manque: 2 });
+    expect(liste.find((x) => x.ingredient === "lentilles-seches")).toMatchObject({ a: 0, manque: 3 });
     expect(carte).toBeDefined();
     expect(carte!.manque.map((a) => a.id)).toContain("lentilles-seches");
     expect(ligneAchats(carte!)).not.toBe("Rien à acheter");
@@ -150,7 +151,9 @@ describe("T135 — le fond se consomme à la quantité, pas au paquet", () => {
     expect(contenuDUnite("sachet de 500 g ou bocal")).toEqual({ amount: 500, unit: "g" });
     expect(contenuDUnite("boîte de 6")).toEqual({ amount: 6, unit: "pièce" });
     expect(contenuDUnite("sachet")).toBeNull();
-    expect(ctx.contenu("fromage-rape")).toEqual({ amount: 200, unit: "g" });
+    // T142 : le fromage s'achète en bloc de 400 g, le lait en briques d'un litre.
+    expect(ctx.contenu("fromage-rape")).toEqual({ amount: 400, unit: "g" });
+    expect(contenuDUnite("brique de 1 L")).toEqual({ amount: 1000, unit: "ml" });
     expect(ctx.contenu("oeufs")).toEqual({ amount: 6, unit: "pièce" });
   });
 
@@ -187,10 +190,10 @@ describe("T135 — le fond se consomme à la quantité, pas au paquet", () => {
     expect(rejeuDe(catalogue, "oeufs", quiche, 1, 5).rejeu.parIngredient.get("oeufs")?.lots[0]?.entame).toBe(2);
   });
 
-  test("un sachet de 200 g de fromage râpé s'épuise : 80 g, 80 g, puis plus rien", () => {
+  test("un bloc de 400 g de fromage s'épuise : 80 g cinq fois, puis plus rien", () => {
     const gratin = platDe("gratin-test", "fromage-rape", 80, "g");
-    expect(rejeuDe(catalogue, "fromage-rape", gratin, 2, 4).rejeu.parIngredient.get("fromage-rape")?.grammes).toBeCloseTo(40);
-    expect(rejeuDe(catalogue, "fromage-rape", gratin, 3, 4).rejeu.parIngredient.has("fromage-rape")).toBe(false);
+    expect(rejeuDe(catalogue, "fromage-rape", gratin, 4, 4).rejeu.parIngredient.get("fromage-rape")?.grammes).toBeCloseTo(80);
+    expect(rejeuDe(catalogue, "fromage-rape", gratin, 5, 4).rejeu.parIngredient.has("fromage-rape")).toBe(false);
   });
 
   test("un paquet de taille inconnue garde l'heuristique de T134 (il s'ouvre, puis se finit)", () => {
@@ -235,23 +238,28 @@ describe("T136 — œufs, yaourts, fromage râpé : achetés par la liste, cuisi
   }
 
   const cas = [
+    // T142 — le fond rentre 3 boîtes de 6 œufs (jusqu'à 4), un bloc de 400 g,
+    // 3 packs de 4 yaourts (jusqu'à 9) : la liste remonte jusqu'au `jusqua`.
     // quiche-poireaux : 6 parts, 3 œufs, 80 g de fromage râpé
-    { ingredient: "oeufs", nom: "œufs", plat: "quiche-poireaux", parts: 6, avant: 1, apres: 2 },
-    { ingredient: "fromage-rape", nom: "râpé", plat: "quiche-poireaux", parts: 6, avant: 2, apres: 3 },
+    { ingredient: "oeufs", nom: "œufs", plat: "quiche-poireaux", parts: 6, avant: 5, apres: 6, manque: 4 },
+    { ingredient: "fromage-rape", nom: "râpé", plat: "quiche-poireaux", parts: 6, avant: 4, apres: 5, manque: 1 },
     // quiche-courgettes-yaourt : 6 parts, 2 yaourts
-    { ingredient: "yaourt-nature", nom: "yaourt", plat: "quiche-courgettes-yaourt", parts: 6, avant: 1, apres: 2 },
+    // T145 — six packs rentrés (24 pots), remontés à 7 (≈ 25 pots la semaine).
+    { ingredient: "yaourt-nature", nom: "yaourt", plat: "quiche-courgettes-yaourt", parts: 6, avant: 11, apres: 12, manque: 7 },
   ];
 
   for (const k of cas) {
     test(`${k.ingredient} : ${k.avant} × ${k.plat} n'épuise pas l'unité, ${k.apres} la vident`, () => {
       const avant = scenario(k.ingredient, k.plat, k.avant, k.parts);
       expect(avant.rejeu.parIngredient.has(k.ingredient)).toBe(true);
-      expect(avant.ligne).toBeUndefined();
+      // Sous le minimum, la ligne peut déjà exister (T142 : le minimum est à
+      // trois unités) — mais jamais à zéro tant qu'il en reste.
+      expect(avant.ligne?.a ?? Infinity).toBeGreaterThan(0);
 
       const { rejeu, carte, ligne } = scenario(k.ingredient, k.plat, k.apres, k.parts);
       expect(rejeu.parIngredient.has(k.ingredient)).toBe(false);
-      expect(ligne).toMatchObject({ a: 0, manque: 1, fond: true });
-      expect(phraseDuPlancher(ligne!, 0)).toContain("pour le fond");
+      expect(ligne).toMatchObject({ a: 0, manque: k.manque, fond: true });
+      expect(phraseDuPlancher(ligne!, 0)).toMatch(/pour le fond|frais de la semaine/);
       expect(carte).toBeDefined();
       expect(carte!.manque.map((a) => a.id)).toContain(k.ingredient);
       // La phrase de la carte tronque à deux noms (« et 2 autres ») ; la liste
@@ -336,7 +344,8 @@ describe("T137 — un article du fond à garde courte se finit par son âge", ()
       repas: "diner" as const, plat: "quiche-poireaux", parts: 6,
     }));
     const l = rentreIlYA(6, quiches).liste.find((x) => x.ingredient === "oeufs");
-    expect(l).toMatchObject({ a: 0, rentreLe: jourAvant(6) });
+    // T142 : trois boîtes rentrées, deux quiches en prennent une.
+    expect(l).toMatchObject({ a: 2, rentreLe: jourAvant(6) });
     expect(phraseDuPlancher(l!, 0)).not.toContain("jamais vu");
     expect(phraseDuPlancher(l!, 0)).toContain(`rentré le ${jourAvant(6)}`);
   });

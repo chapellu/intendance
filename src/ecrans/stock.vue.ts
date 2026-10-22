@@ -35,7 +35,9 @@ import {
   type PlancherDenree,
   type Posable,
 } from "../model/plancherGardeManger";
-import type { Catalogue, Denree, Espace, GardeManger, Urgence, Zone } from "../model/types";
+import type {
+  Catalogue, Denree, Espace, GardeManger, PlanCuisine, RangementDuPlan, Urgence, Zone,
+} from "../model/types";
 import { fmt } from "../ui/format";
 import { bandeEnMots, depuis, nomEspace } from "../ui/phrases";
 
@@ -87,7 +89,7 @@ export interface Categorie {
   note: string;
 }
 
-const pluriel = (n: number, mot: string): string => `${n} ${mot}${n > 1 ? "s" : ""}`;
+export const pluriel = (n: number, mot: string): string => `${n} ${mot}${n > 1 ? "s" : ""}`;
 
 /**
  * Les rangements, avec ce qu'ils portent et ce qu'on en sait.
@@ -596,12 +598,12 @@ export const joursDepuis = (aujourdhui: Date, born: Date): number =>
   );
 
 export function lots(
-  jeu: Jeu,
+  _jeu: Jeu,
   depot: Depot,
   filtre: Espace | null,
   aujourdhui: Date,
 ): LotVue[] {
-  return depot.lignes
+  return depot.initiales
     .map((l, i) => ({ l, i }))
     .filter(({ l }) => !filtre || l.location === filtre)
     .map(({ l, i }) => {
@@ -626,9 +628,7 @@ export function lots(
           // ne porte que des préparations. Le jour où une porte d'entrée hors
           // liste (T114) y fera entrer des courgettes crues, ce mot sera faux
           // — c'est ici qu'il faudra lire l'origine.
-          l.from
-            ? `cuisiné cette semaine (${jeu.plats[l.from]?.titre ?? l.from})`
-            : l.born
+          l.born
               ? `cuisiné ${depuis(joursDepuis(aujourdhui, l.born))}`
               : "déjà là avant la semaine",
           entame ? `reste ${fmt(l.reste!)} ${l.unite ?? ""}`.trim() : "",
@@ -683,7 +683,12 @@ export interface DenreeVue {
   /** Ce qui abîme cette denrée ICI, et rien quand la zone lui convient. */
   alerte: string;
   note: string | null;
+  /** T142 — « industriel — à ne pas racheter », ou vide. */
+  industriel?: string;
 }
+
+/** T142 — la phrase d'un produit industriel que le foyer ne rachète plus. */
+export const PHRASE_INDUSTRIEL = "industriel — à ne pas racheter";
 
 export interface ZoneVue {
   id: string;
@@ -742,6 +747,7 @@ function denreeVue(d: Denree, z: Zone, i: number): DenreeVue {
     etat: ETIQUETTE_ETAT[d.etat],
     alerte: agressions(d, z).join(" · "),
     note: d.note,
+    industriel: d.industriel ? PHRASE_INDUSTRIEL : "",
   };
 }
 
@@ -794,6 +800,8 @@ export function zones(gm: GardeManger): ZoneVue[] {
 
 export interface ASauverVue {
   cle: string;
+  /** L'id, alias résolu — celui du rejeu, que corrige `corrigerLigne` (T139). */
+  id: string;
   nom: string;
   urgence: Urgence;
   raison: string;
@@ -830,6 +838,7 @@ export function aSauverVue(catalogue: Catalogue, reste: Iterable<string>): ASauv
     }
     par.set(s.ingredient, {
       cle: s.ingredient,
+      id: catalogue.rayons.aliases[s.ingredient] ?? s.ingredient,
       nom: s.nom,
       urgence: s.urgence,
       raison: s.raison,
@@ -853,6 +862,25 @@ export function aSauverVue(catalogue: Catalogue, reste: Iterable<string>): ASauv
   return [...par.values()].map(({ zones, ...v }) => ({ ...v, ou: [...zones].join(" · ") }));
 }
 
+/**
+ * Ce qu'on peut ajouter à une zone — T139 : les ingrédients que le catalogue
+ * connaît, relevé ou rayons, alias résolus, par nom.
+ *
+ * LE CATALOGUE ET RIEN D'AUTRE. Un champ libre créerait des ids qu'aucune
+ * recette ne lit — « noix de cajou » à côté de `noix-cajou` — et la denrée
+ * ajoutée ne retirerait jamais une ligne de courses : on l'aurait dite pour rien.
+ */
+export function ingredientsConnus(catalogue: Catalogue): { id: string; nom: string }[] {
+  const alias = (id: string): string => catalogue.rayons.aliases[id] ?? id;
+  const ids = new Set([
+    ...Object.values(catalogue.rayons.rayons).flat().map(alias),
+    ...idsDuReleve(catalogue),
+  ]);
+  return [...ids]
+    .map((id) => ({ id, nom: nomDeLaDenree(id) }))
+    .sort((a, b) => a.nom.localeCompare(b.nom, "fr"));
+}
+
 export interface GardeMangerVue {
   zones: ZoneVue[];
   /** Les erreurs de rangement, calculées à l'export. */
@@ -860,6 +888,8 @@ export interface GardeMangerVue {
   /** Ce qui se perd, du plus pressé au moins. L'autre moitié de l'anti-gaspi :
    *  « à déplacer » dit de ranger autrement, celle-ci dit de cuisiner. */
   aSauver: ASauverVue[];
+  /** Ce qu'un relevé peut ajouter à une zone (T139). */
+  connus: { id: string; nom: string }[];
   /** Le volume mesuré du garde-manger. Les zones non cotées n'y sont pas. */
   volume: string;
 }
@@ -882,6 +912,7 @@ export function gardeManger(catalogue: Catalogue, reste: Iterable<string>): Gard
     zones: zones(gm),
     alertes: gm.alertes,
     aSauver: aSauverVue(catalogue, reste),
+    connus: ingredientsConnus(catalogue),
     volume: volumeL === 0 ? "" : `${fmt(volumeL)} L`,
   };
 }
@@ -909,9 +940,72 @@ export interface ResteAuPlacard {
 export interface MesureZone {
   grammes: number | null;
   unites: number;
+  /**
+   * T139 — LA PORTÉE D'UNE CORRECTION FAITE SUR CETTE LIGNE (`corrigerLigne`).
+   *
+   * L'id de la zone quand le relevé range l'ingrédient dans plusieurs zones :
+   * la ligne ne montre que ce qui est ici, sa correction ne touche que ce qui
+   * est ici. `null` quand il n'a qu'une place — tous ses lots s'y lisent, y
+   * compris ceux rentrés des courses sans rangement, et la correction doit les
+   * atteindre aussi.
+   */
+  zone: string | null;
+  /** Rangé là par un œil sans que le relevé le connaisse (`Rejeu.ajoutes`). */
+  ajoute: boolean;
+  /** Ce que la ligne affiche : « 4 boîtes », « 2 sachets · 1 entamé » — voir
+   *  `enPaquets`. Des grammes seulement pour ce qui s'achète au poids. */
+  quantite: string;
 }
 
 const enPoids = (g: number): string => (g >= 1000 ? `${fmt(g / 1000)} kg` : `${fmt(g)} g`);
+
+/** Les mots d'unité féminins — pour accorder « entamée ». */
+const FEMININS = new Set(["boîte", "brique", "tête", "pièce", "bouteille", "conserve"]);
+
+const auPluriel = (mot: string, n: number): string =>
+  n < 2 || /[sxz]$/.test(mot) ? mot : mot.endsWith("al") ? `${mot.slice(0, -2)}aux` : `${mot}s`;
+
+/**
+ * Le mot de l'unité d'achat d'un ingrédient, ou `null` s'il s'achète au poids
+ * ou se compte sans emballage — T139.
+ *
+ * `fond.yaml:unite` d'abord (« sachet de 500 g » → « sachet ») : c'est le mot
+ * que le foyer a écrit. À défaut, le relevé : une conserve est une boîte, un
+ * paquet pesé est un paquet. Ce qui reste — les courses en vrac — se dit en
+ * grammes, parce que c'est ainsi qu'on l'a acheté.
+ */
+export function motDuPaquet(catalogue: Catalogue, id: string): string | null {
+  const alias = (x: string): string => catalogue.rayons.aliases[x] ?? x;
+  const fond = (catalogue.fond?.denrees ?? []).find((d) => alias(d.ingredient) === id);
+  const mot = fond?.unite.trim().split(/\s+/)[0]?.toLowerCase();
+  if (mot) return mot;
+  const releve = catalogue.gardeManger.denrees.find((d) => alias(d.ingredient) === id);
+  if (!releve) return null;
+  if (releve.etat === "conserve") return "boîte";
+  return releve.parUnite ? "paquet" : null;
+}
+
+/**
+ * Une poignée de lots, dite en PAQUETS — T139.
+ *
+ * « 1 kg » de maïs sur quatre boîtes ne se vérifie pas devant le placard ; on y
+ * compte des boîtes. Les entamés se disent à part, parce que c'est ce que l'œil
+ * distingue : un bocal ouvert n'est pas une boîte de plus. Le compte rejoint
+ * celui de `mesurer` (un entamé vaut une unité), donc celui que corrigent les
+ * boutons − / + : on corrige le nombre qu'on lit.
+ */
+export function enPaquets(lots: readonly LotPlacard[], mot: string | null): string {
+  const m = mesurer(lots);
+  if (!mot) return m.grammes != null ? enPoids(m.grammes) : `${m.unites}`;
+  const entames = lots.reduce(
+    (n, l) => n + (l.entame != null ? 1 : 0) + (l.etat === "entame" ? l.unites : 0),
+    0,
+  );
+  const scelles = m.unites - entames;
+  const e = (n: number) => `${n} entamé${FEMININS.has(mot) ? "e" : ""}${n > 1 ? "s" : ""}`;
+  if (!scelles) return `${entames} ${auPluriel(mot, entames)} ${e(entames).replace(/^\d+ /, "")}`;
+  return `${scelles} ${auPluriel(mot, scelles)}${entames ? ` · ${e(entames)}` : ""}`;
+}
 
 /**
  * Ce qu'il RESTE au garde-manger, dit en une phrase — T106.
@@ -991,6 +1085,9 @@ function parZoneDu(
       if (!l.includes(z.id)) l.push(z.id);
       places.set(alias(d.ingredient), l);
     }
+  // T139 — ce qu'un œil a rangé sans que le relevé le connaisse a UNE place :
+  // celle où il l'a vu.
+  for (const [id, zone] of rejeu.ajoutes) if (!places.has(id)) places.set(id, [zone]);
   const lots = new Map<string, LotPlacard[]>(); // clé : `zone|id`
   for (const [id, ou] of places) {
     for (const lot of rejeu.parIngredient.get(id)?.lots ?? []) {
@@ -1005,8 +1102,25 @@ function parZoneDu(
     const dedans = new Map<string, MesureZone>();
     for (const d of gm.denrees) {
       if (d.zone !== z.id || dedans.has(d.ingredient)) continue;
-      const l = lots.get(`${z.id}|${alias(d.ingredient)}`);
-      if (l?.length) dedans.set(d.ingredient, mesurer(l));
+      const id = alias(d.ingredient);
+      const l = lots.get(`${z.id}|${id}`);
+      if (l?.length)
+        dedans.set(d.ingredient, {
+          ...mesurer(l),
+          zone: (places.get(id)?.length ?? 0) > 1 ? z.id : null,
+          ajoute: false,
+          quantite: enPaquets(l, motDuPaquet(catalogue, id)),
+        });
+    }
+    for (const [id, zone] of rejeu.ajoutes) {
+      const l = lots.get(`${z.id}|${id}`);
+      if (zone === z.id && l?.length && !dedans.has(id))
+        dedans.set(id, {
+          ...mesurer(l),
+          zone: null,
+          ajoute: true,
+          quantite: enPaquets(l, motDuPaquet(catalogue, id)),
+        });
     }
     parZone.set(z.id, dedans);
     const g = [...dedans.values()].reduce((s, m) => s + (m.grammes ?? 0), 0);
@@ -1087,7 +1201,11 @@ export interface Inventaire {
 }
 
 export function vueDeLInventaire(jeu: Jeu, calc: Calcul, voulu: Espace | null): Inventaire {
-  const lignes = calc.depot.lignes;
+  // T147 — L'INVENTAIRE DIT CE QUI EST LÀ : les lots de la base (cuisinés au
+  // journal, relevés à la main). Ce que la semaine projette — un plat posé,
+  // pas cuisiné — n'est dans aucun frigo ; il se lisait « cuisiné cette
+  // semaine (Soupe d'orge…) » avant d'avoir été fait.
+  const lignes = calc.depot.initiales;
   // La date de référence est le PREMIER JOUR DE LA FENÊTRE, c'est-à-dire
   // aujourd'hui : l'inventaire dit ce qu'il y a maintenant, pas ce qu'il en
   // restera dimanche.
@@ -1108,4 +1226,197 @@ export function vueDeLInventaire(jeu: Jeu, calc: Calcul, voulu: Espace | null): 
     perte: perte(calc.depot, filtre),
     constates: lignes.filter((l) => l.ref !== null).length,
   };
+}
+
+/* ─────────────────────────────────────────── le plan de la cuisine — T141 */
+
+/**
+ * Les trois choses qu'un rangement peut avoir à dire, et rien d'autre.
+ *
+ * TROIS GESTES, PAS TROIS NIVEAUX. « À manger vite » dit de cuisiner ;
+ * « entamé » dit de finir avant d'ouvrir le suivant ; « à déplacer » dit de
+ * ranger ailleurs. Le même oignon peut porter deux pastilles, et ce n'est pas
+ * une redite — c'est la règle de « À déplacer » et « À manger en premier ».
+ */
+export type Signal = "vite" | "entame" | "deplacer";
+
+export const SIGNAUX: readonly { genre: Signal; puce: string; puceLong: string; legende: string }[] = [
+  { genre: "vite", puce: "!", puceLong: "à manger vite", legende: "à manger vite" },
+  { genre: "entame", puce: "◐", puceLong: "entamés", legende: "entamé" },
+  { genre: "deplacer", puce: "↔", puceLong: "à déplacer", legende: "à déplacer" },
+];
+
+const aucun = (): Record<Signal, number> => ({ vite: 0, entame: 0, deplacer: 0 });
+
+export interface RangementVue extends RangementDuPlan {
+  /** Combien de produits portent chaque signal, ICI. */
+  signaux: Record<Signal, number>;
+  /** Ce qu'il y a dedans, en produits — `null` tant que le journal n'a pas parlé. */
+  produits: number | null;
+  /** Ce que lit un lecteur d'écran : le nom, le compte, les signaux. */
+  aria: string;
+}
+
+export interface PlanVue {
+  murs: PlanCuisine["murs"];
+  rangements: RangementVue[];
+  decor: PlanCuisine["decor"];
+  /**
+   * Les zones que le plan ne dessine pas. Vide avec le catalogue du dépôt —
+   * `verifier.py` le refuse —, mais un export plus vieux que l'écran ne doit pas
+   * rendre une zone inouvrable : elles se touchent alors sous le dessin.
+   */
+  horsPlan: RangementVue[];
+  totaux: Record<Signal, number>;
+  produits: number;
+}
+
+/**
+ * Ce qui est mal rangé, zone par zone, parmi ce qui RESTE — les ids.
+ *
+ * LA MÊME RÈGLE QUE LES ALERTES DE L'EXPORT (`alertes_rangement`) : une
+ * sensibilité que la zone contredit, ou un voisin incompatible. Recalculée ici
+ * parce que l'export l'écrit en phrases, et qu'une pomme de terre déclarée
+ * finie ne doit plus allumer le sous-évier.
+ */
+export function aDeplacer(catalogue: Catalogue, reste: Iterable<string>): Map<string, Set<string>> {
+  const alias = (id: string): string => catalogue.rayons.aliases[id] ?? id;
+  const restent = new Set(reste);
+  const zones = new Map(catalogue.gardeManger.zones.map((z) => [z.id, z]));
+  const presents = (zid: string): Set<string> =>
+    new Set(
+      catalogue.gardeManger.denrees
+        .filter((d) => d.zone === zid && restent.has(alias(d.ingredient)))
+        .map((d) => d.ingredient),
+    );
+  const par = new Map<string, Set<string>>();
+  for (const d of catalogue.gardeManger.denrees) {
+    const z = zones.get(d.zone);
+    if (!z || !restent.has(alias(d.ingredient))) continue;
+    const voisins = presents(d.zone);
+    if (agressions(d, z).length || d.incompatibles.some((i) => voisins.has(i))) {
+      if (!par.has(d.zone)) par.set(d.zone, new Set());
+      par.get(d.zone)!.add(alias(d.ingredient));
+    }
+  }
+  return par;
+}
+
+/** Les signaux des zones du garde-manger, comptés par produit et pas par lot :
+ *  trois fonds de paquets de pâtes sont UN produit entamé. */
+export function signauxDesZones(catalogue: Catalogue, reste: Iterable<string>): Map<string, Record<Signal, number>> {
+  const ids = [...reste];
+  const par = new Map<string, Record<Signal, number>>();
+  const de = (zid: string) => par.get(zid) ?? par.set(zid, aucun()).get(zid)!;
+  const vus = new Set<string>();
+  for (const s of aSauver(catalogue, ids)) {
+    const cle = `${s.zoneId}|${s.ingredient}`;
+    if (vus.has(cle)) continue;
+    vus.add(cle);
+    // LE PARTAGE DE « À MANGER EN PREMIER » : « pressé » d'un côté, « entamé »
+    // de l'autre — les deux mots que la liste écrit déjà à droite de la ligne.
+    de(s.zoneId)[s.urgence === "haute" ? "vite" : "entame"] += 1;
+  }
+  for (const [zid, mal] of aDeplacer(catalogue, ids)) de(zid).deplacer = mal.size;
+  return par;
+}
+
+/** Un lot du frigo ou du congélateur, compté sur le plan : là, et pas à jeter. */
+const vivant = (l: LotVue): boolean => !l.epuise && !l.perime;
+
+/**
+ * Le plan, prêt à dessiner.
+ *
+ * `lots` : TOUS les lots du dépôt (sans filtre) ; `produitsParZone` : ce que le
+ * rejeu dit qu'il reste dans chaque zone, ou `null` tant qu'il n'a pas répondu.
+ */
+export function vueDuPlan(
+  catalogue: Catalogue,
+  reste: Iterable<string>,
+  lots: readonly LotVue[],
+  produitsParZone: ReadonlyMap<string, number> | null,
+): PlanVue | null {
+  const plan = catalogue.gardeManger.plan;
+  if (!plan) return null;
+  const signaux = signauxDesZones(catalogue, reste);
+  const vue = (r: RangementDuPlan): RangementVue => {
+    const dedans = r.zone ? null : lots.filter((l) => l.espace === r.espace && vivant(l));
+    const s = r.zone
+      ? (signaux.get(r.zone) ?? aucun())
+      : { ...aucun(), vite: dedans!.filter((l) => l.marque === "urgent").length };
+    const produits = r.zone ? (produitsParZone ? (produitsParZone.get(r.zone) ?? 0) : null) : dedans!.length;
+    const dits = SIGNAUX.filter((x) => s[x.genre]).map((x) => `${s[x.genre]} ${x.legende}`);
+    return {
+      ...r,
+      signaux: s,
+      produits,
+      aria: [r.label, produits == null ? "" : pluriel(produits, "produit"), ...dits]
+        .filter(Boolean)
+        .join(", "),
+    };
+  };
+  const rangements = plan.rangements.map(vue);
+  const dessinees = new Set(plan.rangements.map((r) => r.zone));
+  const horsPlan = catalogue.gardeManger.zones
+    .filter((z) => !dessinees.has(z.id))
+    .map((z) =>
+      vue({ id: z.id, zone: z.id, espace: z.espace, label: z.label, court: z.label, teinte: "bois",
+        mur: "fond", x: 0, y: 0, w: 0, h: 0 }),
+    );
+  const tous = [...rangements, ...horsPlan];
+  const totaux = aucun();
+  for (const r of tous) for (const x of SIGNAUX) totaux[x.genre] += r.signaux[x.genre];
+  return {
+    murs: plan.murs,
+    rangements,
+    decor: plan.decor,
+    horsPlan,
+    totaux,
+    produits: tous.reduce((n, r) => n + (r.produits ?? 0), 0),
+  };
+}
+
+/** Un filtre éteint les rangements qui n'ont rien à dire sur lui — il ne les
+ *  cache pas : le plan reste le plan, on ne déplace pas les meubles. */
+export const eteint = (r: RangementVue, filtre: Signal | null): boolean =>
+  filtre !== null && r.signaux[filtre] === 0;
+
+/**
+ * Le conseil de rangement d'un rangement, en phrases — l'encart vert.
+ *
+ * D'ABORD CE QUI EST MAL RANGÉ ICI (les alertes de l'export, tant qu'il reste
+ * quelque chose à déplacer), PUIS LE GESTE DES FAMILLES DE GARDE de ce qui y
+ * est rangé — `conservation.yaml`. Deux au plus : un encart de cinq conseils
+ * est un encart qu'on saute. Le congélateur prend le conseil de sa famille ;
+ * le frigo n'en a pas, ses lots sont des plats, pas des denrées.
+ */
+export function conseilDe(catalogue: Catalogue, r: RangementVue, reste: Iterable<string>): string[] {
+  const familles = catalogue.garde ?? [];
+  if (!r.zone) return familles.filter((f) => f.espace === r.espace && r.espace === "congelo").map((f) => f.conseil);
+  const zone = catalogue.gardeManger.zones.find((z) => z.id === r.zone);
+  if (!zone) return [];
+  const alias = (id: string): string => catalogue.rayons.aliases[id] ?? id;
+  const restent = new Set(reste);
+  // « (sous-évier) » en fin d'alerte se tait : le panneau porte déjà le nom.
+  const fin = ` (${zone.label})`;
+  // UNE SEULE LIGNE « À DÉPLACER », quel que soit le nombre d'alertes (T142,
+  // vu sur le sous-évier : deux lignes qui commençaient pareil, au-dessus d'un
+  // conseil qui le redisait). Les diagnostics s'enchaînent derrière un seul
+  // en-tête ; le geste de la famille, dessous, ne le répète plus.
+  const diagnostics = r.signaux.deplacer
+    ? catalogue.gardeManger.alertes.filter((a) => a.endsWith(fin)).map((a) => a.slice(0, -fin.length))
+    : [];
+  const alertes = diagnostics.length ? [`À déplacer : ${diagnostics.join(" ; ")}.`] : [];
+  const ids = [
+    ...new Set(
+      catalogue.gardeManger.denrees
+        .filter((d) => d.zone === zone.id && d.garde && restent.has(alias(d.ingredient)))
+        .map((d) => d.garde!),
+    ),
+  ];
+  const gestes = ids
+    .map((id) => familles.find((f) => f.id === id)?.conseil)
+    .filter((c): c is string => !!c)
+    .slice(0, 2);
+  return [...alertes, ...gestes];
 }

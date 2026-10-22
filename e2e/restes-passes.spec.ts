@@ -14,7 +14,7 @@
 // son premier `expect` dit lequel.
 
 import { expect, test } from "@playwright/test";
-import { attendreLApp } from "./parcours";
+import { attendreLApp, ouvrirRangement } from "./parcours";
 
 test("« c'est jeté » retire les restes passés, du cockpit comme de l'inventaire", async ({ page }) => {
   await page.goto("/");
@@ -38,8 +38,11 @@ test("« c'est jeté » retire les restes passés, du cockpit comme de l'inventa
 
   await page.goto("/#/cuisine/stock");
   await attendreLApp(page);
-  // La sauce de l'amorce, elle, est toujours là : on a jeté ce qui était passé,
-  // pas le contenu du frigo.
-  await expect(page.locator(".co-lot").filter({ hasText: "sauce bolognaise" }).first()).toBeVisible();
+  // L'écran s'ouvre sur le frigo (T141) : le reste passé n'y est plus.
+  await expect(page.locator(".st-panneau .nom").first()).toContainText("Frigo");
   await expect(lot).toHaveCount(0);
+  // La sauce de l'amorce, elle, est toujours là : on a jeté ce qui était passé,
+  // pas le contenu du congélateur.
+  await ouvrirRangement(page, "Congélateur");
+  await expect(page.locator(".co-lot").filter({ hasText: "sauce bolognaise" }).first()).toBeVisible();
 });

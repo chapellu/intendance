@@ -14,6 +14,11 @@ const catalogue: Catalogue = lireCatalogue(
  *  (mesuré dans `db/gardeManger.ts`), donc c'est ce que porte `jeu.gardeManger`. */
 const tout = idsDuReleve(catalogue);
 
+/** T139 — le même catalogue, sans familles de garde : l'oignon y redevient un
+ *  frais qui court, ce qui garde testables les issues de conservation du
+ *  frais (le relevé du 26/08 ne porte que des légumes de garde). */
+const sansGarde: Catalogue = { ...catalogue, garde: [] };
+
 const platAvec = (ids: string[], base: string[] = []): Plat =>
   ({
     id: "essai",
@@ -36,7 +41,7 @@ describe("ce que le placard offre à écouler", () => {
     // « à sauver » — mais les pousser au dîner revenait à pousser les 42 % de
     // plats qui contiennent un oignon.
     expect(aEcouler(catalogue, tout).has("pomme-de-terre")).toBe(false);
-    expect(aSauver(catalogue, tout).some((s) => s.ingredient === "pomme-de-terre")).toBe(true);
+    expect(aSauver(sansGarde, tout).some((s) => s.ingredient === "pomme-de-terre")).toBe(true);
   });
 
   test("LE SOUS-ÉVIER N'EST PAS LA RAISON, ET C'EST LA MESURE QUI LE DIT", () => {
@@ -46,7 +51,8 @@ describe("ce que le placard offre à écouler", () => {
     // seraient tout aussi pressés dans une cave sèche. Si ce test tombe un jour,
     // c'est que le relevé a changé — pas que la règle est fausse.
     const sousEvier = catalogue.gardeManger.denrees.filter((d) => d.zone === "sous-evier");
-    expect(sousEvier).toHaveLength(4);
+    // T143 : il n'y reste que les pommes de terre (oignons et ail déménagés).
+    expect(sousEvier).toHaveLength(1);
     expect(sousEvier.every((d) => d.etat === "frais")).toBe(true);
   });
 
@@ -54,8 +60,10 @@ describe("ce que le placard offre à écouler", () => {
     // Les pignons sont secs et scellés ; s'ils pressent, c'est la lumière et la
     // bouilloire. Ça se corrige en les déplaçant, pas en dînant — et l'app le dit
     // déjà, à sa place, dans « À déplacer ».
+    // T143 : rangés depuis dans la demi-lune haute, à l'ombre — l'alerte s'est
+    // tue parce que le geste a été fait.
     expect(aEcouler(catalogue, tout).has("pignons-pin")).toBe(false);
-    expect(catalogue.gardeManger.alertes.some((a) => a.includes("pignons"))).toBe(true);
+    expect(catalogue.gardeManger.alertes.some((a) => a.includes("pignons"))).toBe(false);
   });
 
   test("une conserve scellée n'entre pas sur l'axe", () => {
@@ -99,9 +107,9 @@ describe("ce qui est écoulable est ce qu'il RESTE, pas ce que le relevé nommai
     const sousEvier = new Set(
       catalogue.gardeManger.denrees.filter((d) => d.zone === "sous-evier").map((d) => d.ingredient),
     );
-    expect(aSauver(catalogue, tout).some((s) => s.ingredient === "oignon")).toBe(true);
+    expect(aSauver(sansGarde, tout).some((s) => s.ingredient === "oignon")).toBe(true);
     const restent = tout.filter((id) => !sousEvier.has(id));
-    expect(aSauver(catalogue, restent).some((s) => sousEvier.has(s.ingredient))).toBe(false);
+    expect(aSauver(sansGarde, restent).some((s) => sousEvier.has(s.ingredient))).toBe(false);
   });
 });
 
@@ -151,7 +159,9 @@ describe("ce que le plat prend au placard", () => {
     // mugcakes, pain de mie, pâte à pizza. L'épeautre ouvert peut donc être
     // mangé, et la liste n'est pas une règle : c'est un FAIT DE CORPUS, qui se
     // remesure à chaque livre qui entre.
-    const horsRecette = ["cracotte", "krisprolls", "ble-lentilles"];
+    // T143 : les krisprolls ont quitté le relevé du 21/10, et le blé-lentilles
+    // y est un sachet neuf.
+    const horsRecette = ["cracotte", "chocolat-poudre"];
     for (const id of horsRecette) expect(aEcouler(catalogue, tout).has(id)).toBe(true);
     for (const p of catalogue.plats)
       for (const id of horsRecette) expect(ids(p)).not.toContain(id);
@@ -193,8 +203,9 @@ describe("ce qui se perd", () => {
 
   test("la raison distingue « mange-le » de « range-le ailleurs »", () => {
     const l = aSauver(catalogue, tout);
-    // Les pignons sont secs et scellés : s'ils pressent, c'est la zone.
-    expect(l.find((s) => s.ingredient === "pignons-pin")?.raison).toBe("s’abîme à la lumière");
+    // T139 — les pignons sont secs et scellés : s'ils pressaient, c'était la
+    // zone. Un geste de rangement, donc « À déplacer », plus cette liste.
+    expect(l.some((s) => s.ingredient === "pignons-pin")).toBe(false);
     // Les pâtes ne craignent rien de leur zone : c'est le paquet qui est ouvert.
     expect(l.find((s) => s.ingredient === "pates")?.raison).toBe("paquet entamé");
   });
@@ -202,12 +213,24 @@ describe("ce qui se perd", () => {
   test("chaque ligne dit où aller chercher", () => {
     // On ne sauve pas ce qu'on ne retrouve pas.
     expect(aSauver(catalogue, tout).every((s) => s.zone.length > 0)).toBe(true);
-    expect(aSauver(catalogue, tout).find((s) => s.ingredient === "pomme-de-terre")?.zone).toBe("sous-évier");
+    expect(aSauver(sansGarde, tout).find((s) => s.ingredient === "pomme-de-terre")?.zone).toBe("sous-évier");
+  });
+
+  test("T139 — CE QUI SE GARDE DES SEMAINES NE PRESSE PAS", () => {
+    // Capture d'écran du foyer : pomme de terre, échalote, pignons de pin
+    // marqués « pressé ». Les légumes de garde tiennent six semaines
+    // (`conservation.yaml`), les pignons des mois.
+    const l = aSauver(catalogue, tout);
+    for (const id of ["pomme-de-terre", "oignon", "echalote", "ail", "pignons-pin"])
+      expect(l.some((s) => s.ingredient === id)).toBe(false);
+    // La barrière rompue, elle, reste : un paquet entamé se finit.
+    expect(l.find((s) => s.ingredient === "pates")?.urgence).toBe("moyenne");
+    expect(l.some((s) => s.urgence === "haute")).toBe(false);
   });
 });
 
 describe("l'autre issue : transformer au lieu de cuisiner", () => {
-  const l = aSauver(catalogue, tout);
+  const l = aSauver(sansGarde, tout);
   const de = (id: string) => l.find((s) => s.ingredient === id)!;
 
   test("LE BAIN-MARIE N'EST PROPOSÉ SUR AUCUNE DENRÉE PEU ACIDE", () => {
@@ -232,7 +255,6 @@ describe("l'autre issue : transformer au lieu de cuisiner", () => {
 
   test("le congélateur est acquis, et c'est la réponse pour presque tout", () => {
     expect(de("farine-epeautre").conserver.map((c) => c.id)).toContain("congeler");
-    expect(de("pignons-pin").conserver.map((c) => c.id)).toContain("congeler");
     expect(de("oignon").conserver[0]?.fenetre).toBe("3 mois");
   });
 

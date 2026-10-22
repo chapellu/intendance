@@ -38,7 +38,11 @@ export function gesteDuJour(jeu: Jeu, calc: Calcul): GesteDuJour | null {
     if (!joue(rid ?? null)) continue;
     const ch = calc.chaine.find((x) => x.creneau === i);
     if (!ch) continue;
-    const lot = calc.depot.lignes.find((l) => l.type === ch.type && l.espace === "congelo");
+    // OÙ LE LOT EST, PAS OÙ IL IRA (T142). Le reste du dîner de ce soir, que
+    // « Reste réchauffé » prend demain midi, se DESTINE au congélateur mais
+    // dort au frigo : le lire par `espace` réclamait de « sortir du congélo »
+    // un velouté qui n'y était jamais entré.
+    const lot = calc.depot.lignes.find((l) => l.type === ch.type && l.location === "congelo");
     if (!lot) continue;
     const jour = jeu.jours[c.jour];
     if (!jour) continue;

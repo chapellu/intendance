@@ -7,7 +7,8 @@ import type { Catalogue, Denree, Zone } from "../model/types";
 import { contexte, rejouer, type Evenement } from "../model/journal";
 import {
   agressions, baisserPlancher, categories, espaces, fiabilite, gardeManger, lots,
-  perte, PERIME, resteAuPlacard, restesPerimes, vueDeLInventaire, vueDesPlanchers, vueDesPlanchersDenrees, zones,
+  enPaquets, ingredientsConnus, motDuPaquet, perte, PERIME, resteAuPlacard, restesPerimes, vueDeLInventaire, vueDesPlanchers, vueDesPlanchersDenrees, zones,
+  conseilDe, eteint, vueDuPlan, type LotVue,
 } from "./stock.vue";
 
 const LUNDI = new Date("2026-08-17T12:00:00Z");
@@ -183,14 +184,14 @@ describe("les deux plafonds", () => {
 });
 
 describe("les lots", () => {
-  test("un lot constaté porte sa clé de base, un lot cuisiné n'en a pas", () => {
+  test("un lot constaté porte sa clé de base ; un plat posé n'ajoute aucun lot (T147)", () => {
     jeu.stock = [
       { type: "sauce-bolognaise", kind: "base", qty: { amount: 700, unit: "g" }, qty_band: "2-repas", born: "2026-08-16", location: "congelo", ref: "42" },
     ];
     poser(0, "diner", "sauce-bolognaise");
     const vus = lots(jeu, calculer(jeu).depot, null, LUNDI);
     expect(vus.find((l) => l.nom === "sauce bolognaise" && l.ref === "42")).toBeTruthy();
-    expect(vus.filter((l) => l.ref === null).length).toBeGreaterThan(0);
+    expect(vus.every((l) => l.ref !== null)).toBe(true);
   });
 
   test("un lot entamé dit ce qu'il en reste, un lot fini dit qu'il est mangé", () => {
@@ -205,11 +206,11 @@ describe("les lots", () => {
     expect(bocal?.epuise).toBe(false);
   });
 
-  test("un lot cuisiné cette semaine nomme le plat, pas son identifiant", () => {
+  test("un plat posé, pas cuisiné, n'est dans aucun frigo — T147", () => {
+    // Capture du 22/10 : la soupe d'orge posée se disait déjà là.
     poser(0, "diner", "sauce-bolognaise");
     const vus = lots(jeu, calculer(jeu).depot, null, LUNDI);
-    const titre = catalogue.plats.find((p) => p.id === "sauce-bolognaise")?.titre;
-    expect(vus.some((l) => l.ou.includes(`cuisiné cette semaine (${titre})`))).toBe(true);
+    expect(vus.some((l) => l.ou.includes("cuisiné cette semaine"))).toBe(false);
   });
 
   test("le filtre ne montre qu'un rangement", () => {
@@ -428,7 +429,8 @@ describe("la vue entière", () => {
     jeu.stock = catalogue.stock.map((o, i) => ({ ...o, ref: String(i + 1) }));
     const vue = vueDeLInventaire(jeu, calculer(jeu), null);
     expect(vue.constates).toBe(catalogue.stock.length);
-    expect(vue.lots.length).toBeGreaterThan(vue.constates);
+    // T147 — ce que la semaine produirait n'est pas dans l'inventaire.
+    expect(vue.lots.length).toBe(vue.constates);
   });
 });
 
@@ -483,20 +485,23 @@ describe("ce que la zone fait subir à la denrée", () => {
     expect(agressions(d, zoneTest({ exposition: "jour", chaleur: true }))).toHaveLength(2);
   });
 
-  test("les pignons de pin du relevé sont bien signalés", () => {
-    // Le cas réel, contre les vraies données : sachet gras, en pleine lumière,
-    // à côté de la bouilloire.
+  test("les pignons de pin, rangés à l'ombre depuis le relevé du 21/10, ne sont plus signalés", () => {
+    // Le cas réel, contre les vraies données : au 26/08, le sachet gras était
+    // en pleine lumière à côté de la bouilloire ; le 21/10 (T143), il est dans
+    // la demi-lune haute, au sombre. Sur l'étagère, il le serait encore.
     const gm = catalogue.gardeManger;
     const pignons = gm.denrees.find((d) => d.ingredient === "pignons-pin");
     const z = gm.zones.find((x) => x.id === pignons!.zone);
-    expect(agressions(pignons!, z!)).toEqual(["à la lumière", "près d’une source de chaleur"]);
+    expect(agressions(pignons!, z!)).toEqual([]);
+    const etagere = gm.zones.find((x) => x.id === "etagere-ouverte")!;
+    expect(agressions(pignons!, etagere)).toEqual(["à la lumière", "près d’une source de chaleur"]);
   });
 });
 
 /** Une zone et ce qu'elle porte, vues. Le `!` est sûr : `zones()` rend une vue
  *  par zone, et on lui en donne exactement une. */
 const uneZone = (denrees: Denree[], z: Partial<Zone> = {}) =>
-  zones({ releve: "2026-08-26", zones: [zoneTest(z)], denrees, alertes: [] })[0]!;
+  zones({ releve: "2026-08-26", zones: [zoneTest(z)], denrees, alertes: [], plan: null })[0]!;
 
 const SANS_COTES = { largeur_cm: null, profondeur_cm: null, hauteur_cm: null };
 
@@ -558,7 +563,7 @@ describe("ce qu'il reste au garde-manger, en une phrase — T106", () => {
     const r = resteAuPlacard(catalogue, froid());
     expect(r.restent).toBe(idsDuReleve(catalogue).length);
     expect(r.relevees).toBe(r.restent);
-    expect(r.releve).toBe("26/08");
+    expect(r.releve).toBe("21/10");
     expect(r.pesees).toBeGreaterThan(0);
     expect(r.pesees).toBeLessThan(r.restent);
   });
@@ -592,12 +597,23 @@ describe("ce qu'il reste au garde-manger, en une phrase — T106", () => {
   });
 
   test("UN TOTAL PARTIEL NE SE LIT PAS COMME UN TOTAL", () => {
-    // La farine porte un sac de 4 kg pesé ET un bocal qui ne l'est pas. Le
-    // catalogue additionnait les 4 kg ; l'ingrédient n'a pourtant pas de poids
-    // connu, et c'est ce que `EtatIngredient.grammes` dit en rendant `null`.
-    expect(froid().parIngredient.get("farine")?.grammes).toBeNull();
+    // Les pâtes portaient un paquet de 1 kg pesé ET deux demi-paquets qui ne
+    // l'étaient pas (relevé du 21/10) : additionner le kilo seul aurait été
+    // faux. Depuis T146, un demi-paquet d'un paquet que le fond pèse (500 g)
+    // en garde la moitié — le total est entier, et il se lit.
+    expect(froid().parIngredient.get("pates")?.grammes).toBe(1000 + 250 + 250);
     const pesees = idsDuReleve(catalogue).filter((id) => froid().parIngredient.get(id)?.grammes != null);
     expect(resteAuPlacard(catalogue, froid()).pesees).toBe(pesees.length);
+  });
+
+  test("T146 — le demi-paquet ne sert plus un plat entier", () => {
+    // Trois gratins à 350 g sur 1,5 kg : il en reste 450 g. Non chiffrés, les
+    // deux demi-paquets absorbaient chacun un gratin entier, et le kilo restait
+    // presque intact — l'app disait « rien à acheter » sur une cuisine vide.
+    const p = catalogue.plats.find((x) => x.id === "gratin-de-pates-tomates")!;
+    const gratin = (j: string): Evenement => ({ sorte: "cuisine", jour: j, saisi: j, repas: "diner", plat: p.id, parts: p.portions, maj: 1 });
+    const r = rejouer(catalogue, [gratin("2026-10-22"), gratin("2026-10-23"), gratin("2026-10-24")], contexte(catalogue), "2026-10-25");
+    expect(r.parIngredient.get("pates")?.grammes).toBe(1500 - 3 * 350);
   });
 });
 
@@ -618,15 +634,15 @@ describe("une zone ne montre que ce qui reste en elle — T107", () => {
   });
 
   test("UNE ZONE RELEVÉE VIDE EST VIDE, même si l'ingrédient vit dans une autre zone", () => {
-    // Le concentré de tomate est relevé dans l'étagère ET dans la demi-lune
-    // haute : le rejeu le garde, l'étagère ne doit plus le montrer.
-    const r = reste([vider("etagere-ouverte")]);
-    expect(r.parZone.get("etagere-ouverte")!.size).toBe(0);
-    expect(r.poidsParZone.get("etagere-ouverte")).toBe("");
-    expect(r.parZone.get("demi-lune-haute")!.has("concentre-tomate")).toBe(true);
-    // Et l'unité qui reste est celle de la demi-lune, pas le total d'avant.
-    const avant = reste([]).parZone.get("demi-lune-haute")!.get("concentre-tomate")!;
-    expect(r.parZone.get("demi-lune-haute")!.get("concentre-tomate")).toEqual(avant);
+    // La ratatouille est relevée sur le dessus ET au 2e niveau (21/10) : le
+    // rejeu la garde, le dessus ne doit plus la montrer.
+    const r = reste([vider("dessus-etagere")]);
+    expect(r.parZone.get("dessus-etagere")!.size).toBe(0);
+    expect(r.poidsParZone.get("dessus-etagere")).toBe("");
+    expect(r.parZone.get("etagere-basse")!.has("ratatouille-boite")).toBe(true);
+    // Et l'unité qui reste est celle du 2e niveau, pas le total d'avant.
+    const avant = reste([]).parZone.get("etagere-basse")!.get("ratatouille-boite")!;
+    expect(r.parZone.get("etagere-basse")!.get("ratatouille-boite")).toEqual(avant);
   });
 
   test("UNE COURSE RENTRÉE SANS RANGEMENT SE RETROUVE, UNE SEULE FOIS", () => {
@@ -638,8 +654,57 @@ describe("une zone ne montre que ce qui reste en elle — T107", () => {
     };
     const r = reste([...catalogue.gardeManger.zones.map((z, i) => vider(z.id, i)), entree]);
     const ou = [...r.parZone].filter(([, m]) => m.has("pates")).map(([z]) => z);
-    expect(ou).toEqual(["demi-lune-haute"]);
-    expect(r.parZone.get("demi-lune-haute")!.get("pates")).toEqual({ grammes: 1000, unites: 2 });
+    expect(ou).toEqual(["demi-lune-basse"]);
+    expect(r.parZone.get("demi-lune-basse")!.get("pates")).toMatchObject({ grammes: 1000, unites: 2, quantite: "2 paquets" });
+  });
+
+  test("T139 — LE MAÏS SE COMPTE EN BOÎTES, PAS EN KILOS", () => {
+    const m = reste([]).parZone.get("etagere-basse")!.get("mais")!;
+    expect(m.grammes).not.toBeNull();
+    expect(m.quantite).toBe(`${m.unites} boîtes`);
+  });
+
+  test("T139 — une ligne d'un ingrédient relevé dans deux zones se corrige dans la sienne", () => {
+    const r = reste([]);
+    expect(r.parZone.get("etagere-basse")!.get("ratatouille-boite")!.zone).toBe("etagere-basse");
+    expect(r.parZone.get("etagere-basse")!.get("mais")!.zone).toBeNull();
+  });
+
+  test("T139 — ce qu'un relevé ajoute à une zone s'y lit", () => {
+    const ajout: Evenement = {
+      sorte: "observation", portee: "zone", zone: "demi-lune-haute", jour, saisi: jour, maj: 1,
+      constats: [{ ingredient: "noix", unites: 2 }],
+    };
+    const m = reste([ajout]).parZone.get("demi-lune-haute")!.get("noix");
+    expect(m).toMatchObject({ unites: 2, ajoute: true, zone: null });
+  });
+});
+
+describe("T139 — dire en paquets, ajouter du catalogue", () => {
+  const lot = (p: Partial<Parameters<typeof enPaquets>[0][number]>) => ({
+    ingredient: "x", zone: "z", unites: 1, parUnite: { amount: 500, unit: "g" }, etat: "sec" as const,
+    entame: null, court: false, ...p,
+  });
+
+  test("l'entamé se dit à part, accordé", () => {
+    expect(enPaquets([lot({ unites: 3 }), lot({ unites: 0, entame: 120 })], "boîte")).toBe("3 boîtes · 1 entamée");
+    expect(enPaquets([lot({ unites: 1, etat: "entame" })], "paquet")).toBe("1 paquet entamé");
+  });
+
+  test("sans unité d'achat, le vrac se dit en grammes", () => {
+    expect(enPaquets([lot({ unites: 2 })], null)).toBe("1 kg");
+    expect(enPaquets([lot({ unites: 2, parUnite: null })], null)).toBe("2");
+  });
+
+  test("le mot vient du fond, puis du relevé", () => {
+    expect(motDuPaquet(catalogue, "mais")).toBe("boîte");
+    expect(motDuPaquet(catalogue, "inconnu-du-catalogue")).toBeNull();
+  });
+
+  test("on ajoute ce que le catalogue connaît, une fois chacun", () => {
+    const c = ingredientsConnus(catalogue);
+    expect(c.some((x) => x.id === "pates")).toBe(true);
+    expect(new Set(c.map((x) => x.id)).size).toBe(c.length);
   });
 });
 
@@ -658,12 +723,12 @@ describe("le garde-manger entier", () => {
   });
 
   test("les alertes du relevé remontent jusqu'à la vue", () => {
-    // Le couple pommes de terre / oignons est la seule perte ACTIVE du relevé :
-    // s'il cessait d'être signalé, l'écran mentirait par omission.
+    // Les pommes de terre sous l'évier sont la seule perte ACTIVE du relevé
+    // (les oignons en sont sortis le 21/10, T143) : s'il cessait d'être
+    // signalé, l'écran mentirait par omission.
     const vue = gardeManger(catalogue, idsDuReleve(catalogue));
-    expect(
-      vue.alertes.some((a) => a.includes("pomme de terre") && a.includes("voisiner")),
-    ).toBe(true);
+    expect(vue.alertes.some((a) => a.includes("pomme de terre") && a.includes("humide"))).toBe(true);
+    expect(vue.alertes.some((a) => a.includes("voisiner"))).toBe(false);
   });
 
   test("ce qui se corrige d'un seul geste tient sur une seule alerte", () => {
@@ -675,7 +740,6 @@ describe("le garde-manger entier", () => {
     expect(vue.alertes.length).toBeLessThanOrEqual(4);
     const humide = vue.alertes.find((a) => a.includes("endroit humide"));
     expect(humide).toContain("pomme de terre");
-    expect(humide).toContain("ail");
   });
 
   test("la vue de l'inventaire porte le garde-manger", () => {
@@ -819,10 +883,11 @@ describe("ce qu'on veut toujours avoir, au placard", () => {
   test("un plancher posé dit ce qu'il y a et ce qu'on veut, en unités", () => {
     const vue = vueDesPlanchersDenrees(catalogue, placard(), [{ ingredient: "mais", niveau: 6 }]);
     const p = vue.poses.find((x) => x.ingredient === "mais")!;
-    expect(p.a).toBe(4);
+    // Trois boîtes au relevé du 21/10 (T143).
+    expect(p.a).toBe(3);
     expect(p.niveau).toBe(6);
     expect(p.sous).toBe(true);
-    expect(vue.manquent).toContain("2 à racheter");
+    expect(vue.manquent).toContain("3 à racheter");
   });
 
   test("un plancher tenu ne demande rien, et passe derrière ceux qui manquent", () => {
@@ -914,14 +979,14 @@ describe("ce qu'un lot dit de lui-même", () => {
     expect(ne("2026-08-14").ou).toContain("cuisiné il y a 3 j");
   });
 
-  test("ce que la semaine projette garde son plat, pas un âge", () => {
+  test("ce que la semaine projette ne se dit jamais présent — T147", () => {
     poser(0, "diner", "sauce-bolognaise");
     const titre = catalogue.plats.find((p) => p.id === "sauce-bolognaise")?.titre;
     const depot = calculer(jeu).depot;
     const projetes = depot.lignes.filter((l) => l.from !== null).length;
     expect(projetes).toBeGreaterThan(0);
     const dits = lots(jeu, depot, null, LUNDI).filter((l) => l.ou.includes(`cuisiné cette semaine (${titre})`));
-    expect(dits).toHaveLength(projetes);
+    expect(dits).toHaveLength(0);
   });
 
   test("une bande se lit en mots, jamais en identifiant", () => {
@@ -988,5 +1053,80 @@ describe("un rangement perdu d'un coup", () => {
     expect(perte(c.depot, "placard")).toBeNull();
     jeu.stock = [];
     expect(perte(calculer(jeu).depot, "congelo")).toBeNull();
+  });
+});
+
+describe("le plan de la cuisine — T141", () => {
+  const tout = () => idsDuReleve(catalogue);
+  const plan = (reste: Iterable<string> = tout(), lots: LotVue[] = []) =>
+    vueDuPlan(catalogue, reste, lots, null)!;
+  const r = (p: ReturnType<typeof plan>, id: string) => p.rangements.find((x) => x.id === id)!;
+
+  test("chaque zone du garde-manger a sa place, et le frigo et le congélateur aussi", () => {
+    const p = plan();
+    expect(p.horsPlan).toEqual([]);
+    for (const z of catalogue.gardeManger.zones) expect(r(p, z.id).zone).toBe(z.id);
+    expect(r(p, "frigo")).toMatchObject({ zone: null, espace: "frigo" });
+    expect(r(p, "congelo")).toMatchObject({ zone: null, espace: "congelo" });
+  });
+
+  test("les pastilles d'une zone : entamés, à déplacer — comptés par produit, pas par lot", () => {
+    const p = plan();
+    // Cracottes (un fond et un neuf : UN produit) et biscottes, au 21/10.
+    expect(r(p, "dessus-etagere").signaux).toEqual({ vite: 0, entame: 2, deplacer: 0 });
+    // Trois fonds de paquets de pâtes sont UN produit entamé.
+    expect(r(p, "demi-lune-haute").signaux.entame).toBe(2);
+    // Il ne reste que les pommes de terre sous l'évier (T143 : oignons et ail
+    // déménagés, échalote jetée), et les pignons ont quitté la lumière.
+    expect(r(p, "sous-evier").signaux).toEqual({ vite: 0, entame: 0, deplacer: 1 });
+    expect(r(p, "etagere-ouverte").signaux.deplacer).toBe(0);
+    expect(r(p, "sous-evier").aria).toContain("1 à déplacer");
+    expect(p.totaux.deplacer).toBe(1);
+  });
+
+  test("ce qu'on a fini n'allume plus rien", () => {
+    const sans = tout().filter((id) => id !== "pomme-de-terre");
+    expect(r(plan(sans), "sous-evier").signaux.deplacer).toBe(0);
+  });
+
+  test("le frigo compte ses lots vivants, et allume « à manger vite » sur l'urgent seul", () => {
+    const lot = (o: Partial<LotVue>): LotVue => ({
+      cle: String(Math.random()), espace: "frigo", nom: "x", ou: "", quantite: "",
+      fiabilite: { label: "compté", classe: "compte", niveau: "haute" },
+      epuise: false, ref: "1", horloge: "", marque: "", perime: false, ...o,
+    });
+    const p = plan(tout(), [
+      lot({ marque: "urgent" }), lot({ marque: "à manger" }), lot({ epuise: true, marque: "urgent" }),
+      lot({ perime: true }), lot({ espace: "congelo" }),
+    ]);
+    expect(r(p, "frigo").signaux.vite).toBe(1);
+    expect(r(p, "frigo").produits).toBe(2);
+    expect(r(p, "congelo").produits).toBe(1);
+    // Une zone attend le rejeu pour dire combien elle porte.
+    expect(r(p, "sous-evier").produits).toBeNull();
+  });
+
+  test("un filtre éteint les rangements qui n'ont rien à dire, et seulement eux", () => {
+    const p = plan();
+    expect(eteint(r(p, "dessus-etagere"), "deplacer")).toBe(true);
+    expect(eteint(r(p, "sous-evier"), "deplacer")).toBe(false);
+    expect(eteint(r(p, "sous-evier"), "entame")).toBe(true);
+    expect(p.rangements.some((x) => eteint(x, null))).toBe(false);
+  });
+
+  test("le conseil du sous-évier : ce qu'il faut déplacer, puis le geste de la famille", () => {
+    const c = conseilDe(catalogue, r(plan(), "sous-evier"), tout());
+    // T142 — UNE SEULE LIGNE « À DÉPLACER » : les deux diagnostics derrière un
+    // seul en-tête, et le mot n'apparaît qu'une fois dans tout l'encart.
+    expect(c[0]).toBe("À déplacer : pomme de terre — dans un endroit humide.");
+    expect(c.join(" ").match(/À déplacer/g)).toHaveLength(1);
+    expect(c.some((x) => x.includes("loin du sous-évier"))).toBe(true);
+    const sans = tout().filter((id) => id !== "pomme-de-terre");
+    expect(conseilDe(catalogue, r(plan(sans), "sous-evier"), sans)).toEqual([]);
+  });
+
+  test("sans plan dans l'export, pas de plan — l'écran retombe sur la liste des zones", () => {
+    const vieux = { ...catalogue, gardeManger: { ...catalogue.gardeManger, plan: null } };
+    expect(vueDuPlan(vieux, tout(), [], null)).toBeNull();
   });
 });

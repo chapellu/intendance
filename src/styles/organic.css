@@ -998,6 +998,8 @@ a.co-apercu { color: inherit; text-decoration: none; }
 .co-soir .achats.un { background: var(--color-accent-200); color: var(--color-accent-900); }
 .co-soir .achats.plusieurs { background: var(--color-neutral-200); color: var(--color-neutral-800); }
 .co-soir .heure { margin-top: 6px; font-size: 13px; line-height: 1.35; color: var(--color-neutral-800); }
+/* T142 — le déjeuner de demain pris au dîner, ou les boîtes pleines. */
+.co-soir .midi { margin-top: 6px; font-size: 13px; line-height: 1.35; color: var(--color-accent-2-900); font-weight: 500; }
 .co-soir .pied { display: flex; gap: var(--space-2); margin-top: var(--space-3); }
 .co-soir.pose { background: var(--color-accent-2-100); }
 .co-soir.pose + .co-soir { margin-top: var(--space-3); }
@@ -1025,3 +1027,87 @@ a.co-apercu { color: inherit; text-decoration: none; }
 .tk-qte { display: inline-flex; align-items: center; gap: 4px; font-size: 12.5px; }
 .tk-qte input { width: 4.2em; font: inherit; padding: 3px 4px; border: 1px solid var(--color-divider); border-radius: 8px; background: var(--color-bg); color: var(--color-text); }
 .tk-ignorer { font-size: 12.5px; padding: 2px 8px; }
+
+/* — Stock : le plan de la cuisine (T141) —
+   Les teintes du catalogue (`garde-manger.yaml`, `plan:`) deviennent ici des
+   mélanges de jetons : le plan suit le thème comme le reste de l'app. */
+.st-tete { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-2); margin-top: var(--space-2); }
+.st-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: var(--space-3) 0; }
+.st-chip {
+  min-height: 44px; padding: 0 10px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--color-neutral-300); background: var(--color-neutral-100); color: var(--color-text);
+  font: 600 12.5px var(--font-body); display: inline-flex; align-items: center; gap: 5px;
+}
+.st-chip.on { background: var(--color-neutral-900); color: var(--color-neutral-100); border-color: var(--color-neutral-900); }
+.st-puce {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px;
+  padding: 0 5px; border-radius: 9px; font-size: 11px; font-weight: 700; box-sizing: border-box; white-space: nowrap;
+}
+.st-puce.vite { background: var(--color-accent-600); color: var(--color-neutral-100); }
+.st-puce.entame { background: var(--color-accent-400); color: var(--color-accent-900); }
+.st-puce.deplacer { background: var(--color-accent-2-800); color: var(--color-neutral-100); }
+.st-plan {
+  position: relative; max-width: 100%; margin: 0 auto; border-radius: 18px; overflow: hidden;
+  background: var(--color-neutral-200);
+}
+.st-sol { position: absolute; left: 0; right: 0; bottom: 0; height: 44px; background: var(--color-neutral-300); }
+.st-mur { position: absolute; top: 12px; border-radius: 8px; }
+.st-mur.gauche {
+  left: 0; background: color-mix(in srgb, var(--color-surface) 70%, var(--color-neutral-200));
+  transform: perspective(520px) rotateY(34deg); transform-origin: right center;
+}
+.st-mur.fond { background: color-mix(in srgb, var(--color-neutral-200) 60%, var(--color-neutral-100)); }
+.st-murs { position: absolute; left: 12px; right: 12px; bottom: 12px; font-size: 11px; color: var(--color-neutral-800); }
+.st-decor {
+  position: absolute; box-sizing: border-box; padding: 4px; border-radius: 5px; overflow: hidden;
+  font-size: 10px; line-height: 1.15; color: var(--color-neutral-700); overflow-wrap: anywhere;
+  background: color-mix(in srgb, var(--color-neutral-300) 55%, var(--color-surface));
+}
+.st-decor.t-mur-fonce { background: color-mix(in srgb, var(--color-neutral-300) 80%, var(--color-surface)); }
+.st-decor.t-plan-de-travail { background: color-mix(in srgb, var(--color-surface) 55%, var(--color-accent-700)); padding: 0; }
+.st-decor.t-plaques { background: var(--color-neutral-900); color: var(--color-neutral-300); padding: 2px 4px; }
+.st-decor.t-electromenager { background: var(--color-neutral-400); color: var(--color-neutral-800); }
+.st-meuble {
+  position: absolute; box-sizing: border-box; border: 0; border-radius: 6px; cursor: pointer;
+  padding: 5px 4px; text-align: left; color: var(--color-neutral-900); font-family: var(--font-body);
+  box-shadow: inset 0 -3px 0 color-mix(in srgb, var(--color-neutral-900) 12%, transparent),
+    0 2px 0 color-mix(in srgb, var(--color-neutral-900) 18%, transparent);
+  transition: transform .15s, opacity .15s;
+}
+.st-meuble::before {
+  content: ""; position: absolute; left: 4px; right: -6px; top: -7px; height: 7px; background: inherit;
+  filter: brightness(1.08); transform: skewX(-40deg); transform-origin: bottom left; border-radius: 3px 3px 0 0;
+}
+.st-meuble::after {
+  content: ""; position: absolute; top: -4px; right: -7px; bottom: 3px; width: 7px; background: inherit;
+  filter: brightness(.85); transform: skewY(-50deg); transform-origin: top left; border-radius: 0 3px 3px 0;
+}
+.st-meuble:active { transform: translateY(1px); }
+.st-meuble.sel { outline: 3px solid var(--color-accent); outline-offset: 2px; }
+.st-meuble.eteint { opacity: .35; }
+.st-meuble .court { display: block; font-size: 10.5px; font-weight: 700; line-height: 1.15; letter-spacing: -.1px; overflow-wrap: normal; white-space: pre-line; }
+.st-meuble .puces { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px; }
+.st-meuble.t-bois-clair { background: color-mix(in srgb, var(--color-surface) 75%, var(--color-neutral-100)); }
+.st-meuble.t-bois { background: color-mix(in srgb, var(--color-surface) 88%, var(--color-accent-700)); }
+.st-meuble.t-bois-fonce { background: color-mix(in srgb, var(--color-surface) 78%, var(--color-accent-700)); }
+.st-meuble.t-blanc { background: var(--color-neutral-100); }
+.st-meuble.t-froid { background: color-mix(in srgb, var(--color-neutral-100) 75%, var(--color-accent-2-200)); }
+.st-horsplan { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-2); }
+.st-horsplan .btn { min-height: 44px; }
+.st-horsplan .btn.on { background: var(--color-accent-200); }
+.st-legende { display: flex; flex-wrap: wrap; gap: var(--space-3); margin: var(--space-2) var(--space-1) var(--space-3); font-size: 12px; color: var(--color-neutral-800); }
+.st-legende > span { display: inline-flex; align-items: center; gap: 5px; }
+.st-panneau { background: var(--color-neutral-100); border-radius: 18px; padding: var(--space-4); box-shadow: 0 1px 0 var(--color-neutral-300); }
+.st-panneau > .nom { font-family: var(--font-heading); font-weight: 400; font-size: 20px; line-height: 1.15; }
+.st-panneau > .nom .co-note { font-family: var(--font-body); }
+.st-panneau .btn { min-height: 44px; }
+.st-panneau .co-lot { padding-inline: 0; background: transparent; border-top: 1px solid var(--color-neutral-200); border-radius: 0; }
+.st-conseil {
+  margin: var(--space-2) 0; padding: 10px 12px; border-radius: 12px; font-size: 13px; line-height: 1.35;
+  background: var(--color-accent-2-200); color: var(--color-accent-2-900);
+}
+.st-conseil p { margin: 0; }
+.st-conseil p + p { margin-top: var(--space-1); }
+.st-petit { font-size: 12.5px; min-height: 44px; padding: 2px 8px; }
+.st-pourquoi { margin: var(--space-1) var(--space-1) 0; }
+.st-pourquoi > .co-note { margin-top: var(--space-1); }

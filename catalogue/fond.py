@@ -88,6 +88,7 @@ def exporter_familles(conserv: dict) -> list:
     `fenetre` pour afficher — les deux formes de T55, pour la même raison."""
     return [{
         "id": f["id"], "label": f["label"], "fond": bool(f.get("fond")),
+        "entameSeFinit": bool(f.get("entame_se_finit")),
         "espace": f["espace"], "rangement": f["rangement"],
         "methode": f.get("methode"),
         "fenetreJours": gm.fenetre_jours(f.get("fenetre")),
@@ -100,7 +101,10 @@ def exporter_familles(conserv: dict) -> list:
 def exporter_fond(fond: dict) -> dict:
     return {
         "date": fond["date"],
+        # `jusqua` et `hebdo` (T142) sortent toujours, `None`/`False` par
+        # défaut : le type côté app n'a pas de champ optionnel de plus.
         "denrees": [{"ingredient": d["ingredient"], "minimum": d["minimum"],
+                     "jusqua": d.get("jusqua"), "hebdo": bool(d.get("hebdo")),
                      "unite": d["unite"]} for d in fond["denrees"]],
         "diners": [{"plat": d["plat"], "titre": d["titre"]} for d in fond["diners"]],
     }
@@ -125,6 +129,9 @@ def verifier_familles(conserv: dict, rayons: dict) -> tuple:
             err.append(f"{ou} : espace « {f.get('espace')} » inconnu — attendu parmi {list(ch.ESPACES)}")
         if not isinstance(f.get("fond"), bool):
             err.append(f"{ou} : `fond:` doit dire oui ou non — c'est lui qui décide du plancher")
+        if not isinstance(f.get("entame_se_finit", False), bool):
+            err.append(f"{ou} : `entame_se_finit:` doit dire oui ou non — c'est lui qui "
+                       "décide de la boîte entière (T140)")
         # UNE FENÊTRE QU'ON NE SAIT PAS CONVERTIR EST UNE FENÊTRE ABSENTE, et
         # `fenetre_jours` le dit en rendant `None` : l'app n'aurait rien à
         # comparer, et retomberait en silence sur un défaut.
@@ -180,15 +187,22 @@ def verifier_fond(fond: dict, conserv: dict, rayons: dict, cat: dict) -> tuple:
         m = d.get("minimum")
         if not isinstance(m, int) or isinstance(m, bool) or m < 1:
             err.append(f"{ou} : `minimum` doit être un entier ≥ 1, en unités d'achat (lu : {m!r})")
+        j = d.get("jusqua")
+        if j is not None and (not isinstance(j, int) or isinstance(j, bool)
+                              or not isinstance(m, int) or j <= m):
+            err.append(f"{ou} : `jusqua` doit être un entier au-dessus du minimum (lu : {j!r}) — "
+                       "c'est jusqu'où l'on remonte en rachetant")
+        if not isinstance(d.get("hebdo", False), bool):
+            err.append(f"{ou} : `hebdo:` doit dire oui ou non")
         if not (isinstance(d.get("unite"), str) and d["unite"].strip()):
             err.append(f"{ou} : `unite` manquante — « 2 » ne se vérifie pas sans savoir deux quoi")
         f = par_id.get(cid)
         if f is None:
             err.append(f"{ou} : aucune famille de garde dans conservation.yaml — "
                        "sans fenêtre ni conseil, l'app ne sait ni combien ça tient ni où le ranger")
-        elif not f.get("fond"):
+        elif not f.get("fond") and not d.get("hebdo"):
             err.append(f"{ou} : sa famille « {f['id']} » est du frais fragile (`fond: false`) — "
-                       "il ne peut pas être « toujours là »")
+                       "il ne peut pas être « toujours là » (sauf frais de la semaine, `hebdo: true`)")
 
     dispo = disponibles_du_fond(fond, rayons)
     for d in fond["diners"]:
@@ -203,6 +217,41 @@ def verifier_fond(fond: dict, conserv: dict, rayons: dict, cat: dict) -> tuple:
         if m:
             err.append(f"dîner du fond « {rid} » demande {', '.join(m)}, hors du fond et du "
                        "placard : la promesse « sans courses » est fausse")
+    return err, warn
+
+
+def verifier_routines(creneaux: dict, cat: dict) -> tuple:
+    """T142 — une routine se rejoue chaque jour : tout ce qu'elle nomme doit exister.
+
+    Une `recette` absente ne retirerait rien, en silence ; un type `du_depot`
+    qu'aucune recette n'émet ne serait jamais trouvé au congélateur.
+    """
+    err, warn = [], []
+    r = creneaux.get("routines")
+    if not r:
+        return err, warn
+    if r.get("depuis") is None:
+        err.append("routines : `depuis` manquant — sans date, le rejeu viderait le placard depuis toujours")
+    emis = {e.get("type") for x in cat.values() for e in x.get("emits") or []}
+    repas = creneaux.get("repas") or {}
+    for rid, cfg in r.items():
+        if rid == "depuis":
+            continue
+        ou = f"routine « {rid} »"
+        if (repas.get(rid) or {}).get("nature") != "routine":
+            err.append(f"{ou} : le repas n'est pas de nature `routine` dans `repas`")
+        rec = cat.get((cfg or {}).get("recette"))
+        if rec is None:
+            err.append(f"{ou} : recette « {(cfg or {}).get('recette')} » absente du catalogue")
+        elif rec.get("source"):
+            err.append(f"{ou} : la ration est une recette DU FOYER, pas celle d'un livre")
+        dd = (cfg or {}).get("du_depot") or {}
+        for t in dd.get("types") or []:
+            if t not in emis:
+                err.append(f"{ou} : type « {t} » qu'aucune recette n'émet")
+        p = dd.get("parts", 1)
+        if not isinstance(p, (int, float)) or isinstance(p, bool) or p <= 0:
+            err.append(f"{ou} : `du_depot.parts` doit être un nombre > 0")
     return err, warn
 
 

@@ -186,6 +186,12 @@ export interface Emit {
    * huit, et rien ne distinguait un bouillon d'une mitonnée.
    */
   horsTable: boolean;
+  /**
+   * T142 — le reste mis de côté pour le déjeuner de demain (`repas.resteDuMidi`).
+   * Jamais au corpus : il naît quand « Je lance ça » agrandit le dîner. Sa
+   * bande EST le nombre de repas, elle ne suit ni le facteur ni la table.
+   */
+  midi?: boolean;
 }
 
 export interface Accept {
@@ -428,6 +434,23 @@ export interface ConfigCreneaux {
   /** Les repas qui partent en gamelle, par jour : `{ dejeuner: ["mardi"] }`. */
   emporte: Record<RepasId, string[]>;
   equilibre_sur: RepasId[];
+  /** T142 — ce que les repas `routine` consomment chaque jour. `?` : les
+   *  catalogues fabriqués à la main des tests datent d'avant. */
+  routines?: Routines;
+}
+
+/** Une routine : la ration d'un jour (une recette du foyer) et ce qu'elle
+ *  prend au dépôt. Voir `creneaux.yaml:routines`. */
+export interface Routine {
+  repas: RepasId;
+  recette: string;
+  duDepot: { types: string[]; parts: number } | null;
+}
+
+export interface Routines {
+  /** Le jour où les routines ont commencé à compter, `AAAA-MM-JJ`. */
+  depuis: string;
+  liste: Routine[];
 }
 
 export interface ConfigRayons {
@@ -595,6 +618,10 @@ export interface Zone {
   hygrometrie: "sec" | "humide";
   chaleur: boolean;
   note: string | null;
+  /** T143 — le jour où CETTE zone a été relevée, `AAAA-MM-JJ`. Le relevé du
+   *  fichier, sauf pour une zone qu'il n'a pas couverte. `?` : les catalogues
+   *  des tests datent d'avant ; absent, on lit `GardeManger.releve`. */
+  releve?: string | null;
 }
 
 /** Une matière première rangée quelque part.
@@ -622,6 +649,11 @@ export interface Denree {
   nature: Nature;
   /** Ce à quoi elle sert quand ce n'est pas à cuisiner. `null` par défaut. */
   usage: Usage | null;
+  /** T142 — un produit industriel que le foyer ne rachète plus (biscottes,
+   *  purée en flocons…). Le lot reste au stock ; l'écran le dit « à ne pas
+   *  racheter », et aucune proposition ne le remet au panier. `?` : les
+   *  catalogues fabriqués à la main des tests datent d'avant. */
+  industriel?: boolean;
   /** Ce qu'on peut en faire pour qu'elle tienne, acquis ou non. */
   conservations: ConservationDenree[];
   /** L'id de sa famille de garde (`Catalogue.garde`), ou `null` quand aucune
@@ -646,6 +678,10 @@ export interface FamilleDeGarde {
   /** Tient assez pour être « toujours là » — donc porter un plancher. Faux sur
    *  le frais fragile (salade, viande, herbes), qui reste hors du fond. */
   fond: boolean;
+  /** T140 : une boîte entamée ne se garde pas — conserve, brique, bocal. Le
+   *  plat la prend ENTIÈRE dès qu'il en demande une bonne part (`paquet.ts`).
+   *  Faux pour le sec, qui se garde ouvert et se compte à la quantité. */
+  entameSeFinit: boolean;
   espace: Espace;
   /** Où et comment la ranger, en quelques mots. */
   rangement: string;
@@ -671,6 +707,13 @@ export interface DenreeDuFond {
   minimum: number;
   /** Ce qu'est une unité : « sachet de 500 g », « boîte de 6 ». */
   unite: string;
+  /** T142 — jusqu'où remonter en rachetant, en unités d'achat. `minimum`
+   *  déclenche la ligne, `jusqua` la chiffre. `null` : on remonte au minimum.
+   *  `?` pour les catalogues des tests, antérieurs au champ. */
+  jusqua?: number | null;
+  /** T142 — le frais de la semaine (fruits, yaourts, lait) : il se rachète
+   *  chaque semaine au lieu de se garder des mois. */
+  hebdo?: boolean;
 }
 
 /**
@@ -709,6 +752,50 @@ export interface GardeManger {
   /** Les erreurs de RANGEMENT, calculées à l'export. Elles ne parlent pas des
    *  données mais de la cuisine : elles se corrigent en déplaçant un sachet. */
   alertes: string[];
+  /** Le dessin de la cuisine (T141), ou `null` sur un export qui n'en porte pas. */
+  plan: PlanCuisine | null;
+}
+
+export type Mur = "gauche" | "fond";
+export type TeinteRangement = "bois-clair" | "bois" | "bois-fonce" | "blanc" | "froid";
+export type TeinteDecor = "mur" | "mur-fonce" | "plan-de-travail" | "plaques" | "electromenager";
+
+/** Une place sur un mur, en pixels CSS à l'échelle 1. */
+export interface Cadre {
+  mur: Mur;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
+/**
+ * Ce qu'on touche sur le plan — T141.
+ *
+ * UNE ZONE DU GARDE-MANGER OU UN APPAREIL, et `zone` dit lequel : l'id de la
+ * zone, ou `null` pour le frigo et le congélateur, dont le contenu vient du
+ * dépôt par leur `espace`.
+ */
+export interface RangementDuPlan extends Cadre {
+  id: string;
+  zone: string | null;
+  espace: Espace;
+  /** Le titre du panneau : « sous-évier », « Congélateur ». */
+  label: string;
+  /** Le mot écrit sur le meuble : « Coin, haut ». */
+  court: string;
+  teinte: TeinteRangement;
+}
+
+export interface DecorDuPlan extends Cadre {
+  label: string;
+  teinte: TeinteDecor;
+}
+
+export interface PlanCuisine {
+  murs: Record<Mur, { w: number; h: number; label: string }>;
+  rangements: RangementDuPlan[];
+  decor: DecorDuPlan[];
 }
 
 export interface Catalogue {

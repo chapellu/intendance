@@ -453,3 +453,90 @@ describe("les alias se résolvent, sinon le rapprochement échoue en silence", (
     expect(r.parIngredient.has("oignons")).toBe(false);
   });
 });
+
+/* ═══════════════════════════════════════ T139 — corriger une ligne, sur place */
+
+describe("T139 — une correction à un seul constat", () => {
+  const releve = [
+    denree({ ingredient: "mais", unites: 4, parUnite: { amount: 285, unit: "g" }, etat: "conserve" }),
+    denree({ ingredient: "pates", unites: 2 }),
+    denree({ ingredient: "concentre-tomate", unites: 2, zone: "placard-haut" }),
+    denree({ ingredient: "concentre-tomate", unites: 3, zone: "demi-lune" }),
+  ];
+  const c = catalogue({ denrees: releve });
+  const corr = (ingredient: string, unites: number, zone: string | null = null): Evenement =>
+    ({
+      sorte: "observation", portee: "ingredient", zone, jour: "2026-10-20", saisi: "2026-10-20",
+      constats: [{ ingredient, unites }], maj: 1,
+    }) as Evenement;
+
+  test("LES AUTRES DENRÉES DE LA ZONE NE BOUGENT PAS", () => {
+    const r = rejouer(c, [corr("mais", 1)], ctxDe(c), "2026-10-20");
+    expect(r.parIngredient.get("mais")!.unites).toBe(1);
+    // Un relevé de zone aurait retiré les pâtes, absentes de ses constats.
+    expect(r.parIngredient.get("pates")!.unites).toBe(2);
+    expect(r.parIngredient.get("pates")!.vuLe).toBe("2026-08-26");
+    expect(r.parIngredient.get("mais")!.vuLe).toBe("2026-10-20");
+  });
+
+  test("« je n'en ai plus » : l'ingrédient sort, et devient une connaissance", () => {
+    const r = rejouer(c, [corr("mais", 0)], ctxDe(c), "2026-10-20");
+    expect(r.parIngredient.has("mais")).toBe(false);
+    expect(r.vus.get("mais")?.unites).toBe(0);
+  });
+
+  test("UNE ZONE RESTREINT LE CONSTAT AUX LOTS RANGÉS LÀ", () => {
+    const r = rejouer(c, [corr("concentre-tomate", 0, "placard-haut")], ctxDe(c), "2026-10-20");
+    const e = r.parIngredient.get("concentre-tomate")!;
+    expect(e.unites).toBe(3);
+    expect(e.lots.every((l) => l.zone === "demi-lune")).toBe(true);
+  });
+
+  test("sans zone, elle porte sur l'ingrédient entier", () => {
+    const r = rejouer(c, [corr("concentre-tomate", 1)], ctxDe(c), "2026-10-20");
+    expect(r.parIngredient.get("concentre-tomate")!.unites).toBe(1);
+  });
+
+  test("une hausse en zone pose le lot dans cette zone", () => {
+    const r = rejouer(c, [corr("concentre-tomate", 5, "demi-lune")], ctxDe(c), "2026-10-20");
+    const lots = r.parIngredient.get("concentre-tomate")!.lots;
+    expect(lots.filter((l) => l.zone === "demi-lune").reduce((n, l) => n + l.unites, 0)).toBe(5);
+    expect(lots.filter((l) => l.zone === "placard-haut").reduce((n, l) => n + l.unites, 0)).toBe(2);
+  });
+});
+
+describe("T139 — ce qu'un œil range sans que le relevé le connaisse", () => {
+  const c = catalogue({ denrees: [denree({ ingredient: "pates", unites: 2 })] });
+  const releveZone = (constats: { ingredient: string; unites: number }[], jour = "2026-10-20"): Evenement =>
+    ({
+      sorte: "observation", portee: "zone", zone: "placard-haut", jour, saisi: jour, constats, maj: 1,
+    }) as Evenement;
+
+  test("un relevé qui le constate dans une zone l'ajoute, avec sa zone", () => {
+    const r = rejouer(c, [releveZone([{ ingredient: "pates", unites: 2 }, { ingredient: "farine", unites: 1 }])], ctxDe(c), "2026-10-20");
+    expect(r.ajoutes.get("farine")).toBe("placard-haut");
+    expect(r.ajoutes.has("pates")).toBe(false);
+    expect(r.parIngredient.get("farine")!.lots[0]!.zone).toBe("placard-haut");
+  });
+
+  test("UNE COURSE RENTRÉE N'EST PAS UN AJOUT AU PLACARD", () => {
+    const entree = {
+      sorte: "entree", jour: "2026-10-20", saisi: "2026-10-20", maj: 1,
+      lignes: [{ ingredient: "farine", unites: 1, parUnite: null, zone: null, etat: "sec" }],
+    } as Evenement;
+    expect(rejouer(c, [entree], ctxDe(c), "2026-10-20").ajoutes.size).toBe(0);
+  });
+
+  test("le relevé suivant qui ne le mentionne plus le retire", () => {
+    const r = rejouer(
+      c,
+      [
+        releveZone([{ ingredient: "farine", unites: 1 }], "2026-10-19"),
+        releveZone([{ ingredient: "pates", unites: 1 }], "2026-10-20"),
+      ],
+      ctxDe(c),
+      "2026-10-20",
+    );
+    expect(r.ajoutes.has("farine")).toBe(false);
+  });
+});

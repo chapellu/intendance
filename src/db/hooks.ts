@@ -18,6 +18,7 @@ import { calculer, type Calcul } from "../model/calcul";
 import { chargerCatalogue } from "../model/catalogue";
 import { creerJeu, joue, type Choix, type Jeu } from "../model/jeu";
 import type { Catalogue, Plat } from "../model/types";
+import { dernierMidiPasse } from "../model/repas";
 import { contexte, cuissonsRecentes, rejouer, type Evenement, type Rejeu } from "../model/journal";
 import type { PlancherDenree } from "../model/plancherGardeManger";
 import { passeDuJour } from "../model/questions";
@@ -28,6 +29,7 @@ import { lireJournal } from "./journal";
 import { lireDecisions, lirePlanchersDenrees, validesParmi } from "./planchers";
 import { base, jourISO, type EtatCourse, type LotStock } from "./schema";
 import { amorcer, hydraterStock } from "./stock";
+import { routinesDuJour } from "./routines";
 import { reporterLesPoses } from "./report";
 import { hydrater, oublier, poser, prevoirGamelle, reglerParts, toutOublier } from "./semaine";
 
@@ -73,9 +75,13 @@ export function useAmorce(catalogue: Catalogue | null): boolean {
   useEffect(() => {
     if (!catalogue) return;
     let vivant = true;
-    void amorcer(base, catalogue).finally(() => {
-      if (vivant) setFaite(true);
-    });
+    // T142 — puis ce que le petit-déjeuner et le goûter ont pris au dépôt
+    // depuis la dernière ouverture (le pain, la fournée).
+    void amorcer(base, catalogue)
+      .then(() => routinesDuJour(base, catalogue))
+      .finally(() => {
+        if (vivant) setFaite(true);
+      });
     return () => {
       vivant = false;
     };
@@ -114,7 +120,9 @@ export function useReport(squelette: Jeu | null): boolean {
       // La veille n'a plus rien à nous dire : garder sa promesse ferait de
       // cette table un journal de la durée de vie de l'onglet.
       REPORTS.clear();
-      p = reporterLesPoses(base, squelette);
+      // T146 — les routines du jour d'abord : l'onglet resté ouvert passe
+      // minuit sans redémarrer, et le pain du matin doit quand même se manger.
+      p = routinesDuJour(base, squelette.catalogue).then(() => reporterLesPoses(base, squelette));
       REPORTS.set(jour0, p);
     }
     // `finally` ET PAS `then` : un report qui échoue doit laisser l'app
@@ -186,6 +194,13 @@ export function useSemaine(catalogue: Catalogue | null, aujourdhui = new Date())
   // en `chargement` — la machinerie existe déjà, elle est juste en dessous —
   // plutôt que d'afficher une fenêtre amputée le temps d'une frame.
   const reporte = useReport(squelette);
+  // T146 — LE MIDI PASSÉ, l'onglet ouvert : ce que le déjeuner a pris au frigo
+  // libère ses boîtes avant la carte de 15 h. Sans bloquer l'écran — le stock
+  // est vivant, il se relira tout seul.
+  const midiPasse = dernierMidiPasse(new Date(aujourdhui));
+  useEffect(() => {
+    if (catalogue && reporte) void routinesDuJour(base, catalogue);
+  }, [catalogue, reporte, midiPasse]);
   const debut = reporte ? (bornes[0] ?? "") : "";
   const fin = reporte ? (bornes.at(-1) ?? "") : "";
 

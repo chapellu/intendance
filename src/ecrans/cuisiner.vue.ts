@@ -6,9 +6,9 @@
 //
 // Port de `apps/proto-shell/comptoir.js` (`CHAUFFE`, `ecranCuisine`).
 
-import { commeIngredient, echelleTexte } from "../model/calcul";
+import { commeIngredient, echelleTexte, quantiteACuire } from "../model/calcul";
 import { dejaLaPour, ROLES, type Choix, type Jeu } from "../model/jeu";
-import type { Espace, Etape, Foyer, Ingredient, Outil, Plat } from "../model/types";
+import type { Catalogue, Espace, Etape, Foyer, Ingredient, Outil, Plat } from "../model/types";
 import { fmt } from "../ui/format";
 import { phraseDesBoites, quantiteDuLot, vueDeLaSortie } from "./sortie.vue";
 
@@ -639,12 +639,20 @@ export interface LigneEtape {
  * pas. On affiche donc la ligne entière avec « aussi à l'étape N » : vrai dans
  * le premier cas, et dans le second ça dit de ne pas tout verser.
  *
+ * T140 : AVEC LE CATALOGUE, LA BOÎTE ENTIÈRE SE DIT ICI AUSSI (`quantiteACuire`) —
+ * l'étape qui verse le maïs annonce la boîte, comme la liste.
+ *
  * TROIS RÉPONSES, PAS DEUX, comme le champ lui-même (voir `Etape.uses`) :
  * `null` quand la recette n'a pas le lien — l'écran le dit —, `[]` quand l'étape
  * ne verse rien, et la liste sinon. Une référence qui ne se résout pas est
  * sautée plutôt qu'inventée ; `verifier.py` les refuse toutes à l'entrée.
  */
-export function quantitesDeLEtape(p: Plat, n: number, f: number): LigneEtape[] | null {
+export function quantitesDeLEtape(
+  p: Plat,
+  n: number,
+  f: number,
+  catalogue?: Catalogue,
+): LigneEtape[] | null {
   const e = p.steps[n];
   if (!e || e.uses === null) return null;
   return e.uses.flatMap((ref) => {
@@ -653,7 +661,7 @@ export function quantitesDeLEtape(p: Plat, n: number, f: number): LigneEtape[] |
     const aussi = p.steps
       .map((s, k) => (k !== n && s.uses?.includes(ref) ? k + 1 : 0))
       .filter((k) => k > 0);
-    return [{ ref, nom: x.nom, quantite: echelleTexte(x, f), aussi }];
+    return [{ ref, nom: x.nom, quantite: catalogue ? quantiteACuire(catalogue, x, f) : echelleTexte(x, f), aussi }];
   });
 }
 

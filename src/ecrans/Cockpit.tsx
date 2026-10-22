@@ -27,6 +27,7 @@ import { chemin, ENTREE_CUISINE } from "../nav/routes";
 import { Corps } from "../ui/Coquille";
 import { majuscule } from "../ui/format";
 import { gesteDuJour } from "./aujourdhui.vue";
+import { lignesDuJour, type LigneDuJour } from "./repas.vue";
 import { typeDuGeste, vueDuCockpit, type CarteFacette, type Tache, type VueCockpit } from "./cockpit.vue";
 import { entree as entreeDuJardin, vueDeLaTerrasse } from "./jardin.vue";
 
@@ -38,7 +39,7 @@ import { entree as entreeDuJardin, vueDeLaTerrasse } from "./jardin.vue";
  * fraction de seconde plus tard par un trois, se lit comme un bug : mieux vaut
  * une pastille qui apparaît qu'une pastille qui se corrige.
  */
-export function useCockpit(jeu: Jeu, calc: Calcul): VueCockpit | null {
+export function useCockpit(jeu: Jeu, calc: Calcul): (VueCockpit & { repas: LigneDuJour[] }) | null {
   const courses = useCourses();
   const geste = gesteDuJour(jeu, calc);
   const jour0 = jeu.jours[0];
@@ -54,7 +55,7 @@ export function useCockpit(jeu: Jeu, calc: Calcul): VueCockpit | null {
   const fait = useDrapeau(type && jour0 ? cleGeste(jourISO(jour0.date), type) : null);
   const cuisines = useCuisines(jour0 ? jourISO(jour0.date) : "", jour0 ? jourISO(jour0.date) : "");
   if (!courses || fait === undefined || !soir || !cuisines) return null;
-  return vueDuCockpit(jeu, calc, { courses, gesteFait: fait, soir, cuisines });
+  return { ...vueDuCockpit(jeu, calc, { courses, gesteFait: fait, soir, cuisines }), repas: lignesDuJour(jeu, soir) };
 }
 
 export function Cockpit() {
@@ -86,6 +87,25 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
           <Ligne key={t.cle} tache={t} />
         ))}
       </div>
+
+      {/* LES TROIS AUTRES REPAS — T142. Des routines et un midi : une ligne
+          calme chacun, pas une tâche. Elles ne comptent pas dans la phrase du
+          haut et n'ont pas de bouton. */}
+      {vue?.repas.length ? (
+        <div className="co-repas" aria-label="les autres repas" style={{ margin: "0 0 var(--space-6)" }}>
+          {vue.repas.map((l) => (
+            <div key={l.cle} className="co-note" data-repas={l.cle}>
+              {l.route ? (
+                <a href={chemin(l.route)} style={{ color: "inherit" }}>
+                  {l.texte}
+                </a>
+              ) : (
+                l.texte
+              )}
+            </div>
+          ))}
+        </div>
+      ) : null}
 
       <div className="co-kicker" style={{ marginBottom: "var(--space-2)" }}>
         Vos facettes
@@ -175,7 +195,7 @@ function Ligne({ tache }: { tache: Tache }) {
           // POSER, PUIS OUVRIR LA MISE EN PLACE — le même geste que la carte de
           // « Ce soir », sans passer par la liste. `Lancer` garde le doigt
           // d'un double tap.
-          <Lancer plat={lancer} ici={tache.ici} />
+          <Lancer plat={lancer} ici={tache.ici} midi={tache.midi} />
         ) : cocher ? (
           // Le même drapeau que le « Fait » d'« Aujourd'hui » : cocher ici ou
           // là-bas est un seul geste, et la clé porte le jour.
@@ -242,7 +262,7 @@ function Facette({
  * ouvrir la fiche du créneau — qui, le plat posé, s'ouvre sur sa mise en place
  * et non sur un résumé de lecture.
  */
-function Lancer({ plat, ici }: { plat: string; ici?: readonly string[] | undefined }) {
+function Lancer({ plat, ici, midi }: { plat: string; ici?: readonly string[] | undefined; midi?: number | undefined }) {
   const { catalogue } = useCatalogue();
   const { jeu } = useSemaine(catalogue);
   const [enCours, setEnCours] = useState(false);
@@ -256,7 +276,7 @@ function Lancer({ plat, ici }: { plat: string; ici?: readonly string[] | undefin
         if (!jeu || soir < 0 || enCours) return;
         setEnCours(true);
         // L'horloge au doigt, pas la fenêtre en cache (T134, `poserCeSoir`).
-        void poserCeSoir(base, jeu.catalogue, plat, ici)
+        void poserCeSoir(base, jeu.catalogue, plat, ici, new Date(), midi)
           .then((creneau) => aller({ ecran: "cuisiner", creneau }))
           .finally(() => setEnCours(false));
       }}

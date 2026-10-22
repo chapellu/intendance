@@ -16,7 +16,9 @@ test("cocher un article, le rentrer, et le retrouver rentré", async ({ page }) 
   await page.goto("/#/cuisine/courses");
   await attendreLApp(page);
 
-  const article = page.locator("button.co-art").first();
+  // Une ligne de la semaine (« 1 plat ») : le fruit de la semaine (T144)
+  // disparaît de la liste une fois rentré, il ne se retrouverait pas.
+  const article = page.locator("button.co-art").filter({ hasText: /\d plats?/ }).first();
   await expect(article).toBeVisible();
   const nom = (await article.locator(".nom").innerText()).trim();
 

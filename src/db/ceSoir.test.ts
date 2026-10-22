@@ -38,3 +38,39 @@ describe("T134 — « Je lance ça » après trois jours sans geste, l'onglet re
     expect(await base.creneaux.get(cleCreneau("2026-10-19", "diner"))).toBeUndefined();
   });
 });
+
+describe("T142 — « Je lance ça » nourrit aussi demain midi", () => {
+  test("le dîner s'agrandit du midi, et demain midi part sur son reste", async () => {
+    await poserCeSoir(base, catalogue, "dahl-lentilles-corail", [], LUNDI, 3);
+    const diner = await base.creneaux.get(cleCreneau("2026-10-19", "diner"));
+    expect(diner).toMatchObject({ plat: "dahl-lentilles-corail", parts: catalogue.foyer.parts + 3, midi: 3 });
+    const midi = await base.creneaux.get(cleCreneau("2026-10-20", "dejeuner"));
+    expect(midi).toMatchObject({ plat: "reste-de-la-veille", de: "dahl-lentilles-corail" });
+  });
+
+  test("relancer ce soir n'empile pas deux midis, et sans boîtes le dîner revient à sa taille", async () => {
+    await poserCeSoir(base, catalogue, "dahl-lentilles-corail", [], LUNDI, 3);
+    await poserCeSoir(base, catalogue, "soupe-pois-casses-carottes", [], LUNDI, 3);
+    expect(await base.creneaux.get(cleCreneau("2026-10-19", "diner"))).toMatchObject({
+      parts: catalogue.foyer.parts + 3,
+      midi: 3,
+    });
+    expect(await base.creneaux.get(cleCreneau("2026-10-20", "dejeuner"))).toMatchObject({
+      de: "soupe-pois-casses-carottes",
+    });
+    await poserCeSoir(base, catalogue, "dahl-lentilles-corail", [], LUNDI);
+    const diner = await base.creneaux.get(cleCreneau("2026-10-19", "diner"));
+    expect(diner?.parts ?? null).toBeNull();
+    expect(diner?.midi).toBeUndefined();
+  });
+
+  test("un midi déjà posé à la main n'est pas écrasé", async () => {
+    await base.creneaux.put({
+      cle: cleCreneau("2026-10-20", "dejeuner"), jour: "2026-10-20", repas: "dejeuner",
+      plat: "salade-lentilles-amelioree", parts: null, maj: 1,
+    });
+    await poserCeSoir(base, catalogue, "dahl-lentilles-corail", [], LUNDI, 3);
+    expect((await base.creneaux.get(cleCreneau("2026-10-20", "dejeuner")))?.plat).toBe("salade-lentilles-amelioree");
+    expect((await base.creneaux.get(cleCreneau("2026-10-19", "diner")))?.midi).toBeUndefined();
+  });
+});

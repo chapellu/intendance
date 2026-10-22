@@ -131,6 +131,7 @@ def charger(chemin: Path) -> dict:
         "releve": releve.isoformat() if hasattr(releve, "isoformat") else (releve or None),
         "zones": data.get("zones") or [],
         "denrees": data.get("denrees") or [],
+        "plan": data.get("plan") or {},
     }
 
 
@@ -388,6 +389,8 @@ def verifier_garde_manger(gm: dict, rayons: dict) -> tuple:
             err.append(f"{ou} : état « {d.get('etat')} » inconnu — attendu parmi {list(ETATS)}")
         if d.get("nature", "autre") not in NATURES:
             err.append(f"{ou} : nature « {d.get('nature')} » inconnue — attendu parmi {list(NATURES)}")
+        if not isinstance(d.get("industriel", False), bool):
+            err.append(f"{ou} : `industriel:` doit dire oui ou non (T142)")
         if d.get("usage") is not None and d["usage"] not in USAGES:
             err.append(f"{ou} : usage « {d['usage']} » inconnu — attendu parmi {list(USAGES)}")
         if d.get("acidite", ACIDITE_DEFAUT) not in ("basse", "haute"):
@@ -401,4 +404,99 @@ def verifier_garde_manger(gm: dict, rayons: dict) -> tuple:
     # l'export publie : deux implémentations de « craint la lumière » finiraient
     # par ne plus dire la même chose.
     warn += alertes_rangement(gm)
+    err += verifier_plan(gm)
     return err, warn
+
+
+# ── Le plan de la cuisine (T141) ────────────────────────────────────────────
+
+MURS = ("gauche", "fond")
+# LES TEINTES SONT UN VOCABULAIRE FERMÉ, PAS DES COULEURS : l'écran les traduit
+# en jetons `--color-*`. Une couleur écrite ici en hexadécimal échapperait au
+# thème, et le plan serait le seul endroit de l'app à ne pas changer avec lui.
+TEINTES_RANGEMENT = ("bois-clair", "bois", "bois-fonce", "blanc", "froid")
+TEINTES_DECOR = ("mur", "mur-fonce", "plan-de-travail", "plaques", "electromenager")
+# Un doigt, pas un pointeur — la cible tactile minimale des recommandations
+# d'accessibilité. Le plan est dessiné à l'échelle 1, donc la cote EST la cible.
+CIBLE_PX = 44
+
+
+def rangements_du_plan(gm: dict) -> list:
+    """Les rangements qu'on touche sur le plan : les zones, puis les appareils.
+
+    UNE SEULE LISTE POUR L'ÉCRAN, avec `zone` pour dire d'où vient le contenu :
+    l'id d'une zone du garde-manger, ou `None` pour un appareil, dont le contenu
+    vient du dépôt par son `espace`.
+    """
+    sortie = []
+    for z in gm["zones"]:
+        p = z.get("plan")
+        if p:
+            sortie.append({"id": z["id"], "zone": z["id"], "espace": z.get("espace"),
+                           "label": z.get("label") or z["id"], **p})
+    for a in (gm.get("plan") or {}).get("appareils") or []:
+        sortie.append({"zone": None, **a})
+    return sortie
+
+
+def verifier_plan(gm: dict) -> list:
+    """Les erreurs du plan : murs, cotes, cibles trop petites, chevauchements."""
+    err = []
+    plan = gm.get("plan") or {}
+    murs = plan.get("murs") or {}
+    for m in MURS:
+        if not isinstance(murs.get(m), dict) or not murs[m].get("w") or not murs[m].get("h"):
+            err.append(f"plan : le mur « {m} » n'a pas de `w`/`h`")
+    if err:
+        return err
+
+    for z in gm["zones"]:
+        if not z.get("plan"):
+            err.append(f"zone « {z.get('id')} » : pas de `plan:` — elle ne pourrait "
+                       "plus s'ouvrir depuis l'écran Stock")
+
+    def cadre(ou: str, e: dict, teintes: tuple, defaut: str | None) -> bool:
+        if e.get("mur") not in MURS:
+            err.append(f"{ou} : mur « {e.get('mur')} » inconnu — attendu parmi {list(MURS)}")
+            return False
+        if e.get("teinte", defaut) not in teintes:
+            err.append(f"{ou} : teinte « {e.get('teinte')} » inconnue — attendu parmi {list(teintes)}")
+        cotes = [e.get(k) for k in ("x", "y", "w", "h")]
+        if not all(isinstance(c, (int, float)) and c >= 0 for c in cotes):
+            err.append(f"{ou} : x, y, w, h doivent être des nombres positifs")
+            return False
+        x, y, w, h = cotes
+        m = murs[e["mur"]]
+        if x + w > m["w"] or y + h > m["h"]:
+            err.append(f"{ou} : déborde du mur « {e['mur']} » ({m['w']} × {m['h']})")
+        return True
+
+    vus, poses = set(), []
+    for r in rangements_du_plan(gm):
+        ou = f"plan : « {r.get('id')} »"
+        if r.get("id") in vus:
+            err.append(f"{ou} déclaré deux fois")
+        vus.add(r.get("id"))
+        if not r.get("court"):
+            err.append(f"{ou} : il faut un `court`, le nom écrit sur le meuble")
+        if r["zone"] is None and r.get("espace") not in ("frigo", "congelo"):
+            err.append(f"{ou} : un appareil porte l'espace `frigo` ou `congelo`, "
+                       f"pas « {r.get('espace')} »")
+        if r["zone"] is None and not r.get("label"):
+            err.append(f"{ou} : il faut un `label`, le titre du panneau")
+        if not cadre(ou, r, TEINTES_RANGEMENT, None):
+            continue
+        if r["w"] < CIBLE_PX or r["h"] < CIBLE_PX:
+            err.append(f"{ou} : {r['w']} × {r['h']} px, sous la cible tactile de "
+                       f"{CIBLE_PX} px")
+        for autre in poses:
+            if (autre["mur"] == r["mur"]
+                    and r["x"] < autre["x"] + autre["w"] and autre["x"] < r["x"] + r["w"]
+                    and r["y"] < autre["y"] + autre["h"] and autre["y"] < r["y"] + r["h"]):
+                err.append(f"{ou} chevauche « {autre['id']} » : un doigt ne saurait "
+                           "pas lequel il touche")
+        poses.append(r)
+
+    for i, d in enumerate(plan.get("decor") or []):
+        cadre(f"plan : décor n°{i + 1} ({d.get('label') or 'sans nom'})", d, TEINTES_DECOR, "mur")
+    return err

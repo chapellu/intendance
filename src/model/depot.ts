@@ -194,6 +194,9 @@ export interface LotInitial {
   born: string;
   location: Espace;
   ref?: string;
+  /** T144 — le déjeuner mis de côté dans ce lot (`LotStock.midiLe`, `midi`). */
+  midiLe?: string;
+  midi?: number;
   /**
    * La date imprimée sur la boîte, ISO `AAAA-MM-JJ`. Elle GAGNE sur la fenêtre
    * du type quand elle est là.

@@ -6,7 +6,7 @@
 // parcours des courses resteraient verts. Ce qu'un doigt fait, le doigt le
 // fait.
 
-import { expect, type Page } from "@playwright/test";
+import { expect, type Locator, type Page } from "@playwright/test";
 import { libellePoser } from "../src/ui/phrases";
 
 /**
@@ -217,6 +217,23 @@ export async function repondreAuxQuestions(page: Page, plafond = 30): Promise<nu
  *  du stock passée et la semaine calculée. */
 export async function attendreLApp(page: Page): Promise<void> {
   await expect(page.locator(".co-barre")).toBeVisible({ timeout: 30_000 });
+}
+
+/**
+ * T141 — toucher un rangement sur le plan de l'écran Stock, et rendre son
+ * panneau. Par le NOM ACCESSIBLE du meuble (« sous-évier, 4 produits, … »),
+ * comme le lirait un lecteur d'écran : un sélecteur CSS sur la place du meuble
+ * casserait au premier déplacement dans `garde-manger.yaml`.
+ */
+export async function ouvrirRangement(page: Page, nom: string): Promise<Locator> {
+  const echappe = nom.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  await page
+    .getByRole("group", { name: /Plan de la cuisine/ })
+    .getByRole("button", { name: new RegExp(`^${echappe}`, "i") })
+    .click();
+  const panneau = page.locator(".st-panneau");
+  await expect(panneau.locator(".nom").first()).toContainText(nom, { ignoreCase: true });
+  return panneau;
 }
 
 /** Le service worker a pris la main. Tant qu'il n'y a pas de `controller`, la

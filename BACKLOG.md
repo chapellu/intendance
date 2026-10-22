@@ -5271,6 +5271,277 @@ Branche `cuisine/a-la-pause-retouches`, sur `cuisine/a-la-pause`.
       (`RAYON …`) ignorée d'office : il faut le talon. La photo n'est jamais
       gardée. Corpus : 4 tickets sur 4, lignes et totaux exacts, idem en
       variante OCR abîmée.
+- [x] **T139 — Corriger une ligne du stock, sur place.** Signalé au
+      téléphone : « je mets à jour le stock mais je ne peux ni retirer ni
+      corriger ». Chaque ligne du garde-manger — cartes « À manger en premier »
+      et lignes de zone — porte « Corriger » (− / + en paquets entiers,
+      prérempli du rejeu, « C'est ça ») et « Je n'en ai plus » en un tap.
+      `corrigerLigne` écrit une observation `portee: "ingredient"` à UN
+      constat : les autres denrées de la zone ne bougent pas. Sa `zone`, quand
+      elle est donnée, restreint le constat aux lots rangés là (`rejouer`) —
+      seulement pour un ingrédient relevé dans plusieurs zones (concentré) ;
+      sinon l'ingrédient entier, pour atteindre aussi les courses rentrées
+      sans rangement. Le relevé de zone gagne « Ajouter une denrée… » (recherche
+      dans les ids du catalogue, jamais en texte libre). L'intersection de #32
+      reste : `rejeu.ajoutes` (id → zone) ne porte que ce qu'une observation a
+      constaté DANS une zone sans que le relevé le connaisse, et
+      `hydraterGardeManger` l'ajoute à `jeu.gardeManger` — une course rentrée
+      n'y entre toujours pas. « Pressé » ne se dit plus des denrées qui se
+      gardent : `aSauver` ne garde que la barrière rompue (entamé) et le frais
+      dont la famille de `conservation.yaml` tient moins de deux semaines ;
+      pomme de terre, oignon, échalote, ail (6 semaines) et les pignons (seule
+      leur zone les abîmait) sortent — le mauvais rangement est « À déplacer ».
+      Les quantités de zone se disent en paquets (`enPaquets` : « 4 boîtes »,
+      « 1 paquet · 3 entamés », mot pris dans `fond.yaml:unite` puis le relevé),
+      des grammes seulement pour le vrac. Reste ouvert : une course sans
+      rangement d'un ingrédient relevé dans deux zones se lit sous la première,
+      mais une correction de cette ligne-là ne l'atteint pas.
+
+- [x] **T140 — La boîte entière.** Dit le 20/10 : « je préfère utiliser la
+      boîte entière plutôt que les trois quarts et gérer un petit reste ».
+      Une famille de garde `entame_se_finit: true` (conserve, emballé) dont
+      `fond.yaml:unite` dit le poids (maïs 285 g, thon 140 g, maquereaux
+      169 g, tomates 400 g — à reporter au brouillon ; la brique de coco
+      attend son volume) : dès que la recette prend au moins le tiers de la
+      dernière boîte (`PART_POUR_BOITE_ENTIERE`, `paquet.ts`), le plat la vide.
+      200 g sur 285 → une boîte, aucun reste ouvert ; 400 g → deux ; 50 g →
+      usage partiel, la boîte reste entamée. Au rejeu (`rejouer` arrondit la
+      demande ; `retirer` sert enfin plusieurs unités d'un même lot), à la
+      liste (plat par plat : deux plats à 200 g achètent « 2 boîtes
+      (570 g) », rentrées comme deux boîtes de 285 g), donc au fond ; sur la
+      fiche et à l'étape : « 1 boîte entière (285 g, la recette en demande
+      200 g) » — la prose et les `uses:` du livre ne bougent pas. Le sec se
+      garde ouvert et reste à la quantité ; le râpé entamé se congèle, les
+      yaourts se comptent au pot : hors règle.
+
+- [x] **T141 — L'écran Stock est un plan de la cuisine.** D'après la
+      maquette validée le 20/10 (« c'est bien ma cuisine ») : deux murs vus
+      depuis la porte, les étagères en bois à gauche en perspective, le mur de
+      l'évier au fond. Le dessin est une DONNÉE : chaque zone de
+      `garde-manger.yaml` porte son `plan:` (mur, x/y/w/h en px à l'échelle 1,
+      nom court, teinte), et un bloc `plan:` ajoute les murs, le frigo et le
+      congélateur (touchables, contenu tiré du dépôt par leur `espace`) et le
+      décor (placards du haut, plaques, four, lave-vaisselle, vins, laits).
+      `verifier.py` refuse une zone sans place, un débord, un chevauchement et
+      une cible sous 44 px — gauche + fond = 324 px, la largeur utile à 360.
+      Chaque meuble est un `<button>` (nom, produits et signaux en
+      `aria-label`) avec ses pastilles : ! à manger vite (« pressé », lot
+      urgent), ◐ entamés, ↔ à déplacer — comptés par produit sur ce qui RESTE
+      (`vueDuPlan`, `aDeplacer`) ; trois puces filtrent en éteignant, sans
+      cacher. Le meuble touché ouvre SON panneau, et lui seul : la zone avec ses
+      lignes T139 (« Corriger », « Je n'en ai plus », paquets), « Relever » et
+      « Ajouter une denrée… », l'encart vert du conseil (alertes « À déplacer »
+      de la zone, puis le geste de sa famille de garde — `conseilDe`) ; le
+      frigo et le congélateur montrent leurs lots, la jauge de fiabilité et
+      « tout est perdu ». L'écran s'ouvre sur le frigo. Restent dessous « À
+      manger en premier », « À déplacer », la phrase du garde-manger, les deux
+      planchers et « La cuisine est un lieu fini » ; les notes longues passent
+      derrière « Pourquoi ? ». Un export sans plan retombe sur la liste des
+      zones.
+
+## Les trois autres repas — T142
+
+Décision du foyer, 2026-10-21 : l'app ne planifiait que le dîner. Les trois
+autres repas, dans l'esprit de Marie Chioca et le moins d'industriel possible —
+sans semaine planifiée. Branche `cuisine/trois-repas`, sur `cuisine/stock-plan`.
+
+- [x] **T142 — Le midi pris au dîner, les routines comptées, la fournée
+      proposée.** `model/repas.ts`.
+      **Le midi.** `midiDeDemain` : un déjeuner du foyer fait 3 parts
+      (`partsDuMidi` : adultes à leur part, enfants à une demi au moins), rangées
+      dans les boîtes IKEA LIBRES qui vont au frigo (`contenantsLibres`, les sacs
+      ne comptent pas). Tout ou rien : la carte du soir dit « + le déjeuner de
+      demain, 3 boîtes », ou « Boîtes pleines : ce soir seulement », ou se tait
+      (plat qui finit un reste, ne passe pas la nuit, ou casserole trop petite —
+      `vaisselle.facteurMax`, les pâtes bolognaise). « Je lance ça » (écran et
+      cockpit) écrit en une transaction le dîner à `parts + midi`
+      (`DecisionCreneau.midi`) et demain midi en « Reste réchauffé »
+      (`DecisionCreneau.de`) — jamais par-dessus un midi posé à la main ;
+      relancer n'empile pas. La table mange `parts − midi` : la sortie et le
+      journal rangent le reste (`platDuSoir` ajoute un reste `midi: true` aux
+      plats qui n'en déclarent pas ; ceux qui en déclarent un le voient grossir
+      par `restesApresTable`). Le cockpit dit « Demain midi : le reste de … ».
+      Le geste du jour lit où est le lot (`location`), plus où il ira : il
+      réclamait de « sortir du congélo » le reste de ce soir.
+      **Les routines.** Goûter tous les jours (`creneaux.yaml`). Bloc
+      `routines:` : depuis le 21/10, une ration par jour (recettes du foyer
+      `petit-dejeuner-des-enfants`, `gouter-des-enfants` : flocons, lait de
+      croissance, banane, beurre, yaourts, pomme) se REJOUE comme une cuisson
+      (`journal.evenementsDesRoutines`, en fin de journée, sans compter de
+      doute) ; le dépôt (pain maison, fournée, compote) est décompté une fois
+      par jour au démarrage (`db/routines.ts`, `prisesDesRoutines`, le plus
+      ancien d'abord). Cockpit : une ligne calme par repas, hors tâches
+      (« Goûter : banana bread (congélo, 3 restants), yaourt, fruit » ; midi :
+      le reste d'hier, sinon le déjeuner de Chioca du moins d'achats, hors
+      saison exclu).
+      **La fournée.** `fourneeAProposer` : sous 3 goûters au congélo ou des
+      fruits mûrs (moitié de la vie de leur famille), une recette — les fruits
+      mûrs d'abord, puis zéro/un/plusieurs achats, Chioca à achats égaux. Dite
+      à « Ce soir » et au cockpit ; ses portions partent en SACHETS
+      (`rangerDans(…, sachets)`). Quatre recettes du foyer : banana bread à
+      l'avoine, cookies à l'avoine, crêpes semi-complètes, compote
+      pommes-poires (aucun ajout aux recettes des livres).
+      **Le fond.** `jusqua` (le minimum déclenche, `jusqua` chiffre la ligne) et
+      `hebdo` (frais de la semaine : lait de croissance, yaourts, pommes — dit
+      sur la liste). Bases Chioca, dîner ×2, gnocchis sortis (et leur dîner :
+      neuf dîners promis), fromage en bloc de 400 g. Familles `brique-uht`,
+      `fruit-frais`. « brique de 1 L » se lit en ml.
+      **L'industriel.** Biscottes, cracottes, krisprolls, purée mousline :
+      `industriel: true` au relevé — « industriel — à ne pas racheter » au
+      Stock, aucun plancher proposé, sortis des `centraux`.
+      **Retouche** : l'encart du sous-évier ne dit plus « À déplacer » qu'une
+      fois.
+
+Portes : typecheck, **1 128 tests** (26 nouveaux, `repas.test.ts`,
+`db/ceSoir.test.ts`), build, **78 e2e** (2 nouveaux, `trois-repas.spec.ts`),
+`catalogue:verifie` 0 erreur.
+
+**Ce qui reste ouvert.** Les bandes du corpus plafonnent à `3-repas` : une
+fournée de 12 tranches se dit « 3 goûters ». Le reste d'un dîner déclaré
+`1-repas` (le dahl) reste sous-estimé par la donnée du corpus. Changer le plat
+du soir après coup laisse demain midi sur l'ancien reste. Le rejeu d'une
+brique entamée (lot `court`) mesure mal le jour même. Les rations sont
+posées à vue (40 g de flocons, 400 ml de lait le matin) : à corriger à l'usage.
+
+## Le relevé dicté du 21/10 — T143
+
+- [x] **T143 — Le relevé du 21/10 remplace celui du 26/08, et il se voit sur
+      le téléphone.** `garde-manger.yaml` daté du 2026-10-21 pour les zones
+      relevées (dessus et deux niveaux de l'étagère en bois, les deux
+      demi-lunes, le placard haut) ; le sous-évier et le tiroir à épices
+      gardent le 26/08 (`releve:` par zone, exporté sur chaque zone). L'étagère
+      a TROIS niveaux : `etagere-ouverte` devient le 1er (confitures, miel,
+      fruits au sirop) et `etagere-basse` naît (conserves), plan redessiné à
+      44 px. Les oignons passent en demi-lune basse, l'ail en demi-lune haute,
+      l'échalote est jetée — le sous-évier ne garde que les pommes de terre, et
+      l'alerte « voisiner » s'éteint. Dix ids au vocabulaire (ratatouille en
+      boîte, trois confitures, pâte à tartiner, sirop d'érable, polenta,
+      couscous, udon, graines de tournesol). Industriels tagués : cracottes,
+      biscottes, Nesquik, pâte à tartiner, bolognaise Barilla, cocktail de
+      fruits — « à ne pas racheter » au Stock, aucun plancher, et `calculer` ne
+      les met jamais au panier (une recette les finit s'ils sont là).
+      **LE REJEU NE LISAIT L'AMORCE QU'EN TÊTE**, puis le journal du téléphone
+      par-dessus : un relevé de zone fait en septembre, ou les cuissons d'avant
+      le 21/10, auraient effacé ou décompté le relevé dicté. Chaque zone est
+      désormais RE-RELEVÉE à sa date au milieu du journal (en tête de journée,
+      une correction du même jour passe après) : ce qui précède ne la touche
+      plus, ce qui suit la corrige. Une course rentrée sans rangement
+      (`LotPlacard.sansPlace`) n'est effacée que si le relevé compte cet
+      ingrédient — les surgelés de samedi restent. Un rejeu daté d'avant le
+      21/10 ne voit pas le relevé à venir. `releve.test.ts`.
+
+Portes : typecheck, **1 136 tests** (8 nouveaux, une vingtaine recalés sur le
+nouveau relevé), build, **78 e2e** (`stock-plan`, `stock-corriger` recalés),
+`catalogue:verifie` 0 erreur.
+
+**Ouvert.** Une cuisson faite le 21/10 AVANT la dictée serait décomptée une
+seconde fois (le relevé passe en tête de journée). Les graines de courge et de
+tournesol sont mêlées dans un seul sachet de 200 g, porté par la courge.
+
+## Le mois simulé des trois repas — T144
+
+- [x] **T144 — Ce que trente jours simulés ont trouvé à T142.** Harnais
+      `sim/annee.mjs` (branche `sim/trois-repas`).
+      **Les boîtes.** 19 cartes « Boîtes pleines », 14 avec les quatre boîtes
+      libres : `contenantsLibres` re-rangeait les sachets de la fournée et du
+      pain dans les boîtes IKEA (lavables d'abord), gardait les restes périmés,
+      et le midi mangé à table n'était jamais retiré. `repas.lotsEnBoites`
+      (CeSoir, Cuisiner) écarte les types des routines, les périmés et le midi
+      passé ; le lot du midi porte `midiLe`/`midi` (`journaliserCuisson`), et
+      l'ouverture le décompte (`midisPasses`, `db/routines.ts`). Le « reste
+      réchauffé » prend ce lot, puis un lot du frigo — plus un sachet de
+      banana bread.
+      **Le midi.** `dejeunerDuStock` remplace `dejeunerDeChioca` : zéro article,
+      puis un ; la saison ; Chioca départage. Au-delà d'un achat : « Midi : rien
+      ne se fait avec le stock — un reste, ou des tartines ».
+      **Le fruit.** `fond.yaml` : banane (7 pièces) et poires (4, en saison),
+      `hebdo`. Un fruit ne porte pas de plancher : `fruitsDeLaSemaine` fait la
+      ligne (« frais de la semaine · il en reste N »), hors saison elle se tait.
+      **Le pain.** Recette du foyer `pain-maison-semi-complet` (T80–T110,
+      levure de boulanger), deux sachets de trois matins au congélateur.
+      `matinsDePain` sous `SEUIL_PAIN` (3) : la fournée est le pain — compté à
+      part des goûters, le plus court d'abord.
+      **La fournée tourne.** Zéro/un/plusieurs achats, puis ce que le congélo
+      n'a pas, puis un fruit mûr, puis Chioca : la compote ne gagne plus quatre
+      fois sur quatre. La compote se fait de pommes OU de poires ; aucune des
+      deux, la ligne dit « il manque : pommes ou poires ».
+
+Portes : typecheck, **1 153 tests** (17 nouveaux, `repas.test.ts`,
+`db/boites.test.ts`), build, **78 e2e** (`courses`, `plancher-garde-manger`
+recalés sur le fruit de la semaine), `catalogue:verifie` 0 erreur.
+
+**Ouvert.** Le reste déclaré du dahl (`1-repas`) sous-estime toujours le midi
+qu'il porte, donc ses boîtes. Les sachets du pain et de la fournée ne
+décomptent plus les sacs de congélation du pool. « il en reste N » d'un fruit
+lit le rejeu, que la routine décompte à vue.
+
+## L'année simulée des quatre repas — T145
+
+- [x] **T145 — Ce que l'année simulée (run8) a trouvé à T144.**
+      **Les boîtes.** 196 cartes « Boîtes pleines » pour un seul jour de boîtes
+      vraiment pleines. Une boîte IKEA de 0,8 L porte deux parts adultes, pas
+      une : `portionsParBoite` (volume ÷ `PORTION_ADULTE_ML` = 400 ml) sert au
+      midi (`boitesDuMidi`) comme au rangement (`rangerDans`, donc
+      `contenantsLibres`). Le midi des quatre tient en deux boîtes, la
+      bolognaise de l'amorce (700 g) en une. Le dahl agrandi : son lot du midi
+      porte au moins les parts du midi (`journaliserCuisson`), plus « 1 repas ».
+      **Le pain et la fournée.** Le pain sous `SEUIL_PAIN` gagne la fournée,
+      sans condition. Seules les fournées cuisinables concourent : rien à
+      acheter, ou un seul article pris au frais de la semaine (`hebdo`). Celle
+      des derniers jours passe après (`recentes`, depuis `proposerCeSoir`).
+      **Le goûter.** La pomme, comptable parce qu'achetée en sachet, attendait
+      un plancher validé : un fruit `hebdo` qui a une saison est maintenant du
+      frais de la semaine (`fruitsDeLaSemaine`), un sachet de 1,5 kg ; un
+      plancher déjà validé ne fait pas de doublon (`Courses.avecLesFruits`).
+      **Le fond.** Flocons 2 à 3 paquets de 500 g, beurre 2 à 3 plaquettes,
+      yaourts 6 à 7 packs de 4 (≈ 25 pots la semaine).
+      **Les unités.** `model/unites.ts` : le kilo en grammes, la pomme de terre
+      à la pièce à 150 g, là où l'on additionne (`calcul.auPanier`,
+      `journal.demandes`). La fiche garde l'unité de la recette.
+
+Portes : typecheck, **1 161 tests**, build, **78 e2e** (`trois-repas` recalé :
+deux boîtes, et trois restes posés pour les boîtes pleines),
+`catalogue:verifie` 0 erreur.
+
+**Ouvert.** Un reste du frigo entamé au midi sans être fini garde toutes ses
+boîtes dans l'app. Le poids d'une pièce n'est connu que de la pomme de terre.
+
+## L'année simulée n° 9 — T146
+
+- [x] **T146 — Ce que l'année simulée (run 9) a trouvé à T145.**
+      **L'onglet resté ouvert.** La PWA rallumée le matin reprenait l'écran de
+      la veille : le cockpit montrait hier, et sa ligne « Fournée » ouvrait le
+      goûter d'hier (« Ce créneau n'est plus là » — cinq fournées et deux midis
+      perdus). `nav/reveil.ts` redessine l'app à chaque retour sur l'onglet
+      (`visibilitychange`, `focus`, `pageshow`). Les routines (le pain du matin,
+      le goûter) ne passaient qu'au démarrage : le pain du 17/10 restait
+      « 6 matins » le 2/11, et le pain n'était plus jamais proposé (316 matins
+      sans pain). `routinesDuJour` roule avec le report, une fois par jour, et
+      une seconde fois après le déjeuner.
+      **Le midi sans geste.** Le plus ancien reste de plat du frigo perd les
+      parts du midi chaque jour dont le déjeuner est passé, sans cuisson ni midi
+      prévu (`midisDuFrigo`) — au prorata, donc ses boîtes aussi. La ligne
+      « Midi » nomme ce lot-là (`resteDuFrigoAuMidi`). Un midi « reste de la
+      veille » passé se ferme au lieu de se reporter : reporté, il perdait son
+      plat (« Midi : Reste réchauffé ») et bloquait le midi du « Je lance ça »
+      suivant.
+      **La fournée.** Un fruit passe dans ses deux derniers jours de garde, sans
+      rachat (plus à mi-vie : les poires de la semaine étaient « mûres » la
+      moitié du temps). Sans besoin de goûters, un fruit mûr ne relance ni la
+      fournée déjà au congélo ni celle de ces jours-ci. Celle de ces jours-ci
+      passe après, avant même le compte d'achats ; un jour de courses, une
+      fournée à un article (quel qu'il soit) se propose. La raison dit le
+      congélo vide avant les fruits.
+      **Le demi-paquet du relevé.** Sans poids, il servait un plat entier ;
+      quand le fond pèse le paquet, il en garde la moitié, chiffrée.
+
+Portes : typecheck, **1 171 tests**, build, **78 e2e**, `catalogue:verifie`
+0 erreur. Le harnais (`sim/annee.mjs`) prend le relevé du catalogue comme un
+fait du monde, lit « N repas » comme N parts, compte la pomme de terre en
+grammes, et libère les boîtes au prorata.
+
+**Ouvert.** Les lentilles cuites du congélo qu'une recette prend en entier
+restent dans l'app ; la farine dérive d'un paquet en un mois.
 
 ## Sortie
 
@@ -5285,3 +5556,22 @@ Quand l'app porte les mêmes verdicts que le proto : supprimer, chez `flagship`,
 et ici, `scripts/parite.mjs` avec `reference/proto-semaine.js`, qui n'existent
 que pour prouver le port et n'ont plus rien à prouver une fois l'original
 parti.
+
+## Posé n'est pas cuisiné — T147
+
+- [x] **T147 — Le cockpit annonçait les restes de plats seulement posés.**
+      Capture du 22/10, 16 h 23 : trois plats posés par « Proposer »
+      (croque-monsieur ce soir, une soupe d'orge, une tarte au potimarron), et
+      la ligne « Ce soir » disait « le reste de soupe orge est à finir d'ici
+      3 jours · le reste de tarte potimarron est à finir d'ici 4 jours ».
+      Rien n'avait été cuit. `proposerCeSoir` lisait `calculer(jeu, choix).depot`,
+      où la semaine PROJETTE ses sorties : un plat posé y naît comme s'il était
+      fait. « Ce qui attend », la marque « presse » et le « mange le reste de »
+      des cartes lisent désormais un dépôt bâti sur `jeu.stock` seul — ce qui a
+      été cuisiné au journal ou relevé à la main. L'inventaire (`vueDeLInventaire`,
+      `lots`) ne montre plus que `depot.initiales` : « cuisiné cette semaine
+      (…) » se disait d'un plat posé. La projection reste au plan (la semaine,
+      les courses, le chaînage), jamais au présent. Les boîtes libres et le midi
+      (`lotsEnBoites`, `midiDeDemain`) lisaient déjà la base. Tenu par
+      `pause.test.ts` (trois posés, aucun cuit → aucun lot qui attend) et
+      `e2e/pose-pas-cuit.spec.ts` (le fil, puis le cockpit).

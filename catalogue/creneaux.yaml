@@ -74,11 +74,13 @@ repas:
 
 # Quels créneaux existent, jour par jour. `defaut` s'applique à tout jour non
 # listé dans `exceptions`.
+#
+# T142 (2026-10-21) — LE GOÛTER EST DE TOUS LES JOURS. Il n'était qu'au
+# mercredi, jour de la séance des enfants (#29) ; le foyer a décidé que les
+# deux enfants goûtent fait maison chaque jour. L'exception du mercredi
+# disparaît avec lui : elle ne disait plus rien que `defaut` ne dise.
 jours:
-  defaut: [petit-dejeuner, dejeuner, diner, dessert]
-  exceptions:
-    # Séance des enfants un jour de semaine (#29) : un goûter s'ajoute.
-    mercredi: [petit-dejeuner, dejeuner, gouter, diner, dessert]
+  defaut: [petit-dejeuner, dejeuner, gouter, diner, dessert]
 
 # Jours de coworking : le déjeuner doit partir en gamelle (#29, « coworking
 # days need lunchbox outputs »). Un plat qui voyage mal n'y a pas sa place.
@@ -92,3 +94,41 @@ emporte:
 # que personne l'ait décidé. On les garde donc sur les repas principaux et on
 # assume que les chiffres sont à re-régler — ils n'ont jamais été sourcés.
 equilibre_sur: [dejeuner, diner]
+
+# ---------------------------------------------------------------------------
+# T142 — LES ROUTINES : CE QUE LE PETIT-DÉJEUNER ET LE GOÛTER CONSOMMENT.
+#
+# Décision du 2026-10-21, « dans l'esprit de Marie Chioca, et le moins de
+# produits industriels possible » : porridge de petits flocons au lait et au
+# fruit écrasé, pain maison semi-complet beurré, yaourt nature, fruit ; au
+# goûter, une fournée maison congelée (cookies à l'avoine, muffins, banana
+# bread, crêpes), de la compote maison en portions, un yaourt, un fruit. Le
+# lait de croissance reste (recommandation pédiatrique avant 3 ans). Ni
+# Blédine, ni biscottes, ni biscuits ou compotes en gourde.
+#
+# UNE ROUTINE N'EST PAS UN CHOIX, ET ON NE LA PROPOSE PAS : on la COMPTE.
+# `recette` est une recette du foyer qui porte la ration d'UN jour pour les
+# deux enfants ; le rejeu du placard la retire chaque jour depuis `depuis`,
+# pour que le stock et le fond restent vrais. `du_depot` dit ce qu'elle prend
+# en plus dans le dépôt (le pain du congélateur, les goûters de la fournée) :
+# `parts` repas par jour, dans le lot le plus ancien de ces types.
+#
+# `depuis` : le jour où la routine a commencé à compter. Avant lui, l'app ne
+# sait rien de ce qui a été bu et mangé, et vider le placard rétroactivement
+# serait inventer des retraits.
+routines:
+  depuis: 2026-10-21
+  petit-dejeuner:
+    recette: petit-dejeuner-des-enfants
+    du_depot:
+      types: [pain-de-mie-maison]
+      parts: 1
+  gouter:
+    recette: gouter-des-enfants
+    du_depot:
+      # Les goûters de la fournée, et la compote. Un jour sans lot, rien ne se
+      # retire : le goûter s'est fait d'un fruit et d'un yaourt.
+      types: [banana-bread, cookies-avoine, crepes-maison, compote-maison,
+              muffins-choco-courgettes, quatre-quarts-poire, mini-brownies,
+              cookies-figues-noisettes, mini-cakes-fruits]
+      parts: 1

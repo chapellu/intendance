@@ -8,6 +8,7 @@
 import { cleCreneau, jourISO, type Base, type DecisionCreneau } from "./schema";
 import { creerJeu, type Choix, type Jeu } from "../model/jeu";
 import type { Catalogue } from "../model/types";
+import { RESTE_DE_LA_VEILLE } from "../model/repas";
 
 /** La clé de base d'un créneau du modèle. */
 export function cleDuCreneau(jeu: Jeu, i: number): string | null {
@@ -58,6 +59,8 @@ export function hydrater(jeu: Jeu, decisions: Map<string, DecisionCreneau>): Jeu
     jeu.choix[i] = d.plat as Choix;
     if (d.parts != null) jeu.parts[i] = d.parts;
     jeu.dejaLa[i] = d.ici && d.plat ? { plat: d.plat, ids: d.ici } : null;
+    if (jeu.midi) jeu.midi[i] = d.midi ?? null;
+    if (jeu.deLaVeille) jeu.deLaVeille[i] = d.de ?? null;
   });
   return jeu;
 }
@@ -85,6 +88,8 @@ export async function poser(base: Base, jeu: Jeu, i: number, plat: Choix, ici?: 
   });
   jeu.choix[i] = plat;
   jeu.dejaLa[i] = ici && plat ? { plat, ids: [...ici] } : null;
+  if (jeu.midi) jeu.midi[i] = null;
+  if (jeu.deLaVeille) jeu.deLaVeille[i] = null;
 }
 
 /**
@@ -104,12 +109,43 @@ export async function poserCeSoir(
   plat: string,
   ici?: readonly string[],
   maintenant: Date = new Date(),
+  midi?: number,
 ): Promise<{ jour: string; repas: "diner" }> {
   const frais = creerJeu(catalogue, 7, maintenant);
   const i = frais.creneaux.findIndex((c) => c.jour === 0 && c.repas === "diner");
   const cle = cleDuCreneau(frais, i);
   if (i < 0 || !cle) throw new RangeError("pas de dîner ce soir dans la fenêtre");
-  await poser(base, frais, i, plat, ici);
+  const j = frais.creneaux.findIndex((c) => c.jour === 1 && c.repas === "dejeuner");
+  const cleMidi = cleDuCreneau(frais, j);
+  // T142 — LE DÎNER ET LE MIDI DE DEMAIN, OU NI L'UN NI L'AUTRE : une
+  // transaction, pour la raison de `prevoirGamelle`. Le midi n'est écrit que
+  // s'il est vide AU MOMENT DU DOIGT — la carte a pu le lire libre, un autre
+  // écran l'a peut-être pris depuis.
+  await base.transaction("rw", base.creneaux, async () => {
+    // Les parts réglées À LA MAIN, sans le midi d'un « Je lance ça » précédent :
+    // relancer ce soir ne doit pas empiler deux déjeuners sur le même dîner.
+    const avant = await base.creneaux.get(cle);
+    // Un midi posé sur « les parts du foyer » (`null`) y revient : retrancher le
+    // midi retombe pile sur le foyer, et c'est ce `null` qu'on réécrit.
+    const brut = avant?.parts != null ? avant.parts - (avant.midi ?? 0) : null;
+    const reglees = brut != null && Math.abs(brut - catalogue.foyer.parts) < 1e-9 ? null : brut;
+    await poser(base, frais, i, plat, ici);
+    const existant = (await base.creneaux.get(cle))!;
+    if (avant?.midi) await base.creneaux.put({ ...existant, parts: reglees });
+    if (!midi || midi <= 0 || !cleMidi || !catalogue.plats.some((p) => p.id === RESTE_DE_LA_VEILLE)) return;
+    const pris = await base.creneaux.get(cleMidi);
+    if (pris?.plat && !(pris.plat === RESTE_DE_LA_VEILLE && pris.de)) return;
+    await base.creneaux.put({ ...existant, parts: (reglees ?? catalogue.foyer.parts) + midi, midi, maj: Date.now() });
+    await base.creneaux.put({
+      cle: cleMidi,
+      jour: cleMidi.split("|")[0]!,
+      repas: "dejeuner",
+      plat: RESTE_DE_LA_VEILLE,
+      parts: pris?.parts ?? null,
+      de: plat,
+      maj: Date.now(),
+    });
+  });
   return { jour: cle.split("|")[0]!, repas: "diner" };
 }
 
@@ -136,6 +172,9 @@ export async function reglerParts(
     parts,
     // Régler les parts ne change pas ce que la carte disait là.
     ...(existant?.ici ? { ici: existant.ici } : {}),
+    // Ni le midi mis de côté (T142) : il reste compris dans les parts réglées.
+    ...(existant?.midi ? { midi: existant.midi } : {}),
+    ...(existant?.de ? { de: existant.de } : {}),
     maj: Date.now(),
   });
   jeu.parts[i] = parts ?? jeu.catalogue.foyer.parts;

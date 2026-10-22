@@ -13,8 +13,28 @@
 // affirmation.
 
 import { readFileSync } from "node:fs";
-import { expect, test } from "@playwright/test";
-import { attendreLApp, creneauPose, passerLaMiseEnPlace, poserUnPlat } from "./parcours";
+import { expect, test, type Page } from "@playwright/test";
+import { attendreLApp, creneauPose, ouvrirRangement, passerLaMiseEnPlace, poserUnPlat } from "./parcours";
+
+/** Les zones du garde-manger, par leur nom à l'écran — dans l'ordre du relevé. */
+const ZONES: string[] = (
+  JSON.parse(readFileSync("public/cuisine-data.json", "utf8")) as any
+).gardeManger.zones.map((z: any) => z.label);
+
+/**
+ * Ce que disent les lignes de TOUTES les zones — « vu », « estimé »… T141 :
+ * l'écran ne montre plus qu'un rangement à la fois, touché sur le plan ; on
+ * fait donc le tour de la cuisine, comme on le ferait du doigt.
+ */
+async function confiances(page: Page): Promise<string[]> {
+  const dits: string[] = [];
+  for (const nom of ZONES) {
+    const panneau = await ouvrirRangement(page, nom);
+    dits.push(...(await panneau.locator(".co-lot .src").allInnerTexts()));
+  }
+  return dits;
+}
+const depense = (dits: string[]): boolean => dits.some((d) => /estimé|à vérifier/i.test(d));
 
 /**
  * Les plats qui consomment vraiment quelque chose du garde-manger.
@@ -81,11 +101,11 @@ test("terminer une recette journalise, et la confiance du placard se dépense", 
   // relevé et se lit « vu » ; après une cuisson, ce que le plat a touché ne se
   // lit plus « vu ». ⚠ Cette phrase disait « QUEL QUE SOIT LE PLAT » et c'était
   // faux — voir le filtre passé à `poserUnPlat` plus haut.
-  const lignes = page.locator('.co-espace:has-text("Relever") .src');
   await page.goto("/#/cuisine/stock");
   await attendreLApp(page);
-  await expect(lignes.first()).toBeVisible();
-  expect(await lignes.filter({ hasText: /estimé|à vérifier/ }).count()).toBe(0);
+  const avant = await confiances(page);
+  expect(avant.length).toBeGreaterThan(0);
+  expect(depense(avant)).toBe(false);
 
   // LA FICHE DU CRÉNEAU S'OUVRE SUR SA MISE EN PLACE — T112 —, et on la passe
   // comme un doigt la passe. Tous les plats du corpus ont des étapes depuis
@@ -182,16 +202,14 @@ test("terminer une recette journalise, et la confiance du placard se dépense", 
   // dépensée. C'est toute la chaîne, du doigt à l'écran.
   await page.goto("/#/cuisine/stock");
   await attendreLApp(page);
-  await expect(lignes.filter({ hasText: /estimé|à vérifier/ }).first()).toBeVisible({
-    timeout: 15_000,
-  });
+  await expect.poll(async () => depense(await confiances(page)), { timeout: 15_000 }).toBe(true);
 
   // ET ÇA SURVIT AU RECHARGEMENT — la différence entre une projection et un
   // fait. Le niveau n'est stocké nulle part : c'est le JOURNAL qui a survécu, et
   // le rejeu qui refait le chiffre.
   await page.reload();
   await attendreLApp(page);
-  await expect(lignes.filter({ hasText: /estimé|à vérifier/ }).first()).toBeVisible();
+  expect(depense(await confiances(page))).toBe(true);
 
   // T37 — UNE SEULE CUISSON NE PROPOSE AUCUN PLANCHER, et c'est la promesse la
   // plus facile à casser dans le mauvais sens : une app qui propose de suivre
@@ -215,16 +233,19 @@ test("relever une zone remet le placard à ce que l'œil voit", async ({ page })
   // toujours, et le parcours passait sur une zone que personne n'avait touchée
   // pendant que la zone relevée affichait encore « mais · 4 × 285 g ». On
   // retient donc le NOM de la zone ouverte, et on revient à elle.
-  const relevable = page
-    .locator(".co-espace")
-    .filter({ has: page.getByRole("button", { name: "Relever" }) })
-    .first();
-  await expect(relevable).toBeVisible();
-  const nom = (await relevable.locator(".nom > span").first().innerText()).trim();
-  const zone = page.locator(".co-espace").filter({ hasText: nom });
-  await expect(zone).toHaveCount(1);
-  // Elle porte quelque chose avant : sans ça, « vide » serait vrai d'avance.
-  await expect(zone.locator(".co-lot").first()).toBeVisible();
+  //
+  // T141 : une zone à la fois, touchée sur le plan. On fait le tour jusqu'à la
+  // première qui porte quelque chose — sans ça, « vide » serait vrai d'avance.
+  let nom = "";
+  let zone = page.locator(".st-panneau");
+  for (const z of ZONES) {
+    zone = await ouvrirRangement(page, z);
+    if ((await zone.locator(".co-lot").count()) > 0) {
+      nom = z;
+      break;
+    }
+  }
+  expect(nom).not.toBe("");
 
   await zone.getByRole("button", { name: "Relever" }).dispatchEvent("click");
   const valider = zone.getByRole("button", { name: /Valider le relevé/ });
@@ -252,6 +273,7 @@ test("relever une zone remet le placard à ce que l'œil voit", async ({ page })
   // LA ZONE RELEVÉE ne porte plus rien, et ça survit au rechargement.
   await page.reload();
   await attendreLApp(page);
+  zone = await ouvrirRangement(page, nom);
   await expect(zone.getByText("Rien de relevé ici.")).toBeVisible({ timeout: 15_000 });
   await expect(zone.locator(".co-lot")).toHaveCount(0);
 });

@@ -194,6 +194,15 @@ methodes:
 #
 # UN ID N'APPARTIENT QU'À UNE FAMILLE — le vérificateur le tient. Deux fenêtres
 # pour la même denrée, et l'écran choisirait au hasard laquelle afficher.
+#
+# `entame_se_finit: true` — T140, dit le 2026-10-20 : « je préfère utiliser la
+# boîte entière plutôt que les trois quarts et gérer un petit reste ». Une
+# boîte, une brique, un bocal, un paquet sous atmosphère ouverts ne se gardent
+# pas : quand la recette en demande une bonne part (un tiers, voir
+# `src/model/paquet.ts`), le plat la prend ENTIÈRE — au rejeu, à la liste, et
+# la fiche le dit. Il faut aussi que `fond.yaml:unite` dise le poids de la
+# boîte. ABSENT ailleurs, et c'est voulu : le sec se garde ouvert ; le fromage
+# râpé entamé se congèle (son conseil) et les yaourts se comptent au pot.
 # ---------------------------------------------------------------------------
 
 familles:
@@ -214,11 +223,12 @@ familles:
     ids: [farine, farine-complete, farine-epeautre, farine-petit-epeautre,
           lentilles-corail, lentilles-seches, pois-casses, pois-chiches,
           haricots-blancs, haricots-rouges, riz, riz-rond, pates, semoule,
-          flocons-avoine]
+          flocons-avoine, son-avoine, sucre-complet, levure-boulangere]
 
   - id: emballe
     label: frais emballé longue garde
     fond: true
+    entame_se_finit: true
     espace: placard
     rangement: dans son emballage fermé, au placard
     fenetre: {unite: semaines, valeur: 8}
@@ -282,6 +292,7 @@ familles:
   - id: conserve
     label: conserves
     fond: true
+    entame_se_finit: true
     espace: placard
     rangement: au placard, boîtes fermées
     fenetre: {unite: ans, valeur: 2}
@@ -322,9 +333,46 @@ familles:
     conseil: >-
       Un sachet de fromage râpé entamé se congèle tel quel et s'emploie sans
       décongeler, directement sur le gratin.
-    ids: [fromage-rape, yaourt-nature]
+    # `beurre` (T142) : la plaquette fermée tient des semaines au frigo, et
+    # c'est l'ordre de grandeur de cette famille.
+    ids: [fromage-rape, yaourt-nature, beurre]
+
+  # T142 — LE LAIT DE CROISSANCE, en briques UHT : il se garde fermé comme une
+  # conserve, mais une brique ouverte ne se finit pas d'un plat (pas
+  # `entame_se_finit`) — elle se boit sur deux jours.
+  - id: brique-uht
+    label: lait en brique
+    fond: true
+    espace: placard
+    rangement: au placard, briques fermées ; ouverte, au frigo
+    fenetre: {unite: mois, valeur: 3}
+    source: >-
+      ordre de grandeur — la date d'une brique UHT fermée est à plusieurs mois ;
+      ouverte, 48 heures au frigo selon les fabricants. La date de la brique
+      fait foi.
+    conseil: >-
+      Ouvrir une brique à la fois et noter le jour dessus au feutre : deux
+      briques entamées au frigo, c'est une de trop.
+    ids: [lait-croissance]
 
   # ── Le frais fragile : PAS du fond, et c'est là que le geste compte ──────
+
+  # T142 — LES FRUITS DE LA SEMAINE. Ils ne sont pas « toujours là » : ils se
+  # rachètent chaque semaine (`fond.yaml`, `hebdo: true`), et c'est la seule
+  # porte par laquelle une famille `fond: false` entre au fond.
+  - id: fruit-frais
+    label: fruits frais
+    fond: false
+    espace: placard
+    rangement: à l'air, dans une coupe, loin des pommes de terre
+    fenetre: {unite: jours, valeur: 7}
+    source: >-
+      ordre de grandeur, non sourcé — une banane mûrit en quelques jours à
+      température ambiante, une poire aussi.
+    conseil: >-
+      Une banane tachée n'est pas perdue : c'est le banana bread de la fournée,
+      ou le fruit écrasé du porridge de demain matin.
+    ids: [banane, poires]
 
   - id: viande-poisson
     label: viande et poisson frais

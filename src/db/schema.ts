@@ -74,6 +74,17 @@ export interface DecisionCreneau {
    * (même geste que `LotStock.dluo`). Reposer un plat sans lui l'efface.
    */
   ici?: string[];
+  /**
+   * T142 — SUR UN DÎNER : les parts mises de côté pour le déjeuner de demain.
+   * `parts` les COMPREND (c'est ce qu'on cuisine) ; la table en mange
+   * `parts − midi`, et le reste part en boîtes. Absent partout ailleurs.
+   */
+  midi?: number;
+  /**
+   * T142 — SUR UN DÉJEUNER « reste réchauffé » : le plat de la veille qu'il
+   * finit, pour que le midi dise « le reste de dahl » et pas « reste ».
+   */
+  de?: string;
   maj: number;
 }
 
@@ -144,6 +155,14 @@ export interface LotStock {
   dluo?: string;
   /** Le plat qui l'a produit, si c'est nous. */
   origine: string | null;
+  /**
+   * T144 — LE DÉJEUNER MIS DE CÔTÉ DANS CE LOT : la date du midi qui le mange
+   * (`AAAA-MM-JJ`) et ses parts, en repas. Une fois ce midi passé, le lot perd
+   * ces parts (`repas.midisPasses`) — personne ne tape « je n'en ai plus » sur
+   * des boîtes vidées à table, et les quatre boîtes restaient « pleines ».
+   */
+  midiLe?: string;
+  midi?: number;
   maj: number;
 }
 

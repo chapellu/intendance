@@ -15,9 +15,10 @@
 // possible. Un champ qu'aucun calcul ne lit peut manquer sans dommage.
 
 import type {
-  Accept, Accompagnement, Agression, Catalogue, Denree, Emit, EmitKind, Espace, Etape, Etat,
+  Accept, Cadre, DecorDuPlan, Mur, PlanCuisine, RangementDuPlan, TeinteDecor, TeinteRangement,
+  Accompagnement, Agression, Catalogue, Denree, Emit, EmitKind, Espace, Etape, Etat,
   FamilleDeGarde, Fond, Format, Forme, Foyer, GardeManger, Ingredient, LigneStock, Nature, Outil,
-  Plat, Provenance, Quantite, Rattrapage, Role, Saisons, Source, Urgence, Usage, Zone,
+  Plat, Provenance, Quantite, Rattrapage, Role, Routine, Routines, Saisons, Source, Urgence, Usage, Zone,
 } from "./types";
 
 const ESPACES: readonly Espace[] = ["frigo", "congelo", "placard"];
@@ -502,6 +503,7 @@ function zone(v: unknown, ou: string): Zone {
     volumeL: nombreOuNull(o["volumeL"] ?? null, `${ou}.volumeL`),
     exposition: parmi(o["exposition"], ["jour", "sombre"] as const, `${ou}.exposition`),
     hygrometrie: parmi(o["hygrometrie"], ["sec", "humide"] as const, `${ou}.hygrometrie`),
+    releve: texteOuNull(o["releve"] ?? null, `${ou}.releve`),
     chaleur: booleen(o["chaleur"], `${ou}.chaleur`),
     note: note === undefined || note === null ? null : texte(note, `${ou}.note`),
   };
@@ -527,6 +529,7 @@ function denree(v: unknown, ou: string): Denree {
     // connu — une faute de frappe y serait silencieuse et ferait simplement
     // disparaître la denrée de la liste d'apéro, sans que rien ne le dise.
     usage: o["usage"] == null ? null : parmi(o["usage"], USAGES, `${ou}.usage`),
+    industriel: o["industriel"] == null ? false : booleen(o["industriel"], `${ou}.industriel`),
     conservations: tableau(o["conservations"] ?? [], `${ou}.conservations`).map((x, i) => {
       const c = obj(x, `${ou}.conservations[${i}]`);
       return {
@@ -572,7 +575,66 @@ function gardeManger(v: unknown, ou: string): GardeManger {
     zones,
     denrees,
     alertes: listeDeTextes(o["alertes"] ?? [], `${ou}.alertes`),
+    plan: o["plan"] == null ? null : planCuisine(o["plan"], `${ou}.plan`, connues),
   };
+}
+
+const MURS: readonly Mur[] = ["gauche", "fond"];
+const TEINTES_RANGEMENT: readonly TeinteRangement[] = ["bois-clair", "bois", "bois-fonce", "blanc", "froid"];
+const TEINTES_DECOR: readonly TeinteDecor[] = ["mur", "mur-fonce", "plan-de-travail", "plaques", "electromenager"];
+
+function cadre(o: Record<string, unknown>, ou: string): Cadre {
+  return {
+    mur: parmi(o["mur"], MURS, `${ou}.mur`),
+    x: nombre(o["x"], `${ou}.x`),
+    y: nombre(o["y"], `${ou}.y`),
+    w: nombre(o["w"], `${ou}.w`),
+    h: nombre(o["h"], `${ou}.h`),
+  };
+}
+
+/**
+ * Le plan de la cuisine — T141.
+ *
+ * UN RANGEMENT QUI NOMME UNE ZONE INCONNUE EST REFUSÉ, pour la même raison que
+ * la denrée plus haut : il s'ouvrirait sur un panneau vide, qu'on lirait
+ * « il n'y a rien ici ».
+ */
+function planCuisine(v: unknown, ou: string, zones: ReadonlySet<string>): PlanCuisine {
+  const o = obj(v, ou);
+  const murs = obj(o["murs"], `${ou}.murs`);
+  const mur = (m: Mur) => {
+    const x = obj(murs[m], `${ou}.murs.${m}`);
+    return {
+      w: nombre(x["w"], `${ou}.murs.${m}.w`),
+      h: nombre(x["h"], `${ou}.murs.${m}.h`),
+      label: texte(x["label"], `${ou}.murs.${m}.label`),
+    };
+  };
+  const rangements = tableau(o["rangements"] ?? [], `${ou}.rangements`).map((x, i): RangementDuPlan => {
+    const r = obj(x, `${ou}.rangements[${i}]`);
+    const zone = texteOuNull(r["zone"] ?? null, `${ou}.rangements[${i}].zone`);
+    if (zone !== null && !zones.has(zone))
+      throw new CatalogueInvalide(`${ou}.rangements[${i}].zone`, "une zone déclarée", zone);
+    return {
+      ...cadre(r, `${ou}.rangements[${i}]`),
+      id: texte(r["id"], `${ou}.rangements[${i}].id`),
+      zone,
+      espace: parmi(r["espace"], ESPACES, `${ou}.rangements[${i}].espace`),
+      label: texte(r["label"], `${ou}.rangements[${i}].label`),
+      court: texte(r["court"], `${ou}.rangements[${i}].court`),
+      teinte: parmi(r["teinte"], TEINTES_RANGEMENT, `${ou}.rangements[${i}].teinte`),
+    };
+  });
+  const decor = tableau(o["decor"] ?? [], `${ou}.decor`).map((x, i): DecorDuPlan => {
+    const d = obj(x, `${ou}.decor[${i}]`);
+    return {
+      ...cadre(d, `${ou}.decor[${i}]`),
+      label: typeof d["label"] === "string" ? d["label"] : "",
+      teinte: parmi(d["teinte"] ?? "mur", TEINTES_DECOR, `${ou}.decor[${i}].teinte`),
+    };
+  });
+  return { murs: { gauche: mur("gauche"), fond: mur("fond") }, rangements, decor };
 }
 
 /* ─────────────────────────────────── la garde, le fond, les saisons (2026-10-18) */
@@ -593,6 +655,7 @@ function garde(v: unknown, ou: string): FamilleDeGarde[] {
       id: texte(o["id"], `${ou}[${i}].id`),
       label: texte(o["label"], `${ou}[${i}].label`),
       fond: booleen(o["fond"], `${ou}[${i}].fond`),
+      entameSeFinit: booleen(o["entameSeFinit"] ?? false, `${ou}[${i}].entameSeFinit`),
       espace: parmi(o["espace"], ESPACES, `${ou}[${i}].espace`),
       rangement: texte(o["rangement"], `${ou}[${i}].rangement`),
       methode: texteOuNull(o["methode"] ?? null, `${ou}[${i}].methode`),
@@ -623,10 +686,16 @@ function fond(v: unknown, ou: string): Fond {
       // vérifie, et zéro n'est pas un minimum.
       if (!Number.isInteger(minimum) || minimum < 1)
         throw new CatalogueInvalide(`${ou}.denrees[${i}].minimum`, "un entier ≥ 1", minimum);
+      const jusqua = d["jusqua"] == null ? null : nombre(d["jusqua"], `${ou}.denrees[${i}].jusqua`);
+      // AU-DESSUS DU MINIMUM, sinon « remonter jusqu'à » descendrait.
+      if (jusqua !== null && (!Number.isInteger(jusqua) || jusqua <= minimum))
+        throw new CatalogueInvalide(`${ou}.denrees[${i}].jusqua`, "un entier au-dessus du minimum", jusqua);
       return {
         ingredient: texte(d["ingredient"], `${ou}.denrees[${i}].ingredient`),
         minimum,
         unite: texte(d["unite"], `${ou}.denrees[${i}].unite`),
+        jusqua,
+        hebdo: d["hebdo"] == null ? false : booleen(d["hebdo"], `${ou}.denrees[${i}].hebdo`),
       };
     }),
     diners: tableau(o["diners"] ?? [], `${ou}.diners`).map((x, i) => {
@@ -637,6 +706,34 @@ function fond(v: unknown, ou: string): Fond {
       };
     }),
   };
+}
+
+/**
+ * T142 — les routines. La recette d'une ration doit exister : une routine qui
+ * ne retire rien se tairait, et le placard mentirait en silence.
+ */
+function routines(v: unknown, plats: ReadonlySet<string>): Routines {
+  const o = obj(v, "creneaux.routines");
+  const liste: Routine[] = [];
+  for (const [repas, brut] of Object.entries(o)) {
+    if (repas === "depuis") continue;
+    const ou = `creneaux.routines.${repas}`;
+    const r = obj(brut, ou);
+    const recette = texte(r["recette"], `${ou}.recette`);
+    if (!plats.has(recette)) throw new CatalogueInvalide(`${ou}.recette`, "l'id d'un plat", recette);
+    const dd = r["du_depot"] == null ? null : obj(r["du_depot"], `${ou}.du_depot`);
+    liste.push({
+      repas,
+      recette,
+      duDepot: dd
+        ? {
+            types: listeDeTextes(dd["types"] ?? [], `${ou}.du_depot.types`),
+            parts: dd["parts"] == null ? 1 : nombre(dd["parts"], `${ou}.du_depot.parts`),
+          }
+        : null,
+    });
+  }
+  return { depuis: texte(o["depuis"], "creneaux.routines.depuis"), liste };
 }
 
 function saisons(v: unknown, ou: string): Saisons {
@@ -771,6 +868,7 @@ export function lireCatalogue(brut: unknown): Catalogue {
       },
       emporte,
       equilibre_sur: listeDeTextes(creneauxBruts["equilibre_sur"], "creneaux.equilibre_sur"),
+      ...(creneauxBruts["routines"] != null ? { routines: routines(creneauxBruts["routines"], vus) } : {}),
     },
     rayons: {
       ordre: listeDeTextes(rayonsBruts["ordre"], "rayons.ordre"),
