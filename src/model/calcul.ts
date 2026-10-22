@@ -11,6 +11,7 @@
 // frontière n'est pas arbitraire : ici on mesure ce qu'une semaine coûte, là
 // on juge ce qu'elle vaut, et le second appelle le premier — jamais l'inverse.
 
+import { enUniteDeCompte } from "./unites";
 import { bandRepas, Depot, horlogesDu, qteDe, type LigneDepot, type Prise } from "./depot";
 import { dateDe, dejaLaPour, joue, type Jeu } from "./jeu";
 import { boitesDeLaLigne, boitesDuCatalogue, phraseBoites, type Boite } from "./paquet";
@@ -378,15 +379,18 @@ export function calculer(
         aVerifier.set(cid, { nom: ing.nom, prov });
         return;
       }
-      const cle = `${cid}|${ing.unit}`;
-      const slot: LignePanier = panier.get(cle) ?? { nom: ing.nom, qty: 0, n: 0, id: cid, unit: ing.unit };
+      // T145 — UNE UNITÉ PAR DENRÉE : les pommes de terre à la pièce et au kilo
+      // font une seule ligne, en grammes (`enUniteDeCompte`).
+      const u = enUniteDeCompte(cid, ing.qty, ing.unit);
+      const cle = `${cid}|${u.unit}`;
+      const slot: LignePanier = panier.get(cle) ?? { nom: ing.nom, qty: 0, n: 0, id: cid, unit: u.unit };
       // T140 — PLAT PAR PLAT, PAS SUR LA SEMAINE. Deux plats à 200 g de maïs
       // ouvrent chacun leur boîte de 285 g : la semaine en achète deux, pas
       // « 400 g ». Additionner d'abord puis arrondir ferait acheter une boîte
       // et demie.
       const boite = boiteDe(cid);
-      const entieres = boitesDeLaLigne(boite, ing.qty * echelleLigne, ing.unit);
-      slot.qty += entieres ? entieres.quantite : echelle(ing.qty, ing.unit, echelleLigne);
+      const entieres = boitesDeLaLigne(boite, u.qty * echelleLigne, u.unit);
+      slot.qty += entieres ? entieres.quantite : echelle(u.qty, u.unit, echelleLigne);
       if (boite) slot.boite = boite;
       slot.n += 1;
       panier.set(cle, slot);

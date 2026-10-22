@@ -50,13 +50,19 @@ export function Courses() {
       jeu={jeu}
       calc={calc}
       etats={etats}
-      sous={[
-        ...sousLeurPlancher(jeu.catalogue, placard, planchers),
-        ...fruitsDeLaSemaine(jeu.catalogue, placard, new Date().getMonth() + 1),
-      ]}
+      sous={avecLesFruits(
+        sousLeurPlancher(jeu.catalogue, placard, planchers),
+        fruitsDeLaSemaine(jeu.catalogue, placard, new Date().getMonth() + 1),
+      )}
     />
   );
 }
+
+/** T145 — un fruit qui a déjà un plancher validé ne fait pas deux lignes. */
+const avecLesFruits = <L extends { ingredient: string }>(planchers: L[], fruits: L[]): L[] => [
+  ...planchers,
+  ...fruits.filter((f) => !planchers.some((p) => p.ingredient === f.ingredient)),
+];
 
 function Contenu({
   jeu,

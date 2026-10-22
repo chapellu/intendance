@@ -186,18 +186,23 @@ export async function journaliserCuisson(
       if (!e) continue;
       const porteLeMidi = !midiPose && r.emit === rangDuMidi && r.location === "frigo";
       if (porteLeMidi) midiPose = true;
+      // T145 — LE LOT DU MIDI PORTE AU MOINS LE MIDI. Le dahl déclare un reste
+      // « 1-repas » que la table entame : agrandi de trois parts, il restait
+      // « 1 repas », donc une boîte, et un midi compté à une part.
+      const partsMidi = Math.max(1, Math.round(midi));
+      const band = porteLeMidi && bandRepas(r.band) < partsMidi ? `${partsMidi}-repas` : r.band;
       await base.stock.add({
         type: e.type,
         kind: e.kind,
         qty: r.qty,
         unite: e.qty ? e.qty.unit : null,
-        band: r.band,
+        band,
         espace: e.espace,
         location: r.location,
         born: jour,
         origine: plat.id,
         ...(porteLeMidi
-          ? { midiLe: lendemain(jour), midi: Math.min(bandRepas(r.band), Math.max(1, Math.round(midi))) }
+          ? { midiLe: lendemain(jour), midi: partsMidi }
           : {}),
         maj,
       } as LotStock);

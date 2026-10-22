@@ -244,7 +244,8 @@ describe("T136 — œufs, yaourts, fromage râpé : achetés par la liste, cuisi
     { ingredient: "oeufs", nom: "œufs", plat: "quiche-poireaux", parts: 6, avant: 5, apres: 6, manque: 4 },
     { ingredient: "fromage-rape", nom: "râpé", plat: "quiche-poireaux", parts: 6, avant: 4, apres: 5, manque: 1 },
     // quiche-courgettes-yaourt : 6 parts, 2 yaourts
-    { ingredient: "yaourt-nature", nom: "yaourt", plat: "quiche-courgettes-yaourt", parts: 6, avant: 5, apres: 6, manque: 9 },
+    // T145 — six packs rentrés (24 pots), remontés à 7 (≈ 25 pots la semaine).
+    { ingredient: "yaourt-nature", nom: "yaourt", plat: "quiche-courgettes-yaourt", parts: 6, avant: 11, apres: 12, manque: 7 },
   ];
 
   for (const k of cas) {

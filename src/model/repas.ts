@@ -102,6 +102,22 @@ export function midiDeDemain(
 
 const pourLeMidi = (c: Contenant): boolean => c.portions > 0 && !c.consommable && c.espaces.includes("frigo");
 
+/** Ce qu'occupe UNE part adulte d'un plat dans une boîte — T145. */
+export const PORTION_ADULTE_ML = 400;
+
+/**
+ * Combien de parts adultes une boîte porte — T145.
+ *
+ * LE VOLUME DÉCIDE, PAS L'ÉTIQUETTE. `household.yaml` déclarait « 1 portion »
+ * par boîte IKEA de 0,8 L : le midi des quatre (trois parts adultes) prenait
+ * trois boîtes, quand deux le portent — une boîte de 0,8 L tient deux parts
+ * d'un curry. L'année simulée (run8) : 196 cartes « Boîtes pleines (2 libres) »
+ * pour un seul jour de boîtes vraiment pleines. Sans volume (les sacs), la
+ * portion déclarée reste la règle.
+ */
+export const portionsParBoite = (c: Pick<Contenant, "portions" | "volumeMl">): number =>
+  c.volumeMl != null && c.volumeMl > 0 ? Math.max(c.portions, Math.floor(c.volumeMl / PORTION_ADULTE_ML)) : c.portions;
+
 /** Le moins de boîtes qui portent `parts`, les plus grandes d'abord. `null`
  *  quand le pool libre n'y suffit pas. */
 function boitesDuMidi(
@@ -109,14 +125,14 @@ function boitesDuMidi(
   parts: number,
   libres?: ReadonlyMap<string, number>,
 ): { boites: number; label: string } | null {
-  const familles = contenants.filter(pourLeMidi).sort((a, b) => b.portions - a.portions);
+  const familles = contenants.filter(pourLeMidi).sort((a, b) => portionsParBoite(b) - portionsParBoite(a));
   let reste = parts;
   let n = 0;
   for (const c of familles) {
     const dispo = libres?.get(c.id) ?? c.nombre;
-    const prises = Math.min(dispo, Math.ceil(reste / c.portions - 1e-9));
+    const prises = Math.min(dispo, Math.ceil(reste / portionsParBoite(c) - 1e-9));
     n += prises;
-    reste -= prises * c.portions;
+    reste -= prises * portionsParBoite(c);
     if (reste <= 1e-9) return { boites: n, label: familles[0]!.label };
   }
   return null;
@@ -373,17 +389,17 @@ export function fruitsMurs(catalogue: Catalogue, rejeu: Pick<Rejeu, "parIngredie
  * de pommes qu'il manquait. Un fruit de compote là suffit ; aucun là, la
  * ligne dit le choix — « pommes ou poires » — au lieu d'en inventer un.
  */
-function manqueDeLaFournee(catalogue: Catalogue, p: Plat, ici: ReadonlySet<string>): string[] {
+function manqueDeLaFournee(catalogue: Catalogue, p: Plat, ici: ReadonlySet<string>): { nom: string; ids: string[] }[] {
   const m = ceQuiManque(catalogue, p, ici).ingredients;
   const compote = FRUITS_DE_COMPOTE.filter((f) => p.ingredients.some((i) => (catalogue.rayons.aliases[i.id] ?? i.id) === f));
-  if (compote.length < 2) return m.map((a) => a.nom);
+  if (compote.length < 2) return m.map((a) => ({ nom: a.nom, ids: [a.id] }));
   const unLa = compote.some((f) => ici.has(f));
-  const out: string[] = [];
+  const out: { nom: string; ids: string[] }[] = [];
   let dit = false;
   for (const a of m) {
-    if (!compote.includes(a.id)) out.push(a.nom);
+    if (!compote.includes(a.id)) out.push({ nom: a.nom, ids: [a.id] });
     else if (!unLa && !dit) {
-      out.push(compote.join(" ou "));
+      out.push({ nom: compote.join(" ou "), ids: compote });
       dit = true;
     }
   }
@@ -395,53 +411,70 @@ function manqueDeLaFournee(catalogue: Catalogue, p: Plat, ici: ReadonlySet<strin
  *
  * DEUX BESOINS, COMPTÉS À PART, ET UNE SEULE RECETTE. Le pain du matin
  * (`matinsDePain` sous `SEUIL_PAIN`) et les goûters (`SEUIL_FOURNEE`, ou des
- * fruits qui passent). Les deux à la fois : le plus court d'abord, le pain à
- * égalité — il se mange tous les matins, et 30 matins simulés s'en sont passés.
+ * fruits qui passent). Depuis T145, LE PAIN D'ABORD dès qu'il en manque — il se
+ * mange tous les matins.
  *
  * LES GOÛTERS TOURNENT (T144). T142 classait d'abord par fruits mûrs COMPTÉS :
  * la compote en finit deux, elle gagnait toujours — quatre fournées sur quatre,
- * et dix-huit jours sans goûter. L'ordre est maintenant : zéro achat, un,
- * davantage ; puis CE QUE LE CONGÉLATEUR N'A PAS (un type déjà en sachet passe
- * après) ; puis une recette qui finit un fruit mûr ; Chioca à égalité.
+ * et dix-huit jours sans goûter. Seules les fournées CUISINABLES concourent
+ * (T145 : zéro achat, ou un seul pris au frais de la semaine) ; puis zéro achat
+ * avant un ; puis celle qu'on n'a pas faite ces jours-ci (`recentes`) ; puis CE
+ * QUE LE CONGÉLATEUR N'A PAS ; puis un fruit mûr ; Chioca à égalité.
  */
 export function fourneeAProposer(
   catalogue: Catalogue,
   stock: readonly Pick<LotInitial, "type" | "qty_band" | "location" | "born">[],
   murs: readonly string[],
   ici: ReadonlySet<string>,
+  recentes: ReadonlySet<string> = new Set(),
 ): Fournee | null {
   const { restants } = gouterAuCongelo(catalogue, stock);
   const matins = matinsDePain(catalogue, stock);
   const enSachets = new Map<string, number>();
   for (const l of stock) enSachets.set(l.type, (enSachets.get(l.type) ?? 0) + bandRepas(l.qty_band));
+  // T145 — LE FRAIS DE LA SEMAINE s'achète de toute façon : un article qui en
+  // est ne coûte pas une course de plus.
+  const frais = new Set(
+    (catalogue.fond?.denrees ?? []).filter((d) => d.hebdo).map((d) => catalogue.rayons.aliases[d.ingredient] ?? d.ingredient),
+  );
 
   const candidats = (repas: "gouter" | "petit-dejeuner") =>
     catalogue.plats
       .filter((p) => routineNourrie(catalogue, p) === repas)
-      .map((p) => ({
-        p,
-        fruits: murs.filter((f) => p.ingredients.some((i) => i.id === f)),
-        chioca: /chioca/i.test(p.source?.auteur ?? ""),
-        deja: p.emits.some((e) => e.congelo && (enSachets.get(e.type) ?? 0) > 0),
-        manque: manqueDeLaFournee(catalogue, p, ici),
-      }))
+      .map((p) => {
+        const manque = manqueDeLaFournee(catalogue, p, ici);
+        return {
+          p,
+          fruits: murs.filter((f) => p.ingredients.some((i) => i.id === f)),
+          chioca: /chioca/i.test(p.source?.auteur ?? ""),
+          deja: p.emits.some((e) => e.congelo && (enSachets.get(e.type) ?? 0) > 0),
+          recente: recentes.has(p.id),
+          // T145 — SEULE UNE FOURNÉE QU'ON PEUT LANCER : rien à acheter, ou un
+          // seul article, et du frais de la semaine. L'année simulée : 90
+          // propositions sur 223 sans le stock pour les faire.
+          cuisinable: manque.length === 0 || (manque.length === 1 && manque[0]!.ids.some((id) => frais.has(id))),
+          manque: manque.map((m) => m.nom),
+        };
+      })
+      .filter((c) => c.cuisinable)
       .sort(
         (a, b) =>
-          Math.min(a.manque.length, 2) - Math.min(b.manque.length, 2) ||
+          a.manque.length - b.manque.length ||
+          Number(a.recente) - Number(b.recente) ||
           Number(a.deja) - Number(b.deja) ||
           Number(b.fruits.length > 0) - Number(a.fruits.length > 0) ||
           Number(b.chioca) - Number(a.chioca) ||
-          a.manque.length - b.manque.length ||
           a.p.titre.localeCompare(b.p.titre, "fr"),
       );
 
+  // T145 — LE PAIN GAGNE LA FOURNÉE dès qu'il en reste moins de trois matins :
+  // il se mange tous les matins, et l'année simulée a vu 316 matins sans pain
+  // pour deux fournées de pain sur 127.
   const pain = matins < SEUIL_PAIN ? candidats("petit-dejeuner")[0] : undefined;
+  if (pain) return { plat: pain.p, raison: "pain-bas", restants: matins, fruits: [], manque: pain.manque };
   const bas = restants < SEUIL_FOURNEE;
   // SANS BESOIN DE GOÛTERS, seule une recette qui finit les fruits mûrs a sa place.
   const gouter = bas || murs.length ? candidats("gouter").find((c) => bas || c.fruits.length > 0) : undefined;
-
-  if (pain && (!gouter || matins <= restants))
-    return { plat: pain.p, raison: "pain-bas", restants: matins, fruits: [], manque: pain.manque };
   if (!gouter) return null;
   return { plat: gouter.p, raison: gouter.fruits.length ? "fruits-murs" : "stock-bas", restants, fruits: gouter.fruits, manque: gouter.manque };
 }

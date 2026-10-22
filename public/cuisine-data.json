@@ -47994,8 +47994,8 @@
    },
    {
     "ingredient": "flocons-avoine",
-    "minimum": 1,
-    "jusqua": 2,
+    "minimum": 2,
+    "jusqua": 3,
     "hebdo": false,
     "unite": "paquet de 500 g (petits flocons)"
    },
@@ -48016,7 +48016,7 @@
    {
     "ingredient": "beurre",
     "minimum": 2,
-    "jusqua": null,
+    "jusqua": 3,
     "hebdo": false,
     "unite": "plaquette de 250 g"
    },
@@ -48043,15 +48043,15 @@
    },
    {
     "ingredient": "yaourt-nature",
-    "minimum": 3,
-    "jusqua": 9,
+    "minimum": 6,
+    "jusqua": 7,
     "hebdo": true,
     "unite": "pack de 4"
    },
    {
     "ingredient": "pommes",
     "minimum": 1,
-    "jusqua": 2,
+    "jusqua": null,
     "hebdo": true,
     "unite": "sachet de 1,5 kg"
    },

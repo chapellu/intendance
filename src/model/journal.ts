@@ -34,6 +34,7 @@
 // de plus. Confondre les deux ferait rejouer six mois de cuisine pour savoir
 // s'il reste de la bolognaise, alors qu'il suffit d'ouvrir le tiroir.
 
+import { enUniteDeCompte } from "./unites";
 import type {
   Catalogue, Denree, Espace, Etat, Plat, Quantite, RepasId,
 } from "./types";
@@ -780,11 +781,13 @@ export function demandes(plat: Plat, facteur: number): Demande[] {
   const out: Demande[] = [];
   for (const ing of plat.ingredients) {
     if (ing.base || ing.assaisonnement) continue;
+    // T145 — le kilo et la pomme de terre à la pièce se retirent en grammes.
+    const u = enUniteDeCompte(ing.id, ing.qty, ing.unit);
     out.push({
       ingredient: ing.id,
-      grammes: EN_GRAMMES.has(ing.unit) ? ing.qty * facteur : null,
-      pieces: enPieces(ing.unit) ? Math.ceil(ing.qty * facteur - 1e-9) : null,
-      unite: ing.unit,
+      grammes: EN_GRAMMES.has(u.unit) ? u.qty * facteur : null,
+      pieces: enPieces(u.unit) ? Math.ceil(u.qty * facteur - 1e-9) : null,
+      unite: u.unit,
     });
   }
   return out;

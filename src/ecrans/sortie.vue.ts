@@ -26,6 +26,7 @@
 
 import { bandRepas } from "../model/depot";
 import { restesApresTable } from "../model/restes";
+import { portionsParBoite } from "../model/repas";
 import type { LotInitial } from "../model/depot";
 import type { Contenant, Emit, EmitKind, Espace, Foyer, Plat, Quantite } from "../model/types";
 
@@ -264,7 +265,7 @@ export function rangerDans(
 
   const vol = volumeDe(qty);
   const part = (c: Contenant): number =>
-    Math.min(c.portions / Math.max(repas, 1e-9), c.volumeMl != null && vol ? c.volumeMl / vol : Infinity);
+    Math.min(portionsParBoite(c) / Math.max(repas, 1e-9), c.volumeMl != null && vol ? c.volumeMl / vol : Infinity);
   const reste = new Map(declares.map((c) => [c.id, libres?.get(c.id) ?? c.nombre]));
 
   const prises: Boite[] = [];

@@ -5475,6 +5475,37 @@ qu'il porte, donc ses boîtes. Les sachets du pain et de la fournée ne
 décomptent plus les sacs de congélation du pool. « il en reste N » d'un fruit
 lit le rejeu, que la routine décompte à vue.
 
+## L'année simulée des quatre repas — T145
+
+- [x] **T145 — Ce que l'année simulée (run8) a trouvé à T144.**
+      **Les boîtes.** 196 cartes « Boîtes pleines » pour un seul jour de boîtes
+      vraiment pleines. Une boîte IKEA de 0,8 L porte deux parts adultes, pas
+      une : `portionsParBoite` (volume ÷ `PORTION_ADULTE_ML` = 400 ml) sert au
+      midi (`boitesDuMidi`) comme au rangement (`rangerDans`, donc
+      `contenantsLibres`). Le midi des quatre tient en deux boîtes, la
+      bolognaise de l'amorce (700 g) en une. Le dahl agrandi : son lot du midi
+      porte au moins les parts du midi (`journaliserCuisson`), plus « 1 repas ».
+      **Le pain et la fournée.** Le pain sous `SEUIL_PAIN` gagne la fournée,
+      sans condition. Seules les fournées cuisinables concourent : rien à
+      acheter, ou un seul article pris au frais de la semaine (`hebdo`). Celle
+      des derniers jours passe après (`recentes`, depuis `proposerCeSoir`).
+      **Le goûter.** La pomme, comptable parce qu'achetée en sachet, attendait
+      un plancher validé : un fruit `hebdo` qui a une saison est maintenant du
+      frais de la semaine (`fruitsDeLaSemaine`), un sachet de 1,5 kg ; un
+      plancher déjà validé ne fait pas de doublon (`Courses.avecLesFruits`).
+      **Le fond.** Flocons 2 à 3 paquets de 500 g, beurre 2 à 3 plaquettes,
+      yaourts 6 à 7 packs de 4 (≈ 25 pots la semaine).
+      **Les unités.** `model/unites.ts` : le kilo en grammes, la pomme de terre
+      à la pièce à 150 g, là où l'on additionne (`calcul.auPanier`,
+      `journal.demandes`). La fiche garde l'unité de la recette.
+
+Portes : typecheck, **1 161 tests**, build, **78 e2e** (`trois-repas` recalé :
+deux boîtes, et trois restes posés pour les boîtes pleines),
+`catalogue:verifie` 0 erreur.
+
+**Ouvert.** Un reste du frigo entamé au midi sans être fini garde toutes ses
+boîtes dans l'app. Le poids d'une pièce n'est connu que de la pomme de terre.
+
 ## Sortie
 
 **Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`

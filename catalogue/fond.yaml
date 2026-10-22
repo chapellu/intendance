@@ -51,18 +51,24 @@ denrees:
   # ── Les bases de Chioca — pain, porridge, gâteaux du goûter
   - {ingredient: farine-complete, minimum: 1, jusqua: 2, unite: sac de 2 kg (semi-complète T80 à T110)}
   - {ingredient: levure-boulangere, minimum: 4, unite: sachet}
-  - {ingredient: flocons-avoine, minimum: 1, jusqua: 2, unite: paquet de 500 g (petits flocons)}
+  # T145 — l'année simulée : 21 matins sans flocons, 29 sans beurre. Le
+  # porridge prend 40 g par matin et les cookies en vident autant : 1 kg au
+  # moins, 1,5 kg au rachat. Le beurre : deux plaquettes au moins, trois.
+  - {ingredient: flocons-avoine, minimum: 2, jusqua: 3, unite: paquet de 500 g (petits flocons)}
   - {ingredient: son-avoine, minimum: 1, unite: paquet de 250 g}
   - {ingredient: sucre-complet, minimum: 1, unite: paquet de 500 g}
-  - {ingredient: beurre, minimum: 2, unite: plaquette de 250 g}
+  - {ingredient: beurre, minimum: 2, jusqua: 3, unite: plaquette de 250 g}
   - {ingredient: oeufs, minimum: 3, jusqua: 4, unite: boîte de 6}
   # Le fromage EN BLOC, râpé à la maison, remplace le sachet de fromage râpé :
   # l'id reste `fromage-rape` parce que c'est ce que les recettes demandent.
   - {ingredient: fromage-rape, minimum: 1, unite: "morceau de 400 g (en bloc, à râper)"}
   - {ingredient: lait-croissance, minimum: 6, jusqua: 10, unite: brique de 1 L, hebdo: true}
-  - {ingredient: yaourt-nature, minimum: 3, jusqua: 9, unite: pack de 4, hebdo: true}
+  # T145 — deux pots au matin, deux au goûter : ≈ 25 pots la semaine.
+  - {ingredient: yaourt-nature, minimum: 6, jusqua: 7, unite: pack de 4, hebdo: true}
   # ── Les fruits de la semaine — le porridge, le goûter, la compote
-  - {ingredient: pommes, minimum: 1, jusqua: 2, unite: "sachet de 1,5 kg", hebdo: true}
+  # T145 — la pomme du goûter : un sachet de 1,5 kg la semaine, en saison. Sa
+  # ligne vient de `hebdo` (`fruitsDeLaSemaine`), comme la banane.
+  - {ingredient: pommes, minimum: 1, unite: "sachet de 1,5 kg", hebdo: true}
   # T144 — LE FRUIT DU MATIN ET DU GOÛTER : ≈ 14 pièces la semaine pour deux
   # enfants. Une banane écrasée dans le porridge chaque matin (sept), une pomme
   # au goûter (le sachet ci-dessus), et des poires EN SAISON pour varier et pour

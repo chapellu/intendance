@@ -231,7 +231,7 @@ export function posables(catalogue: Catalogue, rejeu: Rejeu): Posable[] {
   // vient de `hebdo` (`fruitsDeLaSemaine`), pas d'un doigt.
   const hebdos = new Set((catalogue.fond?.denrees ?? []).filter((d) => d.hebdo).map((d) => catalogue.rayons.aliases[d.ingredient] ?? d.ingredient));
   for (const id of minimums.keys())
-    if (!out.has(id) && !fruitHebdo(ctx, id, null, hebdos.has(id))) out.set(id, posable(id, classeDe(ctx, id, []), 0));
+    if (!out.has(id) && !fruitHebdo(catalogue, ctx, id, null, hebdos.has(id))) out.set(id, posable(id, classeDe(ctx, id, []), 0));
   // T142 — UN PRODUIT INDUSTRIEL N'A PAS DE PLANCHER À PROPOSER : un plancher,
   // c'est une ligne de courses, et le foyer ne le rachète plus.
   for (const id of industriels(catalogue)) out.delete(id);
@@ -341,8 +341,17 @@ export function sousLeurPlancher(
 
 /** Une denrée du fond que seul `hebdo` fait entrer : elle ne se compte pas au
  *  relevé, donc aucun plancher ne la porte (`fruitsDeLaSemaine`). */
-const fruitHebdo = (ctx: ReturnType<typeof contexte>, id: string, e: EtatIngredient | null, hebdo: boolean): boolean =>
-  hebdo && !comptable(e?.classe ?? classeDe(ctx, id, []));
+// T145 — ET LE FRUIT DE SAISON AUSSI, MÊME COMPTABLE. La pomme s'achète en
+// sachet, donc elle se comptait : sa ligne attendait un plancher validé d'un
+// doigt, que personne ne pose — 46 goûters sans pomme sur l'année simulée. Un
+// fruit `hebdo` qui a une saison (`saisons.yaml`) est du frais de la semaine.
+const fruitHebdo = (
+  catalogue: Catalogue,
+  ctx: ReturnType<typeof contexte>,
+  id: string,
+  e: EtatIngredient | null,
+  hebdo: boolean,
+): boolean => hebdo && (!comptable(e?.classe ?? classeDe(ctx, id, [])) || deSaison(catalogue, id, 1) !== null);
 
 /**
  * LE FRUIT DE LA SEMAINE, SANS PLANCHER — T144.
@@ -363,7 +372,7 @@ export function fruitsDeLaSemaine(catalogue: Catalogue, rejeu: Rejeu, mois: numb
   for (const d of catalogue.fond?.denrees ?? []) {
     const id = aliases[d.ingredient] ?? d.ingredient;
     const e = rejeu.parIngredient.get(id) ?? rejeu.vus.get(id) ?? null;
-    if (!fruitHebdo(ctx, id, e, !!d.hebdo)) continue;
+    if (!fruitHebdo(catalogue, ctx, id, e, !!d.hebdo)) continue;
     if (deSaison(catalogue, id, mois) === false) continue;
     const a = e?.unites ?? 0;
     if (a >= d.minimum) continue;

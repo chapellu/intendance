@@ -614,7 +614,9 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
   }
 
   const dans = new Set(main.map((c) => c.plat.id));
-  const fournee = fourneeAProposer(catalogue, jeu.stock, fruitsMurs(catalogue, savoir.rejeu, iso), ici);
+  // T145 — la fournée tourne : celle de la semaine passe après les autres.
+  const fournee = fourneeAProposer(catalogue, jeu.stock, fruitsMurs(catalogue, savoir.rejeu, iso), ici,
+    new Set([...recents, ...savoir.cuisinesRecemment]));
   return { soir, jourDeCourses, cartes: main, plus: cartes.filter((c) => !dans.has(c.plat.id)), attend, aSortir, fournee,
     dejeuner: dejeunerDuStock(catalogue, ici, mois) };
 }
