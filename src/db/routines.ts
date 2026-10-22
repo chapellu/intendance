@@ -11,7 +11,7 @@
 // retirent pas deux goûters.
 
 import { jourISO, type Base } from "./schema";
-import { joursDe, prisesDesRoutines } from "../model/repas";
+import { joursDe, midisPasses, prisesDesRoutines } from "../model/repas";
 import type { Catalogue } from "../model/types";
 
 export const CLE_ROUTINES = "routines|fait";
@@ -26,9 +26,26 @@ export async function consommerLesRoutines(base: Base, catalogue: Catalogue, auj
   if (!r) return 0;
   const jour = jourISO(aujourdhui);
   return base.transaction("rw", base.stock, base.reglages, async () => {
+    // T144 — LES MIDIS PASSÉS d'abord, à chaque ouverture : un lot mis de côté
+    // pour un déjeuner mangé perd ses parts (`midisPasses`). Idempotent, la
+    // marque `midiLe` part avec.
+    let n = 0;
+    const maj0 = Date.now();
+    for (const p of midisPasses(await base.stock.toArray(), aujourdhui)) {
+      n += 1;
+      if (p.band === null) await base.stock.delete(p.id);
+      else
+        await base.stock.update(p.id, (l) => {
+          l.band = p.band!;
+          l.qty = null;
+          l.maj = maj0;
+          delete l.midiLe;
+          delete l.midi;
+        });
+    }
     const fait = (await base.reglages.get(CLE_ROUTINES))?.valeur;
     const depuis = typeof fait === "string" && fait >= veille(r.depuis) ? fait : veille(r.depuis);
-    if (depuis >= jour) return 0;
+    if (depuis >= jour) return n;
     const jours = joursDe(depuis, jour).slice(1);
     const lots = await base.stock.toArray();
     const prises = prisesDesRoutines(r.liste, lots, jours);
@@ -37,6 +54,6 @@ export async function consommerLesRoutines(base: Base, catalogue: Catalogue, auj
       if (p.band === null) await base.stock.delete(p.id);
       else await base.stock.update(p.id, { band: p.band, maj });
     await base.reglages.put({ cle: CLE_ROUTINES, valeur: jour, maj });
-    return prises.length;
+    return n + prises.length;
   });
 }

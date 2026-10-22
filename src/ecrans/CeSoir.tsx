@@ -35,6 +35,7 @@ import {
 } from "./ceSoir.vue";
 import { ligneDeFournee, ligneMidi, partsPourDemain } from "./repas.vue";
 import { contenantsLibres } from "./sortie.vue";
+import { lotsEnBoites } from "../model/repas";
 
 /** Combien de cartes « voir plus » déplie. Le reste du catalogue a sa
  *  recherche (le fil) et son index (le répertoire) : ici on choisit un dîner,
@@ -114,7 +115,7 @@ export function useProposition(jeu: Jeu | null): PropositionDuSoir | null {
     const mange = evts.flatMap((e) => (e.sorte === "cuisine" ? [{ plat: e.plat, jour: e.jour }] : []));
     // LES BOÎTES PROPRES, après ce que le dépôt occupe : c'est elles qui disent
     // si demain midi se prend au dîner (T142).
-    const libres = contenantsLibres(jeu.catalogue.foyer, jeu.stock);
+    const libres = contenantsLibres(jeu.catalogue.foyer, lotsEnBoites(jeu.catalogue, jeu.stock, maintenant));
     return proposerCeSoir({ jeu, savoir, recents, maintenant, sortis, mange, libres });
   }, [jeu, savoir, evts, sortis]);
 }

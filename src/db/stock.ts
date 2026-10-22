@@ -126,6 +126,7 @@ export const auModele = (l: LotStock): LotInitial => ({
   // que `LotInitial` dit en le rendant optionnel plutôt qu'en le posant à
   // `null` — un `null` écrit partout ressemble à une donnée qu'on a cherchée.
   ...(l.dluo ? { dluo: l.dluo } : {}),
+  ...(l.midiLe ? { midiLe: l.midiLe, midi: l.midi ?? 0 } : {}),
 });
 
 /**

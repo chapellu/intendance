@@ -83,11 +83,13 @@ export function lignesDuJour(jeu: Jeu, soir: PropositionDuSoir | null): LigneDuJ
         ...(creneau ? { route: { ecran: "cuisiner", creneau } as Route } : {}),
       });
     else if (reste) out.push({ cle: "dejeuner", texte: `Midi : le reste au frigo — ${nomDuType(reste.type)}` });
-    else if (soir?.dejeuner) {
+    else if (soir?.dejeuner && !soir.dejeuner.plat)
+      out.push({ cle: "dejeuner", texte: "Midi : rien ne se fait avec le stock — un reste, ou des tartines" });
+    else if (soir?.dejeuner?.plat) {
       const d = soir.dejeuner;
       out.push({
         cle: "dejeuner",
-        texte: `Midi : ${d.plat.titre} (Chioca) — ${d.manque ? `${d.manque} article${d.manque > 1 ? "s" : ""} à acheter` : "rien à acheter"}`,
+        texte: `Midi : ${d.plat.titre}${d.chioca ? " (Chioca)" : ""} — ${d.manque ? `${d.manque} article à acheter` : "rien à acheter"}`,
         ...(creneau ? { route: { ecran: "cuisiner", creneau, plat: d.plat.id } as Route } : {}),
       });
     }
@@ -131,7 +133,11 @@ const FRUITS: Record<string, string> = { banane: "les bananes", poires: "les poi
 /** « Fournée : Banana bread à l'avoine — les bananes sont mûres ». */
 export function phraseDeFournee(f: Fournee): string {
   const pourquoi =
-    f.raison === "fruits-murs"
+    f.raison === "pain-bas"
+      ? f.restants
+        ? `plus que ${fmt(f.restants)} matin${f.restants >= 2 ? "s" : ""} de pain`
+        : "plus de pain maison"
+      : f.raison === "fruits-murs"
       ? `${f.fruits.map((x) => FRUITS[x] ?? x).join(" et ")} sont mûres`
       : f.restants
         ? `plus que ${plurielGouter(f.restants)} au congélo`

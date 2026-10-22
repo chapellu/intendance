@@ -10,7 +10,7 @@
 import { facteur } from "../model/calcul";
 import { accepte, bandRepas } from "../model/depot";
 import type { Constat, Evenement, EvtCuisine, LigneEntree } from "../model/journal";
-import { restesApresTable } from "../model/restes";
+import { mangeALaTable, restesApresTable } from "../model/restes";
 import type { Catalogue, Foyer, Plat, RepasId } from "../model/types";
 import { jourISO, type Base, type LotStock } from "./schema";
 
@@ -119,8 +119,16 @@ export async function journaliserCuisson(
     // recomputée à chaque rendu : le bocal de bolognaise n'était jamais retiré
     // de la base. C'est ici qu'il l'est, et c'est la seule différence qui
     // compte entre une prévision et un fait.
+    // T144 — UN « RESTE RÉCHAUFFÉ » PREND LE LOT MIS DE CÔTÉ POUR CE MIDI,
+    // puis un lot du frigo : `accepts: {kind: reste-plat}` attrapait sinon le
+    // premier lot venu — un sachet de banana bread au congélateur.
+    const servables = [...lots].sort(
+      (a, b) =>
+        Number(b.midiLe === jour) - Number(a.midiLe === jour) ||
+        Number((b.location ?? b.espace) === "frigo") - Number((a.location ?? a.espace) === "frigo"),
+    );
     for (const acc of plat.accepts) {
-      const trouve = lots.find(
+      const trouve = (acc.type ? lots : servables).find(
         (l) => !consomme.has(l.id!) && accepte({ type: l.type, kind: l.kind }, acc),
       );
       if (!trouve) continue;
@@ -162,9 +170,22 @@ export async function journaliserCuisson(
     // dire. Sans elle, RIEN NE CHANGE : un lot par emit, au frigo, sur la bande
     // que le corpus déclare. Le défaut reste donc la vieille prudence, et il
     // reste écrit ici, en une ligne qu'on peut lire.
+    // T144 — LE MIDI DE DEMAIN EST DANS UN LOT, ET IL FAUT SAVOIR LEQUEL : le
+    // reste `midi: true` que `platDuSoir` ajoute, sinon le reste que la table
+    // entame (il a grossi des parts du midi). Le premier rangé au frigo.
+    const emitDuMidi = midi > 0 ? plat.emits.findIndex((e) => e.midi) : -1;
+    const rangDuMidi =
+      midi > 0
+        ? emitDuMidi >= 0
+          ? emitDuMidi
+          : plat.emits.findIndex((e) => e.kind === "reste-plat" && mangeALaTable(e))
+        : -1;
+    let midiPose = false;
     for (const r of rangement?.length ? rangement : defaut(plat, parts, foyer ?? { parts, mangeurs: [] }, midi)) {
       const e = plat.emits[r.emit];
       if (!e) continue;
+      const porteLeMidi = !midiPose && r.emit === rangDuMidi && r.location === "frigo";
+      if (porteLeMidi) midiPose = true;
       await base.stock.add({
         type: e.type,
         kind: e.kind,
@@ -175,6 +196,9 @@ export async function journaliserCuisson(
         location: r.location,
         born: jour,
         origine: plat.id,
+        ...(porteLeMidi
+          ? { midiLe: lendemain(jour), midi: Math.min(bandRepas(r.band), Math.max(1, Math.round(midi))) }
+          : {}),
         maj,
       } as LotStock);
     }
@@ -403,3 +427,7 @@ export function poidsConnu(
   const d = catalogue.gardeManger.denrees.find((x) => x.ingredient === ingredient && x.parUnite);
   return d?.parUnite ?? null;
 }
+
+/** Le jour d'après, en `AAAA-MM-JJ`. */
+const lendemain = (iso: string): string =>
+  new Date(Date.parse(`${iso}T12:00:00Z`) + 86_400_000).toISOString().slice(0, 10);

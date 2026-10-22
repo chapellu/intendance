@@ -28,7 +28,7 @@ import {
 } from "../db/reglages";
 import { base } from "../db/schema";
 import { facteurAffiche, quantiteACuire, type Calcul } from "../model/calcul";
-import { estUneFournee, platDuSoir } from "../model/repas";
+import { estUneFournee, lotsEnBoites, platDuSoir } from "../model/repas";
 import { joue, type Jeu } from "../model/jeu";
 import { heureDe } from "../model/heures";
 import type { Catalogue, Etape, Foyer, Plat } from "../model/types";
@@ -265,7 +265,7 @@ function Fiche({
         sachets={estUneFournee(jeu.catalogue, p)}
         f={f}
         foyer={jeu.catalogue.foyer}
-        stock={jeu.stock}
+        stock={lotsEnBoites(jeu.catalogue, jeu.stock, new Date())}
         revenir={() => setSortie(false)}
         repondre={repondre}
       />

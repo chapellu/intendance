@@ -46,10 +46,12 @@ describe("le fond de roulement fait exister comme stock ce qu'aucun relevé n'av
   });
 
   test("chaque denrée du fond a une famille de garde qui la dit « du fond »", () => {
+    // `hebdo` est la seule porte d'une famille `fond: false` (T142) — le
+    // fruit de la semaine (T144).
     for (const d of catalogue.fond.denrees) {
       const f = familleDe(catalogue, d.ingredient);
       expect(f, d.ingredient).not.toBeNull();
-      expect(f!.fond, d.ingredient).toBe(true);
+      if (!d.hebdo) expect(f!.fond, d.ingredient).toBe(true);
     }
   });
 

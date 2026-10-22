@@ -18,7 +18,7 @@ import { base, cocher, rentrer, rentrerLesCoches, viderCourses } from "../db";
 import { useCatalogue, useCourses, usePlacard, usePlanchersDenrees, useSemaine } from "../db/hooks";
 import type { Calcul } from "../model/calcul";
 import type { Jeu } from "../model/jeu";
-import { sousLeurPlancher } from "../model/plancherGardeManger";
+import { fruitsDeLaSemaine, sousLeurPlancher } from "../model/plancherGardeManger";
 import { Corps } from "../ui/Coquille";
 import { BoutonScanner, RevueDuTicket } from "./Ticket";
 import { listeParIngredient } from "./ticket.vue";
@@ -50,7 +50,10 @@ export function Courses() {
       jeu={jeu}
       calc={calc}
       etats={etats}
-      sous={sousLeurPlancher(jeu.catalogue, placard, planchers)}
+      sous={[
+        ...sousLeurPlancher(jeu.catalogue, placard, planchers),
+        ...fruitsDeLaSemaine(jeu.catalogue, placard, new Date().getMonth() + 1),
+      ]}
     />
   );
 }

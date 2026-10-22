@@ -19,11 +19,12 @@
 // PAS DE SEMAINE PLANIFIÉE. Le foyer la refuse (#66) : chaque fonction ici
 // répond à « aujourd'hui » ou à « demain midi », jamais à « mardi prochain ».
 
-import { bandRepas, type LotInitial } from "./depot";
+import { bandRepas, Depot, horlogesDu, type LotInitial } from "./depot";
+import { HEURE } from "./heures";
 import { joue, type Jeu } from "./jeu";
 import type { Rejeu } from "./journal";
 import { ceQuiManque } from "./ici";
-import { deSaison } from "./saisons";
+import { deSaison, saisonDuPlat } from "./saisons";
 import type { Catalogue, Contenant, Foyer, Plat, Routine } from "./types";
 
 /** La carte qui finit un reste au midi — `catalogue/recipes/reste-de-la-veille.yaml`. */
@@ -203,6 +204,78 @@ export function prisesDesRoutines(
   });
 }
 
+/* ═══════════════════════════════════════════ les boîtes qui sont pleines */
+
+/** Passé cette heure (le déjeuner plus une heure), le midi est mangé. */
+const MIDI_FINI = (HEURE.dejeuner ?? 12 * 60 + 30) + 60;
+
+const midiPasse = (midiLe: string, maintenant: Date): boolean => {
+  const auj = isoDuJour(maintenant);
+  return midiLe < auj || (midiLe === auj && maintenant.getHours() * 60 + maintenant.getMinutes() >= MIDI_FINI);
+};
+
+const isoDuJour = (d: Date): string =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+
+/**
+ * Ce que les midis passés ont pris aux lots qui les portaient — T144.
+ *
+ * L'ANNÉE SIMULÉE L'A VU : le dîner agrandi range demain midi dans trois
+ * boîtes, le midi les vide à table, et personne ne tape « je n'en ai plus »
+ * sur des boîtes qu'on vient de laver. Le lot restait, et avec lui trois
+ * boîtes « pleines » : 19 cartes « Boîtes pleines », dont 14 avec les quatre
+ * boîtes libres. Le lot porte maintenant la date de son midi
+ * (`LotStock.midiLe`) ; ce midi passé, il perd ses parts — fini s'il n'avait
+ * que celles-là.
+ *
+ * PURE : rend les prises (`band: null` = lot fini), ne touche à rien.
+ */
+export function midisPasses(
+  lots: readonly { id?: number; band: string; midiLe?: string; midi?: number }[],
+  maintenant: Date,
+): Prise[] {
+  const out: Prise[] = [];
+  for (const l of lots) {
+    if (l.id == null || !l.midiLe || !midiPasse(l.midiLe, maintenant)) continue;
+    const reste = bandRepas(l.band) - (l.midi ?? bandRepas(l.band));
+    out.push({ id: l.id, band: reste > 1e-9 ? `${Math.round(reste * 100) / 100}-repas` : null });
+  }
+  return out;
+}
+
+/**
+ * Les lots qui tiennent une boîte IKEA MAINTENANT — ce que `contenantsLibres`
+ * doit lire, et rien d'autre. T144.
+ *
+ * TROIS SORTES DE LOTS N'EN TIENNENT PAS, ET LES TROIS PRENAIENT LES QUATRE :
+ *   — les goûters de la fournée et le pain maison, en SACHETS au congélateur
+ *     (les types que les routines prennent au dépôt) ; `rangerDans` les
+ *     re-rangeait dans les boîtes lavables, qui passent devant les sacs ;
+ *   — un reste PÉRIMÉ : il est sorti du jeu (`Depot.perime`), et la tâche
+ *     « à jeter » le dit — on ne réserve pas une boîte pour lui ;
+ *   — le midi déjà MANGÉ (`midisPasses`), même avant que la base le sache.
+ */
+export function lotsEnBoites(
+  catalogue: Catalogue,
+  stock: readonly LotInitial[],
+  maintenant: Date,
+): LotInitial[] {
+  const routine = new Set(catalogue.creneaux.routines?.liste.flatMap((r) => r.duDepot?.types ?? []) ?? []);
+  const depot = new Depot(horlogesDu(catalogue), stock);
+  const out: LotInitial[] = [];
+  stock.forEach((l, i) => {
+    if (routine.has(l.type) || depot.perime(depot.initiales[i]!, maintenant)) return;
+    if (l.midiLe && midiPasse(l.midiLe, maintenant)) {
+      const reste = bandRepas(l.qty_band) - (l.midi ?? bandRepas(l.qty_band));
+      if (reste <= 1e-9) return;
+      out.push({ ...l, qty_band: `${Math.round(reste * 100) / 100}-repas`, qty: null });
+      return;
+    }
+    out.push(l);
+  });
+  return out;
+}
+
 /** Les types que le goûter prend au dépôt — ceux d'une fournée ou d'une compote. */
 export const typesDuGouter = (catalogue: Catalogue): ReadonlySet<string> =>
   new Set(catalogue.creneaux.routines?.liste.find((r) => r.repas === "gouter")?.duDepot?.types ?? []);
@@ -212,12 +285,27 @@ export const typesDuGouter = (catalogue: Catalogue): ReadonlySet<string> =>
 /** Sous ce nombre de goûters au congélateur, la pause propose une fournée. */
 export const SEUIL_FOURNEE = 3;
 
-/** Une fournée : une recette dont une sortie part au congélateur et que le
- *  goûter sait prendre. Les rations des routines n'en sont pas. */
-export function estUneFournee(catalogue: Catalogue, p: Plat): boolean {
-  const types = typesDuGouter(catalogue);
-  return p.emits.some((e) => e.congelo && types.has(e.type));
+/** Sous ce nombre de matins de pain maison, la pause propose le pain — T144. */
+export const SEUIL_PAIN = 3;
+
+/** Les types que le petit-déjeuner prend au dépôt — le pain maison. */
+export const typesDuPain = (catalogue: Catalogue): ReadonlySet<string> =>
+  new Set(catalogue.creneaux.routines?.liste.find((r) => r.repas === "petit-dejeuner")?.duDepot?.types ?? []);
+
+/** La routine qu'une recette nourrit au dépôt : une sortie qui part au
+ *  congélateur, d'un type que la routine prend, et le créneau de la routine. */
+function routineNourrie(catalogue: Catalogue, p: Plat): "gouter" | "petit-dejeuner" | null {
+  for (const repas of ["gouter", "petit-dejeuner"] as const) {
+    const types = repas === "gouter" ? typesDuGouter(catalogue) : typesDuPain(catalogue);
+    if (p.creneaux.includes(repas) && p.emits.some((e) => e.congelo && types.has(e.type))) return repas;
+  }
+  return null;
 }
+
+/** Une fournée : une recette dont une sortie part au congélateur et qu'une
+ *  routine sait prendre — les goûters, et depuis T144 le pain du matin. Les
+ *  rations des routines n'en sont pas. */
+export const estUneFournee = (catalogue: Catalogue, p: Plat): boolean => routineNourrie(catalogue, p) !== null;
 
 /** Combien de goûters attendent au congélateur, et le premier à sortir. */
 export function gouterAuCongelo(
@@ -231,20 +319,35 @@ export function gouterAuCongelo(
   return { restants: lots.reduce((n, l) => n + bandRepas(l.qty_band), 0), premier: lots[0]?.type ?? null };
 }
 
+/** Combien de matins de pain maison il reste, où qu'il soit. COMPTÉ À PART
+ *  des goûters : douze tranches ne sont pas « quatre goûters ». */
+export const matinsDePain = (
+  catalogue: Catalogue,
+  stock: readonly Pick<LotInitial, "type" | "qty_band">[],
+): number => {
+  const types = typesDuPain(catalogue);
+  return stock.filter((l) => types.has(l.type)).reduce((n, l) => n + bandRepas(l.qty_band), 0);
+};
+
 export interface Fournee {
   plat: Plat;
-  /** Pourquoi maintenant : le congélateur se vide, ou des fruits passent. */
-  raison: "stock-bas" | "fruits-murs";
-  /** Goûters restants au congélateur. */
+  /** Pourquoi maintenant : le congélateur se vide de goûters ou de pain, ou
+   *  des fruits passent. */
+  raison: "stock-bas" | "fruits-murs" | "pain-bas";
+  /** Goûters restants au congélateur — matins de pain pour `pain-bas`. */
   restants: number;
   /** Les fruits mûrs que la recette finit, quand c'est eux la raison. */
   fruits: string[];
-  /** Ce qu'il faut acheter pour la lancer. */
+  /** Ce qu'il faut acheter pour la lancer, en mots — « pommes ou poires ». */
   manque: string[];
 }
 
 /** Les fruits qu'une fournée sait finir. */
 const FRUITS = ["banane", "poires", "pommes"];
+
+/** Les fruits qu'une même recette prend l'un pour l'autre : une compote se fait
+ *  de pommes, de poires, ou des deux. */
+const FRUITS_DE_COMPOTE = ["pommes", "poires"];
 
 /**
  * Les fruits qui passent : rentrés depuis plus de la moitié de la vie de leur
@@ -263,12 +366,43 @@ export function fruitsMurs(catalogue: Catalogue, rejeu: Pick<Rejeu, "parIngredie
 }
 
 /**
+ * Ce qu'il faut acheter pour une fournée, en mots — T144.
+ *
+ * LA COMPOTE SE FAIT DE CE QU'ON A. Elle demande pommes ET poires ; T142
+ * disait « il manque : poires » quand le placard avait des pommes, et c'est
+ * de pommes qu'il manquait. Un fruit de compote là suffit ; aucun là, la
+ * ligne dit le choix — « pommes ou poires » — au lieu d'en inventer un.
+ */
+function manqueDeLaFournee(catalogue: Catalogue, p: Plat, ici: ReadonlySet<string>): string[] {
+  const m = ceQuiManque(catalogue, p, ici).ingredients;
+  const compote = FRUITS_DE_COMPOTE.filter((f) => p.ingredients.some((i) => (catalogue.rayons.aliases[i.id] ?? i.id) === f));
+  if (compote.length < 2) return m.map((a) => a.nom);
+  const unLa = compote.some((f) => ici.has(f));
+  const out: string[] = [];
+  let dit = false;
+  for (const a of m) {
+    if (!compote.includes(a.id)) out.push(a.nom);
+    else if (!unLa && !dit) {
+      out.push(compote.join(" ou "));
+      dit = true;
+    }
+  }
+  return out;
+}
+
+/**
  * La fournée de la semaine, quand il en faut une — proposée à la pause de 15 h.
  *
- * DEUX RAISONS, ET UNE SEULE RECETTE. Le congélateur n'a plus que
- * `SEUIL_FOURNEE` goûters, ou des fruits passent. La recette : celle qui finit
- * les fruits mûrs d'abord (la banane tachée fait le banana bread), puis zéro
- * achat, un achat, davantage — et à achats égaux, celles de Marie Chioca.
+ * DEUX BESOINS, COMPTÉS À PART, ET UNE SEULE RECETTE. Le pain du matin
+ * (`matinsDePain` sous `SEUIL_PAIN`) et les goûters (`SEUIL_FOURNEE`, ou des
+ * fruits qui passent). Les deux à la fois : le plus court d'abord, le pain à
+ * égalité — il se mange tous les matins, et 30 matins simulés s'en sont passés.
+ *
+ * LES GOÛTERS TOURNENT (T144). T142 classait d'abord par fruits mûrs COMPTÉS :
+ * la compote en finit deux, elle gagnait toujours — quatre fournées sur quatre,
+ * et dix-huit jours sans goûter. L'ordre est maintenant : zéro achat, un,
+ * davantage ; puis CE QUE LE CONGÉLATEUR N'A PAS (un type déjà en sachet passe
+ * après) ; puis une recette qui finit un fruit mûr ; Chioca à égalité.
  */
 export function fourneeAProposer(
   catalogue: Catalogue,
@@ -277,62 +411,82 @@ export function fourneeAProposer(
   ici: ReadonlySet<string>,
 ): Fournee | null {
   const { restants } = gouterAuCongelo(catalogue, stock);
-  if (restants >= SEUIL_FOURNEE && murs.length === 0) return null;
-  const candidats = catalogue.plats
-    .filter((p) => estUneFournee(catalogue, p))
-    .map((p) => {
-      const fruits = murs.filter((f) => p.ingredients.some((i) => i.id === f));
-      return {
+  const matins = matinsDePain(catalogue, stock);
+  const enSachets = new Map<string, number>();
+  for (const l of stock) enSachets.set(l.type, (enSachets.get(l.type) ?? 0) + bandRepas(l.qty_band));
+
+  const candidats = (repas: "gouter" | "petit-dejeuner") =>
+    catalogue.plats
+      .filter((p) => routineNourrie(catalogue, p) === repas)
+      .map((p) => ({
         p,
-        fruits,
+        fruits: murs.filter((f) => p.ingredients.some((i) => i.id === f)),
         chioca: /chioca/i.test(p.source?.auteur ?? ""),
-        manque: ceQuiManque(catalogue, p, ici).ingredients.map((a) => a.nom),
-      };
-    })
-    // CHIOCA D'ABORD, À ACHATS ÉGAUX : une fournée à six articles n'est pas
-    // une fournée de la pause, quel que soit le livre. Zéro, un, puis le reste.
-    .sort(
-      (a, b) =>
-        b.fruits.length - a.fruits.length ||
-        Math.min(a.manque.length, 2) - Math.min(b.manque.length, 2) ||
-        Number(b.chioca) - Number(a.chioca) ||
-        a.manque.length - b.manque.length ||
-        a.p.titre.localeCompare(b.p.titre, "fr"),
-    );
-  const c = candidats[0];
-  if (!c) return null;
-  const raison = c.fruits.length ? "fruits-murs" : restants < SEUIL_FOURNEE ? "stock-bas" : null;
-  if (!raison) return null;
-  return { plat: c.p, raison, restants, fruits: c.fruits, manque: c.manque };
+        deja: p.emits.some((e) => e.congelo && (enSachets.get(e.type) ?? 0) > 0),
+        manque: manqueDeLaFournee(catalogue, p, ici),
+      }))
+      .sort(
+        (a, b) =>
+          Math.min(a.manque.length, 2) - Math.min(b.manque.length, 2) ||
+          Number(a.deja) - Number(b.deja) ||
+          Number(b.fruits.length > 0) - Number(a.fruits.length > 0) ||
+          Number(b.chioca) - Number(a.chioca) ||
+          a.manque.length - b.manque.length ||
+          a.p.titre.localeCompare(b.p.titre, "fr"),
+      );
+
+  const pain = matins < SEUIL_PAIN ? candidats("petit-dejeuner")[0] : undefined;
+  const bas = restants < SEUIL_FOURNEE;
+  // SANS BESOIN DE GOÛTERS, seule une recette qui finit les fruits mûrs a sa place.
+  const gouter = bas || murs.length ? candidats("gouter").find((c) => bas || c.fruits.length > 0) : undefined;
+
+  if (pain && (!gouter || matins <= restants))
+    return { plat: pain.p, raison: "pain-bas", restants: matins, fruits: [], manque: pain.manque };
+  if (!gouter) return null;
+  return { plat: gouter.p, raison: gouter.fruits.length ? "fruits-murs" : "stock-bas", restants, fruits: gouter.fruits, manque: gouter.manque };
 }
 
 /* ═════════════════════════════════════════════════ les lignes calmes */
 
+/** Le déjeuner proposé : une recette faisable, ou le constat qu'aucune ne l'est. */
+export type DejeunerDuStock =
+  | { plat: Plat; manque: number; chioca: boolean }
+  /** Rien ne se fait sans deux achats ou plus : on le dit, sans recette. */
+  | { plat: null };
+
 /**
- * Le déjeuner de Chioca, quand le dîner d'hier n'a rien laissé.
+ * Le déjeuner, quand le dîner d'hier n'a rien laissé — T144.
  *
- * « Même au boulot » est le livre du midi : ses recettes `dejeuner` d'abord,
- * puis les autres du créneau ; le moins d'achats gagne, puis le titre.
+ * LE STOCK D'ABORD, COMME « CE SOIR ». T142 ne cherchait que chez Chioca, et
+ * l'année simulée n'a jamais pu cuisiner sa ligne : elle demandait toujours
+ * « N articles à acheter ». L'ordre est maintenant celui du dîner : zéro
+ * article, puis un ; à égalité, la saison (plus d'ingrédients de saison, et
+ * jamais un hors saison) ; Marie Chioca (« Même au boulot » d'abord) ne fait
+ * que départager. Au-delà d'un achat, rien n'est proposé : un midi à six
+ * articles n'est pas un midi de la pause, c'est une course.
  */
-export function dejeunerDeChioca(
+export function dejeunerDuStock(
   catalogue: Catalogue,
   ici: ReadonlySet<string>,
   mois: number,
-): { plat: Plat; manque: number } | null {
+): DejeunerDuStock | null {
   const c = catalogue.plats
     .filter(
       (p) =>
         p.role === "plat" &&
         p.creneaux.includes("dejeuner") &&
-        p.accepts.every((a) => !a.requis) &&
-        /chioca/i.test(p.source?.auteur ?? ""),
+        p.id !== RESTE_DE_LA_VEILLE &&
+        p.accepts.every((a) => !a.requis),
     )
     .map((p) => {
       const m = ceQuiManque(catalogue, p, ici).ingredients;
+      const s = saisonDuPlat(catalogue, p, mois);
       return {
         plat: p,
+        chioca: /chioca/i.test(p.source?.auteur ?? ""),
         boulot: /boulot/i.test(p.source?.ouvrage ?? ""),
         manque: m.length,
+        saison: s.deSaison.length,
         // Des orties en octobre ne s'achètent pas (T131) : ce midi-là sort.
         horsSaison: m.some((a) => deSaison(catalogue, a.id, mois) === false),
       };
@@ -340,7 +494,13 @@ export function dejeunerDeChioca(
     .filter((x) => !x.horsSaison)
     .sort(
       (a, b) =>
-        a.manque - b.manque || Number(b.boulot) - Number(a.boulot) || a.plat.titre.localeCompare(b.plat.titre, "fr"),
+        a.manque - b.manque ||
+        b.saison - a.saison ||
+        Number(b.chioca) - Number(a.chioca) ||
+        Number(b.boulot) - Number(a.boulot) ||
+        a.plat.titre.localeCompare(b.plat.titre, "fr"),
     )[0];
-  return c ? { plat: c.plat, manque: c.manque } : null;
+  if (!c) return null;
+  if (c.manque > 1) return { plat: null };
+  return { plat: c.plat, manque: c.manque, chioca: c.chioca };
 }

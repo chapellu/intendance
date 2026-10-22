@@ -162,7 +162,8 @@ export function phraseDuPlancher(p: LignePlancher, plats: number): string {
   if (p.usage === "apero") bouts.push("pour l’apéro");
   else if (p.hebdo) bouts.push("frais de la semaine");
   else if (p.fond) bouts.push("pour le fond");
-  bouts.push(`sous son plancher — ${p.a} sur ${p.niveau}`);
+  // T144 — le fruit de la semaine n'a pas de plancher : la ligne dit ce qui reste.
+  bouts.push(p.sansPlancher ? `il en reste ${p.a}` : `sous son plancher — ${p.a} sur ${p.niveau}`);
   // T137 — ACHETÉ N'EST PAS « JAMAIS VU ». Rentrer ne restaure pas la
   // confiance (la règle de l'entrée tient), mais l'app sait d'où vient l'article.
   if (p.confiance !== "sur")

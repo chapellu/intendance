@@ -43,7 +43,7 @@
 // règle du dépôt : on n'enlève pas une proposition pour une lacune, on
 // l'annonce —, on le range là où il ne coûte pas un refus.
 
-import { dejeunerDeChioca, fourneeAProposer, fruitsMurs, midiDeDemain, type Fournee, type MidiDeDemain } from "./repas";
+import { dejeunerDuStock, fourneeAProposer, fruitsMurs, midiDeDemain, type DejeunerDuStock, type Fournee, type MidiDeDemain } from "./repas";
 import { marque, SEUIL_A_MANGER } from "./axe";
 import { calculer } from "./calcul";
 import type { LigneDepot, LotInitial } from "./depot";
@@ -344,7 +344,7 @@ export interface PropositionDuSoir {
    * n'a rien laissé (« Même au boulot » d'abord, le moins d'achats). `null`
    * quand le catalogue n'en a aucun.
    */
-  dejeuner: { plat: Plat; manque: number } | null;
+  dejeuner: DejeunerDuStock | null;
 }
 
 export interface EntreeDuSoir {
@@ -616,7 +616,7 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
   const dans = new Set(main.map((c) => c.plat.id));
   const fournee = fourneeAProposer(catalogue, jeu.stock, fruitsMurs(catalogue, savoir.rejeu, iso), ici);
   return { soir, jourDeCourses, cartes: main, plus: cartes.filter((c) => !dans.has(c.plat.id)), attend, aSortir, fournee,
-    dejeuner: dejeunerDeChioca(catalogue, ici, mois) };
+    dejeuner: dejeunerDuStock(catalogue, ici, mois) };
 }
 
 /**

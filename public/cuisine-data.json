@@ -23100,6 +23100,219 @@
    "cuisinable": true
   },
   {
+   "id": "pain-maison-semi-complet",
+   "titre": "Pain maison semi-complet",
+   "minutes": 150,
+   "minutesSurPlace": 150,
+   "avanceMin": 135,
+   "anticipations": [],
+   "portions": 6,
+   "source": null,
+   "apports": {
+    "proteine": "aucune",
+    "feculent": "pain",
+    "legumes": [],
+    "profil": "four",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "farine-complete",
+     "ref": "farine-complete",
+     "nom": "farine semi-complète (T80 à T110)",
+     "qty": 500,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "levure-boulangere",
+     "ref": "levure-boulangere",
+     "nom": "levure de boulanger déshydratée",
+     "qty": 1,
+     "unit": "sachet",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "eau",
+     "ref": "eau",
+     "nom": "eau tiède",
+     "qty": 330,
+     "unit": "ml",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sel",
+     "ref": "sel",
+     "nom": "sel fin",
+     "qty": 9,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    },
+    {
+     "id": "huile-olive",
+     "ref": "huile-olive",
+     "nom": "huile d'olive",
+     "qty": 1,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": "cake",
+   "avec": [],
+   "steps": [
+    {
+     "id": "delayer",
+     "action": "Délayer la levure dans l'eau tiède, puis la verser sur la farine et le sel",
+     "minutes": 3,
+     "needs": [],
+     "surveille": true,
+     "astuce": "Jamais au-delà de 40 °C : la chaleur tue la levure.",
+     "uses": [
+      "levure-boulangere",
+      "eau",
+      "farine-complete",
+      "sel"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "petrir",
+     "action": "Pétrir dix minutes à la main, jusqu'à une pâte lisse, avec l'huile",
+     "minutes": 10,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "huile-olive"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "pétrir un morceau de pâte",
+     "enfantDes": 30,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "lever",
+     "action": "Mettre en moule à cake huilé, couvrir d'un torchon et laisser doubler",
+     "minutes": 2,
+     "needs": [],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": 75,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cuire",
+     "action": "Cuire 40 minutes à 210 °C, jusqu'à ce que le dessous sonne creux",
+     "minutes": 40,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "trancher",
+     "action": "Laisser refroidir sur une grille, trancher, et congeler par six tranches en sachet",
+     "minutes": 5,
+     "needs": [],
+     "surveille": true,
+     "astuce": "Une tranche par enfant et par matin : un sachet fait trois petits-déjeuners.",
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 15,
+   "accepts": [],
+   "creneaux": [
+    "petit-dejeuner"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [
+    {
+     "type": "pain-de-mie-maison",
+     "kind": "base",
+     "qty": {
+      "amount": 350.0,
+      "unit": "g"
+     },
+     "band": "3-repas",
+     "espace": "congelo",
+     "note": "un sachet de six tranches, trois matins ; grillé congelé, ou sorti la veille",
+     "gardeFrigo": 0,
+     "congelo": true,
+     "horsTable": true
+    },
+    {
+     "type": "pain-de-mie-maison",
+     "kind": "base",
+     "qty": {
+      "amount": 350.0,
+      "unit": "g"
+     },
+     "band": "3-repas",
+     "espace": "congelo",
+     "note": "le second sachet de six tranches",
+     "gardeFrigo": 0,
+     "congelo": true,
+     "horsTable": true
+    }
+   ],
+   "lotEntier": true,
+   "calibreMax": null,
+   "vaisselle": null,
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
    "id": "pain-perdu-moussaka",
    "titre": "Pain perdu façon moussaka",
    "minutes": 60,
@@ -47841,6 +48054,20 @@
     "jusqua": 2,
     "hebdo": true,
     "unite": "sachet de 1,5 kg"
+   },
+   {
+    "ingredient": "banane",
+    "minimum": 3,
+    "jusqua": 7,
+    "hebdo": true,
+    "unite": "pièce"
+   },
+   {
+    "ingredient": "poires",
+    "minimum": 2,
+    "jusqua": 4,
+    "hebdo": true,
+    "unite": "pièce"
    },
    {
     "ingredient": "lentilles-corail",

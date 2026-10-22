@@ -155,6 +155,14 @@ export interface LotStock {
   dluo?: string;
   /** Le plat qui l'a produit, si c'est nous. */
   origine: string | null;
+  /**
+   * T144 — LE DÉJEUNER MIS DE CÔTÉ DANS CE LOT : la date du midi qui le mange
+   * (`AAAA-MM-JJ`) et ses parts, en repas. Une fois ce midi passé, le lot perd
+   * ces parts (`repas.midisPasses`) — personne ne tape « je n'en ai plus » sur
+   * des boîtes vidées à table, et les quatre boîtes restaient « pleines ».
+   */
+  midiLe?: string;
+  midi?: number;
   maj: number;
 }
 

@@ -5438,6 +5438,43 @@ nouveau relevé), build, **78 e2e** (`stock-plan`, `stock-corriger` recalés),
 seconde fois (le relevé passe en tête de journée). Les graines de courge et de
 tournesol sont mêlées dans un seul sachet de 200 g, porté par la courge.
 
+## Le mois simulé des trois repas — T144
+
+- [x] **T144 — Ce que trente jours simulés ont trouvé à T142.** Harnais
+      `sim/annee.mjs` (branche `sim/trois-repas`).
+      **Les boîtes.** 19 cartes « Boîtes pleines », 14 avec les quatre boîtes
+      libres : `contenantsLibres` re-rangeait les sachets de la fournée et du
+      pain dans les boîtes IKEA (lavables d'abord), gardait les restes périmés,
+      et le midi mangé à table n'était jamais retiré. `repas.lotsEnBoites`
+      (CeSoir, Cuisiner) écarte les types des routines, les périmés et le midi
+      passé ; le lot du midi porte `midiLe`/`midi` (`journaliserCuisson`), et
+      l'ouverture le décompte (`midisPasses`, `db/routines.ts`). Le « reste
+      réchauffé » prend ce lot, puis un lot du frigo — plus un sachet de
+      banana bread.
+      **Le midi.** `dejeunerDuStock` remplace `dejeunerDeChioca` : zéro article,
+      puis un ; la saison ; Chioca départage. Au-delà d'un achat : « Midi : rien
+      ne se fait avec le stock — un reste, ou des tartines ».
+      **Le fruit.** `fond.yaml` : banane (7 pièces) et poires (4, en saison),
+      `hebdo`. Un fruit ne porte pas de plancher : `fruitsDeLaSemaine` fait la
+      ligne (« frais de la semaine · il en reste N »), hors saison elle se tait.
+      **Le pain.** Recette du foyer `pain-maison-semi-complet` (T80–T110,
+      levure de boulanger), deux sachets de trois matins au congélateur.
+      `matinsDePain` sous `SEUIL_PAIN` (3) : la fournée est le pain — compté à
+      part des goûters, le plus court d'abord.
+      **La fournée tourne.** Zéro/un/plusieurs achats, puis ce que le congélo
+      n'a pas, puis un fruit mûr, puis Chioca : la compote ne gagne plus quatre
+      fois sur quatre. La compote se fait de pommes OU de poires ; aucune des
+      deux, la ligne dit « il manque : pommes ou poires ».
+
+Portes : typecheck, **1 153 tests** (17 nouveaux, `repas.test.ts`,
+`db/boites.test.ts`), build, **78 e2e** (`courses`, `plancher-garde-manger`
+recalés sur le fruit de la semaine), `catalogue:verifie` 0 erreur.
+
+**Ouvert.** Le reste déclaré du dahl (`1-repas`) sous-estime toujours le midi
+qu'il porte, donc ses boîtes. Les sachets du pain et de la fournée ne
+décomptent plus les sacs de congélation du pool. « il en reste N » d'un fruit
+lit le rejeu, que la routine décompte à vue.
+
 ## Sortie
 
 **Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`

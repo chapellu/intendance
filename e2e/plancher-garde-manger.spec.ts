@@ -27,8 +27,10 @@ const posee = (page: import("@playwright/test").Page, nom: string) =>
 test("un plancher posé au placard part tout seul dans les courses", async ({ page }) => {
   await page.goto("/#/cuisine/courses");
   await attendreLApp(page);
-  // On part d'une liste vide : la semaine ne demande rien.
-  await expect(page.getByText("Rien à acheter")).toBeVisible();
+  // On part d'une liste que la semaine ne remplit pas : seul le fruit de la
+  // semaine y est (T144), sans plancher.
+  await expect(page.locator(".co-art").filter({ hasText: "frais de la semaine" }).first()).toBeVisible();
+  await expect(page.locator(".co-art").filter({ hasNotText: "frais de la semaine" })).toHaveCount(0);
 
   await page.goto("/#/cuisine/stock");
   await attendreLApp(page);
