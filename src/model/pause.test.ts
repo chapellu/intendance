@@ -534,3 +534,30 @@ describe("trois heures ne décongèlent pas un bloc : ce qui demande la veille s
     expect(proposition.cartes[0]!.plat.id).toBe("reste-de-la-veille");
   });
 });
+
+/* ═══════════════════════ T147 — posé n'est pas cuisiné (capture du 22/10) */
+
+describe("un plat posé mais pas cuisiné ne laisse aucun reste dans « ce qui attend »", () => {
+  test("trois plats posés, aucun cuisiné : le cockpit n'annonce aucun « reste de … »", () => {
+    // Capture du 22/10, 16 h 23 : croque-monsieur ce soir, une soupe d'orge et
+    // une tarte au potimarron posées ailleurs. Le cockpit disait « le reste de
+    // soupe orge est à finir d'ici 3 jours » — une soupe que personne n'avait
+    // faite. Les restes que la semaine PROJETTE sont du plan, pas du frigo.
+    const maintenant = new Date("2026-10-22T16:23:00");
+    const jeu = creerJeu(catalogue, 7, maintenant);
+    jeu.stock = [];
+    const ou = (jour: number, repas: string) => jeu.creneaux.findIndex((c) => c.jour === jour && c.repas === repas);
+    jeu.choix[ou(0, "diner")] = "croque-monsieur-salade";
+    for (const [j, r, p] of [
+      [0, "dejeuner", "soupe-orge-petits-pois"],
+      [1, "diner", "soupe-orge-petits-pois"],
+      [2, "diner", "tarte-potimarron-oignons"],
+    ] as const)
+      if (ou(j, r) >= 0) jeu.choix[ou(j, r)] = p;
+    const rejeu = rejouer(catalogue, [fondRentre(veille(maintenant))], contexte(catalogue), iso(maintenant));
+    const savoir: Savoir = { rejeu, passe: PASSE_VIDE, cuisinesRecemment: new Set(), planchers: [] };
+    const p = proposerCeSoir({ jeu, savoir, recents: new Set(), maintenant });
+    expect(p.attend).toEqual([]);
+    expect([...p.cartes, ...p.plus].every((c) => c.attend === null && !(c.presse && "type" in c.presse))).toBe(true);
+  });
+});

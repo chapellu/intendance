@@ -184,14 +184,14 @@ describe("les deux plafonds", () => {
 });
 
 describe("les lots", () => {
-  test("un lot constaté porte sa clé de base, un lot cuisiné n'en a pas", () => {
+  test("un lot constaté porte sa clé de base ; un plat posé n'ajoute aucun lot (T147)", () => {
     jeu.stock = [
       { type: "sauce-bolognaise", kind: "base", qty: { amount: 700, unit: "g" }, qty_band: "2-repas", born: "2026-08-16", location: "congelo", ref: "42" },
     ];
     poser(0, "diner", "sauce-bolognaise");
     const vus = lots(jeu, calculer(jeu).depot, null, LUNDI);
     expect(vus.find((l) => l.nom === "sauce bolognaise" && l.ref === "42")).toBeTruthy();
-    expect(vus.filter((l) => l.ref === null).length).toBeGreaterThan(0);
+    expect(vus.every((l) => l.ref !== null)).toBe(true);
   });
 
   test("un lot entamé dit ce qu'il en reste, un lot fini dit qu'il est mangé", () => {
@@ -206,11 +206,11 @@ describe("les lots", () => {
     expect(bocal?.epuise).toBe(false);
   });
 
-  test("un lot cuisiné cette semaine nomme le plat, pas son identifiant", () => {
+  test("un plat posé, pas cuisiné, n'est dans aucun frigo — T147", () => {
+    // Capture du 22/10 : la soupe d'orge posée se disait déjà là.
     poser(0, "diner", "sauce-bolognaise");
     const vus = lots(jeu, calculer(jeu).depot, null, LUNDI);
-    const titre = catalogue.plats.find((p) => p.id === "sauce-bolognaise")?.titre;
-    expect(vus.some((l) => l.ou.includes(`cuisiné cette semaine (${titre})`))).toBe(true);
+    expect(vus.some((l) => l.ou.includes("cuisiné cette semaine"))).toBe(false);
   });
 
   test("le filtre ne montre qu'un rangement", () => {
@@ -429,7 +429,8 @@ describe("la vue entière", () => {
     jeu.stock = catalogue.stock.map((o, i) => ({ ...o, ref: String(i + 1) }));
     const vue = vueDeLInventaire(jeu, calculer(jeu), null);
     expect(vue.constates).toBe(catalogue.stock.length);
-    expect(vue.lots.length).toBeGreaterThan(vue.constates);
+    // T147 — ce que la semaine produirait n'est pas dans l'inventaire.
+    expect(vue.lots.length).toBe(vue.constates);
   });
 });
 
@@ -978,14 +979,14 @@ describe("ce qu'un lot dit de lui-même", () => {
     expect(ne("2026-08-14").ou).toContain("cuisiné il y a 3 j");
   });
 
-  test("ce que la semaine projette garde son plat, pas un âge", () => {
+  test("ce que la semaine projette ne se dit jamais présent — T147", () => {
     poser(0, "diner", "sauce-bolognaise");
     const titre = catalogue.plats.find((p) => p.id === "sauce-bolognaise")?.titre;
     const depot = calculer(jeu).depot;
     const projetes = depot.lignes.filter((l) => l.from !== null).length;
     expect(projetes).toBeGreaterThan(0);
     const dits = lots(jeu, depot, null, LUNDI).filter((l) => l.ou.includes(`cuisiné cette semaine (${titre})`));
-    expect(dits).toHaveLength(projetes);
+    expect(dits).toHaveLength(0);
   });
 
   test("une bande se lit en mots, jamais en identifiant", () => {

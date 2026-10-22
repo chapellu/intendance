@@ -5556,3 +5556,22 @@ Quand l'app porte les mêmes verdicts que le proto : supprimer, chez `flagship`,
 et ici, `scripts/parite.mjs` avec `reference/proto-semaine.js`, qui n'existent
 que pour prouver le port et n'ont plus rien à prouver une fois l'original
 parti.
+
+## Posé n'est pas cuisiné — T147
+
+- [x] **T147 — Le cockpit annonçait les restes de plats seulement posés.**
+      Capture du 22/10, 16 h 23 : trois plats posés par « Proposer »
+      (croque-monsieur ce soir, une soupe d'orge, une tarte au potimarron), et
+      la ligne « Ce soir » disait « le reste de soupe orge est à finir d'ici
+      3 jours · le reste de tarte potimarron est à finir d'ici 4 jours ».
+      Rien n'avait été cuit. `proposerCeSoir` lisait `calculer(jeu, choix).depot`,
+      où la semaine PROJETTE ses sorties : un plat posé y naît comme s'il était
+      fait. « Ce qui attend », la marque « presse » et le « mange le reste de »
+      des cartes lisent désormais un dépôt bâti sur `jeu.stock` seul — ce qui a
+      été cuisiné au journal ou relevé à la main. L'inventaire (`vueDeLInventaire`,
+      `lots`) ne montre plus que `depot.initiales` : « cuisiné cette semaine
+      (…) » se disait d'un plat posé. La projection reste au plan (la semaine,
+      les courses, le chaînage), jamais au présent. Les boîtes libres et le midi
+      (`lotsEnBoites`, `midiDeDemain`) lisaient déjà la base. Tenu par
+      `pause.test.ts` (trois posés, aucun cuit → aucun lot qui attend) et
+      `e2e/pose-pas-cuit.spec.ts` (le fil, puis le cockpit).

@@ -45,8 +45,7 @@
 
 import { dejeunerDuStock, fourneeAProposer, fruitsMurs, midiDeDemain, type DejeunerDuStock, type Fournee, type MidiDeDemain } from "./repas";
 import { marque, SEUIL_A_MANGER } from "./axe";
-import { calculer } from "./calcul";
-import type { LigneDepot, LotInitial } from "./depot";
+import { Depot, horlogesDu, type LigneDepot, type LotInitial } from "./depot";
 import { ceQuiEstIci, ceQuiManque, ceQueLaCarteDitIci, type Article } from "./ici";
 import { HEURE } from "./heures";
 import type { Jeu } from "./jeu";
@@ -429,7 +428,7 @@ export const soirDe = (jeu: Jeu): number =>
 export const finitUnReste = (p: Plat): boolean =>
   p.accepts.length > 0 && p.accepts.every((a) => a.kind === "reste-plat" && a.type === null);
 
-function lotMange(depot: ReturnType<typeof calculer>["depot"], l: LigneDepot, date: Date): LotMange {
+function lotMange(depot: Depot, l: LigneDepot, date: Date): LotMange {
   const v = depot.vie(l, date);
   return {
     type: l.type,
@@ -445,7 +444,7 @@ function lotMange(depot: ReturnType<typeof calculer>["depot"], l: LigneDepot, da
  * toujours (il a une horloge de quelques jours et il est déjà cuisiné) ; un lot
  * qui a franchi la moitié de sa vie presse ; le reste attend.
  */
-function presseLeLot(depot: ReturnType<typeof calculer>["depot"], l: LigneDepot, date: Date): boolean {
+function presseLeLot(depot: Depot, l: LigneDepot, date: Date): boolean {
   if (l.location === "congelo") return marque(depot.vie(l, date)?.fraction ?? null) !== "";
   if (l.kind === "reste-plat") return true;
   return (depot.vie(l, date)?.fraction ?? 0) >= SEUIL_A_MANGER;
@@ -485,7 +484,13 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
   const comp = comptoir(ceSoir, choix, soir, savoir);
   if (!comp) return { soir, jourDeCourses, cartes: [], plus: [], attend: [], aSortir: [], fournee: null, dejeuner: null };
 
-  const base = calculer(jeu, choix);
+  // T147 — CE QUI ATTEND EST CE QUI EST LÀ : la table `stock` (cuisiné au
+  // journal, ou relevé à la main), rien d'autre. `calculer(jeu, choix)` range
+  // aussi au dépôt ce que la semaine PROJETTE — la soupe d'orge posée jeudi y
+  // naît comme si elle était faite, et le cockpit disait « le reste de soupe
+  // orge est à finir d'ici 3 jours » d'une soupe que personne n'avait cuite
+  // (capture du 22/10). La projection reste au plan ; jamais au présent.
+  const depot = new Depot(horlogesDu(catalogue), jeu.stock);
   const date = jour0.date;
   const iso = isoLocal(maintenant);
   const ici = ceQuiEstIci(catalogue, jeu.gardeManger, savoir.rejeu, iso);
@@ -495,12 +500,12 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
   // CE QUI ATTEND, pour le cockpit : le dépôt tel qu'il est AVANT ce soir,
   // vivant, du plus pressé au moins. Un lot périmé ne s'y dit pas — c'est la
   // tâche « à jeter » de T103 qui le porte.
-  const vivants = base.depot.lignes.filter((l) => !l.epuise && !base.depot.perime(l, date));
+  const vivants = depot.lignes.filter((l) => !l.epuise && !depot.perime(l, date));
   const attend = vivants
     .filter((l) => l.kind === "reste-plat" || l.kind === "base")
-    .map((l) => ({ l, presse: presseLeLot(base.depot, l, date), f: base.depot.vie(l, date)?.fraction ?? 0 }))
+    .map((l) => ({ l, presse: presseLeLot(depot, l, date), f: depot.vie(l, date)?.fraction ?? 0 }))
     .sort((a, b) => Number(b.presse) - Number(a.presse) || b.f - a.f)
-    .map((x) => lotMange(base.depot, x.l, date));
+    .map((x) => lotMange(depot, x.l, date));
 
   const lotDe = (type: string): LigneDepot | null => vivants.find((l) => l.type === type) ?? null;
 
@@ -543,8 +548,8 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
       }
       const l = lotDe(a.id);
       if (!l) continue;
-      if (!presse && presseLeLot(base.depot, l, date)) presse = lotMange(base.depot, l, date);
-      else if (!attendIci) attendIci = lotMange(base.depot, l, date);
+      if (!presse && presseLeLot(depot, l, date)) presse = lotMange(depot, l, date);
+      else if (!attendIci) attendIci = lotMange(depot, l, date);
     }
 
     const h = horaire(p);

@@ -598,12 +598,12 @@ export const joursDepuis = (aujourdhui: Date, born: Date): number =>
   );
 
 export function lots(
-  jeu: Jeu,
+  _jeu: Jeu,
   depot: Depot,
   filtre: Espace | null,
   aujourdhui: Date,
 ): LotVue[] {
-  return depot.lignes
+  return depot.initiales
     .map((l, i) => ({ l, i }))
     .filter(({ l }) => !filtre || l.location === filtre)
     .map(({ l, i }) => {
@@ -628,9 +628,7 @@ export function lots(
           // ne porte que des préparations. Le jour où une porte d'entrée hors
           // liste (T114) y fera entrer des courgettes crues, ce mot sera faux
           // — c'est ici qu'il faudra lire l'origine.
-          l.from
-            ? `cuisiné cette semaine (${jeu.plats[l.from]?.titre ?? l.from})`
-            : l.born
+          l.born
               ? `cuisiné ${depuis(joursDepuis(aujourdhui, l.born))}`
               : "déjà là avant la semaine",
           entame ? `reste ${fmt(l.reste!)} ${l.unite ?? ""}`.trim() : "",
@@ -1203,7 +1201,11 @@ export interface Inventaire {
 }
 
 export function vueDeLInventaire(jeu: Jeu, calc: Calcul, voulu: Espace | null): Inventaire {
-  const lignes = calc.depot.lignes;
+  // T147 — L'INVENTAIRE DIT CE QUI EST LÀ : les lots de la base (cuisinés au
+  // journal, relevés à la main). Ce que la semaine projette — un plat posé,
+  // pas cuisiné — n'est dans aucun frigo ; il se lisait « cuisiné cette
+  // semaine (Soupe d'orge…) » avant d'avoir été fait.
+  const lignes = calc.depot.initiales;
   // La date de référence est le PREMIER JOUR DE LA FENÊTRE, c'est-à-dire
   // aujourd'hui : l'inventaire dit ce qu'il y a maintenant, pas ce qu'il en
   // restera dimanche.
