@@ -847,15 +847,24 @@ function amorce(ctx: Contexte, denrees: readonly Denree[]): Map<string, LotPlaca
   for (const d of denrees) {
     const id = ctx.alias(d.ingredient);
     const lots = par.get(id) ?? [];
+    // T146 — LE DEMI-PAQUET DU RELEVÉ EST UN DEMI-PAQUET. « Spaghetti, un
+    // demi-paquet », sans poids : non chiffré, il servait un plat ENTIER
+    // (« la demande est considérée servie »), puis un second — deux demi-paquets
+    // valaient deux gratins, et l'année simulée tombait à zéro pâtes quand la
+    // carte disait « rien à acheter » (run 9, décembre). Quand le fond dit ce
+    // que pèse le paquet, le paquet ouvert en garde la moitié, chiffrée.
+    const paquet = d.parUnite == null && d.etat === "entame" && d.unites >= 1 ? ctx.contenu(id) : null;
+    const demi = paquet && EN_GRAMMES.has(paquet.unit) ? paquet : null;
     lots.push({
       ingredient: id,
       zone: d.zone,
-      unites: d.unites,
-      parUnite: d.parUnite,
+      unites: demi ? d.unites - 1 : d.unites,
+      parUnite: demi ? { ...demi } : d.parUnite,
       etat: d.etat,
       // Un lot déjà entamé au relevé n'a pas de reste chiffré : on a vu qu'il
-      // était ouvert, on n'a pas pesé ce qu'il restait dedans.
-      entame: null,
+      // était ouvert, on n'a pas pesé ce qu'il restait dedans — sauf le
+      // demi-paquet d'un paquet connu (ci-dessus).
+      entame: demi ? demi.amount / 2 : null,
       court: false,
     });
     par.set(id, lots);

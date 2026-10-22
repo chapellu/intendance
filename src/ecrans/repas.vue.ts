@@ -12,7 +12,7 @@ import { bandRepas } from "../model/depot";
 import { joue, type Jeu } from "../model/jeu";
 import type { CarteDuSoir, PropositionDuSoir } from "../model/pause";
 import { nomDuType } from "../model/plancher";
-import { RESTE_DE_LA_VEILLE, typesDuGouter, type Fournee, type MidiDeDemain } from "../model/repas";
+import { RESTE_DE_LA_VEILLE, resteDuFrigoAuMidi, typesDuGouter, type Fournee, type MidiDeDemain } from "../model/repas";
 import type { Route } from "../nav/routes";
 
 /** « + le déjeuner de demain, 3 boîtes » — la ligne de la carte du soir. */
@@ -72,7 +72,9 @@ export function lignesDuJour(jeu: Jeu, soir: PropositionDuSoir | null): LigneDuJ
   if (midi >= 0) {
     const pose = jeu.choix[midi] ?? null;
     const de = jeu.deLaVeille?.[midi] ?? null;
-    const reste = soir?.attend.find((l) => l.kind === "reste-plat" && l.location === "frigo");
+    // T146 — le reste que le midi prendra vraiment (`resteDuFrigoAuMidi`), pas le
+    // premier de la liste « à finir » : c'est lui que l'app retire après.
+    const reste = iso ? resteDuFrigoAuMidi(cat, jeu.stock, iso) : null;
     const creneau = jour0 ? { jour: iso, repas: "dejeuner" } : null;
     if (pose === RESTE_DE_LA_VEILLE && de)
       out.push({ cle: "dejeuner", texte: `Midi : le reste de ${jeu.plats[de]?.titre ?? nomDuType(de)}` });

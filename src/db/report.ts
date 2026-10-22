@@ -51,6 +51,7 @@
 
 import { convient, SAUTE, sePioche, type Jeu } from "../model/jeu";
 import { heureDe } from "../model/heures";
+import { RESTE_DE_LA_VEILLE } from "../model/repas";
 import { cleDuCreneau } from "./semaine";
 import { jourISO, type Base, type DecisionCreneau } from "./schema";
 
@@ -122,7 +123,12 @@ export async function reporterLesPoses(base: Base, jeu: Jeu): Promise<Report> {
     const bilan: Report = { ...RIEN };
 
     for (const d of [...anciennes].sort(chronologique)) {
-      if (d.plat === null || d.plat === SAUTE || cuits.has(d.cle)) {
+      // T146 — LE RESTE DE LA VEILLE NE SE REPORTE PAS. Il nomme le reste
+      // d'UN dîner (`de`), mangé à son midi sans geste — le lot l'a dit
+      // (`midisPasses`). Reporté, il perdait son `de` : le cockpit disait
+      // « Midi : Reste réchauffé » devant le reste prévu, et le midi pris
+      // bloquait le « Je lance ça » du soir (run 9, le 27/10).
+      if (d.plat === null || d.plat === SAUTE || d.plat === RESTE_DE_LA_VEILLE || cuits.has(d.cle)) {
         await base.creneaux.delete(d.cle);
         bilan.closes++;
         continue;

@@ -596,12 +596,23 @@ describe("ce qu'il reste au garde-manger, en une phrase — T106", () => {
   });
 
   test("UN TOTAL PARTIEL NE SE LIT PAS COMME UN TOTAL", () => {
-    // Les pâtes portent un paquet de 1 kg pesé ET un demi-paquet qui ne l'est
-    // pas (relevé du 21/10). Additionner le kilo serait faux ; l'ingrédient n'a
-    // pas de poids connu, et `EtatIngredient.grammes` le dit en rendant `null`.
-    expect(froid().parIngredient.get("pates")?.grammes).toBeNull();
+    // Les pâtes portaient un paquet de 1 kg pesé ET deux demi-paquets qui ne
+    // l'étaient pas (relevé du 21/10) : additionner le kilo seul aurait été
+    // faux. Depuis T146, un demi-paquet d'un paquet que le fond pèse (500 g)
+    // en garde la moitié — le total est entier, et il se lit.
+    expect(froid().parIngredient.get("pates")?.grammes).toBe(1000 + 250 + 250);
     const pesees = idsDuReleve(catalogue).filter((id) => froid().parIngredient.get(id)?.grammes != null);
     expect(resteAuPlacard(catalogue, froid()).pesees).toBe(pesees.length);
+  });
+
+  test("T146 — le demi-paquet ne sert plus un plat entier", () => {
+    // Trois gratins à 350 g sur 1,5 kg : il en reste 450 g. Non chiffrés, les
+    // deux demi-paquets absorbaient chacun un gratin entier, et le kilo restait
+    // presque intact — l'app disait « rien à acheter » sur une cuisine vide.
+    const p = catalogue.plats.find((x) => x.id === "gratin-de-pates-tomates")!;
+    const gratin = (j: string): Evenement => ({ sorte: "cuisine", jour: j, saisi: j, repas: "diner", plat: p.id, parts: p.portions, maj: 1 });
+    const r = rejouer(catalogue, [gratin("2026-10-22"), gratin("2026-10-23"), gratin("2026-10-24")], contexte(catalogue), "2026-10-25");
+    expect(r.parIngredient.get("pates")?.grammes).toBe(1500 - 3 * 350);
   });
 });
 

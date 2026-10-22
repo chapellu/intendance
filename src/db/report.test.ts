@@ -11,7 +11,8 @@ import { lireCatalogue } from "../model/catalogue";
 import { creerJeu, SAUTE, type Jeu } from "../model/jeu";
 import type { Catalogue } from "../model/types";
 import { Base, cleCreneau, jourISO } from "./schema";
-import { hydrater, lireSemaine, poser, reglerParts, toutOublier } from "./semaine";
+import { hydrater, lireSemaine, poser, poserCeSoir, reglerParts, toutOublier } from "./semaine";
+import { RESTE_DE_LA_VEILLE } from "../model/repas";
 import { reporterLesPoses } from "./report";
 
 const catalogue: Catalogue = lireCatalogue(
@@ -182,6 +183,26 @@ describe("ce qui ne se reporte pas, et pourquoi", () => {
       bloquees: 1,
     });
     expect((await base.creneaux.get(cleCreneau("2026-08-18", "diner")))?.plat).toBe("poulet-roti");
+  });
+});
+
+describe("T146 — le reste de la veille appartient à son midi", () => {
+  test("un midi « reste de » passé se ferme, et ne prend pas le midi du lendemain", async () => {
+    // Lundi soir : le dahl agrandi pour mardi midi. Mardi soir : les burgers
+    // agrandis pour mercredi midi. Le mardi midi, mangé sans geste, ne doit
+    // pas glisser sur mercredi en perdant son plat.
+    const LUNDI = new Date(2026, 9, 26, 15, 0);
+    await poserCeSoir(base, catalogue, "dahl-lentilles-corail", [], LUNDI, 3);
+    const MARDI_ = new Date(2026, 9, 27, 15, 0);
+    await reporterLesPoses(base, creerJeu(catalogue, 7, MARDI_));
+    await poserCeSoir(base, catalogue, "hachis-parmentier-lentilles", [], MARDI_, 3);
+
+    const mercredi = await rouvrir(new Date(2026, 9, 28, 7, 30));
+    const midi = creneau(mercredi, 0, "dejeuner");
+    expect(mercredi.choix[midi]).toBe(RESTE_DE_LA_VEILLE);
+    expect(mercredi.deLaVeille?.[midi]).toBe("hachis-parmentier-lentilles");
+    // Et aucun autre midi n'a hérité d'un « reste » sans plat.
+    expect(mercredi.choix.filter((c, i) => c === RESTE_DE_LA_VEILLE && !mercredi.deLaVeille?.[i])).toHaveLength(0);
   });
 });
 

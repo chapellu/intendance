@@ -5506,6 +5506,43 @@ deux boîtes, et trois restes posés pour les boîtes pleines),
 **Ouvert.** Un reste du frigo entamé au midi sans être fini garde toutes ses
 boîtes dans l'app. Le poids d'une pièce n'est connu que de la pomme de terre.
 
+## L'année simulée n° 9 — T146
+
+- [x] **T146 — Ce que l'année simulée (run 9) a trouvé à T145.**
+      **L'onglet resté ouvert.** La PWA rallumée le matin reprenait l'écran de
+      la veille : le cockpit montrait hier, et sa ligne « Fournée » ouvrait le
+      goûter d'hier (« Ce créneau n'est plus là » — cinq fournées et deux midis
+      perdus). `nav/reveil.ts` redessine l'app à chaque retour sur l'onglet
+      (`visibilitychange`, `focus`, `pageshow`). Les routines (le pain du matin,
+      le goûter) ne passaient qu'au démarrage : le pain du 17/10 restait
+      « 6 matins » le 2/11, et le pain n'était plus jamais proposé (316 matins
+      sans pain). `routinesDuJour` roule avec le report, une fois par jour, et
+      une seconde fois après le déjeuner.
+      **Le midi sans geste.** Le plus ancien reste de plat du frigo perd les
+      parts du midi chaque jour dont le déjeuner est passé, sans cuisson ni midi
+      prévu (`midisDuFrigo`) — au prorata, donc ses boîtes aussi. La ligne
+      « Midi » nomme ce lot-là (`resteDuFrigoAuMidi`). Un midi « reste de la
+      veille » passé se ferme au lieu de se reporter : reporté, il perdait son
+      plat (« Midi : Reste réchauffé ») et bloquait le midi du « Je lance ça »
+      suivant.
+      **La fournée.** Un fruit passe dans ses deux derniers jours de garde, sans
+      rachat (plus à mi-vie : les poires de la semaine étaient « mûres » la
+      moitié du temps). Sans besoin de goûters, un fruit mûr ne relance ni la
+      fournée déjà au congélo ni celle de ces jours-ci. Celle de ces jours-ci
+      passe après, avant même le compte d'achats ; un jour de courses, une
+      fournée à un article (quel qu'il soit) se propose. La raison dit le
+      congélo vide avant les fruits.
+      **Le demi-paquet du relevé.** Sans poids, il servait un plat entier ;
+      quand le fond pèse le paquet, il en garde la moitié, chiffrée.
+
+Portes : typecheck, **1 171 tests**, build, **78 e2e**, `catalogue:verifie`
+0 erreur. Le harnais (`sim/annee.mjs`) prend le relevé du catalogue comme un
+fait du monde, lit « N repas » comme N parts, compte la pomme de terre en
+grammes, et libère les boîtes au prorata.
+
+**Ouvert.** Les lentilles cuites du congélo qu'une recette prend en entier
+restent dans l'app ; la farine dérive d'un paquet en un mois.
+
 ## Sortie
 
 **Moitié faite en T22** : `scripts/parite.mjs` et `reference/proto-semaine.js`

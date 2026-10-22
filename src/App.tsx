@@ -11,6 +11,7 @@ import { useAmorce, useCatalogue, useSemaine } from "./db/hooks";
 import { vueAPrevoir } from "./ecrans/prevoir.vue";
 import { chemin, ENTREE_CUISINE, pleinEcran, type Route } from "./nav/routes";
 import { JOURS_VISIBLES } from "./nav/jours";
+import { useReveil } from "./nav/reveil";
 import { useRoute } from "./nav/useRoute";
 import { Coquille, Corps, type Pastilles } from "./ui/Coquille";
 import { Aujourdhui } from "./ecrans/Aujourdhui";
@@ -33,6 +34,8 @@ const MOIS = (d: Date) => d.toLocaleDateString("fr-FR", { month: "long" });
 
 export function App() {
   const route = useRoute();
+  // T146 — l'onglet rallumé le matin redessine tout ce qui lit l'heure.
+  useReveil();
   const { catalogue, erreur } = useCatalogue();
   // Le stock du catalogue n'entre en base qu'une fois ; à partir de là c'est le
   // foyer qui fait foi. Voir `db/stock.ts`. Depuis T15, c'est aussi ce que le

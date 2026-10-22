@@ -260,6 +260,80 @@ export function midisPasses(
 }
 
 /**
+ * Ce que les midis SANS GESTE ont pris au frigo — T146.
+ *
+ * LE MIDI MANGE LE RESTE DU FRIGO, ET PERSONNE NE LE TAPE. Le cockpit le dit
+ * (« Midi : le reste au frigo — … ») ; à table, les boîtes se vident, et le
+ * lot restait entier dans l'app : un reste entamé gardait toutes ses boîtes,
+ * et la carte de 15 h disait « Boîtes pleines (1 libre) » devant trois
+ * boîtes lavées (T145 ouvert, run 9 le 30/10).
+ *
+ * Pour chaque jour de `jours` : un midi cuisiné (`cuits`) ou prévu au dîner
+ * de la veille (`prevus`, que `midisPasses` règle) ne prend rien ; sinon le
+ * PLUS ANCIEN reste du frigo né avant ce jour perd les parts du midi — au
+ * prorata, donc ses boîtes aussi (`rangerDans` relit la bande).
+ *
+ * PURE : rend les prises, ne touche à rien.
+ */
+/** Un lot que le midi sans geste peut prendre le jour `jour` : un reste du
+ *  frigo, né avant, qui n'est ni une routine ni un midi déjà prévu. */
+const auMidi = (routine: ReadonlySet<string>, jour: string) =>
+  (l: { type: string; kind?: string; born: string; location?: string; midiLe?: string }): boolean =>
+    l.location === "frigo" && (l.kind ?? "reste-plat") === "reste-plat" && !routine.has(l.type) && !l.midiLe && l.born < jour;
+
+const typesDesRoutines = (catalogue: Catalogue): ReadonlySet<string> =>
+  new Set(catalogue.creneaux.routines?.liste.flatMap((r) => r.duDepot?.types ?? []) ?? []);
+
+/** Le reste que le midi de `jour` prendra au frigo — le plus ancien. Ce que
+ *  la ligne « Midi » du cockpit nomme, et ce que `midisDuFrigo` retire. */
+export function resteDuFrigoAuMidi<L extends { type: string; kind?: string; born: string; location?: string; midiLe?: string }>(
+  catalogue: Catalogue,
+  stock: readonly L[],
+  jour: string,
+): L | null {
+  const ok = auMidi(typesDesRoutines(catalogue), jour);
+  return [...stock].filter(ok).sort((a, b) => a.born.localeCompare(b.born))[0] ?? null;
+}
+
+export function midisDuFrigo(
+  catalogue: Catalogue,
+  lots: readonly { id?: number; type: string; kind?: string; band: string; born: string; location?: string; midiLe?: string }[],
+  jours: readonly string[],
+  cuits: ReadonlySet<string>,
+  prevus: ReadonlySet<string>,
+): Prise[] {
+  const routine = typesDesRoutines(catalogue);
+  const parts = partsDuMidi(catalogue.foyer);
+  const reste = new Map<number, number>();
+  const frigo = lots
+    .filter((l): l is typeof l & { id: number } => l.id != null)
+    .sort((a, b) => a.born.localeCompare(b.born) || a.id - b.id);
+  for (const l of frigo) reste.set(l.id, bandRepas(l.band));
+  const touches = new Set<number>();
+  for (const j of jours) {
+    if (cuits.has(j) || prevus.has(j)) continue;
+    const ok = auMidi(routine, j);
+    const l = frigo.find((x) => ok(x) && reste.get(x.id)! > 1e-9);
+    if (!l) continue;
+    reste.set(l.id, Math.max(0, reste.get(l.id)! - parts));
+    touches.add(l.id);
+  }
+  return [...touches].map((id) => {
+    const n = reste.get(id)!;
+    return { id, band: n > 1e-9 ? `${Math.round(n * 100) / 100}-repas` : null };
+  });
+}
+
+/** Le dernier jour dont le midi est passé à `maintenant` : aujourd'hui après
+ *  le déjeuner, hier avant. */
+export const dernierMidiPasse = (maintenant: Date): string => {
+  const auj = isoDuJour(maintenant);
+  if (midiPasse(auj, maintenant)) return auj;
+  const hier = new Date(maintenant.getFullYear(), maintenant.getMonth(), maintenant.getDate() - 1, 12);
+  return isoDuJour(hier);
+};
+
+/**
  * Les lots qui tiennent une boîte IKEA MAINTENANT — ce que `contenantsLibres`
  * doit lire, et rien d'autre. T144.
  *
@@ -358,6 +432,9 @@ export interface Fournee {
   manque: string[];
 }
 
+/** Un fruit passe dans ses deux derniers jours de garde — T146. */
+const DERNIERS_JOURS = 2;
+
 /** Les fruits qu'une fournée sait finir. */
 const FRUITS = ["banane", "poires", "pommes"];
 
@@ -366,8 +443,15 @@ const FRUITS = ["banane", "poires", "pommes"];
 const FRUITS_DE_COMPOTE = ["pommes", "poires"];
 
 /**
- * Les fruits qui passent : rentrés depuis plus de la moitié de la vie de leur
- * famille de garde (`conservation.yaml:familles`), et toujours au rejeu.
+ * Les fruits qui passent : rentrés depuis les deux derniers jours de la vie de
+ * leur famille de garde (`conservation.yaml:familles`), sans achat depuis, et
+ * toujours au rejeu.
+ *
+ * T146 — PAS À MI-VIE. Les poires s'achètent chaque semaine : à mi-vie
+ * (3,5 jours sur 7), elles étaient « mûres » la moitié de chaque semaine, et
+ * l'année simulée (run 9) a lancé la compote presque tous les jours. Un fruit
+ * qu'on rachète avant qu'il passe ne passe pas ; seul celui qui reste dans la
+ * coupe au-delà de sa semaine ordinaire réclame une fournée.
  */
 export function fruitsMurs(catalogue: Catalogue, rejeu: Pick<Rejeu, "parIngredient" | "rentres">, aujourdhui: string): string[] {
   const out: string[] = [];
@@ -376,7 +460,7 @@ export function fruitsMurs(catalogue: Catalogue, rejeu: Pick<Rejeu, "parIngredie
     const f = (catalogue.garde ?? []).find((x) => x.ids.includes(id));
     if (!rentre || !f || !rejeu.parIngredient.has(id)) continue;
     const age = Math.round((Date.parse(aujourdhui) - Date.parse(rentre)) / JOUR_MS);
-    if (age >= f.fenetreJours / 2) out.push(id);
+    if (age >= Math.max(f.fenetreJours / 2, f.fenetreJours - DERNIERS_JOURS)) out.push(id);
   }
   return out;
 }
@@ -417,9 +501,11 @@ function manqueDeLaFournee(catalogue: Catalogue, p: Plat, ici: ReadonlySet<strin
  * LES GOÛTERS TOURNENT (T144). T142 classait d'abord par fruits mûrs COMPTÉS :
  * la compote en finit deux, elle gagnait toujours — quatre fournées sur quatre,
  * et dix-huit jours sans goûter. Seules les fournées CUISINABLES concourent
- * (T145 : zéro achat, ou un seul pris au frais de la semaine) ; puis zéro achat
- * avant un ; puis celle qu'on n'a pas faite ces jours-ci (`recentes`) ; puis CE
- * QUE LE CONGÉLATEUR N'A PAS ; puis un fruit mûr ; Chioca à égalité.
+ * (T145 : zéro achat, ou un seul pris au frais de la semaine — T146 : ou un
+ * seul, quel qu'il soit, un jour de courses) ; puis celle qu'on n'a pas faite
+ * ces jours-ci (`recentes`, T146 : avant le compte d'achats) ; puis zéro achat
+ * avant un ; puis CE QUE LE CONGÉLATEUR N'A PAS ; puis un fruit mûr ; Chioca à
+ * égalité.
  */
 export function fourneeAProposer(
   catalogue: Catalogue,
@@ -427,6 +513,8 @@ export function fourneeAProposer(
   murs: readonly string[],
   ici: ReadonlySet<string>,
   recentes: ReadonlySet<string> = new Set(),
+  /** T146 — un jour de courses, l'article qui manque se prend au magasin. */
+  jourDeCourses = false,
 ): Fournee | null {
   const { restants } = gouterAuCongelo(catalogue, stock);
   const matins = matinsDePain(catalogue, stock);
@@ -452,15 +540,20 @@ export function fourneeAProposer(
           // T145 — SEULE UNE FOURNÉE QU'ON PEUT LANCER : rien à acheter, ou un
           // seul article, et du frais de la semaine. L'année simulée : 90
           // propositions sur 223 sans le stock pour les faire.
-          cuisinable: manque.length === 0 || (manque.length === 1 && manque[0]!.ids.some((id) => frais.has(id))),
+          // T146 — UN JOUR DE COURSES, un article, quel qu'il soit : le foyer
+          // le prend avec la liste. La compote était la seule fournée sans
+          // achat, et la seule proposée (run 9 : trente sur trente-deux).
+          cuisinable: manque.length === 0 || (manque.length === 1 && (jourDeCourses || manque[0]!.ids.some((id) => frais.has(id)))),
           manque: manque.map((m) => m.nom),
         };
       })
       .filter((c) => c.cuisinable)
       .sort(
         (a, b) =>
-          a.manque.length - b.manque.length ||
+          // T146 — CELLE DE CES JOURS-CI PASSE APRÈS, avant même le compte
+          // d'achats : sinon la fournée sans achat revient tous les jours.
           Number(a.recente) - Number(b.recente) ||
+          a.manque.length - b.manque.length ||
           Number(a.deja) - Number(b.deja) ||
           Number(b.fruits.length > 0) - Number(a.fruits.length > 0) ||
           Number(b.chioca) - Number(a.chioca) ||
@@ -473,10 +566,16 @@ export function fourneeAProposer(
   const pain = matins < SEUIL_PAIN ? candidats("petit-dejeuner")[0] : undefined;
   if (pain) return { plat: pain.p, raison: "pain-bas", restants: matins, fruits: [], manque: pain.manque };
   const bas = restants < SEUIL_FOURNEE;
-  // SANS BESOIN DE GOÛTERS, seule une recette qui finit les fruits mûrs a sa place.
-  const gouter = bas || murs.length ? candidats("gouter").find((c) => bas || c.fruits.length > 0) : undefined;
+  // SANS BESOIN DE GOÛTERS, seule une recette qui finit les fruits mûrs a sa
+  // place — et pas celle que le congélateur a déjà, ni celle de ces derniers
+  // jours (T146 : la compote relancée six jours sur sept, le congélo plein).
+  const gouter = bas || murs.length
+    ? candidats("gouter").find((c) => bas || (c.fruits.length > 0 && !c.deja && !c.recente))
+    : undefined;
   if (!gouter) return null;
-  return { plat: gouter.p, raison: gouter.fruits.length ? "fruits-murs" : "stock-bas", restants, fruits: gouter.fruits, manque: gouter.manque };
+  // T146 — LE MANQUE DU CONGÉLATEUR D'ABORD, dans la raison aussi : la ligne
+  // disait « les poires sont mûres » quand c'était le goûter qui manquait.
+  return { plat: gouter.p, raison: bas ? "stock-bas" : "fruits-murs", restants, fruits: gouter.fruits, manque: gouter.manque };
 }
 
 /* ═════════════════════════════════════════════════ les lignes calmes */

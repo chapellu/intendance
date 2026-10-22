@@ -4,10 +4,10 @@
 import { readFileSync } from "node:fs";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { lireCatalogue } from "../model/catalogue";
-import { platDuSoir, RESTE_DE_LA_VEILLE } from "../model/repas";
+import { partsDuMidi, platDuSoir, RESTE_DE_LA_VEILLE } from "../model/repas";
 import type { Catalogue, Plat } from "../model/types";
 import { journaliserCuisson } from "./journal";
-import { consommerLesRoutines } from "./routines";
+import { consommerLesRoutines, routinesDuJour } from "./routines";
 import { Base, type LotStock } from "./schema";
 
 const catalogue: Catalogue = lireCatalogue(JSON.parse(readFileSync("public/cuisine-data.json", "utf8")) as unknown);
@@ -61,5 +61,48 @@ describe("T144 — le lot du midi porte la date de son déjeuner", () => {
     await base.stock.add(lot({ type: "dahl-lentilles-corail", espace: "frigo", location: "frigo", born: "2026-10-25", midiLe: "2026-10-26", midi: 3 }));
     await journaliserCuisson(base, { jour: "2026-10-26", repas: "dejeuner", plat: plat(RESTE_DE_LA_VEILLE), parts: 3 });
     expect((await base.stock.toArray()).map((l) => l.type)).toEqual(["banana-bread"]);
+  });
+});
+
+describe("T146 — l'onglet resté ouvert mange quand même son pain", () => {
+  test("les routines passent à chaque nouveau jour, une seule fois par jour", async () => {
+    await base.stock.add({
+      type: "pain-de-mie-maison", kind: "reste-plat", location: "congelo", espace: "congelo",
+      band: "3-repas", qty: null, unite: null, born: "2026-10-20", origine: null, maj: 1,
+    } as LotStock);
+    const pain = async () => (await base.stock.toArray()).find((l) => l.type === "pain-de-mie-maison")?.band ?? null;
+    // Le 21 (premier jour des routines) et le 22 : deux matins.
+    await routinesDuJour(base, catalogue, new Date(2026, 9, 22, 7, 30));
+    expect(await pain()).toBe("1-repas");
+    // Le même jour, un autre écran : rien de plus.
+    await routinesDuJour(base, catalogue, new Date(2026, 9, 22, 19, 0));
+    expect(await pain()).toBe("1-repas");
+    // Le lendemain, SANS redémarrer : le dernier matin.
+    await routinesDuJour(base, catalogue, new Date(2026, 9, 23, 7, 30));
+    expect(await pain()).toBeNull();
+  });
+});
+
+describe("T146 — le midi sans geste prend sa part du reste au frigo", () => {
+  const reste = (o: Partial<LotStock>): LotStock =>
+    ({ type: "curry-pois-chiches", kind: "reste-plat", location: "frigo", espace: "frigo", band: "4-repas", qty: null, unite: null, born: "2026-10-25", origine: null, maj: 1, ...o }) as LotStock;
+  const bande = async () => (await base.stock.toArray()).find((l) => l.type === "curry-pois-chiches")?.band ?? null;
+
+  test("entamé au midi : il garde le reste, au prorata — ses boîtes suivent la bande", async () => {
+    await base.stock.add(reste({}));
+    // Lundi 11 h : le déjeuner n'est pas passé.
+    await routinesDuJour(base, catalogue, new Date(2026, 9, 26, 11, 0));
+    expect(await bande()).toBe("4-repas");
+    // Lundi 15 h, l'onglet toujours ouvert : le midi des quatre est mangé.
+    await routinesDuJour(base, catalogue, new Date(2026, 9, 26, 15, 0));
+    expect(await bande()).toBe(`${4 - partsDuMidi(catalogue.foyer)}-repas`);
+  });
+
+  test("un midi cuisiné ne prend rien au frigo", async () => {
+    await base.stock.add(reste({}));
+    const sec = catalogue.plats.find((p) => p.role === "plat" && p.creneaux.includes("dejeuner") && p.emits.length === 0 && p.accepts.length === 0)!;
+    await journaliserCuisson(base, { jour: "2026-10-26", repas: "dejeuner", plat: sec, parts: 3, foyer: catalogue.foyer });
+    await consommerLesRoutines(base, catalogue, new Date(2026, 9, 26, 15, 0));
+    expect(await bande()).toBe("4-repas");
   });
 });
