@@ -100,8 +100,15 @@ page.on("console", (m) => { if (m.type() === "error") erreurs.push(m.text().slic
 let taps = 0;
 const tap = async (loc) => { taps += 1; await loc.dispatchEvent("click"); };
 const texte = () => page.evaluate(() => document.body.innerText);
-const aller = async (route) => { await page.goto(`${URL}/#/${route}`); await page.waitForTimeout(250); };
+// T146 — on rallume le téléphone : l'onglet resté ouvert reçoit son
+// `visibilitychange`, comme au réel (un `goto` sur la même ancre ne redessine rien).
+const aller = async (route) => {
+  await page.evaluate(() => document.dispatchEvent(new Event("visibilitychange"))).catch(() => {});
+  await page.goto(`${URL}/#/${route}`); await page.waitForTimeout(250);
+};
 const attendre = async (sel, t = 15_000) => page.locator(sel).first().waitFor({ timeout: t });
+// Ce que l'écran montrait quand une attente a échoué : l'URL et le début du texte.
+const diag = async () => { try { return ` [${page.url().replace(/^.*#/, "#")}] ${(await texte()).slice(0, 220).replace(/\n/g, " / ")}`; } catch { return ""; } };
 const capture = async (nom) => { try { await page.screenshot({ path: `${OUT}/captures/${nom}.png`, fullPage: false }); } catch {} };
 
 async function ouvrirJour(j, heure = "07:30") {
@@ -120,7 +127,12 @@ const UNITE_RECETTE = new Map(), QTE_RECETTE = new Map();
 for (const p of cat.plats) for (const i of p.ingredients) {
   if (i.base || i.assaisonnement) continue;
   const id = cat.rayons.aliases?.[i.id] ?? i.id;
-  if (!UNITE_RECETTE.has(id)) UNITE_RECETTE.set(id, i.unit);
+  // T146 — LA MASSE GAGNE : la pomme de terre se dit à la pièce, en grammes
+  // ou en kilos selon la recette ; le grand livre la tient en grammes dès
+  // qu'une recette la pèse (run 9 : « 153 kg » de pommes de terre par an,
+  // des pièces additionnées à des kilos).
+  const u = /^kg$/i.test(i.unit ?? "") ? "g" : i.unit;
+  if (!UNITE_RECETTE.has(id) || (u === "g" && UNITE_RECETTE.get(id) !== "g")) UNITE_RECETTE.set(id, u);
   QTE_RECETTE.set(id, Math.max(QTE_RECETTE.get(id) ?? 0, i.qty ?? 0));
 }
 const UNITE_FOND = new Map((cat.fond?.denrees ?? []).map((d) => [d.ingredient, d.unite ?? ""]));
@@ -138,7 +150,9 @@ function parUniteDuFond(id) {
 }
 function acheter(nom, q, j) {
   const id = idParNom.get(norm(nom)) ?? norm(nom);
-  const m = /([\d.,]+)\s*(kg|g|l|cl|ml)?/i.exec(q ?? "");
+  // « 2 boîtes (570 g) » (T140) : le poids entre parenthèses fait foi — lu
+  // « 2 », le monde rentrait deux grammes de thon.
+  const m = /\(([\d.,]+)\s*(kg|g|l|cl|ml)\)/i.exec(q ?? "") ?? /([\d.,]+)\s*(kg|g|l|cl|ml)?/i.exec(q ?? "");
   let qte = m ? parseFloat(m[1].replace(",", ".")) : 1;
   const u = (m?.[2] ?? "u").toLowerCase();
   if (u === "kg" || u === "l") qte *= 1000; if (u === "cl") qte *= 10;
@@ -168,7 +182,7 @@ function consommer(plat, parts, repas = "diner", midi = 0) {
     if (i.base || toujours.has(i.id)) continue;
     const r = etat.reel[i.id];
     if (!r) continue;
-    const pris = Math.min(r.q, (i.qty ?? 0) * Math.min(f, 2));
+    const pris = Math.min(r.q, enUniteDuLivre(i.id, i.qty ?? 0, i.unit) * Math.min(f, 2));
     r.q -= pris;
     compter(repas, i.id, pris, midi > 0 ? midi / parts : 0);
   }
@@ -382,7 +396,7 @@ async function reglerParts(j, voulu, stats) {
 /** Cuisiner le premier posé, du guide à la sortie. */
 // `repas` : à quel repas le grand livre compte les ingrédients ; `midi` : les
 // parts d'un dîner agrandi pour demain midi (T142) ; `fournee` : les sachets.
-async function cuisiner(j, ev, stats, { autrement = false, parts = 2.75, deja = null, repas = "diner", midi = 0, fournee = false } = {}) {
+async function cuisiner(j, ev, stats, { autrement = false, parts = 2.75, deja = null, repas = "diner", midi = 0, fournee = false, voulu = null } = {}) {
   let p0;
   if (deja) {
     // T128/T129 : « Je lance ça » a posé le plat ET ouvert sa fiche — on y est.
@@ -391,8 +405,11 @@ async function cuisiner(j, ev, stats, { autrement = false, parts = 2.75, deja = 
   } else {
     const poses = await lirePoses();
     if (!poses.length) return null;
-    p0 = poses[0];
-    await tap(page.locator(".co-lot").first().getByRole("link", { name: "Voir la recette" }));
+    // Le posé qu'on est venu cuisiner, pas le premier de la liste : celle-ci
+    // porte aussi le « Reste réchauffé » de demain midi (run 9, 09/01).
+    const k = voulu ? Math.max(0, poses.findIndex((x) => x.titre === voulu)) : 0;
+    p0 = poses[k];
+    await tap(page.locator(".co-lot").nth(k).getByRole("link", { name: "Voir la recette" }));
     await attendre(".co-fiche-tete", 20_000);
   }
   const ouvrir = page.getByRole("button", { name: /Ouvrir le guide|Cuisiner ce plat/ });
@@ -448,20 +465,31 @@ async function cuisiner(j, ev, stats, { autrement = false, parts = 2.75, deja = 
     const ou = autrement ? "Frigo" : (m?.[1] ?? "Frigo");
     const boites = boitesDuLot(l.tout, ou);
     const sachet = !boites && /\bsacs?\b/i.test(l.tout);
-    // T142 — « Frigo · 1 repas » : UN REPAS DU FOYER, soit un midi des quatre
-    // (PARTS_MIDI parts), un goûter ou un matin pour un lot de la fournée.
+    // « Frigo · 1 repas » : UNE PART pour l'app (`band`, que `rangerDans`
+    // range à deux par boîte et dont le midi retire `partsDuMidi`), un goûter
+    // ou un matin pour un lot de la fournée. T142 le lisait « un midi des
+    // quatre » (×PARTS_MIDI) : le monde gardait trois fois les restes de
+    // l'app, et le midi prévu revenait le surlendemain (run 10, 12/11).
     const nRepas = /(\d+(?:,\d+)?)\s*repas/.exec(l.nom)?.[1];
-    if (nRepas) portions = parseFloat(nRepas.replace(",", ".")) * ((plat?.emits ?? []).some((e) => TYPES_GOUTER.has(e.type) || TYPES_PAIN.has(e.type)) ? 1 : PARTS_MIDI);
-    etat.restes.push({ plat: p0.titre, types: (plat?.emits ?? []).map((e) => e.type), ou, portions, le: j, garde: parseInt(l.garde) || (m?.[1] === "Frigo" ? 3 : 90), quoi: l.nom, tout: l.tout.slice(0, 160), sachet, boites, repas });
+    if (nRepas) portions = parseFloat(nRepas.replace(",", "."));
+    // « Congélo · 350 g » d'un pain : la sortie dit le poids, la recette dit
+    // les matins (`band: 3-repas`). Lu « 2 parts », le monde mangeait quatre
+    // matins là où l'app en comptait six (run 10).
+    else {
+      const routineEmit = (plat?.emits ?? []).find((e) => (TYPES_GOUTER.has(e.type) || TYPES_PAIN.has(e.type)) && (e.congelo ? ou !== "Frigo" : ou === "Frigo"));
+      const band = parseFloat(routineEmit?.band ?? "");
+      if (band > 0) portions = band;
+    }
+    etat.restes.push({ plat: p0.titre, types: (plat?.emits ?? []).map((e) => e.type), ou, portions, le: j, garde: parseInt(l.garde) || (m?.[1] === "Frigo" ? 3 : 90), quoi: l.nom, tout: l.tout.slice(0, 160), sachet, boites, repas, portions0: portions });
   }
   // T142 — le reste du midi : le lot que la sortie dit « déjeuner de demain »,
   // sinon le plus gros lot du frigo de ce soir. Au moins les parts mises de côté.
   if (midi > 0) {
     const ceSoir = etat.restes.filter((r) => r.le === j && r.plat === p0.titre && !r.jete);
     const r = ceSoir.find((x) => /demain/.test(x.tout ?? "")) ?? ceSoir.filter((x) => x.ou === "Frigo").sort((a, b) => b.portions - a.portions)[0];
-    if (r) { r.midi = true; r.portions = Math.max(r.portions, midi); }
+    if (r) { r.midi = true; r.portions = Math.max(r.portions, midi); r.portions0 = r.portions; }
     else {
-      etat.restes.push({ plat: p0.titre, types: [plat?.id ?? p0.titre], ou: "Frigo", portions: midi, le: j, garde: 2, quoi: "déjeuner de demain (hors sortie)", sachet: false, boites: Math.ceil(midi), midi: true, repas });
+      etat.restes.push({ plat: p0.titre, types: [plat?.id ?? p0.titre], ou: "Frigo", portions: midi, le: j, garde: 2, quoi: "déjeuner de demain (hors sortie)", sachet: false, boites: Math.ceil(midi), midi: true, repas, portions0: midi });
       note(j, "midi", `« ${p0.titre} » agrandi pour demain midi, mais la sortie ne range aucun lot au frigo : ${lots.map((l) => l.tout).join(" ; ").slice(0, 200)}`);
     }
   }
@@ -747,6 +775,8 @@ function lireAchats(t) {
   const noms = m[1].split(/, | et /);
   return { n: noms.length, noms };
 }
+/** Les manques réels du jour, pour le diagnostic de fin de journée. */
+const MANQUE_REEL = new Map();
 /** Les règles du foyer, appliquées à une carte du soir. */
 function juger(c, j, ev) {
   const p = platParTitre.get(c.titre);
@@ -773,6 +803,7 @@ function juger(c, j, ev) {
       pourquoi.push(`manque réel : ${noms.join(", ")}`);
       note(j, "manque réel", `${c.titre} : ${noms.join(", ")} à zéro dans la cuisine, alors que la carte disait « ${c.achats.n ? c.achats.noms.join(", ") : "rien à acheter"} »`);
       etat.compte.manquesReels = (etat.compte.manquesReels ?? 0) + 1;
+      MANQUE_REEL.set(j, [...new Set([...(MANQUE_REEL.get(j) ?? []), ...noms])]);
     }
   }
   return pourquoi;
@@ -874,11 +905,14 @@ async function pauseDe15hUneFois(j, ev, stats) {
 const PARTS_MIDI = cat.foyer.mangeurs.reduce((n, m) => (m.parts > 0 ? n + Math.max(m.parts, 0.5) : n), 0);
 const BOITES = cat.foyer.contenants.filter((c) => c.portions > 0 && !c.consommable && c.espaces.includes("frigo")).reduce((n, c) => n + c.nombre, 0);
 const POIDS_PIECE = { pommes: 150, poires: 150, banane: 120 };
+const ALIAS_LIVRE = cat.rayons?.aliases ?? {};
 const routine = (r) => cat.plats.find((p) => p.id === cat.creneaux.routines?.[r]?.recette);
 const TYPES_GOUTER = new Set(cat.creneaux.routines?.gouter?.du_depot?.types ?? []);
 const TYPES_PAIN = new Set(cat.creneaux.routines?.["petit-dejeuner"]?.du_depot?.types ?? []);
 /** Une quantité de recette, dans l'unité du grand livre pour cet id. */
 function enUniteDuLivre(id, q, unit) {
+  id = ALIAS_LIVRE[id] ?? id;
+  if (/^kg$/i.test(unit ?? "")) { q *= 1000; unit = "g"; }
   const lu = UNITE_RECETTE.get(id) ?? unit;
   if (lu === unit) return q;
   const p = POIDS_PIECE[id] ?? 150;
@@ -906,10 +940,15 @@ function boitesDuLot(tout, ou) {
   const n = /(\d+)\s*×\s*bo[iî]tes?/i.exec(t);
   if (n) return +n[1];
   if (/\bsacs?\b/i.test(t)) return 0;
+  // « il manque 2 × boîtes… : sacs congélation ? » sans boîte attribuée : le
+  // lot part en sac — il n'en occupe aucune (run 10 : « -1 libres »).
+  if (/il manque \d+\s*×\s*bo[iî]tes/i.test(tout ?? "")) return 0;
   return ou === "Frigo" ? 1 : 0;
 }
 const vivants = () => etat.restes.filter((r) => !r.jete && r.portions > 0);
-const boitesOccupees = () => vivants().reduce((n, r) => n + (r.boites ?? 0), 0);
+// Un reste entamé libère ses boîtes au prorata : deux parts mangées sur quatre
+// rangées en deux boîtes, c'est une boîte lavée (le monde réel, run 9 : « -1 libres »).
+const boitesOccupees = () => vivants().reduce((n, r) => n + (r.boites ? Math.ceil(r.boites * Math.min(1, r.portions / (r.portions0 || r.portions)) - 1e-9) : 0), 0);
 const estUnRepas = (r) => { const p = platParTitre.get(r.plat); return !DESSERT.test(r.plat) && !(r.types ?? []).some((t) => TYPES_GOUTER.has(t) || TYPES_PAIN.has(t)) && (!p || (p.role ?? "plat") === "plat"); };
 function manqueRepas(j, type, quoi, stats) {
   etat.compte[type === "petit-dej" ? "manquesPetitDej" : "manquesGouter"] = (etat.compte[type === "petit-dej" ? "manquesPetitDej" : "manquesGouter"] ?? 0) + 1;
@@ -922,7 +961,13 @@ async function lireRepas() {
   return page.evaluate(() => Object.fromEntries([...document.querySelectorAll(".co-repas [data-repas]")].map((e) => [e.dataset.repas, { texte: e.textContent.trim(), lien: !!e.querySelector("a") }])));
 }
 /** Le grand livre a-t-il tout ce que le plat demande (hors bases et placard) ? */
-const ceQuiManque = (p) => [...new Set(p.ingredients.filter((i) => !i.base && !i.assaisonnement && !toujours.has(i.id) && !((etat.reel[i.id]?.q ?? 0) > 0)).map((i) => i.id))];
+const ceQuiManque = (p) => {
+  const m = [...new Set(p.ingredients.filter((i) => !i.base && !i.assaisonnement && !toujours.has(i.id) && !((etat.reel[i.id]?.q ?? 0) > 0)).map((i) => i.id))];
+  // La compote se fait de pommes OU de poires (T144) : un des deux suffit.
+  const compote = ["pommes", "poires"];
+  if (compote.every((f) => p.ingredients.some((i) => i.id === f)) && compote.some((f) => (etat.reel[f]?.q ?? 0) > 0)) return m.filter((x) => !compote.includes(x));
+  return m;
+};
 
 /** Le petit-déjeuner des enfants : la recette du foyer, plus une tranche de pain maison. */
 function petitDejeuner(j, stats) {
@@ -973,6 +1018,8 @@ async function dejeuner(j, ev, stats) {
   if (prevu) {
     const pris = Math.min(prevu.portions, PARTS_MIDI);
     prevu.portions -= pris; if (prevu.portions <= 0) prevu.mangeLe = j;
+    // Son midi est passé : ce qui reste est un reste ordinaire, plus « le midi prévu ».
+    prevu.midi = false;
     etat.compte.restesManges++; stats.midi = `reste prévu : ${prevu.plat} (${pris} parts)`;
     if (!/reste/.test(lignes.dejeuner?.texte ?? "")) note(j, "midi", `le reste prévu (« ${prevu.plat} ») est au frigo, mais le cockpit dit « ${lignes.dejeuner?.texte ?? "rien"} »`);
     return source("reste-prevu");
@@ -993,12 +1040,38 @@ async function dejeuner(j, ev, stats) {
       const url = page.url();
       await tap(page.locator(".co-repas [data-repas='dejeuner'] a"));
       await page.waitForURL((u) => u.toString() !== url, { timeout: 10_000 }).catch(() => {});
-      const t = await cuisiner(j, ev, stats, { parts: PARTS_MIDI, deja: p.titre, repas: "midi" }).catch((e) => { note(j, "midi", `cuisiner « ${p.titre} » depuis la ligne du midi : ${String(e).slice(0, 160)}`); return null; });
+      const t = await cuisiner(j, ev, stats, { parts: PARTS_MIDI, deja: p.titre, repas: "midi" }).catch(async (e) => { note(j, "midi", `cuisiner « ${p.titre} » depuis la ligne du midi : ${String(e).slice(0, 90)}${await diag()}`); return null; });
       if (t) { stats.midi = `Chioca : ${t}`; return source("chioca"); }
     } else { stats.midiRefus = `${p.titre} — manque réel : ${manque.join(", ")}`; etat.compte.chiocaSansStock = (etat.compte.chiocaSansStock ?? 0) + 1; }
   } else if (m) note(j, "midi", `la ligne du midi nomme « ${m[1]} », introuvable au catalogue`);
   stats.midi = "sandwich, hors app";
   return source("sandwich");
+}
+
+/**
+ * T146 — LE RELEVÉ DU CATALOGUE EST UN FAIT DU MONDE. L'app part de lui (son
+ * amorce), et celui du 21/10 regagne ses zones à sa date (T143) : 1 kg de
+ * spaghetti et deux demi-paquets, du riz, des pommes de terre que le monde du
+ * harnais n'avait jamais eus — « pâtes à zéro » quand la carte disait « rien à
+ * acheter » (run 9). Le premier jour, le monde prend tout le relevé ; à la date
+ * d'une zone, ce qu'elle porte redevient la vérité. Le demi-paquet sans poids
+ * vaut un demi-paquet du fond, comme dans l'app.
+ */
+function adopterLeReleve(j, premier) {
+  const g = cat.gardeManger;
+  if (!g?.denrees) return;
+  const zones = new Set((g.zones ?? []).filter((z) => premier || (z.releve ?? g.releve) === j).map((z) => z.id));
+  if (!zones.size) return;
+  const q = {};
+  for (const d of g.denrees) {
+    if (!zones.has(d.zone)) continue;
+    const id = d.ingredient;
+    const paquet = d.parUnite ? enUniteDuLivre(id, d.parUnite.amount, d.parUnite.unit) : (parUniteDuFond(id) ?? (QTE_RECETTE.get(ALIAS_LIVRE[id] ?? id) || 1) * 2);
+    const n = d.etat === "entame" && !d.parUnite ? Math.max(0.5, d.unites - 0.5) : d.unites;
+    q[id] = (q[id] ?? 0) + n * paquet;
+  }
+  for (const [id, v] of Object.entries(q)) etat.reel[id] = { q: v, achete: v, le: j, frais: FRAIS.test(rayonDe.get(id) ?? "") };
+  if (!premier) note(j, "releve", `le relevé du catalogue regagne ${zones.size} zones : ${Object.keys(q).length} denrées remises à ce qu'il dit`);
 }
 
 /** La fournée de 15 h, quand le cockpit la propose et que la cuisine a tout. */
@@ -1129,6 +1202,7 @@ async function journee2(idx) {
   }
 
   if (idx === 0) await poserFond(j);
+  adopterLeReleve(j, idx === 0);
   // Les jours de courses, les courses du matin, avant toute décision. LE FOND NE SE
   // RECHARGE QUE PAR LA LISTE DE L'APP (T134) : aucun réassort côté harnais.
   if (!absent && [3, 6].includes(dow)) { await page.clock.setFixedTime(new Date(`${j}T10:00:00`)); await courses(j, ev, stats); stats.coursesDuMatin = stats.articles; }
@@ -1144,7 +1218,7 @@ async function journee2(idx) {
 
     // 15 h : la pause. La fournée d'abord si l'app la propose, puis le dîner.
     await page.clock.setFixedTime(new Date(`${j}T15:00:00`));
-    await fourneeDe15h(j, ev, stats).catch((e) => note(j, "fournee", `crash : ${String(e).slice(0, 200)}`));
+    await fourneeDe15h(j, ev, stats).catch(async (e) => note(j, "fournee", `crash : ${String(e).slice(0, 90)}${await diag()}`));
     const dehors = ev.some((e) => e.type === "dehors"), malade = ev.some((e) => e.type === "malade");
     if (dehors) stats.diner = "dehors";
     else if (malade) stats.diner = "pâtes (malade)";
@@ -1196,7 +1270,7 @@ async function journee2(idx) {
           etat.compte.midiBoitesPleines = (etat.compte.midiBoitesPleines ?? 0) + 1;
           note(j, "boites", `pas de midi demain : « ${/Boîtes pleines.*?seulement/.exec(phrase)[0]} » (${BOITES - boitesOccupees()} libres au réel)`);
         } else stats.midiPrevu = "non";
-        const t = await cuisiner(j, ev, stats, { autrement: ev.some((e) => e.type === "rate") || hasard() < 0.05, parts: invite?.parts ?? 2.5, deja: detour || pris.par === "posé" ? null : pris.titre, midi });
+        const t = await cuisiner(j, ev, stats, { autrement: ev.some((e) => e.type === "rate") || hasard() < 0.05, parts: invite?.parts ?? 2.5, deja: detour || pris.par === "posé" ? null : pris.titre, midi, voulu: pris.titre });
         stats.diner = t ?? "rien";
         if (t) { etat.recents = [...etat.recents.slice(-10), t]; etat.manges = [...(etat.manges ?? []).slice(-20), { t, j }]; }
       }
@@ -1236,6 +1310,18 @@ async function journee2(idx) {
     };
   }
   if (idx % 30 === 0 || ev.length) { await aller("cuisine/stock"); await page.waitForTimeout(800); await capture(`${j}-stock`); await aller("cockpit"); await page.waitForTimeout(600); await capture(`${j}-cockpit`); }
+  // Un manque réel : ce que l'écran Stock de l'app croit en avoir, pour
+  // dire d'où vient l'écart (quantité, unité, relevé).
+  stats.manqueReel = MANQUE_REEL.get(j);
+  if (stats.manqueReel?.length) {
+    await aller("cuisine/stock"); await page.waitForTimeout(800);
+    const lignes = (await texte()).split("\n");
+    stats.manqueReelApp = stats.manqueReel.map((id) => {
+      const mot = norm(id).split(" ")[0].slice(0, 5);
+      return `${id} (réel ${Math.round((etat.reel[id]?.q ?? 0) * 10) / 10}) : ${lignes.filter((l) => norm(l).includes(mot)).slice(0, 3).join(" / ").slice(0, 160) || "absent de l'écran"}`;
+    });
+    await aller("cockpit");
+  }
   stats.taps = taps; stats.secondes = Math.round((Date.now() - t0) / 1000);
   if (erreurs.length) stats.erreurs = [...new Set(erreurs)].slice(0, 5);
   appendFileSync(JOURNAL, JSON.stringify(stats) + "\n");
