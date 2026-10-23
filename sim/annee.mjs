@@ -138,9 +138,12 @@ for (const p of cat.plats) for (const i of p.ingredients) {
   // ou en kilos selon la recette ; le grand livre la tient en grammes dès
   // qu'une recette la pèse (run 9 : « 153 kg » de pommes de terre par an,
   // des pièces additionnées à des kilos).
-  const u = /^kg$/i.test(i.unit ?? "") ? "g" : i.unit;
+  // T157 — LE CENTILITRE EST UN MILLILITRE ×10 : le lait de coco se dit « 40 cl »
+  // au curry et « 400 ml » au dahl. Le grand livre le tenait en cl et lisait
+  // les 400 ml du dahl comme 400 cl — 84 L de lait de coco sur l'année n° 11.
+  const u = /^kg$/i.test(i.unit ?? "") ? "g" : /^cl$/i.test(i.unit ?? "") ? "ml" : i.unit;
   if (!UNITE_RECETTE.has(id) || (u === "g" && UNITE_RECETTE.get(id) !== "g")) UNITE_RECETTE.set(id, u);
-  QTE_RECETTE.set(id, Math.max(QTE_RECETTE.get(id) ?? 0, i.qty ?? 0));
+  QTE_RECETTE.set(id, Math.max(QTE_RECETTE.get(id) ?? 0, (i.qty ?? 0) * (/^cl$/i.test(i.unit ?? "") ? 10 : 1)));
 }
 const UNITE_FOND = new Map((cat.fond?.denrees ?? []).map((d) => [d.ingredient, d.unite ?? ""]));
 function parUniteDuFond(id) {
@@ -148,8 +151,8 @@ function parUniteDuFond(id) {
   const typ = QTE_RECETTE.get(id) || 1;
   const enMasse = /^(g|ml)$/.test(UNITE_RECETTE.get(id) ?? "");
   // « brique de 1 L » : un litre, pas « 1 » — sans quoi la brique de lait valait 1 ml.
-  const l = /(\d+(?:[.,]\d+)?)\s*(l|cl)\b/i.exec(u);
-  if (l && enMasse) return parseFloat(l[1].replace(",", ".")) * (/^cl$/i.test(l[2]) ? 10 : 1000);
+  const l = /(\d+(?:[.,]\d+)?)\s*(l|cl|ml)\b/i.exec(u);
+  if (l && enMasse) return parseFloat(l[1].replace(",", ".")) * ({ cl: 10, ml: 1 }[l[2].toLowerCase()] ?? 1000);
   const g = /(\d+(?:[.,]\d+)?)\s*(kg|g)\b/.exec(u);
   if (g) { const grammes = parseFloat(g[1].replace(",", ".")) * (g[2] === "kg" ? 1000 : 1); return enMasse ? grammes : Math.max(1, Math.round(grammes / 150)); }
   const n = /de (\d+)\b/.exec(u); if (n) return +n[1];
