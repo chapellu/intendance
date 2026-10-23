@@ -48,7 +48,7 @@ export const partsDuMidi = (foyer: Pick<Foyer, "mangeurs">): number =>
 /** Ce que demain midi peut prendre au dîner de ce soir. */
 export type MidiDeDemain =
   /** Le dîner s'agrandit de `parts`, rangées dans `boites` boîtes. */
-  | { etat: "oui"; midi: number; parts: number; boites: number; label: string }
+  | { etat: "oui"; midi: number; parts: number; boites: number; label: string; auFrigo?: number }
   /** Il y aurait un midi à prendre, mais pas assez de boîtes propres. */
   | { etat: "boites-pleines"; midi: number; parts: number; libres: number }
   /** Demain midi porte déjà un plat : on n'y touche pas. */
@@ -74,6 +74,9 @@ export function midiDeDemain(
   jeu: Pick<Jeu, "catalogue" | "creneaux" | "choix" | "parts" | "plats" | "midi" | "deLaVeille">,
   plat: Plat,
   libres?: ReadonlyMap<string, number>,
+  /** T155 — les parts que le frigo tiendra encore demain midi
+   *  (`partsAuFrigoDemain`) : le dîner ne s'agrandit que du reste. */
+  auFrigo = 0,
 ): MidiDeDemain {
   const foyer = jeu.catalogue.foyer;
   const midi = jeu.creneaux.findIndex((c) => c.jour === 1 && c.repas === "dejeuner");
@@ -84,7 +87,14 @@ export function midiDeDemain(
   const pose = jeu.choix[midi] ?? null;
   if (joue(pose) && !(pose === RESTE_DE_LA_VEILLE && jeu.deLaVeille?.[midi])) return { etat: "deja-pose", midi };
 
-  const parts = partsDuMidi(foyer);
+  // T155 — LE FRIGO D'ABORD. L'année simulée n° 11 : 46 restes jetés (8 la
+  // n° 10). Le dîner s'agrandissait des trois parts du midi, le midi prenait
+  // ce lot-là, et la part que le dîner de la veille laissait (« Frigo · 1
+  // repas ») n'avait plus de preneur. Le dîner ne s'agrandit plus que de ce
+  // qui manque au midi une fois le frigo compté ; le midi prend les deux
+  // (`midisDuFrigo`). Le frigo suffit : rien à agrandir.
+  const parts = Math.round((partsDuMidi(foyer) - auFrigo) * 100) / 100;
+  if (parts < 0.5 - 1e-9) return { etat: "non" };
   // LA MARMITE AUSSI EST FINIE : un lot agrandi qui déborde de la cocotte ne se
   // cuisine pas, quoi qu'en disent les boîtes (même règle que `gamelles`).
   const soir = jeu.creneaux.findIndex((c) => c.jour === 0 && c.repas === "diner");
@@ -98,7 +108,20 @@ export function midiDeDemain(
       .reduce((n, c) => n + (libres?.get(c.id) ?? c.nombre), 0);
     return { etat: "boites-pleines", midi, parts, libres: dispo };
   }
-  return { etat: "oui", midi, parts, ...boites };
+  return { etat: "oui", midi, parts, ...boites, ...(auFrigo > 1e-9 ? { auFrigo } : {}) };
+}
+
+/**
+ * Les parts de reste que le frigo tiendra encore demain midi — T155.
+ *
+ * Ce que le midi sans geste prendra (`midisDuFrigo`) : les restes de plat du
+ * frigo, hors routines et hors midi déjà prévu, encore bons demain à midi.
+ */
+export function partsAuFrigoDemain(catalogue: Catalogue, stock: readonly LotInitial[], maintenant: Date): number {
+  const demain = new Date(maintenant.getFullYear(), maintenant.getMonth(), maintenant.getDate() + 1, 12);
+  const ok = auMidi(typesDesRoutines(catalogue), isoDuJour(demain));
+  const depot = new Depot(horlogesDu(catalogue), stock);
+  return stock.reduce((n, l, i) => (ok(l) && !depot.perime(depot.initiales[i]!, demain) ? n + bandRepas(l.qty_band) : n), 0);
 }
 
 const pourLeMidi = (c: Contenant): boolean => c.portions > 0 && !c.consommable && c.espaces.includes("frigo");
@@ -301,7 +324,10 @@ export function midisDuFrigo(
   lots: readonly { id?: number; type: string; kind?: string; band: string; born: string; location?: string; midiLe?: string }[],
   jours: readonly string[],
   cuits: ReadonlySet<string>,
-  prevus: ReadonlySet<string>,
+  /** Les midis prévus au dîner de la veille, et leurs parts — T155 : un midi
+   *  prévu plus petit que le midi des quatre prend le reste au frigo. Un
+   *  `Set` (T146) les dit complets. */
+  prevus: ReadonlySet<string> | ReadonlyMap<string, number>,
 ): Prise[] {
   const routine = typesDesRoutines(catalogue);
   const parts = partsDuMidi(catalogue.foyer);
@@ -312,12 +338,20 @@ export function midisDuFrigo(
   for (const l of frigo) reste.set(l.id, bandRepas(l.band));
   const touches = new Set<number>();
   for (const j of jours) {
-    if (cuits.has(j) || prevus.has(j)) continue;
+    if (cuits.has(j)) continue;
+    const prevu = prevus instanceof Map ? prevus.get(j) : prevus.has(j) ? parts : undefined;
+    // T155 — PLUSIEURS LOTS S'IL LE FAUT, le plus ancien d'abord : une part
+    // d'hier et deux d'avant-hier font le midi des quatre.
+    let besoin = parts - (prevu ?? 0);
     const ok = auMidi(routine, j);
-    const l = frigo.find((x) => ok(x) && reste.get(x.id)! > 1e-9);
-    if (!l) continue;
-    reste.set(l.id, Math.max(0, reste.get(l.id)! - parts));
-    touches.add(l.id);
+    for (const l of frigo) {
+      if (besoin <= 1e-9) break;
+      if (!ok(l) || reste.get(l.id)! <= 1e-9) continue;
+      const pris = Math.min(besoin, reste.get(l.id)!);
+      reste.set(l.id, reste.get(l.id)! - pris);
+      besoin -= pris;
+      touches.add(l.id);
+    }
   }
   return [...touches].map((id) => {
     const n = reste.get(id)!;

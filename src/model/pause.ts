@@ -43,7 +43,7 @@
 // règle du dépôt : on n'enlève pas une proposition pour une lacune, on
 // l'annonce —, on le range là où il ne coûte pas un refus.
 
-import { dejeunerDuStock, fourneeAProposer, fruitsAuDelaDuGouter, fruitsMurs, midiDeDemain, type DejeunerDuStock, type Fournee, type MidiDeDemain } from "./repas";
+import { dejeunerDuStock, fourneeAProposer, fruitsAuDelaDuGouter, fruitsMurs, partsAuFrigoDemain, midiDeDemain, type DejeunerDuStock, type Fournee, type MidiDeDemain } from "./repas";
 import { marque, SEUIL_A_MANGER } from "./axe";
 import { Depot, horlogesDu, type LigneDepot, type LotInitial } from "./depot";
 import { ceQuiEstIci, ceQuiManque, ceQueLaCarteDitIci, type Article } from "./ici";
@@ -505,6 +505,9 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
   const date = jour0.date;
   const iso = isoLocal(maintenant);
   const ici = ceQuiEstIci(catalogue, jeu.gardeManger, savoir.rejeu, iso);
+  // T155 — ce que le frigo tiendra encore demain midi : le dîner ne s'agrandit
+  // que du reste (`midiDeDemain`).
+  const auFrigo = partsAuFrigoDemain(catalogue, jeu.stock, maintenant);
   const fenetre = heureDuDiner() - minuteDuJour(maintenant);
   const mois = maintenant.getMonth() + 1;
 
@@ -605,7 +608,7 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
       pret: minuteDuJour(maintenant) + duree,
       recent,
       score: Math.round(score * 10) / 10,
-      midi: midiDeDemain(jeu, p, e.libres),
+      midi: midiDeDemain(jeu, p, e.libres, auFrigo),
     });
   }
 

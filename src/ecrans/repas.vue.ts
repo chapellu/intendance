@@ -17,7 +17,9 @@ import type { Route } from "../nav/routes";
 
 /** « + le déjeuner de demain, 3 boîtes » — la ligne de la carte du soir. */
 export function phraseDuMidi(m: MidiDeDemain): string | null {
-  if (m.etat === "oui") return `+ le déjeuner de demain, ${m.boites} boîte${m.boites > 1 ? "s" : ""}`;
+  // T155 — le frigo complète : la ligne le dit, pour qu'on n'oublie pas sa boîte.
+  if (m.etat === "oui")
+    return `+ le déjeuner de demain, ${m.boites} boîte${m.boites > 1 ? "s" : ""}${m.auFrigo ? ", avec le reste du frigo" : ""}`;
   if (m.etat === "boites-pleines")
     return m.libres
       ? `Boîtes pleines (${m.libres} libre${m.libres > 1 ? "s" : ""}) : ce soir seulement`

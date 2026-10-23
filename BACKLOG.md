@@ -5700,3 +5700,18 @@ note « boîtes ») — avant / après : « Boîtes pleines » 28 / 5, dont avec
 boîtes libres ou plus au réel 25 / 0 ; goûters sans pomme 23 / 3 ; matins
 sans beurre 6 / 1 ; gaspillage 1,4 / 0,9 kg ; midis sur le reste prévu
 13 / 37, sandwichs 7 / 2.
+
+## L'année simulée n° 11 — T155 à T157
+
+- [x] **T155 — Les restes d'une part pourrissaient (46 jetés, 8 l'année
+      n° 10).** T151 l'avait laissé ouvert : depuis T148 le midi se prévoit
+      presque chaque soir, le dîner s'agrandissait des trois parts du midi, le
+      midi prenait ce lot-là, et la part laissée par le dîner de la veille
+      n'avait plus de preneur. `midiDeDemain` reçoit ce que le frigo tiendra
+      encore demain midi (`partsAuFrigoDemain` : restes de plat, hors
+      routines, hors midi prévu, pas périmés demain) et n'agrandit le dîner
+      que du reste — rien si le frigo suffit ; la carte dit « avec le reste du
+      frigo ». Le midi passé complète un midi prévu plus petit au frigo, sur
+      plusieurs lots s'il le faut (`midisDuFrigo`, les midis prévus avec leurs
+      parts). Le harnais lit la même phrase et complète le midi de la même
+      façon (commit à part). Tenu par `repas.test.ts`.

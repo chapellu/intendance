@@ -20,6 +20,7 @@ import {
   fruitsAuDelaDuGouter,
   lotsEnBoites,
   midisDuFrigo,
+  partsAuFrigoDemain,
   resteDuFrigoAuMidi,
   matinsDePain,
   midisPasses,
@@ -564,5 +565,37 @@ describe("T146 — le midi sans geste et le reste qu'il prend", () => {
     expect(midisDuFrigo(catalogue, stock, ["2026-10-25"], new Set(["2026-10-25"]), new Set())).toEqual([]);
     expect(midisDuFrigo(catalogue, stock, ["2026-10-25"], new Set(), new Set(["2026-10-25"]))).toEqual([]);
     expect(midisDuFrigo(catalogue, stock, ["2026-10-25", "2026-10-26"], new Set(), new Set())).toEqual([{ id: 1, band: null }]);
+  });
+});
+
+// T155 — L'ANNÉE N° 11 : 46 RESTES JETÉS. Le dîner s'agrandissait des parts du
+// midi quand le frigo tenait déjà une part d'hier, et celle-ci pourrissait.
+describe("T155 — le dîner s'agrandit du midi moins ce que le frigo tient", () => {
+  const p = partsDuMidi(catalogue.foyer);
+  const part = (o: Partial<LotInitial>): LotInitial =>
+    ({ type: "gratin-pates", kind: "reste-plat", qty: null, qty_band: "1-repas", born: "2026-10-25", location: "frigo", ...o });
+
+  test("une part au frigo : le dîner ne prend que le reste du midi, et la carte le dit", () => {
+    const m = midiDeDemain(jeuDuLundi(), plat("dahl-lentilles-corail"), undefined, 1);
+    expect(m).toMatchObject({ etat: "oui", parts: p - 1, auFrigo: 1 });
+    expect(phraseDuMidi(m)).toMatch(/avec le reste du frigo$/);
+    expect(midiDeDemain(jeuDuLundi(), plat("dahl-lentilles-corail"), undefined, p).etat).toBe("non");
+  });
+
+  test("ce que le frigo tiendra demain : ni routine, ni midi prévu, ni périmé, ni congélo", () => {
+    const stock = [
+      part({}),
+      part({ type: "compote-maison" }),
+      part({ type: "hachis", midiLe: "2026-10-27", midi: 3, qty_band: "3-repas" }),
+      part({ type: "soupe", born: "2026-10-10" }),
+      part({ type: "curry", location: "congelo" }),
+    ];
+    expect(partsAuFrigoDemain(catalogue, stock, LUNDI)).toBe(1);
+  });
+
+  test("un midi prévu de deux parts prend la troisième au frigo", () => {
+    const stock = [{ id: 1, type: "gratin", kind: "reste-plat", band: "1-repas", born: "2026-10-24", location: "frigo" }];
+    expect(midisDuFrigo(catalogue, stock, ["2026-10-26"], new Set(), new Map([["2026-10-26", p - 1]]))).toEqual([{ id: 1, band: null }]);
+    expect(midisDuFrigo(catalogue, stock, ["2026-10-26"], new Set(), new Map([["2026-10-26", p]]))).toEqual([]);
   });
 });
