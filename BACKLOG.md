@@ -5596,3 +5596,18 @@ parti.
       en sacs, les quatre boîtes au frigo. Tenu par `repas.test.ts` (la
       bolognaise du 20/07 et les lentilles cuites au congélo, un gratin au
       frigo → trois boîtes libres, le midi se prend) et `sortie.vue.test.ts`.
+- [x] **T149 — Les goûters sans pomme.** 143 goûters sur l'année n° 10. Trois
+      causes, dans l'app. **La pomme à la pièce** : le goûter en retire une
+      (`gouter-des-enfants`) d'un sachet chiffré en grammes ; faute de poids
+      de la pièce, `retirer` passait au mode non chiffré — le sachet de 1,5 kg
+      s'entamait au premier goûter et disparaissait au second, et l'app
+      croyait la semaine finie le lundi soir. `POIDS_PIECE` pèse la pomme et
+      la poire (150 g). **La compote d'abord** : `ici` ne dit que la présence,
+      et la compote (1 kg) se proposait dès qu'il restait une pomme.
+      `fruitsAuDelaDuGouter` réserve les goûters d'ici les prochaines courses
+      (`goutersAvantCourses` : le samedi, quatre) ; seul ce qui dépasse
+      nourrit une fournée (`fourneeAProposer`, `auDelaDuGouter`). **Le
+      sachet entamé valait un sachet** : `fruitsDeLaSemaine` compte l'entame à
+      sa fraction (`unitesReelles`) et rachète par `aRacheter`. Le fond : la
+      pomme au kilo, 2 à 3 kg (les enfants en mangent 1,7 kg la semaine,
+      compote comprise) ; la poire, 500 g pesés. Tenu par `repas.test.ts`.

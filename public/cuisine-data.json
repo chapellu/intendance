@@ -48050,10 +48050,10 @@
    },
    {
     "ingredient": "pommes",
-    "minimum": 1,
-    "jusqua": null,
+    "minimum": 2,
+    "jusqua": 3,
     "hebdo": true,
-    "unite": "sachet de 1,5 kg"
+    "unite": "1 kg en vrac"
    },
    {
     "ingredient": "banane",
@@ -48064,10 +48064,10 @@
    },
    {
     "ingredient": "poires",
-    "minimum": 2,
-    "jusqua": 4,
+    "minimum": 1,
+    "jusqua": null,
     "hebdo": true,
-    "unite": "pièce"
+    "unite": "500 g en vrac"
    },
    {
     "ingredient": "lentilles-corail",

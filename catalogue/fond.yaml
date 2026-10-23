@@ -66,16 +66,23 @@ denrees:
   # T145 — deux pots au matin, deux au goûter : ≈ 25 pots la semaine.
   - {ingredient: yaourt-nature, minimum: 6, jusqua: 7, unite: pack de 4, hebdo: true}
   # ── Les fruits de la semaine — le porridge, le goûter, la compote
-  # T145 — la pomme du goûter : un sachet de 1,5 kg la semaine, en saison. Sa
-  # ligne vient de `hebdo` (`fruitsDeLaSemaine`), comme la banane.
-  - {ingredient: pommes, minimum: 1, unite: "sachet de 1,5 kg", hebdo: true}
+  # T145 — la pomme du goûter, en saison. Sa ligne vient de `hebdo`
+  # (`fruitsDeLaSemaine`), comme la banane.
+  # T149 — DEUX KILOS, PAS UN SACHET. L'année simulée n° 10 : les enfants en
+  # mangent 1,7 kg la semaine (une pomme de 150 g au goûter, plus la compote),
+  # contre un sachet de 1,5 kg — 143 goûters sans pomme. Comptée au kilo, la
+  # ligne part sous 2 kg et remonte vers 3 (`aRacheter`) : à chaque course,
+  # de quoi tenir jusqu'à la suivante.
+  - {ingredient: pommes, minimum: 2, jusqua: 3, unite: 1 kg en vrac, hebdo: true}
   # T144 — LE FRUIT DU MATIN ET DU GOÛTER : ≈ 14 pièces la semaine pour deux
   # enfants. Une banane écrasée dans le porridge chaque matin (sept), une pomme
   # au goûter (le sachet ci-dessus), et des poires EN SAISON pour varier et pour
   # la compote. Un fruit frais ne porte pas de plancher (il ne se compte pas au
   # relevé) : la ligne vient de `hebdo`, et hors saison elle se tait.
   - {ingredient: banane, minimum: 3, jusqua: 7, unite: pièce, hebdo: true}
-  - {ingredient: poires, minimum: 2, jusqua: 4, unite: pièce, hebdo: true}
+  # T149 — 500 g la semaine, pesés : la compote en prend 500 g, et la pièce
+  # sans poids se finissait en deux compotes au rejeu.
+  - {ingredient: poires, minimum: 1, unite: 500 g en vrac, hebdo: true}
   # ── Légumineuses sèches — la base à découvrir (×2 : le dîner nourrit aussi le midi)
   - {ingredient: lentilles-corail, minimum: 2, unite: sachet de 500 g}
   - {ingredient: lentilles-seches, minimum: 3, unite: sachet de 500 g}

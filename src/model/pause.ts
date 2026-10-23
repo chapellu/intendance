@@ -43,7 +43,7 @@
 // règle du dépôt : on n'enlève pas une proposition pour une lacune, on
 // l'annonce —, on le range là où il ne coûte pas un refus.
 
-import { dejeunerDuStock, fourneeAProposer, fruitsMurs, midiDeDemain, type DejeunerDuStock, type Fournee, type MidiDeDemain } from "./repas";
+import { dejeunerDuStock, fourneeAProposer, fruitsAuDelaDuGouter, fruitsMurs, midiDeDemain, type DejeunerDuStock, type Fournee, type MidiDeDemain } from "./repas";
 import { marque, SEUIL_A_MANGER } from "./axe";
 import { Depot, horlogesDu, type LigneDepot, type LotInitial } from "./depot";
 import { ceQuiEstIci, ceQuiManque, ceQueLaCarteDitIci, type Article } from "./ici";
@@ -63,6 +63,17 @@ import type { Catalogue, Etape, Plat } from "./types";
  * statut que `heures.ts` : une hypothèse assumée, à un seul endroit.
  */
 export const JOURS_DE_COURSES: readonly string[] = ["mercredi", "samedi"];
+
+/** Les goûters d'ici le prochain jour de courses, celui d'aujourd'hui compris
+ *  (la fournée se propose à 15 h, le goûter est à 16 h) — T149. Le samedi,
+ *  quatre : samedi, dimanche, lundi, mardi ; mercredi, on rachète. */
+export function goutersAvantCourses(jours: readonly string[], joursDeCourses: readonly string[]): number {
+  const SEMAINE = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"];
+  const i0 = SEMAINE.indexOf(jours[0] ?? "");
+  if (i0 < 0) return 1;
+  for (let n = 1; n <= 7; n += 1) if (joursDeCourses.includes(SEMAINE[(i0 + n) % 7]!)) return n;
+  return 7;
+}
 
 /** Combien de cartes la proposition montre d'emblée. La quatrième place est
  *  réservée — voir `proposerCeSoir`. */
@@ -620,8 +631,12 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
 
   const dans = new Set(main.map((c) => c.plat.id));
   // T145 — la fournée tourne : celle de la semaine passe après les autres.
+  // T149 — la pomme du goûter avant la compote : les goûters d'ici les
+  // prochaines courses, celui de cet après-midi compris, sont réservés.
+  const gouters = goutersAvantCourses(jeu.jours.map((j) => j.nom), e.joursDeCourses ?? JOURS_DE_COURSES);
   const fournee = fourneeAProposer(catalogue, jeu.stock, fruitsMurs(catalogue, savoir.rejeu, iso), ici,
-    new Set([...recents, ...savoir.cuisinesRecemment]), jourDeCourses);
+    new Set([...recents, ...savoir.cuisinesRecemment]), jourDeCourses,
+    fruitsAuDelaDuGouter(catalogue, savoir.rejeu, gouters));
   return { soir, jourDeCourses, cartes: main, plus: cartes.filter((c) => !dans.has(c.plat.id)), attend, aSortir, fournee,
     dejeuner: dejeunerDuStock(catalogue, ici, mois) };
 }

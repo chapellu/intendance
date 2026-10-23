@@ -25,6 +25,7 @@ import { joue, type Jeu } from "./jeu";
 import type { Rejeu } from "./journal";
 import { ceQuiManque } from "./ici";
 import { deSaison, saisonDuPlat } from "./saisons";
+import { enUniteDeCompte } from "./unites";
 import type { Catalogue, Contenant, Foyer, Plat, Routine } from "./types";
 
 /** La carte qui finit un reste au midi — `catalogue/recipes/reste-de-la-veille.yaml`. */
@@ -473,6 +474,63 @@ export function fruitsMurs(catalogue: Catalogue, rejeu: Pick<Rejeu, "parIngredie
  * de pommes qu'il manquait. Un fruit de compote là suffit ; aucun là, la
  * ligne dit le choix — « pommes ou poires » — au lieu d'en inventer un.
  */
+/**
+ * Ce qui reste d'un fruit une fois les goûters servis jusqu'aux prochaines
+ * courses, en grammes — T149.
+ *
+ * LA POMME DU GOÛTER PASSE AVANT LA COMPOTE. L'année simulée n° 10 : 143
+ * goûters sans pomme. La compote (1 kg de pommes) se proposait dès qu'il y
+ * avait UNE pomme au placard (`ici` ne dit que la présence) ; on la faisait le
+ * mercredi, et le sachet de la semaine n'allait pas jusqu'au samedi. La routine
+ * du goûter dit ce qu'un goûter prend (`gouter-des-enfants` : une pomme) ;
+ * multipliée par les goûters d'ici les prochaines courses, c'est une réserve.
+ * Seul ce qui la dépasse nourrit une fournée.
+ *
+ * Seuls les fruits que le rejeu pèse sont rendus : un fruit compté à la pièce
+ * sans poids garde la règle de présence, faute de mieux.
+ */
+export function fruitsAuDelaDuGouter(
+  catalogue: Catalogue,
+  rejeu: Pick<Rejeu, "parIngredient">,
+  goutersAvantCourses: number,
+): Map<string, number> {
+  const out = new Map<string, number>();
+  const r = catalogue.creneaux?.routines?.liste.find((x) => x.repas === "gouter");
+  const recette = r ? catalogue.plats.find((p) => p.id === r.recette) : undefined;
+  for (const i of recette?.ingredients ?? []) {
+    const id = catalogue.rayons.aliases[i.id] ?? i.id;
+    if (!FRUITS.includes(id)) continue;
+    const u = enUniteDeCompte(id, i.qty, i.unit);
+    const g = rejeu.parIngredient.get(id)?.grammes;
+    if (u.unit !== "g" || g == null) continue;
+    out.set(id, g - u.qty * goutersAvantCourses);
+  }
+  return out;
+}
+
+/** Les grammes d'un fruit que demande une fournée, à sa taille de recette. */
+const grammesDe = (catalogue: Catalogue, p: Plat, fruit: string): number =>
+  p.ingredients
+    .filter((i) => (catalogue.rayons.aliases[i.id] ?? i.id) === fruit)
+    .reduce((n, i) => {
+      const u = enUniteDeCompte(fruit, i.qty, i.unit);
+      return n + (u.unit === "g" ? u.qty : 0);
+    }, 0);
+
+/** `ici` pour une fournée : sans les fruits que la réserve du goûter retient. */
+const iciPourLaFournee = (
+  catalogue: Catalogue,
+  p: Plat,
+  ici: ReadonlySet<string>,
+  auDela: ReadonlyMap<string, number>,
+): ReadonlySet<string> => {
+  const retenus = [...auDela].filter(([f, g]) => ici.has(f) && g + 1e-9 < grammesDe(catalogue, p, f));
+  if (!retenus.length) return ici;
+  const out = new Set(ici);
+  for (const [f] of retenus) out.delete(f);
+  return out;
+};
+
 function manqueDeLaFournee(catalogue: Catalogue, p: Plat, ici: ReadonlySet<string>): { nom: string; ids: string[] }[] {
   const m = ceQuiManque(catalogue, p, ici).ingredients;
   const compote = FRUITS_DE_COMPOTE.filter((f) => p.ingredients.some((i) => (catalogue.rayons.aliases[i.id] ?? i.id) === f));
@@ -515,6 +573,9 @@ export function fourneeAProposer(
   recentes: ReadonlySet<string> = new Set(),
   /** T146 — un jour de courses, l'article qui manque se prend au magasin. */
   jourDeCourses = false,
+  /** T149 — ce qui reste des fruits après les goûters d'ici les prochaines
+   *  courses (`fruitsAuDelaDuGouter`) ; absent, la seule présence compte. */
+  auDelaDuGouter: ReadonlyMap<string, number> = new Map(),
 ): Fournee | null {
   const { restants } = gouterAuCongelo(catalogue, stock);
   const matins = matinsDePain(catalogue, stock);
@@ -530,7 +591,7 @@ export function fourneeAProposer(
     catalogue.plats
       .filter((p) => routineNourrie(catalogue, p) === repas)
       .map((p) => {
-        const manque = manqueDeLaFournee(catalogue, p, ici);
+        const manque = manqueDeLaFournee(catalogue, p, iciPourLaFournee(catalogue, p, ici, auDelaDuGouter));
         return {
           p,
           fruits: murs.filter((f) => p.ingredients.some((i) => i.id === f)),

@@ -339,6 +339,41 @@ export function sousLeurPlancher(
   return lignes.sort((a, b) => b.manque - a.manque || a.nom.localeCompare(b.nom, "fr"));
 }
 
+/**
+ * Combien d'unités d'achat il reste VRAIMENT — T149, T150.
+ *
+ * UN PAQUET ENTAMÉ PÈSE CE QU'IL LUI RESTE, PAS UN PAQUET. Le rejeu compte un
+ * lot ouvert pour une unité entière (`unitesDe`) : c'est juste pour « y en
+ * a-t-il », faux pour « faut-il en racheter ». Le beurre (minimum 2
+ * plaquettes) ne passait sous son plancher qu'avec moins d'UNE plaquette au
+ * frigo — 230 g pour une semaine qui en mange 240, et la liste n'est lue que
+ * le mercredi et le samedi : 36 matins sans beurre sur l'année simulée n° 10.
+ * Le sachet de pommes entamé valait un sachet plein jusqu'à sa dernière pomme.
+ * Quand le lot est pesé, son entame compte pour sa fraction ; sinon, pour un.
+ */
+export function unitesReelles(e: Pick<EtatIngredient, "lots" | "unites"> | null): number {
+  if (!e) return 0;
+  if (!e.lots.length) return e.unites;
+  return e.lots.reduce((n, l) => {
+    if (l.entame == null) return n + l.unites;
+    const pu = l.parUnite && (l.parUnite.unit === "g" || l.parUnite.unit === "ml") ? l.parUnite.amount : null;
+    return n + l.unites + (pu ? Math.min(1, l.entame / pu) : 1);
+  }, 0);
+}
+
+/**
+ * Combien en racheter : de quoi repasser le plancher, et jusqu'au `jusqua`
+ * sans le dépasser d'une unité entière — T150. Avec l'entame comptée à sa
+ * fraction, « 3 − 1,9 » ne se dit pas « 1,1 sachet » : une plaquette ramène
+ * le beurre à 2,9 ; avec 0,6 sachet de lentilles sur un plancher de 1, un
+ * sachet en remet 1,6. Toujours au moins un.
+ */
+export const aRacheter = (reel: number, niveau: number, cible: number): number =>
+  Math.max(1, Math.ceil(niveau - reel - 1e-9), Math.floor(cible - reel + 1e-9));
+
+/** L'unité d'achat dite à la liste : un chiffre après la virgule au plus. */
+const auDixieme = (n: number): number => Math.round(n * 10) / 10;
+
 /** Une denrée du fond que seul `hebdo` fait entrer : elle ne se compte pas au
  *  relevé, donc aucun plancher ne la porte (`fruitsDeLaSemaine`). */
 // T145 — ET LE FRUIT DE SAISON AUSSI, MÊME COMPTABLE. La pomme s'achète en
@@ -374,14 +409,15 @@ export function fruitsDeLaSemaine(catalogue: Catalogue, rejeu: Rejeu, mois: numb
     const e = rejeu.parIngredient.get(id) ?? rejeu.vus.get(id) ?? null;
     if (!fruitHebdo(catalogue, ctx, id, e, !!d.hebdo)) continue;
     if (deSaison(catalogue, id, mois) === false) continue;
-    const a = e?.unites ?? 0;
-    if (a >= d.minimum) continue;
+    // T149 — le sachet entamé à sa fraction (`unitesReelles`).
+    const a = unitesReelles(e);
+    if (a >= d.minimum - 1e-9) continue;
     lignes.push({
       ingredient: id,
       nom: nomDeLaDenree(id),
       niveau: d.minimum,
-      a,
-      manque: Math.max(d.minimum, d.jusqua ?? 0) - a,
+      a: auDixieme(a),
+      manque: aRacheter(a, d.minimum, Math.max(d.minimum, d.jusqua ?? 0)),
       hebdo: true,
       sansPlancher: true,
       confiance: e?.confiance ?? "inconnu",

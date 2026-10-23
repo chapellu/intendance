@@ -6,7 +6,7 @@ import { describe, expect, test } from "vitest";
 import { lignesDuJour, phraseDeFournee, phraseDuMidi } from "../ecrans/repas.vue";
 import { contenantsLibres } from "../ecrans/sortie.vue";
 import type { LotInitial } from "./depot";
-import type { PropositionDuSoir } from "./pause";
+import { goutersAvantCourses, JOURS_DE_COURSES, type PropositionDuSoir } from "./pause";
 import { fruitsDeLaSemaine } from "./plancherGardeManger";
 import { calculer } from "./calcul";
 import { lireCatalogue } from "./catalogue";
@@ -17,6 +17,7 @@ import {
   estUneFournee,
   evenementsDesRoutines,
   fourneeAProposer,
+  fruitsAuDelaDuGouter,
   lotsEnBoites,
   midisDuFrigo,
   resteDuFrigoAuMidi,
@@ -202,6 +203,34 @@ describe("la fournée, proposée à la pause", () => {
   test("à achats égaux, Chioca d'abord", () => {
     const tout = new Set(catalogue.plats.flatMap((p) => p.ingredients.map((i) => catalogue.rayons.aliases[i.id] ?? i.id)));
     expect(fourneeAProposer(catalogue, [pain], [], tout)!.plat.source?.auteur).toMatch(/Chioca/);
+  });
+
+  // T149 — L'ANNÉE SIMULÉE N° 10 : 143 GOÛTERS SANS POMME. La compote (1 kg)
+  // se lançait dès qu'il y avait une pomme, et le sachet de la semaine
+  // n'allait plus jusqu'aux courses suivantes.
+  test("T149 — la pomme du goûter passe avant la compote", () => {
+    const pommes = new Set(["pommes", "eau"]);
+    const compote = (auDela: Map<string, number>) => {
+      const f = fourneeAProposer(catalogue, [pain], ["pommes"], pommes, new Set(), false, auDela);
+      return f?.plat.id === "compote-pommes-poires" ? f : null;
+    };
+    // 1,4 kg au placard, quatre goûters à servir d'ici samedi : 800 g de trop
+    // ne font pas le kilo de la compote — elle demande des fruits.
+    expect(compote(new Map([["pommes", 1400 - 4 * 150]]))?.manque ?? ["autre fournée"]).not.toEqual([]);
+    // 1,9 kg : la compote se fait de ce qui dépasse.
+    expect(compote(new Map([["pommes", 1900 - 4 * 150]]))).toMatchObject({ manque: [] });
+  });
+
+  test("T149 — la réserve du goûter : une pomme de 150 g par goûter d'ici les courses", () => {
+    const e = { sorte: "entree" as const, jour: "2026-10-24", saisi: "2026-10-24", maj: 1,
+      lignes: [{ ingredient: "pommes", unites: 1, parUnite: { amount: 1500, unit: "g" }, zone: null, etat: "frais" as const }] };
+    // Un sachet de 1,5 kg rentré samedi, trois goûters servis (sam., dim., lun.).
+    const r = rejouer(catalogue, [e], contexte(catalogue), "2026-10-26");
+    expect(r.parIngredient.get("pommes")?.grammes).toBe(1500 - 3 * 150);
+    // Lundi : lundi et mardi avant les courses du mercredi.
+    expect(goutersAvantCourses(["lundi"], JOURS_DE_COURSES)).toBe(2);
+    expect(goutersAvantCourses(["samedi"], JOURS_DE_COURSES)).toBe(4);
+    expect(fruitsAuDelaDuGouter(catalogue, r, 2).get("pommes")).toBe(1050 - 300);
   });
 
   test(`${SEUIL_FOURNEE} goûters au congélateur et rien qui passe : pas de fournée`, () => {
@@ -404,9 +433,10 @@ describe("T144 — le fruit de la semaine", () => {
     expect(l.some((x) => x.ingredient === "poires")).toBe(true);
   });
 
-  test("T145 — la pomme du goûter est au frais de la semaine : un sachet de 1,5 kg, en saison", () => {
+  // T149 — au kilo : sous 2 kg la ligne part, et remonte vers 3.
+  test("T145 — la pomme du goûter est au frais de la semaine : trois kilos quand il n'y en a plus, en saison", () => {
     const pommes = fruitsDeLaSemaine(catalogue, r(), 10).find((x) => x.ingredient === "pommes");
-    expect(pommes).toMatchObject({ hebdo: true, sansPlancher: true, manque: 1 });
+    expect(pommes).toMatchObject({ hebdo: true, sansPlancher: true, manque: 3 });
     expect(fruitsDeLaSemaine(catalogue, r(), 7).some((x) => x.ingredient === "pommes")).toBe(false);
   });
 

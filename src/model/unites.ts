@@ -12,6 +12,13 @@
 export const POIDS_PIECE: Readonly<Record<string, number>> = {
   "pomme-de-terre": 150,
   "pommes-de-terre": 150,
+  // T149 — LA POMME DU GOÛTER EST UNE PIÈCE, LE SACHET SE PÈSE. Retirée « à la
+  // pièce » d'un sachet de 1,5 kg chiffré en grammes, la pomme passait par le
+  // mode non chiffré : le sachet s'entamait au premier goûter et disparaissait
+  // au second. L'app croyait la semaine finie le lundi soir. 150 g, la pomme
+  // moyenne ; la poire, à l'avenant.
+  pommes: 150,
+  poires: 150,
 };
 
 /** `qty unit` dans l'unité où l'on additionne : le kilo en grammes, le litre
