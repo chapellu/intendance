@@ -35,6 +35,9 @@ export const POIDS_PIECE: Readonly<Record<string, number>> = {
 export function enUniteDeCompte(id: string, qty: number, unit: string): { qty: number; unit: string } {
   if (unit === "kg") return { qty: qty * 1000, unit: "g" };
   if (unit === "l" || unit === "L") return { qty: qty * 1000, unit: "ml" };
+  // T157 — le curry dit « 40 cl » de lait de coco, le dahl « 400 ml » : sans
+  // conversion, le centilitre passait au mode non chiffré.
+  if (unit === "cl") return { qty: qty * 10, unit: "ml" };
   const piece = POIDS_PIECE[id];
   if (piece != null && (unit === "pièce" || unit === "piece")) return { qty: qty * piece, unit: "g" };
   return { qty, unit };

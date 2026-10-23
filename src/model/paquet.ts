@@ -85,6 +85,11 @@ export function contenuDUnite(unite: string): Quantite | null {
   // rejeu soustrait comme des grammes (`journal.EN_GRAMMES`).
   const l = /(\d+(?:[.,]\d+)?)\s*l\b/i.exec(unite);
   if (l) return { amount: nombre(l[1]!) * 1000, unit: "ml" };
+  // T157 — « brique de 40 cl » (le lait de coco), « 400 ml ».
+  const cl = /(\d+(?:[.,]\d+)?)\s*cl\b/i.exec(unite);
+  if (cl) return { amount: nombre(cl[1]!) * 10, unit: "ml" };
+  const ml = /(\d+(?:[.,]\d+)?)\s*ml\b/i.exec(unite);
+  if (ml) return { amount: nombre(ml[1]!), unit: "ml" };
   const pieces = /\bde\s+(\d+)\s*$/i.exec(unite);
   if (pieces) return { amount: nombre(pieces[1]!), unit: "pièce" };
   return null;

@@ -123,10 +123,13 @@ denrees:
   # T140 : le poids d'une boîte, pour que le plat la prenne ENTIÈRE (voir
   # `conservation.yaml:entame_se_finit`). Maïs, thon, maquereaux : les boîtes
   # du relevé du 26/08 ; tomates : le format de 400 g que le corpus appelle
-  # quinze fois. À reporter au brouillon. La brique de coco attend son volume.
+  # quinze fois. À reporter au brouillon. La brique de coco a son volume depuis T157.
   - {ingredient: tomates-pelees, minimum: 3, jusqua: 5, unite: boîte de 400 g}
   - {ingredient: concentre-tomate, minimum: 1, unite: tube}
-  - {ingredient: lait-coco, minimum: 3, unite: brique}
+  # T157 — LA BRIQUE A SON VOLUME : 40 cl, ce que le dahl et le curry en
+  # prennent. Sans lui, une brique servait deux plats au rejeu, quand le dahl
+  # la vide — 14 dîners de l'année n° 11 sans lait de coco que l'app croyait là.
+  - {ingredient: lait-coco, minimum: 3, unite: brique de 40 cl}
   # T154 — deux boîtes au moins : c'est ce que la salade tiède (un dîner sans
   # courses) en prend ; trois au rachat.
   - {ingredient: thon-boite, minimum: 2, jusqua: 3, unite: boîte de 140 g}

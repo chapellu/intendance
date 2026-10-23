@@ -5723,3 +5723,12 @@ sans beurre 6 / 1 ; gaspillage 1,4 / 0,9 kg ; midis sur le reste prévu
       que la pomme de T149 : `POIDS_PIECE` pèse la carotte, et l'oignon (filet
       de 1 kg compté à la pièce), à 150 g comme le harnais. Tenu par
       `fondReappro.test.ts`.
+- [x] **T157 — Du lait de coco à l'écran, aucun au placard (14 dîners).**
+      Le fond disait « brique » sans volume ; non chiffrée, une brique servait
+      deux plats au rejeu quand le dahl (400 ml) la vide, et le curry dit
+      « 40 cl », une unité que `enUniteDeCompte` ne convertissait pas. La
+      brique a son volume (« brique de 40 cl », `contenuDUnite` lit cl et ml),
+      le centilitre devient des millilitres. Le harnais avait l'erreur
+      symétrique — son grand livre tenait le coco en cl et lisait les 400 ml
+      du dahl comme 400 cl (84 L l'année) ; corrigé à part. Tenu par
+      `fondReappro.test.ts`.

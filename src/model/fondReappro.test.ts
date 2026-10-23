@@ -409,3 +409,16 @@ describe("T156 — la carotte à la pièce se retire d'un demi-kilo pesé", () =
     expect(rejouer(catalogue, ev, ctx, "2026-10-23").parIngredient.get("carottes")?.grammes).toBe(1000 - 450);
   });
 });
+
+// T157 — 14 DÎNERS SANS LAIT DE COCO QUE L'APP CROYAIT LÀ.
+describe("T157 — la brique de lait de coco a son volume", () => {
+  test("un dahl (400 ml) vide une brique de 40 cl ; un curry (40 cl) aussi", () => {
+    const ev: Evenement[] = [
+      { sorte: "entree", jour: "2026-10-22", saisi: "2026-10-22", maj: 1,
+        lignes: [{ ingredient: "lait-coco", unites: 3, parUnite: null, zone: null, etat: "conserve" as const }] },
+      { sorte: "cuisine", jour: "2026-10-23", saisi: "2026-10-23", maj: 2, repas: "diner", plat: "dahl-lentilles-corail", parts: 5 },
+      { sorte: "cuisine", jour: "2026-10-24", saisi: "2026-10-24", maj: 3, repas: "diner", plat: "curry-pois-chiches", parts: 4 },
+    ];
+    expect(rejouer(catalogue, ev, ctx, "2026-10-24").parIngredient.get("lait-coco")?.grammes).toBe(400);
+  });
+});
