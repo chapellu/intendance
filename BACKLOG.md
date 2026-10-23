@@ -5714,7 +5714,9 @@ sans beurre 6 / 1 ; gaspillage 1,4 / 0,9 kg ; midis sur le reste prévu
       frigo ». Le midi passé complète un midi prévu plus petit au frigo, sur
       plusieurs lots s'il le faut (`midisDuFrigo`, les midis prévus avec leurs
       parts). Le harnais lit la même phrase et complète le midi de la même
-      façon (commit à part). Tenu par `repas.test.ts`.
+      façon (commit à part). Tenu par `repas.test.ts` ; `e2e/trois-repas`
+      remplit ses trois boîtes de lentilles cuites (des bases) : trois parts
+      de dahl feraient désormais le midi à elles seules.
 - [x] **T156 — Des carottes à l'écran, aucune au bac (60 dîners).** T154 a
       mis la carotte au demi-kilo pesé (« 500 g en vrac ») ; les recettes la
       comptent à la pièce. Sans poids de la pièce, `retirer` passait au mode

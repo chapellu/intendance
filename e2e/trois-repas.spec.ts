@@ -24,9 +24,9 @@ test.beforeEach(async ({ page }) => {
 /** Vide le dépôt, puis y range `restes` restes du jour d'un repas chacun (une
  *  boîte chacun). Dexie ne voit pas une écriture faite hors de lui — d'où le
  *  rechargement. */
-async function viderLeDepot(page: Page, restes = 0): Promise<void> {
+async function viderLeDepot(page: Page, restes = 0, sorte: { type: string; kind: string } = { type: "dahl-lentilles-corail", kind: "reste-plat" }): Promise<void> {
   await page.evaluate(
-    ({ n, jour }) =>
+    ({ n, jour, sorte }) =>
       new Promise<void>((ok, ko) => {
         const r = indexedDB.open("intendance");
         r.onsuccess = () => {
@@ -35,8 +35,8 @@ async function viderLeDepot(page: Page, restes = 0): Promise<void> {
           st.clear();
           for (let i = 0; i < n; i++)
             st.add({
-              type: "dahl-lentilles-corail", kind: "reste-plat", qty: null, unite: null, band: "1-repas",
-              espace: "frigo", location: "frigo", born: jour, origine: "dahl-lentilles-corail", maj: Date.now(),
+              type: sorte.type, kind: sorte.kind, qty: null, unite: null, band: "1-repas",
+              espace: "frigo", location: "frigo", born: jour, origine: sorte.type, maj: Date.now(),
             });
           t.oncomplete = () => {
             r.result.close();
@@ -46,7 +46,7 @@ async function viderLeDepot(page: Page, restes = 0): Promise<void> {
         };
         r.onerror = () => ko(r.error);
       }),
-    { n: restes, jour: aujourdhuiISO() },
+    { n: restes, jour: aujourdhuiISO(), sorte },
   );
   await page.reload();
   await attendreLApp(page);
@@ -55,7 +55,10 @@ async function viderLeDepot(page: Page, restes = 0): Promise<void> {
 test("trois boîtes prises par des restes : la carte du soir dit les boîtes pleines", async ({ page }) => {
   await page.goto("/#/cuisine/ce-soir");
   await attendreLApp(page);
-  await viderLeDepot(page, 3);
+  // T155 — des BASES (des lentilles cuites), pas des restes de plat : trois
+  // parts de dahl au frigo feraient le midi de demain à elles seules, et la
+  // carte n'agrandirait rien — boîtes ou pas.
+  await viderLeDepot(page, 3, { type: "lentilles-vertes-cuites", kind: "base" });
   await expect(page.locator(".co-soir:not(.pose)").first()).toBeVisible({ timeout: 30_000 });
   // Une carte peut se taire (les pâtes : la casserole ne prend pas trois parts
   // de plus) ; celles qui parlent du midi disent les boîtes pleines.
