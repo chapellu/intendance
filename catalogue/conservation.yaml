@@ -333,9 +333,26 @@ familles:
     conseil: >-
       Un sachet de fromage râpé entamé se congèle tel quel et s'emploie sans
       décongeler, directement sur le gratin.
-    # `beurre` (T142) : la plaquette fermée tient des semaines au frigo, et
-    # c'est l'ordre de grandeur de cette famille.
-    ids: [fromage-rape, yaourt-nature, beurre]
+    ids: [fromage-rape, yaourt-nature]
+
+  # T150 — LE BEURRE N'EST PAS UN YAOURT. T142 l'avait rangé ici, à trois
+  # semaines : l'année simulée n° 10 jetait la plaquette entamée au 22e jour
+  # (et l'app la croyait « sans doute finie » au même jour), avec ce qui
+  # restait des trois achetées d'un coup. Une plaquette fermée tient deux mois.
+  - id: beurre
+    label: beurre
+    fond: true
+    espace: frigo
+    rangement: au frigo, dans son papier, loin des odeurs
+    fenetre: {unite: semaines, valeur: 8}
+    source: >-
+      ordre de grandeur — la date d'une plaquette de beurre doux est à six à
+      dix semaines de l'achat ; ouverte et bien emballée, elle tient jusqu'à
+      sa date.
+    conseil: >-
+      Une plaquette d'avance se congèle telle quelle, dans son papier, et se
+      sort la veille au frigo.
+    ids: [beurre]
 
   # T142 — LE LAIT DE CROISSANCE, en briques UHT : il se garde fermé comme une
   # conserve, mais une brique ouverte ne se finit pas d'un plat (pas

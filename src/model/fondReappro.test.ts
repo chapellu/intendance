@@ -69,15 +69,19 @@ describe("T134 — cuisiner un plat du fond le consomme, et la liste le recharge
   // T135 — 200 g par hachis (250 g pour 5 parts, cuisiné pour 4). T142 : le
   // fond rentre trois sachets de 500 g ; T143 : le relevé du 21/10 n'a plus de
   // lentilles vertes, c'est donc 1,5 kg en tout.
-  test("deux hachis (400 g) : un sachet entamé et deux scellés, la liste ne demande rien", () => {
+  // T150 — L'ENTAME COMPTE À SA FRACTION : 1,1 kg, c'est 2,2 sachets, sous un
+  // plancher de trois. Avant, le sachet entamé valait un sachet plein, et la
+  // liste attendait qu'il en reste moins de deux (moins d'un kilo).
+  test("deux hachis (400 g) : 2,2 sachets sur 3, la liste en demande un", () => {
     const { liste } = apres(2);
-    expect(liste.map((l) => l.ingredient)).not.toContain("lentilles-seches");
+    expect(liste.find((x) => x.ingredient === "lentilles-seches")).toMatchObject({ a: 2.2, niveau: 3, manque: 1, fond: true });
   });
 
   test("six hachis (1,2 kg) : il reste un sachet entamé, la liste dit « pour le fond »", () => {
     const { liste } = apres(6);
     const l = liste.find((x) => x.ingredient === "lentilles-seches");
-    expect(l).toMatchObject({ a: 1, niveau: 3, manque: 2, fond: true });
+    // T150 — 300 g, 0,6 sachet : trois sachets pour repasser le plancher.
+    expect(l).toMatchObject({ a: 0.6, niveau: 3, manque: 3, fond: true });
     expect(phraseDuPlancher(l!, 0)).toContain("pour le fond");
   });
 
@@ -157,7 +161,10 @@ describe("T135 — le fond se consomme à la quantité, pas au paquet", () => {
     expect(ctx.contenu("oeufs")).toEqual({ amount: 6, unit: "pièce" });
   });
 
-  test("un sac de 1 kg de lentilles corail tient quatre dahls de 200 g, et la liste ne le demande qu'au cinquième", () => {
+  // T150 — le sac tient toujours quatre dahls ; mais un plancher d'UN sac
+  // veut dire un sac plein au placard, et la liste le redemande dès le premier
+  // (0,8 sac) — non plus après le dernier, quand il n'y a plus rien.
+  test("un sac de 1 kg de lentilles corail tient quatre dahls de 200 g, et la liste le redemande dès le premier", () => {
     const dahl = platDe("dahl-test", "lentilles-corail", 200, "g");
     const cat: Catalogue = {
       ...catalogue,
@@ -171,7 +178,8 @@ describe("T135 — le fond se consomme à la quantité, pas au paquet", () => {
     for (const n of [1, 2, 3, 4]) {
       const { c, rejeu } = rejeuDe(cat, "lentilles-corail", dahl, n, 4);
       expect(rejeu.parIngredient.get("lentilles-corail")?.grammes).toBeCloseTo(1000 - 200 * n);
-      expect(sousLeurPlancher(c, rejeu, plancher).map((l) => l.ingredient)).not.toContain("lentilles-corail");
+      expect(sousLeurPlancher(c, rejeu, plancher).find((l) => l.ingredient === "lentilles-corail"))
+        .toMatchObject({ a: (1000 - 200 * n) / 1000, manque: 1 });
     }
     const { c, rejeu } = rejeuDe(cat, "lentilles-corail", dahl, 5, 4);
     expect(rejeu.parIngredient.has("lentilles-corail")).toBe(false);
@@ -348,5 +356,30 @@ describe("T137 — un article du fond à garde courte se finit par son âge", ()
     expect(l).toMatchObject({ a: 2, rentreLe: jourAvant(6) });
     expect(phraseDuPlancher(l!, 0)).not.toContain("jamais vu");
     expect(phraseDuPlancher(l!, 0)).toContain(`rentré le ${jourAvant(6)}`);
+  });
+});
+
+// T150 — L'ANNÉE SIMULÉE N° 10 : 36 MATINS SANS BEURRE, minimum 2 plaquettes.
+// Une plaquette entamée valait une plaquette pleine : la liste ne partait
+// qu'avec moins d'une plaquette au frigo, et la famille « laitier » jetait le
+// beurre au 22e jour.
+describe("T150 — le beurre se rachète sous deux plaquettes, pas sous une", () => {
+  const rentre: Evenement = {
+    sorte: "entree", jour: "2026-10-21", saisi: "2026-10-21", maj: 1,
+    lignes: [{ ingredient: "beurre", unites: 3, parUnite: null, zone: null, etat: "frais" as const }],
+  };
+  const beurre = (jour: string) =>
+    sousLeurPlancher(catalogue, rejouer(catalogue, [rentre], ctx, jour), [{ ingredient: "beurre", niveau: 2 }])
+      .find((l) => l.ingredient === "beurre");
+
+  test("500 g au frigo (25 tartines de 10 g) : rien ; 490 g : une plaquette", () => {
+    expect(beurre("2026-11-14")).toBeUndefined();
+    expect(beurre("2026-11-15")).toMatchObject({ a: 1.9, niveau: 2, manque: 1 });
+  });
+
+  test("la plaquette fermée tient deux mois : pas « sans doute finie » à trois semaines", () => {
+    const r = rejouer(catalogue, [rentre], ctx, "2026-11-20");
+    expect(r.finis.has("beurre")).toBe(false);
+    expect(r.parIngredient.get("beurre")?.grammes).toBe(750 - 31 * 10);
   });
 });

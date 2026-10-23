@@ -308,8 +308,9 @@ export function sousLeurPlancher(
 
   for (const p of planchers) {
     const e = rejeu.parIngredient.get(p.ingredient) ?? rejeu.vus.get(p.ingredient) ?? null;
-    const a = e?.unites ?? 0;
-    if (a >= p.niveau) continue;
+    // T150 — L'ENTAME À SA FRACTION (`unitesReelles`).
+    const a = unitesReelles(e);
+    if (a >= p.niveau - 1e-9) continue;
     // T142 — LE MINIMUM DÉCLENCHE, `jusqua` CHIFFRE. Sous le plancher, on
     // remonte jusqu'où le fond le dit, jamais en dessous du plancher posé.
     const d = fond.get(p.ingredient);
@@ -318,8 +319,8 @@ export function sousLeurPlancher(
       ingredient: p.ingredient,
       nom: nomDeLaDenree(p.ingredient),
       niveau: p.niveau,
-      a,
-      manque: cible - a,
+      a: auDixieme(a),
+      manque: aRacheter(a, p.niveau, cible),
       ...(d?.hebdo ? { hebdo: true } : {}),
       // JAMAIS VU DU TOUT = INCONNU, et pas « sûr » par défaut. Un plancher peut
       // survivre à la denrée sur laquelle il a été posé — le relevé d'une zone
@@ -371,8 +372,9 @@ export function unitesReelles(e: Pick<EtatIngredient, "lots" | "unites"> | null)
 export const aRacheter = (reel: number, niveau: number, cible: number): number =>
   Math.max(1, Math.ceil(niveau - reel - 1e-9), Math.floor(cible - reel + 1e-9));
 
-/** L'unité d'achat dite à la liste : un chiffre après la virgule au plus. */
-const auDixieme = (n: number): number => Math.round(n * 10) / 10;
+/** L'unité d'achat dite à la liste : un chiffre après la virgule au plus,
+ *  arrondi vers le bas — 490 g de beurre se disent « 1,9 sur 2 », pas « 2 sur 2 ». */
+const auDixieme = (n: number): number => Math.floor(n * 10 + 1e-9) / 10;
 
 /** Une denrée du fond que seul `hebdo` fait entrer : elle ne se compte pas au
  *  relevé, donc aucun plancher ne la porte (`fruitsDeLaSemaine`). */

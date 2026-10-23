@@ -47867,7 +47867,22 @@
    "conseil": "Un sachet de fromage râpé entamé se congèle tel quel et s'emploie sans décongeler, directement sur le gratin.",
    "ids": [
     "fromage-rape",
-    "yaourt-nature",
+    "yaourt-nature"
+   ]
+  },
+  {
+   "id": "beurre",
+   "label": "beurre",
+   "fond": true,
+   "entameSeFinit": false,
+   "espace": "frigo",
+   "rangement": "au frigo, dans son papier, loin des odeurs",
+   "methode": null,
+   "fenetreJours": 56,
+   "fenetre": "8 semaines",
+   "source": "ordre de grandeur — la date d'une plaquette de beurre doux est à six à dix semaines de l'achat ; ouverte et bien emballée, elle tient jusqu'à sa date.",
+   "conseil": "Une plaquette d'avance se congèle telle quelle, dans son papier, et se sort la veille au frigo.",
+   "ids": [
     "beurre"
    ]
   },

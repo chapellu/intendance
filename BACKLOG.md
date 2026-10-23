@@ -5611,3 +5611,18 @@ parti.
       sa fraction (`unitesReelles`) et rachète par `aRacheter`. Le fond : la
       pomme au kilo, 2 à 3 kg (les enfants en mangent 1,7 kg la semaine,
       compote comprise) ; la poire, 500 g pesés. Tenu par `repas.test.ts`.
+- [x] **T150 — Le beurre manquait 36 matins, minimum 2 plaquettes.** Ni les
+      gâteaux ni l'unité : les fournées retirent bien leur beurre en grammes,
+      et la plaquette est pesée (`fond.yaml`). Deux causes. **Le rachat trop
+      tard** : `sousLeurPlancher` lisait `unites`, où un lot ouvert compte
+      pour une unité entière ; « sous 2 plaquettes » voulait dire « moins
+      d'une au frigo » — 230 g pour une semaine qui en mange 240 (tartines et
+      fournées), et la liste ne se lit qu'aux jours de courses. L'entame compte
+      maintenant à sa fraction (`unitesReelles`) ; le rachat repasse le
+      plancher sans dépasser `jusqua` d'une unité entière (`aRacheter`), et la
+      liste dit « 1,9 sur 2 ». Vaut pour tout le fond : un sachet de lentilles
+      entamé n'est plus un sachet. **La garde** : T142 avait mis le beurre dans
+      la famille « laitier » (trois semaines) ; la plaquette entamée était
+      jetée au 22e jour avec les deux autres, et l'app la croyait « sans doute
+      finie » le même jour. Une famille `beurre` à huit semaines
+      (`conservation.yaml`). Tenu par `fondReappro.test.ts`.
