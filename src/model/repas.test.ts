@@ -313,8 +313,9 @@ describe("T144 — les boîtes libres ne comptent que les restes vivants en boî
       { ...reste("compote-maison", "3-repas", "2026-10-24"), location: "congelo" },
       { type: "pain-de-mie-maison", kind: "base", qty: null, qty_band: "3-repas", born: "2026-10-24", location: "congelo" },
     ];
-    // Avant T144, les trois sachets prenaient trois des quatre boîtes.
-    expect(contenantsLibres(catalogue.foyer, stock).get("boites-hermetiques")).toBeLessThan(4);
+    // Avant T144, les trois sachets prenaient trois des quatre boîtes ; depuis
+    // T148, rien de ce qui dort au congélateur n'en prend une, routine ou pas.
+    expect(contenantsLibres(catalogue.foyer, stock).get("boites-hermetiques")).toBe(4);
     expect(libresDe(stock, LUNDI)).toBe(4);
     expect(midiDeDemain(jeuDuLundi(), plat("dahl-lentilles-corail"), contenantsLibres(catalogue.foyer, lotsEnBoites(catalogue, stock, LUNDI))).etat).toBe("oui");
   });
@@ -324,10 +325,22 @@ describe("T144 — les boîtes libres ne comptent que les restes vivants en boî
     expect(libresDe([reste("dahl-lentilles-corail", "1-repas", "2026-10-25")], LUNDI)).toBe(3);
   });
 
-  test("T145 — la bolognaise du congélateur (700 g, deux repas) tient une seule boîte de 0,8 L", () => {
-    const bolo: LotInitial = { type: "sauce-bolognaise", kind: "base", qty_band: "2-repas", qty: { amount: 700, unit: "g" }, born: "2026-10-20", location: "congelo" };
+  test("T145 — la bolognaise (700 g, deux repas) tient une seule boîte de 0,8 L", () => {
+    const bolo: LotInitial = { type: "sauce-bolognaise", kind: "base", qty_band: "2-repas", qty: { amount: 700, unit: "g" }, born: "2026-10-25", location: "frigo" };
     expect(libresDe([bolo], LUNDI)).toBe(3);
     expect(midiDeDemain(jeuDuLundi(), plat("dahl-lentilles-corail"), contenantsLibres(catalogue.foyer, lotsEnBoites(catalogue, [bolo], LUNDI))).etat).toBe("oui");
+  });
+
+  // T148 — L'ANNÉE SIMULÉE N° 10 : 159 cartes « Boîtes pleines », dont 119 avec
+  // deux boîtes libres ou plus au réel. Le 21/10 : la bolognaise du relevé (née
+  // le 20/07, au congélo) tenait une boîte, et le houmous de la veille trois ;
+  // l'app en voyait cinq occupées sur quatre, la cuisine trois.
+  test("T148 — ce qui dort au congélateur ne tient aucune boîte du midi", () => {
+    const bolo: LotInitial = { type: "sauce-bolognaise", kind: "base", qty_band: "2-repas", qty: { amount: 700, unit: "g" }, born: "2026-07-20", location: "congelo" };
+    const lentilles: LotInitial = { type: "lentilles-vertes-cuites", kind: "base", qty_band: "2-repas", qty: { amount: 300, unit: "g" }, born: "2026-10-20", location: "congelo" };
+    const gratin = reste("gratin-pates", "1-repas", "2026-10-25");
+    expect(libresDe([bolo, lentilles, gratin], LUNDI)).toBe(3);
+    expect(midiDeDemain(jeuDuLundi(), plat("dahl-lentilles-corail"), contenantsLibres(catalogue.foyer, lotsEnBoites(catalogue, [bolo, lentilles, gratin], LUNDI))).etat).toBe("oui");
   });
 
   test("le midi mis de côté rend ses boîtes une fois le déjeuner passé", () => {

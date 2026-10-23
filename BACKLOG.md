@@ -5575,3 +5575,24 @@ parti.
       (`lotsEnBoites`, `midiDeDemain`) lisaient déjà la base. Tenu par
       `pause.test.ts` (trois posés, aucun cuit → aucun lot qui attend) et
       `e2e/pose-pas-cuit.spec.ts` (le fil, puis le cockpit).
+
+## L'année simulée n° 10 — T148 à T153
+
+- [x] **T148 — « Boîtes pleines » devant des boîtes vides.** L'année simulée
+      n° 10 : 159 cartes « Boîtes pleines », dont 119 avec deux boîtes libres
+      ou plus dans la vraie cuisine. Le 21/10, l'app voyait cinq boîtes
+      occupées sur quatre : la sauce bolognaise du relevé (née le 20/07, au
+      congélo) en tenait une, le houmous de la veille trois, le gratin une.
+      `contenantsLibres` re-range chaque lot par la règle de la sortie, et
+      cette règle (T99) mettait les boîtes qui se lavent devant les sacs
+      PARTOUT, congélateur compris : tout ce qui dormait au congélo — la sauce
+      du relevé, les lentilles cuites de la souche, une soupe de trop — prenait
+      une des quatre boîtes du midi pour des semaines, même quand la sortie
+      l'avait mis en sac faute de boîte libre ce soir-là (le lot ne dit pas où
+      il dort ; dès que le frigo se vidait, le re-rangement le remettait en
+      boîte). Au congélateur, les sacs passent maintenant devant (`rangerDans`,
+      comme la fournée de T142) ; les boîtes ne reprennent la main que quand
+      les sacs manquent. Le pot-au-feu se range enfin : le bouillon du congélo
+      en sacs, les quatre boîtes au frigo. Tenu par `repas.test.ts` (la
+      bolognaise du 20/07 et les lentilles cuites au congélo, un gratin au
+      frigo → trois boîtes libres, le midi se prend) et `sortie.vue.test.ts`.

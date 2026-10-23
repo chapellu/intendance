@@ -276,7 +276,15 @@ export function rangerDans(
     const lavables = dispo.filter((c) => !c.consommable);
     // T142 — UNE FOURNÉE PART EN SACHETS : les quatre boîtes du foyer portent
     // les restes de la semaine, pas douze tranches de banana bread.
-    const sacs = sachets ? dispo.filter((c) => c.consommable) : [];
+    // T148 — ET TOUT CE QUI PART AU CONGÉLATEUR AUSSI. Une boîte IKEA rangée au
+    // congélo y dort des semaines : la sauce bolognaise du relevé (née le
+    // 20/07), les lentilles cuites de la souche, la soupe de trop — chacune
+    // tenait une des quatre boîtes du midi pour trois mois, et la carte de
+    // 15 h disait « Boîtes pleines » quand le frigo n'en tenait qu'une (année
+    // simulée n° 10 : 159 cartes, dont 119 avec deux boîtes libres ou plus au
+    // réel). Le congélateur tourne aux sacs ; les boîtes restent au frigo, pour
+    // demain midi. Quand les sacs manquent, les boîtes reprennent la main.
+    const sacs = sachets || espace === "congelo" ? dispo.filter((c) => c.consommable) : [];
     const classe = sacs.length ? sacs : lavables.length ? lavables : dispo;
     const tient = classe.filter((c) => part(c) >= a - 1e-9);
     const c = tient.length
