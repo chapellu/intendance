@@ -1038,6 +1038,14 @@ async function dejeuner(j, ev, stats) {
     // Son midi est passé : ce qui reste est un reste ordinaire, plus « le midi prévu ».
     prevu.midi = false;
     etat.compte.restesManges++; stats.midi = `reste prévu : ${prevu.plat} (${pris} parts)`;
+    // T155 — un midi prévu plus petit se complète au frigo, le plus ancien d'abord.
+    let manque = PARTS_MIDI - pris;
+    for (const x of vivants().filter((y) => y.ou === "Frigo" && !y.midi && y !== prevu && estUnRepas(y)).sort((a, b) => a.le.localeCompare(b.le))) {
+      if (manque <= 1e-9) break;
+      const q = Math.min(x.portions, manque); x.portions -= q; manque -= q;
+      if (x.portions <= 0) x.mangeLe = j;
+      stats.midi += ` + ${x.plat} (${q})`;
+    }
     if (!/reste/.test(lignes.dejeuner?.texte ?? "")) note(j, "midi", `le reste prévu (« ${prevu.plat} ») est au frigo, mais le cockpit dit « ${lignes.dejeuner?.texte ?? "rien"} »`);
     return source("reste-prevu");
   }
@@ -1277,7 +1285,11 @@ async function journee2(idx) {
         const phrase = `${pris.midi ?? ""} ${pris.heure ?? ""} ${pris.raison ?? ""}`;
         let midi = 0;
         if (/déjeuner de demain/.test(phrase)) {
-          midi = PARTS_MIDI;
+          // T155 — « avec le reste du frigo » : le dîner ne s'agrandit que de
+          // ce qui manque au midi une fois le frigo compté (le monde compte le sien).
+          const auFrigo = /avec le reste du frigo/.test(phrase)
+            ? vivants().filter((x) => x.ou === "Frigo" && !x.midi && estUnRepas(x)).reduce((n, x) => n + x.portions, 0) : 0;
+          midi = Math.max(0.5, PARTS_MIDI - auFrigo);
           const voulu = +(/déjeuner de demain, (\d+)/.exec(phrase)?.[1] ?? Math.ceil(midi));
           const libres = BOITES - boitesOccupees();
           stats.midiPrevu = `oui, ${voulu} boîtes (${libres} libres au réel)`;
