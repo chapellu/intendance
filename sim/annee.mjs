@@ -183,8 +183,18 @@ function compter(repas, id, q, partMidi = 0) {
   if (m) etat.conso.midi[id] = (etat.conso.midi[id] ?? 0) + m;
   etat.conso[repas][id] = (etat.conso[repas][id] ?? 0) + q - m;
 }
+// T152 — LE MONDE CUISINE CE QUE LA FICHE DIT, au facteur de `calcul.facteur` :
+// un plat qui se garde se fait en lot entier, même pour 2,5 parts ; un lot
+// entier (le pain) s'arrondit au lot. `max(0,5, parts/portions)` faisait
+// cuire au monde 42 % du pain dont la sortie rangeait le lot entier.
+function facteurFiche(plat, parts) {
+  const portions = plat.portions || 4;
+  const garde = (plat.emits ?? []).some((e) => e.congelo || e.kind === "reste-plat");
+  const f = garde && parts < portions ? 1 : parts / portions;
+  return plat.lotEntier ? Math.max(1, Math.ceil(f - 1e-9)) : f;
+}
 function consommer(plat, parts, repas = "diner", midi = 0) {
-  const f = Math.max(0.5, parts / (plat.portions || 4));
+  const f = facteurFiche(plat, parts);
   for (const i of plat.ingredients) {
     if (i.base || toujours.has(i.id)) continue;
     const r = etat.reel[i.id];
