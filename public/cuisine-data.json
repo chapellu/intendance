@@ -47866,8 +47866,23 @@
    "source": "ordre de grandeur — yaourts et fromage râpé fermés tiennent jusqu'à leur date, souvent trois à quatre semaines. Ouvert, le fromage râpé tient quelques jours.",
    "conseil": "Un sachet de fromage râpé entamé se congèle tel quel et s'emploie sans décongeler, directement sur le gratin.",
    "ids": [
-    "fromage-rape",
     "yaourt-nature"
+   ]
+  },
+  {
+   "id": "fromage-bloc",
+   "label": "fromage en bloc",
+   "fond": true,
+   "entameSeFinit": false,
+   "espace": "frigo",
+   "rangement": "au frigo, dans son emballage ou un papier ciré, bien fermé",
+   "methode": null,
+   "fenetreJours": 42,
+   "fenetre": "6 semaines",
+   "source": "ordre de grandeur — un bloc de comté ou d'emmental sous vide porte une date à six à huit semaines ; entamé, il tient trois à quatre semaines emballé.",
+   "conseil": "Râper la moitié d'un bloc qui traîne et la congeler à plat : elle s'emploie sans décongeler, directement sur le gratin.",
+   "ids": [
+    "fromage-rape"
    ]
   },
   {

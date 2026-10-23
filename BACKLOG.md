@@ -5576,7 +5576,7 @@ parti.
       `pause.test.ts` (trois posés, aucun cuit → aucun lot qui attend) et
       `e2e/pose-pas-cuit.spec.ts` (le fil, puis le cockpit).
 
-## L'année simulée n° 10 — T148 à T153
+## L'année simulée n° 10 — T148 à T154
 
 - [x] **T148 — « Boîtes pleines » devant des boîtes vides.** L'année simulée
       n° 10 : 159 cartes « Boîtes pleines », dont 119 avec deux boîtes libres
@@ -5626,6 +5626,30 @@ parti.
       jetée au 22e jour avec les deux autres, et l'app la croyait « sans doute
       finie » le même jour. Une famille `beurre` à huit semaines
       (`conservation.yaml`). Tenu par `fondReappro.test.ts`.
+- [x] **T151 — Le gaspillage, tracé.** 25 kg sur l'année n° 10 (16,7 avant
+      T144–T146). Le harnais ne comptait que le total ; il le compte
+      maintenant par denrée (`etat.gaspi`). Sur 60 jours, avant ce lot : 1,4 kg
+      — le beurre (840 g, la plaquette jetée au 22e jour : T150), un bœuf
+      haché (500 g), le fromage. Après T148–T154 : 0,9 kg — le même bœuf, et
+      le bloc de fromage (387 g). **Le fromage** est de ce lot : depuis T150,
+      « 1 morceau » au minimum veut dire un bloc d'avance, et la famille
+      « laitier » (trois semaines) jetait celui qu'on finissait en cinq (75 g
+      la semaine). Une famille `fromage-bloc` à six semaines
+      (`conservation.yaml`). **Le bœuf haché n'est pas de l'app** : les
+      lasagnes du 21/10 finissent la bolognaise du congélo (relevée le 20/07)
+      et demandent du bœuf pour compléter la sauce ; le monde du harnais n'a
+      pas cette bolognaise et ne cuisine pas la sauce en chaîne — le bœuf
+      acheté pourrit. **L'été** (40 jours à partir du 17/07) : 8,3 kg, dont
+      6 kg de tomates et courgettes données par le voisin (un événement du
+      harnais), 1,85 kg de pommes et le fromage laissés au frigo pendant les
+      trois semaines d'août — l'app n'a aucun geste pour dire « on part ».
+      **Ouvert.** Les restes d'une part pourrissent au frigo : quand le dîner
+      s'agrandit pour demain midi, le midi prend ce lot-là, et la part que le
+      dîner laisse aussi (« Frigo · 1 repas ») n'a plus de preneur — huit en
+      60 jours (une avant, quand les boîtes pleines empêchaient le midi
+      prévu). Le harnais ne les pèse pas. Piste : agrandir le dîner des parts
+      du midi MOINS ce que le frigo tient déjà pour demain. Et dire une
+      absence.
 - [x] **T152 — La farine dérivait d'un sac par mois.** Ni le sac de 2 kg
       (`contenuDUnite` le pèse bien, 2 000 g) ni les quantités des fournées :
       le rejeu retirait `parts / portions` du placard, quand la fiche, la
@@ -5651,8 +5675,8 @@ parti.
       d'abord, sur autant de lots qu'il faut ; ce qui resterait d'un lot, s'il
       est plus petit que ce que la recette en prend, part avec le plat ; un
       lot vraiment entamé garde sa part de bande. Les lentilles mises de côté
-      SONT bien proposées : `burgers-de-lentilles` et la salade améliorée les
-      acceptent, et leur carte dit « du congélo ». Tenu par `db/journal.test.ts`.
+      ont preneurs (`accepts` : les burgers, 400 g ; la salade améliorée,
+      300 g ; le pâté, 150 g). Tenu par `db/journal.test.ts`.
 - [x] **T154 — Le fond aligné sur ce que l'année mange.** `fond.yaml`, daté
       du 2026-10-23, sur la mesure de l'année n° 10 (deux semaines de quatre
       repas), et pas au-delà : tomates pelées 3 à 5 boîtes ; pois chiches 1 à

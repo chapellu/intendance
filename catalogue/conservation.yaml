@@ -333,7 +333,28 @@ familles:
     conseil: >-
       Un sachet de fromage râpé entamé se congèle tel quel et s'emploie sans
       décongeler, directement sur le gratin.
-    ids: [fromage-rape, yaourt-nature]
+    ids: [yaourt-nature]
+
+  # T151 — LE FROMAGE EST UN BLOC, PAS UN SACHET DE RÂPÉ (fond, T142 : « en
+  # bloc, à râper »). À trois semaines, l'année simulée jetait le morceau de
+  # 400 g entamé : le foyer en mange 75 g la semaine, un bloc fait cinq
+  # semaines, et le fond en garde un d'avance (T150 : un minimum est une vraie
+  # quantité). Un bloc de pâte dure fermé tient deux mois ; entamé et bien
+  # emballé, plusieurs semaines.
+  - id: fromage-bloc
+    label: fromage en bloc
+    fond: true
+    espace: frigo
+    rangement: au frigo, dans son emballage ou un papier ciré, bien fermé
+    fenetre: {unite: semaines, valeur: 6}
+    source: >-
+      ordre de grandeur — un bloc de comté ou d'emmental sous vide porte une
+      date à six à huit semaines ; entamé, il tient trois à quatre semaines
+      emballé.
+    conseil: >-
+      Râper la moitié d'un bloc qui traîne et la congeler à plat : elle
+      s'emploie sans décongeler, directement sur le gratin.
+    ids: [fromage-rape]
 
   # T150 — LE BEURRE N'EST PAS UN YAOURT. T142 l'avait rangé ici, à trois
   # semaines : l'année simulée n° 10 jetait la plaquette entamée au 22e jour
