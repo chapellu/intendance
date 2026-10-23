@@ -67,31 +67,25 @@ describe("T134 — cuisiner un plat du fond le consomme, et la liste le recharge
   });
 
   // T135 — 200 g par hachis (250 g pour 5 parts, cuisiné pour 4). T142 : le
-  // fond rentre trois sachets de 500 g ; T143 : le relevé du 21/10 n'a plus de
-  // lentilles vertes, c'est donc 1,5 kg en tout.
+  // fond rentrait trois sachets de 500 g.
   // T152 — 250 g : le hachis se garde, il se cuisine en lot entier (la fiche
   // le dit), et le rejeu retire ce qui est cuisiné, pas ce qui est mangé.
-  // T150 — L'ENTAME COMPTE À SA FRACTION : sous un plancher de trois sachets,
-  // la liste en demande dès qu'il en manque — avant, le sachet entamé valait
-  // un sachet plein, et elle attendait qu'il en reste moins de deux.
-  test("deux hachis (500 g) : deux sachets sur 3, la liste en demande un", () => {
-    const { liste } = apres(2);
-    expect(liste.find((x) => x.ingredient === "lentilles-seches")).toMatchObject({ a: 2, niveau: 3, manque: 1, fond: true });
-  });
-
-  test("cinq hachis (1,25 kg) : il reste un demi-sachet, la liste dit « pour le fond »", () => {
-    const { liste } = apres(5);
+  // T154 — le fond rentre UN sachet (500 g au moins, 1 kg au rachat).
+  // T150 — L'ENTAME COMPTE À SA FRACTION : sous un plancher d'un sachet, la
+  // liste en demande dès qu'il est entamé — avant, le sachet entamé valait un
+  // sachet plein, et elle attendait qu'il soit vide.
+  test("un hachis (250 g) : un demi-sachet, la liste dit « pour le fond »", () => {
+    const { liste } = apres(1);
     const l = liste.find((x) => x.ingredient === "lentilles-seches");
-    // T150 — 250 g, 0,5 sachet : trois sachets pour repasser le plancher.
-    expect(l).toMatchObject({ a: 0.5, niveau: 3, manque: 3, fond: true });
+    expect(l).toMatchObject({ a: 0.5, niveau: 1, manque: 1, fond: true });
     expect(phraseDuPlancher(l!, 0)).toContain("pour le fond");
   });
 
-  test("dix hachis : les lentilles sont épuisées au rejeu, et « Ce soir » le dit", () => {
-    const { rejeu, jeu, carte, liste } = apres(10);
+  test("deux hachis : les lentilles sont épuisées au rejeu, et « Ce soir » le dit", () => {
+    const { rejeu, jeu, carte, liste } = apres(2);
     expect(rejeu.parIngredient.has("lentilles-seches")).toBe(false);
     expect(jeu.gardeManger).not.toContain("lentilles-seches");
-    expect(liste.find((x) => x.ingredient === "lentilles-seches")).toMatchObject({ a: 0, manque: 3 });
+    expect(liste.find((x) => x.ingredient === "lentilles-seches")).toMatchObject({ a: 0, manque: 2 });
     expect(carte).toBeDefined();
     expect(carte!.manque.map((a) => a.id)).toContain("lentilles-seches");
     expect(ligneAchats(carte!)).not.toBe("Rien à acheter");
@@ -254,8 +248,8 @@ describe("T136 — œufs, yaourts, fromage râpé : achetés par la liste, cuisi
     { ingredient: "oeufs", nom: "œufs", plat: "quiche-poireaux", parts: 6, avant: 5, apres: 6, manque: 4 },
     { ingredient: "fromage-rape", nom: "râpé", plat: "quiche-poireaux", parts: 6, avant: 4, apres: 5, manque: 1 },
     // quiche-courgettes-yaourt : 6 parts, 2 yaourts
-    // T145 — six packs rentrés (24 pots), remontés à 7 (≈ 25 pots la semaine).
-    { ingredient: "yaourt-nature", nom: "yaourt", plat: "quiche-courgettes-yaourt", parts: 6, avant: 11, apres: 12, manque: 7 },
+    // T145 — six packs rentrés (24 pots) ; T154 : remontés à 9 (36 pots).
+    { ingredient: "yaourt-nature", nom: "yaourt", plat: "quiche-courgettes-yaourt", parts: 6, avant: 11, apres: 12, manque: 9 },
   ];
 
   for (const k of cas) {
@@ -397,6 +391,7 @@ describe("T152 — le rejeu retire ce que la fiche fait cuisiner", () => {
       { sorte: "cuisine", jour: "2026-10-23", saisi: "2026-10-23", maj: 2, repas: "gouter", plat: pain.id, parts: 2.5 },
     ];
     expect(pain.portions).toBeGreaterThan(2.5);
-    expect(rejouer(catalogue, ev, ctx, "2026-10-23").parIngredient.get("farine-complete")?.grammes).toBe(2000 - 500);
+    // T154 : le sac de 1 kg.
+    expect(rejouer(catalogue, ev, ctx, "2026-10-23").parIngredient.get("farine-complete")?.grammes).toBe(1000 - 500);
   });
 });

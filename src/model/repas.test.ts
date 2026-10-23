@@ -282,11 +282,16 @@ describe("la fournée, proposée à la pause", () => {
 });
 
 describe("le fond et le stock de T142", () => {
-  test("`jusqua` chiffre la ligne : sous six boîtes de tomates, on remonte à dix", async () => {
+  // T154 — trois boîtes au moins, cinq au rachat ; un plancher posé plus haut
+  // que `jusqua` (six, d'avant T154) gagne : on ne remonte jamais sous lui.
+  test("`jusqua` chiffre la ligne : sous trois boîtes de tomates, on remonte à cinq", async () => {
     const { sousLeurPlancher } = await import("./plancherGardeManger");
     const r = rejouer(catalogue, [], contexte(catalogue), "2026-10-26");
-    const l = sousLeurPlancher(catalogue, r, [{ ingredient: "tomates-pelees", niveau: 6 }])[0]!;
-    expect(l).toMatchObject({ niveau: 6, manque: 10 - l.a, fond: true });
+    const a = sousLeurPlancher(catalogue, r, [{ ingredient: "tomates-pelees", niveau: 99 }])[0]!.a;
+    expect(a).toBeLessThan(3);
+    const l = sousLeurPlancher(catalogue, r, [{ ingredient: "tomates-pelees", niveau: 3 }])[0]!;
+    expect(l).toMatchObject({ niveau: 3, manque: 5 - l.a, fond: true });
+    expect(sousLeurPlancher(catalogue, r, [{ ingredient: "tomates-pelees", niveau: 6 }])[0]).toMatchObject({ manque: 6 - a });
   });
 
   test("le frais de la semaine se dit tel quel sur la liste", async () => {

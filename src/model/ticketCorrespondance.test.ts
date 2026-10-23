@@ -115,7 +115,7 @@ describe("quantiteDe — la pesée imprimée sous la ligne", () => {
 
 test("une ligne vrac sans pesée ne prend pas le format du fond", () => {
   const sac = catalogue.fond.denrees.find((d) => d.ingredient === "pomme-de-terre");
-  expect(sac?.unite).toMatch(/kg/);
+  expect(sac?.unite).toMatch(/\d+ k?g/);
   expect(quantiteDe(ligne("POMME DE TERRE VRAC"), "pomme-de-terre", catalogue)).toEqual({ unites: 1, parUnite: null });
   expect(quantiteDe(ligne("RAISIN SEC BIO KG"), "raisins-secs", catalogue).parUnite).toBeNull();
 });

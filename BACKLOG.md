@@ -5653,3 +5653,18 @@ parti.
       lot vraiment entamé garde sa part de bande. Les lentilles mises de côté
       SONT bien proposées : `burgers-de-lentilles` et la salade améliorée les
       acceptent, et leur carte dit « du congélo ». Tenu par `db/journal.test.ts`.
+- [x] **T154 — Le fond aligné sur ce que l'année mange.** `fond.yaml`, daté
+      du 2026-10-23, sur la mesure de l'année n° 10 (deux semaines de quatre
+      repas), et pas au-delà : tomates pelées 3 à 5 boîtes ; pois chiches 1 à
+      1,5 kg ; lentilles vertes 500 g à 1 kg ; lentilles corail et pois cassés,
+      un sachet ; farine semi-complète 2 à 3 kg, au sac de 1 kg ; pâtes 1 à 2
+      paquets ; riz 1 kg ; épinards et poêlée surgelés, 1 à 2 sachets ; thon 2
+      à 3 boîtes ; pommes de terre et carottes 1 à 2,5 kg, au demi-kilo ; lait
+      4 à 6 L ; yaourts 24 à 36 pots. Inchangés : flocons, beurre, fromage,
+      sucre (un paquet fait l'année), bananes. DEPUIS T150, UN MINIMUM EST UNE
+      VRAIE QUANTITÉ (l'entame compte à sa fraction) : les minimums de T142,
+      posés quand un paquet ouvert valait un paquet plein, baissent d'autant.
+      Les neuf dîners sans courses se font toujours du fond seul, en quantité
+      aussi (vérifié à la main : la bolognaise de lentilles prend 800 g de
+      tomates, la salade tiède deux boîtes de thon — d'où le minimum à deux).
+      `catalogue:verifie` 0 erreur.
