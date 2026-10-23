@@ -19,6 +19,15 @@ export const POIDS_PIECE: Readonly<Record<string, number>> = {
   // moyenne ; la poire, à l'avenant.
   pommes: 150,
   poires: 150,
+  // T156 — LA CAROTTE ET L'OIGNON, MÊME PIÈGE. T154 a mis la carotte au
+  // demi-kilo pesé ; les recettes la comptent à la pièce (« 3 carottes »),
+  // donc `retirer` passait au mode non chiffré : un demi-kilo servait deux
+  // plats quel que soit le nombre de carottes. L'app croyait des carottes au
+  // bac quand la cuisine n'en avait plus — 60 dîners de l'année n° 11, surtout
+  // les lentilles vertes (quatre carottes). L'oignon (filet de 1 kg, compté à
+  // la pièce) dérivait de même, dans l'autre sens. 150 g, comme le harnais.
+  carottes: 150,
+  oignon: 150,
 };
 
 /** `qty unit` dans l'unité où l'on additionne : le kilo en grammes, le litre

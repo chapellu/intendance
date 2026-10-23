@@ -5715,3 +5715,11 @@ sans beurre 6 / 1 ; gaspillage 1,4 / 0,9 kg ; midis sur le reste prévu
       plusieurs lots s'il le faut (`midisDuFrigo`, les midis prévus avec leurs
       parts). Le harnais lit la même phrase et complète le midi de la même
       façon (commit à part). Tenu par `repas.test.ts`.
+- [x] **T156 — Des carottes à l'écran, aucune au bac (60 dîners).** T154 a
+      mis la carotte au demi-kilo pesé (« 500 g en vrac ») ; les recettes la
+      comptent à la pièce. Sans poids de la pièce, `retirer` passait au mode
+      non chiffré : un demi-kilo servait deux plats, qu'ils prennent deux
+      carottes ou quatre — les lentilles vertes mijotées en tête. Même piège
+      que la pomme de T149 : `POIDS_PIECE` pèse la carotte, et l'oignon (filet
+      de 1 kg compté à la pièce), à 150 g comme le harnais. Tenu par
+      `fondReappro.test.ts`.

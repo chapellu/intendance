@@ -395,3 +395,17 @@ describe("T152 — le rejeu retire ce que la fiche fait cuisiner", () => {
     expect(rejouer(catalogue, ev, ctx, "2026-10-23").parIngredient.get("farine-complete")?.grammes).toBe(1000 - 500);
   });
 });
+
+// T156 — 60 DÎNERS DE L'ANNÉE N° 11 SANS CAROTTES QUE L'APP CROYAIT LÀ.
+describe("T156 — la carotte à la pièce se retire d'un demi-kilo pesé", () => {
+  test("trois carottes (450 g) sur un kilo : il en reste 550 g, pas un demi-kilo entier", () => {
+    const soupe = catalogue.plats.find((p) => p.id === "soupe-pois-casses-carottes")!;
+    expect(soupe.ingredients.find((i) => i.id === "carottes")).toMatchObject({ qty: 3, unit: "pièce" });
+    const ev: Evenement[] = [
+      { sorte: "entree", jour: "2026-10-22", saisi: "2026-10-22", maj: 1,
+        lignes: [{ ingredient: "carottes", unites: 2, parUnite: null, zone: null, etat: "frais" as const }] },
+      { sorte: "cuisine", jour: "2026-10-23", saisi: "2026-10-23", maj: 2, repas: "diner", plat: soupe.id, parts: soupe.portions },
+    ];
+    expect(rejouer(catalogue, ev, ctx, "2026-10-23").parIngredient.get("carottes")?.grammes).toBe(1000 - 450);
+  });
+});
