@@ -5639,3 +5639,17 @@ parti.
       (`consommer`, `max(0,5, parts/portions)`) et elle y est corrigée à part.
       Tenu par `fondReappro.test.ts` (un pain pour 2,5 parts prend ses 500 g ;
       le hachis, 250 g).
+- [x] **T153 — Les lentilles cuites restaient au congélateur.** T146 l'avait
+      laissé ouvert. La projection (`Depot.prelever`) puise dans plusieurs
+      lots ; la base (`journaliserCuisson`, effet 2) n'en retirait qu'un, le
+      premier de la table, au facteur `parts / portions`. Des burgers (400 g)
+      devant 150 g au frigo et 300 g au congélo ôtaient le lot du frigo, ou
+      250 g d'un lot de 450 ; le reste — « 3 repas » sur la bande, quelle que
+      soit sa quantité — dormait au congélateur de l'app des mois après avoir
+      été mangé, et tenait ses boîtes (T148). L'effet 2 prend maintenant au
+      facteur de la fiche (T152), le frigo avant le congélo et le plus ancien
+      d'abord, sur autant de lots qu'il faut ; ce qui resterait d'un lot, s'il
+      est plus petit que ce que la recette en prend, part avec le plat ; un
+      lot vraiment entamé garde sa part de bande. Les lentilles mises de côté
+      SONT bien proposées : `burgers-de-lentilles` et la salade améliorée les
+      acceptent, et leur carte dit « du congélo ». Tenu par `db/journal.test.ts`.

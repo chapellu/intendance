@@ -103,7 +103,6 @@ export async function journaliserCuisson(
 ): Promise<number> {
   const saisi = jourISO(aujourdhui);
   const maj = Date.now();
-  const f = plat.portions > 0 ? parts / plat.portions : 1;
 
   return base.transaction("rw", base.evenements, base.stock, async () => {
     const lots = await base.stock.toArray();
@@ -127,10 +126,21 @@ export async function journaliserCuisson(
         Number(b.midiLe === jour) - Number(a.midiLe === jour) ||
         Number((b.location ?? b.espace) === "frigo") - Number((a.location ?? a.espace) === "frigo"),
     );
+    // T153 — LE FRIGO AVANT LE CONGÉLATEUR, LE PLUS ANCIEN D'ABORD, pour une
+    // base nommée (des lentilles cuites) : c'est l'ordre de `Depot.prelever`.
+    const parType = [...lots].sort(
+      (a, b) =>
+        Number((b.location ?? b.espace) === "frigo") - Number((a.location ?? a.espace) === "frigo") ||
+        a.born.localeCompare(b.born),
+    );
+    // T153 — AU FACTEUR DE LA FICHE (T152) : des burgers pour 2,5 parts se
+    // font en lot entier, et prennent leurs 400 g de lentilles, pas 250.
+    const fAcc = plat.portions > 0 ? facteur(plat, parts) : 1;
     for (const acc of plat.accepts) {
-      const trouve = (acc.type ? lots : servables).find(
+      const candidats = (acc.type ? parType : servables).filter(
         (l) => !consomme.has(l.id!) && accepte({ type: l.type, kind: l.kind }, acc),
       );
+      const trouve = candidats[0];
       if (!trouve) continue;
       const besoin = acc.qty?.amount ?? null;
       if (besoin == null || trouve.qty == null || trouve.unite !== acc.qty?.unit) {
@@ -140,12 +150,28 @@ export async function journaliserCuisson(
         await base.stock.delete(trouve.id!);
         continue;
       }
-      const reste = trouve.qty - besoin * f;
-      if (reste <= 1e-9) {
-        consomme.add(trouve.id!);
-        await base.stock.delete(trouve.id!);
-      } else {
-        await base.stock.update(trouve.id!, { qty: reste, maj });
+      // T153 — PLUSIEURS LOTS, COMME `Depot.prelever`. Des burgers (400 g)
+      // devant 150 g au frigo et 300 g au congélo : la projection prenait les
+      // deux, la base n'en retirait qu'un, et les lentilles cuites restaient
+      // au congélateur de l'app des mois après avoir été mangées (T146 ouvert).
+      // UN FOND PART AVEC LE PLAT : ce qui resterait d'un lot, s'il est plus
+      // petit que ce que la recette en prend, ne se garde pas — 200 g de
+      // lentilles sur 450 vont dans les burgers, pas dans une boîte du midi.
+      let reste = besoin * fAcc;
+      for (const l of candidats) {
+        if (reste <= 1e-9) break;
+        if (l.qty == null || l.unite !== acc.qty?.unit) continue;
+        const garde = l.qty - reste;
+        reste = Math.max(0, reste - l.qty);
+        consomme.add(l.id!);
+        if (garde < besoin * fAcc - 1e-9) {
+          await base.stock.delete(l.id!);
+        } else {
+          // Le lot entamé garde sa part de repas : ses boîtes suivent
+          // (`contenantsLibres` relit la bande).
+          const repas = Math.round(bandRepas(l.band) * (garde / l.qty) * 100) / 100;
+          await base.stock.update(l.id!, { qty: garde, band: `${Math.max(repas, 0.5)}-repas`, maj });
+        }
       }
     }
 
@@ -229,8 +255,7 @@ export async function journaliserCuisson(
  * « 3-repas ». Les deux lisent maintenant `restesApresTable` au facteur que
  * `calculer()` donne au créneau — celui que la fiche montre.
  *
- * (L'EFFET 2, LUI, GARDE `parts / portions` : c'est ce qu'un `accepts` prend,
- * et c'est une autre question, laissée ouverte au backlog.)
+ * (L'EFFET 2 AUSSI, DEPUIS T153 : un `accepts` prend au même facteur.)
  */
 const defaut = (plat: Plat, parts: number, foyer: Pick<Foyer, "parts" | "mangeurs">, midi = 0): RangementLot[] =>
   restesApresTable(plat, facteur(plat, parts), parts - midi, foyer).map(({ emit, repas, qty }) => {
