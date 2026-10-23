@@ -5626,3 +5626,16 @@ parti.
       jetée au 22e jour avec les deux autres, et l'app la croyait « sans doute
       finie » le même jour. Une famille `beurre` à huit semaines
       (`conservation.yaml`). Tenu par `fondReappro.test.ts`.
+- [x] **T152 — La farine dérivait d'un sac par mois.** Ni le sac de 2 kg
+      (`contenuDUnite` le pèse bien, 2 000 g) ni les quantités des fournées :
+      le rejeu retirait `parts / portions` du placard, quand la fiche, la
+      sortie et les restes cuisinent au facteur de `calculer()` — un plat qui
+      se garde se fait en lot entier, même pour 2,5 parts. Le pain maison
+      (pour six) ne retirait que 208 g de farine sur 500, les cookies la
+      moitié de leur beurre, un dîner pour quatre 62 % de ses lentilles : le
+      placard de l'app restait plein quand la cuisine se vidait. `rejouer`
+      retire maintenant au `facteur` de la fiche (T108 l'avait fait pour les
+      restes, pas pour le placard). Le harnais faisait la même erreur
+      (`consommer`, `max(0,5, parts/portions)`) et elle y est corrigée à part.
+      Tenu par `fondReappro.test.ts` (un pain pour 2,5 parts prend ses 500 g ;
+      le hachis, 250 g).

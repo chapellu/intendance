@@ -69,19 +69,21 @@ describe("T134 — cuisiner un plat du fond le consomme, et la liste le recharge
   // T135 — 200 g par hachis (250 g pour 5 parts, cuisiné pour 4). T142 : le
   // fond rentre trois sachets de 500 g ; T143 : le relevé du 21/10 n'a plus de
   // lentilles vertes, c'est donc 1,5 kg en tout.
-  // T150 — L'ENTAME COMPTE À SA FRACTION : 1,1 kg, c'est 2,2 sachets, sous un
-  // plancher de trois. Avant, le sachet entamé valait un sachet plein, et la
-  // liste attendait qu'il en reste moins de deux (moins d'un kilo).
-  test("deux hachis (400 g) : 2,2 sachets sur 3, la liste en demande un", () => {
+  // T152 — 250 g : le hachis se garde, il se cuisine en lot entier (la fiche
+  // le dit), et le rejeu retire ce qui est cuisiné, pas ce qui est mangé.
+  // T150 — L'ENTAME COMPTE À SA FRACTION : sous un plancher de trois sachets,
+  // la liste en demande dès qu'il en manque — avant, le sachet entamé valait
+  // un sachet plein, et elle attendait qu'il en reste moins de deux.
+  test("deux hachis (500 g) : deux sachets sur 3, la liste en demande un", () => {
     const { liste } = apres(2);
-    expect(liste.find((x) => x.ingredient === "lentilles-seches")).toMatchObject({ a: 2.2, niveau: 3, manque: 1, fond: true });
+    expect(liste.find((x) => x.ingredient === "lentilles-seches")).toMatchObject({ a: 2, niveau: 3, manque: 1, fond: true });
   });
 
-  test("six hachis (1,2 kg) : il reste un sachet entamé, la liste dit « pour le fond »", () => {
-    const { liste } = apres(6);
+  test("cinq hachis (1,25 kg) : il reste un demi-sachet, la liste dit « pour le fond »", () => {
+    const { liste } = apres(5);
     const l = liste.find((x) => x.ingredient === "lentilles-seches");
-    // T150 — 300 g, 0,6 sachet : trois sachets pour repasser le plancher.
-    expect(l).toMatchObject({ a: 0.6, niveau: 3, manque: 3, fond: true });
+    // T150 — 250 g, 0,5 sachet : trois sachets pour repasser le plancher.
+    expect(l).toMatchObject({ a: 0.5, niveau: 3, manque: 3, fond: true });
     expect(phraseDuPlancher(l!, 0)).toContain("pour le fond");
   });
 
@@ -381,5 +383,20 @@ describe("T150 — le beurre se rachète sous deux plaquettes, pas sous une", ()
     const r = rejouer(catalogue, [rentre], ctx, "2026-11-20");
     expect(r.finis.has("beurre")).toBe(false);
     expect(r.parIngredient.get("beurre")?.grammes).toBe(750 - 31 * 10);
+  });
+});
+
+// T152 — LA FARINE DÉRIVAIT D'UN SAC PAR MOIS : la fournée se cuisine en lot
+// entier (la fiche le dit), mais le rejeu retirait `parts / portions` du foyer.
+describe("T152 — le rejeu retire ce que la fiche fait cuisiner", () => {
+  test("un pain maison pour 2,5 parts prend ses 500 g de farine, pas 208", () => {
+    const pain = catalogue.plats.find((p) => p.id === "pain-maison-semi-complet")!;
+    const ev: Evenement[] = [
+      { sorte: "entree", jour: "2026-10-22", saisi: "2026-10-22", maj: 1,
+        lignes: [{ ingredient: "farine-complete", unites: 1, parUnite: null, zone: null, etat: "sec" as const }] },
+      { sorte: "cuisine", jour: "2026-10-23", saisi: "2026-10-23", maj: 2, repas: "gouter", plat: pain.id, parts: 2.5 },
+    ];
+    expect(pain.portions).toBeGreaterThan(2.5);
+    expect(rejouer(catalogue, ev, ctx, "2026-10-23").parIngredient.get("farine-complete")?.grammes).toBe(2000 - 500);
   });
 });
