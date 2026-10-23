@@ -5692,3 +5692,11 @@ parti.
       aussi (vérifié à la main : la bolognaise de lentilles prend 800 g de
       tomates, la salade tiède deux boîtes de thon — d'où le minimum à deux).
       `catalogue:verifie` 0 erreur.
+
+Portes : typecheck, **1 180 tests**, build, **79 e2e**, `catalogue:verifie`
+0 erreur. Le harnais, sur 60 jours (même harnais, corrigé à part : le
+facteur de la fiche, le gaspillage par denrée, le stock de l'app dans la
+note « boîtes ») — avant / après : « Boîtes pleines » 28 / 5, dont avec deux
+boîtes libres ou plus au réel 25 / 0 ; goûters sans pomme 23 / 3 ; matins
+sans beurre 6 / 1 ; gaspillage 1,4 / 0,9 kg ; midis sur le reste prévu
+13 / 37, sandwichs 7 / 2.
