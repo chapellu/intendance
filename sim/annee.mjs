@@ -109,6 +109,13 @@ const aller = async (route) => {
 const attendre = async (sel, t = 15_000) => page.locator(sel).first().waitFor({ timeout: t });
 // Ce que l'écran montrait quand une attente a échoué : l'URL et le début du texte.
 const diag = async () => { try { return ` [${page.url().replace(/^.*#/, "#")}] ${(await texte()).slice(0, 220).replace(/\n/g, " / ")}`; } catch { return ""; } };
+// Le stock que l'app croit avoir (IndexedDB `intendance`, table `stock`) :
+// ce qu'une note « boîtes » met à côté du monde réel, pour voir qui ment.
+const stockApp = () => page.evaluate(() => new Promise((ok) => {
+  const r = indexedDB.open("intendance");
+  r.onsuccess = () => { try { const q = r.result.transaction("stock").objectStore("stock").getAll(); q.onsuccess = () => ok(q.result.map((l) => ({ type: l.type, kind: l.kind, band: l.qty_band ?? l.band, ou: l.location ?? l.espace, born: l.born, midiLe: l.midiLe }))); q.onerror = () => ok([]); } catch { ok([]); } };
+  r.onerror = () => ok([]);
+})).catch(() => []);
 const capture = async (nom) => { try { await page.screenshot({ path: `${OUT}/captures/${nom}.png`, fullPage: false }); } catch {} };
 
 async function ouvrirJour(j, heure = "07:30") {
@@ -205,7 +212,7 @@ for (const f of cat.garde ?? []) if (f.fond) for (const id of f.ids) GARDE_JOURS
 function pourrirLeFrais(j) {
   for (const [id, r] of Object.entries(etat.reel)) {
     if (r.frais && r.q > 0 && (new Date(j) - new Date(r.le)) / 864e5 > (GARDE_JOURS.get(id) ?? 7)) {
-      etat.compte.gaspilleG += r.q; r.q = 0;
+      etat.compte.gaspilleG += r.q; (etat.gaspi ??= {})[id] = (etat.gaspi[id] ?? 0) + r.q; r.q = 0;
     }
   }
 }
@@ -572,7 +579,7 @@ async function journee(idx) {
     const lieu = e.type === "panne-congelo" ? "Congélo" : "Frigo";
     let n = 0; while (n < 40 && (await plusDe((t) => t.includes(lieu)))) n++;
     for (const r of perdusDansLaPanne(d, j, lieu)) { r.jete = j; r.panne = true; etat.compte.perdusPanne = (etat.compte.perdusPanne ?? 0) + 1; }
-    if (lieu === "Frigo") for (const r of Object.values(etat.reel)) if (r.frais) { etat.compte.gaspilleG += r.q; r.q = 0; }
+    if (lieu === "Frigo") for (const [id, r] of Object.entries(etat.reel)) if (r.frais) { etat.compte.gaspilleG += r.q; (etat.gaspi ??= {})[id] = (etat.gaspi[id] ?? 0) + r.q; r.q = 0; }
     note(j, "panne", `${e.quoi} : ${n} lots retirés un par un (« Je n'en ai plus » ×${n}) — pas de geste « tout ce qui était au ${lieu.toLowerCase()} est perdu »${lieu === "Frigo" ? " ; et rien pour le frais acheté (beurre, crème, légumes) qui n'est pas un lot" : ""}`);
   }
   if (ev.some((e) => e.type === "jete")) {
@@ -1268,7 +1275,7 @@ async function journee2(idx) {
         } else if (/Boîtes pleines/.test(phrase)) {
           stats.midiPrevu = "boîtes pleines";
           etat.compte.midiBoitesPleines = (etat.compte.midiBoitesPleines ?? 0) + 1;
-          note(j, "boites", `pas de midi demain : « ${/Boîtes pleines.*?seulement/.exec(phrase)[0]} » (${BOITES - boitesOccupees()} libres au réel)`);
+          note(j, "boites", `pas de midi demain : « ${/Boîtes pleines.*?seulement/.exec(phrase)[0]} » (${BOITES - boitesOccupees()} libres au réel)`, { app: await stockApp(), reel: vivants().filter((r) => r.boites).map((r) => ({ plat: r.plat, ou: r.ou, boites: r.boites, portions: r.portions, le: r.le })) });
         } else stats.midiPrevu = "non";
         const t = await cuisiner(j, ev, stats, { autrement: ev.some((e) => e.type === "rate") || hasard() < 0.05, parts: invite?.parts ?? 2.5, deja: detour || pris.par === "posé" ? null : pris.titre, midi, voulu: pris.titre });
         stats.diner = t ?? "rien";
