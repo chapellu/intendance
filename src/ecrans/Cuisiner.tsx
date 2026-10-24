@@ -697,6 +697,19 @@ function Ingredients({
           {phraseDuRole(p)}
         </span>
       </div>
+      {/* T159 — LE CRÉDIT OUVRE LA FICHE (il la fermait depuis T73). Le
+          24/10, le foyer a voulu vérifier des recettes dans le livre : il faut
+          le livre et la page sous les yeux, sans descendre sous les
+          ingrédients — et savoir tout de suite quand il n'y a pas de livre. */}
+      <div className="co-credit">
+        {cr.url ? (
+          <a href={cr.url} target="_blank" rel="noreferrer">
+            {cr.texte}
+          </a>
+        ) : (
+          cr.texte
+        )}
+      </div>
       {/* T74 — « à sortir avant de commencer », sur la FICHE et pas sur
           l'étape : le guide se lit à bout de bras et tout ce qui n'est pas
           l'étape en cours y est du bruit. Muet sur les 72 plats sans
@@ -754,18 +767,6 @@ function Ingredients({
           ))}
         </div>
       )}
-      {/* T73 — le crédit ferme la fiche au lieu de l'ouvrir : on vient y lire
-          des quantités, pas une bibliographie. Il est là, lisible, et il ne
-          prend la place de rien. */}
-      <div className="co-credit">
-        {cr.url ? (
-          <a href={cr.url} target="_blank" rel="noreferrer">
-            {cr.texte}
-          </a>
-        ) : (
-          cr.texte
-        )}
-      </div>
     </div>
   );
 }

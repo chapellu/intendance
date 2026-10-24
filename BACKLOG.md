@@ -5748,3 +5748,12 @@ sans beurre 6 / 1 ; gaspillage 1,4 / 0,9 kg ; midis sur le reste prévu
       planchers posés, elle propose seulement ceux du fond qui manquent. Les
       niveaux se règlent ensuite ligne à ligne, comme avant. Tenu par
       `db.test.ts` et `plancher-garde-manger.spec.ts`.
+
+- [x] **T159 — Le livre et la page en tête de fiche (24/10).** Le foyer veut
+      vérifier des recettes dans le livre. Le crédit (« Marie Chioca — Je
+      mange sain et bio, même au boulot !, Terre vivante, p. 63 ») fermait la
+      fiche depuis T73, sous treize lignes d'ingrédients : il l'ouvre
+      maintenant, juste sous les parts. Et les 39 fiches sans source ne disent
+      plus « Recette du foyer », qui laissait croire à une recette de famille :
+      elles ont été écrites pour l'app, et le disent (« Écrite pour l'app —
+      dans aucun livre »).

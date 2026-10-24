@@ -83,7 +83,7 @@ test("un plat du foyer le dit au lieu de se taire", async ({ page }) => {
   // LE SILENCE ÉTAIT L'AUTRE OPTION, ET IL A ÉTÉ ÉCARTÉ : un champ vide sur un
   // quart du catalogue ressemble à un bug, alors que ces plats n'ont pas de
   // source parce qu'ils sont à nous.
-  await expect(page.locator(".co-credit")).toHaveText("Recette du foyer");
+  await expect(page.locator(".co-credit")).toHaveText("Écrite pour l’app — dans aucun livre");
 });
 
 test("un plat sans vaisselle ne montre rien plutôt que d'inventer", async ({ page }) => {
