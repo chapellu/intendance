@@ -47866,8 +47866,38 @@
    "source": "ordre de grandeur — yaourts et fromage râpé fermés tiennent jusqu'à leur date, souvent trois à quatre semaines. Ouvert, le fromage râpé tient quelques jours.",
    "conseil": "Un sachet de fromage râpé entamé se congèle tel quel et s'emploie sans décongeler, directement sur le gratin.",
    "ids": [
-    "fromage-rape",
-    "yaourt-nature",
+    "yaourt-nature"
+   ]
+  },
+  {
+   "id": "fromage-bloc",
+   "label": "fromage en bloc",
+   "fond": true,
+   "entameSeFinit": false,
+   "espace": "frigo",
+   "rangement": "au frigo, dans son emballage ou un papier ciré, bien fermé",
+   "methode": null,
+   "fenetreJours": 42,
+   "fenetre": "6 semaines",
+   "source": "ordre de grandeur — un bloc de comté ou d'emmental sous vide porte une date à six à huit semaines ; entamé, il tient trois à quatre semaines emballé.",
+   "conseil": "Râper la moitié d'un bloc qui traîne et la congeler à plat : elle s'emploie sans décongeler, directement sur le gratin.",
+   "ids": [
+    "fromage-rape"
+   ]
+  },
+  {
+   "id": "beurre",
+   "label": "beurre",
+   "fond": true,
+   "entameSeFinit": false,
+   "espace": "frigo",
+   "rangement": "au frigo, dans son papier, loin des odeurs",
+   "methode": null,
+   "fenetreJours": 56,
+   "fenetre": "8 semaines",
+   "source": "ordre de grandeur — la date d'une plaquette de beurre doux est à six à dix semaines de l'achat ; ouverte et bien emballée, elle tient jusqu'à sa date.",
+   "conseil": "Une plaquette d'avance se congèle telle quelle, dans son papier, et se sort la veille au frigo.",
+   "ids": [
     "beurre"
    ]
   },
@@ -47976,14 +48006,14 @@
   }
  ],
  "fond": {
-  "date": "2026-10-21",
+  "date": "2026-10-23",
   "denrees": [
    {
     "ingredient": "farine-complete",
-    "minimum": 1,
-    "jusqua": 2,
+    "minimum": 2,
+    "jusqua": 3,
     "hebdo": false,
-    "unite": "sac de 2 kg (semi-complète T80 à T110)"
+    "unite": "sac de 1 kg (semi-complète T80 à T110)"
    },
    {
     "ingredient": "levure-boulangere",
@@ -48036,24 +48066,24 @@
    },
    {
     "ingredient": "lait-croissance",
-    "minimum": 6,
-    "jusqua": 10,
+    "minimum": 4,
+    "jusqua": 6,
     "hebdo": true,
     "unite": "brique de 1 L"
    },
    {
     "ingredient": "yaourt-nature",
     "minimum": 6,
-    "jusqua": 7,
+    "jusqua": 9,
     "hebdo": true,
     "unite": "pack de 4"
    },
    {
     "ingredient": "pommes",
-    "minimum": 1,
-    "jusqua": null,
+    "minimum": 2,
+    "jusqua": 3,
     "hebdo": true,
-    "unite": "sachet de 1,5 kg"
+    "unite": "1 kg en vrac"
    },
    {
     "ingredient": "banane",
@@ -48064,22 +48094,22 @@
    },
    {
     "ingredient": "poires",
-    "minimum": 2,
-    "jusqua": 4,
+    "minimum": 1,
+    "jusqua": null,
     "hebdo": true,
-    "unite": "pièce"
+    "unite": "500 g en vrac"
    },
    {
     "ingredient": "lentilles-corail",
-    "minimum": 2,
+    "minimum": 1,
     "jusqua": null,
     "hebdo": false,
     "unite": "sachet de 500 g"
    },
    {
     "ingredient": "lentilles-seches",
-    "minimum": 3,
-    "jusqua": null,
+    "minimum": 1,
+    "jusqua": 2,
     "hebdo": false,
     "unite": "sachet de 500 g"
    },
@@ -48092,8 +48122,8 @@
    },
    {
     "ingredient": "pois-chiches",
-    "minimum": 4,
-    "jusqua": null,
+    "minimum": 2,
+    "jusqua": 3,
     "hebdo": false,
     "unite": "sachet de 500 g ou bocal"
    },
@@ -48113,15 +48143,15 @@
    },
    {
     "ingredient": "pates",
-    "minimum": 2,
-    "jusqua": null,
+    "minimum": 1,
+    "jusqua": 2,
     "hebdo": false,
     "unite": "paquet de 500 g (demi-complètes)"
    },
    {
     "ingredient": "riz",
     "minimum": 1,
-    "jusqua": 2,
+    "jusqua": null,
     "hebdo": false,
     "unite": "paquet de 1 kg (demi-complet)"
    },
@@ -48134,15 +48164,15 @@
    },
    {
     "ingredient": "pomme-de-terre",
-    "minimum": 3,
-    "jusqua": null,
+    "minimum": 2,
+    "jusqua": 5,
     "hebdo": false,
-    "unite": "1 kg en vrac"
+    "unite": "500 g en vrac"
    },
    {
     "ingredient": "epinards-surgeles",
-    "minimum": 2,
-    "jusqua": null,
+    "minimum": 1,
+    "jusqua": 2,
     "hebdo": false,
     "unite": "sachet"
    },
@@ -48169,15 +48199,15 @@
    },
    {
     "ingredient": "legumes-surgeles",
-    "minimum": 2,
-    "jusqua": null,
+    "minimum": 1,
+    "jusqua": 2,
     "hebdo": false,
     "unite": "sachet de poêlée"
    },
    {
     "ingredient": "tomates-pelees",
-    "minimum": 6,
-    "jusqua": 10,
+    "minimum": 3,
+    "jusqua": 5,
     "hebdo": false,
     "unite": "boîte de 400 g"
    },
@@ -48193,12 +48223,12 @@
     "minimum": 3,
     "jusqua": null,
     "hebdo": false,
-    "unite": "brique"
+    "unite": "brique de 40 cl"
    },
    {
     "ingredient": "thon-boite",
-    "minimum": 4,
-    "jusqua": 6,
+    "minimum": 2,
+    "jusqua": 3,
     "hebdo": false,
     "unite": "boîte de 140 g"
    },
@@ -48233,9 +48263,9 @@
    {
     "ingredient": "carottes",
     "minimum": 2,
-    "jusqua": null,
+    "jusqua": 5,
     "hebdo": false,
-    "unite": "sachet de 1 kg"
+    "unite": "500 g en vrac"
    },
    {
     "ingredient": "citron",

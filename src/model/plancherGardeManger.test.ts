@@ -12,12 +12,14 @@ import { describe, expect, test } from "vitest";
 import { lireCatalogue } from "./catalogue";
 import { contexte, rejouer, type Evenement, type Rejeu } from "./journal";
 import {
+  aRacheter,
   comptable,
   nomDeLaDenree,
   posables,
   pourquoiPasDePlancher,
   sousLeurPlancher,
   UNITE_PLANCHER,
+  unitesReelles,
   usages,
   type PlancherDenree,
 } from "./plancherGardeManger";
@@ -59,8 +61,11 @@ describe("T39 — le plancher du garde-manger porte sur l'ingrédient", () => {
     const [ligne] = sousLeurPlancher(catalogue, placard(), [{ ingredient: "pates", niveau: 99 }]);
     expect(ligne).toBeDefined();
     // Un seul manque, calculé sur le total de l'ingrédient — pas quatre lignes.
-    expect(ligne!.a).toBe(e!.unites);
-    expect(ligne!.manque).toBe(99 - e!.unites);
+    // T150 — les paquets entamés à leur fraction, quand ils sont pesés.
+    const reel = unitesReelles(e!);
+    expect(reel).toBeLessThanOrEqual(e!.unites);
+    expect(ligne!.a).toBe(Math.floor(reel * 10 + 1e-9) / 10);
+    expect(ligne!.manque).toBe(aRacheter(reel, 99, 99));
   });
 
   test("le compte est en unités d'achat, jamais en grammes", () => {

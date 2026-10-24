@@ -333,9 +333,47 @@ familles:
     conseil: >-
       Un sachet de fromage râpé entamé se congèle tel quel et s'emploie sans
       décongeler, directement sur le gratin.
-    # `beurre` (T142) : la plaquette fermée tient des semaines au frigo, et
-    # c'est l'ordre de grandeur de cette famille.
-    ids: [fromage-rape, yaourt-nature, beurre]
+    ids: [yaourt-nature]
+
+  # T151 — LE FROMAGE EST UN BLOC, PAS UN SACHET DE RÂPÉ (fond, T142 : « en
+  # bloc, à râper »). À trois semaines, l'année simulée jetait le morceau de
+  # 400 g entamé : le foyer en mange 75 g la semaine, un bloc fait cinq
+  # semaines, et le fond en garde un d'avance (T150 : un minimum est une vraie
+  # quantité). Un bloc de pâte dure fermé tient deux mois ; entamé et bien
+  # emballé, plusieurs semaines.
+  - id: fromage-bloc
+    label: fromage en bloc
+    fond: true
+    espace: frigo
+    rangement: au frigo, dans son emballage ou un papier ciré, bien fermé
+    fenetre: {unite: semaines, valeur: 6}
+    source: >-
+      ordre de grandeur — un bloc de comté ou d'emmental sous vide porte une
+      date à six à huit semaines ; entamé, il tient trois à quatre semaines
+      emballé.
+    conseil: >-
+      Râper la moitié d'un bloc qui traîne et la congeler à plat : elle
+      s'emploie sans décongeler, directement sur le gratin.
+    ids: [fromage-rape]
+
+  # T150 — LE BEURRE N'EST PAS UN YAOURT. T142 l'avait rangé ici, à trois
+  # semaines : l'année simulée n° 10 jetait la plaquette entamée au 22e jour
+  # (et l'app la croyait « sans doute finie » au même jour), avec ce qui
+  # restait des trois achetées d'un coup. Une plaquette fermée tient deux mois.
+  - id: beurre
+    label: beurre
+    fond: true
+    espace: frigo
+    rangement: au frigo, dans son papier, loin des odeurs
+    fenetre: {unite: semaines, valeur: 8}
+    source: >-
+      ordre de grandeur — la date d'une plaquette de beurre doux est à six à
+      dix semaines de l'achat ; ouverte et bien emballée, elle tient jusqu'à
+      sa date.
+    conseil: >-
+      Une plaquette d'avance se congèle telle quelle, dans son papier, et se
+      sort la veille au frigo.
+    ids: [beurre]
 
   # T142 — LE LAIT DE CROISSANCE, en briques UHT : il se garde fermé comme une
   # conserve, mais une brique ouverte ne se finit pas d'un plat (pas

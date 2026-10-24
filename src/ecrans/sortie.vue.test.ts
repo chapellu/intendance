@@ -163,11 +163,16 @@ describe("les contenants du foyerMixte", () => {
     ]);
   });
 
-  test("les boîtes qui se lavent passent devant les sacs qu'on rachète", () => {
-    // Au congélateur, le foyerMixte a 8 boîtes hermétiques et 20 sacs — tous deux
-    // d'une portion. Proposer le sac d'abord dépenserait un consommable pour
-    // épargner une vaisselle.
-    expect(boitesPour(foyerMixte, "congelo", 2)).toEqual([
+  // T148 — LE CONTRAIRE DE T99, AU CONGÉLATEUR SEULEMENT. Une boîte qui part
+  // au congélo y dort des semaines, et ce sont les boîtes du midi : le sac passe
+  // devant. Au frigo, rien ne change — le sac n'y va pas.
+  test("au congélateur, les sacs passent devant les boîtes qui se lavent", () => {
+    expect(boitesPour(foyerMixte, "congelo", 2)).toEqual([{ label: "sacs congélation", nombre: 2 }]);
+  });
+
+  test("plus de sacs : les boîtes reprennent la main au congélateur", () => {
+    const sansSacs = new Map([["sacs-congelation", 0]]);
+    expect(boitesPour(foyerMixte, "congelo", 2, null, sansSacs)).toEqual([
       { label: "boîtes hermétiques 0,5 / 1 L", nombre: 2 },
     ]);
   });
@@ -301,7 +306,8 @@ describe("T109 — une boîte a un volume, et elle peut être prise", () => {
 
   test("1 250 ml de bouillon ne tiennent pas dans une boîte de 0,5 L", () => {
     // Le cas mesuré du ticket : « 1 250 ml → 1 × boîtes hermétiques ».
-    expect(boitesPour(foyerMixte, "congelo", 1, { amount: 1250, unit: "ml" })).toEqual([
+    // T148 : sans sac libre, sinon le sac le prend.
+    expect(boitesPour(foyerMixte, "congelo", 1, { amount: 1250, unit: "ml" }, new Map([["sacs-congelation", 0]]))).toEqual([
       { label: "boîtes hermétiques 0,5 / 1 L", nombre: 3 },
     ]);
   });
@@ -322,11 +328,11 @@ describe("T109 — une boîte a un volume, et elle peut être prise", () => {
   });
 
   test("ce que le dépôt occupe n'est plus libre", () => {
-    const stock = Array.from({ length: 8 }, () => lot({ location: "congelo" }));
+    const stock = Array.from({ length: 8 }, () => lot({ location: "frigo" }));
     const libres = contenantsLibres(foyerMixte, stock);
-    // Les 8 boîtes dorment au congélateur : le prochain lot va dans un sac.
+    // Les 8 boîtes sont au frigo : le prochain reste va dans un bocal.
     expect(libres.get("boites-hermetiques")).toBe(0);
-    expect(boitesPour(foyerMixte, "congelo", 1, null, libres)).toEqual([{ label: "sacs congélation", nombre: 1 }]);
+    expect(boitesPour(foyerMixte, "frigo", 1, null, libres)).toEqual([{ label: "bocaux Le Parfait 0,75 L", nombre: 1 }]);
   });
 
   test("quand il n'en reste pas assez, la sortie le dit — et propose un sac au frigo", () => {
@@ -365,11 +371,11 @@ describe("T109 — une boîte a un volume, et elle peut être prise", () => {
 });
 
 describe("le foyer réel, quatre boîtes de 0,8 L", () => {
-  test("le pot-au-feu remplit les quatre boîtes avec son seul bouillon, et le dit", () => {
+  test("le pot-au-feu remplit les quatre boîtes du frigo ; ce qui part au congélo va en sacs", () => {
     // LE RETOUR D'USAGE QUI A OUVERT T109, CONTRE LE VRAI FOYER : « pas assez
-    // de boîtes pour le ranger ». Les 2,5 L de bouillon prennent les quatre
-    // boîtes ; la viande et les légumes qui restent au frigo n'ont plus rien,
-    // et l'écran le dit au lieu de proposer une boîte qui n'existe pas.
+    // de boîtes pour le ranger ». T109 mettait le bouillon du congélo dans les
+    // boîtes, et la viande du frigo n'avait plus rien. T148 : le congélateur
+    // tourne aux sacs, les quatre boîtes vont au frigo — et tout se range.
     const p = catalogue.plats.find((x) => x.id === "pot-au-feu-traditionnel")!;
     const v = vueDeLaSortie(p, foyer.parts, 1, foyer);
     const boites = v.lots
@@ -377,10 +383,10 @@ describe("le foyer réel, quatre boîtes de 0,8 L", () => {
       .filter((b) => b.label === "boîtes IKEA 0,8 L")
       .reduce((n, b) => n + b.nombre, 0);
     expect(boites).toBe(4);
-    const bouillon = v.lots.filter((l) => l.type === "bouillon-pot-au-feu");
-    expect(bouillon.every((l) => phraseDesBoites(l.boites) === "2 × boîtes IKEA 0,8 L")).toBe(true);
-    const sansBoite = v.lots.filter((l) => l.location === "frigo" && l.manque);
-    expect(sansBoite.map((l) => l.type)).toEqual(["viande-pot-au-feu", "legumes-pot-au-feu"]);
+    const congelo = v.lots.filter((l) => l.location === "congelo");
+    expect(congelo.length).toBeGreaterThan(0);
+    expect(congelo.every((l) => l.boites.every((b) => b.label === "sacs congélation"))).toBe(true);
+    expect(v.lots.filter((l) => l.manque)).toEqual([]);
   });
 });
 

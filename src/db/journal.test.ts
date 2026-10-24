@@ -322,3 +322,28 @@ describe("T99 — la sortie range, et la base l'apprend", () => {
     expect(await base.stock.count()).toBe(0);
   });
 });
+
+// T153 — LES LENTILLES CUITES DU CONGÉLO RESTAIENT DANS L'APP (T146 ouvert).
+describe("T153 — un accepts prend ce que la fiche cuisine, sur plusieurs lots, et finit les fonds", () => {
+  const burgers = plat({
+    id: "burgers-test",
+    portions: 4,
+    emits: [{ type: "burgers", kind: "reste-plat", qty: null, band: "1-repas", espace: "frigo", congelo: true, gardeFrigo: 3 }],
+    accepts: [{ type: "lentilles-vertes-cuites", kind: null, qty: { amount: 400, unit: "g" } }],
+  } as Partial<Plat> & { id: string });
+  const lentilles = (o: Partial<LotStock>) =>
+    lot({ type: "lentilles-vertes-cuites", qty: 300, unite: "g", band: "2-repas", ...o });
+
+  test("150 g au frigo et 300 g au congélo : les burgers prennent les deux", async () => {
+    await base.stock.bulkAdd([lentilles({ location: "congelo", born: "2026-10-03" }), lentilles({ qty: 150, band: "1-repas", location: "frigo", born: "2026-10-20" })]);
+    await journaliserCuisson(base, { jour: "2026-10-21", repas: "diner", plat: burgers, parts: 2.5 });
+    expect((await base.stock.toArray()).filter((l) => l.type === "lentilles-vertes-cuites")).toEqual([]);
+  });
+
+  test("un lot de 1,2 kg en garde 800 g, et sa bande suit", async () => {
+    await base.stock.add(lentilles({ qty: 1200, band: "3-repas", location: "frigo" }));
+    await journaliserCuisson(base, { jour: "2026-10-21", repas: "diner", plat: burgers, parts: 2.5 });
+    const [l] = (await base.stock.toArray()).filter((x) => x.type === "lentilles-vertes-cuites");
+    expect(l).toMatchObject({ qty: 800, band: "2-repas" });
+  });
+});

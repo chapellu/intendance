@@ -5575,3 +5575,162 @@ parti.
       (`lotsEnBoites`, `midiDeDemain`) lisaient déjà la base. Tenu par
       `pause.test.ts` (trois posés, aucun cuit → aucun lot qui attend) et
       `e2e/pose-pas-cuit.spec.ts` (le fil, puis le cockpit).
+
+## L'année simulée n° 10 — T148 à T154
+
+- [x] **T148 — « Boîtes pleines » devant des boîtes vides.** L'année simulée
+      n° 10 : 159 cartes « Boîtes pleines », dont 119 avec deux boîtes libres
+      ou plus dans la vraie cuisine. Le 21/10, l'app voyait cinq boîtes
+      occupées sur quatre : la sauce bolognaise du relevé (née le 20/07, au
+      congélo) en tenait une, le houmous de la veille trois, le gratin une.
+      `contenantsLibres` re-range chaque lot par la règle de la sortie, et
+      cette règle (T99) mettait les boîtes qui se lavent devant les sacs
+      PARTOUT, congélateur compris : tout ce qui dormait au congélo — la sauce
+      du relevé, les lentilles cuites de la souche, une soupe de trop — prenait
+      une des quatre boîtes du midi pour des semaines, même quand la sortie
+      l'avait mis en sac faute de boîte libre ce soir-là (le lot ne dit pas où
+      il dort ; dès que le frigo se vidait, le re-rangement le remettait en
+      boîte). Au congélateur, les sacs passent maintenant devant (`rangerDans`,
+      comme la fournée de T142) ; les boîtes ne reprennent la main que quand
+      les sacs manquent. Le pot-au-feu se range enfin : le bouillon du congélo
+      en sacs, les quatre boîtes au frigo. Tenu par `repas.test.ts` (la
+      bolognaise du 20/07 et les lentilles cuites au congélo, un gratin au
+      frigo → trois boîtes libres, le midi se prend) et `sortie.vue.test.ts`.
+- [x] **T149 — Les goûters sans pomme.** 143 goûters sur l'année n° 10. Trois
+      causes, dans l'app. **La pomme à la pièce** : le goûter en retire une
+      (`gouter-des-enfants`) d'un sachet chiffré en grammes ; faute de poids
+      de la pièce, `retirer` passait au mode non chiffré — le sachet de 1,5 kg
+      s'entamait au premier goûter et disparaissait au second, et l'app
+      croyait la semaine finie le lundi soir. `POIDS_PIECE` pèse la pomme et
+      la poire (150 g). **La compote d'abord** : `ici` ne dit que la présence,
+      et la compote (1 kg) se proposait dès qu'il restait une pomme.
+      `fruitsAuDelaDuGouter` réserve les goûters d'ici les prochaines courses
+      (`goutersAvantCourses` : le samedi, quatre) ; seul ce qui dépasse
+      nourrit une fournée (`fourneeAProposer`, `auDelaDuGouter`). **Le
+      sachet entamé valait un sachet** : `fruitsDeLaSemaine` compte l'entame à
+      sa fraction (`unitesReelles`) et rachète par `aRacheter`. Le fond : la
+      pomme au kilo, 2 à 3 kg (les enfants en mangent 1,7 kg la semaine,
+      compote comprise) ; la poire, 500 g pesés. Tenu par `repas.test.ts`.
+- [x] **T150 — Le beurre manquait 36 matins, minimum 2 plaquettes.** Ni les
+      gâteaux ni l'unité : les fournées retirent bien leur beurre en grammes,
+      et la plaquette est pesée (`fond.yaml`). Deux causes. **Le rachat trop
+      tard** : `sousLeurPlancher` lisait `unites`, où un lot ouvert compte
+      pour une unité entière ; « sous 2 plaquettes » voulait dire « moins
+      d'une au frigo » — 230 g pour une semaine qui en mange 240 (tartines et
+      fournées), et la liste ne se lit qu'aux jours de courses. L'entame compte
+      maintenant à sa fraction (`unitesReelles`) ; le rachat repasse le
+      plancher sans dépasser `jusqua` d'une unité entière (`aRacheter`), et la
+      liste dit « 1,9 sur 2 ». Vaut pour tout le fond : un sachet de lentilles
+      entamé n'est plus un sachet. **La garde** : T142 avait mis le beurre dans
+      la famille « laitier » (trois semaines) ; la plaquette entamée était
+      jetée au 22e jour avec les deux autres, et l'app la croyait « sans doute
+      finie » le même jour. Une famille `beurre` à huit semaines
+      (`conservation.yaml`). Tenu par `fondReappro.test.ts`.
+- [x] **T151 — Le gaspillage, tracé.** 25 kg sur l'année n° 10 (16,7 avant
+      T144–T146). Le harnais ne comptait que le total ; il le compte
+      maintenant par denrée (`etat.gaspi`). Sur 60 jours, avant ce lot : 1,4 kg
+      — le beurre (840 g, la plaquette jetée au 22e jour : T150), un bœuf
+      haché (500 g), le fromage. Après T148–T154 : 0,9 kg — le même bœuf, et
+      le bloc de fromage (387 g). **Le fromage** est de ce lot : depuis T150,
+      « 1 morceau » au minimum veut dire un bloc d'avance, et la famille
+      « laitier » (trois semaines) jetait celui qu'on finissait en cinq (75 g
+      la semaine). Une famille `fromage-bloc` à six semaines
+      (`conservation.yaml`). **Le bœuf haché n'est pas de l'app** : les
+      lasagnes du 21/10 finissent la bolognaise du congélo (relevée le 20/07)
+      et demandent du bœuf pour compléter la sauce ; le monde du harnais n'a
+      pas cette bolognaise et ne cuisine pas la sauce en chaîne — le bœuf
+      acheté pourrit. **L'été** (40 jours à partir du 17/07) : 8,3 kg, dont
+      6 kg de tomates et courgettes données par le voisin (un événement du
+      harnais), 1,85 kg de pommes et le fromage laissés au frigo pendant les
+      trois semaines d'août — l'app n'a aucun geste pour dire « on part ».
+      **Ouvert.** Les restes d'une part pourrissent au frigo : quand le dîner
+      s'agrandit pour demain midi, le midi prend ce lot-là, et la part que le
+      dîner laisse aussi (« Frigo · 1 repas ») n'a plus de preneur — huit en
+      60 jours (une avant, quand les boîtes pleines empêchaient le midi
+      prévu). Le harnais ne les pèse pas. Piste : agrandir le dîner des parts
+      du midi MOINS ce que le frigo tient déjà pour demain. Et dire une
+      absence.
+- [x] **T152 — La farine dérivait d'un sac par mois.** Ni le sac de 2 kg
+      (`contenuDUnite` le pèse bien, 2 000 g) ni les quantités des fournées :
+      le rejeu retirait `parts / portions` du placard, quand la fiche, la
+      sortie et les restes cuisinent au facteur de `calculer()` — un plat qui
+      se garde se fait en lot entier, même pour 2,5 parts. Le pain maison
+      (pour six) ne retirait que 208 g de farine sur 500, les cookies la
+      moitié de leur beurre, un dîner pour quatre 62 % de ses lentilles : le
+      placard de l'app restait plein quand la cuisine se vidait. `rejouer`
+      retire maintenant au `facteur` de la fiche (T108 l'avait fait pour les
+      restes, pas pour le placard). Le harnais faisait la même erreur
+      (`consommer`, `max(0,5, parts/portions)`) et elle y est corrigée à part.
+      Tenu par `fondReappro.test.ts` (un pain pour 2,5 parts prend ses 500 g ;
+      le hachis, 250 g).
+- [x] **T153 — Les lentilles cuites restaient au congélateur.** T146 l'avait
+      laissé ouvert. La projection (`Depot.prelever`) puise dans plusieurs
+      lots ; la base (`journaliserCuisson`, effet 2) n'en retirait qu'un, le
+      premier de la table, au facteur `parts / portions`. Des burgers (400 g)
+      devant 150 g au frigo et 300 g au congélo ôtaient le lot du frigo, ou
+      250 g d'un lot de 450 ; le reste — « 3 repas » sur la bande, quelle que
+      soit sa quantité — dormait au congélateur de l'app des mois après avoir
+      été mangé, et tenait ses boîtes (T148). L'effet 2 prend maintenant au
+      facteur de la fiche (T152), le frigo avant le congélo et le plus ancien
+      d'abord, sur autant de lots qu'il faut ; ce qui resterait d'un lot, s'il
+      est plus petit que ce que la recette en prend, part avec le plat ; un
+      lot vraiment entamé garde sa part de bande. Les lentilles mises de côté
+      ont preneurs (`accepts` : les burgers, 400 g ; la salade améliorée,
+      300 g ; le pâté, 150 g). Tenu par `db/journal.test.ts`.
+- [x] **T154 — Le fond aligné sur ce que l'année mange.** `fond.yaml`, daté
+      du 2026-10-23, sur la mesure de l'année n° 10 (deux semaines de quatre
+      repas), et pas au-delà : tomates pelées 3 à 5 boîtes ; pois chiches 1 à
+      1,5 kg ; lentilles vertes 500 g à 1 kg ; lentilles corail et pois cassés,
+      un sachet ; farine semi-complète 2 à 3 kg, au sac de 1 kg ; pâtes 1 à 2
+      paquets ; riz 1 kg ; épinards et poêlée surgelés, 1 à 2 sachets ; thon 2
+      à 3 boîtes ; pommes de terre et carottes 1 à 2,5 kg, au demi-kilo ; lait
+      4 à 6 L ; yaourts 24 à 36 pots. Inchangés : flocons, beurre, fromage,
+      sucre (un paquet fait l'année), bananes. DEPUIS T150, UN MINIMUM EST UNE
+      VRAIE QUANTITÉ (l'entame compte à sa fraction) : les minimums de T142,
+      posés quand un paquet ouvert valait un paquet plein, baissent d'autant.
+      Les neuf dîners sans courses se font toujours du fond seul, en quantité
+      aussi (vérifié à la main : la bolognaise de lentilles prend 800 g de
+      tomates, la salade tiède deux boîtes de thon — d'où le minimum à deux).
+      `catalogue:verifie` 0 erreur.
+
+Portes : typecheck, **1 180 tests**, build, **79 e2e**, `catalogue:verifie`
+0 erreur. Le harnais, sur 60 jours (même harnais, corrigé à part : le
+facteur de la fiche, le gaspillage par denrée, le stock de l'app dans la
+note « boîtes ») — avant / après : « Boîtes pleines » 28 / 5, dont avec deux
+boîtes libres ou plus au réel 25 / 0 ; goûters sans pomme 23 / 3 ; matins
+sans beurre 6 / 1 ; gaspillage 1,4 / 0,9 kg ; midis sur le reste prévu
+13 / 37, sandwichs 7 / 2.
+
+## L'année simulée n° 11 — T155 à T157
+
+- [x] **T155 — Les restes d'une part pourrissaient (46 jetés, 8 l'année
+      n° 10).** T151 l'avait laissé ouvert : depuis T148 le midi se prévoit
+      presque chaque soir, le dîner s'agrandissait des trois parts du midi, le
+      midi prenait ce lot-là, et la part laissée par le dîner de la veille
+      n'avait plus de preneur. `midiDeDemain` reçoit ce que le frigo tiendra
+      encore demain midi (`partsAuFrigoDemain` : restes de plat, hors
+      routines, hors midi prévu, pas périmés demain) et n'agrandit le dîner
+      que du reste — rien si le frigo suffit ; la carte dit « avec le reste du
+      frigo ». Le midi passé complète un midi prévu plus petit au frigo, sur
+      plusieurs lots s'il le faut (`midisDuFrigo`, les midis prévus avec leurs
+      parts). Le harnais lit la même phrase et complète le midi de la même
+      façon (commit à part). Tenu par `repas.test.ts` ; `e2e/trois-repas`
+      remplit ses trois boîtes de lentilles cuites (des bases) : trois parts
+      de dahl feraient désormais le midi à elles seules.
+- [x] **T156 — Des carottes à l'écran, aucune au bac (60 dîners).** T154 a
+      mis la carotte au demi-kilo pesé (« 500 g en vrac ») ; les recettes la
+      comptent à la pièce. Sans poids de la pièce, `retirer` passait au mode
+      non chiffré : un demi-kilo servait deux plats, qu'ils prennent deux
+      carottes ou quatre — les lentilles vertes mijotées en tête. Même piège
+      que la pomme de T149 : `POIDS_PIECE` pèse la carotte, et l'oignon (filet
+      de 1 kg compté à la pièce), à 150 g comme le harnais. Tenu par
+      `fondReappro.test.ts`.
+- [x] **T157 — Du lait de coco à l'écran, aucun au placard (14 dîners).**
+      Le fond disait « brique » sans volume ; non chiffrée, une brique servait
+      deux plats au rejeu quand le dahl (400 ml) la vide, et le curry dit
+      « 40 cl », une unité que `enUniteDeCompte` ne convertissait pas. La
+      brique a son volume (« brique de 40 cl », `contenuDUnite` lit cl et ml),
+      le centilitre devient des millilitres. Le harnais avait l'erreur
+      symétrique — son grand livre tenait le coco en cl et lisait les 400 ml
+      du dahl comme 400 cl (84 L l'année) ; corrigé à part. Tenu par
+      `fondReappro.test.ts`.

@@ -34,6 +34,7 @@
 // de plus. Confondre les deux ferait rejouer six mois de cuisine pour savoir
 // s'il reste de la bolognaise, alors qu'il suffit d'ouvrir le tiroir.
 
+import { facteur } from "./calcul";
 import { enUniteDeCompte } from "./unites";
 import type {
   Catalogue, Denree, Espace, Etat, Plat, Quantite, RepasId,
@@ -980,7 +981,14 @@ export function rejouer(
     if (e.sorte === "cuisine") {
       const plat = catalogue.plats.find((p) => p.id === e.plat);
       if (!plat) continue;
-      const f = plat.portions > 0 ? e.parts / plat.portions : 1;
+      // T152 — CE QUI EST CUISINÉ, PAS CE QUI EST MANGÉ. La fiche, la sortie et
+      // les restes (`restesApresTable`) cuisinent au facteur de `calculer()` :
+      // un plat qui se garde se fait en lot entier, même pour 2,5 parts. Le
+      // rejeu retirait `parts / portions` — 42 % du pain pour une recette de
+      // six, la moitié des cookies, 62 % d'un dîner pour quatre —, et la farine
+      // dérivait d'un sac par mois (année simulée n° 9), le beurre des
+      // fournées aussi. Une ration de routine (`parts = portions`) n'y change rien.
+      const f = plat.portions > 0 ? facteur(plat, e.parts) : 1;
       for (const d of demandes(plat, f)) {
         const id = ctx.alias(d.ingredient);
         const l = lots.get(id);

@@ -6,7 +6,7 @@ import { describe, expect, test } from "vitest";
 import { lignesDuJour, phraseDeFournee, phraseDuMidi } from "../ecrans/repas.vue";
 import { contenantsLibres } from "../ecrans/sortie.vue";
 import type { LotInitial } from "./depot";
-import type { PropositionDuSoir } from "./pause";
+import { goutersAvantCourses, JOURS_DE_COURSES, type PropositionDuSoir } from "./pause";
 import { fruitsDeLaSemaine } from "./plancherGardeManger";
 import { calculer } from "./calcul";
 import { lireCatalogue } from "./catalogue";
@@ -17,8 +17,10 @@ import {
   estUneFournee,
   evenementsDesRoutines,
   fourneeAProposer,
+  fruitsAuDelaDuGouter,
   lotsEnBoites,
   midisDuFrigo,
+  partsAuFrigoDemain,
   resteDuFrigoAuMidi,
   matinsDePain,
   midisPasses,
@@ -204,6 +206,34 @@ describe("la fournée, proposée à la pause", () => {
     expect(fourneeAProposer(catalogue, [pain], [], tout)!.plat.source?.auteur).toMatch(/Chioca/);
   });
 
+  // T149 — L'ANNÉE SIMULÉE N° 10 : 143 GOÛTERS SANS POMME. La compote (1 kg)
+  // se lançait dès qu'il y avait une pomme, et le sachet de la semaine
+  // n'allait plus jusqu'aux courses suivantes.
+  test("T149 — la pomme du goûter passe avant la compote", () => {
+    const pommes = new Set(["pommes", "eau"]);
+    const compote = (auDela: Map<string, number>) => {
+      const f = fourneeAProposer(catalogue, [pain], ["pommes"], pommes, new Set(), false, auDela);
+      return f?.plat.id === "compote-pommes-poires" ? f : null;
+    };
+    // 1,4 kg au placard, quatre goûters à servir d'ici samedi : 800 g de trop
+    // ne font pas le kilo de la compote — elle demande des fruits.
+    expect(compote(new Map([["pommes", 1400 - 4 * 150]]))?.manque ?? ["autre fournée"]).not.toEqual([]);
+    // 1,9 kg : la compote se fait de ce qui dépasse.
+    expect(compote(new Map([["pommes", 1900 - 4 * 150]]))).toMatchObject({ manque: [] });
+  });
+
+  test("T149 — la réserve du goûter : une pomme de 150 g par goûter d'ici les courses", () => {
+    const e = { sorte: "entree" as const, jour: "2026-10-24", saisi: "2026-10-24", maj: 1,
+      lignes: [{ ingredient: "pommes", unites: 1, parUnite: { amount: 1500, unit: "g" }, zone: null, etat: "frais" as const }] };
+    // Un sachet de 1,5 kg rentré samedi, trois goûters servis (sam., dim., lun.).
+    const r = rejouer(catalogue, [e], contexte(catalogue), "2026-10-26");
+    expect(r.parIngredient.get("pommes")?.grammes).toBe(1500 - 3 * 150);
+    // Lundi : lundi et mardi avant les courses du mercredi.
+    expect(goutersAvantCourses(["lundi"], JOURS_DE_COURSES)).toBe(2);
+    expect(goutersAvantCourses(["samedi"], JOURS_DE_COURSES)).toBe(4);
+    expect(fruitsAuDelaDuGouter(catalogue, r, 2).get("pommes")).toBe(1050 - 300);
+  });
+
   test(`${SEUIL_FOURNEE} goûters au congélateur et rien qui passe : pas de fournée`, () => {
     expect(fourneeAProposer(catalogue, [pain, congelo("banana-bread", "3-repas")], [], ici)).toBeNull();
   });
@@ -253,11 +283,16 @@ describe("la fournée, proposée à la pause", () => {
 });
 
 describe("le fond et le stock de T142", () => {
-  test("`jusqua` chiffre la ligne : sous six boîtes de tomates, on remonte à dix", async () => {
+  // T154 — trois boîtes au moins, cinq au rachat ; un plancher posé plus haut
+  // que `jusqua` (six, d'avant T154) gagne : on ne remonte jamais sous lui.
+  test("`jusqua` chiffre la ligne : sous trois boîtes de tomates, on remonte à cinq", async () => {
     const { sousLeurPlancher } = await import("./plancherGardeManger");
     const r = rejouer(catalogue, [], contexte(catalogue), "2026-10-26");
-    const l = sousLeurPlancher(catalogue, r, [{ ingredient: "tomates-pelees", niveau: 6 }])[0]!;
-    expect(l).toMatchObject({ niveau: 6, manque: 10 - l.a, fond: true });
+    const a = sousLeurPlancher(catalogue, r, [{ ingredient: "tomates-pelees", niveau: 99 }])[0]!.a;
+    expect(a).toBeLessThan(3);
+    const l = sousLeurPlancher(catalogue, r, [{ ingredient: "tomates-pelees", niveau: 3 }])[0]!;
+    expect(l).toMatchObject({ niveau: 3, manque: 5 - l.a, fond: true });
+    expect(sousLeurPlancher(catalogue, r, [{ ingredient: "tomates-pelees", niveau: 6 }])[0]).toMatchObject({ manque: 6 - a });
   });
 
   test("le frais de la semaine se dit tel quel sur la liste", async () => {
@@ -313,8 +348,9 @@ describe("T144 — les boîtes libres ne comptent que les restes vivants en boî
       { ...reste("compote-maison", "3-repas", "2026-10-24"), location: "congelo" },
       { type: "pain-de-mie-maison", kind: "base", qty: null, qty_band: "3-repas", born: "2026-10-24", location: "congelo" },
     ];
-    // Avant T144, les trois sachets prenaient trois des quatre boîtes.
-    expect(contenantsLibres(catalogue.foyer, stock).get("boites-hermetiques")).toBeLessThan(4);
+    // Avant T144, les trois sachets prenaient trois des quatre boîtes ; depuis
+    // T148, rien de ce qui dort au congélateur n'en prend une, routine ou pas.
+    expect(contenantsLibres(catalogue.foyer, stock).get("boites-hermetiques")).toBe(4);
     expect(libresDe(stock, LUNDI)).toBe(4);
     expect(midiDeDemain(jeuDuLundi(), plat("dahl-lentilles-corail"), contenantsLibres(catalogue.foyer, lotsEnBoites(catalogue, stock, LUNDI))).etat).toBe("oui");
   });
@@ -324,10 +360,22 @@ describe("T144 — les boîtes libres ne comptent que les restes vivants en boî
     expect(libresDe([reste("dahl-lentilles-corail", "1-repas", "2026-10-25")], LUNDI)).toBe(3);
   });
 
-  test("T145 — la bolognaise du congélateur (700 g, deux repas) tient une seule boîte de 0,8 L", () => {
-    const bolo: LotInitial = { type: "sauce-bolognaise", kind: "base", qty_band: "2-repas", qty: { amount: 700, unit: "g" }, born: "2026-10-20", location: "congelo" };
+  test("T145 — la bolognaise (700 g, deux repas) tient une seule boîte de 0,8 L", () => {
+    const bolo: LotInitial = { type: "sauce-bolognaise", kind: "base", qty_band: "2-repas", qty: { amount: 700, unit: "g" }, born: "2026-10-25", location: "frigo" };
     expect(libresDe([bolo], LUNDI)).toBe(3);
     expect(midiDeDemain(jeuDuLundi(), plat("dahl-lentilles-corail"), contenantsLibres(catalogue.foyer, lotsEnBoites(catalogue, [bolo], LUNDI))).etat).toBe("oui");
+  });
+
+  // T148 — L'ANNÉE SIMULÉE N° 10 : 159 cartes « Boîtes pleines », dont 119 avec
+  // deux boîtes libres ou plus au réel. Le 21/10 : la bolognaise du relevé (née
+  // le 20/07, au congélo) tenait une boîte, et le houmous de la veille trois ;
+  // l'app en voyait cinq occupées sur quatre, la cuisine trois.
+  test("T148 — ce qui dort au congélateur ne tient aucune boîte du midi", () => {
+    const bolo: LotInitial = { type: "sauce-bolognaise", kind: "base", qty_band: "2-repas", qty: { amount: 700, unit: "g" }, born: "2026-07-20", location: "congelo" };
+    const lentilles: LotInitial = { type: "lentilles-vertes-cuites", kind: "base", qty_band: "2-repas", qty: { amount: 300, unit: "g" }, born: "2026-10-20", location: "congelo" };
+    const gratin = reste("gratin-pates", "1-repas", "2026-10-25");
+    expect(libresDe([bolo, lentilles, gratin], LUNDI)).toBe(3);
+    expect(midiDeDemain(jeuDuLundi(), plat("dahl-lentilles-corail"), contenantsLibres(catalogue.foyer, lotsEnBoites(catalogue, [bolo, lentilles, gratin], LUNDI))).etat).toBe("oui");
   });
 
   test("le midi mis de côté rend ses boîtes une fois le déjeuner passé", () => {
@@ -391,9 +439,10 @@ describe("T144 — le fruit de la semaine", () => {
     expect(l.some((x) => x.ingredient === "poires")).toBe(true);
   });
 
-  test("T145 — la pomme du goûter est au frais de la semaine : un sachet de 1,5 kg, en saison", () => {
+  // T149 — au kilo : sous 2 kg la ligne part, et remonte vers 3.
+  test("T145 — la pomme du goûter est au frais de la semaine : trois kilos quand il n'y en a plus, en saison", () => {
     const pommes = fruitsDeLaSemaine(catalogue, r(), 10).find((x) => x.ingredient === "pommes");
-    expect(pommes).toMatchObject({ hebdo: true, sansPlancher: true, manque: 1 });
+    expect(pommes).toMatchObject({ hebdo: true, sansPlancher: true, manque: 3 });
     expect(fruitsDeLaSemaine(catalogue, r(), 7).some((x) => x.ingredient === "pommes")).toBe(false);
   });
 
@@ -516,5 +565,37 @@ describe("T146 — le midi sans geste et le reste qu'il prend", () => {
     expect(midisDuFrigo(catalogue, stock, ["2026-10-25"], new Set(["2026-10-25"]), new Set())).toEqual([]);
     expect(midisDuFrigo(catalogue, stock, ["2026-10-25"], new Set(), new Set(["2026-10-25"]))).toEqual([]);
     expect(midisDuFrigo(catalogue, stock, ["2026-10-25", "2026-10-26"], new Set(), new Set())).toEqual([{ id: 1, band: null }]);
+  });
+});
+
+// T155 — L'ANNÉE N° 11 : 46 RESTES JETÉS. Le dîner s'agrandissait des parts du
+// midi quand le frigo tenait déjà une part d'hier, et celle-ci pourrissait.
+describe("T155 — le dîner s'agrandit du midi moins ce que le frigo tient", () => {
+  const p = partsDuMidi(catalogue.foyer);
+  const part = (o: Partial<LotInitial>): LotInitial =>
+    ({ type: "gratin-pates", kind: "reste-plat", qty: null, qty_band: "1-repas", born: "2026-10-25", location: "frigo", ...o });
+
+  test("une part au frigo : le dîner ne prend que le reste du midi, et la carte le dit", () => {
+    const m = midiDeDemain(jeuDuLundi(), plat("dahl-lentilles-corail"), undefined, 1);
+    expect(m).toMatchObject({ etat: "oui", parts: p - 1, auFrigo: 1 });
+    expect(phraseDuMidi(m)).toMatch(/avec le reste du frigo$/);
+    expect(midiDeDemain(jeuDuLundi(), plat("dahl-lentilles-corail"), undefined, p).etat).toBe("non");
+  });
+
+  test("ce que le frigo tiendra demain : ni routine, ni midi prévu, ni périmé, ni congélo", () => {
+    const stock = [
+      part({}),
+      part({ type: "compote-maison" }),
+      part({ type: "hachis", midiLe: "2026-10-27", midi: 3, qty_band: "3-repas" }),
+      part({ type: "soupe", born: "2026-10-10" }),
+      part({ type: "curry", location: "congelo" }),
+    ];
+    expect(partsAuFrigoDemain(catalogue, stock, LUNDI)).toBe(1);
+  });
+
+  test("un midi prévu de deux parts prend la troisième au frigo", () => {
+    const stock = [{ id: 1, type: "gratin", kind: "reste-plat", band: "1-repas", born: "2026-10-24", location: "frigo" }];
+    expect(midisDuFrigo(catalogue, stock, ["2026-10-26"], new Set(), new Map([["2026-10-26", p - 1]]))).toEqual([{ id: 1, band: null }]);
+    expect(midisDuFrigo(catalogue, stock, ["2026-10-26"], new Set(), new Map([["2026-10-26", p]]))).toEqual([]);
   });
 });

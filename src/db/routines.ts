@@ -12,6 +12,7 @@
 
 import { jourISO, type Base } from "./schema";
 import { dernierMidiPasse, joursDe, midisDuFrigo, midisPasses, prisesDesRoutines } from "../model/repas";
+import { bandRepas } from "../model/depot";
 import type { Catalogue } from "../model/types";
 
 export const CLE_ROUTINES = "routines|fait";
@@ -30,7 +31,10 @@ export async function consommerLesRoutines(base: Base, catalogue: Catalogue, auj
   return base.transaction("rw", base.stock, base.reglages, base.evenements, async () => {
     // T146 — les midis prévus au dîner de la veille, lus AVANT que
     // `midisPasses` n'efface leur marque : ceux-là ne prennent rien au frigo.
-    const prevus = new Set((await base.stock.toArray()).flatMap((l) => (l.midiLe ? [l.midiLe] : [])));
+    // T155 — avec leurs parts : un midi prévu plus petit prend le reste au frigo.
+    const prevus = new Map<string, number>();
+    for (const l of await base.stock.toArray())
+      if (l.midiLe) prevus.set(l.midiLe, (prevus.get(l.midiLe) ?? 0) + (l.midi ?? bandRepas(l.band)));
     // T144 — LES MIDIS PASSÉS d'abord, à chaque ouverture : un lot mis de côté
     // pour un déjeuner mangé perd ses parts (`midisPasses`). Idempotent, la
     // marque `midiLe` part avec.

@@ -25,6 +25,7 @@ import { joue, type Jeu } from "./jeu";
 import type { Rejeu } from "./journal";
 import { ceQuiManque } from "./ici";
 import { deSaison, saisonDuPlat } from "./saisons";
+import { enUniteDeCompte } from "./unites";
 import type { Catalogue, Contenant, Foyer, Plat, Routine } from "./types";
 
 /** La carte qui finit un reste au midi — `catalogue/recipes/reste-de-la-veille.yaml`. */
@@ -47,7 +48,7 @@ export const partsDuMidi = (foyer: Pick<Foyer, "mangeurs">): number =>
 /** Ce que demain midi peut prendre au dîner de ce soir. */
 export type MidiDeDemain =
   /** Le dîner s'agrandit de `parts`, rangées dans `boites` boîtes. */
-  | { etat: "oui"; midi: number; parts: number; boites: number; label: string }
+  | { etat: "oui"; midi: number; parts: number; boites: number; label: string; auFrigo?: number }
   /** Il y aurait un midi à prendre, mais pas assez de boîtes propres. */
   | { etat: "boites-pleines"; midi: number; parts: number; libres: number }
   /** Demain midi porte déjà un plat : on n'y touche pas. */
@@ -73,6 +74,9 @@ export function midiDeDemain(
   jeu: Pick<Jeu, "catalogue" | "creneaux" | "choix" | "parts" | "plats" | "midi" | "deLaVeille">,
   plat: Plat,
   libres?: ReadonlyMap<string, number>,
+  /** T155 — les parts que le frigo tiendra encore demain midi
+   *  (`partsAuFrigoDemain`) : le dîner ne s'agrandit que du reste. */
+  auFrigo = 0,
 ): MidiDeDemain {
   const foyer = jeu.catalogue.foyer;
   const midi = jeu.creneaux.findIndex((c) => c.jour === 1 && c.repas === "dejeuner");
@@ -83,7 +87,14 @@ export function midiDeDemain(
   const pose = jeu.choix[midi] ?? null;
   if (joue(pose) && !(pose === RESTE_DE_LA_VEILLE && jeu.deLaVeille?.[midi])) return { etat: "deja-pose", midi };
 
-  const parts = partsDuMidi(foyer);
+  // T155 — LE FRIGO D'ABORD. L'année simulée n° 11 : 46 restes jetés (8 la
+  // n° 10). Le dîner s'agrandissait des trois parts du midi, le midi prenait
+  // ce lot-là, et la part que le dîner de la veille laissait (« Frigo · 1
+  // repas ») n'avait plus de preneur. Le dîner ne s'agrandit plus que de ce
+  // qui manque au midi une fois le frigo compté ; le midi prend les deux
+  // (`midisDuFrigo`). Le frigo suffit : rien à agrandir.
+  const parts = Math.round((partsDuMidi(foyer) - auFrigo) * 100) / 100;
+  if (parts < 0.5 - 1e-9) return { etat: "non" };
   // LA MARMITE AUSSI EST FINIE : un lot agrandi qui déborde de la cocotte ne se
   // cuisine pas, quoi qu'en disent les boîtes (même règle que `gamelles`).
   const soir = jeu.creneaux.findIndex((c) => c.jour === 0 && c.repas === "diner");
@@ -97,7 +108,20 @@ export function midiDeDemain(
       .reduce((n, c) => n + (libres?.get(c.id) ?? c.nombre), 0);
     return { etat: "boites-pleines", midi, parts, libres: dispo };
   }
-  return { etat: "oui", midi, parts, ...boites };
+  return { etat: "oui", midi, parts, ...boites, ...(auFrigo > 1e-9 ? { auFrigo } : {}) };
+}
+
+/**
+ * Les parts de reste que le frigo tiendra encore demain midi — T155.
+ *
+ * Ce que le midi sans geste prendra (`midisDuFrigo`) : les restes de plat du
+ * frigo, hors routines et hors midi déjà prévu, encore bons demain à midi.
+ */
+export function partsAuFrigoDemain(catalogue: Catalogue, stock: readonly LotInitial[], maintenant: Date): number {
+  const demain = new Date(maintenant.getFullYear(), maintenant.getMonth(), maintenant.getDate() + 1, 12);
+  const ok = auMidi(typesDesRoutines(catalogue), isoDuJour(demain));
+  const depot = new Depot(horlogesDu(catalogue), stock);
+  return stock.reduce((n, l, i) => (ok(l) && !depot.perime(depot.initiales[i]!, demain) ? n + bandRepas(l.qty_band) : n), 0);
 }
 
 const pourLeMidi = (c: Contenant): boolean => c.portions > 0 && !c.consommable && c.espaces.includes("frigo");
@@ -300,7 +324,10 @@ export function midisDuFrigo(
   lots: readonly { id?: number; type: string; kind?: string; band: string; born: string; location?: string; midiLe?: string }[],
   jours: readonly string[],
   cuits: ReadonlySet<string>,
-  prevus: ReadonlySet<string>,
+  /** Les midis prévus au dîner de la veille, et leurs parts — T155 : un midi
+   *  prévu plus petit que le midi des quatre prend le reste au frigo. Un
+   *  `Set` (T146) les dit complets. */
+  prevus: ReadonlySet<string> | ReadonlyMap<string, number>,
 ): Prise[] {
   const routine = typesDesRoutines(catalogue);
   const parts = partsDuMidi(catalogue.foyer);
@@ -311,12 +338,20 @@ export function midisDuFrigo(
   for (const l of frigo) reste.set(l.id, bandRepas(l.band));
   const touches = new Set<number>();
   for (const j of jours) {
-    if (cuits.has(j) || prevus.has(j)) continue;
+    if (cuits.has(j)) continue;
+    const prevu = prevus instanceof Map ? prevus.get(j) : prevus.has(j) ? parts : undefined;
+    // T155 — PLUSIEURS LOTS S'IL LE FAUT, le plus ancien d'abord : une part
+    // d'hier et deux d'avant-hier font le midi des quatre.
+    let besoin = parts - (prevu ?? 0);
     const ok = auMidi(routine, j);
-    const l = frigo.find((x) => ok(x) && reste.get(x.id)! > 1e-9);
-    if (!l) continue;
-    reste.set(l.id, Math.max(0, reste.get(l.id)! - parts));
-    touches.add(l.id);
+    for (const l of frigo) {
+      if (besoin <= 1e-9) break;
+      if (!ok(l) || reste.get(l.id)! <= 1e-9) continue;
+      const pris = Math.min(besoin, reste.get(l.id)!);
+      reste.set(l.id, reste.get(l.id)! - pris);
+      besoin -= pris;
+      touches.add(l.id);
+    }
   }
   return [...touches].map((id) => {
     const n = reste.get(id)!;
@@ -473,6 +508,63 @@ export function fruitsMurs(catalogue: Catalogue, rejeu: Pick<Rejeu, "parIngredie
  * de pommes qu'il manquait. Un fruit de compote là suffit ; aucun là, la
  * ligne dit le choix — « pommes ou poires » — au lieu d'en inventer un.
  */
+/**
+ * Ce qui reste d'un fruit une fois les goûters servis jusqu'aux prochaines
+ * courses, en grammes — T149.
+ *
+ * LA POMME DU GOÛTER PASSE AVANT LA COMPOTE. L'année simulée n° 10 : 143
+ * goûters sans pomme. La compote (1 kg de pommes) se proposait dès qu'il y
+ * avait UNE pomme au placard (`ici` ne dit que la présence) ; on la faisait le
+ * mercredi, et le sachet de la semaine n'allait pas jusqu'au samedi. La routine
+ * du goûter dit ce qu'un goûter prend (`gouter-des-enfants` : une pomme) ;
+ * multipliée par les goûters d'ici les prochaines courses, c'est une réserve.
+ * Seul ce qui la dépasse nourrit une fournée.
+ *
+ * Seuls les fruits que le rejeu pèse sont rendus : un fruit compté à la pièce
+ * sans poids garde la règle de présence, faute de mieux.
+ */
+export function fruitsAuDelaDuGouter(
+  catalogue: Catalogue,
+  rejeu: Pick<Rejeu, "parIngredient">,
+  goutersAvantCourses: number,
+): Map<string, number> {
+  const out = new Map<string, number>();
+  const r = catalogue.creneaux?.routines?.liste.find((x) => x.repas === "gouter");
+  const recette = r ? catalogue.plats.find((p) => p.id === r.recette) : undefined;
+  for (const i of recette?.ingredients ?? []) {
+    const id = catalogue.rayons.aliases[i.id] ?? i.id;
+    if (!FRUITS.includes(id)) continue;
+    const u = enUniteDeCompte(id, i.qty, i.unit);
+    const g = rejeu.parIngredient.get(id)?.grammes;
+    if (u.unit !== "g" || g == null) continue;
+    out.set(id, g - u.qty * goutersAvantCourses);
+  }
+  return out;
+}
+
+/** Les grammes d'un fruit que demande une fournée, à sa taille de recette. */
+const grammesDe = (catalogue: Catalogue, p: Plat, fruit: string): number =>
+  p.ingredients
+    .filter((i) => (catalogue.rayons.aliases[i.id] ?? i.id) === fruit)
+    .reduce((n, i) => {
+      const u = enUniteDeCompte(fruit, i.qty, i.unit);
+      return n + (u.unit === "g" ? u.qty : 0);
+    }, 0);
+
+/** `ici` pour une fournée : sans les fruits que la réserve du goûter retient. */
+const iciPourLaFournee = (
+  catalogue: Catalogue,
+  p: Plat,
+  ici: ReadonlySet<string>,
+  auDela: ReadonlyMap<string, number>,
+): ReadonlySet<string> => {
+  const retenus = [...auDela].filter(([f, g]) => ici.has(f) && g + 1e-9 < grammesDe(catalogue, p, f));
+  if (!retenus.length) return ici;
+  const out = new Set(ici);
+  for (const [f] of retenus) out.delete(f);
+  return out;
+};
+
 function manqueDeLaFournee(catalogue: Catalogue, p: Plat, ici: ReadonlySet<string>): { nom: string; ids: string[] }[] {
   const m = ceQuiManque(catalogue, p, ici).ingredients;
   const compote = FRUITS_DE_COMPOTE.filter((f) => p.ingredients.some((i) => (catalogue.rayons.aliases[i.id] ?? i.id) === f));
@@ -515,6 +607,9 @@ export function fourneeAProposer(
   recentes: ReadonlySet<string> = new Set(),
   /** T146 — un jour de courses, l'article qui manque se prend au magasin. */
   jourDeCourses = false,
+  /** T149 — ce qui reste des fruits après les goûters d'ici les prochaines
+   *  courses (`fruitsAuDelaDuGouter`) ; absent, la seule présence compte. */
+  auDelaDuGouter: ReadonlyMap<string, number> = new Map(),
 ): Fournee | null {
   const { restants } = gouterAuCongelo(catalogue, stock);
   const matins = matinsDePain(catalogue, stock);
@@ -530,7 +625,7 @@ export function fourneeAProposer(
     catalogue.plats
       .filter((p) => routineNourrie(catalogue, p) === repas)
       .map((p) => {
-        const manque = manqueDeLaFournee(catalogue, p, ici);
+        const manque = manqueDeLaFournee(catalogue, p, iciPourLaFournee(catalogue, p, ici, auDelaDuGouter));
         return {
           p,
           fruits: murs.filter((f) => p.ingredients.some((i) => i.id === f)),

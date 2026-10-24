@@ -67,25 +67,25 @@ describe("T134 — cuisiner un plat du fond le consomme, et la liste le recharge
   });
 
   // T135 — 200 g par hachis (250 g pour 5 parts, cuisiné pour 4). T142 : le
-  // fond rentre trois sachets de 500 g ; T143 : le relevé du 21/10 n'a plus de
-  // lentilles vertes, c'est donc 1,5 kg en tout.
-  test("deux hachis (400 g) : un sachet entamé et deux scellés, la liste ne demande rien", () => {
-    const { liste } = apres(2);
-    expect(liste.map((l) => l.ingredient)).not.toContain("lentilles-seches");
-  });
-
-  test("six hachis (1,2 kg) : il reste un sachet entamé, la liste dit « pour le fond »", () => {
-    const { liste } = apres(6);
+  // fond rentrait trois sachets de 500 g.
+  // T152 — 250 g : le hachis se garde, il se cuisine en lot entier (la fiche
+  // le dit), et le rejeu retire ce qui est cuisiné, pas ce qui est mangé.
+  // T154 — le fond rentre UN sachet (500 g au moins, 1 kg au rachat).
+  // T150 — L'ENTAME COMPTE À SA FRACTION : sous un plancher d'un sachet, la
+  // liste en demande dès qu'il est entamé — avant, le sachet entamé valait un
+  // sachet plein, et elle attendait qu'il soit vide.
+  test("un hachis (250 g) : un demi-sachet, la liste dit « pour le fond »", () => {
+    const { liste } = apres(1);
     const l = liste.find((x) => x.ingredient === "lentilles-seches");
-    expect(l).toMatchObject({ a: 1, niveau: 3, manque: 2, fond: true });
+    expect(l).toMatchObject({ a: 0.5, niveau: 1, manque: 1, fond: true });
     expect(phraseDuPlancher(l!, 0)).toContain("pour le fond");
   });
 
-  test("dix hachis : les lentilles sont épuisées au rejeu, et « Ce soir » le dit", () => {
-    const { rejeu, jeu, carte, liste } = apres(10);
+  test("deux hachis : les lentilles sont épuisées au rejeu, et « Ce soir » le dit", () => {
+    const { rejeu, jeu, carte, liste } = apres(2);
     expect(rejeu.parIngredient.has("lentilles-seches")).toBe(false);
     expect(jeu.gardeManger).not.toContain("lentilles-seches");
-    expect(liste.find((x) => x.ingredient === "lentilles-seches")).toMatchObject({ a: 0, manque: 3 });
+    expect(liste.find((x) => x.ingredient === "lentilles-seches")).toMatchObject({ a: 0, manque: 2 });
     expect(carte).toBeDefined();
     expect(carte!.manque.map((a) => a.id)).toContain("lentilles-seches");
     expect(ligneAchats(carte!)).not.toBe("Rien à acheter");
@@ -157,7 +157,10 @@ describe("T135 — le fond se consomme à la quantité, pas au paquet", () => {
     expect(ctx.contenu("oeufs")).toEqual({ amount: 6, unit: "pièce" });
   });
 
-  test("un sac de 1 kg de lentilles corail tient quatre dahls de 200 g, et la liste ne le demande qu'au cinquième", () => {
+  // T150 — le sac tient toujours quatre dahls ; mais un plancher d'UN sac
+  // veut dire un sac plein au placard, et la liste le redemande dès le premier
+  // (0,8 sac) — non plus après le dernier, quand il n'y a plus rien.
+  test("un sac de 1 kg de lentilles corail tient quatre dahls de 200 g, et la liste le redemande dès le premier", () => {
     const dahl = platDe("dahl-test", "lentilles-corail", 200, "g");
     const cat: Catalogue = {
       ...catalogue,
@@ -171,7 +174,8 @@ describe("T135 — le fond se consomme à la quantité, pas au paquet", () => {
     for (const n of [1, 2, 3, 4]) {
       const { c, rejeu } = rejeuDe(cat, "lentilles-corail", dahl, n, 4);
       expect(rejeu.parIngredient.get("lentilles-corail")?.grammes).toBeCloseTo(1000 - 200 * n);
-      expect(sousLeurPlancher(c, rejeu, plancher).map((l) => l.ingredient)).not.toContain("lentilles-corail");
+      expect(sousLeurPlancher(c, rejeu, plancher).find((l) => l.ingredient === "lentilles-corail"))
+        .toMatchObject({ a: (1000 - 200 * n) / 1000, manque: 1 });
     }
     const { c, rejeu } = rejeuDe(cat, "lentilles-corail", dahl, 5, 4);
     expect(rejeu.parIngredient.has("lentilles-corail")).toBe(false);
@@ -244,8 +248,8 @@ describe("T136 — œufs, yaourts, fromage râpé : achetés par la liste, cuisi
     { ingredient: "oeufs", nom: "œufs", plat: "quiche-poireaux", parts: 6, avant: 5, apres: 6, manque: 4 },
     { ingredient: "fromage-rape", nom: "râpé", plat: "quiche-poireaux", parts: 6, avant: 4, apres: 5, manque: 1 },
     // quiche-courgettes-yaourt : 6 parts, 2 yaourts
-    // T145 — six packs rentrés (24 pots), remontés à 7 (≈ 25 pots la semaine).
-    { ingredient: "yaourt-nature", nom: "yaourt", plat: "quiche-courgettes-yaourt", parts: 6, avant: 11, apres: 12, manque: 7 },
+    // T145 — six packs rentrés (24 pots) ; T154 : remontés à 9 (36 pots).
+    { ingredient: "yaourt-nature", nom: "yaourt", plat: "quiche-courgettes-yaourt", parts: 6, avant: 11, apres: 12, manque: 9 },
   ];
 
   for (const k of cas) {
@@ -348,5 +352,73 @@ describe("T137 — un article du fond à garde courte se finit par son âge", ()
     expect(l).toMatchObject({ a: 2, rentreLe: jourAvant(6) });
     expect(phraseDuPlancher(l!, 0)).not.toContain("jamais vu");
     expect(phraseDuPlancher(l!, 0)).toContain(`rentré le ${jourAvant(6)}`);
+  });
+});
+
+// T150 — L'ANNÉE SIMULÉE N° 10 : 36 MATINS SANS BEURRE, minimum 2 plaquettes.
+// Une plaquette entamée valait une plaquette pleine : la liste ne partait
+// qu'avec moins d'une plaquette au frigo, et la famille « laitier » jetait le
+// beurre au 22e jour.
+describe("T150 — le beurre se rachète sous deux plaquettes, pas sous une", () => {
+  const rentre: Evenement = {
+    sorte: "entree", jour: "2026-10-21", saisi: "2026-10-21", maj: 1,
+    lignes: [{ ingredient: "beurre", unites: 3, parUnite: null, zone: null, etat: "frais" as const }],
+  };
+  const beurre = (jour: string) =>
+    sousLeurPlancher(catalogue, rejouer(catalogue, [rentre], ctx, jour), [{ ingredient: "beurre", niveau: 2 }])
+      .find((l) => l.ingredient === "beurre");
+
+  test("500 g au frigo (25 tartines de 10 g) : rien ; 490 g : une plaquette", () => {
+    expect(beurre("2026-11-14")).toBeUndefined();
+    expect(beurre("2026-11-15")).toMatchObject({ a: 1.9, niveau: 2, manque: 1 });
+  });
+
+  test("la plaquette fermée tient deux mois : pas « sans doute finie » à trois semaines", () => {
+    const r = rejouer(catalogue, [rentre], ctx, "2026-11-20");
+    expect(r.finis.has("beurre")).toBe(false);
+    expect(r.parIngredient.get("beurre")?.grammes).toBe(750 - 31 * 10);
+  });
+});
+
+// T152 — LA FARINE DÉRIVAIT D'UN SAC PAR MOIS : la fournée se cuisine en lot
+// entier (la fiche le dit), mais le rejeu retirait `parts / portions` du foyer.
+describe("T152 — le rejeu retire ce que la fiche fait cuisiner", () => {
+  test("un pain maison pour 2,5 parts prend ses 500 g de farine, pas 208", () => {
+    const pain = catalogue.plats.find((p) => p.id === "pain-maison-semi-complet")!;
+    const ev: Evenement[] = [
+      { sorte: "entree", jour: "2026-10-22", saisi: "2026-10-22", maj: 1,
+        lignes: [{ ingredient: "farine-complete", unites: 1, parUnite: null, zone: null, etat: "sec" as const }] },
+      { sorte: "cuisine", jour: "2026-10-23", saisi: "2026-10-23", maj: 2, repas: "gouter", plat: pain.id, parts: 2.5 },
+    ];
+    expect(pain.portions).toBeGreaterThan(2.5);
+    // T154 : le sac de 1 kg.
+    expect(rejouer(catalogue, ev, ctx, "2026-10-23").parIngredient.get("farine-complete")?.grammes).toBe(1000 - 500);
+  });
+});
+
+// T156 — 60 DÎNERS DE L'ANNÉE N° 11 SANS CAROTTES QUE L'APP CROYAIT LÀ.
+describe("T156 — la carotte à la pièce se retire d'un demi-kilo pesé", () => {
+  test("trois carottes (450 g) sur un kilo : il en reste 550 g, pas un demi-kilo entier", () => {
+    const soupe = catalogue.plats.find((p) => p.id === "soupe-pois-casses-carottes")!;
+    expect(soupe.ingredients.find((i) => i.id === "carottes")).toMatchObject({ qty: 3, unit: "pièce" });
+    const ev: Evenement[] = [
+      { sorte: "entree", jour: "2026-10-22", saisi: "2026-10-22", maj: 1,
+        lignes: [{ ingredient: "carottes", unites: 2, parUnite: null, zone: null, etat: "frais" as const }] },
+      { sorte: "cuisine", jour: "2026-10-23", saisi: "2026-10-23", maj: 2, repas: "diner", plat: soupe.id, parts: soupe.portions },
+    ];
+    expect(rejouer(catalogue, ev, ctx, "2026-10-23").parIngredient.get("carottes")?.grammes).toBe(1000 - 450);
+  });
+});
+
+// T157 — 14 DÎNERS SANS LAIT DE COCO QUE L'APP CROYAIT LÀ.
+describe("T157 — la brique de lait de coco a son volume", () => {
+  test("un dahl (400 ml) vide une brique de 40 cl ; un curry (40 cl) aussi", () => {
+    const ev: Evenement[] = [
+      { sorte: "entree", jour: "2026-10-22", saisi: "2026-10-22", maj: 1,
+        lignes: [{ ingredient: "lait-coco", unites: 3, parUnite: null, zone: null, etat: "conserve" as const }] },
+      { sorte: "cuisine", jour: "2026-10-23", saisi: "2026-10-23", maj: 2, repas: "diner", plat: "dahl-lentilles-corail", parts: 5 },
+      { sorte: "cuisine", jour: "2026-10-24", saisi: "2026-10-24", maj: 3, repas: "diner", plat: "curry-pois-chiches", parts: 4 },
+    ];
+    expect(rejouer(catalogue, ev, ctx, "2026-10-24").parIngredient.get("lait-coco")?.grammes).toBe(400);
   });
 });
