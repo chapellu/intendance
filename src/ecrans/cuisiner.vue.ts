@@ -320,7 +320,10 @@ export interface Credit {
  */
 export function credit(plat: Plat): Credit {
   const s = plat.source;
-  if (!s) return { texte: "Recette du foyer", url: null };
+  // T159 — « RECETTE DU FOYER » LAISSAIT CROIRE À UNE RECETTE DE FAMILLE. Ces
+  // fiches ont été écrites pour l'app (2026-10-18 et après) : le dire, pour
+  // qu'on ne les cherche pas dans un livre.
+  if (!s) return { texte: "Écrite pour l’app — dans aucun livre", url: null };
   return { texte: `${s.auteur} — ${s.ouvrage}`, url: s.url };
 }
 

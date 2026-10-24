@@ -137,6 +137,30 @@ export async function poserPlancherDenree(
   });
 }
 
+/**
+ * T158 — LE FOND DE ROULEMENT EN UN GESTE. Trente-huit « En garder 1 » suivis
+ * d'autant de « + » jusqu'au minimum : c'est ce que fait l'année simulée, et
+ * personne d'autre. Sur le téléphone du foyer, le 24/10, aucun plancher n'était
+ * posé — le fond restait une proposition que rien ne mettait en œuvre. Toutes
+ * les lignes s'écrivent dans une seule transaction : un écran qui se redessine
+ * au milieu ne montre jamais un fond à moitié pris.
+ */
+export async function poserPlanchersDenrees(
+  base: Base,
+  planchers: readonly { ingredient: string; niveau: number }[],
+): Promise<void> {
+  const maj = Date.now();
+  await base.reglages.bulkPut(
+    planchers
+      .filter((p) => p.niveau > 0)
+      .map((p) => ({
+        cle: clePlancherDenree(p.ingredient),
+        valeur: { niveau: p.niveau } satisfies DecisionPlancher,
+        maj,
+      })),
+  );
+}
+
 /** ON EFFACE VRAIMENT, contrairement au congélateur. Sans proposition à faire
  *  taire, garder la trace d'un plancher retiré ne servirait qu'à empêcher de le
  *  reposer un jour où l'on aurait changé d'avis. */

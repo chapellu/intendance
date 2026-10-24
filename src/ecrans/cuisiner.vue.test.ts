@@ -322,7 +322,7 @@ describe("la provenance d'une recette", () => {
     const sans = plats.filter((p) => p.source === null);
     expect(sans.length).toBeGreaterThan(0);
     for (const p of sans) {
-      expect(credit(p).texte).toBe("Recette du foyer");
+      expect(credit(p).texte).toBe("Écrite pour l’app — dans aucun livre");
       expect(credit(p).url).toBeNull();
     }
   });

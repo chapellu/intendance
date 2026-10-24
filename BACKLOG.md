@@ -5734,3 +5734,26 @@ sans beurre 6 / 1 ; gaspillage 1,4 / 0,9 kg ; midis sur le reste prévu
       symétrique — son grand livre tenait le coco en cl et lisait les 400 ml
       du dahl comme 400 cl (84 L l'année) ; corrigé à part. Tenu par
       `fondReappro.test.ts`.
+
+## Le placard du téléphone — T158
+
+- [x] **T158 — Le fond de roulement restait une proposition (24/10).** Sur
+      le téléphone du foyer, « Aucun plancher au garde-manger » : les minimums
+      de `fond.yaml` n'existaient que comme `minimumDuFond` d'un posable, à
+      valider denrée par denrée (« En garder 1 », puis « + » jusqu'au
+      minimum). L'année simulée faisait ces soixante gestes ; personne
+      d'autre. La section du placard propose maintenant le fond entier d'un
+      doigt (« Prendre le fond de roulement »), chaque denrée à son minimum,
+      dans une seule transaction (`poserPlanchersDenrees`) ; une fois des
+      planchers posés, elle propose seulement ceux du fond qui manquent. Les
+      niveaux se règlent ensuite ligne à ligne, comme avant. Tenu par
+      `db.test.ts` et `plancher-garde-manger.spec.ts`.
+
+- [x] **T159 — Le livre et la page en tête de fiche (24/10).** Le foyer veut
+      vérifier des recettes dans le livre. Le crédit (« Marie Chioca — Je
+      mange sain et bio, même au boulot !, Terre vivante, p. 63 ») fermait la
+      fiche depuis T73, sous treize lignes d'ingrédients : il l'ouvre
+      maintenant, juste sous les parts. Et les 39 fiches sans source ne disent
+      plus « Recette du foyer », qui laissait croire à une recette de famille :
+      elles ont été écrites pour l'app, et le disent (« Écrite pour l'app —
+      dans aucun livre »).

@@ -651,7 +651,7 @@ button { font-family: var(--font-body); color: inherit; }
    pas une bibliographie. Mais il est lisible — créditer à demi ne crédite
    pas. */
 .co-credit {
-  margin-top: var(--space-3); padding: 0 var(--space-1) var(--space-2);
+  margin-top: var(--space-2); padding: 0 var(--space-1) var(--space-1);
   font-size: 12px; line-height: 1.45; color: var(--color-neutral-700);
 }
 .co-credit a { color: inherit; text-decoration: underline; }

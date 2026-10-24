@@ -94,3 +94,21 @@ test("un plancher posé au placard part tout seul dans les courses", async ({ pa
   await attendreLApp(page);
   await expect(page.locator(".co-art").filter({ hasText: "graines courge" })).toBeVisible();
 });
+
+// T158 — LE FOND EN UN GESTE. Le 24/10, le téléphone du foyer n'avait aucun
+// plancher : trente-huit « En garder 1 » suivis de leurs « + », personne ne
+// les fait. Un doigt pose tout le fond, chaque denrée à son minimum.
+test("le fond de roulement se prend d'un doigt", async ({ page }) => {
+  await page.goto("/#/cuisine/stock");
+  await attendreLApp(page);
+
+  await page.getByRole("button", { name: "Prendre le fond de roulement" }).dispatchEvent("click");
+
+  await expect(posee(page, "tomates pelees")).toContainText("/ 3");
+  await expect(posee(page, "beurre")).toContainText("/ 2");
+  await expect(page.getByRole("button", { name: "Prendre le fond de roulement" })).toHaveCount(0);
+
+  await page.goto("/#/cuisine/courses");
+  await attendreLApp(page);
+  await expect(page.locator(".co-art").filter({ hasText: /lentilles corail/i }).first()).toBeVisible();
+});
