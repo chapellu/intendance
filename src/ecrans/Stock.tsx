@@ -41,7 +41,12 @@ import {
   useSemaine,
 } from "../db/hooks";
 import { corrigerLigne, releverZone } from "../db/journal";
-import { poserPlancher, poserPlancherDenree, retirerPlancherDenree } from "../db/planchers";
+import {
+  poserPlancher,
+  poserPlancherDenree,
+  poserPlanchersDenrees,
+  retirerPlancherDenree,
+} from "../db/planchers";
 import type { Calcul } from "../model/calcul";
 import { nomDuType } from "../model/plancher";
 import type { Jeu } from "../model/jeu";
@@ -927,6 +932,7 @@ function GardeManger({
 function PlanchersDenrees({ vue }: { vue: PlanchersDenreesVue | null }) {
   const [ouvert, setOuvert] = useState(false);
   if (!vue) return null;
+  const duFond = vue.libres.filter((p) => p.minimumDuFond);
 
   return (
     <>
@@ -956,11 +962,39 @@ function PlanchersDenrees({ vue }: { vue: PlanchersDenreesVue | null }) {
         </button>
       </div>
 
-      {vue.poses.length === 0 && !ouvert ? (
+      {vue.poses.length === 0 && !ouvert && !duFond.length ? (
         <div className="co-note" style={{ margin: "0 var(--space-1) var(--space-2)" }}>
           Aucun plancher au garde-manger. En poser un sur une denrée, c’est dire «&nbsp;j’en veux
           toujours autant&nbsp;»&nbsp;: en dessous, elle part d’elle-même dans «&nbsp;Courses&nbsp;»,
           sans qu’aucun plat n’ait à la réclamer.
+        </div>
+      ) : null}
+
+      {/* T158 — LE FOND DE ROULEMENT SE PREND D'UN DOIGT. Ses minimums
+          (`fond.yaml`) restent une proposition — on les règle ensuite ligne à
+          ligne — mais trente-huit gestes pour la valider, c'était ne jamais la
+          valider : le placard du foyer est resté sans plancher. */}
+      {duFond.length ? (
+        <div className="co-espace" style={{ margin: "0 var(--space-1) var(--space-2)" }}>
+          <div className="nom">
+            {vue.poses.length ? "Le fond de roulement n’est pas tout suivi" : "Le fond de roulement"}
+          </div>
+          <div className="co-note" style={{ margin: "4px 0 var(--space-2)" }}>
+            {duFond.length} denrée{duFond.length > 1 ? "s" : ""} à toujours avoir, au minimum mesuré
+            sur l’année&nbsp;: {duFond.slice(0, 4).map((p) => `${p.nom} ${p.minimumDuFond}`).join(", ")}
+            {duFond.length > 4 ? "…" : ""} Chaque niveau se règle ensuite ici.
+          </div>
+          <button
+            className="btn btn-primary"
+            onClick={() =>
+              void poserPlanchersDenrees(
+                base,
+                duFond.map((p) => ({ ingredient: p.ingredient, niveau: p.minimumDuFond ?? 1 })),
+              )
+            }
+          >
+            {vue.poses.length ? `Suivre les ${duFond.length} qui manquent` : "Prendre le fond de roulement"}
+          </button>
         </div>
       ) : null}
 

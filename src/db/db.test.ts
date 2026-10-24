@@ -14,6 +14,7 @@ import {
   lirePlanchersDenrees,
   poserPlancher,
   poserPlancherDenree,
+  poserPlanchersDenrees,
   retirerPlancherDenree,
   validesParmi,
 } from "./planchers";
@@ -406,6 +407,18 @@ describe("un plancher est une décision, donc il survit", () => {
 describe("un plancher de denrée est une décision à part", () => {
   test("une base neuve n'en porte aucun", async () => {
     expect(await lirePlanchersDenrees(base)).toEqual([]);
+  });
+
+  test("le fond se pose d'un geste, au minimum de chaque denrée (T158)", async () => {
+    await poserPlanchersDenrees(base, [
+      { ingredient: "tomates-pelees", niveau: 3 },
+      { ingredient: "beurre", niveau: 2 },
+      { ingredient: "mais", niveau: 0 },
+    ]);
+    expect(await lirePlanchersDenrees(base)).toEqual([
+      { ingredient: "beurre", niveau: 2 },
+      { ingredient: "tomates-pelees", niveau: 3 },
+    ]);
   });
 
   test("posé, il se relit en unités d'achat", async () => {
