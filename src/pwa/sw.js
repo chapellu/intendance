@@ -95,7 +95,8 @@ self.addEventListener("fetch", (e) => {
 });
 
 // Gardé au premier passage — la seule exception à « on ne garde pas ce qu'on a
-// servi », et elle est bornée : cinq fichiers connus, sous `/ocr/`.
+// servi », et elle est bornée : les fichiers connus de `/ocr/` — tesseract, et
+// depuis T160 les deux chunks de pdf.js (`/ocr/pdf/`, voir `vite.config.ts`).
 async function servirOcr(cle, requete) {
   const c = await caches.open(OCR);
   const connue = await c.match(cle);

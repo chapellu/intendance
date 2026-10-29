@@ -9,6 +9,7 @@
 // LA CLÉ EST COMPOSITE — (enseigne, vendeur, libellé) — parce qu'un même
 // libellé tronqué ne veut pas dire la même chose chez deux commerçants, et que
 // la liste des vendeurs d'un ticket Grand Frais change d'un papier à l'autre.
+// Sauf quand la ligne porte un EAN (facture drive, T160) : c'est lui la clé.
 
 import type { Catalogue, Quantite } from "./types";
 import { formatDe, type Enseigne, type LigneLue } from "./ticket";
@@ -29,6 +30,14 @@ export interface Appris {
 
 export const cleDuLibelle = (enseigne: Enseigne | string, vendeur: string, libelle: string): string =>
   `${enseigne}|${vendeur.trim().toUpperCase()}|${libelle.trim().toUpperCase()}`;
+
+/**
+ * La clé d'une ligne. T160 — UNE LIGNE QUI A UN EAN EST APPRISE PAR SON EAN :
+ * le même pot de lait de coco a le même code au drive comme en magasin, d'une
+ * facture à l'autre, là où son libellé se replie différemment à chaque page.
+ */
+export const cleDeLaLigne = (enseigne: Enseigne, ligne: Pick<LigneLue, "vendeur" | "libelle" | "ean">): string =>
+  ligne.ean ? `ean|${ligne.ean}` : cleDuLibelle(enseigne, ligne.vendeur, ligne.libelle);
 
 /**
  * Ce qui ne s'achète pas : un sous-produit (épluchures, fanes, parures, un
@@ -170,7 +179,7 @@ export function proposer(
   appris: ReadonlyMap<string, Appris>,
   candidats: readonly Candidat[],
 ): Proposition {
-  const cle = cleDuLibelle(enseigne, ligne.vendeur, ligne.libelle);
+  const cle = cleDeLaLigne(enseigne, ligne);
   const a = appris.get(cle);
   const classes = classer(ligne.libelle, candidats);
   const suggestions = classes.map(([c]) => c);

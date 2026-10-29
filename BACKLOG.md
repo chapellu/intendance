@@ -5768,3 +5768,27 @@ sans beurre 6 / 1 ; gaspillage 1,4 / 0,9 kg ; midis sur le reste prévu
       `riz` reste un paquet de 1 kg, basmati. Le lait (Viva en commande, lait
       de croissance au fond) n'est pas touché : c'est une question posée au
       foyer, pas une lecture de ticket.
+
+## La facture du drive — T160
+
+- [x] **T160 — La facture Carrefour Drive rentre comme un ticket (28/10).**
+      La livraison du 28/10 (43 articles, 171,88 €) arrive en PDF ; lue par
+      `lireTicket`, elle donnait 30 lignes dont des pieds de page (« RCS :
+      CAEN … »), perdait 13 libellés repliés sur deux rangées (l'EAN sur celle
+      du milieu), comptait tout à 1 et datait de la commande. Un second bouton
+      de l'écran Courses, « Rentrer une facture drive (PDF) », lit le texte
+      sur le téléphone avec pdf.js (chargé au premier PDF, rangé sous
+      `/ocr/pdf/` hors précache comme tesseract ; le bundle principal prend
+      2 ko compressés), refait les colonnes (`ecrans/pdf.ts`), et
+      `lireFactureDrive` en tire un `TicketLu` : un article par bloc de
+      rangées, quantité LIVRÉE, remises du récapitulatif comprises (celle de
+      l'eau Arancia n'est que là), date de LIVRAISON, total contre « Montant
+      Net payé ». La revue et « Tout rentrer » sont ceux de T138 ; la table
+      apprise retient l'EAN (`ean|…`) plutôt que le libellé, et les rayons
+      DROGUERIE / PARFUMERIE HYGIENE proposent « pas pour la cuisine ». Le PDF
+      n'est ni gardé ni versionné : le corpus porte sa sortie
+      `pdftotext -layout`, identifiants remplacés, et sa transcription. Sur
+      la facture : 35 lignes sur 35 (30 pour la cuisine), 43 articles, brut
+      176,31 €, remises 4,43 €, net 171,88 € au centime — et le même résultat
+      par pdf.js sur le vrai PDF. Tenu par `factureDrive.test.ts`,
+      `pdf.test.ts` et `e2e/facture-drive.spec.ts`.

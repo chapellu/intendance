@@ -4,14 +4,20 @@
 // galerie) ; la lecture tourne sur le téléphone avec sa barre de progression ;
 // la revue montre une rangée par ligne, et « Tout rentrer » passe par le même
 // chemin que la liste. La photo ne vit que dans cet écran : rien ne la garde.
+//
+// T160 — LA FACTURE DU DRIVE PREND LE MÊME CHEMIN. Un PDF n'a pas d'OCR à
+// passer : son texte est lu par pdf.js, puis par `lireFactureDrive`, et la
+// revue qui suit est celle du ticket. Le PDF, lui non plus, n'est pas gardé.
 
 import { useEffect, useMemo, useState } from "react";
 import { base } from "../db";
 import { lireAppris, rentrerUnTicket } from "../db/tickets";
+import { estFactureDrive, lireFactureDrive } from "../model/factureDrive";
 import { lireTicket, type TicketLu } from "../model/ticket";
 import { candidatsDu } from "../model/ticketCorrespondance";
 import type { Catalogue } from "../model/types";
 import { lireImage } from "./ocr";
+import { lirePdf } from "./pdf";
 import {
   aRentrer,
   choisir,
@@ -44,6 +50,27 @@ export function BoutonScanner({ onImage }: { onImage: (f: File) => void }) {
   );
 }
 
+/** T160 — la facture PDF du drive : pas d'appareil photo, un fichier. */
+export function BoutonFacture({ onFichier }: { onFichier: (f: File) => void }) {
+  return (
+    <label className="btn btn-secondary btn-block tk-scanner">
+      Rentrer une facture drive (PDF)
+      <input
+        type="file"
+        accept="application/pdf,.pdf"
+        data-testid="facture-pdf"
+        onChange={(e) => {
+          const f = e.currentTarget.files?.[0];
+          e.currentTarget.value = "";
+          if (f) onFichier(f);
+        }}
+      />
+    </label>
+  );
+}
+
+const estUnPdf = (f: File): boolean => f.type === "application/pdf" || /\.pdf$/i.test(f.name);
+
 type Etape =
   | { sorte: "lecture"; progres: number }
   | { sorte: "echec"; message: string }
@@ -67,12 +94,27 @@ export function RevueDuTicket({
   const [rangees, setRangees] = useState<Rangee[]>([]);
   const [jour, setJour] = useState("");
   const candidats = useMemo(() => candidatsDu(catalogue), [catalogue]);
+  const pdf = estUnPdf(image);
 
   useEffect(() => {
     let vivant = true;
     setEtape({ sorte: "lecture", progres: 0 });
     (async () => {
       const suivre = (p: number) => vivant && setEtape({ sorte: "lecture", progres: p });
+      if (pdf) {
+        const texte = await lirePdf(image, suivre);
+        const lu = estFactureDrive(texte) ? lireFactureDrive(texte) : lireTicket(texte);
+        const appris = await lireAppris(base);
+        if (!vivant) return;
+        if (!lu.lignes.length) {
+          setEtape({ sorte: "echec", message: "Aucune ligne d’article lue dans ce PDF. Est-ce bien une facture Carrefour Drive ?" });
+          return;
+        }
+        setRangees(rangeesDu(lu, appris, candidats, catalogue));
+        setJour(lu.date ?? lu.dateSuggeree ?? "");
+        setEtape({ sorte: "revue", lu });
+        return;
+      }
       let lu = lireTicket(await lireImage(image, suivre));
       // L'EXIF PEUT MENTIR : orientation=6 sur des pixels déjà droits. Une
       // lecture qui ne trouve aucune ligne est relue d'un quart de tour, dans
@@ -96,7 +138,7 @@ export function RevueDuTicket({
     return () => {
       vivant = false;
     };
-  }, [image, candidats, catalogue]);
+  }, [image, pdf, candidats, catalogue]);
 
   const maj = (rang: number, f: (r: Rangee) => Rangee) =>
     setRangees((rs) => rs.map((r) => (r.rang === rang ? f(r) : r)));
@@ -104,11 +146,11 @@ export function RevueDuTicket({
   if (etape.sorte === "lecture") {
     return (
       <div className="tk-revue">
-        <div className="co-kicker">Lecture du ticket, sur le téléphone</div>
+        <div className="co-kicker">{pdf ? "Lecture de la facture" : "Lecture du ticket"}, sur le téléphone</div>
         <div className="tk-progres" role="progressbar" aria-valuenow={Math.round(etape.progres * 100)}>
           <div style={{ width: `${Math.round(etape.progres * 100)}%` }} />
         </div>
-        <div className="co-note">La photo ne quitte pas l’appareil et n’est pas gardée.</div>
+        <div className="co-note">{pdf ? "Le document ne quitte pas l’appareil et n’est pas gardé." : "La photo ne quitte pas l’appareil et n’est pas gardée."}</div>
       </div>
     );
   }
@@ -116,7 +158,7 @@ export function RevueDuTicket({
     return (
       <div className="tk-revue">
         <div className="co-vide">{etape.message}</div>
-        <BoutonScanner onImage={onReprendre} />
+        {pdf ? <BoutonFacture onFichier={onReprendre} /> : <BoutonScanner onImage={onReprendre} />}
         <button className="btn btn-ghost" onClick={onFermer}>Fermer</button>
       </div>
     );
@@ -153,7 +195,11 @@ export function RevueDuTicket({
           le dit, on propose de reprendre, ou de la taper. */}
       {!lu.date ? (
         <div className="tk-alerte" data-testid="ticket-sans-date">
-          <b>Photo incomplète : il manque la date</b>, reprenez le haut / le bas du ticket.
+          {pdf ? (
+            <b>La date de livraison n’a pas été lue : il manque la date.</b>
+          ) : (
+            <><b>Photo incomplète : il manque la date</b>, reprenez le haut / le bas du ticket.</>
+          )}
           {lu.dateSuggeree ? (
             <div className="co-note">Le code-barres suggère le {new Date(`${lu.dateSuggeree}T12:00:00`).toLocaleDateString("fr-FR")} — vérifiez.</div>
           ) : null}
@@ -163,7 +209,7 @@ export function RevueDuTicket({
               <input type="date" value={jour} max={new Date().toISOString().slice(0, 10)} onChange={(e) => setJour(e.currentTarget.value)} data-testid="ticket-date" />
             </label>
           </div>
-          <BoutonScanner onImage={onReprendre} />
+          {pdf ? null : <BoutonScanner onImage={onReprendre} />}
         </div>
       ) : null}
 

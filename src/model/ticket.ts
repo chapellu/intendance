@@ -24,7 +24,8 @@
 // Le texte brut n'est jamais rendu ni gardé : le numéro de carte de fidélité y
 // figure, et rien ici ne le recopie.
 
-export type Enseigne = "grand-frais" | "carrefour" | "despi" | "inconnue";
+/** `carrefour-drive` : la facture PDF du drive (T160), pas un papier. */
+export type Enseigne = "grand-frais" | "carrefour" | "carrefour-drive" | "despi" | "inconnue";
 
 export interface LigneLue {
   /** Rang dans le ticket : deux POTIMARRON du même vendeur sont deux lignes. */
@@ -46,6 +47,12 @@ export interface LigneLue {
   douteux: boolean;
   /** Ligne de comptoir sans détail (« RAYON BOUCHERIE ») : il faut le talon. */
   opaque: boolean;
+  /** T160 — le code-barres de la facture drive : la clé de la table apprise. */
+  ean?: string;
+  /** T160 — l'intertitre de la facture (« EPICERIE », « DROGUERIE »). */
+  rayon?: string;
+  /** T160 — le rayon ne mange pas : proposé « pas pour la cuisine ». */
+  horsCuisine?: boolean;
 }
 
 export interface TicketLu {
@@ -118,6 +125,7 @@ function enseigneDe(texte: string): Enseigne {
 const NOMS: Record<Exclude<Enseigne, "inconnue">, string> = {
   "grand-frais": "Grand Frais",
   carrefour: "Carrefour",
+  "carrefour-drive": "Carrefour Drive",
   despi: "Boucherie Despi",
 };
 

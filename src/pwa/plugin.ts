@@ -29,7 +29,8 @@ import type { Plugin, ResolvedConfig } from "vite";
 export function aPrecacher(fichiers: readonly string[]): string[] {
   return fichiers
     // `ocr/` (T138) : ~12 Mo que le précache ferait retélécharger à chaque
-    // version. `sw.js` les garde au premier scan, dans un cache à part.
+    // version. `sw.js` les garde au premier scan, dans un cache à part. pdf.js
+    // y est rangé aussi (`ocr/pdf/`, T160).
     .filter((f) => f !== "sw.js" && !f.endsWith(".map") && !f.startsWith("ocr/"))
     .sort()
     .map((f) => `/${f}`);
