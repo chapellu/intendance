@@ -5757,3 +5757,14 @@ sans beurre 6 / 1 ; gaspillage 1,4 / 0,9 kg ; midis sur le reste prévu
       plus « Recette du foyer », qui laissait croire à une recette de famille :
       elles ont été écrites pour l'app, et le disent (« Écrite pour l'app —
       dans aucun livre »).
+
+- [x] **T161 — Le fond disait des pâtes que le placard ne tenait pas (29/10).**
+      La commande drive du 27/10 et le placard photographié le lendemain
+      disent 4 kg de pâtes Barilla au paquet de 1 kg, plus des crozets, et un
+      riz basmati. `fond.yaml` disait « 1 à 2 paquets de 500 g demi-complètes »
+      et un riz demi-complet : l'app aurait réclamé des pâtes au premier
+      paquet ouvert et jamais vu le stock réel comme normal. Le foyer garde
+      4 à 5 kg : `pates` passe à 3 paquets de 1 kg au moins, 5 au rachat ;
+      `riz` reste un paquet de 1 kg, basmati. Le lait (Viva en commande, lait
+      de croissance au fond) n'est pas touché : c'est une question posée au
+      foyer, pas une lecture de ticket.
