@@ -48143,17 +48143,17 @@
    },
    {
     "ingredient": "pates",
-    "minimum": 1,
-    "jusqua": 2,
+    "minimum": 3,
+    "jusqua": 5,
     "hebdo": false,
-    "unite": "paquet de 500 g (demi-complètes)"
+    "unite": "paquet de 1 kg"
    },
    {
     "ingredient": "riz",
     "minimum": 1,
     "jusqua": null,
     "hebdo": false,
-    "unite": "paquet de 1 kg (demi-complet)"
+    "unite": "paquet de 1 kg (basmati)"
    },
    {
     "ingredient": "semoule",

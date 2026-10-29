@@ -107,9 +107,16 @@ denrees:
   - {ingredient: pois-chiches, minimum: 2, jusqua: 3, unite: sachet de 500 g ou bocal}
   - {ingredient: haricots-blancs, minimum: 1, unite: sachet de 500 g}
   - {ingredient: haricots-rouges, minimum: 1, unite: sachet de 500 g}
-  # ── Féculents — demi-complets ; les gnocchis sortent du fond (T142)
-  - {ingredient: pates, minimum: 1, jusqua: 2, unite: paquet de 500 g (demi-complètes)}
-  - {ingredient: riz, minimum: 1, unite: paquet de 1 kg (demi-complet)}
+  # ── Féculents — les gnocchis sortent du fond (T142)
+  # T161 — RELU SUR LA COMMANDE DU 27/10 (drive, livrée le 28) ET LE PLACARD
+  # PHOTOGRAPHIÉ LE LENDEMAIN : le foyer achète des pâtes blanches au paquet de
+  # 1 kg (Barilla : penne, spaghetti, torsades, coquillettes) et en garde
+  # 4 à 5 kg, une forme par paquet ; le riz est un basmati blanc. Le fond
+  # disait « 500 g demi-complètes » et « demi-complet » : une intention qu'aucun
+  # achat ne suivait. Le fond dit ce que le placard tient, pas ce qu'on
+  # voudrait qu'il tienne. À reporter au brouillon.
+  - {ingredient: pates, minimum: 3, jusqua: 5, unite: paquet de 1 kg}
+  - {ingredient: riz, minimum: 1, unite: paquet de 1 kg (basmati)}
   - {ingredient: semoule, minimum: 1, unite: paquet de 500 g}
   # T154 — au demi-kilo, pour que 1 kg au moins et 2,5 kg au rachat se disent.
   - {ingredient: pomme-de-terre, minimum: 2, jusqua: 5, unite: 500 g en vrac}
