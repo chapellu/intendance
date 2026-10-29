@@ -42,7 +42,9 @@ export function rangeesDu(
     const p = proposer(lu.enseigne, l, appris, candidats);
     // Un premier nettement devant est PRÉSÉLECTIONNÉ — toujours modifiable, et
     // il n'est appris qu'au « Tout rentrer », donc vu par le doigt.
-    const ingredient = p.reconnu ? p.ingredient : (p.evidente?.id ?? undefined);
+    // T160 — un rayon qui ne mange pas (DROGUERIE) propose « pas pour la
+    // cuisine », de la même façon : vu, modifiable, appris au « Tout rentrer ».
+    const ingredient = p.reconnu ? p.ingredient : l.horsCuisine ? null : (p.evidente?.id ?? undefined);
     const q = ingredient ? quantiteDe(l, ingredient, catalogue) : { unites: Math.max(1, l.quantite), parUnite: null };
     return {
       rang: l.rang,
@@ -58,7 +60,7 @@ export function rangeesDu(
       ...q,
       // Une ligne de comptoir n'a pas d'article : on ne la rentre pas à
       // l'aveugle. « pas pour la cuisine » appris : ignorée d'office.
-      ignoree: l.opaque || p.ingredient === null,
+      ignoree: l.opaque || ingredient === null,
     };
   });
 }
@@ -103,9 +105,11 @@ export function quantiteLisible(r: Pick<Rangee, "unites" | "parUnite">): string 
 export function phraseDuTotal(lu: TicketLu): { texte: string; ok: boolean } {
   if (lu.totalImprime === null)
     return { texte: `Les lignes font ${euros(lu.sommeNets)} — le total n’a pas été lu.`, ok: false };
-  if (lu.concorde) return { texte: `Les lignes font ${euros(lu.sommeNets)}, comme le ticket.`, ok: true };
+  // T160 — une facture drive se dit « la facture ».
+  const papier = lu.enseigne === "carrefour-drive" ? "la facture" : "le ticket";
+  if (lu.concorde) return { texte: `Les lignes font ${euros(lu.sommeNets)}, comme ${papier}.`, ok: true };
   return {
-    texte: `Les lignes font ${euros(lu.sommeNets)}, le ticket dit ${euros(lu.totalImprime)} : une ligne a été mal lue ou manque.`,
+    texte: `Les lignes font ${euros(lu.sommeNets)}, ${papier} dit ${euros(lu.totalImprime)} : une ligne a été mal lue ou manque.`,
     ok: false,
   };
 }

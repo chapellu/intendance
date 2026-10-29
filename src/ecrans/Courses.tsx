@@ -20,7 +20,7 @@ import type { Calcul } from "../model/calcul";
 import type { Jeu } from "../model/jeu";
 import { fruitsDeLaSemaine, sousLeurPlancher } from "../model/plancherGardeManger";
 import { Corps } from "../ui/Coquille";
-import { BoutonScanner, RevueDuTicket } from "./Ticket";
+import { BoutonFacture, BoutonScanner, RevueDuTicket } from "./Ticket";
 import { listeParIngredient } from "./ticket.vue";
 import {
   basculeDe,
@@ -81,6 +81,7 @@ function Contenu({
   // économise.
   const [mode, setMode] = useState<Mode>("magasin");
   // T138 — la photo du ticket vit ici, en mémoire, le temps de la revue.
+  // T160 — ou la facture PDF du drive, au même titre.
   const [photo, setPhoto] = useState<File | null>(null);
   const vue = useMemo(
     () => vueDesCourses(jeu.catalogue, calc.panier, etats, sous, new Date().setHours(0, 0, 0, 0)),
@@ -149,6 +150,8 @@ function Contenu({
         {/* T138 — LE TICKET PHOTOGRAPHIÉ. À la maison, c'est l'autre façon de
             vider le sac : ce qui a été acheté, daté et pesé par la caisse. */}
         <BoutonScanner onImage={setPhoto} />
+        {/* T160 — la facture PDF du drive : même revue, même « Tout rentrer ». */}
+        <BoutonFacture onFichier={setPhoto} />
 
         {/* LE GESTE DE VIDER LE SAC. On ne rentre pas douze articles un par un
             en tenant un cabas ; c'est le seul endroit de l'app où une action

@@ -39,7 +39,10 @@ const DOSSIER = join(__dirname, "tickets-corpus");
 const corpus: [string, TicketJson][] = readdirSync(DOSSIER)
   .filter((f) => f.endsWith(".json"))
   .sort()
-  .map((f) => [f, JSON.parse(readFileSync(join(DOSSIER, f), "utf8")) as TicketJson]);
+  .map((f): [string, TicketJson & { type?: string }] => [f, JSON.parse(readFileSync(join(DOSSIER, f), "utf8"))])
+  // T160 — la facture drive a son texte et son lecteur à elle
+  // (`factureDrive.test.ts`) : ce n'est pas un papier qu'on refait d'OCR.
+  .filter(([, t]) => t.type !== "facture");
 
 const eur = (x: number): string => x.toFixed(2).replace(".", ",");
 const kg = (x: number): string => x.toFixed(3).replace(".", ",");
