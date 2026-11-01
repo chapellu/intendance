@@ -12,12 +12,12 @@
 # `_repertoire.yaml` sont à corriger.
 #
 # Une entrée saisie se signale en lui ajoutant `catalogue_id: <id>` pointant sur
-# le plat correspondant dans `recipes/`. Saisies à ce jour : **60 sur 100**.
+# le plat correspondant dans `recipes/`. Saisies à ce jour : **61 sur 100**.
 # L'ÉTÉ EST COMPLET : 26 sur 26, la p. 116 ayant fermé la saison. Le PRINTEMPS
 # l'est à cinq pages près (42, 45, 46, 49, 50) ; l'HIVER tient ses sept premiers
 # plats (p. 172 à 182) ; l'AUTOMNE est entamé par les deux bouts — sa tête
-# (p. 123 à 127) et sa queue (p. 157 à 166) —, sa p. 163 restant illisible sur
-# la photo disponible.
+# (p. 123 à 127) et sa queue (p. 157 à 166), la p. 163, longtemps illisible,
+# ayant été rephotographiée et encodée le 2026-11-01 (T162).
 #
 # LE COMPTE DE CET EN-TÊTE SE PÉRIME, et il l'a fait : il annonçait 25 alors que
 # les p. 87 et 115 étaient entrées depuis dix jours. Le chiffre juste se calcule
@@ -141,7 +141,7 @@ sommaire:
     - {page: 158, titre: "Riz au lait « retour des îles »", catalogue_id: riz-au-lait-retour-des-iles}
     - {page: 159, titre: "Soja-dessert à la vanille (sans yaourtière, 3 méthodes !)", catalogue_id: soja-dessert-vanille}
     - {page: 160, titre: "Tourte-crumble « des paresseux » aux pommes et aux noix", catalogue_id: tourte-crumble-pommes-noix}
-    - {page: 163, titre: "Marbré du goûter façon « Savane »"}
+    - {page: 163, titre: "Marbré du goûter façon « Savane »", catalogue_id: marbre-gouter-savane}
     - {page: 166, titre: "Quatre-quarts d'anniversaire à la poire", catalogue_id: quatre-quarts-anniversaire-poire}
 
   hiver:

@@ -1,0 +1,121 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+#
+# LISTÉE AU SOMMAIRE DEPUIS LE DÉBUT, JAMAIS ENCODÉE. La p. 163 figurait dans
+# `sources/chioca-cuisine-bio-quotidien.yaml` sans `catalogue_id` : l'app ne la
+# proposait donc pas. Encodée le 2026-11-01 sur photo de la page (T162).
+#
+# 30 OU 35 MINUTES : l'en-tête annonce 30 min de cuisson, la marche à suivre
+# « environ 35 ». On encode 35 — c'est le geste — et la pique décide.
+#
+# PAS DE FRIGO, ET C'EST LA RECETTE QUI LE DIT : l'huile de coco durcit au
+# froid et le gâteau perd son moelleux. Le schéma n'a pas de champ « à
+# température ambiante » ; `frigo_days: 0` + congélation en parts est ce qui
+# s'en approche, et la note le dit en clair.
+#
+# LE CHOCOLAT EN POUDRE, PAS LE CACAO : c'est l'une des « astuces-saveur » de
+# l'autrice. Le placard en a (Nesquik, `garde-manger.yaml`), d'où `chocolat-poudre`
+# et non `cacao`.
+
+recipe:
+  id: marbre-gouter-savane
+  title: Marbré du goûter façon « Savane »
+  lang: fr
+  format: cake
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 163"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 163
+    saison: automne
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « pour 8 parts »
+  lot_entier: true          # un moule à manqué ne se coupe pas en deux
+  time_min_total: 50        # 15 min de préparation + ~35 min de cuisson
+  active_min: 15
+
+  creneaux: [gouter, dessert]
+
+  apports:
+    proteine: aucune        # quatre œufs pour huit parts de goûter
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-complete, name: farine T80 ou T110 de blé ou de grand épeautre, qty: 300, unit: g}
+    - {id: sucre-roux, name: sucre blond, qty: 170, unit: g}
+    - {id: sucre-vanille, name: sachets de sucre vanillé, qty: 3, unit: sachet}
+    - {id: poudre-a-lever, name: poudre à lever, qty: 1, unit: sachet}
+    - {id: lait-soja-vanille, name: "lait de soja-vanille (150 g pour la pâte + 2 c. à s. pour la part chocolat)", qty: 180, unit: g}
+    - {id: oeufs, name: œufs, qty: 4, unit: pièce}
+    - {id: rhum, name: rhum ambré, qty: 2, unit: c. à s.}
+    - {id: yaourt-soja, name: "yaourt à la vanille, de soja ou de vache", qty: 50, unit: g}
+    - {id: huile-coco, name: "huile de coco fondue — à défaut huile de tournesol désodorisée ou beurre fondu", qty: 150, unit: g}
+    - {id: chocolat-poudre, name: "chocolat en poudre (pas du cacao)", qty: 2, unit: c. à s.}
+    - {id: fleur-de-sel, name: fleur de sel, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 180 °C"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: fondre-coco
+      action: "Faire fondre l'huile de coco dans une petite casserole"
+      needs: [simmer]
+      uses: [huile-coco]
+      time_min: 3
+      charge_partielle: true
+    - id: pate-blanche
+      action: "Mélanger farine, sucres, sel et poudre à lever ; faire un puits, y verser le lait, les œufs, le rhum, l'huile de coco et le yaourt, puis bien mélanger"
+      needs: []
+      uses: [farine-complete, sucre-roux, sucre-vanille, fleur-de-sel, poudre-a-lever, lait-soja-vanille, oeufs, rhum, huile-coco, yaourt-soja]
+      time_min: 5
+      seasoning_gate: true
+      kid: {age_min_months: 30, task: "verser la farine et les sucres dans le saladier"}
+    - id: pate-chocolat
+      action: "Prélever 250 g de pâte, y ajouter le chocolat en poudre et 2 c. à s. de lait, et bien mélanger"
+      needs: []
+      uses: [chocolat-poudre]
+      time_min: 2
+      kid: {age_min_months: 30, task: "mélanger le chocolat dans la petite part de pâte"}
+    - id: cible
+      action: "Dans un moule à manqué, verser une cuillerée à pot de pâte blanche, puis une cuillerée à soupe de pâte chocolat bien au centre"
+      needs: []
+      uses: []
+      time_min: 1
+      kid: {age_min_months: 36, task: "verser les cuillerées de pâte chocolat au centre"}
+    - id: cible-suite
+      action: "Alterner ainsi pâte blanche et pâte chocolat, toujours au centre, jusqu'à épuisement de la pâte"
+      astuce: "Toujours verser bien au centre de la flaque précédente : c'est ce qui dessine la cible."
+      needs: []
+      uses: []
+      time_min: 3
+    - id: cuire
+      action: "Enfourner environ 35 minutes"
+      needs: [bake]
+      uses: []
+      time_min: 35
+      attended: false
+    - id: verifier-cuisson
+      action: "Vérifier la cuisson à la pique avant de sortir le gâteau, puis le laisser refroidir"
+      astuce: "Servir à température ambiante, jamais au frigo : l'huile de coco y durcit et le gâteau perd son moelleux."
+      needs: []
+      uses: []
+      time_min: 2
+      attente_min: 45
+      attente_raison: "refroidissement"
+  # PAS DE PRÉLÈVEMENT BÉBÉ : 170 g de sucre blond, 3 sachets de sucre vanillé
+  # et du rhum.
+
+  emits:
+    - kind: reste-plat
+      type: marbre-savane
+      qty_band: 3-repas
+      keeps: {frigo_days: 0, congelo: true}
+      note: "se garde sous cloche à température ambiante, pas au frigo ; se congèle en parts, sorties la veille pour un goûter"
