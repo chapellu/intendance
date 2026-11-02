@@ -17467,6 +17467,331 @@
    "cuisinable": true
   },
   {
+   "id": "marbre-gouter-savane",
+   "titre": "Marbré du goûter façon « Savane »",
+   "minutes": 50,
+   "minutesSurPlace": 50,
+   "avanceMin": 97,
+   "anticipations": [],
+   "portions": 8,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 163",
+    "url": null,
+    "saison": "automne"
+   },
+   "apports": {
+    "proteine": "aucune",
+    "feculent": "farine",
+    "legumes": [],
+    "profil": "four",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "farine-complete",
+     "ref": "farine-complete",
+     "nom": "farine T80 ou T110 de blé ou de grand épeautre",
+     "qty": 300,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sucre-roux",
+     "ref": "sucre-roux",
+     "nom": "sucre blond",
+     "qty": 170,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sucre-vanille",
+     "ref": "sucre-vanille",
+     "nom": "sachets de sucre vanillé",
+     "qty": 3,
+     "unit": "sachet",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "poudre-a-lever",
+     "ref": "poudre-a-lever",
+     "nom": "poudre à lever",
+     "qty": 1,
+     "unit": "sachet",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "lait-soja-vanille",
+     "ref": "lait-soja-vanille",
+     "nom": "lait de soja-vanille (150 g pour la pâte + 2 c. à s. pour la part chocolat)",
+     "qty": 180,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "oeufs",
+     "ref": "oeufs",
+     "nom": "œufs",
+     "qty": 4,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "rhum",
+     "ref": "rhum",
+     "nom": "rhum ambré",
+     "qty": 2,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "yaourt-soja",
+     "ref": "yaourt-soja",
+     "nom": "yaourt à la vanille, de soja ou de vache",
+     "qty": 50,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "huile-coco",
+     "ref": "huile-coco",
+     "nom": "huile de coco fondue — à défaut huile de tournesol désodorisée ou beurre fondu",
+     "qty": 150,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "chocolat-poudre",
+     "ref": "chocolat-poudre",
+     "nom": "chocolat en poudre (pas du cacao)",
+     "qty": 2,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "fleur-de-sel",
+     "ref": "fleur-de-sel",
+     "nom": "fleur de sel",
+     "qty": 1,
+     "unit": "pincée",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": "cake",
+   "avec": [],
+   "steps": [
+    {
+     "id": "prechauffer",
+     "action": "Préchauffer le four à 180 °C",
+     "minutes": 1,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "fondre-coco",
+     "action": "Faire fondre l'huile de coco dans une petite casserole",
+     "minutes": 3,
+     "needs": [
+      "simmer"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "huile-coco"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "pate-blanche",
+     "action": "Mélanger farine, sucres, sel et poudre à lever ; faire un puits, y verser le lait, les œufs, le rhum, l'huile de coco et le yaourt, puis bien mélanger",
+     "minutes": 5,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "farine-complete",
+      "sucre-roux",
+      "sucre-vanille",
+      "fleur-de-sel",
+      "poudre-a-lever",
+      "lait-soja-vanille",
+      "oeufs",
+      "rhum",
+      "huile-coco",
+      "yaourt-soja"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "verser la farine et les sucres dans le saladier",
+     "enfantDes": 30,
+     "porteAssaisonnement": true
+    },
+    {
+     "id": "pate-chocolat",
+     "action": "Prélever 250 g de pâte, y ajouter le chocolat en poudre et 2 c. à s. de lait, et bien mélanger",
+     "minutes": 2,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "chocolat-poudre"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "mélanger le chocolat dans la petite part de pâte",
+     "enfantDes": 30,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cible",
+     "action": "Dans un moule à manqué, verser une cuillerée à pot de pâte blanche, puis une cuillerée à soupe de pâte chocolat bien au centre",
+     "minutes": 1,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "verser les cuillerées de pâte chocolat au centre",
+     "enfantDes": 36,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cible-suite",
+     "action": "Alterner ainsi pâte blanche et pâte chocolat, toujours au centre, jusqu'à épuisement de la pâte",
+     "minutes": 3,
+     "needs": [],
+     "surveille": true,
+     "astuce": "Toujours verser bien au centre de la flaque précédente : c'est ce qui dessine la cible.",
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cuire",
+     "action": "Enfourner environ 35 minutes",
+     "minutes": 35,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "verifier-cuisson",
+     "action": "Vérifier la cuisson à la pique avant de sortir le gâteau, puis le laisser refroidir",
+     "minutes": 2,
+     "needs": [],
+     "surveille": true,
+     "astuce": "Servir à température ambiante, jamais au frigo : l'huile de coco y durcit et le gâteau perd son moelleux.",
+     "uses": [],
+     "enParallele": null,
+     "attente": 45,
+     "attenteRaison": "refroidissement",
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 15,
+   "accepts": [],
+   "creneaux": [
+    "gouter",
+    "dessert"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [
+    {
+     "type": "marbre-savane",
+     "kind": "reste-plat",
+     "qty": null,
+     "band": "3-repas",
+     "espace": "congelo",
+     "note": "se garde sous cloche à température ambiante, pas au frigo ; se congèle en parts, sorties la veille pour un goûter",
+     "gardeFrigo": 0,
+     "congelo": true,
+     "horsTable": false
+    }
+   ],
+   "lotEntier": true,
+   "calibreMax": null,
+   "vaisselle": null,
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
    "id": "meli-melo-remoulade-brebis",
    "titre": "Méli-mélo en rémoulade légère au yaourt de brebis",
    "minutes": 15,

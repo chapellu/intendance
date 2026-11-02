@@ -5792,3 +5792,17 @@ sans beurre 6 / 1 ; gaspillage 1,4 / 0,9 kg ; midis sur le reste prévu
       176,31 €, remises 4,43 €, net 171,88 € au centime — et le même résultat
       par pdf.js sur le vrai PDF. Tenu par `factureDrive.test.ts`,
       `pdf.test.ts` et `e2e/facture-drive.spec.ts`.
+
+## Le marbré de la p. 163 — T162
+
+- [x] **T162 — Le marbré « Savane » était au sommaire, pas dans l'app (01/11).**
+      La p. 163 de *La cuisine bio du quotidien* (Marbré du goûter façon
+      « Savane ») figurait dans la source sans `catalogue_id` : la photo
+      d'origine était illisible, la recette n'avait jamais été encodée, et le
+      foyer ne la trouvait pas. Rephotographiée, elle entre sous
+      `marbre-gouter-savane` (goûter ou dessert, 8 parts, lot entier). Deux
+      choses du livre sont dites plutôt que perdues : la cuisson annoncée
+      30 min en tête mais « environ 35 » dans les étapes (on encode 35, la
+      pique décide), et l'interdit du frigo (l'huile de coco durcit) —
+      `frigo_days: 0`, congélation en parts. Le chocolat en poudre est
+      `chocolat-poudre`, déjà au placard, pas `cacao`. Source : 61 sur 100.

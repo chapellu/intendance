@@ -161,7 +161,10 @@ describe("ce que le plat prend au placard", () => {
     // remesure à chaque livre qui entre.
     // T143 : les krisprolls ont quitté le relevé du 21/10, et le blé-lentilles
     // y est un sachet neuf.
-    const horsRecette = ["cracotte", "chocolat-poudre"];
+    // T162 : le marbré « Savane » (p. 163) mange le chocolat en poudre — c'est
+    // une « astuce-saveur » de l'autrice, pas du cacao. Le Nesquik entamé a
+    // désormais un plat qui l'écoule ; il reste les cracottes.
+    const horsRecette = ["cracotte"];
     for (const id of horsRecette) expect(aEcouler(catalogue, tout).has(id)).toBe(true);
     for (const p of catalogue.plats)
       for (const id of horsRecette) expect(ids(p)).not.toContain(id);
