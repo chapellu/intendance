@@ -566,6 +566,13 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
       else if (!attendIci) attendIci = lotMange(depot, l, date);
     }
 
+    // T164 — « RESTE RÉCHAUFFÉ » SANS RESTE QU'ON PUISSE NOMMER NE SE PROPOSE
+    // PAS. Le calcul peut le croire faisable sur un reste périmé (le frigo
+    // l'a jeté depuis longtemps) ou sur le reste PROJETÉ d'un plat posé mais
+    // pas cuit : la carte disait alors « Rien à acheter » sans pouvoir dire
+    // quel reste, devant un frigo vide.
+    if (finitUnReste(p) && !presse && !attendIci) continue;
+
     const h = horaire(p);
     const tientNet = h.total <= fenetre;
     const parRattrapage = !tientNet && h.rattrape < h.total && h.rattrape <= fenetre;

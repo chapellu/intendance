@@ -5841,3 +5841,15 @@ sans beurre 6 / 1 ; gaspillage 1,4 / 0,9 kg ; midis sur le reste prévu
       matin se lisent « 1 plaquette · 1 entamée ». Les ids sans accents
       (`farine-epeautre`) ne reprennent le mot des recettes que s'il
       correspond exactement.
+
+## Le reste fantôme — T164
+
+- [x] **T164 — « Reste réchauffé » devant un frigo vide (06/11).** « Pourquoi
+      tu parles de reste à réchauffer alors qu'il n'y a absolument rien dans le
+      frigo ? » `proposerCeSoir` garde les autres plats posés (`choix`), et le
+      calcul range au dépôt ce qu'ils PROJETTENT : un chili posé ce midi et
+      jamais cuit suffisait à rendre « Reste réchauffé » faisable ce soir, sans
+      aucun lot réel que la carte puisse nommer. Désormais un plat qui ne fait
+      que finir un reste (`finitUnReste`) ne se propose que s'il finit un lot
+      vivant de la table `stock` — et la carte dit lequel. Tenu par deux tests
+      de `pause.test.ts`, dont l'un échoue sans le correctif.
