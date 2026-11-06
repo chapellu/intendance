@@ -23,8 +23,7 @@ import {
   scoreSaison,
   TAILLE,
   type CarteDuSoir,
-  type PropositionDuSoir,
-} from "./pause";
+  type PropositionDuSoir, sansLuiPasDePlat } from "./pause";
 import { PASSE_VIDE } from "./questions";
 import { offre, type Savoir } from "./scoring";
 import type { Catalogue } from "./types";
@@ -103,6 +102,25 @@ describe("un jour sans courses, le fond en place : ce qui se fait avec ce qui es
     expect(proposition.cartes[0]!.manque).toEqual([]);
   });
 
+  test("sans lui, pas de plat : la viande, les œufs d'une omelette — pas le parmesan d'une bolognaise", () => {
+    const sans = sansLuiPasDePlat(catalogue);
+    const ligne = (p: string, id: string) => {
+      const pl = plat(p);
+      return sans(pl, pl.ingredients.find((i) => i.id === id)!);
+    };
+    expect(ligne("poulet-roti", plat("poulet-roti").ingredients.find((i) => i.id.startsWith("poulet"))!.id)).toBe(true);
+    expect(ligne("pates-bolognaise", "fromage-rape")).toBe(false);
+    const omelette = catalogue.plats.find((p) => p.apports.proteine === "oeuf" && p.ingredients.some((i) => i.id === "oeufs"))!;
+    expect(ligne(omelette.id, "oeufs")).toBe(true);
+  });
+
+  test("aucune carte de la main ne manque de ce dont le plat ne se fait pas — T165", () => {
+    // Le poulet d'un poulet rôti n'est pas « un article à prendre en passant ».
+    for (const c of proposition.cartes) expect(c.manqueCentral, c.plat.id).toBe(false);
+    const poulet = proposition.plus.find((c) => c.plat.id === "poulet-roti");
+    if (poulet && poulet.manque.some((a) => a.id.startsWith("poulet"))) expect(poulet.manqueCentral).toBe(true);
+  });
+
   test("aucune carte de la main ne demande deux achats ou plus", () => {
     expect(proposition.cartes.length).toBeGreaterThanOrEqual(TAILLE);
     for (const c of proposition.cartes) expect(c.manque.length, c.plat.id).toBeLessThanOrEqual(1);
@@ -115,7 +133,7 @@ describe("un jour sans courses, le fond en place : ce qui se fait avec ce qui es
     // toujours rangé après TOUS ceux qui se font sans courses.
     const six = proposition.plus.findIndex((c) => c.manque.length >= 6);
     const dernierFaisable = proposition.plus
-      .map((c) => c.manque.length <= 1 && c.horsSaison.length === 0)
+      .map((c) => c.manque.length <= 1 && !c.manqueCentral && c.horsSaison.length === 0)
       .lastIndexOf(true);
     expect(six).toBeGreaterThan(dernierFaisable);
   });
@@ -158,7 +176,8 @@ describe("un article manquant se NOMME", () => {
     // Un article hors saison ne s'achète pas : il range sa carte sous toutes
     // les autres, rang « 3 » ici.
     const rangs = [...proposition.cartes.slice(0, TAILLE), ...proposition.plus].map((c) =>
-      c.horsSaison.length ? 3 : Math.min(2, c.manque.length),
+      // T165 — un article central compte pour deux.
+      c.horsSaison.length ? 3 : c.manqueCentral ? 2 : Math.min(2, c.manque.length),
     );
     expect(rangs).toEqual([...rangs].sort((a, b) => a - b));
     expect(new Set(rangs)).toEqual(new Set([0, 1, 2, 3]));

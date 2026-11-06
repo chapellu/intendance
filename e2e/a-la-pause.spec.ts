@@ -47,7 +47,9 @@ test("depuis le cockpit, la ligne « Ce soir » nomme un plat et ce qui attend �
   await expect(page.getByText("Ce soir, à 18 h")).toBeVisible();
   const cartes = page.locator(".co-soir:not(.pose)");
   await expect(cartes.first()).toBeVisible();
-  expect(await cartes.count()).toBeGreaterThanOrEqual(3);
+  // T165 — la main ne garde que ce qui se fait avec ce qui est là : sur la base
+  // de démo, une seule carte peut suffire.
+  expect(await cartes.count()).toBeGreaterThanOrEqual(1);
   expect(await cartes.count()).toBeLessThanOrEqual(4);
   await page.screenshot({ path: "/tmp/a-la-pause-proposition.png", fullPage: true });
 
