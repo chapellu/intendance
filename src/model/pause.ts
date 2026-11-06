@@ -50,8 +50,9 @@ import { ceQuiEstIci, ceQuiManque, ceQueLaCarteDitIci, type Article } from "./ic
 import { HEURE } from "./heures";
 import type { Jeu } from "./jeu";
 import { deSaison, saisonDuPlat } from "./saisons";
+import { contexte } from "./journal";
 import { comptoir, type Carte, type Savoir } from "./scoring";
-import type { Catalogue, Etape, Plat } from "./types";
+import type { Catalogue, Etape, Ingredient, Plat } from "./types";
 
 /* ═══════════════════════════════════════════════════════════ les réglages */
 
@@ -294,6 +295,13 @@ export interface CarteDuSoir {
    * tout ce qui se fait (`ordre`) et sort de la main (`proposerCeSoir`).
    */
   horsSaison: Article[];
+  /**
+   * T165 — CE QUI MANQUE EST-IL CE DONT LE PLAT NE SE FAIT PAS ? Le poulet d'un
+   * poulet rôti, les œufs d'une omelette — la centralité de T33
+   * (`centralite`). Un seul article, mais tout le plat : un jour sans courses,
+   * la carte sort de la main comme si elle en demandait deux.
+   */
+  manqueCentral: boolean;
   /** L'accompagnement absent — dit, pas compté (voir `fond.ceQuiManque`). */
   aCote: Article[];
   /** Ce que la carte tient pour là — l'instantané que « Je lance ça » écrit
@@ -422,6 +430,30 @@ export function scoreRotation(
   );
 }
 
+/**
+ * T165 — l'ingrédient sans lequel ce plat-ci ne se fait pas.
+ *
+ * PAS TOUTE LA CENTRALITÉ DE T33 : elle tient la crèmerie entière pour
+ * centrale, et le parmesan d'une bolognaise n'empêche personne de dîner. Ici
+ * comptent la viande et le poisson, les féculents qui portent le plat
+ * (`centraux.ids`), la surcharge de ligne — et la crèmerie seulement quand elle
+ * EST la protéine du plat : les œufs d'une omelette, le fromage d'un croque.
+ */
+export function sansLuiPasDePlat(catalogue: Catalogue) {
+  const ctx = contexte(catalogue);
+  const ids = new Set(catalogue.rayons.centraux.ids);
+  return (p: Plat, ligne: Pick<Ingredient, "id" | "central">): boolean => {
+    if (ligne.central) return true;
+    const id = ctx.alias(ligne.id);
+    if (ids.has(id)) return true;
+    const rayon = ctx.rayonDe(id);
+    if (rayon === "boucherie" || rayon === "poissonnerie") return true;
+    if (rayon !== "crèmerie") return false;
+    if (p.apports.proteine === "oeuf") return id === "oeufs";
+    return p.apports.proteine === "fromage" && id !== "oeufs";
+  };
+}
+
 /** Le dîner de ce soir — le premier jour de la fenêtre glissante. */
 export const soirDe = (jeu: Jeu): number =>
   jeu.creneaux.findIndex((c) => c.jour === 0 && c.repas === "diner");
@@ -539,6 +571,7 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
     aSortir.push({ lot: x, plat: preneurs[0]?.p ?? null });
   }
 
+  const central = sansLuiPasDePlat(catalogue);
   const cartes: CarteDuSoir[] = [];
   for (const p of catalogue.plats) {
     const ecarts = comp.ecarts(p);
@@ -552,6 +585,9 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
 
     const { ingredients: manque, aCote } = ceQuiManque(catalogue, p, ici, carte.plein);
     const horsSaison = manque.filter((a) => deSaison(catalogue, a.id, mois) === false);
+    const manqueCentral = manque.some((a) =>
+      p.ingredients.some((i) => (catalogue.rayons.aliases[i.id] ?? i.id) === a.id && central(p, i)),
+    );
 
     let presse: CarteDuSoir["presse"] = null;
     let attendIci: LotMange | null = null;
@@ -605,6 +641,7 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
       carte,
       manque,
       horsSaison,
+      manqueCentral,
       aCote,
       ici: ceQueLaCarteDitIci(catalogue, p, { ingredients: manque, aCote }, carte.plein),
       presse,
@@ -626,7 +663,7 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
   // aucun jour ne fait ce qui attend un légume hors saison — le marché du
   // samedi n'a pas d'orties en octobre.
   const faisable = (c: CarteDuSoir): boolean =>
-    c.horsSaison.length === 0 && (jourDeCourses || c.manque.length <= 1);
+    c.horsSaison.length === 0 && (jourDeCourses || c.manque.length === 0 || (c.manque.length === 1 && !c.manqueCentral));
   const main = cartes.filter(faisable).slice(0, TAILLE);
 
   // LA QUATRIÈME PLACE EST AUX LÉGUMINEUSES, et seulement quand aucune des
@@ -670,7 +707,9 @@ export const ordre =
     const presse = Number(b.presse !== null) - Number(a.presse !== null);
     if (presse) return presse;
     if (!jourDeCourses) {
-      const achats = Math.min(a.manque.length, 2) - Math.min(b.manque.length, 2);
+      // Un article central compte pour deux : sans lui, le plat ne se fait pas.
+      const n = (c: CarteDuSoir) => (c.manqueCentral ? 2 : Math.min(c.manque.length, 2));
+      const achats = n(a) - n(b);
       if (achats) return achats;
     }
     const tient = Number(b.tient) - Number(a.tient);

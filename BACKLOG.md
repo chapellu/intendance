@@ -5853,3 +5853,16 @@ sans beurre 6 / 1 ; gaspillage 1,4 / 0,9 kg ; midis sur le reste prévu
       que finir un reste (`finitUnReste`) ne se propose que s'il finit un lot
       vivant de la table `stock` — et la carte dit lequel. Tenu par deux tests
       de `pause.test.ts`, dont l'un échoue sans le correctif.
+
+## Le poulet qu'on n'a pas — T165
+
+- [x] **T165 — « Ce soir » proposait un poulet rôti sans poulet (06/11).** « La
+      carte dit il manque : poulet fermier entier — elle devait proposer en
+      fonction des stocks. » Un jour sans courses, la main admettait UN article
+      manquant, quel qu'il soit : un poulet entier comptait comme un brin de
+      persil. `sansLuiPasDePlat` dit maintenant ce dont un plat ne se fait pas
+      — viande, poisson, féculents de `centraux.ids`, surcharge de ligne, et
+      la crèmerie seulement quand elle est la protéine (les œufs d'une
+      omelette, le fromage d'un croque). Une carte à qui il manque cela sort de
+      la main et passe derrière « Voir plus » ; le parmesan d'une bolognaise
+      reste un article à prendre en passant.
