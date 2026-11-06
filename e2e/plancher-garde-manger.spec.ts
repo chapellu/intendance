@@ -13,7 +13,7 @@
 // apparaître. Si elle est dans la liste, c'est le plancher, et rien d'autre.
 
 import { expect, test } from "@playwright/test";
-import { attendreLApp } from "./parcours";
+import { attendreLApp, ouvrirReglages } from "./parcours";
 
 /** La ligne d'un plancher posé, désignée par le seul bouton qui n'existe que
  *  là. Le NOM ne suffirait pas : la même denrée paraît aussi dans le relevé de
@@ -29,15 +29,16 @@ test("un plancher posé au placard part tout seul dans les courses", async ({ pa
   await attendreLApp(page);
   // On part d'une liste que la semaine ne remplit pas : seul le fruit de la
   // semaine y est (T144), sans plancher.
-  await expect(page.locator(".co-art").filter({ hasText: "frais de la semaine" }).first()).toBeVisible();
-  await expect(page.locator(".co-art").filter({ hasNotText: "frais de la semaine" })).toHaveCount(0);
+  await expect(page.locator(".co-art").filter({ hasText: "pour la semaine" }).first()).toBeVisible();
+  await expect(page.locator(".co-art").filter({ hasNotText: "pour la semaine" })).toHaveCount(0);
 
   await page.goto("/#/cuisine/stock");
   await attendreLApp(page);
+  await ouvrirReglages(page);
 
   // La section existe et ne propose rien d'elle-même — T39 : ici l'app ne
   // devine aucune habitude, contrairement au congélateur.
-  await expect(page.getByText("Ce qu’on veut toujours au placard")).toBeVisible();
+  await expect(page.getByText("À toujours avoir au placard")).toBeVisible();
   await expect(page.getByRole("button", { name: "Ne plus suivre" })).toHaveCount(0);
 
   // LE BOUTON SE DÉSIGNE PAR SON RANGEMENT DEPUIS T89 : le congélateur a gagné
@@ -69,7 +70,7 @@ test("un plancher posé au placard part tout seul dans les courses", async ({ pa
   // Un plancher à 1 sur un bocal qu'on a déjà est TENU : rien à acheter. C'est
   // la moitié de la promesse — un plancher est un seuil, il ne réclame pas tant
   // qu'on est au-dessus.
-  await expect(posee(page, "graines courge")).toContainText("tenu");
+  await expect(posee(page, "graines courge")).toContainText("ok");
 
   // On monte le niveau d'un cran : le placard passe sous son plancher.
   await posee(page, "graines courge").getByRole("button", { name: "+" }).dispatchEvent("click");
@@ -83,7 +84,7 @@ test("un plancher posé au placard part tout seul dans les courses", async ({ pa
   // parle du placard.
   const article = page.locator(".co-art").filter({ hasText: "graines courge" });
   await expect(article).toBeVisible();
-  await expect(article).toContainText("sous son plancher — 1 sur 2");
+  await expect(article).toContainText("il en reste 1, vous en voulez 2");
   await expect(article).toContainText("pour l’apéro");
   await expect(article).toContainText("1 unité");
 
@@ -101,12 +102,13 @@ test("un plancher posé au placard part tout seul dans les courses", async ({ pa
 test("le fond de roulement se prend d'un doigt", async ({ page }) => {
   await page.goto("/#/cuisine/stock");
   await attendreLApp(page);
+  await ouvrirReglages(page);
 
-  await page.getByRole("button", { name: "Prendre le fond de roulement" }).dispatchEvent("click");
+  await page.getByRole("button", { name: /^Suivre ces \d+ essentiels/ }).dispatchEvent("click");
 
-  await expect(posee(page, "tomates pelees")).toContainText("/ 3");
+  await expect(posee(page, "tomates pel")).toContainText("/ 3");
   await expect(posee(page, "beurre")).toContainText("/ 2");
-  await expect(page.getByRole("button", { name: "Prendre le fond de roulement" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /^Suivre ces \d+ essentiels/ })).toHaveCount(0);
 
   await page.goto("/#/cuisine/courses");
   await attendreLApp(page);

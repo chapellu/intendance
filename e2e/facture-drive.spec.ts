@@ -70,6 +70,8 @@ async function pdfDeLaFacture(page: Page): Promise<Buffer> {
 }
 
 async function deposer(page: Page, pdf: Buffer) {
+  // Ticket et facture sont repliés sous « Importer » depuis T163.
+  if (!(await page.getByTestId("facture-pdf").count())) await page.getByRole("button", { name: /Importer un ticket/ }).click();
   await page.getByTestId("facture-pdf").setInputFiles({ name: "facture.pdf", mimeType: "application/pdf", buffer: pdf });
   await expect(page.getByTestId("ticket-revue")).toBeVisible({ timeout: 60_000 });
 }

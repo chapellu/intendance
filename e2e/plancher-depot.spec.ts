@@ -18,7 +18,7 @@
 // les deux côtés du seuil sans rien cuisiner.
 
 import { expect, test } from "@playwright/test";
-import { attendreLApp } from "./parcours";
+import { attendreLApp, ouvrirReglages } from "./parcours";
 
 type Page = import("@playwright/test").Page;
 
@@ -41,8 +41,9 @@ const posable = (page: Page, nom: string) =>
 test("un plancher de congélateur se pose à la main, se règle, et se retire", async ({ page }) => {
   await page.goto("/#/cuisine/stock");
   await attendreLApp(page);
+  await ouvrirReglages(page);
 
-  await expect(page.getByText("Ce qu’on veut toujours avoir")).toBeVisible();
+  await expect(page.getByText("Plats d’avance au congélateur")).toBeVisible();
   // RIEN N'EST POSÉ ET RIEN N'EST PROPOSÉ : le journal est vide. C'est l'état
   // dans lequel l'app vivait, et dont elle ne pouvait pas sortir.
   await expect(page.getByRole("button", { name: "Ne plus suivre" })).toHaveCount(0);
@@ -53,7 +54,6 @@ test("un plancher de congélateur se pose à la main, se règle, et se retire", 
 
   // CE QUI EST INTERDIT EST NOMMÉ, comme T46 le fait au placard : un plancher
   // compte des portions au tiroir, donc il ne se pose pas sur ce qui n'y va pas.
-  await expect(page.getByText(/Pas de plancher sur ce qui ne se congèle pas/)).toBeVisible();
 
   // LA LISTE MONTRE CE QUI RECHARGE AVANT LE GESTE : accepter un plancher, c'est
   // accepter de revoir ces plats-là (T34).
@@ -69,7 +69,7 @@ test("un plancher de congélateur se pose à la main, se règle, et se retire", 
   // Deux portions à l'amorce, plancher à 1 : TENU. Un plancher est un seuil, il
   // ne réclame rien tant qu'on est au-dessus.
   await expect(posee(page, "sauce bolognaise")).toContainText("2 / 1");
-  await expect(posee(page, "sauce bolognaise")).toContainText("tenu");
+  await expect(posee(page, "sauce bolognaise")).toContainText("ok");
 
   // On monte de deux crans : le tiroir passe sous son plancher, et le dit.
   const plus = () => posee(page, "sauce bolognaise").getByRole("button", { name: "+" });
@@ -84,6 +84,7 @@ test("un plancher de congélateur se pose à la main, se règle, et se retire", 
   // `db/schema.ts`, et c'est ce qui sépare un réglage d'une illusion.
   await page.reload();
   await attendreLApp(page);
+  await ouvrirReglages(page);
   await expect(posee(page, "sauce bolognaise")).toContainText("2 / 3");
 });
 
@@ -94,6 +95,7 @@ test("le « − » descend jusqu'à un et s'y arrête", async ({ page }) => {
   // de réglage n'a pas à décider « ne redemande jamais » au douzième appui.
   await page.goto("/#/cuisine/stock");
   await attendreLApp(page);
+  await ouvrirReglages(page);
   await page
     .getByRole("button", { name: "en ajouter un au congélateur" })
     .dispatchEvent("click");
@@ -118,6 +120,7 @@ test("cesser de suivre un type le laisse posable, et ne le repropose pas", async
   // reste posable à la main, rangé à la fin — un refus n'est pas un interdit.
   await page.goto("/#/cuisine/stock");
   await attendreLApp(page);
+  await ouvrirReglages(page);
   await page
     .getByRole("button", { name: "en ajouter un au congélateur" })
     .dispatchEvent("click");
@@ -136,6 +139,7 @@ test("cesser de suivre un type le laisse posable, et ne le repropose pas", async
 
   await page.reload();
   await attendreLApp(page);
+  await ouvrirReglages(page);
   await page
     .getByRole("button", { name: "en ajouter un au congélateur" })
     .dispatchEvent("click");

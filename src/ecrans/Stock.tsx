@@ -1227,7 +1227,7 @@ function Zone({
               </span>
               <span>
                 <div className="q">{m.quantite}</div>
-                {e && e.confiance === "inconnu" ? <div className="src estime">à vérifier</div> : null}
+                {e && e.confiance !== "sur" ? <div className="src estime">à vérifier</div> : null}
               </span>
             </div>
           );
