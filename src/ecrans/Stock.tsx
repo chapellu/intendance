@@ -786,7 +786,7 @@ function GardeManger({
         </>
       ) : null}
       {ouverts.length ? (
-        <div className="co-espace" style={{ marginTop: "var(--space-3)" }}>
+        <div className="co-espace st-ouverts" style={{ marginTop: "var(--space-3)" }}>
           <button className="st-reglages-tete" style={{ padding: 0, minHeight: 0 }} aria-expanded={voirOuverts} onClick={() => setVoirOuverts(!voirOuverts)}>
             <span>
               <b>{ouverts.length} paquets ouverts</b>

@@ -247,8 +247,8 @@ test("relever une zone remet le placard à ce que l'œil voit", async ({ page })
   }
   expect(nom).not.toBe("");
 
-  await zone.getByRole("button", { name: "Relever" }).dispatchEvent("click");
-  const valider = zone.getByRole("button", { name: /Valider le relevé/ });
+  await zone.getByRole("button", { name: "Tout recompter" }).dispatchEvent("click");
+  const valider = zone.getByRole("button", { name: /^Valider/ });
   await expect(valider).toBeVisible();
 
   // Tout descendre à zéro : la zone est déclarée vide, ce qui est le geste que
@@ -268,7 +268,7 @@ test("relever une zone remet le placard à ce que l'œil voit", async ({ page })
   }
 
   await valider.dispatchEvent("click");
-  await expect(zone.getByRole("button", { name: "Relever" })).toBeVisible();
+  await expect(zone.getByRole("button", { name: "Tout recompter" })).toBeVisible();
 
   // LA ZONE RELEVÉE ne porte plus rien, et ça survit au rechargement.
   await page.reload();

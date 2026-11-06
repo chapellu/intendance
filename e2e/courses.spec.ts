@@ -8,36 +8,28 @@
 import { expect, test } from "@playwright/test";
 import { attendreLApp, poserUnPlat } from "./parcours";
 
-test("cocher un article, le rentrer, et le retrouver rentré", async ({ page }) => {
-  // Une liste de courses n'existe pas toute seule : elle est ce qu'il manque
-  // pour la semaine posée. On pose donc d'abord.
+test("mettre un article dans le sac, le ranger, et le retrouver rangé", async ({ page }) => {
   await poserUnPlat(page);
 
   await page.goto("/#/cuisine/courses");
   await attendreLApp(page);
 
-  // Une ligne de la semaine (« 1 plat ») : le fruit de la semaine (T144)
-  // disparaît de la liste une fois rentré, il ne se retrouverait pas.
-  const article = page.locator("button.co-art").filter({ hasText: /\d plats?/ }).first();
+  const article = page.locator("button.co-art").filter({ hasText: /pour \d plats?/ }).first();
   await expect(article).toBeVisible();
   const nom = (await article.locator(".nom").innerText()).trim();
 
-  await expect(page.locator(".co-kicker").first()).toContainText("0 sur");
+  // UN SEUL GESTE SUR LA LISTE : toucher met dans le sac, sans toucher au stock.
+  await expect(page.getByRole("button", { name: /Ranger au stock/ })).toHaveCount(0);
   await article.click();
-  await expect(page.locator(".co-kicker").first()).toContainText("1 sur");
   await expect(article).toHaveClass(/coche/);
+  await expect(page.getByText(/1 dans le sac/)).toBeVisible();
 
-  // Rien n'est rangé tant qu'on n'est pas rentré : côté maison, le compteur des
-  // rentrés est toujours à zéro.
-  await page.getByRole("button", { name: "À la maison" }).click();
-  await expect(page.locator(".co-kicker").first()).toContainText("0 sur");
-
-  await page.getByRole("button", { name: /Tout rentrer/ }).click();
-  await expect(page.locator(".co-kicker").first()).toContainText("1 sur");
+  // Ranger fait entrer le sac au stock : l'article quitte la liste.
+  await page.getByRole("button", { name: /Ranger au stock — 1 article/ }).click();
+  await expect(page.locator("button.co-art").filter({ hasText: nom })).toHaveCount(0);
 
   await page.reload();
   await attendreLApp(page);
-  await page.getByRole("button", { name: "À la maison" }).click();
-  await expect(page.locator(".co-kicker").first()).toContainText("1 sur");
+  await page.getByRole("button", { name: /Déjà rangés \(\d+\)/ }).click();
   await expect(page.locator("button.co-art").filter({ hasText: nom }).first()).toHaveClass(/rentre/);
 });

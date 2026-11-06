@@ -37,6 +37,7 @@ import { aller } from "../nav/useRoute";
 import { armer, arreter, demanderBandeau, desarmer, plateforme, promesse } from "../pwa/alarme";
 import { duree, fmt, hhmm, mmss } from "../ui/format";
 import { Icone, iconeEspace } from "../ui/icones";
+import { AjouterAuStock } from "../ui/Ajouter";
 import { nomEspace } from "../ui/phrases";
 import {
   aArmer,
@@ -56,7 +57,6 @@ import {
   pourLire,
   provenanceIngredient,
   quantitesDeLEtape,
-  SANS_USES,
   sansRecette,
   tempsDuPlat,
   type EtatMinuteur,
@@ -460,12 +460,15 @@ function MiseEnPlace({
           {m.rien ? (
             <div className="co-note">Rien à mettre de côté : tout part dans les assiettes.</div>
           ) : (
-            m.ranger.map((l, n) => (
+            // DEUX SACHETS PAREILS FONT UNE LIGNE « 2 × », pas deux cartes
+            // identiques qu'on prend pour un doublon.
+            regrouper(m.ranger).map(({ l, n: combien }, n) => (
               <div key={`${l.location}-${n}`} className="co-lot">
                 <Icone nom={iconeEspace(l.location)} />
                 <span style={{ flex: 1 }}>
                   <div className="nom">
-                    {nomEspace(l.location)} · {l.quantite}
+                    {nomEspace(l.location)} · {combien > 1 ? `${combien} × ` : ""}
+                    {l.quantite}
                   </div>
                   {/* Muet quand le foyer n'a déclaré aucun contenant pour cet
                       espace — même silence que la sortie. */}
@@ -493,6 +496,19 @@ function MiseEnPlace({
       </div>
     </>
   );
+}
+
+/** Les lignes « à ranger » identiques, comptées une fois. */
+function regrouper<L extends { location: unknown; quantite: string; boites: string | null }>(
+  lignes: readonly L[],
+): { l: L; n: number }[] {
+  const out: { l: L; n: number }[] = [];
+  for (const l of lignes) {
+    const deja = out.find((o) => o.l.location === l.location && o.l.quantite === l.quantite && o.l.boites === l.boites);
+    if (deja) deja.n += 1;
+    else out.push({ l, n: 1 });
+  }
+  return out;
 }
 
 /* ──────────────────────────────────────────────────────────────── la sortie */
@@ -674,6 +690,7 @@ function Ingredients({
   tient?: Recipient | null;
 }) {
   const produit = +(p.portions * f).toFixed(1);
+  const [jEnAi, setJEnAi] = useState<string | null>(null);
   const ustensile = aSortir(p);
   const cr = credit(p);
   const table = aTable(jeu, p, parts, i);
@@ -682,14 +699,15 @@ function Ingredients({
       <div className="co-encart">
         <Icone nom="info" />
         <span>
-          <b>
-            Pour {fmt(parts)} parts · on en cuisine {fmt(produit)}.
-          </b>{" "}
-          {produit > parts + 0.05
-            ? p.lotEntier
-              ? "Le lot ne se coupe pas."
-              : "Ça se garde, autant faire le lot."
-            : ""}{" "}
+          {produit > parts + 0.05 ? (
+            <>
+              <b>Recette entière : {fmt(produit)} parts</b> pour {fmt(parts)} ce soir — le reste se garde.{" "}
+            </>
+          ) : (
+            <>
+              <b>Pour {fmt(parts)} parts.</b>{" "}
+            </>
+          )}
           {/* LE RÔLE, DANS LA LIGNE QUI PORTE DÉJÀ LES PARTS, parce que c'est
               cette phrase-là qu'il corrige : « on en cuisine 6 » ne veut pas
               dire six dîners quand la recette compte ses parts en
@@ -701,6 +719,7 @@ function Ingredients({
           24/10, le foyer a voulu vérifier des recettes dans le livre : il faut
           le livre et la page sous les yeux, sans descendre sous les
           ingrédients — et savoir tout de suite quand il n'y a pas de livre. */}
+      {cr.texte ? (
       <div className="co-credit">
         {cr.url ? (
           <a href={cr.url} target="_blank" rel="noreferrer">
@@ -710,6 +729,7 @@ function Ingredients({
           cr.texte
         )}
       </div>
+      ) : null}
       {/* T74 — « à sortir avant de commencer », sur la FICHE et pas sur
           l'étape : le guide se lit à bout de bras et tout ce qui n'est pas
           l'étape en cours y est du bruit. Muet sur les 72 plats sans
@@ -737,11 +757,26 @@ function Ingredients({
             <div key={x.ref} className="l">
               <span className="nom">{x.nom}</span>
               <span className="q">{quantiteACuire(jeu.catalogue, x, f)}</span>
-              <span className={`p ${prov.acheter ? "acheter" : ""}`}>{prov.label}</span>
+              {/* « À ACHETER » SE TOUCHE : si on en a, on le dit ici même, et la
+                  ligne passe au vert. L'eau n'a pas d'étiquette. */}
+              {prov.acheter && !x.base ? (
+                <button
+                  className="p acheter"
+                  aria-label={`${x.nom} : à acheter — j’en ai`}
+                  onClick={() => setJEnAi(x.id)}
+                >
+                  à acheter · j’en ai
+                </button>
+              ) : /^eau(-|$)/.test(x.id) ? null : (
+                <span className={`p ${prov.acheter ? "acheter" : ""}`}>{prov.label}</span>
+              )}
             </div>
           );
         })}
       </div>
+      {jEnAi ? (
+        <AjouterAuStock catalogue={jeu.catalogue} ouvrirSur={jEnAi} onFerme={() => setJEnAi(null)} />
+      ) : null}
       {children}
       {/* À TABLE — ce qu'il faut À CÔTÉ, sous les ingrédients et pas dedans.
           « Il manque toujours les accompagnements, je n'ai pas un repas
@@ -874,7 +909,9 @@ function Guide({
 
   const { reste, total } = avancement(steps, etape);
   const chauffe = chauffeDe(e);
-  const outil = outilDe(foyer, e);
+  // « Outil : four » sous « Chauffe : Four » dit deux fois la même chose.
+  const outilDit = outilDe(foyer, e);
+  const outil = outilDit && outilDit.texte.toLowerCase() === chauffe.nom.toLowerCase() ? null : outilDit;
   // Le minuteur demande DEUX conditions, et elles ne disent pas la même chose :
   // qu'il y ait une durée à compter, et que la compter serve à quelque chose.
   const avecMinuteur = e.minutes > 0 && minuteurUtile(e);
@@ -918,7 +955,7 @@ function Guide({
       <div className="co-kicker accent">
         Étape {etape + 1} sur {steps.length}
       </div>
-      <div className="geste">{e.action}</div>
+      <div className={`geste${e.action.length > 90 ? " long" : ""}`}>{e.action}</div>
       <div className="texte">
         {/* « Sans surveiller » est la seule chose qui sépare une journée de
             90 minutes tenable d'une autre qui ne l'est pas. */}
@@ -937,9 +974,7 @@ function Guide({
           verse avant de se demander pourquoi. Même échelle que la liste des
           ingrédients (`quantitesDeLEtape`). `null` le dit en une ligne
           discrète, `[]` se tait — voir `SANS_USES`. */}
-      {quantites === null ? (
-        <div className="co-qetape-muet">{SANS_USES}</div>
-      ) : quantites.length ? (
+      {quantites?.length ? (
         <div className="co-qetape">
           {quantites.map((x) => (
             <div key={x.ref} className="l">

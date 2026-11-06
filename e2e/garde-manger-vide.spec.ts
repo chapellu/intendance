@@ -80,7 +80,7 @@ test("relever une zone à vide met ce qui manque sur la liste de courses", async
   await attendreLApp(page);
   // T141 — la zone s'ouvre en la touchant sur le plan.
   const carte = await ouvrirRangement(page, zone);
-  await carte.getByRole("button", { name: "Relever" }).click();
+  await carte.getByRole("button", { name: "Tout recompter" }).click();
 
   // Tout descendre à zéro. Douze coups par ligne : le relevé du 26/08 ne porte
   // aucune denrée au-delà, et un « − » qui a déjà touché le fond ne fait rien.
@@ -88,7 +88,7 @@ test("relever une zone à vide met ce qui manque sur la liste de courses", async
   const n = await moins.count();
   expect(n).toBeGreaterThan(0);
   for (let i = 0; i < n; i += 1) for (let k = 0; k < 12; k += 1) await moins.nth(i).click();
-  await carte.getByRole("button", { name: /Valider le relevé/ }).click();
+  await carte.getByRole("button", { name: /^Valider/ }).click();
 
   // APRÈS — la ligne a changé de section : elle n'est plus à vérifier, elle est
   // à acheter. C'est la phrase entière de ce correctif.

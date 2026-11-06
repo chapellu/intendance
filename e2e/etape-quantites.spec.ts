@@ -7,7 +7,7 @@
 
 import { readFileSync } from "node:fs";
 import { expect, test } from "@playwright/test";
-import { quantitesDeLEtape, SANS_USES } from "../src/ecrans/cuisiner.vue";
+import { quantitesDeLEtape } from "../src/ecrans/cuisiner.vue";
 import { facteurAffiche } from "../src/model/calcul";
 import { lireCatalogue } from "../src/model/catalogue";
 import { ouvrirLeGuide } from "./parcours";
@@ -32,8 +32,8 @@ test("l'étape montre ses quantités, aux parts du créneau", async ({ page }) =
   await expect(page.locator(".co-qetape-muet")).toHaveCount(0);
 });
 
-test("l'étape sans lien le dit, discrètement", async ({ page }) => {
+test("l'étape sans lien se tait : les quantités sont dans « Ingrédients »", async ({ page }) => {
   await ouvrirLeGuide(page, sans.id);
-  await expect(page.locator(".co-etape .co-qetape-muet")).toHaveText(SANS_USES);
+  await expect(page.locator(".co-etape .co-qetape-muet")).toHaveCount(0);
   await expect(page.locator(".co-qetape")).toHaveCount(0);
 });

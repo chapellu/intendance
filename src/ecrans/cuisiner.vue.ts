@@ -192,7 +192,19 @@ export function outilDe(foyer: Foyer, e: Etape): OutilEtape | null {
   const o = recipient ?? dits[0];
   if (!o) return null;
   if (o.reecrit) return { texte: o.reecrit, methode: true };
-  return { texte: o.label as string, methode: false };
+  return { texte: sansModeContraire(o.label as string, e.action), methode: false };
+}
+
+/**
+ * L'ÉTAPE DIT LE MODE DU FOUR, L'OUTIL NE LE CONTREDIT PAS. Le foyer déclare
+ * « four chaleur tournante » ; l'étape du pain de mie dit « 180 °C en chaleur
+ * statique ». Les deux lignes l'une sous l'autre se contredisaient : quand
+ * l'étape nomme un mode, l'outil se contente de dire « four ».
+ */
+const MODES_DU_FOUR = /\s*(?:à |en )?(?:chaleur tournante|tournante|chaleur statique|statique|grill?|gril|chaleur brassée)\b/i;
+export function sansModeContraire(label: string, action: string): string {
+  if (!/four/i.test(label) || !MODES_DU_FOUR.test(label) || !MODES_DU_FOUR.test(action)) return label;
+  return label.replace(MODES_DU_FOUR, "").trim();
 }
 
 /* ─────────────────────────────────────────────────────────── les ingrédients */

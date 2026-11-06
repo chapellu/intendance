@@ -19,7 +19,7 @@ test("un congélateur perdu se vide d'un geste confirmé, et se rend d'un autre"
   await ouvrirRangement(page, "Congélateur");
   await expect(bocal).toHaveCount(1);
 
-  await page.getByRole("button", { name: "Tout ce qui était au congélo est perdu" }).dispatchEvent("click");
+  await page.getByRole("button", { name: "Tout jeter au congélo" }).dispatchEvent("click");
   // LA QUESTION D'ABORD, ET RIEN N'EST PARTI : elle dit combien.
   await expect(page.getByText("Le lot au congélo va sortir de l’inventaire.")).toBeVisible();
   await expect(bocal).toHaveCount(1);
