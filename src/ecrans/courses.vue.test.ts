@@ -211,9 +211,9 @@ describe("T41 — la liste vit sans plan", () => {
 
   test("la phrase dit le placard, jamais « 0 plat »", () => {
     const p = sous({ ingredient: "mais", a: 1, niveau: 3, manque: 2 });
-    expect(phraseDuPlancher(p, 0)).toBe("sous son plancher — 1 sur 3");
+    expect(phraseDuPlancher(p, 0)).toBe("il en reste 1, vous en voulez 3");
     // Quand la semaine en demande aussi, les deux raisons se disent.
-    expect(phraseDuPlancher(p, 2)).toBe("2 plats · sous son plancher — 1 sur 3");
+    expect(phraseDuPlancher(p, 2)).toBe("pour 2 plats · il en reste 1, vous en voulez 3");
     // Et un chiffre qu'on n'a pas vu récemment ne se donne pas pour sûr.
     expect(phraseDuPlancher({ ...p, confiance: "probable" }, 0)).toContain("à vérifier");
   });

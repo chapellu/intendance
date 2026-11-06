@@ -151,27 +151,33 @@ export function vueDesCourses(
  * répond à « pourquoi cette quantité » ; pour un plancher la réponse n'est pas
  * dans la semaine, elle est dans le placard — « il en reste 1, j'en veux 2 ».
  *
- * LA CONFIANCE VOYAGE JUSQU'AU RAYON. T46 garantit que l'app sait compter cette
- * classe-là, pas qu'elle a regardé récemment ; taire la différence ferait
- * rentrer du maïs en trop, ce qui est précisément l'erreur qu'un plancher existe
- * pour éviter.
+ * LA CONFIANCE VOYAGE JUSQU'AU RAYON, en mots de rayon : quand l'app n'a pas
+ * regardé, elle ne prétend pas savoir ce qu'il reste (« il en reste 0 · jamais
+ * vu » se contredisait) — elle dit d'aller voir.
  */
+/** « 2026-10-13 » → « 13/10 » ; tout autre format passe tel quel. */
+const court = (iso: string): string => {
+  const m = /^\d{4}-(\d{2})-(\d{2})$/.exec(iso);
+  return m ? `${m[2]}/${m[1]}` : iso;
+};
+
 export function phraseDuPlancher(p: LignePlancher, plats: number): string {
   const bouts: string[] = [];
-  if (plats > 0) bouts.push(plats > 1 ? `${plats} plats` : "1 plat");
+  if (plats > 0) bouts.push(plats > 1 ? `pour ${plats} plats` : "pour 1 plat");
   if (p.usage === "apero") bouts.push("pour l’apéro");
-  else if (p.hebdo) bouts.push("frais de la semaine");
-  else if (p.fond) bouts.push("pour le fond");
-  // T144 — le fruit de la semaine n'a pas de plancher : la ligne dit ce qui reste.
-  // T150 — un paquet entamé compte à sa fraction : « 1,6 sur 2 ».
+  else if (p.hebdo) bouts.push("pour la semaine");
+  else if (p.fond) bouts.push("à toujours avoir");
   const a = String(p.a).replace(".", ",");
-  bouts.push(p.sansPlancher ? `il en reste ${a}` : `sous son plancher — ${a} sur ${p.niveau}`);
-  // T137 — ACHETÉ N'EST PAS « JAMAIS VU ». Rentrer ne restaure pas la
-  // confiance (la règle de l'entrée tient), mais l'app sait d'où vient l'article.
   if (p.confiance !== "sur")
     bouts.push(
-      p.vuLe ? `à vérifier, vu le ${p.vuLe}` : p.rentreLe ? `à vérifier, rentré le ${p.rentreLe}` : "jamais vu",
+      p.rentreLe
+        ? `acheté le ${court(p.rentreLe)}, à vérifier`
+        : p.vuLe
+          ? `vu le ${court(p.vuLe)}, à vérifier`
+          : "à vérifier",
     );
+  else if (!p.sansPlancher) bouts.push(`il en reste ${a}, vous en voulez ${p.niveau}`);
+  else if (p.a > 0) bouts.push(`il en reste ${a}`);
   return bouts.join(" · ");
 }
 

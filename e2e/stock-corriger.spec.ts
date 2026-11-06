@@ -10,17 +10,20 @@
 import { expect, test, type Page } from "@playwright/test";
 import { attendreLApp, ouvrirRangement } from "./parcours";
 
-/** Une carte « À manger en premier » : le nom d'abord, puis la raison. */
+/** Une carte des paquets ouverts : le nom d'abord. */
 const carte = (page: Page, nom: string) =>
-  page.locator(".co-lot").filter({ hasText: "paquet entamé" }).filter({ hasText: new RegExp(`^${nom}`) });
+  page.locator(".st-ouverts .co-lot").filter({ hasText: new RegExp(`^${nom}`) });
 
 /** La carte d'une zone — touchée sur le plan depuis T141. */
 const zone = (page: Page, nom: string) => ouvrirRangement(page, nom);
 
-test("corriger puis retirer une ligne depuis « À manger en premier »", async ({ page }) => {
+test("corriger puis retirer une ligne des paquets ouverts", async ({ page }) => {
   await page.goto("/#/cuisine/stock");
   await attendreLApp(page);
-  await expect(page.getByText("À manger en premier")).toBeVisible();
+  // Rien ne presse : les paquets simplement ouverts tiennent en une ligne,
+  // qu'on déplie pour les corriger.
+  await expect(page.getByText("À finir en premier")).toHaveCount(0);
+  await page.getByRole("button", { name: /paquets ouverts/ }).click();
 
   // T139 (3) — les légumes de garde et les pignons ne « pressent » plus.
   await expect(page.locator(".co-lot").filter({ hasText: "pressé" })).toHaveCount(0);
@@ -31,7 +34,7 @@ test("corriger puis retirer une ligne depuis « À manger en premier »", async 
   // Relevé du 21/10 (T143) : un paquet neuf, deux entamés.
   await expect(pates.locator("b")).toHaveText("3");
   await pates.getByRole("button", { name: "−" }).click();
-  await pates.getByRole("button", { name: "C’est ça" }).click();
+  await pates.getByRole("button", { name: "OK" }).click();
   await pates.getByRole("button", { name: "corriger : pates" }).click();
   await expect(pates.locator("b")).toHaveText("2");
   await pates.getByRole("button", { name: "Annuler" }).click();
@@ -52,10 +55,10 @@ test("ajouter à une zone ce que le relevé ne connaît pas", async ({ page }) =
   await page.goto("/#/cuisine/stock");
   await attendreLApp(page);
   const dessus = await zone(page, "dessus de l");
-  await dessus.getByRole("button", { name: "Relever" }).click();
+  await dessus.getByRole("button", { name: "Tout recompter" }).click();
   await dessus.getByRole("searchbox").fill("lentilles cor");
   await dessus.getByRole("button", { name: "+ lentilles corail" }).click();
-  await dessus.getByRole("button", { name: /Valider le relevé/ }).click();
+  await dessus.getByRole("button", { name: /^Valider/ }).click();
   const ligne = dessus.locator(".co-lot").filter({ hasText: /^lentilles corail/ });
   await expect(ligne).toHaveCount(1);
   await expect(ligne).toContainText("ajouté au relevé");

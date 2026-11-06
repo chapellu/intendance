@@ -19,6 +19,7 @@ import {
   miseEnPlace,
   montrerMiseEnPlace,
   outilDe,
+  sansModeContraire,
   phraseAussi,
   pourLire,
   quantitesDeLEtape,
@@ -545,10 +546,18 @@ describe("l'outil de l'étape", () => {
     expect(outilDe(foyer, etape(["bake"]))!.texte).toBe("four chaleur tournante");
   });
 
+  test("l'outil ne contredit pas le mode de four que dit l'étape", () => {
+    expect(sansModeContraire("four chaleur tournante", "Enfourner, régler sur 180 °C en chaleur statique")).toBe("four");
+    expect(sansModeContraire("four chaleur tournante", "Enfourner 20 min à 200 °C")).toBe("four chaleur tournante");
+    expect(sansModeContraire("cocotte 7,5 L", "Faire revenir en chaleur statique")).toBe("cocotte 7,5 L");
+  });
+
   test("aucun outil inventé : tout ce qui sort vient de la table du foyer", () => {
     const dits = new Set<string>();
     for (const o of Object.values(foyer.outils)) {
       if (o.label) dits.add(o.label);
+      // Le même, sans le mode de four quand l'étape en nomme un autre.
+      if (o.label) dits.add(sansModeContraire(o.label, "chaleur statique"));
       if (o.reecrit) dits.add(o.reecrit);
     }
     let vus = 0;

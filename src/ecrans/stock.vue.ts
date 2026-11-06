@@ -115,7 +115,6 @@ export function categories(
     const perimes = dedans.filter((l) => !l.epuise && perime(l)).length;
     const vivants = dedans.length - manges - perimes;
     const niveaux = dedans.map((l) => fiabilite(l).niveau);
-    const etats = [...new Set(dedans.map((l) => fiabilite(l).label))];
     return {
       espace,
       nom: nomEspace(espace),
@@ -128,11 +127,13 @@ export function categories(
         : niveaux.every((n) => n === "haute")
           ? "haute"
           : "moyenne",
+      // CE QUI SE COMPTE, EN MOTS DE PORTE DE FRIGO. « 0 lot · 1 à jeter ·
+      // compté » disait zéro au-dessus d'une ligne bien visible, et « compté »
+      // est un mot de l'app, pas du frigo.
       note: [
-        pluriel(vivants, "lot"),
+        vivants ? `${vivants} à manger` : "",
         manges ? `${manges} mangé${manges > 1 ? "s" : ""}` : "",
         perimes ? `${perimes} à jeter` : "",
-        ...etats,
       ]
         .filter(Boolean)
         .join(" · "),
@@ -706,7 +707,7 @@ export interface ZoneVue {
   poids: string;
 }
 
-const nomDenree = (id: string): string => id.replace(/-/g, " ");
+const nomDenree = nomDeLaDenree;
 
 const ETIQUETTE_ETAT: Record<Denree["etat"], string> = {
   conserve: "conserve",
@@ -839,7 +840,7 @@ export function aSauverVue(catalogue: Catalogue, reste: Iterable<string>): ASauv
     par.set(s.ingredient, {
       cle: s.ingredient,
       id: catalogue.rayons.aliases[s.ingredient] ?? s.ingredient,
-      nom: s.nom,
+      nom: nomDeLaDenree(s.ingredient) === s.ingredient.replace(/-/g, " ") ? s.nom : nomDeLaDenree(s.ingredient),
       urgence: s.urgence,
       raison: s.raison,
       ou: s.zone,
@@ -960,7 +961,9 @@ export interface MesureZone {
 const enPoids = (g: number): string => (g >= 1000 ? `${fmt(g / 1000)} kg` : `${fmt(g)} g`);
 
 /** Les mots d'unité féminins — pour accorder « entamée ». */
-const FEMININS = new Set(["boîte", "brique", "tête", "pièce", "bouteille", "conserve"]);
+const FEMININS = new Set([
+  "boîte", "brique", "tête", "pièce", "bouteille", "conserve", "plaquette", "barquette", "tablette", "boule", "botte", "barre",
+]);
 
 const auPluriel = (mot: string, n: number): string =>
   n < 2 || /[sxz]$/.test(mot) ? mot : mot.endsWith("al") ? `${mot.slice(0, -2)}aux` : `${mot}s`;
@@ -997,8 +1000,11 @@ export function motDuPaquet(catalogue: Catalogue, id: string): string | null {
 export function enPaquets(lots: readonly LotPlacard[], mot: string | null): string {
   const m = mesurer(lots);
   if (!mot) return m.grammes != null ? enPoids(m.grammes) : `${m.unites}`;
+  // UN LOT EN SERVICE NE SE COMPTE QU'UNE FOIS. Son unité ouverte (`entame`)
+  // porte déjà son état « entame » : additionner les deux faisait lire
+  // « 2 plaquettes entamées » pour une neuve et une ouverte.
   const entames = lots.reduce(
-    (n, l) => n + (l.entame != null ? 1 : 0) + (l.etat === "entame" ? l.unites : 0),
+    (n, l) => n + (l.entame != null ? 1 : l.etat === "entame" ? l.unites : 0),
     0,
   );
   const scelles = m.unites - entames;
@@ -1169,7 +1175,7 @@ export function perte(depot: Depot, filtre: Espace | null): PerteVue | null {
   const lots = n > 1 ? `les ${n} lots` : "le lot";
   return {
     espace: filtre,
-    bouton: `Tout ce qui était ${ou} est perdu`,
+    bouton: `Tout jeter ${ou}`,
     question: `${n > 1 ? `Les ${n} lots` : "Le lot"} ${ou} ${n > 1 ? "vont" : "va"} sortir de l’inventaire.`,
     confirmer: `Oui, retirer ${lots}`,
     refs,
@@ -1419,4 +1425,56 @@ export function conseilDe(catalogue: Catalogue, r: RangementVue, reste: Iterable
     .filter((c): c is string => !!c)
     .slice(0, 2);
   return [...alertes, ...gestes];
+}
+
+/* ═══════════════════════════════════════ ce qui est là sans être au relevé */
+
+/** Où se range une denrée que le relevé ne connaît pas, d'après son rayon. */
+export type Porte = "frigo" | "congelo" | "fruits" | "placard";
+
+const PORTE_DU_RAYON: Record<string, Porte> = {
+  crèmerie: "frigo",
+  frais: "frigo",
+  boucherie: "frigo",
+  poissonnerie: "frigo",
+  surgelés: "congelo",
+  primeur: "fruits",
+};
+
+export interface HorsReleve {
+  id: string;
+  nom: string;
+  unites: number;
+  quantite: string;
+  porte: Porte;
+}
+
+/**
+ * Ce que le rejeu porte et qu'AUCUNE ZONE NE MONTRE.
+ *
+ * Le relevé ne décrit que les placards. Un beurre ou des surgelés rentrés des
+ * courses vivent bien dans le rejeu (posés en `placard-haut` faute de place),
+ * mais `parZoneDu` ne les range nulle part : on les avait achetés, l'app en
+ * tenait compte, et l'écran Stock ne les montrait pas. Ils se montrent ici,
+ * derrière la porte que leur rayon désigne.
+ */
+export function horsDuReleve(catalogue: Catalogue, rejeu: Rejeu): HorsReleve[] {
+  const alias = (id: string): string => catalogue.rayons.aliases[id] ?? id;
+  const connus = new Set([...catalogue.gardeManger.denrees.map((d) => alias(d.ingredient)), ...rejeu.ajoutes.keys()]);
+  const rayonDe = new Map<string, string>();
+  for (const [r, ids] of Object.entries(catalogue.rayons.rayons)) for (const id of ids) rayonDe.set(alias(id), r);
+  const out: HorsReleve[] = [];
+  for (const [id, e] of rejeu.parIngredient) {
+    if (connus.has(id) || !e.lots.length) continue;
+    const m = mesurer(e.lots);
+    if (m.unites <= 0 && m.grammes == null) continue;
+    out.push({
+      id,
+      nom: nomDeLaDenree(id),
+      unites: m.unites,
+      quantite: enPaquets(e.lots, motDuPaquet(catalogue, id)),
+      porte: PORTE_DU_RAYON[rayonDe.get(id) ?? ""] ?? "placard",
+    });
+  }
+  return out.sort((a, b) => a.nom.localeCompare(b.nom, "fr"));
 }

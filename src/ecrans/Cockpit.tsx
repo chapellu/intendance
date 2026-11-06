@@ -130,13 +130,10 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
           <span className="etat">en sommeil</span>
         </span>
         <span className="resume">
-          Facette pas encore ouverte. Elle reste ici, sans chiffre, jusqu'au jour où elle servira.
+          Bientôt.
         </span>
       </div>
 
-      <div className="co-note" style={{ marginTop: "var(--space-4)" }}>
-        La barre du bas suit partout : elle appartient à la coquille, pas à la facette.
-      </div>
     </Corps>
   );
 }

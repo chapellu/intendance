@@ -14,6 +14,7 @@
 // vocabulaires sur lesquels il branche, les invariants qui rendent un calcul
 // possible. Un champ qu'aucun calcul ne lit peut manquer sans dommage.
 
+import { retenirLesNoms } from "./plancherGardeManger";
 import type {
   Accept, Cadre, DecorDuPlan, Mur, PlanCuisine, RangementDuPlan, TeinteDecor, TeinteRangement,
   Accompagnement, Agression, Catalogue, Denree, Emit, EmitKind, Espace, Etape, Etat,
@@ -924,5 +925,7 @@ export const CHEMIN_CATALOGUE = "/cuisine-data.json";
 export async function chargerCatalogue(chemin = CHEMIN_CATALOGUE): Promise<Catalogue> {
   const r = await fetch(chemin);
   if (!r.ok) throw new Error(`${chemin} : ${r.status} ${r.statusText}`);
-  return lireCatalogue(await r.json());
+  const catalogue = lireCatalogue(await r.json());
+  retenirLesNoms(catalogue.plats);
+  return catalogue;
 }

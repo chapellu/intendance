@@ -14,7 +14,7 @@
 
 import { readFileSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
-import { attendreLApp, creneauPose, ouvrirRangement, passerLaMiseEnPlace, poserUnPlat } from "./parcours";
+import { attendreLApp, creneauPose, ouvrirRangement, passerLaMiseEnPlace, poserUnPlat, ouvrirReglages } from "./parcours";
 
 /** Les zones du garde-manger, par leur nom à l'écran — dans l'ordre du relevé. */
 const ZONES: string[] = (
@@ -30,7 +30,10 @@ async function confiances(page: Page): Promise<string[]> {
   const dits: string[] = [];
   for (const nom of ZONES) {
     const panneau = await ouvrirRangement(page, nom);
-    dits.push(...(await panneau.locator(".co-lot .src").allInnerTexts()));
+    // Une ligne par denrée : « à vérifier » quand le chiffre n'est que déduit,
+    // rien quand il a été vu (T163).
+    for (const l of await panneau.locator(".co-lot").all())
+      dits.push(((await l.locator(".src").allInnerTexts()).join(" ")).trim() || "vu");
   }
   return dits;
 }
@@ -218,7 +221,8 @@ test("terminer une recette journalise, et la confiance du placard se dépense", 
   // d'urgence ne se décide pas, il vient du catalogue et vaut dès le premier
   // jour. Quel que soit le plat que « Poser » a tiré, ces deux phrases sont
   // vraies : c'est pour ça qu'elles sont testées ici plutôt qu'un compte.
-  await expect(page.getByText("Ce qu’on veut toujours avoir")).toBeVisible();
+  await ouvrirReglages(page);
+  await expect(page.getByText("Plats d’avance au congélateur")).toBeVisible();
   await expect(page.getByText("au congélateur sur")).toBeVisible();
   await expect(page.getByRole("button", { name: /En garder/ })).toHaveCount(0);
 });
@@ -247,8 +251,8 @@ test("relever une zone remet le placard à ce que l'œil voit", async ({ page })
   }
   expect(nom).not.toBe("");
 
-  await zone.getByRole("button", { name: "Relever" }).dispatchEvent("click");
-  const valider = zone.getByRole("button", { name: /Valider le relevé/ });
+  await zone.getByRole("button", { name: "Tout recompter" }).dispatchEvent("click");
+  const valider = zone.getByRole("button", { name: /^Valider/ });
   await expect(valider).toBeVisible();
 
   // Tout descendre à zéro : la zone est déclarée vide, ce qui est le geste que
@@ -268,7 +272,7 @@ test("relever une zone remet le placard à ce que l'œil voit", async ({ page })
   }
 
   await valider.dispatchEvent("click");
-  await expect(zone.getByRole("button", { name: "Relever" })).toBeVisible();
+  await expect(zone.getByRole("button", { name: "Tout recompter" })).toBeVisible();
 
   // LA ZONE RELEVÉE ne porte plus rien, et ça survit au rechargement.
   await page.reload();

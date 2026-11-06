@@ -154,9 +154,8 @@ function Ouverture({ jeu }: { jeu: Jeu }) {
         Combien de repas ?
       </div>
       <p className="co-note">
-        {soir ? "Pour prévoir plusieurs repas d’un coup : le" : "Le"} fil pose les repas un
-        par un, dans l’ordre. Ce qu’il ne couvre pas reste
-        hors du plan — sans rien réclamer.
+        {soir ? "Pour prévoir plusieurs repas d’un coup : on" : "On"} les choisit un par un, dans
+        l’ordre.
       </p>
 
       <div className="co-crans">
@@ -185,7 +184,7 @@ function Ouverture({ jeu }: { jeu: Jeu }) {
         href={chemin(JOURS_VISIBLES ? { ecran: "semaine" } : { ecran: "stock" })}
         style={{ marginTop: "var(--space-3)" }}
       >
-        {JOURS_VISIBLES ? "Voir la semaine" : "Voir l’inventaire"}
+        {JOURS_VISIBLES ? "Voir la semaine" : "Voir le stock"}
       </a>
     </Corps>
   );

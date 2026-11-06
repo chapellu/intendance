@@ -5806,3 +5806,38 @@ sans beurre 6 / 1 ; gaspillage 1,4 / 0,9 kg ; midis sur le reste prévu
       pique décide), et l'interdit du frigo (l'huile de coco durcit) —
       `frigo_days: 0`, congélation en parts. Le chocolat en poudre est
       `chocolat-poudre`, déjà au placard, pas `cacao`. Source : 61 sur 100.
+
+## L'app dit ce qu'il faut faire, pas comment elle pense — T163
+
+- [x] **T163 — Une passe sur tout ce que l'écran explique de l'interne (06/11).**
+      Le retour : « je n'ai pas trouvé comment mettre à jour mes stocks — tu
+      me dis d'acheter 2 plaquettes de beurre, je les ai achetées, je ne peux
+      pas les rentrer », et « beaucoup d'endroits où on explique de l'interne,
+      ou des informations contradictoires ».
+      **Le geste qui manquait** : « + Ajouter » (Stock) et « + J'ai acheté »
+      (Courses) ouvrent un panneau — chercher, compter, ajouter, annuler. Une
+      `entree` au journal, au poids dernier vu ; les lignes de la liste pour cet
+      ingrédient passent « rangé » (`ajouterAuStock`). « À acheter » sur la
+      fiche se touche et ouvre le même panneau.
+      **Courses sans mode** : l'interrupteur Au magasin / À la maison obligeait
+      à savoir qu'au magasin un toucher ne change pas le stock. Toucher = dans
+      le sac ; « Ranger au stock » en bas. Ticket et PDF sous « Importer ».
+      **Ce qui était acheté et invisible** : le relevé ne décrit que les
+      placards, donc un beurre rentré vivait dans le rejeu (en `placard-haut`)
+      sans aucune ligne à l'écran. `horsDuReleve` le range derrière la porte
+      que son rayon désigne — frigo, congélo, fruits et légumes, placard.
+      **Contradictions corrigées** : « 0 lot · 1 à jeter » au-dessus d'une ligne
+      visible ; « 2 plaquettes entamés » pour une neuve et une ouverte (double
+      compte dans `enPaquets`) ; « Outil : four chaleur tournante » sous une
+      étape en chaleur statique ; « il en reste 0 · jamais vu » ; deux cartes
+      « Congélo · 350 g » identiques.
+      **Retiré de l'écran** : les « Pourquoi ? », statistiques de relevé,
+      compté / estimé, jauges, « plancher » (→ minimum, « à toujours avoir »),
+      « le fil pose… », « la barre du bas appartient à la coquille ». Les
+      réglages du stock sont repliés en bas. Boutons en Figtree gras ; le geste
+      d'une étape aussi.
+      **Laissé tel quel, à trancher** : le rejeu retire la ration du
+      petit-déjeuner le jour même de l'achat — deux plaquettes rentrées le
+      matin se lisent « 1 plaquette · 1 entamée ». Les ids sans accents
+      (`farine-epeautre`) ne reprennent le mot des recettes que s'il
+      correspond exactement.

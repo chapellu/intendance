@@ -266,3 +266,10 @@ export function aujourdhuiISO(): string {
   const jj = String(d.getDate()).padStart(2, "0");
   return `${d.getFullYear()}-${mm}-${jj}`;
 }
+
+/** Déplie « Réglages du stock » s'il est là et fermé (T163) — sans effet ailleurs. */
+export async function ouvrirReglages(page: Page): Promise<void> {
+  const b = page.getByRole("button", { name: /Réglages du stock/ });
+  await b.waitFor({ timeout: 15_000 }).catch(() => undefined);
+  if ((await b.count()) && (await b.getAttribute("aria-expanded")) === "false") await b.click();
+}

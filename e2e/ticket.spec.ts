@@ -48,6 +48,8 @@ async function scanner(page: Page, lignes: string[]) {
   await page.goto("/#/cuisine/courses");
   await attendreLApp(page);
   const photo = await photoDuTicket(page, lignes);
+  // Ticket et facture sont repliés sous « Importer » depuis T163.
+  if (!(await page.getByTestId("ticket-photo").count())) await page.getByRole("button", { name: /Importer un ticket/ }).click();
   await page.getByTestId("ticket-photo").setInputFiles({ name: "ticket.png", mimeType: "image/png", buffer: photo });
   await expect(page.getByTestId("ticket-revue")).toBeVisible({ timeout: 90_000 });
 }
@@ -72,6 +74,8 @@ test("un ticket photographié arrive à la revue, puis rentre au stock", async (
   // La fois suivante, la table apprise reconnaît le libellé.
   await page.getByRole("button", { name: "Retour à la liste" }).dispatchEvent("click");
   const photo = await photoDuTicket(page, [...CORPS, `${avantHier()} 16:28`]);
+  // Ticket et facture sont repliés sous « Importer » depuis T163.
+  if (!(await page.getByTestId("ticket-photo").count())) await page.getByRole("button", { name: /Importer un ticket/ }).click();
   await page.getByTestId("ticket-photo").setInputFiles({ name: "ticket.png", mimeType: "image/png", buffer: photo });
   await expect(page.getByTestId("ticket-revue")).toBeVisible({ timeout: 90_000 });
   await expect(page.getByTestId("ticket-rangee").filter({ hasText: "POIREAU VRAC" })).toContainText("reconnu");
@@ -120,6 +124,8 @@ test("un EXIF qui ment (orientation=6 sur une photo droite) n'empêche pas la le
   await page.goto("/#/cuisine/courses");
   await attendreLApp(page);
   const photo = await jpegQuiMent(page, [...CORPS, `${avantHier()} 16:28`]);
+  // Ticket et facture sont repliés sous « Importer » depuis T163.
+  if (!(await page.getByTestId("ticket-photo").count())) await page.getByRole("button", { name: /Importer un ticket/ }).click();
   await page.getByTestId("ticket-photo").setInputFiles({ name: "ticket.jpg", mimeType: "image/jpeg", buffer: photo });
   await expect(page.getByTestId("ticket-revue")).toBeVisible({ timeout: 90_000 });
   await expect(page.getByTestId("ticket-rangee")).toHaveCount(2);
