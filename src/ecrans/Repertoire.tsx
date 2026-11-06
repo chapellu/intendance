@@ -69,10 +69,7 @@ export function Repertoire() {
       <div className="co-kicker">
         {vue.montres === vue.total ? `${vue.total} plats` : `${vue.montres} sur ${vue.total} plats`}
       </div>
-      <div className="co-note" style={{ margin: "var(--space-1) var(--space-1) var(--space-3)" }}>
-        Tout ce que la cuisine sait faire. On lit, on ne pose rien&nbsp;: une fiche s’ouvre en
-        résumé.
-      </div>
+      <div style={{ height: "var(--space-2)" }} />
 
       {/* LE CHAMP DE T80, À L'IDENTIQUE — même classe, même libellé pour les
           lecteurs d'écran, même « Effacer ». Ce qu'il fait diffère, et c'est

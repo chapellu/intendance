@@ -54,7 +54,7 @@ export function Poses() {
                  reste (articles, lots) a déjà ses écrans, et les répéter ferait
                  de celui-ci un second cockpit. */
               `${duree(vue.minutes)} de cuisine en tout.`
-            : "Le fil pose les repas un par un ; ce qu’il pose s’affichera ici."}
+            : "Les plats choisis dans « Proposer » s’afficheront ici."}
         </div>
       ) : null}
 
@@ -135,12 +135,6 @@ export function Poses() {
       >
         Poser un plat de plus
       </a>
-      {vue.restent ? (
-        <div className="co-note" style={{ margin: "var(--space-2) var(--space-1) 0" }}>
-          {vue.restent > 1 ? `${vue.restent} repas restent` : "1 repas reste"} sans décision. Rien
-          ne les réclame&nbsp;: ce que le fil ne couvre pas reste hors du plan.
-        </div>
-      ) : null}
 
       {/* LE SEUL GESTE QUI EFFACE TOUT, ET IL EST EN BAS. Ce qui est posé
           traverse maintenant les nuits (`db/report.ts`) : la liste ne se ferme

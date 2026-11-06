@@ -372,9 +372,9 @@ export function resumeSansJours(poses: number, soir?: PropositionDuSoir | null):
     const libres = [...soir.cartes, ...soir.plus].filter((c) => c.manque.length === 0).length;
     if (libres > 1) return `Ce soir, ${libres} dîners se font sans rien acheter.`;
     if (libres === 1) return "Ce soir, un dîner se fait sans rien acheter.";
-    return "Ce soir, chaque dîner demande au moins un achat — « Ce soir » dit lequel.";
+    return "Ce soir, chaque dîner demande au moins un achat.";
   }
-  if (poses === 0) return "Rien n'est posé — « Proposer » tire une main sur ce que vous avez.";
+  if (poses === 0) return "Rien de prévu — « Proposer » part de ce que vous avez.";
   return poses === 1 ? "Un plat posé, à cuisiner quand vous voulez." : `${poses} plats posés, à cuisiner quand vous voulez.`;
 }
 

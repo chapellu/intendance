@@ -650,8 +650,8 @@ function Sortie({
               recette de la liste des choses à faire » — et ces trois effets
               partaient jusqu'ici sans que personne ne les annonce. */}
           <div className="co-note" style={{ margin: "var(--space-2) var(--space-1) 0" }}>
-            Le plat est compté comme cuisiné&nbsp;: ses ingrédients descendent du placard, et il
-            quitte la liste des posés.
+            Le plat est compté comme cuisiné&nbsp;: ses ingrédients sortent du stock, et il quitte
+            la liste des posés.
           </div>
         </div>
       </div>
