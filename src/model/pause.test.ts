@@ -69,12 +69,15 @@ function monde(o: {
   stock?: LotInitial[];
   recents?: string[];
   sortis?: string[];
+  /** Des plats posés, par créneau de la fenêtre : `[jour, repas, plat]`. */
+  poses?: [number, string, string][];
 } = {}): Monde {
   const maintenant = o.maintenant ?? LUNDI;
   const jour = iso(maintenant);
   const rejeu = rejouer(catalogue, o.evts ?? [], contexte(catalogue), jour);
   const jeu = creerJeu(catalogue, 7, maintenant);
   jeu.stock = o.stock ?? [];
+  for (const [j, r, id] of o.poses ?? []) jeu.choix[jeu.creneaux.findIndex((c) => c.jour === j && c.repas === r)] = id;
   jeu.gardeManger = jeu.gardeManger.filter((id) => rejeu.parIngredient.has(id));
   const savoir: Savoir = { rejeu, passe: PASSE_VIDE, cuisinesRecemment: new Set(), planchers: [] };
   const proposition = proposerCeSoir({
@@ -238,6 +241,35 @@ describe("ce qui doit être mangé passe devant, même devant zéro article", ()
     });
     expect(proposition.cartes[0]!.plat.id).toBe("reste-de-la-veille");
     expect(proposition.cartes[0]!.manque).toEqual([]);
+  });
+
+  test("le reste PROJETÉ d'un plat posé mais pas cuit ne fait pas de « Reste réchauffé » — T164", () => {
+    // Le chili est posé ce midi ; rien n'est cuit, le frigo est vide.
+    const { proposition } = monde({
+      evts: [fondRentre(veille(LUNDI))],
+      poses: [[0, "dejeuner", "chili-sin-carne"]],
+    });
+    const reste = [...proposition.cartes, ...proposition.plus].find((c) => c.plat.id === "reste-de-la-veille");
+    expect(reste).toBeUndefined();
+  });
+
+  test("un reste PÉRIMÉ au frigo ne fait pas de « Reste réchauffé » — T164", () => {
+    const { proposition } = monde({
+      evts: [fondRentre(veille(LUNDI))],
+      stock: [resteDe("lasagnes", veille(LUNDI, 20), "frigo")],
+    });
+    const reste = [...proposition.cartes, ...proposition.plus].find((c) => c.plat.id === "reste-de-la-veille");
+    expect(reste).toBeUndefined();
+  });
+
+  test("le « Reste réchauffé » proposé dit quel reste il finit", () => {
+    const { proposition } = monde({
+      evts: [fondRentre(veille(LUNDI))],
+      stock: [resteDe("lasagnes", veille(LUNDI), "frigo")],
+    });
+    const c = proposition.cartes[0]!;
+    expect(c.plat.id).toBe("reste-de-la-veille");
+    expect(c.presse && "type" in c.presse ? c.presse.type : c.attend?.type).toBe("lasagnes");
   });
 
   test("un lot JEUNE du congélateur ne presse pas — il attend, et le cockpit le sait", () => {
