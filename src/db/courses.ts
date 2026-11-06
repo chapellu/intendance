@@ -13,6 +13,7 @@ import { journaliserEntree } from "./journal";
 import { cleArticle, type Base, type EtatCourse } from "./schema";
 import { boitesAAcheter, type LignePanier } from "../model/calcul";
 import { UNITE_PLANCHER } from "../model/plancherGardeManger";
+import type { LigneEntree } from "../model/journal";
 
 export const cleDeLArticle = (a: LignePanier): string => cleArticle(a.id, a.unit);
 
@@ -125,3 +126,36 @@ const EN_MASSE = new Set(["g", "ml"]);
  * une liste de courses.
  */
 export const viderCourses = (base: Base): Promise<void> => base.courses.clear();
+
+/**
+ * « J'ai acheté ça » — l'entrée à la main, hors liste comme dans la liste.
+ *
+ * Le même événement qu'un article rentré ou qu'un ticket : une `entree` au
+ * journal, au poids dernier vu pour cet ingrédient. Si l'ingrédient est sur la
+ * liste en cours, ses lignes passent « rangé » — sans quoi la liste
+ * redemanderait ce qu'on vient de poser dans le placard.
+ *
+ * Rend de quoi annuler : l'id de l'événement et les clés marquées.
+ */
+export async function ajouterAuStock(
+  base: Base,
+  ligne: { ingredient: string; unites: number; parUnite: LigneEntree["parUnite"] },
+  cles: readonly string[] = [],
+): Promise<{ evenement: number; cles: string[] }> {
+  return base.transaction("rw", base.evenements, base.courses, async () => {
+    const evenement = await journaliserEntree(base, [
+      { ingredient: ligne.ingredient, unites: ligne.unites, parUnite: ligne.parUnite, zone: null, etat: "sec" },
+    ]);
+    const maj = Date.now();
+    await base.courses.bulkPut(cles.map((cle) => ({ cle, coche: false, rentre: true, maj })));
+    return { evenement, cles: [...cles] };
+  });
+}
+
+/** Le retour en arrière d'`ajouterAuStock`. */
+export async function annulerAjout(base: Base, ajout: { evenement: number; cles: readonly string[] }): Promise<void> {
+  await base.transaction("rw", base.evenements, base.courses, async () => {
+    await base.evenements.delete(ajout.evenement);
+    await base.courses.bulkDelete([...ajout.cles]);
+  });
+}

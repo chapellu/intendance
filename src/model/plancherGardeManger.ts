@@ -122,10 +122,37 @@ export interface PlancherDenree {
   niveau: number;
 }
 
-/** Une denrée dite en français. Le vocabulaire des rayons est en ids tiretés, et
- *  le catalogue ne porte pas de libellé lisible — même trou que pour les types
- *  émis, noté au backlog depuis T15. */
-export const nomDeLaDenree = (id: string): string => id.replace(/-/g, " ");
+/** Sans accents ni casse : la forme sous laquelle un id et un nom se comparent. */
+export const sansAccents = (s: string): string =>
+  s
+    .toLowerCase()
+    .replace(/œ/g, "oe")
+    .replace(/æ/g, "ae")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+
+const NOMS = new Map<string, string>();
+
+/**
+ * Retient le vrai mot des recettes pour chaque id — « œufs », pas « oeufs ».
+ *
+ * SEULEMENT QUAND IL REDONNE EXACTEMENT L'ID une fois les accents ôtés : sans
+ * quoi « beurre » deviendrait « beurre mou », ce qui est faux sur une étagère.
+ * Appelé au chargement du catalogue.
+ */
+export function retenirLesNoms(plats: readonly { ingredients: readonly { id: string; nom?: string }[] }[]): void {
+  for (const p of plats)
+    for (const i of p.ingredients) {
+      if (NOMS.has(i.id) || !i.nom) continue;
+      if (sansAccents(i.nom) === sansAccents(i.id)) NOMS.set(i.id, i.nom.toLowerCase());
+    }
+}
+
+/** Une denrée dite en français. Le vocabulaire des rayons est en ids tiretés ;
+ *  le mot accentué vient des recettes quand elles le portent. */
+export const nomDeLaDenree = (id: string): string => NOMS.get(id) ?? id.replace(/-/g, " ");
 
 /**
  * L'unité d'une ligne de courses née d'un plancher.

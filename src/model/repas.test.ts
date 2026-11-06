@@ -301,7 +301,7 @@ describe("le fond et le stock de T142", () => {
     const r = rejouer(catalogue, [], contexte(catalogue), "2026-10-26");
     const l = sousLeurPlancher(catalogue, r, [{ ingredient: "yaourt-nature", niveau: 3 }])[0]!;
     expect(l.hebdo).toBe(true);
-    expect(phraseDuPlancher(l, 0)).toContain("frais de la semaine");
+    expect(phraseDuPlancher(l, 0)).toContain("pour la semaine");
   });
 
   test("l'industriel du relevé : au stock, dit « à ne pas racheter », jamais proposé", async () => {
@@ -543,7 +543,7 @@ describe("T144 — le pain, puis des goûters qui tournent", () => {
 test("T144 — la ligne du fruit de la semaine ne parle pas de plancher", async () => {
   const { phraseDuPlancher } = await import("../ecrans/courses.vue");
   const l = fruitsDeLaSemaine(catalogue, rejouer(catalogue, [], contexte(catalogue), "2026-10-26"), 10).find((x) => x.ingredient === "banane")!;
-  expect(phraseDuPlancher(l, 0)).toMatch(/^frais de la semaine · il en reste \d/);
+  expect(phraseDuPlancher(l, 0)).toMatch(/^pour la semaine · /);
 });
 
 describe("T146 — le midi sans geste et le reste qu'il prend", () => {

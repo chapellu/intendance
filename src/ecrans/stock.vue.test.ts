@@ -1018,7 +1018,7 @@ describe("un rangement perdu d'un coup", () => {
   test("le geste est celui du rangement ouvert, et il en dit le nombre", () => {
     remplir();
     const p = vueDeLInventaire(jeu, calculer(jeu), "congelo").perte;
-    expect(p?.bouton).toBe("Tout ce qui était au congélo est perdu");
+    expect(p?.bouton).toBe("Tout jeter au congélo");
     expect(p?.question).toBe("Les 2 lots au congélo vont sortir de l’inventaire.");
     expect(p?.confirmer).toBe("Oui, retirer les 2 lots");
     // Le frigo n'est pas touché par la panne du congélateur.
@@ -1028,7 +1028,7 @@ describe("un rangement perdu d'un coup", () => {
   test("un lot seul se dit au singulier", () => {
     remplir();
     expect(vueDeLInventaire(jeu, calculer(jeu), "frigo").perte).toMatchObject({
-      bouton: "Tout ce qui était au frigo est perdu",
+      bouton: "Tout jeter au frigo",
       question: "Le lot au frigo va sortir de l’inventaire.",
       refs: ["3"],
     });

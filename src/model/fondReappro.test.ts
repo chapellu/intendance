@@ -78,7 +78,7 @@ describe("T134 — cuisiner un plat du fond le consomme, et la liste le recharge
     const { liste } = apres(1);
     const l = liste.find((x) => x.ingredient === "lentilles-seches");
     expect(l).toMatchObject({ a: 0.5, niveau: 1, manque: 1, fond: true });
-    expect(phraseDuPlancher(l!, 0)).toContain("pour le fond");
+    expect(phraseDuPlancher(l!, 0)).toContain("à toujours avoir");
   });
 
   test("deux hachis : les lentilles sont épuisées au rejeu, et « Ce soir » le dit", () => {
@@ -263,7 +263,7 @@ describe("T136 — œufs, yaourts, fromage râpé : achetés par la liste, cuisi
       const { rejeu, carte, ligne } = scenario(k.ingredient, k.plat, k.apres, k.parts);
       expect(rejeu.parIngredient.has(k.ingredient)).toBe(false);
       expect(ligne).toMatchObject({ a: 0, manque: k.manque, fond: true });
-      expect(phraseDuPlancher(ligne!, 0)).toMatch(/pour le fond|frais de la semaine/);
+      expect(phraseDuPlancher(ligne!, 0)).toMatch(/à toujours avoir|pour la semaine/);
       expect(carte).toBeDefined();
       expect(carte!.manque.map((a) => a.id)).toContain(k.ingredient);
       // La phrase de la carte tronque à deux noms (« et 2 autres ») ; la liste
@@ -303,7 +303,7 @@ describe("T137 — un article du fond à garde courte se finit par son âge", ()
     expect(rejeu.finis.get("oeufs")).toBe(29);
     const l = liste.find((x) => x.ingredient === "oeufs");
     expect(l).toMatchObject({ a: 0, fond: true });
-    expect(phraseDuPlancher(l!, 0)).toContain("pour le fond");
+    expect(phraseDuPlancher(l!, 0)).toContain("à toujours avoir");
     expect(phraseDuPlancher(l!, 0)).not.toContain("jeter");
     expect(carte).toBeDefined();
     expect(carte!.manque.map((a) => a.id)).toContain("oeufs");
@@ -351,7 +351,7 @@ describe("T137 — un article du fond à garde courte se finit par son âge", ()
     // T142 : trois boîtes rentrées, deux quiches en prennent une.
     expect(l).toMatchObject({ a: 2, rentreLe: jourAvant(6) });
     expect(phraseDuPlancher(l!, 0)).not.toContain("jamais vu");
-    expect(phraseDuPlancher(l!, 0)).toContain(`rentré le ${jourAvant(6)}`);
+    expect(phraseDuPlancher(l!, 0)).toContain(`acheté le ${jourAvant(6).slice(8, 10)}/${jourAvant(6).slice(5, 7)}`);
   });
 });
 
