@@ -72,6 +72,12 @@ test("« Je lance ça » prend aussi demain midi, et le cockpit le redit", async
   await attendreLApp(page);
   await viderLeDepot(page);
 
+  // T165 — le dépôt vidé, rien ne se fait avec ce qui est là : les plats qui
+  // prennent demain midi (poulet, omelette) manquent de leur ingrédient central
+  // et attendent derrière « Voir plus ».
+  const plus = page.getByRole("button", { name: "Voir plus" });
+  await expect(plus).toBeVisible({ timeout: 30_000 });
+  await plus.dispatchEvent("click");
   const cartes = page.locator(".co-soir:not(.pose)");
   await expect(cartes.first()).toBeVisible({ timeout: 30_000 });
   const carte = cartes.filter({ has: page.locator(".midi", { hasText: "+ le déjeuner de demain" }) }).first();
