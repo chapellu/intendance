@@ -406,3 +406,94 @@ export const quantiteDuLot = (l: LotSortie): string =>
   l.qty != null
     ? `${Math.round(l.qty)} ${l.unite ?? ""}`.trim()
     : `${l.repas} repas`;
+
+/* ──────────────────────────────────────────────────── « j'ai fait autrement » */
+
+/** Où un reste est parti, quand la proposition n'a pas été suivie. `null` :
+ *  rien n'a été gardé — mangé, donné, jeté. */
+export type OuEstParti = Espace | null;
+
+/** Les quatre réponses, dans l'ordre où l'écran les propose. « À l'air libre »
+ *  est l'espace `placard` : le pain dans son torchon, le gâteau sous cloche. */
+export const DESTINATIONS: readonly { ou: OuEstParti; label: string }[] = [
+  { ou: "frigo", label: "Au frigo" },
+  { ou: "congelo", label: "Au congélo" },
+  { ou: "placard", label: "À l’air libre" },
+  { ou: null, label: "Pas gardé" },
+];
+
+/** Un reste tel qu'on le pense les mains pleines : UN par emit, entier. */
+export interface Reste {
+  emit: number;
+  nom: string;
+  qty: number | null;
+  unite: string | null;
+  repas: number;
+  /** Les jours qu'il tient hors du congélateur, d'après la recette. */
+  garde: number;
+}
+
+/**
+ * Les restes de la sortie, recollés par emit.
+ *
+ * LA PROPOSITION COUPE, LA QUESTION RECOLLE. La sortie propose « 300 g au
+ * frigo, 600 g au congélo » ; qui ne l'a pas suivie a rangé UN pain de mie, et
+ * c'est de lui qu'on lui parle — « Pain de mie maison · 900 g, où est-il ? ».
+ */
+export function restesDeLaSortie(p: Plat, lots: readonly LotSortie[]): Reste[] {
+  const parEmit = new Map<number, Reste>();
+  for (const l of lots) {
+    const vu = parEmit.get(l.emit);
+    if (vu) {
+      vu.repas += l.repas;
+      vu.qty = vu.qty != null && l.qty != null ? vu.qty + l.qty : null;
+      continue;
+    }
+    const e = p.emits[l.emit];
+    parEmit.set(l.emit, {
+      emit: l.emit,
+      nom: l.type.replace(/-/g, " "),
+      qty: l.qty,
+      unite: l.unite,
+      repas: l.repas,
+      garde: e?.gardeFrigo ?? 0,
+    });
+  }
+  return [...parEmit.values()];
+}
+
+/** Ce que les réponses écrivent au journal. `rienGarde` quand tout est « pas
+ *  gardé » : un rangement vide seul se lirait « personne n'a répondu ». */
+export function rangementDesReponses(
+  p: Plat,
+  restes: readonly Reste[],
+  reponses: ReadonlyMap<number, OuEstParti>,
+): { rangement: { emit: number; location: Espace; band: string; qty: number | null }[]; rienGarde: boolean } {
+  const rangement = restes.flatMap((r) => {
+    const ou = reponses.get(r.emit);
+    if (!ou) return [];
+    const e = p.emits[r.emit];
+    const band = e ? bandeDuLot(e, r.repas, r.repas) : `${r.repas}-repas`;
+    return [{ emit: r.emit, location: ou, band, qty: r.qty }];
+  });
+  return { rangement, rienGarde: rangement.length === 0 };
+}
+
+const JOURS_COURTS = ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."];
+
+/**
+ * Ce que l'app a retenu, en une phrase par reste — le témoin qui manquait.
+ * « à l'air libre · à manger d'ici mer. 11/11 ».
+ */
+export function phraseDuReste(r: Reste, ou: OuEstParti, aujourdhui: Date): string {
+  if (ou === null) return "pas gardé";
+  if (ou === "congelo") return "au congélateur";
+  const d = new Date(aujourdhui);
+  d.setDate(d.getDate() + r.garde);
+  const date = `${JOURS_COURTS[d.getDay()]} ${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}`;
+  const ici = ou === "frigo" ? "au frigo" : "à l’air libre";
+  return r.garde > 0 ? `${ici} · à manger d’ici ${date}` : `${ici} · à manger aujourd’hui`;
+}
+
+export const quantiteDuReste = (r: Reste): string =>
+  r.qty != null ? `${Math.round(r.qty)} ${r.unite ?? ""}`.trim() : `${r.repas} repas`;

@@ -5866,3 +5866,26 @@ sans beurre 6 / 1 ; gaspillage 1,4 / 0,9 kg ; midis sur le reste prévu
       omelette, le fromage d'un croque). Une carte à qui il manque cela sort de
       la main et passe derrière « Voir plus » ; le parmesan d'une bolognaise
       reste un article à prendre en passant.
+
+## La fin du pain de mie — T166
+
+- [x] **T166 — « J'en ai » sans témoin, « J'ai fait autrement » sans question
+      (07/11).** Un pain de mie au son d'avoine : la fiche disait « à acheter »
+      pour la farine, « j'en ai » n'a rien montré, et « j'ai fait autrement »
+      a fermé la recette sur un rangement au frigo que personne n'avait dit,
+      alors que le pain était dans son torchon. Quatre réparations :
+      — le toast « ajouté au stock » disparaissait avec le panneau, démonté à
+        sa fermeture ; la fiche lit maintenant le rejeu (achats rangés
+        compris) et la ligne passe à « en stock » ;
+      — « J'ai fait autrement » demande, reste par reste : au frigo, au congélo,
+        à l'air libre, pas gardé — rien de précoché — puis récapitule ce qui
+        est noté et jusqu'à quand (« à l'air libre · à manger d'ici mer.
+        11/11 ») ; `rienGarde` dit expressément « nulle part » ;
+      — `horlogesDu` ne laisse plus un producteur « 0 jour, congelable »
+        (`pain-maison-semi-complet`) fixer la fenêtre du frigo : le pain de mie
+        du jour s'affichait « périmé · à jeter » ;
+      — « N parts passent à table » se tait sur une base.
+- [ ] **Les farines qui se remplacent.** La recette dit « T110 de blé ou de
+      grand épeautre » mais n'accepte que `farine-complete` : une farine
+      d'épeautre au placard ne compte pas. Il faudrait des alternatives sur la
+      ligne d'ingrédient.
