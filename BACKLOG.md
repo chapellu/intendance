@@ -5885,10 +5885,7 @@ sans beurre 6 / 1 ; gaspillage 1,4 / 0,9 kg ; midis sur le reste prévu
         (`pain-maison-semi-complet`) fixer la fenêtre du frigo : le pain de mie
         du jour s'affichait « périmé · à jeter » ;
       — « N parts passent à table » se tait sur une base.
-- [ ] **Les farines qui se remplacent.** La recette dit « T110 de blé ou de
-      grand épeautre » mais n'accepte que `farine-complete` : une farine
-      d'épeautre au placard ne compte pas. Il faudrait des alternatives sur la
-      ligne d'ingrédient.
+- [x] **Les farines qui se remplacent.** → T167.
 
 ## Le budget ouvre — T167
 
@@ -5944,3 +5941,21 @@ ordinaire finisse dans le rouge.
   un export de fichier est le minimum avant d'y mettre des mois d'historique.
 - **Le cockpit** ne dit encore rien du budget : une échéance proche non
   couverte y aurait sa ligne.
+
+## Les ingrédients de remplacement — T167
+
+- [x] **T167 — « T110 de blé ou de grand épeautre » ne lisait que la T110
+      (07/11).** 41 lignes du corpus nomment ce qui fait aussi bien ; `subs`
+      existait mais sans `id`, donc rien ne le lisait. Un `subs` qui porte un
+      `id` (et un `ratio`) est maintenant un remplaçant, par recette et jamais
+      par famille. Une seule règle (`model/remplacants.ts` · `retenir`) : le
+      choix de la fiche, puis l'original s'il est là, puis le premier
+      remplaçant qui l'est, puis l'original — qui s'achète. Lue par la fiche
+      (puces « avec »), la liste de courses, « Ce soir » et le rejeu, qui
+      retire du stock la farine prise (`EvtCuisine.remplacements`). La fiche
+      dit aussi quand le stock ne suffit pas : « reste ~200 g », ou « entamé
+      · à vérifier » d'un sac ouvert sans poids.
+- [ ] Les `subs` sans `id` (emmental râpé, crème d'avoine…) restent des notes :
+      les passer en remplaçants quand leur ingrédient a un rayon.
+- [ ] Un fond qui ne suffit pas pourrait COMPLÉTER avec l'autre farine (200 g
+      d'épeautre + 180 g de T110) au lieu de n'en prendre qu'une.

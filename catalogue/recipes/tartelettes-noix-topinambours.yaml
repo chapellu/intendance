@@ -60,7 +60,7 @@ recipe:
   ingredients:
     # Pâte au vin blanc — ni beurre ni œuf : le vin et l'huile remplacent le
     # corps gras solide, ce qui la rend faisable sans rien sabler.
-    - {id: farine-complete, name: farine T80 ou T110 de blé ou de grand épeautre, qty: 360, unit: g}
+    - {id: farine-complete, name: farine T80 ou T110 de blé ou de grand épeautre, qty: 360, unit: g, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
     - {id: vin-blanc-sec, name: vin blanc sec, qty: 150, unit: g}
     - {id: huile-olive, name: huile d'olive, qty: 95, unit: g}
     - {id: sel, ref: sel-pate, name: sel fin (pâte), qty: 1, unit: c. à c. rase, seasoning: true}

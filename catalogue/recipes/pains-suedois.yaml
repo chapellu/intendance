@@ -32,7 +32,7 @@ recipe:
     origine: francais
 
   ingredients:
-    - {id: farine-complete, name: farine de blé ou d'épeautre demi-complète, qty: 500, unit: g}
+    - {id: farine-complete, name: farine de blé ou d'épeautre demi-complète, qty: 500, unit: g, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
     - {id: sel, name: sel fin, qty: 10, unit: g, seasoning: true}
     - {id: levure-boulangere, name: levure de boulanger déshydratée, qty: 1, unit: pièce}
     - {id: sucre-complet, name: sucre complet, qty: 15, unit: g}

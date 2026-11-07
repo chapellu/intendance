@@ -44,7 +44,7 @@ recipe:
     origine: francais
 
   ingredients:
-    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 180, unit: g}
+    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 180, unit: g, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
     - {id: poires, name: "poires pas trop grosses, mûres à point mais encore un peu fermes pour qu'elles se tiennent à la cuisson", qty: 5, unit: pièce}
     - {id: oeufs, name: œufs (180 g), qty: 3, unit: pièce}
     - {id: beurre, name: beurre demi-sel, qty: 180, unit: g}

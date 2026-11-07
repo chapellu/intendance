@@ -34,10 +34,12 @@
 // de plus. Confondre les deux ferait rejouer six mois de cuisine pour savoir
 // s'il reste de la bolognaise, alors qu'il suffit d'ouvrir le tiroir.
 
+import { retenir } from "./remplacants";
 import { facteur } from "./calcul";
 import { enUniteDeCompte } from "./unites";
 import type {
   Catalogue, Denree, Espace, Etat, Plat, Quantite, RepasId,
+  Remplacant,
 } from "./types";
 import { boitesDeLaLigne, boitesDuCatalogue, contenuDUnite, type Boite } from "./paquet";
 
@@ -103,6 +105,12 @@ export interface EvtCuisine extends Commun {
    * un doute : une ration connue n'est pas une incertitude.
    */
   routine?: true;
+  /**
+   * T167 — ce qu'un doigt a pris à la place, par `ref` de ligne : « farine
+   * T110 » → `farine-epeautre`. Absent, le rejeu prend ce qui est là (voir
+   * `retenir`) : l'original s'il a un lot, sinon le premier remplaçant qui en a.
+   */
+  remplacements?: Record<string, string>;
 }
 
 /**
@@ -759,6 +767,9 @@ export function retirer(
 /** Ce qu'une ligne de recette réclame du placard, mise à l'échelle. */
 export interface Demande {
   ingredient: string;
+  /** T167 — la ligne d'où vient la demande, et ce qui la remplace. */
+  ref: string;
+  remplacants?: readonly Remplacant[];
   /** `null` quand l'unité n'est pas une masse — « 2 gousses » ne se soustrait
    *  pas d'un poids, et prétendre le contraire fabriquerait un faux chiffre. */
   grammes: number | null;
@@ -786,6 +797,8 @@ export function demandes(plat: Plat, facteur: number): Demande[] {
     const u = enUniteDeCompte(ing.id, ing.qty, ing.unit);
     out.push({
       ingredient: ing.id,
+      ref: ing.ref,
+      ...(ing.remplacants ? { remplacants: ing.remplacants } : {}),
       grammes: EN_GRAMMES.has(u.unit) ? u.qty * facteur : null,
       pieces: enPieces(u.unit) ? Math.ceil(u.qty * facteur - 1e-9) : null,
       unite: u.unit,
@@ -989,7 +1002,24 @@ export function rejouer(
       // dérivait d'un sac par mois (année simulée n° 9), le beurre des
       // fournées aussi. Une ration de routine (`parts = portions`) n'y change rien.
       const f = plat.portions > 0 ? facteur(plat, e.parts) : 1;
-      for (const d of demandes(plat, f)) {
+      for (const brute of demandes(plat, f)) {
+        // T167 — LA FARINE QU'ON A PRISE, PAS CELLE QUE LA RECETTE NOMME. Le
+        // choix de la fiche s'il y en a un, sinon ce qui a un lot.
+        const r = retenir(
+          { id: brute.ingredient, ...(brute.remplacants ? { remplacants: brute.remplacants } : {}) },
+          (x) => (lots.get(x)?.length ?? 0) > 0,
+          ctx.alias,
+          e.remplacements?.[brute.ref],
+        );
+        const d =
+          r.remplacant == null
+            ? brute
+            : {
+                ...brute,
+                ingredient: r.id,
+                grammes: brute.grammes == null ? null : brute.grammes * r.ratio,
+                pieces: brute.pieces == null ? null : Math.ceil(brute.pieces * r.ratio - 1e-9),
+              };
         const id = ctx.alias(d.ingredient);
         const l = lots.get(id);
         // Une ration sans lot ne dit rien : le lait n'a jamais été rentré, le

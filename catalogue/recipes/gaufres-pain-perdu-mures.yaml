@@ -67,7 +67,7 @@ recipe:
 
   ingredients:
     - {id: pain-rassis-ing, name: "pain bio rassis de blé ou d'épeautre — blanc, semi-complet ou complet, c'est égal", qty: 150, unit: g, from_accepts: true}
-    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 100, unit: g}
+    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 100, unit: g, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
     - {id: lait-soja-vanille, name: "lait de soja-vanille — 30 cl si le pain est juste rassis, 40 cl s'il est très sec", qty: 40, unit: cl}
     - {id: oeufs, name: œufs, qty: 3, unit: pièce}
     - {id: rhum, name: rhum ambré, qty: 2, unit: c. à s.}

@@ -49,7 +49,7 @@ recipe:
   ingredients:
     - {id: roti-porc, name: "rôti de porc fermier (épaule ou jambon, au choix)", qty: 1000, unit: g}
     - {id: oignon, name: oignon, qty: 1, unit: pièce}
-    - {id: celeri-branche, name: "branche de céleri, ou une tranche de céleri-rave", qty: 1, unit: pièce}
+    - {id: celeri-branche, name: "branche de céleri, ou une tranche de céleri-rave", qty: 1, unit: pièce, subs: [{id: celeri-rave, name: "céleri-rave", ratio: 1.0}]}
     - {id: carottes, name: carotte, qty: 1, unit: pièce}
     - {id: laurier, name: feuilles de laurier, qty: 3, unit: pièce}
     - {id: clous-girofle, name: clou de girofle, qty: 1, unit: pièce}

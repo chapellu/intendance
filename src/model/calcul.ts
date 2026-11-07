@@ -11,6 +11,7 @@
 // frontière n'est pas arbitraire : ici on mesure ce qu'une semaine coûte, là
 // on juge ce qu'elle vaut, et le second appelle le premier — jamais l'inverse.
 
+import { retenir } from "./remplacants";
 import { enUniteDeCompte } from "./unites";
 import { bandRepas, Depot, horlogesDu, qteDe, type LigneDepot, type Prise } from "./depot";
 import { dateDe, dejaLaPour, joue, type Jeu } from "./jeu";
@@ -364,7 +365,15 @@ export function calculer(
     const lignes = [...p.ingredients];
     if (plein && p.sansReste) lignes.push(...p.sansReste.ingredients);
 
-    const auPanier = (ing: Ingredient, echelleLigne: number) => {
+    const auPanier = (ligne: Ingredient, echelleLigne: number) => {
+      // T167 — LA FARINE D'ÉPEAUTRE AU PLACARD FAIT LE PAIN : la ligne prend
+      // ce qui est là avant de racheter ce que la recette nomme d'abord.
+      const r = retenir(
+        ligne,
+        (id) => ici.has(id) || catalogue.rayons.placard.includes(id),
+        (id) => alias(catalogue, id),
+      );
+      const ing = r.remplacant ? { ...ligne, id: r.id, nom: r.remplacant.nom } : ligne;
       const cid = alias(catalogue, ing.id);
       const prov = provenance(catalogue, ing, cid, prises, ici);
       provenances[prov] = (provenances[prov] ?? 0) + 1;

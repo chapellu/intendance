@@ -37,7 +37,7 @@ recipe:
   ingredients:
     - {id: figues-seches, name: figues sèches, qty: 135, unit: g}
     - {id: raisins-secs, name: raisins secs, qty: 100, unit: g}
-    - {id: farine-epeautre, name: farine complète de grand épeautre ou de blé, qty: 190, unit: g}
+    - {id: farine-epeautre, name: farine complète de grand épeautre ou de blé, qty: 190, unit: g, subs: [{id: farine-complete, name: "farine de blé semi-complète", ratio: 1.0}]}
     - {id: son-avoine, name: son d'avoine, qty: 70, unit: g}
     - {id: huile-tournesol, name: huile neutre, qty: 85, unit: g}
     - {id: noisettes, name: noisettes, qty: 100, unit: g}

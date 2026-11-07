@@ -58,7 +58,7 @@ recipe:
     origine: italien
 
   ingredients:
-    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 500, unit: g}
+    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 500, unit: g, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
     - {id: eau, name: eau tiède, qty: 365, unit: g}
     - {id: levure-boulangere, name: "sachet de levure de boulangerie déshydratée (ou un demi-cube de levure fraîche)", qty: 1, unit: sachet}
     - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}

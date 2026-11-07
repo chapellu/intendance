@@ -29,7 +29,7 @@ recipe:
     origine: francais
 
   ingredients:
-    - {id: farine-complete, name: farine de blé ou de grand épeautre T110, qty: 65, unit: g}
+    - {id: farine-complete, name: farine de blé ou de grand épeautre T110, qty: 65, unit: g, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
     - {id: poudre-a-lever, name: poudre à lever, qty: 0.5, unit: sachet}
     - {id: chocolat-noir, name: chocolat noir pâtissier à 70 %, qty: 100, unit: g}
     - {id: sirop-agave, name: sirop d'agave, qty: 4, unit: grosse c. à s.}

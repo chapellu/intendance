@@ -38,6 +38,7 @@ import { armer, arreter, demanderBandeau, desarmer, plateforme, promesse } from 
 import { duree, fmt, hhmm, mmss } from "../ui/format";
 import { Icone, iconeEspace } from "../ui/icones";
 import { AjouterAuStock } from "../ui/Ajouter";
+import { options } from "../model/remplacants";
 import { nomEspace } from "../ui/phrases";
 import {
   aArmer,
@@ -56,6 +57,7 @@ import {
   phraseDuRole,
   pourLire,
   provenanceIngredient,
+  resteCourt,
   quantitesDeLEtape,
   sansRecette,
   tempsDuPlat,
@@ -149,6 +151,10 @@ function Fiche({
   // sur « Terminer », qui ramène ici. Persister cet écran-là ferait rouvrir
   // demain matin une question sur une casserole qu'on a rangée hier soir.
   const [sortie, setSortie] = useState(false);
+  // T167 — la farine qu'on prend, par `ref` de ligne, quand la recette en
+  // accepte plusieurs. Vide : chaque ligne prend ce qui est en stock.
+  const [choix, setChoix] = useState<Record<string, string>>({});
+  const choisir = (ref: string, id: string) => setChoix((c) => ({ ...c, [ref]: id }));
   const cle = cleEtape(creneau.jour, creneau.repas, p.id);
   const range = useNombre(cle);
   // LA MISE EN PLACE PASSÉE — T112. Persistée comme l'avancement, et pour la
@@ -210,6 +216,7 @@ function Fiche({
       rangement,
       sortie: marque,
       rienGarde,
+      remplacements: choix,
       foyer: jeu.catalogue.foyer,
     });
     return "note" as const;
@@ -323,7 +330,7 @@ function Fiche({
             <span>{muet.long}</span>
           </div>
         ) : null}
-        <Ingredients p={p} parts={parts} f={f} jeu={jeu} i={i}>
+        <Ingredients p={p} parts={parts} f={f} jeu={jeu} i={i} choix={choix} choisir={choisir}>
           <Deroule steps={steps} temps={temps} />
         </Ingredients>
         {/* LE GUIDE RESTE ATTEIGNABLE, ET C'EST UNE PORTE, PLUS UN COULOIR.
@@ -356,6 +363,8 @@ function Fiche({
         jeu={jeu}
         commencer={() => void poserReglage(cleP, true)}
         terminer={() => setSortie(true)}
+        choix={choix}
+        choisir={choisir}
       />
     );
 
@@ -366,7 +375,7 @@ function Fiche({
     return (
       <>
         {tete}
-        <Ingredients p={p} parts={parts} f={f} jeu={jeu} i={i} />
+        <Ingredients p={p} parts={parts} f={f} jeu={jeu} i={i} choix={choix} choisir={choisir} />
         <div style={{ padding: "0 var(--space-4) var(--space-4)" }}>
           <button className="btn btn-secondary btn-block" onClick={() => setIngr(false)}>
             Revenir à l’étape {etape + 1}
@@ -424,7 +433,11 @@ function MiseEnPlace({
   jeu,
   commencer,
   terminer,
+  choix,
+  choisir,
 }: {
+  choix: Readonly<Record<string, string>>;
+  choisir: (ref: string, id: string) => void;
   /** Le créneau de la fiche — pour ce que la carte de 15 h disait là. */
   i: number;
   p: Plat;
@@ -460,7 +473,7 @@ function MiseEnPlace({
           <span>{muet.long}</span>
         </div>
       ) : null}
-      <Ingredients p={p} parts={parts} f={f} jeu={jeu} i={i} tient={m.recipient}>
+      <Ingredients p={p} parts={parts} f={f} jeu={jeu} i={i} tient={m.recipient} choix={choix} choisir={choisir}>
         {/* LE TEMPS, PUIS LA SORTIE — sous la liste, parce que la liste est ce
             qu'on sort en premier et que l'œil y arrive directement. */}
         <div className="co-mep">
@@ -853,6 +866,11 @@ function Autrement({
 
 /* ─────────────────────────────────────────────────────────── les ingrédients */
 
+/** « farine T110 de blé ou de grand épeautre » → « farine T110 de blé » : la
+ *  puce de l'original dit ce qu'il est, pas tout ce que la ligne accepte. */
+const nomCourt = (nom: string): string => nom.split(/,? ou |\s—|\s\(/)[0]!.trim();
+
+
 function Ingredients({
   p,
   parts,
@@ -860,8 +878,13 @@ function Ingredients({
   jeu,
   i,
   tient,
+  choix = {},
+  choisir,
   children,
 }: {
+  /** T167 — la farine prise, par `ref`, et le geste qui la change. */
+  choix?: Readonly<Record<string, string>>;
+  choisir?: (ref: string, id: string) => void;
   /** Le créneau de la fiche : la provenance lit ce que la carte de 15 h y
    *  disait là (`Jeu.dejaLa`), comme la liste de courses. */
   i: number;
@@ -943,27 +966,57 @@ function Ingredients({
       )}
       <div className="co-ing">
         {p.ingredients.map((x) => {
-          const prov = provenanceIngredient(jeu, x, { i, plat: p.id }, enStock);
+          const prov = provenanceIngredient(jeu, x, { i, plat: p.id }, enStock, choix[x.ref]);
+          const pris = prov.avec?.id ?? x.id;
+          // La quantité DU REMPLAÇANT : 3 c. à s. de miel pour 2 de sirop.
+          const xq = prov.avec ? { ...x, id: pris, qty: x.qty * prov.avec.ratio } : x;
+          const court = prov.acheter
+            ? null
+            : resteCourt(placard?.parIngredient.get(jeu.catalogue.rayons.aliases[pris] ?? pris), {
+                qty: xq.qty * f,
+                unit: xq.unit,
+              });
           // `key` sur `ref` ET PAS SUR `id` : onze plats portent deux lignes du
           // même ingrédient — la farine de la pâte et celle de la crème — et
           // React recevait deux fois la même clé. C'est `ref` qui les
           // distingue, et elle n'existait pas avant T72.
           return (
             <div key={x.ref} className="l">
-              <span className="nom">{x.nom}</span>
-              <span className="q">{quantiteACuire(jeu.catalogue, x, f)}</span>
+              <span className="nom">
+                {x.nom}
+                {/* T167 — LES FARINES QUI SE REMPLACENT, À UN DOIGT. Celle qui
+                    est en stock est prise d'office ; toucher l'autre la prend,
+                    et c'est elle que la cuisson retirera du stock. */}
+                {x.remplacants?.length && choisir ? (
+                  <span className="co-avec" role="radiogroup" aria-label={`${x.nom} : avec quoi`}>
+                    <span className="k">avec</span>
+                    {options(x).map((o) => (
+                      <button
+                        key={o.id}
+                        role="radio"
+                        aria-checked={o.id === pris}
+                        className={`co-avec-puce${o.id === pris ? " choisi" : ""}`}
+                        onClick={() => choisir(x.ref, o.id)}
+                      >
+                        {o.id === x.id ? nomCourt(x.nom) : o.nom}
+                      </button>
+                    ))}
+                  </span>
+                ) : null}
+              </span>
+              <span className="q">{quantiteACuire(jeu.catalogue, xq, f)}</span>
               {/* « À ACHETER » SE TOUCHE : si on en a, on le dit ici même, et la
                   ligne passe au vert. L'eau n'a pas d'étiquette. */}
               {prov.acheter && !x.base ? (
                 <button
                   className="p acheter"
                   aria-label={`${x.nom} : à acheter — j’en ai`}
-                  onClick={() => setJEnAi({ id: x.id, nom: x.nom })}
+                  onClick={() => setJEnAi({ id: pris, nom: prov.avec?.nom ?? x.nom })}
                 >
                   à acheter · j’en ai
                 </button>
               ) : /^eau(-|$)/.test(x.id) ? null : (
-                <span className={`p ${prov.acheter ? "acheter" : ""}`}>{prov.label}</span>
+                <span className={`p ${prov.acheter ? "acheter" : court ? "peu" : ""}`}>{court ?? prov.label}</span>
               )}
             </div>
           );

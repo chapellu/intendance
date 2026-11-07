@@ -34,7 +34,7 @@ recipe:
     origine: francais
 
   ingredients:
-    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 200, unit: g}
+    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 200, unit: g, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
     - {id: chevre-demi-sec, name: fromage de chèvre demi-sec, qty: 100, unit: g}
     - {id: thym-frais, name: brins de thym bien tendres, qty: 12, unit: brin}
     - {id: huile-olive, name: huile d'olive, qty: 7, unit: cl}

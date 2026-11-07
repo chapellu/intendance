@@ -31,7 +31,7 @@ recipe:
     origine: francais
 
   ingredients:
-    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 360, unit: g}
+    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 360, unit: g, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
     - {id: eau, name: eau, qty: 140, unit: g}
     - {id: huile-olive, name: huile d'olive, qty: 70, unit: g}
     - {id: sel, name: sel fin, qty: 1, unit: c. à c., seasoning: true}

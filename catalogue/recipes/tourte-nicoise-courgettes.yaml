@@ -39,7 +39,7 @@ recipe:
   ingredients:
     # Pâte à l'huile d'olive — ni beurre ni œuf, et c'est ce qui la rend
     # faisable à la main : rien à sabler, rien à faire monter.
-    - {id: farine-complete, name: farine T80 à T110 de blé ou de grand épeautre, qty: 300, unit: g}
+    - {id: farine-complete, name: farine T80 à T110 de blé ou de grand épeautre, qty: 300, unit: g, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
     - {id: eau, name: eau, qty: 15, unit: cl}
     - {id: huile-olive, ref: huile-olive-pate, name: huile d'olive (pâte), qty: 5, unit: c. à s.}
     - {id: sel, ref: sel-pate, name: sel (pâte), qty: 1, unit: pincée, seasoning: true}

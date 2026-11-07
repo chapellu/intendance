@@ -172,7 +172,13 @@ def main():
                  "nom": i["name"], "qty": i["qty"],
                  "unit": i["unit"], "base": bool(i.get("from_accepts")),
                  "assaisonnement": bool(i.get("seasoning")),
-                 "central": bool(i.get("central"))}
+                 "central": bool(i.get("central")),
+                 # T167 — LES REMPLAÇANTS QUI S'ACHÈTENT : seuls les `subs` qui
+                 # portent un `id`. Les autres sont une note de livre.
+                 **({"remplacants": [
+                     {"id": s["id"], "nom": s["name"], "ratio": s.get("ratio", 1.0)}
+                     for s in i.get("subs") or [] if "id" in s]}
+                    if any("id" in s for s in i.get("subs") or []) else {})}
                 for i in r.get("ingredients", [])
             ],
             # LE RÔLE — ce que ce plat EST dans un repas, et ce qui décide

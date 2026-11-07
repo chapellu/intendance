@@ -49,7 +49,7 @@ recipe:
     - {id: oeufs, name: œuf, qty: 1, unit: pièce}
     - {id: chevre-buche, name: bûche de fromage de chèvre, qty: 200, unit: g}
     - {id: ciboulette, name: ciboulette, qty: 1, unit: petit bouquet}
-    - {id: farine-complete, name: farine de blé ou d'épeautre (pour rouler), qty: 1, unit: tasse}
+    - {id: farine-complete, name: farine de blé ou d'épeautre (pour rouler), qty: 1, unit: tasse, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
     - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
     - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
 

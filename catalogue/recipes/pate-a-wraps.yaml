@@ -32,7 +32,7 @@ recipe:
     origine: francais
 
   ingredients:
-    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 500, unit: g}
+    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 500, unit: g, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
     - {id: eau, name: eau, qty: 1000, unit: ml}
     - {id: oeufs, name: œufs, qty: 2, unit: pièce}
     - {id: huile-olive, name: "huile d'olive, plus un peu pour la première crêpe", qty: 4, unit: c. à s.}

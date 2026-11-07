@@ -92,6 +92,21 @@ export interface Ingredient {
    * change une question ; ailleurs elle vaut faux et ne coûte rien.
    */
   central: boolean;
+  /**
+   * T167 — CE QUI FAIT AUSSI BIEN, POUR CETTE RECETTE. « Farine T110 de blé ou
+   * de grand épeautre » : la ligne achète `farine-complete`, mais une farine
+   * d'épeautre au placard fait le pain. Par RECETTE et pas par famille — une
+   * T55 ne fait pas le pain d'une T110. Absent sur 3 lignes sur 4.
+   */
+  remplacants?: readonly Remplacant[];
+}
+
+/** Un remplaçant qui s'achète : son id, son nom, et combien en mettre pour un
+ *  de l'original (3 c. à s. de miel pour 2 de sirop d'agave : 1,5). */
+export interface Remplacant {
+  id: string;
+  nom: string;
+  ratio: number;
 }
 
 /** Le repli quand l'anticipation a été manquée : six étapes en portent un, et

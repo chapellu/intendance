@@ -36,7 +36,7 @@ recipe:
 
   ingredients:
     # Pâte — aux petits suisses, sans crème ni œuf
-    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 180, unit: g}
+    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 180, unit: g, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
     - {id: beurre, name: "beurre mou, à température ambiante", qty: 90, unit: g}
     - {id: petits-suisses, name: petits suisses au lait entier, qty: 180, unit: g}
     - {id: sucre-roux, name: sucre roux, qty: 3, unit: c. à s.}

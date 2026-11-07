@@ -46,7 +46,7 @@ recipe:
     origine: francais
 
   ingredients:
-    - {id: farine-complete, name: farine T80 ou T110 de blé ou de grand épeautre, qty: 300, unit: g}
+    - {id: farine-complete, name: farine T80 ou T110 de blé ou de grand épeautre, qty: 300, unit: g, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
     - {id: sucre-roux, name: sucre blond, qty: 170, unit: g}
     - {id: sucre-vanille, name: sachets de sucre vanillé, qty: 3, unit: sachet}
     - {id: poudre-a-lever, name: poudre à lever, qty: 1, unit: sachet}
@@ -54,7 +54,7 @@ recipe:
     - {id: oeufs, name: œufs, qty: 4, unit: pièce}
     - {id: rhum, name: rhum ambré, qty: 2, unit: c. à s.}
     - {id: yaourt-soja, name: "yaourt à la vanille, de soja ou de vache", qty: 50, unit: g}
-    - {id: huile-coco, name: "huile de coco fondue — à défaut huile de tournesol désodorisée ou beurre fondu", qty: 150, unit: g}
+    - {id: huile-coco, name: "huile de coco fondue — à défaut huile de tournesol désodorisée ou beurre fondu", qty: 150, unit: g, subs: [{id: huile-tournesol, name: "huile de tournesol", ratio: 1.0}, {id: beurre, name: "beurre fondu", ratio: 1.0}]}
     - {id: chocolat-poudre, name: "chocolat en poudre (pas du cacao)", qty: 2, unit: c. à s.}
     - {id: fleur-de-sel, name: fleur de sel, qty: 1, unit: pincée, seasoning: true}
 

@@ -184,7 +184,8 @@ def compile_recipe(recipe_id, household, rules, stock, time_budget=None,
             line += f"  ({ch.ETIQUETTES[prov]})"
         subs = ing.get("subs") or []
         if subs:
-            line += f"  [à défaut : {subs[0]['name']} — {subs[0]['note']}]"
+            note = subs[0].get("note")
+            line += f"  [à défaut : {subs[0]['name']}" + (f" — {note}]" if note else "]")
         ingredients.append(line)
 
     # L'ASSIETTE — ce qui se sert à côté, à la même échelle que le reste.

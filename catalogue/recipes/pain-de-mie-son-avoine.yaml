@@ -32,13 +32,13 @@ recipe:
     origine: francais
 
   ingredients:
-    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 375, unit: g}
+    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 375, unit: g, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
     - {id: son-avoine, name: son d'avoine, qty: 100, unit: g}
     - {id: sel, name: sel fin, qty: 10, unit: g, seasoning: true}
     - {id: levure-boulangere, name: levure de boulanger déshydratée, qty: 1, unit: pièce}
     - {id: eau, name: "eau tiède, 40 °C au maximum", qty: 400, unit: ml}
     - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
-    - {id: sirop-agave, name: "sirop d'agave, ou 3 c. à s. de miel", qty: 2, unit: c. à s.}
+    - {id: sirop-agave, name: "sirop d'agave, ou 3 c. à s. de miel", qty: 2, unit: c. à s., subs: [{id: miel, name: "miel", ratio: 1.5}]}
 
   steps:
     - id: melanger-secs

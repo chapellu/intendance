@@ -76,6 +76,8 @@ export interface Cuisson {
    * répondre « nulle part ».
    */
   rienGarde?: boolean;
+  /** T167 — ce que la fiche a pris à la place, par `ref` de ligne. */
+  remplacements?: Record<string, string>;
   /**
    * Le foyer contre lequel les `emits` ont été déclarés — T108.
    *
@@ -105,7 +107,7 @@ export interface Cuisson {
  */
 export async function journaliserCuisson(
   base: Base,
-  { jour, repas, plat, parts, rangement, sortie, rienGarde = false, foyer, midi = 0 }: Cuisson,
+  { jour, repas, plat, parts, rangement, sortie, rienGarde = false, remplacements, foyer, midi = 0 }: Cuisson,
   aujourdhui = new Date(),
 ): Promise<number> {
   const saisi = jourISO(aujourdhui);
@@ -250,6 +252,7 @@ export async function journaliserCuisson(
     const evt: EvtCuisine = {
       sorte: "cuisine", jour, saisi, repas, plat: plat.id, parts, maj,
       ...(sortie ? { sortie } : {}),
+      ...(remplacements && Object.keys(remplacements).length ? { remplacements } : {}),
     };
     return (await base.evenements.add(evt as never)) as number;
   });

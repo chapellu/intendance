@@ -28,7 +28,7 @@ recipe:
     - {id: huile-olive, name: "huile d'olive, un demi-pot à yaourt", qty: 50, unit: g}
     - {id: yaourt-soja, name: yaourt de soja, qty: 100, unit: g}
     - {id: tomates-cerises-confites, name: tomates-cerises séchées à l'huile d'olive, qty: 20, unit: pièce}
-    - {id: parmesan, name: "parmesan ou tomme de chèvre râpée", qty: 30, unit: g}
+    - {id: parmesan, name: "parmesan ou tomme de chèvre râpée", qty: 30, unit: g, subs: [{id: fromage-rape, name: "fromage râpé", ratio: 1.0}]}
     - {id: chevre-frais, name: fromage de chèvre frais, qty: 70, unit: g}
     - {id: sarriette, name: "sarriette fraîche, ou 1 c. à c. de sarriette séchée", qty: 1, unit: petit bouquet}
     - {id: ail, name: "gousse d'ail, facultative", qty: 1, unit: gousse}
