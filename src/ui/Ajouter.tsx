@@ -30,6 +30,7 @@ export function AjouterAuStock({
   suggestions = [],
   titreSuggestions = "Sur la liste de courses",
   ouvrirSur,
+  nomDepart,
   onFerme,
   libelle = "+ Ajouter",
   className = "btn btn-primary",
@@ -41,6 +42,9 @@ export function AjouterAuStock({
   titreSuggestions?: string;
   /** Ouvre directement le panneau sur cet ingrédient (« J'en ai »). */
   ouvrirSur?: string | null;
+  /** Le nom de la ligne de recette qui a ouvert le panneau : « farine T110 »
+   *  se reconnaît mieux que l'id d'achat qu'elle porte. */
+  nomDepart?: string | undefined;
   onFerme?: () => void;
   libelle?: string;
   className?: string;
@@ -77,6 +81,7 @@ export function AjouterAuStock({
           suggestions={suggestions}
           titreSuggestions={titreSuggestions}
           depart={ouvrirSur ?? null}
+          nomDepart={nomDepart}
           onFerme={fermer}
           onAjoute={(a) => {
             setDernier(a);
@@ -108,6 +113,7 @@ function Feuille({
   suggestions,
   titreSuggestions,
   depart,
+  nomDepart,
   onFerme,
   onAjoute,
 }: {
@@ -116,6 +122,7 @@ function Feuille({
   suggestions: readonly Suggestion[];
   titreSuggestions: string;
   depart: string | null;
+  nomDepart?: string | undefined;
   onFerme: () => void;
   onAjoute: (a: Ajout) => void;
 }) {
@@ -123,6 +130,7 @@ function Feuille({
   const placard = usePlacard(catalogue);
   const [cherche, setCherche] = useState("");
   const [choisi, setChoisi] = useState<string | null>(depart);
+  const nom = (id: string) => (id === depart && nomDepart ? nomDepart : nomLisible(catalogue, id));
   const [n, setN] = useState(() => suggestions.find((s) => s.id === depart)?.unites ?? 1);
 
   const connus = useMemo(
@@ -158,7 +166,7 @@ function Feuille({
       { ingredient: choisi, unites: n, parUnite: poidsConnu(catalogue, journal, choisi) },
       cles,
     );
-    onAjoute({ ...r, texte: `${nomLisible(catalogue, choisi)} × ${n} ajouté au stock` });
+    onAjoute({ ...r, texte: `${nom(choisi)} × ${n} ajouté au stock` });
   };
 
   const deja = choisi ? (placard?.parIngredient.get(choisi)?.unites ?? 0) : 0;
@@ -190,7 +198,7 @@ function Feuille({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="aj-tete">
-          <div className="aj-titre">{choisi ? nomLisible(catalogue, choisi) : "Ajouter au stock"}</div>
+          <div className="aj-titre">{choisi ? nom(choisi) : "Ajouter au stock"}</div>
           <button className="btn btn-ghost" onClick={onFerme} aria-label="Fermer">
             Fermer
           </button>

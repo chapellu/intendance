@@ -235,11 +235,16 @@ export function provenanceIngredient(
   /** Le créneau et le plat de la fiche, pour lire ce que la carte de 15 h
    *  disait là (`Jeu.dejaLa`) — la liste le lit, la fiche doit dire pareil. */
   ou?: { i: number; plat: string },
+  /** Ce que le rejeu du journal porte en ce moment, achats rangés compris.
+   *  « J'en ai », touché sur la fiche, y entre : sans lui la ligne restait
+   *  « à acheter » sous le doigt qui venait de dire le contraire. */
+  enStock?: ReadonlySet<string>,
 ): Provenance {
   const { catalogue } = jeu;
   if (ing.base) return { label: "base", acheter: true };
   const cid = catalogue.rayons.aliases[ing.id] ?? ing.id;
   if (catalogue.rayons.placard.includes(cid)) return { label: "placard", acheter: false };
+  if (enStock?.has(cid)) return { label: "en stock", acheter: false };
   // Le relevé dit qu'il en reste. La fiche ne promet pas la quantité — elle ne
   // la connaît pas —, elle dit seulement d'aller voir avant de partir acheter.
   if (jeu.gardeManger.includes(cid)) return { label: "au garde-manger", acheter: false };
@@ -294,11 +299,17 @@ export interface LigneATable {
  * soir. Passer `f` ici afficherait « 300 g de riz » sous une assiette qui en
  * demande 125.
  */
-export function aTable(jeu: Jeu, p: Plat, parts: number, i = -1): LigneATable[] {
+export function aTable(
+  jeu: Jeu,
+  p: Plat,
+  parts: number,
+  i = -1,
+  enStock?: ReadonlySet<string>,
+): LigneATable[] {
   const f = parts / p.portions;
   return p.avec.map((a) => {
     const ing = commeIngredient(a);
-    return { id: a.id, nom: a.nom, quantite: echelleTexte(ing, f), prov: provenanceIngredient(jeu, ing, { i, plat: p.id }) };
+    return { id: a.id, nom: a.nom, quantite: echelleTexte(ing, f), prov: provenanceIngredient(jeu, ing, { i, plat: p.id }, enStock) };
   });
 }
 

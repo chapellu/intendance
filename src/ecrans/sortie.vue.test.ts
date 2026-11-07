@@ -26,6 +26,11 @@ import {
   quantiteDuLot,
   rangerDans,
   vueDeLaSortie,
+  phraseDuReste,
+  quantiteDuReste,
+  rangementDesReponses,
+  restesDeLaSortie,
+  type LotSortie,
 } from "./sortie.vue";
 
 const catalogue: Catalogue = lireCatalogue(
@@ -390,3 +395,40 @@ describe("le foyer réel, quatre boîtes de 0,8 L", () => {
   });
 });
 
+
+describe("« j'ai fait autrement »", () => {
+  const pain = {
+    emits: [{ type: "pain-de-mie-maison", band: "3-repas", gardeFrigo: 4 }],
+  } as unknown as Plat;
+  const lots = [
+    { emit: 0, type: "pain-de-mie-maison", location: "frigo", repas: 1, qty: 300, unite: "g" },
+    { emit: 0, type: "pain-de-mie-maison", location: "congelo", repas: 2, qty: 600, unite: "g" },
+  ] as unknown as LotSortie[];
+
+  test("recolle la proposition coupée en deux : un pain, pas deux morceaux", () => {
+    const r = restesDeLaSortie(pain, lots);
+    expect(r).toHaveLength(1);
+    expect(quantiteDuReste(r[0]!)).toBe("900 g");
+    expect(r[0]!.nom).toBe("pain de mie maison");
+  });
+
+  test("à l'air libre s'écrit au placard, sur la bande déclarée", () => {
+    const r = restesDeLaSortie(pain, lots);
+    const { rangement, rienGarde } = rangementDesReponses(pain, r, new Map([[0, "placard"]]));
+    expect(rienGarde).toBe(false);
+    expect(rangement).toEqual([{ emit: 0, location: "placard", band: "3-repas", qty: 900 }]);
+  });
+
+  test("« pas gardé » partout le dit expressément", () => {
+    const r = restesDeLaSortie(pain, lots);
+    expect(rangementDesReponses(pain, r, new Map([[0, null]]))).toEqual({ rangement: [], rienGarde: true });
+  });
+
+  test("la phrase dit où, et jusqu'à quand", () => {
+    const r = restesDeLaSortie(pain, lots)[0]!;
+    const sam = new Date(2026, 10, 7);
+    expect(phraseDuReste(r, "placard", sam)).toBe("à l’air libre · à manger d’ici mer. 11/11");
+    expect(phraseDuReste(r, "congelo", sam)).toBe("au congélateur");
+    expect(phraseDuReste(r, null, sam)).toBe("pas gardé");
+  });
+});

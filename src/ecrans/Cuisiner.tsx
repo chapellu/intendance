@@ -15,7 +15,7 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import { indexDuCreneau } from "../db";
-import { useCatalogue, useSemaine } from "../db/hooks";
+import { useCatalogue, usePlacard, useSemaine } from "../db/hooks";
 import { dejaCuisine, journaliserCuisson, type RangementLot } from "../db/journal";
 import {
   cleEtape,
@@ -62,7 +62,22 @@ import {
   type EtatMinuteur,
   type Recipient,
 } from "./cuisiner.vue";
-import { phraseDesBoites, phraseDuManque, quantiteDuLot, vueDeLaSortie } from "./sortie.vue";
+import {
+  DESTINATIONS,
+  phraseDesBoites,
+  phraseDuManque,
+  phraseDuReste,
+  quantiteDuLot,
+  quantiteDuReste,
+  rangementDesReponses,
+  restesDeLaSortie,
+  vueDeLaSortie,
+  type OuEstParti,
+  type Reste,
+} from "./sortie.vue";
+
+/** Ce qu'est devenue la réponse de la sortie. */
+type Issue = "note" | "deja" | "hors";
 
 export function Cuisiner({ creneau, plat }: { creneau: CleCreneau; plat?: string }) {
   const { catalogue } = useCatalogue();
@@ -179,9 +194,13 @@ function Fiche({
    * `dejaCuisine` protège du double décrément — marquer deux fois « fait » est
    * un geste qu'on fait vraiment, et rien d'autre dans l'app ne le rattraperait.
    */
-  const terminer = async (rangement: RangementLot[] | null, marque?: "suivie" | "autre") => {
-    if ((lecture && !guide) || i < 0) return;
-    if (await dejaCuisine(base, creneau.jour, creneau.repas)) return;
+  const terminer = async (
+    rangement: RangementLot[] | null,
+    marque?: "suivie" | "autre",
+    rienGarde = false,
+  ) => {
+    if ((lecture && !guide) || i < 0) return "hors" as const;
+    if (await dejaCuisine(base, creneau.jour, creneau.repas)) return "deja" as const;
     await journaliserCuisson(base, {
       jour: creneau.jour,
       repas: creneau.repas,
@@ -190,8 +209,10 @@ function Fiche({
       midi,
       rangement,
       sortie: marque,
+      rienGarde,
       foyer: jeu.catalogue.foyer,
     });
+    return "note" as const;
   };
 
   /**
@@ -209,13 +230,20 @@ function Fiche({
    * sans répondre laisse donc la fiche à sa dernière étape, et « Terminer » la
    * rouvre. On ne perd pas une cuisson pour avoir posé le téléphone.
    */
-  const repondre = (rangement: RangementLot[] | null, marque?: "suivie" | "autre") => {
-    void terminer(rangement, marque).finally(() => {
+  const repondre = (
+    rangement: RangementLot[] | null,
+    marque?: "suivie" | "autre",
+    { rienGarde = false, rester = false }: { rienGarde?: boolean; rester?: boolean } = {},
+  ): Promise<Issue> =>
+    terminer(rangement, marque, rienGarde).finally(() =>
       // La mise en place s'efface AVEC l'avancement : la prochaine cuisson du
       // même plat sur le même créneau — une seconde fournée — repart du début.
-      void Promise.all([poserReglage(cle, null), poserReglage(cleP, null)]).finally(sortir);
-    });
-  };
+      // `rester` : la sortie montre d'abord ce qu'elle a noté, et c'est son
+      // « Terminer » qui fermera.
+      Promise.all([poserReglage(cle, null), poserReglage(cleP, null)]).finally(() => {
+        if (!rester) sortir();
+      }),
+    );
 
   const tete = (
     <>
@@ -268,6 +296,7 @@ function Fiche({
         stock={lotsEnBoites(jeu.catalogue, jeu.stock, new Date())}
         revenir={() => setSortie(false)}
         repondre={repondre}
+        fermer={sortir}
       />
     );
 
@@ -547,6 +576,7 @@ function Sortie({
   sachets = false,
   revenir,
   repondre,
+  fermer,
 }: {
   p: Plat;
   parts: number;
@@ -557,9 +587,38 @@ function Sortie({
   /** T142 — une fournée part en sachets de congélation, pas en boîtes. */
   sachets?: boolean;
   revenir: () => void;
-  repondre: (rangement: RangementLot[] | null, marque?: "suivie" | "autre") => void;
+  repondre: (
+    rangement: RangementLot[] | null,
+    marque?: "suivie" | "autre",
+    opts?: { rienGarde?: boolean; rester?: boolean },
+  ) => Promise<Issue>;
+  fermer: () => void;
 }) {
   const v = vueDeLaSortie(p, parts, f, foyer, stock, sachets);
+  // « J'AI FAIT AUTREMENT » POSE LA QUESTION, au lieu de fermer la recette sur
+  // un rangement que personne n'a dit (le frigo par défaut). Puis il montre ce
+  // qu'il a retenu : c'est le témoin que le 07/11 réclamait — « je ne sais pas
+  // ce qui a été stocké, ni comment ».
+  const [autrement, setAutrement] = useState(false);
+  const [note, setNote] = useState<Issue | null>(null);
+  const [reponses, setReponses] = useState<Map<number, OuEstParti>>(new Map());
+  const restes = restesDeLaSortie(p, v.lots);
+  if (autrement)
+    return (
+      <Autrement
+        p={p}
+        restes={restes}
+        reponses={reponses}
+        note={note}
+        choisir={(emit, ou) => setReponses(new Map(reponses).set(emit, ou))}
+        revenir={() => setAutrement(false)}
+        valider={() => {
+          const { rangement, rienGarde } = rangementDesReponses(p, restes, reponses);
+          void repondre(rangement, "autre", { rienGarde, rester: true }).then(setNote);
+        }}
+        fermer={fermer}
+      />
+    );
   return (
     <>
       <div className="co-fiche-tete">
@@ -572,7 +631,10 @@ function Sortie({
         <div className="co-encart">
           <Icone nom="info" />
           <span>
-            <b>C’est prêt.</b> {fmt(v.table)} parts passent à table.
+            <b>C’est prêt.</b>{" "}
+            {/* Une base — un pain, un bouillon — ne passe pas à table ce soir :
+                « 2,5 parts passent à table » sous un pain de mie se contredisait. */}
+            {p.role === "base" ? null : <>{fmt(v.table)} parts passent à table.</>}
           </span>
         </div>
 
@@ -620,14 +682,14 @@ function Sortie({
 
         <div style={{ marginTop: "var(--space-6)" }}>
           {v.rien ? (
-            <button className="btn btn-primary btn-block" onClick={() => repondre(null)}>
+            <button className="btn btn-primary btn-block" onClick={() => void repondre(null)}>
               C’est fait
             </button>
           ) : (
             <>
               <button
                 className="btn btn-primary btn-block"
-                onClick={() => repondre(v.lots, "suivie")}
+                onClick={() => void repondre(v.lots, "suivie")}
               >
                 C’est rangé comme ça
               </button>
@@ -638,7 +700,7 @@ function Sortie({
               <button
                 className="btn btn-secondary btn-block"
                 style={{ marginTop: "var(--space-2)" }}
-                onClick={() => repondre(null, "autre")}
+                onClick={() => setAutrement(true)}
               >
                 J’ai fait autrement
               </button>
@@ -653,6 +715,136 @@ function Sortie({
             Le plat est compté comme cuisiné&nbsp;: ses ingrédients sortent du stock, et il quitte
             la liste des posés.
           </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+/**
+ * « J'ai fait autrement » : où chaque reste est parti, puis ce qui est noté.
+ *
+ * UNE QUESTION PAR RESTE, QUATRE RÉPONSES, AUCUNE PRÉCOCHÉE. Précocher la
+ * proposition qu'on vient de refuser ferait valider d'un doigt distrait ce que
+ * le bouton disait justement ne pas être vrai. « Noter » attend donc que
+ * chaque reste ait sa réponse.
+ */
+function Autrement({
+  p,
+  restes,
+  reponses,
+  note,
+  choisir,
+  revenir,
+  valider,
+  fermer,
+}: {
+  p: Plat;
+  restes: readonly Reste[];
+  reponses: ReadonlyMap<number, OuEstParti>;
+  /** La réponse est partie : l'écran devient le récapitulatif. */
+  note: Issue | null;
+  choisir: (emit: number, ou: OuEstParti) => void;
+  revenir: () => void;
+  valider: () => void;
+  fermer: () => void;
+}) {
+  const complet = restes.every((r) => reponses.has(r.emit));
+  const aujourdhui = new Date();
+  if (note)
+    return (
+      <>
+        <div className="co-fiche-tete">
+          <span className="t">{p.titre}</span>
+        </div>
+        <div className="co-corps">
+          <div className="co-encart">
+            <Icone nom="info" />
+            {/* LE RÉCAPITULATIF NE MENT PAS SUR SA PROPRE ISSUE : une cuisson
+                déjà notée sur ce créneau n'est pas écrite deux fois. */}
+            <span>
+              {note === "note" ? (
+                <>
+                  <b>C’est noté.</b> Ses ingrédients sont sortis du stock.
+                </>
+              ) : note === "deja" ? (
+                <>
+                  <b>Déjà noté</b> pour ce repas : rien n’a changé dans le stock.
+                </>
+              ) : (
+                <>
+                  <b>Rien n’est noté</b> : ce plat n’était pas posé sur un repas.
+                </>
+              )}
+            </span>
+          </div>
+          {(note === "note" ? restes : []).map((r) => {
+            const ou = reponses.get(r.emit) ?? null;
+            return (
+              <div key={r.emit} className={`co-lot${ou === null ? " mange" : ""}`}>
+                <Icone nom={ou ? iconeEspace(ou) : "info"} />
+                <span style={{ flex: 1 }}>
+                  <div className="nom">
+                    {r.nom} · {quantiteDuReste(r)}
+                  </div>
+                  <div className="ou">{phraseDuReste(r, ou, aujourdhui)}</div>
+                </span>
+              </div>
+            );
+          })}
+          <div style={{ marginTop: "var(--space-6)" }}>
+            <button className="btn btn-primary btn-block" onClick={fermer}>
+              Terminer
+            </button>
+            {note === "note" && restes.some((r) => reponses.get(r.emit)) ? (
+              <button
+                className="btn btn-secondary btn-block"
+                style={{ marginTop: "var(--space-2)" }}
+                onClick={() => aller({ ecran: "stock" }, true)}
+              >
+                Voir dans le stock
+              </button>
+            ) : null}
+          </div>
+        </div>
+      </>
+    );
+  return (
+    <>
+      <div className="co-fiche-tete">
+        <button className="co-retour" onClick={revenir}>
+          ‹ La proposition
+        </button>
+        <span className="t">{p.titre}</span>
+      </div>
+      <div className="co-corps">
+        <div className="co-kicker accent" style={{ margin: "var(--space-2) 0 var(--space-2)" }}>
+          Où est parti le reste&nbsp;?
+        </div>
+        {restes.map((r) => (
+          <div key={r.emit} className="co-lot co-ou">
+            <div className="nom">
+              {r.nom} · {quantiteDuReste(r)}
+            </div>
+            <div className="co-ou-choix" role="radiogroup" aria-label={`Où est parti : ${r.nom}`}>
+              {DESTINATIONS.map((d) => (
+                <button
+                  key={d.label}
+                  role="radio"
+                  aria-checked={reponses.has(r.emit) && reponses.get(r.emit) === d.ou}
+                  className={`co-ou-puce${reponses.has(r.emit) && reponses.get(r.emit) === d.ou ? " choisi" : ""}`}
+                  onClick={() => choisir(r.emit, d.ou)}
+                >
+                  {d.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+        <div style={{ marginTop: "var(--space-6)" }}>
+          <button className="btn btn-primary btn-block" disabled={!complet} onClick={valider}>
+            Noter
+          </button>
         </div>
       </div>
     </>
@@ -690,10 +882,13 @@ function Ingredients({
   tient?: Recipient | null;
 }) {
   const produit = +(p.portions * f).toFixed(1);
-  const [jEnAi, setJEnAi] = useState<string | null>(null);
+  const [jEnAi, setJEnAi] = useState<{ id: string; nom: string } | null>(null);
   const ustensile = aSortir(p);
   const cr = credit(p);
-  const table = aTable(jeu, p, parts, i);
+  // CE QUI EST LÀ, ACHATS RANGÉS COMPRIS : c'est ce que « j'en ai » écrit.
+  const placard = usePlacard(jeu.catalogue);
+  const enStock = placard ? new Set(placard.parIngredient.keys()) : undefined;
+  const table = aTable(jeu, p, parts, i, enStock);
   return (
     <div className="co-corps">
       <div className="co-encart">
@@ -748,7 +943,7 @@ function Ingredients({
       )}
       <div className="co-ing">
         {p.ingredients.map((x) => {
-          const prov = provenanceIngredient(jeu, x, { i, plat: p.id });
+          const prov = provenanceIngredient(jeu, x, { i, plat: p.id }, enStock);
           // `key` sur `ref` ET PAS SUR `id` : onze plats portent deux lignes du
           // même ingrédient — la farine de la pâte et celle de la crème — et
           // React recevait deux fois la même clé. C'est `ref` qui les
@@ -763,7 +958,7 @@ function Ingredients({
                 <button
                   className="p acheter"
                   aria-label={`${x.nom} : à acheter — j’en ai`}
-                  onClick={() => setJEnAi(x.id)}
+                  onClick={() => setJEnAi({ id: x.id, nom: x.nom })}
                 >
                   à acheter · j’en ai
                 </button>
@@ -774,9 +969,15 @@ function Ingredients({
           );
         })}
       </div>
-      {jEnAi ? (
-        <AjouterAuStock catalogue={jeu.catalogue} ouvrirSur={jEnAi} onFerme={() => setJEnAi(null)} />
-      ) : null}
+      {/* MONTÉ EN PERMANENCE, ET C'EST LE CORRECTIF : démonté à la fermeture du
+          panneau, il emportait avec lui le toast « ajouté au stock » — le doigt
+          touchait « Ajouter » et rien ne se voyait. */}
+      <AjouterAuStock
+        catalogue={jeu.catalogue}
+        ouvrirSur={jEnAi?.id ?? null}
+        nomDepart={jEnAi?.nom}
+        onFerme={() => setJEnAi(null)}
+      />
       {children}
       {/* À TABLE — ce qu'il faut À CÔTÉ, sous les ingrédients et pas dedans.
           « Il manque toujours les accompagnements, je n'ai pas un repas

@@ -70,6 +70,13 @@ export interface Cuisson {
    */
   sortie?: EvtCuisine["sortie"];
   /**
+   * « Rien gardé » — tout mangé, donné, jeté. DIT EXPRÈS, parce qu'un rangement
+   * vide seul reste « personne n'a répondu » (voir le test du journal) : sans
+   * ce drapeau, l'écran qui demande où le reste est parti ne pourrait pas
+   * répondre « nulle part ».
+   */
+  rienGarde?: boolean;
+  /**
    * Le foyer contre lequel les `emits` ont été déclarés — T108.
    *
    * C'EST LUI QUI DIT COMBIEN LES INVITÉS ONT MANGÉ. Un emit est le reste du
@@ -98,7 +105,7 @@ export interface Cuisson {
  */
 export async function journaliserCuisson(
   base: Base,
-  { jour, repas, plat, parts, rangement, sortie, foyer, midi = 0 }: Cuisson,
+  { jour, repas, plat, parts, rangement, sortie, rienGarde = false, foyer, midi = 0 }: Cuisson,
   aujourdhui = new Date(),
 ): Promise<number> {
   const saisi = jourISO(aujourdhui);
@@ -207,7 +214,12 @@ export async function journaliserCuisson(
           : plat.emits.findIndex((e) => e.kind === "reste-plat" && mangeALaTable(e))
         : -1;
     let midiPose = false;
-    for (const r of rangement?.length ? rangement : defaut(plat, parts, foyer ?? { parts, mangeurs: [] }, midi)) {
+    const aRanger = rangement?.length
+      ? rangement
+      : rienGarde
+        ? []
+        : defaut(plat, parts, foyer ?? { parts, mangeurs: [] }, midi);
+    for (const r of aRanger) {
       const e = plat.emits[r.emit];
       if (!e) continue;
       const porteLeMidi = !midiPose && r.emit === rangDuMidi && r.location === "frigo";

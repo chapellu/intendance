@@ -132,12 +132,22 @@ export function horlogesDu(catalogue: Catalogue): Horloges {
         `— sans elle le congélateur n'a pas d'horloge.`,
     );
 
+  // UN « ZÉRO JOUR, CONGELABLE » NE DIT RIEN DU FRIGO, il dit « droit au
+  // congélateur » (voir `auCongelo`). Le compter dans le minimum faisait périmer
+  // le jour même le pain de mie qu'une autre recette du même type garde 4 jours
+  // dans un torchon. Il ne compte que si aucun producteur ne dit mieux.
   const parType = new Map<string, number>();
+  const zeros = new Set<string>();
   for (const p of catalogue.plats)
     for (const e of p.emits) {
+      if (e.gardeFrigo === 0 && e.congelo) {
+        zeros.add(e.type);
+        continue;
+      }
       const vu = parType.get(e.type);
       parType.set(e.type, vu == null ? e.gardeFrigo : Math.min(vu, e.gardeFrigo));
     }
+  for (const t of zeros) if (!parType.has(t)) parType.set(t, 0);
 
   return { frigo: catalogue.foyer.fenetreFrigo, congelo: congeler.fenetreJours, parType };
 }
