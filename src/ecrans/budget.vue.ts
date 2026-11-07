@@ -1,0 +1,153 @@
+// Ce que les écrans du budget DISENT — les phrases et les chiffres prêts à
+// poser. `Budget.tsx` les dessine, et ne calcule rien.
+
+import {
+  calendrier,
+  euros,
+  joursEntre,
+  moisType,
+  NATURES,
+  provisions,
+  type EtatProvision,
+  type MoisAVenir,
+  type MoisType,
+  type Nature,
+  type Provisions,
+} from "../model/budget";
+import type { DonneesBudget, Releve } from "../db/budget";
+
+const MOIS_COURTS = ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."];
+const MOIS_LONGS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+
+/** « 15 janv. », et l'année seulement quand ce n'est pas celle d'aujourd'hui. */
+export function dateCourte(jour: string, aujourdhui: string): string {
+  const [a, m, j] = jour.split("-").map(Number);
+  const meme = jour.slice(0, 4) === aujourdhui.slice(0, 4);
+  return `${j} ${MOIS_COURTS[m! - 1]}${meme ? "" : ` ${a}`}`;
+}
+
+/** `AAAA-MM` → « janvier », ou « janvier 2027 » hors de l'année en cours. */
+export function nomDuMois(mois: string, aujourdhui: string): string {
+  const [a, m] = mois.split("-").map(Number);
+  return `${MOIS_LONGS[m! - 1]}${mois.slice(0, 4) === aujourdhui.slice(0, 4) ? "" : ` ${a}`}`;
+}
+
+/** « aujourd'hui », « demain », « dans 12 jours », « dans 3 mois ». Au-delà de
+ *  deux mois, les jours ne se lisent plus : 143 jours ne dit rien, « dans 5
+ *  mois » dit quelque chose. */
+export function dans(jours: number): string {
+  if (jours <= 0) return "aujourd’hui";
+  if (jours === 1) return "demain";
+  if (jours < 60) return `dans ${jours} jours`;
+  return `dans ${Math.round(jours / 30.44)} mois`;
+}
+
+export const MOT_ETAT: Record<EtatProvision, string> = {
+  couverte: "Couverte",
+  "a-jour": "À jour",
+  "en-retard": "En retard",
+};
+
+/* ───────────────────────────────────────────────────────────── le relevé */
+
+/** Au-delà d'un mois, le solde relevé ne dit plus où l'on en est : les
+ *  virements et les prélèvements d'entre-temps n'y sont pas. */
+export const RELEVE_PERIME_JOURS = 35;
+
+export interface VueReleve {
+  /** Le solde tel que relevé ; 0 tant qu'on n'a rien relevé. */
+  montant: number;
+  /** « relevé aujourd'hui », « relevé il y a 12 jours », ou `null` si jamais. */
+  quand: string | null;
+  perime: boolean;
+}
+
+export function vueDuReleve(r: Releve | null, aujourdhui: string): VueReleve {
+  if (!r) return { montant: 0, quand: null, perime: false };
+  const age = joursEntre(r.jour, aujourdhui);
+  const quand = age <= 0 ? "relevé aujourd’hui" : age === 1 ? "relevé hier" : `relevé il y a ${age} jours`;
+  return { montant: r.montant, quand, perime: age > RELEVE_PERIME_JOURS };
+}
+
+/* ──────────────────────────────────────────────────────────── le mois type */
+
+export interface PartNature {
+  nature: Nature;
+  total: number;
+  /** Part des revenus, en %, arrondie. `null` sans revenus saisis : un
+   *  pourcentage de zéro n'a pas de sens. */
+  pct: number | null;
+}
+
+export interface VueMois {
+  /** Rien de saisi du tout : l'écran explique par où commencer. */
+  vide: boolean;
+  mois: MoisType;
+  parts: PartNature[];
+  /** La part des revenus qui reste pour épargner, en %. */
+  pctCapacite: number | null;
+  prov: Provisions;
+  /**
+   * Ce qui reste VRAIMENT ce mois-ci : la capacité du mois type, moins le
+   * rattrapage des provisions s'il y en a un. Un compte de provisions en retard
+   * mange l'épargne du mois, et c'est ce qu'il faut voir avant de la placer.
+   */
+  ceMois: number;
+  rattrapage: number;
+  phrase: string;
+}
+
+const pct = (v: number, sur: number): number | null => (sur > 0 ? Math.round((v * 100) / sur) : null);
+
+export function vueDuMois(d: DonneesBudget, aujourdhui: string): VueMois {
+  const mois = moisType(d.revenus, d.echeances, d.enveloppes);
+  const prov = provisions(d.echeances, d.solde?.montant ?? 0, aujourdhui);
+  const rattrapage = Math.max(0, prov.conseille - prov.regime);
+  const ceMois = mois.capacite - rattrapage;
+  const vide = !d.revenus.length && !d.echeances.length && !d.enveloppes.length;
+
+  let phrase: string;
+  if (vide) phrase = "Commence par ce qui rentre, puis ce que tu sais devoir payer.";
+  else if (!d.revenus.length) phrase = "Ajoute tes revenus pour voir ce qui reste à épargner.";
+  else if (mois.capacite < 0) phrase = `Le budget écrit dépasse les revenus de ${euros(-mois.capacite)} par mois.`;
+  else if (rattrapage > 0)
+    phrase = `${euros(mois.capacite)} à épargner par mois en régime — ${euros(Math.max(0, ceMois))} ce mois-ci, le temps de remettre les provisions à niveau.`;
+  else phrase = `${euros(mois.capacite)} à épargner chaque mois, une fois tout payé et tout provisionné.`;
+
+  return {
+    vide,
+    mois,
+    parts: NATURES.map((n) => ({ nature: n, total: mois.postes[n].total, pct: pct(mois.postes[n].total, mois.revenus) })),
+    pctCapacite: pct(mois.capacite, mois.revenus),
+    prov,
+    ceMois,
+    rattrapage,
+    phrase,
+  };
+}
+
+/* ─────────────────────────────────────────────────────────── les provisions */
+
+export interface VueProvisions {
+  prov: Provisions;
+  releve: VueReleve;
+  calendrier: MoisAVenir[];
+  /** Le mois le plus lourd des douze, s'il y a au moins une provision. */
+  plusLourd: MoisAVenir | null;
+  phrase: string;
+}
+
+export function vueDesProvisions(d: DonneesBudget, aujourdhui: string): VueProvisions {
+  const releve = vueDuReleve(d.solde, aujourdhui);
+  const prov = provisions(d.echeances, releve.montant, aujourdhui);
+  const cal = calendrier(d.echeances, aujourdhui);
+  const plusLourd = cal.reduce<MoisAVenir | null>((m, x) => (x.total > (m?.total ?? 0) ? x : m), null);
+
+  let phrase: string;
+  if (!prov.lignes.length) phrase = "Aucune échéance non mensuelle pour l’instant.";
+  else if (!d.solde) phrase = `Relève le solde de ton compte de provisions : il devrait y avoir ${euros(prov.requis)} de côté aujourd’hui.`;
+  else if (prov.ecart >= 0) phrase = `Le compte est à jour${prov.ecart > 0 ? `, avec ${euros(prov.ecart)} d’avance` : ""}.`;
+  else phrase = `Il manque ${euros(-prov.ecart)} sur le compte pour être à jour.`;
+
+  return { prov, releve, calendrier: cal, plusLourd, phrase };
+}

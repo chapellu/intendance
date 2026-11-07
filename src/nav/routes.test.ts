@@ -1,10 +1,13 @@
 import { describe, expect, test } from "vitest";
-import { ENTREE_CUISINE, chemin, dansCuisine, lireRoute, pleinEcran, ROUTE_DEFAUT, type Route } from "./routes";
+import { ENTREE_CUISINE, chemin, dansBudget, dansCuisine, lireRoute, pleinEcran, ROUTE_DEFAUT, type Route } from "./routes";
 import { JOURS_VISIBLES } from "./jours";
 
 const TOUTES: Route[] = [
   { ecran: "cockpit" },
   { ecran: "jardin" },
+  { ecran: "budget" },
+  { ecran: "provisions" },
+  { ecran: "enveloppes" },
   { ecran: "aujourdhui" },
   { ecran: "semaine" },
   { ecran: "prevoir" },
@@ -101,6 +104,16 @@ describe("les routes", () => {
     expect(dansCuisine({ ecran: "cuisiner", creneau: { jour: "2026-08-19", repas: "diner" } })).toBe(false);
     expect(pleinEcran({ ecran: "cuisiner", creneau: { jour: "2026-08-19", repas: "diner" } })).toBe(true);
     expect(pleinEcran({ ecran: "semaine" })).toBe(false);
+  });
+
+  test("la facette budget a ses trois vues, et elles ne sont pas de la cuisine", () => {
+    expect(lireRoute("#/budget")).toEqual({ ecran: "budget" });
+    expect(lireRoute("#/budget/provisions")).toEqual({ ecran: "provisions" });
+    for (const e of ["budget", "provisions", "enveloppes"] as const) {
+      expect(dansBudget({ ecran: e })).toBe(true);
+      expect(dansCuisine({ ecran: e })).toBe(false);
+    }
+    expect(dansBudget({ ecran: "jardin" })).toBe(false);
   });
 
   test("la fiche peut viser un plat qu'on n'a pas encore posé", () => {

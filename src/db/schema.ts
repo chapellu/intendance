@@ -34,6 +34,7 @@
 // ────────────────────────────────────────────────────────────────────────────
 
 import type { Appris } from "../model/ticketCorrespondance";
+import type { Echeance, Enveloppe } from "../model/budget";
 import Dexie, { type EntityTable } from "dexie";
 import type { Evenement } from "../model/journal";
 import type { EmitKind, Espace, RepasId } from "../model/types";
@@ -191,7 +192,7 @@ export interface Reglage {
 // La v1 n'a pas d'`upgrade` : il ne s'exécuterait sur aucune base existante,
 // puisqu'il n'en existe aucune. Une migration vide écrite « pour la forme »
 // est une migration qu'on croit avoir testée.
-export const VERSION = 3;
+export const VERSION = 4;
 
 const SCHEMAS: Record<number, Record<string, string>> = {
   1: {
@@ -222,6 +223,18 @@ const SCHEMAS: Record<number, Record<string, string>> = {
   3: {
     libelles: "cle",
   },
+  // v4 — LE BUDGET. Les échéances (charges fixes et provisions) et les
+  // enveloppes mensuelles. Deux tables neuves qui démarrent vides : pas
+  // d'`upgrade`, même raison que la v2. Les revenus et le solde du compte des
+  // provisions vivent dans `reglages` (voir `db/budget.ts`) : un relevé et une
+  // courte liste, pas de quoi justifier une table.
+  //
+  // RIEN N'EST INDEXÉ AU-DELÀ DE LA CLÉ : on lit toujours les tables entières,
+  // une ou deux douzaines de lignes, et tout le reste se recalcule.
+  4: {
+    echeances: "id",
+    enveloppes: "id",
+  },
 };
 
 export class Base extends Dexie {
@@ -231,6 +244,8 @@ export class Base extends Dexie {
   reglages!: EntityTable<Reglage, "cle">;
   evenements!: EntityTable<Evenement & { id: number }, "id">;
   libelles!: EntityTable<Appris, "cle">;
+  echeances!: EntityTable<Echeance, "id">;
+  enveloppes!: EntityTable<Enveloppe, "id">;
 
   constructor(nom = "intendance") {
     super(nom);

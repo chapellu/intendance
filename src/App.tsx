@@ -15,6 +15,7 @@ import { useReveil } from "./nav/reveil";
 import { useRoute } from "./nav/useRoute";
 import { Coquille, Corps, type Pastilles } from "./ui/Coquille";
 import { Aujourdhui } from "./ecrans/Aujourdhui";
+import { BudgetEnveloppes, BudgetMois, BudgetProvisions } from "./ecrans/Budget";
 import { CeSoir } from "./ecrans/CeSoir";
 import { Cockpit, useCockpit } from "./ecrans/Cockpit";
 import { Courses } from "./ecrans/Courses";
@@ -89,6 +90,9 @@ function rendre(route: Route, jeu: Jeu) {
   switch (route.ecran) {
     case "cockpit": return <Cockpit />;
     case "jardin": return <Jardin />;
+    case "budget": return <BudgetMois />;
+    case "provisions": return <BudgetProvisions />;
+    case "enveloppes": return <BudgetEnveloppes />;
     case "aujourdhui": return <Aujourdhui />;
     case "semaine": return <Semaine />;
     case "poses": return <Poses />;
