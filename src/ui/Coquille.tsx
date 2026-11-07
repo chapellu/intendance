@@ -10,7 +10,7 @@
 
 import type { ReactNode } from "react";
 import { JOURS_VISIBLES } from "../nav/jours";
-import { chemin, dansCuisine, ENTREE_CUISINE, type Route } from "../nav/routes";
+import { chemin, dansBudget, dansCuisine, ENTREE_CUISINE, type Route } from "../nav/routes";
 import { aller } from "../nav/useRoute";
 import { MiseAJour } from "./MiseAJour";
 
@@ -88,6 +88,18 @@ const SOUS_NAV_STOCK: { route: Route; nom: string }[] = [
 
 const SOUS_NAV = JOURS_VISIBLES ? SOUS_NAV_JOURS : SOUS_NAV_STOCK;
 
+/**
+ * Les vues du budget. « LE MOIS » D'ABORD : c'est la question qu'on vient
+ * poser — combien reste-t-il pour épargner — et les deux autres sont les
+ * lignes qui la remplissent. Les provisions avant les enveloppes, parce que
+ * c'est ce qu'aucune appli bancaire ne fait, et la raison d'être de la facette.
+ */
+const SOUS_NAV_BUDGET: { route: Route; nom: string }[] = [
+  { route: { ecran: "budget" }, nom: "Le mois" },
+  { route: { ecran: "provisions" }, nom: "Provisions" },
+  { route: { ecran: "enveloppes" }, nom: "Enveloppes" },
+];
+
 export interface Pastilles {
   /** Ce qui attend une réponse côté cuisine : offres et gamelles. */
   cuisine: number;
@@ -143,6 +155,24 @@ export function Coquille({
         </>
       ) : null}
 
+      {dansBudget(route) ? (
+        <>
+          <div className="co-tete">
+            <div>
+              <div className="titre">Budget</div>
+            </div>
+            <button className="btn btn-secondary" onClick={() => aller({ ecran: "cockpit" })}>
+              Cockpit
+            </button>
+          </div>
+          <nav className="co-sousnav bu-sousnav" aria-label="Vues du budget">
+            {SOUS_NAV_BUDGET.map((o) => (
+              <Lien key={o.route.ecran} onglet={o} actif={route.ecran === o.route.ecran} />
+            ))}
+          </nav>
+        </>
+      ) : null}
+
       {children}
 
       <MiseAJour />
@@ -173,6 +203,17 @@ export function Coquille({
           actif={route.ecran === "jardin"}
           pastille={0}
           onClick={() => aller({ ecran: "jardin" })}
+        />
+        {/* LE BUDGET N'A PAS D'ACCENT À LUI. Le système de design n'en porte
+            que deux, et ils sont pris ; on n'en invente pas un ici (voir l'en-tête
+            d'`organic.css`). Il prend le neutre le plus sombre : c'est la
+            facette des chiffres, pas celle de la saison. */}
+        <Facette
+          nom="Budget"
+          couleur="var(--color-neutral-800)"
+          actif={dansBudget(route)}
+          pastille={0}
+          onClick={() => aller({ ecran: "budget" })}
         />
       </nav>
     </div>

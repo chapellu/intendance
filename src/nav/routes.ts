@@ -1,4 +1,4 @@
-// Les routes — dix écrans, et de quoi les nommer dans une URL.
+// Les routes — une quinzaine d'écrans, et de quoi les nommer dans une URL.
 //
 // UN ROUTEUR ÉCRIT ICI PLUTÔT QU'IMPORTÉ, et ce n'est pas de la fierté mal
 // placée. La navigation de cette app est un ENSEMBLE FINI et plat : dix écrans,
@@ -39,6 +39,12 @@ export interface CleCreneau {
 export type Route =
   | { ecran: "cockpit" }
   | { ecran: "jardin" }
+  // LE BUDGET — trois vues courtes, sans paramètre : le mois type, les
+  // provisions, les enveloppes. Aucune ne vise une date : tout ce qu'elles
+  // affichent se recalcule depuis aujourd'hui.
+  | { ecran: "budget" }
+  | { ecran: "provisions" }
+  | { ecran: "enveloppes" }
   | { ecran: "aujourdhui" }
   | { ecran: "semaine" }
   | { ecran: "poses" }
@@ -108,6 +114,12 @@ const DANS_CUISINE: ReadonlySet<Ecran> = new Set<Ecran>([
 
 export const dansCuisine = (r: Route): boolean => DANS_CUISINE.has(r.ecran);
 
+/** Les écrans de la facette budget — ceux qui portent SON en-tête et SA
+ *  sous-navigation. */
+const DANS_BUDGET: ReadonlySet<Ecran> = new Set<Ecran>(["budget", "provisions", "enveloppes"]);
+
+export const dansBudget = (r: Route): boolean => DANS_BUDGET.has(r.ecran);
+
 /** « En cuisine » sort de la coquille : le mode guidé prend l'écran entier,
  *  parce qu'on le lit à bout de bras avec les mains sales. */
 export const pleinEcran = (r: Route): boolean => r.ecran === "cuisiner";
@@ -118,6 +130,9 @@ const SANS_PARAM: Record<string, Ecran> = {
   "": "cockpit",
   cockpit: "cockpit",
   jardin: "jardin",
+  budget: "budget",
+  "budget/provisions": "provisions",
+  "budget/enveloppes": "enveloppes",
   // `#/cuisine` EST UN ALIAS DE L'ENTRÉE, PAS UN ÉCRAN, et c'est ce qui a
   // changé : il adressait « Aujourd'hui » en dur, si bien qu'éteindre les jours
   // aurait fait de la porte de la facette une impasse. Il suit désormais
@@ -148,6 +163,9 @@ export function chemin(r: Route): string {
   switch (r.ecran) {
     case "cockpit": return "#/cockpit";
     case "jardin": return "#/jardin";
+    case "budget": return "#/budget";
+    case "provisions": return "#/budget/provisions";
+    case "enveloppes": return "#/budget/enveloppes";
     case "aujourdhui": return "#/cuisine/aujourdhui";
     case "semaine": return "#/cuisine/semaine";
     case "poses": return "#/cuisine/poses";

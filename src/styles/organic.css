@@ -1185,3 +1185,126 @@ button.p.acheter { font: inherit; font-size: 11px; border: none; cursor: pointer
 }
 .co-ou-puce.choisi { background: var(--color-accent); border-color: transparent; color: var(--color-bg); }
 .btn[disabled] { opacity: .45; }
+
+/* — facette budget : le mois type, les provisions, les enveloppes — */
+/* LA FACETTE N'A PAS D'ACCENT À ELLE (voir `Coquille.tsx`) : elle reprend le
+   neutre sombre de sa pastille dans la barre du bas, et ne garde la couleur
+   que pour dire quelque chose — le vert pour l'épargne et le « à jour », le
+   cuivre pour ce qui manque. */
+.bu-sousnav a.actif { background: var(--color-neutral-800); }
+
+.bu-capacite {
+  display: flex; flex-direction: column; gap: 2px; margin: var(--space-2) 0 var(--space-2);
+  padding: var(--space-4); border-radius: var(--radius-lg);
+  background: var(--color-accent-2-200); color: var(--color-accent-2-900);
+}
+.bu-capacite .k { font-size: 12px; font-weight: 700; }
+.bu-capacite .n { font-family: var(--font-heading); font-size: 38px; line-height: 1.05; }
+.bu-capacite.negatif { background: var(--color-accent-200); color: var(--color-accent-900); }
+.bu-capacite.petit { background: var(--color-surface); color: var(--color-text); }
+.bu-capacite.petit .n { font-size: 30px; }
+
+/* La barre des parts : trois natures et l'épargne, sur la largeur des revenus. */
+.bu-barre {
+  display: flex; height: 14px; border-radius: 999px; overflow: hidden;
+  background: var(--color-neutral-200); margin: var(--space-3) 0 var(--space-1);
+}
+.bu-barre span { display: block; height: 100%; }
+.bu-barre .obligatoire, .bu-poste.obligatoire .tete .nom::before { background: var(--color-neutral-700); }
+.bu-barre .essentiel, .bu-poste.essentiel .tete .nom::before { background: var(--color-neutral-500); }
+.bu-barre .plaisir, .bu-poste.plaisir .tete .nom::before { background: var(--color-accent-400); }
+.bu-barre .epargne { background: var(--color-accent-2-500); }
+
+.bu-section { margin-top: var(--space-6); }
+.bu-section-tete {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-2);
+  margin-bottom: var(--space-2); min-height: 32px;
+}
+.bu-section-tete .btn-ghost { font-size: 13px; padding-block: 4px; }
+
+.bu-ligne {
+  display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3);
+  width: 100%; min-height: 46px; padding: var(--space-2) var(--space-1);
+  font: inherit; font-size: 14.5px; text-align: left; color: var(--color-text);
+  background: transparent; border: 0; border-bottom: 1px solid var(--color-neutral-300);
+}
+button.bu-ligne { cursor: pointer; }
+.bu-ligne .nom { font-weight: 600; display: flex; flex-direction: column; }
+.bu-ligne .sous { font-size: 11.5px; font-weight: 400; color: var(--color-neutral-700); }
+.bu-ligne .v { font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.bu-poste {
+  padding: var(--space-2) var(--space-1); border-bottom: 1px solid var(--color-neutral-300);
+}
+.bu-poste .tete { display: flex; justify-content: space-between; gap: var(--space-2); font-size: 14.5px; }
+.bu-poste .tete .nom { font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.bu-poste .tete .nom::before { content: ""; width: 10px; height: 10px; border-radius: 999px; }
+.bu-poste .tete .v { font-weight: 700; font-variant-numeric: tabular-nums; }
+.bu-poste .tete .pct { font-weight: 400; color: var(--color-neutral-700); }
+.bu-poste .detail { font-size: 12px; color: var(--color-neutral-700); margin: 2px 0 0 18px; }
+
+/* Trois chiffres côte à côte : ce qu'on a, ce qu'il faudrait, ce qu'on vire. */
+.bu-chiffres { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: var(--space-2) 0; }
+.bu-chiffre {
+  display: flex; flex-direction: column; gap: 2px; text-align: left;
+  padding: var(--space-2); border-radius: var(--radius-md); border: 0;
+  background: var(--color-surface); color: var(--color-text); font: inherit;
+}
+button.bu-chiffre { cursor: pointer; outline: 1px dashed var(--color-neutral-500); outline-offset: -4px; }
+.bu-chiffre .k { font-size: 10.5px; font-weight: 700; line-height: 1.2; color: var(--color-neutral-700); }
+.bu-chiffre .n { font-family: var(--font-heading); font-size: 19px; line-height: 1.15; }
+.bu-chiffre .q { font-size: 10.5px; line-height: 1.25; color: var(--color-neutral-700); }
+.bu-chiffre .q.perime { color: var(--color-accent-700); font-weight: 700; }
+.bu-chiffre.fort { background: var(--color-accent-2-200); color: var(--color-accent-2-900); }
+.bu-chiffre.fort .k, .bu-chiffre.fort .q { color: var(--color-accent-2-800); }
+
+.bu-provision {
+  display: block; width: 100%; text-align: left; cursor: pointer; font: inherit; color: var(--color-text);
+  margin-bottom: var(--space-2); padding: var(--space-3); border: 0;
+  border-radius: var(--radius-md); background: var(--color-surface);
+  border-left: 3px solid var(--color-accent-2-500);
+}
+.bu-provision.en-retard { border-left-color: var(--color-accent-500); }
+.bu-provision .tete { display: flex; justify-content: space-between; gap: var(--space-2); }
+.bu-provision .tete .nom { font-family: var(--font-heading); font-size: 18px; line-height: 1.15; }
+.bu-provision .tete .v { font-weight: 700; font-variant-numeric: tabular-nums; }
+.bu-provision .quand { font-size: 12px; color: var(--color-neutral-700); margin-top: 2px; }
+/* La jauge : la part couverte, et un trait là où elle DEVRAIT être aujourd'hui. */
+.bu-provision .jauge {
+  position: relative; height: 8px; border-radius: 999px; margin: var(--space-2) 0 6px;
+  background: var(--color-neutral-200); overflow: visible;
+}
+.bu-provision .jauge span { display: block; height: 100%; border-radius: 999px; background: var(--color-accent-2-500); }
+.bu-provision.en-retard .jauge span { background: var(--color-accent-400); }
+.bu-provision .jauge i {
+  position: absolute; top: -3px; width: 2px; height: 14px; margin-left: -1px;
+  background: var(--color-neutral-900); border-radius: 1px;
+}
+.bu-provision .pied { display: flex; justify-content: space-between; gap: var(--space-2); font-size: 12px; color: var(--color-neutral-700); }
+.bu-provision .etat { font-weight: 700; color: var(--color-accent-2-800); }
+.bu-provision.en-retard .etat { color: var(--color-accent-800); }
+
+.bu-calendrier { display: flex; flex-direction: column; }
+.bu-calendrier .mois {
+  display: grid; grid-template-columns: 9.5em 1fr auto; gap: var(--space-2); align-items: baseline;
+  padding: 7px var(--space-1); border-bottom: 1px solid var(--color-neutral-300); font-size: 13px;
+}
+.bu-calendrier .mois .nom { font-weight: 700; }
+.bu-calendrier .mois .quoi { color: var(--color-neutral-700); font-size: 12px; }
+.bu-calendrier .mois .v { font-weight: 700; font-variant-numeric: tabular-nums; }
+.bu-calendrier .mois.lourd { background: var(--color-accent-100); border-radius: var(--radius-sm, 8px); }
+
+/* — les feuilles de saisie — */
+.bu-feuille { display: flex; flex-direction: column; gap: var(--space-3); }
+.bu-champ { display: flex; flex-direction: column; gap: 5px; font-size: 13px; font-weight: 700; }
+.bu-champ input, .bu-champ select {
+  font: inherit; font-size: 16px; font-weight: 400; min-height: 46px; width: 100%;
+  padding: 0 var(--space-3); border-radius: var(--radius-md);
+  border: 1px solid var(--color-divider); background: var(--color-neutral-100); color: var(--color-text);
+}
+.bu-champ input[aria-invalid] { border-color: var(--color-accent-500); }
+.bu-champ em { font-style: normal; font-weight: 400; font-size: 12px; color: var(--color-accent-700); }
+.bu-champ em.dit { color: var(--color-neutral-700); }
+.aj-puce.bu-choisie { background: var(--color-neutral-800); color: var(--color-bg); }
+.bu-boutons { display: flex; flex-direction: column; gap: var(--space-1); }
+.bu-boutons .aj-go { margin-top: var(--space-1); }

@@ -5889,3 +5889,58 @@ sans beurre 6 / 1 ; gaspillage 1,4 / 0,9 kg ; midis sur le reste prévu
       grand épeautre » mais n'accepte que `farine-complete` : une farine
       d'épeautre au placard ne compte pas. Il faudrait des alternatives sur la
       ligne d'ingrédient.
+
+## Le budget ouvre — T167
+
+Une facette pour répondre à une seule question : **combien reste-t-il pour
+épargner chaque mois, une fois payé tout ce qu'on sait déjà devoir payer ?** Le
+« déjà » est la partie que les applis bancaires ratent : beaucoup de dépenses
+ne tombent pas chaque mois (trimestrielles, annuelles), mais leur montant et
+leur date sont connus d'avance. Les lisser, c'est ce qui évite qu'un mois
+ordinaire finisse dans le rouge.
+
+- [x] **T167 — Une quatrième facette : le mois type, les provisions, les
+      enveloppes.** Rien ne quitte le navigateur : le dépôt est public et le
+      site n'a pas de connexion, c'est la base locale qui rend acceptable la
+      saisie de chiffres de foyer. **Ce dépôt ne porte que le mécanisme ;
+      aucun montant, aucune banque, aucun objectif du foyer n'y est écrit**, et
+      les données de test sont des nombres ronds sans rapport avec lui.
+
+      **TROIS OBJETS SAISIS, TOUT LE RESTE RECALCULÉ** (`model/budget.ts`).
+      Une *échéance* revient tous les N mois à partir d'UNE date connue — on
+      ne stocke jamais « la prochaine », qui serait fausse le lendemain du
+      prélèvement. À N = 1 c'est une charge fixe ; au-delà, une provision.
+      Une *enveloppe* est un plafond mensuel pour ce qui varie. Un *revenu*.
+      Plus un seul relevé : le solde du compte des provisions, avec son jour —
+      personne ne sait « combien j'ai de côté pour telle facture », tout le
+      monde sait ce que dit le livret.
+
+      **LE SOLDE SE RÉPARTIT EN DEUX PASSES** : ce qui devrait être là (au
+      prorata des jours depuis l'échéance précédente), dans l'ordre des dates
+      — s'il manque, c'est la plus lointaine qui le constate, elle a le temps
+      de rattraper — puis le surplus, dans le même ordre. Un compte à jour
+      conseille donc le régime ; un compte en retard conseille plus, et « Le
+      mois » retire ce rattrapage de l'épargne du mois.
+
+      **DEUX AXES ORTHOGONAUX** : la catégorie (à quoi ça sert) et la nature
+      (est-ce qu'on y peut quelque chose ce mois-ci). Trois natures et pas
+      deux : *obligatoire* (un contrat), *essentiel* (nécessaire, montant
+      réglable), *plaisir*. C'est entre les deux premiers que se cache la
+      marge.
+
+      Base v4 : tables `echeances` et `enveloppes` ; revenus et relevé dans
+      `reglages`. Montants en centimes entiers.
+
+### Ce que T167 laisse ouvert
+
+- **Le mois RÉEL.** Tout ce que la facette montre est le budget tel qu'on l'a
+  écrit. L'import de relevés viendra le comparer — exports CSV/OFX, et relevés
+  PDF (`pdfjs-dist` est déjà là, T160). Les lecteurs s'écriront sur des
+  fichiers réels, gardés HORS du dépôt ; seuls des extraits fabriqués à la
+  main, au même format, pourront servir de fixtures.
+- **Les objectifs d'épargne**, rangés par horizon. La capacité du mois type
+  est la ligne qui les alimentera.
+- **La sauvegarde.** Une base de navigateur peut se perdre avec le téléphone ;
+  un export de fichier est le minimum avant d'y mettre des mois d'historique.
+- **Le cockpit** ne dit encore rien du budget : une échéance proche non
+  couverte y aurait sa ligne.
