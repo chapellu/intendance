@@ -98,6 +98,10 @@ const SOUS_NAV_BUDGET: { route: Route; nom: string }[] = [
   { route: { ecran: "budget" }, nom: "Le mois" },
   { route: { ecran: "provisions" }, nom: "Provisions" },
   { route: { ecran: "enveloppes" }, nom: "Enveloppes" },
+  // LE RÉEL EN DERNIER : les trois premiers disent le budget qu'on ÉCRIT, celui-ci
+  // le confronte à ce qui s'est passé. Il n'a de sens qu'une fois les autres
+  // remplis.
+  { route: { ecran: "releves" }, nom: "Relevés" },
 ];
 
 export interface Pastilles {

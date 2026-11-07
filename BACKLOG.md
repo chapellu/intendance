@@ -5944,3 +5944,50 @@ ordinaire finisse dans le rouge.
   un export de fichier est le minimum avant d'y mettre des mois d'historique.
 - **Le cockpit** ne dit encore rien du budget : une échéance proche non
   couverte y aurait sa ligne.
+
+## Le mois réel — T168
+
+- [x] **T168 — Importer un relevé PDF, le vérifier, classer par motif.** Le
+      budget écrit (T167) dit ce qu'on PRÉVOIT ; un quatrième onglet,
+      « Relevés », dit ce qui s'est passé. Le PDF est lu sur le téléphone par
+      le même `lirePdf` que la facture drive (T160) ; il n'est pas gardé, son
+      IBAN non plus — la base n'en retient qu'une empreinte SHA-256 et quatre
+      chiffres pour l'œil.
+
+      **UN GABARIT EST UNE MISE EN PAGE, PAS UNE BANQUE** (`model/releveBancaire.ts`).
+      Deux sont reconnus, à leur ligne d'en-tête : date de valeur avant le
+      libellé, ou dans sa propre colonne après lui. Le sens d'un montant se
+      lit à sa COLONNE — un remboursement par carte a le libellé d'un
+      paiement — et l'en-tête se relit à chaque page, où il se décale.
+
+      **UN RELEVÉ QUI NE SE RELIT PAS JUSTE EST REFUSÉ.** Somme des débits =
+      total imprimé, somme des crédits = total imprimé, ancien solde +
+      mouvements = nouveau solde, au centime. C'est ce contrôle qui a trouvé
+      la seule surprise des relevés réels : un gabarit dont la ligne des
+      totaux CUMULE l'ancien solde dans sa colonne (`totauxAvecAncien`).
+
+      **ON CLASSE UN MOTIF, PAS UNE LIGNE** (`model/reel.ts`). Le libellé
+      sans sa mécanique (type d'opération, dates, nombres) donne un motif ;
+      une règle posée dessus range toutes ses opérations, passées et à
+      venir. Trois sortes : dépense (catégorie × nature), revenu, et
+      mouvement ENTRE SES COMPTES — ni l'un ni l'autre, sans quoi l'épargne
+      se compterait comme une dépense.
+
+      Réimporter ne double rien : la clé d'une opération est ce qu'elle est
+      (compte, jour, montant, libellé) plus son rang parmi ses jumelles. Les
+      lignes de détail ne gardent que ce qui parle (un motif de virement),
+      jamais les références de mandat. « Tout oublier » efface opérations,
+      comptes et règles sans toucher au budget écrit.
+
+      Base v5 : `comptes`, `operations`, `classements`. Tests sur des relevés
+      FABRIQUÉS (`releveBancaire.exemples.ts`) ; l'e2e en fait un vrai PDF
+      avec Chromium. Aucun relevé réel n'entre dans le dépôt.
+
+### Ce que T168 laisse ouvert
+
+- **Les virements entre comptes se classent à la main.** Un débit sur un
+  compte et un crédit du même montant, le même jour, sur un autre compte
+  importé : l'app pourrait le proposer seule.
+- **Les CSV/OFX** : un gabarit de plus, sur la même vérification.
+- **« Le mois »** ne montre encore que le mois type ; le réel du dernier mois
+  importé y aurait sa ligne.
