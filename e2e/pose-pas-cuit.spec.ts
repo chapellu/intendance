@@ -33,6 +33,18 @@ test("trois plats posés par « Proposer », aucun cuit : le cockpit n'annonce a
     if (n < 2) await expect(page.getByText(`${n + 1} sur 3`)).toBeVisible({ timeout: 30_000 });
   }
 
+  // LE TROISIÈME PLAT S'ATTEND COMME LES DEUX AUTRES — T172. « Je fais ça »
+  // écrit, PUIS renvoie le fil sur le pas suivant (`suivant`, dans `Fil.tsx`) ;
+  // après le dernier, ce renvoi est « La passe est finie ». Partir sans
+  // l'attendre, c'est courir contre lui : le `page.goto` d'en dessous atterrit
+  // 25 à 70 ms après le clic, l'écriture et le renvoi 45 à 60 ms. Quand le
+  // renvoi passait second, il ramenait l'onglet sur `#/cuisine/fil` quatre
+  // millisecondes après l'arrivée sur « Posés », et `.co-lot` restait à zéro
+  // trente secondes : un écran qu'on n'affichait plus. La fin de la passe,
+  // elle, ne se montre qu'une fois le renvoi fait — rien ne reste en vol.
+  await expect(page.getByText("La passe est finie")).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByText("les 3 repas sont posés")).toBeVisible();
+
   await page.goto("/#/cuisine/poses");
   await attendreLApp(page);
   await expect(page.locator(".co-lot")).toHaveCount(3, { timeout: 30_000 });
