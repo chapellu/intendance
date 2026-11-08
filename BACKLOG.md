@@ -6082,3 +6082,20 @@ ordinaire finisse dans le rouge.
       plus un autre motif que le remboursement du même achat. La règle posée
       sous l'ancien motif vaut pour le nouveau : changer `motif()` ne perd
       aucun classement. Au passage, `euros` n'affiche plus « -0 € ».
+
+      **ET UNE RÈGLE NE SAIT PAS SUR QUEL COMPTE ELLE TOMBE** (retour du
+      8/11). Le libellé d'un virement reçu dit le nom de qui l'envoie ; quand
+      c'est soi-même, depuis son autre compte, c'est le même nom qu'un
+      virement reçu de l'extérieur. La règle « revenu » posée sur l'un
+      rangeait l'autre en revenu, et un salaire passé d'un compte à l'autre
+      comptait deux fois. D'où le CLASSEMENT EFFECTIF (`classerTout`), par
+      opération et non plus par motif, du plus fort au plus faible :
+      1. une EXCEPTION posée sur cette seule opération (table `exceptions`,
+         base v6) — « Seulement cette opération » dans la fiche ;
+      2. un VIREMENT ENTRE COMPTES repéré par ses deux jambes (`apparier`) :
+         un virement qui sort d'un compte importé et un virement qui entre
+         dans un autre, même montant, un jour avant à cinq après. L'arrivée
+         n'est jamais ni revenu ni dépense ; le départ garde sa règle si elle
+         dit « épargne » (un livret importé se compte une fois). Carte et
+         prélèvement ne s'apparient jamais ;
+      3. la RÈGLE du motif — sauf « revenu » sur un débit, qui reste à classer.

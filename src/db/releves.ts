@@ -49,7 +49,7 @@ export async function importerReleve(r: ReleveLu, b: Base = baseApp): Promise<Im
   }
   const jours = ops.map((o) => o.jour).sort();
 
-  return b.transaction("rw", b.operations, b.comptes, b.classements, async () => {
+  return b.transaction("rw", [b.operations, b.comptes, b.classements, b.exceptions], async () => {
     // LES OPÉRATIONS DÉJÀ LÀ SE RECONNAISSENT À LEUR IDENTITÉ, PAS À LEUR CLÉ.
     // La clé porte le libellé tel qu'il était lu le jour de l'import ; si la
     // lecture s'améliore (des accents rendus), le même relevé réimporté
@@ -75,6 +75,12 @@ export async function importerReleve(r: ReleveLu, b: Base = baseApp): Promise<Im
       // Une opération relue autrement : la nouvelle lecture la remplace, et
       // la règle de son ancien motif suit, si le nouveau n'en a pas.
       await b.operations.delete(ancienne.cle);
+      // Une exception posée sur l'ancienne lecture suit l'opération.
+      const exception = await b.exceptions.get(ancienne.cle);
+      if (exception) {
+        await b.exceptions.delete(ancienne.cle);
+        await b.exceptions.put({ cle: o.cle, classement: exception.classement });
+      }
       if (ancienne.motif !== o.motif && !(await b.classements.get(o.motif))) {
         const regle = await b.classements.get(ancienne.motif);
         if (regle) await b.classements.put({ motif: o.motif, classement: regle.classement });
@@ -109,6 +115,13 @@ export async function classer(motifDe: string, c: Classement | null, b: Base = b
   else await b.classements.delete(motifDe);
 }
 
+/** Classer UNE opération, sans toucher à la règle de son motif — ou retirer
+ *  l'exception (`null`), pour qu'elle suive de nouveau la règle. */
+export async function classerOperation(cle: string, c: Classement | null, b: Base = baseApp): Promise<void> {
+  if (c) await b.exceptions.put({ cle, classement: c });
+  else await b.exceptions.delete(cle);
+}
+
 export async function renommerCompte(id: string, nom: string, b: Base = baseApp): Promise<void> {
   await b.comptes.update(id, { nom });
 }
@@ -116,8 +129,8 @@ export async function renommerCompte(id: string, nom: string, b: Base = baseApp)
 /** TOUT oublier des relevés : opérations, comptes, règles. Le budget écrit
  *  (échéances, enveloppes, revenus) ne bouge pas. */
 export async function oublierLesReleves(b: Base = baseApp): Promise<void> {
-  await b.transaction("rw", b.operations, b.comptes, b.classements, async () => {
-    await Promise.all([b.operations.clear(), b.comptes.clear(), b.classements.clear()]);
+  await b.transaction("rw", [b.operations, b.comptes, b.classements, b.exceptions], async () => {
+    await Promise.all([b.operations.clear(), b.comptes.clear(), b.classements.clear(), b.exceptions.clear()]);
   });
 }
 
@@ -125,6 +138,8 @@ export interface DonneesReleves {
   comptes: Compte[];
   operations: OperationEnBase[];
   regles: Map<string, Classement>;
+  /** Les classements posés sur une seule opération, par clé. */
+  exceptions: Map<string, Classement>;
 }
 
 /**
@@ -137,7 +152,12 @@ export interface DonneesReleves {
  * sienne — on ne perd aucun classement en changeant `motif()`.
  */
 export async function lireReleves(b: Base = baseApp): Promise<DonneesReleves> {
-  const [comptes, enBase, rangees] = await Promise.all([b.comptes.toArray(), b.operations.toArray(), b.classements.toArray()]);
+  const [comptes, enBase, rangees, exceptions] = await Promise.all([
+    b.comptes.toArray(),
+    b.operations.toArray(),
+    b.classements.toArray(),
+    b.exceptions.toArray(),
+  ]);
   const regles = new Map(rangees.map((r) => [r.motif, r.classement]));
   const operations = enBase.map((o) => {
     const m = motif(o.libelle);
@@ -146,7 +166,7 @@ export async function lireReleves(b: Base = baseApp): Promise<DonneesReleves> {
     if (ancienne && !regles.has(m)) regles.set(m, ancienne);
     return { ...o, motif: m };
   });
-  return { comptes, operations, regles };
+  return { comptes, operations, regles, exceptions: new Map(exceptions.map((e) => [e.cle, e.classement])) };
 }
 
 export const useReleves = (): DonneesReleves | undefined => useLiveQuery(() => lireReleves(), []);

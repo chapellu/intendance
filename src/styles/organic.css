@@ -1366,3 +1366,4 @@ button.bu-reel {
 .bu-groupe.ouvert { background: var(--color-surface); border-radius: var(--radius-md); }
 .bu-groupe.ouvert > .bu-ligne + .bu-ligne { padding-left: var(--space-4); font-size: 13px; }
 .bu-retour { align-self: flex-start; }
+.bu-repere { background: var(--color-accent-2-100); color: var(--color-accent-2-900); border-radius: var(--radius-md); padding: var(--space-2); }

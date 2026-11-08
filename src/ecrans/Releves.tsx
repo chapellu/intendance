@@ -9,11 +9,11 @@
 import { useState } from "react";
 import { euros, moisType, NATURE_PROPOSEE, NOM_CATEGORIE, NOM_NATURE, type Categorie, type Nature } from "../model/budget";
 import { lireReleve } from "../model/releveBancaire";
-import { composition, historique, moisDisponibles, moisReel, type Classement, type MoisReel, type OperationEnBase, type Vue } from "../model/reel";
+import { classerTout, composition, historique, moisDisponibles, moisReel, type Classement, type Classes, type MoisReel, type OperationEnBase, type Source, type Vue } from "../model/reel";
 import { useBudget } from "../db/budget";
-import { classer, importerReleve, oublierLesReleves, useReleves, type DonneesReleves } from "../db/releves";
+import { classer, classerOperation, importerReleve, oublierLesReleves, useReleves, type DonneesReleves } from "../db/releves";
 import { Corps } from "../ui/Coquille";
-import { Boutons, ChoixCategorie, ChoixNature, Feuille, Ligne, Section } from "./Budget";
+import { ChoixCategorie, ChoixNature, Feuille, Ligne, Section } from "./Budget";
 import { dateCourte, nomDuMois } from "./budget.vue";
 import { lirePdf } from "./pdf";
 
@@ -51,7 +51,11 @@ function Contenu({ d, type }: { d: DonneesReleves; type: ReturnType<typeof moisT
   // catégorie, ou « toutes les dépenses ». `retour` ramène à la liste des
   // catégories quand on y est entré par elle.
   const [vue, setVue] = useState<{ vue: Vue | "depenses"; retour: boolean } | null>(null);
-  const m = mois.length ? moisReel(d.operations, d.regles, choisi && mois.includes(choisi) ? choisi : mois[0]!, type) : null;
+  // LE CLASSEMENT EFFECTIF de chaque opération : exception, virement apparié,
+  // puis règle du motif (`classerTout`). Tout ce qui suit le lit, jamais les
+  // règles directement — une règle ne sait pas sur quel compte elle tombe.
+  const eff = classerTout(d.operations, d.regles, d.exceptions);
+  const m = mois.length ? moisReel(d.operations, eff.classes, choisi && mois.includes(choisi) ? choisi : mois[0]!, type) : null;
 
   const importer = async (fichiers: File[]) => {
     setEnCours(true);
@@ -218,7 +222,7 @@ function Contenu({ d, type }: { d: DonneesReleves; type: ReturnType<typeof moisT
             ))}
           </Section>
 
-          <MoisParMois d={d} type={type} jour={jour} actuel={m.mois} onChoisir={setChoisi} />
+          <MoisParMois d={d} eff={eff} type={type} jour={jour} actuel={m.mois} onChoisir={setChoisi} />
 
           <details className="bu-toutes">
             <summary>Toutes les opérations du mois · {m.operations.length}</summary>
@@ -226,7 +230,7 @@ function Contenu({ d, type }: { d: DonneesReleves; type: ReturnType<typeof moisT
               <Ligne
                 key={o.cle}
                 nom={o.libelle}
-                sous={`${dateCourte(o.jour, jour)} · ${motDuClassement(d.regles.get(o.motif))}`}
+                sous={`${dateCourte(o.jour, jour)} · ${motDuClassement(eff.classes.get(o.cle), eff.sources.get(o.cle))}`}
                 montant={signe(o.montant)}
                 onClick={() => setAClasser(o)}
               />
@@ -249,6 +253,7 @@ function Contenu({ d, type }: { d: DonneesReleves; type: ReturnType<typeof moisT
       {vue && m ? (
         <FeuilleComposition
           d={d}
+          eff={eff}
           m={m}
           jour={jour}
           vue={vue.vue}
@@ -261,8 +266,8 @@ function Contenu({ d, type }: { d: DonneesReleves; type: ReturnType<typeof moisT
       {aClasser ? (
         <FeuilleClassement
           op={aClasser}
-          actuel={d.regles.get(aClasser.motif) ?? null}
-          combien={d.operations.filter((o) => o.motif === aClasser.motif).length}
+          d={d}
+          eff={eff}
           onFerme={() => setAClasser(null)}
         />
       ) : null}
@@ -309,6 +314,7 @@ const TITRE_VUE = (v: Vue): string =>
  */
 function FeuilleComposition({
   d,
+  eff,
   m,
   jour,
   vue,
@@ -318,6 +324,7 @@ function FeuilleComposition({
   onFerme,
 }: {
   d: DonneesReleves;
+  eff: Classes;
   m: MoisReel;
   jour: string;
   vue: Vue | "depenses";
@@ -358,7 +365,7 @@ function FeuilleComposition({
     );
   }
 
-  const c = composition(d.operations, d.regles, m.mois, vue);
+  const c = composition(d.operations, eff.classes, m.mois, vue);
   const n = c.groupes.reduce((s, g) => s + g.operations.length, 0);
   const part = vue.sorte === "depense" && m.sorties > 0 ? ` · ${Math.round((c.total * 100) / m.sorties)} % des dépenses` : "";
   return (
@@ -404,18 +411,20 @@ function FeuilleComposition({
  *  d'épargne réelle, en face de celle que le mois type promet. */
 function MoisParMois({
   d,
+  eff,
   type,
   jour,
   actuel,
   onChoisir,
 }: {
   d: DonneesReleves;
+  eff: Classes;
   type: ReturnType<typeof moisType>;
   jour: string;
   actuel: string;
   onChoisir: (mois: string) => void;
 }) {
-  const h = historique(d.operations, d.regles, type);
+  const h = historique(d.operations, eff.classes, type);
   if (h.mois.length < 2) return null;
   return (
     <Section titre="Mois par mois">
@@ -441,8 +450,9 @@ function MoisParMois({
 
 const signe = (c: number): string => (c > 0 ? `+${euros(c)}` : c < 0 ? `−${euros(-c)}` : euros(0));
 
-function motDuClassement(c: Classement | undefined): string {
+function motDuClassement(c: Classement | undefined, source?: Source): string {
   if (!c) return "à classer";
+  if (source === "paire") return "entre mes comptes (repéré)";
   if (c.sorte === "revenu") return "revenu";
   if (c.sorte === "interne") return "entre mes comptes";
   if (c.sorte === "epargne") return "épargne";
@@ -459,24 +469,49 @@ const SORTES: { sorte: Sorte; nom: string; dit: string }[] = [
 
 function FeuilleClassement({
   op,
-  actuel,
-  combien,
+  d,
+  eff,
   onFerme,
 }: {
   op: OperationEnBase;
-  actuel: Classement | null;
-  combien: number;
+  d: DonneesReleves;
+  eff: Classes;
   onFerme: () => void;
 }) {
+  const actuel = eff.classes.get(op.cle) ?? null;
+  const source = eff.sources.get(op.cle);
+  const regle = d.regles.get(op.motif) ?? null;
+  const exception = d.exceptions.get(op.cle) ?? null;
+  const autreJambe = eff.paires.has(op.cle) ? d.operations.find((o) => o.cle === eff.paires.get(op.cle)) : undefined;
+  const combien = d.operations.filter((o) => o.motif === op.motif).length;
+
   const [sorte, setSorte] = useState<Sorte>(actuel?.sorte ?? (op.montant > 0 ? "revenu" : "depense"));
   const [categorie, setCategorie] = useState<Categorie>(actuel?.sorte === "depense" ? actuel.categorie : "alimentation");
   const [nature, setNature] = useState<Nature>(actuel?.sorte === "depense" ? actuel.nature : NATURE_PROPOSEE.alimentation);
   const [natureTouchee, setNatureTouchee] = useState(actuel?.sorte === "depense");
+  // LA PORTÉE : tout le motif (une règle) ou cette opération seule (une
+  // exception). Seule par défaut quand l'opération a déjà une exception, ou
+  // quand c'est un virement apparié — corriger celui-là ne doit pas changer
+  // la règle des autres virements du même nom.
+  const [seule, setSeule] = useState(exception !== null || source === "paire");
 
   const valider = async () => {
-    await classer(op.motif, sorte === "depense" ? { sorte, categorie, nature } : { sorte });
+    const c: Classement = sorte === "depense" ? { sorte, categorie, nature } : { sorte };
+    if (seule) await classerOperation(op.cle, c);
+    else {
+      await classer(op.motif, c);
+      // Une règle choisie pour tout le motif : l'exception de cette opération
+      // n'a plus lieu d'être, sinon elle resterait seule à part sans le dire.
+      if (exception) await classerOperation(op.cle, null);
+    }
     onFerme();
   };
+
+  const retirer = exception
+    ? { mot: "Revenir à la règle du motif", faire: () => classerOperation(op.cle, null) }
+    : regle
+      ? { mot: "Retirer la règle", faire: () => classer(op.motif, null) }
+      : null;
 
   return (
     <Feuille titre={op.libelle} onFerme={onFerme}>
@@ -484,6 +519,13 @@ function FeuilleClassement({
         {signe(op.montant)} le {dateCourte(op.jour, op.jour)}
         {op.detail.length ? ` · ${op.detail.join(" · ")}` : ""}
       </p>
+      {autreJambe && source === "paire" ? (
+        <p className="co-note bu-repere" data-test="paire">
+          Repéré comme un virement entre tes comptes : il répond à {signe(autreJambe.montant)} le{" "}
+          {dateCourte(autreJambe.jour, autreJambe.jour)} sur {d.comptes.find((c) => c.id === autreJambe.compte)?.nom ?? "un autre compte"}.
+          Il n’est compté ni en entrée ni en dépense, quelle que soit la règle de son motif.
+        </p>
+      ) : null}
       <div className="bu-champ">
         <span>C’est</span>
         <div className="aj-puces">
@@ -519,11 +561,32 @@ function FeuilleClassement({
           />
         </>
       ) : null}
-      <p className="co-note">
-        La règle vaut pour « {op.motif} » : {combien > 1 ? `les ${combien} opérations qui portent ce motif` : "cette opération"}, et
-        celles des prochains relevés.
-      </p>
-      <Boutons ok onValide={() => void valider()} onRetire={actuel ? () => void classer(op.motif, null).then(onFerme) : undefined} />
+      <div className="bu-champ">
+        <span>Pour</span>
+        <div className="aj-puces">
+          <button type="button" className={`aj-puce${!seule ? " bu-choisie" : ""}`} aria-pressed={!seule} onClick={() => setSeule(false)}>
+            {combien > 1 ? `Les ${combien} « ${op.motif} »` : `Tout « ${op.motif} »`}
+          </button>
+          <button type="button" className={`aj-puce${seule ? " bu-choisie" : ""}`} aria-pressed={seule} onClick={() => setSeule(true)}>
+            Seulement cette opération
+          </button>
+        </div>
+        <em className="dit">
+          {seule
+            ? "Les autres opérations de ce motif gardent leur classement."
+            : "Une règle : elle vaut aussi pour les prochains relevés — sauf pour un virement repéré entre tes comptes."}
+        </em>
+      </div>
+      <div className="bu-boutons">
+        <button className="btn btn-primary btn-block aj-go" onClick={() => void valider()}>
+          Enregistrer
+        </button>
+        {retirer ? (
+          <button className="btn btn-ghost btn-block" onClick={() => void retirer.faire().then(onFerme)}>
+            {retirer.mot}
+          </button>
+        ) : null}
+      </div>
     </Feuille>
   );
 }

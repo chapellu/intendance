@@ -70,6 +70,14 @@ test("un relevé PDF s'importe une fois, se classe par motif, et un relevé faux
   await page.getByRole("dialog", { name: "Dépenses" }).getByRole("button", { name: "Fermer" }).dispatchEvent("click");
   await expect(page.getByRole("dialog")).toHaveCount(0);
 
+  // UNE OPÉRATION SEULE : le remboursement du magasin, sans poser de règle sur
+  // son motif — le paiement du même magasin reste à classer.
+  await expect(page.getByText("À classer · 4")).toBeVisible();
+  await page.locator(".bu-ligne").filter({ hasText: "CARTE 05/09 MAGASIN TEST" }).first().dispatchEvent("click");
+  await page.getByRole("dialog").getByRole("button", { name: "Seulement cette opération" }).dispatchEvent("click");
+  await page.getByRole("button", { name: "Enregistrer" }).dispatchEvent("click");
+  await expect(page.getByText("À classer · 3")).toBeVisible();
+
   // Un relevé dont le total imprimé ne tombe pas juste : refusé, rien n'entre.
   await deposer(page, await pdfDe(page, releve1("1 042,31")));
   await expect(page.getByTestId("releve-resultats")).toContainText("ne tombe pas sur le total imprimé", { timeout: 60_000 });

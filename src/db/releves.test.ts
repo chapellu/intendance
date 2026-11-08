@@ -3,7 +3,7 @@
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { lireReleve } from "../model/releveBancaire";
 import { releve1 } from "../model/releveBancaire.exemples";
-import { classer, importerReleve, lireReleves, oublierLesReleves } from "./releves";
+import { classer, classerOperation, importerReleve, lireReleves, oublierLesReleves } from "./releves";
 import { Base } from "./schema";
 
 let base: Base;
@@ -75,8 +75,11 @@ describe("les relevés en base", () => {
     await importerReleve(lu(), base);
     await classer("BOULANGERIE TEST", { sorte: "depense", categorie: "alimentation", nature: "essentiel" }, base);
     expect((await lireReleves(base)).regles.get("BOULANGERIE TEST")).toMatchObject({ categorie: "alimentation" });
+    const une = (await base.operations.toArray())[0]!;
+    await classerOperation(une.cle, { sorte: "interne" }, base);
+    expect((await lireReleves(base)).exceptions.get(une.cle)).toEqual({ sorte: "interne" });
     await oublierLesReleves(base);
     const vide = await lireReleves(base);
-    expect([vide.comptes.length, vide.operations.length, vide.regles.size]).toEqual([0, 0, 0]);
+    expect([vide.comptes.length, vide.operations.length, vide.regles.size, vide.exceptions.size]).toEqual([0, 0, 0, 0]);
   });
 });
