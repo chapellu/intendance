@@ -3,7 +3,7 @@
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { lireReleve } from "../model/releveBancaire";
 import { releve1 } from "../model/releveBancaire.exemples";
-import { classer, importerReleve, lireReleves, oublierLesReleves } from "./releves";
+import { classer, classerOperation, importerReleve, lireReleves, oublierLesReleves } from "./releves";
 import { Base } from "./schema";
 
 let base: Base;
@@ -58,12 +58,28 @@ describe("les relevés en base", () => {
     expect((await lireReleves(base)).regles.get("BOULANGERIE TEST")).toMatchObject({ categorie: "alimentation" });
   });
 
+  test("le motif se recalcule à la lecture, et la règle de l'ancien motif suit", async () => {
+    await importerReleve(lu(), base);
+    // Une opération gardée avec le motif d'un ancien calcul, classée sous lui.
+    const op = (await base.operations.toArray()).find((o) => o.libelle.includes("MAGASIN TEST 12,50 EUR"))!;
+    await base.operations.put({ ...op, motif: "MAGASIN TEST EUR" });
+    await classer("MAGASIN TEST EUR", { sorte: "depense", categorie: "loisirs", nature: "plaisir" }, base);
+
+    const d = await lireReleves(base);
+    const relue = d.operations.find((o) => o.cle === op.cle)!;
+    expect(relue.motif).toBe("MAGASIN TEST");
+    expect(d.regles.get("MAGASIN TEST")).toMatchObject({ categorie: "loisirs" });
+  });
+
   test("une règle se pose sur un motif, et tout s'oublie d'un geste", async () => {
     await importerReleve(lu(), base);
     await classer("BOULANGERIE TEST", { sorte: "depense", categorie: "alimentation", nature: "essentiel" }, base);
     expect((await lireReleves(base)).regles.get("BOULANGERIE TEST")).toMatchObject({ categorie: "alimentation" });
+    const une = (await base.operations.toArray())[0]!;
+    await classerOperation(une.cle, { sorte: "interne" }, base);
+    expect((await lireReleves(base)).exceptions.get(une.cle)).toEqual({ sorte: "interne" });
     await oublierLesReleves(base);
     const vide = await lireReleves(base);
-    expect([vide.comptes.length, vide.operations.length, vide.regles.size]).toEqual([0, 0, 0]);
+    expect([vide.comptes.length, vide.operations.length, vide.regles.size, vide.exceptions.size]).toEqual([0, 0, 0, 0]);
   });
 });

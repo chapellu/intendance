@@ -6056,3 +6056,54 @@ ordinaire finisse dans le rouge.
       d'enveloppe proposent la nature de la catégorie, comme le classement
       des relevés, et cessent de la suivre dès qu'on la choisit soi-même.
       Pas de migration : les catégories existantes ne changent pas d'id.
+
+## Ce qui compose un total — T171
+
+- [x] **T171 — Ouvrir un total pour voir de quoi il est fait.** Les quatre
+      cases du mois réel et chaque ligne de catégorie s'ouvrent : Dépenses →
+      ses catégories (part, prévu) → une catégorie → ses MOTIFS (total, part,
+      nombre d'opérations) → les opérations d'un motif, qu'on reclasse là où
+      on les voit. Les revenus, l'épargne et les virements entre comptes
+      s'ouvrent de même.
+
+      **LE MOTIF TIENT LIEU DE SOUS-CATÉGORIE.** D'autres applis rangent à deux
+      niveaux (Logement › Prêt, Énergie, Travaux). Ici, « Logement » ouvert
+      montre déjà le prêt, l'électricité, l'eau — chacun avec son total —
+      sans qu'on ait rangé quoi que ce soit dans un second niveau.
+      `nomLisible` en donne un nom : le libellé sans sa mécanique bancaire,
+      avec sa casse et ses accents.
+
+      **MOIS PAR MOIS.** Les six derniers mois importés, entrées, dépenses,
+      épargne, et la capacité moyenne — celle que le mois type promet,
+      vérifiée.
+
+      **LE MOTIF SE RECALCULE À LA LECTURE.** C'est une déduction, et sa
+      recette s'améliore : un montant cité en devise (« … 12,50 EUR ») ne fait
+      plus un autre motif que le remboursement du même achat. La règle posée
+      sous l'ancien motif vaut pour le nouveau : changer `motif()` ne perd
+      aucun classement. Au passage, `euros` n'affiche plus « -0 € ».
+
+      **ET UNE RÈGLE NE SAIT PAS SUR QUEL COMPTE ELLE TOMBE** (retour du
+      8/11). Le libellé d'un virement reçu dit le nom de qui l'envoie ; quand
+      c'est soi-même, depuis son autre compte, c'est le même nom qu'un
+      virement reçu de l'extérieur. La règle « revenu » posée sur l'un
+      rangeait l'autre en revenu, et un salaire passé d'un compte à l'autre
+      comptait deux fois. D'où le CLASSEMENT EFFECTIF (`classerTout`), par
+      opération et non plus par motif, du plus fort au plus faible :
+      1. une EXCEPTION posée sur cette seule opération (table `exceptions`,
+         base v6) — « Seulement cette opération » dans la fiche ;
+      2. un VIREMENT ENTRE COMPTES repéré par ses deux jambes (`apparier`) :
+         un virement qui sort d'un compte importé et un virement qui entre
+         dans un autre, même montant, un jour avant à cinq après. L'arrivée
+         n'est jamais ni revenu ni dépense ; le départ garde sa règle si elle
+         dit « épargne » (un livret importé se compte une fois). Carte et
+         prélèvement ne s'apparient jamais ;
+      3. la RÈGLE du motif — sauf « revenu » sur un débit, qui reste à classer.
+
+      **LA RÉPARTITION OBLIGATOIRE / ESSENTIEL / PLAISIR** (demandée le
+      8/11). La lecture « 50/30/20 » : quelle part de ce qu'on dépense est
+      contrainte, réglable, choisie. « Le mois » donne pour chaque nature sa
+      part des DÉPENSES (les trois font 100) puis sa part des revenus ; le
+      mois réel la dessine en barre, en face de la répartition prévue, sur
+      les dépenses déjà classées. `pourcentages` arrondit par les plus forts
+      restes : jamais « 33 + 33 + 33 = 99 ».

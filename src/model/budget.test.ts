@@ -4,6 +4,7 @@ import {
   NATURE_PROPOSEE,
   NOM_CATEGORIE,
   ajouterMois,
+  pourcentages,
   calendrier,
   enSaisie,
   euros,
@@ -155,6 +156,23 @@ describe("les montants", () => {
     expect(euros(8_333.33)).toBe("83,33 €");
     expect(enSaisie(123_456)).toBe("1234,56");
     expect(enSaisie(8_000)).toBe("80");
+    // Jamais « -0 € ».
+    expect(euros(-0)).toBe("0 €");
+    expect(euros(-0.4)).toBe("0 €");
+  });
+});
+
+describe("les pourcentages", () => {
+  test("des parts entières qui font exactement 100", () => {
+    expect(pourcentages([1, 1, 1])).toEqual([34, 33, 33]);
+    expect(pourcentages([105_000, 60_000, 15_000])).toEqual([59, 33, 8]);
+    for (const v of [[1, 2, 3], [7, 7, 7, 7], [999, 1, 0]]) expect(pourcentages(v)!.reduce((s, x) => s + x, 0)).toBe(100);
+  });
+
+  test("un négatif compte pour zéro, et rien à répartir donne null", () => {
+    expect(pourcentages([100, -20, 0])).toEqual([100, 0, 0]);
+    expect(pourcentages([0, 0, 0])).toBeNull();
+    expect(pourcentages([-5, 0, 0])).toBeNull();
   });
 });
 

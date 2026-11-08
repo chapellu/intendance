@@ -7,6 +7,7 @@ import {
   joursEntre,
   moisType,
   NATURES,
+  pourcentages,
   provisions,
   type EtatProvision,
   type MoisAVenir,
@@ -77,6 +78,9 @@ export interface PartNature {
   /** Part des revenus, en %, arrondie. `null` sans revenus saisis : un
    *  pourcentage de zéro n'a pas de sens. */
   pct: number | null;
+  /** Part des DÉPENSES, en % — les trois natures font 100. `null` sans
+   *  dépense écrite. */
+  pctDepenses: number | null;
 }
 
 export interface VueMois {
@@ -104,6 +108,7 @@ export function vueDuMois(d: DonneesBudget, aujourdhui: string): VueMois {
   const prov = provisions(d.echeances, d.solde?.montant ?? 0, aujourdhui);
   const rattrapage = Math.max(0, prov.conseille - prov.regime);
   const ceMois = mois.capacite - rattrapage;
+  const partsDepenses = pourcentages(NATURES.map((n) => mois.postes[n].total));
   const vide = !d.revenus.length && !d.echeances.length && !d.enveloppes.length;
 
   let phrase: string;
@@ -117,7 +122,12 @@ export function vueDuMois(d: DonneesBudget, aujourdhui: string): VueMois {
   return {
     vide,
     mois,
-    parts: NATURES.map((n) => ({ nature: n, total: mois.postes[n].total, pct: pct(mois.postes[n].total, mois.revenus) })),
+    parts: NATURES.map((n, i) => ({
+      nature: n,
+      total: mois.postes[n].total,
+      pct: pct(mois.postes[n].total, mois.revenus),
+      pctDepenses: partsDepenses?.[i] ?? null,
+    })),
     pctCapacite: pct(mois.capacite, mois.revenus),
     prov,
     ceMois,

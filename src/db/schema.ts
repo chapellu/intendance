@@ -52,6 +52,12 @@ export interface RegleClassement {
   motif: string;
   classement: Classement;
 }
+
+/** Le classement d'UNE opération, plus fort que la règle de son motif. */
+export interface ExceptionClassement {
+  cle: string;
+  classement: Classement;
+}
 import Dexie, { type EntityTable } from "dexie";
 import type { Evenement } from "../model/journal";
 import type { EmitKind, Espace, RepasId } from "../model/types";
@@ -209,7 +215,7 @@ export interface Reglage {
 // La v1 n'a pas d'`upgrade` : il ne s'exécuterait sur aucune base existante,
 // puisqu'il n'en existe aucune. Une migration vide écrite « pour la forme »
 // est une migration qu'on croit avoir testée.
-export const VERSION = 5;
+export const VERSION = 6;
 
 const SCHEMAS: Record<number, Record<string, string>> = {
   1: {
@@ -261,6 +267,12 @@ const SCHEMAS: Record<number, Record<string, string>> = {
     operations: "cle, compte, jour",
     classements: "motif",
   },
+  // v6 — LES EXCEPTIONS : un classement posé sur UNE opération, par sa clé,
+  // qui l'emporte sur la règle de son motif et sur l'appariement. Table neuve,
+  // vide : pas d'`upgrade`.
+  6: {
+    exceptions: "cle",
+  },
 };
 
 export class Base extends Dexie {
@@ -275,6 +287,7 @@ export class Base extends Dexie {
   comptes!: EntityTable<Compte, "id">;
   operations!: EntityTable<OperationEnBase, "cle">;
   classements!: EntityTable<RegleClassement, "motif">;
+  exceptions!: EntityTable<ExceptionClassement, "cle">;
 
   constructor(nom = "intendance") {
     super(nom);

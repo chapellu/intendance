@@ -54,6 +54,32 @@ test("un relevé PDF s'importe une fois, se classe par motif, et un relevé faux
   await page.getByRole("button", { name: "Enregistrer" }).dispatchEvent("click");
   await expect(page.locator("[data-test=epargne]")).toHaveText("987,50 €");
   await expect(page.locator("[data-test=sorties]")).toHaveText("12,30 €");
+  // La boulangerie, seule dépense classée, est « essentiel » : 100 % des dépenses.
+  await expect(page.locator("[data-test=nature-essentiel]")).toContainText("100 %");
+  await expect(page.locator("[data-test=nature-plaisir]")).toContainText("0 %");
+
+  // Ce qui compose un total : Dépenses → Alimentation → la boulangerie → ses
+  // opérations, puis retour à la liste des catégories.
+  await page.getByRole("button", { name: /^Dépenses/ }).dispatchEvent("click");
+  const depenses = page.getByRole("dialog", { name: "Dépenses" });
+  await expect(depenses).toBeVisible();
+  await depenses.locator(".bu-ligne").filter({ hasText: "Alimentation" }).dispatchEvent("click");
+  const alim = page.getByRole("dialog", { name: "Alimentation" });
+  await expect(alim.locator("[data-test=composition-total]")).toHaveText("12,30 €");
+  await alim.locator(".bu-ligne").filter({ hasText: "BOULANGERIE TEST" }).first().dispatchEvent("click");
+  await expect(alim.locator(".bu-groupe.ouvert .bu-ligne")).toHaveCount(2);
+  await alim.getByRole("button", { name: "← Toutes les dépenses" }).dispatchEvent("click");
+  await expect(page.getByRole("dialog", { name: "Dépenses" })).toBeVisible();
+  await page.getByRole("dialog", { name: "Dépenses" }).getByRole("button", { name: "Fermer" }).dispatchEvent("click");
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+
+  // UNE OPÉRATION SEULE : le remboursement du magasin, sans poser de règle sur
+  // son motif — le paiement du même magasin reste à classer.
+  await expect(page.getByText("À classer · 4")).toBeVisible();
+  await page.locator(".bu-ligne").filter({ hasText: "CARTE 05/09 MAGASIN TEST" }).first().dispatchEvent("click");
+  await page.getByRole("dialog").getByRole("button", { name: "Seulement cette opération" }).dispatchEvent("click");
+  await page.getByRole("button", { name: "Enregistrer" }).dispatchEvent("click");
+  await expect(page.getByText("À classer · 3")).toBeVisible();
 
   // Un relevé dont le total imprimé ne tombe pas juste : refusé, rien n'entre.
   await deposer(page, await pdfDe(page, releve1("1 042,31")));
