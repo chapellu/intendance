@@ -1,5 +1,8 @@
 import { describe, expect, test } from "vitest";
 import {
+  CATEGORIES,
+  NATURE_PROPOSEE,
+  NOM_CATEGORIE,
   ajouterMois,
   calendrier,
   enSaisie,
@@ -152,5 +155,19 @@ describe("les montants", () => {
     expect(euros(8_333.33)).toBe("83,33 €");
     expect(enSaisie(123_456)).toBe("1234,56");
     expect(enSaisie(8_000)).toBe("80");
+  });
+});
+
+describe("les catégories", () => {
+  test("une liste complète, sans doublon, avec Divers en dernier recours", () => {
+    expect(new Set(CATEGORIES).size).toBe(CATEGORIES.length);
+    expect([...CATEGORIES].sort()).toEqual(Object.keys(NOM_CATEGORIE).sort());
+    expect(CATEGORIES.at(-1)).toBe("divers");
+  });
+
+  test("chaque catégorie propose une nature", () => {
+    for (const c of CATEGORIES) expect(NATURE_PROPOSEE[c]).toBeDefined();
+    expect(NATURE_PROPOSEE.garde).toBe("obligatoire");
+    expect(NATURE_PROPOSEE.cadeaux).toBe("plaisir");
   });
 });

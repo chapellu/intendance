@@ -55,49 +55,110 @@ export const DIT_NATURE: Record<Nature, string> = {
  *  qui les range, mais pas de la même nature. */
 export type Categorie =
   | "logement"
+  | "maison"
   | "alimentation"
   | "transport"
   | "enfants"
+  | "garde"
   | "sante"
   | "assurances"
   | "impots"
+  | "banque"
   | "telecom"
   | "abonnements"
+  | "habillement"
   | "loisirs"
   | "vacances"
+  | "cadeaux"
+  | "animaux"
   | "divers";
 
+/**
+ * L'ordre du sélecteur : ce qui fait tourner la maison, puis les gens, puis
+ * les contrats, puis ce qu'on choisit — Divers en dernier, pour qu'il reste
+ * le dernier recours et pas le premier venu.
+ *
+ * DIX-HUIT, ET PAS PLUS SANS RAISON. Chaque catégorie de plus est une
+ * hésitation de plus au moment de classer. Celles d'ici séparent ce qui se
+ * pilote différemment : « Maison » (ce qu'on achète pour le logement) n'est pas
+ * « Logement » (ce que coûte d'y vivre), « Garde » (un contrat, déductible en
+ * partie) n'est pas « Enfants » (tout le reste), « Banque » s'isole parce que
+ * c'est le poste qui baisse le plus facilement, et « Cadeaux » parce qu'il
+ * revient aux mêmes dates chaque année — il se provisionne.
+ */
 export const CATEGORIES: readonly Categorie[] = [
   "logement",
+  "maison",
   "alimentation",
   "transport",
   "enfants",
+  "garde",
   "sante",
   "assurances",
   "impots",
+  "banque",
   "telecom",
   "abonnements",
+  "habillement",
   "loisirs",
   "vacances",
+  "cadeaux",
+  "animaux",
   "divers",
 ];
 
 export const NOM_CATEGORIE: Record<Categorie, string> = {
   logement: "Logement",
+  maison: "Maison et équipement",
   alimentation: "Alimentation",
   transport: "Transport",
   enfants: "Enfants",
+  garde: "Garde d’enfants",
   sante: "Santé",
   assurances: "Assurances",
   impots: "Impôts et taxes",
+  banque: "Frais bancaires",
   // SÉPARÉ DES ABONNEMENTS : la box et les forfaits sont un poste à eux, qu'on
   // renégocie une fois l'an, quand les abonnements (vidéo, presse, sport) se
   // résilient d'un geste. Les ranger ensemble cacherait l'un derrière l'autre.
   telecom: "Téléphone et internet",
   abonnements: "Abonnements",
+  habillement: "Habillement",
   loisirs: "Loisirs",
   vacances: "Vacances",
+  cadeaux: "Cadeaux et fêtes",
+  animaux: "Animaux",
   divers: "Divers",
+};
+
+/**
+ * La nature qu'on PROPOSE pour une catégorie, tant que le doigt n'en a pas
+ * choisi une : une première idée, pas une règle. Les fiches la montrent, et
+ * cessent de la suivre dès qu'on touche à la nature.
+ *
+ * « Garde » est obligatoire : un contrat de crèche ou d'assistante maternelle
+ * ne se baisse pas ce mois-ci. « Banque » et « Téléphone » sont essentiels :
+ * nécessaires, mais leur montant se renégocie.
+ */
+export const NATURE_PROPOSEE: Record<Categorie, Nature> = {
+  logement: "obligatoire",
+  maison: "essentiel",
+  alimentation: "essentiel",
+  transport: "essentiel",
+  enfants: "essentiel",
+  garde: "obligatoire",
+  sante: "essentiel",
+  assurances: "obligatoire",
+  impots: "obligatoire",
+  banque: "essentiel",
+  telecom: "essentiel",
+  abonnements: "plaisir",
+  habillement: "essentiel",
+  loisirs: "plaisir",
+  vacances: "plaisir",
+  cadeaux: "plaisir",
+  animaux: "essentiel",
+  divers: "essentiel",
 };
 
 /** Tous les combien de mois. 1 = une charge fixe, payée sur le mois. */
