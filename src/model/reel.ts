@@ -123,3 +123,124 @@ export function moisReel(
     operations: duMois,
   };
 }
+
+/* ───────────────────────────────────────────────────────── la composition */
+
+/**
+ * Ce qu'on ouvre pour voir de quoi un total est fait : une catégorie de
+ * dépenses, les revenus, l'épargne, les virements entre comptes, ou ce qui
+ * reste à classer.
+ */
+export type Vue =
+  | { sorte: "depense"; categorie: Categorie }
+  | { sorte: "revenu" }
+  | { sorte: "epargne" }
+  | { sorte: "interne" }
+  | { sorte: "a-classer" };
+
+/** Un motif dans une vue : l'enseigne, l'employeur, l'organisme — et ses
+ *  opérations du mois. */
+export interface Groupe {
+  motif: string;
+  /** Un nom lisible, tiré du libellé le plus récent du motif. */
+  nom: string;
+  /** Dans le sens de la vue : une dépense compte en positif, un remboursement
+   *  en négatif ; un revenu en positif. */
+  total: number;
+  operations: OperationEnBase[];
+}
+
+export interface Composition {
+  total: number;
+  groupes: Groupe[];
+}
+
+/**
+ * Le nom d'un motif tel qu'on le lit : le libellé sans sa mécanique bancaire
+ * (« CARTE 12/09 », « PRLV SEPA », dates, longues références), mais avec sa
+ * casse et ses accents — c'est ce que le motif, fait pour comparer, a perdu.
+ *
+ * C'EST L'ÉQUIVALENT DES SOUS-CATÉGORIES D'AUTRES APPLIS, et en mieux pour un
+ * budget de foyer : « Logement » ouvert montre « Prêt », « Électricité »,
+ * « Eau », chacun avec son total — sans avoir eu à ranger quoi que ce soit
+ * dans un deuxième niveau.
+ */
+export function nomLisible(libelle: string): string {
+  const s = libelle
+    .replace(/^(?:CARTE|CB|PRLV(?: SEPA)?|PRELEVEMENT(?: SEPA)?|VIR(?:EMENT)?(?:\.| )?(?:INST|PERMANENT|SEPA|RECU|EMIS)?|CHQ\.?|CHEQUE|RETRAIT(?: DAB)?)\b\.?/i, " ")
+    .replace(/\b\d{1,2}\/\d{1,2}(?:\/\d{2,4})?\b/g, " ")
+    .replace(/\b\d{1,3}(?:[ .]\d{3})*,\d{2}(?:\s*(?:EUR|USD|GBP|CHF)\b)?/gi, " ")
+    .replace(/\b[A-Z0-9]*\d[A-Z0-9]{5,}\b/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  return s || libelle.trim();
+}
+
+const dansLaVue = (v: Vue, r: Classement | undefined): boolean =>
+  v.sorte === "a-classer" ? !r : v.sorte === "depense" ? r?.sorte === "depense" && r.categorie === v.categorie : r?.sorte === v.sorte;
+
+/** Le sens dans lequel une vue compte une opération. */
+const dansLeSens = (v: Vue, o: OperationEnBase): number =>
+  v.sorte === "revenu" || v.sorte === "a-classer" ? o.montant : v.sorte === "interne" ? Math.abs(o.montant) : -o.montant;
+
+export function composition(
+  ops: readonly OperationEnBase[],
+  regles: ReadonlyMap<string, Classement>,
+  mois: string,
+  vue: Vue,
+): Composition {
+  const parMotif = new Map<string, OperationEnBase[]>();
+  for (const o of ops) {
+    if (!o.jour.startsWith(mois) || !dansLaVue(vue, regles.get(o.motif))) continue;
+    parMotif.set(o.motif, [...(parMotif.get(o.motif) ?? []), o]);
+  }
+  const groupes: Groupe[] = [...parMotif.entries()].map(([motif, operations]) => {
+    const triees = [...operations].sort((a, b) => (a.jour < b.jour ? 1 : a.jour > b.jour ? -1 : 0));
+    return {
+      motif,
+      nom: nomLisible(triees[0]!.libelle),
+      total: triees.reduce((s, o) => s + dansLeSens(vue, o), 0),
+      operations: triees,
+    };
+  });
+  groupes.sort((a, b) => Math.abs(b.total) - Math.abs(a.total));
+  return { total: groupes.reduce((s, g) => s + g.total, 0), groupes };
+}
+
+/* ──────────────────────────────────────────────────────── mois par mois */
+
+export interface MoisResume {
+  mois: string;
+  entrees: number;
+  sorties: number;
+  epargne: number;
+  /** Entrées − dépenses : ce que le mois a laissé, épargné ou non. */
+  capacite: number;
+  aClasser: number;
+}
+
+export interface Historique {
+  mois: MoisResume[];
+  /** La capacité moyenne des mois montrés. `null` sans mois. */
+  moyenne: number | null;
+}
+
+/**
+ * Les derniers mois importés, du plus récent au plus ancien, et ce qu'ils ont
+ * laissé en moyenne. C'est la capacité d'épargne RÉELLE — celle que le mois
+ * type promet, vérifiée.
+ */
+export function historique(
+  ops: readonly OperationEnBase[],
+  regles: ReadonlyMap<string, Classement>,
+  type: MoisType,
+  combien = 6,
+): Historique {
+  const mois = moisDisponibles(ops)
+    .slice(0, combien)
+    .map((x) => {
+      const m = moisReel(ops, regles, x, type);
+      return { mois: x, entrees: m.entrees, sorties: m.sorties, epargne: m.epargne, capacite: m.entrees - m.sorties, aClasser: m.aClasser.length };
+    });
+  return { mois, moyenne: mois.length ? Math.round(mois.reduce((s, m) => s + m.capacite, 0) / mois.length) : null };
+}

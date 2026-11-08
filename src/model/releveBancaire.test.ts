@@ -90,6 +90,8 @@ describe("le motif d'un libellé", () => {
     expect(motif("CARTE 12/09 BOULANGERIE DU COIN 69")).toBe("BOULANGERIE DU COIN");
     expect(motif("PRLV SEPA Assurance Exemple")).toBe("ASSURANCE EXEMPLE");
     expect(motif("VIR.PERMANENT LOYER EXEMPLE")).toBe("LOYER EXEMPLE");
+    // Un montant cité en devise ne fait pas un autre motif que le remboursement.
+    expect(motif("CARTE 04/09 MAGASIN TEST 12,50 EUR")).toBe(motif("CARTE 05/09 MAGASIN TEST"));
   });
 });
 

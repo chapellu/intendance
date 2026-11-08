@@ -155,6 +155,9 @@ describe("les montants", () => {
     expect(euros(8_333.33)).toBe("83,33 €");
     expect(enSaisie(123_456)).toBe("1234,56");
     expect(enSaisie(8_000)).toBe("80");
+    // Jamais « -0 € ».
+    expect(euros(-0)).toBe("0 €");
+    expect(euros(-0.4)).toBe("0 €");
   });
 });
 

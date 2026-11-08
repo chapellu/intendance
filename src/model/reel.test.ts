@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { moisType } from "./budget";
-import { moisDisponibles, moisReel, type Classement, type OperationEnBase } from "./reel";
+import { composition, historique, moisDisponibles, moisReel, nomLisible, type Classement, type OperationEnBase } from "./reel";
 
 const op = (jour: string, motif: string, montant: number, compte = "a"): OperationEnBase => ({
   cle: `${compte}|${jour}|${montant}|${motif}|0`, compte, jour, libelle: motif, detail: [], montant, motif,
@@ -52,5 +52,37 @@ describe("le mois réel", () => {
     expect(m.categories.find((c) => c.categorie === "alimentation")).toEqual({ categorie: "alimentation", reel: 1_200, prevu: 60_000 });
     expect(m.categories.find((c) => c.categorie === "loisirs")).toEqual({ categorie: "loisirs", reel: 3_500, prevu: 0 });
     expect(m.natures.find((n) => n.nature === "essentiel")).toEqual({ nature: "essentiel", reel: 1_200, prevu: 60_000 });
+  });
+});
+
+describe("la composition d'un total", () => {
+  test("une catégorie s'ouvre motif par motif, le plus gros d'abord, remboursements déduits", () => {
+    const c = composition(ops, regles, "2026-09", { sorte: "depense", categorie: "loisirs" });
+    expect(c.total).toBe(3_500);
+    expect(c.groupes.map((g) => [g.motif, g.total, g.operations.length])).toEqual([["MAGASIN TEST", 3_500, 2]]);
+  });
+
+  test("les revenus, l'épargne, les virements internes et ce qui reste à classer s'ouvrent aussi", () => {
+    expect(composition(ops, regles, "2026-09", { sorte: "revenu" }).total).toBe(300_000);
+    expect(composition(ops, regles, "2026-09", { sorte: "epargne" }).total).toBe(15_000);
+    expect(composition(ops, regles, "2026-09", { sorte: "interne" }).total).toBe(100_000);
+    expect(composition(ops, regles, "2026-09", { sorte: "a-classer" }).groupes.map((g) => g.motif)).toEqual(["INCONNU"]);
+  });
+
+  test("le nom d'un motif garde sa casse et perd sa mécanique bancaire", () => {
+    expect(nomLisible("CARTE 12/09 Boulangerie du Coin")).toBe("Boulangerie du Coin");
+    expect(nomLisible("PRLV SEPA Fournisseur Énergie ABC1234567")).toBe("Fournisseur Énergie");
+    expect(nomLisible("VIR INST")).toBe("VIR INST");
+    expect(nomLisible("CARTE 04/09 MAGASIN TEST 12,50 EUR")).toBe("MAGASIN TEST");
+  });
+});
+
+describe("mois par mois", () => {
+  test("les derniers mois, du plus récent, et la capacité moyenne", () => {
+    const h = historique(ops, regles, type);
+    expect(h.mois.map((m) => m.mois)).toEqual(["2026-09", "2026-08"]);
+    expect(h.mois[0]).toMatchObject({ entrees: 300_000, sorties: 4_700, epargne: 15_000, capacite: 295_300, aClasser: 1 });
+    expect(h.mois[1]).toMatchObject({ entrees: 0, sorties: 800, capacite: -800 });
+    expect(h.moyenne).toBe(Math.round((295_300 - 800) / 2));
   });
 });

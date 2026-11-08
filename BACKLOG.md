@@ -6056,3 +6056,29 @@ ordinaire finisse dans le rouge.
       d'enveloppe proposent la nature de la catégorie, comme le classement
       des relevés, et cessent de la suivre dès qu'on la choisit soi-même.
       Pas de migration : les catégories existantes ne changent pas d'id.
+
+## Ce qui compose un total — T171
+
+- [x] **T171 — Ouvrir un total pour voir de quoi il est fait.** Les quatre
+      cases du mois réel et chaque ligne de catégorie s'ouvrent : Dépenses →
+      ses catégories (part, prévu) → une catégorie → ses MOTIFS (total, part,
+      nombre d'opérations) → les opérations d'un motif, qu'on reclasse là où
+      on les voit. Les revenus, l'épargne et les virements entre comptes
+      s'ouvrent de même.
+
+      **LE MOTIF TIENT LIEU DE SOUS-CATÉGORIE.** D'autres applis rangent à deux
+      niveaux (Logement › Prêt, Énergie, Travaux). Ici, « Logement » ouvert
+      montre déjà le prêt, l'électricité, l'eau — chacun avec son total —
+      sans qu'on ait rangé quoi que ce soit dans un second niveau.
+      `nomLisible` en donne un nom : le libellé sans sa mécanique bancaire,
+      avec sa casse et ses accents.
+
+      **MOIS PAR MOIS.** Les six derniers mois importés, entrées, dépenses,
+      épargne, et la capacité moyenne — celle que le mois type promet,
+      vérifiée.
+
+      **LE MOTIF SE RECALCULE À LA LECTURE.** C'est une déduction, et sa
+      recette s'améliore : un montant cité en devise (« … 12,50 EUR ») ne fait
+      plus un autre motif que le remboursement du même achat. La règle posée
+      sous l'ancien motif vaut pour le nouveau : changer `motif()` ne perd
+      aucun classement. Au passage, `euros` n'affiche plus « -0 € ».

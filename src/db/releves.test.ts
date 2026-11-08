@@ -58,6 +58,19 @@ describe("les relevés en base", () => {
     expect((await lireReleves(base)).regles.get("BOULANGERIE TEST")).toMatchObject({ categorie: "alimentation" });
   });
 
+  test("le motif se recalcule à la lecture, et la règle de l'ancien motif suit", async () => {
+    await importerReleve(lu(), base);
+    // Une opération gardée avec le motif d'un ancien calcul, classée sous lui.
+    const op = (await base.operations.toArray()).find((o) => o.libelle.includes("MAGASIN TEST 12,50 EUR"))!;
+    await base.operations.put({ ...op, motif: "MAGASIN TEST EUR" });
+    await classer("MAGASIN TEST EUR", { sorte: "depense", categorie: "loisirs", nature: "plaisir" }, base);
+
+    const d = await lireReleves(base);
+    const relue = d.operations.find((o) => o.cle === op.cle)!;
+    expect(relue.motif).toBe("MAGASIN TEST");
+    expect(d.regles.get("MAGASIN TEST")).toMatchObject({ categorie: "loisirs" });
+  });
+
   test("une règle se pose sur un motif, et tout s'oublie d'un geste", async () => {
     await importerReleve(lu(), base);
     await classer("BOULANGERIE TEST", { sorte: "depense", categorie: "alimentation", nature: "essentiel" }, base);

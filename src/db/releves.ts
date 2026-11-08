@@ -127,9 +127,26 @@ export interface DonneesReleves {
   regles: Map<string, Classement>;
 }
 
+/**
+ * Tout ce que les relevés ont laissé, prêt pour l'écran.
+ *
+ * LE MOTIF SE RECALCULE ICI, DEPUIS LE LIBELLÉ : c'est une déduction, et la
+ * façon de le déduire s'améliore (une devise ignorée, un accent rendu). Le
+ * motif gardé en base est celui du jour de l'import ; s'il diffère, la règle
+ * posée sous l'ancien vaut pour le nouveau tant que le nouveau n'a pas la
+ * sienne — on ne perd aucun classement en changeant `motif()`.
+ */
 export async function lireReleves(b: Base = baseApp): Promise<DonneesReleves> {
-  const [comptes, operations, regles] = await Promise.all([b.comptes.toArray(), b.operations.toArray(), b.classements.toArray()]);
-  return { comptes, operations, regles: new Map(regles.map((r) => [r.motif, r.classement])) };
+  const [comptes, enBase, rangees] = await Promise.all([b.comptes.toArray(), b.operations.toArray(), b.classements.toArray()]);
+  const regles = new Map(rangees.map((r) => [r.motif, r.classement]));
+  const operations = enBase.map((o) => {
+    const m = motif(o.libelle);
+    if (m === o.motif) return o;
+    const ancienne = regles.get(o.motif);
+    if (ancienne && !regles.has(m)) regles.set(m, ancienne);
+    return { ...o, motif: m };
+  });
+  return { comptes, operations, regles };
 }
 
 export const useReleves = (): DonneesReleves | undefined => useLiveQuery(() => lireReleves(), []);

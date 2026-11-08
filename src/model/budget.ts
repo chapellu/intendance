@@ -533,7 +533,8 @@ export function lireMontant(texte: string): number | null {
 /** Centimes → « 1 234 € » ou « 83,33 € ». Les centimes ne s'affichent que
  *  quand il y en a : un budget se lit en euros ronds. */
 export function euros(centimes: number): string {
-  const c = Math.round(centimes);
+  // `|| 0` : un « -0 » arrondi s'afficherait « -0 € ».
+  const c = Math.round(centimes) || 0;
   const entier = c % 100 === 0;
   return (
     (c / 100).toLocaleString("fr-FR", {

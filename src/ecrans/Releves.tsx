@@ -9,7 +9,7 @@
 import { useState } from "react";
 import { euros, moisType, NATURE_PROPOSEE, NOM_CATEGORIE, NOM_NATURE, type Categorie, type Nature } from "../model/budget";
 import { lireReleve } from "../model/releveBancaire";
-import { moisDisponibles, moisReel, type Classement, type OperationEnBase } from "../model/reel";
+import { composition, historique, moisDisponibles, moisReel, type Classement, type MoisReel, type OperationEnBase, type Vue } from "../model/reel";
 import { useBudget } from "../db/budget";
 import { classer, importerReleve, oublierLesReleves, useReleves, type DonneesReleves } from "../db/releves";
 import { Corps } from "../ui/Coquille";
@@ -47,6 +47,10 @@ function Contenu({ d, type }: { d: DonneesReleves; type: ReturnType<typeof moisT
   const [enCours, setEnCours] = useState(false);
   const [aClasser, setAClasser] = useState<OperationEnBase | null>(null);
   const [oubli, setOubli] = useState(false);
+  // CE QU'ON A OUVERT POUR VOIR DE QUOI IL EST FAIT : un total du haut, une
+  // catégorie, ou « toutes les dépenses ». `retour` ramène à la liste des
+  // catégories quand on y est entré par elle.
+  const [vue, setVue] = useState<{ vue: Vue | "depenses"; retour: boolean } | null>(null);
   const m = mois.length ? moisReel(d.operations, d.regles, choisi && mois.includes(choisi) ? choisi : mois[0]!, type) : null;
 
   const importer = async (fichiers: File[]) => {
@@ -133,19 +137,19 @@ function Contenu({ d, type }: { d: DonneesReleves; type: ReturnType<typeof moisT
               côté et ce qui reste sur les comptes. L'épargne a sa case parce que
               c'est le chiffre que tout le budget sert à faire grossir. */}
           <div className="bu-chiffres deux">
-            <div className="bu-chiffre">
+            <button className="bu-chiffre ouvrable" onClick={() => setVue({ vue: { sorte: "revenu" }, retour: false })}>
               <span className="k">Entrées</span>
               <span className="n" data-test="entrees">{euros(m.entrees)}</span>
-            </div>
-            <div className="bu-chiffre">
+            </button>
+            <button className="bu-chiffre ouvrable" onClick={() => setVue({ vue: "depenses", retour: false })}>
               <span className="k">Dépenses</span>
               <span className="n" data-test="sorties">{euros(m.sorties)}</span>
-            </div>
-            <div className="bu-chiffre fort">
+            </button>
+            <button className="bu-chiffre fort ouvrable" onClick={() => setVue({ vue: { sorte: "epargne" }, retour: false })}>
               <span className="k">Épargné</span>
               <span className="n" data-test="epargne">{euros(m.epargne)}</span>
               {type.capacite > 0 ? <span className="q">le mois type en permet {euros(type.capacite)}</span> : null}
-            </div>
+            </button>
             <div className={`bu-chiffre${m.entrees - m.sorties - m.epargne < 0 ? " negatif" : ""}`}>
               <span className="k">Reste sur les comptes</span>
               <span className="n">{euros(m.entrees - m.sorties - m.epargne)}</span>
@@ -157,6 +161,11 @@ function Contenu({ d, type }: { d: DonneesReleves; type: ReturnType<typeof moisT
               : "Tout est classé."}
             {m.internes ? ` ${euros(m.internes)} de virements entre tes comptes, comptés ni en entrée ni en dépense.` : ""}
           </p>
+          {m.internes ? (
+            <button className="btn btn-ghost" onClick={() => setVue({ vue: { sorte: "interne" }, retour: false })}>
+              Voir les virements entre comptes
+            </button>
+          ) : null}
 
           {m.aClasser.length ? (
             <Section titre={`À classer · ${m.aClasser.length}`}>
@@ -175,9 +184,16 @@ function Contenu({ d, type }: { d: DonneesReleves; type: ReturnType<typeof moisT
           <Section titre="Par catégorie · réel / prévu">
             {m.categories.length ? (
               m.categories.map((c) => (
-                <div key={c.categorie} className={`bu-reel${c.prevu > 0 && c.reel > c.prevu ? " depasse" : ""}`}>
+                <button
+                  key={c.categorie}
+                  className={`bu-reel${c.prevu > 0 && c.reel > c.prevu ? " depasse" : ""}`}
+                  onClick={() => setVue({ vue: { sorte: "depense", categorie: c.categorie }, retour: false })}
+                >
                   <div className="tete">
-                    <span className="nom">{NOM_CATEGORIE[c.categorie]}</span>
+                    <span className="nom">
+                      {NOM_CATEGORIE[c.categorie]}
+                      {m.sorties > 0 && c.reel > 0 ? <span className="pct"> · {Math.round((c.reel * 100) / m.sorties)} %</span> : null}
+                    </span>
                     <span className="v">
                       {euros(c.reel)} <span className="prevu">/ {euros(c.prevu)}</span>
                     </span>
@@ -185,7 +201,7 @@ function Contenu({ d, type }: { d: DonneesReleves; type: ReturnType<typeof moisT
                   <div className="jauge" aria-hidden="true">
                     <span style={{ width: `${c.prevu > 0 ? Math.min(100, (c.reel * 100) / c.prevu) : c.reel > 0 ? 100 : 0}%` }} />
                   </div>
-                </div>
+                </button>
               ))
             ) : (
               <div className="co-vide">Classe quelques opérations pour voir le réel en face du budget.</div>
@@ -201,6 +217,8 @@ function Contenu({ d, type }: { d: DonneesReleves; type: ReturnType<typeof moisT
               <Ligne key={n.nature} nom={NOM_NATURE[n.nature]} montant={`${euros(n.reel)} / ${euros(n.prevu)}`} />
             ))}
           </Section>
+
+          <MoisParMois d={d} type={type} jour={jour} actuel={m.mois} onChoisir={setChoisi} />
 
           <details className="bu-toutes">
             <summary>Toutes les opérations du mois · {m.operations.length}</summary>
@@ -228,6 +246,18 @@ function Contenu({ d, type }: { d: DonneesReleves; type: ReturnType<typeof moisT
         </Section>
       ) : null}
 
+      {vue && m ? (
+        <FeuilleComposition
+          d={d}
+          m={m}
+          jour={jour}
+          vue={vue.vue}
+          onRetour={vue.retour ? () => setVue({ vue: "depenses", retour: false }) : undefined}
+          onOuvrir={(v) => setVue({ vue: v, retour: true })}
+          onOperation={setAClasser}
+          onFerme={() => setVue(null)}
+        />
+      ) : null}
       {aClasser ? (
         <FeuilleClassement
           op={aClasser}
@@ -262,7 +292,154 @@ export function echec(etape: string, e: unknown): string {
   return `Échec à l’étape « ${etape} » — ${message || "sans message"}`;
 }
 
-const signe = (c: number): string => (c > 0 ? `+${euros(c)}` : `−${euros(-c)}`);
+/* ═════════════════════════════════════════════════════ CE QUI COMPOSE */
+
+const TITRE_VUE = (v: Vue): string =>
+  v.sorte === "depense" ? NOM_CATEGORIE[v.categorie]
+  : v.sorte === "revenu" ? "Revenus"
+  : v.sorte === "epargne" ? "Épargne"
+  : v.sorte === "interne" ? "Entre mes comptes"
+  : "À classer";
+
+/**
+ * Ce qui compose un total : les catégories de toutes les dépenses, ou les
+ * motifs d'une vue — chacun avec son total, sa part et son nombre
+ * d'opérations, et ses opérations au toucher. Une opération touchée s'ouvre
+ * dans la fiche de classement, par-dessus : on corrige là où l'on a vu.
+ */
+function FeuilleComposition({
+  d,
+  m,
+  jour,
+  vue,
+  onRetour,
+  onOuvrir,
+  onOperation,
+  onFerme,
+}: {
+  d: DonneesReleves;
+  m: MoisReel;
+  jour: string;
+  vue: Vue | "depenses";
+  onRetour: (() => void) | undefined;
+  onOuvrir: (v: Vue) => void;
+  onOperation: (o: OperationEnBase) => void;
+  onFerme: () => void;
+}) {
+  const [ouvert, setOuvert] = useState<string | null>(null);
+  const mois = nomDuMois(m.mois, jour);
+
+  if (vue === "depenses") {
+    return (
+      <Feuille titre="Dépenses" onFerme={onFerme}>
+        <div className="bu-capacite petit">
+          <div className="n">{euros(m.sorties)}</div>
+          <div className="k">
+            {mois} · {m.categories.filter((c) => c.reel).length} catégories
+          </div>
+        </div>
+        <div>
+          {m.categories
+            .filter((c) => c.reel)
+            .map((c) => (
+              <Ligne
+                key={c.categorie}
+                nom={NOM_CATEGORIE[c.categorie]}
+                sous={`${m.sorties > 0 ? Math.round((c.reel * 100) / m.sorties) : 0} %${c.prevu ? ` · prévu ${euros(c.prevu)}` : ""}`}
+                montant={euros(c.reel)}
+                onClick={() => onOuvrir({ sorte: "depense", categorie: c.categorie })}
+              />
+            ))}
+          {m.aClasser.length ? (
+            <Ligne nom="À classer" sous={`${m.aClasser.length} opérations`} montant={euros(m.montantAClasser)} onClick={() => onOuvrir({ sorte: "a-classer" })} />
+          ) : null}
+        </div>
+      </Feuille>
+    );
+  }
+
+  const c = composition(d.operations, d.regles, m.mois, vue);
+  const n = c.groupes.reduce((s, g) => s + g.operations.length, 0);
+  const part = vue.sorte === "depense" && m.sorties > 0 ? ` · ${Math.round((c.total * 100) / m.sorties)} % des dépenses` : "";
+  return (
+    <Feuille titre={TITRE_VUE(vue)} onFerme={onFerme}>
+      {onRetour ? (
+        <button className="btn btn-ghost bu-retour" onClick={onRetour}>
+          ← Toutes les dépenses
+        </button>
+      ) : null}
+      <div className="bu-capacite petit">
+        <div className="n" data-test="composition-total">{euros(c.total)}</div>
+        <div className="k">
+          {mois} · {n} opération{n > 1 ? "s" : ""}
+          {part}
+        </div>
+      </div>
+      {c.groupes.length ? (
+        <div data-test="composition">
+          {c.groupes.map((g) => (
+            <div key={g.motif} className={`bu-groupe${ouvert === g.motif ? " ouvert" : ""}`}>
+              <Ligne
+                nom={g.nom}
+                sous={`${g.operations.length} opération${g.operations.length > 1 ? "s" : ""}${c.total ? ` · ${Math.round((g.total * 100) / c.total)} %` : ""}`}
+                montant={euros(g.total)}
+                onClick={() => setOuvert(ouvert === g.motif ? null : g.motif)}
+              />
+              {ouvert === g.motif
+                ? g.operations.map((o) => (
+                    <Ligne key={o.cle} nom={dateCourte(o.jour, jour)} sous={o.libelle} montant={signe(o.montant)} onClick={() => onOperation(o)} />
+                  ))
+                : null}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="co-vide">Rien ce mois-ci.</div>
+      )}
+    </Feuille>
+  );
+}
+
+/** Les derniers mois importés, et ce qu'ils ont laissé : la capacité
+ *  d'épargne réelle, en face de celle que le mois type promet. */
+function MoisParMois({
+  d,
+  type,
+  jour,
+  actuel,
+  onChoisir,
+}: {
+  d: DonneesReleves;
+  type: ReturnType<typeof moisType>;
+  jour: string;
+  actuel: string;
+  onChoisir: (mois: string) => void;
+}) {
+  const h = historique(d.operations, d.regles, type);
+  if (h.mois.length < 2) return null;
+  return (
+    <Section titre="Mois par mois">
+      {h.mois.map((x) => (
+        <Ligne
+          key={x.mois}
+          nom={`${nomDuMois(x.mois, jour)}${x.mois === actuel ? " · affiché" : ""}`}
+          sous={`${signe(x.entrees)} · ${signe(-x.sorties)}${x.epargne ? ` · ${euros(x.epargne)} épargnés` : ""}${x.aClasser ? ` · ${x.aClasser} à classer` : ""}`}
+          montant={signe(x.capacite)}
+          onClick={() => onChoisir(x.mois)}
+        />
+      ))}
+      {h.moyenne !== null ? (
+        <p className="co-note" data-test="moyenne">
+          En moyenne, {h.moyenne >= 0 ? `${euros(h.moyenne)} laissés` : `${euros(-h.moyenne)} de trop`} par mois sur{" "}
+          {h.mois.length} mois{type.capacite > 0 ? ` ; le mois type en prévoit ${euros(type.capacite)}` : ""}. Un mois
+          n’est complet que si les relevés de tous tes comptes le couvrent.
+        </p>
+      ) : null}
+    </Section>
+  );
+}
+
+const signe = (c: number): string => (c > 0 ? `+${euros(c)}` : c < 0 ? `−${euros(-c)}` : euros(0));
 
 function motDuClassement(c: Classement | undefined): string {
   if (!c) return "à classer";
