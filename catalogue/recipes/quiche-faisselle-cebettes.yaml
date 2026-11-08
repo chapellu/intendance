@@ -29,7 +29,7 @@ recipe:
   ingredients:
     # Pâte — brisée végétalienne à la poudre d'amande, sans beurre ni œuf.
     - {id: poudre-amande, name: poudre d'amande, qty: 125, unit: g}
-    - {id: farine-complete, name: farine semi-complète de blé ou de grand épeautre, qty: 250, unit: g}
+    - {id: farine-complete, name: farine semi-complète de blé ou de grand épeautre, qty: 250, unit: g, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
     - {id: huile-olive, name: huile d'olive, qty: 80, unit: g}
     - {id: eau, name: eau, qty: 80, unit: g}
     - {id: fleur-de-sel, name: fleur de sel, qty: 7, unit: g, seasoning: true}

@@ -29,6 +29,7 @@
 // rentré samedi — parce qu'elle ne retire rien à personne : elle ordonne des
 // cartes.
 
+import { retenir } from "./remplacants";
 import { commeIngredient } from "./calcul";
 import { contexte, type Classe, type EtatIngredient, type Rejeu } from "./journal";
 import type { Catalogue, Ingredient, Plat } from "./types";
@@ -147,7 +148,8 @@ export function ceQuiManque(
     const vus = new Map<string, Article>();
     for (const ing of lignes) {
       if (ing.base || ing.assaisonnement) continue;
-      const id = alias(ing.id);
+      // T167 — un remplaçant qui est là vaut l'original.
+      const id = alias(retenir(ing, (x) => ici.has(x), alias).id);
       if (ici.has(id) || vus.has(id)) continue;
       vus.set(id, { id, nom: ing.nom });
     }

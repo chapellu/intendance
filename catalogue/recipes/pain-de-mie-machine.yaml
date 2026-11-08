@@ -38,7 +38,7 @@ recipe:
     origine: francais
 
   ingredients:
-    - {id: farine-epeautre, name: farine T130 ou T150 de grand épeautre ou de blé, qty: 500, unit: g}
+    - {id: farine-epeautre, name: farine T130 ou T150 de grand épeautre ou de blé, qty: 500, unit: g, subs: [{id: farine-complete, name: "farine de blé semi-complète", ratio: 1.0}]}
     - {id: eau, name: "eau tiède, 40 °C au maximum", qty: 400, unit: ml}
     - {id: levure-boulangere, name: levure de boulanger déshydratée, qty: 1, unit: pièce}
     - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}

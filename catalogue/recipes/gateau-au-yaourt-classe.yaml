@@ -60,7 +60,7 @@ recipe:
   ingredients:
     # Gâteau — les grammes sont une conversion indicative, le pot est la mesure.
     - {id: yaourt-nature, name: "yaourt nature de vache, chèvre, brebis ou soja — et son pot, qui sert d'unité à tout le reste", qty: 1, unit: pot}
-    - {id: farine-complete, name: "farine T80 ou T110 de blé ou de grand épeautre (3 pots)", qty: 210, unit: g}
+    - {id: farine-complete, name: "farine T80 ou T110 de blé ou de grand épeautre (3 pots)", qty: 210, unit: g, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
     - {id: sucre-roux, name: "cassonade (1 pot et demi)", qty: 190, unit: g}
     - {id: oeufs, name: œufs, qty: 3, unit: pièce}
     - {id: huile-olive, name: "huile d'olive (3/4 de pot)", qty: 85, unit: g}

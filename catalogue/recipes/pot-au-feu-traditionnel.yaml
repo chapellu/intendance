@@ -66,9 +66,9 @@ recipe:
     - {id: poireau, name: poireaux, qty: 3, unit: pièce}
     - {id: panais, name: panais (facultatif), qty: 3, unit: pièce}
     - {id: navets, name: navets, qty: 3, unit: pièce}
-    - {id: potimarron, name: petit potimarron (600 g environ) ou une grosse tranche de courge musquée (facultatif), qty: 1, unit: pièce}
+    - {id: potimarron, name: petit potimarron (600 g environ) ou une grosse tranche de courge musquée (facultatif), qty: 1, unit: pièce, subs: [{id: courge, name: "courge musquée", ratio: 1.0}]}
     - {id: pomme-de-terre, name: pommes de terre de taille moyenne, qty: 12, unit: pièce}
-    - {id: celeri-rave, name: petit céleri-rave ou petit céleri branche, qty: 1, unit: pièce}
+    - {id: celeri-rave, name: petit céleri-rave ou petit céleri branche, qty: 1, unit: pièce, subs: [{id: celeri-branche, name: "céleri branche", ratio: 1.0}]}
     - {id: clous-girofle, name: clous de girofle, qty: 6, unit: pièce, seasoning: true}
     - {id: laurier, name: feuilles de laurier, qty: 3, unit: pièce, seasoning: true}
     - {id: graines-coriandre, name: graines de coriandre, qty: 1, unit: c. à c., seasoning: true}

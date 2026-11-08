@@ -40,7 +40,7 @@ recipe:
   ingredients:
     - {id: poelee-legumes-verts, name: "poêlée de courgettes, ou un autre légume vert de la p. 72", qty: 275, unit: g, from_accepts: true}
     - {id: flocons-avoine, name: flocons d'avoine, qty: 40, unit: g}
-    - {id: parmesan, name: "parmesan, ou Cantal, tomme de chèvre ou de brebis, emmental", qty: 50, unit: g}
+    - {id: parmesan, name: "parmesan, ou Cantal, tomme de chèvre ou de brebis, emmental", qty: 50, unit: g, subs: [{id: fromage-rape, name: "fromage râpé", ratio: 1.0}]}
     - {id: farine-epeautre, name: farine T110 de grand épeautre, qty: 50, unit: g}
     - {id: origan, name: origan séché, qty: 1, unit: c. à c.}
     - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}

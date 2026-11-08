@@ -49,7 +49,7 @@ recipe:
   ingredients:
     - {id: chou-rouge, name: chou rouge ou chou cabus, qty: 300, unit: g}
     - {id: celeri-rave, name: céleri-rave ou chou-rave, qty: 300, unit: g}
-    - {id: carottes, name: "carottes ou potiron — oui, ça se mange cru aussi", qty: 300, unit: g}
+    - {id: carottes, name: "carottes ou potiron — oui, ça se mange cru aussi", qty: 300, unit: g, subs: [{id: courge, name: "potiron", ratio: 1.0}]}
     - {id: oeufs, name: jaune d'œuf, qty: 1, unit: pièce}
     - {id: moutarde, name: c. à s. légèrement bombées de moutarde à l'ancienne, qty: 2, unit: c. à s.}
     - {id: vinaigre, name: vinaigre de vin ou de cidre, qty: 2, unit: c. à s.}

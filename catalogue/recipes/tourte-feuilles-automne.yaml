@@ -50,13 +50,13 @@ recipe:
     # Garniture
     - {id: oignon, name: oignons, qty: 3, unit: pièce}
     - {id: poireau, name: poireaux, qty: 3, unit: pièce}
-    - {id: jambon-cru, name: "jambon cru ou tofu fumé, coupé en « lardons »", qty: 200, unit: g}
+    - {id: jambon-cru, name: "jambon cru ou tofu fumé, coupé en « lardons »", qty: 200, unit: g, subs: [{id: tofu-fume, name: "tofu fumé", ratio: 1.0}]}
     - {id: courge, name: "courge ou potiron d'une variété peu aqueuse — potimarron et butternut ne s'épluchent même pas", qty: 1.5, unit: kg}
     - {id: parmesan, name: "parmesan râpé (ou Grana Padano) — 150 g dans la garniture, 50 g sur le dessus", qty: 200, unit: g}
     - {id: huile-olive, ref: huile-garniture, name: huile d'olive (garniture), qty: 4, unit: c. à s.}
     - {id: eau, name: verre d'eau pour le mijotage, qty: 1, unit: verre}
     # Pâte
-    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 540, unit: g}
+    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 540, unit: g, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
     - {id: vin-blanc-sec, name: vin blanc sec, qty: 165, unit: g}
     - {id: concentre-tomate, name: double concentré de tomate, qty: 70, unit: g}
     - {id: huile-olive, ref: huile-pate, name: huile d'olive (pâte), qty: 110, unit: g}

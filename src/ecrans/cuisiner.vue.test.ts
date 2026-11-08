@@ -29,6 +29,7 @@ import {
   sansRecette,
   tempsDuPlat,
   type EtatMinuteur,
+  resteCourt,
 } from "./cuisiner.vue";
 
 const catalogue: Catalogue = lireCatalogue(
@@ -822,5 +823,17 @@ describe("la quantité de chaque étape — T113", () => {
     const foyer = catalogue.plats.filter((p) => p.source === null);
     expect(foyer).toHaveLength(54);
     for (const p of foyer) for (const e of p.steps) expect(e.uses, `${p.id} ${e.id}`).not.toBeNull();
+  });
+});
+
+describe("T167 — resteCourt", () => {
+  test("un fond pesé qui ne suffit pas se dit en grammes", () => {
+    expect(resteCourt({ grammes: 200, lots: [{ etat: "entame" }] }, { qty: 380, unit: "g" })).toBe("reste ~200 g");
+  });
+  test("assez : rien à dire", () => {
+    expect(resteCourt({ grammes: 1000, lots: [{ etat: "sec" }] }, { qty: 380, unit: "g" })).toBeNull();
+  });
+  test("un sac ouvert sans poids : entamé, à vérifier", () => {
+    expect(resteCourt({ grammes: null, lots: [{ etat: "entame" }] }, { qty: 380, unit: "g" })).toBe("entamé · à vérifier");
   });
 });

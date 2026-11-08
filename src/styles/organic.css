@@ -595,6 +595,7 @@ button { font-family: var(--font-body); color: inherit; }
 .co-ing .p, .co-atable .p { font-size: 11px; border-radius: 999px; padding: 2px 9px; white-space: nowrap;
   background: var(--color-accent-2-200); color: var(--color-accent-2-900); }
 .co-ing .p.acheter, .co-atable .p.acheter { background: var(--color-accent-200); color: var(--color-accent-900); }
+.co-ing .p.peu { background: #f4e3b5; color: #6b4e0f; }
 
 /* L'ASSIETTE — ce qui se sert à côté, sur la même surface que les ingrédients
    parce que c'est la même chose qu'on lit : un nom, une quantité, où le
@@ -1308,6 +1309,20 @@ button.bu-chiffre { cursor: pointer; outline: 1px dashed var(--color-neutral-500
 .aj-puce.bu-choisie { background: var(--color-neutral-800); color: var(--color-bg); }
 .bu-boutons { display: flex; flex-direction: column; gap: var(--space-1); }
 .bu-boutons .aj-go { margin-top: var(--space-1); }
+
+/* — Fiche : « avec » — les remplaçants d'une ligne (T167) — */
+.co-avec { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 6px; }
+.co-avec .k { font-size: 12px; color: var(--color-neutral-700); }
+.co-avec-puce {
+  font: inherit; font-size: 12.5px; font-weight: 700; padding: 4px 10px; border-radius: 999px;
+  border: 1.5px solid var(--color-divider); background: var(--color-bg); color: inherit;
+}
+.co-avec-puce.choisi { background: var(--color-accent); border-color: transparent; color: var(--color-bg); }
+.co-complete { display: block; margin-top: 4px; font-size: 12.5px; color: var(--color-neutral-700); }
+.co-ing .l { flex-wrap: wrap; }
+.co-pese { flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 6px; }
+.co-pese .k { flex-basis: 100%; font-size: 12.5px; color: var(--color-neutral-700); }
+button.p.peu { border: 0; font: inherit; cursor: pointer; text-decoration: underline dotted; }
 
 /* — budget : les relevés et le mois réel — */
 .bu-import { margin: var(--space-2) 0; position: relative; overflow: hidden; }

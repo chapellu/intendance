@@ -60,14 +60,14 @@ recipe:
       unit: pièce
       seasoning: true
       subs:
-        - {name: cube de bouillon de légumes bio, note: "à défaut de miso", ratio: 1.0}
+        - {id: bouillon-legumes, name: cube de bouillon de légumes bio, note: "à défaut de miso", ratio: 1.0}
     - {id: poivre-5-baies, name: poivre 5 baies, qty: 1, unit: pincée, seasoning: true}
     - id: son-avoine
       name: son d'avoine (panure)
       qty: 50
       unit: g
       subs:
-        - {name: flocons d'avoine mixés, note: "même usage", ratio: 1.0}
+        - {id: flocons-avoine, name: flocons d'avoine mixés, note: "même usage", ratio: 1.0}
 
   steps:
     - id: dorer

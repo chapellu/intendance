@@ -56,7 +56,7 @@ recipe:
     - {id: chocolat-noir, name: chocolat noir pâtissier à 70 % de cacao, qty: 130, unit: g}
     - {id: lait-avoine, name: lait d'avoine ou de soja, qty: 5, unit: cl}
     - {id: sirop-agave, name: sirop d'agave, qty: 7, unit: cl}
-    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 75, unit: g}
+    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 75, unit: g, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
     - {id: poudre-a-lever, name: demi-sachet de levure, qty: 0.5, unit: sachet}
     - {id: oeufs, name: œufs, qty: 3, unit: pièce}
     - {id: caissettes, name: "caissettes cartonnées à muffins (environ 6 cm de diamètre et 4,5 cm de haut)", qty: 8, unit: pièce}

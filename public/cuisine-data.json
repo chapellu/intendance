@@ -524,7 +524,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "parmesan",
+       "nom": "parmesan",
+       "ratio": 1.0
+      }
+     ]
     }
    ],
    "role": "plat",
@@ -3388,7 +3395,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-epeautre",
+       "nom": "farine de grand épeautre",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "poudre-a-lever",
@@ -3418,7 +3432,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "fromage-rape",
+       "nom": "fromage râpé",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "huile-olive",
@@ -4496,7 +4517,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": true,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "bouillon-legumes",
+       "nom": "cube de bouillon de légumes bio",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "poivre-5-baies",
@@ -4516,7 +4544,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "flocons-avoine",
+       "nom": "flocons d'avoine mixés",
+       "ratio": 1.0
+      }
+     ]
     }
    ],
    "role": "plat",
@@ -4720,7 +4755,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-epeautre",
+       "nom": "farine de grand épeautre",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "poudre-a-lever",
@@ -5344,7 +5386,19 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "gruau-avoine",
+       "nom": "gruau d'avoine",
+       "ratio": 1.0
+      },
+      {
+       "id": "petit-epeautre",
+       "nom": "petit épeautre",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "huile-olive",
@@ -7753,7 +7807,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-complete",
+       "nom": "farine de blé semi-complète",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "son-avoine",
@@ -8001,7 +8062,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-epeautre",
+       "nom": "farine de grand épeautre",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "chevre-buche",
@@ -8218,7 +8286,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-epeautre",
+       "nom": "farine de grand épeautre",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "chevre-demi-sec",
@@ -9346,7 +9421,14 @@
      "unit": "tasse",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-epeautre",
+       "nom": "farine de grand épeautre",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "sel",
@@ -9909,7 +9991,14 @@
      "unit": "c. à s.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-epeautre",
+       "nom": "farine d’épeautre",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "huile-olive",
@@ -10114,7 +10203,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "fromage-rape",
+       "nom": "fromage râpé",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "farine-epeautre",
@@ -11401,7 +11497,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-epeautre",
+       "nom": "farine de grand épeautre",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "vert-de-blette",
@@ -12668,7 +12771,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-epeautre",
+       "nom": "farine de grand épeautre",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "sucre-roux",
@@ -13369,7 +13479,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-epeautre",
+       "nom": "farine de grand épeautre",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "lait-soja-vanille",
@@ -16611,7 +16728,19 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "haricots-blancs",
+       "nom": "haricots blancs secs",
+       "ratio": 1.0
+      },
+      {
+       "id": "haricots-rouges",
+       "nom": "haricots rouges secs",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -16651,7 +16780,14 @@
      "unit": "petit bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "sauge",
+       "nom": "sauge seule",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "eau",
@@ -17496,7 +17632,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-epeautre",
+       "nom": "farine de grand épeautre",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "sucre-roux",
@@ -17576,7 +17719,19 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-tournesol",
+       "nom": "huile de tournesol",
+       "ratio": 1.0
+      },
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "chocolat-poudre",
@@ -17844,7 +17999,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courge",
+       "nom": "potiron",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "oeufs",
@@ -18697,7 +18859,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-epeautre",
+       "nom": "farine de grand épeautre",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "poudre-a-lever",
@@ -20651,7 +20820,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "fromage-rape",
+       "nom": "fromage râpé",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "chevre-frais",
@@ -20924,7 +21100,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-epeautre",
+       "nom": "farine de grand épeautre",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "poudre-a-lever",
@@ -21191,7 +21374,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-complete",
+       "nom": "farine de blé semi-complète",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "poudre-a-lever",
@@ -23024,7 +23214,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-complete",
+       "nom": "farine de blé semi-complète",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "eau",
@@ -23219,7 +23416,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-epeautre",
+       "nom": "farine de grand épeautre",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "son-avoine",
@@ -23279,7 +23483,14 @@
      "unit": "c. à s.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "miel",
+       "nom": "miel",
+       "ratio": 1.5
+      }
+     ]
     }
    ],
    "role": "base",
@@ -24137,7 +24348,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-epeautre",
+       "nom": "farine de grand épeautre",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "sel",
@@ -25382,7 +25600,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-epeautre",
+       "nom": "farine de grand épeautre",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "eau",
@@ -25568,7 +25793,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-epeautre",
+       "nom": "farine de grand épeautre",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "eau",
@@ -25755,7 +25987,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-epeautre",
+       "nom": "farine de grand épeautre",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "eau",
@@ -26456,7 +26695,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-epeautre",
+       "nom": "farine de grand épeautre",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "son-avoine",
@@ -27613,7 +27859,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "epinards-surgeles",
+       "nom": "épinards surgelés",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -28639,7 +28892,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courge",
+       "nom": "courge musquée",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "pomme-de-terre",
@@ -28659,7 +28919,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "celeri-branche",
+       "nom": "céleri branche",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "clous-girofle",
@@ -29498,7 +29765,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-epeautre",
+       "nom": "farine de grand épeautre",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "poires",
@@ -30410,7 +30684,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-epeautre",
+       "nom": "farine de grand épeautre",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "huile-olive",
@@ -31975,7 +32256,14 @@
      "unit": "c. à s.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "sirop-agave",
+       "nom": "sirop d’agave",
+       "ratio": 0.67
+      }
+     ]
     },
     {
      "id": "gousse-vanille",
@@ -32495,7 +32783,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "celeri-rave",
+       "nom": "céleri-rave",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "carottes",
@@ -33764,7 +34059,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "saumon",
+       "nom": "saumon sauvage",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "riz",
@@ -34748,7 +35050,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "tomates",
+       "nom": "tomates",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "olives-noires",
@@ -36017,7 +36326,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "truite-fumee",
+       "nom": "truite fumée",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "sel",
@@ -38113,7 +38429,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-epeautre",
+       "nom": "farine de grand épeautre",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "beurre",
@@ -39301,7 +39624,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-epeautre",
+       "nom": "farine de grand épeautre",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "vin-blanc-sec",
@@ -41327,7 +41657,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "tofu-fume",
+       "nom": "tofu fumé",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "courge",
@@ -41377,7 +41714,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-epeautre",
+       "nom": "farine de grand épeautre",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "vin-blanc-sec",
@@ -41980,7 +42324,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-epeautre",
+       "nom": "farine de grand épeautre",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "eau",
@@ -44233,7 +44584,19 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courgettes",
+       "nom": "courgettes seules",
+       "ratio": 1.0
+      },
+      {
+       "id": "chou-chinois",
+       "nom": "chou chinois seul",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "oignon",

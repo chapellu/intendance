@@ -52,8 +52,8 @@ recipe:
       qty: 500
       unit: g
       subs:
-        - {name: haricots blancs secs, note: "même procédé, même conservation", ratio: 1.0}
-        - {name: haricots rouges secs, note: "même procédé, même conservation", ratio: 1.0}
+        - {id: haricots-blancs, name: haricots blancs secs, note: "même procédé, même conservation", ratio: 1.0}
+        - {id: haricots-rouges, name: haricots rouges secs, note: "même procédé, même conservation", ratio: 1.0}
     - {id: oignon, name: oignon, qty: 1, unit: pièce}
     - {id: clous-girofle, name: clou de girofle, qty: 1, unit: pièce}
     - {id: laurier, name: feuilles de laurier, qty: 3, unit: pièce}
@@ -62,7 +62,7 @@ recipe:
       qty: 1
       unit: petit bouquet
       subs:
-        - {name: sauge seule, note: "l'autrice donne les deux au choix", ratio: 1.0}
+        - {id: sauge, name: sauge seule, note: "l'autrice donne les deux au choix", ratio: 1.0}
     - {id: eau, name: eau froide, qty: 3000, unit: ml}
 
   steps:

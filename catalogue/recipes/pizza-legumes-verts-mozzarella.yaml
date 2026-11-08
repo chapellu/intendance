@@ -53,7 +53,7 @@ recipe:
   ingredients:
     - {id: pate-a-pizza-ing, name: pâte à pizza (p. 96), qty: 1, unit: pâte, from_accepts: true}
     - {id: courgettes, name: jeunes courgettes très fraîches, qty: 1.6, unit: kg}
-    - {id: pousses-epinards, name: "jeunes feuilles d'épinards triées et lavées, ou surgelées", qty: 300, unit: g}
+    - {id: pousses-epinards, name: "jeunes feuilles d'épinards triées et lavées, ou surgelées", qty: 300, unit: g, subs: [{id: epinards-surgeles, name: "épinards surgelés", ratio: 1.0}]}
     - {id: oignon, name: oignons, qty: 2, unit: pièce}
     - {id: huile-olive, name: huile d'olive, qty: 6, unit: c. à s.}
     - {id: basilic, name: grosses feuilles de basilic bien tendres, qty: 25, unit: pièce}

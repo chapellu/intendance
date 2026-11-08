@@ -193,6 +193,20 @@ def verifier(rid: str, r: dict, rayons: dict, rules: dict, cat: dict,
         cid = alias.get(ing["id"], ing["id"])
         if cid not in ids_connus:
             err.append(f"ingrédient « {cid} » sans rayon (à ajouter dans rayons.yaml)")
+        # UN REMPLAÇANT AVEC UN `id` EST UN ACHAT, et il doit en être un vrai :
+        # sans rayon, la fiche dirait « en stock » d'une chose que le stock ne
+        # peut pas porter. Sans `id`, `subs` reste la note d'avant — lue par
+        # l'humain, pas par le modèle.
+        for sub in ing.get("subs") or []:
+            if "id" not in sub:
+                continue
+            sid = alias.get(sub["id"], sub["id"])
+            if sid not in ids_connus:
+                err.append(f"ingrédient « {cid} » : remplaçant « {sid} » sans rayon")
+            if sid == cid:
+                err.append(f"ingrédient « {cid} » : se remplace par lui-même")
+            if not isinstance(sub.get("ratio", 1.0), (int, float)) or sub.get("ratio", 1.0) <= 0:
+                err.append(f"ingrédient « {cid} » : remplaçant « {sid} » au ratio invalide")
 
     # ────────────────────────────────────────────────────────── le rôle
     #

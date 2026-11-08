@@ -540,3 +540,66 @@ describe("T139 — ce qu'un œil range sans que le relevé le connaisse", () => 
     expect(r.ajoutes.has("farine")).toBe(false);
   });
 });
+
+/* ══════════════════════════════════════════ T167 — les remplaçants au rejeu */
+
+describe("T167 — la cuisson retire la farine qu'on a prise", () => {
+  const pain = plat({
+    id: "pain", portions: 4,
+    ingredients: [{
+      id: "farine-complete", ref: "farine-complete", nom: "farine T110 de blé ou de grand épeautre",
+      qty: 375, unit: "g", base: false, assaisonnement: false, central: false,
+      remplacants: [{ id: "farine-epeautre", nom: "farine de grand épeautre", ratio: 1 }],
+    }],
+  });
+  const avec = (denrees: Denree[]) =>
+    catalogue({ denrees, plats: [pain], rayons: { épicerie: ["farine-complete", "farine-epeautre"] } });
+  const cuisson = (extra: Partial<Evenement> = {}): Evenement[] => [
+    { sorte: "cuisine", jour: "2026-08-28", saisi: "2026-08-28", repas: "diner", plat: "pain", parts: 4, maj: 1, ...extra } as Evenement,
+  ];
+  const epeautre = denree({ ingredient: "farine-epeautre", unites: 1, parUnite: { amount: 1000, unit: "g" } });
+  const t110 = denree({ ingredient: "farine-complete", unites: 1, parUnite: { amount: 1000, unit: "g" } });
+
+  test("seul l'épeautre est là : c'est lui qui descend", () => {
+    const c = avec([epeautre]);
+    const r = rejouer(c, cuisson(), ctxDe(c), "2026-08-28");
+    expect(r.parIngredient.get("farine-epeautre")!.grammes).toBe(625);
+  });
+
+  test("les deux sont là : l'original d'abord", () => {
+    const c = avec([epeautre, t110]);
+    const r = rejouer(c, cuisson(), ctxDe(c), "2026-08-28");
+    expect(r.parIngredient.get("farine-complete")!.grammes).toBe(625);
+    expect(r.parIngredient.get("farine-epeautre")!.grammes).toBe(1000);
+  });
+
+  test("un fond d'épeautre se complète avec la T110", () => {
+    const fond = denree({ ingredient: "farine-epeautre", unites: 1, parUnite: { amount: 200, unit: "g" } });
+    const c = avec([fond, t110]);
+    const r = rejouer(c, cuisson({ remplacements: { "farine-complete": "farine-epeautre" } } as never), ctxDe(c), "2026-08-28");
+    expect(r.parIngredient.get("farine-epeautre")).toBeUndefined();
+    expect(r.parIngredient.get("farine-complete")!.grammes).toBe(825);
+  });
+
+  test("« il en reste ~200 g » pèse un fond, et la cuisson le complète", () => {
+    const fond = denree({ ingredient: "farine-epeautre", unites: 1, parUnite: null, etat: "entame" });
+    const c = avec([fond, t110]);
+    const evts: Evenement[] = [
+      { sorte: "observation", portee: "ingredient", zone: null, jour: "2026-08-27", saisi: "2026-08-27", maj: 1,
+        constats: [{ ingredient: "farine-epeautre", unites: null, grammes: 200 }] },
+      ...cuisson({ remplacements: { "farine-complete": "farine-epeautre" } } as never),
+    ];
+    const avant = rejouer(c, evts.slice(0, 1), ctxDe(c), "2026-08-27");
+    expect(avant.parIngredient.get("farine-epeautre")!.grammes).toBe(200);
+    const r = rejouer(c, evts, ctxDe(c), "2026-08-28");
+    expect(r.parIngredient.get("farine-epeautre")).toBeUndefined();
+    expect(r.parIngredient.get("farine-complete")!.grammes).toBe(825);
+  });
+
+  test("le choix de la fiche l'emporte", () => {
+    const c = avec([epeautre, t110]);
+    const r = rejouer(c, cuisson({ remplacements: { "farine-complete": "farine-epeautre" } } as never), ctxDe(c), "2026-08-28");
+    expect(r.parIngredient.get("farine-epeautre")!.grammes).toBe(625);
+    expect(r.parIngredient.get("farine-complete")!.grammes).toBe(1000);
+  });
+});

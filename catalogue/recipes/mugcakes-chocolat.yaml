@@ -38,7 +38,7 @@ recipe:
     - {id: huile-coco, name: huile de coco vierge, qty: 30, unit: g}
     - {id: chocolat-noir, name: chocolat noir pâtissier à 70 %, qty: 60, unit: g}
     - {id: oeufs, name: œuf, qty: 1, unit: pièce}
-    - {id: farine-epeautre, name: farine demi-complète de grand épeautre ou de blé, qty: 30, unit: g}
+    - {id: farine-epeautre, name: farine demi-complète de grand épeautre ou de blé, qty: 30, unit: g, subs: [{id: farine-complete, name: "farine de blé semi-complète", ratio: 1.0}]}
     - {id: poudre-a-lever, name: poudre à lever, qty: 1, unit: c. à c.}
     - {id: fleur-de-sel, name: fleur de sel, qty: 1, unit: pincée, seasoning: true}
 

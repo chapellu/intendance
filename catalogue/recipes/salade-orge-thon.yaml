@@ -47,7 +47,7 @@ recipe:
     - {id: orge, name: "orge perlé (orge blanc) ou mondé (orge complet)", qty: 500, unit: g}
     - {id: oeufs, name: œufs, qty: 6, unit: pièce}
     - {id: thon-boite, name: thon au naturel, qty: 400, unit: g}
-    - {id: tomates-cerises, name: "tomates cerise, ou à défaut des tomates normales coupées en cubes", qty: 300, unit: g}
+    - {id: tomates-cerises, name: "tomates cerise, ou à défaut des tomates normales coupées en cubes", qty: 300, unit: g, subs: [{id: tomates, name: "tomates", ratio: 1.0}]}
     - {id: olives-noires, name: olives noires dénoyautées, qty: 12, unit: pièce}
     - {id: cebette, name: cébette, qty: 1, unit: pièce}
     - {id: huile-olive, name: huile d'olive, qty: 6, unit: c. à s.}

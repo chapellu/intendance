@@ -37,7 +37,7 @@ recipe:
       qty: 200
       unit: g
       subs:
-        - {name: saumon sauvage, note: "variante de l'autrice : vinaigre → citron, persil → aneth", ratio: 1.0}
+        - {id: saumon, name: saumon sauvage, note: "variante de l'autrice : vinaigre → citron, persil → aneth", ratio: 1.0}
     - {id: riz, name: "riz basmati demi-complet, cuisson normale et non rapide", qty: 100, unit: g}
     - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
     - {id: vinaigre, name: vinaigre de cidre, qty: 2, unit: c. à s.}

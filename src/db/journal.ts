@@ -76,6 +76,8 @@ export interface Cuisson {
    * répondre « nulle part ».
    */
   rienGarde?: boolean;
+  /** T167 — ce que la fiche a pris à la place, par `ref` de ligne. */
+  remplacements?: Record<string, string>;
   /**
    * Le foyer contre lequel les `emits` ont été déclarés — T108.
    *
@@ -105,7 +107,7 @@ export interface Cuisson {
  */
 export async function journaliserCuisson(
   base: Base,
-  { jour, repas, plat, parts, rangement, sortie, rienGarde = false, foyer, midi = 0 }: Cuisson,
+  { jour, repas, plat, parts, rangement, sortie, rienGarde = false, remplacements, foyer, midi = 0 }: Cuisson,
   aujourdhui = new Date(),
 ): Promise<number> {
   const saisi = jourISO(aujourdhui);
@@ -250,6 +252,7 @@ export async function journaliserCuisson(
     const evt: EvtCuisine = {
       sorte: "cuisine", jour, saisi, repas, plat: plat.id, parts, maj,
       ...(sortie ? { sortie } : {}),
+      ...(remplacements && Object.keys(remplacements).length ? { remplacements } : {}),
     };
     return (await base.evenements.add(evt as never)) as number;
   });
@@ -331,6 +334,29 @@ export async function observerIngredient(
     jour,
     saisi: jour,
     constats: [{ ingredient, unites, ...(reste ? { reste } : {}) }],
+    maj: Date.now(),
+  };
+  return (await base.evenements.add(evt as never)) as number;
+}
+
+/**
+ * « Il en reste ~200 g, en tout » — T167. Le poids d'un fond, dit depuis la
+ * fiche au moment où il compte : quand la recette en demande 375 g.
+ */
+export async function observerPoids(
+  base: Base,
+  ingredient: string,
+  grammes: number,
+  aujourdhui = new Date(),
+): Promise<number> {
+  const jour = jourISO(aujourdhui);
+  const evt: Evenement = {
+    sorte: "observation",
+    portee: "ingredient",
+    zone: null,
+    jour,
+    saisi: jour,
+    constats: [{ ingredient, unites: null, grammes }],
     maj: Date.now(),
   };
   return (await base.evenements.add(evt as never)) as number;

@@ -6,6 +6,7 @@
 //
 // Port de `apps/proto-shell/comptoir.js` (`CHAUFFE`, `ecranCuisine`).
 
+import { retenir } from "../model/remplacants";
 import { commeIngredient, echelleTexte, quantiteACuire } from "../model/calcul";
 import { dejaLaPour, ROLES, type Choix, type Jeu } from "../model/jeu";
 import type { Catalogue, Espace, Etape, Foyer, Ingredient, Outil, Plat } from "../model/types";
@@ -213,6 +214,9 @@ export interface Provenance {
   label: string;
   /** Vrai quand la ligne finit sur la liste de courses. */
   acheter: boolean;
+  /** T167 — l'ingrédient que la ligne prend vraiment, quand c'est un
+   *  remplaçant : « farine de grand épeautre » sous « farine T110 ». */
+  avec?: { id: string; nom: string; ratio: number };
 }
 
 /**
@@ -239,17 +243,26 @@ export function provenanceIngredient(
    *  « J'en ai », touché sur la fiche, y entre : sans lui la ligne restait
    *  « à acheter » sous le doigt qui venait de dire le contraire. */
   enStock?: ReadonlySet<string>,
+  /** T167 — ce qu'un doigt a choisi sur la fiche, parmi l'original et ses
+   *  remplaçants. Absent, la ligne prend ce qui est là. */
+  choisi?: string | null,
 ): Provenance {
   const { catalogue } = jeu;
   if (ing.base) return { label: "base", acheter: true };
-  const cid = catalogue.rayons.aliases[ing.id] ?? ing.id;
-  if (catalogue.rayons.placard.includes(cid)) return { label: "placard", acheter: false };
-  if (enStock?.has(cid)) return { label: "en stock", acheter: false };
-  // Le relevé dit qu'il en reste. La fiche ne promet pas la quantité — elle ne
-  // la connaît pas —, elle dit seulement d'aller voir avant de partir acheter.
-  if (jeu.gardeManger.includes(cid)) return { label: "au garde-manger", acheter: false };
-  if (ou && dejaLaPour(jeu, ou.i, ou.plat).includes(cid)) return { label: "déjà là", acheter: false };
-  return { label: "à acheter", acheter: true };
+  const alias = (id: string) => catalogue.rayons.aliases[id] ?? id;
+  const deja = ou ? dejaLaPour(jeu, ou.i, ou.plat) : [];
+  const ou1 = (cid: string): Provenance | null => {
+    if (catalogue.rayons.placard.includes(cid)) return { label: "placard", acheter: false };
+    if (enStock?.has(cid)) return { label: "en stock", acheter: false };
+    // Le relevé dit qu'il en reste. La fiche ne promet pas la quantité — elle ne
+    // la connaît pas —, elle dit seulement d'aller voir avant de partir acheter.
+    if (jeu.gardeManger.includes(cid)) return { label: "au garde-manger", acheter: false };
+    if (deja.includes(cid)) return { label: "déjà là", acheter: false };
+    return null;
+  };
+  const r = retenir(ing, (cid) => ou1(cid) !== null, alias, choisi);
+  const p = ou1(alias(r.id)) ?? { label: "à acheter", acheter: true };
+  return r.remplacant ? { ...p, avec: { id: r.id, nom: r.remplacant.nom, ratio: r.ratio } } : p;
 }
 
 /* ────────────────────────────────────────────────────────────────── le rôle */
@@ -711,3 +724,22 @@ export function phraseAussi(aussi: readonly number[]): string {
  * minuteur partout de T83 : une ligne lue trois fois puis jamais plus.
  */
 export const SANS_USES = "Les quantités de cette étape ne sont pas notées — elles sont dans « Ingrédients ».";
+
+/**
+ * T167 — CE QU'IL EN RESTE, QUAND ÇA NE SUFFIT PAS. « Il me reste plus
+ * beaucoup d'épeautre » : la fiche disait « en stock » d'un fond de sac devant
+ * 380 g. Elle le dit maintenant, en grammes quand le stock les connaît, et
+ * « entamé » quand il ne sait qu'une chose — que le sac est ouvert.
+ * `null` quand il n'y a rien à dire : assez, ou rien de connu.
+ */
+export function resteCourt(
+  etat: { grammes: number | null; lots: readonly { etat: string }[] } | undefined,
+  besoin: { qty: number; unit: string },
+): string | null {
+  if (!etat || etat.lots.length === 0) return null;
+  if (etat.grammes != null) {
+    if (besoin.unit !== "g" || etat.grammes >= besoin.qty - 0.5) return null;
+    return `reste ~${Math.round(etat.grammes)} g`;
+  }
+  return etat.lots.every((l) => l.etat === "entame") ? "entamé · à vérifier" : null;
+}

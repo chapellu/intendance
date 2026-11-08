@@ -111,7 +111,7 @@ recipes:
     ingredients:
       - {id: sauce-bolognaise-ing, name: sauce bolognaise, qty: 500, unit: g, from_accepts: true}
       - {id: pates, name: "pâtes longues (spaghetti, linguine)", qty: 350, unit: g}
-      - {id: fromage-rape, name: parmesan ou comté râpé, qty: 60, unit: g}
+      - {id: fromage-rape, name: parmesan ou comté râpé, qty: 60, unit: g, subs: [{id: parmesan, name: "parmesan", ratio: 1.0}]}
     steps:
       - id: eau
         action: "Porter une grande casserole d'eau salée à ébullition"

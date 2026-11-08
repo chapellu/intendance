@@ -44,7 +44,7 @@ recipe:
       qty: 100
       unit: g
       subs:
-        - {name: truite fumée, note: "l'autrice donne truite, maquereau au poivre ou haddock", ratio: 1.0}
+        - {id: truite-fumee, name: truite fumée, note: "l'autrice donne truite, maquereau au poivre ou haddock", ratio: 1.0}
     - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
     - {id: poivre-5-baies, name: poivre 5 baies, qty: 1, unit: pincée, seasoning: true}
 

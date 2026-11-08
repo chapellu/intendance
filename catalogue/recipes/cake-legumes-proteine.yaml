@@ -33,7 +33,7 @@ recipe:
     origine: francais
 
   ingredients:
-    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 250, unit: g}
+    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 250, unit: g, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
     - {id: poudre-a-lever, name: poudre à lever, qty: 1, unit: pièce}
     - {id: courgettes, name: courgettes râpées, qty: 250, unit: g}
     - {id: tomme-savoie, name: tomme de chèvre râpée, qty: 200, unit: g}

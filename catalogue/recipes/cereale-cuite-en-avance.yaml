@@ -46,8 +46,8 @@ recipe:
       qty: 500
       unit: g
       subs:
-        - {name: gruau d'avoine, note: "le mijoté p. 91 en réclame 200 g cuits", ratio: 1.0}
-        - {name: petit épeautre, note: "la niçoise p. 93 en réclame 200 g cuits", ratio: 1.0}
+        - {id: gruau-avoine, name: gruau d'avoine, note: "le mijoté p. 91 en réclame 200 g cuits", ratio: 1.0}
+        - {id: petit-epeautre, name: petit épeautre, note: "la niçoise p. 93 en réclame 200 g cuits", ratio: 1.0}
     - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
     - {id: eau, name: eau, qty: 2000, unit: ml}
 

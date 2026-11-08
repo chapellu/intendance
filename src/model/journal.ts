@@ -34,10 +34,12 @@
 // de plus. Confondre les deux ferait rejouer six mois de cuisine pour savoir
 // s'il reste de la bolognaise, alors qu'il suffit d'ouvrir le tiroir.
 
+import { repartir, retenir } from "./remplacants";
 import { facteur } from "./calcul";
 import { enUniteDeCompte } from "./unites";
 import type {
   Catalogue, Denree, Espace, Etat, Plat, Quantite, RepasId,
+  Remplacant,
 } from "./types";
 import { boitesDeLaLigne, boitesDuCatalogue, contenuDUnite, type Boite } from "./paquet";
 
@@ -103,6 +105,12 @@ export interface EvtCuisine extends Commun {
    * un doute : une ration connue n'est pas une incertitude.
    */
   routine?: true;
+  /**
+   * T167 — ce qu'un doigt a pris à la place, par `ref` de ligne : « farine
+   * T110 » → `farine-epeautre`. Absent, le rejeu prend ce qui est là (voir
+   * `retenir`) : l'original s'il a un lot, sinon le premier remplaçant qui en a.
+   */
+  remplacements?: Record<string, string>;
 }
 
 /**
@@ -118,6 +126,13 @@ export interface Constat {
    *  non ». Une quantité par défaut obligerait à peser pour répondre, donc on
    *  ne répondrait pas, donc l'app cesserait de demander. */
   reste?: "oui" | "peu" | "non";
+  /**
+   * T167 — « il en reste ~200 g, en tout ». Un fond de sac se pèse à l'œil, il
+   * ne se compte pas : sans ce champ, la farine entamée restait « un fond » sans
+   * poids, et rien ne pouvait dire qu'elle ne suffirait pas pour 375 g. Remplace
+   * tous les lots de l'ingrédient (ou de la zone) par UN entamé de ce poids.
+   */
+  grammes?: number;
 }
 
 /**
@@ -759,6 +774,9 @@ export function retirer(
 /** Ce qu'une ligne de recette réclame du placard, mise à l'échelle. */
 export interface Demande {
   ingredient: string;
+  /** T167 — la ligne d'où vient la demande, et ce qui la remplace. */
+  ref: string;
+  remplacants?: readonly Remplacant[];
   /** `null` quand l'unité n'est pas une masse — « 2 gousses » ne se soustrait
    *  pas d'un poids, et prétendre le contraire fabriquerait un faux chiffre. */
   grammes: number | null;
@@ -786,6 +804,8 @@ export function demandes(plat: Plat, facteur: number): Demande[] {
     const u = enUniteDeCompte(ing.id, ing.qty, ing.unit);
     out.push({
       ingredient: ing.id,
+      ref: ing.ref,
+      ...(ing.remplacants ? { remplacants: ing.remplacants } : {}),
       grammes: EN_GRAMMES.has(u.unit) ? u.qty * facteur : null,
       pieces: enPieces(u.unit) ? Math.ceil(u.qty * facteur - 1e-9) : null,
       unite: u.unit,
@@ -989,7 +1009,30 @@ export function rejouer(
       // dérivait d'un sac par mois (année simulée n° 9), le beurre des
       // fournées aussi. Une ration de routine (`parts = portions`) n'y change rien.
       const f = plat.portions > 0 ? facteur(plat, e.parts) : 1;
-      for (const d of demandes(plat, f)) {
+      // T167 — LA FARINE QU'ON A PRISE, PAS CELLE QUE LA RECETTE NOMME : le
+      // choix de la fiche s'il y en a un, sinon ce qui a un lot. Et un fond
+      // pesé qui ne suffit pas se complète avec l'option suivante (`repartir`).
+      const aRetirer = demandes(plat, f).flatMap((brute) => {
+        if (!brute.remplacants?.length) return [brute];
+        const choisi = e.remplacements?.[brute.ref];
+        const stock = (x: string) => {
+          const l = lots.get(x);
+          return l && l.length ? mesurer(l).grammes : 0;
+        };
+        const ligne = { id: brute.ingredient, remplacants: brute.remplacants, unit: brute.grammes != null ? "g" : brute.unite };
+        if (brute.grammes != null) {
+          return repartir(ligne, brute.grammes, stock, ctx.alias, choisi).map((p) => ({
+            ...brute, ingredient: p.id, grammes: p.qty,
+          }));
+        }
+        const r = retenir(ligne, (x) => stock(x) !== 0, ctx.alias, choisi);
+        return [{
+          ...brute,
+          ingredient: r.id,
+          pieces: brute.pieces == null ? null : Math.ceil(brute.pieces * r.ratio - 1e-9),
+        }];
+      });
+      for (const d of aRetirer) {
         const id = ctx.alias(d.ingredient);
         const l = lots.get(id);
         // Une ration sans lot ne dit rien : le lait n'a jamais été rentré, le
@@ -1100,6 +1143,26 @@ export function rejouer(
         const ici = cadre ? l.filter((x) => x.zone === cadre) : l;
         ajusterUnites(ici, id, c.unites, e.zone);
         const apres = cadre ? [...l.filter((x) => x.zone !== cadre), ...ici] : ici;
+        if (apres.length === 0) lots.delete(id);
+        else lots.set(id, apres);
+      }
+
+      if (c.grammes != null) {
+        const l = lots.get(id) ?? [];
+        const ici = cadre ? l.filter((x) => x.zone === cadre) : l;
+        const autres = cadre ? l.filter((x) => x.zone !== cadre) : [];
+        const modele = ici.find((x) => x.entame != null || x.etat === "entame") ?? ici[0];
+        const pese: LotPlacard = {
+          ingredient: id,
+          zone: modele?.zone ?? e.zone ?? "placard-haut",
+          unites: 0,
+          // Le poids d'une unité, s'il est connu ; sinon ce fond EST l'unité.
+          parUnite: modele?.parUnite ?? { amount: c.grammes, unit: "g" },
+          etat: "entame",
+          entame: c.grammes,
+          court: false,
+        };
+        const apres = c.grammes > 0 ? [...autres, pese] : autres;
         if (apres.length === 0) lots.delete(id);
         else lots.set(id, apres);
       }

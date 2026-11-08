@@ -42,7 +42,7 @@ recipe:
   ingredients:
     - {id: lait-soja-vanille, name: "lait de soja-vanille (aucun autre lait végétal ne conviendrait aussi bien)", qty: 1, unit: l}
     - {id: riz-arborio, name: "riz rond à risotto (arborio ou carnaroli)", qty: 150, unit: g}
-    - {id: sucre-roux, name: "cassonade — ou 4 c. à s. de sirop d'agave", qty: 6, unit: c. à s.}
+    - {id: sucre-roux, name: "cassonade — ou 4 c. à s. de sirop d'agave", qty: 6, unit: c. à s., subs: [{id: sirop-agave, name: "sirop d’agave", ratio: 0.67}]}
     - {id: gousse-vanille, name: gousse de vanille, qty: 1, unit: pièce}
     - {id: rhum, name: rhum ambré, qty: 3, unit: cl}
     - {id: creme-coco, name: briquette de crème de coco liquide, qty: 20, unit: cl}

@@ -38,7 +38,7 @@ recipe:
     - {id: eau, name: eau bouillante, qty: 200, unit: ml}
     - {id: chevre-demi-sec, name: fromage de chèvre demi-sec, qty: 50, unit: g}
     - {id: ciboulette, name: ciboulette, qty: 1, unit: petit bouquet}
-    - {id: farine, name: "farine de blé ou d'épeautre — ou de riz, pour une version totalement sans gluten", qty: 2, unit: c. à s.}
+    - {id: farine, name: "farine de blé ou d'épeautre — ou de riz, pour une version totalement sans gluten", qty: 2, unit: c. à s., subs: [{id: farine-epeautre, name: "farine d’épeautre", ratio: 1.0}]}
     - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
     - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
     - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}

@@ -64,10 +64,10 @@ recipe:
     - {id: carottes, name: carotte, qty: 120, unit: g}
     - {id: oignon, name: petit oignon, qty: 1, unit: pièce}
     - {id: thon-boite, name: thon égoutté, qty: 140, unit: g}
-    - {id: farine-complete, name: farine semi-complète de blé ou de grand épeautre, qty: 40, unit: g}
+    - {id: farine-complete, name: farine semi-complète de blé ou de grand épeautre, qty: 40, unit: g, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
     - {id: poudre-a-lever, name: poudre à lever, qty: 1, unit: sachet}
     - {id: citron, name: jus d'un citron, qty: 1, unit: pièce}
-    - {id: parmesan, name: parmesan ou gruyère râpé (facultatif), qty: 100, unit: g}
+    - {id: parmesan, name: parmesan ou gruyère râpé (facultatif), qty: 100, unit: g, subs: [{id: fromage-rape, name: "fromage râpé", ratio: 1.0}]}
     - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
     - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
     - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}

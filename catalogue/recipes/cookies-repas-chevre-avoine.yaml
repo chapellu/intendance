@@ -27,7 +27,7 @@ recipe:
 
   ingredients:
     - {id: flocons-avoine, name: petits flocons d'avoine, qty: 50, unit: g}
-    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 30, unit: g}
+    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 30, unit: g, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
     - {id: chevre-buche, name: bûche de chèvre bio, qty: 70, unit: g}
     - {id: origan, name: origan séché, qty: 1, unit: c. à c.}
     - {id: olives-noires, name: "olives noires dénoyautées, en tranches fines", qty: 8, unit: pièce}

@@ -34,7 +34,7 @@ recipe:
     origine: francais
 
   ingredients:
-    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 125, unit: g}
+    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 125, unit: g, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
     - {id: son-avoine, name: son d'avoine, qty: 50, unit: g}
     - {id: poudre-a-lever, name: poudre à lever, qty: 1, unit: pièce}
     - {id: yaourt-soja, name: yaourt de soja, qty: 100, unit: g}
