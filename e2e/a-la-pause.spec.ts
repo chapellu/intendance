@@ -78,7 +78,15 @@ test("un seul tap : « Je lance ça » sur la ligne du cockpit pose le plat et o
   const ligne = page.locator(".co-tache", { hasText: "Ce soir :" });
   await expect(ligne).toBeVisible({ timeout: 30_000 });
   const titre = (await ligne.locator(".t").innerText()).replace(/^Ce soir : /, "").trim();
-  await ligne.getByRole("button", { name: LIBELLE_LANCER }).dispatchEvent("click");
+  // LE BOUTON NAÎT DÉSACTIVÉ, et `dispatchEvent` ne l'attend pas (T173).
+  // « Je lance ça » lit sa propre semaine (`Lancer`, `useSemaine`) et reste
+  // désactivé tant qu'elle n'est pas là ; la ligne, elle, s'affiche avant. Un
+  // clic envoyé sur un bouton désactivé n'arrive à personne : le parcours
+  // restait au cockpit 6 fois sur 15, en local. Un doigt, lui, voit le bouton
+  // grisé et attend — le parcours fait de même.
+  const lancer = ligne.getByRole("button", { name: LIBELLE_LANCER });
+  await expect(lancer).toBeEnabled({ timeout: 30_000 });
+  await lancer.dispatchEvent("click");
 
   await expect(page).toHaveURL(new RegExp(`#/cuisine/cuisiner/${aujourdhuiISO()}/diner$`));
   await expect(page.locator(".co-fiche-tete .t")).toHaveText(titre);
