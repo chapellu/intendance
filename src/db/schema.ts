@@ -35,6 +35,23 @@
 
 import type { Appris } from "../model/ticketCorrespondance";
 import type { Echeance, Enveloppe } from "../model/budget";
+import type { Classement, OperationEnBase } from "../model/reel";
+
+/** Un compte vu dans un relevé. L'IBAN n'y est PAS : seulement son empreinte
+ *  (l'identifiant) et quatre chiffres pour que l'écran le reconnaisse. */
+export interface Compte {
+  id: string;
+  nom: string;
+  /** Les quatre derniers chiffres du numéro de compte, pour l'œil. */
+  fin: string;
+  /** Le dernier jour couvert par un relevé importé. */
+  jusquau: string;
+}
+
+export interface RegleClassement {
+  motif: string;
+  classement: Classement;
+}
 import Dexie, { type EntityTable } from "dexie";
 import type { Evenement } from "../model/journal";
 import type { EmitKind, Espace, RepasId } from "../model/types";
@@ -192,7 +209,7 @@ export interface Reglage {
 // La v1 n'a pas d'`upgrade` : il ne s'exécuterait sur aucune base existante,
 // puisqu'il n'en existe aucune. Une migration vide écrite « pour la forme »
 // est une migration qu'on croit avoir testée.
-export const VERSION = 4;
+export const VERSION = 5;
 
 const SCHEMAS: Record<number, Record<string, string>> = {
   1: {
@@ -235,6 +252,15 @@ const SCHEMAS: Record<number, Record<string, string>> = {
     echeances: "id",
     enveloppes: "id",
   },
+  // v5 — LES RELEVÉS. Les comptes (par EMPREINTE d'IBAN, jamais l'IBAN), les
+  // opérations importées, et les règles de classement par motif. Trois tables
+  // neuves, vides : pas d'`upgrade`. `jour` est indexé parce que le mois réel
+  // se lit par plage de dates ; `compte` parce qu'on oublie un compte entier.
+  5: {
+    comptes: "id",
+    operations: "cle, compte, jour",
+    classements: "motif",
+  },
 };
 
 export class Base extends Dexie {
@@ -246,6 +272,9 @@ export class Base extends Dexie {
   libelles!: EntityTable<Appris, "cle">;
   echeances!: EntityTable<Echeance, "id">;
   enveloppes!: EntityTable<Enveloppe, "id">;
+  comptes!: EntityTable<Compte, "id">;
+  operations!: EntityTable<OperationEnBase, "cle">;
+  classements!: EntityTable<RegleClassement, "motif">;
 
   constructor(nom = "intendance") {
     super(nom);

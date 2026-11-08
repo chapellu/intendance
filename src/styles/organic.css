@@ -1308,3 +1308,27 @@ button.bu-chiffre { cursor: pointer; outline: 1px dashed var(--color-neutral-500
 .aj-puce.bu-choisie { background: var(--color-neutral-800); color: var(--color-bg); }
 .bu-boutons { display: flex; flex-direction: column; gap: var(--space-1); }
 .bu-boutons .aj-go { margin-top: var(--space-1); }
+
+/* — budget : les relevés et le mois réel — */
+.bu-import { margin: var(--space-2) 0; position: relative; overflow: hidden; }
+.bu-import.occupe { opacity: .7; }
+.bu-resultats { list-style: none; margin: var(--space-2) 0 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.bu-resultats li { font-size: 12.5px; line-height: 1.4; padding: var(--space-2); border-radius: var(--radius-md); }
+.bu-resultats li.ok { background: var(--color-accent-2-100); color: var(--color-accent-2-900); }
+.bu-resultats li.refus { background: var(--color-accent-100); color: var(--color-accent-900); }
+.bu-mois { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+.bu-mois .co-pilule { flex: none; border: 0; cursor: pointer; font: inherit; font-size: 13px; font-weight: 700; }
+.bu-mois .co-pilule.actif { background: var(--color-neutral-800); color: var(--color-bg); }
+.bu-chiffre.fort.negatif { background: var(--color-accent-200); color: var(--color-accent-900); }
+
+.bu-reel { padding: var(--space-2) var(--space-1); border-bottom: 1px solid var(--color-neutral-300); }
+.bu-reel .tete { display: flex; justify-content: space-between; gap: var(--space-2); font-size: 14px; }
+.bu-reel .tete .nom { font-weight: 700; }
+.bu-reel .tete .v { font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.bu-reel .tete .prevu { font-weight: 400; color: var(--color-neutral-700); }
+.bu-reel .jauge { height: 6px; border-radius: 999px; margin-top: 6px; background: var(--color-neutral-200); overflow: hidden; }
+.bu-reel .jauge span { display: block; height: 100%; background: var(--color-accent-2-500); }
+.bu-reel.depasse .jauge span { background: var(--color-accent-500); }
+
+.bu-toutes { margin-top: var(--space-6); }
+.bu-toutes summary { cursor: pointer; font-size: 13px; font-weight: 700; color: var(--color-neutral-700); padding: var(--space-2) 0; }
