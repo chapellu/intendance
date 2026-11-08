@@ -57,3 +57,21 @@ test("un relevé PDF s'importe une fois, se classe par motif, et un relevé faux
   await page.getByRole("button", { name: "Effacer" }).dispatchEvent("click");
   await expect(page.getByText("Aucun relevé importé")).toBeVisible();
 });
+
+// SAFARI N'ITÈRE PAS UN `ReadableStream` (`for await (… of flux)`), et pdf.js le
+// fait dans `getTextContent`. Le premier import sur iPhone est tombé là :
+// « TypeError: undefined is not a function (near '...i of e...') ». On retire
+// à Chromium cet itérateur AVANT que l'app se charge : c'est Safari, pour ce
+// qui compte ici, et la lecture doit passer quand même.
+test("comme sur Safari : un flux sans itérateur asynchrone ne casse pas la lecture", async ({ page }) => {
+  test.setTimeout(120_000);
+  await page.addInitScript(() => {
+    delete (ReadableStream.prototype as unknown as Record<symbol, unknown>)[Symbol.asyncIterator];
+    delete (ReadableStream.prototype as unknown as Record<string, unknown>)["values"];
+  });
+  await page.goto("/#/budget/releves");
+  await attendreLApp(page);
+  expect(await page.evaluate(() => Symbol.asyncIterator in ReadableStream.prototype)).toBe(false);
+  await deposer(page, await pdfDe(page, releve1()));
+  await expect(page.getByTestId("releve-resultats")).toContainText("6 opérations ajoutées · totaux vérifiés", { timeout: 60_000 });
+});

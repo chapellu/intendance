@@ -73,6 +73,35 @@ export function texteDeLaPage(morceaux: readonly MorceauPdf[]): string {
   return lignes.join("\n");
 }
 
+/** Un morceau de texte tel que pdf.js le rend — ou une marque de contenu,
+ *  sans `str`, qu'on écarte. */
+type ElementDeTexte = { str: string; transform: unknown; width: number } | { type: string };
+
+/**
+ * Les éléments de texte d'une page, lus AU LECTEUR.
+ *
+ * PAS `page.getTextContent()`, ET C'EST SAFARI QUI L'A DIT. Elle fait
+ * `for await (… of flux)` sur un `ReadableStream` ; WebKit ne donne pas
+ * d'itérateur asynchrone aux flux, et le build legacy de pdf.js ne le comble
+ * pas. Sur iPhone, tout PDF tombait sur « TypeError: undefined is not a
+ * function (near '...i of e...') » — la facture drive comme les relevés.
+ * `streamTextContent()` est le même flux, et `getReader()` existe partout.
+ * `e2e/releves.spec.ts` retire l'itérateur à Chromium pour le tenir.
+ */
+async function elementsDeTexte(flux: ReadableStream): Promise<ElementDeTexte[]> {
+  const lecteur = flux.getReader();
+  const elements: ElementDeTexte[] = [];
+  try {
+    for (;;) {
+      const { done, value } = (await lecteur.read()) as { done: boolean; value?: { items: ElementDeTexte[] } };
+      if (done) return elements;
+      if (value) elements.push(...value.items);
+    }
+  } finally {
+    lecteur.releaseLock();
+  }
+}
+
 /** Le texte d'un PDF, page par page, séparées par un saut de page (`\f`). */
 export async function lirePdf(document: Blob, progres: (p: number) => void): Promise<string> {
   // L'ORDRE COMPTE : le module du worker pose `globalThis.pdfjsWorker`, et
@@ -94,9 +123,8 @@ export async function lirePdf(document: Blob, progres: (p: number) => void): Pro
     const pages: string[] = [];
     for (let n = 1; n <= doc.numPages; n += 1) {
       const page = await doc.getPage(n);
-      const contenu = await page.getTextContent();
       const morceaux: MorceauPdf[] = [];
-      for (const it of contenu.items) {
+      for (const it of await elementsDeTexte(page.streamTextContent())) {
         if (!("str" in it)) continue;
         const [a, b, , , x, y] = it.transform as number[];
         morceaux.push({ str: it.str, x: x ?? 0, y: y ?? 0, taille: Math.hypot(a ?? 0, b ?? 0) || 8, largeur: it.width });
