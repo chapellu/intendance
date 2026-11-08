@@ -144,6 +144,9 @@ interface Gabarit {
   nouveau: RegExp;
   /** Le signe d'un solde : par son mot (« débiteur ») ou par sa colonne. */
   signe: (ligne: string, sens: "debit" | "credit") => 1 | -1;
+  /** Le gabarit écrit-il ses libellés dans le vieux jeu français (ISO 646-FR,
+   *  `{` pour é) ? Voir `accentsIso646`. */
+  iso646: boolean;
   /** La ligne des totaux compte-t-elle l'ancien solde dans sa colonne ?
    *  Certains relevés l'additionnent aux mouvements, si bien que « crédit −
    *  débit » des totaux y donne directement le nouveau solde. */
@@ -166,6 +169,7 @@ const GABARITS: readonly Gabarit[] = [
     total: /\bTOTAL DES OP[ÉE]RATIONS\b/i,
     nouveau: /\bNOUVEAU SOLDE\b/i,
     signe: (l) => (/D[ÉE]BITEUR/i.test(l) ? -1 : 1),
+    iso646: false,
     totauxAvecAncien: false,
     periode: (t) => {
       const a = /\bANCIEN SOLDE\b[^\n]*?\bAU\s+([^\n]*?\d{4})/i.exec(t);
@@ -184,6 +188,8 @@ const GABARITS: readonly Gabarit[] = [
     total: /^\s*TOTAUX\b|\s{2,}TOTAUX\b/,
     nouveau: /\bSOLDE EN EUROS\b/,
     signe: parColonne,
+    // Relevé réel : les lettres accentuées des libellés y sont des accolades.
+    iso646: true,
     // Relevé réel : l'écart entre les crédits lus et le total imprimé était
     // EXACTEMENT l'ancien solde, et « total crédit − total débit » le solde
     // final. Le total est un cumul, pas une somme des mouvements.
@@ -245,6 +251,36 @@ function annee(mois: number, fin: string): number {
 }
 
 const resserrer = (s: string): string => s.replace(/\s+/g, " ").trim();
+
+/**
+ * Les accents d'un libellé écrit dans le VIEUX JEU FRANÇAIS — ISO 646-FR, celui
+ * des terminaux d'avant l'ASCII étendu, où les accolades et la barre tenaient
+ * la place des lettres accentuées : `{` é, `}` è, `|` ù, `\` ç, `@` à. Un
+ * « Prélèvement » saisi au guichet s'y imprime « Pr{l}vement ».
+ *
+ * Ces signes n'ont rien à faire dans un libellé bancaire : on les remplace
+ * partout dans un gabarit qui écrit ainsi, et nulle part ailleurs.
+ *
+ * L'arobase seulement quand elle n'est pas collée à deux lettres : entre deux,
+ * c'est une adresse, et elle reste. La casse suit les voisines : entre deux
+ * majuscules, c'est É.
+ */
+export function accentsIso646(texte: string): string {
+  const LETTRES: Record<string, string> = { "{": "é", "}": "è", "|": "ù", "\\": "ç", "@": "à" };
+  const lettre = (c: string | undefined): boolean => !!c && /[A-Za-zÀ-ÿ0-9]/.test(c);
+  const majuscule = (c: string | undefined): boolean => !!c && /[A-ZÀ-Þ]/.test(c);
+  let sortie = "";
+  for (let i = 0; i < texte.length; i++) {
+    const c = texte[i]!;
+    const avant = texte[i - 1];
+    const apres = texte[i + 1];
+    let l = LETTRES[c];
+    if (l && c === "@" && lettre(avant) && lettre(apres)) l = undefined;
+    if (l && majuscule(avant) && (majuscule(apres) || !lettre(apres))) l = l.toUpperCase();
+    sortie += l ?? c;
+  }
+  return sortie;
+}
 
 /**
  * Une ligne de détail qui DIT quelque chose — le motif d'un virement, le nom
@@ -328,7 +364,8 @@ export function lireReleve(texte: string): Lecture {
         // Le libellé s'arrête avant le montant (et, pour un gabarit dont la
         // date de valeur suit le libellé, l'expression l'a déjà coupé avant).
         const debutLibelle = ligne.indexOf(libelleBrut);
-        const libelle = resserrer(libelleBrut.slice(0, Math.max(0, mv.debut - debutLibelle)));
+        const brut = resserrer(libelleBrut.slice(0, Math.max(0, mv.debut - debutLibelle)));
+        const libelle = g.iso646 ? accentsIso646(brut) : brut;
         colLibelle = debutLibelle;
         derniere = {
           jour: iso(annee(mois, fin), mois, Number(op.groups["jour"])),
@@ -345,7 +382,8 @@ export function lireReleve(texte: string): Lecture {
       // sous-total, un solde intermédiaire). Sinon, du texte de page.
       const retrait = ligne.length - ligne.trimStart().length;
       if (derniere && colLibelle >= 0 && Math.abs(retrait - colLibelle) <= 6 && !mouvement(ligne, col)) {
-        if (derniere.detail.length < 3 && parlant(ligne)) derniere.detail.push(resserrer(ligne));
+        if (derniere.detail.length < 3 && parlant(ligne))
+          derniere.detail.push(g.iso646 ? accentsIso646(resserrer(ligne)) : resserrer(ligne));
       } else derniere = null;
     }
   }

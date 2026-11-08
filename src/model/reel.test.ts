@@ -14,6 +14,8 @@ const ops = [
   op("2026-09-10", "VERS EPARGNE", -50_000),
   op("2026-09-10", "VERS EPARGNE", 50_000, "b"),
   op("2026-09-12", "INCONNU", -999),
+  op("2026-09-15", "VERSEMENT PLACEMENT", -20_000),
+  op("2026-09-20", "VERSEMENT PLACEMENT", 5_000), // un retrait partiel
   op("2026-08-30", "BOULANGERIE TEST", -800),
 ];
 
@@ -22,6 +24,7 @@ const regles = new Map<string, Classement>([
   ["BOULANGERIE TEST", { sorte: "depense", categorie: "alimentation", nature: "essentiel" }],
   ["MAGASIN TEST", { sorte: "depense", categorie: "loisirs", nature: "plaisir" }],
   ["VERS EPARGNE", { sorte: "interne" }],
+  ["VERSEMENT PLACEMENT", { sorte: "epargne" }],
 ]);
 
 const type = moisType([], [], [{ id: "e", nom: "Courses", montant: 60_000, categorie: "alimentation", nature: "essentiel" }]);
@@ -37,6 +40,9 @@ describe("le mois réel", () => {
     // Le remboursement vient en déduction de sa catégorie, pas en revenu.
     expect(m.sorties).toBe(1_200 + 5_000 - 1_500);
     expect(m.internes).toBe(100_000);
+    // L'épargne n'est ni une dépense ni un virement interne : elle se compte à
+    // part, retraits déduits.
+    expect(m.epargne).toBe(15_000);
     expect(m.aClasser.map((o) => o.motif)).toEqual(["INCONNU"]);
     expect(m.montantAClasser).toBe(999);
   });

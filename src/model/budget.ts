@@ -61,6 +61,7 @@ export type Categorie =
   | "sante"
   | "assurances"
   | "impots"
+  | "telecom"
   | "abonnements"
   | "loisirs"
   | "vacances"
@@ -74,6 +75,7 @@ export const CATEGORIES: readonly Categorie[] = [
   "sante",
   "assurances",
   "impots",
+  "telecom",
   "abonnements",
   "loisirs",
   "vacances",
@@ -88,6 +90,10 @@ export const NOM_CATEGORIE: Record<Categorie, string> = {
   sante: "Santé",
   assurances: "Assurances",
   impots: "Impôts et taxes",
+  // SÉPARÉ DES ABONNEMENTS : la box et les forfaits sont un poste à eux, qu'on
+  // renégocie une fois l'an, quand les abonnements (vidéo, presse, sport) se
+  // résilient d'un geste. Les ranger ensemble cacherait l'un derrière l'autre.
+  telecom: "Téléphone et internet",
   abonnements: "Abonnements",
   loisirs: "Loisirs",
   vacances: "Vacances",

@@ -3,7 +3,7 @@
 
 import { describe, expect, test } from "vitest";
 import { releve1, releve2 } from "./releveBancaire.exemples";
-import { gabaritDe, ibanValide, lireReleve, motif } from "./releveBancaire";
+import { accentsIso646, gabaritDe, ibanValide, lireReleve, motif } from "./releveBancaire";
 
 describe("gabarit « date de valeur en tête »", () => {
   test("se reconnaît à son en-tête, et se relit juste", () => {
@@ -61,6 +61,8 @@ describe("gabarit « date de valeur en colonne »", () => {
       ["2026-12-28", "VIREMENT DE EXEMPLE", 210_000],
     ]);
     expect(r.operations[0]!.detail).toEqual(["pour le mois"]);
+    // Les accents du vieux jeu français sont rendus à la lecture.
+    expect(r.operations[1]!.detail).toEqual(["Prélèvement trimestriel"]);
   });
 
   test("un relevé arrêté en janvier range décembre dans l'année d'avant", () => {
@@ -88,5 +90,21 @@ describe("le motif d'un libellé", () => {
     expect(motif("CARTE 12/09 BOULANGERIE DU COIN 69")).toBe("BOULANGERIE DU COIN");
     expect(motif("PRLV SEPA Assurance Exemple")).toBe("ASSURANCE EXEMPLE");
     expect(motif("VIR.PERMANENT LOYER EXEMPLE")).toBe("LOYER EXEMPLE");
+  });
+});
+
+describe("le vieux jeu français (ISO 646-FR)", () => {
+  test("accolades, barre et antislash redeviennent des lettres accentuées", () => {
+    expect(accentsIso646("Pr{l}vement")).toBe("Prélèvement");
+    expect(accentsIso646("fa\\on o| tu veux")).toBe("façon où tu veux");
+  });
+
+  test("la casse suit les voisines", () => {
+    expect(accentsIso646("PR{L}VEMENT")).toBe("PRÉLÈVEMENT");
+  });
+
+  test("l'arobase devient « à », sauf collée à deux lettres — une adresse", () => {
+    expect(accentsIso646("remise @ domicile, voil@")).toBe("remise à domicile, voilà");
+    expect(accentsIso646("contact@exemple.fr")).toBe("contact@exemple.fr");
   });
 });

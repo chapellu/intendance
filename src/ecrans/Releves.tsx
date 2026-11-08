@@ -33,6 +33,7 @@ const NATURE_PROPOSEE: Record<Categorie, Nature> = {
   sante: "essentiel",
   assurances: "obligatoire",
   impots: "obligatoire",
+  telecom: "essentiel",
   abonnements: "plaisir",
   loisirs: "plaisir",
   vacances: "plaisir",
@@ -146,7 +147,10 @@ function Contenu({ d, type }: { d: DonneesReleves; type: ReturnType<typeof moisT
             ))}
           </div>
 
-          <div className="bu-chiffres">
+          {/* DEUX PAR DEUX : ce qui entre et ce qui sort, puis ce qu'on a mis de
+              côté et ce qui reste sur les comptes. L'épargne a sa case parce que
+              c'est le chiffre que tout le budget sert à faire grossir. */}
+          <div className="bu-chiffres deux">
             <div className="bu-chiffre">
               <span className="k">Entrées</span>
               <span className="n" data-test="entrees">{euros(m.entrees)}</span>
@@ -155,9 +159,14 @@ function Contenu({ d, type }: { d: DonneesReleves; type: ReturnType<typeof moisT
               <span className="k">Dépenses</span>
               <span className="n" data-test="sorties">{euros(m.sorties)}</span>
             </div>
-            <div className={`bu-chiffre fort${m.entrees - m.sorties < 0 ? " negatif" : ""}`}>
-              <span className="k">Reste</span>
-              <span className="n">{euros(m.entrees - m.sorties)}</span>
+            <div className="bu-chiffre fort">
+              <span className="k">Épargné</span>
+              <span className="n" data-test="epargne">{euros(m.epargne)}</span>
+              {type.capacite > 0 ? <span className="q">le mois type en permet {euros(type.capacite)}</span> : null}
+            </div>
+            <div className={`bu-chiffre${m.entrees - m.sorties - m.epargne < 0 ? " negatif" : ""}`}>
+              <span className="k">Reste sur les comptes</span>
+              <span className="n">{euros(m.entrees - m.sorties - m.epargne)}</span>
             </div>
           </div>
           <p className="co-note">
@@ -277,14 +286,16 @@ function motDuClassement(c: Classement | undefined): string {
   if (!c) return "à classer";
   if (c.sorte === "revenu") return "revenu";
   if (c.sorte === "interne") return "entre mes comptes";
+  if (c.sorte === "epargne") return "épargne";
   return `${NOM_CATEGORIE[c.categorie]} · ${NOM_NATURE[c.nature].toLowerCase()}`;
 }
 
 type Sorte = Classement["sorte"];
-const SORTES: { sorte: Sorte; nom: string }[] = [
-  { sorte: "depense", nom: "Dépense" },
-  { sorte: "revenu", nom: "Revenu" },
-  { sorte: "interne", nom: "Entre mes comptes" },
+const SORTES: { sorte: Sorte; nom: string; dit: string }[] = [
+  { sorte: "depense", nom: "Dépense", dit: "de l’argent qui part pour de bon" },
+  { sorte: "revenu", nom: "Revenu", dit: "salaire, allocations, remboursements de frais" },
+  { sorte: "epargne", nom: "Épargne", dit: "un versement vers un livret, une assurance-vie, un PEA" },
+  { sorte: "interne", nom: "Entre mes comptes", dit: "d’un compte courant à l’autre : ni gagné, ni dépensé" },
 ];
 
 function FeuilleClassement({
@@ -329,6 +340,7 @@ function FeuilleClassement({
             </button>
           ))}
         </div>
+        <em className="dit">{SORTES.find((s) => s.sorte === sorte)!.dit}</em>
       </div>
       {sorte === "depense" ? (
         <>
