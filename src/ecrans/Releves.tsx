@@ -70,10 +70,20 @@ function Contenu({ d, type }: { d: DonneesReleves; type: ReturnType<typeof moisT
     setEnCours(true);
     const res: Resultat[] = [];
     for (const f of fichiers) {
+      // L'ÉTAPE VA AVEC L'ERREUR. La première version disait « Ce PDF n'a pas
+      // pu être lu » pour tout ce qui lève, et le premier essai sur iPhone n'a
+      // rien pu dire de plus : ni si pdf.js avait échoué, ni la base. Le
+      // message d'une exception ne porte aucune donnée du relevé — c'est celui
+      // de pdf.js, de la base ou du navigateur — et c'est lui qui permet de
+      // corriger.
+      let etape = "lecture du PDF";
       try {
-        const lecture = lireReleve(await lirePdf(f, () => {}));
+        const texte = await lirePdf(f, () => {});
+        etape = "lecture du relevé";
+        const lecture = lireReleve(texte);
         if (!lecture.ok) res.push({ fichier: f.name, ok: false, texte: lecture.raison });
         else {
+          etape = "enregistrement";
           const imp = await importerReleve(lecture.releve);
           res.push({
             fichier: f.name,
@@ -81,8 +91,8 @@ function Contenu({ d, type }: { d: DonneesReleves; type: ReturnType<typeof moisT
             texte: `${imp.compte.nom} · ${imp.nouvelles} opération${imp.nouvelles > 1 ? "s" : ""} ajoutée${imp.nouvelles > 1 ? "s" : ""}${imp.deja ? `, ${imp.deja} déjà là` : ""} · totaux vérifiés`,
           });
         }
-      } catch {
-        res.push({ fichier: f.name, ok: false, texte: "Ce PDF n’a pas pu être lu." });
+      } catch (e) {
+        res.push({ fichier: f.name, ok: false, texte: echec(etape, e) });
       }
     }
     setResultats(res);
@@ -251,6 +261,14 @@ function Contenu({ d, type }: { d: DonneesReleves; type: ReturnType<typeof moisT
       ) : null}
     </>
   );
+}
+
+/** Ce qu'on dit d'une exception : l'étape, et ce que l'exception dit d'elle-même. */
+export function echec(etape: string, e: unknown): string {
+  const nom = e instanceof Error ? e.name : "";
+  if (nom === "PasswordException") return "Ce PDF est protégé par un mot de passe : exporte-le sans protection depuis la banque.";
+  const message = e instanceof Error ? `${nom && nom !== "Error" ? `${nom} : ` : ""}${e.message}` : String(e);
+  return `Échec à l’étape « ${etape} » — ${message || "sans message"}`;
 }
 
 const signe = (c: number): string => (c > 0 ? `+${euros(c)}` : `−${euros(-c)}`);
