@@ -1347,3 +1347,6 @@ button.p.peu { border: 0; font: inherit; cursor: pointer; text-decoration: under
 
 .bu-toutes { margin-top: var(--space-6); }
 .bu-toutes summary { cursor: pointer; font-size: 13px; font-weight: 700; color: var(--color-neutral-700); padding: var(--space-2) 0; }
+/* Le mois réel : deux par deux, l'épargne en vert. */
+.bu-chiffres.deux { grid-template-columns: repeat(2, 1fr); }
+.bu-chiffre.negatif { background: var(--color-accent-200); color: var(--color-accent-900); }

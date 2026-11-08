@@ -6,16 +6,22 @@
 // (`motif()` du lecteur), et le mois réel se recalcule depuis les règles à
 // chaque rendu — changer d'avis sur un motif reclasse tout l'historique.
 //
-// TROIS SORTES, ET LA TROISIÈME EST CELLE QU'ON OUBLIE. Une dépense, un revenu,
-// et un mouvement ENTRE SES PROPRES COMPTES : le virement mensuel vers le livret
-// sort d'un compte et entre dans l'autre. Le compter comme une dépense ferait
-// croire qu'on dépense ce qu'on épargne.
+// QUATRE SORTES, ET LES DEUX DERNIÈRES SONT CELLES QU'ON OUBLIE. Une dépense,
+// un revenu — et deux façons pour l'argent de quitter un compte sans être
+// dépensé :
+//   - l'ÉPARGNE : un versement vers un placement (livret, assurance-vie, PEA).
+//     C'est la ligne que tout ce budget sert à faire grossir ; la ranger en
+//     dépense ferait croire qu'on dépense ce qu'on met de côté, et la noyer
+//     dans les virements internes la rendrait invisible ;
+//   - un mouvement ENTRE SES PROPRES COMPTES courants : il sort de l'un et
+//     entre dans l'autre, et ne compte ni comme entrée ni comme sortie.
 
 import { NATURES, type Categorie, type MoisType, type Nature } from "./budget";
 
 export type Classement =
   | { sorte: "depense"; categorie: Categorie; nature: Nature }
   | { sorte: "revenu" }
+  | { sorte: "epargne" }
   | { sorte: "interne" };
 
 /** Une opération telle qu'elle est gardée en base. */
@@ -45,6 +51,9 @@ export interface MoisReel {
   entrees: number;
   /** Dépenses classées. */
   sorties: number;
+  /** Mis de côté : versements vers l'épargne, moins les retraits qui en
+   *  reviennent. */
+  epargne: number;
   /** Les mouvements entre comptes, ni l'un ni l'autre : on les montre, on ne
    *  les compte pas. */
   internes: number;
@@ -72,6 +81,7 @@ export function moisReel(
   let entrees = 0;
   let sorties = 0;
   let internes = 0;
+  let epargne = 0;
   const aClasser: OperationEnBase[] = [];
   const parCategorie = new Map<Categorie, number>();
   const parNature = new Map<Nature, number>();
@@ -83,6 +93,7 @@ export function moisReel(
       continue;
     }
     if (r.sorte === "interne") internes += Math.abs(o.montant);
+    else if (r.sorte === "epargne") epargne -= o.montant;
     else if (r.sorte === "revenu") entrees += o.montant;
     else {
       // UNE DÉPENSE CLASSÉE PEUT ÊTRE UN CRÉDIT : le remboursement d'un achat
@@ -103,6 +114,7 @@ export function moisReel(
     mois,
     entrees,
     sorties,
+    epargne,
     internes,
     aClasser,
     montantAClasser: aClasser.reduce((s, o) => s + Math.abs(o.montant), 0),

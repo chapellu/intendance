@@ -74,6 +74,8 @@ export const releve2 = (fin = "31.12.2026", debut = "01.12.2026") =>
     ligne([27, "pour le mois"]),
     ligne([27, "REF.MANDAT: XYZ987654321"]),
     ligne([14, "15.12"], [25, "PRLV SEPA ASSURANCE TEST"], [113, "15.12.26"], [D2, "45,50", "fin"]),
+    // Ce gabarit écrit ses accents dans le vieux jeu français : `{` pour é.
+    ligne([27, "Pr{l}vement trimestriel"]),
     ligne([31, "SOLDE INTERMEDIAIRE A FIN DE PAGE"], [C2, "254,50", "fin"]),
     ligne([175, "Page 1 / 2"]),
     "\f" + ligne([44, "RELEVE DE COMPTE"]),

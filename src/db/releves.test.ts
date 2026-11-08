@@ -39,6 +39,25 @@ describe("les relevés en base", () => {
     expect(tout).not.toContain("30006000011234567890");
   });
 
+  test("une lecture améliorée remplace l'ancienne au lieu de la doubler, et la règle suit", async () => {
+    await importerReleve(lu(), base);
+    // L'opération telle qu'une lecture plus ancienne l'aurait gardée : un
+    // accent du vieux jeu français resté en accolade, donc un autre libellé,
+    // une autre clé, un autre motif — et une règle posée sur ce motif-là.
+    const vraie = (await base.operations.toArray()).find((o) => o.libelle === "CARTE 01/09 BOULANGERIE TEST")!;
+    await base.operations.delete(vraie.cle);
+    const vieille = { ...vraie, libelle: "CARTE 01/09 BOULANGERI{ TEST", cle: vraie.cle.replace("BOULANGERIE", "BOULANGERI{"), motif: "BOULANGERI TEST" };
+    await base.operations.put(vieille);
+    await classer("BOULANGERI TEST", { sorte: "depense", categorie: "alimentation", nature: "essentiel" }, base);
+
+    const r = await importerReleve(lu(), base);
+    expect(r).toMatchObject({ nouvelles: 0, deja: 6 });
+    expect(await base.operations.count()).toBe(6);
+    expect(await base.operations.get(vieille.cle)).toBeUndefined();
+    expect(await base.operations.get(vraie.cle)).toBeDefined();
+    expect((await lireReleves(base)).regles.get("BOULANGERIE TEST")).toMatchObject({ categorie: "alimentation" });
+  });
+
   test("une règle se pose sur un motif, et tout s'oublie d'un geste", async () => {
     await importerReleve(lu(), base);
     await classer("BOULANGERIE TEST", { sorte: "depense", categorie: "alimentation", nature: "essentiel" }, base);

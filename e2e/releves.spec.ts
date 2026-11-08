@@ -48,6 +48,13 @@ test("un relevé PDF s'importe une fois, se classe par motif, et un relevé faux
   await expect(page.locator(".bu-reel").filter({ hasText: "Alimentation" })).toContainText("12,30 €");
   await expect(page.locator("[data-test=sorties]")).toHaveText("12,30 €");
 
+  // Un versement vers un placement : ni dépense, ni virement interne — épargné.
+  await page.locator(".bu-ligne").filter({ hasText: "VERS EPARGNE" }).first().dispatchEvent("click");
+  await page.getByRole("dialog").getByRole("button", { name: "Épargne", exact: true }).dispatchEvent("click");
+  await page.getByRole("button", { name: "Enregistrer" }).dispatchEvent("click");
+  await expect(page.locator("[data-test=epargne]")).toHaveText("987,50 €");
+  await expect(page.locator("[data-test=sorties]")).toHaveText("12,30 €");
+
   // Un relevé dont le total imprimé ne tombe pas juste : refusé, rien n'entre.
   await deposer(page, await pdfDe(page, releve1("1 042,31")));
   await expect(page.getByTestId("releve-resultats")).toContainText("ne tombe pas sur le total imprimé", { timeout: 60_000 });

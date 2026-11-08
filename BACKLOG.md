@@ -6011,3 +6011,31 @@ ordinaire finisse dans le rouge.
 - **Les CSV/OFX** : un gabarit de plus, sur la même vérification.
 - **« Le mois »** ne montre encore que le mois type ; le réel du dernier mois
   importé y aurait sa ligne.
+
+## Les accents, l'épargne, le téléphone — T169
+
+- [x] **T169 — Trois retours du premier mois importé.**
+
+      **LES ACCENTS DU VIEUX JEU FRANÇAIS.** Un des gabarits imprime ses
+      libellés en ISO 646-FR, où `{` tient la place de é, `}` de è, `|` de ù,
+      `\` de ç et `@` de à. `accentsIso646` les rend, pour ce gabarit seulement
+      (`iso646`), libellés et lignes de détail. L'arobase collée à deux lettres
+      reste : c'est une adresse.
+
+      **RÉIMPORTER APRÈS UNE MEILLEURE LECTURE NE DOUBLE RIEN.** La clé d'une
+      opération porte son libellé ; une lecture qui rend un accent change la
+      clé. L'import reconnaît donc une opération à son IDENTITÉ — compte, jour,
+      montant, libellé réduit à ses lettres et chiffres, vieux jeu compris —
+      remplace l'ancienne lecture par la nouvelle, et reporte la règle de
+      l'ancien motif sur le nouveau.
+
+      **L'ÉPARGNE EST UNE QUATRIÈME SORTE.** Un versement vers un livret, une
+      assurance-vie, un PEA n'est ni une dépense ni un virement entre comptes
+      courants : c'est le chiffre que le budget sert à faire grossir. Le mois
+      réel le compte à part (retraits déduits) et le met en face de ce que le
+      mois type permet. Les virements entre comptes courants restent
+      « entre mes comptes ».
+
+      **« TÉLÉPHONE ET INTERNET » SORT DES ABONNEMENTS.** La box et les forfaits
+      se renégocient une fois l'an ; la vidéo ou la presse se résilient d'un
+      geste. Nature proposée : essentiel, contre plaisir pour les abonnements.
