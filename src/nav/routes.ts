@@ -45,6 +45,7 @@ export type Route =
   | { ecran: "budget" }
   | { ecran: "provisions" }
   | { ecran: "enveloppes" }
+  | { ecran: "releves" }
   | { ecran: "aujourdhui" }
   | { ecran: "semaine" }
   | { ecran: "poses" }
@@ -116,7 +117,7 @@ export const dansCuisine = (r: Route): boolean => DANS_CUISINE.has(r.ecran);
 
 /** Les écrans de la facette budget — ceux qui portent SON en-tête et SA
  *  sous-navigation. */
-const DANS_BUDGET: ReadonlySet<Ecran> = new Set<Ecran>(["budget", "provisions", "enveloppes"]);
+const DANS_BUDGET: ReadonlySet<Ecran> = new Set<Ecran>(["budget", "provisions", "enveloppes", "releves"]);
 
 export const dansBudget = (r: Route): boolean => DANS_BUDGET.has(r.ecran);
 
@@ -133,6 +134,7 @@ const SANS_PARAM: Record<string, Ecran> = {
   budget: "budget",
   "budget/provisions": "provisions",
   "budget/enveloppes": "enveloppes",
+  "budget/releves": "releves",
   // `#/cuisine` EST UN ALIAS DE L'ENTRÉE, PAS UN ÉCRAN, et c'est ce qui a
   // changé : il adressait « Aujourd'hui » en dur, si bien qu'éteindre les jours
   // aurait fait de la porte de la facette une impasse. Il suit désormais
@@ -166,6 +168,7 @@ export function chemin(r: Route): string {
     case "budget": return "#/budget";
     case "provisions": return "#/budget/provisions";
     case "enveloppes": return "#/budget/enveloppes";
+    case "releves": return "#/budget/releves";
     case "aujourdhui": return "#/cuisine/aujourdhui";
     case "semaine": return "#/cuisine/semaine";
     case "poses": return "#/cuisine/poses";

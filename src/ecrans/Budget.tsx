@@ -313,7 +313,7 @@ function EnveloppesEcran({ d }: { d: DonneesBudget }) {
 
 /* ═══════════════════════════════════════════════════════════════ BRIQUES */
 
-function Section({
+export function Section({
   titre,
   action,
   onAction,
@@ -339,7 +339,7 @@ function Section({
   );
 }
 
-function Ligne({ nom, sous, montant, onClick }: { nom: string; sous?: string; montant: string; onClick?: () => void }) {
+export function Ligne({ nom, sous, montant, onClick }: { nom: string; sous?: string; montant: string; onClick?: () => void }) {
   const corps = (
     <>
       <span className="nom">
@@ -360,7 +360,7 @@ function Ligne({ nom, sous, montant, onClick }: { nom: string; sous?: string; mo
 
 /* ═══════════════════════════════════════════════════════════════ SAISIES */
 
-function Feuille({ titre, onFerme, children }: { titre: string; onFerme: () => void; children: ReactNode }) {
+export function Feuille({ titre, onFerme, children }: { titre: string; onFerme: () => void; children: ReactNode }) {
   return (
     <div className="aj-fond" onClick={onFerme}>
       <div className="aj-feuille bu-feuille" role="dialog" aria-modal="true" aria-label={titre} onClick={(e) => e.stopPropagation()}>
@@ -376,7 +376,7 @@ function Feuille({ titre, onFerme, children }: { titre: string; onFerme: () => v
   );
 }
 
-function Champ({ nom, children }: { nom: string; children: ReactNode }) {
+export function Champ({ nom, children }: { nom: string; children: ReactNode }) {
   return (
     <label className="bu-champ">
       <span>{nom}</span>
@@ -401,7 +401,7 @@ function ChampMontant({ nom, valeur, onChange }: { nom: string; valeur: string; 
   );
 }
 
-function ChoixNature({ valeur, onChange }: { valeur: Nature; onChange: (n: Nature) => void }) {
+export function ChoixNature({ valeur, onChange }: { valeur: Nature; onChange: (n: Nature) => void }) {
   return (
     <div className="bu-champ">
       <span>Nature</span>
@@ -423,7 +423,7 @@ function ChoixNature({ valeur, onChange }: { valeur: Nature; onChange: (n: Natur
   );
 }
 
-function ChoixCategorie({ valeur, onChange }: { valeur: Categorie; onChange: (c: Categorie) => void }) {
+export function ChoixCategorie({ valeur, onChange }: { valeur: Categorie; onChange: (c: Categorie) => void }) {
   return (
     <Champ nom="Catégorie">
       <select value={valeur} onChange={(e) => onChange(e.target.value as Categorie)}>
@@ -437,7 +437,7 @@ function ChoixCategorie({ valeur, onChange }: { valeur: Categorie; onChange: (c:
   );
 }
 
-function Boutons({ ok, onValide, onRetire }: { ok: boolean; onValide: () => void; onRetire?: (() => void) | undefined }) {
+export function Boutons({ ok, onValide, onRetire }: { ok: boolean; onValide: () => void; onRetire?: (() => void) | undefined }) {
   return (
     <div className="bu-boutons">
       <button className="btn btn-primary btn-block aj-go" disabled={!ok} onClick={onValide}>
