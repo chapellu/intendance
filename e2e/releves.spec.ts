@@ -54,6 +54,9 @@ test("un relevé PDF s'importe une fois, se classe par motif, et un relevé faux
   await page.getByRole("button", { name: "Enregistrer" }).dispatchEvent("click");
   await expect(page.locator("[data-test=epargne]")).toHaveText("987,50 €");
   await expect(page.locator("[data-test=sorties]")).toHaveText("12,30 €");
+  // La boulangerie, seule dépense classée, est « essentiel » : 100 % des dépenses.
+  await expect(page.locator("[data-test=nature-essentiel]")).toContainText("100 %");
+  await expect(page.locator("[data-test=nature-plaisir]")).toContainText("0 %");
 
   // Ce qui compose un total : Dépenses → Alimentation → la boulangerie → ses
   // opérations, puis retour à la liste des catégories.

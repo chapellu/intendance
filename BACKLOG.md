@@ -6099,3 +6099,11 @@ ordinaire finisse dans le rouge.
          dit « épargne » (un livret importé se compte une fois). Carte et
          prélèvement ne s'apparient jamais ;
       3. la RÈGLE du motif — sauf « revenu » sur un débit, qui reste à classer.
+
+      **LA RÉPARTITION OBLIGATOIRE / ESSENTIEL / PLAISIR** (demandée le
+      8/11). La lecture « 50/30/20 » : quelle part de ce qu'on dépense est
+      contrainte, réglable, choisie. « Le mois » donne pour chaque nature sa
+      part des DÉPENSES (les trois font 100) puis sa part des revenus ; le
+      mois réel la dessine en barre, en face de la répartition prévue, sur
+      les dépenses déjà classées. `pourcentages` arrondit par les plus forts
+      restes : jamais « 33 + 33 + 33 = 99 ».

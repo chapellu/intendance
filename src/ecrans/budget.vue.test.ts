@@ -45,6 +45,8 @@ describe("le mois", () => {
     expect(v.rattrapage).toBeGreaterThan(0);
     expect(v.ceMois).toBeLessThan(v.mois.capacite);
     expect(v.phrase).toContain("ce mois-ci");
+    // Une seule nature écrite : elle fait toutes les dépenses.
+    expect(v.parts.map((p) => p.pctDepenses)).toEqual([100, 0, 0]);
   });
 });
 

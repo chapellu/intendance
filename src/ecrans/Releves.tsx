@@ -7,7 +7,7 @@
 // le temps de la lecture, puis disparaissent avec elle.
 
 import { useState } from "react";
-import { euros, moisType, NATURE_PROPOSEE, NOM_CATEGORIE, NOM_NATURE, type Categorie, type Nature } from "../model/budget";
+import { euros, moisType, NATURE_PROPOSEE, NOM_CATEGORIE, NOM_NATURE, pourcentages, type Categorie, type Nature } from "../model/budget";
 import { lireReleve } from "../model/releveBancaire";
 import { classerTout, composition, historique, moisDisponibles, moisReel, type Classement, type Classes, type MoisReel, type OperationEnBase, type Source, type Vue } from "../model/reel";
 import { useBudget } from "../db/budget";
@@ -216,11 +216,7 @@ function Contenu({ d, type }: { d: DonneesReleves; type: ReturnType<typeof moisT
             suivants sous le prévu.
           </p>
 
-          <Section titre="Par nature">
-            {m.natures.map((n) => (
-              <Ligne key={n.nature} nom={NOM_NATURE[n.nature]} montant={`${euros(n.reel)} / ${euros(n.prevu)}`} />
-            ))}
-          </Section>
+          <Repartition m={m} />
 
           <MoisParMois d={d} eff={eff} type={type} jour={jour} actuel={m.mois} onChoisir={setChoisi} />
 
@@ -404,6 +400,46 @@ function FeuilleComposition({
         <div className="co-vide">Rien ce mois-ci.</div>
       )}
     </Feuille>
+  );
+}
+
+/**
+ * La répartition des dépenses du mois entre obligatoire, essentiel et
+ * plaisir — trois parts qui font 100 —, en face de celle que le mois type
+ * prévoit. C'est la lecture « 50/30/20 » : quelle part de ce qu'on dépense est
+ * contrainte, réglable, choisie.
+ *
+ * SUR LES DÉPENSES CLASSÉES SEULEMENT : tant que des opérations restent à
+ * classer, la répartition est celle de ce qu'on sait, et l'écran le dit.
+ */
+function Repartition({ m }: { m: MoisReel }) {
+  const reel = pourcentages(m.natures.map((n) => n.reel));
+  const prevu = pourcentages(m.natures.map((n) => n.prevu));
+  return (
+    <Section titre="Par nature · part des dépenses">
+      {reel ? (
+        <div className="bu-barre" aria-hidden="true">
+          {m.natures.map((n, i) => (reel[i] ? <span key={n.nature} className={n.nature} style={{ width: `${reel[i]}%` }} /> : null))}
+        </div>
+      ) : null}
+      {m.natures.map((n, i) => (
+        <div key={n.nature} className={`bu-poste ${n.nature}`} data-test={`nature-${n.nature}`}>
+          <div className="tete">
+            <span className="nom">{NOM_NATURE[n.nature]}</span>
+            <span className="v">
+              {euros(n.reel)}
+              {reel ? <span className="pct"> · {reel[i]} %</span> : null}
+            </span>
+          </div>
+          <div className="detail">
+            {prevu ? `prévu ${euros(n.prevu)} · ${prevu[i]} %` : "rien de prévu au mois type"}
+          </div>
+        </div>
+      ))}
+      {m.aClasser.length && reel ? (
+        <p className="co-note">Sur les dépenses déjà classées : {m.aClasser.length} opération{m.aClasser.length > 1 ? "s" : ""} attendent encore.</p>
+      ) : null}
+    </Section>
   );
 }
 
