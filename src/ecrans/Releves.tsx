@@ -7,7 +7,7 @@
 // le temps de la lecture, puis disparaissent avec elle.
 
 import { useState } from "react";
-import { euros, moisType, NOM_CATEGORIE, NOM_NATURE, type Categorie, type Nature } from "../model/budget";
+import { euros, moisType, NATURE_PROPOSEE, NOM_CATEGORIE, NOM_NATURE, type Categorie, type Nature } from "../model/budget";
 import { lireReleve } from "../model/releveBancaire";
 import { moisDisponibles, moisReel, type Classement, type OperationEnBase } from "../model/reel";
 import { useBudget } from "../db/budget";
@@ -20,24 +20,6 @@ import { lirePdf } from "./pdf";
 const aujourdhui = (): string => {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-};
-
-/** La nature qu'on propose pour une catégorie, tant qu'on n'en a pas choisi
- *  une : c'est une première idée, pas une règle — l'écran la montre, le doigt
- *  la change. */
-const NATURE_PROPOSEE: Record<Categorie, Nature> = {
-  logement: "obligatoire",
-  alimentation: "essentiel",
-  transport: "essentiel",
-  enfants: "essentiel",
-  sante: "essentiel",
-  assurances: "obligatoire",
-  impots: "obligatoire",
-  telecom: "essentiel",
-  abonnements: "plaisir",
-  loisirs: "plaisir",
-  vacances: "plaisir",
-  divers: "essentiel",
 };
 
 interface Resultat {

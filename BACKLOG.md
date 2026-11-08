@@ -6039,3 +6039,20 @@ ordinaire finisse dans le rouge.
       **« TÉLÉPHONE ET INTERNET » SORT DES ABONNEMENTS.** La box et les forfaits
       se renégocient une fois l'an ; la vidéo ou la presse se résilient d'un
       geste. Nature proposée : essentiel, contre plaisir pour les abonnements.
+
+## Six catégories de plus — T170
+
+- [x] **T170 — Ce que le premier classement n'avait pas où ranger.** Frais
+      bancaires, Habillement, Maison et équipement, Cadeaux et fêtes, Garde
+      d'enfants, Animaux. Dix-huit catégories en tout, et chacune sépare ce
+      qui se PILOTE différemment : « Maison » (ce qu'on achète pour le
+      logement) n'est pas « Logement » (ce que coûte d'y vivre) ; « Garde »
+      (un contrat, en partie déductible) n'est pas « Enfants » ; « Banque »
+      s'isole parce que c'est le poste qui baisse le plus facilement ;
+      « Cadeaux » revient aux mêmes dates chaque année, donc se provisionne.
+      Divers reste le dernier du sélecteur.
+
+      `NATURE_PROPOSEE` passe dans le modèle : les fiches d'échéance et
+      d'enveloppe proposent la nature de la catégorie, comme le classement
+      des relevés, et cessent de la suivre dès qu'on la choisit soi-même.
+      Pas de migration : les catégories existantes ne changent pas d'id.

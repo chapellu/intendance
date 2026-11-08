@@ -22,6 +22,7 @@ import {
   NOM_CATEGORIE,
   NOM_FREQUENCE,
   NOM_NATURE,
+  NATURE_PROPOSEE,
   parMois,
   prochaine,
   type Categorie,
@@ -452,6 +453,29 @@ export function Boutons({ ok, onValide, onRetire }: { ok: boolean; onValide: () 
   );
 }
 
+/**
+ * La catégorie et la nature d'une fiche. LA NATURE SUIT LA CATÉGORIE tant
+ * qu'on ne l'a pas choisie soi-même (`NATURE_PROPOSEE`) ; une fiche qu'on
+ * corrige garde la sienne, puisqu'elle a déjà été choisie.
+ */
+function useCategorieEtNature(existant: { categorie: Categorie; nature: Nature } | null, defaut: Categorie) {
+  const [categorie, setCategorie] = useState<Categorie>(existant?.categorie ?? defaut);
+  const [nature, setNature] = useState<Nature>(existant?.nature ?? NATURE_PROPOSEE[defaut]);
+  const [touchee, setTouchee] = useState(existant !== null);
+  return {
+    categorie,
+    nature,
+    choisirCategorie: (c: Categorie) => {
+      setCategorie(c);
+      if (!touchee) setNature(NATURE_PROPOSEE[c]);
+    },
+    choisirNature: (n: Nature) => {
+      setNature(n);
+      setTouchee(true);
+    },
+  };
+}
+
 function FeuilleEcheance({ echeance, onFerme }: { echeance: Echeance | null; onFerme: () => void }) {
   const jour = aujourdhui();
   const [nom, setNom] = useState(echeance?.nom ?? "");
@@ -461,8 +485,7 @@ function FeuilleEcheance({ echeance, onFerme }: { echeance: Echeance | null; onF
   // en tête (« l'assurance tombe le 1er mars »), et l'une vaut l'autre pour le
   // modèle — n'importe quelle occurrence retrouve toutes les autres.
   const [date, setDate] = useState(echeance ? prochaine(echeance, jour) : "");
-  const [categorie, setCategorie] = useState<Categorie>(echeance?.categorie ?? "logement");
-  const [nature, setNature] = useState<Nature>(echeance?.nature ?? "obligatoire");
+  const { categorie, nature, choisirCategorie, choisirNature } = useCategorieEtNature(echeance, "logement");
 
   const centimes = lireMontant(montant);
   const ok = nom.trim() !== "" && centimes !== null && centimes > 0 && /^\d{4}-\d{2}-\d{2}$/.test(date);
@@ -492,8 +515,8 @@ function FeuilleEcheance({ echeance, onFerme }: { echeance: Echeance | null; onF
       <Champ nom={tousLes > 1 ? "Prochaine échéance (ou une date passée)" : "Jour de prélèvement (une date du mois)"}>
         <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
       </Champ>
-      <ChoixCategorie valeur={categorie} onChange={setCategorie} />
-      <ChoixNature valeur={nature} onChange={setNature} />
+      <ChoixCategorie valeur={categorie} onChange={choisirCategorie} />
+      <ChoixNature valeur={nature} onChange={choisirNature} />
       {apercu ? <p className="co-note">{apercu}</p> : null}
       <Boutons
         ok={ok}
@@ -507,8 +530,7 @@ function FeuilleEcheance({ echeance, onFerme }: { echeance: Echeance | null; onF
 function FeuilleEnveloppe({ enveloppe, onFerme }: { enveloppe: Enveloppe | null; onFerme: () => void }) {
   const [nom, setNom] = useState(enveloppe?.nom ?? "");
   const [montant, setMontant] = useState(enveloppe ? enSaisie(enveloppe.montant) : "");
-  const [categorie, setCategorie] = useState<Categorie>(enveloppe?.categorie ?? "alimentation");
-  const [nature, setNature] = useState<Nature>(enveloppe?.nature ?? "essentiel");
+  const { categorie, nature, choisirCategorie, choisirNature } = useCategorieEtNature(enveloppe, "alimentation");
   const centimes = lireMontant(montant);
   const ok = nom.trim() !== "" && centimes !== null && centimes > 0;
 
@@ -524,8 +546,8 @@ function FeuilleEnveloppe({ enveloppe, onFerme }: { enveloppe: Enveloppe | null;
         <input value={nom} onChange={(e) => setNom(e.target.value)} placeholder="Courses, essence, sorties…" />
       </Champ>
       <ChampMontant nom="Plafond par mois" valeur={montant} onChange={setMontant} />
-      <ChoixCategorie valeur={categorie} onChange={setCategorie} />
-      <ChoixNature valeur={nature} onChange={setNature} />
+      <ChoixCategorie valeur={categorie} onChange={choisirCategorie} />
+      <ChoixNature valeur={nature} onChange={choisirNature} />
       <Boutons
         ok={ok}
         onValide={() => void valider()}

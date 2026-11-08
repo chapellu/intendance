@@ -76,3 +76,17 @@ test("la facette a sa place dans la barre du bas", async ({ page }) => {
   await expect(page).toHaveURL(/#\/budget$/);
   await expect(page.getByRole("navigation", { name: "Vues du budget" })).toBeVisible();
 });
+
+test("la nature suit la catégorie, jusqu'à ce qu'on la choisisse soi-même", async ({ page }) => {
+  await page.goto("/#/budget/enveloppes");
+  await attendreLApp(page);
+  await page.getByRole("button", { name: "+ Enveloppe" }).click();
+  const nature = (n: string) => page.getByRole("dialog").getByRole("button", { name: n, exact: true });
+  await expect(nature("Essentiel")).toHaveAttribute("aria-pressed", "true");
+  await page.locator(".bu-champ select").selectOption("cadeaux");
+  await expect(nature("Plaisir")).toHaveAttribute("aria-pressed", "true");
+  // Choisie à la main, elle ne bouge plus.
+  await nature("Essentiel").click();
+  await page.locator(".bu-champ select").selectOption("loisirs");
+  await expect(nature("Essentiel")).toHaveAttribute("aria-pressed", "true");
+});
