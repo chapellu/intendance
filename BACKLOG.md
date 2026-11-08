@@ -6107,3 +6107,45 @@ ordinaire finisse dans le rouge.
       mois réel la dessine en barre, en face de la répartition prévue, sur
       les dépenses déjà classées. `pourcentages` arrondit par les plus forts
       restes : jamais « 33 + 33 + 33 = 99 ».
+
+## Le parcours qui partait trop tôt — T172
+
+- [x] **T172 — `pose-pas-cuit.spec.ts` tombait une fois sur deux en CI (08/11).**
+      Toujours la même erreur : « Posés » attendu à trois lignes, zéro reçue,
+      au bout de trente secondes. Ni l'horloge figée, ni le fuseau, ni le
+      report des posés : la trace du premier échec (12 h 06 UTC) montre
+      l'onglet arriver sur `#/cuisine/poses`, puis en repartir pour
+      `#/cuisine/fil` — « La passe est finie, les 3 repas sont posés ». Les
+      trois plats étaient en base ; c'est l'écran qui n'était plus là.
+
+      « Je fais ça » écrit, PUIS renvoie le fil au pas suivant (`suivant`,
+      `Fil.tsx`) ; après le dernier plat, ce renvoi est la fin de la passe. Le
+      parcours attendait « 1 sur 3 » et « 2 sur 3 », pas la fin : son
+      `page.goto` atterrissait 25 à 70 ms après le troisième clic, l'écriture
+      et le renvoi 45 à 60 ms, et le dernier arrivé gagnait. Il attend
+      désormais « La passe est finie » et « les 3 repas sont posés » avant de
+      partir — la règle que `poses.spec.ts` et `poserUnPlat` suivaient déjà.
+      Rien d'affaibli : trois lignes sur « Posés », zéro reste au cockpit.
+
+      PAS UNE RÉGRESSION. Inchangé, le parcours tombe 10 fois sur 10 sur la
+      machine de dev au commit d'avant T169 comme à celui du 02/11, avec le
+      même délai mesuré, et 14 fois sur 14 du lundi au dimanche, en UTC comme
+      à Paris. Corrigé : 30 passages d'affilée, et 6 sous un processeur
+      ralenti six fois. La CI gagnait la course plus souvent, voilà tout ; ce
+      qui l'a fait basculer le 08/11 à midi n'est pas dans le code.
+
+      CE QUE ÇA NE CHANGE PAS : l'app renvoie toujours après l'écriture, même
+      si l'on a changé d'écran entre-temps. Un pouce ne touche pas un onglet
+      en 50 ms ; le jour où un téléphone lent ouvre une fenêtre assez large
+      pour qu'un doigt y tombe, c'est `suivant` qu'il faudra garder.
+
+### Ce que T172 laisse ouvert
+
+- [ ] **`a-la-pause.spec.ts`, « un seul tap », tombe aussi — autre course.**
+      Vu en refaisant tourner la suite : 6 échecs sur 15 sur la machine de
+      dev, jamais en CI jusqu'ici. L'URL reste `#/cockpit` : le
+      `dispatchEvent` part sur « Je lance ça » alors que le bouton est encore
+      désactivé — `Lancer` attend son propre `useSemaine`, qui répond après
+      la ligne qui le porte —, et un clic sur un bouton désactivé ne fait
+      rien. Le parcours devrait attendre `toBeEnabled()` avant de frapper.
+      Pas corrigé ici : un ticket, une course.
