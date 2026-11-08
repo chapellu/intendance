@@ -517,6 +517,36 @@ export function moisType(
   };
 }
 
+/* ──────────────────────────────────────────────────────── les pourcentages */
+
+/**
+ * Les parts de chaque valeur dans leur total, en pourcentages ENTIERS qui
+ * font exactement 100 — par la méthode des plus forts restes. Arrondir chaque
+ * part seule donne « 33 + 33 + 33 = 99 », et un lecteur qui additionne cesse
+ * de croire le reste de l'écran.
+ *
+ * Une valeur négative (un mois où les remboursements dépassent les achats
+ * d'une nature) compte pour zéro. `null` si le total n'est pas positif : il
+ * n'y a rien à répartir.
+ */
+export function pourcentages(valeurs: readonly number[]): number[] | null {
+  const v = valeurs.map((x) => Math.max(0, x));
+  const total = v.reduce((s, x) => s + x, 0);
+  if (total <= 0) return null;
+  const bruts = v.map((x) => (x * 100) / total);
+  const parts = bruts.map(Math.floor);
+  let reste = 100 - parts.reduce((s, x) => s + x, 0);
+  const ordre = bruts.map((b, i) => ({ i, r: b - Math.floor(b) })).sort((a, b) => b.r - a.r);
+  for (const { i } of ordre) {
+    if (reste <= 0) break;
+    if (v[i]! > 0) {
+      parts[i]!++;
+      reste--;
+    }
+  }
+  return parts;
+}
+
 /* ─────────────────────────────────────────────────────────── les montants */
 
 /**
@@ -533,7 +563,8 @@ export function lireMontant(texte: string): number | null {
 /** Centimes → « 1 234 € » ou « 83,33 € ». Les centimes ne s'affichent que
  *  quand il y en a : un budget se lit en euros ronds. */
 export function euros(centimes: number): string {
-  const c = Math.round(centimes);
+  // `|| 0` : un « -0 » arrondi s'afficherait « -0 € ».
+  const c = Math.round(centimes) || 0;
   const entier = c % 100 === 0;
   return (
     (c / 100).toLocaleString("fr-FR", {

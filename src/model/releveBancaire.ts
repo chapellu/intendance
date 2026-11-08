@@ -419,12 +419,17 @@ export function lireReleve(texte: string): Lecture {
  * nombres et la ponctuation, on garde les QUATRE premiers mots. Plus, et une
  * référence de mandat changeante ferait de chaque prélèvement un inconnu ;
  * moins, et deux enseignes d'un même centre commercial se confondraient.
+ *
+ * LA DEVISE NON PLUS. Un paiement par carte cite parfois son montant
+ * d'origine (« … 12,50 EUR ») et son remboursement non : sans ça, la même
+ * enseigne aurait deux motifs, et le remboursement resterait à classer.
  */
 export function motif(libelle: string): string {
   const s = sansAccents(libelle.toUpperCase())
     .replace(/^(?:CARTE|CB|PRLV(?: SEPA)?|PRELEVEMENT(?: SEPA)?|VIR(?:EMENT)?(?:\.| )?(?:INST|PERMANENT|SEPA|RECU|EMIS)?|CHQ\.?|CHEQUE|RETRAIT(?: DAB)?)\b\.?/, " ")
     .replace(/\b\d{1,2}\/\d{1,2}(?:\/\d{2,4})?\b/g, " ")
     .replace(/[^A-Z ]+/g, " ")
+    .replace(/\b(?:EUR|USD|GBP|CHF)\b/g, " ")
     .replace(/\b[A-Z]\b/g, " ");
   const mots = s.split(/\s+/).filter(Boolean).slice(0, 4);
   return mots.length ? mots.join(" ") : sansAccents(libelle.toUpperCase()).replace(/\d+/g, "#").trim();

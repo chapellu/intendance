@@ -1350,3 +1350,23 @@ button.p.peu { border: 0; font: inherit; cursor: pointer; text-decoration: under
 /* Le mois réel : deux par deux, l'épargne en vert. */
 .bu-chiffres.deux { grid-template-columns: repeat(2, 1fr); }
 .bu-chiffre.negatif { background: var(--color-accent-200); color: var(--color-accent-900); }
+
+/* — budget : ce qui compose un total — */
+/* Les cases du haut s'ouvrent : un chevron le dit, pas le pointillé du solde
+   à relever (qui, lui, appelle une saisie). */
+.bu-chiffre.ouvrable { outline: none; cursor: pointer; }
+.bu-chiffre.ouvrable .k::after { content: " ›"; }
+button.bu-reel {
+  display: block; width: 100%; text-align: left; cursor: pointer;
+  font: inherit; color: inherit; background: none; border: 0;
+  border-bottom: 1px solid var(--color-neutral-300);
+}
+.bu-reel .tete .pct { font-weight: 400; color: var(--color-neutral-700); }
+.bu-reel .tete .nom::after { content: " ›"; color: var(--color-neutral-500); }
+.bu-groupe.ouvert { background: var(--color-surface); border-radius: var(--radius-md); }
+.bu-groupe.ouvert > .bu-ligne + .bu-ligne { padding-left: var(--space-4); font-size: 13px; }
+.bu-retour { align-self: flex-start; }
+.bu-repere { background: var(--color-accent-2-100); color: var(--color-accent-2-900); border-radius: var(--radius-md); padding: var(--space-2); }
+
+/* La part d'une nature : des dépenses (qui font 100) puis des revenus. */
+.bu-poste .parts { font-size: 12px; font-weight: 600; color: var(--color-neutral-800); margin: 2px 0 0 18px; }

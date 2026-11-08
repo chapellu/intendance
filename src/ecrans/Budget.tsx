@@ -94,6 +94,10 @@ function Mois({ d }: { d: DonneesBudget }) {
         )}
       </Section>
 
+      {/* LA PART DES DÉPENSES D'ABORD, ET ELLE FAIT 100 : c'est la question
+          « quelle part de ce que je dépense est contrainte, réglable, choisie ».
+          La part des revenus suit, en petit — c'est elle que la barre du haut
+          dessine, avec l'épargne. */}
       <Section titre="Dépenses, par nature">
         {v.parts.map((p) => {
           const poste = v.mois.postes[p.nature];
@@ -103,9 +107,14 @@ function Mois({ d }: { d: DonneesBudget }) {
                 <span className="nom">{NOM_NATURE[p.nature]}</span>
                 <span className="v">
                   {euros(p.total)}
-                  {p.pct !== null ? <span className="pct"> · {p.pct} %</span> : null}
+                  {p.pctDepenses !== null ? <span className="pct"> · {p.pctDepenses} %</span> : null}
                 </span>
               </div>
+              {p.pctDepenses !== null ? (
+                <div className="parts">
+                  {p.pctDepenses} % des dépenses{p.pct !== null ? ` · ${p.pct} % des revenus` : ""}
+                </div>
+              ) : null}
               <div className="detail">
                 {[
                   poste.fixes ? `${euros(poste.fixes)} de charges fixes` : null,
