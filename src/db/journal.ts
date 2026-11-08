@@ -340,6 +340,29 @@ export async function observerIngredient(
 }
 
 /**
+ * « Il en reste ~200 g, en tout » — T167. Le poids d'un fond, dit depuis la
+ * fiche au moment où il compte : quand la recette en demande 375 g.
+ */
+export async function observerPoids(
+  base: Base,
+  ingredient: string,
+  grammes: number,
+  aujourdhui = new Date(),
+): Promise<number> {
+  const jour = jourISO(aujourdhui);
+  const evt: Evenement = {
+    sorte: "observation",
+    portee: "ingredient",
+    zone: null,
+    jour,
+    saisi: jour,
+    constats: [{ ingredient, unites: null, grammes }],
+    maj: Date.now(),
+  };
+  return (await base.evenements.add(evt as never)) as number;
+}
+
+/**
  * La correction d'UNE ligne du garde-manger — T139.
  *
  * « J'en ai trois, pas cinq », « je n'en ai plus » : ce qu'un doigt fait en

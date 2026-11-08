@@ -48,8 +48,8 @@ recipe:
       qty: 1500
       unit: g
       subs:
-        - {name: courgettes seules, note: "la version d'été la plus simple", ratio: 1.0}
-        - {name: chou chinois seul, note: "la version d'hiver", ratio: 1.0}
+        - {id: courgettes, name: courgettes seules, note: "la version d'été la plus simple", ratio: 1.0}
+        - {id: chou-chinois, name: chou chinois seul, note: "la version d'hiver", ratio: 1.0}
     - {id: oignon, name: oignons, qty: 3, unit: pièce}
     - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
     - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}

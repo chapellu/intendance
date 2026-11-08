@@ -4517,7 +4517,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": true,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "bouillon-legumes",
+       "nom": "cube de bouillon de légumes bio",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "poivre-5-baies",
@@ -4537,7 +4544,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "flocons-avoine",
+       "nom": "flocons d'avoine mixés",
+       "ratio": 1.0
+      }
+     ]
     }
    ],
    "role": "plat",
@@ -5372,7 +5386,19 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "gruau-avoine",
+       "nom": "gruau d'avoine",
+       "ratio": 1.0
+      },
+      {
+       "id": "petit-epeautre",
+       "nom": "petit épeautre",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "huile-olive",
@@ -16702,7 +16728,19 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "haricots-blancs",
+       "nom": "haricots blancs secs",
+       "ratio": 1.0
+      },
+      {
+       "id": "haricots-rouges",
+       "nom": "haricots rouges secs",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -16742,7 +16780,14 @@
      "unit": "petit bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "sauge",
+       "nom": "sauge seule",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "eau",
@@ -34014,7 +34059,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "saumon",
+       "nom": "saumon sauvage",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "riz",
@@ -36274,7 +36326,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "truite-fumee",
+       "nom": "truite fumée",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "sel",
@@ -44525,7 +44584,19 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courgettes",
+       "nom": "courgettes seules",
+       "ratio": 1.0
+      },
+      {
+       "id": "chou-chinois",
+       "nom": "chou chinois seul",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "oignon",

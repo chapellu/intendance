@@ -16,7 +16,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { indexDuCreneau } from "../db";
 import { useCatalogue, usePlacard, useSemaine } from "../db/hooks";
-import { dejaCuisine, journaliserCuisson, type RangementLot } from "../db/journal";
+import { dejaCuisine, journaliserCuisson, observerPoids, type RangementLot } from "../db/journal";
 import {
   cleEtape,
   cleMinuteur,
@@ -38,7 +38,7 @@ import { armer, arreter, demanderBandeau, desarmer, plateforme, promesse } from 
 import { duree, fmt, hhmm, mmss } from "../ui/format";
 import { Icone, iconeEspace } from "../ui/icones";
 import { AjouterAuStock } from "../ui/Ajouter";
-import { options } from "../model/remplacants";
+import { options, repartir } from "../model/remplacants";
 import { nomEspace } from "../ui/phrases";
 import {
   aArmer,
@@ -868,6 +868,9 @@ function Autrement({
 
 /** « farine T110 de blé ou de grand épeautre » → « farine T110 de blé » : la
  *  puce de l'original dit ce qu'il est, pas tout ce que la ligne accepte. */
+/** Les poids qu'on dit d'un coup d'œil sur un fond de sac. */
+const POIDS = [50, 150, 300, 500, 1000] as const;
+
 const nomCourt = (nom: string): string => nom.split(/,? ou |\s—|\s\(/)[0]!.trim();
 
 
@@ -906,6 +909,7 @@ function Ingredients({
 }) {
   const produit = +(p.portions * f).toFixed(1);
   const [jEnAi, setJEnAi] = useState<{ id: string; nom: string } | null>(null);
+  const [pese, setPese] = useState<string | null>(null);
   const ustensile = aSortir(p);
   const cr = credit(p);
   // CE QUI EST LÀ, ACHATS RANGÉS COMPRIS : c'est ce que « j'en ai » écrit.
@@ -970,7 +974,24 @@ function Ingredients({
           const pris = prov.avec?.id ?? x.id;
           // La quantité DU REMPLAÇANT : 3 c. à s. de miel pour 2 de sirop.
           const xq = prov.avec ? { ...x, id: pris, qty: x.qty * prov.avec.ratio } : x;
-          const court = prov.acheter
+          // T167 — UN FOND PESÉ QUI NE SUFFIT PAS SE COMPLÈTE avec l'autre
+          // option présente : « 200 g d'épeautre, puis 175 g de T110 ».
+          const parts =
+            x.remplacants?.length && x.unit === "g" && placard
+              ? repartir(
+                  x,
+                  x.qty * f,
+                  (id) => {
+                    const e = placard.parIngredient.get(id);
+                    if (e) return e.grammes;
+                    return jeu.catalogue.rayons.placard.includes(id) || jeu.gardeManger.includes(id) ? null : 0;
+                  },
+                  (id) => jeu.catalogue.rayons.aliases[id] ?? id,
+                  choix[x.ref] ?? prov.avec?.id ?? null,
+                )
+              : [];
+          const complete = parts.length > 1;
+          const court = prov.acheter || complete
             ? null
             : resteCourt(placard?.parIngredient.get(jeu.catalogue.rayons.aliases[pris] ?? pris), {
                 qty: xq.qty * f,
@@ -1003,8 +1024,19 @@ function Ingredients({
                     ))}
                   </span>
                 ) : null}
+                {complete ? (
+                  <span className="co-complete">
+                    {parts
+                      .map((pt, n) => `${n ? "puis " : ""}${Math.round(pt.qty)} g de ${pt.remplacant ? pt.remplacant.nom : nomCourt(x.nom)}`)
+                      .join(", ")}
+                  </span>
+                ) : null}
               </span>
-              <span className="q">{quantiteACuire(jeu.catalogue, xq, f)}</span>
+              <span className="q">
+                {complete
+                  ? parts.map((pt) => `${Math.round(pt.qty)} g`).join(" + ")
+                  : quantiteACuire(jeu.catalogue, xq, f)}
+              </span>
               {/* « À ACHETER » SE TOUCHE : si on en a, on le dit ici même, et la
                   ligne passe au vert. L'eau n'a pas d'étiquette. */}
               {prov.acheter && !x.base ? (
@@ -1016,8 +1048,37 @@ function Ingredients({
                   à acheter · j’en ai
                 </button>
               ) : /^eau(-|$)/.test(x.id) ? null : (
-                <span className={`p ${prov.acheter ? "acheter" : court ? "peu" : ""}`}>{court ?? prov.label}</span>
+                court ? (
+                  /* T167 — « ENTAMÉ » SE TOUCHE : on dit à l'œil ce qu'il en
+                     reste, et la ligne se complète si ça ne suffit pas. */
+                  <button
+                    className="p peu"
+                    aria-label={`${prov.avec?.nom ?? x.nom} : ${court} — dire combien il en reste`}
+                    onClick={() => setPese(pese === x.ref ? null : x.ref)}
+                  >
+                    {court}
+                  </button>
+                ) : (
+                  <span className={`p ${prov.acheter ? "acheter" : ""}`}>{prov.label}</span>
+                )
               )}
+              {pese === x.ref ? (
+                <span className="co-pese" role="group" aria-label="Il en reste combien, en tout ?">
+                  <span className="k">Il en reste combien, en tout&nbsp;?</span>
+                  {POIDS.map((g) => (
+                    <button
+                      key={g}
+                      className="co-avec-puce"
+                      onClick={() => {
+                        void observerPoids(base, jeu.catalogue.rayons.aliases[pris] ?? pris, g);
+                        setPese(null);
+                      }}
+                    >
+                      {g >= 1000 ? "1 kg ou plus" : `~${g} g`}
+                    </button>
+                  ))}
+                </span>
+              ) : null}
             </div>
           );
         })}

@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { retenir } from "./remplacants";
+import { repartir, retenir } from "./remplacants";
 
 const farine = {
   id: "farine-complete",
@@ -27,5 +27,36 @@ describe("retenir — quelle farine, au juste", () => {
   });
   test("une ligne sans remplaçant ne demande rien", () => {
     expect(retenir({ id: "sel" }, () => false).id).toBe("sel");
+  });
+});
+
+describe("repartir — un fond qui ne suffit pas se complète", () => {
+  const ligne = { ...farine, unit: "g" };
+  test("200 g d'épeautre, pas de T110 en poids connu : 200 + 175 de T110", () => {
+    const stock = (id: string) => (id === "farine-epeautre" ? 200 : id === "farine-complete" ? null : 0);
+    const p = repartir(ligne, 375, stock, undefined, "farine-epeautre");
+    expect(p.map((x) => [x.id, Math.round(x.qty)])).toEqual([["farine-epeautre", 200], ["farine-complete", 175]]);
+  });
+  test("assez sur la première : une seule part", () => {
+    const p = repartir(ligne, 375, () => 1000);
+    expect(p.map((x) => x.id)).toEqual(["farine-complete"]);
+  });
+  test("rien d'autre de présent : la ligne reste entière", () => {
+    const stock = (id: string) => (id === "farine-epeautre" ? 200 : 0);
+    const p = repartir(ligne, 375, stock);
+    expect(p.map((x) => [x.id, x.qty])).toEqual([["farine-epeautre", 375]]);
+  });
+  test("un sac sans poids n'est pas un manque mesuré", () => {
+    const p = repartir(ligne, 375, () => null, undefined, "farine-epeautre");
+    expect(p.map((x) => x.id)).toEqual(["farine-epeautre"]);
+  });
+  test("pas en grammes : jamais réparti", () => {
+    const p = repartir({ ...farine, unit: "tasse" }, 1, (id) => (id === "farine-complete" ? 0.2 : null));
+    expect(p).toHaveLength(1);
+  });
+  test("le ratio se respecte des deux côtés", () => {
+    const miel = { id: "sirop", unit: "g", remplacants: [{ id: "miel", nom: "miel", ratio: 1.5 }] };
+    const p = repartir(miel, 30, (id) => (id === "sirop" ? 10 : null));
+    expect(p.map((x) => [x.id, x.qty])).toEqual([["sirop", 10], ["miel", 30]]);
   });
 });

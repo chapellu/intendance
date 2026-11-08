@@ -5955,7 +5955,12 @@ ordinaire finisse dans le rouge.
       retire du stock la farine prise (`EvtCuisine.remplacements`). La fiche
       dit aussi quand le stock ne suffit pas : « reste ~200 g », ou « entamé
       · à vérifier » d'un sac ouvert sans poids.
-- [ ] Les `subs` sans `id` (emmental râpé, crème d'avoine…) restent des notes :
-      les passer en remplaçants quand leur ingrédient a un rayon.
-- [ ] Un fond qui ne suffit pas pourrait COMPLÉTER avec l'autre farine (200 g
-      d'épeautre + 180 g de T110) au lieu de n'en prendre qu'une.
+- [x] Les `subs` des livres passent en remplaçants quand leur ingrédient a un
+      rayon (11 : saumon, haricots, sauge, gruau, petit épeautre, bouillon,
+      flocons d'avoine, truite fumée, courgettes, chou chinois). Restent des
+      notes : emmental (c'est déjà `fromage-rape`), lardons, crème d'avoine,
+      piperade maison, le panachage de la ratatouille — sans rayon.
+- [x] Un fond qui ne suffit pas se COMPLÈTE (`repartir`) : « 150 g de farine
+      d'épeautre, puis 225 g de T110 », sur la fiche comme au rejeu. Il faut un
+      poids : « entamé · à vérifier » se touche et demande « il en reste
+      combien, en tout ? » (`Constat.grammes`, `observerPoids`).
