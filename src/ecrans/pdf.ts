@@ -78,6 +78,27 @@ export function texteDeLaPage(morceaux: readonly MorceauPdf[]): string {
 type ElementDeTexte = { str: string; transform: unknown; width: number } | { type: string };
 
 /**
+ * Un élément de texte de pdf.js, en morceau à poser — ou `null` s'il n'est pas
+ * à l'horizontale.
+ *
+ * CE QUI EST TOURNÉ N'EST PAS DE LA MISE EN PAGE. Un relevé imprime dans sa
+ * marge, de bas en haut, une mention (date d'émission, référence du document).
+ * pdf.js n'en donne que l'ORIGINE — un point au pied de la marge —, et rien ne
+ * distinguait alors la mention d'un morceau de la rangée qui passe à cette
+ * hauteur : collée en tête de la dernière opération de la page, elle
+ * l'empêchait d'être lue comme une opération, et le relevé entier était
+ * refusé faute de tomber sur ses totaux. Aucun tableau ne s'écrit à la
+ * verticale : on l'écarte.
+ */
+export function morceauDe(it: { str: string; transform: unknown; width: number }): MorceauPdf | null {
+  const [a = 0, b = 0, , , x = 0, y = 0] = it.transform as number[];
+  // À l'horizontale, de gauche à droite : `a` porte le corps, `b` est nul. Un
+  // italique synthétisé (un cisaillement) touche `c`, pas `b` : il reste.
+  if (!(a > 0) || Math.abs(b) > 0.05 * a) return null;
+  return { str: it.str, x, y, taille: a, largeur: it.width };
+}
+
+/**
  * Les éléments de texte d'une page, lus AU LECTEUR.
  *
  * PAS `page.getTextContent()`, ET C'EST SAFARI QUI L'A DIT. Elle fait
@@ -125,9 +146,8 @@ export async function lirePdf(document: Blob, progres: (p: number) => void): Pro
       const page = await doc.getPage(n);
       const morceaux: MorceauPdf[] = [];
       for (const it of await elementsDeTexte(page.streamTextContent())) {
-        if (!("str" in it)) continue;
-        const [a, b, , , x, y] = it.transform as number[];
-        morceaux.push({ str: it.str, x: x ?? 0, y: y ?? 0, taille: Math.hypot(a ?? 0, b ?? 0) || 8, largeur: it.width });
+        const m = "str" in it ? morceauDe(it) : null;
+        if (m) morceaux.push(m);
       }
       pages.push(texteDeLaPage(morceaux));
       progres(0.2 + (0.8 * n) / doc.numPages);

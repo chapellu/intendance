@@ -100,6 +100,13 @@ function cote(m: MontantPose, c: Colonnes): "debit" | "credit" | null {
   return dd <= dc ? "debit" : "credit";
 }
 
+/** « (écart de 1 012,30 €) » — entre ce qu'on a lu et ce qui est imprimé. */
+const ditEcart = (lu: number, imprime: number): string => {
+  const c = Math.abs(lu - imprime);
+  const e = `${Math.floor(c / 100)}`.replace(/\B(?=(\d{3})+$)/g, " ");
+  return ` (écart de ${e},${String(c % 100).padStart(2, "0")} €)`;
+};
+
 /** Le montant d'une ligne qui tombe dans une des deux colonnes : le DERNIER,
  *  parce qu'un libellé peut citer un prix (« … 12,50 EUR »). */
 function mouvement(ligne: string, c: Colonnes): { sens: "debit" | "credit"; valeur: number; debut: number } | null {
@@ -392,15 +399,19 @@ export function lireReleve(texte: string): Lecture {
   if (soldeFinal === null) return { ok: false, raison: "Le nouveau solde est introuvable." };
 
   // LES TROIS ÉGALITÉS. Voir l'en-tête : c'est ce qui autorise l'import.
+  //
+  // L'ÉCART EST DIT : c'est le plus souvent le montant exact d'une ligne que
+  // la lecture a manquée, et il suffit de le chercher sur le relevé pour la
+  // retrouver.
   const debits = operations.filter((o) => o.montant < 0).reduce((s, o) => s - o.montant, 0);
   const credits = operations.filter((o) => o.montant > 0).reduce((s, o) => s + o.montant, 0);
   const report = g.totauxAvecAncien ? soldeInitial : 0;
   if (totalDebits !== null && debits + Math.max(0, -report) !== totalDebits)
-    return { ok: false, raison: "La somme des débits lus ne tombe pas sur le total imprimé." };
+    return { ok: false, raison: `La somme des débits lus ne tombe pas sur le total imprimé${ditEcart(debits + Math.max(0, -report), totalDebits)}.` };
   if (totalCredits !== null && credits + Math.max(0, report) !== totalCredits)
-    return { ok: false, raison: "La somme des crédits lus ne tombe pas sur le total imprimé." };
+    return { ok: false, raison: `La somme des crédits lus ne tombe pas sur le total imprimé${ditEcart(credits + Math.max(0, report), totalCredits)}.` };
   if (soldeInitial + credits - debits !== soldeFinal)
-    return { ok: false, raison: "L'ancien solde plus les mouvements ne donne pas le nouveau solde." };
+    return { ok: false, raison: `L'ancien solde plus les mouvements ne donne pas le nouveau solde${ditEcart(soldeInitial + credits - debits, soldeFinal)}.` };
 
   return {
     ok: true,

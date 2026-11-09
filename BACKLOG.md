@@ -6261,3 +6261,26 @@ ordinaire finisse dans le rouge.
       financements ; les mois. Suite possible : le prêt (mensualité, part des
       revenus), un bien vendu (ce qu'il reste dû), le calendrier mois par
       mois, des scénarios côte à côte.
+
+## La mention de la marge — T177
+
+- [x] **T177 — Un texte imprimé à la verticale ne cache plus une opération.**
+      Retour du 9/11 : un relevé refusé, « la somme des crédits lus ne tombe
+      pas sur le total imprimé ».
+
+      **LA CAUSE** : le relevé imprime dans sa marge, de bas en haut, une
+      mention (date d'émission, référence). pdf.js n'en donne que l'origine,
+      au pied de la marge ; elle tombait à un demi-point de la dernière
+      opération de la page, et `texteDeLaPage` l'a rangée sur la même rangée,
+      EN TÊTE. La ligne ne commençait plus par une date : l'opération n'était
+      plus lue, et la vérification des totaux a refusé le relevé — ce qu'elle
+      doit faire.
+
+      **LE REMÈDE** (`ecrans/pdf.ts`, `morceauDe`) : le texte qui n'est pas à
+      l'horizontale est écarté avant la mise en page. Aucun tableau ne s'écrit
+      à la verticale ; un italique (cisaillement) reste. Le refus dit
+      désormais l'ÉCART (« écart de 30,00 € ») : c'est le plus souvent le
+      montant de la ligne manquée, qu'on retrouve alors sur le papier.
+
+      Test : le relevé d'exemple posé en morceaux, une mention tournée à la
+      hauteur d'une opération — refusé sans le remède, relu juste avec.
