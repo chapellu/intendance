@@ -88,7 +88,7 @@ describe("les provisions", () => {
     // L'eau tombe en premier : c'est elle que le solde couvre d'abord.
     expect(p.lignes.map((l) => l.echeance.nom)).toEqual(["Eau", "Assurance auto"]);
     expect(p.lignes[0]!.couvert).toBe(requis(eau, "2026-11-07"));
-    expect(p.lignes[1]!.etat).toBe("en-retard");
+    expect(p.lignes[1]!.etat).toBe("a-rattraper");
     expect(p.ecart).toBeLessThan(0);
     expect(p.conseille).toBeGreaterThan(p.regime);
   });
@@ -96,13 +96,49 @@ describe("les provisions", () => {
   test("l'avance sert d'abord ce qui tombe en premier, jusqu'au montant plein", () => {
     const p = provisions([eau], 50_000, "2026-11-07");
     expect(p.lignes[0]!.couvert).toBe(18_000);
-    expect(p.lignes[0]!.etat).toBe("couverte");
+    expect(p.lignes[0]!.etat).toBe("prete");
     expect(p.conseille).toBe(0);
   });
 
   test("une charge mensuelle n'est pas une provision", () => {
     const pret = ech({ nom: "Prêt", montant: 95_000, tousLes: 1, reference: "2026-01-05" });
     expect(provisions([pret, eau], 0, "2026-11-07").lignes).toHaveLength(1);
+  });
+});
+
+describe("le départ des provisions", () => {
+  // L'eau : 180 € par trimestre — 15 janvier, avril, juillet, octobre.
+  const eau = ech({ nom: "Eau", montant: 18_000, tousLes: 3, reference: "2026-01-15" });
+  const auto = ech({ nom: "Assurance auto", montant: 60_000, tousLes: 12, reference: "2027-03-01" });
+
+  test("le jour où l'on commence, rien n'est à rattraper — même à zéro euro", () => {
+    const p = provisions([eau, auto], 0, "2026-11-09", "2026-11-09");
+    expect(p.requis).toBe(0);
+    expect(p.lignes.every((l) => l.etat === "a-jour")).toBe(true);
+    // Le virement du mois prépare tout d'ici les dates : plus que le régime.
+    expect(p.conseille).toBeGreaterThan(p.regime);
+  });
+
+  test("une échéance trop proche du départ se paie comme d'habitude, et l'on prépare la suivante", () => {
+    // Départ le 1er janvier : l'eau du 15 janvier tombe dans le mois.
+    const p = provisions([eau], 0, "2027-01-03", "2027-01-01");
+    const l = p.lignes[0]!;
+    expect(l.prochaine).toBe("2027-01-15");
+    expect(l.horsProvision).toBe(true);
+    expect(l.cible).toBe("2027-04-15");
+    // Rien n'est dû pour avril tant que janvier n'est pas passé…
+    expect(l.requis).toBe(0);
+    // …mais le virement du mois prépare déjà avril : trois virements d'ici là.
+    expect(l.conseille).toBe(6_000);
+  });
+
+  test("après le départ, ce qui est dû se compte depuis lui, pas depuis toujours", () => {
+    // Commencé le 1er novembre, relevé le 1er décembre : l'eau du 15 janvier
+    // a eu un mois sur deux et demi — pas deux sur trois.
+    const avec = provisions([eau], 0, "2026-12-01", "2026-11-01").lignes[0]!;
+    const sans = provisions([eau], 0, "2026-12-01").lignes[0]!;
+    expect(avec.requis).toBe(Math.round((18_000 * 30) / 75));
+    expect(sans.requis).toBeGreaterThan(avec.requis);
   });
 });
 

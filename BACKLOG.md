@@ -6167,3 +6167,33 @@ ordinaire finisse dans le rouge.
       **Le test avait tort, pas l'app** : un doigt voit le bouton grisé et
       attend une fraction de seconde. Le parcours fait de même
       (`toBeEnabled` avant de frapper) ; ses assertions ne changent pas.
+
+## Les provisions, concrètement — T174
+
+- [x] **T174 — Un départ, deux façons de tenir ses provisions, des mots
+      justes.** Retour du 9/11 : « J'ai ajouté les échéances, et maintenant ?
+      À part me dire en retard, ce qui est faux car j'ai déjà payé. » Puis :
+      « Et si l'argent reste sur le compte courant ? Quel intérêt d'introduire
+      encore un nouveau compte ? »
+
+      **« EN RETARD » SE LISAIT « PAS PAYÉ ».** L'état parlait de l'argent mis
+      de côté pour la PROCHAINE échéance, sans le dire. Il dit maintenant
+      « Prête », « Dans les temps », « À rattraper » — et la ligne dit ce
+      qu'il faudrait avoir de côté.
+
+      **LE CALCUL SUPPOSAIT QU'ON PROVISIONNAIT DEPUIS TOUJOURS** : il exigeait
+      la part accumulée depuis le paiement précédent, donc tout était en
+      retard le jour où l'on commençait. Il y a maintenant un DÉPART, posé au
+      premier relevé du solde (même à 0 €), corrigeable. Rien n'est exigé pour
+      avant lui ; une échéance qui tombe moins d'un mois après se paie comme
+      d'habitude, et l'on prépare la suivante (`trajectoire`, `horsProvision`).
+
+      **DEUX LIEUX, AU CHOIX** (`budget|lieu-provisions`) :
+      - « courant » — rien à ouvrir : l'app RÉSERVE sur le compte courant la
+        part des factures à venir et dit ce qui est vraiment disponible. Le
+        solde relevé n'y compte que jusqu'au réservé : un lendemain de paie ne
+        rend pas les factures de l'année « prêtes » ;
+      - « livret » — un compte à part, un virement mensuel ; le surplus y est
+        de l'avance.
+      Tant qu'on n'a pas commencé, l'écran Provisions remplace ses chiffres par
+      un mode d'emploi en quatre gestes, pour l'un ou l'autre lieu.

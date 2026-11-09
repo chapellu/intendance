@@ -90,3 +90,32 @@ test("la nature suit la catégorie, jusqu'à ce qu'on la choisisse soi-même", a
   await page.locator(".bu-champ select").selectOption("loisirs");
   await expect(nature("Essentiel")).toHaveAttribute("aria-pressed", "true");
 });
+
+test("les provisions sur le compte courant : rien à virer, une part réservée, le reste disponible", async ({ page }) => {
+  await page.goto("/#/budget/provisions");
+  await attendreLApp(page);
+  await page.getByRole("button", { name: "+ Échéance" }).click();
+  await page.getByPlaceholder(/Eau, taxe/).fill("Provision annuelle");
+  await page.getByPlaceholder("0").fill("1200");
+  await page.locator("input[type=date]").fill("2027-10-15");
+  await page.getByRole("button", { name: "Enregistrer" }).click();
+  await expect(page.locator(".aj-fond")).toHaveCount(0);
+
+  // Pas encore commencé : un mode d'emploi, et rien « à rattraper ».
+  const mode = page.locator("[data-test=mode-emploi]");
+  await expect(mode).toBeVisible();
+  await expect(page.locator(".bu-provision.a-rattraper")).toHaveCount(0);
+  await mode.getByRole("button", { name: "Sur mon compte courant" }).click();
+  await mode.getByRole("button", { name: /Commencer/ }).click();
+
+  // Le relevé : le solde du compte courant, aujourd'hui pour départ.
+  await page.getByRole("dialog").getByPlaceholder("0").fill("2500");
+  await page.getByRole("button", { name: "Enregistrer" }).click();
+  await expect(page.locator(".aj-fond")).toHaveCount(0);
+
+  await expect(page.locator("[data-test=mode-emploi]")).toHaveCount(0);
+  await expect(page.getByText("Vraiment disponible", { exact: true })).toBeVisible();
+  // Le jour du départ, rien n'est encore réservé : tout est disponible.
+  await expect(page.locator("[data-test=reserve]")).toHaveText("0 €");
+  await expect(page.locator("[data-test=disponible]")).toHaveText(/2\s500\s€/);
+});

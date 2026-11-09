@@ -1,9 +1,9 @@
 import { describe, expect, test } from "vitest";
 import type { DonneesBudget } from "../db/budget";
-import { dans, dateCourte, nomDuMois, vueDesProvisions, vueDuMois, vueDuReleve } from "./budget.vue";
+import { dans, dateCourte, MOT_ETAT, nomDuMois, vueDesProvisions, vueDuMois, vueDuReleve } from "./budget.vue";
 
 const JOUR = "2026-11-07";
-const vide: DonneesBudget = { echeances: [], enveloppes: [], revenus: [], solde: null };
+const vide: DonneesBudget = { echeances: [], enveloppes: [], revenus: [], solde: null, depart: null, lieu: null };
 const eau = {
   id: "eau", nom: "Eau", montant: 18_000, tousLes: 3 as const, reference: "2027-01-15",
   categorie: "logement" as const, nature: "obligatoire" as const,
@@ -51,14 +51,45 @@ describe("le mois", () => {
 });
 
 describe("les provisions", () => {
-  test("sans relevé, l'écran demande le solde et dit ce qu'il devrait être", () => {
+  test("sans relevé, l'écran dit que les provisions n'ont pas commencé", () => {
     const v = vueDesProvisions({ ...vide, echeances: [eau] }, JOUR);
-    expect(v.phrase).toMatch(/^Relève le solde/);
+    expect(v.phrase).toMatch(/n’ont pas commencé/);
     expect(v.plusLourd?.mois).toBe("2027-01");
   });
 
-  test("un solde suffisant donne un compte à jour", () => {
+  test("un solde suffisant sur un livret donne un livret dans les temps", () => {
     const v = vueDesProvisions({ ...vide, echeances: [eau], solde: { montant: 18_000, jour: JOUR } }, JOUR);
-    expect(v.phrase).toMatch(/^Le compte est à jour/);
+    expect(v.phrase).toMatch(/^Le livret est dans les temps/);
+  });
+});
+
+describe("où dorment les provisions", () => {
+  const auto = { ...eau, id: "auto", nom: "Assurance auto", montant: 60_000, tousLes: 12 as const, reference: "2027-03-01" };
+
+  test("sans relevé, rien n'est « à rattraper » : les provisions n'ont pas commencé", () => {
+    const v = vueDesProvisions({ ...vide, echeances: [eau, auto] }, JOUR);
+    expect(v.phrase).toMatch(/n’ont pas commencé/);
+    expect(v.prov.lignes.some((l) => l.etat === "a-rattraper")).toBe(false);
+  });
+
+  test("sur le compte courant, l'app réserve et dit ce qui est vraiment disponible", () => {
+    const d: DonneesBudget = { ...vide, echeances: [eau, auto], lieu: "courant", depart: "2026-10-01", solde: { montant: 300_000, jour: JOUR } };
+    const v = vueDesProvisions(d, JOUR);
+    expect(v.prov.requis).toBeGreaterThan(0);
+    expect(v.disponible).toBe(300_000 - v.prov.requis);
+    // Un compte de lendemain de paie ne rend pas les factures de l'année « prêtes ».
+    expect(v.prov.lignes.some((l) => l.etat === "prete")).toBe(false);
+    expect(v.phrase).toMatch(/vraiment disponibles/);
+  });
+
+  test("le même solde sur un livret, c'est de l'avance", () => {
+    const d: DonneesBudget = { ...vide, echeances: [eau, auto], lieu: "livret", depart: "2026-10-01", solde: { montant: 300_000, jour: JOUR } };
+    const v = vueDesProvisions(d, JOUR);
+    expect(v.disponible).toBeNull();
+    expect(v.prov.lignes.every((l) => l.etat === "prete")).toBe(true);
+  });
+
+  test("les mots parlent du livret, pas de la facture", () => {
+    expect(Object.values(MOT_ETAT)).toEqual(["Prête", "Dans les temps", "À rattraper"]);
   });
 });

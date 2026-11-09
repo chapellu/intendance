@@ -316,14 +316,34 @@ export function requis(e: Echeance, aujourdhui: string): number {
 export const versementsRestants = (e: Echeance, aujourdhui: string): number =>
   Math.max(1, moisEntre(aujourdhui, prochaine(e, aujourdhui)));
 
-export type EtatProvision = "couverte" | "a-jour" | "en-retard";
+/**
+ * L'état d'une provision — CE QUI EST DE CÔTÉ, jamais la facture elle-même.
+ *
+ * La première version disait « en retard », et ça se lisait « pas payé » :
+ * retour du 9/11, « en retard, ce qui est faux car j'ai déjà payé ». La
+ * facture, elle, se paie comme toujours ; l'état parle du livret.
+ *   - « prete » : tout le montant est de côté ;
+ *   - « a-jour » : il y a ce qu'il faut à ce stade ;
+ *   - « a-rattraper » : il manque de quoi suivre le rythme — le conseil du
+ *     mois le rattrape d'ici la date.
+ */
+export type EtatProvision = "prete" | "a-jour" | "a-rattraper";
 
 export interface LigneProvision {
   echeance: Echeance;
+  /** La prochaine occurrence réelle — celle qu'on paiera, provisionnée ou non. */
   prochaine: string;
-  /** Jours avant l'échéance, aujourd'hui = 0. */
+  /** Jours avant la prochaine, aujourd'hui = 0. */
   dans: number;
-  /** Ce qui devrait être de côté aujourd'hui. */
+  /**
+   * L'occurrence que la provision PRÉPARE. C'est la prochaine, sauf quand
+   * elle tombe moins d'un mois après le départ des provisions : trop tôt pour
+   * la mettre de côté, elle se paie comme d'habitude, et l'on prépare la
+   * suivante (`horsProvision`).
+   */
+  cible: string;
+  horsProvision: boolean;
+  /** Ce qui devrait être de côté aujourd'hui pour la cible. */
   requis: number;
   /** La part du solde relevé qui lui revient. */
   couvert: number;
@@ -337,13 +357,54 @@ export interface Provisions {
   /** Σ des douzièmes (tiers, …) : ce qu'on verse chaque mois en régime établi. */
   regime: number;
   /** Ce qu'il faut verser CE mois-ci pour que tout soit prêt à temps. Proche du
-   *  régime quand le compte est à jour, plus haut quand il est en retard. */
+   *  régime quand le compte est à jour, plus haut au démarrage ou en retard. */
   conseille: number;
   /** Σ de ce qui devrait être de côté aujourd'hui. */
   requis: number;
   solde: number;
   /** Solde − requis : positif, on a de l'avance ; négatif, du retard. */
   ecart: number;
+}
+
+/** Combien de temps il faut, au moins, pour préparer une échéance : un mois.
+ *  Plus près du départ, elle se paie comme avant. */
+const DELAI_DE_PREPARATION = 1;
+
+interface Trajectoire {
+  cible: string;
+  /** Le jour d'où l'on part pour la cible : le paiement précédent, ou le
+   *  départ des provisions s'il est plus récent. */
+  depuis: string;
+  horsProvision: boolean;
+}
+
+/**
+ * La trajectoire d'une provision : de quand à quand on met de côté, et pour
+ * quelle occurrence.
+ *
+ * SANS DÉPART, c'est l'ancien calcul : on fait comme si l'on provisionnait
+ * depuis toujours, donc depuis le paiement précédent. AVEC UN DÉPART — le
+ * jour où l'on a commencé —, rien n'est exigé pour avant lui : la trajectoire
+ * part de zéro ce jour-là, et l'occurrence trop proche pour être préparée
+ * passe à la suivante.
+ */
+function trajectoire(e: Echeance, aujourdhui: string, depart: string | null): Trajectoire {
+  const k = rangProchaine(e, aujourdhui);
+  const occ = (r: number) => ajouterMois(e.reference, r * e.tousLes);
+  if (!depart) return { cible: occ(k), depuis: occ(k - 1), horsProvision: false };
+  const auPlusTot = ajouterMois(depart, DELAI_DE_PREPARATION);
+  let kc = k;
+  while (occ(kc) < auPlusTot) kc++;
+  const avant = occ(kc - 1);
+  return { cible: occ(kc), depuis: avant > depart ? avant : depart, horsProvision: kc > k };
+}
+
+/** Ce qui devrait être de côté aujourd'hui sur une trajectoire — au prorata
+ *  des jours, jamais moins que zéro (avant son départ) ni plus que le montant. */
+function requisSur(montant: number, t: Trajectoire, aujourdhui: string): number {
+  if (aujourdhui <= t.depuis) return 0;
+  const total = joursEntre(t.depuis, t.cible);
+  return Math.min(montant, Math.round((montant * joursEntre(t.depuis, aujourdhui)) / total));
 }
 
 /**
@@ -353,21 +414,31 @@ export interface Provisions {
  * as-tu de côté pour l'eau ? » — personne ne le sait. On sait ce que dit le
  * livret. Le modèle le répartit donc lui-même, en deux passes :
  *
- *   1. CE QUI DEVRAIT ÊTRE LÀ, dans l'ordre des échéances. S'il manque de
- *      l'argent, c'est l'échéance la plus lointaine qui le constate — elle a
+ *   1. CE QUI DEVRAIT ÊTRE LÀ, dans l'ordre des échéances préparées. S'il
+ *      manque de l'argent, c'est la plus lointaine qui le constate — elle a
  *      encore des mois pour rattraper ; celle qui tombe dans dix jours, non.
  *   2. LE SURPLUS, dans le même ordre, jusqu'au montant plein : l'avance sert
  *      d'abord ce qui arrive en premier.
  *
  * Conséquence voulue : un compte pile à jour donne un conseil égal au régime,
- * à quelques euros près (le dû se compte en jours, les virements en mois). Le conseil ne monte que si on est en retard, et redescend
- * tout seul une fois le retard comblé.
+ * à quelques euros près (le dû se compte en jours, les virements en mois). Le
+ * conseil ne monte qu'au démarrage ou en retard, et redescend tout seul.
+ *
+ * `depart` : le jour où l'on a commencé à provisionner (voir `trajectoire`).
  */
-export function provisions(echeances: readonly Echeance[], solde: number, aujourdhui: string): Provisions {
+export function provisions(
+  echeances: readonly Echeance[],
+  solde: number,
+  aujourdhui: string,
+  depart: string | null = null,
+): Provisions {
   const lignes = echeances
     .filter(estProvision)
-    .map((e) => ({ echeance: e, prochaine: prochaine(e, aujourdhui), requis: requis(e, aujourdhui) }))
-    .sort((a, b) => (a.prochaine < b.prochaine ? -1 : a.prochaine > b.prochaine ? 1 : a.echeance.nom.localeCompare(b.echeance.nom)));
+    .map((e) => {
+      const t = trajectoire(e, aujourdhui, depart);
+      return { echeance: e, t, prochaine: prochaine(e, aujourdhui), requis: requisSur(e.montant, t, aujourdhui) };
+    })
+    .sort((a, b) => (a.t.cible < b.t.cible ? -1 : a.t.cible > b.t.cible ? 1 : a.echeance.nom.localeCompare(b.echeance.nom)));
 
   let reste = Math.max(0, solde);
   const couvert = lignes.map((l) => {
@@ -383,16 +454,20 @@ export function provisions(echeances: readonly Echeance[], solde: number, aujour
 
   const detail: LigneProvision[] = lignes.map((l, i) => {
     const c = couvert[i]!;
-    const n = versementsRestants(l.echeance, aujourdhui);
+    // Les virements qui restent avant la CIBLE — un par mois calendaire avant
+    // le sien (voir `versementsRestants`).
+    const n = Math.max(1, moisEntre(aujourdhui, l.t.cible));
     const manque = l.echeance.montant - c;
     // Le manque, étalé sur les virements qui restent. Due ce mois-ci, tout ce
     // qui manque se verse maintenant.
     const conseille = manque <= 0 ? 0 : manque / n;
-    const etat: EtatProvision = c >= l.echeance.montant ? "couverte" : c >= l.requis ? "a-jour" : "en-retard";
+    const etat: EtatProvision = c >= l.echeance.montant ? "prete" : c >= l.requis ? "a-jour" : "a-rattraper";
     return {
       echeance: l.echeance,
       prochaine: l.prochaine,
       dans: joursEntre(aujourdhui, l.prochaine),
+      cible: l.t.cible,
+      horsProvision: l.t.horsProvision,
       requis: l.requis,
       couvert: c,
       conseille,
