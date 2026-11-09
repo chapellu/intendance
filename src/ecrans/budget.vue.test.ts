@@ -3,7 +3,7 @@ import type { DonneesBudget } from "../db/budget";
 import { dans, dateCourte, MOT_ETAT, nomDuMois, vueDesProvisions, vueDuMois, vueDuReleve } from "./budget.vue";
 
 const JOUR = "2026-11-07";
-const vide: DonneesBudget = { echeances: [], enveloppes: [], revenus: [], solde: null, depart: null, lieu: null };
+const vide: DonneesBudget = { echeances: [], enveloppes: [], revenus: [], solde: null, depart: null, lieu: null, projets: [], courant: null };
 const eau = {
   id: "eau", nom: "Eau", montant: 18_000, tousLes: 3 as const, reference: "2027-01-15",
   categorie: "logement" as const, nature: "obligatoire" as const,

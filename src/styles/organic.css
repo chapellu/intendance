@@ -1374,4 +1374,8 @@ button.bu-reel {
 /* Le mode d'emploi des provisions, tant qu'on n'a pas commencé. */
 .bu-mode { margin-top: var(--space-4); padding: var(--space-3); border-radius: var(--radius-lg); background: var(--color-accent-2-100); color: var(--color-accent-2-900); }
 .bu-mode ol { margin: var(--space-2) 0 var(--space-3); padding-left: 1.2em; font-size: 13.5px; line-height: 1.45; display: flex; flex-direction: column; gap: 6px; }
+/* Deux segments bout à bout — fait, puis à faire : c'est la jauge qui arrondit. */
+.bu-projet .jauge { display: flex; overflow: hidden; }
+.bu-projet .jauge span { border-radius: 0; }
+.bu-projet .jauge span.puis { opacity: .4; }
 .bu-provision .hors { font-size: 12px; color: var(--color-neutral-800); background: var(--color-neutral-100); border-radius: var(--radius-sm, 8px); padding: 4px 8px; margin-top: 6px; }

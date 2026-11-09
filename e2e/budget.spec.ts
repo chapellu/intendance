@@ -119,3 +119,53 @@ test("les provisions sur le compte courant : rien à virer, une part réservée,
   await expect(page.locator("[data-test=reserve]")).toHaveText("0 €");
   await expect(page.locator("[data-test=disponible]")).toHaveText(/2\s500\s€/);
 });
+
+test("l'épargne : ce qui dort, une réserve d'abord, puis une somme chaque mois", async ({ page }) => {
+  await page.goto("/#/budget");
+  await attendreLApp(page);
+  await page.getByRole("button", { name: "+ Revenu" }).click();
+  await page.getByPlaceholder(/Salaire/).fill("Revenu A");
+  await page.getByPlaceholder("0").fill("3000");
+  await enregistrer(page);
+  await page.getByRole("link", { name: "Enveloppes" }).click();
+  await page.getByRole("button", { name: "+ Enveloppe" }).click();
+  await page.getByPlaceholder(/Courses/).fill("Enveloppe A");
+  await page.getByPlaceholder("0").fill("500");
+  await enregistrer(page);
+
+  await page.getByRole("link", { name: "Épargne" }).click();
+  await expect(page).toHaveURL(/#\/budget\/epargne$/);
+  // Sans relevés importés, on planifie sur le mois type : 3 000 − 500.
+  await expect(page.locator("[data-test=capacite-retenue]")).toHaveText(/2\s500\s€/);
+
+  // Le compte courant : il garde un mois de dépenses, le reste dort.
+  await page.getByRole("button", { name: /Sur le compte/ }).click();
+  await page.getByRole("dialog").getByPlaceholder("0").fill("10000");
+  await enregistrer(page);
+  await expect(page.locator("[data-test=a-garder]")).toHaveText("500 €");
+  await expect(page.locator("[data-test=a-placer]")).toHaveText(/9\s500\s€/);
+
+  // La réserve de précaution, proposée : trois mois d'essentiel.
+  await page.getByRole("button", { name: /Commencer par une réserve de précaution/ }).click();
+  await expect(page.getByRole("dialog").getByLabel("Montant à réunir")).toHaveValue("1500");
+  await enregistrer(page);
+  const aFaire = page.locator("[data-test=a-faire]");
+  await expect(aFaire).toContainText(/1\s500\s€ vers « Réserve de précaution »/);
+  await expect(aFaire).toContainText(/8\s000\s€ dorment encore/);
+  await expect(aFaire).toContainText(/2\s500\s€ par mois restent sans destination/);
+
+  // Une somme chaque mois : elle passe après la réserve, déjà pleine.
+  await page.getByRole("button", { name: "+ Projet" }).click();
+  const feuille = page.getByRole("dialog");
+  await feuille.getByPlaceholder(/précaution/).fill("Projet A");
+  await feuille.getByRole("button", { name: "Chaque mois", exact: true }).click();
+  await feuille.getByLabel("Chaque mois", { exact: true }).fill("200");
+  await enregistrer(page);
+  await expect(aFaire).toContainText(/200\s€ vers « Projet A »/);
+  await expect(aFaire).toContainText(/2\s300\s€ par mois restent sans destination/);
+
+  await page.reload();
+  await attendreLApp(page);
+  await expect(page.locator(".bu-projet")).toHaveCount(2);
+  await expect(page.locator(".bu-projet").first()).toContainText("1. Réserve de précaution");
+});

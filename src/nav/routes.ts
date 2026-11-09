@@ -39,12 +39,13 @@ export interface CleCreneau {
 export type Route =
   | { ecran: "cockpit" }
   | { ecran: "jardin" }
-  // LE BUDGET — trois vues courtes, sans paramètre : le mois type, les
-  // provisions, les enveloppes. Aucune ne vise une date : tout ce qu'elles
-  // affichent se recalcule depuis aujourd'hui.
+  // LE BUDGET — des vues courtes, sans paramètre : le mois type, les
+  // provisions, les enveloppes, l'épargne, les relevés. Aucune ne vise une
+  // date : tout ce qu'elles affichent se recalcule depuis aujourd'hui.
   | { ecran: "budget" }
   | { ecran: "provisions" }
   | { ecran: "enveloppes" }
+  | { ecran: "epargne" }
   | { ecran: "releves" }
   | { ecran: "aujourdhui" }
   | { ecran: "semaine" }
@@ -117,7 +118,7 @@ export const dansCuisine = (r: Route): boolean => DANS_CUISINE.has(r.ecran);
 
 /** Les écrans de la facette budget — ceux qui portent SON en-tête et SA
  *  sous-navigation. */
-const DANS_BUDGET: ReadonlySet<Ecran> = new Set<Ecran>(["budget", "provisions", "enveloppes", "releves"]);
+const DANS_BUDGET: ReadonlySet<Ecran> = new Set<Ecran>(["budget", "provisions", "enveloppes", "epargne", "releves"]);
 
 export const dansBudget = (r: Route): boolean => DANS_BUDGET.has(r.ecran);
 
@@ -134,6 +135,7 @@ const SANS_PARAM: Record<string, Ecran> = {
   budget: "budget",
   "budget/provisions": "provisions",
   "budget/enveloppes": "enveloppes",
+  "budget/epargne": "epargne",
   "budget/releves": "releves",
   // `#/cuisine` EST UN ALIAS DE L'ENTRÉE, PAS UN ÉCRAN, et c'est ce qui a
   // changé : il adressait « Aujourd'hui » en dur, si bien qu'éteindre les jours
@@ -168,6 +170,7 @@ export function chemin(r: Route): string {
     case "budget": return "#/budget";
     case "provisions": return "#/budget/provisions";
     case "enveloppes": return "#/budget/enveloppes";
+    case "epargne": return "#/budget/epargne";
     case "releves": return "#/budget/releves";
     case "aujourdhui": return "#/cuisine/aujourdhui";
     case "semaine": return "#/cuisine/semaine";

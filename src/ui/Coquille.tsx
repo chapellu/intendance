@@ -98,6 +98,9 @@ const SOUS_NAV_BUDGET: { route: Route; nom: string }[] = [
   { route: { ecran: "budget" }, nom: "Le mois" },
   { route: { ecran: "provisions" }, nom: "Provisions" },
   { route: { ecran: "enveloppes" }, nom: "Enveloppes" },
+  // L'ÉPARGNE APRÈS CE QU'ON DÉPENSE : elle reçoit ce que les trois premières
+  // laissent — le stock qui dort, et la capacité de chaque mois.
+  { route: { ecran: "epargne" }, nom: "Épargne" },
   // LE RÉEL EN DERNIER : les trois premiers disent le budget qu'on ÉCRIT, celui-ci
   // le confronte à ce qui s'est passé. Il n'a de sens qu'une fois les autres
   // remplis.

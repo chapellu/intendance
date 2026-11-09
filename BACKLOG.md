@@ -6197,3 +6197,40 @@ ordinaire finisse dans le rouge.
         de l'avance.
       Tant qu'on n'a pas commencé, l'écran Provisions remplace ses chiffres par
       un mode d'emploi en quatre gestes, pour l'un ou l'autre lieu.
+
+## Où va ce qui reste — T175
+
+- [x] **T175 — L'épargne : ce qui dort, la capacité de chaque mois, des
+      projets qui la reçoivent.** Question du 9/11 : la capacité d'épargne
+      réelle, et comment financer des projets — une partie de l'argent dort
+      sur le compte courant. Le mois type disait COMBIEN il reste ; rien ne
+      disait OÙ ça va, et ce qui n'a pas de destination reste sur le compte.
+
+      **LE STOCK** (`dormant`) : le solde du compte courant, moins ce qu'il
+      doit garder — le réservé des provisions quand elles y dorment, et un
+      mois de charges et d'enveloppes. Le reste est « à placer », une fois.
+      Le compte courant se relève sur l'écran Épargne ; quand les provisions
+      y dorment, c'est le même relevé que celui de l'écran Provisions
+      (`releverCourant`).
+
+      **LE FLUX** (`capaciteDe`) : la capacité ÉCRITE (le mois type) et la
+      capacité MESURÉE (la moyenne des mois complets de relevés, le mois en
+      cours exclu, deux mois au moins) ; on planifie sur la plus prudente. La
+      mesure dit aussi ce qui a été laissé sans être mis de côté : l'argent
+      qui s'est accumulé sur le compte, mois après mois.
+
+      **LES PROJETS** (`budget|projets`, l'ordre est la priorité) : un montant
+      pour une date, un montant dès que possible (une réserve), ou une somme
+      chaque mois. `repartir` donne le stock puis le flux, dans l'ordre, et
+      simule mois par mois : une réserve qui prend tout trois mois puis se
+      tait laisse le projet suivant rattraper sur ce qui lui reste. Chaque
+      projet dit son état (Avec ce qui dort, Atteint, Dans les temps, En
+      route, Tenu, Trop court) et ce qu'il reçoit.
+
+      **« À FAIRE »** : les virements nommés — une fois, puis chaque mois — et
+      ce qui reste sans destination. Une réserve de précaution est proposée
+      (trois mois d'obligatoire et d'essentiel), corrigeable. L'app ne dit pas
+      sur quoi placer : le support se choisit selon l'horizon.
+
+      Au passage, « Le mois » ne dit plus « à virer sur le compte dédié » quand
+      les provisions dorment sur le compte courant, et renvoie à l'Épargne.

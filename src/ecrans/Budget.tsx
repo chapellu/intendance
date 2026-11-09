@@ -1,4 +1,5 @@
-// Les écrans du budget — « Le mois », « Provisions », « Enveloppes ».
+// Les écrans du budget — « Le mois », « Provisions », « Enveloppes ». L'épargne
+// a son fichier (`Epargne.tsx`), les relevés le leur.
 //
 // CE QUE CETTE PREMIÈRE VERSION NE FAIT PAS, et il faut le lire avant de la
 // compléter : elle ne lit AUCUN relevé bancaire. Tout ce qu'elle montre est le
@@ -142,9 +143,20 @@ function Mois({ d }: { d: DonneesBudget }) {
 
       {v.prov.lignes.length ? (
         <a className="co-appel" href={chemin({ ecran: "provisions" })}>
-          {v.rattrapage > 0
-            ? `Provisions : ${euros(v.prov.conseille)} à virer ce mois-ci (${euros(v.prov.regime)} en régime).`
-            : `Provisions : ${euros(v.prov.regime)} à virer chaque mois sur le compte dédié.`}
+          {/* SUR LE COMPTE COURANT, ON NE VIRE RIEN : on garde. */}
+          {d.lieu === "courant"
+            ? `Provisions : ${euros(v.prov.conseille)} à garder sur le compte ce mois-ci.`
+            : v.rattrapage > 0
+              ? `Provisions : ${euros(v.prov.conseille)} à virer ce mois-ci (${euros(v.prov.regime)} en régime).`
+              : `Provisions : ${euros(v.prov.regime)} à virer chaque mois sur le compte dédié.`}
+        </a>
+      ) : null}
+
+      {/* CE QUI RESTE N'EST PAS ENCORE DE L'ÉPARGNE : sans destination, il reste
+          sur le compte courant. L'écran Épargne lui en donne une. */}
+      {v.mois.capacite > 0 ? (
+        <a className="co-appel" href={chemin({ ecran: "epargne" })}>
+          Où vont ces {euros(v.mois.capacite)} ? Les projets et ce qui dort sur le compte →
         </a>
       ) : null}
 
@@ -444,7 +456,7 @@ export function Champ({ nom, children }: { nom: string; children: ReactNode }) {
   );
 }
 
-function ChampMontant({ nom, valeur, onChange }: { nom: string; valeur: string; onChange: (v: string) => void }) {
+export function ChampMontant({ nom, valeur, onChange }: { nom: string; valeur: string; onChange: (v: string) => void }) {
   const invalide = valeur !== "" && lireMontant(valeur) === null;
   return (
     <Champ nom={nom}>
