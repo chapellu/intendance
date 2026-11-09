@@ -5,7 +5,9 @@
 
 import { describe, expect, test } from "vitest";
 import { lireFactureDrive } from "../model/factureDrive";
-import { texteDeLaPage, type MorceauPdf } from "./pdf";
+import { lireReleve } from "../model/releveBancaire";
+import { releve1 } from "../model/releveBancaire.exemples";
+import { morceauDe, texteDeLaPage, type MorceauPdf } from "./pdf";
 
 const m = (str: string, x: number, y: number, taille = 8): MorceauPdf => ({ str, x, y, taille });
 
@@ -66,5 +68,55 @@ describe("texteDeLaPage", () => {
 
   test("une page sans texte rend une chaîne vide", () => {
     expect(texteDeLaPage([m(" ", 10, 10)])).toBe("");
+  });
+});
+
+describe("le texte tourné de la marge", () => {
+  // Le relevé d'exemple, posé comme pdf.js le rendrait : chaque morceau de
+  // ligne (séparé du suivant par deux blancs ou plus) à son abscisse — une
+  // colonne vaut 3 pt —, une rangée tous les 10 pt, en corps 8.
+  type Element = { str: string; transform: number[]; width: number };
+  const elements = (page: string): Element[] =>
+    page.split("\n").flatMap((l, i) =>
+      [...l.matchAll(/\S+(?: \S+)*/g)].map((m) => ({
+        str: m[0],
+        transform: [8, 0, 0, 8, m.index! * 3, 800 - 10 * i],
+        width: m[0].length * 3,
+      })),
+    );
+  const pages = releve1().split("\f").map(elements);
+
+  // UNE MENTION IMPRIMÉE DE BAS EN HAUT dans la marge (tournée d'un quart de
+  // tour : `a` nul, `b` porte le corps), dont l'origine tombe à 0,5 pt de la
+  // rangée de la dernière opération de la page.
+  const rangee = pages[0]!.find((e) => e.str.startsWith("03/09/2026"))!.transform[5]!;
+  const mention: Element = { str: "Édité le 01/10/2026 Réf. 0000", transform: [0, 6, -6, 0, 30, rangee - 0.5], width: 87 };
+  const avecMention = [[...pages[0]!, mention], ...pages.slice(1)];
+
+  const lire = (versMorceau: (e: Element) => MorceauPdf | null) =>
+    lireReleve(avecMention.map((p) => texteDeLaPage(p.flatMap((e) => versMorceau(e) ?? []))).join("\n\f"));
+
+  test("sans elle, le relevé posé se relit juste", () => {
+    expect(lireReleve(pages.map((p) => texteDeLaPage(p.flatMap((e) => morceauDe(e) ?? []))).join("\n\f")).ok).toBe(true);
+  });
+
+  test("prise pour un morceau de la rangée, elle cachait l'opération — et le relevé était refusé", () => {
+    const naif = (e: Element): MorceauPdf => ({ str: e.str, x: e.transform[4]!, y: e.transform[5]!, taille: 8, largeur: e.width });
+    const l = lire(naif);
+    expect(l.ok).toBe(false);
+    if (!l.ok) expect(l.raison).toBe("La somme des débits lus ne tombe pas sur le total imprimé (écart de 30,00 €).");
+  });
+
+  test("écartée, le relevé se relit juste, l'opération comprise", () => {
+    expect(morceauDe(mention)).toBeNull();
+    const l = lire(morceauDe);
+    if (!l.ok) throw new Error(l.raison);
+    expect(l.releve.operations.map((o) => o.libelle)).toContain("PRLV SEPA FOURNISSEUR EAU");
+  });
+
+  test("le texte droit passe, en italique compris ; à l'envers, non", () => {
+    expect(morceauDe({ str: "x", transform: [8, 0, 0, 8, 10, 20], width: 4 })).toEqual({ str: "x", x: 10, y: 20, taille: 8, largeur: 4 });
+    expect(morceauDe({ str: "x", transform: [8, 0, 1.7, 8, 10, 20], width: 4 })).not.toBeNull();
+    expect(morceauDe({ str: "x", transform: [-8, 0, 0, -8, 10, 20], width: 4 })).toBeNull();
   });
 });

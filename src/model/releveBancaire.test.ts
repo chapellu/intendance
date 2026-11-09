@@ -43,7 +43,7 @@ describe("gabarit « date de valeur en tête »", () => {
   test("un total qui ne tombe pas juste fait refuser le relevé", () => {
     const l = lireReleve(releve1("1 042,31"));
     expect(l.ok).toBe(false);
-    if (!l.ok) expect(l.raison).toMatch(/débits/);
+    if (!l.ok) expect(l.raison).toBe("La somme des débits lus ne tombe pas sur le total imprimé (écart de 0,01 €).");
   });
 });
 
