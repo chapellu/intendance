@@ -32,7 +32,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: nginx
-          image: ghcr.io/chapellu/intendance:f28e7f0dd9ebf6cb6ef8f87e6e5d8a9a2025b2f7
+          image: ghcr.io/chapellu/intendance:9d36ce3e01a9aa88f2dd0db6885b197c6c18e678
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
