@@ -6141,7 +6141,8 @@ ordinaire finisse dans le rouge.
 
 ### Ce que T172 laisse ouvert
 
-- [ ] **`a-la-pause.spec.ts`, « un seul tap », tombe aussi — autre course.**
+- [x] **`a-la-pause.spec.ts`, « un seul tap », tombe aussi — autre course.**
+      Fermé par T173, ci-dessous.
       Vu en refaisant tourner la suite : 6 échecs sur 15 sur la machine de
       dev, jamais en CI jusqu'ici. L'URL reste `#/cockpit` : le
       `dispatchEvent` part sur « Je lance ça » alors que le bouton est encore
@@ -6149,3 +6150,20 @@ ordinaire finisse dans le rouge.
       la ligne qui le porte —, et un clic sur un bouton désactivé ne fait
       rien. Le parcours devrait attendre `toBeEnabled()` avant de frapper.
       Pas corrigé ici : un ticket, une course.
+
+## Le bouton qu'on touchait grisé — T173
+
+- [x] **T173 — « Un seul tap » attend que « Je lance ça » soit actif.** La
+      course que T172 avait notée sans la fermer. `Lancer`, au cockpit, lit
+      sa propre semaine et reste désactivé tant qu'elle n'est pas là ; la
+      ligne « Ce soir » qui le porte s'affiche avant. Le parcours envoyait son
+      `dispatchEvent` dès la ligne visible — et `dispatchEvent` n'attend pas
+      qu'un bouton soit actionnable : sur un bouton désactivé, le clic n'arrive
+      à personne, l'URL reste `#/cockpit`.
+
+      **Mesuré sur la machine de dev** : 16 échecs sur 45 sans correctif ; 30
+      sur 30 avec. La suite complète passe 87 sur 87 dans la foulée.
+
+      **Le test avait tort, pas l'app** : un doigt voit le bouton grisé et
+      attend une fraction de seconde. Le parcours fait de même
+      (`toBeEnabled` avant de frapper) ; ses assertions ne changent pas.
