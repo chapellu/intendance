@@ -9,6 +9,7 @@ const TOUTES: Route[] = [
   { ecran: "provisions" },
   { ecran: "enveloppes" },
   { ecran: "epargne" },
+  { ecran: "projet", id: "0b6c-4f2a" },
   { ecran: "releves" },
   { ecran: "aujourdhui" },
   { ecran: "semaine" },
@@ -111,6 +112,8 @@ describe("les routes", () => {
   test("la facette budget a ses trois vues, et elles ne sont pas de la cuisine", () => {
     expect(lireRoute("#/budget")).toEqual({ ecran: "budget" });
     expect(lireRoute("#/budget/provisions")).toEqual({ ecran: "provisions" });
+    expect(lireRoute("#/budget/epargne/0b6c-4f2a")).toEqual({ ecran: "projet", id: "0b6c-4f2a" });
+    expect(dansBudget({ ecran: "projet", id: "x" })).toBe(true);
     for (const e of ["budget", "provisions", "enveloppes", "epargne", "releves"] as const) {
       expect(dansBudget({ ecran: e })).toBe(true);
       expect(dansCuisine({ ecran: e })).toBe(false);

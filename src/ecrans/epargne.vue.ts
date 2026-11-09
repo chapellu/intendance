@@ -2,7 +2,7 @@
 // `Epargne.tsx` les dessine, et ne calcule rien.
 
 import { euros, moisType } from "../model/budget";
-import { dormant, MOIS_DE_PRECAUTION, repartir, type Dormant, type LigneProjet, type Repartition, type Rythme } from "../model/epargne";
+import { dormant, MOIS_DE_PRECAUTION, projetEffectif, repartir, type Dormant, type LigneProjet, type Repartition, type Rythme } from "../model/epargne";
 import { classerTout, historique, type OperationEnBase, type Classement } from "../model/reel";
 import type { DonneesBudget, Releve } from "../db/budget";
 import { provisionsDe, vueDuReleve, type VueReleve } from "./budget.vue";
@@ -90,7 +90,7 @@ export function vueDeLEpargne(d: DonneesBudget, reel: Reel | null, aujourdhui: s
   const matelas = Object.values(type.postes).reduce((s, p) => s + p.fixes + p.enveloppes, 0);
   const reserve = provisionsSurLeCourant ? provisionsDe(d, aujourdhui).requis : 0;
   const dort = r ? dormant(r.montant, reserve, matelas) : null;
-  const rep = repartir(d.projets, dort?.aPlacer ?? 0, capacite.retenue, aujourdhui.slice(0, 7));
+  const rep = repartir(d.projets.map(projetEffectif), dort?.aPlacer ?? 0, capacite.retenue, aujourdhui.slice(0, 7));
   const precaution = MOIS_DE_PRECAUTION * (type.postes.obligatoire.total + type.postes.essentiel.total);
   return { capacite, releve: vueDuReleve(r, aujourdhui), dormant: dort, rep, precaution, provisionsSurLeCourant };
 }

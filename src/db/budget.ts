@@ -15,6 +15,7 @@
 import { useLiveQuery } from "dexie-react-hooks";
 import type { Echeance, Enveloppe, Revenu } from "../model/budget";
 import type { Projet } from "../model/epargne";
+import type { Detail } from "../model/postes";
 import { base as baseApp, type Base } from "./schema";
 
 export const CLE_REVENUS = "budget|revenus";
@@ -106,6 +107,20 @@ export const CLE_COURANT = "budget|solde-courant";
 export async function poserProjets(p: readonly Projet[], b: Base = baseApp): Promise<void> {
   if (p.length) await b.reglages.put({ cle: CLE_PROJETS, valeur: [...p], maj: Date.now() });
   else await b.reglages.delete(CLE_PROJETS);
+}
+
+/**
+ * Le détail d'un projet — ses postes et ses financements. En transaction : la
+ * liste des projets est une seule valeur, et deux écritures qui se croisent
+ * (un poste ici, un rang là) ne doivent pas s'effacer l'une l'autre.
+ */
+export async function poserDetail(id: string, detail: Detail, b: Base = baseApp): Promise<void> {
+  await b.transaction("rw", b.reglages, async () => {
+    const lus = ((await b.reglages.get(CLE_PROJETS))?.valeur as Projet[] | undefined) ?? [];
+    if (!lus.some((p) => p.id === id)) return;
+    const projets = lus.map((p) => (p.id === id ? { ...p, detail } : p));
+    await b.reglages.put({ cle: CLE_PROJETS, valeur: projets, maj: Date.now() });
+  });
 }
 
 /** Relever le compte courant — par le relevé des provisions s'il le porte. */

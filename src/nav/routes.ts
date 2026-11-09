@@ -46,6 +46,9 @@ export type Route =
   | { ecran: "provisions" }
   | { ecran: "enveloppes" }
   | { ecran: "epargne" }
+  // UN PROJET DÉTAILLÉ EN POSTES — le seul écran du budget qui vise quelque
+  // chose : un projet, par son id.
+  | { ecran: "projet"; id: string }
   | { ecran: "releves" }
   | { ecran: "aujourdhui" }
   | { ecran: "semaine" }
@@ -118,7 +121,7 @@ export const dansCuisine = (r: Route): boolean => DANS_CUISINE.has(r.ecran);
 
 /** Les écrans de la facette budget — ceux qui portent SON en-tête et SA
  *  sous-navigation. */
-const DANS_BUDGET: ReadonlySet<Ecran> = new Set<Ecran>(["budget", "provisions", "enveloppes", "epargne", "releves"]);
+const DANS_BUDGET: ReadonlySet<Ecran> = new Set<Ecran>(["budget", "provisions", "enveloppes", "epargne", "projet", "releves"]);
 
 export const dansBudget = (r: Route): boolean => DANS_BUDGET.has(r.ecran);
 
@@ -171,6 +174,7 @@ export function chemin(r: Route): string {
     case "provisions": return "#/budget/provisions";
     case "enveloppes": return "#/budget/enveloppes";
     case "epargne": return "#/budget/epargne";
+    case "projet": return `#/budget/epargne/${r.id}`;
     case "releves": return "#/budget/releves";
     case "aujourdhui": return "#/cuisine/aujourdhui";
     case "semaine": return "#/cuisine/semaine";
@@ -201,6 +205,8 @@ export function lireRoute(hash: string): Route {
   if (simple) return { ecran: simple } as Route;
 
   const morceaux = brut.split("/");
+  if (morceaux.length === 3 && morceaux[0] === "budget" && morceaux[1] === "epargne" && /^[\w-]+$/.test(morceaux[2]!))
+    return { ecran: "projet", id: morceaux[2]! };
   // La fiche d'un plat qu'on n'a pas encore posé : un segment de plus.
   if (morceaux.length === 5 && `${morceaux[0]}/${morceaux[1]}` === "cuisine/cuisiner") {
     const [, , jour, repas, plat] = morceaux as [string, string, string, string, string];
