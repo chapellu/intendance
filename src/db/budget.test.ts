@@ -3,7 +3,7 @@
 
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import type { Echeance } from "../model/budget";
-import { lireBudget, poserDepart, poserEcheance, poserEnveloppe, poserLieu, poserRevenus, releverSolde, retirerEcheance } from "./budget";
+import { lireBudget, poserDepart, poserEcheance, poserEnveloppe, poserLieu, poserProjets, poserRevenus, releverCourant, releverSolde, retirerEcheance } from "./budget";
 import { Base } from "./schema";
 
 let base: Base;
@@ -42,9 +42,29 @@ describe("le départ et le lieu des provisions", () => {
   });
 });
 
+describe("l'épargne en base", () => {
+  test("les projets se relisent dans l'ordre : l'ordre est la priorité", async () => {
+    const p = (id: string) => ({ id, nom: id, rythme: { sorte: "vite" as const, cible: 100_000 }, deja: 0 });
+    await poserProjets([p("b"), p("a"), p("c")], base);
+    expect((await lireBudget(base)).projets.map((x) => x.id)).toEqual(["b", "a", "c"]);
+    await poserProjets([], base);
+    expect((await lireBudget(base)).projets).toEqual([]);
+  });
+
+  test("le compte courant se relève à part — sauf quand les provisions y dorment : c'est le même relevé", async () => {
+    await releverCourant({ montant: 500_000, jour: "2026-11-09" }, null, base);
+    let b = await lireBudget(base);
+    expect([b.courant?.montant, b.solde, b.depart]).toEqual([500_000, null, null]);
+
+    await releverCourant({ montant: 700_000, jour: "2026-11-09" }, "courant", base);
+    b = await lireBudget(base);
+    expect([b.courant?.montant, b.solde?.montant, b.depart]).toEqual([500_000, 700_000, "2026-11-09"]);
+  });
+});
+
 describe("le budget en base", () => {
   test("une base neuve n'a rien, et le dit sans zéro inventé", async () => {
-    expect(await lireBudget(base)).toEqual({ echeances: [], enveloppes: [], revenus: [], solde: null, depart: null, lieu: null });
+    expect(await lireBudget(base)).toEqual({ echeances: [], enveloppes: [], revenus: [], solde: null, depart: null, lieu: null, projets: [], courant: null });
   });
 
   test("ce qu'on pose se relit, ce qu'on retire disparaît", async () => {

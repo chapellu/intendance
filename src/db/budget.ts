@@ -1,7 +1,8 @@
 // Le budget en base — ce qu'un doigt a saisi, et rien de ce qui s'en déduit.
 //
-// PERSISTÉ : les échéances, les enveloppes, les revenus, et le solde relevé du
-// compte des provisions (avec le jour du relevé). RECALCULÉ : la prochaine
+// PERSISTÉ : les échéances, les enveloppes, les revenus, le solde relevé du
+// compte des provisions (avec le jour du relevé), les projets d'épargne et le
+// solde du compte courant. RECALCULÉ : la prochaine
 // date, ce qui devrait être de côté, le virement conseillé, la capacité
 // d'épargne — tout `model/budget.ts`.
 //
@@ -13,6 +14,7 @@
 
 import { useLiveQuery } from "dexie-react-hooks";
 import type { Echeance, Enveloppe, Revenu } from "../model/budget";
+import type { Projet } from "../model/epargne";
 import { base as baseApp, type Base } from "./schema";
 
 export const CLE_REVENUS = "budget|revenus";
@@ -91,6 +93,27 @@ export async function poserDepart(jour: string, b: Base = baseApp): Promise<void
   await b.reglages.put({ cle: CLE_DEPART, valeur: jour, maj: Date.now() });
 }
 
+/* ────────────────────────────────────────────────────────────── l'épargne */
+
+/** Les projets, DANS L'ORDRE : le rang est la priorité, et c'est la seule
+ *  chose que l'ordre du tableau dit. */
+export const CLE_PROJETS = "budget|projets";
+/** Le solde du compte courant, quand les provisions dorment AILLEURS. Quand
+ *  elles y dorment, c'est le même compte, et le même relevé (`CLE_SOLDE`) :
+ *  le saisir deux fois, ce serait pouvoir le saisir faux une fois. */
+export const CLE_COURANT = "budget|solde-courant";
+
+export async function poserProjets(p: readonly Projet[], b: Base = baseApp): Promise<void> {
+  if (p.length) await b.reglages.put({ cle: CLE_PROJETS, valeur: [...p], maj: Date.now() });
+  else await b.reglages.delete(CLE_PROJETS);
+}
+
+/** Relever le compte courant — par le relevé des provisions s'il le porte. */
+export async function releverCourant(r: Releve, lieu: Lieu | null, b: Base = baseApp): Promise<void> {
+  if (lieu === "courant") await releverSolde(r, b);
+  else await b.reglages.put({ cle: CLE_COURANT, valeur: r, maj: Date.now() });
+}
+
 /* ──────────────────────────────────────────────────────────────── lectures */
 
 export interface DonneesBudget {
@@ -102,16 +125,22 @@ export interface DonneesBudget {
   depart: string | null;
   /** Où dorment les provisions — `null` tant qu'on n'a pas choisi. */
   lieu: Lieu | null;
+  projets: Projet[];
+  /** Le compte courant relevé à part — `null` quand les provisions y dorment
+   *  (c'est alors `solde`), ou tant qu'on ne l'a pas relevé. */
+  courant: Releve | null;
 }
 
 export async function lireBudget(b: Base = baseApp): Promise<DonneesBudget> {
-  const [echeances, enveloppes, revenus, solde, depart, lieu] = await Promise.all([
+  const [echeances, enveloppes, revenus, solde, depart, lieu, projets, courant] = await Promise.all([
     b.echeances.toArray(),
     b.enveloppes.toArray(),
     b.reglages.get(CLE_REVENUS),
     b.reglages.get(CLE_SOLDE),
     b.reglages.get(CLE_DEPART),
     b.reglages.get(CLE_LIEU),
+    b.reglages.get(CLE_PROJETS),
+    b.reglages.get(CLE_COURANT),
   ]);
   return {
     echeances,
@@ -120,6 +149,8 @@ export async function lireBudget(b: Base = baseApp): Promise<DonneesBudget> {
     solde: (solde?.valeur as Releve | undefined) ?? null,
     depart: (depart?.valeur as string | undefined) ?? null,
     lieu: (lieu?.valeur as Lieu | undefined) ?? null,
+    projets: (projets?.valeur as Projet[] | undefined) ?? [],
+    courant: (courant?.valeur as Releve | undefined) ?? null,
   };
 }
 

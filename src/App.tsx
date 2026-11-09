@@ -16,6 +16,7 @@ import { useRoute } from "./nav/useRoute";
 import { Coquille, Corps, type Pastilles } from "./ui/Coquille";
 import { Aujourdhui } from "./ecrans/Aujourdhui";
 import { BudgetEnveloppes, BudgetMois, BudgetProvisions } from "./ecrans/Budget";
+import { BudgetEpargne } from "./ecrans/Epargne";
 import { Releves } from "./ecrans/Releves";
 import { CeSoir } from "./ecrans/CeSoir";
 import { Cockpit, useCockpit } from "./ecrans/Cockpit";
@@ -94,6 +95,7 @@ function rendre(route: Route, jeu: Jeu) {
     case "budget": return <BudgetMois />;
     case "provisions": return <BudgetProvisions />;
     case "enveloppes": return <BudgetEnveloppes />;
+    case "epargne": return <BudgetEpargne />;
     case "releves": return <Releves />;
     case "aujourdhui": return <Aujourdhui />;
     case "semaine": return <Semaine />;
