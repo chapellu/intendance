@@ -43,11 +43,43 @@ export function dans(jours: number): string {
   return `dans ${Math.round(jours / 30.44)} mois`;
 }
 
+/** Ce que dit l'état d'une provision — DU LIVRET, pas de la facture : la
+ *  facture se paie comme toujours. */
 export const MOT_ETAT: Record<EtatProvision, string> = {
-  couverte: "Couverte",
-  "a-jour": "À jour",
-  "en-retard": "En retard",
+  prete: "Prête",
+  "a-jour": "Dans les temps",
+  "a-rattraper": "À rattraper",
 };
+
+/**
+ * Le départ EFFECTIF des provisions.
+ *
+ *   - posé : c'est lui ;
+ *   - pas de relevé du tout : on n'a pas commencé — on calcule comme si l'on
+ *     commençait aujourd'hui, pour montrer le virement à mettre en place, et
+ *     rien n'est « à rattraper » ;
+ *   - un relevé d'avant que le départ existe : celui-là fait foi, faute de
+ *     mieux, jusqu'au prochain relevé qui posera le départ.
+ */
+export const departEffectif = (d: Pick<DonneesBudget, "depart" | "solde">, aujourdhui: string): string =>
+  d.depart ?? d.solde?.jour ?? aujourdhui;
+
+/**
+ * Les provisions telles que le foyer les tient.
+ *
+ * SUR UN LIVRET, le solde relevé est tout entier aux provisions : le surplus
+ * est de l'avance. SUR LE COMPTE COURANT, il porte aussi le salaire et les
+ * courses : on n'en compte que ce qui devrait être réservé, jamais plus — sans
+ * quoi un compte un lendemain de paie déclarerait toutes les factures de
+ * l'année « prêtes ».
+ */
+export function provisionsDe(d: DonneesBudget, aujourdhui: string): Provisions {
+  const depart = departEffectif(d, aujourdhui);
+  const solde = d.solde?.montant ?? 0;
+  if (d.lieu !== "courant") return provisions(d.echeances, solde, aujourdhui, depart);
+  const reserve = provisions(d.echeances, 0, aujourdhui, depart).requis;
+  return provisions(d.echeances, Math.min(solde, reserve), aujourdhui, depart);
+}
 
 /* ───────────────────────────────────────────────────────────── le relevé */
 
@@ -105,7 +137,7 @@ const pct = (v: number, sur: number): number | null => (sur > 0 ? Math.round((v 
 
 export function vueDuMois(d: DonneesBudget, aujourdhui: string): VueMois {
   const mois = moisType(d.revenus, d.echeances, d.enveloppes);
-  const prov = provisions(d.echeances, d.solde?.montant ?? 0, aujourdhui);
+  const prov = provisionsDe(d, aujourdhui);
   const rattrapage = Math.max(0, prov.conseille - prov.regime);
   const ceMois = mois.capacite - rattrapage;
   const partsDepenses = pourcentages(NATURES.map((n) => mois.postes[n].total));
@@ -140,6 +172,10 @@ export function vueDuMois(d: DonneesBudget, aujourdhui: string): VueMois {
 
 export interface VueProvisions {
   prov: Provisions;
+  lieu: "livret" | "courant";
+  /** Sur le compte courant : le solde relevé moins le réservé. `null` sur un
+   *  livret, ou sans relevé. */
+  disponible: number | null;
   releve: VueReleve;
   calendrier: MoisAVenir[];
   /** Le mois le plus lourd des douze, s'il y a au moins une provision. */
@@ -149,15 +185,22 @@ export interface VueProvisions {
 
 export function vueDesProvisions(d: DonneesBudget, aujourdhui: string): VueProvisions {
   const releve = vueDuReleve(d.solde, aujourdhui);
-  const prov = provisions(d.echeances, releve.montant, aujourdhui);
+  const prov = provisionsDe(d, aujourdhui);
+  const lieu = d.lieu ?? "livret";
+  const disponible = lieu === "courant" && d.solde ? d.solde.montant - prov.requis : null;
   const cal = calendrier(d.echeances, aujourdhui);
   const plusLourd = cal.reduce<MoisAVenir | null>((m, x) => (x.total > (m?.total ?? 0) ? x : m), null);
 
   let phrase: string;
   if (!prov.lignes.length) phrase = "Aucune échéance non mensuelle pour l’instant.";
-  else if (!d.solde) phrase = `Relève le solde de ton compte de provisions : il devrait y avoir ${euros(prov.requis)} de côté aujourd’hui.`;
-  else if (prov.ecart >= 0) phrase = `Le compte est à jour${prov.ecart > 0 ? `, avec ${euros(prov.ecart)} d’avance` : ""}.`;
-  else phrase = `Il manque ${euros(-prov.ecart)} sur le compte pour être à jour.`;
+  else if (!d.solde) phrase = "Les provisions n’ont pas commencé : rien n’est en retard, il n’y a encore rien à rattraper.";
+  else if (lieu === "courant")
+    phrase =
+      disponible! >= 0
+        ? `Sur ${euros(d.solde.montant)}, ${euros(prov.requis)} sont réservés aux factures à venir : ${euros(disponible!)} vraiment disponibles.`
+        : `Le compte est ${euros(-disponible!)} sous le réservé : une partie de l’argent des factures à venir a été dépensée.`;
+  else if (prov.ecart >= 0) phrase = `Le livret est dans les temps${prov.ecart > 0 ? `, avec ${euros(prov.ecart)} d’avance` : ""}.`;
+  else phrase = `Il manque ${euros(-prov.ecart)} sur le livret pour suivre le rythme — le virement du mois le rattrape.`;
 
-  return { prov, releve, calendrier: cal, plusLourd, phrase };
+  return { prov, lieu, disponible, releve, calendrier: cal, plusLourd, phrase };
 }

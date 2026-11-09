@@ -3,7 +3,7 @@
 
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import type { Echeance } from "../model/budget";
-import { lireBudget, poserEcheance, poserEnveloppe, poserRevenus, releverSolde, retirerEcheance } from "./budget";
+import { lireBudget, poserDepart, poserEcheance, poserEnveloppe, poserLieu, poserRevenus, releverSolde, retirerEcheance } from "./budget";
 import { Base } from "./schema";
 
 let base: Base;
@@ -27,9 +27,24 @@ const eau: Echeance = {
   nature: "obligatoire",
 };
 
+describe("le départ et le lieu des provisions", () => {
+  test("le premier relevé pose le départ ; les suivants ne le bougent pas", async () => {
+    await releverSolde({ montant: 0, jour: "2026-11-09" }, base);
+    await releverSolde({ montant: 25_000, jour: "2026-12-09" }, base);
+    expect((await lireBudget(base)).depart).toBe("2026-11-09");
+    await poserDepart("2026-09-01", base);
+    expect((await lireBudget(base)).depart).toBe("2026-09-01");
+  });
+
+  test("le lieu se choisit et se relit", async () => {
+    await poserLieu("courant", base);
+    expect((await lireBudget(base)).lieu).toBe("courant");
+  });
+});
+
 describe("le budget en base", () => {
   test("une base neuve n'a rien, et le dit sans zéro inventé", async () => {
-    expect(await lireBudget(base)).toEqual({ echeances: [], enveloppes: [], revenus: [], solde: null });
+    expect(await lireBudget(base)).toEqual({ echeances: [], enveloppes: [], revenus: [], solde: null, depart: null, lieu: null });
   });
 
   test("ce qu'on pose se relit, ce qu'on retire disparaît", async () => {

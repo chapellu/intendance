@@ -38,11 +38,14 @@ import {
   poserEcheance,
   poserEnveloppe,
   poserRevenus,
+  poserDepart,
+  poserLieu,
   releverSolde,
   retirerEcheance,
   retirerEnveloppe,
   useBudget,
   type DonneesBudget,
+  type Lieu,
 } from "../db/budget";
 import { chemin } from "../nav/routes";
 import { Corps } from "../ui/Coquille";
@@ -182,7 +185,31 @@ function ProvisionsEcran({ d }: { d: DonneesBudget }) {
 
   return (
     <>
-      <div className="co-kicker">Le compte des provisions</div>
+      <div className="co-kicker">{v.lieu === "courant" ? "Sur le compte courant" : "Le compte des provisions"}</div>
+      {/* PAS DE CHIFFRES AVANT D'AVOIR COMMENCÉ : ils parleraient d'un livret ou
+          d'un compte qu'on n'a pas encore choisi. Le mode d'emploi les remplace. */}
+      {!d.solde && v.prov.lignes.length ? null : v.lieu === "courant" ? (
+        // SUR LE COMPTE COURANT, ON NE VIRE RIEN : on réserve. La case qui
+        // compte est la troisième — ce qu'on peut dépenser sans toucher à
+        // l'argent des factures à venir.
+        <div className="bu-chiffres">
+          <button className="bu-chiffre" onClick={() => setReleve(true)}>
+            <span className="k">Sur le compte</span>
+            <span className="n">{d.solde ? euros(v.releve.montant) : "—"}</span>
+            <span className={`q${v.releve.perime ? " perime" : ""}`}>{v.releve.quand ?? "toucher pour relever"}</span>
+          </button>
+          <div className="bu-chiffre">
+            <span className="k">Réservé</span>
+            <span className="n" data-test="reserve">{euros(v.prov.requis)}</span>
+            <span className="q">aux factures à venir</span>
+          </div>
+          <div className={`bu-chiffre fort${v.disponible !== null && v.disponible < 0 ? " negatif" : ""}`}>
+            <span className="k">Vraiment disponible</span>
+            <span className="n" data-test="disponible">{v.disponible === null ? "—" : euros(v.disponible)}</span>
+            <span className="q">à garder ce mois-ci : {euros(v.prov.conseille)}</span>
+          </div>
+        </div>
+      ) : (
       <div className="bu-chiffres">
         <button className="bu-chiffre" onClick={() => setReleve(true)}>
           <span className="k">Solde relevé</span>
@@ -200,10 +227,24 @@ function ProvisionsEcran({ d }: { d: DonneesBudget }) {
           <span className="q">régime : {euros(v.prov.regime)}/mois</span>
         </div>
       </div>
+      )}
       <p className="co-note">
         {v.phrase}
         {v.releve.perime ? " Le relevé date : mets-le à jour avant de te fier à l’écart." : ""}
       </p>
+
+      {/* LE MODE D'EMPLOI, TANT QU'ON N'A PAS COMMENCÉ. Ajouter des échéances
+          ne suffit pas : sans livret ni virement, l'app n'a rien à suivre — et
+          c'est précisément la question qui revenait, « j'ai ajouté les
+          échéances, et maintenant ? ». */}
+      {!d.solde && v.prov.lignes.length ? (
+        <ModeEmploi
+          regime={v.prov.regime}
+          conseille={v.prov.conseille}
+          lieu={d.lieu ?? "courant"}
+          onCommencer={(lieu) => void poserLieu(lieu).then(() => setReleve(true))}
+        />
+      ) : null}
 
       <Section titre="Échéances" action="+ Échéance" onAction={() => setEdite("nouvelle")}>
         {v.prov.lignes.length ? (
@@ -216,6 +257,12 @@ function ProvisionsEcran({ d }: { d: DonneesBudget }) {
               <div className="quand">
                 {dateCourte(l.prochaine, jour)}, {dans(l.dans)} · {NOM_FREQUENCE[l.echeance.tousLes].toLowerCase()}
               </div>
+              {l.horsProvision ? (
+                <div className="hors">
+                  Trop proche pour être mise de côté : celle-ci se paie comme d’habitude. On prépare celle du{" "}
+                  {dateCourte(l.cible, jour)}.
+                </div>
+              ) : null}
               <div className="jauge" aria-hidden="true">
                 <span style={{ width: `${Math.min(100, (l.couvert * 100) / l.echeance.montant)}%` }} />
                 <i style={{ left: `${Math.min(100, (l.requis * 100) / l.echeance.montant)}%` }} />
@@ -223,7 +270,9 @@ function ProvisionsEcran({ d }: { d: DonneesBudget }) {
               <div className="pied">
                 <span className="etat">{MOT_ETAT[l.etat]}</span>
                 <span>
-                  {euros(l.couvert)} de côté · {l.conseille > 0 ? `${euros(l.conseille)} ce mois-ci` : "rien à virer"}
+                  {euros(l.couvert)} de côté
+                  {l.etat === "a-rattraper" ? ` · il en faudrait ${euros(l.requis)}` : ""} ·{" "}
+                  {l.conseille > 0 ? `${euros(l.conseille)} ce mois-ci` : "rien à virer"}
                 </span>
               </div>
             </button>
@@ -594,23 +643,126 @@ function FeuilleRevenu({ revenu, tous, onFerme }: { revenu: Revenu | null; tous:
   );
 }
 
+/** Arrondi à l'euro supérieur : un virement permanent se règle en euros ronds. */
+const auxEuros = (c: number): string => euros(Math.ceil(c / 100) * 100);
+
+/**
+ * LE MODE D'EMPLOI, TANT QU'ON N'A PAS COMMENCÉ. Ajouter des échéances ne
+ * suffit pas — c'est la question qui revenait, « j'ai ajouté les échéances,
+ * et maintenant ? ». Deux façons de tenir ses provisions, au choix : sur le
+ * compte courant (rien à ouvrir, l'app réserve) ou sur un livret à part (un
+ * virement mensuel, l'argent sort de la vue). Le compte courant d'abord : c'est
+ * le moins de gestes.
+ */
+function ModeEmploi({
+  regime,
+  conseille,
+  lieu: initial,
+  onCommencer,
+}: {
+  regime: number;
+  conseille: number;
+  lieu: Lieu;
+  onCommencer: (lieu: Lieu) => void;
+}) {
+  const [lieu, setLieu] = useState<Lieu>(initial);
+  const demarrage = conseille > regime + 100;
+  return (
+    <div className="bu-mode" data-test="mode-emploi">
+      <div className="co-kicker">Comment ça marche</div>
+      <div className="aj-puces" style={{ margin: "var(--space-2) 0" }}>
+        <button type="button" className={`aj-puce${lieu === "courant" ? " bu-choisie" : ""}`} aria-pressed={lieu === "courant"} onClick={() => setLieu("courant")}>
+          Sur mon compte courant
+        </button>
+        <button type="button" className={`aj-puce${lieu === "livret" ? " bu-choisie" : ""}`} aria-pressed={lieu === "livret"} onClick={() => setLieu("livret")}>
+          Sur un livret à part
+        </button>
+      </div>
+      {lieu === "courant" ? (
+        <ol>
+          <li>
+            <b>Rien à ouvrir.</b> L’argent des factures à venir reste sur ton compte courant.
+          </li>
+          <li>
+            <b>L’app en réserve la part</b> : elle grossit d’environ {auxEuros(regime)} par mois
+            {demarrage ? ` (${auxEuros(conseille)} ce mois-ci, le temps de préparer les échéances proches)` : ""}.
+          </li>
+          <li>
+            <b>La seule règle</b> : le solde ne descend pas sous le réservé. Ce qui est au-dessus est vraiment
+            disponible.
+          </li>
+          <li>
+            <b>Une fois par mois</b>, relève le solde du compte ici.
+          </li>
+        </ol>
+      ) : (
+        <ol>
+          <li>
+            <b>Un livret à part</b> — un Livret A suffit. L’argent des factures sort de ta vue, et rapporte un peu.
+          </li>
+          <li>
+            <b>Un virement permanent</b> de {auxEuros(regime)} par mois vers ce livret
+            {demarrage ? ` — ${auxEuros(conseille)} ce mois-ci, le temps de préparer les échéances proches` : ""}.
+          </li>
+          <li>
+            <b>Le jour où une facture tombe</b>, vire son montant du livret vers le compte courant.
+          </li>
+          <li>
+            <b>Une fois par mois</b>, relève le solde du livret ici.
+          </li>
+        </ol>
+      )}
+      <button className="btn btn-primary btn-block" onClick={() => onCommencer(lieu)}>
+        Commencer : relever le solde {lieu === "courant" ? "du compte" : "du livret"}
+      </button>
+    </div>
+  );
+}
+
 function FeuilleSolde({ d, onFerme }: { d: DonneesBudget; onFerme: () => void }) {
+  const jour = aujourdhui();
   const [montant, setMontant] = useState(d.solde ? enSaisie(d.solde.montant) : "");
+  // LE DÉPART : posé tout seul au premier relevé (aujourd'hui), corrigeable
+  // ensuite — on provisionnait peut-être déjà avant d'utiliser l'app.
+  const [depart, setDepart] = useState(d.depart ?? jour);
+  const [lieu, setLieu] = useState<Lieu>(d.lieu ?? "courant");
   const centimes = lireMontant(montant);
-  const ok = centimes !== null;
+  const ok = centimes !== null && /^\d{4}-\d{2}-\d{2}$/.test(depart) && depart <= jour;
 
   const valider = async () => {
     if (!ok) return;
-    await releverSolde({ montant: centimes!, jour: aujourdhui() });
+    if (lieu !== d.lieu) await poserLieu(lieu);
+    await releverSolde({ montant: centimes!, jour });
+    if (depart !== (d.depart ?? jour)) await poserDepart(depart);
     onFerme();
   };
 
   return (
     <Feuille titre="Relever le solde" onFerme={onFerme}>
+      <div className="bu-champ">
+        <span>Les provisions dorment</span>
+        <div className="aj-puces">
+          <button type="button" className={`aj-puce${lieu === "courant" ? " bu-choisie" : ""}`} aria-pressed={lieu === "courant"} onClick={() => setLieu("courant")}>
+            Sur mon compte courant
+          </button>
+          <button type="button" className={`aj-puce${lieu === "livret" ? " bu-choisie" : ""}`} aria-pressed={lieu === "livret"} onClick={() => setLieu("livret")}>
+            Sur un livret à part
+          </button>
+        </div>
+      </div>
       <p className="co-note">
-        Le solde du livret ou du compte où dorment les provisions, tel que l’appli de la banque l’affiche aujourd’hui.
+        {lieu === "courant"
+          ? "Le solde du compte courant où arrivent les factures, tel que l’appli de la banque l’affiche aujourd’hui."
+          : `Le solde du livret des provisions, tel que l’appli de la banque l’affiche aujourd’hui.${d.solde ? "" : " Un livret neuf : 0 €."}`}
       </p>
-      <ChampMontant nom="Solde" valeur={montant} onChange={setMontant} />
+      <ChampMontant nom={lieu === "courant" ? "Solde du compte" : "Solde du livret"} valeur={montant} onChange={setMontant} />
+      <Champ nom="Provisions commencées le">
+        <input type="date" value={depart} max={jour} onChange={(e) => setDepart(e.target.value)} />
+      </Champ>
+      <p className="co-note">
+        Rien n’est exigé pour avant cette date. Laisse aujourd’hui si tu commences ; mets une date plus ancienne si tu
+        mettais déjà de côté avant.
+      </p>
       <Boutons ok={ok} onValide={() => void valider()} />
     </Feuille>
   );
