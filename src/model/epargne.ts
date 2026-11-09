@@ -28,6 +28,7 @@
 // reste l'affaire du foyer.
 
 import { ajouterMois, moisEntre } from "./budget";
+import { chiffrer, type Detail } from "./postes";
 
 export type Rythme =
   | { sorte: "date"; cible: number; /** `AAAA-MM` */ pour: string }
@@ -40,6 +41,21 @@ export interface Projet {
   rythme: Rythme;
   /** Ce qui est déjà de côté pour lui, en centimes — relevé à la main. */
   deja: number;
+  /** Un projet DÉTAILLÉ EN POSTES : sa cible ne se saisit plus, elle se
+   *  calcule — le total des postes moins ce que d'autres financent (voir
+   *  `model/postes.ts`). Sans objet pour une somme mensuelle. */
+  detail?: Detail;
+}
+
+/** Le projet tel que la répartition le voit : un projet détaillé prend pour
+ *  cible ce qu'il reste à épargner une fois les postes chiffrés et les
+ *  financements déduits. La cible saisie, elle, reste en base : elle revient
+ *  si l'on retire le détail. */
+export function projetEffectif(p: Projet): Projet {
+  // SANS POSTE, PAS DE DÉTAIL : un projet dont on a retiré tous les postes
+  // retrouve sa cible saisie, au lieu de se croire atteint à zéro euro.
+  if (!p.detail?.postes.length || p.rythme.sorte === "mensuel") return p;
+  return { ...p, rythme: { ...p.rythme, cible: chiffrer(p.detail).aEpargner } };
 }
 
 export type EtatProjet = "atteint" | "tenu" | "court";

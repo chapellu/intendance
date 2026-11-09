@@ -12,6 +12,8 @@
 import { useState } from "react";
 import { enSaisie, euros, lireMontant } from "../model/budget";
 import type { Projet, Rythme } from "../model/epargne";
+import { chiffrer } from "../model/postes";
+import { aller } from "../nav/useRoute";
 import { jourISO } from "../db";
 import { nouvelId, poserProjets, releverCourant, useBudget, type DonneesBudget } from "../db/budget";
 import { useReleves, type DonneesReleves } from "../db/releves";
@@ -101,7 +103,14 @@ function EpargneEcran({ d, reel }: { d: DonneesBudget; reel: DonneesReleves }) {
                 // Les couleurs des provisions : le même vocabulaire visuel — vert
                 // qui avance, orange qui n'y arrive pas.
                 className={`bu-provision bu-projet${l.etat === "court" ? " a-rattraper" : ""}`}
-                onClick={() => setEdite({ projet: l.projet })}
+                // UN PROJET DÉTAILLÉ S'OUVRE SUR SES POSTES ; les autres, sur leur
+                // fiche. La fiche reçoit le projet TEL QU'EN BASE, pas celui que la
+                // répartition a vu — sa cible calculée n'a pas à s'écrire.
+                onClick={() =>
+                  l.projet.detail?.postes.length
+                    ? aller({ ecran: "projet", id: l.projet.id })
+                    : setEdite({ projet: d.projets.find((p) => p.id === l.projet.id) ?? l.projet })
+                }
               >
                 <div className="tete">
                   <span className="nom">
@@ -110,6 +119,9 @@ function EpargneEcran({ d, reel }: { d: DonneesBudget; reel: DonneesReleves }) {
                   <span className="v">{ditRythme(r)}</span>
                 </div>
                 <div className="quand">
+                  {l.projet.detail?.postes.length
+                    ? `${l.projet.detail.postes.length} postes · ${euros(chiffrer(l.projet.detail).total)} au total · `
+                    : ""}
                   {euros(l.projet.deja)} déjà de côté
                 </div>
                 {/* CE QUI EST DE CÔTÉ, PUIS, PLUS PÂLE, CE QUE LE VIREMENT D'AUJOURD'HUI
@@ -210,7 +222,7 @@ const SORTES: { sorte: Sorte; nom: string; dit: string }[] = [
   { sorte: "mensuel", nom: "Chaque mois", dit: "Une somme fixe, mise de côté mois après mois, sans montant à atteindre." },
 ];
 
-function FeuilleProjet({
+export function FeuilleProjet({
   projet,
   modele,
   tous,
@@ -225,6 +237,8 @@ function FeuilleProjet({
 }) {
   const depart = projet ?? modele ?? null;
   const r0 = depart?.rythme;
+  // DÉTAILLÉ, LE MONTANT NE SE SAISIT PLUS : il se calcule depuis les postes.
+  const detail = projet?.detail?.postes.length ? projet.detail : null;
   const [nom, setNom] = useState(depart?.nom ?? "");
   const [sorte, setSorte] = useState<Sorte>(r0?.sorte ?? "date");
   const [cible, setCible] = useState(r0 && r0.sorte !== "mensuel" ? enSaisie(r0.cible) : "");
@@ -242,14 +256,22 @@ function FeuilleProjet({
   const ok =
     nom.trim() !== "" &&
     dj !== null &&
-    (sorte === "mensuel" ? m !== null && m > 0 : c !== null && c > 0) &&
+    (sorte === "mensuel" ? m !== null && m > 0 : detail !== null || (c !== null && c > 0)) &&
     (sorte !== "date" || (/^\d{4}-\d{2}$/.test(pour) && pour > mois));
 
   const valider = async () => {
     if (!ok) return;
+    // La cible saisie reste en base sous le détail : elle revient si l'on
+    // retire tous les postes.
+    const cibleGardee = c ?? (r0 && r0.sorte !== "mensuel" ? r0.cible : 0);
     const rythme: Rythme =
-      sorte === "mensuel" ? { sorte, mensuel: m! } : sorte === "vite" ? { sorte, cible: c! } : { sorte, cible: c!, pour };
-    const p: Projet = { id: projet?.id ?? nouvelId(), nom: nom.trim(), rythme, deja: dj! };
+      sorte === "mensuel"
+        ? { sorte, mensuel: m! }
+        : sorte === "vite"
+          ? { sorte, cible: cibleGardee }
+          : { sorte, cible: cibleGardee, pour };
+    // `...projet` : le détail suit — corriger le nom ne doit pas effacer les postes.
+    const p: Projet = { ...(projet ?? {}), id: projet?.id ?? nouvelId(), nom: nom.trim(), rythme, deja: dj! };
     const liste = [...autres];
     liste.splice(Math.min(rang, liste.length), 0, p);
     await poserProjets(liste);
@@ -264,7 +286,7 @@ function FeuilleProjet({
       <div className="bu-champ">
         <span>Comment le financer</span>
         <div className="aj-puces">
-          {SORTES.map((s) => (
+          {SORTES.filter((s) => !(detail && s.sorte === "mensuel")).map((s) => (
             <button
               key={s.sorte}
               type="button"
@@ -280,6 +302,13 @@ function FeuilleProjet({
       </div>
       {sorte === "mensuel" ? (
         <ChampMontant nom="Chaque mois" valeur={mensuel} onChange={setMensuel} />
+      ) : detail ? (
+        <div className="bu-champ">
+          <span>Montant à réunir</span>
+          <em className="dit">
+            Calculé depuis les postes : {euros(chiffrer(detail).aEpargner)} — le total, moins ce que d’autres financent.
+          </em>
+        </div>
       ) : (
         <ChampMontant nom="Montant à réunir" valeur={cible} onChange={setCible} />
       )}
@@ -308,6 +337,14 @@ function FeuilleProjet({
           </div>
           <em className="dit">Le premier est servi d’abord : ce qui dort, puis sa part de chaque mois.</em>
         </div>
+      ) : null}
+      {/* UN GROS PROJET N'EST PAS UNE LIGNE : on le découpe en postes, et sa
+          cible s'en déduit. Un projet déjà enregistré seulement — les postes
+          s'accrochent à son id. */}
+      {projet && sorte !== "mensuel" ? (
+        <button type="button" className="btn btn-secondary btn-block" onClick={() => aller({ ecran: "projet", id: projet.id })}>
+          {detail ? "Voir les postes" : "Détailler en postes"} →
+        </button>
       ) : null}
       <Boutons
         ok={ok}

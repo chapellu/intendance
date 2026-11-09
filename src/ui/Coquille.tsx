@@ -174,7 +174,12 @@ export function Coquille({
           </div>
           <nav className="co-sousnav bu-sousnav" aria-label="Vues du budget">
             {SOUS_NAV_BUDGET.map((o) => (
-              <Lien key={o.route.ecran} onglet={o} actif={route.ecran === o.route.ecran} />
+              <Lien
+                key={o.route.ecran}
+                onglet={o}
+                // UN PROJET DÉTAILLÉ EST UNE PAGE DE L'ÉPARGNE : l'onglet reste allumé.
+                actif={route.ecran === o.route.ecran || (route.ecran === "projet" && o.route.ecran === "epargne")}
+              />
             ))}
           </nav>
         </>

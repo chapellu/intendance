@@ -6234,3 +6234,30 @@ ordinaire finisse dans le rouge.
 
       Au passage, « Le mois » ne dit plus « à virer sur le compte dédié » quand
       les provisions dorment sur le compte courant, et renvoie à l'Épargne.
+
+## Un gros projet n'est pas une ligne — T176
+
+- [x] **T176 — Un projet d'épargne se détaille en postes.** Retour du 9/11 :
+      un projet de plusieurs centaines de milliers d'euros ne peut pas tenir
+      en une seule ligne, il faut le découper par postes.
+
+      **UN POSTE** (`model/postes.ts`) : un nom, un groupe en texte libre, un
+      montant — saisi, une quantité par un prix unitaire, ou la part d'un
+      autre poste (une part de part se suit ; une boucle vaut zéro) —, le mois
+      où il se paie, et sa CERTITUDE : estimé, sur devis, payé. L'écran dit
+      quelle part du total est payée, sur devis, estimée.
+
+      **CE QU'IL FAUT ÉPARGNER N'EST PAS LE TOTAL** : les FINANCEMENTS (prêt,
+      vente, don, autre) s'en déduisent. Le reste devient la cible du projet
+      dans l'onglet Épargne (`projetEffectif`) — elle se recalcule à chaque
+      poste précisé. Sans poste, la cible saisie revient.
+
+      **UNE LISTE SE COLLE** (`lireListe`) : « Groupe / Nom : valeur », une
+      ligne par poste, depuis des notes — vingt postes ne se saisissent pas au
+      doigt. Une ligne incomprise est rendue avec sa raison.
+
+      L'écran (`#/budget/epargne/<id>`) : le total, ce qui est financé, ce qui
+      reste à épargner ; la certitude ; les postes par groupe ; les
+      financements ; les mois. Suite possible : le prêt (mensualité, part des
+      revenus), un bien vendu (ce qu'il reste dû), le calendrier mois par
+      mois, des scénarios côte à côte.

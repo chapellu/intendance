@@ -169,3 +169,52 @@ test("l'épargne : ce qui dort, une réserve d'abord, puis une somme chaque mois
   await expect(page.locator(".bu-projet")).toHaveCount(2);
   await expect(page.locator(".bu-projet").first()).toContainText("1. Réserve de précaution");
 });
+
+test("un projet détaillé en postes : une liste collée, un prêt déduit, la cible suit", async ({ page }) => {
+  await page.goto("/#/budget/epargne");
+  await attendreLApp(page);
+  await page.getByRole("button", { name: "+ Projet" }).click();
+  const feuille = page.getByRole("dialog");
+  await feuille.getByPlaceholder(/précaution/).fill("Projet A");
+  await feuille.getByRole("button", { name: "Dès que possible", exact: true }).click();
+  await feuille.getByLabel("Montant à réunir").fill("1000");
+  await enregistrer(page);
+
+  // Pas encore détaillé : la carte ouvre sa fiche, et la fiche mène aux postes.
+  await page.locator(".bu-projet").click();
+  await page.getByRole("button", { name: /Détailler en postes/ }).click();
+  await expect(page).toHaveURL(/#\/budget\/epargne\/[\w-]+$/);
+  await expect(page.getByRole("navigation", { name: "Vues du budget" }).getByRole("link", { name: "Épargne" })).toHaveAttribute("aria-current", "page");
+
+  // Une liste collée : trois postes, dont une part d'un autre.
+  await page.getByRole("button", { name: "Coller une liste de postes" }).click();
+  await page.getByRole("dialog").locator("textarea").fill(
+    ["Travaux / Sol : 40 × 60", "Équipement / Électroménager : 3000", "Marge / Imprévus : 10 % de Sol"].join("\n"),
+  );
+  await expect(page.locator("[data-test=apercu]")).toContainText(/3 postes compris, 5\s640\s€ au total/);
+  await page.getByRole("button", { name: "Ajouter 3 postes" }).click();
+  await expect(page.locator(".aj-fond")).toHaveCount(0);
+  await expect(page.locator("[data-test=total]")).toHaveText(/5\s640\s€/);
+  await expect(page.locator(".bu-groupe-tete")).toHaveText([/Travaux/, /Équipement/, /Marge/]);
+
+  // Un prêt se déduit de ce qu'il faut épargner.
+  await page.getByRole("button", { name: "+ Financement" }).click();
+  await page.getByRole("dialog").getByPlaceholder("0").fill("2000");
+  await enregistrer(page);
+  await expect(page.locator("[data-test=a-epargner]")).toHaveText(/3\s640\s€/);
+
+  // Corriger la quantité d'un poste : la part qui le suit bouge avec lui.
+  await page.getByRole("button", { name: /^Sol 40/ }).click();
+  await page.getByRole("dialog").getByLabel("Quantité").fill("50");
+  await enregistrer(page);
+  await expect(page.locator("[data-test=total]")).toHaveText(/6\s300\s€/);
+  await expect(page.locator(".bu-ligne", { hasText: "Imprévus" })).toContainText(/300\s€/);
+
+  // De retour à l'épargne, la cible du projet est ce qu'il reste à épargner.
+  await page.getByRole("link", { name: "‹ Épargne" }).click();
+  const carte = page.locator(".bu-projet");
+  await expect(carte).toContainText(/3 postes · 6\s300\s€ au total/);
+  await expect(carte).toContainText(/4\s300\s€, dès que possible/);
+  await carte.click();
+  await expect(page).toHaveURL(/#\/budget\/epargne\/[\w-]+$/);
+});

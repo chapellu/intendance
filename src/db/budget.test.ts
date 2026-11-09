@@ -3,7 +3,7 @@
 
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import type { Echeance } from "../model/budget";
-import { lireBudget, poserDepart, poserEcheance, poserEnveloppe, poserLieu, poserProjets, poserRevenus, releverCourant, releverSolde, retirerEcheance } from "./budget";
+import { lireBudget, poserDepart, poserDetail, poserEcheance, poserEnveloppe, poserLieu, poserProjets, poserRevenus, releverCourant, releverSolde, retirerEcheance } from "./budget";
 import { Base } from "./schema";
 
 let base: Base;
@@ -49,6 +49,16 @@ describe("l'épargne en base", () => {
     expect((await lireBudget(base)).projets.map((x) => x.id)).toEqual(["b", "a", "c"]);
     await poserProjets([], base);
     expect((await lireBudget(base)).projets).toEqual([]);
+  });
+
+  test("le détail d'un projet s'écrit sur lui seul, et pas sur un projet disparu", async () => {
+    const p = (id: string) => ({ id, nom: id, rythme: { sorte: "vite" as const, cible: 100_000 }, deja: 0 });
+    await poserProjets([p("a"), p("b")], base);
+    const detail = { postes: [{ id: "x", nom: "X", groupe: "", calcul: { sorte: "montant" as const, montant: 1 }, quand: null, certitude: "estime" as const }], financements: [] };
+    await poserDetail("b", detail, base);
+    await poserDetail("zz", detail, base);
+    const lus = (await lireBudget(base)).projets;
+    expect(lus.map((x) => [x.id, x.detail?.postes.length ?? 0])).toEqual([["a", 0], ["b", 1]]);
   });
 
   test("le compte courant se relève à part — sauf quand les provisions y dorment : c'est le même relevé", async () => {
