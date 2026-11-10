@@ -127,6 +127,8 @@ rayons:
     - concombre
     - chou-chinois
     - chou-frise
+    # T178 — le cousin d'étal du chou frisé et du chou chinois (`equivalences.yaml`).
+    - chou-blanc
     - celeri-rave
     - champignons-conserve
     - basilic

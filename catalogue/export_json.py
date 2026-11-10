@@ -39,6 +39,37 @@ def _qty(bloc):
     return {"amount": amount, "unit": unit} if amount is not None else None
 
 
+def _remplacants(i, alias, equivalences):
+    """Les champs `remplacants` et `potager` d'une ligne, ou rien.
+
+    D'abord les `subs` de la ligne qui portent un `id` (T167 : les autres sont
+    une note de livre), puis les entrées de `equivalences.yaml` qui s'appliquent
+    à son unité (T178). Un id n'y figure qu'une fois, et jamais l'original.
+    `equivalences: false` sur la ligne refuse la table, pas ses propres `subs`.
+    """
+    cid = alias.get(i["id"], i["id"])
+    liste = [{"id": s["id"], "nom": s["name"], "ratio": s.get("ratio", 1.0)}
+             for s in i.get("subs") or [] if "id" in s]
+    # Une ligne `from_accepts` est une base chaînée, pas un achat : la table
+    # ne la concerne pas.
+    refus = i.get("equivalences") is False or i.get("from_accepts")
+    entree = {} if refus else equivalences.get(cid) or {}
+    for e in entree.get("par") or []:
+        if "unites" in e and i["unit"] not in e["unites"]:
+            continue
+        liste.append({"id": e["id"], "nom": e["nom"], "ratio": e.get("ratio", 1.0)})
+    vus, propres = {cid}, []
+    for x in liste:
+        xid = alias.get(x["id"], x["id"])
+        if xid not in vus:
+            vus.add(xid)
+            propres.append(x)
+    out = {"remplacants": propres} if propres else {}
+    if entree.get("potager") and propres:
+        out["potager"] = True
+    return out
+
+
 def _bebe_apres(r):
     """L'id de l'étape après laquelle le prélèvement bébé se fait, ou `None`
     quand la recette ne dit pas d'où il sort — auquel cas l'écran retombe sur
@@ -70,6 +101,7 @@ def main():
     saisons = fd.charger_saisons(HERE / "saisons.yaml")
     _garde = fd.famille_par_id(conserv)
     _alias = rayons.get("aliases") or {}
+    equivalences = (yaml.safe_load((HERE / "equivalences.yaml").read_text()) or {}).get("equivalences") or {}
 
     # Tout ce que le foyer sait faire — l'union des capacités de ses outils et
     # des chaînes de dégradation. C'est ce qui décide si un bocal est une place
@@ -173,12 +205,9 @@ def main():
                  "unit": i["unit"], "base": bool(i.get("from_accepts")),
                  "assaisonnement": bool(i.get("seasoning")),
                  "central": bool(i.get("central")),
-                 # T167 — LES REMPLAÇANTS QUI S'ACHÈTENT : seuls les `subs` qui
-                 # portent un `id`. Les autres sont une note de livre.
-                 **({"remplacants": [
-                     {"id": s["id"], "nom": s["name"], "ratio": s.get("ratio", 1.0)}
-                     for s in i.get("subs") or [] if "id" in s]}
-                    if any("id" in s for s in i.get("subs") or []) else {})}
+                 # T167 — LES REMPLAÇANTS QUI S'ACHÈTENT : les `subs` qui
+                 # portent un `id`, puis (T178) les équivalences du commerce.
+                 **_remplacants(i, _alias, equivalences)}
                 for i in r.get("ingredients", [])
             ],
             # LE RÔLE — ce que ce plat EST dans un repas, et ce qui décide

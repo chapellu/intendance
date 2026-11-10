@@ -164,6 +164,7 @@ function ingredient(v: unknown, ou: string, defauts = false): Ingredient {
             };
           }),
         }),
+    ...(o["potager"] === undefined ? {} : { potager: booleen(o["potager"], `${ou}.potager`) }),
   };
 }
 

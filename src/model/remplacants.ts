@@ -28,9 +28,13 @@ export interface Retenu {
  * puis le premier remplaçant qui l'est, puis l'original — qu'il faudra acheter.
  * Un remplaçant ne s'achète jamais à la place : la recette nomme d'abord ce
  * qu'elle préfère, et c'est ce que la liste doit demander.
+ *
+ * SAUF CE QUI NE S'ACHÈTE PAS (T178, `potager`) : une cébette absente ne se
+ * réclame pas chaque semaine à un étal qui n'en a pas ; c'est le premier
+ * remplaçant — l'oignon — qui s'achète.
  */
 export function retenir(
-  ing: Pick<Ingredient, "id" | "remplacants">,
+  ing: Pick<Ingredient, "id" | "remplacants" | "potager">,
   estLa: (id: string) => boolean,
   alias: (id: string) => string = (id) => id,
   choisi?: string | null,
@@ -43,7 +47,7 @@ export function retenir(
     if (r) return { id: r.id, ratio: r.ratio, remplacant: r };
   }
   if (!autres.length || estLa(alias(ing.id))) return original;
-  const r = autres.find((x) => estLa(alias(x.id)));
+  const r = autres.find((x) => estLa(alias(x.id))) ?? (ing.potager ? autres[0] : undefined);
   return r ? { id: r.id, ratio: r.ratio, remplacant: r } : original;
 }
 
@@ -74,7 +78,7 @@ export interface Part extends Retenu {
  * `stock(id)` : les grammes connus, `null` présent sans poids, `0` absent.
  */
 export function repartir(
-  ing: Pick<Ingredient, "id" | "remplacants" | "unit">,
+  ing: Pick<Ingredient, "id" | "remplacants" | "unit" | "potager">,
   besoin: number,
   stock: (id: string) => number | null,
   alias: (id: string) => string = (id) => id,

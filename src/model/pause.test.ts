@@ -188,31 +188,42 @@ describe("un article manquant se NOMME", () => {
 
 describe("un article hors saison ne compte pas comme « un article à acheter » — capture du 19/10", () => {
   const tout = (p: PropositionDuSoir) => [...p.cartes, ...p.plus];
-
-  test("en octobre, le velouté d'ortie sort de la main et passe sous tout ce qui se fait", () => {
+  // T178 — LA SCÈNE DU 19/10 PORTAIT SUR LE VELOUTÉ D'ORTIE ; elle porte
+  // maintenant sur le tian de navets primeur. Les orties ne s'achètent pas
+  // (`equivalences.yaml`, `potager`), et le livre lui-même dit « ou jeunes
+  // pousses d'épinards » : le velouté d'octobre est un velouté d'épinards, de
+  // saison, et n'a plus rien à dire de la saison. Le navet primeur, lui, n'a
+  // pas d'équivalent qui le remplace au panier.
+  test("en octobre, le tian de navets primeur sort de la main et passe sous tout ce qui se fait", () => {
     const { proposition } = monde({ evts: [fondRentre(veille(LUNDI))] });
-    expect(ids(proposition.cartes)).not.toContain("veloute-ortie");
+    expect(ids(proposition.cartes)).not.toContain("tian-printemps-navets-pois-chiches");
     const liste = tout(proposition);
-    const i = liste.findIndex((c) => c.plat.id === "veloute-ortie");
-    const ortie = liste[i]!;
-    expect(ortie.manque.map((a) => a.id)).toEqual(["orties"]);
-    expect(ortie.horsSaison.map((a) => a.id)).toEqual(["orties"]);
+    const i = liste.findIndex((c) => c.plat.id === "tian-printemps-navets-pois-chiches");
+    const tian = liste[i]!;
+    expect(tian.manque.map((a) => a.id)).toEqual(["navet-primeur"]);
+    expect(tian.horsSaison.map((a) => a.id)).toEqual(["navet-primeur"]);
     // Sous TOUS les plats qui se font, y compris ceux à plusieurs achats.
     expect(liste.slice(i).every((c) => c.horsSaison.length > 0)).toBe(true);
   });
 
-  test("même un jour de courses : le marché n'a pas d'orties en octobre", () => {
+  test("même un jour de courses : le marché n'a pas de navets primeur en octobre", () => {
     const { proposition } = monde({ maintenant: MERCREDI, evts: [fondRentre(veille(MERCREDI))] });
     expect(proposition.jourDeCourses).toBe(true);
-    expect(ids(proposition.cartes)).not.toContain("veloute-ortie");
+    expect(ids(proposition.cartes)).not.toContain("tian-printemps-navets-pois-chiches");
   });
 
-  test("en avril, les orties sont de saison : le velouté redevient « un article »", () => {
+  test("en avril, le navet primeur est de saison : le tian redevient « un article »", () => {
     const AVRIL = new Date("2026-04-20T15:00:00"); // un lundi
     const { proposition } = monde({ maintenant: AVRIL, evts: [fondRentre(veille(AVRIL))] });
+    const tian = tout(proposition).find((c) => c.plat.id === "tian-printemps-navets-pois-chiches")!;
+    expect(tian.manque.map((a) => a.id)).toEqual(["navet-primeur"]);
+    expect(tian.horsSaison).toEqual([]);
+  });
+
+  test("le velouté d'ortie d'octobre se fait aux pousses d'épinards (T178)", () => {
+    const { proposition } = monde({ evts: [fondRentre(veille(LUNDI))] });
     const ortie = tout(proposition).find((c) => c.plat.id === "veloute-ortie")!;
-    expect(ortie.manque.map((a) => a.id)).toEqual(["orties"]);
-    expect(ortie.horsSaison).toEqual([]);
+    expect(ortie.manque.map((a) => a.id)).toEqual(["pousses-epinards"]);
   });
 
   test("le rang hors saison passe même devant ce qui presse", () => {

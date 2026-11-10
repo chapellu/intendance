@@ -1,0 +1,124 @@
+# Les équivalences du commerce — ce qui fait aussi bien, pour TOUTES les
+# recettes qui nomment l'ingrédient.
+#
+# POURQUOI UNE TABLE, QUAND T167 DISAIT « PAR RECETTE ET JAMAIS PAR FAMILLE ».
+# Les livres de Marie Chioca sortent d'un potager : cébettes, vert de blettes,
+# navets roses, orties. Sans potager, tout s'achète, et l'étal n'a pas tout.
+# Écrire « une cébette, ou un demi oignon » sur chaque ligne qui en demande,
+# c'est la même phrase cinq fois, et la sixième recette saisie l'oubliera. La règle de T167 tient toujours sur ce
+# qu'elle protégeait : une entrée ici est une PAIRE nommée (la T110 fait ce que
+# fait le grand épeautre), jamais une famille (« une farine »), et une ligne qui
+# ne la supporte pas la refuse avec `equivalences: false`.
+#
+# L'ORDRE DE LECTURE ne change pas (`model/remplacants.ts` · `retenir`) : le
+# choix de la fiche, l'original s'il est là, le premier remplaçant qui l'est,
+# puis l'original — qui s'achète. Les remplaçants écrits sur la ligne (`subs`)
+# passent AVANT ceux de cette table : la recette parle d'abord.
+#
+# `potager: true` — NE S'ACHÈTE PAS, OU PRESQUE : ça se cultive ou se cueille.
+# Quand rien n'est là, la liste de courses demande alors le premier remplaçant
+# au lieu de l'original : elle ne réclame pas chaque semaine une cébette
+# qu'aucun étal ne vend.
+#
+# `ratio` — combien de remplaçant pour UN de l'original, dans l'unité de la
+# ligne. `unites` restreint l'entrée aux lignes écrites dans ces unités : une
+# demi-pièce d'oignon pour une cébette se dit à la pièce, pas à la botte, et un
+# brin de thym frais ne se convertit pas en cuillère de thym sec — ces cas-là
+# restent sur leur ligne, ou ne se remplacent pas.
+
+equivalences:
+  # ── Ce que le potager donne et que l'étal n'a pas
+  cebette:
+    potager: true
+    par:
+      # À la pièce seulement : un remplaçant garde l'unité de sa ligne, et
+      # « une botte d'oignon » ne s'achète nulle part. Les deux recettes qui
+      # comptent la cébette à la botte la gardent.
+      - {id: oignon, nom: "oignon (un demi par cébette)", ratio: 0.5, unites: [pièce]}
+  vert-de-blette:
+    potager: true
+    par:
+      - {id: pousses-epinards, nom: "pousses d'épinards", ratio: 1, unites: [g]}
+  navets-roses:
+    potager: true
+    par:
+      - {id: navet-primeur, nom: "navets primeur", ratio: 1, unites: [pièce]}
+      - {id: navets, nom: "navets", ratio: 1, unites: [pièce]}
+  orties:
+    potager: true
+    par:
+      - {id: pousses-epinards, nom: "pousses d'épinards", ratio: 1, unites: [g]}
+  ail-des-ours:
+    potager: true
+    par:
+      - {id: ail, nom: "ail", ratio: 1, unites: [gousse]}
+
+  # ── Le frais qui a un cousin à l'étal
+  tomates-roma:
+    par:
+      - {id: tomates, nom: "tomates", ratio: 1}
+  navet-primeur:
+    par:
+      - {id: navets, nom: "navets", ratio: 1, unites: [pièce]}
+  navets:
+    par:
+      - {id: navet-primeur, nom: "navets primeur", ratio: 1, unites: [pièce]}
+  chou-frise:
+    par:
+      - {id: chou-blanc, nom: "chou blanc", ratio: 1, unites: [pièce]}
+  chou-chinois:
+    par:
+      - {id: chou-blanc, nom: "chou blanc", ratio: 1, unites: [pièce]}
+  poires:
+    par:
+      - {id: pommes, nom: "pommes", ratio: 1}
+  petits-pois:
+    par:
+      - {id: petits-pois-surgeles, nom: "petits pois surgelés", ratio: 1, unites: [g]}
+  champignons-paris:
+    par:
+      - {id: champignons-surgeles, nom: "champignons surgelés", ratio: 1, unites: [g]}
+      - {id: champignons-conserve, nom: "champignons en conserve", ratio: 1, unites: [g]}
+
+  # ── Le stock : ce qui manque au placard a un remplaçant au placard
+  petits-pois-surgeles:
+    par:
+      - {id: petits-pois, nom: "petits pois frais", ratio: 1, unites: [g]}
+  champignons-surgeles:
+    par:
+      - {id: champignons-paris, nom: "champignons de Paris", ratio: 1, unites: [g]}
+      - {id: champignons-conserve, nom: "champignons en conserve", ratio: 1, unites: [g]}
+  champignons-conserve:
+    par:
+      - {id: champignons-surgeles, nom: "champignons surgelés", ratio: 1, unites: [g]}
+      - {id: champignons-paris, nom: "champignons de Paris", ratio: 1, unites: [g]}
+  farine-petit-epeautre:
+    par:
+      - {id: farine-epeautre, nom: "farine de grand épeautre", ratio: 1, unites: [g]}
+      - {id: farine-complete, nom: "farine T110", ratio: 1, unites: [g]}
+  farine-epeautre:
+    par:
+      - {id: farine-complete, nom: "farine T110", ratio: 1, unites: [g]}
+  orge:
+    par:
+      - {id: petit-epeautre, nom: "petit épeautre", ratio: 1, unites: [g]}
+  # La soupe se défait pareil, elle n'a pas le même goût : c'est un dîner du
+  # fond qui reste possible le soir où les pois cassés manquent.
+  pois-casses:
+    par:
+      - {id: lentilles-corail, nom: "lentilles corail", ratio: 1, unites: [g]}
+  nouilles-soba:
+    par:
+      - {id: pates, nom: "spaghetti", ratio: 1, unites: [g]}
+  tofu-lactofermente:
+    par:
+      - {id: tofu-fume, nom: "tofu fumé", ratio: 1, unites: [g]}
+  bouillon-miso:
+    par:
+      - {id: bouillon-legumes, nom: "cube de bouillon de légumes", ratio: 1, unites: [pièce]}
+  cabillaud:
+    par:
+      - {id: colin-surgele, nom: "filets de colin surgelés", ratio: 1, unites: [g]}
+  colin-surgele:
+    par:
+      - {id: cabillaud, nom: "cabillaud", ratio: 1, unites: [g]}
