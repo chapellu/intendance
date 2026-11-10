@@ -7,3 +7,6 @@ resources:
   - httproute.yaml
   - httproute-prive.yaml
   - securitypolicy.yaml
+  # T179 — chiffrés SOPS, déchiffrés par Flux (voir `.sops.yaml`).
+  - references.enc.yaml
+  - cle.enc.yaml

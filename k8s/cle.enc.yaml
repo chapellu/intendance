@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: intendance-cle
+    namespace: intendance
+type: Opaque
+stringData:
+    telephone: ENC[AES256_GCM,data:f6i1hY0cJjKtXsQqlTrRt3iVPwydK3bZ8p2106Tud7ss6XAgBsqz2ZwogQ==,iv:4bObHG3y4DPVVr0ImKPAWSg9YRpicMofqB+IRSJF1mo=,tag:oe59lLwhfko0rnDnUo19WQ==,type:str]
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB6dVN1NzJ3SlpOTVByRFQ4
+            eENIV3lXSVh4ZzRZdGdlR3crL1JlcHYxSW1BCnNucGhCajRTZ2NUNEx1bFI0SFVz
+            UG1ucWdGdk5kNTJHNDIrT3JheGNIc0kKLS0tIEhIK1h0ZkNsTEFiK3JOaVRpRXM2
+            eVZocldwYktJYmg5VGxPeUpYZGp5NGMKgcnWADQdGMP88V/nIG0nri5/fkmIbWx9
+            aMtlnBWI/H0JZ2H6ObMx0IIzdZnwZMN7owMbzACXVSnkBHSWlvx4/g==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age146qdcn0v66z6mylvdrnucy5g3zencx8wqlga78jd2zwvzknklctqkgpdkz
+    encrypted_regex: ^(data|stringData)$
+    lastmodified: "2026-11-10T14:57:10Z"
+    mac: ENC[AES256_GCM,data:B29H7FLv5fdJiel6Wk4JWWnkT6XHhYPZQVR9hVD+viYCnAoO3uxJG2zGpMa4FYOgZhUAnw+jdcVc28bKliD+Xi3Dp1GPWN0qXxY8mt8y0JLtSaW+qQSsS5wTw2ZdBMEQ6eVpnby08dc6e9OowN4vqNHn6FBwzPXe7FDyPHo5PHc=,iv:aOAGPTEb6p6Hgqs+BxhRQaTn5n+0iihoWZaR5ek7qSE=,tag:0bjKrReRHq5lYQeX+77KwA==,type:str]
+    version: 3.13.3
