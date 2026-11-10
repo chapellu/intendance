@@ -6345,5 +6345,5 @@ ordinaire finisse dans le rouge.
       `/prive/` au réseau ; nginx le sert `no-store`, sans repli sur
       `index.html`.
 
-- [ ] Les deux Secrets chiffrés (`references.enc.yaml`, `cle.enc.yaml`) et le
-      bloc `decryption` de Flux côté `flagship`.
+- [x] Les deux Secrets chiffrés (`references.enc.yaml`, `cle.enc.yaml`) et le
+      bloc `decryption` de Flux côté `flagship` (10/11).
