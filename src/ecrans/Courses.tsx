@@ -13,8 +13,8 @@
 //
 // Port de `apps/proto-shell/comptoir.js` (`ecranCourses`).
 
-import { useMemo, useState } from "react";
-import { base, cocher, rentrer, rentrerLesCoches, viderCourses } from "../db";
+import { useEffect, useMemo, useState } from "react";
+import { base, cocher, jourISO, rentrer, rentrerLesCoches, viderCourses } from "../db";
 import { useCatalogue, useCourses, usePlacard, usePlanchersDenrees, useSemaine } from "../db/hooks";
 import type { Calcul } from "../model/calcul";
 import type { Jeu } from "../model/jeu";
@@ -32,6 +32,8 @@ import {
 import { pluriel } from "./stock.vue";
 import { AjouterAuStock } from "../ui/Ajouter";
 import { UNITE_PLANCHER } from "../model/plancherGardeManger";
+import { ageDuReleve, phraseDeReference, referenceDe, type References } from "../model/references";
+import { phraseDIssue, poserCle, rafraichirReferences, useReferences, type Issue } from "../db/references";
 
 export function Courses() {
   const { catalogue } = useCatalogue();
@@ -85,6 +87,9 @@ function Contenu({
     [jeu.catalogue, calc.panier, etats, sous],
   );
   const aVerifier = useMemo(() => aVerifierParRaison(calc.aVerifier), [calc.aVerifier]);
+  // T179 — LES RÉFÉRENCES DU MAGASIN, quand le téléphone en a une copie. Elles
+  // annotent la ligne ; elles ne la font ni n'en retirent aucune.
+  const refs = useReferences()?.copie?.refs ?? null;
 
   // UN SEUL GESTE SUR LA LISTE : toucher = dans le sac. Le stock ne bouge qu'au
   // bouton « Ranger », en rentrant — il n'y a plus de mode à deviner. Toucher
@@ -148,7 +153,7 @@ function Contenu({
               {r.nom}
             </div>
             {arts.map((a) => (
-              <Ligne key={a.cle} a={a} onClick={() => toucher(a)} />
+              <Ligne key={a.cle} a={a} refs={refs} onClick={() => toucher(a)} />
             ))}
           </div>
         );
@@ -185,7 +190,7 @@ function Contenu({
           >
             {voirRanges ? "▾" : "▸"} Déjà rangés ({ranges.length})
           </button>
-          {voirRanges ? ranges.map((a) => <Ligne key={a.cle} a={a} onClick={() => toucher(a)} />) : null}
+          {voirRanges ? ranges.map((a) => <Ligne key={a.cle} a={a} refs={refs} onClick={() => toucher(a)} />) : null}
         </div>
       ) : null}
 
@@ -202,6 +207,8 @@ function Contenu({
           </div>
         ) : null}
       </div>
+
+      <ReferencesDuMagasin />
 
       {vue.orphelins > 0 || vue.coches + vue.rentres > 0 ? (
         <div className="co-note" style={{ marginTop: "var(--space-3)" }}>
@@ -226,7 +233,7 @@ function Contenu({
   );
 }
 
-function Ligne({ a, onClick }: { a: Article; onClick: () => void }) {
+function Ligne({ a, refs, onClick }: { a: Article; refs: References | null; onClick: () => void }) {
   const etat = a.rentre ? " rentre" : a.coche ? " coche" : "";
   const raison = a.plancher
     ? phraseDuPlancher(a.plancher, a.ligne.n)
@@ -239,8 +246,82 @@ function Ligne({ a, onClick }: { a: Article; onClick: () => void }) {
       <span style={{ flex: 1 }}>
         <span className="nom">{a.ligne.nom}</span>
         {raison ? <div className="pour">{raison}</div> : null}
+        {refs ? <PhraseDeReference refs={refs} id={a.ligne.id} /> : null}
       </span>
       <span className="q">{quantiteDeLArticle(a.ligne)}</span>
     </button>
+  );
+}
+
+function PhraseDeReference({ refs, id }: { refs: References; id: string }) {
+  const phrase = phraseDeReference(referenceDe(refs, id), refs.magasin);
+  return phrase ? <div className="pour co-ref">{phrase}</div> : null;
+}
+
+/**
+ * T179 — La clé, et l'état de la copie. Replié par défaut : on la colle une
+ * fois. À l'ouverture de l'écran, la copie se rafraîchit d'elle-même si une
+ * clé est là ; sans réseau, l'ancienne reste.
+ */
+function ReferencesDuMagasin() {
+  const etat = useReferences();
+  const [ouvert, setOuvert] = useState(false);
+  const [saisie, setSaisie] = useState("");
+  const [issue, setIssue] = useState<Issue | null>(null);
+  const aUneCle = etat?.aUneCle ?? false;
+  useEffect(() => {
+    if (aUneCle) void rafraichirReferences().then(setIssue);
+  }, [aUneCle]);
+  if (!etat) return null;
+  const copie = etat.copie;
+  const aujourdhui = jourISO(new Date());
+  const age = copie ? ageDuReleve(copie.refs, aujourdhui) : null;
+  return (
+    <div style={{ marginTop: "var(--space-4)" }}>
+      <button className="btn btn-ghost" aria-expanded={ouvert} onClick={() => setOuvert(!ouvert)}>
+        {ouvert ? "▾" : "▸"} Références du magasin
+        {copie ? ` · relevées ${age === 0 ? "aujourd’hui" : `il y a ${pluriel(age ?? 0, "jour")}`}` : ""}
+      </button>
+      {ouvert ? (
+        <div style={{ display: "grid", gap: "var(--space-2)", marginTop: "var(--space-2)" }}>
+          <div className="co-note">
+            {copie
+              ? `${pluriel(Object.keys(copie.refs.articles).length, "référence")} sur ce téléphone.`
+              : "Aucune référence sur ce téléphone."}
+            {issue ? ` ${phraseDIssue(issue)}` : ""}
+          </div>
+          <form
+            style={{ display: "flex", gap: "var(--space-2)" }}
+            onSubmit={(e) => {
+              e.preventDefault();
+              void poserCle(saisie)
+                .then(() => rafraichirReferences())
+                .then((i) => {
+                  setIssue(i);
+                  setSaisie("");
+                });
+            }}
+          >
+            <input
+              type="password"
+              autoComplete="off"
+              aria-label="Clé du magasin"
+              placeholder={aUneCle ? "Remplacer la clé" : "Coller la clé"}
+              value={saisie}
+              onChange={(e) => setSaisie(e.target.value)}
+              style={{ flex: 1 }}
+            />
+            <button className="btn btn-secondary" type="submit" disabled={!saisie.trim()}>
+              Enregistrer
+            </button>
+          </form>
+          {aUneCle ? (
+            <button className="btn btn-ghost st-petit" onClick={() => void rafraichirReferences().then(setIssue)}>
+              Actualiser
+            </button>
+          ) : null}
+        </div>
+      ) : null}
+    </div>
   );
 }

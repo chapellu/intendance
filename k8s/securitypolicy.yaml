@@ -1,0 +1,30 @@
+# T179 — `/prive/` exige une clé, dans l'en-tête `x-intendance-cle`.
+#
+# UNE CLÉ, PAS UNE CONNEXION GOOGLE (comme `terrain` dans `chapellu/flagship`).
+# L'app s'utilise installée sur l'écran d'accueil d'un iPhone : elle y a ses
+# propres cookies et ne suit pas une redirection de connexion. Un en-tête part
+# pareil partout ; l'app le pose (`src/db/references.ts`), et la clé se colle
+# une fois, sur l'écran des courses.
+#
+# La clé vit dans le Secret `intendance-cle` (`cle.enc.yaml`, chiffré SOPS,
+# déchiffré par Flux) : une entrée par appareil, son nom pour clé. Sans ce
+# Secret, la politique ne se résout pas et la route refuse tout — fermée par
+# défaut. `sanitize` retire l'en-tête avant nginx : la clé ne va pas plus loin
+# que la passerelle.
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: intendance-prive
+  namespace: intendance
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: intendance-prive
+  apiKeyAuth:
+    credentialRefs:
+      - name: intendance-cle
+    extractFrom:
+      - headers:
+          - x-intendance-cle
+    sanitize: true

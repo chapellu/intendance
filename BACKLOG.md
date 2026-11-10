@@ -6322,3 +6322,28 @@ ordinaire finisse dans le rouge.
       Restent hors de la table, exprès : les herbes fraîches contre sèches (un
       brin ne se convertit pas en cuillère), la cébette à la botte, le tahin,
       le kasha, les groseilles et les mûres.
+## Les références du magasin — T179
+
+- [x] **T179 — La liste de courses dit quel produit prendre, et à combien
+      (10/11).** Pour chaque ingrédient : le produit du magasin du stock, son
+      EAN, son conditionnement, son prix relevé — ou qu'il n'y est pas, et
+      pourquoi. Affiché sous la ligne, discret ; la liste ne change pas.
+
+      **PRIVÉ, ET POURTANT DANS GIT.** Le magasin d'un foyer et ce qu'il y
+      prend n'ont rien à faire dans un dépôt public. Le fichier est un Secret
+      chiffré SOPS (`k8s/references.enc.yaml`), déchiffré par Flux, monté
+      dans nginx sous `/prive/`, et cette route seule exige une clé
+      (`apiKeyAuth` de la passerelle, en-tête `x-intendance-cle`). Une clé et
+      pas la connexion Google de `terrain` : l'app vit sur l'écran d'accueil
+      d'un iPhone, qui a ses propres cookies et ne suit pas une redirection.
+
+      **LE TÉLÉPHONE GARDE UNE COPIE** (`db/references.ts`, dans `reglages`),
+      rafraîchie à l'ouverture des courses. Elle n'est remplacée que par un
+      fichier lu EN ENTIER (`model/references.ts` refuse le fichier au
+      premier champ faux) : ni une clé refusée, ni un réseau absent, ni un
+      fichier abîmé ne vident les prix d'un rayon. Le service worker laisse
+      `/prive/` au réseau ; nginx le sert `no-store`, sans repli sur
+      `index.html`.
+
+- [ ] Les deux Secrets chiffrés (`references.enc.yaml`, `cle.enc.yaml`) et le
+      bloc `decryption` de Flux côté `flagship`.

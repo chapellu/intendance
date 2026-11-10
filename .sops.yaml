@@ -1,0 +1,12 @@
+# T179 — Ce qui pilote `sops --encrypt` pour les Secrets de ce dépôt.
+#
+# Le dépôt est public : un `*.enc.yaml` sous `k8s/` n'y entre que chiffré, et
+# seules ses valeurs (`data`, `stringData`) le sont — le reste du manifeste
+# reste lisible pour kustomize. Flux le déchiffre au moment d'appliquer, avec
+# le Secret `sops-age` de `flux-system` (`chapellu/flagship`, `k8s/flux/
+# intendance.yaml`, bloc `decryption`). Le destinataire est la même clé age
+# que celle de `flagship` : une seule clé privée à garder hors ligne.
+creation_rules:
+  - path_regex: k8s/.*\.enc\.yaml$
+    encrypted_regex: ^(data|stringData)$
+    age: age146qdcn0v66z6mylvdrnucy5g3zencx8wqlga78jd2zwvzknklctqkgpdkz

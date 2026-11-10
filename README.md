@@ -186,6 +186,39 @@ les deux tournent tant que le prototype sert encore de référence.
   (cert-manager émet `intendance-tls`) et le rrset `intendance_a`
   (`infra/dns.tf`).
 
+## Les références du magasin — privées
+
+Pour chaque ingrédient, le produit qu'on achète au magasin du stock, son EAN,
+son conditionnement et son prix relevé. La liste de courses les affiche sous
+chaque ligne. **Rien de tout ça n'est dans le dépôt**, qui est public : le code
+ne connaît que leur forme (`src/model/references.ts`).
+
+Le chemin des données :
+
+- `k8s/references.enc.yaml` — le Secret `intendance-references`, une clé
+  `references.json`, **chiffré SOPS** (`.sops.yaml`). Flux le déchiffre en
+  appliquant (`chapellu/flagship`, `k8s/flux/intendance.yaml`, bloc
+  `decryption`). Dans git, seul le chiffré : versionné, et l'app se
+  reconstruit sans perte.
+- `k8s/deployment.yaml` — le Secret est monté sous `/usr/share/nginx/html/prive`
+  (`optional` : sans lui, le site démarre et `/prive/` répond 404).
+- `k8s/httproute-prive.yaml` + `k8s/securitypolicy.yaml` — `/prive/` a sa
+  route, et la passerelle y exige l'en-tête `x-intendance-cle`
+  (`apiKeyAuth`). Les clés : le Secret `intendance-cle`
+  (`k8s/cle.enc.yaml`, chiffré pareil), une entrée par appareil.
+- Le téléphone colle la clé une fois (Courses → « Références du magasin ») et
+  garde une copie dans sa base : la liste marche hors ligne.
+
+Mettre à jour les références — sur une machine qui a `sops` :
+
+```sh
+sops k8s/references.enc.yaml     # ouvre le clair dans $EDITOR, rechiffre à la sauvegarde
+git commit -am "Références : relevé du …" && git push
+```
+
+Le clair ne s'écrit jamais dans l'arbre du dépôt. La clé privée age reste hors
+ligne : la clé publique de `.sops.yaml` suffit pour chiffrer.
+
 ## L'état des travaux
 
 `BACKLOG.md` porte les vingt tickets et leur avancement. Un ticket = un commit

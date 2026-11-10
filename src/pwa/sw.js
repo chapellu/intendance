@@ -90,6 +90,9 @@ self.addEventListener("fetch", (e) => {
   // où elle le ferait, la laisser passer est le bon comportement par défaut.
   if (url.origin !== self.location.origin) return;
 
+  // T179 — `/prive/` N'EST PAS DU BUILD, et il ne se garde pas : il est servi
+  // derrière une clé (en-tête), et la copie vit dans la base. Le réseau seul.
+  if (url.pathname.startsWith("/prive/")) return;
   if (url.pathname.startsWith("/ocr/")) return e.respondWith(servirOcr(url.pathname, requete));
   e.respondWith(servir(requete.mode === "navigate" ? "/index.html" : url.pathname, requete));
 });

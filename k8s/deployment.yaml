@@ -67,6 +67,18 @@ spec:
             # nginx-unprivileged met pid et caches sous /tmp
             - name: tmp
               mountPath: /tmp
+            # T179 — les références du magasin, sous `/prive/`. Un Secret et
+            # pas un fichier de l'image : l'image se construit d'un dépôt
+            # public. La route qui le sert exige une clé (`securitypolicy.yaml`).
+            - name: prive
+              mountPath: /usr/share/nginx/html/prive
+              readOnly: true
       volumes:
+        # `optional` : sans le Secret, le pod démarre quand même, et `/prive/`
+        # répond 404. Un site qui tombe pour un fichier de prix serait pire.
+        - name: prive
+          secret:
+            secretName: intendance-references
+            optional: true
         - name: tmp
           emptyDir: {}
