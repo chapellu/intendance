@@ -5,6 +5,7 @@ import { articles, calculer, cleDuCreneau, echelle, facteur, minutesParJour } fr
 import { contexte, rejouer, type Evenement } from "./journal";
 import { creerJeu, idsDuReleve, SAUTE, type Jeu } from "./jeu";
 import type { Catalogue } from "./types";
+import { enUniteDeCompte } from "./unites";
 
 // UNE DATE FIXE, et c'est une correction du proto. Son smoke lisait `new Date()`
 // : la fenêtre de fraîcheur du frigo, les jours de coworking et l'existence
@@ -825,5 +826,51 @@ describe("un créneau cuisiné n'est plus projeté", () => {
     const [jeu, slot] = posee();
     const c = jeu.creneaux[slot]!;
     expect(cleDuCreneau(jeu, slot)).toBe(`2026-08-17|${c.repas}`);
+  });
+});
+
+// T178 — Les équivalences du commerce (`catalogue/equivalences.yaml`).
+describe("ce qui ne s'achète pas part au panier sous son équivalent", () => {
+  const sansOignon = (rid: string): Jeu => {
+    const j = creerJeu(catalogue, 7, LUNDI);
+    j.choix[j.creneaux.findIndex((c) => c.repas === "diner")] = rid;
+    j.gardeManger = j.gardeManger.filter((id) => id !== "oignon");
+    return j;
+  };
+
+  test("la salade d'orge ne réclame pas de cébette : un DEMI oignon à la place", () => {
+    // Une cébette à la pièce, et aucune autre ligne d'oignon dans le plat :
+    // ce qui part au panier est la cébette au ratio, mise à l'échelle.
+    const j = sansOignon("salade-orge-thon");
+    const plat = catalogue.plats.find((p) => p.id === "salade-orge-thon")!;
+    const cebette = plat.ingredients.find((i) => i.id === "cebette")!;
+    expect(cebette.potager).toBe(true);
+    const c = calculer(j);
+    const ids = [...c.panier.values()].map((a) => a.id);
+    expect(ids).not.toContain("cebette");
+    const oignon = [...c.panier.values()].find((a) => a.id === "oignon")!;
+    // L'oignon se compte en grammes : un demi oignon, et pas un entier.
+    const entier = enUniteDeCompte("oignon", cebette.qty, cebette.unit).qty;
+    expect(oignon.qty).toBeGreaterThan(0);
+    expect(oignon.qty).toBeLessThan(entier);
+  });
+
+  test("une équivalence de stock ne passe pas devant l'original : les pois cassés s'achètent", () => {
+    // Pas `potager` : sans pois cassés ni lentilles corail, c'est la recette
+    // qui dit quoi acheter.
+    const j = creerJeu(catalogue, 7, LUNDI);
+    j.choix[j.creneaux.findIndex((c) => c.repas === "diner")] = "soupe-pois-casses-carottes";
+    j.gardeManger = j.gardeManger.filter((id) => id !== "pois-casses" && id !== "lentilles-corail");
+    const ids = [...calculer(j).panier.values()].map((a) => a.id);
+    expect(ids).toContain("pois-casses");
+    expect(ids).not.toContain("lentilles-corail");
+  });
+
+  test("des lentilles corail au placard font la soupe de pois cassés", () => {
+    const j = creerJeu(catalogue, 7, LUNDI);
+    j.choix[j.creneaux.findIndex((c) => c.repas === "diner")] = "soupe-pois-casses-carottes";
+    j.gardeManger = [...j.gardeManger.filter((id) => id !== "pois-casses"), "lentilles-corail"];
+    const ids = [...calculer(j).panier.values()].map((a) => a.id);
+    expect(ids).not.toContain("pois-casses");
   });
 });

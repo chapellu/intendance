@@ -6284,3 +6284,41 @@ ordinaire finisse dans le rouge.
 
       Test : le relevé d'exemple posé en morceaux, une mention tournée à la
       hauteur d'une opération — refusé sans le remède, relu juste avec.
+
+## Les équivalences du commerce — T178
+
+- [x] **T178 — Une recette de potager se fait avec ce que vend l'étal
+      (10/11).** Les livres sortent d'un jardin : cébettes, vert de blettes,
+      navets roses, orties, ail des ours. Recroisé avec ce qu'un magasin vend
+      vraiment, 48 plats butaient sur un ingrédient qu'on ne trouve pas, dont
+      une bonne moitié pour un cousin évident (Roma → tomates, cébette →
+      oignon, orge → petit épeautre).
+
+      **UNE TABLE, PAS UNE FAMILLE** (`catalogue/equivalences.yaml`). T167
+      disait « par recette et jamais par famille » ; écrire « ou un demi
+      oignon » sur chaque ligne de cébette, c'est la même phrase cinq fois, et
+      la sixième recette l'oublie. La table nomme des PAIRES, pas des familles,
+      et l'export les ajoute à chaque ligne APRÈS ses propres `subs`. `unites`
+      restreint une paire aux lignes de cette unité (une demi-pièce d'oignon ne
+      se dit pas « à la botte ») ; `equivalences: false` sur une ligne la
+      refuse. 46 lignes de 39 plats gagnent un remplaçant.
+
+      **`potager: true` — ÇA NE S'ACHÈTE PAS.** Quand rien n'est là, `retenir`
+      rend le premier remplaçant au lieu de l'original : la liste de courses
+      demande un oignon, plus une cébette qu'aucun étal n'a. Cinq ingrédients
+      (cébette, vert de blette, navets roses, orties, ail des ours). Pour tous
+      les autres la règle de T167 tient : l'original s'achète.
+
+      **UN REMPLAÇANT AU PANIER EST COMPTÉ À SON RATIO** (`calcul.ts`). La
+      liste reprenait la quantité de l'original telle quelle — invisible tant
+      que tous les ratios valaient 1.
+
+      Le vérificateur tient la table : ids à rayon, rien qui se remplace par
+      lui-même, ratio positif, `potager` avec au moins un remplaçant. Nouveau
+      rayon : `chou-blanc`. La scène du 19/10 (« le velouté d'ortie hors
+      saison ») passe sur le tian de navets primeur : en octobre, le velouté
+      d'ortie se fait aux pousses d'épinards, comme le livre le propose.
+
+      Restent hors de la table, exprès : les herbes fraîches contre sèches (un
+      brin ne se convertit pas en cuillère), la cébette à la botte, le tahin,
+      le kasha, les groseilles et les mûres.

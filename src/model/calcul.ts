@@ -373,7 +373,9 @@ export function calculer(
         (id) => ici.has(id) || catalogue.rayons.placard.includes(id),
         (id) => alias(catalogue, id),
       );
-      const ing = r.remplacant ? { ...ligne, id: r.id, nom: r.remplacant.nom } : ligne;
+      // T178 — AU RATIO : une cébette, c'est un DEMI oignon. Invisible tant
+      // que les remplaçants valaient tous 1.
+      const ing = r.remplacant ? { ...ligne, id: r.id, nom: r.remplacant.nom, qty: ligne.qty * r.ratio } : ligne;
       const cid = alias(catalogue, ing.id);
       const prov = provenance(catalogue, ing, cid, prises, ici);
       provenances[prov] = (provenances[prov] ?? 0) + 1;

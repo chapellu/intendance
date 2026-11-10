@@ -28,6 +28,18 @@ describe("retenir — quelle farine, au juste", () => {
   test("une ligne sans remplaçant ne demande rien", () => {
     expect(retenir({ id: "sel" }, () => false).id).toBe("sel");
   });
+  // T178 — ce qui se cultive ou se cueille.
+  const cebette = { id: "cebette", potager: true, remplacants: [{ id: "oignon", nom: "oignon", ratio: 0.5 }] };
+  test("potager, rien n'est là : c'est le remplaçant qui s'achète", () => {
+    const r = retenir(cebette, () => false);
+    expect([r.id, r.ratio]).toEqual(["oignon", 0.5]);
+  });
+  test("potager, l'original est là : on le prend", () => {
+    expect(retenir(cebette, (id) => id === "cebette").id).toBe("cebette");
+  });
+  test("potager sans remplaçant : l'original, faute de mieux", () => {
+    expect(retenir({ id: "orties", potager: true }, () => false).id).toBe("orties");
+  });
 });
 
 describe("repartir — un fond qui ne suffit pas se complète", () => {

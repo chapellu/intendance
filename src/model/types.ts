@@ -95,10 +95,17 @@ export interface Ingredient {
   /**
    * T167 — CE QUI FAIT AUSSI BIEN, POUR CETTE RECETTE. « Farine T110 de blé ou
    * de grand épeautre » : la ligne achète `farine-complete`, mais une farine
-   * d'épeautre au placard fait le pain. Par RECETTE et pas par famille — une
-   * T55 ne fait pas le pain d'une T110. Absent sur 3 lignes sur 4.
+   * d'épeautre au placard fait le pain. Par PAIRE et pas par famille — une
+   * T55 ne fait pas le pain d'une T110. T178 : la ligne reçoit aussi les
+   * équivalences du commerce (`catalogue/equivalences.yaml`), après les siens.
    */
   remplacants?: readonly Remplacant[];
+  /**
+   * T178 — ÇA SE CULTIVE OU SE CUEILLE, ÇA NE S'ACHÈTE PAS : une cébette, un
+   * vert de blette, des orties. Quand rien n'est là, c'est le premier
+   * remplaçant qui part au panier, pas l'original. Jamais posé sans remplaçant.
+   */
+  potager?: boolean;
 }
 
 /** Un remplaçant qui s'achète : son id, son nom, et combien en mettre pour un

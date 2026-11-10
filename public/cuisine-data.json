@@ -4266,7 +4266,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "pates",
+       "nom": "spaghetti",
+       "ratio": 1
+      }
+     ]
     }
    ],
    "role": "plat",
@@ -5743,7 +5750,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "chou-blanc",
+       "nom": "chou blanc",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon-rouge",
@@ -6645,7 +6659,19 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-epeautre",
+       "nom": "farine de grand épeautre",
+       "ratio": 1
+      },
+      {
+       "id": "farine-complete",
+       "nom": "farine T110",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "miel-acacia",
@@ -7119,7 +7145,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "pommes",
+       "nom": "pommes",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "eau",
@@ -8855,7 +8888,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "navet-primeur",
+       "nom": "navets primeur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "carottes",
@@ -9951,7 +9991,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "petits-pois-surgeles",
+       "nom": "petits pois surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "eau",
@@ -10220,7 +10267,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-complete",
+       "nom": "farine T110",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "origan",
@@ -10896,7 +10950,19 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "champignons-surgeles",
+       "nom": "champignons surgelés",
+       "ratio": 1
+      },
+      {
+       "id": "champignons-conserve",
+       "nom": "champignons en conserve",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -11514,7 +11580,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "pousses-epinards",
+       "nom": "pousses d'épinards",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "fromage-rape",
@@ -11534,7 +11608,15 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "oignon",
+       "nom": "oignon (un demi par cébette)",
+       "ratio": 0.5
+      }
+     ],
+     "potager": true
     },
     {
      "id": "persil",
@@ -12333,7 +12415,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "petits-pois",
+       "nom": "petits pois frais",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "huile-olive",
@@ -14020,7 +14109,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "petits-pois",
+       "nom": "petits pois frais",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "champignons-surgeles",
@@ -14030,7 +14126,19 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "champignons-paris",
+       "nom": "champignons de Paris",
+       "ratio": 1
+      },
+      {
+       "id": "champignons-conserve",
+       "nom": "champignons en conserve",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -14590,7 +14698,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "chou-blanc",
+       "nom": "chou blanc",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -17396,7 +17511,19 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-epeautre",
+       "nom": "farine de grand épeautre",
+       "ratio": 1
+      },
+      {
+       "id": "farine-complete",
+       "nom": "farine T110",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "sucre-roux",
@@ -18266,7 +18393,19 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "champignons-surgeles",
+       "nom": "champignons surgelés",
+       "ratio": 1
+      },
+      {
+       "id": "champignons-paris",
+       "nom": "champignons de Paris",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "poireau",
@@ -19143,7 +19282,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-complete",
+       "nom": "farine T110",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "poudre-a-lever",
@@ -19634,7 +19780,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "navets",
+       "nom": "navets",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "poireau",
@@ -20760,7 +20913,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-complete",
+       "nom": "farine T110",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "poudre-a-lever",
@@ -21580,7 +21740,20 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "navet-primeur",
+       "nom": "navets primeur",
+       "ratio": 1
+      },
+      {
+       "id": "navets",
+       "nom": "navets",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "echalote",
@@ -22117,7 +22290,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "cabillaud",
+       "nom": "cabillaud",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "fromage-rape",
@@ -22580,7 +22760,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "navets",
+       "nom": "navets",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "carottes",
@@ -22600,7 +22787,15 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "oignon",
+       "nom": "oignon (un demi par cébette)",
+       "ratio": 0.5
+      }
+     ],
+     "potager": true
     },
     {
      "id": "petits-pois",
@@ -25408,7 +25603,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-complete",
+       "nom": "farine T110",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "sel",
@@ -28516,7 +28718,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "petit-epeautre",
+       "nom": "petit épeautre",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "champignons-paris",
@@ -28526,7 +28735,19 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "champignons-surgeles",
+       "nom": "champignons surgelés",
+       "ratio": 1
+      },
+      {
+       "id": "champignons-conserve",
+       "nom": "champignons en conserve",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "champignons-conserve",
@@ -28536,7 +28757,19 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "champignons-surgeles",
+       "nom": "champignons surgelés",
+       "ratio": 1
+      },
+      {
+       "id": "champignons-paris",
+       "nom": "champignons de Paris",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "jambon-cru",
@@ -28882,7 +29115,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "navet-primeur",
+       "nom": "navets primeur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "potimarron",
@@ -29782,7 +30022,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "pommes",
+       "nom": "pommes",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oeufs",
@@ -33308,7 +33555,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "tomates",
+       "nom": "tomates",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "ciboulette",
@@ -34065,6 +34319,11 @@
        "id": "saumon",
        "nom": "saumon sauvage",
        "ratio": 1.0
+      },
+      {
+       "id": "colin-surgele",
+       "nom": "filets de colin surgelés",
+       "ratio": 1
       }
      ]
     },
@@ -34285,7 +34544,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "tomates",
+       "nom": "tomates",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "basilic",
@@ -35020,7 +35286,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "petit-epeautre",
+       "nom": "petit épeautre",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oeufs",
@@ -35077,7 +35350,15 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "oignon",
+       "nom": "oignon (un demi par cébette)",
+       "ratio": 0.5
+      }
+     ],
+     "potager": true
     },
     {
      "id": "huile-olive",
@@ -35358,7 +35639,15 @@
      "unit": "gousse",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "ail",
+       "nom": "ail",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "huile-olive",
@@ -35890,7 +36179,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "tomates",
+       "nom": "tomates",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "ail",
@@ -36747,7 +37043,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "chou-blanc",
+       "nom": "chou blanc",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "pomme-de-terre",
@@ -37672,7 +37975,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "petit-epeautre",
+       "nom": "petit épeautre",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "petits-pois",
@@ -37682,7 +37992,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "petits-pois-surgeles",
+       "nom": "petits pois surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "ciboulette",
@@ -37914,7 +38231,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "lentilles-corail",
+       "nom": "lentilles corail",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "carottes",
@@ -39404,7 +39728,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "tomates",
+       "nom": "tomates",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "fromage-rape",
@@ -40028,7 +40359,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "tofu-fume",
+       "nom": "tofu fumé",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "huile-olive",
@@ -40782,7 +41120,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "tomates",
+       "nom": "tomates",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -41291,7 +41636,19 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-epeautre",
+       "nom": "farine de grand épeautre",
+       "ratio": 1
+      },
+      {
+       "id": "farine-complete",
+       "nom": "farine T110",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "huile-pepin-raisin",
@@ -43838,7 +44195,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "pousses-epinards",
+       "nom": "pousses d'épinards",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "eau",
@@ -45011,7 +45376,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "tofu-fume",
+       "nom": "tofu fumé",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "sel",
@@ -45666,6 +46038,7 @@
     "concombre",
     "chou-chinois",
     "chou-frise",
+    "chou-blanc",
     "celeri-rave",
     "champignons-conserve",
     "basilic",

@@ -36,7 +36,7 @@ BANDES = {"1-repas", "2-repas", "3-repas", "lunchbox"}
 # (voir le contrôle plus bas). Un nouveau champ s'ajoute ici en même temps que
 # le code qui le lit.
 CHAMPS_INGREDIENT = {"id", "name", "qty", "unit", "seasoning", "ref",
-                     "from_accepts", "subs"}
+                     "from_accepts", "subs", "equivalences"}
 # LES RÔLES — ce que ce plat est DANS un repas, et non ce qu'il contient.
 #
 # UNION FERMÉE, DÉFAUT `plat`. Cinq valeurs pour la seule question qui commande
@@ -207,6 +207,10 @@ def verifier(rid: str, r: dict, rayons: dict, rules: dict, cat: dict,
                 err.append(f"ingrédient « {cid} » : se remplace par lui-même")
             if not isinstance(sub.get("ratio", 1.0), (int, float)) or sub.get("ratio", 1.0) <= 0:
                 err.append(f"ingrédient « {cid} » : remplaçant « {sid} » au ratio invalide")
+        # T178 — `equivalences: false` refuse la table du commerce pour CETTE
+        # ligne ; `true` ne veut rien dire de plus que l'absence du champ.
+        if "equivalences" in ing and ing["equivalences"] is not False:
+            err.append(f"ingrédient « {cid} » : `equivalences` ne prend que `false`")
 
     # ────────────────────────────────────────────────────────── le rôle
     #
@@ -470,6 +474,43 @@ def verifier(rid: str, r: dict, rayons: dict, rules: dict, cat: dict,
     return err, warn
 
 
+def verifier_equivalences(eq: dict, rayons: dict) -> tuple:
+    """T178 — la table du commerce : chaque id a un rayon, rien ne se remplace
+    par lui-même, un ratio est un nombre positif, `potager` a un remplaçant."""
+    err, warn = [], []
+    alias = rayons.get("aliases") or {}
+    connus = {i for v in rayons["rayons"].values() for i in v} | set(rayons["placard"])
+    for oid, entree in (eq.get("equivalences") or {}).items():
+        if oid not in connus:
+            err.append(f"« {oid} » sans rayon")
+        inconnus = set(entree or {}) - {"par", "potager"}
+        if inconnus:
+            err.append(f"« {oid} » : champ(s) inconnu(s) {sorted(inconnus)}")
+        par = (entree or {}).get("par") or []
+        if not par:
+            err.append(f"« {oid} » : aucun remplaçant (`par:` vide)")
+        if not isinstance((entree or {}).get("potager", False), bool):
+            err.append(f"« {oid} » : `potager` est vrai ou faux")
+        for e in par:
+            sid = alias.get(e.get("id"), e.get("id"))
+            if sid not in connus:
+                err.append(f"« {oid} » : remplaçant « {sid} » sans rayon")
+            if sid == alias.get(oid, oid):
+                err.append(f"« {oid} » : se remplace par lui-même")
+            if not e.get("nom"):
+                err.append(f"« {oid} » : remplaçant « {sid} » sans `nom`")
+            r = e.get("ratio", 1.0)
+            if isinstance(r, bool) or not isinstance(r, (int, float)) or r <= 0:
+                err.append(f"« {oid} » : remplaçant « {sid} » au ratio invalide")
+            u = e.get("unites")
+            if u is not None and (not isinstance(u, list) or not u):
+                err.append(f"« {oid} » : `unites` est une liste non vide")
+            inconnus = set(e) - {"id", "nom", "ratio", "unites"}
+            if inconnus:
+                err.append(f"« {oid} » → « {sid} » : champ(s) inconnu(s) {sorted(inconnus)}")
+    return err, warn
+
+
 def verifier_centraux(rayons: dict) -> tuple:
     """`centraux` désigne des rayons et des ids ; les deux doivent exister.
 
@@ -554,6 +595,15 @@ def main() -> int:
         n_err += len(err); n_warn += len(warn)
         if err or warn:
             print("\nrayons.yaml")
+            for e in err:
+                print(f"  ✗ {e}")
+            for w in warn:
+                print(f"  ⚠ {w}")
+
+        err, warn = verifier_equivalences(rc.load(HERE / "equivalences.yaml"), rayons)
+        n_err += len(err); n_warn += len(warn)
+        if err or warn:
+            print("\nequivalences.yaml")
             for e in err:
                 print(f"  ✗ {e}")
             for w in warn:
