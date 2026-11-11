@@ -6429,3 +6429,11 @@ ordinaire finisse dans le rouge.
       mettre ces yaourts les aurait fait racheter chaque semaine.
       `fond.yaml:conditionnements` dit la taille et rien d'autre ; le
       vérificateur refuse un id déjà au fond.
+
+## T184 — La liste de courses dit « 3 unités » sans dire ce qu'est une unité
+
+Signalé en faisant les courses : « pommes, 3 unités, c'est 3 pommes pour la semaine ? » Non, 3 kg : le fond les achète au kilo en vrac. Une ligne née d'un plancher compte en unités d'achat du fond (`fond.yaml`, champ `unite`), mais l'écran ne le disait pas.
+
+Fait : la ligne lit l'unité au fond et se dit comme on l'achète. Le vrac devient un poids (« 3 kg », « 2,5 kg ») ; le reste devient un nombre de paquets nommés (« 3 boîtes de 6 », « 8 packs de 4 »), sans la précision entre parenthèses. Une denrée hors du fond garde « unité ».
+
+Reste ouvert : la phrase « il en reste 1, vous en voulez 3 » compte toujours en unités d'achat sans les nommer.

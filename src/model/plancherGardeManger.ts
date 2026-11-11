@@ -170,6 +170,39 @@ export const nomDeLaDenree = (id: string): string => NOMS.get(id) ?? id.replace(
  */
 export const UNITE_PLANCHER = "unité";
 
+/** Ingrédient (alias résolu) → ce qu'est une unité d'achat au fond de roulement :
+ *  « 1 kg en vrac », « boîte de 6 ». Absent hors du fond. */
+export function unitesDAchat(catalogue: Catalogue): Map<string, string> {
+  const aliases = catalogue.rayons.aliases;
+  return new Map(
+    (catalogue.fond?.denrees ?? []).map((d) => [aliases[d.ingredient] ?? d.ingredient, d.unite]),
+  );
+}
+
+/**
+ * « 3 unités » de pommes, dites comme on les achète — T184.
+ *
+ * LE MOT « UNITÉ » NE DISAIT PAS CE QU'IL COMPTAIT. Au rayon, « pommes, 3
+ * unités » se lisait trois pommes, alors que le fond les achète au kilo. Le
+ * vrac devient donc un poids (« 3 kg », « 2,5 kg »), le reste un nombre de
+ * paquets nommés (« 3 boîtes de 6 », « 8 packs de 4 ») ; la précision entre
+ * parenthèses (« en bloc, à râper ») reste au catalogue, la ligne n'a pas la
+ * place. Sans unité connue, on retombe sur « unité ».
+ */
+export function enUnitesDAchat(n: number, achat: string | undefined): string {
+  const mot = (achat ?? "").replace(/\s*\(.*?\)\s*/g, " ").trim();
+  if (!mot) return `${n} ${UNITE_PLANCHER}${n > 1 ? "s" : ""}`;
+  const vrac = /^(\d+(?:[.,]\d+)?)\s*(g|kg)\s+en vrac$/.exec(mot);
+  if (vrac) {
+    const g = n * Number(vrac[1]!.replace(",", ".")) * (vrac[2] === "kg" ? 1000 : 1);
+    const dire = (x: number) => String(Math.round(x * 100) / 100).replace(".", ",");
+    return g >= 1000 ? `${dire(g / 1000)} kg` : `${dire(g)} g`;
+  }
+  const [tete, ...reste] = mot.split(" ");
+  const nom = n > 1 ? (tete!.endsWith("al") ? `${tete!.slice(0, -2)}aux` : `${tete}s`) : tete;
+  return [String(n), nom, ...reste].join(" ");
+}
+
 /**
  * À quoi sert chaque denrée du relevé, quand ce n'est pas à cuisiner — T40.
  *

@@ -138,6 +138,18 @@ describe("T41 — la liste vit sans plan", () => {
     expect(v.parPlancher).toBe(1);
   });
 
+  test("T184 — une ligne du fond porte son unité d'achat, dite au rayon", async () => {
+    const demandes = new Set([...calc.panier.values()].map((l) => l.id));
+    const d = catalogue.fond!.denrees.find((x) => x.unite === "boîte de 6" && !demandes.has(x.ingredient))
+      ?? catalogue.fond!.denrees.find((x) => !demandes.has(x.ingredient))!;
+    const v = vueDesCourses(catalogue, calc.panier, await lireCourses(base), [
+      sous({ ingredient: d.ingredient, manque: 3 }),
+    ]);
+    const ligne = v.articles.find((a) => a.ligne.id === d.ingredient)!;
+    expect(ligne.ligne.achat).toBe(d.unite);
+    expect(quantiteDeLArticle(ligne.ligne)).not.toContain("unité");
+  });
+
   test("T134 — rentrée un autre jour et revenue sous son plancher, elle se rachète", async () => {
     // La clé `id|unité` ne change jamais : sans date, les graines rentrées
     // samedi restaient « déjà rentré » à chaque liste suivante.
@@ -224,6 +236,19 @@ describe("T41 — la liste vit sans plan", () => {
     expect(quantiteDeLArticle({ id: "x", nom: "x", qty: 1, unit: UNITE_PLANCHER, n: 0 }))
       .toBe("1 unité");
     expect(quantiteDeLArticle({ id: "x", nom: "x", qty: 500, unit: "g", n: 1 })).toBe("500 g");
+  });
+
+  test("T184 — une unité du fond se dit comme on l'achète", () => {
+    const q = (qty: number, achat: string) =>
+      quantiteDeLArticle({ id: "x", nom: "x", qty, unit: UNITE_PLANCHER, n: 0, achat });
+    expect(q(3, "1 kg en vrac")).toBe("3 kg");
+    expect(q(5, "500 g en vrac")).toBe("2,5 kg");
+    expect(q(1, "500 g en vrac")).toBe("500 g");
+    expect(q(3, "boîte de 6")).toBe("3 boîtes de 6");
+    expect(q(8, "pack de 4")).toBe("8 packs de 4");
+    expect(q(1, "plaquette de 250 g")).toBe("1 plaquette de 250 g");
+    expect(q(1, "morceau de 400 g (en bloc, à râper)")).toBe("1 morceau de 400 g");
+    expect(q(2, "pièce")).toBe("2 pièces");
   });
 });
 

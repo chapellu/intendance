@@ -218,6 +218,9 @@ export interface LignePanier {
   /** T140 : la boîte de l'ingrédient, quand un plat la prend entière — la
    *  ligne s'achète alors en boîtes (`quantiteDeLArticle`, `entrerAuStock`). */
   boite?: Boite;
+  /** T184 : pour une ligne du fond, ce qu'est une unité d'achat (« 1 kg en
+   *  vrac »), pour que la liste dise « 3 kg » et non « 3 unités ». */
+  achat?: string;
 }
 
 /** Le bilan d'un espace : ce qu'il portait, ce que la semaine y met, ce qu'elle

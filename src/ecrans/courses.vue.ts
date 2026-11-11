@@ -12,7 +12,7 @@ import type { EtatCourse } from "../db";
 import { cleDeLArticle } from "../db";
 import { boitesAAcheter, type LignePanier } from "../model/calcul";
 import { pluriel } from "../model/paquet";
-import { UNITE_PLANCHER, type LignePlancher } from "../model/plancherGardeManger";
+import { enUnitesDAchat, UNITE_PLANCHER, unitesDAchat, type LignePlancher } from "../model/plancherGardeManger";
 import { parRayon } from "../model/scoring";
 import type { Catalogue, Provenance } from "../model/types";
 import { fmt } from "../ui/format";
@@ -98,6 +98,7 @@ export function vueDesCourses(
   // entière. Ceux qu'elle réclame déjà n'en font pas une de plus : ils
   // annoteront la ligne existante, plus bas.
   const complet = new Map(panier);
+  const achats = unitesDAchat(catalogue);
   for (const p of planchers) {
     if (dejaDemandes.has(p.ingredient)) continue;
     complet.set(`${p.ingredient}|${UNITE_PLANCHER}`, {
@@ -105,6 +106,7 @@ export function vueDesCourses(
       nom: p.nom,
       qty: p.manque,
       unit: UNITE_PLANCHER,
+      ...(achats.has(p.ingredient) ? { achat: achats.get(p.ingredient)! } : {}),
       // ZÉRO PLAT, ET C'EST L'INFORMATION. `n` compte les plats de la semaine
       // qui réclament la ligne ; pour un plancher il n'y en a aucun, et écrire
       // 1 pour faire joli dirait qu'un plat la demande.
@@ -189,7 +191,7 @@ export function phraseDuPlancher(p: LignePlancher, plats: number): string {
  *  T140 : une ligne qu'un plat prend en boîtes entières s'achète en boîtes —
  *  « 2 boîtes (570 g) » —, puisque c'est ce qui partira dans la casserole. */
 export const quantiteDeLArticle = (l: LignePanier): string => {
-  if (l.unit === UNITE_PLANCHER) return `${l.qty} ${UNITE_PLANCHER}${l.qty > 1 ? "s" : ""}`;
+  if (l.unit === UNITE_PLANCHER) return enUnitesDAchat(l.qty, l.achat);
   const n = boitesAAcheter(l);
   if (n != null && l.boite) return `${n} ${pluriel(l.boite.nom, n)} (${fmt(l.qty)} ${l.unit})`;
   return `${fmt(l.qty)} ${l.unit}`;
