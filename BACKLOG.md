@@ -6347,3 +6347,30 @@ ordinaire finisse dans le rouge.
 
 - [x] Les deux Secrets chiffrés (`references.enc.yaml`, `cle.enc.yaml`) et le
       bloc `decryption` de Flux côté `flagship` (10/11).
+
+## Ranger, déplacer — T180
+
+- [x] **T180 — Dire où l'on range, et changer d'étagère (11/11).** Le
+      signalement, dans Cuisine → Stock : deux boîtes de tomates pelées et une
+      de pois chiches ajoutées par « + Ajouter », sans pouvoir dire où — puis
+      « je voulais aussi ranger et déplacer d'un espace à l'autre ».
+
+      **RANGÉ OÙ ?** La feuille d'ajout propose les zones du garde-manger, la
+      place que le relevé donne à l'ingrédient choisie d'office. Sans place
+      connue, « Pas encore rangé » : la course attend sous « Rentrés, à
+      ranger », comme avant.
+
+      **UN NOUVEL ÉVÉNEMENT, `deplacement`, PAS UNE OBSERVATION.** Changer des
+      boîtes d'étagère ne dit rien de combien il y en a : ni confiance, ni
+      dérive. « Déplacer » sur une ligne de zone, « Ranger » sur ce qui attend ;
+      le scellé part d'abord, l'entamé reste où l'on se sert.
+
+      **UN LOT RANGÉ EST LÀ OÙ IL A ÉTÉ RANGÉ.** `placeDuLot` est la règle
+      unique de l'écran et du rejeu : un lot hors des zones que le relevé nomme
+      retombait sur la première d'entre elles, et des tomates déplacées sous
+      l'évier se seraient relues sur l'étagère. Une hausse sans zone d'un lot
+      sans place reste sans place.
+
+      **RESTE OUVERT :** « Modifier » sous « à ranger » corrige l'ingrédient
+      entier — après en avoir rangé une partie, il toucherait aussi ce qui est
+      rangé.

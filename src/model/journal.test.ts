@@ -603,3 +603,52 @@ describe("T167 — la cuisson retire la farine qu'on a prise", () => {
     expect(r.parIngredient.get("farine-complete")!.grammes).toBe(1000);
   });
 });
+
+/* ═════════════════════════════════════════════ T180 — ranger et déplacer */
+
+describe("T180 — un déplacement change la place, pas le compte", () => {
+  const c = catalogue({ denrees: [] });
+  const j = "2026-10-20";
+  const entree = (lignes: object[]): Evenement => ({ sorte: "entree", jour: j, saisi: j, maj: 1, lignes } as Evenement);
+  const deplacer = (de: string | null, vers: string, unites: number | null, maj = 2): Evenement =>
+    ({ sorte: "deplacement", jour: j, saisi: j, maj, ingredient: "pates", de, vers, unites }) as Evenement;
+  const lotsDe = (evts: Evenement[]) => rejouer(c, evts, ctxDe(c), j).parIngredient.get("pates")!.lots;
+  const dans = (l: LotPlacard[], zone: string) =>
+    l.filter((x) => x.zone === zone && !x.sansPlace).reduce((n, x) => n + x.unites + (x.entame != null ? 1 : 0), 0);
+
+  test("LE SCELLÉ PART D'ABORD, l'entamé reste où l'on se sert", () => {
+    const ev = [
+      entree([{ ingredient: "pates", unites: 2, parUnite: { amount: 500, unit: "g" }, zone: "placard-haut", etat: "sec" }]),
+      { sorte: "observation", portee: "ingredient", zone: null, jour: j, saisi: j, maj: 2, constats: [{ ingredient: "pates", unites: null, grammes: 200 }] } as Evenement,
+      entree([{ ingredient: "pates", unites: 1, parUnite: { amount: 500, unit: "g" }, zone: "placard-haut", etat: "sec" }]),
+    ];
+    const l = lotsDe([...ev.map((e, i) => ({ ...e, maj: i + 1 }) as Evenement), deplacer("placard-haut", "tiroir-congelo", 2, 9)]);
+    // Le pesé de 200 g a remplacé les deux paquets ; un neuf est rentré après.
+    // Deux à déplacer : le neuf d'abord, puis seulement l'entamé.
+    const partis = l.filter((x) => x.zone === "tiroir-congelo");
+    expect(partis.reduce((n, x) => n + x.unites, 0)).toBe(1);
+    expect(partis.some((x) => x.entame === 200)).toBe(true);
+    expect(l.filter((x) => x.zone === "placard-haut").length).toBe(0);
+    // Un seul : le neuf part, l'entamé reste.
+    const un = lotsDe([...ev.map((e, i) => ({ ...e, maj: i + 1 }) as Evenement), deplacer("placard-haut", "tiroir-congelo", 1, 9)]);
+    expect(un.find((x) => x.entame === 200)!.zone).toBe("placard-haut");
+  });
+
+  test("RANGER UN LOT SANS PLACE lui donne la sienne", () => {
+    const l = lotsDe([
+      entree([{ ingredient: "pates", unites: 2, parUnite: null, zone: null, etat: "sec" }]),
+      deplacer(null, "placard-haut", 1),
+    ]);
+    expect(l.filter((x) => x.sansPlace).reduce((n, x) => n + x.unites, 0)).toBe(1);
+    expect(dans(l, "placard-haut")).toBe(1);
+  });
+
+  test("une hausse sans zone d'un lot sans place reste sans place", () => {
+    const l = lotsDe([
+      entree([{ ingredient: "pates", unites: 1, parUnite: null, zone: null, etat: "sec" }]),
+      { sorte: "observation", portee: "ingredient", zone: null, jour: j, saisi: j, maj: 2, constats: [{ ingredient: "pates", unites: 3 }] } as Evenement,
+    ]);
+    expect(l.every((x) => x.sansPlace)).toBe(true);
+    expect(l.reduce((n, x) => n + x.unites, 0)).toBe(3);
+  });
+});

@@ -9,6 +9,7 @@ import { ajouterAuStock, annulerAjout, base } from "../db";
 import { useJournal, usePlacard } from "../db/hooks";
 import { poidsConnu } from "../db/journal";
 import { ingredientsConnus } from "../ecrans/stock.vue";
+import { placesDuReleve } from "../model/journal";
 import type { Catalogue } from "../model/types";
 import { nomLisible, pourChercher } from "./noms";
 
@@ -133,6 +134,16 @@ function Feuille({
   const nom = (id: string) => (id === depart && nomDepart ? nomDepart : nomLisible(catalogue, id));
   const [n, setN] = useState(() => suggestions.find((s) => s.id === depart)?.unites ?? 1);
 
+  // T180 — RANGÉ OÙ ? La place que le relevé donne à l'ingrédient est proposée
+  // d'office : des tomates pelées vont sur l'étagère où sont les autres, sans un
+  // tap de plus. Sans place connue, rien n'est choisi, et la course attend sous
+  // « Rentrés, à ranger » comme avant.
+  const zones = catalogue.gardeManger.zones;
+  const places = useMemo(() => placesDuReleve(catalogue), [catalogue]);
+  const placeDe = (id: string | null): string | null =>
+    id ? (places.get(catalogue.rayons.aliases[id] ?? id)?.[0] ?? null) : null;
+  const [zone, setZone] = useState<string | null>(() => placeDe(depart));
+
   const connus = useMemo(
     () => ingredientsConnus(catalogue).map((c) => ({ id: c.id, nom: nomLisible(catalogue, c.id) })),
     [catalogue],
@@ -156,6 +167,7 @@ function Feuille({
   const choisir = (id: string) => {
     setChoisi(id);
     setN(suggestions.find((s) => s.id === id)?.unites ?? 1);
+    setZone(placeDe(id));
   };
 
   const ajouter = async () => {
@@ -163,10 +175,11 @@ function Feuille({
     const cles = panier ? [...panier.keys()].filter((k) => k.startsWith(`${choisi}|`)) : [];
     const r = await ajouterAuStock(
       base,
-      { ingredient: choisi, unites: n, parUnite: poidsConnu(catalogue, journal, choisi) },
+      { ingredient: choisi, unites: n, parUnite: poidsConnu(catalogue, journal, choisi), zone },
       cles,
     );
-    onAjoute({ ...r, texte: `${nom(choisi)} × ${n} ajouté au stock` });
+    const ou = zones.find((z) => z.id === zone)?.label;
+    onAjoute({ ...r, texte: `${nom(choisi)} × ${n} ajouté au stock${ou ? ` — ${ou}` : ""}` });
   };
 
   const deja = choisi ? (placard?.parIngredient.get(choisi)?.unites ?? 0) : 0;
@@ -224,6 +237,28 @@ function Feuille({
             <div className="co-note" style={{ textAlign: "center" }}>
               paquets, boîtes ou pièces
             </div>
+            {zones.length ? (
+              <>
+                <div className="co-kicker" style={{ margin: "var(--space-3) 0 var(--space-1)" }}>
+                  Rangé où ?
+                </div>
+                <div className="aj-puces" role="radiogroup" aria-label="Rangé où ?">
+                  {[...zones.map((z) => ({ id: z.id as string | null, label: z.label })), { id: null, label: "Pas encore rangé" }].map(
+                    (z) => (
+                      <button
+                        key={z.id ?? "-"}
+                        role="radio"
+                        aria-checked={zone === z.id}
+                        className={`aj-puce${zone === z.id ? " on" : ""}`}
+                        onClick={() => setZone(z.id)}
+                      >
+                        {z.label}
+                      </button>
+                    ),
+                  )}
+                </div>
+              </>
+            ) : null}
             <button className="btn btn-primary btn-block aj-go" onClick={() => void ajouter()}>
               Ajouter {n} au stock
             </button>

@@ -20,7 +20,7 @@ import type { BilanEspace, Calcul } from "../model/calcul";
 import type { Depot, LigneDepot } from "../model/depot";
 import { idsDuReleve, type Jeu } from "../model/jeu";
 import { aSauver } from "../model/gardeManger";
-import { mesurer, type Evenement, type LotPlacard, type Rejeu } from "../model/journal";
+import { mesurer, placeDuLot, placesDuReleve, type Evenement, type LotPlacard, type Rejeu } from "../model/journal";
 import {
   etatDuCongelo,
   nomDuType,
@@ -944,14 +944,15 @@ export interface MesureZone {
   /**
    * T139 — LA PORTÉE D'UNE CORRECTION FAITE SUR CETTE LIGNE (`corrigerLigne`).
    *
-   * L'id de la zone quand le relevé range l'ingrédient dans plusieurs zones :
-   * la ligne ne montre que ce qui est ici, sa correction ne touche que ce qui
-   * est ici. `null` quand il n'a qu'une place — tous ses lots s'y lisent, y
-   * compris ceux rentrés des courses sans rangement, et la correction doit les
-   * atteindre aussi.
+   * L'id de la zone quand l'ingrédient a des lots ailleurs — une autre zone,
+   * ou « à ranger » (T180) : la ligne ne montre que ce qui est ici, sa
+   * correction ne touche que ce qui est ici. `null` quand tous ses lots se
+   * lisent ici, y compris ceux rentrés des courses sans rangement, et la
+   * correction doit les atteindre aussi.
    */
   zone: string | null;
-  /** Rangé là par un œil sans que le relevé le connaisse (`Rejeu.ajoutes`). */
+  /** Rangé là sans que le relevé de CETTE zone le connaisse — ajouté par un
+   *  œil (`Rejeu.ajoutes`), ou rangé là par un doigt (T180). */
   ajoute: boolean;
   /** Ce que la ligne affiche : « 4 boîtes », « 2 sachets · 1 entamé » — voir
    *  `enPaquets`. Des grammes seulement pour ce qui s'achète au poids. */
@@ -1082,57 +1083,55 @@ function parZoneDu(
 ): { parZone: Map<string, Map<string, MesureZone>>; poidsParZone: Map<string, string> } {
   const gm = catalogue.gardeManger;
   const alias = (id: string): string => catalogue.rayons.aliases[id] ?? id;
-  // Les zones qui nomment chaque ingrédient, dans l'ordre du relevé.
-  const places = new Map<string, string[]>();
-  for (const z of gm.zones)
-    for (const d of gm.denrees) {
-      if (d.zone !== z.id) continue;
-      const l = places.get(alias(d.ingredient)) ?? [];
-      if (!l.includes(z.id)) l.push(z.id);
-      places.set(alias(d.ingredient), l);
-    }
-  // T139 — ce qu'un œil a rangé sans que le relevé le connaisse a UNE place :
-  // celle où il l'a vu.
-  for (const [id, zone] of rejeu.ajoutes) if (!places.has(id)) places.set(id, [zone]);
+  const places = placesDe(catalogue, rejeu);
+  // Chaque lot à SA place — `placeDuLot`, la règle que le rejeu applique aussi.
   const lots = new Map<string, LotPlacard[]>(); // clé : `zone|id`
-  for (const [id, ou] of places) {
-    for (const lot of rejeu.parIngredient.get(id)?.lots ?? []) {
-      const zone = ou.includes(lot.zone) ? lot.zone : ou[0]!;
+  const horsIci = new Map<string, Set<string | null>>(); // id → ses places
+  for (const [id, e] of rejeu.parIngredient)
+    for (const lot of e.lots) {
+      const zone = placeDuLot(lot, places.get(id));
+      horsIci.set(id, (horsIci.get(id) ?? new Set()).add(zone));
+      if (zone === null) continue;
       const cle = `${zone}|${id}`;
       lots.set(cle, [...(lots.get(cle) ?? []), lot]);
     }
-  }
+  const mesure = (z: string, id: string, l: LotPlacard[], ajoute: boolean): MesureZone => ({
+    ...mesurer(l),
+    zone: (horsIci.get(id)?.size ?? 0) > 1 ? z : null,
+    ajoute,
+    quantite: enPaquets(l, motDuPaquet(catalogue, id)),
+  });
   const parZone = new Map<string, Map<string, MesureZone>>();
   const poidsParZone = new Map<string, string>();
   for (const z of gm.zones) {
     const dedans = new Map<string, MesureZone>();
+    const vus = new Set<string>();
     for (const d of gm.denrees) {
-      if (d.zone !== z.id || dedans.has(d.ingredient)) continue;
       const id = alias(d.ingredient);
+      if (d.zone !== z.id || vus.has(id)) continue;
+      vus.add(id);
       const l = lots.get(`${z.id}|${id}`);
-      if (l?.length)
-        dedans.set(d.ingredient, {
-          ...mesurer(l),
-          zone: (places.get(id)?.length ?? 0) > 1 ? z.id : null,
-          ajoute: false,
-          quantite: enPaquets(l, motDuPaquet(catalogue, id)),
-        });
+      if (l?.length) dedans.set(d.ingredient, mesure(z.id, id, l, false));
     }
-    for (const [id, zone] of rejeu.ajoutes) {
+    // Ce que le relevé de cette zone ne porte pas, et qui y est pourtant.
+    for (const [id] of rejeu.parIngredient) {
       const l = lots.get(`${z.id}|${id}`);
-      if (zone === z.id && l?.length && !dedans.has(id))
-        dedans.set(id, {
-          ...mesurer(l),
-          zone: null,
-          ajoute: true,
-          quantite: enPaquets(l, motDuPaquet(catalogue, id)),
-        });
+      if (!vus.has(id) && l?.length) dedans.set(id, mesure(z.id, id, l, true));
     }
     parZone.set(z.id, dedans);
     const g = [...dedans.values()].reduce((s, m) => s + (m.grammes ?? 0), 0);
     poidsParZone.set(z.id, g > 0 ? enPoids(g) : "");
   }
   return { parZone, poidsParZone };
+}
+
+/** Les zones où chaque ingrédient se range : celles du relevé, à défaut celle
+ *  où un œil l'a ajouté (T139). La première sert aux lots sans place. */
+function placesDe(catalogue: Catalogue, rejeu: Rejeu): Map<string, readonly string[]> {
+  const places: Map<string, readonly string[]> = placesDuReleve(catalogue);
+  const out = new Map(places);
+  for (const [id, zone] of rejeu.ajoutes) if (!out.has(id)) out.set(id, [zone]);
+  return out;
 }
 
 /**
@@ -1460,19 +1459,22 @@ export interface HorsReleve {
  */
 export function horsDuReleve(catalogue: Catalogue, rejeu: Rejeu): HorsReleve[] {
   const alias = (id: string): string => catalogue.rayons.aliases[id] ?? id;
-  const connus = new Set([...catalogue.gardeManger.denrees.map((d) => alias(d.ingredient)), ...rejeu.ajoutes.keys()]);
+  const places = placesDe(catalogue, rejeu);
   const rayonDe = new Map<string, string>();
   for (const [r, ids] of Object.entries(catalogue.rayons.rayons)) for (const id of ids) rayonDe.set(alias(id), r);
   const out: HorsReleve[] = [];
   for (const [id, e] of rejeu.parIngredient) {
-    if (connus.has(id) || !e.lots.length) continue;
-    const m = mesurer(e.lots);
+    // T180 — LES LOTS SANS PLACE, ET EUX SEULS : ranger une boîte de pois
+    // chiches sur trois la fait passer dans sa zone, les deux autres attendent.
+    const ici = e.lots.filter((l) => placeDuLot(l, places.get(id)) === null);
+    if (!ici.length) continue;
+    const m = mesurer(ici);
     if (m.unites <= 0 && m.grammes == null) continue;
     out.push({
       id,
       nom: nomDeLaDenree(id),
       unites: m.unites,
-      quantite: enPaquets(e.lots, motDuPaquet(catalogue, id)),
+      quantite: enPaquets(ici, motDuPaquet(catalogue, id)),
       porte: PORTE_DU_RAYON[rayonDe.get(id) ?? ""] ?? "placard",
     });
   }
