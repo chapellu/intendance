@@ -1277,6 +1277,17 @@ describe("T183 — même remarque pour les yaourts", () => {
     expect(h.quantite).toBe(`${h.pieces} yaourts nature`);
   });
 
+  test("les yaourts de brebis et de soja se comptent aussi en pots (pack de 4)", () => {
+    for (const id of ["yaourt-brebis", "yaourt-soja"]) {
+      const evts: Evenement[] = [
+        { sorte: "entree", jour, saisi: jour, maj: 1, lignes: [{ ingredient: id, unites: 2, parUnite: null, zone: null, etat: "frais" }] },
+      ];
+      const h = horsDuReleve(catalogue, rejouer(catalogue, evts, contexte(catalogue), jour)).find((x) => x.id === id)!;
+      expect(h.pieces).toBe(8);
+      expect(h.quantite).toMatch(/^8 yaourts /);
+    }
+  });
+
   test("le premier mot porte le nombre", () => {
     expect(accorder("yaourt nature", 3)).toBe("yaourts nature");
     expect(accorder("œufs", 1)).toBe("œuf");

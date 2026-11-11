@@ -6424,5 +6424,8 @@ ordinaire finisse dans le rouge.
       Et les pièces s'accordent (`accorder`) : « 3 yaourts nature », « 1 œuf ».
       « pot » se compte comme « pièce ».
 
-      **RESTE OUVERT :** les yaourts de brebis et de soja n'ont pas de taille
-      de pack au fond (`fond.yaml:unite`) — l'app ne peut pas les dire en pots.
+      **LES YAOURTS DE BREBIS ET DE SOJA, AU PACK DE 4** (le foyer, 11/11).
+      Le fond seul disait la taille d'un paquet, et il exige un minimum : y
+      mettre ces yaourts les aurait fait racheter chaque semaine.
+      `fond.yaml:conditionnements` dit la taille et rien d'autre ; le
+      vérificateur refuse un id déjà au fond.

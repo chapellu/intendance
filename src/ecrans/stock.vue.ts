@@ -1039,7 +1039,9 @@ const auPluriel = (mot: string, n: number): string =>
  */
 export function motDuPaquet(catalogue: Catalogue, id: string): string | null {
   const alias = (x: string): string => catalogue.rayons.aliases[x] ?? x;
-  const fond = (catalogue.fond?.denrees ?? []).find((d) => alias(d.ingredient) === id);
+  const fond = [...(catalogue.fond?.denrees ?? []), ...(catalogue.fond?.conditionnements ?? [])].find(
+    (d) => alias(d.ingredient) === id,
+  );
   const mot = fond?.unite.trim().split(/\s+/)[0]?.toLowerCase();
   if (mot) return mot;
   const releve = catalogue.gardeManger.denrees.find((d) => alias(d.ingredient) === id);

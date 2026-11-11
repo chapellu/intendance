@@ -490,7 +490,9 @@ export function contexte(catalogue: Catalogue): Contexte {
     })(),
     contenu: (() => {
       const par = new Map<string, Quantite>();
-      for (const d of catalogue.fond?.denrees ?? []) {
+      // T183 — et les conditionnements, qui ne disent que la taille du paquet.
+      // `?? []` : les catalogues fabriqués à la main des tests.
+      for (const d of [...(catalogue.fond?.denrees ?? []), ...(catalogue.fond?.conditionnements ?? [])]) {
         const q = contenuDUnite(d.unite);
         if (q) par.set(alias(d.ingredient), q);
       }

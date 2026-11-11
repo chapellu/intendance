@@ -751,6 +751,9 @@ export interface Fond {
   denrees: DenreeDuFond[];
   /** Les dîners que le fond promet sans courses — le vérificateur les tient. */
   diners: { plat: string; titre: string }[];
+  /** T183 — la taille d'un paquet sans minimum (`fond.yaml:conditionnements`) :
+   *  ce qui s'achète au pack sans être « toujours là ». */
+  conditionnements: { ingredient: string; unite: string }[];
 }
 
 /** Le calendrier des saisons : ingrédient → mois (1 = janvier). */

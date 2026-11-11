@@ -712,6 +712,13 @@ function fond(v: unknown, ou: string): Fond {
         hebdo: d["hebdo"] == null ? false : booleen(d["hebdo"], `${ou}.denrees[${i}].hebdo`),
       };
     }),
+    conditionnements: tableau(o["conditionnements"] ?? [], `${ou}.conditionnements`).map((x, i) => {
+      const d = obj(x, `${ou}.conditionnements[${i}]`);
+      return {
+        ingredient: texte(d["ingredient"], `${ou}.conditionnements[${i}].ingredient`),
+        unite: texte(d["unite"], `${ou}.conditionnements[${i}].unite`),
+      };
+    }),
     diners: tableau(o["diners"] ?? [], `${ou}.diners`).map((x, i) => {
       const d = obj(x, `${ou}.diners[${i}]`);
       return {
