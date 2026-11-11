@@ -772,7 +772,15 @@ export function retirer(
         pris += pu2;
         if (reste != null) reste -= pu2;
         effet ??= "grammes";
-        if (lot.entame <= 1e-9) lot.entame = null;
+        if (lot.entame <= 1e-9) {
+          lot.entame = null;
+          // T183 — LE PAQUET OUVERT EST FINI, LES SUIVANTS SONT FERMÉS. Le lot
+          // gardait `etat: "entame"` sans reste : deux packs de yaourts encore
+          // scellés se lisaient « 2 packs entamés », sans un pot de compté, et
+          // la seconde boîte d'œufs « entamée » avant d'être ouverte. Même
+          // règle que l'ouverture d'un paquet, plus bas.
+          if (lot.unites > 0 && lot.etat === "entame") lot.etat = "sec";
+        }
         continue;
       }
 
