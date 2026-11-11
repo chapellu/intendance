@@ -6393,3 +6393,18 @@ ordinaire finisse dans le rouge.
       **UN PRODUIT INCONNU S'AJOUTE QUAND MÊME** : « + Nouveau produit », son
       id tiré du nom. Un stock qui refuse de compter la levure chimique du
       placard est un stock faux ; qu'aucune recette ne la lise n'y change rien.
+
+## Dire ce qui reste, pas « entamé » — T182
+
+- [x] **T182 — « Il me reste 2 œufs » (11/11).** Le frigo disait « 1 boîte ·
+      1 entamée » : le compte d'un paquet ouvert ne sert à rien quand on
+      connaît ce qu'il y reste.
+
+      **CE QUI SE COMPTE À LA PIÈCE SE DIT EN PIÈCES** (`piecesDe`) : « 9
+      œufs », et « Modifier » compte des œufs, pas des boîtes — une
+      observation `grammes` dans l'unité de la boîte (`corrigerPieces`), le
+      chemin du fond pesé de T167.
+
+      **UN ENTAMÉ DONT ON CONNAÎT LE RESTE DIT CE RESTE** : « 2 paquets ·
+      ≈ 200 g ». Ceux dont on ne sait rien gardent « entamé » : un reste
+      inventé se lirait comme une mesure.

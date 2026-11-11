@@ -92,3 +92,20 @@ test("T181 — trouver le son d'avoine, créer la levure chimique", async ({ pag
   await page.getByRole("searchbox", { name: "Quoi ?" }).fill("levure chim");
   await expect(page.locator(".aj-ligne", { hasText: /^levure chimique$/ })).toBeVisible();
 });
+
+test("T182 — il me reste 2 œufs : la ligne compte des œufs, et se corrige en œufs", async ({ page }) => {
+  await page.goto("/#/cuisine/stock");
+  await attendreLApp(page);
+  await ajouter(page, "oeufs", 1, null);
+
+  // L'écran s'ouvre sur le frigo (T141).
+  const frigo = page.locator(".st-panneau");
+  const oeufs = ligne(frigo, /^œufs$/);
+  await expect(oeufs.locator(".q")).toHaveText("6 œufs");
+
+  await oeufs.getByRole("button", { name: "corriger : œufs" }).click();
+  await expect(oeufs.locator("b")).toHaveText("6");
+  for (let i = 0; i < 4; i++) await oeufs.getByRole("button", { name: "−" }).click();
+  await oeufs.getByRole("button", { name: "OK" }).click();
+  await expect(oeufs.locator(".q")).toHaveText("2 œufs");
+});
