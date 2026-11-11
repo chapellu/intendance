@@ -1139,6 +1139,8 @@ a.co-apercu { color: inherit; text-decoration: none; }
   padding: 0 var(--space-3); border-radius: 999px; border: none;
   background: var(--color-surface); color: var(--color-text); cursor: pointer;
 }
+/* T181 — créer un produit que le catalogue ne connaît pas. */
+.aj-nouveau { color: var(--color-accent-700); border-bottom: none; }
 /* T180 — ranger, déplacer : combien, puis où. */
 .st-bouger { display: flex; flex-direction: column; gap: var(--space-1); margin-top: var(--space-1); }
 /* T180 — le choix fait, dans « Rangé où ? » et « Déplacer vers ». */

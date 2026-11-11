@@ -8,7 +8,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ajouterAuStock, annulerAjout, base } from "../db";
 import { useJournal, usePlacard } from "../db/hooks";
 import { poidsConnu } from "../db/journal";
-import { ingredientsConnus } from "../ecrans/stock.vue";
+import { chercherIngredient, idDuNom, ingredientsConnus } from "../ecrans/stock.vue";
 import { placesDuReleve } from "../model/journal";
 import type { Catalogue } from "../model/types";
 import { nomLisible, pourChercher } from "./noms";
@@ -144,10 +144,13 @@ function Feuille({
     id ? (places.get(catalogue.rayons.aliases[id] ?? id)?.[0] ?? null) : null;
   const [zone, setZone] = useState<string | null>(() => placeDe(depart));
 
-  const connus = useMemo(
-    () => ingredientsConnus(catalogue).map((c) => ({ id: c.id, nom: nomLisible(catalogue, c.id) })),
-    [catalogue],
-  );
+  // T181 — ce que le journal a déjà vu rentrer compte aussi : un produit créé
+  // une fois se retrouve la fois suivante.
+  const connus = useMemo(() => {
+    const ids = new Set(ingredientsConnus(catalogue).map((c) => c.id));
+    for (const e of journal ?? []) if (e.sorte === "entree") for (const l of e.lignes) ids.add(l.ingredient);
+    return [...ids].map((id) => ({ id, nom: nomLisible(catalogue, id) })).sort((a, b) => a.nom.localeCompare(b.nom, "fr"));
+  }, [catalogue, journal]);
 
   // Ce qu'on a rentré dernièrement : les rachats habituels, à un doigt.
   const recents = useMemo(() => {
@@ -162,7 +165,12 @@ function Feuille({
   }, [journal]);
 
   const q = pourChercher(cherche);
-  const trouves = q.length < 1 ? [] : connus.filter((c) => pourChercher(c.nom).includes(q)).slice(0, 8);
+  const { exacts: trouves, proches } = chercherIngredient(connus, cherche);
+  // T181 — CE QUE LE CATALOGUE NE CONNAÎT PAS S'AJOUTE QUAND MÊME. La levure
+  // chimique n'est dans aucune recette ; elle est pourtant dans le placard, et
+  // un stock qui refuse de la compter est un stock faux. Son id se tire du nom.
+  const nouveau = idDuNom(cherche);
+  const existe = connus.some((c) => c.id === nouveau || pourChercher(c.nom) === q);
 
   const choisir = (id: string) => {
     setChoisi(id);
@@ -287,7 +295,23 @@ function Feuille({
                     {c.nom}
                   </button>
                 ))}
-                {!trouves.length ? <div className="co-note">Rien de connu sous ce nom.</div> : null}
+                {proches.length ? (
+                  <>
+                    <div className="co-kicker" style={{ margin: "var(--space-3) 0 var(--space-1)" }}>
+                      {trouves.length ? "Proches" : "Rien sous ce nom exact — peut-être :"}
+                    </div>
+                    {proches.map((c) => (
+                      <button key={c.id} className="aj-ligne" onClick={() => choisir(c.id)}>
+                        {c.nom}
+                      </button>
+                    ))}
+                  </>
+                ) : null}
+                {nouveau && !existe ? (
+                  <button className="aj-ligne aj-nouveau" onClick={() => choisir(nouveau)}>
+                    + Nouveau produit : « {cherche.trim()} »
+                  </button>
+                ) : null}
               </div>
             ) : (
               <>

@@ -363,6 +363,33 @@ export async function observerPoids(
 }
 
 /**
+ * « Il me reste 2 œufs » — T182. Un compte en PIÈCES sur une ligne qui se
+ * compte à la pièce : le reste de la boîte, pas un nombre de boîtes. Même
+ * chemin que le poids d'un fond (`grammes` remplace les lots de la ligne par un
+ * seul entamé de ce reste, dans l'unité de la boîte), et même portée que
+ * `corrigerLigne` : `zone` restreint aux lots rangés là.
+ */
+export async function corrigerPieces(
+  base: Base,
+  ingredient: string,
+  pieces: number,
+  zone: string | null,
+  aujourdhui = new Date(),
+): Promise<number> {
+  const jour = jourISO(aujourdhui);
+  const evt: Evenement = {
+    sorte: "observation",
+    portee: "ingredient",
+    zone,
+    jour,
+    saisi: jour,
+    constats: [{ ingredient, unites: null, grammes: pieces }],
+    maj: Date.now(),
+  };
+  return (await base.evenements.add(evt as never)) as number;
+}
+
+/**
  * La correction d'UNE ligne du garde-manger — T139.
  *
  * « J'en ai trois, pas cinq », « je n'en ai plus » : ce qu'un doigt fait en

@@ -5,10 +5,11 @@ import { lireCatalogue } from "../model/catalogue";
 import { creerJeu, idsDuReleve, type Jeu } from "../model/jeu";
 import type { Catalogue, Denree, Zone } from "../model/types";
 import { contexte, rejouer, type Evenement } from "../model/journal";
+import { retenirLesNoms } from "../model/plancherGardeManger";
 import {
   agressions, baisserPlancher, categories, espaces, fiabilite, gardeManger, lots,
   enPaquets, ingredientsConnus, motDuPaquet, perte, PERIME, resteAuPlacard, restesPerimes, vueDeLInventaire, vueDesPlanchers, vueDesPlanchersDenrees, zones,
-  conseilDe, eteint, horsDuReleve, vueDuPlan, type LotVue,
+  conseilDe, eteint, horsDuReleve, vueDuPlan, type LotVue, chercherIngredient, idDuNom, piecesDe,
 } from "./stock.vue";
 
 const LUNDI = new Date("2026-08-17T12:00:00Z");
@@ -691,7 +692,9 @@ describe("T139 — dire en paquets, ajouter du catalogue", () => {
   });
 
   test("l'entamé se dit à part, accordé", () => {
-    expect(enPaquets([lot({ unites: 3 }), lot({ unites: 0, entame: 120 })], "boîte")).toBe("3 boîtes · 1 entamée");
+    // T182 — un entamé dont on connaît le reste dit ce reste.
+    expect(enPaquets([lot({ unites: 3 }), lot({ unites: 0, entame: 120 })], "boîte")).toBe("3 boîtes · ≈ 120 g");
+    expect(enPaquets([lot({ unites: 3 }), lot({ unites: 1, etat: "entame" })], "boîte")).toBe("3 boîtes · 1 entamée");
     expect(enPaquets([lot({ unites: 1, etat: "entame" })], "paquet")).toBe("1 paquet entamé");
   });
 
@@ -1194,5 +1197,67 @@ describe("T180 — ranger, déplacer d'une zone à l'autre", () => {
     ];
     expect(ici(evts, "dessus-etagere", "tomates-pelees")).toBeUndefined();
     expect(ici(evts, "sous-evier", "tomates-pelees")!.unites).toBe(2);
+  });
+});
+
+describe("T181 — trouver ce qu'on tient en main", () => {
+  const connus = ingredientsConnus(catalogue);
+  const noms = (q: string) => {
+    const r = chercherIngredient(connus, q);
+    return { exacts: r.exacts.map((c) => c.id), proches: r.proches.map((c) => c.id) };
+  };
+
+  test("le son d'avoine des recettes se trouve, apostrophe typographique comprise", () => {
+    expect(noms("Son d’avoine").exacts).toContain("son-avoine");
+  });
+
+  test("« lentilles vertes » propose les lentilles qu'on a, même sans le mot « vertes »", () => {
+    const r = noms("Lentilles vertes");
+    expect([...r.exacts, ...r.proches]).toContain("lentilles-seches");
+  });
+
+  test("le pluriel ne départage rien", () => {
+    expect(noms("tomate pelée").exacts).toContain("tomates-pelees");
+  });
+
+  test("un produit inconnu se nomme de lui-même", () => {
+    expect(noms("Levure chimique").exacts).toEqual([]);
+    expect(idDuNom("Levure chimique")).toBe("levure-chimique");
+    expect(idDuNom("  Crème d’amande ")).toBe("creme-d-amande");
+  });
+});
+
+describe("T182 — il me reste 2 œufs", () => {
+  // Comme au chargement de l'app : « œufs », le mot des recettes.
+  beforeEach(() => retenirLesNoms(catalogue.plats));
+  const jour = "2026-11-10";
+  const oeufs = (n: number): Evenement => ({
+    sorte: "entree", jour, saisi: jour, maj: 1,
+    lignes: [{ ingredient: "oeufs", unites: n, parUnite: null, zone: null, etat: "frais" }],
+  });
+  const quiche = catalogue.plats.find((p) => p.ingredients.some((i) => i.id === "oeufs" && i.qty === 3))!;
+  const cuire: Evenement = { sorte: "cuisine", jour, saisi: jour, maj: 2, repas: "diner", plat: quiche.id, parts: quiche.portions };
+  const hors = (evts: Evenement[]) =>
+    horsDuReleve(catalogue, rejouer(catalogue, evts, contexte(catalogue), jour)).find((h) => h.id === "oeufs");
+
+  test("deux boîtes dont une ouverte se disent en œufs, pas « 1 boîte · 1 entamée »", () => {
+    const h = hors([oeufs(2), cuire])!;
+    expect(h.quantite).toBe("9 œufs");
+    expect(h.pieces).toBe(9);
+  });
+
+  test("« Modifier » à 2 œufs : la ligne dit 2 œufs", () => {
+    const dire: Evenement = {
+      sorte: "observation", portee: "ingredient", zone: null, jour, saisi: jour, maj: 3,
+      constats: [{ ingredient: "oeufs", unites: null, grammes: 2 }],
+    };
+    expect(hors([oeufs(2), cuire, dire])!.quantite).toBe("2 œufs");
+    expect(hors([oeufs(1), { ...dire, constats: [{ ingredient: "oeufs", unites: null, grammes: 1 }] }])!.quantite).toBe("1 œuf");
+  });
+
+  test("ce qui ne se compte pas à la pièce n'a pas de compte en pièces", () => {
+    const lot = { ingredient: "x", zone: "z", unites: 1, parUnite: { amount: 500, unit: "g" }, etat: "sec" as const, entame: null, court: false };
+    expect(piecesDe([lot])).toBeNull();
+    expect(piecesDe([{ ...lot, parUnite: { amount: 6, unit: "pièce" }, etat: "entame" as const }])).toBeNull();
   });
 });

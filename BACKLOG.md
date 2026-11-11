@@ -6374,3 +6374,37 @@ ordinaire finisse dans le rouge.
       **RESTE OUVERT :** « Modifier » sous « à ranger » corrige l'ingrédient
       entier — après en avoir rangé une partie, il toucherait aussi ce qui est
       rangé.
+
+## Trouver ce qu'on range — T181
+
+- [x] **T181 — « + Ajouter » trouve ce qu'on tient en main, et crée le reste
+      (11/11).** Au téléphone : « Levure chimique », « Lentilles vertes »,
+      « Son d’avoine » — « Rien de connu sous ce nom » les trois fois.
+
+      **LA RECHERCHE NE LISAIT QUE LES RAYONS.** Le son d'avoine d'un pain de
+      mie n'en a pas : il était introuvable alors qu'une recette le lit. Elle
+      lit désormais aussi les ingrédients des recettes (hors préparations
+      `-ing`), le fond, et ce que le journal a déjà vu rentrer.
+
+      **MOT À MOT** (`chercherIngredient`) : l'apostrophe, les petits mots et
+      le pluriel ne départagent plus rien, et ce qui n'a qu'une partie des mots
+      se propose à part — « lentilles vertes » montre les lentilles sèches.
+
+      **UN PRODUIT INCONNU S'AJOUTE QUAND MÊME** : « + Nouveau produit », son
+      id tiré du nom. Un stock qui refuse de compter la levure chimique du
+      placard est un stock faux ; qu'aucune recette ne la lise n'y change rien.
+
+## Dire ce qui reste, pas « entamé » — T182
+
+- [x] **T182 — « Il me reste 2 œufs » (11/11).** Le frigo disait « 1 boîte ·
+      1 entamée » : le compte d'un paquet ouvert ne sert à rien quand on
+      connaît ce qu'il y reste.
+
+      **CE QUI SE COMPTE À LA PIÈCE SE DIT EN PIÈCES** (`piecesDe`) : « 9
+      œufs », et « Modifier » compte des œufs, pas des boîtes — une
+      observation `grammes` dans l'unité de la boîte (`corrigerPieces`), le
+      chemin du fond pesé de T167.
+
+      **UN ENTAMÉ DONT ON CONNAÎT LE RESTE DIT CE RESTE** : « 2 paquets ·
+      ≈ 200 g ». Ceux dont on ne sait rien gardent « entamé » : un reste
+      inventé se lirait comme une mesure.

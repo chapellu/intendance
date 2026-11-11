@@ -31,6 +31,7 @@ import {
 } from "../model/plancher";
 import {
   nomDeLaDenree,
+  sansAccents,
   posables,
   type PlancherDenree,
   type Posable,
@@ -873,14 +874,69 @@ export function aSauverVue(catalogue: Catalogue, reste: Iterable<string>): ASauv
  */
 export function ingredientsConnus(catalogue: Catalogue): { id: string; nom: string }[] {
   const alias = (id: string): string => catalogue.rayons.aliases[id] ?? id;
+  // T181 — TOUT CE QUE L'APP SAIT NOMMER, pas seulement les rayons des
+  // courses : le son d'avoine d'un pain de mie n'a pas de rayon, et il était
+  // introuvable dans « + Ajouter » alors qu'une recette le lit.
   const ids = new Set([
     ...Object.values(catalogue.rayons.rayons).flat().map(alias),
     ...idsDuReleve(catalogue),
+    // Sauf les préparations internes (`pois-chiches-cuits-ing`) : on ne range
+    // pas l'étape d'une recette.
+    ...catalogue.plats.flatMap((p) => p.ingredients.map((i) => alias(i.id))).filter((id) => !id.endsWith("-ing")),
+    ...(catalogue.fond?.denrees ?? []).map((d) => alias(d.ingredient)),
   ]);
   return [...ids]
     .map((id) => ({ id, nom: nomDeLaDenree(id) }))
     .sort((a, b) => a.nom.localeCompare(b.nom, "fr"));
 }
+
+/** Les petits mots qu'une recherche ignore : « son d’avoine » trouve
+ *  `son-avoine`. */
+const MOTS_VIDES = new Set(["d", "de", "du", "des", "l", "la", "le", "les", "a", "au", "aux", "en", "et"]);
+const motsDe = (s: string): string[] =>
+  sansAccents(s)
+    .split(" ")
+    .filter((m) => m && !MOTS_VIDES.has(m))
+    // Le pluriel ne départage rien : « tomate » trouve « tomates ».
+    .map((m) => (m.length > 3 ? m.replace(/[sx]$/, "") : m));
+
+/**
+ * Chercher un ingrédient par son nom — T181.
+ *
+ * MOT À MOT, PAS EN UNE CHAÎNE. « Lentilles vertes » ne trouvait rien : aucun
+ * nom ne contient la chaîne entière. Ici, `exacts` porte les noms qui ont TOUS
+ * les mots cherchés (au début d'un de leurs mots), `proches` ceux qui en ont au
+ * moins un, le plus de mots d'abord — « lentilles sèches » est sans doute ce
+ * qu'on tient en main.
+ */
+export function chercherIngredient<T extends { nom: string }>(
+  liste: readonly T[],
+  cherche: string,
+  max = 8,
+): { exacts: T[]; proches: T[] } {
+  const q = motsDe(cherche);
+  if (!q.length) return { exacts: [], proches: [] };
+  const notes = liste
+    .map((c) => {
+      const mots = motsDe(c.nom);
+      return { c, n: q.filter((w) => mots.some((m) => m.startsWith(w))).length };
+    })
+    .filter((x) => x.n > 0);
+  // Le nom le plus court d'abord : « pois chiches » avant « pois chiches
+  // cuits », le produit qu'on range avant la préparation qui l'emploie.
+  const exacts = notes
+    .filter((x) => x.n === q.length)
+    .sort((a, b) => a.c.nom.length - b.c.nom.length)
+    .map((x) => x.c);
+  const proches = notes
+    .filter((x) => x.n < q.length)
+    .sort((a, b) => b.n - a.n)
+    .map((x) => x.c);
+  return { exacts: exacts.slice(0, max), proches: proches.slice(0, Math.max(0, max - exacts.length)) };
+}
+
+/** L'id d'un produit que le catalogue ne connaît pas, tiré de son nom. */
+export const idDuNom = (nom: string): string => sansAccents(nom).replace(/ /g, "-");
 
 export interface GardeMangerVue {
   zones: ZoneVue[];
@@ -957,6 +1013,9 @@ export interface MesureZone {
   /** Ce que la ligne affiche : « 4 boîtes », « 2 sachets · 1 entamé » — voir
    *  `enPaquets`. Des grammes seulement pour ce qui s'achète au poids. */
   quantite: string;
+  /** T182 — le compte en pièces, quand il se tient : « Modifier » compte
+   *  alors des œufs, pas des boîtes. */
+  pieces: number | null;
 }
 
 const enPoids = (g: number): string => (g >= 1000 ? `${fmt(g / 1000)} kg` : `${fmt(g)} g`);
@@ -998,8 +1057,13 @@ export function motDuPaquet(catalogue: Catalogue, id: string): string | null {
  * celui de `mesurer` (un entamé vaut une unité), donc celui que corrigent les
  * boutons − / + : on corrige le nombre qu'on lit.
  */
-export function enPaquets(lots: readonly LotPlacard[], mot: string | null): string {
+export function enPaquets(lots: readonly LotPlacard[], mot: string | null, piece?: string): string {
   const m = mesurer(lots);
+  // T182 — CE QUI SE COMPTE À LA PIÈCE SE DIT EN PIÈCES. « 1 boîte · 1
+  // entamée » quand il reste deux œufs : la boîte ne sert à rien, le nombre
+  // d'œufs si.
+  const n = piecesDe(lots);
+  if (n !== null && piece) return `${fmt(n)} ${n > 1 ? piece : piece.replace(/s$/, "")}`;
   if (!mot) return m.grammes != null ? enPoids(m.grammes) : `${m.unites}`;
   // UN LOT EN SERVICE NE SE COMPTE QU'UNE FOIS. Son unité ouverte (`entame`)
   // porte déjà son état « entame » : additionner les deux faisait lire
@@ -1009,9 +1073,36 @@ export function enPaquets(lots: readonly LotPlacard[], mot: string | null): stri
     0,
   );
   const scelles = m.unites - entames;
+  // T182 — UN ENTAMÉ DONT ON CONNAÎT LE RESTE DIT CE RESTE, pas « entamé » :
+  // « 2 paquets · ≈ 200 g ». Ceux dont on ne sait rien gardent le mot.
+  const estimes = lots.filter((l) => l.entame != null && l.parUnite);
+  const parUnite = new Map<string, number>();
+  for (const l of estimes) parUnite.set(l.parUnite!.unit, (parUnite.get(l.parUnite!.unit) ?? 0) + l.entame!);
+  const estime = [...parUnite].map(([u, q]) => (u === "g" ? `≈ ${enPoids(q)}` : `≈ ${fmt(q)} ${u}`)).join(" · ");
+  const inconnus = entames - estimes.length;
   const e = (n: number) => `${n} entamé${FEMININS.has(mot) ? "e" : ""}${n > 1 ? "s" : ""}`;
-  if (!scelles) return `${entames} ${auPluriel(mot, entames)} ${e(entames).replace(/^\d+ /, "")}`;
-  return `${scelles} ${auPluriel(mot, scelles)}${entames ? ` · ${e(entames)}` : ""}`;
+  const morceaux = [
+    scelles ? `${scelles} ${auPluriel(mot, scelles)}` : "",
+    estime,
+    inconnus ? (scelles || estime ? e(inconnus) : `${inconnus} ${auPluriel(mot, inconnus)} ${e(inconnus).replace(/^\d+ /, "")}`) : "",
+  ].filter(Boolean);
+  return morceaux.join(" · ") || "0";
+}
+
+/**
+ * Le nombre de pièces d'une poignée de lots — T182. `null` dès qu'un lot ne
+ * se compte pas à la pièce, ou qu'un entamé n'a pas de reste connu : un
+ * total inventé se lirait comme un compte.
+ */
+export function piecesDe(lots: readonly LotPlacard[]): number | null {
+  if (!lots.length) return null;
+  let n = 0;
+  for (const l of lots) {
+    if (!l.parUnite || !/^pi[eè]ce$/.test(l.parUnite.unit)) return null;
+    if (l.entame == null && l.etat === "entame") return null;
+    n += l.unites * l.parUnite.amount + (l.entame ?? 0);
+  }
+  return n;
 }
 
 /**
@@ -1099,7 +1190,8 @@ function parZoneDu(
     ...mesurer(l),
     zone: (horsIci.get(id)?.size ?? 0) > 1 ? z : null,
     ajoute,
-    quantite: enPaquets(l, motDuPaquet(catalogue, id)),
+    quantite: enPaquets(l, motDuPaquet(catalogue, id), nomDeLaDenree(id)),
+    pieces: piecesDe(l),
   });
   const parZone = new Map<string, Map<string, MesureZone>>();
   const poidsParZone = new Map<string, string>();
@@ -1444,6 +1536,8 @@ export interface HorsReleve {
   id: string;
   nom: string;
   unites: number;
+  /** T182 — le compte en pièces, quand il se tient (voir `piecesDe`). */
+  pieces: number | null;
   quantite: string;
   porte: Porte;
 }
@@ -1474,7 +1568,8 @@ export function horsDuReleve(catalogue: Catalogue, rejeu: Rejeu): HorsReleve[] {
       id,
       nom: nomDeLaDenree(id),
       unites: m.unites,
-      quantite: enPaquets(ici, motDuPaquet(catalogue, id)),
+      quantite: enPaquets(ici, motDuPaquet(catalogue, id), nomDeLaDenree(id)),
+      pieces: piecesDe(ici),
       porte: PORTE_DU_RAYON[rayonDe.get(id) ?? ""] ?? "placard",
     });
   }

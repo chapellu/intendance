@@ -40,7 +40,7 @@ import {
   usePlanchersDenrees,
   useSemaine,
 } from "../db/hooks";
-import { corrigerLigne, deplacer, releverZone } from "../db/journal";
+import { corrigerLigne, corrigerPieces, deplacer, releverZone } from "../db/journal";
 import {
   poserPlancher,
   poserPlancherDenree,
@@ -70,6 +70,7 @@ import {
   vueDesPlanchersDenrees,
   vueDuPlan,
   horsDuReleve,
+  chercherIngredient,
   type HorsReleve,
   type LotVue,
   type PlanVue,
@@ -837,6 +838,7 @@ function Produit({ h, zones }: { h: HorsReleve; zones?: readonly { id: string; n
           nom={h.nom}
           ingredient={h.id}
           unites={h.unites}
+          pieces={h.pieces}
           zone={null}
           {...(zones ? { bouger: { de: null, zones } } : {})}
         />
@@ -1125,9 +1127,9 @@ function Zone({
     setReleve(new Map(releve).set(id, Math.max(1, releve.get(id) ?? 0)));
     setCherche("");
   };
-  const q = cherche.trim().toLowerCase();
-  const trouves =
-    q.length < 2 ? [] : connus.filter((c) => c.nom.includes(q) || c.id.includes(q)).slice(0, 6);
+  // T181 — la même recherche que « + Ajouter », mot à mot.
+  const { exacts, proches } = chercherIngredient(connus, cherche, 6);
+  const trouves = cherche.trim().length < 2 ? [] : [...exacts, ...proches];
 
   // Une ligne de l'éditeur : − n +. Les denrées du relevé et les ajouts
   // partagent le même geste, et le même compte en paquets.
@@ -1252,6 +1254,7 @@ function Zone({
                   ingredient={e?.ingredient ?? d.ingredient}
                   unites={m.unites}
                   zone={m.zone}
+                  pieces={m.pieces}
                   bouger={{ de: z.id, zones: toutes }}
                 />
               </span>
@@ -1306,11 +1309,14 @@ function Corriger({
   unites,
   zone,
   bouger,
+  pieces = null,
 }: {
   nom: string;
   ingredient: string;
   unites: number;
   zone: string | null;
+  /** T182 — présent, « Modifier » compte des pièces (des œufs), pas des boîtes. */
+  pieces?: number | null;
   /** T180 — d'où la ligne se déplace (`null` : « à ranger »), et vers quoi. */
   bouger?: { de: string | null; zones: readonly { id: string; nom: string }[] };
 }) {
@@ -1318,6 +1324,11 @@ function Corriger({
   const [vers, setVers] = useState<number | null>(null);
   const poser = async (v: number) => {
     await corrigerLigne(base, ingredient, v, zone);
+    setN(null);
+  };
+  const compter = async (v: number) => {
+    if (pieces === null || v === 0) return poser(v);
+    await corrigerPieces(base, ingredient, v, zone);
     setN(null);
   };
   const petit = { fontSize: 12, padding: "2px 8px" };
@@ -1343,7 +1354,12 @@ function Corriger({
   if (n === null)
     return (
       <div style={{ display: "flex", gap: "var(--space-1)", marginTop: 4 }}>
-        <button className="btn btn-ghost" style={petit} aria-label={`corriger : ${nom}`} onClick={() => setN(unites)}>
+        <button
+          className="btn btn-ghost"
+          style={petit}
+          aria-label={`corriger : ${nom}`}
+          onClick={() => setN(pieces ?? unites)}
+        >
           Modifier
         </button>
         {bouger ? (
@@ -1369,7 +1385,8 @@ function Corriger({
   return (
     <div style={{ display: "flex", gap: "var(--space-1)", alignItems: "center", marginTop: 4 }}>
       <Compteur n={n} poser={setN} />
-      <button className="btn btn-secondary" style={petit} onClick={() => void poser(n)}>
+      {pieces !== null ? <span className="co-note">{nom}</span> : null}
+      <button className="btn btn-secondary" style={petit} onClick={() => void compter(n)}>
         OK
       </button>
       <button className="btn btn-ghost" style={petit} onClick={() => setN(null)}>
