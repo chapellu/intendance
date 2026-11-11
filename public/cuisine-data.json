@@ -49373,6 +49373,16 @@
     "plat": "soupe-legumes-pois-chiches",
     "titre": "Soupe de légumes surgelés et pois chiches"
    }
+  ],
+  "conditionnements": [
+   {
+    "ingredient": "yaourt-brebis",
+    "unite": "pack de 4"
+   },
+   {
+    "ingredient": "yaourt-soja",
+    "unite": "pack de 4"
+   }
   ]
  },
  "saisons": {

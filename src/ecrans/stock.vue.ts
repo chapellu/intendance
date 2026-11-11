@@ -1039,7 +1039,9 @@ const auPluriel = (mot: string, n: number): string =>
  */
 export function motDuPaquet(catalogue: Catalogue, id: string): string | null {
   const alias = (x: string): string => catalogue.rayons.aliases[x] ?? x;
-  const fond = (catalogue.fond?.denrees ?? []).find((d) => alias(d.ingredient) === id);
+  const fond = [...(catalogue.fond?.denrees ?? []), ...(catalogue.fond?.conditionnements ?? [])].find(
+    (d) => alias(d.ingredient) === id,
+  );
   const mot = fond?.unite.trim().split(/\s+/)[0]?.toLowerCase();
   if (mot) return mot;
   const releve = catalogue.gardeManger.denrees.find((d) => alias(d.ingredient) === id);
@@ -1063,7 +1065,7 @@ export function enPaquets(lots: readonly LotPlacard[], mot: string | null, piece
   // entamée » quand il reste deux œufs : la boîte ne sert à rien, le nombre
   // d'œufs si.
   const n = piecesDe(lots);
-  if (n !== null && piece) return `${fmt(n)} ${n > 1 ? piece : piece.replace(/s$/, "")}`;
+  if (n !== null && piece) return `${fmt(n)} ${accorder(piece, n)}`;
   if (!mot) return m.grammes != null ? enPoids(m.grammes) : `${m.unites}`;
   // UN LOT EN SERVICE NE SE COMPTE QU'UNE FOIS. Son unité ouverte (`entame`)
   // porte déjà son état « entame » : additionner les deux faisait lire
@@ -1090,6 +1092,16 @@ export function enPaquets(lots: readonly LotPlacard[], mot: string | null, piece
 }
 
 /**
+ * Accorde le nom d'une denrée au nombre — T183. Le premier mot porte le
+ * nombre : « 3 yaourts nature », « 1 œuf », « 2 œufs ».
+ */
+export function accorder(nom: string, n: number): string {
+  const [tete = "", ...reste] = nom.split(" ");
+  const mot = n > 1 ? (/[sxz]$/.test(tete) ? tete : `${tete}s`) : tete.replace(/s$/, "");
+  return [mot, ...reste].join(" ");
+}
+
+/**
  * Le nombre de pièces d'une poignée de lots — T182. `null` dès qu'un lot ne
  * se compte pas à la pièce, ou qu'un entamé n'a pas de reste connu : un
  * total inventé se lirait comme un compte.
@@ -1098,7 +1110,8 @@ export function piecesDe(lots: readonly LotPlacard[]): number | null {
   if (!lots.length) return null;
   let n = 0;
   for (const l of lots) {
-    if (!l.parUnite || !/^pi[eè]ce$/.test(l.parUnite.unit)) return null;
+    // « pot » comme « pièce » : les recettes comptent les yaourts en pots.
+    if (!l.parUnite || !/^(pi[eè]ce|pot)$/.test(l.parUnite.unit)) return null;
     if (l.entame == null && l.etat === "entame") return null;
     n += l.unites * l.parUnite.amount + (l.entame ?? 0);
   }

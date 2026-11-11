@@ -36,6 +36,7 @@ def charger_fond(chemin: Path) -> dict:
         "date": d.isoformat() if hasattr(d, "isoformat") else (d or None),
         "denrees": data.get("denrees") or [],
         "diners": data.get("diners") or [],
+        "conditionnements": data.get("conditionnements") or [],
     }
 
 
@@ -107,6 +108,10 @@ def exporter_fond(fond: dict) -> dict:
                      "jusqua": d.get("jusqua"), "hebdo": bool(d.get("hebdo")),
                      "unite": d["unite"]} for d in fond["denrees"]],
         "diners": [{"plat": d["plat"], "titre": d["titre"]} for d in fond["diners"]],
+        # T183 — la taille d'un paquet, sans minimum : ce qui s'achète au pack
+        # sans être « toujours là ».
+        "conditionnements": [{"ingredient": d["ingredient"], "unite": d["unite"]}
+                             for d in fond.get("conditionnements") or []],
     }
 
 
@@ -203,6 +208,22 @@ def verifier_fond(fond: dict, conserv: dict, rayons: dict, cat: dict) -> tuple:
         elif not f.get("fond") and not d.get("hebdo"):
             err.append(f"{ou} : sa famille « {f['id']} » est du frais fragile (`fond: false`) — "
                        "il ne peut pas être « toujours là » (sauf frais de la semaine, `hebdo: true`)")
+
+    # T183 — UN CONDITIONNEMENT N'EST PAS UNE DENRÉE DU FOND : il ne dit que la
+    # taille du paquet. Listé aux deux endroits, l'un des deux mentirait.
+    for d in fond.get("conditionnements") or []:
+        iid = d.get("ingredient", "?")
+        ou = f"conditionnement « {iid} »"
+        cid = alias.get(iid, iid)
+        if cid != iid:
+            err.append(f"{ou} : écrire l'id canonique « {cid} »")
+        if cid not in connus:
+            err.append(f"{ou} : ingrédient sans rayon (à ajouter dans rayons.yaml)")
+        if cid in vus:
+            err.append(f"{ou} : déjà au fond, ou listé deux fois — le fond dit déjà son `unite`")
+        vus.add(cid)
+        if not (isinstance(d.get("unite"), str) and d["unite"].strip()):
+            err.append(f"{ou} : `unite` manquante")
 
     dispo = disponibles_du_fond(fond, rayons)
     for d in fond["diners"]:

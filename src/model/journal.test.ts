@@ -652,3 +652,17 @@ describe("T180 — un déplacement change la place, pas le compte", () => {
     expect(l.reduce((n, x) => n + x.unites, 0)).toBe(3);
   });
 });
+
+/* ═══════════════════════════════ T183 — le pack fini, les suivants fermés */
+
+describe("T183 — un pack ouvert qui se finit ne laisse pas les autres « entamés »", () => {
+  test("trois packs de 4 yaourts, deux fois deux pots : 2 packs fermés, 8 pots", () => {
+    const lots = [lot({ ingredient: "yaourt", unites: 3, parUnite: { amount: 4, unit: "pièce" }, etat: "frais" })];
+    retirer(lots, "yaourt", 2, "pièce");
+    expect(lots[0]).toMatchObject({ unites: 2, etat: "entame", entame: 2 });
+    retirer(lots, "yaourt", 2, "pièce");
+    expect(lots[0]!.entame).toBeNull();
+    expect(lots[0]!.unites).toBe(2);
+    expect(lots[0]!.etat).not.toBe("entame");
+  });
+});

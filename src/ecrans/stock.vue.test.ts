@@ -9,7 +9,7 @@ import { retenirLesNoms } from "../model/plancherGardeManger";
 import {
   agressions, baisserPlancher, categories, espaces, fiabilite, gardeManger, lots,
   enPaquets, ingredientsConnus, motDuPaquet, perte, PERIME, resteAuPlacard, restesPerimes, vueDeLInventaire, vueDesPlanchers, vueDesPlanchersDenrees, zones,
-  conseilDe, eteint, horsDuReleve, vueDuPlan, type LotVue, chercherIngredient, idDuNom, piecesDe,
+  conseilDe, eteint, horsDuReleve, vueDuPlan, type LotVue, chercherIngredient, idDuNom, piecesDe, accorder,
 } from "./stock.vue";
 
 const LUNDI = new Date("2026-08-17T12:00:00Z");
@@ -1259,5 +1259,44 @@ describe("T182 — il me reste 2 œufs", () => {
     const lot = { ingredient: "x", zone: "z", unites: 1, parUnite: { amount: 500, unit: "g" }, etat: "sec" as const, entame: null, court: false };
     expect(piecesDe([lot])).toBeNull();
     expect(piecesDe([{ ...lot, parUnite: { amount: 6, unit: "pièce" }, etat: "entame" as const }])).toBeNull();
+  });
+});
+
+describe("T183 — même remarque pour les yaourts", () => {
+  beforeEach(() => retenirLesNoms(catalogue.plats));
+  const jour = "2026-11-10";
+
+  test("des packs de 4 se disent en yaourts, accordés", () => {
+    // Les routines du petit-déjeuner en mangent aussi : on lit le compte
+    // qu'elles laissent, et sa phrase doit le dire.
+    const evts: Evenement[] = [
+      { sorte: "entree", jour, saisi: jour, maj: 1, lignes: [{ ingredient: "yaourt-nature", unites: 3, parUnite: null, zone: null, etat: "frais" }] },
+    ];
+    const h = horsDuReleve(catalogue, rejouer(catalogue, evts, contexte(catalogue), jour)).find((x) => x.id === "yaourt-nature")!;
+    expect(h.pieces).toBeGreaterThan(1);
+    expect(h.quantite).toBe(`${h.pieces} yaourts nature`);
+  });
+
+  test("les yaourts de brebis et de soja se comptent aussi en pots (pack de 4)", () => {
+    for (const id of ["yaourt-brebis", "yaourt-soja"]) {
+      const evts: Evenement[] = [
+        { sorte: "entree", jour, saisi: jour, maj: 1, lignes: [{ ingredient: id, unites: 2, parUnite: null, zone: null, etat: "frais" }] },
+      ];
+      const h = horsDuReleve(catalogue, rejouer(catalogue, evts, contexte(catalogue), jour)).find((x) => x.id === id)!;
+      expect(h.pieces).toBe(8);
+      expect(h.quantite).toMatch(/^8 yaourts /);
+    }
+  });
+
+  test("le premier mot porte le nombre", () => {
+    expect(accorder("yaourt nature", 3)).toBe("yaourts nature");
+    expect(accorder("œufs", 1)).toBe("œuf");
+    expect(accorder("œufs", 2)).toBe("œufs");
+    expect(accorder("noix", 3)).toBe("noix");
+  });
+
+  test("un lot compté en pots se compte en pièces", () => {
+    const lot = { ingredient: "x", zone: "z", unites: 1, parUnite: { amount: 4, unit: "pot" }, etat: "frais" as const, entame: null, court: false };
+    expect(piecesDe([lot])).toBe(4);
   });
 });

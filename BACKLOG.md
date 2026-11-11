@@ -6408,3 +6408,24 @@ ordinaire finisse dans le rouge.
       **UN ENTAMÉ DONT ON CONNAÎT LE RESTE DIT CE RESTE** : « 2 paquets ·
       ≈ 200 g ». Ceux dont on ne sait rien gardent « entamé » : un reste
       inventé se lirait comme une mesure.
+
+## Le pack fini, les suivants fermés — T183
+
+- [x] **T183 — « Même remarque pour les yaourts » (11/11).** Trois packs de 4
+      yaourts, le petit-déjeuner et le goûter en prennent deux pots chacun :
+      l'écran disait « 2 packs entamés », sans un pot de compté.
+
+      **LE PAQUET OUVERT SE FINISSAIT SANS REFERMER LES AUTRES.** `retirer`
+      vidait l'entamé d'un lot à plusieurs unités et lui laissait
+      `etat: "entame"` : les packs encore scellés se lisaient ouverts, sans
+      reste connu, et `piecesDe` (T182) refusait de compter. La seconde boîte
+      d'œufs avait le même sort. Le lot redevient fermé, comme à l'ouverture.
+
+      Et les pièces s'accordent (`accorder`) : « 3 yaourts nature », « 1 œuf ».
+      « pot » se compte comme « pièce ».
+
+      **LES YAOURTS DE BREBIS ET DE SOJA, AU PACK DE 4** (le foyer, 11/11).
+      Le fond seul disait la taille d'un paquet, et il exige un minimum : y
+      mettre ces yaourts les aurait fait racheter chaque semaine.
+      `fond.yaml:conditionnements` dit la taille et rien d'autre ; le
+      vérificateur refuse un id déjà au fond.

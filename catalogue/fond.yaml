@@ -149,6 +149,14 @@ denrees:
   - {ingredient: carottes, minimum: 2, jusqua: 5, unite: 500 g en vrac}
   - {ingredient: citron, minimum: 2, unite: pièce}
 
+# T183 — LES CONDITIONNEMENTS : la taille d'un paquet, et rien d'autre. Pas
+# de minimum — ce n'est pas « toujours là » — mais un pack de yaourts se
+# compte en pots, et sans sa taille l'app ne peut dire ni combien il en reste,
+# ni corriger « il m'en reste trois ». La taille est celle du foyer (11/11).
+conditionnements:
+  - {ingredient: yaourt-brebis, unite: pack de 4}
+  - {ingredient: yaourt-soja, unite: pack de 4}
+
 # Les dîners que le brouillon promet (neuf depuis T142 : les gnocchis sont
 # sortis du fond, et leur dîner avec eux) « sans courses ». CE N'EST PAS UNE
 # LISTE DE SOUHAITS : le vérificateur exige que chacun se cuisine avec le fond
