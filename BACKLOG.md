@@ -6374,3 +6374,22 @@ ordinaire finisse dans le rouge.
       **RESTE OUVERT :** « Modifier » sous « à ranger » corrige l'ingrédient
       entier — après en avoir rangé une partie, il toucherait aussi ce qui est
       rangé.
+
+## Trouver ce qu'on range — T181
+
+- [x] **T181 — « + Ajouter » trouve ce qu'on tient en main, et crée le reste
+      (11/11).** Au téléphone : « Levure chimique », « Lentilles vertes »,
+      « Son d’avoine » — « Rien de connu sous ce nom » les trois fois.
+
+      **LA RECHERCHE NE LISAIT QUE LES RAYONS.** Le son d'avoine d'un pain de
+      mie n'en a pas : il était introuvable alors qu'une recette le lit. Elle
+      lit désormais aussi les ingrédients des recettes (hors préparations
+      `-ing`), le fond, et ce que le journal a déjà vu rentrer.
+
+      **MOT À MOT** (`chercherIngredient`) : l'apostrophe, les petits mots et
+      le pluriel ne départagent plus rien, et ce qui n'a qu'une partie des mots
+      se propose à part — « lentilles vertes » montre les lentilles sèches.
+
+      **UN PRODUIT INCONNU S'AJOUTE QUAND MÊME** : « + Nouveau produit », son
+      id tiré du nom. Un stock qui refuse de compter la levure chimique du
+      placard est un stock faux ; qu'aucune recette ne la lise n'y change rien.

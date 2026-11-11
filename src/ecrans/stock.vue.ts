@@ -31,6 +31,7 @@ import {
 } from "../model/plancher";
 import {
   nomDeLaDenree,
+  sansAccents,
   posables,
   type PlancherDenree,
   type Posable,
@@ -873,14 +874,69 @@ export function aSauverVue(catalogue: Catalogue, reste: Iterable<string>): ASauv
  */
 export function ingredientsConnus(catalogue: Catalogue): { id: string; nom: string }[] {
   const alias = (id: string): string => catalogue.rayons.aliases[id] ?? id;
+  // T181 — TOUT CE QUE L'APP SAIT NOMMER, pas seulement les rayons des
+  // courses : le son d'avoine d'un pain de mie n'a pas de rayon, et il était
+  // introuvable dans « + Ajouter » alors qu'une recette le lit.
   const ids = new Set([
     ...Object.values(catalogue.rayons.rayons).flat().map(alias),
     ...idsDuReleve(catalogue),
+    // Sauf les préparations internes (`pois-chiches-cuits-ing`) : on ne range
+    // pas l'étape d'une recette.
+    ...catalogue.plats.flatMap((p) => p.ingredients.map((i) => alias(i.id))).filter((id) => !id.endsWith("-ing")),
+    ...(catalogue.fond?.denrees ?? []).map((d) => alias(d.ingredient)),
   ]);
   return [...ids]
     .map((id) => ({ id, nom: nomDeLaDenree(id) }))
     .sort((a, b) => a.nom.localeCompare(b.nom, "fr"));
 }
+
+/** Les petits mots qu'une recherche ignore : « son d’avoine » trouve
+ *  `son-avoine`. */
+const MOTS_VIDES = new Set(["d", "de", "du", "des", "l", "la", "le", "les", "a", "au", "aux", "en", "et"]);
+const motsDe = (s: string): string[] =>
+  sansAccents(s)
+    .split(" ")
+    .filter((m) => m && !MOTS_VIDES.has(m))
+    // Le pluriel ne départage rien : « tomate » trouve « tomates ».
+    .map((m) => (m.length > 3 ? m.replace(/[sx]$/, "") : m));
+
+/**
+ * Chercher un ingrédient par son nom — T181.
+ *
+ * MOT À MOT, PAS EN UNE CHAÎNE. « Lentilles vertes » ne trouvait rien : aucun
+ * nom ne contient la chaîne entière. Ici, `exacts` porte les noms qui ont TOUS
+ * les mots cherchés (au début d'un de leurs mots), `proches` ceux qui en ont au
+ * moins un, le plus de mots d'abord — « lentilles sèches » est sans doute ce
+ * qu'on tient en main.
+ */
+export function chercherIngredient<T extends { nom: string }>(
+  liste: readonly T[],
+  cherche: string,
+  max = 8,
+): { exacts: T[]; proches: T[] } {
+  const q = motsDe(cherche);
+  if (!q.length) return { exacts: [], proches: [] };
+  const notes = liste
+    .map((c) => {
+      const mots = motsDe(c.nom);
+      return { c, n: q.filter((w) => mots.some((m) => m.startsWith(w))).length };
+    })
+    .filter((x) => x.n > 0);
+  // Le nom le plus court d'abord : « pois chiches » avant « pois chiches
+  // cuits », le produit qu'on range avant la préparation qui l'emploie.
+  const exacts = notes
+    .filter((x) => x.n === q.length)
+    .sort((a, b) => a.c.nom.length - b.c.nom.length)
+    .map((x) => x.c);
+  const proches = notes
+    .filter((x) => x.n < q.length)
+    .sort((a, b) => b.n - a.n)
+    .map((x) => x.c);
+  return { exacts: exacts.slice(0, max), proches: proches.slice(0, Math.max(0, max - exacts.length)) };
+}
+
+/** L'id d'un produit que le catalogue ne connaît pas, tiré de son nom. */
+export const idDuNom = (nom: string): string => sansAccents(nom).replace(/ /g, "-");
 
 export interface GardeMangerVue {
   zones: ZoneVue[];

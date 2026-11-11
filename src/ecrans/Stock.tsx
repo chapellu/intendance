@@ -70,6 +70,7 @@ import {
   vueDesPlanchersDenrees,
   vueDuPlan,
   horsDuReleve,
+  chercherIngredient,
   type HorsReleve,
   type LotVue,
   type PlanVue,
@@ -1125,9 +1126,9 @@ function Zone({
     setReleve(new Map(releve).set(id, Math.max(1, releve.get(id) ?? 0)));
     setCherche("");
   };
-  const q = cherche.trim().toLowerCase();
-  const trouves =
-    q.length < 2 ? [] : connus.filter((c) => c.nom.includes(q) || c.id.includes(q)).slice(0, 6);
+  // T181 — la même recherche que « + Ajouter », mot à mot.
+  const { exacts, proches } = chercherIngredient(connus, cherche, 6);
+  const trouves = cherche.trim().length < 2 ? [] : [...exacts, ...proches];
 
   // Une ligne de l'éditeur : − n +. Les denrées du relevé et les ajouts
   // partagent le même geste, et le même compte en paquets.

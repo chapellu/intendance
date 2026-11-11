@@ -69,3 +69,26 @@ test("ranger ce qui attend sous « Rentrés, à ranger »", async ({ page }) => 
   const etagere = await ouvrirRangement(page, "étagère en bois, 2e");
   await expect(ligne(etagere, /^pois chiches/).locator(".q")).toHaveText("1 sachet");
 });
+
+test("T181 — trouver le son d'avoine, créer la levure chimique", async ({ page }) => {
+  await page.goto("/#/cuisine/stock");
+  await attendreLApp(page);
+
+  await page.locator(".st-tete").getByRole("button", { name: "+ Ajouter" }).click();
+  await page.getByRole("searchbox", { name: "Quoi ?" }).fill("Son d’avoine");
+  await expect(page.locator(".aj-ligne", { hasText: /^son avoine$/ })).toBeVisible();
+
+  // Inconnu du catalogue : on le crée, et on le range.
+  await page.getByRole("searchbox", { name: "Quoi ?" }).fill("Levure chimique");
+  await page.getByRole("button", { name: "+ Nouveau produit : « Levure chimique »" }).click();
+  await page.getByRole("radio", { name: "placard haut, étagère basse" }).click();
+  await page.getByRole("button", { name: /^Ajouter 1 au stock/ }).click();
+
+  const placard = await ouvrirRangement(page, "placard haut");
+  await expect(ligne(placard, /^levure chimique/)).toHaveCount(1);
+
+  // Et la fois suivante, il se trouve comme les autres.
+  await page.locator(".st-tete").getByRole("button", { name: "+ Ajouter" }).click();
+  await page.getByRole("searchbox", { name: "Quoi ?" }).fill("levure chim");
+  await expect(page.locator(".aj-ligne", { hasText: /^levure chimique$/ })).toBeVisible();
+});

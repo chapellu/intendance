@@ -8,7 +8,7 @@ import { contexte, rejouer, type Evenement } from "../model/journal";
 import {
   agressions, baisserPlancher, categories, espaces, fiabilite, gardeManger, lots,
   enPaquets, ingredientsConnus, motDuPaquet, perte, PERIME, resteAuPlacard, restesPerimes, vueDeLInventaire, vueDesPlanchers, vueDesPlanchersDenrees, zones,
-  conseilDe, eteint, horsDuReleve, vueDuPlan, type LotVue,
+  conseilDe, eteint, horsDuReleve, vueDuPlan, type LotVue, chercherIngredient, idDuNom,
 } from "./stock.vue";
 
 const LUNDI = new Date("2026-08-17T12:00:00Z");
@@ -1194,5 +1194,32 @@ describe("T180 — ranger, déplacer d'une zone à l'autre", () => {
     ];
     expect(ici(evts, "dessus-etagere", "tomates-pelees")).toBeUndefined();
     expect(ici(evts, "sous-evier", "tomates-pelees")!.unites).toBe(2);
+  });
+});
+
+describe("T181 — trouver ce qu'on tient en main", () => {
+  const connus = ingredientsConnus(catalogue);
+  const noms = (q: string) => {
+    const r = chercherIngredient(connus, q);
+    return { exacts: r.exacts.map((c) => c.id), proches: r.proches.map((c) => c.id) };
+  };
+
+  test("le son d'avoine des recettes se trouve, apostrophe typographique comprise", () => {
+    expect(noms("Son d’avoine").exacts).toContain("son-avoine");
+  });
+
+  test("« lentilles vertes » propose les lentilles qu'on a, même sans le mot « vertes »", () => {
+    const r = noms("Lentilles vertes");
+    expect([...r.exacts, ...r.proches]).toContain("lentilles-seches");
+  });
+
+  test("le pluriel ne départage rien", () => {
+    expect(noms("tomate pelée").exacts).toContain("tomates-pelees");
+  });
+
+  test("un produit inconnu se nomme de lui-même", () => {
+    expect(noms("Levure chimique").exacts).toEqual([]);
+    expect(idDuNom("Levure chimique")).toBe("levure-chimique");
+    expect(idDuNom("  Crème d’amande ")).toBe("creme-d-amande");
   });
 });
