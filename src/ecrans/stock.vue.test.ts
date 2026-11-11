@@ -8,7 +8,7 @@ import { contexte, rejouer, type Evenement } from "../model/journal";
 import {
   agressions, baisserPlancher, categories, espaces, fiabilite, gardeManger, lots,
   enPaquets, ingredientsConnus, motDuPaquet, perte, PERIME, resteAuPlacard, restesPerimes, vueDeLInventaire, vueDesPlanchers, vueDesPlanchersDenrees, zones,
-  conseilDe, eteint, vueDuPlan, type LotVue,
+  conseilDe, eteint, horsDuReleve, vueDuPlan, type LotVue,
 } from "./stock.vue";
 
 const LUNDI = new Date("2026-08-17T12:00:00Z");
@@ -644,7 +644,9 @@ describe("une zone ne montre que ce qui reste en elle — T107", () => {
     expect(r.parZone.get("etagere-basse")!.has("ratatouille-boite")).toBe(true);
     // Et l'unité qui reste est celle du 2e niveau, pas le total d'avant.
     const avant = reste([]).parZone.get("etagere-basse")!.get("ratatouille-boite")!;
-    expect(r.parZone.get("etagere-basse")!.get("ratatouille-boite")).toEqual(avant);
+    // T180 — sa correction, elle, cesse de viser la zone : tous ses lots sont
+    // ici désormais, et corriger l'ingrédient entier revient au même.
+    expect(r.parZone.get("etagere-basse")!.get("ratatouille-boite")).toEqual({ ...avant, zone: null });
   });
 
   test("UNE COURSE RENTRÉE SANS RANGEMENT SE RETROUVE, UNE SEULE FOIS", () => {
@@ -1130,5 +1132,67 @@ describe("le plan de la cuisine — T141", () => {
   test("sans plan dans l'export, pas de plan — l'écran retombe sur la liste des zones", () => {
     const vieux = { ...catalogue, gardeManger: { ...catalogue.gardeManger, plan: null } };
     expect(vueDuPlan(vieux, tout(), [], null)).toBeNull();
+  });
+});
+
+describe("T180 — ranger, déplacer d'une zone à l'autre", () => {
+  const jour = "2026-11-10";
+  const entree = (ingredient: string, unites: number, zone: string | null, maj = 1): Evenement => ({
+    sorte: "entree", jour, saisi: jour, maj,
+    lignes: [{ ingredient, unites, parUnite: null, zone, etat: "conserve" }],
+  });
+  const deplacer = (ingredient: string, de: string | null, vers: string, unites: number | null, maj = 2): Evenement => ({
+    sorte: "deplacement", jour, saisi: jour, maj, ingredient, de, vers, unites,
+  });
+  const rejeu = (evts: Evenement[]) => rejouer(catalogue, evts, contexte(catalogue), jour);
+  const ici = (evts: Evenement[], zone: string, id: string) => resteAuPlacard(catalogue, rejeu(evts)).parZone.get(zone)!.get(id);
+
+  test("des tomates pelées rentrées sans place rejoignent celles du relevé", () => {
+    expect(ici([], "dessus-etagere", "tomates-pelees")!.unites).toBe(1);
+    expect(ici([entree("tomates-pelees", 2, null)], "dessus-etagere", "tomates-pelees")!.unites).toBe(3);
+  });
+
+  test("RANGÉ OÙ ON L'A DIT : un ajout avec sa zone s'y lit, même hors du relevé", () => {
+    const m = ici([entree("tomates-pelees", 2, "sous-evier")], "sous-evier", "tomates-pelees");
+    expect(m).toMatchObject({ unites: 2, ajoute: true, zone: "sous-evier" });
+    expect(ici([entree("tomates-pelees", 2, "sous-evier")], "dessus-etagere", "tomates-pelees")!.unites).toBe(1);
+  });
+
+  test("DÉPLACER deux boîtes sur trois : chaque zone lit les siennes, et le total ne bouge pas", () => {
+    const evts = [entree("tomates-pelees", 2, null), deplacer("tomates-pelees", "dessus-etagere", "sous-evier", 2)];
+    expect(ici(evts, "dessus-etagere", "tomates-pelees")).toMatchObject({ unites: 1, zone: "dessus-etagere" });
+    expect(ici(evts, "sous-evier", "tomates-pelees")).toMatchObject({ unites: 2, zone: "sous-evier", ajoute: true });
+    expect(rejeu(evts).parIngredient.get("tomates-pelees")!.unites).toBe(3);
+  });
+
+  test("tout déplacer vide la zone de départ", () => {
+    const evts = [deplacer("tomates-pelees", "dessus-etagere", "placard-haut", null)];
+    expect(ici(evts, "dessus-etagere", "tomates-pelees")).toBeUndefined();
+    expect(ici(evts, "placard-haut", "tomates-pelees")).toMatchObject({ unites: 1, zone: null });
+  });
+
+  test("RANGER des pois chiches : ce qui est rangé quitte « à ranger », le reste y attend", () => {
+    const avant = [entree("pois-chiches", 3, null)];
+    expect(horsDuReleve(catalogue, rejeu(avant)).find((h) => h.id === "pois-chiches")!.unites).toBe(3);
+    const apres = [...avant, deplacer("pois-chiches", null, "etagere-basse", 1)];
+    expect(horsDuReleve(catalogue, rejeu(apres)).find((h) => h.id === "pois-chiches")!.unites).toBe(2);
+    expect(ici(apres, "etagere-basse", "pois-chiches")).toMatchObject({ unites: 1, ajoute: true, zone: "etagere-basse" });
+  });
+
+  test("un déplacement n'est pas une observation : la confiance ne bouge pas", () => {
+    const sans = rejeu([entree("pois-chiches", 3, null)]).parIngredient.get("pois-chiches")!;
+    const avec = rejeu([entree("pois-chiches", 3, null), deplacer("pois-chiches", null, "etagere-basse", null)]).parIngredient.get("pois-chiches")!;
+    expect(avec.vuLe).toBe(sans.vuLe);
+    expect(avec.confiance).toBe(sans.confiance);
+  });
+
+  test("UNE LIGNE CORRIGÉE DANS SA ZONE NE TOUCHE PAS L'AUTRE", () => {
+    const evts: Evenement[] = [
+      entree("tomates-pelees", 2, null),
+      deplacer("tomates-pelees", "dessus-etagere", "sous-evier", 2),
+      { sorte: "observation", portee: "ingredient", zone: "dessus-etagere", jour, saisi: jour, maj: 3, constats: [{ ingredient: "tomates-pelees", unites: 0 }] },
+    ];
+    expect(ici(evts, "dessus-etagere", "tomates-pelees")).toBeUndefined();
+    expect(ici(evts, "sous-evier", "tomates-pelees")!.unites).toBe(2);
   });
 });

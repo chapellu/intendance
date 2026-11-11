@@ -40,7 +40,7 @@ import {
   usePlanchersDenrees,
   useSemaine,
 } from "../db/hooks";
-import { corrigerLigne, releverZone } from "../db/journal";
+import { corrigerLigne, deplacer, releverZone } from "../db/journal";
 import {
   poserPlancher,
   poserPlancherDenree,
@@ -267,6 +267,7 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
           poids={reste?.poidsParZone.get(zoneChoisie.id) ?? ""}
           connus={vue.gardeManger.connus}
           conseil={conseil}
+          toutes={vue.gardeManger.zones}
         />
       ) : choisi && !choisi.zone ? (
         <Appareil
@@ -295,6 +296,7 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
               poids={reste?.poidsParZone.get(z.id) ?? ""}
               connus={vue.gardeManger.connus}
               conseil={[]}
+              toutes={vue.gardeManger.zones}
             />
           ))
         : null}
@@ -315,7 +317,11 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
       ) : null}
 
       <Produits titre="Fruits et légumes" liste={hors.filter((h) => h.porte === "fruits")} />
-      <Produits titre="Rentrés, à ranger au placard" liste={hors.filter((h) => h.porte === "placard")} />
+      <Produits
+        titre="Rentrés, à ranger au placard"
+        liste={hors.filter((h) => h.porte === "placard")}
+        zones={vue.gardeManger.zones}
+      />
 
       <GardeManger vue={vue.gardeManger} placard={placard} />
 
@@ -822,12 +828,18 @@ function GardeManger({
 }
 
 /** Une denrée achetée hors relevé — voir `horsDuReleve`. */
-function Produit({ h }: { h: HorsReleve }) {
+function Produit({ h, zones }: { h: HorsReleve; zones?: readonly { id: string; nom: string }[] }) {
   return (
     <div className="co-lot">
       <span style={{ flex: 1 }}>
         <div className="nom">{h.nom}</div>
-        <Corriger nom={h.nom} ingredient={h.id} unites={h.unites} zone={null} />
+        <Corriger
+          nom={h.nom}
+          ingredient={h.id}
+          unites={h.unites}
+          zone={null}
+          {...(zones ? { bouger: { de: null, zones } } : {})}
+        />
       </span>
       <span>
         <div className="q">{h.quantite}</div>
@@ -836,7 +848,16 @@ function Produit({ h }: { h: HorsReleve }) {
   );
 }
 
-function Produits({ titre, liste }: { titre: string; liste: readonly HorsReleve[] }) {
+function Produits({
+  titre,
+  liste,
+  zones,
+}: {
+  titre: string;
+  liste: readonly HorsReleve[];
+  /** T180 — présent, chaque ligne peut se ranger dans une de ces zones. */
+  zones?: readonly { id: string; nom: string }[];
+}) {
   if (!liste.length) return null;
   return (
     <>
@@ -844,7 +865,7 @@ function Produits({ titre, liste }: { titre: string; liste: readonly HorsReleve[
         {titre}
       </div>
       {liste.map((h) => (
-        <Produit key={h.id} h={h} />
+        <Produit key={h.id} h={h} {...(zones ? { zones } : {})} />
       ))}
     </>
   );
@@ -1061,8 +1082,11 @@ function Zone({
   poids,
   connus,
   conseil,
+  toutes,
 }: {
   z: ZoneVue;
+  /** T180 — les zones où l'on peut déplacer une ligne. */
+  toutes: readonly { id: string; nom: string }[];
   placard: Rejeu | null;
   /** Ce qui reste DANS cette zone, par ingrédient — `null` tant que le journal
    *  n'a pas répondu. Voir `parZoneDu`. */
@@ -1223,7 +1247,13 @@ function Zone({
                 {/* LE CHIFFRE ET SA DATE, TOUJOURS LISIBLES DESSOUS. C'est ce
                     qui remplace un score de confiance : trois mots se lisent,
                     un score se croit. */}
-                <Corriger nom={d.nom} ingredient={e?.ingredient ?? d.ingredient} unites={m.unites} zone={m.zone} />
+                <Corriger
+                  nom={d.nom}
+                  ingredient={e?.ingredient ?? d.ingredient}
+                  unites={m.unites}
+                  zone={m.zone}
+                  bouger={{ de: z.id, zones: toutes }}
+                />
               </span>
               <span>
                 <div className="q">{m.quantite}</div>
@@ -1275,24 +1305,57 @@ function Corriger({
   ingredient,
   unites,
   zone,
+  bouger,
 }: {
   nom: string;
   ingredient: string;
   unites: number;
   zone: string | null;
+  /** T180 — d'où la ligne se déplace (`null` : « à ranger »), et vers quoi. */
+  bouger?: { de: string | null; zones: readonly { id: string; nom: string }[] };
 }) {
   const [n, setN] = useState<number | null>(null);
+  const [vers, setVers] = useState<number | null>(null);
   const poser = async (v: number) => {
     await corrigerLigne(base, ingredient, v, zone);
     setN(null);
   };
   const petit = { fontSize: 12, padding: "2px 8px" };
+  const verbe = bouger?.de === null ? "Ranger" : "Déplacer";
+  if (bouger && vers !== null)
+    return (
+      <Bouger
+        nom={nom}
+        verbe={verbe}
+        n={vers}
+        max={unites}
+        setN={setVers}
+        zones={bouger.zones.filter((z) => z.id !== bouger.de)}
+        aller={async (z) => {
+          // Tout ce qui est là, et pas « n unités » : ce qui part doit être
+          // exactement ce que la ligne montrait, entamé compris.
+          await deplacer(base, ingredient, bouger.de, z, vers >= unites ? null : vers);
+          setVers(null);
+        }}
+        annuler={() => setVers(null)}
+      />
+    );
   if (n === null)
     return (
       <div style={{ display: "flex", gap: "var(--space-1)", marginTop: 4 }}>
         <button className="btn btn-ghost" style={petit} aria-label={`corriger : ${nom}`} onClick={() => setN(unites)}>
           Modifier
         </button>
+        {bouger ? (
+          <button
+            className="btn btn-ghost"
+            style={petit}
+            aria-label={`${verbe.toLowerCase()} : ${nom}`}
+            onClick={() => setVers(Math.max(1, unites))}
+          >
+            {verbe}
+          </button>
+        ) : null}
         <button
           className="btn btn-ghost"
           style={petit}
@@ -1310,6 +1373,53 @@ function Corriger({
         OK
       </button>
       <button className="btn btn-ghost" style={petit} onClick={() => setN(null)}>
+        Annuler
+      </button>
+    </div>
+  );
+}
+
+/**
+ * Ranger ou déplacer une ligne — T180 : combien (quand il y en a plusieurs),
+ * puis où. Toucher la zone suffit : c'est le geste qui valide.
+ */
+function Bouger({
+  nom,
+  verbe,
+  n,
+  max,
+  setN,
+  zones,
+  aller,
+  annuler,
+}: {
+  nom: string;
+  verbe: string;
+  n: number;
+  max: number;
+  setN: (n: number) => void;
+  zones: readonly { id: string; nom: string }[];
+  aller: (zone: string) => Promise<void>;
+  annuler: () => void;
+}) {
+  const petit = { fontSize: 12, padding: "2px 8px" };
+  return (
+    <div className="st-bouger" role="group" aria-label={`${verbe.toLowerCase()} : ${nom}`}>
+      {max > 1 ? (
+        <div style={{ display: "flex", gap: "var(--space-2)", alignItems: "center" }}>
+          <Compteur n={n} poser={(v) => setN(Math.min(max, Math.max(1, v)))} />
+          <span className="co-note">sur {max}</span>
+        </div>
+      ) : null}
+      <div className="co-note">{verbe === "Ranger" ? "Rangé où ?" : "Vers où ?"}</div>
+      <div className="aj-puces">
+        {zones.map((z) => (
+          <button key={z.id} className="aj-puce" onClick={() => void aller(z.id)}>
+            {z.nom}
+          </button>
+        ))}
+      </div>
+      <button className="btn btn-ghost" style={petit} onClick={annuler}>
         Annuler
       </button>
     </div>

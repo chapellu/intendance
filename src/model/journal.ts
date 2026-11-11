@@ -45,7 +45,7 @@ import { boitesDeLaLigne, boitesDuCatalogue, contenuDUnite, type Boite } from ".
 
 /* ══════════════════════════════════════════════════════ les trois événements */
 
-export type SorteEvenement = "cuisine" | "observation" | "entree";
+export type SorteEvenement = "cuisine" | "observation" | "entree" | "deplacement";
 
 interface Commun {
   id?: number;
@@ -187,7 +187,27 @@ export interface EvtEntree extends Commun {
   lignes: LigneEntree[];
 }
 
-export type Evenement = EvtCuisine | EvtObservation | EvtEntree;
+/**
+ * Ranger, ou déplacer — T180.
+ *
+ * CE N'EST PAS UNE OBSERVATION. Changer des boîtes d'étagère ne dit rien de
+ * combien il y en a : la confiance ne bouge pas, la dérive non plus, et rien
+ * n'est compté. Seule la PLACE des lots change.
+ *
+ * `de` est la place telle que l'écran la montre (voir `placeDuLot`) : une zone,
+ * ou `null` pour « rentré, pas encore rangé ». C'est ce que le doigt a vu, et
+ * c'est donc ce que le rejeu doit retrouver.
+ */
+export interface EvtDeplacement extends Commun {
+  sorte: "deplacement";
+  ingredient: string;
+  de: string | null;
+  vers: string;
+  /** Combien d'unités, l'entamée comptant pour une. `null` : tout ce qui est là. */
+  unites: number | null;
+}
+
+export type Evenement = EvtCuisine | EvtObservation | EvtEntree | EvtDeplacement;
 
 /* ═══════════════════════════════════════════════════════════ l'état dérivé */
 
@@ -422,6 +442,9 @@ export interface Contexte {
   /** T143 — le jour du relevé d'UNE zone (`Zone.releve`), à défaut celui du
    *  fichier. `?` : les contextes fabriqués à la main des tests. */
   releveDe?: (zone: string) => string | null;
+  /** T180 — les zones où le relevé range cet ingrédient, dans l'ordre du
+   *  relevé. `?` : les contextes fabriqués à la main des tests. */
+  placesDe?: (id: string) => readonly string[];
   /** T135 : ce que contient une unité d'achat du fond (`fond.yaml:unite`),
    *  quand elle le dit — « sachet de 500 g », « boîte de 6 ». */
   contenu: (id: string) => Quantite | null;
@@ -461,6 +484,10 @@ export function contexte(catalogue: Catalogue): Contexte {
       const par = new Map(catalogue.gardeManger.zones.map((z) => [z.id, z.releve ?? catalogue.gardeManger.releve]));
       return (zone: string) => par.get(zone) ?? catalogue.gardeManger.releve;
     })(),
+    placesDe: (() => {
+      const par = placesDuReleve(catalogue);
+      return (id: string) => par.get(alias(id)) ?? [];
+    })(),
     contenu: (() => {
       const par = new Map<string, Quantite>();
       for (const d of catalogue.fond?.denrees ?? []) {
@@ -471,6 +498,45 @@ export function contexte(catalogue: Catalogue): Contexte {
     })(),
     boite: boitesDuCatalogue(catalogue, alias),
   };
+}
+
+/**
+ * Les zones où le relevé range chaque ingrédient (par id résolu), dans l'ordre
+ * du relevé — T180. La première est sa place par défaut.
+ */
+export function placesDuReleve(catalogue: Catalogue): Map<string, string[]> {
+  const alias = (id: string): string => catalogue.rayons.aliases[id] ?? id;
+  const gm = catalogue.gardeManger;
+  const places = new Map<string, string[]>();
+  for (const z of gm.zones)
+    for (const d of gm.denrees) {
+      if (d.zone !== z.id) continue;
+      const l = places.get(alias(d.ingredient)) ?? [];
+      if (!l.includes(z.id)) l.push(z.id);
+      places.set(alias(d.ingredient), l);
+    }
+  return places;
+}
+
+/**
+ * Où l'écran montre un lot — T180. `null` : nulle part dans les zones, il
+ * attend sous « Rentrés, à ranger ».
+ *
+ * UN LOT RANGÉ EST LÀ OÙ IL A ÉTÉ RANGÉ. Avant T180, un lot hors des zones que
+ * le relevé nomme pour son ingrédient retombait sur la première d'entre elles :
+ * des tomates déplacées sous l'évier se seraient relues sur l'étagère.
+ *
+ * UN LOT SANS PLACE (`sansPlace`, une course rentrée sans rangement) va là où
+ * le relevé range son ingrédient — T107 — et nulle part s'il n'en dit rien.
+ *
+ * LA MÊME FONCTION POUR L'ÉCRAN ET LE REJEU : un déplacement ou une correction
+ * de ligne visent la place que le doigt a vue. Deux règles divergeraient au
+ * premier lot sans place.
+ */
+export function placeDuLot(lot: LotPlacard, places: readonly string[] | undefined): string | null {
+  if (!lot.sansPlace) return lot.zone;
+  if (!places?.length) return null;
+  return places.includes(lot.zone) ? lot.zone : places[0]!;
 }
 
 // `contenuDUnite` vit dans `paquet.ts` depuis T140 : la boîte entière en a
@@ -988,6 +1054,14 @@ export function rejouer(
   };
   const unitesDe = (id: string): number =>
     (lots.get(id) ?? []).reduce((n, l) => n + l.unites + (l.entame != null ? 1 : 0), 0);
+  // T180 — la place d'un lot telle que l'écran la montre : c'est elle que
+  // visent un déplacement et une correction de ligne.
+  const placesDe = (id: string): readonly string[] => {
+    const p = ctx.placesDe?.(id) ?? [];
+    const a = ajoutes.get(id);
+    return p.length ? p : a ? [a] : [];
+  };
+  const placeDe = (id: string, x: LotPlacard): string | null => placeDuLot(x, placesDe(id));
 
   // T142 — LES ROUTINES SE REJOUENT COMME DES CUISSONS, une par jour et par
   // repas, depuis `creneaux.routines.depuis`. Rien n'est écrit en base : le
@@ -1068,6 +1142,21 @@ export function rejouer(
       continue;
     }
 
+    if (e.sorte === "deplacement") {
+      const id = ctx.alias(e.ingredient);
+      const l = lots.get(id);
+      if (!l) continue;
+      const ici = l.filter((x) => placeDe(id, x) === e.de);
+      const ailleurs = l.filter((x) => placeDe(id, x) !== e.de);
+      const partis = prelever(ici, e.unites);
+      for (const x of partis) {
+        x.zone = e.vers;
+        delete x.sansPlace;
+      }
+      lots.set(id, [...ailleurs, ...ici, ...partis]);
+      continue;
+    }
+
     if (e.sorte === "entree") {
       for (const ligne of e.lignes) {
         const id = ctx.alias(ligne.ingredient);
@@ -1119,7 +1208,7 @@ export function rejouer(
       const id = ctx.alias(c.ingredient);
       const s = suiviDe(id);
       const avant = cadre
-        ? mesurer((lots.get(id) ?? []).filter((x) => x.zone === cadre)).unites
+        ? mesurer((lots.get(id) ?? []).filter((x) => placeDe(id, x) === cadre)).unites
         : unitesDe(id);
       if (e.zone && !connus.has(id) && c.unites !== 0) ajoutes.set(id, e.zone);
 
@@ -1140,17 +1229,17 @@ export function rejouer(
         // avant le scellé. Une correction porte sur un INGRÉDIENT, jamais sur
         // un lot — c'est ce qu'un œil voit en ouvrant un placard : on compte
         // des boîtes de maïs, pas « le lot n°17 ».
-        const ici = cadre ? l.filter((x) => x.zone === cadre) : l;
+        const ici = cadre ? l.filter((x) => placeDe(id, x) === cadre) : l;
         ajusterUnites(ici, id, c.unites, e.zone);
-        const apres = cadre ? [...l.filter((x) => x.zone !== cadre), ...ici] : ici;
+        const apres = cadre ? [...l.filter((x) => placeDe(id, x) !== cadre), ...ici] : ici;
         if (apres.length === 0) lots.delete(id);
         else lots.set(id, apres);
       }
 
       if (c.grammes != null) {
         const l = lots.get(id) ?? [];
-        const ici = cadre ? l.filter((x) => x.zone === cadre) : l;
-        const autres = cadre ? l.filter((x) => x.zone !== cadre) : [];
+        const ici = cadre ? l.filter((x) => placeDe(id, x) === cadre) : l;
+        const autres = cadre ? l.filter((x) => placeDe(id, x) !== cadre) : [];
         const modele = ici.find((x) => x.entame != null || x.etat === "entame") ?? ici[0];
         const pese: LotPlacard = {
           ingredient: id,
@@ -1161,6 +1250,9 @@ export function rejouer(
           etat: "entame",
           entame: c.grammes,
           court: false,
+          // T180 — sans zone dite, un fond pesé reste où était son modèle :
+          // « pas encore rangé » ne devient pas « au placard haut ».
+          ...(!e.zone && (!modele || modele.sansPlace) ? { sansPlace: true as const } : {}),
         };
         const apres = c.grammes > 0 ? [...autres, pese] : autres;
         if (apres.length === 0) lots.delete(id);
@@ -1305,5 +1397,44 @@ function ajusterUnites(lots: LotPlacard[], ingredient: string, cible: number, zo
     etat: modele?.etat ?? "sec",
     entame: null,
     court: false,
+    // T180 — UNE HAUSSE SANS ZONE NE RANGE RIEN. Elle se posait en
+    // `placard-haut` comme un lot rangé : depuis que les lots rangés se lisent
+    // où ils sont, des pois chiches « non rangés » corrigés de 1 à 2 auraient
+    // vu leur seconde boîte apparaître au placard haut.
+    ...(zone == null && (!modele || modele.sansPlace) ? { sansPlace: true as const } : {}),
   });
+}
+
+/**
+ * Prélève `n` unités d'une poignée de lots, pour un déplacement — T180. MUTE
+ * `lots` (ce qui reste) et rend ce qui part, en lots neufs.
+ *
+ * LE SCELLÉ PART D'ABORD. On déplace des boîtes pleines bien plus souvent
+ * qu'un paquet ouvert, qu'on garde là où on se sert. L'entamée ne part que si
+ * l'on en demande plus qu'il n'y a de scellées. `null` : tout part.
+ */
+function prelever(lots: LotPlacard[], n: number | null): LotPlacard[] {
+  if (n === null) return lots.splice(0, lots.length);
+  const partis: LotPlacard[] = [];
+  let reste = n;
+  for (const x of lots) {
+    if (reste <= 0) break;
+    const k = Math.min(x.unites, reste);
+    if (k <= 0) continue;
+    partis.push({ ...cloner(x), unites: k, entame: null });
+    x.unites -= k;
+    reste -= k;
+  }
+  for (const x of lots) {
+    if (reste <= 0) break;
+    if (x.entame == null) continue;
+    partis.push({ ...cloner(x), unites: 0, entame: x.entame });
+    x.entame = null;
+    reste -= 1;
+  }
+  for (let i = lots.length - 1; i >= 0; i -= 1) {
+    const l = lots[i]!;
+    if (l.unites <= 0 && l.entame == null) lots.splice(i, 1);
+  }
+  return partis;
 }

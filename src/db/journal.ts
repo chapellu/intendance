@@ -450,6 +450,23 @@ export async function releverDepot(
   });
 }
 
+/**
+ * Ranger ou déplacer — T180. `de` est la place que l'écran montrait (`null` :
+ * « rentré, pas encore rangé »), `unites: null` déplace tout ce qui y est.
+ */
+export async function deplacer(
+  base: Base,
+  ingredient: string,
+  de: string | null,
+  vers: string,
+  unites: number | null,
+  aujourdhui = new Date(),
+): Promise<number> {
+  const jour = jourISO(aujourdhui);
+  const evt: Evenement = { sorte: "deplacement", ingredient, de, vers, unites, jour, saisi: jour, maj: Date.now() };
+  return (await base.evenements.add(evt as never)) as number;
+}
+
 /* ═══════════════════════════════════════════════════════════ les entrées */
 
 /**

@@ -139,12 +139,14 @@ export const viderCourses = (base: Base): Promise<void> => base.courses.clear();
  */
 export async function ajouterAuStock(
   base: Base,
-  ligne: { ingredient: string; unites: number; parUnite: LigneEntree["parUnite"] },
+  // T180 — `zone` : où on vient de le ranger. Absente, la course attend sous
+  // « Rentrés, à ranger », comme avant.
+  ligne: { ingredient: string; unites: number; parUnite: LigneEntree["parUnite"]; zone?: string | null },
   cles: readonly string[] = [],
 ): Promise<{ evenement: number; cles: string[] }> {
   return base.transaction("rw", base.evenements, base.courses, async () => {
     const evenement = await journaliserEntree(base, [
-      { ingredient: ligne.ingredient, unites: ligne.unites, parUnite: ligne.parUnite, zone: null, etat: "sec" },
+      { ingredient: ligne.ingredient, unites: ligne.unites, parUnite: ligne.parUnite, zone: ligne.zone ?? null, etat: "sec" },
     ]);
     const maj = Date.now();
     await base.courses.bulkPut(cles.map((cle) => ({ cle, coche: false, rentre: true, maj })));
