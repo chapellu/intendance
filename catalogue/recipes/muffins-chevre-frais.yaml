@@ -31,7 +31,7 @@ recipe:
     - {id: parmesan, name: "parmesan ou tomme de chèvre râpée", qty: 30, unit: g, subs: [{id: fromage-rape, name: "fromage râpé", ratio: 1.0}]}
     - {id: chevre-frais, name: fromage de chèvre frais, qty: 70, unit: g}
     - {id: sarriette, name: "sarriette fraîche, ou 1 c. à c. de sarriette séchée", qty: 1, unit: petit bouquet}
-    - {id: ail, name: "gousse d'ail, facultative", qty: 1, unit: gousse}
+    - {id: ail, name: "gousse d'ail, facultative", qty: 1, unit: gousse, optional: true}
     - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
     - {id: poivre, name: poivre du moulin, qty: 1, unit: pincée, seasoning: true}
 

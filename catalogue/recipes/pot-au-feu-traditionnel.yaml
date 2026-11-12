@@ -59,14 +59,14 @@ recipe:
 
   ingredients:
     - {id: jarret-boeuf, name: "jarret de bœuf avec l'os (ou gîte, paleron — des morceaux « à braiser », donc à cuire longtemps)", qty: 1.5, unit: kg}
-    - {id: os-a-moelle, name: os à moelle (facultatif), qty: 1, unit: pièce}
+    - {id: os-a-moelle, name: os à moelle (facultatif), qty: 1, unit: pièce, optional: true}
     - {id: eau, name: eau froide, qty: 3.5, unit: l}
     - {id: carottes, name: carottes, qty: 6, unit: pièce}
     - {id: oignon, name: oignons, qty: 3, unit: pièce}
     - {id: poireau, name: poireaux, qty: 3, unit: pièce}
-    - {id: panais, name: panais (facultatif), qty: 3, unit: pièce}
+    - {id: panais, name: panais (facultatif), qty: 3, unit: pièce, optional: true}
     - {id: navets, name: navets, qty: 3, unit: pièce}
-    - {id: potimarron, name: petit potimarron (600 g environ) ou une grosse tranche de courge musquée (facultatif), qty: 1, unit: pièce, subs: [{id: courge, name: "courge musquée", ratio: 1.0}]}
+    - {id: potimarron, name: petit potimarron (600 g environ) ou une grosse tranche de courge musquée (facultatif), qty: 1, unit: pièce, subs: [{id: courge, name: "courge musquée", ratio: 1.0}], optional: true}
     - {id: pomme-de-terre, name: pommes de terre de taille moyenne, qty: 12, unit: pièce}
     - {id: celeri-rave, name: petit céleri-rave ou petit céleri branche, qty: 1, unit: pièce, subs: [{id: celeri-branche, name: "céleri branche", ratio: 1.0}]}
     - {id: clous-girofle, name: clous de girofle, qty: 6, unit: pièce, seasoning: true}

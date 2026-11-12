@@ -31,7 +31,7 @@ recipe:
     - {id: carottes, name: carotte, qty: 1, unit: pièce}
     - {id: poireau, name: blanc de poireau, qty: 1, unit: pièce}
     - {id: celeri-branche, name: branche de céleri, qty: 1, unit: pièce}
-    - {id: laurier, name: "feuille de laurier, facultative", qty: 1, unit: pièce}
+    - {id: laurier, name: "feuille de laurier, facultative", qty: 1, unit: pièce, optional: true}
     - id: cabillaud
       name: "filet de cabillaud sans arêtes, ultra-frais ou surgelé"
       qty: 200
@@ -42,7 +42,7 @@ recipe:
     - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
     - {id: vinaigre, name: vinaigre de cidre, qty: 2, unit: c. à s.}
     - {id: moutarde, name: moutarde, qty: 1, unit: c. à s.}
-    - {id: persil, name: persil, qty: 1, unit: petit bouquet}
+    - {id: persil, name: persil, qty: 1, unit: petit bouquet, optional: true}
     - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
     - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
 

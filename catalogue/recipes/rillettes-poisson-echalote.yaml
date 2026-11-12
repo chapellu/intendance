@@ -39,7 +39,7 @@ recipe:
     - {id: carottes, name: carotte, qty: 1, unit: pièce}
     - {id: vin-blanc-sec, name: vin blanc sec (ou eau), qty: 10, unit: cl}
     - {id: creme, name: crème fraîche épaisse (ou yaourt de brebis au lait entier), qty: 1, unit: c. à s.}
-    - {id: concentre-tomate, name: double concentré de tomate (facultatif), qty: 1, unit: c. à c.}
+    - {id: concentre-tomate, name: double concentré de tomate (facultatif), qty: 1, unit: c. à c., optional: true}
     - {id: ciboulette, name: ciboulette, qty: 0.5, unit: bouquet}
     - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
     - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}

@@ -36,7 +36,7 @@ recipe:
     - {id: lentilles-vertes-cuites, name: mitonnée de lentilles, qty: 300, unit: g, from_accepts: true}
     - {id: jambon, name: talon de jambon cuit, qty: 150, unit: g}
     - {id: tomates-cerises, name: tomates-cerises, qty: 10, unit: pièce}
-    - {id: persil, name: "persil finement ciselé", qty: 1, unit: petit bouquet}
+    - {id: persil, name: "persil finement ciselé", qty: 1, unit: petit bouquet, optional: true}
     - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
     - {id: vinaigre, name: vinaigre de cidre, qty: 1, unit: c. à s.}
     - {id: levure-biere, name: levure de bière, qty: 1, unit: c. à c.}

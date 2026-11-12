@@ -32,8 +32,8 @@ recipe:
     - {id: eau, name: eau, qty: 300, unit: ml}
     - {id: truite-fumee, name: truite fumée, qty: 100, unit: g}
     - {id: tomates-roma, name: tomate Roma, qty: 1, unit: pièce}
-    - {id: ciboulette, name: ciboulette, qty: 1, unit: petit bouquet}
-    - {id: noisettes, name: noisettes, qty: 30, unit: g}
+    - {id: ciboulette, name: ciboulette, qty: 1, unit: petit bouquet, optional: true}
+    - {id: noisettes, name: noisettes, qty: 30, unit: g, optional: true}
     - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
     - {id: vinaigre-balsamique, name: vinaigre balsamique, qty: 2, unit: c. à s.}
     - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}

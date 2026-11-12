@@ -35,7 +35,7 @@ recipe:
     - {id: fromage-rape, name: parmesan râpé, qty: 70, unit: g}
     - {id: biscottes, name: biscottes complètes de blé ou d'épeautre, qty: 70, unit: g}
     - {id: oeufs, name: œufs, qty: 2, unit: pièce}
-    - {id: ciboulette, name: ciboulette, qty: 1, unit: petit bouquet}
+    - {id: ciboulette, name: ciboulette, qty: 1, unit: petit bouquet, optional: true}
     - {id: citron, name: citron (son jus), qty: 1, unit: pièce}
     - {id: huile-olive, name: huile d'olive ou de tournesol, qty: 2, unit: c. à s.}
     - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}

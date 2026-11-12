@@ -38,7 +38,7 @@ recipe:
     - {id: fenouil, name: gros bulbe de fenouil, qty: 1, unit: pièce}
     - {id: citron, name: citron, qty: 1, unit: pièce}
     - {id: creme, name: crème fraîche bio, qty: 2, unit: c. à s.}
-    - {id: ciboulette, name: ciboulette, qty: 1, unit: petit bouquet}
+    - {id: ciboulette, name: ciboulette, qty: 1, unit: petit bouquet, optional: true}
     - id: saumon-fume
       name: "saumon fumé, ou autre poisson fumé au choix"
       qty: 100

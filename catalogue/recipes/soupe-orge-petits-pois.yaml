@@ -50,7 +50,7 @@ recipe:
     - {id: bouillon-herbes-ing, name: bouillon de cuisson du rôti, qty: 1500, unit: ml, from_accepts: true}
     - {id: orge, name: orge mondé ou perlé, qty: 200, unit: g}
     - {id: petits-pois, name: petits pois frais écossés (ou surgelés), qty: 200, unit: g}
-    - {id: ciboulette, name: ciboulette (facultatif), qty: 1, unit: petit bouquet}
+    - {id: ciboulette, name: ciboulette (facultatif), qty: 1, unit: petit bouquet, optional: true}
     - {id: eau, name: eau, qty: 300, unit: ml}
     - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
 

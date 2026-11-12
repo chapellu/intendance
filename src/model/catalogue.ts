@@ -152,6 +152,7 @@ function ingredient(v: unknown, ou: string, defauts = false): Ingredient {
     // compris sur les lignes pleines, contrairement aux deux drapeaux
     // au-dessus. Le rayon reste alors seul juge, ce qui est le défaut voulu.
     central: o["central"] === undefined ? false : booleen(o["central"], `${ou}.central`),
+    ...(o["facultatif"] === undefined ? {} : { facultatif: booleen(o["facultatif"], `${ou}.facultatif`) }),
     ...(o["remplacants"] === undefined
       ? {}
       : {

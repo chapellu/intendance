@@ -111,7 +111,7 @@ recipes:
     ingredients:
       - {id: sauce-bolognaise-ing, name: sauce bolognaise, qty: 500, unit: g, from_accepts: true}
       - {id: pates, name: "pâtes longues (spaghetti, linguine)", qty: 350, unit: g}
-      - {id: fromage-rape, name: parmesan ou comté râpé, qty: 60, unit: g, subs: [{id: parmesan, name: "parmesan", ratio: 1.0}]}
+      - {id: fromage-rape, name: parmesan ou comté râpé, qty: 60, unit: g, subs: [{id: parmesan, name: "parmesan", ratio: 1.0}], optional: true}
     steps:
       - id: eau
         action: "Porter une grande casserole d'eau salée à ébullition"
@@ -331,7 +331,7 @@ recipes:
       - {id: poivron, name: poivrons, qty: 2, unit: pièce}
       - {id: oignon, name: oignon, qty: 1, unit: pièce}
       - {id: creme, name: crème fraîche, qty: 10, unit: cl}
-      - {id: fromage-rape, name: fromage râpé, qty: 80, unit: g}
+      - {id: fromage-rape, name: fromage râpé, qty: 80, unit: g, optional: true}
     steps:
       - id: tailler
         action: "Poivrons et oignon en lanières"

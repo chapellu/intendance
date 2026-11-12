@@ -9,7 +9,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, test } from "vitest";
 import { lireCatalogue } from "./catalogue";
 import type { LotInitial } from "./depot";
-import { ceQuiEstIci, ceQuiManque, estLa, suffitAuStock } from "./ici";
+import { ceQueLaCarteDitIci, ceQuiEstIci, ceQuiManque, estLa, suffitAuStock } from "./ici";
 import { calculer } from "./calcul";
 import { creerJeu, type Jeu } from "./jeu";
 import { contexte, rejouer, type Evenement } from "./journal";
@@ -675,4 +675,42 @@ describe("T185 — un jour sans courses, la main se fait avec ce qui est là", (
       if (autres) expect(new Set(formats).size).toBe(formats.length);
     }
   });
+});
+
+/* ═══════════════════════ T186 — ce dont le plat se passe (12/11) */
+
+describe("T186 — un ingrédient facultatif ne coûte pas le dîner", () => {
+  test("le catalogue marque le fromage râpé des pâtes bolognaise", () => {
+    const f = plat("pates-bolognaise").ingredients.find((i) => i.id === "fromage-rape")!;
+    expect(f.facultatif).toBe(true);
+  });
+
+  test("sans fromage râpé, les pâtes bolognaise ne demandent rien : il est dit, pas compté", () => {
+    const p = plat("pates-bolognaise");
+    const ici = new Set(p.ingredients.filter((i) => i.id !== "fromage-rape").map((i) => i.id));
+    const m = ceQuiManque(catalogue, p, ici);
+    expect(m.ingredients).toEqual([]);
+    expect(m.sans.map((a) => a.id)).toEqual(["fromage-rape"]);
+    // Et la liste du créneau ne le tient pas pour là.
+    expect(ceQueLaCarteDitIci(catalogue, p, m)).not.toContain("fromage-rape");
+  });
+
+  test("là, il ne se dit pas", () => {
+    const p = plat("pates-bolognaise");
+    const ici = new Set(p.ingredients.map((i) => i.id));
+    expect(ceQuiManque(catalogue, p, ici).sans).toEqual([]);
+  });
+
+  test("un jour sans courses, le fromage râpé fini, la bolognaise du congélateur se fait", () => {
+    const { proposition } = monde({
+      evts: [fondRentre(veille(LUNDI), ["fromage-rape"])],
+      // 70 jours sur 90 : elle presse, et la carte qui la finit passe en tête.
+      stock: [resteDe("sauce-bolognaise", veille(LUNDI, 70), "congelo")],
+    });
+    const c = proposition.cartes.find((x) => x.plat.id === "pates-bolognaise")!;
+    expect(c).toBeDefined();
+    expect(c.manque).toEqual([]);
+    expect(c.sans.map((a) => a.id)).toEqual(["fromage-rape"]);
+  });
+
 });

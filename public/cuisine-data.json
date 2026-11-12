@@ -525,6 +525,7 @@
      "base": false,
      "assaisonnement": false,
      "central": false,
+     "facultatif": true,
      "remplacants": [
       {
        "id": "parmesan",
@@ -1361,7 +1362,8 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     }
    ],
    "role": "plat",
@@ -3433,6 +3435,7 @@
      "base": false,
      "assaisonnement": false,
      "central": false,
+     "facultatif": true,
      "remplacants": [
       {
        "id": "fromage-rape",
@@ -7348,7 +7351,8 @@
      "unit": "poignée",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     },
     {
      "id": "orties",
@@ -7358,7 +7362,8 @@
      "unit": "poignée",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     },
     {
      "id": "eau",
@@ -11032,7 +11037,8 @@
      "unit": "bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     },
     {
      "id": "sel",
@@ -11598,7 +11604,8 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     },
     {
      "id": "cebette",
@@ -15677,7 +15684,8 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     },
     {
      "id": "sel",
@@ -16296,7 +16304,8 @@
      "unit": "gousse",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     },
     {
      "id": "citron",
@@ -18760,7 +18769,8 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     }
    ],
    "role": "plat",
@@ -21017,7 +21027,8 @@
      "unit": "gousse",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     },
     {
      "id": "sel",
@@ -22337,7 +22348,8 @@
      "unit": "petit bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     },
     {
      "id": "citron",
@@ -22835,7 +22847,8 @@
      "unit": "petit bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     },
     {
      "id": "oeufs",
@@ -25163,7 +25176,8 @@
      "unit": "petit bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     },
     {
      "id": "sel",
@@ -25349,7 +25363,8 @@
      "unit": "bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     },
     {
      "id": "fenouil-sauvage",
@@ -26383,7 +26398,8 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     },
     {
      "id": "sel",
@@ -26668,7 +26684,8 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     },
     {
      "id": "sel",
@@ -27817,7 +27834,8 @@
      "unit": "petit bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     }
    ],
    "role": "plat",
@@ -29055,7 +29073,8 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     },
     {
      "id": "eau",
@@ -29105,7 +29124,8 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     },
     {
      "id": "navets",
@@ -29133,6 +29153,7 @@
      "base": false,
      "assaisonnement": false,
      "central": false,
+     "facultatif": true,
      "remplacants": [
       {
        "id": "courge",
@@ -31685,7 +31706,8 @@
      "unit": "c. à c.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     },
     {
      "id": "ciboulette",
@@ -33284,7 +33306,8 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     },
     {
      "id": "graines-fenouil",
@@ -33572,7 +33595,8 @@
      "unit": "petit bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     },
     {
      "id": "noisettes",
@@ -33582,7 +33606,8 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     },
     {
      "id": "huile-olive",
@@ -33808,7 +33833,8 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     },
     {
      "id": "huile-olive",
@@ -34050,7 +34076,8 @@
      "unit": "petit bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     },
     {
      "id": "capres",
@@ -34303,7 +34330,8 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     },
     {
      "id": "cabillaud",
@@ -34375,7 +34403,8 @@
      "unit": "petit bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     },
     {
      "id": "sel",
@@ -34561,7 +34590,8 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     },
     {
      "id": "olives-noires",
@@ -34581,7 +34611,8 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     },
     {
      "id": "capres",
@@ -34810,7 +34841,8 @@
      "unit": "petit bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     },
     {
      "id": "huile-olive",
@@ -35067,7 +35099,8 @@
      "unit": "petit bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     },
     {
      "id": "origan",
@@ -36612,7 +36645,8 @@
      "unit": "petit bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     },
     {
      "id": "saumon-fume",
@@ -38009,7 +38043,8 @@
      "unit": "petit bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     },
     {
      "id": "eau",
@@ -40906,7 +40941,8 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     }
    ],
    "role": "plat",

@@ -6449,4 +6449,15 @@ Trois causes, trois réparations :
 
 Conséquence assumée : sur la base de démo, un jour sans courses, la main peut être vide (« Aucun dîner ne se fait ce soir avec ce qui est là ») — les pâtes bolognaise demandent du fromage râpé. Les parcours de la pause se placent donc un jour de courses.
 
-Reste ouvert : aucune recette ne marque un ingrédient comme facultatif (le fromage râpé des pâtes). Un champ `facultatif` permettrait de garder ces plats dans la main.
+Reste ouvert : aucune recette ne marque un ingrédient comme facultatif (le fromage râpé des pâtes). → T186.
+
+## T186 — Ce dont un plat se passe : `optional: true`
+
+« J'étais plus ou moins persuadé qu'on l'avait déjà traité. » À moitié : l'assaisonnement (`seasoning`) n'est jamais compté, l'accompagnement (`avec:`, T92) est dit sans être compté — mais une GARNITURE ne l'était pas. Le fromage râpé servi à table sur des pâtes bolognaise suffisait à sortir le plat de la main un jour sans courses. Et quinze lignes du catalogue écrivaient déjà « (facultatif) » dans leur nom, sans que rien ne le lise.
+
+Fait :
+- `optional: true` sur une ligne d'ingrédient (`verifier.py` le connaît, et refuse qu'un facultatif soit aussi `from_accepts`, `seasoning` ou `central`) ; l'export le porte en `facultatif` ;
+- absent, un facultatif ne compte pas : `ceQuiManque` le range dans `sans`, la carte dit « Rien à acheter · sans fromage râpé ». Il n'est pas tenu pour là (`ceQueLaCarteDitIci`) : la liste de courses d'un plat posé le rachète ;
+- marquées : toutes les lignes que leur nom disait facultatives (hors assaisonnements, déjà ignorés), le fromage servi à table ou parsemé à la fin quand il n'est pas la protéine du plat (pâtes bolognaise, minestrone, fajitas, hachis de lentilles, tian, salade César…), et les herbes fraîches de finition des salades, soupes et omelettes. Pas les plats dont l'herbe est dans le titre, ni le fromage d'un appareil ou d'une pâte.
+
+À relire par le foyer : la liste exacte est dans le diff de `catalogue/recipes/` — une ligne qu'il ne veut pas voir facultative se corrige en retirant `optional: true`.

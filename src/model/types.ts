@@ -93,6 +93,14 @@ export interface Ingredient {
    */
   central: boolean;
   /**
+   * T186 — LE PLAT SE FAIT SANS. Le fromage râpé servi à table, le persil du
+   * dessus, ce que la recette dit elle-même « facultatif ». Absent, il ne
+   * coûte pas le dîner : la carte du soir le dit (« sans fromage râpé ») et ne
+   * le compte pas. Il reste à la liste de courses d'un plat posé — on le
+   * rachète, on ne renonce pas pour lui. `?` : vaut faux partout ailleurs.
+   */
+  facultatif?: boolean;
+  /**
    * T167 — CE QUI FAIT AUSSI BIEN, POUR CETTE RECETTE. « Farine T110 de blé ou
    * de grand épeautre » : la ligne achète `farine-complete`, mais une farine
    * d'épeautre au placard fait le pain. Par PAIRE et pas par famille — une

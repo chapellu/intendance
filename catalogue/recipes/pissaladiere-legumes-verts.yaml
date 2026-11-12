@@ -49,7 +49,7 @@ recipe:
     - {id: olives-noires, name: olives noires, qty: 7, unit: pièce}
     - {id: anchois, name: filets d'anchois, qty: 6, unit: pièce}
     - {id: origan, name: origan séché, qty: 1, unit: c. à c.}
-    - {id: thym-frais, name: "thym frais, facultatif", qty: 1, unit: petit bouquet}
+    - {id: thym-frais, name: "thym frais, facultatif", qty: 1, unit: petit bouquet, optional: true}
 
   # p. 81 : « peu de protéines — compléter par 2 œufs durs, ou une belle
   # portion de fromage de chèvre ». Les œufs sont la première des deux voies ;

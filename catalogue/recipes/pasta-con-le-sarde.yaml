@@ -34,7 +34,7 @@ recipe:
     - {id: sardines-boite, name: sardines en boîte à l'huile d'olive, qty: 8, unit: pièce}
     - {id: oignon, name: oignons, qty: 2, unit: pièce}
     - {id: ail, name: ail, qty: 1, unit: gousse}
-    - {id: persil, name: persil plat bien frais, qty: 0.5, unit: bouquet}
+    - {id: persil, name: persil plat bien frais, qty: 0.5, unit: bouquet, optional: true}
     - {id: fenouil-sauvage, name: tiges et feuilles de fenouil sauvage frais (ou fenouil séché), qty: 1, unit: poignée}
     - {id: fromage-rape, name: parmesan râpé, qty: 100, unit: g}
     - {id: huile-olive, name: huile d'olive, qty: 3, unit: c. à s.}
