@@ -166,6 +166,9 @@ export interface CeQuiManque {
   ingredients: Article[];
   /** Ce qui va À CÔTÉ (T92) et qui n'est pas là — dit, jamais compté. */
   aCote: Article[];
+  /** T186 — les lignes facultatives qui ne sont pas là : le plat se fait
+   *  sans, la carte le dit. Jamais comptées. */
+  sans: Article[];
 }
 
 /**
@@ -198,10 +201,16 @@ export function ceQuiManque(
   suffit?: Suffit,
 ): CeQuiManque {
   const alias = (id: string): string => catalogue.rayons.aliases[id] ?? id;
+  const sans = new Map<string, Article>();
   const manquants = (lignes: readonly Ingredient[]): Article[] => {
     const vus = new Map<string, Article>();
     for (const ing of lignes) {
       if (ing.base || ing.assaisonnement) continue;
+      if (ing.facultatif) {
+        const id = alias(retenir(ing, (x) => ici.has(x), alias).id);
+        if (!ici.has(id) && !sans.has(id)) sans.set(id, { id, nom: ing.nom });
+        continue;
+      }
       // T167 — un remplaçant qui est là vaut l'original.
       const id = alias(retenir(ing, (x) => ici.has(x), alias).id);
       if (vus.has(id)) continue;
@@ -218,9 +227,12 @@ export function ceQuiManque(
   const lignes = [...plat.ingredients, ...(plein && plat.sansReste ? plat.sansReste.ingredients : [])];
   const ingredients = manquants(lignes);
   const dejaDits = new Set(ingredients.map((a) => a.id));
+  // Une ligne facultative d'un id qu'une autre ligne exige déjà est dite là.
+  for (const id of dejaDits) sans.delete(id);
   return {
     ingredients,
     aCote: manquants(plat.avec.map(commeIngredient)).filter((a) => !dejaDits.has(a.id)),
+    sans: [...sans.values()],
   };
 }
 
@@ -237,9 +249,14 @@ export function ceQuiManque(
  * (`DecisionCreneau.ici`), pour que la liste ne demande que ce que la carte a
  * dit manquer.
  */
-export function ceQueLaCarteDitIci(catalogue: Catalogue, plat: Plat, manque: CeQuiManque, plein = false): string[] {
+export function ceQueLaCarteDitIci(
+  catalogue: Catalogue,
+  plat: Plat,
+  manque: Pick<CeQuiManque, "ingredients" | "aCote"> & { sans?: Article[] },
+  plein = false,
+): string[] {
   const alias = (id: string): string => catalogue.rayons.aliases[id] ?? id;
-  const exclus = new Set([...manque.ingredients, ...manque.aCote].map((a) => a.id));
+  const exclus = new Set([...manque.ingredients, ...manque.aCote, ...(manque.sans ?? [])].map((a) => a.id));
   const lignes = [
     ...plat.ingredients,
     ...(plein && plat.sansReste ? plat.sansReste.ingredients : []),

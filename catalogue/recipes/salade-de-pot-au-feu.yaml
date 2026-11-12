@@ -47,7 +47,7 @@ recipe:
   ingredients:
     - {id: viande-pot-au-feu, name: bœuf de pot-au-feu, qty: 125, unit: g, from_accepts: true}
     - {id: legumes-pot-au-feu, name: "légumes et pommes de terre de pot-au-feu, idéalement des pommes de terre nouvelles", qty: 400, unit: g, from_accepts: true}
-    - {id: persil, name: persil, qty: 1, unit: petit bouquet}
+    - {id: persil, name: persil, qty: 1, unit: petit bouquet, optional: true}
     - {id: capres, name: câpres, qty: 2, unit: c. à s.}
     - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
     - {id: vinaigre, name: vinaigre de vin, qty: 2, unit: c. à s.}

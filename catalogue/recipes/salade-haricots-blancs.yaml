@@ -42,9 +42,9 @@ recipe:
     - {id: haricots-blancs-cuits, name: haricots blancs cuits, qty: 300, unit: g, from_accepts: true}
     - {id: oeufs, name: œuf extra-frais, qty: 1, unit: pièce}
     - {id: tomates-roma, name: tomate Roma, qty: 1, unit: pièce}
-    - {id: basilic, name: feuilles de basilic frais, qty: 18, unit: pièce}
+    - {id: basilic, name: feuilles de basilic frais, qty: 18, unit: pièce, optional: true}
     - {id: olives-noires, name: olives noires dénoyautées, qty: 6, unit: pièce}
-    - {id: parmesan, name: parmesan, qty: 30, unit: g}
+    - {id: parmesan, name: parmesan, qty: 30, unit: g, optional: true}
     - {id: capres, name: câpres, qty: 1, unit: c. à s.}
     - {id: vinaigre-balsamique, name: vinaigre balsamique, qty: 1, unit: c. à s.}
     - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}

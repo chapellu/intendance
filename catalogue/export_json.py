@@ -205,6 +205,8 @@ def main():
                  "unit": i["unit"], "base": bool(i.get("from_accepts")),
                  "assaisonnement": bool(i.get("seasoning")),
                  "central": bool(i.get("central")),
+                 # T186 — le plat se fait sans : dit, jamais compté.
+                 **({"facultatif": True} if i.get("optional") else {}),
                  # T167 — LES REMPLAÇANTS QUI S'ACHÈTENT : les `subs` qui
                  # portent un `id`, puis (T178) les équivalences du commerce.
                  **_remplacants(i, _alias, equivalences)}

@@ -47,7 +47,7 @@ recipe:
     - {id: pain-de-mie-maison, name: tranches de pain de mie complet, qty: 100, unit: g, from_accepts: true}
     - {id: oeufs, name: "œuf bio très frais", qty: 1, unit: pièce}
     - {id: salade-verte, name: laitue lavée et essorée, qty: 1, unit: pièce}
-    - {id: parmesan, name: parmesan, qty: 20, unit: g}
+    - {id: parmesan, name: parmesan, qty: 20, unit: g, optional: true}
     - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
     - {id: citron, name: citron, qty: 1, unit: pièce}
     - {id: moutarde, name: moutarde, qty: 1, unit: c. à c.}

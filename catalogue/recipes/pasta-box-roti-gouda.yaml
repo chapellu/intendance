@@ -48,7 +48,7 @@ recipe:
     - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
     - {id: vinaigre-balsamique, name: vinaigre balsamique, qty: 1, unit: c. à s.}
     - {id: levure-biere, name: levure de bière maltée, qty: 1, unit: c. à c.}
-    - {id: ciboulette, name: "ciboulette finement ciselée, facultative", qty: 1, unit: petit bouquet}
+    - {id: ciboulette, name: "ciboulette finement ciselée, facultative", qty: 1, unit: petit bouquet, optional: true}
     - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
     - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
 

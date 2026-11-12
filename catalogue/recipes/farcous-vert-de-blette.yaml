@@ -32,7 +32,7 @@ recipe:
     - {id: oeufs, name: œufs, qty: 4, unit: pièce}
     - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 300, unit: g, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
     - {id: vert-de-blette, name: vert de blettes (ou épinards frais), qty: 400, unit: g}
-    - {id: fromage-rape, name: gruyère râpé (facultatif), qty: 140, unit: g}
+    - {id: fromage-rape, name: gruyère râpé (facultatif), qty: 140, unit: g, optional: true}
     - {id: cebette, name: cébette avec le vert, qty: 1, unit: pièce}
     - {id: persil, name: persil, qty: 1, unit: petit bouquet}
     - {id: ail, name: ail, qty: 2, unit: gousse}

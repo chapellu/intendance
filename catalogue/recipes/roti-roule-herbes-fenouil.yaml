@@ -51,7 +51,7 @@ recipe:
     - {id: roti-porc, name: "filet de porc bio ou fermier, découpé à plat par le boucher afin de pouvoir être roulé", qty: 1.5, unit: kg}
     - {id: ail, name: gousses d'ail frais, qty: 3, unit: pièce}
     - {id: herbes-fraiches, name: "brins de sarriette, d'origan ou de thym — à défaut 2 c. à c. d'origan séché", qty: 1, unit: poignée}
-    - {id: sauge, name: "feuilles de sauge fraîche (facultatif, mais recommandé)", qty: 6, unit: pièce}
+    - {id: sauge, name: "feuilles de sauge fraîche (facultatif, mais recommandé)", qty: 6, unit: pièce, optional: true}
     - {id: graines-fenouil, name: c. à c. rases de graines de fenouil, qty: 2, unit: c. à c., seasoning: true}
     - {id: piment-espelette, name: piment d'Espelette (facultatif), qty: 1, unit: pincée, seasoning: true}
     - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}

@@ -36,7 +36,7 @@ BANDES = {"1-repas", "2-repas", "3-repas", "lunchbox"}
 # (voir le contrôle plus bas). Un nouveau champ s'ajoute ici en même temps que
 # le code qui le lit.
 CHAMPS_INGREDIENT = {"id", "name", "qty", "unit", "seasoning", "ref",
-                     "from_accepts", "subs", "equivalences"}
+                     "from_accepts", "subs", "equivalences", "optional"}
 # LES RÔLES — ce que ce plat est DANS un repas, et non ce qu'il contient.
 #
 # UNION FERMÉE, DÉFAUT `plat`. Cinq valeurs pour la seule question qui commande
@@ -188,6 +188,14 @@ def verifier(rid: str, r: dict, rayons: dict, rules: dict, cat: dict,
                 f"{sorted(inconnues)} — presque toujours une virgule non quotée "
                 f"dans `name:`, qui a coupé le nom à « {ing.get('name')} » et "
                 "transformé la suite en clés vides. Mettre le nom entre guillemets.")
+        # T186 — FACULTATIF, C'EST « LE PLAT SE FAIT SANS ». Une base, un
+        # assaisonnement (déjà jamais compté) ou une ligne dite centrale ne
+        # peuvent pas l'être : la phrase se contredirait.
+        if ing.get("optional") is not None and ing.get("optional") is not True:
+            err.append(f"ingrédient « {ing.get('id', '?')} » : `optional` ne prend que `true`")
+        if ing.get("optional") and (ing.get("from_accepts") or ing.get("seasoning") or ing.get("central")):
+            err.append(f"ingrédient « {ing.get('id', '?')} » : `optional` avec `from_accepts`, "
+                       "`seasoning` ou `central` — un facultatif est une ligne ordinaire")
         if ing.get("from_accepts"):
             continue
         cid = alias.get(ing["id"], ing["id"])

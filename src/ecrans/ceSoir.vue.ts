@@ -93,6 +93,14 @@ export function nomCourt(nom: string): string {
 
 /** Ce qu'il faut acheter, en une ligne — la ligne qui décide à 15 h. */
 export function ligneAchats(c: CarteDuSoir): string {
+  // « parmesan ou gruyère râpé (facultatif) » : la carte le dit déjà en
+  // écrivant « sans ».
+  const nu = (nom: string) => nom.replace(/\s*\(facultati[^)]*\)|,\s*facultati.*$/i, "");
+  const sans = c.sans?.length ? ` · sans ${c.sans.slice(0, 2).map((a) => nomCourt(nu(a.nom))).join(" ni ")}` : "";
+  return lignePayante(c) + sans;
+}
+
+function lignePayante(c: CarteDuSoir): string {
   const n = c.manque.length;
   if (n === 0) return "Rien à acheter";
   const noms = c.manque.map((a) => `${nomCourt(a.nom)}${a.pasAssez ? " (pas assez)" : ""}`);

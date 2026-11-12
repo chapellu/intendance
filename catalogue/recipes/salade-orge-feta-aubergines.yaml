@@ -45,7 +45,7 @@ recipe:
     - {id: aubergine, name: aubergine, qty: 1, unit: pièce}
     - {id: tomates-cerises, name: tomates-cerises, qty: 10, unit: pièce}
     - {id: olives-noires, name: olives noires dénoyautées, qty: 6, unit: pièce}
-    - {id: persil, name: persil, qty: 1, unit: petit bouquet}
+    - {id: persil, name: persil, qty: 1, unit: petit bouquet, optional: true}
     - {id: origan, name: origan séché, qty: 1, unit: pincée}
     - {id: feta, name: feta, qty: 30, unit: g}
     - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}

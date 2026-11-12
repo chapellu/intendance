@@ -43,7 +43,7 @@ recipe:
     - {id: oignon, name: oignon, qty: 1, unit: pièce}
     - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
     - {id: puree-noisette, name: "purée de noisette grillée, cuillerée un peu bombée", qty: 1, unit: c. à s.}
-    - {id: noisettes, name: "noisettes, facultatives", qty: 6, unit: pièce}
+    - {id: noisettes, name: "noisettes, facultatives", qty: 6, unit: pièce, optional: true}
     - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
     - {id: poivre, name: poivre du moulin, qty: 1, unit: pincée, seasoning: true}
 

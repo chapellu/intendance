@@ -34,7 +34,7 @@ recipe:
     - {id: petits-pois, name: petits pois à écosser, qty: 1, unit: poignée}
     - {id: pois-gourmands, name: pois gourmands, qty: 1, unit: poignée}
     - {id: pousses-epinards, name: jeunes pousses d'épinards, qty: 1, unit: poignée}
-    - {id: ciboulette, name: ciboulette, qty: 1, unit: petit bouquet}
+    - {id: ciboulette, name: ciboulette, qty: 1, unit: petit bouquet, optional: true}
     - {id: oeufs, name: œufs fermiers, qty: 6, unit: pièce}
     - {id: fromage-rape, name: comté ou emmental fraîchement râpé, qty: 100, unit: g}
     - {id: huile-olive, name: huile d'olive, qty: 6, unit: c. à s.}

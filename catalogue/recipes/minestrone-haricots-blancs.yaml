@@ -35,7 +35,7 @@ recipe:
     - {id: bouillon-legumes, name: cube de bouillon de légumes, qty: 1, unit: pièce, seasoning: true}
     - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
     - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
-    - {id: fromage-rape, name: fromage râpé, qty: 40, unit: g}
+    - {id: fromage-rape, name: fromage râpé, qty: 40, unit: g, optional: true}
 
   steps:
     - id: tremper

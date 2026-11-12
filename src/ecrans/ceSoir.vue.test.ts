@@ -65,6 +65,10 @@ describe("la ligne qui décide à 15 h : ce qu'il faut acheter", () => {
   test("zéro, un — nommé —, plusieurs", () => {
     expect(ligneAchats(carte({}))).toBe("Rien à acheter");
     expect(ligneAchats(carte({ manque: [{ id: "creme", nom: "crème" }] }))).toBe("il manque : crème");
+    // T186 — le facultatif absent se dit, sans rien coûter.
+    expect(ligneAchats(carte({ sans: [{ id: "fromage-rape", nom: "fromage râpé" }] }))).toBe("Rien à acheter · sans fromage râpé");
+    expect(ligneAchats(carte({ sans: [{ id: "parmesan", nom: "parmesan ou gruyère râpé (facultatif)" }] })))
+      .toBe("Rien à acheter · sans parmesan ou gruyère râpé");
     expect(
       ligneAchats(carte({ manque: [{ id: "a", nom: "crème" }, { id: "b", nom: "lardons" }] })),
     ).toBe("il manque : crème et lardons");

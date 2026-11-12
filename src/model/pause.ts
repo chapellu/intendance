@@ -304,6 +304,8 @@ export interface CarteDuSoir {
   manqueCentral: boolean;
   /** L'accompagnement absent — dit, pas compté (voir `fond.ceQuiManque`). */
   aCote: Article[];
+  /** T186 — le facultatif absent : le plat se fait sans, la carte le dit. */
+  sans: Article[];
   /** Ce que la carte tient pour là — l'instantané que « Je lance ça » écrit
    *  sur le créneau (`DecisionCreneau.ici`), pour que la liste de courses ne
    *  demande que `manque` (et `aCote`, qu'elle dit). */
@@ -584,7 +586,7 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
     // faudrait cuisiner la base avant — c'est une journée, pas une pause.
     if (carte.manque) continue;
 
-    const { ingredients: manque, aCote } = ceQuiManque(catalogue, p, ici, carte.plein, suffit);
+    const { ingredients: manque, aCote, sans } = ceQuiManque(catalogue, p, ici, carte.plein, suffit);
     const horsSaison = manque.filter((a) => deSaison(catalogue, a.id, mois) === false);
     // Les lignes du « sans reste » comptent aussi : le jarret d'un bouillon
     // fait sans reste est central comme une ligne de la recette (T185).
@@ -647,7 +649,8 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
       horsSaison,
       manqueCentral,
       aCote,
-      ici: ceQueLaCarteDitIci(catalogue, p, { ingredients: manque, aCote }, carte.plein),
+      sans,
+      ici: ceQueLaCarteDitIci(catalogue, p, { ingredients: manque, aCote, sans }, carte.plein),
       presse,
       attend: attendIci,
       horaire: h,
