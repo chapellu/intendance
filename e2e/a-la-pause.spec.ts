@@ -7,7 +7,7 @@
 // et que la fiche s'ouvre sur sa MISE EN PLACE et pas sur un résumé de lecture —
 // la différence entre les deux est le seul `pose` que la fiche relit en base.
 //
-// L'HEURE EST FIXÉE À 15 H, LE JOUR EST CELUI DU PASSAGE. Un jour codé en dur
+// L'HEURE EST FIXÉE À 15 H, LE JOUR EST LE PROCHAIN JOUR DE COURSES (T185). Un jour codé en dur
 // pourrit pendant la nuit (`fiche-provenance.spec.ts`, le 15/09) ; une heure non
 // fixée ferait dire « prêt vers 22h40 » à un parcours lancé le soir, et la
 // phrase testée changerait avec l'horloge du CI.
@@ -19,9 +19,9 @@
 
 import { expect, test } from "@playwright/test";
 import { libellePoser, LIBELLE_LANCER } from "../src/ui/phrases";
-import { attendreLApp, aujourdhuiISO } from "./parcours";
+import { attendreLApp, jourDeCoursesISO } from "./parcours";
 
-const A_15H = (): Date => new Date(`${aujourdhuiISO()}T15:00:00`);
+const A_15H = (): Date => new Date(`${jourDeCoursesISO()}T15:00:00`);
 
 test.beforeEach(async ({ page }) => {
   await page.clock.setFixedTime(A_15H());
@@ -57,7 +57,7 @@ test("depuis le cockpit, la ligne « Ce soir » nomme un plat et ce qui attend �
   await cartes.first().getByRole("button", { name: LIBELLE_LANCER }).dispatchEvent("click");
 
   // LA MISE EN PLACE, PAS LA LECTURE : le plat est posé, la fiche le relit.
-  await expect(page).toHaveURL(new RegExp(`#/cuisine/cuisiner/${aujourdhuiISO()}/diner$`));
+  await expect(page).toHaveURL(new RegExp(`#/cuisine/cuisiner/${jourDeCoursesISO()}/diner$`));
   await expect(page.locator(".co-fiche-tete .t")).toHaveText(titre);
   await expect(page.locator(".co-mep")).toBeVisible();
   await expect(page.getByRole("button", { name: "‹ Revenir" })).toHaveCount(0);
@@ -88,7 +88,7 @@ test("un seul tap : « Je lance ça » sur la ligne du cockpit pose le plat et o
   await expect(lancer).toBeEnabled({ timeout: 30_000 });
   await lancer.dispatchEvent("click");
 
-  await expect(page).toHaveURL(new RegExp(`#/cuisine/cuisiner/${aujourdhuiISO()}/diner$`));
+  await expect(page).toHaveURL(new RegExp(`#/cuisine/cuisiner/${jourDeCoursesISO()}/diner$`));
   await expect(page.locator(".co-fiche-tete .t")).toHaveText(titre);
   await expect(page.locator(".co-mep")).toBeVisible();
 });

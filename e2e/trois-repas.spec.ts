@@ -13,9 +13,9 @@
 
 import { expect, test, type Page } from "@playwright/test";
 import { LIBELLE_LANCER } from "../src/ui/phrases";
-import { attendreLApp, aujourdhuiISO } from "./parcours";
+import { attendreLApp, jourDeCoursesISO } from "./parcours";
 
-const A_15H = (): Date => new Date(`${aujourdhuiISO()}T15:00:00`);
+const A_15H = (): Date => new Date(`${jourDeCoursesISO()}T15:00:00`);
 
 test.beforeEach(async ({ page }) => {
   await page.clock.setFixedTime(A_15H());
@@ -46,7 +46,7 @@ async function viderLeDepot(page: Page, restes = 0, sorte: { type: string; kind:
         };
         r.onerror = () => ko(r.error);
       }),
-    { n: restes, jour: aujourdhuiISO(), sorte },
+    { n: restes, jour: jourDeCoursesISO(), sorte },
   );
   await page.reload();
   await attendreLApp(page);
@@ -85,7 +85,7 @@ test("« Je lance ça » prend aussi demain midi, et le cockpit le redit", async
   await page.screenshot({ path: "/tmp/trois-repas-carte.png", fullPage: true });
   const titre = (await carte.locator(".nom").innerText()).trim();
   await carte.getByRole("button", { name: LIBELLE_LANCER }).dispatchEvent("click");
-  await expect(page).toHaveURL(new RegExp(`#/cuisine/cuisiner/${aujourdhuiISO()}/diner$`));
+  await expect(page).toHaveURL(new RegExp(`#/cuisine/cuisiner/${jourDeCoursesISO()}/diner$`));
 
   await page.goto("/#/cockpit");
   const repas = page.locator('[aria-label="les autres repas"]');

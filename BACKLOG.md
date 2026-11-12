@@ -6437,3 +6437,16 @@ Signalé en faisant les courses : « pommes, 3 unités, c'est 3 pommes pour la s
 Fait : la ligne lit l'unité au fond et se dit comme on l'achète. Le vrac devient un poids (« 3 kg », « 2,5 kg ») ; le reste devient un nombre de paquets nommés (« 3 boîtes de 6 », « 8 packs de 4 »), sans la précision entre parenthèses. Une denrée hors du fond garde « unité ».
 
 Reste ouvert : la phrase « il en reste 1, vous en voulez 3 » compte toujours en unités d'achat sans les nommer.
+
+## T185 — « Ce soir » propose trois plats dont aucun ne se fait, dont trois soupes
+
+Signalé le 12/11, un jeudi : « il était censé me proposer des recettes que je pouvais faire avec ce que j'avais en stock — je ne vais pas courir en courses tous les jours — et sur les trois, je ne peux en faire aucune. » Puis : « en termes de diversité, il me propose trois soupes. »
+
+Trois causes, trois réparations :
+- un jour sans courses, la main admettait encore UN article manquant « non central ». Or la centralité ne connaît pas le légume qui fait le velouté (les pousses d'épinards d'un velouté) et ignorait les lignes du « sans reste » (le jarret d'un bouillon). La main ne garde plus que ce qui se fait SANS RIEN ACHETER ; la carte à un article passe sous « Voir plus », où elle dit ce qui manque. Les jours de courses ne changent pas ;
+- « il y en a » ne voulait pas dire « il y en a assez » : deux œufs passaient pour une frittata de six. `suffitAuStock` compare ce que le rejeu compte à ce que la recette demande pour le foyer, en grammes ou en pièces. Dans le doute (lot non compté, unité qui ne se compare pas), on garde la réponse d'avant. L'article se dit « œufs (pas assez) » ;
+- la main prend un format par carte d'abord (pas trois soupes), et ne complète avec un format déjà pris que faute d'autre plat faisable.
+
+Conséquence assumée : sur la base de démo, un jour sans courses, la main peut être vide (« Aucun dîner ne se fait ce soir avec ce qui est là ») — les pâtes bolognaise demandent du fromage râpé. Les parcours de la pause se placent donc un jour de courses.
+
+Reste ouvert : aucune recette ne marque un ingrédient comme facultatif (le fromage râpé des pâtes). Un champ `facultatif` permettrait de garder ces plats dans la main.
