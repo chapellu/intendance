@@ -359,6 +359,10 @@ export interface Rejeu {
   /** Le dernier jour d'entrée par les courses, par id — même quand le lot a
    *  été mangé depuis. Ce qui distingue « rentré le 17/10 » de « jamais vu ». */
   rentres: Map<string, string>;
+  /** T187 — le jour où un ingrédient est entré au congélateur, rangé là en
+   *  rentrant ou déplacé du frigo : l'horloge de la congélation part de là.
+   *  `?` : les rejeux fabriqués à la main des tests. */
+  congeleLe?: Map<string, string>;
   /**
    * T139 — CE QU'UN ŒIL A RANGÉ QUE LE RELEVÉ NE CONNAISSAIT PAS : id → zone.
    *
@@ -463,7 +467,8 @@ export function contexte(catalogue: Catalogue): Contexte {
   return {
     alias,
     rayonDe: (id) => parIngredient.get(alias(id)) ?? null,
-    espaceDe: (zone) => zones.get(zone) ?? "placard",
+    // T187 — le frigo et le congélateur sont des zones de lot, hors relevé.
+    espaceDe: (zone) => (zone === "frigo" || zone === "congelo" ? zone : (zones.get(zone) ?? "placard")),
     placard: new Set(catalogue.rayons.placard),
     // `?? []` POUR LES CATALOGUES FABRIQUÉS À LA MAIN DES TESTS, qui datent
     // d'avant la garde : le chargeur, lui, résout toujours le champ.
@@ -998,6 +1003,7 @@ export function rejouer(
   // Ce que le relevé connaît — pour reconnaître ce qu'un œil y ajoute (T139).
   const connus = new Set(lots.keys());
   const ajoutes = new Map<string, string>();
+  const congeleLe = new Map<string, string>();
   // `?? 4` : des fixtures de test construisent un catalogue sans foyer.
   const fenetreFrigo = catalogue.foyer?.fenetreFrigo ?? 4;
   const suivi = new Map<string, Suivi>();
@@ -1163,6 +1169,7 @@ export function rejouer(
         x.zone = e.vers;
         delete x.sansPlace;
       }
+      if (partis.length && e.vers === "congelo") congeleLe.set(id, e.jour);
       lots.set(id, [...ailleurs, ...ici, ...partis]);
       continue;
     }
@@ -1170,6 +1177,7 @@ export function rejouer(
     if (e.sorte === "entree") {
       for (const ligne of e.lignes) {
         const id = ctx.alias(ligne.ingredient);
+        if (ligne.zone === "congelo") congeleLe.set(id, e.jour);
         const l = lots.get(id) ?? [];
         l.push({
           ingredient: id,
@@ -1348,7 +1356,7 @@ export function rejouer(
 
   for (const id of [...ajoutes.keys()]) if (!parIngredient.has(id)) ajoutes.delete(id);
 
-  return { parIngredient, vus, retraits, finis, rentres, ajoutes };
+  return { parIngredient, vus, retraits, finis, rentres, ajoutes, congeleLe };
 }
 
 /**

@@ -287,7 +287,7 @@ familles:
       pas le temps, qui abîme. Un sachet décongelé ne repart pas au
       congélateur.
     ids: [epinards-surgeles, petits-pois-surgeles, haricots-verts-surgeles,
-          champignons-surgeles, legumes-surgeles]
+          champignons-surgeles, legumes-surgeles, colin-surgele]
 
   - id: conserve
     label: conserves
@@ -427,7 +427,11 @@ familles:
       Achetée en quantité, la partager dès le retour en portions d'un repas, à
       plat dans des sacs congélation, air chassé, datés au feutre : à plat,
       elle décongèle en une nuit au frigo.
-    ids: [boeuf-hache, poulet, poulet-filets, roti-porc, saumon, cabillaud]
+    # T187 — toute la viande et le poisson crus du catalogue, pas seulement les
+    # six premiers : un rôti de veau ou un jarret ont la même horloge. Pas la
+    # charcuterie ni le fumé, dont la date d'emballage dit tout.
+    ids: [boeuf-hache, poulet, poulet-filets, roti-porc, roti-veau, agneau-collier,
+          jarret-boeuf, os-a-moelle, saumon, cabillaud]
 
   - id: legume-fragile
     label: légumes fragiles
