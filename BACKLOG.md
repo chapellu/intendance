@@ -6461,3 +6461,19 @@ Fait :
 - marquées : toutes les lignes que leur nom disait facultatives (hors assaisonnements, déjà ignorés), le fromage servi à table ou parsemé à la fin quand il n'est pas la protéine du plat (pâtes bolognaise, minestrone, fajitas, hachis de lentilles, tian, salade César…), et les herbes fraîches de finition des salades, soupes et omelettes. Pas les plats dont l'herbe est dans le titre, ni le fromage d'un appareil ou d'une pâte.
 
 À relire par le foyer : la liste exacte est dans le diff de `catalogue/recipes/` — une ligne qu'il ne veut pas voir facultative se corrige en retirant `optional: true`.
+
+## T187 — La viande et le poisson au stock : le frigo, le congélateur, la date
+
+« J'ai le sentiment que dans le stock on ne gère aucun poisson ni aucune viande » (12/11). Ils entraient, mais mal : « Rangé où ? » ne proposait que les placards ; la porte se devinait au rayon, et le colin SURGELÉ, rangé en poissonnerie, finissait au frigo ; un poulet s'affichait « 1 » sans dire qu'il avait deux jours devant lui ; rien ne permettait de le congeler.
+
+Fait (`model/froid.ts`) :
+- `frigo` et `congelo` deviennent des zones de lot, proposées en tête de « Rangé où ? » ; la porte par défaut suit le rayon (boucherie, poissonnerie, crèmerie, frais → frigo ; surgelés → congélateur). `colin-surgele` passe au rayon surgelés et reste central par `centraux.ids`. `espaceDe` connaît les deux zones ;
+- la ligne dit la limite : au frigo, la fenêtre de la famille depuis l'achat (viande et poisson frais : 2 jours ; la famille couvre désormais toute la viande et le poisson crus du catalogue, pas la charcuterie ni le fumé) — « à manger d'ici demain », « pressé » à J-1 ; au congélateur, trois mois depuis le jour où on l'y a mis (`Rejeu.congeleLe`), ou la fenêtre du surgelé du commerce ;
+- « Congeler » sur une ligne du frigo dont la famille se congèle : un `deplacement` vers `congelo` ;
+- un frais congelé à la maison n'est pas « là » pour ce soir (`ceQuiEstIci`) : il demande une nuit au frigo. Le surgelé du commerce, si.
+
+Reste ouvert : le geste « sortir du congélateur pour demain » sur une viande crue (celui des plats cuisinés existe, `aSortir`).
+
+## T188 — Dire la pièce ET le poids d'une viande ou d'un poisson
+
+Demandé le 12/11 : « il faudrait préciser la pièce en plus du poids ». Aujourd'hui « + Ajouter » ne compte que des unités : un poulet entier et 500 g de filets s'écrivent « 1 », et « Ce soir » ne peut pas dire s'il y en a assez (T185 ne compare que grammes et pièces). À faire : à l'ajout d'une viande ou d'un poisson, demander le nombre de pièces et le poids d'une pièce (« 2 filets de 150 g »), stockés en `unites` × `parUnite`.

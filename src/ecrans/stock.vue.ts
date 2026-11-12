@@ -21,6 +21,7 @@ import type { Depot, LigneDepot } from "../model/depot";
 import { idsDuReleve, type Jeu } from "../model/jeu";
 import { aSauver } from "../model/gardeManger";
 import { mesurer, placeDuLot, placesDuReleve, type Evenement, type LotPlacard, type Rejeu } from "../model/journal";
+import { estFroid, limiteAuFroid, seCongele, type Limite } from "../model/froid";
 import {
   etatDuCongelo,
   nomDuType,
@@ -1553,6 +1554,13 @@ export interface HorsReleve {
   pieces: number | null;
   quantite: string;
   porte: Porte;
+  /** T187 — la place de ces lots : `frigo`, `congelo`, ou `null` quand ils
+   *  n'en ont pas (rentrés sans rangement, la porte vient alors du rayon). */
+  de: string | null;
+  /** T187 — jusqu'à quand ça se garde derrière cette porte, quand on le sait. */
+  limite: Limite | null;
+  /** T187 — au frigo, et sa famille se congèle : le geste « Congeler ». */
+  congelable: boolean;
 }
 
 /**
@@ -1564,7 +1572,11 @@ export interface HorsReleve {
  * tenait compte, et l'écran Stock ne les montrait pas. Ils se montrent ici,
  * derrière la porte que leur rayon désigne.
  */
-export function horsDuReleve(catalogue: Catalogue, rejeu: Rejeu): HorsReleve[] {
+/** `AAAA-MM-JJ` local. */
+const jourDe = (d: Date): string =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+
+export function horsDuReleve(catalogue: Catalogue, rejeu: Rejeu, aujourdhui = jourDe(new Date())): HorsReleve[] {
   const alias = (id: string): string => catalogue.rayons.aliases[id] ?? id;
   const places = placesDe(catalogue, rejeu);
   const rayonDe = new Map<string, string>();
@@ -1573,18 +1585,30 @@ export function horsDuReleve(catalogue: Catalogue, rejeu: Rejeu): HorsReleve[] {
   for (const [id, e] of rejeu.parIngredient) {
     // T180 — LES LOTS SANS PLACE, ET EUX SEULS : ranger une boîte de pois
     // chiches sur trois la fait passer dans sa zone, les deux autres attendent.
-    const ici = e.lots.filter((l) => placeDuLot(l, places.get(id)) === null);
-    if (!ici.length) continue;
-    const m = mesurer(ici);
-    if (m.unites <= 0 && m.grammes == null) continue;
-    out.push({
-      id,
-      nom: nomDeLaDenree(id),
-      unites: m.unites,
-      quantite: enPaquets(ici, motDuPaquet(catalogue, id), nomDeLaDenree(id)),
-      pieces: piecesDe(ici),
-      porte: PORTE_DU_RAYON[rayonDe.get(id) ?? ""] ?? "placard",
-    });
+    // T187 — ET CEUX DU FROID : le frigo et le congélateur ne sont pas des
+    // zones du relevé, ce qui y est rangé se montre derrière leur porte.
+    const groupes = new Map<string | null, LotPlacard[]>();
+    for (const l of e.lots) {
+      const ou = placeDuLot(l, places.get(id));
+      if (ou !== null && !estFroid(ou)) continue;
+      groupes.set(ou, [...(groupes.get(ou) ?? []), l]);
+    }
+    for (const [de, ici] of groupes) {
+      const m = mesurer(ici);
+      if (m.unites <= 0 && m.grammes == null) continue;
+      const porte: Porte = de === "frigo" || de === "congelo" ? de : (PORTE_DU_RAYON[rayonDe.get(id) ?? ""] ?? "placard");
+      out.push({
+        id,
+        nom: nomDeLaDenree(id),
+        unites: m.unites,
+        quantite: enPaquets(ici, motDuPaquet(catalogue, id), nomDeLaDenree(id)),
+        pieces: piecesDe(ici),
+        porte,
+        de,
+        limite: limiteAuFroid(catalogue, rejeu, id, porte, aujourdhui),
+        congelable: porte === "frigo" && seCongele(catalogue, id),
+      });
+    }
   }
   return out.sort((a, b) => a.nom.localeCompare(b.nom, "fr"));
 }

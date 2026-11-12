@@ -48,6 +48,8 @@ ordre: [primeur, boucherie, poissonnerie, crèmerie, frais, épicerie, surgelés
 centraux:
   rayons: [boucherie, poissonnerie, crèmerie]
   ids:
+    # T187 — sorti de la poissonnerie (rayon surgelés), il reste le poisson.
+    - colin-surgele
     # Légumineuses et céréales sèches
     - lentilles-seches
     - pois-chiches
@@ -236,7 +238,6 @@ rayons:
     - saucisson-sec
   poissonnerie:
     - saumon
-    - colin-surgele
     - sardines-boite
     # Poissons fumés du chapitre lunchbox : ils se mangent froids, sans
     # cuisson, ce qui est exactement ce qu'un déjeuner emporté demande.
@@ -463,6 +464,10 @@ rayons:
     - haricots-verts-surgeles
     - champignons-surgeles
     - legumes-surgeles
+    # T187 — le colin ACHETÉ SURGELÉ était rangé en poissonnerie : ajouté au
+    # stock, il finissait au frigo. Son rayon dit sa porte, donc il vit ici ;
+    # il reste central par `centraux.ids` (le poisson d'un plat de poisson).
+    - colin-surgele
 
 placard:
   - huile-olive

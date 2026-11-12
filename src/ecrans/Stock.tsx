@@ -41,6 +41,7 @@ import {
   useSemaine,
 } from "../db/hooks";
 import { corrigerLigne, corrigerPieces, deplacer, releverZone } from "../db/journal";
+import { CONGELO, phraseDeLimite, ZONES_FROID } from "../model/froid";
 import {
   poserPlancher,
   poserPlancherDenree,
@@ -321,7 +322,7 @@ function Contenu({ jeu, calc }: { jeu: Jeu; calc: Calcul }) {
       <Produits
         titre="Rentrés, à ranger au placard"
         liste={hors.filter((h) => h.porte === "placard")}
-        zones={vue.gardeManger.zones}
+        zones={[...ZONES_FROID.map((z) => ({ id: z.id, nom: z.label })), ...vue.gardeManger.zones]}
       />
 
       <GardeManger vue={vue.gardeManger} placard={placard} />
@@ -542,7 +543,11 @@ function Appareil({
         <Lot key={l.cle} lot={l} retirer={retirer} />
       ))}
       {produits.map((h) => (
-        <Produit key={h.id} h={h} />
+        <Produit
+          key={`${h.id}|${h.de ?? ""}`}
+          h={h}
+          zones={ZONES_FROID.filter((z) => z.id !== espace).map((z) => ({ id: z.id, nom: z.label }))}
+        />
       ))}
       {!ici.length && !produits.length ? <div className="co-vide">Rien ici.</div> : null}
 
@@ -830,21 +835,35 @@ function GardeManger({
 
 /** Une denrée achetée hors relevé — voir `horsDuReleve`. */
 function Produit({ h, zones }: { h: HorsReleve; zones?: readonly { id: string; nom: string }[] }) {
+  // T187 — CE QUI PRESSE SE VOIT : la viande et le poisson frais ont deux
+  // jours devant eux, et c'est la ligne qui doit le dire, pas la mémoire.
+  const presse = h.limite !== null && h.limite.jours <= 1;
   return (
     <div className="co-lot">
       <span style={{ flex: 1 }}>
         <div className="nom">{h.nom}</div>
+        {h.limite ? <div className={`ou${presse ? " st-presse" : ""}`}>{phraseDeLimite(h.limite)}</div> : null}
         <Corriger
           nom={h.nom}
           ingredient={h.id}
           unites={h.unites}
           pieces={h.pieces}
           zone={null}
-          {...(zones ? { bouger: { de: null, zones } } : {})}
+          {...(zones ? { bouger: { de: h.de, zones } } : {})}
         />
+        {h.congelable ? (
+          <button
+            className="btn btn-ghost st-petit"
+            aria-label={`congeler : ${h.nom}`}
+            onClick={() => void deplacer(base, h.id, h.de, CONGELO, null)}
+          >
+            Congeler
+          </button>
+        ) : null}
       </span>
       <span>
         <div className="q">{h.quantite}</div>
+        {presse ? <div className="src estime">pressé</div> : null}
       </span>
     </div>
   );
@@ -867,7 +886,7 @@ function Produits({
         {titre}
       </div>
       {liste.map((h) => (
-        <Produit key={h.id} h={h} {...(zones ? { zones } : {})} />
+        <Produit key={`${h.id}|${h.de ?? ""}`} h={h} {...(zones ? { zones } : {})} />
       ))}
     </>
   );
