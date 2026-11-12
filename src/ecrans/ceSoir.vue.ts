@@ -95,7 +95,7 @@ export function nomCourt(nom: string): string {
 export function ligneAchats(c: CarteDuSoir): string {
   const n = c.manque.length;
   if (n === 0) return "Rien à acheter";
-  const noms = c.manque.map((a) => nomCourt(a.nom));
+  const noms = c.manque.map((a) => `${nomCourt(a.nom)}${a.pasAssez ? " (pas assez)" : ""}`);
   // HORS SAISON SE DIT : la carte est descendue sous les autres pour ça, et une
   // ligne qui le tairait ferait croire à un oubli du classement.
   if (c.horsSaison.length) {

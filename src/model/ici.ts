@@ -30,7 +30,7 @@
 // cartes.
 
 import { retenir } from "./remplacants";
-import { commeIngredient } from "./calcul";
+import { commeIngredient, facteur } from "./calcul";
 import { contexte, type Classe, type EtatIngredient, type Rejeu } from "./journal";
 import type { Catalogue, Ingredient, Plat } from "./types";
 
@@ -106,6 +106,59 @@ export function ceQuiEstIci(
 export interface Article {
   id: string;
   nom: string;
+  /** T185 — il y en a, mais moins que la recette n'en demande. */
+  pasAssez?: boolean;
+}
+
+/** Pour une ligne d'un plat, ce qu'il y a au stock suffit-il ? */
+export type Suffit = (plat: Plat, ligne: Ingredient, id: string) => boolean;
+
+/**
+ * T185 — « il y en a » ne veut pas dire « il y en a assez ».
+ *
+ * DEUX ŒUFS NE FONT PAS UNE OMELETTE DE SIX. `ceQuiEstIci` répond oui ou non ;
+ * la proposition du soir disait donc « rien à acheter » devant un stock qui
+ * contenait l'ingrédient, en n'importe quelle quantité. On compare ici ce que
+ * le rejeu compte à ce que la recette demande pour le foyer (`facteur`), dans
+ * les deux cas où les deux se comptent pareil : des grammes contre des
+ * grammes, des pièces contre des pièces.
+ *
+ * DANS LE DOUTE, ÇA SUFFIT. Un lot pesé « à l'œil », une recette en cuillères,
+ * un ingrédient du placard « toujours là » : on ne sait pas comparer, et l'on
+ * garde la réponse d'avant plutôt que d'inventer un manque. Une marge de 10 %
+ * absorbe l'arrondi d'une balance et d'un relevé.
+ */
+export function suffitAuStock(catalogue: Catalogue, rejeu: Rejeu): Suffit {
+  const ctx = contexte(catalogue);
+  const par = new Map<string, EtatIngredient[]>();
+  for (const e of rejeu.parIngredient.values()) {
+    const id = ctx.alias(e.ingredient);
+    par.set(id, [...(par.get(id) ?? []), e]);
+  }
+  const pieces = (e: EtatIngredient): number | null => {
+    let n = 0;
+    for (const l of e.lots) {
+      if (!l.parUnite || l.parUnite.unit !== "pièce") return null;
+      n += l.unites * l.parUnite.amount + (l.entame ?? 0);
+      if (l.etat === "entame" && l.entame == null) return null;
+    }
+    return n;
+  };
+  return (plat, ligne, id) => {
+    const etats = par.get(id);
+    if (!etats?.length) return true;
+    const besoin = ligne.qty * facteur(plat, catalogue.foyer.parts) * 0.9;
+    if (ligne.unit === "g") {
+      if (etats.some((e) => e.grammes == null)) return true;
+      return etats.reduce((s, e) => s + e.grammes!, 0) >= besoin;
+    }
+    if (ligne.unit === "pièce") {
+      const n = etats.map(pieces);
+      if (n.some((x) => x == null)) return true;
+      return n.reduce((s: number, x) => s + x!, 0) >= besoin;
+    }
+    return true;
+  };
 }
 
 export interface CeQuiManque {
@@ -142,6 +195,7 @@ export function ceQuiManque(
   plat: Plat,
   ici: ReadonlySet<string>,
   plein = false,
+  suffit?: Suffit,
 ): CeQuiManque {
   const alias = (id: string): string => catalogue.rayons.aliases[id] ?? id;
   const manquants = (lignes: readonly Ingredient[]): Article[] => {
@@ -150,7 +204,13 @@ export function ceQuiManque(
       if (ing.base || ing.assaisonnement) continue;
       // T167 — un remplaçant qui est là vaut l'original.
       const id = alias(retenir(ing, (x) => ici.has(x), alias).id);
-      if (ici.has(id) || vus.has(id)) continue;
+      if (vus.has(id)) continue;
+      if (ici.has(id)) {
+        // T185 — là, mais pas assez : la ligne reste à acheter.
+        if (!suffit || suffit(plat, ing, id)) continue;
+        vus.set(id, { id, nom: ing.nom, pasAssez: true });
+        continue;
+      }
       vus.set(id, { id, nom: ing.nom });
     }
     return [...vus.values()];

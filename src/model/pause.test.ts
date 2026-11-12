@@ -9,7 +9,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, test } from "vitest";
 import { lireCatalogue } from "./catalogue";
 import type { LotInitial } from "./depot";
-import { ceQuiEstIci, ceQuiManque, estLa } from "./ici";
+import { ceQuiEstIci, ceQuiManque, estLa, suffitAuStock } from "./ici";
 import { calculer } from "./calcul";
 import { creerJeu, type Jeu } from "./jeu";
 import { contexte, rejouer, type Evenement } from "./journal";
@@ -322,7 +322,11 @@ describe("ce qui doit être mangé passe devant, même devant zéro article", ()
         { type: "lentilles-vertes-cuites", kind: "base", qty: { amount: 400, unit: "g" }, qty_band: "2-repas", born, location: "frigo", ref: "2" },
       ],
     });
-    const tete = proposition.cartes[0]!;
+    // T185 — le plat qui la finit demande du tofu fumé : un jour sans courses,
+    // il ne se fait pas ce soir. Il mène « Voir plus », la main ne promet rien
+    // qu'il faille acheter.
+    expect(proposition.cartes.every((c) => c.manque.length === 0)).toBe(true);
+    const tete = proposition.plus[0]!;
     expect(tete.presse).not.toBeNull();
     expect(tete.carte.chaine).toBe(true);
   });
@@ -621,5 +625,54 @@ describe("un plat posé mais pas cuisiné ne laisse aucun reste dans « ce qui a
     const p = proposerCeSoir({ jeu, savoir, recents: new Set(), maintenant });
     expect(p.attend).toEqual([]);
     expect([...p.cartes, ...p.plus].every((c) => c.attend === null && !(c.presse && "type" in c.presse))).toBe(true);
+  });
+});
+
+/* ═════════════════════ T185 — avec ce qui est là, et pas trois soupes (12/11) */
+
+describe("T185 — un jour sans courses, la main se fait avec ce qui est là", () => {
+  test("rien à acheter dans la main : la carte à un article passe derrière « Voir plus »", () => {
+    const { proposition } = monde({ evts: [fondRentre(veille(LUNDI))] });
+    expect(proposition.cartes.length).toBeGreaterThan(0);
+    expect(proposition.cartes.every((c) => c.manque.length === 0)).toBe(true);
+  });
+
+  test("deux œufs ne font pas une frittata de six : l'œuf manque, « pas assez »", () => {
+    const jour = veille(LUNDI);
+    const rejeu = rejouer(catalogue, [{
+      sorte: "entree", jour, saisi: jour, maj: 1,
+      lignes: [{ ingredient: "oeufs", unites: 1, parUnite: { amount: 2, unit: "pièce" }, zone: null, etat: "sec" }],
+    }], contexte(catalogue), iso(LUNDI));
+    const ici = ceQuiEstIci(catalogue, [], rejeu, iso(LUNDI));
+    expect(ici.has("oeufs")).toBe(true);
+    const p = plat("frittata-petits-pois-cebettes");
+    const suffit = suffitAuStock(catalogue, rejeu);
+    const oeuf = ceQuiManque(catalogue, p, ici, false, suffit).ingredients.find((a) => a.id === "oeufs");
+    expect(oeuf?.pasAssez).toBe(true);
+    // Sans la question de la quantité, on croyait les avoir.
+    expect(ceQuiManque(catalogue, p, ici).ingredients.some((a) => a.id === "oeufs")).toBe(false);
+  });
+
+  test("une douzaine suffit, et un lot non compté ne fabrique pas de manque", () => {
+    const jour = veille(LUNDI);
+    const avec = (parUnite: { amount: number; unit: string } | null) =>
+      suffitAuStock(catalogue, rejouer(catalogue, [{
+        sorte: "entree", jour, saisi: jour, maj: 1,
+        lignes: [{ ingredient: "oeufs", unites: 2, parUnite, zone: null, etat: "sec" }],
+      }], contexte(catalogue), iso(LUNDI)));
+    const p = plat("frittata-petits-pois-cebettes");
+    const ligne = p.ingredients.find((i) => i.id === "oeufs")!;
+    expect(avec({ amount: 6, unit: "pièce" })(p, ligne, "oeufs")).toBe(true);
+    expect(avec(null)(p, ligne, "oeufs")).toBe(true);
+  });
+
+  test("pas deux cartes du même format quand d'autres se font", () => {
+    for (const d of [LUNDI, MERCREDI]) {
+      const { proposition } = monde({ maintenant: d, evts: [fondRentre(veille(d))] });
+      const formats = proposition.cartes.slice(0, 3).map((c) => c.plat.format).filter((f) => f !== null);
+      const autres = proposition.plus.some((c) => c.plat.format && !formats.includes(c.plat.format)
+        && c.horsSaison.length === 0 && (proposition.jourDeCourses || c.manque.length === 0));
+      if (autres) expect(new Set(formats).size).toBe(formats.length);
+    }
   });
 });

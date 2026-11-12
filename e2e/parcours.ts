@@ -273,3 +273,19 @@ export async function ouvrirReglages(page: Page): Promise<void> {
   await b.waitFor({ timeout: 15_000 }).catch(() => undefined);
   if ((await b.count()) && (await b.getAttribute("aria-expanded")) === "false") await b.click();
 }
+
+/**
+ * T185 — le prochain jour de courses (mercredi ou samedi), aujourd'hui compris.
+ *
+ * UN JOUR SANS COURSES, LA MAIN DU SOIR NE GARDE QUE CE QUI SE FAIT SANS RIEN
+ * ACHETER — et la base de démo n'a pas de quoi faire un dîner entier. Les
+ * parcours qui traversent « Je lance ça » se placent donc un jour de courses :
+ * ce qu'ils testent est le geste, pas le rang.
+ */
+export function jourDeCoursesISO(): string {
+  const d = new Date();
+  while (d.getDay() !== 3 && d.getDay() !== 6) d.setDate(d.getDate() + 1);
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const jj = String(d.getDate()).padStart(2, "0");
+  return `${d.getFullYear()}-${mm}-${jj}`;
+}

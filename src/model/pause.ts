@@ -46,7 +46,7 @@
 import { dejeunerDuStock, fourneeAProposer, fruitsAuDelaDuGouter, fruitsMurs, partsAuFrigoDemain, midiDeDemain, type DejeunerDuStock, type Fournee, type MidiDeDemain } from "./repas";
 import { marque, SEUIL_A_MANGER } from "./axe";
 import { Depot, horlogesDu, type LigneDepot, type LotInitial } from "./depot";
-import { ceQuiEstIci, ceQuiManque, ceQueLaCarteDitIci, type Article } from "./ici";
+import { ceQuiEstIci, ceQuiManque, ceQueLaCarteDitIci, suffitAuStock, type Article } from "./ici";
 import { HEURE } from "./heures";
 import type { Jeu } from "./jeu";
 import { deSaison, saisonDuPlat } from "./saisons";
@@ -537,6 +537,7 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
   const date = jour0.date;
   const iso = isoLocal(maintenant);
   const ici = ceQuiEstIci(catalogue, jeu.gardeManger, savoir.rejeu, iso);
+  const suffit = suffitAuStock(catalogue, savoir.rejeu);
   // T155 — ce que le frigo tiendra encore demain midi : le dîner ne s'agrandit
   // que du reste (`midiDeDemain`).
   const auFrigo = partsAuFrigoDemain(catalogue, jeu.stock, maintenant);
@@ -566,7 +567,7 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
     vusASortir.add(x.type);
     const preneurs = catalogue.plats
       .filter((p) => p.creneaux.includes("diner") && p.accepts.some((a) => a.type === x.type))
-      .map((p) => ({ p, n: ceQuiManque(catalogue, p, ici).ingredients.length }))
+      .map((p) => ({ p, n: ceQuiManque(catalogue, p, ici, false, suffit).ingredients.length }))
       .sort((a, b) => a.n - b.n || a.p.titre.localeCompare(b.p.titre, "fr"));
     aSortir.push({ lot: x, plat: preneurs[0]?.p ?? null });
   }
@@ -583,10 +584,13 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
     // faudrait cuisiner la base avant — c'est une journée, pas une pause.
     if (carte.manque) continue;
 
-    const { ingredients: manque, aCote } = ceQuiManque(catalogue, p, ici, carte.plein);
+    const { ingredients: manque, aCote } = ceQuiManque(catalogue, p, ici, carte.plein, suffit);
     const horsSaison = manque.filter((a) => deSaison(catalogue, a.id, mois) === false);
+    // Les lignes du « sans reste » comptent aussi : le jarret d'un bouillon
+    // fait sans reste est central comme une ligne de la recette (T185).
+    const lignesDuPlat = [...p.ingredients, ...(carte.plein && p.sansReste ? p.sansReste.ingredients : [])];
     const manqueCentral = manque.some((a) =>
-      p.ingredients.some((i) => (catalogue.rayons.aliases[i.id] ?? i.id) === a.id && central(p, i)),
+      lignesDuPlat.some((i) => (catalogue.rayons.aliases[i.id] ?? i.id) === a.id && central(p, i)),
     );
 
     let presse: CarteDuSoir["presse"] = null;
@@ -659,12 +663,29 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
   cartes.sort(ordre(jourDeCourses));
 
   // LA MAIN : les trois premiers que l'on peut faire ce soir. Un jour sans
-  // courses, « faire ce soir » exclut ce qui demande deux achats ou plus ; et
-  // aucun jour ne fait ce qui attend un légume hors saison — le marché du
-  // samedi n'a pas d'orties en octobre.
+  // courses, « faire ce soir » veut dire AVEC CE QUI EST LÀ, sans rien acheter
+  // (T185, 12/11 : « je ne vais pas courir en courses tous les jours ») — la
+  // carte à un article passe derrière « Voir plus », où elle le dit. Aucun
+  // jour ne fait ce qui attend un légume hors saison.
   const faisable = (c: CarteDuSoir): boolean =>
-    c.horsSaison.length === 0 && (jourDeCourses || c.manque.length === 0 || (c.manque.length === 1 && !c.manqueCentral));
-  const main = cartes.filter(faisable).slice(0, TAILLE);
+    c.horsSaison.length === 0 && (jourDeCourses || c.manque.length === 0);
+  // T185 — PAS TROIS SOUPES (12/11). Un format par carte d'abord ; s'il n'y a
+  // pas trois formats faisables ce soir, on complète avec ce qui se fait
+  // plutôt que de laisser une place vide.
+  const faisables = cartes.filter(faisable);
+  const main: CarteDuSoir[] = [];
+  const formats = new Set<string>();
+  for (const c of faisables) {
+    if (main.length === TAILLE) break;
+    if (c.plat.format && formats.has(c.plat.format)) continue;
+    main.push(c);
+    if (c.plat.format) formats.add(c.plat.format);
+  }
+  for (const c of faisables) {
+    if (main.length === TAILLE) break;
+    if (!main.includes(c)) main.push(c);
+  }
+  main.sort((a, b) => cartes.indexOf(a) - cartes.indexOf(b));
 
   // LA QUATRIÈME PLACE EST AUX LÉGUMINEUSES, et seulement quand aucune des
   // trois n'en est (#70). Un pas doux : on ne déloge personne, on ajoute une
