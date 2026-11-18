@@ -14,7 +14,7 @@
 // doigt de l'utilisateur et sa liste.
 
 import { readFileSync } from "node:fs";
-import { expect, test } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 import { attendreLApp, ouvrirRangement, poserUnPlat } from "./parcours";
 
 /**
@@ -63,17 +63,34 @@ function cibles(): Map<string, { zone: string; ingredient: string }> {
   return out;
 }
 
+/**
+ * L'ingrédient comme MOT, pas comme sous-chaîne (T192). « ail » se lit dans
+ * « foies de volaille » comme dans « herbes fraîches… ail des ours » : un
+ * `hasText` en chaîne trouvait une autre ligne et faisait échouer le parcours
+ * sur une bonne réponse. Une ligne de courses porte son nom dans `.nom` :
+ * c'est ce nom, exact, qu'on vise. La section « Vous en avez » ne l'isole pas
+ * ainsi : on y cherche le mot entier.
+ */
+const echappe = (nom: string): string => nom.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const enMot = (nom: string): RegExp =>
+  new RegExp(`(^|[^\\p{L}])${echappe(nom)}($|[^\\p{L}])`, "iu");
+const ligneDe = (page: Page, nom: string): Locator =>
+  page.locator("button.co-art").filter({
+    has: page.locator(".nom", { hasText: new RegExp(`^\\s*${echappe(nom)}\\s*$`, "iu") }),
+  });
+
 test("relever une zone à vide met ce qui manque sur la liste de courses", async ({ page }) => {
   const parPlat = cibles();
   const titre = await poserUnPlat(page, (t) => parPlat.has(t));
   const { zone, ingredient } = parPlat.get(titre)!;
+  const mot = enMot(ingredient);
 
   // AVANT — la promesse de T24, qui doit continuer de tenir : ce dont le relevé
   // dit qu'il en reste ne s'achète pas les yeux fermés, il se vérifie.
   await page.goto("/#/cuisine/courses");
   await attendreLApp(page);
   await expect(page.locator(".co-vide", { hasText: "Vous en avez" })).toContainText(ingredient);
-  await expect(page.locator("button.co-art", { hasText: ingredient })).toHaveCount(0);
+  await expect(ligneDe(page, ingredient)).toHaveCount(0);
 
   // LE GESTE : ouvrir le placard, constater qu'il n'y a plus rien, le dire.
   await page.goto("/#/cuisine/stock");
@@ -94,13 +111,13 @@ test("relever une zone à vide met ce qui manque sur la liste de courses", async
   // à acheter. C'est la phrase entière de ce correctif.
   await page.goto("/#/cuisine/courses");
   await attendreLApp(page);
-  await expect(page.locator("button.co-art", { hasText: ingredient }).first()).toBeVisible();
+  await expect(ligneDe(page, ingredient).first()).toBeVisible();
   // PAR LE COMPTE, PAS PAR `not.toContainText` : la section « Vous en avez »
   // peut avoir DISPARU — c'était sa dernière ligne — et une assertion négative
   // sur un localisateur vide échoue au lieu de passer. Le dépôt connaît le
   // piège dans l'autre sens (`not.toHaveText` passe quand l'élément n'est plus
   // là) ; c'est la même leçon, prise par l'autre bout.
-  await expect(page.locator(".co-vide", { hasText: ingredient })).toHaveCount(0);
+  await expect(page.locator(".co-vide", { hasText: mot })).toHaveCount(0);
 
   // ET ÇA SURVIT AU RECHARGEMENT, parce que rien de tout ça n'est stocké : la
   // liste se recalcule, le niveau du placard se REJOUE depuis le journal. Si le
@@ -108,5 +125,5 @@ test("relever une zone à vide met ce qui manque sur la liste de courses", async
   // cacher dans « Vous en avez » au premier F5.
   await page.reload();
   await attendreLApp(page);
-  await expect(page.locator("button.co-art", { hasText: ingredient }).first()).toBeVisible();
+  await expect(ligneDe(page, ingredient).first()).toBeVisible();
 });
