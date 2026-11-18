@@ -13,11 +13,17 @@ await page.goto(`${process.env.URL || "http://localhost:4193"}/#/cuisine/stock`)
 const plan = page.getByRole("group", { name: /Plan de la cuisine/ });
 await plan.waitFor({ timeout: 30_000 }); await page.waitForTimeout(800);
 
-// Les lots du frigo et du congélateur se constatent un par un.
-for (let k = 0; k < 40; k++) {
-  const b = page.getByRole("button", { name: /Je n.en ai plus/ });
-  if (!(await b.count())) break;
-  await b.first().dispatchEvent("click"); await page.waitForTimeout(400);
+// Les lots du frigo et du congélateur se constatent un par un : on ouvre la
+// zone sur le plan, puis « Fini » sur chaque lot (T141).
+for (const zone of [/^Frigo/, /^Congélo/]) {
+  const ouvert = (await page.locator(".st-panneau .nom").first().innerText().catch(() => "")).trim();
+  if (!zone.test(ouvert)) { await plan.getByRole("button").filter({ hasText: zone }).first().dispatchEvent("click"); await page.waitForTimeout(500); }
+  for (let k = 0; k < 40; k++) {
+    const b = page.locator(".st-panneau").getByRole("button", { name: /^Fini$|Je n.en ai plus/ });
+    if (!(await b.count())) break;
+    await b.first().dispatchEvent("click"); await page.waitForTimeout(400);
+  }
+  console.log("lots retirés :", zone.source);
 }
 
 const zones = await plan.getByRole("button").allInnerTexts();

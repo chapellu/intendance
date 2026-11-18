@@ -460,9 +460,11 @@ async function plusDe(filtre) {
   await plan.waitFor({ timeout: 20_000 });
   await page.waitForTimeout(400);
   for (const zone of [/^Frigo/, /^Congélo/]) {
-    const bouton = plan.getByRole("button", { name: zone });
+    const bouton = plan.getByRole("button").filter({ hasText: zone });
     if (!(await bouton.count())) continue;
-    await tap(bouton.first()); await page.waitForTimeout(400);
+    // Le panneau de la zone peut être déjà ouvert : le toucher le refermerait.
+    const ouvert = (await page.locator(".st-panneau .nom").first().innerText().catch(() => "")).trim();
+    if (!zone.test(ouvert)) { await tap(bouton.first()); await page.waitForTimeout(400); }
     const lots = page.locator(".st-panneau .co-lot").filter({ has: page.getByRole("button", { name: /^Fini$|Je n.en ai plus/ }) });
     const n = await lots.count();
     for (let k = 0; k < n; k++) {
