@@ -1,0 +1,108 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T190).
+#
+# UNE POULE AU POT OÙ LE PETIT ÉPEAUTRE REMPLACE LES POMMES DE TERRE, et deux
+# repas : à midi la poule, les légumes et l'épeautre ; le soir le bouillon, avec
+# ce qui reste d'épeautre et de légumes recoupés en petits morceaux (ou des
+# petites pâtes, ou des flocons d'avoine). Le soir sort en `emits`.
+#
+# LA PAGE PARLE DE POMMES DE TERRE DANS LES ÉTAPES, PAS DANS LA LISTE : un reste
+# de la poule au pot d'origine. On encode la liste.
+#
+# POULET OU POULE : 1 h 30 pour un poulet, 2 h 30 pour une poule de réforme.
+# On encode le poulet, que le foyer achète ; la poule est un remplaçant.
+#
+# CE BOUILLON N'EST PAS `bouillon-pot-au-feu`, même s'il en ferait office pour
+# les soba p. 67 : le relier serait dire qu'un bouillon de volaille est un
+# bouillon de bœuf. Il reste un reste-plat, mangé tel quel.
+
+recipe:
+  id: poule-petit-epeautre
+  title: Poule au « potit » épeautre
+  format: mijote
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 132"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 132
+    saison: automne
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « pour 6 personnes »
+  time_min_total: 110       # hors trempage : 20 min de préparation + 1 h 30 de cuisson (poulet)
+  active_min: 25
+
+  apports:
+    proteine: viande-blanche
+    feculent: cereale
+    legumes: [racine, allium]
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: petit-epeautre, name: petit épeautre, qty: 500, unit: g}
+    - {id: poulet, name: "poulet bio (ou poule de réforme : compter 2 h 30)", qty: 1, unit: pièce}
+    - {id: oignon, name: oignons, qty: 3, unit: pièce}
+    - {id: carottes, name: petites carottes, qty: 6, unit: pièce}
+    - {id: poireau, name: "petits poireaux (ou 3 gros coupés en deux)", qty: 6, unit: pièce}
+    - {id: celeri-branche, name: "cœur de céleri branche, ou petit céleri-rave", qty: 1, unit: pièce, subs: [{id: celeri-rave, name: "petit céleri-rave", ratio: 1.0}]}
+    - {id: navets, name: navets, qty: 3, unit: pièce}
+    - {id: eau, name: eau, qty: 2.5, unit: l}
+    - {id: laurier, name: feuilles de laurier, qty: 3, unit: pièce, seasoning: true}
+    - {id: clous-girofle, name: clous de girofle, qty: 6, unit: pièce, seasoning: true}
+    - {id: thym-frais, name: thym ou sarriette, qty: 3, unit: brin, seasoning: true}
+    - {id: gros-sel, name: gros sel (c. à s. rases), qty: 2, unit: c. à s., seasoning: true}
+
+  steps:
+    - id: tremper
+      action: "Mettre le petit épeautre à tremper dans un grand volume d'eau"
+      needs: []
+      uses: [petit-epeautre]
+      time_min: 2
+      attended: false
+      attente_min: 720
+      attente_raison: "trempage d'une nuit, à lancer la veille"
+      kid: {age_min_months: 24, task: "verser l'épeautre dans le saladier d'eau"}
+    - id: eplucher
+      action: "Éplucher les légumes et les couper en gros morceaux ; carottes et poireaux peuvent rester entiers"
+      needs: []
+      uses: [oignon, carottes, poireau, celeri-branche, navets]
+      time_min: 15
+      kid: {age_min_months: 30, task: "laver les carottes et les poireaux sous l'eau"}
+    - id: marmite
+      action: "Mettre le poulet, les légumes et les aromates dans un très grand faitout, avec l'eau et le gros sel, et porter à ébullition"
+      needs: [simmer-large]
+      uses: [poulet, eau, laurier, clous-girofle, thym-frais, gros-sel]
+      time_min: 10
+    - id: mijoter
+      action: "Laisser cuire à petits bouillons"
+      needs: [simmer-large]
+      uses: []
+      time_min: 45
+      attended: false
+    - id: epeautre
+      action: "Rincer et égoutter le petit épeautre, puis l'ajouter dans le faitout pour les 45 dernières minutes"
+      needs: [simmer-large]
+      uses: []
+      time_min: 45
+      attended: false
+    - id: servir
+      action: "Sortir poulet, légumes et épeautre à l'écumoire, garder le bouillon pour le soir, et servir"
+      astuce: "Avec une vinaigrette à la moutarde à l'ancienne et au persil, par exemple."
+      needs: []
+      uses: []
+      time_min: 5
+  # PAS DE PRÉLÈVEMENT BÉBÉ : 2 c. à s. de gros sel dans l'eau à la minute zéro,
+  # le cas du pot-au-feu p. 182.
+
+  emits:
+    - kind: reste-plat
+      type: bouillon-poule-epeautre
+      qty_band: 1-repas
+      keeps: {frigo_days: 3, congelo: true}
+      note: "le repas du soir : le bouillon avec l'épeautre et les légumes restants recoupés, ou des petites pâtes, ou des flocons d'avoine"
+
+  plan_b: []

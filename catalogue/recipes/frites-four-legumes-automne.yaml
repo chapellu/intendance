@@ -1,0 +1,73 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T191).
+#
+# UN ACCOMPAGNEMENT : « servir bien chaud à midi en accompagnement », ou le
+# soir avec une salade. Rôle `accompagnement`, donc pas de `format`.
+#
+# LE CÉLERI DIVISE LES ENFANTS, dit l'autrice : le panais le remplace, plus
+# doux. C'est le remplaçant de la ligne.
+
+recipe:
+  id: frites-four-legumes-automne
+  title: « Frites au four » de légumes d'automne
+  role: accompagnement
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 138"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 138
+    saison: automne
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes »
+  time_min_total: 35        # en-tête : 10 min de préparation + 20 min de four, plus le préchauffage
+  active_min: 12
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: [cucurbitacee, racine]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: potimarron, name: demi-potimarron de taille moyenne, qty: 0.5, unit: pièce}
+    - {id: celeri-rave, name: demi-céleri-rave de taille moyenne, qty: 0.5, unit: pièce, subs: [{id: panais, name: "panais, plus doux pour les enfants", ratio: 1.0}]}
+    - {id: carottes, name: carottes, qty: 6, unit: pièce}
+    - {id: huile-olive, name: "huile d'olive, ou de tournesol désodorisée pour un goût plus « frites »", qty: 6, unit: c. à s., subs: [{id: huile-tournesol, name: "huile de tournesol désodorisée", ratio: 1.0}]}
+    - {id: paprika, name: paprika (c. à c. rases), qty: 2, unit: c. à c.}
+    - {id: origan, name: origan séché (c. à c. rase), qty: 1, unit: c. à c.}
+    - {id: sel, name: sel (c. à c. rase), qty: 1, unit: c. à c., seasoning: true}
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 220 °C, en chaleur tournante si possible"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: tailler
+      action: "Éplucher le céleri ; ouvrir le potimarron, l'épépiner ; brosser les carottes et les fendre en deux ; tailler potimarron et céleri en frites"
+      needs: []
+      uses: [potimarron, celeri-rave, carottes]
+      time_min: 8
+      kid: {age_min_months: 30, task: "brosser les carottes sous l'eau"}
+    - id: enrober
+      action: "Brasser les légumes dans un grand saladier avec l'huile, le paprika, l'origan et le sel"
+      needs: []
+      uses: [huile-olive, paprika, origan, sel]
+      time_min: 2
+      kid: {age_min_months: 24, task: "brasser les frites dans le saladier"}
+    - id: cuire
+      action: "Les étaler sur une lèchefrite huilée ou chemisée et enfourner 20 min"
+      astuce: "Surveiller les dernières minutes : ça brunit vite."
+      needs: [bake]
+      uses: []
+      time_min: 20
+      attended: false
+  # PAS DE PRÉLÈVEMENT BÉBÉ : le sel est dans la marinade, avant le four.
+
+  plan_b: []

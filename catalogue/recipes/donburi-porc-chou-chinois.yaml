@@ -1,0 +1,88 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T192).
+#
+# LE BOL-REPAS JAPONAIS, ET LE PLAT DU MENU TYPE DE L'AUTRICE (journée 2,
+# déjeuner) : plat complet, sans entrée ni fromage, une part mise de côté
+# pour le déjeuner du lendemain de l'adulte absent.
+#
+# LE CHOU CHINOIS SE TAILLE SELON L'ENDROIT : grossièrement pour les feuilles
+# tendres, finement près du trognon, pour que tout cuise en même temps.
+
+recipe:
+  id: donburi-porc-chou-chinois
+  title: Donburi au porc et chou chinois
+  format: poelee
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 193"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 193
+    saison: hiver
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes, plat complet pour midi »
+  time_min_total: 20        # en-tête : 5 min de préparation + 15 min de cuisson
+  active_min: 15
+
+  apports:
+    proteine: viande-blanche
+    feculent: riz
+    legumes: [crucifere, allium]
+    profil: poele
+    origine: japonais
+
+  ingredients:
+    - {id: riz, name: riz basmati complet ou semi-complet, qty: 350, unit: g}
+    - {id: chou-chinois, name: "gros chou chinois, bien vert", qty: 1, unit: pièce}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: porc-saute, name: "sauté de porc, en petits morceaux d'environ 1,5 cm", qty: 400, unit: g}
+    - {id: huile-olive, name: "huile d'olive (+ un peu pour le riz)", qty: 5, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre-5-baies, name: poivre 5 baies, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: riz
+      action: "Cuire le riz à l'eau bouillante salée, le temps indiqué sur le paquet"
+      needs: [boil]
+      uses: [riz]
+      time_min: 15
+      attended: false
+      charge_partielle: true
+    - id: emincer
+      action: "Pendant ce temps : émincer l'oignon et le chou, grossièrement pour les feuilles tendres, finement près du trognon"
+      astuce: "Plus on approche du trognon, plus on taille fin : tout cuit alors en même temps."
+      needs: []
+      uses: [oignon, chou-chinois]
+      time_min: 5
+      parallel_with: riz
+      kid: {age_min_months: 30, task: "rincer le chou chinois sous l'eau"}
+    - id: dorer
+      action: "Faire dorer le porc et l'oignon à l'huile dans une grande poêle ou un wok"
+      needs: [pan-fry]
+      uses: [porc-saute, huile-olive]
+      time_min: 7
+    - id: chou
+      action: "Ajouter le chou, saler, poivrer et cuire quelques minutes, le temps que les feuilles tombent"
+      needs: [pan-fry]
+      uses: [sel, poivre-5-baies]
+      time_min: 4
+    - id: servir
+      action: "Égoutter le riz, l'arroser d'un filet d'huile, et servir avec le chou sauté au porc"
+      needs: []
+      uses: []
+      time_min: 2
+  # PAS DE PRÉLÈVEMENT BÉBÉ AU SENS DU MODÈLE : riz à l'eau salée, chou salé
+  # à la poêle. L'autrice écrase pourtant la part du bébé « avec un peu de
+  # jus » dans son menu type — même cas que les croquettes p. 45.
+
+  emits:
+    - kind: reste-plat
+      type: donburi-porc
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: false}
+      note: "la part du déjeuner du lendemain, dans le menu type de l'autrice"
+
+  plan_b: []

@@ -1,0 +1,112 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T191).
+#
+# LA DAUBE AU VIN BLANC, POUR LES ENFANTS QUI BOUDENT LE VIN ROUGE. Commencée
+# la veille au soir, deux heures de mijotage, une nuit de repos, et on réduit
+# le jus le lendemain jusqu'à un suc sirupeux.
+#
+# ⚠ LA NUIT DE REPOS À TEMPÉRATURE AMBIANTE N'EST PAS ENCODÉE TELLE QUELLE.
+# L'autrice laisse la cocotte refroidir toute la nuit hors du frigo. Les
+# recommandations sanitaires courantes demandent de mettre un plat de viande
+# au frais dans les deux heures qui suivent la cuisson : l'étape dit de le
+# laisser tiédir puis de le mettre au frais, et l'astuce le justifie.
+#
+# LES CÈPES SÉCHÉS SONT FACULTATIFS (« mais très bon ! »).
+
+recipe:
+  id: jarret-braise-vin-blanc
+  title: Jarret braisé au vin blanc et petits légumes
+  format: mijote
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 150"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 150
+    saison: automne
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « pour 6 personnes »
+  time_min_total: 160       # en-tête : 10 min de préparation + 2 h 30 de cuisson ; hors nuit de repos
+  active_min: 25
+
+  apports:
+    proteine: viande-rouge
+    feculent: aucun
+    legumes: [racine, allium]
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: jarret-boeuf, name: jarret de bœuf ficelé en rôti, qty: 1.2, unit: kg}
+    - {id: oignon, name: oignons, qty: 2, unit: pièce}
+    - {id: poireau, name: blancs de poireau, qty: 6, unit: pièce}
+    - {id: carottes, name: carottes, qty: 6, unit: pièce}
+    - {id: ail, name: ail épluché, qty: 3, unit: gousse}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: cepes-seches, name: cèpes séchés, qty: 35, unit: g, optional: true}
+    - {id: jambon-cru, name: « lardons » de jambon cru, qty: 100, unit: g}
+    - {id: vin-blanc-sec, name: vin blanc sec, qty: 25, unit: cl}
+    - {id: eau, name: "eau, à hauteur", qty: 1.5, unit: l}
+    - {id: persil, name: persil frais pour servir, qty: 4, unit: brin, optional: true}
+    - {id: laurier, name: feuilles de laurier, qty: 3, unit: pièce, seasoning: true}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  # « avec une céréale au choix »
+  avec:
+    - {id: riz, name: "riz, ou une autre céréale au choix", qty: 350, unit: g}
+
+  steps:
+    - id: saisir
+      action: "Dans une large cocotte en fonte, dorer le dessus du rôti à l'huile jusqu'à une belle coloration, puis le réserver"
+      needs: [simmer-large]
+      uses: [jarret-boeuf, huile-olive]
+      time_min: 8
+    - id: revenir
+      action: "Faire revenir les oignons et les lardons dans la cocotte jusqu'à ce que tout soit bien doré"
+      needs: [simmer-large]
+      uses: [oignon, jambon-cru]
+      time_min: 8
+    - id: mouiller
+      action: "Remettre le rôti face dorée dessus, avec poireaux et carottes en gros tronçons, laurier, ail, cèpes, sel et poivre ; verser le vin et couvrir d'eau à hauteur"
+      needs: [simmer-large]
+      uses: [poireau, carottes, laurier, ail, cepes-seches, sel, poivre, vin-blanc-sec, eau]
+      time_min: 6
+    - id: mijoter
+      action: "Mijoter 2 h à couvert, sur le plus petit feu : le jus doit à peine frémir"
+      needs: [simmer-large]
+      uses: []
+      time_min: 120
+      attended: false
+    - id: reposer
+      action: "Laisser tiédir à couvert, puis mettre la cocotte au frais pour la nuit"
+      astuce: "Le repos d'une nuit donne parfum et moelleux à la viande. L'autrice le fait à température ambiante ; au frigo, c'est plus sûr pour un plat de viande."
+      needs: []
+      uses: []
+      time_min: 2
+      attente_min: 720
+      attente_raison: "une nuit de repos : le plat est meilleur réchauffé"
+    - id: reduire
+      action: "Réchauffer en faisant réduire le jus au maximum, jusqu'à un suc épais, légèrement sirupeux"
+      needs: [simmer-large]
+      uses: []
+      time_min: 25
+    - id: servir
+      action: "Servir bien chaud, les assiettes parsemées de persil"
+      needs: []
+      uses: [persil]
+      time_min: 2
+  # PAS DE PRÉLÈVEMENT BÉBÉ : vin blanc, lardons de jambon cru et sel dès la
+  # mise en cocotte.
+
+  emits:
+    - kind: reste-plat
+      type: jarret-braise
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: true}
+      note: "encore meilleur réchauffé, comme le plat lui-même"
+
+  plan_b: []

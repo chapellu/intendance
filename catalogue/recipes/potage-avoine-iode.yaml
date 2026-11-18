@@ -1,0 +1,81 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T190).
+#
+# LE SECOND PLAT D'UNE PAIRE, COMME LES CROQUETTES p. 45 : « le fumet restant
+# de la recette précédente ». Sans moules la veille, pas de potage — d'où
+# `required` et les moules en repli.
+#
+# FILTRER, MÊME SI ON Y PERD LE PERSIL ET LES ÉCHALOTES : c'est ce qui retire
+# les éclats de coquille et le sable.
+
+recipe:
+  id: potage-avoine-iode
+  title: Potage crémeux à l'avoine et saveurs iodées
+  format: soupe
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 129"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 129
+    saison: automne
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes »
+  time_min_total: 30        # en-tête : 15 min de préparation + ~15 min de cuisson
+  active_min: 15
+
+  accepts:
+    - type: fumet-moules
+      qty: {amount: 350, unit: ml}
+      required: true
+      fallback_recipe: moules-spaghettis
+
+  apports:
+    proteine: aucune
+    feculent: avoine
+    legumes: [allium, racine, champignon]
+    profil: soupe
+    origine: francais
+
+  ingredients:
+    - {id: fumet-moules, name: "le fumet des moules (jus de cuisson au persil, échalote et vin blanc)", qty: 350, unit: ml, from_accepts: true}
+    - {id: poireau, name: poireau, qty: 1, unit: pièce}
+    - {id: carottes, name: carotte, qty: 1, unit: pièce}
+    - {id: champignons-paris, name: champignons, qty: 10, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: flocons-avoine, name: flocons d'avoine (c. à s. un peu bombées), qty: 4, unit: c. à s.}
+    - {id: creme, name: "crème fleurette, ou crème de soja", qty: 20, unit: cl, subs: [{id: creme-soja, name: "crème de soja", ratio: 1.0}]}
+    - {id: persil, name: un peu de persil, qty: 3, unit: brin, optional: true}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: filtrer
+      action: "Filtrer le fumet"
+      astuce: "On y perd le persil et les échalotes, mais c'est ce qui retire les éclats de coquille et le sable."
+      needs: []
+      uses: [fumet-moules]
+      time_min: 2
+    - id: revenir
+      action: "Émincer finement poireau, carotte et champignons, puis les faire revenir doucement à l'huile, jusqu'à ce qu'ils soient tendres et légèrement dorés"
+      needs: [simmer-large]
+      uses: [poireau, carottes, champignons-paris, huile-olive]
+      time_min: 13
+    - id: mouiller
+      action: "Ajouter le fumet, les flocons d'avoine et le persil haché, saler et poivrer, porter à ébullition et cuire 5 min"
+      needs: [simmer-large]
+      uses: [flocons-avoine, persil, sel, poivre]
+      time_min: 7
+      kid: {age_min_months: 30, task: "verser les flocons d'avoine dans la casserole"}
+    - id: cremer
+      action: "Délayer la crème, rectifier l'assaisonnement et servir aussitôt"
+      needs: []
+      uses: [creme]
+      time_min: 2
+  # PAS DE PRÉLÈVEMENT BÉBÉ : le fumet porte le vin et le sel des moules dès
+  # la première louche.
+
+  plan_b: []

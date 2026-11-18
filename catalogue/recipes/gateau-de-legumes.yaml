@@ -1,0 +1,89 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T192).
+#
+# UNE RECETTE AU VERRE À MOUTARDE : un verre de farine, un de lait, un de
+# fromage râpé tassé, quatre œufs, deux verres de légumes poêlés. Le verre
+# fait environ 20 cl ; les grammes ci-dessous en sont la conversion, à vérifier.
+#
+# UNE RECETTE À DÉCLINER : épinards, poireaux, chou chinois, carottes,
+# champignons, poivrons l'été. Et une recette « reste » : elle transforme
+# des légumes poêlés de la veille. Les blettes sont la version de la page.
+#
+# 600 G DE BLETTES, DEUX VERRES DANS LE GÂTEAU : le reste se sert à côté.
+
+recipe:
+  id: gateau-de-legumes
+  title: Gâteau de légumes
+  format: quiche
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 190"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 190
+    saison: hiver
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 5          # « 4 (avec une salade) à 6 (avec du riz) »
+  time_min_total: 45        # en-tête : 5 min + 30 min de four ; on ajoute la poêlée de blettes
+  active_min: 15
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: [feuille, allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: blettes, name: "petites blettes à feuilles, côtes et feuilles", qty: 600, unit: g}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: farine-complete, name: "farine T110 de blé ou de grand épeautre (1 verre à moutarde)", qty: 110, unit: g, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
+    - {id: lait, name: "lait de vache ou végétal (1 verre à moutarde)", qty: 20, unit: cl}
+    - {id: fromage-rape, name: "fromage râpé bien tassé, au choix (1 verre à moutarde)", qty: 100, unit: g}
+    - {id: oeufs, name: œufs, qty: 4, unit: pièce}
+    - {id: sel, name: sel, qty: 2, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  # « repas complet avec une salade »
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 180 °C"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: blettes
+      action: "Faire revenir l'oignon émincé à l'huile dans une grande poêle, ajouter les blettes en lamelles, saler, couvrir et cuire 10 min en remuant"
+      needs: [pan-fry]
+      uses: [oignon, huile-olive, blettes, sel]
+      time_min: 12
+    - id: appareil
+      action: "Mélanger dans un saladier farine, œufs, lait, fromage, sel et poivre, puis y ajouter deux verres de blettes bien égouttées"
+      needs: []
+      uses: [farine-complete, oeufs, lait, fromage-rape, poivre]
+      time_min: 3
+      kid: {age_min_months: 30, task: "remplir les verres à moutarde et les vider dans le saladier"}
+    - id: cuire
+      action: "Verser dans un moule à manqué d'environ 24 cm chemisé, et enfourner 30 min"
+      astuce: "Il se mange tiède ou à température ambiante. Le reste de blettes se sert à côté."
+      needs: [bake]
+      uses: []
+      time_min: 30
+      attended: false
+  # PAS DE PRÉLÈVEMENT BÉBÉ : les blettes sont salées dès la poêle.
+
+  emits:
+    - kind: reste-plat
+      type: gateau-de-legumes
+      qty_band: 1-repas
+      keeps: {frigo_days: 3, congelo: false}
+      note: "se mange froid ou tiède : une boîte de déjeuner"
+
+  plan_b: []

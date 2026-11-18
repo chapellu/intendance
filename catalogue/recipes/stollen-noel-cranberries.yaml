@@ -1,0 +1,128 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T192).
+#
+# LA PÂTE D'AMANDE EST UN INGRÉDIENT, EN ATTENDANT LA p. 214. La page renvoie
+# à la pâte d'amande maison de la p. 214, pas encore encodée : `accepts` exige
+# une recette de repli qui existe. Le jour où la p. 214 entre, la ligne devient
+# une arête (`from_accepts`) et `pate-amande` cesse d'être un achat.
+#
+# UNE BRIOCHE ALSACIENNE À COMMENCER LA VEILLE : pâte pétrie en fin
+# d'après-midi, 2 h au frigo, façonnage, une nuit au frais, une heure à
+# température ambiante, et la cuisson part du four FROID, cocotte couverte.
+#
+# SANS ROBOT : l'autrice le prévoit, 7 minutes à la cuillère en bois en
+# étirant bien la pâte vers le haut.
+#
+# LES AMANDES ENTIÈRES SONT DANS LA LISTE, PAS DANS LES ÉTAPES. On les ajoute
+# avec les cranberries, en fin de pétrissage : c'est une lecture, pas le livre.
+#
+# LE RESTE DE L'ANNÉE, SANS LA PÂTE D'AMANDE : brioche, briochettes, brioche
+# tressée, tropézienne. Non encodé.
+
+recipe:
+  id: stollen-noel-cranberries
+  title: Stollen de Noël aux cranberries
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 204"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 204
+    saison: hiver
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 9          # « pour 8 à 10 personnes »
+  lot_entier: true
+  time_min_total: 70        # 20 min de préparation + 45 min de four ; hors repos et nuit
+  active_min: 25
+
+  creneaux: [petit-dejeuner, gouter, dessert]
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: pate-amande, name: "pâte d'amande maison (p. 214)", qty: 200, unit: g}
+    - {id: farine-complete, name: farine de blé ou de grand épeautre T80, qty: 500, unit: g, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
+    - {id: creme-coco, name: crème de coco liquide en briquette, qty: 40, unit: cl}
+    - {id: sirop-agave, name: sirop d'agave ou miel liquide, qty: 5, unit: cl}
+    - {id: lait-soja-vanille, name: lait de soja-vanille, qty: 10, unit: cl}
+    - {id: extrait-vanille, name: extrait de vanille liquide, qty: 1, unit: grosse c. à s.}
+    - {id: rhum, name: rhum ambré, qty: 2, unit: grosse c. à s.}
+    - {id: levure-boulangere, name: levure de boulangerie déshydratée, qty: 1, unit: sachet}
+    - {id: cranberries, name: cranberries, qty: 125, unit: g}
+    - {id: gingembre-confit, name: gingembre confit en petits cubes, qty: 65, unit: g, optional: true}
+    - {id: amandes, name: amandes entières, qty: 65, unit: g}
+    - {id: sucre-glace, name: sucre glace pour saupoudrer, qty: 2, unit: c. à s.}
+    - {id: sel, name: sel fin, qty: 5, unit: g, seasoning: true}
+
+  steps:
+    - id: liquides
+      action: "En fin d'après-midi, faire tiédir crème de coco, sirop, lait, rhum et vanille, puis y délayer la levure en fouettant"
+      astuce: "Pas plus de 45 °C : au-delà, la chaleur tue la levure."
+      needs: [simmer]
+      uses: [creme-coco, sirop-agave, lait-soja-vanille, rhum, extrait-vanille, levure-boulangere]
+      time_min: 5
+      charge_partielle: true   # la casserole tient les liquides, pas la brioche
+    - id: petrir
+      action: "Verser les liquides sur la farine et le sel, et pétrir 7 min au robot à vitesse lente, ou à la cuillère en étirant la pâte vers le haut"
+      needs: []
+      uses: [farine-complete, sel]
+      time_min: 8
+      kid: {age_min_months: 36, task: "pétrir à la cuillère en bois, à tour de rôle"}
+    - id: garnir
+      action: "En fin de pétrissage, ajouter les cranberries, le gingembre et les amandes, couvrir et mettre au frigo"
+      astuce: "La pâte paraît trop collante : c'est normal, le froid la raffermit."
+      needs: []
+      uses: [cranberries, gingembre-confit, amandes]
+      time_min: 2
+      attente_min: 120
+      attente_raison: "2 h au frigo pour que la pâte durcisse"
+    - id: faconner
+      action: "Aplatir la pâte sur un plan fariné en une bande de 22 × 12 cm, y poser un boudin de pâte d'amande de 20 cm et la replier dessus"
+      needs: []
+      uses: [pate-amande]
+      time_min: 5
+      kid: {age_min_months: 36, task: "rouler le boudin de pâte d'amande"}
+    - id: nuit
+      action: "Poser le stollen dans une cocotte ovale farinée, couvrir et garder au frais"
+      needs: []
+      uses: []
+      time_min: 2
+      attente_min: 720
+      attente_raison: "une nuit au frais"
+    - id: temperer
+      action: "Sortir la cocotte et la laisser à température ambiante"
+      needs: []
+      uses: []
+      time_min: 1
+      attente_min: 60
+      attente_raison: "une heure hors du frigo avant la cuisson"
+    - id: cuire
+      action: "Enfourner la cocotte couverte dans le four froid, réglé à 240 °C, et cuire 45 min"
+      needs: [bake]
+      uses: []
+      time_min: 45
+      attended: false
+    - id: finir
+      action: "Laisser refroidir entièrement, saupoudrer de sucre glace et découper"
+      needs: []
+      uses: [sucre-glace]
+      time_min: 2
+      attente_min: 60
+      attente_raison: "refroidissement complet"
+
+  emits:
+    - kind: reste-plat
+      type: stollen
+      qty_band: 3-repas
+      keeps: {frigo_days: 0, congelo: true}
+      note: "se garde quelques jours emballé, à température ambiante ; se congèle en tranches"
+
+  plan_b: []

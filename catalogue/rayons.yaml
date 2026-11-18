@@ -193,6 +193,15 @@ rayons:
     - menthe
     - radis
     - jeunes-pousses
+    # Arrivés avec le printemps de Chioca (p. 42 et 46, T189) : le gingembre
+    # frais du dahl, la betterave CRUE de la tartinade rose.
+    - gingembre
+    - betterave
+    # T191 — le zeste du moelleux p. 153.
+    - orange
+    # T192 — les blettes entières (côtes et feuilles) du gâteau p. 190 ;
+    # `vert-de-blette` n'en est que les feuilles.
+    - blettes
     # ── Arrivés avec un TICKET DE CAISSE (Grand Frais, 2026-09-12), ni avec une
     # recette ni avec un relevé. C'est la SECONDE fois que le vocabulaire grandit
     # sans qu'on cuisine — la première était le relevé du 26/08, quelques lignes
@@ -217,6 +226,13 @@ rayons:
     - raisins
     - mirabelles
   boucherie:
+    # Arrivés avec l'hiver de Chioca (p. 193 et 197, T192).
+    - porc-saute
+    - saucisses
+    # Arrivés avec l'automne de Chioca (p. 134 à 150, T191).
+    - porc-hache
+    - foies-volaille
+    - lardons
     - boeuf-hache
     - agneau-collier
     - roti-porc
@@ -244,6 +260,8 @@ rayons:
     - truite-fumee
     - cabillaud
     - anchois
+    # Arrivées avec l'automne de Chioca (p. 128, T190). Vivantes à l'achat.
+    - moules
   crèmerie:
     - oeufs
     - fromage-rape
@@ -278,6 +296,19 @@ rayons:
     # pour sa digestibilité, pas pour son goût, et les deux ne se remplacent pas.
     - tofu-lactofermente
   épicerie:
+    # Arrivés avec l'hiver de Chioca (p. 154 à 207, T192). `pate-amande` est la
+    # pâte d'amande de la p. 214, achetée tant que la page n'est pas encodée.
+    - noix-coco-rapee
+    - crozets
+    - pate-amande
+    - cranberries
+    - gingembre-confit
+    - amandes
+    - gomme-guar
+    # Arrivés avec l'automne de Chioca (p. 134 à 153, T191).
+    - cognac
+    - cepes-seches
+    - sucre-glace
     - lentilles-seches
     - pates
     - pates-lasagne

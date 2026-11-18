@@ -210,8 +210,9 @@ describe("ce que la recherche montre du plat qu'on a nommé", () => {
   test("elle rend des cartes entières, prêtes à poser", () => {
     // DEUX GNOCCHIS DEPUIS LE FOND DE ROULEMENT (2026-10-18) : la version aux
     // courgettes et celle aux surgelés. Le fait remesuré, pas le test contourné.
+    // TROIS DEPUIS T191 : les gnocchis de polenta à la bolognaise (p. 137).
     const r = chercher(jeu, jeu.choix, creneau(0, "diner"), "gnocchi");
-    expect(r.total).toBe(2);
+    expect(r.total).toBe(3);
     const t = r.trouvailles.find((x) => x.carte.plat.id === "gnocchis-poelees")!;
     expect(t).toBeDefined();
     expect(t.ecarts).toEqual([]);
@@ -238,7 +239,7 @@ describe("ce que la recherche montre du plat qu'on a nommé", () => {
     // été proposé sans qu'aucun écart de l'offre puisse l'expliquer.
     const slot = creneau(0, "diner");
     const r = chercher(jeu, jeu.choix, slot, "gnocchi", savoirAvec({}, ["gnocchis-poelees"]));
-    const e = r.trouvailles[0]!.ecarts;
+    const e = r.trouvailles.find((x) => x.carte.plat.id === "gnocchis-poelees")!.ecarts;
     expect(e.map((x) => x.cle)).toEqual(["recent"]);
     expect(e[0]!.texte).toContain(`${catalogue.equilibre.main.cooldown_jours} jours`);
   });

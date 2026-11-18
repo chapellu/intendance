@@ -1,0 +1,97 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T192).
+#
+# LA PÂTE D'AMANDE EST UN INGRÉDIENT, EN ATTENDANT LA p. 214. La page renvoie
+# à la pâte d'amande maison de la p. 214, pas encore encodée : `accepts` exige
+# une recette de repli qui existe. Le jour où la p. 214 entre, la ligne devient
+# une arête (`from_accepts`) et `pate-amande` cesse d'être un achat.
+#
+# UNE GALETTE AUX POIRES ET À LA CRÈME DE PÂTE D'AMANDE, plus digeste qu'une
+# frangipane. Les poires caramélisées doivent avoir rendu tout leur jus :
+# sinon la pâte est détrempée.
+#
+# DORÉE AU LAIT DE SOJA-VANILLE, PAS AU JAUNE D'ŒUF : la variante végétale de
+# l'autrice, aussi dorée. Variante sans lactose (non encodée) : pâtes
+# feuilletées végétales et poires dorées dans 3 c. à s. d'huile de tournesol.
+
+recipe:
+  id: galette-rois-poires-pate-amande
+  title: Galette des rois aux poires caramélisées et pâte d'amande
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 203"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 203
+    saison: hiver
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « pour 8 personnes »
+  lot_entier: true
+  time_min_total: 50        # en-tête : 10 min de préparation + ~10 min de poêle + 25 min de four, plus le préchauffage
+  active_min: 20
+
+  creneaux: [gouter, dessert]
+
+  apports:
+    proteine: aucune
+    feculent: pate-brisee
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: poires, name: poires mûres à point, qty: 600, unit: g}
+    - {id: beurre, name: beurre, qty: 35, unit: g}
+    - {id: sucre-vanille, name: sachets de sucre vanillé, qty: 2, unit: sachet}
+    - {id: pate-amande, name: "pâte d'amande maison (p. 214)", qty: 250, unit: g}
+    - {id: lait-soja-vanille, name: "lait de soja-vanille (+ un peu pour dorer)", qty: 17, unit: cl}
+    - {id: farine, name: "farine blanche ou semi-complète, de blé ou d'épeautre", qty: 25, unit: g}
+    - {id: pate-feuilletee, name: rouleaux de pâte feuilletée pur beurre, qty: 2, unit: pièce}
+
+  steps:
+    - id: poires
+      action: "Éplucher les poires, les couper en quartiers et les dorer au beurre avec le sucre vanillé une dizaine de minutes"
+      astuce: "Jusqu'à une belle couleur caramel et plus une goutte de jus : sinon la pâte serait détrempée."
+      needs: [pan-fry]
+      uses: [poires, beurre, sucre-vanille]
+      time_min: 15
+      charge_partielle: true   # la poêle tient les poires, pas la galette
+    - id: prechauffer
+      action: "Préchauffer le four à 220 °C"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: creme
+      action: "Mixer la pâte d'amande avec le lait de soja et la farine"
+      needs: [blend-smooth]
+      uses: [pate-amande, lait-soja-vanille, farine]
+      time_min: 3
+    - id: monter
+      action: "Étaler une pâte sur la plaque, y étaler la crème sur 20 cm, répartir les poires, cacher la fève, et couvrir de la seconde pâte"
+      needs: []
+      uses: [pate-feuilletee]
+      time_min: 4
+      kid: {age_min_months: 36, task: "cacher la fève"}
+    - id: decouper
+      action: "Souder les bords en appuyant légèrement, puis redécouper à la roulette autour d'un saladier de 25 cm"
+      needs: []
+      uses: []
+      time_min: 3
+    - id: dorer
+      action: "Badigeonner de lait de soja-vanille et dessiner un quadrillage à la pointe du couteau"
+      needs: []
+      uses: []
+      time_min: 2
+      kid: {age_min_months: 36, task: "badigeonner la galette au pinceau"}
+    - id: cuire
+      action: "Enfourner 25 min, en baissant un peu le four en fin de cuisson si elle dore trop vite"
+      needs: [bake]
+      uses: []
+      time_min: 25
+      attended: false
+
+  plan_b: []

@@ -1,0 +1,130 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T192).
+#
+# LE POULET DE NOËL : un poulet fermier farci, quatre heures à 150 °C en
+# cocotte, posé « à l'envers » pour que blancs et cuisses cuisent dans la
+# sauce, puis retourné, puis laqué à découvert. Pour 8 à 10.
+#
+# IL LAISSE UNE CARCASSE ET DE LA VIANDE : les deux sorties du poulet rôti,
+# que le cock-a-leekie p. 141 réclame.
+#
+# DEUX OIGNONS ET QUATRE GOUSSES D'AIL, EN UNE LIGNE CHACUN : un pour la
+# farce et un pour la cocotte, une gousse pour la farce et trois en chemise.
+# Deux lignes au même id auraient demandé un `ref:` pour rien.
+#
+# LA COCOTTE VA AU FOUR 4 H : celle du foyer (7,5 L) n'est déclarée que pour
+# le feu ; un roaster ou une cocotte en fonte va au four. Rien ne le vérifie.
+
+recipe:
+  id: poulet-4h-farci
+  title: « Poulet de 4 h » farci
+  format: piece
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 194"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 194
+    saison: hiver
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 9          # « pour 8 à 10 personnes »
+  lot_entier: true
+  time_min_total: 260       # en-tête : 15 min de préparation + 4 h de cuisson
+  active_min: 25
+
+  apports:
+    proteine: viande-blanche
+    feculent: aucun
+    legumes: [allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: poulet, name: "poulet fermier d'environ 2,2 kg", qty: 1, unit: pièce}
+    - {id: porc-hache, name: "échine de porc hachée par le boucher", qty: 600, unit: g}
+    - {id: oignon, name: "oignons (1 gros pour la farce, 1 pour la cocotte)", qty: 2, unit: pièce}
+    - {id: jambon-cru, name: jambon cru fumé ou speck, qty: 100, unit: g}
+    - {id: ail, name: "ail (1 gousse pour la farce, 3 en chemise)", qty: 4, unit: gousse}
+    - {id: persil, name: persil, qty: 15, unit: brin}
+    - {id: pain-levain, name: pain grillé, qty: 45, unit: g}
+    - {id: cepes-seches, name: "cèpes séchés (à défaut, d'autres champignons)", qty: 30, unit: g}
+    - {id: cognac, name: "armagnac, cognac ou whisky", qty: 1, unit: c. à s.}
+    - {id: huile-olive, name: huile d'olive, qty: 3, unit: c. à s.}
+    - {id: vin-blanc-sec, name: vin blanc, qty: 20, unit: cl}
+    - {id: laurier, name: feuilles de laurier, qty: 3, unit: pièce, seasoning: true}
+    - {id: sel, name: "sel fin (1 c. à c. pour la farce, un peu pour la cocotte)", qty: 1.5, unit: c. à c., seasoning: true}
+    - {id: poivre, name: "poivre moulu (1 c. à c. rase pour la farce)", qty: 1.5, unit: c. à c., seasoning: true}
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 150 °C"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: cepes
+      action: "Réhydrater les cèpes 5 min dans de l'eau bouillante, puis les égoutter"
+      needs: [boil]
+      uses: [cepes-seches]
+      time_min: 6
+      charge_partielle: true   # la casserole tient les cèpes, pas le poulet
+    - id: farce
+      action: "Mixer en gardant quelques morceaux un oignon, le jambon, une gousse, le persil, le pain, les cèpes, l'alcool, sel et poivre"
+      needs: [chop-coarse]
+      uses: [jambon-cru, persil, pain-levain, cognac]
+      time_min: 5
+    - id: farcir
+      action: "Malaxer à la main avec l'échine hachée, puis farcir le poulet en pressant pour en faire entrer le maximum"
+      needs: []
+      uses: [porc-hache, poulet]
+      time_min: 5
+      kid: {age_min_months: 36, task: "malaxer la farce à la main"}
+    - id: cocotte
+      action: "Dans une grande cocotte, mélanger l'autre oignon, le laurier, l'huile, l'ail en chemise, le vin, un peu de sel et de poivre, et y poser le poulet à l'envers"
+      astuce: "À l'envers : blancs et cuisses cuisent dans la sauce pendant la première partie."
+      needs: [bake]
+      uses: [oignon, ail, laurier, huile-olive, vin-blanc-sec, sel, poivre]
+      time_min: 3
+    - id: cuire-envers
+      action: "Cuire 2 h 30 à couvert"
+      needs: [bake]
+      uses: []
+      time_min: 150
+      attended: false
+    - id: retourner
+      action: "Retourner le poulet et cuire encore 1 h à couvert"
+      needs: [bake]
+      uses: []
+      time_min: 60
+      attended: false
+    - id: laquer
+      action: "Retirer le couvercle, arroser de sauce et faire dorer 30 min à 200 °C, en arrosant encore deux ou trois fois"
+      needs: [bake]
+      uses: []
+      time_min: 30
+      attended: true
+    - id: servir
+      action: "Servir aussitôt, avec une garniture au choix"
+      needs: []
+      uses: []
+      time_min: 2
+  # PAS DE PRÉLÈVEMENT BÉBÉ : farce salée, alcool, vin dans la cocotte.
+
+  emits:
+    - kind: base
+      type: poulet-cuit
+      qty_band: 2-repas
+      qty: {amount: 500, unit: g}
+      keeps: {frigo_days: 3, congelo: true}
+    - kind: base
+      type: carcasse-volaille
+      hors_table: true
+      qty_band: 1-repas
+      qty: {amount: 1, unit: pièce}
+      keeps: {frigo_days: 2}
+      note: "la carcasse et le jus : le cock-a-leekie de la p. 141"
+
+  plan_b: []

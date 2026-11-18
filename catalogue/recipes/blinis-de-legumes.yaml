@@ -1,0 +1,98 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T192).
+#
+# BLINIS À LA LEVURE DE BOULANGERIE, OU CROQUETTES À LA POUDRE À LEVER :
+# l'autrice donne les deux. On encode les blinis, la version de la page.
+#
+# LA LEVURE LÈVE PENDANT QU'ON PRÉPARE LES LÉGUMES : pas d'attente propre,
+# l'étape poireaux est en parallèle.
+#
+# DES PETITS CERCLES EN INOX, FACULTATIFS : sans eux, les blinis sont juste
+# moins ronds. La poêle doit être en céramique ou en tôle, pas en inox : le
+# foyer a les poêles Ingenio.
+
+recipe:
+  id: blinis-de-legumes
+  title: Blinis de légumes
+  format: galettes
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 200"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 200
+    saison: hiver
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « environ 12 blinis, 4 personnes en repas du soir avec une salade »
+    pieces: 12
+  time_min_total: 45        # 15 min de préparation + la poêlée + quelques minutes par face
+  active_min: 35
+
+  apports:
+    proteine: oeuf
+    feculent: avoine
+    legumes: [allium, racine]
+    profil: poele
+    origine: francais
+
+  ingredients:
+    - {id: poireau, name: "blancs de poireau (environ 3 gros poireaux)", qty: 400, unit: g}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: carottes, name: carotte, qty: 100, unit: g}
+    - {id: huile-olive, name: "huile d'olive (+ pour la poêle)", qty: 4, unit: c. à s.}
+    - {id: flocons-avoine, name: petits flocons d'avoine, qty: 85, unit: g}
+    - {id: farine-complete, name: farine T110 ou T150 de blé ou de grand épeautre, qty: 50, unit: g, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
+    - {id: eau, name: eau tiède, qty: 15, unit: cl}
+    - {id: oeufs, name: œufs, qty: 2, unit: pièce}
+    - {id: levure-boulangere, name: levure de boulangerie déshydratée, qty: 1, unit: sachet}
+    - {id: parmesan, name: parmesan râpé, qty: 50, unit: g}
+    - {id: sel, name: sel, qty: 2, unit: pincée, seasoning: true}
+    - {id: poivre-5-baies, name: poivre 5 baies, qty: 1, unit: pincée, seasoning: true}
+
+  # « en repas du soir avec une salade »
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: levure
+      action: "Délayer la levure dans l'eau tiède"
+      astuce: "Pas plus de 45 °C : au-delà, la chaleur tue la levure."
+      needs: []
+      uses: [levure-boulangere, eau]
+      time_min: 2
+    - id: pate
+      action: "Mêler flocons, farine et un peu de sel, ajouter la levure délayée et les œufs, fouetter et laisser lever dans un endroit tiède"
+      needs: []
+      uses: [flocons-avoine, farine-complete, oeufs]
+      time_min: 3
+      kid: {age_min_months: 30, task: "casser les œufs et fouetter"}
+    - id: poireaux
+      action: "Émincer finement poireaux et oignon, et les faire revenir avec 3 c. à s. d'huile et un peu de sel, en remuant souvent"
+      needs: [pan-fry]
+      uses: [poireau, oignon, huile-olive, sel]
+      time_min: 15
+    - id: carotte
+      action: "Pendant ce temps, râper la carotte à la grosse grille"
+      needs: []
+      uses: [carottes]
+      time_min: 3
+      parallel_with: poireaux
+    - id: lier
+      action: "Feu éteint, ajouter le parmesan et la carotte aux poireaux, puis verser cette poêlée non brûlante dans la pâte et mélanger"
+      needs: []
+      uses: [parmesan, poivre-5-baies]
+      time_min: 3
+    - id: cuire
+      action: "Dans une poêle huilée en céramique ou en tôle, verser une grosse cuillerée de pâte par blini, couvrir quelques minutes à feu doux, retourner et finir à couvert"
+      astuce: "Pas d'inox : ça accroche. Des petits cercles huilés font des blinis bien ronds, mais ne sont pas indispensables."
+      needs: [pan-fry]
+      uses: []
+      time_min: 15
+      attended: true
+  # PAS DE PRÉLÈVEMENT BÉBÉ : la pâte et les poireaux sont salés, le parmesan
+  # aussi.
+
+  plan_b: []

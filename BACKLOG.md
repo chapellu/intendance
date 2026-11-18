@@ -6461,3 +6461,121 @@ Fait :
 - marquées : toutes les lignes que leur nom disait facultatives (hors assaisonnements, déjà ignorés), le fromage servi à table ou parsemé à la fin quand il n'est pas la protéine du plat (pâtes bolognaise, minestrone, fajitas, hachis de lentilles, tian, salade César…), et les herbes fraîches de finition des salades, soupes et omelettes. Pas les plats dont l'herbe est dans le titre, ni le fromage d'un appareil ou d'une pâte.
 
 À relire par le foyer : la liste exacte est dans le diff de `catalogue/recipes/` — une ligne qu'il ne veut pas voir facultative se corrige en retirant `optional: true`.
+
+## T189 — Le printemps de *La cuisine bio du quotidien* est complet
+
+- [x] **T189 — Les p. 42 à 50 étaient au sommaire, pas dans l'app (18/11).**
+      Cinq pages photographiées, cinq plats encodés : le dahl de riz et
+      lentilles corail aux carottes (p. 42), les croquettes au parmesan et
+      restes de dahl (p. 45), les tartines-repas au chèvre frais (p. 46), les
+      bruschettas « express » aux champignons (p. 49) et la brouillade du
+      pêcheur (p. 50). Source : 66 sur 100, printemps 24 sur 24.
+
+      **LA PREMIÈRE ARÊTE ÉCRITE PAR LE LIVRE.** La p. 45 demande « 400 g de
+      dahl froid (voir recette précédente) » : le dahl émet 600 g de reste,
+      les croquettes l'`accepts` et le reprennent en repli. La règle de
+      l'autrice (1 œuf, 2 c. à s. de farine, 50 g de parmesan pour 200 g de
+      légumineuses crémeuses) vaudrait pour les lentilles p. 173 et les pois
+      cassés p. 197 ; le modèle ne sait pas dire « n'importe quelle
+      légumineuse crémeuse, à proportion », elle reste en commentaire.
+
+      **LES TARTINES SE HACHENT, ELLES NE SE MIXENT PAS.** Le foyer n'a pas
+      de mixeur ; l'étape le dit, et l'astuce garde le geste de l'autrice
+      (brèves impulsions) pour qui en a un. Deux ingrédients nouveaux au
+      primeur : `gingembre` et `betterave` (crue), au bac.
+
+      Reste ouvert : rien ne relie les deux dahls de lentilles corail du
+      catalogue (celui-ci et celui du fond) — même limite que les deux ragoûts
+      de lentilles vertes.
+
+## T190 — L'automne de *La cuisine bio du quotidien*, p. 128 à 133
+
+- [x] **T190 — Cinq pages d'automne encodées sur photo (18/11).** Moules de
+      bouchot aux spaghettis (p. 128), potage crémeux à l'avoine et saveurs
+      iodées (p. 129), galette de céréales « maxi-format » (p. 130), poule au
+      « potit » épeautre (p. 132), gratin de courge au riz (p. 133). Source :
+      71 sur 100.
+
+      **LA DEUXIÈME PAIRE ÉCRITE PAR LE LIVRE.** Le potage se fait avec « le
+      fumet restant de la recette précédente » : les moules émettent 350 ml de
+      jus filtré (`fumet-moules`), le potage l'`accepts`, les moules en repli.
+
+      **LA POULE NOURRIT DEUX REPAS** : midi la poule et ses légumes, le soir
+      le bouillon avec l'épeautre restant (`bouillon-poule-epeautre`). Le
+      trempage de la veille est une `attente_min` de 12 h. Le bouillon n'est
+      pas relié à `bouillon-pot-au-feu` : volaille n'est pas bœuf.
+
+      Nouvel ingrédient : `moules`, en poissonnerie et dans la famille
+      « viande et poisson frais » (2 jours au frigo).
+
+      Reste ouvert : la variante légère du soir de la galette (sans jambon ni
+      fromage, 12 à 15 min de four) n'est qu'un commentaire.
+
+## T191 — L'automne de *La cuisine bio du quotidien*, p. 134 à 153
+
+- [x] **T191 — Dix pages d'automne encodées sur photo (18/11).** Terrine à
+      l'échalote, noisettes et champignons (p. 134), gnocchis de polenta à la
+      bolognaise (p. 137), « frites au four » de légumes d'automne (p. 138,
+      accompagnement), cock-a-leekie (p. 141), marbré aux légumes-racines
+      (p. 142), chou farci facile (p. 145), tranches de butternut aux lardons
+      (p. 146), « casspoulet » (p. 149), jarret braisé au vin blanc (p. 150),
+      moelleux « mystère » à l'orange (p. 153). Source : 81 sur 100 ; l'automne
+      n'attend plus que la p. 154.
+
+      **LE COCK-A-LEEKIE FINIT LE POULET RÔTI** : il `accepts` la carcasse
+      (requise, poulet rôti en repli) et un peu de viande (`poulet-cuit`,
+      facultative), deux sorties déjà émises par le poulet rôti.
+
+      **LA VEILLE, QUATRE FOIS** : trempage des haricots (p. 149), nuit au
+      frais du chou farci (p. 145), nuit de repos du jarret (p. 150), deux
+      heures de refroidissement de la polenta (p. 137) — toutes en
+      `attente_min`, que l'app place d'elle-même.
+
+      **LE JARRET NE PASSE PAS LA NUIT HORS DU FRIGO.** Le livre le laisse
+      refroidir à température ambiante ; l'étape dit de le mettre au frais une
+      fois tiède, et l'astuce le dit en clair.
+
+      **LA TERRINE POUR QUINZE NE TIENT PAS DANS LA COCOTTE** au sens du
+      contrôle de vaisselle — mais la cocotte n'y fait revenir que les
+      légumes : `charge_partielle`. La terrine de 3 L, le moule à cake de
+      30 cm et le moule à savarin ne sont pas dans l'inventaire du foyer, et
+      rien ne le vérifie. Deux recettes cuisent à la vapeur (p. 142, 153) :
+      la cocotte de 7,5 L porte `steam`.
+
+      Nouveaux ids : `porc-hache`, `foies-volaille`, `lardons` (boucherie),
+      `cognac`, `cepes-seches`, `sucre-glace` (épicerie), `orange` (primeur).
+
+## T192 — L'automne fini, l'hiver jusqu'à la p. 207
+
+- [x] **T192 — Quinze pages encodées sur photo (18/11).** Gros cookie à
+      partager (p. 154, qui ferme l'automne), coquilles de poisson (p. 184),
+      cordons bleus de restes de rôti (p. 186), colcannon (p. 189), gâteau de
+      légumes (p. 190), soupe de crêpes de Haute-Autriche (p. 192), donburi au
+      porc (p. 193), poulet de 4 h farci (p. 194), mitonnée de pois cassés
+      (p. 197), gratin de crozets (p. 198), hachis Parmentier 50/50 (p. 199),
+      blinis de légumes (p. 200), galette des rois aux poires (p. 203),
+      stollen (p. 204), crème dessert au chocolat (p. 207). Source : 96 sur 100.
+
+      **TROIS ARÊTES DE PLUS, TOUTES SUR DES SORTIES QUI EXISTAIENT.** Les
+      cordons bleus prennent le `roti-froid` du rôti au bouillon ; la soupe de
+      crêpes prend 2 L de `bouillon-pot-au-feu` (le pot-au-feu en laisse 2,5,
+      et sa note annonçait déjà la p. 192) ; le poulet de 4 h émet carcasse et
+      viande, que le cock-a-leekie p. 141 réclame.
+
+      **LA PÂTE D'AMANDE S'ACHÈTE EN ATTENDANT LA p. 214.** La galette et le
+      stollen la demandent ; une arête vers une recette absente serait refusée.
+      Elle est un ingrédient (`pate-amande`) jusqu'à l'encodage de la p. 214.
+
+      **CE QUE LE LIVRE NE DIT PAS, DIT COMME TEL.** Les coquilles n'ont pas de
+      température de four : l'astuce donne 200 °C et le signale comme une
+      estimation. Le stollen liste des amandes qu'aucune étape n'emploie : on
+      les ajoute avec les cranberries, et la fiche le dit.
+
+      Reste ouvert : le bouillon de la poule p. 132 vaut pour la soupe de
+      crêpes (« ou de poule au pot »), mais son type ne la nourrit pas ; les
+      pois cassés et les lentilles ne nourrissent pas les croquettes p. 45.
+      Les deux demandent qu'une arête accepte plusieurs types.
+
+      Nouveaux ids : `porc-saute`, `saucisses` (boucherie), `blettes`
+      (primeur), `noix-coco-rapee`, `crozets`, `pate-amande`, `cranberries`,
+      `gingembre-confit`, `amandes`, `gomme-guar` (épicerie).

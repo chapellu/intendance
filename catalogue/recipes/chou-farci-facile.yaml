@@ -1,0 +1,127 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T191).
+#
+# LE CHOU FARCI D'AUVERGNE, MONTÉ EN TERRINE : on empile feuilles et farce
+# dans un long moule au lieu de reformer le chou. Sans graisse ajoutée.
+#
+# À PRÉPARER LA VEILLE : une nuit au frais avant de démouler et de couper.
+# Encodé en `attente_min` sur le refroidissement.
+#
+# LE MOULE DE 30 CM N'EST PAS DANS L'INVENTAIRE ; une cocotte en fonte
+# convient, avec un quart d'heure de plus et son couvercle.
+#
+# Servi froid, ou réchauffé à la poêle avec des pommes de terre.
+
+recipe:
+  id: chou-farci-facile
+  title: Chou farci facile
+  format: terrine
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 145"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 145
+    saison: automne
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « pour environ 15 tranches »
+    pieces: 15
+  lot_entier: true
+  time_min_total: 110       # en-tête : 35 min de préparation + 10 min + 1 h de cuisson ; hors nuit au frais
+  active_min: 35
+
+  apports:
+    proteine: viande-blanche
+    feculent: farine
+    legumes: [crucifere, allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: roti-porc, name: "rôti de porc dans l'échine ou l'épaule (surtout pas le filet)", qty: 800, unit: g}
+    - {id: chou-frise, name: chou vert frisé, qty: 1, unit: pièce}
+    - {id: jambon, name: jambon cuit, qty: 300, unit: g}
+    - {id: ail, name: ail, qty: 1, unit: gousse}
+    - {id: oignon-rouge, name: gros oignon rouge, qty: 1, unit: pièce}
+    - {id: oeufs, name: œufs, qty: 2, unit: pièce}
+    - {id: cantal, name: cantal entre-deux, qty: 140, unit: g}
+    - {id: persil, name: quelques brins de persil, qty: 4, unit: brin}
+    - {id: farine-complete, name: farine complète ou semi-complète, qty: 100, unit: g}
+    - {id: huile-olive, name: un peu d'huile d'olive pour le moule, qty: 1, unit: c. à s.}
+    - {id: eau, name: eau du blanchiment, qty: 4, unit: l}
+    - {id: laurier, name: feuilles de laurier, qty: 5, unit: pièce, seasoning: true}
+    - {id: clous-girofle, name: clous de girofle, qty: 5, unit: pièce, seasoning: true}
+    - {id: gros-sel, name: gros sel pour l'eau, qty: 1, unit: c. à s., seasoning: true}
+    - {id: poivre, name: poivre gris moulu (c. à c. rase), qty: 1, unit: c. à c., seasoning: true}
+    - {id: sel, name: sel fin, qty: 18, unit: g, seasoning: true}
+
+  steps:
+    - id: eau
+      action: "Porter à ébullition un grand faitout d'eau salée avec le laurier et les clous de girofle"
+      needs: [simmer-large]
+      uses: [eau, gros-sel, laurier, clous-girofle]
+      time_min: 10
+      attended: false
+    - id: feuilles
+      action: "Pendant ce temps : détacher les feuilles du chou (jeter les 2 ou 3 premières, très foncées), retirer les grosses côtes et rincer"
+      needs: []
+      uses: [chou-frise]
+      time_min: 8
+      parallel_with: eau
+      kid: {age_min_months: 30, task: "rincer les feuilles de chou"}
+    - id: blanchir
+      action: "Plonger les feuilles dans l'eau bouillante, couvrir, cuire 10 min et égoutter"
+      needs: [simmer-large]
+      uses: []
+      time_min: 12
+      attended: false
+    - id: farce
+      action: "Pendant ce temps : couper le rôti en petits morceaux et le hacher avec le jambon, le cantal, l'ail, le persil et l'oignon"
+      needs: [chop-coarse]
+      uses: [roti-porc, jambon, cantal, ail, persil, oignon-rouge]
+      time_min: 15
+      parallel_with: blanchir
+    - id: lier
+      action: "Ajouter le sel, le poivre, la farine et les œufs, et bien malaxer à la main"
+      needs: []
+      uses: [sel, poivre, farine-complete, oeufs]
+      time_min: 3
+      kid: {age_min_months: 36, task: "malaxer la farce à la main"}
+    - id: prechauffer
+      action: "Préchauffer le four à 180 °C ; huiler un long moule à cake d'environ 30 cm et le chemiser de feuilles de chou égouttées"
+      needs: [bake]
+      uses: [huile-olive]
+      time_min: 3
+    - id: monter
+      action: "Alterner couches de farce et de feuilles de chou jusqu'à épuisement"
+      needs: []
+      uses: []
+      time_min: 5
+      kid: {age_min_months: 36, task: "poser les feuilles de chou entre deux couches"}
+    - id: cuire
+      action: "Entourer de papier cuisson et enfourner 1 h (1 h 15 en cocotte en fonte, couvercle posé)"
+      needs: [bake]
+      uses: []
+      time_min: 60
+      attended: false
+    - id: refroidir
+      action: "Laisser refroidir une nuit au frais avant de démouler"
+      astuce: "Couper avec un couteau lisse bien aiguisé ; servir froid, ou réchauffé à la poêle."
+      needs: []
+      uses: []
+      time_min: 2
+      attente_min: 720
+      attente_raison: "une nuit au frais : la terrine se tient et se coupe"
+  # PAS DE PRÉLÈVEMENT BÉBÉ : jambon, cantal et 18 g de sel dans une farce crue.
+
+  emits:
+    - kind: reste-plat
+      type: chou-farci-terrine
+      qty_band: 3-repas
+      keeps: {frigo_days: 3, congelo: true}
+      note: "des repas tout prêts : froid, ou en tranches réchauffées à la poêle avec des pommes de terre"
+
+  plan_b: []
