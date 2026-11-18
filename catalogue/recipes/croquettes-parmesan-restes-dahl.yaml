@@ -1,0 +1,94 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T189).
+#
+# LE PREMIER PLAT DU LIVRE ÉCRIT POUR UN RESTE D'UNE AUTRE PAGE. La p. 45
+# demande « 400 g de dahl froid (voir recette précédente) » : l'arête est dans
+# le livre, pas déduite. `accepts` la porte, avec le dahl p. 42 en repli.
+#
+# LA RÈGLE DE L'AUTRICE VAUT PLUS QUE LA RECETTE : 1 œuf, 2 c. à s. de farine
+# et 50 g de parmesan pour 200 g de légumineuses crémeuses — et pas de farine
+# si elles sont sèches (pois chiches, haricots blancs). Elle cite les lentilles
+# p. 173 et les pois cassés p. 197. Le modèle ne sait pas dire « n'importe quel
+# reste de légumineuse crémeuse, à proportion » : l'arête ne nomme que le dahl,
+# et la règle reste ici, en commentaire, jusqu'à ce qu'il le sache.
+
+recipe:
+  id: croquettes-parmesan-restes-dahl
+  title: Croquettes dorées au parmesan et restes de dahl
+  format: galettes
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 45"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 45
+    saison: printemps
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour quatre affamés »
+    pieces: 12              # « pour environ 12 croquettes »
+  time_min_total: 25        # en-tête : 15 min de préparation + « quelques min » de cuisson
+  active_min: 15
+
+  accepts:
+    - type: dahl-riz-lentilles-corail
+      qty: {amount: 400, unit: g}
+      required: true
+      fallback_recipe: dahl-riz-lentilles-corail-carottes
+
+  apports:
+    proteine: legumineuse
+    feculent: riz
+    legumes: [racine, allium]
+    profil: poele
+    origine: francais
+
+  ingredients:
+    - {id: dahl-froid, name: dahl froid, qty: 400, unit: g, from_accepts: true}
+    - {id: oeufs, name: œufs, qty: 2, unit: pièce}
+    - {id: farine-complete, name: "farine semi-complète de blé ou de grand épeautre (+ un peu pour enrober)", qty: 4, unit: c. à s., subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
+    - {id: parmesan, name: parmesan râpé, qty: 100, unit: g}
+    - {id: persil, name: persil haché, qty: 3, unit: brin, optional: true}
+    - {id: huile-olive, name: huile d'olive pour la poêle, qty: 2, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: melanger
+      action: "Mélanger dans un saladier le dahl froid, les œufs, la farine, le parmesan et le persil, puis saler et poivrer"
+      astuce: "Pâte trop molle ? Ajouter un peu de farine : elle doit se façonner sans couler."
+      needs: []
+      uses: [dahl-froid, oeufs, farine-complete, parmesan, persil, sel, poivre]
+      time_min: 4
+      kid: {age_min_months: 30, task: "casser les œufs et mélanger dans le saladier"}
+    - id: faconner
+      action: "Mains mouillées, façonner des croquettes de la taille d'une petite mandarine et les déposer dans une assiette farinée"
+      astuce: "Se mouiller les mains souvent : c'est ce qui empêche la pâte d'y coller."
+      needs: []
+      uses: []
+      time_min: 8
+      kid: {age_min_months: 36, task: "rouler les croquettes dans l'assiette de farine"}
+    - id: fariner
+      action: "Retourner les croquettes dans l'assiette pour fariner l'autre face"
+      needs: []
+      uses: []
+      time_min: 2
+    - id: dorer
+      action: "Faire chauffer l'huile dans une grande poêle, y dorer les croquettes quelques minutes à couvert, puis les retourner pour cuire l'autre face"
+      needs: [pan-fry]
+      uses: [huile-olive]
+      time_min: 8
+      attended: true
+    - id: servir
+      action: "Servir bien chaud"
+      needs: []
+      uses: []
+      time_min: 1
+  # PAS DE PRÉLÈVEMENT BÉBÉ : le dahl d'origine est salé dès sa cuisson
+  # (p. 42), et le parmesan l'est aussi. La photo de la page montre pourtant
+  # un tout-petit qui croque une croquette — le modèle n'a pas de mot pour
+  # « la part bébé est le plat tel quel ».
+
+  plan_b: []                # la poêle tient les douze croquettes : rien à comprimer

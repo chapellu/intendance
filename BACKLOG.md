@@ -6461,3 +6461,29 @@ Fait :
 - marquées : toutes les lignes que leur nom disait facultatives (hors assaisonnements, déjà ignorés), le fromage servi à table ou parsemé à la fin quand il n'est pas la protéine du plat (pâtes bolognaise, minestrone, fajitas, hachis de lentilles, tian, salade César…), et les herbes fraîches de finition des salades, soupes et omelettes. Pas les plats dont l'herbe est dans le titre, ni le fromage d'un appareil ou d'une pâte.
 
 À relire par le foyer : la liste exacte est dans le diff de `catalogue/recipes/` — une ligne qu'il ne veut pas voir facultative se corrige en retirant `optional: true`.
+
+## T189 — Le printemps de *La cuisine bio du quotidien* est complet
+
+- [x] **T189 — Les p. 42 à 50 étaient au sommaire, pas dans l'app (18/11).**
+      Cinq pages photographiées, cinq plats encodés : le dahl de riz et
+      lentilles corail aux carottes (p. 42), les croquettes au parmesan et
+      restes de dahl (p. 45), les tartines-repas au chèvre frais (p. 46), les
+      bruschettas « express » aux champignons (p. 49) et la brouillade du
+      pêcheur (p. 50). Source : 66 sur 100, printemps 24 sur 24.
+
+      **LA PREMIÈRE ARÊTE ÉCRITE PAR LE LIVRE.** La p. 45 demande « 400 g de
+      dahl froid (voir recette précédente) » : le dahl émet 600 g de reste,
+      les croquettes l'`accepts` et le reprennent en repli. La règle de
+      l'autrice (1 œuf, 2 c. à s. de farine, 50 g de parmesan pour 200 g de
+      légumineuses crémeuses) vaudrait pour les lentilles p. 173 et les pois
+      cassés p. 197 ; le modèle ne sait pas dire « n'importe quelle
+      légumineuse crémeuse, à proportion », elle reste en commentaire.
+
+      **LES TARTINES SE HACHENT, ELLES NE SE MIXENT PAS.** Le foyer n'a pas
+      de mixeur ; l'étape le dit, et l'astuce garde le geste de l'autrice
+      (brèves impulsions) pour qui en a un. Deux ingrédients nouveaux au
+      primeur : `gingembre` et `betterave` (crue), au bac.
+
+      Reste ouvert : rien ne relie les deux dahls de lentilles corail du
+      catalogue (celui-ci et celui du fond) — même limite que les deux ragoûts
+      de lentilles vertes.

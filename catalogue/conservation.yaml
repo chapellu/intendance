@@ -270,7 +270,7 @@ familles:
       Couper les fanes des carottes dès le retour des courses (elles tirent
       l'eau de la racine), et laisser le bac respirer : un sac fermé fait
       moisir.
-    ids: [carottes, celeri-rave, navets, pommes, citron]
+    ids: [carottes, celeri-rave, navets, pommes, citron, betterave, gingembre]
 
   - id: surgele
     label: surgelés du commerce

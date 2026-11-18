@@ -4446,6 +4446,487 @@
    "cuisinable": true
   },
   {
+   "id": "brouillade-du-pecheur",
+   "titre": "Brouillade du pêcheur",
+   "minutes": 23,
+   "minutesSurPlace": 23,
+   "avanceMin": 13,
+   "anticipations": [],
+   "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 50",
+    "url": null,
+    "saison": "printemps"
+   },
+   "apports": {
+    "proteine": "oeuf",
+    "feculent": "aucun",
+    "legumes": [
+     "allium",
+     "feuille"
+    ],
+    "profil": "poele",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "oignon",
+     "ref": "oignon",
+     "nom": "oignon",
+     "qty": 1,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "huile-olive",
+     "ref": "huile-olive",
+     "nom": "huile d'olive",
+     "qty": 4,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "laitue-de-mer",
+     "ref": "laitue-de-mer",
+     "nom": "laitue de mer fraîche au sel",
+     "qty": 70,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "persil",
+     "ref": "persil",
+     "nom": "persil",
+     "qty": 0.5,
+     "unit": "bouquet",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "ail",
+     "ref": "ail",
+     "nom": "ail",
+     "qty": 1,
+     "unit": "gousse",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "oeufs",
+     "ref": "oeufs",
+     "nom": "œufs très frais",
+     "qty": 8,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sel",
+     "ref": "sel",
+     "nom": "sel",
+     "qty": 1,
+     "unit": "pincée",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    },
+    {
+     "id": "poivre",
+     "ref": "poivre",
+     "nom": "poivre",
+     "qty": 1,
+     "unit": "pincée",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": "omelette",
+   "avec": [],
+   "steps": [
+    {
+     "id": "dorer-oignon",
+     "action": "Couper l'oignon en petits cubes et le faire dorer quelques instants dans l'huile, à la poêle",
+     "minutes": 5,
+     "needs": [
+      "pan-fry"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "oignon",
+      "huile-olive"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "hacher-algue",
+     "action": "Pendant ce temps : rincer très soigneusement la laitue de mer pour la dessaler, la presser, puis la hacher avec le persil et l'ail",
+     "minutes": 5,
+     "needs": [
+      "chop-coarse"
+     ],
+     "surveille": true,
+     "astuce": "Rincer dans plusieurs eaux : le sel de conservation est fort, et c'est lui qui ferait la brouillade trop salée.",
+     "uses": [
+      "laitue-de-mer",
+      "persil",
+      "ail"
+     ],
+     "enParallele": "dorer-oignon",
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cuire-hachis",
+     "action": "Ajouter le hachis dans la poêle, mélanger et laisser cuire 3 min",
+     "minutes": 3,
+     "needs": [
+      "pan-fry"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "battre",
+     "action": "Battre les œufs avec un peu de sel et de poivre",
+     "minutes": 2,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "oeufs",
+      "sel",
+      "poivre"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "casser et battre les œufs",
+     "enfantDes": 30,
+     "porteAssaisonnement": true
+    },
+    {
+     "id": "brouiller",
+     "action": "Verser dans la poêle et cuire 2 à 3 min en remuant à la cuillère en bois",
+     "minutes": 3,
+     "needs": [
+      "pan-fry"
+     ],
+     "surveille": true,
+     "astuce": "Retirer du feu encore moelleux et légèrement baveux : les œufs continuent de cuire hors du feu.",
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 15,
+   "accepts": [],
+   "creneaux": [
+    "dejeuner",
+    "diner"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [],
+   "lotEntier": false,
+   "calibreMax": null,
+   "vaisselle": {
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.5
+   },
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
+   "id": "bruschettas-champignons",
+   "titre": "Bruschettas « express » aux champignons",
+   "minutes": 25,
+   "minutesSurPlace": 25,
+   "avanceMin": 23,
+   "anticipations": [],
+   "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 49",
+    "url": null,
+    "saison": "printemps"
+   },
+   "apports": {
+    "proteine": "fromage",
+    "feculent": "pain",
+    "legumes": [
+     "champignon",
+     "solanacee"
+    ],
+    "profil": "four",
+    "origine": "italien"
+   },
+   "ingredients": [
+    {
+     "id": "pain-levain",
+     "ref": "pain-levain",
+     "nom": "bon pain au levain, en larges tranches (600 à 800 g)",
+     "qty": 700,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sauce-tomate",
+     "ref": "sauce-tomate",
+     "nom": "sauce tomate (napolitaine ou provençale)",
+     "qty": 300,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "mozzarella",
+     "ref": "mozzarella",
+     "nom": "mozzarella (2 boules)",
+     "qty": 250,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "champignons-paris",
+     "ref": "champignons-paris",
+     "nom": "champignons très frais, lavés et coupés en tranches",
+     "qty": 6,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "origan",
+     "ref": "origan",
+     "nom": "origan, sarriette ou marjolaine (quelques brins, ou 1 c. à c. séchée)",
+     "qty": 1,
+     "unit": "c. à c.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "remplacants": [
+      {
+       "id": "sarriette",
+       "nom": "sarriette fraîche",
+       "ratio": 1.0
+      }
+     ]
+    },
+    {
+     "id": "huile-olive",
+     "ref": "huile-olive",
+     "nom": "huile d'olive",
+     "qty": 3,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "olives-noires",
+     "ref": "olives-noires",
+     "nom": "quelques olives noires",
+     "qty": 12,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "facultatif": true
+    },
+    {
+     "id": "sel",
+     "ref": "sel",
+     "nom": "sel",
+     "qty": 1,
+     "unit": "pincée",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": "tartine",
+   "avec": [
+    {
+     "id": "salade-verte",
+     "nom": "salade verte",
+     "qty": 0.5,
+     "unit": "pièce"
+    }
+   ],
+   "steps": [
+    {
+     "id": "prechauffer",
+     "action": "Préchauffer le four à 220 °C",
+     "minutes": 1,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "griller",
+     "action": "Griller les tranches de pain au grille-pain et les poser sur une plaque huilée",
+     "minutes": 4,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "pain-levain"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "garnir",
+     "action": "Tartiner de sauce tomate, puis répartir dans l'ordre la mozzarella en tranches, les herbes, les champignons et les olives",
+     "minutes": 5,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "sauce-tomate",
+      "mozzarella",
+      "origan",
+      "champignons-paris",
+      "olives-noires",
+      "sel"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "poser les champignons et les olives sur les tartines",
+     "enfantDes": 30,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cuire",
+     "action": "Arroser chaque tartine d'un mince filet d'huile d'olive et enfourner 10 à 12 min, jusqu'à ce que le fromage coule et dore",
+     "minutes": 12,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [
+      "huile-olive"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "servir",
+     "action": "Servir aussitôt",
+     "minutes": 1,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 10,
+   "accepts": [],
+   "creneaux": [
+    "dejeuner",
+    "diner"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [],
+   "lotEntier": false,
+   "calibreMax": null,
+   "vaisselle": null,
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
    "id": "burgers-de-lentilles",
    "titre": "Petits burgers de lentilles au tofu fumé",
    "minutes": 30,
@@ -10204,6 +10685,256 @@
    "cuisinable": true
   },
   {
+   "id": "croquettes-parmesan-restes-dahl",
+   "titre": "Croquettes dorées au parmesan et restes de dahl",
+   "minutes": 25,
+   "minutesSurPlace": 25,
+   "avanceMin": 23,
+   "anticipations": [],
+   "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 45",
+    "url": null,
+    "saison": "printemps"
+   },
+   "apports": {
+    "proteine": "legumineuse",
+    "feculent": "riz",
+    "legumes": [
+     "racine",
+     "allium"
+    ],
+    "profil": "poele",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "dahl-froid",
+     "ref": "dahl-froid",
+     "nom": "dahl froid",
+     "qty": 400,
+     "unit": "g",
+     "base": true,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "oeufs",
+     "ref": "oeufs",
+     "nom": "œufs",
+     "qty": 2,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "farine-complete",
+     "ref": "farine-complete",
+     "nom": "farine semi-complète de blé ou de grand épeautre (+ un peu pour enrober)",
+     "qty": 4,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-epeautre",
+       "nom": "farine de grand épeautre",
+       "ratio": 1.0
+      }
+     ]
+    },
+    {
+     "id": "parmesan",
+     "ref": "parmesan",
+     "nom": "parmesan râpé",
+     "qty": 100,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "persil",
+     "ref": "persil",
+     "nom": "persil haché",
+     "qty": 3,
+     "unit": "brin",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "facultatif": true
+    },
+    {
+     "id": "huile-olive",
+     "ref": "huile-olive",
+     "nom": "huile d'olive pour la poêle",
+     "qty": 2,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sel",
+     "ref": "sel",
+     "nom": "sel",
+     "qty": 1,
+     "unit": "pincée",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    },
+    {
+     "id": "poivre",
+     "ref": "poivre",
+     "nom": "poivre",
+     "qty": 1,
+     "unit": "pincée",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": "galettes",
+   "avec": [],
+   "steps": [
+    {
+     "id": "melanger",
+     "action": "Mélanger dans un saladier le dahl froid, les œufs, la farine, le parmesan et le persil, puis saler et poivrer",
+     "minutes": 4,
+     "needs": [],
+     "surveille": true,
+     "astuce": "Pâte trop molle ? Ajouter un peu de farine : elle doit se façonner sans couler.",
+     "uses": [
+      "dahl-froid",
+      "oeufs",
+      "farine-complete",
+      "parmesan",
+      "persil",
+      "sel",
+      "poivre"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "casser les œufs et mélanger dans le saladier",
+     "enfantDes": 30,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "faconner",
+     "action": "Mains mouillées, façonner des croquettes de la taille d'une petite mandarine et les déposer dans une assiette farinée",
+     "minutes": 8,
+     "needs": [],
+     "surveille": true,
+     "astuce": "Se mouiller les mains souvent : c'est ce qui empêche la pâte d'y coller.",
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "rouler les croquettes dans l'assiette de farine",
+     "enfantDes": 36,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "fariner",
+     "action": "Retourner les croquettes dans l'assiette pour fariner l'autre face",
+     "minutes": 2,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "dorer",
+     "action": "Faire chauffer l'huile dans une grande poêle, y dorer les croquettes quelques minutes à couvert, puis les retourner pour cuire l'autre face",
+     "minutes": 8,
+     "needs": [
+      "pan-fry"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "huile-olive"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "servir",
+     "action": "Servir bien chaud",
+     "minutes": 1,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 15,
+   "accepts": [
+    {
+     "type": "dahl-riz-lentilles-corail",
+     "kind": null,
+     "requis": true,
+     "qty": {
+      "amount": 400.0,
+      "unit": "g"
+     },
+     "delaiMaxH": null,
+     "mere": "dahl-riz-lentilles-corail-carottes"
+    }
+   ],
+   "creneaux": [
+    "dejeuner",
+    "diner"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [],
+   "lotEntier": false,
+   "calibreMax": null,
+   "vaisselle": {
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.5
+   },
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
    "id": "crumble-courgettes",
    "titre": "Crumble aux courgettes",
    "minutes": 35,
@@ -10769,6 +11500,320 @@
     "id": "cocotte-7.5l",
     "label": "cocotte 7,5 L",
     "facteurMax": 2.4
+   },
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
+   "id": "dahl-riz-lentilles-corail-carottes",
+   "titre": "Dahl de riz et lentilles corail aux carottes",
+   "minutes": 30,
+   "minutesSurPlace": 30,
+   "avanceMin": 33,
+   "anticipations": [],
+   "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 42",
+    "url": null,
+    "saison": "printemps"
+   },
+   "apports": {
+    "proteine": "legumineuse",
+    "feculent": "riz",
+    "legumes": [
+     "racine",
+     "allium"
+    ],
+    "profil": "mijote",
+    "origine": "indien"
+   },
+   "ingredients": [
+    {
+     "id": "huile-coco",
+     "ref": "huile-coco",
+     "nom": "huile de coco vierge",
+     "qty": 65,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "oignon",
+     "ref": "oignon",
+     "nom": "gros oignon",
+     "qty": 1,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "carottes",
+     "ref": "carottes",
+     "nom": "carottes nouvelles",
+     "qty": 200,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "riz",
+     "ref": "riz",
+     "nom": "riz basmati blanc ou demi-complet",
+     "qty": 200,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "lentilles-corail",
+     "ref": "lentilles-corail",
+     "nom": "lentilles corail",
+     "qty": 200,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "ail",
+     "ref": "ail",
+     "nom": "ail",
+     "qty": 1,
+     "unit": "gousse",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "gingembre",
+     "ref": "gingembre",
+     "nom": "gingembre frais (un tronçon d'environ 2 cm)",
+     "qty": 1,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "curcuma",
+     "ref": "curcuma",
+     "nom": "curcuma",
+     "qty": 1,
+     "unit": "c. à c.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "eau",
+     "ref": "eau",
+     "nom": "eau",
+     "qty": 1.5,
+     "unit": "l",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "laurier",
+     "ref": "laurier",
+     "nom": "feuille de laurier",
+     "qty": 1,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    },
+    {
+     "id": "sel",
+     "ref": "sel",
+     "nom": "sel (une cuillerée à café bombée)",
+     "qty": 1,
+     "unit": "c. à c.",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    },
+    {
+     "id": "poivre",
+     "ref": "poivre",
+     "nom": "poivre du moulin",
+     "qty": 1,
+     "unit": "bonne pincée",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": "mijote",
+   "avec": [],
+   "steps": [
+    {
+     "id": "oignon",
+     "action": "Couper l'oignon en petits cubes et le faire revenir à l'huile de coco dans une cocotte",
+     "minutes": 4,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "huile-coco",
+      "oignon"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "carottes",
+     "action": "Émincer finement les carottes, les ajouter dans la cocotte et les faire revenir 5 min",
+     "minutes": 5,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "carottes"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "verser les carottes émincées dans la cocotte",
+     "enfantDes": 30,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "tailler",
+     "action": "Pendant ce temps : éplucher le gingembre et l'ail, et les tailler en tout petits cubes",
+     "minutes": 3,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "gingembre",
+      "ail"
+     ],
+     "enParallele": "carottes",
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "mouiller",
+     "action": "Ajouter le gingembre, l'ail, le riz, les lentilles, le curcuma, le laurier, le sel, le poivre et l'eau, puis porter à ébullition",
+     "minutes": 5,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "riz",
+      "lentilles-corail",
+      "curcuma",
+      "laurier",
+      "sel",
+      "poivre",
+      "eau"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "verser les lentilles et le riz dans la cocotte",
+     "enfantDes": 30,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "mijoter",
+     "action": "Couvrir et cuire à feu assez doux en mélangeant de temps en temps, le temps de cuisson du riz",
+     "minutes": 18,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": false,
+     "astuce": "Compter 15 à 20 min selon le paquet de riz : un basmati demi-complet demande le haut de la fourchette.",
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "gouter",
+     "action": "Goûter pour rectifier le sel et vérifier que riz et lentilles sont bien fondants, puis servir bien chaud",
+     "minutes": 1,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 10,
+   "accepts": [],
+   "creneaux": [
+    "dejeuner",
+    "diner"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [
+    {
+     "type": "dahl-riz-lentilles-corail",
+     "kind": "reste-plat",
+     "qty": {
+      "amount": 600.0,
+      "unit": "g"
+     },
+     "band": "1-repas",
+     "espace": "congelo",
+     "note": "froid, il fait les croquettes au parmesan de la p. 45",
+     "gardeFrigo": 3,
+     "congelo": true,
+     "horsTable": false
+    }
+   ],
+   "lotEntier": false,
+   "calibreMax": null,
+   "vaisselle": {
+    "id": "cocotte-7.5l",
+    "label": "cocotte 7,5 L",
+    "facteurMax": 3.0
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -40365,6 +41410,278 @@
    "cuisinable": true
   },
   {
+   "id": "tartines-chevre-frais",
+   "titre": "Tartines-repas « sur le pouce » au chèvre frais",
+   "minutes": 10,
+   "minutesSurPlace": 10,
+   "avanceMin": 13,
+   "anticipations": [],
+   "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 46",
+    "url": null,
+    "saison": "printemps"
+   },
+   "apports": {
+    "proteine": "fromage",
+    "feculent": "pain",
+    "legumes": [
+     "racine",
+     "feuille"
+    ],
+    "profil": "cru",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "chevre-frais",
+     "ref": "chevre-frais",
+     "nom": "fromage de chèvre frais (pas de faisselle) ou tomme fraîche",
+     "qty": 300,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "oeufs",
+     "ref": "oeufs",
+     "nom": "œufs",
+     "qty": 4,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "betterave",
+     "ref": "betterave",
+     "nom": "betterave crue",
+     "qty": 1,
+     "unit": "tranche",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "herbes-fraiches",
+     "ref": "herbes-fraiches",
+     "nom": "herbes fraîches de saison, seules ou en mélange",
+     "qty": 1,
+     "unit": "poignée",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "huile-olive",
+     "ref": "huile-olive",
+     "nom": "huile d'olive",
+     "qty": 4,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "radis",
+     "ref": "radis",
+     "nom": "radis",
+     "qty": 8,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "pain-levain",
+     "ref": "pain-levain",
+     "nom": "pain complet ou demi-complet",
+     "qty": 800,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sel",
+     "ref": "sel",
+     "nom": "sel",
+     "qty": 2,
+     "unit": "pincée",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    },
+    {
+     "id": "poivre",
+     "ref": "poivre",
+     "nom": "poivre",
+     "qty": 2,
+     "unit": "pincée",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": "tartine",
+   "avec": [
+    {
+     "id": "salade-verte",
+     "nom": "salade verte",
+     "qty": 0.5,
+     "unit": "pièce"
+    }
+   ],
+   "steps": [
+    {
+     "id": "cuire-oeufs",
+     "action": "Cuire les œufs 8 min à l'eau bouillante",
+     "minutes": 8,
+     "needs": [
+      "boil"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [
+      "oeufs"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "laver-herbes",
+     "action": "Pendant ce temps : laver les herbes et les sécher soigneusement, à l'essoreuse par exemple",
+     "minutes": 2,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "herbes-fraiches"
+     ],
+     "enParallele": "cuire-oeufs",
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "tourner l'essoreuse à salade",
+     "enfantDes": 30,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "creme-rose",
+     "action": "Hacher ensemble la moitié du chèvre et la betterave, avec la moitié de l'huile, sel et poivre : c'est la crème rose",
+     "minutes": 2,
+     "needs": [
+      "chop-coarse"
+     ],
+     "surveille": true,
+     "astuce": "Au mixeur, par brèves impulsions seulement, pour garder de petits morceaux croquants : mixé trop longtemps, le chèvre se liquéfie et c'est irrécupérable.",
+     "uses": [
+      "chevre-frais",
+      "betterave",
+      "huile-olive",
+      "sel",
+      "poivre"
+     ],
+     "enParallele": "cuire-oeufs",
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "creme-verte",
+     "action": "Faire de même avec l'autre moitié du chèvre, le reste de l'huile et les herbes : c'est la crème verte",
+     "minutes": 2,
+     "needs": [
+      "chop-coarse"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": "cuire-oeufs",
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "ecaler",
+     "action": "Écaler les œufs ; laver les radis et leur couper la queue",
+     "minutes": 3,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "radis"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "écaler les œufs durs",
+     "enfantDes": 36,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "dresser",
+     "action": "Poser sur la table les deux tartinades, les radis, les œufs et le pain tranché : chacun compose ses tartines",
+     "minutes": 2,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "pain-levain"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "porter les bols de tartinade sur la table",
+     "enfantDes": 24,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": "un demi-œuf dur",
+   "bebePrep": "écrasé à la fourchette, avec un peu de pain en mouillette",
+   "bebeApres": "ecaler",
+   "actifMin": 10,
+   "accepts": [],
+   "creneaux": [
+    "dejeuner",
+    "diner"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [],
+   "lotEntier": false,
+   "calibreMax": null,
+   "vaisselle": {
+    "id": "casseroles",
+    "label": "casseroles 2,6 L / 1,6 L",
+    "facteurMax": 1.25
+   },
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
    "id": "tartines-fromage-vegetal",
    "titre": "Tartines de « fromage » végétal",
    "minutes": 5,
@@ -46108,6 +47425,8 @@
     "menthe",
     "radis",
     "jeunes-pousses",
+    "gingembre",
+    "betterave",
     "melon",
     "framboises",
     "raisins",
@@ -48889,7 +50208,9 @@
     "celeri-rave",
     "navets",
     "pommes",
-    "citron"
+    "citron",
+    "betterave",
+    "gingembre"
    ]
   },
   {
