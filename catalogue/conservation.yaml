@@ -427,7 +427,7 @@ familles:
       Achetée en quantité, la partager dès le retour en portions d'un repas, à
       plat dans des sacs congélation, air chassé, datés au feutre : à plat,
       elle décongèle en une nuit au frigo.
-    ids: [boeuf-hache, poulet, poulet-filets, roti-porc, saumon, cabillaud, moules, porc-hache, foies-volaille]
+    ids: [boeuf-hache, poulet, poulet-filets, roti-porc, saumon, cabillaud, moules, porc-hache, foies-volaille, porc-saute, saucisses]
 
   - id: legume-fragile
     label: légumes fragiles

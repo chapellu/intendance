@@ -1,0 +1,106 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T192).
+#
+# LA PURÉE IRLANDAISE AU CHOU, ET AU CANTAL — l'écart de l'autrice, « les
+# Auvergnats et les Irlandais étant cousins celtes ». Écrasée à la cuillère,
+# pas au presse-purée : il doit rester des morceaux.
+#
+# LE CHOU NE CUIT QUE 12 MINUTES : c'est ce qui garde son goût discret.
+#
+# `format: poelee` FAUTE DE MIEUX : le modèle n'a pas de format « purée ».
+#
+# LA MOITIÉ DU CHOU RESTE : on n'en prend que 500 g. Le modèle n'a pas
+# d'émetteur de légume cru entamé ; c'est dit ici.
+
+recipe:
+  id: colcannon-irlandais
+  title: Colcannon irlandais
+  format: poelee
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 189"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 189
+    saison: hiver
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes »
+  time_min_total: 40        # en-tête : 15 min de préparation + 25 min de cuisson
+  active_min: 15
+
+  apports:
+    proteine: fromage
+    feculent: pommes-de-terre
+    legumes: [crucifere]
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: pomme-de-terre, name: "pommes de terre (Mona Lisa, idéalement)", qty: 1, unit: kg}
+    - {id: chou-frise, name: "chou vert frisé pas trop gros (on n'en prend que 500 g)", qty: 0.5, unit: pièce}
+    - {id: beurre, name: beurre, qty: 80, unit: g}
+    - {id: lait, name: lait, qty: 75, unit: g}
+    - {id: cantal, name: "cantal entre-deux (ou un autre fromage à pâte dure qui fond bien)", qty: 150, unit: g}
+    - {id: eau, name: eau de cuisson, qty: 4, unit: l}
+    - {id: gros-sel, name: gros sel pour l'eau, qty: 1, unit: c. à s., seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  # « idéalement au repas de midi avec un œuf mollet »
+  avec:
+    - {id: oeufs, name: œufs mollets, qty: 4, unit: pièce}
+
+  steps:
+    - id: eau
+      action: "Porter à ébullition un très grand faitout d'eau salée"
+      needs: [simmer-large]
+      uses: [eau, gros-sel]
+      time_min: 10
+      attended: false
+    - id: pommes-de-terre
+      action: "Éplucher les pommes de terre, les couper en dés d'environ 1,5 cm et les cuire environ 25 min, jusqu'à ce qu'elles soient tendres"
+      needs: [simmer-large]
+      uses: [pomme-de-terre]
+      time_min: 25
+      attended: false
+    - id: chou
+      action: "Pendant ce temps : prélever environ 500 g de feuilles bien vertes, retirer les grosses côtes et les couper en carrés de 3 cm"
+      needs: []
+      uses: [chou-frise]
+      time_min: 6
+      parallel_with: pommes-de-terre
+      kid: {age_min_months: 36, task: "défaire les feuilles de chou"}
+    - id: cuire-chou
+      action: "Un quart d'heure avant la fin, ajouter le chou et compter 12 min à partir de la reprise de l'ébullition"
+      astuce: "Pas plus : peu cuit, le chou garde un goût très discret."
+      needs: [simmer-large]
+      uses: []
+      time_min: 1
+    - id: raper
+      action: "Pendant ce temps, râper le fromage"
+      needs: []
+      uses: [cantal]
+      time_min: 3
+    - id: ecraser
+      action: "Égoutter, ajouter beurre, lait, fromage et poivre, et mélanger vivement à la cuillère pour écraser les pommes de terre"
+      astuce: "Pas de presse-purée : c'est meilleur avec des morceaux."
+      needs: []
+      uses: [beurre, lait, poivre]
+      time_min: 3
+    - id: servir
+      action: "Servir bien chaud, tant que le fromage file"
+      needs: []
+      uses: []
+      time_min: 1
+
+  # Les pommes de terre et le chou sortent de l'eau salée ; le beurre, le
+  # lait et le fromage arrivent après.
+  baby_portion:
+    take: "2 c. à s. de pommes de terre et de chou, avant le fromage"
+    prep: "écrasés avec un peu de beurre et de lait — cuits à l'eau salée, à réserver aux plus de 12 mois"
+    needs: []
+    depuis: [cuire-chou]
+
+  plan_b: []

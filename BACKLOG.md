@@ -6544,3 +6544,38 @@ Fait :
 
       Nouveaux ids : `porc-hache`, `foies-volaille`, `lardons` (boucherie),
       `cognac`, `cepes-seches`, `sucre-glace` (épicerie), `orange` (primeur).
+
+## T192 — L'automne fini, l'hiver jusqu'à la p. 207
+
+- [x] **T192 — Quinze pages encodées sur photo (18/11).** Gros cookie à
+      partager (p. 154, qui ferme l'automne), coquilles de poisson (p. 184),
+      cordons bleus de restes de rôti (p. 186), colcannon (p. 189), gâteau de
+      légumes (p. 190), soupe de crêpes de Haute-Autriche (p. 192), donburi au
+      porc (p. 193), poulet de 4 h farci (p. 194), mitonnée de pois cassés
+      (p. 197), gratin de crozets (p. 198), hachis Parmentier 50/50 (p. 199),
+      blinis de légumes (p. 200), galette des rois aux poires (p. 203),
+      stollen (p. 204), crème dessert au chocolat (p. 207). Source : 96 sur 100.
+
+      **TROIS ARÊTES DE PLUS, TOUTES SUR DES SORTIES QUI EXISTAIENT.** Les
+      cordons bleus prennent le `roti-froid` du rôti au bouillon ; la soupe de
+      crêpes prend 2 L de `bouillon-pot-au-feu` (le pot-au-feu en laisse 2,5,
+      et sa note annonçait déjà la p. 192) ; le poulet de 4 h émet carcasse et
+      viande, que le cock-a-leekie p. 141 réclame.
+
+      **LA PÂTE D'AMANDE S'ACHÈTE EN ATTENDANT LA p. 214.** La galette et le
+      stollen la demandent ; une arête vers une recette absente serait refusée.
+      Elle est un ingrédient (`pate-amande`) jusqu'à l'encodage de la p. 214.
+
+      **CE QUE LE LIVRE NE DIT PAS, DIT COMME TEL.** Les coquilles n'ont pas de
+      température de four : l'astuce donne 200 °C et le signale comme une
+      estimation. Le stollen liste des amandes qu'aucune étape n'emploie : on
+      les ajoute avec les cranberries, et la fiche le dit.
+
+      Reste ouvert : le bouillon de la poule p. 132 vaut pour la soupe de
+      crêpes (« ou de poule au pot »), mais son type ne la nourrit pas ; les
+      pois cassés et les lentilles ne nourrissent pas les croquettes p. 45.
+      Les deux demandent qu'une arête accepte plusieurs types.
+
+      Nouveaux ids : `porc-saute`, `saucisses` (boucherie), `blettes`
+      (primeur), `noix-coco-rapee`, `crozets`, `pate-amande`, `cranberries`,
+      `gingembre-confit`, `amandes`, `gomme-guar` (épicerie).

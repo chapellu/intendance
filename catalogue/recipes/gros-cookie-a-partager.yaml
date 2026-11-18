@@ -1,0 +1,88 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T192).
+#
+# UN SEUL COOKIE DE 22 CM AU LIEU DE QUINZE : rien à façonner, une plaque, et
+# les enfants en détachent des morceaux à la sortie du four.
+#
+# LE CHOCOLAT EN TABLETTE, CONCASSÉ AU COUTEAU : l'astuce budget de l'autrice
+# (les pépites coûtent plus cher au kilo). La « vanille liquide » renvoie à la
+# p. 64 ; `extrait-vanille` est au placard.
+
+recipe:
+  id: gros-cookie-a-partager
+  title: Gros cookie à partager
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 154"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 154
+    saison: automne
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « l'équivalent d'environ 15 cookies »
+  lot_entier: true
+  time_min_total: 25        # en-tête : 5 min de préparation + 15 min de four, plus le préchauffage
+  active_min: 8
+
+  creneaux: [gouter]
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 200, unit: g, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
+    - {id: noix-coco-rapee, name: noix de coco râpée, qty: 45, unit: g}
+    - {id: chocolat-noir, name: "chocolat noir à 70 %, en tablette", qty: 100, unit: g}
+    - {id: noisettes, name: noisettes, qty: 65, unit: g}
+    - {id: huile-tournesol, name: huile de tournesol désodorisée, qty: 75, unit: g}
+    - {id: lait-soja-vanille, name: lait de soja-vanille, qty: 90, unit: g}
+    - {id: sucre-roux, name: sucre roux, qty: 65, unit: g}
+    - {id: extrait-vanille, name: vanille liquide, qty: 1, unit: c. à s.}
+    - {id: poudre-a-lever, name: poudre à lever, qty: 0.5, unit: sachet}
+    - {id: fleur-de-sel, name: fleur de sel, qty: 1, unit: bonne pincée, seasoning: true}
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 180 °C, en chaleur tournante si possible"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: concasser
+      action: "Casser le chocolat en « pépites » et concasser grossièrement les noisettes au gros couteau, sur une planche"
+      astuce: "Des pépites irrégulières : c'est meilleur marché que les pépites du commerce, et on tombe parfois sur un très gros morceau."
+      needs: [chop-coarse]
+      uses: [chocolat-noir, noisettes]
+      time_min: 3
+    - id: melanger
+      action: "Mélanger rapidement tous les ingrédients dans un saladier, jusqu'à une boule de pâte homogène"
+      needs: []
+      uses: [farine-complete, noix-coco-rapee, huile-tournesol, lait-soja-vanille, sucre-roux, extrait-vanille, poudre-a-lever, fleur-de-sel]
+      time_min: 2
+      kid: {age_min_months: 30, task: "verser les ingrédients et mélanger"}
+    - id: etaler
+      action: "L'étaler à la main sur une plaque chemisée en un cookie d'environ 22 cm"
+      needs: []
+      uses: []
+      time_min: 2
+      kid: {age_min_months: 30, task: "aplatir la pâte avec les mains"}
+    - id: cuire
+      action: "Enfourner 15 min pour un cœur moelleux, 20 pour un cookie plus croquant"
+      needs: [bake]
+      uses: []
+      time_min: 15
+      attended: false
+    - id: partager
+      action: "À la sortie du four, laisser les enfants en détacher des morceaux"
+      needs: []
+      uses: []
+      time_min: 1
+
+  plan_b: []

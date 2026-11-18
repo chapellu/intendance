@@ -1,0 +1,102 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T192).
+#
+# DES « TAGLIATELLES » DE CRÊPES DANS UN BOUILLON DE POT-AU-FEU : la recette
+# du grand-père autrichien des enfants de l'autrice. C'est le repas du soir
+# que la note du pot-au-feu p. 182 annonçait déjà.
+#
+# L'ARÊTE EST `bouillon-pot-au-feu` (2 L, le pot-au-feu en laisse 2,5). La
+# page dit aussi « ou de poule au pot » : la poule p. 132 émet son bouillon
+# comme un reste-plat à part (`bouillon-poule-epeautre`), pour ne pas faire
+# passer la volaille pour du bœuf. Avec elle, c'est le même plat ; le modèle
+# ne sait pas encore le dire.
+
+recipe:
+  id: soupe-crepes-haute-autriche
+  title: Soupe de crêpes de Haute-Autriche
+  format: soupe
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 192"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 192
+    saison: hiver
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « pour 6 personnes, plat complet du soir avec une salade »
+  time_min_total: 115       # 25 min de préparation, 1 h de repos de la pâte, ~25 min de crêpes
+  active_min: 50
+
+  accepts:
+    - type: bouillon-pot-au-feu
+      qty: {amount: 2000, unit: ml}
+      required: true
+      fallback_recipe: pot-au-feu-traditionnel
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: soupe
+    origine: francais
+
+  ingredients:
+    - {id: bouillon, name: "bouillon de pot-au-feu (ou de poule au pot)", qty: 2, unit: l, from_accepts: true}
+    - {id: farine-complete, name: farine T80 ou T110 de blé ou de grand épeautre, qty: 500, unit: g, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
+    - {id: eau, name: eau, qty: 1, unit: l}
+    - {id: oeufs, name: œufs, qty: 4, unit: pièce}
+    - {id: huile-olive, name: "huile d'olive (+ un peu pour la poêle)", qty: 5, unit: c. à s.}
+    - {id: fromage-rape, name: fromage fraîchement râpé, qty: 150, unit: g}
+    - {id: ciboulette, name: un peu de ciboulette, qty: 1, unit: petit bouquet, optional: true}
+    - {id: sel, name: sel, qty: 1, unit: bonne pincée, seasoning: true}
+
+  # « plat complet du soir, à servir avec une salade »
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: pate
+      action: "Mélanger farine et sel, faire un puits, ajouter l'eau, l'huile et les œufs, et fouetter énergiquement"
+      astuce: "Des grumeaux ? Un passage au mixeur rattrape tout."
+      needs: []
+      uses: [farine-complete, sel, eau, huile-olive, oeufs]
+      time_min: 5
+      kid: {age_min_months: 30, task: "casser les œufs dans le puits"}
+    - id: repos
+      action: "Laisser reposer la pâte, et la détendre d'un peu d'eau si elle a trop épaissi"
+      needs: []
+      uses: []
+      time_min: 1
+      attente_min: 60
+      attente_raison: "repos de la pâte à crêpes"
+    - id: crepes
+      action: "Dans une poêle très chaude et à peine huilée, cuire les crêpes une à une, des deux côtés"
+      astuce: "Si les premières collent, la poêle n'était pas assez chaude."
+      needs: [pan-fry]
+      uses: []
+      time_min: 25
+      attended: true
+    - id: couper
+      action: "Rouler les crêpes et les couper en lamelles d'environ 5 mm, comme un saucisson"
+      needs: []
+      uses: []
+      time_min: 5
+      kid: {age_min_months: 36, task: "rouler les crêpes"}
+    - id: bouillon
+      action: "Réchauffer le bouillon ; ciseler la ciboulette"
+      needs: [simmer-large]
+      uses: [bouillon, ciboulette]
+      time_min: 8
+      parallel_with: couper
+    - id: servir
+      action: "Poser tout sur la table : chacun se sert du bouillon, puis des crêpes, de la ciboulette et du fromage"
+      needs: []
+      uses: [fromage-rape]
+      time_min: 2
+  # PAS DE PRÉLÈVEMENT BÉBÉ : le bouillon du pot-au-feu est salé dès la
+  # minute zéro (p. 182). Une lanière de crêpe, nature, reste possible.
+
+  plan_b: []

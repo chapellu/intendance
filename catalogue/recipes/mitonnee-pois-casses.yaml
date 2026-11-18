@@ -1,0 +1,87 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T192).
+#
+# LE POIS CASSÉ, LÉGUMINEUSE OUBLIÉE, SANS TREMPAGE : en dahl « à la
+# française », avec des saucisses. Deux façons de servir, que l'autrice
+# laisse au choix : tel quel, ou les pois mixés avec le jambon en mousseline,
+# les saucisses à côté. L'astuce le dit ; la mousseline n'est pas une étape.
+#
+# VARIANTE « PLUS RAISONNABLE », NON ENCODÉE : les saucisses grillées à part
+# dans une poêle sèche, piquées pour rendre leur gras, puis ajoutées.
+#
+# LE RESTE FAIT DES CROQUETTES : la p. 45 nomme les pois cassés de cette page
+# comme base possible. L'arête n'est pas posée (voir les croquettes).
+
+recipe:
+  id: mitonnee-pois-casses
+  title: Mitonnée de pois cassés « qui réchauffe »
+  format: mijote
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 197"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 197
+    saison: hiver
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « pour 6 personnes »
+  time_min_total: 70        # en-tête : 10 min de préparation + 1 h de cuisson
+  active_min: 15
+
+  apports:
+    proteine: legumineuse
+    feculent: legumineuse
+    legumes: [allium]
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: poireau, name: "poireaux (environ 500 g épluchés)", qty: 600, unit: g}
+    - {id: pois-casses, name: pois cassés, qty: 500, unit: g}
+    - {id: eau, name: eau, qty: 2, unit: l}
+    - {id: jambon-cru, name: jambon cru, qty: 100, unit: g}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: saucisses, name: saucisses fermières, qty: 6, unit: pièce}
+    - {id: laurier, name: feuilles de laurier, qty: 3, unit: pièce, seasoning: true}
+    - {id: sel, name: sel (c. à s. rase), qty: 1, unit: c. à s., seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: revenir
+      action: "Émincer les poireaux et les faire revenir à l'huile dans un grand faitout avec le jambon en lamelles et les saucisses"
+      astuce: "Jusqu'à ce que tout soit bien doré, sans brûler."
+      needs: [simmer-large]
+      uses: [poireau, huile-olive, jambon-cru, saucisses]
+      time_min: 10
+    - id: mouiller
+      action: "Ajouter les pois cassés, le laurier, l'eau et le sel"
+      needs: [simmer-large]
+      uses: [pois-casses, laurier, eau, sel]
+      time_min: 5
+      kid: {age_min_months: 30, task: "verser les pois cassés dans le faitout"}
+    - id: mijoter
+      action: "Dès la reprise de l'ébullition, cuire environ 50 min à feu doux sous un couvercle, en retirant l'écume"
+      astuce: "Écumer évite que la casserole déborde. En fin de cuisson, surveiller le fond : il accroche vite."
+      needs: [simmer-large]
+      uses: []
+      time_min: 50
+      attended: false
+    - id: servir
+      action: "Quand le jus est presque résorbé et les pois fondants, poivrer et servir"
+      astuce: "Ou retirer les saucisses, mixer pois et jambon en mousseline, et servir les saucisses à côté comme avec une purée."
+      needs: []
+      uses: [poivre]
+      time_min: 3
+  # PAS DE PRÉLÈVEMENT BÉBÉ : jambon cru, saucisses et sel dès la mise en eau.
+
+  emits:
+    - kind: reste-plat
+      type: mitonnee-pois-casses
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: true}
+      note: "un reste de pois cassés fait aussi les croquettes au parmesan de la p. 45"
+
+  plan_b: []

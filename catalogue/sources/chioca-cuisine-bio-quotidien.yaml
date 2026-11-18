@@ -12,12 +12,12 @@
 # `_repertoire.yaml` sont à corriger.
 #
 # Une entrée saisie se signale en lui ajoutant `catalogue_id: <id>` pointant sur
-# le plat correspondant dans `recipes/`. Saisies à ce jour : **81 sur 100**.
-# L'ÉTÉ EST COMPLET : 26 sur 26, la p. 116 ayant fermé la saison. Le PRINTEMPS
-# l'est aussi depuis le 2026-11-18 (p. 42 à 50, T189) ; l'HIVER tient ses sept premiers
-# plats (p. 172 à 182) ; l'AUTOMNE est entamé par les deux bouts — sa tête
-# (p. 123 à 153, T190-T191 : seule manque la p. 154) et sa queue (p. 157 à 166), la p. 163, longtemps illisible,
-# ayant été rephotographiée et encodée le 2026-11-01 (T162).
+# le plat correspondant dans `recipes/`. Saisies à ce jour : **96 sur 100**.
+# PRINTEMPS, ÉTÉ ET AUTOMNE SONT COMPLETS depuis le 2026-11-18 (T189 à T192).
+# L'HIVER n'attend plus que quatre pages, toutes de Noël : les pains d'épices
+# en bocaux (p. 208), les truffes (p. 211), le fondant au marron (p. 212) et
+# la pâte d'amande « express » (p. 214) — que la galette p. 203 et le stollen
+# p. 204 réclament, et qu'ils achètent en attendant.
 #
 # LE COMPTE DE CET EN-TÊTE SE PÉRIME, et il l'a fait : il annonçait 25 alors que
 # les p. 87 et 115 étaient entrées depuis dix jours. Le chiffre juste se calcule
@@ -136,7 +136,7 @@ sommaire:
     - {page: 149, titre: "« Casspoulet »", catalogue_id: casspoulet}
     - {page: 150, titre: "Jarret braisé au vin blanc et petits légumes", catalogue_id: jarret-braise-vin-blanc}
     - {page: 153, titre: "Moelleux « mystère » à l'orange", catalogue_id: moelleux-mystere-orange}
-    - {page: 154, titre: "Gros cookie à partager…"}
+    - {page: 154, titre: "Gros cookie à partager…", catalogue_id: gros-cookie-a-partager}
     - {page: 157, titre: "Bon lait « bana-chaud » du petit déjeuner", catalogue_id: lait-bana-chaud}
     - {page: 158, titre: "Riz au lait « retour des îles »", catalogue_id: riz-au-lait-retour-des-iles}
     - {page: 159, titre: "Soja-dessert à la vanille (sans yaourtière, 3 méthodes !)", catalogue_id: soja-dessert-vanille}
@@ -152,20 +152,20 @@ sommaire:
     - {page: 178, titre: "Accras gourmands au thon, pain et carottes râpées", catalogue_id: accras-thon-pain-carottes}
     - {page: 181, titre: "Tartelettes aux noix et topinambours", catalogue_id: tartelettes-noix-topinambours}
     - {page: 182, titre: "Pot-au-feu traditionnel (ou poule-au-pot, potée…)", catalogue_id: pot-au-feu-traditionnel}
-    - {page: 184, titre: "Coquilles de poisson"}
-    - {page: 186, titre: "Restes de rôti en « cordons bleus » au four"}
-    - {page: 189, titre: "Colcannon irlandais"}
-    - {page: 190, titre: "Gâteau de légumes"}
-    - {page: 192, titre: "Soupe de crêpes de Haute-Autriche"}
-    - {page: 193, titre: "Donburi au porc et chou chinois"}
-    - {page: 194, titre: "« Poulet de 4 h » farci"}
-    - {page: 197, titre: "Mitonnée de pois cassés « qui réchauffe »"}
-    - {page: 198, titre: "Gratin de crozets végétarien"}
-    - {page: 199, titre: "Hachis Parmentier « 50/50 »"}
-    - {page: 200, titre: "Blinis de légumes"}
-    - {page: 203, titre: "Galettes des rois aux poires caramélisées et pâte d'amande"}
-    - {page: 204, titre: "Stollen de Noël au cranberries (ou brioche pour tout le reste de l'année !)"}
-    - {page: 207, titre: "Crème dessert au chocolat « 3 min chrono »"}
+    - {page: 184, titre: "Coquilles de poisson", catalogue_id: coquilles-de-poisson}
+    - {page: 186, titre: "Restes de rôti en « cordons bleus » au four", catalogue_id: cordons-bleus-restes-roti}
+    - {page: 189, titre: "Colcannon irlandais", catalogue_id: colcannon-irlandais}
+    - {page: 190, titre: "Gâteau de légumes", catalogue_id: gateau-de-legumes}
+    - {page: 192, titre: "Soupe de crêpes de Haute-Autriche", catalogue_id: soupe-crepes-haute-autriche}
+    - {page: 193, titre: "Donburi au porc et chou chinois", catalogue_id: donburi-porc-chou-chinois}
+    - {page: 194, titre: "« Poulet de 4 h » farci", catalogue_id: poulet-4h-farci}
+    - {page: 197, titre: "Mitonnée de pois cassés « qui réchauffe »", catalogue_id: mitonnee-pois-casses}
+    - {page: 198, titre: "Gratin de crozets végétarien", catalogue_id: gratin-crozets-vegetarien}
+    - {page: 199, titre: "Hachis Parmentier « 50/50 »", catalogue_id: hachis-parmentier-50-50}
+    - {page: 200, titre: "Blinis de légumes", catalogue_id: blinis-de-legumes}
+    - {page: 203, titre: "Galettes des rois aux poires caramélisées et pâte d'amande", catalogue_id: galette-rois-poires-pate-amande}
+    - {page: 204, titre: "Stollen de Noël au cranberries (ou brioche pour tout le reste de l'année !)", catalogue_id: stollen-noel-cranberries}
+    - {page: 207, titre: "Crème dessert au chocolat « 3 min chrono »", catalogue_id: creme-dessert-chocolat-3-min}
     - {page: 208, titre: "Petits pains d'épices en bocaux (ou pas…)"}
     - {page: 211, titre: "Truffes de Noël pour cadeaux gourmands"}
     - {page: 212, titre: "Fondant au (poti-)marron façon Rennes de Noël"}

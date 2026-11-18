@@ -1,0 +1,82 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T192).
+#
+# LA CRÈME DESSERT SANS CUISSON, À LA GOMME DE GUAR : trois minutes au fouet,
+# et le foyer n'a plus de raison d'en acheter (`creme-dessert-chocolat`,
+# industrielle, est au rayon). Cinq jours au frais en pots fermés.
+#
+# LE LAIT DE SOJA-VANILLE, QUE LE FOYER A DÉJÀ : la page le donne au choix
+# avec le soja nature, l'avoine ou le riz, et dit alors de supprimer le sucre
+# vanillé et de descendre le sucre à 120 g. C'est cette version qui est
+# encodée.
+#
+# LES POUDRES D'ABORD, ET BIEN MÉLANGÉES : sinon la gomme de guar fait des
+# grumeaux gélatineux. Variante mousseuse (non encodée) : tout au blender,
+# 3 min à pleine puissance, avec 1 L de lait.
+
+recipe:
+  id: creme-dessert-chocolat-3-min
+  title: Crème dessert au chocolat « 3 min chrono »
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 207"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 207
+    saison: hiver
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 9          # « environ 1 L, 8 à 10 petits pots »
+  lot_entier: true
+  time_min_total: 5         # en-tête : 3 min de préparation, sans cuisson
+  active_min: 3
+
+  creneaux: [gouter, dessert]
+
+  apports:
+    proteine: tofu-soja
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: cacao, name: "cacao amer bien parfumé (55 g pour les plus chocophiles)", qty: 35, unit: g}
+    - {id: sucre-roux, name: "sucre roux (135 g avec un lait non sucré)", qty: 120, unit: g}
+    - {id: gomme-guar, name: "gomme de guar en poudre (une grosse c. à s.)", qty: 11, unit: g}
+    - {id: lait-soja-vanille, name: "lait de soja-vanille (ou soja nature, avoine, riz)", qty: 75, unit: cl, subs: [{id: lait-avoine, name: "lait d'avoine", ratio: 1.0}]}
+    - {id: creme-coco, name: crème de coco liquide, qty: 20, unit: cl}
+    - {id: fleur-de-sel, name: fleur de sel, qty: 1, unit: bonne pincée, seasoning: true}
+
+  steps:
+    - id: poudres
+      action: "Bien mélanger au fouet toutes les poudres au fond d'un saladier"
+      astuce: "C'est ce qui évite les grumeaux gélatineux de la gomme de guar."
+      needs: []
+      uses: [cacao, sucre-roux, gomme-guar, fleur-de-sel]
+      time_min: 1
+      kid: {age_min_months: 24, task: "mélanger les poudres au fouet"}
+    - id: liquides
+      action: "Ajouter la moitié du lait et la crème en fouettant énergiquement jusqu'à une pâte lisse, puis le reste du lait"
+      needs: []
+      uses: [lait-soja-vanille, creme-coco]
+      time_min: 2
+    - id: frais
+      action: "Répartir en pots et mettre au frais"
+      astuce: "Elle se mange presque aussitôt, mais gagne en tenue après une demi-heure."
+      needs: []
+      uses: []
+      time_min: 1
+      attente_min: 30
+      attente_raison: "une demi-heure au frais pour la tenue"
+
+  emits:
+    - kind: reste-plat
+      type: creme-dessert-chocolat-maison
+      qty_band: 3-repas
+      keeps: {frigo_days: 5, congelo: false}
+      note: "cinq jours au frais en pots fermés"
+
+  plan_b: []

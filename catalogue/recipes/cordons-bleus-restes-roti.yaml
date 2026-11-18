@@ -1,0 +1,98 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T192).
+#
+# DES CORDONS BLEUS AVEC UN RESTE DE RÔTI, et c'est l'intérêt : la viande est
+# déjà cuite à cœur, donc la panure ne brûle pas avant. `accepts` le rôti
+# froid, que le rôti cuit au bouillon émet (800 g).
+#
+# LES BISCOTTES : le foyer ne rachète plus de biscottes industrielles
+# (`garde-manger.yaml`, `industriel: true`). Elles restent la ligne du livre,
+# avec la chapelure en remplaçant.
+#
+# RESTE DE PANURE ET D'ŒUF : l'autrice le recase dans un gratin, des
+# croquettes ou un pain perdu. Rien ne le chaîne.
+
+recipe:
+  id: cordons-bleus-restes-roti
+  title: Restes de rôti en « cordons bleus » au four
+  format: galettes
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 186"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 186
+    saison: hiver
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 beaux cordons bleus »
+    pieces: 4
+  time_min_total: 25        # en-tête : 15 min de préparation + 10 min de four
+  active_min: 15
+
+  accepts:
+    - type: roti-froid
+      qty: {amount: 140, unit: g}
+      required: true
+      fallback_recipe: roti-cuit-au-bouillon
+
+  apports:
+    proteine: viande-blanche
+    feculent: pain
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: roti-cuit, name: "reste de rôti de porc cuit (ou de poulet, de veau), 120 à 160 g", qty: 140, unit: g, from_accepts: true}
+    - {id: jambon, name: tranches de jambon cuit, qty: 4, unit: tranche}
+    - {id: cantal, name: "cantal, comté, tomme de Savoie ou reblochon", qty: 160, unit: g, subs: [{id: tomme-savoie, name: "tomme de Savoie", ratio: 1.0}]}
+    - {id: biscottes, name: "biscottes complètes (blé, épeautre, sans gluten)", qty: 250, unit: g, subs: [{id: chapelure, name: "chapelure", ratio: 1.0}]}
+    - {id: huile-olive, name: huile d'olive ou de tournesol désodorisée, qty: 3, unit: c. à s., subs: [{id: huile-tournesol, name: "huile de tournesol désodorisée", ratio: 1.0}]}
+    - {id: oeufs, name: œufs, qty: 4, unit: pièce}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  # « servir chaud avec une salade »
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 240 °C"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: trancher
+      action: "Couper le rôti et le fromage en fines tranches"
+      needs: []
+      uses: [roti-cuit, cantal]
+      time_min: 3
+    - id: panure
+      action: "Mixer les biscottes avec l'huile et verser dans une grande assiette plate ; fouetter les œufs dans une assiette creuse"
+      needs: [chop-coarse-small]
+      uses: [biscottes, huile-olive, oeufs]
+      time_min: 3
+    - id: garnir
+      action: "Couvrir la moitié d'une tranche de jambon de 20 g de fromage, 25 à 30 g de rôti, encore 20 g de fromage, et poivrer"
+      needs: []
+      uses: [jambon, poivre]
+      time_min: 4
+      kid: {age_min_months: 36, task: "poser le fromage et le rôti sur le jambon"}
+    - id: paner
+      action: "Replier en chausson, tremper dans l'œuf, puis passer des deux côtés dans la panure en le tenant fermé, et poser sur une plaque chemisée"
+      astuce: "Refaire de même pour les autres cordons bleus."
+      needs: []
+      uses: []
+      time_min: 5
+    - id: cuire
+      action: "Enfourner 2 min à 240 °C, puis 8 min à 150 °C, jusqu'à une panure dorée et un cœur coulant"
+      needs: [bake]
+      uses: []
+      time_min: 10
+      attended: false
+  # PAS DE PRÉLÈVEMENT BÉBÉ : jambon et fromage salés, rôti assaisonné.
+
+  plan_b: []
