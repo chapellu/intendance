@@ -87,6 +87,7 @@ const note = (j, type, texte, extra = {}) => { appendFileSync(NOTES, JSON.string
 
 // ───────────────────────────────────────────────────────────── le navigateur
 const ctx = await chromium.launchPersistentContext(PROFILE, {
+  ...(process.env.CHROMIUM ? { executablePath: process.env.CHROMIUM } : {}),
   viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, serviceWorkers: "block",
 });
 const page = ctx.pages()[0] ?? (await ctx.newPage());
@@ -306,10 +307,10 @@ async function courses(j, ev, stats) {
     await tap(arts.nth(k)); coches++;
     await page.waitForTimeout(120);
   }
-  await tap(page.getByRole("button", { name: "À la maison" }));
-  await page.waitForTimeout(400);
-  const tout = page.getByRole("button", { name: /Tout rentrer/ });
-  if (await tout.count()) { await tap(tout); await page.waitForTimeout(800); }
+  // Depuis 7e1b7b2, plus de mode « À la maison » : toucher met dans le sac,
+  // « Ranger au stock » fait tout entrer d'un coup.
+  const ranger = page.getByRole("button", { name: /Ranger au stock/ });
+  if (await ranger.count()) { await tap(ranger); await page.waitForTimeout(800); }
   for (const l of lignes) if (!manquants.has(l.nom) && !/rentre/.test(l.classe ?? "")) acheter(l.nom, l.q, j);
   // Ce que la liste ne dit pas : on note les lignes qui restent sans rentrer et les orphelins.
   const apres = await texte();
