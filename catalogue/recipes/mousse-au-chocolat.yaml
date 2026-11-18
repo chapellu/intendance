@@ -63,17 +63,20 @@ recipe:
 
   steps:
     - id: chauffer-creme
+      uses: [creme-coco, huile-coco, extrait-vanille, fleur-de-sel]
       action: "Chauffer la crème avec la vanille, la fleur de sel et l'huile de coco"
       astuce: "En surveillant que le fond n'attache pas."
       needs: [simmer]
       time_min: 3
       attended: true
     - id: fondre-chocolat
+      uses: [chocolat-noir]
       action: "Casser le chocolat dedans et le faire fondre hors du feu, en mélangeant"
       needs: []
       time_min: 3
       attended: true
     - id: monter-en-neige
+      uses: [jus-pois-chiches-ing, sucre-complet]
       action: "Pendant ce temps : monter en neige les blancs d'œufs (ou le jus de pois chiches), en ajoutant le sucre en trois fois"
       astuce: "Dans la version aux œufs, les jaunes vont dans le chocolat."
       needs: [blend-smooth]
@@ -83,10 +86,12 @@ recipe:
         age_min_months: 30
         task: "verser le sucre en trois fois pendant que ça monte"
     - id: incorporer
+      uses: []
       action: "Incorporer la neige au chocolat fondu à la spatule souple, en soulevant le mélange d'un mouvement tournant, sans le casser"
       needs: []
       time_min: 3
     - id: mettre-au-frais
+      uses: []
       action: "Verser aussitôt dans des petits pots et mettre au frais"
       astuce: "Au moins 4 h."
       needs: []

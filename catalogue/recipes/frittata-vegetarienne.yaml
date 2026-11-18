@@ -55,21 +55,25 @@ recipe:
 
   steps:
     - id: prechauffer-frittata
+      uses: []
       action: "Préchauffer le four à 180 °C"
       needs: [bake]
       time_min: 1
       attended: false
     - id: battre-les-oeufs
+      uses: [oeufs, sel, poivre, piment-espelette]
       action: "Battre les œufs avec le sel, le poivre et éventuellement un peu de piment"
       needs: []
       time_min: 2
       seasoning_gate: true
     - id: monter-la-frittata
+      uses: [piperade, etorki]
       action: "Mélanger à la piperade, verser dans un petit plat à œuf individuel et déposer le fromage en lamelles par-dessus"
       astuce: "Le plat individuel est celui-là même qui partira au bureau."
       needs: []
       time_min: 3
     - id: cuire-frittata
+      uses: []
       action: "Enfourner 10 min"
       needs: [bake]
       time_min: 10

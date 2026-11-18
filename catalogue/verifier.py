@@ -381,11 +381,17 @@ def verifier(rid: str, r: dict, rayons: dict, rules: dict, cat: dict,
 
     # `uses:` — le lien étape → ingrédient, et ses deux façons de mentir.
     #
-    # Il est FACULTATIF par recette (la plupart du catalogue ne l'a pas encore)
-    # mais TOTAL dès qu'une recette en déclare un seul : une couverture partielle
-    # est pire que pas de couverture du tout, parce qu'un écran qui déroule la
-    # recette geste par geste ne montre alors qu'une partie des quantités sans
-    # rien signaler, et le cuisinier oublie ce qui manque en croyant tout voir.
+    # Il est OBLIGATOIRE depuis T193, et TOTAL : chaque étape le porte, `[]`
+    # quand elle ne consomme rien. Le foyer l'a dit plusieurs fois — « on te
+    # dit mélanger l'eau et la farine, mais on ne te donne pas les quantités,
+    # donc tu restes sur la liste des ingrédients » : 82 plats sur 207 n'en
+    # avaient aucun, et le mode en cuisine renvoyait à la liste pour eux. Une
+    # couverture partielle est pire encore : l'écran ne montre alors qu'une
+    # partie des quantités sans rien signaler.
+    if etapes and not any("uses" in s for s in etapes if isinstance(s, dict)):
+        err.append("aucune étape ne porte `uses:` : en cuisine, aucune quantité ne "
+                   "serait rappelée au moment du geste — dire, étape par étape, "
+                   "quelles lignes d'ingrédient elle emploie (`[]` si aucune)")
     refs, doublons = {}, []
     for i in r.get("ingredients", []):
         cle = i.get("ref") or i["id"]

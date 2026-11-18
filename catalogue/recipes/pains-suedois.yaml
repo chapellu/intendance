@@ -42,35 +42,42 @@ recipe:
 
   steps:
     - id: melanger-farine-sel
+      uses: [farine-complete, sel]
       action: "Mélanger la farine et le sel fin"
       needs: []
       time_min: 2
     - id: delayer
+      uses: [levure-boulangere, sucre-complet, yaourt-brebis, eau, huile-olive]
       action: "Délayer la levure, le sucre complet et le yaourt dans l'eau tiède, puis verser sur la farine avec l'huile et mélanger jusqu'à obtenir une pâte homogène"
       needs: []
       time_min: 6
     - id: etaler-dans-le-cadre
+      uses: []
       action: "Poser un papier cuisson sur une plaque, y installer un cadre à pâtisserie de 30 cm de côté, verser la pâte et la répartir au dos d'une cuillère huilée"
       astuce: "À défaut de cadre, un plat de même taille chemisé fait l'affaire."
       needs: []
       time_min: 6
     - id: premiere-levee
+      uses: []
       action: "Couvrir et laisser lever au tiède"
       needs: []
       time_min: 1
       attente_min: 75
       attended: false
     - id: piquer-et-cuire
+      uses: []
       action: "Piquer la pâte tous les 3 cm à la fourchette huilée, puis la laisser lever encore un quart d'heure pendant que le four préchauffe à 240 °C"
       needs: [bake]
       time_min: 15
       attended: false
     - id: cuire-pains-suedois
+      uses: []
       action: "Enfourner assez bas, 12 min chrono"
       needs: [bake]
       time_min: 12
       attended: false
     - id: decouper-en-carres
+      uses: []
       action: "Laisser refroidir puis découper en 9 carrés"
       needs: []
       time_min: 3

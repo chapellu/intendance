@@ -49,31 +49,37 @@ recipe:
 
   steps:
     - id: prechauffer-bocal
+      uses: []
       action: "Préchauffer le four à 150 °C"
       needs: [bake]
       time_min: 1
       attended: false
     - id: melanger-secs-bocal
+      uses: [farine-complete, son-avoine, poudre-a-lever, sel]
       action: "Mélanger la farine, le son d'avoine, le sel et la poudre à lever, puis faire un puits"
       needs: []
       time_min: 3
       seasoning_gate: true
     - id: appareil-bocal
+      uses: [yaourt-soja, sirop-agave, jus-orange, huile-olive, oeufs, cannelle, chocolat-noir, huile-essentielle-orange]
       action: "Ajouter le yaourt et tous les autres ingrédients dans le puits, puis mélanger au fouet"
       needs: []
       time_min: 5
     - id: cuire-en-pots
+      uses: []
       action: "Répartir la pâte dans 6 pots de confiture et les enfourner SANS leur couvercle, 40 min"
       needs: [bake]
       time_min: 40
       attended: false
     - id: visser-a-chaud
+      uses: []
       action: "Visser les couvercles sur les pots JUSTE SORTIS DU FOUR, avec des maniques"
       astuce: "C'est ce geste qui crée le vide d'air en refroidissant."
       needs: []
       time_min: 3
       attended: true
     - id: verifier-le-vide
+      uses: []
       action: "Laisser refroidir à température ambiante, puis vérifier que le centre du couvercle est un peu « enfoncé »"
       astuce: "C'est la preuve que le vide s'est fait. À défaut, consommer le gâteau dans la semaine."
       needs: []

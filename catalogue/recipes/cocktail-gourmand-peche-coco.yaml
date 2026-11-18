@@ -52,31 +52,37 @@ recipe:
 
   steps:
     - id: infuser
+      uses: [gousse-vanille, rhum, eau]
       action: "Fendre la gousse de vanille, gratter les graines et mettre gousse et graines dans une petite casserole avec l'eau et le rhum"
       needs: []
       time_min: 4
     - id: reduire
+      uses: []
       action: "Porter à ébullition puis cuire 5 min à tout petit feu, SANS COUVERCLE"
       astuce: "C'est l'étape qui infuse la vanille et évapore l'essentiel de l'alcool ; couvrir la manquerait."
       needs: [simmer]
       time_min: 5
       attended: true
     - id: refroidir
+      uses: []
       action: "Laisser refroidir puis retirer la gousse"
       needs: []
       time_min: 8
       attended: false
     - id: peler
+      uses: [peches]
       action: "Pendant ce temps : éplucher et dénoyauter les pêches"
       needs: []
       time_min: 8
       parallel_with: refroidir
       kid: {age_min_months: 30, task: "compter les pêches et les rincer"}
     - id: mixer
+      uses: [creme-coco]
       action: "Mixer les pêches avec la crème de coco et l'infusion refroidie jusqu'à une texture parfaitement veloutée"
       needs: [blend-smooth]
       time_min: 4
     - id: servir
+      uses: [glacons]
       action: "Ajouter les glaçons, mélanger rapidement et servir aussitôt"
       needs: []
       time_min: 1

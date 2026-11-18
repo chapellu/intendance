@@ -57,24 +57,29 @@ recipe:
 
   steps:
     - id: prechauffer-chausson
+      uses: []
       action: "Préchauffer le four à 180 °C"
       astuce: "Si possible, enfourner la frittata p. 97 en même temps : deux déjeuners d'un coup."
       needs: [bake]
       time_min: 1
       attended: false
     - id: etaler-chausson
+      uses: [pate-brisee-portion]
       action: "Étaler la pâte en un cercle d'environ 24 cm"
       needs: []
       time_min: 4
     - id: garnir-chausson
+      uses: [poulet-cuit, piperade]
       action: "Couper le poulet en petits cubes, le mélanger à la piperade et répartir la garniture sur la MOITIÉ de la pâte, en laissant 3 cm de pâte nue sur le bord"
       needs: []
       time_min: 4
     - id: souder-chausson
+      uses: []
       action: "Replier le disque pour former le chausson, puis souder et rouloter les bords"
       needs: []
       time_min: 3
     - id: cuire-chausson
+      uses: []
       action: "Enfourner 25 min assez bas, jusqu'à ce que la pâte soit bien dorée"
       needs: [bake]
       time_min: 25

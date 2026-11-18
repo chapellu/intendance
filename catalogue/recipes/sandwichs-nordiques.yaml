@@ -55,25 +55,30 @@ recipe:
 
   steps:
     - id: cuire-oeuf-nordique
+      uses: [oeufs]
       action: "Cuire l'œuf 8 minutes chrono à l'eau bouillante, puis l'écaler et le trancher"
       needs: [simmer]
       time_min: 10
       attended: false
     - id: preparer-fenouil
+      uses: [fenouil]
       action: "Ôter les 2 ou 3 grosses feuilles extérieures du fenouil, filandreuses, puis recouper le cœur en tranches très fines"
       needs: []
       time_min: 5
       parallel_with: cuire-oeuf-nordique
     - id: lier-au-fenouil
+      uses: [fenouil, citron, creme, ciboulette, poivre-5-baies]
       action: "Mélanger le fenouil avec le jus de citron, la crème, la ciboulette ciselée et le poivre"
       needs: []
       time_min: 3
     - id: saler-fenouil
+      uses: [sel]
       action: "Saler la préparation au fenouil"
       needs: []
       time_min: 1
       seasoning_gate: true
     - id: monter-sandwichs
+      uses: [pains-suedois, saumon-fume]
       action: "Ouvrir les pains, tartiner les bases de préparation au fenouil, ajouter l'œuf en tranches et le poisson fumé, refermer"
       astuce: "Recouper chaque sandwich en diagonale."
       needs: []

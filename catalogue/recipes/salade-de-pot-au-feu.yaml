@@ -57,14 +57,17 @@ recipe:
 
   steps:
     - id: cuber-le-pot-au-feu
+      uses: [viande-pot-au-feu, legumes-pot-au-feu]
       action: "Découper bœuf, légumes et pommes de terre en cubes de 2 à 3 cm"
       needs: []
       time_min: 5
     - id: sauce-au-persil
+      uses: [persil, capres, huile-olive, vinaigre, moutarde, poivre]
       action: "Hacher le persil avec les câpres, l'huile, le vinaigre, la moutarde et le poivre"
       needs: [chop-coarse]
       time_min: 3
     - id: saler-salade-paf
+      uses: [sel]
       action: "Saler la sauce, puis mélanger tous les ingrédients"
       needs: []
       time_min: 2

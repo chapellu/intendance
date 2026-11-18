@@ -54,26 +54,31 @@ recipe:
 
   steps:
     - id: cuire-oeufs
+      uses: [oeufs]
       action: "Cuire les œufs 8 min à l'eau bouillante"
       needs: [simmer]
       time_min: 8
       attended: false
     - id: trier-cueillette
+      uses: [pousses-sauvages]
       action: "Trier la cueillette brin à brin pour écarter tout ce qui n'a pas été identifié, puis laver, essorer et recouper les feuilles trop grandes"
       needs: []
       time_min: 8
       parallel_with: cuire-oeufs
       # Le tri n'est pas du confort : c'est l'étape de sécurité de la recette.
     - id: assembler
+      uses: [pois-chiches-cuits-ing, ail-des-ours]
       action: "Mélanger les pois chiches, les herbes et l'ail des ours ou la cébette"
       needs: []
       time_min: 3
     - id: assaisonner
+      uses: [huile-olive, vinaigre-balsamique, sel]
       action: "Assaisonner d'huile, de vinaigre et de sel, puis répartir dans les assiettes"
       needs: []
       time_min: 2
       seasoning_gate: true
     - id: dresser-oeufs
+      uses: [poivre]
       action: "Écaler les œufs, les couper en quatre, les poser sur les assiettes, saler et poivrer légèrement, servir aussitôt"
       needs: []
       time_min: 3

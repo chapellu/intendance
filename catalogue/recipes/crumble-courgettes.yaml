@@ -49,21 +49,25 @@ recipe:
 
   steps:
     - id: prechauffer-crumble
+      uses: []
       action: "Préchauffer le four à 180 °C"
       needs: [bake]
       time_min: 1
       attended: false
     - id: lit-de-courgettes
+      uses: [poelee-legumes-verts]
       action: "Étaler la poêlée dans un plat individuel plutôt LARGE"
       astuce: "Large, le crumble est plus croustillant : plus de surface au four."
       needs: []
       time_min: 3
     - id: sabler-le-crumble
+      uses: [flocons-avoine, parmesan, farine-epeautre, origan, huile-olive, vin-blanc-sec, sel]
       action: "Mixer tous les autres ingrédients par brèves impulsions jusqu'à texture sablée, sel compris"
       needs: [chop-coarse]
       time_min: 5
       seasoning_gate: true
     - id: cuire-crumble
+      uses: []
       action: "Étaler le sablé sur les courgettes, puis enfourner 25 min"
       astuce: "Sans tasser pour un crumble sablonneux, légèrement tassé pour une croûte qui résiste au transport."
       needs: [bake]

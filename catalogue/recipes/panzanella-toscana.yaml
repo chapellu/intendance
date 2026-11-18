@@ -55,26 +55,31 @@ recipe:
 
   steps:
     - id: griller-tremper
+      uses: [pain-rassis-ing]
       action: "Faire légèrement dorer les tranches au grille-pain, puis les tremper 3 min dans de l'eau froide"
       needs: []
       time_min: 6
       # Griller puis tremper : c'est ce qui ressuscite un pain rassis sans le
       # transformer en bouillie.
     - id: couper-pain
+      uses: []
       action: "Quand le pain est ramolli, le découper en petits morceaux dans un grand plat"
       needs: []
       time_min: 4
     - id: assaisonner-pain
+      uses: [huile-olive, vinaigre, sel, poivre]
       action: "Brasser le pain avec le sel, l'huile d'olive et le vinaigre"
       needs: []
       time_min: 1
       seasoning_gate: true
     - id: garnir
+      uses: [tomates, concombre, olives-noires, oignon-rouge, basilic]
       action: "Ajouter les tomates et le concombre en morceaux, les olives, l'oignon très finement émincé et les feuilles de basilic, puis mélanger"
       needs: []
       time_min: 7
       kid: {age_min_months: 30, task: "effeuiller le basilic dans le saladier"}
     - id: reposer
+      uses: []
       action: "Couvrir et mettre au frais ; juste avant de servir, ajouter un filet d'huile d'olive et quelques feuilles de basilic"
       needs: []
       time_min: 2

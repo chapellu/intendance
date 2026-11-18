@@ -57,15 +57,18 @@ recipe:
 
   steps:
     - id: tailler-le-tofu
+      uses: [tofu-fume]
       action: "Découper le tofu fumé en « lardons »"
       needs: []
       time_min: 3
     - id: melanger-flamiche
+      uses: [poelee-legumes-verts, oeufs, lait-avoine, fromage-rape, sel, poivre]
       action: "Mélanger tous les ingrédients dans un grand bol, saler et poivrer, puis verser dans un plat à four individuel d'environ 14 cm"
       needs: []
       time_min: 4
       seasoning_gate: true
     - id: cuire-flamiche
+      uses: []
       action: "Cuire 30 min à 180 °C"
       astuce: "Ou 50 min à 150 °C SANS préchauffage si la flamiche partage le four avec les terrines de la p. 75."
       needs: [bake]

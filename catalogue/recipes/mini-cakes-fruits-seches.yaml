@@ -38,25 +38,30 @@ recipe:
 
   steps:
     - id: prechauffer-mini-cakes
+      uses: []
       action: "Préchauffer le four à 180 °C, si possible en chaleur tournante"
       needs: [bake]
       time_min: 1
       attended: false
     - id: melanger-secs-mini-cakes
+      uses: [farine-epeautre, poudre-a-lever, sel]
       action: "Mélanger la farine, la poudre à lever et le sel, puis faire un puits"
       needs: []
       time_min: 2
       seasoning_gate: true
     - id: appareil-mini-cakes
+      uses: [miel-acacia, jus-orange, huile-tournesol, rhum, oeufs]
       action: "Ajouter le miel, le jus d'orange, l'huile, le rhum et les œufs, puis mélanger jusqu'à une pâte bien homogène"
       needs: []
       time_min: 4
     - id: incorporer-les-fruits
+      uses: [fruits-secs-panaches, caissettes]
       action: "Ajouter les fruits, bien mélanger, puis répartir la pâte dans 6 caissettes en carton ou 6 moules à muffins moyens"
       needs: []
       time_min: 4
       kid: {age_min_months: 30, task: "remplir les caissettes à la cuillère"}
     - id: cuire-mini-cakes
+      uses: []
       action: "Enfourner 20 min"
       needs: [bake]
       time_min: 20

@@ -39,6 +39,7 @@ recipe:
 
   steps:
     - id: malaxer
+      uses: [farine-complete, eau, huile-olive, sel, origan]
       action: "Mettre tous les ingrédients « en vrac » dans un saladier et malaxer à la main"
       astuce: "Juste ce qu'il faut pour obtenir une pâte homogène : trop travaillée, elle devient élastique."
       needs: []
@@ -47,6 +48,7 @@ recipe:
         age_min_months: 24
         task: "malaxer la pâte avec les mains propres"
     - id: diviser
+      uses: []
       action: "Découper la pâte en 4 pâtons"
       astuce: "C'est en pâtons individuels qu'elle se congèle et se ressort un par un."
       needs: []

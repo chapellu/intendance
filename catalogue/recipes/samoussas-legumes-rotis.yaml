@@ -72,25 +72,30 @@ recipe:
 
   steps:
     - id: prechauffer
+      uses: []
       action: "Préchauffer le four à 200 °C et chemiser une grande lèchefrite de papier cuisson"
       needs: [bake]
       time_min: 2
       attended: false
     - id: tailler-courgettes
+      uses: [courgettes, huile-olive, sel]
       action: "Couper les courgettes en tranches d'environ 8 mm, les brasser avec 2 c. à s. d'huile d'olive et un peu de sel, puis les étaler sur la lèchefrite"
       astuce: "En les serrant : elles peuvent se chevaucher un peu pour laisser la place aux autres légumes."
       needs: []
       time_min: 8
     - id: tailler-aubergine
+      uses: [aubergine, huile-olive]
       action: "Couper l'aubergine en tranches d'environ 8 mm, les brasser avec 3 c. à s. d'huile d'olive et un peu de sel, et les ranger à côté des courgettes"
       needs: []
       time_min: 7
     - id: preparer-poivron-tomates
+      uses: [poivron, tomates-roma]
       action: "Ouvrir le poivron en deux, jeter les graines et le poser peau vers le haut ; couper les tomates en tranches, les disposer et les saler légèrement"
       needs: []
       time_min: 5
       kid: {age_min_months: 30, task: "ranger les tranches de tomate sur la plaque"}
     - id: rotir
+      uses: []
       action: "Enfourner environ 35 min"
       astuce: "Jusqu'à ce que les légumes soient bien dorés et qu'il ne reste plus d'eau au fond de la lèchefrite."
       needs: [bake]
@@ -99,15 +104,18 @@ recipe:
       # Le temps varie beaucoup : 25 min dans un grand four où les légumes sont
       # étalés, davantage s'ils sont serrés et se chevauchent.
     - id: garniture-courgette
+      uses: [basilic, chevre-buche, ail, poivre]
       action: "Mixer les courgettes avec le basilic, le chèvre et une gousse d'ail, puis réserver"
       needs: [chop-coarse]
       time_min: 5
     - id: garniture-poivron
+      uses: [fromage-rape]
       action: "Ôter la peau du poivron et le mixer avec la moitié des tomates et la tomme de brebis, puis réserver"
       astuce: "La peau se retire toute seule après cuisson."
       needs: [chop-coarse]
       time_min: 5
     - id: garniture-aubergine
+      uses: [parmesan]
       action: "Mixer l'aubergine avec le parmesan, la dernière gousse d'ail et le reste des tomates"
       needs: [chop-coarse]
       time_min: 5
@@ -115,10 +123,12 @@ recipe:
       # plongeur : la chaîne `chop-coarse` bascule dessus et il faut le laver
       # entre chaque garniture. C'est la friction réelle de cette recette.
     - id: preparer-bandes
+      uses: [feuilles-brick]
       action: "Couper chaque feuille de brick en deux et replier la partie bombée pour obtenir un long rectangle"
       needs: []
       time_min: 6
     - id: plier
+      uses: [farine]
       action: "Poser un peu de farce au bout et rabattre en triangle par un mouvement de balancier gauche-droite"
       astuce: "En suivant le bord de la feuille comme un rail. Le bout restant se rentre dans un pli, ou se replie dessous."
       needs: []
@@ -127,11 +137,13 @@ recipe:
         age_min_months: 30
         task: "poser la cuillerée de farce au bout de chaque bande"
     - id: huiler
+      uses: []
       action: "Ranger les samoussas sur une plaque de cuisson et les huiler au pinceau"
       needs: []
       time_min: 5
       kid: {age_min_months: 30, task: "badigeonner les samoussas au pinceau"}
     - id: cuire
+      uses: []
       action: "Enfourner environ 15 min, jusqu'à ce que les samoussas soient bien dorés et croustillants"
       needs: [bake]
       time_min: 15

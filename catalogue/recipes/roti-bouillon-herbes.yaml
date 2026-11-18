@@ -50,21 +50,25 @@ recipe:
 
   steps:
     - id: tailler
+      uses: [oignon, carottes, celeri-branche, poireau]
       action: "Détailler l'oignon en petits cubes, émincer les carottes, le céleri et le poireau"
       needs: []
       time_min: 10
       kid: {age_min_months: 30, task: "laver le céleri et le poireau"}
     - id: cuire
+      uses: [roti-porc, eau, clous-girofle, laurier, gros-sel]
       action: "Réunir le rôti, les légumes, les clous de girofle, le laurier, le gros sel et l'eau dans un faitout, couvrir et cuire 1 h à feu moyen"
       needs: [simmer-large]
       time_min: 45
       attended: false
     - id: herbes
+      uses: [herbes-fraiches, persil]
       action: "15 à 20 min avant la fin, ajouter les herbes fraîches et recouvrir"
       needs: [simmer-large]
       time_min: 15
       attended: false
     - id: refroidir
+      uses: []
       action: "Sortir le rôti, le laisser sécher et refroidir quelques instants dans une passoire, puis le mettre au frais bien emballé"
       needs: []
       time_min: 5

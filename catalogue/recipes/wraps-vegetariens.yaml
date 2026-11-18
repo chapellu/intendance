@@ -53,20 +53,24 @@ recipe:
 
   steps:
     - id: raper-carotte
+      uses: [carottes]
       action: "Râper la carotte"
       needs: []
       time_min: 2
       kid: {age_min_months: 30, task: "tourner la manivelle du râpe-légumes"}
     - id: ecraser-avocat
+      uses: [avocat, citron, sel, poivre]
       action: "Écraser l'avocat à la fourchette avec le jus de citron, un peu de sel et de poivre"
       needs: []
       time_min: 3
       seasoning_gate: true
     - id: emietter-tofu
+      uses: [tofu-lactofermente]
       action: "Émietter le tofu lactofermenté à la fourchette"
       needs: []
       time_min: 2
     - id: rouler
+      uses: [crepes-wraps]
       action: "Tartiner la crêpe de purée d'avocat, répartir carotte et tofu, TASSER la garniture, puis rouler en terminant par la partie nue"
       astuce: "Recouper en deux et emballer chaque wrap."
       needs: []

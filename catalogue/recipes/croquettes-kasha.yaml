@@ -49,6 +49,7 @@ recipe:
 
   steps:
     - id: cuire-kasha
+      uses: [kasha, petits-pois, eau, sel]
       action: "Mettre kasha et petits pois dans une petite casserole avec l'eau bouillante et un peu de sel, puis cuire à feu doux environ 8 min en mélangeant SOUVENT"
       astuce: "La préparation boit vite toute son eau : sans remuer, elle attache."
       needs: [simmer]
@@ -56,16 +57,19 @@ recipe:
       attended: true
       seasoning_gate: true
     - id: lier-croquettes
+      uses: [chevre-demi-sec, ciboulette, poivre]
       action: "Ajouter le fromage en petits cubes, la ciboulette ciselée et un peu de poivre, puis mixer LÉGÈREMENT par brèves impulsions"
       astuce: "Surtout pas de bouillie : il faut garder des petits morceaux."
       needs: [chop-coarse]
       time_min: 3
     - id: faconner-croquettes
+      uses: [farine]
       action: "Façonner à la main 6 croquettes de 45 à 50 g, puis les fariner légèrement"
       needs: []
       time_min: 6
       kid: {age_min_months: 24, task: "rouler les croquettes dans l'assiette de farine"}
     - id: dorer-croquettes
+      uses: [huile-olive]
       action: "Faire dorer à l'huile chaude jusqu'à ce que chaque face soit bien croustillante"
       needs: [pan-fry]
       time_min: 8

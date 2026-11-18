@@ -53,16 +53,19 @@ recipe:
 
   steps:
     - id: cuire-oeuf-haricots
+      uses: [oeufs]
       action: "Cuire l'œuf 8 min à l'eau bouillante, puis l'écaler et le couper en tranches"
       needs: [simmer]
       time_min: 10
       attended: false
     - id: tailler-salade-haricots
+      uses: [tomates-roma, basilic, olives-noires, parmesan]
       action: "Découper la tomate en petits cubes, ciseler le basilic, détailler les olives en rondelles et le parmesan en copeaux"
       needs: []
       time_min: 6
       parallel_with: cuire-oeuf-haricots
     - id: assaisonner-haricots
+      uses: [haricots-blancs-cuits, capres, vinaigre-balsamique, huile-olive, sel, piment-espelette]
       action: "Saler et pimenter, puis mélanger tous les ingrédients et mettre en bocal ou en lunchbox"
       needs: []
       time_min: 3

@@ -6579,3 +6579,31 @@ Fait :
       Nouveaux ids : `porc-saute`, `saucisses` (boucherie), `blettes`
       (primeur), `noix-coco-rapee`, `crozets`, `pate-amande`, `cranberries`,
       `gingembre-confit`, `amandes`, `gomme-guar` (épicerie).
+
+## T193 — En cuisine, chaque étape rappelle ses quantités
+
+- [x] **T193 — 82 plats sur 207 ne disaient aucune quantité au moment du
+      geste (18/11).** Retour du foyer, plusieurs fois : « on te dit mélanger
+      l'eau et la farine, mais on ne te donne pas les quantités, donc tu es
+      obligé de rouvrir la liste des ingrédients — ou je reste sur la liste et
+      je ne suis pas le mode en cuisine ». Le mécanisme existait depuis T113
+      (`uses` × le facteur de la fiche), mais 82 plats — 404 étapes sur 1 156 —
+      n'avaient jamais reçu leur `uses:`, et depuis becb785 l'écran se taisait
+      sous ces étapes au lieu de renvoyer à la liste.
+
+      **Les 404 étapes ont leur lien.** Proposition automatique (l'ingrédient
+      nommé dans la consigne), puis relecture recette par recette : « tous les
+      ingrédients », « le reste », les assaisonnements à part, les doublons
+      retirés quand l'étape ne fait que réunir des choses déjà pesées. Deux
+      plats portaient deux lignes du même id (le sirop des petits pots glacés,
+      l'huile de la quiche) : elles ont reçu un `ref:`.
+
+      **`verifier.py` l'exige désormais** : une recette dont aucune étape ne
+      porte `uses:` est refusée. La couverture totale (chaque ligne employée
+      par au moins une étape) était déjà tenue.
+
+      Reste ouvert : une vingtaine de consignes écrivent une quantité en dur
+      (« prélever 40 cl de lait », « 150 g de parmesan ») qui ne suit pas les
+      parts quand le plat est mis à l'échelle — la plupart sont des tailles de
+      pièce ou de récipient et doivent rester fixes ; les autres demanderaient
+      une quantité calculée DANS la phrase, que le modèle ne sait pas écrire.
