@@ -54,6 +54,7 @@
 // est un forfait, écouler est une rampe, et l'un passe devant l'autre quand le
 // lot qu'on remplacerait a consommé 0,80 de sa vie. Voir `ecoulement.ts`.
 
+import { nomDuType } from "./typesLisibles";
 import { bandRepas, type LigneDepot } from "./depot";
 import type { Evenement } from "./journal";
 import type { Catalogue, EmitKind, Plat } from "./types";
@@ -79,9 +80,8 @@ export type Population = "apport" | "diner";
 
 export const populationDe = (kind: EmitKind): Population => (kind === "base" ? "apport" : "diner");
 
-/** Un type émis, dit en français. Le catalogue n'a pas de libellé lisible pour
- *  ce qu'un plat produit — c'est noté au backlog depuis T15. */
-export const nomDuType = (type: string): string => type.replace(/-/g, " ");
+/** Un type émis, dit en français — `typesLisibles.ts` (T193). */
+export { nomDuType };
 
 /* ═══════════════════════════════════════════════════════════════ le plancher */
 

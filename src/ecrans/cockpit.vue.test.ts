@@ -96,7 +96,7 @@ describe("T129 — la ligne « Ce soir » nomme le plat, et ce qui attend", () =
     const t = v.taches.find((x) => x.cle === "ce-soir")!;
     expect(t.titre).toBe(`Ce soir : ${soir.cartes[0]!.plat.titre}`);
     expect(t.detail).not.toMatch(/Rien n'est posé/);
-    expect(t.detail).toMatch(/3 repas de curry pois chiches au congélo/);
+    expect(t.detail).toMatch(/3 repas de curry de pois chiches au lait de coco au congélo/);
     expect(t.route).toEqual({ ecran: "ce-soir" });
     expect(t.lancer).toBe(soir.cartes[0]!.plat.id);
   });
@@ -302,7 +302,7 @@ describe("les restes passés", () => {
     passes();
     const t = vue().taches.find((x) => x.cle === "perimes");
     expect(t?.titre).toBe("2 restes ont passé leur date");
-    expect(t?.detail).toContain("carcasse volaille, lentilles vertes cuites");
+    expect(t?.detail).toContain("carcasse de poulet, lentilles vertes cuites");
     // Capture du 19/10 : l'id d'émission s'affichait tel quel.
     expect(t?.detail).not.toMatch(/\w-\w/);
     // Le geste ne demande rien de plus que ce que la tâche porte.

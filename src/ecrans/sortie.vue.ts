@@ -24,6 +24,7 @@
 // sortie EST ce doigt — c'est le premier endroit de l'app où quelqu'un peut
 // dire qu'un bocal est parti au congélateur.
 
+import { nomDuType } from "../model/typesLisibles";
 import { bandRepas } from "../model/depot";
 import { restesApresTable } from "../model/restes";
 import { portionsParBoite } from "../model/repas";
@@ -452,7 +453,7 @@ export function restesDeLaSortie(p: Plat, lots: readonly LotSortie[]): Reste[] {
     const e = p.emits[l.emit];
     parEmit.set(l.emit, {
       emit: l.emit,
-      nom: l.type.replace(/-/g, " "),
+      nom: nomDuType(l.type),
       qty: l.qty,
       unite: l.unite,
       repas: l.repas,

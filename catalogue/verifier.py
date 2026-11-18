@@ -488,6 +488,28 @@ def verifier(rid: str, r: dict, rayons: dict, rules: dict, cat: dict,
     return err, warn
 
 
+def verifier_types_lisibles(cat: dict) -> tuple:
+    """T193 — tout ce qu'un plat produit se dit en français à l'écran.
+
+    Le titre du plat suffit quand un seul plat émet le type et n'émet que lui ;
+    sinon il faut un libellé dans `types.yaml`. Sans lui, l'écran retombait sur
+    l'identifiant dé-tiretisé : « pate vegetal », sans accents."""
+    libelles = (rc.load(HERE / "types.yaml") or {}).get("libelles", {})
+    emetteurs = {}
+    for rid, r in cat.items():
+        for e in r.get("emits", []):
+            emetteurs.setdefault(e["type"], []).append(r)
+    err = []
+    for t, rs in sorted(emetteurs.items()):
+        if t in libelles:
+            continue
+        if len(rs) == 1 and len({e["type"] for e in rs[0].get("emits", [])}) == 1:
+            continue
+        err.append(f"type émis « {t} » sans nom lisible : l'ajouter à types.yaml "
+                   f"({len(rs)} plat(s) l'émettent)")
+    return err, []
+
+
 def verifier_equivalences(eq: dict, rayons: dict) -> tuple:
     """T178 — la table du commerce : chaque id a un rayon, rien ne se remplace
     par lui-même, un ratio est un nombre positif, `potager` a un remplaçant."""
@@ -613,6 +635,13 @@ def main() -> int:
                 print(f"  ✗ {e}")
             for w in warn:
                 print(f"  ⚠ {w}")
+
+        err, warn = verifier_types_lisibles(cat)
+        n_err += len(err); n_warn += len(warn)
+        if err:
+            print("\ntypes.yaml")
+            for e in err:
+                print(f"  ✗ {e}")
 
         err, warn = verifier_equivalences(rc.load(HERE / "equivalences.yaml"), rayons)
         n_err += len(err); n_warn += len(warn)

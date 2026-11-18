@@ -370,7 +370,29 @@ def main():
             "cause": "contenant" if pool and pool < cap else "place",
         }
 
+    # T193 — ce qu'un plat produit, dit en français (`types.yaml`). Le titre
+    # du plat quand un seul plat émet le type et n'émet que lui ; le libellé
+    # écrit sinon. `verifier.py` tient qu'aucun type émis ne reste sans nom.
+    libelles = (yaml.safe_load((HERE / "types.yaml").read_text()) or {}).get("libelles", {})
+    emetteurs = {}
+    for p in plats:
+        for e in p.get("emits", []):
+            emetteurs.setdefault(e["type"], []).append(p)
+    types_lisibles = {}
+    for t, ps in emetteurs.items():
+        if t in libelles:
+            types_lisibles[t] = libelles[t]
+        elif len(ps) == 1 and len({e["type"] for e in ps[0]["emits"]}) == 1:
+            # Le titre se lit en milieu de phrase (« Sortir les lasagnes du
+            # congélo ») : sans sa majuscule initiale.
+            titre = ps[0]["titre"]
+            i = next((k for k, ch in enumerate(titre) if ch.isalpha()), 0)
+            types_lisibles[t] = titre[:i] + titre[i:i + 1].lower() + titre[i + 1:]
+    for t, l in libelles.items():
+        types_lisibles.setdefault(t, l)
+
     json.dump({
+        "typesLisibles": types_lisibles,
         "foyer": {
             "nom": foyer["name"],
             "parts": sum(e["portion_eq"] for e in foyer["eaters"]

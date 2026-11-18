@@ -317,7 +317,8 @@ Un ticket = un commit qui laisse l'app fonctionnelle. `[ ]` à faire,
       porte `maj`, un horodatage, et la fenêtre de sept jours glisse chaque
       jour : « avant lundi » ne veut rien dire ici).
 
-- [ ] **Le catalogue n'a pas de nom lisible pour ce qu'il produit.** Un `emit`
+- [x] **Le catalogue n'a pas de nom lisible pour ce qu'il produit.** (Fait en
+      T194, voir plus bas.) Un `emit`
       porte un `type` (`lentilles-vertes-cuites`, `puree-lentilles-carottes`) et
       une catégorie d'équilibre porte un id (`legumineuse`) — jamais de libellé.
       Les écrans les affichent donc tels quels, identifiants compris : « apporte
@@ -6617,3 +6618,29 @@ Fait :
       parts quand le plat est mis à l'échelle — la plupart sont des tailles de
       pièce ou de récipient et doivent rester fixes ; les autres demanderaient
       une quantité calculée DANS la phrase, que le modèle ne sait pas écrire.
+
+## T194 — Ce qu'un plat produit a un nom, sur tous les écrans
+
+- [x] **T194 — « pate vegetal », « carcasse volaille », « reste roti » (18/11).**
+      Vu sur une capture de l'année simulée n° 12 : le frigo affichait le type
+      émis dé-tiretisé, sans accents — le stock, le cockpit, les repas, le
+      plancher, la sortie et le répertoire passaient tous par le même
+      `nomDuType`. Ouvert depuis T15. `typesLisibles` est publié par
+      l'export : le titre du plat (sans sa majuscule, il se lit en milieu de
+      phrase) quand un seul plat émet le type et n'émet que lui, sinon un
+      libellé de `types.yaml` (35 bases et types partagés : « pâté de
+      lentilles », « carcasse de poulet », « bouillon de pot-au-feu »).
+      `verifier.py` refuse un type émis sans nom ; `lireCatalogue` les
+      retient, `nomDuType` les lit.
+
+## L'année simulée n° 12 — T193 et T194
+
+Le harnais avait dérivé de l'écran depuis l'année n° 11 (fin octobre) et ne
+jouait plus juste : « À la maison » n'existait plus (7e1b7b2), les zones
+s'ouvrent par le plan (T141), un reste se retire par « Fini », et un jour
+sans rien à acheter n'a pas de titre de rayon. Premier passage de l'année
+n° 12, avec ces trous : 382 plats cuits, 274 restes mangés, 90 jetés (17 kg).
+Mais 197 restes mangés au réel n'ont pas pu être retirés de l'app (le
+bouton avait changé de nom), et 16 jours de courses ont planté : ces
+chiffres mesurent le harnais autant que l'app. Le harnais est réparé (commit
+à part) et l'année rejouée.

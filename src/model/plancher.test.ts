@@ -407,7 +407,7 @@ describe("la proposition le dit sur la carte", () => {
       planchers: [{ type: "reste-roti", niveau: 1 }],
     });
     const carte = apres.find((c) => c.plat.id === p.id)!;
-    expect(carte.plancher).toContain("reste roti");
+    expect(carte.plancher).toContain("reste de rôti");
     expect(carte.pourquoi.some((x) => x.startsWith("reconstitue"))).toBe(true);
     expect(rang(apres, p.id)).toBeLessThan(rang(avant, p.id));
   });
@@ -454,7 +454,10 @@ describe("poser un plancher sans attendre que l'app le propose", () => {
     const libres = posablesAuDepot(catalogue, etat([]), vide);
     for (const p of libres) {
       expect(p.plats.length).toBeGreaterThan(0);
-      expect(p.nom).not.toContain("-");
+      // T193 — le nom que publie le catalogue, jamais l'identifiant
+      // dé-tiretisé (« pâté de lentilles », pas « pate vegetal »).
+      expect(catalogue.typesLisibles[p.type]).toBeDefined();
+      expect(p.nom).toBe(catalogue.typesLisibles[p.type]);
     }
     const bolo = libres.find((p) => p.type === "sauce-bolognaise")!;
     expect(bolo.population).toBe("apport");

@@ -327,7 +327,7 @@ describe("les lignes calmes du cockpit", () => {
     j.choix[midi] = RESTE_DE_LA_VEILLE;
     j.deLaVeille![midi] = "dahl-lentilles-corail";
     const l = lignesDuJour(j, null);
-    expect(l.find((x) => x.cle === "gouter")?.texte).toBe("Goûter : banana bread (congélo, 3 restants), yaourt, fruit");
+    expect(l.find((x) => x.cle === "gouter")?.texte).toBe("Goûter : banana bread à l'avoine (congélo, 3 restants), yaourt, fruit");
     expect(l.find((x) => x.cle === "dejeuner")?.texte).toBe(`Midi : le reste de ${plat("dahl-lentilles-corail").titre}`);
     expect(l.find((x) => x.cle === "petit-dejeuner")?.texte).toBe("Petit-déj : porridge, yaourt, fruit — plus de pain maison");
   });

@@ -19,6 +19,7 @@
 // quel créneau ouvrir la fiche, et c'est justement pour l'ÉVITER (voir
 // `creneauDeLecture`).
 
+import { nomDuType } from "../model/typesLisibles";
 import { jourISO } from "../db";
 import { convient, joue, type Jeu } from "../model/jeu";
 import type { Accept, Emit, Plat } from "../model/types";
@@ -110,8 +111,8 @@ export function phraseDesApports(p: Plat): string | null {
 /* ───────────────────────────────────────────── ce qu'il donne, ce qu'il prend */
 
 /** Un type d'export lisible : `sauce-bolognaise` → « sauce bolognaise ». Même
- *  geste que `nomDuType` du plancher, sans en dépendre. */
-const nomDu = (type: string): string => type.replace(/-/g, " ");
+ *  geste que `nomDuType` du plancher — c'est lui, depuis T193. */
+const nomDu = (type: string): string => nomDuType(type);
 
 /**
  * Ce que le plat laisse derrière lui.

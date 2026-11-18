@@ -832,6 +832,8 @@ export interface PlanCuisine {
 }
 
 export interface Catalogue {
+  /** T193 — type émis → ce qu'on lit à l'écran (« pâté de lentilles »). */
+  typesLisibles: Record<string, string>;
   foyer: Foyer;
   plats: Plat[];
   creneaux: ConfigCreneaux;
