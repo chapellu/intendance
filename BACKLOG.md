@@ -6602,6 +6602,12 @@ Fait :
       porte `uses:` est refusée. La couverture totale (chaque ligne employée
       par au moins une étape) était déjà tenue.
 
+      **Les quantités s'écrivent comme on les lit** (`ecrireQuantite`) : la
+      fiche et l'étape disaient « 2 pièce », « 3 gousse », « 1000 ml » quand
+      le stock dit « 9 œufs » depuis T182. La pièce ne se dit plus (le nom
+      suit), 1 000 ml et 100 cl deviennent des litres, 1 000 g des kilos, et
+      le reste s'accorde à partir de 2.
+
       Reste ouvert : une vingtaine de consignes écrivent une quantité en dur
       (« prélever 40 cl de lait », « 150 g de parmesan ») qui ne suit pas les
       parts quand le plat est mis à l'échelle — la plupart sont des tailles de
