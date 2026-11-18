@@ -228,6 +228,9 @@ describe("T41 — la liste vit sans plan", () => {
     expect(phraseDuPlancher(p, 2)).toBe("pour 2 plats · il en reste 1, vous en voulez 3");
     // Et un chiffre qu'on n'a pas vu récemment ne se donne pas pour sûr.
     expect(phraseDuPlancher({ ...p, confiance: "probable" }, 0)).toContain("à vérifier");
+    // T193 — avec l'unité du fond, la phrase compte comme la ligne.
+    expect(phraseDuPlancher(p, 0, "boîte de 6")).toBe("il en reste 1 boîte de 6, vous en voulez 3 boîtes de 6");
+    expect(phraseDuPlancher(p, 0, "1 kg en vrac")).toBe("il en reste 1 kg, vous en voulez 3 kg");
   });
 
   test("les unités d'achat s'accordent, les grammes non", () => {

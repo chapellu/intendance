@@ -163,7 +163,13 @@ const court = (iso: string): string => {
   return m ? `${m[2]}/${m[1]}` : iso;
 };
 
-export function phraseDuPlancher(p: LignePlancher, plats: number): string {
+/**
+ * T193 — « il en reste 1, vous en voulez 3 » disait des unités d'achat sans les
+ * nommer (le reste ouvert de T184) : une pomme ou un kilo ? Avec l'unité du
+ * fond, la phrase compte comme la quantité de la ligne : « il en reste 1 kg,
+ * vous en voulez 3 kg ».
+ */
+export function phraseDuPlancher(p: LignePlancher, plats: number, achat?: string): string {
   const bouts: string[] = [];
   if (plats > 0) bouts.push(plats > 1 ? `pour ${plats} plats` : "pour 1 plat");
   if (p.usage === "apero") bouts.push("pour l’apéro");
@@ -178,8 +184,11 @@ export function phraseDuPlancher(p: LignePlancher, plats: number): string {
           ? `vu le ${court(p.vuLe)}, à vérifier`
           : "à vérifier",
     );
-  else if (!p.sansPlancher) bouts.push(`il en reste ${a}, vous en voulez ${p.niveau}`);
-  else if (p.a > 0) bouts.push(`il en reste ${a}`);
+  else {
+    const dire = (n: number): string => (achat ? enUnitesDAchat(n, achat) : String(n).replace(".", ","));
+    if (!p.sansPlancher) bouts.push(`il en reste ${achat ? dire(p.a) : a}, vous en voulez ${dire(p.niveau)}`);
+    else if (p.a > 0) bouts.push(`il en reste ${achat ? dire(p.a) : a}`);
+  }
   return bouts.join(" · ");
 }
 
