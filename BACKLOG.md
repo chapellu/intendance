@@ -6510,3 +6510,37 @@ Fait :
 
       Reste ouvert : la variante légère du soir de la galette (sans jambon ni
       fromage, 12 à 15 min de four) n'est qu'un commentaire.
+
+## T191 — L'automne de *La cuisine bio du quotidien*, p. 134 à 153
+
+- [x] **T191 — Dix pages d'automne encodées sur photo (18/11).** Terrine à
+      l'échalote, noisettes et champignons (p. 134), gnocchis de polenta à la
+      bolognaise (p. 137), « frites au four » de légumes d'automne (p. 138,
+      accompagnement), cock-a-leekie (p. 141), marbré aux légumes-racines
+      (p. 142), chou farci facile (p. 145), tranches de butternut aux lardons
+      (p. 146), « casspoulet » (p. 149), jarret braisé au vin blanc (p. 150),
+      moelleux « mystère » à l'orange (p. 153). Source : 81 sur 100 ; l'automne
+      n'attend plus que la p. 154.
+
+      **LE COCK-A-LEEKIE FINIT LE POULET RÔTI** : il `accepts` la carcasse
+      (requise, poulet rôti en repli) et un peu de viande (`poulet-cuit`,
+      facultative), deux sorties déjà émises par le poulet rôti.
+
+      **LA VEILLE, QUATRE FOIS** : trempage des haricots (p. 149), nuit au
+      frais du chou farci (p. 145), nuit de repos du jarret (p. 150), deux
+      heures de refroidissement de la polenta (p. 137) — toutes en
+      `attente_min`, que l'app place d'elle-même.
+
+      **LE JARRET NE PASSE PAS LA NUIT HORS DU FRIGO.** Le livre le laisse
+      refroidir à température ambiante ; l'étape dit de le mettre au frais une
+      fois tiède, et l'astuce le dit en clair.
+
+      **LA TERRINE POUR QUINZE NE TIENT PAS DANS LA COCOTTE** au sens du
+      contrôle de vaisselle — mais la cocotte n'y fait revenir que les
+      légumes : `charge_partielle`. La terrine de 3 L, le moule à cake de
+      30 cm et le moule à savarin ne sont pas dans l'inventaire du foyer, et
+      rien ne le vérifie. Deux recettes cuisent à la vapeur (p. 142, 153) :
+      la cocotte de 7,5 L porte `steam`.
+
+      Nouveaux ids : `porc-hache`, `foies-volaille`, `lardons` (boucherie),
+      `cognac`, `cepes-seches`, `sucre-glace` (épicerie), `orange` (primeur).

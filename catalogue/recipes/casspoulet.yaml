@@ -1,0 +1,104 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T191).
+#
+# LE CASSOULET AU POULET : plus léger qu'un cassoulet, en budget comme en
+# calories. Haricots secs trempés la veille (12 h au moins, idéalement 18 à
+# 24 h) : l'`attente_min` dit le minimum.
+#
+# NE PAS SALER AVANT UNE HEURE : le sel durcirait les haricots. Il arrive
+# après la cuisson couverte. Le talon de jambon cru, lui, entre dès le début :
+# pas de prélèvement bébé (cas de `lentilles-paysanne`).
+#
+# NI QUANTITÉ D'EAU NI MINUTAGE EXACT, dit l'autrice : selon la variété et le
+# séchage, les haricots cuisent plus ou moins vite. On goûte ; on encode 1 h
+# + 30 min, son ordre de grandeur.
+
+recipe:
+  id: casspoulet
+  title: « Casspoulet »
+  format: mijote
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 149"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 149
+    saison: automne
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « pour 6 personnes »
+  time_min_total: 110       # en-tête : 15 min de préparation + 1 h 30 de cuisson ; hors trempage
+  active_min: 20
+
+  apports:
+    proteine: viande-blanche
+    feculent: legumineuse
+    legumes: [allium, solanacee]
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: haricots-blancs, name: haricots blancs secs, qty: 500, unit: g}
+    - {id: poulet, name: "poulet fermier, découpé en 6 par le boucher", qty: 1, unit: pièce}
+    - {id: jambon-cru, name: talon de jambon cru, qty: 100, unit: g}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: oignon, name: oignons, qty: 3, unit: pièce}
+    - {id: ail, name: ail en chemise, qty: 3, unit: gousse}
+    - {id: concentre-tomate, name: double concentré de tomate, qty: 50, unit: g}
+    - {id: sarriette, name: "sarriette (ou 1 c. à s. séchée)", qty: 5, unit: brin}
+    - {id: sauge, name: feuilles de sauge, qty: 5, unit: pièce, optional: true}
+    - {id: eau, name: "eau froide, à hauteur", qty: 2, unit: l}
+    - {id: laurier, name: feuilles de laurier, qty: 3, unit: pièce, seasoning: true}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: tremper
+      action: "Mettre les haricots à tremper dans de l'eau froide"
+      astuce: "12 h au minimum ; 18 à 24 h, c'est encore mieux."
+      needs: []
+      uses: [haricots-blancs]
+      time_min: 2
+      attended: false
+      attente_min: 720
+      attente_raison: "trempage d'au moins 12 h, à lancer la veille"
+      kid: {age_min_months: 24, task: "verser les haricots dans le saladier d'eau"}
+    - id: egoutter
+      action: "Égoutter et rincer les haricots"
+      needs: []
+      uses: []
+      time_min: 2
+    - id: dorer
+      action: "Faire revenir les morceaux de poulet à l'huile dans une grande cocotte en fonte, les retirer, puis dorer les oignons"
+      needs: [simmer-large]
+      uses: [poulet, huile-olive, oignon]
+      time_min: 12
+    - id: mouiller
+      action: "Remettre le poulet avec haricots, jambon, ail, concentré, herbes et poivre, sans saler, et couvrir d'eau froide à hauteur en délayant le concentré"
+      needs: [simmer-large]
+      uses: [jambon-cru, ail, concentre-tomate, sarriette, sauge, laurier, poivre, eau]
+      time_min: 4
+    - id: cuire-couvert
+      action: "Cuire 1 h à couvert sur feu doux"
+      needs: [simmer-large]
+      uses: []
+      time_min: 60
+      attended: false
+    - id: saler
+      action: "Saler, mélanger et poursuivre 30 min à découvert, en ajoutant un peu d'eau si besoin"
+      astuce: "C'est cuit quand les haricots sont fondants : goûter. Trop d'eau ? Laisser épaissir sans couvercle en remuant le moins possible."
+      needs: [simmer-large]
+      uses: [sel]
+      time_min: 30
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: casspoulet
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: true}
+      note: "comme tout plat de haricots, il se réchauffe très bien"
+
+  plan_b: []

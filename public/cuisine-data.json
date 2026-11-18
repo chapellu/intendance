@@ -5838,6 +5838,339 @@
    "cuisinable": true
   },
   {
+   "id": "casspoulet",
+   "titre": "« Casspoulet »",
+   "minutes": 110,
+   "minutesSurPlace": 108,
+   "avanceMin": 830,
+   "anticipations": [
+    {
+     "gestes": [
+      "tremper"
+     ],
+     "minutes": 2,
+     "attente": 720,
+     "avantMin": 830,
+     "raison": "trempage d'au moins 12 h, à lancer la veille"
+    }
+   ],
+   "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 149",
+    "url": null,
+    "saison": "automne"
+   },
+   "apports": {
+    "proteine": "viande-blanche",
+    "feculent": "legumineuse",
+    "legumes": [
+     "allium",
+     "solanacee"
+    ],
+    "profil": "mijote",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "haricots-blancs",
+     "ref": "haricots-blancs",
+     "nom": "haricots blancs secs",
+     "qty": 500,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "poulet",
+     "ref": "poulet",
+     "nom": "poulet fermier, découpé en 6 par le boucher",
+     "qty": 1,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "jambon-cru",
+     "ref": "jambon-cru",
+     "nom": "talon de jambon cru",
+     "qty": 100,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "huile-olive",
+     "ref": "huile-olive",
+     "nom": "huile d'olive",
+     "qty": 4,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "oignon",
+     "ref": "oignon",
+     "nom": "oignons",
+     "qty": 3,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "ail",
+     "ref": "ail",
+     "nom": "ail en chemise",
+     "qty": 3,
+     "unit": "gousse",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "concentre-tomate",
+     "ref": "concentre-tomate",
+     "nom": "double concentré de tomate",
+     "qty": 50,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sarriette",
+     "ref": "sarriette",
+     "nom": "sarriette (ou 1 c. à s. séchée)",
+     "qty": 5,
+     "unit": "brin",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sauge",
+     "ref": "sauge",
+     "nom": "feuilles de sauge",
+     "qty": 5,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "facultatif": true
+    },
+    {
+     "id": "eau",
+     "ref": "eau",
+     "nom": "eau froide, à hauteur",
+     "qty": 2,
+     "unit": "l",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "laurier",
+     "ref": "laurier",
+     "nom": "feuilles de laurier",
+     "qty": 3,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    },
+    {
+     "id": "sel",
+     "ref": "sel",
+     "nom": "sel",
+     "qty": 1,
+     "unit": "c. à c.",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    },
+    {
+     "id": "poivre",
+     "ref": "poivre",
+     "nom": "poivre",
+     "qty": 1,
+     "unit": "pincée",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": "mijote",
+   "avec": [],
+   "steps": [
+    {
+     "id": "tremper",
+     "action": "Mettre les haricots à tremper dans de l'eau froide",
+     "minutes": 2,
+     "needs": [],
+     "surveille": false,
+     "astuce": "12 h au minimum ; 18 à 24 h, c'est encore mieux.",
+     "uses": [
+      "haricots-blancs"
+     ],
+     "enParallele": null,
+     "attente": 720,
+     "attenteRaison": "trempage d'au moins 12 h, à lancer la veille",
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "verser les haricots dans le saladier d'eau",
+     "enfantDes": 24,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "egoutter",
+     "action": "Égoutter et rincer les haricots",
+     "minutes": 2,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "dorer",
+     "action": "Faire revenir les morceaux de poulet à l'huile dans une grande cocotte en fonte, les retirer, puis dorer les oignons",
+     "minutes": 12,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "poulet",
+      "huile-olive",
+      "oignon"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "mouiller",
+     "action": "Remettre le poulet avec haricots, jambon, ail, concentré, herbes et poivre, sans saler, et couvrir d'eau froide à hauteur en délayant le concentré",
+     "minutes": 4,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "jambon-cru",
+      "ail",
+      "concentre-tomate",
+      "sarriette",
+      "sauge",
+      "laurier",
+      "poivre",
+      "eau"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cuire-couvert",
+     "action": "Cuire 1 h à couvert sur feu doux",
+     "minutes": 60,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "saler",
+     "action": "Saler, mélanger et poursuivre 30 min à découvert, en ajoutant un peu d'eau si besoin",
+     "minutes": 30,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": false,
+     "astuce": "C'est cuit quand les haricots sont fondants : goûter. Trop d'eau ? Laisser épaissir sans couvercle en remuant le moins possible.",
+     "uses": [
+      "sel"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 20,
+   "accepts": [],
+   "creneaux": [
+    "dejeuner",
+    "diner"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [
+    {
+     "type": "casspoulet",
+     "kind": "reste-plat",
+     "qty": null,
+     "band": "2-repas",
+     "espace": "congelo",
+     "note": "comme tout plat de haricots, il se réchauffe très bien",
+     "gardeFrigo": 3,
+     "congelo": true,
+     "horsTable": false
+    }
+   ],
+   "lotEntier": false,
+   "calibreMax": null,
+   "vaisselle": {
+    "id": "cocotte-7.5l",
+    "label": "cocotte 7,5 L",
+    "facteurMax": 2.0
+   },
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
    "id": "cereale-cuite-en-avance",
    "titre": "Grande casserole de céréale cuite d'avance (souche)",
    "minutes": 50,
@@ -7084,6 +7417,440 @@
    "cuisinable": true
   },
   {
+   "id": "chou-farci-facile",
+   "titre": "Chou farci facile",
+   "minutes": 110,
+   "minutesSurPlace": 15,
+   "avanceMin": 815,
+   "anticipations": [
+    {
+     "gestes": [
+      "eau",
+      "feuilles",
+      "blanchir",
+      "farce",
+      "lier",
+      "prechauffer",
+      "monter",
+      "cuire",
+      "refroidir"
+     ],
+     "minutes": 95,
+     "attente": 720,
+     "avantMin": 815,
+     "raison": "une nuit au frais : la terrine se tient et se coupe"
+    }
+   ],
+   "portions": 8,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 145",
+    "url": null,
+    "saison": "automne"
+   },
+   "apports": {
+    "proteine": "viande-blanche",
+    "feculent": "farine",
+    "legumes": [
+     "crucifere",
+     "allium"
+    ],
+    "profil": "four",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "roti-porc",
+     "ref": "roti-porc",
+     "nom": "rôti de porc dans l'échine ou l'épaule (surtout pas le filet)",
+     "qty": 800,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "chou-frise",
+     "ref": "chou-frise",
+     "nom": "chou vert frisé",
+     "qty": 1,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "remplacants": [
+      {
+       "id": "chou-blanc",
+       "nom": "chou blanc",
+       "ratio": 1
+      }
+     ]
+    },
+    {
+     "id": "jambon",
+     "ref": "jambon",
+     "nom": "jambon cuit",
+     "qty": 300,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "ail",
+     "ref": "ail",
+     "nom": "ail",
+     "qty": 1,
+     "unit": "gousse",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "oignon-rouge",
+     "ref": "oignon-rouge",
+     "nom": "gros oignon rouge",
+     "qty": 1,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "oeufs",
+     "ref": "oeufs",
+     "nom": "œufs",
+     "qty": 2,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "cantal",
+     "ref": "cantal",
+     "nom": "cantal entre-deux",
+     "qty": 140,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "persil",
+     "ref": "persil",
+     "nom": "quelques brins de persil",
+     "qty": 4,
+     "unit": "brin",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "farine-complete",
+     "ref": "farine-complete",
+     "nom": "farine complète ou semi-complète",
+     "qty": 100,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "huile-olive",
+     "ref": "huile-olive",
+     "nom": "un peu d'huile d'olive pour le moule",
+     "qty": 1,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "eau",
+     "ref": "eau",
+     "nom": "eau du blanchiment",
+     "qty": 4,
+     "unit": "l",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "laurier",
+     "ref": "laurier",
+     "nom": "feuilles de laurier",
+     "qty": 5,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    },
+    {
+     "id": "clous-girofle",
+     "ref": "clous-girofle",
+     "nom": "clous de girofle",
+     "qty": 5,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    },
+    {
+     "id": "gros-sel",
+     "ref": "gros-sel",
+     "nom": "gros sel pour l'eau",
+     "qty": 1,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    },
+    {
+     "id": "poivre",
+     "ref": "poivre",
+     "nom": "poivre gris moulu (c. à c. rase)",
+     "qty": 1,
+     "unit": "c. à c.",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    },
+    {
+     "id": "sel",
+     "ref": "sel",
+     "nom": "sel fin",
+     "qty": 18,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": "terrine",
+   "avec": [],
+   "steps": [
+    {
+     "id": "eau",
+     "action": "Porter à ébullition un grand faitout d'eau salée avec le laurier et les clous de girofle",
+     "minutes": 10,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [
+      "eau",
+      "gros-sel",
+      "laurier",
+      "clous-girofle"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "feuilles",
+     "action": "Pendant ce temps : détacher les feuilles du chou (jeter les 2 ou 3 premières, très foncées), retirer les grosses côtes et rincer",
+     "minutes": 8,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "chou-frise"
+     ],
+     "enParallele": "eau",
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "rincer les feuilles de chou",
+     "enfantDes": 30,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "blanchir",
+     "action": "Plonger les feuilles dans l'eau bouillante, couvrir, cuire 10 min et égoutter",
+     "minutes": 12,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "farce",
+     "action": "Pendant ce temps : couper le rôti en petits morceaux et le hacher avec le jambon, le cantal, l'ail, le persil et l'oignon",
+     "minutes": 15,
+     "needs": [
+      "chop-coarse"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "roti-porc",
+      "jambon",
+      "cantal",
+      "ail",
+      "persil",
+      "oignon-rouge"
+     ],
+     "enParallele": "blanchir",
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "lier",
+     "action": "Ajouter le sel, le poivre, la farine et les œufs, et bien malaxer à la main",
+     "minutes": 3,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "sel",
+      "poivre",
+      "farine-complete",
+      "oeufs"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "malaxer la farce à la main",
+     "enfantDes": 36,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "prechauffer",
+     "action": "Préchauffer le four à 180 °C ; huiler un long moule à cake d'environ 30 cm et le chemiser de feuilles de chou égouttées",
+     "minutes": 3,
+     "needs": [
+      "bake"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "huile-olive"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "monter",
+     "action": "Alterner couches de farce et de feuilles de chou jusqu'à épuisement",
+     "minutes": 5,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "poser les feuilles de chou entre deux couches",
+     "enfantDes": 36,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cuire",
+     "action": "Entourer de papier cuisson et enfourner 1 h (1 h 15 en cocotte en fonte, couvercle posé)",
+     "minutes": 60,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "refroidir",
+     "action": "Laisser refroidir une nuit au frais avant de démouler",
+     "minutes": 2,
+     "needs": [],
+     "surveille": true,
+     "astuce": "Couper avec un couteau lisse bien aiguisé ; servir froid, ou réchauffé à la poêle.",
+     "uses": [],
+     "enParallele": null,
+     "attente": 720,
+     "attenteRaison": "une nuit au frais : la terrine se tient et se coupe",
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 35,
+   "accepts": [],
+   "creneaux": [
+    "dejeuner",
+    "diner"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [
+    {
+     "type": "chou-farci-terrine",
+     "kind": "reste-plat",
+     "qty": null,
+     "band": "3-repas",
+     "espace": "congelo",
+     "note": "des repas tout prêts : froid, ou en tranches réchauffées à la poêle avec des pommes de terre",
+     "gardeFrigo": 3,
+     "congelo": true,
+     "horsTable": false
+    }
+   ],
+   "lotEntier": true,
+   "calibreMax": null,
+   "vaisselle": {
+    "id": "cocotte-7.5l",
+    "label": "cocotte 7,5 L",
+    "facteurMax": 1.5
+   },
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
    "id": "clafoutis-miel-abricot",
    "titre": "Clafoutis super crémeux au miel et à l'abricot",
    "minutes": 70,
@@ -7376,6 +8143,287 @@
    "lotEntier": false,
    "calibreMax": null,
    "vaisselle": null,
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
+   "id": "cock-a-leekie",
+   "titre": "Cock-a-leekie",
+   "minutes": 40,
+   "minutesSurPlace": 40,
+   "avanceMin": 41,
+   "anticipations": [],
+   "portions": 5,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 141",
+    "url": null,
+    "saison": "automne"
+   },
+   "apports": {
+    "proteine": "viande-blanche",
+    "feculent": "avoine",
+    "legumes": [
+     "allium"
+    ],
+    "profil": "soupe",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "carcasse",
+     "ref": "carcasse",
+     "nom": "carcasse de poulet rôti, et son jus de cuisson dégraissé",
+     "qty": 1,
+     "unit": "pièce",
+     "base": true,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "poulet-cuit",
+     "ref": "poulet-cuit",
+     "nom": "un peu de viande de poulet rôti, sans la peau",
+     "qty": 100,
+     "unit": "g",
+     "base": true,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "poireau",
+     "ref": "poireau",
+     "nom": "poireaux",
+     "qty": 900,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "pruneaux",
+     "ref": "pruneaux",
+     "nom": "pruneaux",
+     "qty": 12,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "eau",
+     "ref": "eau",
+     "nom": "eau",
+     "qty": 1.5,
+     "unit": "l",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "flocons-avoine",
+     "ref": "flocons-avoine",
+     "nom": "flocons d'orge ou d'avoine (6 c. à s. pour une soupe plus épaisse)",
+     "qty": 4,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "huile-olive",
+     "ref": "huile-olive",
+     "nom": "huile d'olive ou neutre",
+     "qty": 4,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "laurier",
+     "ref": "laurier",
+     "nom": "feuille de laurier",
+     "qty": 1,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    },
+    {
+     "id": "clous-girofle",
+     "ref": "clous-girofle",
+     "nom": "clou de girofle",
+     "qty": 1,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    },
+    {
+     "id": "sel",
+     "ref": "sel",
+     "nom": "sel (c. à s. rase)",
+     "qty": 1,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": "soupe",
+   "avec": [],
+   "steps": [
+    {
+     "id": "revenir",
+     "action": "Émincer les poireaux, couper la viande en petits morceaux sans la peau, et faire revenir le tout à l'huile dans un faitout, jusqu'à une légère coloration",
+     "minutes": 8,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": true,
+     "astuce": "Pas de peau : elle rendrait le bouillon trop gras.",
+     "uses": [
+      "poireau",
+      "poulet-cuit",
+      "huile-olive"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "mouiller",
+     "action": "Ajouter la carcasse, son jus, les pruneaux, le laurier, le clou de girofle, le sel et l'eau, et porter à ébullition",
+     "minutes": 5,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "carcasse",
+      "pruneaux",
+      "laurier",
+      "clous-girofle",
+      "sel",
+      "eau"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "compter et verser les pruneaux",
+     "enfantDes": 30,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cuire",
+     "action": "Compter 15 min à feu moyen",
+     "minutes": 15,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "flocons",
+     "action": "Ajouter les flocons et cuire encore 10 min",
+     "minutes": 10,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [
+      "flocons-avoine"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "servir",
+     "action": "Retirer la carcasse, dénoyauter les pruneaux et servir",
+     "minutes": 3,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 12,
+   "accepts": [
+    {
+     "type": "carcasse-volaille",
+     "kind": null,
+     "requis": true,
+     "qty": {
+      "amount": 1.0,
+      "unit": "pièce"
+     },
+     "delaiMaxH": null,
+     "mere": "poulet-roti"
+    },
+    {
+     "type": "poulet-cuit",
+     "kind": null,
+     "requis": false,
+     "qty": {
+      "amount": 100.0,
+      "unit": "g"
+     },
+     "delaiMaxH": null,
+     "mere": null
+    }
+   ],
+   "creneaux": [
+    "dejeuner",
+    "diner"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [],
+   "lotEntier": false,
+   "calibreMax": null,
+   "vaisselle": {
+    "id": "cocotte-7.5l",
+    "label": "cocotte 7,5 L",
+    "facteurMax": 2.4
+   },
    "gainChainage": 0,
    "cuisinable": true
   },
@@ -13420,6 +14468,220 @@
    "cuisinable": true
   },
   {
+   "id": "frites-four-legumes-automne",
+   "titre": "« Frites au four » de légumes d'automne",
+   "minutes": 35,
+   "minutesSurPlace": 35,
+   "avanceMin": 31,
+   "anticipations": [],
+   "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 138",
+    "url": null,
+    "saison": "automne"
+   },
+   "apports": {
+    "proteine": "aucune",
+    "feculent": "aucun",
+    "legumes": [
+     "cucurbitacee",
+     "racine"
+    ],
+    "profil": "four",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "potimarron",
+     "ref": "potimarron",
+     "nom": "demi-potimarron de taille moyenne",
+     "qty": 0.5,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "celeri-rave",
+     "ref": "celeri-rave",
+     "nom": "demi-céleri-rave de taille moyenne",
+     "qty": 0.5,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "remplacants": [
+      {
+       "id": "panais",
+       "nom": "panais, plus doux pour les enfants",
+       "ratio": 1.0
+      }
+     ]
+    },
+    {
+     "id": "carottes",
+     "ref": "carottes",
+     "nom": "carottes",
+     "qty": 6,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "huile-olive",
+     "ref": "huile-olive",
+     "nom": "huile d'olive, ou de tournesol désodorisée pour un goût plus « frites »",
+     "qty": 6,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-tournesol",
+       "nom": "huile de tournesol désodorisée",
+       "ratio": 1.0
+      }
+     ]
+    },
+    {
+     "id": "paprika",
+     "ref": "paprika",
+     "nom": "paprika (c. à c. rases)",
+     "qty": 2,
+     "unit": "c. à c.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "origan",
+     "ref": "origan",
+     "nom": "origan séché (c. à c. rase)",
+     "qty": 1,
+     "unit": "c. à c.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sel",
+     "ref": "sel",
+     "nom": "sel (c. à c. rase)",
+     "qty": 1,
+     "unit": "c. à c.",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    }
+   ],
+   "role": "accompagnement",
+   "format": null,
+   "avec": [],
+   "steps": [
+    {
+     "id": "prechauffer",
+     "action": "Préchauffer le four à 220 °C, en chaleur tournante si possible",
+     "minutes": 1,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "tailler",
+     "action": "Éplucher le céleri ; ouvrir le potimarron, l'épépiner ; brosser les carottes et les fendre en deux ; tailler potimarron et céleri en frites",
+     "minutes": 8,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "potimarron",
+      "celeri-rave",
+      "carottes"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "brosser les carottes sous l'eau",
+     "enfantDes": 30,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "enrober",
+     "action": "Brasser les légumes dans un grand saladier avec l'huile, le paprika, l'origan et le sel",
+     "minutes": 2,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "huile-olive",
+      "paprika",
+      "origan",
+      "sel"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "brasser les frites dans le saladier",
+     "enfantDes": 24,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cuire",
+     "action": "Les étaler sur une lèchefrite huilée ou chemisée et enfourner 20 min",
+     "minutes": 20,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "astuce": "Surveiller les dernières minutes : ça brunit vite.",
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 12,
+   "accepts": [],
+   "creneaux": [
+    "dejeuner",
+    "diner"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [],
+   "lotEntier": false,
+   "calibreMax": null,
+   "vaisselle": null,
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
    "id": "frittata-petits-pois-cebettes",
    "titre": "Frittata aux petits pois et aux cébettes",
    "minutes": 35,
@@ -15707,6 +16969,345 @@
      "horsTable": false
     }
    ],
+   "lotEntier": false,
+   "calibreMax": null,
+   "vaisselle": {
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.5
+   },
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
+   "id": "gnocchis-polenta-bolognaise",
+   "titre": "Gnocchis de polenta à la bolognaise",
+   "minutes": 40,
+   "minutesSurPlace": 30,
+   "avanceMin": 149,
+   "anticipations": [
+    {
+     "gestes": [
+      "polenta",
+      "polenta-cuire",
+      "etaler"
+     ],
+     "minutes": 10,
+     "attente": 120,
+     "avantMin": 149,
+     "raison": "refroidissement : la polenta doit être solide pour se découper"
+    }
+   ],
+   "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 137",
+    "url": null,
+    "saison": "automne"
+   },
+   "apports": {
+    "proteine": "viande-rouge",
+    "feculent": "cereale",
+    "legumes": [
+     "solanacee",
+     "allium"
+    ],
+    "profil": "four",
+    "origine": "italien"
+   },
+   "ingredients": [
+    {
+     "id": "polenta",
+     "ref": "polenta",
+     "nom": "polenta instantanée",
+     "qty": 250,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "eau",
+     "ref": "eau",
+     "nom": "eau",
+     "qty": 1,
+     "unit": "l",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sauce-tomate",
+     "ref": "sauce-tomate",
+     "nom": "sauce tomate cuisinée (napolitaine), un bocal d'environ 400 g",
+     "qty": 400,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "parmesan",
+     "ref": "parmesan",
+     "nom": "parmesan râpé",
+     "qty": 100,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "boeuf-hache",
+     "ref": "boeuf-hache",
+     "nom": "bœuf haché",
+     "qty": 200,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "olives-noires",
+     "ref": "olives-noires",
+     "nom": "olives noires dénoyautées, coupées en deux",
+     "qty": 15,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "capres",
+     "ref": "capres",
+     "nom": "câpres",
+     "qty": 2,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "facultatif": true
+    },
+    {
+     "id": "champignons-conserve",
+     "ref": "champignons-conserve",
+     "nom": "petite boîte de champignons émincés",
+     "qty": 1,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "facultatif": true
+    },
+    {
+     "id": "oignon",
+     "ref": "oignon",
+     "nom": "oignon",
+     "qty": 1,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "huile-olive",
+     "ref": "huile-olive",
+     "nom": "huile d'olive (+ un peu pour le plat)",
+     "qty": 4,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sel",
+     "ref": "sel",
+     "nom": "sel",
+     "qty": 1,
+     "unit": "c. à c.",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": "gratin",
+   "avec": [],
+   "steps": [
+    {
+     "id": "polenta",
+     "action": "Porter l'eau salée à ébullition, verser la polenta en pluie en fouettant vigoureusement",
+     "minutes": 5,
+     "needs": [
+      "simmer"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "eau",
+      "sel",
+      "polenta"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "verser la polenta en pluie, à côté d'un adulte qui fouette",
+     "enfantDes": 36,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "polenta-cuire",
+     "action": "Dès qu'elle clapote, cesser de fouetter, couvrir et cuire 1 à 2 min à petit feu",
+     "minutes": 2,
+     "needs": [
+      "simmer"
+     ],
+     "surveille": true,
+     "astuce": "Le couvercle avant tout : la polenta qui clapote projette et brûle.",
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "etaler",
+     "action": "Étaler la polenta chaude sur un marbre ou dans un plat, sur 1,5 cm environ, et la laisser refroidir complètement",
+     "minutes": 3,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": 120,
+     "attenteRaison": "refroidissement : la polenta doit être solide pour se découper",
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "bolognaise",
+     "action": "Pendant ce temps : faire revenir l'oignon en cubes et le bœuf à l'huile, ajouter sauce tomate, olives, câpres et champignons, couvrir et mijoter 10 min",
+     "minutes": 15,
+     "needs": [
+      "pan-fry"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "oignon",
+      "boeuf-hache",
+      "huile-olive",
+      "sauce-tomate",
+      "olives-noires",
+      "capres",
+      "champignons-conserve"
+     ],
+     "enParallele": "etaler",
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "prechauffer",
+     "action": "Préchauffer le four à 220 °C",
+     "minutes": 1,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "decouper",
+     "action": "Découper la polenta en petits rectangles ou losanges de 2 à 3 cm",
+     "minutes": 4,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "découper les gnocchis à la roulette",
+     "enfantDes": 36,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "monter",
+     "action": "Dans un plat à gratin : un tiers de sauce, une couche de gnocchis, la moitié du parmesan, puis sauce, gnocchis, sauce, et le reste de parmesan",
+     "minutes": 4,
+     "needs": [
+      "gratin-vessel"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "parmesan"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cuire",
+     "action": "Arroser d'un filet d'huile et enfourner 10 min ; servir bien chaud",
+     "minutes": 10,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "astuce": "En refroidissant, les gnocchis perdent de leur moelleux.",
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 20,
+   "accepts": [],
+   "creneaux": [
+    "dejeuner",
+    "diner"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [],
    "lotEntier": false,
    "calibreMax": null,
    "vaisselle": {
@@ -18299,6 +19900,381 @@
    "cuisinable": true
   },
   {
+   "id": "jarret-braise-vin-blanc",
+   "titre": "Jarret braisé au vin blanc et petits légumes",
+   "minutes": 160,
+   "minutesSurPlace": 16,
+   "avanceMin": 891,
+   "anticipations": [
+    {
+     "gestes": [
+      "saisir",
+      "revenir",
+      "mouiller",
+      "mijoter",
+      "reposer"
+     ],
+     "minutes": 144,
+     "attente": 720,
+     "avantMin": 891,
+     "raison": "une nuit de repos : le plat est meilleur réchauffé"
+    }
+   ],
+   "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 150",
+    "url": null,
+    "saison": "automne"
+   },
+   "apports": {
+    "proteine": "viande-rouge",
+    "feculent": "aucun",
+    "legumes": [
+     "racine",
+     "allium"
+    ],
+    "profil": "mijote",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "jarret-boeuf",
+     "ref": "jarret-boeuf",
+     "nom": "jarret de bœuf ficelé en rôti",
+     "qty": 1.2,
+     "unit": "kg",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "oignon",
+     "ref": "oignon",
+     "nom": "oignons",
+     "qty": 2,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "poireau",
+     "ref": "poireau",
+     "nom": "blancs de poireau",
+     "qty": 6,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "carottes",
+     "ref": "carottes",
+     "nom": "carottes",
+     "qty": 6,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "ail",
+     "ref": "ail",
+     "nom": "ail épluché",
+     "qty": 3,
+     "unit": "gousse",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "huile-olive",
+     "ref": "huile-olive",
+     "nom": "huile d'olive",
+     "qty": 4,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "cepes-seches",
+     "ref": "cepes-seches",
+     "nom": "cèpes séchés",
+     "qty": 35,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "facultatif": true
+    },
+    {
+     "id": "jambon-cru",
+     "ref": "jambon-cru",
+     "nom": "« lardons » de jambon cru",
+     "qty": 100,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "vin-blanc-sec",
+     "ref": "vin-blanc-sec",
+     "nom": "vin blanc sec",
+     "qty": 25,
+     "unit": "cl",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "eau",
+     "ref": "eau",
+     "nom": "eau, à hauteur",
+     "qty": 1.5,
+     "unit": "l",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "persil",
+     "ref": "persil",
+     "nom": "persil frais pour servir",
+     "qty": 4,
+     "unit": "brin",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "facultatif": true
+    },
+    {
+     "id": "laurier",
+     "ref": "laurier",
+     "nom": "feuilles de laurier",
+     "qty": 3,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    },
+    {
+     "id": "sel",
+     "ref": "sel",
+     "nom": "sel",
+     "qty": 1,
+     "unit": "c. à c.",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    },
+    {
+     "id": "poivre",
+     "ref": "poivre",
+     "nom": "poivre",
+     "qty": 1,
+     "unit": "pincée",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": "mijote",
+   "avec": [
+    {
+     "id": "riz",
+     "nom": "riz, ou une autre céréale au choix",
+     "qty": 350,
+     "unit": "g"
+    }
+   ],
+   "steps": [
+    {
+     "id": "saisir",
+     "action": "Dans une large cocotte en fonte, dorer le dessus du rôti à l'huile jusqu'à une belle coloration, puis le réserver",
+     "minutes": 8,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "jarret-boeuf",
+      "huile-olive"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "revenir",
+     "action": "Faire revenir les oignons et les lardons dans la cocotte jusqu'à ce que tout soit bien doré",
+     "minutes": 8,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "oignon",
+      "jambon-cru"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "mouiller",
+     "action": "Remettre le rôti face dorée dessus, avec poireaux et carottes en gros tronçons, laurier, ail, cèpes, sel et poivre ; verser le vin et couvrir d'eau à hauteur",
+     "minutes": 6,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "poireau",
+      "carottes",
+      "laurier",
+      "ail",
+      "cepes-seches",
+      "sel",
+      "poivre",
+      "vin-blanc-sec",
+      "eau"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "mijoter",
+     "action": "Mijoter 2 h à couvert, sur le plus petit feu : le jus doit à peine frémir",
+     "minutes": 120,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "reposer",
+     "action": "Laisser tiédir à couvert, puis mettre la cocotte au frais pour la nuit",
+     "minutes": 2,
+     "needs": [],
+     "surveille": true,
+     "astuce": "Le repos d'une nuit donne parfum et moelleux à la viande. L'autrice le fait à température ambiante ; au frigo, c'est plus sûr pour un plat de viande.",
+     "uses": [],
+     "enParallele": null,
+     "attente": 720,
+     "attenteRaison": "une nuit de repos : le plat est meilleur réchauffé",
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "reduire",
+     "action": "Réchauffer en faisant réduire le jus au maximum, jusqu'à un suc épais, légèrement sirupeux",
+     "minutes": 25,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "servir",
+     "action": "Servir bien chaud, les assiettes parsemées de persil",
+     "minutes": 2,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "persil"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 25,
+   "accepts": [],
+   "creneaux": [
+    "dejeuner",
+    "diner"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [
+    {
+     "type": "jarret-braise",
+     "kind": "reste-plat",
+     "qty": null,
+     "band": "2-repas",
+     "espace": "congelo",
+     "note": "encore meilleur réchauffé, comme le plat lui-même",
+     "gardeFrigo": 3,
+     "congelo": true,
+     "horsTable": false
+    }
+   ],
+   "lotEntier": false,
+   "calibreMax": null,
+   "vaisselle": {
+    "id": "cocotte-7.5l",
+    "label": "cocotte 7,5 L",
+    "facteurMax": 2.0
+   },
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
    "id": "lait-bana-chaud",
    "titre": "Bon lait « bana-chaud » du petit déjeuner",
    "minutes": 10,
@@ -19737,6 +21713,291 @@
    "lotEntier": true,
    "calibreMax": null,
    "vaisselle": null,
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
+   "id": "marbre-legumes-racines",
+   "titre": "Marbré aux légumes-racines",
+   "minutes": 75,
+   "minutesSurPlace": 75,
+   "avanceMin": 137,
+   "anticipations": [],
+   "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 142",
+    "url": null,
+    "saison": "automne"
+   },
+   "apports": {
+    "proteine": "fromage",
+    "feculent": "farine",
+    "legumes": [
+     "racine"
+    ],
+    "profil": "four",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "celeri-rave",
+     "ref": "celeri-rave",
+     "nom": "céleri-rave (pâte blanche)",
+     "qty": 150,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "carottes",
+     "ref": "carottes",
+     "nom": "carottes (pâte orange)",
+     "qty": 150,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "farine-complete",
+     "ref": "farine-complete",
+     "nom": "farine T110 de blé ou de grand épeautre",
+     "qty": 250,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-epeautre",
+       "nom": "farine de grand épeautre",
+       "ratio": 1.0
+      }
+     ]
+    },
+    {
+     "id": "oeufs",
+     "ref": "oeufs",
+     "nom": "œufs",
+     "qty": 4,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "fromage-rape",
+     "ref": "fromage-rape",
+     "nom": "fromage râpé (comté, cantal, brebis…)",
+     "qty": 140,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "huile-olive",
+     "ref": "huile-olive",
+     "nom": "huile d'olive ou de tournesol désodorisée",
+     "qty": 130,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-tournesol",
+       "nom": "huile de tournesol désodorisée",
+       "ratio": 1.0
+      }
+     ]
+    },
+    {
+     "id": "jambon-cru",
+     "ref": "jambon-cru",
+     "nom": "talon de jambon cru en « lardons »",
+     "qty": 100,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "poudre-a-lever",
+     "ref": "poudre-a-lever",
+     "nom": "poudre à lever",
+     "qty": 1,
+     "unit": "sachet",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sel",
+     "ref": "sel",
+     "nom": "sel (c. à c. rases)",
+     "qty": 2,
+     "unit": "c. à c.",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": "cake",
+   "avec": [],
+   "steps": [
+    {
+     "id": "eau",
+     "action": "Mettre environ 2 L d'eau à chauffer dans le bas du cuit-vapeur",
+     "minutes": 1,
+     "needs": [
+      "steam"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "pate-blanche",
+     "action": "Mélanger la moitié de la farine, de la poudre à lever et du sel ; y malaxer à la main le céleri râpé, et la moitié des œufs, du fromage, de l'huile et du jambon",
+     "minutes": 6,
+     "needs": [],
+     "surveille": true,
+     "astuce": "À la main, ça se mélange mieux qu'à la cuillère en bois.",
+     "uses": [
+      "farine-complete",
+      "poudre-a-lever",
+      "sel",
+      "celeri-rave",
+      "oeufs",
+      "fromage-rape",
+      "huile-olive",
+      "jambon-cru"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "malaxer la pâte avec les mains",
+     "enfantDes": 30,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "verser-blanche",
+     "action": "Verser dans un moule à cake chemisé de papier cuisson, assez petit pour entrer dans le cuit-vapeur",
+     "minutes": 1,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "pate-orange",
+     "action": "Refaire une pâte avec le reste des ingrédients et les carottes râpées, et la verser sur la pâte blanche",
+     "minutes": 6,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "carottes"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "malaxer la pâte orange",
+     "enfantDes": 30,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cuire",
+     "action": "Poser le moule dans le panier vapeur, couvrir et cuire 1 h à feu moyen, à compter de l'ébullition",
+     "minutes": 60,
+     "needs": [
+      "steam"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "refroidir",
+     "action": "Laisser tiédir, démouler et décoller le papier, puis laisser refroidir et « se ressuyer » sur une grille avant de couper",
+     "minutes": 3,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": 60,
+     "attenteRaison": "refroidissement sur grille avant la découpe",
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 15,
+   "accepts": [],
+   "creneaux": [
+    "dejeuner",
+    "diner"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [
+    {
+     "type": "marbre-legumes-racines",
+     "kind": "reste-plat",
+     "qty": null,
+     "band": "lunchbox",
+     "espace": "congelo",
+     "note": "le cake des pique-niques : il voyage en sac à dos sans s'émietter",
+     "gardeFrigo": 4,
+     "congelo": true,
+     "horsTable": false
+    }
+   ],
+   "lotEntier": true,
+   "calibreMax": null,
+   "vaisselle": {
+    "id": "cocotte-7.5l",
+    "label": "cocotte 7,5 L",
+    "facteurMax": 2.0
+   },
    "gainChainage": 0,
    "cuisinable": true
   },
@@ -21400,6 +23661,314 @@
     "id": "sauteuse-28",
     "label": "sauteuse 28 cm",
     "facteurMax": 1.0
+   },
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
+   "id": "moelleux-mystere-orange",
+   "titre": "Moelleux « mystère » à l'orange",
+   "minutes": 60,
+   "minutesSurPlace": 60,
+   "avanceMin": 117,
+   "anticipations": [],
+   "portions": 8,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 153",
+    "url": null,
+    "saison": "automne"
+   },
+   "apports": {
+    "proteine": "aucune",
+    "feculent": "farine",
+    "legumes": [
+     "cucurbitacee"
+    ],
+    "profil": "four",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "potimarron",
+     "ref": "potimarron",
+     "nom": "chair de potimarron râpée, avec la peau",
+     "qty": 250,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "farine-complete",
+     "ref": "farine-complete",
+     "nom": "farine T80 ou T110 de blé ou de grand épeautre",
+     "qty": 200,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-epeautre",
+       "nom": "farine de grand épeautre",
+       "ratio": 1.0
+      }
+     ]
+    },
+    {
+     "id": "sirop-agave",
+     "ref": "sirop-agave",
+     "nom": "sirop d'agave",
+     "qty": 120,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "oeufs",
+     "ref": "oeufs",
+     "nom": "œufs",
+     "qty": 3,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "orange",
+     "ref": "orange",
+     "nom": "zeste finement râpé d'une orange bio (ou 20 gouttes d'huile essentielle d'orange)",
+     "qty": 1,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-essentielle-orange",
+       "nom": "20 gouttes d'huile essentielle d'orange bio",
+       "ratio": 1.0
+      }
+     ]
+    },
+    {
+     "id": "jus-orange",
+     "ref": "jus-orange",
+     "nom": "jus d'orange",
+     "qty": 60,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "huile-tournesol",
+     "ref": "huile-tournesol",
+     "nom": "huile de tournesol désodorisée",
+     "qty": 6,
+     "unit": "cl",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "poudre-a-lever",
+     "ref": "poudre-a-lever",
+     "nom": "poudre à lever",
+     "qty": 1,
+     "unit": "sachet",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "rhum",
+     "ref": "rhum",
+     "nom": "rhum ambré (ou un alcool d'agrume)",
+     "qty": 2,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sucre-vanille",
+     "ref": "sucre-vanille",
+     "nom": "sachets de sucre vanillé",
+     "qty": 2,
+     "unit": "sachet",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sucre-glace",
+     "ref": "sucre-glace",
+     "nom": "un peu de sucre glace",
+     "qty": 1,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "facultatif": true
+    }
+   ],
+   "role": "plat",
+   "format": "cake",
+   "avec": [],
+   "steps": [
+    {
+     "id": "eau",
+     "action": "Porter à ébullition au moins 1,5 L d'eau dans le bas du cuit-vapeur",
+     "minutes": 1,
+     "needs": [
+      "steam"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "pate",
+     "action": "Mélanger farine et poudre à lever, faire un puits, y ajouter tous les autres ingrédients et bien mélanger",
+     "minutes": 6,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "farine-complete",
+      "poudre-a-lever",
+      "potimarron",
+      "sirop-agave",
+      "oeufs",
+      "orange",
+      "jus-orange",
+      "huile-tournesol",
+      "rhum",
+      "sucre-vanille"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "verser la farine et casser les œufs",
+     "enfantDes": 30,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "mouler",
+     "action": "Huiler un moule à savarin de 22 cm, y verser la pâte, égaliser et le poser dans le panier vapeur",
+     "minutes": 2,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cuire",
+     "action": "Couvrir et cuire 45 min à feu moyen",
+     "minutes": 45,
+     "needs": [
+      "steam"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "refroidir",
+     "action": "Sortir le moule et laisser refroidir entièrement, puis passer une lame autour et démouler",
+     "minutes": 2,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": 60,
+     "attenteRaison": "refroidissement complet avant démoulage",
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "servir",
+     "action": "Servir tel quel, ou saupoudré de sucre glace",
+     "minutes": 1,
+     "needs": [],
+     "surveille": true,
+     "astuce": "Le sucre glace fond au contact de l'humidité et fait un léger glaçage.",
+     "uses": [
+      "sucre-glace"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 10,
+   "accepts": [],
+   "creneaux": [
+    "gouter",
+    "dessert"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [
+    {
+     "type": "moelleux-orange",
+     "kind": "reste-plat",
+     "qty": null,
+     "band": "3-repas",
+     "espace": "congelo",
+     "note": "goûters de la semaine",
+     "gardeFrigo": 4,
+     "congelo": true,
+     "horsTable": false
+    }
+   ],
+   "lotEntier": true,
+   "calibreMax": null,
+   "vaisselle": {
+    "id": "cocotte-7.5l",
+    "label": "cocotte 7,5 L",
+    "facteurMax": 1.5
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -43440,6 +46009,451 @@
    "cuisinable": true
   },
   {
+   "id": "terrine-echalote-noisettes-champignons",
+   "titre": "Terrine légère à l'échalote, noisettes et champignons",
+   "minutes": 165,
+   "minutesSurPlace": 0,
+   "avanceMin": 362,
+   "anticipations": [
+    {
+     "gestes": [
+      "dorer",
+      "champignons",
+      "prechauffer",
+      "farce",
+      "hacher-legumes",
+      "remplir",
+      "cuire",
+      "dorer-four",
+      "refroidir"
+     ],
+     "minutes": 182,
+     "attente": 180,
+     "avantMin": 362,
+     "raison": "refroidissement dans le four éteint"
+    }
+   ],
+   "portions": 15,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 134",
+    "url": null,
+    "saison": "automne"
+   },
+   "apports": {
+    "proteine": "viande-blanche",
+    "feculent": "aucun",
+    "legumes": [
+     "allium",
+     "champignon"
+    ],
+    "profil": "four",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "porc-hache",
+     "ref": "porc-hache",
+     "nom": "échine de porc, hachée par le boucher",
+     "qty": 850,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "oignon",
+     "ref": "oignon",
+     "nom": "oignons",
+     "qty": 800,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "jambon-cru",
+     "ref": "jambon-cru",
+     "nom": "jambon cru fumé",
+     "qty": 130,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "champignons-paris",
+     "ref": "champignons-paris",
+     "nom": "champignons blancs très frais (ou cèpes frais)",
+     "qty": 500,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "remplacants": [
+      {
+       "id": "champignons-surgeles",
+       "nom": "champignons surgelés",
+       "ratio": 1
+      },
+      {
+       "id": "champignons-conserve",
+       "nom": "champignons en conserve",
+       "ratio": 1
+      }
+     ]
+    },
+    {
+     "id": "ail",
+     "ref": "ail",
+     "nom": "ail",
+     "qty": 3,
+     "unit": "gousse",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "foies-volaille",
+     "ref": "foies-volaille",
+     "nom": "foies de volaille fermiers",
+     "qty": 500,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "laurier",
+     "ref": "laurier",
+     "nom": "feuilles de laurier frais (+ 3 pour décorer)",
+     "qty": 9,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sauge",
+     "ref": "sauge",
+     "nom": "feuilles de sauge fraîche",
+     "qty": 7,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sarriette",
+     "ref": "sarriette",
+     "nom": "sarriette ou origan frais",
+     "qty": 10,
+     "unit": "brin",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "huile-olive",
+     "ref": "huile-olive",
+     "nom": "huile d'olive",
+     "qty": 7,
+     "unit": "cl",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "oeufs",
+     "ref": "oeufs",
+     "nom": "œufs",
+     "qty": 2,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "farine",
+     "ref": "farine",
+     "nom": "farine",
+     "qty": 25,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "cognac",
+     "ref": "cognac",
+     "nom": "cognac ou armagnac (à défaut rhum ou whisky)",
+     "qty": 2,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "remplacants": [
+      {
+       "id": "rhum",
+       "nom": "rhum",
+       "ratio": 1.0
+      }
+     ]
+    },
+    {
+     "id": "noisettes",
+     "ref": "noisettes",
+     "nom": "noisettes entières",
+     "qty": 200,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "poivre",
+     "ref": "poivre",
+     "nom": "poivre bien parfumé (c. à c. légèrement bombée)",
+     "qty": 1,
+     "unit": "c. à c.",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    },
+    {
+     "id": "sel",
+     "ref": "sel",
+     "nom": "sel fin",
+     "qty": 25,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": "terrine",
+   "avec": [],
+   "steps": [
+    {
+     "id": "dorer",
+     "action": "Émincer les oignons, couper le jambon en morceaux et faire dorer le tout à l'huile dans une cocotte",
+     "minutes": 12,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "oignon",
+      "jambon-cru",
+      "huile-olive"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "champignons",
+     "action": "Ajouter les champignons coupés en gros morceaux et les faire suer à feu assez vif, jusqu'à ce que leur jus soit évaporé",
+     "minutes": 10,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "champignons-paris"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "prechauffer",
+     "action": "Préchauffer le four à 150 °C, en chaleur statique",
+     "minutes": 1,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "farce",
+     "action": "Hacher finement l'ail, les foies, 6 feuilles de laurier, la sauge et la sarriette effeuillée, puis y mêler cognac, poivre, sel, œufs et farine",
+     "minutes": 10,
+     "needs": [
+      "chop-coarse"
+     ],
+     "surveille": true,
+     "astuce": "Effeuiller la sarriette : les tiges coriaces ne se fondent pas dans la masse.",
+     "uses": [
+      "ail",
+      "foies-volaille",
+      "laurier",
+      "sauge",
+      "sarriette",
+      "cognac",
+      "poivre",
+      "sel",
+      "oeufs",
+      "farine"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": true
+    },
+    {
+     "id": "hacher-legumes",
+     "action": "Hacher grossièrement les oignons et champignons cuits, puis les réunir avec la farce, le porc et les noisettes entières",
+     "minutes": 5,
+     "needs": [
+      "chop-coarse"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "porc-hache",
+      "noisettes"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "verser les noisettes dans le saladier",
+     "enfantDes": 30,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "remplir",
+     "action": "Bien brasser, verser dans une terrine d'environ 3 L, décorer des 3 feuilles de laurier et couvrir d'un couvercle ou d'un papier plié en quatre",
+     "minutes": 3,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cuire",
+     "action": "Enfourner 2 h à 150 °C",
+     "minutes": 120,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "dorer-four",
+     "action": "Retirer le couvercle, monter le four à 180 °C et cuire encore 15 à 20 min, jusqu'à ce que le dessus soit bien doré",
+     "minutes": 18,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "refroidir",
+     "action": "Laisser refroidir dans le four éteint, puis emballer soigneusement et mettre au frais",
+     "minutes": 3,
+     "needs": [],
+     "surveille": true,
+     "astuce": "Un ou deux jours de repos au frais la rendent encore meilleure : facultatif, mais ça vaut l'attente.",
+     "uses": [],
+     "enParallele": null,
+     "attente": 180,
+     "attenteRaison": "refroidissement dans le four éteint",
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 25,
+   "accepts": [],
+   "creneaux": [
+    "dejeuner",
+    "diner"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [
+    {
+     "type": "terrine-echalote-noisettes",
+     "kind": "reste-plat",
+     "qty": null,
+     "band": "3-repas",
+     "espace": "congelo",
+     "note": "en tranches, plusieurs jours au frais ; plusieurs semaines au congélateur",
+     "gardeFrigo": 5,
+     "congelo": true,
+     "horsTable": false
+    }
+   ],
+   "lotEntier": true,
+   "calibreMax": null,
+   "vaisselle": null,
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
    "id": "terrine-poulet-poireaux",
    "titre": "Terrine légère de poulet et poireaux",
    "minutes": 55,
@@ -45943,6 +48957,292 @@
     "id": "sauteuse-28",
     "label": "sauteuse 28 cm",
     "facteurMax": 1.5
+   },
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
+   "id": "tranches-butternut-lardons",
+   "titre": "Tranches de butternut rôties aux lardons et aux herbes",
+   "minutes": 35,
+   "minutesSurPlace": 35,
+   "avanceMin": 32,
+   "anticipations": [],
+   "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 146",
+    "url": null,
+    "saison": "automne"
+   },
+   "apports": {
+    "proteine": "fromage",
+    "feculent": "aucun",
+    "legumes": [
+     "cucurbitacee",
+     "solanacee",
+     "allium"
+    ],
+    "profil": "four",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "courge",
+     "ref": "courge",
+     "nom": "courge butternut",
+     "qty": 1,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "lardons",
+     "ref": "lardons",
+     "nom": "lardons (ou dés de talon de jambon cru)",
+     "qty": 100,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "remplacants": [
+      {
+       "id": "jambon-cru",
+       "nom": "dés de talon de jambon cru",
+       "ratio": 1.0
+      }
+     ]
+    },
+    {
+     "id": "tomates",
+     "ref": "tomates",
+     "nom": "tomates",
+     "qty": 2,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "oignon",
+     "ref": "oignon",
+     "nom": "oignons",
+     "qty": 2,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "huile-olive",
+     "ref": "huile-olive",
+     "nom": "huile d'olive",
+     "qty": 4,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "parmesan",
+     "ref": "parmesan",
+     "nom": "parmesan râpé",
+     "qty": 100,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "origan",
+     "ref": "origan",
+     "nom": "origan séché (ou herbes de Provence), c. à c. rase",
+     "qty": 1,
+     "unit": "c. à c.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-provence",
+       "nom": "herbes de Provence",
+       "ratio": 1.0
+      }
+     ]
+    },
+    {
+     "id": "sauge",
+     "ref": "sauge",
+     "nom": "quelques feuilles de sauge, brins de thym, sarriette ou origan frais",
+     "qty": 4,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "facultatif": true
+    },
+    {
+     "id": "sel",
+     "ref": "sel",
+     "nom": "sel",
+     "qty": 1,
+     "unit": "pincée",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    },
+    {
+     "id": "poivre",
+     "ref": "poivre",
+     "nom": "poivre du moulin",
+     "qty": 1,
+     "unit": "pincée",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": "gratin",
+   "avec": [
+    {
+     "id": "riz",
+     "nom": "riz basmati",
+     "qty": 250,
+     "unit": "g"
+    },
+    {
+     "id": "salade-verte",
+     "nom": "salade verte",
+     "qty": 0.5,
+     "unit": "pièce"
+    }
+   ],
+   "steps": [
+    {
+     "id": "prechauffer",
+     "action": "Préchauffer le four à 200 °C",
+     "minutes": 1,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "garniture",
+     "action": "Dans un plat, mélanger oignons et tomates en petits cubes, lardons, huile, la moitié des herbes, très peu de sel et du poivre",
+     "minutes": 5,
+     "needs": [
+      "gratin-vessel"
+     ],
+     "surveille": true,
+     "astuce": "Très peu de sel : les lardons le sont déjà.",
+     "uses": [
+      "tomates",
+      "oignon",
+      "lardons",
+      "huile-olive",
+      "origan",
+      "sauge"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "mélanger la garniture dans le plat",
+     "enfantDes": 30,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "tranches",
+     "action": "Couper la courge sans l'éplucher en tranches d'environ 1 cm, et retirer les graines",
+     "minutes": 4,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "courge"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "garnir",
+     "action": "Poser les tranches sur la garniture, parsemer du reste des herbes, saler et poivrer légèrement, puis couvrir de parmesan",
+     "minutes": 2,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "sel",
+      "poivre",
+      "parmesan"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "parsemer le parmesan sur les tranches",
+     "enfantDes": 30,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cuire",
+     "action": "Enfourner 20 min et servir aussitôt",
+     "minutes": 20,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 10,
+   "accepts": [],
+   "creneaux": [
+    "dejeuner",
+    "diner"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [],
+   "lotEntier": false,
+   "calibreMax": null,
+   "vaisselle": {
+    "id": "plats-a-gratin",
+    "label": "plats à gratin 35×18 / 32×20",
+    "facteurMax": 3.0
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -48965,12 +52265,16 @@
     "jeunes-pousses",
     "gingembre",
     "betterave",
+    "orange",
     "melon",
     "framboises",
     "raisins",
     "mirabelles"
    ],
    "boucherie": [
+    "porc-hache",
+    "foies-volaille",
+    "lardons",
     "boeuf-hache",
     "agneau-collier",
     "roti-porc",
@@ -49026,6 +52330,9 @@
     "tofu-lactofermente"
    ],
    "épicerie": [
+    "cognac",
+    "cepes-seches",
+    "sucre-glace",
     "lentilles-seches",
     "pates",
     "pates-lasagne",
@@ -51910,7 +55217,9 @@
     "roti-porc",
     "saumon",
     "cabillaud",
-    "moules"
+    "moules",
+    "porc-hache",
+    "foies-volaille"
    ]
   },
   {

@@ -1,0 +1,103 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T191).
+#
+# UNE POLENTA QUI DOIT REFROIDIR DEUX HEURES AVANT D'ÊTRE DÉCOUPÉE : c'est ce
+# qui en fait des « gnocchis ». L'attente est sur l'étape d'étalage ; le
+# total de l'en-tête ne la compte pas.
+#
+# PEU DE VIANDE POUR UN PLAT COMPLET : 200 g de bœuf pour quatre. Câpres et
+# champignons sont facultatifs dans la liste même.
+
+recipe:
+  id: gnocchis-polenta-bolognaise
+  title: Gnocchis de polenta à la bolognaise
+  format: gratin
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 137"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 137
+    saison: automne
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes »
+  time_min_total: 40        # 10 min de préparation + 10 + 2 + 10 min de cuisson, plus le préchauffage ; hors refroidissement
+  active_min: 20
+
+  apports:
+    proteine: viande-rouge
+    feculent: cereale
+    legumes: [solanacee, allium]
+    profil: four
+    origine: italien
+
+  ingredients:
+    - {id: polenta, name: polenta instantanée, qty: 250, unit: g}
+    - {id: eau, name: eau, qty: 1, unit: l}
+    - {id: sauce-tomate, name: "sauce tomate cuisinée (napolitaine), un bocal d'environ 400 g", qty: 400, unit: g}
+    - {id: parmesan, name: parmesan râpé, qty: 100, unit: g}
+    - {id: boeuf-hache, name: bœuf haché, qty: 200, unit: g}
+    - {id: olives-noires, name: "olives noires dénoyautées, coupées en deux", qty: 15, unit: pièce}
+    - {id: capres, name: câpres, qty: 2, unit: c. à s., optional: true}
+    - {id: champignons-conserve, name: petite boîte de champignons émincés, qty: 1, unit: pièce, optional: true}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: huile-olive, name: "huile d'olive (+ un peu pour le plat)", qty: 4, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+
+  steps:
+    - id: polenta
+      action: "Porter l'eau salée à ébullition, verser la polenta en pluie en fouettant vigoureusement"
+      needs: [simmer]
+      uses: [eau, sel, polenta]
+      time_min: 5
+      kid: {age_min_months: 36, task: "verser la polenta en pluie, à côté d'un adulte qui fouette"}
+    - id: polenta-cuire
+      action: "Dès qu'elle clapote, cesser de fouetter, couvrir et cuire 1 à 2 min à petit feu"
+      astuce: "Le couvercle avant tout : la polenta qui clapote projette et brûle."
+      needs: [simmer]
+      uses: []
+      time_min: 2
+    - id: etaler
+      action: "Étaler la polenta chaude sur un marbre ou dans un plat, sur 1,5 cm environ, et la laisser refroidir complètement"
+      needs: []
+      uses: []
+      time_min: 3
+      attente_min: 120
+      attente_raison: "refroidissement : la polenta doit être solide pour se découper"
+    - id: bolognaise
+      action: "Pendant ce temps : faire revenir l'oignon en cubes et le bœuf à l'huile, ajouter sauce tomate, olives, câpres et champignons, couvrir et mijoter 10 min"
+      needs: [pan-fry]
+      uses: [oignon, boeuf-hache, huile-olive, sauce-tomate, olives-noires, capres, champignons-conserve]
+      time_min: 15
+      parallel_with: etaler
+    - id: prechauffer
+      action: "Préchauffer le four à 220 °C"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: decouper
+      action: "Découper la polenta en petits rectangles ou losanges de 2 à 3 cm"
+      needs: []
+      uses: []
+      time_min: 4
+      kid: {age_min_months: 36, task: "découper les gnocchis à la roulette"}
+    - id: monter
+      action: "Dans un plat à gratin : un tiers de sauce, une couche de gnocchis, la moitié du parmesan, puis sauce, gnocchis, sauce, et le reste de parmesan"
+      needs: [gratin-vessel]
+      uses: [parmesan]
+      time_min: 4
+    - id: cuire
+      action: "Arroser d'un filet d'huile et enfourner 10 min ; servir bien chaud"
+      astuce: "En refroidissant, les gnocchis perdent de leur moelleux."
+      needs: [bake]
+      uses: []
+      time_min: 10
+      attended: false
+  # PAS DE PRÉLÈVEMENT BÉBÉ : la polenta cuit dans l'eau salée, la sauce
+  # tomate du commerce l'est aussi.
+
+  plan_b: []

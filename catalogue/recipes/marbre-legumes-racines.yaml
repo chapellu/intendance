@@ -1,0 +1,101 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T191).
+#
+# LE CAKE SALÉ DES PIQUE-NIQUES, CUIT À LA VAPEUR. L'autrice l'a mis au point
+# un jour de four en panne, et l'a gardé : la vapeur donne le moelleux et
+# garde la couleur. Le moule à cake doit entrer dans le cuit-vapeur ; chez le
+# foyer, c'est la cocotte de 7,5 L (`steam`).
+#
+# DEUX PÂTES, LA MÊME RECETTE ÉCRITE UNE FOIS : la page donne les quantités
+# pour une pâte, « à multiplier par deux ». On encode le total ; seul le
+# légume râpé change — céleri-rave pour la blanche, carotte pour l'orange.
+#
+# `profil: four` FAUTE DE MIEUX : le modèle n'a pas de profil vapeur, et un
+# cake se range avec les cakes.
+
+recipe:
+  id: marbre-legumes-racines
+  title: Marbré aux légumes-racines
+  format: cake
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 142"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 142
+    saison: automne
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « pour 6 personnes »
+  lot_entier: true
+  time_min_total: 75        # en-tête : 15 min de préparation + 1 h de vapeur ; hors refroidissement
+  active_min: 15
+
+  apports:
+    proteine: fromage
+    feculent: farine
+    legumes: [racine]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: celeri-rave, name: céleri-rave (pâte blanche), qty: 150, unit: g}
+    - {id: carottes, name: carottes (pâte orange), qty: 150, unit: g}
+    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 250, unit: g, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
+    - {id: oeufs, name: œufs, qty: 4, unit: pièce}
+    - {id: fromage-rape, name: "fromage râpé (comté, cantal, brebis…)", qty: 140, unit: g}
+    - {id: huile-olive, name: huile d'olive ou de tournesol désodorisée, qty: 130, unit: g, subs: [{id: huile-tournesol, name: "huile de tournesol désodorisée", ratio: 1.0}]}
+    - {id: jambon-cru, name: talon de jambon cru en « lardons », qty: 100, unit: g}
+    - {id: poudre-a-lever, name: poudre à lever, qty: 1, unit: sachet}
+    - {id: sel, name: sel (c. à c. rases), qty: 2, unit: c. à c., seasoning: true}
+
+  steps:
+    - id: eau
+      action: "Mettre environ 2 L d'eau à chauffer dans le bas du cuit-vapeur"
+      needs: [steam]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: pate-blanche
+      action: "Mélanger la moitié de la farine, de la poudre à lever et du sel ; y malaxer à la main le céleri râpé, et la moitié des œufs, du fromage, de l'huile et du jambon"
+      astuce: "À la main, ça se mélange mieux qu'à la cuillère en bois."
+      needs: []
+      uses: [farine-complete, poudre-a-lever, sel, celeri-rave, oeufs, fromage-rape, huile-olive, jambon-cru]
+      time_min: 6
+      kid: {age_min_months: 30, task: "malaxer la pâte avec les mains"}
+    - id: verser-blanche
+      action: "Verser dans un moule à cake chemisé de papier cuisson, assez petit pour entrer dans le cuit-vapeur"
+      needs: []
+      uses: []
+      time_min: 1
+    - id: pate-orange
+      action: "Refaire une pâte avec le reste des ingrédients et les carottes râpées, et la verser sur la pâte blanche"
+      needs: []
+      uses: [carottes]
+      time_min: 6
+      kid: {age_min_months: 30, task: "malaxer la pâte orange"}
+    - id: cuire
+      action: "Poser le moule dans le panier vapeur, couvrir et cuire 1 h à feu moyen, à compter de l'ébullition"
+      needs: [steam]
+      uses: []
+      time_min: 60
+      attended: false
+    - id: refroidir
+      action: "Laisser tiédir, démouler et décoller le papier, puis laisser refroidir et « se ressuyer » sur une grille avant de couper"
+      needs: []
+      uses: []
+      time_min: 3
+      attente_min: 60
+      attente_raison: "refroidissement sur grille avant la découpe"
+  # PAS DE PRÉLÈVEMENT BÉBÉ : sel, jambon cru et fromage entrent tous ensemble.
+
+  emits:
+    - kind: reste-plat
+      type: marbre-legumes-racines
+      qty_band: lunchbox
+      keeps: {frigo_days: 4, congelo: true}
+      note: "le cake des pique-niques : il voyage en sac à dos sans s'émietter"
+
+  plan_b: []

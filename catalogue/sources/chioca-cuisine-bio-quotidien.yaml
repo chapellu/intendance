@@ -12,11 +12,11 @@
 # `_repertoire.yaml` sont à corriger.
 #
 # Une entrée saisie se signale en lui ajoutant `catalogue_id: <id>` pointant sur
-# le plat correspondant dans `recipes/`. Saisies à ce jour : **71 sur 100**.
+# le plat correspondant dans `recipes/`. Saisies à ce jour : **81 sur 100**.
 # L'ÉTÉ EST COMPLET : 26 sur 26, la p. 116 ayant fermé la saison. Le PRINTEMPS
 # l'est aussi depuis le 2026-11-18 (p. 42 à 50, T189) ; l'HIVER tient ses sept premiers
 # plats (p. 172 à 182) ; l'AUTOMNE est entamé par les deux bouts — sa tête
-# (p. 123 à 133, T190) et sa queue (p. 157 à 166), la p. 163, longtemps illisible,
+# (p. 123 à 153, T190-T191 : seule manque la p. 154) et sa queue (p. 157 à 166), la p. 163, longtemps illisible,
 # ayant été rephotographiée et encodée le 2026-11-01 (T162).
 #
 # LE COMPTE DE CET EN-TÊTE SE PÉRIME, et il l'a fait : il annonçait 25 alors que
@@ -126,16 +126,16 @@ sommaire:
     - {page: 130, titre: "Galette de céréales « maxi-format »", catalogue_id: galette-cereales-maxi}
     - {page: 132, titre: "Poule au « potit » épeautre", catalogue_id: poule-petit-epeautre}
     - {page: 133, titre: "Gratin de courge au riz", catalogue_id: gratin-courge-riz}
-    - {page: 134, titre: "Terrine légère à l'échalote, noisettes et champignons"}
-    - {page: 137, titre: "Gnocchis de polenta à la bolognaise"}
-    - {page: 138, titre: "« Frites au four » de légumes d'automne"}
-    - {page: 141, titre: "Cock-a-leekie (un peu à ma façon)"}
-    - {page: 142, titre: "Marbré aux légumes-racines"}
-    - {page: 145, titre: "Chou farci facile"}
-    - {page: 146, titre: "Tranches de butternut rôties aux lardons et aux herbes"}
-    - {page: 149, titre: "« Casspoulet »"}
-    - {page: 150, titre: "Jarret braisé au vin blanc et petits légumes"}
-    - {page: 153, titre: "Moelleux « mystère » à l'orange"}
+    - {page: 134, titre: "Terrine légère à l'échalote, noisettes et champignons", catalogue_id: terrine-echalote-noisettes-champignons}
+    - {page: 137, titre: "Gnocchis de polenta à la bolognaise", catalogue_id: gnocchis-polenta-bolognaise}
+    - {page: 138, titre: "« Frites au four » de légumes d'automne", catalogue_id: frites-four-legumes-automne}
+    - {page: 141, titre: "Cock-a-leekie (un peu à ma façon)", catalogue_id: cock-a-leekie}
+    - {page: 142, titre: "Marbré aux légumes-racines", catalogue_id: marbre-legumes-racines}
+    - {page: 145, titre: "Chou farci facile", catalogue_id: chou-farci-facile}
+    - {page: 146, titre: "Tranches de butternut rôties aux lardons et aux herbes", catalogue_id: tranches-butternut-lardons}
+    - {page: 149, titre: "« Casspoulet »", catalogue_id: casspoulet}
+    - {page: 150, titre: "Jarret braisé au vin blanc et petits légumes", catalogue_id: jarret-braise-vin-blanc}
+    - {page: 153, titre: "Moelleux « mystère » à l'orange", catalogue_id: moelleux-mystere-orange}
     - {page: 154, titre: "Gros cookie à partager…"}
     - {page: 157, titre: "Bon lait « bana-chaud » du petit déjeuner", catalogue_id: lait-bana-chaud}
     - {page: 158, titre: "Riz au lait « retour des îles »", catalogue_id: riz-au-lait-retour-des-iles}

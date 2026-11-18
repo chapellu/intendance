@@ -1,0 +1,91 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T191).
+#
+# « SI VOUS NE DEVEZ EN TESTER QU'UNE DE CE CHAPITRE » : c'est celle-ci, dit
+# l'autrice. Des tranches de butternut non épluchée, rôties sur une garniture
+# oignon-tomate-lardons, avec du parmesan dessus.
+#
+# PLAT PRESQUE COMPLET avec une salade et du riz basmati : c'est l'`avec:`.
+#
+# LA PARTIE RENFLÉE DE LA COURGE (celle des graines), si elle ne tient pas
+# dans le plat, fait la soupe du soir. Le modèle n'a pas d'émetteur de
+# « morceau de courge cru » ; c'est dit ici.
+
+recipe:
+  id: tranches-butternut-lardons
+  title: Tranches de butternut rôties aux lardons et aux herbes
+  format: gratin
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 146"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 146
+    saison: automne
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes »
+  time_min_total: 35        # en-tête : 10 min de préparation + 20 min de four, plus le préchauffage
+  active_min: 10
+
+  apports:
+    proteine: fromage
+    feculent: aucun
+    legumes: [cucurbitacee, solanacee, allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: courge, name: courge butternut, qty: 1, unit: pièce}
+    - {id: lardons, name: "lardons (ou dés de talon de jambon cru)", qty: 100, unit: g, subs: [{id: jambon-cru, name: "dés de talon de jambon cru", ratio: 1.0}]}
+    - {id: tomates, name: tomates, qty: 2, unit: pièce}
+    - {id: oignon, name: oignons, qty: 2, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: parmesan, name: parmesan râpé, qty: 100, unit: g}
+    - {id: origan, name: "origan séché (ou herbes de Provence), c. à c. rase", qty: 1, unit: c. à c., subs: [{id: herbes-provence, name: "herbes de Provence", ratio: 1.0}]}
+    - {id: sauge, name: "quelques feuilles de sauge, brins de thym, sarriette ou origan frais", qty: 4, unit: pièce, optional: true}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 1, unit: pincée, seasoning: true}
+
+  # « accompagnées d'une salade et de bon riz basmati »
+  avec:
+    - {id: riz, name: riz basmati, qty: 250, unit: g}
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 200 °C"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: garniture
+      action: "Dans un plat, mélanger oignons et tomates en petits cubes, lardons, huile, la moitié des herbes, très peu de sel et du poivre"
+      astuce: "Très peu de sel : les lardons le sont déjà."
+      needs: [gratin-vessel]
+      uses: [tomates, oignon, lardons, huile-olive, origan, sauge]
+      time_min: 5
+      kid: {age_min_months: 30, task: "mélanger la garniture dans le plat"}
+    - id: tranches
+      action: "Couper la courge sans l'éplucher en tranches d'environ 1 cm, et retirer les graines"
+      needs: []
+      uses: [courge]
+      time_min: 4
+    - id: garnir
+      action: "Poser les tranches sur la garniture, parsemer du reste des herbes, saler et poivrer légèrement, puis couvrir de parmesan"
+      needs: []
+      uses: [sel, poivre, parmesan]
+      time_min: 2
+      kid: {age_min_months: 30, task: "parsemer le parmesan sur les tranches"}
+    - id: cuire
+      action: "Enfourner 20 min et servir aussitôt"
+      needs: [bake]
+      uses: []
+      time_min: 20
+      attended: false
+  # PAS DE PRÉLÈVEMENT BÉBÉ : les lardons salent la garniture sur laquelle
+  # cuisent les tranches.
+
+  plan_b: []
