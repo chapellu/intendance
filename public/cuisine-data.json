@@ -13873,6 +13873,335 @@
    "cuisinable": true
   },
   {
+   "id": "galette-cereales-maxi",
+   "titre": "Galette de céréales « maxi-format »",
+   "minutes": 40,
+   "minutesSurPlace": 40,
+   "avanceMin": 37,
+   "anticipations": [],
+   "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 130",
+    "url": null,
+    "saison": "automne"
+   },
+   "apports": {
+    "proteine": "viande-blanche",
+    "feculent": "avoine",
+    "legumes": [
+     "allium",
+     "racine",
+     "legumineuse"
+    ],
+    "profil": "four",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "oignon",
+     "ref": "oignon",
+     "nom": "oignons",
+     "qty": 2,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "poireau",
+     "ref": "poireau",
+     "nom": "poireaux",
+     "qty": 2,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "carottes",
+     "ref": "carottes",
+     "nom": "carottes (3, environ 200 g)",
+     "qty": 200,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "huile-olive",
+     "ref": "huile-olive",
+     "nom": "huile d'olive (+ un filet pour le four)",
+     "qty": 5,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "petits-pois-surgeles",
+     "ref": "petits-pois-surgeles",
+     "nom": "petits pois surgelés, décongelés",
+     "qty": 150,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "remplacants": [
+      {
+       "id": "petits-pois",
+       "nom": "petits pois frais",
+       "ratio": 1
+      }
+     ]
+    },
+    {
+     "id": "jambon",
+     "ref": "jambon",
+     "nom": "jambon cuit",
+     "qty": 180,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "fromage-rape",
+     "ref": "fromage-rape",
+     "nom": "gruyère râpé",
+     "qty": 100,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "lait",
+     "ref": "lait",
+     "nom": "lait de vache, d'avoine ou de soja",
+     "qty": 35,
+     "unit": "cl",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "remplacants": [
+      {
+       "id": "lait-avoine",
+       "nom": "lait d'avoine",
+       "ratio": 1.0
+      }
+     ]
+    },
+    {
+     "id": "flocons-avoine",
+     "ref": "flocons-avoine",
+     "nom": "flocons d'avoine",
+     "qty": 320,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "oeufs",
+     "ref": "oeufs",
+     "nom": "œufs",
+     "qty": 4,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "herbes-provence",
+     "ref": "herbes-provence",
+     "nom": "herbes de Provence, origan ou marjolaine",
+     "qty": 1,
+     "unit": "c. à c.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "facultatif": true
+    },
+    {
+     "id": "sel",
+     "ref": "sel",
+     "nom": "sel",
+     "qty": 1,
+     "unit": "pincée",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    },
+    {
+     "id": "poivre",
+     "ref": "poivre",
+     "nom": "poivre",
+     "qty": 1,
+     "unit": "pincée",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": "galettes",
+   "avec": [
+    {
+     "id": "salade-verte",
+     "nom": "salade verte",
+     "qty": 0.5,
+     "unit": "pièce"
+    }
+   ],
+   "steps": [
+    {
+     "id": "prechauffer",
+     "action": "Préchauffer le four à 220 °C",
+     "minutes": 1,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "revenir",
+     "action": "Émincer oignons, poireaux et carottes, et les faire revenir à l'huile au wok jusqu'à une légère coloration des sucs",
+     "minutes": 10,
+     "needs": [
+      "pan-fry"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "oignon",
+      "poireau",
+      "carottes",
+      "huile-olive"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "melanger",
+     "action": "Hors du feu, ajouter petits pois, jambon, fromage, lait, flocons, œufs, herbes, sel et poivre, et bien mélanger",
+     "minutes": 3,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "petits-pois-surgeles",
+      "jambon",
+      "fromage-rape",
+      "lait",
+      "flocons-avoine",
+      "oeufs",
+      "herbes-provence",
+      "sel",
+      "poivre"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "verser les flocons et casser les œufs",
+     "enfantDes": 30,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "tasser",
+     "action": "Tasser au fond d'un moule à charnière ou d'un plat à tarte d'environ 26 cm, chemisé de papier cuisson",
+     "minutes": 2,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "tasser la préparation avec le dos de la cuillère",
+     "enfantDes": 30,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cuire",
+     "action": "Arroser d'un petit filet d'huile et enfourner environ 20 min, jusqu'à ce que le dessus soit bien doré",
+     "minutes": 20,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "servir",
+     "action": "Servir chaud",
+     "minutes": 1,
+     "needs": [],
+     "surveille": true,
+     "astuce": "En refroidissant, la galette perd beaucoup de sa texture.",
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 15,
+   "accepts": [],
+   "creneaux": [
+    "dejeuner",
+    "diner"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [],
+   "lotEntier": true,
+   "calibreMax": null,
+   "vaisselle": {
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.5
+   },
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
    "id": "gateau-au-yaourt-classe",
    "titre": "Juste un gâteau au yaourt, la « classe » en plus",
    "minutes": 45,
@@ -15476,6 +15805,290 @@
    "lotEntier": false,
    "calibreMax": null,
    "vaisselle": null,
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
+   "id": "gratin-courge-riz",
+   "titre": "Gratin de courge au riz",
+   "minutes": 100,
+   "minutesSurPlace": 100,
+   "avanceMin": 100,
+   "anticipations": [],
+   "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 133",
+    "url": null,
+    "saison": "automne"
+   },
+   "apports": {
+    "proteine": "fromage",
+    "feculent": "riz",
+    "legumes": [
+     "cucurbitacee",
+     "allium"
+    ],
+    "profil": "four",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "courge",
+     "ref": "courge",
+     "nom": "courge musquée, pesée épluchée et sans les graines",
+     "qty": 1,
+     "unit": "kg",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "oignon",
+     "ref": "oignon",
+     "nom": "oignons",
+     "qty": 2,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "riz",
+     "ref": "riz",
+     "nom": "riz basmati demi-complet",
+     "qty": 75,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "lait",
+     "ref": "lait",
+     "nom": "lait",
+     "qty": 30,
+     "unit": "cl",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "parmesan",
+     "ref": "parmesan",
+     "nom": "parmesan ou gruyère râpé",
+     "qty": 150,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "remplacants": [
+      {
+       "id": "fromage-rape",
+       "nom": "gruyère râpé",
+       "ratio": 1.0
+      }
+     ]
+    },
+    {
+     "id": "oeufs",
+     "ref": "oeufs",
+     "nom": "œufs",
+     "qty": 3,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "huile-olive",
+     "ref": "huile-olive",
+     "nom": "huile pour le plat",
+     "qty": 1,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sel",
+     "ref": "sel",
+     "nom": "sel",
+     "qty": 1,
+     "unit": "c. à c.",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    },
+    {
+     "id": "poivre",
+     "ref": "poivre",
+     "nom": "poivre",
+     "qty": 1,
+     "unit": "pincée",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": "gratin",
+   "avec": [],
+   "steps": [
+    {
+     "id": "prechauffer",
+     "action": "Préchauffer le four à 180 °C",
+     "minutes": 1,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "raper",
+     "action": "Râper la courge à la grosse grille, comme pour un céleri rémoulade ; peler et émincer finement les oignons",
+     "minutes": 6,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "courge",
+      "oignon"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "melanger",
+     "action": "Mélanger dans un grand saladier avec le riz, le lait, le fromage, les œufs, le sel et le poivre, en brassant bien",
+     "minutes": 2,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "riz",
+      "lait",
+      "parmesan",
+      "oeufs",
+      "sel",
+      "poivre"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "brasser le mélange dans le saladier",
+     "enfantDes": 30,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "tasser",
+     "action": "Verser dans un plat huilé et bien tasser avec les mains",
+     "minutes": 1,
+     "needs": [
+      "gratin-vessel"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "huile-olive"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "tasser le gratin avec les mains",
+     "enfantDes": 30,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cuire",
+     "action": "Enfourner 1 h à 180 °C",
+     "minutes": 60,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "finir",
+     "action": "Baisser le four à 150 °C pour les 30 dernières minutes",
+     "minutes": 30,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 10,
+   "accepts": [],
+   "creneaux": [
+    "dejeuner",
+    "diner"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [
+    {
+     "type": "gratin-courge-riz",
+     "kind": "reste-plat",
+     "qty": null,
+     "band": "2-repas",
+     "espace": "congelo",
+     "note": "6 parts pour le foyer : le reste se réchauffe au four",
+     "gardeFrigo": 3,
+     "congelo": true,
+     "horsTable": false
+    }
+   ],
+   "lotEntier": false,
+   "calibreMax": null,
+   "vaisselle": {
+    "id": "plats-a-gratin",
+    "label": "plats à gratin 35×18 / 32×20",
+    "facteurMax": 2.0
+   },
    "gainChainage": 0,
    "cuisinable": true
   },
@@ -20787,6 +21400,339 @@
     "id": "sauteuse-28",
     "label": "sauteuse 28 cm",
     "facteurMax": 1.0
+   },
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
+   "id": "moules-spaghettis",
+   "titre": "Moules de bouchot aux spaghettis",
+   "minutes": 30,
+   "minutesSurPlace": 30,
+   "avanceMin": 28,
+   "anticipations": [],
+   "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 128",
+    "url": null,
+    "saison": "automne"
+   },
+   "apports": {
+    "proteine": "poisson",
+    "feculent": "pates",
+    "legumes": [
+     "allium"
+    ],
+    "profil": "rapide",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "pates",
+     "ref": "pates",
+     "nom": "spaghettis (blancs ou semi-complets, blé ou épeautre)",
+     "qty": 350,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "moules",
+     "ref": "moules",
+     "nom": "moules de bouchot ultra fraîches",
+     "qty": 1,
+     "unit": "kg",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "echalote",
+     "ref": "echalote",
+     "nom": "échalotes",
+     "qty": 3,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "persil",
+     "ref": "persil",
+     "nom": "persil",
+     "qty": 1,
+     "unit": "petit bouquet",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "ail",
+     "ref": "ail",
+     "nom": "ail",
+     "qty": 1,
+     "unit": "gousse",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "vin-blanc-sec",
+     "ref": "vin-blanc-sec",
+     "nom": "vin blanc sec",
+     "qty": 25,
+     "unit": "cl",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "huile-olive",
+     "ref": "huile-olive",
+     "nom": "huile d'olive (ou 35 g de beurre), + un filet pour les pâtes",
+     "qty": 4,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre (35 g)",
+       "ratio": 0.6
+      }
+     ]
+    },
+    {
+     "id": "creme",
+     "ref": "creme",
+     "nom": "crème fraîche épaisse",
+     "qty": 4,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "parmesan",
+     "ref": "parmesan",
+     "nom": "parmesan râpé",
+     "qty": 100,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "facultatif": true
+    },
+    {
+     "id": "poivre",
+     "ref": "poivre",
+     "nom": "poivre",
+     "qty": 1,
+     "unit": "pincée",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": "pates",
+   "avec": [],
+   "steps": [
+    {
+     "id": "cuire-pates",
+     "action": "Cuire les spaghettis al dente, le temps indiqué sur le paquet",
+     "minutes": 11,
+     "needs": [
+      "boil"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [
+      "pates"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "laver-moules",
+     "action": "Pendant ce temps : laver les moules dans un grand bac d'eau froide, en jetant celles qui flottent, restent ouvertes ou sont abîmées",
+     "minutes": 8,
+     "needs": [],
+     "surveille": true,
+     "astuce": "Ébarber est facultatif ; si on le fait, tirer la « barbe » vers la charnière pour ne pas abîmer la chair.",
+     "uses": [
+      "moules"
+     ],
+     "enParallele": "cuire-pates",
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "hacher",
+     "action": "Hacher les échalotes et le persil, écraser l'ail",
+     "minutes": 4,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "echalote",
+      "persil",
+      "ail"
+     ],
+     "enParallele": "cuire-pates",
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "ouvrir-moules",
+     "action": "Faire revenir les échalotes à l'huile dans un grand faitout, ajouter moules, vin, persil, ail et poivre, mélanger et couvrir",
+     "minutes": 6,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": true,
+     "astuce": "Un grand faitout : les moules prennent beaucoup de place en s'ouvrant.",
+     "uses": [
+      "huile-olive",
+      "vin-blanc-sec",
+      "poivre"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "egoutter",
+     "action": "Égoutter les spaghettis, les mélanger avec un filet d'huile et garder au chaud",
+     "minutes": 1,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "decoquiller",
+     "action": "Couper le feu dès que les moules sont bien ouvertes, puis les décoquiller",
+     "minutes": 6,
+     "needs": [],
+     "surveille": true,
+     "astuce": "Pas plus de cuisson que ça : c'est ce qui les garde moelleuses.",
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "décoquiller les moules tiédies",
+     "enfantDes": 48,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "sauce",
+     "action": "Réchauffer 4 c. à s. de jus de cuisson filtré, y délayer la crème, ajouter les moules et couper dès que c'est chaud",
+     "minutes": 3,
+     "needs": [
+      "simmer"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "creme"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "servir",
+     "action": "Servir avec les spaghettis, en parsemant les assiettes de parmesan",
+     "minutes": 1,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "parmesan"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 20,
+   "accepts": [],
+   "creneaux": [
+    "dejeuner",
+    "diner"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [
+    {
+     "type": "fumet-moules",
+     "kind": "base",
+     "qty": {
+      "amount": 350.0,
+      "unit": "ml"
+     },
+     "band": "1-repas",
+     "espace": "congelo",
+     "note": "le jus de cuisson filtré fait le potage à l'avoine de la p. 129",
+     "gardeFrigo": 1,
+     "congelo": true,
+     "horsTable": true
+    }
+   ],
+   "lotEntier": false,
+   "calibreMax": null,
+   "vaisselle": {
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 1.5
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -30493,6 +31439,598 @@
      "note": "pommes de terre et navets cuits à l'eau : ils se délitent à la décongélation, ils restent au frigo",
      "gardeFrigo": 3,
      "congelo": false,
+     "horsTable": false
+    }
+   ],
+   "lotEntier": false,
+   "calibreMax": null,
+   "vaisselle": {
+    "id": "cocotte-7.5l",
+    "label": "cocotte 7,5 L",
+    "facteurMax": 2.0
+   },
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
+   "id": "potage-avoine-iode",
+   "titre": "Potage crémeux à l'avoine et saveurs iodées",
+   "minutes": 30,
+   "minutesSurPlace": 30,
+   "avanceMin": 24,
+   "anticipations": [],
+   "portions": 4,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 129",
+    "url": null,
+    "saison": "automne"
+   },
+   "apports": {
+    "proteine": "aucune",
+    "feculent": "avoine",
+    "legumes": [
+     "allium",
+     "racine",
+     "champignon"
+    ],
+    "profil": "soupe",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "fumet-moules",
+     "ref": "fumet-moules",
+     "nom": "le fumet des moules (jus de cuisson au persil, échalote et vin blanc)",
+     "qty": 350,
+     "unit": "ml",
+     "base": true,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "poireau",
+     "ref": "poireau",
+     "nom": "poireau",
+     "qty": 1,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "carottes",
+     "ref": "carottes",
+     "nom": "carotte",
+     "qty": 1,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "champignons-paris",
+     "ref": "champignons-paris",
+     "nom": "champignons",
+     "qty": 10,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "huile-olive",
+     "ref": "huile-olive",
+     "nom": "huile d'olive",
+     "qty": 2,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "flocons-avoine",
+     "ref": "flocons-avoine",
+     "nom": "flocons d'avoine (c. à s. un peu bombées)",
+     "qty": 4,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "creme",
+     "ref": "creme",
+     "nom": "crème fleurette, ou crème de soja",
+     "qty": 20,
+     "unit": "cl",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "remplacants": [
+      {
+       "id": "creme-soja",
+       "nom": "crème de soja",
+       "ratio": 1.0
+      }
+     ]
+    },
+    {
+     "id": "persil",
+     "ref": "persil",
+     "nom": "un peu de persil",
+     "qty": 3,
+     "unit": "brin",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "facultatif": true
+    },
+    {
+     "id": "sel",
+     "ref": "sel",
+     "nom": "sel",
+     "qty": 1,
+     "unit": "pincée",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    },
+    {
+     "id": "poivre",
+     "ref": "poivre",
+     "nom": "poivre",
+     "qty": 1,
+     "unit": "pincée",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": "soupe",
+   "avec": [],
+   "steps": [
+    {
+     "id": "filtrer",
+     "action": "Filtrer le fumet",
+     "minutes": 2,
+     "needs": [],
+     "surveille": true,
+     "astuce": "On y perd le persil et les échalotes, mais c'est ce qui retire les éclats de coquille et le sable.",
+     "uses": [
+      "fumet-moules"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "revenir",
+     "action": "Émincer finement poireau, carotte et champignons, puis les faire revenir doucement à l'huile, jusqu'à ce qu'ils soient tendres et légèrement dorés",
+     "minutes": 13,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "poireau",
+      "carottes",
+      "champignons-paris",
+      "huile-olive"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "mouiller",
+     "action": "Ajouter le fumet, les flocons d'avoine et le persil haché, saler et poivrer, porter à ébullition et cuire 5 min",
+     "minutes": 7,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "flocons-avoine",
+      "persil",
+      "sel",
+      "poivre"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "verser les flocons d'avoine dans la casserole",
+     "enfantDes": 30,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cremer",
+     "action": "Délayer la crème, rectifier l'assaisonnement et servir aussitôt",
+     "minutes": 2,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "creme"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 15,
+   "accepts": [
+    {
+     "type": "fumet-moules",
+     "kind": null,
+     "requis": true,
+     "qty": {
+      "amount": 350.0,
+      "unit": "ml"
+     },
+     "delaiMaxH": null,
+     "mere": "moules-spaghettis"
+    }
+   ],
+   "creneaux": [
+    "dejeuner",
+    "diner"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [],
+   "lotEntier": false,
+   "calibreMax": null,
+   "vaisselle": {
+    "id": "cocotte-7.5l",
+    "label": "cocotte 7,5 L",
+    "facteurMax": 3.0
+   },
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
+   "id": "poule-petit-epeautre",
+   "titre": "Poule au « potit » épeautre",
+   "minutes": 110,
+   "minutesSurPlace": 108,
+   "avanceMin": 842,
+   "anticipations": [
+    {
+     "gestes": [
+      "tremper"
+     ],
+     "minutes": 2,
+     "attente": 720,
+     "avantMin": 842,
+     "raison": "trempage d'une nuit, à lancer la veille"
+    }
+   ],
+   "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "La cuisine bio du quotidien, Terre vivante, p. 132",
+    "url": null,
+    "saison": "automne"
+   },
+   "apports": {
+    "proteine": "viande-blanche",
+    "feculent": "cereale",
+    "legumes": [
+     "racine",
+     "allium"
+    ],
+    "profil": "mijote",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "petit-epeautre",
+     "ref": "petit-epeautre",
+     "nom": "petit épeautre",
+     "qty": 500,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "poulet",
+     "ref": "poulet",
+     "nom": "poulet bio (ou poule de réforme : compter 2 h 30)",
+     "qty": 1,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "oignon",
+     "ref": "oignon",
+     "nom": "oignons",
+     "qty": 3,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "carottes",
+     "ref": "carottes",
+     "nom": "petites carottes",
+     "qty": 6,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "poireau",
+     "ref": "poireau",
+     "nom": "petits poireaux (ou 3 gros coupés en deux)",
+     "qty": 6,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "celeri-branche",
+     "ref": "celeri-branche",
+     "nom": "cœur de céleri branche, ou petit céleri-rave",
+     "qty": 1,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "remplacants": [
+      {
+       "id": "celeri-rave",
+       "nom": "petit céleri-rave",
+       "ratio": 1.0
+      }
+     ]
+    },
+    {
+     "id": "navets",
+     "ref": "navets",
+     "nom": "navets",
+     "qty": 3,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "remplacants": [
+      {
+       "id": "navet-primeur",
+       "nom": "navets primeur",
+       "ratio": 1
+      }
+     ]
+    },
+    {
+     "id": "eau",
+     "ref": "eau",
+     "nom": "eau",
+     "qty": 2.5,
+     "unit": "l",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "laurier",
+     "ref": "laurier",
+     "nom": "feuilles de laurier",
+     "qty": 3,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    },
+    {
+     "id": "clous-girofle",
+     "ref": "clous-girofle",
+     "nom": "clous de girofle",
+     "qty": 6,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    },
+    {
+     "id": "thym-frais",
+     "ref": "thym-frais",
+     "nom": "thym ou sarriette",
+     "qty": 3,
+     "unit": "brin",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    },
+    {
+     "id": "gros-sel",
+     "ref": "gros-sel",
+     "nom": "gros sel (c. à s. rases)",
+     "qty": 2,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": true,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": "mijote",
+   "avec": [],
+   "steps": [
+    {
+     "id": "tremper",
+     "action": "Mettre le petit épeautre à tremper dans un grand volume d'eau",
+     "minutes": 2,
+     "needs": [],
+     "surveille": false,
+     "astuce": null,
+     "uses": [
+      "petit-epeautre"
+     ],
+     "enParallele": null,
+     "attente": 720,
+     "attenteRaison": "trempage d'une nuit, à lancer la veille",
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "verser l'épeautre dans le saladier d'eau",
+     "enfantDes": 24,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "eplucher",
+     "action": "Éplucher les légumes et les couper en gros morceaux ; carottes et poireaux peuvent rester entiers",
+     "minutes": 15,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "oignon",
+      "carottes",
+      "poireau",
+      "celeri-branche",
+      "navets"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "laver les carottes et les poireaux sous l'eau",
+     "enfantDes": 30,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "marmite",
+     "action": "Mettre le poulet, les légumes et les aromates dans un très grand faitout, avec l'eau et le gros sel, et porter à ébullition",
+     "minutes": 10,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "poulet",
+      "eau",
+      "laurier",
+      "clous-girofle",
+      "thym-frais",
+      "gros-sel"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "mijoter",
+     "action": "Laisser cuire à petits bouillons",
+     "minutes": 45,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "epeautre",
+     "action": "Rincer et égoutter le petit épeautre, puis l'ajouter dans le faitout pour les 45 dernières minutes",
+     "minutes": 45,
+     "needs": [
+      "simmer-large"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "servir",
+     "action": "Sortir poulet, légumes et épeautre à l'écumoire, garder le bouillon pour le soir, et servir",
+     "minutes": 5,
+     "needs": [],
+     "surveille": true,
+     "astuce": "Avec une vinaigrette à la moutarde à l'ancienne et au persil, par exemple.",
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 25,
+   "accepts": [],
+   "creneaux": [
+    "dejeuner",
+    "diner"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [
+    {
+     "type": "bouillon-poule-epeautre",
+     "kind": "reste-plat",
+     "qty": null,
+     "band": "1-repas",
+     "espace": "congelo",
+     "note": "le repas du soir : le bouillon avec l'épeautre et les légumes restants recoupés, ou des petites pâtes, ou des flocons d'avoine",
+     "gardeFrigo": 3,
+     "congelo": true,
      "horsTable": false
     }
    ],
@@ -47453,7 +48991,8 @@
     "saumon-fume",
     "truite-fumee",
     "cabillaud",
-    "anchois"
+    "anchois",
+    "moules"
    ],
    "crèmerie": [
     "oeufs",
@@ -50370,7 +51909,8 @@
     "poulet-filets",
     "roti-porc",
     "saumon",
-    "cabillaud"
+    "cabillaud",
+    "moules"
    ]
   },
   {

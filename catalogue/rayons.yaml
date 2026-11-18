@@ -248,6 +248,8 @@ rayons:
     - truite-fumee
     - cabillaud
     - anchois
+    # Arrivées avec l'automne de Chioca (p. 128, T190). Vivantes à l'achat.
+    - moules
   crèmerie:
     - oeufs
     - fromage-rape

@@ -12,11 +12,11 @@
 # `_repertoire.yaml` sont à corriger.
 #
 # Une entrée saisie se signale en lui ajoutant `catalogue_id: <id>` pointant sur
-# le plat correspondant dans `recipes/`. Saisies à ce jour : **66 sur 100**.
+# le plat correspondant dans `recipes/`. Saisies à ce jour : **71 sur 100**.
 # L'ÉTÉ EST COMPLET : 26 sur 26, la p. 116 ayant fermé la saison. Le PRINTEMPS
 # l'est aussi depuis le 2026-11-18 (p. 42 à 50, T189) ; l'HIVER tient ses sept premiers
 # plats (p. 172 à 182) ; l'AUTOMNE est entamé par les deux bouts — sa tête
-# (p. 123 à 127) et sa queue (p. 157 à 166), la p. 163, longtemps illisible,
+# (p. 123 à 133, T190) et sa queue (p. 157 à 166), la p. 163, longtemps illisible,
 # ayant été rephotographiée et encodée le 2026-11-01 (T162).
 #
 # LE COMPTE DE CET EN-TÊTE SE PÉRIME, et il l'a fait : il annonçait 25 alors que
@@ -121,11 +121,11 @@ sommaire:
     - {page: 123, titre: "Jolie tourte « feuilles d'automne »", catalogue_id: tourte-feuilles-automne}
     - {page: 124, titre: "Châtaignes grillées", catalogue_id: chataignes-grillees}
     - {page: 127, titre: "Le meilleur des veloutés de potiron !", catalogue_id: veloute-potiron}
-    - {page: 128, titre: "Moules de bouchot aux spaghettis"}
-    - {page: 129, titre: "Potage crémeux à l'avoine et saveurs iodées"}
-    - {page: 130, titre: "Galette de céréales « maxi-format »"}
-    - {page: 132, titre: "Poule au « potit » épeautre"}
-    - {page: 133, titre: "Gratin de courge au riz"}
+    - {page: 128, titre: "Moules de bouchot aux spaghettis", catalogue_id: moules-spaghettis}
+    - {page: 129, titre: "Potage crémeux à l'avoine et saveurs iodées", catalogue_id: potage-avoine-iode}
+    - {page: 130, titre: "Galette de céréales « maxi-format »", catalogue_id: galette-cereales-maxi}
+    - {page: 132, titre: "Poule au « potit » épeautre", catalogue_id: poule-petit-epeautre}
+    - {page: 133, titre: "Gratin de courge au riz", catalogue_id: gratin-courge-riz}
     - {page: 134, titre: "Terrine légère à l'échalote, noisettes et champignons"}
     - {page: 137, titre: "Gnocchis de polenta à la bolognaise"}
     - {page: 138, titre: "« Frites au four » de légumes d'automne"}

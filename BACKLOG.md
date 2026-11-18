@@ -6487,3 +6487,26 @@ Fait :
       Reste ouvert : rien ne relie les deux dahls de lentilles corail du
       catalogue (celui-ci et celui du fond) — même limite que les deux ragoûts
       de lentilles vertes.
+
+## T190 — L'automne de *La cuisine bio du quotidien*, p. 128 à 133
+
+- [x] **T190 — Cinq pages d'automne encodées sur photo (18/11).** Moules de
+      bouchot aux spaghettis (p. 128), potage crémeux à l'avoine et saveurs
+      iodées (p. 129), galette de céréales « maxi-format » (p. 130), poule au
+      « potit » épeautre (p. 132), gratin de courge au riz (p. 133). Source :
+      71 sur 100.
+
+      **LA DEUXIÈME PAIRE ÉCRITE PAR LE LIVRE.** Le potage se fait avec « le
+      fumet restant de la recette précédente » : les moules émettent 350 ml de
+      jus filtré (`fumet-moules`), le potage l'`accepts`, les moules en repli.
+
+      **LA POULE NOURRIT DEUX REPAS** : midi la poule et ses légumes, le soir
+      le bouillon avec l'épeautre restant (`bouillon-poule-epeautre`). Le
+      trempage de la veille est une `attente_min` de 12 h. Le bouillon n'est
+      pas relié à `bouillon-pot-au-feu` : volaille n'est pas bœuf.
+
+      Nouvel ingrédient : `moules`, en poissonnerie et dans la famille
+      « viande et poisson frais » (2 jours au frigo).
+
+      Reste ouvert : la variante légère du soir de la galette (sans jambon ni
+      fromage, 12 à 15 min de four) n'est qu'un commentaire.
