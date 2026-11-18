@@ -315,7 +315,12 @@ def facteur_max_vaisselle(recipe, foyer):
     if not besoins or not base:
         return None, None
     pire = None
-    for cap in besoins:
+    # TRIÉ, PARCE QUE `besoins` EST UN ENSEMBLE : son ordre change d'un
+    # processus à l'autre (le hachage des chaînes est salé), et à égalité de
+    # contenance — la cocotte de 7,5 L et les deux plats à gratin — le
+    # récipient retenu changeait avec lui. `catalogue:verifie` voyait alors
+    # le JSON commité « périmé » une fois sur deux (T194).
+    for cap in sorted(besoins):
         meilleur = None
         for eq in foyer.get("equipment", []):
             if cap not in eq.get("capabilities", []) or not eq.get("contenance"):

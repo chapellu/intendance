@@ -59,22 +59,22 @@ test("un plancher posé au placard part tout seul dans les courses", async ({ pa
   ).toBeVisible();
   await expect(page.getByText(/Pas de plancher sur/)).toHaveCount(0);
 
-  const candidat = page.locator(".co-lot").filter({ hasText: "graines courge" });
+  const candidat = page.locator(".co-lot").filter({ hasText: "graines de courge" });
   await candidat.getByRole("button", { name: "En garder 1" }).dispatchEvent("click");
 
   // ON ATTEND UN PROGRÈS EXPLICITE, jamais la disparition d'un texte : la ligne
   // change de section sous nous à chaque écriture, et `not.toHaveText` passerait
   // aussi si l'écran s'était simplement vidé.
-  await expect(posee(page, "graines courge")).toBeVisible();
+  await expect(posee(page, "graines de courge")).toBeVisible();
 
   // Un plancher à 1 sur un bocal qu'on a déjà est TENU : rien à acheter. C'est
   // la moitié de la promesse — un plancher est un seuil, il ne réclame pas tant
   // qu'on est au-dessus.
-  await expect(posee(page, "graines courge")).toContainText("ok");
+  await expect(posee(page, "graines de courge")).toContainText("ok");
 
   // On monte le niveau d'un cran : le placard passe sous son plancher.
-  await posee(page, "graines courge").getByRole("button", { name: "+" }).dispatchEvent("click");
-  await expect(posee(page, "graines courge")).toContainText("1 / 2");
+  await posee(page, "graines de courge").getByRole("button", { name: "+" }).dispatchEvent("click");
+  await expect(posee(page, "graines de courge")).toContainText("1 / 2");
 
   await page.goto("/#/cuisine/courses");
   await attendreLApp(page);
@@ -82,7 +82,7 @@ test("un plancher posé au placard part tout seul dans les courses", async ({ pa
   // LA LIGNE EST LÀ, DANS SON RAYON, ET ELLE DIT POURQUOI. Aucun plat ne la
   // réclame — « 0 plat » aurait été exact et incompréhensible, donc la phrase
   // parle du placard.
-  const article = page.locator(".co-art").filter({ hasText: "graines courge" });
+  const article = page.locator(".co-art").filter({ hasText: "graines de courge" });
   await expect(article).toBeVisible();
   await expect(article).toContainText("il en reste 1, vous en voulez 2");
   await expect(article).toContainText("pour l’apéro");
@@ -93,7 +93,7 @@ test("un plancher posé au placard part tout seul dans les courses", async ({ pa
   // `db/schema.ts`, et c'est ce qui distingue une liste d'une farce.
   await page.reload();
   await attendreLApp(page);
-  await expect(page.locator(".co-art").filter({ hasText: "graines courge" })).toBeVisible();
+  await expect(page.locator(".co-art").filter({ hasText: "graines de courge" })).toBeVisible();
 });
 
 // T158 — LE FOND EN UN GESTE. Le 24/10, le téléphone du foyer n'avait aucun

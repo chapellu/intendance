@@ -6652,3 +6652,30 @@ Mais 197 restes mangés au réel n'ont pas pu être retirés de l'app (le
 bouton avait changé de nom), et 16 jours de courses ont planté : ces
 chiffres mesurent le harnais autant que l'app. Le harnais est réparé (commit
 à part) et l'année rejouée.
+
+**L'année rejouée (365 jours, 0 plantage), sur le code de T193–T194 :** 406
+plats cuits, 295 restes mangés, 89 jetés (16,8 kg), 13 perdus dans les
+pannes. Signalements : « reste sans lot » 197 → 85, « chaîne crue
+disponible » 76 → 60.
+
+**Ce que l'année a trouvé et qui est réparé ici :** les noms bruts à l'écran
+(T194 : types émis, denrées, quantités de lot), et l'export non déterministe
+(`chainage.facteur_max_vaisselle` parcourait un ensemble : à égalité de
+contenance, le récipient retenu changeait d'un lancement à l'autre, et
+`catalogue:verifie` pouvait échouer en CI sans qu'aucune donnée ait bougé).
+
+- [ ] **T195 — Ce que l'année n° 12 laisse ouvert.** Trois écarts entre le
+      monde du harnais et l'app, qu'il faut démêler avant de les imputer à
+      l'une ou à l'autre :
+      **60 « chaînes »** : l'app croit une base présente que le monde n'a
+      plus — lentilles vertes cuites (15), pâte à pizza (14), pâte brisée
+      (9), bouillon de pot-au-feu (5). Le harnais tient une base en parts,
+      l'app en grammes : à vérifier avant tout le reste.
+      **85 « restes sans lot »** : une partie au moins vient du harnais, qui
+      range tout le reste au frigo quand l'app en congèle une part (velouté,
+      chausson, octobre).
+      **89 restes jetés** (70 au frigo) : croquettes de kasha (9), poulet
+      cocotte (7), chausson (6), salade de lentilles et pasta con le sarde (5
+      chacun). Des plats à garde courte cuisinés en lot entier pour 2,75
+      parts : la question de T155, pour les plats qui n'ont pas de preneur
+      le lendemain midi.

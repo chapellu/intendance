@@ -20522,8 +20522,8 @@
    "lotEntier": false,
    "calibreMax": null,
    "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
+    "id": "plats-a-gratin",
+    "label": "plats à gratin 35×18 / 32×20",
     "facteurMax": 2.0
    },
    "gainChainage": 0,
