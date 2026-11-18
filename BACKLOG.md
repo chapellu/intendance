@@ -6633,6 +6633,14 @@ Fait :
       `verifier.py` refuse un type émis sans nom ; `lireCatalogue` les
       retient, `nomDuType` les lit.
 
+      **Et les denrées de l'étagère** : 117 ids s'affichaient dé-tiretisés
+      faute d'une recette qui les écrive tels quels (« huile olive », « boeuf
+      hache », « porc saute »). `rayons.yaml` porte un nom pour chacun
+      (`noms:`), qui prime sur le mot des recettes.
+
+      **Et les quantités des lots** s'arrondissent et s'écrivent comme en
+      cuisine : « 350 g » de piperade, plus « 354,2 g ».
+
 ## L'année simulée n° 12 — T193 et T194
 
 Le harnais avait dérivé de l'écran depuis l'année n° 11 (fin octobre) et ne

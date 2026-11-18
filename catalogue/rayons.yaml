@@ -526,3 +526,118 @@ placard:
   - curcuma
   - glacons        # se font, ne s'achètent pas
   - eau            # ne s'achète pas ; listé pour ne pas polluer la liste
+
+# T194 — LE NOM D'UNE DENRÉE SUR UNE ÉTAGÈRE. `nomDeLaDenree` retrouve le mot
+# accentué quand une recette l'écrit exactement comme l'id (« pâte brisée ») ;
+# pour les autres, le stock affichait l'id dé-tiretisé : « huile olive »,
+# « boeuf hache », « porc saute ». Ces noms-là sont écrits ici, et priment.
+noms:
+  agar-agar: agar-agar
+  agneau-collier: collier d'agneau
+  biscuits-cuillere: biscuits à la cuillère
+  ble-lentilles: mélange blé-lentilles
+  boeuf-hache: bœuf haché
+  bouillon-legumes: bouillon de légumes
+  bouillon-miso: bouillon au miso
+  bouillon-volaille: bouillon de volaille
+  celeri-rave: céleri-rave
+  champignons-conserve: champignons en conserve
+  champignons-paris: champignons de Paris
+  chevre-buche: bûche de chèvre
+  chevre-demi-sec: chèvre demi-sec
+  chocolat-poudre: chocolat en poudre
+  chou-blanc: chou blanc
+  clous-girofle: clous de girofle
+  cocktail-fruits: cocktail de fruits
+  colin-surgele: colin surgelé
+  concentre-tomate: concentré de tomate
+  confiture-fraise: confiture de fraises
+  confiture-mirabelle: confiture de mirabelles
+  confiture-orange: confiture d'oranges
+  confiture-prune: confiture de prunes
+  cracotte: cracottes
+  creme-coco: crème de coco
+  creme-dessert-chocolat: crème dessert au chocolat
+  creme-soja: crème de soja
+  eau-fleur-oranger: eau de fleur d'oranger
+  epinards-surgeles: épinards surgelés
+  extrait-amande-amere: extrait d'amande amère
+  extrait-vanille: extrait de vanille
+  farine-epeautre: farine de grand épeautre
+  farine-petit-epeautre: farine de petit épeautre
+  ferments-yaourt: ferments à yaourt
+  feuilles-brick: feuilles de brick
+  feuilles-nori: feuilles de nori
+  flocons-avoine: flocons d'avoine
+  foies-volaille: foies de volaille
+  fruits-secs-melange: mélange de fruits secs
+  fruits-secs-panaches: fruits secs panachés
+  gomme-guar: gomme de guar
+  gousse-vanille: gousse de vanille
+  graines-coriandre: graines de coriandre
+  graines-courge: graines de courge
+  graines-fenouil: graines de fenouil
+  graines-tournesol: graines de tournesol
+  gruau-avoine: gruau d'avoine
+  herbes-provence: herbes de Provence
+  huile-coco: huile de coco
+  huile-essentielle-orange: huile essentielle d'orange
+  huile-olive: huile d'olive
+  huile-pepin-raisin: huile de pépins de raisin
+  huile-tournesol: huile de tournesol
+  jarret-boeuf: jarret de bœuf
+  jus-orange: jus d'orange
+  jus-pomme: jus de pomme
+  lait-amande: lait d'amande
+  lait-avoine: lait d'avoine
+  lait-coco: lait de coco
+  lait-croissance: lait de croissance
+  lait-soja-vanille: lait de soja-vanille
+  legumes-verts-saison: légumes verts de saison
+  lentilles-seches: lentilles vertes sèches
+  levure-biere: levure de bière
+  levure-boulangere: levure de boulanger
+  maizena: Maïzena
+  maquereaux-boite: maquereaux en boîte
+  miel-acacia: miel d'acacia
+  nectar-mangue: nectar de mangue
+  noix-coco-rapee: noix de coco râpée
+  oeufs: œufs
+  pain-levain: pain au levain
+  pate-a-tartiner: pâte à tartiner
+  pate-amande: pâte d'amande
+  pates-lasagne: pâtes à lasagne
+  petits-pois-carottes: petits pois-carottes
+  pignons-pin: pignons de pin
+  piment-espelette: piment d'Espelette
+  porc-hache: porc haché
+  porc-saute: sauté de porc
+  pots-carton: pots en carton
+  poudre-amande: poudre d'amande
+  poulet-filets: filets de poulet
+  pousses-epinards: pousses d'épinards
+  pousses-haricots: pousses de haricot mungo
+  preparation-amandine: préparation amandine
+  puree-amande-blanche: purée d'amande blanche
+  puree-mousline: purée Mousline
+  puree-noisette: purée de noisette
+  ratatouille-boite: ratatouille en boîte
+  roti-porc: rôti de porc
+  roti-veau: rôti de veau
+  sardines-boite: sardines en boîte
+  sauce-bolognaise-bocal: sauce bolognaise en bocal
+  saucisson-sec: saucisson sec
+  sirop-agave: sirop d'agave
+  sirop-erable: sirop d'érable
+  sirop-imbibage: sirop d'imbibage
+  son-avoine: son d'avoine
+  sucre-blanc: sucre blanc
+  terrine-campagne: terrine de campagne
+  thon-boite: thon en boîte
+  tomates-cerises: tomates cerises
+  tomates-cerises-confites: tomates cerises confites
+  tomates-sechees: tomates séchées
+  tomme-savoie: tomme de Savoie
+  vert-de-blette: vert de blette
+  yaourt-brebis: yaourt de brebis
+  yaourt-soja: yaourt de soja

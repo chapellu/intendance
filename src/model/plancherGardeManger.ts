@@ -142,7 +142,12 @@ const NOMS = new Map<string, string>();
  * quoi « beurre » deviendrait « beurre mou », ce qui est faux sur une étagère.
  * Appelé au chargement du catalogue.
  */
-export function retenirLesNoms(plats: readonly { ingredients: readonly { id: string; nom?: string }[] }[]): void {
+export function retenirLesNoms(
+  plats: readonly { ingredients: readonly { id: string; nom?: string }[] }[],
+  /** T194 — les noms écrits dans `rayons.yaml`, qui priment. */
+  ecrits: Readonly<Record<string, string>> = {},
+): void {
+  for (const [id, nom] of Object.entries(ecrits)) NOMS.set(id, nom);
   for (const p of plats)
     for (const i of p.ingredients) {
       if (NOMS.has(i.id) || !i.nom) continue;

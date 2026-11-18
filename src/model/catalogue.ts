@@ -906,6 +906,9 @@ export function lireCatalogue(brut: unknown): Catalogue {
       aliases,
       rayons: rayonsParNom,
       placard: listeDeTextes(rayonsBruts["placard"] ?? [], "rayons.placard"),
+      noms: Object.fromEntries(
+        Object.entries(obj(rayonsBruts["noms"] ?? {}, "rayons.noms")).map(([id, n]) => [id, texte(n, `rayons.noms.${id}`)]),
+      ),
       centraux: {
         rayons: listeDeTextes(centrauxBruts["rayons"] ?? [], "rayons.centraux.rayons"),
         ids: listeDeTextes(centrauxBruts["ids"] ?? [], "rayons.centraux.ids"),
@@ -956,6 +959,6 @@ export async function chargerCatalogue(chemin = CHEMIN_CATALOGUE): Promise<Catal
   const r = await fetch(chemin);
   if (!r.ok) throw new Error(`${chemin} : ${r.status} ${r.statusText}`);
   const catalogue = lireCatalogue(await r.json());
-  retenirLesNoms(catalogue.plats);
+  retenirLesNoms(catalogue.plats, catalogue.rayons.noms);
   return catalogue;
 }

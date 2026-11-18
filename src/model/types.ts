@@ -490,6 +490,9 @@ export interface ConfigRayons {
   rayons: Record<string, string[]>;
   /** Ce qu'on a toujours, et qu'on vérifie au lieu de l'acheter. */
   placard: string[];
+  /** T194 — le nom d'une denrée sur une étagère, quand l'id dé-tiretisé ne le
+   *  dit pas (« huile d'olive », pas « huile olive »). */
+  noms: Record<string, string>;
   /**
    * Ce dont un plat ne se fait pas — la matière de la question de T33.
    *
