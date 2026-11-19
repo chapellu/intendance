@@ -76,7 +76,7 @@ test("T181 — trouver le son d'avoine, créer la levure chimique", async ({ pag
 
   await page.locator(".st-tete").getByRole("button", { name: "+ Ajouter" }).click();
   await page.getByRole("searchbox", { name: "Quoi ?" }).fill("Son d’avoine");
-  await expect(page.locator(".aj-ligne", { hasText: /^son avoine$/ })).toBeVisible();
+  await expect(page.locator(".aj-ligne", { hasText: /^son d'avoine$/ })).toBeVisible();
 
   // Inconnu du catalogue : on le crée, et on le range.
   await page.getByRole("searchbox", { name: "Quoi ?" }).fill("Levure chimique");

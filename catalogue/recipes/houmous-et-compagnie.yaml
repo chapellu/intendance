@@ -55,6 +55,7 @@ recipe:
 
   steps:
     - id: mixer-le-houmous
+      uses: [pois-chiches-cuits, huile-olive, ail, citron, sel, poivre]
       action: "Mixer soigneusement tous les ingrédients, sel compris. C'est prêt"
       needs: [blend-smooth]
       time_min: 3

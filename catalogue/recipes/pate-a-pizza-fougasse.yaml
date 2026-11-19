@@ -38,15 +38,18 @@ recipe:
 
   steps:
     - id: puits
+      uses: [farine-epeautre, sel]
       action: "Mélanger la farine et le sel, puis faire un puits"
       needs: []
       time_min: 2
     - id: delayer-pizza
+      uses: [levure-boulangere, eau, huile-olive]
       action: "Délayer la levure dans l'eau tiède, l'ajouter dans le puits avec l'huile d'olive, puis mélanger à la cuillère en bois ou au robot"
       astuce: "Jamais plus de 40 °C : au-delà, la chaleur tue la levure."
       needs: []
       time_min: 6
     - id: lever-pizza
+      uses: []
       action: "Retourner une assiette sur le saladier et laisser lever au tiède"
       needs: []
       time_min: 1
@@ -54,6 +57,7 @@ recipe:
       attente_raison: "levée d'une heure à une heure et demie, à lancer avant de partir"
       attended: false
     - id: etaler-pizza
+      uses: []
       action: "Étaler la pâte à la main en un disque d'environ 25 cm, sur un papier cuisson huilé et fariné"
       needs: []
       time_min: 6

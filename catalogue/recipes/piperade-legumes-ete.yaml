@@ -61,26 +61,31 @@ recipe:
 
   steps:
     - id: dorer-oignons
+      uses: [oignon, huile-olive]
       action: "Faire revenir les oignons émincés dans l'huile d'olive, au wok ou dans une large sauteuse d'au moins 28 cm"
       needs: [pan-fry]
       time_min: 8
       attended: true
     - id: decouper-legumes
+      uses: [tomates, poivron]
       action: "Pendant ce temps, découper les légumes d'été en gros morceaux, moitié tomates et moitié poivrons (piperade) ou moitié légumes de ratatouille"
       needs: []
       time_min: 12
       parallel_with: dorer-oignons
       kid: {age_min_months: 30, task: "déchirer les feuilles d'herbes au-dessus de la sauteuse"}
     - id: reunir-legumes
+      uses: [ail, herbes-provence, poivre]
       action: "Ajouter les légumes quand les oignons sont bien dorés, puis l'ail émincé, les herbes et le poivre"
       needs: []
       time_min: 3
     - id: saler-piperade
+      uses: [sel]
       action: "Saler"
       needs: []
       time_min: 1
       seasoning_gate: true
     - id: reduire
+      uses: []
       action: "Mener la cuisson à feu ASSEZ VIF environ 15 min, jusqu'à ce que les légumes soient bien cuits et que le jus ait complètement réduit"
       needs: [pan-fry]
       time_min: 15

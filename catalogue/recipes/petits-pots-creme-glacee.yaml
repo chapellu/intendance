@@ -31,32 +31,36 @@ recipe:
   ingredients:
     # Crème glacée vanille — sans sorbetière, montée à froid
     - {id: creme-coco, name: crème de coco très froide, qty: 40, unit: cl}
-    - {id: sirop-agave, name: sirop d'agave (crème vanille), qty: 5, unit: cl}
+    - {id: sirop-agave, ref: sirop-agave-creme, name: sirop d'agave (crème vanille), qty: 5, unit: cl}
     - {id: extrait-vanille, name: extrait de vanille, qty: 1, unit: c. à s.}
     # Marbrures à la fraise
     - {id: fraises, name: fraises de saison très parfumées (Mara des Bois), qty: 200, unit: g}
-    - {id: sirop-agave, name: sirop d'agave (marbrures), qty: 50, unit: g}
+    - {id: sirop-agave, ref: sirop-agave-fraises, name: sirop d'agave (marbrures), qty: 50, unit: g}
     - {id: lait-soja-vanille, name: lait de soja-vanille, qty: 60, unit: g}
     - {id: pots-carton, name: petits pots en carton, qty: 6, unit: pièce}
 
   steps:
     - id: fouetter
+      uses: [creme-coco, sirop-agave-creme, extrait-vanille]
       action: "Fouetter la crème de coco très froide avec le sirop d'agave et l'extrait de vanille, puis réserver"
       needs: [blend-smooth]
       time_min: 5
       # La crème de coco ne monte que sortant du frigo — même contrainte que la
       # chantilly de la tarte aux fraises (p. 58).
     - id: marbrures
+      uses: [fraises, sirop-agave-fraises, lait-soja-vanille]
       action: "Mixer les fraises avec le sirop d'agave et le lait de soja-vanille"
       needs: [blend-smooth]
       time_min: 4
       kid: {age_min_months: 30, task: "équeuter les fraises avant de les mixer"}
     - id: marbrer
+      uses: []
       action: "Verser la purée de fraises dans la crème fouettée et mélanger en trois ou quatre coups de spatule"
       astuce: "Pas un de plus : au-delà, les marbrures disparaissent."
       needs: []
       time_min: 2
     - id: congeler
+      uses: [pots-carton]
       action: "Répartir dans les 6 pots en carton et mettre au congélateur environ 2 h"
       astuce: "Au-delà, les sortir un peu en avance pour qu'ils ne soient pas trop durs."
       needs: [congeler]

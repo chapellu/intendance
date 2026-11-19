@@ -42,30 +42,36 @@ recipe:
 
   steps:
     - id: melanger-secs
+      uses: [farine-complete, son-avoine, sel]
       action: "Mélanger farine, son d'avoine et sel fin, puis faire un puits"
       needs: []
       time_min: 3
     - id: delayer-levure
+      uses: [levure-boulangere, eau, huile-olive, sirop-agave]
       action: "Délayer la levure dans l'eau tiède, puis verser dans le puits avec l'huile et le sirop d'agave"
       astuce: "Jamais au-delà de 40 °C : la chaleur tue la levure."
       needs: []
       time_min: 3
     - id: petrir
+      uses: []
       action: "Mélanger 3 min au robot ou à la cuillère en bois, puis verser dans un grand moule à cake (environ 30 cm de long, 11 cm de haut) chemisé de papier cuisson"
       needs: []
       time_min: 6
     - id: lever
+      uses: []
       action: "Couvrir d'un torchon mouillé et laisser lever à température ambiante"
       needs: []
       time_min: 1
       attente_min: 60
       attended: false
     - id: cuire-four-froid
+      uses: []
       action: "Vaporiser un peu d'eau, enfourner à FOUR FROID sans taper le moule, puis régler sur 180 °C en chaleur statique : le pain finit de lever pendant le préchauffage"
       needs: [bake]
       time_min: 50
       attended: false
     - id: refroidir
+      uses: []
       action: "Laisser entièrement refroidir avant de démouler"
       astuce: "Trancher chaud abîme la mie."
       needs: []

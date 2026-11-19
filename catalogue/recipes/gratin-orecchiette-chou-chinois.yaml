@@ -44,11 +44,13 @@ recipe:
 
   steps:
     - id: revenir-oignons
+      uses: [oignon, huile-olive]
       action: "Émincer finement les oignons et les faire revenir à l'huile d'olive dans un grand wok ou une cocotte en fonte"
       needs: [pan-fry]
       time_min: 6
       attended: true
     - id: emincer-chou
+      uses: [chou-chinois]
       action: "Pendant ce temps : émincer le chou chinois en tranches de 3 cm côté feuilles, de plus en plus fines vers le trognon"
       astuce: "Sinon la texture reste filandreuse après cuisson : le trognon est bien plus dur que la feuille."
       needs: []
@@ -58,21 +60,25 @@ recipe:
         age_min_months: 30
         task: "détacher les feuilles du chou une à une"
     - id: dorer-chou
+      uses: [boeuf-hache]
       action: "Faire dorer le chou avec les oignons et la viande"
       needs: [pan-fry]
       time_min: 6
       attended: true
     - id: assaisonner-poelee
+      uses: [origan, thym, sel, poivre]
       action: "Ajouter l'origan et le thym, saler et poivrer"
       needs: []
       time_min: 1
       seasoning_gate: true
     - id: mijoter
+      uses: []
       action: "Couvrir et laisser mijoter une dizaine de minutes"
       needs: [pan-fry]
       time_min: 10
       attended: false
     - id: reduire
+      uses: []
       action: "Découvrir et laisser réduire le jus jusqu'à ce que tout soit fondu et bien doré au fond"
       needs: [pan-fry]
       time_min: 6
@@ -80,18 +86,21 @@ recipe:
       # C'est cette réduction qui décide du plat : un gratin monté sur une
       # poêlée encore humide rend de l'eau et ne dore pas.
     - id: cuire-pates
+      uses: [pates]
       action: "En parallèle : cuire les pâtes à l'eau salée selon le paquet, les égoutter et les huiler légèrement"
       needs: [simmer-large]
       time_min: 12
       parallel_with: mijoter
       attended: false
     - id: prechauffer
+      uses: []
       action: "Préchauffer le four à 225 °C"
       needs: [bake]
       time_min: 1
       parallel_with: mijoter
       attended: false
     - id: monter
+      uses: [fromage-rape]
       action: "Dans un grand plat à gratin : la moitié des pâtes, toute la poêlée au chou, la moitié du parmesan, le reste des pâtes et le reste du parmesan"
       astuce: "Un peu de thym et d'origan pour finir."
       needs: [gratin-vessel]
@@ -100,6 +109,7 @@ recipe:
         age_min_months: 30
         task: "saupoudrer le parmesan entre les couches"
     - id: gratiner
+      uses: []
       action: "Enfourner quelques minutes, juste le temps de faire dorer le dessus"
       needs: [gratin]
       time_min: 8

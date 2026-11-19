@@ -47,21 +47,25 @@ recipe:
 
   steps:
     - id: charger-la-cuve
+      uses: [farine-epeautre, eau, levure-boulangere, huile-olive, sirop-agave, sel]
       action: "Mettre tous les ingrédients dans la cuve et lancer le programme « basique » ou « pain normal »"
       needs: [machine-a-pain]
       time_min: 5
     - id: retirer-la-pale
+      uses: []
       action: "Si la machine sonne en fin de pétrissage, retirer la pâle"
       astuce: "Sinon elle reste imprimée dans la mie, et on perd deux ou trois tranches."
       needs: [machine-a-pain]
       time_min: 2
       attended: true
     - id: cuire-en-machine
+      uses: []
       action: "Laisser le programme aller à son terme"
       needs: [machine-a-pain]
       time_min: 175
       attended: false
     - id: refroidir-machine
+      uses: []
       action: "Laisser le pain refroidir entièrement avant de le trancher"
       needs: []
       time_min: 5

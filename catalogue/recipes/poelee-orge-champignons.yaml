@@ -43,6 +43,7 @@ recipe:
 
   steps:
     - id: tremper
+      uses: [orge]
       action: "Mettre l'orge à tremper dans un grand volume d'eau froide"
       needs: []
       time_min: 3
@@ -53,22 +54,26 @@ recipe:
         cout_min: 60
         effet: "grain moins tendre ; compter quelques minutes de cuisson en plus"
     - id: rincer
+      uses: []
       action: "Égoutter et rincer l'orge trempée"
       needs: []
       time_min: 1
     - id: cuire-orge
+      uses: [sel]
       action: "Cuire l'orge 15 min dans un grand faitout d'eau bouillante salée"
       astuce: "Le temps se compte à partir de la reprise de l'ébullition."
       needs: [simmer-large]
       time_min: 15
       attended: false
     - id: dorer-oignon-jambon
+      uses: [jambon-cru, oignon, huile-olive]
       action: "Pendant ce temps : faire dorer à l'huile d'olive l'oignon en cubes et le jambon, au wok ou dans une grande sauteuse"
       needs: [pan-fry]
       time_min: 6
       parallel_with: cuire-orge
       attended: true
     - id: sauter-champignons
+      uses: [champignons-paris, champignons-conserve]
       action: "Ajouter les champignons frais émincés et ceux en conserve, bien rincés, puis faire sauter à feu vif"
       astuce: "10 à 15 min, le temps qu'ils soient bien dorés."
       needs: [pan-fry]
@@ -77,11 +82,13 @@ recipe:
       parallel_with: "cuire-orge"
       # À feu vif et sans couvrir : c'est ce qui fait dorer plutôt que bouillir.
     - id: assaisonner
+      uses: [ail, thym-frais, poivre]
       action: "Ajouter l'ail écrasé, poivrer, effeuiller le thym et bien mélanger"
       needs: []
       time_min: 2
       seasoning_gate: true
     - id: reunir
+      uses: []
       action: "Égoutter l'orge, le mélanger à la poêlée et servir aussitôt, nature ou avec un peu de parmesan"
       needs: []
       time_min: 3

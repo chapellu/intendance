@@ -54,10 +54,12 @@ recipe:
 
   steps:
     - id: tailler-pasta-box
+      uses: [roti-froid, gouda, celeri-rave, carottes]
       action: "Découper le rôti et le fromage en petits cubes, le céleri et les carottes en bâtonnets"
       needs: []
       time_min: 7
     - id: assaisonner-pasta-box
+      uses: [pates, capres, graines-fenouil, huile-olive, vinaigre-balsamique, levure-biere, ciboulette, sel, poivre]
       action: "Saler, puis mélanger tous les ingrédients et mettre au frais jusqu'au repas"
       needs: []
       time_min: 3

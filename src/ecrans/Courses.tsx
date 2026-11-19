@@ -236,7 +236,7 @@ function Contenu({
 function Ligne({ a, refs, onClick }: { a: Article; refs: References | null; onClick: () => void }) {
   const etat = a.rentre ? " rentre" : a.coche ? " coche" : "";
   const raison = a.plancher
-    ? phraseDuPlancher(a.plancher, a.ligne.n)
+    ? phraseDuPlancher(a.plancher, a.ligne.n, a.ligne.achat)
     : a.ligne.n > 1
       ? `pour ${a.ligne.n} plats`
       : "pour 1 plat";

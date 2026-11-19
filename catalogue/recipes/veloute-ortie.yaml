@@ -38,22 +38,26 @@ recipe:
 
   steps:
     - id: blondir-oignons
+      uses: [oignon, huile-olive]
       action: "Émincer les oignons et les faire blondir à l'huile d'olive dans un grand faitout"
       needs: [simmer-large]
       time_min: 6
       attended: true
     - id: cuire-pommes-de-terre
+      uses: [pomme-de-terre, eau, ail, sel]
       action: "Pendant ce temps : éplucher les pommes de terre, les couper en cubes de 2 cm, les ajouter avec l'eau, l'ail épluché et le sel, puis laisser cuire"
       needs: [simmer-large]
       time_min: 15
       attended: false
     - id: laver-feuilles
+      uses: [orties]
       action: "Pendant la cuisson : laver les orties, ou les feuilles choisies"
       astuce: "Avec des gants pour les orties."
       needs: []
       time_min: 5
       parallel_with: "cuire-pommes-de-terre"
     - id: ajouter-feuilles
+      uses: []
       action: "Dès que les cubes de pomme de terre sont bien tendres, ajouter les feuilles et poursuivre 10 min"
       needs: [simmer-large]
       time_min: 10
@@ -61,6 +65,7 @@ recipe:
       # La cuisson des feuilles est volontairement courte : au-delà, le vert vire
       # au kaki et la recette perd ce qui la rend jolie.
     - id: mixer
+      uses: [poivre]
       action: "Poivrer et mixer soigneusement jusqu'à une texture bien veloutée"
       needs: [blend-smooth]
       time_min: 3

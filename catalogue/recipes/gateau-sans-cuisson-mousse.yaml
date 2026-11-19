@@ -65,11 +65,13 @@ recipe:
 
   steps:
     - id: poser-cercle
+      uses: []
       action: "Poser un cercle à pâtisserie d'environ 26 cm directement sur le plat de service"
       astuce: "Sur le plat de service, parce que ce gâteau-là ne se déplace plus une fois monté."
       needs: []
       time_min: 2
     - id: premiere-couche
+      uses: [biscuits-cuillere, sirop-imbibage]
       action: "Le tapisser d'une couche de biscuits très rapidement trempés dans le sirop, bien serrés"
       astuce: "Très rapidement : trempés trop longtemps, ils se défont à la pose."
       needs: []
@@ -79,14 +81,17 @@ recipe:
         task: "tremper les biscuits et les ranger côte à côte"
       # « Très rapidement » : un biscuit qui boit trop s'effondre.
     - id: premiere-mousse
+      uses: [mousse-chocolat-ing]
       action: "Verser la moitié de la mousse encore tiède dans le cercle"
       needs: []
       time_min: 2
     - id: seconde-couche
+      uses: []
       action: "Déposer une deuxième couche de biscuits imbibés, verser le reste de mousse et égaliser"
       needs: []
       time_min: 6
     - id: reposer
+      uses: [cacao]
       action: "Couvrir et mettre au frais ; saupoudrer de cacao au moment de servir"
       needs: []
       time_min: 4

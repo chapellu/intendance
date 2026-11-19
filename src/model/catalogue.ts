@@ -14,6 +14,7 @@
 // vocabulaires sur lesquels il branche, les invariants qui rendent un calcul
 // possible. Un champ qu'aucun calcul ne lit peut manquer sans dommage.
 
+import { retenirTypesLisibles } from "./typesLisibles";
 import { retenirLesNoms } from "./plancherGardeManger";
 import type {
   Accept, Cadre, DecorDuPlan, Mur, PlanCuisine, RangementDuPlan, TeinteDecor, TeinteRangement,
@@ -879,7 +880,15 @@ export function lireCatalogue(brut: unknown): Catalogue {
     if (d.garde !== null && !idsFamilles.has(d.garde))
       throw new CatalogueInvalide("gardeManger.denrees", "une famille de garde déclarée", d.garde);
 
+  // T193 — ce qu'un plat produit, dit en français. Facultatif : un catalogue
+  // d'avant T193 (ou fabriqué par un test) garde l'identifiant dé-tiretisé.
+  const typesLisibles: Record<string, string> = {};
+  for (const [t, nom] of Object.entries(obj(o["typesLisibles"] ?? {}, "typesLisibles")))
+    typesLisibles[t] = texte(nom, `typesLisibles.${t}`);
+  retenirTypesLisibles(typesLisibles);
+
   return {
+    typesLisibles,
     foyer: foyer(o["foyer"], "foyer"),
     plats,
     creneaux: {
@@ -897,6 +906,9 @@ export function lireCatalogue(brut: unknown): Catalogue {
       aliases,
       rayons: rayonsParNom,
       placard: listeDeTextes(rayonsBruts["placard"] ?? [], "rayons.placard"),
+      noms: Object.fromEntries(
+        Object.entries(obj(rayonsBruts["noms"] ?? {}, "rayons.noms")).map(([id, n]) => [id, texte(n, `rayons.noms.${id}`)]),
+      ),
       centraux: {
         rayons: listeDeTextes(centrauxBruts["rayons"] ?? [], "rayons.centraux.rayons"),
         ids: listeDeTextes(centrauxBruts["ids"] ?? [], "rayons.centraux.ids"),
@@ -947,6 +959,6 @@ export async function chargerCatalogue(chemin = CHEMIN_CATALOGUE): Promise<Catal
   const r = await fetch(chemin);
   if (!r.ok) throw new Error(`${chemin} : ${r.status} ${r.statusText}`);
   const catalogue = lireCatalogue(await r.json());
-  retenirLesNoms(catalogue.plats);
+  retenirLesNoms(catalogue.plats, catalogue.rayons.noms);
   return catalogue;
 }

@@ -5,7 +5,7 @@ import { lireCatalogue } from "../model/catalogue";
 import { creerJeu, idsDuReleve, type Jeu } from "../model/jeu";
 import type { Catalogue, Denree, Zone } from "../model/types";
 import { contexte, rejouer, type Evenement } from "../model/journal";
-import { retenirLesNoms } from "../model/plancherGardeManger";
+import { nomDeLaDenree, retenirLesNoms } from "../model/plancherGardeManger";
 import {
   agressions, baisserPlancher, categories, espaces, fiabilite, gardeManger, lots,
   enPaquets, ingredientsConnus, motDuPaquet, perte, PERIME, resteAuPlacard, restesPerimes, vueDeLInventaire, vueDesPlanchers, vueDesPlanchersDenrees, zones,
@@ -1229,7 +1229,7 @@ describe("T181 — trouver ce qu'on tient en main", () => {
 
 describe("T182 — il me reste 2 œufs", () => {
   // Comme au chargement de l'app : « œufs », le mot des recettes.
-  beforeEach(() => retenirLesNoms(catalogue.plats));
+  beforeEach(() => retenirLesNoms(catalogue.plats, catalogue.rayons.noms));
   const jour = "2026-11-10";
   const oeufs = (n: number): Evenement => ({
     sorte: "entree", jour, saisi: jour, maj: 1,
@@ -1263,7 +1263,7 @@ describe("T182 — il me reste 2 œufs", () => {
 });
 
 describe("T183 — même remarque pour les yaourts", () => {
-  beforeEach(() => retenirLesNoms(catalogue.plats));
+  beforeEach(() => retenirLesNoms(catalogue.plats, catalogue.rayons.noms));
   const jour = "2026-11-10";
 
   test("des packs de 4 se disent en yaourts, accordés", () => {
@@ -1298,5 +1298,14 @@ describe("T183 — même remarque pour les yaourts", () => {
   test("un lot compté en pots se compte en pièces", () => {
     const lot = { ingredient: "x", zone: "z", unites: 1, parUnite: { amount: 4, unit: "pot" }, etat: "frais" as const, entame: null, court: false };
     expect(piecesDe([lot])).toBe(4);
+  });
+});
+
+describe("T194 — une denrée se dit en français sur l'étagère", () => {
+  beforeEach(() => retenirLesNoms(catalogue.plats, catalogue.rayons.noms));
+  test("le nom écrit prime, le mot des recettes vient ensuite, l'id en dernier", () => {
+    expect(nomDeLaDenree("huile-olive")).toBe("huile d'olive");
+    expect(nomDeLaDenree("porc-saute")).toBe("sauté de porc");
+    expect(nomDeLaDenree("boeuf-hache")).toBe("bœuf haché");
   });
 });

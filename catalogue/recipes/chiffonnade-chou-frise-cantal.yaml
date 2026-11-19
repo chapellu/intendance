@@ -44,24 +44,29 @@ recipe:
 
   steps:
     - id: parer-chou
+      uses: [chou-frise]
       action: "Ôter les deux ou trois feuilles extérieures les plus foncées et coriaces, recouper le demi-chou en deux et retirer le trognon"
       needs: []
       time_min: 5
     - id: emincer
+      uses: []
       action: "Émincer le chou très finement, au robot ou au couteau"
       needs: [chop-coarse]
       time_min: 5
       # La finesse fait tout : un chou frisé taillé épais reste coriace cru.
     - id: garniture
+      uses: [jambon-cru, cantal, pruneaux, noix]
       action: "Recouper le jambon en lardons, le cantal en cubes, dénoyauter et couper les pruneaux aux ciseaux, casser les noix"
       needs: []
       time_min: 7
       kid: {age_min_months: 30, task: "ramasser les cerneaux de noix cassées"}
     - id: reunir
+      uses: [oignon-rouge]
       action: "Réunir le chou, l'oignon, le cantal, le jambon, les pruneaux et les noix dans un saladier"
       needs: []
       time_min: 2
     - id: assaisonner
+      uses: [huile-olive, vinaigre, sel, poivre]
       action: "Assaisonner d'huile, de vinaigre, de sel et de poivre, brasser et servir aussitôt"
       astuce: "Le chou frisé est assez tendre pour se passer de marinade."
       needs: []

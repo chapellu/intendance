@@ -60,21 +60,25 @@ recipe:
 
   steps:
     - id: monter-le-bouillon
+      uses: [roti-porc, oignon, celeri-branche, carottes, laurier, clous-girofle, thym, vinaigre, eau]
       action: "Réunir dans une grande casserole le rôti, l'oignon, le céleri, la carotte, le laurier, le clou de girofle, le thym, le vinaigre de cidre et l'eau"
       needs: []
       time_min: 10
     - id: saler-le-bouillon
+      uses: [gros-sel]
       action: "Saler le bouillon au gros sel gris"
       astuce: "C'est lui qui fait le goût de « jambon »."
       needs: []
       time_min: 2
       seasoning_gate: true
     - id: cuire
+      uses: []
       action: "Porter à ébullition, puis compter 1 h de cuisson"
       needs: [simmer-large]
       time_min: 60
       attended: false
     - id: refroidir-dans-le-bouillon
+      uses: []
       action: "Laisser le rôti refroidir DANS son bouillon, au frais"
       astuce: "C'est ce qui le garde moelleux et parfumé."
       needs: []

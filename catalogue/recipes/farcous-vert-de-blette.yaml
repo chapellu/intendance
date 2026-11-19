@@ -44,11 +44,13 @@ recipe:
 
   steps:
     - id: laver-essorer
+      uses: [vert-de-blette]
       action: "Laver les feuilles de blette (ou les épinards) et les essorer soigneusement à l'essoreuse à salade"
       needs: []
       time_min: 6
       kid: {age_min_months: 30, task: "tourner l'essoreuse à salade"}
     - id: mixer
+      uses: [oeufs, farine-complete, fromage-rape, cebette, persil, ail, lait, poudre-a-lever]
       action: "Mixer les feuilles, la cébette, le persil, l'ail, les œufs, la farine, le lait, la poudre à lever et le fromage"
       astuce: "Jusqu'à une pâte à crêpes verte et bien épaisse."
       needs: [blend-smooth]
@@ -57,17 +59,20 @@ recipe:
       # mixeur plongeur et son petit bol — il faudra procéder en plusieurs fois,
       # d'où le `time_delta_min` de la chaîne `blend-smooth`.
     - id: assaisonner
+      uses: [sel, poivre]
       action: "Saler et poivrer la pâte"
       needs: []
       time_min: 1
       seasoning_gate: true    # le prélèvement bébé est injecté AVANT cette étape
     - id: cuire-poelees
+      uses: [huile-olive]
       action: "Cuire par poêlées dans une grande poêle bien huilée, en versant de petites louches comme des blinis"
       astuce: "2 à 3 min par face, jusqu'à ce qu'ils soient bien dorés."
       needs: [pan-fry]
       time_min: 20
       attended: true
     - id: egoutter-servir
+      uses: []
       action: "Débarrasser sur du papier absorbant et servir aussitôt, tant que les farçous sont croustillants"
       needs: []
       time_min: 2

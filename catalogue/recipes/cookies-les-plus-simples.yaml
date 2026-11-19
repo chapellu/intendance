@@ -47,32 +47,38 @@ recipe:
 
   steps:
     - id: prechauffer-cookies-simples
+      uses: []
       action: "Préchauffer le four à 180 °C, si possible en chaleur tournante"
       needs: [bake]
       time_min: 1
       attended: false
     - id: hacher-les-fruits
+      uses: [figues-seches, raisins-secs]
       action: "Mixer figues et raisins par brèves impulsions, jusqu'à des morceaux de la taille d'un petit raisin sec"
       astuce: "Attention à ne pas faire de bouillie."
       needs: [chop-coarse]
       time_min: 4
     - id: faire-la-pate-cookies
+      uses: [farine-epeautre, son-avoine, huile-tournesol, noisettes, jus-pomme, poudre-a-lever, fleur-de-sel]
       action: "Ajouter tous les autres ingrédients, fleur de sel comprise, et mixer par impulsions jusqu'à une pâte homogène et malléable"
       astuce: "En gardant des morceaux de noisette et de fruit."
       needs: [chop-coarse]
       time_min: 5
       seasoning_gate: true
     - id: predecouper
+      uses: []
       action: "Étaler la pâte sur une plaque chemisée, en une épaisseur d'environ 7 mm, puis prédécouper les biscuits à la roulette à pizza en barres de 4 × 8 cm"
       needs: []
       time_min: 6
       kid: {age_min_months: 30, task: "passer la roulette sur la pâte, en suivant une règle"}
     - id: cuire-cookies-simples
+      uses: []
       action: "Enfourner 10 min à 180 °C, puis baisser à 150 °C pour la fin de la cuisson"
       needs: [bake]
       time_min: 20
       attended: false
     - id: refroidir-sur-grille
+      uses: []
       action: "Laisser un peu tiédir, détacher les gâteaux, puis les laisser refroidir SUR UNE GRILLE"
       astuce: "Et non sur le papier cuisson : c'est ce qui les rend croustillants dehors et moelleux dedans."
       needs: []

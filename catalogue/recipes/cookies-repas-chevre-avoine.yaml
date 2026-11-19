@@ -44,22 +44,26 @@ recipe:
 
   steps:
     - id: prechauffer-cookies
+      uses: []
       action: "Préchauffer le four à 180 °C, si possible en chaleur tournante"
       needs: [bake]
       time_min: 1
       attended: false
     - id: malaxer-cookies
+      uses: [flocons-avoine, farine-complete, chevre-buche, origan, olives-noires, huile-olive, poudre-a-lever, sel, piment-espelette]
       action: "Malaxer à la main tous les ingrédients dans un petit saladier, jusqu'à une pâte très malléable qui ne colle pas"
       needs: []
       time_min: 8
       seasoning_gate: true
       kid: {age_min_months: 24, task: "malaxer la pâte avec les mains propres"}
     - id: former-cookies
+      uses: []
       action: "Diviser en 9 boules de la taille d'une prune, puis les écraser assez finement sur une plaque chemisée"
       needs: []
       time_min: 6
       kid: {age_min_months: 24, task: "écraser les boules avec la paume"}
     - id: cuire-cookies
+      uses: []
       action: "Enfourner environ 20 min, jusqu'à ce que le BORD des cookies soit bien doré"
       astuce: "C'est le bord qui dit la cuisson, et il varie beaucoup d'un four à l'autre."
       needs: [bake]

@@ -57,21 +57,25 @@ recipe:
 
   steps:
     - id: cuire-oeuf-nicoise
+      uses: [oeufs]
       action: "Cuire l'œuf 8 minutes chrono à l'eau bouillante"
       needs: [simmer]
       time_min: 10
       attended: false
     - id: tailler-nicoise
+      uses: [concombre, radis, poivron, tomates-cerises]
       action: "Laver et éplucher les légumes : concombre et radis en fines tranches, poivron en petits cubes, tomates-cerises en deux"
       needs: []
       time_min: 8
       parallel_with: cuire-oeuf-nicoise
     - id: empiler-le-bocal
+      uses: [cereale-cuite, thon-boite, salade-verte]
       action: "Empiler dans un grand bocal d'un litre : petit épeautre, concombre, radis, poivron, tomates, thon, œuf, mesclun"
       astuce: "Dans cet ordre, et il n'est pas décoratif : c'est lui qui évite que la salade arrive flétrie — le mesclun ne doit toucher ni la sauce ni le jus des tomates."
       needs: []
       time_min: 4
     - id: sauce-a-part
+      uses: [huile-olive, vinaigre-balsamique, origan, sel]
       action: "Mélanger huile, vinaigre, origan et sel, puis verser dans une petite bouteille À PART"
       astuce: "La sauce ne rejoint la salade qu'au moment de savourer."
       needs: []

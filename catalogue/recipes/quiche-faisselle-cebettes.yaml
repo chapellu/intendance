@@ -30,12 +30,12 @@ recipe:
     # Pâte — brisée végétalienne à la poudre d'amande, sans beurre ni œuf.
     - {id: poudre-amande, name: poudre d'amande, qty: 125, unit: g}
     - {id: farine-complete, name: farine semi-complète de blé ou de grand épeautre, qty: 250, unit: g, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
-    - {id: huile-olive, name: huile d'olive, qty: 80, unit: g}
+    - {id: huile-olive, ref: huile-pate, name: huile d'olive, qty: 80, unit: g}
     - {id: eau, name: eau, qty: 80, unit: g}
     - {id: fleur-de-sel, name: fleur de sel, qty: 7, unit: g, seasoning: true}
     # Garniture
     - {id: cebette, name: cébettes (oignons tiges nouveaux), qty: 2, unit: botte}
-    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: huile-olive, ref: huile-cebettes, name: huile d'olive, qty: 2, unit: c. à s.}
     - {id: faisselle, name: fromage frais en faisselle, qty: 500, unit: g}
     - {id: fromage-rape, name: "fromage râpé à pâte dure (parmesan, comté, tomme de chèvre ou de brebis)", qty: 200, unit: g}
     - {id: oeufs, name: œufs, qty: 2, unit: pièce}
@@ -46,17 +46,20 @@ recipe:
 
   steps:
     - id: egoutter
+      uses: [faisselle]
       action: "Renverser la faisselle dans une passoire et la laisser s'égoutter"
       astuce: "C'est ce qui décide de la tenue de l'appareil."
       needs: []
       time_min: 2
       attended: false
     - id: prechauffer
+      uses: []
       action: "Préchauffer le four à 200 °C, grille sur le cran le plus bas au-dessus de la sole"
       needs: [bake]
       time_min: 1
       attended: false
     - id: dorer-cebettes
+      uses: [cebette, huile-cebettes]
       action: "Ôter la première feuille des cébettes, les coucher à plat dans une grande poêle huilée, saler et faire dorer 5 min à feu doux"
       needs: [pan-fry]
       time_min: 6
@@ -65,17 +68,20 @@ recipe:
         age_min_months: 30
         task: "éplucher la première feuille des cébettes"
     - id: poeler-cebettes
+      uses: []
       action: "Ajouter un verre d'eau, couvrir et étuver 10 min"
       needs: [pan-fry]
       time_min: 11
       attended: false
     - id: faire-la-pate
+      uses: [poudre-amande, farine-complete, huile-pate, eau, fleur-de-sel]
       action: "Pendant l'étuvée : mélanger poudre d'amande, farine et fleur de sel, incorporer l'huile jusqu'à une texture sablonneuse, puis verser l'eau d'un coup"
       astuce: "Amalgamer sans travailler la pâte : c'est une pâte sablée, pas une pâte à pain."
       needs: []
       time_min: 8
       parallel_with: "poeler-cebettes"
     - id: foncer
+      uses: []
       action: "Étaler la pâte au rouleau sur un papier cuisson, la transférer dans un moule d'environ 30 cm avec son papier, puis recouper les bords"
       needs: []
       time_min: 5
@@ -84,15 +90,18 @@ recipe:
     # `seasoning_gate` injecte le prélèvement bébé AVANT l'étape qu'il marque.
     # Fusionnées, la portion bébé était prélevée avant que l'appareil existe.
     - id: appareil
+      uses: [fromage-rape, farine, poivre, ciboulette, oeufs]
       action: "Mixer la faisselle égouttée avec le fromage râpé, la cuillerée de farine et le poivre, puis incorporer la ciboulette ciselée et les œufs"
       needs: [blend-smooth]
       time_min: 4
     - id: saler-appareil
+      uses: [sel]
       action: "Saler l'appareil"
       needs: []
       time_min: 1
       seasoning_gate: true
     - id: garnir-cuire
+      uses: []
       action: "Verser l'appareil sur le fond de tarte, ranger les cébettes poêlées par-dessus et enfourner 30 min jusqu'à belle coloration"
       needs: [bake]
       time_min: 30

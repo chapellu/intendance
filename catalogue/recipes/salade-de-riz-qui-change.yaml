@@ -48,16 +48,19 @@ recipe:
 
   steps:
     - id: lancer-la-casserole
+      uses: [carottes, poireau, celeri-branche, laurier, cabillaud, sel]
       action: "Émincer carotte, blanc de poireau et céleri, puis les mettre à cuire dans une casserole d'eau salée avec le laurier et le poisson"
       needs: [simmer]
       time_min: 8
       attended: true
     - id: ajouter-le-riz
+      uses: [riz]
       action: "À l'ébullition, ajouter le riz et compter environ 20 min, en suivant les indications du paquet"
       needs: [simmer]
       time_min: 20
       attended: false
     - id: assaisonner-riz
+      uses: [huile-olive, vinaigre, moutarde, persil, poivre]
       action: "Égoutter, puis assaisonner d'huile, de vinaigre, de moutarde, de poivre et de persil ciselé ; conserver au frais jusqu'au repas"
       needs: []
       time_min: 5

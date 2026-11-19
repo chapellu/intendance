@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { beforeEach, describe, expect, test } from "vitest";
 import { lireCatalogue } from "./catalogue";
-import { articles, calculer, cleDuCreneau, echelle, facteur, minutesParJour } from "./calcul";
+import { articles, calculer, cleDuCreneau, echelle, facteur, minutesParJour, ecrireQuantite } from "./calcul";
 import { contexte, rejouer, type Evenement } from "./journal";
 import { creerJeu, idsDuReleve, SAUTE, type Jeu } from "./jeu";
 import type { Catalogue } from "./types";
@@ -872,5 +872,21 @@ describe("ce qui ne s'achète pas part au panier sous son équivalent", () => {
     j.gardeManger = [...j.gardeManger.filter((id) => id !== "pois-casses"), "lentilles-corail"];
     const ids = [...calculer(j).panier.values()].map((a) => a.id);
     expect(ids).not.toContain("pois-casses");
+  });
+});
+
+describe("ecrireQuantite — une quantité telle qu'on la lit en cuisine (T193)", () => {
+  test("la pièce ne se dit pas, le gros se convertit, le reste s'accorde", () => {
+    expect(ecrireQuantite(2, "pièce")).toBe("2");
+    expect(ecrireQuantite(0.5, "pièce")).toBe("0,5");
+    expect(ecrireQuantite(1000, "ml")).toBe("1 l");
+    expect(ecrireQuantite(150, "cl")).toBe("1,5 l");
+    expect(ecrireQuantite(1250, "g")).toBe("1,25 kg");
+    expect(ecrireQuantite(0.4, "kg")).toBe("400 g");
+    expect(ecrireQuantite(1.5, "gousse")).toBe("1,5 gousse");
+    expect(ecrireQuantite(3, "gousse")).toBe("3 gousses");
+    expect(ecrireQuantite(2, "petit bouquet")).toBe("2 petits bouquets");
+    expect(ecrireQuantite(3, "c. à s.")).toBe("3 c. à s.");
+    expect(ecrireQuantite(40, "cl")).toBe("40 cl");
   });
 });

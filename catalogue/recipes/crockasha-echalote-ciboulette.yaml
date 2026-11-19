@@ -55,37 +55,44 @@ recipe:
 
   steps:
     - id: cuire-kasha
+      uses: [kasha-cuit-ing]
       action: "Cuire le kasha 12 min à l'eau bouillante salée, l'égoutter et le laisser refroidir dans la passoire"
       needs: [simmer]
       time_min: 15
       attended: false
       # Étape sautée quand le kasha vient de la veille (`accepts`).
     - id: dorer-echalotes
+      uses: [echalote, huile-olive]
       action: "Détailler les échalotes en petits cubes et les faire dorer à l'huile"
       needs: [pan-fry]
       time_min: 5
       attended: true
     - id: melanger
+      uses: [kasha-cuit-ing, oeufs, chevre-buche, ciboulette]
       action: "Réunir dans un saladier le kasha, les échalotes, l'œuf, le chèvre en petits cubes et la ciboulette finement ciselée, puis malaxer"
       needs: []
       time_min: 4
     - id: assaisonner-appareil
+      uses: [sel, poivre]
       action: "Saler et poivrer l'appareil"
       needs: []
       time_min: 1
       seasoning_gate: true
     - id: faconner
+      uses: [farine-complete]
       action: "Façonner 12 croquettes à la main en les roulant dans la farine ; se mouiller les mains au fur et à mesure évite que la pâte colle"
       needs: []
       time_min: 8
       kid: {age_min_months: 30, task: "rouler les croquettes dans l'assiette de farine"}
     - id: dorer-croquettes
+      uses: [huile-olive]
       action: "Faire dorer les croquettes sur toutes leurs faces dans une grande poêle, avec un fond d'huile"
       astuce: "Jusqu'à ce qu'elles soient croustillantes."
       needs: [pan-fry]
       time_min: 10
       attended: true
     - id: egoutter
+      uses: []
       action: "Débarrasser sur du papier absorbant et servir avec une salade de saison"
       needs: []
       time_min: 2

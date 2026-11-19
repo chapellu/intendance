@@ -51,22 +51,26 @@ recipe:
 
   steps:
     - id: emincer-avoine
+      uses: [poireau, oignon]
       action: "Émincer finement l'oignon et le poireau"
       needs: []
       time_min: 3
     - id: dorer-les-sucs-avoine
+      uses: [jambon-cru, huile-olive]
       action: "Les faire revenir à l'huile d'olive en petite cocotte, ajouter le jambon en lanières et laisser cuire"
       astuce: "Jusqu'à ce que les sucs commencent à dorer : c'est eux qui feront le goût du mijoté."
       needs: [pan-fry]
       time_min: 7
       attended: true
     - id: mijoter-avoine
+      uses: [cereale-cuite, champignons-conserve, eau]
       action: "Ajouter les champignons rincés et égouttés ainsi que l'avoine, mouiller du verre d'eau, puis mijoter 10 min"
       astuce: "S'il reste du liquide, c'est normal : il épaissira en sauce crémeuse."
       needs: [simmer]
       time_min: 10
       attended: false
     - id: reposer-une-nuit
+      uses: []
       action: "Laisser au frais jusqu'au lendemain"
       needs: []
       time_min: 1
@@ -74,6 +78,7 @@ recipe:
       attente_raison: "cuisiné le soir, réchauffé et emporté brûlant le matin suivant"
       attended: false
     - id: rechauffer-et-partir
+      uses: []
       action: "Réchauffer le plat et le verser BRÛLANT dans une lunchbox isotherme"
       needs: [reheat]
       time_min: 6

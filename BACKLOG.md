@@ -317,7 +317,8 @@ Un ticket = un commit qui laisse l'app fonctionnelle. `[ ]` à faire,
       porte `maj`, un horodatage, et la fenêtre de sept jours glisse chaque
       jour : « avant lundi » ne veut rien dire ici).
 
-- [ ] **Le catalogue n'a pas de nom lisible pour ce qu'il produit.** Un `emit`
+- [x] **Le catalogue n'a pas de nom lisible pour ce qu'il produit.** (Fait en
+      T194, voir plus bas.) Un `emit`
       porte un `type` (`lentilles-vertes-cuites`, `puree-lentilles-carottes`) et
       une catégorie d'équilibre porte un id (`legumineuse`) — jamais de libellé.
       Les écrans les affichent donc tels quels, identifiants compris : « apporte
@@ -6579,3 +6580,102 @@ Fait :
       Nouveaux ids : `porc-saute`, `saucisses` (boucherie), `blettes`
       (primeur), `noix-coco-rapee`, `crozets`, `pate-amande`, `cranberries`,
       `gingembre-confit`, `amandes`, `gomme-guar` (épicerie).
+
+## T193 — En cuisine, chaque étape rappelle ses quantités
+
+- [x] **T193 — 82 plats sur 207 ne disaient aucune quantité au moment du
+      geste (18/11).** Retour du foyer, plusieurs fois : « on te dit mélanger
+      l'eau et la farine, mais on ne te donne pas les quantités, donc tu es
+      obligé de rouvrir la liste des ingrédients — ou je reste sur la liste et
+      je ne suis pas le mode en cuisine ». Le mécanisme existait depuis T113
+      (`uses` × le facteur de la fiche), mais 82 plats — 404 étapes sur 1 156 —
+      n'avaient jamais reçu leur `uses:`, et depuis becb785 l'écran se taisait
+      sous ces étapes au lieu de renvoyer à la liste.
+
+      **Les 404 étapes ont leur lien.** Proposition automatique (l'ingrédient
+      nommé dans la consigne), puis relecture recette par recette : « tous les
+      ingrédients », « le reste », les assaisonnements à part, les doublons
+      retirés quand l'étape ne fait que réunir des choses déjà pesées. Deux
+      plats portaient deux lignes du même id (le sirop des petits pots glacés,
+      l'huile de la quiche) : elles ont reçu un `ref:`.
+
+      **`verifier.py` l'exige désormais** : une recette dont aucune étape ne
+      porte `uses:` est refusée. La couverture totale (chaque ligne employée
+      par au moins une étape) était déjà tenue.
+
+      **Les quantités s'écrivent comme on les lit** (`ecrireQuantite`) : la
+      fiche et l'étape disaient « 2 pièce », « 3 gousse », « 1000 ml » quand
+      le stock dit « 9 œufs » depuis T182. La pièce ne se dit plus (le nom
+      suit), 1 000 ml et 100 cl deviennent des litres, 1 000 g des kilos, et
+      le reste s'accorde à partir de 2.
+
+      **Et la liste de courses nomme l'unité de son placard** — le reste
+      ouvert de T184 : « il en reste 1, vous en voulez 3 » devient « il en
+      reste 1 kg, vous en voulez 3 kg » pour une denrée du fond.
+
+      Reste ouvert : une vingtaine de consignes écrivent une quantité en dur
+      (« prélever 40 cl de lait », « 150 g de parmesan ») qui ne suit pas les
+      parts quand le plat est mis à l'échelle — la plupart sont des tailles de
+      pièce ou de récipient et doivent rester fixes ; les autres demanderaient
+      une quantité calculée DANS la phrase, que le modèle ne sait pas écrire.
+
+## T194 — Ce qu'un plat produit a un nom, sur tous les écrans
+
+- [x] **T194 — « pate vegetal », « carcasse volaille », « reste roti » (18/11).**
+      Vu sur une capture de l'année simulée n° 12 : le frigo affichait le type
+      émis dé-tiretisé, sans accents — le stock, le cockpit, les repas, le
+      plancher, la sortie et le répertoire passaient tous par le même
+      `nomDuType`. Ouvert depuis T15. `typesLisibles` est publié par
+      l'export : le titre du plat (sans sa majuscule, il se lit en milieu de
+      phrase) quand un seul plat émet le type et n'émet que lui, sinon un
+      libellé de `types.yaml` (35 bases et types partagés : « pâté de
+      lentilles », « carcasse de poulet », « bouillon de pot-au-feu »).
+      `verifier.py` refuse un type émis sans nom ; `lireCatalogue` les
+      retient, `nomDuType` les lit.
+
+      **Et les denrées de l'étagère** : 117 ids s'affichaient dé-tiretisés
+      faute d'une recette qui les écrive tels quels (« huile olive », « boeuf
+      hache », « porc saute »). `rayons.yaml` porte un nom pour chacun
+      (`noms:`), qui prime sur le mot des recettes.
+
+      **Et les quantités des lots** s'arrondissent et s'écrivent comme en
+      cuisine : « 350 g » de piperade, plus « 354,2 g ».
+
+## L'année simulée n° 12 — T193 et T194
+
+Le harnais avait dérivé de l'écran depuis l'année n° 11 (fin octobre) et ne
+jouait plus juste : « À la maison » n'existait plus (7e1b7b2), les zones
+s'ouvrent par le plan (T141), un reste se retire par « Fini », et un jour
+sans rien à acheter n'a pas de titre de rayon. Premier passage de l'année
+n° 12, avec ces trous : 382 plats cuits, 274 restes mangés, 90 jetés (17 kg).
+Mais 197 restes mangés au réel n'ont pas pu être retirés de l'app (le
+bouton avait changé de nom), et 16 jours de courses ont planté : ces
+chiffres mesurent le harnais autant que l'app. Le harnais est réparé (commit
+à part) et l'année rejouée.
+
+**L'année rejouée (365 jours, 0 plantage), sur le code de T193–T194 :** 406
+plats cuits, 295 restes mangés, 89 jetés (16,8 kg), 13 perdus dans les
+pannes. Signalements : « reste sans lot » 197 → 85, « chaîne crue
+disponible » 76 → 60.
+
+**Ce que l'année a trouvé et qui est réparé ici :** les noms bruts à l'écran
+(T194 : types émis, denrées, quantités de lot), et l'export non déterministe
+(`chainage.facteur_max_vaisselle` parcourait un ensemble : à égalité de
+contenance, le récipient retenu changeait d'un lancement à l'autre, et
+`catalogue:verifie` pouvait échouer en CI sans qu'aucune donnée ait bougé).
+
+- [ ] **T195 — Ce que l'année n° 12 laisse ouvert.** Trois écarts entre le
+      monde du harnais et l'app, qu'il faut démêler avant de les imputer à
+      l'une ou à l'autre :
+      **60 « chaînes »** : l'app croit une base présente que le monde n'a
+      plus — lentilles vertes cuites (15), pâte à pizza (14), pâte brisée
+      (9), bouillon de pot-au-feu (5). Le harnais tient une base en parts,
+      l'app en grammes : à vérifier avant tout le reste.
+      **85 « restes sans lot »** : une partie au moins vient du harnais, qui
+      range tout le reste au frigo quand l'app en congèle une part (velouté,
+      chausson, octobre).
+      **89 restes jetés** (70 au frigo) : croquettes de kasha (9), poulet
+      cocotte (7), chausson (6), salade de lentilles et pasta con le sarde (5
+      chacun). Des plats à garde courte cuisinés en lot entier pour 2,75
+      parts : la question de T155, pour les plats qui n'ont pas de preneur
+      le lendemain midi.

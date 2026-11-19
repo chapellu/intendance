@@ -40,6 +40,11 @@ import type {
   Catalogue, Denree, Espace, GardeManger, PlanCuisine, RangementDuPlan, Urgence, Zone,
 } from "../model/types";
 import { fmt } from "../ui/format";
+import { echelle, ecrireQuantite } from "../model/calcul";
+
+/** Une quantité de lot dite comme une quantité de recette (T194). */
+const commeEnCuisine = (q: number, unite: string | null | undefined): string =>
+  unite ? ecrireQuantite(echelle(q, unite, 1), unite) : fmt(q);
 import { bandeEnMots, depuis, nomEspace } from "../ui/phrases";
 
 /** L'ordre des espaces, du plus consulté au moins. Le même partout : une
@@ -633,14 +638,15 @@ export function lots(
           l.born
               ? `cuisiné ${depuis(joursDepuis(aujourdhui, l.born))}`
               : "déjà là avant la semaine",
-          entame ? `reste ${fmt(l.reste!)} ${l.unite ?? ""}`.trim() : "",
+          entame ? `reste ${commeEnCuisine(l.reste!, l.unite)}` : "",
           l.epuise ? "mangé par la semaine" : "",
         ]
           .filter(Boolean)
           .join(" · "),
         // La bande en mots (T104) : « lunchbox » et « 2-repas » sont des
         // identifiants du corpus, pas du français.
-        quantite: q != null ? `${fmt(q)} ${l.unite ?? ""}`.trim() : bandeEnMots(l.band),
+        // T194 — arrondie et écrite comme en cuisine : « 350 g », pas « 354,2 g ».
+        quantite: q != null ? commeEnCuisine(q, l.unite) : bandeEnMots(l.band),
         fiabilite: fiabilite(l),
         epuise: l.epuise,
         ref: l.ref,

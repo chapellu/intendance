@@ -119,8 +119,38 @@ export function echelle(qty: number, unit: string, f: number): number {
   return Math.round(v * 10) / 10;
 }
 
+/**
+ * Une quantité de recette telle qu'on la lit en cuisine (T193).
+ *
+ * L'ÉCRAN ÉCRIVAIT L'UNITÉ DU CATALOGUE TELLE QUELLE : « 2 pièce », « 3 gousse »,
+ * « 1000 ml », « 1500 g ». Le stock dit « 9 œufs » depuis T182 ; la fiche et le
+ * mode en cuisine disaient « 2 pièce » à côté des œufs. Trois règles, rien de
+ * plus :
+ *
+ * - LA PIÈCE NE SE DIT PAS : le nom de la ligne suit, « 2 · œufs » ;
+ * - LE GROS SE CONVERTIT : 1 000 ml ou 100 cl → litres, 1 000 g → kg, et
+ *   l'inverse pour un kilo devenu trop petit (0,4 kg → 400 g) ;
+ * - LE RESTE S'ACCORDE à partir de 2, comme en français (« 1,5 gousse »,
+ *   « 2 gousses », « 2 petits bouquets ») ; les cuillères abrégées ne bougent
+ *   pas.
+ */
+export function ecrireQuantite(v: number, unit: string): string {
+  const n = (x: number): string => String(Math.round(x * 100) / 100).replace(".", ",");
+  if (unit === "pièce") return n(v);
+  if (unit === "ml" && v >= 1000) return `${n(v / 1000)} l`;
+  if (unit === "cl" && v >= 100) return `${n(v / 100)} l`;
+  if (unit === "g" && v >= 1000) return `${n(v / 1000)} kg`;
+  if (unit === "kg" && v < 1) return `${n(Math.round(v * 100) * 10)} g`;
+  if (v < 2 || unit.includes(".") || ["g", "kg", "ml", "cl", "l"].includes(unit)) return `${n(v)} ${unit}`;
+  const pluriel = unit
+    .split(" ")
+    .map((m) => (/[sx]$/.test(m) ? m : `${m}s`))
+    .join(" ");
+  return `${n(v)} ${pluriel}`;
+}
+
 export const echelleTexte = (ing: Ingredient, f: number): string =>
-  `${String(echelle(ing.qty, ing.unit, f)).replace(".", ",")} ${ing.unit}`;
+  ecrireQuantite(echelle(ing.qty, ing.unit, f), ing.unit);
 
 /**
  * Un accompagnement sous la forme que lisent `provenance` et `echelleTexte`.

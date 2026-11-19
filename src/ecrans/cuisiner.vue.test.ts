@@ -189,9 +189,10 @@ describe("à table, à côté", () => {
     // 300, qui est ce que le LOT d'escalopes réclame en champignons.
     expect(aTable(jeu, escalopes, 2.5).map((l) => [l.nom, l.quantite])).toEqual([
       ["riz", "130 g"],
-      ["salade verte", "0,5 pièce"],
+      ["salade verte", "0,5"],
     ]);
-    expect(aTable(jeu, escalopes, 6).map((l) => l.quantite)).toEqual(["300 g", "1 pièce"]);
+    // T193 — la pièce ne se dit pas : le nom de la ligne suit.
+    expect(aTable(jeu, escalopes, 6).map((l) => l.quantite)).toEqual(["300 g", "1"]);
   });
 
   test("et dit d’où ça sort, comme pour un ingrédient", () => {

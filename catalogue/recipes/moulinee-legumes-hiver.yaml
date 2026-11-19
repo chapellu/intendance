@@ -37,21 +37,25 @@ recipe:
 
   steps:
     - id: tailler
+      uses: [celeri-rave, navet-primeur, poireau, oignon]
       action: "Éplucher et couper le céleri-rave et le navet en cubes, émincer l'oignon et les blancs de poireau"
       needs: []
       time_min: 10
       kid: {age_min_months: 30, task: "mettre les cubes de légumes dans la casserole"}
     - id: cuire
+      uses: [eau]
       action: "Tout réunir dans une casserole avec l'eau, couvrir et cuire 25 min à petits bouillons"
       needs: [simmer-large]
       time_min: 25
       attended: false
     - id: beurrer
+      uses: [beurre, poivre]
       action: "Hors du feu, ajouter le beurre demi-sel et un peu de poivre du moulin"
       needs: []
       time_min: 1
       seasoning_gate: true
     - id: mixer
+      uses: []
       action: "Mixer soigneusement jusqu'à une texture bien lisse"
       needs: [blend-smooth]
       time_min: 3

@@ -44,19 +44,23 @@ recipe:
 
   steps:
     - id: mixer-le-tofu
+      uses: [tofu-lactofermente, huile-olive, piment-espelette, sel, poivre]
       action: "Mettre le tofu en cubes avec l'huile, le sel, le poivre et le piment dans le bol du robot"
       needs: []
       time_min: 2
       seasoning_gate: true
     - id: rendre-cremeux
+      uses: []
       action: "Mixer soigneusement jusqu'à consistance crémeuse"
       needs: [blend-smooth]
       time_min: 2
     - id: concasser
+      uses: [pistaches, olives-vertes]
       action: "Ajouter pistaches et olives, puis donner 2 ou 3 impulsions seulement pour les hacher en gros morceaux"
       needs: [chop-coarse]
       time_min: 1
     - id: mettre-en-bocaux
+      uses: []
       action: "Transférer dans deux petits bocaux individuels bien fermés et mettre au frais"
       astuce: "Un bocal par repas."
       needs: []

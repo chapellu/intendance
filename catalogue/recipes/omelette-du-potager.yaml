@@ -46,39 +46,46 @@ recipe:
 
   steps:
     - id: tailler-racines
+      uses: [pomme-de-terre, navet-primeur, carottes, cebette]
       action: "Brosser pommes de terre, navet et carottes sous l'eau, les tailler en petits morceaux et les essuyer au torchon ; émincer la cébette"
       needs: []
       time_min: 10
       kid: {age_min_months: 30, task: "brosser les légumes sous l'eau"}
     - id: cuire-racines
+      uses: [huile-olive, fleur-de-sel]
       action: "Faire revenir les racines à l'huile d'olive dans une grande poêle en fonte ou céramique, saler, couvrir et compter 10 min en remuant de temps en temps"
       astuce: "Surtout pas d'inox : il accroche trop pour cette cuisson-là."
       needs: [pan-fry]
       time_min: 10
       attended: false
     - id: preparer-verts
+      uses: [petits-pois, pois-gourmands, pousses-epinards]
       action: "Pendant ce temps : écosser les petits pois, équeuter les pois gourmands, laver et essorer les pousses d'épinards"
       needs: []
       time_min: 8
       parallel_with: cuire-racines
       kid: {age_min_months: 30, task: "écosser les petits pois"}
     - id: ajouter-verts
+      uses: []
       action: "Ajouter épinards, pois gourmands et petits pois, mélanger, saler légèrement, couvrir et compter 5 min de plus"
       needs: [pan-fry]
       time_min: 5
       attended: false
     - id: battre-oeufs
+      uses: [oeufs, farine, fromage-rape, ciboulette, poivre]
       action: "Pendant ce temps : battre les œufs avec la farine, le fromage râpé et la ciboulette ciselée, saler et poivrer"
       needs: []
       time_min: 4
       parallel_with: ajouter-verts
       kid: {age_min_months: 30, task: "casser et battre les œufs"}
     - id: cuire-omelette
+      uses: []
       action: "Verser sur les légumes, donner quelques coups de cuillère, couvrir et cuire 5 min à feu doux"
       needs: [pan-fry]
       time_min: 5
       attended: false
     - id: reposer
+      uses: []
       action: "Couper le feu et laisser reposer 10 min sans découvrir : l'omelette finit de prendre et se décolle seule du fond"
       needs: []
       time_min: 10

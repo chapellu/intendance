@@ -57,25 +57,30 @@ recipe:
 
   steps:
     - id: hacher-la-terrine
+      uses: [poelee-legumes-verts, poulet-filets, son-avoine, citron]
       action: "Mixer par brèves impulsions tous les ingrédients, de façon à conserver des petits morceaux"
       needs: [chop-coarse]
       time_min: 4
     - id: saler-terrine
+      uses: [sel, poivre-5-baies]
       action: "Saler et poivrer l'appareil"
       needs: []
       time_min: 1
       seasoning_gate: true
     - id: remplir-les-bocaux
+      uses: []
       action: "Répartir entre deux bocaux de 50 cl et les déposer sur la grille du four, COUVERCLE OUVERT"
       needs: []
       time_min: 3
     - id: cuire-en-bocal
+      uses: []
       action: "Allumer le four à 150 °C en chaleur tournante et cuire 50 min"
       astuce: "Ne jamais dépasser 150 °C, et toujours enfourner à four FROID : sinon les bocaux éclatent."
       needs: [bake]
       time_min: 50
       attended: false
     - id: fermer-les-bocaux
+      uses: []
       action: "Fermer les pots à la sortie du four et laisser tiédir"
       needs: []
       time_min: 2

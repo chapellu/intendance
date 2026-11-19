@@ -46,10 +46,12 @@ recipe:
 
   steps:
     - id: tailler-salade-lentilles
+      uses: [jambon, tomates-cerises]
       action: "Découper le talon de jambon en petits cubes et les tomates-cerises en deux"
       needs: []
       time_min: 3
     - id: brasser-salade-lentilles
+      uses: [lentilles-vertes-cuites, persil, huile-olive, vinaigre, levure-biere, moutarde, sel, poivre-5-baies]
       action: "Saler, puis mélanger avec les lentilles et tous les autres ingrédients en brassant bien le tout"
       needs: []
       time_min: 2

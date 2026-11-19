@@ -43,31 +43,37 @@ recipe:
 
   steps:
     - id: rincer-l-algue
+      uses: [laitue-de-mer]
       action: "Rincer la laitue de mer dans trois eaux différentes"
       astuce: "Elle est conservée au sel, et ce rinçage n'est pas facultatif."
       needs: []
       time_min: 4
     - id: tailler-saumon-tm
+      uses: [poireau, oignon, carottes]
       action: "Émincer finement poireau et oignon, tailler la carotte en petits cubes"
       needs: []
       time_min: 3
     - id: dorer-les-legumes
+      uses: [huile-olive]
       action: "Les faire revenir à l'huile d'olive dans une petite cocotte"
       astuce: "Jusqu'à légère coloration des sucs."
       needs: [pan-fry]
       time_min: 5
       attended: true
     - id: saler-mouiller
+      uses: [saumon, vin-blanc-sec, sel, poivre]
       action: "Ajouter le saumon, mouiller au vin blanc, saler et poivrer"
       needs: []
       time_min: 2
       seasoning_gate: true
     - id: mijoter-saumon
+      uses: []
       action: "Couvrir et mijoter une dizaine de minutes, jusqu'à cuisson complète du poisson"
       needs: [simmer]
       time_min: 10
       attended: false
     - id: hacher-rillettes
+      uses: [creme, ciboulette]
       action: "Hors du feu, ajouter crème, ciboulette ciselée et laitue de mer, puis hacher grossièrement en gardant des petits morceaux"
       needs: [chop-coarse]
       time_min: 3

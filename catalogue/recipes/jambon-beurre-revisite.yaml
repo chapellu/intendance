@@ -51,19 +51,23 @@ recipe:
 
   steps:
     - id: trancher-le-roti
+      uses: [roti-froid]
       action: "Découper le rôti en tranches très fines"
       needs: []
       time_min: 4
     - id: laver-la-verdure
+      uses: [radis, jeunes-pousses]
       action: "Laver les radis et les jeunes pousses"
       needs: []
       time_min: 3
       kid: {age_min_months: 30, task: "laver les radis dans la passoire"}
     - id: monter-le-sandwich
+      uses: [baguette, beurre, cornichons]
       action: "Ouvrir la baguette, retirer un peu de mie, beurrer les deux faces, puis disposer la salade, les radis émincés et les tranches de rôti"
       needs: []
       time_min: 4
     - id: saler-sandwich
+      uses: [sel, poivre]
       action: "Saler et poivrer, refermer, bien emballer et garder au frais"
       needs: []
       time_min: 2

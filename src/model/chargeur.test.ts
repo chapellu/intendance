@@ -63,8 +63,16 @@ describe("`uses` : l'absence est une donnée, pas un vide", () => {
   // écran qui confond les deux promet qu'une étape ne consomme rien alors
   // qu'on l'ignore — le mensonge plausible que ce chargeur existe pour
   // attraper. `export_json.py` l'écrit déjà en commentaire ; ici on le tient.
-  test("le chargeur garde les deux, et le corpus contient les deux", () => {
-    expect(etapes.some((e) => e.uses === null)).toBe(true);
+  // T193 — LE CORPUS N'A PLUS DE `null`. 82 plats n'avaient aucun `uses`, et
+  // le mode en cuisine renvoyait à la liste d'ingrédients pour eux (« on te
+  // dit mélanger l'eau et la farine, mais on ne te donne pas les quantités »).
+  // `verifier.py` l'exige désormais ; le type garde `null` pour un plat venu
+  // d'ailleurs, et `SANS_USES` le dit toujours à l'écran.
+  test("toutes les étapes du corpus disent ce qu'elles emploient, `[]` compris", () => {
+    const sans = catalogue.plats.flatMap((p) =>
+      p.steps.filter((e) => e.uses === null).map((e) => `${p.id}/${e.id}`),
+    );
+    expect(sans).toEqual([]);
     expect(etapes.some((e) => e.uses?.length === 0)).toBe(true);
   });
 
