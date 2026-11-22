@@ -926,8 +926,10 @@ describe("ce qu'on veut toujours avoir, au placard", () => {
   test("l'apéro se dit, parce que rien d'autre ne le dirait", () => {
     // Ces six denrées ne sont citées par aucune recette : hors de cette ligne,
     // elles n'ont aucune raison lisible d'être dans une liste de courses.
+    // T196 : les tomates séchées en bocal, depuis que les graines de courge
+    // ont une recette (les crackers du blog).
     const vue = vueDesPlanchersDenrees(catalogue, placard(), [
-      { ingredient: "graines-courge", niveau: 2 },
+      { ingredient: "tomates-sechees", niveau: 2 },
     ]);
     expect(vue.poses[0]!.usage).toBe("pour l’apéro");
   });

@@ -6742,8 +6742,38 @@ reformulé comme ceux du livre.
       lignes ajoutées depuis l'id ; ils passent par `nomDeLaDenree` (T194).
       `ranger-deplacer.spec.ts` épinglait l'ancienne graphie, il dit la bonne.
 
-- [ ] **T196b — Tartes et cakes salés, entrées, pains.** 22 + 12 + 13
-      articles.
+- [x] **T196b — Tartes et cakes salés, entrées, pains (22/11).** 55 plats
+      de plus : 30 tartes, pizzas et cakes salés (dont neuf du dossier
+      céleri-rave de mars 2026 et quatre des « fromages » végétaux), 11
+      entrées, 14 pains et brioches, et la confiture express d'abricots au
+      miel qui accompagne l'une d'elles. Catalogue : 262 → 317 plats, 0 erreur.
+
+      **TROIS ARÊTES DE PLUS, TOUTES SUR DES RESTES QUI EXISTAIENT.** Le
+      mug-cake salé (80 g) et les petits pains au potimarron (250 g) prennent la
+      `puree-potimarron` de T196a ; le céleri façon « pommes tapées » prend les
+      `legumes-pot-au-feu` (c'est pour eux que l'autrice l'a inventé) ; le
+      hachis de légumes-racines prend du `poulet-cuit`, facultatif. Le
+      sandwich-cake laisse deux de ses six blinis, du même type que les blinis
+      de 2014.
+
+      **ÉCARTÉS, ET L'INDEX LE DIT.** La glace à la tomate crue et le granité
+      au concombre demandent un blender qui pile la glace ; la tarte
+      printanière à la faisselle, la pâte brisée des fainéants et la tourte la
+      plus simple du monde sont déjà au catalogue depuis le livre, comme le
+      marbré aux légumes-racines. Le pain aux algues de 2011 n'a pas d'étapes.
+
+      **UN APÉRO QUI CUISINE.** Les crackers de petit épeautre mettent des
+      graines de courge : ce sont celles du sachet de la demi-lune, qui perdent
+      donc leur `usage: apero`, comme les pignons en septembre. Leurs tomates
+      séchées sont « nature, pas à l'huile » : un autre produit
+      (`tomates-sechees-nature`), le bocal garde l'usage. Les tests T40 parlent
+      désormais des tomates séchées ; le compte des plats à l'épeautre passe à
+      34.
+
+      Le robot pétrisseur des brioches devient le pétrissage à la main (10 min,
+      dit l'autrice) ; la machine à pain de la brioche à l'huile d'olive n'est
+      pas encodée. Moules à savarin, à kouglof, à madeleines, moules hauts :
+      hors inventaire, rien ne le vérifie. 18 ingrédients nouveaux.
 - [ ] **T196c — Desserts, gourmandises, glaces, petit-déjeuner.** Environ
       160 articles, et c'est là que vivent les recettes invitées à écarter.
 - [ ] **T196d — Le reste** : bocaux et confitures, boissons, sauces, et les

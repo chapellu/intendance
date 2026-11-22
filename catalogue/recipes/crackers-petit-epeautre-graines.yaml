@@ -1,0 +1,68 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DES CRACKERS SANS BEURRE NI ŒUF : petit épeautre, huile, vin blanc, origan,
+# pistaches, graines de courge, sésame et tomates séchées. Le robot du blog
+# (quelques impulsions) n'est pas là : on mélange à la main, les graines
+# entières. Pré-découpés en losanges, détachés après cuisson. Des graines
+# fraîchement entamées, sinon elles rancissent.
+
+recipe:
+  id: crackers-petit-epeautre-graines
+  title: Crackers de petit épeautre aux graines, pistaches et tomates séchées
+  role: accompagnement
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Crackers végétaliens de petit épeautre aux graines, pistaches et tomates séchées », blog Saines Gourmandises, 12 juin 2017"
+    url: https://saines-gourmandises.fr/ca-croustille/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 5          # « pour 4 à 6 personnes »
+  time_min_total: 25        # 10 min de préparation + 12 min de cuisson
+  active_min: 12
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-petit-epeautre, name: farine T110 de petit épeautre, qty: 145, unit: g}
+    - {id: origan, name: origan séché (c. à c. rases), qty: 2, unit: c. à c., seasoning: true}
+    - {id: huile-olive, name: huile d'olive, qty: 40, unit: g}
+    - {id: vin-blanc-sec, name: vin blanc sec, qty: 60, unit: g}
+    - {id: pistaches, name: pistaches salées décortiquées, qty: 25, unit: g}
+    - {id: graines-courge, name: graines de courge, qty: 25, unit: g}
+    - {id: tomates-sechees-nature, name: "tomates séchées nature (pas à l'huile)", qty: 25, unit: g}
+    - {id: sesame, name: sésame blond ou noir, qty: 25, unit: g}
+    - {id: fleur-de-sel, name: fleur de sel (demi-c. à c.), qty: 0.5, unit: c. à c., seasoning: true}
+
+  steps:
+    - id: pate
+      action: "Préchauffer le four à 180 °C ; mélanger farine, sel, origan, huile et vin, puis graines, pistaches et tomates séchées en morceaux, et rassembler en boule"
+      needs: []
+      uses: [farine-petit-epeautre, fleur-de-sel, origan, huile-olive, vin-blanc-sec, pistaches, graines-courge, sesame, tomates-sechees-nature]
+      time_min: 6
+      kid: {age_min_months: 30, task: "couper les tomates séchées aux ciseaux"}
+    - id: etaler
+      action: "Étaler finement sur une plaque chemisée et pré-découper des losanges de 3 cm à la roulette"
+      needs: []
+      uses: []
+      time_min: 4
+    - id: cuire
+      action: "Cuire 12 min, laisser tiédir, détacher les crackers et les laisser refroidir sur une grille"
+      astuce: "Encore mous une fois froids ? 5 min de plus au four."
+      needs: [bake]
+      uses: []
+      time_min: 15
+      attended: false
+
+  emits: []
+
+  plan_b: []

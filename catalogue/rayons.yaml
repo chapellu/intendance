@@ -119,6 +119,10 @@ rayons:
     - pissenlit
     - feves
     - patidou
+    - roquette
+    - patate-douce
+    - radis-long
+    - graines-germees
     # Arrivés avec les recettes de printemps de Chioca (p. 26–34).
     - cebette
     - ciboulette
@@ -246,6 +250,9 @@ rayons:
     - couenne-porc
     - jarret-porc-demi-sel
     - veau-blanquette
+    - coppa
+    - magret-fume
+    - agneau-hache
     # Arrivés avec l'hiver de Chioca (p. 193 et 197, T192).
     - porc-saute
     - saucisses
@@ -310,6 +317,7 @@ rayons:
     - mozzarella
     - mascarpone
     - beaufort
+    - oeufs-caille
     # `yaourt-soja` est un id d'INGRÉDIENT, distinct du type de chaînage
     # `yaourt-soja` qu'émet la p. 159 : on peut l'acheter ou le cuisiner.
     - yaourt-soja
@@ -326,6 +334,8 @@ rayons:
     - pate-brisee
     - pate-feuilletee
     - feuilles-brick
+    - tofu-soyeux
+    - margarine
     # `tofu-lactofermente` reste DISTINCT de `tofu-fume` : l'autrice le choisit
     # pour sa digestibilité, pas pour son goût, et les deux ne se remplacent pas.
     - tofu-lactofermente
@@ -343,6 +353,13 @@ rayons:
     - farine-orge
     - nouilles-oeufs
     - miso-orge
+    - sesame
+    - biere-blonde
+    - pesto
+    - baies-roses
+    - porto
+    - huile-essentielle-citron
+    - tomates-sechees-nature
     # Arrivés avec l'hiver de Chioca (p. 154 à 207, T192). `pate-amande` est la
     # pâte d'amande de la p. 214, achetée tant que la page n'est pas encodée.
     - noix-coco-rapee
@@ -574,6 +591,7 @@ placard:
   # Arrivées avec le blog Saines Gourmandises (T196).
   - piment-cayenne
   - muscade
+  - ail-semoule
   - glacons        # se font, ne s'achètent pas
   - eau            # ne s'achète pas ; listé pour ne pas polluer la liste
 
@@ -584,10 +602,14 @@ placard:
 noms:
   agar-agar: agar-agar
   agneau-collier: collier d'agneau
+  agneau-hache: agneau haché
+  ail-semoule: ail en semoule
   anis-vert: anis vert
   arrow-root: arrow-root
   asperges-vertes: asperges vertes
+  baies-roses: baies roses
   beaufort: beaufort
+  biere-blonde: bière blonde
   biscuits-cuillere: biscuits à la cuillère
   ble-lentilles: mélange blé-lentilles
   boeuf-a-braiser: bœuf à braiser
@@ -615,6 +637,7 @@ noms:
   confiture-mirabelle: confiture de mirabelles
   confiture-orange: confiture d'oranges
   confiture-prune: confiture de prunes
+  coppa: coppa
   couenne-porc: couenne de porc
   cracotte: cracottes
   creme-avoine: crème d'avoine
@@ -643,10 +666,12 @@ noms:
   graines-coriandre: graines de coriandre
   graines-courge: graines de courge
   graines-fenouil: graines de fenouil
+  graines-germees: graines germées
   graines-tournesol: graines de tournesol
   gruau-avoine: gruau d'avoine
   herbes-provence: herbes de Provence
   huile-coco: huile de coco
+  huile-essentielle-citron: huile essentielle de citron
   huile-essentielle-orange: huile essentielle d'orange
   huile-olive: huile d'olive
   huile-pepin-raisin: huile de pépins de raisin
@@ -665,9 +690,11 @@ noms:
   levure-biere: levure de bière
   levure-boulangere: levure de boulanger
   mache: mâche
+  magret-fume: magret de canard fumé
   maizena: Maïzena
   maquereau-fume: maquereau fumé
   maquereaux-boite: maquereaux en boîte
+  margarine: margarine
   miel-acacia: miel d'acacia
   miso-blanc: miso blanc
   miso-orge: miso d'orge
@@ -675,7 +702,9 @@ noms:
   noix-coco-rapee: noix de coco râpée
   nouilles-oeufs: nouilles aux œufs
   oeufs: œufs
+  oeufs-caille: œufs de caille
   pain-levain: pain au levain
+  patate-douce: patate douce
   pate-a-tartiner: pâte à tartiner
   pate-amande: pâte d'amande
   pates-lasagne: pâtes à lasagne
@@ -701,7 +730,9 @@ noms:
   puree-cajou: purée de cajou
   puree-mousline: purée Mousline
   puree-noisette: purée de noisette
+  radis-long: radis long
   ratatouille-boite: ratatouille en boîte
+  roquette: roquette
   roti-porc: rôti de porc
   roti-veau: rôti de veau
   rouelle-veau: rouelles de veau
@@ -709,6 +740,7 @@ noms:
   sardines-boite: sardines en boîte
   sauce-bolognaise-bocal: sauce bolognaise en bocal
   saucisson-sec: saucisson sec
+  sesame: sésame
   sirop-agave: sirop d'agave
   sirop-erable: sirop d'érable
   sirop-imbibage: sirop d'imbibage
@@ -716,10 +748,12 @@ noms:
   sucre-blanc: sucre blanc
   terrine-campagne: terrine de campagne
   thon-boite: thon en boîte
+  tofu-soyeux: tofu soyeux
   tomates-cerises: tomates cerises
   tomates-cerises-confites: tomates cerises confites
   tomates-pelees: tomates pelées
   tomates-sechees: tomates séchées
+  tomates-sechees-nature: tomates séchées nature
   tomme-savoie: tomme de Savoie
   veau-blanquette: veau à blanquette
   vert-de-blette: vert de blette

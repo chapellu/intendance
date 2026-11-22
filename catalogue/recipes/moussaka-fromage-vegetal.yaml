@@ -1,0 +1,96 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE MOUSSAKA SANS FRITURE NI FROMAGE : aubergines grillées au four au
+# pinceau d'huile, farce d'agneau et de bœuf hachés, hachis d'oignon et
+# d'herbes, sauce tomate et un « fromage » d'arrow-root, miso et tahin. Plat
+# de 22 cm (un plat à gratin du foyer convient).
+
+recipe:
+  id: moussaka-fromage-vegetal
+  title: Moussaka au « fromage » fondant végétal
+  format: gratin
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Les fromages végétaux fait-maison », extrait de « Cuisiner sans lait », blog Saines Gourmandises, 20 janvier 2016"
+    url: https://saines-gourmandises.fr/ca-peut-vraiment-etre-super-bon/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes »
+  time_min_total: 95        # 25 min + 20 min + 50 min
+  active_min: 25
+
+  apports:
+    proteine: viande-rouge
+    feculent: aucun
+    legumes: [solanacee, allium]
+    profil: four
+    origine: grec
+
+  ingredients:
+    - {id: agneau-hache, name: agneau haché par le boucher, qty: 250, unit: g}
+    - {id: boeuf-hache, name: bœuf haché, qty: 250, unit: g}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: persil, name: persil frais, qty: 1, unit: bouquet}
+    - {id: sarriette, name: "sarriette, marjolaine ou origan", qty: 3, unit: brin}
+    - {id: sel, ref: sel-farce, name: bonne pincée de sel (farce), qty: 1, unit: bonne pincée, seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 1, unit: pincée, seasoning: true}
+    - {id: eau, name: "eau (20 cl + 2 c. à s.)", qty: 23, unit: cl}
+    - {id: arrow-root, name: arrow-root, qty: 10, unit: g}
+    - {id: ail, name: ail frais, qty: 3, unit: gousse}
+    - {id: miso-blanc, name: miso blanc (c. à c. bombée), qty: 1, unit: c. à c.}
+    - {id: levure-biere, name: levure de bière maltée (c. à c. bombée), qty: 1, unit: c. à c.}
+    - {id: huile-olive, ref: huile-fromage, name: huile d'olive (fromage), qty: 2, unit: c. à s.}
+    - {id: tahin, name: tahin, qty: 2, unit: c. à s.}
+    - {id: fleur-de-sel, name: fleur de sel (c. à c. rase), qty: 1, unit: c. à c., seasoning: true}
+    - {id: aubergine, name: aubergines, qty: 700, unit: g}
+    - {id: sauce-tomate, name: sauce tomate cuisinée, qty: 300, unit: g}
+    - {id: huile-olive, ref: huile-aubergines, name: huile d'olive (aubergines), qty: 4, unit: c. à s.}
+    - {id: sel, ref: sel-aubergines, name: sel (aubergines), qty: 2, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: riz, name: riz basmati complet, qty: 250, unit: g}
+
+  steps:
+    - id: aubergines
+      action: "Chauffer le four à 200 °C ; poser les aubergines en tranches de 1 cm sur un papier huilé et salé, huiler et saler le dessus, et rôtir 20 min"
+      needs: [bake]
+      uses: [aubergine, huile-aubergines, sel-aubergines]
+      time_min: 28
+      attended: false
+    - id: fromage
+      action: "Fouetter à froid en casserole tous les ingrédients du « fromage » avec 20 cl d'eau et porter à ébullition en fouettant ; éteindre dès qu'il épaissit"
+      needs: [simmer]
+      uses: [eau, arrow-root, ail, miso-blanc, levure-biere, huile-fromage, tahin, fleur-de-sel]
+      time_min: 5
+      parallel_with: aubergines
+    - id: hachis
+      action: "Hacher l'oignon et les herbes avec un peu de sel et de poivre"
+      needs: [chop-coarse]
+      uses: [oignon, persil, sarriette, sel-farce, poivre]
+      time_min: 5
+      parallel_with: aubergines
+    - id: monter
+      action: "Monter dans un plat : aubergines, viande tassée, hachis, moitié du fromage, aubergines, sauce tomate, et le reste du fromage allongé d'eau"
+      astuce: "Deux cuillerées d'eau rendent le fromage du dessus assez liquide pour napper."
+      needs: [gratin-vessel]
+      uses: [agneau-hache, boeuf-hache, sauce-tomate]
+      time_min: 8
+    - id: cuire
+      action: "Baisser le four à 150 °C et cuire 50 min"
+      needs: [bake]
+      uses: []
+      time_min: 50
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: moussaka-fromage-vegetal
+      qty_band: 1-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

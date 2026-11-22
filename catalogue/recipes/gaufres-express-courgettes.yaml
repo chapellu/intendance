@@ -1,0 +1,75 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DES GAUFRES SALÉES DE PIQUE-NIQUE : courgette hachée avec ail, persil et
+# basilic, farine, œufs, parmesan, vin blanc. Le robot n'est pas là : la
+# courgette se râpe et les herbes se hachent au couteau.
+
+recipe:
+  id: gaufres-express-courgettes
+  title: Gaufres express aux courgettes
+  format: galettes
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Gaufres express aux courgettes », blog Saines Gourmandises, 4 juillet 2019"
+    url: https://saines-gourmandises.fr/pique-nique-soir-jardin/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 3          # « environ 8 grandes gaufres »
+    pieces: 8
+  time_min_total: 20        # 5 min de préparation + 10 min de cuisson
+  active_min: 20
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: [cucurbitacee]
+    profil: rapide
+    origine: francais
+
+  ingredients:
+    - {id: courgettes, name: courgette bien fraîche, qty: 200, unit: g}
+    - {id: parmesan, name: parmesan râpé, qty: 85, unit: g}
+    - {id: ail, name: ail, qty: 1, unit: gousse}
+    - {id: persil, name: persil, qty: 3, unit: brin}
+    - {id: basilic, name: basilic, qty: 3, unit: brin}
+    - {id: farine-complete, name: farine complète ou semi-complète, qty: 140, unit: g}
+    - {id: oeufs, name: œufs, qty: 3, unit: pièce}
+    - {id: poudre-a-lever, name: poudre à lever (demi-sachet), qty: 0.5, unit: sachet}
+    - {id: vin-blanc-sec, name: vin blanc sec, qty: 10, unit: cl}
+    - {id: sel, name: grosse pincée de sel, qty: 1, unit: bonne pincée, seasoning: true}
+    - {id: huile-olive, name: huile pour le gaufrier, qty: 1, unit: c. à s.}
+
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: hacher
+      action: "Râper la courgette et hacher persil, basilic et ail"
+      needs: [chop-coarse]
+      uses: [courgettes, persil, basilic, ail]
+      time_min: 5
+    - id: pate
+      action: "Y mélanger la farine, les œufs, le parmesan, la levure, le vin blanc et le sel, sans chercher une pâte lisse"
+      needs: []
+      uses: [farine-complete, oeufs, parmesan, poudre-a-lever, vin-blanc-sec, sel]
+      time_min: 3
+      kid: {age_min_months: 30, task: "casser les œufs et mélanger"}
+    - id: cuire
+      action: "Huiler le gaufrier chaud au pinceau et cuire des petites louchées jusqu'à ce que les gaufres soient dorées et se détachent"
+      needs: [gaufrier]
+      uses: [huile-olive]
+      time_min: 12
+      attended: true
+
+  emits:
+    - kind: reste-plat
+      type: gaufres-express-courgettes
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: true}
+
+  plan_b: []

@@ -1,0 +1,67 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DES MUFFINS DE COURGETTE RÂPÉE AU PESTO, coiffés tièdes d'une rosace de
+# chèvre frais et de baies roses froissées. Une entrée.
+
+recipe:
+  id: cupcakes-courgettes-pesto-chevre
+  title: Cupcakes chaud-froid aux jeunes courgettes, pesto et chèvre frais
+  role: entree
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Cupcakes chaud-froid aux jeunes courgettes, pesto et chèvre frais », blog Saines Gourmandises, 2 septembre 2011"
+    url: https://saines-gourmandises.fr/cupcakes-chaud-froid-aux-jeunes-courgettes-pesto-et-chevre-frais/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4
+    pieces: 9               # « 8 à 10 cupcakes »
+  time_min_total: 45
+  active_min: 15
+
+  apports:
+    proteine: fromage
+    feculent: farine
+    legumes: [cucurbitacee]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: courgettes, name: jeunes courgettes, qty: 200, unit: g}
+    - {id: oeufs, name: œufs, qty: 3, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 3, unit: c. à s.}
+    - {id: farine-complete, name: farine complète, qty: 100, unit: g}
+    - {id: poudre-a-lever, name: levure (demi-sachet), qty: 0.5, unit: sachet}
+    - {id: parmesan, name: parmesan râpé, qty: 30, unit: g}
+    - {id: pesto, name: pesto, qty: 3, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+    - {id: chevre-frais, name: chèvre frais, qty: 400, unit: g}
+    - {id: baies-roses, name: quelques baies roses, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: pate
+      action: "Râper grossièrement les courgettes, y mêler œufs, sel, poivre, huile, parmesan et pesto, puis la farine mélangée à la levure"
+      needs: []
+      uses: [courgettes, oeufs, sel, poivre, huile-olive, parmesan, pesto, farine-complete, poudre-a-lever]
+      time_min: 6
+      kid: {age_min_months: 30, task: "mélanger la pâte"}
+    - id: cuire
+      action: "Verser dans des moules à muffins huilés et cuire 30 min à 175 °C"
+      needs: [bake]
+      uses: []
+      time_min: 30
+      attended: false
+    - id: garnir
+      action: "Coiffer les muffins tièdes d'une rosace de chèvre à la poche et froisser quelques baies roses par-dessus"
+      needs: []
+      uses: [chevre-frais, baies-roses]
+      time_min: 6
+
+  emits: []
+
+  plan_b: []

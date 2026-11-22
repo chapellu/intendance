@@ -1,0 +1,89 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE « PIFENOUILLÈRE » : pâte levée d'épeautre étalée à la main, 1,2 kg de
+# cœurs de fenouil et quatre oignons confits à couvert, anchois et olives en
+# rosace, 15 min à 240 °C sur le cran le plus bas.
+
+recipe:
+  id: pissaladiere-epeautre-fenouils
+  title: « Pissaladière » d'épeautre aux cœurs de fenouil confits
+  format: pizza
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Pissaladière d'épeautre aux cœurs de fenouils confits », blog Saines Gourmandises, 10 mars 2016"
+    url: https://saines-gourmandises.fr/pour-les-cabotins-et-les-autres/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 2.5        # « 2/3 parts »
+  lot_entier: true
+  time_min_total: 110       # 20 min + 1 h à 1 h 30 de pousse + 15 min
+  active_min: 25
+
+  apports:
+    proteine: poisson
+    feculent: farine
+    legumes: [allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: farine T110 de grand épeautre, qty: 250, unit: g}
+    - {id: eau, name: eau tiède (40 °C au plus), qty: 18, unit: cl}
+    - {id: levure-boulangere, name: levure de boulanger, qty: 1, unit: sachet}
+    - {id: sel, ref: sel-pate, name: sel (pâte), qty: 5, unit: g, seasoning: true}
+    - {id: huile-olive, ref: huile-pate, name: huile d'olive (pâte), qty: 2, unit: c. à s.}
+    - {id: fenouil, name: gros bulbes de fenouil tendres, qty: 1.2, unit: kg}
+    - {id: oignon, name: oignons, qty: 4, unit: pièce}
+    - {id: huile-olive, ref: huile-garniture, name: huile d'olive (garniture), qty: 4, unit: c. à s.}
+    - {id: sel, ref: sel-garniture, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: anchois, name: filets d'anchois, qty: 6, unit: pièce}
+    - {id: olives-noires, name: olives noires, qty: 7, unit: pièce}
+    - {id: origan, name: origan séché (c. à c. rase), qty: 1, unit: c. à c., seasoning: true}
+    - {id: thym-frais, name: thym frais, qty: 2, unit: brin, optional: true}
+
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: pate
+      action: "Délayer la levure dans l'eau tiède et la verser avec l'huile dans la farine salée ; bien mélanger"
+      needs: []
+      uses: [levure-boulangere, eau, farine-epeautre, sel-pate, huile-pate]
+      time_min: 5
+      attente_min: 60
+      attente_raison: "pousse de la pâte au tiède, 1 h à 1 h 30"
+    - id: confire
+      action: "Ôter les feuilles dures des fenouils, émincer cœurs et oignons, et les confire à l'huile avec un peu de sel, à couvert, en remuant souvent"
+      astuce: "Jusqu'à ce que tout soit fondant et un peu caramélisé ; laisser tiédir."
+      needs: [simmer-large]
+      uses: [fenouil, oignon, huile-garniture, sel-garniture]
+      time_min: 35
+      attended: false
+      parallel_with: pate
+    - id: etaler
+      action: "Chauffer le four à 240 °C, grille au plus bas ; étaler la pâte à la main en disque de 22 à 25 cm sur un papier huilé et fariné"
+      astuce: "Les mains un peu mouillées, la pâte n'y colle pas."
+      needs: []
+      uses: []
+      time_min: 5
+    - id: garnir
+      action: "Couvrir des légumes confits, disposer olives et anchois en rosace, parsemer d'origan et de thym"
+      needs: []
+      uses: [anchois, olives-noires, origan, thym-frais]
+      time_min: 4
+      kid: {age_min_months: 30, task: "poser les olives en rosace"}
+    - id: cuire
+      action: "Cuire 15 min et laisser un peu tiédir"
+      needs: [bake]
+      uses: []
+      time_min: 15
+      attended: false
+
+  emits: []
+
+  plan_b: []

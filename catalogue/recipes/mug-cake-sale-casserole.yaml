@@ -1,0 +1,85 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN REPAS DE MIDI POUR UN, SANS MICRO-ONDES : 80 g de purée de légumes (ou de
+# sauce tomate), un œuf, de la farine d'épeautre, du fromage, cuits 25 min dans
+# un mug au bain-marie couvert. Encodé dans la version potimarron, brebis et
+# jambon cru que l'article propose ; brocoli-picodon-noix et tomate-parmesan-
+# olives en sont les deux autres.
+#
+# LA PURÉE DE POTIMARRON EST UN RESTE du catalogue (T196a) : 80 g.
+
+recipe:
+  id: mug-cake-sale-casserole
+  title: Mug-cake salé à la purée de potimarron, brebis et jambon cru
+  format: cake
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Mes mug-cakes salés (toujours sans micro-ondes !) », blog Saines Gourmandises, 6 novembre 2014"
+    url: https://saines-gourmandises.fr/les-gateaux-passent-a-la-casserole-suite/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 1          # « pour 1 personne »
+  time_min_total: 35        # 10 min de préparation + 25 min de cuisson
+  active_min: 8
+
+  accepts:
+    - type: puree-potimarron
+      qty: {amount: 80, unit: g}
+      required: true
+      fallback_recipe: puree-potimarron-huile-olive
+
+  sans_reste:
+    temps_min: 0
+    ingredients:
+      - {id: sauce-tomate, name: "à défaut de purée, 3 c. à s. de sauce tomate épaisse", qty: 80, unit: g}
+
+  apports:
+    proteine: fromage
+    feculent: farine
+    legumes: [cucurbitacee]
+    profil: rapide
+    origine: francais
+
+  ingredients:
+    - {id: puree-potimarron, name: purée de potimarron, qty: 80, unit: g, from_accepts: true}
+    - {id: oeufs, name: œuf, qty: 1, unit: pièce}
+    - {id: farine-epeautre, name: farine T130 de grand épeautre, qty: 65, unit: g}
+    - {id: etorki, name: tomme de brebis râpée, qty: 30, unit: g}
+    - {id: huile-olive, name: huile d'olive, qty: 1, unit: c. à s.}
+    - {id: poudre-a-lever, name: poudre à lever (demi-sachet), qty: 0.5, unit: sachet}
+    - {id: sel, name: bonne pincée de sel, qty: 1, unit: bonne pincée, seasoning: true}
+    - {id: piment-espelette, name: piment d'Espelette, qty: 1, unit: pincée, seasoning: true}
+    - {id: jambon-cru, name: jambon cru en petits lardons, qty: 25, unit: g, optional: true}
+
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.25, unit: pièce}
+
+  steps:
+    - id: eau
+      action: "Porter à ébullition, dans une casserole assez haute pour être couverte avec le mug dedans, de l'eau jusqu'à mi-hauteur du mug"
+      needs: [simmer]
+      uses: []
+      time_min: 5
+    - id: pate
+      action: "Mélanger farine, sel et levure, puis l'œuf, l'huile, la purée, le fromage, le jambon et le piment, et verser dans un grand mug"
+      needs: []
+      uses: [farine-epeautre, sel, poudre-a-lever, oeufs, huile-olive, puree-potimarron, etorki, jambon-cru, piment-espelette]
+      time_min: 4
+      parallel_with: eau
+      kid: {age_min_months: 30, task: "mélanger la pâte dans le bol"}
+    - id: cuire
+      action: "Poser le mug dans l'eau bouillante, couvrir et cuire 25 à 30 min ; manger chaud"
+      astuce: "Deux petits mugs cuisent en 15 min, un peu moins levés."
+      needs: [steam]
+      uses: []
+      time_min: 27
+      attended: false
+
+  emits: []
+
+  plan_b: []

@@ -1,0 +1,112 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DOUZE PETITS PAINS FARCIS : pâte de farine d'orge (non élastique, levée au
+# bain-marie d'eau chaude), boulettes d'agneau haché aux orties, ail des ours
+# et persil précuites à la poêle, enveloppées de pâte, levées 30 min, 35 min
+# au four. L'édition de l'autrice (30 g de farce au lieu de 20) est retenue.
+# Les orties sont du jardin : épinards à défaut.
+
+recipe:
+  id: petits-pains-orge-agneau
+  title: Petits pains d'orge à l'agneau et aux herbes sauvages
+  format: galettes
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Petits pains d'orge à l'agneau et aux herbes sauvages », blog Saines Gourmandises, 26 mars 2013"
+    url: https://saines-gourmandises.fr/lorge-monde-la-cereale-minceur-par-excellence/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 5
+    pieces: 12              # « 12 petits pains de 100 g environ »
+  time_min_total: 170       # 35 min + 2 h de repos + 20 min de poêle + 35 min
+  active_min: 50
+
+  apports:
+    proteine: viande-rouge
+    feculent: orge
+    legumes: [feuille, allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-orge, name: farine d'orge mondé, qty: 500, unit: g}
+    - {id: eau, name: eau tiède, qty: 35, unit: cl}
+    - {id: levure-boulangere, name: cube de levure fraîche, qty: 1, unit: pièce}
+    - {id: sel, ref: sel-pate, name: "sel fin (pâte, c. à c. rase)", qty: 1, unit: c. à c., seasoning: true}
+    - {id: huile-olive, ref: huile-pate, name: "huile d'olive (pâte et badigeon)", qty: 6, unit: c. à s.}
+    - {id: agneau-hache, name: agneau dégraissé et désossé, qty: 360, unit: g}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: huile-olive, ref: huile-farce, name: huile d'olive (farce), qty: 3, unit: c. à s.}
+    - id: orties
+      name: pointes d'orties
+      qty: 15
+      unit: pièce
+      subs:
+        - {id: pousses-epinards, name: pousses d'épinards, ratio: 1.0}
+    - id: ail-des-ours
+      name: feuilles d'ail des ours
+      qty: 10
+      unit: pièce
+      subs:
+        - {id: ail, name: une gousse d'ail, ratio: 0.1}
+    - {id: persil, name: persil, qty: 0.5, unit: bouquet}
+    - {id: sel, ref: sel-farce, name: "sel (farce, c. à c. rase)", qty: 1, unit: c. à c., seasoning: true}
+    - {id: son-avoine, name: son d'avoine, qty: 3, unit: c. à s.}
+    - {id: poivre-5-baies, name: poivre 5 baies, qty: 2, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: pate
+      action: "Délayer la levure dans l'eau tiède, la verser avec 4 c. à s. d'huile dans la farine salée, pétrir et laisser lever couvert au bain-marie tiède"
+      astuce: "Cette pâte pauvre en gluten n'est pas élastique et colle peu : la chaleur humide l'aide à lever."
+      needs: []
+      uses: [levure-boulangere, eau, farine-orge, sel-pate]
+      time_min: 8
+      attente_min: 90
+      attente_raison: "pousse au bain-marie tiède"
+    - id: farce
+      action: "Dorer l'oignon haché à l'huile ; hacher l'agneau, le persil, les orties et l'ail des ours, et y mêler l'oignon, le sel, le poivre et le son"
+      needs: [chop-coarse]
+      uses: [oignon, huile-farce, agneau-hache, persil, orties, ail-des-ours, sel-farce, poivre-5-baies, son-avoine]
+      time_min: 15
+      parallel_with: pate
+    - id: boulettes
+      action: "Former 12 boulettes de 30 g et les précuire à la poêle jusqu'à ce qu'elles soient dorées"
+      needs: [pan-fry]
+      uses: []
+      time_min: 12
+      attended: true
+    - id: enrober
+      action: "Dégazer la pâte, la peser en 12 pâtons de 70 g, les aplatir en disques fins, y enfermer chaque boulette et rouler entre les mains"
+      needs: []
+      uses: []
+      time_min: 15
+      kid: {age_min_months: 36, task: "rouler les petits pains entre les mains"}
+    - id: lever
+      action: "Badigeonner d'un mélange d'eau et d'huile et laisser lever au tiède, four à 180 °C"
+      needs: []
+      uses: [huile-pate]
+      time_min: 3
+      attente_min: 30
+      attente_raison: "seconde pousse"
+    - id: cuire
+      action: "Cuire 35 min"
+      needs: [bake]
+      uses: []
+      time_min: 35
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: petits-pains-orge-agneau
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

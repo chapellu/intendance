@@ -184,11 +184,16 @@ describe("T40 — `usage: apero` est la preuve que le plancher est indépendant 
   //
   // Ce que le ticket demande est qu'il EXISTE des denrées qu'aucune recette
   // n'atteint, pas qu'elles soient six : le test suivant reste la vraie preuve.
-  test("trois denrées portent l'usage, et le reste n'en porte aucun", () => {
+  test("deux denrées portent l'usage, et le reste n'en porte aucun", () => {
     const par = usages(catalogue);
     // T143 : le relevé du 21/10 n'a plus ni guacamole ni mélange de fruits
     // secs — trois denrées gardent l'usage.
-    expect([...par.keys()].sort()).toEqual(["graines-courge", "terrine-campagne", "tomates-sechees"]);
+    // T196 : les crackers du blog Saines Gourmandises mettent des graines de
+    // courge, les mêmes que celles du sachet : elles perdent l'usage, comme
+    // les pignons avant elles. Leurs tomates séchées sont « nature, pas à
+    // l'huile » : un autre produit (`tomates-sechees-nature`), le bocal garde
+    // l'usage.
+    expect([...par.keys()].sort()).toEqual(["terrine-campagne", "tomates-sechees"]);
     expect([...par.values()].every((u) => u === "apero")).toBe(true);
   });
 
@@ -209,8 +214,10 @@ describe("T40 — `usage: apero` est la preuve que le plancher est indépendant 
   });
 
   test("une denrée d'apéro sous son plancher produit une ligne, et le dit", () => {
+    // T196 : les tomates séchées en bocal, depuis que les graines de courge
+    // ont une recette.
     const [ligne] = sousLeurPlancher(catalogue, placard(), [
-      { ingredient: "graines-courge", niveau: 3 },
+      { ingredient: "tomates-sechees", niveau: 3 },
     ]);
     expect(ligne).toBeDefined();
     expect(ligne!.usage).toBe("apero");
