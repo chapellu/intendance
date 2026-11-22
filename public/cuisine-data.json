@@ -480,8 +480,8 @@
     "deltaMin": 0
    },
    "gaufrier": {
-    "id": null,
-    "label": null,
+    "id": "gaufrier",
+    "label": "gaufrier multi-plaques (gaufres, croque, panini)",
     "reecrit": null,
     "deltaMin": 0
    },
