@@ -1,0 +1,64 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LA PÂTE BRISÉE AU SUCRE DE BOULEAU, avec 4 cuillerées de sucre de plus, de la
+# noix de coco râpée et des pépites de chocolat, façonnée à la main en petits
+# cookies parsemés de coco. 30 à 40 pièces.
+
+recipe:
+  id: cookies-coco-chocolat-sucre-bouleau
+  title: Cookies croustillants chocolat-coco au sucre de bouleau
+  creneaux: [gouter]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Tartes de saison et petits gâteaux au sucre de bouleau », blog Saines Gourmandises, 18 juillet 2012"
+    url: https://saines-gourmandises.fr/connaissez-vous-le-sucre-de-bouleau/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « au moins 30 à 40 petits cookies »
+    pieces: 35
+  lot_entier: true
+  time_min_total: 40
+  active_min: 20
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: "farine complète d'épeautre", qty: 250, unit: g}
+    - {id: margarine, name: "margarine bio (ou beurre)", qty: 125, unit: g}
+    - {id: eau, name: "eau tiède", qty: 2.5, unit: cl}
+    - {id: sel, name: "pincée de sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: sucre-bouleau, name: "sucre de bouleau (3 + 4 c. à s.)", qty: 7, unit: c. à s.}
+    - {id: noix-coco-rapee, name: "noix de coco râpée (+ pour saupoudrer)", qty: 5, unit: c. à s.}
+    - {id: chocolat-noir, name: "pépites de chocolat noir", qty: 50, unit: g}
+
+  steps:
+    - id: pate
+      action: "Sabler du bout des doigts la margarine et la farine ; fondre 7 c. à s. de sucre et le sel dans l'eau tiède, verser d'un coup, former une boule"
+      needs: []
+      uses: [farine-epeautre, margarine, eau, sel, sucre-bouleau]
+      time_min: 10
+    - id: cookies
+      action: "Préchauffer à 180 °C ; y mêler la coco et les pépites, façonner de petits cookies, parsemer de coco et cuire jusqu'à dorer (150 °C si les bords foncent)"
+      needs: [bake]
+      uses: [noix-coco-rapee, chocolat-noir]
+      time_min: 30
+      attended: false
+      kid: {age_min_months: 30, task: "façonner les cookies"}
+
+  emits:
+    - kind: base
+      type: cookies-coco-chocolat-sucre-bouleau
+      qty_band: 3-repas
+      keeps: {frigo_days: 10, congelo: false}
+
+  plan_b: []

@@ -1,0 +1,98 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE FARCE QUI MANGE 1,5 KG DE COURGETTES : oignons et ail dorés, courgettes en
+# dés et échine hachée réduites sans couvercle, puis couenne cuite hachée,
+# nouilles de mungo, champignons noirs, vinaigre, sauce nem, sucre et piment
+# qui caramélisent 10 min ; roulés dans des feuilles de riz, huilés au
+# pinceau et dorés 20 min au four. Environ 25 nems.
+
+recipe:
+  id: nems-courgettes-porc-four
+  title: Nems « crocodiles » aux courgettes, cuits au four
+  format: piece
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Nems de crocodiles », blog Saines Gourmandises, 21 août 2026"
+    url: https://saines-gourmandises.fr/nems-de-crocodiles/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 10          # « environ 25 nems (8 à 12 personnes) »
+    pieces: 25
+  lot_entier: true
+  time_min_total: 95
+  active_min: 60
+
+  apports:
+    proteine: viande-rouge
+    feculent: aucun
+    legumes: [cucurbitacee, allium, champignon]
+    profil: four
+    origine: japonais
+
+  ingredients:
+    - {id: galettes-riz, name: "feuilles de riz", qty: 25, unit: pièce}
+    - {id: courgettes, name: "courgettes", qty: 1.5, unit: kg}
+    - {id: champignons-noirs, name: "champignons noirs déshydratés", qty: 50, unit: g}
+    - {id: vermicelles-soja, name: "nouilles de haricot mungo", qty: 100, unit: g}
+    - {id: porc-echine, name: "échine de porc hachée par le boucher", qty: 500, unit: g}
+    - {id: couenne, name: "couenne de porc dégraissée", qty: 150, unit: g}
+    - {id: oignon, name: "oignons", qty: 3, unit: pièce}
+    - {id: huile-olive, name: "huile d'olive (+ pour le pinceau)", qty: 5, unit: c. à s.}
+    - {id: ail, name: "gousses d'ail", qty: 3, unit: pièce}
+    - {id: sucre-complet, name: "sucre", qty: 1, unit: c. à c.}
+    - {id: sauce-nem, name: "sauce pour nems (+ pour servir)", qty: 3, unit: c. à s.}
+    - {id: vinaigre-balsamique, name: "vinaigre balsamique", qty: 3, unit: c. à s.}
+    - {id: sel, name: "sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: piment-frais, name: "un peu de piment frais ou séché", qty: 1, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: salade-verte, name: "feuilles de laitue", qty: 1, unit: pièce}
+    - {id: menthe, name: "menthe fraîche", qty: 1, unit: bouquet}
+
+  steps:
+    - id: couenne
+      action: "Cuire la couenne environ 20 min à l'eau bouillante salée jusqu'à ce qu'elle soit tendre, puis la hacher"
+      needs: [boil]
+      charge_partielle: true
+      uses: [couenne]
+      time_min: 22
+      attended: false
+    - id: farce
+      action: "Dorer oignons et ail émincés à l'huile dans la sauteuse, ajouter courgettes en dés, échine et sel, et cuire à découvert jusqu'à bien réduire"
+      needs: [pan-fry]
+      charge_partielle: true
+      uses: [oignon, ail, courgettes, porc-echine, sel]
+      time_min: 30
+      attended: false
+      parallel_with: couenne
+    - id: garnir
+      action: "Réhydrater les champignons, cuire brièvement les nouilles, puis les ajouter à la farce avec la couenne, le piment, le vinaigre, la sauce et le sucre ; 10 min"
+      needs: [boil, pan-fry]
+      charge_partielle: true
+      uses: [champignons-noirs, vermicelles-soja, piment-frais, vinaigre-balsamique, sauce-nem, sucre-complet]
+      time_min: 14
+    - id: rouler
+      action: "Préchauffer à 200 °C ; rouler la farce dans les feuilles de riz humidifiées et les poser sur une plaque huilée, puis huiler le dessus au pinceau"
+      needs: []
+      uses: [galettes-riz, huile-olive]
+      time_min: 25
+      kid: {age_min_months: 48, task: "humidifier les feuilles de riz"}
+    - id: cuire
+      action: "Enfourner au moins 20 min, jusqu'à ce que les feuilles soient dorées et croustillantes"
+      needs: [bake]
+      uses: []
+      time_min: 22
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: nems-courgettes-porc-four
+      qty_band: 3-repas
+      keeps: {frigo_days: 2, congelo: true}
+
+  plan_b: []

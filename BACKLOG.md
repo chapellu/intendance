@@ -6830,5 +6830,32 @@ reformulé comme ceux du livre.
       **UN FAIT DE CORPUS A BOUGÉ.** 92 plats mangent maintenant l'épeautre
       (44 de plus). 31 ingrédients nouveaux, dont gélatine, matcha, chia et
       miel de lavande.
-- [ ] **T196d — Le reste** : bocaux et confitures, boissons, sauces, et les
-      articles « blabla » ou « non classé » qui contiennent une recette.
+- [x] **T196d — Le reste du blog.** 43 plats de plus (508 au catalogue) :
+      les articles qui n'étaient ni plats ni desserts classés (bocaux,
+      boissons, sauces, « blabla », « non classé », ingrédients, jardin), et
+      une poignée de desserts que les lots précédents avaient manqués. Chaque
+      article du blog a maintenant soit une fiche, soit une raison dans
+      l'index ; les 112 restants sont des nouvelles, des annonces de livres
+      ou des billets sans recette.
+
+      **DES INVITÉES ÉCARTÉES DANS LA MÊME PAGE.** La crème-mousse au tofu
+      soyeux (et sa variante « nuage ») est la recette de Valérie Cupillard ;
+      le lait chaud à la badiane est « très librement inspiré » d'une autre
+      blogueuse. Les recettes de l'autrice publiées à côté, elles, sont
+      encodées.
+
+      **TROIS ARÊTES DE PLUS.** Le lait amande-avoine laisse un okara (430 g)
+      que les bannocks au comté réclament. Le bouillon d'os de volaille prend
+      la carcasse d'un poulet rôti, et les flocons d'orge pilaf peuvent le
+      prendre à la place de l'eau. Le kéfir à boire ensemence les « yaourts »
+      de kéfir. La mousse au chocolat traditionnelle nourrit aussi le gâteau
+      sans cuisson qui en réclame deux.
+
+      **CE QUI N'EST PAS UNE RECETTE.** Les trames de repas chiffrées en
+      calories, les idées sans quantités autour des galettes de sarrasin, les
+      méthodes de façonnage des cookies, un article sur le matériel : écartés
+      avec leur raison.
+
+      **UN FAIT DE CORPUS A BOUGÉ.** 105 plats mangent l'épeautre (13 de
+      plus). 24 ingrédients nouveaux, dont seitan, ail noir, reblochon,
+      psyllium et kéfir de lait.
