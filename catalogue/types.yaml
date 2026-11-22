@@ -15,6 +15,7 @@
 # `verifier.py` refuse un type émis qui n'a ni l'un ni l'autre.
 # ---------------------------------------------------------------------------
 libelles:
+  biscuits-cuillere-maison: biscuits à la cuillère maison
   blinis-epeautre-son-avoine: blinis d'épeautre au son d'avoine
   bouillon-herbes: bouillon d'herbes
   bouillon-maison: bouillon de fanes
@@ -22,6 +23,7 @@ libelles:
   bouillon-poule-epeautre: bouillon de poule à l'épeautre
   carcasse-volaille: carcasse de poulet
   cereale-cuite: céréale cuite
+  creme-marron-maison: crème de marron maison
   crepes-wraps: crêpes à wraps
   falafels: falafels
   fondue-courgettes: fondue de courgettes

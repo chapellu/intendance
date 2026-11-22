@@ -175,9 +175,10 @@ describe("ce que le plat prend au placard", () => {
     // cinq des huit écoulables ont un mangeur, et l'épeautre en a le plus.
     // T196 : le blog Saines Gourmandises en ajoute trois (le pounti, le « pâté
     // épatant » aux courgettes, les cupcakes au potimarron), puis 24 de plus
-    // avec ses tartes, entrées et pains (T196b).
+    // avec ses tartes, entrées et pains (T196b), puis 14 avec ses desserts de
+    // 2011 à 2014 (T196c).
     const mangeurs = catalogue.plats.filter((p) => ids(p).includes("farine-epeautre"));
-    expect(mangeurs).toHaveLength(34);
+    expect(mangeurs).toHaveLength(48);
   });
 
   test("un ingrédient cité deux fois ne compte qu'une", () => {

@@ -1,0 +1,65 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DES FIGUES FRAÎCHES COMPOTÉES au miel et à la vanille, chocolat 70 % fondu
+# dedans à couvert, jaunes, blancs en neige, un peu de farine de petit
+# épeautre ; 10 min exactement à 150 °C. Tièdes, le cœur coule ; au frais, ils
+# deviennent truffés.
+
+recipe:
+  id: mi-cuits-figue-chocolat
+  title: Petits fondants mi-cuits à la figue et au chocolat
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« 3 desserts au chocolat pour ce week-end… », extrait de « Mes irrésistibles recettes au chocolat », blog Saines Gourmandises, 10 octobre 2014"
+    url: https://saines-gourmandises.fr/des-brownies-des-mi-cuits-des-petits-pots-de-creme-mousseuse/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 7          # « 6 à 8 petits fondants »
+  time_min_total: 25
+  active_min: 15
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: figues, name: "figues fraîches (5 belles)", qty: 325, unit: g}
+    - {id: chocolat-noir, name: "chocolat noir pâtissier 70 %", qty: 200, unit: g}
+    - {id: miel-acacia, name: "miel d'acacia", qty: 2, unit: c. à s.}
+    - {id: oeufs, name: "œufs ultra frais", qty: 4, unit: pièce}
+    - {id: farine-petit-epeautre, name: "farine de petit épeautre", qty: 40, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever (c. à moka)", qty: 1, unit: pincée}
+    - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 1, unit: c. à s.}
+    - {id: eau, name: "eau", qty: 2, unit: c. à s.}
+
+  steps:
+    - id: figues
+      action: "Préchauffer à 150 °C ; compoter quelques minutes les figues pelées en quartiers avec vanille, miel et eau, puis y fondre le chocolat hors du feu, à couvert"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [figues, extrait-vanille, miel-acacia, eau, chocolat-noir]
+      time_min: 8
+    - id: pate
+      action: "Y mêler les jaunes, puis à la spatule les blancs en neige et la farine mélangée à la levure ; répartir en ramequins"
+      needs: []
+      uses: [oeufs, farine-petit-epeautre, poudre-a-lever]
+      time_min: 6
+    - id: cuire
+      action: "Cuire 10 min exactement et servir tiède"
+      needs: [bake]
+      uses: []
+      time_min: 10
+      attended: true
+
+  emits: []
+
+  plan_b: []

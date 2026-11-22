@@ -1,0 +1,78 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# SANS BEURRE NI CRÈME LAITIÈRE : chocolat 70 % fondu au bain-marie avec crème
+# végétale, vanille, sel et café, jaunes, blancs en neige sucrés au sucre de
+# coco ; dans un cercle de 16 à 17 cm bordé de biscuits recoupés en biseau,
+# en deux couches ; au moins 6 h au frais, une nuit au mieux.
+
+recipe:
+  id: charlotte-chocolat-cafe
+  title: Charlotte intensément chocolat, pointe de café
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Les Secrets de la Pâtisserie Bio, suite… Des biscuits à la cuillère, 2 charlottes, un tiramisu », blog Saines Gourmandises, 5 juin 2014"
+    url: https://saines-gourmandises.fr/mieux-que-60-desserts-a-ig-bas-97-desserts-a-ig-bas/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « une charlotte de 8 parts »
+  lot_entier: true
+  time_min_total: 25
+  active_min: 20
+
+  apports:
+    proteine: oeuf
+    feculent: biscuit
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: chocolat-noir, name: "chocolat noir 70 %", qty: 300, unit: g}
+    - {id: creme-soja, name: "crème végétale de coco ou de soja", qty: 20, unit: cl}
+    - {id: oeufs, name: "œufs ultra-frais", qty: 3, unit: pièce}
+    - {id: sucre-complet, name: "sucre de coco", qty: 75, unit: g}
+    - {id: cafe, name: "café assez serré", qty: 5, unit: cl}
+    - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 1, unit: c. à s.}
+    - {id: fleur-de-sel, name: "pointe de fleur de sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: biscuits-cuillere, name: "biscuits à la cuillère", qty: 20, unit: pièce}
+    - {id: cacao, name: "cacao", qty: 1, unit: c. à s.}
+
+  steps:
+    - id: fondre
+      action: "Fondre au bain-marie le chocolat en petits morceaux avec la crème, la vanille, le sel et le café ; éteindre avant la fin et laisser fondre à couvert"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [chocolat-noir, creme-soja, extrait-vanille, fleur-de-sel, cafe]
+      time_min: 8
+    - id: mousse
+      action: "Y fouetter les jaunes, puis incorporer les blancs montés en neige souple avec le sucre ajouté en trois fois"
+      needs: []
+      uses: [oeufs, sucre-complet]
+      time_min: 8
+    - id: monter
+      action: "Border un cercle de biscuits coupés en biseau, tapisser le fond des chutes, verser la moitié de la mousse, une couche de biscuits, puis le reste"
+      needs: []
+      uses: [biscuits-cuillere]
+      time_min: 8
+      attente_min: 360
+      attente_raison: "au moins 6 h au frais, une nuit au mieux"
+      kid: {age_min_months: 36, task: "ranger les biscuits debout"}
+    - id: servir
+      action: "Décercler et poudrer de cacao"
+      needs: []
+      uses: [cacao]
+      time_min: 2
+
+  emits:
+    - kind: reste-plat
+      type: charlotte-chocolat-cafe
+      qty_band: 3-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

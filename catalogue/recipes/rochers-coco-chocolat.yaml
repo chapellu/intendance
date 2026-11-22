@@ -1,0 +1,67 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE VINGTAINE DE ROCHERS : coco râpée liée d'huile de coco fondue, agave et
+# vanille, pressée en boules de 15 g, durcie 1 h au frais, trempée dans du
+# chocolat noir fondu (tempéré, ils se gardent mieux), séchée 1 h. Sur un
+# bâtonnet, des sucettes.
+
+recipe:
+  id: rochers-coco-chocolat
+  title: Rochers « Bounty » à IG bas
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Grand jeu-concours sur le thème des cadeaux gourmands… et recette des rochers Bounty à IG bas », blog Saines Gourmandises, 19 novembre 2012"
+    url: https://saines-gourmandises.fr/2-concours-sur-le-meme-theme-cest-2-fois-plus-de-chances-de-gagner/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 10          # « une vingtaine de rochers »
+    pieces: 20
+  time_min_total: 140
+  active_min: 25
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: noix-coco-rapee, name: "noix de coco râpée", qty: 150, unit: g}
+    - {id: huile-coco, name: "huile de coco vierge", qty: 70, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 4, unit: c. à s.}
+    - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 1, unit: c. à c.}
+    - {id: chocolat-noir, name: "chocolat noir pâtissier (plus de 60 %)", qty: 200, unit: g}
+
+  steps:
+    - id: boules
+      action: "Fondre à feu doux l'huile de coco avec l'agave et la vanille, y malaxer la coco râpée et presser des boules de 15 g"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [huile-coco, sirop-agave, extrait-vanille, noix-coco-rapee]
+      time_min: 12
+      attente_min: 60
+      attente_raison: "une heure au frais pour durcir"
+      kid: {age_min_months: 30, task: "presser les boules entre les mains"}
+    - id: enrober
+      action: "Fondre le chocolat haché au bain-marie sans trop chauffer, y tremper les rochers et les poser sur un papier"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [chocolat-noir]
+      time_min: 12
+      attente_min: 60
+      attente_raison: "une heure à température ambiante pour que le chocolat durcisse"
+
+  emits:
+    - kind: base
+      type: rochers-coco-chocolat
+      qty_band: 3-repas
+      keeps: {frigo_days: 10, congelo: false}
+
+  plan_b: []

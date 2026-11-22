@@ -1,0 +1,78 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# SUCRÉ PAR LES FRUITS SEULS : figues sèches trempées la veille et mixées avec
+# jaunes, lait, huile et vanille ; blancs en neige, farine, abricots, pruneaux
+# et canneberges ; 15 min à 200 °C puis 50 min à 150 °C sous un papier.
+
+recipe:
+  id: cake-fruits-secs-sans-sucre
+  title: Cake aux fruits secs sans sucre ajouté
+  creneaux: [gouter, petit-dejeuner]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Un cake et un crumble, sucrés uniquement avec des fruits », extrait de « Mes bons desserts aux sucres naturels », blog Saines Gourmandises, 19 septembre 2013"
+    url: https://saines-gourmandises.fr/2-bons-desserts-de-saison-sans-aucun-sucre-ajoute/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 9          # « un gros cake (8/10 parts) »
+  lot_entier: true
+  time_min_total: 85
+  active_min: 20
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: figues-seches, name: "figues sèches", qty: 150, unit: g}
+    - {id: cranberries, name: "canneberges séchées", qty: 100, unit: g}
+    - {id: abricots-secs, name: "abricots secs", qty: 100, unit: g}
+    - {id: pruneaux, name: "pruneaux dénoyautés", qty: 100, unit: g}
+    - {id: farine-complete, name: "farine bise T110", qty: 150, unit: g}
+    - {id: oeufs, name: "œufs", qty: 4, unit: pièce}
+    - {id: lait-amande, name: "lait de soja ou d'amande", qty: 10, unit: cl}
+    - {id: huile-tournesol, name: "huile au parfum discret", qty: 10, unit: cl}
+    - {id: extrait-vanille, name: "extrait de vanille en poudre", qty: 1, unit: c. à c.}
+    - {id: poudre-a-lever, name: "poudre à lever", qty: 1, unit: sachet}
+
+  steps:
+    - id: tremper
+      action: "Mettre les figues à tremper dans de l'eau"
+      needs: []
+      uses: [figues-seches]
+      time_min: 1
+      attente_min: 600
+      attente_raison: "trempage des figues la veille au soir"
+    - id: creme
+      action: "Égoutter les figues et les mixer avec les jaunes, le lait, l'huile et la vanille jusqu'à une crème lisse et mousseuse"
+      needs: [blend-smooth]
+      uses: [oeufs, lait-amande, huile-tournesol, extrait-vanille]
+      time_min: 5
+    - id: pate
+      action: "Préchauffer à 200 °C ; monter les blancs en neige et y mêler à la cuillère farine et levure, fruits secs en dés et crème de figue"
+      needs: []
+      uses: [farine-complete, poudre-a-lever, abricots-secs, pruneaux, cranberries]
+      time_min: 8
+      kid: {age_min_months: 30, task: "couper les pruneaux aux ciseaux"}
+    - id: cuire
+      action: "Cuire 15 min à 200 °C, puis couvrir d'un papier et cuire 50 min à 150 °C"
+      needs: [bake]
+      uses: []
+      time_min: 65
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: cake-fruits-secs-sans-sucre
+      qty_band: 3-repas
+      keeps: {frigo_days: 5, congelo: true}
+
+  plan_b: []

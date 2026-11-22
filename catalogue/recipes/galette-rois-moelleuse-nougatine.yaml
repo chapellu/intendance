@@ -1,0 +1,74 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE GALETTE SANS PÂTE FEUILLETÉE : une frangipane épaisse (poudre d'amande,
+# œufs, agave, beurre demi-sel, un peu de farine, tonka ou amande amère)
+# cuite 12 à 14 min à 210 °C, refroidie, couverte au dernier moment d'une
+# nougatine d'amandes effilées à l'agave. Ne pas oublier la fève.
+
+recipe:
+  id: galette-rois-moelleuse-nougatine
+  title: Galette des rois moelleuse à la nougatine d'amande
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Galette des rois un peu revisitée, toute moelleuse et à la nougatine d'amande », blog Saines Gourmandises, 4 janvier 2012"
+    url: https://saines-gourmandises.fr/une-galette-des-rois-a-ig-bas-et-un-chouette-concours/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 7          # « 6/8 parts »
+  lot_entier: true
+  time_min_total: 25
+  active_min: 12
+
+  apports:
+    proteine: oeuf
+    feculent: aucun
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: poudre-amande, name: "poudre d'amande", qty: 300, unit: g}
+    - {id: oeufs, name: "œufs", qty: 5, unit: pièce}
+    - {id: sirop-agave, name: "sirop d'agave (12 cl + 4 c. à s.)", qty: 18, unit: cl}
+    - {id: beurre, name: "beurre demi-sel (ou margarine)", qty: 100, unit: g}
+    - {id: farine-complete, name: "farine complète T110", qty: 40, unit: g}
+    - {id: feve-tonka, name: "fèves tonka râpées (ou amande amère)", qty: 2, unit: pièce, optional: true}
+    - {id: amandes-effilees, name: "amandes effilées", qty: 65, unit: g}
+
+  steps:
+    - id: galette
+      action: "Préchauffer à 210 °C ; mélanger poudre d'amande, œufs, 12 cl d'agave, beurre fondu, farine et tonka, et verser dans un moule chemisé"
+      needs: []
+      uses: [poudre-amande, oeufs, beurre, farine-complete, feve-tonka]
+      time_min: 5
+      kid: {age_min_months: 30, task: "cacher la fève"}
+    - id: cuire
+      action: "Cuire 12 min (fondante) à 14 min (moelleuse) et laisser bien refroidir au frais"
+      needs: [bake]
+      uses: []
+      time_min: 14
+      attente_min: 240
+      attente_raison: "à préparer de préférence la veille"
+      attente_souple: true
+    - id: nougatine
+      action: "Au moment de servir, dorer 4 à 5 min à petit feu les amandes effilées dans 4 c. à s. d'agave et les verser sur la galette"
+      astuce: "Ça brûle très vite à la fin."
+      needs: [simmer]
+      charge_partielle: true
+      uses: [amandes-effilees, sirop-agave]
+      time_min: 6
+      attended: true
+
+  emits:
+    - kind: reste-plat
+      type: galette-rois-moelleuse-nougatine
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

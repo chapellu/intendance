@@ -1,0 +1,70 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# QUINZE COOKIES SANS BEURRE : son d'avoine et farine intégrale sablés avec la
+# purée de noisette, sucre de coco, fleur de sel, noisettes concassées et
+# pépites de chocolat, liés d'un œuf ; boules de 30 g écrasées, 15 min.
+
+recipe:
+  id: cookies-pralines-son-avoine
+  title: Cookies pralinés au son d'avoine
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Cookies pralinés au son d'avoine », blog Saines Gourmandises, 9 juillet 2014"
+    url: https://saines-gourmandises.fr/pour-vero/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 5          # « pour 15 cookies »
+    pieces: 15
+  time_min_total: 25
+  active_min: 10
+
+  apports:
+    proteine: oeuf
+    feculent: avoine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: son-avoine, name: "son d'avoine", qty: 75, unit: g}
+    - {id: farine-complete, name: "farine intégrale (blé ou grand épeautre)", qty: 75, unit: g}
+    - {id: puree-noisette, name: "purée de noisette", qty: 75, unit: g}
+    - {id: chocolat-noir, name: "chocolat noir 70 ou 85 %", qty: 75, unit: g}
+    - {id: sucre-complet, name: "sucre de coco", qty: 50, unit: g}
+    - {id: oeufs, name: "œuf", qty: 1, unit: pièce}
+    - {id: noisettes, name: "noisettes", qty: 75, unit: g}
+    - {id: fleur-de-sel, name: "bonne pincée de fleur de sel", qty: 1, unit: bonne pincée, seasoning: true}
+
+  steps:
+    - id: sabler
+      action: "Préchauffer à 180 °C ; mêler son, farine, sucre et sel, puis sabler finement avec la purée de noisette du bout des doigts"
+      needs: []
+      uses: [son-avoine, farine-complete, sucre-complet, fleur-de-sel, puree-noisette]
+      time_min: 4
+      kid: {age_min_months: 30, task: "sabler la pâte"}
+    - id: pate
+      action: "Ajouter les noisettes concassées, le chocolat en grosses pépites et l'œuf, et mélanger à la main"
+      needs: []
+      uses: [noisettes, chocolat-noir, oeufs]
+      time_min: 4
+    - id: cuire
+      action: "Former des boules de 30 g, les écraser sur une plaque chemisée et cuire 15 min ; refroidir sur grille"
+      needs: [bake]
+      uses: []
+      time_min: 18
+      attended: false
+      kid: {age_min_months: 30, task: "écraser les boules"}
+
+  emits:
+    - kind: base
+      type: cookies-pralines-son-avoine
+      qty_band: 2-repas
+      keeps: {frigo_days: 7, congelo: false}
+
+  plan_b: []

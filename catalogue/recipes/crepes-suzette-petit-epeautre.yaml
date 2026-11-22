@@ -1,0 +1,82 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE PÂTE DE PETIT ÉPEAUTRE COMPLET à la fleur d'oranger et à la liqueur
+# d'agrumes, reposée 1 h ; chaque crêpe nappée de beurre fondu à l'agave et au
+# zeste d'orange, pliée en quatre, réchauffée trois par trois et flambée.
+# Les crêpes à l'orge de l'article sont la recette d'une autre blogueuse :
+# non encodées.
+
+recipe:
+  id: crepes-suzette-petit-epeautre
+  title: Crêpes Suzette au petit épeautre
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Crêpes Suzette au petit épeautre, crêpes à l'orge mondée (et une pâte à tartiner) », blog Saines Gourmandises, 30 janvier 2014"
+    url: https://saines-gourmandises.fr/chandeleur-2014-3-recettes-alternatives/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « pour 6 personnes »
+  time_min_total: 80
+  active_min: 40
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: poele
+    origine: francais
+
+  ingredients:
+    - {id: farine-petit-epeautre, name: "farine de petit épeautre complet", qty: 500, unit: g}
+    - {id: eau, name: "eau", qty: 75, unit: cl}
+    - {id: eau-fleur-oranger, name: "eau de fleur d'oranger", qty: 4, unit: c. à s.}
+    - {id: oeufs, name: "œufs", qty: 2, unit: pièce}
+    - {id: huile-olive, name: "huile d'olive", qty: 4, unit: c. à s.}
+    - {id: cointreau, name: "liqueur d'agrumes (pâte + flambage)", qty: 13, unit: c. à s.}
+    - {id: sel, name: "pincée de sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: orange, name: "orange non traitée", qty: 1, unit: pièce}
+    - {id: sirop-agave, name: "sirop d'agave ou d'érable", qty: 6, unit: c. à s.}
+    - {id: huile-essentielle-orange, name: "huile essentielle d'orange douce ou de mandarine", qty: 15, unit: pièce}
+    - {id: beurre, name: "beurre ou huile de coco", qty: 60, unit: g}
+
+  steps:
+    - id: pate
+      action: "Mêler farine, sel, huile et œufs, ajouter l'eau peu à peu en fouettant, puis la fleur d'oranger, 4 c. à s. de liqueur et l'huile essentielle"
+      needs: []
+      uses: [farine-petit-epeautre, sel, huile-olive, oeufs, eau, eau-fleur-oranger, huile-essentielle-orange]
+      time_min: 8
+      attente_min: 60
+      attente_raison: "repos d'une heure ; rallonger d'eau si besoin"
+    - id: crepes
+      action: "Cuire les crêpes fines dans une poêle bien chaude et huilée"
+      needs: [pan-fry]
+      uses: []
+      time_min: 25
+      attended: true
+    - id: napper
+      action: "Zester l'orange au-dessus d'une casserole avec l'agave et le beurre, chauffer, en napper chaque crêpe et la plier en quatre"
+      needs: [simmer]
+      uses: [orange, sirop-agave, beurre]
+      time_min: 6
+      kid: {age_min_months: 36, task: "plier les crêpes"}
+    - id: flamber
+      action: "Réchauffer les crêpes trois par trois dans la poêle, verser loin du feu 3 c. à s. de liqueur et flamber ; servir aussitôt"
+      astuce: "Un adulte, une poêle à manche long, et rien d'inflammable autour."
+      needs: [pan-fry]
+      uses: [cointreau]
+      time_min: 8
+      attended: true
+
+  emits:
+    - kind: reste-plat
+      type: crepes-suzette-petit-epeautre
+      qty_band: 1-repas
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

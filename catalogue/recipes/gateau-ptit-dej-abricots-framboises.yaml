@@ -1,0 +1,66 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LE SODA-CAKE AU SON D'AVOINE EN VERSION DU MATIN : 3 cl de citron seulement,
+# des dés d'abricot et des framboises ; 45 min à 150 °C, donc la veille au
+# soir.
+
+recipe:
+  id: gateau-ptit-dej-abricots-framboises
+  title: Petit gâteau du p'tit déj aux abricots et framboises
+  creneaux: [petit-dejeuner, gouter]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Vous mangez quoi vous au p'tit déj ? », blog Saines Gourmandises, 26 juin 2012"
+    url: https://saines-gourmandises.fr/vous-mangez-quoi-vous-au-ptit-dej/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « un petit gâteau de 18 à 20 cm »
+  lot_entier: true
+  time_min_total: 55
+  active_min: 10
+
+  apports:
+    proteine: oeuf
+    feculent: avoine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: son-avoine, name: "son d'avoine", qty: 75, unit: g}
+    - {id: farine-complete, name: "farine complète T110", qty: 75, unit: g}
+    - {id: poudre-a-lever, name: "levure", qty: 1, unit: sachet}
+    - {id: puree-amande-blanche, name: "purée d'amande blanche (ou margarine)", qty: 100, unit: g}
+    - {id: oeufs, name: "œufs", qty: 3, unit: pièce}
+    - {id: citron, name: "citron (3 cl de jus)", qty: 1, unit: pièce}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 15, unit: cl}
+    - {id: abricots, name: "abricots", qty: 3, unit: pièce}
+    - {id: framboises, name: "petite poignée de framboises", qty: 80, unit: g}
+
+  steps:
+    - id: pate
+      action: "Préchauffer à 150 °C ; mélanger farine, levure et son, puis tous les autres ingrédients, et verser aussitôt dans le moule"
+      astuce: "Dès que la pâte mousse, ne plus la toucher."
+      needs: []
+      uses: [son-avoine, farine-complete, poudre-a-lever, puree-amande-blanche, oeufs, citron, sirop-agave, abricots, framboises]
+      time_min: 8
+      kid: {age_min_months: 30, task: "couper les abricots au couteau à beurre"}
+    - id: cuire
+      action: "Cuire environ 45 min"
+      needs: [bake]
+      uses: []
+      time_min: 45
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: gateau-ptit-dej-abricots-framboises
+      qty_band: 3-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

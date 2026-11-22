@@ -1,0 +1,66 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LA MÊME PÂTE AU SON D'AVOINE, parfumée cannelle et épices à spéculoos, cuite
+# à blanc 25 min, garnie de quartiers de pommes caramélisés à la poêle.
+# Servies tièdes, avec une glace vanille en cas de crise de gourmandise.
+
+recipe:
+  id: tartelettes-pommes-poelees-speculoos
+  title: Petites tartes aux pommes poêlées et parfum de spéculoos
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Petites tartes de saison aux pommes poêlées et parfum de spéculoos », blog Saines Gourmandises, 26 février 2012"
+    url: https://saines-gourmandises.fr/et-hop-un-ptit-billet-imprevu/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « 6 tartelettes »
+  lot_entier: true
+  time_min_total: 30
+  active_min: 15
+
+  apports:
+    proteine: aucune
+    feculent: avoine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: son-avoine, name: "son d'avoine", qty: 150, unit: g}
+    - {id: farine-complete, name: "farine T110", qty: 80, unit: g}
+    - {id: margarine, ref: margarine-pate, name: "margarine bio non hydrogénée", qty: 80, unit: g}
+    - {id: sel, name: "pincée de sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: sirop-agave, ref: agave-pate, name: "sirop d'agave (pâte)", qty: 2, unit: c. à s.}
+    - {id: cannelle, name: "cannelle en poudre", qty: 1, unit: c. à s., seasoning: true}
+    - {id: epices-pain-epices, name: "épices pour spéculoos", qty: 1, unit: c. à s., seasoning: true}
+    - {id: pommes, name: "belles pommes", qty: 4, unit: pièce}
+    - {id: huile-tournesol, name: "huile", qty: 2, unit: c. à s.}
+
+  steps:
+    - id: pate
+      action: "Préchauffer à 150 °C ; travailler son, farine, margarine, épices, sel et agave en pâte souple, foncer 6 moules et cuire 25 min"
+      needs: [bake]
+      uses: [son-avoine, farine-complete, margarine-pate, cannelle, epices-pain-epices, sel, agave-pate]
+      time_min: 30
+    - id: pommes
+      action: "Éplucher les pommes en quartiers et les caraméliser à la poêle dans l'huile, puis garnir les fonds et servir chaud"
+      needs: [pan-fry]
+      charge_partielle: true
+      uses: [pommes, huile-tournesol]
+      time_min: 12
+      parallel_with: pate
+      kid: {age_min_months: 36, task: "ranger les quartiers sur les fonds"}
+
+  emits:
+    - kind: reste-plat
+      type: tartelettes-pommes-poelees-speculoos
+      qty_band: 1-repas
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

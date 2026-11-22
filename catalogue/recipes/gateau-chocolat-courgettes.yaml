@@ -1,0 +1,71 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# 200 G DE COURGETTE RÂPÉE DANS UN GÂTEAU AU CHOCOLAT 85 % : personne ne la
+# voit. Purée de noisette, agave, son d'avoine et farine complète, blancs en
+# neige ; 15 min à 180 °C puis 15 min à 150 °C, moule de 24 cm.
+
+recipe:
+  id: gateau-chocolat-courgettes
+  title: Gâteau au chocolat « inavouable » de l'été (courgettes inside)
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Gâteau au chocolat inavouable de l'été (courgettes inside) », blog Saines Gourmandises, 5 août 2013"
+    url: https://saines-gourmandises.fr/quest-ce-quon-va-faire-de-toutes-ces-courgettes-un-gateau-au-chocolat-chiche/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « un gâteau de 8 parts »
+  lot_entier: true
+  time_min_total: 45
+  active_min: 15
+
+  apports:
+    proteine: oeuf
+    feculent: avoine
+    legumes: [cucurbitacee]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: courgettes, name: "jeunes courgettes très fraîches", qty: 200, unit: g}
+    - {id: chocolat-noir, name: "bon chocolat 85 %", qty: 200, unit: g}
+    - {id: puree-noisette, name: "purée de noisettes", qty: 100, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 100, unit: g}
+    - {id: oeufs, name: "œufs", qty: 4, unit: pièce}
+    - {id: son-avoine, name: "son d'avoine", qty: 50, unit: g}
+    - {id: farine-complete, name: "farine complète T110", qty: 100, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever (demi-sachet)", qty: 0.5, unit: sachet}
+    - {id: cacao, name: "cacao pour saupoudrer", qty: 1, unit: c. à c.}
+
+  steps:
+    - id: preparer
+      action: "Préchauffer à 180 °C ; fondre le chocolat au bain-marie ; mêler farine, son et levure ; râper finement les courgettes"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [chocolat-noir, farine-complete, son-avoine, poudre-a-lever, courgettes]
+      time_min: 8
+      kid: {age_min_months: 36, task: "râper la courgette, avec un adulte"}
+    - id: melanger
+      action: "Hors du feu, mêler au chocolat les jaunes, la noisette, l'agave et les courgettes, puis à la spatule les blancs en neige et la farine"
+      needs: []
+      uses: [oeufs, puree-noisette, sirop-agave]
+      time_min: 6
+    - id: cuire
+      action: "Cuire 15 min à 180 °C puis 15 min à 150 °C ; poudrer de cacao"
+      needs: [bake]
+      uses: [cacao]
+      time_min: 30
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: gateau-chocolat-courgettes
+      qty_band: 3-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

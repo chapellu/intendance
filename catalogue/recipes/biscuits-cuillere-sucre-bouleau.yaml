@@ -1,0 +1,69 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# TRENTE BISCUITS : jaunes et vanille au fouet, blancs montés en meringue au
+# sucre de bouleau, farine T65 tamisée (pas plus complète, ils ne lèveraient
+# pas) ; dressés à la poche, 5 min à 180 °C puis à 150 °C sans ouvrir, et
+# refroidis dans le four. Ils font les charlottes et le tiramisu de la même
+# page, qui achètent les leurs : l'arête n'est pas posée.
+
+recipe:
+  id: biscuits-cuillere-sucre-bouleau
+  title: Biscuits à la cuillère au sucre de bouleau
+  role: base
+  creneaux: [gouter]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Les Secrets de la Pâtisserie Bio, suite… Des biscuits à la cuillère, 2 charlottes, un tiramisu », blog Saines Gourmandises, 5 juin 2014"
+    url: https://saines-gourmandises.fr/mieux-que-60-desserts-a-ig-bas-97-desserts-a-ig-bas/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « pour 30 biscuits »
+    pieces: 30
+  time_min_total: 55
+  active_min: 20
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: oeufs, name: "œufs", qty: 3, unit: pièce}
+    - {id: sucre-bouleau, name: "sucre de bouleau (35 + 55 g, + pour saupoudrer)", qty: 100, unit: g}
+    - {id: farine, name: "farine T65", qty: 60, unit: g}
+    - {id: extrait-vanille, name: "extrait de vanille en poudre", qty: 0.25, unit: c. à c.}
+
+  steps:
+    - id: pate
+      action: "Préchauffer à 180 °C ; mêler jaunes, vanille et 35 g de sucre ; monter les blancs avec 55 g de sucre en pics brillants ; réunir et y tamiser la farine"
+      needs: []
+      uses: [oeufs, extrait-vanille, farine]
+      time_min: 12
+    - id: cuire
+      action: "Dresser à la poche sur une plaque chemisée, cuire 5 min à 180 °C puis baisser à 150 °C sans ouvrir et laisser refroidir dans le four"
+      needs: [bake]
+      uses: []
+      time_min: 35
+      attended: false
+    - id: saupoudrer
+      action: "Décoller les biscuits et les poudrer de sucre de bouleau impalpable ; boîte hermétique"
+      needs: []
+      uses: [sucre-bouleau]
+      time_min: 4
+      kid: {age_min_months: 30, task: "poudrer les biscuits à la passoire"}
+
+  emits:
+    - kind: base
+      type: biscuits-cuillere-maison
+      qty_band: 3-repas
+      keeps: {frigo_days: 10, congelo: false}
+      note: "pour charlottes et tiramisus"
+
+  plan_b: []

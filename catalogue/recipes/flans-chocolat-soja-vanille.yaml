@@ -1,0 +1,56 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LA PLUS SIMPLE DES QUATRE : soja-vanille et un peu d'agar-agar portés à
+# ébullition, chocolat fondu dedans hors du feu, fouetté, refroidi en pots.
+
+recipe:
+  id: flans-chocolat-soja-vanille
+  title: Flans « végé » au chocolat noir
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« 4 recettes pour tire-au-flan ! », blog Saines Gourmandises, 26 avril 2012"
+    url: https://saines-gourmandises.fr/ah-ces-ptites-cremes-aux-oeufs-cremes-brulees-et-petits-flanbio-regressifs/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « pour 6 pots »
+    pieces: 6
+  time_min_total: 8
+  active_min: 8
+
+  apports:
+    proteine: tofu-soja
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: lait-soja-vanille, name: "lait de soja-vanille", qty: 70, unit: cl}
+    - {id: chocolat-noir, name: "chocolat noir pâtissier corsé", qty: 100, unit: g}
+    - {id: agar-agar, name: "agar-agar", qty: 2, unit: g}
+
+  steps:
+    - id: cuire
+      action: "Porter à ébullition le soja-vanille mélangé à froid avec l'agar-agar, puis y fondre le chocolat hors du feu en fouettant"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [lait-soja-vanille, agar-agar, chocolat-noir]
+      time_min: 6
+      kid: {age_min_months: 36, task: "casser le chocolat en carrés"}
+    - id: prendre
+      action: "Verser en petits pots et laisser refroidir"
+      needs: []
+      uses: []
+      time_min: 2
+      attente_min: 120
+      attente_raison: "prise au frais"
+
+  emits: []
+
+  plan_b: []

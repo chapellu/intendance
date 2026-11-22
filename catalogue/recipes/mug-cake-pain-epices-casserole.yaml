@@ -1,0 +1,65 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LE MÊME PROCÉDÉ (un mug dans 3 cm d'eau bouillante, 15 min à couvert) avec
+# farine bise d'épeautre, miel, compote sans sucre ajouté, cannelle, épices à
+# pain d'épices et une goutte d'huile essentielle d'orange.
+
+recipe:
+  id: mug-cake-pain-epices-casserole
+  title: Mug-cake pain d'épices, sans micro-ondes
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Mes mug-cakes minute… sans micro-ondes (et sans four du tout !) », blog Saines Gourmandises, 5 août 2014"
+    url: https://saines-gourmandises.fr/les-gateaux-passent-a-la-casserole/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 1          # « 1 gros mug-cake, ou 2 petits »
+  time_min_total: 20
+  active_min: 5
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: "farine bise de grand épeautre", qty: 45, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever (c. à c. rase)", qty: 1, unit: c. à c.}
+    - {id: oeufs, name: "œuf", qty: 1, unit: pièce}
+    - {id: miel-acacia, name: "miel liquide d'acacia", qty: 2, unit: c. à s.}
+    - {id: huile-pepin-raisin, name: "huile neutre", qty: 1, unit: c. à s.}
+    - {id: compote, name: "compote de pomme ou de poire sans sucre", qty: 2, unit: c. à s.}
+    - {id: cannelle, name: "cannelle (demi-c. à c.)", qty: 0.5, unit: c. à c., seasoning: true}
+    - {id: epices-pain-epices, name: "pointe d'épices à pain d'épices", qty: 1, unit: pincée, seasoning: true}
+    - {id: huile-essentielle-orange, name: "huile essentielle d'orange douce", qty: 2, unit: pièce, optional: true}
+
+  steps:
+    - id: eau
+      action: "Mettre à bouillir 3 cm d'eau dans une casserole haute, à couvert"
+      needs: [simmer]
+      uses: []
+      time_min: 5
+    - id: pate
+      action: "Mélanger farine et levure, puis tous les autres ingrédients, et verser dans un gros mug"
+      needs: []
+      uses: [farine-epeautre, poudre-a-lever, oeufs, miel-acacia, huile-pepin-raisin, compote, cannelle, epices-pain-epices, huile-essentielle-orange]
+      time_min: 3
+      parallel_with: eau
+    - id: cuire
+      action: "Poser le mug dans l'eau bouillante, couvrir et cuire 15 min sans soulever"
+      needs: [steam]
+      uses: []
+      time_min: 15
+      attended: false
+
+  emits: []
+
+  plan_b: []

@@ -6774,7 +6774,40 @@ reformulé comme ceux du livre.
       dit l'autrice) ; la machine à pain de la brioche à l'huile d'olive n'est
       pas encodée. Moules à savarin, à kouglof, à madeleines, moules hauts :
       hors inventaire, rien ne le vérifie. 18 ingrédients nouveaux.
-- [ ] **T196c — Desserts, gourmandises, glaces, petit-déjeuner.** Environ
-      160 articles, et c'est là que vivent les recettes invitées à écarter.
+- [x] **T196c — Desserts, gourmandises et glaces de 2011 à 2014 (22/11).** 74
+      plats : gâteaux, tartes, bûches, charlottes, choux et éclairs sans beurre,
+      flans, mousses, confiseries de Noël (citronnettes, truffes, chocolats
+      fourrés, pâte d'amande minute, boules de neige), biscuits et cookies,
+      crêpes. Catalogue : 317 → 391 plats, 0 erreur.
+
+      **LES DEUX PREMIÈRES RECETTES INVITÉES, ÉCARTÉES ET NOMMÉES.** Le fondant
+      de Noël de décembre 2012 est « d'après une recette d'Amandine Geers et
+      Olivier Degorce » ; les crêpes à l'orge de la Chandeleur 2014 sont
+      « les crêpes de Cathy », reprises telles quelles. Les deux portent
+      `ecartee:` (ou `note_encodage:` quand l'article a d'autres plats).
+      Les livres d'autres auteurs que l'autrice recommande en fin d'article ne
+      sont pas des recettes invitées : seules comptent les recettes publiées.
+
+      **CE QUI DEMANDE UNE MACHINE ABSENTE.** Une sorbetière (la crème glacée
+      à la poire), un robot qui mixe des fruits ou des tomates surgelés (la
+      glace « magique », la glace à la tomate, la bûche choco-framboise) :
+      écartés. Les génoises aux œufs entiers fouettés jusqu'à tripler, que
+      l'autrice monte au robot pâtissier, sont encodées : au fouet, c'est plus
+      long, et les fiches le disent.
+
+      **UNE ARÊTE DE PLUS.** La crème de marron maison (900 g) nourrit la coupe
+      « timarronsuisse » (150 g), avec une crème de marron du commerce en
+      repli. Les biscuits à la cuillère maison émettent une base
+      (`biscuits-cuillere-maison`) que les charlottes et le tiramisu de la
+      même page ne réclament pas encore : ils achètent les leurs.
+
+      **DEUX FAITS DE CORPUS ONT BOUGÉ.** Les framboises sont maintenant
+      cuisinées (le test du vocabulaire des courses les retire de sa liste
+      « hors recette ») et 48 plats mangent l'épeautre. L'huile essentielle de
+      mandarine a un id court (`essence-mandarine`) : au-delà de 24 lettres, le
+      nom d'une puce de ticket tombait sur l'id. 29 ingrédients nouveaux.
+
+- [ ] **T196c2 — Desserts, gourmandises et glaces de 2015 à 2026.** Environ
+      60 articles.
 - [ ] **T196d — Le reste** : bocaux et confitures, boissons, sauces, et les
       articles « blabla » ou « non classé » qui contiennent une recette.

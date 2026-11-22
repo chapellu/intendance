@@ -1,0 +1,84 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN FOND SANS CUISSON PRÉALABLE : farine d'orge, coco râpée, sucre de bouleau et
+# huile de coco fondue tassés dans un cercle de 20 cm ; une crème de huit
+# petits-suisses, œufs, sucre et vanille ; 1 h de four, au moins 4 h au
+# frais ; fraises fraîches et sauce de fraises pochées à l'agave.
+
+recipe:
+  id: cheesecake-fraises-orge-coco
+  title: Cheesecake aux fraises, sucre de bouleau et farine d'orge
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Cheesecake aux fraises, sucre de bouleau et farine d'orge mondé », blog Saines Gourmandises, 9 mai 2013"
+    url: https://saines-gourmandises.fr/chouette-enfin-des-fraises/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « un cheesecake de 8 parts »
+  lot_entier: true
+  time_min_total: 80
+  active_min: 20
+
+  apports:
+    proteine: fromage
+    feculent: orge
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: sucre-bouleau, name: "sucre de bouleau (50 + 100 g)", qty: 150, unit: g}
+    - {id: farine-orge, name: "farine d'orge mondé", qty: 150, unit: g}
+    - {id: huile-coco, name: "huile de coco vierge", qty: 75, unit: g}
+    - {id: noix-coco-rapee, name: "noix de coco râpée", qty: 50, unit: g}
+    - {id: sel, name: "toute petite pincée de sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: petits-suisses, name: "petits-suisses", qty: 8, unit: pièce}
+    - {id: oeufs, name: "œufs", qty: 3, unit: pièce}
+    - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 1, unit: c. à s.}
+    - {id: fraises, name: "fraises (300 g sauce + 200 g décor)", qty: 500, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 4, unit: c. à s.}
+    - {id: eau, name: "eau", qty: 2, unit: c. à s.}
+
+  steps:
+    - id: fond
+      action: "Fondre l'huile de coco, la mélanger à la farine d'orge, la coco, 50 g de sucre et le sel, et tasser au fond d'un cercle posé sur une plaque chemisée"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [huile-coco, farine-orge, noix-coco-rapee, sel]
+      time_min: 8
+      kid: {age_min_months: 30, task: "tasser le fond avec le dos d'une cuillère"}
+    - id: creme
+      action: "Fouetter les petits-suisses avec les œufs, 100 g de sucre et la vanille, verser sur le fond et cuire 1 h"
+      astuce: "Baisser un peu le four si le dessus dore trop vite ; le centre doit être pris, pas tremblant."
+      needs: [bake]
+      uses: [petits-suisses, oeufs, sucre-bouleau, extrait-vanille]
+      time_min: 65
+      attended: false
+      attente_min: 240
+      attente_raison: "au moins 4 h au frais"
+    - id: sauce
+      action: "Porter doucement 300 g de fraises coupées à ébullition avec l'agave et l'eau, quelques minutes, jusqu'à ce qu'elles baignent dans leur jus"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [fraises, sirop-agave, eau]
+      time_min: 6
+      parallel_with: creme
+    - id: servir
+      action: "Décorer du reste de fraises et servir avec la sauce"
+      needs: []
+      uses: []
+      time_min: 4
+
+  emits:
+    - kind: reste-plat
+      type: cheesecake-fraises-orge-coco
+      qty_band: 3-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

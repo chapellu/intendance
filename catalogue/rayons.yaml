@@ -123,6 +123,12 @@ rayons:
     - patate-douce
     - radis-long
     - graines-germees
+    - reines-claudes
+    - mandarines
+    - cedrat
+    - figues
+    - ananas
+    - cerises
     # Arrivés avec les recettes de printemps de Chioca (p. 26–34).
     - cebette
     - ciboulette
@@ -318,6 +324,8 @@ rayons:
     - mascarpone
     - beaufort
     - oeufs-caille
+    - ricotta
+    - fromage-blanc
     # `yaourt-soja` est un id d'INGRÉDIENT, distinct du type de chaînage
     # `yaourt-soja` qu'émet la p. 159 : on peut l'acheter ou le cuisiner.
     - yaourt-soja
@@ -360,6 +368,26 @@ rayons:
     - porto
     - huile-essentielle-citron
     - tomates-sechees-nature
+    - creme-amande
+    - eau-de-vie
+    - whisky
+    - cafe
+    - epices-pain-epices
+    - feve-tonka
+    - cointreau
+    - oeufs-chocolat
+    - essence-mandarine
+    - sucre-bouleau
+    - abricots-secs
+    - lecithine-soja
+    - the-blanc
+    - eau-rose
+    - gelee-coing
+    - grains-cafe-chocolat
+    - the-vert
+    - huile-essentielle-menthe
+    - farine-avoine
+    - creme-marron
     # Arrivés avec l'hiver de Chioca (p. 154 à 207, T192). `pate-amande` est la
     # pâte d'amande de la p. 214, achetée tant que la page n'est pas encodée.
     - noix-coco-rapee
@@ -592,6 +620,7 @@ placard:
   - piment-cayenne
   - muscade
   - ail-semoule
+  - gingembre-poudre
   - glacons        # se font, ne s'achètent pas
   - eau            # ne s'achète pas ; listé pour ne pas polluer la liste
 
@@ -600,10 +629,12 @@ placard:
 # pour les autres, le stock affichait l'id dé-tiretisé : « huile olive »,
 # « boeuf hache », « porc saute ». Ces noms-là sont écrits ici, et priment.
 noms:
+  abricots-secs: abricots secs
   agar-agar: agar-agar
   agneau-collier: collier d'agneau
   agneau-hache: agneau haché
   ail-semoule: ail en semoule
+  ananas: ananas
   anis-vert: anis vert
   arrow-root: arrow-root
   asperges-vertes: asperges vertes
@@ -617,9 +648,12 @@ noms:
   bouillon-legumes: bouillon de légumes
   bouillon-miso: bouillon au miso
   bouillon-volaille: bouillon de volaille
+  cafe: café
   cavolo-nero: chou noir toscan
+  cedrat: cédrat
   celeri-rave: céleri-rave
   cepes: cèpes
+  cerises: cerises
   champignons-conserve: champignons en conserve
   champignons-paris: champignons de Paris
   chevre-buche: bûche de chèvre
@@ -630,6 +664,7 @@ noms:
   chou-vert: chou vert
   clous-girofle: clous de girofle
   cocktail-fruits: cocktail de fruits
+  cointreau: liqueur d'agrume
   colin-surgele: colin surgelé
   comte: comté
   concentre-tomate: concentré de tomate
@@ -640,27 +675,38 @@ noms:
   coppa: coppa
   couenne-porc: couenne de porc
   cracotte: cracottes
+  creme-amande: crème d'amande
   creme-avoine: crème d'avoine
   creme-coco: crème de coco
   creme-dessert-chocolat: crème dessert au chocolat
   creme-epeautre: crème d'épeautre
+  creme-marron: crème de marron
   creme-soja: crème de soja
+  eau-de-vie: eau-de-vie
   eau-fleur-oranger: eau de fleur d'oranger
+  eau-rose: eau de rose
+  epices-pain-epices: épices à pain d'épices
   epinards-surgeles: épinards surgelés
   extrait-amande-amere: extrait d'amande amère
   extrait-vanille: extrait de vanille
+  farine-avoine: farine d'avoine
   farine-epeautre: farine de grand épeautre
   farine-orge: farine d'orge
   farine-petit-epeautre: farine de petit épeautre
   ferments-yaourt: ferments à yaourt
   feuilles-brick: feuilles de brick
   feuilles-nori: feuilles de nori
+  feve-tonka: fève tonka
   feves: fèves
+  figues: figues fraîches
   flocons-avoine: flocons d'avoine
   foies-volaille: foies de volaille
+  fromage-blanc: fromage blanc
   fruits-secs-melange: mélange de fruits secs
   fruits-secs-panaches: fruits secs panachés
   galettes-sarrasin: galettes de sarrasin
+  gelee-coing: gelée de coing
+  gingembre-poudre: gingembre en poudre
   gomme-guar: gomme de guar
   gousse-vanille: gousse de vanille
   graines-coriandre: graines de coriandre
@@ -668,10 +714,13 @@ noms:
   graines-fenouil: graines de fenouil
   graines-germees: graines germées
   graines-tournesol: graines de tournesol
+  grains-cafe-chocolat: grains de café en chocolat
   gruau-avoine: gruau d'avoine
   herbes-provence: herbes de Provence
   huile-coco: huile de coco
   huile-essentielle-citron: huile essentielle de citron
+  essence-mandarine: huile essentielle de mandarine
+  huile-essentielle-menthe: huile essentielle de menthe
   huile-essentielle-orange: huile essentielle d'orange
   huile-olive: huile d'olive
   huile-pepin-raisin: huile de pépins de raisin
@@ -685,6 +734,7 @@ noms:
   lait-coco: lait de coco
   lait-croissance: lait de croissance
   lait-soja-vanille: lait de soja-vanille
+  lecithine-soja: lécithine de soja
   legumes-verts-saison: légumes verts de saison
   lentilles-seches: lentilles vertes sèches
   levure-biere: levure de bière
@@ -692,6 +742,7 @@ noms:
   mache: mâche
   magret-fume: magret de canard fumé
   maizena: Maïzena
+  mandarines: mandarines
   maquereau-fume: maquereau fumé
   maquereaux-boite: maquereaux en boîte
   margarine: margarine
@@ -703,6 +754,7 @@ noms:
   nouilles-oeufs: nouilles aux œufs
   oeufs: œufs
   oeufs-caille: œufs de caille
+  oeufs-chocolat: petits œufs en chocolat
   pain-levain: pain au levain
   patate-douce: patate douce
   pate-a-tartiner: pâte à tartiner
@@ -732,6 +784,8 @@ noms:
   puree-noisette: purée de noisette
   radis-long: radis long
   ratatouille-boite: ratatouille en boîte
+  reines-claudes: reines-claudes
+  ricotta: ricotta
   roquette: roquette
   roti-porc: rôti de porc
   roti-veau: rôti de veau
@@ -746,7 +800,10 @@ noms:
   sirop-imbibage: sirop d'imbibage
   son-avoine: son d'avoine
   sucre-blanc: sucre blanc
+  sucre-bouleau: sucre de bouleau
   terrine-campagne: terrine de campagne
+  the-blanc: thé blanc
+  the-vert: thé vert
   thon-boite: thon en boîte
   tofu-soyeux: tofu soyeux
   tomates-cerises: tomates cerises
@@ -758,5 +815,6 @@ noms:
   veau-blanquette: veau à blanquette
   vert-de-blette: vert de blette
   vin-rouge: vin rouge
+  whisky: whisky
   yaourt-brebis: yaourt de brebis
   yaourt-soja: yaourt de soja

@@ -1,0 +1,64 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE VINGTAINE DE SPÉCULOOS : farine complète d'épeautre, sucre de coco,
+# cannelle et épices, un œuf, de l'huile ; étalés, marqués, découpés, 15 min.
+# Avec un sachet de levure, plus moelleux, mais le dessin s'efface.
+
+recipe:
+  id: speculoos-epeautre-sucre-coco
+  title: Spéculoos à l'épeautre et au sucre de coco
+  creneaux: [gouter]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Spéculoos à l'épeautre et sucre de coco », blog Saines Gourmandises, 27 septembre 2012"
+    url: https://saines-gourmandises.fr/connaissez-vous-le-sucre-de-coco/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « une vingtaine de petits spéculoos »
+    pieces: 20
+  time_min_total: 30
+  active_min: 15
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: "farine complète d'épeautre", qty: 200, unit: g}
+    - {id: sucre-complet, name: "sucre de coco", qty: 75, unit: g}
+    - {id: cannelle, name: "cannelle (c. à s. légèrement bombée)", qty: 1, unit: c. à s., seasoning: true}
+    - {id: epices-pain-epices, name: "épices pour spéculoos (demi-c. à s.)", qty: 0.5, unit: c. à s., seasoning: true}
+    - {id: oeufs, name: "œuf", qty: 1, unit: pièce}
+    - {id: huile-tournesol, name: "huile végétale", qty: 10, unit: cl}
+    - {id: sel, name: "pincée de sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: poudre-a-lever, name: "sachet de levure", qty: 1, unit: sachet, optional: true}
+
+  steps:
+    - id: pate
+      action: "Préchauffer à 180 °C ; mêler farine, épices, sel, sucre et levure, puis l'œuf et l'huile, pétrir en boule et étaler sur un plan fariné"
+      needs: []
+      uses: [farine-epeautre, sucre-complet, cannelle, epices-pain-epices, sel, poudre-a-lever, oeufs, huile-tournesol]
+      time_min: 8
+      kid: {age_min_months: 30, task: "marquer la pâte et découper"}
+    - id: cuire
+      action: "Marquer, découper, poser sur une plaque chemisée et cuire 15 min ; ils croquent en refroidissant"
+      needs: [bake]
+      uses: []
+      time_min: 18
+      attended: false
+
+  emits:
+    - kind: base
+      type: speculoos-epeautre-sucre-coco
+      qty_band: 3-repas
+      keeps: {frigo_days: 15, congelo: false}
+
+  plan_b: []

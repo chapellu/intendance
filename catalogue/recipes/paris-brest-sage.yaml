@@ -1,0 +1,101 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE COURONNE DE PÂTE À CHOUX SANS BEURRE (la recette des petits choux, avec
+# deux œufs) de 18 cm, 45 min ; ouverte, évidée, remplie d'une crème
+# mousseline : crème pâtissière de soja-vanille, farine d'épeautre, purée de
+# noisette et sucre de coco, refroidie filmée à température ambiante (pas au
+# frigo), allégée de crème de coco fouettée dans un bol givré.
+
+recipe:
+  id: paris-brest-sage
+  title: Paris-Brest très « sage » à la mousseline pralinée
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Mon Paris-Brest très sage… », blog Saines Gourmandises, 19 février 2014"
+    url: https://saines-gourmandises.fr/ca-cest-du-sport/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « pour 8 personnes »
+  lot_entier: true
+  time_min_total: 90
+  active_min: 40
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, ref: farine-choux, name: "farine d'épeautre T130 (pâte à choux)", qty: 95, unit: g}
+    - {id: eau, name: "eau", qty: 12, unit: cl}
+    - {id: puree-amande-blanche, name: "purée d'amande blanche bien fluide", qty: 100, unit: g}
+    - {id: sel, name: "pincée de sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: oeufs, name: "œufs", qty: 2, unit: pièce}
+    - {id: lait-soja-vanille, name: "lait de soja-vanille", qty: 20, unit: cl}
+    - {id: farine-epeautre, ref: farine-creme, name: "farine d'épeautre (crème)", qty: 2, unit: c. à s.}
+    - {id: puree-noisette, name: "purée de noisette fluide", qty: 3, unit: c. à s.}
+    - {id: sucre-complet, name: "sucre de coco ou de canne intégral", qty: 85, unit: g}
+    - {id: huile-coco, name: "huile de coco vierge", qty: 55, unit: g}
+    - {id: creme-coco, name: "crème de coco liquide bien froide", qty: 20, unit: cl}
+    - {id: sirop-agave, name: "un peu de sirop d'agave", qty: 2, unit: c. à s.}
+    - {id: amandes-effilees, name: "amandes effilées", qty: 30, unit: g}
+    - {id: sucre-glace, name: "un peu de sucre glace", qty: 1, unit: c. à s.}
+
+  steps:
+    - id: creme
+      action: "Fouetter en casserole le soja, la farine, le sucre et la noisette, chauffer à petit feu en fouettant jusqu'à épaissir, puis y fondre l'huile de coco"
+      astuce: "Mettre le bol et le fouet au congélateur, la crème de coco au frigo."
+      needs: [simmer]
+      charge_partielle: true
+      uses: [lait-soja-vanille, farine-creme, sucre-complet, puree-noisette, huile-coco]
+      time_min: 8
+      attente_min: 180
+      attente_raison: "refroidir filmée à température ambiante, pas au frigo"
+    - id: chantilly
+      action: "Fouetter la crème de coco glacée dans le bol givré jusqu'à ce qu'elle soit ferme, l'incorporer à la crème et mettre en poche cannelée au frais"
+      needs: []
+      uses: [creme-coco]
+      time_min: 8
+    - id: choux
+      action: "Préchauffer à 180 °C ; bouillir eau, purée d'amande et sel, jeter la farine hors du feu, sécher la panade 1 min 30, puis les œufs un à un très vite"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [eau, puree-amande-blanche, sel, farine-choux, oeufs]
+      time_min: 10
+      attended: true
+    - id: cuire
+      action: "Dresser une couronne de 18 cm à la poche et cuire 45 min"
+      astuce: "Baisser à 150 °C après 30 min si elle dore trop vite."
+      needs: [bake]
+      uses: []
+      time_min: 45
+      attended: false
+    - id: garnir
+      action: "Couper la couronne tiède dans l'épaisseur, l'évider, remplir généreusement la base de crème, reposer le chapeau et le badigeonner d'agave"
+      needs: []
+      uses: [sirop-agave]
+      time_min: 10
+    - id: finir
+      action: "Parsemer d'amandes torréfiées à sec, saupoudrer de sucre glace et garder au frais"
+      needs: [pan-fry]
+      charge_partielle: true
+      uses: [amandes-effilees, sucre-glace]
+      time_min: 5
+      attente_min: 120
+      attente_raison: "quelques heures au frais, la pâte s'assouplit"
+
+  emits:
+    - kind: reste-plat
+      type: paris-brest-sage
+      qty_band: 3-repas
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []
