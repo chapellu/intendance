@@ -1,0 +1,72 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN SAVARIN DE 24 CM AU MIEL ET AU BEURRE, 22 min ; à la chantilly de crème
+# fleurette parfumée de deux gouttes d'huile essentielle de lavande vraie et
+# marbrée de confiture de myrtilles, ou nature.
+
+recipe:
+  id: gateau-ete-miel-chantilly-lavande
+  title: Gâteau tout simple pour l'été, chantilly à la lavande
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Gâteau tout simple pour l'été (avec ou sans chantilly lavande) », blog Saines Gourmandises, 2 juillet 2020"
+    url: https://saines-gourmandises.fr/rayon-de-miel/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 7          # « pour 6/8 parts »
+  lot_entier: true
+  time_min_total: 40
+  active_min: 15
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: "farine T110 de grand épeautre", qty: 175, unit: g}
+    - {id: oeufs, name: "œufs", qty: 3, unit: pièce}
+    - {id: jus-pomme, name: "jus de pomme", qty: 5, unit: cl}
+    - {id: miel-acacia, name: "miel liquide d'acacia", qty: 125, unit: g}
+    - {id: beurre, name: "beurre fondu", qty: 125, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever (demi-sachet)", qty: 0.5, unit: sachet}
+    - {id: fleur-de-sel, name: "grosse pincée de fleur de sel", qty: 1, unit: bonne pincée, seasoning: true}
+    - {id: creme, name: "crème fleurette entière très froide", qty: 40, unit: cl, optional: true}
+    - {id: essence-lavande, name: "huile essentielle de lavande vraie", qty: 2, unit: pièce, optional: true}
+    - {id: sucre-vanille, name: "sucre vanillé", qty: 3, unit: sachet, optional: true}
+    - {id: confiture-mures, name: "confiture de myrtilles allégée", qty: 100, unit: g, optional: true}
+
+  steps:
+    - id: pate
+      action: "Préchauffer à 180 °C ; mêler farine, sel et levure, puis tous les autres ingrédients du gâteau, et verser dans un savarin de 24 cm"
+      needs: []
+      uses: [farine-epeautre, fleur-de-sel, poudre-a-lever, oeufs, jus-pomme, miel-acacia, beurre]
+      time_min: 5
+      kid: {age_min_months: 24, task: "verser le miel et mélanger"}
+    - id: cuire
+      action: "Cuire 22 min et laisser refroidir"
+      needs: [bake]
+      uses: []
+      time_min: 22
+      attended: false
+    - id: chantilly
+      action: "Au goût, fouetter la crème très froide avec le sucre vanillé et la lavande en y mêlant la confiture, et en coiffer le gâteau"
+      needs: []
+      uses: [creme, sucre-vanille, essence-lavande, confiture-mures]
+      time_min: 8
+
+  emits:
+    - kind: reste-plat
+      type: gateau-ete-miel-chantilly-lavande
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

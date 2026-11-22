@@ -1,0 +1,73 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# TRENTE COOKIES AU CACAO SANS ŒUF : farine semi-complète, cacao, grué, noix (les
+# meilleures, fraîchement cassées) ou noisettes, chocolat 70 % concassés au
+# couteau, sucre de coco, huile de coco molle (pas fondue) et jus de pomme,
+# malaxés à la main ; palets de 30 g, 14 min exactement.
+
+recipe:
+  id: cookies-top-moumoute
+  title: Les fameux cookies « Top Moumoute »
+  creneaux: [gouter]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Les fameux cookies Top Moumoute », blog Saines Gourmandises, 21 décembre 2022"
+    url: https://saines-gourmandises.fr/les-fameux-cookies-top-moumoute/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 10          # « pour 30 cookies »
+    pieces: 30
+  time_min_total: 35
+  active_min: 20
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: "farine semi-complète", qty: 250, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever", qty: 1, unit: sachet}
+    - {id: sucre-vanille, name: "sucre vanillé", qty: 3, unit: sachet}
+    - {id: cacao, name: "cacao amer", qty: 25, unit: g}
+    - {id: grue-cacao, name: "grué de cacao", qty: 30, unit: g}
+    - {id: noix, name: "noix (ou noisettes, ou pécan)", qty: 125, unit: g}
+    - {id: chocolat-noir, name: "chocolat noir pâtissier 70 %", qty: 150, unit: g}
+    - {id: sucre-complet, name: "sucre de coco", qty: 80, unit: g}
+    - {id: huile-coco, name: "huile de coco un peu molle", qty: 200, unit: g}
+    - {id: jus-pomme, name: "jus de pomme", qty: 50, unit: g}
+    - {id: fleur-de-sel, name: "grosse pincée de fleur de sel", qty: 1, unit: bonne pincée, seasoning: true}
+
+  steps:
+    - id: concasser
+      action: "Préchauffer à 180 °C ; concasser grossièrement au couteau les noix et le chocolat"
+      needs: [chop-coarse]
+      uses: [noix, chocolat-noir]
+      time_min: 6
+    - id: pate
+      action: "Mêler farine, sucres et levure, puis tout le reste, et malaxer à la main jusqu'à une pâte homogène"
+      needs: []
+      uses: [farine-epeautre, sucre-complet, sucre-vanille, poudre-a-lever, cacao, grue-cacao, huile-coco, jus-pomme, fleur-de-sel]
+      time_min: 6
+      kid: {age_min_months: 30, task: "malaxer la pâte"}
+    - id: cuire
+      action: "Façonner des palets de 30 g espacés sur une plaque et cuire 14 min exactement ; refroidir"
+      needs: [bake]
+      uses: []
+      time_min: 20
+      attended: true
+
+  emits:
+    - kind: base
+      type: cookies-top-moumoute
+      qty_band: 3-repas
+      keeps: {frigo_days: 15, congelo: false}
+
+  plan_b: []

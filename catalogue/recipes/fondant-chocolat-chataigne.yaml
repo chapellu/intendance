@@ -1,0 +1,79 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# SANS FARINE : soja-vanille, miel, huile de coco et sucre vanillé bouillis, mixés
+# avec 250 g de châtaignes en crème, chocolat fondu au contact, jaunes, sel et
+# levure ; le reste des châtaignes en morceaux, blancs en neige ; 20 min dans un
+# cercle de 20 cm, une nuit au frais, cacao.
+
+recipe:
+  id: fondant-chocolat-chataigne
+  title: Fondant chocolat-châtaigne sans gluten
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Fondant chocolat-châtaigne », blog Saines Gourmandises, 12 octobre 2020"
+    url: https://saines-gourmandises.fr/sans-gluten-mais-sans-ingredients-bizarres-non-plus/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 10          # « pour 10 parts »
+  lot_entier: true
+  time_min_total: 35
+  active_min: 15
+
+  apports:
+    proteine: oeuf
+    feculent: chataigne
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: huile-coco, name: "huile de coco", qty: 100, unit: g}
+    - {id: chocolat-noir, name: "chocolat noir pâtissier 70 %", qty: 200, unit: g}
+    - {id: miel-acacia, name: "miel d'acacia (ou agave)", qty: 100, unit: g}
+    - {id: sucre-vanille, name: "sucre vanillé", qty: 3, unit: sachet}
+    - {id: chataignes, name: "châtaignes pelées au naturel", qty: 400, unit: g}
+    - {id: oeufs, name: "œufs moyens", qty: 5, unit: pièce}
+    - {id: lait-soja-vanille, name: "lait de soja à la vanille", qty: 20, unit: cl}
+    - {id: poudre-a-lever, name: "poudre à lever", qty: 1, unit: sachet}
+    - {id: fleur-de-sel, name: "grosse pincée de fleur de sel", qty: 1, unit: bonne pincée, seasoning: true}
+    - {id: cacao, name: "cacao", qty: 1, unit: c. à c.}
+
+  steps:
+    - id: creme
+      action: "Préchauffer à 180 °C ; bouillir le lait avec le miel, l'huile de coco et le sucre vanillé, et le mixer finement avec 250 g de châtaignes"
+      needs: [simmer, blend-smooth]
+      charge_partielle: true
+      uses: [lait-soja-vanille, miel-acacia, huile-coco, sucre-vanille]
+      time_min: 8
+    - id: chocolat
+      action: "Y mixer par impulsions le chocolat en morceaux jusqu'à le fondre, puis les jaunes, le sel et la levure"
+      needs: [blend-smooth]
+      uses: [chocolat-noir, fleur-de-sel, poudre-a-lever]
+      time_min: 4
+    - id: cuire
+      action: "Mêler à la spatule les châtaignes restantes en morceaux et les blancs en neige, verser dans un cercle de 20 cm et cuire 20 min"
+      needs: [bake]
+      uses: [chataignes, oeufs]
+      time_min: 25
+      attended: false
+      attente_min: 600
+      attente_raison: "une nuit au frais"
+    - id: servir
+      action: "Poudrer de cacao avant de servir"
+      needs: []
+      uses: [cacao]
+      time_min: 1
+
+  emits:
+    - kind: reste-plat
+      type: fondant-chocolat-chataigne
+      qty_band: 3-repas
+      keeps: {frigo_days: 4, congelo: false}
+
+  plan_b: []

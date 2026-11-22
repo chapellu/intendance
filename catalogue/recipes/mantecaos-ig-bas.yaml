@@ -1,0 +1,63 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# QUARANTE SABLÉS ANDALOUS SANS SAINDOUX : farine d'épeautre, sucre de coco, huile
+# neutre, cannelle et clémentine sablées du bout des doigts, tassées en palets
+# de 25 g marqués du pouce ; 20 min à 180 °C puis 5 min à 125 °C (l'article
+# annonce 160 °C en tête, puis 180 °C dans les étapes : ce sont les étapes qui
+# sont encodées). Sablés une fois froids, poudrés de cannelle.
+
+recipe:
+  id: mantecaos-ig-bas
+  title: Mantecaos à IG bas
+  creneaux: [gouter]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Mes mantecaos à IG bas », blog Saines Gourmandises, 4 novembre 2015"
+    url: https://saines-gourmandises.fr/plein-de-soleil-en-novembre/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 10          # « environ 40 mantecaos »
+    pieces: 40
+  time_min_total: 35
+  active_min: 15
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: "farine T110 de grand épeautre", qty: 500, unit: g}
+    - {id: sucre-complet, name: "sucre de coco", qty: 200, unit: g}
+    - {id: huile-pepin-raisin, name: "huile neutre", qty: 25, unit: cl}
+    - {id: cannelle, name: "cannelle (2 c. à s. rases + pour saupoudrer)", qty: 2.5, unit: c. à s., seasoning: true}
+    - {id: huile-essentielle-orange, name: "huile essentielle de clémentine (ou d'orange douce)", qty: 15, unit: pièce}
+
+  steps:
+    - id: sabler
+      action: "Sabler du bout des doigts tous les ingrédients ; tasser des palets de 25 g et creuser le centre d'une pression du pouce"
+      needs: []
+      uses: [farine-epeautre, sucre-complet, huile-pepin-raisin, cannelle, huile-essentielle-orange]
+      time_min: 12
+      kid: {age_min_months: 30, task: "marquer les palets du pouce"}
+    - id: cuire
+      action: "Cuire 20 min à 180 °C puis 5 min à 125 °C, refroidir sur grille et poudrer de cannelle"
+      needs: [bake]
+      uses: []
+      time_min: 28
+      attended: false
+
+  emits:
+    - kind: base
+      type: mantecaos-ig-bas
+      qty_band: 3-repas
+      keeps: {frigo_days: 20, congelo: false}
+
+  plan_b: []

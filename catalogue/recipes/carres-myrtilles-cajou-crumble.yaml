@@ -1,0 +1,75 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN GÂTEAU MOELLEUX À LA PURÉE DE CAJOU ET AU MIEL, des myrtilles fraîches dedans,
+# sous un « topping » croustillant de cajous, sucre de coco, farine et huile
+# haché en gros sable ; 20 min à 180 °C puis 150 °C. Refroidi avant de couper.
+
+recipe:
+  id: carres-myrtilles-cajou-crumble
+  title: Carrés aux myrtilles et noix de cajou
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Deux super gâteaux tout simples et de saison ! », blog Saines Gourmandises, 20 juin 2016"
+    url: https://saines-gourmandises.fr/7829/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « pour 8 à 9 parts »
+  lot_entier: true
+  time_min_total: 45
+  active_min: 15
+
+  apports:
+    proteine: oeuf
+    feculent: avoine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: puree-cajou, name: "purée de cajou", qty: 90, unit: g}
+    - {id: oeufs, name: "œufs fermiers", qty: 3, unit: pièce}
+    - {id: farine-petit-epeautre, name: "farine T110 de petit épeautre (120 + 35 g)", qty: 155, unit: g}
+    - {id: son-avoine, name: "son d'avoine", qty: 50, unit: g}
+    - {id: miel-acacia, name: "miel d'acacia", qty: 100, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever (demi-sachet)", qty: 0.5, unit: sachet}
+    - {id: lait-amande, name: "lait d'amande (10 cl + 1 c. à s.)", qty: 11, unit: cl}
+    - {id: sel, name: "pincée de sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: extrait-vanille, name: "extrait de vanille", qty: 1, unit: c. à s.}
+    - {id: myrtilles, name: "myrtilles fraîches", qty: 125, unit: g}
+    - {id: noix-cajou, name: "noix de cajou", qty: 85, unit: g}
+    - {id: sucre-complet, name: "sucre de coco", qty: 35, unit: g}
+    - {id: huile-pepin-raisin, name: "huile neutre", qty: 1, unit: c. à s.}
+    - {id: fleur-de-sel, name: "pincée de fleur de sel", qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: pate
+      action: "Préchauffer à 180 °C ; mêler 120 g de farine, son, levure et sel ; fouetter avec cajou, œufs, miel, lait et vanille, ajouter les myrtilles et verser en plat"
+      needs: []
+      uses: [farine-petit-epeautre, son-avoine, poudre-a-lever, sel, puree-cajou, oeufs, miel-acacia, lait-amande, extrait-vanille, myrtilles]
+      time_min: 8
+    - id: topping
+      action: "Hacher en gros sable les cajous, le sucre, 35 g de farine, l'huile, une cuillerée de lait et la fleur de sel, et en couvrir le gâteau"
+      needs: [chop-coarse-small]
+      uses: [noix-cajou, sucre-complet, huile-pepin-raisin, fleur-de-sel]
+      time_min: 4
+      kid: {age_min_months: 30, task: "parsemer le topping"}
+    - id: cuire
+      action: "Cuire 20 min à 180 °C puis environ 10 min à 150 °C ; refroidir avant de couper en carrés"
+      needs: [bake]
+      uses: []
+      time_min: 30
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: carres-myrtilles-cajou-crumble
+      qty_band: 3-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

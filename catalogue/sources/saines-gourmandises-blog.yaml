@@ -113,6 +113,7 @@ recettes:
     titre: "3 glaces végétales délicieusement « chocolat » (…PS : et sans sorbetière aussi ;)!)"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/pour-fondre-de-bonheur/
+    catalogue_ids: [glace-chocolat-grand-cru-coco, glace-marbree-irish-coffee, glace-tiramisu-coco]
     rendement: {n: 4, unite: personnes}
     prep_min: 10
     ingredients:
@@ -155,6 +156,8 @@ recettes:
   - slug: des-pancakes-des-polpettes-une-peche-melba-et-un-fondant-au-chocolat
     titre: "4 recettes « minceur durable"
     url: https://saines-gourmandises.fr/des-pancakes-des-polpettes-une-peche-melba-et-un-fondant-au-chocolat/
+    catalogue_ids: [pancakes-epeautre-son-avoine, peches-vapeur-miel-framboise, polpettes-herbes-spaghettis-epeautre]
+    note_encodage: "le fondant au chocolat très sage reprend la base du nid de Pâques 2013 et des brownies 2014 (crème de soja, agave, noisette, 85 %) : non doublé"
     prep_min: 10
     ingredients:
       - "Repos au frais : une nuit"
@@ -186,6 +189,7 @@ recettes:
   - slug: 5-ans
     titre: "Angel Cake à la framboise, crème vanille et « chocolat blanc"
     url: https://saines-gourmandises.fr/5-ans/
+    catalogue_id: angel-cake-framboise-chocolat-blanc
     prep_min: 45
     cuisson_min: 40
     ingredients:
@@ -235,6 +239,7 @@ recettes:
   - slug: joyeux-anniversaire
     titre: "Baba rhum-coco au pamplemousse corse et à la framboise"
     url: https://saines-gourmandises.fr/joyeux-anniversaire/
+    catalogue_id: baba-rhum-coco-pomelo-framboise
     prep_min: 25
     cuisson_min: 15
     ingredients:
@@ -349,6 +354,7 @@ recettes:
   - slug: bebe-de-jeanne
     titre: "Biscuits express à l’épeautre et au jus de pomme (Spécial « petites menottes et petites quenottes »)"
     url: https://saines-gourmandises.fr/bebe-de-jeanne/
+    catalogue_id: biscuits-epeautre-jus-pomme-bebe
     rendement: {n: 25, unite: biscuits}
     prep_min: 10
     ingredients:
@@ -364,6 +370,7 @@ recettes:
   - slug: facile-et-epatant
     titre: "Blancheline, la jolie Lapinette de Pâques"
     url: https://saines-gourmandises.fr/facile-et-epatant/
+    catalogue_id: gateau-lapinette-blancheline
     rendement: {n: 8, unite: personnes}
     prep_min: 30
     cuisson_min: 30
@@ -434,6 +441,7 @@ recettes:
   - slug: cette-annee-paques-tombe-1er-avril-ai-poisson-poisson-davril
     titre: "Brownies de Pâques « Forêt-Noire » (Super-faciles à faire, en quelques minutes chrono)"
     url: https://saines-gourmandises.fr/cette-annee-paques-tombe-1er-avril-ai-poisson-poisson-davril/
+    catalogue_id: brownies-foret-noire-griottes
     rendement: {n: 8, unite: personnes}
     prep_min: 5
     cuisson_min: 14
@@ -452,6 +460,7 @@ recettes:
     titre: "Bûche de Noël au miel et au… sapin (!) façon « Chalet de la forêt"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/la-sapiniere/
+    catalogue_id: buche-sapin-miel-chalet
     rendement: {n: 10, unite: parts}
     ingredients:
       - "Préparation : 1H"
@@ -499,6 +508,7 @@ recettes:
     titre: "Bûche poire-chocolat à la Chartreuse Verte et en bonus, THE recette de truffes !"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/pour-emmanuelle/
+    catalogue_ids: [buche-poire-chocolat-chartreuse, truffes-coco-vanille]
     prep_min: 10
     ingredients:
       - "200g de chocolat noir pâtissier à 70% de cacao"
@@ -605,6 +615,7 @@ recettes:
   - slug: carottes-cuites-tant-mieux
     titre: "Carrot Cake « raisonnable » avec un tout p’tit peu de beurre quand même"
     url: https://saines-gourmandises.fr/carottes-cuites-tant-mieux/
+    catalogue_id: carrot-cake-raisonnable-noix
     prep_min: 15
     cuisson_min: 40
     ingredients:
@@ -620,6 +631,7 @@ recettes:
   - slug: 8163
     titre: "Carrot-cake « surprise"
     url: https://saines-gourmandises.fr/8163/
+    catalogue_id: carrot-cake-surprise-lapins
     prep_min: 45
     cuisson_min: 50
     ingredients:
@@ -649,6 +661,7 @@ recettes:
   - slug: faites-comme-je-dis-pas-comme-je-fais
     titre: "Carrés sablés à la crème de groseille"
     url: https://saines-gourmandises.fr/faites-comme-je-dis-pas-comme-je-fais/
+    ecartee: "recette invitée : la crème de groseille teste « la recette de Karen » (les carrés sablés sont par ailleurs au catalogue depuis le livre)"
     prep_min: 20
     cuisson_min: 15
     ingredients:
@@ -676,6 +689,7 @@ recettes:
     titre: "Chalet de Noël à croquer…"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/pour-julie-et-ses-enfants/
+    catalogue_id: chalet-noel-a-croquer
     ingredients:
       - "Préparation, cuisson, montage (tout compris, y compris les gabarits) : j'ai mis 1H30, en écoutant de la musique de Noël, c'était chouette, ça aussi ce devrait être remboursé par la sécu 😉"
       - "Pour la pâte en « bois blond » (façades et pignons de la maison)"
@@ -745,6 +759,7 @@ recettes:
   - slug: cheesecake-aux-myrtilles-sable-breton-miel-de-lavande
     titre: "Cheesecake aux myrtilles, sablé breton, miel de lavande"
     url: https://saines-gourmandises.fr/cheesecake-aux-myrtilles-sable-breton-miel-de-lavande/
+    catalogue_id: cheesecake-myrtilles-sable-breton-lavande
     rendement: {n: 8, unite: parts}
     prep_min: 20
     cuisson_min: 20
@@ -859,6 +874,7 @@ recettes:
   - slug: desolee-ils-ne-savent-vraiment-pas-se-tenir
     titre: "Cookies pomme-noisette sans sucre ajouté"
     url: https://saines-gourmandises.fr/desolee-ils-ne-savent-vraiment-pas-se-tenir/
+    catalogue_id: cookies-pomme-noisette-sans-sucre
     rendement: {n: 25, unite: biscuits}
     prep_min: 20
     cuisson_min: 30
@@ -892,6 +908,7 @@ recettes:
     titre: "Cookies sensas’ à IG très, très, bas…"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/petite-ordonnance-equilibre-nerveux/
+    catalogue_id: cookies-sensas-kasha-avoine
     prep_min: 15
     cuisson_min: 15
     ingredients:
@@ -1022,6 +1039,7 @@ recettes:
     titre: "Crunchy du petit dej’ (super croustillant, super sage…)"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/petit-matin-dhiver/
+    catalogue_id: crunchy-petit-dej-orge-noisettes
     prep_min: 5
     cuisson_min: 8
     ingredients:
@@ -1131,6 +1149,7 @@ recettes:
   - slug: encore-une-idee-farfelue
     titre: "Crêpes à la mandarine et au potiron"
     url: https://saines-gourmandises.fr/encore-une-idee-farfelue/
+    catalogue_id: crepes-mandarine-potiron
     rendement: {n: 12, unite: crêpes}
     ingredients:
       - "400g de chair courge (crue, pesée sans les graines et sans la peau)"
@@ -1266,6 +1285,8 @@ recettes:
     titre: "Des recettes sucrées !"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/et-lokara-on-en-fait-quoi-part-2/
+    catalogue_ids: [cake-okara-epices, rochers-okara-amande]
+    note_encodage: "recette invitée écartée : les cookies pralinés à l'okara sont « fortement inspirés » de ceux du blog de Pipelette"
     prep_min: 5
     cuisson_min: 40
     ingredients:
@@ -1283,6 +1304,7 @@ recettes:
     titre: "Des « Figo-Lulus » bio tout fait-maison, 100% bons pour la santé (Et sans passer 4 h dans la cuisine…)"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/pour-vos-loulous-et-vos-lulu/
+    catalogue_id: figo-lulus
     prep_min: 20
     cuisson_min: 25
     ingredients:
@@ -1302,6 +1324,7 @@ recettes:
     titre: "Des « œufs de condor » pour votre dessert de Pâques? (En mousse choco-caramel, biscuit café et coque de chocolat croquante)"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/88973/
+    catalogue_id: oeufs-condor-mousse-caramel-cafe
     rendement: {n: 6, unite: personnes}
     prep_min: 25
     ingredients:
@@ -1340,6 +1363,7 @@ recettes:
   - slug: deux-recettes-dont-mon-incroyable-cake-mimosa
     titre: "Deux recettes, dont mon incroyable cake « Mimosa"
     url: https://saines-gourmandises.fr/deux-recettes-dont-mon-incroyable-cake-mimosa/
+    catalogue_id: cake-mimosa-mandarines-entieres
     rendement: {n: 10, unite: parts}
     prep_min: 10
     cuisson_min: 50
@@ -1357,6 +1381,7 @@ recettes:
     titre: "Deux « super gâteaux » tout simples et de saison !"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/7829/
+    catalogue_ids: [carres-myrtilles-cajou-crumble, couronne-cerises-chocolat-amande]
     prep_min: 15
     ingredients:
       - "Cuisson : 30 à 35 min"
@@ -1504,6 +1529,7 @@ recettes:
   - slug: ete-y-a-de-route-dautres-roue
     titre: "Entremet « Paon » à la crème et aux fruits"
     url: https://saines-gourmandises.fr/ete-y-a-de-route-dautres-roue/
+    catalogue_id: entremet-paon-creme-fruits
     rendement: {n: 8, unite: parts}
     prep_min: 35
     cuisson_min: 3
@@ -1678,6 +1704,7 @@ recettes:
   - slug: noel-bio-a-budget-sympa-partie-1
     titre: "Fondant au (poti-)marron façon « Rennes de Noël"
     url: https://saines-gourmandises.fr/noel-bio-a-budget-sympa-partie-1/
+    catalogue_id: fondant-potimarron-chocolat-rennes
     rendement: {n: 8, unite: personnes}
     prep_min: 20
     cuisson_min: 15
@@ -1718,6 +1745,7 @@ recettes:
   - slug: sans-gluten-mais-sans-ingredients-bizarres-non-plus
     titre: "Fondant chocolat-châtaigne"
     url: https://saines-gourmandises.fr/sans-gluten-mais-sans-ingredients-bizarres-non-plus/
+    catalogue_id: fondant-chocolat-chataigne
     rendement: {n: 10, unite: parts}
     prep_min: 15
     cuisson_min: 20
@@ -1754,6 +1782,7 @@ recettes:
     titre: "Fraisier à l’huile d’olive pour les 10 ans de Saines Gourmandises !"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/fraisier-a-lhuile-dolive-pour-les-10-ans-de-saines-gourmandises/
+    catalogue_id: fraisier-huile-olive-dix-ans
     prep_min: 30
     cuisson_min: 20
     ingredients:
@@ -1772,6 +1801,7 @@ recettes:
   - slug: framboisier-nuage-a-ig-super-bas
     titre: "Framboisier « nuage » à IG super bas"
     url: https://saines-gourmandises.fr/framboisier-nuage-a-ig-super-bas/
+    catalogue_id: framboisier-nuage-chia
     rendement: {n: 12, unite: parts}
     prep_min: 30
     cuisson_min: 15
@@ -1862,6 +1892,7 @@ recettes:
     titre: "Gaufres de Liège au chocolat (ou pas !)"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/tres-retard-lepiphanie-avance-chandeleur/
+    catalogue_id: gaufres-liege-chocolat
     rendement: {n: 16, unite: gaufres}
     ingredients:
       - "Préparation m 10 min"
@@ -1948,6 +1979,7 @@ recettes:
   - slug: chouette-mures-mures
     titre: "Grand cheesecake végétal aux fruits des bois"
     url: https://saines-gourmandises.fr/chouette-mures-mures/
+    catalogue_id: grand-cheesecake-vegetal-fruits-bois
     rendement: {n: 12, unite: personnes}
     prep_min: 30
     cuisson_min: 15
@@ -2092,6 +2124,7 @@ recettes:
   - slug: tout-simplement
     titre: "Gâteau au kéfir"
     url: https://saines-gourmandises.fr/tout-simplement/
+    catalogue_id: gateau-kefir
     prep_min: 5
     cuisson_min: 20
     ingredients:
@@ -2152,6 +2185,7 @@ recettes:
     titre: "Gâteau italien choco, vanille, café… à la poêle ! (bien protéiné, et à IG super bas)"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/gateau-italien-choco-vanille-cafe-a-la-poele/
+    catalogue_id: gateau-italien-poele-choco-cafe
     rendement: {n: 6, unite: parts}
     prep_min: 15
     ingredients:
@@ -2233,6 +2267,7 @@ recettes:
   - slug: rayon-de-miel
     titre: "Gâteau tout simple pour l’été (avec ou sans chantilly lavande)"
     url: https://saines-gourmandises.fr/rayon-de-miel/
+    catalogue_id: gateau-ete-miel-chantilly-lavande
     rendement: {n: 6, unite: parts}
     prep_min: 10
     cuisson_min: 22
@@ -2277,6 +2312,7 @@ recettes:
   - slug: avec-de-la-farine-integrale-ca-le-fait
     titre: "Gâteau « Grog » (super moelleux et aérien)"
     url: https://saines-gourmandises.fr/avec-de-la-farine-integrale-ca-le-fait/
+    catalogue_id: gateau-grog-orange-miel
     prep_min: 15
     cuisson_min: 35
     ingredients:
@@ -2303,6 +2339,7 @@ recettes:
   - slug: 90389
     titre: "Gâteau « mendiant » aux épices"
     url: https://saines-gourmandises.fr/90389/
+    catalogue_id: gateau-mendiant-epices-vapeur
     rendement: {n: 8, unite: parts}
     prep_min: 10
     cuisson_min: 40
@@ -2326,6 +2363,7 @@ recettes:
   - slug: pleut-trombes-photos-grise
     titre: "Je me console avec des spéculoos de compet’"
     url: https://saines-gourmandises.fr/pleut-trombes-photos-grise/
+    catalogue_id: speculoos-de-compet
     prep_min: 15
     cuisson_min: 12
     ingredients:
@@ -2484,6 +2522,7 @@ recettes:
     titre: "La plus sage des tartes au citron !"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/la-plus-sage-des-tartes-au-citron/
+    catalogue_id: tarte-citron-meringuee-orge-skyr
     rendement: {n: 8, unite: parts}
     prep_min: 25
     cuisson_min: 25
@@ -2526,6 +2565,7 @@ recettes:
   - slug: encore-du-chocolat-ben-oui-pardon
     titre: "Le Clan », Gâteau « mousse au chocolat » sur biscuit croustillant, crème de whisky"
     url: https://saines-gourmandises.fr/encore-du-chocolat-ben-oui-pardon/
+    catalogue_id: gateau-le-clan-mousse-whisky
     rendement: {n: 8, unite: parts}
     prep_min: 35
     ingredients:
@@ -2553,6 +2593,7 @@ recettes:
     titre: "Le gâteau de Noël 2025 sera une vache !"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/le-gateau-de-noel-2025-sera-une-vache/
+    catalogue_id: gateau-noel-vache-potimarron
     prep_min: 35
     cuisson_min: 30
     attentes: ["Repos 2 h"]
@@ -2586,6 +2627,7 @@ recettes:
   - slug: le-gateau-de-paques-au-citron-rocca-et-pomelo-de-corse
     titre: "Le gâteau de Pâques au citron Rocca et pomelo de Corse"
     url: https://saines-gourmandises.fr/le-gateau-de-paques-au-citron-rocca-et-pomelo-de-corse/
+    ecartee: "recette invitée : la génoise citron-amande est « empruntée » à la blogueuse Cléa"
     rendement: {n: 8, unite: parts}
     prep_min: 25
     cuisson_min: 30
@@ -2677,6 +2719,7 @@ recettes:
   - slug: sans-sucre-ajoute
     titre: "Le gâteau « Pomme d’Or"
     url: https://saines-gourmandises.fr/sans-sucre-ajoute/
+    catalogue_id: gateau-pomme-or-sans-sucre
     prep_min: 15
     cuisson_min: 35
     ingredients:
@@ -2744,6 +2787,7 @@ recettes:
   - slug: le-moelleux-au-chocolat-nuage-et-sa-version-poetique-pour-paques
     titre: "Le moelleux au chocolat « nuage » et sa version poétique pour Pâques"
     url: https://saines-gourmandises.fr/le-moelleux-au-chocolat-nuage-et-sa-version-poetique-pour-paques/
+    catalogue_id: moelleux-chocolat-nuage
     rendement: {n: 8, unite: parts}
     prep_min: 10
     cuisson_min: 25
@@ -2763,6 +2807,7 @@ recettes:
   - slug: le-renne-de-noel-poire-amande-chocolat
     titre: "Le « Renne de Noël » poire-amande-chocolat"
     url: https://saines-gourmandises.fr/le-renne-de-noel-poire-amande-chocolat/
+    catalogue_id: renne-noel-poire-amande-chocolat
     prep_min: 40
     cuisson_min: 35
     ingredients:
@@ -2794,6 +2839,7 @@ recettes:
     titre: "Les cookies les plus simples du monde ! (Sans aucun sucre ajouté…)"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/mi-figue-mi-raisin/
+    ecartee: "déjà au catalogue depuis le livre (cookies-les-plus-simples, mêmes quantités)"
     prep_min: 10
     cuisson_min: 20
     ingredients:
@@ -2811,6 +2857,7 @@ recettes:
     titre: "Les desserts sans lait, ça le fait !"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/un-tiramisu-un-cheesecake-et-un-gateau-de-fete-au-chocolat/
+    catalogue_ids: [gateau-fete-chocolat-praline-sans-lait, mini-cheesecakes-tofu-amande, tiramisu-sans-lait-tofu]
     prep_min: 30
     cuisson_min: 10
     ingredients:
@@ -2839,6 +2886,7 @@ recettes:
   - slug: les-fameux-cookies-top-moumoute
     titre: "Les fameux cookies “Top Moumoute”"
     url: https://saines-gourmandises.fr/les-fameux-cookies-top-moumoute/
+    catalogue_id: cookies-top-moumoute
     prep_min: 20
     cuisson_min: 14
     ingredients:
@@ -2857,6 +2905,7 @@ recettes:
   - slug: noel-en-blanc-et-or
     titre: "Les petits choux trop mignons qui se prenaient pour une Tarte au citron"
     url: https://saines-gourmandises.fr/noel-en-blanc-et-or/
+    catalogue_id: choux-tarte-citron-meringues
     prep_min: 35
     ingredients:
       - "Cuisson : environ 25 à 35 min (cela dépend des fours)"
@@ -3102,6 +3151,7 @@ recettes:
   - slug: plein-de-soleil-en-novembre
     titre: "Mes mantecaos à IG bas"
     url: https://saines-gourmandises.fr/plein-de-soleil-en-novembre/
+    catalogue_id: mantecaos-ig-bas
     prep_min: 10
     cuisson_min: 25
     ingredients:
@@ -3234,6 +3284,7 @@ recettes:
   - slug: moelleux-vapeur-au-citron-gingembre-miel-et-huile-dolive
     titre: "Moelleux vapeur au citron, gingembre, miel et huile d’olive"
     url: https://saines-gourmandises.fr/moelleux-vapeur-au-citron-gingembre-miel-et-huile-dolive/
+    catalogue_id: moelleux-vapeur-citron-gingembre
     rendement: {n: 6, unite: parts}
     prep_min: 10
     cuisson_min: 35
@@ -3251,6 +3302,7 @@ recettes:
   - slug: ode-a-lautomne
     titre: "Moelleux à la pomme, ghee et miel Crème végétale fouettée à la noix de Grenoble et fleur de sel"
     url: https://saines-gourmandises.fr/ode-a-lautomne/
+    catalogue_id: moelleux-pomme-ghee-miel-noix
     prep_min: 30
     cuisson_min: 40
     ingredients:
@@ -3280,6 +3332,7 @@ recettes:
   - slug: mojito-cake
     titre: "Mojito cake"
     url: https://saines-gourmandises.fr/mojito-cake/
+    catalogue_id: mojito-cake
     rendement: {n: 8, unite: parts}
     prep_min: 20
     cuisson_min: 20
@@ -3469,6 +3522,7 @@ recettes:
   - slug: une-recette-pour-les-loulous
     titre: "Pain d’épices aux 3 pommes"
     url: https://saines-gourmandises.fr/une-recette-pour-les-loulous/
+    catalogue_id: pain-epices-trois-pommes
     prep_min: 10
     cuisson_min: 45
     ingredients:
@@ -3618,6 +3672,7 @@ recettes:
   - slug: petits-cakes-de-paques-trop-mignons
     titre: "Petits cakes de Pâques trop mignons"
     url: https://saines-gourmandises.fr/petits-cakes-de-paques-trop-mignons/
+    catalogue_id: petits-cakes-paques-chocolat
     rendement: {n: 12, unite: muffins}
     prep_min: 10
     cuisson_min: 12
@@ -3836,6 +3891,7 @@ recettes:
   - slug: pour-paques-un-dessert-de-faussaire-connaissez-vous-le-jus-de-pois-chiches-monte-en-neige
     titre: "Petits pots de mousse au chocolat noir, sauce caramel beurre salé"
     url: https://saines-gourmandises.fr/pour-paques-un-dessert-de-faussaire-connaissez-vous-le-jus-de-pois-chiches-monte-en-neige/
+    catalogue_id: mousse-chocolat-aquafaba-caramel-sale
     prep_min: 15
     ingredients:
       - "Cuisson : quelques minutes"
@@ -3877,6 +3933,7 @@ recettes:
     titre: "Petits pots légers de « mousse au chocolat du jardinier » (Avec des courgettes dedans… mais chuuut !)"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/encore-une-idee-com-ple-te-ment-loufoque/
+    catalogue_id: mousse-chocolat-jardinier-courgette
     rendement: {n: 6, unite: pots}
     prep_min: 15
     ingredients:
@@ -4068,6 +4125,7 @@ recettes:
     titre: "Pâte « magique » pour bredele et autres petits sablés de Noël (Se décline aussi en super pâte à tarte !)"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/noel-bio-a-budget-sympa-partie-2/
+    catalogue_id: pate-magique-bredele
     ingredients:
       - "Préparation de la pâte : 5 min"
       - "Cuisson : environ 10 à 12 min"
@@ -4107,6 +4165,7 @@ recettes:
   - slug: royal-au-ble-noir
     titre: "Royal au blé noir"
     url: https://saines-gourmandises.fr/royal-au-ble-noir/
+    catalogue_id: royal-au-ble-noir
     rendement: {n: 12, unite: parts}
     prep_min: 30
     cuisson_min: 15
@@ -4337,6 +4396,7 @@ recettes:
   - slug: tic-tac-auraient-reve
     titre: "Sucettes-cookies des écureuils"
     url: https://saines-gourmandises.fr/tic-tac-auraient-reve/
+    catalogue_id: sucettes-cookies-ecureuils
     prep_min: 15
     cuisson_min: 20
     ingredients:
@@ -4376,6 +4436,7 @@ recettes:
     titre: "Tarte aux fraises (la vraie, mais de compet’ !)"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/tarte-aux-fraises-la-vraie-mais-de-compet/
+    catalogue_id: tarte-fraises-vraie-de-compet
     rendement: {n: 8, unite: parts}
     prep_min: 25
     ingredients:
@@ -4401,6 +4462,7 @@ recettes:
   - slug: tarte-briochee-flocon-de-neige
     titre: "Tarte briochée « flocon de neige"
     url: https://saines-gourmandises.fr/tarte-briochee-flocon-de-neige/
+    catalogue_id: tarte-briochee-flocon-neige
     rendement: {n: 8, unite: personnes}
     prep_min: 25
     cuisson_min: 12
@@ -4499,6 +4561,7 @@ recettes:
   - slug: tarte-a-la-mousse-au-chocolat-amande-et-cerises-noires
     titre: "Tarte à la mousse au chocolat, amande et cerises noires"
     url: https://saines-gourmandises.fr/tarte-a-la-mousse-au-chocolat-amande-et-cerises-noires/
+    catalogue_id: tarte-mousse-chocolat-cerises
     rendement: {n: 8, unite: parts}
     prep_min: 20
     cuisson_min: 20
@@ -4649,6 +4712,7 @@ recettes:
   - slug: cest-local-et-de-saison-et-puis-cest-surtout-trop-bon
     titre: "Tourte-crumble « des paresseux » Aux pommes poêlées et noix de Grenoble"
     url: https://saines-gourmandises.fr/cest-local-et-de-saison-et-puis-cest-surtout-trop-bon/
+    ecartee: "déjà au catalogue depuis le livre (tourte-crumble des paresseux)"
     prep_min: 10
     cuisson_min: 30
     ingredients:
@@ -4672,6 +4736,7 @@ recettes:
     titre: "Trois délicieux desserts à IG bas… et quelques mises au point pour vous entraîner au « Meilleur Pâtissier Bio » ;)"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/sos-patissiers-malheureux/
+    catalogue_ids: [gaufres-son-avoine-orge, mousse-fraise-miel-faisselle-brebis, quatre-quarts-orge-petit-suisse]
     prep_min: 10
     cuisson_min: 25
     ingredients:
@@ -4697,6 +4762,7 @@ recettes:
     titre: "Tropézienne… intensément chocolat"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/90550/
+    catalogue_id: tropezienne-chocolat
     rendement: {n: 12, unite: parts}
     prep_min: 25
     cuisson_min: 30
@@ -4871,6 +4937,7 @@ recettes:
     titre: "Une vraie crème glacée « vegan » super décadente… (… et sans sorbetière non plus ;))"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/on-attend-le-remboursement-secu-ou-du-moins-une-reconnaissance-dutilite-publique/
+    catalogue_id: glace-coco-pecan-caramel
     prep_min: 20
     cuisson_min: 1
     ingredients:
@@ -4971,6 +5038,7 @@ recettes:
     titre: "Yaourts « magiques » à la vanille et bon lait de ferme (Sans yaourtière, sans thermomètre, sans allumer le four…)"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/pour-regaler-vos-loulous-en-vacances-officieusement-vous-aurez-aussi-le-droit-dy-gouter/
+    catalogue_id: yaourts-magiques-vanille
     prep_min: 5
     cuisson_min: 120
     ingredients:
@@ -5053,6 +5121,7 @@ recettes:
     titre: "Œufs de Pâques comme des brownies pralinés…"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/jai-vraiment-des-poules-formidables/
+    catalogue_id: oeufs-paques-brownies-pralines
     cuisson_min: 15
     ingredients:
       - "Préparation des coquilles : de 15 à 30 min, selon la méthode choisie"

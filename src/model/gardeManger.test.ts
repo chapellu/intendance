@@ -176,9 +176,9 @@ describe("ce que le plat prend au placard", () => {
     // T196 : le blog Saines Gourmandises en ajoute trois (le pounti, le « pâté
     // épatant » aux courgettes, les cupcakes au potimarron), puis 24 de plus
     // avec ses tartes, entrées et pains (T196b), puis 14 avec ses desserts de
-    // 2011 à 2014 (T196c).
+    // 2011 à 2014 (T196c), puis 44 avec ceux de 2015 à 2026 (T196c2).
     const mangeurs = catalogue.plats.filter((p) => ids(p).includes("farine-epeautre"));
-    expect(mangeurs).toHaveLength(48);
+    expect(mangeurs).toHaveLength(92);
   });
 
   test("un ingrédient cité deux fois ne compte qu'une", () => {

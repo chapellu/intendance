@@ -6807,7 +6807,28 @@ reformulé comme ceux du livre.
       mandarine a un id court (`essence-mandarine`) : au-delà de 24 lettres, le
       nom d'une puce de ticket tombait sur l'id. 29 ingrédients nouveaux.
 
-- [ ] **T196c2 — Desserts, gourmandises et glaces de 2015 à 2026.** Environ
-      60 articles.
+- [x] **T196c2 — Desserts, gourmandises et glaces de 2015 à 2026.** 74
+      plats de plus (465 au catalogue), indexés dans
+      `catalogue/sources/saines-gourmandises-blog.yaml` comme les lots
+      précédents : étapes reformulées, jamais recopiées.
+
+      **TROIS INVITÉES DE PLUS, ÉCARTÉES.** La crème de groseille qui teste
+      « la recette de Karen », le moelleux adapté d'Amandine Geers et Olivier
+      Degorce, et le gâteau de Pâques 2026 au citron, dont la génoise est
+      « empruntée » à une consœur blogueuse. Chaque écart est dit dans
+      l'index (`ecartee`).
+
+      **LES MACHINES ABSENTES, ENCORE.** Sorbetière (crème glacée poire-amande,
+      SOS canicule), robot à fruits surgelés ou à glace pilée (granité
+      concombre-menthe, glace à la tomate crue), déshydrateur : écartés. Les
+      doublons du livre (cookies les plus simples, tourte-crumble) aussi.
+
+      **UNE ARÊTE DE PLUS.** Le gâteau de Noël 2025 en vache prend 500 g de
+      purée de potimarron pour sa ganache « rousse » : il accepte le reste du
+      catalogue, avec un potimarron à cuire en repli.
+
+      **UN FAIT DE CORPUS A BOUGÉ.** 92 plats mangent maintenant l'épeautre
+      (44 de plus). 31 ingrédients nouveaux, dont gélatine, matcha, chia et
+      miel de lavande.
 - [ ] **T196d — Le reste** : bocaux et confitures, boissons, sauces, et les
       articles « blabla » ou « non classé » qui contiennent une recette.

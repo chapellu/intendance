@@ -1,0 +1,79 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# TROIS ÉTAGES SANS LAIT : biscuit au cacao aux œufs fouettés (10 à 12 min dans un
+# cadre de 18 × 24 cm), ganache pralinée de purée de noisette toastée, huile de
+# coco et chocolat aux éclats de fève (qui restent croquants, sans liquide),
+# mousse au chocolat 70 % à l'huile de coco ; 6 h au frais. Couper à la lame
+# chaude.
+
+recipe:
+  id: gateau-fete-chocolat-praline-sans-lait
+  title: Gâteau de fête au chocolat et ganache pralinée, sans lait
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Les desserts sans lait, ça le fait ! », extrait de « Cuisiner sans lait », blog Saines Gourmandises, 28 janvier 2016"
+    url: https://saines-gourmandises.fr/un-tiramisu-un-cheesecake-et-un-gateau-de-fete-au-chocolat/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 12          # « un gâteau de 12 parts »
+  lot_entier: true
+  time_min_total: 45
+  active_min: 30
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: oeufs, name: "œufs (3 petits + 4)", qty: 7, unit: pièce}
+    - {id: sirop-agave, name: "sirop d'agave (5 + 5 cl)", qty: 10, unit: cl}
+    - {id: farine-petit-epeautre, name: "farine de petit épeautre T70 à T110", qty: 75, unit: g}
+    - {id: cacao, name: "cacao (10 g + pour saupoudrer)", qty: 15, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever (quart de sachet)", qty: 0.25, unit: sachet}
+    - {id: puree-noisette, name: "purée de noisette toastée", qty: 55, unit: g}
+    - {id: huile-coco, name: "huile de coco vierge (45 + 50 g)", qty: 95, unit: g}
+    - {id: chocolat-noir, name: "chocolat noir 70 % (100 g aux éclats de fève + 200 g)", qty: 300, unit: g}
+    - {id: extrait-vanille, name: "extrait de vanille liquide (1 + 1 c. à s.)", qty: 2, unit: c. à s.}
+
+  steps:
+    - id: biscuit
+      action: "Préchauffer à 180 °C ; fouetter 3 œufs avec 5 cl d'agave jusqu'à tripler, y mêler la farine, le cacao et la levure tamisés et cuire 10 à 12 min dans un cadre"
+      needs: [bake]
+      uses: [farine-petit-epeautre, poudre-a-lever]
+      time_min: 25
+    - id: ganache
+      action: "Fondre au bain-marie 100 g de chocolat aux éclats de fève avec la purée de noisette, 45 g d'huile de coco et la vanille, lisser et verser sur le biscuit"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [puree-noisette]
+      time_min: 6
+    - id: mousse
+      action: "Fondre au bain-marie le reste du chocolat avec 50 g d'huile de coco, 5 cl d'agave et la vanille, y mêler 4 jaunes puis les blancs en neige souple"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [chocolat-noir, huile-coco, sirop-agave, extrait-vanille, oeufs]
+      time_min: 10
+    - id: finir
+      action: "Verser la mousse sur la ganache, couvrir et mettre au frais ; poudrer de cacao et couper en 12"
+      needs: []
+      uses: [cacao]
+      time_min: 4
+      attente_min: 360
+      attente_raison: "au moins 6 h au frais"
+
+  emits:
+    - kind: reste-plat
+      type: gateau-fete-chocolat-praline-sans-lait
+      qty_band: 3-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

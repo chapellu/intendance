@@ -1,0 +1,82 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN SABLÉ AU GHEE (ou beurre) tassé dans un cercle de 19 cm, cuit, puis peint de
+# chocolat fondu pour rester croquant ; une mousse de myrtilles compotées,
+# crème fleurette chauffée au miel de lavande sans bouillir, gélatine et
+# petits-suisses, mixée ; 6 h au frais (la gélatine prend plus lentement que
+# l'agar-agar).
+
+recipe:
+  id: cheesecake-myrtilles-sable-breton-lavande
+  title: Cheesecake aux myrtilles, sablé breton, miel de lavande
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Cheesecake aux myrtilles, sablé breton, miel de lavande », blog Saines Gourmandises, 13 mai 2026"
+    url: https://saines-gourmandises.fr/cheesecake-aux-myrtilles-sable-breton-miel-de-lavande/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « pour 8 parts »
+  lot_entier: true
+  time_min_total: 45
+  active_min: 25
+
+  apports:
+    proteine: fromage
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: ghee, name: "ghee ou beurre", qty: 75, unit: g}
+    - {id: farine-epeautre, name: "farine T110", qty: 125, unit: g}
+    - {id: sucre-vanille, name: "sucre vanillé (4 sachets)", qty: 30, unit: g}
+    - {id: fleur-de-sel, name: "grosse pincée de fleur de sel", qty: 1, unit: bonne pincée, seasoning: true}
+    - {id: myrtilles, name: "myrtilles fraîches ou surgelées", qty: 450, unit: g}
+    - {id: petits-suisses, name: "petits-suisses", qty: 4, unit: pièce}
+    - {id: creme, name: "crème fleurette", qty: 25, unit: cl}
+    - {id: miel-lavande, name: "miel de lavande", qty: 100, unit: g}
+    - {id: gelatine, name: "gélatine", qty: 10, unit: g}
+    - {id: chocolat-noir, name: "chocolat noir 70 %", qty: 50, unit: g}
+
+  steps:
+    - id: sable
+      action: "Préchauffer à 180 °C ; mêler du bout des doigts le ghee fondu à la farine, au sel et au sucre vanillé, tasser dans un cercle de 19 cm et cuire environ 20 min"
+      needs: [simmer, bake]
+      charge_partielle: true
+      uses: [ghee, farine-epeautre, fleur-de-sel, sucre-vanille]
+      time_min: 25
+      kid: {age_min_months: 30, task: "tasser le sablé"}
+    - id: compote
+      action: "Compoter les myrtilles à feu doux en confiture ; fondre le chocolat au bain-marie et en peindre le sablé tiède, puis passer au congélateur"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [myrtilles, chocolat-noir]
+      time_min: 15
+    - id: mousse
+      action: "Ramollir la gélatine ; chauffer la crème avec le miel sans bouillir, y fondre la gélatine, puis mixer avec les myrtilles et les petits-suisses"
+      needs: [simmer, blend-smooth]
+      charge_partielle: true
+      uses: [gelatine, creme, miel-lavande, petits-suisses]
+      time_min: 8
+    - id: prendre
+      action: "Verser sur le sablé et laisser prendre au frais avant de démouler"
+      needs: []
+      uses: []
+      time_min: 2
+      attente_min: 360
+      attente_raison: "au moins 6 h au frais"
+
+  emits:
+    - kind: reste-plat
+      type: cheesecake-myrtilles-sable-breton-lavande
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

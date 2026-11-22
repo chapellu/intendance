@@ -1,0 +1,93 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN ANGEL CAKE À LA FARINE D'ORGE : huile, citron, soja et vanille, puis huit
+# blancs montés au sucre de bouleau ; moule à angel cake de 25 cm non graissé
+# (hors inventaire ; rien ne le vérifie), 45 min à 160 °C, refroidi à l'envers
+# toute la nuit. Une crème « chocolat blanc » au beurre de cacao, huile et
+# crème de coco, tofu soyeux, mixée la veille ; une chantilly de coco aux
+# framboises écrasées ; 500 g de framboises en rangs.
+
+recipe:
+  id: angel-cake-framboise-chocolat-blanc
+  title: Angel cake à la framboise, crème vanille et « chocolat blanc »
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Angel Cake à la framboise, crème vanille et chocolat blanc », blog Saines Gourmandises, 23 mai 2016"
+    url: https://saines-gourmandises.fr/5-ans/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 12          # « un gros gâteau de 12 parts »
+  lot_entier: true
+  time_min_total: 90
+  active_min: 45
+
+  apports:
+    proteine: oeuf
+    feculent: orge
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: huile-pepin-raisin, name: "huile neutre", qty: 7, unit: cl}
+    - {id: citron, name: "citron (3 cl de jus)", qty: 1, unit: pièce}
+    - {id: lait-soja-vanille, name: "lait de soja-vanille", qty: 8, unit: cl}
+    - {id: farine-orge, name: "farine d'orge mondé", qty: 100, unit: g}
+    - {id: sel, name: "pincée de sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: poudre-a-lever, name: "poudre à lever (demi-sachet)", qty: 0.5, unit: sachet}
+    - {id: oeufs, name: "blancs d'œufs", qty: 8, unit: pièce}
+    - {id: sucre-bouleau, name: "sucre de bouleau (90 + 30 g)", qty: 120, unit: g}
+    - {id: extrait-vanille, name: "extrait de vanille liquide (3 c. à s. en tout)", qty: 3, unit: c. à s.}
+    - {id: tofu-soyeux, name: "tofu soyeux bien égoutté", qty: 140, unit: g}
+    - {id: creme-coco, name: "crème de coco liquide (20 + 20 cl, très froide)", qty: 40, unit: cl}
+    - {id: beurre-cacao, name: "beurre de cacao", qty: 35, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 75, unit: g}
+    - {id: huile-coco, name: "huile de coco", qty: 75, unit: g}
+    - {id: fleur-de-sel, name: "pincée de fleur de sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: framboises, name: "framboises bien mûres", qty: 500, unit: g}
+
+  steps:
+    - id: pate
+      action: "Préchauffer à 160 °C ; mêler huile, citron, vanille et soja, les verser sur farine, levure et sel ; monter les blancs avec 90 g de sucre en trois fois"
+      needs: []
+      uses: [huile-pepin-raisin, citron, lait-soja-vanille, farine-orge, poudre-a-lever, sel, oeufs]
+      time_min: 12
+    - id: cuire
+      action: "Détendre la pâte d'un quart des blancs, incorporer le reste en soulevant, verser dans le moule non graissé et cuire 45 min ; retourner le moule pour la nuit"
+      needs: [bake]
+      uses: []
+      time_min: 50
+      attended: false
+      attente_min: 600
+      attente_raison: "refroidi à l'envers toute la nuit"
+    - id: creme
+      action: "Fondre le beurre de cacao, l'huile de coco, 20 cl de crème de coco, l'agave, la vanille et le sel, puis mixer avec le tofu soyeux et garder au frais"
+      needs: [simmer, blend-smooth]
+      charge_partielle: true
+      uses: [beurre-cacao, huile-coco, sirop-agave, fleur-de-sel, tofu-soyeux]
+      time_min: 10
+    - id: chantilly
+      action: "Fouetter très ferme 20 cl de crème de coco glacée avec 30 g de sucre et la vanille, et y écraser 100 g de framboises"
+      needs: []
+      uses: [creme-coco, sucre-bouleau, extrait-vanille]
+      time_min: 8
+    - id: monter
+      action: "Démouler, fendre le gâteau, étaler la chantilly, aligner des framboises, reposer le dessus, napper de crème et finir de framboises"
+      needs: []
+      uses: [framboises]
+      time_min: 12
+      kid: {age_min_months: 36, task: "aligner les framboises"}
+
+  emits:
+    - kind: reste-plat
+      type: angel-cake-framboise-chocolat-blanc
+      qty_band: 3-repas
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

@@ -1,0 +1,87 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN GÂTEAU À IMBIBER : œufs entiers fouettés au miel jusqu'à doubler, farine
+# intégrale et poudre d'amande, jus d'orange et huile jetés « en vrac » ;
+# 35 min dans un cercle de 22 cm. Imbibé chaud d'un sirop grog : eau infusée
+# à la cannelle, badiane et vanille, jus d'orange et de citron, miel, thym,
+# huiles essentielles, rhum. Peu sucré seul : c'est voulu.
+
+recipe:
+  id: gateau-grog-orange-miel
+  title: Gâteau « grog » super moelleux à l'orange et au miel
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Gâteau Grog (super moelleux et aérien) », blog Saines Gourmandises, 5 décembre 2019"
+    url: https://saines-gourmandises.fr/avec-de-la-farine-integrale-ca-le-fait/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « un gâteau de 8 parts »
+  lot_entier: true
+  time_min_total: 50
+  active_min: 20
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-complete, name: "farine T150 de grand épeautre", qty: 125, unit: g}
+    - {id: poudre-amande, name: "poudre d'amande", qty: 125, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever", qty: 1, unit: sachet}
+    - {id: orange, name: "oranges bio (jus)", qty: 2, unit: pièce}
+    - {id: oeufs, name: "œufs", qty: 6, unit: pièce}
+    - {id: miel-acacia, name: "miel d'acacia (100 + 100 g)", qty: 200, unit: g}
+    - {id: huile-tournesol, name: "huile neutre", qty: 5, unit: cl}
+    - {id: eau, name: "eau", qty: 20, unit: cl}
+    - {id: cannelle, name: "cannelle (demi-c. à c.)", qty: 0.5, unit: c. à c., seasoning: true}
+    - {id: badiane, name: "étoiles de badiane", qty: 2, unit: pièce, seasoning: true}
+    - {id: gousse-vanille, name: "gousse de vanille", qty: 1, unit: pièce}
+    - {id: citron, name: "demi-citron (jus)", qty: 0.5, unit: pièce}
+    - {id: thym, name: "pincée de thym séché", qty: 1, unit: pincée, seasoning: true}
+    - {id: huile-essentielle-orange, name: "huile essentielle d'orange", qty: 10, unit: pièce}
+    - {id: huile-essentielle-citron, name: "huile essentielle de citron", qty: 10, unit: pièce}
+    - {id: rhum, name: "rhum ambré", qty: 3, unit: c. à s.}
+
+  steps:
+    - id: pate
+      action: "Préchauffer à 180 °C ; fouetter les œufs et 100 g de miel jusqu'à doubler, puis y mêler en vrac farine, amande, levure, jus d'une orange et huile"
+      astuce: "Ne pas mêler d'abord jus et huile à la farine : tout se jette ensemble."
+      needs: []
+      uses: [oeufs, farine-complete, poudre-amande, poudre-a-lever, huile-tournesol]
+      time_min: 10
+    - id: cuire
+      action: "Verser dans un cercle de 22 cm posé sur un moule chemisé et cuire 35 min"
+      needs: [bake]
+      uses: []
+      time_min: 35
+      attended: false
+    - id: sirop
+      action: "Frémir l'eau quelques minutes avec cannelle, badiane et vanille, filtrer, puis ajouter rhum, jus, reste de miel, thym et huiles essentielles"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [eau, cannelle, badiane, gousse-vanille, rhum, orange, citron, miel-acacia, thym, huile-essentielle-orange, huile-essentielle-citron]
+      time_min: 8
+      parallel_with: cuire
+    - id: imbiber
+      action: "Imbiber le gâteau chaud cuillerée par cuillerée et laisser tiédir"
+      needs: []
+      uses: []
+      time_min: 5
+      kid: {age_min_months: 36, task: "verser le sirop à la cuillère"}
+
+  emits:
+    - kind: reste-plat
+      type: gateau-grog-orange-miel
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []
