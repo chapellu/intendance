@@ -94,6 +94,8 @@ aliases:
 
 rayons:
   primeur:
+    # Arrivés avec le blog Saines Gourmandises (T196).
+    - chou-romanesco
     - oignon
     - oignon-rouge
     - ail
@@ -107,6 +109,16 @@ rayons:
     - brocoli
     - citron
     - salade-verte
+    - cepes
+    - oseille
+    - piment-frais
+    - asperges-vertes
+    - mache
+    - cavolo-nero
+    - chou-vert
+    - pissenlit
+    - feves
+    - patidou
     # Arrivés avec les recettes de printemps de Chioca (p. 26–34).
     - cebette
     - ciboulette
@@ -226,6 +238,14 @@ rayons:
     - raisins
     - mirabelles
   boucherie:
+    # Arrivés avec le blog Saines Gourmandises (T196).
+    - dinde
+    - canette
+    - boeuf-a-braiser
+    - rouelle-veau
+    - couenne-porc
+    - jarret-porc-demi-sel
+    - veau-blanquette
     # Arrivés avec l'hiver de Chioca (p. 193 et 197, T192).
     - porc-saute
     - saucisses
@@ -251,9 +271,18 @@ rayons:
     - roti-veau
     - saucisson-sec
   poissonnerie:
+    # Arrivés avec le blog Saines Gourmandises (T196).
+    - gambas
     - saumon
     - colin-surgele
     - sardines-boite
+    - poisson-blanc
+    - crevettes
+    - poissons-roche
+    - rouille
+    - sardines
+    - maquereau-fume
+    - poisson-entier
     # Poissons fumés du chapitre lunchbox : ils se mangent froids, sans
     # cuisson, ce qui est exactement ce qu'un déjeuner emporté demande.
     - saumon-fume
@@ -263,6 +292,8 @@ rayons:
     # Arrivées avec l'automne de Chioca (p. 128, T190). Vivantes à l'achat.
     - moules
   crèmerie:
+    # Arrivés avec le blog Saines Gourmandises (T196).
+    - comte
     - oeufs
     - fromage-rape
     - creme
@@ -278,6 +309,7 @@ rayons:
     - tomme-savoie
     - mozzarella
     - mascarpone
+    - beaufort
     # `yaourt-soja` est un id d'INGRÉDIENT, distinct du type de chaînage
     # `yaourt-soja` qu'émet la p. 159 : on peut l'acheter ou le cuisiner.
     - yaourt-soja
@@ -287,6 +319,8 @@ rayons:
     - gouda
     - etorki
   frais:
+    # Arrivés avec le blog Saines Gourmandises (T196).
+    - galettes-sarrasin
     - tofu-fume
     - gnocchis
     - pate-brisee
@@ -296,6 +330,19 @@ rayons:
     # pour sa digestibilité, pas pour son goût, et les deux ne se remplacent pas.
     - tofu-lactofermente
   épicerie:
+    # Arrivés avec le blog Saines Gourmandises (T196).
+    - vin-rouge
+    - creme-avoine
+    - pastis
+    - safran
+    - anis-vert
+    - creme-epeautre
+    - arrow-root
+    - miso-blanc
+    - puree-cajou
+    - farine-orge
+    - nouilles-oeufs
+    - miso-orge
     # Arrivés avec l'hiver de Chioca (p. 154 à 207, T192). `pate-amande` est la
     # pâte d'amande de la p. 214, achetée tant que la page n'est pas encodée.
     - noix-coco-rapee
@@ -524,6 +571,9 @@ placard:
   - cumin
   - paprika
   - curcuma
+  # Arrivées avec le blog Saines Gourmandises (T196).
+  - piment-cayenne
+  - muscade
   - glacons        # se font, ne s'achètent pas
   - eau            # ne s'achète pas ; listé pour ne pas polluer la liste
 
@@ -534,44 +584,60 @@ placard:
 noms:
   agar-agar: agar-agar
   agneau-collier: collier d'agneau
+  anis-vert: anis vert
+  arrow-root: arrow-root
+  asperges-vertes: asperges vertes
+  beaufort: beaufort
   biscuits-cuillere: biscuits à la cuillère
   ble-lentilles: mélange blé-lentilles
+  boeuf-a-braiser: bœuf à braiser
   boeuf-hache: bœuf haché
   bouillon-legumes: bouillon de légumes
   bouillon-miso: bouillon au miso
   bouillon-volaille: bouillon de volaille
+  cavolo-nero: chou noir toscan
   celeri-rave: céleri-rave
+  cepes: cèpes
   champignons-conserve: champignons en conserve
   champignons-paris: champignons de Paris
   chevre-buche: bûche de chèvre
   chevre-demi-sec: chèvre demi-sec
   chocolat-poudre: chocolat en poudre
   chou-blanc: chou blanc
+  chou-romanesco: chou romanesco
+  chou-vert: chou vert
   clous-girofle: clous de girofle
   cocktail-fruits: cocktail de fruits
   colin-surgele: colin surgelé
+  comte: comté
   concentre-tomate: concentré de tomate
   confiture-fraise: confiture de fraises
   confiture-mirabelle: confiture de mirabelles
   confiture-orange: confiture d'oranges
   confiture-prune: confiture de prunes
+  couenne-porc: couenne de porc
   cracotte: cracottes
+  creme-avoine: crème d'avoine
   creme-coco: crème de coco
   creme-dessert-chocolat: crème dessert au chocolat
+  creme-epeautre: crème d'épeautre
   creme-soja: crème de soja
   eau-fleur-oranger: eau de fleur d'oranger
   epinards-surgeles: épinards surgelés
   extrait-amande-amere: extrait d'amande amère
   extrait-vanille: extrait de vanille
   farine-epeautre: farine de grand épeautre
+  farine-orge: farine d'orge
   farine-petit-epeautre: farine de petit épeautre
   ferments-yaourt: ferments à yaourt
   feuilles-brick: feuilles de brick
   feuilles-nori: feuilles de nori
+  feves: fèves
   flocons-avoine: flocons d'avoine
   foies-volaille: foies de volaille
   fruits-secs-melange: mélange de fruits secs
   fruits-secs-panaches: fruits secs panachés
+  galettes-sarrasin: galettes de sarrasin
   gomme-guar: gomme de guar
   gousse-vanille: gousse de vanille
   graines-coriandre: graines de coriandre
@@ -586,6 +652,7 @@ noms:
   huile-pepin-raisin: huile de pépins de raisin
   huile-tournesol: huile de tournesol
   jarret-boeuf: jarret de bœuf
+  jarret-porc-demi-sel: jarret de porc demi-sel
   jus-orange: jus d'orange
   jus-pomme: jus de pomme
   lait-amande: lait d'amande
@@ -597,19 +664,31 @@ noms:
   lentilles-seches: lentilles vertes sèches
   levure-biere: levure de bière
   levure-boulangere: levure de boulanger
+  mache: mâche
   maizena: Maïzena
+  maquereau-fume: maquereau fumé
   maquereaux-boite: maquereaux en boîte
   miel-acacia: miel d'acacia
+  miso-blanc: miso blanc
+  miso-orge: miso d'orge
   nectar-mangue: nectar de mangue
   noix-coco-rapee: noix de coco râpée
+  nouilles-oeufs: nouilles aux œufs
   oeufs: œufs
   pain-levain: pain au levain
   pate-a-tartiner: pâte à tartiner
   pate-amande: pâte d'amande
   pates-lasagne: pâtes à lasagne
+  patidou: patidou
   petits-pois-carottes: petits pois-carottes
   pignons-pin: pignons de pin
+  piment-cayenne: piment de Cayenne
   piment-espelette: piment d'Espelette
+  piment-frais: piment frais
+  pissenlit: pissenlit
+  poisson-blanc: filets de poisson blanc
+  poisson-entier: poisson entier
+  poissons-roche: poissons de roche
   porc-hache: porc haché
   porc-saute: sauté de porc
   pots-carton: pots en carton
@@ -619,11 +698,14 @@ noms:
   pousses-haricots: pousses de haricot mungo
   preparation-amandine: préparation amandine
   puree-amande-blanche: purée d'amande blanche
+  puree-cajou: purée de cajou
   puree-mousline: purée Mousline
   puree-noisette: purée de noisette
   ratatouille-boite: ratatouille en boîte
   roti-porc: rôti de porc
   roti-veau: rôti de veau
+  rouelle-veau: rouelles de veau
+  sardines: sardines fraîches
   sardines-boite: sardines en boîte
   sauce-bolognaise-bocal: sauce bolognaise en bocal
   saucisson-sec: saucisson sec
@@ -636,8 +718,11 @@ noms:
   thon-boite: thon en boîte
   tomates-cerises: tomates cerises
   tomates-cerises-confites: tomates cerises confites
+  tomates-pelees: tomates pelées
   tomates-sechees: tomates séchées
   tomme-savoie: tomme de Savoie
+  veau-blanquette: veau à blanquette
   vert-de-blette: vert de blette
+  vin-rouge: vin rouge
   yaourt-brebis: yaourt de brebis
   yaourt-soja: yaourt de soja

@@ -1,0 +1,123 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LA BOUILLABAISSE DES « GRANDS CLASSIQUES », en trois temps : une soupe de
+# poissons de roche moulinée, de gros poissons pochés à part dans ce bouillon,
+# servis avec pommes de terre, croûtons aillés et rouille.
+#
+# LA ROUILLE S'ACHÈTE ICI. L'article en donne deux façons (corail d'oursins,
+# ou un aïoli relevé de paprika et de Cayenne) : non encodées.
+#
+# LE MOULIN À LÉGUMES N'EST PAS DANS L'INVENTAIRE : on mixe et on passe au
+# tamis fin, l'autre façon qu'elle donne.
+
+recipe:
+  id: bouillabaisse
+  title: La fameuse bouillabaisse
+  format: soupe
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« LA fameuse bouillabaisse », blog Saines Gourmandises, 24 octobre 2014"
+    url: https://saines-gourmandises.fr/pour-lou-qui-attend-impatiemment-cette-recette-depuis-septembre/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « pour 8 personnes »
+  time_min_total: 135       # 45 min de préparation + 1 h 30 environ
+  active_min: 60
+
+  apports:
+    proteine: poisson
+    feculent: pommes-de-terre
+    legumes: [allium, solanacee, racine]
+    profil: soupe
+    origine: francais
+
+  ingredients:
+    - {id: poissons-roche, name: "petits poissons de roche pour la soupe (rascasses, grondins, vives…)", qty: 1, unit: kg}
+    - {id: poisson-blanc, name: "gros poissons de Méditerranée vidés et écaillés (saint-pierre, rascasse, rougets…)", qty: 2, unit: kg}
+    - {id: oignon, name: oignons, qty: 2, unit: pièce}
+    - {id: tomates, name: tomates, qty: 4, unit: pièce}
+    - {id: fenouil, name: bulbe de fenouil, qty: 1, unit: pièce}
+    - {id: poireau, name: poireau, qty: 1, unit: pièce}
+    - {id: carottes, name: carotte, qty: 1, unit: pièce}
+    - {id: celeri-branche, name: branches de céleri, qty: 3, unit: pièce}
+    - {id: ail, ref: ail-soupe, name: ail (soupe), qty: 5, unit: gousse}
+    - {id: ail, ref: ail-croutons, name: ail (croûtons), qty: 1, unit: gousse}
+    - {id: vin-blanc-sec, name: bon vin blanc sec, qty: 50, unit: cl}
+    - {id: eau, name: eau, qty: 4, unit: l}
+    - {id: huile-olive, name: huile d'olive, qty: 6, unit: c. à s.}
+    - {id: pastis, name: pastis, qty: 2, unit: c. à s.}
+    - {id: safran, name: safran, qty: 2, unit: dosette}
+    - {id: pomme-de-terre, name: pommes de terre nouvelles, qty: 6, unit: pièce}
+    - {id: pain-levain, name: "pain de campagne en croûtons (6 larges tranches)", qty: 300, unit: g}
+    - {id: rouille, name: rouille, qty: 300, unit: g}
+    - {id: laurier, name: feuilles de laurier, qty: 4, unit: pièce, seasoning: true}
+    - {id: graines-coriandre, name: graines de coriandre, qty: 1, unit: c. à s., seasoning: true}
+    - {id: gros-sel, name: gros sel (c. à s. rases), qty: 2, unit: c. à s., seasoning: true}
+    - {id: piment-cayenne, name: piment de Cayenne, qty: 1, unit: pincée, seasoning: true}
+    - {id: paprika, name: paprika, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 2, unit: pincée, seasoning: true}
+
+  steps:
+    - id: revenir
+      action: "Émincer oignons, carotte, fenouil et poireau et les faire revenir à l'huile dans un très grand faitout, puis ajouter tomates en quartiers et céleri en tronçons"
+      needs: [simmer-large]
+      uses: [oignon, carottes, fenouil, poireau, huile-olive, tomates, celeri-branche]
+      time_min: 15
+      attended: true
+    - id: soupe
+      action: "Ajouter les poissons de roche (et les parures des gros poissons), le vin, laurier, coriandre, ail, gros sel et l'eau ; mijoter 45 min"
+      needs: [simmer-large]
+      uses: [poissons-roche, vin-blanc-sec, laurier, graines-coriandre, ail-soupe, gros-sel, eau]
+      time_min: 45
+      attended: false
+    - id: pommes-de-terre
+      action: "Éplucher les pommes de terre, les couper en grosses bouchées et les cuire à l'eau salée"
+      needs: [boil]
+      uses: [pomme-de-terre]
+      time_min: 25
+      parallel_with: soupe
+      charge_partielle: true   # la casserole ne tient que les pommes de terre
+    - id: pocher
+      action: "Poser les gros poissons dans une grande sauteuse, les couvrir de bouillon brûlant et cuire 10 à 20 min selon leur taille"
+      astuce: "Si les tailles varient, mettre les plus gros d'abord, puis les moyens 10 min après, puis filets et petits."
+      needs: [pan-fry]
+      uses: [poisson-blanc]
+      time_min: 20
+      attended: true
+      charge_partielle: true   # les poissons se pochent en deux fois si besoin
+    - id: mouliner
+      action: "Mixer le reste du bouillon avec légumes et poissons de roche, puis le passer au tamis fin en pressant bien"
+      astuce: "Exprimer un maximum de sucs ; le tamis retient les arêtes."
+      needs: [blend-smooth]
+      uses: []
+      time_min: 15
+    - id: assaisonner
+      action: "Poivrer, pimenter, rectifier le sel, ajouter safran et pastis, et faire bouillir 5 min"
+      needs: [simmer-large]
+      uses: [poivre, piment-cayenne, paprika, safran, pastis]
+      time_min: 6
+    - id: croutons
+      action: "Griller les croûtons 10 min sous le gril du four et les frotter d'ail"
+      needs: [gratin]
+      uses: [pain-levain, ail-croutons]
+      time_min: 12
+      parallel_with: assaisonner
+    - id: servir
+      action: "Servir la soupe brûlante avec les pommes de terre et les croûtons tartinés de rouille, les poissons à part"
+      needs: []
+      uses: [rouille]
+      time_min: 5
+
+  emits:
+    - kind: reste-plat
+      type: bouillabaisse
+      qty_band: 2-repas
+      keeps: {frigo_days: 1, congelo: true}
+      note: "la soupe seule se congèle ; les poissons se finissent le lendemain"
+
+  plan_b: []

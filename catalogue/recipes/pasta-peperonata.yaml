@@ -1,0 +1,89 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LA PEPERONATA : poivrons grillés au four puis pelés, sauce de tomates Roma
+# épluchées à l'économe, câpres, olives, herbes. Sur des pâtes al dente, avec
+# du parmesan, du chèvre frais ou de la tomme de brebis.
+
+recipe:
+  id: pasta-peperonata
+  title: Pasta peperonata dans les règles de l'art
+  format: pates
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Pasta Peperonata dans les règles de l'art », blog Saines Gourmandises, 13 juillet 2016"
+    url: https://saines-gourmandises.fr/mamamia/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes »
+  time_min_total: 35        # 15 min de préparation + 20 min de cuisson
+  active_min: 25
+
+  apports:
+    proteine: aucune
+    feculent: pates
+    legumes: [solanacee, allium]
+    profil: mijote
+    origine: italien
+
+  ingredients:
+    - {id: pates, name: pâtes au choix, qty: 350, unit: g}
+    - {id: poivron, name: "poivrons (2 rouges, 1 vert)", qty: 3, unit: pièce}
+    - {id: tomates-roma, name: grosses tomates Roma, qty: 6, unit: pièce}
+    - {id: oignon, name: oignons, qty: 2, unit: pièce}
+    - {id: capres, name: câpres, qty: 1, unit: c. à s.}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: ail, name: ail, qty: 1, unit: gousse}
+    - {id: olives-noires, name: olives noires, qty: 15, unit: pièce}
+    - {id: laurier, name: feuille de laurier, qty: 1, unit: pièce, seasoning: true}
+    - {id: origan, name: "sarriette, origan ou thym frais (ou 1 c. à c. d'origan séché)", qty: 1, unit: c. à c., seasoning: true}
+    - {id: sel, name: sel, qty: 2, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+    - {id: piment-espelette, name: piment d'Espelette, qty: 1, unit: pincée, seasoning: true}
+    - {id: parmesan, name: parmesan râpé (au service), qty: 40, unit: g, optional: true}
+
+  steps:
+    - id: griller
+      action: "Ouvrir les poivrons, les épépiner et les griller face bombée en haut sous le gril à 240 °C, environ 10 min, jusqu'à ce que la peau noircisse"
+      needs: [gratin]
+      uses: [poivron]
+      time_min: 12
+      attended: true
+    - id: oignons
+      action: "Couper les oignons en petits dés et les faire revenir à l'huile avec un peu de sel dans une cocotte"
+      needs: [simmer]
+      uses: [oignon, huile-olive]
+      time_min: 8
+      parallel_with: griller
+      attended: true
+    - id: sauce
+      action: "Ajouter les tomates épluchées en dés, câpres, ail émincé, olives, laurier et herbes ; saler, poivrer, pimenter et mijoter 10 min"
+      astuce: "Un économe pèle les tomates plus vite qu'un passage à l'eau bouillante."
+      needs: [simmer]
+      uses: [tomates-roma, capres, ail, olives-noires, laurier, origan, sel, poivre, piment-espelette]
+      time_min: 15
+    - id: pates
+      action: "Cuire les pâtes al dente"
+      needs: [boil]
+      uses: [pates]
+      time_min: 11
+      parallel_with: sauce
+    - id: peler
+      action: "Peler les poivrons grillés, les couper en lanières et les ajouter à la sauce en fin de cuisson ; servir sur les pâtes, avec du parmesan"
+      needs: []
+      uses: [parmesan]
+      time_min: 5
+      kid: {age_min_months: 36, task: "retirer la peau des poivrons refroidis"}
+
+  emits:
+    - kind: reste-plat
+      type: peperonata
+      qty_band: 1-repas
+      keeps: {frigo_days: 3, congelo: true}
+      note: "la sauce seule, si on en fait plus"
+
+  plan_b: []

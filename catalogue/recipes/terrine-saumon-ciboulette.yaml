@@ -1,0 +1,84 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LE MIXEUR DU FOYER EST UN MIXEUR PLONGEUR : tout se mixe dans un pot haut,
+# la ciboulette ciselée s'ajoute après. Cuisson au bain-marie dans le four.
+
+recipe:
+  id: terrine-saumon-ciboulette
+  title: Terrine toute simple au saumon, huile d'olive et ciboulette
+  format: terrine
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Terrine toute simple au saumon sauvage, huile d'olive et ciboulette », blog Saines Gourmandises, 1er juillet 2011"
+    url: https://saines-gourmandises.fr/terrine-toute-simple-au-saumon-sauvage-huile-dolive-et-ciboulette/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes environ »
+  lot_entier: true
+  time_min_total: 40        # 5 min de préparation + 35 min de cuisson
+  active_min: 8
+
+  apports:
+    proteine: poisson
+    feculent: aucun
+    legumes: [allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: saumon, name: "filets de saumon sans arêtes (frais, ou surgelé décongelé)", qty: 500, unit: g}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: yaourt-nature, name: yaourt nature, qty: 1, unit: pot}
+    - {id: farine, name: farine (c. à s. rase), qty: 1, unit: c. à s.}
+    - {id: oeufs, name: œuf, qty: 1, unit: pièce}
+    - {id: gros-sel, name: gros sel, qty: 10, unit: g, seasoning: true}
+    - {id: poivre-5-baies, name: poivre 5 baies moulu (c. à c. rase), qty: 1, unit: c. à c., seasoning: true}
+    - {id: ciboulette, name: ciboulette, qty: 1, unit: petit bouquet}
+
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 180 °C et faire chauffer de l'eau pour le bain-marie"
+      needs: [bake]
+      uses: []
+      time_min: 1
+    - id: mixer
+      action: "Mixer finement le saumon avec l'huile, le yaourt, la farine, l'œuf, le sel et le poivre"
+      astuce: "Dans un pot haut, au mixeur plongeant, par morceaux de saumon : la lame doit toujours baigner dans le mélange."
+      needs: [blend-smooth]
+      uses: [saumon, huile-olive, yaourt-nature, farine, oeufs, gros-sel, poivre-5-baies]
+      time_min: 4
+    - id: ciboulette
+      action: "Ciseler finement la ciboulette et l'incorporer à la cuillère, puis verser dans une terrine ou un petit moule à cake"
+      needs: []
+      uses: [ciboulette]
+      time_min: 3
+      kid: {age_min_months: 30, task: "couper la ciboulette aux ciseaux au-dessus du bol"}
+    - id: cuire
+      action: "Cuire 35 min au bain-marie dans le four"
+      needs: [bake]
+      uses: []
+      time_min: 35
+      attended: false
+    - id: servir
+      action: "Laisser refroidir puis servir bien frais, en tranches ou en dés"
+      astuce: "Elle se tranche mieux après quelques heures au frigo."
+      needs: []
+      uses: []
+      time_min: 1
+
+  emits:
+    - kind: reste-plat
+      type: terrine-saumon-ciboulette
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: false}
+      note: "se mange froide : boîte du midi"
+
+  plan_b: []

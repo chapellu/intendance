@@ -1,0 +1,82 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DES COURGES-PORTIONS FARCIES : patidous (ou deux petits potimarrons de
+# 350 g) garnis d'une poêlée de poulet, jambon fumé, cèpes, persillade et
+# gruyère, 35 min au four.
+
+recipe:
+  id: patidous-farcis-poulet-cepes
+  title: Patidous farcis au poulet, cèpes et persillade
+  format: piece
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Potimarrons, courges, potirons, citrouilles and Co… rétrospective d'idées recettes », blog Saines Gourmandises, 17 septembre 2026"
+    url: https://saines-gourmandises.fr/potimarrons-courges-potirons-citrouilles-and-co-retrospective-didees-recettes-geniaaaaales/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 2          # « pour 2 personnes »
+  time_min_total: 55        # 10 min de préparation + 15 min + 35 min
+  active_min: 20
+
+  apports:
+    proteine: viande-blanche
+    feculent: aucun
+    legumes: [cucurbitacee, champignon, allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - id: patidou
+      name: patidous
+      qty: 2
+      unit: pièce
+      subs:
+        - {id: potimarron, name: "petits potimarrons (350 g)", ratio: 1.0}
+    - {id: poulet-filets, name: blanc de poulet, qty: 200, unit: g}
+    - {id: jambon-cru, name: tranches fines de jambon fumé, qty: 2, unit: tranche}
+    - {id: cepes, name: cèpes frais ou surgelés, qty: 300, unit: g}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: persil, name: persil, qty: 4, unit: brin}
+    - {id: ail, name: ail, qty: 1, unit: gousse}
+    - {id: fromage-rape, name: gruyère râpé, qty: 70, unit: g}
+    - {id: sel, name: sel, qty: 2, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 2, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.25, unit: pièce}
+
+  steps:
+    - id: poeler
+      action: "Préchauffer le four à 180 °C ; dorer à l'huile l'oignon en dés, le poulet en cubes et le jambon en lanières, légèrement salés et poivrés"
+      needs: [pan-fry]
+      uses: [oignon, poulet-filets, jambon-cru, huile-olive]
+      time_min: 8
+      attended: true
+    - id: cepes
+      action: "Ajouter les cèpes et cuire 5 à 10 min, le temps qu'ils rendent leur eau ; hors du feu, ajouter l'ail écrasé, le persil haché et le fromage"
+      needs: [pan-fry]
+      uses: [cepes, ail, persil, fromage-rape]
+      time_min: 9
+      attended: true
+    - id: farcir
+      action: "Couper les chapeaux, vider les graines, saler et poivrer l'intérieur, et remplir de farce en tassant"
+      astuce: "La farce peut dépasser : le chapeau n'a pas besoin de fermer."
+      needs: []
+      uses: [patidou, sel, poivre]
+      time_min: 5
+    - id: cuire
+      action: "Remettre les chapeaux et cuire 35 min"
+      needs: [bake]
+      uses: []
+      time_min: 35
+      attended: false
+
+  emits: []
+
+  plan_b: []

@@ -23,6 +23,7 @@ libelles:
   cereale-cuite: céréale cuite
   crepes-wraps: crêpes à wraps
   falafels: falafels
+  fondue-courgettes: fondue de courgettes
   frittata: frittata
   fumet-moules: fumet de moules
   haricots-blancs-cuits: haricots blancs cuits
@@ -37,6 +38,7 @@ libelles:
   pate-a-pizza: pâte à pizza
   pate-brisee-portion: pâte brisée
   pate-vegetal: pâté de lentilles
+  peperonata: sauce peperonata
   piperade: piperade
   poelee-legumes-verts: poêlée de légumes verts
   pois-chiches-cuits: pois chiches cuits
@@ -51,3 +53,4 @@ libelles:
   veloute-vert: velouté vert
   viande-pot-au-feu: viande du pot-au-feu
   yaourt-soja: soja-dessert
+

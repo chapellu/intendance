@@ -1,0 +1,88 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LE POUNTI AUVERGNAT, à la poêle puis sous le gril : oignon et jambon cru
+# dorés, verdure tombée (vert de blette, persil, céleri), pruneaux — « il faut
+# les mettre » —, puis une pâte d'œufs, farine et lait. Chaud ou froid. La
+# poêle doit aller au four : celle du foyer à poignée amovible le permet.
+
+recipe:
+  id: pounti
+  title: Pounti
+  format: omelette
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Pounti », blog Saines Gourmandises, 24 novembre 2022"
+    url: https://saines-gourmandises.fr/pounti/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes en plat principal »
+  time_min_total: 30        # 10 min de préparation + 20 min de cuisson
+  active_min: 20
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: [feuille, allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: oignon, name: "gros oignon (ou un blanc de poireau)", qty: 1, unit: pièce}
+    - {id: huile-olive, name: "huile d'olive (ou graisse de canard)", qty: 4, unit: c. à s.}
+    - {id: beurre, name: beurre, qty: 20, unit: g}
+    - {id: jambon-cru, name: jambon cru, qty: 150, unit: g}
+    - {id: pruneaux, name: pruneaux, qty: 7, unit: pièce}
+    - id: vert-de-blette
+      name: "verdure : vert de blette, persil, céleri"
+      qty: 300
+      unit: g
+      subs:
+        - {id: pousses-epinards, name: épinards et persil, ratio: 1.0}
+    - {id: oeufs, name: œufs, qty: 6, unit: pièce}
+    - {id: farine-epeautre, name: farine semi-complète d'épeautre, qty: 100, unit: g}
+    - {id: lait, name: "lait (ou eau)", qty: 10, unit: cl}
+    - {id: sel, name: sel (c. à c. rase), qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 1, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: dorer
+      action: "Allumer le gril du four ; couper l'oignon en petits dés et le dorer à la poêle avec le beurre, l'huile et le jambon cru"
+      needs: [oven-transfer]
+      uses: [oignon, beurre, huile-olive, jambon-cru]
+      time_min: 8
+      attended: true
+    - id: verdure
+      action: "Ajouter la verdure hachée grossièrement au couteau, la laisser tomber quelques minutes, puis les pruneaux en gros morceaux"
+      needs: [oven-transfer]
+      uses: [vert-de-blette, pruneaux]
+      time_min: 5
+      attended: true
+    - id: appareil
+      action: "Battre les œufs avec la farine, le lait, le sel et le poivre et verser sur la garniture ; cuire 3 min sur le feu"
+      needs: [oven-transfer]
+      uses: [oeufs, farine-epeautre, lait, sel, poivre]
+      time_min: 5
+      kid: {age_min_months: 30, task: "battre les œufs avec la farine"}
+    - id: gratiner
+      action: "Passer la poêle environ 10 min sous le gril"
+      needs: [gratin]
+      uses: []
+      time_min: 10
+      attended: true
+
+  emits:
+    - kind: reste-plat
+      type: pounti
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+      note: "se mange aussi froid"
+
+  plan_b: []

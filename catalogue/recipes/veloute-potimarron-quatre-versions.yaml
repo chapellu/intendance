@@ -1,0 +1,84 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LE VELOUTÉ DE LA MAISON, sans pomme de terre, et sa légume au choix : trois
+# blancs de poireaux, 300 g de céleri-rave ou un bocal de tomates pelées
+# (ici les poireaux, les deux autres en remplaçants). Pressé, on saute le
+# dorage de l'oignon et tout cuit 20 min dans l'eau bouillante.
+
+recipe:
+  id: veloute-potimarron-quatre-versions
+  title: Velouté de potimarron, en quatre versions
+  format: soupe
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Potimarrons, courges, potirons, citrouilles and Co… rétrospective d'idées recettes », blog Saines Gourmandises, 17 septembre 2026"
+    url: https://saines-gourmandises.fr/potimarrons-courges-potirons-citrouilles-and-co-retrospective-didees-recettes-geniaaaaales/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « pour 6 personnes »
+  time_min_total: 35        # 10 min de préparation + 25 min de cuisson
+  active_min: 10
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: [cucurbitacee, allium]
+    profil: soupe
+    origine: francais
+
+  ingredients:
+    - {id: potimarron, name: potimarron de taille normale, qty: 1, unit: pièce}
+    - {id: ail, name: ail (1 à 3 gousses), qty: 2, unit: gousse}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - id: poireau
+      name: blancs de poireaux
+      qty: 3
+      unit: pièce
+      subs:
+        - {id: celeri-rave, name: "300 g de céleri-rave", ratio: 1.0}
+        - {id: tomates-pelees, name: "un bocal de 400 g de tomates pelées", ratio: 1.0}
+    - {id: huile-olive, name: huile d'olive, qty: 6, unit: c. à s.}
+    - {id: eau, name: eau, qty: 1.2, unit: l}
+    - {id: muscade, name: muscade, qty: 1, unit: pincée, seasoning: true}
+    - {id: sel, name: sel, qty: 3, unit: pincée, seasoning: true}
+    - {id: poivre-5-baies, name: poivre 5 baies, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: blondir
+      action: "Blondir l'oignon émincé dans 4 c. à s. d'huile dans une cocotte"
+      needs: [simmer-large]
+      uses: [oignon]
+      time_min: 5
+      attended: true
+    - id: cuire
+      action: "Ajouter l'eau, le potimarron en cubes de 5 cm avec la peau, l'ail, les poireaux émincés et le sel ; cuire 20 min à couvert après l'ébullition"
+      needs: [simmer-large]
+      uses: [eau, potimarron, ail, poireau, sel]
+      time_min: 25
+      attended: false
+    - id: mixer
+      action: "Ajouter le reste d'huile, le poivre et la muscade, et mixer"
+      astuce: "Ou garder l'huile et mettre un peu de crème dans l'assiette."
+      needs: [blend-smooth]
+      uses: [huile-olive, poivre-5-baies, muscade]
+      time_min: 4
+      seasoning_gate: true
+
+  baby_portion:
+    take: "une petite louche de velouté mixé, avant le poivre et la muscade"
+    prep: "servir tiède"
+    needs: []
+    depuis: [cuire]
+
+  emits:
+    - kind: reste-plat
+      type: veloute-potimarron-quatre-versions
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

@@ -1,0 +1,67 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# CINQ MINUTES, UNE FOURCHETTE : maquereau fumé au poivre écrasé avec un
+# laitage (yaourt de brebis le plus sage, crème ou mascarpone les jours de
+# fête) et de la ciboulette. Tartine-repas, toasts. 24 h au frais en pot fermé.
+
+recipe:
+  id: rillettes-maquereau-fume
+  title: Rillettes « minute » de maquereau fumé au poivre
+  format: tartine
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Mais je vous donne quand même 2 recettes sympa à la fin de l'article », blog Saines Gourmandises, 22 mars 2019 (extrait de « Poissons et autres produits de la mer »)"
+    url: https://saines-gourmandises.fr/attention-travaux/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 2          # « pour 2 personnes en repas principal, 4 en entrée »
+  time_min_total: 5
+  active_min: 5
+
+  apports:
+    proteine: poisson
+    feculent: pain
+    legumes: [allium]
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: maquereau-fume, name: filets de maquereau fumé au poivre, qty: 350, unit: g}
+    - id: yaourt-brebis
+      name: yaourt de brebis au lait entier
+      qty: 100
+      unit: g
+      subs:
+        - {id: creme, name: crème fraîche épaisse, ratio: 1.0}
+        - {id: mascarpone, name: mascarpone, note: "les jours de fête", ratio: 1.0}
+    - {id: ciboulette, name: ciboulette, qty: 5, unit: brin}
+
+  avec:
+    - {id: pain-levain, name: pain grillé, qty: 200, unit: g}
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: ecraser
+      action: "Ôter la peau des filets et écraser la chair à la fourchette, en retirant les arêtes éventuelles"
+      needs: []
+      uses: [maquereau-fume]
+      time_min: 3
+      kid: {age_min_months: 30, task: "écraser le poisson à la fourchette"}
+    - id: lier
+      action: "Ajouter le laitage et la ciboulette ciselée, mélanger en pommade et servir sur du pain grillé"
+      needs: []
+      uses: [yaourt-brebis, ciboulette]
+      time_min: 2
+
+  emits:
+    - kind: reste-plat
+      type: rillettes-maquereau-fume
+      qty_band: lunchbox
+      keeps: {frigo_days: 1, congelo: false}
+
+  plan_b: []

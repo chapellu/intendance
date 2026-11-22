@@ -1,0 +1,80 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN PESTO D'HIVER : feuilles de chou noir toscan blanchies 5 min, mixées avec
+# noix, ail, parmesan et huile. L'eau de blanchiment cuit les pâtes. Sans
+# lactose : six filets d'anchois à la place du parmesan.
+
+recipe:
+  id: pates-pesto-cavolo-nero
+  title: Pâtes au pesto de cavolo nero (chou noir toscan)
+  format: pates
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Pesto de Cavolo Nero (Chou Noir Toscan) », blog Saines Gourmandises, 22 novembre 2017"
+    url: https://saines-gourmandises.fr/nest-beaute-compte/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes »
+  time_min_total: 25        # 10 min de préparation + 5 min + les pâtes
+  active_min: 15
+
+  apports:
+    proteine: fromage
+    feculent: pates
+    legumes: [crucifere]
+    profil: rapide
+    origine: italien
+
+  ingredients:
+    - id: cavolo-nero
+      name: "chou noir toscan (env. 350 g sans les côtes)"
+      qty: 700
+      unit: g
+      subs:
+        - {id: chou-frise, name: chou frisé, ratio: 1.0}
+    - {id: noix, name: noix fraîchement cassées, qty: 75, unit: g}
+    - {id: ail, name: ail, qty: 1, unit: gousse}
+    - id: parmesan
+      name: parmesan
+      qty: 85
+      unit: g
+      subs:
+        - {id: anchois, name: 6 filets d'anchois, note: "version sans lactose", ratio: 0.3}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: pates, name: pâtes au choix, qty: 350, unit: g}
+    - {id: sel, name: sel, qty: 2, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: bouillir
+      action: "Porter un grand faitout d'eau salée à ébullition et ôter les côtes du chou"
+      needs: [simmer-large]
+      uses: []
+      time_min: 8
+    - id: blanchir
+      action: "Plonger les feuilles 5 min à couvert en les immergeant bien, puis les sortir à l'écumoire"
+      astuce: "Garder l'eau : elle cuit les pâtes."
+      needs: [simmer-large]
+      uses: [cavolo-nero]
+      time_min: 6
+    - id: pates
+      action: "Cuire les pâtes al dente dans l'eau du chou"
+      needs: [simmer-large]
+      uses: [pates]
+      time_min: 11
+      attended: false
+    - id: mixer
+      action: "Mixer le chou avec les noix, le parmesan, l'ail, l'huile, du sel et du poivre, et servir sur les pâtes"
+      needs: [blend-smooth]
+      uses: [noix, parmesan, ail, huile-olive, sel, poivre]
+      time_min: 4
+      parallel_with: pates
+
+  emits: []
+
+  plan_b: []

@@ -173,8 +173,10 @@ describe("ce que le plat prend au placard", () => {
     // rien ferait passer les trois boucles ci-dessus en silence, et le test
     // deviendrait vert par vacuité. On épingle donc ce qu'on vient de mesurer —
     // cinq des huit écoulables ont un mangeur, et l'épeautre en a le plus.
+    // T196 : le blog Saines Gourmandises en ajoute trois (le pounti, le « pâté
+    // épatant » aux courgettes, les cupcakes au potimarron).
     const mangeurs = catalogue.plats.filter((p) => ids(p).includes("farine-epeautre"));
-    expect(mangeurs).toHaveLength(7);
+    expect(mangeurs).toHaveLength(10);
   });
 
   test("un ingrédient cité deux fois ne compte qu'une", () => {

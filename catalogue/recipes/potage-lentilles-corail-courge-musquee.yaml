@@ -1,0 +1,74 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN POTAGE ÉPAIS SANS POMME DE TERRE : courge musquée et lentilles corail,
+# 20 min, mixé à l'huile d'olive et à la muscade.
+
+recipe:
+  id: potage-lentilles-corail-courge-musquee
+  title: Potage d'automne aux lentilles corail et courge musquée
+  format: soupe
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Décidément, je ferais bien une soupe ! », blog Saines Gourmandises, 6 novembre 2013 (extrait de « Je ferais bien une soupe »)"
+    url: https://saines-gourmandises.fr/2-bonnes-recettes-qui-rechauffent-et-mon-ouvrage-a-gagner/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes »
+  time_min_total: 30        # 10 min de préparation + 20 min de cuisson
+  active_min: 10
+
+  apports:
+    proteine: legumineuse
+    feculent: legumineuse
+    legumes: [cucurbitacee, allium]
+    profil: soupe
+    origine: francais
+
+  ingredients:
+    - {id: courge, name: courge musquée (une grosse tranche), qty: 1, unit: kg}
+    - {id: lentilles-corail, name: lentilles corail, qty: 150, unit: g}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: eau, name: eau, qty: 75, unit: cl}
+    - {id: muscade, name: muscade, qty: 1, unit: pincée, seasoning: true}
+    - {id: persil, name: persil, qty: 4, unit: brin}
+    - {id: huile-olive, name: huile d'olive, qty: 3, unit: c. à s.}
+    - {id: sel, name: sel, qty: 2, unit: pincée, seasoning: true}
+    - {id: poivre-5-baies, name: poivre 5 baies, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: bouillir
+      action: "Éplucher la courge, la couper en gros morceaux et la porter à ébullition dans une casserole avec l'oignon émincé, l'eau et un peu de sel"
+      needs: [simmer]
+      uses: [courge, oignon, eau]
+      time_min: 10
+    - id: lentilles
+      action: "Verser les lentilles en pluie, mélanger et cuire 20 min à couvert"
+      needs: [simmer]
+      uses: [lentilles-corail]
+      time_min: 20
+      attended: false
+    - id: mixer
+      action: "Mixer avec l'huile, le sel, le poivre et la muscade, et parsemer de persil haché"
+      needs: [blend-smooth]
+      uses: [huile-olive, sel, poivre-5-baies, muscade, persil]
+      time_min: 4
+      seasoning_gate: true
+
+  baby_portion:
+    take: "une petite louche de courge et de lentilles cuites, avant le poivre et la muscade"
+    prep: "mixer à part, servir tiède"
+    needs: [blend-smooth]
+    depuis: [lentilles]
+
+  emits:
+    - kind: reste-plat
+      type: potage-lentilles-corail-courge-musquee
+      qty_band: 1-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

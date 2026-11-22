@@ -1,0 +1,92 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DES « BOULETTES SUÉDOISES » SANS VIANDE : tofu fumé, oignons caramélisés,
+# son d'avoine, brebis râpé et un peu de haricots blancs. L'autrice mixe au
+# robot par impulsions ; ici, au petit blender, en 2 ou 3 fois, ou au
+# couteau. Le repos de 30 min est facultatif : il aide à façonner.
+
+recipe:
+  id: croquettes-suedoises-avoine-brebis
+  title: Croquettes suédoises à l'avoine et au brebis
+  format: galettes
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Croquettes suédoises à l'avoine et au brebis », blog Saines Gourmandises, 4 mars 2015"
+    url: https://saines-gourmandises.fr/comfort-food-super-douce-pour-la-sante/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « 18 croquettes de 30 g (environ 4 personnes) »
+    pieces: 18
+  time_min_total: 45        # 25 min de préparation + 20 min de cuisson
+  active_min: 35
+
+  apports:
+    proteine: tofu-soja
+    feculent: avoine
+    legumes: [allium]
+    profil: poele
+    origine: francais
+
+  ingredients:
+    - {id: oignon, name: oignons, qty: 2, unit: pièce}
+    - {id: tofu-fume, name: tofu fumé, qty: 200, unit: g}
+    - {id: persil, name: persillade fraîche ou surgelée, qty: 4, unit: c. à s.}
+    - {id: oeufs, name: œuf, qty: 1, unit: pièce}
+    - {id: etorki, name: "brebis type Etorki ou Ossau-Iraty, râpé", qty: 55, unit: g}
+    - {id: son-avoine, name: son d'avoine, qty: 60, unit: g}
+    - {id: haricots-blancs, name: haricots blancs cuits bien égouttés, qty: 60, unit: g}
+    - {id: huile-olive, name: "huile d'olive (4 c. à s. + la poêle)", qty: 6, unit: c. à s.}
+    - {id: farine, name: farine pour enrober, qty: 3, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 1, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: riz, name: riz, qty: 250, unit: g}
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: caramel
+      action: "Émincer les oignons et les dorer à la poêle avec 4 c. à s. d'huile jusqu'à de beaux sucs caramélisés"
+      needs: [pan-fry]
+      uses: [oignon, huile-olive]
+      time_min: 10
+      attended: true
+    - id: tofu
+      action: "Ajouter le tofu fumé en petits dés, saler légèrement et dorer encore quelques minutes"
+      needs: [pan-fry]
+      uses: [tofu-fume, sel]
+      time_min: 4
+      attended: true
+    - id: hacher
+      action: "Hacher par brèves impulsions avec la persillade, l'œuf, le fromage, le son, les haricots et le poivre"
+      astuce: "Il doit rester de petits morceaux : on ne cherche pas une purée."
+      needs: [chop-coarse-small]
+      uses: [persil, oeufs, etorki, son-avoine, haricots-blancs, poivre]
+      time_min: 5
+    - id: faconner
+      action: "Former à la main 18 croquettes de 30 g et les rouler dans la farine"
+      astuce: "Une demi-heure de repos avant facilite le façonnage."
+      needs: []
+      uses: [farine]
+      time_min: 8
+      kid: {age_min_months: 24, task: "rouler les croquettes dans l'assiette de farine"}
+    - id: cuire
+      action: "Cuire environ 5 min par face dans une poêle huilée, à couvert"
+      astuce: "Le couvercle les cuit à cœur ; surveiller qu'elles n'attachent pas."
+      needs: [pan-fry]
+      uses: []
+      time_min: 12
+      attended: true
+
+  emits:
+    - kind: reste-plat
+      type: croquettes-suedoises-avoine-brebis
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

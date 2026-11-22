@@ -1,0 +1,81 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LE REPAS DE NOËL LE PLUS SIMPLE : une canette au four 1 h 30, les légumes
+# d'hiver rôtis 45 min dessous. Sans roaster, l'arroser pendant la cuisson.
+
+recipe:
+  id: canette-legumes-rotis
+  title: Canette fondante et farandole de légumes rôtis
+  format: piece
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Canette ultra fondante au roaster, farandole de petits légumes rôtis », blog Saines Gourmandises, 19 décembre 2012"
+    url: https://saines-gourmandises.fr/sur-le-fil-une-idee-ultra-simple-et-qui-en-jette-pour-noel/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « pour 8 personnes »
+  lot_entier: true
+  time_min_total: 105       # 15 min de préparation + 1 h 30 de cuisson
+  active_min: 20
+
+  apports:
+    proteine: viande-blanche
+    feculent: aucun
+    legumes: [cucurbitacee, crucifere, racine, allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: canette, name: canette fermière, qty: 1, unit: pièce}
+    - {id: potimarron, name: potimarron, qty: 1, unit: pièce}
+    - {id: chou-romanesco, name: chou romanesco, qty: 1, unit: pièce}
+    - {id: topinambours, name: topinambours, qty: 8, unit: pièce}
+    - {id: echalote, name: échalotes, qty: 8, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 6, unit: c. à s.}
+    - {id: herbes-provence, name: herbes de Provence, qty: 2, unit: pincée, seasoning: true}
+    - {id: sel, name: sel, qty: 2, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 2, unit: pincée, seasoning: true}
+
+  steps:
+    - id: enfourner
+      action: "Préchauffer le four à 180 °C ; saler, poivrer et parfumer la canette d'herbes, puis l'enfourner 1 h 30"
+      astuce: "Sans roaster, l'arroser de son jus plusieurs fois pendant la cuisson."
+      needs: [bake]
+      uses: [canette]
+      time_min: 5
+    - id: tailler
+      action: "Couper le potimarron en croissants avec la peau, éplucher les topinambours, couper les échalotes en deux et le romanesco en grosses fleurettes"
+      needs: [chop-coarse]
+      uses: [potimarron, topinambours, echalote, chou-romanesco]
+      time_min: 12
+      parallel_with: enfourner
+    - id: assaisonner
+      action: "Brasser les légumes dans un saladier avec l'huile, le sel, le poivre et les herbes"
+      needs: []
+      uses: [huile-olive, herbes-provence, sel, poivre]
+      time_min: 2
+      kid: {age_min_months: 24, task: "brasser les légumes avec les mains"}
+    - id: rotir
+      action: "Étaler les légumes sur la lèchefrite chemisée de papier, sous la canette, pour 45 à 50 min"
+      needs: [bake]
+      uses: []
+      time_min: 50
+      attended: false
+    - id: servir
+      action: "Servir la canette découpée avec ses légumes"
+      needs: []
+      uses: []
+      time_min: 5
+
+  emits:
+    - kind: reste-plat
+      type: canette-legumes-rotis
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

@@ -1,0 +1,77 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# VINGT MINUTES POUR DEUX : riz basmati complet, poulet en dés doré avec un
+# oignon, chou chinois juste tombé. Seules les feuilles tendres vont au wok ;
+# les côtes près du trognon se gardent pour une autre recette. Végétarien :
+# tofu fumé, 60 g de parmesan ou des haricots rouges à la place du poulet.
+
+recipe:
+  id: tombee-chou-chinois-poulet
+  title: Tombée de chou chinois au poulet sauté et riz basmati
+  format: poelee
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Tombée de chou chinois au poulet sauté et basmati complet », blog Saines Gourmandises, 26 novembre 2012"
+    url: https://saines-gourmandises.fr/bon-et-si-on-mangeait-un-peu-equilibre/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 2          # « pour 2 personnes »
+  time_min_total: 20        # 5 min de préparation + 15 min de cuisson
+  active_min: 15
+
+  apports:
+    proteine: viande-blanche
+    feculent: riz
+    legumes: [crucifere, allium]
+    profil: rapide
+    origine: francais
+
+  ingredients:
+    - {id: chou-chinois, name: gros chou chinois bien vert, qty: 1, unit: pièce}
+    - id: poulet-filets
+      name: filet de poulet
+      qty: 200
+      unit: g
+      subs:
+        - {id: tofu-fume, name: tofu fumé, note: "version végétarienne", ratio: 1.0}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 3, unit: c. à s.}
+    - {id: riz, name: riz basmati complet, qty: 150, unit: g}
+    - {id: sel, name: sel, qty: 2, unit: pincée, seasoning: true}
+    - {id: poivre-5-baies, name: poivre 5 baies, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: riz
+      action: "Cuire le riz al dente à l'eau bouillante salée et l'égoutter aussitôt"
+      needs: [boil]
+      uses: [riz]
+      time_min: 12
+      attended: false
+    - id: tailler
+      action: "Émincer l'oignon, et le chou jusqu'aux deux tiers ; couper le poulet en petits cubes"
+      astuce: "Garder les côtes du trognon pour une autre recette : elles ne cuiraient pas à temps."
+      needs: [chop-coarse]
+      uses: [oignon, chou-chinois, poulet-filets]
+      time_min: 6
+      parallel_with: riz
+    - id: dorer
+      action: "Faire dorer le poulet et l'oignon à l'huile dans une grande poêle"
+      needs: [pan-fry]
+      uses: [huile-olive]
+      time_min: 6
+      attended: true
+    - id: tomber
+      action: "Ajouter le chou, saler, poivrer et cuire quelques minutes, le temps que les feuilles tombent ; servir avec le riz"
+      needs: [pan-fry]
+      uses: [sel, poivre-5-baies]
+      time_min: 4
+      attended: true
+
+  emits: []
+
+  plan_b: []

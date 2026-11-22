@@ -1,0 +1,94 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN GROS POISSON ENTIER FARCI (ombrine, ou tout poisson d'1 kg à 1,2 kg) :
+# échalotes au beurre, piment, persil, tomate, biscotte, parmesan, anis vert.
+# La sauce est le fond du plat — oignon, tomate, jus de cuisson — mixé avec
+# de la crème.
+
+recipe:
+  id: ombrine-farcie
+  title: Ombrine farcie
+  format: piece
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Ombrine farcie », blog Saines Gourmandises, 17 octobre 2022"
+    url: https://saines-gourmandises.fr/ombrine-farcie-et-un-petit-reportage-au-beau-soleil-de-mediterranee/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 5          # « pour 4 à 6 personnes »
+  lot_entier: true
+  time_min_total: 50        # 15 min de préparation + 30 min de cuisson
+  active_min: 25
+
+  apports:
+    proteine: poisson
+    feculent: aucun
+    legumes: [allium, solanacee]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: poisson-entier, name: "ombrine ou autre gros poisson vidé (1 à 1,2 kg)", qty: 1, unit: pièce}
+    - {id: beurre, name: beurre, qty: 50, unit: g}
+    - {id: echalote, name: échalotes, qty: 100, unit: g}
+    - {id: piment-frais, name: petit piment frais, qty: 1, unit: pièce}
+    - {id: persil, name: persil, qty: 5, unit: brin}
+    - {id: parmesan, name: parmesan, qty: 50, unit: g}
+    - {id: tomates, name: "tomates (1 pour la farce, 1 pour la sauce)", qty: 2, unit: pièce}
+    - {id: biscottes, name: biscottes, qty: 3, unit: pièce}
+    - {id: anis-vert, name: anis vert, qty: 1, unit: c. à c., seasoning: true}
+    - {id: sel, ref: sel-farce, name: "sel (farce, c. à c. rase)", qty: 1, unit: c. à c., seasoning: true}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: citron, name: citron non traité, qty: 1, unit: pièce}
+    - {id: vin-blanc-sec, name: vin blanc sec, qty: 10, unit: cl}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: creme, name: crème fraîche épaisse, qty: 2, unit: c. à s.}
+    - {id: sel, ref: sel-plat, name: sel (plat), qty: 2, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 2, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: riz, name: riz, qty: 300, unit: g}
+
+  steps:
+    - id: echalotes
+      action: "Préchauffer le four à 180 °C ; couper les échalotes en petits dés et les faire revenir dans le beurre"
+      needs: [pan-fry]
+      uses: [echalote, beurre]
+      time_min: 6
+      attended: true
+    - id: farce
+      action: "Hors du feu, ajouter le piment et le persil hachés, une tomate en dés, les biscottes écrasées, le parmesan, l'anis et le sel"
+      needs: []
+      uses: [piment-frais, persil, biscottes, parmesan, anis-vert, sel-farce]
+      time_min: 6
+      kid: {age_min_months: 24, task: "écraser les biscottes au rouleau dans un sac"}
+    - id: farcir
+      action: "Farcir le poisson posé dans un plat salé ; l'entourer d'oignon et de tomate en dés, de citron en tranches, de vin et d'huile ; saler, poivrer"
+      astuce: "Le reste de farce va dans le plat : il épaissira la sauce."
+      needs: [gratin-vessel]
+      uses: [poisson-entier, oignon, tomates, citron, vin-blanc-sec, huile-olive, sel-plat, poivre]
+      time_min: 6
+    - id: cuire
+      action: "Cuire 30 min, vérifier la cuisson à l'arête puis glisser le poisson sur le plat de service avec deux spatules"
+      needs: [bake]
+      uses: []
+      time_min: 32
+      attended: false
+    - id: sauce
+      action: "Retirer le citron et mixer finement le contenu du plat avec la crème, jusqu'à une sauce crémeuse"
+      needs: [blend-smooth]
+      uses: [creme]
+      time_min: 4
+
+  emits:
+    - kind: reste-plat
+      type: ombrine-farcie
+      qty_band: 1-repas
+      keeps: {frigo_days: 1, congelo: false}
+
+  plan_b: []

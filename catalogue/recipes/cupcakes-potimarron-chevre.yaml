@@ -1,0 +1,97 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DES CUPCAKES SALÉS CUITS AU BAIN-MARIE dans six tasses à café de 15 cl
+# posées dans un faitout couvert : pâte de purée de potimarron, œufs, farine
+# d'épeautre et parmesan, rosace de chèvre frais et piment d'Espelette. Le
+# jour même, à température ambiante.
+#
+# LA PURÉE VIENT DE LA MÊME PAGE (puree-potimarron-huile-olive). Sans elle,
+# cuire 250 g de potimarron 20 min à la vapeur ou à l'eau.
+
+recipe:
+  id: cupcakes-potimarron-chevre
+  title: Petits cupcakes au potimarron et chèvre frais
+  role: entree
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Potimarrons, courges, potirons, citrouilles and Co… rétrospective d'idées recettes », blog Saines Gourmandises, 17 septembre 2026"
+    url: https://saines-gourmandises.fr/potimarrons-courges-potirons-citrouilles-and-co-retrospective-didees-recettes-geniaaaaales/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 3
+    pieces: 6               # « pour 6 cupcakes »
+  lot_entier: true
+  time_min_total: 45        # 20 min de préparation + 25 min de cuisson
+  active_min: 20
+
+  accepts:
+    - type: puree-potimarron
+      qty: {amount: 160, unit: g}
+      required: true
+      fallback_recipe: puree-potimarron-huile-olive
+
+  sans_reste:
+    temps_min: 25
+    ingredients:
+      - {id: potimarron, name: "potimarron à cuire (250 g)", qty: 0.25, unit: pièce}
+
+  apports:
+    proteine: fromage
+    feculent: farine
+    legumes: [cucurbitacee]
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: puree-potimarron, name: purée de potimarron cuite et légèrement salée, qty: 160, unit: g, from_accepts: true}
+    - {id: oeufs, name: œufs, qty: 2, unit: pièce}
+    - {id: farine-epeautre, name: farine T130 de grand épeautre, qty: 130, unit: g}
+    - {id: parmesan, name: parmesan râpé, qty: 50, unit: g}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: poudre-a-lever, name: poudre à lever, qty: 1, unit: sachet}
+    - {id: sel, name: bonne pincée de sel, qty: 1, unit: bonne pincée, seasoning: true}
+    - {id: chevre-frais, name: chèvre frais bien égoutté (pas de faisselle), qty: 400, unit: g}
+    - {id: piment-espelette, name: piment d'Espelette, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: bain-marie
+      action: "Poser les tasses dans un faitout, verser l'eau jusqu'à mi-hauteur, retirer les tasses et porter l'eau à ébullition à couvert"
+      needs: [simmer-large]
+      uses: []
+      time_min: 6
+    - id: pate
+      action: "Mélanger farine, sel et levure, puis les œufs, l'huile, la purée et le parmesan, et répartir dans les tasses"
+      needs: []
+      uses: [farine-epeautre, sel, poudre-a-lever, oeufs, huile-olive, puree-potimarron, parmesan]
+      time_min: 6
+      kid: {age_min_months: 30, task: "remplir les tasses à la cuillère"}
+    - id: cuire
+      action: "Poser les tasses dans l'eau bouillante, couvrir et cuire 25 à 30 min"
+      needs: [steam]
+      uses: []
+      time_min: 27
+      attended: false
+    - id: chevre
+      action: "Lisser le chèvre à la fourchette ou au mixeur et le mettre en poche à douille cannelée"
+      needs: []
+      uses: [chevre-frais]
+      time_min: 4
+      parallel_with: cuire
+    - id: garnir
+      action: "Une fois les cupcakes froids, les coiffer d'une rosace de chèvre et saupoudrer de piment"
+      astuce: "Au frais quelques heures seulement, en boîte hermétique : le chèvre prend le goût du frigo."
+      needs: []
+      uses: [piment-espelette]
+      time_min: 5
+      attente_min: 60
+      attente_raison: "refroidissement complet avant de garnir"
+      attente_souple: true
+
+  emits: []
+
+  plan_b: []

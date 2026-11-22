@@ -1,0 +1,105 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE BRANDADE SANS POMME DE TERRE : purée de haricots blancs à la crème de
+# soja, cabillaud émietté à la poêle, chapelure de pain complet et son
+# d'avoine passée sous le gril. Les haricots se cuisent 30 min, le poisson
+# pendant ce temps.
+
+recipe:
+  id: brandade-haricots-blancs-cabillaud
+  title: Brandade « parmentière » aux haricots blancs
+  format: gratin
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Ma brandade parmentière (enfin presque) », blog Saines Gourmandises, 1er mars 2013"
+    url: https://saines-gourmandises.fr/un-plat-tout-simple-et-tres-bon-a-savourer-a-la-cuillere-de-bois/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes »
+  time_min_total: 55        # 15 min de préparation + 30 min de haricots + gril
+  active_min: 30
+
+  apports:
+    proteine: poisson
+    feculent: legumineuse
+    legumes: [allium, legumineuse]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: cabillaud, name: filets de cabillaud bien frais, qty: 500, unit: g}
+    - {id: haricots-blancs, name: "haricots blancs surgelés (meilleurs qu'en boîte)", qty: 500, unit: g}
+    - {id: persil, name: persil frais, qty: 0.5, unit: bouquet}
+    - {id: ail, name: ail, qty: 1, unit: gousse}
+    - {id: huile-olive, ref: huile-oignons, name: huile d'olive (oignons), qty: 2, unit: c. à s.}
+    - {id: huile-olive, ref: huile-puree, name: huile d'olive (purée), qty: 2, unit: c. à s.}
+    - {id: huile-olive, ref: huile-chapelure, name: huile d'olive (chapelure), qty: 1, unit: c. à s.}
+    - {id: creme-soja, name: crème de soja, qty: 20, unit: cl}
+    - {id: oignon, name: oignons, qty: 2, unit: pièce}
+    - {id: pain-levain, name: pain complet, qty: 200, unit: g}
+    - {id: vin-blanc-sec, name: vin blanc sec, qty: 10, unit: cl}
+    - {id: son-avoine, name: son d'avoine, qty: 2, unit: c. à s.}
+    - {id: laurier, name: feuilles de laurier, qty: 3, unit: pièce, seasoning: true}
+    - {id: sel, name: sel, qty: 2, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: haricots
+      action: "Cuire les haricots blancs 30 min à l'eau bouillante salée avec le laurier"
+      needs: [simmer]
+      uses: [haricots-blancs, laurier]
+      time_min: 30
+      attended: false
+    - id: oignons
+      action: "Couper les oignons en dés et les dorer doucement à la poêle dans 2 c. à s. d'huile"
+      needs: [pan-fry]
+      uses: [oignon, huile-oignons]
+      time_min: 8
+      parallel_with: haricots
+    - id: poisson
+      action: "Ôter la ligne d'arêtes des filets, les dorer avec les oignons, ajouter vin blanc et ail, saler, poivrer et finir de cuire en remuant"
+      astuce: "La ligne d'arêtes est la bande plus foncée : on la sent sous le doigt. Le poisson s'émiette en cuisant, c'est voulu."
+      needs: [pan-fry]
+      uses: [cabillaud, vin-blanc-sec, ail, sel, poivre]
+      time_min: 12
+      attended: true
+      seasoning_gate: true
+    - id: persil
+      action: "Hors du feu, ajouter le persil haché"
+      needs: []
+      uses: [persil]
+      time_min: 2
+    - id: puree
+      action: "Égoutter les haricots sans trop les sécher, les mixer avec 2 c. à s. d'huile et la crème de soja, puis y mixer le poisson, finement ou en gardant des morceaux"
+      needs: [blend-smooth]
+      uses: [huile-puree, creme-soja]
+      time_min: 5
+    - id: gratiner
+      action: "Verser dans un plat, couvrir du pain haché avec le son et 1 c. à s. d'huile, et passer 5 à 10 min sous le gril"
+      astuce: "Surveiller de près : la chapelure brûle vite."
+      needs: [gratin, gratin-vessel]
+      uses: [pain-levain, son-avoine, huile-chapelure]
+      time_min: 10
+      attended: true
+
+  baby_portion:
+    take: "2 c. à s. de haricots blancs cuits et un morceau de cabillaud nature, avant le vin blanc et le sel"
+    prep: "écraser finement à la fourchette avec un peu d'eau de cuisson"
+    needs: [puree]
+    depuis: [haricots]
+
+  emits:
+    - kind: reste-plat
+      type: brandade-haricots-blancs-cabillaud
+      qty_band: 1-repas
+      keeps: {frigo_days: 2, congelo: true}
+
+  plan_b:
+    - drop: gratiner
+      saves_min: 8
+      effect: "servie en purée, sans croûte"

@@ -1,0 +1,70 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LE « VELOUTÉ DES BOIS » : cèpes (frais, ou surgelés) dorés avec un oignon,
+# châtaignes et tofu fumé, mixés après 15 min. L'ingrédient « oignon » est
+# écrit deux fois dans la liste de l'autrice ; un seul est encodé.
+
+recipe:
+  id: veloute-cepes-chataignes
+  title: Velouté des bois aux cèpes et aux châtaignes
+  format: soupe
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Décidément, je ferais bien une soupe ! », blog Saines Gourmandises, 6 novembre 2013 (extrait de « Je ferais bien une soupe »)"
+    url: https://saines-gourmandises.fr/2-bonnes-recettes-qui-rechauffent-et-mon-ouvrage-a-gagner/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 2          # « 4 en entrée ou 2 en plat principal »
+  time_min_total: 35        # 10 min de préparation + 25 min de cuisson
+  active_min: 15
+
+  apports:
+    proteine: tofu-soja
+    feculent: chataigne
+    legumes: [champignon, allium]
+    profil: soupe
+    origine: francais
+
+  ingredients:
+    - id: cepes
+      name: cèpes frais ou surgelés
+      qty: 150
+      unit: g
+      subs:
+        - {id: champignons-surgeles, name: champignons des bois surgelés, ratio: 1.0}
+    - {id: chataignes, name: châtaignes pelées sous vide, qty: 200, unit: g}
+    - {id: tofu-fume, name: tofu fumé, qty: 100, unit: g}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: eau, name: eau, qty: 75, unit: cl}
+    - {id: huile-olive, name: "huile d'olive (ou une noix de beurre)", qty: 3, unit: c. à s.}
+    - {id: sel, name: sel, qty: 2, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: dorer
+      action: "Nettoyer les cèpes, les couper en morceaux et les dorer à l'huile avec l'oignon émincé"
+      needs: [simmer]
+      uses: [cepes, oignon, huile-olive]
+      time_min: 8
+      attended: true
+    - id: mijoter
+      action: "Saler, poivrer, ajouter le tofu, les châtaignes et l'eau, et mijoter 15 min après la reprise de l'ébullition"
+      needs: [simmer]
+      uses: [sel, poivre, tofu-fume, chataignes, eau]
+      time_min: 18
+      attended: false
+    - id: mixer
+      action: "Mixer très finement, rallonger d'un peu d'eau bouillante si besoin, rectifier et servir"
+      astuce: "Quelques châtaignes émiettées par-dessus, si on en a gardé."
+      needs: [blend-smooth]
+      uses: []
+      time_min: 4
+
+  emits: []
+
+  plan_b: []

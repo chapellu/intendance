@@ -25,6 +25,18 @@
 #     plus là ! » est un titre d'article, pas un nom de recette. Ces
 #     entrées-là demandent d'ouvrir la page pour nommer le plat.
 #   - le rendement : connu pour 123 entrées seulement.
+#
+# ENCODAGE DANS `recipes/` (T196, à partir du 2026-11-22), par rubrique du
+# blog : une entrée saisie porte `catalogue_id:` (ou `catalogue_ids:` quand
+# l'article donne plusieurs plats). `ecartee:` dit pourquoi un article ne
+# passera pas au catalogue ; `note_encodage:` ce qui, dans un article saisi,
+# a été laissé de côté. Le compte se calcule, il ne s'écrit pas ici.
+#
+# LES RECETTES D'INVITÉS RESTENT DEHORS, à la demande du foyer : une recette
+# que l'autrice publie au nom de quelqu'un d'autre (gagnante d'un concours,
+# recette d'une amie ou d'une lectrice) n'est pas encodée, et l'entrée le dit
+# dans `ecartee:`. Tout le blog paraît sous le compte de l'autrice : le tri se
+# fait à la lecture de chaque article, pas sur un auteur WordPress.
 # -------------------------------------------------------------------------
 
 source:
@@ -76,6 +88,7 @@ recettes:
   - slug: apres-paques-on-fait-leger-leger
     titre: "3 délicieuses recettes « détox » de printemps"
     url: https://saines-gourmandises.fr/apres-paques-on-fait-leger-leger/
+    catalogue_ids: [pasta-primavera-legumes-croquants, salade-pissenlit-asperges-oeufs, soupe-miso-printaniere]
     rendement: {n: 4, unite: personnes}
     prep_min: 10
     cuisson_min: 12
@@ -202,6 +215,7 @@ recettes:
   - slug: aubergines-roties-a-la-viande-aux-oignons-et-au-parmesan
     titre: "Aubergines rôties à la viande, aux oignons et au parmesan"
     url: https://saines-gourmandises.fr/aubergines-roties-a-la-viande-aux-oignons-et-au-parmesan/
+    catalogue_id: aubergines-roties-viande-parmesan
     prep_min: 10
     cuisson_min: 40
     ingredients:
@@ -487,6 +501,7 @@ recettes:
   - slug: reprendrez-bien-de-buche-dinde
     titre: "Bûche salée (presque) 100% légumes"
     url: https://saines-gourmandises.fr/reprendrez-bien-de-buche-dinde/
+    catalogue_id: buche-salee-legumes
     prep_min: 35
     ingredients:
       - "Cuisson : Idem"
@@ -559,6 +574,7 @@ recettes:
   - slug: sur-le-fil-une-idee-ultra-simple-et-qui-en-jette-pour-noel
     titre: "Canette ultra fondante au roaster, Farandole de petits légumes rôtis"
     url: https://saines-gourmandises.fr/sur-le-fil-une-idee-ultra-simple-et-qui-en-jette-pour-noel/
+    catalogue_id: canette-legumes-rotis
     rendement: {n: 8, unite: personnes}
     prep_min: 10
     cuisson_min: 60
@@ -734,6 +750,7 @@ recettes:
   - slug: mal-aime-etonner
     titre: "Chiffonnade de chou frisé au cantal, noix et jambon cru"
     url: https://saines-gourmandises.fr/mal-aime-etonner/
+    catalogue_id: chiffonnade-chou-frise-cantal
     rendement: {n: 3, unite: personnes}
     prep_min: 15
     ingredients:
@@ -771,6 +788,7 @@ recettes:
   - slug: la-feuille-dautomne
     titre: "Chips de sarrasin (attention, recette de méga-fainéant)"
     url: https://saines-gourmandises.fr/la-feuille-dautomne/
+    catalogue_id: chips-sarrasin
     rendement: {n: 4, unite: personnes}
     prep_min: 5
     cuisson_min: 5
@@ -874,6 +892,7 @@ recettes:
     titre: "Courge Buttercup juste rôtie au four avec des noix, du cantal et du lard fumé…"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/aujourdhui-de-photos-gars/
+    catalogue_id: courge-buttercup-rotie-cantal-noix
     rendement: {n: 2, unite: personnes}
     prep_min: 10
     cuisson_min: 30
@@ -907,6 +926,7 @@ recettes:
   - slug: gourmandise-salee-de-saison
     titre: "Croc’légumes » croustifondants à l’avoine et miso blanc"
     url: https://saines-gourmandises.fr/gourmandise-salee-de-saison/
+    catalogue_id: croc-legumes-avoine-miso
     rendement: {n: 12, unite: croquettes}
     prep_min: 15
     ingredients:
@@ -946,6 +966,7 @@ recettes:
   - slug: comfort-food-super-douce-pour-la-sante
     titre: "Croquettes suédoises à l’avoine et au brebis"
     url: https://saines-gourmandises.fr/comfort-food-super-douce-pour-la-sante/
+    catalogue_id: croquettes-suedoises-avoine-brebis
     rendement: {n: 18, unite: croquettes}
     prep_min: 25
     cuisson_min: 20
@@ -1328,6 +1349,7 @@ recettes:
     titre: "Dinde de Noël ultra moelleuse (et sa farce au parfum de truffe…)"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/dinde-de-noel-ultra-moelleuse-et-sa-farce-au-parfum-de-truffe/
+    catalogue_id: dinde-noel-farce-truffee
     rendement: {n: 8, unite: personnes}
     prep_min: 20
     ingredients:
@@ -1352,6 +1374,7 @@ recettes:
     titre: "Dinde farcie « confite » à basse température (Avec une petite farce toute légère…)"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/avec-celle-la-on-ne-setouffera-pas/
+    catalogue_id: dinde-farcie-basse-temperature
     prep_min: 15
     ingredients:
       - "Cuisson : 3 heures"
@@ -1373,6 +1396,7 @@ recettes:
   - slug: dip-de-tomates-cerises-et-pois-chiches
     titre: "Dip de tomates cerise et pois chiches"
     url: https://saines-gourmandises.fr/dip-de-tomates-cerises-et-pois-chiches/
+    catalogue_id: dip-tomates-cerises-pois-chiches
     rendement: {n: 4, unite: personnes}
     prep_min: 10
     cuisson_min: 20
@@ -1407,6 +1431,7 @@ recettes:
     titre: "Décidément, je ferais bien une soupe !"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/2-bonnes-recettes-qui-rechauffent-et-mon-ouvrage-a-gagner/
+    catalogue_ids: [potage-lentilles-corail-courge-musquee, veloute-cepes-chataignes]
     rendement: {n: 4, unite: personnes}
     prep_min: 10
     ingredients:
@@ -1541,6 +1566,7 @@ recettes:
   - slug: recette-de-grand-mere-meriterait-de-faire-buzz-2017
     titre: "Farçous Aveyronnais un (tout petit peu) revisités"
     url: https://saines-gourmandises.fr/recette-de-grand-mere-meriterait-de-faire-buzz-2017/
+    catalogue_id: farcous-orge-son-avoine
     prep_min: 10
     ingredients:
       - "Cuisson : quelques minutes par poêlée"
@@ -1599,6 +1625,7 @@ recettes:
   - slug: recette-tres-facile-soir-petit-tour-jardin
     titre: "Flan de courgettes végétalien"
     url: https://saines-gourmandises.fr/recette-tres-facile-soir-petit-tour-jardin/
+    catalogue_id: flan-courgettes-vegetal
     rendement: {n: 4, unite: personnes}
     prep_min: 20
     cuisson_min: 20
@@ -1770,6 +1797,7 @@ recettes:
   - slug: panisse-cest-faute-aux-canards
     titre: "Galettes de sarrasin à la fondue de courgettes et « fromage » végétal"
     url: https://saines-gourmandises.fr/panisse-cest-faute-aux-canards/
+    catalogue_id: galettes-sarrasin-courgettes-fromage-vegetal
     prep_min: 15
     cuisson_min: 20
     ingredients:
@@ -1952,6 +1980,7 @@ recettes:
   - slug: lorge-magnifique-cereale-a-redecouvrir
     titre: "Grande poêlée d’orge aux champignons, jambon fumé et thym frais"
     url: https://saines-gourmandises.fr/lorge-magnifique-cereale-a-redecouvrir/
+    catalogue_id: poelee-orge-champignons
     rendement: {n: 6, unite: personnes}
     prep_min: 15
     cuisson_min: 15
@@ -1985,6 +2014,7 @@ recettes:
   - slug: 88076
     titre: "Gratin d’orecchiette au chou chinois et au bœuf"
     url: https://saines-gourmandises.fr/88076/
+    catalogue_id: gratin-orecchiette-chou-chinois
     rendement: {n: 6, unite: personnes}
     prep_min: 10
     cuisson_min: 25
@@ -2296,6 +2326,7 @@ recettes:
   - slug: on-veut-des-recettes
     titre: "La cuisine des grands classiques (suite), 3 recettes de bons plats du dimanche"
     url: https://saines-gourmandises.fr/on-veut-des-recettes/
+    catalogue_ids: [goulasch-boeuf, marmite-dieppoise, poulet-chasseur]
     rendement: {n: 6, unite: personnes}
     prep_min: 10
     cuisson_min: 180
@@ -2331,6 +2362,7 @@ recettes:
   - slug: pour-lou-qui-attend-impatiemment-cette-recette-depuis-septembre
     titre: "LA fameuse bouillabaisse"
     url: https://saines-gourmandises.fr/pour-lou-qui-attend-impatiemment-cette-recette-depuis-septembre/
+    catalogue_id: bouillabaisse
     rendement: {n: 8, unite: personnes}
     prep_min: 45
     ingredients:
@@ -2381,6 +2413,7 @@ recettes:
   - slug: cest-tellement-mieux-que-douvrir-une-brique
     titre: "La petite soupe asiatique « chrono » et trop bonne (Modulable en fonction des appétits)"
     url: https://saines-gourmandises.fr/cest-tellement-mieux-que-douvrir-une-brique/
+    catalogue_id: soupe-asiatique-chrono
     rendement: {n: 4, unite: personnes}
     prep_min: 5
     cuisson_min: 12
@@ -2953,6 +2986,7 @@ recettes:
   - slug: un-plat-tout-simple-et-tres-bon-a-savourer-a-la-cuillere-de-bois
     titre: "Ma brandade « parmentière » (enfin presque)"
     url: https://saines-gourmandises.fr/un-plat-tout-simple-et-tres-bon-a-savourer-a-la-cuillere-de-bois/
+    catalogue_id: brandade-haricots-blancs-cabillaud
     rendement: {n: 4, unite: personnes}
     prep_min: 15
     cuisson_min: 30
@@ -3090,6 +3124,7 @@ recettes:
   - slug: envie-de-douceur-et-de-reconfort
     titre: "Mitonnée de petit épeautre « façon carbonara"
     url: https://saines-gourmandises.fr/envie-de-douceur-et-de-reconfort/
+    catalogue_id: mitonnee-petit-epeautre-carbonara
     rendement: {n: 6, unite: personnes}
     prep_min: 10
     attentes: ["Trempage 2 h"]
@@ -3245,6 +3280,7 @@ recettes:
   - slug: mange-ta-soupe
     titre: "Moulinée toute blanche de bons légumes d’hiver, touche de beurre salé"
     url: https://saines-gourmandises.fr/mange-ta-soupe/
+    catalogue_id: moulinee-legumes-hiver
     rendement: {n: 4, unite: personnes}
     prep_min: 10
     ingredients:
@@ -3291,6 +3327,7 @@ recettes:
   - slug: ombrine-farcie-et-un-petit-reportage-au-beau-soleil-de-mediterranee
     titre: "Ombrine farcie (et un petit reportage au beau soleil de Méditerranée)"
     url: https://saines-gourmandises.fr/ombrine-farcie-et-un-petit-reportage-au-beau-soleil-de-mediterranee/
+    catalogue_id: ombrine-farcie
     rendement: {n: 4, unite: personnes}
     prep_min: 15
     cuisson_min: 30
@@ -3319,6 +3356,7 @@ recettes:
   - slug: im-eating-in-the-rain
     titre: "Osso buco d’été aux tomates fraîches"
     url: https://saines-gourmandises.fr/im-eating-in-the-rain/
+    catalogue_id: osso-buco-ete
     rendement: {n: 4, unite: personnes}
     prep_min: 10
     cuisson_min: 60
@@ -3398,6 +3436,7 @@ recettes:
   - slug: mamamia
     titre: "Pasta Peperonata dans les règles de l’art"
     url: https://saines-gourmandises.fr/mamamia/
+    catalogue_id: pasta-peperonata
     rendement: {n: 4, unite: personnes}
     prep_min: 15
     cuisson_min: 20
@@ -3489,6 +3528,7 @@ recettes:
   - slug: comment-rendre-seduisant-au-possible-un-reste-de-lentilles
     titre: "Petits burgers pour grands gourmands"
     url: https://saines-gourmandises.fr/comment-rendre-seduisant-au-possible-un-reste-de-lentilles/
+    catalogue_id: burgers-de-lentilles
     ingredients:
       - "400g de lentilles vertes déjà cuites (pour moi un reste de la veille)"
       - "200g de tofu fumé"
@@ -3865,6 +3905,7 @@ recettes:
   - slug: ca-va-nous-rechauffer
     titre: "Poule-au-pot un peu « revisitée », lentement cuite à basse température dans son propre jus"
     url: https://saines-gourmandises.fr/ca-va-nous-rechauffer/
+    catalogue_id: poulet-etouffee-legumes
     rendement: {n: 6, unite: personnes}
     prep_min: 15
     ingredients:
@@ -3884,6 +3925,7 @@ recettes:
   - slug: cocoricooooo
     titre: "Poulet fermier comme un bon coq au vin"
     url: https://saines-gourmandises.fr/cocoricooooo/
+    catalogue_id: poulet-facon-coq-au-vin
     rendement: {n: 4, unite: personnes}
     prep_min: 20
     ingredients:
@@ -3905,6 +3947,7 @@ recettes:
   - slug: pounti
     titre: "Pounti"
     url: https://saines-gourmandises.fr/pounti/
+    catalogue_id: pounti
     rendement: {n: 4, unite: personnes}
     prep_min: 10
     cuisson_min: 20
@@ -3949,6 +3992,7 @@ recettes:
   - slug: pate-epatant-aux-courgettes-et-pistou
     titre: "Pâté épatant » aux courgettes et pistou"
     url: https://saines-gourmandises.fr/pate-epatant-aux-courgettes-et-pistou/
+    catalogue_id: pate-epatant-courgettes-pistou
     rendement: {n: 8, unite: parts}
     prep_min: 15
     cuisson_min: 20
@@ -4039,6 +4083,7 @@ recettes:
   - slug: comment-je-vois-la-gourmandise
     titre: "Salade de riz tiède aux légumes primeurs et ail des ours"
     url: https://saines-gourmandises.fr/comment-je-vois-la-gourmandise/
+    catalogue_id: salade-riz-tiede-primeurs
     rendement: {n: 4, unite: personnes}
     prep_min: 10
     ingredients:
@@ -4105,6 +4150,7 @@ recettes:
   - slug: poisson-booon-plus-cest-vrai
     titre: "Sardines farcies au pain grillé, oseille et parmesan"
     url: https://saines-gourmandises.fr/poisson-booon-plus-cest-vrai/
+    catalogue_id: sardines-farcies-oseille
     rendement: {n: 4, unite: personnes}
     prep_min: 10
     cuisson_min: 30
@@ -4381,6 +4427,7 @@ recettes:
   - slug: terrine-toute-simple-au-saumon-sauvage-huile-dolive-et-ciboulette
     titre: "Terrine toute simple au saumon sauvage, huile d’olive et ciboulette"
     url: https://saines-gourmandises.fr/terrine-toute-simple-au-saumon-sauvage-huile-dolive-et-ciboulette/
+    catalogue_id: terrine-saumon-ciboulette
     rendement: {n: 4, unite: personnes}
     prep_min: 5
     ingredients:
@@ -4397,6 +4444,7 @@ recettes:
   - slug: ca-y-on-rallumer-four
     titre: "Tian de loup (juste le poisson, on se caaaalme) aux aubergines et parmesan"
     url: https://saines-gourmandises.fr/ca-y-on-rallumer-four/
+    catalogue_id: tian-loup-aubergines
     rendement: {n: 8, unite: personnes}
     prep_min: 15
     cuisson_min: 60
@@ -4414,6 +4462,7 @@ recettes:
   - slug: bac-2018-020-grec-moderne
     titre: "Tomatokeftedes"
     url: https://saines-gourmandises.fr/bac-2018-020-grec-moderne/
+    catalogue_id: tomatokeftedes
     prep_min: 10
     cuisson_min: 15
     ingredients:
@@ -4431,6 +4480,7 @@ recettes:
   - slug: bon-et-si-on-mangeait-un-peu-equilibre
     titre: "Tombée de chou chinois au poulet sauté et basmati complet"
     url: https://saines-gourmandises.fr/bon-et-si-on-mangeait-un-peu-equilibre/
+    catalogue_id: tombee-chou-chinois-poulet
     rendement: {n: 2, unite: personnes}
     prep_min: 5
     ingredients:
@@ -4746,6 +4796,7 @@ recettes:
     titre: "Velouté de pois cassés aux poireaux caramélisés (Et aussi un bonhomme de neige au curcuma, mais ce n’est pas une recette !)"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/cest-beau-hiver-neige/
+    catalogue_id: veloute-pois-casses-poireaux-mache
     rendement: {n: 4, unite: personnes}
     prep_min: 10
     cuisson_min: 35
@@ -4763,6 +4814,7 @@ recettes:
   - slug: beaucoup-de-neige-une-panne-delectricite-une-grippe-une-chouette-idee-pour-le-diner
     titre: "Waterzoï de poisson un peu revisité"
     url: https://saines-gourmandises.fr/beaucoup-de-neige-une-panne-delectricite-une-grippe-une-chouette-idee-pour-le-diner/
+    catalogue_id: waterzoi-poisson-avoine
     rendement: {n: 8, unite: personnes}
     prep_min: 25
     cuisson_min: 60
@@ -4789,6 +4841,7 @@ recettes:
   - slug: sous-la-neige
     titre: "Welsh Cawl (Soupe-repas galloise)"
     url: https://saines-gourmandises.fr/sous-la-neige/
+    catalogue_id: welsh-cawl
     rendement: {n: 8, unite: personnes}
     prep_min: 15
     attentes: ["Trempage 8 H"]
@@ -4909,6 +4962,7 @@ recettes:
     titre: "… Et une recette de croquettes thaïe au thon (Pour les « étudiants » de 7 à 107 ans !)"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/saines-gourmandises-instagram-drole-didee/
+    catalogue_id: croquettes-thai-thon
     prep_min: 10
     cuisson_min: 6
     ingredients:
@@ -4964,6 +5018,7 @@ recettes:
     titre: "…Mais je vous donne quand même 2 recettes sympa à la fin de l’article ;)"
     titre_a_revoir: true
     url: https://saines-gourmandises.fr/attention-travaux/
+    catalogue_ids: [pate-croute-saumon-fenouil, rillettes-maquereau-fume]
     rendement: {n: 6, unite: personnes}
     prep_min: 30
     cuisson_min: 15
@@ -4982,3 +5037,17 @@ recettes:
       - "75g de parmesan râpé"
       - "Sel, poivre 5 baies."
     etapes_sur_le_blog: 22
+  # ── Absents du relevé du 2026-08-14, ajoutés à l'encodage (T196). ──
+  - slug: cest-cest-maison
+    titre: "Tomates séchées marinées à l'italienne"
+    url: https://saines-gourmandises.fr/cest-cest-maison/
+    ecartee: "demande un déshydrateur (45 à 48 h à 65 °C), absent de l'inventaire"
+  - slug: nest-beaute-compte
+    titre: "Pesto de Cavolo Nero (Chou Noir Toscan)"
+    url: https://saines-gourmandises.fr/nest-beaute-compte/
+    catalogue_id: pates-pesto-cavolo-nero
+  - slug: potimarrons-courges-potirons-citrouilles-and-co-retrospective-didees-recettes-geniaaaaales
+    titre: "Potimarrons, courges, potirons, citrouilles and Co… rétrospective d'idées recettes"
+    url: https://saines-gourmandises.fr/potimarrons-courges-potirons-citrouilles-and-co-retrospective-didees-recettes-geniaaaaales/
+    catalogue_ids: [creme-potiron-beaufort-lard, croissants-potimarron-rotis, cupcakes-potimarron-chevre, patidous-farcis-poulet-cepes, potimarron-surprise-veau-chataignes, puree-potimarron-huile-olive, salade-ecureuil-potimarron-noisettes, sopaipillas-courge, soupe-reconfortante-epices, veloute-potimarron-quatre-versions]
+    note_encodage: "la tourte « feuilles d'automne », le velouté de potiron, le moelleux mystère et les tranches de butternut sont déjà au catalogue depuis le livre ; les desserts viendront avec les desserts"

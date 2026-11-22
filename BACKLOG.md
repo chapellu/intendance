@@ -6679,3 +6679,72 @@ contenance, le récipient retenu changeait d'un lancement à l'autre, et
       chacun). Des plats à garde courte cuisinés en lot entier pour 2,75
       parts : la question de T155, pour les plats qui n'ont pas de preneur
       le lendemain midi.
+
+## T196 — Le blog Saines Gourmandises entre au catalogue, rubrique par rubrique
+
+Demandé le 22/11 : « traiter toutes les recettes du blog de Marie Chioca », en
+laissant de côté les recettes invitées. L'index de `sources/` (255 entrées,
+relevé du 14/08) n'en avait fait entrer que cinq. Le blog compte aujourd'hui
+404 articles, dont 262 portent une liste d'ingrédients (334 recettes) ; le
+travail se fait par rubrique, une PR chacune, chaque plat repris à la main et
+reformulé comme ceux du livre.
+
+- [x] **T196a — Viandes et poissons, légumes et céréales (22/11).** 55 plats :
+      les 17 articles de « Viandes et poissons » (dont les trois classiques du
+      dimanche — goulasch, poulet chasseur, marmite dieppoise —, la
+      bouillabaisse, les deux dindes de Noël, le waterzoï à l'avoine) et les
+      27 de « Légumes et céréales » restants, dont les onze plats salés de la
+      rétrospective potimarron de septembre 2026. Catalogue : 207 → 262 plats,
+      0 erreur.
+
+      **UNE ARÊTE DE PLUS, ÉCRITE PAR L'ARTICLE.** Les cupcakes au potimarron
+      demandent 160 g de purée déjà cuite : la purée à l'huile d'olive de la
+      même page l'émet (`puree-potimarron`), les cupcakes l'`accepts`, avec un
+      `sans_reste` (250 g de potimarron à cuire). La crème de potiron au
+      beaufort prend 30 cl de `bouillon-pot-au-feu`, facultatif.
+
+      **CE QUE LE FOYER N'A PAS, DIT DANS LA FICHE.** Le robot de l'autrice
+      devient le couteau (farces de dinde, « une farce, pas un velouté ») ou
+      le petit blender ; le moulin à légumes de la bouillabaisse, le mixeur et
+      le tamis. Le roaster, le moule à bûche, la feuille guitare, le moule haut
+      de 18 cm sont hors inventaire et rien ne le vérifie. Le welsh cawl est
+      encodé pour 4 (l'autrice propose de diviser par deux) : pour 8, il faut
+      un chaudron de 33 cm.
+
+      **TROIS ÉCARTS, TOUS ÉCRITS DANS L'INDEX.** Les tomates séchées
+      demandent un déshydrateur (`ecartee:`). Dans la rétrospective, la tourte
+      « feuilles d'automne », le meilleur des veloutés de potiron et le
+      moelleux mystère étaient déjà au catalogue depuis le livre, comme les
+      tranches de butternut (`note_encodage:`). Les farçous du blog, eux, ne
+      sont pas ceux du livre (orge, son d'avoine, eau, parmesan) : ils entrent
+      à côté.
+
+      **AUCUNE RECETTE INVITÉE DANS CES DEUX RUBRIQUES.** Tout le blog paraît
+      sous le compte de l'autrice ; les articles qui publient la recette d'un
+      autre (gagnants de concours, une amie, une lectrice) se repèrent à la
+      lecture et seront marqués `ecartee:` dans leur rubrique — ceux repérés
+      jusqu'ici sont dans les desserts.
+
+      La famille de garde « viande et poisson frais » reçoit les douze
+      viandes et poissons crus nouveaux (2 jours au frigo, à congeler sinon).
+
+      `sources/saines-gourmandises-blog.yaml` porte `catalogue_id:` (ou
+      `catalogue_ids:`) sur chaque article saisi ; trois articles absents du
+      relevé d'août y sont ajoutés. 43 ingrédients nouveaux, au rayon et
+      nommés (`noms:`) ; deux types émis ont un libellé (`fondue-courgettes`,
+      `peperonata`). Le test du garde-manger qui compte les plats à l'épeautre
+      passe de 7 à 10 — un fait de corpus, comme il le dit.
+
+      **UN NOM QUI DÉPENDAIT DE LA ZONE.** Le goulasch écrit « tomates
+      pelées » : le stock l'affiche désormais avec son accent… sauf dans la
+      zone où l'on vient de déplacer la boîte, qui disait encore « tomates
+      pelees ». Le panneau d'une zone et son éditeur fabriquaient le nom des
+      lignes ajoutées depuis l'id ; ils passent par `nomDeLaDenree` (T194).
+      `ranger-deplacer.spec.ts` épinglait l'ancienne graphie, il dit la bonne.
+
+- [ ] **T196b — Tartes et cakes salés, entrées, pains.** 22 + 12 + 13
+      articles.
+- [ ] **T196c — Desserts, gourmandises, glaces, petit-déjeuner.** Environ
+      160 articles, et c'est là que vivent les recettes invitées à écarter.
+- [ ] **T196d — Le reste** : bocaux et confitures, boissons, sauces, et les
+      articles « blabla » ou « non classé » qui contiennent une recette.

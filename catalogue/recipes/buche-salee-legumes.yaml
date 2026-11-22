@@ -1,0 +1,113 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE BÛCHE DE NOËL SALÉE EN TROIS STRATES liées à l'agar-agar : céleri-rave
+# au comté, potimarron aux oignons rouges, épinards. Prise au frais jusqu'au
+# lendemain ; tiédie à 60 °C au plus, elle garde sa tenue. Les fleurs de
+# légumes du décor ne sont pas encodées. Moule à bûche de 30 cm et feuille
+# guitare : hors inventaire, rien ne le vérifie.
+
+recipe:
+  id: buche-salee-legumes
+  title: Bûche salée (presque) 100 % légumes
+  role: entree
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Bûche salée (presque) 100% légumes », blog Saines Gourmandises, 20 décembre 2017"
+    url: https://saines-gourmandises.fr/reprendrez-bien-de-buche-dinde/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 15         # « une bûche d'environ 30 cm, 15 à 16 parts »
+  lot_entier: true
+  time_min_total: 70        # 35 min de préparation + 35 min de cuisson
+  active_min: 50
+
+  apports:
+    proteine: fromage
+    feculent: aucun
+    legumes: [racine, cucurbitacee, feuille, allium]
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: creme-soja, name: crème de soja liquide, qty: 50, unit: cl}
+    - {id: agar-agar, name: agar-agar, qty: 6, unit: g}
+    - {id: celeri-rave, name: petit céleri-rave, qty: 300, unit: g}
+    - {id: comte, name: comté affiné 18 mois, qty: 65, unit: g}
+    - {id: oignon-rouge, name: oignons rouges, qty: 2, unit: pièce}
+    - {id: potimarron, name: potimarron (pesé sans les graines), qty: 500, unit: g}
+    - {id: oignon, name: oignons jaunes, qty: 2, unit: pièce}
+    - {id: pousses-epinards, name: épinards frais, qty: 400, unit: g}
+    - {id: ail, name: ail, qty: 2, unit: gousse}
+    - {id: huile-olive, ref: huile-orange, name: huile d'olive (strate orange), qty: 3, unit: c. à s.}
+    - {id: huile-olive, ref: huile-verte, name: huile d'olive (strate verte), qty: 3, unit: c. à s.}
+    - {id: fleur-de-sel, name: fleur de sel, qty: 3, unit: pincée, seasoning: true}
+    - {id: poivre-5-baies, name: poivre 5 baies, qty: 3, unit: pincée, seasoning: true}
+
+  steps:
+    - id: liant
+      action: "Huiler une feuille guitare au fond d'un moule à bûche ; mixer la crème avec l'agar-agar puis la bouillir 1 min en fouettant, et la garder au chaud"
+      needs: [simmer]
+      charge_partielle: true   # une strate à la fois
+      uses: [creme-soja, agar-agar]
+      time_min: 5
+      attended: true
+    - id: celeri
+      action: "Cuire le céleri-rave en petits cubes 15 min à l'eau salée, l'égoutter et le mixer avec le comté, 80 g de liant et du poivre"
+      needs: [boil]
+      charge_partielle: true   # une strate à la fois
+      uses: [celeri-rave, comte]
+      time_min: 20
+    - id: strate-blanche
+      action: "Remettre 3 min sur le feu en remuant et verser au fond du moule"
+      needs: [simmer]
+      charge_partielle: true   # une strate à la fois
+      uses: []
+      time_min: 4
+    - id: potimarron
+      action: "Faire revenir les oignons rouges à l'huile, puis le potimarron non épluché en lamelles de 4 mm, salé et poivré, jusqu'à ce qu'il soit tendre et doré"
+      needs: [pan-fry]
+      charge_partielle: true   # une strate à la fois
+      uses: [huile-orange, oignon-rouge, potimarron]
+      time_min: 15
+      attended: true
+      parallel_with: celeri
+    - id: strate-orange
+      action: "Y mêler 110 g de liant 1 min sur le feu et verser sur la strate blanche"
+      needs: [pan-fry]
+      charge_partielle: true   # une strate à la fois
+      uses: []
+      time_min: 2
+    - id: epinards
+      action: "Dorer les oignons jaunes à l'huile, y blondir l'ail émincé, puis faire tomber les épinards salés à couvert jusqu'à ce qu'il n'y ait plus de jus"
+      needs: [pan-fry]
+      charge_partielle: true   # une strate à la fois
+      uses: [huile-verte, oignon, ail, pousses-epinards, fleur-de-sel]
+      time_min: 12
+      attended: true
+    - id: strate-verte
+      action: "Ajouter 150 g de liant et du poivre, porter à ébullition et verser dans le moule"
+      needs: [pan-fry]
+      charge_partielle: true   # une strate à la fois
+      uses: [poivre-5-baies]
+      time_min: 3
+    - id: prendre
+      action: "Couvrir et mettre au frais ; démouler et ôter la feuille au moment de servir"
+      astuce: "On peut la tiédir à 60 °C ; à 80 °C l'agar-agar fond."
+      needs: []
+      uses: []
+      time_min: 3
+      attente_min: 720
+      attente_raison: "prise au frais jusqu'au lendemain"
+
+  emits:
+    - kind: reste-plat
+      type: buche-salee-legumes
+      qty_band: 3-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []
