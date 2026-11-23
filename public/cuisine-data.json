@@ -37739,7 +37739,19 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1.0
+      },
+      {
+       "id": "beurre",
+       "nom": "beurre",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -37799,7 +37811,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "gingembre-poudre",
+       "nom": "gingembre en poudre (une demi-cuillerée à café)",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "curcuma",
@@ -46549,7 +46568,19 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "fromage-rape",
+       "nom": "fromage râpé",
+       "ratio": 1.0
+      },
+      {
+       "id": "parmesan",
+       "nom": "parmesan",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "sel",
@@ -57766,7 +57797,14 @@
      "unit": "cl",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "lait-croissance",
+       "nom": "lait de croissance",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "parmesan",
@@ -130962,7 +131000,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courge",
+       "nom": "courge (butternut…)",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "ail",
@@ -137122,7 +137167,8 @@
     "thon-boite",
     "maquereaux-boite",
     "sardines-boite",
-    "mais"
+    "mais",
+    "sauce-tomate"
    ]
   },
   {
@@ -137170,7 +137216,8 @@
    "source": "ordre de grandeur — un bloc de comté ou d'emmental sous vide porte une date à six à huit semaines ; entamé, il tient trois à quatre semaines emballé.",
    "conseil": "Râper la moitié d'un bloc qui traîne et la congeler à plat : elle s'emploie sans décongeler, directement sur le gratin.",
    "ids": [
-    "fromage-rape"
+    "fromage-rape",
+    "parmesan"
    ]
   },
   {
@@ -137578,44 +137625,68 @@
     "jusqua": null,
     "hebdo": false,
     "unite": "pièce"
+   },
+   {
+    "ingredient": "courge",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "pièce (butternut ou potimarron)"
+   },
+   {
+    "ingredient": "poireau",
+    "minimum": 2,
+    "jusqua": 4,
+    "hebdo": true,
+    "unite": "pièce"
+   },
+   {
+    "ingredient": "parmesan",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "morceau de 200 g"
+   },
+   {
+    "ingredient": "sauce-tomate",
+    "minimum": 1,
+    "jusqua": 2,
+    "hebdo": false,
+    "unite": "bocal de 500 g"
    }
   ],
   "diners": [
    {
-    "plat": "dahl-lentilles-corail",
-    "titre": "Dahl de lentilles corail, lait de coco, épinards surgelés, riz"
+    "plat": "dahl-riz-lentilles-corail-carottes",
+    "titre": "Dahl de riz et lentilles corail aux carottes"
    },
    {
-    "plat": "pates-bolognaise-lentilles",
-    "titre": "Pâtes à la bolognaise de lentilles vertes et tomates pelées"
+    "plat": "houmous-et-compagnie",
+    "titre": "Houmous et compagnie"
    },
    {
-    "plat": "soupe-pois-casses-carottes",
-    "titre": "Soupe de pois cassés aux carottes"
+    "plat": "soupe-crepes-haute-autriche",
+    "titre": "Soupe de crêpes de Haute-Autriche"
    },
    {
-    "plat": "curry-pois-chiches",
-    "titre": "Curry de pois chiches"
+    "plat": "blinis-de-legumes",
+    "titre": "Blinis de légumes"
    },
    {
-    "plat": "chili-haricots-rouges",
-    "titre": "Chili de haricots rouges (trempés la veille), riz"
+    "plat": "frittata-vegetarienne",
+    "titre": "Frittata végétarienne"
    },
    {
-    "plat": "haricots-blancs-tomate-oeufs",
-    "titre": "Haricots blancs mijotés à la tomate, œufs pochés dedans"
+    "plat": "gratin-courge-riz",
+    "titre": "Gratin de courge au riz"
    },
    {
-    "plat": "tortilla-pommes-de-terre-haricots-verts",
-    "titre": "Omelette aux pommes de terre et haricots verts"
+    "plat": "veloute-potiron",
+    "titre": "Le meilleur des veloutés de potiron"
    },
    {
-    "plat": "salade-tiede-lentilles-thon",
-    "titre": "Salade tiède de lentilles vertes, carottes, thon"
-   },
-   {
-    "plat": "soupe-legumes-pois-chiches",
-    "titre": "Soupe de légumes surgelés et pois chiches"
+    "plat": "veloute-potimarron-quatre-versions",
+    "titre": "Velouté de potimarron, en quatre versions"
    }
   ],
   "conditionnements": [

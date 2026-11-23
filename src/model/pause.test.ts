@@ -703,7 +703,8 @@ describe("T186 — un ingrédient facultatif ne coûte pas le dîner", () => {
 
   test("un jour sans courses, le fromage râpé fini, la bolognaise du congélateur se fait", () => {
     const { proposition } = monde({
-      evts: [fondRentre(veille(LUNDI), ["fromage-rape"])],
+      // T197 : le parmesan, entré au fond, remplace le râpé — il est fini aussi.
+      evts: [fondRentre(veille(LUNDI), ["fromage-rape", "parmesan"])],
       // 70 jours sur 90 : elle presse, et la carte qui la finit passe en tête.
       stock: [resteDe("sauce-bolognaise", veille(LUNDI, 70), "congelo")],
     });

@@ -56,8 +56,9 @@ describe("le fond de roulement fait exister comme stock ce qu'aucun relevé n'av
   });
 
   // T142 : neuf — les gnocchis sont sortis du fond, et leur dîner avec eux.
-  test("les neuf dîners du fond désignent des plats qui existent", () => {
-    expect(catalogue.fond.diners).toHaveLength(9);
+  test("les huit dîners du fond désignent des plats qui existent", () => {
+    // T197 : huit dîners sourcés, au lieu des neuf rédigés pour ce dépôt.
+    expect(catalogue.fond.diners).toHaveLength(8);
     for (const d of catalogue.fond.diners) expect(plat(d.plat), d.plat).toBeDefined();
   });
 
@@ -133,10 +134,17 @@ describe("les saisons parlent des légumes, jamais de la garde", () => {
     expect(saisonDuPlat(catalogue, q, 12).horsSaison).toEqual(["courgettes"]);
   });
 
-  test("les dîners du fond ne sont ni de saison ni hors saison — ils se font toute l'année", () => {
-    for (const d of catalogue.fond.diners)
-      for (const m of [1, 4, 7, 10])
-        expect(saisonDuPlat(catalogue, plat(d.plat), m).horsSaison, d.plat).toEqual([]);
+  // T197 — LA RÈGLE A CHANGÉ AVEC LES DÎNERS. Les neuf dîners rédigés pour ce
+  // dépôt se faisaient toute l'année, chacun ; ceux de Marie Chioca suivent les
+  // saisons (courge, poireau, herbes). La promesse porte donc sur le mois : il
+  // y a toujours au moins trois dîners du fond de saison, quel que soit le mois.
+  test("chaque mois, au moins trois dîners du fond sont de saison", () => {
+    for (let m = 1; m <= 12; m++) {
+      const ok = catalogue.fond.diners.filter(
+        (d) => saisonDuPlat(catalogue, plat(d.plat), m).horsSaison.length === 0,
+      );
+      expect(ok.length, `mois ${m}`).toBeGreaterThanOrEqual(3);
+    }
   });
 
   test("un mois hors de 1–12 est refusé au chargement", () => {

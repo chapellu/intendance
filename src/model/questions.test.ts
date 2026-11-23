@@ -409,7 +409,7 @@ describe("le volume de questions DOIT décroître à l'usage", () => {
   const JOUR = "2026-09-06";
 
   /** Une passe de N dîners : on demande, on répond « oui » à tout, on pose. */
-  function passeDe(evts: Evenement[], n: number): number {
+  function passeDe(evts: Evenement[], n: number, demandes?: Set<string>): number {
     const jeu = creerJeu(reel, 7, new Date(`${JOUR}T12:00:00Z`));
     const rejeu = rejouer(reel, evts, ctxReel, JOUR);
     const savoir = {
@@ -435,6 +435,7 @@ describe("le volume de questions DOIT décroître à l'usage", () => {
         repondu: new Map(),
       });
       total += qs.length;
+      for (const q of qs) demandes?.add(q.ingredient);
       for (const q of qs)
         evts.push({
           sorte: "observation", portee: "ingredient", zone: null,
@@ -456,9 +457,17 @@ describe("le volume de questions DOIT décroître à l'usage", () => {
   });
 
   test("une passe plus large ne redemande que ce qu'elle découvre", () => {
+    // T197 — LA PROMESSE, PLUTÔT QUE SON INDICE. Le test comparait les deux
+    // totaux (« sept dîners demandent moins que trois »), ce qui ne tient que
+    // si les quatre dîners de plus découvrent peu d'ingrédients : avec les
+    // recettes variées de l'autrice, ils en découvrent quinze. Ce que le titre
+    // promet se vérifie directement : rien de ce qui a été répondu ne revient.
     const evts: Evenement[] = [];
-    const trois = passeDe(evts, 3);
-    expect(passeDe(evts, 7)).toBeLessThan(trois);
+    const vus = new Set<string>();
+    expect(passeDe(evts, 3, vus)).toBeGreaterThan(0);
+    const ensuite = new Set<string>();
+    passeDe(evts, 7, ensuite);
+    expect([...ensuite].filter((i) => vus.has(i))).toEqual([]);
   });
 });
 

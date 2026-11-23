@@ -79,7 +79,16 @@ def manques(recette: dict, disponibles: set, rayons: dict) -> list:
     lignes = [i for i in recette.get("ingredients") or [] if not i.get("from_accepts")]
     if any(i.get("from_accepts") for i in recette.get("ingredients") or []):
         lignes += (recette.get("sans_reste") or {}).get("ingredients") or []
-    return sorted({alias.get(i["id"], i["id"]) for i in lignes} - disponibles)
+    # T197 — UNE LIGNE QUE LA FICHE SAIT REMPLACER est couverte si l'un de ses
+    # remplaçants (`subs` portant un id) est au fond : l'huile de coco du dahl
+    # se fait à l'huile d'olive, et le foyer n'achète pas l'une pour l'autre.
+    # La ligne facultative ne manque jamais.
+    def couverte(i):
+        if i.get("optional"):
+            return True
+        ids = [i["id"]] + [s["id"] for s in i.get("subs") or [] if "id" in s]
+        return any(alias.get(x, x) in disponibles for x in ids)
+    return sorted({alias.get(i["id"], i["id"]) for i in lignes if not couverte(i)})
 
 
 # ──────────────────────────────────────────────────────────────── export

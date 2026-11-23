@@ -32,7 +32,13 @@ recipe:
     origine: francais
 
   ingredients:
-    - {id: potimarron, name: potimarron de taille normale, qty: 1, unit: pièce}
+    # T197 — adaptation du foyer : la courge du fond fait le même velouté.
+    - id: potimarron
+      name: potimarron de taille normale
+      qty: 1
+      unit: pièce
+      subs:
+        - {id: courge, name: "courge (butternut…)", note: "adaptation du foyer", ratio: 1.0}
     - {id: ail, name: ail (1 à 3 gousses), qty: 2, unit: gousse}
     - {id: oignon, name: oignon, qty: 1, unit: pièce}
     - id: poireau

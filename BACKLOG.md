@@ -6892,15 +6892,24 @@ reformulé comme ceux du livre.
       `crepes-son-avoine-fleur-oranger` · `cookies-avoine-maison` → les
       cookies du blog · `pain-maison-semi-complet` → les pains de mie du blog.
 
-      **BLOQUÉES PAR LE FOND DE ROULEMENT.** Les dîners de `fond.yaml` se
-      cuisinent avec le fond et le placard SEULS ; aucune recette sourcée ne
-      le fait encore. `dahl-lentilles-corail` (le dahl du livre veut des
-      carottes fraîches), `pates-bolognaise-lentilles`,
+      **LE FOND DE ROULEMENT N'EST PLUS UN BLOCAGE (fait le 2026-11-23).**
+      Il avait été écrit en même temps que les neuf dîners rédigés pour ce
+      dépôt, et leur allait comme un gant : un seul plat sourcé s'y faisait
+      sans courses. Il gagne la courge, le poireau (frais de la semaine), le
+      parmesan et la sauce tomate ; pas de céleri-rave (pas aimé), pas d'huile
+      de coco ni de gingembre frais (on adapte plutôt que d'acheter). Quatre
+      fiches portent une adaptation du foyer en `subs` (huile et gingembre du
+      dahl, fromage de la frittata, lait du gratin, potimarron du velouté), et
+      `fond.manques` compte une ligne couverte si un remplaçant est au fond.
+      Les dîners du fond sont désormais huit plats de l'autrice, et la règle
+      « chacun se fait toute l'année » devient « chaque mois, au moins trois
+      sont de saison » : elle cuisine avec les saisons. Les neuf anciens
+      dîners (`dahl-lentilles-corail`, `pates-bolognaise-lentilles`,
       `soupe-pois-casses-carottes`, `curry-pois-chiches`,
       `chili-haricots-rouges`, `haricots-blancs-tomate-oeufs`,
       `tortilla-pommes-de-terre-haricots-verts`, `salade-tiede-lentilles-thon`,
-      `soupe-legumes-pois-chiches`. Il faut d'abord des recettes sourcées qui
-      tiennent ce contrat, ou revoir le contrat.
+      `soupe-legumes-pois-chiches`) ne tiennent plus rien : ils rejoignent la
+      vague de retrait.
 
       **SANS ÉQUIVALENT SOURCÉ.** Chili sin carne, fajitas, gnocchis (deux),
       lasagnes, sauce et pâtes bolognaise, saumon-riz-brocoli, soupe de poule,

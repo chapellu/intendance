@@ -303,7 +303,7 @@ familles:
       Une boîte entamée ne reste jamais dans le métal : transvaser dans une
       boîte hermétique, au frigo, et finir dans les trois jours.
     ids: [tomates-pelees, concentre-tomate, lait-coco, thon-boite,
-          maquereaux-boite, sardines-boite, mais]
+          maquereaux-boite, sardines-boite, mais, sauce-tomate]
 
   - id: oeufs
     label: œufs
@@ -354,7 +354,7 @@ familles:
     conseil: >-
       Râper la moitié d'un bloc qui traîne et la congeler à plat : elle
       s'emploie sans décongeler, directement sur le gratin.
-    ids: [fromage-rape]
+    ids: [fromage-rape, parmesan]
 
   # T150 — LE BEURRE N'EST PAS UN YAOURT. T142 l'avait rangé ici, à trois
   # semaines : l'année simulée n° 10 jetait la plaquette entamée au 22e jour
