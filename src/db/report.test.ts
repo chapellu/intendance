@@ -55,7 +55,7 @@ describe("ce qui est posé ne vieillit pas", () => {
   test("un plat posé hier se relit aujourd’hui, sans qu’on l’ait demandé", async () => {
     // LA PANNE, EXACTEMENT. Mardi soir on pose un dîner ; mercredi la fenêtre
     // commence à mercredi, et mardi est passé sous la borne basse.
-    await poser(base, mardi, creneau(mardi, 0, "diner"), "poulet-roti");
+    await poser(base, mardi, creneau(mardi, 0, "diner"), "poulet-roti-du-dimanche");
 
     const sansReport = hydrater(
       creerJeu(catalogue, 7, MERCREDI),
@@ -64,13 +64,13 @@ describe("ce qui est posé ne vieillit pas", () => {
     expect(poses(sansReport)).toEqual([]);
 
     // Avec le report, le même geste rend le plat — c'est tout le ticket.
-    expect(poses(await rouvrir(MERCREDI))).toEqual(["poulet-roti"]);
+    expect(poses(await rouvrir(MERCREDI))).toEqual(["poulet-roti-du-dimanche"]);
   });
 
   test("un dîner redevient un dîner, pas le premier créneau venu", async () => {
-    await poser(base, mardi, creneau(mardi, 0, "diner"), "poulet-roti");
+    await poser(base, mardi, creneau(mardi, 0, "diner"), "poulet-roti-du-dimanche");
     const mercredi = await rouvrir(MERCREDI);
-    const i = mercredi.choix.findIndex((c) => c === "poulet-roti");
+    const i = mercredi.choix.findIndex((c) => c === "poulet-roti-du-dimanche");
     expect(mercredi.creneaux[i]?.repas).toBe("diner");
     // Et sur le PREMIER dîner disponible : on ne le repousse pas à la fin de la
     // semaine sous prétexte qu'il a déjà attendu un jour.
@@ -79,21 +79,21 @@ describe("ce qui est posé ne vieillit pas", () => {
 
   test("les parts réglées suivent le plat", async () => {
     const soir = creneau(mardi, 0, "diner");
-    await poser(base, mardi, soir, "poulet-roti");
+    await poser(base, mardi, soir, "poulet-roti-du-dimanche");
     await reglerParts(base, mardi, soir, 6);
 
     const mercredi = await rouvrir(MERCREDI);
-    const i = mercredi.choix.findIndex((c) => c === "poulet-roti");
+    const i = mercredi.choix.findIndex((c) => c === "poulet-roti-du-dimanche");
     expect(mercredi.parts[i]).toBe(6);
   });
 
   test("deux plats d’hier ne se marchent pas dessus, et gardent leur ordre", async () => {
-    await poser(base, mardi, creneau(mardi, 0, "dejeuner"), "poulet-roti");
+    await poser(base, mardi, creneau(mardi, 0, "dejeuner"), "poulet-roti-du-dimanche");
     await poser(base, mardi, creneau(mardi, 0, "diner"), "pates-bolognaise");
 
     const mercredi = await rouvrir(MERCREDI);
-    expect(poses(mercredi)).toEqual(["poulet-roti", "pates-bolognaise"]);
-    const midi = mercredi.choix.indexOf("poulet-roti");
+    expect(poses(mercredi)).toEqual(["poulet-roti-du-dimanche", "pates-bolognaise"]);
+    const midi = mercredi.choix.indexOf("poulet-roti-du-dimanche");
     const soir = mercredi.choix.indexOf("pates-bolognaise");
     expect(mercredi.creneaux[midi]?.repas).toBe("dejeuner");
     expect(mercredi.creneaux[soir]?.repas).toBe("diner");
@@ -103,30 +103,30 @@ describe("ce qui est posé ne vieillit pas", () => {
     // Le report ne regarde pas COMBIEN de nuits ont passé : il regarde ce qui
     // est en amont de la borne. Un week-end sans ouvrir l'app est le cas
     // ordinaire, pas le cas limite.
-    await poser(base, mardi, creneau(mardi, 0, "diner"), "poulet-roti");
+    await poser(base, mardi, creneau(mardi, 0, "diner"), "poulet-roti-du-dimanche");
     const samedi = await rouvrir(new Date(2026, 7, 22, 12, 0, 0));
-    expect(poses(samedi)).toEqual(["poulet-roti"]);
+    expect(poses(samedi)).toEqual(["poulet-roti-du-dimanche"]);
   });
 
   test("il ne touche pas ce qui est déjà dans la fenêtre", async () => {
     // Posé mardi pour jeudi : jeudi est encore devant, rien à reporter, et le
     // plat ne doit surtout pas remonter au mercredi.
-    await poser(base, mardi, creneau(mardi, 2, "diner"), "poulet-roti");
+    await poser(base, mardi, creneau(mardi, 2, "diner"), "poulet-roti-du-dimanche");
     const mercredi = await rouvrir(MERCREDI);
-    const i = mercredi.choix.indexOf("poulet-roti");
+    const i = mercredi.choix.indexOf("poulet-roti-du-dimanche");
     expect(jourISO(mercredi.jours[mercredi.creneaux[i]!.jour]!.date)).toBe("2026-08-20");
   });
 
   test("rouvrir deux fois ne duplique rien", async () => {
-    await poser(base, mardi, creneau(mardi, 0, "diner"), "poulet-roti");
+    await poser(base, mardi, creneau(mardi, 0, "diner"), "poulet-roti-du-dimanche");
     await rouvrir(MERCREDI);
     const bis = await rouvrir(MERCREDI);
-    expect(poses(bis)).toEqual(["poulet-roti"]);
+    expect(poses(bis)).toEqual(["poulet-roti-du-dimanche"]);
     expect(await base.creneaux.count()).toBe(1);
   });
 
   test("et le second report ne fait rien du tout", async () => {
-    await poser(base, mardi, creneau(mardi, 0, "diner"), "poulet-roti");
+    await poser(base, mardi, creneau(mardi, 0, "diner"), "poulet-roti-du-dimanche");
     const j = creerJeu(catalogue, 7, MERCREDI);
     expect(await reporterLesPoses(base, j)).toEqual({ reportees: 1, closes: 0, bloquees: 0 });
     expect(await reporterLesPoses(base, j)).toEqual({ reportees: 0, closes: 0, bloquees: 0 });
@@ -139,13 +139,13 @@ describe("ce qui ne se reporte pas, et pourquoi", () => {
     // cuisson ; reporter le plat le remettrait en « à cuisiner » et la liste
     // de courses le recompterait.
     const soir = creneau(mardi, 0, "diner");
-    await poser(base, mardi, soir, "poulet-roti");
+    await poser(base, mardi, soir, "poulet-roti-du-dimanche");
     await base.evenements.add({
       sorte: "cuisine",
       jour: "2026-08-18",
       saisi: "2026-08-18",
       repas: "diner",
-      plat: "poulet-roti",
+      plat: "poulet-roti-du-dimanche",
       parts: 4,
       maj: Date.now(),
     } as never);
@@ -171,7 +171,7 @@ describe("ce qui ne se reporte pas, et pourquoi", () => {
     // LA PERTE SILENCIEUSE EST CE QU'ON RÉPARE : on ne va pas la refaire à
     // l'autre bout. Une fenêtre entièrement posée n'a nulle part où reporter ;
     // la ligne attend son tour, et le report suivant la reprendra.
-    await poser(base, mardi, creneau(mardi, 0, "diner"), "poulet-roti");
+    await poser(base, mardi, creneau(mardi, 0, "diner"), "poulet-roti-du-dimanche");
 
     const mercredi = creerJeu(catalogue, 7, MERCREDI);
     for (const [i, c] of mercredi.creneaux.entries())
@@ -182,7 +182,7 @@ describe("ce qui ne se reporte pas, et pourquoi", () => {
       closes: 0,
       bloquees: 1,
     });
-    expect((await base.creneaux.get(cleCreneau("2026-08-18", "diner")))?.plat).toBe("poulet-roti");
+    expect((await base.creneaux.get(cleCreneau("2026-08-18", "diner")))?.plat).toBe("poulet-roti-du-dimanche");
   });
 });
 
@@ -192,15 +192,15 @@ describe("T146 — le reste de la veille appartient à son midi", () => {
     // agrandis pour mercredi midi. Le mardi midi, mangé sans geste, ne doit
     // pas glisser sur mercredi en perdant son plat.
     const LUNDI = new Date(2026, 9, 26, 15, 0);
-    await poserCeSoir(base, catalogue, "dahl-lentilles-corail", [], LUNDI, 3);
+    await poserCeSoir(base, catalogue, "dahl-riz-lentilles-corail-carottes", [], LUNDI, 3);
     const MARDI_ = new Date(2026, 9, 27, 15, 0);
     await reporterLesPoses(base, creerJeu(catalogue, 7, MARDI_));
-    await poserCeSoir(base, catalogue, "hachis-parmentier-lentilles", [], MARDI_, 3);
+    await poserCeSoir(base, catalogue, "hachis-parmentier-50-50", [], MARDI_, 3);
 
     const mercredi = await rouvrir(new Date(2026, 9, 28, 7, 30));
     const midi = creneau(mercredi, 0, "dejeuner");
     expect(mercredi.choix[midi]).toBe(RESTE_DE_LA_VEILLE);
-    expect(mercredi.deLaVeille?.[midi]).toBe("hachis-parmentier-lentilles");
+    expect(mercredi.deLaVeille?.[midi]).toBe("hachis-parmentier-50-50");
     // Et aucun autre midi n'a hérité d'un « reste » sans plat.
     expect(mercredi.choix.filter((c, i) => c === RESTE_DE_LA_VEILLE && !mercredi.deLaVeille?.[i])).toHaveLength(0);
   });
@@ -210,7 +210,7 @@ describe("« j’ai fini » est le seul geste qui efface en gros", () => {
   test("il vide la table, y compris ce qui est resté en amont", async () => {
     // Ce qui est bloqué en amont est justement ce qu'on ne VOIT pas : l'épargner
     // le ferait revenir demain, après qu'on a dit avoir fini.
-    await poser(base, mardi, creneau(mardi, 0, "diner"), "poulet-roti");
+    await poser(base, mardi, creneau(mardi, 0, "diner"), "poulet-roti-du-dimanche");
     const mercredi = await rouvrir(MERCREDI);
     await poser(base, mercredi, creneau(mercredi, 3, "dejeuner"), "pates-bolognaise");
 
@@ -221,7 +221,7 @@ describe("« j’ai fini » est le seul geste qui efface en gros", () => {
 
   test("il remet les parts du foyer, pas zéro", async () => {
     const soir = creneau(mardi, 0, "diner");
-    await poser(base, mardi, soir, "poulet-roti");
+    await poser(base, mardi, soir, "poulet-roti-du-dimanche");
     await reglerParts(base, mardi, soir, 6);
     await toutOublier(base, mardi);
     expect(mardi.parts[soir]).toBe(catalogue.foyer.parts);
@@ -230,10 +230,10 @@ describe("« j’ai fini » est le seul geste qui efface en gros", () => {
   test("et rien ne le déclenche tout seul", async () => {
     // La promesse en creux du ticket — « only clean recipes when I say I'm
     // done ». Trente nuits d'affilée ne doivent pas valoir un geste.
-    await poser(base, mardi, creneau(mardi, 0, "diner"), "poulet-roti");
+    await poser(base, mardi, creneau(mardi, 0, "diner"), "poulet-roti-du-dimanche");
     let dernier = mardi;
     for (let n = 1; n <= 30; n++)
       dernier = await rouvrir(new Date(2026, 7, 18 + n, 12, 0, 0));
-    expect(poses(dernier)).toEqual(["poulet-roti"]);
+    expect(poses(dernier)).toEqual(["poulet-roti-du-dimanche"]);
   });
 });

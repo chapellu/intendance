@@ -1,0 +1,67 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LA MÊME MÉTHODE avec de la purée de noisette toastée bien lisse (50 g), 10 g
+# de psyllium, agave, vanille et fleur de sel dans 50 cl d'eau. Avec de la
+# purée d'amande blanche, c'est la version vanille, ou café avec un expresso.
+
+recipe:
+  id: creme-psyllium-praline
+  title: Crème dessert pralinée sans cuisson, au psyllium
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Les sublimes crèmes dessert sans lait, sans oeufs, sans farine… et sans cuisson ! », blog Saines Gourmandises, 13 juin 2025"
+    url: https://saines-gourmandises.fr/les-sublimes-cremes-dessert-sans-lait-sans-oeufs-sans-farine-et-sans-cuisson-avec-un-ingredient-improbable/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6
+    pieces: 6
+  lot_entier: true
+  time_min_total: 70
+  active_min: 6
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: eau, name: "eau", qty: 50, unit: cl}
+    - {id: psyllium, name: "psyllium blond", qty: 10, unit: g}
+    - {id: puree-noisette, name: "purée de noisette toastée bien lisse", qty: 50, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 10, unit: cl}
+    - {id: extrait-vanille, name: "extrait de vanille", qty: 1, unit: c. à c.}
+    - {id: fleur-de-sel, name: "grosse pincée de fleur de sel", qty: 1, unit: bonne pincée, seasoning: true}
+
+  steps:
+    - id: mixer
+      action: "Mettre tous les ingrédients dans l'eau et mixer"
+      needs: [blend-smooth]
+      uses: [eau, psyllium, puree-noisette, sirop-agave, extrait-vanille, fleur-de-sel]
+      time_min: 3
+      attente_min: 60
+      attente_raison: "le psyllium gonfle 10 min au moins, 1 h au mieux"
+      attente_souple: true
+    - id: empoter
+      action: "Mixer à nouveau, verser en pots et mettre au frais"
+      needs: [blend-smooth]
+      uses: []
+      time_min: 3
+      attente_min: 60
+      attente_raison: "au frais avant de servir"
+      attente_souple: true
+
+  emits:
+    - kind: reste-plat
+      type: creme-psyllium-praline
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

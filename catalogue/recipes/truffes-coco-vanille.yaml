@@ -1,0 +1,77 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# TRENTE TRUFFES SANS ŒUF NI CRÈME LAITIÈRE : crème de coco chauffée à la vanille et
+# à l'agave, chocolat 70 % et huile de coco fondus dedans, mixés avec un peu de
+# lécithine ; une nuit au frais, puis boules de 20 g roulées dans le cacao, ou
+# carrés découpés. Quinze jours au frais en boîte ; sortir avant de servir.
+
+recipe:
+  id: truffes-coco-vanille
+  title: « THE » truffes au chocolat, coco et vanille
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Bûche poire-chocolat à la Chartreuse verte et, en bonus, THE recette de truffes ! », blog Saines Gourmandises, 18 décembre 2018"
+    url: https://saines-gourmandises.fr/pour-emmanuelle/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 10          # « environ 30 truffes »
+    pieces: 30
+  time_min_total: 15
+  active_min: 15
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: chocolat-noir, name: "chocolat noir pâtissier 70 %", qty: 200, unit: g}
+    - {id: huile-coco, name: "huile de coco vierge", qty: 75, unit: g}
+    - {id: creme-coco, ref: creme-truffes, name: "crème de coco liquide (truffes)", qty: 20, unit: cl}
+    - {id: sirop-agave, ref: agave-truffes, name: "sirop d'agave (truffes)", qty: 10, unit: cl}
+    - {id: gousse-vanille, name: "belle gousse de vanille", qty: 1, unit: pièce}
+    - {id: lecithine-soja, name: "lécithine de soja (c. à s. rase)", qty: 1, unit: c. à s.}
+    - {id: fleur-de-sel, name: "pointe de fleur de sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: cacao, name: "cacao pour rouler", qty: 3, unit: c. à s.}
+
+  steps:
+    - id: ganache
+      action: "Chauffer doucement la crème de coco, la vanille et l'agave en fouettant, couper avant l'ébullition et y fondre huile de coco et chocolat en morceaux"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [creme-truffes, gousse-vanille, agave-truffes, huile-coco, chocolat-noir]
+      time_min: 8
+    - id: mixer
+      action: "Ôter la gousse et mixer plusieurs minutes avec la lécithine et la fleur de sel, jusqu'à ce qu'il ne reste aucun grain"
+      needs: [blend-smooth]
+      uses: [lecithine-soja, fleur-de-sel]
+      time_min: 5
+    - id: prendre
+      action: "Verser dans un petit plat et laisser prendre au frais"
+      needs: []
+      uses: []
+      time_min: 2
+      attente_min: 600
+      attente_raison: "une nuit au frais"
+    - id: rouler
+      action: "Façonner des boules de 20 g roulées dans le cacao, ou découper des carrés de 2 cm brassés dans le cacao"
+      needs: []
+      uses: [cacao]
+      time_min: 15
+      kid: {age_min_months: 30, task: "rouler les truffes dans le cacao"}
+
+  emits:
+    - kind: base
+      type: truffes-coco-vanille
+      qty_band: 3-repas
+      keeps: {frigo_days: 15, congelo: false}
+
+  plan_b: []

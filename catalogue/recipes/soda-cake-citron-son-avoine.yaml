@@ -1,0 +1,64 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN CAKE QUI MOUSSE : le jus de citron réagit avec la levure, donc on verse
+# aussitôt et on ne touche plus ; 1 h à 150 °C, pas plus chaud. En muffins,
+# 25 min.
+
+recipe:
+  id: soda-cake-citron-son-avoine
+  title: « Soda-cake » au citron, sirop d'agave et son d'avoine
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Soda-cake au citron, sirop d'agave et son d'avoine », blog Saines Gourmandises, 23 mars 2012"
+    url: https://saines-gourmandises.fr/une-recette-toute-simple-et-legere-pour-feter-larrivee-du-printemps/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « un cake de 20 cm »
+  lot_entier: true
+  time_min_total: 70
+  active_min: 10
+
+  apports:
+    proteine: oeuf
+    feculent: avoine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: son-avoine, name: "son d'avoine", qty: 75, unit: g}
+    - {id: farine-epeautre, name: "farine complète d'épeautre", qty: 75, unit: g}
+    - {id: poudre-a-lever, name: "levure", qty: 1, unit: sachet}
+    - {id: puree-amande-blanche, name: "purée d'amande blanche (ou margarine)", qty: 100, unit: g}
+    - {id: oeufs, name: "œufs", qty: 3, unit: pièce}
+    - {id: citron, name: "citrons (7 cl de jus)", qty: 2, unit: pièce}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 15, unit: cl}
+    - {id: huile-essentielle-citron, name: "huile essentielle de citron (ou un zeste)", qty: 20, unit: pièce}
+
+  steps:
+    - id: pate
+      action: "Préchauffer à 150 °C ; mélanger farine, levure et son, puis tous les autres ingrédients, et verser aussitôt dans le moule"
+      astuce: "Dès que la pâte mousse, moins on la touche, mieux le cake lève."
+      needs: []
+      uses: [son-avoine, farine-epeautre, poudre-a-lever, puree-amande-blanche, oeufs, citron, sirop-agave, huile-essentielle-citron]
+      time_min: 6
+    - id: cuire
+      action: "Cuire 1 h"
+      needs: [bake]
+      uses: []
+      time_min: 60
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: soda-cake-citron-son-avoine
+      qty_band: 3-repas
+      keeps: {frigo_days: 4, congelo: true}
+
+  plan_b: []

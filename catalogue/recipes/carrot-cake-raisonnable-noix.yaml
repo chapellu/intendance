@@ -1,0 +1,72 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN CARROT CAKE À PEU DE BEURRE : carottes et noix râpées (la râpe concasse les
+# noix sans les réduire en bouillie), beurre fondu, farine complète, œufs, sucre
+# de coco, vanille et rhum ; 40 min en savarin de 24 cm. Avec une crème
+# fouettée, au choix.
+
+recipe:
+  id: carrot-cake-raisonnable-noix
+  title: Carrot cake « raisonnable » aux noix
+  creneaux: [gouter, dessert, petit-dejeuner]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Carrot Cake raisonnable avec un tout p'tit peu de beurre quand même », blog Saines Gourmandises, 14 février 2019"
+    url: https://saines-gourmandises.fr/carottes-cuites-tant-mieux/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 10          # « un gâteau de 8/12 parts »
+  lot_entier: true
+  time_min_total: 55
+  active_min: 15
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: [racine]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: carottes, name: "carottes", qty: 300, unit: g}
+    - {id: noix, name: "cerneaux de noix fraîchement cassées", qty: 150, unit: g}
+    - {id: beurre, name: "beurre", qty: 90, unit: g}
+    - {id: farine-complete, name: "farine complète ou semi-complète", qty: 180, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever", qty: 1, unit: sachet}
+    - {id: oeufs, name: "œufs", qty: 3, unit: pièce}
+    - {id: sucre-complet, name: "sucre de coco", qty: 130, unit: g}
+    - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 1, unit: c. à s.}
+    - {id: rhum, name: "rhum", qty: 1, unit: c. à s.}
+
+  steps:
+    - id: raper
+      action: "Préchauffer à 180 °C ; râper les carottes et les noix, et fondre le beurre"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [carottes, noix, beurre]
+      time_min: 10
+      kid: {age_min_months: 36, task: "râper les carottes, avec un adulte"}
+    - id: pate
+      action: "Mêler la farine et la levure avec tous les autres ingrédients et verser dans un savarin beurré"
+      needs: []
+      uses: [farine-complete, poudre-a-lever, oeufs, sucre-complet, extrait-vanille, rhum]
+      time_min: 4
+    - id: cuire
+      action: "Cuire 40 min, tiédir dans le moule puis démouler"
+      needs: [bake]
+      uses: []
+      time_min: 40
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: carrot-cake-raisonnable-noix
+      qty_band: 3-repas
+      keeps: {frigo_days: 4, congelo: true}
+
+  plan_b: []

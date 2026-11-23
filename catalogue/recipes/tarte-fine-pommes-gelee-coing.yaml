@@ -1,0 +1,80 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE PÂTE ÉCRASÉE À LA MAIN : farine bise d'épeautre, beurre mou, petits-suisses
+# égouttés, un peu de sucre, reposée 1 h au frais ; trottoirs roulottés,
+# pommes fines serrées en rosace, 20 à 25 min à 200 °C ; nappage de gelée de
+# coing bouillie avec vanille et cannelle.
+
+recipe:
+  id: tarte-fine-pommes-gelee-coing
+  title: Tarte fine aux pommes, nappage gelée de coing vanillée
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« La Cuisine des Grands Classiques, ma version bio (suite et fin) », blog Saines Gourmandises, 12 septembre 2014"
+    url: https://saines-gourmandises.fr/je-vous-apporte-la-carte-des-desserts/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « pour 8 à 9 parts »
+  lot_entier: true
+  time_min_total: 110
+  active_min: 25
+
+  apports:
+    proteine: fromage
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: pommes, name: "pommes", qty: 5, unit: pièce}
+    - {id: farine-epeautre, name: "farine bise ou complète de grand épeautre", qty: 180, unit: g}
+    - {id: beurre, name: "beurre mou", qty: 90, unit: g}
+    - {id: petits-suisses, name: "petits-suisses égouttés", qty: 3, unit: pièce}
+    - {id: sucre-complet, name: "sucre au choix (cassonade, coco…)", qty: 3, unit: c. à s.}
+    - {id: sel, name: "pincée de sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: gelee-coing, name: "gelée de coing ou de pomme", qty: 100, unit: g}
+    - {id: gousse-vanille, name: "gousse de vanille", qty: 1, unit: pièce}
+    - {id: cannelle, name: "pincée de cannelle", qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: pate
+      action: "Écraser entre les mains farine, sel, sucre, beurre en dés et petits-suisses, sans trop pétrir, et former une boule"
+      needs: []
+      uses: [farine-epeautre, sel, sucre-complet, beurre, petits-suisses]
+      time_min: 6
+      attente_min: 60
+      attente_raison: "une heure au frais"
+      kid: {age_min_months: 30, task: "écraser la pâte entre les mains"}
+    - id: garnir
+      action: "Préchauffer à 200 °C ; étaler la pâte, roulotter les bords, et couvrir de pommes en fines tranches bien serrées"
+      needs: []
+      uses: [pommes]
+      time_min: 12
+      kid: {age_min_months: 36, task: "ranger les tranches de pomme"}
+    - id: cuire
+      action: "Cuire 20 à 25 min, jusqu'à ce que la pâte soit dorée"
+      needs: [bake]
+      uses: []
+      time_min: 23
+      attended: false
+    - id: napper
+      action: "Porter à ébullition la gelée avec une cuillerée d'eau, les graines de vanille et la cannelle, la tiédir et en badigeonner la tarte tiède"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [gelee-coing, gousse-vanille, cannelle]
+      time_min: 5
+
+  emits:
+    - kind: reste-plat
+      type: tarte-fine-pommes-gelee-coing
+      qty_band: 2-repas
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

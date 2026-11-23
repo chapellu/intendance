@@ -1,0 +1,56 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# CINQ MINUTES POUR DEUX : poires mixées à la purée d'amande et à l'agave,
+# chocolat fondu dans le lait d'amande. Versé ensemble, c'est marbré ;
+# le chocolat d'abord, un peu figé, puis la poire, ça fait deux couches.
+
+recipe:
+  id: veloute-poire-amande-chocolat
+  title: Velouté de poire à l'amande sur coulis de chocolat chaud
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Velouté de poire à l'amande sur coulis de chocolat chaud », blog Saines Gourmandises, 18 octobre 2011"
+    url: https://saines-gourmandises.fr/un-petit-dessert-en-trois-coups-de-mixeur-pour-se-consoler-den-avoir-rate-deux-autres-juste-avant/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 2          # « pour 2 personnes »
+  time_min_total: 5
+  active_min: 5
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: poires, name: "grosses poires", qty: 2, unit: pièce}
+    - {id: puree-amande-blanche, name: "purée d'amande blanche", qty: 2, unit: c. à s.}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 2, unit: c. à s.}
+    - {id: chocolat-noir, name: "chocolat noir", qty: 50, unit: g}
+    - {id: lait-amande, name: "lait d'amande", qty: 10, unit: cl}
+    - {id: cacao, name: "cacao en poudre", qty: 1, unit: pincée, optional: true}
+
+  steps:
+    - id: poire
+      action: "Mixer les poires avec la purée d'amande et l'agave"
+      needs: [blend-smooth]
+      uses: [poires, puree-amande-blanche, sirop-agave]
+      time_min: 3
+    - id: chocolat
+      action: "Fondre vite le chocolat dans le lait d'amande et verser les deux préparations en verrines ; saupoudrer de cacao"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [chocolat-noir, lait-amande, cacao]
+      time_min: 3
+
+  emits: []
+
+  plan_b: []

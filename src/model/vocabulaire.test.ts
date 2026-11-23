@@ -64,7 +64,9 @@ describe("ce qu'un ticket de caisse trouve dans le vocabulaire", () => {
     const cuisines = new Set(
       catalogue.plats.flatMap((p) => p.ingredients.map((i) => ctx.alias(i.id))),
     );
-    const horsRecette = ["melon", "framboises", "raisins", "mirabelles", "nectar-mangue", "roti-veau", "saucisson-sec"];
+    // T196 : les framboises sont entrées en cuisine avec les desserts du blog
+    // Saines Gourmandises (soufflés glacés, charlotte, gâteau du p'tit déj).
+    const horsRecette = ["melon", "raisins", "mirabelles", "nectar-mangue", "roti-veau", "saucisson-sec"];
     for (const id of horsRecette) {
       expect(nommable(id), id).toBe(true);
       expect(cuisines.has(id), `${id} est cuisiné`).toBe(false);

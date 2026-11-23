@@ -1,0 +1,88 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN BABA SANS LEVURE DE BOULANGER : œufs fouettés à l'agave avec rhum et huiles
+# essentielles d'agrumes jusqu'à doubler, farine d'épeautre et levure, 300 g
+# d'ananas Victoria en dés ; savarin haut de 22 cm bien beurré, 10 min à
+# 180 °C puis 20 à 25 min à 150 °C ; piqué et imbibé d'un sirop vanille-
+# cannelle-rhum infusé d'avance. Chantilly de coco et fruits, facultatifs.
+
+recipe:
+  id: baba-ananas-rhum
+  title: Baba « des îles paradisiaques » à l'ananas
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Baba des îles paradisiaques… », blog Saines Gourmandises, 9 décembre 2014"
+    url: https://saines-gourmandises.fr/baba-vs-buche-de-noel/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « un baba de 8 parts »
+  lot_entier: true
+  time_min_total: 55
+  active_min: 20
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: ananas, name: "ananas Victoria (300 g de chair)", qty: 1, unit: pièce}
+    - {id: oeufs, name: "œufs", qty: 3, unit: pièce}
+    - {id: farine-epeautre, name: "farine T130 de grand épeautre", qty: 125, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave (7 + 7 cl)", qty: 14, unit: cl}
+    - {id: rhum, name: "rhum ambré (1 c. à s. + 5 cl)", qty: 6.5, unit: cl}
+    - {id: huile-essentielle-citron, name: "huile essentielle de citron", qty: 3, unit: pièce}
+    - {id: huile-essentielle-orange, name: "huile essentielle d'orange", qty: 3, unit: pièce}
+    - {id: poudre-a-lever, name: "poudre à lever", qty: 1, unit: c. à c.}
+    - {id: cannelle, name: "pincée de cannelle", qty: 1, unit: pincée, seasoning: true}
+    - {id: gousse-vanille, name: "gousse de vanille bien charnue", qty: 1, unit: pièce}
+    - {id: eau, name: "eau", qty: 7, unit: cl}
+    - {id: beurre, name: "beurre pour le moule", qty: 40, unit: g}
+    - {id: creme-coco, name: "crème de coco bien froide", qty: 20, unit: cl, optional: true}
+    - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 1, unit: c. à c., optional: true}
+    - {id: sucre-complet, name: "sucre de coco", qty: 20, unit: g, optional: true}
+
+  steps:
+    - id: sirop
+      action: "Mêler l'eau, 7 cl d'agave, la cannelle et 5 cl de rhum, et y laisser infuser la gousse de vanille fendue et grattée"
+      needs: []
+      uses: [eau, cannelle, gousse-vanille]
+      time_min: 3
+    - id: pate
+      action: "Préchauffer à 180 °C ; beurrer un savarin haut ; fouetter les œufs avec 7 cl d'agave, les huiles essentielles et une cuillerée de rhum jusqu'à doubler"
+      needs: []
+      uses: [beurre, oeufs, sirop-agave, huile-essentielle-citron, huile-essentielle-orange, rhum]
+      time_min: 10
+    - id: cuire
+      action: "Y mêler la farine, la levure et l'ananas en dés d'1 cm, verser dans le moule et cuire 10 min à 180 °C puis 20 à 25 min à 150 °C"
+      needs: [bake]
+      uses: [farine-epeautre, poudre-a-lever, ananas]
+      time_min: 40
+      attended: false
+    - id: imbiber
+      action: "Piquer le baba chaud à la fourchette et l'imbiber de sirop cuillerée par cuillerée"
+      needs: []
+      uses: []
+      time_min: 6
+    - id: chantilly
+      action: "Au goût, le couvrir d'une chantilly de coco fouettée avec la vanille et le sucre, et de fruits"
+      needs: []
+      uses: [creme-coco, extrait-vanille, sucre-complet]
+      time_min: 8
+      kid: {age_min_months: 30, task: "poser les fruits"}
+
+  emits:
+    - kind: reste-plat
+      type: baba-ananas-rhum
+      qty_band: 3-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

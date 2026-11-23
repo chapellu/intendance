@@ -1,0 +1,65 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# FRAISES POCHÉES 5 MIN avec le miel et un gramme d'agar-agar, mixées avec la
+# faisselle de brebis égouttée, allégées de deux blancs en neige (sans les
+# jaunes, qui la teinteraient) ; 4 h au frais. L'article ne détaille pas la
+# fin : on mixe les fraises chaudes avec le fromage avant d'incorporer les
+# blancs.
+
+recipe:
+  id: mousse-fraise-miel-faisselle-brebis
+  title: Mousse légère à la fraise, miel et faisselle de brebis
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Trois délicieux desserts à IG bas… », blog Saines Gourmandises, 9 mai 2016"
+    url: https://saines-gourmandises.fr/sos-patissiers-malheureux/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes »
+  time_min_total: 15
+  active_min: 15
+
+  apports:
+    proteine: fromage
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: fraises, name: "fraises de saison bien parfumées", qty: 250, unit: g}
+    - {id: agar-agar, name: "agar-agar (c. à moka rase)", qty: 1, unit: g}
+    - {id: faisselle, name: "fromage blanc de brebis en faisselle", qty: 100, unit: g}
+    - {id: miel-acacia, name: "miel d'acacia", qty: 4, unit: c. à s.}
+    - {id: oeufs, name: "blancs d'œufs ultra frais", qty: 2, unit: pièce}
+    - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 1, unit: c. à c., optional: true}
+
+  steps:
+    - id: egoutter
+      action: "Égoutter la faisselle dans une passoire fine"
+      needs: []
+      uses: [faisselle]
+      time_min: 1
+    - id: pocher
+      action: "Pocher 4 à 5 min les fraises en quartiers saupoudrées d'agar-agar avec le miel, sans laisser attacher"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [fraises, agar-agar, miel-acacia]
+      time_min: 7
+    - id: mousse
+      action: "Mixer les fraises chaudes avec la faisselle et la vanille, puis incorporer les blancs en neige et verser en coupes"
+      needs: [blend-smooth]
+      uses: [extrait-vanille, oeufs]
+      time_min: 6
+      attente_min: 240
+      attente_raison: "au moins 4 h au frais"
+
+  emits: []
+
+  plan_b: []

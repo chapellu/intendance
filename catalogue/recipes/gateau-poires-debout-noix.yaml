@@ -1,0 +1,75 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# SIX PETITES POIRES DEBOUT DANS UN MOULE, une pâte de son d'avoine et poudre
+# d'amande levée aux blancs d'œufs versée autour, 1 h à 150 °C ; des noix
+# caramélisées 4 min dans l'agave par-dessus.
+
+recipe:
+  id: gateau-poires-debout-noix
+  title: Gâteau moelleux aux poires, vanille et noix caramélisées
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Gâteau moelleux et léger aux poires, vanille et noix caramélisées au sirop d'agave », blog Saines Gourmandises, 19 novembre 2011"
+    url: https://saines-gourmandises.fr/un-gateau-a-ig-tres-bas-pour-gilda/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « 6 belles parts »
+  lot_entier: true
+  time_min_total: 75
+  active_min: 15
+
+  apports:
+    proteine: oeuf
+    feculent: avoine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: poires, name: "petites poires bien mûres", qty: 6, unit: pièce}
+    - {id: son-avoine, name: "son d'avoine", qty: 100, unit: g}
+    - {id: poudre-amande, name: "poudre d'amande", qty: 125, unit: g}
+    - {id: oeufs, name: "œufs", qty: 4, unit: pièce}
+    - {id: margarine, name: "margarine bio fondue", qty: 100, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave (6 + 4 c. à s.)", qty: 10, unit: c. à s.}
+    - {id: noix, name: "cerneaux de noix", qty: 100, unit: g}
+    - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 2, unit: c. à s.}
+
+  steps:
+    - id: poires
+      action: "Préchauffer à 150 °C ; éplucher les poires, couper leur base pour qu'elles tiennent debout et les ranger dans un moule rond"
+      needs: []
+      uses: [poires]
+      time_min: 6
+    - id: pate
+      action: "Monter les blancs en neige, y mêler à la spatule jaunes, 6 c. à s. d'agave, margarine fondue, poudre d'amande, son, vanille et les trois quarts des noix"
+      needs: []
+      uses: [oeufs, margarine, poudre-amande, son-avoine, extrait-vanille]
+      time_min: 6
+      kid: {age_min_months: 30, task: "verser les noix"}
+    - id: cuire
+      action: "Verser sur les poires et cuire 1 h"
+      needs: [bake]
+      uses: []
+      time_min: 60
+      attended: false
+    - id: noix
+      action: "Caraméliser 4 min à petit feu le reste des noix dans 4 c. à s. d'agave et verser sur le gâteau"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [noix, sirop-agave]
+      time_min: 5
+
+  emits:
+    - kind: reste-plat
+      type: gateau-poires-debout-noix
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

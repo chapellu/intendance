@@ -1,0 +1,85 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DES BROWNIES SANS ŒUF, EN QUELQUES MINUTES : chocolat fondu dans l'huile de coco,
+# jus de pomme, sucre de coco, purée d'amande, farine, arôme d'amande amère
+# (dosage selon la marque !), sucre vanillé ; 14 min dans un cadre de 18 × 24 cm.
+# Servis avec des griottes séchées trempées une nuit dans du jus de pomme et
+# une chantilly de coco.
+
+recipe:
+  id: brownies-foret-noire-griottes
+  title: Brownies de Pâques « Forêt-Noire » aux griottes
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Brownies de Pâques Forêt-Noire », blog Saines Gourmandises, 28 mars 2018"
+    url: https://saines-gourmandises.fr/cette-annee-paques-tombe-1er-avril-ai-poisson-poisson-davril/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « pour environ 8 personnes »
+  lot_entier: true
+  time_min_total: 25
+  active_min: 10
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: jus-pomme, name: "jus de pomme (140 g + pour le trempage)", qty: 290, unit: g}
+    - {id: chocolat-noir, name: "chocolat noir pâtissier 70 %", qty: 180, unit: g}
+    - {id: sucre-complet, name: "sucre de coco", qty: 130, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever (demi-sachet)", qty: 0.5, unit: sachet}
+    - {id: farine-epeautre, name: "farine T110", qty: 100, unit: g}
+    - {id: huile-coco, name: "huile de coco vierge", qty: 70, unit: g}
+    - {id: puree-amande-blanche, name: "purée d'amande blanche", qty: 70, unit: g}
+    - {id: extrait-amande-amere, name: "arôme d'amande amère", qty: 1, unit: c. à c.}
+    - {id: sucre-vanille, name: "sucre vanillé", qty: 3, unit: sachet}
+    - {id: fleur-de-sel, name: "bonne pincée de fleur de sel", qty: 1, unit: bonne pincée, seasoning: true}
+    - {id: griottes-sechees, name: "griottes séchées", qty: 100, unit: g}
+    - {id: creme-coco, name: "crème de coco liquide bien froide", qty: 40, unit: cl}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 40, unit: g}
+    - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 1, unit: c. à s.}
+
+  steps:
+    - id: tremper
+      action: "Faire tremper les griottes dans un bol de jus de pomme"
+      needs: []
+      uses: [griottes-sechees]
+      time_min: 2
+      attente_min: 600
+      attente_raison: "trempage depuis la veille au soir"
+    - id: pate
+      action: "Préchauffer à 180 °C ; fondre l'huile de coco, y fondre le chocolat hors du feu, puis mêler à la farine, la levure et tout le reste, sans trop travailler"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [huile-coco, chocolat-noir, farine-epeautre, poudre-a-lever, jus-pomme, sucre-complet, puree-amande-blanche, extrait-amande-amere, sucre-vanille, fleur-de-sel]
+      time_min: 8
+    - id: cuire
+      action: "Verser aussitôt dans un cadre chemisé et cuire 14 min ; refroidir avant de couper"
+      needs: [bake]
+      uses: []
+      time_min: 14
+      attended: false
+    - id: servir
+      action: "Servir avec les griottes égouttées et la crème de coco montée en chantilly avec l'agave et la vanille"
+      needs: []
+      uses: [creme-coco, sirop-agave, extrait-vanille]
+      time_min: 8
+      kid: {age_min_months: 30, task: "répartir les griottes"}
+
+  emits:
+    - kind: reste-plat
+      type: brownies-foret-noire-griottes
+      qty_band: 3-repas
+      keeps: {frigo_days: 4, congelo: true}
+
+  plan_b: []

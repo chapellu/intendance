@@ -1,0 +1,78 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LE MOKA SANS CRÈME AU BEURRE : génoise aux œufs entiers fouettés (12 min dans un
+# cadre de 18 × 24 cm), fendue, imbibée d'un sirop d'espresso et d'agave,
+# montée avec une chantilly de crème de coco glacée et d'espresso froid ;
+# 6 à 12 h au frais, cacao, douze rectangles. Un café très parfumé : c'est
+# la vedette.
+
+recipe:
+  id: moka-chantilly-coco-cafe
+  title: Le moka à la chantilly de coco au café
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« La Cuisine des Grands Classiques, ma version bio (suite et fin) », blog Saines Gourmandises, 12 septembre 2014"
+    url: https://saines-gourmandises.fr/je-vous-apporte-la-carte-des-desserts/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 12          # « un gâteau de 12 parts »
+  lot_entier: true
+  time_min_total: 40
+  active_min: 30
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: oeufs, name: "œufs", qty: 4, unit: pièce}
+    - {id: sirop-agave, name: "sirop d'agave (10 cl + 3 c. à s. + 5 cl)", qty: 20, unit: cl}
+    - {id: farine-epeautre, name: "farine de grand épeautre T110", qty: 150, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever", qty: 1, unit: sachet}
+    - {id: creme-coco, name: "crème de coco liquide bien froide", qty: 20, unit: cl}
+    - {id: cafe, name: "expresso très serré (3 + 5 cl)", qty: 8, unit: cl}
+    - {id: cacao, name: "cacao", qty: 1, unit: c. à s.}
+    - {id: grains-cafe-chocolat, name: "grains de café en chocolat", qty: 12, unit: pièce, optional: true}
+
+  steps:
+    - id: genoise
+      action: "Préchauffer à 200 °C ; fouetter les œufs avec 10 cl d'agave jusqu'à tripler, y mêler farine et levure tamisées et cuire 12 min dans un cadre chemisé"
+      astuce: "Mettre la crème de coco, le bol et le fouet au congélateur pendant ce temps."
+      needs: [bake]
+      uses: [oeufs, farine-epeautre, poudre-a-lever]
+      time_min: 25
+    - id: chantilly
+      action: "Monter la crème de coco glacée avec 3 c. à s. d'agave comme une chantilly, puis y verser doucement 3 cl d'espresso froid"
+      needs: []
+      uses: [creme-coco]
+      time_min: 8
+    - id: monter
+      action: "Fendre la génoise ; dans le cadre, un rectangle imbibé d'un sirop de 5 cl d'espresso et 5 cl d'agave, 2/3 de la crème, l'autre rectangle imbibé, le reste"
+      needs: []
+      uses: [cafe, sirop-agave]
+      time_min: 10
+      attente_min: 360
+      attente_raison: "6 à 12 h au frais, couvert"
+    - id: servir
+      action: "Poudrer de cacao, couper en 12 rectangles et décorer de grains de café"
+      needs: []
+      uses: [cacao, grains-cafe-chocolat]
+      time_min: 4
+      kid: {age_min_months: 30, task: "poser un grain de café sur chaque part"}
+
+  emits:
+    - kind: reste-plat
+      type: moka-chantilly-coco-cafe
+      qty_band: 3-repas
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

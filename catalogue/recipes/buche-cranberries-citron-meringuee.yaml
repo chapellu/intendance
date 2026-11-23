@@ -1,0 +1,102 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN BISCUIT ROULÉ AUX ŒUFS FOUETTÉS (7 min à 200 °C, roulé chaud dans un
+# papier neuf), tartiné d'une gelée crue de cranberries trempées une nuit au
+# citron et mixées, et d'une crème de citron à l'agar-agar ; roulé, reposé
+# 12 h, couvert de meringue au sucre de bouleau. Le temps de four de la
+# meringue n'est pas dit : 5 min à four chaud, à surveiller (estimation).
+
+recipe:
+  id: buche-cranberries-citron-meringuee
+  title: Bûche légère à la gelée de cranberries crues, parfum de tarte au citron
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Bûche légère et acidulée à la gelée de cranberries crues, parfum de tarte au citron », blog Saines Gourmandises, 20 décembre 2013"
+    url: https://saines-gourmandises.fr/une-gourmandise-toute-sage-pour-la-ligne/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « une bûche de 8 parts »
+  lot_entier: true
+  time_min_total: 55
+  active_min: 40
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: cranberries, name: "cranberries", qty: 150, unit: g}
+    - {id: citron, name: "citrons (1 gros + 12 cl de jus)", qty: 4, unit: pièce}
+    - {id: eau, name: "un peu d'eau", qty: 10, unit: cl}
+    - {id: sirop-agave, name: "sirop d'agave (8 cl + 15 cl + 3 c. à s.)", qty: 28, unit: cl}
+    - {id: oeufs, name: "œufs (3 entiers, 3 jaunes, 3 blancs)", qty: 6, unit: pièce}
+    - {id: farine-complete, name: "farine complète T110 (120 + 20 g)", qty: 140, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever", qty: 1, unit: c. à c.}
+    - {id: margarine, name: "margarine bio", qty: 200, unit: g}
+    - {id: huile-essentielle-citron, name: "huile essentielle de citron", qty: 15, unit: pièce}
+    - {id: agar-agar, name: "agar-agar", qty: 6, unit: g}
+    - {id: sucre-bouleau, name: "sucre de bouleau", qty: 4, unit: c. à s.}
+    - {id: sel, name: "pincée de sel", qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: tremper
+      action: "Faire tremper les cranberries dans le jus d'un gros citron et juste assez d'eau pour les couvrir"
+      needs: []
+      uses: [cranberries, eau]
+      time_min: 2
+      attente_min: 600
+      attente_raison: "trempage d'une nuit"
+    - id: gelee
+      action: "Mixer les cranberries égouttées avec 3 c. à s. d'agave, puis assez de leur jus pour une gelée souple"
+      needs: [blend-small]
+      uses: []
+      time_min: 4
+    - id: biscuit
+      action: "Préchauffer à 200 °C ; fouetter 3 œufs avec 8 cl d'agave jusqu'à doubler, y mêler farine et levure tamisées, étaler en plaque de 1 cm et cuire 7 min"
+      needs: [bake]
+      uses: [poudre-a-lever]
+      time_min: 20
+    - id: rouler
+      action: "Renverser le biscuit sur un papier neuf, ôter le papier de cuisson, le rouler tiède dans un papier et le laisser refroidir"
+      needs: []
+      uses: []
+      time_min: 4
+    - id: creme
+      action: "Fouetter en casserole jus de citron, agar-agar, 15 cl d'agave, farine et 3 jaunes, bouillir quelques minutes et y fondre la margarine"
+      astuce: "L'huile essentielle seulement une fois la crème tiède."
+      needs: [simmer]
+      charge_partielle: true
+      uses: [citron, agar-agar, sirop-agave, farine-complete, oeufs, margarine, huile-essentielle-citron]
+      time_min: 8
+      parallel_with: biscuit
+    - id: monter
+      action: "Dérouler le biscuit, le tartiner de gelée puis de crème, le rouler serré et laisser reposer"
+      needs: []
+      uses: []
+      time_min: 6
+      attente_min: 720
+      attente_raison: "au moins 12 h au frais"
+    - id: meringue
+      action: "Monter 3 blancs en neige ferme avec le sel et le sucre de bouleau, en couvrir la bûche et la dorer quelques minutes à four chaud"
+      astuce: "Temps non donné par l'article : environ 5 min, en surveillant. À défaut, de la coco râpée."
+      needs: [bake]
+      uses: [sucre-bouleau, sel]
+      time_min: 10
+      attended: true
+
+  emits:
+    - kind: reste-plat
+      type: buche-cranberries-citron-meringuee
+      qty_band: 3-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

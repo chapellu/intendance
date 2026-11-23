@@ -1,0 +1,65 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# CINQ MINUTES DE PRÉPARATION : farine d'épeautre, levure, agave, kéfir de fruits
+# (la boisson), rhum, huile d'olive, vanille, œufs, sel ; 20 min dans un moule
+# à savarin de 24 cm. Emballé, sinon il sèche.
+
+recipe:
+  id: gateau-kefir
+  title: Gâteau au kéfir de fruits
+  creneaux: [gouter, dessert, petit-dejeuner]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Gâteau au kéfir », blog Saines Gourmandises, 3 juillet 2018"
+    url: https://saines-gourmandises.fr/tout-simplement/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « un gâteau de 8 parts »
+  lot_entier: true
+  time_min_total: 30
+  active_min: 5
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: "farine T110 de grand épeautre", qty: 270, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever (demi-sachet)", qty: 0.5, unit: sachet}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 85, unit: g}
+    - {id: kefir-fruits, name: "kéfir de fruits (boisson)", qty: 100, unit: g}
+    - {id: rhum, name: "rhum ambré", qty: 2, unit: c. à s.}
+    - {id: huile-olive, name: "huile d'olive", qty: 100, unit: g}
+    - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 1, unit: c. à s.}
+    - {id: oeufs, name: "œufs", qty: 3, unit: pièce}
+    - {id: sel, name: "pincée de sel", qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: pate
+      action: "Préchauffer à 180 °C et huiler un savarin ; mêler farine, levure et sel, puis fouetter juste assez avec tous les autres ingrédients"
+      needs: []
+      uses: [farine-epeautre, poudre-a-lever, sel, sirop-agave, kefir-fruits, rhum, huile-olive, extrait-vanille, oeufs]
+      time_min: 5
+      kid: {age_min_months: 24, task: "verser et fouetter"}
+    - id: cuire
+      action: "Cuire 20 à 23 min et tiédir avant de démouler"
+      needs: [bake]
+      uses: []
+      time_min: 22
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: gateau-kefir
+      qty_band: 3-repas
+      keeps: {frigo_days: 4, congelo: true}
+
+  plan_b: []

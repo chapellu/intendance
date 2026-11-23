@@ -89,7 +89,9 @@ recipe:
     - id: cuire
       uses: []
       action: "Cuire de 35 min à 1 h, en goûtant régulièrement"
-      astuce: "Aucun temps précis n'est donnable : cela dépend de la légumineuse et de son degré de séchage à l'achat."
+      # T197 — SÉCURITÉ, ajoutée au livre : le remplaçant « haricots rouges secs »
+      # demande dix minutes de vraie ébullition avant le mijotage (lectine).
+      astuce: "Aucun temps précis n'est donnable : cela dépend de la légumineuse et de son degré de séchage à l'achat. Avec des haricots rouges, faire d'abord bouillir 10 minutes à gros bouillons."
       needs: [simmer-large]
       time_min: 57
       attended: false

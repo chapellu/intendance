@@ -1,0 +1,80 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DES « BISCUITS AU COUTEAU » : une génoise d'amande sans farine cuite en
+# plaque puis découpée en rectangles, alternée dans un moule chemisé avec une
+# mousse épaisse au chocolat 70 % et soja ; une nuit au frais, cacao, coulis
+# de framboises crues mixé à l'agave.
+
+recipe:
+  id: charlotte-chocolat-framboises
+  title: Charlotte au chocolat noir 70 %, coulis de framboises crues
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Charlotte au chocolat noir 70 %, coulis de framboises crues », blog Saines Gourmandises, 26 juillet 2012"
+    url: https://saines-gourmandises.fr/une-charlotte-au-chocolat-pour-eva/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 9          # « 9/10 parts »
+  lot_entier: true
+  time_min_total: 30
+  active_min: 25
+
+  apports:
+    proteine: oeuf
+    feculent: aucun
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: poudre-amande, name: "poudre d'amande", qty: 125, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave (3 c. à s. + 10 cl + 3 c. à s.)", qty: 16, unit: cl}
+    - {id: eau, name: "eau", qty: 3, unit: c. à s.}
+    - {id: oeufs, name: "œufs (4 génoise + 2 mousse)", qty: 6, unit: pièce}
+    - {id: extrait-amande-amere, name: "extrait d'amande amère", qty: 1, unit: pincée, optional: true}
+    - {id: chocolat-noir, name: "chocolat noir 70 %", qty: 350, unit: g}
+    - {id: lait-soja-vanille, name: "lait de soja", qty: 20, unit: cl}
+    - {id: extrait-vanille, name: "extrait de vanille", qty: 1, unit: c. à s.}
+    - {id: cacao, name: "cacao", qty: 1, unit: c. à s.}
+    - {id: framboises, name: "framboises", qty: 250, unit: g}
+
+  steps:
+    - id: genoise
+      action: "Préchauffer à 180 °C ; mêler poudre d'amande, 4 jaunes, 3 c. à s. d'agave, eau et extrait, incorporer 4 blancs en neige, étaler en plaque et cuire 10 min"
+      needs: [bake]
+      uses: [poudre-amande, eau, extrait-amande-amere]
+      time_min: 18
+    - id: mousse
+      action: "Fondre à petit feu le chocolat dans le lait avec 10 cl d'agave et la vanille ; hors du feu, y fouetter 2 jaunes, puis 2 blancs en neige"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [chocolat-noir, lait-soja-vanille, extrait-vanille, oeufs]
+      time_min: 10
+      parallel_with: genoise
+    - id: monter
+      action: "Découper la génoise en biscuits, en tapisser un moule chemisé en les espaçant, et remplir en alternant mousse et biscuits"
+      needs: []
+      uses: []
+      time_min: 10
+      attente_min: 600
+      attente_raison: "au moins une nuit au frais"
+      kid: {age_min_months: 36, task: "poser les biscuits contre la paroi"}
+    - id: servir
+      action: "Démouler, poudrer de cacao et servir avec les framboises mixées avec le reste d'agave"
+      needs: [blend-small]
+      uses: [cacao, framboises, sirop-agave]
+      time_min: 5
+
+  emits:
+    - kind: reste-plat
+      type: charlotte-chocolat-framboises
+      qty_band: 3-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

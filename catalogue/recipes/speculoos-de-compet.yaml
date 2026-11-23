@@ -1,0 +1,69 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# SEIZE SPÉCULOOS SANS ŒUF : farine d'épeautre, sucre de coco, cannelle et épices,
+# liés d'huile, d'un peu de lait végétal et de fleur de sel, en pâte friable
+# qu'on presse au rouleau ; découpés à l'emporte-pièce, 12 min ; ils croquent
+# en refroidissant. Respecter l'huile et le lait.
+
+recipe:
+  id: speculoos-de-compet
+  title: Spéculoos « de compet' »
+  creneaux: [gouter]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Je me console avec des spéculoos de compet' », blog Saines Gourmandises, 2 juin 2016"
+    url: https://saines-gourmandises.fr/pleut-trombes-photos-grise/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 5          # « pour 16 spéculoos »
+    pieces: 16
+  time_min_total: 30
+  active_min: 15
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: "farine T110 de grand épeautre", qty: 125, unit: g}
+    - {id: sucre-complet, name: "sucre de coco", qty: 50, unit: g}
+    - {id: cannelle, name: "cannelle (c. à s. rase)", qty: 1, unit: c. à s., seasoning: true}
+    - {id: huile-tournesol, name: "huile neutre", qty: 7, unit: cl}
+    - {id: lait-avoine, name: "lait végétal (d'avoine)", qty: 1, unit: c. à s.}
+    - {id: epices-pain-epices, name: "épices pour spéculoos (demi-c. à c. rase)", qty: 0.5, unit: c. à c., seasoning: true}
+    - {id: fleur-de-sel, name: "bonne pincée de fleur de sel", qty: 1, unit: bonne pincée, seasoning: true}
+
+  steps:
+    - id: pate
+      action: "Préchauffer à 180 °C ; mêler farine, sucre et épices, y verser l'huile fouettée avec le sel et le lait, et rassembler à la main en boule friable"
+      needs: []
+      uses: [farine-epeautre, sucre-complet, cannelle, epices-pain-epices, huile-tournesol, fleur-de-sel, lait-avoine]
+      time_min: 6
+    - id: decouper
+      action: "Presser la pâte au rouleau sur un papier, découper les biscuits à l'emporte-pièce et étaler les chutes"
+      needs: []
+      uses: []
+      time_min: 8
+      kid: {age_min_months: 30, task: "découper à l'emporte-pièce"}
+    - id: cuire
+      action: "Cuire 12 min et refroidir sur une grille"
+      needs: [bake]
+      uses: []
+      time_min: 12
+      attended: true
+
+  emits:
+    - kind: base
+      type: speculoos-de-compet
+      qty_band: 3-repas
+      keeps: {frigo_days: 20, congelo: false}
+
+  plan_b: []

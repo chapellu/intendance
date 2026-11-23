@@ -1,0 +1,76 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN GÂTEAU SANS ŒUF NI LAIT : génoise au lait de soja-vanille, jus de pomme et
+# huile, deux sachets de levure, 30 min dans un moule de 22 cm ; coupé en deux
+# demi-disques collés debout à la chantilly de coco, tête dégagée au couteau,
+# entièrement couvert de chantilly et de coco râpée, oreilles en papier.
+# Avec une salade de fraises.
+
+recipe:
+  id: gateau-lapinette-blancheline
+  title: Blancheline, la lapinette de Pâques
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Blancheline, la jolie Lapinette de Pâques », blog Saines Gourmandises, 13 avril 2017"
+    url: https://saines-gourmandises.fr/facile-et-epatant/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « pour 8 personnes »
+  lot_entier: true
+  time_min_total: 50
+  active_min: 30
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: "farine T110 de grand épeautre", qty: 330, unit: g}
+    - {id: sucre-complet, name: "sucre complet ou de coco", qty: 165, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever sans phosphates", qty: 2, unit: sachet}
+    - {id: sel, name: "pincée de sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: lait-soja-vanille, name: "lait de soja-vanille", qty: 33, unit: cl}
+    - {id: jus-pomme, name: "jus de pomme", qty: 3.5, unit: cl}
+    - {id: huile-tournesol, name: "huile de tournesol", qty: 5, unit: cl}
+    - {id: extrait-vanille, name: "vanille en poudre (demi-c. à c. rase)", qty: 0.5, unit: c. à c.}
+    - {id: creme-coco, name: "crème de coco très froide", qty: 40, unit: cl}
+    - {id: sucre-vanille, name: "sucre vanillé", qty: 2, unit: sachet}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 4, unit: c. à s.}
+    - {id: noix-coco-rapee, name: "noix de coco râpée", qty: 40, unit: g}
+    - {id: oeufs-chocolat, name: "billes de chocolat pour les yeux et le nez", qty: 3, unit: pièce, optional: true}
+
+  steps:
+    - id: genoise
+      action: "Préchauffer à 180 °C ; mêler farine, levure, vanille et sel, y verser d'un coup sucre, lait, jus de pomme et huile, fouetter juste assez, cuire aussitôt 30 min"
+      needs: [bake]
+      uses: [farine-epeautre, poudre-a-lever, extrait-vanille, sel, sucre-complet, lait-soja-vanille, jus-pomme, huile-tournesol]
+      time_min: 35
+      attended: false
+    - id: chantilly
+      action: "Une fois la génoise froide, monter la crème de coco très froide avec l'agave et le sucre vanillé en chantilly ferme"
+      needs: []
+      uses: [creme-coco, sirop-agave, sucre-vanille]
+      time_min: 8
+    - id: lapin
+      action: "Couper la génoise en deux, coller les moitiés debout à la chantilly, dégager la tête, couvrir de chantilly et de coco, et poser yeux, nez et oreilles"
+      needs: []
+      uses: [noix-coco-rapee, oeufs-chocolat]
+      time_min: 15
+      kid: {age_min_months: 36, task: "poser les yeux et le nez"}
+
+  emits:
+    - kind: reste-plat
+      type: gateau-lapinette-blancheline
+      qty_band: 3-repas
+      keeps: {frigo_days: 1, congelo: false}
+
+  plan_b: []

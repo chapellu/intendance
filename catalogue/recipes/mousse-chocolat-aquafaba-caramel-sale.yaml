@@ -1,0 +1,85 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE MOUSSE DE « FAUSSAIRE » SANS ŒUF : le jus de pois chiches (aquafaba)
+# monté en neige ferme au sucre de coco, chocolat fondu avec crème et huile
+# de coco ; un faux caramel beurre salé de sucre de coco, vanille, crème de
+# coco et fleur de sel, en filets entre les couches ; une nuit au frais.
+# L'AQUAFABA EST UN RESTE du catalogue ; à défaut, celui d'une boîte.
+
+recipe:
+  id: mousse-chocolat-aquafaba-caramel-sale
+  title: Petits pots de mousse au chocolat noir, sauce caramel beurre salé
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Petits pots de mousse au chocolat noir, sauce caramel beurre salé », blog Saines Gourmandises, 31 mars 2015"
+    url: https://saines-gourmandises.fr/pour-paques-un-dessert-de-faussaire-connaissez-vous-le-jus-de-pois-chiches-monte-en-neige/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 7          # « 6 à 8 petits pots »
+  time_min_total: 20
+  active_min: 20
+
+  accepts:
+    - type: jus-pois-chiches
+      qty: {amount: 12, unit: cl}
+      required: false
+
+  sans_reste:
+    temps_min: 0
+    ingredients:
+      - {id: pois-chiches, name: "à défaut, une boîte de pois chiches pour son jus", qty: 1, unit: pièce}
+
+  apports:
+    proteine: legumineuse
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: jus-pois-chiches-ing, name: "jus de pois chiches (aquafaba)", qty: 12, unit: cl, from_accepts: true}
+    - {id: sucre-complet, name: "sucre de coco (40 + 75 g)", qty: 115, unit: g}
+    - {id: chocolat-noir, name: "chocolat noir pâtissier", qty: 200, unit: g}
+    - {id: creme-coco, name: "crème de coco liquide (20 cl + 6 cl)", qty: 26, unit: cl}
+    - {id: huile-coco, name: "huile de coco vierge (35 + 35 g)", qty: 70, unit: g}
+    - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 1, unit: c. à s.}
+    - {id: eau, name: "eau", qty: 2, unit: c. à s.}
+    - {id: gousse-vanille, name: "gousse de vanille", qty: 1, unit: pièce}
+    - {id: fleur-de-sel, name: "bonne pincée de fleur de sel", qty: 1, unit: bonne pincée, seasoning: true}
+
+  steps:
+    - id: caramel
+      action: "Chauffer à feu doux 75 g de sucre, la fleur de sel, la vanille fendue et l'eau en fouettant, puis y fouetter 6 cl de crème et 35 g d'huile de coco"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [eau, gousse-vanille, fleur-de-sel]
+      time_min: 6
+    - id: chocolat
+      action: "Fondre à feu très doux le chocolat avec 20 cl de crème de coco, 35 g d'huile de coco et la vanille, et laisser finir de fondre hors du feu"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [chocolat-noir, creme-coco, huile-coco, extrait-vanille]
+      time_min: 6
+    - id: neige
+      action: "Monter l'aquafaba en neige ferme et brillante en ajoutant 40 g de sucre en trois fois, puis l'incorporer au chocolat tiède"
+      needs: []
+      uses: [jus-pois-chiches-ing, sucre-complet]
+      time_min: 8
+    - id: pots
+      action: "Remplir les pots en alternant mousse et fins filets de caramel"
+      needs: []
+      uses: []
+      time_min: 5
+      attente_min: 600
+      attente_raison: "une nuit au frais"
+      kid: {age_min_months: 36, task: "verser les filets de caramel"}
+
+  emits: []
+
+  plan_b: []

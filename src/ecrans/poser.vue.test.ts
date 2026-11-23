@@ -96,7 +96,7 @@ describe("ce que la carte produit", () => {
   });
 
   test("un plat sans sortie n'en invente pas", () => {
-    const p = jeu.plats["croque-monsieur-salade"]!;
+    const p = jeu.plats["croque-monsieur-montagnards"]!;
     expect(sortiesDeLaCarte(p).filter((s) => s.icone !== "bebe")).toHaveLength(
       p.emits.length,
     );
@@ -190,11 +190,13 @@ describe("la frappe trouve le plat", () => {
   });
 
   test("le titre qui commence par ce qu'on a tapé passe devant", () => {
-    const r = trouver(plats, "salade");
+    // T197 — « salade » ne départage plus rien : le seul titre qui la portait
+    // au milieu (le croque-monsieur, rédigé pour ce dépôt) est retiré.
+    const r = trouver(plats, "lentilles");
     expect(r.length).toBeGreaterThan(1);
-    expect(normaliser(r[0]!.titre).startsWith("salade")).toBe(true);
+    expect(normaliser(r[0]!.titre).startsWith("lentilles")).toBe(true);
     // Et le dernier ne commence pas par là, sinon l'ordre ne prouve rien.
-    expect(normaliser(r.at(-1)!.titre).startsWith("salade")).toBe(false);
+    expect(normaliser(r.at(-1)!.titre).startsWith("lentilles")).toBe(false);
   });
 });
 

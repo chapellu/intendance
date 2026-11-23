@@ -1,0 +1,71 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# TROIS POMMES ENTIÈRES DEBOUT DANS UN MOULE À CAKE de 25 cm, une pâte au miel
+# d'acacia, farine d'épeautre, œufs, huile, cannelle, jus et huile essentielle
+# d'orange versée autour ; 45 min. Sans huile essentielle, un zeste d'orange.
+
+recipe:
+  id: pain-epices-trois-pommes
+  title: Pain d'épices aux trois pommes
+  creneaux: [gouter, petit-dejeuner]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Pain d'épices aux 3 pommes », blog Saines Gourmandises, 3 octobre 2016"
+    url: https://saines-gourmandises.fr/une-recette-pour-les-loulous/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « un gâteau de 8 parts »
+  lot_entier: true
+  time_min_total: 55
+  active_min: 10
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: pommes, name: "pommes non traitées", qty: 3, unit: pièce}
+    - {id: miel-acacia, name: "miel d'acacia", qty: 140, unit: g}
+    - {id: farine-epeautre, name: "farine T110", qty: 220, unit: g}
+    - {id: oeufs, name: "œufs", qty: 3, unit: pièce}
+    - {id: poudre-a-lever, name: "poudre à lever", qty: 1, unit: sachet}
+    - {id: huile-tournesol, name: "huile neutre", qty: 10, unit: cl}
+    - {id: cannelle, name: "cannelle (c. à s. rase)", qty: 1, unit: c. à s., seasoning: true}
+    - {id: jus-orange, name: "jus d'orange", qty: 5, unit: cl}
+    - {id: huile-essentielle-orange, name: "huile essentielle d'orange douce", qty: 12, unit: pièce}
+    - {id: fleur-de-sel, name: "bonne pincée de fleur de sel", qty: 1, unit: bonne pincée, seasoning: true}
+
+  steps:
+    - id: pommes
+      action: "Préchauffer à 180 °C ; laver les pommes et les poser debout dans un moule à cake chemisé"
+      needs: []
+      uses: [pommes]
+      time_min: 3
+      kid: {age_min_months: 24, task: "poser les pommes dans le moule"}
+    - id: pate
+      action: "Fouetter farine, sel, cannelle et levure, puis le miel, l'huile, le jus d'orange, les œufs et l'huile essentielle, et verser autour des pommes"
+      needs: []
+      uses: [farine-epeautre, fleur-de-sel, cannelle, poudre-a-lever, miel-acacia, huile-tournesol, jus-orange, oeufs, huile-essentielle-orange]
+      time_min: 6
+    - id: cuire
+      action: "Cuire 45 min et laisser tiédir avant de couper"
+      needs: [bake]
+      uses: []
+      time_min: 45
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: pain-epices-trois-pommes
+      qty_band: 3-repas
+      keeps: {frigo_days: 5, congelo: true}
+
+  plan_b: []

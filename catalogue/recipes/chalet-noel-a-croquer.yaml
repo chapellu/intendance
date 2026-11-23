@@ -1,0 +1,90 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE MAISON EN BISCUIT SANS PAIN D'ÉPICES DUR : une pâte « bois blond » à la
+# cannelle, à l'orange et à la crème de coco pour pignons et façades, une pâte
+# « bois brun » au cacao pour le toit, la porte et les volets ; découpées sur
+# gabarits de papier, cuites 20 min puis séchées 10 min à 150 °C ; assemblées
+# au miel très pâteux, neige de coco, un clou de girofle pour poignée. Faite
+# pour des enfants, sans glaçage blanc ni pâte à sucre.
+
+recipe:
+  id: chalet-noel-a-croquer
+  title: Chalet de Noël à croquer
+  creneaux: [gouter]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Chalet de Noël à croquer… », blog Saines Gourmandises, 18 décembre 2019"
+    url: https://saines-gourmandises.fr/pour-julie-et-ses-enfants/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 18          # « 15 à 20 parts au moins »
+  lot_entier: true
+  time_min_total: 90
+  active_min: 70
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: "farine bise T110 de grand épeautre (650 + 320 g)", qty: 970, unit: g}
+    - {id: cannelle, name: "cannelle", qty: 2, unit: c. à s., seasoning: true}
+    - {id: sucre-complet, name: "sucre de coco (260 + 130 g)", qty: 390, unit: g}
+    - {id: huile-pepin-raisin, name: "huile neutre (15 + 14 cl)", qty: 29, unit: cl}
+    - {id: creme-coco, name: "crème de coco", qty: 20, unit: cl}
+    - {id: eau, name: "eau", qty: 7, unit: cl}
+    - {id: sucre-vanille, name: "sucre vanillé (4 + 2)", qty: 6, unit: sachet}
+    - {id: huile-essentielle-orange, name: "huile essentielle d'orange", qty: 25, unit: pièce}
+    - {id: sel, name: "sel fin (1 c. à c. + une grosse pincée)", qty: 1.5, unit: c. à c., seasoning: true}
+    - {id: cacao, name: "cacao", qty: 50, unit: g}
+    - {id: lait-soja-vanille, name: "lait de soja-vanille", qty: 10, unit: cl}
+    - {id: miel-acacia, name: "miel très pâteux pour coller", qty: 150, unit: g}
+    - {id: noix-coco-rapee, name: "noix de coco râpée", qty: 60, unit: g}
+    - {id: clous-girofle, name: "clou de girofle (la poignée)", qty: 1, unit: pièce, seasoning: true}
+
+  steps:
+    - id: gabarits
+      action: "Préchauffer à 180 °C ; dessiner et découper les gabarits des pignons, façades et pentes du toit sur papier"
+      needs: []
+      uses: []
+      time_min: 15
+      kid: {age_min_months: 48, task: "dessiner les gabarits"}
+    - id: pates
+      action: "Pétrir juste assez la pâte blonde (650 g de farine, cannelle, sucres, sel, huile, orange, crème, eau) puis la brune (farine, cacao, sucres, sel, lait, huile)"
+      needs: []
+      uses: [farine-epeautre, cannelle, sucre-complet, sucre-vanille, sel, huile-pepin-raisin, huile-essentielle-orange, creme-coco, eau, cacao, lait-soja-vanille]
+      time_min: 15
+    - id: decouper
+      action: "Étaler à 1 cm sur papier cuisson, découper pignons et façades dans la blonde, toit, porte et volets dans la brune, et les lucarnes à l'emporte-pièce"
+      needs: []
+      uses: []
+      time_min: 20
+      kid: {age_min_months: 36, task: "découper les fenêtres à l'emporte-pièce"}
+    - id: cuire
+      action: "Cuire 20 min, ajourer les fenêtres, puis sécher les pièces 10 min à 150 °C sur une grille"
+      needs: [bake]
+      uses: []
+      time_min: 35
+      attended: true
+    - id: monter
+      action: "Assembler les pièces refroidies au miel pâteux, poser porte et volets, enneiger de coco et piquer le clou de girofle"
+      needs: []
+      uses: [miel-acacia, noix-coco-rapee, clous-girofle]
+      time_min: 20
+      kid: {age_min_months: 36, task: "enneiger le toit de coco"}
+
+  emits:
+    - kind: reste-plat
+      type: chalet-noel-a-croquer
+      qty_band: 3-repas
+      keeps: {frigo_days: 10, congelo: false}
+
+  plan_b: []

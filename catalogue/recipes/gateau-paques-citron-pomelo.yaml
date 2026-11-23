@@ -1,0 +1,93 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# RECETTE INVITÉE POUR SA GÉNOISE : la génoise citron-amande est « empruntée » à la
+# blogueuse Cléa. Montage de Marie Chioca : la génoise fendue, une fine couche
+# de chocolat noir fondu, un curd de citron et de pomelo (30 cl de jus, agave,
+# ghee, farine, jaunes) mixé ; amandes concassées sur les bords ; 2 h au
+# frais, au mieux une nuit. Les citrons trop juteux noient la génoise : 6 cl
+# de jus.
+
+recipe:
+  id: gateau-paques-citron-pomelo
+  title: Gâteau de Pâques au citron et au pomelo
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Le gâteau de Pâques au citron Rocca et pomelo de Corse », blog Saines Gourmandises, 1er avril 2026"
+    url: https://saines-gourmandises.fr/le-gateau-de-paques-au-citron-rocca-et-pomelo-de-corse/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « pour 8 parts »
+  lot_entier: true
+  time_min_total: 180
+  active_min: 45
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: oeufs, name: "œufs (3 + 2 jaunes)", qty: 5, unit: pièce}
+    - {id: farine-epeautre, name: "farine T80 ou T110 (40 + 40 g)", qty: 80, unit: g}
+    - {id: poudre-amande, name: "poudre d'amande", qty: 40, unit: g}
+    - {id: sucre-roux, name: "sucre blond de canne", qty: 80, unit: g}
+    - {id: puree-amande-blanche, name: "purée d'amande blanche", qty: 60, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever", qty: 1, unit: c. à c.}
+    - {id: citron, name: "citrons (6 cl de jus et zestes, + 1 pour le curd)", qty: 3, unit: pièce}
+    - {id: pomelo, name: "pomelo", qty: 1, unit: pièce}
+    - {id: sirop-agave, name: "sirop d'agave ou miel d'acacia", qty: 150, unit: g}
+    - {id: ghee, name: "ghee ou beurre", qty: 75, unit: g}
+    - {id: sucre-vanille, name: "sucre vanillé", qty: 25, unit: g}
+    - {id: chocolat-noir, name: "chocolat noir", qty: 100, unit: g}
+    - {id: amandes, name: "amandes concassées", qty: 40, unit: g}
+
+  steps:
+    - id: genoise
+      action: "Préchauffer à 180 °C ; fouetter 3 jaunes et le sucre, puis la purée d'amande et 6 cl de jus ; y mêler 40 g de farine, levure, poudre d'amande et zestes"
+      needs: []
+      uses: [sucre-roux, puree-amande-blanche, poudre-a-lever, poudre-amande]
+      time_min: 10
+    - id: cuire
+      action: "Incorporer les 3 blancs montés fermes, verser dans un moule de 18 à 20 cm et cuire environ 25 min ; laisser refroidir"
+      needs: [bake]
+      uses: []
+      time_min: 28
+      attended: false
+    - id: curd
+      action: "Mêler à froid 30 cl de jus de citron et de pomelo, 40 g de farine, l'agave, le sucre vanillé et 2 jaunes ; épaissir à feu doux en fouettant, ajouter le ghee"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [citron, pomelo, farine-epeautre, sirop-agave, sucre-vanille, oeufs, ghee]
+      time_min: 12
+      parallel_with: cuire
+    - id: mixer
+      action: "Mixer le curd pour le velouter et le laisser tiédir"
+      needs: [blend-smooth]
+      uses: []
+      time_min: 3
+    - id: monter
+      action: "Fendre la génoise, étaler le chocolat fondu puis du curd, refermer, couvrir de curd et coller les amandes sur les bords"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [chocolat-noir, amandes]
+      time_min: 15
+      attente_min: 120
+      attente_raison: "au moins 2 h au frais, au mieux une nuit"
+      attente_souple: true
+      kid: {age_min_months: 36, task: "coller les amandes"}
+
+  emits:
+    - kind: reste-plat
+      type: gateau-paques-citron-pomelo
+      qty_band: 3-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

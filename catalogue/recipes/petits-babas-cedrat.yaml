@@ -1,0 +1,80 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DES BABAS AU POT DE YAOURT : farine complète, son d'avoine, yaourt de soja,
+# huile d'olive, agave, œufs, zeste de cédrat ; cuits 15 min en petits pots,
+# imbibés d'un sirop de citron, d'eau, d'agave et de zeste mixé, coiffés d'une
+# « chantilly » de petits-suisses. Le cédrat peut se remplacer par un citron.
+
+recipe:
+  id: petits-babas-cedrat
+  title: Petits babas au cédrat
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Petits babas au cédrat », blog Saines Gourmandises, 8 novembre 2012"
+    url: https://saines-gourmandises.fr/baba-cool/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 5          # « une dizaine de babas individuels »
+    pieces: 10
+  time_min_total: 30
+  active_min: 15
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-complete, name: "farine complète T110 (2 pots)", qty: 250, unit: g}
+    - {id: son-avoine, name: "son d'avoine (1 pot)", qty: 70, unit: g}
+    - {id: yaourt-soja, name: "yaourt de soja", qty: 1, unit: pot}
+    - {id: huile-olive, name: "huile d'olive (1 pot)", qty: 12, unit: cl}
+    - {id: sirop-agave, name: "sirop d'agave (demi-pot + 10 cl + 2 c. à s.)", qty: 18, unit: cl}
+    - {id: oeufs, name: "œufs", qty: 3, unit: pièce}
+    - {id: poudre-a-lever, name: "levure", qty: 1, unit: sachet}
+    - {id: cedrat, name: "cédrat (ou citron)", qty: 1, unit: pièce}
+    - {id: sel, name: "pincée de sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: citron, name: "citrons (10 cl de jus)", qty: 2, unit: pièce}
+    - {id: eau, name: "eau", qty: 10, unit: cl}
+    - {id: petits-suisses, name: "petits-suisses", qty: 3, unit: pièce}
+    - {id: extrait-vanille, name: "extrait de vanille (demi-c. à c.)", qty: 0.5, unit: c. à c.}
+
+  steps:
+    - id: pate
+      action: "Préchauffer à 180 °C ; mêler farine, son, sel et levure, puis œufs, huile, yaourt, la moitié du zeste et l'agave, et répartir en petits pots hauts"
+      needs: []
+      uses: [farine-complete, son-avoine, sel, poudre-a-lever, oeufs, huile-olive, yaourt-soja, cedrat]
+      time_min: 8
+      kid: {age_min_months: 30, task: "remplir les petits pots"}
+    - id: cuire
+      action: "Cuire 15 min, jusqu'à ce qu'une pique ressorte sèche"
+      needs: [bake]
+      uses: []
+      time_min: 15
+      attended: false
+    - id: sirop
+      action: "Mixer le reste du zeste avec le jus de citron, l'eau et 10 cl d'agave, et en imbiber doucement les babas à la sortie du four"
+      needs: [blend-small]
+      uses: [citron, eau, sirop-agave]
+      time_min: 6
+    - id: chantilly
+      action: "Fouetter les petits-suisses avec la vanille et 2 c. à s. d'agave et en poser une rosace sur chaque baba"
+      needs: []
+      uses: [petits-suisses, extrait-vanille]
+      time_min: 4
+
+  emits:
+    - kind: reste-plat
+      type: petits-babas-cedrat
+      qty_band: 2-repas
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

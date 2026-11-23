@@ -1,0 +1,74 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# SOIXANTE COOKIES À IG TRÈS BAS : son d'avoine, kasha (des grains bien grillés,
+# sinon ils cassent les dents), un peu de farine, huile de coco à température
+# ambiante, sucre de coco, chocolat en pépites, amandes concassées, œufs ;
+# travaillés aux doigts jusqu'à ce que ça s'amalgame, boules de 25 g écrasées
+# à main mouillée, 15 min. Quinze jours en boîte. Diviser par trois au besoin.
+
+recipe:
+  id: cookies-sensas-kasha-avoine
+  title: Cookies « sensas' » au kasha et au son d'avoine
+  creneaux: [gouter]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Cookies sensas' à IG très, très bas… », blog Saines Gourmandises, 22 juin 2018"
+    url: https://saines-gourmandises.fr/petite-ordonnance-equilibre-nerveux/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 20          # « environ 60 cookies »
+    pieces: 60
+  time_min_total: 35
+  active_min: 20
+
+  apports:
+    proteine: oeuf
+    feculent: avoine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: son-avoine, name: "son d'avoine", qty: 415, unit: g}
+    - {id: kasha, name: "kasha (sarrasin grillé)", qty: 160, unit: g}
+    - {id: farine-epeautre, name: "farine T130 ou T150 de grand épeautre", qty: 125, unit: g}
+    - {id: huile-coco, name: "huile de coco", qty: 180, unit: g}
+    - {id: sucre-complet, name: "sucre de coco", qty: 150, unit: g}
+    - {id: chocolat-noir, name: "chocolat noir 70 ou 85 %", qty: 225, unit: g}
+    - {id: oeufs, name: "œufs", qty: 3, unit: pièce}
+    - {id: amandes, name: "amandes (ou noisettes)", qty: 225, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever", qty: 1, unit: sachet}
+    - {id: fleur-de-sel, name: "fleur de sel (c. à c. à peine bombée)", qty: 1, unit: c. à c., seasoning: true}
+
+  steps:
+    - id: melanger
+      action: "Préchauffer à 180 °C ; concasser grossièrement les amandes, couper le chocolat en pépites et mêler avec son, farine, kasha, levure, sucre et sel"
+      needs: [chop-coarse]
+      uses: [amandes, chocolat-noir, son-avoine, farine-epeautre, kasha, poudre-a-lever, sucre-complet, fleur-de-sel]
+      time_min: 10
+    - id: pate
+      action: "Ajouter l'huile de coco et les œufs et travailler aux doigts jusqu'à ce que la pâte s'amalgame"
+      astuce: "Sablonneuse au début : l'huile froide finit par se lier en travaillant."
+      needs: []
+      uses: [huile-coco, oeufs]
+      time_min: 6
+      kid: {age_min_months: 30, task: "travailler la pâte aux doigts"}
+    - id: cuire
+      action: "Former des boules de 25 g, les écraser main mouillée sur la plaque et cuire 15 min ; refroidir sur grille"
+      needs: [bake]
+      uses: []
+      time_min: 30
+      attended: false
+
+  emits:
+    - kind: base
+      type: cookies-sensas-kasha-avoine
+      qty_band: 3-repas
+      keeps: {frigo_days: 15, congelo: false}
+
+  plan_b: []

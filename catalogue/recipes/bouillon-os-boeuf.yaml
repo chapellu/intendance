@@ -1,0 +1,72 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN KILO D'OS DE BŒUF du boucher, couverts d'eau salée et vinaigrée, 12 à 15 h
+# à feu minimal ; les os retirés, puis 30 min à petite ébullition avec
+# carottes, poireaux, gingembre, ail, céleri, demi-piment, girofle, oignon et
+# laurier. Cerfeuil ou persil au service. Environ 5 l.
+
+recipe:
+  id: bouillon-os-boeuf
+  title: Bouillon d'os de bœuf
+  role: base
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Bienfaits ancestraux des bouillons d'os », blog Saines Gourmandises, 24 février 2023"
+    url: https://saines-gourmandises.fr/bienfaits-ancestraux-des-bouillons-dos/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 12          # « environ 5 l de bouillon »
+  lot_entier: true
+  time_min_total: 800
+  active_min: 20
+
+  apports:
+    proteine: viande-rouge
+    feculent: aucun
+    legumes: [allium, racine]
+    profil: soupe
+    origine: francais
+
+  ingredients:
+    - {id: os-a-moelle, name: "os de bœuf", qty: 1, unit: kg}
+    - {id: gros-sel, name: "sel", qty: 2, unit: c. à s., seasoning: true}
+    - {id: vinaigre, name: "vinaigre de cidre", qty: 3, unit: c. à s.}
+    - {id: carottes, name: "carottes", qty: 2, unit: pièce}
+    - {id: poireau, name: "poireau", qty: 2, unit: pièce}
+    - {id: gingembre, name: "cube de gingembre", qty: 1, unit: pièce}
+    - {id: ail, name: "gousses d'ail", qty: 3, unit: pièce}
+    - {id: celeri-branche, name: "branche de céleri", qty: 1, unit: pièce}
+    - {id: piment-frais, name: "demi-piment rouge", qty: 0.5, unit: pièce}
+    - {id: clous-girofle, name: "clous de girofle", qty: 5, unit: pièce}
+    - {id: oignon, name: "gros oignon", qty: 1, unit: pièce}
+    - {id: laurier, name: "feuilles de laurier", qty: 3, unit: pièce}
+    - {id: eau, name: "eau", qty: 5, unit: l}
+
+  steps:
+    - id: cuire
+      action: "Couvrir les os d'eau dans le faitout avec le vinaigre et le sel, et cuire à feu minimal"
+      needs: [simmer-large]
+      uses: [os-a-moelle, vinaigre, gros-sel, eau]
+      time_min: 5
+      attente_min: 780
+      attente_raison: "12 à 15 h à feu minimal"
+    - id: legumes
+      action: "Retirer les os, ajouter légumes et aromates, porter à ébullition et cuire encore 30 min"
+      needs: [chop-coarse, simmer-large]
+      uses: [carottes, poireau, gingembre, ail, celeri-branche, piment-frais, clous-girofle, oignon, laurier]
+      time_min: 35
+      attended: false
+
+  emits:
+    - kind: base
+      type: bouillon-os-boeuf
+      qty_band: 3-repas
+      qty: {amount: 500, unit: cl}
+      keeps: {frigo_days: 4, congelo: true}
+
+  plan_b: []

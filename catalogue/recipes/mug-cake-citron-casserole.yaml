@@ -1,0 +1,66 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN GÂTEAU POUR UN, CUIT DANS UNE CASSEROLE : farine complète, œuf, yaourt de
+# soja, citron, huile d'olive, miel ; dans un gros mug posé dans 3 cm d'eau
+# bouillante, à couvert, 15 min sans soulever le couvercle (10 min en deux
+# petits mugs).
+
+recipe:
+  id: mug-cake-citron-casserole
+  title: Mug-cake « minute » au citron, sans micro-ondes
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Mes mug-cakes minute… sans micro-ondes (et sans four du tout !) », blog Saines Gourmandises, 5 août 2014"
+    url: https://saines-gourmandises.fr/les-gateaux-passent-a-la-casserole/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 1          # « 1 gros mug-cake, ou 2 petits »
+  time_min_total: 20
+  active_min: 5
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: farine-complete, name: "farine complète", qty: 50, unit: g}
+    - {id: oeufs, name: "œuf", qty: 1, unit: pièce}
+    - {id: yaourt-soja, name: "yaourt de soja", qty: 25, unit: g}
+    - {id: citron, name: "demi-citron non traité (jus)", qty: 0.5, unit: pièce}
+    - {id: huile-essentielle-citron, name: "huile essentielle de citron", qty: 4, unit: pièce}
+    - {id: poudre-a-lever, name: "poudre à lever (c. à c. rase)", qty: 1, unit: c. à c.}
+    - {id: huile-olive, name: "huile d'olive", qty: 2, unit: c. à s.}
+    - {id: miel-acacia, name: "miel d'acacia", qty: 2, unit: c. à s.}
+
+  steps:
+    - id: eau
+      action: "Mettre à bouillir 3 cm d'eau dans une casserole haute, à couvert"
+      needs: [simmer]
+      uses: []
+      time_min: 5
+    - id: pate
+      action: "Mélanger la farine et la levure, puis tous les autres ingrédients en pâte homogène, et verser dans un gros mug"
+      needs: []
+      uses: [farine-complete, poudre-a-lever, oeufs, yaourt-soja, citron, huile-essentielle-citron, huile-olive, miel-acacia]
+      time_min: 3
+      parallel_with: eau
+      kid: {age_min_months: 30, task: "mélanger la pâte"}
+    - id: cuire
+      action: "Poser le mug dans l'eau bouillante, couvrir et cuire 15 min sans soulever ; vérifier à la pique"
+      needs: [steam]
+      uses: []
+      time_min: 15
+      attended: false
+
+  emits: []
+
+  plan_b: []
