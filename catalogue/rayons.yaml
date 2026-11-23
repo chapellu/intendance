@@ -635,6 +635,7 @@ rayons:
   # saisons que le sachet du congélateur est « hors saison » en novembre.
   surgelés:
     - epinards-surgeles
+    - herbes-surgelees
     - petits-pois-surgeles
     - haricots-verts-surgeles
     - champignons-surgeles
@@ -810,6 +811,7 @@ noms:
   gruau-avoine: gruau d'avoine
   grue-cacao: grué de cacao
   herbes-provence: herbes de Provence
+  herbes-surgelees: herbes surgelées
   huile-coco: huile de coco
   huile-essentielle-citron: huile essentielle de citron
   huile-essentielle-menthe: huile essentielle de menthe

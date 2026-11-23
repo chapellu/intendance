@@ -169,6 +169,8 @@ denrees:
   - {ingredient: echalote, minimum: 1, unite: filet de 500 g}
   - {ingredient: noix, minimum: 1, unite: sachet de 200 g}
   - {ingredient: creme-soja, minimum: 2, unite: brique de 20 cl}
+  # EXPÉRIENCE — les herbes ciselées surgelées, cousines de l'étal (`equivalences.yaml`).
+  - {ingredient: herbes-surgelees, minimum: 1, unite: sachet de 250 g}
 
 # T183 — LES CONDITIONNEMENTS : la taille d'un paquet, et rien d'autre. Pas
 # de minimum — ce n'est pas « toujours là » — mais un pack de yaourts se

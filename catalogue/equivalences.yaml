@@ -150,3 +150,19 @@ equivalences:
     evite: true
     par:
       - {id: beurre, nom: "beurre", ratio: 1, unites: [g]}
+
+  # ── EXPÉRIENCE (2026-11-23) — les herbes fraîches, garniture de 50 dîners du
+  # corpus, se tiennent au congélateur : persil, ciboulette, basilic ciselés,
+  # « l'équivalent » dans l'unité de la ligne (un petit bouquet ciselé).
+  persil:
+    par:
+      - {id: herbes-surgelees, nom: "herbes ciselées surgelées", ratio: 1}
+  ciboulette:
+    par:
+      - {id: herbes-surgelees, nom: "herbes ciselées surgelées", ratio: 1}
+  basilic:
+    par:
+      - {id: herbes-surgelees, nom: "herbes ciselées surgelées", ratio: 1}
+  herbes-fraiches:
+    par:
+      - {id: herbes-surgelees, nom: "herbes ciselées surgelées", ratio: 1}

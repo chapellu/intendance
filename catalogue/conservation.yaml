@@ -287,7 +287,7 @@ familles:
       Chasser l'air et refermer d'une pince à chaque usage : c'est le givre,
       pas le temps, qui abîme. Un sachet décongelé ne repart pas au
       congélateur.
-    ids: [epinards-surgeles, petits-pois-surgeles, haricots-verts-surgeles,
+    ids: [epinards-surgeles, petits-pois-surgeles, haricots-verts-surgeles, herbes-surgelees,
           champignons-surgeles, legumes-surgeles, colin-surgele]
 
   - id: conserve

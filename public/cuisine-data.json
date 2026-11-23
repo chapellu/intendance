@@ -3853,7 +3853,14 @@
      "unit": "petit bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     }
    ],
    "role": "plat",
@@ -9696,7 +9703,14 @@
      "unit": "bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "ail",
@@ -10764,7 +10778,14 @@
      "unit": "bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "ail",
@@ -15247,7 +15268,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "ail",
@@ -15939,7 +15967,14 @@
      "unit": "bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "huile-olive",
@@ -20869,7 +20904,14 @@
      "unit": "brin",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "farine-complete",
@@ -23578,7 +23620,14 @@
      "base": false,
      "assaisonnement": false,
      "central": false,
-     "facultatif": true
+     "facultatif": true,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "orties",
@@ -26052,7 +26101,14 @@
      "unit": "brin",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "sel",
@@ -28904,7 +28960,14 @@
      "unit": "brin",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "muscade",
@@ -31532,7 +31595,14 @@
      "unit": "petit bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "farine-complete",
@@ -32556,7 +32626,14 @@
      "unit": "petit bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "farine",
@@ -32820,7 +32897,14 @@
      "base": false,
      "assaisonnement": false,
      "central": false,
-     "facultatif": true
+     "facultatif": true,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "huile-olive",
@@ -33041,7 +33125,14 @@
      "unit": "c. à s.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oeufs",
@@ -37968,7 +38059,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "huile-olive",
@@ -38293,7 +38391,14 @@
      "base": false,
      "assaisonnement": false,
      "central": false,
-     "facultatif": true
+     "facultatif": true,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "sel",
@@ -38554,7 +38659,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "tahin",
@@ -38917,7 +39029,14 @@
      "unit": "petit bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "ail",
@@ -39186,7 +39305,14 @@
      "unit": "petit bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "ail",
@@ -40502,7 +40628,14 @@
      "unit": "petit bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "sel",
@@ -51540,7 +51673,14 @@
      "unit": "brin",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "basilic",
@@ -51550,7 +51690,14 @@
      "unit": "brin",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "farine-complete",
@@ -57850,7 +57997,14 @@
      "base": false,
      "assaisonnement": false,
      "central": false,
-     "facultatif": true
+     "facultatif": true,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "laurier",
@@ -60478,7 +60632,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "parmesan",
@@ -61545,7 +61706,14 @@
      "unit": "brin",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "eau",
@@ -67015,7 +67183,14 @@
      "unit": "petit bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "ail",
@@ -67588,7 +67763,14 @@
      "unit": "bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "sarriette",
@@ -73777,7 +73959,14 @@
      "base": false,
      "assaisonnement": false,
      "central": false,
-     "facultatif": true
+     "facultatif": true,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "citron",
@@ -74707,7 +74896,14 @@
      "unit": "brin",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "parmesan",
@@ -75284,7 +75480,14 @@
      "base": false,
      "assaisonnement": false,
      "central": false,
-     "facultatif": true
+     "facultatif": true,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oeufs",
@@ -75631,7 +75834,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "capres",
@@ -75970,7 +76180,14 @@
      "unit": "bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "citron",
@@ -76264,7 +76481,14 @@
      "unit": "brin",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "poulet-filets",
@@ -78997,7 +79221,14 @@
      "unit": "poignée",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "huile-olive",
@@ -79681,7 +79912,14 @@
      "base": false,
      "assaisonnement": false,
      "central": false,
-     "facultatif": true
+     "facultatif": true,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "sel",
@@ -79883,7 +80121,14 @@
      "base": false,
      "assaisonnement": false,
      "central": false,
-     "facultatif": true
+     "facultatif": true,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "fenouil-sauvage",
@@ -82029,7 +82274,14 @@
      "unit": "bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "riz",
@@ -83252,7 +83504,14 @@
      "unit": "brin",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "ail",
@@ -85058,7 +85317,14 @@
      "unit": "petit bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "olives-noires",
@@ -86111,7 +86377,14 @@
      "unit": "bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "sel",
@@ -88684,7 +88957,14 @@
      "unit": "c. à s.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "tomates-cerises",
@@ -88714,7 +88994,14 @@
      "unit": "brin",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "poivre",
@@ -88973,7 +89260,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "ail",
@@ -89399,7 +89693,14 @@
      "unit": "bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "olives-noires",
@@ -90657,7 +90958,14 @@
      "unit": "brin",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "ciboulette",
@@ -90667,7 +90975,14 @@
      "unit": "brin",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "anis-vert",
@@ -91564,7 +91879,14 @@
      "base": false,
      "assaisonnement": false,
      "central": false,
-     "facultatif": true
+     "facultatif": true,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "sel",
@@ -91795,7 +92117,14 @@
      "unit": "brin",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "huile-olive",
@@ -92032,7 +92361,14 @@
      "unit": "petit bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "ail",
@@ -92614,7 +92950,14 @@
      "unit": "brin",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "pain-levain",
@@ -93331,7 +93674,14 @@
      "unit": "poignée",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "sauge",
@@ -94246,7 +94596,14 @@
      "unit": "petit bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "sel",
@@ -94764,7 +95121,14 @@
      "base": false,
      "assaisonnement": false,
      "central": false,
-     "facultatif": true
+     "facultatif": true,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     }
    ],
    "role": "accompagnement",
@@ -96099,7 +96463,14 @@
      "unit": "petit bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "farine",
@@ -97336,7 +97707,14 @@
      "unit": "brin",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     }
    ],
    "role": "plat",
@@ -97527,7 +97905,14 @@
      "unit": "bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "huile-olive",
@@ -97795,7 +98180,14 @@
      "unit": "petit bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "huile-olive",
@@ -99180,7 +99572,14 @@
      "unit": "poignée",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "persil",
@@ -99190,7 +99589,14 @@
      "unit": "poignée",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "eau",
@@ -99690,7 +100096,14 @@
      "unit": "poignée",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "sauge",
@@ -100715,7 +101128,14 @@
      "base": false,
      "assaisonnement": false,
      "central": false,
-     "facultatif": true
+     "facultatif": true,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "noisettes",
@@ -101225,7 +101645,14 @@
      "base": false,
      "assaisonnement": false,
      "central": false,
-     "facultatif": true
+     "facultatif": true,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "capres",
@@ -101564,7 +101991,14 @@
      "base": false,
      "assaisonnement": false,
      "central": false,
-     "facultatif": true
+     "facultatif": true,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "sel",
@@ -101976,7 +102410,14 @@
      "base": false,
      "assaisonnement": false,
      "central": false,
-     "facultatif": true
+     "facultatif": true,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "olives-noires",
@@ -102241,7 +102682,14 @@
      "base": false,
      "assaisonnement": false,
      "central": false,
-     "facultatif": true
+     "facultatif": true,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "huile-olive",
@@ -102704,7 +103152,14 @@
      "base": false,
      "assaisonnement": false,
      "central": false,
-     "facultatif": true
+     "facultatif": true,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "origan",
@@ -104435,7 +104890,14 @@
      "unit": "brin",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     }
    ],
    "role": "entree",
@@ -104627,7 +105089,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "chevre-buche",
@@ -105194,7 +105663,14 @@
      "base": false,
      "assaisonnement": false,
      "central": false,
-     "facultatif": true
+     "facultatif": true,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "tomates-cerises",
@@ -105443,7 +105919,14 @@
      "base": false,
      "assaisonnement": false,
      "central": false,
-     "facultatif": true
+     "facultatif": true,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "saumon-fume",
@@ -106185,7 +106668,14 @@
      "unit": "bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oeufs",
@@ -108005,7 +108495,14 @@
      "base": false,
      "assaisonnement": false,
      "central": false,
-     "facultatif": true
+     "facultatif": true,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "sel",
@@ -108596,7 +109093,14 @@
      "unit": "brin",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "huile-olive",
@@ -108886,7 +109390,14 @@
      "base": false,
      "assaisonnement": false,
      "central": false,
-     "facultatif": true
+     "facultatif": true,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "eau",
@@ -109191,7 +109702,14 @@
      "unit": "brin",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "paprika",
@@ -115242,7 +115760,14 @@
      "unit": "brin",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "fleur-de-sel",
@@ -115421,7 +115946,14 @@
      "unit": "poignée",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "huile-olive",
@@ -116652,7 +117184,14 @@
      "unit": "petit bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     }
    ],
    "role": "plat",
@@ -116861,7 +117400,14 @@
      "unit": "bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "ciboulette",
@@ -116871,7 +117417,14 @@
      "unit": "brin",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "ail",
@@ -118943,7 +119496,14 @@
      "unit": "petit bouquet",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "sel",
@@ -126119,7 +126679,14 @@
      "base": false,
      "assaisonnement": false,
      "central": false,
-     "facultatif": true
+     "facultatif": true,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     }
    ],
    "role": "plat",
@@ -126759,7 +127326,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "herbes-surgelees",
+       "nom": "herbes ciselées surgelées",
+       "ratio": 1
+      }
+     ]
     }
    ],
    "role": "plat",
@@ -128341,6 +128915,7 @@
    ],
    "surgelés": [
     "epinards-surgeles",
+    "herbes-surgelees",
     "petits-pois-surgeles",
     "haricots-verts-surgeles",
     "champignons-surgeles",
@@ -128506,6 +129081,7 @@
    "gruau-avoine": "gruau d'avoine",
    "grue-cacao": "grué de cacao",
    "herbes-provence": "herbes de Provence",
+   "herbes-surgelees": "herbes surgelées",
    "huile-coco": "huile de coco",
    "huile-essentielle-citron": "huile essentielle de citron",
    "huile-essentielle-menthe": "huile essentielle de menthe",
@@ -131212,6 +131788,7 @@
     "epinards-surgeles",
     "petits-pois-surgeles",
     "haricots-verts-surgeles",
+    "herbes-surgelees",
     "champignons-surgeles",
     "legumes-surgeles",
     "colin-surgele"
@@ -131798,6 +132375,13 @@
     "jusqua": null,
     "hebdo": false,
     "unite": "brique de 20 cl"
+   },
+   {
+    "ingredient": "herbes-surgelees",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "sachet de 250 g"
    }
   ],
   "diners": [
