@@ -497,6 +497,7 @@ async function cuisiner(j, ev, stats, { autrement = false, parts = 2.75, deja = 
   else if (await range.count()) { await tap(range); reponseDonnee = "rangé"; }
   else if (await fait.count()) { await tap(fait); reponseDonnee = "fait"; }
   else note(j, "sortie", "pas d'écran de sortie : " + sortieTxt.slice(0, 200).replace(/\n/g, " / "));
+  if (/Déjà noté/.test(await texte().catch(() => ""))) { note(j, "deja-note", `« ${p0.titre} » : « Déjà noté pour ce repas », rien n'est sorti du stock`); etat.compte.dejaNotes = (etat.compte.dejaNotes ?? 0) + 1; }
   await page.waitForURL((u) => !/cuisiner/.test(u.toString()), { timeout: 10_000 }).catch(() => note(j, "sortie", "la fiche ne s'est pas refermée"));
   const plat = platParTitre.get(p0.titre);
   if (plat) consommer(plat, parts);
@@ -1058,18 +1059,56 @@ function dessert(j, stats) {
   if (id) { prendre(id, 3); stats.repas = { ...stats.repas, dessert: id }; }
   else { manqueDuJour(stats, "dessert", choix[0]); stats.repas = { ...stats.repas, dessert: `manque ${choix[0]}` }; }
 }
+// L'APÉRO DES LIVRES : pizza « 8 parts en apéro », houmous, rillettes, crackers,
+// madeleines salées, cakes, terrines… Cuisiné par « Recettes » et le guide, comme
+// le foyer le ferait ; sinon un bocal, sinon rien.
+const APERO_RE = /houmous|tartinade|tapenade|rillette|cracker|gressin|pizza|focaccia|fougasse|madeleines? (à l'huile|sal)|barbajuan|calzone|chips|falafel|accras|blinis|dip |terrine|pâté épatant|cake salé|mug-cake salé/i;
+const PLATS_APERO = cat.plats.filter((p) => APERO_RE.test(p.titre) && !/céleri/i.test(JSON.stringify(p.ingredients)) && p.ingredients.length > 0);
+function faisable(p) {
+  // Une base exigée (pois chiches cuits, pâte) doit être au vrai frigo.
+  const bases = (p.accepts ?? []).filter((a) => a.requis && a.type).every((a) => etat.restes.some((r) => !r.jete && r.portions > 0 && r.types.includes(a.type)));
+  return bases && p.ingredients.every((i) => i.base || i.assaisonnement || i.facultatif || toujours.has(i.id) || !(i.qty > 0)
+    || [i.id, ...(i.remplacants ?? []).map((r) => r.id)].some((id) => (etat.reel[id]?.q ?? 0) >= versBase(id, i.qty, i.unit)));
+}
 async function apero(j, ev, stats) {
   const invites = ev.some((e) => e.type === "invites");
   const dow = new Date(j).getDay();
   if (!(invites || (dow === 5 && hasard() < 0.35 * ALEA) || (dow === 6 && hasard() < 0.25 * ALEA))) return;
+  etat.compte.aperos = (etat.compte.aperos ?? 0) + 1;
+  // Un reste d'apéro au frigo d'abord (la moitié de la pizza de samedi).
+  const reste = etat.restes.find((r) => !r.jete && r.portions > 0 && r.ou === "Frigo" && r.apero);
+  if (reste) { reste.portions = 0; reste.mangeLe = j; stats.repas = { ...stats.repas, apero: `reste : ${reste.plat}` }; return; }
+  const candidats = PLATS_APERO.filter(faisable);
+  if (candidats.length && (invites || hasard() < 0.7)) {
+    const p = candidats[Math.floor(hasard() * candidats.length)];
+    await page.clock.setFixedTime(new Date(`${j}T17:30:00`));
+    await aller("cuisine/repertoire"); await page.waitForTimeout(400);
+    const champ = page.getByLabel("chercher un plat par son nom");
+    if (await champ.count()) {
+      await champ.fill(p.titre); await page.waitForTimeout(500);
+      const lien = page.locator("a.co-rep").filter({ hasText: p.titre.slice(0, 30) }).first();
+      if (await lien.count()) {
+        const href = await lien.getAttribute("href");
+        stats.aperoCreneau = href; // le créneau que « Recettes » vise : la cuisson s'y journalise
+        if (href && !href.includes(`${j}/`)) note(j, "apero-creneau", `« ${p.titre} » cuisiné ce soir depuis Recettes, journalisé sur ${href.split("/").slice(-3, -1).join(" ")}`);
+        await tap(lien);
+        const fait = await cuisiner(j, ev, stats, { parts: p.portions, deja: p.titre }).catch((e) => { note(j, "apero", `cuisson échouée : ${String(e).slice(0, 120)}`); return null; });
+        if (fait) {
+          for (const r of etat.restes.filter((x) => x.plat === fait && x.le === j)) r.apero = true;
+          // L'apéro mange la moitié de la fournée ; le reste attend au frigo.
+          stats.repas = { ...stats.repas, apero: `cuisiné : ${fait}` }; etat.compte.aperosCuisines = (etat.compte.aperosCuisines ?? 0) + 1; return;
+        }
+      }
+    }
+  }
   const pris = [];
   for (const id of APERO) {
-    const r = etat.reel[id]; if (!r || r.q <= 0) { manqueDuJour(stats, "apero", id); continue; }
+    const r = etat.reel[id]; if (!r || r.q <= 0) continue;
     r.q = Math.max(0, r.q - (invites ? r.achete || 1 : (r.achete || 1) / 3)); pris.push(id);
-    // Le bocal vide se dit à l'app — le seul geste qui existe (« Fini » au stock).
     if (r.q <= 0) { const t = await plusDe((x) => norm(x).includes(norm(nomDe(id)))); if (!t) note(j, "apero", `${id} fini au réel, pas de ligne « Fini » au stock`); }
   }
-  stats.repas = { ...stats.repas, apero: pris.length ? pris.join(",") : "rien pour l'apéro" };
+  if (!pris.length) manqueDuJour(stats, "apero", candidats.length ? "rien de prêt" : "rien de faisable");
+  stats.repas = { ...stats.repas, apero: pris.length ? `bocal : ${pris.join(",")}` : "rien pour l'apéro" };
 }
 const nomDe = (id) => cat.rayons.noms?.[id] ?? id.replace(/-/g, " ");
 /** Midi : un reste pour les quatre (3 parts), sinon une omelette-tartines hors app. */
