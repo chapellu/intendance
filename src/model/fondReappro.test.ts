@@ -342,6 +342,20 @@ describe("T137 — un article du fond à garde courte se finit par son âge", ()
     expect(tot.parIngredient.has("poireau")).toBe(true);
   });
 
+  test("l'âge se compte par lot : une boîte d'œufs neuve ne ressuscite pas celle d'il y a un mois", () => {
+    const neuve: Evenement = {
+      sorte: "entree", jour: jourAvant(2), saisi: jourAvant(2), maj: 9,
+      lignes: [{ ingredient: "oeufs", unites: 1, parUnite: null, zone: null, etat: "sec" }],
+    };
+    const { rejeu } = rentreIlYA(30, [neuve]);
+    const e = rejeu.parIngredient.get("oeufs")!;
+    expect(e.lots.map((l) => l.unites)).toEqual([1]);
+    expect(rejeu.finis.has("oeufs")).toBe(false);
+    // et les bananes rachetées remplacent celles qui ont passé, sans s'y ajouter
+    const bananes: Evenement = { ...neuve, lignes: [{ ingredient: "banane", unites: 7, parUnite: null, zone: null, etat: "sec" }] };
+    expect(rentreIlYA(10, [bananes]).rejeu.parIngredient.get("banane")!.unites).toBe(7);
+  });
+
   test("une observation après l'achat relance l'horloge : « Des œufs ? oui » est la confirmation", () => {
     const vu = {
       sorte: "observation", jour: jourAvant(10), saisi: jourAvant(10), maj: 5,

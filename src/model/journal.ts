@@ -266,6 +266,10 @@ export interface LotPlacard {
   sansPlace?: true;
   /** Né d'un reste d'unité scellée (T29) : il court, donc il presse. */
   court: boolean;
+  /** Le jour où CE lot est rentré des courses. L'âge se compte par lot : une
+   *  boîte d'œufs neuve ne ressuscite pas celle d'il y a un mois. Absent : un
+   *  lot relevé, qui vieillit avec le dernier achat de sa denrée (T137). */
+  rentreLe?: string;
 }
 
 export interface EtatIngredient {
@@ -1200,6 +1204,7 @@ export function rejouer(
           etat: ligne.etat,
           entame: null,
           court: false,
+          rentreLe: e.jour,
           ...(ligne.zone ? {} : { sansPlace: true as const }),
         });
         lots.set(id, l);
@@ -1338,12 +1343,20 @@ export function rejouer(
   // l'achat, ou de la dernière observation qui l'a suivi : répondre « oui » à
   // « Des œufs ? » est le geste de confirmation, et il existe déjà.
   const finis = new Map<string, number>();
-  for (const [id, l] of lots) {
+  for (const [id, l] of [...lots]) {
     const s = suivi.get(id);
     const fenetre = ctx.fenetreCourte(id);
     if (!s?.rentreLe || fenetre === null || l.length === 0) continue;
-    const depuis = s.vuLe && s.vuLe > s.rentreLe ? s.vuLe : s.rentreLe;
-    if (joursEntre(depuis, aujourdhui) <= fenetre) continue;
+    // L'ÂGE SE COMPTE PAR LOT. Un lot rentré a sa date ; un lot relevé prend
+    // celle du dernier achat, comme avant. Une observation postérieure (« Des
+    // œufs ? oui ») confirme tout ce qui est là et relance l'horloge.
+    const age = (x: LotPlacard): number => {
+      const ne = x.rentreLe ?? s.rentreLe!;
+      return joursEntre(s.vuLe && s.vuLe > ne ? s.vuLe : ne, aujourdhui);
+    };
+    const vivants = l.filter((x) => age(x) <= fenetre);
+    if (vivants.length === l.length) continue;
+    if (vivants.length) { lots.set(id, vivants); continue; }
     finis.set(id, joursEntre(s.rentreLe, aujourdhui));
     lots.delete(id);
   }
