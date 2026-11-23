@@ -25,7 +25,8 @@ describe("le fond de roulement fait exister comme stock ce qu'aucun relevé n'av
   test("lentilles corail, pois cassés, surgelés et œufs sont posables, à zéro", () => {
     const rejeu = rejouer(catalogue, [], ctx, "2026-10-19");
     const p = new Map(posables(catalogue, rejeu).map((x) => [x.ingredient, x]));
-    for (const id of ["lentilles-corail", "pois-casses", "epinards-surgeles", "oeufs", "lait-coco"]) {
+    // T197 : le lait de coco a quitté le fond ; le soja-vanille y est entré.
+    for (const id of ["lentilles-corail", "pois-casses", "epinards-surgeles", "oeufs", "lait-soja-vanille"]) {
       expect(p.get(id), id).toBeDefined();
       expect(p.get(id)!.comptable, id).toBe(true);
       expect(p.get(id)!.minimumDuFond, id).toBeGreaterThanOrEqual(1);
@@ -56,8 +57,9 @@ describe("le fond de roulement fait exister comme stock ce qu'aucun relevé n'av
   });
 
   // T142 : neuf — les gnocchis sont sortis du fond, et leur dîner avec eux.
-  test("les neuf dîners du fond désignent des plats qui existent", () => {
-    expect(catalogue.fond.diners).toHaveLength(9);
+  test("les dix dîners du fond désignent des plats qui existent", () => {
+    // T197 : dix dîners sourcés, au lieu des neuf rédigés pour ce dépôt.
+    expect(catalogue.fond.diners).toHaveLength(10);
     for (const d of catalogue.fond.diners) expect(plat(d.plat), d.plat).toBeDefined();
   });
 
@@ -133,10 +135,17 @@ describe("les saisons parlent des légumes, jamais de la garde", () => {
     expect(saisonDuPlat(catalogue, q, 12).horsSaison).toEqual(["courgettes"]);
   });
 
-  test("les dîners du fond ne sont ni de saison ni hors saison — ils se font toute l'année", () => {
-    for (const d of catalogue.fond.diners)
-      for (const m of [1, 4, 7, 10])
-        expect(saisonDuPlat(catalogue, plat(d.plat), m).horsSaison, d.plat).toEqual([]);
+  // T197 — LA RÈGLE A CHANGÉ AVEC LES DÎNERS. Les neuf dîners rédigés pour ce
+  // dépôt se faisaient toute l'année, chacun ; ceux de Marie Chioca suivent les
+  // saisons (courge, poireau, herbes). La promesse porte donc sur le mois : il
+  // y a toujours au moins trois dîners du fond de saison, quel que soit le mois.
+  test("chaque mois, au moins trois dîners du fond sont de saison", () => {
+    for (let m = 1; m <= 12; m++) {
+      const ok = catalogue.fond.diners.filter(
+        (d) => saisonDuPlat(catalogue, plat(d.plat), m).horsSaison.length === 0,
+      );
+      expect(ok.length, `mois ${m}`).toBeGreaterThanOrEqual(3);
+    }
   });
 
   test("un mois hors de 1–12 est refusé au chargement", () => {
@@ -180,10 +189,17 @@ describe("les haricots rouges secs bouillent dix minutes à gros bouillons", () 
     // le premier plat du corpus à partir du sachet sec.
     for (const p of catalogue.plats) {
       const trempe = p.steps.some((s) => (s.attente ?? 0) >= 480);
-      if (!trempe || !p.ingredients.some((i) => i.id === "haricots-rouges")) continue;
-      expect(p.steps.some((s) => /gros bouillons/.test(s.action) && /10 minutes/.test(s.action)), p.id)
+      // T197 — un REMPLAÇANT compte aussi : la souche de légumineuses propose
+      // les haricots rouges secs en `subs`, et c'est là que le geste manquait.
+      const rouges = p.ingredients.some(
+        (i) => i.id === "haricots-rouges" || (i.remplacants ?? []).some((r) => r.id === "haricots-rouges"),
+      );
+      if (!trempe || !rouges) continue;
+      const texte = (s: (typeof p.steps)[number]) => `${s.action} ${s.astuce ?? ""}`;
+      expect(p.steps.some((s) => /gros bouillons/.test(texte(s)) && /10 minutes/.test(texte(s))), p.id)
         .toBe(true);
     }
-    expect(plat("chili-haricots-rouges").steps.map((s) => s.id)).toContain("bouillir");
+    expect(plat("legumineuses-mitonnees").ingredients.some((i) =>
+      (i.remplacants ?? []).some((r) => r.id === "haricots-rouges"))).toBe(true);
   });
 });

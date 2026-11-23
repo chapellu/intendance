@@ -2,9 +2,6 @@
  "typesLisibles": {
   "sauce-bolognaise": "sauce bolognaise",
   "lasagnes": "lasagnes",
-  "poulet-cuit": "poulet rôti",
-  "carcasse-volaille": "carcasse de poulet",
-  "curry-pois-chiches": "curry de pois chiches au lait de coco",
   "quiche": "quiche aux poireaux",
   "chili": "chili sin carne",
   "accras-thon": "accras gourmands au thon, pain et carottes râpées",
@@ -66,7 +63,6 @@
   "cheesecake-fraises-orge-coco": "cheesecake aux fraises, sucre de bouleau et farine d'orge",
   "cheesecake-myrtilles-sable-breton-lavande": "cheesecake aux myrtilles, sablé breton, miel de lavande",
   "chili-con-poulet": "chili-con-poulet",
-  "chili-haricots-rouges": "chili de haricots rouges au riz",
   "chocolats-fourres-ganache": "petits chocolats fourrés à la ganache « comme les pros »",
   "chou-farci-terrine": "chou farci facile",
   "citronnettes-chocolat": "citronnettes et palets de chocolat noir",
@@ -77,7 +73,6 @@
   "confiture-express-abricots-miel": "confiture « express » d'abricots au miel",
   "bouillon-maison": "bouillon de fanes",
   "cookies-amande-citron-chocolat": "cookies « 0 complexe » amande-citron-chocolat",
-  "cookies-avoine": "cookies à l'avoine",
   "cookies-coco-chocolat-sucre-bouleau": "cookies croustillants chocolat-coco au sucre de bouleau",
   "cookies-figues-noisettes": "les cookies les plus simples du monde",
   "cookies-pomme-noisette-sans-sucre": "cookies pomme-noisette sans sucre ajouté",
@@ -92,11 +87,11 @@
   "couscous-legumes": "couscous de légumes d'hiver aux pois chiches",
   "creme-dessert-chocolat-maison": "crème dessert au chocolat « 3 min chrono »",
   "creme-marron-maison": "crème de marron maison",
+  "creme-mousse-chocolat-tofu-soyeux": "crème-mousse au chocolat et tofu soyeux",
   "creme-psyllium-amande-citron-miel": "crème dessert amande-citron-miel sans cuisson, au psyllium",
   "creme-psyllium-chocolat": "crème dessert au chocolat sans cuisson, au psyllium",
   "creme-psyllium-praline": "crème dessert pralinée sans cuisson, au psyllium",
   "creme-romanesco-parmesan": "petite crème « romanesca » à l'huile d'olive et parmesan",
-  "crepes-maison": "crêpes semi-complètes",
   "crepes-mandarine-potiron": "crêpes à la mandarine et au potiron",
   "crepes-son-avoine-fleur-oranger": "crêpes au son d'avoine et à la fleur d'oranger",
   "crepes-suzette-petit-epeautre": "crêpes Suzette au petit épeautre",
@@ -110,7 +105,6 @@
   "cupcakes-chocolat-agrumes-gingembre": "cupcakes au chocolat noir, parfum d'agrumes et gingembre confit",
   "cupcakes-nids-chocolat-avocat": "cupcakes « nids de Pâques » au chocolat et à l'avocat",
   "curry-cremeux-celeri": "curry crémeux de céleri-rave",
-  "dahl-lentilles-corail": "dahl de lentilles corail, coco et épinards",
   "dahl-riz-lentilles-corail": "dahl de riz et lentilles corail aux carottes",
   "dinde-farcie-basse-temperature": "dinde farcie « confite » à basse température",
   "dinde-noel-farce-truffee": "dinde de Noël ultra moelleuse et sa farce au parfum de truffe",
@@ -133,6 +127,7 @@
   "focaccia-porcini": "focaccia ai porcini",
   "fondant-chocolat-cafe-whisky": "le meilleur fondant au chocolat du monde",
   "fondant-chocolat-chataigne": "fondant chocolat-châtaigne sans gluten",
+  "fondant-noel-chocolat-orange-speculoos": "fondant de Noël au chocolat, orange et épices à spéculoos",
   "fondant-potimarron-chocolat-rennes": "fondant au (poti)marron façon « rennes de Noël »",
   "fraisier-huile-olive-dix-ans": "fraisier à l'huile d'olive (le gâteau des dix ans du blog)",
   "fraisier-leger-faisselle": "un fraisier tout simple et tout léger",
@@ -158,6 +153,7 @@
   "gateau-leger-chocolat-feve-tonka": "gâteau très léger au chocolat noir et à la fève tonka",
   "gateau-mendiant-epices-vapeur": "gâteau « mendiant » aux épices, cuit à la vapeur",
   "gateau-noel-vache-potimarron": "le gâteau de Noël en vache, ganache rousse au potimarron",
+  "gateau-paques-citron-pomelo": "gâteau de Pâques au citron et au pomelo",
   "gateau-poires-debout-noix": "gâteau moelleux aux poires, vanille et noix caramélisées",
   "gateau-pomme-or-sans-sucre": "le gâteau « Pomme d'Or » sans sucre ajouté",
   "gateau-ptit-dej-abricots-framboises": "petit gâteau du p'tit déj aux abricots et framboises",
@@ -176,8 +172,6 @@
   "gratin-pates-brocoli": "gratin de pâtes au brocoli et au thon",
   "chausson-basquaise": "gros chausson façon basquaise",
   "hachis-parmentier-legumes-racine": "hachis Parmentier de légumes-racines",
-  "hachis-lentilles": "hachis parmentier de lentilles",
-  "haricots-blancs-tomate": "haricots blancs à la tomate, œufs pochés dedans",
   "tartinade-legumineuse": "houmous",
   "jarret-braise": "jarret braisé au vin blanc et petits légumes",
   "kefir-lait": "kéfir de lait à boire",
@@ -187,8 +181,6 @@
   "layer-cake-noel-chocolat-the-blanc": "layer-cake de Noël enneigé, mousse chocolatée et crème au thé blanc",
   "pois-chiches-cuits": "pois chiches cuits",
   "haricots-blancs-cuits": "haricots blancs cuits",
-  "lentilles-vertes-cuites": "lentilles vertes cuites",
-  "puree-lentilles-carottes": "purée lentilles-carottes du bébé",
   "lentilles-paysanne": "lentilles vertes mijotées à la paysanne",
   "madeleines-yaourt": "madeleines au yaourt",
   "mantecaos-ig-bas": "mantecaos à IG bas",
@@ -202,6 +194,7 @@
   "mini-brownies": "mini-brownies fondants de Pâques",
   "mini-cakes-fruits": "mini-cakes aux fruits séchés",
   "mini-cheesecakes-tofu-amande": "mini « cheesecakes » au tofu soyeux et à l'amande blanche",
+  "lentilles-vertes-cuites": "lentilles vertes cuites",
   "mitonnee-petit-epeautre-carbonara": "mitonnée de petit épeautre « façon carbonara »",
   "mitonnee-pois-casses": "mitonnée de pois cassés « qui réchauffe »",
   "moelleux-chocolat-nuage": "moelleux au chocolat « nuage »",
@@ -219,6 +212,7 @@
   "moussaka-lentilles": "moussaka de lentilles aux aubergines",
   "mousse-chocolat": "mousse au chocolat",
   "mousse-peches": "mousse légère aux pêches",
+  "mousse-nuage-chocolat-tofu-soyeux": "mousse « nuage » au chocolat et tofu soyeux",
   "muffins-chevre": "muffins au chèvre frais",
   "muffins-choco-courgettes": "muffins choco-courgettes",
   "muffins-mures-sauvages": "muffins aux mûres sauvages, façon gâteau au yaourt",
@@ -255,7 +249,6 @@
   "pate-vegetal": "pâté de lentilles",
   "pate-magique-bredele": "pâte « magique » pour bredele et petits sablés de Noël",
   "pate-tartiner-choco-noisette": "pâte à tartiner choco-noisettes maison",
-  "bolognaise-lentilles": "pâtes à la bolognaise de lentilles",
   "gateau-en-bocal": "le petit bocal qui fait du bien",
   "petits-babas-cedrat": "petits babas au cédrat",
   "petits-cakes-paques-chocolat": "petits cakes de Pâques au chocolat",
@@ -281,6 +274,8 @@
   "legumes-pot-au-feu": "légumes du pot-au-feu",
   "potage-lentilles-corail-courge-musquee": "potage d'automne aux lentilles corail et courge musquée",
   "bouillon-poule-epeautre": "bouillon de poule à l'épeautre",
+  "poulet-cuit": "poulet rôti",
+  "carcasse-volaille": "carcasse de poulet",
   "poulet-chasseur": "poulet chasseur",
   "reste-roti": "reste de rôti",
   "poulet-etouffee-legumes": "poule-au-pot revisitée, cuite dans son propre jus",
@@ -316,7 +311,6 @@
   "salade-orge": "salade d'orge sympa",
   "salade-remoulade-legumes-hiver": "salade de légumes d'hiver en rémoulade au yaourt de brebis",
   "salade-riz-tiede-primeurs": "salade de riz tiède aux légumes primeurs et ail des ours",
-  "salade-lentilles-thon": "salade tiède de lentilles, carottes et thon",
   "samoussas": "samoussas végétariens aux légumes rôtis",
   "sardines-farcies-oseille": "sardines farcies au pain grillé, oseille et parmesan",
   "scones-trois-cereales-noisettes-chocolat": "scones aux trois céréales, éclats de noisettes et chocolat",
@@ -326,9 +320,7 @@
   "soupe-asiatique-chrono": "petite soupe asiatique « chrono »",
   "soupe-chou-haricots": "soupe de chou frisé aux haricots blancs",
   "soupe-cretoise": "soupe crétoise « 3 min chrono »",
-  "soupe-legumes-pois-chiches": "soupe de légumes et pois chiches",
   "soupe-orge": "soupe d'orge et de petits pois",
-  "soupe-pois-casses": "soupe de pois cassés aux carottes",
   "soupe-reconfortante-epices": "soupe réconfortante aux épices",
   "speculoos-de-compet": "spéculoos « de compet' »",
   "speculoos-epeautre-sucre-coco": "spéculoos à l'épeautre et au sucre de coco",
@@ -360,7 +352,6 @@
   "tiramisu-sans-lait-tofu": "« lE » tiramisu sans lait",
   "tomatokeftedes": "tomatokeftedes (galettes de tomates à la menthe)",
   "tomme-vegetale": "tomme végétale",
-  "tortilla": "omelette au four, pommes de terre et haricots verts",
   "tourte-automne-foret-champignons": "jolie tourte d'automne de la forêt aux champignons",
   "tourte-briochee-magret-courge": "tourte briochée aux magrets de canard fumés et petits légumes",
   "tourte-crumble-pommes": "tourte-crumble « des paresseux » aux pommes et aux noix",
@@ -391,7 +382,8 @@
   "wraps-vegetariens": "wraps végétariens",
   "yaourt-fruits": "yaourts aux fruits, LA recette inratable",
   "yaourts-kefir": "« yaourts » de kéfir",
-  "yaourts-magiques-vanille": "yaourts « magiques » à la vanille, sans yaourtière"
+  "yaourts-magiques-vanille": "yaourts « magiques » à la vanille, sans yaourtière",
+  "puree-lentilles-carottes": "purée lentilles-carottes du bébé"
  },
  "foyer": {
   "nom": "Francheville",
@@ -1495,208 +1487,6 @@
    "cuisinable": true
   },
   {
-   "id": "poulet-roti",
-   "titre": "Poulet rôti et pommes de terre",
-   "minutes": 80,
-   "minutesSurPlace": 80,
-   "avanceMin": 80,
-   "anticipations": [],
-   "portions": 6,
-   "source": null,
-   "apports": {
-    "proteine": "viande-blanche",
-    "feculent": "pommes-de-terre",
-    "legumes": [
-     "allium",
-     "racine"
-    ],
-    "profil": "four",
-    "origine": "francais"
-   },
-   "ingredients": [
-    {
-     "id": "poulet",
-     "ref": "poulet",
-     "nom": "poulet fermier entier",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "pommes-de-terre",
-     "ref": "pommes-de-terre",
-     "nom": "pommes de terre",
-     "qty": 1,
-     "unit": "kg",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "oignon",
-     "ref": "oignon",
-     "nom": "oignon",
-     "qty": 2,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "huile-olive",
-     "ref": "huile-olive",
-     "nom": "huile d'olive",
-     "qty": 2,
-     "unit": "c. à s.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "thym",
-     "ref": "thym",
-     "nom": "thym",
-     "qty": 1,
-     "unit": "c. à c.",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    }
-   ],
-   "role": "plat",
-   "format": "piece",
-   "avec": [],
-   "steps": [
-    {
-     "id": "prechauffer",
-     "action": "Préchauffer le four à 200 °C",
-     "minutes": 2,
-     "needs": [
-      "bake"
-     ],
-     "surveille": false,
-     "astuce": null,
-     "uses": [],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "preparer-poulet",
-     "action": "Frotter le poulet d'huile d'olive, le parsemer de thym, le poser dans le plat cuisses vers le haut",
-     "minutes": 3,
-     "needs": [],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "poulet",
-      "huile-olive",
-      "thym"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "legumes-autour",
-     "action": "Pommes de terre en gros quartiers et oignons en demi-lunes, disposés autour du poulet",
-     "minutes": 10,
-     "needs": [],
-     "surveille": true,
-     "astuce": "Autour et pas dessous : ils cuisent dans le gras qui tombe, et sous le poulet ils cuiraient à la vapeur.",
-     "uses": [
-      "pommes-de-terre",
-      "oignon"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "rotir",
-     "action": "Enfourner à 200 °C, arroser du jus à mi-cuisson et remuer les pommes de terre",
-     "minutes": 65,
-     "needs": [
-      "bake"
-     ],
-     "surveille": false,
-     "astuce": "Cuit quand la cuisse se détache et que le jus qui sort est clair. Rose, il faut prolonger — le four ne dessèche pas un poulet arrosé.",
-     "uses": [],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    }
-   ],
-   "bebe": null,
-   "bebePrep": null,
-   "bebeApres": null,
-   "actifMin": null,
-   "accepts": [],
-   "creneaux": [
-    "dejeuner",
-    "diner"
-   ],
-   "transportable": true,
-   "sansReste": null,
-   "emits": [
-    {
-     "type": "poulet-cuit",
-     "kind": "base",
-     "qty": {
-      "amount": 500.0,
-      "unit": "g"
-     },
-     "band": "2-repas",
-     "espace": "congelo",
-     "note": null,
-     "gardeFrigo": 3,
-     "congelo": true,
-     "horsTable": false
-    },
-    {
-     "type": "carcasse-volaille",
-     "kind": "base",
-     "qty": {
-      "amount": 1.0,
-      "unit": "pièce"
-     },
-     "band": "1-repas",
-     "espace": "frigo",
-     "note": null,
-     "gardeFrigo": 2,
-     "congelo": false,
-     "horsTable": true
-    }
-   ],
-   "lotEntier": true,
-   "calibreMax": 1.6,
-   "vaisselle": null,
-   "gainChainage": 0,
-   "cuisinable": true
-  },
-  {
    "id": "fajitas-poulet",
    "titre": "Fajitas au poulet",
    "minutes": 25,
@@ -2138,232 +1928,6 @@
     "id": "cocotte-7.5l",
     "label": "cocotte 7,5 L",
     "facteurMax": 3.0
-   },
-   "gainChainage": 0,
-   "cuisinable": true
-  },
-  {
-   "id": "curry-pois-chiches",
-   "titre": "Curry de pois chiches au lait de coco",
-   "minutes": 30,
-   "minutesSurPlace": 30,
-   "avanceMin": 32,
-   "anticipations": [],
-   "portions": 4,
-   "source": null,
-   "apports": {
-    "proteine": "legumineuse",
-    "feculent": "riz",
-    "legumes": [
-     "solanacee",
-     "allium"
-    ],
-    "profil": "mijote",
-    "origine": "indien"
-   },
-   "ingredients": [
-    {
-     "id": "pois-chiches",
-     "ref": "pois-chiches",
-     "nom": "pois chiches cuits (bocal)",
-     "qty": 500,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "lait-coco",
-     "ref": "lait-coco",
-     "nom": "lait de coco",
-     "qty": 40,
-     "unit": "cl",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "tomates-pelees",
-     "ref": "tomates-pelees",
-     "nom": "tomates pelées en conserve",
-     "qty": 400,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "oignon",
-     "ref": "oignon",
-     "nom": "oignon",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "riz",
-     "ref": "riz",
-     "nom": "riz basmati",
-     "qty": 250,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "curry",
-     "ref": "curry",
-     "nom": "curry doux en poudre",
-     "qty": 2,
-     "unit": "c. à c.",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    }
-   ],
-   "role": "plat",
-   "format": "mijote",
-   "avec": [],
-   "steps": [
-    {
-     "id": "riz",
-     "action": "Mettre le riz à cuire",
-     "minutes": 15,
-     "needs": [
-      "boil"
-     ],
-     "surveille": false,
-     "astuce": "C'est lui qui donne le tempo du reste : tout ce qui suit se cale sur son minuteur.",
-     "uses": [
-      "riz"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "oignon",
-     "action": "Pendant la cuisson du riz : émincer l'oignon et le faire revenir à la sauteuse",
-     "minutes": 6,
-     "needs": [
-      "pan-fry"
-     ],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "oignon"
-     ],
-     "enParallele": "riz",
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "curry",
-     "action": "Ajouter le curry et le laisser griller quelques secondes",
-     "minutes": 2,
-     "needs": [
-      "pan-fry"
-     ],
-     "surveille": true,
-     "astuce": "C'est au contact du gras chaud qu'il libère son parfum, pas dans la sauce — jeté dans les tomates, il reste poudreux.",
-     "uses": [
-      "curry"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "mijoter",
-     "action": "Verser les tomates pelées et le lait de coco, laisser réduire à feu moyen",
-     "minutes": 10,
-     "needs": [
-      "simmer"
-     ],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "tomates-pelees",
-      "lait-coco"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "pois-chiches",
-     "action": "Ajouter les pois chiches égouttés et rincés, les réchauffer dans la sauce",
-     "minutes": 5,
-     "needs": [
-      "simmer"
-     ],
-     "surveille": true,
-     "astuce": "Rincés, vraiment : l'eau de conserve est saumâtre et se sent dans toute la sauce.",
-     "uses": [
-      "pois-chiches"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    }
-   ],
-   "bebe": null,
-   "bebePrep": null,
-   "bebeApres": null,
-   "actifMin": null,
-   "accepts": [],
-   "creneaux": [
-    "dejeuner",
-    "diner"
-   ],
-   "transportable": true,
-   "sansReste": null,
-   "emits": [
-    {
-     "type": "curry-pois-chiches",
-     "kind": "reste-plat",
-     "qty": null,
-     "band": "lunchbox",
-     "espace": "congelo",
-     "note": null,
-     "gardeFrigo": 3,
-     "congelo": true,
-     "horsTable": false
-    }
-   ],
-   "lotEntier": false,
-   "calibreMax": null,
-   "vaisselle": {
-    "id": "sauteuse-28",
-    "label": "sauteuse 28 cm",
-    "facteurMax": 1.5
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -2967,742 +2531,6 @@
     "label": "sauteuse 28 cm",
     "facteurMax": 1.0
    },
-   "gainChainage": 0,
-   "cuisinable": true
-  },
-  {
-   "id": "gratin-courgettes-riz",
-   "titre": "Gratin de courgettes au riz",
-   "minutes": 50,
-   "minutesSurPlace": 50,
-   "avanceMin": 50,
-   "anticipations": [],
-   "portions": 4,
-   "source": null,
-   "apports": {
-    "proteine": "fromage",
-    "feculent": "riz",
-    "legumes": [
-     "cucurbitacee",
-     "allium"
-    ],
-    "profil": "four",
-    "origine": "francais"
-   },
-   "ingredients": [
-    {
-     "id": "courgettes",
-     "ref": "courgettes",
-     "nom": "courgettes",
-     "qty": 3,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "riz",
-     "ref": "riz",
-     "nom": "riz",
-     "qty": 200,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "oeufs",
-     "ref": "oeufs",
-     "nom": "œufs",
-     "qty": 2,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "fromage-rape",
-     "ref": "fromage-rape",
-     "nom": "comté râpé",
-     "qty": 80,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "oignon",
-     "ref": "oignon",
-     "nom": "oignon",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    }
-   ],
-   "role": "plat",
-   "format": "gratin",
-   "avec": [],
-   "steps": [
-    {
-     "id": "riz",
-     "action": "Mettre le riz à cuire, deux minutes de moins que le temps du paquet",
-     "minutes": 15,
-     "needs": [
-      "boil"
-     ],
-     "surveille": false,
-     "astuce": "Il finira de gonfler au four. À temps plein, le gratin sort pâteux.",
-     "uses": [
-      "riz"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "courgettes",
-     "action": "Pendant la cuisson du riz : oignon émincé et courgettes en rondelles, à faire revenir à la sauteuse",
-     "minutes": 12,
-     "needs": [
-      "pan-fry"
-     ],
-     "surveille": true,
-     "astuce": "Jusqu'à ce qu'elles aient rendu leur eau — sinon elle ressort au four et le gratin nage.",
-     "uses": [
-      "courgettes",
-      "oignon"
-     ],
-     "enParallele": "riz",
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "prechauffer",
-     "action": "Préchauffer le four à 200 °C",
-     "minutes": 1,
-     "needs": [
-      "bake"
-     ],
-     "surveille": false,
-     "astuce": null,
-     "uses": [],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "melanger",
-     "action": "Mêler le riz, les courgettes et les œufs battus, verser dans le plat à gratin",
-     "minutes": 5,
-     "needs": [
-      "gratin-vessel"
-     ],
-     "surveille": true,
-     "astuce": "Les œufs dans un mélange TIÈDE, pas brûlant : versés sur le riz sortant de la casserole, ils coagulent en filaments.",
-     "uses": [
-      "oeufs"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "gratiner",
-     "action": "Couvrir de comté râpé et gratiner à 200 °C jusqu'à ce que le dessus prenne couleur",
-     "minutes": 29,
-     "needs": [
-      "gratin"
-     ],
-     "surveille": false,
-     "astuce": null,
-     "uses": [
-      "fromage-rape"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    }
-   ],
-   "bebe": null,
-   "bebePrep": null,
-   "bebeApres": null,
-   "actifMin": null,
-   "accepts": [],
-   "creneaux": [
-    "dejeuner",
-    "diner"
-   ],
-   "transportable": true,
-   "sansReste": null,
-   "emits": [],
-   "lotEntier": false,
-   "calibreMax": null,
-   "vaisselle": {
-    "id": "sauteuse-28",
-    "label": "sauteuse 28 cm",
-    "facteurMax": 1.5
-   },
-   "gainChainage": 0,
-   "cuisinable": true
-  },
-  {
-   "id": "salade-lentilles-feta",
-   "titre": "Salade de lentilles à la feta",
-   "minutes": 15,
-   "minutesSurPlace": 15,
-   "avanceMin": 15,
-   "anticipations": [],
-   "portions": 4,
-   "source": null,
-   "apports": {
-    "proteine": "legumineuse",
-    "feculent": "legumineuse",
-    "legumes": [
-     "allium",
-     "solanacee"
-    ],
-    "profil": "cru",
-    "origine": "francais"
-   },
-   "ingredients": [
-    {
-     "id": "lentilles-cuites",
-     "ref": "lentilles-cuites",
-     "nom": "lentilles vertes cuites",
-     "qty": 400,
-     "unit": "g",
-     "base": true,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "feta",
-     "ref": "feta",
-     "nom": "feta",
-     "qty": 150,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "tomates",
-     "ref": "tomates",
-     "nom": "tomates",
-     "qty": 3,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "oignon-rouge",
-     "ref": "oignon-rouge",
-     "nom": "oignon rouge",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "huile-olive",
-     "ref": "huile-olive",
-     "nom": "huile d'olive",
-     "qty": 3,
-     "unit": "c. à s.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    }
-   ],
-   "role": "plat",
-   "format": "salade",
-   "avec": [],
-   "steps": [
-    {
-     "id": "lentilles",
-     "action": "Sortir les lentilles cuites et les laisser revenir à température",
-     "minutes": 3,
-     "needs": [],
-     "surveille": true,
-     "astuce": "Froides du frigo, elles ne prennent pas l'assaisonnement : le gras fige au lieu de les enrober.",
-     "uses": [
-      "lentilles-cuites"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "tailler",
-     "action": "Tomates en dés, oignon rouge en lamelles fines",
-     "minutes": 7,
-     "needs": [],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "tomates",
-      "oignon-rouge"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "assaisonner",
-     "action": "Mêler le tout à l'huile d'olive, saler, poivrer",
-     "minutes": 3,
-     "needs": [],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "huile-olive"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "feta",
-     "action": "Émietter la feta par-dessus au dernier moment, sans mélanger",
-     "minutes": 2,
-     "needs": [],
-     "surveille": true,
-     "astuce": "Elle sale déjà la salade : l'écraser dedans la sale deux fois.",
-     "uses": [
-      "feta"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    }
-   ],
-   "bebe": null,
-   "bebePrep": null,
-   "bebeApres": null,
-   "actifMin": null,
-   "accepts": [
-    {
-     "type": "lentilles-vertes-cuites",
-     "kind": null,
-     "requis": true,
-     "qty": {
-      "amount": 400.0,
-      "unit": "g"
-     },
-     "delaiMaxH": null,
-     "mere": "lentilles-mijotees"
-    }
-   ],
-   "creneaux": [
-    "dejeuner",
-    "diner"
-   ],
-   "transportable": true,
-   "sansReste": {
-    "minutes": 35,
-    "ingredients": [
-     {
-      "id": "lentilles-seches",
-      "nom": "lentilles vertes sèches",
-      "qty": 200,
-      "unit": "g"
-     }
-    ]
-   },
-   "emits": [],
-   "lotEntier": false,
-   "calibreMax": null,
-   "vaisselle": null,
-   "gainChainage": 20,
-   "cuisinable": true
-  },
-  {
-   "id": "croque-monsieur-salade",
-   "titre": "Croque-monsieur et salade verte",
-   "minutes": 20,
-   "minutesSurPlace": 20,
-   "avanceMin": 20,
-   "anticipations": [],
-   "portions": 4,
-   "source": null,
-   "apports": {
-    "proteine": "fromage",
-    "feculent": "pain",
-    "legumes": [
-     "feuille"
-    ],
-    "profil": "rapide",
-    "origine": "francais"
-   },
-   "ingredients": [
-    {
-     "id": "pain-de-mie",
-     "ref": "pain-de-mie",
-     "nom": "pain de mie",
-     "qty": 8,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "jambon",
-     "ref": "jambon",
-     "nom": "jambon blanc",
-     "qty": 4,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "fromage-rape",
-     "ref": "fromage-rape",
-     "nom": "comté râpé",
-     "qty": 100,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "salade-verte",
-     "ref": "salade-verte",
-     "nom": "salade verte",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    }
-   ],
-   "role": "plat",
-   "format": "tartine",
-   "avec": [],
-   "steps": [
-    {
-     "id": "prechauffer",
-     "action": "Préchauffer le four à 200 °C",
-     "minutes": 2,
-     "needs": [
-      "bake"
-     ],
-     "surveille": false,
-     "astuce": null,
-     "uses": [],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "monter",
-     "action": "Monter les croques : une tranche, le jambon, le comté râpé, la seconde tranche, et encore un peu de fromage dessus",
-     "minutes": 8,
-     "needs": [],
-     "surveille": true,
-     "astuce": "C'est le fromage du dessus qui fait la croûte — celui de l'intérieur ne fait que filer.",
-     "uses": [
-      "pain-de-mie",
-      "jambon",
-      "fromage-rape"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "cuire",
-     "action": "Enfourner jusqu'à ce que le dessus soit doré et que le fromage file",
-     "minutes": 10,
-     "needs": [
-      "bake"
-     ],
-     "surveille": false,
-     "astuce": null,
-     "uses": [],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "salade",
-     "action": "Pendant la cuisson : laver la salade et l'assaisonner",
-     "minutes": 5,
-     "needs": [],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "salade-verte"
-     ],
-     "enParallele": "cuire",
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    }
-   ],
-   "bebe": null,
-   "bebePrep": null,
-   "bebeApres": null,
-   "actifMin": null,
-   "accepts": [],
-   "creneaux": [
-    "dejeuner",
-    "diner"
-   ],
-   "transportable": true,
-   "sansReste": null,
-   "emits": [],
-   "lotEntier": false,
-   "calibreMax": null,
-   "vaisselle": null,
-   "gainChainage": 0,
-   "cuisinable": true
-  },
-  {
-   "id": "tarte-tomates-moutarde",
-   "titre": "Tarte tomates-moutarde",
-   "minutes": 45,
-   "minutesSurPlace": 45,
-   "avanceMin": 45,
-   "anticipations": [],
-   "portions": 4,
-   "source": null,
-   "apports": {
-    "proteine": "fromage",
-    "feculent": "pate-brisee",
-    "legumes": [
-     "solanacee"
-    ],
-    "profil": "four",
-    "origine": "francais"
-   },
-   "ingredients": [
-    {
-     "id": "pate-brisee",
-     "ref": "pate-brisee",
-     "nom": "pâte brisée",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "tomates",
-     "ref": "tomates",
-     "nom": "tomates",
-     "qty": 5,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "moutarde",
-     "ref": "moutarde",
-     "nom": "moutarde",
-     "qty": 2,
-     "unit": "c. à s.",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    },
-    {
-     "id": "fromage-rape",
-     "ref": "fromage-rape",
-     "nom": "comté râpé",
-     "qty": 80,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    }
-   ],
-   "role": "plat",
-   "format": "quiche",
-   "avec": [],
-   "steps": [
-    {
-     "id": "prechauffer",
-     "action": "Préchauffer le four à 200 °C",
-     "minutes": 1,
-     "needs": [
-      "bake"
-     ],
-     "surveille": false,
-     "astuce": null,
-     "uses": [],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "foncer",
-     "action": "Foncer le moule avec la pâte brisée et la piquer à la fourchette",
-     "minutes": 3,
-     "needs": [],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "pate-brisee"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "moutarde",
-     "action": "Étaler la moutarde au fond de la pâte, en couche fine",
-     "minutes": 2,
-     "needs": [],
-     "surveille": true,
-     "astuce": "C'est elle qui tient l'eau des tomates à distance de la pâte.",
-     "uses": [
-      "moutarde"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "tomates",
-     "action": "Tomates en rondelles, rangées en rosace sans se superposer",
-     "minutes": 7,
-     "needs": [],
-     "surveille": true,
-     "astuce": "Superposées, elles cuisent à la vapeur au lieu de sécher.",
-     "uses": [
-      "tomates"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "cuire",
-     "action": "Couvrir de comté râpé et enfourner à 200 °C jusqu'à ce que les bords de la pâte soient dorés",
-     "minutes": 32,
-     "needs": [
-      "bake"
-     ],
-     "surveille": false,
-     "astuce": null,
-     "uses": [
-      "fromage-rape"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    }
-   ],
-   "bebe": null,
-   "bebePrep": null,
-   "bebeApres": null,
-   "actifMin": null,
-   "accepts": [],
-   "creneaux": [
-    "dejeuner",
-    "diner"
-   ],
-   "transportable": true,
-   "sansReste": null,
-   "emits": [],
-   "lotEntier": false,
-   "calibreMax": null,
-   "vaisselle": null,
    "gainChainage": 0,
    "cuisinable": true
   },
@@ -10566,7 +9394,7 @@
       "unit": "pièce"
      },
      "delaiMaxH": null,
-     "mere": "poulet-roti"
+     "mere": "poulet-roti-du-dimanche"
     }
    ],
    "creneaux": [
@@ -15521,7 +14349,7 @@
       "unit": "g"
      },
      "delaiMaxH": null,
-     "mere": "lentilles-mijotees"
+     "mere": "mitonnee-lentilles"
     }
    ],
    "creneaux": [
@@ -21947,364 +20775,6 @@
    "cuisinable": true
   },
   {
-   "id": "chili-haricots-rouges",
-   "titre": "Chili de haricots rouges au riz",
-   "minutes": 80,
-   "minutesSurPlace": 78,
-   "avanceMin": 799,
-   "anticipations": [
-    {
-     "gestes": [
-      "tremper"
-     ],
-     "minutes": 2,
-     "attente": 720,
-     "avantMin": 799,
-     "raison": "trempage d'une nuit, à lancer la veille au soir"
-    }
-   ],
-   "portions": 5,
-   "source": null,
-   "apports": {
-    "proteine": "legumineuse",
-    "feculent": "riz",
-    "legumes": [
-     "solanacee",
-     "racine",
-     "allium"
-    ],
-    "profil": "mijote",
-    "origine": "mexicain"
-   },
-   "ingredients": [
-    {
-     "id": "haricots-rouges",
-     "ref": "haricots-rouges",
-     "nom": "haricots rouges secs",
-     "qty": 300,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "tomates-pelees",
-     "ref": "tomates-pelees",
-     "nom": "tomates pelées en conserve",
-     "qty": 800,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "concentre-tomate",
-     "ref": "concentre-tomate",
-     "nom": "concentré de tomate",
-     "qty": 1,
-     "unit": "c. à s.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "oignon",
-     "ref": "oignon",
-     "nom": "oignon",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "ail",
-     "ref": "ail",
-     "nom": "ail",
-     "qty": 2,
-     "unit": "gousse",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "carottes",
-     "ref": "carottes",
-     "nom": "carottes",
-     "qty": 2,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "mais",
-     "ref": "mais",
-     "nom": "maïs en conserve",
-     "qty": 140,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "cumin",
-     "ref": "cumin",
-     "nom": "cumin",
-     "qty": 2,
-     "unit": "c. à c.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "paprika",
-     "ref": "paprika",
-     "nom": "paprika doux",
-     "qty": 1,
-     "unit": "c. à c.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "huile-olive",
-     "ref": "huile-olive",
-     "nom": "huile d'olive",
-     "qty": 2,
-     "unit": "c. à s.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "riz",
-     "ref": "riz",
-     "nom": "riz",
-     "qty": 250,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "sel",
-     "ref": "sel",
-     "nom": "sel",
-     "qty": 1,
-     "unit": "c. à c.",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    }
-   ],
-   "role": "plat",
-   "format": "mijote",
-   "avec": [],
-   "steps": [
-    {
-     "id": "tremper",
-     "action": "Couvrir les haricots rouges de trois fois leur volume d'eau froide",
-     "minutes": 2,
-     "needs": [],
-     "surveille": false,
-     "astuce": null,
-     "uses": [
-      "haricots-rouges"
-     ],
-     "enParallele": null,
-     "attente": 720,
-     "attenteRaison": "trempage d'une nuit, à lancer la veille au soir",
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": "verser les haricots dans le saladier d'eau",
-     "enfantDes": 24,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "bouillir",
-     "action": "Égoutter, couvrir d'eau fraîche, porter à gros bouillons et les y tenir 10 minutes",
-     "minutes": 15,
-     "needs": [
-      "simmer-large"
-     ],
-     "surveille": true,
-     "astuce": "Non négociable : seule une vraie ébullition rend les haricots rouges sans danger. Un frémissement n'y suffit pas.",
-     "uses": [],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "cuire",
-     "action": "Baisser le feu et cuire à frémissement, à couvert, jusqu'à ce qu'ils s'écrasent sous la langue",
-     "minutes": 50,
-     "needs": [
-      "simmer-large"
-     ],
-     "surveille": false,
-     "astuce": "Sans sel dans l'eau : on sale le chili à la fin.",
-     "uses": [],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "tailler",
-     "action": "Pendant ce temps : oignon, ail et carottes en petits dés",
-     "minutes": 8,
-     "needs": [
-      "chop-coarse"
-     ],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "oignon",
-      "ail",
-      "carottes"
-     ],
-     "enParallele": "cuire",
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "sauce",
-     "action": "À la sauteuse, faire revenir les dés à l'huile avec le cumin et le paprika, puis ajouter tomates et concentré",
-     "minutes": 25,
-     "needs": [
-      "pan-fry",
-      "simmer"
-     ],
-     "surveille": false,
-     "astuce": "À découvert : la sauce doit compoter et épaissir pendant que les haricots finissent.",
-     "uses": [
-      "huile-olive",
-      "cumin",
-      "paprika",
-      "tomates-pelees",
-      "concentre-tomate"
-     ],
-     "enParallele": "cuire",
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "riz",
-     "action": "Cuire le riz",
-     "minutes": 15,
-     "needs": [
-      "boil"
-     ],
-     "surveille": false,
-     "astuce": null,
-     "uses": [
-      "riz"
-     ],
-     "enParallele": "cuire",
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "assembler",
-     "action": "Égoutter les haricots, les verser dans la sauce avec le maïs, et laisser 10 minutes à petit feu",
-     "minutes": 10,
-     "needs": [
-      "simmer"
-     ],
-     "surveille": false,
-     "astuce": null,
-     "uses": [
-      "mais"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "saler",
-     "action": "Goûter et saler",
-     "minutes": 2,
-     "needs": [],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "sel"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": true
-    }
-   ],
-   "bebe": "2 c. à s. de chili, avant salage",
-   "bebePrep": "écraser finement : la peau des haricots passe mal à cet âge",
-   "bebeApres": "assembler",
-   "actifMin": 22,
-   "accepts": [],
-   "creneaux": [
-    "dejeuner",
-    "diner"
-   ],
-   "transportable": true,
-   "sansReste": null,
-   "emits": [
-    {
-     "type": "chili-haricots-rouges",
-     "kind": "reste-plat",
-     "qty": null,
-     "band": "1-repas",
-     "espace": "congelo",
-     "note": "meilleur le lendemain ; deux boîtes de 0,8 L",
-     "gardeFrigo": 3,
-     "congelo": true,
-     "horsTable": false
-    }
-   ],
-   "lotEntier": false,
-   "calibreMax": null,
-   "vaisselle": {
-    "id": "sauteuse-28",
-    "label": "sauteuse 28 cm",
-    "facteurMax": 1.2
-   },
-   "gainChainage": 0,
-   "cuisinable": true
-  },
-  {
    "id": "chips-sarrasin",
    "titre": "Chips de sarrasin",
    "minutes": 15,
@@ -24231,7 +22701,7 @@
       "unit": "pièce"
      },
      "delaiMaxH": null,
-     "mere": "poulet-roti"
+     "mere": "poulet-roti-du-dimanche"
     },
     {
      "type": "poulet-cuit",
@@ -25836,232 +24306,6 @@
      "note": null,
      "gardeFrigo": 10,
      "congelo": false,
-     "horsTable": false
-    }
-   ],
-   "lotEntier": true,
-   "calibreMax": null,
-   "vaisselle": null,
-   "gainChainage": 0,
-   "cuisinable": true
-  },
-  {
-   "id": "cookies-avoine-maison",
-   "titre": "Cookies à l'avoine",
-   "minutes": 35,
-   "minutesSurPlace": 35,
-   "avanceMin": 29,
-   "anticipations": [],
-   "portions": 5,
-   "source": null,
-   "apports": {
-    "proteine": "oeuf",
-    "feculent": "cereale",
-    "legumes": [],
-    "profil": "four",
-    "origine": "francais"
-   },
-   "ingredients": [
-    {
-     "id": "flocons-avoine",
-     "ref": "flocons-avoine",
-     "nom": "petits flocons d'avoine",
-     "qty": 150,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "farine-complete",
-     "ref": "farine-complete",
-     "nom": "farine semi-complète (T80)",
-     "qty": 80,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "beurre",
-     "ref": "beurre",
-     "nom": "beurre mou",
-     "qty": 70,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "sucre-complet",
-     "ref": "sucre-complet",
-     "nom": "sucre complet",
-     "qty": 50,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "oeufs",
-     "ref": "oeufs",
-     "nom": "œuf",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "poudre-a-lever",
-     "ref": "poudre-a-lever",
-     "nom": "levure chimique",
-     "qty": 0.5,
-     "unit": "sachet",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    }
-   ],
-   "role": "plat",
-   "format": "cake",
-   "avec": [],
-   "steps": [
-    {
-     "id": "prechauffer",
-     "action": "Préchauffer le four à 180 °C",
-     "minutes": 1,
-     "needs": [
-      "bake"
-     ],
-     "surveille": false,
-     "astuce": null,
-     "uses": [],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "cremer",
-     "action": "Mélanger le beurre mou et le sucre, puis l'œuf",
-     "minutes": 4,
-     "needs": [],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "beurre",
-      "sucre-complet",
-      "oeufs"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "melanger",
-     "action": "Ajouter les flocons, la farine et la levure, et mélanger sans trop travailler",
-     "minutes": 3,
-     "needs": [],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "flocons-avoine",
-      "farine-complete",
-      "poudre-a-lever"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": "verser les flocons et mélanger à la cuillère",
-     "enfantDes": 30,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "former",
-     "action": "Former vingt petits tas sur une plaque, les aplatir du dos d'une cuillère",
-     "minutes": 6,
-     "needs": [],
-     "surveille": true,
-     "astuce": null,
-     "uses": [],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "cuire",
-     "action": "Cuire 12 minutes : ils durcissent en refroidissant",
-     "minutes": 12,
-     "needs": [
-      "bake"
-     ],
-     "surveille": false,
-     "astuce": null,
-     "uses": [],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "ranger",
-     "action": "Refroidir sur grille, puis congeler par quatre en sachet",
-     "minutes": 3,
-     "needs": [],
-     "surveille": true,
-     "astuce": null,
-     "uses": [],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    }
-   ],
-   "bebe": null,
-   "bebePrep": null,
-   "bebeApres": null,
-   "actifMin": 15,
-   "accepts": [],
-   "creneaux": [
-    "gouter"
-   ],
-   "transportable": true,
-   "sansReste": null,
-   "emits": [
-    {
-     "type": "cookies-avoine",
-     "kind": "reste-plat",
-     "qty": null,
-     "band": "3-repas",
-     "espace": "congelo",
-     "note": "quatre cookies par sachet : un goûter pour les deux enfants",
-     "gardeFrigo": 7,
-     "congelo": true,
      "horsTable": false
     }
    ],
@@ -30606,6 +28850,159 @@
    "cuisinable": true
   },
   {
+   "id": "creme-mousse-chocolat-tofu-soyeux",
+   "titre": "Crème-mousse au chocolat et tofu soyeux",
+   "minutes": 130,
+   "minutesSurPlace": 119,
+   "avanceMin": 131,
+   "anticipations": [
+    {
+     "gestes": [
+      "fondre",
+      "mixer"
+     ],
+     "minutes": 11,
+     "attente": 120,
+     "avantMin": 131,
+     "raison": "au frais avant de servir"
+    }
+   ],
+   "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "« Petite anthologie gourmande (et légère) de la mousse au chocolat bio », blog Saines Gourmandises, 12 juillet 2011",
+    "url": "https://saines-gourmandises.fr/petite-anthologie-gourmande-et-legere-de-la-mousse-au-chocolat-bio/",
+    "saison": null
+   },
+   "apports": {
+    "proteine": "tofu-soja",
+    "feculent": "aucun",
+    "legumes": [],
+    "profil": "cru",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "lait-soja-vanille",
+     "ref": "lait-soja-vanille",
+     "nom": "lait de soja (vanille, c'est encore meilleur)",
+     "qty": 10,
+     "unit": "cl",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "chocolat-noir",
+     "ref": "chocolat-noir",
+     "nom": "chocolat noir 70 à 85 %",
+     "qty": 100,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sirop-agave",
+     "ref": "sirop-agave",
+     "nom": "sirop d'agave",
+     "qty": 3,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "tofu-soyeux",
+     "ref": "tofu-soyeux",
+     "nom": "tofu soyeux",
+     "qty": 400,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": null,
+   "avec": [],
+   "steps": [
+    {
+     "id": "fondre",
+     "action": "Fondre le chocolat dans le lait de soja avec l'agave, dans une petite casserole",
+     "minutes": 6,
+     "needs": [
+      "simmer"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "lait-soja-vanille",
+      "chocolat-noir",
+      "sirop-agave"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "mixer",
+     "action": "Mixer quelques minutes le chocolat chaud avec le tofu soyeux jusqu'à une crème mousseuse, et verser en pots",
+     "minutes": 5,
+     "needs": [
+      "blend-smooth"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "tofu-soyeux"
+     ],
+     "enParallele": null,
+     "attente": 120,
+     "attenteRaison": "au frais avant de servir",
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 10,
+   "accepts": [],
+   "creneaux": [
+    "gouter",
+    "dessert"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [
+    {
+     "type": "creme-mousse-chocolat-tofu-soyeux",
+     "kind": "reste-plat",
+     "qty": null,
+     "band": "2-repas",
+     "espace": "frigo",
+     "note": null,
+     "gardeFrigo": 3,
+     "congelo": false,
+     "horsTable": false
+    }
+   ],
+   "lotEntier": true,
+   "calibreMax": null,
+   "vaisselle": null,
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
    "id": "creme-potiron-beaufort-lard",
    "titre": "Crème de potiron au beaufort et lard fumé",
    "minutes": 45,
@@ -31995,189 +30392,6 @@
    "lotEntier": false,
    "calibreMax": null,
    "vaisselle": null,
-   "gainChainage": 0,
-   "cuisinable": true
-  },
-  {
-   "id": "crepes-maison",
-   "titre": "Crêpes semi-complètes",
-   "minutes": 75,
-   "minutesSurPlace": 75,
-   "avanceMin": 72,
-   "anticipations": [],
-   "portions": 4,
-   "source": null,
-   "apports": {
-    "proteine": "oeuf",
-    "feculent": "farine",
-    "legumes": [],
-    "profil": "poele",
-    "origine": "francais"
-   },
-   "ingredients": [
-    {
-     "id": "farine-complete",
-     "ref": "farine-complete",
-     "nom": "farine semi-complète (T80)",
-     "qty": 250,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "oeufs",
-     "ref": "oeufs",
-     "nom": "œufs",
-     "qty": 3,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "lait",
-     "ref": "lait",
-     "nom": "lait",
-     "qty": 500,
-     "unit": "ml",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "beurre",
-     "ref": "beurre",
-     "nom": "beurre fondu",
-     "qty": 30,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "sel",
-     "ref": "sel",
-     "nom": "sel",
-     "qty": 1,
-     "unit": "pincée",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    }
-   ],
-   "role": "plat",
-   "format": "cake",
-   "avec": [],
-   "steps": [
-    {
-     "id": "pate",
-     "action": "Fouetter la farine, les œufs et le sel, puis délayer peu à peu avec le lait et le beurre fondu",
-     "minutes": 8,
-     "needs": [],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "farine-complete",
-      "oeufs",
-      "lait",
-      "beurre",
-      "sel"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": "verser le lait petit à petit pendant qu'un adulte fouette",
-     "enfantDes": 30,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "reposer",
-     "action": "Laisser reposer la pâte",
-     "minutes": 30,
-     "needs": [],
-     "surveille": false,
-     "astuce": null,
-     "uses": [],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "cuire",
-     "action": "Cuire les crêpes une à une à la poêle chaude légèrement beurrée",
-     "minutes": 30,
-     "needs": [
-      "pan-fry"
-     ],
-     "surveille": true,
-     "astuce": null,
-     "uses": [],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "ranger",
-     "action": "Empiler en intercalant du papier cuisson, et congeler par quatre en sachet",
-     "minutes": 4,
-     "needs": [],
-     "surveille": true,
-     "astuce": null,
-     "uses": [],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    }
-   ],
-   "bebe": null,
-   "bebePrep": null,
-   "bebeApres": null,
-   "actifMin": 30,
-   "accepts": [],
-   "creneaux": [
-    "gouter",
-    "petit-dejeuner"
-   ],
-   "transportable": true,
-   "sansReste": null,
-   "emits": [
-    {
-     "type": "crepes-maison",
-     "kind": "reste-plat",
-     "qty": null,
-     "band": "3-repas",
-     "espace": "congelo",
-     "note": "quatre crêpes par sachet ; une minute à la poêle, sans décongeler",
-     "gardeFrigo": 2,
-     "congelo": true,
-     "horsTable": false
-    }
-   ],
-   "lotEntier": true,
-   "calibreMax": null,
-   "vaisselle": {
-    "id": "sauteuse-28",
-    "label": "sauteuse 28 cm",
-    "facteurMax": 1.5
-   },
    "gainChainage": 0,
    "cuisinable": true
   },
@@ -37230,326 +35444,6 @@
    "cuisinable": true
   },
   {
-   "id": "dahl-lentilles-corail",
-   "titre": "Dahl de lentilles corail, coco et épinards",
-   "minutes": 40,
-   "minutesSurPlace": 40,
-   "avanceMin": 37,
-   "anticipations": [],
-   "portions": 5,
-   "source": null,
-   "apports": {
-    "proteine": "legumineuse",
-    "feculent": "riz",
-    "legumes": [
-     "feuille",
-     "solanacee",
-     "allium"
-    ],
-    "profil": "mijote",
-    "origine": "indien"
-   },
-   "ingredients": [
-    {
-     "id": "lentilles-corail",
-     "ref": "lentilles-corail",
-     "nom": "lentilles corail",
-     "qty": 300,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "tomates-pelees",
-     "ref": "tomates-pelees",
-     "nom": "tomates pelées en conserve",
-     "qty": 400,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "lait-coco",
-     "ref": "lait-coco",
-     "nom": "lait de coco",
-     "qty": 400,
-     "unit": "ml",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "epinards-surgeles",
-     "ref": "epinards-surgeles",
-     "nom": "épinards hachés surgelés",
-     "qty": 300,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "oignon",
-     "ref": "oignon",
-     "nom": "oignon",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "ail",
-     "ref": "ail",
-     "nom": "ail",
-     "qty": 2,
-     "unit": "gousse",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "curry",
-     "ref": "curry",
-     "nom": "curry doux",
-     "qty": 2,
-     "unit": "c. à c.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "curcuma",
-     "ref": "curcuma",
-     "nom": "curcuma",
-     "qty": 1,
-     "unit": "c. à c.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "cumin",
-     "ref": "cumin",
-     "nom": "cumin",
-     "qty": 1,
-     "unit": "c. à c.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "huile-olive",
-     "ref": "huile-olive",
-     "nom": "huile d'olive",
-     "qty": 2,
-     "unit": "c. à s.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "eau",
-     "ref": "eau",
-     "nom": "eau",
-     "qty": 0.8,
-     "unit": "l",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "riz",
-     "ref": "riz",
-     "nom": "riz",
-     "qty": 250,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "sel",
-     "ref": "sel",
-     "nom": "sel",
-     "qty": 1,
-     "unit": "c. à c.",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    }
-   ],
-   "role": "plat",
-   "format": "mijote",
-   "avec": [],
-   "steps": [
-    {
-     "id": "rincer",
-     "action": "Rincer les lentilles corail dans une passoire, jusqu'à ce que l'eau coule claire",
-     "minutes": 2,
-     "needs": [],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "lentilles-corail"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": "remuer les lentilles sous l'eau froide, dans la passoire",
-     "enfantDes": 30,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "suer",
-     "action": "Émincer l'oignon et l'ail, les faire fondre à l'huile dans la cocotte avec les épices",
-     "minutes": 6,
-     "needs": [
-      "simmer-large"
-     ],
-     "surveille": true,
-     "astuce": "Une minute d'épices dans le gras chaud suffit à libérer leur parfum ; au-delà, elles brûlent.",
-     "uses": [
-      "oignon",
-      "ail",
-      "huile-olive",
-      "curry",
-      "curcuma",
-      "cumin"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "mijoter",
-     "action": "Ajouter les lentilles, les tomates écrasées et l'eau, puis laisser mijoter à couvert en remuant de temps en temps",
-     "minutes": 20,
-     "needs": [
-      "simmer-large"
-     ],
-     "surveille": false,
-     "astuce": "Elles se défont en vingt minutes, et c'est voulu : c'est ce qui épaissit le dahl.",
-     "uses": [
-      "tomates-pelees",
-      "eau"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "riz",
-     "action": "Pendant ce temps, cuire le riz",
-     "minutes": 15,
-     "needs": [
-      "boil"
-     ],
-     "surveille": false,
-     "astuce": null,
-     "uses": [
-      "riz"
-     ],
-     "enParallele": "mijoter",
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "epinards",
-     "action": "Ajouter les épinards surgelés et le lait de coco, laisser reprendre le frémissement",
-     "minutes": 8,
-     "needs": [
-      "simmer-large"
-     ],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "epinards-surgeles",
-      "lait-coco"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "saler",
-     "action": "Goûter et saler",
-     "minutes": 1,
-     "needs": [],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "sel"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": true
-    }
-   ],
-   "bebe": "3 c. à s. de dahl, avant salage",
-   "bebePrep": "tel quel, détendu d'un peu d'eau s'il a épaissi — le curry doux convient, sans piment",
-   "bebeApres": "epinards",
-   "actifMin": 12,
-   "accepts": [],
-   "creneaux": [
-    "dejeuner",
-    "diner"
-   ],
-   "transportable": true,
-   "sansReste": null,
-   "emits": [
-    {
-     "type": "dahl-lentilles-corail",
-     "kind": "reste-plat",
-     "qty": null,
-     "band": "1-repas",
-     "espace": "congelo",
-     "note": "le reste remplit deux boîtes de 0,8 L ; le riz se recuit à part",
-     "gardeFrigo": 3,
-     "congelo": true,
-     "horsTable": false
-    }
-   ],
-   "lotEntier": false,
-   "calibreMax": null,
-   "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 2.4
-   },
-   "gainChainage": 0,
-   "cuisinable": true
-  },
-  {
    "id": "dahl-riz-lentilles-corail-carottes",
    "titre": "Dahl de riz et lentilles corail aux carottes",
    "minutes": 30,
@@ -37582,7 +35476,19 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1.0
+      },
+      {
+       "id": "beurre",
+       "nom": "beurre",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -37642,7 +35548,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "gingembre-poudre",
+       "nom": "gingembre en poudre (une demi-cuillerée à café)",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "curcuma",
@@ -44569,6 +42482,233 @@
    "cuisinable": true
   },
   {
+   "id": "fondant-noel-chocolat-orange-speculoos",
+   "titre": "Fondant de Noël au chocolat, orange et épices à spéculoos",
+   "minutes": 25,
+   "minutesSurPlace": 0,
+   "avanceMin": 628,
+   "anticipations": [
+    {
+     "gestes": [
+      "fondre",
+      "pate",
+      "cuire"
+     ],
+     "minutes": 28,
+     "attente": 600,
+     "avantMin": 628,
+     "raison": "au frais jusqu'au lendemain"
+    }
+   ],
+   "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "« Fondant de Noël au chocolat, orange et épices à spéculoos », blog Saines Gourmandises, 4 décembre 2012",
+    "url": "https://saines-gourmandises.fr/dapres-une-recette-a-ig-bas-damandine-et-olivier/",
+    "saison": null
+   },
+   "apports": {
+    "proteine": "oeuf",
+    "feculent": "aucun",
+    "legumes": [],
+    "profil": "four",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "chocolat-noir",
+     "ref": "chocolat-noir",
+     "nom": "chocolat noir 70 %",
+     "qty": 200,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sirop-agave",
+     "ref": "sirop-agave",
+     "nom": "sirop d'agave",
+     "qty": 3,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "eau",
+     "ref": "eau",
+     "nom": "soupçon d'eau",
+     "qty": 1,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "puree-amande-blanche",
+     "ref": "puree-amande-blanche",
+     "nom": "purée d'amande",
+     "qty": 2,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "farine-complete",
+     "ref": "farine-complete",
+     "nom": "farine de blé complète (ou de kamut)",
+     "qty": 3,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "yaourt-soja",
+     "ref": "yaourt-soja",
+     "nom": "yaourt de soja (ou de brebis)",
+     "qty": 1,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "oeufs",
+     "ref": "oeufs",
+     "nom": "œufs (6 dans la recette initiale)",
+     "qty": 5,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "epices-pain-epices",
+     "ref": "epices-pain-epices",
+     "nom": "épices pour spéculoos",
+     "qty": 1,
+     "unit": "c. à moka",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "huile-essentielle-orange",
+     "ref": "huile-essentielle-orange",
+     "nom": "gouttes d'huile essentielle d'orange douce",
+     "qty": 7,
+     "unit": "goutte",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": null,
+   "avec": [],
+   "steps": [
+    {
+     "id": "fondre",
+     "action": "Préchauffer à 180 °C ; fondre très doucement le chocolat avec l'agave et un soupçon d'eau",
+     "minutes": 6,
+     "needs": [
+      "simmer"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "chocolat-noir",
+      "sirop-agave",
+      "eau"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "pate",
+     "action": "Monter les blancs en neige ; hors du feu, mêler au chocolat les jaunes, la purée d'amande, le yaourt, les épices et l'orange, puis verser sur les blancs",
+     "minutes": 8,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "oeufs",
+      "puree-amande-blanche",
+      "yaourt-soja",
+      "epices-pain-epices",
+      "huile-essentielle-orange"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cuire",
+     "action": "Incorporer délicatement la farine, verser dans un petit moule et cuire 10 à 12 min",
+     "minutes": 14,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [
+      "farine-complete"
+     ],
+     "enParallele": null,
+     "attente": 600,
+     "attenteRaison": "au frais jusqu'au lendemain",
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 12,
+   "accepts": [],
+   "creneaux": [
+    "gouter",
+    "dessert"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [
+    {
+     "type": "fondant-noel-chocolat-orange-speculoos",
+     "kind": "reste-plat",
+     "qty": null,
+     "band": "2-repas",
+     "espace": "frigo",
+     "note": null,
+     "gardeFrigo": 3,
+     "congelo": false,
+     "horsTable": false
+    }
+   ],
+   "lotEntier": true,
+   "calibreMax": null,
+   "vaisselle": null,
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
    "id": "fondant-potimarron-chocolat-rennes",
    "titre": "Fondant au (poti)marron façon « rennes de Noël »",
    "minutes": 40,
@@ -45882,238 +44022,6 @@
    "cuisinable": true
   },
   {
-   "id": "frittata-petits-pois-cebettes",
-   "titre": "Frittata aux petits pois et aux cébettes",
-   "minutes": 35,
-   "minutesSurPlace": 35,
-   "avanceMin": 34,
-   "anticipations": [],
-   "portions": 4,
-   "source": null,
-   "apports": {
-    "proteine": "oeuf",
-    "feculent": "pommes-de-terre",
-    "legumes": [
-     "allium",
-     "legumineuse"
-    ],
-    "profil": "poele",
-    "origine": "italien"
-   },
-   "ingredients": [
-    {
-     "id": "pomme-de-terre",
-     "ref": "pomme-de-terre",
-     "nom": "pommes de terre",
-     "qty": 2,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "cebette",
-     "ref": "cebette",
-     "nom": "cébettes",
-     "qty": 1,
-     "unit": "botte",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "petits-pois-surgeles",
-     "ref": "petits-pois-surgeles",
-     "nom": "petits pois surgelés",
-     "qty": 200,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false,
-     "remplacants": [
-      {
-       "id": "petits-pois",
-       "nom": "petits pois frais",
-       "ratio": 1
-      }
-     ]
-    },
-    {
-     "id": "huile-olive",
-     "ref": "huile-olive",
-     "nom": "huile d'olive",
-     "qty": 2,
-     "unit": "c. à s.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "oeufs",
-     "ref": "oeufs",
-     "nom": "œufs",
-     "qty": 6,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "fromage-rape",
-     "ref": "fromage-rape",
-     "nom": "fromage râpé",
-     "qty": 40,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "sel",
-     "ref": "sel",
-     "nom": "sel",
-     "qty": 1,
-     "unit": "pincée",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    },
-    {
-     "id": "poivre",
-     "ref": "poivre",
-     "nom": "poivre",
-     "qty": 1,
-     "unit": "pincée",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    }
-   ],
-   "role": "plat",
-   "format": "omelette",
-   "avec": [],
-   "steps": [
-    {
-     "id": "tailler",
-     "action": "Pommes de terre en fines lamelles, cébettes émincées avec leur vert",
-     "minutes": 6,
-     "needs": [
-      "chop-coarse"
-     ],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "pomme-de-terre",
-      "cebette"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "cuire",
-     "action": "Cuire les pommes de terre à l'huile, à couvert, puis ajouter petits pois et cébettes pour 3 minutes",
-     "minutes": 15,
-     "needs": [
-      "pan-fry"
-     ],
-     "surveille": false,
-     "astuce": null,
-     "uses": [
-      "huile-olive",
-      "petits-pois-surgeles"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "battre",
-     "action": "Battre les œufs avec le fromage, saler et poivrer",
-     "minutes": 3,
-     "needs": [],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "oeufs",
-      "fromage-rape",
-      "sel",
-      "poivre"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": "battre les œufs à la fourchette",
-     "enfantDes": 30,
-     "porteAssaisonnement": true
-    },
-    {
-     "id": "prendre",
-     "action": "Verser les œufs sur les légumes, couvrir et laisser prendre à feu doux",
-     "minutes": 10,
-     "needs": [
-      "pan-fry"
-     ],
-     "surveille": false,
-     "astuce": "Feu doux et couvercle : le dessus prend à la vapeur, sans retourner.",
-     "uses": [],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    }
-   ],
-   "bebe": "quelques lamelles de pomme de terre et des petits pois, avant les œufs salés",
-   "bebePrep": "écraser à la fourchette",
-   "bebeApres": "cuire",
-   "actifMin": 15,
-   "accepts": [],
-   "creneaux": [
-    "dejeuner",
-    "diner"
-   ],
-   "transportable": true,
-   "sansReste": null,
-   "emits": [
-    {
-     "type": "frittata",
-     "kind": "reste-plat",
-     "qty": null,
-     "band": "lunchbox",
-     "espace": "frigo",
-     "note": "se mange froide, en part, dans une boîte",
-     "gardeFrigo": 2,
-     "congelo": false,
-     "horsTable": false
-    }
-   ],
-   "lotEntier": false,
-   "calibreMax": null,
-   "vaisselle": {
-    "id": "sauteuse-28",
-    "label": "sauteuse 28 cm",
-    "facteurMax": 1.5
-   },
-   "gainChainage": 0,
-   "cuisinable": true
-  },
-  {
    "id": "frittata-vegetarienne",
    "titre": "Frittata végétarienne",
    "minutes": 15,
@@ -46165,7 +44073,19 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "fromage-rape",
+       "nom": "fromage râpé",
+       "ratio": 1.0
+      },
+      {
+       "id": "parmesan",
+       "nom": "parmesan",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "sel",
@@ -52664,6 +50584,324 @@
    "cuisinable": true
   },
   {
+   "id": "gateau-paques-citron-pomelo",
+   "titre": "Gâteau de Pâques au citron et au pomelo",
+   "minutes": 180,
+   "minutesSurPlace": 124,
+   "avanceMin": 176,
+   "anticipations": [
+    {
+     "gestes": [
+      "genoise",
+      "cuire",
+      "curd",
+      "mixer",
+      "monter"
+     ],
+     "minutes": 56,
+     "attente": 120,
+     "avantMin": 176,
+     "raison": "au moins 2 h au frais, au mieux une nuit"
+    }
+   ],
+   "portions": 8,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "« Le gâteau de Pâques au citron Rocca et pomelo de Corse », blog Saines Gourmandises, 1er avril 2026",
+    "url": "https://saines-gourmandises.fr/le-gateau-de-paques-au-citron-rocca-et-pomelo-de-corse/",
+    "saison": null
+   },
+   "apports": {
+    "proteine": "oeuf",
+    "feculent": "farine",
+    "legumes": [],
+    "profil": "four",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "oeufs",
+     "ref": "oeufs",
+     "nom": "œufs (3 + 2 jaunes)",
+     "qty": 5,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "farine-epeautre",
+     "ref": "farine-epeautre",
+     "nom": "farine T80 ou T110 (40 + 40 g)",
+     "qty": 80,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-complete",
+       "nom": "farine T110",
+       "ratio": 1
+      }
+     ]
+    },
+    {
+     "id": "poudre-amande",
+     "ref": "poudre-amande",
+     "nom": "poudre d'amande",
+     "qty": 40,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sucre-roux",
+     "ref": "sucre-roux",
+     "nom": "sucre blond de canne",
+     "qty": 80,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "puree-amande-blanche",
+     "ref": "puree-amande-blanche",
+     "nom": "purée d'amande blanche",
+     "qty": 60,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "poudre-a-lever",
+     "ref": "poudre-a-lever",
+     "nom": "poudre à lever",
+     "qty": 1,
+     "unit": "c. à c.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "citron",
+     "ref": "citron",
+     "nom": "citrons (6 cl de jus et zestes, + 1 pour le curd)",
+     "qty": 3,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "pomelo",
+     "ref": "pomelo",
+     "nom": "pomelo",
+     "qty": 1,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sirop-agave",
+     "ref": "sirop-agave",
+     "nom": "sirop d'agave ou miel d'acacia",
+     "qty": 150,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "ghee",
+     "ref": "ghee",
+     "nom": "ghee ou beurre",
+     "qty": 75,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sucre-vanille",
+     "ref": "sucre-vanille",
+     "nom": "sucre vanillé",
+     "qty": 25,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "chocolat-noir",
+     "ref": "chocolat-noir",
+     "nom": "chocolat noir",
+     "qty": 100,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "amandes",
+     "ref": "amandes",
+     "nom": "amandes concassées",
+     "qty": 40,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": null,
+   "avec": [],
+   "steps": [
+    {
+     "id": "genoise",
+     "action": "Préchauffer à 180 °C ; fouetter 3 jaunes et le sucre, puis la purée d'amande et 6 cl de jus ; y mêler 40 g de farine, levure, poudre d'amande et zestes",
+     "minutes": 10,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "sucre-roux",
+      "puree-amande-blanche",
+      "poudre-a-lever",
+      "poudre-amande"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cuire",
+     "action": "Incorporer les 3 blancs montés fermes, verser dans un moule de 18 à 20 cm et cuire environ 25 min ; laisser refroidir",
+     "minutes": 28,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "curd",
+     "action": "Mêler à froid 30 cl de jus de citron et de pomelo, 40 g de farine, l'agave, le sucre vanillé et 2 jaunes ; épaissir à feu doux en fouettant, ajouter le ghee",
+     "minutes": 12,
+     "needs": [
+      "simmer"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "citron",
+      "pomelo",
+      "farine-epeautre",
+      "sirop-agave",
+      "sucre-vanille",
+      "oeufs",
+      "ghee"
+     ],
+     "enParallele": "cuire",
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "mixer",
+     "action": "Mixer le curd pour le velouter et le laisser tiédir",
+     "minutes": 3,
+     "needs": [
+      "blend-smooth"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "monter",
+     "action": "Fendre la génoise, étaler le chocolat fondu puis du curd, refermer, couvrir de curd et coller les amandes sur les bords",
+     "minutes": 15,
+     "needs": [
+      "simmer"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "chocolat-noir",
+      "amandes"
+     ],
+     "enParallele": null,
+     "attente": 120,
+     "attenteRaison": "au moins 2 h au frais, au mieux une nuit",
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "coller les amandes",
+     "enfantDes": 36,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 45,
+   "accepts": [],
+   "creneaux": [
+    "gouter",
+    "dessert"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [
+    {
+     "type": "gateau-paques-citron-pomelo",
+     "kind": "reste-plat",
+     "qty": null,
+     "band": "3-repas",
+     "espace": "frigo",
+     "note": null,
+     "gardeFrigo": 3,
+     "congelo": false,
+     "horsTable": false
+    }
+   ],
+   "lotEntier": true,
+   "calibreMax": null,
+   "vaisselle": null,
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
    "id": "gateau-poires-debout-noix",
    "titre": "Gâteau moelleux aux poires, vanille et noix caramélisées",
    "minutes": 75,
@@ -56670,16 +54908,6 @@
      "base": false,
      "assaisonnement": false,
      "central": false
-    },
-    {
-     "id": "lait-croissance",
-     "ref": "lait-croissance",
-     "nom": "lait de croissance",
-     "qty": 200,
-     "unit": "ml",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
     }
    ],
    "role": "plat",
@@ -56695,8 +54923,7 @@
      "astuce": null,
      "uses": [
       "pommes",
-      "yaourt-nature",
-      "lait-croissance"
+      "yaourt-nature"
      ],
      "enParallele": null,
      "attente": null,
@@ -59530,725 +57757,6 @@
    "cuisinable": true
   },
   {
-   "id": "hachis-parmentier-lentilles",
-   "titre": "Hachis parmentier de lentilles",
-   "minutes": 75,
-   "minutesSurPlace": 75,
-   "avanceMin": 74,
-   "anticipations": [],
-   "portions": 5,
-   "source": null,
-   "apports": {
-    "proteine": "legumineuse",
-    "feculent": "pommes-de-terre",
-    "legumes": [
-     "racine",
-     "solanacee",
-     "allium"
-    ],
-    "profil": "four",
-    "origine": "francais"
-   },
-   "ingredients": [
-    {
-     "id": "lentilles-seches",
-     "ref": "lentilles-seches",
-     "nom": "lentilles vertes sèches",
-     "qty": 250,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "carottes",
-     "ref": "carottes",
-     "nom": "carottes",
-     "qty": 2,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "oignon",
-     "ref": "oignon",
-     "nom": "oignon",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "ail",
-     "ref": "ail",
-     "nom": "ail",
-     "qty": 1,
-     "unit": "gousse",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "tomates-pelees",
-     "ref": "tomates-pelees",
-     "nom": "tomates pelées en conserve",
-     "qty": 400,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "concentre-tomate",
-     "ref": "concentre-tomate",
-     "nom": "concentré de tomate",
-     "qty": 1,
-     "unit": "c. à s.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "thym",
-     "ref": "thym",
-     "nom": "thym",
-     "qty": 1,
-     "unit": "c. à c.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "laurier",
-     "ref": "laurier",
-     "nom": "feuille de laurier",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "eau",
-     "ref": "eau",
-     "nom": "eau",
-     "qty": 0.6,
-     "unit": "l",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "pomme-de-terre",
-     "ref": "pomme-de-terre",
-     "nom": "pommes de terre à purée",
-     "qty": 1,
-     "unit": "kg",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "huile-olive",
-     "ref": "huile-olive",
-     "nom": "huile d'olive",
-     "qty": 3,
-     "unit": "c. à s.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "yaourt-nature",
-     "ref": "yaourt-nature",
-     "nom": "yaourt nature",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "fromage-rape",
-     "ref": "fromage-rape",
-     "nom": "fromage râpé",
-     "qty": 60,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false,
-     "facultatif": true
-    },
-    {
-     "id": "sel",
-     "ref": "sel",
-     "nom": "sel",
-     "qty": 1,
-     "unit": "c. à c.",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    }
-   ],
-   "role": "plat",
-   "format": "gratin",
-   "avec": [],
-   "steps": [
-    {
-     "id": "tailler",
-     "action": "Carottes en petits dés, oignon et ail émincés, lentilles rincées",
-     "minutes": 8,
-     "needs": [
-      "chop-coarse"
-     ],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "carottes",
-      "oignon",
-      "ail",
-      "lentilles-seches"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": "rincer les lentilles dans la passoire",
-     "enfantDes": 30,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "lentilles",
-     "action": "Dans la cocotte : lentilles, légumes, tomates, concentré, thym, laurier et eau ; mijoter à couvert",
-     "minutes": 35,
-     "needs": [
-      "simmer-large"
-     ],
-     "surveille": false,
-     "astuce": "Elles doivent finir presque sèches : trop de jus détremperait la purée.",
-     "uses": [
-      "tomates-pelees",
-      "concentre-tomate",
-      "thym",
-      "laurier",
-      "eau"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "pommes-de-terre",
-     "action": "Pendant ce temps, cuire les pommes de terre épluchées et coupées en morceaux à l'eau",
-     "minutes": 25,
-     "needs": [
-      "boil"
-     ],
-     "surveille": false,
-     "astuce": null,
-     "uses": [
-      "pomme-de-terre"
-     ],
-     "enParallele": "lentilles",
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "prechauffer",
-     "action": "Préchauffer le four à 200 °C",
-     "minutes": 1,
-     "needs": [
-      "bake"
-     ],
-     "surveille": false,
-     "astuce": null,
-     "uses": [],
-     "enParallele": "lentilles",
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "puree",
-     "action": "Écraser les pommes de terre avec l'huile, le yaourt et un peu d'eau de cuisson",
-     "minutes": 5,
-     "needs": [
-      "puree"
-     ],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "huile-olive",
-      "yaourt-nature"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": "aider à écraser au presse-purée",
-     "enfantDes": 30,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "saler",
-     "action": "Retirer le laurier, saler les lentilles et la purée",
-     "minutes": 2,
-     "needs": [],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "sel"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": true
-    },
-    {
-     "id": "monter",
-     "action": "Lentilles au fond du plat, purée par-dessus, fromage râpé pour finir",
-     "minutes": 4,
-     "needs": [
-      "gratin-vessel"
-     ],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "fromage-rape"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "gratiner",
-     "action": "Gratiner jusqu'à ce que le dessus soit doré",
-     "minutes": 20,
-     "needs": [
-      "gratin"
-     ],
-     "surveille": false,
-     "astuce": null,
-     "uses": [],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    }
-   ],
-   "bebe": "2 c. à s. de lentilles et autant de purée, avant salage et sans fromage",
-   "bebePrep": "mélanger à la fourchette",
-   "bebeApres": "puree",
-   "actifMin": 20,
-   "accepts": [],
-   "creneaux": [
-    "dejeuner",
-    "diner"
-   ],
-   "transportable": true,
-   "sansReste": null,
-   "emits": [
-    {
-     "type": "hachis-lentilles",
-     "kind": "reste-plat",
-     "qty": null,
-     "band": "1-repas",
-     "espace": "congelo",
-     "note": "se congèle en parts, directement dans les boîtes",
-     "gardeFrigo": 3,
-     "congelo": true,
-     "horsTable": false
-    }
-   ],
-   "lotEntier": false,
-   "calibreMax": null,
-   "vaisselle": {
-    "id": "casseroles",
-    "label": "casseroles 2,6 L / 1,6 L",
-    "facteurMax": 1.0
-   },
-   "gainChainage": 0,
-   "cuisinable": true
-  },
-  {
-   "id": "haricots-blancs-tomate-oeufs",
-   "titre": "Haricots blancs à la tomate, œufs pochés dedans",
-   "minutes": 95,
-   "minutesSurPlace": 93,
-   "avanceMin": 816,
-   "anticipations": [
-    {
-     "gestes": [
-      "tremper"
-     ],
-     "minutes": 2,
-     "attente": 720,
-     "avantMin": 816,
-     "raison": "trempage d'une nuit, à lancer la veille au soir"
-    }
-   ],
-   "portions": 5,
-   "source": null,
-   "apports": {
-    "proteine": "legumineuse",
-    "feculent": "legumineuse",
-    "legumes": [
-     "solanacee",
-     "racine",
-     "allium"
-    ],
-    "profil": "mijote",
-    "origine": "francais"
-   },
-   "ingredients": [
-    {
-     "id": "haricots-blancs",
-     "ref": "haricots-blancs",
-     "nom": "haricots blancs secs (coco ou lingots)",
-     "qty": 300,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "tomates-pelees",
-     "ref": "tomates-pelees",
-     "nom": "tomates pelées en conserve",
-     "qty": 800,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "oignon",
-     "ref": "oignon",
-     "nom": "oignon",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "ail",
-     "ref": "ail",
-     "nom": "ail",
-     "qty": 2,
-     "unit": "gousse",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "carottes",
-     "ref": "carottes",
-     "nom": "carotte",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "thym",
-     "ref": "thym",
-     "nom": "thym",
-     "qty": 1,
-     "unit": "c. à c.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "laurier",
-     "ref": "laurier",
-     "nom": "feuille de laurier",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "paprika",
-     "ref": "paprika",
-     "nom": "paprika doux",
-     "qty": 1,
-     "unit": "c. à c.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "huile-olive",
-     "ref": "huile-olive",
-     "nom": "huile d'olive",
-     "qty": 2,
-     "unit": "c. à s.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "oeufs",
-     "ref": "oeufs",
-     "nom": "œufs",
-     "qty": 4,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "sel",
-     "ref": "sel",
-     "nom": "sel",
-     "qty": 1,
-     "unit": "c. à c.",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    }
-   ],
-   "role": "plat",
-   "format": "mijote",
-   "avec": [],
-   "steps": [
-    {
-     "id": "tremper",
-     "action": "Couvrir les haricots blancs de trois fois leur volume d'eau froide",
-     "minutes": 2,
-     "needs": [],
-     "surveille": false,
-     "astuce": null,
-     "uses": [
-      "haricots-blancs"
-     ],
-     "enParallele": null,
-     "attente": 720,
-     "attenteRaison": "trempage d'une nuit, à lancer la veille au soir",
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": "verser les haricots dans le saladier d'eau",
-     "enfantDes": 24,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "bouillir",
-     "action": "Égoutter, couvrir d'eau fraîche avec le laurier, porter à gros bouillons et les y tenir 10 minutes",
-     "minutes": 15,
-     "needs": [
-      "simmer-large"
-     ],
-     "surveille": true,
-     "astuce": "Comme tous les haricots secs, ils gagnent à bouillir franchement au début : c'est ce qui les rend digestes.",
-     "uses": [
-      "laurier"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "cuire",
-     "action": "Baisser le feu et cuire à frémissement, à couvert, jusqu'à ce qu'ils soient fondants",
-     "minutes": 60,
-     "needs": [
-      "simmer-large"
-     ],
-     "surveille": false,
-     "astuce": null,
-     "uses": [],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "tailler",
-     "action": "Pendant ce temps : oignon, ail et carotte en petits dés",
-     "minutes": 6,
-     "needs": [
-      "chop-coarse"
-     ],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "oignon",
-      "ail",
-      "carottes"
-     ],
-     "enParallele": "cuire",
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "sauce",
-     "action": "À la sauteuse, faire fondre les dés à l'huile, ajouter tomates, thym et paprika, laisser compoter",
-     "minutes": 25,
-     "needs": [
-      "pan-fry",
-      "simmer"
-     ],
-     "surveille": false,
-     "astuce": null,
-     "uses": [
-      "huile-olive",
-      "tomates-pelees",
-      "thym",
-      "paprika"
-     ],
-     "enParallele": "cuire",
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "assembler",
-     "action": "Égoutter les haricots, retirer le laurier, les mêler à la sauce et laisser 10 minutes à petit feu",
-     "minutes": 10,
-     "needs": [
-      "simmer"
-     ],
-     "surveille": false,
-     "astuce": null,
-     "uses": [],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "saler",
-     "action": "Goûter et saler",
-     "minutes": 1,
-     "needs": [],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "sel"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": true
-    },
-    {
-     "id": "oeufs",
-     "action": "Creuser quatre nids dans la sauce, y casser les œufs, couvrir et cuire jusqu'à ce que le blanc soit pris",
-     "minutes": 8,
-     "needs": [
-      "simmer"
-     ],
-     "surveille": true,
-     "astuce": "Pour les petits, laisser aller jusqu'au jaune ferme.",
-     "uses": [
-      "oeufs"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    }
-   ],
-   "bebe": "2 c. à s. de haricots à la tomate, avant salage et avant les œufs",
-   "bebePrep": "écraser finement",
-   "bebeApres": "assembler",
-   "actifMin": 20,
-   "accepts": [],
-   "creneaux": [
-    "dejeuner",
-    "diner"
-   ],
-   "transportable": true,
-   "sansReste": null,
-   "emits": [
-    {
-     "type": "haricots-blancs-tomate",
-     "kind": "reste-plat",
-     "qty": null,
-     "band": "1-repas",
-     "espace": "congelo",
-     "note": "le reste se range sans les œufs, qui se cuisent au moment",
-     "gardeFrigo": 3,
-     "congelo": true,
-     "horsTable": false
-    }
-   ],
-   "lotEntier": false,
-   "calibreMax": null,
-   "vaisselle": {
-    "id": "sauteuse-28",
-    "label": "sauteuse 28 cm",
-    "facteurMax": 1.2
-   },
-   "gainChainage": 0,
-   "cuisinable": true
-  },
-  {
    "id": "houmous-et-compagnie",
    "titre": "Houmous et compagnie",
    "minutes": 3,
@@ -62112,6 +59620,140 @@
    "cuisinable": true
   },
   {
+   "id": "lait-chaud-chocolat-badiane",
+   "titre": "Lait chaud mousseux, doucement chocolaté, à la badiane",
+   "minutes": 10,
+   "minutesSurPlace": 10,
+   "avanceMin": 11,
+   "anticipations": [],
+   "portions": 1,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "« Cookies « 0 complexe » amande-citron-chocolat, lait chaud… », blog Saines Gourmandises, 12 janvier 2012",
+    "url": "https://saines-gourmandises.fr/cocooning/",
+    "saison": null
+   },
+   "apports": {
+    "proteine": "aucune",
+    "feculent": "aucun",
+    "legumes": [],
+    "profil": "rapide",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "lait-amande",
+     "ref": "lait-amande",
+     "nom": "lait d'amande ou de soja-vanille",
+     "qty": 25,
+     "unit": "cl",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "extrait-vanille",
+     "ref": "extrait-vanille",
+     "nom": "extrait de vanille liquide",
+     "qty": 1,
+     "unit": "c. à c.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "badiane",
+     "ref": "badiane",
+     "nom": "étoile de badiane",
+     "qty": 1,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "chocolat-noir",
+     "ref": "chocolat-noir",
+     "nom": "chocolat noir 85 %",
+     "qty": 20,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    }
+   ],
+   "role": "boisson",
+   "format": null,
+   "avec": [],
+   "steps": [
+    {
+     "id": "infuser",
+     "action": "Porter le lait à ébullition avec la badiane et la vanille, couper le feu et laisser infuser à couvert",
+     "minutes": 4,
+     "needs": [
+      "simmer"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "lait-amande",
+      "badiane",
+      "extrait-vanille"
+     ],
+     "enParallele": null,
+     "attente": 5,
+     "attenteRaison": "5 min d'infusion",
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "mousser",
+     "action": "Ajouter le chocolat en tout petits morceaux et fouetter ou mixer pour le fondre et faire mousser ; servir bien chaud",
+     "minutes": 2,
+     "needs": [
+      "blend-smooth"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "chocolat-noir"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 5,
+   "accepts": [],
+   "creneaux": [
+    "gouter",
+    "petit-dejeuner"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [],
+   "lotEntier": false,
+   "calibreMax": null,
+   "vaisselle": {
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 6.0
+   },
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
    "id": "layer-cake-noel-chocolat-the-blanc",
    "titre": "Layer-cake de Noël enneigé, mousse chocolatée et crème au thé blanc",
    "minutes": 60,
@@ -62625,7 +60267,7 @@
       "simmer-large"
      ],
      "surveille": false,
-     "astuce": "Aucun temps précis n'est donnable : cela dépend de la légumineuse et de son degré de séchage à l'achat.",
+     "astuce": "Aucun temps précis n'est donnable : cela dépend de la légumineuse et de son degré de séchage à l'achat. Avec des haricots rouges, faire d'abord bouillir 10 minutes à gros bouillons.",
      "uses": [],
      "enParallele": null,
      "attente": null,
@@ -62684,193 +60326,6 @@
     "id": "cocotte-7.5l",
     "label": "cocotte 7,5 L",
     "facteurMax": 2.0
-   },
-   "gainChainage": 0,
-   "cuisinable": true
-  },
-  {
-   "id": "lentilles-mijotees",
-   "titre": "Lentilles vertes mijotées aux carottes",
-   "minutes": 40,
-   "minutesSurPlace": 40,
-   "avanceMin": 32,
-   "anticipations": [],
-   "portions": 4,
-   "source": null,
-   "apports": {
-    "proteine": "legumineuse",
-    "feculent": "legumineuse",
-    "legumes": [
-     "racine",
-     "allium"
-    ],
-    "profil": "mijote",
-    "origine": "francais"
-   },
-   "ingredients": [
-    {
-     "id": "lentilles-seches",
-     "ref": "lentilles-seches",
-     "nom": "lentilles vertes sèches",
-     "qty": 300,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "carottes",
-     "ref": "carottes",
-     "nom": "carottes",
-     "qty": 4,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "oignon",
-     "ref": "oignon",
-     "nom": "oignon",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "laurier",
-     "ref": "laurier",
-     "nom": "feuille de laurier",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "sel",
-     "ref": "sel",
-     "nom": "sel",
-     "qty": 1,
-     "unit": "c. à c.",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    }
-   ],
-   "role": "plat",
-   "format": "mijote",
-   "avec": [],
-   "steps": [
-    {
-     "id": "lancer-mijotage",
-     "action": "Rincer les lentilles, les couvrir de 3 fois leur volume d'eau froide avec l'oignon émincé et le laurier, porter à frémissement puis laisser mijoter à couvert",
-     "minutes": 30,
-     "needs": [
-      "simmer-large"
-     ],
-     "surveille": false,
-     "astuce": null,
-     "uses": [
-      "lentilles-seches",
-      "oignon",
-      "laurier"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "carottes-vapeur",
-     "action": "Pendant le mijotage : carottes en rondelles, cuites à la vapeur au-dessus des lentilles",
-     "minutes": 15,
-     "needs": [
-      "steam"
-     ],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "carottes"
-     ],
-     "enParallele": "lancer-mijotage",
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": "mettre les rondelles de carottes dans le panier",
-     "enfantDes": 30,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "assaisonner",
-     "action": "Égoutter, retirer le laurier, saler",
-     "minutes": 2,
-     "needs": [],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "sel"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": true
-    }
-   ],
-   "bebe": "3 c. à s. de lentilles + quelques rondelles de carottes, avant salage",
-   "bebePrep": "mixer avec un peu d'eau de cuisson tiède",
-   "bebeApres": null,
-   "actifMin": 10,
-   "accepts": [],
-   "creneaux": [
-    "dejeuner",
-    "diner"
-   ],
-   "transportable": true,
-   "sansReste": null,
-   "emits": [
-    {
-     "type": "lentilles-vertes-cuites",
-     "kind": "base",
-     "qty": {
-      "amount": 400.0,
-      "unit": "g"
-     },
-     "band": "2-repas",
-     "espace": "congelo",
-     "note": null,
-     "gardeFrigo": 4,
-     "congelo": true,
-     "horsTable": false
-    },
-    {
-     "type": "puree-lentilles-carottes",
-     "kind": "portion-bebe",
-     "qty": null,
-     "band": "1-repas",
-     "espace": "frigo",
-     "note": null,
-     "gardeFrigo": 2,
-     "congelo": false,
-     "horsTable": false
-    }
-   ],
-   "lotEntier": false,
-   "calibreMax": null,
-   "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 3.0
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -72620,6 +70075,188 @@
    "cuisinable": true
   },
   {
+   "id": "mousse-nuage-chocolat-tofu-soyeux",
+   "titre": "Mousse « nuage » au chocolat et tofu soyeux",
+   "minutes": 135,
+   "minutesSurPlace": 116,
+   "avanceMin": 139,
+   "anticipations": [
+    {
+     "gestes": [
+      "fondre",
+      "mixer",
+      "blancs"
+     ],
+     "minutes": 19,
+     "attente": 120,
+     "avantMin": 139,
+     "raison": "au frais avant de servir"
+    }
+   ],
+   "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "« Petite anthologie gourmande (et légère) de la mousse au chocolat bio », blog Saines Gourmandises, 12 juillet 2011",
+    "url": "https://saines-gourmandises.fr/petite-anthologie-gourmande-et-legere-de-la-mousse-au-chocolat-bio/",
+    "saison": null
+   },
+   "apports": {
+    "proteine": "tofu-soja",
+    "feculent": "aucun",
+    "legumes": [],
+    "profil": "cru",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "lait-soja-vanille",
+     "ref": "lait-soja-vanille",
+     "nom": "lait de soja vanille",
+     "qty": 10,
+     "unit": "cl",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "chocolat-noir",
+     "ref": "chocolat-noir",
+     "nom": "chocolat noir 70 à 85 %",
+     "qty": 100,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sirop-agave",
+     "ref": "sirop-agave",
+     "nom": "sirop d'agave",
+     "qty": 3,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "tofu-soyeux",
+     "ref": "tofu-soyeux",
+     "nom": "tofu soyeux",
+     "qty": 400,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "oeufs",
+     "ref": "oeufs",
+     "nom": "œufs bio ultra frais",
+     "qty": 2,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": null,
+   "avec": [],
+   "steps": [
+    {
+     "id": "fondre",
+     "action": "Fondre le chocolat dans le lait de soja avec l'agave",
+     "minutes": 6,
+     "needs": [
+      "simmer"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "lait-soja-vanille",
+      "chocolat-noir",
+      "sirop-agave"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "mixer",
+     "action": "Mixer le chocolat chaud avec le tofu soyeux et les jaunes d'œufs",
+     "minutes": 5,
+     "needs": [
+      "blend-smooth"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "tofu-soyeux",
+      "oeufs"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "blancs",
+     "action": "Monter les blancs en neige, les incorporer à la spatule et verser en petits pots",
+     "minutes": 8,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": 120,
+     "attenteRaison": "au frais avant de servir",
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "incorporer les blancs",
+     "enfantDes": 36,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 15,
+   "accepts": [],
+   "creneaux": [
+    "gouter",
+    "dessert"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [
+    {
+     "type": "mousse-nuage-chocolat-tofu-soyeux",
+     "kind": "reste-plat",
+     "qty": null,
+     "band": "2-repas",
+     "espace": "frigo",
+     "note": null,
+     "gardeFrigo": 2,
+     "congelo": false,
+     "horsTable": false
+    }
+   ],
+   "lotEntier": true,
+   "calibreMax": null,
+   "vaisselle": null,
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
    "id": "mousseline-celeri-romanesco",
    "titre": "Mousseline au céleri, romanesco et parmesan",
    "minutes": 25,
@@ -80002,8 +77639,7 @@
    "actifMin": 12,
    "accepts": [],
    "creneaux": [
-    "dejeuner",
-    "diner"
+    "petit-dejeuner"
    ],
    "transportable": true,
    "sansReste": null,
@@ -80012,18 +77648,32 @@
      "type": "pain-de-mie-maison",
      "kind": "base",
      "qty": {
-      "amount": 900.0,
+      "amount": 450.0,
       "unit": "g"
      },
      "band": "3-repas",
      "espace": "congelo",
-     "note": "4 jours dans un torchon, ou tranché puis congelé en sachet hermétique ; la salade César p. 59 en réclame 100 g",
-     "gardeFrigo": 4,
+     "note": "un sachet de tranches, trois matins ; la salade César p. 59 en réclame 100 g",
+     "gardeFrigo": 0,
+     "congelo": true,
+     "horsTable": true
+    },
+    {
+     "type": "pain-de-mie-maison",
+     "kind": "base",
+     "qty": {
+      "amount": 450.0,
+      "unit": "g"
+     },
+     "band": "3-repas",
+     "espace": "congelo",
+     "note": "le second sachet",
+     "gardeFrigo": 0,
      "congelo": true,
      "horsTable": true
     }
    ],
-   "lotEntier": false,
+   "lotEntier": true,
    "calibreMax": null,
    "vaisselle": null,
    "gainChainage": 0,
@@ -80682,219 +78332,6 @@
      "gardeFrigo": 5,
      "congelo": true,
      "horsTable": false
-    }
-   ],
-   "lotEntier": true,
-   "calibreMax": null,
-   "vaisselle": null,
-   "gainChainage": 0,
-   "cuisinable": true
-  },
-  {
-   "id": "pain-maison-semi-complet",
-   "titre": "Pain maison semi-complet",
-   "minutes": 150,
-   "minutesSurPlace": 150,
-   "avanceMin": 135,
-   "anticipations": [],
-   "portions": 6,
-   "source": null,
-   "apports": {
-    "proteine": "aucune",
-    "feculent": "pain",
-    "legumes": [],
-    "profil": "four",
-    "origine": "francais"
-   },
-   "ingredients": [
-    {
-     "id": "farine-complete",
-     "ref": "farine-complete",
-     "nom": "farine semi-complète (T80 à T110)",
-     "qty": 500,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "levure-boulangere",
-     "ref": "levure-boulangere",
-     "nom": "levure de boulanger déshydratée",
-     "qty": 1,
-     "unit": "sachet",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "eau",
-     "ref": "eau",
-     "nom": "eau tiède",
-     "qty": 330,
-     "unit": "ml",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "sel",
-     "ref": "sel",
-     "nom": "sel fin",
-     "qty": 9,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    },
-    {
-     "id": "huile-olive",
-     "ref": "huile-olive",
-     "nom": "huile d'olive",
-     "qty": 1,
-     "unit": "c. à s.",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    }
-   ],
-   "role": "plat",
-   "format": "cake",
-   "avec": [],
-   "steps": [
-    {
-     "id": "delayer",
-     "action": "Délayer la levure dans l'eau tiède, puis la verser sur la farine et le sel",
-     "minutes": 3,
-     "needs": [],
-     "surveille": true,
-     "astuce": "Jamais au-delà de 40 °C : la chaleur tue la levure.",
-     "uses": [
-      "levure-boulangere",
-      "eau",
-      "farine-complete",
-      "sel"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "petrir",
-     "action": "Pétrir dix minutes à la main, jusqu'à une pâte lisse, avec l'huile",
-     "minutes": 10,
-     "needs": [],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "huile-olive"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": "pétrir un morceau de pâte",
-     "enfantDes": 30,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "lever",
-     "action": "Mettre en moule à cake huilé, couvrir d'un torchon et laisser doubler",
-     "minutes": 2,
-     "needs": [],
-     "surveille": false,
-     "astuce": null,
-     "uses": [],
-     "enParallele": null,
-     "attente": 75,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "cuire",
-     "action": "Cuire 40 minutes à 210 °C, jusqu'à ce que le dessous sonne creux",
-     "minutes": 40,
-     "needs": [
-      "bake"
-     ],
-     "surveille": false,
-     "astuce": null,
-     "uses": [],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "trancher",
-     "action": "Laisser refroidir sur une grille, trancher, et congeler par six tranches en sachet",
-     "minutes": 5,
-     "needs": [],
-     "surveille": true,
-     "astuce": "Une tranche par enfant et par matin : un sachet fait trois petits-déjeuners.",
-     "uses": [],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    }
-   ],
-   "bebe": null,
-   "bebePrep": null,
-   "bebeApres": null,
-   "actifMin": 15,
-   "accepts": [],
-   "creneaux": [
-    "petit-dejeuner"
-   ],
-   "transportable": true,
-   "sansReste": null,
-   "emits": [
-    {
-     "type": "pain-de-mie-maison",
-     "kind": "base",
-     "qty": {
-      "amount": 350.0,
-      "unit": "g"
-     },
-     "band": "3-repas",
-     "espace": "congelo",
-     "note": "un sachet de six tranches, trois matins ; grillé congelé, ou sorti la veille",
-     "gardeFrigo": 0,
-     "congelo": true,
-     "horsTable": true
-    },
-    {
-     "type": "pain-de-mie-maison",
-     "kind": "base",
-     "qty": {
-      "amount": 350.0,
-      "unit": "g"
-     },
-     "band": "3-repas",
-     "espace": "congelo",
-     "note": "le second sachet de six tranches",
-     "gardeFrigo": 0,
-     "congelo": true,
-     "horsTable": true
     }
    ],
    "lotEntier": true,
@@ -86170,345 +83607,6 @@
    "cuisinable": true
   },
   {
-   "id": "pates-bolognaise-lentilles",
-   "titre": "Pâtes à la bolognaise de lentilles",
-   "minutes": 55,
-   "minutesSurPlace": 55,
-   "avanceMin": 53,
-   "anticipations": [],
-   "portions": 5,
-   "source": null,
-   "apports": {
-    "proteine": "legumineuse",
-    "feculent": "pates",
-    "legumes": [
-     "solanacee",
-     "racine",
-     "allium"
-    ],
-    "profil": "mijote",
-    "origine": "italien"
-   },
-   "ingredients": [
-    {
-     "id": "lentilles-seches",
-     "ref": "lentilles-seches",
-     "nom": "lentilles vertes sèches",
-     "qty": 250,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "carottes",
-     "ref": "carottes",
-     "nom": "carottes",
-     "qty": 2,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "oignon",
-     "ref": "oignon",
-     "nom": "oignon",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "ail",
-     "ref": "ail",
-     "nom": "ail",
-     "qty": 2,
-     "unit": "gousse",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "tomates-pelees",
-     "ref": "tomates-pelees",
-     "nom": "tomates pelées en conserve",
-     "qty": 800,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "concentre-tomate",
-     "ref": "concentre-tomate",
-     "nom": "concentré de tomate",
-     "qty": 2,
-     "unit": "c. à s.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "herbes-provence",
-     "ref": "herbes-provence",
-     "nom": "herbes de Provence",
-     "qty": 1,
-     "unit": "c. à c.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "laurier",
-     "ref": "laurier",
-     "nom": "feuille de laurier",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "huile-olive",
-     "ref": "huile-olive",
-     "nom": "huile d'olive",
-     "qty": 2,
-     "unit": "c. à s.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "eau",
-     "ref": "eau",
-     "nom": "eau",
-     "qty": 0.6,
-     "unit": "l",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "pates",
-     "ref": "pates",
-     "nom": "pâtes (spaghettis, coquillettes)",
-     "qty": 400,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "fromage-rape",
-     "ref": "fromage-rape",
-     "nom": "fromage râpé",
-     "qty": 60,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false,
-     "facultatif": true
-    },
-    {
-     "id": "sel",
-     "ref": "sel",
-     "nom": "sel",
-     "qty": 1,
-     "unit": "c. à c.",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    }
-   ],
-   "role": "plat",
-   "format": "pates",
-   "avec": [],
-   "steps": [
-    {
-     "id": "tailler",
-     "action": "Émincer l'oignon et l'ail, tailler les carottes en tout petits dés",
-     "minutes": 8,
-     "needs": [
-      "chop-coarse"
-     ],
-     "surveille": true,
-     "astuce": "Plus petits que l'oignon : la carotte fond moins vite, et les enfants ne la trient pas.",
-     "uses": [
-      "oignon",
-      "ail",
-      "carottes"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "rincer",
-     "action": "Rincer les lentilles dans une passoire",
-     "minutes": 2,
-     "needs": [],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "lentilles-seches"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": "rincer les lentilles et chercher les petits cailloux",
-     "enfantDes": 30,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "suer",
-     "action": "Faire suer oignon, ail et carottes à l'huile dans la cocotte",
-     "minutes": 5,
-     "needs": [
-      "simmer-large"
-     ],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "huile-olive"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "mijoter",
-     "action": "Ajouter les lentilles, les tomates écrasées, le concentré, les herbes, le laurier et l'eau ; mijoter à couvert",
-     "minutes": 35,
-     "needs": [
-      "simmer-large"
-     ],
-     "surveille": false,
-     "astuce": "Les lentilles vertes gardent leur forme : c'est elles qui font la mâche de la viande hachée.",
-     "uses": [
-      "tomates-pelees",
-      "concentre-tomate",
-      "herbes-provence",
-      "laurier",
-      "eau"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "pates",
-     "action": "Dans les dix dernières minutes, cuire les pâtes",
-     "minutes": 10,
-     "needs": [
-      "boil"
-     ],
-     "surveille": false,
-     "astuce": null,
-     "uses": [
-      "pates"
-     ],
-     "enParallele": "mijoter",
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "saler",
-     "action": "Retirer le laurier, goûter et saler la sauce",
-     "minutes": 2,
-     "needs": [],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "sel"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": true
-    },
-    {
-     "id": "servir",
-     "action": "Servir la sauce sur les pâtes, le fromage râpé à table",
-     "minutes": 1,
-     "needs": [],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "fromage-rape"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    }
-   ],
-   "bebe": "2 c. à s. de sauce et quelques pâtes, avant salage et sans fromage",
-   "bebePrep": "écraser à la fourchette",
-   "bebeApres": "pates",
-   "actifMin": 18,
-   "accepts": [],
-   "creneaux": [
-    "dejeuner",
-    "diner"
-   ],
-   "transportable": true,
-   "sansReste": null,
-   "emits": [
-    {
-     "type": "bolognaise-lentilles",
-     "kind": "reste-plat",
-     "qty": null,
-     "band": "1-repas",
-     "espace": "congelo",
-     "note": "garder la sauce à part des pâtes : seule, elle se congèle et se réchauffe sans coller",
-     "gardeFrigo": 4,
-     "congelo": true,
-     "horsTable": false
-    }
-   ],
-   "lotEntier": false,
-   "calibreMax": null,
-   "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 2.4
-   },
-   "gainChainage": 0,
-   "cuisinable": true
-  },
-  {
    "id": "pates-pesto-cavolo-nero",
    "titre": "Pâtes au pesto de cavolo nero (chou noir toscan)",
    "minutes": 25,
@@ -87522,16 +84620,6 @@
      "central": false
     },
     {
-     "id": "lait-croissance",
-     "ref": "lait-croissance",
-     "nom": "lait de croissance",
-     "qty": 400,
-     "unit": "ml",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
      "id": "banane",
      "ref": "banane",
      "nom": "banane écrasée dans le porridge",
@@ -87568,7 +84656,7 @@
    "steps": [
     {
      "id": "porridge",
-     "action": "Cuire les flocons dans le lait trois minutes en remuant, puis y écraser la banane",
+     "action": "Cuire les flocons dans leur lait trois minutes en remuant, puis y écraser la banane",
      "minutes": 6,
      "needs": [
       "simmer"
@@ -87577,7 +84665,6 @@
      "astuce": null,
      "uses": [
       "flocons-avoine",
-      "lait-croissance",
       "banane"
      ],
      "enParallele": null,
@@ -107831,270 +104918,6 @@
    "cuisinable": true
   },
   {
-   "id": "salade-tiede-lentilles-thon",
-   "titre": "Salade tiède de lentilles, carottes et thon",
-   "minutes": 40,
-   "minutesSurPlace": 40,
-   "avanceMin": 36,
-   "anticipations": [],
-   "portions": 5,
-   "source": null,
-   "apports": {
-    "proteine": "legumineuse",
-    "feculent": "legumineuse",
-    "legumes": [
-     "racine",
-     "allium"
-    ],
-    "profil": "cru",
-    "origine": "francais"
-   },
-   "ingredients": [
-    {
-     "id": "lentilles-seches",
-     "ref": "lentilles-seches",
-     "nom": "lentilles vertes sèches",
-     "qty": 300,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "carottes",
-     "ref": "carottes",
-     "nom": "carottes",
-     "qty": 3,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "oignon",
-     "ref": "oignon",
-     "nom": "oignon",
-     "qty": 0.5,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "thon-boite",
-     "ref": "thon-boite",
-     "nom": "thon au naturel",
-     "qty": 280,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "citron",
-     "ref": "citron",
-     "nom": "citron",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "moutarde",
-     "ref": "moutarde",
-     "nom": "moutarde",
-     "qty": 1,
-     "unit": "c. à c.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "huile-olive",
-     "ref": "huile-olive",
-     "nom": "huile d'olive",
-     "qty": 4,
-     "unit": "c. à s.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "laurier",
-     "ref": "laurier",
-     "nom": "feuille de laurier",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "sel",
-     "ref": "sel",
-     "nom": "sel",
-     "qty": 1,
-     "unit": "pincée",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    },
-    {
-     "id": "poivre",
-     "ref": "poivre",
-     "nom": "poivre",
-     "qty": 1,
-     "unit": "pincée",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    }
-   ],
-   "role": "plat",
-   "format": "salade",
-   "avec": [],
-   "steps": [
-    {
-     "id": "rincer",
-     "action": "Rincer les lentilles dans une passoire",
-     "minutes": 2,
-     "needs": [],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "lentilles-seches"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": "rincer les lentilles et chercher les petits cailloux",
-     "enfantDes": 30,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "cuire",
-     "action": "Les cuire départ eau froide avec le laurier, à frémissement et sans saler",
-     "minutes": 25,
-     "needs": [
-      "simmer"
-     ],
-     "surveille": false,
-     "astuce": "Le sel au début durcit la peau : on assaisonne à la vinaigrette.",
-     "uses": [
-      "laurier"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "carottes",
-     "action": "Pendant ce temps, carottes en rondelles, cuites à la vapeur",
-     "minutes": 12,
-     "needs": [
-      "steam"
-     ],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "carottes"
-     ],
-     "enParallele": "cuire",
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "vinaigrette",
-     "action": "Mélanger jus de citron, moutarde, huile, sel et poivre, puis y émincer l'oignon très finement",
-     "minutes": 5,
-     "needs": [],
-     "surveille": true,
-     "astuce": "Cinq minutes dans le citron adoucissent l'oignon cru : les enfants ne le sentent presque plus.",
-     "uses": [
-      "citron",
-      "moutarde",
-      "huile-olive",
-      "oignon",
-      "sel",
-      "poivre"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": true
-    },
-    {
-     "id": "melanger",
-     "action": "Égoutter les lentilles, les mêler tièdes à la vinaigrette avec les carottes, émietter le thon dessus",
-     "minutes": 4,
-     "needs": [],
-     "surveille": true,
-     "astuce": "Tièdes, elles boivent la vinaigrette ; froides, elles la laissent au fond du saladier.",
-     "uses": [
-      "thon-boite"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    }
-   ],
-   "bebe": "3 c. à s. de lentilles et quelques rondelles de carottes, avant la vinaigrette",
-   "bebePrep": "écraser avec un peu d'eau de cuisson",
-   "bebeApres": "carottes",
-   "actifMin": 12,
-   "accepts": [],
-   "creneaux": [
-    "dejeuner",
-    "diner"
-   ],
-   "transportable": true,
-   "sansReste": null,
-   "emits": [
-    {
-     "type": "salade-lentilles-thon",
-     "kind": "reste-plat",
-     "qty": null,
-     "band": "lunchbox",
-     "espace": "frigo",
-     "note": "voyage bien dans une boîte pour le déjeuner",
-     "gardeFrigo": 2,
-     "congelo": false,
-     "horsTable": false
-    }
-   ],
-   "lotEntier": false,
-   "calibreMax": null,
-   "vaisselle": {
-    "id": "sauteuse-28",
-    "label": "sauteuse 28 cm",
-    "facteurMax": 1.2
-   },
-   "gainChainage": 0,
-   "cuisinable": true
-  },
-  {
    "id": "salade-tiede-poivrons-parme-chevre",
    "titre": "Salade tiède de poivrons grillés au jambon de Parme, basilic et chèvre frais",
    "minutes": 25,
@@ -112467,303 +109290,6 @@
    "cuisinable": true
   },
   {
-   "id": "soupe-legumes-pois-chiches",
-   "titre": "Soupe de légumes et pois chiches",
-   "minutes": 45,
-   "minutesSurPlace": 45,
-   "avanceMin": 44,
-   "anticipations": [],
-   "portions": 6,
-   "source": null,
-   "apports": {
-    "proteine": "legumineuse",
-    "feculent": "pommes-de-terre",
-    "legumes": [
-     "solanacee",
-     "racine",
-     "allium"
-    ],
-    "profil": "soupe",
-    "origine": "francais"
-   },
-   "ingredients": [
-    {
-     "id": "legumes-surgeles",
-     "ref": "legumes-surgeles",
-     "nom": "mélange de légumes surgelés",
-     "qty": 750,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "pois-chiches",
-     "ref": "pois-chiches",
-     "nom": "pois chiches cuits, en bocal",
-     "qty": 400,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "pomme-de-terre",
-     "ref": "pomme-de-terre",
-     "nom": "pommes de terre",
-     "qty": 2,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "oignon",
-     "ref": "oignon",
-     "nom": "oignon",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "ail",
-     "ref": "ail",
-     "nom": "ail",
-     "qty": 1,
-     "unit": "gousse",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "tomates-pelees",
-     "ref": "tomates-pelees",
-     "nom": "tomates pelées en conserve",
-     "qty": 400,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "herbes-provence",
-     "ref": "herbes-provence",
-     "nom": "herbes de Provence",
-     "qty": 1,
-     "unit": "c. à c.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "huile-olive",
-     "ref": "huile-olive",
-     "nom": "huile d'olive",
-     "qty": 2,
-     "unit": "c. à s.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "eau",
-     "ref": "eau",
-     "nom": "eau",
-     "qty": 1.2,
-     "unit": "l",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "bouillon-legumes",
-     "ref": "bouillon-legumes",
-     "nom": "cube de bouillon de légumes",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    },
-    {
-     "id": "sel",
-     "ref": "sel",
-     "nom": "sel",
-     "qty": 1,
-     "unit": "pincée",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    }
-   ],
-   "role": "plat",
-   "format": "soupe",
-   "avec": [],
-   "steps": [
-    {
-     "id": "rincer",
-     "action": "Égoutter et rincer les pois chiches",
-     "minutes": 2,
-     "needs": [],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "pois-chiches"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": "rincer les pois chiches dans la passoire",
-     "enfantDes": 30,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "tailler",
-     "action": "Émincer l'oignon et l'ail, couper les pommes de terre en dés",
-     "minutes": 6,
-     "needs": [
-      "chop-coarse"
-     ],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "oignon",
-      "ail",
-      "pomme-de-terre"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "suer",
-     "action": "Faire suer l'oignon et l'ail à l'huile dans la cocotte",
-     "minutes": 4,
-     "needs": [
-      "simmer-large"
-     ],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "huile-olive"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "cuire",
-     "action": "Ajouter les légumes surgelés, les pommes de terre, les tomates, les herbes et l'eau ; cuire à couvert",
-     "minutes": 25,
-     "needs": [
-      "simmer-large"
-     ],
-     "surveille": false,
-     "astuce": null,
-     "uses": [
-      "legumes-surgeles",
-      "tomates-pelees",
-      "herbes-provence",
-      "eau"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "pois-chiches",
-     "action": "Ajouter les pois chiches et laisser reprendre 5 minutes",
-     "minutes": 5,
-     "needs": [
-      "simmer-large"
-     ],
-     "surveille": true,
-     "astuce": null,
-     "uses": [],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "saler",
-     "action": "Délayer le cube de bouillon, goûter et saler si besoin",
-     "minutes": 2,
-     "needs": [],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "bouillon-legumes",
-      "sel"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": true
-    }
-   ],
-   "bebe": "un petit bol de soupe, avant le cube et le sel",
-   "bebePrep": "mixer",
-   "bebeApres": "pois-chiches",
-   "actifMin": 12,
-   "accepts": [],
-   "creneaux": [
-    "dejeuner",
-    "diner"
-   ],
-   "transportable": true,
-   "sansReste": null,
-   "emits": [
-    {
-     "type": "soupe-legumes-pois-chiches",
-     "kind": "reste-plat",
-     "qty": null,
-     "band": "1-repas",
-     "espace": "congelo",
-     "note": null,
-     "gardeFrigo": 3,
-     "congelo": true,
-     "horsTable": false
-    }
-   ],
-   "lotEntier": false,
-   "calibreMax": null,
-   "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 2.0
-   },
-   "gainChainage": 0,
-   "cuisinable": true
-  },
-  {
    "id": "soupe-miso-printaniere",
    "titre": "Soupe miso printanière",
    "minutes": 25,
@@ -113362,298 +109888,6 @@
      "band": "lunchbox",
      "espace": "congelo",
      "note": null,
-     "gardeFrigo": 3,
-     "congelo": true,
-     "horsTable": false
-    }
-   ],
-   "lotEntier": false,
-   "calibreMax": null,
-   "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 2.0
-   },
-   "gainChainage": 0,
-   "cuisinable": true
-  },
-  {
-   "id": "soupe-pois-casses-carottes",
-   "titre": "Soupe de pois cassés aux carottes",
-   "minutes": 75,
-   "minutesSurPlace": 75,
-   "avanceMin": 70,
-   "anticipations": [],
-   "portions": 6,
-   "source": null,
-   "apports": {
-    "proteine": "legumineuse",
-    "feculent": "legumineuse",
-    "legumes": [
-     "racine",
-     "allium"
-    ],
-    "profil": "soupe",
-    "origine": "francais"
-   },
-   "ingredients": [
-    {
-     "id": "pois-casses",
-     "ref": "pois-casses",
-     "nom": "pois cassés",
-     "qty": 300,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false,
-     "remplacants": [
-      {
-       "id": "lentilles-corail",
-       "nom": "lentilles corail",
-       "ratio": 1
-      }
-     ]
-    },
-    {
-     "id": "carottes",
-     "ref": "carottes",
-     "nom": "carottes",
-     "qty": 3,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "pomme-de-terre",
-     "ref": "pomme-de-terre",
-     "nom": "pommes de terre",
-     "qty": 2,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "oignon",
-     "ref": "oignon",
-     "nom": "oignon",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "ail",
-     "ref": "ail",
-     "nom": "ail",
-     "qty": 1,
-     "unit": "gousse",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "laurier",
-     "ref": "laurier",
-     "nom": "feuille de laurier",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "huile-olive",
-     "ref": "huile-olive",
-     "nom": "huile d'olive",
-     "qty": 1,
-     "unit": "c. à s.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "eau",
-     "ref": "eau",
-     "nom": "eau",
-     "qty": 1.5,
-     "unit": "l",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "bouillon-legumes",
-     "ref": "bouillon-legumes",
-     "nom": "cube de bouillon de légumes",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    },
-    {
-     "id": "sel",
-     "ref": "sel",
-     "nom": "sel",
-     "qty": 1,
-     "unit": "pincée",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    }
-   ],
-   "role": "plat",
-   "format": "soupe",
-   "avec": [],
-   "steps": [
-    {
-     "id": "rincer",
-     "action": "Rincer les pois cassés dans une passoire",
-     "minutes": 2,
-     "needs": [],
-     "surveille": true,
-     "astuce": "Pas de trempage : les pois cassés sont déjà dépelliculés et fendus.",
-     "uses": [
-      "pois-casses"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": "rincer les pois cassés sous l'eau froide",
-     "enfantDes": 30,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "tailler",
-     "action": "Émincer l'oignon et l'ail, couper carottes et pommes de terre en morceaux",
-     "minutes": 8,
-     "needs": [
-      "chop-coarse"
-     ],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "oignon",
-      "ail",
-      "carottes",
-      "pomme-de-terre"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "suer",
-     "action": "Faire suer l'oignon et l'ail à l'huile dans la cocotte",
-     "minutes": 4,
-     "needs": [
-      "simmer-large"
-     ],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "huile-olive"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "cuire",
-     "action": "Ajouter pois cassés, légumes, laurier et eau ; cuire à couvert à petit frémissement",
-     "minutes": 50,
-     "needs": [
-      "simmer-large"
-     ],
-     "surveille": false,
-     "astuce": "Petit frémissement, pas gros bouillon : les pois cassés attachent au fond quand ça bout fort.",
-     "uses": [
-      "laurier",
-      "eau"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "mixer",
-     "action": "Retirer le laurier et mixer",
-     "minutes": 4,
-     "needs": [
-      "blend-smooth"
-     ],
-     "surveille": true,
-     "astuce": null,
-     "uses": [],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "saler",
-     "action": "Délayer le cube de bouillon, goûter et saler si besoin",
-     "minutes": 2,
-     "needs": [],
-     "surveille": true,
-     "astuce": "Le cube sale déjà beaucoup : goûter avant d'ajouter la moindre pincée.",
-     "uses": [
-      "bouillon-legumes",
-      "sel"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": true
-    }
-   ],
-   "bebe": "un petit bol de soupe mixée, avant le cube et le sel",
-   "bebePrep": "tiédir",
-   "bebeApres": "mixer",
-   "actifMin": 15,
-   "accepts": [],
-   "creneaux": [
-    "dejeuner",
-    "diner"
-   ],
-   "transportable": true,
-   "sansReste": null,
-   "emits": [
-    {
-     "type": "soupe-pois-casses",
-     "kind": "reste-plat",
-     "qty": null,
-     "band": "1-repas",
-     "espace": "congelo",
-     "note": "elle épaissit en refroidissant : la détendre d'un peu d'eau au réchauffage",
      "gardeFrigo": 3,
      "congelo": true,
      "horsTable": false
@@ -123250,249 +119484,6 @@
    "cuisinable": true
   },
   {
-   "id": "tortilla-pommes-de-terre-haricots-verts",
-   "titre": "Omelette au four, pommes de terre et haricots verts",
-   "minutes": 55,
-   "minutesSurPlace": 55,
-   "avanceMin": 52,
-   "anticipations": [],
-   "portions": 4,
-   "source": null,
-   "apports": {
-    "proteine": "oeuf",
-    "feculent": "pommes-de-terre",
-    "legumes": [
-     "legumineuse",
-     "allium"
-    ],
-    "profil": "four",
-    "origine": "espagnol"
-   },
-   "ingredients": [
-    {
-     "id": "pomme-de-terre",
-     "ref": "pomme-de-terre",
-     "nom": "pommes de terre",
-     "qty": 600,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "haricots-verts-surgeles",
-     "ref": "haricots-verts-surgeles",
-     "nom": "haricots verts surgelés",
-     "qty": 250,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "oignon",
-     "ref": "oignon",
-     "nom": "oignon",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "oeufs",
-     "ref": "oeufs",
-     "nom": "œufs",
-     "qty": 6,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "huile-olive",
-     "ref": "huile-olive",
-     "nom": "huile d'olive",
-     "qty": 3,
-     "unit": "c. à s.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "sel",
-     "ref": "sel",
-     "nom": "sel",
-     "qty": 1,
-     "unit": "c. à c.",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    }
-   ],
-   "role": "plat",
-   "format": "omelette",
-   "avec": [],
-   "steps": [
-    {
-     "id": "prechauffer",
-     "action": "Préchauffer le four à 180 °C",
-     "minutes": 1,
-     "needs": [
-      "bake"
-     ],
-     "surveille": false,
-     "astuce": null,
-     "uses": [],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "tailler",
-     "action": "Pommes de terre en fines rondelles, oignon émincé",
-     "minutes": 8,
-     "needs": [
-      "chop-coarse"
-     ],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "pomme-de-terre",
-      "oignon"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "pommes-de-terre",
-     "action": "Cuire pommes de terre et oignon à l'huile, à couvert et à feu moyen, jusqu'à ce qu'elles soient tendres",
-     "minutes": 15,
-     "needs": [
-      "pan-fry"
-     ],
-     "surveille": false,
-     "astuce": "Remuer de temps en temps ; elles doivent fondre, pas dorer.",
-     "uses": [
-      "huile-olive"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "haricots",
-     "action": "Pendant ce temps, cuire les haricots verts surgelés à la vapeur, puis les couper en tronçons",
-     "minutes": 10,
-     "needs": [
-      "steam"
-     ],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "haricots-verts-surgeles"
-     ],
-     "enParallele": "pommes-de-terre",
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "battre",
-     "action": "Battre les œufs en omelette et les saler",
-     "minutes": 3,
-     "needs": [],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "oeufs",
-      "sel"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": "battre les œufs à la fourchette",
-     "enfantDes": 30,
-     "porteAssaisonnement": true
-    },
-    {
-     "id": "enfourner",
-     "action": "Mêler légumes et œufs dans le plat huilé, enfourner jusqu'à ce que le centre soit pris",
-     "minutes": 25,
-     "needs": [
-      "gratin-vessel",
-      "bake"
-     ],
-     "surveille": false,
-     "astuce": null,
-     "uses": [],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    }
-   ],
-   "bebe": "quelques rondelles de pomme de terre et des haricots verts, avant les œufs salés",
-   "bebePrep": "écraser à la fourchette",
-   "bebeApres": "haricots",
-   "actifMin": 15,
-   "accepts": [],
-   "creneaux": [
-    "dejeuner",
-    "diner"
-   ],
-   "transportable": true,
-   "sansReste": null,
-   "emits": [
-    {
-     "type": "tortilla",
-     "kind": "reste-plat",
-     "qty": null,
-     "band": "lunchbox",
-     "espace": "frigo",
-     "note": "se mange froide, en part, dans une boîte",
-     "gardeFrigo": 2,
-     "congelo": false,
-     "horsTable": false
-    }
-   ],
-   "lotEntier": false,
-   "calibreMax": null,
-   "vaisselle": {
-    "id": "sauteuse-28",
-    "label": "sauteuse 28 cm",
-    "facteurMax": 1.5
-   },
-   "gainChainage": 0,
-   "cuisinable": true
-  },
-  {
    "id": "tourte-automne-foret-champignons",
    "titre": "Jolie tourte d'automne de la forêt aux champignons",
    "minutes": 60,
@@ -129944,7 +125935,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courge",
+       "nom": "courge (butternut…)",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "ail",
@@ -132737,8 +128735,8 @@
     "du_depot": {
      "types": [
       "banana-bread",
-      "cookies-avoine",
-      "crepes-maison",
+      "cookies-pralines-son-avoine",
+      "crepes-son-avoine-fleur-oranger",
       "compote-maison",
       "muffins-choco-courgettes",
       "quatre-quarts-poire",
@@ -133146,7 +129144,6 @@
     "ferments-yaourt",
     "creme-soja",
     "levure-boulangere",
-    "lait-croissance",
     "agar-agar",
     "lait-avoine",
     "eau-fleur-oranger",
@@ -133394,7 +129391,6 @@
    "lait-amande": "lait d'amande",
    "lait-avoine": "lait d'avoine",
    "lait-coco": "lait de coco",
-   "lait-croissance": "lait de croissance",
    "lait-soja-vanille": "lait de soja-vanille",
    "lecithine-soja": "lécithine de soja",
    "legumes-verts-saison": "légumes verts de saison",
@@ -136104,7 +132100,8 @@
     "thon-boite",
     "maquereaux-boite",
     "sardines-boite",
-    "mais"
+    "mais",
+    "sauce-tomate"
    ]
   },
   {
@@ -136152,7 +132149,8 @@
    "source": "ordre de grandeur — un bloc de comté ou d'emmental sous vide porte une date à six à huit semaines ; entamé, il tient trois à quatre semaines emballé.",
    "conseil": "Râper la moitié d'un bloc qui traîne et la congeler à plat : elle s'emploie sans décongeler, directement sur le gratin.",
    "ids": [
-    "fromage-rape"
+    "fromage-rape",
+    "parmesan"
    ]
   },
   {
@@ -136184,7 +132182,10 @@
    "source": "ordre de grandeur — la date d'une brique UHT fermée est à plusieurs mois ; ouverte, 48 heures au frigo selon les fabricants. La date de la brique fait foi.",
    "conseil": "Ouvrir une brique à la fois et noter le jour dessus au feutre : deux briques entamées au frigo, c'est une de trop.",
    "ids": [
-    "lait-croissance"
+    "lait",
+    "lait-soja-vanille",
+    "lait-amande",
+    "lait-avoine"
    ]
   },
   {
@@ -136352,10 +132353,17 @@
     "unite": "morceau de 400 g (en bloc, à râper)"
    },
    {
-    "ingredient": "lait-croissance",
-    "minimum": 4,
-    "jusqua": 6,
-    "hebdo": true,
+    "ingredient": "lait",
+    "minimum": 2,
+    "jusqua": 4,
+    "hebdo": false,
+    "unite": "brique de 1 L"
+   },
+   {
+    "ingredient": "lait-soja-vanille",
+    "minimum": 1,
+    "jusqua": 2,
+    "hebdo": false,
     "unite": "brique de 1 L"
    },
    {
@@ -136506,13 +132514,6 @@
     "unite": "tube"
    },
    {
-    "ingredient": "lait-coco",
-    "minimum": 3,
-    "jusqua": null,
-    "hebdo": false,
-    "unite": "brique de 40 cl"
-   },
-   {
     "ingredient": "thon-boite",
     "minimum": 2,
     "jusqua": 3,
@@ -136560,47 +132561,83 @@
     "jusqua": null,
     "hebdo": false,
     "unite": "pièce"
+   },
+   {
+    "ingredient": "courge",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "pièce (butternut ou potimarron)"
+   },
+   {
+    "ingredient": "poireau",
+    "minimum": 2,
+    "jusqua": 4,
+    "hebdo": true,
+    "unite": "pièce"
+   },
+   {
+    "ingredient": "parmesan",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "morceau de 200 g"
+   },
+   {
+    "ingredient": "sauce-tomate",
+    "minimum": 1,
+    "jusqua": 2,
+    "hebdo": false,
+    "unite": "bocal de 500 g"
    }
   ],
   "diners": [
    {
-    "plat": "dahl-lentilles-corail",
-    "titre": "Dahl de lentilles corail, lait de coco, épinards surgelés, riz"
+    "plat": "dahl-riz-lentilles-corail-carottes",
+    "titre": "Dahl de riz et lentilles corail aux carottes"
    },
    {
-    "plat": "pates-bolognaise-lentilles",
-    "titre": "Pâtes à la bolognaise de lentilles vertes et tomates pelées"
+    "plat": "houmous-et-compagnie",
+    "titre": "Houmous et compagnie"
    },
    {
-    "plat": "soupe-pois-casses-carottes",
-    "titre": "Soupe de pois cassés aux carottes"
+    "plat": "soupe-crepes-haute-autriche",
+    "titre": "Soupe de crêpes de Haute-Autriche"
    },
    {
-    "plat": "curry-pois-chiches",
-    "titre": "Curry de pois chiches"
+    "plat": "blinis-de-legumes",
+    "titre": "Blinis de légumes"
    },
    {
-    "plat": "chili-haricots-rouges",
-    "titre": "Chili de haricots rouges (trempés la veille), riz"
+    "plat": "frittata-vegetarienne",
+    "titre": "Frittata végétarienne"
    },
    {
-    "plat": "haricots-blancs-tomate-oeufs",
-    "titre": "Haricots blancs mijotés à la tomate, œufs pochés dedans"
+    "plat": "gratin-courge-riz",
+    "titre": "Gratin de courge au riz"
    },
    {
-    "plat": "tortilla-pommes-de-terre-haricots-verts",
-    "titre": "Omelette aux pommes de terre et haricots verts"
+    "plat": "veloute-potiron",
+    "titre": "Le meilleur des veloutés de potiron"
    },
    {
-    "plat": "salade-tiede-lentilles-thon",
-    "titre": "Salade tiède de lentilles vertes, carottes, thon"
+    "plat": "veloute-potimarron-quatre-versions",
+    "titre": "Velouté de potimarron, en quatre versions"
    },
    {
-    "plat": "soupe-legumes-pois-chiches",
-    "titre": "Soupe de légumes surgelés et pois chiches"
+    "plat": "mitonnee-lentilles",
+    "titre": "Mitonnée de lentilles vertes"
+   },
+   {
+    "plat": "croquettes-parmesan-restes-dahl",
+    "titre": "Croquettes dorées au parmesan et restes de dahl"
    }
   ],
   "conditionnements": [
+   {
+    "ingredient": "lait-coco",
+    "unite": "brique de 40 cl"
+   },
    {
     "ingredient": "yaourt-brebis",
     "unite": "pack de 4"

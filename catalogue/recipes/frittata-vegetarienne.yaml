@@ -41,7 +41,14 @@ recipe:
   ingredients:
     - {id: piperade, name: "piperade, ou ratatouille", qty: 150, unit: g, from_accepts: true}
     - {id: oeufs, name: œufs, qty: 2, unit: pièce}
-    - {id: etorki, name: Etorki, qty: 30, unit: g}
+    # T197 — adaptation du foyer : le fromage râpé du fond fait l'affaire.
+    - id: etorki
+      name: Etorki
+      qty: 30
+      unit: g
+      subs:
+        - {id: fromage-rape, name: fromage râpé, note: "adaptation du foyer", ratio: 1.0}
+        - {id: parmesan, name: parmesan, note: "adaptation du foyer", ratio: 1.0}
     - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
     - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
     - {id: piment-espelette, name: "piment d'Espelette, facultatif", qty: 1, unit: pincée, seasoning: true}

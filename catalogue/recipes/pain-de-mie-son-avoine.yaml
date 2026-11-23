@@ -16,6 +16,7 @@ recipe:
     encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
   yields:
     portions_eq: 5
+  lot_entier: true          # un moule ne se coupe pas en deux
   time_min_total: 120
   active_min: 12
 
@@ -23,6 +24,9 @@ recipe:
   # « pains, pâtes et fonds qui servent aux autres chapitres ». Un pain de mie
   # se garnit, il ne fait pas un dîner.
   role: base
+  # T197 — LE PAIN DU MATIN DES ENFANTS. Le pain maison rédigé pour ce dépôt est
+  # retiré : celui-ci le remplace au petit-déjeuner, et se cuit d'un bloc.
+  creneaux: [petit-dejeuner]
 
   apports:
     proteine: aucune
@@ -78,13 +82,23 @@ recipe:
       time_min: 5
       attended: false
   emits:
+    # T197 — ADAPTATION DU FOYER : l'autrice le garde 4 jours dans un torchon, ou
+    # tranché et congelé en sachet. Le foyer le congèle tranché en deux sachets,
+    # trois matins chacun, comme le pain maison qu'il remplace.
     - kind: base
       type: pain-de-mie-maison
       hors_table: true   # T108 — préparation : le pain sort entier
       qty_band: 3-repas
-      qty: {amount: 900, unit: g}
-      keeps: {frigo_days: 4, congelo: true}
-      note: "4 jours dans un torchon, ou tranché puis congelé en sachet hermétique ; la salade César p. 59 en réclame 100 g"
+      qty: {amount: 450, unit: g}
+      keeps: {frigo_days: 0, congelo: true}
+      note: "un sachet de tranches, trois matins ; la salade César p. 59 en réclame 100 g"
+    - kind: base
+      type: pain-de-mie-maison
+      hors_table: true
+      qty_band: 3-repas
+      qty: {amount: 450, unit: g}
+      keeps: {frigo_days: 0, congelo: true}
+      note: "le second sachet"
 
   plan_b:
     - swap:

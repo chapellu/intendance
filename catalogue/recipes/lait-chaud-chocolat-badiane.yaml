@@ -1,0 +1,57 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# RECETTE INVITÉE : « très librement inspirée » du chocolat chaud à l'anis étoilé
+# d'une autre blogueuse, Frédérique, avec moins de chocolat. Lait végétal
+# porté à ébullition avec une étoile de badiane, infusé 5 min à couvert, puis
+# fouetté ou mixé avec 20 g de chocolat 85 % pour fondre et mousser. Un bol.
+
+recipe:
+  id: lait-chaud-chocolat-badiane
+  title: Lait chaud mousseux, doucement chocolaté, à la badiane
+  role: boisson
+  creneaux: [gouter, petit-dejeuner]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Cookies « 0 complexe » amande-citron-chocolat, lait chaud… », blog Saines Gourmandises, 12 janvier 2012"
+    url: https://saines-gourmandises.fr/cocooning/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 1          # « pour un bol »
+  time_min_total: 10
+  active_min: 5
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: []
+    profil: rapide
+    origine: francais
+
+  ingredients:
+    - {id: lait-amande, name: "lait d'amande ou de soja-vanille", qty: 25, unit: cl}
+    - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 1, unit: c. à c.}
+    - {id: badiane, name: "étoile de badiane", qty: 1, unit: pièce}
+    - {id: chocolat-noir, name: "chocolat noir 85 %", qty: 20, unit: g}
+
+  steps:
+    - id: infuser
+      action: "Porter le lait à ébullition avec la badiane et la vanille, couper le feu et laisser infuser à couvert"
+      needs: [simmer]
+      uses: [lait-amande, badiane, extrait-vanille]
+      time_min: 4
+      attente_min: 5
+      attente_raison: "5 min d'infusion"
+    - id: mousser
+      action: "Ajouter le chocolat en tout petits morceaux et fouetter ou mixer pour le fondre et faire mousser ; servir bien chaud"
+      needs: [blend-smooth]
+      uses: [chocolat-noir]
+      time_min: 2
+
+  emits: []
+
+  plan_b: []

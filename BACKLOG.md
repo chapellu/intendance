@@ -6859,3 +6859,62 @@ reformulé comme ceux du livre.
       **UN FAIT DE CORPUS A BOUGÉ.** 105 plats mangent l'épeautre (13 de
       plus). 24 ingrédients nouveaux, dont seitan, ail noir, reblochon,
       psyllium et kéfir de lait.
+
+- [x] **T196e — Les recettes invitées du blog, créditées.** Le mot « invitées »
+      de la demande visait les recettes RÉDIGÉES POUR CE DÉPÔT, pas celles
+      d'autres auteurs publiées sur le blog : ces dernières reviennent, chacune
+      avec son auteur dans l'en-tête de la fiche. Le fondant de Noël (d'après
+      Amandine Geers et Olivier Degorce), le gâteau de Pâques 2026 (génoise de
+      la blogueuse Cléa), la crème-mousse au tofu soyeux de Valérie Cupillard
+      et sa variante « nuage », le lait chaud à la badiane (inspiré de
+      Frédérique). Les carrés à la crème de groseille restent dehors, mais
+      pour la bonne raison : ils sont déjà au catalogue depuis le livre.
+
+- [ ] **T197 — Retirer peu à peu les recettes rédigées pour ce dépôt.** 52
+      plats n'ont aucune source extérieure (37 fiches « Recette du foyer » et
+      15 entrées de `_repertoire.yaml`) ; trois autres sont des mécanismes,
+      pas des recettes, et restent (`gouter-des-enfants`,
+      `petit-dejeuner-des-enfants`, `reste-de-la-veille`). Règle : une fiche
+      ne part que quand une recette sourcée tient sa place — même rôle, même
+      apport, et la même contrainte s'il y en a une. Une vague par PR, avec
+      ses tests.
+
+      **PREMIÈRE VAGUE FAITE (2026-11-23) : VINGT RECETTES RETIRÉES.** Onze
+      qu'une recette sourcée couvrait déjà (poulet rôti, lentilles mijotées,
+      frittata, gratin courgettes-riz, salade lentilles-feta, tarte tomates-
+      moutarde, croque-monsieur-salade, hachis de lentilles, crêpes, cookies
+      d'avoine, pain maison) et les neuf anciens dîners du fond. Ce qui les
+      tenait est rebranché sur l'autrice :
+      — le fond de roulement : dix de ses dîners, élargi de la courge, du
+        poireau, du parmesan, de la sauce tomate, du lait et du soja-vanille.
+        Le lait de croissance n'est plus suivi (le foyer le gère), le lait de
+        coco n'y est plus (sa brique garde sa taille dans `conditionnements`).
+        Trois fiches portent une adaptation du foyer en `subs` (huile et
+        gingembre du dahl, fromage de la frittata, potimarron du velouté), et
+        `fond.manques` compte une ligne couverte si un remplaçant est au fond.
+        La règle « chacun se fait toute l'année » devient « chaque mois, au
+        moins trois sont de saison » : elle cuisine avec les saisons ;
+      — le pain du matin : son pain de mie au son d'avoine, celui que le foyer
+        fait (`creneaux: [petit-dejeuner]`, congelé tranché en deux sachets) ;
+      — le goûter puise dans ses crêpes au son d'avoine et ses cookies
+        pralinés ; les replis de `cock-a-leekie` et des burgers visent son
+        poulet rôti et sa mitonnée ;
+      — les tests qui prenaient ces plats pour exemples prennent les siens et
+        vérifient la même propriété ; celui du volume de questions vérifie ce
+        que son titre promet au lieu de comparer deux totaux.
+      Le retrait a révélé un vrai trou : sa souche de légumineuses propose des
+      haricots rouges secs en remplaçant sans dire les dix minutes de grosse
+      ébullition. L'astuce de l'étape le dit, et le garde-fou regarde
+      désormais les remplaçants.
+
+      **RESTENT 32 RECETTES SANS SOURCE** (plus les trois mécanismes), aucune
+      couverte pour l'instant : chili sin carne, fajitas, gnocchis (deux),
+      lasagnes, sauce et pâtes bolognaise, saumon-riz-brocoli, soupe de poule,
+      couscous d'hiver, taboulé, minestrone, moussaka de lentilles, ratatouille
+      minute, quiches (courgettes-yaourt, épinards-thon, poireaux), tartes
+      oignons-thon et potimarron-oignons, burgers de lentilles, veloutés
+      (courgettes, butternut-coco, carottes-corail, épinards-corail,
+      poireaux-pommes de terre-corail), soupe chou frisé-haricots, tian de
+      printemps, banana bread, compote pommes-poires, gratins de pâtes
+      (tomates, brocoli-thon), omelette aux courgettes. D'autres livres de
+      l'autrice les couvriraient peut-être.

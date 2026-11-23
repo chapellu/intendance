@@ -171,10 +171,9 @@ export interface Etape {
    *  existe pour attraper. `export_json.py` le dit déjà en commentaire ; on le
    *  tient de ce côté-ci. */
   uses: string[] | null;
-  /** L'id de l'étape — du MÊME plat — que celle-ci accompagne. Les carottes de
-   *  `lentilles-mijotees` portent `enParallele: lancer-mijotage` et leur texte
-   *  commence par « Pendant le mijotage : » ; le guide les a pourtant mises à
-   *  la queue leu leu et a fait attendre 30 minutes de trop. */
+  /** L'id de l'étape — du MÊME plat — que celle-ci accompagne. Né d'une
+   *  plainte : des carottes à tailler « pendant le mijotage » que le guide avait
+   *  mises à la queue leu leu, trente minutes d'attente de trop. */
   enParallele: string | null;
   /** Du temps mort, en minutes : trempage 720, prise au frais 240, repos 10.
    *  LA SECONDE HORLOGE — elle ne compte pas dans les gestes (`anticipation.py`

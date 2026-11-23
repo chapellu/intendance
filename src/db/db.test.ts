@@ -108,12 +108,12 @@ describe("une décision appartient à un jour, pas à un index", () => {
     // Posé mardi sur le dîner de jeudi (index 5) ; relu jeudi, c'est le dîner
     // du jour (index bien plus petit) qui doit le porter.
     const jeudiSoirDepuisMardi = creneau(jeu, 2, "diner");
-    await poser(base, jeu, jeudiSoirDepuisMardi, "poulet-roti");
+    await poser(base, jeu, jeudiSoirDepuisMardi, "poulet-roti-du-dimanche");
 
     const depuisJeudi = await recharger(JEUDI);
     const jeudiSoir = creneau(depuisJeudi, 0, "diner");
     expect(jeudiSoir).not.toBe(jeudiSoirDepuisMardi);
-    expect(depuisJeudi.choix[jeudiSoir]).toBe("poulet-roti");
+    expect(depuisJeudi.choix[jeudiSoir]).toBe("poulet-roti-du-dimanche");
   });
 });
 
@@ -128,17 +128,17 @@ describe("poser, régler, oublier", () => {
   test("changer de plat ne fait pas oublier les parts qu'on avait réglées", async () => {
     const soir = creneau(jeu, 0, "diner");
     await reglerParts(base, jeu, soir, 5);
-    await poser(base, jeu, soir, "poulet-roti");
+    await poser(base, jeu, soir, "poulet-roti-du-dimanche");
     const relu = await recharger(MARDI);
     expect(relu.parts[soir]).toBe(5);
-    expect(relu.choix[soir]).toBe("poulet-roti");
+    expect(relu.choix[soir]).toBe("poulet-roti-du-dimanche");
   });
 
   test("ce que la carte de 15 h disait là se garde avec le plat, et tombe avec lui", async () => {
     const soir = creneau(jeu, 0, "diner");
-    await poser(base, jeu, soir, "dahl-lentilles-corail", ["lentilles-corail", "oignon"]);
+    await poser(base, jeu, soir, "dahl-riz-lentilles-corail-carottes", ["lentilles-corail", "oignon"]);
     let relu = await recharger(MARDI);
-    expect(relu.dejaLa[soir]).toEqual({ plat: "dahl-lentilles-corail", ids: ["lentilles-corail", "oignon"] });
+    expect(relu.dejaLa[soir]).toEqual({ plat: "dahl-riz-lentilles-corail-carottes", ids: ["lentilles-corail", "oignon"] });
 
     // Régler les parts ne change pas ce que la carte disait.
     await reglerParts(base, jeu, soir, 4);
@@ -146,7 +146,7 @@ describe("poser, régler, oublier", () => {
     expect(relu.dejaLa[soir]?.ids).toEqual(["lentilles-corail", "oignon"]);
 
     // Un autre plat, posé d'ailleurs, n'hérite pas de l'instantané.
-    await poser(base, jeu, soir, "poulet-roti");
+    await poser(base, jeu, soir, "poulet-roti-du-dimanche");
     relu = await recharger(MARDI);
     expect(relu.dejaLa[soir]).toBeNull();
     expect(jeu.dejaLa[soir]).toBeNull();
@@ -154,7 +154,7 @@ describe("poser, régler, oublier", () => {
 
   test("effacer le plat garde les parts, oublier le créneau efface tout", async () => {
     const soir = creneau(jeu, 0, "diner");
-    await poser(base, jeu, soir, "poulet-roti");
+    await poser(base, jeu, soir, "poulet-roti-du-dimanche");
     await reglerParts(base, jeu, soir, 5);
 
     await poser(base, jeu, soir, null);
@@ -182,11 +182,11 @@ describe("poser, régler, oublier", () => {
   });
 
   test("un créneau hors de la semaine est une erreur, pas un silence", async () => {
-    await expect(poser(base, jeu, 999, "poulet-roti")).rejects.toThrow(/hors de la semaine/);
+    await expect(poser(base, jeu, 999, "poulet-roti-du-dimanche")).rejects.toThrow(/hors de la semaine/);
   });
 
   test("la semaine ne lit que sa fenêtre, pas toute la base", async () => {
-    await poser(base, jeu, creneau(jeu, 0, "diner"), "poulet-roti");
+    await poser(base, jeu, creneau(jeu, 0, "diner"), "poulet-roti-du-dimanche");
     // Une décision très ancienne, qui ne doit pas remonter.
     await base.creneaux.put({
       cle: cleCreneau("2020-01-01", "diner"), jour: "2020-01-01",
