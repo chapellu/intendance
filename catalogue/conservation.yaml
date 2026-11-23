@@ -391,7 +391,7 @@ familles:
     conseil: >-
       Ouvrir une brique à la fois et noter le jour dessus au feutre : deux
       briques entamées au frigo, c'est une de trop.
-    ids: [lait-croissance]
+    ids: [lait, lait-soja-vanille, lait-amande, lait-avoine]
 
   # ── Le frais fragile : PAS du fond, et c'est là que le geste compte ──────
 

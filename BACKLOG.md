@@ -6896,12 +6896,13 @@ reformulé comme ceux du livre.
       Il avait été écrit en même temps que les neuf dîners rédigés pour ce
       dépôt, et leur allait comme un gant : un seul plat sourcé s'y faisait
       sans courses. Il gagne la courge, le poireau (frais de la semaine), le
-      parmesan et la sauce tomate ; pas de céleri-rave (pas aimé), pas d'huile
-      de coco ni de gingembre frais (on adapte plutôt que d'acheter). Quatre
+      parmesan, la sauce tomate, le lait et le soja-vanille (le lait des
+      enfants n'est plus suivi : le foyer le gère) ; pas de céleri-rave (pas aimé), pas d'huile
+      de coco ni de gingembre frais (on adapte plutôt que d'acheter). Trois
       fiches portent une adaptation du foyer en `subs` (huile et gingembre du
-      dahl, fromage de la frittata, lait du gratin, potimarron du velouté), et
+      dahl, fromage de la frittata, potimarron du velouté), et
       `fond.manques` compte une ligne couverte si un remplaçant est au fond.
-      Les dîners du fond sont désormais huit plats de l'autrice, et la règle
+      Les dîners du fond sont désormais dix plats de l'autrice, et la règle
       « chacun se fait toute l'année » devient « chaque mois, au moins trois
       sont de saison » : elle cuisine avec les saisons. Les neuf anciens
       dîners (`dahl-lentilles-corail`, `pates-bolognaise-lentilles`,

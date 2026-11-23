@@ -524,7 +524,6 @@ rayons:
     - levure-boulangere
     # T142 — le lait de croissance des deux enfants, en briques UHT d'un litre
     # (recommandation pédiatrique jusqu'à 3 ans) : rayon épicerie, pas crèmerie.
-    - lait-croissance
     - agar-agar
     - lait-avoine
     - eau-fleur-oranger
@@ -821,7 +820,6 @@ noms:
   lait-amande: lait d'amande
   lait-avoine: lait d'avoine
   lait-coco: lait de coco
-  lait-croissance: lait de croissance
   lait-soja-vanille: lait de soja-vanille
   lecithine-soja: lécithine de soja
   legumes-verts-saison: légumes verts de saison

@@ -38,13 +38,7 @@ recipe:
     - {id: courge, name: "courge musquée, pesée épluchée et sans les graines", qty: 1, unit: kg}
     - {id: oignon, name: oignons, qty: 2, unit: pièce}
     - {id: riz, name: riz basmati demi-complet, qty: 75, unit: g}
-    # T197 — adaptation du foyer : le lait toujours là est celui des enfants.
-    - id: lait
-      name: lait
-      qty: 30
-      unit: cl
-      subs:
-        - {id: lait-croissance, name: lait de croissance, note: "adaptation du foyer", ratio: 1.0}
+    - {id: lait, name: lait, qty: 30, unit: cl}
     - {id: parmesan, name: parmesan ou gruyère râpé, qty: 150, unit: g, subs: [{id: fromage-rape, name: "gruyère râpé", ratio: 1.0}]}
     - {id: oeufs, name: œufs, qty: 3, unit: pièce}
     - {id: huile-olive, name: huile pour le plat, qty: 1, unit: c. à s.}

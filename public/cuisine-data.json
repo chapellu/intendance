@@ -57403,16 +57403,6 @@
      "base": false,
      "assaisonnement": false,
      "central": false
-    },
-    {
-     "id": "lait-croissance",
-     "ref": "lait-croissance",
-     "nom": "lait de croissance",
-     "qty": 200,
-     "unit": "ml",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
     }
    ],
    "role": "plat",
@@ -57428,8 +57418,7 @@
      "astuce": null,
      "uses": [
       "pommes",
-      "yaourt-nature",
-      "lait-croissance"
+      "yaourt-nature"
      ],
      "enParallele": null,
      "attente": null,
@@ -57797,14 +57786,7 @@
      "unit": "cl",
      "base": false,
      "assaisonnement": false,
-     "central": false,
-     "remplacants": [
-      {
-       "id": "lait-croissance",
-       "nom": "lait de croissance",
-       "ratio": 1.0
-      }
-     ]
+     "central": false
     },
     {
      "id": "parmesan",
@@ -88578,16 +88560,6 @@
      "central": false
     },
     {
-     "id": "lait-croissance",
-     "ref": "lait-croissance",
-     "nom": "lait de croissance",
-     "qty": 400,
-     "unit": "ml",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
      "id": "banane",
      "ref": "banane",
      "nom": "banane écrasée dans le porridge",
@@ -88624,7 +88596,7 @@
    "steps": [
     {
      "id": "porridge",
-     "action": "Cuire les flocons dans le lait trois minutes en remuant, puis y écraser la banane",
+     "action": "Cuire les flocons dans leur lait trois minutes en remuant, puis y écraser la banane",
      "minutes": 6,
      "needs": [
       "simmer"
@@ -88633,7 +88605,6 @@
      "astuce": null,
      "uses": [
       "flocons-avoine",
-      "lait-croissance",
       "banane"
      ],
      "enParallele": null,
@@ -134209,7 +134180,6 @@
     "ferments-yaourt",
     "creme-soja",
     "levure-boulangere",
-    "lait-croissance",
     "agar-agar",
     "lait-avoine",
     "eau-fleur-oranger",
@@ -134457,7 +134427,6 @@
    "lait-amande": "lait d'amande",
    "lait-avoine": "lait d'avoine",
    "lait-coco": "lait de coco",
-   "lait-croissance": "lait de croissance",
    "lait-soja-vanille": "lait de soja-vanille",
    "lecithine-soja": "lécithine de soja",
    "legumes-verts-saison": "légumes verts de saison",
@@ -137249,7 +137218,10 @@
    "source": "ordre de grandeur — la date d'une brique UHT fermée est à plusieurs mois ; ouverte, 48 heures au frigo selon les fabricants. La date de la brique fait foi.",
    "conseil": "Ouvrir une brique à la fois et noter le jour dessus au feutre : deux briques entamées au frigo, c'est une de trop.",
    "ids": [
-    "lait-croissance"
+    "lait",
+    "lait-soja-vanille",
+    "lait-amande",
+    "lait-avoine"
    ]
   },
   {
@@ -137417,10 +137389,17 @@
     "unite": "morceau de 400 g (en bloc, à râper)"
    },
    {
-    "ingredient": "lait-croissance",
-    "minimum": 4,
-    "jusqua": 6,
-    "hebdo": true,
+    "ingredient": "lait",
+    "minimum": 2,
+    "jusqua": 4,
+    "hebdo": false,
+    "unite": "brique de 1 L"
+   },
+   {
+    "ingredient": "lait-soja-vanille",
+    "minimum": 1,
+    "jusqua": 2,
+    "hebdo": false,
     "unite": "brique de 1 L"
    },
    {
@@ -137687,6 +137666,14 @@
    {
     "plat": "veloute-potimarron-quatre-versions",
     "titre": "Velouté de potimarron, en quatre versions"
+   },
+   {
+    "plat": "mitonnee-lentilles",
+    "titre": "Mitonnée de lentilles vertes"
+   },
+   {
+    "plat": "croquettes-parmesan-restes-dahl",
+    "titre": "Croquettes dorées au parmesan et restes de dahl"
    }
   ],
   "conditionnements": [

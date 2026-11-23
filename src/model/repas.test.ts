@@ -134,7 +134,6 @@ describe("les routines se rejouent, chaque jour", () => {
     sorte: "entree", jour: depuis, saisi: depuis, maj: 1,
     lignes: [
       { ingredient: "yaourt-nature", unites: 3, parUnite: { amount: 4, unit: "pot" }, zone: null, etat: "frais" },
-      { ingredient: "lait-croissance", unites: 6, parUnite: { amount: 1000, unit: "ml" }, zone: null, etat: "conserve" },
     ],
   };
 
@@ -146,16 +145,16 @@ describe("les routines se rejouent, chaque jour", () => {
     );
   });
 
-  test("deux jours de goûters et de petits-déjeuners : 8 yaourts en moins, et le lait descend", () => {
+  test("deux jours de goûters et de petits-déjeuners : 8 yaourts en moins", () => {
     const r = rejouer(catalogue, [courses], contexte(catalogue), lendemain);
     expect(r.parIngredient.get("yaourt-nature")?.unites).toBe(1);
-    // Le lait se retire à la quantité (une brique ouverte devient un reste,
-    // T135) : on vérifie qu'il descend, jour après jour, sans l'arithmétique
-    // interne de la brique entamée.
-    const veille = rejouer(catalogue, [courses], contexte(catalogue), "2026-10-20");
-    expect(veille.parIngredient.get("lait-croissance")?.grammes).toBe(6000);
-    expect(r.parIngredient.get("lait-croissance")!.grammes!).toBeLessThan(6000);
-    expect(r.retraits.filter((x) => x.ingredient === "lait-croissance")).toHaveLength(4);
+  });
+
+  test("le lait des enfants n'est pas suivi : les routines ne le retirent pas", () => {
+    // T197 — le foyer le gère lui-même ; l'app ne le compte ni ne le rachète.
+    const r = rejouer(catalogue, [courses], contexte(catalogue), lendemain);
+    expect(r.retraits.filter((x) => x.ingredient.startsWith("lait"))).toEqual([]);
+    expect(catalogue.fond.denrees.map((d) => d.ingredient)).not.toContain("lait-croissance");
   });
 
   test("une ration n'est pas un doute : elle ne fait pas redemander « des yaourts ? »", () => {
