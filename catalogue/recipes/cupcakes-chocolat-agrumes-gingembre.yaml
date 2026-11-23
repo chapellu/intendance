@@ -1,0 +1,76 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# MOELLEUX AU YAOURT ET À LA PURÉE D'AMANDE parfumés d'alcool d'agrume et de
+# gingembre, coiffés d'une ganache de tofu soyeux, chocolat et citron prise
+# 4 à 12 h au frais, gingembre confit émietté.
+
+recipe:
+  id: cupcakes-chocolat-agrumes-gingembre
+  title: Cupcakes au chocolat noir, parfum d'agrumes et gingembre confit
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Cupcakes bio au chocolat noir, parfum d'agrumes et pépites de gingembre confit », blog Saines Gourmandises, 15 mars 2012"
+    url: https://saines-gourmandises.fr/les-fameux-cupcakes/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 8 cupcakes »
+    pieces: 8
+  time_min_total: 30
+  active_min: 15
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine, name: "farine", qty: 150, unit: g}
+    - {id: poudre-a-lever, name: "levure", qty: 1, unit: sachet}
+    - {id: oeufs, name: "œufs", qty: 3, unit: pièce}
+    - {id: yaourt-nature, name: "yaourt", qty: 1, unit: pot}
+    - {id: puree-amande-blanche, name: "purée d'amande blanche", qty: 3, unit: c. à s.}
+    - {id: gingembre-poudre, name: "gingembre en poudre", qty: 1, unit: c. à c., seasoning: true}
+    - {id: sirop-agave, name: "sirop d'agave (6 + 4 c. à s.)", qty: 10, unit: c. à s.}
+    - {id: cointreau, name: "alcool d'agrume (ou rhum)", qty: 2, unit: c. à s.}
+    - {id: tofu-soyeux, name: "tofu soyeux", qty: 400, unit: g}
+    - {id: chocolat-noir, name: "très bon chocolat noir", qty: 200, unit: g}
+    - {id: huile-essentielle-citron, name: "huile essentielle de citron", qty: 15, unit: pièce}
+    - {id: gingembre-confit, name: "gingembre confit", qty: 4, unit: pièce}
+    - {id: cacao, name: "cacao pour saupoudrer", qty: 1, unit: c. à c.}
+
+  steps:
+    - id: ganache
+      action: "Fondre le chocolat au bain-marie avec 4 c. à s. d'agave, y chauffer le tofu égoutté, puis mixer en crème lisse avec l'huile essentielle"
+      needs: [simmer, blend-smooth]
+      charge_partielle: true
+      uses: [chocolat-noir, tofu-soyeux, huile-essentielle-citron]
+      time_min: 8
+      attente_min: 240
+      attente_raison: "la ganache prend 4 à 12 h au frais"
+    - id: moelleux
+      action: "Préchauffer à 180 °C ; mélanger farine et levure, puis œufs, yaourt, purée d'amande, gingembre, agave et alcool ; répartir en caissettes et cuire 20 min"
+      needs: [bake]
+      uses: [farine, poudre-a-lever, oeufs, yaourt-nature, puree-amande-blanche, gingembre-poudre, sirop-agave, cointreau]
+      time_min: 25
+    - id: garnir
+      action: "Coiffer chaque moelleux d'une volute de ganache, poudrer de cacao et émietter du gingembre confit"
+      needs: []
+      uses: [cacao, gingembre-confit]
+      time_min: 6
+      kid: {age_min_months: 36, task: "émietter le gingembre confit"}
+
+  emits:
+    - kind: reste-plat
+      type: cupcakes-chocolat-agrumes-gingembre
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

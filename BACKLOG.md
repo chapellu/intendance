@@ -6679,3 +6679,242 @@ contenance, le récipient retenu changeait d'un lancement à l'autre, et
       chacun). Des plats à garde courte cuisinés en lot entier pour 2,75
       parts : la question de T155, pour les plats qui n'ont pas de preneur
       le lendemain midi.
+
+## T196 — Le blog Saines Gourmandises entre au catalogue, rubrique par rubrique
+
+Demandé le 22/11 : « traiter toutes les recettes du blog de Marie Chioca », en
+laissant de côté les recettes invitées. L'index de `sources/` (255 entrées,
+relevé du 14/08) n'en avait fait entrer que cinq. Le blog compte aujourd'hui
+404 articles, dont 262 portent une liste d'ingrédients (334 recettes) ; le
+travail se fait par rubrique, une PR chacune, chaque plat repris à la main et
+reformulé comme ceux du livre.
+
+- [x] **T196a — Viandes et poissons, légumes et céréales (22/11).** 55 plats :
+      les 17 articles de « Viandes et poissons » (dont les trois classiques du
+      dimanche — goulasch, poulet chasseur, marmite dieppoise —, la
+      bouillabaisse, les deux dindes de Noël, le waterzoï à l'avoine) et les
+      27 de « Légumes et céréales » restants, dont les onze plats salés de la
+      rétrospective potimarron de septembre 2026. Catalogue : 207 → 262 plats,
+      0 erreur.
+
+      **UNE ARÊTE DE PLUS, ÉCRITE PAR L'ARTICLE.** Les cupcakes au potimarron
+      demandent 160 g de purée déjà cuite : la purée à l'huile d'olive de la
+      même page l'émet (`puree-potimarron`), les cupcakes l'`accepts`, avec un
+      `sans_reste` (250 g de potimarron à cuire). La crème de potiron au
+      beaufort prend 30 cl de `bouillon-pot-au-feu`, facultatif.
+
+      **CE QUE LE FOYER N'A PAS, DIT DANS LA FICHE.** Le robot de l'autrice
+      devient le couteau (farces de dinde, « une farce, pas un velouté ») ou
+      le petit blender ; le moulin à légumes de la bouillabaisse, le mixeur et
+      le tamis. Le roaster, le moule à bûche, la feuille guitare, le moule haut
+      de 18 cm sont hors inventaire et rien ne le vérifie. Le welsh cawl est
+      encodé pour 4 (l'autrice propose de diviser par deux) : pour 8, il faut
+      un chaudron de 33 cm.
+
+      **TROIS ÉCARTS, TOUS ÉCRITS DANS L'INDEX.** Les tomates séchées
+      demandent un déshydrateur (`ecartee:`). Dans la rétrospective, la tourte
+      « feuilles d'automne », le meilleur des veloutés de potiron et le
+      moelleux mystère étaient déjà au catalogue depuis le livre, comme les
+      tranches de butternut (`note_encodage:`). Les farçous du blog, eux, ne
+      sont pas ceux du livre (orge, son d'avoine, eau, parmesan) : ils entrent
+      à côté.
+
+      **AUCUNE RECETTE INVITÉE DANS CES DEUX RUBRIQUES.** Tout le blog paraît
+      sous le compte de l'autrice ; les articles qui publient la recette d'un
+      autre (gagnants de concours, une amie, une lectrice) se repèrent à la
+      lecture et seront marqués `ecartee:` dans leur rubrique — ceux repérés
+      jusqu'ici sont dans les desserts.
+
+      La famille de garde « viande et poisson frais » reçoit les douze
+      viandes et poissons crus nouveaux (2 jours au frigo, à congeler sinon).
+
+      `sources/saines-gourmandises-blog.yaml` porte `catalogue_id:` (ou
+      `catalogue_ids:`) sur chaque article saisi ; trois articles absents du
+      relevé d'août y sont ajoutés. 43 ingrédients nouveaux, au rayon et
+      nommés (`noms:`) ; deux types émis ont un libellé (`fondue-courgettes`,
+      `peperonata`). Le test du garde-manger qui compte les plats à l'épeautre
+      passe de 7 à 10 — un fait de corpus, comme il le dit.
+
+      **UN NOM QUI DÉPENDAIT DE LA ZONE.** Le goulasch écrit « tomates
+      pelées » : le stock l'affiche désormais avec son accent… sauf dans la
+      zone où l'on vient de déplacer la boîte, qui disait encore « tomates
+      pelees ». Le panneau d'une zone et son éditeur fabriquaient le nom des
+      lignes ajoutées depuis l'id ; ils passent par `nomDeLaDenree` (T194).
+      `ranger-deplacer.spec.ts` épinglait l'ancienne graphie, il dit la bonne.
+
+- [x] **T196b — Tartes et cakes salés, entrées, pains (22/11).** 55 plats
+      de plus : 30 tartes, pizzas et cakes salés (dont neuf du dossier
+      céleri-rave de mars 2026 et quatre des « fromages » végétaux), 11
+      entrées, 14 pains et brioches, et la confiture express d'abricots au
+      miel qui accompagne l'une d'elles. Catalogue : 262 → 317 plats, 0 erreur.
+
+      **TROIS ARÊTES DE PLUS, TOUTES SUR DES RESTES QUI EXISTAIENT.** Le
+      mug-cake salé (80 g) et les petits pains au potimarron (250 g) prennent la
+      `puree-potimarron` de T196a ; le céleri façon « pommes tapées » prend les
+      `legumes-pot-au-feu` (c'est pour eux que l'autrice l'a inventé) ; le
+      hachis de légumes-racines prend du `poulet-cuit`, facultatif. Le
+      sandwich-cake laisse deux de ses six blinis, du même type que les blinis
+      de 2014.
+
+      **ÉCARTÉS, ET L'INDEX LE DIT.** La glace à la tomate crue et le granité
+      au concombre demandent un blender qui pile la glace ; la tarte
+      printanière à la faisselle, la pâte brisée des fainéants et la tourte la
+      plus simple du monde sont déjà au catalogue depuis le livre, comme le
+      marbré aux légumes-racines. Le pain aux algues de 2011 n'a pas d'étapes.
+
+      **UN APÉRO QUI CUISINE.** Les crackers de petit épeautre mettent des
+      graines de courge : ce sont celles du sachet de la demi-lune, qui perdent
+      donc leur `usage: apero`, comme les pignons en septembre. Leurs tomates
+      séchées sont « nature, pas à l'huile » : un autre produit
+      (`tomates-sechees-nature`), le bocal garde l'usage. Les tests T40 parlent
+      désormais des tomates séchées ; le compte des plats à l'épeautre passe à
+      34.
+
+      Le robot pétrisseur des brioches devient le pétrissage à la main (10 min,
+      dit l'autrice) ; la machine à pain de la brioche à l'huile d'olive n'est
+      pas encodée. Moules à savarin, à kouglof, à madeleines, moules hauts :
+      hors inventaire, rien ne le vérifie. 18 ingrédients nouveaux.
+- [x] **T196c — Desserts, gourmandises et glaces de 2011 à 2014 (22/11).** 74
+      plats : gâteaux, tartes, bûches, charlottes, choux et éclairs sans beurre,
+      flans, mousses, confiseries de Noël (citronnettes, truffes, chocolats
+      fourrés, pâte d'amande minute, boules de neige), biscuits et cookies,
+      crêpes. Catalogue : 317 → 391 plats, 0 erreur.
+
+      **LES DEUX PREMIÈRES RECETTES INVITÉES, ÉCARTÉES ET NOMMÉES.** Le fondant
+      de Noël de décembre 2012 est « d'après une recette d'Amandine Geers et
+      Olivier Degorce » ; les crêpes à l'orge de la Chandeleur 2014 sont
+      « les crêpes de Cathy », reprises telles quelles. Les deux portent
+      `ecartee:` (ou `note_encodage:` quand l'article a d'autres plats).
+      Les livres d'autres auteurs que l'autrice recommande en fin d'article ne
+      sont pas des recettes invitées : seules comptent les recettes publiées.
+
+      **CE QUI DEMANDE UNE MACHINE ABSENTE.** Une sorbetière (la crème glacée
+      à la poire), un robot qui mixe des fruits ou des tomates surgelés (la
+      glace « magique », la glace à la tomate, la bûche choco-framboise) :
+      écartés. Les génoises aux œufs entiers fouettés jusqu'à tripler, que
+      l'autrice monte au robot pâtissier, sont encodées : au fouet, c'est plus
+      long, et les fiches le disent.
+
+      **UNE ARÊTE DE PLUS.** La crème de marron maison (900 g) nourrit la coupe
+      « timarronsuisse » (150 g), avec une crème de marron du commerce en
+      repli. Les biscuits à la cuillère maison émettent une base
+      (`biscuits-cuillere-maison`) que les charlottes et le tiramisu de la
+      même page ne réclament pas encore : ils achètent les leurs.
+
+      **DEUX FAITS DE CORPUS ONT BOUGÉ.** Les framboises sont maintenant
+      cuisinées (le test du vocabulaire des courses les retire de sa liste
+      « hors recette ») et 48 plats mangent l'épeautre. L'huile essentielle de
+      mandarine a un id court (`essence-mandarine`) : au-delà de 24 lettres, le
+      nom d'une puce de ticket tombait sur l'id. 29 ingrédients nouveaux.
+
+- [x] **T196c2 — Desserts, gourmandises et glaces de 2015 à 2026.** 74
+      plats de plus (465 au catalogue), indexés dans
+      `catalogue/sources/saines-gourmandises-blog.yaml` comme les lots
+      précédents : étapes reformulées, jamais recopiées.
+
+      **TROIS INVITÉES DE PLUS, ÉCARTÉES.** La crème de groseille qui teste
+      « la recette de Karen », le moelleux adapté d'Amandine Geers et Olivier
+      Degorce, et le gâteau de Pâques 2026 au citron, dont la génoise est
+      « empruntée » à une consœur blogueuse. Chaque écart est dit dans
+      l'index (`ecartee`).
+
+      **LES MACHINES ABSENTES, ENCORE.** Sorbetière (crème glacée poire-amande,
+      SOS canicule), robot à fruits surgelés ou à glace pilée (granité
+      concombre-menthe, glace à la tomate crue), déshydrateur : écartés. Les
+      doublons du livre (cookies les plus simples, tourte-crumble) aussi.
+
+      **UNE ARÊTE DE PLUS.** Le gâteau de Noël 2025 en vache prend 500 g de
+      purée de potimarron pour sa ganache « rousse » : il accepte le reste du
+      catalogue, avec un potimarron à cuire en repli.
+
+      **UN FAIT DE CORPUS A BOUGÉ.** 92 plats mangent maintenant l'épeautre
+      (44 de plus). 31 ingrédients nouveaux, dont gélatine, matcha, chia et
+      miel de lavande.
+- [x] **T196d — Le reste du blog.** 43 plats de plus (508 au catalogue) :
+      les articles qui n'étaient ni plats ni desserts classés (bocaux,
+      boissons, sauces, « blabla », « non classé », ingrédients, jardin), et
+      une poignée de desserts que les lots précédents avaient manqués. Chaque
+      article du blog a maintenant soit une fiche, soit une raison dans
+      l'index ; les 112 restants sont des nouvelles, des annonces de livres
+      ou des billets sans recette.
+
+      **DES INVITÉES ÉCARTÉES DANS LA MÊME PAGE.** La crème-mousse au tofu
+      soyeux (et sa variante « nuage ») est la recette de Valérie Cupillard ;
+      le lait chaud à la badiane est « très librement inspiré » d'une autre
+      blogueuse. Les recettes de l'autrice publiées à côté, elles, sont
+      encodées.
+
+      **TROIS ARÊTES DE PLUS.** Le lait amande-avoine laisse un okara (430 g)
+      que les bannocks au comté réclament. Le bouillon d'os de volaille prend
+      la carcasse d'un poulet rôti, et les flocons d'orge pilaf peuvent le
+      prendre à la place de l'eau. Le kéfir à boire ensemence les « yaourts »
+      de kéfir. La mousse au chocolat traditionnelle nourrit aussi le gâteau
+      sans cuisson qui en réclame deux.
+
+      **CE QUI N'EST PAS UNE RECETTE.** Les trames de repas chiffrées en
+      calories, les idées sans quantités autour des galettes de sarrasin, les
+      méthodes de façonnage des cookies, un article sur le matériel : écartés
+      avec leur raison.
+
+      **UN FAIT DE CORPUS A BOUGÉ.** 105 plats mangent l'épeautre (13 de
+      plus). 24 ingrédients nouveaux, dont seitan, ail noir, reblochon,
+      psyllium et kéfir de lait.
+
+- [x] **T196e — Les recettes invitées du blog, créditées.** Le mot « invitées »
+      de la demande visait les recettes RÉDIGÉES POUR CE DÉPÔT, pas celles
+      d'autres auteurs publiées sur le blog : ces dernières reviennent, chacune
+      avec son auteur dans l'en-tête de la fiche. Le fondant de Noël (d'après
+      Amandine Geers et Olivier Degorce), le gâteau de Pâques 2026 (génoise de
+      la blogueuse Cléa), la crème-mousse au tofu soyeux de Valérie Cupillard
+      et sa variante « nuage », le lait chaud à la badiane (inspiré de
+      Frédérique). Les carrés à la crème de groseille restent dehors, mais
+      pour la bonne raison : ils sont déjà au catalogue depuis le livre.
+
+- [ ] **T197 — Retirer peu à peu les recettes rédigées pour ce dépôt.** 52
+      plats n'ont aucune source extérieure (37 fiches « Recette du foyer » et
+      15 entrées de `_repertoire.yaml`) ; trois autres sont des mécanismes,
+      pas des recettes, et restent (`gouter-des-enfants`,
+      `petit-dejeuner-des-enfants`, `reste-de-la-veille`). Règle : une fiche
+      ne part que quand une recette sourcée tient sa place — même rôle, même
+      apport, et la même contrainte s'il y en a une. Une vague par PR, avec
+      ses tests.
+
+      **PREMIÈRE VAGUE FAITE (2026-11-23) : VINGT RECETTES RETIRÉES.** Onze
+      qu'une recette sourcée couvrait déjà (poulet rôti, lentilles mijotées,
+      frittata, gratin courgettes-riz, salade lentilles-feta, tarte tomates-
+      moutarde, croque-monsieur-salade, hachis de lentilles, crêpes, cookies
+      d'avoine, pain maison) et les neuf anciens dîners du fond. Ce qui les
+      tenait est rebranché sur l'autrice :
+      — le fond de roulement : dix de ses dîners, élargi de la courge, du
+        poireau, du parmesan, de la sauce tomate, du lait et du soja-vanille.
+        Le lait de croissance n'est plus suivi (le foyer le gère), le lait de
+        coco n'y est plus (sa brique garde sa taille dans `conditionnements`).
+        Trois fiches portent une adaptation du foyer en `subs` (huile et
+        gingembre du dahl, fromage de la frittata, potimarron du velouté), et
+        `fond.manques` compte une ligne couverte si un remplaçant est au fond.
+        La règle « chacun se fait toute l'année » devient « chaque mois, au
+        moins trois sont de saison » : elle cuisine avec les saisons ;
+      — le pain du matin : son pain de mie au son d'avoine, celui que le foyer
+        fait (`creneaux: [petit-dejeuner]`, congelé tranché en deux sachets) ;
+      — le goûter puise dans ses crêpes au son d'avoine et ses cookies
+        pralinés ; les replis de `cock-a-leekie` et des burgers visent son
+        poulet rôti et sa mitonnée ;
+      — les tests qui prenaient ces plats pour exemples prennent les siens et
+        vérifient la même propriété ; celui du volume de questions vérifie ce
+        que son titre promet au lieu de comparer deux totaux.
+      Le retrait a révélé un vrai trou : sa souche de légumineuses propose des
+      haricots rouges secs en remplaçant sans dire les dix minutes de grosse
+      ébullition. L'astuce de l'étape le dit, et le garde-fou regarde
+      désormais les remplaçants.
+
+      **RESTENT 32 RECETTES SANS SOURCE** (plus les trois mécanismes), aucune
+      couverte pour l'instant : chili sin carne, fajitas, gnocchis (deux),
+      lasagnes, sauce et pâtes bolognaise, saumon-riz-brocoli, soupe de poule,
+      couscous d'hiver, taboulé, minestrone, moussaka de lentilles, ratatouille
+      minute, quiches (courgettes-yaourt, épinards-thon, poireaux), tartes
+      oignons-thon et potimarron-oignons, burgers de lentilles, veloutés
+      (courgettes, butternut-coco, carottes-corail, épinards-corail,
+      poireaux-pommes de terre-corail), soupe chou frisé-haricots, tian de
+      printemps, banana bread, compote pommes-poires, gratins de pâtes
+      (tomates, brocoli-thon), omelette aux courgettes. D'autres livres de
+      l'autrice les couvriraient peut-être.

@@ -1,0 +1,78 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# QUATRE INGRÉDIENTS : potimarron (ou courge à chair farineuse : bleu de
+# Hongrie, buttercup, butternut…), cuit à la cocotte avec un fond d'eau,
+# écrasé à l'huile d'olive. Un œuf poché par-dessus en fait un plat. Pas de
+# courge aqueuse : ce serait une soupe.
+#
+# ELLE NOURRIT LES CUPCAKES SALÉS de la même page (160 g de purée cuite) :
+# l'arête est posée, et le reste se garde en base.
+
+recipe:
+  id: puree-potimarron-huile-olive
+  title: Purée de potimarron à l'huile d'olive
+  role: accompagnement
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Potimarrons, courges, potirons, citrouilles and Co… rétrospective d'idées recettes », blog Saines Gourmandises, 17 septembre 2026"
+    url: https://saines-gourmandises.fr/potimarrons-courges-potirons-citrouilles-and-co-retrospective-didees-recettes-geniaaaaales/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes »
+  time_min_total: 35        # 10 min de préparation + 25 min de cuisson
+  active_min: 12
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: [cucurbitacee]
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: potimarron, name: "gros potimarron (environ 1,5 kg)", qty: 1, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: eau, name: un fond d'eau, qty: 10, unit: cl}
+    - {id: sel, name: sel, qty: 2, unit: pincée, seasoning: true}
+    - {id: poivre-5-baies, name: poivre 5 baies du moulin, qty: 1, unit: pincée, seasoning: true}
+    - {id: persil, name: persil pour servir, qty: 3, unit: brin, optional: true}
+
+  steps:
+    - id: tailler
+      action: "Ôter la tige, le trognon et les petites cicatrices dures de la peau, ouvrir le potimarron, l'épépiner et le couper en morceaux de 4 à 5 cm"
+      needs: [chop-coarse]
+      uses: [potimarron]
+      time_min: 8
+    - id: cuire
+      action: "Cuire environ 25 min à la cocotte avec un fond d'eau, jusqu'à ce que les morceaux soient fondants"
+      needs: [simmer-large]
+      uses: [eau]
+      time_min: 25
+      attended: false
+    - id: ecraser
+      action: "Écraser au presse-purée avec l'huile, le sel et le poivre, en ajoutant un peu d'eau si besoin, et parsemer de persil"
+      needs: []
+      uses: [huile-olive, sel, poivre-5-baies, persil]
+      time_min: 4
+      seasoning_gate: true
+
+  baby_portion:
+    take: "2 c. à s. de potimarron cuit, avant le sel et le poivre"
+    prep: "écraser avec une cuillerée d'huile d'olive"
+    needs: []
+    depuis: [cuire]
+
+  emits:
+    - kind: base
+      type: puree-potimarron
+      qty_band: 1-repas
+      qty: {amount: 300, unit: g}
+      keeps: {frigo_days: 3, congelo: true}
+      note: "les cupcakes au chèvre en prennent 160 g"
+
+  plan_b: []

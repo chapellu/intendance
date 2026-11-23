@@ -1,0 +1,87 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LE GOULASCH DES « GRANDS CLASSIQUES » : paleron en cubes plus petits que
+# pour une daube (il se mange sans couteau), tomates, paprika, trois heures au
+# plus petit feu. Servi avec des pommes de terre, ou du kasha.
+
+recipe:
+  id: goulasch-boeuf
+  title: Goulasch de bœuf
+  format: mijote
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« La cuisine des grands classiques (suite), 3 recettes de bons plats du dimanche », blog Saines Gourmandises, 11 septembre 2014"
+    url: https://saines-gourmandises.fr/on-veut-des-recettes/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « pour 6 personnes »
+  time_min_total: 190       # 10 min de préparation + 3 h
+  active_min: 20
+
+  apports:
+    proteine: viande-rouge
+    feculent: aucun
+    legumes: [allium, racine, solanacee]
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: boeuf-a-braiser, name: paleron, qty: 500, unit: g}
+    - {id: oignon, name: oignons, qty: 6, unit: pièce}
+    - {id: carottes, name: carottes, qty: 6, unit: pièce}
+    - {id: tomates-pelees, name: tomates pelées au jus, qty: 1, unit: kg}
+    - {id: concentre-tomate, name: concentré de tomate, qty: 50, unit: g}
+    - {id: paprika, name: paprika, qty: 4, unit: c. à s.}
+    - {id: ail, name: ail, qty: 3, unit: gousse}
+    - {id: vin-blanc-sec, name: vin blanc, qty: 45, unit: cl}
+    - {id: eau, name: eau, qty: 2, unit: verre}
+    - {id: huile-olive, name: huile d'olive, qty: 6, unit: c. à s.}
+    - {id: piment-cayenne, name: piment de Cayenne, qty: 1, unit: pincée, seasoning: true}
+    - {id: cumin, name: cumin, qty: 1, unit: pincée, seasoning: true}
+    - {id: laurier, name: feuilles de laurier, qty: 2, unit: pièce, seasoning: true}
+    - {id: sel, name: sel, qty: 2, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 1, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: pomme-de-terre, name: pommes de terre, qty: 1, unit: kg}
+
+  steps:
+    - id: revenir
+      action: "Émincer oignons et carottes et les faire revenir à l'huile dans une grande cocotte jusqu'à légère coloration"
+      needs: [simmer-large]
+      uses: [oignon, carottes, huile-olive]
+      time_min: 12
+      attended: true
+    - id: viande
+      action: "Couper le paleron en petits cubes et les faire dorer dans la cocotte"
+      astuce: "Plus petits que pour une daube : le goulasch se mange sans couteau."
+      needs: [simmer-large]
+      uses: [boeuf-a-braiser]
+      time_min: 8
+      attended: true
+    - id: mouiller
+      action: "Ajouter les tomates écrasées à la fourchette avec leur jus, le vin, l'eau, le paprika, l'ail, le concentré, les épices, le laurier, sel et poivre"
+      needs: [simmer-large]
+      uses: [tomates-pelees, vin-blanc-sec, eau, paprika, ail, concentre-tomate, piment-cayenne, cumin, laurier, sel, poivre]
+      time_min: 5
+      kid: {age_min_months: 30, task: "écraser les tomates pelées à la fourchette"}
+    - id: mijoter
+      action: "Couvrir et mijoter 2 h 30 à 3 h sur le plus petit feu, jusqu'à ce que la viande soit fondante"
+      astuce: "Remuer de temps en temps et ajouter un peu d'eau si le fond accroche."
+      needs: [simmer-large]
+      uses: []
+      time_min: 165
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: goulasch-boeuf
+      qty_band: 2-repas
+      keeps: {frigo_days: 4, congelo: true}
+
+  plan_b: []

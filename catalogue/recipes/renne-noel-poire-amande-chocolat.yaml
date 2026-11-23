@@ -1,0 +1,96 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN GROS GÂTEAU DE FÊTE POUR 15 : génoise moelleuse à l'amande, beurre, miel et
+# compote, fendue ; poires marinées au rhum et au miel ; une ganache montée de
+# chocolat noir et de crème de coco tenue par six feuilles de gélatine, reposée
+# 2 h au moins puis fouettée 8 à 10 min ; couverte de pointes de ganache.
+# Bois en chocolat, yeux et museau en pâte d'amande : le décor n'est pas
+# encodé en détail.
+
+recipe:
+  id: renne-noel-poire-amande-chocolat
+  title: Le « renne de Noël » poire-amande-chocolat
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Le Renne de Noël poire-amande-chocolat », blog Saines Gourmandises, 19 décembre 2024"
+    url: https://saines-gourmandises.fr/le-renne-de-noel-poire-amande-chocolat/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 15          # « au moins 15 parts »
+  lot_entier: true
+  time_min_total: 80
+  active_min: 40
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: poudre-amande, name: "poudre d'amande", qty: 125, unit: g}
+    - {id: beurre, name: "beurre fondu", qty: 125, unit: g}
+    - {id: farine-epeautre, name: "farine semi-complète", qty: 125, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever", qty: 1, unit: sachet}
+    - {id: sucre-vanille, name: "sucre vanillé", qty: 3, unit: sachet}
+    - {id: oeufs, name: "œufs", qty: 3, unit: pièce}
+    - {id: miel-acacia, name: "miel d'acacia (125 g + 2 c. à s.)", qty: 165, unit: g}
+    - {id: compote, name: "compote de pomme ou de poire sans sucre", qty: 125, unit: g}
+    - {id: extrait-amande-amere, name: "arôme d'amande amère", qty: 1, unit: c. à c.}
+    - {id: cointreau, name: "amaretto (ou rhum)", qty: 1, unit: c. à s.}
+    - {id: chocolat-noir, name: "chocolat noir pâtissier (300 + 75 g)", qty: 375, unit: g}
+    - {id: creme-coco, name: "crème de coco", qty: 120, unit: cl}
+    - {id: gelatine, name: "gélatine (6 feuilles)", qty: 12, unit: g}
+    - {id: sucre-complet, name: "sucre de coco ou de bouleau", qty: 60, unit: g}
+    - {id: poires, name: "poires bien mûres", qty: 2, unit: pièce}
+    - {id: rhum, name: "rhum", qty: 2, unit: c. à s.}
+    - {id: pate-amande, name: "pâte d'amande blanche et rose", qty: 60, unit: g, optional: true}
+
+  steps:
+    - id: ganache
+      action: "Tremper la gélatine ; chauffer 60 cl de crème de coco, y dissoudre la gélatine, fondre 300 g de chocolat hors du feu, puis le sucre et le reste de crème"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [gelatine, creme-coco, sucre-complet]
+      time_min: 10
+      attente_min: 120
+      attente_raison: "au moins 2 h au frais, au mieux une nuit"
+    - id: poires
+      action: "Éplucher les poires en petits morceaux et les faire mariner avec le rhum et 2 c. à s. de miel"
+      needs: []
+      uses: [poires, rhum]
+      time_min: 8
+      kid: {age_min_months: 36, task: "couper les poires au couteau à beurre"}
+    - id: genoise
+      action: "Préchauffer à 180 °C ; mêler farine, amande et levure, puis tous les autres ingrédients du gâteau, et cuire 35 min ; refroidir"
+      needs: [bake]
+      uses: [farine-epeautre, poudre-amande, poudre-a-lever, beurre, sucre-vanille, oeufs, miel-acacia, compote, extrait-amande-amere, cointreau]
+      time_min: 40
+      attended: false
+    - id: monter
+      action: "Fouetter la ganache froide 8 à 10 min ; fendre la génoise, garnir de poires, de sirop et de ganache, reposer le chapeau imbibé, couvrir de pointes de ganache"
+      needs: []
+      uses: []
+      time_min: 20
+    - id: decor
+      action: "Dessiner les bois au chocolat fondu sur un papier, les laisser figer et les planter ; yeux et museau en pâte d'amande"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [chocolat-noir, pate-amande]
+      time_min: 15
+      kid: {age_min_months: 48, task: "modeler le museau"}
+
+  emits:
+    - kind: reste-plat
+      type: renne-noel-poire-amande-chocolat
+      qty_band: 3-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

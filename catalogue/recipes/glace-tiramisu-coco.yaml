@@ -1,0 +1,59 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# SANS SORBETIÈRE : une chantilly de crème de coco à l'agave et à la vanille, en
+# deux couches sur des biscuits à la cuillère imbibés d'espresso, de rhum et
+# d'agave, poudrées de cacao ; 4 h au congélateur. Au fouet électrique.
+
+recipe:
+  id: glace-tiramisu-coco
+  title: Glace façon tiramisu à la chantilly de coco
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« 3 glaces végétales délicieusement chocolat (et sans sorbetière) », blog Saines Gourmandises, 26 août 2015"
+    url: https://saines-gourmandises.fr/pour-fondre-de-bonheur/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 5          # « pour 4 à 6 personnes »
+  time_min_total: 10
+  active_min: 10
+
+  apports:
+    proteine: aucune
+    feculent: biscuit
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: creme-coco, name: "crème de coco liquide bien froide", qty: 40, unit: cl}
+    - {id: sirop-agave, name: "sirop d'agave (5 + 5 cl)", qty: 10, unit: cl}
+    - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 1, unit: c. à s.}
+    - {id: cafe, name: "espresso très fort", qty: 3, unit: cl}
+    - {id: rhum, name: "rhum ambré", qty: 5, unit: cl}
+    - {id: biscuits-cuillere, name: "biscuits à la cuillère", qty: 6, unit: pièce}
+    - {id: cacao, name: "cacao", qty: 3, unit: c. à s.}
+
+  steps:
+    - id: chantilly
+      action: "Monter la crème de coco en chantilly avec 5 cl d'agave et la vanille ; mêler le café, le rhum et le reste d'agave"
+      needs: []
+      uses: [creme-coco, extrait-vanille, cafe, rhum, sirop-agave]
+      time_min: 6
+    - id: monter
+      action: "Dans un plat, 3 biscuits imbibés, du cacao, une couche de crème, du cacao, 3 biscuits imbibés, le reste de crème et du cacao"
+      needs: []
+      uses: [biscuits-cuillere, cacao]
+      time_min: 4
+      attente_min: 240
+      attente_raison: "environ 4 h au congélateur"
+      kid: {age_min_months: 36, task: "poudrer de cacao à la passoire"}
+
+  emits: []
+
+  plan_b: []

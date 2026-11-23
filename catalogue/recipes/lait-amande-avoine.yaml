@@ -1,0 +1,71 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# GRUAU D'AVOINE ET AMANDES trempés une nuit, rincés ; l'avoine bouillie 10 min dans
+# 2,25 l d'eau, puis tout mixé avec miel, huile et sel et filtré au sac à lait.
+# Plus on presse, plus le lait est épais. Une semaine au frais.
+# L'OKARA QUI RESTE (environ 430 g) fait les bannocks de la même page.
+
+recipe:
+  id: lait-amande-avoine
+  title: Lait végétal amande-avoine
+  role: boisson
+  creneaux: [petit-dejeuner]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Lait végétal amande-avoine (+ des bannocks pour recycler l'okara !) », blog Saines Gourmandises, 16 avril 2016"
+    url: https://saines-gourmandises.fr/de-la-douceur-au-petit-dejeuner/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « environ 2 l »
+  lot_entier: true
+  time_min_total: 730
+  active_min: 15
+
+  apports:
+    proteine: aucune
+    feculent: avoine
+    legumes: []
+    profil: rapide
+    origine: francais
+
+  ingredients:
+    - {id: gruau-avoine, name: "gruau d'avoine (grain entier)", qty: 150, unit: g}
+    - {id: amandes, name: "amandes", qty: 65, unit: g}
+    - {id: miel-acacia, name: "miel d'acacia", qty: 80, unit: g}
+    - {id: fleur-de-sel, name: "tiers de c. à c. de fleur de sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: huile-tournesol, name: "huile de tournesol ou de colza désodorisée", qty: 3, unit: c. à s.}
+    - {id: eau, name: "eau pure", qty: 2.25, unit: l}
+
+  steps:
+    - id: tremper
+      action: "Mettre le gruau et les amandes à tremper dans deux bols"
+      needs: []
+      uses: [gruau-avoine, amandes]
+      time_min: 2
+      attente_min: 720
+      attente_raison: "au moins 12 h de trempage"
+    - id: cuire
+      action: "Rincer l'avoine et la faire bouillir 10 min dans l'eau ; rincer les amandes"
+      needs: [simmer-large]
+      uses: [eau]
+      time_min: 14
+    - id: mixer
+      action: "Mixer quelques minutes l'avoine et son eau avec les amandes, le miel, l'huile et le sel, puis filtrer au sac à lait et mettre en bouteille"
+      needs: [blend-smooth]
+      uses: [miel-acacia, huile-tournesol, fleur-de-sel]
+      time_min: 10
+
+  emits:
+    - kind: base
+      type: okara-amande-avoine
+      qty_band: 1-repas
+      qty: {amount: 430, unit: g}
+      keeps: {frigo_days: 3, congelo: false}
+      note: "l'okara pressé"
+
+  plan_b: []

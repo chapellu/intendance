@@ -1,0 +1,95 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# QUATRE PIZZAS FINES D'ÉPEAUTRE COMPLET, levées 1 h 30 : oignons, aubergine
+# et tofu fumé confits au wok, sauce tomate, champignons, persillade, olives,
+# roquette et basilic au sortir du four. Un plat unique avec une salade.
+
+recipe:
+  id: pizza-legere-legumes-confits
+  title: Pizza très légère aux légumes confits
+  format: pizza
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Pizza très légère aux légumes confits », blog Saines Gourmandises, 21 août 2014"
+    url: https://saines-gourmandises.fr/la-pizza-cest-bon-pour-la-ligne-si-si-enfin-du-moins-celle-la/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes (plat principal unique) »
+  time_min_total: 150       # 35 min + 1 h 30 de pousse + 15 min par pizza
+  active_min: 45
+
+  apports:
+    proteine: tofu-soja
+    feculent: farine
+    legumes: [allium, solanacee, champignon]
+    profil: four
+    origine: italien
+
+  ingredients:
+    - {id: farine-epeautre, name: farine de grand épeautre complet, qty: 500, unit: g}
+    - {id: eau, name: eau tiède (40 °C au plus), qty: 30, unit: cl}
+    - {id: levure-boulangere, name: levure de boulanger déshydratée, qty: 1, unit: sachet}
+    - {id: sel, name: sel fin, qty: 1, unit: c. à c., seasoning: true}
+    - {id: huile-olive, ref: huile-pate, name: huile d'olive (pâte), qty: 1, unit: c. à s.}
+    - {id: huile-olive, ref: huile-legumes, name: huile d'olive (légumes), qty: 5, unit: c. à s.}
+    - {id: oignon, name: oignons, qty: 8, unit: pièce}
+    - {id: aubergine, name: aubergine, qty: 1, unit: pièce}
+    - {id: tofu-fume, name: tofu fumé, qty: 200, unit: g}
+    - {id: sauce-tomate, name: bonne sauce tomate, qty: 400, unit: g}
+    - {id: champignons-paris, name: champignons blancs, qty: 8, unit: pièce}
+    - {id: olives-noires, name: olives noires, qty: 16, unit: pièce}
+    - {id: persil, name: persillade fraîche ou surgelée (une tasse), qty: 6, unit: c. à s.}
+    - {id: tomates-cerises, name: quelques tomates cerises, qty: 8, unit: pièce}
+    - {id: roquette, name: quelques feuilles de roquette, qty: 1, unit: poignée}
+    - {id: basilic, name: quelques feuilles de basilic, qty: 3, unit: brin}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+    - {id: piment-espelette, name: piment d'Espelette, qty: 1, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: pate
+      action: "Délayer la levure dans l'eau tiède, la verser dans la farine salée avec 1 c. à s. d'huile et pétrir jusqu'à une pâte souple qui se détache"
+      needs: []
+      uses: [levure-boulangere, eau, farine-epeautre, sel, huile-pate]
+      time_min: 8
+      kid: {age_min_months: 30, task: "pétrir la pâte"}
+    - id: lever
+      action: "Couvrir et laisser lever au tiède, jusqu'à ce qu'elle double"
+      needs: []
+      uses: []
+      time_min: 1
+      attente_min: 90
+      attente_raison: "pousse de la pâte"
+    - id: confire
+      action: "Dorer au wok les oignons émincés et le tofu en lardons dans 5 c. à s. d'huile, puis l'aubergine en dés, salée, mouillée d'un petit verre d'eau, à couvert"
+      astuce: "Jusqu'à ce que l'aubergine soit fondante."
+      needs: [pan-fry]
+      uses: [huile-legumes, oignon, tofu-fume, aubergine]
+      time_min: 25
+      attended: false
+      parallel_with: lever
+    - id: garnir
+      action: "Dégazer la pâte, l'étaler en 4 disques fins de 22 cm, garnir de sauce, légumes, persillade, champignons tranchés, tomates et olives ; poivrer, pimenter"
+      needs: []
+      uses: [sauce-tomate, persil, champignons-paris, tomates-cerises, olives-noires, poivre, piment-espelette]
+      time_min: 12
+      attente_min: 20
+      attente_raison: "seconde pousse, le temps de chauffer le four à 220 °C"
+      attente_souple: true
+    - id: cuire
+      action: "Cuire chaque pizza 15 min et la garnir de roquette et de basilic à la sortie"
+      needs: [bake]
+      uses: [roquette, basilic]
+      time_min: 30
+      attended: true
+
+  emits: []
+
+  plan_b: []

@@ -1,0 +1,94 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE PÂTE À CHOUX SANS BEURRE : eau et purée d'amande fluide bouillies, farine
+# d'épeautre d'un coup, panade séchée 1 min 30, œufs un à un très vite ; 35 min
+# à 180 °C. Crème pâtissière express au soja, café, vanille, noisette et
+# sucre de bouleau (3 min d'ébullition) ; chapeau de chocolat fondu.
+# Meilleurs le lendemain.
+
+recipe:
+  id: petits-choux-creme-chocolat
+  title: Petits choux à la crème, très « sages »
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Petits choux à la crème, très sages et très gourmands », blog Saines Gourmandises, 7 mars 2013"
+    url: https://saines-gourmandises.fr/un-dessert-de-paques-trop-chou/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 5          # « environ 15 choux »
+    pieces: 15
+  time_min_total: 70
+  active_min: 35
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: "farine d'épeautre T130 (+ 1 c. à s. pour la crème)", qty: 105, unit: g}
+    - {id: eau, name: "eau", qty: 12, unit: cl}
+    - {id: puree-amande-blanche, name: "purée d'amande blanche bien fluide", qty: 100, unit: g}
+    - {id: oeufs, name: "petits œufs", qty: 3, unit: pièce}
+    - {id: sel, name: "pincée de sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: lait-soja-vanille, name: "lait de soja (20 + 10 cl)", qty: 30, unit: cl}
+    - {id: cafe, name: "expresso serré", qty: 3, unit: cl}
+    - {id: extrait-vanille, name: "extrait de vanille", qty: 1, unit: c. à c.}
+    - {id: puree-noisette, name: "purée de noisette fluide", qty: 3, unit: c. à s.}
+    - {id: sucre-bouleau, name: "sucre de bouleau", qty: 75, unit: g}
+    - {id: chocolat-noir, name: "chocolat noir 70 %", qty: 100, unit: g}
+
+  steps:
+    - id: panade
+      action: "Préchauffer à 180 °C et tout peser ; bouillir l'eau, la purée d'amande et le sel en fouettant, puis hors du feu jeter la farine d'un coup et mélanger vite"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [eau, puree-amande-blanche, sel, farine-epeautre]
+      time_min: 5
+      attended: true
+    - id: secher
+      action: "Sécher la panade 1 min 30 sur feu doux à la cuillère, la verser dans un saladier et incorporer les œufs un à un très vite"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [oeufs]
+      time_min: 6
+      attended: true
+    - id: dresser
+      action: "Dresser à la poche des choux de la taille d'une petite figue, aplatir la pointe d'un doigt huilé et cuire 35 min"
+      needs: [bake]
+      uses: []
+      time_min: 38
+      attended: false
+    - id: creme
+      action: "Mélanger à froid 20 cl de soja, la cuillerée de farine, le café, la vanille, la noisette et le sucre, puis bouillir 3 min en fouettant"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [cafe, extrait-vanille, puree-noisette, sucre-bouleau]
+      time_min: 6
+      parallel_with: dresser
+    - id: garnir
+      action: "Fourrer les choux chauds à la poche par un petit trou, puis tremper leur sommet dans le chocolat fondu avec 10 cl de soja ; au frais"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [chocolat-noir, lait-soja-vanille]
+      time_min: 12
+      attente_min: 600
+      attente_raison: "meilleurs le lendemain"
+      attente_souple: true
+      kid: {age_min_months: 48, task: "tremper le haut des choux dans le chocolat"}
+
+  emits:
+    - kind: reste-plat
+      type: petits-choux-creme-chocolat
+      qty_band: 2-repas
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

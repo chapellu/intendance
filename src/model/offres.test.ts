@@ -81,10 +81,10 @@ describe("faire plus, plus tôt", () => {
     // « ×4,8 » d'un lot déjà fractionnaire ne veut rien dire devant une
     // casserole. Un poulet, lui, se choisit entre 1,2 et 2 kg : c'est le
     // calibre, et c'est pour ça qu'on n'en rôtit pas deux pour 300 g manquants.
-    poser(0, "diner", "poulet-roti");
+    poser(0, "diner", "poulet-roti-du-dimanche");
     poser(1, "diner", "soupe-de-poule");
     poser(2, "diner", "soupe-de-poule");
-    const o = offres().find((x) => x.rid === "poulet-roti");
+    const o = offres().find((x) => x.rid === "poulet-roti-du-dimanche");
     expect(o).toBeDefined();
     expect(o!.indivisible).toBe(true);
     expect(o!.combien).toMatch(/lot|plus gros/);

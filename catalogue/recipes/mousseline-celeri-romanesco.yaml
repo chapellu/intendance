@@ -1,0 +1,68 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE PURÉE QUI CALE : romanesco (ou brocoli) et céleri cuits 12 à 15 min,
+# égouttés sans excès, mixés à l'huile d'olive et au parmesan. Avec des œufs
+# mollets et des tartines.
+
+recipe:
+  id: mousseline-celeri-romanesco
+  title: Mousseline au céleri, romanesco et parmesan
+  role: accompagnement
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Vous faire raffoler du céleri rave ?… chiche ! », blog Saines Gourmandises, 6 mars 2026"
+    url: https://saines-gourmandises.fr/vous-faire-raffoler-du-celeri-rave-chiche/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4
+  time_min_total: 25
+  active_min: 10
+
+  apports:
+    proteine: fromage
+    feculent: aucun
+    legumes: [crucifere, racine]
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - id: chou-romanesco
+      name: chou romanesco
+      qty: 1.5
+      unit: kg
+      subs:
+        - {id: brocoli, name: brocoli, ratio: 1.0}
+    - {id: celeri-rave, name: petit céleri-rave, qty: 350, unit: g}
+    - {id: huile-olive, name: huile d'olive, qty: 6, unit: c. à s.}
+    - {id: parmesan, name: parmesan râpé, qty: 50, unit: g}
+    - {id: sel, name: sel, qty: 2, unit: pincée, seasoning: true}
+    - {id: poivre-5-baies, name: poivre 5 baies, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: cuire
+      action: "Cuire 12 à 15 min à l'eau bouillante salée le céleri en petits cubes et le romanesco en fleurettes ; égoutter sans trop insister"
+      needs: [simmer-large]
+      uses: [celeri-rave, chou-romanesco, sel]
+      time_min: 18
+      attended: false
+    - id: mixer
+      action: "Mixer avec l'huile, le parmesan et le poivre, et servir aussitôt"
+      needs: [blend-smooth]
+      uses: [huile-olive, parmesan, poivre-5-baies]
+      time_min: 4
+      seasoning_gate: true
+
+  baby_portion:
+    take: "2 c. à s. de céleri et de romanesco cuits, avant le parmesan et le poivre"
+    prep: "mixer avec un filet d'huile d'olive"
+    needs: [blend-smooth]
+    depuis: [cuire]
+
+  emits: []
+
+  plan_b: []

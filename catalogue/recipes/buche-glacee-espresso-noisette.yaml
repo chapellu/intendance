@@ -1,0 +1,61 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LA SECONDE DES DEUX BÛCHES GLACÉES « EXPRESS » : espresso, jaunes, agave,
+# crème d'amande, vanille et purée de noisette mixés, allégés de blancs en
+# neige, versés dans un moule poudré de cacao, congelés la veille. Si
+# aérienne qu'on la sert sans attendre. La première (sorbet framboise mixé
+# surgelé) demande un robot assez puissant : non encodée.
+
+recipe:
+  id: buche-glacee-espresso-noisette
+  title: Bûche glacée aérienne espresso-noisette
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« 2 bûches glacées express », blog Saines Gourmandises, 21 décembre 2011"
+    url: https://saines-gourmandises.fr/sur-le-fil/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « pour 8 personnes »
+  lot_entier: true
+  time_min_total: 10
+  active_min: 10
+
+  apports:
+    proteine: oeuf
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: cafe, name: "espresso corsé", qty: 6, unit: cl}
+    - {id: oeufs, name: "œufs très frais", qty: 3, unit: pièce}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 15, unit: cl}
+    - {id: creme-amande, name: "crème d'amande liquide", qty: 20, unit: cl}
+    - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 2, unit: c. à s.}
+    - {id: puree-noisette, name: "purée de noisettes", qty: 6, unit: c. à s.}
+    - {id: cacao, name: "cacao non sucré", qty: 1, unit: c. à s.}
+
+  steps:
+    - id: mixer
+      action: "Mixer l'espresso, les jaunes, l'agave, la crème d'amande, la vanille et la purée de noisette"
+      needs: [blend-smooth]
+      uses: [cafe, sirop-agave, creme-amande, extrait-vanille, puree-noisette]
+      time_min: 4
+    - id: blancs
+      action: "Incorporer les blancs montés en neige, verser dans un moule à bûche poudré de cacao et congeler"
+      needs: [congeler]
+      uses: [oeufs, cacao]
+      time_min: 6
+      attente_min: 720
+      attente_raison: "au congélateur depuis la veille"
+
+  emits: []
+
+  plan_b: []

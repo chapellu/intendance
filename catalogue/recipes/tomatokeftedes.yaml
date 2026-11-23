@@ -1,0 +1,83 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LES GALETTES DE TOMATES DE SANTORIN : tomates Roma en dés salées et
+# égouttées (550 g donnent 375 g de chair), oignon, ail et menthe hachés,
+# farine, œuf, frites dans un demi-centimètre d'huile. Se préparent même la
+# veille. Variante : 75 g de feta en dés.
+
+recipe:
+  id: tomatokeftedes
+  title: Tomatokeftedes (galettes de tomates à la menthe)
+  format: galettes
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Tomatokeftedes », blog Saines Gourmandises, 6 juin 2018"
+    url: https://saines-gourmandises.fr/bac-2018-020-grec-moderne/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 3          # « 14 à 16 galettes »
+    pieces: 15
+  time_min_total: 30        # 10 min de préparation + 15 min de cuisson
+  active_min: 25
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: [solanacee, allium]
+    profil: poele
+    origine: grec
+
+  ingredients:
+    - {id: tomates-roma, name: tomates Roma bien mûres, qty: 550, unit: g}
+    - {id: oignon, name: "oignons (100 à 120 g en tout)", qty: 2, unit: pièce}
+    - {id: farine-complete, name: farine complète ou semi-complète, qty: 125, unit: g}
+    - {id: oeufs, name: œuf, qty: 1, unit: pièce}
+    - {id: menthe, name: menthe fraîche sans les tiges, qty: 0.5, unit: bouquet}
+    - {id: ail, name: ail, qty: 1.5, unit: gousse}
+    - {id: sel, name: sel (c. à c. rases), qty: 2, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+    - {id: huile-olive, name: huile d'olive pour la cuisson, qty: 10, unit: c. à s.}
+    - {id: feta, name: feta en petits dés, qty: 75, unit: g, optional: true}
+
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: degorger
+      action: "Couper les tomates en dés d'1 cm, les mélanger au sel dans une passoire et les laisser égoutter"
+      needs: [chop-coarse]
+      uses: [tomates-roma, sel]
+      time_min: 6
+    - id: hacher
+      action: "Hacher les oignons avec l'ail et la menthe"
+      needs: [chop-coarse]
+      uses: [oignon, ail, menthe]
+      time_min: 5
+    - id: pate
+      action: "Presser les tomates à la main pour en ôter encore du jus, puis les mélanger avec le hachis, le poivre, la farine et l'œuf"
+      astuce: "Le jus, assez salé, peut servir de base à une soupe."
+      needs: []
+      uses: [farine-complete, oeufs, poivre, feta]
+      time_min: 3
+      kid: {age_min_months: 30, task: "presser les tomates dans la passoire"}
+    - id: frire
+      action: "Dans 0,5 cm d'huile bien chaude, cuire 7 ou 8 cuillerées espacées 3 min à couvert, puis 3 min de l'autre côté, et refaire une fournée"
+      astuce: "L'huile doit être chaude sans fumer, sinon ça accroche. Égoutter sur du papier absorbant."
+      needs: [pan-fry]
+      uses: [huile-olive]
+      time_min: 14
+      attended: true
+
+  emits:
+    - kind: reste-plat
+      type: tomatokeftedes
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: false}
+      note: "bonnes à température ambiante"
+
+  plan_b: []

@@ -1,0 +1,64 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# SANS ŒUFS, À PEINE GÉLIFIÉS : 2 g d'agar-agar pour 60 cl de lait (moins que la
+# règle, pour un flan tremblotant), vanille, agave, 2 min de frémissement ;
+# pris au frais, démoulés et nappés de caramel d'agave. Les pots de récup
+# en plastique se démoulent mieux.
+
+recipe:
+  id: flans-agar-facon-flanby
+  title: Faux flans à l'agar-agar façon « Flanby »
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« 4 recettes pour tire-au-flan ! », blog Saines Gourmandises, 26 avril 2012"
+    url: https://saines-gourmandises.fr/ah-ces-ptites-cremes-aux-oeufs-cremes-brulees-et-petits-flanbio-regressifs/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 5          # « 4 à 6 petits flans »
+    pieces: 5
+  time_min_total: 10
+  active_min: 10
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: lait, name: "lait entier", qty: 60, unit: cl}
+    - {id: agar-agar, name: "agar-agar", qty: 2, unit: g}
+    - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 3, unit: c. à c.}
+    - {id: sirop-agave, name: "sirop d'agave (5 + 6 c. à s.)", qty: 11, unit: c. à s.}
+
+  steps:
+    - id: cuire
+      action: "Mélanger à froid le lait, l'agar-agar, la vanille et 5 c. à s. d'agave, porter à ébullition et frémir 2 min en remuant"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [lait, agar-agar, extrait-vanille, sirop-agave]
+      time_min: 6
+    - id: prendre
+      action: "Verser chaud dans des petits moules et laisser prendre au frais"
+      needs: []
+      uses: []
+      time_min: 2
+      attente_min: 180
+      attente_raison: "plusieurs heures au frais"
+    - id: caramel
+      action: "Frémir 2 min à petit feu le reste d'agave et en napper les flans démoulés"
+      needs: [simmer]
+      charge_partielle: true
+      uses: []
+      time_min: 3
+
+  emits: []
+
+  plan_b: []

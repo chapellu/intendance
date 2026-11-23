@@ -1,0 +1,84 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# VINGT CHOUX À L'HUILE : eau, huile, sel et sucre frémissants, farine, panade
+# séchée 3 min, 225 g d'œufs battus pesés ; 30 min à 180 °C jusqu'à ce que les
+# rides soient dorées. Lemon-curd de la veille (citron, miel, farine, jaunes,
+# huile de coco) ; fourrés par-dessous, trempés dans une meringue au sucre de
+# bouleau, 2 à 3 min de four. À manger dans les 24 h.
+
+recipe:
+  id: choux-tarte-citron-meringues
+  title: Petits choux façon tarte au citron meringuée
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Les petits choux trop mignons qui se prenaient pour une tarte au citron », blog Saines Gourmandises, 21 décembre 2015"
+    url: https://saines-gourmandises.fr/noel-en-blanc-et-or/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 7          # « environ 20 choux »
+    pieces: 20
+  time_min_total: 70
+  active_min: 40
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: citron, name: "citrons (10 cl de jus)", qty: 2, unit: pièce}
+    - {id: miel-acacia, name: "miel d'acacia", qty: 18, unit: cl}
+    - {id: huile-essentielle-citron, name: "huile essentielle de citron", qty: 12, unit: pièce}
+    - {id: farine-petit-epeautre, name: "farine de petit épeautre", qty: 10, unit: g}
+    - {id: oeufs, name: "œufs (3 jaunes, 3 blancs, 225 g battus)", qty: 8, unit: pièce}
+    - {id: huile-coco, name: "huile de coco vierge", qty: 85, unit: g}
+    - {id: eau, name: "eau", qty: 25, unit: cl}
+    - {id: huile-pepin-raisin, name: "huile d'olive ou neutre", qty: 12, unit: cl}
+    - {id: farine-epeautre, name: "farine de grand épeautre T110 ou T130", qty: 150, unit: g}
+    - {id: sel, name: "sel fin", qty: 4, unit: g, seasoning: true}
+    - {id: sucre-complet, name: "sucre de coco", qty: 5, unit: g}
+    - {id: sucre-bouleau, name: "sucre de bouleau", qty: 60, unit: g}
+    - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 1, unit: c. à s.}
+
+  steps:
+    - id: curd
+      action: "Mêler à froid jus de citron, miel, farine et 3 jaunes, chauffer en fouettant jusqu'à la première ébullition, puis ajouter huile de coco et huile essentielle"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [citron, miel-acacia, farine-petit-epeautre, huile-coco, huile-essentielle-citron]
+      time_min: 8
+      attente_min: 600
+      attente_raison: "le curd prend une nuit au frais"
+    - id: panade
+      action: "Préchauffer à 180 °C ; frémir l'eau, l'huile, le sel et le sucre, jeter la farine hors du feu, puis sécher la panade 3 min sur feu moyen"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [eau, huile-pepin-raisin, sel, sucre-complet, farine-epeautre]
+      time_min: 8
+      attended: true
+    - id: choux
+      action: "Y incorporer peu à peu 225 g d'œufs battus, dresser à la poche des choux de la taille d'une figue et cuire environ 30 min"
+      astuce: "Les rides doivent être dorées, sinon le chou retombe en refroidissant."
+      needs: [bake]
+      uses: [oeufs]
+      time_min: 38
+      attended: false
+    - id: meringuer
+      action: "Fourrer les choux de curd par-dessous ; monter 3 blancs avec le sucre en trois fois et la vanille ; y tremper le dessus des choux et dorer 2 à 3 min"
+      needs: [bake]
+      uses: [sucre-bouleau, extrait-vanille]
+      time_min: 15
+      attended: true
+      kid: {age_min_months: 48, task: "tremper les choux dans la meringue"}
+
+  emits: []
+
+  plan_b: []

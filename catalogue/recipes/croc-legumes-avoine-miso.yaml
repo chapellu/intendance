@@ -1,0 +1,90 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DES BLINIS DE LÉGUMES LEVÉS : une pâte de flocons d'avoine, farine, œufs et
+# levure de boulanger qui pousse pendant qu'on fait fondre poireaux et oignon,
+# puis carotte râpée et miso blanc. Les cercles inox sont facultatifs.
+
+recipe:
+  id: croc-legumes-avoine-miso
+  title: « Croc'légumes » croustifondants à l'avoine et au miso blanc
+  format: galettes
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Croc'légumes croustifondants à l'avoine et miso blanc », blog Saines Gourmandises, 1er mars 2016"
+    url: https://saines-gourmandises.fr/gourmandise-salee-de-saison/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 3          # « environ 12 croquettes »
+    pieces: 12
+  time_min_total: 40        # 15 min de préparation + cuisson par fournées
+  active_min: 30
+
+  apports:
+    proteine: oeuf
+    feculent: avoine
+    legumes: [allium, racine]
+    profil: poele
+    origine: japonais
+
+  ingredients:
+    - {id: poireau, name: blancs de poireaux (3 gros), qty: 400, unit: g}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: carottes, name: carotte, qty: 100, unit: g}
+    - {id: huile-olive, name: "huile d'olive (3 c. à s. + la poêle)", qty: 5, unit: c. à s.}
+    - {id: flocons-avoine, name: petits flocons d'avoine, qty: 85, unit: g}
+    - {id: farine-complete, name: farine de grand épeautre T110 ou T150, qty: 50, unit: g}
+    - {id: eau, name: "eau tiède (45 °C au plus)", qty: 15, unit: cl}
+    - {id: oeufs, name: œufs moyens, qty: 2, unit: pièce}
+    - {id: levure-boulangere, name: levure de boulanger déshydratée, qty: 1, unit: sachet}
+    - {id: miso-blanc, name: miso blanc (c. à c. très bombée), qty: 25, unit: g}
+    - {id: sel, name: sel, qty: 2, unit: pincée, seasoning: true}
+    - {id: poivre-5-baies, name: poivre 5 baies, qty: 1, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: pate
+      action: "Délayer la levure dans l'eau tiède ; dans un saladier, fouetter flocons, farine, une pincée de sel, la levure et les œufs, et laisser lever au tiède"
+      astuce: "Au-delà de 45 °C, l'eau tue la levure."
+      needs: []
+      uses: [levure-boulangere, eau, flocons-avoine, farine-complete, oeufs]
+      time_min: 5
+      kid: {age_min_months: 30, task: "fouetter la pâte"}
+    - id: fondre
+      action: "Émincer finement poireaux et oignon et les faire revenir dans 3 c. à s. d'huile avec un peu de sel, en remuant souvent"
+      needs: [pan-fry]
+      uses: [poireau, oignon, huile-olive, sel]
+      time_min: 15
+      attended: true
+    - id: raper
+      action: "Râper la carotte à la grosse grille"
+      needs: []
+      uses: [carottes]
+      time_min: 3
+      parallel_with: fondre
+    - id: melanger
+      action: "Hors du feu, mêler le miso et la carotte aux poireaux fondus, puis verser le tout, tiédi, dans la pâte et poivrer"
+      needs: []
+      uses: [miso-blanc, poivre-5-baies]
+      time_min: 3
+    - id: cuire
+      action: "Cuire de grosses cuillerées de pâte dans une poêle huilée, quelques minutes à couvert sur chaque face, jusqu'à ce qu'elles soient dorées"
+      astuce: "Une poêle en céramique ou en fer : l'inox accroche."
+      needs: [pan-fry]
+      uses: []
+      time_min: 15
+      attended: true
+
+  emits:
+    - kind: reste-plat
+      type: croc-legumes-avoine-miso
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: true}
+
+  plan_b: []

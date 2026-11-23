@@ -1,0 +1,62 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# CHÂTAIGNES PELÉES cuites 45 min dans l'eau avec la vanille, dans une petite
+# cocotte, puis mixées longuement avec l'agave et une pincée de fleur de sel
+# (le secret) jusqu'à faire « blop ». Trois pots, dix jours au frais.
+
+recipe:
+  id: creme-marron-vanille-maison
+  title: La crème de marron de mes rêves
+  role: base
+  creneaux: [gouter, petit-dejeuner]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« La crème de marron de mes rêves (et la coupe timarronsuisse) », blog Saines Gourmandises, 20 novembre 2014"
+    url: https://saines-gourmandises.fr/la-creme-de-marron-de-mes-reves/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 12          # « pour 3 pots »
+  time_min_total: 55
+  active_min: 10
+
+  apports:
+    proteine: aucune
+    feculent: chataigne
+    legumes: []
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: chataignes, name: "châtaignes pelées", qty: 500, unit: g}
+    - {id: eau, name: "eau", qty: 75, unit: cl}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 15, unit: cl}
+    - {id: gousse-vanille, name: "très bonne gousse de vanille", qty: 1, unit: pièce}
+    - {id: fleur-de-sel, name: "pincée de fleur de sel", qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: cuire
+      action: "Cuire 45 min les châtaignes dans l'eau avec la vanille fendue et grattée, à couvert et à feu doux"
+      needs: [simmer]
+      uses: [chataignes, eau, gousse-vanille]
+      time_min: 45
+      attended: false
+    - id: mixer
+      action: "Ôter la gousse et mixer longuement avec l'agave et la fleur de sel jusqu'à une crème lisse ; mettre en pots"
+      needs: [blend-smooth]
+      uses: [sirop-agave, fleur-de-sel]
+      time_min: 6
+
+  emits:
+    - kind: base
+      type: creme-marron-maison
+      qty_band: 3-repas
+      qty: {amount: 900, unit: g}
+      keeps: {frigo_days: 10, congelo: false}
+      note: "la coupe timarronsuisse en prend 150 g"
+
+  plan_b: []

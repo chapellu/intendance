@@ -1,0 +1,87 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DEUX PIZZAS SANS FROMAGE LAITIER : pâte d'épeautre levée au moins 2 h (ou
+# la veille), sauce tomate, moules décoquillées, thon blanc, persil, olives,
+# et le « fromage coulant » à l'arrow-root et à la purée de cajou, versé juste
+# avant le four. La recette de pâte renvoie à une autre du livre : elle est
+# écrite ici avec les quantités de la liste.
+
+recipe:
+  id: pizza-mer-fromage-vegetal
+  title: Pizza de la mer au « fromage » végétal coulant
+  format: pizza
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Les fromages végétaux fait-maison », extrait de « Cuisiner sans lait », blog Saines Gourmandises, 20 janvier 2016"
+    url: https://saines-gourmandises.fr/ca-peut-vraiment-etre-super-bon/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « 2 pizzas (4 personnes) »
+  time_min_total: 165       # 25 min + 2 h de pousse + 20 min
+  active_min: 30
+
+  apports:
+    proteine: poisson
+    feculent: farine
+    legumes: [solanacee]
+    profil: four
+    origine: italien
+
+  ingredients:
+    - {id: farine-epeautre, name: farine T110 de grand épeautre, qty: 500, unit: g}
+    - {id: eau, ref: eau-pate, name: eau tiède (pâte), qty: 33, unit: cl}
+    - {id: huile-olive, ref: huile-pate, name: huile d'olive (pâte), qty: 2, unit: c. à s.}
+    - {id: levure-boulangere, name: levure de boulanger déshydratée, qty: 1, unit: sachet}
+    - {id: sel, name: sel fin, qty: 10, unit: g, seasoning: true}
+    - {id: sauce-tomate, name: bonne sauce tomate cuisinée, qty: 300, unit: g}
+    - {id: moules, name: "un bol de moules cuites décoquillées", qty: 250, unit: g}
+    - {id: thon-boite, name: thon blanc à l'huile d'olive bien égoutté, qty: 200, unit: g}
+    - {id: persil, name: persil haché, qty: 1, unit: bouquet}
+    - {id: olives-noires, name: quelques olives noires, qty: 10, unit: pièce}
+    - {id: eau, ref: eau-fromage, name: eau froide (fromage), qty: 30, unit: cl}
+    - {id: arrow-root, name: arrow-root, qty: 14, unit: g}
+    - {id: ail, name: ail frais, qty: 6, unit: gousse}
+    - {id: miso-blanc, name: miso blanc (c. à c. rases), qty: 2, unit: c. à c.}
+    - {id: levure-biere, name: levure de bière maltée (c. à c. rases), qty: 2, unit: c. à c.}
+    - {id: huile-olive, ref: huile-fromage, name: huile d'olive (fromage), qty: 4, unit: c. à s.}
+    - {id: puree-cajou, name: purée de cajou, qty: 4, unit: c. à s.}
+    - {id: fleur-de-sel, name: fleur de sel (c. à c. rases), qty: 2, unit: c. à c., seasoning: true}
+
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: pate
+      action: "Délayer la levure dans l'eau tiède, la verser avec l'huile dans la farine salée et pétrir jusqu'à une pâte souple"
+      needs: []
+      uses: [levure-boulangere, eau-pate, huile-pate, farine-epeautre, sel]
+      time_min: 8
+      attente_min: 120
+      attente_raison: "pousse d'au moins 2 h, ou la veille au frais"
+    - id: garnir
+      action: "Chauffer le four à 240-260 °C ; étaler à la main deux disques de 20 cm sur un papier fariné, garnir de sauce, thon, moules et persil"
+      needs: []
+      uses: [sauce-tomate, thon-boite, moules, persil]
+      time_min: 8
+      kid: {age_min_months: 30, task: "étaler la sauce tomate"}
+    - id: fromage
+      action: "Fouetter en casserole eau froide, fleur de sel, ail pressé et arrow-root, bouillir 2 min, puis fouetter 30 s avec miso, levure, huile et cajou"
+      needs: [simmer]
+      uses: [eau-fromage, fleur-de-sel, ail, arrow-root, miso-blanc, levure-biere, huile-fromage, puree-cajou]
+      time_min: 6
+      attended: true
+    - id: cuire
+      action: "Napper les pizzas de fromage coulant, ajouter les olives et cuire 10 à 12 min"
+      needs: [bake]
+      uses: [olives-noires]
+      time_min: 12
+      attended: true
+
+  emits: []
+
+  plan_b: []

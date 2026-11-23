@@ -1,0 +1,93 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# MEILLEUR LA VEILLE, mais rien ne l'oblige : la recette se fait d'une traite
+# en 1 h 15 à 1 h 30 de cocotte. Le faitout à fond accumulateur de l'autrice
+# finit la cuisson hors du feu jusqu'au lendemain ; non encodé.
+#
+# LES CAROTTES PEUVENT SE FAIRE À PART, al dente, et n'arriver qu'à la fin :
+# l'astuce le dit.
+
+recipe:
+  id: poulet-facon-coq-au-vin
+  title: Poulet fermier comme un bon coq au vin
+  format: mijote
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Poulet fermier comme un bon coq au vin », blog Saines Gourmandises, 12 février 2014"
+    url: https://saines-gourmandises.fr/cocoricooooo/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 5          # « pour 4 à 6 personnes »
+  time_min_total: 110       # 20 min de préparation + 1 h 30 environ
+  active_min: 30
+
+  apports:
+    proteine: viande-blanche
+    feculent: aucun
+    legumes: [racine, allium, champignon]
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: poulet, name: poulet fermier, qty: 1, unit: pièce}
+    - {id: carottes, name: carottes, qty: 6, unit: pièce}
+    - {id: echalote, name: échalotes, qty: 6, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: jambon-cru, name: jambon cru, qty: 100, unit: g}
+    - {id: cepes-seches, name: cèpes séchés, qty: 35, unit: g}
+    - {id: vin-rouge, name: "bon vin rouge (Cahors, Corbières…)", qty: 50, unit: cl}
+    - {id: cognac, name: "cognac, armagnac ou bon marc", qty: 2, unit: c. à s.}
+    - {id: vinaigre, name: vinaigre de vin vieux, qty: 1, unit: c. à s.}
+    - {id: ail, name: ail, qty: 5, unit: gousse}
+    - {id: laurier, name: feuilles de laurier, qty: 4, unit: pièce, seasoning: true}
+    - {id: sel, name: sel (avec prudence), qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 2, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: riz, name: riz basmati complet, qty: 300, unit: g}
+
+  steps:
+    - id: decouper
+      action: "Couper le poulet en morceaux en retirant le plus de peau possible"
+      astuce: "Sans peau, la chair prend mieux la sauce. Le boucher peut le faire."
+      needs: [chop-coarse]
+      uses: [poulet]
+      time_min: 10
+    - id: blondir
+      action: "Émincer les échalotes et les faire blondir à l'huile dans la cocotte avec le jambon cru en lanières"
+      needs: [simmer-large]
+      uses: [echalote, huile-olive, jambon-cru]
+      time_min: 6
+      attended: true
+    - id: mouiller
+      action: "Ajouter le poulet, les carottes en rondelles, les cèpes, le vin, l'alcool, le vinaigre, l'ail, le laurier ; saler très peu et poivrer"
+      astuce: "Peu de sel : le jambon cru en apporte déjà."
+      needs: [simmer-large]
+      uses: [carottes, cepes-seches, vin-rouge, cognac, vinaigre, ail, laurier, sel, poivre]
+      time_min: 6
+    - id: mijoter
+      action: "Couvrir et mijoter 1 h 15 à 1 h 30 à feu doux, en remuant de temps en temps pour que le fond n'accroche pas"
+      needs: [simmer-large]
+      uses: []
+      time_min: 80
+      attended: false
+    - id: reduire
+      action: "Finir 15 à 20 min à découvert pour réduire la sauce"
+      astuce: "Encore meilleur préparé la veille et réchauffé ainsi le lendemain."
+      needs: [simmer-large]
+      uses: []
+      time_min: 15
+      attended: true
+
+  emits:
+    - kind: reste-plat
+      type: poulet-facon-coq-au-vin
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

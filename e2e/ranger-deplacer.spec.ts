@@ -34,23 +34,23 @@ test("ajouter en disant où, puis déplacer d'une zone à l'autre", async ({ pag
   await page.getByRole("button", { name: /^Ajouter 2 au stock/ }).click();
 
   let dessus = await ouvrirRangement(page, "dessus de l");
-  await expect(ligne(dessus, /^tomates pelees/).locator(".q")).toHaveText("3 boîtes");
+  await expect(ligne(dessus, /^tomates pelées/).locator(".q")).toHaveText("3 boîtes");
 
   // DÉPLACER deux boîtes sous l'évier.
-  await ligne(dessus, /^tomates pelees/).getByRole("button", { name: "déplacer : tomates pelees" }).click();
-  const bouger = dessus.getByRole("group", { name: "déplacer : tomates pelees" });
+  await ligne(dessus, /^tomates pelées/).getByRole("button", { name: "déplacer : tomates pelées" }).click();
+  const bouger = dessus.getByRole("group", { name: "déplacer : tomates pelées" });
   await bouger.getByRole("button", { name: "−" }).click();
   await bouger.getByRole("button", { name: "sous-évier" }).click();
-  await expect(ligne(dessus, /^tomates pelees/).locator(".q")).toHaveText("1 boîte");
+  await expect(ligne(dessus, /^tomates pelées/).locator(".q")).toHaveText("1 boîte");
 
   const evier = await ouvrirRangement(page, "sous-évier");
-  await expect(ligne(evier, /^tomates pelees/).locator(".q")).toHaveText("2 boîtes");
+  await expect(ligne(evier, /^tomates pelées/).locator(".q")).toHaveText("2 boîtes");
 
   // Et ça tient après rechargement : c'est le journal qui le dit, pas l'écran.
   await page.reload();
   await attendreLApp(page);
   dessus = await ouvrirRangement(page, "dessus de l");
-  await expect(ligne(dessus, /^tomates pelees/).locator(".q")).toHaveText("1 boîte");
+  await expect(ligne(dessus, /^tomates pelées/).locator(".q")).toHaveText("1 boîte");
 });
 
 test("ranger ce qui attend sous « Rentrés, à ranger »", async ({ page }) => {

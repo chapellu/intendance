@@ -1,0 +1,56 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LE PREMIER BILLET DU BLOG : fraises mixées avec ricotta et agave en verrines,
+# coiffées de crème d'amande fouettée au miel. À servir aussitôt, ingrédients
+# mis au frais quelques heures avant.
+
+recipe:
+  id: cappuccino-fraises-ricotta
+  title: « Cappuccino » crémeux de fraises et ricotta, nuage d'amande au miel
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Amis visiteurs, bienvenue sur Saines Gourmandises ! », blog Saines Gourmandises, 9 mai 2011"
+    url: https://saines-gourmandises.fr/amis-visiteurs-bienvenue-sur-saines-gourmandises/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « pour 8 verrines »
+  time_min_total: 15
+  active_min: 15
+
+  apports:
+    proteine: fromage
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: fraises, name: "fraises très parfumées", qty: 250, unit: g}
+    - {id: ricotta, name: "ricotta fraîche", qty: 250, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 4, unit: c. à s.}
+    - {id: creme-amande, name: "crème d'amande liquide bien froide", qty: 20, unit: cl}
+    - {id: miel-acacia, name: "miel liquide (acacia ou mille fleurs)", qty: 3, unit: c. à s.}
+
+  steps:
+    - id: mixer
+      action: "Équeuter les fraises et les mixer très finement avec la ricotta et l'agave, puis verser en verrines"
+      needs: [blend-smooth]
+      uses: [fraises, ricotta, sirop-agave]
+      time_min: 6
+      kid: {age_min_months: 24, task: "équeuter les fraises"}
+    - id: fouetter
+      action: "Fouetter quelques minutes la crème d'amande bien froide avec le miel jusqu'à ce qu'elle mousse, en déposer une cuillerée sur chaque verrine et servir"
+      astuce: "Un sachet de fixe-chantilly aide la crème végétale à tenir."
+      needs: []
+      uses: [creme-amande, miel-acacia]
+      time_min: 6
+
+  emits: []
+
+  plan_b: []

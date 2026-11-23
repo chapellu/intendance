@@ -1,0 +1,94 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE AUTRE TOURTE AUX « FEUILLES » que celle du livre (à la courge) : même
+# pâte à la tomate, ici de petit épeautre, garnie d'une poêlée de champignons,
+# pommes de terre en dés et tofu fumé, persil et fromage râpé. Faite pour
+# cuisiner avec les enfants, qui découpent les feuilles.
+
+recipe:
+  id: tourte-automne-foret-champignons
+  title: Jolie tourte d'automne de la forêt aux champignons
+  format: quiche
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« La jolie tourte d'automne de la forêt », blog Saines Gourmandises, 23 octobre 2015"
+    url: https://saines-gourmandises.fr/en-cuisine-avec-vos-loulous-pendant-ces-vacances/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « pour 6 personnes »
+  lot_entier: true
+  time_min_total: 60        # 25 min de préparation + 30 min de cuisson
+  active_min: 30
+
+  apports:
+    proteine: tofu-soja
+    feculent: pommes-de-terre
+    legumes: [champignon, allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-petit-epeautre, name: farine T110 de petit épeautre, qty: 550, unit: g}
+    - {id: eau, name: eau, qty: 18, unit: cl}
+    - {id: concentre-tomate, name: double concentré de tomate, qty: 140, unit: g}
+    - {id: huile-olive, ref: huile-pate, name: huile d'olive (pâte), qty: 12, unit: cl}
+    - {id: sel, ref: sel-pate, name: "sel (pâte, c. à c. rase)", qty: 1, unit: c. à c., seasoning: true}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: huile-olive, ref: huile-garniture, name: huile d'olive (garniture), qty: 4, unit: c. à s.}
+    - {id: champignons-paris, name: "champignons frais, sauvages ou cultivés", qty: 400, unit: g}
+    - {id: tofu-fume, name: tofu fumé, qty: 200, unit: g}
+    - {id: pomme-de-terre, name: pommes de terre, qty: 250, unit: g}
+    - {id: fromage-rape, name: fromage râpé au choix, qty: 200, unit: g}
+    - {id: persil, name: persil, qty: 1, unit: petit bouquet}
+    - {id: sel, ref: sel-garniture, name: sel, qty: 2, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: pate
+      action: "Fouetter le concentré dans l'eau, le verser avec l'huile dans la farine salée, mélanger juste assez, filmer et mettre au frais"
+      astuce: "Trop travaillée, la pâte cuit moins bien."
+      needs: []
+      uses: [concentre-tomate, eau, huile-pate, farine-petit-epeautre, sel-pate]
+      time_min: 6
+      kid: {age_min_months: 30, task: "fouetter le concentré dans l'eau"}
+    - id: poeler
+      action: "Préchauffer le four à 180 °C ; dorer à l'huile l'oignon et les pommes de terre en dés de 1,5 cm avec le tofu en lardons"
+      needs: [pan-fry]
+      uses: [oignon, pomme-de-terre, tofu-fume, huile-garniture]
+      time_min: 12
+      attended: true
+    - id: champignons
+      action: "Ajouter les champignons en gros morceaux, saler, poivrer et cuire jusqu'à ce qu'il n'y ait plus d'eau ; hors du feu, ajouter persil et fromage"
+      astuce: "Les pommes de terre doivent être cuites avant d'enfourner."
+      needs: [pan-fry]
+      uses: [champignons-paris, sel-garniture, poivre, persil, fromage-rape]
+      time_min: 12
+      attended: true
+    - id: monter
+      action: "Foncer un moule huilé et fariné avec la moitié de la pâte, tasser la garniture, couvrir de feuilles découpées dans l'autre moitié"
+      needs: []
+      uses: []
+      time_min: 10
+      kid: {age_min_months: 36, task: "découper les feuilles à l'emporte-pièce"}
+    - id: cuire
+      action: "Cuire 30 min et servir chaud sans être brûlant"
+      needs: [bake]
+      uses: []
+      time_min: 30
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: tourte-automne-foret-champignons
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

@@ -1,0 +1,70 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LA PREMIÈRE « LEÇON » DE CHOCOLATS DE NOËL : écorces de citron confites 20 min
+# dans l'agave et l'eau, séchées, trempées dans le chocolat 70 % tempéré.
+# Même méthode pour orangettes et mandarinettes. Les palets aux pistaches
+# (ou mendiants) et les cœurs au gingembre confit de l'article ne sont pas
+# encodés à part.
+
+recipe:
+  id: citronnettes-chocolat
+  title: Citronnettes et palets de chocolat noir
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Leçon n°1 : des petits chocolats bio qui ne vous feront (presque) pas grossir », blog Saines Gourmandises, 30 novembre 2011"
+    url: https://saines-gourmandises.fr/saines-gourmandises-de-noel-3/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 10
+  time_min_total: 50
+  active_min: 25
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: chocolat-noir, name: "chocolat noir 70 %", qty: 200, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 6, unit: c. à s.}
+    - {id: citron, name: "citrons non traités", qty: 2, unit: pièce}
+    - {id: eau, name: "eau", qty: 6, unit: c. à s.}
+
+  steps:
+    - id: confire
+      action: "Prélever de fines lanières d'écorce et les confire 20 min à couvert sur feu très doux avec l'agave et l'eau"
+      astuce: "Surveiller la fin : le sirop brûle vite."
+      needs: [simmer]
+      charge_partielle: true
+      uses: [citron, sirop-agave, eau]
+      time_min: 22
+      attended: false
+    - id: secher
+      action: "Les étaler sur un papier cuisson et les laisser sécher un peu ; tempérer le chocolat"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [chocolat-noir]
+      time_min: 10
+    - id: enrober
+      action: "Tremper vite chaque écorce dans le chocolat et la laisser figer sur un papier"
+      needs: []
+      uses: []
+      time_min: 10
+      kid: {age_min_months: 48, task: "poser les écorces enrobées sur le papier"}
+
+  emits:
+    - kind: base
+      type: citronnettes-chocolat
+      qty_band: 3-repas
+      keeps: {frigo_days: 15, congelo: false}
+      note: "se gardent en boîte hermétique"
+
+  plan_b: []

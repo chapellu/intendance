@@ -1,0 +1,79 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN FONDANT EN COURONNE : crème de soja, agave et purée de noisette chauffées,
+# chocolat fondu dedans, jaunes puis blancs en neige, 30 min dans un savarin
+# de 22 cm, une nuit au frais ; puis une ganache coco-vanille dressée tout
+# autour à la poche en remontant, comme un nid.
+
+recipe:
+  id: nid-paques-chocolat
+  title: Joli nid de Pâques tout chocolat
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Joli nid de Pâques, tout bio, tout bon, tout chocolat », blog Saines Gourmandises, 28 mars 2013"
+    url: https://saines-gourmandises.fr/pas-de-blabla-rien-que-du-chocolat/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 12          # « un nid de Pâques de 12 parts »
+  lot_entier: true
+  time_min_total: 55
+  active_min: 30
+
+  apports:
+    proteine: oeuf
+    feculent: aucun
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: chocolat-noir, name: "chocolat noir 70 à 85 % (200 + 100 g)", qty: 300, unit: g}
+    - {id: creme-soja, name: "crème de soja (2 briquettes)", qty: 40, unit: cl}
+    - {id: sirop-agave, name: "sirop d'agave (12 cl + 4 c. à s.)", qty: 18, unit: cl}
+    - {id: puree-noisette, name: "purée de noisette bien souple", qty: 70, unit: g}
+    - {id: oeufs, name: "œufs", qty: 3, unit: pièce}
+    - {id: huile-coco, name: "huile de coco vierge", qty: 60, unit: g}
+    - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 1, unit: c. à s.}
+    - {id: oeufs-chocolat, name: "petits œufs en chocolat", qty: 12, unit: pièce, optional: true}
+
+  steps:
+    - id: fondant
+      action: "Préchauffer à 180 °C ; chauffer 20 cl de crème avec 12 cl d'agave et la noisette, y fondre 200 g de chocolat hors du feu, à couvert"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [puree-noisette]
+      time_min: 8
+    - id: cuire
+      action: "Lisser au fouet avec les jaunes, incorporer les blancs en neige, verser dans un savarin huilé et cuire 30 min"
+      needs: [bake]
+      uses: [oeufs]
+      time_min: 35
+      attended: false
+      attente_min: 600
+      attente_raison: "une nuit au frais"
+    - id: ganache
+      action: "Fondre le reste de chocolat, d'agave et de crème avec l'huile de coco et la vanille, fouetter et verser dans une poche cannelée fermée"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [chocolat-noir, sirop-agave, creme-soja, huile-coco, extrait-vanille]
+      time_min: 6
+    - id: decor
+      action: "Le jour J, malaxer la poche, puis dresser la ganache tout autour du gâteau en remontant ; poser les petits œufs"
+      needs: []
+      uses: [oeufs-chocolat]
+      time_min: 12
+      kid: {age_min_months: 30, task: "poser les petits œufs dans le nid"}
+
+  emits:
+    - kind: reste-plat
+      type: nid-paques-chocolat
+      qty_band: 3-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

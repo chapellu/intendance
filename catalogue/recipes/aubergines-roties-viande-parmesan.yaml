@@ -1,0 +1,78 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DES DEMI-AUBERGINES AU FOUR, sans précuisson : huile, sauce tomate, bœuf
+# haché à l'oignon et à l'origan, parmesan, 40 min. Variantes de l'autrice :
+# persillade dans la viande ; tofu fumé ou seitan ; thon.
+
+recipe:
+  id: aubergines-roties-viande-parmesan
+  title: Aubergines rôties à la viande, aux oignons et au parmesan
+  format: gratin
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Aubergines rôties à la viande, aux oignons et au parmesan », blog Saines Gourmandises, 30 juillet 2021"
+    url: https://saines-gourmandises.fr/aubergines-roties-a-la-viande-aux-oignons-et-au-parmesan/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « 8 portions, soit 8 personnes normales ou 4 morfalous »
+  time_min_total: 50        # 10 min de préparation + 40 min de cuisson
+  active_min: 10
+
+  apports:
+    proteine: viande-rouge
+    feculent: aucun
+    legumes: [solanacee, allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: aubergine, name: grosses aubergines bien fraîches, qty: 4, unit: pièce}
+    - id: boeuf-hache
+      name: bœuf haché, frais ou surgelé
+      qty: 250
+      unit: g
+      subs:
+        - {id: tofu-fume, name: tofu fumé émietté, note: "version végétarienne", ratio: 1.0}
+        - {id: thon-boite, name: thon, ratio: 1.0}
+    - {id: oignon, name: gros oignon, qty: 1, unit: pièce}
+    - {id: parmesan, name: parmesan ou grana padano, qty: 100, unit: g}
+    - {id: huile-olive, name: huile d'olive, qty: 8, unit: c. à s.}
+    - {id: sauce-tomate, name: sauce tomate, qty: 350, unit: g}
+    - {id: origan, name: "grosse pincée d'origan ou de sarriette", qty: 1, unit: pincée, seasoning: true}
+    - {id: sel, name: sel, qty: 3, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: riz, name: riz, qty: 350, unit: g}
+
+  steps:
+    - id: viande
+      action: "Préchauffer le four à 180 °C ; couper l'oignon en petits dés et le mélanger au bœuf avec sel, poivre et origan"
+      needs: [chop-coarse]
+      uses: [oignon, boeuf-hache, origan, poivre]
+      time_min: 5
+    - id: garnir
+      action: "Ouvrir les aubergines en deux, les poser face bombée dessous, saler, étaler 1 c. à s. d'huile sur chacune, puis la sauce tomate, la viande et le parmesan"
+      needs: []
+      uses: [aubergine, sel, huile-olive, sauce-tomate, parmesan]
+      time_min: 6
+      kid: {age_min_months: 30, task: "étaler la sauce tomate à la cuillère"}
+    - id: cuire
+      action: "Cuire 40 min et servir avec du riz"
+      needs: [bake]
+      uses: []
+      time_min: 40
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: aubergines-roties-viande-parmesan
+      qty_band: 1-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

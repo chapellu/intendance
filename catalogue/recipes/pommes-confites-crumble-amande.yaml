@@ -1,0 +1,69 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# SANS AUTRE SUCRE QU'UNE DEMI-FIGUE PAR PART : quartiers de pommes caramélisés
+# dans leur suc à la poêle, en cercles ou dans un petit plat à gratin, sous un
+# crumble d'amandes, cannelle, figue sèche et farine haché en sable ;
+# 12 min de four, servi tiède.
+
+recipe:
+  id: pommes-confites-crumble-amande
+  title: Pommes confites au crumble léger amande-cannelle
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Un cake et un crumble, sucrés uniquement avec des fruits », extrait de « Mes bons desserts aux sucres naturels », blog Saines Gourmandises, 19 septembre 2013"
+    url: https://saines-gourmandises.fr/2-bons-desserts-de-saison-sans-aucun-sucre-ajoute/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes »
+  time_min_total: 30
+  active_min: 15
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: pommes, name: "grosses pommes", qty: 4, unit: pièce}
+    - {id: beurre, name: "beurre (ou 5 c. à s. d'huile)", qty: 75, unit: g}
+    - {id: amandes, name: "amandes entières", qty: 40, unit: g}
+    - {id: cannelle, name: "cannelle", qty: 1, unit: c. à s., seasoning: true}
+    - {id: farine-complete, name: "farine complète", qty: 2, unit: c. à s.}
+    - {id: figues-seches, name: "figues sèches", qty: 2, unit: pièce}
+
+  steps:
+    - id: pommes
+      action: "Éplucher les pommes en quartiers et les dorer à la poêle dans le beurre, en gardant une noix pour le crumble, puis les répartir en cercles"
+      needs: [pan-fry]
+      charge_partielle: true
+      uses: [pommes, beurre]
+      time_min: 12
+      attended: true
+    - id: crumble
+      action: "Préchauffer à 180 °C ; hacher en sable les amandes, la cannelle, les figues, la farine et le reste de beurre"
+      needs: [chop-coarse-small]
+      uses: [amandes, cannelle, figues-seches, farine-complete]
+      time_min: 4
+    - id: cuire
+      action: "Répartir le crumble sur les pommes et cuire 12 min ; servir tiède"
+      needs: [bake]
+      uses: []
+      time_min: 12
+      attended: false
+      kid: {age_min_months: 24, task: "parsemer le crumble"}
+
+  emits:
+    - kind: reste-plat
+      type: pommes-confites-crumble-amande
+      qty_band: 1-repas
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

@@ -1,0 +1,68 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DES BROWNIES CUITS DANS LEUR COQUILLE : coquilles vidées par un petit trou d'1 cm,
+# rincées, posées dans une boîte à œufs en carton ; remplies aux deux tiers
+# d'une pâte de chocolat 70 % fondu à l'agave, purée de noisette grillée,
+# œufs et farine ; 15 min à 180 °C. Plus vite : 6 min en caissettes à truffes.
+# Les jaunes et blancs vidés font une omelette.
+
+recipe:
+  id: oeufs-paques-brownies-pralines
+  title: Œufs de Pâques comme des brownies pralinés
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Œufs de Pâques comme des brownies pralinés… », blog Saines Gourmandises, 23 mars 2016"
+    url: https://saines-gourmandises.fr/jai-vraiment-des-poules-formidables/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « pour 12 œufs de taille moyenne »
+    pieces: 12
+  time_min_total: 45
+  active_min: 30
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: oeufs, name: "œufs (12 coquilles vidées + 3 pour la pâte)", qty: 15, unit: pièce}
+    - {id: farine-epeautre, name: "farine de grand épeautre T110", qty: 65, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever (demi-sachet)", qty: 0.5, unit: sachet}
+    - {id: chocolat-noir, name: "chocolat noir pâtissier 70 %", qty: 100, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 4, unit: c. à s.}
+    - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 1, unit: c. à s.}
+    - {id: puree-noisette, name: "purée de noisette grillée bien souple", qty: 3, unit: c. à s.}
+    - {id: fleur-de-sel, name: "pincée de fleur de sel", qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: coquilles
+      action: "Percer un cercle d'1 cm en haut de 12 œufs, les vider, rincer les coquilles et les poser dans une boîte à œufs en carton"
+      needs: []
+      uses: []
+      time_min: 20
+      kid: {age_min_months: 48, task: "rincer les coquilles vidées"}
+    - id: pate
+      action: "Préchauffer à 180 °C ; fondre le chocolat au bain-marie avec l'agave, puis hors du feu y mêler noisette, vanille, 3 œufs et la farine avec sel et levure"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [chocolat-noir, sirop-agave, puree-noisette, extrait-vanille, oeufs, farine-epeautre, fleur-de-sel, poudre-a-lever]
+      time_min: 8
+    - id: cuire
+      action: "Remplir les coquilles aux deux tiers à la poche et cuire 15 min ; laisser refroidir et poser trou en dessous"
+      needs: [bake]
+      uses: []
+      time_min: 18
+      attended: false
+
+  emits: []
+
+  plan_b: []

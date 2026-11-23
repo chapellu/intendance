@@ -1,0 +1,79 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# L'OSEILLE NE SE TROUVE PAS PARTOUT : à défaut, des pousses d'épinards et un
+# trait de citron (remplaçant indiqué ici, pas par l'autrice). Le robot du
+# blog devient le petit blender.
+
+recipe:
+  id: sardines-farcies-oseille
+  title: Sardines farcies au pain grillé, oseille et parmesan
+  format: piece
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Sardines farcies au pain grillé, oseille et parmesan », blog Saines Gourmandises, 24 avril 2018"
+    url: https://saines-gourmandises.fr/poisson-booon-plus-cest-vrai/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes »
+  time_min_total: 40        # 10 min de préparation + 30 min de cuisson
+  active_min: 20
+
+  apports:
+    proteine: poisson
+    feculent: pain
+    legumes: [allium, feuille]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: sardines, name: "sardines très fraîches ouvertes, sans tête ni arête", qty: 12, unit: pièce}
+    - {id: echalote, name: échalotes, qty: 3, unit: pièce}
+    - {id: ail, name: ail, qty: 3, unit: gousse}
+    - id: oseille
+      name: feuilles d'oseille fraîche
+      qty: 12
+      unit: pièce
+      subs:
+        - {id: pousses-epinards, name: pousses d'épinards et un trait de citron, note: "à défaut d'oseille", ratio: 1.0}
+    - {id: parmesan, name: parmesan râpé, qty: 100, unit: g}
+    - {id: pain-levain, name: pain de campagne grillé, qty: 45, unit: g}
+    - {id: huile-olive, name: huile d'olive, qty: 6, unit: c. à s.}
+    - {id: sel, name: sel, qty: 2, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 2, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: farce
+      action: "Préchauffer le four à 200 °C ; hacher finement pain grillé, parmesan, ail, échalotes et oseille avec 4 c. à s. d'huile, sel et poivre"
+      needs: [chop-coarse-small]
+      uses: [pain-levain, parmesan, ail, echalote, oseille, huile-olive, sel, poivre]
+      time_min: 6
+    - id: farcir
+      action: "Poser un boudin de farce sur chaque sardine ouverte, la replier et la ranger debout, fente en haut, dans un plat huilé et salé"
+      astuce: "Les serrer : elles se tiennent droites les unes contre les autres."
+      needs: [gratin-vessel]
+      uses: [sardines]
+      time_min: 10
+      kid: {age_min_months: 30, task: "poser la farce sur les sardines"}
+    - id: cuire
+      action: "Saler, poivrer, arroser d'un filet d'huile et cuire 20 min, jusqu'à ce que les sardines soient dorées"
+      astuce: "Baisser un peu le four en fin de cuisson si la farce colore trop."
+      needs: [bake]
+      uses: []
+      time_min: 20
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: sardines-farcies-oseille
+      qty_band: 1-repas
+      keeps: {frigo_days: 1, congelo: false}
+
+  plan_b: []

@@ -1,0 +1,74 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# TOUT AU ROBOT, PUIS AU FOUR SANS SURVEILLANCE : céleri brossé en cubes, farine,
+# œufs, crème, parmesan ; les noix à la main à la fin. Sans robot, le céleri se
+# râpe fin et tout se mixe au mixeur plongeant dans un grand pot. Plat de
+# 18 × 24 cm ; les parts se tiennent, en boîte comme à l'apéro.
+
+recipe:
+  id: gateau-celeri-noix
+  title: Gâteau de céleri-rave aux noix
+  format: cake
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Vous faire raffoler du céleri rave ?… chiche ! », blog Saines Gourmandises, 6 mars 2026"
+    url: https://saines-gourmandises.fr/vous-faire-raffoler-du-celeri-rave-chiche/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 5          # « 4 à 6 personnes en plat principal, 12 en apéro »
+  lot_entier: true
+  time_min_total: 55        # 10 min de préparation + 45 min de cuisson
+  active_min: 10
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: [racine]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: celeri-rave, name: céleri-rave moyen, qty: 700, unit: g}
+    - {id: farine, name: farine, qty: 125, unit: g}
+    - {id: poudre-a-lever, name: poudre à lever (demi-sachet), qty: 0.5, unit: sachet}
+    - {id: oeufs, name: œufs, qty: 6, unit: pièce}
+    - {id: creme, name: crème au choix, qty: 20, unit: cl}
+    - {id: parmesan, name: parmesan ou grana padano râpé, qty: 100, unit: g}
+    - {id: noix, name: noix fraîchement cassées, qty: 85, unit: g}
+    - {id: sel, name: sel fin (c. à c. un peu bombée), qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+    - {id: muscade, name: muscade, qty: 1, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: brosser
+      action: "Préchauffer le four à 200 °C ; ôter les racines du céleri, le brosser sous l'eau et le râper finement"
+      needs: []
+      uses: [celeri-rave]
+      time_min: 6
+    - id: mixer
+      action: "Mixer avec farine, levure, œufs, crème, parmesan, sel, poivre et muscade, puis mêler les noix à la main"
+      needs: [blend-smooth]
+      uses: [farine, poudre-a-lever, oeufs, creme, parmesan, sel, poivre, muscade, noix]
+      time_min: 4
+    - id: cuire
+      action: "Verser dans un plat chemisé et cuire 45 min ; servir chaud, tiède ou froid"
+      needs: [gratin-vessel, bake]
+      uses: []
+      time_min: 45
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: gateau-celeri-noix
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

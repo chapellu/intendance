@@ -1,0 +1,97 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# L'OSSO BUCO D'ÉTÉ, aux tomates fraîches pelées, fini avec une gremolata
+# (persil, zeste de citron, ail, anchois) mise 5 min avant la fin. L'en-tête
+# dit 1 h de cuisson, les étapes 1 h 30 de mijotage : c'est le second qui
+# est encodé.
+
+recipe:
+  id: osso-buco-ete
+  title: Osso buco d'été aux tomates fraîches
+  format: mijote
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Osso buco d'été aux tomates fraîches », blog Saines Gourmandises, 11 août 2017"
+    url: https://saines-gourmandises.fr/im-eating-in-the-rain/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes »
+  time_min_total: 115
+  active_min: 30
+
+  apports:
+    proteine: viande-blanche
+    feculent: aucun
+    legumes: [solanacee, allium, racine]
+    profil: mijote
+    origine: italien
+
+  ingredients:
+    - {id: rouelle-veau, name: rouelles de veau, qty: 1.2, unit: kg}
+    - {id: tomates, name: tomates fraîches, qty: 1.5, unit: kg}
+    - {id: oignon, name: gros oignons, qty: 3, unit: pièce}
+    - {id: carottes, name: grosses carottes, qty: 3, unit: pièce}
+    - {id: sarriette, name: sarriette, qty: 3, unit: brin}
+    - {id: origan, name: origan, qty: 3, unit: brin, seasoning: true}
+    - {id: laurier, name: feuilles de laurier, qty: 2, unit: pièce, seasoning: true}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: vin-blanc-sec, name: vin blanc sec, qty: 20, unit: cl}
+    - {id: persil, name: "persil plat, sans les tiges", qty: 0.5, unit: bouquet}
+    - {id: citron, name: citron non traité (zeste et jus), qty: 1, unit: pièce}
+    - {id: ail, name: ail, qty: 1, unit: gousse}
+    - {id: anchois, name: filets d'anchois à l'huile rincés, qty: 2, unit: pièce}
+    - {id: sel, name: sel, qty: 2, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 1, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: pates, name: pâtes fraîches, qty: 350, unit: g}
+
+  steps:
+    - id: dorer
+      action: "Émincer les oignons, couper les carottes en petits dés et les dorer légèrement à l'huile dans une grande cocotte"
+      needs: [simmer-large]
+      uses: [oignon, carottes, huile-olive]
+      time_min: 10
+      attended: true
+    - id: tomates
+      action: "Peler les tomates et les couper en quartiers"
+      astuce: "Quelques tomates cerises en plus, non pelées, si on en a."
+      needs: [chop-coarse]
+      uses: [tomates]
+      time_min: 12
+      parallel_with: dorer
+    - id: mijoter
+      action: "Ajouter tomates, rouelles, vin blanc, jus du citron, herbes, sel et poivre ; couvrir et mijoter 1 h 30 à feu très doux dès l'ébullition"
+      astuce: "En fin de cuisson, surveiller le fond et ajouter un peu d'eau s'il accroche."
+      needs: [simmer-large]
+      uses: [rouelle-veau, vin-blanc-sec, sarriette, origan, laurier, sel, poivre]
+      time_min: 90
+      attended: false
+    - id: gremolata
+      action: "Hacher finement aux ciseaux, dans un verre, le persil, le zeste du citron, l'ail et les anchois"
+      needs: []
+      uses: [persil, citron, ail, anchois]
+      time_min: 5
+      parallel_with: mijoter
+    - id: finir
+      action: "5 min avant la fin, incorporer la gremolata, couvrir et finir à feu doux"
+      astuce: "Cette cuisson brève adoucit l'ail et garde le parfum du zeste. La sauce doit napper la viande."
+      needs: [simmer-large]
+      uses: []
+      time_min: 5
+
+  emits:
+    - kind: reste-plat
+      type: osso-buco-ete
+      qty_band: 1-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b:
+    - drop: gremolata
+      saves_min: 5
+      effect: "sauce plus simple, sans la note fraîche du citron"

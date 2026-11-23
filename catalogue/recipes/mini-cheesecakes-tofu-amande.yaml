@@ -1,0 +1,73 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# EN CERCLES INDIVIDUELS DE 6 À 8 CM : sablé de petit épeautre à la purée d'amande
+# mixé en sable fin et tassé ; crème de tofu soyeux, œufs, purée d'amande,
+# miel et agar-agar mixée lisse ; 25 min, 3 à 4 h au frais, fruits rouges.
+# Sans robot, le sablé se fait du bout des doigts.
+
+recipe:
+  id: mini-cheesecakes-tofu-amande
+  title: Mini « cheesecakes » au tofu soyeux et à l'amande blanche
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Les desserts sans lait, ça le fait ! », extrait de « Cuisiner sans lait », blog Saines Gourmandises, 28 janvier 2016"
+    url: https://saines-gourmandises.fr/un-tiramisu-un-cheesecake-et-un-gateau-de-fete-au-chocolat/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 7          # « 6 à 8 cheesecakes individuels »
+    pieces: 7
+  time_min_total: 45
+  active_min: 20
+
+  apports:
+    proteine: tofu-soja
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-petit-epeautre, name: "farine T110 de petit épeautre", qty: 180, unit: g}
+    - {id: puree-amande-blanche, name: "purée d'amande blanche (85 + 65 g)", qty: 150, unit: g}
+    - {id: sucre-complet, name: "sucre de coco", qty: 30, unit: g}
+    - {id: oeufs, name: "œufs (1 moyen + 4)", qty: 5, unit: pièce}
+    - {id: fleur-de-sel, name: "bonne pincée de fleur de sel", qty: 1, unit: bonne pincée, seasoning: true}
+    - {id: tofu-soyeux, name: "tofu soyeux bien égoutté", qty: 400, unit: g}
+    - {id: miel-acacia, name: "miel d'acacia", qty: 100, unit: g}
+    - {id: agar-agar, name: "agar-agar", qty: 2, unit: g}
+    - {id: fruits-rouges, name: "fruits rouges de saison", qty: 400, unit: g}
+
+  steps:
+    - id: sable
+      action: "Préchauffer à 180 °C ; sabler finement la farine, 85 g de purée d'amande, le sucre, un œuf et la fleur de sel, et tasser au fond des cercles"
+      needs: []
+      uses: [farine-petit-epeautre, sucre-complet, fleur-de-sel]
+      time_min: 8
+      kid: {age_min_months: 30, task: "tasser le sablé au fond des cercles"}
+    - id: creme
+      action: "Mixer le tofu, 4 œufs, 65 g de purée d'amande, le miel et l'agar-agar jusqu'à une crème lisse et la verser doucement dans les cercles"
+      needs: [blend-smooth]
+      uses: [tofu-soyeux, oeufs, puree-amande-blanche, miel-acacia, agar-agar]
+      time_min: 5
+    - id: cuire
+      action: "Cuire 25 min, tiédir puis mettre au frais ; démouler et servir avec les fruits"
+      needs: [bake]
+      uses: [fruits-rouges]
+      time_min: 27
+      attended: false
+      attente_min: 210
+      attente_raison: "3 à 4 h au frais"
+
+  emits:
+    - kind: reste-plat
+      type: mini-cheesecakes-tofu-amande
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

@@ -1,0 +1,89 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# EN CERCLES INDIVIDUELS : un sablé-crumble à l'huile de coco et au sucre de
+# coco cuit 10 min, isolé d'une fine couche de chocolat figée ; une gelée de
+# compote de poire à l'agar-agar, coulée tiède (elle prend vers 25 °C) ; un
+# crémeux de marrons cuits à la vanille mixés avec huile de coco et agave ;
+# 2 à 3 h au frais, cacao.
+
+recipe:
+  id: entremet-marron-poire-chocolat
+  title: Entremet végétal marron, poire, touche de chocolat, sur sablé à la fleur de sel
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Entremet végétal marron, poire, touche de chocolat, sur un sablé à la fleur de sel », blog Saines Gourmandises, 22 décembre 2014"
+    url: https://saines-gourmandises.fr/dessert-der-des-der-pour-retardataires-en-bonus-une-histoire-de-chien-ps-mais-promis-yen-a-pas-dans-la-recette/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 7          # « 6 à 8 personnes »
+  lot_entier: true
+  time_min_total: 45
+  active_min: 30
+
+  apports:
+    proteine: aucune
+    feculent: chataigne
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: "farine de grand épeautre T130", qty: 160, unit: g}
+    - {id: huile-coco, name: "huile de coco vierge (80 + 100 g)", qty: 180, unit: g}
+    - {id: sucre-complet, name: "sucre de coco", qty: 70, unit: g}
+    - {id: fleur-de-sel, name: "fleur de sel (2 pincées)", qty: 2, unit: pincée, seasoning: true}
+    - {id: chataignes, name: "marrons au naturel en bocal", qty: 350, unit: g}
+    - {id: gousse-vanille, name: "gousse de vanille", qty: 1, unit: pièce}
+    - {id: eau, name: "eau", qty: 30, unit: cl}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 10, unit: cl}
+    - {id: compote, name: "compote de poire en morceaux sans sucre", qty: 500, unit: g}
+    - {id: agar-agar, name: "agar-agar", qty: 2, unit: g}
+    - {id: chocolat-noir, name: "chocolat noir", qty: 100, unit: g}
+    - {id: cacao, name: "un peu de cacao", qty: 1, unit: c. à c.}
+
+  steps:
+    - id: sable
+      action: "Préchauffer à 180 °C ; sabler la farine, 80 g d'huile de coco, le sucre et une grosse pincée de fleur de sel, étaler sans tasser et cuire 10 min"
+      needs: [bake]
+      uses: [farine-epeautre, sucre-complet]
+      time_min: 14
+      kid: {age_min_months: 30, task: "sabler la pâte"}
+    - id: chocolat
+      action: "Tasser le sablé au fond des cercles, le tapisser d'une cuillerée de chocolat fondu au bain-marie et passer au congélateur"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [chocolat-noir]
+      time_min: 8
+    - id: gelee
+      action: "Fouetter l'agar-agar dans la compote froide, bouillir 2 min et couler tiède sur le chocolat figé"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [compote, agar-agar]
+      time_min: 6
+    - id: cremeux
+      action: "Cuire 10 min les marrons avec la vanille grattée, une pincée de sel et l'eau jusqu'à presque plus de liquide, puis mixer avec 100 g d'huile de coco et l'agave"
+      needs: [simmer, blend-smooth]
+      charge_partielle: true
+      uses: [chataignes, gousse-vanille, fleur-de-sel, eau, huile-coco, sirop-agave]
+      time_min: 15
+    - id: finir
+      action: "Étaler le crémeux sur la gelée, mettre au frais, puis démouler et poudrer de cacao"
+      needs: []
+      uses: [cacao]
+      time_min: 6
+      attente_min: 150
+      attente_raison: "2 à 3 h au frais"
+
+  emits:
+    - kind: reste-plat
+      type: entremet-marron-poire-chocolat
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

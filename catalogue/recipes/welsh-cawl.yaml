@@ -1,0 +1,100 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LA SOUPE-REPAS GALLOISE : épaule ou collier d'agneau, jarret de porc
+# demi-sel, chou vert, poireaux, carottes, céleri-rave, et l'orge mondé (ou le
+# gruau d'avoine) trempé 8 à 12 h et cuit à part, puis ajouté. Il faut un très
+# grand faitout (33 cm chez l'autrice) : pour la cocotte du foyer, la recette
+# est encodée À MOITIÉ (pour 4), ce que l'autrice propose elle-même.
+#
+# SANS JARRET DEMI-SEL, une cuillerée de sel de plus dans le bouillon.
+# Variante : des pommes de terre à la place de la céréale, 20 min avant la fin.
+
+recipe:
+  id: welsh-cawl
+  title: Welsh cawl (soupe-repas galloise)
+  format: soupe
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Welsh Cawl (Soupe-repas galloise) », blog Saines Gourmandises, 20 novembre 2019"
+    url: https://saines-gourmandises.fr/sous-la-neige/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 8 personnes » : proportions divisées par deux
+  time_min_total: 95        # 15 min de préparation + 1 h 15 environ (trempage 8 h)
+  active_min: 25
+
+  apports:
+    proteine: viande-rouge
+    feculent: orge
+    legumes: [crucifere, allium, racine]
+    profil: soupe
+    origine: francais
+
+  ingredients:
+    - id: orge
+      name: orge mondé
+      qty: 250
+      unit: g
+      subs:
+        - {id: gruau-avoine, name: gruau d'avoine, note: "plus crémeux", ratio: 1.0}
+    - {id: agneau-collier, name: "épaule ou collier d'agneau", qty: 550, unit: g}
+    - {id: jarret-porc-demi-sel, name: jarret de porc demi-sel, qty: 550, unit: g}
+    - {id: oignon, name: gros oignon, qty: 1, unit: pièce}
+    - {id: chou-vert, name: chou vert, qty: 450, unit: g}
+    - {id: huile-olive, name: huile, qty: 2, unit: c. à s.}
+    - {id: poireau, name: poireaux, qty: 2, unit: pièce}
+    - {id: carottes, name: carottes, qty: 2, unit: pièce}
+    - {id: celeri-rave, name: céleri-rave, qty: 0.5, unit: pièce}
+    - {id: laurier, name: feuilles de laurier, qty: 2, unit: pièce, seasoning: true}
+    - {id: clous-girofle, name: clous de girofle, qty: 2, unit: pièce, seasoning: true}
+    - {id: sel, name: sel, qty: 0.5, unit: c. à s., seasoning: true}
+    - {id: persil, name: persil pour le service, qty: 5, unit: brin}
+
+  steps:
+    - id: tremper
+      action: "Mettre l'orge à tremper dans de l'eau froide"
+      needs: []
+      uses: [orge]
+      time_min: 2
+      attended: false
+      attente_min: 480
+      attente_raison: "trempage de 8 à 12 h, à lancer la veille"
+    - id: cereale
+      action: "Rincer l'orge et la cuire dans une casserole d'eau froide non salée, 45 min à partir de l'ébullition"
+      needs: [simmer]
+      uses: []
+      time_min: 50
+      attended: false
+    - id: revenir
+      action: "Couper l'oignon en gros morceaux et le faire revenir à l'huile avec l'agneau dans la cocotte jusqu'à légère coloration"
+      needs: [simmer-large]
+      uses: [oignon, huile-olive, agneau-collier]
+      time_min: 8
+      attended: true
+      parallel_with: cereale
+    - id: legumes
+      action: "Ajouter les légumes en gros morceaux, le jarret rincé, laurier, girofle et sel ; couvrir d'eau et mijoter 1 h 15 à petit feu"
+      astuce: "Carottes et poireaux en tronçons de 3 cm, chou en carrés de 4 cm, céleri en cubes de 5 cm."
+      needs: [simmer-large]
+      uses: [carottes, poireau, chou-vert, celeri-rave, jarret-porc-demi-sel, laurier, clous-girofle, sel]
+      time_min: 75
+      attended: false
+    - id: servir
+      action: "Égoutter l'orge et l'ajouter à la soupe, découper la viande et servir parsemé de persil haché"
+      astuce: "Non rincée, l'orge épaissit le bouillon ; rincée, il reste limpide."
+      needs: []
+      uses: [persil]
+      time_min: 5
+
+  emits:
+    - kind: reste-plat
+      type: welsh-cawl
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

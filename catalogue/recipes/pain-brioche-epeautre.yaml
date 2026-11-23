@@ -1,0 +1,76 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN PAIN DE MIE BRIOCHÉ SANS BEURRE : épeautre T110, lait d'amande tiède,
+# huile de pépin de raisin, un œuf, un peu d'agave ; levé 1 h 30 à 2 h, cinq
+# boules dans un long moule à cake, levé encore 45 min, enfourné à 240 °C et
+# cuit 35 min à 150 °C. Il accompagnait le faux foie gras ; il sert de pain de
+# mie au goûter et au petit-déjeuner.
+
+recipe:
+  id: pain-brioche-epeautre
+  title: Pain brioché à l'épeautre
+  role: base
+  creneaux: [petit-dejeuner, gouter]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Faux foie-gras de grand-mère à la Lyonnaise, pain brioché à l'épeautre », blog Saines Gourmandises, 10 décembre 2015"
+    url: https://saines-gourmandises.fr/deux-recettes-de-gourmets-pour-noel/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « un grand pain de 28 à 30 cm »
+  lot_entier: true
+  time_min_total: 225       # 10 min + 2 h + 45 min de pousse + 35 min
+  active_min: 20
+
+  apports:
+    proteine: aucune
+    feculent: pain
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: farine T110 de grand épeautre, qty: 500, unit: g}
+    - {id: lait-amande, name: lait d'amande tiède (42 °C au plus), qty: 25, unit: cl}
+    - {id: huile-pepin-raisin, name: huile de pépin de raisin, qty: 5, unit: cl}
+    - {id: oeufs, name: œuf, qty: 1, unit: pièce}
+    - {id: sirop-agave, name: sirop d'agave, qty: 1, unit: c. à s.}
+    - {id: levure-boulangere, name: levure de boulanger déshydratée, qty: 1, unit: sachet}
+    - {id: sel, name: sel, qty: 8, unit: g, seasoning: true}
+
+  steps:
+    - id: petrir
+      action: "Délayer levure et agave dans le lait tiède, verser dans la farine salée avec l'œuf et l'huile, et pétrir 10 min énergiquement"
+      astuce: "La pâte colle un peu : c'est normal, il faut être patient."
+      needs: []
+      uses: [lait-amande, levure-boulangere, sirop-agave, farine-epeautre, sel, oeufs, huile-pepin-raisin]
+      time_min: 12
+      attente_min: 105
+      attente_raison: "première pousse au tiède, sous un torchon mouillé, jusqu'à doubler"
+      kid: {age_min_months: 36, task: "pétrir à tour de rôle"}
+    - id: faconner
+      action: "Diviser en 5, bouler chaque pâton en rabattant les bords au centre, et ranger les boules dans un moule à cake huilé et fariné"
+      needs: []
+      uses: []
+      time_min: 6
+      attente_min: 45
+      attente_raison: "seconde pousse, le temps de chauffer le four à 240 °C"
+    - id: cuire
+      action: "Enfourner bas, baisser aussitôt à 150 °C et cuire 35 min ; démouler et laisser refroidir avant de trancher"
+      needs: [bake]
+      uses: []
+      time_min: 35
+      attended: false
+
+  emits:
+    - kind: base
+      type: pain-brioche-epeautre
+      qty_band: 3-repas
+      keeps: {frigo_days: 4, congelo: true}
+
+  plan_b: []

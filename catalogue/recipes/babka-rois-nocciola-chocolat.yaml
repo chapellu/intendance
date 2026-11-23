@@ -1,0 +1,101 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE COURONNE DES ROIS EN BABKA : brioche au lait de soja-vanille, fleur
+# d'oranger et beurre (ou margarine) pétrie 10 min, levée 1 h 15 ; abaissée en
+# 25 × 40 cm, tartinée de pâte noisette-chocolat à l'agave et de chocolat
+# râpé, roulée, coupée en 7 tronçons dans un savarin de 24 cm, relevée, cuite
+# 5 min à 220 °C puis 20 min à 150 °C, nappée. La Nocciola est une pâte à
+# tartiner bio : `pate-a-tartiner`.
+
+recipe:
+  id: babka-rois-nocciola-chocolat
+  title: « Babka des rois » à la pâte à tartiner et au chocolat
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Babka des rois à la Nocciola et au chocolat », blog Saines Gourmandises, 9 janvier 2015"
+    url: https://saines-gourmandises.fr/nocciola-attention-danger/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 9          # « 8 à 10 parts »
+  lot_entier: true
+  time_min_total: 165       # 20 min + 2 h de pousse + 25 min
+  active_min: 35
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: farine T130 de grand épeautre (ou T110 de blé), qty: 500, unit: g}
+    - {id: lait-soja-vanille, name: lait de soja à la vanille, qty: 20, unit: cl}
+    - {id: sirop-agave, name: "sirop d'agave (7 cl pâte + 4 c. à s. garniture)", qty: 13, unit: cl}
+    - {id: eau-fleur-oranger, name: eau de fleur d'oranger, qty: 7, unit: cl}
+    - {id: sel, name: sel fin, qty: 5, unit: g, seasoning: true}
+    - {id: levure-boulangere, name: levure de boulanger déshydratée, qty: 1, unit: sachet}
+    - id: beurre
+      name: beurre mou
+      qty: 150
+      unit: g
+      subs:
+        - {id: margarine, name: margarine bio non hydrogénée, ratio: 1.0}
+    - {id: pate-a-tartiner, name: pâte à tartiner noisette-chocolat bio, qty: 5, unit: c. à s.}
+    - {id: chocolat-noir, name: chocolat noir pâtissier, qty: 200, unit: g}
+
+  steps:
+    - id: levain
+      action: "Ramollir le beurre en dés ; tiédir le lait, la fleur d'oranger et 7 cl d'agave sous 45 °C, y fouetter la levure et attendre qu'elle mousse"
+      needs: [simmer]
+      charge_partielle: true   # le récipient ne tient que cette part du plat
+      uses: [beurre, lait-soja-vanille, eau-fleur-oranger, levure-boulangere]
+      time_min: 10
+    - id: petrir
+      action: "Verser les liquides et le beurre mou dans la farine salée et pétrir au moins 10 min énergiquement"
+      needs: []
+      uses: [farine-epeautre, sel]
+      time_min: 12
+      attente_min: 75
+      attente_raison: "première pousse au tiède et à l'humide, jusqu'à doubler"
+    - id: garnir
+      action: "Râper finement le chocolat ; abaisser la pâte en rectangle de 25 × 40 cm, la tartiner de pâte noisette mêlée à 3 c. à s. d'agave et y répartir 130 g de chocolat"
+      astuce: "Trop souple pour être roulée ? 20 min au frais raffermissent le beurre."
+      needs: []
+      uses: [chocolat-noir, pate-a-tartiner, sirop-agave]
+      time_min: 8
+      kid: {age_min_months: 36, task: "parsemer le chocolat râpé (et cacher la fève)"}
+    - id: faconner
+      action: "Rouler serré dans la longueur, couper en 7 tronçons et les ranger dans un moule à savarin beurré, spirale contre le bord"
+      needs: []
+      uses: []
+      time_min: 6
+      attente_min: 50
+      attente_raison: "seconde pousse jusqu'à déborder du moule, four à 220 °C"
+    - id: cuire
+      action: "Cuire 5 min à 220 °C puis 20 min à 150 °C sans ouvrir, et laisser refroidir dans le moule"
+      needs: [bake]
+      uses: []
+      time_min: 25
+      attended: false
+    - id: napper
+      action: "Fondre au bain-marie le reste de pâte noisette, d'agave et de chocolat, tiédir et napper le dessus"
+      needs: [simmer]
+      charge_partielle: true   # le récipient ne tient que cette part du plat
+      uses: []
+      time_min: 6
+
+  emits:
+    - kind: reste-plat
+      type: babka-rois-nocciola-chocolat
+      qty_band: 2-repas
+      keeps: {frigo_days: 2, congelo: true}
+      note: "meilleure le jour même"
+
+  plan_b: []

@@ -1,0 +1,79 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE « CONFITURE » DE CERISES MINUTE (cerises dénoyautées et agave réduites
+# 10 min) cachée au cœur de mi-cuits au chocolat 70 % et à la purée d'amande,
+# allégés de blancs en neige ; 8 min exactement à 180 °C. Meilleurs après
+# 24 h au frais.
+
+recipe:
+  id: mi-cuits-amande-chocolat-coeur-cerise
+  title: Mi-cuits amande-chocolat, cœur cerise
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Mes mi-cuits amande-chocolat, cœur cerise », blog Saines Gourmandises, 19 mai 2012"
+    url: https://saines-gourmandises.fr/des-cerises-pour-noemie-en-attendant-les-resultats/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « pour 6 mi-cuits »
+    pieces: 6
+  time_min_total: 25
+  active_min: 15
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: cerises, name: "cerises fraîches dénoyautées", qty: 350, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave (6 + 4 c. à s.)", qty: 10, unit: c. à s.}
+    - {id: creme-soja, name: "crème liquide de soja ou d'amande", qty: 4, unit: c. à s.}
+    - {id: chocolat-noir, name: "chocolat noir 70 %", qty: 100, unit: g}
+    - {id: puree-amande-blanche, name: "purée d'amande", qty: 2, unit: c. à s.}
+    - {id: extrait-amande-amere, name: "extrait d'amande amère", qty: 1, unit: pincée, optional: true}
+    - {id: oeufs, name: "œufs", qty: 3, unit: pièce}
+    - {id: farine-complete, name: "farine complète", qty: 50, unit: g}
+    - {id: poudre-a-lever, name: "levure (demi-paquet)", qty: 0.5, unit: sachet}
+
+  steps:
+    - id: cerises
+      action: "Préchauffer à 180 °C ; cuire les cerises avec 6 c. à s. d'agave une dizaine de minutes en remuant, jusqu'à ce qu'il ne reste qu'un jus épais"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [cerises]
+      time_min: 12
+      attended: true
+    - id: chocolat
+      action: "Bouillir la crème avec 4 c. à s. d'agave, y fondre le chocolat hors du feu à couvert, puis y mêler les jaunes, la purée d'amande et l'extrait"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [creme-soja, sirop-agave, chocolat-noir, puree-amande-blanche, extrait-amande-amere]
+      time_min: 6
+      parallel_with: cerises
+    - id: pate
+      action: "Mêler farine et levure au chocolat, puis les blancs en neige à la spatule"
+      needs: []
+      uses: [farine-complete, poudre-a-lever, oeufs]
+      time_min: 5
+    - id: cuire
+      action: "Remplir 6 moules au tiers, une grosse cuillerée de cerises, recouvrir de pâte et cuire 8 min exactement"
+      needs: [bake]
+      uses: []
+      time_min: 10
+      attended: true
+      attente_min: 1440
+      attente_raison: "meilleurs après 24 h au frais"
+      attente_souple: true
+      kid: {age_min_months: 30, task: "déposer la cuillerée de cerises"}
+
+  emits: []
+
+  plan_b: []

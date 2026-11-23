@@ -1,0 +1,63 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE CUILLERÉE DE GRAINS DE KÉFIR bien actifs dans un litre de lait cru à
+# température ambiante, en bocal : environ 24 h de fermentation, jusqu'à
+# épaissir et sentir la faisselle ; filtré en bouteille, les grains récupérés.
+# 24 h de plus en bouteille mal vissée (avec un peu de sucre) le rend
+# pétillant. Le kéfir filtré fait les « yaourts » de la même page.
+
+recipe:
+  id: kefir-lait-boisson
+  title: Kéfir de lait à boire
+  role: boisson
+  creneaux: [petit-dejeuner, gouter]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Alors le lait, bon ou mauvais ? (En bonus, la recette du kéfir de lait) », blog Saines Gourmandises, 12 août 2019"
+    url: https://saines-gourmandises.fr/petit-eloge-de-nuance-episode-2/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « 1 l de kéfir »
+  lot_entier: true
+  time_min_total: 1450
+  active_min: 5
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: []
+    profil: routine
+    origine: francais
+
+  ingredients:
+    - {id: kefir-fruits, name: "grains de kéfir de lait bien actifs", qty: 1, unit: c. à s.}
+    - {id: lait, name: "lait cru (vache, chèvre ou brebis)", qty: 1, unit: l}
+    - {id: sucre-roux, name: "sucre roux, pour le pétillant", qty: 2, unit: c. à s., optional: true}
+
+  steps:
+    - id: fermenter
+      action: "Mettre les grains et le lait dans un bocal, couvrir sans serrer et laisser fermenter en agitant de temps en temps"
+      needs: []
+      uses: [kefir-fruits, lait]
+      time_min: 2
+      attente_min: 1440
+      attente_raison: "environ 24 h selon la température"
+    - id: filtrer
+      action: "Filtrer en bouteille à travers une passoire et un entonnoir pour récupérer les grains ; au goût, sucrer et laisser pétiller"
+      needs: []
+      uses: [sucre-roux]
+      time_min: 3
+
+  emits:
+    - kind: base
+      type: kefir-lait
+      qty_band: 2-repas
+      qty: {amount: 100, unit: cl}
+      keeps: {frigo_days: 5, congelo: false}
+
+  plan_b: []

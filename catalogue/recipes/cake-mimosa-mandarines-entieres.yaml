@@ -1,0 +1,64 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DEUX MANDARINES (OU CLÉMENTINES) ENTIÈRES mixées avec leur peau, sans les pépins
+# (seuls eux donnent de l'amertume), huile d'olive, sucre, farine, levure, œufs
+# et fleur de sel ; 45 à 50 min dans un moule à cake. Mesures au petit verre
+# de 12 cl dans l'article, en grammes ici.
+
+recipe:
+  id: cake-mimosa-mandarines-entieres
+  title: Cake « mimosa » aux mandarines entières
+  creneaux: [gouter, dessert, petit-dejeuner]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Deux recettes, dont mon incroyable cake Mimosa », blog Saines Gourmandises, 26 janvier 2024"
+    url: https://saines-gourmandises.fr/deux-recettes-dont-mon-incroyable-cake-mimosa/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 10          # « pour 10 parts »
+  lot_entier: true
+  time_min_total: 60
+  active_min: 10
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: mandarines, name: "mandarines ou clémentines bio (180 g)", qty: 2, unit: pièce}
+    - {id: huile-olive, name: "huile d'olive (ou neutre, ou beurre fondu)", qty: 100, unit: g}
+    - {id: sucre-bouleau, name: "sucre au choix (bouleau)", qty: 90, unit: g}
+    - {id: farine-epeautre, name: "farine semi-complète de grand épeautre", qty: 180, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever", qty: 1, unit: sachet}
+    - {id: oeufs, name: "œufs", qty: 3, unit: pièce}
+    - {id: fleur-de-sel, name: "pincée de fleur de sel", qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: mixer
+      action: "Préchauffer à 180 °C ; ouvrir les mandarines pour ôter les pépins, puis mixer jus et peaux avec tous les autres ingrédients"
+      needs: [blend-smooth]
+      uses: [mandarines, huile-olive, sucre-bouleau, farine-epeautre, poudre-a-lever, oeufs, fleur-de-sel]
+      time_min: 8
+      kid: {age_min_months: 36, task: "chercher les pépins"}
+    - id: cuire
+      action: "Verser dans un moule à cake et cuire environ 45 min"
+      needs: [bake]
+      uses: []
+      time_min: 47
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: cake-mimosa-mandarines-entieres
+      qty_band: 3-repas
+      keeps: {frigo_days: 4, congelo: true}
+
+  plan_b: []

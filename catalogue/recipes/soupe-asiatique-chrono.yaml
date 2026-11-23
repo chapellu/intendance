@@ -1,0 +1,95 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LA SOUPE ASIATIQUE DES SOIRS DE CRISE : aromates blondis, légumes émincés et
+# crevettes revenus, bouillon de 10 min, crème de coco ; les nouilles gonflent
+# à part et chacun en met selon son appétit. Les crevettes se remplacent par
+# 100 g de cabillaud, de poulet ou de bœuf, ou rien du tout.
+
+recipe:
+  id: soupe-asiatique-chrono
+  title: Petite soupe asiatique « chrono »
+  format: soupe
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« La petite soupe asiatique chrono et trop bonne », blog Saines Gourmandises, 26 février 2020"
+    url: https://saines-gourmandises.fr/cest-tellement-mieux-que-douvrir-une-brique/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes »
+  time_min_total: 22        # 10 min de préparation + 12 min de cuisson
+  active_min: 15
+
+  apports:
+    proteine: poisson
+    feculent: pates
+    legumes: [crucifere, allium, racine]
+    profil: soupe
+    origine: japonais
+
+  ingredients:
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: poireau, name: poireau, qty: 1, unit: pièce}
+    - {id: carottes, name: grosse carotte, qty: 1, unit: pièce}
+    - {id: chou-chinois, name: petit chou chinois, qty: 350, unit: g}
+    - {id: celeri-branche, name: branches de céleri tendres, qty: 2, unit: pièce}
+    - {id: champignons-paris, name: quelques champignons frais, qty: 100, unit: g, optional: true}
+    - {id: gingembre, name: gingembre frais, qty: 20, unit: g}
+    - {id: ail, name: ail, qty: 2, unit: gousse}
+    - {id: huile-coco, name: huile de coco ou d'olive, qty: 4, unit: c. à s.}
+    - id: crevettes
+      name: crevettes décortiquées
+      qty: 100
+      unit: g
+      subs:
+        - {id: cabillaud, name: cabillaud en petits cubes, ratio: 1.0}
+        - {id: poulet-filets, name: blanc de poulet en petits cubes, note: "à rissoler avec les aromates", ratio: 1.0}
+    - id: nouilles-oeufs
+      name: nouilles asiatiques aux œufs
+      qty: 200
+      unit: g
+      subs:
+        - {id: nouilles-soba, name: nouilles soba, note: "à cuire à part", ratio: 1.0}
+    - {id: creme-coco, name: crème de coco liquide, qty: 20, unit: cl}
+    - {id: eau, name: eau bouillante, qty: 2, unit: l}
+    - {id: piment-frais, name: petit piment séché, qty: 1, unit: pièce, optional: true}
+    - {id: sel, name: sel (généreusement), qty: 3, unit: pincée, seasoning: true}
+    - {id: poivre-5-baies, name: poivre 5 baies, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: aromates
+      action: "Hacher l'ail, le gingembre et le piment et les faire blondir à l'huile dans une cocotte jusqu'à de légères notes caramélisées ; mettre l'eau à bouillir"
+      needs: [simmer-large]
+      uses: [ail, gingembre, piment-frais, huile-coco, eau]
+      time_min: 4
+      attended: true
+    - id: revenir
+      action: "Émincer finement tous les légumes, les ajouter avec les crevettes, saler généreusement et faire revenir quelques minutes"
+      needs: [simmer-large]
+      uses: [oignon, poireau, carottes, chou-chinois, celeri-branche, champignons-paris, crevettes, sel]
+      time_min: 6
+      attended: true
+    - id: bouillon
+      action: "Verser 1,5 l d'eau bouillante, poivrer, couvrir et cuire 7 à 10 min, jusqu'à ce que les légumes soient tendres ; ajouter la crème de coco"
+      needs: [simmer-large]
+      uses: [poivre-5-baies, creme-coco]
+      time_min: 9
+      attended: false
+    - id: nouilles
+      action: "Verser le reste d'eau bouillante sur les nouilles, couvrir et laisser gonfler le temps indiqué ; servir à part"
+      needs: []
+      uses: [nouilles-oeufs]
+      time_min: 4
+      parallel_with: bouillon
+
+  emits:
+    - kind: reste-plat
+      type: soupe-asiatique-chrono
+      qty_band: 1-repas
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

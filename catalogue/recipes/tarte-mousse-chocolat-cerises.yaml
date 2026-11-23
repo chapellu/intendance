@@ -1,0 +1,79 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE PÂTE SABLÉE À L'AMANDE ET À L'HUILE DE COCO (un peu de jus de pomme pour la
+# version tendre), cuite à blanc ; une mousse de chocolat fondu à la purée
+# d'amande incorporé à une chantilly de coco, des cerises en bocal, 2 h au
+# frais ; chantilly vanillée, cerises fraîches et copeaux de chocolat.
+
+recipe:
+  id: tarte-mousse-chocolat-cerises
+  title: Tarte à la mousse au chocolat, amande et cerises noires
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Tarte à la mousse au chocolat, amande et cerises noires », blog Saines Gourmandises, 1er juillet 2021"
+    url: https://saines-gourmandises.fr/tarte-a-la-mousse-au-chocolat-amande-et-cerises-noires/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « pour 8 parts »
+  lot_entier: true
+  time_min_total: 45
+  active_min: 25
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: "farine T110", qty: 200, unit: g}
+    - {id: huile-coco, name: "huile de coco fondue", qty: 100, unit: g}
+    - {id: jus-pomme, name: "jus de pomme", qty: 5, unit: cl}
+    - {id: fleur-de-sel, name: "grosse pincée de fleur de sel", qty: 1, unit: bonne pincée, seasoning: true}
+    - {id: oeufs, name: "œuf", qty: 1, unit: pièce}
+    - {id: poudre-amande, name: "poudre d'amande blanche", qty: 50, unit: g}
+    - {id: sucre-complet, name: "sucre au choix", qty: 20, unit: g}
+    - {id: chocolat-noir, name: "chocolat noir pâtissier 70 % (+ pour râper)", qty: 220, unit: g}
+    - {id: puree-amande-blanche, name: "purée d'amande blanche très fluide", qty: 2, unit: c. à s.}
+    - {id: sucre-vanille, name: "sucre vanillé", qty: 2, unit: sachet}
+    - {id: creme-coco, name: "crème de coco très froide (40 + 40 cl)", qty: 80, unit: cl}
+    - {id: extrait-vanille, name: "arôme naturel de vanille", qty: 1, unit: c. à c.}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 3, unit: c. à s.}
+    - {id: cerises-bocal, name: "cerises au naturel en bocal", qty: 400, unit: g}
+    - {id: cerises, name: "cerises fraîches", qty: 30, unit: pièce}
+
+  steps:
+    - id: pate
+      action: "Préchauffer à 180 °C ; mélanger juste assez tous les ingrédients de la pâte, l'étaler, foncer un moule et cuire environ 20 min"
+      needs: [bake]
+      uses: [farine-epeautre, huile-coco, jus-pomme, fleur-de-sel, oeufs, poudre-amande, sucre-complet]
+      time_min: 25
+    - id: mousse
+      action: "Fondre au bain-marie chocolat, sucre vanillé et purée d'amande, l'incorporer à 40 cl de crème de coco montée ; garnir le fond de cerises puis de mousse"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [chocolat-noir, sucre-vanille, puree-amande-blanche, cerises-bocal]
+      time_min: 12
+      attente_min: 120
+      attente_raison: "au moins 2 h au frais"
+    - id: finir
+      action: "Monter le reste de crème de coco avec l'agave et la vanille, en couvrir la tarte, poser les cerises fraîches et râper du chocolat"
+      needs: []
+      uses: [creme-coco, sirop-agave, extrait-vanille, cerises]
+      time_min: 8
+      kid: {age_min_months: 30, task: "poser les cerises"}
+
+  emits:
+    - kind: reste-plat
+      type: tarte-mousse-chocolat-cerises
+      qty_band: 2-repas
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

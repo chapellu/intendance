@@ -1,0 +1,78 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DES BISCUITS FOURRÉS FAÇON GOÛTER D'ÉCOLE : pâte provençale de petit épeautre à
+# l'huile d'olive et à la fleur d'oranger, reposée 30 min au frais ; figues
+# sèches ébouillantées 20 min puis mixées avec la vanille ; deux boudins
+# roulés, coupés en 8, écrasés à la fourchette ; 25 min à 180 °C.
+
+recipe:
+  id: figo-lulus
+  title: « Figo-Lulus » fourrés aux figues
+  creneaux: [gouter]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Des Figo-Lulus bio tout fait-maison », blog Saines Gourmandises, 16 mars 2015"
+    url: https://saines-gourmandises.fr/pour-vos-loulous-et-vos-lulu/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « 16 petits sablés fourrés »
+    pieces: 16
+  time_min_total: 75
+  active_min: 30
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-petit-epeautre, name: "farine T110 de petit épeautre", qty: 250, unit: g}
+    - {id: huile-olive, name: "huile d'olive", qty: 9, unit: cl}
+    - {id: eau-fleur-oranger, name: "eau de fleur d'oranger", qty: 5, unit: cl}
+    - {id: eau, name: "eau", qty: 5, unit: cl}
+    - {id: sucre-roux, name: "sucre roux non raffiné ou de coco", qty: 4, unit: c. à s.}
+    - {id: sel, name: "pincée de sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: figues-seches, name: "figues sèches (calabacitas)", qty: 300, unit: g}
+    - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 1, unit: c. à s.}
+
+  steps:
+    - id: pate
+      action: "Mélanger farine et sel, ajouter d'un coup huile, fleur d'oranger, eau et sucre, rassembler sans trop travailler et mettre au frais"
+      needs: []
+      uses: [farine-petit-epeautre, sel, huile-olive, eau-fleur-oranger, eau, sucre-roux]
+      time_min: 6
+      attente_min: 30
+      attente_raison: "repos au frais"
+    - id: figues
+      action: "Couvrir les figues d'eau bouillante 20 min, les égoutter, ôter les queues et les mixer avec la vanille"
+      needs: [blend-smooth]
+      uses: [figues-seches, extrait-vanille]
+      time_min: 25
+      parallel_with: pate
+    - id: rouler
+      action: "Étaler la pâte en 20 × 40 cm, y poser la pâte de figue, rabattre, couper en deux boudins, les rouler et les couper en 8"
+      needs: []
+      uses: []
+      time_min: 12
+      kid: {age_min_months: 36, task: "rouler les boudins"}
+    - id: cuire
+      action: "Écraser légèrement à la fourchette et cuire 25 min à 180 °C"
+      needs: [bake]
+      uses: []
+      time_min: 25
+      attended: false
+
+  emits:
+    - kind: base
+      type: figo-lulus
+      qty_band: 3-repas
+      keeps: {frigo_days: 10, congelo: false}
+
+  plan_b: []

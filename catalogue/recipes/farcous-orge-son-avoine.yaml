@@ -1,0 +1,83 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LA VERSION « SAGE » DU BLOG, différente de celle du livre (p. 30, déjà au
+# catalogue sous farcous-vert-de-blette) : farine d'orge mondé et son
+# d'avoine, eau au lieu de lait, parmesan. Tout se mixe en une pâte verte
+# épaisse ; au mixeur plongeant dans un pot haut, à défaut de blender.
+
+recipe:
+  id: farcous-orge-son-avoine
+  title: Farçous aveyronnais à l'orge et au son d'avoine
+  format: galettes
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Farçous Aveyronnais un (tout petit peu) revisités », blog Saines Gourmandises, 31 mai 2017"
+    url: https://saines-gourmandises.fr/recette-de-grand-mere-meriterait-de-faire-buzz-2017/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 2          # « 12 farçous, soit 2 personnes en plat principal »
+    pieces: 12
+  time_min_total: 25
+  active_min: 25
+
+  apports:
+    proteine: oeuf
+    feculent: orge
+    legumes: [feuille, allium]
+    profil: poele
+    origine: francais
+
+  ingredients:
+    - {id: oeufs, name: œufs, qty: 2, unit: pièce}
+    - {id: farine-orge, name: farine d'orge mondé, qty: 105, unit: g}
+    - {id: son-avoine, name: son d'avoine, qty: 55, unit: g}
+    - id: vert-de-blette
+      name: "vert de blettes, sans les côtes"
+      qty: 200
+      unit: g
+      subs:
+        - {id: pousses-epinards, name: épinards frais, ratio: 1.0}
+    - {id: parmesan, name: parmesan râpé, qty: 70, unit: g}
+    - id: cebette
+      name: cébette avec le vert
+      qty: 1
+      unit: pièce
+      subs:
+        - {id: oignon, name: petit oignon, ratio: 1.0}
+    - {id: persil, name: persil, qty: 1, unit: petit bouquet}
+    - {id: ail, name: ail, qty: 2, unit: gousse}
+    - {id: eau, name: eau, qty: 20, unit: cl}
+    - {id: huile-olive, name: "huile d'olive (2 c. à s. + la poêle)", qty: 4, unit: c. à s.}
+    - {id: poudre-a-lever, name: poudre à lever sans phosphates, qty: 1, unit: sachet}
+    - {id: sel, name: sel (bonne c. à c.), qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: mixer
+      action: "Laver et bien essorer les feuilles et le persil, puis tout mixer en une pâte à crêpes verte bien épaisse"
+      needs: [blend-smooth]
+      uses: [oeufs, farine-orge, son-avoine, vert-de-blette, parmesan, cebette, persil, ail, eau, poudre-a-lever, sel, poivre]
+      time_min: 6
+    - id: cuire
+      action: "Verser des petites louchées épaisses dans une grande poêle huilée chaude, sans les étaler, et dorer 2 à 3 min par face"
+      astuce: "Quatre à la fois dans une poêle de 28 cm : ils s'étalent d'eux-mêmes et se colleraient."
+      needs: [pan-fry]
+      uses: [huile-olive]
+      time_min: 18
+      attended: true
+
+  emits:
+    - kind: reste-plat
+      type: farcous-orge-son-avoine
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: true}
+
+  plan_b: []

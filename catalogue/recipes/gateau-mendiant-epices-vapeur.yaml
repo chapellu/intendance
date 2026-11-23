@@ -1,0 +1,83 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN PAIN D'ÉPICES À LA VAPEUR : farine, levure, sucre vanillé, anis vert, cannelle,
+# quatre-épices, compote, huile essentielle d'orange, miel, œufs, jus de pomme,
+# huile et rhum ; 40 min dans un savarin de 24 cm au panier vapeur. En cadeau,
+# les parts nappées de chocolat fondu et reformées en gâteau.
+
+recipe:
+  id: gateau-mendiant-epices-vapeur
+  title: Gâteau « mendiant » aux épices, cuit à la vapeur
+  creneaux: [gouter, petit-dejeuner]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Gâteau mendiant aux épices », blog Saines Gourmandises, 9 décembre 2020"
+    url: https://saines-gourmandises.fr/90389/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « pour 8 parts »
+  lot_entier: true
+  time_min_total: 55
+  active_min: 10
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: "farine T110", qty: 250, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever", qty: 1, unit: sachet}
+    - {id: sucre-vanille, name: "sucre vanillé", qty: 3, unit: sachet}
+    - {id: anis-vert, name: "anis vert", qty: 2, unit: c. à c., seasoning: true}
+    - {id: cannelle, name: "cannelle (c. à c. bombée)", qty: 1, unit: c. à c., seasoning: true}
+    - {id: quatre-epices, name: "mélange quatre-épices", qty: 1, unit: c. à c., seasoning: true}
+    - {id: sel, name: "pincée de sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: compote, name: "compote de pomme sans sucre", qty: 100, unit: g}
+    - {id: huile-essentielle-orange, name: "huile essentielle d'orange douce", qty: 15, unit: pièce}
+    - {id: miel-acacia, name: "miel ou sirop d'agave", qty: 160, unit: g}
+    - {id: oeufs, name: "œufs", qty: 2, unit: pièce}
+    - {id: jus-pomme, name: "jus de pomme", qty: 5, unit: cl}
+    - {id: huile-tournesol, name: "huile neutre", qty: 65, unit: g}
+    - {id: rhum, name: "rhum", qty: 2, unit: c. à s.}
+    - {id: chocolat-noir, name: "chocolat noir 70 % (version cadeau)", qty: 300, unit: g, optional: true}
+
+  steps:
+    - id: vapeur
+      action: "Porter 2 l d'eau à ébullition sous le panier vapeur, à couvert"
+      needs: [steam]
+      uses: []
+      time_min: 8
+    - id: pate
+      action: "Mêler farine, levure, sucre vanillé, épices et sel, y fouetter juste le minimum tout le reste, et verser dans un savarin huilé"
+      needs: []
+      uses: [farine-epeautre, poudre-a-lever, sucre-vanille, anis-vert, cannelle, quatre-epices, sel, compote, huile-essentielle-orange, miel-acacia, oeufs, jus-pomme, huile-tournesol, rhum]
+      time_min: 6
+      parallel_with: vapeur
+    - id: cuire
+      action: "Cuire 40 min à la vapeur, à couvert, et laisser refroidir avant de démouler"
+      needs: [steam]
+      uses: []
+      time_min: 40
+      attended: false
+    - id: napper
+      action: "Au goût, napper chaque part de chocolat fondu au bain-marie et reformer le gâteau"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [chocolat-noir]
+      time_min: 10
+
+  emits:
+    - kind: reste-plat
+      type: gateau-mendiant-epices-vapeur
+      qty_band: 3-repas
+      keeps: {frigo_days: 7, congelo: true}
+
+  plan_b: []

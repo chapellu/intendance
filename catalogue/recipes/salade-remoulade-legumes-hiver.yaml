@@ -1,0 +1,67 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE RÉMOULADE ALLÉGÉE AU YAOURT DE BREBIS pour près d'un kilo de légumes
+# crus émincés : chou rouge ou cabus, céleri ou chou-rave, carottes ou
+# potiron. Croquante aussitôt, attendrie après 2 à 24 h au frais. Un plat du
+# soir pour 8, avec du pain.
+
+recipe:
+  id: salade-remoulade-legumes-hiver
+  title: Salade de légumes d'hiver en rémoulade au yaourt de brebis
+  format: salade
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Vous faire raffoler du céleri rave ?… chiche ! », blog Saines Gourmandises, 6 mars 2026"
+    url: https://saines-gourmandises.fr/vous-faire-raffoler-du-celeri-rave-chiche/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « 8 personnes (repas principal du soir avec du pain) »
+  time_min_total: 15
+  active_min: 15
+
+  apports:
+    proteine: oeuf
+    feculent: pain
+    legumes: [crucifere, racine]
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: oeufs, name: jaune d'œuf cru ou cuit, qty: 1, unit: pièce}
+    - {id: moutarde, name: moutarde à l'ancienne (c. à s. bombées), qty: 2, unit: c. à s.}
+    - {id: vinaigre, name: vinaigre de vin ou de cidre, qty: 2, unit: c. à s.}
+    - {id: huile-olive, name: huile d'olive, qty: 6, unit: cl}
+    - {id: yaourt-brebis, name: yaourt de brebis, qty: 1, unit: pot}
+    - {id: sel, name: sel fin (c. à c. rase), qty: 1, unit: c. à c., seasoning: true}
+    - {id: chou-rouge, name: chou rouge ou cabus, qty: 300, unit: g}
+    - {id: celeri-rave, name: céleri-rave ou chou-rave, qty: 300, unit: g}
+    - {id: carottes, name: carottes ou potiron, qty: 300, unit: g}
+
+  avec:
+    - {id: pain-levain, name: pain, qty: 500, unit: g}
+
+  steps:
+    - id: mayonnaise
+      action: "Fouetter le jaune avec la moutarde, le sel et le vinaigre, monter avec l'huile en filet, puis incorporer juste le yaourt"
+      needs: []
+      uses: [oeufs, moutarde, sel, vinaigre, huile-olive, yaourt-brebis]
+      time_min: 6
+    - id: emincer
+      action: "Émincer finement les légumes et les mélanger à la sauce"
+      astuce: "Servie aussitôt, elle croque ; 2 à 24 h au frais, bien couverte, l'attendrissent."
+      needs: [chop-coarse]
+      uses: [chou-rouge, celeri-rave, carottes]
+      time_min: 10
+
+  emits:
+    - kind: reste-plat
+      type: salade-remoulade-legumes-hiver
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

@@ -1,0 +1,108 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DES GALETTES BRETONNES DU COMMERCE, garnies d'une fondue de courgettes
+# (2 kg, bien réduite) et d'un « fromage coulant » végétal à l'arrow-root,
+# miso, levure maltée et purée de cajou, gratinées 5 à 10 min. L'en-tête dit
+# 8 galettes, la liste 6 : ce sont les 6 qui sont encodées.
+
+recipe:
+  id: galettes-sarrasin-courgettes-fromage-vegetal
+  title: Galettes de sarrasin à la fondue de courgettes et « fromage » végétal
+  format: tartine
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Galettes de sarrasin à la fondue de courgettes et fromage végétal », blog Saines Gourmandises, 10 juin 2016"
+    url: https://saines-gourmandises.fr/panisse-cest-faute-aux-canards/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4
+    pieces: 6
+  time_min_total: 45        # 15 min de préparation + 20 min + 5 à 10 min
+  active_min: 30
+
+  apports:
+    proteine: aucune
+    feculent: sarrasin
+    legumes: [cucurbitacee, allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: galettes-sarrasin, name: galettes de sarrasin du rayon frais, qty: 6, unit: pièce}
+    - {id: oignon, name: gros oignons, qty: 3, unit: pièce}
+    - {id: courgettes, name: courgettes, qty: 2, unit: kg}
+    - {id: huile-olive, ref: huile-courgettes, name: huile d'olive (courgettes), qty: 4, unit: c. à s.}
+    - {id: eau, name: eau froide, qty: 30, unit: cl}
+    - id: arrow-root
+      name: arrow-root (2 c. à c. un peu bombées)
+      qty: 14
+      unit: g
+      subs:
+        - {id: maizena, name: fécule de maïs, ratio: 1.0}
+    - {id: ail, name: ail frais, qty: 6, unit: gousse}
+    - {id: miso-blanc, name: miso blanc (c. à c. rases), qty: 2, unit: c. à c.}
+    - {id: levure-biere, name: levure de bière maltée (c. à c. rases), qty: 2, unit: c. à c.}
+    - {id: huile-olive, ref: huile-fromage, name: huile d'olive (fromage), qty: 4, unit: c. à s.}
+    - {id: puree-cajou, name: purée de cajou, qty: 4, unit: c. à s.}
+    - {id: fleur-de-sel, name: fleur de sel (c. à c. rases), qty: 2, unit: c. à c., seasoning: true}
+    - {id: pignons-pin, name: pignons, qty: 1, unit: poignée}
+    - {id: sarriette, name: "sarriette fraîche (ou origan)", qty: 3, unit: brin}
+    - {id: sel, name: sel, qty: 2, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: oignons
+      action: "Émincer les oignons et les faire revenir à l'huile dans un grand wok ou une sauteuse jusqu'à une belle coloration"
+      needs: [pan-fry]
+      uses: [oignon, huile-courgettes]
+      time_min: 8
+      attended: true
+    - id: courgettes
+      action: "Ajouter les courgettes en rondelles, saler, cuire d'abord à couvert puis à découvert à feu assez vif, jusqu'à ce qu'elles soient fondantes, dorées et sans jus"
+      needs: [pan-fry]
+      uses: [courgettes, sel]
+      time_min: 20
+      attended: true
+    - id: fromage
+      action: "Préchauffer le four à 240 °C ; fouetter en casserole l'eau froide, la fleur de sel, l'ail pressé et l'arrow-root, et bouillir 2 min en fouettant"
+      astuce: "Sans cesser de fouetter : le mélange doit beaucoup épaissir."
+      needs: [simmer]
+      uses: [eau, fleur-de-sel, ail, arrow-root]
+      time_min: 5
+      attended: true
+      parallel_with: courgettes
+    - id: finir-fromage
+      action: "Ajouter miso, levure maltée, huile et purée de cajou et fouetter encore 30 s sur le feu"
+      astuce: "Un coup de mixeur dans la casserole affine encore la texture."
+      needs: [simmer]
+      uses: [miso-blanc, levure-biere, huile-fromage, puree-cajou]
+      time_min: 2
+    - id: garnir
+      action: "Huiler chaque galette, la garnir de courgettes, de sarriette ciselée, de fromage coulant et de pignons, la replier et la poser sur une plaque"
+      needs: []
+      uses: [galettes-sarrasin, sarriette, pignons-pin, poivre]
+      time_min: 8
+      kid: {age_min_months: 30, task: "parsemer les pignons"}
+    - id: gratiner
+      action: "Enfourner 5 à 10 min en surveillant : le fromage gratine, le dessus devient croustillant"
+      needs: [bake]
+      uses: []
+      time_min: 8
+      attended: true
+
+  emits:
+    - kind: reste-plat
+      type: fondue-courgettes
+      qty_band: 1-repas
+      keeps: {frigo_days: 3, congelo: true}
+      note: "s'il reste de la fondue de courgettes"
+
+  plan_b: []

@@ -1,0 +1,82 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN BOUILLON MISO AUX LÉGUMES DE PRINTEMPS, chacun cuit au plus juste : oignons
+# et céleri blondis, champignons sués, asperges et petits pois 3 min, carottes
+# et navets crus en julienne. Le miso se délaie dans l'eau chaude mais pas
+# bouillante, feu éteint, pour garder ses ferments. Une entrée.
+
+recipe:
+  id: soupe-miso-printaniere
+  title: Soupe miso printanière
+  role: entree
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« 3 délicieuses recettes détox de printemps », blog Saines Gourmandises, 10 avril 2015 (extrait de « Mes recettes détox super gourmandes »)"
+    url: https://saines-gourmandises.fr/apres-paques-on-fait-leger-leger/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes (entrée) »
+  time_min_total: 25        # 15 min de préparation + 10 min de cuisson
+  active_min: 20
+
+  apports:
+    proteine: tofu-soja
+    feculent: aucun
+    legumes: [allium, racine, champignon, legumineuse]
+    profil: soupe
+    origine: japonais
+
+  ingredients:
+    - {id: cebette, name: oignons tiges, qty: 4, unit: pièce}
+    - {id: carottes, name: carottes, qty: 2, unit: pièce}
+    - {id: asperges-vertes, name: asperges vertes, qty: 4, unit: pièce}
+    - {id: navet-primeur, name: navets primeurs, qty: 2, unit: pièce}
+    - {id: champignons-paris, name: champignons bien fermes, qty: 8, unit: pièce}
+    - {id: petits-pois, name: petits pois écossés, qty: 1, unit: poignée}
+    - {id: celeri-branche, name: branche de céleri tendre, qty: 1, unit: pièce}
+    - {id: ciboulette, name: ciboulette, qty: 5, unit: brin}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: eau, name: eau, qty: 1.5, unit: l}
+    - {id: miso-orge, name: miso d'orge non pasteurisé, qty: 2, unit: c. à s.}
+    - {id: gingembre, name: gingembre râpé, qty: 5, unit: g}
+    - {id: poivre-5-baies, name: poivre 5 baies, qty: 1, unit: pincée, seasoning: true}
+    - {id: sel, name: sel (c. à s. rase), qty: 1, unit: c. à s., seasoning: true}
+
+  steps:
+    - id: chauffer
+      action: "Chauffer l'eau salée dans une casserole ; émincer très finement les oignons, le céleri et les champignons"
+      needs: [simmer]
+      uses: [eau, sel, cebette, celeri-branche, champignons-paris]
+      time_min: 6
+    - id: blondir
+      action: "Blondir doucement oignons et céleri à l'huile dans une cocotte, puis ajouter les champignons et laisser suer à couvert"
+      needs: [simmer-large]
+      uses: [huile-olive]
+      time_min: 6
+      attended: true
+    - id: tailler
+      action: "Tailler les carottes en fins bâtonnets, les asperges en lamelles et les navets en tranches presque transparentes"
+      needs: [chop-coarse]
+      uses: [carottes, asperges-vertes, navet-primeur]
+      time_min: 6
+      parallel_with: blondir
+    - id: etouffee
+      action: "Ajouter asperges et petits pois et cuire 3 min à couvert"
+      needs: [simmer-large]
+      uses: [petits-pois]
+      time_min: 3
+    - id: miso
+      action: "Feu éteint, délayer le miso dans l'eau chaude, verser dans la cocotte avec carottes, navets, gingembre et poivre, et parsemer de ciboulette"
+      astuce: "L'eau doit être chaude mais pas bouillante : le miso garde ainsi ses ferments."
+      needs: []
+      uses: [miso-orge, gingembre, poivre-5-baies, ciboulette]
+      time_min: 3
+
+  emits: []
+
+  plan_b: []

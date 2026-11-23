@@ -1,0 +1,80 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN HOUMOUS ROUGE : tomates cerises entières confites avec échalotes, paprika
+# fumé, laurier et sarriette jusqu'à caraméliser, déglacées au citron, mixées
+# avec des pois chiches (ou des mogettes) en bocal.
+
+recipe:
+  id: dip-tomates-cerises-pois-chiches
+  title: Dip de tomates cerises et pois chiches
+  format: tartine
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Dip de tomates cerise et pois chiches », blog Saines Gourmandises, 5 septembre 2024"
+    url: https://saines-gourmandises.fr/dip-de-tomates-cerises-et-pois-chiches/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes »
+  time_min_total: 30        # 10 min de préparation + 20 min de cuisson
+  active_min: 12
+
+  apports:
+    proteine: legumineuse
+    feculent: pain
+    legumes: [solanacee, allium, legumineuse]
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: echalote, name: "échalotes (ou 2 oignons)", qty: 4, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 5, unit: c. à s.}
+    - {id: ail, name: ail, qty: 2, unit: gousse}
+    - {id: tomates-cerises, name: tomates cerises, qty: 800, unit: g}
+    - {id: citron, name: citron, qty: 1, unit: pièce}
+    - id: pois-chiches
+      name: "pois chiches en bocal (poids égoutté)"
+      qty: 450
+      unit: g
+      subs:
+        - {id: haricots-blancs, name: mogettes en bocal, ratio: 1.0}
+    - {id: laurier, name: feuilles de laurier, qty: 2, unit: pièce, seasoning: true}
+    - {id: paprika, name: paprika fumé (c. à c. rase), qty: 1, unit: c. à c., seasoning: true}
+    - {id: sarriette, name: sarriette fraîche, qty: 6, unit: brin}
+    - {id: piment-frais, name: petit piment d'Espelette frais, qty: 1, unit: pièce, optional: true}
+    - {id: sel, name: sel, qty: 2, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: pain-levain, name: pain, qty: 250, unit: g}
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: echalotes
+      action: "Émincer les échalotes et les dorer à l'huile dans une sauteuse"
+      needs: [pan-fry]
+      uses: [echalote, huile-olive]
+      time_min: 6
+      attended: true
+    - id: confire
+      action: "Ajouter les tomates entières, l'ail, le piment haché, le paprika, le laurier, la sarriette et le sel, et réduire jusqu'à ce que les sucs caramélisent au fond"
+      needs: [pan-fry]
+      uses: [tomates-cerises, ail, piment-frais, paprika, laurier, sarriette, sel]
+      time_min: 18
+      attended: false
+    - id: mixer
+      action: "Déglacer au jus de citron, ajouter les pois chiches rincés, retirer le laurier et mixer très finement"
+      needs: [blend-smooth]
+      uses: [citron, pois-chiches]
+      time_min: 4
+
+  emits:
+    - kind: reste-plat
+      type: dip-tomates-cerises-pois-chiches
+      qty_band: lunchbox
+      keeps: {frigo_days: 4, congelo: true}
+
+  plan_b: []

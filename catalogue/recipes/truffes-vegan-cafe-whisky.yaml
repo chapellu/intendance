@@ -1,0 +1,66 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE TRENTAINE DE TRUFFES : chocolat 85 %, crème de soja, espresso doux, whisky
+# et agave fondus ensemble à feu très doux, refroidis plusieurs heures,
+# roulés à la main dans le cacao. Quinze jours en boîte. L'article propose
+# une dizaine de variantes (soja-vanille, amaretto, menthe, bergamote…).
+
+recipe:
+  id: truffes-vegan-cafe-whisky
+  title: Truffes « magiques » 100 % vegan
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Leçon n°2 : mes truffes magiques 100 % vegan », blog Saines Gourmandises, 9 décembre 2011"
+    url: https://saines-gourmandises.fr/saines-gourmandises-de-noel-2/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 10
+    pieces: 30
+  time_min_total: 20
+  active_min: 20
+
+  apports:
+    proteine: tofu-soja
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: chocolat-noir, name: "chocolat noir 85 %", qty: 300, unit: g}
+    - {id: creme-soja, name: "crème de soja liquide", qty: 20, unit: cl}
+    - {id: cafe, name: "espresso doux", qty: 6, unit: cl}
+    - {id: whisky, name: "très bon whisky", qty: 3, unit: cl}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 9, unit: c. à s.}
+    - {id: cacao, name: "cacao pur pour rouler", qty: 3, unit: c. à s.}
+
+  steps:
+    - id: fondre
+      action: "Fondre tous les ingrédients sauf le cacao à feu très doux en remuant sans cesse"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [chocolat-noir, creme-soja, cafe, whisky, sirop-agave]
+      time_min: 6
+      attente_min: 180
+      attente_raison: "plusieurs heures au frais pour raffermir"
+    - id: rouler
+      action: "Façonner les truffes à la main et les rouler dans le cacao"
+      needs: []
+      uses: [cacao]
+      time_min: 15
+      kid: {age_min_months: 30, task: "rouler les truffes dans le cacao"}
+
+  emits:
+    - kind: base
+      type: truffes-vegan-cafe-whisky
+      qty_band: 3-repas
+      keeps: {frigo_days: 15, congelo: false}
+      note: "15 jours en boîte hermétique"
+
+  plan_b: []

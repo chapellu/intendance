@@ -1,0 +1,78 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# 300 G DE CHOCOLAT À 85 %, fondu avec margarine (ou purée d'amande),
+# café léger, agave et 3 cl de whisky ; un peu de farine et de levure, six
+# œufs dont les blancs montés ; 10 min de four seulement, puis 4 h au
+# frais au moins. Cuit à cœur (20 min), il reste bon et léger.
+
+recipe:
+  id: fondant-chocolat-cafe-whisky
+  title: Le meilleur fondant au chocolat du monde
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Le meilleur fondant au chocolat du monde… », blog Saines Gourmandises, 30 octobre 2011"
+    url: https://saines-gourmandises.fr/encore-du-chocolat-ouiiiiiiiiii/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 9          # « 8 à 10 parts »
+  lot_entier: true
+  time_min_total: 20
+  active_min: 10
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: chocolat-noir, name: "chocolat noir 85 %", qty: 300, unit: g}
+    - {id: cafe, name: "café léger", qty: 10, unit: cl}
+    - {id: whisky, name: "bon whisky", qty: 3, unit: cl}
+    - {id: farine, name: "farine", qty: 75, unit: g}
+    - {id: poudre-a-lever, name: "levure (demi-sachet)", qty: 0.5, unit: sachet}
+    - {id: oeufs, name: "œufs", qty: 6, unit: pièce}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 10, unit: cl}
+    - {id: margarine, name: "margarine bio (ou purée d'amande blanche)", qty: 100, unit: g}
+    - {id: cacao, name: "cacao pour saupoudrer", qty: 1, unit: c. à s.}
+
+  steps:
+    - id: fondre
+      action: "Préchauffer à 180 °C ; fondre à feu très doux le chocolat avec la margarine, le café, l'agave et le whisky, puis y mêler les jaunes hors du feu"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [chocolat-noir, margarine, cafe, sirop-agave, whisky]
+      time_min: 8
+    - id: blancs
+      action: "Monter les blancs en neige, y verser farine et levure mélangées puis le chocolat, et mêler à la spatule"
+      needs: []
+      uses: [oeufs, farine, poudre-a-lever]
+      time_min: 5
+    - id: cuire
+      action: "Cuire 10 min exactement dans un moule à manqué"
+      needs: [bake]
+      uses: []
+      time_min: 10
+      attended: true
+    - id: frais
+      action: "Mettre au frais et servir saupoudré de cacao"
+      needs: []
+      uses: [cacao]
+      time_min: 1
+      attente_min: 240
+      attente_raison: "au moins 4 h au frais, meilleur le lendemain"
+
+  emits:
+    - kind: reste-plat
+      type: fondant-chocolat-cafe-whisky
+      qty_band: 3-repas
+      keeps: {frigo_days: 4, congelo: true}
+
+  plan_b: []

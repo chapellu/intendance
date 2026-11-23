@@ -1,0 +1,98 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DES RAVIOLIS FRITS MONÉGASQUES, CUITS AU FOUR ICI : pâte de petit épeautre
+# à l'œuf et à l'huile, farce d'épinards crus hachés et fondus avec l'oignon,
+# riz cuit, parmesan, anchois, pignons et œufs. Pliés en carrés de 8 cm,
+# badigeonnés d'huile, 30 min à 180 °C ; la friture (3 ou 4 à la fois) est
+# l'autre façon. Tièdes ou froids, à l'apéro ou en pique-nique.
+
+recipe:
+  id: barbajuans
+  title: Barbajuans aux épinards
+  format: galettes
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Les barbajouans », blog Saines Gourmandises, 18 juin 2013"
+    url: https://saines-gourmandises.fr/une-recette-de-mon-carnet-de-cuisine-et-puis-peut-etre-des-vacances-a-nice/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6
+    pieces: 35              # « 30 à 40 barbajuans »
+  time_min_total: 70        # 35 min de préparation + 30 min de four
+  active_min: 40
+
+  apports:
+    proteine: fromage
+    feculent: farine
+    legumes: [feuille, allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-petit-epeautre, name: farine de petit épeautre, qty: 500, unit: g}
+    - {id: oeufs, name: "œufs (2 pâte, 2 farce)", qty: 4, unit: pièce}
+    - {id: poudre-a-lever, name: levure, qty: 1, unit: sachet}
+    - {id: sel, ref: sel-pate, name: sel fin (pâte), qty: 1, unit: c. à c., seasoning: true}
+    - {id: huile-olive, ref: huile-pate, name: "huile d'olive (pâte et badigeon)", qty: 7, unit: c. à s.}
+    - {id: eau, name: eau tiède, qty: 10, unit: cl}
+    - {id: pousses-epinards, name: épinards, qty: 500, unit: g}
+    - {id: riz, name: riz basmati complet (cru), qty: 35, unit: g}
+    - {id: oignon, name: oignons, qty: 2, unit: pièce}
+    - {id: anchois, name: anchois, qty: 6, unit: pièce}
+    - {id: parmesan, name: parmesan, qty: 150, unit: g}
+    - {id: huile-olive, ref: huile-farce, name: huile d'olive (farce), qty: 4, unit: c. à s.}
+    - {id: pignons-pin, name: pignons, qty: 50, unit: g}
+    - {id: sel, ref: sel-farce, name: sel, qty: 2, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: riz
+      action: "Cuire le riz à l'eau (il en faut 100 g cuit)"
+      needs: [boil]
+      charge_partielle: true   # le récipient ne tient que cette part du plat
+      uses: [riz]
+      time_min: 20
+      attended: false
+    - id: pate
+      action: "Mélanger farine, levure et sel, puis 2 œufs, 4 c. à s. d'huile et l'eau tiède ; pétrir en pâte souple et la laisser reposer couverte"
+      astuce: "Un peu d'eau ou de farine selon la farine : elle doit s'étaler comme une pâte à tarte souple."
+      needs: []
+      uses: [farine-petit-epeautre, poudre-a-lever, sel-pate, eau]
+      time_min: 8
+      parallel_with: riz
+    - id: farce
+      action: "Dorer les oignons en petits cubes à l'huile, ajouter les épinards hachés crus, saler, poivrer et cuire jusqu'à ce qu'ils aient rendu toute leur eau"
+      needs: [pan-fry]
+      uses: [oignon, huile-farce, pousses-epinards, sel-farce, poivre]
+      time_min: 12
+      attended: true
+    - id: lier
+      action: "Mêler hors du feu pignons, riz, parmesan, anchois en petits morceaux et 2 œufs"
+      needs: []
+      uses: [pignons-pin, parmesan, anchois, oeufs]
+      time_min: 3
+    - id: plier
+      action: "Préchauffer à 180 °C ; découper la pâte étalée en carrés de 8 cm, y poser un boudin de farce, mouiller les bords, replier et souder"
+      needs: []
+      uses: []
+      time_min: 15
+      kid: {age_min_months: 36, task: "presser les bords à la fourchette"}
+    - id: cuire
+      action: "Badigeonner d'huile et cuire 30 min, jusqu'à ce qu'ils soient dorés"
+      needs: [bake]
+      uses: [huile-pate]
+      time_min: 30
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: barbajuans
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

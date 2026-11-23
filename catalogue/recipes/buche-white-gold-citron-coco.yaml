@@ -1,0 +1,85 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE BÛCHE SANS BEURRE : génoise d'amande sans farine (15 × 20 cm), une
+# crème de citron à l'agar-agar et à la margarine prise quelques heures au
+# frais, trois couches de génoise dans un moule chemisé, prise encore,
+# démoulée, enduite de crème et de coco râpée. Huiles essentielles ajoutées
+# à froid.
+
+recipe:
+  id: buche-white-gold-citron-coco
+  title: Bûche « White & Gold » à l'amande, crème de citron et coco
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Bûche White & Gold à l'amande blanche, crème de citron et coco », blog Saines Gourmandises, 20 décembre 2011"
+    url: https://saines-gourmandises.fr/comme-promis/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 7          # « pour 6/8 personnes »
+  lot_entier: true
+  time_min_total: 60
+  active_min: 40
+
+  apports:
+    proteine: oeuf
+    feculent: aucun
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: citron, name: "citrons (12 cl de jus)", qty: 3, unit: pièce}
+    - {id: sirop-agave, name: "sirop d'agave (15 cl + 4 c. à s.)", qty: 21, unit: cl}
+    - {id: oeufs, name: "œufs (4 jaunes crème + 4 génoise)", qty: 8, unit: pièce}
+    - {id: margarine, name: "margarine bio", qty: 200, unit: g}
+    - {id: huile-essentielle-citron, name: "huile essentielle de citron", qty: 15, unit: pièce, optional: true}
+    - {id: farine-complete, name: "farine T110", qty: 15, unit: g}
+    - {id: agar-agar, name: "agar-agar", qty: 6, unit: g}
+    - {id: poudre-amande, name: "poudre d'amande", qty: 125, unit: g}
+    - {id: eau-de-vie, name: "eau ou limoncello", qty: 3, unit: c. à s.}
+    - {id: extrait-amande-amere, name: "extrait d'amande amère", qty: 1, unit: pincée, optional: true}
+    - {id: noix-coco-rapee, name: "noix de coco râpée", qty: 30, unit: g}
+
+  steps:
+    - id: genoise
+      action: "Préchauffer à 180 °C ; mêler poudre d'amande, 4 c. à s. d'agave, alcool, extrait et 4 jaunes, puis 4 blancs en neige ; cuire 20 min en plat chemisé"
+      needs: [bake]
+      uses: [poudre-amande, eau-de-vie, extrait-amande-amere]
+      time_min: 28
+    - id: creme
+      action: "Fouetter en casserole le jus de citron, l'agar-agar, 15 cl d'agave, la farine et 4 jaunes ; bouillir quelques minutes puis y fondre la margarine"
+      astuce: "L'huile essentielle seulement quand la crème n'est plus brûlante."
+      needs: [simmer]
+      charge_partielle: true
+      uses: [citron, agar-agar, sirop-agave, farine-complete, oeufs, margarine, huile-essentielle-citron]
+      time_min: 8
+      parallel_with: genoise
+      attente_min: 180
+      attente_raison: "la crème prend quelques heures au frais"
+    - id: monter
+      action: "Fendre la génoise dans l'épaisseur et monter dans un moule chemisé trois couches de génoise et deux de crème, en gardant de la crème"
+      needs: []
+      uses: []
+      time_min: 12
+      attente_min: 180
+      attente_raison: "quelques heures au frais avant de démouler"
+    - id: finir
+      action: "Démouler, enduire de la crème restante et saupoudrer de coco râpée"
+      needs: []
+      uses: [noix-coco-rapee]
+      time_min: 5
+      kid: {age_min_months: 30, task: "saupoudrer la noix de coco"}
+
+  emits:
+    - kind: reste-plat
+      type: buche-white-gold-citron-coco
+      qty_band: 3-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

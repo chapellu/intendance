@@ -1,0 +1,70 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# SUCRÉ PAR LES POMMES : 400 g de Golden en cubes d'1 cm dans une pâte de farine
+# d'épeautre, sucre vanillé, œufs, huile, jus de pomme et rhum ; 35 min dans un
+# savarin de 21 cm huilé (ou beurré, pour le goût).
+
+recipe:
+  id: gateau-pomme-or-sans-sucre
+  title: Le gâteau « Pomme d'Or » sans sucre ajouté
+  creneaux: [gouter, dessert, petit-dejeuner]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Le gâteau Pomme d'Or », blog Saines Gourmandises, 16 janvier 2020"
+    url: https://saines-gourmandises.fr/sans-sucre-ajoute/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 10          # « un gâteau de 10 parts »
+  lot_entier: true
+  time_min_total: 50
+  active_min: 15
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: pommes, name: "pommes Golden (500 g entières)", qty: 4, unit: pièce}
+    - {id: farine-epeautre, name: "farine T110", qty: 160, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever", qty: 1, unit: sachet}
+    - {id: sucre-vanille, name: "sucre vanillé", qty: 3, unit: sachet}
+    - {id: oeufs, name: "œufs", qty: 2, unit: pièce}
+    - {id: huile-tournesol, name: "huile neutre", qty: 7, unit: cl}
+    - {id: jus-pomme, name: "jus de pomme", qty: 5, unit: cl}
+    - {id: rhum, name: "rhum ambré", qty: 1, unit: c. à s.}
+    - {id: sel, name: "pincée de sel", qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: pommes
+      action: "Préchauffer à 180 °C et huiler le moule ; éplucher les pommes et les couper en cubes de 1 à 1,5 cm (400 g)"
+      needs: []
+      uses: [pommes]
+      time_min: 8
+      kid: {age_min_months: 36, task: "couper les pommes au couteau à beurre"}
+    - id: pate
+      action: "Mêler levure, farine, sel et sucre vanillé, y mélanger vite l'huile, le jus, le rhum et les œufs, puis les pommes, et verser aussitôt"
+      needs: []
+      uses: [poudre-a-lever, farine-epeautre, sel, sucre-vanille, huile-tournesol, jus-pomme, rhum, oeufs]
+      time_min: 5
+    - id: cuire
+      action: "Cuire 35 min et tiédir avant de démouler"
+      needs: [bake]
+      uses: []
+      time_min: 35
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: gateau-pomme-or-sans-sucre
+      qty_band: 3-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

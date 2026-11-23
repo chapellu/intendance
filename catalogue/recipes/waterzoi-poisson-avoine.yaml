@@ -1,0 +1,108 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN WATERZOÏ ÉPAISSI AU GRUAU D'AVOINE, trempé la veille. Les gambas sont
+# facultatives (« plus festif »), le tofu fumé aussi (il parfume le bouillon).
+# Le poisson doit être très frais ; surgelé à la rigueur.
+
+recipe:
+  id: waterzoi-poisson-avoine
+  title: Waterzoï de poisson au gruau d'avoine
+  format: soupe
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Waterzoï de poisson un peu revisité », blog Saines Gourmandises, 20 novembre 2013"
+    url: https://saines-gourmandises.fr/beaucoup-de-neige-une-panne-delectricite-une-grippe-une-chouette-idee-pour-le-diner/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « pour 8 personnes, en plat principal copieux »
+  time_min_total: 85        # 25 min de préparation + 1 h de cuisson (trempage la veille)
+  active_min: 35
+
+  apports:
+    proteine: poisson
+    feculent: avoine
+    legumes: [allium, racine]
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: gruau-avoine, name: gruau d'avoine, qty: 500, unit: g}
+    - {id: saumon, name: filets de saumon sans peau ni arêtes, qty: 300, unit: g}
+    - {id: cabillaud, name: filets de cabillaud sans peau ni arêtes, qty: 400, unit: g}
+    - {id: moules, name: moules, qty: 500, unit: g}
+    - {id: gambas, name: gambas, qty: 8, unit: pièce, optional: true}
+    - {id: poireau, name: poireaux, qty: 2, unit: pièce}
+    - {id: carottes, name: carottes, qty: 3, unit: pièce}
+    - {id: oignon, name: oignons, qty: 2, unit: pièce}
+    - {id: celeri-branche, name: branches de céleri du cœur, qty: 2, unit: pièce}
+    - {id: tofu-fume, name: tofu fumé, qty: 100, unit: g, optional: true}
+    - {id: eau, name: eau, qty: 1, unit: l}
+    - {id: vin-blanc-sec, name: vin blanc sec, qty: 50, unit: cl}
+    - {id: creme-avoine, name: crème d'avoine liquide, qty: 40, unit: cl}
+    - {id: huile-olive, name: huile, qty: 6, unit: c. à s.}
+    - {id: citron, name: citron (jus), qty: 1, unit: pièce}
+    - {id: laurier, name: feuilles de laurier, qty: 5, unit: pièce, seasoning: true}
+    - {id: clous-girofle, name: clous de girofle, qty: 3, unit: pièce, seasoning: true}
+    - {id: sel, name: sel, qty: 1, unit: c. à s., seasoning: true}
+    - {id: poivre-5-baies, name: poivre 5 baies, qty: 2, unit: pincée, seasoning: true}
+
+  steps:
+    - id: tremper
+      action: "Rincer le gruau d'avoine et le mettre à tremper dans de l'eau"
+      needs: []
+      uses: [gruau-avoine]
+      time_min: 2
+      attended: false
+      attente_min: 600
+      attente_raison: "trempage du gruau, à lancer la veille au soir"
+    - id: revenir
+      action: "Émincer oignons, poireaux et carottes et les faire revenir à l'huile dans la cocotte avec le tofu fumé en lardons"
+      needs: [simmer-large]
+      uses: [oignon, poireau, carottes, huile-olive, tofu-fume]
+      time_min: 15
+      attended: true
+    - id: mijoter
+      action: "Ajouter le gruau égoutté et rincé, le céleri émincé, girofle, laurier, eau, vin blanc et sel ; cuire environ 45 min"
+      needs: [simmer-large]
+      uses: [celeri-branche, clous-girofle, laurier, eau, vin-blanc-sec, sel]
+      time_min: 45
+      attended: false
+    - id: gambas
+      action: "Cuire les gambas 15 min à l'eau légèrement salée, puis les décortiquer"
+      needs: [boil]
+      uses: [gambas]
+      time_min: 18
+      parallel_with: mijoter
+      charge_partielle: true   # la casserole tient les huit gambas, pas le plat
+    - id: mariner
+      action: "Couper le poisson en cubes, l'arroser du jus de citron, saler et poivrer généreusement"
+      needs: [chop-coarse]
+      uses: [saumon, cabillaud, citron, poivre-5-baies]
+      time_min: 5
+      parallel_with: mijoter
+    - id: lier
+      action: "Quand l'avoine est fondante et le bouillon épaissi, ajouter la crème d'avoine et rectifier l'assaisonnement"
+      needs: [simmer-large]
+      uses: [creme-avoine]
+      time_min: 2
+    - id: pocher
+      action: "Ajouter les moules crues, le poisson et sa marinade, les gambas, et cuire 10 à 15 min à feu très doux"
+      astuce: "Juste assez pour cuire les dés de poisson sans qu'ils se défassent."
+      needs: [simmer-large]
+      uses: [moules]
+      time_min: 12
+      attended: true
+
+  emits:
+    - kind: reste-plat
+      type: waterzoi-poisson-avoine
+      qty_band: 2-repas
+      keeps: {frigo_days: 1, congelo: false}
+      note: "poisson et moules : à finir le lendemain"
+
+  plan_b: []
