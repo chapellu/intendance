@@ -6964,8 +6964,8 @@ Les recettes rédigées pour ce dépôt n'y sont pas soumises : elles partent un
 
 - [x] Céleri-rave : sept plats écartés (le céleri au centre), douze où il se remplace — panais, chou-rave (que l'autrice propose), céleri branche
 - [x] Machine à pain : le pain de mie p. 20 écarté ; le test des horloges pose lui-même son second producteur
-- [ ] Provenance et en-têtes
-- [ ] `parallel_with`, appareils, `optional`
+- [x] Provenance et en-têtes : un `source_id`, cinq `encoding` ramenés à la phrase commune, un en-tête traduit
+- [x] `parallel_with` (3 étapes, et une quatrième dont « pendant ce temps » était faux), trois « bol du robot » sans robot, quatre lignes « pour servir / pour décorer » facultatives
 - [ ] `uses:` à la première mention
 - [ ] Alternatives en `subs:`
 - [ ] Pièces des viandes et poissons : nombres à donner par le foyer

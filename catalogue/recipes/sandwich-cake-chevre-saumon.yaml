@@ -51,7 +51,7 @@ recipe:
     - {id: paprika, name: paprika (c. à c. rase), qty: 1, unit: c. à c., seasoning: true}
     - {id: sel, ref: sel-creme, name: "sel (crème, c. à moka rase)", qty: 1, unit: pincée, seasoning: true}
     - {id: poivre-5-baies, name: poivre 5 baies, qty: 2, unit: pincée, seasoning: true}
-    - {id: ciboulette, name: ciboulette pour décorer, qty: 4, unit: brin}
+    - {id: ciboulette, name: ciboulette pour décorer, qty: 4, unit: brin, optional: true}
     - {id: tomates-cerises, name: tomates cerises pour décorer, qty: 3, unit: pièce, optional: true}
 
   steps:

@@ -54,7 +54,7 @@ recipe:
     - {id: laurier, name: feuilles de laurier, qty: 2, unit: pièce, seasoning: true}
     - {id: clous-girofle, name: clous de girofle, qty: 2, unit: pièce, seasoning: true}
     - {id: sel, name: sel, qty: 0.5, unit: c. à s., seasoning: true}
-    - {id: persil, name: persil pour le service, qty: 5, unit: brin}
+    - {id: persil, name: persil pour le service, qty: 5, unit: brin, optional: true}
 
   steps:
     - id: tremper

@@ -22600,7 +22600,7 @@
    "titre": "Colcannon irlandais",
    "minutes": 40,
    "minutesSurPlace": 40,
-   "avanceMin": 43,
+   "avanceMin": 40,
    "anticipations": [],
    "portions": 4,
    "source": {
@@ -22809,7 +22809,7 @@
      "uses": [
       "cantal"
      ],
-     "enParallele": null,
+     "enParallele": "cuire-chou",
      "attente": null,
      "attenteRaison": null,
      "attenteSouple": true,
@@ -58163,7 +58163,8 @@
      "unit": "c. à s.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     }
    ],
    "role": "plat",
@@ -82239,7 +82240,7 @@
     },
     {
      "id": "reunir-le-pate",
-     "action": "Transférer les sucs avec leur huile de cuisson dans le bol du robot, puis ajouter les lentilles, la purée de noisette, un peu de sel et de poivre",
+     "action": "Transférer les sucs avec leur huile de cuisson dans un récipient haut, puis ajouter les lentilles, la purée de noisette, un peu de sel et de poivre",
      "minutes": 3,
      "needs": [],
      "surveille": true,
@@ -90471,7 +90472,8 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     }
    ],
    "role": "plat",
@@ -104897,7 +104899,8 @@
      "unit": "brin",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     },
     {
      "id": "tomates-cerises",
@@ -115421,7 +115424,7 @@
    "steps": [
     {
      "id": "mixer-le-tofu",
-     "action": "Mettre le tofu en cubes avec l'huile, le sel, le poivre et le piment dans le bol du robot",
+     "action": "Mettre le tofu en cubes avec l'huile, le sel, le poivre et le piment dans un récipient haut",
      "minutes": 2,
      "needs": [],
      "surveille": true,
@@ -119364,7 +119367,7 @@
     },
     {
      "id": "amalgamer-tourte",
-     "action": "Sortir la pâte du robot et l'amalgamer entre les mains en une boule bien souple",
+     "action": "Rassembler la pâte et l'amalgamer entre les mains en une boule bien souple",
      "minutes": 3,
      "needs": [],
      "surveille": true,
@@ -123862,7 +123865,7 @@
     },
     {
      "id": "cuire-pommes-de-terre",
-     "action": "Pendant ce temps : éplucher les pommes de terre, les couper en cubes de 2 cm, les ajouter avec l'eau, l'ail épluché et le sel, puis laisser cuire",
+     "action": "Éplucher les pommes de terre, les couper en cubes de 2 cm, les ajouter avec l'eau, l'ail épluché et le sel, puis laisser cuire",
      "minutes": 15,
      "needs": [
       "simmer-large"
@@ -125761,7 +125764,8 @@
      "unit": "brin",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "facultatif": true
     }
    ],
    "role": "plat",
@@ -126764,7 +126768,7 @@
    "titre": "Yaourts aux fruits, LA recette inratable",
    "minutes": 20,
    "minutesSurPlace": 0,
-   "avanceMin": 845,
+   "avanceMin": 836,
    "anticipations": [
     {
      "gestes": [
@@ -126778,9 +126782,9 @@
       "enfourner",
       "fermenter"
      ],
-     "minutes": 162,
+     "minutes": 153,
      "attente": 420,
-     "avantMin": 845,
+     "avantMin": 836,
      "raison": "fermentation"
     },
     {
@@ -126920,7 +126924,7 @@
      "surveille": true,
      "astuce": null,
      "uses": [],
-     "enParallele": null,
+     "enParallele": "repartir",
      "attente": null,
      "attenteRaison": null,
      "attenteSouple": true,
@@ -126960,7 +126964,7 @@
      "uses": [
       "yaourt-soja-ing"
      ],
-     "enParallele": null,
+     "enParallele": "bouillir-lait",
      "attente": null,
      "attenteRaison": null,
      "attenteSouple": true,

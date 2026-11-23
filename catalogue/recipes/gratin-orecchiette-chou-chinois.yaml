@@ -17,7 +17,7 @@ recipe:
     source_id: saines-gourmandises-blog
     url: https://saines-gourmandises.fr/88076/
     saison: automne
-    encoding: étapes restructurées et reformulées ; prose d'origine non reproduite
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
   yields:
     portions_eq: 6
   time_min_total: 45

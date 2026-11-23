@@ -45,7 +45,7 @@ recipe:
       attended: true
     - id: cuire-pommes-de-terre
       uses: [pomme-de-terre, eau, ail, sel]
-      action: "Pendant ce temps : éplucher les pommes de terre, les couper en cubes de 2 cm, les ajouter avec l'eau, l'ail épluché et le sel, puis laisser cuire"
+      action: "Éplucher les pommes de terre, les couper en cubes de 2 cm, les ajouter avec l'eau, l'ail épluché et le sel, puis laisser cuire"
       needs: [simmer-large]
       time_min: 15
       attended: false

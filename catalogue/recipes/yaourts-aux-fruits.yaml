@@ -106,6 +106,7 @@ recipe:
       attente_min: 20
       attente_raison: "refroidissement"
     - id: chauffer-four
+      parallel_with: repartir
       action: "Pendant ce temps, faire chauffer de l'eau à la casserole ou à la bouilloire, et préchauffer le four à 50 °C"
       needs: [bake]
       uses: []
@@ -118,6 +119,7 @@ recipe:
       time_min: 7
       charge_partielle: true
     - id: delayer
+      parallel_with: bouillir-lait
       action: "Pendant ce temps, délayer dans un pichet le yaourt ou le ferment dans le lait restant, puis ajouter le lait bouillant et bien mélanger"
       needs: []
       uses: [yaourt-soja-ing]

@@ -13,7 +13,7 @@ recipe:
     source_id: saines-gourmandises-blog
     url: https://saines-gourmandises.fr/mange-ta-soupe/
     saison: hiver
-    encoding: étapes restructurées et reformulées ; prose d'origine non reproduite
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
   yields:
     portions_eq: 4
   time_min_total: 40

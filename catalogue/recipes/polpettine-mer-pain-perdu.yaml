@@ -44,7 +44,7 @@ recipe:
     - {id: poivre, name: "poivre du moulin", qty: 1, unit: pincée, seasoning: true}
     - {id: farine, name: "farine pour rouler", qty: 2, unit: c. à s.}
     - {id: huile-olive, name: "huile d'olive", qty: 3, unit: c. à s.}
-    - {id: citron, name: "citron pour servir", qty: 1, unit: pièce}
+    - {id: citron, name: "citron pour servir", qty: 1, unit: pièce, optional: true}
 
   avec:
     - {id: salade-verte, name: "salade verte", qty: 0.5, unit: pièce}

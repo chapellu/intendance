@@ -45,7 +45,7 @@ recipe:
   steps:
     - id: mixer-le-tofu
       uses: [tofu-lactofermente, huile-olive, piment-espelette, sel, poivre]
-      action: "Mettre le tofu en cubes avec l'huile, le sel, le poivre et le piment dans le bol du robot"
+      action: "Mettre le tofu en cubes avec l'huile, le sel, le poivre et le piment dans un récipient haut"
       needs: []
       time_min: 2
       seasoning_gate: true
