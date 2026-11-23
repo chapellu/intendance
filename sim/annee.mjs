@@ -170,7 +170,7 @@ function parUniteDuFond(id) {
 // LES UNITÉS DU MONDE RÉEL. Le placard tient chaque denrée dans UNE unité (la
 // première que le corpus emploie) ; une recette qui la dit autrement se
 // convertit : « 300 g de poireau » ne vide pas un stock compté en pièces.
-const POIDS_PIECE = { poireau: 200, oignon: 120, "oignon-rouge": 120, carottes: 100, pommes: 150, poires: 150, banane: 120, "pomme-de-terre": 150, courge: 1500, potimarron: 1200, courgettes: 200, tomates: 120, citron: 100, oeufs: 55, echalote: 30, navets: 120, panais: 150, brocoli: 400, "chou-fleur": 800, "yaourt-nature": 125 };
+const POIDS_PIECE = { poireau: 200, oignon: 120, "oignon-rouge": 120, carottes: 100, pommes: 150, poires: 150, banane: 120, "pomme-de-terre": 150, courge: 1500, potimarron: 1200, courgettes: 200, tomates: 120, citron: 100, oeufs: 55, echalote: 30, navets: 120, panais: 150, brocoli: 400, "chou-fleur": 800, "yaourt-nature": 125, basilic: 1, menthe: 1, persil: 1, "olives-noires": 4, jambon: 40, "jambon-cru": 17, poulet: 1500, "tomates-cerises": 15, champignons: 20, noix: 5 };
 function versBase(id, qty, unit) {
   const base = UNITE_RECETTE.get(id) ?? unit;
   if (!unit || unit === base) return qty;
@@ -210,9 +210,34 @@ function quantiteAchat(id, txt) {
 /** Une unité d'achat du fond (« pack de 4 »), en unité du placard réel. */
 const UNITE_ACHAT = new Map((cat.fond?.denrees ?? []).map((d) => [cat.rayons.aliases?.[d.ingredient] ?? d.ingredient, d.unite ?? "pièce"]));
 const unDuFond = (id) => quantiteAchat(id, `1 ${UNITE_ACHAT.get(id) ?? "pièce"}`) || 1;
+// LE PRIX — un relevé de magasin, HORS DU DÉPÔT (`PRIX=…/references.json`) :
+// les montants du foyer ne vivent pas dans git. Absent, rien ne se chiffre.
+const PRIX = process.env.PRIX && existsSync(process.env.PRIX) ? JSON.parse(readFileSync(process.env.PRIX, "utf8")).articles ?? {} : {};
+function prixUnitaire(id) {
+  const a = PRIX[id] ?? PRIX[cat.rayons.aliases?.[id] ?? ""]; if (!a?.prix) return null;
+  const c = (a.conditionnement ?? "").replace(",", ".");
+  let base;
+  const mul = /(\d+(?:\.\d+)?)\s*[×x]\s*(\d+(?:\.\d+)?)\s*(kg|g|l|cl|ml)\b/i.exec(c);
+  const m = /(\d+(?:\.\d+)?)\s*(kg|g|l|cl|ml)\b/i.exec(c);
+  if (mul) base = versBase(id, +mul[1] * +mul[2], mul[3].toLowerCase());
+  else if (m) base = versBase(id, +m[1], m[2].toLowerCase());
+  else if (/^kg$/i.test(c.trim())) base = versBase(id, 1000, "g");
+  else if (/botte/i.test(c)) base = versBase(id, /basilic|persil|ciboulette|menthe|coriandre|herbe/.test(id) ? 30 : 500, "g");
+  else if (/(\d+)\s*(cubes|sachets|pièces)/i.test(c)) base = versBase(id, +/(\d+)/.exec(c)[1], "pièce");
+  else base = versBase(id, 1, "pièce");
+  return base > 0 ? a.prix / base : null;
+}
+function payer(id, qte) {
+  const pu = prixUnitaire(id);
+  const c = etat.compte;
+  if (pu == null) { c.sansPrix = { ...(c.sansPrix ?? {}), [id]: 1 }; return; }
+  c.depense = Math.round(((c.depense ?? 0) + pu * qte) * 100) / 100;
+  c.depenseParId = { ...(c.depenseParId ?? {}), [id]: Math.round((((c.depenseParId ?? {})[id] ?? 0) + pu * qte) * 100) / 100 };
+}
 function acheter(nom, q, j) {
   const id = idParNom.get(norm(nom)) ?? norm(nom);
   const qte = quantiteAchat(id, q ?? "");
+  payer(id, qte);
   const r = etat.reel[id] ?? { q: 0, achete: 0 };
   r.q += qte; r.achete = qte; r.le = j; r.frais = FRAIS.test(rayonDe.get(id) ?? "");
   etat.reel[id] = r;
@@ -811,10 +836,13 @@ async function poserFondCatalogue(j) {
       const id = cat.rayons.aliases?.[ingredient] ?? ingredient;
       if (!suivis.has(norm(nomDe(id).replace(/œ/g, "oe"))) && !suivis.has(norm(id))) continue;
       const q = minimum * unDuFond(id);
+      payer(id, q);
       etat.reel[id] = { q: (etat.reel[id]?.q ?? 0) + q, achete: q, le: j, frais: FRAIS.test(rayonDe.get(id) ?? "") };
       poses.push(`${ingredient} ${minimum}`);
     }
     etat.fondPose = n;
+    // Le fond de départ se chiffre à part : c'est un capital, pas la dépense de l'année.
+    etat.compte.fondInitial = etat.compte.depense ?? 0; etat.compte.depense = 0; etat.compte.depenseParId = {};
     // L'apéro n'est pas au fond : le foyer pose lui-même ses deux bocaux,
     // « En garder 1 » sur la ligne de chacun (le même geste que l'e2e T41).
     await tap(page.getByRole("button", { name: "en ajouter un au placard" })).catch(() => {});
@@ -1252,7 +1280,7 @@ async function journee2(idx) {
             const id = i?.id ?? idParNom.get(norm(nom)) ?? norm(nom);
             const r = etat.reel[id] ?? { q: 0, achete: 0 };
             const q = Math.max(1, (i?.qty ?? 1) * 1.5);
-            r.q += q; r.achete = q; r.le = j; r.frais = FRAIS.test(rayonDe.get(id) ?? ""); etat.reel[id] = r;
+            r.q += q; r.achete = q; r.le = j; r.frais = FRAIS.test(rayonDe.get(id) ?? ""); etat.reel[id] = r; payer(id, q);
           }
           stats.achatsHorsApp = pris.achats.noms;
         }

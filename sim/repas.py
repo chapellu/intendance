@@ -70,6 +70,11 @@ def resume(out):
     r["restesJetes"] = c.get("jetes", 0)
     r["fournees"] = c.get("fournees", 0)
     r["midisCuisines"] = c.get("midisCuisines", 0)
+    r["depense"] = c.get("depense")
+    r["fondInitial"] = c.get("fondInitial")
+    r["depenseParId"] = sorted((c.get("depenseParId") or {}).items(), key=lambda x: -x[1])[:8]
+    r["aperos"] = (c.get("aperos", 0), c.get("aperosCuisines", 0))
+    r["dejaNotes"] = c.get("dejaNotes", 0)
     r["tapsParJour"] = round(sum(j.get("taps", 0) for j in jours) / max(1, len(jours)), 1)
     r["distincts"] = len({j["diner"] for j in maison if isinstance(j.get("diner"), str) and not j["diner"].startswith(("repli", "malade", "dehors", "rien"))})
     return r
@@ -103,8 +108,14 @@ def main():
     ligne("fournées / midis cuisinés", lambda r: f"{r['fournees']} / {r['midisCuisines']}")
     ligne("gaspillage (kg) / restes jetés", lambda r: f"{r['gaspilleKg']} / {r['restesJetes']}")
     ligne("taps par jour", lambda r: str(r["tapsParJour"]))
+    ligne("apéros (dont cuisinés)", lambda r: f"{r['aperos'][0]} ({r['aperos'][1]})")
+    ligne("« Déjà noté » à la sortie", lambda r: str(r["dejaNotes"]))
+    ligne("fond de départ (€)", lambda r: "—" if r["fondInitial"] is None else f"{r['fondInitial']:.0f}")
+    ligne("dépense (€) / par semaine", lambda r: "—" if r["depense"] is None else f"{r['depense']:.0f} / {7 * r['depense'] / max(1, r['jours']):.0f}")
     for n in noms:
         print(f"\n{n} — manques : " + ", ".join(f"{k} ×{v}" for k, v in rs[n]["manques"]))
+        if rs[n]["depenseParId"]:
+            print(f"{n} — dépense : " + ", ".join(f"{k} {v:.0f} €" for k, v in rs[n]["depenseParId"]))
         print(f"{n} — jeté : " + ", ".join(f"{k} {v} g" for k, v in rs[n]["jetesParId"]))
 
 
