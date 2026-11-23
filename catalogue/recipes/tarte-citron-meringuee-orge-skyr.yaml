@@ -42,7 +42,7 @@ recipe:
     - {id: oeufs, name: "œufs (1 + 4 jaunes + 4 blancs)", qty: 5, unit: pièce}
     - {id: jus-pomme, name: "jus de pomme", qty: 30, unit: g}
     - {id: citron, name: "citrons (20 cl de jus, zeste)", qty: 5, unit: pièce}
-    - {id: sirop-agave, name: "sirop d'agave ou miel d'acacia", qty: 110, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave ou miel d'acacia", qty: 110, unit: g, subs: [{id: miel-acacia, name: "miel d'acacia", ratio: 1.0}]}
     - {id: skyr, name: "skyr bien égoutté", qty: 100, unit: g}
     - {id: extrait-vanille, name: "pincée de vanille en poudre", qty: 1, unit: pincée}
 

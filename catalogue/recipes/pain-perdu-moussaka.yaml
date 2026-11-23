@@ -77,7 +77,7 @@ recipe:
     - {id: aubergine, name: "aubergines bien fraîches (environ 2 de taille moyenne)", qty: 500, unit: g}
     - {id: creme-soja, name: crème de soja ou d'avoine, qty: 20, unit: cl}
     - {id: fromage-rape, name: fromage râpé, qty: 120, unit: g}
-    - {id: boeuf-hache, name: "steak haché surgelé, bœuf haché ou sauté de porc", qty: 400, unit: g}
+    - {id: boeuf-hache, name: "steak haché surgelé, bœuf haché ou sauté de porc", qty: 400, unit: g, subs: [{id: porc-saute, name: "sauté de porc", ratio: 1.0}]}
     - {id: oignon, name: gros oignon, qty: 1, unit: pièce}
     - {id: huile-olive, ref: huile-aubergines, name: huile d'olive (aubergines), qty: 3, unit: c. à s.}
     - {id: huile-olive, ref: huile-viande, name: huile d'olive (viande), qty: 2, unit: c. à s.}

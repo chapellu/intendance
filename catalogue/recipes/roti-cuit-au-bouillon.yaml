@@ -47,7 +47,7 @@ recipe:
     origine: francais
 
   ingredients:
-    - {id: roti-porc, name: "rôti de porc fermier (épaule ou jambon, au choix)", qty: 1000, unit: g}
+    - {id: roti-porc, name: "rôti de porc fermier (épaule ou jambon, au choix)", qty: 1000, unit: g, subs: [{name: "rôti pris dans le jambon (la cuisse)"}]}
     - {id: oignon, name: oignon, qty: 1, unit: pièce}
     - {id: celeri-branche, name: "branche de céleri", qty: 1, unit: pièce}
     - {id: carottes, name: carotte, qty: 1, unit: pièce}

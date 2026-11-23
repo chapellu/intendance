@@ -51,7 +51,7 @@ recipe:
     - {id: oignon, name: oignons, qty: 3, unit: pièce}
     - {id: poireau, name: poireaux, qty: 3, unit: pièce}
     - {id: jambon-cru, name: "jambon cru ou tofu fumé, coupé en « lardons »", qty: 200, unit: g, subs: [{id: tofu-fume, name: "tofu fumé", ratio: 1.0}]}
-    - {id: courge, name: "courge ou potiron d'une variété peu aqueuse — potimarron et butternut ne s'épluchent même pas", qty: 1.5, unit: kg}
+    - {id: courge, name: "courge ou potiron d'une variété peu aqueuse — potimarron et butternut ne s'épluchent même pas", qty: 1.5, unit: kg, subs: [{id: potimarron, name: "potimarron, qui ne s'épluche pas", ratio: 1.0}]}
     - {id: parmesan, name: "parmesan râpé (ou Grana Padano) — 150 g dans la garniture, 50 g sur le dessus", qty: 200, unit: g}
     - {id: huile-olive, ref: huile-garniture, name: huile d'olive (garniture), qty: 4, unit: c. à s.}
     - {id: eau, name: verre d'eau pour le mijotage, qty: 1, unit: verre}

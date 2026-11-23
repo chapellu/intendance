@@ -42,7 +42,7 @@ recipe:
     - {id: sel, name: "pincée de sel", qty: 1, unit: pincée, seasoning: true}
     - {id: compote, name: "compote de pomme sans sucre", qty: 100, unit: g}
     - {id: huile-essentielle-orange, name: "huile essentielle d'orange douce", qty: 15, unit: pièce}
-    - {id: miel-acacia, name: "miel ou sirop d'agave", qty: 160, unit: g}
+    - {id: miel-acacia, name: "miel ou sirop d'agave", qty: 160, unit: g, subs: [{id: sirop-agave, name: "sirop d'agave", ratio: 1.0}]}
     - {id: oeufs, name: "œufs", qty: 2, unit: pièce}
     - {id: jus-pomme, name: "jus de pomme", qty: 5, unit: cl}
     - {id: huile-tournesol, name: "huile neutre", qty: 65, unit: g}

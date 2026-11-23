@@ -40,7 +40,7 @@ recipe:
     - {id: boeuf-hache, name: "viande crue au choix (bœuf, veau, porc, poulet)", qty: 200, unit: g}
     - {id: parmesan, name: parmesan, qty: 100, unit: g}
     - {id: sauce-tomate, name: bonne sauce tomate, qty: 200, unit: g}
-    - {id: riz, name: "riz basmati complet (ou quinoa)", qty: 80, unit: g}
+    - {id: riz, name: "riz basmati complet (ou quinoa)", qty: 80, unit: g, subs: [{id: quinoa, name: "quinoa", ratio: 1.0}]}
     - {id: huile-olive, name: huile d'olive, qty: 5, unit: c. à s.}
     - {id: herbes-fraiches, name: "persil, ciboulette, sarriette ou origan", qty: 1, unit: petit bouquet}
     - {id: olives-noires, name: olives noires dénoyautées, qty: 16, unit: pièce}

@@ -43,7 +43,7 @@ recipe:
     - {id: agar-agar, name: "agar-agar", qty: 6, unit: g}
     - {id: creme-coco, name: "crème de coco (40 cl + 40 cl très froide)", qty: 80, unit: cl}
     - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 2, unit: c. à s.}
-    - {id: confiture-mures, name: "confiture de mûres ou de myrtilles", qty: 200, unit: g}
+    - {id: confiture-mures, name: "confiture de mûres ou de myrtilles", qty: 200, unit: g, subs: [{name: "confiture de myrtilles"}]}
 
   steps:
     - id: fond

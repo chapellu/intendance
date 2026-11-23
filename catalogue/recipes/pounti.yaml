@@ -32,7 +32,7 @@ recipe:
     origine: francais
 
   ingredients:
-    - {id: oignon, name: "gros oignon (ou un blanc de poireau)", qty: 1, unit: pièce}
+    - {id: oignon, name: "gros oignon (ou un blanc de poireau)", qty: 1, unit: pièce, subs: [{id: poireau, name: "un blanc de poireau", ratio: 1.0}]}
     - {id: huile-olive, name: "huile d'olive (ou graisse de canard)", qty: 4, unit: c. à s.}
     - {id: beurre, name: beurre, qty: 20, unit: g}
     - {id: jambon-cru, name: jambon cru, qty: 150, unit: g}

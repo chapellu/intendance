@@ -77,7 +77,7 @@ recipe:
 
   ingredients:
     - {id: yaourt-soja-ing, name: "yaourt au lait entier ou de soja, servant de ferment", qty: 1, unit: pot, from_accepts: true}
-    - {id: fruits-frais, name: "fruits frais — fraises, poires, pêches, cerises ou abricots selon la saison", qty: 500, unit: g}
+    - {id: fruits-frais, name: "fruits frais — fraises, poires, pêches, cerises ou abricots selon la saison", qty: 500, unit: g, subs: [{name: "fraises, poires, pêches, cerises ou abricots, selon la saison"}]}
     - {id: sucre-roux, name: sucre blond, qty: 5, unit: c. à s.}
     - {id: lait, name: "lait entier (ou de soja)", qty: 1, unit: l}
 

@@ -6952,7 +6952,7 @@ Les recettes rédigées pour ce dépôt n'y sont pas soumises : elles partent un
 | Aucune étape sans solution avec l'équipement du foyer ; pas d'appareil nommé sans `needs` | T84, T189, T196 | 6 |
 | La première étape qui nomme une ligne la porte dans `uses:` | T113, T193, et le 23/11 | 59 (110 avant que le contrôle sache départager deux lignes sœurs) |
 | Un nom qui se dit facultatif est `optional: true` | T186 | 4 |
-| Une alternative qui a un rayon est un `subs:` | T167 | 78 |
+| Une alternative qui a un rayon est un `subs:` | T167 | 49 (78 avant d'écarter assaisonnements, table du commerce et faux amis) |
 | Pas de céleri-rave | le foyer, 23/11 | 23 |
 | Une viande ou un poisson en pièces se compte (avertissement) | T188 | 21 |
 
@@ -6967,5 +6967,5 @@ Les recettes rédigées pour ce dépôt n'y sont pas soumises : elles partent un
 - [x] Provenance et en-têtes : un `source_id`, cinq `encoding` ramenés à la phrase commune, un en-tête traduit
 - [x] `parallel_with` (3 étapes, et une quatrième dont « pendant ce temps » était faux), trois « bol du robot » sans robot, quatre lignes « pour servir / pour décorer » facultatives
 - [x] `uses:` à la première mention : 58 étapes de 51 plats reçoivent la ligne qu'elles nomment ; deux consignes reformulées, qui nommaient une ligne sans la verser (les parures de la bouillabaisse, le cacao des truffes). Le contrôle départage les lignes sœurs (« oignons rouges » n'est pas `oignon`, « beurre de cacao » n'est pas `cacao`)
-- [ ] Alternatives en `subs:`
+- [x] Alternatives en `subs:` : 49 lignes de 48 plats. 34 reçoivent un remplaçant qui s'achète (miel ↔ agave, cognac → whisky, abricots → cerises, pêches…) ; 15 dont l'alternative n'a pas d'id propre ou pas la même unité gardent une note (`subs:` sans `id`). Le contrôle ignore les assaisonnements, les lignes que la table du commerce couvre, et « à défaut de rôti » (ce qu'une base chaînée remplace)
 - [ ] Pièces des viandes et poissons : nombres à donner par le foyer

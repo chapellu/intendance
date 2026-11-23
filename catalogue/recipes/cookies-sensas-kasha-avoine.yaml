@@ -41,7 +41,7 @@ recipe:
     - {id: sucre-complet, name: "sucre de coco", qty: 150, unit: g}
     - {id: chocolat-noir, name: "chocolat noir 70 ou 85 %", qty: 225, unit: g}
     - {id: oeufs, name: "œufs", qty: 3, unit: pièce}
-    - {id: amandes, name: "amandes (ou noisettes)", qty: 225, unit: g}
+    - {id: amandes, name: "amandes (ou noisettes)", qty: 225, unit: g, subs: [{id: noisettes, name: "noisettes", ratio: 1.0}]}
     - {id: poudre-a-lever, name: "poudre à lever", qty: 1, unit: sachet}
     - {id: fleur-de-sel, name: "fleur de sel (c. à c. à peine bombée)", qty: 1, unit: c. à c., seasoning: true}
 

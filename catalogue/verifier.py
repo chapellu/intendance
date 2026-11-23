@@ -561,6 +561,16 @@ def _nomme(iid: str, autres: set, texte: str) -> bool:
     return False
 
 
+def _equivalences() -> dict:
+    global _EQ
+    if _EQ is None:
+        _EQ = (rc.load(HERE / "equivalences.yaml") or {}).get("equivalences") or {}
+    return _EQ
+
+
+_EQ = None
+
+
 def _sans_accents(s: str) -> str:
     return "".join(c for c in unicodedata.normalize("NFD", s.lower())
                    if unicodedata.category(c) != "Mn")
@@ -664,9 +674,17 @@ def verifier_harmonie(r: dict, rayons: dict, rules: dict, foyer: dict) -> tuple:
         # le nom, la fiche ne la propose pas et la liste ne la voit pas. Une
         # ligne qui porte déjà des `subs` (avec id, ou en note quand le ratio
         # n'a pas de sens) a été lue.
+        # « à défaut de rôti, un blanc de poulet » nomme ce que la ligne
+        # REMPLACE (une base chaînée), pas une alternative ; une parenthèse qui
+        # suit l'alternative la précise (« (crème) », « si l'okara est
+        # humide ») ; « bien mûres » est un adjectif, pas des mûres.
         coupe = re.split(r"\bou\b|à défaut|\bsinon\b", n, maxsplit=1)
-        if len(coupe) == 2 and not i.get("subs"):
-            alt = _sans_accents(coupe[1])
+        # Un assaisonnement ne s'achète pas à la ligne, et une ligne que la
+        # table du commerce couvre (`equivalences.yaml`) a déjà ses remplaçants.
+        if len(coupe) == 2 and not i.get("subs") and not n.lower().startswith("à défaut") \
+                and not i.get("seasoning") and cid not in _equivalences():
+            alt = re.sub(r"\([^()]*\)", "", _sans_accents(coupe[1]))
+            alt = re.sub(r"\bbien mures?\b|\bmures? a point\b", "", alt)
             autres = sorted(k for k, mots in lex.items()
                             if k != cid and alias.get(k, k) != cid
                             and any(re.search(r"\b" + re.escape(w) + r"\b", alt) for w in mots))

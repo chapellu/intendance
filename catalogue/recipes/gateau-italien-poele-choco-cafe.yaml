@@ -39,7 +39,7 @@ recipe:
     - {id: creme, name: "crème au choix", qty: 40, unit: g}
     - {id: poudre-a-lever, name: "poudre à lever (tiers de sachet)", qty: 0.33, unit: sachet}
     - {id: oeufs, name: "œufs", qty: 6, unit: pièce}
-    - {id: vinaigre, name: "vinaigre de cidre ou jus de citron", qty: 1, unit: c. à c.}
+    - {id: vinaigre, name: "vinaigre de cidre ou jus de citron", qty: 1, unit: c. à c., subs: [{name: "jus de citron"}]}
     - {id: fleur-de-sel, name: "bonne pincée de fleur de sel", qty: 1, unit: bonne pincée, seasoning: true}
     - {id: beurre, name: "beurre pour la poêle", qty: 10, unit: g}
     - {id: rhum, name: "rhum", qty: 1, unit: c. à s.}

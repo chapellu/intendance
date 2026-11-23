@@ -3254,7 +3254,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "margarine",
+       "nom": "margarine",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "sucre-glace",
@@ -13097,7 +13104,14 @@
      "unit": "c. à s.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "cognac",
+       "nom": "cognac",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "eau",
@@ -14721,7 +14735,19 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-tournesol",
+       "nom": "huile neutre",
+       "ratio": 1.0
+      },
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "sucre-bouleau",
@@ -21722,7 +21748,14 @@
      "unit": "c. à c.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre",
+       "ratio": 1.0
+      }
+     ]
     }
    ],
    "role": "plat",
@@ -21898,7 +21931,29 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "cerises",
+       "nom": "cerises",
+       "ratio": 1.0
+      },
+      {
+       "id": "peches",
+       "nom": "pêches",
+       "ratio": 1.0
+      },
+      {
+       "id": "reines-claudes",
+       "nom": "reines-claudes",
+       "ratio": 1.0
+      },
+      {
+       "id": "mirabelles",
+       "nom": "mirabelles",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "rhum",
@@ -23505,7 +23560,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "cebette",
+       "nom": "vert de cébette",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "persil",
@@ -25453,7 +25515,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "noisettes",
+       "nom": "noisettes",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "poudre-a-lever",
@@ -25664,7 +25733,19 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "noisettes",
+       "nom": "noisettes",
+       "ratio": 1.0
+      },
+      {
+       "id": "noix-pecan",
+       "nom": "noix de pécan",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "chocolat-noir",
@@ -26879,7 +26960,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "jambon-cru",
+       "nom": "jambon fumé de montagne (speck)",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "cantal",
@@ -30928,7 +31016,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-coco",
+       "nom": "huile de coco",
+       "ratio": 1.0
+      }
+     ]
     }
    ],
    "role": "plat",
@@ -35547,7 +35642,14 @@
      "unit": "cl",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "whisky",
+       "nom": "whisky",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "oeufs",
@@ -44466,7 +44568,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "margarine",
+       "nom": "margarine",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "farine-complete",
@@ -45378,7 +45487,14 @@
      "unit": "c. à s.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "sirop-agave",
+       "nom": "sirop d'agave",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "extrait-vanille",
@@ -45398,7 +45514,14 @@
      "unit": "c. à s.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "sirop-agave",
+       "nom": "sirop d'agave",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "eau",
@@ -49391,7 +49514,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "sirop-agave",
+       "nom": "sirop d'agave",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "oeufs",
@@ -50053,7 +50183,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "miel-acacia",
+       "nom": "miel d'acacia",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "ghee",
@@ -50765,7 +50902,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "margarine",
+       "nom": "margarine",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "oeufs",
@@ -57168,7 +57312,14 @@
      "unit": "c. à s.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "tahin",
+       "nom": "tahin",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "ail",
@@ -77071,7 +77222,14 @@
      "unit": "c. à s.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "miel-acacia",
+       "nom": "miel d'acacia",
+       "ratio": 1.25
+      }
+     ]
     },
     {
      "id": "cannelle",
@@ -77551,7 +77709,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "porc-saute",
+       "nom": "sauté de porc",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -81545,7 +81710,14 @@
      "unit": "poignée",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "blettes",
+       "nom": "blettes",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "parmesan",
@@ -83942,7 +84114,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "citron",
+       "nom": "citron",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "sel",
@@ -84835,7 +85014,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "quinoa",
+       "nom": "quinoa",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "huile-olive",
@@ -92441,7 +92627,14 @@
      "unit": "c. à s.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "whisky",
+       "nom": "whisky",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "huile-olive",
@@ -94210,7 +94403,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireau",
+       "nom": "un blanc de poireau",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "huile-olive",
@@ -96476,7 +96676,14 @@
      "unit": "c. à s.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "pistaches",
+       "nom": "pistaches",
+       "ratio": 1.0
+      }
+     ]
     }
    ],
    "role": "plat",
@@ -97275,7 +97482,14 @@
      "unit": "c. à s.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "yaourt-brebis",
+       "nom": "yaourt de brebis au lait entier",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "concentre-tomate",
@@ -98396,7 +98610,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "amandes",
+       "nom": "amandes",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "chocolat-couverture",
@@ -106233,7 +106454,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "margarine",
+       "nom": "margarine",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "oeufs",
@@ -106809,7 +107037,14 @@
      "unit": "c. à s.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "puree-amande-blanche",
+       "nom": "purée d'amande blanche",
+       "ratio": 0.5
+      }
+     ]
     },
     {
      "id": "oeufs",
@@ -108872,7 +109107,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "patate-douce",
+       "nom": "patate douce",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "carottes",
@@ -111236,7 +111478,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "miel-acacia",
+       "nom": "miel d'acacia",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "skyr",
@@ -119635,7 +119884,14 @@
      "unit": "kg",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "potimarron",
+       "nom": "potimarron, qui ne s'épluche pas",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "parmesan",
@@ -121464,7 +121720,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "chocolat-noisettes",
+       "nom": "chocolat noir aux noisettes",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "grue-cacao",
@@ -123172,7 +123435,14 @@
      "unit": "c. à s.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "une noix de beurre",
+       "ratio": 0.25
+      }
+     ]
     },
     {
      "id": "sel",
@@ -124580,7 +124850,14 @@
      "unit": "c. à s.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "creme",
+       "nom": "crème fleurette",
+       "ratio": 1.0
+      }
+     ]
     },
     {
      "id": "eau",

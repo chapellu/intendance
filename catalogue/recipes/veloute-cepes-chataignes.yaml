@@ -41,7 +41,7 @@ recipe:
     - {id: tofu-fume, name: tofu fumé, qty: 100, unit: g}
     - {id: oignon, name: oignon, qty: 1, unit: pièce}
     - {id: eau, name: eau, qty: 75, unit: cl}
-    - {id: huile-olive, name: "huile d'olive (ou une noix de beurre)", qty: 3, unit: c. à s.}
+    - {id: huile-olive, name: "huile d'olive (ou une noix de beurre)", qty: 3, unit: c. à s., subs: [{id: beurre, name: "une noix de beurre", ratio: 0.25}]}
     - {id: sel, name: sel, qty: 2, unit: pincée, seasoning: true}
     - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
 

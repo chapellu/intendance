@@ -46,7 +46,7 @@ recipe:
     - {id: jambon-cru, name: jambon cru, qty: 200, unit: g}
     - {id: couenne-porc, name: couenne de porc fraîche dégraissée, qty: 300, unit: g, optional: true}
     - {id: cepes, name: cèpes frais ou surgelés, qty: 100, unit: g}
-    - {id: poulet-filets, name: blancs de poulet ou de dinde, qty: 400, unit: g}
+    - {id: poulet-filets, name: blancs de poulet ou de dinde, qty: 400, unit: g, subs: [{name: "blancs de dinde"}]}
     - {id: cognac, name: armagnac ou cognac, qty: 1, unit: c. à s.}
     - {id: farine, name: farine, qty: 40, unit: g}
     - {id: oeufs, name: œuf, qty: 1, unit: pièce, optional: true}

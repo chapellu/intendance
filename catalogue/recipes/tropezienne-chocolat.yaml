@@ -46,7 +46,7 @@ recipe:
     - {id: chocolat-noir, name: "chocolat noir 70 % (200 g mousse + 100 g nappage)", qty: 300, unit: g}
     - {id: puree-noisette, name: "purée de noisette toastée", qty: 65, unit: g}
     - {id: creme-coco, name: "crème de coco bien froide", qty: 40, unit: cl}
-    - {id: chocolat-amandes, name: "chocolat noir aux amandes ou aux noisettes", qty: 100, unit: g}
+    - {id: chocolat-amandes, name: "chocolat noir aux amandes ou aux noisettes", qty: 100, unit: g, subs: [{id: chocolat-noisettes, name: "chocolat noir aux noisettes", ratio: 1.0}]}
     - {id: grue-cacao, name: "grué de cacao", qty: 2, unit: c. à s., optional: true}
 
   steps:

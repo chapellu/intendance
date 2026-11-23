@@ -40,7 +40,7 @@ recipe:
     - {id: sirop-agave, name: "sirop d'agave (demi-pot + 10 cl + 2 c. à s.)", qty: 18, unit: cl}
     - {id: oeufs, name: "œufs", qty: 3, unit: pièce}
     - {id: poudre-a-lever, name: "levure", qty: 1, unit: sachet}
-    - {id: cedrat, name: "cédrat (ou citron)", qty: 1, unit: pièce}
+    - {id: cedrat, name: "cédrat (ou citron)", qty: 1, unit: pièce, subs: [{id: citron, name: "citron", ratio: 1.0}]}
     - {id: sel, name: "pincée de sel", qty: 1, unit: pincée, seasoning: true}
     - {id: citron, name: "citrons (10 cl de jus)", qty: 2, unit: pièce}
     - {id: eau, name: "eau", qty: 10, unit: cl}

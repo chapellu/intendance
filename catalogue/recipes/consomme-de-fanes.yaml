@@ -55,7 +55,7 @@ recipe:
 
   ingredients:
     - {id: parures-legumes, name: "épluchures de carottes, vert de poireau, feuilles de céleri", qty: 1, unit: lot, from_accepts: true}
-    - {id: oignon, name: oignon (ou vert de cébette), qty: 1, unit: pièce}
+    - {id: oignon, name: oignon (ou vert de cébette), qty: 1, unit: pièce, subs: [{id: cebette, name: "vert de cébette", ratio: 1.0}]}
     - {id: persil, name: tiges de persil (facultatif), qty: 1, unit: poignée, optional: true}
     - {id: orties, name: orties (facultatif), qty: 1, unit: poignée, optional: true}
     - {id: eau, name: eau, qty: 1, unit: l}

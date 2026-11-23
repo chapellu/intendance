@@ -37,7 +37,7 @@ recipe:
     - {id: sirop-agave, ref: agave-genoise, name: "sirop d'agave (génoise)", qty: 10, unit: cl}
     - {id: farine-petit-epeautre, ref: farine-genoise, name: "farine de petit épeautre T110", qty: 170, unit: g}
     - {id: poudre-a-lever, name: "poudre à lever (demi-paquet)", qty: 0.5, unit: sachet}
-    - {id: beurre, name: "beurre ou margarine pour le moule", qty: 10, unit: g}
+    - {id: beurre, name: "beurre ou margarine pour le moule", qty: 10, unit: g, subs: [{id: margarine, name: "margarine", ratio: 1.0}]}
     - {id: sucre-glace, name: "un peu de sucre glace", qty: 1, unit: c. à s., optional: true}
     - {id: clous-girofle, name: "clous de girofle (les yeux)", qty: 2, unit: pièce, seasoning: true}
 

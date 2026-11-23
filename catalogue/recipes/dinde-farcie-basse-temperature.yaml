@@ -46,7 +46,7 @@ recipe:
     - {id: tofu-fume, name: tofu fumé, qty: 100, unit: g}
     - {id: champignons-paris, name: champignons de Paris, qty: 500, unit: g}
     - {id: cepes-seches, name: cèpes séchés bien rincés, qty: 45, unit: g}
-    - {id: cognac, name: "armagnac, cognac ou whisky", qty: 3, unit: cl}
+    - {id: cognac, name: "armagnac, cognac ou whisky", qty: 3, unit: cl, subs: [{id: whisky, name: "whisky", ratio: 1.0}]}
     - {id: oeufs, name: œufs, qty: 2, unit: pièce}
     - {id: farine, name: farine, qty: 2, unit: c. à s.}
     - {id: ail, name: ail, qty: 2, unit: gousse}

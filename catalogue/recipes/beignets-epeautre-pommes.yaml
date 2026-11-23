@@ -34,7 +34,7 @@ recipe:
     origine: francais
 
   ingredients:
-    - {id: compote, name: "compote de pommes un peu épaisse (ou 6 petites pommes)", qty: 400, unit: g}
+    - {id: compote, name: "compote de pommes un peu épaisse (ou 6 petites pommes)", qty: 400, unit: g, subs: [{name: "6 petites pommes, à cuire en compote"}]}
     - {id: farine-epeautre, name: "farine T110 de grand épeautre (+ pour étaler)", qty: 630, unit: g}
     - {id: rhum, name: "rhum ambré", qty: 3, unit: c. à s.}
     - {id: oeufs, name: "œufs", qty: 2, unit: pièce}

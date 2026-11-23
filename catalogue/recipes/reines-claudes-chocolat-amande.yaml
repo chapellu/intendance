@@ -38,7 +38,7 @@ recipe:
     - {id: lait-amande, name: "lait végétal", qty: 20, unit: cl}
     - {id: puree-amande-blanche, name: "purée d'amandes blanches", qty: 2, unit: c. à s.}
     - {id: extrait-amande-amere, name: "arôme d'amande amère", qty: 1, unit: pincée, optional: true}
-    - {id: amandes-effilees, name: "amandes effilées ou pistaches", qty: 2, unit: c. à s.}
+    - {id: amandes-effilees, name: "amandes effilées ou pistaches", qty: 2, unit: c. à s., subs: [{id: pistaches, name: "pistaches", ratio: 1.0}]}
 
   steps:
     - id: pocher

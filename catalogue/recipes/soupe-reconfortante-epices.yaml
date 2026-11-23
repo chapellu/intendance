@@ -32,7 +32,7 @@ recipe:
     origine: indien
 
   ingredients:
-    - {id: courge, name: potiron ou patate douce, qty: 500, unit: g}
+    - {id: courge, name: potiron ou patate douce, qty: 500, unit: g, subs: [{id: patate-douce, name: "patate douce", ratio: 1.0}]}
     - {id: carottes, name: carottes, qty: 3, unit: pièce}
     - {id: poireau, name: blanc de poireau, qty: 1, unit: pièce}
     # T198 — pas de céleri-rave chez ce foyer : le panais, au même poids.

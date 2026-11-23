@@ -38,7 +38,7 @@ recipe:
     - {id: sucre-complet, name: "sucre de coco", qty: 200, unit: g}
     - {id: huile-pepin-raisin, name: "huile neutre", qty: 25, unit: cl}
     - {id: cannelle, name: "cannelle (2 c. à s. rases + pour saupoudrer)", qty: 2.5, unit: c. à s., seasoning: true}
-    - {id: huile-essentielle-orange, name: "huile essentielle de clémentine (ou d'orange douce)", qty: 15, unit: pièce}
+    - {id: huile-essentielle-orange, name: "huile essentielle de clémentine (ou d'orange douce)", qty: 15, unit: pièce, subs: [{name: "huile essentielle d'orange douce"}]}
 
   steps:
     - id: sabler

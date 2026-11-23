@@ -48,7 +48,7 @@ recipe:
     - {id: pain-levain, name: "tranches fines de pain bio moulé au levain (complet ou semi-complet, blé, épeautre ou sans gluten)", qty: 12, unit: tranche}
     - {id: oignon, name: gros oignons, qty: 3, unit: pièce}
     - {id: tomme-savoie, name: tomme de Savoie, qty: 300, unit: g}
-    - {id: jambon-cru, name: tranches de Speck ou de jambon cru fumé de montagne, qty: 6, unit: tranche}
+    - {id: jambon-cru, name: tranches de Speck ou de jambon cru fumé de montagne, qty: 6, unit: tranche, subs: [{name: "jambon cru fumé de montagne"}]}
     - {id: cornichons, name: petits cornichons (ou 12 moyens), qty: 18, unit: pièce}
     - {id: huile-olive, name: huile d'olive, qty: 6, unit: c. à s.}
     - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
