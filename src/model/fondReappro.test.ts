@@ -15,7 +15,7 @@ import { lireCatalogue } from "./catalogue";
 import { creerJeu } from "./jeu";
 import { contenuDUnite, contexte, rejouer, retirer, type Evenement } from "./journal";
 import { proposerCeSoir } from "./pause";
-import { minimumsDuFond, sousLeurPlancher } from "./plancherGardeManger";
+import { fruitsDeLaSemaine, minimumsDuFond, sousLeurPlancher } from "./plancherGardeManger";
 import { PASSE_VIDE } from "./questions";
 import type { Savoir } from "./scoring";
 import type { Catalogue, Plat } from "./types";
@@ -327,6 +327,19 @@ describe("T137 — un article du fond à garde courte se finit par son âge", ()
     // …mais le râpé (21 j) et les pommes de terre (6 semaines), si.
     expect(rejeu.finis.has("fromage-rape")).toBe(true);
     expect(rejeu.finis.has("pomme-de-terre")).toBe(true);
+  });
+
+  test("le frais de la semaine vieillit aussi : bananes à 8 jours et poireaux à 6 sont « sans doute finis »", () => {
+    const { rejeu } = rentreIlYA(8);
+    expect(rejeu.finis.get("banane")).toBe(8);
+    expect(rejeu.finis.has("poireau")).toBe(true);
+    expect(rejeu.parIngredient.has("banane")).toBe(false);
+    // …et la ligne de la semaine revient : c'est tout l'objet.
+    expect(fruitsDeLaSemaine(catalogue, rejeu, 10).map((l) => l.ingredient)).toEqual(expect.arrayContaining(["banane", "poireau"]));
+    // à 4 jours, tout est encore là
+    const tot = rentreIlYA(4).rejeu;
+    expect(tot.parIngredient.has("banane")).toBe(true);
+    expect(tot.parIngredient.has("poireau")).toBe(true);
   });
 
   test("une observation après l'achat relance l'horloge : « Des œufs ? oui » est la confirmation", () => {

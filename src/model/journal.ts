@@ -478,10 +478,17 @@ export function contexte(catalogue: Catalogue): Contexte {
         .flatMap((f) => f.ids),
     ),
     fenetreCourte: (() => {
+      // LE FRAIS DE LA SEMAINE VIEILLIT AUSSI. Une famille `fond: false` (fruits
+      // frais, légumes fragiles) n'entre au fond que par `hebdo` ; sans horloge,
+      // les bananes et les poireaux rachetés une fois restaient au grand livre
+      // pour toujours — on ne les décrémente pas, ils « ne s'estiment pas » —,
+      // la ligne « pour la semaine » ne revenait jamais et « Ce soir » disait
+      // « rien à acheter » sur des poireaux mangés depuis dix jours.
+      const hebdo = new Set((catalogue.fond?.denrees ?? []).filter((d) => d.hebdo).map((d) => alias(d.ingredient)));
       const par = new Map<string, number>();
       for (const f of catalogue.garde ?? [])
-        if (f.fond && f.fenetreJours <= SEMAINES_FENETRE_COURTE * 7)
-          for (const id of f.ids) par.set(alias(id), f.fenetreJours);
+        if (f.fenetreJours <= SEMAINES_FENETRE_COURTE * 7)
+          for (const id of f.ids) if (f.fond || hebdo.has(alias(id))) par.set(alias(id), f.fenetreJours);
       return (id: string) => par.get(alias(id)) ?? null;
     })(),
     releve: catalogue.gardeManger.releve,
