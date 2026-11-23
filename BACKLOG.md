@@ -6934,3 +6934,38 @@ reformulé comme ceux du livre.
       printemps, banana bread, compote pommes-poires, gratins de pâtes
       (tomates, brocoli-thon), omelette aux courgettes. D'autres livres de
       l'autrice les couvriraient peut-être.
+
+## T198 — Toutes les fiches suivent toutes les règles
+
+Demandé le 23/11 : chaque retour sur une fiche a été appliqué à la fiche qui l'avait fait naître et aux suivantes, jamais aux précédentes. Le catalogue disait donc chaque règle à moitié. Relevé des règles dans ce backlog, les commits et le README, mesure de l'écart sur les 493 plats, arbitrage du foyer, puis : un contrôle dans `verifier.py` pour chaque règle qui se vérifie, et la reprise des fiches par lots.
+
+Les recettes rédigées pour ce dépôt n'y sont pas soumises : elles partent une à une (T197).
+
+**Les règles tenues par le vérificateur (`verifier_harmonie`, `verifier_entetes`)**
+
+| Règle | Origine | Écart au départ |
+|---|---|---|
+| Une recette a des étapes | 14/09, T76 | 0 |
+| Bloc source complet ; `encoding` standard ; la page dans `work` | T73, T159 | 6 |
+| L'en-tête cite la carte #26, en français | #26, T86 | 1 |
+| « Pendant… » porte `parallel_with` | les lentilles du 14/09 | 4 |
+| Aucune étape sans solution avec l'équipement du foyer ; pas d'appareil nommé sans `needs` | T84, T189, T196 | 6 |
+| La première étape qui nomme une ligne la porte dans `uses:` | T113, T193, et le 23/11 | 110 |
+| Un nom qui se dit facultatif est `optional: true` | T186 | 4 |
+| Une alternative qui a un rayon est un `subs:` | T167 | 78 |
+| Pas de céleri-rave | le foyer, 23/11 | 23 |
+| Une viande ou un poisson en pièces se compte (avertissement) | T188 | 21 |
+
+**Et par la table du commerce** : `evite: true` dans `equivalences.yaml` (huile de coco, sucre de bouleau, margarine, ghee → ce que le placard a), lu comme `potager`. Le gaufrier entre dans l'inventaire ; la machine à pain non.
+
+**Écartées après arbitrage** : la somme des étapes égale au temps annoncé (l'app affiche déjà la somme, T91) ; le crédit de l'auteur d'origine des recettes invitées dans un champ (pas pour l'instant) ; les quantités écrites en dur dans une consigne restent, elles montrent ce qu'on prélève.
+
+**Restent au jugement, recette par recette** : reformuler sans recopier, un geste par étape, `avec:` tiré de la page, un `role:` cité, la sécurité avant le livre.
+
+- [ ] Céleri-rave : plats écartés, racines remplacées
+- [ ] Machine à pain : plat écarté
+- [ ] Provenance et en-têtes
+- [ ] `parallel_with`, appareils, `optional`
+- [ ] `uses:` à la première mention
+- [ ] Alternatives en `subs:`
+- [ ] Pièces des viandes et poissons : nombres à donner par le foyer

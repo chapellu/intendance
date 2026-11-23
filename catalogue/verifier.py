@@ -19,6 +19,7 @@ don't obey them blindly.
 import collections
 import re
 import sys
+import unicodedata
 from pathlib import Path
 
 import anticipation as an
@@ -485,7 +486,180 @@ def verifier(rid: str, r: dict, rayons: dict, rules: dict, cat: dict,
     src = r.get("source")
     if src and not (src.get("page") or src.get("url")):
         warn.append("bloc source sans numéro de page ni URL : la recette n'est pas retrouvable")
+    e2, w2 = verifier_harmonie(r, rayons, rules, foyer)
+    return err + e2, warn + w2
+
+
+# ─────────────────────────────────────────────────────────── T198
+#
+# LES RÈGLES DE RÉDACTION, TENUES SUR TOUT LE CATALOGUE. Chacune est née d'un
+# retour sur UNE fiche et appliquée aux suivantes, jamais aux précédentes : le
+# catalogue disait donc la règle à moitié. Ce bloc en fait des contrôles, pour
+# que la fiche saisie demain ne refasse pas la faute que la passe de T198 a
+# corrigée sur les anciennes. Le détail de chaque règle et son origine sont
+# dans le BACKLOG, ticket T198.
+#
+# LES RECETTES SANS SOURCE N'Y SONT PAS SOUMISES, sauf pour le céleri-rave et
+# l'obligation d'avoir des étapes : elles partent une à une (T197), et les
+# remettre au format reviendrait à les écrire une seconde fois.
+
+ENCODAGE = "étapes restructurées et reformulées ; ni prose ni photo d'origine"
+# Ce que l'inventaire du foyer n'a pas, nommé dans une consigne. Le foyer a un
+# mixeur plongeur et un petit blender, pas de robot : un « bol du robot » écrit
+# en clair contourne la résolution par capacité (`needs`), qui seule sait dire
+# « au petit blender, par impulsions » ou « au couteau ».
+APPAREILS = re.compile(r"\b(robot|mixeur|blender|sorbeti\w+|machine à pain|déshydrat\w+)\b", re.I)
+# T186 — ce qu'un nom de ligne dit facultatif. « (+ 3 pour décorer) » ne l'est
+# pas : c'est une part de la ligne, le reste entre dans le plat.
+FACULTATIF = re.compile(r"facultati|pour servir|pour le service|pour décorer|en option", re.I)
+EN_PARTIE = re.compile(r"\+[^)]*(pour décorer|pour servir)|le reste pour servir", re.I)
+PENDANT = re.compile(r"^\s*(Pendant (?:ce temps|la|le|les|que)|Entre-temps)\b")
+# T188 — une viande ou un poisson qui se compte à la pièce ne se dit pas qu'au
+# poids : « 400 g de filets de poulet » ne dit pas combien de filets acheter.
+PIECES = re.compile(r"\b(filets?|pavés?|cuisses?|escalopes?|blancs?|darnes?|côtes?|"
+                    r"saucisses?|sardines?|gambas|steaks?|pilons?|magrets?)\b", re.I)
+COMPTE = re.compile(r"\b(\d+|un|une|deux|trois|quatre|cinq|six|huit|dix|douze)\s+"
+                    r"(grands?\s+|gros\s+|petits?\s+|longs?\s+|beaux?\s+)?" + PIECES.pattern[2:], re.I)
+# Les mots d'un id qui ne nomment pas l'ingrédient à eux seuls.
+MOTS_VIDES = {"huile", "sucre", "farine", "fleur", "poudre", "pate", "creme", "jus",
+              "eau", "lait", "sauce", "pain", "bouillon", "puree", "graines", "feuilles",
+              "frais", "fraiche", "blanc", "noir", "rouge", "vert", "verte", "sec", "seche",
+              "cuit", "cuite", "demi", "petit", "petits", "gros", "extrait", "ecorce", "zeste"}
+
+
+def _sans_accents(s: str) -> str:
+    return "".join(c for c in unicodedata.normalize("NFD", s.lower())
+                   if unicodedata.category(c) != "Mn")
+
+
+def _lexique(rayons: dict) -> dict:
+    """id → les mots qui le nomment (son nom lisible, son id en clair)."""
+    if "_lexique" not in rayons:
+        noms = rayons.get("noms") or {}
+        ids = {i for v in rayons["rayons"].values() for i in v}
+        rayons["_lexique"] = {i: {w for w in (_sans_accents(str(noms.get(i, ""))),
+                                              _sans_accents(i.replace("-", " ")))
+                                  if len(w) >= 5}
+                              for i in ids}
+    return rayons["_lexique"]
+
+
+def verifier_harmonie(r: dict, rayons: dict, rules: dict, foyer: dict) -> tuple:
+    err, warn = [], []
+    alias = rayons.get("aliases", {})
+    etapes = [s for s in r.get("steps", []) if isinstance(s, dict)]
+    lignes = r.get("ingredients", []) + (r.get("sans_reste") or {}).get("ingredients", [])
+
+    # LE CÉLERI-RAVE N'ENTRE PAS DANS CETTE CUISINE — le foyer ne l'aime pas.
+    # Ni en ligne, ni en remplaçant, ni dans un nom : un plat qui le met au
+    # centre est écarté dans l'index de sa source, un plat qui le mêle à
+    # d'autres racines le remplace par l'une d'elles.
+    for i in lignes + r.get("avec", []):
+        ids = [i.get("id")] + [s.get("id") for s in i.get("subs") or []]
+        noms = [str(i.get("name", ""))] + [str(s.get("name", "")) for s in i.get("subs") or []]
+        if "celeri-rave" in ids or any(re.search(r"céleri[- ]rave", n, re.I) for n in noms):
+            err.append(f"« {i.get('name')} » : du céleri-rave — le remplacer par une autre "
+                       "racine, ou écarter le plat dans l'index de sa source")
+
+    # UNE RECETTE A DES ÉTAPES (14/09 : « encore une recette sans étapes »).
+    if not etapes:
+        err.append("aucune étape : le plat se planifie mais ne se cuisine pas")
+
+    if not r.get("source"):
+        return err, warn
+
+    # LA PROVENANCE COMPLÈTE (T73, T159) : de quoi retrouver la page ou l'article.
+    src = r["source"]
+    for k in ("author", "work", "source_id", "encoding"):
+        if not src.get(k):
+            err.append(f"bloc source sans `{k}:`")
+    if src.get("encoding") and not str(src["encoding"]).startswith(ENCODAGE):
+        err.append(f"`encoding:` doit commencer par « {ENCODAGE} » (lu : « {src['encoding']} »)")
+    if src.get("page") and f"p. {src['page']}" not in str(src.get("work", "")):
+        err.append(f"la page {src['page']} n'est pas dans `work:`, la phrase que la fiche affiche")
+
+    deja = set()
+    for s in etapes:
+        a = s.get("action", "")
+        # DEUX ÉTAPES EN MÊME TEMPS SE DISENT (les lentilles du 14/09, qui ont
+        # fait attendre 30 min pour rien).
+        if PENDANT.match(a) and not s.get("parallel_with"):
+            err.append(f"étape {s['id']} : « {a[:30]}… » sans `parallel_with:` — le guide "
+                       "fera attendre la fin de l'étape d'avant")
+        # CE QUE LE FOYER N'A PAS (T84, T189, T196) : une capacité sans solution,
+        # ou un appareil nommé en clair sans autre façon de faire.
+        for cap in s.get("needs", []):
+            lab, rew, _ = rc.resolve_capability(cap, foyer, rules)
+            if lab is None and rew is None:
+                err.append(f"étape {s['id']} : « {cap} » n'a aucune solution avec l'équipement "
+                           "du foyer — adapter le geste ou écarter le plat")
+        app = APPAREILS.search(a)
+        if app and not s.get("needs") and not re.search(r"\bou\b|sans mixer", a):
+            err.append(f"étape {s['id']} : nomme un appareil (« {app.group(0)} ») sans "
+                       "`needs:` ni autre façon de faire — le foyer n'a pas de robot")
+        # LA QUANTITÉ AU MOMENT DU GESTE (T113, T193, et le 23/11 : « sinon je
+        # dois ouvrir les ingrédients à chaque étape »). La PREMIÈRE étape qui
+        # nomme une ligne la porte dans `uses:` ; les suivantes peuvent la
+        # citer sans elle (« retirer la carcasse »).
+        texte = _sans_accents(a)
+        uses = set(s.get("uses") or [])
+        for i in r.get("ingredients", []):
+            cle = i.get("ref") or i["id"]
+            if cle in uses or cle in deja or i.get("seasoning"):
+                continue
+            mots = [w for w in i["id"].split("-") if len(w) >= 4 and w not in MOTS_VIDES]
+            if mots and re.search(r"\b" + re.escape(mots[0]) + r"s?\b", texte):
+                err.append(f"étape {s['id']} : nomme « {i['name']} » sans l'avoir dans `uses:` "
+                           "— sa quantité ne s'affichera pas sous le geste")
+                deja.add(cle)
+        deja |= uses
+
+    lex = _lexique(rayons)
+    viandes = set(rayons["rayons"]["boucherie"]) | set(rayons["rayons"]["poissonnerie"])
+    for i in lignes:
+        if i.get("from_accepts"):
+            continue
+        n = str(i.get("name", ""))
+        cid = alias.get(i["id"], i["id"])
+        # T186 — CE DONT LE PLAT SE PASSE, DIT PAR SON NOM, EST `optional`.
+        if FACULTATIF.search(n) and not EN_PARTIE.search(n) and not i.get("optional") \
+                and not i.get("seasoning"):
+            err.append(f"« {n} » : le nom le dit facultatif — `optional: true`")
+        # T167 — UNE ALTERNATIVE QUI A UN RAYON EST UN REMPLAÇANT. Écrite dans
+        # le nom, la fiche ne la propose pas et la liste ne la voit pas. Une
+        # ligne qui porte déjà des `subs` (avec id, ou en note quand le ratio
+        # n'a pas de sens) a été lue.
+        coupe = re.split(r"\bou\b|à défaut|\bsinon\b", n, maxsplit=1)
+        if len(coupe) == 2 and not i.get("subs"):
+            alt = _sans_accents(coupe[1])
+            autres = sorted(k for k, mots in lex.items()
+                            if k != cid and alias.get(k, k) != cid
+                            and any(re.search(r"\b" + re.escape(w) + r"\b", alt) for w in mots))
+            if autres:
+                err.append(f"« {n} » : l'alternative ({', '.join(autres[:3])}) a un rayon — "
+                           "en faire un `subs:` avec `id`, ou une note `subs:` sans `id`")
+        # T188 — LA PIÈCE ET LE POIDS. Avertissement seulement : le livre ne
+        # donne souvent que l'un des deux, et l'autre est au foyer de le dire.
+        if cid in viandes and i.get("unit") in ("g", "kg") and PIECES.search(n) \
+                and not COMPTE.search(n):
+            warn.append(f"« {n} » ({i.get('qty')} {i.get('unit')}) : combien de pièces ?")
     return err, warn
+
+
+def verifier_entetes(dossier: Path) -> list:
+    """T198 — une fiche sourcée s'ouvre sur son cadre de licence (carte #26),
+    en français. Lu sur le fichier : le chargeur ne garde pas les commentaires."""
+    err = []
+    for p in sorted(dossier.glob("*.yaml")):
+        texte = p.read_text()
+        if "\nrecipe:" not in texte or "\n  source:" not in texte:
+            continue
+        tete = texte.split("\nrecipe:")[0]
+        ouverture = "\n".join(tete.splitlines()[:3])
+        if "#26" not in tete or re.search(r"\b(the|recipe|encoding)\b", ouverture):
+            err.append(f"{p.name} : l'en-tête ne cite pas, en français, le cadre de licence "
+                       "de la carte #26")
+    return err
 
 
 def verifier_types_lisibles(cat: dict) -> tuple:
@@ -519,7 +693,7 @@ def verifier_equivalences(eq: dict, rayons: dict) -> tuple:
     for oid, entree in (eq.get("equivalences") or {}).items():
         if oid not in connus:
             err.append(f"« {oid} » sans rayon")
-        inconnus = set(entree or {}) - {"par", "potager"}
+        inconnus = set(entree or {}) - {"par", "potager", "evite"}
         if inconnus:
             err.append(f"« {oid} » : champ(s) inconnu(s) {sorted(inconnus)}")
         par = (entree or {}).get("par") or []
@@ -527,6 +701,8 @@ def verifier_equivalences(eq: dict, rayons: dict) -> tuple:
             err.append(f"« {oid} » : aucun remplaçant (`par:` vide)")
         if not isinstance((entree or {}).get("potager", False), bool):
             err.append(f"« {oid} » : `potager` est vrai ou faux")
+        if not isinstance((entree or {}).get("evite", False), bool):
+            err.append(f"« {oid} » : `evite` est vrai ou faux")
         for e in par:
             sid = alias.get(e.get("id"), e.get("id"))
             if sid not in connus:
@@ -640,6 +816,13 @@ def main() -> int:
         n_err += len(err); n_warn += len(warn)
         if err:
             print("\ntypes.yaml")
+            for e in err:
+                print(f"  ✗ {e}")
+
+        err = verifier_entetes(HERE / "recipes")
+        n_err += len(err)
+        if err:
+            print("\nrecipes/ (en-têtes)")
             for e in err:
                 print(f"  ✗ {e}")
 

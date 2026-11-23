@@ -122,3 +122,31 @@ equivalences:
   colin-surgele:
     par:
       - {id: cabillaud, nom: "cabillaud", ratio: 1, unites: [g]}
+
+  # ── Ce que le foyer n'achète pas exprès pour une recette (T198)
+  #
+  # `evite: true` — ÇA S'ACHÈTE, MAIS LE FOYER NE L'ACHÈTE PAS : une huile, un
+  # sucre ou une matière grasse qu'un seul gâteau demanderait, quand le placard
+  # en a un qui fait le même office. Même lecture que `potager` : quand rien
+  # n'est là, c'est le premier remplaçant qui part au panier. La ligne garde le
+  # mot de l'autrice ; la fiche dit avec quoi on la fait.
+  #
+  # Restent hors de la table, exprès : le gingembre frais (un centimètre ne se
+  # convertit pas en cuillère de poudre), le psyllium (c'est lui qui fait
+  # prendre les crèmes qui le nomment).
+  huile-coco:
+    evite: true
+    par:
+      - {id: beurre, nom: "beurre fondu", ratio: 1, unites: [g, c. à s., grosse c. à s.]}
+  sucre-bouleau:
+    evite: true
+    par:
+      - {id: sucre-complet, nom: "sucre complet", ratio: 1, unites: [g, c. à s.]}
+  margarine:
+    evite: true
+    par:
+      - {id: beurre, nom: "beurre", ratio: 1, unites: [g]}
+  ghee:
+    evite: true
+    par:
+      - {id: beurre, nom: "beurre", ratio: 1, unites: [g]}

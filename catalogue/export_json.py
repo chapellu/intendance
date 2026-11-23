@@ -65,7 +65,10 @@ def _remplacants(i, alias, equivalences):
             vus.add(xid)
             propres.append(x)
     out = {"remplacants": propres} if propres else {}
-    if entree.get("potager") and propres:
+    # `evite` (T198) se lit comme `potager` : ni l'un ni l'autre ne part au
+    # panier, c'est le premier remplaçant qui s'achète. L'app n'a qu'un champ
+    # pour cette règle, et c'est celui-là.
+    if (entree.get("potager") or entree.get("evite")) and propres:
         out["potager"] = True
     return out
 
