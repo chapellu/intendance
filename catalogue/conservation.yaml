@@ -223,7 +223,8 @@ familles:
     ids: [farine, farine-complete, farine-epeautre, farine-petit-epeautre,
           lentilles-corail, lentilles-seches, pois-casses, pois-chiches,
           haricots-blancs, haricots-rouges, riz, riz-rond, pates, semoule,
-          flocons-avoine, son-avoine, sucre-complet, levure-boulangere]
+          flocons-avoine, son-avoine, sucre-complet, levure-boulangere,
+          poudre-a-lever, noix]
 
   - id: emballe
     label: frais emballé longue garde
@@ -303,7 +304,8 @@ familles:
       Une boîte entamée ne reste jamais dans le métal : transvaser dans une
       boîte hermétique, au frigo, et finir dans les trois jours.
     ids: [tomates-pelees, concentre-tomate, lait-coco, thon-boite,
-          maquereaux-boite, sardines-boite, mais, sauce-tomate]
+          maquereaux-boite, sardines-boite, mais, sauce-tomate,
+          olives-noires, vinaigre, vin-blanc-sec]
 
   - id: oeufs
     label: œufs
@@ -391,7 +393,7 @@ familles:
     conseil: >-
       Ouvrir une brique à la fois et noter le jour dessus au feutre : deux
       briques entamées au frigo, c'est une de trop.
-    ids: [lait, lait-soja-vanille, lait-amande, lait-avoine]
+    ids: [lait, lait-soja-vanille, lait-amande, lait-avoine, creme-soja]
 
   # ── Le frais fragile : PAS du fond, et c'est là que le geste compte ──────
 

@@ -159,6 +159,16 @@ denrees:
   - {ingredient: poireau, minimum: 2, jusqua: 4, unite: pièce, hebdo: true}
   - {ingredient: parmesan, minimum: 1, unite: morceau de 200 g}
   - {ingredient: sauce-tomate, minimum: 1, jusqua: 2, unite: bocal de 500 g}
+  # EXPÉRIENCE (année simulée des cinq repas, 2026-11-23) — sept denrées qui
+  # se gardent des mois et que des dizaines de dîners demandent : vin blanc 22,
+  # poudre à lever 18, olives 13, échalote 12, vinaigre 10 (`sim/fond.py`).
+  - {ingredient: vin-blanc-sec, minimum: 1, unite: bouteille de 75 cl}
+  - {ingredient: poudre-a-lever, minimum: 1, unite: boîte de 6 sachets}
+  - {ingredient: vinaigre, minimum: 1, unite: bouteille}
+  - {ingredient: olives-noires, minimum: 1, unite: bocal}
+  - {ingredient: echalote, minimum: 1, unite: filet de 500 g}
+  - {ingredient: noix, minimum: 1, unite: sachet de 200 g}
+  - {ingredient: creme-soja, minimum: 2, unite: brique de 20 cl}
 
 # T183 — LES CONDITIONNEMENTS : la taille d'un paquet, et rien d'autre. Pas
 # de minimum — ce n'est pas « toujours là » — mais un pack de yaourts se

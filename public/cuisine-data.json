@@ -131130,7 +131130,9 @@
     "flocons-avoine",
     "son-avoine",
     "sucre-complet",
-    "levure-boulangere"
+    "levure-boulangere",
+    "poudre-a-lever",
+    "noix"
    ]
   },
   {
@@ -131235,7 +131237,10 @@
     "maquereaux-boite",
     "sardines-boite",
     "mais",
-    "sauce-tomate"
+    "sauce-tomate",
+    "olives-noires",
+    "vinaigre",
+    "vin-blanc-sec"
    ]
   },
   {
@@ -131319,7 +131324,8 @@
     "lait",
     "lait-soja-vanille",
     "lait-amande",
-    "lait-avoine"
+    "lait-avoine",
+    "creme-soja"
    ]
   },
   {
@@ -131743,6 +131749,55 @@
     "jusqua": 2,
     "hebdo": false,
     "unite": "bocal de 500 g"
+   },
+   {
+    "ingredient": "vin-blanc-sec",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "bouteille de 75 cl"
+   },
+   {
+    "ingredient": "poudre-a-lever",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "boîte de 6 sachets"
+   },
+   {
+    "ingredient": "vinaigre",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "bouteille"
+   },
+   {
+    "ingredient": "olives-noires",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "bocal"
+   },
+   {
+    "ingredient": "echalote",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "filet de 500 g"
+   },
+   {
+    "ingredient": "noix",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "sachet de 200 g"
+   },
+   {
+    "ingredient": "creme-soja",
+    "minimum": 2,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "brique de 20 cl"
    }
   ],
   "diners": [
