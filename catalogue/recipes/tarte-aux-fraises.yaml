@@ -48,10 +48,12 @@ recipe:
 
   steps:
     - id: couper-beurre
+      uses: [beurre]
       action: "Couper le beurre mou en petits morceaux"
       needs: []
       time_min: 2
     - id: faire-la-pate
+      uses: [farine-complete, beurre, petits-suisses, sucre-roux, sel]
       action: "Malaxer à la main farine, sel, sucre, beurre et petits suisses très soigneusement égouttés"
       astuce: "S'arrêter dès que la boule est formée : il doit rester des morceaux de beurre mal mélangés."
       needs: []
@@ -60,6 +62,7 @@ recipe:
         age_min_months: 30
         task: "malaxer la pâte à la main"
     - id: reposer
+      uses: []
       action: "Couvrir et mettre au frais"
       needs: []
       time_min: 5
@@ -71,22 +74,26 @@ recipe:
       # l'heure de départ, ce qui est exactement l'information manquante quand
       # le goûter est à 16 h.
     - id: cuire-a-blanc
+      uses: []
       action: "Préchauffer à 200 °C, étaler la pâte et foncer un moule à tarte en tôle d'environ 22 cm, puis enfourner 20 min jusqu'à belle coloration"
       needs: [bake]
       time_min: 22
       attended: false
     - id: refroidir
+      uses: []
       action: "Démouler et laisser refroidir sur une grille"
       astuce: "Hors du moule, la pâte reste bien plus croustillante."
       needs: []
       time_min: 5
     - id: chantilly
+      uses: [creme-coco, sucre-vanille]
       action: "Fouetter la crème de coco bien froide en chantilly épaisse avec le sucre vanillé, puis l'étaler sur la pâte entièrement refroidie"
       needs: [blend-smooth]
       time_min: 5
       # La crème de coco ne monte que sortant du frigo : c'est la seule
       # contrainte technique de la recette.
     - id: dresser
+      uses: [fraises]
       action: "Équeuter les fraises, les couper en deux et les serrer sur la crème"
       needs: []
       time_min: 8

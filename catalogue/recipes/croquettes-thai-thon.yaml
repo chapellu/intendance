@@ -1,0 +1,71 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DU LIVRE « PRESSÉ, FAUCHÉ, MAL ÉQUIPÉ… MAIS GOURMAND ! », pour un ou deux :
+# thon en boîte, œuf, farine, gingembre, ail, zeste de citron, curcuma,
+# piment, en petits tas poêlés à couvert.
+
+recipe:
+  id: croquettes-thai-thon
+  title: Croquettes thaïes au thon
+  format: galettes
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« … Et une recette de croquettes thaïe au thon », blog Saines Gourmandises, 7 octobre 2019"
+    url: https://saines-gourmandises.fr/saines-gourmandises-instagram-drole-didee/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 1.5        # « pour 1 à 2 portions »
+  time_min_total: 16        # 10 min de préparation + 6 min de cuisson
+  active_min: 16
+
+  apports:
+    proteine: poisson
+    feculent: farine
+    legumes: [allium]
+    profil: rapide
+    origine: japonais
+
+  ingredients:
+    - {id: thon-boite, name: thon (poids égoutté), qty: 140, unit: g}
+    - {id: oeufs, name: œuf, qty: 1, unit: pièce}
+    - {id: gingembre, name: "gingembre frais (1,5 cm)", qty: 10, unit: g}
+    - {id: ail, name: ail, qty: 1, unit: gousse}
+    - {id: farine, name: farine, qty: 60, unit: g}
+    - {id: citron, name: citron non traité, qty: 0.5, unit: pièce}
+    - {id: curcuma, name: curcuma, qty: 1, unit: c. à c., seasoning: true}
+    - {id: piment-cayenne, name: piment en poudre (1/4 c. à c.), qty: 1, unit: pincée, seasoning: true}
+    - {id: huile-coco, name: "huile de coco, d'olive ou neutre", qty: 3, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre-5-baies, name: poivre 5 baies, qty: 1, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.25, unit: pièce}
+
+  steps:
+    - id: tailler
+      action: "Couper gingembre et ail en tout petits dés ; presser le demi-citron et tailler un long zeste en petits bâtonnets"
+      needs: [chop-coarse]
+      uses: [gingembre, ail, citron]
+      time_min: 4
+    - id: pate
+      action: "Malaxer à la main le thon égoutté avec tout le reste sauf l'huile"
+      needs: []
+      uses: [thon-boite, oeufs, farine, curcuma, piment-cayenne, sel, poivre-5-baies]
+      time_min: 3
+      kid: {age_min_months: 30, task: "malaxer la pâte avec les mains"}
+    - id: cuire
+      action: "Déposer des cuillerées en petits tas dans l'huile chaude, les aplatir, cuire 3 min à couvert, retourner et cuire encore 2 à 3 min"
+      astuce: "Aplatir avec une cuillère mouillée : elles cuisent plus vite. Dorées sans brûler, et à manger aussitôt."
+      needs: [pan-fry]
+      uses: [huile-coco]
+      time_min: 8
+      attended: true
+
+  emits: []
+
+  plan_b: []

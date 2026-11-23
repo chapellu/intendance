@@ -43,21 +43,25 @@ recipe:
 
   steps:
     - id: dorer-les-sucs
+      uses: [oignon, poireau, huile-olive]
       action: "Faire revenir l'oignon et le blanc de poireau émincés dans l'huile d'olive, jusqu'à ce que les sucs soient bien dorés"
       needs: [pan-fry]
       time_min: 8
       attended: true
     - id: reunir
+      uses: [lentilles-seches, carottes, laurier, clous-girofle, eau]
       action: "Ajouter les carottes en rondelles, le laurier, le clou de girofle, les lentilles et l'eau"
       needs: []
       time_min: 4
       kid: {age_min_months: 30, task: "verser les lentilles dans le faitout"}
     - id: saler
+      uses: [sel]
       action: "Saler d'une cuillerée à café légèrement bombée"
       needs: []
       time_min: 1
       seasoning_gate: true
     - id: mijoter
+      uses: []
       action: "Couvrir et laisser mijoter 40 min à feu doux, jusqu'à ce que les lentilles soient tendres et aient absorbé tout le jus de cuisson"
       needs: [simmer-large]
       time_min: 40

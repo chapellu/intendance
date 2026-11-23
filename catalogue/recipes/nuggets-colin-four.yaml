@@ -43,6 +43,7 @@ recipe:
 
   steps:
     - id: mariner
+      uses: [colin-surgele, citron, sel, poivre]
       action: "Mettre le colin surgelé à décongeler dans le jus de citron, avec un peu de sel et de poivre"
       needs: []
       time_min: 5
@@ -54,29 +55,35 @@ recipe:
         cout_min: 20
         effet: "chair moins ferme et marinade à peine prise — le citron n'a pas le temps d'agir"
     - id: detailler
+      uses: []
       action: "Égoutter la marinade et découper le colin en morceaux de deux bouchées"
       needs: []
       time_min: 4
     - id: resaler
+      uses: []
       action: "Resaler et repoivrer légèrement les morceaux"
       needs: []
       time_min: 1
       seasoning_gate: true
     - id: chapelure
+      uses: [fromage-rape, biscottes, ciboulette]
       action: "Mixer les biscottes avec le parmesan et la ciboulette ciselée très finement, jusqu'à une chapelure homogène"
       needs: [chop-coarse]
       time_min: 4
     - id: preparer-plaque
+      uses: [oeufs]
       action: "Battre les œufs en omelette ; chemiser une plaque de papier cuisson et le huiler au pinceau"
       needs: []
       time_min: 3
       kid: {age_min_months: 30, task: "battre les œufs et badigeonner le papier au pinceau"}
     - id: paner
+      uses: [huile-olive]
       action: "Essuyer chaque morceau, le tremper dans l'œuf battu, le rouler dans la chapelure sur toutes ses faces et le poser sur le papier huilé"
       needs: []
       time_min: 8
       kid: {age_min_months: 30, task: "rouler les morceaux dans la chapelure"}
     - id: cuire
+      uses: []
       action: "Enfourner 10 min, retourner les nuggets, puis remettre 5 à 10 min"
       needs: [bake]
       time_min: 17

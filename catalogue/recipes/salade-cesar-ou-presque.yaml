@@ -56,22 +56,26 @@ recipe:
 
   steps:
     - id: oeuf-mollet-cesar
+      uses: [oeufs]
       action: "Cuire l'œuf 7 minutes chrono à l'eau bouillante"
       needs: [simmer]
       time_min: 9
       attended: false
     - id: faire-les-croutons
+      uses: [pain-de-mie-maison]
       action: "Passer les tranches de pain de mie au grille-pain, les couper en croûtons et les réserver dans un sachet hermétique"
       astuce: "À TEMPÉRATURE AMBIANTE, jamais au frais : le froid les ramollit."
       needs: []
       time_min: 4
       parallel_with: "oeuf-mollet-cesar"
     - id: monter-la-boite
+      uses: [poulet-cuit, oeufs, salade-verte, parmesan]
       action: "Mettre dans la boîte-repas la laitue en morceaux et le poulet en dés de 2 cm, puis l'œuf écalé en quartiers et des copeaux de parmesan"
       astuce: "Les copeaux se font à l'économe."
       needs: []
       time_min: 5
     - id: sauce-cesar
+      uses: [huile-olive, citron, moutarde, anchois, sel]
       action: "Mélanger huile, jus de citron, moutarde, anchois hachés très fin et sel, puis verser dans un petit flacon qui ferme bien"
       astuce: "La sauce ne rejoint la salade qu'au moment de manger."
       needs: []

@@ -1,0 +1,77 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# TOUT DANS UN SALADIER, PUIS AU FOUR : croissants de buttercup avec la peau,
+# lardons de speck, oignon, cantal râpé, noix, tomates pelées rincées. Les
+# tranches ne doivent pas trop se chevaucher pour dorer. Toute courge à peau
+# fine convient (potimarron).
+
+recipe:
+  id: courge-buttercup-rotie-cantal-noix
+  title: Courge buttercup rôtie aux noix, cantal et lard fumé
+  format: gratin
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Courge Buttercup juste rôtie au four avec des noix, du cantal et du lard fumé », blog Saines Gourmandises, 24 novembre 2016"
+    url: https://saines-gourmandises.fr/aujourdhui-de-photos-gars/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 2.5        # « pour 2 à 3 personnes en repas principal »
+  time_min_total: 40        # 10 min de préparation + 30 min de cuisson
+  active_min: 10
+
+  apports:
+    proteine: fromage
+    feculent: aucun
+    legumes: [cucurbitacee, solanacee, allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - id: courge
+      name: courge buttercup d'environ 1 kg
+      qty: 1
+      unit: kg
+      subs:
+        - {id: potimarron, name: potimarron, ratio: 1.0}
+    - id: lardons
+      name: "lard maigre ou jambon fumé de montagne (speck)"
+      qty: 100
+      unit: g
+    - {id: cantal, name: cantal entre-deux, qty: 100, unit: g}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: noix, name: cerneaux de noix fraîchement cassées, qty: 100, unit: g}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: origan, name: origan (c. à c. rase), qty: 1, unit: c. à c., seasoning: true}
+    - {id: tomates-pelees, name: tomates pelées, qty: 800, unit: g}
+    - {id: poivre, name: poivre du moulin, qty: 2, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: tailler
+      action: "Préchauffer le four à 180 °C ; ouvrir la courge, l'épépiner et la couper en croissants ; tailler le lard en gros lardons et l'oignon en dés, râper le cantal"
+      needs: [chop-coarse]
+      uses: [courge, lardons, oignon, cantal]
+      time_min: 8
+    - id: brasser
+      action: "Rincer les tomates pelées, les couper en morceaux et tout brasser dans un saladier avec les noix, l'huile, l'origan et le poivre"
+      needs: []
+      uses: [tomates-pelees, noix, huile-olive, origan, poivre]
+      time_min: 3
+      kid: {age_min_months: 24, task: "brasser le saladier à la cuillère"}
+    - id: cuire
+      action: "Étaler dans un grand plat sans trop superposer les tranches et cuire 30 min"
+      needs: [gratin-vessel, bake]
+      uses: []
+      time_min: 30
+      attended: false
+
+  emits: []
+
+  plan_b: []

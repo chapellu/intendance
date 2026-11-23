@@ -41,22 +41,26 @@ recipe:
 
   steps:
     - id: lancer-12-min
+      uses: [quinoa, lentilles-corail, eau, sel]
       action: "Mettre quinoa et lentilles corail dans une petite casserole avec l'eau et un peu de sel"
       needs: [simmer]
       time_min: 2
       seasoning_gate: true
     - id: cuire-12-min
+      uses: []
       action: "Couvrir et compter 12 minutes chrono à feu doux, après reprise de l'ébullition"
       astuce: "Les deux ont exactement le même temps de cuisson : c'est toute l'astuce de cette salade."
       needs: [simmer]
       time_min: 12
       attended: false
     - id: tailler-garniture
+      uses: [truite-fumee, tomates-roma, ciboulette]
       action: "Pendant ce temps : tomate en cubes, truite en gros morceaux, ciboulette ciselée"
       needs: []
       time_min: 5
       parallel_with: cuire-12-min
     - id: assembler-12-min
+      uses: [noisettes, huile-olive, vinaigre-balsamique, poivre]
       action: "Mélanger avec tous les autres ingrédients, puis conserver au frais jusqu'au repas"
       astuce: "Attendre qu'il n'y ait plus d'eau dans la casserole."
       needs: []

@@ -1,0 +1,104 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LA DINDE CONFITE DE 2012 : farce de jambons, tofu fumé et champignons, trois
+# heures à l'étouffée sur le plus petit feu, retournée à mi-cuisson. Le wok à
+# fond épais de l'autrice cuit sans eau ; dans une cocotte ordinaire, une
+# cuillerée d'huile et un petit verre d'eau (l'astuce le dit).
+#
+# LE ROBOT N'EST PAS DANS L'INVENTAIRE : la farce se hache au couteau,
+# grossièrement — c'est ce qu'elle demande (« une farce, pas un velouté »).
+#
+# LE RESTE DE FARCE fait une tourte au chou ou aux poireaux : non encodé.
+
+recipe:
+  id: dinde-farcie-basse-temperature
+  title: Dinde farcie « confite » à basse température
+  format: piece
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Dinde farcie confite à basse température », blog Saines Gourmandises, 13 décembre 2012"
+    url: https://saines-gourmandises.fr/avec-celle-la-on-ne-setouffera-pas/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 10         # « pour une dinde » : rendement non dit, estimé
+  lot_entier: true
+  time_min_total: 200       # 15 min de préparation + 3 h de cuisson
+  active_min: 35
+
+  apports:
+    proteine: viande-blanche
+    feculent: farine
+    legumes: [allium, champignon]
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: dinde, name: dinde fermière, qty: 1, unit: pièce}
+    - {id: oignon, name: oignons, qty: 3, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 3, unit: c. à s.}
+    - {id: jambon-cru, name: talon de jambon cru découenné, qty: 300, unit: g}
+    - {id: jambon, name: talon de jambon cuit découenné, qty: 300, unit: g}
+    - {id: tofu-fume, name: tofu fumé, qty: 100, unit: g}
+    - {id: champignons-paris, name: champignons de Paris, qty: 500, unit: g}
+    - {id: cepes-seches, name: cèpes séchés bien rincés, qty: 45, unit: g}
+    - {id: cognac, name: "armagnac, cognac ou whisky", qty: 3, unit: cl}
+    - {id: oeufs, name: œufs, qty: 2, unit: pièce}
+    - {id: farine, name: farine, qty: 2, unit: c. à s.}
+    - {id: ail, name: ail, qty: 2, unit: gousse}
+    - {id: laurier, name: feuilles de laurier, qty: 3, unit: pièce, seasoning: true}
+    - {id: sel, name: sel (pour la peau seulement), qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 2, unit: pincée, seasoning: true}
+
+  steps:
+    - id: dorer
+      action: "Émincer les oignons, couper les deux jambons et le tofu fumé en petits dés, et les faire dorer à l'huile dans une grande cocotte"
+      needs: [simmer-large]
+      uses: [oignon, huile-olive, jambon-cru, jambon, tofu-fume]
+      time_min: 12
+      attended: true
+    - id: suer
+      action: "Ajouter les champignons en morceaux, poivrer et faire suer jusqu'à ce qu'ils aient rendu leur eau"
+      astuce: "Ne pas saler : le jambon cru suffit."
+      needs: [simmer-large]
+      uses: [champignons-paris]
+      time_min: 10
+      attended: true
+    - id: farce
+      action: "Hacher grossièrement le tout au couteau avec les cèpes, puis y mélanger les œufs, la farine et l'alcool"
+      astuce: "Il doit rester des morceaux : c'est une farce, pas une purée."
+      needs: [chop-coarse]
+      uses: [cepes-seches, oeufs, farine, cognac]
+      time_min: 8
+      kid: {age_min_months: 30, task: "casser les œufs et mélanger la farce"}
+    - id: farcir
+      action: "Farcir la dinde, la poser à l'envers dans la cocotte, la saler légèrement, la poivrer, ajouter l'ail et le laurier, couvrir"
+      astuce: "Sans cocotte à fond épais, ajouter 1 c. à s. d'huile et un petit verre d'eau."
+      needs: [simmer-large]
+      uses: [dinde, sel, poivre, ail, laurier]
+      time_min: 5
+      seasoning_gate: true
+    - id: cuire1
+      action: "Cuire 1 h 30 sur le plus petit feu, au minimum"
+      needs: [simmer-large]
+      uses: []
+      time_min: 90
+      attended: false
+    - id: cuire2
+      action: "Retourner la dinde et cuire encore 1 h 30, puis servir"
+      needs: [simmer-large]
+      uses: []
+      time_min: 90
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: dinde-farcie-basse-temperature
+      qty_band: 3-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

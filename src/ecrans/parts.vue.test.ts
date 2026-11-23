@@ -113,20 +113,20 @@ describe("ce que le nombre dit du foyer", () => {
 describe("ce qu'on cuisine vraiment", () => {
   test("un lot entier ne se coupe pas, et le dit", () => {
     // Le poulet rôti fait six parts ; en demander 2,5 n'en fait pas 2,5.
-    const c = cuisson(plat("poulet-roti"), 2.5);
+    const c = cuisson(plat("poulet-roti-du-dimanche"), 2.5);
     expect(c.produit).toBe(6);
     expect(c.pourquoi).toBe("Le lot ne se coupe pas.");
   });
 
   test("un plat qui se garde se fait en entier, et le dit autrement", () => {
-    const c = cuisson(plat("lentilles-mijotees"), 2.5);
+    const c = cuisson(plat("mitonnee-lentilles"), 2.5);
     expect(c.produit).toBeGreaterThan(2.5);
     expect(c.pourquoi).toBe("Ça se garde, autant faire le lot.");
   });
 
   test("sans surplus, rien à expliquer", () => {
     // À la taille du lot, ce qu'on cuisine est ce qu'on demande.
-    expect(cuisson(plat("lentilles-mijotees"), 4).pourquoi).toBe("");
+    expect(cuisson(plat("soupe-reconfortante-epices"), 4).pourquoi).toBe("");
   });
 
   test("la vaisselle borne, et la phrase dit la limite au lieu de la promettre", () => {
@@ -140,7 +140,7 @@ describe("ce qu'on cuisine vraiment", () => {
   });
 
   test("un plat que rien ne borne le dit aussi", () => {
-    expect(cuisson(plat("poulet-roti"), 2.5).reserve).toBe("Rien ne borne ce plat.");
+    expect(cuisson(plat("poulet-roti-du-dimanche"), 2.5).reserve).toBe("Rien ne borne ce plat.");
   });
 });
 
@@ -155,7 +155,7 @@ describe("l'aperçu de la semaine", () => {
   });
 
   test("le créneau courant y est TOUJOURS, et marqué une seule fois", () => {
-    jeu.choix[creneau(1, "diner")] = "lentilles-mijotees";
+    jeu.choix[creneau(1, "diner")] = "mitonnee-lentilles";
     const i = creneau(0, "dejeuner");
     const a = vue(i);
     expect(a.filter((l) => l.ici)).toHaveLength(1);
@@ -167,7 +167,7 @@ describe("l'aperçu de la semaine", () => {
     const pose = creneau(1, "diner");
     const regle = creneau(3, "dejeuner");
     const saute = creneau(4, "diner");
-    jeu.choix[pose] = "lentilles-mijotees";
+    jeu.choix[pose] = "mitonnee-lentilles";
     jeu.parts[regle] = 6;
     jeu.choix[saute] = SAUTE;
 
@@ -192,7 +192,7 @@ describe("l'aperçu de la semaine", () => {
   });
 
   test("chaque ligne porte de quoi ouvrir ses propres parts", () => {
-    jeu.choix[creneau(1, "diner")] = "lentilles-mijotees";
+    jeu.choix[creneau(1, "diner")] = "mitonnee-lentilles";
     for (const l of vue(creneau(0, "diner"))) {
       expect(l.creneau.jour).toMatch(/^\d{4}-\d{2}-\d{2}$/);
       expect(l.creneau.repas).toBeTruthy();

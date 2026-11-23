@@ -14,7 +14,7 @@ that Wednesday eats what Tuesday made.
 Usage:
   python3 plan.py                                  # the week in semaine.yaml
   python3 plan.py --today 2026-08-11               # plan from a given date
-  python3 plan.py lentilles-mijotees omelette-...  # an ad-hoc list of dishes
+  python3 plan.py mitonnee-lentilles omelette-...  # an ad-hoc list of dishes
 """
 
 import argparse

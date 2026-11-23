@@ -1,0 +1,94 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE SALADE COMPLÈTE DE PRINTEMPS : jeunes pissenlits, asperges vertes 12 min,
+# œufs mollets 6 min, radis, oignons nouveaux, croûtons aillés, vinaigrette au
+# citron et à l'ail. Quelques feuilles d'ail des ours s'y marient bien.
+
+recipe:
+  id: salade-pissenlit-asperges-oeufs
+  title: Salade de pissenlit aux asperges et œufs mollets
+  format: salade
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« 3 délicieuses recettes détox de printemps », blog Saines Gourmandises, 10 avril 2015 (extrait de « Mes recettes détox super gourmandes »)"
+    url: https://saines-gourmandises.fr/apres-paques-on-fait-leger-leger/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes »
+  time_min_total: 22        # 10 min de préparation + 12 min de cuisson
+  active_min: 18
+
+  apports:
+    proteine: oeuf
+    feculent: pain
+    legumes: [feuille, allium, racine]
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - id: pissenlit
+      name: jeunes pousses de pissenlit
+      qty: 300
+      unit: g
+      subs:
+        - {id: jeunes-pousses, name: jeunes pousses de salade, ratio: 1.0}
+    - {id: asperges-vertes, name: asperges vertes, qty: 1, unit: botte}
+    - {id: oeufs, name: œufs très frais, qty: 4, unit: pièce}
+    - {id: cebette, name: jeunes oignons tiges, qty: 4, unit: pièce}
+    - {id: radis, name: radis rouges, qty: 1, unit: botte}
+    - {id: pain-levain, name: "pain complet au levain (2 tranches fines)", qty: 60, unit: g}
+    - {id: ail, name: ail, qty: 1, unit: gousse}
+    - {id: huile-olive, name: huile d'olive, qty: 6, unit: c. à s.}
+    - id: citron
+      name: citron
+      qty: 1
+      unit: pièce
+      subs:
+        - {id: vinaigre, name: 2 c. à s. de vinaigre de vin vieux, ratio: 1.0}
+    - {id: fleur-de-sel, name: fleur de sel, qty: 2, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: eau
+      action: "Laver et essorer le pissenlit ; porter à ébullition deux casseroles d'eau, l'une salée, l'autre non"
+      needs: [boil]
+      uses: [pissenlit]
+      time_min: 6
+    - id: asperges
+      action: "Garder 10 à 12 cm de partie tendre des asperges et les cuire 12 min dans l'eau salée"
+      needs: [boil]
+      uses: [asperges-vertes]
+      time_min: 13
+      attended: false
+    - id: oeufs
+      action: "Cuire les œufs 6 min dans l'autre casserole"
+      needs: [boil]
+      uses: [oeufs]
+      time_min: 6
+      parallel_with: asperges
+    - id: tailler
+      action: "Émincer les radis et le blanc des oignons ; griller le pain, le frotter d'ail et le couper en croûtons"
+      needs: [chop-coarse]
+      uses: [radis, cebette, pain-levain]
+      time_min: 6
+      parallel_with: asperges
+    - id: sauce
+      action: "Écaler les œufs, égoutter les asperges, battre le jus du citron avec l'huile, la fleur de sel et le reste d'ail écrasé"
+      needs: []
+      uses: [citron, huile-olive, fleur-de-sel, ail, poivre]
+      time_min: 4
+      kid: {age_min_months: 36, task: "écaler les œufs"}
+    - id: dresser
+      action: "Répartir le tout dans quatre assiettes, napper de sauce et servir aussitôt"
+      needs: []
+      uses: []
+      time_min: 3
+
+  emits: []
+
+  plan_b: []

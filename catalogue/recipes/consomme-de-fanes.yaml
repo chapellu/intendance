@@ -67,20 +67,24 @@ recipe:
 
   steps:
     - id: laver
+      uses: [parures-legumes, oignon, persil, orties, thym, laurier, clous-girofle]
       action: "Laver soigneusement les parures et les rassembler dans un faitout avec l'oignon, les herbes, le laurier et les clous de girofle"
       needs: []
       time_min: 8
       kid: {age_min_months: 30, task: "laver les épluchures dans une grande bassine"}
     - id: bouillir
+      uses: [eau]
       action: "Mouiller à l'eau, porter à ébullition et compter 15 min"
       needs: [simmer-large]
       time_min: 15
       attended: false
     - id: filtrer
+      uses: []
       action: "Filtrer le bouillon"
       needs: []
       time_min: 2
     - id: rectifier
+      uses: [sel, poivre]
       action: "Goûter et rectifier le sel"
       needs: []
       time_min: 1

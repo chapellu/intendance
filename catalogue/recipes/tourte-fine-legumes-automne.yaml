@@ -1,0 +1,94 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE TARTE EN ROSACE DE LÉGUMES CRUS : pâte à l'huile, au vin blanc, à l'ail
+# et au thym ; compotée d'oignons et parmesan au fond ; demi-tranches de
+# patate douce et de céleri-rave alternées avec des radis longs rose et vert,
+# un cercle d'oignons rouges, des carottes au centre. Moule de 32 à 34 cm
+# (hors inventaire, rien ne le vérifie).
+
+recipe:
+  id: tourte-fine-legumes-automne
+  title: Tourte fine aux légumes d'automne, thym et parmesan
+  format: quiche
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Tourte fine aux légumes d'automne, thym et parmesan », blog Saines Gourmandises, 6 novembre 2019"
+    url: https://saines-gourmandises.fr/un-peu-de-sagesse/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « pour 6 personnes »
+  lot_entier: true
+  time_min_total: 70        # 25 min de préparation + 10 min + 35 min
+  active_min: 35
+
+  apports:
+    proteine: fromage
+    feculent: pate-brisee
+    legumes: [racine, allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: farine complète de grand épeautre, qty: 300, unit: g}
+    - {id: huile-olive, ref: huile-pate, name: huile d'olive (pâte), qty: 7, unit: cl}
+    - {id: vin-blanc-sec, name: vin blanc, qty: 15, unit: cl}
+    - {id: thym, name: thym (pâte et compotée), qty: 2, unit: c. à c., seasoning: true}
+    - {id: ail-semoule, name: ail en semoule (c. à c. bombée), qty: 1, unit: c. à c., seasoning: true}
+    - {id: sel, ref: sel-pate, name: sel fin (pâte), qty: 1, unit: c. à c., seasoning: true}
+    - {id: oignon, name: oignons, qty: 500, unit: g}
+    - {id: huile-olive, ref: huile-compotee, name: "huile d'olive (compotée et filet)", qty: 5, unit: c. à s.}
+    - {id: patate-douce, name: grosse patate douce, qty: 1, unit: pièce}
+    - {id: celeri-rave, name: céleri-rave, qty: 1, unit: pièce}
+    - {id: radis-long, name: "radis longs (un rose, un vert)", qty: 2, unit: pièce}
+    - {id: oignon-rouge, name: oignons rouges, qty: 2, unit: pièce}
+    - {id: carottes, name: carottes, qty: 2, unit: pièce}
+    - {id: parmesan, name: parmesan râpé, qty: 150, unit: g}
+    - {id: sel, ref: sel-garniture, name: sel, qty: 2, unit: pincée, seasoning: true}
+    - {id: poivre-5-baies, name: poivre 5 baies, qty: 2, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: compotee
+      action: "Émincer les oignons et les dorer à l'huile dans une cocotte avec sel, poivre et thym, en remuant de temps en temps"
+      needs: [simmer]
+      uses: [oignon, huile-compotee]
+      time_min: 15
+      attended: false
+    - id: pate
+      action: "Préchauffer le four à 180 °C ; mélanger farine, sel, thym et ail, puis l'huile, puis le vin d'un coup, et foncer un grand moule"
+      needs: []
+      uses: [farine-epeautre, sel-pate, ail-semoule, thym, huile-pate, vin-blanc-sec]
+      time_min: 8
+      parallel_with: compotee
+    - id: trancher
+      action: "Trancher finement tous les légumes, en coupant en deux les plus larges tranches de céleri et de patate douce"
+      needs: [chop-coarse]
+      uses: [patate-douce, celeri-rave, radis-long, oignon-rouge, carottes]
+      time_min: 12
+    - id: garnir
+      action: "Étaler la compotée sur la pâte, saupoudrer 100 g de parmesan, puis disposer les légumes en cercles alternés, carottes au centre"
+      needs: []
+      uses: [parmesan]
+      time_min: 10
+      kid: {age_min_months: 36, task: "poser les rondelles de carotte au centre"}
+    - id: cuire
+      action: "Arroser d'un filet d'huile, saler, poivrer, parsemer du reste de parmesan et cuire 35 min assez bas dans le four"
+      needs: [bake]
+      uses: [sel-garniture, poivre-5-baies]
+      time_min: 35
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: tourte-fine-legumes-automne
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

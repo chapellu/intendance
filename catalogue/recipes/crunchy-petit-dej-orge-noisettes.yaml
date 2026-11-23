@@ -1,0 +1,68 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN GRANOLA À LA POÊLE EN HUIT MINUTES : amandes et noisettes concassées toastées
+# à sec, flocons d'orge (IG très bas) ou d'avoine dorés dans l'huile de coco
+# avec sel et sucre vanillé, puis le sucre de coco et les fruits secs remis ;
+# étalé, il croustille en refroidissant. Bocal hermétique.
+
+recipe:
+  id: crunchy-petit-dej-orge-noisettes
+  title: Crunchy du petit-déj' (orge, amandes et noisettes)
+  creneaux: [petit-dejeuner, gouter]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Crunchy du petit dej' (super croustillant, super sage…) », blog Saines Gourmandises, 31 janvier 2019"
+    url: https://saines-gourmandises.fr/petit-matin-dhiver/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 10          # « 8 à 12 portions »
+  time_min_total: 15
+  active_min: 15
+
+  apports:
+    proteine: aucune
+    feculent: orge
+    legumes: []
+    profil: poele
+    origine: francais
+
+  ingredients:
+    - {id: amandes, name: "amandes", qty: 100, unit: g}
+    - {id: noisettes, name: "noisettes", qty: 100, unit: g}
+    - {id: flocons-orge, name: "flocons d'orge (ou d'avoine)", qty: 200, unit: g}
+    - {id: huile-coco, name: "huile de coco vierge", qty: 75, unit: g}
+    - {id: sucre-vanille, name: "sucre vanillé", qty: 2, unit: sachet}
+    - {id: sucre-complet, name: "sucre de coco", qty: 70, unit: g}
+    - {id: sel, name: "sel fin (demi-c. à c. rase)", qty: 0.5, unit: c. à c., seasoning: true}
+
+  steps:
+    - id: toaster
+      action: "Concasser amandes et noisettes, ôter les éclats de peau à la passoire et les toaster 3 min à sec dans une grande poêle en remuant sans cesse"
+      needs: [pan-fry]
+      uses: [amandes, noisettes]
+      time_min: 6
+      attended: true
+    - id: flocons
+      action: "Les réserver, fondre l'huile de coco et y dorer les flocons avec sel et sucre vanillé 3 à 4 min, puis ajouter le sucre de coco et les fruits secs"
+      needs: [pan-fry]
+      uses: [huile-coco, flocons-orge, sel, sucre-vanille, sucre-complet]
+      time_min: 6
+      attended: true
+    - id: etaler
+      action: "Étaler sur un papier ou un torchon propre et laisser croustiller en refroidissant ; bocal hermétique"
+      needs: []
+      uses: []
+      time_min: 2
+
+  emits:
+    - kind: base
+      type: crunchy-petit-dej-orge-noisettes
+      qty_band: 3-repas
+      keeps: {frigo_days: 30, congelo: false}
+
+  plan_b: []

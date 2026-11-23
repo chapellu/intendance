@@ -1,0 +1,81 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE « POULE AU POT » AVEC UN POULET, cuite dans son propre jus : légumes et
+# morceaux de poulet sans peau en couches dans un faitout rempli aux trois
+# quarts, sel sur le dessus, sans eau ni gras, au plus petit feu. L'autrice
+# utilise un faitout à fond accumulateur ; dans une cocotte ordinaire il faut
+# un peu d'eau (l'astuce le dit), et le jus sera moins concentré.
+
+recipe:
+  id: poulet-etouffee-legumes
+  title: Poule-au-pot revisitée, cuite dans son propre jus
+  format: mijote
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Poule-au-pot un peu revisitée, lentement cuite à basse température dans son propre jus », blog Saines Gourmandises, 21 février 2013"
+    url: https://saines-gourmandises.fr/ca-va-nous-rechauffer/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « pour 6 personnes »
+  time_min_total: 75        # 15 min de préparation + 1 h environ
+  active_min: 20
+
+  apports:
+    proteine: viande-blanche
+    feculent: aucun
+    legumes: [allium, racine, cucurbitacee]
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: poulet, name: "petit poulet fermier (pas une poule)", qty: 1, unit: pièce}
+    - {id: poireau, name: poireaux, qty: 4, unit: pièce}
+    - {id: navets, name: navets, qty: 2, unit: pièce}
+    - {id: carottes, name: carottes, qty: 2, unit: pièce}
+    - {id: courge, name: courge, qty: 500, unit: g}
+    - {id: celeri-branche, name: pied de céleri branche, qty: 1, unit: pièce}
+    - {id: oignon, name: oignons, qty: 4, unit: pièce}
+    - {id: clous-girofle, name: clous de girofle, qty: 6, unit: pièce, seasoning: true}
+    - {id: poivre-5-baies, name: poivre 5 baies en grains (c. à moka rase), qty: 1, unit: c. à moka, seasoning: true}
+    - {id: laurier, name: feuilles de laurier, qty: 4, unit: pièce, seasoning: true}
+    - {id: sel, name: sel fin (c. à s. rase), qty: 1, unit: c. à s., seasoning: true}
+
+  steps:
+    - id: decouper
+      action: "Couper le poulet en 6 morceaux et retirer la peau"
+      astuce: "Séparer cuisses et hauts de cuisse, laisser un peu de blanc sur chaque aile, couper les filets en deux."
+      needs: [chop-coarse]
+      uses: [poulet]
+      time_min: 8
+    - id: legumes
+      action: "Éplucher les légumes et les couper en gros morceaux"
+      needs: [chop-coarse]
+      uses: [poireau, navets, carottes, courge, celeri-branche, oignon]
+      time_min: 10
+    - id: monter
+      action: "Remplir le faitout aux trois quarts en alternant légumes et aromates, poulet, puis légumes ; saler sur le dessus seulement"
+      astuce: "Sans eau ni matière grasse dans un faitout à fond épais. Dans une cocotte ordinaire, ajouter un fond d'eau."
+      needs: [simmer-large]
+      uses: [clous-girofle, poivre-5-baies, laurier, sel]
+      time_min: 4
+      kid: {age_min_months: 30, task: "poser les couches de légumes dans le faitout"}
+    - id: cuire
+      action: "Couvrir et cuire environ 1 h sur le plus petit feu, au minimum"
+      astuce: "Si le couvercle tressaute et laisse fuir la vapeur, le feu est trop fort."
+      needs: [simmer-large]
+      uses: []
+      time_min: 55
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: poulet-etouffee-legumes
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

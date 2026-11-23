@@ -56,27 +56,32 @@ recipe:
 
   steps:
     - id: laver-emincer
+      uses: [legumes-verts-saison]
       action: "Laver les légumes et les émincer ; éviter épinards et blettes, trop riches en acide oxalique pour se conserver plus de quelques heures"
       needs: []
       time_min: 15
       kid: {age_min_months: 30, task: "laver les légumes dans la passoire"}
     - id: blondir-oignons
+      uses: [oignon, huile-olive]
       action: "Faire revenir les oignons émincés dans l'huile d'olive"
       needs: [pan-fry]
       time_min: 5
       attended: true
     - id: cuire-a-couvert
+      uses: []
       action: "Ajouter les légumes, couvrir et mener la cuisson jusqu'à ce qu'ils soient tendres"
       needs: [pan-fry]
       time_min: 10
       attended: false
     - id: assecher
+      uses: []
       action: "Découvrir et laisser cuire quelques minutes de plus, le temps de bien faire évaporer le jus de cuisson"
       astuce: "Une poêlée qui rend de l'eau détrempe les tourtes et les pizzas qu'elle garnira."
       needs: [pan-fry]
       time_min: 5
       attended: true
     - id: saler-poelee
+      uses: [sel]
       action: "Saler la poêlée"
       needs: []
       time_min: 1

@@ -55,27 +55,32 @@ recipe:
 
   steps:
     - id: lancer-le-riz
+      uses: [riz]
       action: "Mettre le riz à cuire"
       astuce: "Il démarre en début de recette et sera prêt en même temps que le reste."
       needs: [simmer]
       time_min: 18
       attended: false
     - id: hacher-le-tout
+      uses: [oignon, poivron, carottes, poulet-cuit]
       action: "Éplucher l'oignon, découper tous les légumes crus en gros morceaux, puis les hacher grossièrement avec le poulet"
       needs: [chop-coarse]
       time_min: 6
       parallel_with: lancer-le-riz
     - id: dorer-le-hachis
+      uses: [huile-olive]
       action: "Faire revenir le hachis à la poêle dans l'huile d'olive, jusqu'à ce que les sucs soient bien dorés"
       needs: [pan-fry]
       time_min: 6
       attended: true
     - id: assaisonner-chili
+      uses: [haricots-rouges, sauce-tomate, poivre, sel]
       action: "Ajouter haricots, sauce tomate, poivre et épices, puis saler"
       needs: []
       time_min: 2
       seasoning_gate: true
     - id: mijoter-chili
+      uses: []
       action: "Couvrir et laisser mijoter 5 à 10 min"
       needs: [simmer]
       time_min: 8

@@ -1,0 +1,94 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN PLAT COMPLET DE PRINTEMPS : poireaux primeurs, riz basmati complet,
+# pointes d'asperges et petits pois cuits ensemble dans la même eau, œufs
+# mollets, vinaigrette à l'ail des ours (ou à la ciboulette).
+
+recipe:
+  id: salade-riz-tiede-primeurs
+  title: Salade de riz tiède aux légumes primeurs et ail des ours
+  format: salade
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Salade de riz tiède aux légumes primeurs et ail des ours », blog Saines Gourmandises, 28 mai 2013"
+    url: https://saines-gourmandises.fr/comment-je-vois-la-gourmandise/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes (plat complet) »
+  time_min_total: 30        # 10 min de préparation + 20 min de cuisson
+  active_min: 15
+
+  apports:
+    proteine: oeuf
+    feculent: riz
+    legumes: [allium, legumineuse]
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: riz, name: riz basmati complet (cuisson 10 min), qty: 500, unit: g}
+    - {id: asperges-vertes, name: pointes d'asperges vertes, qty: 1, unit: grosse poignée}
+    - id: petits-pois
+      name: petits pois frais écossés
+      qty: 2
+      unit: poignée
+      subs:
+        - {id: petits-pois-surgeles, name: petits pois surgelés, ratio: 1.0}
+    - {id: poireau, name: poireaux primeurs, qty: 1, unit: kg}
+    - {id: oeufs, name: "œufs très frais (4 à 9 selon les appétits)", qty: 6, unit: pièce}
+    - id: ail-des-ours
+      name: feuilles d'ail des ours
+      qty: 6
+      unit: pièce
+      subs:
+        - {id: ciboulette, name: quelques brins de ciboulette, ratio: 1.0}
+    - {id: huile-olive, name: huile d'olive, qty: 6, unit: c. à s.}
+    - {id: vinaigre-balsamique, name: vinaigre balsamique, qty: 3, unit: c. à s.}
+    - {id: fleur-de-sel, name: fleur de sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: sel, name: sel, qty: 1, unit: c. à s., seasoning: true}
+    - {id: poivre-5-baies, name: poivre 5 baies, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: bouillir
+      action: "Porter à ébullition un grand faitout d'eau salée et une petite casserole pour les œufs"
+      needs: [simmer-large]
+      uses: [sel]
+      time_min: 8
+      attended: false
+    - id: poireaux
+      action: "Laver les poireaux, les couper en tronçons de 2 à 3 cm et les cuire 10 min dans le faitout"
+      needs: [simmer-large]
+      uses: [poireau]
+      time_min: 12
+    - id: riz
+      action: "Ajouter le riz, les asperges et les petits pois, cuire encore 10 min puis égoutter"
+      needs: [simmer-large]
+      uses: [riz, asperges-vertes, petits-pois]
+      time_min: 10
+      attended: false
+    - id: oeufs
+      action: "Cuire les œufs 5 min à l'eau bouillante, les rafraîchir sous l'eau froide et les écaler délicatement"
+      needs: [boil]
+      uses: [oeufs]
+      time_min: 8
+      parallel_with: riz
+      kid: {age_min_months: 36, task: "écaler les œufs refroidis"}
+    - id: servir
+      action: "Mélanger l'huile, le vinaigre et l'ail des ours émincé, en napper le riz et servir avec les œufs mollets à la fleur de sel"
+      needs: []
+      uses: [huile-olive, vinaigre-balsamique, ail-des-ours, fleur-de-sel, poivre-5-baies]
+      time_min: 4
+
+  emits:
+    - kind: reste-plat
+      type: salade-riz-tiede-primeurs
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: false}
+      note: "le riz froid se mange en boîte ; les œufs mollets, non"
+
+  plan_b: []

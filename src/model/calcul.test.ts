@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { beforeEach, describe, expect, test } from "vitest";
 import { lireCatalogue } from "./catalogue";
-import { articles, calculer, cleDuCreneau, echelle, facteur, minutesParJour } from "./calcul";
+import { articles, calculer, cleDuCreneau, echelle, facteur, minutesParJour, ecrireQuantite } from "./calcul";
 import { contexte, rejouer, type Evenement } from "./journal";
 import { creerJeu, idsDuReleve, SAUTE, type Jeu } from "./jeu";
 import type { Catalogue } from "./types";
@@ -208,7 +208,7 @@ describe("les parts commandent le panier", () => {
   });
 
   test("un lot entier s'arrondit au lot supérieur", () => {
-    const p = jeu.plats["poulet-roti"]!;
+    const p = jeu.plats["poulet-roti-du-dimanche"]!;
     expect(p.lotEntier).toBe(true);
     expect(facteur(p, p.portions + 0.5)).toBe(2);
   });
@@ -350,7 +350,7 @@ describe("le vieillissement, tel que le modèle le fait aujourd'hui", () => {
 // recette, ce qui n'apprend rien à personne.
 //
 // LE LOT TÉMOIN EST LA CARCASSE DE VOLAILLE, et ce n'est pas un cas d'école :
-// `poulet-roti` l'émet à 2 jours sans qu'elle se congèle, et `soupe-de-poule`
+// `poulet-roti-du-dimanche` l'émet à 2 jours sans qu'elle se congèle, et `soupe-de-poule`
 // est le seul plat qui la mange. C'est donc un vrai maillon du chaînage, à
 // cheval exactement sur l'écart que ce ticket corrige — deux jours au corpus
 // contre les quatre du foyer.
@@ -534,9 +534,9 @@ describe("chaque lot a son horloge", () => {
 describe("les minutes se comptent par journée", () => {
   test("trois plats tenables séparément peuvent faire une journée intenable", () => {
     poser(0, "dejeuner", "pates-bolognaise");
-    poser(0, "diner", "poulet-roti");
+    poser(0, "diner", "poulet-roti-du-dimanche");
     const m = minutesParJour(jeu);
-    const attendu = jeu.plats["pates-bolognaise"]!.minutes + jeu.plats["poulet-roti"]!.minutes;
+    const attendu = jeu.plats["pates-bolognaise"]!.minutes + jeu.plats["poulet-roti-du-dimanche"]!.minutes;
     expect(m[0]).toBe(attendu);
     expect(m[1]).toBe(0);
   });
@@ -859,7 +859,7 @@ describe("ce qui ne s'achète pas part au panier sous son équivalent", () => {
     // Pas `potager` : sans pois cassés ni lentilles corail, c'est la recette
     // qui dit quoi acheter.
     const j = creerJeu(catalogue, 7, LUNDI);
-    j.choix[j.creneaux.findIndex((c) => c.repas === "diner")] = "soupe-pois-casses-carottes";
+    j.choix[j.creneaux.findIndex((c) => c.repas === "diner")] = "veloute-pois-casses-poireaux-mache";
     j.gardeManger = j.gardeManger.filter((id) => id !== "pois-casses" && id !== "lentilles-corail");
     const ids = [...calculer(j).panier.values()].map((a) => a.id);
     expect(ids).toContain("pois-casses");
@@ -868,9 +868,25 @@ describe("ce qui ne s'achète pas part au panier sous son équivalent", () => {
 
   test("des lentilles corail au placard font la soupe de pois cassés", () => {
     const j = creerJeu(catalogue, 7, LUNDI);
-    j.choix[j.creneaux.findIndex((c) => c.repas === "diner")] = "soupe-pois-casses-carottes";
+    j.choix[j.creneaux.findIndex((c) => c.repas === "diner")] = "veloute-pois-casses-poireaux-mache";
     j.gardeManger = [...j.gardeManger.filter((id) => id !== "pois-casses"), "lentilles-corail"];
     const ids = [...calculer(j).panier.values()].map((a) => a.id);
     expect(ids).not.toContain("pois-casses");
+  });
+});
+
+describe("ecrireQuantite — une quantité telle qu'on la lit en cuisine (T193)", () => {
+  test("la pièce ne se dit pas, le gros se convertit, le reste s'accorde", () => {
+    expect(ecrireQuantite(2, "pièce")).toBe("2");
+    expect(ecrireQuantite(0.5, "pièce")).toBe("0,5");
+    expect(ecrireQuantite(1000, "ml")).toBe("1 l");
+    expect(ecrireQuantite(150, "cl")).toBe("1,5 l");
+    expect(ecrireQuantite(1250, "g")).toBe("1,25 kg");
+    expect(ecrireQuantite(0.4, "kg")).toBe("400 g");
+    expect(ecrireQuantite(1.5, "gousse")).toBe("1,5 gousse");
+    expect(ecrireQuantite(3, "gousse")).toBe("3 gousses");
+    expect(ecrireQuantite(2, "petit bouquet")).toBe("2 petits bouquets");
+    expect(ecrireQuantite(3, "c. à s.")).toBe("3 c. à s.");
+    expect(ecrireQuantite(40, "cl")).toBe("40 cl");
   });
 });

@@ -1,0 +1,75 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# SANS SORBETIÈRE : la crème de coco frappée au congélateur avec agave et vanille,
+# fouettée en chantilly ferme, en deux couches avec des noix de pécan
+# caramélisées dans un caramel de sucre de coco, vanille, fleur de sel et un
+# peu de crème de coco, marbrée, 4 h au congélateur. Le caramel est trop
+# sucré en entier, dit l'autrice : n'en mettre que la moitié, le reste au
+# service. Au fouet électrique.
+
+recipe:
+  id: glace-coco-pecan-caramel
+  title: Crème glacée vegan coco, noix de pécan caramélisées
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Une vraie crème glacée vegan super décadente… et sans sorbetière », blog Saines Gourmandises, 3 août 2015"
+    url: https://saines-gourmandises.fr/on-attend-le-remboursement-secu-ou-du-moins-une-reconnaissance-dutilite-publique/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « pour 6 portions »
+  time_min_total: 25
+  active_min: 20
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: creme-coco, name: "crème de coco liquide bien froide (dont 7 cl caramel)", qty: 40, unit: cl}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 5, unit: cl}
+    - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 1, unit: c. à s.}
+    - {id: sucre-complet, name: "sucre de coco", qty: 75, unit: g}
+    - {id: eau, name: "eau", qty: 2, unit: c. à s.}
+    - {id: gousse-vanille, name: "demi-gousse de vanille", qty: 0.5, unit: pièce}
+    - {id: noix-pecan, name: "noix de pécan", qty: 60, unit: g}
+    - {id: fleur-de-sel, name: "bonne pincée de fleur de sel", qty: 1, unit: bonne pincée, seasoning: true}
+
+  steps:
+    - id: frapper
+      action: "Réserver 7 cl de crème de coco ; mettre le reste au congélateur dans le bol avec l'agave et la vanille"
+      needs: [congeler]
+      uses: [sirop-agave, extrait-vanille]
+      time_min: 3
+    - id: caramel
+      action: "Concasser les pécans et les tamiser ; chauffer le sucre, l'eau, le sel et la vanille, 30 s après la mousse ajouter les 7 cl de crème et les noix, et cuire 1 min"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [noix-pecan, sucre-complet, eau, fleur-de-sel, gousse-vanille]
+      time_min: 8
+      attended: true
+    - id: egoutter
+      action: "Égoutter dans une passoire métallique au-dessus d'une casserole : noix d'un côté, caramel de l'autre ; tiédir"
+      needs: []
+      uses: []
+      time_min: 10
+    - id: monter
+      action: "Fouetter la crème frappée en chantilly ferme, verser la moitié dans un plat, la moitié des noix et un tiers du caramel, puis le reste, et marbrer"
+      needs: []
+      uses: [creme-coco]
+      time_min: 10
+      attente_min: 240
+      attente_raison: "au moins 4 h au congélateur"
+      kid: {age_min_months: 36, task: "parsemer les noix"}
+
+  emits: []
+
+  plan_b: []

@@ -1,0 +1,71 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# ONZE COOKIES SUR BÂTONNET pour les goûters d'anniversaire : farine, sucre complet,
+# soja-vanille, huile, noisettes entières et chocolat 70 % hachés grossièrement,
+# boules de 50 g piquées sur une fourchette en bois et écrasées ; 10 min à
+# 180 °C puis 150 °C. Ils croquent en refroidissant.
+
+recipe:
+  id: sucettes-cookies-ecureuils
+  title: Sucettes-cookies des écureuils
+  creneaux: [gouter]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Sucettes-cookies des écureuils », extrait de « Mes beaux goûters de fête ! », blog Saines Gourmandises, 16 mai 2017"
+    url: https://saines-gourmandises.fr/tic-tac-auraient-reve/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 5          # « pour 11 sucettes »
+    pieces: 11
+  time_min_total: 35
+  active_min: 15
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: "farine T110", qty: 185, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever (demi-sachet)", qty: 0.5, unit: sachet}
+    - {id: sucre-complet, name: "sucre de canne intégral ou de coco", qty: 60, unit: g}
+    - {id: lait-soja-vanille, name: "lait de soja-vanille", qty: 5, unit: cl}
+    - {id: huile-tournesol, name: "huile neutre", qty: 7, unit: cl}
+    - {id: noisettes, name: "noisettes entières", qty: 100, unit: g}
+    - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 1, unit: c. à s.}
+    - {id: chocolat-noir, name: "chocolat noir pâtissier 70 %", qty: 95, unit: g}
+    - {id: fleur-de-sel, name: "bonne pincée de fleur de sel", qty: 1, unit: bonne pincée, seasoning: true}
+
+  steps:
+    - id: pate
+      action: "Préchauffer à 180 °C ; hacher grossièrement noisettes et chocolat et mélanger avec tous les autres ingrédients en pâte malléable"
+      needs: [chop-coarse]
+      uses: [farine-epeautre, poudre-a-lever, sucre-complet, lait-soja-vanille, huile-tournesol, noisettes, extrait-vanille, chocolat-noir, fleur-de-sel]
+      time_min: 8
+    - id: faconner
+      action: "Former 11 boules de 50 g, y piquer une fourchette en bois et les écraser sur une plaque chemisée"
+      needs: []
+      uses: []
+      time_min: 8
+      kid: {age_min_months: 30, task: "écraser les boules sur leur bâtonnet"}
+    - id: cuire
+      action: "Cuire 10 min à 180 °C puis quelques minutes à 150 °C en surveillant, et laisser refroidir"
+      needs: [bake]
+      uses: []
+      time_min: 18
+      attended: true
+
+  emits:
+    - kind: base
+      type: sucettes-cookies-ecureuils
+      qty_band: 2-repas
+      keeps: {frigo_days: 5, congelo: false}
+
+  plan_b: []

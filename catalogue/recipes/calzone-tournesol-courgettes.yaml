@@ -1,0 +1,108 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE CALZONE EN SOLEIL : pâte levée une nuit au frais, garniture de
+# courgettes, épinards et basilic séchée au wok et refroidie la veille, deux
+# disques soudés autour d'un bol, rayons découpés et tordus. Four à 260 °C au
+# plus bas, 12 min. Pour 3 ou 4 en plat.
+
+recipe:
+  id: calzone-tournesol-courgettes
+  title: Calzone « tournesol » à la fondue de courgette, basilic et mozzarella
+  format: pizza
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Calzone tournesol à la fondue de courgette, basilic et mozzarella », blog Saines Gourmandises, 2 septembre 2015"
+    url: https://saines-gourmandises.fr/kkvkvk-60/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 3.5        # « 8 parts en apéro, 3 à 4 en plat principal »
+  lot_entier: true
+  time_min_total: 75        # 25 min + 30 min au wok + 30 min de pousse + 12 min
+  active_min: 45
+
+  apports:
+    proteine: fromage
+    feculent: farine
+    legumes: [cucurbitacee, feuille, allium]
+    profil: four
+    origine: italien
+
+  ingredients:
+    - {id: farine-epeautre, name: farine de grand épeautre ou de blé T110, qty: 500, unit: g}
+    - {id: eau, name: eau tiède (40 °C au plus), qty: 30, unit: cl}
+    - {id: huile-olive, ref: huile-pate, name: huile d'olive (pâte), qty: 2, unit: c. à s.}
+    - {id: levure-boulangere, name: levure déshydratée, qty: 1, unit: sachet}
+    - {id: sel, ref: sel-pate, name: sel fin (pâte), qty: 8, unit: g, seasoning: true}
+    - {id: courgettes, name: jeunes courgettes, qty: 1.2, unit: kg}
+    - id: pousses-epinards
+      name: jeunes feuilles d'épinards
+      qty: 300
+      unit: g
+      subs:
+        - {id: epinards-surgeles, name: épinards surgelés, ratio: 1.0}
+    - {id: oignon, name: oignons, qty: 2, unit: pièce}
+    - {id: huile-olive, ref: huile-garniture, name: huile d'olive (garniture), qty: 6, unit: c. à s.}
+    - {id: basilic, name: grosses feuilles de basilic, qty: 25, unit: pièce}
+    - {id: ail, name: ail, qty: 3, unit: gousse}
+    - {id: mozzarella, name: mozzarella, qty: 350, unit: g}
+    - {id: sel, ref: sel-garniture, name: sel, qty: 2, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: pate
+      action: "Délayer la levure dans l'eau tiède, la verser dans la farine salée avec l'huile, pétrir 7 min à la main et mettre au frais sous une assiette"
+      needs: []
+      uses: [levure-boulangere, eau, farine-epeautre, sel-pate, huile-pate]
+      time_min: 10
+      attente_min: 480
+      attente_raison: "pousse lente au frais, la veille au soir (ou 1 h au tiède)"
+      attente_souple: true
+    - id: fondue
+      action: "Dorer les oignons émincés à l'huile, légèrement salés, puis les courgettes en dés de 2 cm une quinzaine de minutes"
+      needs: [pan-fry]
+      uses: [oignon, huile-garniture, courgettes, sel-garniture]
+      time_min: 22
+      attended: true
+    - id: tomber
+      action: "Faire tomber épinards et basilic jusqu'à ce qu'il n'y ait plus d'eau ; hors du feu, ajouter l'ail écrasé, poivrer et laisser refroidir"
+      astuce: "Une garniture humide détremperait la pâte : la préparer la veille aussi."
+      needs: [pan-fry]
+      uses: [pousses-epinards, basilic, ail, poivre]
+      time_min: 8
+      attended: true
+    - id: monter
+      action: "Étaler deux disques, garnir le premier de légumes mêlés à la mozzarella en dés, couvrir du second et souder les bords et le tour d'un bol posé au centre"
+      needs: []
+      uses: [mozzarella]
+      time_min: 10
+    - id: soleil
+      action: "Découper le tour net, puis les rayons, tordre chaque rayon d'un quart de tour et laisser lever en chauffant le four à 260 °C, grille au plus bas"
+      needs: []
+      uses: []
+      time_min: 6
+      attente_min: 30
+      attente_raison: "seconde pousse"
+      kid: {age_min_months: 36, task: "tordre les rayons du soleil"}
+    - id: cuire
+      action: "Cuire 12 min en surveillant le dessus"
+      astuce: "Sans pierre à pain, finir 5 à 10 min à 150 °C pour cuire le dessous."
+      needs: [bake]
+      uses: []
+      time_min: 15
+      attended: true
+
+  emits:
+    - kind: reste-plat
+      type: calzone-tournesol-courgettes
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: true}
+
+  plan_b: []

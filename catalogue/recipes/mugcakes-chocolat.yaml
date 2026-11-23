@@ -44,20 +44,24 @@ recipe:
 
   steps:
     - id: fondre-le-chocolat
+      uses: [lait-soja-vanille, sirop-agave, huile-coco, chocolat-noir]
       action: "Faire chauffer le lait, le sirop d'agave et l'huile de coco dans une petite casserole, y casser le chocolat et bien mélanger pour le faire fondre"
       needs: [simmer]
       time_min: 4
       attended: true
     - id: finir-la-pate-mugcake
+      uses: [oeufs, farine-epeautre, poudre-a-lever, fleur-de-sel]
       action: "Ajouter l'œuf, la farine, la poudre à lever et la fleur de sel, puis bien mélanger au fouet"
       needs: []
       time_min: 3
       seasoning_gate: true
     - id: remplir-les-tasses
+      uses: []
       action: "Verser dans deux tasses à thé solides d'environ 20 cl"
       needs: []
       time_min: 2
     - id: cuire-vapeur-mugcake
+      uses: []
       action: "Déposer les tasses dans le panier vapeur d'un faitout d'eau bouillante, poser un couvercle et compter 20 min"
       astuce: "On peut profiter de la cuisson d'une céréale ou d'un plat de légumes déjà en cours."
       needs: [steam]

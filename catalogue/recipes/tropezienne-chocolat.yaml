@@ -1,0 +1,98 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE BRIOCHE AU CACAO SANS BEURRE : purée d'amande mixée avec l'eau tiède, le sucre
+# vanillé et l'agave en « lait », levure, farine et cacao, pétrie 7 min, levée
+# 1 h 30 en rabattant, boulée, levée encore, 30 min à 180 °C ; refroidie sous
+# un saladier. Fendue, garnie de chocolat aux amandes concassé et d'une mousse
+# de chantilly de coco au chocolat-noisette, nappée de chocolat et de grué.
+# Le jour même.
+
+recipe:
+  id: tropezienne-chocolat
+  title: Tropézienne intensément chocolat
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Tropézienne… intensément chocolat », blog Saines Gourmandises, 31 mars 2021"
+    url: https://saines-gourmandises.fr/90550/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 12          # « pour 12 parts »
+  lot_entier: true
+  time_min_total: 190
+  active_min: 40
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: puree-amande-blanche, name: "purée d'amande blanche bien souple", qty: 150, unit: g}
+    - {id: sucre-vanille, name: "sucre vanillé (3 + 3)", qty: 6, unit: sachet}
+    - {id: eau, name: "eau tiède (45 °C au plus)", qty: 350, unit: g}
+    - {id: farine-epeautre, name: "farine T110", qty: 450, unit: g}
+    - {id: cacao, name: "cacao amer", qty: 50, unit: g}
+    - {id: sel, name: "sel fin", qty: 5, unit: g, seasoning: true}
+    - {id: levure-boulangere, name: "levure fraîche (demi-cube)", qty: 0.5, unit: pièce}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 80, unit: g}
+    - {id: chocolat-noir, name: "chocolat noir 70 % (200 g mousse + 100 g nappage)", qty: 300, unit: g}
+    - {id: puree-noisette, name: "purée de noisette toastée", qty: 65, unit: g}
+    - {id: creme-coco, name: "crème de coco bien froide", qty: 40, unit: cl}
+    - {id: chocolat-amandes, name: "chocolat noir aux amandes ou aux noisettes", qty: 100, unit: g}
+    - {id: grue-cacao, name: "grué de cacao", qty: 2, unit: c. à s., optional: true}
+
+  steps:
+    - id: lait
+      action: "Mixer la purée d'amande avec l'eau tiède, 3 sachets de sucre vanillé et l'agave, et y délayer la levure"
+      needs: [blend-smooth]
+      uses: [puree-amande-blanche, eau, sirop-agave, levure-boulangere, sucre-vanille]
+      time_min: 4
+    - id: petrir
+      action: "Pétrir 7 min avec la farine, le sel et le cacao, couvrir et laisser lever en rabattant la pâte toutes les 30 min"
+      needs: []
+      uses: [farine-epeautre, sel, cacao]
+      time_min: 10
+      attente_min: 90
+      attente_raison: "pousse de 1 h 30 au tiède"
+    - id: bouler
+      action: "Plier la pâte en quatre, la bouler, la poser soudure dessous dans un cercle et laisser lever encore"
+      needs: []
+      uses: []
+      time_min: 5
+      attente_min: 30
+      attente_raison: "seconde pousse, four à 180 °C"
+    - id: cuire
+      action: "Cuire 30 min bas dans le four et laisser refroidir sous un saladier"
+      needs: [bake]
+      uses: []
+      time_min: 30
+      attended: false
+    - id: mousse
+      action: "Fondre au bain-marie 200 g de chocolat avec la noisette, tiédir, et l'incorporer à la crème de coco montée en chantilly avec 3 sachets de sucre vanillé"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [puree-noisette, creme-coco]
+      time_min: 10
+    - id: monter
+      action: "Fendre la brioche, couvrir la base de chocolat aux amandes concassé, puis de mousse, reposer le chapeau, napper du reste de chocolat fondu et parsemer de grué"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [chocolat-amandes, chocolat-noir, grue-cacao]
+      time_min: 12
+      kid: {age_min_months: 36, task: "parsemer le grué"}
+
+  emits:
+    - kind: reste-plat
+      type: tropezienne-chocolat
+      qty_band: 3-repas
+      keeps: {frigo_days: 1, congelo: false}
+
+  plan_b: []

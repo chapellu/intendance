@@ -1,0 +1,81 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# L'INGRÉDIENT MYSTÈRE EST UN AVOCAT : il fait la ganache, mixé avec chocolat
+# 70 % fondu dans l'agave et le soja-vanille. Moelleux au chocolat et à la
+# purée d'amande cuits 15 min la veille, ganache en couronne de nid le
+# lendemain, cacao, petits œufs en chocolat.
+
+recipe:
+  id: cupcakes-nids-chocolat-avocat
+  title: Cupcakes « nids de Pâques » au chocolat et à l'avocat
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Cupcakes Nids de Pâques au chocolat et à l'****** », blog Saines Gourmandises, 17 avril 2014"
+    url: https://saines-gourmandises.fr/ya-du-mystere-dans-lair/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « 6 à 8 cupcakes »
+    pieces: 7
+  time_min_total: 35
+  active_min: 20
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: "farine de grand épeautre T110", qty: 75, unit: g}
+    - {id: poudre-a-lever, name: "levure (demi-sachet)", qty: 0.5, unit: sachet}
+    - {id: chocolat-noir, name: "chocolat noir 70 % (100 + 150 g)", qty: 250, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave (4 + 6 c. à s.)", qty: 10, unit: c. à s.}
+    - {id: oeufs, name: "œufs", qty: 3, unit: pièce}
+    - {id: puree-amande-blanche, name: "purée d'amande blanche fluide", qty: 3, unit: c. à s.}
+    - {id: avocat, name: "gros avocat Hass bien mûr", qty: 1, unit: pièce}
+    - {id: lait-soja-vanille, name: "lait de soja-vanille", qty: 6, unit: c. à s.}
+    - {id: cacao, name: "cacao en poudre", qty: 1, unit: c. à c.}
+    - {id: oeufs-chocolat, name: "petits œufs en chocolat", qty: 14, unit: pièce, optional: true}
+
+  steps:
+    - id: moelleux
+      action: "Préchauffer à 180 °C ; chauffer 4 c. à s. d'agave, y fondre 100 g de chocolat hors du feu, puis la purée d'amande, les œufs, la farine et la levure"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [farine-epeautre, poudre-a-lever, puree-amande-blanche, oeufs]
+      time_min: 8
+    - id: cuire
+      action: "Répartir en caissettes et cuire 15 min exactement ; refroidis, les garder en sachet"
+      needs: [bake]
+      uses: []
+      time_min: 15
+      attended: false
+    - id: ganache
+      action: "Chauffer le reste d'agave avec le soja-vanille, y fondre le reste du chocolat hors du feu, puis mixer avec la chair de l'avocat et mettre en poche au frais"
+      needs: [simmer, blend-smooth]
+      charge_partielle: true
+      uses: [sirop-agave, lait-soja-vanille, chocolat-noir, avocat]
+      time_min: 8
+      attente_min: 600
+      attente_raison: "une nuit au frais"
+    - id: nids
+      action: "Malaxer la poche, dresser une couronne de ganache sur chaque moelleux, poudrer de cacao et garnir de petits œufs"
+      needs: []
+      uses: [cacao, oeufs-chocolat]
+      time_min: 8
+      kid: {age_min_months: 30, task: "poser les petits œufs dans les nids"}
+
+  emits:
+    - kind: reste-plat
+      type: cupcakes-nids-chocolat-avocat
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

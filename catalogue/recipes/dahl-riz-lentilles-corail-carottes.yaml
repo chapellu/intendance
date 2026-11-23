@@ -1,0 +1,123 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T189).
+#
+# LE CATALOGUE A MAINTENANT DEUX DAHLS DE LENTILLES CORAIL. Celui-ci et
+# `dahl-lentilles-corail`, la recette du foyer écrite pour le fond de roulement.
+# Ils ne se ressemblent que par la lentille : l'un cuit le riz DANS le dahl,
+# l'autre à côté ; l'un est au lait et à l'huile de coco et aux carottes,
+# l'autre aux tomates et aux épinards. Même limite que celle notée sur
+# `lentilles-paysanne` : rien ne détecte deux plats voisins dans la semaine.
+#
+# LE RIZ CUIT DANS LE DAHL, ET C'EST LUI QUI DONNE LE TEMPS. 15 à 20 min selon
+# le paquet : on encode 20, la fin de cuisson se juge au goût (« riz et
+# lentilles bien fondants »).
+#
+# « SAGEMENT » ÉPICÉ, DIT L'AUTRICE : ni curry ni garam masala, du curcuma, du
+# gingembre et du laurier. C'est exactement ce qui le rend possible pour les
+# enfants du foyer.
+
+recipe:
+  id: dahl-riz-lentilles-corail-carottes
+  title: Dahl de riz et lentilles corail aux carottes
+  format: mijote
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 42"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 42
+    saison: printemps
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes »
+  time_min_total: 30        # en-tête : 10 min de préparation + 20 min de cuisson
+  active_min: 10
+
+  apports:
+    proteine: legumineuse
+    feculent: riz
+    legumes: [racine, allium]
+    profil: mijote
+    origine: indien
+
+  ingredients:
+    # T197 — ADAPTATIONS DU FOYER, pas du livre : on n'achète pas d'huile de
+    # coco ni de gingembre frais pour ce seul plat.
+    - id: huile-coco
+      name: huile de coco vierge
+      qty: 65
+      unit: g
+      subs:
+        - {id: huile-olive, name: huile d'olive, note: "adaptation du foyer", ratio: 1.0}
+        - {id: beurre, name: beurre, note: "adaptation du foyer", ratio: 1.0}
+    - {id: oignon, name: gros oignon, qty: 1, unit: pièce}
+    - {id: carottes, name: carottes nouvelles, qty: 200, unit: g}
+    - {id: riz, name: riz basmati blanc ou demi-complet, qty: 200, unit: g}
+    - {id: lentilles-corail, name: lentilles corail, qty: 200, unit: g}
+    - {id: ail, name: ail, qty: 1, unit: gousse}
+    - id: gingembre
+      name: "gingembre frais (un tronçon d'environ 2 cm)"
+      qty: 1
+      unit: pièce
+      subs:
+        - {id: gingembre-poudre, name: "gingembre en poudre (une demi-cuillerée à café)", note: "adaptation du foyer", ratio: 1.0}
+    - {id: curcuma, name: curcuma, qty: 1, unit: c. à c.}
+    - {id: eau, name: eau, qty: 1.5, unit: l}
+    - {id: laurier, name: feuille de laurier, qty: 1, unit: pièce, seasoning: true}
+    - {id: sel, name: "sel (une cuillerée à café bombée)", qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 1, unit: bonne pincée, seasoning: true}
+
+  steps:
+    - id: oignon
+      action: "Couper l'oignon en petits cubes et le faire revenir à l'huile de coco dans une cocotte"
+      needs: [simmer-large]
+      uses: [huile-coco, oignon]
+      time_min: 4
+    - id: carottes
+      action: "Émincer finement les carottes, les ajouter dans la cocotte et les faire revenir 5 min"
+      needs: [simmer-large]
+      uses: [carottes]
+      time_min: 5
+      kid: {age_min_months: 30, task: "verser les carottes émincées dans la cocotte"}
+    - id: tailler
+      action: "Pendant ce temps : éplucher le gingembre et l'ail, et les tailler en tout petits cubes"
+      needs: []
+      uses: [gingembre, ail]
+      time_min: 3
+      parallel_with: carottes
+    - id: mouiller
+      action: "Ajouter le gingembre, l'ail, le riz, les lentilles, le curcuma, le laurier, le sel, le poivre et l'eau, puis porter à ébullition"
+      needs: [simmer-large]
+      uses: [riz, lentilles-corail, curcuma, laurier, sel, poivre, eau]
+      time_min: 5
+      kid: {age_min_months: 30, task: "verser les lentilles et le riz dans la cocotte"}
+    - id: mijoter
+      action: "Couvrir et cuire à feu assez doux en mélangeant de temps en temps, le temps de cuisson du riz"
+      astuce: "Compter 15 à 20 min selon le paquet de riz : un basmati demi-complet demande le haut de la fourchette."
+      needs: [simmer-large]
+      uses: []
+      time_min: 18
+      attended: false
+    - id: gouter
+      action: "Goûter pour rectifier le sel et vérifier que riz et lentilles sont bien fondants, puis servir bien chaud"
+      needs: []
+      uses: []
+      time_min: 1
+  # PAS DE PRÉLÈVEMENT BÉBÉ : le sel entre avec l'eau, au début des 20 minutes
+  # de cuisson — cas du pot-au-feu p. 182. Saler à la fin, après prélèvement,
+  # serait un écart à la recette ; il n'est pas encodé.
+
+  emits:
+    - kind: reste-plat
+      type: dahl-riz-lentilles-corail
+      qty_band: 1-repas
+      # ~2 kg de dahl pour 4 parts ; le foyer en mange 2,75, il reste un peu
+      # plus d'une part. C'est ce reste FROID que réclament les croquettes de la
+      # page suivante (400 g) : la page 45 est écrite pour lui.
+      qty: {amount: 600, unit: g}
+      keeps: {frigo_days: 3, congelo: true}
+      note: "froid, il fait les croquettes au parmesan de la p. 45"
+
+  plan_b: []                # vingt minutes à couvert : rien à comprimer

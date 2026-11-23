@@ -57,27 +57,32 @@ recipe:
 
   steps:
     - id: prechauffer-thermos
+      uses: []
       action: "Le matin avant de partir, verser de l'eau bouillante à hauteur dans le thermos et le fermer"
       astuce: "Un thermos froid mange la chaleur du repas."
       needs: []
       time_min: 2
     - id: monter-le-bouillon-soba
+      uses: [bouillon-pot-au-feu]
       action: "Porter le bouillon à ébullition"
       needs: [simmer]
       time_min: 2
       attended: true
     - id: tailler-soba
+      uses: [legumes-pot-au-feu, pomme-de-terre, viande-pot-au-feu, nouilles-soba]
       action: "Pendant ce temps, découper légumes et bœuf en petits cubes et casser les nouilles"
       astuce: "Cassées, elles tiennent dans le thermos et se mangent à la cuillère."
       needs: []
       time_min: 4
       parallel_with: "monter-le-bouillon-soba"
     - id: cuire-les-soba
+      uses: [legumes-pot-au-feu, pomme-de-terre, viande-pot-au-feu, nouilles-soba]
       action: "Ajouter tous les ingrédients dans le bouillon et cuire 3 min après reprise de l'ébullition"
       needs: [simmer]
       time_min: 4
       attended: true
     - id: remplir-le-thermos
+      uses: []
       action: "Vider l'eau bouillante du thermos, y verser la soupe brûlante et fermer aussitôt"
       needs: []
       time_min: 2

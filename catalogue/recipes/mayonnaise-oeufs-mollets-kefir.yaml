@@ -1,0 +1,62 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# TROIS ŒUFS MOLLETS (6 min exactement) mixés entiers avec moutarde, kéfir ou
+# yaourt crémeux, deux cuillerées d'huile d'olive, sel et vinaigre : une
+# simili-mayo lisse, environ 450 kcal le bol de 300 g. Trois jours au frais.
+# Variantes aïoli, ravigote, béarnaise, rouille… dans l'article.
+
+recipe:
+  id: mayonnaise-oeufs-mollets-kefir
+  title: « Mayonnaise » aux œufs mollets entiers et au kéfir
+  role: base
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Mayonnaise aux oeufs mollets entiers (bonne pour la santé, ultra légère, riche en probiotiques) », blog Saines Gourmandises, 29 mai 2026"
+    url: https://saines-gourmandises.fr/mayonnaise-aux-oeufs-mollets-entiers-bonne-pour-la-sante-ultra-legere-riche-en-probiotiques/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « un bol d'environ 300 g, au moins 6 parts »
+  lot_entier: true
+  time_min_total: 12
+  active_min: 6
+
+  apports:
+    proteine: oeuf
+    feculent: aucun
+    legumes: []
+    profil: rapide
+    origine: francais
+
+  ingredients:
+    - {id: oeufs, name: "œufs", qty: 3, unit: pièce}
+    - {id: moutarde, name: "moutarde (c. à c. très bombée)", qty: 1, unit: c. à c.}
+    - {id: kefir-lait, name: "kéfir de lait ou yaourt bien crémeux", qty: 50, unit: g}
+    - {id: huile-olive, name: "huile d'olive", qty: 2, unit: c. à s.}
+    - {id: sel, name: "sel (c. à c. rase)", qty: 1, unit: c. à c., seasoning: true}
+    - {id: vinaigre, name: "vinaigre de cidre ou de vin", qty: 1.5, unit: c. à s.}
+
+  steps:
+    - id: mollets
+      action: "Cuire les œufs 6 min exactement à l'eau bouillante, les refroidir et les écaler"
+      needs: [boil]
+      charge_partielle: true
+      uses: [oeufs]
+      time_min: 10
+    - id: mixer
+      action: "Mixer les œufs entiers avec la moutarde, le kéfir, l'huile, le sel et le vinaigre jusqu'à une crème lisse"
+      needs: [blend-smooth]
+      uses: [moutarde, kefir-lait, huile-olive, sel, vinaigre]
+      time_min: 3
+
+  emits:
+    - kind: base
+      type: mayonnaise-oeufs-mollets
+      qty_band: 3-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

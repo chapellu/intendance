@@ -1,0 +1,59 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LA VARIANTE DES FLANS AVEC UN ESPRESSO SERRÉ et sans caramel, dorée 5 min sous
+# le gril en fin de cuisson. Sans lait de vache, moitié lait végétal, moitié
+# crème végétale.
+
+recipe:
+  id: cremes-brulees-cafe
+  title: Crèmes « brûlées » vanille-café sans caramel
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« 4 recettes pour tire-au-flan ! », blog Saines Gourmandises, 26 avril 2012"
+    url: https://saines-gourmandises.fr/ah-ces-ptites-cremes-aux-oeufs-cremes-brulees-et-petits-flanbio-regressifs/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 ramequins »
+    pieces: 4
+  time_min_total: 50
+  active_min: 10
+
+  apports:
+    proteine: oeuf
+    feculent: aucun
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: lait, name: "lait entier", qty: 50, unit: cl}
+    - {id: gousse-vanille, name: "gousse de vanille", qty: 1, unit: pièce}
+    - {id: oeufs, name: "œufs", qty: 3, unit: pièce}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 6, unit: c. à s.}
+    - {id: cafe, name: "espresso bien serré", qty: 1, unit: tasse}
+
+  steps:
+    - id: appareil
+      action: "Préchauffer à 180 °C ; porter le lait à ébullition avec la vanille, laisser infuser et tiédir, puis y fouetter œufs, agave et café"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [lait, gousse-vanille, oeufs, sirop-agave, cafe]
+      time_min: 10
+    - id: cuire
+      action: "Cuire 35 min au bain-marie en ramequins, puis 5 min sous le gril en surveillant"
+      needs: [bake]
+      uses: []
+      time_min: 40
+      attended: false
+      attente_min: 120
+      attente_raison: "à servir bien frais"
+
+  emits: []
+
+  plan_b: []

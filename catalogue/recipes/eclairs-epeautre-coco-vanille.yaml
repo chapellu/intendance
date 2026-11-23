@@ -1,0 +1,87 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LA PÂTE À CHOUX SANS BEURRE DES PETITS CHOUX (même liste, même procédé),
+# dressée en boudins de 7 à 8 cm ; une crème de soja-vanille, crème de coco,
+# huile de coco, gousse de vanille, agave et farine de petit épeautre, entrée
+# par trois petits trous ; chapeau de chocolat 70 % fondu tiédi.
+
+recipe:
+  id: eclairs-epeautre-coco-vanille
+  title: Éclairs « light » à l'épeautre, chocolat noir et crème coco-vanille
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Éclairs light à l'épeautre, chocolat noir et crème végétale coco-vanille », blog Saines Gourmandises, 14 novembre 2013"
+    url: https://saines-gourmandises.fr/aaah-ca-cest-du-dessert/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 5          # « une dizaine de petits éclairs »
+    pieces: 10
+  time_min_total: 90
+  active_min: 45
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: "farine d'épeautre T130 (pâte à choux)", qty: 95, unit: g}
+    - {id: eau, name: "eau", qty: 12, unit: cl}
+    - {id: puree-amande-blanche, name: "purée d'amande blanche fluide", qty: 100, unit: g}
+    - {id: oeufs, name: "petits œufs", qty: 3, unit: pièce}
+    - {id: sel, name: "pincée de sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: lait-soja-vanille, name: "lait de soja-vanille", qty: 20, unit: cl}
+    - {id: creme-coco, name: "crème de coco cuisine", qty: 20, unit: cl}
+    - {id: huile-coco, name: "huile de coco vierge", qty: 50, unit: g}
+    - {id: gousse-vanille, name: "gousse de vanille", qty: 1, unit: pièce}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 6, unit: c. à s.}
+    - {id: farine-petit-epeautre, name: "farine T70 de petit épeautre", qty: 35, unit: g}
+    - {id: chocolat-noir, name: "chocolat noir pâtissier 70 %", qty: 150, unit: g}
+
+  steps:
+    - id: panade
+      action: "Préchauffer à 180 °C ; bouillir eau, purée d'amande et sel en fouettant, jeter la farine d'un coup hors du feu, puis sécher la panade 1 min 30 à feu doux"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [eau, puree-amande-blanche, sel, farine-epeautre]
+      time_min: 8
+      attended: true
+    - id: dresser
+      action: "Incorporer les œufs un à un très vite, dresser à la poche des boudins de 7 à 8 cm et cuire 30 min"
+      astuce: "Baisser à 150 °C en fin de cuisson s'ils dorent trop."
+      needs: [bake]
+      uses: [oeufs]
+      time_min: 35
+      attended: false
+    - id: creme
+      action: "Fouetter en casserole le soja, la crème de coco, l'agave, la farine et la vanille grattée, porter à ébullition en remuant, puis ajouter l'huile de coco"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [lait-soja-vanille, creme-coco, sirop-agave, farine-petit-epeautre, gousse-vanille, huile-coco]
+      time_min: 8
+      parallel_with: dresser
+    - id: garnir
+      action: "Fondre le chocolat au bain-marie et le tiédir ; garnir les éclairs par trois petits trous et tremper leur dessus dans le chocolat ; au frais"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [chocolat-noir]
+      time_min: 15
+      attente_min: 120
+      attente_raison: "refroidissement complet au frais"
+      kid: {age_min_months: 48, task: "tremper le dessus dans le chocolat"}
+
+  emits:
+    - kind: reste-plat
+      type: eclairs-epeautre-coco-vanille
+      qty_band: 2-repas
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

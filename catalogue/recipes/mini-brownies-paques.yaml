@@ -41,35 +41,42 @@ recipe:
 
   steps:
     - id: prechauffer
+      uses: []
       action: "Préchauffer le four à 180 °C"
       needs: [bake]
       time_min: 1
       attended: false
     - id: installer-caissettes
+      uses: [caissettes]
       action: "Installer les caissettes dans une plaque à mini-muffins"
       astuce: "À défaut, une plaque à œufs en carton en ne garnissant qu'une alvéole sur deux — cette plaque-là brunira et sera perdue."
       needs: []
       time_min: 4
     - id: melange-sec
+      uses: [farine-complete, poudre-a-lever, fleur-de-sel]
       action: "Mélanger la farine, la fleur de sel et la poudre à lever dans un bol et réserver"
       needs: []
       time_min: 2
     - id: fondre
+      uses: [chocolat-noir, sirop-agave, huile-coco]
       action: "Faire fondre le chocolat au bain-marie avec le sirop d'agave et l'huile de coco"
       needs: [simmer]
       time_min: 4
       attended: true
     - id: appareil-brownies
+      uses: [extrait-vanille, oeufs]
       action: "Hors du feu, ajouter la vanille et les œufs entiers, puis la farine, et bien mélanger"
       astuce: "Hors du feu, vraiment : sur le bain-marie, les œufs prennent en omelette."
       needs: []
       time_min: 4
     - id: remplir
+      uses: []
       action: "Transférer la pâte dans un pichet verseur et remplir les caissettes aux trois quarts"
       needs: []
       time_min: 4
       kid: {age_min_months: 30, task: "verser la pâte dans les caissettes au pichet"}
     - id: cuire
+      uses: []
       action: "Enfourner 6 minutes chrono, puis laisser refroidir entièrement avant de mettre en boîte"
       needs: [bake]
       time_min: 6

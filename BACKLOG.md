@@ -317,7 +317,8 @@ Un ticket = un commit qui laisse l'app fonctionnelle. `[ ]` à faire,
       porte `maj`, un horodatage, et la fenêtre de sept jours glisse chaque
       jour : « avant lundi » ne veut rien dire ici).
 
-- [ ] **Le catalogue n'a pas de nom lisible pour ce qu'il produit.** Un `emit`
+- [x] **Le catalogue n'a pas de nom lisible pour ce qu'il produit.** (Fait en
+      T194, voir plus bas.) Un `emit`
       porte un `type` (`lentilles-vertes-cuites`, `puree-lentilles-carottes`) et
       une catégorie d'équilibre porte un id (`legumineuse`) — jamais de libellé.
       Les écrans les affichent donc tels quels, identifiants compris : « apporte
@@ -6477,3 +6478,459 @@ Reste ouvert : le geste « sortir du congélateur pour demain » sur une viande 
 ## T188 — Dire la pièce ET le poids d'une viande ou d'un poisson
 
 Demandé le 12/11 : « il faudrait préciser la pièce en plus du poids ». Aujourd'hui « + Ajouter » ne compte que des unités : un poulet entier et 500 g de filets s'écrivent « 1 », et « Ce soir » ne peut pas dire s'il y en a assez (T185 ne compare que grammes et pièces). À faire : à l'ajout d'une viande ou d'un poisson, demander le nombre de pièces et le poids d'une pièce (« 2 filets de 150 g »), stockés en `unites` × `parUnite`.
+
+## T189 — Le printemps de *La cuisine bio du quotidien* est complet
+
+- [x] **T189 — Les p. 42 à 50 étaient au sommaire, pas dans l'app (18/11).**
+      Cinq pages photographiées, cinq plats encodés : le dahl de riz et
+      lentilles corail aux carottes (p. 42), les croquettes au parmesan et
+      restes de dahl (p. 45), les tartines-repas au chèvre frais (p. 46), les
+      bruschettas « express » aux champignons (p. 49) et la brouillade du
+      pêcheur (p. 50). Source : 66 sur 100, printemps 24 sur 24.
+
+      **LA PREMIÈRE ARÊTE ÉCRITE PAR LE LIVRE.** La p. 45 demande « 400 g de
+      dahl froid (voir recette précédente) » : le dahl émet 600 g de reste,
+      les croquettes l'`accepts` et le reprennent en repli. La règle de
+      l'autrice (1 œuf, 2 c. à s. de farine, 50 g de parmesan pour 200 g de
+      légumineuses crémeuses) vaudrait pour les lentilles p. 173 et les pois
+      cassés p. 197 ; le modèle ne sait pas dire « n'importe quelle
+      légumineuse crémeuse, à proportion », elle reste en commentaire.
+
+      **LES TARTINES SE HACHENT, ELLES NE SE MIXENT PAS.** Le foyer n'a pas
+      de mixeur ; l'étape le dit, et l'astuce garde le geste de l'autrice
+      (brèves impulsions) pour qui en a un. Deux ingrédients nouveaux au
+      primeur : `gingembre` et `betterave` (crue), au bac.
+
+      Reste ouvert : rien ne relie les deux dahls de lentilles corail du
+      catalogue (celui-ci et celui du fond) — même limite que les deux ragoûts
+      de lentilles vertes.
+
+## T190 — L'automne de *La cuisine bio du quotidien*, p. 128 à 133
+
+- [x] **T190 — Cinq pages d'automne encodées sur photo (18/11).** Moules de
+      bouchot aux spaghettis (p. 128), potage crémeux à l'avoine et saveurs
+      iodées (p. 129), galette de céréales « maxi-format » (p. 130), poule au
+      « potit » épeautre (p. 132), gratin de courge au riz (p. 133). Source :
+      71 sur 100.
+
+      **LA DEUXIÈME PAIRE ÉCRITE PAR LE LIVRE.** Le potage se fait avec « le
+      fumet restant de la recette précédente » : les moules émettent 350 ml de
+      jus filtré (`fumet-moules`), le potage l'`accepts`, les moules en repli.
+
+      **LA POULE NOURRIT DEUX REPAS** : midi la poule et ses légumes, le soir
+      le bouillon avec l'épeautre restant (`bouillon-poule-epeautre`). Le
+      trempage de la veille est une `attente_min` de 12 h. Le bouillon n'est
+      pas relié à `bouillon-pot-au-feu` : volaille n'est pas bœuf.
+
+      Nouvel ingrédient : `moules`, en poissonnerie et dans la famille
+      « viande et poisson frais » (2 jours au frigo).
+
+      Reste ouvert : la variante légère du soir de la galette (sans jambon ni
+      fromage, 12 à 15 min de four) n'est qu'un commentaire.
+
+## T191 — L'automne de *La cuisine bio du quotidien*, p. 134 à 153
+
+- [x] **T191 — Dix pages d'automne encodées sur photo (18/11).** Terrine à
+      l'échalote, noisettes et champignons (p. 134), gnocchis de polenta à la
+      bolognaise (p. 137), « frites au four » de légumes d'automne (p. 138,
+      accompagnement), cock-a-leekie (p. 141), marbré aux légumes-racines
+      (p. 142), chou farci facile (p. 145), tranches de butternut aux lardons
+      (p. 146), « casspoulet » (p. 149), jarret braisé au vin blanc (p. 150),
+      moelleux « mystère » à l'orange (p. 153). Source : 81 sur 100 ; l'automne
+      n'attend plus que la p. 154.
+
+      **LE COCK-A-LEEKIE FINIT LE POULET RÔTI** : il `accepts` la carcasse
+      (requise, poulet rôti en repli) et un peu de viande (`poulet-cuit`,
+      facultative), deux sorties déjà émises par le poulet rôti.
+
+      **LA VEILLE, QUATRE FOIS** : trempage des haricots (p. 149), nuit au
+      frais du chou farci (p. 145), nuit de repos du jarret (p. 150), deux
+      heures de refroidissement de la polenta (p. 137) — toutes en
+      `attente_min`, que l'app place d'elle-même.
+
+      **LE JARRET NE PASSE PAS LA NUIT HORS DU FRIGO.** Le livre le laisse
+      refroidir à température ambiante ; l'étape dit de le mettre au frais une
+      fois tiède, et l'astuce le dit en clair.
+
+      **LA TERRINE POUR QUINZE NE TIENT PAS DANS LA COCOTTE** au sens du
+      contrôle de vaisselle — mais la cocotte n'y fait revenir que les
+      légumes : `charge_partielle`. La terrine de 3 L, le moule à cake de
+      30 cm et le moule à savarin ne sont pas dans l'inventaire du foyer, et
+      rien ne le vérifie. Deux recettes cuisent à la vapeur (p. 142, 153) :
+      la cocotte de 7,5 L porte `steam`.
+
+      Nouveaux ids : `porc-hache`, `foies-volaille`, `lardons` (boucherie),
+      `cognac`, `cepes-seches`, `sucre-glace` (épicerie), `orange` (primeur).
+
+## T192 — L'automne fini, l'hiver jusqu'à la p. 207
+
+- [x] **T192 — Quinze pages encodées sur photo (18/11).** Gros cookie à
+      partager (p. 154, qui ferme l'automne), coquilles de poisson (p. 184),
+      cordons bleus de restes de rôti (p. 186), colcannon (p. 189), gâteau de
+      légumes (p. 190), soupe de crêpes de Haute-Autriche (p. 192), donburi au
+      porc (p. 193), poulet de 4 h farci (p. 194), mitonnée de pois cassés
+      (p. 197), gratin de crozets (p. 198), hachis Parmentier 50/50 (p. 199),
+      blinis de légumes (p. 200), galette des rois aux poires (p. 203),
+      stollen (p. 204), crème dessert au chocolat (p. 207). Source : 96 sur 100.
+
+      **TROIS ARÊTES DE PLUS, TOUTES SUR DES SORTIES QUI EXISTAIENT.** Les
+      cordons bleus prennent le `roti-froid` du rôti au bouillon ; la soupe de
+      crêpes prend 2 L de `bouillon-pot-au-feu` (le pot-au-feu en laisse 2,5,
+      et sa note annonçait déjà la p. 192) ; le poulet de 4 h émet carcasse et
+      viande, que le cock-a-leekie p. 141 réclame.
+
+      **LA PÂTE D'AMANDE S'ACHÈTE EN ATTENDANT LA p. 214.** La galette et le
+      stollen la demandent ; une arête vers une recette absente serait refusée.
+      Elle est un ingrédient (`pate-amande`) jusqu'à l'encodage de la p. 214.
+
+      **CE QUE LE LIVRE NE DIT PAS, DIT COMME TEL.** Les coquilles n'ont pas de
+      température de four : l'astuce donne 200 °C et le signale comme une
+      estimation. Le stollen liste des amandes qu'aucune étape n'emploie : on
+      les ajoute avec les cranberries, et la fiche le dit.
+
+      Reste ouvert : le bouillon de la poule p. 132 vaut pour la soupe de
+      crêpes (« ou de poule au pot »), mais son type ne la nourrit pas ; les
+      pois cassés et les lentilles ne nourrissent pas les croquettes p. 45.
+      Les deux demandent qu'une arête accepte plusieurs types.
+
+      Nouveaux ids : `porc-saute`, `saucisses` (boucherie), `blettes`
+      (primeur), `noix-coco-rapee`, `crozets`, `pate-amande`, `cranberries`,
+      `gingembre-confit`, `amandes`, `gomme-guar` (épicerie).
+
+## T193 — En cuisine, chaque étape rappelle ses quantités
+
+- [x] **T193 — 82 plats sur 207 ne disaient aucune quantité au moment du
+      geste (18/11).** Retour du foyer, plusieurs fois : « on te dit mélanger
+      l'eau et la farine, mais on ne te donne pas les quantités, donc tu es
+      obligé de rouvrir la liste des ingrédients — ou je reste sur la liste et
+      je ne suis pas le mode en cuisine ». Le mécanisme existait depuis T113
+      (`uses` × le facteur de la fiche), mais 82 plats — 404 étapes sur 1 156 —
+      n'avaient jamais reçu leur `uses:`, et depuis becb785 l'écran se taisait
+      sous ces étapes au lieu de renvoyer à la liste.
+
+      **Les 404 étapes ont leur lien.** Proposition automatique (l'ingrédient
+      nommé dans la consigne), puis relecture recette par recette : « tous les
+      ingrédients », « le reste », les assaisonnements à part, les doublons
+      retirés quand l'étape ne fait que réunir des choses déjà pesées. Deux
+      plats portaient deux lignes du même id (le sirop des petits pots glacés,
+      l'huile de la quiche) : elles ont reçu un `ref:`.
+
+      **`verifier.py` l'exige désormais** : une recette dont aucune étape ne
+      porte `uses:` est refusée. La couverture totale (chaque ligne employée
+      par au moins une étape) était déjà tenue.
+
+      **Les quantités s'écrivent comme on les lit** (`ecrireQuantite`) : la
+      fiche et l'étape disaient « 2 pièce », « 3 gousse », « 1000 ml » quand
+      le stock dit « 9 œufs » depuis T182. La pièce ne se dit plus (le nom
+      suit), 1 000 ml et 100 cl deviennent des litres, 1 000 g des kilos, et
+      le reste s'accorde à partir de 2.
+
+      **Et la liste de courses nomme l'unité de son placard** — le reste
+      ouvert de T184 : « il en reste 1, vous en voulez 3 » devient « il en
+      reste 1 kg, vous en voulez 3 kg » pour une denrée du fond.
+
+      Reste ouvert : une vingtaine de consignes écrivent une quantité en dur
+      (« prélever 40 cl de lait », « 150 g de parmesan ») qui ne suit pas les
+      parts quand le plat est mis à l'échelle — la plupart sont des tailles de
+      pièce ou de récipient et doivent rester fixes ; les autres demanderaient
+      une quantité calculée DANS la phrase, que le modèle ne sait pas écrire.
+
+## T194 — Ce qu'un plat produit a un nom, sur tous les écrans
+
+- [x] **T194 — « pate vegetal », « carcasse volaille », « reste roti » (18/11).**
+      Vu sur une capture de l'année simulée n° 12 : le frigo affichait le type
+      émis dé-tiretisé, sans accents — le stock, le cockpit, les repas, le
+      plancher, la sortie et le répertoire passaient tous par le même
+      `nomDuType`. Ouvert depuis T15. `typesLisibles` est publié par
+      l'export : le titre du plat (sans sa majuscule, il se lit en milieu de
+      phrase) quand un seul plat émet le type et n'émet que lui, sinon un
+      libellé de `types.yaml` (35 bases et types partagés : « pâté de
+      lentilles », « carcasse de poulet », « bouillon de pot-au-feu »).
+      `verifier.py` refuse un type émis sans nom ; `lireCatalogue` les
+      retient, `nomDuType` les lit.
+
+      **Et les denrées de l'étagère** : 117 ids s'affichaient dé-tiretisés
+      faute d'une recette qui les écrive tels quels (« huile olive », « boeuf
+      hache », « porc saute »). `rayons.yaml` porte un nom pour chacun
+      (`noms:`), qui prime sur le mot des recettes.
+
+      **Et les quantités des lots** s'arrondissent et s'écrivent comme en
+      cuisine : « 350 g » de piperade, plus « 354,2 g ».
+
+## L'année simulée n° 12 — T193 et T194
+
+Le harnais avait dérivé de l'écran depuis l'année n° 11 (fin octobre) et ne
+jouait plus juste : « À la maison » n'existait plus (7e1b7b2), les zones
+s'ouvrent par le plan (T141), un reste se retire par « Fini », et un jour
+sans rien à acheter n'a pas de titre de rayon. Premier passage de l'année
+n° 12, avec ces trous : 382 plats cuits, 274 restes mangés, 90 jetés (17 kg).
+Mais 197 restes mangés au réel n'ont pas pu être retirés de l'app (le
+bouton avait changé de nom), et 16 jours de courses ont planté : ces
+chiffres mesurent le harnais autant que l'app. Le harnais est réparé (commit
+à part) et l'année rejouée.
+
+**L'année rejouée (365 jours, 0 plantage), sur le code de T193–T194 :** 406
+plats cuits, 295 restes mangés, 89 jetés (16,8 kg), 13 perdus dans les
+pannes. Signalements : « reste sans lot » 197 → 85, « chaîne crue
+disponible » 76 → 60.
+
+**Ce que l'année a trouvé et qui est réparé ici :** les noms bruts à l'écran
+(T194 : types émis, denrées, quantités de lot), et l'export non déterministe
+(`chainage.facteur_max_vaisselle` parcourait un ensemble : à égalité de
+contenance, le récipient retenu changeait d'un lancement à l'autre, et
+`catalogue:verifie` pouvait échouer en CI sans qu'aucune donnée ait bougé).
+
+- [ ] **T195 — Ce que l'année n° 12 laisse ouvert.** Trois écarts entre le
+      monde du harnais et l'app, qu'il faut démêler avant de les imputer à
+      l'une ou à l'autre :
+      **60 « chaînes »** : l'app croit une base présente que le monde n'a
+      plus — lentilles vertes cuites (15), pâte à pizza (14), pâte brisée
+      (9), bouillon de pot-au-feu (5). Le harnais tient une base en parts,
+      l'app en grammes : à vérifier avant tout le reste.
+      **85 « restes sans lot »** : une partie au moins vient du harnais, qui
+      range tout le reste au frigo quand l'app en congèle une part (velouté,
+      chausson, octobre).
+      **89 restes jetés** (70 au frigo) : croquettes de kasha (9), poulet
+      cocotte (7), chausson (6), salade de lentilles et pasta con le sarde (5
+      chacun). Des plats à garde courte cuisinés en lot entier pour 2,75
+      parts : la question de T155, pour les plats qui n'ont pas de preneur
+      le lendemain midi.
+
+## T196 — Le blog Saines Gourmandises entre au catalogue, rubrique par rubrique
+
+Demandé le 22/11 : « traiter toutes les recettes du blog de Marie Chioca », en
+laissant de côté les recettes invitées. L'index de `sources/` (255 entrées,
+relevé du 14/08) n'en avait fait entrer que cinq. Le blog compte aujourd'hui
+404 articles, dont 262 portent une liste d'ingrédients (334 recettes) ; le
+travail se fait par rubrique, une PR chacune, chaque plat repris à la main et
+reformulé comme ceux du livre.
+
+- [x] **T196a — Viandes et poissons, légumes et céréales (22/11).** 55 plats :
+      les 17 articles de « Viandes et poissons » (dont les trois classiques du
+      dimanche — goulasch, poulet chasseur, marmite dieppoise —, la
+      bouillabaisse, les deux dindes de Noël, le waterzoï à l'avoine) et les
+      27 de « Légumes et céréales » restants, dont les onze plats salés de la
+      rétrospective potimarron de septembre 2026. Catalogue : 207 → 262 plats,
+      0 erreur.
+
+      **UNE ARÊTE DE PLUS, ÉCRITE PAR L'ARTICLE.** Les cupcakes au potimarron
+      demandent 160 g de purée déjà cuite : la purée à l'huile d'olive de la
+      même page l'émet (`puree-potimarron`), les cupcakes l'`accepts`, avec un
+      `sans_reste` (250 g de potimarron à cuire). La crème de potiron au
+      beaufort prend 30 cl de `bouillon-pot-au-feu`, facultatif.
+
+      **CE QUE LE FOYER N'A PAS, DIT DANS LA FICHE.** Le robot de l'autrice
+      devient le couteau (farces de dinde, « une farce, pas un velouté ») ou
+      le petit blender ; le moulin à légumes de la bouillabaisse, le mixeur et
+      le tamis. Le roaster, le moule à bûche, la feuille guitare, le moule haut
+      de 18 cm sont hors inventaire et rien ne le vérifie. Le welsh cawl est
+      encodé pour 4 (l'autrice propose de diviser par deux) : pour 8, il faut
+      un chaudron de 33 cm.
+
+      **TROIS ÉCARTS, TOUS ÉCRITS DANS L'INDEX.** Les tomates séchées
+      demandent un déshydrateur (`ecartee:`). Dans la rétrospective, la tourte
+      « feuilles d'automne », le meilleur des veloutés de potiron et le
+      moelleux mystère étaient déjà au catalogue depuis le livre, comme les
+      tranches de butternut (`note_encodage:`). Les farçous du blog, eux, ne
+      sont pas ceux du livre (orge, son d'avoine, eau, parmesan) : ils entrent
+      à côté.
+
+      **AUCUNE RECETTE INVITÉE DANS CES DEUX RUBRIQUES.** Tout le blog paraît
+      sous le compte de l'autrice ; les articles qui publient la recette d'un
+      autre (gagnants de concours, une amie, une lectrice) se repèrent à la
+      lecture et seront marqués `ecartee:` dans leur rubrique — ceux repérés
+      jusqu'ici sont dans les desserts.
+
+      La famille de garde « viande et poisson frais » reçoit les douze
+      viandes et poissons crus nouveaux (2 jours au frigo, à congeler sinon).
+
+      `sources/saines-gourmandises-blog.yaml` porte `catalogue_id:` (ou
+      `catalogue_ids:`) sur chaque article saisi ; trois articles absents du
+      relevé d'août y sont ajoutés. 43 ingrédients nouveaux, au rayon et
+      nommés (`noms:`) ; deux types émis ont un libellé (`fondue-courgettes`,
+      `peperonata`). Le test du garde-manger qui compte les plats à l'épeautre
+      passe de 7 à 10 — un fait de corpus, comme il le dit.
+
+      **UN NOM QUI DÉPENDAIT DE LA ZONE.** Le goulasch écrit « tomates
+      pelées » : le stock l'affiche désormais avec son accent… sauf dans la
+      zone où l'on vient de déplacer la boîte, qui disait encore « tomates
+      pelees ». Le panneau d'une zone et son éditeur fabriquaient le nom des
+      lignes ajoutées depuis l'id ; ils passent par `nomDeLaDenree` (T194).
+      `ranger-deplacer.spec.ts` épinglait l'ancienne graphie, il dit la bonne.
+
+- [x] **T196b — Tartes et cakes salés, entrées, pains (22/11).** 55 plats
+      de plus : 30 tartes, pizzas et cakes salés (dont neuf du dossier
+      céleri-rave de mars 2026 et quatre des « fromages » végétaux), 11
+      entrées, 14 pains et brioches, et la confiture express d'abricots au
+      miel qui accompagne l'une d'elles. Catalogue : 262 → 317 plats, 0 erreur.
+
+      **TROIS ARÊTES DE PLUS, TOUTES SUR DES RESTES QUI EXISTAIENT.** Le
+      mug-cake salé (80 g) et les petits pains au potimarron (250 g) prennent la
+      `puree-potimarron` de T196a ; le céleri façon « pommes tapées » prend les
+      `legumes-pot-au-feu` (c'est pour eux que l'autrice l'a inventé) ; le
+      hachis de légumes-racines prend du `poulet-cuit`, facultatif. Le
+      sandwich-cake laisse deux de ses six blinis, du même type que les blinis
+      de 2014.
+
+      **ÉCARTÉS, ET L'INDEX LE DIT.** La glace à la tomate crue et le granité
+      au concombre demandent un blender qui pile la glace ; la tarte
+      printanière à la faisselle, la pâte brisée des fainéants et la tourte la
+      plus simple du monde sont déjà au catalogue depuis le livre, comme le
+      marbré aux légumes-racines. Le pain aux algues de 2011 n'a pas d'étapes.
+
+      **UN APÉRO QUI CUISINE.** Les crackers de petit épeautre mettent des
+      graines de courge : ce sont celles du sachet de la demi-lune, qui perdent
+      donc leur `usage: apero`, comme les pignons en septembre. Leurs tomates
+      séchées sont « nature, pas à l'huile » : un autre produit
+      (`tomates-sechees-nature`), le bocal garde l'usage. Les tests T40 parlent
+      désormais des tomates séchées ; le compte des plats à l'épeautre passe à
+      34.
+
+      Le robot pétrisseur des brioches devient le pétrissage à la main (10 min,
+      dit l'autrice) ; la machine à pain de la brioche à l'huile d'olive n'est
+      pas encodée. Moules à savarin, à kouglof, à madeleines, moules hauts :
+      hors inventaire, rien ne le vérifie. 18 ingrédients nouveaux.
+- [x] **T196c — Desserts, gourmandises et glaces de 2011 à 2014 (22/11).** 74
+      plats : gâteaux, tartes, bûches, charlottes, choux et éclairs sans beurre,
+      flans, mousses, confiseries de Noël (citronnettes, truffes, chocolats
+      fourrés, pâte d'amande minute, boules de neige), biscuits et cookies,
+      crêpes. Catalogue : 317 → 391 plats, 0 erreur.
+
+      **LES DEUX PREMIÈRES RECETTES INVITÉES, ÉCARTÉES ET NOMMÉES.** Le fondant
+      de Noël de décembre 2012 est « d'après une recette d'Amandine Geers et
+      Olivier Degorce » ; les crêpes à l'orge de la Chandeleur 2014 sont
+      « les crêpes de Cathy », reprises telles quelles. Les deux portent
+      `ecartee:` (ou `note_encodage:` quand l'article a d'autres plats).
+      Les livres d'autres auteurs que l'autrice recommande en fin d'article ne
+      sont pas des recettes invitées : seules comptent les recettes publiées.
+
+      **CE QUI DEMANDE UNE MACHINE ABSENTE.** Une sorbetière (la crème glacée
+      à la poire), un robot qui mixe des fruits ou des tomates surgelés (la
+      glace « magique », la glace à la tomate, la bûche choco-framboise) :
+      écartés. Les génoises aux œufs entiers fouettés jusqu'à tripler, que
+      l'autrice monte au robot pâtissier, sont encodées : au fouet, c'est plus
+      long, et les fiches le disent.
+
+      **UNE ARÊTE DE PLUS.** La crème de marron maison (900 g) nourrit la coupe
+      « timarronsuisse » (150 g), avec une crème de marron du commerce en
+      repli. Les biscuits à la cuillère maison émettent une base
+      (`biscuits-cuillere-maison`) que les charlottes et le tiramisu de la
+      même page ne réclament pas encore : ils achètent les leurs.
+
+      **DEUX FAITS DE CORPUS ONT BOUGÉ.** Les framboises sont maintenant
+      cuisinées (le test du vocabulaire des courses les retire de sa liste
+      « hors recette ») et 48 plats mangent l'épeautre. L'huile essentielle de
+      mandarine a un id court (`essence-mandarine`) : au-delà de 24 lettres, le
+      nom d'une puce de ticket tombait sur l'id. 29 ingrédients nouveaux.
+
+- [x] **T196c2 — Desserts, gourmandises et glaces de 2015 à 2026.** 74
+      plats de plus (465 au catalogue), indexés dans
+      `catalogue/sources/saines-gourmandises-blog.yaml` comme les lots
+      précédents : étapes reformulées, jamais recopiées.
+
+      **TROIS INVITÉES DE PLUS, ÉCARTÉES.** La crème de groseille qui teste
+      « la recette de Karen », le moelleux adapté d'Amandine Geers et Olivier
+      Degorce, et le gâteau de Pâques 2026 au citron, dont la génoise est
+      « empruntée » à une consœur blogueuse. Chaque écart est dit dans
+      l'index (`ecartee`).
+
+      **LES MACHINES ABSENTES, ENCORE.** Sorbetière (crème glacée poire-amande,
+      SOS canicule), robot à fruits surgelés ou à glace pilée (granité
+      concombre-menthe, glace à la tomate crue), déshydrateur : écartés. Les
+      doublons du livre (cookies les plus simples, tourte-crumble) aussi.
+
+      **UNE ARÊTE DE PLUS.** Le gâteau de Noël 2025 en vache prend 500 g de
+      purée de potimarron pour sa ganache « rousse » : il accepte le reste du
+      catalogue, avec un potimarron à cuire en repli.
+
+      **UN FAIT DE CORPUS A BOUGÉ.** 92 plats mangent maintenant l'épeautre
+      (44 de plus). 31 ingrédients nouveaux, dont gélatine, matcha, chia et
+      miel de lavande.
+- [x] **T196d — Le reste du blog.** 43 plats de plus (508 au catalogue) :
+      les articles qui n'étaient ni plats ni desserts classés (bocaux,
+      boissons, sauces, « blabla », « non classé », ingrédients, jardin), et
+      une poignée de desserts que les lots précédents avaient manqués. Chaque
+      article du blog a maintenant soit une fiche, soit une raison dans
+      l'index ; les 112 restants sont des nouvelles, des annonces de livres
+      ou des billets sans recette.
+
+      **DES INVITÉES ÉCARTÉES DANS LA MÊME PAGE.** La crème-mousse au tofu
+      soyeux (et sa variante « nuage ») est la recette de Valérie Cupillard ;
+      le lait chaud à la badiane est « très librement inspiré » d'une autre
+      blogueuse. Les recettes de l'autrice publiées à côté, elles, sont
+      encodées.
+
+      **TROIS ARÊTES DE PLUS.** Le lait amande-avoine laisse un okara (430 g)
+      que les bannocks au comté réclament. Le bouillon d'os de volaille prend
+      la carcasse d'un poulet rôti, et les flocons d'orge pilaf peuvent le
+      prendre à la place de l'eau. Le kéfir à boire ensemence les « yaourts »
+      de kéfir. La mousse au chocolat traditionnelle nourrit aussi le gâteau
+      sans cuisson qui en réclame deux.
+
+      **CE QUI N'EST PAS UNE RECETTE.** Les trames de repas chiffrées en
+      calories, les idées sans quantités autour des galettes de sarrasin, les
+      méthodes de façonnage des cookies, un article sur le matériel : écartés
+      avec leur raison.
+
+      **UN FAIT DE CORPUS A BOUGÉ.** 105 plats mangent l'épeautre (13 de
+      plus). 24 ingrédients nouveaux, dont seitan, ail noir, reblochon,
+      psyllium et kéfir de lait.
+
+- [x] **T196e — Les recettes invitées du blog, créditées.** Le mot « invitées »
+      de la demande visait les recettes RÉDIGÉES POUR CE DÉPÔT, pas celles
+      d'autres auteurs publiées sur le blog : ces dernières reviennent, chacune
+      avec son auteur dans l'en-tête de la fiche. Le fondant de Noël (d'après
+      Amandine Geers et Olivier Degorce), le gâteau de Pâques 2026 (génoise de
+      la blogueuse Cléa), la crème-mousse au tofu soyeux de Valérie Cupillard
+      et sa variante « nuage », le lait chaud à la badiane (inspiré de
+      Frédérique). Les carrés à la crème de groseille restent dehors, mais
+      pour la bonne raison : ils sont déjà au catalogue depuis le livre.
+
+- [ ] **T197 — Retirer peu à peu les recettes rédigées pour ce dépôt.** 52
+      plats n'ont aucune source extérieure (37 fiches « Recette du foyer » et
+      15 entrées de `_repertoire.yaml`) ; trois autres sont des mécanismes,
+      pas des recettes, et restent (`gouter-des-enfants`,
+      `petit-dejeuner-des-enfants`, `reste-de-la-veille`). Règle : une fiche
+      ne part que quand une recette sourcée tient sa place — même rôle, même
+      apport, et la même contrainte s'il y en a une. Une vague par PR, avec
+      ses tests.
+
+      **PREMIÈRE VAGUE FAITE (2026-11-23) : VINGT RECETTES RETIRÉES.** Onze
+      qu'une recette sourcée couvrait déjà (poulet rôti, lentilles mijotées,
+      frittata, gratin courgettes-riz, salade lentilles-feta, tarte tomates-
+      moutarde, croque-monsieur-salade, hachis de lentilles, crêpes, cookies
+      d'avoine, pain maison) et les neuf anciens dîners du fond. Ce qui les
+      tenait est rebranché sur l'autrice :
+      — le fond de roulement : dix de ses dîners, élargi de la courge, du
+        poireau, du parmesan, de la sauce tomate, du lait et du soja-vanille.
+        Le lait de croissance n'est plus suivi (le foyer le gère), le lait de
+        coco n'y est plus (sa brique garde sa taille dans `conditionnements`).
+        Trois fiches portent une adaptation du foyer en `subs` (huile et
+        gingembre du dahl, fromage de la frittata, potimarron du velouté), et
+        `fond.manques` compte une ligne couverte si un remplaçant est au fond.
+        La règle « chacun se fait toute l'année » devient « chaque mois, au
+        moins trois sont de saison » : elle cuisine avec les saisons ;
+      — le pain du matin : son pain de mie au son d'avoine, celui que le foyer
+        fait (`creneaux: [petit-dejeuner]`, congelé tranché en deux sachets) ;
+      — le goûter puise dans ses crêpes au son d'avoine et ses cookies
+        pralinés ; les replis de `cock-a-leekie` et des burgers visent son
+        poulet rôti et sa mitonnée ;
+      — les tests qui prenaient ces plats pour exemples prennent les siens et
+        vérifient la même propriété ; celui du volume de questions vérifie ce
+        que son titre promet au lieu de comparer deux totaux.
+      Le retrait a révélé un vrai trou : sa souche de légumineuses propose des
+      haricots rouges secs en remplaçant sans dire les dix minutes de grosse
+      ébullition. L'astuce de l'étape le dit, et le garde-fou regarde
+      désormais les remplaçants.
+
+      **RESTENT 32 RECETTES SANS SOURCE** (plus les trois mécanismes), aucune
+      couverte pour l'instant : chili sin carne, fajitas, gnocchis (deux),
+      lasagnes, sauce et pâtes bolognaise, saumon-riz-brocoli, soupe de poule,
+      couscous d'hiver, taboulé, minestrone, moussaka de lentilles, ratatouille
+      minute, quiches (courgettes-yaourt, épinards-thon, poireaux), tartes
+      oignons-thon et potimarron-oignons, burgers de lentilles, veloutés
+      (courgettes, butternut-coco, carottes-corail, épinards-corail,
+      poireaux-pommes de terre-corail), soupe chou frisé-haricots, tian de
+      printemps, banana bread, compote pommes-poires, gratins de pâtes
+      (tomates, brocoli-thon), omelette aux courgettes. D'autres livres de
+      l'autrice les couvriraient peut-être.

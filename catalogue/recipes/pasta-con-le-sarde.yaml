@@ -44,11 +44,13 @@ recipe:
 
   steps:
     - id: cuire-pates
+      uses: [pates]
       action: "Cuire les tagliatelles al dente dans un grand faitout d'eau salée, selon le temps indiqué sur le paquet"
       needs: [simmer-large]
       time_min: 10
       attended: false
     - id: fondre-oignons
+      uses: [oignon, fenouil-sauvage, huile-olive, origan, sel]
       action: "Pendant ce temps : détailler les oignons en petits cubes et les faire revenir à l'huile en petite cocotte, avec un peu de sel, l'origan et le fenouil ciselé"
       astuce: "Jusqu'à ce qu'ils soient tendres et bien dorés, sans jamais les laisser brûler."
       needs: [pan-fry]
@@ -56,22 +58,26 @@ recipe:
       attended: true
       parallel_with: "cuire-pates"
     - id: persillade
+      uses: [ail, persil]
       action: "Hacher l'ail et le persil"
       needs: []
       time_min: 3
       parallel_with: cuire-pates
     - id: sardines
+      uses: [sardines-boite]
       action: "Égoutter les sardines et les ajouter aux oignons ; mélanger à la cuillère de bois juste assez pour les réduire en gros morceaux"
       needs: [pan-fry]
       time_min: 3
       # Pour les enfants, l'autrice suggère d'ôter peau et arêtes des sardines —
       # facultatif chez elle, et le geste qui rend le plat mangeable ici.
     - id: assaisonner
+      uses: [poivre]
       action: "Ajouter la persillade et un peu de poivre, puis réchauffer le tout"
       needs: [pan-fry]
       time_min: 2
       seasoning_gate: true
     - id: servir
+      uses: [fromage-rape]
       action: "Égoutter les tagliatelles, les huiler légèrement, mélanger et servir bien chaud avec la garniture de sardines, en parsemant de parmesan"
       needs: []
       time_min: 3

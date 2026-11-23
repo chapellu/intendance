@@ -1,0 +1,97 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE PÂTE BRIOCHÉE À L'HUILE D'OLIVE ET AU SON D'AVOINE, levée 1 h 30, fourrée
+# de courge musquée, poireau et oignons dorés avec des magrets fumés et un peu
+# de miso, puis relevée 30 min avant le four. Salé avec prudence : magret et
+# miso le sont déjà.
+
+recipe:
+  id: tourte-briochee-magret-courge
+  title: Tourte briochée aux magrets de canard fumés et petits légumes
+  format: quiche
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Tourte briochée bien rustique aux magrets de canard fumés, petits légumes et huile d'olive », blog Saines Gourmandises, 6 février 2013"
+    url: https://saines-gourmandises.fr/oui-oui-vous-etes-bien-sur-saines-gourmandises/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « une belle tourte (8 personnes) »
+  lot_entier: true
+  time_min_total: 180       # 30 min + 1 h 30 + 30 min de pousse + 35 min
+  active_min: 35
+
+  apports:
+    proteine: viande-blanche
+    feculent: farine
+    legumes: [cucurbitacee, allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-complete, name: farine complète de blé ou de grand épeautre, qty: 350, unit: g}
+    - {id: son-avoine, name: son d'avoine, qty: 150, unit: g}
+    - {id: eau, name: eau tiède, qty: 25, unit: cl}
+    - {id: huile-olive, ref: huile-pate, name: huile d'olive (pâte), qty: 10, unit: cl}
+    - {id: oeufs, name: œuf, qty: 1, unit: pièce}
+    - {id: levure-boulangere, name: cube de levure de boulanger, qty: 1, unit: pièce}
+    - {id: sel, name: sel, qty: 2, unit: pincée, seasoning: true}
+    - {id: origan, name: origan séché, qty: 1, unit: c. à s., seasoning: true}
+    - {id: oignon, name: oignons, qty: 2, unit: pièce}
+    - {id: poireau, name: poireau, qty: 1, unit: pièce}
+    - {id: courge, name: courge musquée, qty: 500, unit: g}
+    - {id: magret-fume, name: magret de canard fumé émincé, qty: 90, unit: g}
+    - {id: huile-olive, ref: huile-garniture, name: huile d'olive (garniture), qty: 4, unit: c. à s.}
+    - {id: miso-orge, name: "miso d'orge ou de soja", qty: 1, unit: c. à s., optional: true}
+    - {id: poivre-5-baies, name: poivre 5 baies, qty: 1, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: pate
+      action: "Mélanger farine, son, origan et sel ; y verser la levure délayée dans l'eau tiède avec l'huile et l'œuf, et pétrir 5 min"
+      astuce: "Collante au début ; se rincer et s'huiler les mains une ou deux fois en pétrissant."
+      needs: []
+      uses: [farine-complete, son-avoine, origan, sel, levure-boulangere, eau, huile-pate, oeufs]
+      time_min: 10
+      kid: {age_min_months: 30, task: "pétrir la pâte"}
+    - id: lever
+      action: "Laisser lever au tiède sous un torchon humide"
+      needs: []
+      uses: []
+      time_min: 1
+      attente_min: 90
+      attente_raison: "première pousse de la pâte briochée"
+    - id: garniture
+      action: "Couper légumes et magrets en tout petits cubes et les dorer à l'huile jusqu'à coloration ; ajouter le miso, poivrer, saler à peine"
+      needs: [pan-fry]
+      charge_partielle: true   # le récipient ne tient que cette part du plat
+      uses: [oignon, poireau, courge, magret-fume, huile-garniture, miso-orge, poivre-5-baies]
+      time_min: 18
+      attended: true
+    - id: monter
+      action: "Étaler la moitié de la pâte dans un moule chemisé, verser la garniture, couvrir d'un second disque et laisser lever"
+      needs: []
+      uses: []
+      time_min: 8
+      attente_min: 30
+      attente_raison: "seconde pousse, le temps de préchauffer à 180 °C"
+    - id: cuire
+      action: "Cuire 35 min à 180 °C"
+      needs: [bake]
+      uses: []
+      time_min: 35
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: tourte-briochee-magret-courge
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

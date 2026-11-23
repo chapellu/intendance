@@ -1,0 +1,65 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LE CARAMEL D'AGAVE : 2 min exactement à feu très doux en fouettant, pas plus,
+# sinon il durcit et colle au ramequin. Lait entier infusé à la vanille,
+# œufs, agave, 35 min au bain-marie. À manger bien frais.
+
+recipe:
+  id: flans-caramel-agave
+  title: Petits flans vanille au caramel d'agave
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« 4 recettes pour tire-au-flan ! », blog Saines Gourmandises, 26 avril 2012"
+    url: https://saines-gourmandises.fr/ah-ces-ptites-cremes-aux-oeufs-cremes-brulees-et-petits-flanbio-regressifs/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 flans »
+    pieces: 4
+  time_min_total: 50
+  active_min: 15
+
+  apports:
+    proteine: oeuf
+    feculent: aucun
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: lait, name: "lait frais entier", qty: 50, unit: cl}
+    - {id: gousse-vanille, name: "gousse de vanille", qty: 1, unit: pièce}
+    - {id: oeufs, name: "œufs", qty: 3, unit: pièce}
+    - {id: sirop-agave, name: "sirop d'agave (5 + 6 c. à s.)", qty: 11, unit: c. à s.}
+
+  steps:
+    - id: caramel
+      action: "Chauffer 6 c. à s. d'agave 2 min exactement à feu très doux en fouettant et le répartir aussitôt dans 4 ramequins"
+      needs: [simmer]
+      charge_partielle: true
+      uses: []
+      time_min: 3
+      attended: true
+    - id: appareil
+      action: "Préchauffer à 180 °C ; porter le lait à ébullition avec la vanille fendue, laisser infuser et tiédir, puis y fouetter les œufs et le reste d'agave"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [lait, gousse-vanille, oeufs, sirop-agave]
+      time_min: 10
+    - id: cuire
+      action: "Verser doucement sur le caramel à l'aide d'une cuillère et cuire 35 min au bain-marie"
+      needs: [bake]
+      uses: []
+      time_min: 35
+      attended: false
+      attente_min: 120
+      attente_raison: "à servir bien frais"
+
+  emits: []
+
+  plan_b: []

@@ -1,0 +1,102 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T191).
+#
+# LE SECRET EST LE POTIMARRON, RÂPÉ AVEC SA PEAU, et la vapeur : comme le
+# marbré p. 142, il cuit au cuit-vapeur (la cocotte de 7,5 L, `steam`).
+# Texture « humide », couleur orangée.
+#
+# LE ZESTE OU L'HUILE ESSENTIELLE : un zeste d'orange bio finement râpé, ou
+# 20 gouttes d'huile essentielle d'orange. Le rhum se remplace par un alcool
+# d'agrume (Cointreau, Grand-Marnier, limoncello, vin d'orange).
+#
+# LE MOULE À SAVARIN DE 22 CM n'est pas dans l'inventaire.
+
+recipe:
+  id: moelleux-mystere-orange
+  title: Moelleux « mystère » à l'orange
+  format: cake
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 153"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 153
+    saison: automne
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « pour 8 parts »
+  lot_entier: true
+  time_min_total: 60        # en-tête : 10 min de préparation + 45 min de vapeur ; hors refroidissement
+  active_min: 10
+
+  creneaux: [gouter, dessert]
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: [cucurbitacee]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: potimarron, name: "chair de potimarron râpée, avec la peau", qty: 250, unit: g}
+    - {id: farine-complete, name: farine T80 ou T110 de blé ou de grand épeautre, qty: 200, unit: g, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
+    - {id: sirop-agave, name: sirop d'agave, qty: 120, unit: g}
+    - {id: oeufs, name: œufs, qty: 3, unit: pièce}
+    - {id: orange, name: "zeste finement râpé d'une orange bio (ou 20 gouttes d'huile essentielle d'orange)", qty: 1, unit: pièce, subs: [{id: huile-essentielle-orange, name: "20 gouttes d'huile essentielle d'orange bio", ratio: 1.0}]}
+    - {id: jus-orange, name: jus d'orange, qty: 60, unit: g}
+    - {id: huile-tournesol, name: huile de tournesol désodorisée, qty: 6, unit: cl}
+    - {id: poudre-a-lever, name: poudre à lever, qty: 1, unit: sachet}
+    - {id: rhum, name: "rhum ambré (ou un alcool d'agrume)", qty: 2, unit: c. à s.}
+    - {id: sucre-vanille, name: sachets de sucre vanillé, qty: 2, unit: sachet}
+    - {id: sucre-glace, name: un peu de sucre glace, qty: 1, unit: c. à s., optional: true}
+
+  steps:
+    - id: eau
+      action: "Porter à ébullition au moins 1,5 L d'eau dans le bas du cuit-vapeur"
+      needs: [steam]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: pate
+      action: "Mélanger farine et poudre à lever, faire un puits, y ajouter tous les autres ingrédients et bien mélanger"
+      needs: []
+      uses: [farine-complete, poudre-a-lever, potimarron, sirop-agave, oeufs, orange, jus-orange, huile-tournesol, rhum, sucre-vanille]
+      time_min: 6
+      kid: {age_min_months: 30, task: "verser la farine et casser les œufs"}
+    - id: mouler
+      action: "Huiler un moule à savarin de 22 cm, y verser la pâte, égaliser et le poser dans le panier vapeur"
+      needs: []
+      uses: []
+      time_min: 2
+    - id: cuire
+      action: "Couvrir et cuire 45 min à feu moyen"
+      needs: [steam]
+      uses: []
+      time_min: 45
+      attended: false
+    - id: refroidir
+      action: "Sortir le moule et laisser refroidir entièrement, puis passer une lame autour et démouler"
+      needs: []
+      uses: []
+      time_min: 2
+      attente_min: 60
+      attente_raison: "refroidissement complet avant démoulage"
+    - id: servir
+      action: "Servir tel quel, ou saupoudré de sucre glace"
+      astuce: "Le sucre glace fond au contact de l'humidité et fait un léger glaçage."
+      needs: []
+      uses: [sucre-glace]
+      time_min: 1
+  # PAS DE PRÉLÈVEMENT BÉBÉ : rhum et sirop d'agave.
+
+  emits:
+    - kind: reste-plat
+      type: moelleux-orange
+      qty_band: 3-repas
+      keeps: {frigo_days: 4, congelo: true}
+      note: "goûters de la semaine"
+
+  plan_b: []

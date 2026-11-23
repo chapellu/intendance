@@ -1,0 +1,59 @@
+# ---------------------------------------------------------------------------
+# CE QU'UN PLAT PRODUIT, DIT EN FRANÇAIS — T193.
+#
+# Un `emits` porte un `type` (`lentilles-vertes-cuites`) qui sert à chaîner,
+# jamais à être lu. Les écrans le dé-tiretisaient faute de mieux : « pate
+# vegetal », « puree lentilles carottes », sans accents — noté au backlog
+# depuis T15 (« Le catalogue n'a pas de nom lisible pour ce qu'il produit »).
+#
+# LA PLUPART N'ONT PAS BESOIN D'ÊTRE ÉCRITS ICI. Un type émis par UN SEUL plat,
+# qui n'émet que lui, se dit par le titre de ce plat (`export_json.py`) : le
+# reste du « Casspoulet » est du casspoulet. Ce fichier ne nomme que ce que le
+# titre ne peut pas dire — les bases (une pâte, des lentilles cuites), les
+# types que plusieurs plats émettent, et ceux d'un plat qui en émet plusieurs
+# (le pot-au-feu laisse un bouillon, de la viande et des légumes).
+# `verifier.py` refuse un type émis qui n'a ni l'un ni l'autre.
+# ---------------------------------------------------------------------------
+libelles:
+  biscuits-cuillere-maison: biscuits à la cuillère maison
+  blinis-epeautre-son-avoine: blinis d'épeautre au son d'avoine
+  bouillon-herbes: bouillon d'herbes
+  bouillon-maison: bouillon de fanes
+  bouillon-pot-au-feu: bouillon de pot-au-feu
+  bouillon-poule-epeautre: bouillon de poule à l'épeautre
+  carcasse-volaille: carcasse de poulet
+  cereale-cuite: céréale cuite
+  creme-marron-maison: crème de marron maison
+  crepes-wraps: crêpes à wraps
+  falafels: falafels
+  fondue-courgettes: fondue de courgettes
+  frittata: frittata
+  fumet-moules: fumet de moules
+  haricots-blancs-cuits: haricots blancs cuits
+  jus-pois-chiches: jus de pois chiches
+  legumes-pot-au-feu: légumes du pot-au-feu
+  lentilles-vertes-cuites: lentilles vertes cuites
+  moulinee-hiver: moulinée de légumes d'hiver
+  mousse-chocolat: mousse au chocolat
+  pain-de-mie-maison: pain de mie maison
+  pains-suedois: pains suédois
+  parures-legumes: parures de légumes
+  pate-a-pizza: pâte à pizza
+  pate-brisee-portion: pâte brisée
+  pate-vegetal: pâté de lentilles
+  peperonata: sauce peperonata
+  piperade: piperade
+  poelee-legumes-verts: poêlée de légumes verts
+  pois-chiches-cuits: pois chiches cuits
+  poulet-cuit: poulet rôti
+  puree-lentilles-carottes: purée lentilles-carottes du bébé
+  reste-roti: reste de rôti
+  rillettes-poisson: rillettes de poisson
+  roti-froid: rôti froid
+  sauce-bolognaise: sauce bolognaise
+  tartinade-legumineuse: houmous
+  tartinade-vegetale: fromage végétal
+  tomme-vegetale: tomme végétale
+  veloute-vert: velouté vert
+  viande-pot-au-feu: viande du pot-au-feu
+  yaourt-soja: soja-dessert

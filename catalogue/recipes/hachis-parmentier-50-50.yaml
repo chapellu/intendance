@@ -1,0 +1,97 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T192).
+#
+# « 50/50 » : moitié pommes de terre, moitié légumes « ni vu ni connu » —
+# céleri-rave, topinambours, panais ou navets, poêlés en petits dés avec la
+# viande. Le céleri-rave est la ligne ; les autres en sont les remplaçants.
+#
+# LE PASSAGE AU FOUR EST FACULTATIF : pressé, on met tout le fromage d'un
+# coup et on sert sans gratiner. C'est le plan B.
+#
+# LA VIANDE CRUE, PAS LE RESTE DU POT-AU-FEU : la note du pot-au-feu p. 182
+# propose ce hachis pour sa viande, mais la page 199 demande du bœuf haché
+# cru, revenu. L'arête n'est pas posée.
+
+recipe:
+  id: hachis-parmentier-50-50
+  title: Hachis Parmentier « 50/50 »
+  format: gratin
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 199"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 199
+    saison: hiver
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes, plat complet de midi avec une salade »
+  time_min_total: 50        # en-tête : 20 + 20 min, + 10 min de four facultatives
+  active_min: 20
+
+  apports:
+    proteine: viande-rouge
+    feculent: pommes-de-terre
+    legumes: [racine, allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: pomme-de-terre, name: pommes de terre à purée, qty: 400, unit: g}
+    - {id: celeri-rave, name: "céleri-rave (ou topinambours, panais, petits navets, ou un mélange)", qty: 400, unit: g, subs: [{id: topinambours, name: "topinambours", ratio: 1.0}, {id: panais, name: "panais", ratio: 1.0}, {id: navets-roses, name: "petits navets roses", ratio: 1.0}]}
+    - {id: boeuf-hache, name: bœuf haché, qty: 300, unit: g}
+    - {id: oignon, name: gros oignons, qty: 2, unit: pièce}
+    - {id: fromage-rape, name: gruyère râpé, qty: 100, unit: g}
+    - {id: huile-olive, name: huile d'olive, qty: 6, unit: c. à s.}
+    - {id: creme-soja, name: crème de soja, qty: 20, unit: cl}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 1, unit: pincée, seasoning: true}
+
+  # « à servir avec une salade »
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: pommes-de-terre
+      action: "Cuire les pommes de terre pelées environ 25 min à l'eau bouillante salée, jusqu'à ce qu'elles soient bien tendres"
+      needs: [boil]
+      uses: [pomme-de-terre]
+      time_min: 25
+      attended: false
+    - id: prechauffer
+      action: "Préchauffer le four à 220 °C"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: viande
+      action: "Pendant ce temps : faire revenir à l'huile, à la poêle ou au wok, les oignons en petits cubes et la viande hachée"
+      needs: [pan-fry]
+      uses: [oignon, boeuf-hache, huile-olive]
+      time_min: 8
+      parallel_with: pommes-de-terre
+    - id: legumes
+      action: "Ajouter les légumes en dés de 1 cm, saler, poivrer, verser un petit verre d'eau et cuire jusqu'à ce que tout soit tendre et doré"
+      needs: [pan-fry]
+      uses: [celeri-rave, sel, poivre]
+      time_min: 15
+      parallel_with: pommes-de-terre
+    - id: melanger
+      action: "Égoutter les pommes de terre, les mêler à la poêlée, puis ajouter hors du feu la moitié du gruyère et la crème"
+      needs: []
+      uses: [creme-soja]
+      time_min: 3
+    - id: gratiner
+      action: "Verser dans un plat à gratin, couvrir du reste de gruyère et passer 10 min au four"
+      needs: [gratin-vessel, bake]
+      uses: [fromage-rape]
+      time_min: 10
+      attended: false
+  # PAS DE PRÉLÈVEMENT BÉBÉ : eau salée et poêlée salée.
+
+  plan_b:
+    - drop: gratiner
+      saves_min: 10
+      effect: "tout le fromage d'un coup dans la poêlée, servi sans gratiner — l'astuce de l'autrice pour les pressés"

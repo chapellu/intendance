@@ -1,0 +1,86 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE « CARBONARA » DE GRAINS : petit épeautre trempé la veille et mijoté
+# avec poireau, oignons et jambon, fini hors du feu à la crème d'épeautre et
+# au gruyère. Selon la provenance, l'épeautre demande plus d'une heure.
+
+recipe:
+  id: mitonnee-petit-epeautre-carbonara
+  title: Mitonnée de petit épeautre « façon carbonara »
+  format: mijote
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Mitonnée de petit épeautre façon carbonara », blog Saines Gourmandises, 10 octobre 2012"
+    url: https://saines-gourmandises.fr/envie-de-douceur-et-de-reconfort/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « pour 6 personnes »
+  time_min_total: 70        # 10 min de préparation + 1 h environ (trempage 12 h)
+  active_min: 15
+
+  apports:
+    proteine: viande-blanche
+    feculent: cereale
+    legumes: [allium]
+    profil: mijote
+    origine: italien
+
+  ingredients:
+    - {id: petit-epeautre, name: petit épeautre, qty: 500, unit: g}
+    - {id: jambon, name: "tranche épaisse (1 cm) de jambon blanc aux herbes", qty: 1, unit: tranche}
+    - {id: oignon, name: oignons, qty: 3, unit: pièce}
+    - {id: poireau, name: poireau, qty: 1, unit: pièce}
+    - id: creme-epeautre
+      name: crème d'épeautre
+      qty: 20
+      unit: cl
+      subs:
+        - {id: creme-avoine, name: crème d'avoine, ratio: 1.0}
+    - {id: fromage-rape, name: gruyère râpé, qty: 100, unit: g}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: sel, name: sel, qty: 2, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: tremper
+      action: "Mettre le petit épeautre à tremper dans de l'eau"
+      needs: []
+      uses: [petit-epeautre]
+      time_min: 2
+      attended: false
+      attente_min: 720
+      attente_raison: "trempage de 12 h, à lancer la veille"
+    - id: dorer
+      action: "Émincer finement poireau et oignons et les faire dorer à l'huile dans une cocotte avec le jambon en cubes"
+      needs: [simmer-large]
+      uses: [poireau, oignon, huile-olive, jambon]
+      time_min: 10
+      attended: true
+    - id: mijoter
+      action: "Ajouter l'épeautre avec toute son eau, saler, poivrer et mijoter à couvert une bonne heure"
+      astuce: "Surveiller le fond et ajouter de l'eau s'il accroche ; goûter et prolonger si le grain est encore ferme."
+      needs: [simmer-large]
+      uses: [sel, poivre]
+      time_min: 60
+      attended: false
+    - id: lier
+      action: "Hors du feu, incorporer la crème et le fromage et servir aussitôt"
+      needs: []
+      uses: [creme-epeautre, fromage-rape]
+      time_min: 2
+
+  emits:
+    - kind: reste-plat
+      type: mitonnee-petit-epeautre-carbonara
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

@@ -1,0 +1,97 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T191).
+#
+# LA SOUPE ÉCOSSAISE QUI FINIT UN POULET RÔTI : la carcasse, le jus figé et
+# le peu de viande qui reste. Deux arêtes : la carcasse est requise (sans elle,
+# pas de bouillon), la viande ne l'est pas (« la quantité n'est pas très
+# importante »). Les deux sortent du poulet rôti.
+#
+# LES PRUNEAUX DANS LE BOUILLON : c'est la recette, pas une fantaisie.
+#
+# FLOCONS D'ORGE OU D'AVOINE : `flocons-avoine` est au placard ; 6 c. à s.
+# au lieu de 4 pour une soupe plus épaisse.
+#
+# VARIANTE NON ENCODÉE : en plat principal, un poulet entier 1 h 30 dans 3 L
+# d'eau salée, avec de l'orge en grains au lieu des flocons.
+
+recipe:
+  id: cock-a-leekie
+  title: Cock-a-leekie
+  format: soupe
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 141"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 141
+    saison: automne
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 5          # « pour 4 à 6 personnes »
+  time_min_total: 40        # en-tête : 10 min de préparation + 30 min de cuisson
+  active_min: 12
+
+  accepts:
+    - type: carcasse-volaille
+      qty: {amount: 1, unit: pièce}
+      required: true
+      fallback_recipe: poulet-roti-du-dimanche
+    - type: poulet-cuit
+      qty: {amount: 100, unit: g}
+      required: false
+
+  apports:
+    proteine: viande-blanche
+    feculent: avoine
+    legumes: [allium]
+    profil: soupe
+    origine: francais
+
+  ingredients:
+    - {id: carcasse, name: "carcasse de poulet rôti, et son jus de cuisson dégraissé", qty: 1, unit: pièce, from_accepts: true}
+    - {id: poulet-cuit, name: "un peu de viande de poulet rôti, sans la peau", qty: 100, unit: g, from_accepts: true}
+    - {id: poireau, name: poireaux, qty: 900, unit: g}
+    - {id: pruneaux, name: pruneaux, qty: 12, unit: pièce}
+    - {id: eau, name: eau, qty: 1.5, unit: l}
+    - {id: flocons-avoine, name: "flocons d'orge ou d'avoine (6 c. à s. pour une soupe plus épaisse)", qty: 4, unit: c. à s.}
+    - {id: huile-olive, name: huile d'olive ou neutre, qty: 4, unit: c. à s.}
+    - {id: laurier, name: feuille de laurier, qty: 1, unit: pièce, seasoning: true}
+    - {id: clous-girofle, name: clou de girofle, qty: 1, unit: pièce, seasoning: true}
+    - {id: sel, name: sel (c. à s. rase), qty: 1, unit: c. à s., seasoning: true}
+
+  steps:
+    - id: revenir
+      action: "Émincer les poireaux, couper la viande en petits morceaux sans la peau, et faire revenir le tout à l'huile dans un faitout, jusqu'à une légère coloration"
+      astuce: "Pas de peau : elle rendrait le bouillon trop gras."
+      needs: [simmer-large]
+      uses: [poireau, poulet-cuit, huile-olive]
+      time_min: 8
+    - id: mouiller
+      action: "Ajouter la carcasse, son jus, les pruneaux, le laurier, le clou de girofle, le sel et l'eau, et porter à ébullition"
+      needs: [simmer-large]
+      uses: [carcasse, pruneaux, laurier, clous-girofle, sel, eau]
+      time_min: 5
+      kid: {age_min_months: 30, task: "compter et verser les pruneaux"}
+    - id: cuire
+      action: "Compter 15 min à feu moyen"
+      needs: [simmer-large]
+      uses: []
+      time_min: 15
+      attended: false
+    - id: flocons
+      action: "Ajouter les flocons et cuire encore 10 min"
+      needs: [simmer-large]
+      uses: [flocons-avoine]
+      time_min: 10
+      attended: false
+    - id: servir
+      action: "Retirer la carcasse, dénoyauter les pruneaux et servir"
+      needs: []
+      uses: []
+      time_min: 3
+  # PAS DE PRÉLÈVEMENT BÉBÉ : le sel entre avec l'eau, et la carcasse vient
+  # d'un poulet rôti déjà assaisonné.
+
+  plan_b: []

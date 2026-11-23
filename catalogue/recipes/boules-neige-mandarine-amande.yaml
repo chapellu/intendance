@@ -1,0 +1,70 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DES BONBONS DE NOËL : mandarines entières à peau fine, sans pépins, hachées
+# avec l'écorce, cuites 10 min au miel en marmelade épaisse, liées de poudre
+# d'amande et d'huile essentielle de mandarine, roulées en boules dans la
+# coco. Le miel plutôt que l'agave : cuit, l'agave peut amérir. Dix jours au
+# frais.
+
+recipe:
+  id: boules-neige-mandarine-amande
+  title: Boules de neige à la mandarine et à l'amande
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Boules de neige à la mandarine et à l'amande », blog Saines Gourmandises, 7 décembre 2012"
+    url: https://saines-gourmandises.fr/bonbons-de-noel/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « 12 à 15 boules de neige »
+    pieces: 14
+  time_min_total: 30
+  active_min: 25
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: mandarines, name: "mandarines bio à écorce fine", qty: 4, unit: pièce}
+    - {id: miel-acacia, name: "miel d'acacia", qty: 8, unit: c. à s.}
+    - {id: poudre-amande, name: "poudre d'amande blanche", qty: 125, unit: g}
+    - {id: essence-mandarine, name: "huile essentielle de mandarine", qty: 8, unit: pièce, optional: true}
+    - {id: noix-coco-rapee, name: "noix de coco râpée pour rouler", qty: 40, unit: g}
+
+  steps:
+    - id: hacher
+      action: "Couper les mandarines en morceaux avec l'écorce, ôter tout pépin, et les hacher finement"
+      needs: [chop-coarse-small]
+      uses: [mandarines]
+      time_min: 8
+    - id: cuire
+      action: "Cuire 10 min à feu assez doux avec le miel dans une casserole large, en remuant, jusqu'à une marmelade épaisse sans jus"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [miel-acacia]
+      time_min: 10
+      attended: true
+    - id: faconner
+      action: "Y malaxer la poudre d'amande et l'huile essentielle, puis, les mains huilées, former des boules et les rouler dans la coco"
+      astuce: "Une heure de repos rend la pâte moins collante."
+      needs: []
+      uses: [poudre-amande, essence-mandarine, noix-coco-rapee]
+      time_min: 12
+      kid: {age_min_months: 30, task: "rouler les boules dans la coco"}
+
+  emits:
+    - kind: base
+      type: boules-neige-mandarine-amande
+      qty_band: 3-repas
+      keeps: {frigo_days: 10, congelo: false}
+
+  plan_b: []

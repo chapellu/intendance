@@ -53,30 +53,36 @@ recipe:
 
   steps:
     - id: prechauffer-tourte
+      uses: []
       action: "Préchauffer le four à 200 °C en chaleur tournante, grille assez bas"
       needs: [bake]
       time_min: 1
       attended: false
     - id: etaler-la-tourte
+      uses: [pate-brisee-portion]
       action: "Étaler le pâton finement à même un papier cuisson, en un disque de 18 à 20 cm"
       needs: []
       time_min: 3
     - id: foncer-la-tourte
+      uses: []
       action: "Le faire glisser dans un petit plat rond d'environ 17 cm et appuyer pour tapisser le fond"
       astuce: "La pâte déborde un peu : c'est normal."
       needs: []
       time_min: 3
     - id: garnir-tourte
+      uses: [poelee-legumes-verts, oeufs, parmesan, pignons-pin, sel, poivre]
       action: "Mélanger tous les autres ingrédients dans un bol, saler et poivrer, verser sur la pâte et rabattre les bords sur la garniture"
       needs: []
       time_min: 4
       seasoning_gate: true
     - id: cuire-tourte
+      uses: []
       action: "Enfourner 25 min"
       needs: [bake]
       time_min: 25
       attended: false
     - id: refroidir-tourte
+      uses: []
       action: "Laisser ENTIÈREMENT refroidir avant de découper en quatre parts"
       astuce: "C'est ce qui rend la tourte mangeable à la main, sans couverts."
       needs: []

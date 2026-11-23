@@ -1,0 +1,81 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DEUX GRANDS FILETS DE LOUP roulés en turban autour d'écailles d'aubergine,
+# de persillade et de parmesan. Tout autre grand filet de poisson blanc
+# convient. Le plat rond de 20 cm n'est pas dans l'inventaire : un plat à
+# gratin du foyer fait l'affaire.
+
+recipe:
+  id: tian-loup-aubergines
+  title: Tian de loup aux aubergines et parmesan
+  format: piece
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Tian de loup aux aubergines et parmesan », blog Saines Gourmandises, 10 août 2018"
+    url: https://saines-gourmandises.fr/ca-y-on-rallumer-four/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « pour 8 personnes environ »
+  lot_entier: true
+  time_min_total: 75        # 15 min de préparation + 1 h de cuisson
+  active_min: 20
+
+  apports:
+    proteine: poisson
+    feculent: aucun
+    legumes: [solanacee, allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: poisson-blanc, name: "2 grands filets de loup (ou autre poisson blanc), env. 1,4 kg", qty: 1.4, unit: kg}
+    - {id: aubergine, name: grosses aubergines, qty: 2, unit: pièce}
+    - {id: parmesan, name: parmesan râpé, qty: 100, unit: g}
+    - {id: persil, name: persil plat, qty: 1, unit: bouquet}
+    - {id: ciboulette, name: "ciboulette (ou un petit oignon)", qty: 5, unit: brin}
+    - {id: ail, name: ail, qty: 2, unit: gousse}
+    - {id: vin-blanc-sec, name: vin blanc sec, qty: 10, unit: cl}
+    - {id: huile-olive, name: huile d'olive, qty: 5, unit: c. à s.}
+    - {id: sel, name: sel, qty: 3, unit: pincée, seasoning: true}
+    - {id: poivre-5-baies, name: poivre 5 baies, qty: 3, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: riz, name: riz basmati, qty: 400, unit: g}
+
+  steps:
+    - id: persillade
+      action: "Préchauffer le four à 180 °C ; hacher l'ail, la ciboulette et le persil, et trancher finement les aubergines"
+      needs: [chop-coarse]
+      uses: [ail, ciboulette, persil, aubergine]
+      time_min: 8
+    - id: garnir
+      action: "Saler et poivrer le premier filet, le couvrir d'écailles d'aubergine huilées au pinceau, de persillade et de parmesan"
+      needs: []
+      uses: [poisson-blanc, huile-olive, parmesan, sel, poivre-5-baies]
+      time_min: 4
+      kid: {age_min_months: 30, task: "saupoudrer le parmesan sur les aubergines"}
+    - id: rouler
+      action: "Rouler ce filet serré, garnir le second de la même façon, y poser le rouleau et enrouler le tout en turban"
+      astuce: "Un cure-dent tient le premier rouleau ; l'enlever avant d'enrouler le second."
+      needs: []
+      uses: []
+      time_min: 5
+    - id: cuire
+      action: "Poser le turban dans un plat, arroser de vin blanc et d'un filet d'huile, saler, poivrer et cuire 1 h"
+      needs: [gratin-vessel, bake]
+      uses: [vin-blanc-sec]
+      time_min: 60
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: tian-loup-aubergines
+      qty_band: 2-repas
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

@@ -56,20 +56,24 @@ recipe:
 
   steps:
     - id: mixer-herbes
+      uses: [herbes-fraiches, tahin, citron, ail, huile-olive, sel, poivre]
       action: "Mixer très finement les herbes avec le sel, le poivre, l'ail, le tahin, l'huile d'olive et le jus de citron"
       needs: [chop-coarse]
       time_min: 5
     - id: mixer-pois-chiches
+      uses: [pois-chiches-cuits-ing, farine-complete]
       action: "Ajouter les pois chiches et la farine, puis mixer par brèves impulsions en gardant des petits morceaux"
       astuce: "Réduits en purée lisse, l'appareil devient trop souple et les boules ne tiennent plus."
       needs: [chop-coarse]
       time_min: 4
     - id: faconner
+      uses: []
       action: "Façonner une vingtaine de boules de 35 g environ, en les roulant au fur et à mesure dans une assiette de farine"
       needs: [weigh]
       time_min: 10
       kid: {age_min_months: 30, task: "rouler les boules dans l'assiette de farine"}
     - id: poeler
+      uses: [huile-olive]
       action: "Chauffer un peu d'huile dans une poêle et cuire les falafels en les retournant de temps en temps"
       astuce: "Jusqu'à ce qu'ils soient bien dorés sur toutes leurs faces."
       needs: [pan-fry]
@@ -78,6 +82,7 @@ recipe:
       # À la poêle plutôt que frits ou au four : l'autrice y tient, c'est ce qui
       # donne le crousti-fondant et rend le plat plus digeste.
     - id: servir
+      uses: []
       action: "Servir tout chaud avec une salade"
       needs: []
       time_min: 1

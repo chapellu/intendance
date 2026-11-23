@@ -90,21 +90,21 @@ describe("T129 — la ligne « Ce soir » nomme le plat, et ce qui attend", () =
     // Trois portions d'un plat au congélateur, jeunes : elles ne pressent pas,
     // mais elles attendent — et l'année simulée ne les a jamais vues nommées.
     jeu.stock = [
-      { type: "curry-pois-chiches", kind: "reste-plat", qty: null, qty_band: "3-repas", born: "2026-08-10", location: "congelo", ref: "7" },
+      { type: "goulasch-boeuf", kind: "reste-plat", qty: null, qty_band: "3-repas", born: "2026-08-10", location: "congelo", ref: "7" },
     ];
     const { soir, vue: v } = avecProposition();
     const t = v.taches.find((x) => x.cle === "ce-soir")!;
     expect(t.titre).toBe(`Ce soir : ${soir.cartes[0]!.plat.titre}`);
     expect(t.detail).not.toMatch(/Rien n'est posé/);
-    expect(t.detail).toMatch(/3 repas de curry pois chiches au congélo/);
+    expect(t.detail).toMatch(/3 repas de goulasch[^·]* au congélo/i);
     expect(t.route).toEqual({ ecran: "ce-soir" });
     expect(t.lancer).toBe(soir.cartes[0]!.plat.id);
   });
 
   test("un dîner posé et pas encore fait se rappelle, avec l'heure où le lancer", () => {
-    poser(0, "diner", "lentilles-mijotees");
+    poser(0, "diner", "mitonnee-lentilles");
     const t = avecProposition().vue.taches.find((x) => x.cle === "ce-soir")!;
-    expect(t.titre).toBe(`Ce soir : ${jeu.plats["lentilles-mijotees"]!.titre}`);
+    expect(t.titre).toBe(`Ce soir : ${jeu.plats["mitonnee-lentilles"]!.titre}`);
     expect(t.detail).toMatch(/^posé — à lancer avant \d+h\d\d/);
     expect(t.route).toEqual({ ecran: "cuisiner", creneau: { jour: "2026-08-17", repas: "diner" } });
   });
@@ -118,7 +118,7 @@ describe("T129 — la ligne « Ce soir » nomme le plat, et ce qui attend", () =
   });
 
   test("un dîner déjà cuisiné ne réclame plus rien", () => {
-    poser(0, "diner", "lentilles-mijotees");
+    poser(0, "diner", "mitonnee-lentilles");
     const { vue: v } = avecProposition(new Set(["2026-08-17|diner"]));
     expect(v.taches.find((x) => x.cle === "ce-soir")).toBeUndefined();
   });
@@ -151,7 +151,7 @@ describe("le geste du jour", () => {
   // Le dîner de demain prend dans le bocal de sauce, qui est au congélo : il
   // faut le sortir ce soir, sinon il sera pris en bloc à 19 h.
   beforeEach(() => {
-    poser(0, "diner", "poulet-roti");
+    poser(0, "diner", "poulet-roti-du-dimanche");
     poser(1, "diner", "pates-bolognaise");
   });
 
@@ -170,7 +170,7 @@ describe("le geste du jour", () => {
 describe("les courses", () => {
   beforeEach(() => {
     poser(0, "diner", "lasagnes");
-    poser(2, "diner", "poulet-roti");
+    poser(2, "diner", "poulet-roti-du-dimanche");
   });
 
   test("la ligne dit où en est la liste, et pas autre chose", () => {
@@ -202,7 +202,7 @@ describe("les courses", () => {
 
 describe("le compte de la journée", () => {
   test("la pastille est la liste, pas un compte refait à côté", () => {
-    poser(0, "diner", "poulet-roti");
+    poser(0, "diner", "poulet-roti-du-dimanche");
     poser(1, "diner", "pates-bolognaise");
     const v = vue();
     expect(aFaire(v)).toBe(v.taches.length);
@@ -302,7 +302,7 @@ describe("les restes passés", () => {
     passes();
     const t = vue().taches.find((x) => x.cle === "perimes");
     expect(t?.titre).toBe("2 restes ont passé leur date");
-    expect(t?.detail).toContain("carcasse volaille, lentilles vertes cuites");
+    expect(t?.detail).toContain("carcasse de poulet, lentilles vertes cuites");
     // Capture du 19/10 : l'id d'émission s'affichait tel quel.
     expect(t?.detail).not.toMatch(/\w-\w/);
     // Le geste ne demande rien de plus que ce que la tâche porte.
@@ -366,7 +366,7 @@ describe("le cockpit n'envoie pas vers un écran éteint — T110", () => {
   // Le geste du jour, lui, survit aux jours cachés : il réclame un bocal à
   // sortir pour un plat POSÉ, pas une case de l'agenda. Il envoie au plat.
   test.runIf(!JOURS_VISIBLES)("sans les jours, le geste du jour ouvre la fiche du plat posé, et se coche sur place", () => {
-    poser(0, "diner", "poulet-roti");
+    poser(0, "diner", "poulet-roti-du-dimanche");
     poser(1, "diner", "pates-bolognaise");
     const t = vue().taches.find((x) => x.cle.startsWith("geste|"));
     expect(t?.titre).toBe("Sortir sauce bolognaise du congélo");

@@ -1,0 +1,91 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LE POULET CHASSEUR, sans crème : la sauce tient par la réduction des sucs.
+# Les cèpes sont facultatifs (selon la saison). Vaut aussi pour le lapin.
+# Une sauteuse dore mieux les morceaux qu'un faitout, mais pour 7 parts celle
+# du foyer (28 cm) est trop petite : la cocotte, que l'autrice admet.
+
+recipe:
+  id: poulet-chasseur
+  title: Poulet chasseur
+  format: mijote
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« La cuisine des grands classiques (suite), 3 recettes de bons plats du dimanche », blog Saines Gourmandises, 11 septembre 2014"
+    url: https://saines-gourmandises.fr/on-veut-des-recettes/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 7          # « pour 6/8 personnes »
+  time_min_total: 55        # 15 min de préparation + 40 min de cuisson
+  active_min: 25
+
+  apports:
+    proteine: viande-blanche
+    feculent: aucun
+    legumes: [allium, champignon]
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: poulet, name: poulet fermier découpé sans peau, qty: 1, unit: pièce}
+    - {id: echalote, name: échalotes, qty: 4, unit: pièce}
+    - {id: champignons-paris, name: champignons de Paris, qty: 300, unit: g}
+    - {id: cepes, name: cèpes ou champignons sauvages, qty: 300, unit: g, optional: true}
+    - {id: jambon-cru, name: "tranche épaisse de jambon cru (5 mm)", qty: 1, unit: tranche}
+    - {id: vin-blanc-sec, name: vin blanc sec, qty: 25, unit: cl}
+    - {id: concentre-tomate, name: "concentré de tomate (pas plus)", qty: 1, unit: c. à s.}
+    - {id: ail, name: ail, qty: 3, unit: gousse}
+    - {id: cognac, name: cognac ou armagnac, qty: 2, unit: c. à s.}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: sel, name: sel (avec prudence), qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 2, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: riz, name: riz, qty: 350, unit: g}
+
+  steps:
+    - id: colorer
+      action: "Émincer les échalotes, couper le jambon en lardons et les faire colorer à l'huile dans une grande cocotte"
+      needs: [simmer-large]
+      uses: [echalote, jambon-cru, huile-olive]
+      time_min: 6
+      attended: true
+    - id: dorer
+      action: "Ajouter les morceaux de poulet et les dorer à feu vif en remuant souvent"
+      needs: [simmer-large]
+      uses: [poulet]
+      time_min: 10
+      attended: true
+    - id: deglacer
+      action: "Déglacer au vin blanc et au cognac, puis incorporer le concentré de tomate"
+      astuce: "On peut flamber, c'est facultatif."
+      needs: [simmer-large]
+      uses: [vin-blanc-sec, cognac, concentre-tomate]
+      time_min: 3
+    - id: mijoter
+      action: "Ajouter les champignons émincés et l'ail, saler à peine, couvrir et cuire une petite demi-heure à feu doux"
+      astuce: "Peu de sel : le jambon cru en apporte déjà."
+      needs: [simmer-large]
+      uses: [champignons-paris, cepes, ail, sel]
+      time_min: 28
+      attended: false
+    - id: reduire
+      action: "Découvrir et réduire la sauce une dizaine de minutes, poivrer et servir"
+      astuce: "Surveiller le fond à ce moment-là : il accroche vite."
+      needs: [simmer-large]
+      uses: [poivre]
+      time_min: 10
+      attended: true
+
+  emits:
+    - kind: reste-plat
+      type: poulet-chasseur
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

@@ -1,0 +1,93 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T190).
+#
+# TOUT CRU DANS LE SALADIER, PUIS UNE HEURE ET DEMIE DE FOUR : 10 minutes de
+# travail, le reste sans surveillance. Le riz cuit dans le lait et le jus de
+# la courge, sans précuisson.
+#
+# LA COURGE EST PESÉE ÉPLUCHÉE ET ÉPÉPINÉE : 1 kg net. Musquée à la page ;
+# `courge` est l'id du primeur.
+
+recipe:
+  id: gratin-courge-riz
+  title: Gratin de courge au riz
+  format: gratin
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 133"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 133
+    saison: automne
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « pour 6 personnes »
+  time_min_total: 100       # en-tête : 10 min de préparation + 1 h 30 de four
+  active_min: 10
+
+  apports:
+    proteine: fromage
+    feculent: riz
+    legumes: [cucurbitacee, allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: courge, name: "courge musquée, pesée épluchée et sans les graines", qty: 1, unit: kg}
+    - {id: oignon, name: oignons, qty: 2, unit: pièce}
+    - {id: riz, name: riz basmati demi-complet, qty: 75, unit: g}
+    - {id: lait, name: lait, qty: 30, unit: cl}
+    - {id: parmesan, name: parmesan ou gruyère râpé, qty: 150, unit: g, subs: [{id: fromage-rape, name: "gruyère râpé", ratio: 1.0}]}
+    - {id: oeufs, name: œufs, qty: 3, unit: pièce}
+    - {id: huile-olive, name: huile pour le plat, qty: 1, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 180 °C"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: raper
+      action: "Râper la courge à la grosse grille, comme pour un céleri rémoulade ; peler et émincer finement les oignons"
+      needs: []
+      uses: [courge, oignon]
+      time_min: 6
+    - id: melanger
+      action: "Mélanger dans un grand saladier avec le riz, le lait, le fromage, les œufs, le sel et le poivre, en brassant bien"
+      needs: []
+      uses: [riz, lait, parmesan, oeufs, sel, poivre]
+      time_min: 2
+      kid: {age_min_months: 30, task: "brasser le mélange dans le saladier"}
+    - id: tasser
+      action: "Verser dans un plat huilé et bien tasser avec les mains"
+      needs: [gratin-vessel]
+      uses: [huile-olive]
+      time_min: 1
+      kid: {age_min_months: 30, task: "tasser le gratin avec les mains"}
+    - id: cuire
+      action: "Enfourner 1 h à 180 °C"
+      needs: [bake]
+      uses: []
+      time_min: 60
+      attended: false
+    - id: finir
+      action: "Baisser le four à 150 °C pour les 30 dernières minutes"
+      needs: [bake]
+      uses: []
+      time_min: 30
+      attended: false
+  # PAS DE PRÉLÈVEMENT BÉBÉ : tout est salé ensemble, à cru, avant le four.
+
+  emits:
+    - kind: reste-plat
+      type: gratin-courge-riz
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: true}
+      note: "6 parts pour le foyer : le reste se réchauffe au four"
+
+  plan_b: []                # tout le temps est au four, sans surveillance

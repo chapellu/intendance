@@ -8,9 +8,14 @@
 //
 // LA SEMAINE RESTE VIDE, ET C'EST LE POINT. Aucun plat n'est posé, donc la liste
 // n'a aucune raison d'exister — sauf le placard. Et la denrée choisie
-// (`graines-courge`, `usage: apero`) est citée par zéro des 86 recettes : il
+// (`tomates-sechees`, `usage: apero`) est citée par zéro des recettes : il
 // n'existe littéralement aucun chemin par lequel la semaine puisse la faire
 // apparaître. Si elle est dans la liste, c'est le plancher, et rien d'autre.
+// (Jusqu'à T196 c'étaient les graines de courge ; les crackers du blog en
+// mettent, et le bocal de tomates séchées à l'huile a pris le relais. Les
+// tomates séchées « nature » des crackers sont un autre produit, d'où le nom
+// exact ci-dessous.)
+const APERO = /^tomates séchées(?! nature)/;
 
 import { expect, test } from "@playwright/test";
 import { attendreLApp, ouvrirReglages } from "./parcours";
@@ -18,7 +23,7 @@ import { attendreLApp, ouvrirReglages } from "./parcours";
 /** La ligne d'un plancher posé, désignée par le seul bouton qui n'existe que
  *  là. Le NOM ne suffirait pas : la même denrée paraît aussi dans le relevé de
  *  sa zone, quelques centimètres plus bas. */
-const posee = (page: import("@playwright/test").Page, nom: string) =>
+const posee = (page: import("@playwright/test").Page, nom: string | RegExp) =>
   page
     .locator(".co-lot")
     .filter({ hasText: nom })
@@ -59,22 +64,22 @@ test("un plancher posé au placard part tout seul dans les courses", async ({ pa
   ).toBeVisible();
   await expect(page.getByText(/Pas de plancher sur/)).toHaveCount(0);
 
-  const candidat = page.locator(".co-lot").filter({ hasText: "graines courge" });
+  const candidat = page.locator(".co-lot").filter({ hasText: APERO });
   await candidat.getByRole("button", { name: "En garder 1" }).dispatchEvent("click");
 
   // ON ATTEND UN PROGRÈS EXPLICITE, jamais la disparition d'un texte : la ligne
   // change de section sous nous à chaque écriture, et `not.toHaveText` passerait
   // aussi si l'écran s'était simplement vidé.
-  await expect(posee(page, "graines courge")).toBeVisible();
+  await expect(posee(page, APERO)).toBeVisible();
 
   // Un plancher à 1 sur un bocal qu'on a déjà est TENU : rien à acheter. C'est
   // la moitié de la promesse — un plancher est un seuil, il ne réclame pas tant
   // qu'on est au-dessus.
-  await expect(posee(page, "graines courge")).toContainText("ok");
+  await expect(posee(page, APERO)).toContainText("ok");
 
   // On monte le niveau d'un cran : le placard passe sous son plancher.
-  await posee(page, "graines courge").getByRole("button", { name: "+" }).dispatchEvent("click");
-  await expect(posee(page, "graines courge")).toContainText("1 / 2");
+  await posee(page, APERO).getByRole("button", { name: "+" }).dispatchEvent("click");
+  await expect(posee(page, APERO)).toContainText("1 / 2");
 
   await page.goto("/#/cuisine/courses");
   await attendreLApp(page);
@@ -82,7 +87,7 @@ test("un plancher posé au placard part tout seul dans les courses", async ({ pa
   // LA LIGNE EST LÀ, DANS SON RAYON, ET ELLE DIT POURQUOI. Aucun plat ne la
   // réclame — « 0 plat » aurait été exact et incompréhensible, donc la phrase
   // parle du placard.
-  const article = page.locator(".co-art").filter({ hasText: "graines courge" });
+  const article = page.locator(".co-art").filter({ hasText: APERO });
   await expect(article).toBeVisible();
   await expect(article).toContainText("il en reste 1, vous en voulez 2");
   await expect(article).toContainText("pour l’apéro");
@@ -93,7 +98,7 @@ test("un plancher posé au placard part tout seul dans les courses", async ({ pa
   // `db/schema.ts`, et c'est ce qui distingue une liste d'une farce.
   await page.reload();
   await attendreLApp(page);
-  await expect(page.locator(".co-art").filter({ hasText: "graines courge" })).toBeVisible();
+  await expect(page.locator(".co-art").filter({ hasText: APERO })).toBeVisible();
 });
 
 // T158 — LE FOND EN UN GESTE. Le 24/10, le téléphone du foyer n'avait aucun

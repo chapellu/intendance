@@ -1,0 +1,84 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE BRIOCHE TRESSÉE SANS BEURRE : épeautre complet et son d'avoine, lait
+# d'amande et fleur d'oranger tiédis, agave, huile, œufs, deux cubes de levure
+# (il faut la « doper »), quelques gouttes d'huile essentielle de citron. La
+# pâte colle : mains huilées.
+
+recipe:
+  id: brioche-tressee-ig-bas
+  title: Une chouette brioche tressée à IG bas
+  role: base
+  creneaux: [petit-dejeuner, gouter]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Une chouette brioche à IG bas », blog Saines Gourmandises, 23 octobre 2012"
+    url: https://saines-gourmandises.fr/pour-christine/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « pour environ 8 personnes »
+  lot_entier: true
+  time_min_total: 170       # 20 min + 2 h de pousse + 30 min
+  active_min: 25
+
+  apports:
+    proteine: oeuf
+    feculent: pain
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: farine complète d'épeautre, qty: 500, unit: g}
+    - {id: son-avoine, name: son d'avoine, qty: 100, unit: g}
+    - {id: lait-amande, name: lait d'amande, qty: 15, unit: cl}
+    - {id: eau-fleur-oranger, name: eau de fleur d'oranger, qty: 5, unit: cl}
+    - {id: sirop-agave, name: sirop d'agave, qty: 5, unit: cl}
+    - {id: huile-olive, name: huile d'olive ou autre, qty: 10, unit: cl}
+    - {id: oeufs, name: œufs, qty: 3, unit: pièce}
+    - {id: levure-boulangere, name: cubes de levure fraîche, qty: 2, unit: pièce}
+    - {id: huile-essentielle-citron, name: huile essentielle de citron, qty: 5, unit: pièce, optional: true}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: levain
+      action: "Tiédir doucement le lait d'amande et la fleur d'oranger, y fouetter hors du feu agave et levure émiettée, puis œufs, huile et huile essentielle"
+      needs: [simmer]
+      charge_partielle: true   # le récipient ne tient que cette part du plat
+      uses: [lait-amande, eau-fleur-oranger, sirop-agave, levure-boulangere, oeufs, huile-olive, huile-essentielle-citron]
+      time_min: 6
+    - id: petrir
+      action: "Mélanger à la farine, au son et au sel, pétrir quelques minutes et laisser lever couvert au tiède"
+      needs: []
+      uses: [farine-epeautre, son-avoine, sel]
+      time_min: 6
+      attente_min: 90
+      attente_raison: "première pousse au tiède"
+    - id: tresser
+      action: "Former avec les mains huilées 3 boudins, les tresser sur une plaque chemisée et laisser lever encore"
+      needs: []
+      uses: []
+      time_min: 8
+      attente_min: 30
+      attente_raison: "seconde pousse, four à 150 °C"
+      kid: {age_min_months: 36, task: "rouler les boudins de pâte"}
+    - id: cuire
+      action: "Cuire 30 min à 150 °C"
+      astuce: "Si elle dore trop vite, finir les 10 dernières minutes à 120 °C."
+      needs: [bake]
+      uses: []
+      time_min: 30
+      attended: false
+
+  emits:
+    - kind: base
+      type: brioche-tressee-ig-bas
+      qty_band: 3-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

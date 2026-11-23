@@ -55,17 +55,20 @@ recipe:
 
   steps:
     - id: dorer-l-oignon
+      uses: [oignon, huile-olive, sel]
       action: "Éplucher et émincer l'oignon, le découper en petits cubes et le faire dorer dans une petite cocotte avec l'huile d'olive et une pincée de sel"
       needs: [pan-fry]
       time_min: 6
       attended: true
       seasoning_gate: true
     - id: reunir-le-pate
+      uses: [lentilles-vertes-cuites, puree-noisette, sel, poivre]
       action: "Transférer les sucs avec leur huile de cuisson dans le bol du robot, puis ajouter les lentilles, la purée de noisette, un peu de sel et de poivre"
       astuce: "Attendre que les sucs soient bien dorés, mais surtout PAS brûlés : un suc brûlé est amer et le pâté entier le prend."
       needs: []
       time_min: 3
     - id: mixer-le-pate
+      uses: [noisettes]
       action: "Mixer en 3 ou 4 brèves impulsions, puis ajouter les noisettes très grossièrement concassées"
       astuce: "Des petits morceaux, surtout pas de bouillie."
       needs: [chop-coarse]

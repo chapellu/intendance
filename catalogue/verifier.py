@@ -381,11 +381,17 @@ def verifier(rid: str, r: dict, rayons: dict, rules: dict, cat: dict,
 
     # `uses:` — le lien étape → ingrédient, et ses deux façons de mentir.
     #
-    # Il est FACULTATIF par recette (la plupart du catalogue ne l'a pas encore)
-    # mais TOTAL dès qu'une recette en déclare un seul : une couverture partielle
-    # est pire que pas de couverture du tout, parce qu'un écran qui déroule la
-    # recette geste par geste ne montre alors qu'une partie des quantités sans
-    # rien signaler, et le cuisinier oublie ce qui manque en croyant tout voir.
+    # Il est OBLIGATOIRE depuis T193, et TOTAL : chaque étape le porte, `[]`
+    # quand elle ne consomme rien. Le foyer l'a dit plusieurs fois — « on te
+    # dit mélanger l'eau et la farine, mais on ne te donne pas les quantités,
+    # donc tu restes sur la liste des ingrédients » : 82 plats sur 207 n'en
+    # avaient aucun, et le mode en cuisine renvoyait à la liste pour eux. Une
+    # couverture partielle est pire encore : l'écran ne montre alors qu'une
+    # partie des quantités sans rien signaler.
+    if etapes and not any("uses" in s for s in etapes if isinstance(s, dict)):
+        err.append("aucune étape ne porte `uses:` : en cuisine, aucune quantité ne "
+                   "serait rappelée au moment du geste — dire, étape par étape, "
+                   "quelles lignes d'ingrédient elle emploie (`[]` si aucune)")
     refs, doublons = {}, []
     for i in r.get("ingredients", []):
         cle = i.get("ref") or i["id"]
@@ -480,6 +486,28 @@ def verifier(rid: str, r: dict, rayons: dict, rules: dict, cat: dict,
     if src and not (src.get("page") or src.get("url")):
         warn.append("bloc source sans numéro de page ni URL : la recette n'est pas retrouvable")
     return err, warn
+
+
+def verifier_types_lisibles(cat: dict) -> tuple:
+    """T193 — tout ce qu'un plat produit se dit en français à l'écran.
+
+    Le titre du plat suffit quand un seul plat émet le type et n'émet que lui ;
+    sinon il faut un libellé dans `types.yaml`. Sans lui, l'écran retombait sur
+    l'identifiant dé-tiretisé : « pate vegetal », sans accents."""
+    libelles = (rc.load(HERE / "types.yaml") or {}).get("libelles", {})
+    emetteurs = {}
+    for rid, r in cat.items():
+        for e in r.get("emits", []):
+            emetteurs.setdefault(e["type"], []).append(r)
+    err = []
+    for t, rs in sorted(emetteurs.items()):
+        if t in libelles:
+            continue
+        if len(rs) == 1 and len({e["type"] for e in rs[0].get("emits", [])}) == 1:
+            continue
+        err.append(f"type émis « {t} » sans nom lisible : l'ajouter à types.yaml "
+                   f"({len(rs)} plat(s) l'émettent)")
+    return err, []
 
 
 def verifier_equivalences(eq: dict, rayons: dict) -> tuple:
@@ -607,6 +635,13 @@ def main() -> int:
                 print(f"  ✗ {e}")
             for w in warn:
                 print(f"  ⚠ {w}")
+
+        err, warn = verifier_types_lisibles(cat)
+        n_err += len(err); n_warn += len(warn)
+        if err:
+            print("\ntypes.yaml")
+            for e in err:
+                print(f"  ✗ {e}")
 
         err, warn = verifier_equivalences(rc.load(HERE / "equivalences.yaml"), rayons)
         n_err += len(err); n_warn += len(warn)

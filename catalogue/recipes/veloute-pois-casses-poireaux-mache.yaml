@@ -1,0 +1,85 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LE TREMPAGE EST FACULTATIF : sans lui, 50 min de cuisson au lieu de 35 et un
+# peu plus d'eau. C'est la version sans trempage qui est encodée, pour que le
+# plat se fasse le jour même ; l'astuce dit l'autre. La mâche cuit les 10
+# dernières minutes, la crème va dans l'assiette.
+
+recipe:
+  id: veloute-pois-casses-poireaux-mache
+  title: Velouté de pois cassés aux poireaux caramélisés
+  format: soupe
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Velouté de pois cassés aux poireaux caramélisés », blog Saines Gourmandises, 7 février 2017"
+    url: https://saines-gourmandises.fr/cest-beau-hiver-neige/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes »
+  time_min_total: 65
+  active_min: 15
+
+  apports:
+    proteine: legumineuse
+    feculent: legumineuse
+    legumes: [allium, feuille]
+    profil: soupe
+    origine: francais
+
+  ingredients:
+    - {id: pois-casses, name: pois cassés, qty: 200, unit: g}
+    - {id: poireau, name: poireaux, qty: 2, unit: pièce}
+    - {id: oignon, name: oignons, qty: 2, unit: pièce}
+    - {id: mache, name: mâche, qty: 150, unit: g}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: creme-soja, name: "crème de soja liquide (ou crème fleurette)", qty: 4, unit: c. à s.}
+    - {id: eau, name: eau, qty: 1.7, unit: l}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: dorer
+      action: "Émincer oignons et poireaux et les faire dorer à l'huile dans une cocotte jusqu'à une légère caramélisation"
+      astuce: "Sans faire fumer l'huile ni brûler les légumes : une cocotte à fond épais aide."
+      needs: [simmer-large]
+      uses: [oignon, poireau, huile-olive]
+      time_min: 12
+      attended: true
+    - id: cuire
+      action: "Ajouter l'eau, les pois cassés rincés et le sel, couvrir et cuire environ 50 min, jusqu'à ce que les pois se défassent"
+      astuce: "Trempés 12 h la veille, ils cuisent en 35 min avec 1,5 l d'eau."
+      needs: [simmer-large]
+      uses: [eau, pois-casses, sel]
+      time_min: 40
+      attended: false
+    - id: mache
+      action: "Ajouter la mâche pour les 10 dernières minutes"
+      needs: [simmer-large]
+      uses: [mache]
+      time_min: 10
+      attended: false
+    - id: mixer
+      action: "Mixer longuement avec le poivre jusqu'à un velouté lisse, et servir avec la crème dans l'assiette"
+      needs: [blend-smooth]
+      uses: [poivre, creme-soja]
+      time_min: 4
+      seasoning_gate: true
+
+  baby_portion:
+    take: "une petite louche de velouté mixé, prélevée avant le poivre"
+    prep: "servir tiède"
+    needs: []
+    depuis: [mache]
+
+  emits:
+    - kind: reste-plat
+      type: veloute-pois-casses-poireaux-mache
+      qty_band: 1-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

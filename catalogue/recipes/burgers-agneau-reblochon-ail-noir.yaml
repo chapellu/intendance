@@ -1,0 +1,76 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DES STEAKS D'AGNEAU HACHÉ GROS posés brûlants sur le reblochon pour qu'il fonde
+# juste un peu ; speck, tomates anciennes, oignon rouge, cornichons, laitue et
+# sarriette ; une sauce crue mixée à l'ail noir, moutarde et jaune d'œuf.
+
+recipe:
+  id: burgers-agneau-reblochon-ail-noir
+  title: Hamburgers du terroir à l'agneau, reblochon et sauce à l'ail noir
+  format: tartine
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« …Où il est question d'ail noir, de reblochon et d'agneau élevé dans mes montagnes », blog Saines Gourmandises, 1er juillet 2025"
+    url: https://saines-gourmandises.fr/ou-il-est-question-dail-noir-de-reblochon-et-dagneau-eleve-dans-mes-montagnes/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « pour 6 personnes »
+  time_min_total: 30
+  active_min: 25
+
+  apports:
+    proteine: viande-rouge
+    feculent: pain
+    legumes: [solanacee, allium, feuille]
+    profil: poele
+    origine: francais
+
+  ingredients:
+    - {id: agneau-hache, name: "sauté d'agneau haché gros", qty: 1200, unit: g}
+    - {id: oignon-rouge, name: "oignons rouges", qty: 2, unit: pièce}
+    - {id: jambon-cru, name: "tranches de speck ou jambon fumé de montagne", qty: 6, unit: tranche}
+    - {id: reblochon, name: "reblochon", qty: 500, unit: g}
+    - {id: pains-burger, name: "pains à hamburger artisanaux", qty: 6, unit: pièce}
+    - {id: cornichons, name: "cornichons", qty: 20, unit: pièce}
+    - {id: tomates, name: "grosses tomates anciennes", qty: 3, unit: pièce}
+    - {id: salade-verte, name: "petite laitue", qty: 1, unit: pièce}
+    - {id: sarriette, name: "brins de sarriette", qty: 3, unit: brin, optional: true}
+    - {id: ail-noir, name: "gousses d'ail noir", qty: 4, unit: pièce}
+    - {id: huile-olive, name: "huile d'olive", qty: 10, unit: c. à s.}
+    - {id: vinaigre, name: "vinaigre de vin", qty: 3, unit: c. à s.}
+    - {id: moutarde, name: "moutarde", qty: 1, unit: c. à c.}
+    - {id: oeufs, name: "jaune d'œuf cru", qty: 1, unit: pièce}
+    - {id: sel, name: "sel", qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: sauce
+      action: "Mixer l'ail noir, l'huile, le vinaigre, la moutarde, le jaune d'œuf et le sel"
+      needs: [blend-small]
+      uses: [ail-noir, huile-olive, vinaigre, moutarde, oeufs, sel]
+      time_min: 4
+    - id: tailler
+      action: "Émincer les oignons rouges, trancher le reblochon et les tomates"
+      needs: [chop-coarse]
+      uses: [oignon-rouge, reblochon, tomates]
+      time_min: 8
+    - id: steaks
+      action: "Façonner 6 steaks et les griller à la poêle"
+      needs: [pan-fry]
+      charge_partielle: true
+      uses: [agneau-hache]
+      time_min: 10
+    - id: monter
+      action: "Napper les pains de sauce, empiler tomate, oignon, cornichons, reblochon, steak brûlant, tomate, speck, laitue et sarriette"
+      needs: []
+      uses: [pains-burger, cornichons, jambon-cru, salade-verte, sarriette]
+      time_min: 6
+      kid: {age_min_months: 36, task: "poser la salade et les cornichons"}
+
+  emits: []
+
+  plan_b: []

@@ -1,0 +1,135 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T191).
+#
+# UNE TERRINE POUR QUINZE, ET C'EST TOUT SON INTÉRÊT : 25 minutes de travail
+# pour plusieurs repas, au frais plusieurs jours, au congélateur plusieurs
+# semaines. Pas de gras ajouté hors l'huile des oignons : c'est la masse de
+# légumes qui remplace le gras de porc.
+#
+# LE ROBOT DU LIVRE, LE COUTEAU DU FOYER. L'autrice hache foies, herbes et
+# légumes cuits au robot ; le foyer n'a que le petit blender du mixeur, trop
+# petit pour 2 kg de farce. L'étape le dit en `chop-coarse`.
+#
+# LA TERRINE DE 3 L N'EST PAS DANS L'INVENTAIRE. 28 × 18 × 10 cm chez
+# l'autrice ; le modèle ne connaît que les plats à gratin. Rien ne le vérifie.
+#
+# LE REPOS DE 24 À 48 H EST FACULTATIF, dit l'en-tête : il n'est pas une
+# attente du modèle, seulement une astuce. Le refroidissement dans le four
+# éteint, lui, est une attente.
+#
+# VARIANTES NON ENCODÉES : cèpes frais au lieu des champignons blancs, canard
+# désossé ou 800 g de magrets au lieu du porc — « plat de fête ».
+
+recipe:
+  id: terrine-echalote-noisettes-champignons
+  title: Terrine légère à l'échalote, noisettes et champignons
+  format: terrine
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 134"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 134
+    saison: automne
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 15         # « pour au moins 15 personnes (en plat principal) »
+  lot_entier: true
+  time_min_total: 165       # en-tête : 25 min de préparation + 2 h 20 de four, hors refroidissement
+  active_min: 25
+
+  apports:
+    proteine: viande-blanche
+    feculent: aucun
+    legumes: [allium, champignon]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: porc-hache, name: "échine de porc, hachée par le boucher", qty: 850, unit: g}
+    - {id: oignon, name: oignons, qty: 800, unit: g}
+    - {id: jambon-cru, name: jambon cru fumé, qty: 130, unit: g}
+    - {id: champignons-paris, name: "champignons blancs très frais (ou cèpes frais)", qty: 500, unit: g}
+    - {id: ail, name: ail, qty: 3, unit: gousse}
+    - {id: foies-volaille, name: foies de volaille fermiers, qty: 500, unit: g}
+    - {id: laurier, name: "feuilles de laurier frais (+ 3 pour décorer)", qty: 9, unit: pièce}
+    - {id: sauge, name: feuilles de sauge fraîche, qty: 7, unit: pièce}
+    - {id: sarriette, name: sarriette ou origan frais, qty: 10, unit: brin}
+    - {id: huile-olive, name: huile d'olive, qty: 7, unit: cl}
+    - {id: oeufs, name: œufs, qty: 2, unit: pièce}
+    - {id: farine, name: farine, qty: 25, unit: g}
+    - {id: cognac, name: "cognac ou armagnac (à défaut rhum ou whisky)", qty: 2, unit: c. à s., subs: [{id: rhum, name: "rhum", ratio: 1.0}]}
+    - {id: noisettes, name: noisettes entières, qty: 200, unit: g}
+    - {id: poivre, name: "poivre bien parfumé (c. à c. légèrement bombée)", qty: 1, unit: c. à c., seasoning: true}
+    - {id: sel, name: sel fin, qty: 25, unit: g, seasoning: true}
+
+  steps:
+    - id: dorer
+      action: "Émincer les oignons, couper le jambon en morceaux et faire dorer le tout à l'huile dans une cocotte"
+      needs: [simmer-large]
+      uses: [oignon, jambon-cru, huile-olive]
+      time_min: 12
+      charge_partielle: true   # la cocotte tient les légumes, pas les 15 parts
+    - id: champignons
+      action: "Ajouter les champignons coupés en gros morceaux et les faire suer à feu assez vif, jusqu'à ce que leur jus soit évaporé"
+      needs: [simmer-large]
+      uses: [champignons-paris]
+      time_min: 10
+      charge_partielle: true   # la cocotte tient les légumes, pas les 15 parts
+    - id: prechauffer
+      action: "Préchauffer le four à 150 °C, en chaleur statique"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: farce
+      action: "Hacher finement l'ail, les foies, 6 feuilles de laurier, la sauge et la sarriette effeuillée, puis y mêler cognac, poivre, sel, œufs et farine"
+      astuce: "Effeuiller la sarriette : les tiges coriaces ne se fondent pas dans la masse."
+      needs: [chop-coarse]
+      uses: [ail, foies-volaille, laurier, sauge, sarriette, cognac, poivre, sel, oeufs, farine]
+      time_min: 10
+      seasoning_gate: true
+    - id: hacher-legumes
+      action: "Hacher grossièrement les oignons et champignons cuits, puis les réunir avec la farce, le porc et les noisettes entières"
+      needs: [chop-coarse]
+      uses: [porc-hache, noisettes]
+      time_min: 5
+      kid: {age_min_months: 30, task: "verser les noisettes dans le saladier"}
+    - id: remplir
+      action: "Bien brasser, verser dans une terrine d'environ 3 L, décorer des 3 feuilles de laurier et couvrir d'un couvercle ou d'un papier plié en quatre"
+      needs: []
+      uses: []
+      time_min: 3
+    - id: cuire
+      action: "Enfourner 2 h à 150 °C"
+      needs: [bake]
+      uses: []
+      time_min: 120
+      attended: false
+    - id: dorer-four
+      action: "Retirer le couvercle, monter le four à 180 °C et cuire encore 15 à 20 min, jusqu'à ce que le dessus soit bien doré"
+      needs: [bake]
+      uses: []
+      time_min: 18
+      attended: false
+    - id: refroidir
+      action: "Laisser refroidir dans le four éteint, puis emballer soigneusement et mettre au frais"
+      astuce: "Un ou deux jours de repos au frais la rendent encore meilleure : facultatif, mais ça vaut l'attente."
+      needs: []
+      uses: []
+      time_min: 3
+      attente_min: 180
+      attente_raison: "refroidissement dans le four éteint"
+  # PAS DE PRÉLÈVEMENT BÉBÉ : 25 g de sel, du cognac et du foie, dans une
+  # farce crue où rien ne se sépare.
+
+  emits:
+    - kind: reste-plat
+      type: terrine-echalote-noisettes
+      qty_band: 3-repas
+      keeps: {frigo_days: 5, congelo: true}
+      note: "en tranches, plusieurs jours au frais ; plusieurs semaines au congélateur"
+
+  plan_b: []

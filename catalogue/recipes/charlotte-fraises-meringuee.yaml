@@ -1,0 +1,81 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE MOUSSE DE FRAISES TENUE PAR L'AGAR-AGAR : fraises compotées avec l'agar-agar
+# et l'agave, mixées brûlantes avec deux petits-suisses, blancs en neige
+# incorporés aussitôt (l'agar-agar fige vers 25 °C) ; biscuits trempés dans
+# un sirop parfumé, 6 h au frais ; meringue au sucre de bouleau étalée au
+# moment de servir. Une couronne de fleurs comestibles, si on a.
+
+recipe:
+  id: charlotte-fraises-meringuee
+  title: Charlotte aux fraises meringuée
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Les Secrets de la Pâtisserie Bio, suite… Des biscuits à la cuillère, 2 charlottes, un tiramisu », blog Saines Gourmandises, 5 juin 2014"
+    url: https://saines-gourmandises.fr/mieux-que-60-desserts-a-ig-bas-97-desserts-a-ig-bas/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « une charlotte de 6 parts »
+  lot_entier: true
+  time_min_total: 25
+  active_min: 25
+
+  apports:
+    proteine: oeuf
+    feculent: biscuit
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: fraises, name: "fraises bien mûres", qty: 250, unit: g}
+    - {id: petits-suisses, name: "petits-suisses", qty: 2, unit: pièce}
+    - {id: agar-agar, name: "agar-agar", qty: 2, unit: g}
+    - {id: oeufs, name: "blancs d'œufs (2 + 3)", qty: 5, unit: pièce}
+    - {id: sirop-agave, name: "sirop d'agave (6 c. à s. + 5 cl)", qty: 14, unit: c. à s.}
+    - {id: biscuits-cuillere, name: "biscuits à la cuillère", qty: 16, unit: pièce}
+    - {id: eau, name: "eau", qty: 5, unit: cl}
+    - {id: extrait-vanille, name: "extrait de vanille (ou autre parfum)", qty: 1, unit: c. à s.}
+    - {id: sucre-bouleau, name: "sucre de bouleau", qty: 65, unit: g}
+
+  steps:
+    - id: compote
+      action: "Compoter à feu doux les fraises en quartiers saupoudrées d'agar-agar avec 6 c. à s. d'agave, jusqu'à ce qu'elles baignent dans un jus sirupeux"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [fraises, agar-agar]
+      time_min: 8
+    - id: moule
+      action: "Monter 2 blancs en neige ; mêler l'eau, 5 cl d'agave et la vanille ; tapisser un moule filmé de biscuits trempés vite dans ce sirop"
+      needs: []
+      uses: [eau, sirop-agave, extrait-vanille, biscuits-cuillere]
+      time_min: 8
+      parallel_with: compote
+      kid: {age_min_months: 36, task: "tremper les biscuits dans le sirop"}
+    - id: mousse
+      action: "Mixer les fraises brûlantes avec les petits-suisses, incorporer aussitôt les blancs, et remplir le moule en deux fois autour d'une couche de biscuits"
+      needs: [blend-smooth]
+      uses: [petits-suisses]
+      time_min: 6
+      attente_min: 360
+      attente_raison: "au moins 6 h au frais"
+    - id: meringue
+      action: "Démouler, monter 3 blancs en ajoutant le sucre peu à peu jusqu'à des pics souples et brillants, et en couvrir la charlotte à la spatule"
+      needs: []
+      uses: [oeufs, sucre-bouleau]
+      time_min: 8
+
+  emits:
+    - kind: reste-plat
+      type: charlotte-fraises-meringuee
+      qty_band: 2-repas
+      keeps: {frigo_days: 1, congelo: false}
+      note: "12 h au plus au frais une fois meringuée"
+
+  plan_b: []

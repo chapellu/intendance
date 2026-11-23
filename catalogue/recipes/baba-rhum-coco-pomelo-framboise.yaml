@@ -1,0 +1,74 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LA GÉNOISE DE BASE AUX ŒUFS FOUETTÉS cuite 15 min dans un savarin beurré de
+# 24 cm, fendue, garnie de suprêmes de pomelo rose et de framboises, imbibée
+# d'un sirop au rhum, couverte de chantilly de coco à la vanille et de coco
+# râpée.
+
+recipe:
+  id: baba-rhum-coco-pomelo-framboise
+  title: Baba rhum-coco au pomelo corse et à la framboise
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Baba rhum-coco au pamplemousse corse et à la framboise », blog Saines Gourmandises, 15 mai 2015"
+    url: https://saines-gourmandises.fr/joyeux-anniversaire/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « un gâteau de 8 parts »
+  lot_entier: true
+  time_min_total: 45
+  active_min: 30
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: oeufs, name: "œufs", qty: 4, unit: pièce}
+    - {id: sirop-agave, ref: agave-genoise, name: "sirop d'agave (génoise)", qty: 10, unit: cl}
+    - {id: farine-petit-epeautre, name: "farine de petit épeautre T110", qty: 170, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever (demi-paquet)", qty: 0.5, unit: sachet}
+    - {id: beurre, name: "beurre pour le moule", qty: 15, unit: g}
+    - {id: rhum, name: "rhum ambré", qty: 3, unit: c. à s.}
+    - {id: sirop-agave, name: "sirop d'agave (sirop 3 c. à s. + chantilly 2 c. à s.)", qty: 5, unit: c. à s.}
+    - {id: eau, name: "eau", qty: 2, unit: c. à s.}
+    - {id: creme-coco, name: "crème de coco très froide", qty: 20, unit: cl}
+    - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 1, unit: c. à s.}
+    - {id: pomelo, name: "pomelo rose", qty: 1, unit: pièce}
+    - {id: framboises, name: "petit bol de framboises", qty: 150, unit: g}
+    - {id: noix-coco-rapee, name: "un peu de noix de coco râpée", qty: 2, unit: c. à s.}
+
+  steps:
+    - id: genoise
+      action: "Préchauffer à 180 °C et beurrer le savarin ; fouetter œufs et agave jusqu'à tripler, y mêler farine et levure tamisées et cuire 15 min"
+      needs: [bake]
+      uses: [beurre, oeufs, agave-genoise, farine-petit-epeautre, poudre-a-lever]
+      time_min: 30
+    - id: garnitures
+      action: "Peler à vif le pomelo en suprêmes ; mêler rhum, 3 c. à s. d'agave et eau ; monter la crème de coco en chantilly avec 2 c. à s. d'agave et la vanille"
+      needs: []
+      uses: [pomelo, rhum, sirop-agave, eau, creme-coco, extrait-vanille]
+      time_min: 12
+    - id: monter
+      action: "Fendre la génoise froide, garnir la base de pomelo et framboises, imbiber, napper de chantilly, poser le chapeau imbibé, finir de chantilly et coco"
+      needs: []
+      uses: [framboises, noix-coco-rapee]
+      time_min: 10
+      kid: {age_min_months: 30, task: "poser les framboises"}
+
+  emits:
+    - kind: reste-plat
+      type: baba-rhum-coco-pomelo-framboise
+      qty_band: 3-repas
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

@@ -1,0 +1,93 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# TROIS PIZZAS D'UNE PÂTE MOITIÉ FARINE T150, MOITIÉ SON D'AVOINE, levée 1 h
+# dans le four tiède éteint ; très collante au début, elle se tient à mesure
+# que le son boit l'eau. Jambon, champignons, mozzarella, parmesan, olives.
+
+recipe:
+  id: pizza-ig-bas-son-avoine
+  title: Une bonne pizza à IG bas au son d'avoine
+  format: pizza
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Une bonne pizza à IG bas… », blog Saines Gourmandises, 7 juin 2012"
+    url: https://saines-gourmandises.fr/on-a-beau-faire-ig-bas-on-va-pas-se-laisser-abattre-pour-autant/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « 3 pizzas copieuses »
+  time_min_total: 110       # 20 min de préparation + 1 h 30 de pousse + 20 min
+  active_min: 25
+
+  apports:
+    proteine: fromage
+    feculent: farine
+    legumes: [champignon, solanacee]
+    profil: four
+    origine: italien
+
+  ingredients:
+    - {id: farine-complete, name: farine T150, qty: 250, unit: g}
+    - {id: son-avoine, name: son d'avoine, qty: 250, unit: g}
+    - {id: levure-boulangere, name: levure de boulanger déshydratée (ou 1 cube frais), qty: 2, unit: sachet}
+    - {id: eau, name: eau à peine tiède, qty: 30, unit: cl}
+    - {id: origan, name: origan ou marjolaine, qty: 2, unit: c. à c., seasoning: true}
+    - {id: sirop-agave, name: sirop d'agave, qty: 1, unit: c. à s.}
+    - {id: huile-olive, name: huile d'olive, qty: 3, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: sauce-tomate, name: sauce tomate en bocal, qty: 350, unit: g}
+    - {id: jambon, name: tranches de jambon, qty: 3, unit: tranche}
+    - {id: champignons-paris, name: petits champignons blancs, qty: 250, unit: g}
+    - {id: mozzarella, name: mozzarella, qty: 300, unit: g}
+    - {id: parmesan, name: parmesan, qty: 60, unit: g}
+    - {id: tomates-cerises, name: quelques tomates cerises, qty: 8, unit: pièce}
+    - {id: sarriette, name: sarriette, qty: 3, unit: brin}
+    - {id: olives-noires, name: olives noires, qty: 12, unit: pièce}
+
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: pate
+      action: "Tiédir le four à 50-80 °C ; dissoudre la levure dans l'eau tiède, mélanger farine et son, puis tout le reste de la pâte, et pétrir quelques minutes"
+      astuce: "Très collante au début : elle se tient à mesure que le son boit l'eau."
+      needs: []
+      uses: [levure-boulangere, eau, farine-complete, son-avoine, origan, sirop-agave, huile-olive, sel]
+      time_min: 8
+      kid: {age_min_months: 30, task: "pétrir la pâte"}
+    - id: lever
+      action: "Couvrir et laisser lever dans le four tiède éteint"
+      needs: []
+      uses: []
+      time_min: 1
+      attente_min: 60
+      attente_raison: "pousse de la pâte"
+    - id: etaler
+      action: "Sortir la pâte, préchauffer à 180 °C, la partager en trois et l'étaler en disques de 26 cm"
+      needs: [bake]
+      uses: []
+      time_min: 6
+    - id: garnir
+      action: "Napper de sauce tomate, puis champignons émincés, jambon, sarriette, mozzarella, parmesan, tomates cerises et olives"
+      needs: []
+      uses: [sauce-tomate, champignons-paris, jambon, sarriette, mozzarella, parmesan, tomates-cerises, olives-noires]
+      time_min: 8
+      kid: {age_min_months: 24, task: "poser les olives et les tomates cerises"}
+    - id: cuire
+      action: "Cuire 20 min"
+      needs: [bake]
+      uses: []
+      time_min: 20
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: pizza-ig-bas-son-avoine
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: true}
+
+  plan_b: []

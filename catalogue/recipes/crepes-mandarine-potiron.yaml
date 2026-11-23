@@ -1,0 +1,66 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DES CRÊPES ORANGE : 400 g de courge crue mixée avec œufs, huile, rhum, vanille,
+# eau et zeste de mandarine, puis la farine et la levure ; cuites comme des
+# crêpes ordinaires, la pâte allongée d'eau si besoin.
+
+recipe:
+  id: crepes-mandarine-potiron
+  title: Crêpes à la mandarine et au potiron
+  creneaux: [gouter, dessert, petit-dejeuner]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Crêpes à la mandarine et au potiron », blog Saines Gourmandises, 2 février 2021"
+    url: https://saines-gourmandises.fr/encore-une-idee-farfelue/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 5          # « 12 à 20 crêpes »
+    pieces: 16
+  time_min_total: 35
+  active_min: 30
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: [cucurbitacee]
+    profil: poele
+    origine: francais
+
+  ingredients:
+    - {id: courge, name: "chair de courge crue sans peau ni graines", qty: 400, unit: g}
+    - {id: farine-epeautre, name: "farine T110 de grand épeautre", qty: 400, unit: g}
+    - {id: oeufs, name: "œufs", qty: 4, unit: pièce}
+    - {id: huile-tournesol, name: "huile neutre (+ pour la poêle)", qty: 5, unit: c. à s.}
+    - {id: rhum, name: "rhum ambré", qty: 4, unit: c. à s.}
+    - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 4, unit: c. à c.}
+    - {id: poudre-a-lever, name: "poudre à lever", qty: 1, unit: sachet}
+    - {id: eau, name: "eau", qty: 40, unit: cl}
+    - {id: mandarines, name: "mandarine bio (zeste)", qty: 1, unit: pièce}
+    - {id: sel, name: "pincée de sel", qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: pate
+      action: "Mixer la courge avec les œufs, l'huile, le rhum, la vanille, l'eau, le zeste et le sel en crème lisse, puis la farine et la levure"
+      needs: [blend-smooth]
+      uses: [courge, oeufs, huile-tournesol, rhum, extrait-vanille, eau, mandarines, sel, farine-epeautre, poudre-a-lever]
+      time_min: 6
+    - id: cuire
+      action: "Cuire les crêpes dans une poêle légèrement huilée, en allongeant la pâte d'un peu d'eau si besoin"
+      needs: [pan-fry]
+      uses: []
+      time_min: 25
+      attended: true
+      kid: {age_min_months: 36, task: "verser la louche de pâte"}
+
+  emits:
+    - kind: reste-plat
+      type: crepes-mandarine-potiron
+      qty_band: 1-repas
+      keeps: {frigo_days: 2, congelo: true}
+
+  plan_b: []

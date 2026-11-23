@@ -1,0 +1,96 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE BÛCHE EN MAISON : génoise au cacao découpée en bandes de 8, 6 et 2 cm
+# empilées en pignon, imbibées d'un sirop de miel, whisky et huile essentielle
+# de sapin de Sibérie, fourrées de chantilly de coco au miel et au sapin ;
+# couverte de ganache au chocolat, toit de biscuits à la cuillère, neige de
+# chantilly vanillée et de coco, sur un lit de pralin maison. Les volets en
+# pâte à biscuits (« au choix », dit l'autrice) ne sont pas encodés.
+
+recipe:
+  id: buche-sapin-miel-chalet
+  title: Bûche de Noël au miel et au sapin façon « chalet de la forêt »
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Bûche de Noël au miel et au… sapin façon Chalet de la forêt », blog Saines Gourmandises, 17 décembre 2020"
+    url: https://saines-gourmandises.fr/la-sapiniere/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 11          # « pour 10 à 12 parts »
+  lot_entier: true
+  time_min_total: 75
+  active_min: 60
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: oeufs, name: "œufs (4 génoise + 2 jaunes ganache)", qty: 6, unit: pièce}
+    - {id: sucre-complet, name: "sucre de coco (80 g + 1 c. à s.)", qty: 90, unit: g}
+    - {id: farine-epeautre, name: "farine de grand épeautre T110", qty: 50, unit: g}
+    - {id: cacao, name: "cacao amer", qty: 25, unit: g}
+    - {id: sucre-vanille, name: "sucre vanillé (3 + 3 + 2 + 2)", qty: 10, unit: sachet}
+    - {id: poudre-a-lever, name: "poudre à lever (demi-c. à c.)", qty: 0.5, unit: c. à c.}
+    - {id: chocolat-noir, name: "chocolat noir pâtissier 70 %", qty: 200, unit: g}
+    - {id: creme-coco, name: "crème de coco (20 + 40 + 20 cl)", qty: 80, unit: cl}
+    - {id: sirop-agave, name: "sirop d'agave (4 + 3 c. à s.)", qty: 7, unit: c. à s.}
+    - {id: miel-acacia, name: "miel d'acacia (4 c. à s. + 60 g)", qty: 120, unit: g}
+    - {id: essence-sapin, name: "huile essentielle de sapin de Sibérie", qty: 5, unit: pièce}
+    - {id: noisettes, name: "noisettes", qty: 150, unit: g}
+    - {id: whisky, name: "whisky ou cognac", qty: 1, unit: c. à s.}
+    - {id: eau, name: "eau", qty: 3, unit: c. à s.}
+    - {id: biscuits-cuillere, name: "biscuits à la cuillère", qty: 12, unit: pièce}
+    - {id: noix-coco-rapee, name: "noix de coco râpée", qty: 30, unit: g}
+
+  steps:
+    - id: ganache
+      action: "Préchauffer à 180 °C ; chauffer 20 cl de crème de coco avec 4 c. à s. d'agave, y fondre le chocolat et mixer avec 2 jaunes jusqu'à une crème lisse"
+      needs: [simmer, blend-smooth]
+      charge_partielle: true
+      uses: [chocolat-noir]
+      time_min: 8
+    - id: genoise
+      action: "Fouetter 2 œufs et 2 jaunes avec le sucre, y mêler farine, cacao et levure tamisés et les 2 blancs montés au sucre vanillé, étaler en plaque et cuire"
+      needs: [bake]
+      uses: [oeufs, sucre-complet, farine-epeautre, cacao, poudre-a-lever, sucre-vanille]
+      time_min: 22
+    - id: pralin
+      action: "Griller les noisettes 10 min, les frotter pour ôter les peaux, puis les caraméliser à la poêle avec un peu de sucre de coco et vanillé, et concasser"
+      needs: [pan-fry]
+      charge_partielle: true
+      uses: [noisettes]
+      time_min: 15
+    - id: cremes
+      action: "Fouetter 40 cl de crème de coco avec 4 c. à s. de miel, sucre vanillé et 3 gouttes de sapin ; mêler 60 g de miel, eau, alcool et 2 gouttes de sapin"
+      needs: []
+      uses: [creme-coco, miel-acacia, essence-sapin, eau, whisky]
+      time_min: 10
+    - id: monter
+      action: "Empiler les bandes de génoise (8, 8, 8, 6 puis 2 cm) imbibées et tartinées de crème au sapin, couvrir de ganache et coller les biscuits en toit"
+      needs: []
+      uses: [biscuits-cuillere]
+      time_min: 20
+      kid: {age_min_months: 48, task: "poser les biscuits du toit"}
+    - id: neige
+      action: "Fouetter 20 cl de crème de coco avec 3 c. à s. d'agave et du sucre vanillé, la poser sur le faîtage, saupoudrer de coco et servir sur le pralin"
+      needs: []
+      uses: [sirop-agave, noix-coco-rapee]
+      time_min: 8
+
+  emits:
+    - kind: reste-plat
+      type: buche-sapin-miel-chalet
+      qty_band: 3-repas
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

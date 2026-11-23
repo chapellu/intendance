@@ -1,0 +1,78 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LES FANES D'UNE BOTTE DE RADIS cuites avec le bœuf haché et les oignons dorés,
+# marjolaine, puis hachées par à-coups ; trois douzaines de grosses coquilles
+# cuites 15 min et farcies à la cuillère, parmesan, tièdes ou repassées
+# 5 min au four.
+
+recipe:
+  id: conchiglioni-farcis-boeuf-fanes-radis
+  title: Conchiglioni farcis au bœuf et aux fanes de radis
+  format: pates
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Conchiglioni farcis au bœuf rôti et fanes de radis », blog Saines Gourmandises, 4 mai 2012"
+    url: https://saines-gourmandises.fr/le-point-sur-les-pates-et-la-methode-ig-recette-gourmande-a-lappui/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 3          # « 3 douzaines (3 personnes en plat) »
+    pieces: 36
+  time_min_total: 35
+  active_min: 25
+
+  apports:
+    proteine: viande-rouge
+    feculent: pates
+    legumes: [feuille, allium]
+    profil: poele
+    origine: italien
+
+  ingredients:
+    - {id: pates, name: "conchiglioni (un demi-paquet)", qty: 250, unit: g}
+    - {id: huile-olive, name: "huile d'olive", qty: 3, unit: c. à s.}
+    - {id: boeuf-hache, name: "bœuf haché", qty: 300, unit: g}
+    - {id: oignon, name: "oignons", qty: 2, unit: pièce}
+    - {id: fanes-radis, name: "fanes d'une belle botte de radis", qty: 1, unit: botte}
+    - {id: sauce-tomate, name: "sauce tomate", qty: 200, unit: g}
+    - {id: origan, name: "marjolaine ou origan", qty: 1, unit: c. à s.}
+    - {id: sel, name: "sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: "poivre", qty: 1, unit: pincée, seasoning: true}
+    - {id: parmesan, name: "parmesan", qty: 30, unit: g}
+
+  steps:
+    - id: pates
+      action: "Cuire les conchiglioni 15 min à l'eau bouillante salée et les égoutter"
+      needs: [boil]
+      uses: [pates]
+      time_min: 17
+      attended: false
+    - id: farce
+      action: "Dorer les oignons émincés à l'huile, ajouter le bœuf à feu vif, puis les fanes lavées, la marjolaine, sel et poivre, jusqu'à ce que l'eau s'évapore"
+      needs: [pan-fry]
+      uses: [huile-olive, oignon, boeuf-hache, fanes-radis, origan, sel, poivre]
+      time_min: 15
+      parallel_with: pates
+    - id: hacher
+      action: "Hacher la farce par à-coups sans la réduire en bouillie et la mêler à la sauce tomate"
+      needs: [chop-coarse-small]
+      uses: [sauce-tomate]
+      time_min: 4
+    - id: farcir
+      action: "Farcir chaque coquille tiédie à la cuillère et saupoudrer de parmesan ; au goût, repasser 5 min au four"
+      needs: []
+      uses: [parmesan]
+      time_min: 10
+      kid: {age_min_months: 36, task: "farcir les coquilles"}
+
+  emits:
+    - kind: reste-plat
+      type: conchiglioni-farcis-boeuf-fanes-radis
+      qty_band: 1-repas
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

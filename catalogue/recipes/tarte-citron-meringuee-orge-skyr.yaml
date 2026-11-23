@@ -1,0 +1,81 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE PÂTE SABLÉE À LA FARINE D'ORGE, poudre d'amande, sucre de bouleau, beurre, œuf
+# et jus de pomme, cuite 20 min dans un cercle de 26 cm ; une crème de citron aux
+# jaunes et à l'agave épaissie d'un peu de farine d'orge, liée hors du feu de
+# beurre et de skyr ; 3 h au frais ; meringue au sucre de bouleau et à la
+# vanille.
+
+recipe:
+  id: tarte-citron-meringuee-orge-skyr
+  title: La plus sage des tartes au citron meringuée
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« La plus sage des tartes au citron ! », blog Saines Gourmandises, 9 avril 2025"
+    url: https://saines-gourmandises.fr/la-plus-sage-des-tartes-au-citron/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « pour 8 parts »
+  lot_entier: true
+  time_min_total: 50
+  active_min: 25
+
+  apports:
+    proteine: oeuf
+    feculent: orge
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-orge, name: "farine d'orge mondé (200 + 15 g)", qty: 215, unit: g}
+    - {id: fleur-de-sel, name: "fleur de sel", qty: 2, unit: g, seasoning: true}
+    - {id: poudre-amande, name: "poudre d'amande blanche", qty: 30, unit: g}
+    - {id: sucre-bouleau, name: "sucre de bouleau (50 + 60 g)", qty: 110, unit: g}
+    - {id: beurre, name: "beurre (100 + 50 g)", qty: 150, unit: g}
+    - {id: oeufs, name: "œufs (1 + 4 jaunes + 4 blancs)", qty: 5, unit: pièce}
+    - {id: jus-pomme, name: "jus de pomme", qty: 30, unit: g}
+    - {id: citron, name: "citrons (20 cl de jus, zeste)", qty: 5, unit: pièce}
+    - {id: sirop-agave, name: "sirop d'agave ou miel d'acacia", qty: 110, unit: g}
+    - {id: skyr, name: "skyr bien égoutté", qty: 100, unit: g}
+    - {id: extrait-vanille, name: "pincée de vanille en poudre", qty: 1, unit: pincée}
+
+  steps:
+    - id: pate
+      action: "Préchauffer à 180 °C ; sabler farine, sel, amande, sucre et beurre en dés, amalgamer vite avec l'œuf et le jus de pomme, foncer un cercle et cuire 20 min"
+      needs: [bake]
+      uses: [fleur-de-sel, poudre-amande, jus-pomme]
+      time_min: 30
+      kid: {age_min_months: 30, task: "sabler la pâte"}
+    - id: creme
+      action: "Cuire à feu doux en remuant le jus de citron, les jaunes, l'agave, la farine et le zeste jusqu'à épaissir ; hors du feu, mixer avec le beurre et le skyr"
+      needs: [simmer, blend-smooth]
+      charge_partielle: true
+      uses: [citron, sirop-agave, skyr, farine-orge, beurre]
+      time_min: 10
+    - id: prendre
+      action: "Verser sur le fond refroidi et mettre au frais"
+      needs: []
+      uses: []
+      time_min: 2
+      attente_min: 180
+      attente_raison: "au moins 3 h au frais"
+    - id: meringue
+      action: "Monter les blancs avec la vanille en ajoutant le sucre en trois fois et en garnir la tarte à la cuillère ou à la poche"
+      needs: []
+      uses: [oeufs, sucre-bouleau, extrait-vanille]
+      time_min: 8
+
+  emits:
+    - kind: reste-plat
+      type: tarte-citron-meringuee-orge-skyr
+      qty_band: 2-repas
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

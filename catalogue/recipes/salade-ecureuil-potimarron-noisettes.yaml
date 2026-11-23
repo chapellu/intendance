@@ -1,0 +1,70 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LE POTIMARRON SE MANGE CRU, râpé avec sa peau comme une carotte, en
+# vinaigrette au balsamique et à la levure de bière, avec des noisettes
+# torréfiées au dernier moment. Le fromage est facultatif.
+
+recipe:
+  id: salade-ecureuil-potimarron-noisettes
+  title: Salade « L'Écureuil » (potimarron râpé aux noisettes toastées)
+  format: salade
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Potimarrons, courges, potirons, citrouilles and Co… rétrospective d'idées recettes », blog Saines Gourmandises, 17 septembre 2026"
+    url: https://saines-gourmandises.fr/potimarrons-courges-potirons-citrouilles-and-co-retrospective-didees-recettes-geniaaaaales/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes »
+  time_min_total: 15        # 10 min de préparation + 5 min de cuisson
+  active_min: 15
+
+  apports:
+    proteine: fromage
+    feculent: aucun
+    legumes: [cucurbitacee, allium]
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: potimarron, name: "potimarron moyen (environ 750 g)", qty: 1, unit: pièce}
+    - {id: noisettes, name: noisettes décortiquées, qty: 100, unit: g}
+    - {id: ail, name: ail, qty: 1, unit: gousse}
+    - {id: gouda, name: mimolette ou gouda râpé, qty: 120, unit: g, optional: true}
+    - {id: huile-olive, name: huile d'olive, qty: 6, unit: c. à s.}
+    - {id: vinaigre-balsamique, name: vinaigre balsamique, qty: 3, unit: c. à s.}
+    - {id: levure-biere, name: levure de bière, qty: 1, unit: c. à s.}
+    - {id: sel, name: sel (bonne pincée), qty: 1, unit: bonne pincée, seasoning: true}
+
+  steps:
+    - id: torrefier
+      action: "Torréfier les noisettes à la poêle sèche environ 5 min sans cesser de remuer, puis les laisser refroidir"
+      astuce: "Elles brûlent vite : surveiller. En refroidissant, elles croustillent."
+      needs: [pan-fry]
+      uses: [noisettes]
+      time_min: 5
+      attended: true
+    - id: raper
+      action: "Ôter les trognons du potimarron, l'épépiner et le râper avec sa peau, fin ou plus gros"
+      needs: []
+      uses: [potimarron]
+      time_min: 6
+      parallel_with: torrefier
+    - id: assaisonner
+      action: "Brasser avec l'ail écrasé, l'huile, le vinaigre, la levure, le sel et le fromage, et ajouter les noisettes au moment de servir"
+      astuce: "Sans les noisettes, la salade tient 24 h au frais."
+      needs: []
+      uses: [ail, huile-olive, vinaigre-balsamique, levure-biere, sel, gouda]
+      time_min: 3
+
+  emits:
+    - kind: reste-plat
+      type: salade-ecureuil-potimarron-noisettes
+      qty_band: lunchbox
+      keeps: {frigo_days: 1, congelo: false}
+
+  plan_b: []

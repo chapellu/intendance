@@ -1,0 +1,107 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LA DINDE DE NOËL 2021 : une farce au « parfum de truffe » sans truffe —
+# noix, topinambours, cèpes et beurre, dit l'autrice, en donnent l'illusion.
+# La couenne blanchie apporte le moelleux (sans elle, farce aussi parfumée
+# mais moins moelleuse : elle est donc facultative ici). Ne pas saler la
+# farce, le jambon cru suffit.
+#
+# LE ROBOT N'EST PAS DANS L'INVENTAIRE : la farce se hache au couteau, en
+# gardant des morceaux. Le roaster va au four 1 h 45 sans eau ni huile ; une
+# cocotte en fonte le remplace. Le reste de farce se cuit en petite terrine.
+
+recipe:
+  id: dinde-noel-farce-truffee
+  title: Dinde de Noël ultra moelleuse et sa farce au parfum de truffe
+  format: piece
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Dinde de Noël ultra moelleuse (et sa farce au parfum de truffe…) », blog Saines Gourmandises, 3 décembre 2021"
+    url: https://saines-gourmandises.fr/dinde-de-noel-ultra-moelleuse-et-sa-farce-au-parfum-de-truffe/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « pour 8 personnes »
+  lot_entier: true
+  time_min_total: 155       # 20 min de préparation + 1 h 45 + 30 min de repos
+  active_min: 40
+
+  apports:
+    proteine: viande-blanche
+    feculent: aucun
+    legumes: [racine, allium, champignon]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: dinde, name: "dinde fermière d'environ 3,5 kg", qty: 1, unit: pièce}
+    - {id: carottes, name: grosse carotte, qty: 1, unit: pièce}
+    - {id: beurre, name: "beurre (ou 50 g d'huile d'olive)", qty: 70, unit: g}
+    - {id: echalote, name: échalotes, qty: 500, unit: g}
+    - {id: topinambours, name: topinambours, qty: 250, unit: g}
+    - {id: jambon-cru, name: jambon cru, qty: 200, unit: g}
+    - {id: couenne-porc, name: couenne de porc fraîche dégraissée, qty: 300, unit: g, optional: true}
+    - {id: cepes, name: cèpes frais ou surgelés, qty: 100, unit: g}
+    - {id: poulet-filets, name: blancs de poulet ou de dinde, qty: 400, unit: g}
+    - {id: cognac, name: armagnac ou cognac, qty: 1, unit: c. à s.}
+    - {id: farine, name: farine, qty: 40, unit: g}
+    - {id: oeufs, name: œuf, qty: 1, unit: pièce, optional: true}
+    - {id: noix, name: noix fraîchement cassées, qty: 80, unit: g}
+    - {id: sel, name: sel (pour la peau seulement), qty: 2, unit: pincée, seasoning: true}
+    - {id: poivre-5-baies, name: poivre 5 baies, qty: 2, unit: pincée, seasoning: true}
+
+  steps:
+    - id: couenne
+      action: "Préchauffer le four à 180 °C ; blanchir la couenne 20 min à l'eau salée bouillante"
+      needs: [boil]
+      uses: [couenne-porc]
+      time_min: 20
+      attended: false
+      charge_partielle: true   # la casserole ne tient que la couenne
+    - id: legumes
+      action: "Éplucher carotte, échalotes et topinambours et les couper en petits morceaux"
+      needs: [chop-coarse]
+      uses: [carottes, echalote, topinambours]
+      time_min: 10
+      parallel_with: couenne
+    - id: dorer
+      action: "Faire dorer au beurre les légumes, le jambon cru et les cèpes dans une grande sauteuse jusqu'à ce qu'ils soient tendres et un peu caramélisés"
+      needs: [pan-fry]
+      uses: [beurre, jambon-cru, cepes]
+      time_min: 15
+      attended: true
+      charge_partielle: true   # la sauteuse ne tient que la farce
+    - id: farce
+      action: "Hacher au couteau ce mélange avec la couenne égouttée en morceaux et les blancs de volaille, puis y mêler alcool, farine, œuf, poivre et les noix entières"
+      astuce: "Garder de petits morceaux, et ne pas saler : le jambon cru suffit."
+      needs: [chop-coarse]
+      uses: [poulet-filets, cognac, farine, oeufs, poivre-5-baies, noix]
+      time_min: 12
+    - id: farcir
+      action: "Farcir la dinde au maximum, cou compris, la saler légèrement, couvrir et enfourner sans eau ni huile pour 1 h 45"
+      astuce: "Le reste de farce cuit à part dans une petite terrine."
+      needs: [bake]
+      uses: [dinde, sel]
+      time_min: 110
+      attended: false
+    - id: reposer
+      action: "Arroser de son jus et laisser reposer 30 min dans le four éteint avant de découper"
+      needs: []
+      uses: []
+      time_min: 30
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: dinde-noel-farce-truffee
+      qty_band: 3-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b:
+    - drop: couenne
+      saves_min: 5
+      effect: "farce aussi parfumée, moins moelleuse"

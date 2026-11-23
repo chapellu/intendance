@@ -1,0 +1,81 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DES CRÊPES-REPAS : pâte de son d'avoine, épeautre, yaourt et origan, plus
+# épaisse qu'une pâte de blé (on l'étale à la spatule, et elle cuit plus
+# longtemps) ; chaque crêpe se réchauffe sous le parmesan, puis coppa
+# toastée, champignons crus et roquette.
+
+recipe:
+  id: crepes-son-avoine-coppa-roquette
+  title: Crêpes au son d'avoine, coppa, parmesan, champignons et roquette
+  format: tartine
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Crêpe gourmande à l'épeautre, son d'avoine et origan », blog Saines Gourmandises, 2 février 2012"
+    url: https://saines-gourmandises.fr/on-oublie-le-beurre-la-bechamel-le-gruyere-et-les-champignons-en-boite/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 3
+    pieces: 6               # « pour 6 crêpes »
+  time_min_total: 65        # repos 30 min compris
+  active_min: 30
+
+  apports:
+    proteine: fromage
+    feculent: avoine
+    legumes: [champignon, feuille]
+    profil: poele
+    origine: italien
+
+  ingredients:
+    - {id: son-avoine, name: son d'avoine, qty: 100, unit: g}
+    - {id: farine-epeautre, name: farine complète d'épeautre, qty: 50, unit: g}
+    - {id: oeufs, name: œufs, qty: 2, unit: pièce}
+    - {id: yaourt-nature, name: yaourt, qty: 1, unit: pot}
+    - {id: eau, name: 2 pots de yaourt d'eau, qty: 25, unit: cl}
+    - {id: sel, name: sel, qty: 1, unit: c. à c., seasoning: true}
+    - {id: origan, name: origan, qty: 1, unit: c. à c., seasoning: true}
+    - {id: huile-olive, name: huile d'olive, qty: 2, unit: c. à s.}
+    - {id: coppa, name: tranches de coppa, qty: 6, unit: tranche}
+    - {id: parmesan, name: parmesan râpé, qty: 100, unit: g}
+    - {id: champignons-paris, name: champignons très frais, qty: 12, unit: pièce}
+    - {id: roquette, name: roquette, qty: 1, unit: poignée}
+    - {id: poivre-5-baies, name: poivre 5 baies, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: pate
+      action: "Mélanger tous les ingrédients de la pâte et la laisser reposer"
+      needs: []
+      uses: [son-avoine, farine-epeautre, oeufs, yaourt-nature, eau, sel, origan, huile-olive]
+      time_min: 4
+      attente_min: 30
+      attente_raison: "repos de la pâte"
+      attente_souple: true
+      kid: {age_min_months: 24, task: "verser les pots d'eau et mélanger"}
+    - id: crepes
+      action: "Cuire six crêpes dans une poêle huilée, en étalant la pâte à la spatule"
+      astuce: "Au son d'avoine, elles cuisent un peu plus longtemps que des crêpes de blé."
+      needs: [pan-fry]
+      uses: []
+      time_min: 15
+      attended: true
+    - id: coppa
+      action: "Toaster la coppa en gros pétales dans la même poêle et trancher finement les champignons"
+      needs: [pan-fry]
+      uses: [coppa, champignons-paris]
+      time_min: 5
+    - id: garnir
+      action: "Réchauffer chaque crêpe dans la poêle sous le parmesan, puis la garnir de coppa, champignons, roquette et poivre"
+      needs: [pan-fry]
+      uses: [parmesan, roquette, poivre-5-baies]
+      time_min: 8
+      attended: true
+
+  emits: []
+
+  plan_b: []

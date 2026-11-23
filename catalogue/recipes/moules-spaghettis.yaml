@@ -1,0 +1,119 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T190).
+#
+# LE PLAT ET SON FUMET. Le jus de cuisson des moules n'est pas jeté : la page
+# suivante (p. 129) en fait un potage. Seules 4 c. à s. servent ici, à la
+# sauce ; le reste sort en `emits`, filtré, et le potage l'`accepts`.
+#
+# LES MOULES SE TRIENT VIVANTES : on jette celles qui flottent, restent
+# ouvertes quand on les tape sur le plan de travail, ou sont cassées.
+# L'ébarbage, lui, est facultatif — l'autrice le dit : question de présentation.
+#
+# Le parmesan est parsemé dans les assiettes : facultatif au sens de T186.
+
+recipe:
+  id: moules-spaghettis
+  title: Moules de bouchot aux spaghettis
+  format: pates
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 128"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 128
+    saison: automne
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes »
+  time_min_total: 30        # en-tête : 15 min de préparation + « quelques minutes » ; les pâtes donnent le tempo
+  active_min: 20
+
+  apports:
+    proteine: poisson
+    feculent: pates
+    legumes: [allium]
+    profil: rapide
+    origine: francais
+
+  ingredients:
+    - {id: pates, name: "spaghettis (blancs ou semi-complets, blé ou épeautre)", qty: 350, unit: g}
+    - {id: moules, name: moules de bouchot ultra fraîches, qty: 1, unit: kg}
+    - {id: echalote, name: échalotes, qty: 3, unit: pièce}
+    - {id: persil, name: persil, qty: 1, unit: petit bouquet}
+    - {id: ail, name: ail, qty: 1, unit: gousse}
+    - {id: vin-blanc-sec, name: vin blanc sec, qty: 25, unit: cl}
+    - {id: huile-olive, name: "huile d'olive (ou 35 g de beurre), + un filet pour les pâtes", qty: 4, unit: c. à s., subs: [{id: beurre, name: "beurre (35 g)", ratio: 0.6}]}
+    - {id: creme, name: crème fraîche épaisse, qty: 4, unit: c. à s.}
+    - {id: parmesan, name: parmesan râpé, qty: 100, unit: g, optional: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: cuire-pates
+      action: "Cuire les spaghettis al dente, le temps indiqué sur le paquet"
+      needs: [boil]
+      uses: [pates]
+      time_min: 11
+      attended: false
+      charge_partielle: true
+    - id: laver-moules
+      action: "Pendant ce temps : laver les moules dans un grand bac d'eau froide, en jetant celles qui flottent, restent ouvertes ou sont abîmées"
+      astuce: "Ébarber est facultatif ; si on le fait, tirer la « barbe » vers la charnière pour ne pas abîmer la chair."
+      needs: []
+      uses: [moules]
+      time_min: 8
+      parallel_with: cuire-pates
+    - id: hacher
+      action: "Hacher les échalotes et le persil, écraser l'ail"
+      needs: []
+      uses: [echalote, persil, ail]
+      time_min: 4
+      parallel_with: cuire-pates
+    - id: ouvrir-moules
+      action: "Faire revenir les échalotes à l'huile dans un grand faitout, ajouter moules, vin, persil, ail et poivre, mélanger et couvrir"
+      astuce: "Un grand faitout : les moules prennent beaucoup de place en s'ouvrant."
+      needs: [simmer-large]
+      uses: [huile-olive, vin-blanc-sec, poivre]
+      time_min: 6
+    - id: egoutter
+      action: "Égoutter les spaghettis, les mélanger avec un filet d'huile et garder au chaud"
+      needs: []
+      uses: []
+      time_min: 1
+    - id: decoquiller
+      action: "Couper le feu dès que les moules sont bien ouvertes, puis les décoquiller"
+      astuce: "Pas plus de cuisson que ça : c'est ce qui les garde moelleuses."
+      needs: []
+      uses: []
+      time_min: 6
+      kid: {age_min_months: 48, task: "décoquiller les moules tiédies"}
+    - id: sauce
+      action: "Réchauffer 4 c. à s. de jus de cuisson filtré, y délayer la crème, ajouter les moules et couper dès que c'est chaud"
+      needs: [simmer]
+      uses: [creme]
+      time_min: 3
+    - id: servir
+      action: "Servir avec les spaghettis, en parsemant les assiettes de parmesan"
+      needs: []
+      uses: [parmesan]
+      time_min: 1
+  # PAS DE PRÉLÈVEMENT BÉBÉ : vin blanc et moules (allergène, et l'eau de mer
+  # sale le jus). Des spaghettis nature avant l'huile restent possibles, mais le
+  # modèle n'a pas de prélèvement sur un accompagnement.
+
+  emits:
+    - kind: base
+      type: fumet-moules
+      hors_table: true
+      qty_band: 1-repas
+      # 25 cl de vin + l'eau rendue par 1 kg de moules, moins les 4 c. à s. de
+      # la sauce. Estimation, adossée au besoin du potage p. 129.
+      qty: {amount: 350, unit: ml}
+      keeps: {frigo_days: 1, congelo: true}
+      note: "le jus de cuisson filtré fait le potage à l'avoine de la p. 129"
+
+  plan_b:
+    - drop: decoquiller
+      saves_min: 5
+      effect: "servir les moules dans leur coquille, la sauce versée dessus"

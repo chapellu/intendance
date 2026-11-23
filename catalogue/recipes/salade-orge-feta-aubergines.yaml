@@ -53,6 +53,7 @@ recipe:
 
   steps:
     - id: dorer-oignon-steak
+      uses: [oignon, huile-olive, boeuf-hache, sel]
       action: "Faire revenir l'oignon en cubes en petite cocotte avec l'huile, ajouter le steak, saler, laisser dorer, puis l'émietter en gros morceaux à la cuillère de bois"
       astuce: "L'émietter après la coloration, pas avant : haché cru, il rend son eau et ne dore plus."
       needs: [pan-fry]
@@ -60,16 +61,19 @@ recipe:
       attended: true
       seasoning_gate: true
     - id: tailler-salade-orge
+      uses: [aubergine, tomates-cerises, olives-noires, persil]
       action: "Pendant ce temps, découper l'aubergine en petits cubes, les tomates-cerises et les olives en deux, et ciseler le persil"
       needs: []
       time_min: 7
       parallel_with: dorer-oignon-steak
     - id: mijoter-aubergine
+      uses: [origan]
       action: "Quand l'oignon et le steak sont bien dorés, ajouter l'aubergine, l'origan et un demi-verre d'eau, mélanger, couvrir et mijoter une dizaine de minutes"
       needs: [simmer]
       time_min: 10
       attended: false
     - id: assembler-salade-orge
+      uses: [cereale-cuite, feta, poivre]
       action: "Quand les aubergines sont tendres et rissolent sans fond d'eau, stopper la cuisson et mélanger tous les ingrédients de la salade"
       needs: []
       time_min: 3

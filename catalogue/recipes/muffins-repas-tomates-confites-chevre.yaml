@@ -1,0 +1,81 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# SIX MUFFINS, DEUX REPAS : farine d'épeautre, yaourt de soja, œufs, tomates
+# cerises confites, sarriette, chèvre frais en dés incorporé en dernier pour
+# ne pas l'écraser. Des olives, si on ne les oublie pas.
+
+recipe:
+  id: muffins-repas-tomates-confites-chevre
+  title: Muffins-repas aux tomates confites et chèvre frais
+  format: cake
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Muffins-Monday #39 (Les muffins-repas !) », blog Saines Gourmandises, 16 avril 2014"
+    url: https://saines-gourmandises.fr/on-a-failli-attendre/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 2          # « 6 muffins, soit 2 repas »
+    pieces: 6
+  time_min_total: 30        # moins de 10 min de préparation + 20 min
+  active_min: 10
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: [solanacee]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: farine complète de grand épeautre, qty: 120, unit: g}
+    - {id: poudre-a-lever, name: poudre à lever (demi-paquet), qty: 0.5, unit: sachet}
+    - {id: yaourt-soja, name: yaourt de soja, qty: 100, unit: g}
+    - {id: huile-olive, name: "huile d'olive (demi-pot de yaourt)", qty: 6, unit: c. à s.}
+    - {id: parmesan, name: parmesan ou tomme de chèvre râpée, qty: 30, unit: g}
+    - {id: oeufs, name: œufs, qty: 3, unit: pièce}
+    - {id: chevre-frais, name: chèvre frais, qty: 70, unit: g}
+    - {id: tomates-cerises-confites, name: tomates cerises confites à l'huile, qty: 20, unit: pièce}
+    - {id: sarriette, name: sarriette fraîche, qty: 3, unit: brin}
+    - {id: ail, name: ail, qty: 1, unit: gousse, optional: true}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: sec
+      action: "Préchauffer le four à 180 °C ; mélanger farine, sel, poivre et levure dans un saladier"
+      needs: []
+      uses: [farine-epeautre, sel, poivre, poudre-a-lever]
+      time_min: 2
+    - id: humide
+      action: "Mélanger à part œufs, huile, yaourt, sarriette ciselée, ail écrasé, tomates en morceaux et parmesan, et les fouetter rapidement dans la farine"
+      needs: []
+      uses: [oeufs, huile-olive, yaourt-soja, sarriette, ail, tomates-cerises-confites, parmesan]
+      time_min: 5
+      kid: {age_min_months: 30, task: "verser et fouetter"}
+    - id: chevre
+      action: "Incorporer délicatement le chèvre en petits dés à la cuillère et répartir dans 6 caissettes"
+      needs: []
+      uses: [chevre-frais]
+      time_min: 3
+    - id: cuire
+      action: "Cuire 20 min"
+      needs: [bake]
+      uses: []
+      time_min: 20
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: muffins-repas-tomates-confites-chevre
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: true}
+
+  plan_b: []

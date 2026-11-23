@@ -1,0 +1,84 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LA VERSION BLOG, DIFFÉRENTE DE CELLE DU LIVRE AU CATALOGUE : une pâte brisée au
+# beurre sablée du bout des doigts, cuite à blanc 15 à 20 min ; une crème
+# pâtissière à la crème fleurette (sans lait), jaunes, sucre de bouleau,
+# vanille, farine et rhum, faite la veille ou 2 h avant ; fraises Mara des
+# Bois, sucre vanillé ou miel au pinceau.
+
+recipe:
+  id: tarte-fraises-vraie-de-compet
+  title: Tarte aux fraises « la vraie, mais de compet' »
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Tarte aux fraises (la vraie, mais de compet' !) », blog Saines Gourmandises, 10 juin 2022"
+    url: https://saines-gourmandises.fr/tarte-aux-fraises-la-vraie-mais-de-compet/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « pour 8 parts »
+  lot_entier: true
+  time_min_total: 45
+  active_min: 25
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: "farine T110 de grand épeautre (250 + 60 g)", qty: 310, unit: g}
+    - {id: beurre, name: "beurre un peu mou", qty: 125, unit: g}
+    - {id: eau, name: "eau tiède", qty: 25, unit: g}
+    - {id: sucre-bouleau, name: "sucre de bouleau (2 c. à s. + 120 g)", qty: 145, unit: g}
+    - {id: fleur-de-sel, name: "grosse pincée de fleur de sel", qty: 1, unit: bonne pincée, seasoning: true}
+    - {id: creme, name: "crème fleurette", qty: 50, unit: cl}
+    - {id: oeufs, name: "jaunes d'œufs", qty: 4, unit: pièce}
+    - {id: gousse-vanille, name: "gousse de vanille", qty: 1, unit: pièce}
+    - {id: rhum, name: "rhum", qty: 1, unit: c. à s.}
+    - {id: sel, name: "pincée de sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: fraises, name: "fraises Mara des Bois", qty: 350, unit: g}
+    - {id: sucre-vanille, name: "sucre vanillé (ou 2 c. à s. de miel)", qty: 1, unit: sachet}
+
+  steps:
+    - id: creme
+      action: "Mixer la crème et 60 g de farine, puis cuire avec la vanille, les jaunes, 120 g de sucre, le rhum et le sel en fouettant jusqu'à épaissir"
+      needs: [blend-smooth, simmer]
+      charge_partielle: true
+      uses: [creme, gousse-vanille, oeufs, rhum, sel]
+      time_min: 10
+      attente_min: 120
+      attente_raison: "au moins 2 h au frais, ou la veille"
+    - id: pate
+      action: "Préchauffer à 180 °C ; fondre le sucre et le sel dans l'eau tiède, sabler la farine avec le beurre en dés, verser l'eau d'un coup et foncer un moule"
+      needs: []
+      uses: [eau, sucre-bouleau, fleur-de-sel, farine-epeautre, beurre]
+      time_min: 10
+      kid: {age_min_months: 30, task: "sabler la pâte du bout des doigts"}
+    - id: cuire
+      action: "Cuire 15 à 20 min, jusqu'à ce que la pâte soit bien dorée, et laisser refroidir"
+      needs: [bake]
+      uses: []
+      time_min: 18
+      attended: false
+    - id: garnir
+      action: "Garnir de crème pâtissière, disposer les fraises coupées en deux et poudrer de sucre vanillé"
+      needs: []
+      uses: [fraises, sucre-vanille]
+      time_min: 8
+      kid: {age_min_months: 30, task: "disposer les fraises"}
+
+  emits:
+    - kind: reste-plat
+      type: tarte-fraises-vraie-de-compet
+      qty_band: 2-repas
+      keeps: {frigo_days: 1, congelo: false}
+
+  plan_b: []

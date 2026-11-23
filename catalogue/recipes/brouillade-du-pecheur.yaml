@@ -1,0 +1,87 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T189).
+#
+# « DU PÊCHEUR », ET POURTANT SANS POISSON : la mer est dans la laitue de mer
+# fraîche au sel, une algue douce (iode, fer, calcium, magnésium). C'est le
+# second plat aux œufs du printemps après l'omelette du potager p. 33.
+#
+# 13 MIN DE CUISSON EN TÊTE ; les étapes en donnent quelques instants pour
+# l'oignon, 3 min pour le hachis et 2 à 3 min pour les œufs. On encode les
+# étapes, et le total de l'en-tête.
+#
+# PAS DE FÉCULENT DANS LA RECETTE. La page n'en propose pas ; le modèle
+# d'équilibre le verra, et c'est juste.
+
+recipe:
+  id: brouillade-du-pecheur
+  title: Brouillade du pêcheur
+  format: omelette
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 50"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 50
+    saison: printemps
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes »
+  time_min_total: 23        # en-tête : 10 min de préparation + 13 min de cuisson
+  active_min: 15
+
+  apports:
+    proteine: oeuf
+    feculent: aucun
+    legumes: [allium, feuille]
+    profil: poele
+    origine: francais
+
+  ingredients:
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: laitue-de-mer, name: laitue de mer fraîche au sel, qty: 70, unit: g}
+    - {id: persil, name: persil, qty: 0.5, unit: bouquet}
+    - {id: ail, name: ail, qty: 1, unit: gousse}
+    - {id: oeufs, name: œufs très frais, qty: 8, unit: pièce}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: dorer-oignon
+      action: "Couper l'oignon en petits cubes et le faire dorer quelques instants dans l'huile, à la poêle"
+      needs: [pan-fry]
+      uses: [oignon, huile-olive]
+      time_min: 5
+    - id: hacher-algue
+      action: "Pendant ce temps : rincer très soigneusement la laitue de mer pour la dessaler, la presser, puis la hacher avec le persil et l'ail"
+      astuce: "Rincer dans plusieurs eaux : le sel de conservation est fort, et c'est lui qui ferait la brouillade trop salée."
+      needs: [chop-coarse]
+      uses: [laitue-de-mer, persil, ail]
+      time_min: 5
+      parallel_with: dorer-oignon
+    - id: cuire-hachis
+      action: "Ajouter le hachis dans la poêle, mélanger et laisser cuire 3 min"
+      needs: [pan-fry]
+      uses: []
+      time_min: 3
+    - id: battre
+      action: "Battre les œufs avec un peu de sel et de poivre"
+      needs: []
+      uses: [oeufs, sel, poivre]
+      time_min: 2
+      seasoning_gate: true
+      kid: {age_min_months: 30, task: "casser et battre les œufs"}
+    - id: brouiller
+      action: "Verser dans la poêle et cuire 2 à 3 min en remuant à la cuillère en bois"
+      astuce: "Retirer du feu encore moelleux et légèrement baveux : les œufs continuent de cuire hors du feu."
+      needs: [pan-fry]
+      uses: []
+      time_min: 3
+      attended: true
+  # PAS DE PRÉLÈVEMENT BÉBÉ : des œufs battus ne se prélèvent que crus, et il
+  # faudrait les cuire à part ; l'algue, même dessalée, reste riche en iode,
+  # ce qu'on ne donne pas à volonté à un tout-petit.
+
+  plan_b: []                # treize minutes de poêle, toutes surveillées

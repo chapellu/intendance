@@ -8,7 +8,7 @@
 //   attendu 30 minutes que les lentilles soient cuites avant de faire cuire les
 //   carottes. »
 //
-// `lentilles-mijotees` porte pourtant `parallel_with: lancer-mijotage` sur
+// `mitonnee-lentilles` porte pourtant `parallel_with: lancer-mijotage` sur
 // l'étape des carottes. Le champ est écrit à la main, validé par `verifier.py`,
 // lu par `compile.py`, exclu de la somme des gestes par `anticipation.py`,
 // exporté sous `enParallele` — et `Etape` ne le déclarait pas. Le guide a fait
@@ -34,7 +34,9 @@ const etapes: Etape[] = catalogue.plats.flatMap((p) => p.steps);
 /** Le plat par lequel l'utilisateur a trouvé le trou. Il sert de témoin : tant
  *  qu'il est au catalogue, c'est sur lui qu'on vérifie, pas sur un plat tiré au
  *  hasard — « changer un classement change ce qu'un parcours traverse ». */
-const LENTILLES = catalogue.plats.find((p) => p.id === "lentilles-mijotees");
+// T197 — les lentilles de la plainte étaient une recette rédigée pour ce dépôt,
+// retirée ; les blinis de l'autrice portent la même forme (une étape en parallèle).
+const LENTILLES = catalogue.plats.find((p) => p.id === "blinis-de-legumes");
 
 describe("les quatre champs que l'export porte et que l'app jetait", () => {
   test("le chargeur les fait exister, et le corpus en porte", () => {
@@ -44,7 +46,7 @@ describe("les quatre champs que l'export porte et que l'app jetait", () => {
     expect(etapes.filter((e) => e.rattrapage !== null).length).toBeGreaterThan(0);
   });
 
-  test("les carottes de la plainte savent enfin qu'elles tournent avec le mijotage", () => {
+  test("une étape en parallèle sait avec quelle étape du même plat elle tourne", () => {
     expect(LENTILLES).toBeDefined();
     const enParallele = LENTILLES!.steps.filter((e) => e.enParallele !== null);
     expect(enParallele.length).toBeGreaterThan(0);
@@ -63,8 +65,16 @@ describe("`uses` : l'absence est une donnée, pas un vide", () => {
   // écran qui confond les deux promet qu'une étape ne consomme rien alors
   // qu'on l'ignore — le mensonge plausible que ce chargeur existe pour
   // attraper. `export_json.py` l'écrit déjà en commentaire ; ici on le tient.
-  test("le chargeur garde les deux, et le corpus contient les deux", () => {
-    expect(etapes.some((e) => e.uses === null)).toBe(true);
+  // T193 — LE CORPUS N'A PLUS DE `null`. 82 plats n'avaient aucun `uses`, et
+  // le mode en cuisine renvoyait à la liste d'ingrédients pour eux (« on te
+  // dit mélanger l'eau et la farine, mais on ne te donne pas les quantités »).
+  // `verifier.py` l'exige désormais ; le type garde `null` pour un plat venu
+  // d'ailleurs, et `SANS_USES` le dit toujours à l'écran.
+  test("toutes les étapes du corpus disent ce qu'elles emploient, `[]` compris", () => {
+    const sans = catalogue.plats.flatMap((p) =>
+      p.steps.filter((e) => e.uses === null).map((e) => `${p.id}/${e.id}`),
+    );
+    expect(sans).toEqual([]);
     expect(etapes.some((e) => e.uses?.length === 0)).toBe(true);
   });
 

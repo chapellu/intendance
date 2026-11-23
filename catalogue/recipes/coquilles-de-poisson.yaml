@@ -1,0 +1,103 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T192).
+#
+# DU POISSON CARRÉ SURGELÉ EN COQUILLES BRETONNES : le poisson entre encore
+# surgelé dans la poêle, sans décongélation, ce qui en fait un plat de placard.
+#
+# LA PAGE NE DONNE PAS LA TEMPÉRATURE DU FOUR pour les 10 dernières minutes.
+# L'étape de préchauffage le dit, et l'astuce donne un ordre de grandeur qui
+# n'est PAS du livre.
+#
+# LES COQUILLES SAINT-JACQUES (grandes, un quart de préparation chacune) ou
+# des plats à crème brûlée ne sont pas dans l'inventaire du foyer. Avec deux
+# petites coquilles par personne, l'autrice retire 2 min de four.
+
+recipe:
+  id: coquilles-de-poisson
+  title: Coquilles de poisson
+  format: gratin
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 184"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 184
+    saison: hiver
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes »
+  time_min_total: 35        # en-tête : 10 min de préparation + 25 min de cuisson
+  active_min: 15
+
+  apports:
+    proteine: poisson
+    feculent: aucun
+    legumes: [allium, racine]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: oignon, name: gros oignon, qty: 1, unit: pièce}
+    - {id: poireau, name: blanc de poireau, qty: 1, unit: pièce}
+    - {id: carottes, name: carottes, qty: 2, unit: pièce}
+    - {id: huile-olive, name: "huile d'olive (ou 40 g de beurre)", qty: 4, unit: c. à s., subs: [{id: beurre, name: "beurre (40 g)", ratio: 0.7}]}
+    - {id: colin-surgele, name: "poisson blanc surgelé (colin ou cabillaud), en portions", qty: 400, unit: g, subs: [{id: cabillaud, name: "cabillaud", ratio: 1.0}]}
+    - {id: creme-soja, name: crème de soja ou crème fleurette, qty: 20, unit: cl, subs: [{id: creme, name: "crème fleurette", ratio: 1.0}]}
+    - {id: vin-blanc-sec, name: "vin blanc sec (à défaut, de l'eau)", qty: 15, unit: cl}
+    - {id: farine, name: farine de blé ou d'épeautre (c. à s. légèrement bombée), qty: 1, unit: c. à s.}
+    - {id: ail, name: ail, qty: 1, unit: gousse}
+    - {id: persil, name: "persil finement ciselé (ou 1 c. à s. surgelé)", qty: 4, unit: brin}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre-5-baies, name: poivre 5 baies, qty: 1, unit: pincée, seasoning: true}
+
+  # « servir chaud avec du riz »
+  avec:
+    - {id: riz, name: riz, qty: 250, unit: g}
+
+  steps:
+    - id: revenir
+      action: "Émincer finement oignon, poireau et carottes, puis les faire revenir quelques minutes à l'huile dans une grande poêle"
+      needs: [pan-fry]
+      uses: [oignon, poireau, carottes, huile-olive]
+      time_min: 8
+    - id: poisson
+      action: "Dès les premières notes caramélisées, ajouter le poisson encore surgelé, le vin, un peu de sel et de poivre, et couvrir"
+      needs: [pan-fry]
+      uses: [colin-surgele, vin-blanc-sec, sel, poivre-5-baies]
+      time_min: 2
+    - id: mijoter
+      action: "Laisser mijoter environ 10 min, jusqu'à ce que le poisson soit cuit"
+      astuce: "Il doit rester un peu de jus dans la poêle : c'est normal."
+      needs: [pan-fry]
+      uses: []
+      time_min: 10
+      attended: false
+    - id: prechauffer
+      action: "Préchauffer le four"
+      astuce: "La page ne donne pas de température ; un four chaud, vers 200 °C, dore le dessus en dix minutes (estimation, pas du livre)."
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: mixer
+      action: "Mixer le tout avec la farine, la crème, l'ail écrasé et le persil, puis goûter et rectifier le sel"
+      needs: [blend-smooth]
+      uses: [farine, creme-soja, ail, persil]
+      time_min: 3
+    - id: remplir
+      action: "Remplir de grandes coquilles Saint-Jacques, ou de petits plats à crème brûlée"
+      needs: []
+      uses: []
+      time_min: 3
+      kid: {age_min_months: 36, task: "remplir les coquilles à la cuillère"}
+    - id: cuire
+      action: "Enfourner 10 min, jusqu'à ce que le dessus soit bien doré ; servir chaud"
+      needs: [bake]
+      uses: []
+      time_min: 10
+      attended: false
+  # PAS DE PRÉLÈVEMENT BÉBÉ : vin blanc et sel entrent avec le poisson.
+
+  plan_b: []

@@ -1,0 +1,79 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN FLAN FROID, SANS ŒUF NI LAIT : courgettes fondues à l'étouffée, crème de
+# soja et agar-agar, basilic. Il prend au frais 4 h au moins, une nuit au
+# mieux. Des courgettes très fraîches, sinon il devient amer.
+
+recipe:
+  id: flan-courgettes-vegetal
+  title: Flan de courgettes végétalien
+  format: terrine
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Flan de courgettes végétalien », blog Saines Gourmandises, 11 juillet 2017"
+    url: https://saines-gourmandises.fr/recette-tres-facile-soir-petit-tour-jardin/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes »
+  time_min_total: 40        # 20 min de préparation + 20 min de cuisson (+ 4 h au frais)
+  active_min: 20
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: [cucurbitacee, allium]
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: courgettes, name: courgettes très fraîches, qty: 1, unit: kg}
+    - {id: oignon, name: oignons, qty: 2, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: agar-agar, name: agar-agar, qty: 4, unit: g}
+    - {id: creme-soja, name: crème de soja liquide, qty: 20, unit: cl}
+    - {id: basilic, name: basilic, qty: 1, unit: petit bouquet}
+    - {id: sel, name: sel, qty: 2, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+    - {id: pain-levain, name: pain, qty: 200, unit: g}
+
+  steps:
+    - id: oignons
+      action: "Émincer les oignons et les dorer légèrement à l'huile avec un peu de sel dans une grande cocotte"
+      needs: [simmer-large]
+      uses: [oignon, huile-olive]
+      time_min: 6
+      attended: true
+    - id: etouffee
+      action: "Ajouter les courgettes en tranches, saler, poivrer et cuire à l'étouffée environ 15 min, jusqu'à ce qu'elles soient tendres"
+      needs: [simmer-large]
+      uses: [courgettes, sel, poivre]
+      time_min: 15
+      attended: false
+    - id: prise
+      action: "Délayer l'agar-agar dans la crème, ajouter le basilic ciselé, verser sur les courgettes et laisser bouillir 1 min"
+      needs: [simmer-large]
+      uses: [agar-agar, creme-soja, basilic]
+      time_min: 4
+    - id: frais
+      action: "Verser dans un grand plat ou quatre petits et mettre au frais"
+      needs: []
+      uses: []
+      time_min: 2
+      attente_min: 240
+      attente_raison: "4 h au frais au minimum, une nuit au mieux, pour que l'agar-agar prenne"
+
+  emits:
+    - kind: reste-plat
+      type: flan-courgettes-vegetal
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

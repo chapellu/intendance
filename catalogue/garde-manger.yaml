@@ -312,7 +312,7 @@ denrees:
   - {ingredient: ble-lentilles, zone: demi-lune-haute, unites: 1, par_unite: {amount: 100, unit: g}, etat: sec}
   - {ingredient: udon, zone: demi-lune-haute, unites: 1, par_unite: null, etat: sec, note: une portion}
   - {ingredient: thym, zone: demi-lune-haute, unites: 1, par_unite: null, etat: sec}
-  - {ingredient: graines-courge, zone: demi-lune-haute, unites: 1, par_unite: {amount: 200, unit: g}, etat: sec, nature: gras, usage: apero, note: avec les graines de tournesol}
+  - {ingredient: graines-courge, zone: demi-lune-haute, unites: 1, par_unite: {amount: 200, unit: g}, etat: sec, nature: gras, note: avec les graines de tournesol}
   - {ingredient: graines-tournesol, zone: demi-lune-haute, unites: 1, par_unite: null, etat: sec, nature: gras, note: mêlées aux graines de courge}
   - {ingredient: semoule, zone: demi-lune-haute, unites: 1, par_unite: null, etat: sec, note: fine}
   - {ingredient: polenta, zone: demi-lune-haute, unites: 1, par_unite: null, etat: sec}

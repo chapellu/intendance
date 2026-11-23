@@ -1,0 +1,69 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DES VERRINES DE CAFÉ GOURMAND : reines-claudes pochées 5 min à l'agave,
+# crème de chocolat 85 % au tofu soyeux et à la purée d'amande, amandes
+# effilées ou pistaches.
+
+recipe:
+  id: reines-claudes-chocolat-amande
+  title: Douces miniatures de reines-claudes confites au chocolat noir et à l'amande
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Douces miniatures de reines-claudes confites au chocolat noir et à l'amande », blog Saines Gourmandises, 18 août 2011"
+    url: https://saines-gourmandises.fr/douces-miniatures-de-reines-claudes-confites-au-chocolat-noir-et-a-lamande/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « 12 miniatures ou 6 verrines »
+  time_min_total: 20
+  active_min: 20
+
+  apports:
+    proteine: tofu-soja
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: reines-claudes, name: "reines-claudes bien mûres", qty: 500, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 8, unit: c. à s.}
+    - {id: tofu-soyeux, name: "tofu soyeux", qty: 400, unit: g}
+    - {id: chocolat-noir, name: "chocolat noir 85 %", qty: 150, unit: g}
+    - {id: lait-amande, name: "lait végétal", qty: 20, unit: cl}
+    - {id: puree-amande-blanche, name: "purée d'amandes blanches", qty: 2, unit: c. à s.}
+    - {id: extrait-amande-amere, name: "arôme d'amande amère", qty: 1, unit: pincée, optional: true}
+    - {id: amandes-effilees, name: "amandes effilées ou pistaches", qty: 2, unit: c. à s.}
+
+  steps:
+    - id: pocher
+      action: "Pocher 5 min à tout petit feu les reines-claudes dénoyautées en quartiers avec 4 c. à s. d'agave, en remuant, puis les répartir en verrines avec leur jus"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [reines-claudes]
+      time_min: 8
+    - id: creme
+      action: "Bouillir le lait avec le reste d'agave, y fondre le chocolat hors du feu et mixer avec la purée d'amande, l'arôme et le tofu soyeux"
+      needs: [simmer, blend-smooth]
+      charge_partielle: true
+      uses: [lait-amande, sirop-agave, chocolat-noir, puree-amande-blanche, extrait-amande-amere, tofu-soyeux]
+      time_min: 8
+    - id: servir
+      action: "Verser sur les fruits et parsemer d'amandes effilées"
+      needs: []
+      uses: [amandes-effilees]
+      time_min: 3
+      kid: {age_min_months: 24, task: "parsemer les amandes"}
+
+  emits:
+    - kind: reste-plat
+      type: reines-claudes-chocolat-amande
+      qty_band: 2-repas
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

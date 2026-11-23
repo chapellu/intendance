@@ -54,11 +54,13 @@ recipe:
 
   steps:
     - id: revenir-oignon
+      uses: [oignon, huile-olive]
       action: "Émincer l'oignon et le faire revenir à l'huile d'olive dans une grande poêle ou un wok"
       needs: [pan-fry]
       time_min: 5
       attended: true
     - id: cuire-champignons
+      uses: [champignons-paris, ail]
       action: "Émincer les champignons, les ajouter avec l'ail émincé et les cuire à feu vif"
       astuce: "Jusqu'à ce qu'ils aient rendu toute leur eau et soient bien dorés — tant qu'il reste du liquide, ils bouillent."
       needs: [pan-fry]
@@ -67,11 +69,13 @@ recipe:
       # C'est l'étape qui décide de tout : des champignons encore humides
       # donnent une pâte qui ne tient pas à la cuisson.
     - id: prechauffer
+      uses: []
       action: "Préchauffer le four à 220 °C"
       needs: [bake]
       time_min: 1
       parallel_with: cuire-champignons
     - id: mixer
+      uses: [fromage-rape, flocons-avoine, oeufs, persil]
       action: "Réunir la poêlée, les œufs, le persil, les flocons et l'emmental râpé, et mixer par impulsions courtes"
       astuce: "Une pâte homogène qui garde des morceaux, surtout pas une bouillie."
       needs: [chop-coarse]
@@ -80,16 +84,19 @@ recipe:
       # `chop-coarse` bascule sur le petit blender, en 2–3 fois. Pour 500 g de
       # champignons plus le reste, c'est la friction réelle de cette recette.
     - id: assaisonner-pate
+      uses: [sel, poivre]
       action: "Saler et poivrer la pâte, puis mélanger"
       needs: []
       time_min: 1
       seasoning_gate: true
     - id: former
+      uses: []
       action: "Déposer 6 flaques de pâte épaisses à la louche sur une lèchefrite chemisée de papier huilé, et les étaler légèrement"
       needs: []
       time_min: 4
       kid: {age_min_months: 30, task: "aplatir les tas de pâte avec le dos d'une cuillère"}
     - id: cuire-four
+      uses: []
       action: "Enfourner 10 min, jusqu'à ce que les escalopes commencent à dorer"
       needs: [bake]
       time_min: 10

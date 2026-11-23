@@ -1,0 +1,58 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# CINQ MINUTES : crème d'avoine, chocolat 70 %, agave, café fort et vanille fondus
+# ensemble à feu très doux en fouettant pour émulsionner ; au moins 2 h au
+# frais, au mieux 24 h. Se tartine aussi.
+
+recipe:
+  id: petits-pots-creme-avoine-chocolat
+  title: Petits pots de crème mousseuse avoine-chocolat
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Petite anthologie gourmande (et légère) de la mousse au chocolat bio », blog Saines Gourmandises, 12 juillet 2011"
+    url: https://saines-gourmandises.fr/petite-anthologie-gourmande-et-legere-de-la-mousse-au-chocolat-bio/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « 4 petits pots de 100 g »
+    pieces: 4
+  lot_entier: true
+  time_min_total: 10
+  active_min: 6
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: creme-avoine, name: "crème d'avoine liquide", qty: 20, unit: cl}
+    - {id: chocolat-noir, name: "chocolat noir 70 %", qty: 100, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 3, unit: c. à s.}
+    - {id: cafe, name: "café fort (ou eau)", qty: 3, unit: c. à s.}
+    - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 1, unit: c. à s., optional: true}
+
+  steps:
+    - id: fondre
+      action: "Fondre ensemble tous les ingrédients à feu très doux en fouettant, puis verser dans 4 petits pots"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [creme-avoine, chocolat-noir, sirop-agave, cafe, extrait-vanille]
+      time_min: 6
+      attente_min: 120
+      attente_raison: "au moins 2 h au frais"
+
+  emits:
+    - kind: reste-plat
+      type: petits-pots-creme-avoine-chocolat
+      qty_band: 1-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

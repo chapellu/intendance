@@ -1,0 +1,100 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca, selon le cadre
+# de licence de la carte #26 : le plat, les quantités et le procédé relèvent du
+# savoir-faire non protégeable ; sa prose et ses photos ne sont PAS reproduites.
+# Encodée le 2026-11-18 sur photo de la page (T190).
+#
+# UNE SEULE GRANDE GALETTE AU LIEU DE DIX PETITES : tout se tasse dans un moule
+# de 26 cm, rien ne se façonne à la main. L'autrice en tient l'idée du blog
+# « Artichaut et Cerises noires ».
+#
+# VARIANTE DU SOIR, NON ENCODÉE COMME RECETTE : sans jambon ni fromage, avec
+# 2 œufs, 10 cl de lait et 120 g de flocons ; plus fluide, 12 à 15 min de four,
+# pour accompagner une soupe ou une salade.
+#
+# LES PETITS POIS SONT DÉCONGELÉS : la page le demande, sans dire quand. Le
+# modèle n'a pas de geste « sortir du congélateur » pour un surgelé du
+# commerce ; c'est dit dans le nom de la ligne.
+
+recipe:
+  id: galette-cereales-maxi
+  title: Galette de céréales « maxi-format »
+  format: galettes
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "La cuisine bio du quotidien, Terre vivante, p. 130"
+    source_id: chioca-cuisine-bio-quotidien
+    page: 130
+    saison: automne
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes », en plat unique
+  lot_entier: true          # un moule de 26 cm
+  time_min_total: 40        # en-tête : 15 min de préparation + 20 min de four, plus le préchauffage
+  active_min: 15
+
+  apports:
+    proteine: viande-blanche
+    feculent: avoine
+    legumes: [allium, racine, legumineuse]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: oignon, name: oignons, qty: 2, unit: pièce}
+    - {id: poireau, name: poireaux, qty: 2, unit: pièce}
+    - {id: carottes, name: "carottes (3, environ 200 g)", qty: 200, unit: g}
+    - {id: huile-olive, name: "huile d'olive (+ un filet pour le four)", qty: 5, unit: c. à s.}
+    - {id: petits-pois-surgeles, name: "petits pois surgelés, décongelés", qty: 150, unit: g}
+    - {id: jambon, name: jambon cuit, qty: 180, unit: g}
+    - {id: fromage-rape, name: gruyère râpé, qty: 100, unit: g}
+    - {id: lait, name: "lait de vache, d'avoine ou de soja", qty: 35, unit: cl, subs: [{id: lait-avoine, name: "lait d'avoine", ratio: 1.0}]}
+    - {id: flocons-avoine, name: flocons d'avoine, qty: 320, unit: g}
+    - {id: oeufs, name: œufs, qty: 4, unit: pièce}
+    - {id: herbes-provence, name: "herbes de Provence, origan ou marjolaine", qty: 1, unit: c. à c., optional: true}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  # « à servir juste avec une salade verte »
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: prechauffer
+      action: "Préchauffer le four à 220 °C"
+      needs: [bake]
+      uses: []
+      time_min: 1
+      attended: false
+    - id: revenir
+      action: "Émincer oignons, poireaux et carottes, et les faire revenir à l'huile au wok jusqu'à une légère coloration des sucs"
+      needs: [pan-fry]
+      uses: [oignon, poireau, carottes, huile-olive]
+      time_min: 10
+    - id: melanger
+      action: "Hors du feu, ajouter petits pois, jambon, fromage, lait, flocons, œufs, herbes, sel et poivre, et bien mélanger"
+      needs: []
+      uses: [petits-pois-surgeles, jambon, fromage-rape, lait, flocons-avoine, oeufs, herbes-provence, sel, poivre]
+      time_min: 3
+      kid: {age_min_months: 30, task: "verser les flocons et casser les œufs"}
+    - id: tasser
+      action: "Tasser au fond d'un moule à charnière ou d'un plat à tarte d'environ 26 cm, chemisé de papier cuisson"
+      needs: []
+      uses: []
+      time_min: 2
+      kid: {age_min_months: 30, task: "tasser la préparation avec le dos de la cuillère"}
+    - id: cuire
+      action: "Arroser d'un petit filet d'huile et enfourner environ 20 min, jusqu'à ce que le dessus soit bien doré"
+      needs: [bake]
+      uses: []
+      time_min: 20
+      attended: false
+    - id: servir
+      action: "Servir chaud"
+      astuce: "En refroidissant, la galette perd beaucoup de sa texture."
+      needs: []
+      uses: []
+      time_min: 1
+  # PAS DE PRÉLÈVEMENT BÉBÉ : jambon et gruyère sont salés avant d'entrer.
+
+  plan_b: []

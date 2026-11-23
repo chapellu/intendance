@@ -1,0 +1,106 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN PÂTÉ EN CROÛTE DE COURGETTES : 3 kg de courgettes fondues puis bien
+# égouttées, liées d'œufs, parmesan, riz cru, agar-agar et farine, basilic et
+# ail ; pâte à l'huile sans repos, moule haut de 18 cm (hors inventaire, rien
+# ne le vérifie). Refroidi, il se tranche net ; chaud, les tranches sont
+# fragiles. Le jus des courgettes fait un bouillon.
+
+recipe:
+  id: pate-epatant-courgettes-pistou
+  title: « Pâté épatant » aux courgettes et pistou
+  format: terrine
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Pâté épatant aux courgettes et pistou », blog Saines Gourmandises, 8 septembre 2021"
+    url: https://saines-gourmandises.fr/pate-epatant-aux-courgettes-et-pistou/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 9          # « 8/10 parts »
+  lot_entier: true
+  time_min_total: 95        # 15 min de préparation + 20 min sur le feu + 1 h de four
+  active_min: 35
+
+  apports:
+    proteine: fromage
+    feculent: farine
+    legumes: [cucurbitacee, allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: courgettes, name: courgettes, qty: 3, unit: kg}
+    - {id: oignon, name: gros oignon, qty: 1, unit: pièce}
+    - {id: ail, name: ail, qty: 5, unit: gousse}
+    - {id: basilic, name: gros bouquet de basilic, qty: 1, unit: bouquet}
+    - {id: riz, name: riz basmati cru, qty: 80, unit: g}
+    - {id: agar-agar, name: agar-agar, qty: 4, unit: g}
+    - {id: farine-complete, ref: farine-garniture, name: farine semi-complète (c. à s. bombée), qty: 1, unit: c. à s.}
+    - {id: huile-olive, ref: huile-garniture, name: huile d'olive (garniture), qty: 6, unit: c. à s.}
+    - {id: parmesan, name: parmesan râpé, qty: 200, unit: g}
+    - {id: oeufs, name: œufs, qty: 5, unit: pièce}
+    - {id: pignons-pin, name: pignons de pin, qty: 50, unit: g, optional: true}
+    - {id: sel, ref: sel-garniture, name: sel (garniture), qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre-5-baies, name: poivre 5 baies, qty: 3, unit: pincée, seasoning: true}
+    - {id: farine-epeautre, name: farine semi-complète de grand épeautre (pâte), qty: 300, unit: g}
+    - {id: huile-olive, ref: huile-pate, name: huile d'olive (pâte), qty: 60, unit: g}
+    - {id: eau, name: eau, qty: 15, unit: cl}
+    - {id: sel, ref: sel-pate, name: "sel (pâte, c. à c. rase)", qty: 1, unit: c. à c., seasoning: true}
+
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: courgettes
+      action: "Émincer l'oignon et le faire revenir à l'huile dans une grande cocotte, ajouter les courgettes en rondelles et le sel, et mijoter environ 20 min à couvert"
+      astuce: "Dès qu'elles ramollissent, découvrir pour que l'eau s'évapore."
+      needs: [simmer-large]
+      uses: [oignon, huile-garniture, courgettes, sel-garniture]
+      time_min: 22
+      attended: false
+    - id: pate
+      action: "Malaxer sans trop pétrir la farine, l'huile, le sel et l'eau, étaler sur un plan bien fariné et foncer le moule en laissant dépasser la pâte"
+      astuce: "La pâte est très souple : c'est normal."
+      needs: []
+      uses: [farine-epeautre, huile-pate, sel-pate, eau]
+      time_min: 10
+      parallel_with: courgettes
+    - id: egoutter
+      action: "Préchauffer le four à 180 °C ; égoutter longuement les courgettes dans une passoire en remuant pour bien les sécher"
+      needs: []
+      uses: []
+      time_min: 5
+    - id: liaison
+      action: "Mélanger œufs, parmesan, agar-agar, riz, farine, pignons, basilic et ail hachés, poivrer généreusement, et l'incorporer aux courgettes"
+      needs: [chop-coarse]
+      uses: [oeufs, parmesan, agar-agar, riz, farine-garniture, pignons-pin, basilic, ail, poivre-5-baies]
+      time_min: 6
+      kid: {age_min_months: 30, task: "casser les œufs et mélanger"}
+    - id: cuire
+      action: "Verser dans le moule, rabattre la pâte sur le dessus et cuire 1 h"
+      needs: [bake]
+      uses: []
+      time_min: 60
+      attended: false
+    - id: refroidir
+      action: "Laisser refroidir avant de trancher"
+      needs: []
+      uses: []
+      time_min: 1
+      attente_min: 120
+      attente_raison: "l'agar-agar fige en refroidissant ; chaud, il se mange aussi"
+      attente_souple: true
+
+  emits:
+    - kind: reste-plat
+      type: pate-epatant-courgettes-pistou
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+      note: "froid, en tranches : boîte du midi"
+
+  plan_b: []

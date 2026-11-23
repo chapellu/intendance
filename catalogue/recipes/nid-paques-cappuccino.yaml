@@ -1,0 +1,92 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE GÉNOISE AU CACAO SANS ŒUF (lait de soja, vinaigre de cidre, huile) cuite
+# en savarin de 24 cm la veille et imbibée d'un sirop rhum-café-agave ; une
+# ganache montée rhum-chocolat et une chantilly de coco au café, dressées
+# ensemble à la poche. Poussins en pâte d'amande teintée au curcuma en décor
+# (facultatif).
+
+recipe:
+  id: nid-paques-cappuccino
+  title: Nid de Pâques « cappuccino », génoise au cacao et deux crèmes
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Nid de Pâques « Capuccino » (et ses poussins en pâte d'amande maison) », blog Saines Gourmandises, 8 avril 2020"
+    url: https://saines-gourmandises.fr/piou/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 12
+  lot_entier: true
+  time_min_total: 75
+  active_min: 40
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: "farine T110 de blé ou de grand épeautre", qty: 300, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever", qty: 2, unit: sachet}
+    - {id: sucre-vanille, name: "sucre vanillé (2 + 1 + 1 sachets)", qty: 4, unit: sachet}
+    - {id: cacao, name: "cacao amer (+ pour saupoudrer)", qty: 35, unit: g}
+    - {id: sucre-complet, name: "sucre de coco (165 + 60 g)", qty: 225, unit: g}
+    - {id: lait-soja-vanille, name: "lait de soja vanille", qty: 33, unit: cl}
+    - {id: vinaigre, name: "vinaigre de cidre", qty: 3, unit: cl}
+    - {id: huile-tournesol, name: "huile de tournesol désodorisée", qty: 5, unit: cl}
+    - {id: sel, name: "grosse pincée de sel", qty: 1, unit: bonne pincée, seasoning: true}
+    - {id: chocolat-noir, name: "chocolat noir 70 %", qty: 100, unit: g}
+    - {id: rhum, name: "rhum ambré (1 + 3 c. à s.)", qty: 4, unit: c. à s.}
+    - {id: creme-coco, name: "crème de coco (20 + 40 cl bien froide)", qty: 60, unit: cl}
+    - {id: cafe, name: "expressos très serrés (3 + 5 cl)", qty: 8, unit: cl}
+    - {id: eau, name: "eau", qty: 3, unit: c. à s.}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 4, unit: c. à s.}
+    - {id: pate-amande, name: "pâte d'amande pour les poussins", qty: 100, unit: g, optional: true}
+
+  steps:
+    - id: genoise
+      action: "Préchauffer à 180 °C ; mêler farine, cacao, sel, levure, 2 sucres vanillés et 165 g de sucre ; y verser lait, huile et vinaigre ; 30 min en savarin huilé"
+      needs: [bake]
+      uses: [farine-epeautre, cacao, sel, poudre-a-lever, lait-soja-vanille, huile-tournesol, vinaigre]
+      time_min: 35
+      attended: false
+    - id: ganache
+      action: "Fondre à feu très doux le chocolat, 1 c. à s. de rhum, 20 cl de crème de coco et un sachet de sucre vanillé"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [chocolat-noir]
+      time_min: 6
+    - id: chantilly
+      action: "Fouetter en chantilly ferme 40 cl de crème de coco froide avec 3 cl de café, 60 g de sucre et le dernier sucre vanillé"
+      needs: []
+      uses: [sucre-complet, sucre-vanille, creme-coco]
+      time_min: 10
+    - id: imbiber
+      action: "Mêler 3 c. à s. de rhum, l'eau, 5 cl de café et l'agave, et en imbiber le gâteau chaud cuillerée par cuillerée"
+      needs: []
+      uses: [rhum, eau, cafe, sirop-agave]
+      time_min: 5
+      attente_min: 600
+      attente_raison: "une nuit : crèmes au frais, gâteau couvert"
+    - id: monter
+      action: "Démouler ; fouetter la ganache froide, dresser les deux crèmes ensemble à la poche sur le gâteau ; poussins en pâte d'amande au goût"
+      needs: []
+      uses: [pate-amande]
+      time_min: 15
+      kid: {age_min_months: 36, task: "modeler les poussins"}
+
+  emits:
+    - kind: reste-plat
+      type: nid-paques-cappuccino
+      qty_band: 3-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

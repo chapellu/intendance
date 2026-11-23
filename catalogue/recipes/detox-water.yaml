@@ -41,10 +41,12 @@ recipe:
 
   steps:
     - id: preparer-agrume
+      uses: [pomelo]
       action: "Détailler la moitié du pomelo en quartiers et les peler à vif ; presser l'autre moitié"
       needs: []
       time_min: 6
     - id: preparer-fruits
+      uses: [fraises, menthe]
       action: "Couper les fraises en deux ou en quatre et froisser légèrement les feuilles de menthe"
       astuce: "C'est le froissage qui libère l'huile essentielle."
       needs: []
@@ -53,6 +55,7 @@ recipe:
         age_min_months: 24
         task: "froisser les feuilles de menthe entre les mains"
     - id: infuser
+      uses: [eau]
       action: "Réunir le tout dans une bouteille à large ouverture, fermer, bien secouer et laisser infuser au réfrigérateur"
       needs: []
       time_min: 1

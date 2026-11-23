@@ -53,26 +53,31 @@ recipe:
 
   steps:
     - id: prechauffer-cake
+      uses: []
       action: "Préchauffer le four à 180 °C, si possible en chaleur tournante"
       needs: [bake]
       time_min: 1
       attended: false
     - id: melanger-secs-cake
+      uses: [farine-complete, poudre-a-lever, sel]
       action: "Bien mélanger au fouet la farine, le sel et la poudre à lever"
       needs: []
       time_min: 2
       seasoning_gate: true
     - id: malaxer-cake
+      uses: [courgettes, tomme-savoie, oeufs, poivre]
       action: "Ajouter courgettes râpées, fromage, œufs et poivre, puis malaxer à la main jusqu'à consistance bien homogène"
       needs: []
       time_min: 7
       kid: {age_min_months: 30, task: "râper les courgettes au râpe-légumes"}
     - id: cuire-cake
+      uses: []
       action: "Verser dans un moule à cake d'environ 25 × 12 cm chemisé de papier cuisson, bien égaliser, puis enfourner 50 min et vérifier à la pique"
       needs: [bake]
       time_min: 50
       attended: false
     - id: refroidir-cake
+      uses: []
       action: "Laisser ENTIÈREMENT refroidir avant de démouler et de découper : les tranches ne tiennent pas si le cake est tranché chaud"
       needs: []
       time_min: 5

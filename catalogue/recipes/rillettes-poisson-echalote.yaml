@@ -48,25 +48,30 @@ recipe:
 
   steps:
     - id: tailler-rillettes
+      uses: [echalote, carottes]
       action: "Émincer les échalotes et couper la carotte en petits cubes"
       needs: []
       time_min: 3
     - id: suer
+      uses: [huile-olive]
       action: "Les faire revenir à l'huile d'olive dans une petite cocotte"
       astuce: "Jusqu'à ce que les sucs prennent une légère coloration : c'est eux qui portent le goût."
       needs: [pan-fry]
       time_min: 5
       attended: true
     - id: mijoter
+      uses: [saumon, vin-blanc-sec, sel]
       action: "Ajouter le saumon, mouiller au vin blanc, saler, couvrir et laisser mijoter une dizaine de minutes jusqu'à ce que le poisson soit bien cuit"
       needs: [simmer]
       time_min: 12
       attended: false
     - id: finir
+      uses: [creme, concentre-tomate, ciboulette]
       action: "Ajouter la crème, le concentré de tomate et la ciboulette ciselée"
       needs: []
       time_min: 2
     - id: mixer
+      uses: []
       action: "Mixer par brèves impulsions pour garder des petits morceaux, puis débarrasser en pot bien fermé"
       needs: [chop-coarse]
       time_min: 3

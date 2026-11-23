@@ -24,7 +24,7 @@ recipe:
     - type: lentilles-vertes-cuites
       qty: {amount: 400, unit: g}
       required: true
-      fallback_recipe: lentilles-mijotees
+      fallback_recipe: mitonnee-lentilles
 
   # 7 Wonders chaining: the reste is a *discount*, not a gate. Without it you
   # buy dry lentils and spend 35 more minutes — a price, not an impossibility.
@@ -71,31 +71,37 @@ recipe:
 
   steps:
     - id: dorer
+      uses: [tofu-fume, oignons, huile-olive]
       action: "Faire dorer doucement les oignons émincés et le tofu fumé en dés dans l'huile d'olive, jusqu'à belle coloration"
       needs: [pan-fry]
       time_min: 10
       attended: true
     - id: hacher
+      uses: []
       action: "Hacher grossièrement le mélange oignons-tofu"
       needs: [chop-coarse]        # Chioca uses a food processor — the household has none
       time_min: 2
     - id: melanger
+      uses: [lentilles-cuites, farine, bouillon-miso, poivre-5-baies]
       action: "Mélanger avec les lentilles, le cube émietté, le poivre et la farine ; pétrir en pâte souple"
       needs: []
       time_min: 4
       seasoning_gate: true
       kid: {age_min_months: 24, task: "malaxer la pâte avec les mains (propres !)"}
     - id: faconner
+      uses: []
       action: "Façonner une dizaine de petites croquettes à la main"
       needs: []
       time_min: 5
       kid: {age_min_months: 24, task: "tapoter et former les croquettes"}
     - id: paner
+      uses: [son-avoine]
       action: "Rouler chaque croquette dans le son d'avoine"
       needs: []
       time_min: 4
       kid: {age_min_months: 24, task: "rouler les croquettes dans l'assiette de son"}
     - id: cuire
+      uses: []
       action: "Faire dorer les croquettes quelques minutes de chaque côté"
       needs: [pan-fry]
       time_min: 8

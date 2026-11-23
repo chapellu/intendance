@@ -1,0 +1,74 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# SEIZE PETITS PAINS : épeautre T130, très bonne huile d'olive, romarin finement
+# émincé, pignons ; levés 1 h 30, roulés en deux baguettes coupées en huit,
+# levés 30 min, 5 min à four maximal puis 15 min à 150 °C sans ouvrir.
+
+recipe:
+  id: petits-pains-epeautre-pignons-romarin
+  title: Petits pains d'épeautre à l'huile d'olive, pignons et romarin
+  role: base
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Petits pains d'épeautre à l'huile d'olive, pignons et romarin », blog Saines Gourmandises, 7 mai 2014"
+    url: https://saines-gourmandises.fr/aujourdhui-cest-tuto-sur-lepeautre/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8
+    pieces: 16              # « 16 petits pains individuels »
+  lot_entier: true
+  time_min_total: 155       # 15 min + 2 h de pousse + 20 min
+  active_min: 20
+
+  apports:
+    proteine: aucune
+    feculent: pain
+    legumes: []
+    profil: four
+    origine: italien
+
+  ingredients:
+    - {id: farine-epeautre, name: farine complète T130 de grand épeautre, qty: 500, unit: g}
+    - {id: eau, name: eau tiède (45 °C au plus), qty: 25, unit: cl}
+    - {id: huile-olive, name: très bonne huile d'olive, qty: 10, unit: cl}
+    - {id: romarin, name: romarin frais, qty: 3, unit: brin}
+    - {id: pignons-pin, name: pignons de pin, qty: 50, unit: g}
+    - {id: levure-boulangere, name: levure de boulanger (1 sachet ou 1 cube), qty: 1, unit: sachet}
+    - {id: fleur-de-sel, name: fleur de sel (c. à c. un peu bombée), qty: 1, unit: c. à c., seasoning: true}
+
+  steps:
+    - id: petrir
+      action: "Mélanger farine, sel, romarin finement émincé et pignons ; y verser la levure délayée dans l'eau et l'huile, et pétrir jusqu'à une pâte souple qui se détache"
+      needs: []
+      uses: [farine-epeautre, fleur-de-sel, romarin, pignons-pin, levure-boulangere, eau, huile-olive]
+      time_min: 10
+      attente_min: 90
+      attente_raison: "première pousse au tiède"
+      kid: {age_min_months: 30, task: "effeuiller le romarin"}
+    - id: faconner
+      action: "Former deux baguettes de 35 cm, les couper chacune en 8 et ranger les petits pains sur une plaque farinée"
+      needs: []
+      uses: []
+      time_min: 5
+      attente_min: 30
+      attente_raison: "seconde pousse, four au maximum, sans chaleur tournante"
+    - id: cuire
+      action: "Cuire 5 min à four maximal, puis baisser à 150 °C sans ouvrir et cuire 15 min"
+      astuce: "Un minuteur pour les 5 premières minutes : à cette chaleur, l'oubli carbonise."
+      needs: [bake]
+      uses: []
+      time_min: 20
+      attended: true
+
+  emits:
+    - kind: base
+      type: petits-pains-epeautre-pignons-romarin
+      qty_band: 3-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

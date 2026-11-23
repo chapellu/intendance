@@ -46,16 +46,19 @@ recipe:
 
   steps:
     - id: prechauffer
+      uses: []
       action: "Préchauffer le four à 200 °C"
       needs: [bake]
       time_min: 1
       attended: false
     - id: foncer
+      uses: [pate-feuilletee]
       action: "Étaler la pâte et la déposer dans un moule à tarte de 24 cm bien fariné"
       astuce: "Jamais sur un papier cuisson, qui retient l'humidité et détrempe le fond."
       needs: []
       time_min: 6
     - id: garnir
+      uses: [tomates-roma, fromage-rape, moutarde]
       action: "Badigeonner le fond de moutarde à l'ancienne, répartir le gruyère par-dessus, puis ranger les tomates en tranches sur le fromage"
       needs: []
       time_min: 6
@@ -63,11 +66,13 @@ recipe:
       # L'ordre compte : le fromage fait barrière entre la pâte et l'eau des
       # tomates. Inversé, la tarte est détrempée.
     - id: assaisonner
+      uses: [huile-olive, origan, sel, poivre]
       action: "Saler, poivrer, saupoudrer d'origan et arroser d'un filet d'huile d'olive"
       needs: []
       time_min: 2
       seasoning_gate: true
     - id: cuire
+      uses: []
       action: "Enfourner 25 min, sur un cran bas pour que le fond cuise bien, et savourer idéalement encore tiède"
       needs: [bake]
       time_min: 25

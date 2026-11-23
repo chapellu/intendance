@@ -87,6 +87,7 @@ const note = (j, type, texte, extra = {}) => { appendFileSync(NOTES, JSON.string
 
 // ───────────────────────────────────────────────────────────── le navigateur
 const ctx = await chromium.launchPersistentContext(PROFILE, {
+  ...(process.env.CHROMIUM ? { executablePath: process.env.CHROMIUM } : {}),
   viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, serviceWorkers: "block",
 });
 const page = ctx.pages()[0] ?? (await ctx.newPage());
@@ -286,7 +287,9 @@ async function passe(j, nRepas, ev, stats) {
 /** Les courses : cocher au magasin, rentrer à la maison. */
 async function courses(j, ev, stats) {
   await aller("cuisine/courses");
-  await attendre(".co-kicker", 20_000);
+  // « .co-kicker » n'existe que s'il y a un rayon à afficher : un jour sans
+  // rien à acheter, le harnais plantait (16 jours de l'année n° 12).
+  await attendre(".st-tete", 20_000);
   await page.waitForTimeout(600);
   const arts = page.locator("button.co-art");
   const n = await arts.count();
@@ -306,10 +309,10 @@ async function courses(j, ev, stats) {
     await tap(arts.nth(k)); coches++;
     await page.waitForTimeout(120);
   }
-  await tap(page.getByRole("button", { name: "À la maison" }));
-  await page.waitForTimeout(400);
-  const tout = page.getByRole("button", { name: /Tout rentrer/ });
-  if (await tout.count()) { await tap(tout); await page.waitForTimeout(800); }
+  // Depuis 7e1b7b2, plus de mode « À la maison » : toucher met dans le sac,
+  // « Ranger au stock » fait tout entrer d'un coup.
+  const ranger = page.getByRole("button", { name: /Ranger au stock/ });
+  if (await ranger.count()) { await tap(ranger); await page.waitForTimeout(800); }
   for (const l of lignes) if (!manquants.has(l.nom) && !/rentre/.test(l.classe ?? "")) acheter(l.nom, l.q, j);
   // Ce que la liste ne dit pas : on note les lignes qui restent sans rentrer et les orphelins.
   const apres = await texte();
@@ -449,17 +452,36 @@ async function lireStock() {
 
 /** « Je n'en ai plus » sur le premier lot qui correspond. */
 async function plusDe(filtre) {
+  // Depuis T141 les lots vivent dans le panneau d'une zone, qu'on ouvre en
+  // touchant le frigo ou le congélateur sur le plan ; le bouton d'un reste dit
+  // « Fini » (il disait « Je n'en ai plus »).
   await aller("cuisine/stock");
-  await attendre(".co-barre", 20_000);
-  await page.waitForTimeout(500);
-  const lots = page.locator(".co-lot").filter({ has: page.getByRole("button", { name: "Je n’en ai plus" }) });
-  const n = await lots.count();
-  for (let k = 0; k < n; k++) {
-    const t = await lots.nth(k).innerText();
-    if (filtre(t)) { await tap(lots.nth(k).getByRole("button", { name: "Je n’en ai plus" })); await page.waitForTimeout(500); return t.split("\n")[0]; }
+  const plan = page.getByRole("group", { name: /Plan de la cuisine/ });
+  await plan.waitFor({ timeout: 20_000 });
+  await page.waitForTimeout(400);
+  for (const zone of [/^Frigo/, /^Congélo/]) {
+    const bouton = plan.getByRole("button").filter({ hasText: zone });
+    if (!(await bouton.count())) continue;
+    // Le panneau de la zone peut être déjà ouvert : le toucher le refermerait.
+    const ouvert = (await page.locator(".st-panneau .nom").first().innerText().catch(() => "")).trim();
+    if (!zone.test(ouvert)) { await tap(bouton.first()); await page.waitForTimeout(400); }
+    const lots = page.locator(".st-panneau .co-lot").filter({ has: page.getByRole("button", { name: /^Fini$|Je n.en ai plus/ }) });
+    const n = await lots.count();
+    for (let k = 0; k < n; k++) {
+      const t = await lots.nth(k).innerText();
+      if (filtre(t)) {
+        await tap(lots.nth(k).getByRole("button", { name: /^Fini$|Je n.en ai plus/ }).first());
+        await page.waitForTimeout(500);
+        return t.split("\n")[0];
+      }
+    }
   }
   return null;
 }
+
+/** Un lot nomme ce qu'il est par son nom lisible (T193), plus par son type. */
+const lisible = (ty) => norm(cat.typesLisibles?.[ty] ?? ty.replace(/-/g, " "));
+const estDu = (r) => (x) => r.types.some((ty) => norm(x).includes(lisible(ty)));
 
 /**
  * Ce qu'une panne fait VRAIMENT perdre : les restes du lieu qui étaient encore
@@ -508,7 +530,7 @@ async function journee(idx) {
   }
   if (ev.some((e) => e.type === "jete")) {
     const r = etat.restes.find((x) => !x.jete && x.ou === "Frigo" && x.portions > 0);
-    if (r) { r.jete = j; const t = await plusDe((x) => r.types.some((ty) => x.includes(ty))); note(j, "jete", `reste de « ${r.plat} » tourné : ${t ? "retiré via Je n'en ai plus" : "introuvable dans l'app"}`); }
+    if (r) { r.jete = j; const t = await plusDe(estDu(r)); note(j, "jete", `reste de « ${r.plat} » tourné : ${t ? "retiré via Je n'en ai plus" : "introuvable dans l'app"}`); }
   }
   if (ev.some((e) => e.type === "don")) {
     note(j, "don", "courgettes et tomates offertes : aucun écran ne permet d'entrer de la nourriture hors liste de courses — le don n'existe pas pour l'app, rien ne propose de le cuisiner");
@@ -564,7 +586,7 @@ async function journee(idx) {
         r.portions -= 2; etat.compte.restesManges++;
         stats.gamelle = r.plat;
         if (r.portions <= 0) {
-          const t = await plusDe((x) => r.types.some((ty) => x.includes(ty)) && x.includes("Frigo"));
+          const t = await plusDe((x) => estDu(r)(x) && x.includes("Frigo"));
           stats.gamelleRetiree = t ?? "introuvable";
           if (!t) note(j, "reste", `reste de « ${r.plat} » fini à la gamelle, mais l'app n'a pas de lot frigo à son nom (${r.types.join(",")})`);
         } else stats.gamellePartielle = `${r.plat} : il reste ${r.portions} parts — l'app ne sait pas qu'on en a mangé 2`;
@@ -599,7 +621,7 @@ async function journee(idx) {
   // Le soir : ce qui a passé sa date dans le monde réel quitte aussi l'app.
   for (const r of etat.restes.filter((x) => x.jete === j && !x.retireApp)) {
     r.retireApp = true;
-    const t = await plusDe((x) => r.types.some((ty) => x.includes(ty)) && x.includes(r.ou.slice(0, 5)));
+    const t = await plusDe((x) => estDu(r)(x) && x.includes(r.ou.slice(0, 5)));
     stats.jetesApp = [...(stats.jetesApp ?? []), `${r.plat}: ${t ? "retiré" : "déjà absent de l'app"}`];
   }
 
@@ -882,7 +904,7 @@ async function journee2(idx) {
     if (r) {
       r.portions -= 2; etat.compte.restesManges++; stats.midi = `reste : ${r.plat}`;
       if (r.portions <= 0) r.mangeLe = j;
-      if (r.portions <= 0) { const t = await plusDe((x) => r.types.some((ty) => x.includes(ty)) && x.includes("Frigo")); stats.resteRetire = !!t; }
+      if (r.portions <= 0) { const t = await plusDe((x) => estDu(r)(x) && x.includes("Frigo")); stats.resteRetire = !!t; }
     } else stats.midi = "pas de reste — sandwich, hors app";
 
     // 15 h : la pause. Décider, et lancer.

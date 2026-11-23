@@ -2,8 +2,9 @@
 //
 // `quantitesDeLEtape()` est tenu par `cuisiner.vue.test.ts`, qui dit ce qu'elle
 // REND. Ce parcours dit qu'elle arrive sous le geste — `uses` voyageait depuis
-// T72 et aucun écran ne le lisait — et que l'étape sans lien le dit au lieu de
-// se taire. Plats dérivés du corpus, jamais nommés à la main.
+// T72 et aucun écran ne le lisait. Depuis T193, toutes les étapes du corpus
+// portent leur lien : celle qui ne prend rien (`uses: []`, un préchauffage) se
+// tait. Plats dérivés du corpus, jamais nommés à la main.
 
 import { readFileSync } from "node:fs";
 import { expect, test } from "@playwright/test";
@@ -18,7 +19,7 @@ const catalogue = lireCatalogue(
 const parts = catalogue.foyer.parts;
 
 const avec = catalogue.plats.find((p) => (p.steps[0]?.uses?.length ?? 0) > 0)!;
-const sans = catalogue.plats.find((p) => p.steps.length > 0 && p.steps[0]!.uses === null)!;
+const rien = catalogue.plats.find((p) => p.steps.length > 0 && p.steps[0]!.uses?.length === 0)!;
 
 test("l'étape montre ses quantités, aux parts du créneau", async ({ page }) => {
   await ouvrirLeGuide(page, avec.id);
@@ -32,8 +33,8 @@ test("l'étape montre ses quantités, aux parts du créneau", async ({ page }) =
   await expect(page.locator(".co-qetape-muet")).toHaveCount(0);
 });
 
-test("l'étape sans lien se tait : les quantités sont dans « Ingrédients »", async ({ page }) => {
-  await ouvrirLeGuide(page, sans.id);
+test("l'étape qui ne prend rien se tait", async ({ page }) => {
+  await ouvrirLeGuide(page, rien.id);
   await expect(page.locator(".co-etape .co-qetape-muet")).toHaveCount(0);
   await expect(page.locator(".co-qetape")).toHaveCount(0);
 });

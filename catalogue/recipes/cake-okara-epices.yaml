@@ -1,0 +1,66 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# L'OKARA EST LA PULPE QUI RESTE quand on fait son lait d'amande ou de noisette ;
+# elle s'achète rarement. 200 g bien égouttés, œufs, sucre de coco, farine,
+# cannelle et épices, demi-yaourt de soja, huile essentielle d'orange,
+# 40 min. Plus moelleux en cake qu'en moule rond.
+
+recipe:
+  id: cake-okara-epices
+  title: Cake moelleux à l'okara d'amande et aux épices
+  creneaux: [gouter, petit-dejeuner]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Et l'okara, on en fait quoi ? (part 2) : des recettes sucrées ! », blog Saines Gourmandises, 25 février 2015"
+    url: https://saines-gourmandises.fr/et-lokara-on-en-fait-quoi-part-2/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « un cake de 20 cm »
+  lot_entier: true
+  time_min_total: 45
+  active_min: 5
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: okara, name: "okara d'amande ou de noisette bien égoutté", qty: 200, unit: g}
+    - {id: oeufs, name: "œufs", qty: 3, unit: pièce}
+    - {id: sucre-complet, name: "sucre de coco", qty: 100, unit: g}
+    - {id: farine-epeautre, name: "farine T130 de grand épeautre", qty: 150, unit: g}
+    - {id: cannelle, name: "cannelle", qty: 1, unit: c. à s., seasoning: true}
+    - {id: epices-pain-epices, name: "épices à pain d'épices", qty: 1, unit: c. à s., seasoning: true}
+    - {id: poudre-a-lever, name: "poudre à lever (demi-sachet)", qty: 0.5, unit: sachet}
+    - {id: yaourt-soja, name: "demi-yaourt de soja", qty: 0.5, unit: pot}
+    - {id: huile-essentielle-orange, name: "huile essentielle d'orange douce", qty: 10, unit: pièce, optional: true}
+
+  steps:
+    - id: pate
+      action: "Préchauffer à 180 °C ; mêler farine et levure, puis fouetter avec tous les autres ingrédients et verser dans un moule à cake huilé"
+      needs: []
+      uses: [farine-epeautre, poudre-a-lever, okara, oeufs, sucre-complet, cannelle, epices-pain-epices, yaourt-soja, huile-essentielle-orange]
+      time_min: 5
+      kid: {age_min_months: 24, task: "verser les épices et fouetter"}
+    - id: cuire
+      action: "Cuire 40 min, en baissant à 150 °C à la fin s'il dore trop ; vérifier à la pique"
+      needs: [bake]
+      uses: []
+      time_min: 40
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: cake-okara-epices
+      qty_band: 3-repas
+      keeps: {frigo_days: 4, congelo: true}
+
+  plan_b: []

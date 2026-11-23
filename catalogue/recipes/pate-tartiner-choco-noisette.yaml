@@ -1,0 +1,62 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# SANS SUCRE BLANC, LAIT NI GRAISSE HYDROGÉNÉE : soja-vanille, purée de noisette,
+# agave (ou sirop d'érable), chocolat 70 % et vanille, fondus et fouettés
+# 5 min ; chaude sur les crêpes, ou prise au frais. Dix jours au frigo. Le
+# geste n'est pas détaillé par l'article : fondre en fouettant.
+
+recipe:
+  id: pate-tartiner-choco-noisette
+  title: Pâte à tartiner choco-noisettes maison
+  role: base
+  creneaux: [petit-dejeuner, gouter]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Crêpes Suzette au petit épeautre, crêpes à l'orge mondée (et une pâte à tartiner) », blog Saines Gourmandises, 30 janvier 2014"
+    url: https://saines-gourmandises.fr/chandeleur-2014-3-recettes-alternatives/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 10          # « 1 gros pot de 500 g »
+  time_min_total: 10
+  active_min: 8
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: lait-soja-vanille, name: "lait de soja à la vanille", qty: 15, unit: cl}
+    - {id: puree-noisette, name: "purée de noisette bien souple", qty: 75, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave (ou 6 c. à s. d'érable)", qty: 4, unit: c. à s.}
+    - {id: chocolat-noir, name: "chocolat noir 70 %", qty: 100, unit: g}
+    - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 1, unit: c. à s.}
+
+  steps:
+    - id: fondre
+      action: "Fondre ensemble tous les ingrédients à feu doux en fouettant, environ 5 min, jusqu'à une crème lisse"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [lait-soja-vanille, puree-noisette, sirop-agave, chocolat-noir, extrait-vanille]
+      time_min: 6
+      kid: {age_min_months: 30, task: "casser le chocolat"}
+    - id: pot
+      action: "Servir chaud ou verser en pot et laisser prendre au frais"
+      needs: []
+      uses: []
+      time_min: 2
+
+  emits:
+    - kind: base
+      type: pate-tartiner-choco-noisette
+      qty_band: 3-repas
+      keeps: {frigo_days: 10, congelo: false}
+
+  plan_b: []

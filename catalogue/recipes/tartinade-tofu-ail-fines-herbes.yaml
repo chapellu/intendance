@@ -1,0 +1,71 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN « FROMAGE » À TARTINER : tofu lactofermenté au tamari mixé avec des
+# échalotes blondies et toute leur huile, ail des ours (ou une petite gousse)
+# et ciboulette. Trois jours au frais en pot fermé. Ne pas lésiner sur
+# l'huile, dit l'autrice : c'est elle qui fait le moelleux.
+
+recipe:
+  id: tartinade-tofu-ail-fines-herbes
+  title: « Fromage » à tartiner ail et fines herbes
+  format: tartine
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Les fromages végétaux fait-maison », extrait de « Cuisiner sans lait », blog Saines Gourmandises, 20 janvier 2016"
+    url: https://saines-gourmandises.fr/ca-peut-vraiment-etre-super-bon/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 3          # un tiers de la préparation fait un petit-déjeuner
+  time_min_total: 15
+  active_min: 15
+
+  apports:
+    proteine: tofu-soja
+    feculent: pain
+    legumes: [allium]
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: tofu-lactofermente, name: bloc de tofu lactofermenté au tamari, qty: 200, unit: g}
+    - {id: huile-olive, name: huile d'olive, qty: 6, unit: c. à s.}
+    - {id: echalote, name: échalotes, qty: 3, unit: pièce}
+    - id: ail-des-ours
+      name: feuilles d'ail des ours
+      qty: 5
+      unit: pièce
+      subs:
+        - {id: ail, name: une toute petite gousse d'ail, ratio: 0.2}
+    - {id: ciboulette, name: brins de ciboulette, qty: 22, unit: brin}
+    - {id: fleur-de-sel, name: fleur de sel, qty: 1, unit: bonne pincée, seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 1, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: pain-levain, name: pain de campagne, qty: 300, unit: g}
+
+  steps:
+    - id: echalotes
+      action: "Blondir à petit feu les échalotes émincées dans 3 c. à s. d'huile, jusqu'à ce qu'elles soient tendres et translucides"
+      needs: [simmer]
+      uses: [echalote]
+      time_min: 8
+      attended: true
+    - id: mixer
+      action: "Mixer avec toute leur huile le tofu en cubes, la fleur de sel, le poivre, le reste d'huile, l'ail des ours et la ciboulette ciselés"
+      needs: [blend-smooth]
+      uses: [tofu-lactofermente, fleur-de-sel, poivre, huile-olive, ail-des-ours, ciboulette]
+      time_min: 5
+      kid: {age_min_months: 30, task: "couper la ciboulette aux ciseaux"}
+
+  emits:
+    - kind: reste-plat
+      type: tartinade-tofu-ail-fines-herbes
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

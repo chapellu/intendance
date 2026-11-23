@@ -43,6 +43,7 @@ recipe:
 
   steps:
     - id: tailler-legumes
+      uses: [pomme-de-terre, carottes, navets-roses]
       action: "Brosser les légumes sans les éplucher, recouper pommes de terre, carottes et navets en morceaux de deux bouchées, puis les essuyer soigneusement au torchon"
       needs: []
       time_min: 15
@@ -50,32 +51,38 @@ recipe:
       # L'essuyage est ce qui permet la coloration : des légumes humides
       # bouillent au lieu de dorer.
     - id: revenir-echalotes
+      uses: [echalote, huile-olive]
       action: "Faire revenir les échalotes émincées à l'huile dans une grande cocotte"
       needs: [simmer-large]
       time_min: 3
       attended: true
     - id: sauter-legumes
+      uses: []
       action: "Ajouter carottes, navets et pommes de terre, et les faire caraméliser à feu vif en remuant souvent"
       astuce: "Ils doivent être presque cuits à cœur avant le mouillage : c'est là que se fait la couleur du navarin."
       needs: [simmer-large]
       time_min: 7
       attended: true
     - id: reserver-legumes
+      uses: [fleur-de-sel, poivre]
       action: "Saler, poivrer, retirer les légumes à l'écumoire et les réserver"
       needs: []
       time_min: 2
       seasoning_gate: true
     - id: colorer-viande
+      uses: [agneau-collier]
       action: "Colorer le collier sur toutes ses faces dans la cocotte, puis déglacer les sucs avec un verre d'eau"
       needs: [simmer-large]
       time_min: 8
       attended: true
     - id: mijoter
+      uses: [tomates-pelees, thym-frais]
       action: "Ajouter la concassée de tomates, saler, poivrer, ajouter le thym, couvrir et laisser mijoter 30 min à feu très doux en remuant de temps en temps"
       needs: [simmer-large]
       time_min: 30
       attended: false
     - id: reunir
+      uses: []
       action: "Remettre les légumes réservés dans la cocotte et poursuivre 5 min à petit feu, le temps de les réchauffer"
       needs: [simmer-large]
       time_min: 5

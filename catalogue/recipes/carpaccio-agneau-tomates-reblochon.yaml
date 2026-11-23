@@ -1,0 +1,71 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN GIGOT FICELÉ fin, juste saisi sur toutes ses faces puis raffermi 15 min au
+# congélateur pour se trancher très fin ; alterné avec un carpaccio de tomates
+# et de fines tranches de reblochon, olives, basilic, vinaigrette à l'ail noir.
+
+recipe:
+  id: carpaccio-agneau-tomates-reblochon
+  title: Salade de tomates anciennes, carpaccio d'agneau, reblochon et ail noir
+  format: salade
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« …Où il est question d'ail noir, de reblochon et d'agneau élevé dans mes montagnes », blog Saines Gourmandises, 1er juillet 2025"
+    url: https://saines-gourmandises.fr/ou-il-est-question-dail-noir-de-reblochon-et-dagneau-eleve-dans-mes-montagnes/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes »
+  time_min_total: 35
+  active_min: 20
+
+  apports:
+    proteine: viande-rouge
+    feculent: aucun
+    legumes: [solanacee]
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: tomates, name: "tomates anciennes", qty: 6, unit: pièce}
+    - {id: agneau-gigot, name: "gigot d'agneau ficelé en rôti fin", qty: 400, unit: g}
+    - {id: reblochon, name: "reblochon", qty: 300, unit: g}
+    - {id: olives-noires, name: "quelques olives noires", qty: 30, unit: g}
+    - {id: ail-noir, name: "gousses d'ail noir", qty: 4, unit: pièce}
+    - {id: basilic, name: "feuilles de basilic", qty: 1, unit: bouquet}
+    - {id: huile-olive, name: "huile d'olive", qty: 6, unit: c. à s.}
+    - {id: vinaigre, name: "vinaigre de vin", qty: 3, unit: c. à c.}
+    - {id: pate-ail-noir, name: "pâte d'ail noir", qty: 1, unit: c. à c.}
+    - {id: sel, name: "sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: "poivre", qty: 1, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: pain-levain, name: "pain au levain", qty: 0.25, unit: pièce}
+
+  steps:
+    - id: saisir
+      action: "Dorer le gigot sur toutes ses faces à la poêle, puis le raffermir au congélateur"
+      needs: [pan-fry]
+      charge_partielle: true
+      uses: [agneau-gigot]
+      time_min: 8
+      attente_min: 15
+      attente_raison: "15 min au congélateur pour trancher fin"
+    - id: sauce
+      action: "Mêler l'huile, le vinaigre et la pâte d'ail noir avec sel et poivre"
+      needs: []
+      uses: [huile-olive, vinaigre, pate-ail-noir]
+      time_min: 3
+    - id: dresser
+      action: "Trancher très fin l'agneau, les tomates et le reblochon, alterner sur les assiettes, parsemer d'ail noir, olives et basilic, et arroser de sauce"
+      needs: [chop-coarse]
+      uses: [tomates, reblochon, ail-noir, olives-noires, basilic, sel, poivre]
+      time_min: 12
+
+  emits: []
+
+  plan_b: []

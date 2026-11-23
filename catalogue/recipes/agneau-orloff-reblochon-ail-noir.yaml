@@ -1,0 +1,71 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE ÉPAULE ROULÉE tranchée en accordéon sans aller au bout, chaque entaille garnie
+# de reblochon et de jambon cru, cloutée d'ail noir, reficelée et rôtie 40 min
+# sur un lit de pommes de terre, carottes, oignons et tomates à l'huile d'olive.
+# Saler peu : le jambon sale déjà.
+
+recipe:
+  id: agneau-orloff-reblochon-ail-noir
+  title: Agneau façon Orloff au reblochon et à l'ail noir, légumes rôtis
+  format: piece
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« …Où il est question d'ail noir, de reblochon et d'agneau élevé dans mes montagnes », blog Saines Gourmandises, 1er juillet 2025"
+    url: https://saines-gourmandises.fr/ou-il-est-question-dail-noir-de-reblochon-et-dagneau-eleve-dans-mes-montagnes/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « pour 6 personnes »
+  time_min_total: 65
+  active_min: 25
+
+  apports:
+    proteine: viande-rouge
+    feculent: pommes-de-terre
+    legumes: [racine, allium, solanacee]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: agneau-epaule, name: "épaule d'agneau désossée et roulée", qty: 550, unit: g}
+    - {id: ail-noir, name: "gousses d'ail noir", qty: 5, unit: pièce}
+    - {id: reblochon, name: "reblochon", qty: 200, unit: g}
+    - {id: jambon-cru, name: "jambon cru en tranches", qty: 300, unit: g}
+    - {id: pommes-de-terre, name: "pommes de terre nouvelles", qty: 600, unit: g}
+    - {id: tomates, name: "grosses tomates", qty: 2, unit: pièce}
+    - {id: oignon, name: "oignons", qty: 2, unit: pièce}
+    - {id: carottes, name: "carottes", qty: 4, unit: pièce}
+    - {id: huile-olive, name: "huile d'olive", qty: 4, unit: c. à s.}
+    - {id: sel, name: "sel", qty: 1, unit: c. à c., seasoning: true}
+    - {id: poivre, name: "poivre", qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: legumes
+      action: "Préchauffer à 180 °C ; ouvrir tomates, oignons, carottes et pommes de terre, et les brasser dans le plat avec l'huile et le sel"
+      needs: [chop-coarse, gratin-vessel]
+      uses: [tomates, oignon, carottes, pommes-de-terre, huile-olive, sel]
+      time_min: 12
+    - id: farcir
+      action: "Trancher le rôti ficelé tous les 2 cm sans aller au bout ; glisser dans chaque entaille reblochon, demi-tranche de jambon et éclats d'ail noir ; reficeler"
+      needs: []
+      uses: [agneau-epaule, reblochon, jambon-cru, ail-noir, poivre]
+      time_min: 13
+    - id: rotir
+      action: "Poser le rôti sur les légumes et enfourner environ 40 min"
+      needs: [bake]
+      uses: []
+      time_min: 40
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: agneau-orloff-reblochon-ail-noir
+      qty_band: 1-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

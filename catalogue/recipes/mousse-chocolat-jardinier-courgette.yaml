@@ -1,0 +1,83 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE COURGETTE CACHÉE DANS LA MOUSSE : 100 g de jeune courgette bouillie 15 min,
+# versée chaude sur le chocolat avec le soja-vanille sucré, mixée avec les
+# jaunes, puis les blancs en neige ; 6 h au frais, surface griffée en
+# « terre », cacao, pousses de menthe et fleurs comestibles plantées. Une
+# courgette très fraîche, sinon c'est amer.
+
+recipe:
+  id: mousse-chocolat-jardinier-courgette
+  title: Petits pots de « mousse au chocolat du jardinier » à la courgette
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Petits pots légers de mousse au chocolat du jardinier », blog Saines Gourmandises, 14 août 2015"
+    url: https://saines-gourmandises.fr/encore-une-idee-com-ple-te-ment-loufoque/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « pour 6 pots »
+    pieces: 6
+  time_min_total: 30
+  active_min: 15
+
+  apports:
+    proteine: oeuf
+    feculent: aucun
+    legumes: [cucurbitacee]
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: chocolat-noir, name: "bon chocolat noir pâtissier 70 %", qty: 100, unit: g}
+    - {id: courgettes, name: "jeune courgette très fraîche", qty: 100, unit: g}
+    - {id: lait-soja-vanille, name: "lait de soja vanille", qty: 5, unit: cl}
+    - {id: sirop-agave, name: "sirop d'agave (ou miel, ou érable)", qty: 5, unit: cl}
+    - {id: oeufs, name: "œufs ultra frais", qty: 2, unit: pièce}
+    - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 1, unit: c. à s.}
+    - {id: fleur-de-sel, name: "pointe de fleur de sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: cacao, name: "cacao en poudre", qty: 1, unit: c. à c.}
+    - {id: menthe, name: "feuilles de menthe (ou fleurs comestibles)", qty: 6, unit: brin}
+
+  steps:
+    - id: courgette
+      action: "Cuire la courgette en tranches épaisses 15 min à l'eau non salée"
+      needs: [boil]
+      charge_partielle: true
+      uses: [courgettes]
+      time_min: 16
+      attended: false
+    - id: lait
+      action: "Chauffer le lait, la vanille, le sel et l'agave et couper au premier bouillon ; mettre le chocolat en morceaux dans un pot haut"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [lait-soja-vanille, extrait-vanille, fleur-de-sel, sirop-agave, chocolat-noir]
+      time_min: 4
+      parallel_with: courgette
+    - id: mixer
+      action: "Verser la courgette égouttée et le lait chaud sur le chocolat, laisser fondre un instant, puis mixer avec les jaunes"
+      needs: [blend-smooth]
+      uses: [oeufs]
+      time_min: 4
+    - id: mousse
+      action: "Incorporer les blancs en neige souple à la maryse et répartir en 6 pots"
+      needs: []
+      uses: []
+      time_min: 5
+      attente_min: 360
+      attente_raison: "au moins 6 h au frais"
+    - id: decor
+      action: "Griffer le dessus à la fourchette, poudrer de cacao et planter menthe ou fleurs au moment de servir"
+      needs: []
+      uses: [cacao, menthe]
+      time_min: 4
+      kid: {age_min_months: 30, task: "planter les pousses de menthe"}
+
+  emits: []
+
+  plan_b: []

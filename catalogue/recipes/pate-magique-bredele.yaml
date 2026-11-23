@@ -1,0 +1,70 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE PÂTE SANS BEURRE NI ŒUF qu'on découpe TIÈDE : lait végétal, agave, huile de
+# coco, sucre vanillé et sel chauffés, versés d'un coup sur la farine
+# d'épeautre ; étalée et découpée aussitôt (au frais elle durcirait), 10 à
+# 12 min. Elle fait aussi une très bonne pâte à tarte.
+
+recipe:
+  id: pate-magique-bredele
+  title: Pâte « magique » pour bredele et petits sablés de Noël
+  creneaux: [gouter]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Pâte magique pour bredele et autres petits sablés de Noël », blog Saines Gourmandises, 6 décembre 2017"
+    url: https://saines-gourmandises.fr/noel-bio-a-budget-sympa-partie-2/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6
+    pieces: 30
+  time_min_total: 25
+  active_min: 15
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: "farine T110 de grand épeautre", qty: 200, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 60, unit: g}
+    - {id: huile-coco, name: "huile de coco vierge", qty: 50, unit: g}
+    - {id: sucre-vanille, name: "sucre vanillé", qty: 1, unit: sachet}
+    - {id: lait-avoine, name: "lait d'avoine ou de soja", qty: 20, unit: g}
+    - {id: fleur-de-sel, name: "pincée de fleur de sel", qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: pate
+      action: "Préchauffer à 180 °C ; chauffer le lait, l'agave, l'huile de coco, le sel et le sucre vanillé, verser d'un coup sur la farine et mélanger juste assez"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [lait-avoine, sirop-agave, huile-coco, fleur-de-sel, sucre-vanille, farine-epeautre]
+      time_min: 5
+    - id: decouper
+      action: "Étaler sur un plan lisse et découper aussitôt à l'emporte-pièce, tant que la pâte est tiède"
+      astuce: "Pas de frigo : refroidie, elle durcit. Les chutes tièdes se réétalent."
+      needs: []
+      uses: []
+      time_min: 10
+      kid: {age_min_months: 30, task: "découper les formes"}
+    - id: cuire
+      action: "Cuire 10 à 12 min selon la taille"
+      needs: [bake]
+      uses: []
+      time_min: 11
+      attended: true
+
+  emits:
+    - kind: base
+      type: pate-magique-bredele
+      qty_band: 3-repas
+      keeps: {frigo_days: 15, congelo: false}
+
+  plan_b: []

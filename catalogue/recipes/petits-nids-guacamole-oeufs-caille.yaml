@@ -1,0 +1,82 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE ENTRÉE DE PÂQUES : petits fonds moelleux à la tomate, au citron et au
+# piment d'Espelette cuits 10 min, double rosace de guacamole, œuf de caille
+# mollet, graines germées. Le guacamole se fait au dernier moment ; les fonds
+# et les œufs peuvent se préparer la veille.
+
+recipe:
+  id: petits-nids-guacamole-oeufs-caille
+  title: Petits nids au guacamole, citron et piment d'Espelette
+  role: entree
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Petits nids au guacamole, citron et piment d'Espelette », blog Saines Gourmandises, 17 mars 2016"
+    url: https://saines-gourmandises.fr/lentree-de-paques-qui-va-bien-toute-fraiche-legere-delicieusement-acidulee/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 3
+    pieces: 6               # « pour 6 petits nids »
+  time_min_total: 30
+  active_min: 20
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: [solanacee]
+    profil: four
+    origine: mexicain
+
+  ingredients:
+    - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 85, unit: g}
+    - {id: piment-espelette, name: piment d'Espelette (demi-c. à c.), qty: 0.5, unit: c. à c., seasoning: true}
+    - {id: citron, name: "citrons (un demi pour la pâte, un pour le guacamole)", qty: 1.5, unit: pièce}
+    - {id: oeufs, name: œuf, qty: 1, unit: pièce}
+    - {id: huile-olive, name: huile d'olive, qty: 5, unit: cl}
+    - {id: concentre-tomate, name: double concentré de tomate, qty: 70, unit: g}
+    - {id: poudre-a-lever, name: poudre à lever (demi-sachet), qty: 0.5, unit: sachet}
+    - {id: sel, name: sel, qty: 2, unit: bonne pincée, seasoning: true}
+    - {id: avocat, name: avocats Hass bien mûrs, qty: 2, unit: pièce}
+    - {id: oeufs-caille, name: boîte d'œufs de caille, qty: 6, unit: pièce}
+    - {id: graines-germees, name: barquette de graines germées, qty: 1, unit: pièce}
+
+
+  steps:
+    - id: fonds
+      action: "Préchauffer le four à 180 °C ; mélanger farine, piment, sel et levure, y fouetter le jus d'un demi-citron, l'œuf, l'huile et le concentré, et répartir en 6"
+      needs: []
+      uses: [farine-complete, poudre-a-lever, oeufs, huile-olive, concentre-tomate]
+      time_min: 6
+      kid: {age_min_months: 30, task: "remplir les empreintes à la cuillère"}
+    - id: cuire
+      action: "Cuire 10 min, démouler et laisser refroidir"
+      needs: [bake]
+      uses: []
+      time_min: 10
+      attended: false
+    - id: oeufs
+      action: "Cuire les œufs de caille 5 min à l'eau bouillante et les écaler"
+      astuce: "Les rouler sous la paume pour craqueler la coquille, puis quelques minutes dans l'eau froide."
+      needs: [boil]
+      uses: [oeufs-caille]
+      time_min: 8
+      parallel_with: cuire
+    - id: guacamole
+      action: "Mixer la chair des avocats avec le jus du citron et du sel jusqu'à une crème lisse, et la mettre en poche cannelée"
+      needs: [blend-smooth]
+      uses: [avocat, citron, sel, piment-espelette]
+      time_min: 4
+    - id: dresser
+      action: "Poser une double rosace de guacamole sur chaque fond, un œuf au centre, les graines germées autour, une pincée de piment"
+      needs: []
+      uses: [graines-germees]
+      time_min: 5
+
+  emits: []
+
+  plan_b: []

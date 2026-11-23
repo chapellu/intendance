@@ -1,0 +1,64 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN QUATRE-QUARTS SANS BEURRE, À POIDS ÉGAUX : 180 g de petits-suisses, de farine
+# d'orge, de sirop d'agave et d'œufs, vanille et fleur de sel ; 25 min, de
+# préférence en moule à savarin. Ne rien remplacer, insiste l'autrice : une
+# autre farine le ferait s'effondrer.
+
+recipe:
+  id: quatre-quarts-orge-petit-suisse
+  title: Quatre-quarts à l'orge et au petit-suisse
+  creneaux: [gouter, dessert, petit-dejeuner]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Trois délicieux desserts à IG bas… », blog Saines Gourmandises, 9 mai 2016"
+    url: https://saines-gourmandises.fr/sos-patissiers-malheureux/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 7          # « un gâteau de 6/8 parts »
+  lot_entier: true
+  time_min_total: 35
+  active_min: 10
+
+  apports:
+    proteine: oeuf
+    feculent: orge
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: petits-suisses, name: "petits-suisses (3)", qty: 180, unit: g}
+    - {id: farine-orge, name: "farine d'orge mondé", qty: 180, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 180, unit: g}
+    - {id: oeufs, name: "œufs (3 gros)", qty: 180, unit: g}
+    - {id: gousse-vanille, name: "gousse de vanille charnue", qty: 1, unit: pièce}
+    - {id: fleur-de-sel, name: "fleur de sel (demi-c. à moka)", qty: 1, unit: pincée, seasoning: true}
+    - {id: poudre-a-lever, name: "poudre à lever", qty: 1, unit: sachet}
+
+  steps:
+    - id: pate
+      action: "Préchauffer à 180 °C ; mêler farine, sel et levure, puis les graines de vanille et tous les autres ingrédients, et verser dans un moule à savarin"
+      needs: []
+      uses: [farine-orge, fleur-de-sel, poudre-a-lever, gousse-vanille, petits-suisses, sirop-agave, oeufs]
+      time_min: 6
+      kid: {age_min_months: 30, task: "peser les ingrédients"}
+    - id: cuire
+      action: "Cuire 25 min, en baissant à 150 °C à la fin s'il colore trop ; vérifier à la pique"
+      needs: [bake]
+      uses: []
+      time_min: 25
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: quatre-quarts-orge-petit-suisse
+      qty_band: 3-repas
+      keeps: {frigo_days: 4, congelo: true}
+
+  plan_b: []

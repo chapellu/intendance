@@ -1,0 +1,76 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN GROS POTIMARRON FARCI ENTIER (1,8 kg) : beaufort au fond, puis une poêlée
+# de veau, champignons et châtaignes, chapeau reposé, une heure de four.
+
+recipe:
+  id: potimarron-surprise-veau-chataignes
+  title: Potimarron surprise au veau, châtaignes et beaufort
+  format: piece
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Potimarrons, courges, potirons, citrouilles and Co… rétrospective d'idées recettes », blog Saines Gourmandises, 17 septembre 2026"
+    url: https://saines-gourmandises.fr/potimarrons-courges-potirons-citrouilles-and-co-retrospective-didees-recettes-geniaaaaales/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes »
+  lot_entier: true
+  time_min_total: 85        # 25 min de préparation + 1 h de cuisson
+  active_min: 25
+
+  apports:
+    proteine: viande-blanche
+    feculent: chataigne
+    legumes: [cucurbitacee, champignon, allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: potimarron, name: "gros potimarron (environ 1,8 kg)", qty: 1, unit: pièce}
+    - {id: veau-blanquette, name: veau à blanquette, qty: 300, unit: g}
+    - {id: champignons-paris, name: champignons frais au choix, qty: 450, unit: g}
+    - {id: chataignes, name: châtaignes pelées au naturel, qty: 200, unit: g}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: persil, name: persil, qty: 1, unit: petit bouquet}
+    - {id: ail, name: ail, qty: 1, unit: gousse}
+    - {id: beaufort, name: beaufort, qty: 150, unit: g}
+    - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}
+    - {id: sel, name: sel, qty: 3, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 2, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: vider
+      action: "Préchauffer le four à 180 °C ; couper le chapeau du potimarron, le vider, le saler et le poivrer dedans et dehors, et tapisser le fond de beaufort en dés"
+      needs: []
+      uses: [potimarron, beaufort]
+      time_min: 8
+    - id: poeler
+      action: "Dorer l'oignon en brunoise et le veau en petits cubes à l'huile dans une sauteuse, salés et poivrés"
+      needs: [pan-fry]
+      uses: [oignon, veau-blanquette, huile-olive, sel, poivre]
+      time_min: 8
+      attended: true
+    - id: champignons
+      action: "Ajouter les champignons en gros morceaux et cuire à feu vif jusqu'à ce qu'ils aient rendu leur eau, puis les châtaignes, l'ail écrasé et le persil"
+      needs: [pan-fry]
+      uses: [champignons-paris, chataignes, ail, persil]
+      time_min: 10
+      attended: true
+    - id: cuire
+      action: "Farcir le potimarron, reposer le chapeau et cuire 1 h ; servir coupé en quatre"
+      needs: [bake]
+      uses: []
+      time_min: 60
+      attended: false
+
+  emits: []
+
+  plan_b: []

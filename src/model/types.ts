@@ -171,10 +171,9 @@ export interface Etape {
    *  existe pour attraper. `export_json.py` le dit déjà en commentaire ; on le
    *  tient de ce côté-ci. */
   uses: string[] | null;
-  /** L'id de l'étape — du MÊME plat — que celle-ci accompagne. Les carottes de
-   *  `lentilles-mijotees` portent `enParallele: lancer-mijotage` et leur texte
-   *  commence par « Pendant le mijotage : » ; le guide les a pourtant mises à
-   *  la queue leu leu et a fait attendre 30 minutes de trop. */
+  /** L'id de l'étape — du MÊME plat — que celle-ci accompagne. Né d'une
+   *  plainte : des carottes à tailler « pendant le mijotage » que le guide avait
+   *  mises à la queue leu leu, trente minutes d'attente de trop. */
   enParallele: string | null;
   /** Du temps mort, en minutes : trempage 720, prise au frais 240, repos 10.
    *  LA SECONDE HORLOGE — elle ne compte pas dans les gestes (`anticipation.py`
@@ -490,6 +489,9 @@ export interface ConfigRayons {
   rayons: Record<string, string[]>;
   /** Ce qu'on a toujours, et qu'on vérifie au lieu de l'acheter. */
   placard: string[];
+  /** T194 — le nom d'une denrée sur une étagère, quand l'id dé-tiretisé ne le
+   *  dit pas (« huile d'olive », pas « huile olive »). */
+  noms: Record<string, string>;
   /**
    * Ce dont un plat ne se fait pas — la matière de la question de T33.
    *
@@ -832,6 +834,8 @@ export interface PlanCuisine {
 }
 
 export interface Catalogue {
+  /** T193 — type émis → ce qu'on lit à l'écran (« pâté de lentilles »). */
+  typesLisibles: Record<string, string>;
   foyer: Foyer;
   plats: Plat[];
   creneaux: ConfigCreneaux;

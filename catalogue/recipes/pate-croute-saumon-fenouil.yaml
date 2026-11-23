@@ -1,0 +1,107 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN PÂTÉ EN CROÛTE SANS BEURRE : pâte à l'huile d'olive et au vin blanc, deux
+# filets de saumon autour d'une fondue de fenouil, oignon et épinards, du
+# parmesan. Tout grand filet de poisson blanc ou rose convient, sauf les goûts
+# forts (lieu noir, carpe, bonite). Deux pâtes feuilletées du commerce
+# raccourcissent la recette (l'astuce le dit).
+
+recipe:
+  id: pate-croute-saumon-fenouil
+  title: Pâté en croûte de saumon au fenouil
+  format: terrine
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Mais je vous donne quand même 2 recettes sympa à la fin de l'article », blog Saines Gourmandises, 22 mars 2019 (extrait de « Poissons et autres produits de la mer »)"
+    url: https://saines-gourmandises.fr/attention-travaux/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 7          # « pour 6/8 personnes »
+  lot_entier: true
+  time_min_total: 90        # 30 min de préparation + 15 min de poêle + 45 min de four
+  active_min: 40
+
+  apports:
+    proteine: poisson
+    feculent: farine
+    legumes: [allium, feuille]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-complete, name: farine semi-complète de blé T80 ou de grand épeautre, qty: 500, unit: g}
+    - {id: poudre-a-lever, name: poudre à lever, qty: 1, unit: sachet}
+    - {id: sel, ref: sel-pate, name: sel gris (c. à c. bombée), qty: 1, unit: c. à c., seasoning: true}
+    - {id: vin-blanc-sec, name: vin blanc sec, qty: 15, unit: cl}
+    - {id: huile-olive, ref: huile-pate, name: huile d'olive (pâte), qty: 15, unit: cl}
+    - {id: huile-olive, ref: huile-legumes, name: huile d'olive (légumes), qty: 2, unit: c. à s.}
+    - {id: saumon, name: 2 longs filets de saumon, qty: 800, unit: g}
+    - {id: fenouil, name: gros bulbe de fenouil, qty: 1, unit: pièce}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: pousses-epinards, name: épinards ou blettes à couper, qty: 2, unit: poignée}
+    - {id: parmesan, name: parmesan râpé, qty: 75, unit: g}
+    - {id: sel, ref: sel-garniture, name: sel, qty: 2, unit: pincée, seasoning: true}
+    - {id: poivre-5-baies, name: poivre 5 baies, qty: 2, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: fondue
+      action: "Émincer l'oignon et le cœur du fenouil en dés, et les colorer 15 min à feu doux dans l'huile, légèrement salés"
+      astuce: "Garder le cœur tendre du fenouil : feuilles extérieures et tiges sont filandreuses."
+      needs: [pan-fry]
+      uses: [oignon, fenouil, huile-legumes, sel-garniture]
+      time_min: 15
+      attended: true
+      charge_partielle: true   # la poêle ne tient que la garniture
+    - id: epinards
+      action: "Ajouter les épinards 3 min avant la fin, le temps qu'ils tombent"
+      needs: [pan-fry]
+      uses: [pousses-epinards]
+      time_min: 3
+      charge_partielle: true
+    - id: pate
+      action: "Préchauffer le four à 180 °C ; mélanger farine, poudre à lever et sel, sabler avec l'huile, puis verser le vin d'un coup et rassembler en boule"
+      astuce: "Pétrir juste assez pour amalgamer : trop travaillée, la croûte durcit."
+      needs: []
+      uses: [farine-complete, poudre-a-lever, sel-pate, huile-pate, vin-blanc-sec]
+      time_min: 8
+      parallel_with: fondue
+      kid: {age_min_months: 30, task: "sabler la farine et l'huile du bout des doigts"}
+    - id: monter
+      action: "Étaler une moitié de pâte en ovale, y poser un filet salé et poivré, la fondue, le parmesan, puis le second filet salé et poivré"
+      needs: []
+      uses: [saumon, parmesan, poivre-5-baies]
+      time_min: 8
+    - id: fermer
+      action: "Couvrir de l'autre moitié de pâte, souder les bords, recouper et festonner, décorer avec les chutes si on veut"
+      needs: []
+      uses: []
+      time_min: 6
+      kid: {age_min_months: 36, task: "découper des petits poissons dans les chutes de pâte"}
+    - id: cuire
+      action: "Cuire 45 à 50 min, jusqu'à ce que le pâté soit bien doré"
+      needs: [bake]
+      uses: []
+      time_min: 48
+      attended: false
+    - id: servir
+      action: "Servir chaud ou tiède, tranché au couteau à pain"
+      needs: []
+      uses: []
+      time_min: 3
+
+  emits:
+    - kind: reste-plat
+      type: pate-croute-saumon-fenouil
+      qty_band: lunchbox
+      keeps: {frigo_days: 2, congelo: true}
+      note: "se mange tiède ou froid"
+
+  plan_b: []

@@ -1,0 +1,85 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LE KRINGLE : brioche à la crème de coco et à l'huile de coco, une nuit au
+# frais, étalée en 30 × 45 cm, cannelle et sucre complet, roulée, fendue en
+# deux, torsadée en couronne ; levée longuement (la pâte est froide), enfournée
+# à 260 °C puis cuite 35 min à 180 °C. Jamais au frais une fois cuit.
+
+recipe:
+  id: kringle-estonien
+  title: Kringle estonien à la cannelle
+  creneaux: [gouter, petit-dejeuner]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Kringle estonien », blog Saines Gourmandises, 21 septembre 2015"
+    url: https://saines-gourmandises.fr/une-vraie-recette-dautomne-speciale-moral-en-beton/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 9          # « un gros kringle de 8/10 parts »
+  lot_entier: true
+  time_min_total: 180       # 25 min + 2 h de pousse + 35 min (nuit au frais)
+  active_min: 25
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: farine bise de grand épeautre (T80 ou T110), qty: 500, unit: g}
+    - {id: creme-coco, name: crème de coco liquide, qty: 40, unit: cl}
+    - {id: huile-coco, name: huile de coco vierge fondue, qty: 25, unit: g}
+    - {id: sirop-agave, name: sirop d'agave, qty: 5, unit: cl}
+    - {id: sel, name: sel fin, qty: 5, unit: g, seasoning: true}
+    - {id: extrait-vanille, name: extrait de vanille liquide, qty: 1, unit: c. à s.}
+    - {id: rhum, name: rhum ambré, qty: 1, unit: c. à s.}
+    - {id: levure-boulangere, name: levure de boulanger déshydratée, qty: 1, unit: sachet}
+    - {id: cannelle, name: cannelle en poudre, qty: 2, unit: c. à s., seasoning: true}
+    - {id: sucre-complet, name: sucre complet, qty: 5, unit: c. à s.}
+    - {id: sucre-glace, name: un peu de sucre glace, qty: 1, unit: c. à s., optional: true}
+
+  steps:
+    - id: petrir
+      action: "Tiédir la crème de coco avec l'agave et la vanille, y fouetter la levure, la pétrir avec la farine salée, le rhum et l'huile de coco fondue"
+      needs: [simmer]
+      charge_partielle: true   # le récipient ne tient que cette part du plat
+      uses: [creme-coco, sirop-agave, extrait-vanille, levure-boulangere, farine-epeautre, sel, rhum, huile-coco]
+      time_min: 12
+      attente_min: 600
+      attente_raison: "une nuit au frais"
+    - id: garnir
+      action: "Tiédir la pâte, l'étaler en rectangle de 30 × 45 cm sur un papier fariné, saupoudrer de cannelle puis de sucre et rouler dans la longueur"
+      astuce: "Froide, elle est friable : c'est normal."
+      needs: []
+      uses: [cannelle, sucre-complet]
+      time_min: 8
+      kid: {age_min_months: 30, task: "saupoudrer la cannelle et le sucre"}
+    - id: torsader
+      action: "Fendre le boudin en deux sans aller au bout, torsader les brins garniture vers le haut et fermer en couronne"
+      needs: []
+      uses: []
+      time_min: 5
+      attente_min: 120
+      attente_raison: "longue pousse au tiède : la pâte froide repart lentement"
+    - id: cuire
+      action: "Enfourner à 260 °C, baisser aussitôt à 180 °C et cuire environ 35 min ; saupoudrer de sucre glace et servir tiède"
+      astuce: "S'il dore trop vite, finir à 150 °C ; vérifier la cuisson à cœur avec une pique."
+      needs: [bake]
+      uses: [sucre-glace]
+      time_min: 35
+      attended: true
+
+  emits:
+    - kind: reste-plat
+      type: kringle-estonien
+      qty_band: 2-repas
+      keeps: {frigo_days: 2, congelo: true}
+
+  plan_b: []

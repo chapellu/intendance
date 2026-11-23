@@ -270,7 +270,7 @@ familles:
       Couper les fanes des carottes dès le retour des courses (elles tirent
       l'eau de la racine), et laisser le bac respirer : un sac fermé fait
       moisir.
-    ids: [carottes, celeri-rave, navets, pommes, citron]
+    ids: [carottes, celeri-rave, navets, pommes, citron, betterave, gingembre]
 
   - id: surgele
     label: surgelés du commerce
@@ -303,7 +303,7 @@ familles:
       Une boîte entamée ne reste jamais dans le métal : transvaser dans une
       boîte hermétique, au frigo, et finir dans les trois jours.
     ids: [tomates-pelees, concentre-tomate, lait-coco, thon-boite,
-          maquereaux-boite, sardines-boite, mais]
+          maquereaux-boite, sardines-boite, mais, sauce-tomate]
 
   - id: oeufs
     label: œufs
@@ -354,7 +354,7 @@ familles:
     conseil: >-
       Râper la moitié d'un bloc qui traîne et la congeler à plat : elle
       s'emploie sans décongeler, directement sur le gratin.
-    ids: [fromage-rape]
+    ids: [fromage-rape, parmesan]
 
   # T150 — LE BEURRE N'EST PAS UN YAOURT. T142 l'avait rangé ici, à trois
   # semaines : l'année simulée n° 10 jetait la plaquette entamée au 22e jour
@@ -391,7 +391,7 @@ familles:
     conseil: >-
       Ouvrir une brique à la fois et noter le jour dessus au feutre : deux
       briques entamées au frigo, c'est une de trop.
-    ids: [lait-croissance]
+    ids: [lait, lait-soja-vanille, lait-amande, lait-avoine]
 
   # ── Le frais fragile : PAS du fond, et c'est là que le geste compte ──────
 
@@ -430,8 +430,11 @@ familles:
     # T187 — toute la viande et le poisson crus du catalogue, pas seulement les
     # six premiers : un rôti de veau ou un jarret ont la même horloge. Pas la
     # charcuterie ni le fumé, dont la date d'emballage dit tout.
-    ids: [boeuf-hache, poulet, poulet-filets, roti-porc, roti-veau, agneau-collier,
-          jarret-boeuf, os-a-moelle, saumon, cabillaud]
+    ids: [boeuf-hache, poulet, poulet-filets, roti-porc, saumon, cabillaud, moules,
+          porc-hache, foies-volaille, porc-saute, saucisses, dinde, canette,
+          boeuf-a-braiser, rouelle-veau, couenne-porc, veau-blanquette, gambas,
+          poisson-blanc, crevettes, poissons-roche, sardines, poisson-entier,
+          roti-veau, agneau-collier, jarret-boeuf, os-a-moelle]
 
   - id: legume-fragile
     label: légumes fragiles

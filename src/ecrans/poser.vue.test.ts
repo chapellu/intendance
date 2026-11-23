@@ -96,7 +96,7 @@ describe("ce que la carte produit", () => {
   });
 
   test("un plat sans sortie n'en invente pas", () => {
-    const p = jeu.plats["croque-monsieur-salade"]!;
+    const p = jeu.plats["croque-monsieur-montagnards"]!;
     expect(sortiesDeLaCarte(p).filter((s) => s.icone !== "bebe")).toHaveLength(
       p.emits.length,
     );
@@ -190,11 +190,13 @@ describe("la frappe trouve le plat", () => {
   });
 
   test("le titre qui commence par ce qu'on a tapé passe devant", () => {
-    const r = trouver(plats, "salade");
+    // T197 — « salade » ne départage plus rien : le seul titre qui la portait
+    // au milieu (le croque-monsieur, rédigé pour ce dépôt) est retiré.
+    const r = trouver(plats, "lentilles");
     expect(r.length).toBeGreaterThan(1);
-    expect(normaliser(r[0]!.titre).startsWith("salade")).toBe(true);
+    expect(normaliser(r[0]!.titre).startsWith("lentilles")).toBe(true);
     // Et le dernier ne commence pas par là, sinon l'ordre ne prouve rien.
-    expect(normaliser(r.at(-1)!.titre).startsWith("salade")).toBe(false);
+    expect(normaliser(r.at(-1)!.titre).startsWith("lentilles")).toBe(false);
   });
 });
 
@@ -210,8 +212,9 @@ describe("ce que la recherche montre du plat qu'on a nommé", () => {
   test("elle rend des cartes entières, prêtes à poser", () => {
     // DEUX GNOCCHIS DEPUIS LE FOND DE ROULEMENT (2026-10-18) : la version aux
     // courgettes et celle aux surgelés. Le fait remesuré, pas le test contourné.
+    // TROIS DEPUIS T191 : les gnocchis de polenta à la bolognaise (p. 137).
     const r = chercher(jeu, jeu.choix, creneau(0, "diner"), "gnocchi");
-    expect(r.total).toBe(2);
+    expect(r.total).toBe(3);
     const t = r.trouvailles.find((x) => x.carte.plat.id === "gnocchis-poelees")!;
     expect(t).toBeDefined();
     expect(t.ecarts).toEqual([]);
@@ -238,7 +241,7 @@ describe("ce que la recherche montre du plat qu'on a nommé", () => {
     // été proposé sans qu'aucun écart de l'offre puisse l'expliquer.
     const slot = creneau(0, "diner");
     const r = chercher(jeu, jeu.choix, slot, "gnocchi", savoirAvec({}, ["gnocchis-poelees"]));
-    const e = r.trouvailles[0]!.ecarts;
+    const e = r.trouvailles.find((x) => x.carte.plat.id === "gnocchis-poelees")!.ecarts;
     expect(e.map((x) => x.cle)).toEqual(["recent"]);
     expect(e[0]!.texte).toContain(`${catalogue.equilibre.main.cooldown_jours} jours`);
   });

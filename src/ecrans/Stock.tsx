@@ -50,6 +50,7 @@ import {
 } from "../db/planchers";
 import type { Calcul } from "../model/calcul";
 import { nomDuType } from "../model/plancher";
+import { nomDeLaDenree } from "../model/plancherGardeManger";
 import type { Jeu } from "../model/jeu";
 import type { Rejeu } from "../model/journal";
 import type { Espace } from "../model/types";
@@ -1202,7 +1203,7 @@ function Zone({
       {releve ? (
         <>
           {z.denrees.map((d) => ligneDEditeur(d.cle, d.ingredient, d.nom, d.note || undefined))}
-          {extras.map((id) => ligneDEditeur(`+${id}`, id, id.replace(/-/g, " "), "ajouté"))}
+          {extras.map((id) => ligneDEditeur(`+${id}`, id, nomDeLaDenree(id), "ajouté"))}
           {/* T139 — CE QUE LE RELEVÉ DU 26/08 NE CONNAÎT PAS. On choisit dans
               le catalogue, jamais en texte libre : un id qu'aucune recette ne
               lit ne retirerait aucune ligne de courses. */}
@@ -1246,7 +1247,10 @@ function Zone({
           ...ajoutes.map((id) => ({
             cle: `+${id}`,
             ingredient: id,
-            nom: id.replace(/-/g, " "),
+            // T196 — le nom de l'étagère (T194), pas l'id dé-tiretisé : une
+            // boîte déplacée ici s'appelait « tomates pelees » quand la zone
+            // d'origine disait « tomates pelées ».
+            nom: nomDeLaDenree(id),
             note: "ajouté au relevé",
             alerte: "",
             etat: "",

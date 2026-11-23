@@ -56,6 +56,7 @@ recipe:
 
   steps:
     - id: tremper
+      uses: [orge]
       action: "Mettre l'orge à tremper dans un grand volume d'eau froide"
       needs: []
       time_min: 3
@@ -66,10 +67,12 @@ recipe:
         cout_min: 60
         effet: "grain moins tendre et cuisson un peu plus longue, mais le plat se fait le jour même"
     - id: rincer
+      uses: []
       action: "Rincer et égoutter l'orge trempée"
       needs: []
       time_min: 1
     - id: completer
+      uses: [bouillon-herbes-ing, eau]
       action: "Mesurer le bouillon restant et compléter d'eau pour arriver à 1,8 l dans le faitout"
       astuce: "Retirer le laurier et les tiges d'herbes, mais garder les morceaux de légumes."
       needs: []
@@ -77,11 +80,13 @@ recipe:
       # Garder les légumes du bouillon est ce qui fait le corps de la soupe :
       # c'est le « recyclage » que la recette revendique.
     - id: cuire-orge
+      uses: []
       action: "Ajouter l'orge, porter à ébullition et compter 15 min"
       needs: [simmer-large]
       time_min: 15
       attended: false
     - id: petits-pois
+      uses: [petits-pois]
       action: "7 min avant la fin, ajouter les petits pois"
       astuce: "Plus tôt ils cuisent, moins ils restent verts."
       needs: [simmer-large]
@@ -89,6 +94,7 @@ recipe:
       attended: false
       parallel_with: "cuire-orge"
     - id: rectifier
+      uses: [ciboulette, sel]
       action: "Goûter et rectifier le sel, puis parsemer de ciboulette à l'assiette"
       needs: []
       time_min: 2
