@@ -132105,7 +132105,7 @@
    },
    {
     "ingredient": "banane",
-    "minimum": 3,
+    "minimum": 4,
     "jusqua": 7,
     "hebdo": true,
     "unite": "pièce"

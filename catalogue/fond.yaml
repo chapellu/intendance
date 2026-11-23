@@ -96,7 +96,7 @@ denrees:
   # au goûter (le sachet ci-dessus), et des poires EN SAISON pour varier et pour
   # la compote. Un fruit frais ne porte pas de plancher (il ne se compte pas au
   # relevé) : la ligne vient de `hebdo`, et hors saison elle se tait.
-  - {ingredient: banane, minimum: 3, jusqua: 7, unite: pièce, hebdo: true}
+  - {ingredient: banane, minimum: 4, jusqua: 7, unite: pièce, hebdo: true}
   # T149 — 500 g la semaine, pesés : la compote en prend 500 g, et la pièce
   # sans poids se finissait en deux compotes au rejeu.
   - {ingredient: poires, minimum: 1, unite: 500 g en vrac, hebdo: true}
