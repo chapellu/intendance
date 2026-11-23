@@ -356,6 +356,19 @@ describe("T137 — un article du fond à garde courte se finit par son âge", ()
     expect(rentreIlYA(10, [bananes]).rejeu.parIngredient.get("banane")!.unites).toBe(7);
   });
 
+  test("une banane achetée à la pièce part à chaque petit-déjeuner, pas un matin sur deux", () => {
+    const bananes: Evenement = {
+      sorte: "entree", jour: jourAvant(6), saisi: jourAvant(6), maj: 9,
+      lignes: [{ ingredient: "banane", unites: 7, parUnite: null, zone: null, etat: "sec" }],
+    };
+    const matins: Evenement[] = [5, 4, 3, 2, 1].map((n, k) => ({
+      sorte: "cuisine", jour: jourAvant(n), saisi: jourAvant(n), maj: 20 + k,
+      repas: "petit-dejeuner", plat: "petit-dejeuner-des-enfants", parts: 1,
+    }) as Evenement);
+    const r = rejouer(catalogue, [bananes, ...matins], ctx, jourAvant(0));
+    expect(r.parIngredient.get("banane")!.unites).toBe(2);
+  });
+
   test("une observation après l'achat relance l'horloge : « Des œufs ? oui » est la confirmation", () => {
     const vu = {
       sorte: "observation", jour: jourAvant(10), saisi: jourAvant(10), maj: 5,
