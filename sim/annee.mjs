@@ -500,7 +500,11 @@ async function cuisiner(j, ev, stats, { autrement = false, parts = 2.75, deja = 
   // Le monde réel garde ce que la sortie a dit de ranger (ou tout au frigo si « autrement »).
   for (const l of lots) {
     const m = /^(Frigo|Congélo|Congélateur)[^·]*·\s*(.*)$/.exec(l.nom);
-    const portions = parseFloat((/([\d,]+)\s*(part|portion)/.exec(l.nom)?.[1] ?? "2").replace(",", "."));
+    // « 3 parts », ou « 1 repas » : un repas de l'app est celui du foyer (le midi
+    // des quatre en prend un : `partsDuMidi`). Le harnais lisait « 2 parts » par
+    // défaut, et le midi des quatre finissait chaque jour sur une omelette.
+    const nParts = /([\d,.]+)\s*(part|portion)/.exec(l.nom), nRepas = /([\d,.]+)\s*repas/.exec(l.nom);
+    const portions = nParts ? parseFloat(nParts[1].replace(",", ".")) : nRepas ? parseFloat(nRepas[1].replace(",", ".")) * MIDI_PARTS : 2;
     // Le lot EST un des emits du plat : on le retrouve par son nom lisible, pour
     // savoir si c'est un reste à manger ou une BASE (pois chiches cuits, bouillon)
     // qu'un autre plat attend — le midi ne mange pas une base.
