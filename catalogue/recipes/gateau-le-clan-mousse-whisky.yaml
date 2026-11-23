@@ -51,14 +51,14 @@ recipe:
       action: "Fondre 50 g de chocolat au bain-marie, y mêler la pâte noisette et les crêpes dentelles écrasées, et tasser dans un cercle de 19 cm"
       needs: [simmer]
       charge_partielle: true
-      uses: [crepes-dentelles, pate-a-tartiner]
+      uses: [crepes-dentelles, pate-a-tartiner, chocolat-noir]
       time_min: 8
       kid: {age_min_months: 24, task: "écraser les crêpes dentelles"}
     - id: mousse
       action: "Bouillir 10 cl d'agave, le lait et le café, les verser sur 300 g de chocolat à couvert ; y mêler jaunes et sel, puis les blancs montés au sucre vanillé"
       needs: [simmer]
       charge_partielle: true
-      uses: [cafe, lait-soja-vanille, chocolat-noir, oeufs, fleur-de-sel]
+      uses: [cafe, lait-soja-vanille, chocolat-noir, oeufs, fleur-de-sel, sucre-vanille]
       time_min: 12
       attente_min: 600
       attente_raison: "une nuit au frais"

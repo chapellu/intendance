@@ -6950,7 +6950,7 @@ Les recettes rédigées pour ce dépôt n'y sont pas soumises : elles partent un
 | L'en-tête cite la carte #26, en français | #26, T86 | 1 |
 | « Pendant… » porte `parallel_with` | les lentilles du 14/09 | 4 |
 | Aucune étape sans solution avec l'équipement du foyer ; pas d'appareil nommé sans `needs` | T84, T189, T196 | 6 |
-| La première étape qui nomme une ligne la porte dans `uses:` | T113, T193, et le 23/11 | 110 |
+| La première étape qui nomme une ligne la porte dans `uses:` | T113, T193, et le 23/11 | 59 (110 avant que le contrôle sache départager deux lignes sœurs) |
 | Un nom qui se dit facultatif est `optional: true` | T186 | 4 |
 | Une alternative qui a un rayon est un `subs:` | T167 | 78 |
 | Pas de céleri-rave | le foyer, 23/11 | 23 |
@@ -6966,6 +6966,6 @@ Les recettes rédigées pour ce dépôt n'y sont pas soumises : elles partent un
 - [x] Machine à pain : le pain de mie p. 20 écarté ; le test des horloges pose lui-même son second producteur
 - [x] Provenance et en-têtes : un `source_id`, cinq `encoding` ramenés à la phrase commune, un en-tête traduit
 - [x] `parallel_with` (3 étapes, et une quatrième dont « pendant ce temps » était faux), trois « bol du robot » sans robot, quatre lignes « pour servir / pour décorer » facultatives
-- [ ] `uses:` à la première mention
+- [x] `uses:` à la première mention : 58 étapes de 51 plats reçoivent la ligne qu'elles nomment ; deux consignes reformulées, qui nommaient une ligne sans la verser (les parures de la bouillabaisse, le cacao des truffes). Le contrôle départage les lignes sœurs (« oignons rouges » n'est pas `oignon`, « beurre de cacao » n'est pas `cacao`)
 - [ ] Alternatives en `subs:`
 - [ ] Pièces des viandes et poissons : nombres à donner par le foyer

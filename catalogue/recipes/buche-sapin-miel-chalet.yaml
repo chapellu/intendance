@@ -57,7 +57,7 @@ recipe:
       action: "Préchauffer à 180 °C ; chauffer 20 cl de crème de coco avec 4 c. à s. d'agave, y fondre le chocolat et mixer avec 2 jaunes jusqu'à une crème lisse"
       needs: [simmer, blend-smooth]
       charge_partielle: true
-      uses: [chocolat-noir]
+      uses: [chocolat-noir, creme-coco]
       time_min: 8
     - id: genoise
       action: "Fouetter 2 œufs et 2 jaunes avec le sucre, y mêler farine, cacao et levure tamisés et les 2 blancs montés au sucre vanillé, étaler en plaque et cuire"

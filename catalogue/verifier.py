@@ -527,6 +527,40 @@ MOTS_VIDES = {"huile", "sucre", "farine", "fleur", "poudre", "pate", "creme", "j
               "cuit", "cuite", "demi", "petit", "petits", "gros", "extrait", "ecorce", "zeste"}
 
 
+def _nomme(iid: str, autres: set, texte: str) -> bool:
+    """La consigne (sans accents) nomme-t-elle cette ligne ?
+
+    Le premier mot de l'id, sauf s'il ne dit qu'une famille (« huile »,
+    « crème », « sucre ») : alors il faut le mot qui le suit, à trois mots au
+    plus — « crème de coco » n'est pas « huile de coco ». Et quand une autre
+    ligne du plat porte le même mot, le mot qui les distingue décide : les
+    « oignons rouges » ne sont pas la ligne `oignon`, le « beurre de cacao »
+    n'est pas la ligne `cacao`, et « du chocolat » tout court ne dit pas
+    lequel des deux chocolats."""
+    mots = iid.split("-")
+    if mots[0] in MOTS_VIDES and len(mots) > 1 and len(mots[1]) >= 3:
+        return bool(re.search(r"\b" + re.escape(mots[0]) + r"s?\b(?:\W+\w+){0,2}?\W+"
+                              + re.escape(mots[1][:5]), texte))
+    utiles = [w for w in mots if len(w) >= 4 and w not in MOTS_VIDES]
+    if not utiles:
+        return False
+    w = utiles[0]
+    freres = [o.split("-") for o in autres if o != iid and w in o.split("-")]
+    for m in re.finditer(r"\b" + re.escape(w) + r"s?\b", texte):
+        avant, apres = texte[max(0, m.start() - 20):m.start()], texte[m.end():m.end() + 25]
+        if any(f.index(w) > 0 and re.search(r"\b" + re.escape(f[0]), avant) for f in freres):
+            continue
+        if any(f[0] == w and len(f) > 1 and re.search(r"\b" + re.escape(f[1][:5]), apres)
+               for f in freres):
+            continue
+        propre = mots[mots.index(w) + 1:] if w in mots else []
+        if any(f[0] == w for f in freres) and propre and not re.search(
+                r"\b" + re.escape(propre[0][:5]), apres):
+            continue
+        return True
+    return False
+
+
 def _sans_accents(s: str) -> str:
     return "".join(c for c in unicodedata.normalize("NFD", s.lower())
                    if unicodedata.category(c) != "Mn")
@@ -603,12 +637,13 @@ def verifier_harmonie(r: dict, rayons: dict, rules: dict, foyer: dict) -> tuple:
         # citer sans elle (« retirer la carcasse »).
         texte = _sans_accents(a)
         uses = set(s.get("uses") or [])
+        ids_ici = {i["id"] for i in r.get("ingredients", []) if (i.get("ref") or i["id"]) in uses}
+        ids_plat = {i["id"] for i in r.get("ingredients", [])}
         for i in r.get("ingredients", []):
             cle = i.get("ref") or i["id"]
-            if cle in uses or cle in deja or i.get("seasoning"):
+            if cle in uses or cle in deja or i["id"] in ids_ici or i.get("seasoning"):
                 continue
-            mots = [w for w in i["id"].split("-") if len(w) >= 4 and w not in MOTS_VIDES]
-            if mots and re.search(r"\b" + re.escape(mots[0]) + r"s?\b", texte):
+            if _nomme(i["id"], ids_plat, texte):
                 err.append(f"étape {s['id']} : nomme « {i['name']} » sans l'avoir dans `uses:` "
                            "— sa quantité ne s'affichera pas sous le geste")
                 deja.add(cle)

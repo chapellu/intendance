@@ -55,19 +55,19 @@ recipe:
     - id: genoise
       action: "Préchauffer à 180 °C ; mêler farine, cacao, sel, levure, 2 sucres vanillés et 165 g de sucre ; y verser lait, huile et vinaigre ; 30 min en savarin huilé"
       needs: [bake]
-      uses: [farine-epeautre, cacao, sel, poudre-a-lever, lait-soja-vanille, huile-tournesol, vinaigre]
+      uses: [farine-epeautre, cacao, sel, poudre-a-lever, lait-soja-vanille, huile-tournesol, vinaigre, sucre-vanille]
       time_min: 35
       attended: false
     - id: ganache
       action: "Fondre à feu très doux le chocolat, 1 c. à s. de rhum, 20 cl de crème de coco et un sachet de sucre vanillé"
       needs: [simmer]
       charge_partielle: true
-      uses: [chocolat-noir]
+      uses: [chocolat-noir, rhum, creme-coco]
       time_min: 6
     - id: chantilly
       action: "Fouetter en chantilly ferme 40 cl de crème de coco froide avec 3 cl de café, 60 g de sucre et le dernier sucre vanillé"
       needs: []
-      uses: [sucre-complet, sucre-vanille, creme-coco]
+      uses: [sucre-complet, sucre-vanille, creme-coco, cafe]
       time_min: 10
     - id: imbiber
       action: "Mêler 3 c. à s. de rhum, l'eau, 5 cl de café et l'agave, et en imbiber le gâteau chaud cuillerée par cuillerée"

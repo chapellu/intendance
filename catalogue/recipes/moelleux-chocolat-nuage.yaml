@@ -53,7 +53,7 @@ recipe:
       action: "Préchauffer à 180 °C et huiler un moule de 18 cm ; chauffer 20 cl de crème de coco, le jus, le rhum et l'agave, et y fondre le chocolat hors du feu"
       needs: [simmer]
       charge_partielle: true
-      uses: [jus-pomme, rhum, sirop-agave, chocolat-noir]
+      uses: [jus-pomme, rhum, sirop-agave, chocolat-noir, creme-coco]
       time_min: 6
     - id: pate
       action: "Mêler farine, levure, sel et vanille, y verser le chocolat, les œufs et le grué, mélanger juste assez et cuire 25 min"

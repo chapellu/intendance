@@ -50,7 +50,7 @@ recipe:
       action: "Tiédir 40 cl de crème de coco avec 5 cl d'agave et la vanille, y fouetter la levure, pétrir 10 min avec la farine salée et le rhum, et mettre au frais"
       needs: [simmer]
       charge_partielle: true   # le récipient ne tient que cette part du plat
-      uses: [farine-epeautre, sel, extrait-vanille, rhum, levure-boulangere]
+      uses: [farine-epeautre, sel, extrait-vanille, rhum, levure-boulangere, creme-coco]
       time_min: 14
       attente_min: 600
       attente_raison: "une nuit au frais"

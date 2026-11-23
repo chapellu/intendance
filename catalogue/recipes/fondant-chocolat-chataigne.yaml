@@ -49,7 +49,7 @@ recipe:
       action: "Préchauffer à 180 °C ; bouillir le lait avec le miel, l'huile de coco et le sucre vanillé, et le mixer finement avec 250 g de châtaignes"
       needs: [simmer, blend-smooth]
       charge_partielle: true
-      uses: [lait-soja-vanille, miel-acacia, huile-coco, sucre-vanille]
+      uses: [lait-soja-vanille, miel-acacia, huile-coco, sucre-vanille, chataignes]
       time_min: 8
     - id: chocolat
       action: "Y mixer par impulsions le chocolat en morceaux jusqu'à le fondre, puis les jaunes, le sel et la levure"

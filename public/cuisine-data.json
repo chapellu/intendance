@@ -3666,7 +3666,8 @@
       "huile-coco",
       "sirop-agave",
       "fleur-de-sel",
-      "tofu-soyeux"
+      "tofu-soyeux",
+      "creme-coco"
      ],
      "enParallele": null,
      "attente": null,
@@ -3687,7 +3688,8 @@
      "uses": [
       "creme-coco",
       "sucre-bouleau",
-      "extrait-vanille"
+      "extrait-vanille",
+      "framboises"
      ],
      "enParallele": null,
      "attente": null,
@@ -4456,7 +4458,8 @@
      "uses": [
       "eau",
       "cannelle",
-      "gousse-vanille"
+      "gousse-vanille",
+      "rhum"
      ],
      "enParallele": null,
      "attente": null,
@@ -5019,7 +5022,8 @@
       "sel",
       "extrait-vanille",
       "rhum",
-      "levure-boulangere"
+      "levure-boulangere",
+      "creme-coco"
      ],
      "enParallele": null,
      "attente": 600,
@@ -6350,7 +6354,8 @@
      "astuce": null,
      "uses": [
       "peches",
-      "puree-amande-blanche"
+      "puree-amande-blanche",
+      "agar-agar"
      ],
      "enParallele": "genoise",
      "attente": null,
@@ -8241,7 +8246,7 @@
     },
     {
      "id": "soupe",
-     "action": "Ajouter les poissons de roche (et les parures des gros poissons), le vin, laurier, coriandre, ail, gros sel et l'eau ; mijoter 45 min",
+     "action": "Ajouter les poissons de roche (et les têtes et arêtes mises de côté), le vin, laurier, coriandre, ail, gros sel et l'eau ; mijoter 45 min",
      "minutes": 45,
      "needs": [
       "simmer-large"
@@ -8255,7 +8260,8 @@
       "graines-coriandre",
       "ail-soupe",
       "gros-sel",
-      "eau"
+      "eau",
+      "poisson-blanc"
      ],
      "enParallele": null,
      "attente": null,
@@ -11125,7 +11131,8 @@
      "surveille": true,
      "astuce": null,
      "uses": [
-      "griottes-sechees"
+      "griottes-sechees",
+      "jus-pomme"
      ],
      "enParallele": null,
      "attente": 600,
@@ -11857,7 +11864,8 @@
      "astuce": null,
      "uses": [
       "cranberries",
-      "eau"
+      "eau",
+      "citron"
      ],
      "enParallele": null,
      "attente": 600,
@@ -13137,7 +13145,8 @@
      "surveille": true,
      "astuce": null,
      "uses": [
-      "chocolat-noir"
+      "chocolat-noir",
+      "creme-coco"
      ],
      "enParallele": null,
      "attente": null,
@@ -17145,7 +17154,9 @@
      "uses": [
       "chocolat-noir",
       "huile-coco",
-      "extrait-vanille"
+      "extrait-vanille",
+      "carottes",
+      "rhum"
      ],
      "enParallele": null,
      "attente": null,
@@ -20618,7 +20629,9 @@
      ],
      "surveille": true,
      "astuce": null,
-     "uses": [],
+     "uses": [
+      "chocolat-noir"
+     ],
      "enParallele": null,
      "attente": 60,
      "attenteRaison": "les coques figent une heure à température ambiante",
@@ -34540,7 +34553,8 @@
       "farine-epeautre",
       "poudre-a-lever",
       "puree-amande-blanche",
-      "oeufs"
+      "oeufs",
+      "chocolat-noir"
      ],
      "enParallele": null,
      "attente": null,
@@ -37123,7 +37137,8 @@
      "astuce": null,
      "uses": [
       "farine-epeautre",
-      "sucre-complet"
+      "sucre-complet",
+      "huile-coco"
      ],
      "enParallele": null,
      "attente": null,
@@ -41891,7 +41906,8 @@
       "lait-soja-vanille",
       "miel-acacia",
       "huile-coco",
-      "sucre-vanille"
+      "sucre-vanille",
+      "chataignes"
      ],
      "enParallele": null,
      "attente": null,
@@ -42393,7 +42409,8 @@
       "huile-coco",
       "sucre-complet",
       "gousse-vanille",
-      "fleur-de-sel"
+      "fleur-de-sel",
+      "chocolat-noir"
      ],
      "enParallele": null,
      "attente": null,
@@ -42708,7 +42725,9 @@
      "uses": [
       "huile-olive",
       "eau-fleur-oranger",
-      "oeufs"
+      "oeufs",
+      "miel-acacia",
+      "rhum"
      ],
      "enParallele": null,
      "attente": null,
@@ -45922,7 +45941,8 @@
       "rhum",
       "sucre-complet",
       "huile-essentielle-citron",
-      "extrait-amande-amere"
+      "extrait-amande-amere",
+      "sucre-vanille"
      ],
      "enParallele": null,
      "attente": null,
@@ -47282,7 +47302,8 @@
      "astuce": null,
      "uses": [
       "farine-petit-epeautre",
-      "poudre-a-lever"
+      "poudre-a-lever",
+      "cacao"
      ],
      "enParallele": null,
      "attente": null,
@@ -47303,7 +47324,9 @@
      "surveille": true,
      "astuce": null,
      "uses": [
-      "puree-noisette"
+      "puree-noisette",
+      "huile-coco",
+      "chocolat-noir"
      ],
      "enParallele": null,
      "attente": null,
@@ -47588,7 +47611,9 @@
       "farine-complete",
       "poudre-amande",
       "poudre-a-lever",
-      "huile-tournesol"
+      "huile-tournesol",
+      "orange",
+      "miel-acacia"
      ],
      "enParallele": null,
      "attente": null,
@@ -48876,7 +48901,8 @@
      "astuce": null,
      "uses": [
       "crepes-dentelles",
-      "pate-a-tartiner"
+      "pate-a-tartiner",
+      "chocolat-noir"
      ],
      "enParallele": null,
      "attente": null,
@@ -48901,7 +48927,8 @@
       "lait-soja-vanille",
       "chocolat-noir",
       "oeufs",
-      "fleur-de-sel"
+      "fleur-de-sel",
+      "sucre-vanille"
      ],
      "enParallele": null,
      "attente": 600,
@@ -49760,7 +49787,8 @@
       "poudre-a-lever",
       "sel",
       "jus-pomme",
-      "extrait-vanille"
+      "extrait-vanille",
+      "beurre"
      ],
      "enParallele": null,
      "attente": null,
@@ -49783,7 +49811,8 @@
      "astuce": null,
      "uses": [
       "rhum",
-      "sirop-agave"
+      "sirop-agave",
+      "chocolat-noir"
      ],
      "enParallele": null,
      "attente": 120,
@@ -50372,7 +50401,8 @@
       "margarine",
       "poudre-amande",
       "son-avoine",
-      "extrait-vanille"
+      "extrait-vanille",
+      "noix"
      ],
      "enParallele": null,
      "attente": null,
@@ -52624,7 +52654,8 @@
      "astuce": null,
      "uses": [
       "sirop-agave",
-      "extrait-vanille"
+      "extrait-vanille",
+      "creme-coco"
      ],
      "enParallele": null,
      "attente": null,
@@ -53017,7 +53048,8 @@
       "extrait-vanille",
       "fleur-de-sel",
       "sirop-agave",
-      "lait-soja-vanille"
+      "lait-soja-vanille",
+      "chocolat-noir"
      ],
      "enParallele": null,
      "attente": null,
@@ -54461,7 +54493,8 @@
      "astuce": null,
      "uses": [
       "sucre-complet",
-      "fleur-de-sel"
+      "fleur-de-sel",
+      "huile-coco"
      ],
      "enParallele": null,
      "attente": null,
@@ -54489,7 +54522,8 @@
       "agar-agar",
       "extrait-vanille",
       "farine-epeautre",
-      "huile-coco"
+      "huile-coco",
+      "creme-coco"
      ],
      "enParallele": null,
      "attente": null,
@@ -57004,7 +57038,8 @@
      "surveille": true,
      "astuce": null,
      "uses": [
-      "creme"
+      "creme",
+      "fromage-rape"
      ],
      "enParallele": null,
      "attente": null,
@@ -58179,7 +58214,9 @@
      "surveille": true,
      "astuce": null,
      "uses": [
-      "fruits-secs-melange"
+      "fruits-secs-melange",
+      "beurre",
+      "kirsch"
      ],
      "enParallele": null,
      "attente": null,
@@ -63861,7 +63898,8 @@
      "uses": [
       "farine-petit-epeautre",
       "sucre-complet",
-      "fleur-de-sel"
+      "fleur-de-sel",
+      "puree-amande-blanche"
      ],
      "enParallele": null,
      "attente": null,
@@ -64900,7 +64938,8 @@
       "jus-pomme",
       "rhum",
       "sirop-agave",
-      "chocolat-noir"
+      "chocolat-noir",
+      "creme-coco"
      ],
      "enParallele": null,
      "attente": null,
@@ -65925,7 +65964,8 @@
       "poudre-amande",
       "poudre-a-lever",
       "oeufs",
-      "huile-olive"
+      "huile-olive",
+      "miel-acacia"
      ],
      "enParallele": null,
      "attente": null,
@@ -68493,7 +68533,8 @@
      "uses": [
       "eau",
       "gousse-vanille",
-      "fleur-de-sel"
+      "fleur-de-sel",
+      "huile-coco"
      ],
      "enParallele": null,
      "attente": null,
@@ -72784,7 +72825,8 @@
       "poudre-a-lever",
       "lait-soja-vanille",
       "huile-tournesol",
-      "vinaigre"
+      "vinaigre",
+      "sucre-vanille"
      ],
      "enParallele": null,
      "attente": null,
@@ -72805,7 +72847,9 @@
      "surveille": true,
      "astuce": null,
      "uses": [
-      "chocolat-noir"
+      "chocolat-noir",
+      "rhum",
+      "creme-coco"
      ],
      "enParallele": null,
      "attente": null,
@@ -72826,7 +72870,8 @@
      "uses": [
       "sucre-complet",
       "sucre-vanille",
-      "creme-coco"
+      "creme-coco",
+      "cafe"
      ],
      "enParallele": null,
      "attente": null,
@@ -73046,7 +73091,8 @@
      "surveille": true,
      "astuce": null,
      "uses": [
-      "puree-noisette"
+      "puree-noisette",
+      "chocolat-noir"
      ],
      "enParallele": null,
      "attente": null,
@@ -75880,7 +75926,8 @@
       "origan",
       "laurier",
       "sel",
-      "poivre"
+      "poivre",
+      "citron"
      ],
      "enParallele": null,
      "attente": null,
@@ -83288,7 +83335,8 @@
      "astuce": null,
      "uses": [
       "peches",
-      "framboises"
+      "framboises",
+      "miel-acacia"
      ],
      "enParallele": null,
      "attente": null,
@@ -84903,7 +84951,8 @@
       "poivre",
       "parmesan",
       "riz",
-      "sauce-tomate"
+      "sauce-tomate",
+      "olives-noires"
      ],
      "enParallele": null,
      "attente": null,
@@ -85122,7 +85171,8 @@
       "poudre-a-lever",
       "oeufs",
       "huile-olive",
-      "concentre-tomate"
+      "concentre-tomate",
+      "citron"
      ],
      "enParallele": null,
      "attente": null,
@@ -87752,7 +87802,9 @@
      "needs": [],
      "surveille": true,
      "astuce": "C'est ce qui fait la différence entre une poêlée tendre et une poêlée fibreuse.",
-     "uses": [],
+     "uses": [
+      "poelee-legumes-verts"
+     ],
      "enParallele": null,
      "attente": null,
      "attenteRaison": null,
@@ -92499,7 +92551,8 @@
       "jambon-cru",
       "persil",
       "pain-levain",
-      "cognac"
+      "cognac",
+      "oignon"
      ],
      "enParallele": null,
      "attente": null,
@@ -96762,7 +96815,8 @@
      "uses": [
       "gelatine",
       "creme-coco",
-      "sucre-complet"
+      "sucre-complet",
+      "chocolat-noir"
      ],
      "enParallele": null,
      "attente": 120,
@@ -96782,7 +96836,8 @@
      "astuce": null,
      "uses": [
       "poires",
-      "rhum"
+      "rhum",
+      "miel-acacia"
      ],
      "enParallele": null,
      "attente": null,
@@ -99837,7 +99892,8 @@
       "farine-sarrasin",
       "poudre-amande",
       "sirop-agave",
-      "huile-tournesol"
+      "huile-tournesol",
+      "sucre-vanille"
      ],
      "enParallele": null,
      "attente": null,
@@ -111219,7 +111275,8 @@
      "uses": [
       "fleur-de-sel",
       "poudre-amande",
-      "jus-pomme"
+      "jus-pomme",
+      "beurre"
      ],
      "enParallele": null,
      "attente": null,
@@ -112672,7 +112729,9 @@
       "chocolat-noir",
       "sucre-vanille",
       "puree-amande-blanche",
-      "cerises-bocal"
+      "cerises-bocal",
+      "creme-coco",
+      "cerises"
      ],
      "enParallele": null,
      "attente": 120,
@@ -117661,7 +117720,8 @@
       "cafe",
       "sirop-agave",
       "rhum",
-      "biscuits-cuillere"
+      "biscuits-cuillere",
+      "cacao"
      ],
      "enParallele": null,
      "attente": null,
@@ -122357,7 +122417,7 @@
    "steps": [
     {
      "id": "fondre",
-     "action": "Fondre tous les ingrédients sauf le cacao à feu très doux en remuant sans cesse",
+     "action": "Fondre tous les ingrédients, sauf la poudre à rouler, à feu très doux en remuant sans cesse",
      "minutes": 6,
      "needs": [
       "simmer"

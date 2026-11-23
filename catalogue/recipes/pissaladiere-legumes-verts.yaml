@@ -65,7 +65,7 @@ recipe:
       time_min: 1
       attended: false
     - id: preparer-les-fenouils
-      uses: []
+      uses: [poelee-legumes-verts]
       action: "Si la poêlée est au fenouil : enlever les feuilles extérieures coriaces et recouper les tiges à ras"
       astuce: "C'est ce qui fait la différence entre une poêlée tendre et une poêlée fibreuse."
       needs: []

@@ -52,7 +52,7 @@ recipe:
     - id: sirop
       action: "Mêler le café, 2 c. à s. d'agave et l'alcool ; tapisser un moule de biscuits trempés vite et poudrer de cacao"
       needs: []
-      uses: [cafe, sirop-agave, rhum, biscuits-cuillere]
+      uses: [cafe, sirop-agave, rhum, biscuits-cuillere, cacao]
       time_min: 5
       kid: {age_min_months: 36, task: "tremper les biscuits"}
     - id: monter

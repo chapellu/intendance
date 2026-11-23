@@ -42,7 +42,7 @@ recipe:
 
   steps:
     - id: fondre
-      action: "Fondre tous les ingrédients sauf le cacao à feu très doux en remuant sans cesse"
+      action: "Fondre tous les ingrédients, sauf la poudre à rouler, à feu très doux en remuant sans cesse"
       needs: [simmer]
       charge_partielle: true
       uses: [chocolat-noir, creme-soja, cafe, whisky, sirop-agave]

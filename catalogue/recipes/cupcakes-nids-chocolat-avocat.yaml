@@ -49,7 +49,7 @@ recipe:
       action: "Préchauffer à 180 °C ; chauffer 4 c. à s. d'agave, y fondre 100 g de chocolat hors du feu, puis la purée d'amande, les œufs, la farine et la levure"
       needs: [simmer]
       charge_partielle: true
-      uses: [farine-epeautre, poudre-a-lever, puree-amande-blanche, oeufs]
+      uses: [farine-epeautre, poudre-a-lever, puree-amande-blanche, oeufs, chocolat-noir]
       time_min: 8
     - id: cuire
       action: "Répartir en caissettes et cuire 15 min exactement ; refroidis, les garder en sachet"

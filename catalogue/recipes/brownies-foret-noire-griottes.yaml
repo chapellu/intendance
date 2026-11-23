@@ -53,7 +53,7 @@ recipe:
     - id: tremper
       action: "Faire tremper les griottes dans un bol de jus de pomme"
       needs: []
-      uses: [griottes-sechees]
+      uses: [griottes-sechees, jus-pomme]
       time_min: 2
       attente_min: 600
       attente_raison: "trempage depuis la veille au soir"

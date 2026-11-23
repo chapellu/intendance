@@ -74,7 +74,7 @@ recipe:
     - id: farce
       action: "Mixer en gardant quelques morceaux un oignon, le jambon, une gousse, le persil, le pain, les cèpes, l'alcool, sel et poivre"
       needs: [chop-coarse]
-      uses: [jambon-cru, persil, pain-levain, cognac]
+      uses: [jambon-cru, persil, pain-levain, cognac, oignon]
       time_min: 5
     - id: farcir
       action: "Malaxer à la main avec l'échine hachée, puis farcir le poulet en pressant pour en faire entrer le maximum"

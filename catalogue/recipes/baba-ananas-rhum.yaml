@@ -54,7 +54,7 @@ recipe:
     - id: sirop
       action: "Mêler l'eau, 7 cl d'agave, la cannelle et 5 cl de rhum, et y laisser infuser la gousse de vanille fendue et grattée"
       needs: []
-      uses: [eau, cannelle, gousse-vanille]
+      uses: [eau, cannelle, gousse-vanille, rhum]
       time_min: 3
     - id: pate
       action: "Préchauffer à 180 °C ; beurrer un savarin haut ; fouetter les œufs avec 7 cl d'agave, les huiles essentielles et une cuillerée de rhum jusqu'à doubler"

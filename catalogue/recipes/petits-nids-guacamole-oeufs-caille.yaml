@@ -50,7 +50,7 @@ recipe:
     - id: fonds
       action: "Préchauffer le four à 180 °C ; mélanger farine, piment, sel et levure, y fouetter le jus d'un demi-citron, l'œuf, l'huile et le concentré, et répartir en 6"
       needs: []
-      uses: [farine-complete, poudre-a-lever, oeufs, huile-olive, concentre-tomate]
+      uses: [farine-complete, poudre-a-lever, oeufs, huile-olive, concentre-tomate, citron]
       time_min: 6
       kid: {age_min_months: 30, task: "remplir les empreintes à la cuillère"}
     - id: cuire

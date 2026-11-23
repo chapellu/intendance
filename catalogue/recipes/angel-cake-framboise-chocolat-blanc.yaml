@@ -70,12 +70,12 @@ recipe:
       action: "Fondre le beurre de cacao, l'huile de coco, 20 cl de crème de coco, l'agave, la vanille et le sel, puis mixer avec le tofu soyeux et garder au frais"
       needs: [simmer, blend-smooth]
       charge_partielle: true
-      uses: [beurre-cacao, huile-coco, sirop-agave, fleur-de-sel, tofu-soyeux]
+      uses: [beurre-cacao, huile-coco, sirop-agave, fleur-de-sel, tofu-soyeux, creme-coco]
       time_min: 10
     - id: chantilly
       action: "Fouetter très ferme 20 cl de crème de coco glacée avec 30 g de sucre et la vanille, et y écraser 100 g de framboises"
       needs: []
-      uses: [creme-coco, sucre-bouleau, extrait-vanille]
+      uses: [creme-coco, sucre-bouleau, extrait-vanille, framboises]
       time_min: 8
     - id: monter
       action: "Démouler, fendre le gâteau, étaler la chantilly, aligner des framboises, reposer le dessus, napper de crème et finir de framboises"

@@ -62,7 +62,7 @@ recipe:
     - id: farce
       action: "Hacher la chair des légumes avec les herbes, le sel, le poivre et la moitié des olives, puis amalgamer avec viande, parmesan, riz et sauce"
       needs: [chop-coarse]
-      uses: [herbes-fraiches, sel, poivre, parmesan, riz, sauce-tomate]
+      uses: [herbes-fraiches, sel, poivre, parmesan, riz, sauce-tomate, olives-noires]
       time_min: 8
       kid: {age_min_months: 30, task: "malaxer la farce avec les mains"}
     - id: cuire

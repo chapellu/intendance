@@ -58,14 +58,14 @@ recipe:
       action: "Tremper la gélatine ; chauffer 60 cl de crème de coco, y dissoudre la gélatine, fondre 300 g de chocolat hors du feu, puis le sucre et le reste de crème"
       needs: [simmer]
       charge_partielle: true
-      uses: [gelatine, creme-coco, sucre-complet]
+      uses: [gelatine, creme-coco, sucre-complet, chocolat-noir]
       time_min: 10
       attente_min: 120
       attente_raison: "au moins 2 h au frais, au mieux une nuit"
     - id: poires
       action: "Éplucher les poires en petits morceaux et les faire mariner avec le rhum et 2 c. à s. de miel"
       needs: []
-      uses: [poires, rhum]
+      uses: [poires, rhum, miel-acacia]
       time_min: 8
       kid: {age_min_months: 36, task: "couper les poires au couteau à beurre"}
     - id: genoise

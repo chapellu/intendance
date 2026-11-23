@@ -47,7 +47,7 @@ recipe:
       action: "Préchauffer à 180 °C ; chauffer 20 cl de crème avec 12 cl d'agave et la noisette, y fondre 200 g de chocolat hors du feu, à couvert"
       needs: [simmer]
       charge_partielle: true
-      uses: [puree-noisette]
+      uses: [puree-noisette, chocolat-noir]
       time_min: 8
     - id: cuire
       action: "Lisser au fouet avec les jaunes, incorporer les blancs en neige, verser dans un savarin huilé et cuire 30 min"

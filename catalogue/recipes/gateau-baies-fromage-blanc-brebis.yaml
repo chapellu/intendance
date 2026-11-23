@@ -65,7 +65,7 @@ recipe:
     - id: gateau
       action: "Mêler farine et levure, y fouetter les autres ingrédients du gâteau et 3 sachets de sucre vanillé, et cuire environ 40 min à la vapeur en moule de 18 à 20 cm"
       needs: [steam]
-      uses: [farine-epeautre, poudre-a-lever, oeufs, huile-olive, compote, rhum, sucre-complet, huile-essentielle-citron, extrait-amande-amere]
+      uses: [farine-epeautre, poudre-a-lever, oeufs, huile-olive, compote, rhum, sucre-complet, huile-essentielle-citron, extrait-amande-amere, sucre-vanille]
       time_min: 45
       attended: false
     - id: monter

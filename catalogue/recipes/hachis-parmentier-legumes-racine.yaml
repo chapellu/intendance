@@ -74,7 +74,7 @@ recipe:
     - id: puree
       action: "Allumer le gril à 220 °C ; écraser les légumes avec juste assez de crème, y mêler la viande et la moitié du fromage, et verser dans un plat"
       needs: [gratin-vessel]
-      uses: [creme]
+      uses: [creme, fromage-rape]
       time_min: 6
     - id: gratiner
       action: "Couvrir du reste de fromage et gratiner une dizaine de minutes"

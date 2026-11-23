@@ -58,7 +58,7 @@ recipe:
       action: "Chauffer à feu doux 75 g de sucre, la fleur de sel, la vanille fendue et l'eau en fouettant, puis y fouetter 6 cl de crème et 35 g d'huile de coco"
       needs: [simmer]
       charge_partielle: true
-      uses: [eau, gousse-vanille, fleur-de-sel]
+      uses: [eau, gousse-vanille, fleur-de-sel, huile-coco]
       time_min: 6
     - id: chocolat
       action: "Fondre à feu très doux le chocolat avec 20 cl de crème de coco, 35 g d'huile de coco et la vanille, et laisser finir de fondre hors du feu"

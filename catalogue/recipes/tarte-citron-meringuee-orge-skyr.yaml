@@ -50,7 +50,7 @@ recipe:
     - id: pate
       action: "Préchauffer à 180 °C ; sabler farine, sel, amande, sucre et beurre en dés, amalgamer vite avec l'œuf et le jus de pomme, foncer un cercle et cuire 20 min"
       needs: [bake]
-      uses: [fleur-de-sel, poudre-amande, jus-pomme]
+      uses: [fleur-de-sel, poudre-amande, jus-pomme, beurre]
       time_min: 30
       kid: {age_min_months: 30, task: "sabler la pâte"}
     - id: creme

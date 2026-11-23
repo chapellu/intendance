@@ -50,7 +50,7 @@ recipe:
     - id: pate
       action: "Monter les blancs en neige, y mêler à la spatule jaunes, 6 c. à s. d'agave, margarine fondue, poudre d'amande, son, vanille et les trois quarts des noix"
       needs: []
-      uses: [oeufs, margarine, poudre-amande, son-avoine, extrait-vanille]
+      uses: [oeufs, margarine, poudre-amande, son-avoine, extrait-vanille, noix]
       time_min: 6
       kid: {age_min_months: 30, task: "verser les noix"}
     - id: cuire
