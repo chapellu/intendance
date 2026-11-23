@@ -35,7 +35,7 @@ recipe:
     - {id: oignon, name: oignons, qty: 2, unit: pièce}
     - {id: ail, name: ail, qty: 1, unit: gousse}
     - {id: persil, name: persil plat bien frais, qty: 0.5, unit: bouquet, optional: true}
-    - {id: fenouil-sauvage, name: tiges et feuilles de fenouil sauvage frais (ou fenouil séché), qty: 1, unit: poignée}
+    - {id: fenouil-sauvage, name: tiges et feuilles de fenouil sauvage frais (ou fenouil séché), qty: 1, unit: poignée, subs: [{name: "fenouil séché"}]}
     - {id: fromage-rape, name: parmesan râpé, qty: 100, unit: g}
     - {id: huile-olive, name: huile d'olive, qty: 3, unit: c. à s.}
     - {id: origan, name: origan séché, qty: 1, unit: c. à c., seasoning: true}

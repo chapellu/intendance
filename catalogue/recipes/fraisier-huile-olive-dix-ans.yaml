@@ -53,7 +53,7 @@ recipe:
     - id: genoises
       action: "Préchauffer à 180 °C et chemiser deux moules de 20 cm ; mêler à part l'huile, la fleur d'oranger, les jaunes, 180 g de miel et 4 c. à s. de rhum"
       needs: []
-      uses: [huile-olive, eau-fleur-oranger, oeufs]
+      uses: [huile-olive, eau-fleur-oranger, oeufs, miel-acacia, rhum]
       time_min: 8
     - id: cuire
       action: "Monter les blancs, y mêler la farine avec la levure et le mélange liquide, partager entre les moules et cuire 20 min ; refroidir"

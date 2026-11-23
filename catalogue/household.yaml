@@ -155,6 +155,13 @@ household:
     - id: balance-tefal
       label: balance de cuisine
       capabilities: [weigh]
+    # Appareil multi-plaques gaufres / croque / panini, signalé par
+    # l'utilisateur le 22/11/2026. L'id est celui que `rules.yaml` attend pour
+    # la capacité `gaufrier` : les gaufres p. 111 et celles du blog deviennent
+    # exécutables.
+    - id: gaufrier
+      label: gaufrier multi-plaques (gaufres, croque, panini)
+      capabilities: [gaufrier]
     # NOT owned: food processor, steamer appliance, stand mixer, Thermomix-class robot.
     # Small kitchen: the compiler must never suggest a purchase (#29).
     #

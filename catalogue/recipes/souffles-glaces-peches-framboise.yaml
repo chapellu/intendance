@@ -33,7 +33,7 @@ recipe:
   ingredients:
     - {id: peches, name: "pêches bien mûres épluchées", qty: 4, unit: pièce}
     - {id: sirop-agave, name: "sirop d'agave (4 + 3 c. à s.)", qty: 7, unit: c. à s.}
-    - {id: fromage-blanc, name: "fromage blanc (ou 3 c. à s. de purée d'amande blanche)", qty: 6, unit: c. à s.}
+    - {id: fromage-blanc, name: "fromage blanc (ou 3 c. à s. de purée d'amande blanche)", qty: 6, unit: c. à s., subs: [{id: puree-amande-blanche, name: "purée d'amande blanche", ratio: 0.5}]}
     - {id: oeufs, name: "œufs", qty: 3, unit: pièce}
     - {id: extrait-amande-amere, name: "extrait d'amande amère (demi-c. à moka)", qty: 1, unit: pincée}
     - {id: eau-de-vie, name: "alcool de noyau (prune, cerise, amaretto…)", qty: 1, unit: c. à s.}

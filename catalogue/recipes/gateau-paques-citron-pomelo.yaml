@@ -43,7 +43,7 @@ recipe:
     - {id: poudre-a-lever, name: "poudre à lever", qty: 1, unit: c. à c.}
     - {id: citron, name: "citrons (6 cl de jus et zestes, + 1 pour le curd)", qty: 3, unit: pièce}
     - {id: pomelo, name: "pomelo", qty: 1, unit: pièce}
-    - {id: sirop-agave, name: "sirop d'agave ou miel d'acacia", qty: 150, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave ou miel d'acacia", qty: 150, unit: g, subs: [{id: miel-acacia, name: "miel d'acacia", ratio: 1.0}]}
     - {id: ghee, name: "ghee ou beurre", qty: 75, unit: g}
     - {id: sucre-vanille, name: "sucre vanillé", qty: 25, unit: g}
     - {id: chocolat-noir, name: "chocolat noir", qty: 100, unit: g}

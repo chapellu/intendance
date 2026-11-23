@@ -44,7 +44,7 @@ recipe:
       action: "Tempérer 300 g de chocolat et en tapisser généreusement les parois des moules à la petite cuillère"
       needs: [simmer]
       charge_partielle: true
-      uses: []
+      uses: [chocolat-noir]
       time_min: 20
       attente_min: 60
       attente_raison: "les coques figent une heure à température ambiante"

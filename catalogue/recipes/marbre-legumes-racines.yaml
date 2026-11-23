@@ -41,7 +41,8 @@ recipe:
     origine: francais
 
   ingredients:
-    - {id: celeri-rave, name: céleri-rave (pâte blanche), qty: 150, unit: g}
+    # T198 — pas de céleri-rave chez ce foyer : le panais râpé fait la pâte blanche.
+    - {id: panais, name: panais (pâte blanche), qty: 150, unit: g}
     - {id: carottes, name: carottes (pâte orange), qty: 150, unit: g}
     - {id: farine-complete, name: farine T110 de blé ou de grand épeautre, qty: 250, unit: g, subs: [{id: farine-epeautre, name: "farine de grand épeautre", ratio: 1.0}]}
     - {id: oeufs, name: œufs, qty: 4, unit: pièce}
@@ -59,10 +60,10 @@ recipe:
       time_min: 1
       attended: false
     - id: pate-blanche
-      action: "Mélanger la moitié de la farine, de la poudre à lever et du sel ; y malaxer à la main le céleri râpé, et la moitié des œufs, du fromage, de l'huile et du jambon"
+      action: "Mélanger la moitié de la farine, de la poudre à lever et du sel ; y malaxer à la main le panais râpé, et la moitié des œufs, du fromage, de l'huile et du jambon"
       astuce: "À la main, ça se mélange mieux qu'à la cuillère en bois."
       needs: []
-      uses: [farine-complete, poudre-a-lever, sel, celeri-rave, oeufs, fromage-rape, huile-olive, jambon-cru]
+      uses: [farine-complete, poudre-a-lever, sel, panais, oeufs, fromage-rape, huile-olive, jambon-cru]
       time_min: 6
       kid: {age_min_months: 30, task: "malaxer la pâte avec les mains"}
     - id: verser-blanche

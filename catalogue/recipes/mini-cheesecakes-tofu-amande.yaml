@@ -47,7 +47,7 @@ recipe:
     - id: sable
       action: "Préchauffer à 180 °C ; sabler finement la farine, 85 g de purée d'amande, le sucre, un œuf et la fleur de sel, et tasser au fond des cercles"
       needs: []
-      uses: [farine-petit-epeautre, sucre-complet, fleur-de-sel]
+      uses: [farine-petit-epeautre, sucre-complet, fleur-de-sel, puree-amande-blanche]
       time_min: 8
       kid: {age_min_months: 30, task: "tasser le sablé au fond des cercles"}
     - id: creme

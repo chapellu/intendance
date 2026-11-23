@@ -59,7 +59,7 @@ recipe:
       action: "Fondre au bain-marie chocolat, sucre vanillé et purée d'amande, l'incorporer à 40 cl de crème de coco montée ; garnir le fond de cerises puis de mousse"
       needs: [simmer]
       charge_partielle: true
-      uses: [chocolat-noir, sucre-vanille, puree-amande-blanche, cerises-bocal]
+      uses: [chocolat-noir, sucre-vanille, puree-amande-blanche, cerises-bocal, creme-coco, cerises]
       time_min: 12
       attente_min: 120
       attente_raison: "au moins 2 h au frais"

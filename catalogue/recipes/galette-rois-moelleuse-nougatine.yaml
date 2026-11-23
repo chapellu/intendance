@@ -36,7 +36,7 @@ recipe:
     - {id: poudre-amande, name: "poudre d'amande", qty: 300, unit: g}
     - {id: oeufs, name: "œufs", qty: 5, unit: pièce}
     - {id: sirop-agave, name: "sirop d'agave (12 cl + 4 c. à s.)", qty: 18, unit: cl}
-    - {id: beurre, name: "beurre demi-sel (ou margarine)", qty: 100, unit: g}
+    - {id: beurre, name: "beurre demi-sel (ou margarine)", qty: 100, unit: g, subs: [{id: margarine, name: "margarine", ratio: 1.0}]}
     - {id: farine-complete, name: "farine complète T110", qty: 40, unit: g}
     - {id: feve-tonka, name: "fèves tonka râpées (ou amande amère)", qty: 2, unit: pièce, optional: true}
     - {id: amandes-effilees, name: "amandes effilées", qty: 65, unit: g}

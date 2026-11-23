@@ -51,7 +51,7 @@ recipe:
       action: "Mixer les pêches en quartiers avec un sachet d'agar-agar et 6 c. à s. d'agave, bouillir 2 min, puis mixer avec la purée d'amande"
       needs: [simmer]
       charge_partielle: true
-      uses: [peches, puree-amande-blanche]
+      uses: [peches, puree-amande-blanche, agar-agar]
       time_min: 8
       parallel_with: genoise
     - id: blancs

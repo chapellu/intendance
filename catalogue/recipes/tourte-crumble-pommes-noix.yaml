@@ -101,7 +101,7 @@ recipe:
       # du mixeur plongeur, et le compilateur l'ANNONCE. À comparer au gaufrier
       # de la p. 177, qui n'est pas une capacité et se replie donc en silence.
     - id: amalgamer-tourte
-      action: "Sortir la pâte du robot et l'amalgamer entre les mains en une boule bien souple"
+      action: "Rassembler la pâte et l'amalgamer entre les mains en une boule bien souple"
       needs: []
       uses: []
       time_min: 3

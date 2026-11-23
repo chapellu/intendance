@@ -51,7 +51,7 @@ recipe:
     - id: tremper
       action: "Faire tremper les cranberries dans le jus d'un gros citron et juste assez d'eau pour les couvrir"
       needs: []
-      uses: [cranberries, eau]
+      uses: [cranberries, eau, citron]
       time_min: 2
       attente_min: 600
       attente_raison: "trempage d'une nuit"

@@ -63,7 +63,7 @@ recipe:
       action: "Préchauffer à 180 °C ; chauffer 10 cl de soja avec l'huile, le sucre, la vanille grattée et le sel, couper à l'ébullition et y fondre 300 g de chocolat"
       needs: [simmer]
       charge_partielle: true
-      uses: [huile-coco, sucre-complet, gousse-vanille, fleur-de-sel]
+      uses: [huile-coco, sucre-complet, gousse-vanille, fleur-de-sel, chocolat-noir]
       time_min: 6
     - id: mixer
       action: "Mixer le chocolat avec la chair de potimarron, la farine et la levure, verser dans un moule huilé de 20 cm et cuire 15 min"

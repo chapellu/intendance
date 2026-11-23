@@ -63,7 +63,7 @@ recipe:
     - id: sauce
       action: "Mélanger à part le cacao, la vanille, la fleur de sel et le sirop d'agave, avec le lait soja-vanille, de façon à obtenir une sauce chocolat un peu liquide"
       needs: []
-      uses: [cacao, extrait-vanille, fleur-de-sel, sirop-agave, lait-soja-vanille]
+      uses: [cacao, extrait-vanille, fleur-de-sel, sirop-agave, lait-soja-vanille, chocolat-noir]
       time_min: 4
     - id: raper
       action: "Râper le chocolat avec un économe"

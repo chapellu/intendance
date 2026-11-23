@@ -13,7 +13,7 @@ recipe:
     source_id: saines-gourmandises-blog
     url: https://saines-gourmandises.fr/mange-ta-soupe/
     saison: hiver
-    encoding: étapes restructurées et reformulées ; prose d'origine non reproduite
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
   yields:
     portions_eq: 4
   time_min_total: 40
@@ -27,7 +27,8 @@ recipe:
     origine: francais
 
   ingredients:
-    - {id: celeri-rave, name: céleri-rave, qty: 0.5, unit: pièce}
+    # T198 — pas de céleri-rave chez ce foyer : deux panais pour le demi-céleri.
+    - {id: panais, name: panais, qty: 2, unit: pièce}
     - {id: navet-primeur, name: navet blanc, qty: 1, unit: pièce}
     - {id: poireau, name: blancs de poireau (garder le vert pour un autre usage), qty: 2, unit: pièce}
     - {id: oignon, name: bel oignon, qty: 1, unit: pièce}
@@ -37,8 +38,8 @@ recipe:
 
   steps:
     - id: tailler
-      uses: [celeri-rave, navet-primeur, poireau, oignon]
-      action: "Éplucher et couper le céleri-rave et le navet en cubes, émincer l'oignon et les blancs de poireau"
+      uses: [panais, navet-primeur, poireau, oignon]
+      action: "Éplucher et couper les panais et le navet en cubes, émincer l'oignon et les blancs de poireau"
       needs: []
       time_min: 10
       kid: {age_min_months: 30, task: "mettre les cubes de légumes dans la casserole"}
@@ -75,7 +76,7 @@ recipe:
       type: moulinee-hiver
       qty_band: lunchbox
       keeps: {frigo_days: 3, congelo: true}
-    # Éplucher céleri-rave, navet et oignon produit des parures que le consommé
+    # Éplucher panais, navet et oignon produit des parures que le consommé
     # de fanes (livre, p. 35) mange. Quatrième arête « déchet » du graphe.
     - kind: parure
       type: parures-legumes

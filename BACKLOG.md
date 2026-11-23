@@ -6934,3 +6934,38 @@ reformulé comme ceux du livre.
       printemps, banana bread, compote pommes-poires, gratins de pâtes
       (tomates, brocoli-thon), omelette aux courgettes. D'autres livres de
       l'autrice les couvriraient peut-être.
+
+## T198 — Toutes les fiches suivent toutes les règles
+
+Demandé le 23/11 : chaque retour sur une fiche a été appliqué à la fiche qui l'avait fait naître et aux suivantes, jamais aux précédentes. Le catalogue disait donc chaque règle à moitié. Relevé des règles dans ce backlog, les commits et le README, mesure de l'écart sur les 493 plats, arbitrage du foyer, puis : un contrôle dans `verifier.py` pour chaque règle qui se vérifie, et la reprise des fiches par lots.
+
+Les recettes rédigées pour ce dépôt n'y sont pas soumises : elles partent une à une (T197).
+
+**Les règles tenues par le vérificateur (`verifier_harmonie`, `verifier_entetes`)**
+
+| Règle | Origine | Écart au départ |
+|---|---|---|
+| Une recette a des étapes | 14/09, T76 | 0 |
+| Bloc source complet ; `encoding` standard ; la page dans `work` | T73, T159 | 6 |
+| L'en-tête cite la carte #26, en français | #26, T86 | 1 |
+| « Pendant… » porte `parallel_with` | les lentilles du 14/09 | 4 |
+| Aucune étape sans solution avec l'équipement du foyer ; pas d'appareil nommé sans `needs` | T84, T189, T196 | 6 |
+| La première étape qui nomme une ligne la porte dans `uses:` | T113, T193, et le 23/11 | 59 (110 avant que le contrôle sache départager deux lignes sœurs) |
+| Un nom qui se dit facultatif est `optional: true` | T186 | 4 |
+| Une alternative qui a un rayon est un `subs:` | T167 | 49 (78 avant d'écarter assaisonnements, table du commerce et faux amis) |
+| Pas de céleri-rave | le foyer, 23/11 | 23 |
+| Une viande ou un poisson en pièces se compte (avertissement) | T188 | 11 (au pluriel, sans nombre) |
+
+**Et par la table du commerce** : `evite: true` dans `equivalences.yaml` (huile de coco, sucre de bouleau, margarine, ghee → ce que le placard a), lu comme `potager`. Le gaufrier entre dans l'inventaire ; la machine à pain non.
+
+**Écartées après arbitrage** : la somme des étapes égale au temps annoncé (l'app affiche déjà la somme, T91) ; le crédit de l'auteur d'origine des recettes invitées dans un champ (pas pour l'instant) ; les quantités écrites en dur dans une consigne restent, elles montrent ce qu'on prélève.
+
+**Restent au jugement, recette par recette** : reformuler sans recopier, un geste par étape, `avec:` tiré de la page, un `role:` cité, la sécurité avant le livre.
+
+- [x] Céleri-rave : sept plats écartés (le céleri au centre), douze où il se remplace — panais, chou-rave (que l'autrice propose), céleri branche
+- [x] Machine à pain : le pain de mie p. 20 écarté ; le test des horloges pose lui-même son second producteur
+- [x] Provenance et en-têtes : un `source_id`, cinq `encoding` ramenés à la phrase commune, un en-tête traduit
+- [x] `parallel_with` (3 étapes, et une quatrième dont « pendant ce temps » était faux), trois « bol du robot » sans robot, quatre lignes « pour servir / pour décorer » facultatives
+- [x] `uses:` à la première mention : 58 étapes de 51 plats reçoivent la ligne qu'elles nomment ; deux consignes reformulées, qui nommaient une ligne sans la verser (les parures de la bouillabaisse, le cacao des truffes). Le contrôle départage les lignes sœurs (« oignons rouges » n'est pas `oignon`, « beurre de cacao » n'est pas `cacao`)
+- [x] Alternatives en `subs:` : 49 lignes de 48 plats. 34 reçoivent un remplaçant qui s'achète (miel ↔ agave, cognac → whisky, abricots → cerises, pêches…) ; 15 dont l'alternative n'a pas d'id propre ou pas la même unité gardent une note (`subs:` sans `id`). Le contrôle ignore les assaisonnements, les lignes que la table du commerce couvre, et « à défaut de rôti » (ce qu'une base chaînée remplace)
+- [ ] Pièces des viandes et poissons : nombres à donner par le foyer. Le contrôle reste un avertissement : les livres donnent la pièce (« 1 poulet », « 12 sardines ») ou le poids (« 300 g de filets »), presque jamais les deux, et ce qui manque ne s'invente pas. Onze lignes au pluriel sans nombre : brandade (filets de cabillaud, 500 g), dinde de Noël (blancs, 400 g), marmite dieppoise (filets de poisson blanc, 600 g ; pavés de saumon, 300 g), paella verte (filets de poulet, 300 g), pizza ratatouille (blancs de poulet, 200 g), rillettes de maquereau (filets fumés, 350 g), terrine poulet-poireaux (blancs, 400 g), terrine de saumon (filets, 500 g), waterzoï (filets de saumon, 300 g ; de cabillaud, 400 g)

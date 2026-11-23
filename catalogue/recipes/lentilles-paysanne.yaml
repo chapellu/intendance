@@ -54,7 +54,7 @@ recipe:
     origine: francais
 
   ingredients:
-    - {id: saucisse-fumee, name: "saucisse fumée (environ 100 g), ou 70 g de « lardons » de jambon cru", qty: 1, unit: pièce}
+    - {id: saucisse-fumee, name: "saucisse fumée (environ 100 g), ou 70 g de « lardons » de jambon cru", qty: 1, unit: pièce, subs: [{name: "70 g de « lardons » de jambon cru"}]}
     - {id: lentilles-seches, name: lentilles vertes, qty: 250, unit: g}
     - {id: oignon, name: oignons, qty: 2, unit: pièce}
     - {id: poireau, name: poireau, qty: 1, unit: pièce}

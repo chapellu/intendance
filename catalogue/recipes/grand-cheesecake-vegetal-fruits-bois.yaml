@@ -43,20 +43,20 @@ recipe:
     - {id: agar-agar, name: "agar-agar", qty: 6, unit: g}
     - {id: creme-coco, name: "crème de coco (40 cl + 40 cl très froide)", qty: 80, unit: cl}
     - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 2, unit: c. à s.}
-    - {id: confiture-mures, name: "confiture de mûres ou de myrtilles", qty: 200, unit: g}
+    - {id: confiture-mures, name: "confiture de mûres ou de myrtilles", qty: 200, unit: g, subs: [{name: "confiture de myrtilles"}]}
 
   steps:
     - id: fond
       action: "Préchauffer à 180 °C ; sabler 265 g de farine, le sucre, 150 g d'huile de coco et le sel, tasser dans un cercle de 25 cm et cuire 15 min"
       needs: [bake]
-      uses: [sucre-complet, fleur-de-sel]
+      uses: [sucre-complet, fleur-de-sel, huile-coco]
       time_min: 20
       kid: {age_min_months: 30, task: "tasser le fond"}
     - id: curd
       action: "Mixer mûres, myrtilles, agave, agar-agar, 40 cl de crème de coco, vanille, 25 g de farine et 75 g d'huile de coco, puis bouillir 3 min en fouettant"
       needs: [blend-smooth, simmer]
       charge_partielle: true
-      uses: [mures, myrtilles, sirop-agave, agar-agar, extrait-vanille, farine-epeautre, huile-coco]
+      uses: [mures, myrtilles, sirop-agave, agar-agar, extrait-vanille, farine-epeautre, huile-coco, creme-coco]
       time_min: 10
     - id: prendre
       action: "Remixer, verser sur le fond, couvrir et mettre au frais"

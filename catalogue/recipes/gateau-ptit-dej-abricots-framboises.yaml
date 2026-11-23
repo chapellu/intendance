@@ -35,7 +35,7 @@ recipe:
     - {id: son-avoine, name: "son d'avoine", qty: 75, unit: g}
     - {id: farine-complete, name: "farine complète T110", qty: 75, unit: g}
     - {id: poudre-a-lever, name: "levure", qty: 1, unit: sachet}
-    - {id: puree-amande-blanche, name: "purée d'amande blanche (ou margarine)", qty: 100, unit: g}
+    - {id: puree-amande-blanche, name: "purée d'amande blanche (ou margarine)", qty: 100, unit: g, subs: [{id: margarine, name: "margarine", ratio: 1.0}]}
     - {id: oeufs, name: "œufs", qty: 3, unit: pièce}
     - {id: citron, name: "citron (3 cl de jus)", qty: 1, unit: pièce}
     - {id: sirop-agave, name: "sirop d'agave", qty: 15, unit: cl}

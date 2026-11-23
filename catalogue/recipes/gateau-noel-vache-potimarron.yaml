@@ -67,14 +67,14 @@ recipe:
     - id: genoise
       action: "Préchauffer à 180 °C ; mêler farine, levure et sel, y fouetter le sucre, 33 cl de lait, le jus, le beurre fondu et la vanille, et cuire dans un moule de 24 cm"
       needs: [bake]
-      uses: [farine-epeautre, poudre-a-lever, sel, jus-pomme, extrait-vanille]
+      uses: [farine-epeautre, poudre-a-lever, sel, jus-pomme, extrait-vanille, beurre]
       time_min: 35
       attended: false
     - id: ganache
       action: "Chauffer 140 g de lait, y fondre hors du feu 150 g de chocolat avec le rhum et l'agave, mixer et mettre au frais"
       needs: [simmer, blend-smooth]
       charge_partielle: true
-      uses: [rhum, sirop-agave]
+      uses: [rhum, sirop-agave, chocolat-noir]
       time_min: 6
       attente_min: 120
       attente_raison: "au moins 2 h au frais"

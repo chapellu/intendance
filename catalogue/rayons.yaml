@@ -157,6 +157,7 @@ rayons:
     # T178 — le cousin d'étal du chou frisé et du chou chinois (`equivalences.yaml`).
     - chou-blanc
     - celeri-rave
+    - chou-rave
     - champignons-conserve
     - basilic
     - abricots
@@ -718,6 +719,7 @@ noms:
   cavolo-nero: chou noir toscan
   cedrat: cédrat
   celeri-rave: céleri-rave
+  chou-rave: chou-rave
   cepes: cèpes
   cerises: cerises
   cerises-bocal: cerises en bocal

@@ -51,7 +51,7 @@ recipe:
     - id: sable
       action: "Préchauffer à 180 °C ; sabler la farine, 80 g d'huile de coco, le sucre et une grosse pincée de fleur de sel, étaler sans tasser et cuire 10 min"
       needs: [bake]
-      uses: [farine-epeautre, sucre-complet]
+      uses: [farine-epeautre, sucre-complet, huile-coco]
       time_min: 14
       kid: {age_min_months: 30, task: "sabler la pâte"}
     - id: chocolat

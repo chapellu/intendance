@@ -42,7 +42,7 @@ recipe:
 
   ingredients:
     - {id: pois-chiches-cuits, name: pois chiches déjà cuits, qty: 350, unit: g, from_accepts: true}
-    - {id: huile-olive, name: "huile d'olive — ou du tahin, pour la version la plus traditionnelle", qty: 5, unit: c. à s.}
+    - {id: huile-olive, name: "huile d'olive — ou du tahin, pour la version la plus traditionnelle", qty: 5, unit: c. à s., subs: [{id: tahin, name: "tahin", ratio: 1.0}]}
     - {id: ail, name: "petite gousse d'ail, facultative à cause des collègues", qty: 1, unit: gousse, optional: true}
     - {id: citron, name: citron, qty: 1, unit: pièce}
     - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}

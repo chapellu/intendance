@@ -48,7 +48,7 @@ recipe:
     - id: pate
       action: "Mélanger farine, poudre d'amande et levure ; monter les blancs ; y mêler les jaunes battus avec huile, fleur d'oranger, miel et vanille, puis la farine"
       needs: []
-      uses: [farine-petit-epeautre, poudre-amande, poudre-a-lever, oeufs, huile-olive]
+      uses: [farine-petit-epeautre, poudre-amande, poudre-a-lever, oeufs, huile-olive, miel-acacia]
       time_min: 10
     - id: cuire
       action: "Couvrir d'une rosace de quartiers de figues et cuire 20 min à 180 °C, puis baisser à 125 °C jusqu'à ce qu'une pointe ressorte sèche"

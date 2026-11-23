@@ -1,6 +1,7 @@
-# Re-worded structured encoding of a real Marie Chioca recipe, per the licensing
-# frame in map #26: the dish, quantities and process are unprotectable savoir-faire
-# (TGI Paris 1974; 1997); her prose and photos are NOT reproduced here.
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable (TGI Paris
+# 1974 ; 1997) ; sa prose et ses photos ne sont PAS reproduites.
 
 recipe:
   id: burgers-de-lentilles
@@ -11,7 +12,8 @@ recipe:
     author: Marie Chioca
     work: "« Petits burgers pour grands gourmands », blog Saines Gourmandises, 23 février 2012"
     url: https://saines-gourmandises.fr/comment-rendre-seduisant-au-possible-un-reste-de-lentilles/
-    encoding: re-worded structured steps; no original prose or photos
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
   yields:
     portions_eq: 4
     pieces: 10

@@ -56,7 +56,7 @@ recipe:
       action: "Préchauffer à 180 °C ; fouetter les œufs et 100 g de miel jusqu'à doubler, puis y mêler en vrac farine, amande, levure, jus d'une orange et huile"
       astuce: "Ne pas mêler d'abord jus et huile à la farine : tout se jette ensemble."
       needs: []
-      uses: [oeufs, farine-complete, poudre-amande, poudre-a-lever, huile-tournesol]
+      uses: [oeufs, farine-complete, poudre-amande, poudre-a-lever, huile-tournesol, orange, miel-acacia]
       time_min: 10
     - id: cuire
       action: "Verser dans un cercle de 22 cm posé sur un moule chemisé et cuire 35 min"

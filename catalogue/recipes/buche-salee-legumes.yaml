@@ -36,7 +36,8 @@ recipe:
   ingredients:
     - {id: creme-soja, name: crème de soja liquide, qty: 50, unit: cl}
     - {id: agar-agar, name: agar-agar, qty: 6, unit: g}
-    - {id: celeri-rave, name: petit céleri-rave, qty: 300, unit: g}
+    # T198 — pas de céleri-rave chez ce foyer : le panais tient la strate blanche, à la même cuisson.
+    - {id: panais, name: panais, qty: 300, unit: g}
     - {id: comte, name: comté affiné 18 mois, qty: 65, unit: g}
     - {id: oignon-rouge, name: oignons rouges, qty: 2, unit: pièce}
     - {id: potimarron, name: potimarron (pesé sans les graines), qty: 500, unit: g}
@@ -57,10 +58,10 @@ recipe:
       time_min: 5
       attended: true
     - id: celeri
-      action: "Cuire le céleri-rave en petits cubes 15 min à l'eau salée, l'égoutter et le mixer avec le comté, 80 g de liant et du poivre"
+      action: "Cuire les panais en petits cubes 15 min à l'eau salée, l'égoutter et le mixer avec le comté, 80 g de liant et du poivre"
       needs: [boil]
       charge_partielle: true   # une strate à la fois
-      uses: [celeri-rave, comte]
+      uses: [panais, comte]
       time_min: 20
     - id: strate-blanche
       action: "Remettre 3 min sur le feu en remuant et verser au fond du moule"

@@ -57,7 +57,7 @@ recipe:
     - id: joconde
       action: "Préchauffer à 180 °C ; fouetter 3 œufs à tripler, y mêler farine, amande, agave et huile, puis 2 blancs montés au sucre vanillé ; cuire 15 min (26 cm)"
       needs: [bake]
-      uses: [farine-sarrasin, poudre-amande, sirop-agave, huile-tournesol]
+      uses: [farine-sarrasin, poudre-amande, sirop-agave, huile-tournesol, sucre-vanille]
       time_min: 25
     - id: croustillant
       action: "Fondre le chocolat aux noisettes, le hacher par impulsions avec les tartines, la pâte noisette et le sucre vanillé, ajouter le grué et étaler sur le biscuit"

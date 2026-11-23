@@ -40,7 +40,8 @@ recipe:
   ingredients:
     - {id: roti-froid, name: "rôti de porc cuit comme du jambon", qty: 100, unit: g, from_accepts: true}
     - {id: gouda, name: "gouda ou mimolette", qty: 30, unit: g}
-    - {id: celeri-rave, name: céleri-rave cru, qty: 150, unit: g}
+    # T198 — pas de céleri-rave chez ce foyer : cru et croquant, le chou-rave tient sa place.
+    - {id: chou-rave, name: chou-rave cru, qty: 150, unit: g}
     - {id: carottes, name: carottes crues, qty: 150, unit: g}
     - {id: pates, name: "pâtes complètes d'épeautre ou de blé, pesées CUITES (≈ 100 g crues)", qty: 200, unit: g}
     - {id: capres, name: câpres, qty: 1, unit: c. à s.}
@@ -54,8 +55,8 @@ recipe:
 
   steps:
     - id: tailler-pasta-box
-      uses: [roti-froid, gouda, celeri-rave, carottes]
-      action: "Découper le rôti et le fromage en petits cubes, le céleri et les carottes en bâtonnets"
+      uses: [roti-froid, gouda, chou-rave, carottes]
+      action: "Découper le rôti et le fromage en petits cubes, le chou-rave et les carottes en bâtonnets"
       needs: []
       time_min: 7
     - id: assaisonner-pasta-box

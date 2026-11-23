@@ -33,7 +33,7 @@ recipe:
   ingredients:
     - {id: agneau-hache, name: "sauté d'agneau haché gros", qty: 1200, unit: g}
     - {id: oignon-rouge, name: "oignons rouges", qty: 2, unit: pièce}
-    - {id: jambon-cru, name: "tranches de speck ou jambon fumé de montagne", qty: 6, unit: tranche}
+    - {id: jambon-cru, name: "tranches de speck ou jambon fumé de montagne", qty: 6, unit: tranche, subs: [{name: "jambon fumé de montagne"}]}
     - {id: reblochon, name: "reblochon", qty: 500, unit: g}
     - {id: pains-burger, name: "pains à hamburger artisanaux", qty: 6, unit: pièce}
     - {id: cornichons, name: "cornichons", qty: 20, unit: pièce}

@@ -71,10 +71,10 @@ recipe:
     - {id: abricots, name: abricots mûrs à point, qty: 3, unit: pièce}
     - {id: fraises, name: fraises mûres à point, qty: 6, unit: pièce}
     - {id: creme-coco, name: "crème de coco liquide bien froide, sortant juste du réfrigérateur", qty: 20, unit: cl}
-    - {id: miel-acacia, ref: miel-chantilly, name: "miel ou sirop d'agave (chantilly)", qty: 2, unit: c. à s.}
+    - {id: miel-acacia, ref: miel-chantilly, name: "miel ou sirop d'agave (chantilly)", qty: 2, unit: c. à s., subs: [{id: sirop-agave, name: "sirop d'agave", ratio: 1.0}]}
     - {id: extrait-vanille, ref: vanille-chantilly, name: extrait de vanille liquide (chantilly), qty: 1, unit: c. à s.}
     # Sirop d'imbibage
-    - {id: miel-acacia, ref: miel-sirop, name: "miel ou sirop d'agave (sirop)", qty: 3, unit: c. à s.}
+    - {id: miel-acacia, ref: miel-sirop, name: "miel ou sirop d'agave (sirop)", qty: 3, unit: c. à s., subs: [{id: sirop-agave, name: "sirop d'agave", ratio: 1.0}]}
     - {id: eau, name: eau, qty: 3, unit: c. à s.}
     - {id: eau-fleur-oranger, name: eau de fleur d'oranger, qty: 1, unit: c. à s.}
     - {id: extrait-vanille, ref: vanille-sirop, name: extrait de vanille liquide (sirop), qty: 1, unit: c. à s.}

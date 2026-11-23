@@ -42,6 +42,7 @@ recipe:
       name: "lard maigre ou jambon fumé de montagne (speck)"
       qty: 100
       unit: g
+      subs: [{id: jambon-cru, name: "jambon fumé de montagne (speck)", ratio: 1.0}]
     - {id: cantal, name: cantal entre-deux, qty: 100, unit: g}
     - {id: oignon, name: oignon, qty: 1, unit: pièce}
     - {id: noix, name: cerneaux de noix fraîchement cassées, qty: 100, unit: g}

@@ -37,7 +37,7 @@ recipe:
     - {id: aubergine, name: grosses aubergines, qty: 2, unit: pièce}
     - {id: parmesan, name: parmesan râpé, qty: 100, unit: g}
     - {id: persil, name: persil plat, qty: 1, unit: bouquet}
-    - {id: ciboulette, name: "ciboulette (ou un petit oignon)", qty: 5, unit: brin}
+    - {id: ciboulette, name: "ciboulette (ou un petit oignon)", qty: 5, unit: brin, subs: [{name: "un petit oignon"}]}
     - {id: ail, name: ail, qty: 2, unit: gousse}
     - {id: vin-blanc-sec, name: vin blanc sec, qty: 10, unit: cl}
     - {id: huile-olive, name: huile d'olive, qty: 5, unit: c. à s.}

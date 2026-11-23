@@ -80,6 +80,7 @@ recipe:
       time_min: 1
     - id: raper
       action: "Pendant ce temps, râper le fromage"
+      parallel_with: cuire-chou
       needs: []
       uses: [cantal]
       time_min: 3

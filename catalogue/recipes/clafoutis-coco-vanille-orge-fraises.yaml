@@ -40,7 +40,7 @@ recipe:
     - {id: sirop-agave, name: "sirop d'agave", qty: 10, unit: cl}
     - {id: gousse-vanille, name: "gousse de vanille (ou 1 c. à s. d'extrait)", qty: 1, unit: pièce}
     - {id: fraises, name: "fraises bien mûres", qty: 300, unit: g}
-    - {id: huile-tournesol, name: "huile ou beurre pour le moule", qty: 1, unit: c. à c.}
+    - {id: huile-tournesol, name: "huile ou beurre pour le moule", qty: 1, unit: c. à c., subs: [{id: beurre, name: "beurre", ratio: 1.0}]}
 
   steps:
     - id: appareil

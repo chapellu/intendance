@@ -35,7 +35,7 @@ recipe:
     - {id: son-avoine, name: "son d'avoine", qty: 125, unit: g}
     - {id: farine-complete, name: "farine complète T110", qty: 125, unit: g}
     - {id: poudre-a-lever, name: "levure à gâteaux", qty: 1, unit: sachet}
-    - {id: sirop-agave, name: "sirop d'agave (ou 10 c. à s. de miel d'acacia)", qty: 8, unit: c. à s.}
+    - {id: sirop-agave, name: "sirop d'agave (ou 10 c. à s. de miel d'acacia)", qty: 8, unit: c. à s., subs: [{id: miel-acacia, name: "miel d'acacia", ratio: 1.25}]}
     - {id: cannelle, name: "cannelle", qty: 1, unit: c. à s., seasoning: true}
     - {id: epices-pain-epices, name: "mélange pour pain d'épices", qty: 1, unit: c. à s., seasoning: true}
     - {id: huile-essentielle-orange, name: "huile essentielle d'orange", qty: 20, unit: pièce, optional: true}

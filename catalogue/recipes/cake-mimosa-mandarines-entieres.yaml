@@ -34,7 +34,7 @@ recipe:
 
   ingredients:
     - {id: mandarines, name: "mandarines ou clémentines bio (180 g)", qty: 2, unit: pièce}
-    - {id: huile-olive, name: "huile d'olive (ou neutre, ou beurre fondu)", qty: 100, unit: g}
+    - {id: huile-olive, name: "huile d'olive (ou neutre, ou beurre fondu)", qty: 100, unit: g, subs: [{id: huile-tournesol, name: "huile neutre", ratio: 1.0}, {id: beurre, name: "beurre fondu", ratio: 1.0}]}
     - {id: sucre-bouleau, name: "sucre au choix (bouleau)", qty: 90, unit: g}
     - {id: farine-epeautre, name: "farine semi-complète de grand épeautre", qty: 180, unit: g}
     - {id: poudre-a-lever, name: "poudre à lever", qty: 1, unit: sachet}

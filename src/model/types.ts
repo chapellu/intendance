@@ -112,6 +112,8 @@ export interface Ingredient {
    * T178 — ÇA SE CULTIVE OU SE CUEILLE, ÇA NE S'ACHÈTE PAS : une cébette, un
    * vert de blette, des orties. Quand rien n'est là, c'est le premier
    * remplaçant qui part au panier, pas l'original. Jamais posé sans remplaçant.
+   * T198 : vaut aussi pour ce que le foyer n'achète pas exprès (`evite` dans
+   * `equivalences.yaml` — huile de coco, margarine, ghee, sucre de bouleau).
    */
   potager?: boolean;
 }

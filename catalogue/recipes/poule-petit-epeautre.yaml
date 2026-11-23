@@ -48,7 +48,7 @@ recipe:
     - {id: oignon, name: oignons, qty: 3, unit: pièce}
     - {id: carottes, name: petites carottes, qty: 6, unit: pièce}
     - {id: poireau, name: "petits poireaux (ou 3 gros coupés en deux)", qty: 6, unit: pièce}
-    - {id: celeri-branche, name: "cœur de céleri branche, ou petit céleri-rave", qty: 1, unit: pièce, subs: [{id: celeri-rave, name: "petit céleri-rave", ratio: 1.0}]}
+    - {id: celeri-branche, name: "cœur de céleri branche", qty: 1, unit: pièce}
     - {id: navets, name: navets, qty: 3, unit: pièce}
     - {id: eau, name: eau, qty: 2.5, unit: l}
     - {id: laurier, name: feuilles de laurier, qty: 3, unit: pièce, seasoning: true}

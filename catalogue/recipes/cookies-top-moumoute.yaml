@@ -38,7 +38,7 @@ recipe:
     - {id: sucre-vanille, name: "sucre vanillé", qty: 3, unit: sachet}
     - {id: cacao, name: "cacao amer", qty: 25, unit: g}
     - {id: grue-cacao, name: "grué de cacao", qty: 30, unit: g}
-    - {id: noix, name: "noix (ou noisettes, ou pécan)", qty: 125, unit: g}
+    - {id: noix, name: "noix (ou noisettes, ou pécan)", qty: 125, unit: g, subs: [{id: noisettes, name: "noisettes", ratio: 1.0}, {id: noix-pecan, name: "noix de pécan", ratio: 1.0}]}
     - {id: chocolat-noir, name: "chocolat noir pâtissier 70 %", qty: 150, unit: g}
     - {id: sucre-complet, name: "sucre de coco", qty: 80, unit: g}
     - {id: huile-coco, name: "huile de coco un peu molle", qty: 200, unit: g}

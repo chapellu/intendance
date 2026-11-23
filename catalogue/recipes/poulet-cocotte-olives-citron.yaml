@@ -50,7 +50,7 @@ recipe:
     - {id: oignon, name: oignon, qty: 1, unit: pièce}
     - {id: ail, name: gousses d'ail, qty: 6, unit: pièce}
     - {id: laurier, name: feuilles de laurier, qty: 3, unit: pièce, seasoning: true}
-    - {id: herbes-fraiches, name: "brins de sarriette fraîche, de thym frais et/ou de romarin, seuls ou en mélange", qty: 1, unit: poignée}
+    - {id: herbes-fraiches, name: "brins de sarriette fraîche, de thym frais et/ou de romarin, seuls ou en mélange", qty: 1, unit: poignée, subs: [{name: "thym frais ou romarin, seuls ou en mélange"}]}
     - {id: sauge, name: feuilles de sauge, qty: 6, unit: pièce}
     - {id: olives-noires, name: olives noires, qty: 1, unit: poignée}
     - {id: citron, name: "citron bio — le jus, puis le zeste", qty: 1, unit: pièce}

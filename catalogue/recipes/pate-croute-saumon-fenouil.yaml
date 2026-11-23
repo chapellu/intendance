@@ -43,7 +43,7 @@ recipe:
     - {id: saumon, name: 2 longs filets de saumon, qty: 800, unit: g}
     - {id: fenouil, name: gros bulbe de fenouil, qty: 1, unit: pièce}
     - {id: oignon, name: oignon, qty: 1, unit: pièce}
-    - {id: pousses-epinards, name: épinards ou blettes à couper, qty: 2, unit: poignée}
+    - {id: pousses-epinards, name: épinards ou blettes à couper, qty: 2, unit: poignée, subs: [{id: blettes, name: "blettes", ratio: 1.0}]}
     - {id: parmesan, name: parmesan râpé, qty: 75, unit: g}
     - {id: sel, ref: sel-garniture, name: sel, qty: 2, unit: pincée, seasoning: true}
     - {id: poivre-5-baies, name: poivre 5 baies, qty: 2, unit: pincée, seasoning: true}

@@ -52,7 +52,7 @@ recipe:
       action: "Préchauffer à 180 °C ; mêler 120 g de carottes râpées et 3 œufs, puis le chocolat fondu avec rhum, vanille, coco et 120 g d'agave, puis la farine"
       needs: [simmer]
       charge_partielle: true
-      uses: [chocolat-noir, huile-coco, extrait-vanille]
+      uses: [chocolat-noir, huile-coco, extrait-vanille, carottes, rhum]
       time_min: 12
     - id: cuire-chocolat
       action: "Cuire 45 à 50 min dans un moule à cake et laisser refroidir"

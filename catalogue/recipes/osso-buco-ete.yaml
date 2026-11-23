@@ -69,7 +69,7 @@ recipe:
       action: "Ajouter tomates, rouelles, vin blanc, jus du citron, herbes, sel et poivre ; couvrir et mijoter 1 h 30 à feu très doux dès l'ébullition"
       astuce: "En fin de cuisson, surveiller le fond et ajouter un peu d'eau s'il accroche."
       needs: [simmer-large]
-      uses: [rouelle-veau, vin-blanc-sec, sarriette, origan, laurier, sel, poivre]
+      uses: [rouelle-veau, vin-blanc-sec, sarriette, origan, laurier, sel, poivre, citron]
       time_min: 90
       attended: false
     - id: gremolata

@@ -43,13 +43,13 @@ recipe:
     - {id: oeufs, name: "œufs", qty: 2, unit: pièce}
     - {id: amandes, name: "poignée d'amandes émondées", qty: 30, unit: g}
     - {id: sel, name: "sel fin", qty: 10, unit: g, seasoning: true}
-    - {id: sucre-glace, name: "sucre glace pour décorer", qty: 1, unit: c. à s.}
+    - {id: sucre-glace, name: "sucre glace pour décorer", qty: 1, unit: c. à s., optional: true}
 
   steps:
     - id: tremper
       action: "Couper le beurre en dés et le laisser ramollir au tiède ; couvrir les fruits d'eau bouillante avec une rasade de kirsch"
       needs: []
-      uses: [fruits-secs-melange]
+      uses: [fruits-secs-melange, beurre, kirsch]
       time_min: 4
     - id: petrir
       action: "Tiédir le lait (45 °C au plus), y fouetter sucre, levure et 2 c. à s. de kirsch ; pétrir 10 à 15 min avec 500 g de farine, le sel et les œufs battus"

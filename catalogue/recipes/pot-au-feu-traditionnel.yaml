@@ -68,7 +68,8 @@ recipe:
     - {id: navets, name: navets, qty: 3, unit: pièce}
     - {id: potimarron, name: petit potimarron (600 g environ) ou une grosse tranche de courge musquée (facultatif), qty: 1, unit: pièce, subs: [{id: courge, name: "courge musquée", ratio: 1.0}], optional: true}
     - {id: pomme-de-terre, name: pommes de terre de taille moyenne, qty: 12, unit: pièce}
-    - {id: celeri-rave, name: petit céleri-rave ou petit céleri branche, qty: 1, unit: pièce, subs: [{id: celeri-branche, name: "céleri branche", ratio: 1.0}]}
+    # T198 — pas de céleri-rave chez ce foyer : le céleri branche, que l'autrice propose.
+    - {id: celeri-branche, name: petit céleri branche, qty: 1, unit: pièce}
     - {id: clous-girofle, name: clous de girofle, qty: 6, unit: pièce, seasoning: true}
     - {id: laurier, name: feuilles de laurier, qty: 3, unit: pièce, seasoning: true}
     - {id: graines-coriandre, name: graines de coriandre, qty: 1, unit: c. à c., seasoning: true}
@@ -93,16 +94,16 @@ recipe:
       attended: false
     - id: preparer-legumes
       action: "Pendant la précuisson : éplucher et préparer les autres légumes"
-      astuce: "Poireaux et navets recoupés en deux, potimarron et céleri-rave en six, pommes de terre entières."
+      astuce: "Poireaux et navets recoupés en deux, potimarron en six, céleri branche en tronçons, pommes de terre entières."
       needs: []
-      uses: [poireau, navets, potimarron, celeri-rave, pomme-de-terre]
+      uses: [poireau, navets, potimarron, celeri-branche, pomme-de-terre]
       time_min: 15
       parallel_with: "precuire"
       kid:
         age_min_months: 30
         task: "laver les poireaux sous l'eau et compter les pommes de terre"
     - id: ajouter-legumes
-      action: "Au bout des 2 heures, ajouter DANS CET ORDRE : céleri-rave, poireaux, navets, pommes de terre, puis potimarron"
+      action: "Au bout des 2 heures, ajouter DANS CET ORDRE : céleri, poireaux, navets, pommes de terre, puis potimarron"
       astuce: "L'ordre fait la cuisson : les légumes coriaces doivent être parfaitement immergés, tandis que potimarron et pomme de terre cuisent quasiment à la vapeur au-dessus."
       needs: [simmer-large]
       uses: []

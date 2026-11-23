@@ -70,9 +70,9 @@ recipe:
       time_min: 15
       attended: true
     - id: soupe
-      action: "Ajouter les poissons de roche (et les parures des gros poissons), le vin, laurier, coriandre, ail, gros sel et l'eau ; mijoter 45 min"
+      action: "Ajouter les poissons de roche (et les têtes et arêtes mises de côté), le vin, laurier, coriandre, ail, gros sel et l'eau ; mijoter 45 min"
       needs: [simmer-large]
-      uses: [poissons-roche, vin-blanc-sec, laurier, graines-coriandre, ail-soupe, gros-sel, eau]
+      uses: [poissons-roche, vin-blanc-sec, laurier, graines-coriandre, ail-soupe, gros-sel, eau, poisson-blanc]
       time_min: 45
       attended: false
     - id: pommes-de-terre

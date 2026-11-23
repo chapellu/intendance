@@ -47,7 +47,7 @@ recipe:
     - id: garnir
       action: "Ouvrir et dénoyauter les pêches, remplir le creux de framboises et d'une demi-cuillerée de miel"
       needs: []
-      uses: [peches, framboises]
+      uses: [peches, framboises, miel-acacia]
       time_min: 5
       kid: {age_min_months: 30, task: "remplir les pêches de framboises"}
     - id: cuire

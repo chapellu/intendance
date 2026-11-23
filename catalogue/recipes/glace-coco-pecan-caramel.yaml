@@ -47,7 +47,7 @@ recipe:
     - id: frapper
       action: "Réserver 7 cl de crème de coco ; mettre le reste au congélateur dans le bol avec l'agave et la vanille"
       needs: [congeler]
-      uses: [sirop-agave, extrait-vanille]
+      uses: [sirop-agave, extrait-vanille, creme-coco]
       time_min: 3
     - id: caramel
       action: "Concasser les pécans et les tamiser ; chauffer le sucre, l'eau, le sel et la vanille, 30 s après la mousse ajouter les 7 cl de crème et les noix, et cuire 1 min"

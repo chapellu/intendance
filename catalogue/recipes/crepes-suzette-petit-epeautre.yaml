@@ -43,7 +43,7 @@ recipe:
     - {id: orange, name: "orange non traitée", qty: 1, unit: pièce}
     - {id: sirop-agave, name: "sirop d'agave ou d'érable", qty: 6, unit: c. à s.}
     - {id: huile-essentielle-orange, name: "huile essentielle d'orange douce ou de mandarine", qty: 15, unit: pièce}
-    - {id: beurre, name: "beurre ou huile de coco", qty: 60, unit: g}
+    - {id: beurre, name: "beurre ou huile de coco", qty: 60, unit: g, subs: [{id: huile-coco, name: "huile de coco", ratio: 1.0}]}
 
   steps:
     - id: pate

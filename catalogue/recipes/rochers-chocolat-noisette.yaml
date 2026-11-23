@@ -39,7 +39,7 @@ recipe:
     - {id: lait-soja-vanille, name: "lait soja-vanille ou autre lait végétal", qty: 10, unit: cl}
     - {id: puree-noisette, name: "purée de noisette", qty: 100, unit: g}
     - {id: sirop-agave, name: "sirop d'agave", qty: 4, unit: c. à s.}
-    - {id: noisettes, name: "noisettes ou amandes", qty: 100, unit: g}
+    - {id: noisettes, name: "noisettes ou amandes", qty: 100, unit: g, subs: [{id: amandes, name: "amandes", ratio: 1.0}]}
     - {id: chocolat-couverture, name: "chocolat de couverture", qty: 200, unit: g}
 
   steps:

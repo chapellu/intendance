@@ -43,7 +43,8 @@ recipe:
     - {id: oignon, name: oignons, qty: 500, unit: g}
     - {id: huile-olive, ref: huile-compotee, name: "huile d'olive (compotée et filet)", qty: 5, unit: c. à s.}
     - {id: patate-douce, name: grosse patate douce, qty: 1, unit: pièce}
-    - {id: celeri-rave, name: céleri-rave, qty: 1, unit: pièce}
+    # T198 — pas de céleri-rave chez ce foyer : trois gros panais pour le céleri entier.
+    - {id: panais, name: gros panais, qty: 3, unit: pièce}
     - {id: radis-long, name: "radis longs (un rose, un vert)", qty: 2, unit: pièce}
     - {id: oignon-rouge, name: oignons rouges, qty: 2, unit: pièce}
     - {id: carottes, name: carottes, qty: 2, unit: pièce}
@@ -68,9 +69,9 @@ recipe:
       time_min: 8
       parallel_with: compotee
     - id: trancher
-      action: "Trancher finement tous les légumes, en coupant en deux les plus larges tranches de céleri et de patate douce"
+      action: "Trancher finement tous les légumes, en coupant en deux les plus larges tranches de panais et de patate douce"
       needs: [chop-coarse]
-      uses: [patate-douce, celeri-rave, radis-long, oignon-rouge, carottes]
+      uses: [patate-douce, panais, radis-long, oignon-rouge, carottes]
       time_min: 12
     - id: garnir
       action: "Étaler la compotée sur la pâte, saupoudrer 100 g de parmesan, puis disposer les légumes en cercles alternés, carottes au centre"

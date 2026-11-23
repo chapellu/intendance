@@ -48,13 +48,13 @@ recipe:
     - id: biscuit
       action: "Préchauffer à 180 °C ; fouetter 3 œufs avec 5 cl d'agave jusqu'à tripler, y mêler la farine, le cacao et la levure tamisés et cuire 10 à 12 min dans un cadre"
       needs: [bake]
-      uses: [farine-petit-epeautre, poudre-a-lever]
+      uses: [farine-petit-epeautre, poudre-a-lever, cacao]
       time_min: 25
     - id: ganache
       action: "Fondre au bain-marie 100 g de chocolat aux éclats de fève avec la purée de noisette, 45 g d'huile de coco et la vanille, lisser et verser sur le biscuit"
       needs: [simmer]
       charge_partielle: true
-      uses: [puree-noisette]
+      uses: [puree-noisette, huile-coco, chocolat-noir]
       time_min: 6
     - id: mousse
       action: "Fondre au bain-marie le reste du chocolat avec 50 g d'huile de coco, 5 cl d'agave et la vanille, y mêler 4 jaunes puis les blancs en neige souple"

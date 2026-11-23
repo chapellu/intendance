@@ -47,7 +47,7 @@ recipe:
     - {id: miel-acacia, name: "miel d'acacia (4 c. à s. + 60 g)", qty: 120, unit: g}
     - {id: essence-sapin, name: "huile essentielle de sapin de Sibérie", qty: 5, unit: pièce}
     - {id: noisettes, name: "noisettes", qty: 150, unit: g}
-    - {id: whisky, name: "whisky ou cognac", qty: 1, unit: c. à s.}
+    - {id: whisky, name: "whisky ou cognac", qty: 1, unit: c. à s., subs: [{id: cognac, name: "cognac", ratio: 1.0}]}
     - {id: eau, name: "eau", qty: 3, unit: c. à s.}
     - {id: biscuits-cuillere, name: "biscuits à la cuillère", qty: 12, unit: pièce}
     - {id: noix-coco-rapee, name: "noix de coco râpée", qty: 30, unit: g}
@@ -57,7 +57,7 @@ recipe:
       action: "Préchauffer à 180 °C ; chauffer 20 cl de crème de coco avec 4 c. à s. d'agave, y fondre le chocolat et mixer avec 2 jaunes jusqu'à une crème lisse"
       needs: [simmer, blend-smooth]
       charge_partielle: true
-      uses: [chocolat-noir]
+      uses: [chocolat-noir, creme-coco]
       time_min: 8
     - id: genoise
       action: "Fouetter 2 œufs et 2 jaunes avec le sucre, y mêler farine, cacao et levure tamisés et les 2 blancs montés au sucre vanillé, étaler en plaque et cuire"
