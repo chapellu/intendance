@@ -1219,10 +1219,10 @@ async function journee2(idx) {
     await page.waitForTimeout(500);
     const filtre = page.locator("button", { hasText: lieu === "frigo" ? /^Frigo/ : /^Congélo/ }).first();
     await tap(filtre); await page.waitForTimeout(400);
-    const perdu = page.getByRole("button", { name: new RegExp(`Tout ce qui était au ${lieu} est perdu`) });
+    const perdu = page.getByRole("button", { name: new RegExp(`Tout jeter au ${lieu}|Tout ce qui était au ${lieu} est perdu`) });
     if (await perdu.count()) {
       await tap(perdu); await page.waitForTimeout(300);
-      const oui = page.getByRole("button", { name: /Oui|Confirmer|perdu/ }).last();
+      const oui = page.getByRole("button", { name: /^Oui, retirer|Oui|Confirmer|perdu/ }).last();
       await tap(oui); await page.waitForTimeout(600);
       note(j, "panne", `${e.quoi} : « Tout ce qui était au ${lieu} est perdu » (T105), un geste et une confirmation`);
     } else note(j, "panne", `${e.quoi} : le geste T105 est introuvable`);
