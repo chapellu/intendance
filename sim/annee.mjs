@@ -8,7 +8,7 @@
 import { chromium } from "@playwright/test";
 import { readFileSync, writeFileSync, appendFileSync, existsSync, mkdirSync } from "node:fs";
 
-let graine = 20261016;
+let graine = +(process.env.SEED ?? 20261016);
 const hasard = () => ((graine = (graine * 1103515245 + 12345) % 2147483648) / 2147483648);
 // PERSONA=moi : le foyer tel qu'il se décrit le 2026-10-16 — pas de semaine
 // planifiée, le dîner décidé ET lancé à 15 h (télétravail) pour 18 h, courses
@@ -37,7 +37,7 @@ for (const [r, ids] of Object.entries(cat.rayons.rayons ?? {})) for (const id of
 const FRAIS = /frais|fruit|legume|boucher|poisson|cremerie|crèmerie|laitier|fromage/i;
 
 // ───────────────────────────────────────────────────────────── le calendrier
-const DEBUT = new Date("2026-10-16T00:00:00");
+const DEBUT = new Date(`${process.env.DEBUT ?? "2026-10-16"}T00:00:00`);
 const N = +(process.argv[2] ?? 365);
 const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 const entre = (j, a, b) => j >= a && j <= b;
@@ -85,6 +85,26 @@ const etat = existsSync(ETAT)
 const sauver = () => writeFileSync(ETAT, JSON.stringify(etat));
 const note = (j, type, texte, extra = {}) => { appendFileSync(NOTES, JSON.stringify({ j, type, texte, ...extra }) + "\n"); console.log(`  ⚑ ${type} — ${texte}`); };
 
+
+// LE REPLI SE MANGE DANS LE VRAI PLACARD. Pâtes ou gnocchis, ~100 g par part :
+// s'il n'y en a pas assez, il n'y a rien à manger ce soir — on le compte, on ne
+// l'invente pas. L'app n'en sait rien (aucun geste « ce soir, des pâtes »).
+function repliMange(j, stats, pourquoi = "repli") {
+  const besoin = 250;
+  for (const id of ["pates", "gnocchis"]) {
+    const r = etat.reel[id];
+    if (r && r.q >= besoin) {
+      r.q -= besoin;
+      stats.diner = `${pourquoi} : ${id === "pates" ? "pâtes" : "gnocchis"} (hors app)`;
+      etat.compte.replis = (etat.compte.replis ?? 0) + 1;
+      return true;
+    }
+  }
+  stats.diner = `${pourquoi} : RIEN — ni pâtes ni gnocchis au placard`;
+  etat.compte.rien = (etat.compte.rien ?? 0) + 1;
+  note(j, "rien", `${pourquoi} sans pâtes ni gnocchis dans la cuisine réelle`);
+  return false;
+}
 // ───────────────────────────────────────────────────────────── le navigateur
 const ctx = await chromium.launchPersistentContext(PROFILE, {
   ...(process.env.CHROMIUM ? { executablePath: process.env.CHROMIUM } : {}),
@@ -133,13 +153,53 @@ function parUniteDuFond(id) {
   const n = /de (\d+)\b/.exec(u); if (n) return +n[1];
   return /bo[iî]te|brique|bocal|tube/.test(u) ? typ : 2 * typ;
 }
+
+// LES UNITÉS DU MONDE RÉEL. Le placard tient chaque denrée dans UNE unité (la
+// première que le corpus emploie) ; une recette qui la dit autrement se
+// convertit : « 300 g de poireau » ne vide pas un stock compté en pièces.
+const POIDS_PIECE = { poireau: 200, oignon: 120, "oignon-rouge": 120, carottes: 100, pommes: 150, poires: 150, banane: 120, "pomme-de-terre": 150, courge: 1500, potimarron: 1200, courgettes: 200, tomates: 120, citron: 100, oeufs: 55, echalote: 30, navets: 120, panais: 150, brocoli: 400, "chou-fleur": 800, "yaourt-nature": 125 };
+function versBase(id, qty, unit) {
+  const base = UNITE_RECETTE.get(id) ?? unit;
+  if (!unit || unit === base) return qty;
+  const masse = { g: 1, kg: 1000, ml: 1, cl: 10, l: 1000 };
+  if (masse[unit] && masse[base]) return qty * masse[unit] / masse[base];
+  const pp = POIDS_PIECE[id] ?? 150;
+  const compte = /^(pièce|pot|unité|botte|tête|gousse)$/;
+  if (unit === "gousse" && base === "tête") return qty / 10;
+  if (unit === "tête" && base === "gousse") return qty * 10;
+  if (masse[unit] && compte.test(base)) return qty * masse[unit] / pp;
+  if (compte.test(unit) && masse[base]) return qty * pp / masse[base];
+  return qty; // pot ↔ pièce, brin, c. à s. : à l'unité près
+}
+function enGrammes(id, q) {
+  const base = UNITE_RECETTE.get(id) ?? "";
+  const masse = { g: 1, kg: 1000, ml: 1, cl: 10, l: 1000 };
+  if (masse[base]) return q * masse[base];
+  if (base === "gousse") return q * 6;
+  if (base === "tête") return q * 60;
+  return q * (POIDS_PIECE[id] ?? 100);
+}
+/** Ce que dit une ligne d'achat (« 9 packs de 4 », « 1 filet de 1 kg », « 400 g »), en unité du placard réel. */
+function quantiteAchat(id, txt) {
+  const cond = /^\s*([\d.,]+)\s+[^\d]+?\s+de\s+([\d.,]+)\s*(kg|g|l|cl|ml)?\b/i.exec(txt);
+  const m = /([\d.,]+)\s*(kg|g|l|cl|ml)?\b/i.exec(txt);
+  const n0 = m ? parseFloat(m[1].replace(",", ".")) : 1;
+  if (cond) {
+    const n = parseFloat(cond[1].replace(",", ".")), x = parseFloat(cond[2].replace(",", "."));
+    const uc = (cond[3] ?? "").toLowerCase();
+    return uc ? versBase(id, n * x, uc) : n * x;
+  }
+  if (/unit[ée]/.test(txt) && parUniteDuFond(id) != null) return n0 * parUniteDuFond(id);
+  if (/t[êe]te/.test(txt)) return versBase(id, n0, "tête");
+  const u = (m?.[2] ?? "").toLowerCase();
+  return u ? versBase(id, n0, u) : versBase(id, n0, "pièce");
+}
+/** Une unité d'achat du fond (« pack de 4 »), en unité du placard réel. */
+const UNITE_ACHAT = new Map((cat.fond?.denrees ?? []).map((d) => [cat.rayons.aliases?.[d.ingredient] ?? d.ingredient, d.unite ?? "pièce"]));
+const unDuFond = (id) => quantiteAchat(id, `1 ${UNITE_ACHAT.get(id) ?? "pièce"}`) || 1;
 function acheter(nom, q, j) {
   const id = idParNom.get(norm(nom)) ?? norm(nom);
-  const m = /([\d.,]+)\s*(kg|g|l|cl|ml)?/i.exec(q ?? "");
-  let qte = m ? parseFloat(m[1].replace(",", ".")) : 1;
-  const u = (m?.[2] ?? "u").toLowerCase();
-  if (u === "kg" || u === "l") qte *= 1000; if (u === "cl") qte *= 10;
-  if (/unit[ée]/.test(q ?? "") && parUniteDuFond(id) != null) qte *= parUniteDuFond(id);
+  const qte = quantiteAchat(id, q ?? "");
   const r = etat.reel[id] ?? { q: 0, achete: 0 };
   r.q += qte; r.achete = qte; r.le = j; r.frais = FRAIS.test(rayonDe.get(id) ?? "");
   etat.reel[id] = r;
@@ -150,7 +210,7 @@ function consommer(plat, parts) {
     if (i.base || toujours.has(i.id)) continue;
     const r = etat.reel[i.id];
     if (!r) continue;
-    r.q = Math.max(0, r.q - (i.qty ?? 0) * Math.min(f, 2));
+    r.q = Math.max(0, r.q - versBase(i.id, i.qty ?? 0, i.unit) * Math.min(f, 2));
   }
 }
 function reponse(nomQ) {
@@ -167,11 +227,13 @@ function reponse(nomQ) {
 // livre vidait ces trois denrées sans une cuisson : l'année n° 5 a compté 275
 // « manques réels » que l'app ne pouvait pas voir, faute d'un geste à rejouer.
 const GARDE_JOURS = new Map();
-for (const f of cat.garde ?? []) if (f.fond) for (const id of f.ids) GARDE_JOURS.set(id, f.fenetreJours);
+for (const f of cat.garde ?? []) for (const id of f.ids) GARDE_JOURS.set(id, f.fenetreJours);
 function pourrirLeFrais(j) {
   for (const [id, r] of Object.entries(etat.reel)) {
     if (r.frais && r.q > 0 && (new Date(j) - new Date(r.le)) / 864e5 > (GARDE_JOURS.get(id) ?? 7)) {
-      etat.compte.gaspilleG += r.q; r.q = 0;
+      const g = enGrammes(id, r.q);
+      etat.compte.gaspilleG += g; r.q = 0;
+      etat.compte.jetesParId = { ...(etat.compte.jetesParId ?? {}), [id]: Math.round(((etat.compte.jetesParId ?? {})[id] ?? 0) + g) };
     }
   }
 }
@@ -404,7 +466,21 @@ async function cuisiner(j, ev, stats, { autrement = false, parts = 2.75, deja = 
   const autre = page.getByRole("button", { name: "J’ai fait autrement" });
   const fait = page.getByRole("button", { name: "C’est fait", exact: true });
   let reponseDonnee = "";
-  if (autrement && (await autre.count())) { await tap(autre); reponseDonnee = "autrement"; }
+  if (autrement && (await autre.count())) {
+    // « J'ai fait autrement » : où est parti chaque reste, puis « Noter », puis « Terminer ».
+    // Le foyer qui a raté son plat n'en garde rien ; celui qui a improvisé met au frigo.
+    await tap(autre); reponseDonnee = "autrement"; await page.waitForTimeout(300);
+    const groupes = page.getByRole("radiogroup");
+    const ng = await groupes.count();
+    const rate = ev.some((e) => e.type === "rate");
+    for (let k = 0; k < ng; k++) await tap(groupes.nth(k).getByRole("radio", { name: rate ? "Pas gardé" : "Au frigo" }));
+    const noter = page.getByRole("button", { name: "Noter" });
+    if (await noter.count()) { await tap(noter); await page.waitForTimeout(400); }
+    const fin = page.getByRole("button", { name: "Terminer" });
+    if (await fin.count()) await tap(fin);
+    else note(j, "sortie", "« J'ai fait autrement » : pas de « Terminer » après « Noter »");
+    if (rate) lots.length = 0;
+  }
   else if (await range.count()) { await tap(range); reponseDonnee = "rangé"; }
   else if (await fait.count()) { await tap(fait); reponseDonnee = "fait"; }
   else note(j, "sortie", "pas d'écran de sortie : " + sortieTxt.slice(0, 200).replace(/\n/g, " / "));
@@ -508,6 +584,7 @@ async function journee(idx) {
   const t0 = Date.now();
 
   await ouvrirJour(j);
+  if (idx === 0) await poserFond(j);
   const cockpit = await texte();
   stats.cockpit = (/aujourd'hui\.\n\n([\s\S]*?)\nVOS FACETTES/.exec(cockpit)?.[1] ?? "").replace(/\n/g, " / ").slice(0, 250);
   stats.cuisineFacette = (/Cuisine\n([^\n]*RÉPONDUS[^\n]*\n[^\n]*)/.exec(cockpit)?.[1] ?? "").replace(/\n/g, " / ");
@@ -597,7 +674,7 @@ async function journee(idx) {
     await page.clock.setFixedTime(new Date(`${j}T19:00:00`));
     if (ev.some((e) => e.type === "dehors")) { note(j, "dehors", "dîner dehors à l'improviste : le plat posé de ce soir glisse simplement, rien à dire à l'app"); stats.diner = "dehors"; }
     else if (ev.some((e) => e.type === "malade")) {
-      stats.diner = "pâtes, hors app";
+      repliMange(j, stats, "malade");
       note(j, "malade", "le petit est malade : pâtes au beurre — pas de plat « simple » dans la main, cuisson non journalisée");
     } else {
       const invite = ev.find((e) => (e.type === "invites" && e.repas === "diner") || e.type === "deux");
@@ -657,6 +734,9 @@ const FOND = { "pates": 2, "lentilles seches": 1, "pois chiches": 1, "riz rond":
 async function poserFond(j) {
   if (cat.fond?.denrees?.length) return poserFondCatalogue(j);
   await aller("cuisine/stock"); await attendre(".co-barre"); await page.waitForTimeout(800);
+  // Les planchers du placard vivent dans « Réglages du stock », replié par défaut.
+  const reglages = page.getByRole("button", { name: /Réglages du stock/ });
+  if ((await reglages.count()) && (await reglages.getAttribute("aria-expanded")) === "false") { await tap(reglages); await page.waitForTimeout(500); }
   const ouvrir = page.getByRole("button", { name: "en ajouter un au placard" });
   if (!(await ouvrir.count())) { note(j, "fond", "pas de bouton pour poser un plancher au placard"); return; }
   await tap(ouvrir); await page.waitForTimeout(500);
@@ -681,13 +761,53 @@ async function poserFond(j) {
  */
 async function poserFondCatalogue(j) {
   await aller("cuisine/stock"); await attendre(".co-barre"); await page.waitForTimeout(800);
+  // Les planchers du placard vivent dans « Réglages du stock », replié par défaut.
+  const reglages = page.getByRole("button", { name: /Réglages du stock/ });
+  if ((await reglages.count()) && (await reglages.getAttribute("aria-expanded")) === "false") { await tap(reglages); await page.waitForTimeout(500); }
   const ouvrir = page.getByRole("button", { name: "en ajouter un au placard" });
   if (!(await ouvrir.count())) { note(j, "fond", "pas de bouton pour poser un plancher au placard"); return; }
   await tap(ouvrir); await page.waitForTimeout(500);
+  // Le nom affiché porte accents et ligatures (« œufs », « tomates pelées ») :
+  // on retrouve le texte exact de l'écran par le nom normalisé.
+  const affiches = new Map();
+  for (const t of await page.locator(".co-lot .nom").allInnerTexts()) affiches.set(norm(t.replace(/œ/g, "oe")), t.trim());
+  const echap = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const ligneDe = (nom, bouton) => page.locator(".co-lot")
-    .filter({ has: page.locator(".nom", { hasText: new RegExp(`^${nom}$`, "i") }) })
+    .filter({ has: page.locator(".nom", { hasText: new RegExp(`^${echap(affiches.get(norm(nom)) ?? nom)}$`, "i") }) })
     .filter({ has: page.getByRole("button", { name: bouton, exact: true }) }).first();
   const poses = [], absents = [];
+  // T158 — le geste du foyer : « Suivre ces N essentiels », d'un doigt.
+  const tous = page.getByRole("button", { name: /^Suivre (ces|les) \d+/ });
+  if (await tous.count()) {
+    const n = +(/\d+/.exec(await tous.first().innerText())?.[0] ?? 0);
+    await tap(tous.first()); await page.waitForTimeout(1200);
+    // Ce que l'app suit désormais, lu à l'écran : c'est cela, et seulement cela,
+    // que le foyer a déclaré avoir (« En garder N » = j'en ai).
+    const suivis = new Set((await page.locator(".co-lot").filter({ has: page.getByRole("button", { name: "Ne plus suivre" }) }).locator(".nom").allInnerTexts()).map((t) => norm(t.replace(/œ/g, "oe"))));
+    for (const { ingredient, minimum } of cat.fond.denrees) {
+      const id = cat.rayons.aliases?.[ingredient] ?? ingredient;
+      if (!suivis.has(norm(nomDe(id).replace(/œ/g, "oe"))) && !suivis.has(norm(id))) continue;
+      const q = minimum * unDuFond(id);
+      etat.reel[id] = { q: (etat.reel[id]?.q ?? 0) + q, achete: q, le: j, frais: FRAIS.test(rayonDe.get(id) ?? "") };
+      poses.push(`${ingredient} ${minimum}`);
+    }
+    etat.fondPose = n;
+    // L'apéro n'est pas au fond : le foyer pose lui-même ses deux bocaux,
+    // « En garder 1 » sur la ligne de chacun (le même geste que l'e2e T41).
+    await tap(page.getByRole("button", { name: "en ajouter un au placard" })).catch(() => {});
+    await page.waitForTimeout(500);
+    for (const id of APERO) {
+      const nom = nomDe(id);
+      const ligne = page.locator(".co-lot").filter({ hasText: new RegExp(`^${nom.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`, "i") }).filter({ has: page.getByRole("button", { name: "En garder 1" }) }).first();
+      if (!(await ligne.count())) { note(j, "apero", `pas de « En garder 1 » pour ${nom}`); continue; }
+      await tap(ligne.getByRole("button", { name: "En garder 1" })); await page.waitForTimeout(300);
+      const q = unDuFond(id) || 1;
+      etat.reel[id] = { q, achete: q, le: j, frais: false };
+      poses.push(`${id} 1 (apéro)`);
+    }
+    note(j, "fond", `« Suivre ces ${n} essentiels » : ${n} planchers posés d'un doigt ; le placard réel part plein (${poses.length} denrées suivies : ${poses.join(", ")})`);
+    return;
+  }
   for (const { ingredient, minimum } of cat.fond.denrees) {
     const nom = ingredient.replace(/-/g, " ");
     const ligne = ligneDe(nom, "En garder 1");
@@ -699,6 +819,11 @@ async function poserFondCatalogue(j) {
       await tap(suivi.getByRole("button", { name: "+", exact: true })); await page.waitForTimeout(200);
     }
     poses.push(`${nom} ${minimum}`);
+    // « En garder N » dit « j'en ai, garde-m'en au moins N » : le placard réel
+    // part plein, à son plancher — comme une cuisine de restaurant au par.
+    const id = cat.rayons.aliases?.[ingredient] ?? ingredient;
+    const q = minimum * (parUniteDuFond(id) ?? 1);
+    etat.reel[id] = { q: (etat.reel[id]?.q ?? 0) + q, achete: q, le: j, frais: FRAIS.test(rayonDe.get(id) ?? "") };
   }
   etat.fondPose = poses.length;
   note(j, "fond", `fond de roulement posé au placard (${poses.length}/${cat.fond.denrees.length}) : ${poses.join(", ")}${absents.length ? ` — introuvables : ${absents.join(", ")}` : ""}`);
@@ -847,6 +972,132 @@ async function pauseDe15hUneFois(j, ev, stats) {
 }
 
 // ───────────────────────────────────────────────────────────── une journée, comme chez moi
+
+// ───────────────────────────────────────────────────────────── les cinq repas du jour
+// TOUS LES MOMENTS OÙ L'ON MANGE, pour les quatre (deux adultes, le grand, le
+// petit). Le monde réel mange ; l'app, elle, compte ses routines (T142) — on
+// regarde si les deux tiennent ensemble. Ce que le foyer mange ici ne passe par
+// l'app que quand elle offre un geste (une fournée, un midi à cuisiner).
+const platParId = new Map(cat.plats.map((p) => [p.id, p]));
+const ROUT = cat.creneaux?.routines ?? {};
+const PDJ = platParId.get(ROUT["petit-dejeuner"]?.recette), GOUT = platParId.get(ROUT.gouter?.recette);
+const TYPES_PAIN = new Set(ROUT["petit-dejeuner"]?.du_depot?.types ?? []);
+const TYPES_GOUTER = new Set(ROUT.gouter?.du_depot?.types ?? []);
+const BAND = (b) => +(/^(\d+)/.exec(b ?? "")?.[1] ?? 1);
+const MIDI_PARTS = (cat.foyer?.mangeurs ?? []).reduce((n, m) => (m.parts > 0 ? n + Math.max(m.parts, 0.5) : n), 0) || 3;
+const APERO = (cat.gardeManger?.denrees ?? []).filter((d) => d.usage === "apero").map((d) => cat.rayons.aliases?.[d.ingredient] ?? d.ingredient);
+const manqueDuJour = (stats, repas, id) => { stats.manquesRepas = [...(stats.manquesRepas ?? []), `${repas}:${id}`]; etat.compte.manquesRepas = (etat.compte.manquesRepas ?? 0) + 1; };
+/** Prend q d'un id dans la cuisine réelle ; faux si elle n'en a pas assez. */
+function prendre(id, q) {
+  const r = etat.reel[id];
+  if (!r || r.q + 1e-9 < q) { if (r) r.q = Math.max(0, r.q - q); return false; }
+  r.q -= q; return true;
+}
+/** Mange une recette dans le réel (remplaçants compris) ; rend les ids qui ont manqué. */
+function mangerRecette(plat, f = 1) {
+  const manque = [];
+  for (const i of plat?.ingredients ?? []) {
+    if (i.base || i.assaisonnement || toujours.has(i.id) || !(i.qty > 0)) continue;
+    const alts = [i.id, ...(i.remplacants ?? []).map((r) => r.id)];
+    const ok = alts.find((id) => (etat.reel[id]?.q ?? 0) >= versBase(id, i.qty * f, i.unit));
+    if (ok) { prendre(ok, versBase(ok, i.qty * f, i.unit)); continue; }
+    if (!i.facultatif) manque.push(i.id);
+  }
+  return manque;
+}
+/** Une ration d'un lot réel de ces types (le plus ancien d'abord). */
+function ration(types, n = 1) {
+  const l = etat.restes.filter((r) => !r.jete && r.portions > 0 && r.types.some((t) => types.has(t))).sort((a, b) => a.le.localeCompare(b.le))[0];
+  if (!l) return null;
+  l.portions -= n; if (l.portions <= 0) l.mangeLe = jourCourant;
+  return l.plat;
+}
+function petitDejeuner(j, stats) {
+  const m = mangerRecette(PDJ, 1);
+  for (const id of m) manqueDuJour(stats, "pdj", id);
+  const pain = ration(TYPES_PAIN);
+  // Sans pain maison, les adultes prennent un porridge : 80 g de flocons.
+  if (!pain && !prendre("flocons-avoine", 80)) manqueDuJour(stats, "pdj", "flocons-avoine (adultes)");
+  stats.repas = { ...stats.repas, pdj: m.length ? `manque ${m.join(",")}` : pain ? "complet" : "sans pain maison" };
+}
+function gouter(j, stats) {
+  const m = mangerRecette(GOUT, 1);
+  for (const id of m) manqueDuJour(stats, "gouter", id);
+  const f = ration(TYPES_GOUTER);
+  stats.repas = { ...stats.repas, gouter: m.length ? `manque ${m.join(",")}` : f ? `fournée (${f})` : "yaourt et fruit seuls" };
+}
+function dessert(j, stats) {
+  if (hasard() > 0.6) { stats.repas = { ...stats.repas, dessert: "pas de dessert" }; return; }
+  // Trois desserts (les adultes et le grand) : un yaourt, ou un fruit.
+  const choix = hasard() < 0.5 ? ["yaourt-nature"] : ["pommes", "poires", "banane"];
+  const id = choix.find((x) => (etat.reel[x]?.q ?? 0) >= 3);
+  if (id) { prendre(id, 3); stats.repas = { ...stats.repas, dessert: id }; }
+  else { manqueDuJour(stats, "dessert", choix[0]); stats.repas = { ...stats.repas, dessert: `manque ${choix[0]}` }; }
+}
+async function apero(j, ev, stats) {
+  const invites = ev.some((e) => e.type === "invites");
+  const dow = new Date(j).getDay();
+  if (!(invites || (dow === 5 && hasard() < 0.35) || (dow === 6 && hasard() < 0.25))) return;
+  const pris = [];
+  for (const id of APERO) {
+    const r = etat.reel[id]; if (!r || r.q <= 0) { manqueDuJour(stats, "apero", id); continue; }
+    r.q = Math.max(0, r.q - (invites ? r.achete || 1 : (r.achete || 1) / 3)); pris.push(id);
+    // Le bocal vide se dit à l'app — le seul geste qui existe (« Fini » au stock).
+    if (r.q <= 0) { const t = await plusDe((x) => norm(x).includes(norm(nomDe(id)))); if (!t) note(j, "apero", `${id} fini au réel, pas de ligne « Fini » au stock`); }
+  }
+  stats.repas = { ...stats.repas, apero: pris.length ? pris.join(",") : "rien pour l'apéro" };
+}
+const nomDe = (id) => cat.rayons.noms?.[id] ?? id.replace(/-/g, " ");
+/** Midi : un reste pour les quatre (3 parts), sinon une omelette-tartines hors app. */
+async function dejeuner(j, ev, stats, weekend) {
+  // Le week-end, le cockpit peut proposer un midi à cuisiner avec le stock.
+  if (weekend) {
+    await page.clock.setFixedTime(new Date(`${j}T11:30:00`));
+    await aller("cockpit"); await attendre(".co-barre", 20_000); await page.waitForTimeout(300);
+    const lien = page.locator("a", { hasText: /^Midi : .* — rien à acheter/ }).first();
+    if (await lien.count()) {
+      const t = (await lien.innerText()).replace(/^Midi : /, "").replace(/ \(Chioca\)/, "").replace(/ — .*$/, "").trim();
+      await tap(lien);
+      const fait = await cuisiner(j, ev, stats, { parts: MIDI_PARTS, deja: t }).catch((e) => { note(j, "midi", `cuisson du midi échouée : ${String(e).slice(0, 120)}`); return null; });
+      if (fait) { stats.repas = { ...stats.repas, midi: `cuisiné : ${fait}` }; etat.compte.midisCuisines = (etat.compte.midisCuisines ?? 0) + 1; return; }
+    }
+  }
+  let reste = MIDI_PARTS; const pris = [];
+  for (const r of etat.restes.filter((x) => !x.jete && x.portions > 0 && x.ou === "Frigo" && !x.types.some((t) => TYPES_PAIN.has(t) || TYPES_GOUTER.has(t)))) {
+    if (reste <= 0) break;
+    const k = Math.min(r.portions, reste); r.portions -= k; reste -= k; pris.push(r.plat);
+    if (r.portions <= 0) { r.mangeLe = j; etat.compte.restesManges++; }
+  }
+  if (reste <= 0.01) { stats.repas = { ...stats.repas, midi: `reste : ${pris.join(" + ")}` }; stats.midi = stats.repas.midi; return; }
+  // Le complément : une omelette et des tartines, hors app (T116).
+  const oeufs = prendre("oeufs", 4);
+  if (!oeufs) manqueDuJour(stats, "midi", "oeufs");
+  const pain = ration(TYPES_PAIN);
+  stats.repas = { ...stats.repas, midi: `${pris.length ? `reste (${pris.join(" + ")}) + ` : ""}${oeufs ? "omelette" : "rien de chaud"}${pain ? ", pain maison" : ""}` };
+  stats.midi = stats.repas.midi;
+  if (!pris.length) etat.compte.midisHorsApp = (etat.compte.midisHorsApp ?? 0) + 1;
+}
+/** 14 h 30 : la fournée que « Ce soir » propose — le mercredi, le week-end, ou quand le pain manque. */
+async function fournee(j, stats) {
+  await page.clock.setFixedTime(new Date(`${j}T14:30:00`));
+  await aller("cuisine/ce-soir"); await page.waitForTimeout(700);
+  const lien = page.locator("p.co-action a", { hasText: /^Fournée/ }).first();
+  if (!(await lien.count())) return;
+  const txt = (await lien.innerText()).trim();
+  const dow = new Date(j).getDay();
+  if (!([0, 3, 6].includes(dow) || /pain/i.test(txt))) { stats.fourneeVue = txt; return; }
+  const titre = txt.replace(/^Fournée\s*:\s*/, "").replace(/\s+—.*$/, "").trim();
+  await tap(lien);
+  const fait = await cuisiner(j, [], stats, { parts: platParTitre.get(titre)?.portions ?? 4, deja: titre }).catch((e) => { note(j, "fournee", `fournée échouée : ${String(e).slice(0, 120)}`); return null; });
+  if (fait) {
+    etat.compte.fournees = (etat.compte.fournees ?? 0) + 1; stats.fournee = fait;
+    // Une fournée se range en sachets de rations (`band`), pas en « 2 parts ».
+    const p = platParTitre.get(fait);
+    const lots = etat.restes.filter((r) => r.plat === fait && r.le === j);
+    lots.forEach((r, k) => { const e = p?.emits?.[Math.min(k, (p.emits.length || 1) - 1)]; if (e) { r.portions = BAND(e.band); r.garde = e.congelo ? 90 : e.gardeFrigo ?? 3; r.ou = e.congelo ? "Congélo" : "Frigo"; } });
+  } else note(j, "fournee", `« ${txt} » n'a pas abouti`);
+}
+
 async function journee2(idx) {
   const d = new Date(DEBUT); d.setDate(d.getDate() + idx);
   const j = iso(d);
@@ -895,30 +1146,28 @@ async function journee2(idx) {
   if (idx === 0) await poserFond(j);
   // Les jours de courses, les courses du matin, avant toute décision. LE FOND NE SE
   // RECHARGE QUE PAR LA LISTE DE L'APP (T134) : aucun réassort côté harnais.
-  if (!absent && [3, 6].includes(dow)) { await page.clock.setFixedTime(new Date(`${j}T10:00:00`)); await courses(j, ev, stats); stats.coursesDuMatin = stats.articles; }
+  if (!absent && [3, 6].includes(dow)) { await page.clock.setFixedTime(new Date(`${j}T10:00:00`)); await courses(j, ev, stats); stats.coursesDuMatin = stats.articles; stats.listeMatin = stats.liste; }
 
   if (absent) { stats.absent = true; }
   else {
-    // Le midi, en télétravail : un reste du frigo s'il y en a.
-    const r = etat.restes.find((x) => !x.jete && x.portions > 0 && x.ou === "Frigo");
-    if (r) {
-      r.portions -= 2; etat.compte.restesManges++; stats.midi = `reste : ${r.plat}`;
-      if (r.portions <= 0) r.mangeLe = j;
-      if (r.portions <= 0) { const t = await plusDe((x) => estDu(r)(x) && x.includes("Frigo")); stats.resteRetire = !!t; }
-    } else stats.midi = "pas de reste — sandwich, hors app";
+    // Les repas du jour, pour les quatre — dans le monde réel.
+    stats.repas = {};
+    petitDejeuner(j, stats);
+    await dejeuner(j, ev, stats, [0, 6].includes(dow));
+    await fournee(j, stats);
+    gouter(j, stats);
 
     // 15 h : la pause. Décider, et lancer.
     await page.clock.setFixedTime(new Date(`${j}T15:00:00`));
     const dehors = ev.some((e) => e.type === "dehors"), malade = ev.some((e) => e.type === "malade");
     if (dehors) stats.diner = "dehors";
-    else if (malade) stats.diner = "pâtes (malade)";
+    else if (malade) repliMange(j, stats, "malade");
     else if (!PASSE) {
       // T127–T129 : la pause de 15 h passe par le cockpit et « Ce soir ».
       const pris = await pauseDe15h(j, ev, stats);
       if (stats.refus === undefined && pris) stats.refus = pris.refus;
       if (!pris) {
-        stats.diner = "repli : pâtes ou gnocchis";
-        etat.compte.replis = (etat.compte.replis ?? 0) + 1;
+        repliMange(j, stats);
       } else {
         const p = platParTitre.get(pris.titre);
         const courseDay = [3, 6].includes(dow);
@@ -955,8 +1204,7 @@ async function journee2(idx) {
       let poses = await lirePoses();
       if (!poses.length) { await passe(j, 1, ev, stats); poses = await lirePoses(); }
       if (!poses.length) {
-        stats.diner = "repli : pâtes ou gnocchis";
-        etat.compte.replis = (etat.compte.replis ?? 0) + 1;
+        repliMange(j, stats);
       } else {
         if ([3, 6].includes(dow) || true) await courses(j, ev, stats);
         for (const e of ev.filter((e) => (e.type === "invites" && e.repas === "diner") || e.type === "deux")) await reglerParts(j, e.parts, stats);
@@ -968,6 +1216,23 @@ async function journee2(idx) {
         if (t) etat.recents = [...etat.recents.slice(-10), t];
       }
     }
+  }
+
+  if (!absent) {
+    // Le soir, après le dîner : un dessert, parfois un apéro avant.
+    await page.clock.setFixedTime(new Date(`${j}T20:15:00`));
+    dessert(j, stats);
+    await apero(j, ev, stats);
+  }
+
+  // Chaque dimanche : le journal de l'app (rejoué ensuite par sim/croyance.ts)
+  // et la cuisine réelle, côte à côte.
+  if (dow === 0 || idx === N - 1) {
+    try {
+      const evts = await page.evaluate(() => new Promise((ok, ko) => { const r = indexedDB.open("intendance"); r.onsuccess = () => { const q = r.result.transaction("evenements").objectStore("evenements").getAll(); q.onsuccess = () => { r.result.close(); ok(q.result); }; q.onerror = () => ko(q.error); }; r.onerror = () => ko(r.error); }));
+      mkdirSync(`${OUT}/journal`, { recursive: true });
+      writeFileSync(`${OUT}/journal/${j}.json`, JSON.stringify({ jour: j, evts, reel: Object.fromEntries(Object.entries(etat.reel).map(([id, r]) => [id, Math.round(r.q * 10) / 10])), reelFond: Object.fromEntries([...UNITE_ACHAT.keys()].map((id) => [id, Math.round(((etat.reel[id]?.q ?? 0) / unDuFond(id)) * 100) / 100])) }));
+    } catch (e) { note(j, "journal", `export impossible : ${String(e).slice(0, 120)}`); }
   }
 
   if (dow === 0 || idx === N - 1) {
@@ -986,7 +1251,7 @@ async function journee2(idx) {
   stats.taps = taps; stats.secondes = Math.round((Date.now() - t0) / 1000);
   if (erreurs.length) stats.erreurs = [...new Set(erreurs)].slice(0, 5);
   appendFileSync(JOURNAL, JSON.stringify(stats) + "\n");
-  console.log(`${j} ${["dim", "lun", "mar", "mer", "jeu", "ven", "sam"][dow]} taps=${taps} ${stats.secondes}s dîner=${stats.diner ?? "-"}${stats.carte ? ` [${stats.carte.par} #${stats.carte.pos}, ${stats.carte.achats} art.]` : ""}${stats.legume ? " (légumineuses)" : ""} q=${stats.questions ?? 0} art=${stats.articles ?? 0} refus=${(stats.refus ?? []).length} ${ev.map((e) => e.type).join(",")}`);
+  console.log(`${j} ${["dim", "lun", "mar", "mer", "jeu", "ven", "sam"][dow]} taps=${taps} ${stats.secondes}s dîner=${stats.diner ?? "-"}${stats.carte ? ` [${stats.carte.par} #${stats.carte.pos}, ${stats.carte.achats} art.]` : ""}${stats.legume ? " (légumineuses)" : ""} q=${stats.questions ?? 0} art=${stats.articles ?? 0} refus=${(stats.refus ?? []).length} ${ev.map((e) => e.type).join(",")}${stats.repas ? `\n    ${Object.entries(stats.repas).map(([k, v]) => `${k}=${v}`).join(" · ")}` : ""}`);
 }
 
 
