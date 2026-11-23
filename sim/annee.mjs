@@ -501,7 +501,12 @@ async function cuisiner(j, ev, stats, { autrement = false, parts = 2.75, deja = 
   for (const l of lots) {
     const m = /^(Frigo|Congélo|Congélateur)[^·]*·\s*(.*)$/.exec(l.nom);
     const portions = parseFloat((/([\d,]+)\s*(part|portion)/.exec(l.nom)?.[1] ?? "2").replace(",", "."));
-    etat.restes.push({ plat: p0.titre, types: (plat?.emits ?? []).map((e) => e.type), ou: autrement ? "Frigo" : (m?.[1] ?? "Frigo"), portions, le: j, garde: parseInt(l.garde) || (m?.[1] === "Frigo" ? 3 : 90), quoi: l.nom });
+    // Le lot EST un des emits du plat : on le retrouve par son nom lisible, pour
+    // savoir si c'est un reste à manger ou une BASE (pois chiches cuits, bouillon)
+    // qu'un autre plat attend — le midi ne mange pas une base.
+    const emits = plat?.emits ?? [];
+    const e = emits.find((x) => norm(l.nom).includes(lisible(x.type)));
+    etat.restes.push({ plat: p0.titre, types: e ? [e.type] : emits.map((x) => x.type), kind: e?.kind ?? (emits.every((x) => x.kind === "base") ? "base" : "reste-plat"), ou: autrement ? "Frigo" : (m?.[1] ?? "Frigo"), portions, le: j, garde: parseInt(l.garde) || (m?.[1] === "Frigo" ? 3 : 90), quoi: l.nom });
   }
   etat.compte.cuits++;
   stats.cuits = [...(stats.cuits ?? []), { titre: p0.titre, etapes, reponse: reponseDonnee, lots: lots.map((l) => `${l.nom} ${l.garde}`) }];
@@ -1063,7 +1068,7 @@ async function dejeuner(j, ev, stats, weekend) {
     }
   }
   let reste = MIDI_PARTS; const pris = [];
-  for (const r of etat.restes.filter((x) => !x.jete && x.portions > 0 && x.ou === "Frigo" && !x.types.some((t) => TYPES_PAIN.has(t) || TYPES_GOUTER.has(t)))) {
+  for (const r of etat.restes.filter((x) => !x.jete && x.portions > 0 && x.ou === "Frigo" && x.kind !== "base" && !x.types.some((t) => TYPES_PAIN.has(t) || TYPES_GOUTER.has(t)))) {
     if (reste <= 0) break;
     const k = Math.min(r.portions, reste); r.portions -= k; reste -= k; pris.push(r.plat);
     if (r.portions <= 0) { r.mangeLe = j; etat.compte.restesManges++; }
