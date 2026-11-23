@@ -43,13 +43,26 @@ recipe:
     origine: indien
 
   ingredients:
-    - {id: huile-coco, name: huile de coco vierge, qty: 65, unit: g}
+    # T197 — ADAPTATIONS DU FOYER, pas du livre : on n'achète pas d'huile de
+    # coco ni de gingembre frais pour ce seul plat.
+    - id: huile-coco
+      name: huile de coco vierge
+      qty: 65
+      unit: g
+      subs:
+        - {id: huile-olive, name: huile d'olive, note: "adaptation du foyer", ratio: 1.0}
+        - {id: beurre, name: beurre, note: "adaptation du foyer", ratio: 1.0}
     - {id: oignon, name: gros oignon, qty: 1, unit: pièce}
     - {id: carottes, name: carottes nouvelles, qty: 200, unit: g}
     - {id: riz, name: riz basmati blanc ou demi-complet, qty: 200, unit: g}
     - {id: lentilles-corail, name: lentilles corail, qty: 200, unit: g}
     - {id: ail, name: ail, qty: 1, unit: gousse}
-    - {id: gingembre, name: "gingembre frais (un tronçon d'environ 2 cm)", qty: 1, unit: pièce}
+    - id: gingembre
+      name: "gingembre frais (un tronçon d'environ 2 cm)"
+      qty: 1
+      unit: pièce
+      subs:
+        - {id: gingembre-poudre, name: "gingembre en poudre (une demi-cuillerée à café)", note: "adaptation du foyer", ratio: 1.0}
     - {id: curcuma, name: curcuma, qty: 1, unit: c. à c.}
     - {id: eau, name: eau, qty: 1.5, unit: l}
     - {id: laurier, name: feuille de laurier, qty: 1, unit: pièce, seasoning: true}

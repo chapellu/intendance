@@ -1,0 +1,75 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN KILO DE BAIES au choix (cassis, groseilles à maquereau, mûres, sureau…)
+# suées 5 min à couvert avec 300 g d'agave et une gousse de vanille, puis
+# 10 min à découvert ; passées au moulin à légumes pour retenir peaux et
+# pépins, reportées à ébullition et mises en pots brûlantes, retournées.
+# Tout l'été au frigo ; stériliser 30 min pour garder plus longtemps.
+
+recipe:
+  id: coulis-baies-vanille
+  title: Coulis de baies à la vanille, en pots
+  role: base
+  creneaux: [petit-dejeuner, gouter]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Un délicieux « coulis d'antioxydants » sur nos tartines du matin ! », blog Saines Gourmandises, 13 juillet 2026"
+    url: https://saines-gourmandises.fr/un-delicieux-coulis-dantioxydants-sur-nos-tartines-du-matin/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 16          # « un kilo de baies »
+  lot_entier: true
+  time_min_total: 40
+  active_min: 30
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: []
+    profil: compote
+    origine: francais
+
+  ingredients:
+    - {id: fruits-rouges, name: "baies au choix, seules ou en mélange", qty: 1, unit: kg}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 300, unit: g}
+    - {id: gousse-vanille, name: "gousse de vanille", qty: 1, unit: pièce, optional: true}
+    - {id: pectine, name: "pectine de fruits", qty: 2, unit: sachet, optional: true}
+
+  steps:
+    - id: suer
+      action: "Mettre baies, agave, vanille fendue et pectine dans une sauteuse large, couvrir et faire suer 5 min"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [fruits-rouges, sirop-agave, gousse-vanille, pectine]
+      time_min: 6
+    - id: reduire
+      action: "Poursuivre une dizaine de minutes à découvert à feu moyen en remuant très souvent"
+      needs: [simmer]
+      charge_partielle: true
+      uses: []
+      time_min: 10
+      attended: true
+    - id: passer
+      action: "Passer au moulin à légumes au-dessus d'un saladier en pressant bien"
+      needs: [puree]
+      uses: []
+      time_min: 8
+    - id: empoter
+      action: "Reporter à ébullition, verser brûlant dans des pots propres, visser des couvercles neufs et retourner"
+      needs: [simmer]
+      charge_partielle: true
+      uses: []
+      time_min: 6
+
+  emits:
+    - kind: base
+      type: coulis-baies-vanille
+      qty_band: 3-repas
+      keeps: {frigo_days: 60, congelo: false}
+
+  plan_b: []

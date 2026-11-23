@@ -1,0 +1,59 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# MÂCHE, betterave et carotte râpées, petits navets nouveaux émincés, seize noix
+# cassées et trois saucisses végétales fumées en rondelles ; huile d'olive,
+# vinaigre de cidre et fleur de sel, mêlés aussitôt.
+
+recipe:
+  id: salade-mache-saucisses-vegetales-noix
+  title: Salade de mâche aux « saucisses » végétales fumées, noix et fleur de sel
+  role: entree
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Connaissez-vous le seitan ? », blog Saines Gourmandises, 10 mars 2014"
+    url: https://saines-gourmandises.fr/seitan-forgeant-quon-devient-forgeron/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes »
+  time_min_total: 15
+  active_min: 15
+
+  apports:
+    proteine: tofu-soja
+    feculent: aucun
+    legumes: [feuille, racine]
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: mache, name: "mâche", qty: 200, unit: g}
+    - {id: betterave, name: "petite betterave crue", qty: 1, unit: pièce}
+    - {id: carottes, name: "grosse carotte", qty: 1, unit: pièce}
+    - {id: navets, name: "petits navets nouveaux", qty: 4, unit: pièce}
+    - {id: noix, name: "noix", qty: 16, unit: pièce}
+    - {id: saucisses-vegetales, name: "saucisses végétales fumées", qty: 3, unit: pièce}
+    - {id: huile-olive, name: "huile d'olive", qty: 4, unit: c. à s.}
+    - {id: vinaigre, name: "vinaigre de cidre", qty: 2, unit: c. à c.}
+    - {id: fleur-de-sel, name: "fleur de sel", qty: 2, unit: pincée, seasoning: true}
+
+  steps:
+    - id: preparer
+      action: "Laver la mâche, râper betterave et carotte, émincer les navets, casser les noix et trancher les saucisses"
+      needs: [chop-coarse]
+      uses: [mache, betterave, carottes, navets, noix, saucisses-vegetales]
+      time_min: 12
+      kid: {age_min_months: 36, task: "casser les noix"}
+    - id: assaisonner
+      action: "Mêler aussitôt avec l'huile, le vinaigre et la fleur de sel"
+      needs: []
+      uses: [huile-olive, vinaigre, fleur-de-sel]
+      time_min: 2
+
+  emits: []
+
+  plan_b: []

@@ -75,7 +75,11 @@ denrees:
   # l'id reste `fromage-rape` parce que c'est ce que les recettes demandent.
   - {ingredient: fromage-rape, minimum: 1, unite: "morceau de 400 g (en bloc, à râper)"}
   # T154 — 4 L au moins, 6 au rachat ; les yaourts, 24 à 36 pots.
-  - {ingredient: lait-croissance, minimum: 4, jusqua: 6, unite: brique de 1 L, hebdo: true}
+  # T197 (2026-11-23) — LE LAIT DES ENFANTS N'EST PAS SUIVI : le foyer le gère
+  # lui-même. Le fond suit le lait de vache et le soja-vanille, les deux laits
+  # que les recettes demandent le plus (18 et 49 fiches).
+  - {ingredient: lait, minimum: 2, jusqua: 4, unite: brique de 1 L}
+  - {ingredient: lait-soja-vanille, minimum: 1, jusqua: 2, unite: brique de 1 L}
   # T145 — deux pots au matin, deux au goûter : ≈ 25 pots la semaine.
   - {ingredient: yaourt-nature, minimum: 6, jusqua: 9, unite: pack de 4, hebdo: true}
   # ── Les fruits de la semaine — le porridge, le goûter, la compote
@@ -130,13 +134,9 @@ denrees:
   # T140 : le poids d'une boîte, pour que le plat la prenne ENTIÈRE (voir
   # `conservation.yaml:entame_se_finit`). Maïs, thon, maquereaux : les boîtes
   # du relevé du 26/08 ; tomates : le format de 400 g que le corpus appelle
-  # quinze fois. À reporter au brouillon. La brique de coco a son volume depuis T157.
+  # quinze fois. À reporter au brouillon.
   - {ingredient: tomates-pelees, minimum: 3, jusqua: 5, unite: boîte de 400 g}
   - {ingredient: concentre-tomate, minimum: 1, unite: tube}
-  # T157 — LA BRIQUE A SON VOLUME : 40 cl, ce que le dahl et le curry en
-  # prennent. Sans lui, une brique servait deux plats au rejeu, quand le dahl
-  # la vide — 14 dîners de l'année n° 11 sans lait de coco que l'app croyait là.
-  - {ingredient: lait-coco, minimum: 3, unite: brique de 40 cl}
   # T154 — deux boîtes au moins : c'est ce que la salade tiède (un dîner sans
   # courses) en prend ; trois au rachat.
   - {ingredient: thon-boite, minimum: 2, jusqua: 3, unite: boîte de 140 g}
@@ -148,12 +148,25 @@ denrees:
   # T154 — 1 kg au moins, 2,5 kg au rachat : au demi-kilo, comme la pomme de terre.
   - {ingredient: carottes, minimum: 2, jusqua: 5, unite: 500 g en vrac}
   - {ingredient: citron, minimum: 2, unite: pièce}
+  # T197 (décision du 2026-11-23) — POUR QUE LES DÎNERS DE CHIOCA SE FASSENT
+  # SANS COURSES. Choisis parmi ce qui débloquait le plus de ses recettes, en
+  # écartant ce qui coûte ou ne plaît pas (céleri-rave, huile de coco) : on
+  # adapte la recette plutôt que de multiplier les achats.
+  - {ingredient: courge, minimum: 1, unite: pièce (butternut ou potimarron)}
+  - {ingredient: poireau, minimum: 2, jusqua: 4, unite: pièce, hebdo: true}
+  - {ingredient: parmesan, minimum: 1, unite: morceau de 200 g}
+  - {ingredient: sauce-tomate, minimum: 1, jusqua: 2, unite: bocal de 500 g}
 
 # T183 — LES CONDITIONNEMENTS : la taille d'un paquet, et rien d'autre. Pas
 # de minimum — ce n'est pas « toujours là » — mais un pack de yaourts se
 # compte en pots, et sans sa taille l'app ne peut dire ni combien il en reste,
 # ni corriger « il m'en reste trois ». La taille est celle du foyer (11/11).
 conditionnements:
+  # T157 — LA BRIQUE DE COCO A SON VOLUME (40 cl) : sans lui, une brique servait
+  # deux plats au rejeu. T197 — elle quitte le fond : les deux dîners rédigés
+  # pour ce dépôt qui la vidaient (dahl, curry) sont retirés, et le foyer
+  # n'achète pas pour une seule recette. Sa taille reste dite ici.
+  - {ingredient: lait-coco, unite: brique de 40 cl}
   - {ingredient: yaourt-brebis, unite: pack de 4}
   - {ingredient: yaourt-soja, unite: pack de 4}
 
@@ -164,12 +177,22 @@ conditionnements:
 # gagne un ingrédient hors fond, la promesse du brouillon devient fausse et
 # c'est le vérificateur qui le dit, pas le soir où l'on cuisine.
 diners:
-  - {plat: dahl-lentilles-corail, titre: "Dahl de lentilles corail, lait de coco, épinards surgelés, riz"}
-  - {plat: pates-bolognaise-lentilles, titre: "Pâtes à la bolognaise de lentilles vertes et tomates pelées"}
-  - {plat: soupe-pois-casses-carottes, titre: "Soupe de pois cassés aux carottes"}
-  - {plat: curry-pois-chiches, titre: "Curry de pois chiches"}
-  - {plat: chili-haricots-rouges, titre: "Chili de haricots rouges (trempés la veille), riz"}
-  - {plat: haricots-blancs-tomate-oeufs, titre: "Haricots blancs mijotés à la tomate, œufs pochés dedans"}
-  - {plat: tortilla-pommes-de-terre-haricots-verts, titre: "Omelette aux pommes de terre et haricots verts"}
-  - {plat: salade-tiede-lentilles-thon, titre: "Salade tiède de lentilles vertes, carottes, thon"}
-  - {plat: soupe-legumes-pois-chiches, titre: "Soupe de légumes surgelés et pois chiches"}
+  # T197 (2026-11-23) — LES DÎNERS DU FOND SONT DÉSORMAIS CEUX DE L'AUTRICE. Les
+  # neuf précédents avaient été rédigés pour ce dépôt, en même temps que ce
+  # fichier : ils tenaient le contrat parce que l'un était taillé pour l'autre.
+  # Le fond s'est élargi (courge, poireau, parmesan, sauce tomate, lait) et
+  # trois fiches portent une adaptation du foyer (`subs`) : huile et gingembre
+  # du dahl, fromage de la frittata, potimarron du velouté.
+  # LA SAISON SE PROMET AU MOIS : l'autrice cuisine avec les saisons, et chaque
+  # mois au moins trois de ces dîners sont de saison (`fond.test.ts`). Le
+  # potage lentilles-courge n'y est pas : son persil frais n'est pas au fond.
+  - {plat: dahl-riz-lentilles-corail-carottes, titre: "Dahl de riz et lentilles corail aux carottes"}
+  - {plat: houmous-et-compagnie, titre: "Houmous et compagnie"}
+  - {plat: soupe-crepes-haute-autriche, titre: "Soupe de crêpes de Haute-Autriche"}
+  - {plat: blinis-de-legumes, titre: "Blinis de légumes"}
+  - {plat: frittata-vegetarienne, titre: "Frittata végétarienne"}
+  - {plat: gratin-courge-riz, titre: "Gratin de courge au riz"}
+  - {plat: veloute-potiron, titre: "Le meilleur des veloutés de potiron"}
+  - {plat: veloute-potimarron-quatre-versions, titre: "Velouté de potimarron, en quatre versions"}
+  - {plat: mitonnee-lentilles, titre: "Mitonnée de lentilles vertes"}
+  - {plat: croquettes-parmesan-restes-dahl, titre: "Croquettes dorées au parmesan et restes de dahl"}

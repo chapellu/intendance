@@ -1,0 +1,74 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# FARINES DE BLÉ INTÉGRALE ET DE SEIGLE avec beaucoup de son d'avoine, sablées à
+# l'huile ; un œuf, de l'agave, du soja-vanille, des noisettes et des pépites
+# de chocolat ; étalés sur 1,5 cm, découpés en ronds de 5 cm aux mains huilées
+# (ça colle un peu), 15 min de four. Une douzaine.
+
+recipe:
+  id: scones-trois-cereales-noisettes-chocolat
+  title: Scones aux trois céréales, éclats de noisettes et chocolat
+  creneaux: [petit-dejeuner, gouter]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Scones aux 3 céréales, éclats de noisettes et chocolat », blog Saines Gourmandises, 19 septembre 2012"
+    url: https://saines-gourmandises.fr/mes-premiers-scones-a-moi-aussi/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « une douzaine de scones »
+    pieces: 12
+  lot_entier: true
+  time_min_total: 30
+  active_min: 15
+
+  apports:
+    proteine: aucune
+    feculent: avoine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-complete, name: "farine de blé intégrale T150", qty: 100, unit: g}
+    - {id: farine-seigle, name: "farine de seigle", qty: 100, unit: g}
+    - {id: son-avoine, name: "son d'avoine", qty: 130, unit: g}
+    - {id: huile-tournesol, name: "huile au choix", qty: 6, unit: c. à s.}
+    - {id: oeufs, name: "œuf", qty: 1, unit: pièce}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 4, unit: c. à s.}
+    - {id: lait-soja-vanille, name: "lait de soja vanille ou nature", qty: 15, unit: cl}
+    - {id: chocolat-noir, name: "pépites de chocolat noir", qty: 100, unit: g}
+    - {id: noisettes, name: "noisettes", qty: 60, unit: g}
+    - {id: poudre-a-lever, name: "levure", qty: 1, unit: sachet}
+    - {id: sel, name: "pincée de sel", qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: sabler
+      action: "Préchauffer à 180 °C ; mêler farines, son, sel et levure, puis sabler du bout des doigts avec l'huile"
+      needs: []
+      uses: [farine-complete, farine-seigle, son-avoine, sel, poudre-a-lever, huile-tournesol]
+      time_min: 6
+    - id: pate
+      action: "Ajouter l'œuf, le lait, l'agave, les noisettes et les pépites, mélanger et étaler sur 1,5 cm sur un plan fariné"
+      needs: []
+      uses: [oeufs, lait-soja-vanille, sirop-agave, noisettes, chocolat-noir]
+      time_min: 6
+    - id: cuire
+      action: "Découper des ronds de 5 cm avec un emporte-pièce huilé, les poser sur une plaque chemisée et cuire 15 min"
+      needs: [bake]
+      uses: []
+      time_min: 20
+      attended: false
+      kid: {age_min_months: 36, task: "découper les ronds"}
+
+  emits:
+    - kind: base
+      type: scones-trois-cereales-noisettes-chocolat
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

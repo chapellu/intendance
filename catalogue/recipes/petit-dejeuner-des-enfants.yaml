@@ -27,16 +27,16 @@ recipe:
 
   ingredients:
     - {id: flocons-avoine, name: petits flocons d'avoine, qty: 40, unit: g}
-    - {id: lait-croissance, name: lait de croissance, qty: 400, unit: ml}
+    # T197 — leur lait n'est pas suivi : le foyer le gère lui-même.
     - {id: banane, name: banane écrasée dans le porridge, qty: 1, unit: pièce}
     - {id: beurre, name: beurre des tartines, qty: 10, unit: g}
     - {id: yaourt-nature, name: yaourts nature, qty: 2, unit: pot}
 
   steps:
     - id: porridge
-      action: "Cuire les flocons dans le lait trois minutes en remuant, puis y écraser la banane"
+      action: "Cuire les flocons dans leur lait trois minutes en remuant, puis y écraser la banane"
       needs: [simmer]
-      uses: [flocons-avoine, lait-croissance, banane]
+      uses: [flocons-avoine, banane]
       time_min: 6
     - id: tartines
       action: "Beurrer les tartines de pain maison, et sortir les yaourts"

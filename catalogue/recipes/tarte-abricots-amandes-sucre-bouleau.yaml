@@ -1,0 +1,69 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LA PÂTE BRISÉE AU SUCRE DE BOULEAU parfumée d'amande amère, en deux boules
+# 2/3 – 1/3 : fond saupoudré de poudre d'amande, un kilo d'abricots bien mûrs
+# en moitiés serrées, sucre de bouleau, couvercle de pâte.
+
+recipe:
+  id: tarte-abricots-amandes-sucre-bouleau
+  title: Tarte aux abricots et aux amandes, pâte au sucre de bouleau
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Tartes de saison et petits gâteaux au sucre de bouleau », blog Saines Gourmandises, 18 juillet 2012"
+    url: https://saines-gourmandises.fr/connaissez-vous-le-sucre-de-bouleau/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « une grande tarte »
+  lot_entier: true
+  time_min_total: 65
+  active_min: 25
+
+  apports:
+    proteine: aucune
+    feculent: pate-brisee
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: "farine complète d'épeautre", qty: 250, unit: g}
+    - {id: margarine, name: "margarine bio (ou beurre)", qty: 125, unit: g}
+    - {id: eau, name: "eau tiède", qty: 2.5, unit: cl}
+    - {id: sel, name: "pincée de sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: sucre-bouleau, name: "sucre de bouleau (+ mixé pour saupoudrer)", qty: 5, unit: c. à s.}
+    - {id: extrait-amande-amere, name: "extrait d'amande amère", qty: 1, unit: c. à moka}
+    - {id: abricots, name: "abricots parfaitement mûrs", qty: 1, unit: kg}
+    - {id: poudre-amande, name: "poudre d'amande", qty: 75, unit: g}
+
+  steps:
+    - id: pate
+      action: "Sabler du bout des doigts la margarine et la farine ; fondre 3 c. à s. de sucre, l'amande amère et le sel dans l'eau tiède, verser d'un coup, former une boule"
+      needs: []
+      uses: [farine-epeautre, margarine, eau, sel, sucre-bouleau, extrait-amande-amere]
+      time_min: 10
+    - id: garnir
+      action: "Préchauffer à 180 °C ; foncer le moule avec 2/3 de la pâte, saupoudrer de poudre d'amande, serrer les demi-abricots, sucrer et couvrir du reste de pâte"
+      needs: []
+      uses: [abricots, poudre-amande]
+      time_min: 15
+      kid: {age_min_months: 36, task: "poser les abricots"}
+    - id: cuire
+      action: "Cuire jusqu'à ce que la pâte soit dorée"
+      needs: [bake]
+      uses: []
+      time_min: 40
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: tarte-abricots-amandes-sucre-bouleau
+      qty_band: 3-repas
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

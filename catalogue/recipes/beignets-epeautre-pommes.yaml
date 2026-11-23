@@ -1,0 +1,77 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE PÂTE LEVÉE D'ÉPEAUTRE au rhum, à la vanille et à l'agave, pétrie 7 min et
+# levée 1 h 30 (ou une nuit au frais) ; étalée, garnie de cuillerées de compote
+# (ou de rondelles de pomme), refermée et découpée au verre ; frite dans 3 cm
+# d'huile en sauteuse. Environ 45 petits beignets.
+
+recipe:
+  id: beignets-epeautre-pommes
+  title: Beignets d'épeautre aux pommes
+  creneaux: [gouter]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Beignets d'épeautre aux pommes (deux versions) », blog Saines Gourmandises, 15 février 2021"
+    url: https://saines-gourmandises.fr/lundi-gras/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 10          # « environ 45 petits beignets »
+    pieces: 45
+  lot_entier: true
+  time_min_total: 150
+  active_min: 60
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: poele
+    origine: francais
+
+  ingredients:
+    - {id: compote, name: "compote de pommes un peu épaisse (ou 6 petites pommes)", qty: 400, unit: g}
+    - {id: farine-epeautre, name: "farine T110 de grand épeautre (+ pour étaler)", qty: 630, unit: g}
+    - {id: rhum, name: "rhum ambré", qty: 3, unit: c. à s.}
+    - {id: oeufs, name: "œufs", qty: 2, unit: pièce}
+    - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 1, unit: c. à s.}
+    - {id: eau, name: "eau tiède", qty: 25, unit: cl}
+    - {id: levure-boulangere, name: "levure de boulangerie", qty: 1, unit: sachet}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 85, unit: g}
+    - {id: huile-tournesol, name: "huile (4 c. à s. pour la pâte + friture)", qty: 60, unit: cl}
+    - {id: sel, name: "sel", qty: 1, unit: c. à c., seasoning: true}
+
+  steps:
+    - id: petrir
+      action: "Pétrir environ 7 min farine, rhum, œufs, vanille, eau, levure, agave, 4 c. à s. d'huile et sel jusqu'à une pâte élastique ; couvrir"
+      needs: []
+      uses: [farine-epeautre, rhum, oeufs, extrait-vanille, eau, levure-boulangere, sirop-agave, sel]
+      time_min: 10
+      attente_min: 90
+      attente_raison: "1 h 30 au tiède, ou une nuit au frais"
+      attente_souple: true
+    - id: garnir
+      action: "Étaler la pâte farinée en rectangle de 0,5 cm, poser des cuillerées de compote espacées de 3 cm sur une moitié, rabattre et découper au verre"
+      needs: []
+      uses: [compote]
+      time_min: 20
+      kid: {age_min_months: 36, task: "poser la compote"}
+    - id: frire
+      action: "Chauffer 3 cm d'huile en sauteuse et dorer les beignets par fournées, une face puis l'autre ; égoutter"
+      needs: [pan-fry]
+      charge_partielle: true
+      uses: [huile-tournesol]
+      time_min: 30
+      attended: true
+
+  emits:
+    - kind: reste-plat
+      type: beignets-epeautre-pommes
+      qty_band: 3-repas
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

@@ -1,0 +1,65 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# RECETTE INVITÉE : la crème-mousse de Valérie Cupillard, que Marie Chioca dit
+# réaliser plus souvent que n'importe quelle recette qui n'est pas d'elle.
+# Chocolat fondu dans le lait de soja avec l'agave, mixé chaud avec 400 g de
+# tofu soyeux : entre crème, mousse et ganache. Café, agrumes ou menthe au
+# goût.
+
+recipe:
+  id: creme-mousse-chocolat-tofu-soyeux
+  title: Crème-mousse au chocolat et tofu soyeux
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Petite anthologie gourmande (et légère) de la mousse au chocolat bio », blog Saines Gourmandises, 12 juillet 2011"
+    url: https://saines-gourmandises.fr/petite-anthologie-gourmande-et-legere-de-la-mousse-au-chocolat-bio/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « 6 pots »
+    pieces: 6
+  lot_entier: true
+  time_min_total: 130
+  active_min: 10
+
+  apports:
+    proteine: tofu-soja
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: lait-soja-vanille, name: "lait de soja (vanille, c'est encore meilleur)", qty: 10, unit: cl}
+    - {id: chocolat-noir, name: "chocolat noir 70 à 85 %", qty: 100, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 3, unit: c. à s.}
+    - {id: tofu-soyeux, name: "tofu soyeux", qty: 400, unit: g}
+
+  steps:
+    - id: fondre
+      action: "Fondre le chocolat dans le lait de soja avec l'agave, dans une petite casserole"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [lait-soja-vanille, chocolat-noir, sirop-agave]
+      time_min: 6
+    - id: mixer
+      action: "Mixer quelques minutes le chocolat chaud avec le tofu soyeux jusqu'à une crème mousseuse, et verser en pots"
+      needs: [blend-smooth]
+      uses: [tofu-soyeux]
+      time_min: 5
+      attente_min: 120
+      attente_raison: "au frais avant de servir"
+      attente_souple: true
+
+  emits:
+    - kind: reste-plat
+      type: creme-mousse-chocolat-tofu-soyeux
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

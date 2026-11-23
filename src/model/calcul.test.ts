@@ -208,7 +208,7 @@ describe("les parts commandent le panier", () => {
   });
 
   test("un lot entier s'arrondit au lot supérieur", () => {
-    const p = jeu.plats["poulet-roti"]!;
+    const p = jeu.plats["poulet-roti-du-dimanche"]!;
     expect(p.lotEntier).toBe(true);
     expect(facteur(p, p.portions + 0.5)).toBe(2);
   });
@@ -350,7 +350,7 @@ describe("le vieillissement, tel que le modèle le fait aujourd'hui", () => {
 // recette, ce qui n'apprend rien à personne.
 //
 // LE LOT TÉMOIN EST LA CARCASSE DE VOLAILLE, et ce n'est pas un cas d'école :
-// `poulet-roti` l'émet à 2 jours sans qu'elle se congèle, et `soupe-de-poule`
+// `poulet-roti-du-dimanche` l'émet à 2 jours sans qu'elle se congèle, et `soupe-de-poule`
 // est le seul plat qui la mange. C'est donc un vrai maillon du chaînage, à
 // cheval exactement sur l'écart que ce ticket corrige — deux jours au corpus
 // contre les quatre du foyer.
@@ -534,9 +534,9 @@ describe("chaque lot a son horloge", () => {
 describe("les minutes se comptent par journée", () => {
   test("trois plats tenables séparément peuvent faire une journée intenable", () => {
     poser(0, "dejeuner", "pates-bolognaise");
-    poser(0, "diner", "poulet-roti");
+    poser(0, "diner", "poulet-roti-du-dimanche");
     const m = minutesParJour(jeu);
-    const attendu = jeu.plats["pates-bolognaise"]!.minutes + jeu.plats["poulet-roti"]!.minutes;
+    const attendu = jeu.plats["pates-bolognaise"]!.minutes + jeu.plats["poulet-roti-du-dimanche"]!.minutes;
     expect(m[0]).toBe(attendu);
     expect(m[1]).toBe(0);
   });
@@ -859,7 +859,7 @@ describe("ce qui ne s'achète pas part au panier sous son équivalent", () => {
     // Pas `potager` : sans pois cassés ni lentilles corail, c'est la recette
     // qui dit quoi acheter.
     const j = creerJeu(catalogue, 7, LUNDI);
-    j.choix[j.creneaux.findIndex((c) => c.repas === "diner")] = "soupe-pois-casses-carottes";
+    j.choix[j.creneaux.findIndex((c) => c.repas === "diner")] = "veloute-pois-casses-poireaux-mache";
     j.gardeManger = j.gardeManger.filter((id) => id !== "pois-casses" && id !== "lentilles-corail");
     const ids = [...calculer(j).panier.values()].map((a) => a.id);
     expect(ids).toContain("pois-casses");
@@ -868,7 +868,7 @@ describe("ce qui ne s'achète pas part au panier sous son équivalent", () => {
 
   test("des lentilles corail au placard font la soupe de pois cassés", () => {
     const j = creerJeu(catalogue, 7, LUNDI);
-    j.choix[j.creneaux.findIndex((c) => c.repas === "diner")] = "soupe-pois-casses-carottes";
+    j.choix[j.creneaux.findIndex((c) => c.repas === "diner")] = "veloute-pois-casses-poireaux-mache";
     j.gardeManger = [...j.gardeManger.filter((id) => id !== "pois-casses"), "lentilles-corail"];
     const ids = [...calculer(j).panier.values()].map((a) => a.id);
     expect(ids).not.toContain("pois-casses");

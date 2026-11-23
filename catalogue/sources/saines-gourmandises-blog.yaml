@@ -661,7 +661,7 @@ recettes:
   - slug: faites-comme-je-dis-pas-comme-je-fais
     titre: "Carrés sablés à la crème de groseille"
     url: https://saines-gourmandises.fr/faites-comme-je-dis-pas-comme-je-fais/
-    ecartee: "recette invitée : la crème de groseille teste « la recette de Karen » (les carrés sablés sont par ailleurs au catalogue depuis le livre)"
+    ecartee: "doublon : les carrés sablés à la crème de groseilles sont déjà au catalogue depuis le livre, aux mêmes quantités"
     prep_min: 20
     cuisson_min: 15
     ingredients:
@@ -1764,7 +1764,8 @@ recettes:
   - slug: dapres-une-recette-a-ig-bas-damandine-et-olivier
     titre: "Fondant de Noël au chocolat, orange et épices à spéculoos"
     url: https://saines-gourmandises.fr/dapres-une-recette-a-ig-bas-damandine-et-olivier/
-    ecartee: "recette invitée : adaptée du « Moelleux au chocolat, kamut et sirop d'agave » d'Amandine Geers et Olivier Degorce"
+    catalogue_id: fondant-noel-chocolat-orange-speculoos
+    note_encodage: "recette invitée, créditée : d'après le moelleux d'Amandine Geers et Olivier Degorce"
     rendement: {n: 6, unite: personnes}
     prep_min: 10
     ingredients:
@@ -2627,7 +2628,8 @@ recettes:
   - slug: le-gateau-de-paques-au-citron-rocca-et-pomelo-de-corse
     titre: "Le gâteau de Pâques au citron Rocca et pomelo de Corse"
     url: https://saines-gourmandises.fr/le-gateau-de-paques-au-citron-rocca-et-pomelo-de-corse/
-    ecartee: "recette invitée : la génoise citron-amande est « empruntée » à la blogueuse Cléa"
+    catalogue_id: gateau-paques-citron-pomelo
+    note_encodage: "recette invitée, créditée : la génoise est celle de la blogueuse Cléa"
     rendement: {n: 8, unite: parts}
     prep_min: 25
     cuisson_min: 30
@@ -5218,25 +5220,159 @@ recettes:
       - "Sel, poivre 5 baies."
     etapes_sur_le_blog: 22
   # ── Absents du relevé du 2026-08-14, ajoutés à l'encodage (T196). ──
+  - slug: 88098
+    titre: ""
+    url: https://saines-gourmandises.fr/88098/
+    ecartee: "un article sur le matériel de cuisson, sans recette"
+  - slug: bienfaits-ancestraux-des-bouillons-dos
+    titre: ""
+    url: https://saines-gourmandises.fr/bienfaits-ancestraux-des-bouillons-dos/
+    catalogue_ids: [bouillon-os-boeuf, bouillon-os-poisson, bouillon-os-volaille]
   - slug: cest-cest-maison
     titre: "Tomates séchées marinées à l'italienne"
     url: https://saines-gourmandises.fr/cest-cest-maison/
     ecartee: "demande un déshydrateur (45 à 48 h à 65 °C), absent de l'inventaire"
+  - slug: cocooning
+    titre: ""
+    url: https://saines-gourmandises.fr/cocooning/
+    catalogue_ids: [cookies-amande-citron-chocolat, lait-chaud-chocolat-badiane]
+    note_encodage: "le lait chaud à la badiane est une recette invitée, créditée (inspirée de Frédérique)"
+  - slug: connaissez-vous-le-sucre-de-bouleau
+    titre: ""
+    url: https://saines-gourmandises.fr/connaissez-vous-le-sucre-de-bouleau/
+    catalogue_ids: [cookies-coco-chocolat-sucre-bouleau, sables-confiture-sucre-bouleau, tarte-abricots-amandes-sucre-bouleau, tartelettes-fraises-sucre-bouleau]
+  - slug: de-la-douceur-au-petit-dejeuner
+    titre: ""
+    url: https://saines-gourmandises.fr/de-la-douceur-au-petit-dejeuner/
+    catalogue_ids: [bannocks-okara-comte, lait-amande-avoine]
+  - slug: du-sport-des-fichues-calories-et-du-blabla
+    titre: ""
+    url: https://saines-gourmandises.fr/du-sport-des-fichues-calories-et-du-blabla/
+    ecartee: "des trames de repas chiffrées en calories, pas une recette"
+  - slug: en-clafoutisez-vos-fruits-dete
+    titre: ""
+    url: https://saines-gourmandises.fr/en-clafoutisez-vos-fruits-dete/
+    catalogue_id: clafoutis-coco-vanille-orge-fraises
+    note_encodage: "la variante miel-amande au petit épeautre est déjà au catalogue depuis le livre (clafoutis-miel-abricot)"
+  - slug: et-si-lon-repoussait-un-peu-la-rentree-du-moins-le-temps-dun-beau-pique-nique
+    titre: ""
+    url: https://saines-gourmandises.fr/et-si-lon-repoussait-un-peu-la-rentree-du-moins-le-temps-dun-beau-pique-nique/
+    catalogue_id: pans-bagnats-epeautre
+  - slug: galette-de-sarrasin-chapitre-2
+    titre: ""
+    url: https://saines-gourmandises.fr/galette-de-sarrasin-chapitre-2/
+    ecartee: "quatre idées sans quantités autour de galettes de sarrasin du commerce"
+  - slug: gateau-aux-baies-et-fromage-blanc-de-brebis
+    titre: ""
+    url: https://saines-gourmandises.fr/gateau-aux-baies-et-fromage-blanc-de-brebis/
+    catalogue_id: gateau-baies-fromage-blanc-brebis
+  - slug: jai-teste-pour-vous-et-pour-moi-le-chocolat-cru
+    titre: ""
+    url: https://saines-gourmandises.fr/jai-teste-pour-vous-et-pour-moi-le-chocolat-cru/
+    catalogue_ids: [truffes-cacao-cru-feves, truffes-cacao-cru-fleur-sel]
   - slug: je-vous-reparle-du-gout-du-bio
     titre: ""
     url: https://saines-gourmandises.fr/je-vous-reparle-du-gout-du-bio/
     catalogue_id: sabayon-mandarine-chocolat
+  - slug: jour-j-special-post-pour-evelyne
+    titre: ""
+    url: https://saines-gourmandises.fr/jour-j-special-post-pour-evelyne/
+    catalogue_id: rochers-chocolat-noisette
+    note_encodage: "tirée de « Je crée mes cadeaux gourmands », coécrit par l'autrice"
+  - slug: kouf-kouf
+    titre: ""
+    url: https://saines-gourmandises.fr/kouf-kouf/
+    catalogue_id: kouglof-epeautre-fruits-seches
+  - slug: le-point-sur-les-pates-et-la-methode-ig-recette-gourmande-a-lappui
+    titre: ""
+    url: https://saines-gourmandises.fr/le-point-sur-les-pates-et-la-methode-ig-recette-gourmande-a-lappui/
+    catalogue_id: conchiglioni-farcis-boeuf-fanes-radis
+  - slug: les-flocons-dorge-en-garniture
+    titre: ""
+    url: https://saines-gourmandises.fr/les-flocons-dorge-en-garniture/
+    catalogue_id: flocons-orge-pilaf
+  - slug: les-sublimes-cremes-dessert-sans-lait-sans-oeufs-sans-farine-et-sans-cuisson-avec-un-ingredient-improbable
+    titre: ""
+    url: https://saines-gourmandises.fr/les-sublimes-cremes-dessert-sans-lait-sans-oeufs-sans-farine-et-sans-cuisson-avec-un-ingredient-improbable/
+    catalogue_ids: [creme-psyllium-amande-citron-miel, creme-psyllium-chocolat, creme-psyllium-praline]
+    note_encodage: "la version pâtissière, versée sur un fond de tarte non décrit, n'est pas reprise"
+  - slug: lundi-gras
+    titre: ""
+    url: https://saines-gourmandises.fr/lundi-gras/
+    catalogue_id: beignets-epeautre-pommes
+    note_encodage: "une seule fiche : la version à la compote, celle aux rondelles de pomme en variante"
+  - slug: mayonnaise-aux-oeufs-mollets-entiers-bonne-pour-la-sante-ultra-legere-riche-en-probiotiques
+    titre: ""
+    url: https://saines-gourmandises.fr/mayonnaise-aux-oeufs-mollets-entiers-bonne-pour-la-sante-ultra-legere-riche-en-probiotiques/
+    catalogue_id: mayonnaise-oeufs-mollets-kefir
+  - slug: mes-premiers-scones-a-moi-aussi
+    titre: ""
+    url: https://saines-gourmandises.fr/mes-premiers-scones-a-moi-aussi/
+    catalogue_id: scones-trois-cereales-noisettes-chocolat
+  - slug: mes-soupes-au-fil-des-saisons
+    titre: ""
+    url: https://saines-gourmandises.fr/mes-soupes-au-fil-des-saisons/
+    ecartee: "la soupe réconfortante aux épices est déjà au catalogue (soupe-reconfortante-epices)"
+  - slug: muffins-monday-38-et-une-promenade-poetique-en-images
+    titre: ""
+    url: https://saines-gourmandises.fr/muffins-monday-38-et-une-promenade-poetique-en-images/
+    catalogue_id: muffins-mures-sauvages
+  - slug: nems-de-crocodiles
+    titre: ""
+    url: https://saines-gourmandises.fr/nems-de-crocodiles/
+    catalogue_id: nems-courgettes-porc-four
   - slug: nest-beaute-compte
     titre: "Pesto de Cavolo Nero (Chou Noir Toscan)"
     url: https://saines-gourmandises.fr/nest-beaute-compte/
     catalogue_id: pates-pesto-cavolo-nero
+  - slug: ou-il-est-question-dail-noir-de-reblochon-et-dagneau-eleve-dans-mes-montagnes
+    titre: ""
+    url: https://saines-gourmandises.fr/ou-il-est-question-dail-noir-de-reblochon-et-dagneau-eleve-dans-mes-montagnes/
+    catalogue_ids: [agneau-orloff-reblochon-ail-noir, burgers-agneau-reblochon-ail-noir, carpaccio-agneau-tomates-reblochon]
+  - slug: petit-eloge-de-nuance-episode-2
+    titre: ""
+    url: https://saines-gourmandises.fr/petit-eloge-de-nuance-episode-2/
+    catalogue_ids: [kefir-lait-boisson, yaourts-kefir]
+  - slug: petite-anthologie-gourmande-et-legere-de-la-mousse-au-chocolat-bio
+    titre: ""
+    url: https://saines-gourmandises.fr/petite-anthologie-gourmande-et-legere-de-la-mousse-au-chocolat-bio/
+    catalogue_ids: [creme-mousse-chocolat-tofu-soyeux, mousse-chocolat-traditionnelle-agave, mousse-nuage-chocolat-tofu-soyeux, petits-pots-creme-avoine-chocolat]
+    note_encodage: "la crème-mousse au tofu soyeux est une recette invitée, créditée (Valérie Cupillard), comme sa variante « nuage »"
+  - slug: piou
+    titre: ""
+    url: https://saines-gourmandises.fr/piou/
+    catalogue_id: nid-paques-cappuccino
+  - slug: polpettine-de-la-mer-au-pain-perdu
+    titre: ""
+    url: https://saines-gourmandises.fr/polpettine-de-la-mer-au-pain-perdu/
+    catalogue_id: polpettine-mer-pain-perdu
   - slug: potimarrons-courges-potirons-citrouilles-and-co-retrospective-didees-recettes-geniaaaaales
     titre: "Potimarrons, courges, potirons, citrouilles and Co… rétrospective d'idées recettes"
     url: https://saines-gourmandises.fr/potimarrons-courges-potirons-citrouilles-and-co-retrospective-didees-recettes-geniaaaaales/
     catalogue_ids: [creme-potiron-beaufort-lard, croissants-potimarron-rotis, cupcakes-potimarron-chevre, patidous-farcis-poulet-cepes, potimarron-surprise-veau-chataignes, puree-potimarron-huile-olive, salade-ecureuil-potimarron-noisettes, sopaipillas-courge, soupe-reconfortante-epices, veloute-potimarron-quatre-versions]
     note_encodage: "la tourte « feuilles d'automne », le velouté de potiron, le moelleux mystère et les tranches de butternut sont déjà au catalogue depuis le livre ; les desserts viendront avec les desserts"
+  - slug: seitan-forgeant-quon-devient-forgeron
+    titre: ""
+    url: https://saines-gourmandises.fr/seitan-forgeant-quon-devient-forgeron/
+    catalogue_ids: [bolognaise-seitan-spaghettis, chaussons-seitan-echalote-espelette, salade-mache-saucisses-vegetales-noix, wok-seitan-poireaux-basmati]
+  - slug: sept-methodes-magiques-cookies-de-faineants
+    titre: ""
+    url: https://saines-gourmandises.fr/sept-methodes-magiques-cookies-de-faineants/
+    ecartee: "des méthodes de façonnage, renvoyant aux recettes du livre"
+  - slug: un-agneau-fermier-un-vieux-chameau-un-mouflon-6-ans-dage-un-bouc-un-zebu-daustralie-et-meme-un-lapereau-abandonne
+    titre: ""
+    url: https://saines-gourmandises.fr/un-agneau-fermier-un-vieux-chameau-un-mouflon-6-ans-dage-un-bouc-un-zebu-daustralie-et-meme-un-lapereau-abandonne/
+    catalogue_id: epaule-agneau-briochee-herbes
+  - slug: un-delicieux-coulis-dantioxydants-sur-nos-tartines-du-matin
+    titre: ""
+    url: https://saines-gourmandises.fr/un-delicieux-coulis-dantioxydants-sur-nos-tartines-du-matin/
+    catalogue_id: coulis-baies-vanille
   - slug: vous-faire-raffoler-du-celeri-rave-chiche
     titre: "Vous faire raffoler du céleri rave ?… chiche !"
     url: https://saines-gourmandises.fr/vous-faire-raffoler-du-celeri-rave-chiche/
     catalogue_ids: [boulettes-potager-celeri-jambon, celeri-pommes-tapees, curry-cremeux-celeri, gateau-celeri-noix, hachis-parmentier-legumes-racine, mousseline-celeri-romanesco, salade-remoulade-legumes-hiver, souffle-vapeur-celeri-brebis, veloute-celeri-huile-persil]
     note_encodage: "le marbré aux légumes-racines est déjà au catalogue depuis le livre"
+  - slug: yeees-enfin-du-bon-riz-a-ig-bas
+    titre: ""
+    url: https://saines-gourmandises.fr/yeees-enfin-du-bon-riz-a-ig-bas/
+    catalogue_id: paella-verte-printaniere

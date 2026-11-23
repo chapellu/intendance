@@ -1,0 +1,84 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN GÂTEAU AU POT DE YAOURT (épeautre, huile d'olive, compote, sucre de coco,
+# citron, amande amère) cuit 40 min à la vapeur en moule de 18 à 20 cm ;
+# fourré de fromage blanc de brebis égoutté 3 à 4 h et juste vanillé au fouet
+# à main, et d'une confiture minute de fruits rouges à l'agar-agar.
+
+recipe:
+  id: gateau-baies-fromage-blanc-brebis
+  title: Gâteau aux baies et fromage blanc de brebis, cuit à la vapeur
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Gâteau aux baies et fromage blanc de brebis », blog Saines Gourmandises, 25 août 2021"
+    url: https://saines-gourmandises.fr/gateau-aux-baies-et-fromage-blanc-de-brebis/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « pour 8 parts »
+  lot_entier: true
+  time_min_total: 300
+  active_min: 35
+
+  apports:
+    proteine: fromage
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: fromage-blanc, name: "fromage blanc de brebis au lait entier", qty: 400, unit: g}
+    - {id: farine-epeautre, name: "farine T110 de grand épeautre (3 pots)", qty: 210, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever", qty: 1, unit: sachet}
+    - {id: oeufs, name: "œufs", qty: 2, unit: pièce}
+    - {id: huile-olive, name: "huile d'olive ou neutre (1 pot)", qty: 10, unit: cl}
+    - {id: compote, name: "compote de pomme sans sucre (1 pot)", qty: 125, unit: g}
+    - {id: rhum, name: "rhum ou fleur d'oranger", qty: 1, unit: c. à s.}
+    - {id: sucre-complet, name: "sucre de coco (½ pot)", qty: 50, unit: g}
+    - {id: huile-essentielle-citron, name: "gouttes d'huile essentielle de citron", qty: 10, unit: goutte}
+    - {id: extrait-amande-amere, name: "arôme amande amère", qty: 1, unit: c. à c., optional: true}
+    - {id: sucre-vanille, name: "sucre vanillé (3 + 3 sachets)", qty: 6, unit: sachet}
+    - {id: fruits-rouges, name: "fruits rouges (fraises, mûres)", qty: 500, unit: g}
+    - {id: sucre-roux, name: "sucre (½ pot)", qty: 50, unit: g}
+    - {id: agar-agar, name: "agar-agar", qty: 2, unit: g}
+
+  steps:
+    - id: egoutter
+      action: "Suspendre le fromage blanc dans un torchon noué pour l'égoutter"
+      needs: []
+      uses: [fromage-blanc]
+      time_min: 3
+      attente_min: 210
+      attente_raison: "3 à 4 h d'égouttage"
+    - id: confiture
+      action: "Cuire les fruits avec le sucre et l'agar-agar dans une casserole large, environ 10 min en remuant ; laisser refroidir"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [fruits-rouges, sucre-roux, agar-agar]
+      time_min: 12
+    - id: gateau
+      action: "Mêler farine et levure, y fouetter les autres ingrédients du gâteau et 3 sachets de sucre vanillé, et cuire environ 40 min à la vapeur en moule de 18 à 20 cm"
+      needs: [steam]
+      uses: [farine-epeautre, poudre-a-lever, oeufs, huile-olive, compote, rhum, sucre-complet, huile-essentielle-citron, extrait-amande-amere]
+      time_min: 45
+      attended: false
+    - id: monter
+      action: "Fouetter à la main le fromage avec 3 sachets de sucre vanillé ; ouvrir le gâteau froid en deux, garnir de crème puis de confiture"
+      needs: []
+      uses: [sucre-vanille]
+      time_min: 10
+      kid: {age_min_months: 36, task: "étaler la confiture"}
+
+  emits:
+    - kind: reste-plat
+      type: gateau-baies-fromage-blanc-brebis
+      qty_band: 2-repas
+      keeps: {frigo_days: 1, congelo: false}
+
+  plan_b: []

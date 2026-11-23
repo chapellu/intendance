@@ -1,0 +1,77 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN RESTE DE POISSON CUIT (150 g) mixé par à-coups avec autant de pain, deux
+# œufs, ail, persil, ciboulette et anis vert : une quinzaine de boulettes
+# roulées dans la farine et dorées à la poêle. Avec une salade ou des
+# spaghettis.
+
+recipe:
+  id: polpettine-mer-pain-perdu
+  title: Polpettine de la mer au pain perdu
+  format: galettes
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Polpettine de la mer au pain perdu », blog Saines Gourmandises, 28 mars 2022"
+    url: https://saines-gourmandises.fr/polpettine-de-la-mer-au-pain-perdu/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 3          # « 15 boulettes (3 personnes) »
+    pieces: 15
+  time_min_total: 25
+  active_min: 25
+
+  apports:
+    proteine: poisson
+    feculent: pain
+    legumes: [feuille]
+    profil: poele
+    origine: italien
+
+  ingredients:
+    - {id: pain-levain, name: "pain (intégral d'épeautre)", qty: 150, unit: g}
+    - {id: poisson-blanc, name: "restes de poisson cuit", qty: 150, unit: g}
+    - {id: oeufs, name: "œufs", qty: 2, unit: pièce}
+    - {id: ail, name: "gousses d'ail", qty: 2, unit: pièce}
+    - {id: persil, name: "brins de persil", qty: 12, unit: brin}
+    - {id: ciboulette, name: "brins de ciboulette", qty: 5, unit: brin}
+    - {id: anis-vert, name: "anis vert", qty: 1, unit: c. à c.}
+    - {id: sel, name: "sel (prudence si le poisson est salé)", qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: "poivre du moulin", qty: 1, unit: pincée, seasoning: true}
+    - {id: farine, name: "farine pour rouler", qty: 2, unit: c. à s.}
+    - {id: huile-olive, name: "huile d'olive", qty: 3, unit: c. à s.}
+    - {id: citron, name: "citron pour servir", qty: 1, unit: pièce}
+
+  avec:
+    - {id: salade-verte, name: "salade verte", qty: 0.5, unit: pièce}
+
+  steps:
+    - id: mixer
+      action: "Ôter peau et arêtes du poisson, couper le pain, ciseler les herbes, émincer l'ail, puis tout mixer par brèves impulsions avec les œufs et l'anis"
+      needs: [blend-small]
+      uses: [poisson-blanc, pain-levain, oeufs, ail, persil, ciboulette, anis-vert, sel, poivre]
+      time_min: 10
+    - id: rouler
+      action: "Rouler une quinzaine de boulettes de 25 à 30 g et les passer dans la farine"
+      needs: []
+      uses: [farine]
+      time_min: 8
+      kid: {age_min_months: 30, task: "rouler les boulettes"}
+    - id: dorer
+      action: "Les dorer sur toutes leurs faces dans un fond d'huile en secouant la poêle ; servir avec le citron"
+      needs: [pan-fry]
+      charge_partielle: true
+      uses: [huile-olive, citron]
+      time_min: 8
+
+  emits:
+    - kind: reste-plat
+      type: polpettine-mer-pain-perdu
+      qty_band: 1-repas
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []
