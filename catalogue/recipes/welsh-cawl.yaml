@@ -49,7 +49,8 @@ recipe:
     - {id: huile-olive, name: huile, qty: 2, unit: c. à s.}
     - {id: poireau, name: poireaux, qty: 2, unit: pièce}
     - {id: carottes, name: carottes, qty: 2, unit: pièce}
-    - {id: celeri-rave, name: céleri-rave, qty: 0.5, unit: pièce}
+    # T198 — pas de céleri-rave chez ce foyer : deux panais pour le demi-céleri.
+    - {id: panais, name: panais, qty: 2, unit: pièce}
     - {id: laurier, name: feuilles de laurier, qty: 2, unit: pièce, seasoning: true}
     - {id: clous-girofle, name: clous de girofle, qty: 2, unit: pièce, seasoning: true}
     - {id: sel, name: sel, qty: 0.5, unit: c. à s., seasoning: true}
@@ -79,9 +80,9 @@ recipe:
       parallel_with: cereale
     - id: legumes
       action: "Ajouter les légumes en gros morceaux, le jarret rincé, laurier, girofle et sel ; couvrir d'eau et mijoter 1 h 15 à petit feu"
-      astuce: "Carottes et poireaux en tronçons de 3 cm, chou en carrés de 4 cm, céleri en cubes de 5 cm."
+      astuce: "Carottes et poireaux en tronçons de 3 cm, chou en carrés de 4 cm, panais en tronçons de 5 cm."
       needs: [simmer-large]
-      uses: [carottes, poireau, chou-vert, celeri-rave, jarret-porc-demi-sel, laurier, clous-girofle, sel]
+      uses: [carottes, poireau, chou-vert, panais, jarret-porc-demi-sel, laurier, clous-girofle, sel]
       time_min: 75
       attended: false
     - id: servir

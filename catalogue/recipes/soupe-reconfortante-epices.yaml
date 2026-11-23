@@ -35,7 +35,8 @@ recipe:
     - {id: courge, name: potiron ou patate douce, qty: 500, unit: g}
     - {id: carottes, name: carottes, qty: 3, unit: pièce}
     - {id: poireau, name: blanc de poireau, qty: 1, unit: pièce}
-    - {id: celeri-rave, name: céleri-rave, qty: 100, unit: g}
+    # T198 — pas de céleri-rave chez ce foyer : le panais, au même poids.
+    - {id: panais, name: panais, qty: 100, unit: g}
     - {id: oignon, name: oignon, qty: 1, unit: pièce}
     - {id: beurre, name: beurre ou ghee, qty: 50, unit: g}
     - {id: persil, name: persil, qty: 4, unit: brin}
@@ -48,7 +49,7 @@ recipe:
     - id: tailler
       action: "Couper les légumes en petits cubes, le poireau en tranches fines"
       needs: [chop-coarse]
-      uses: [courge, carottes, poireau, celeri-rave, oignon]
+      uses: [courge, carottes, poireau, panais, oignon]
       time_min: 12
     - id: revenir
       action: "Les faire revenir au beurre avec les épices dans une cocotte jusqu'à ce qu'ils soient tendres"

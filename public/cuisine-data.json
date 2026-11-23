@@ -29,7 +29,6 @@
   "bouillon-os-poisson": "bouillon d'arêtes de poisson",
   "bouillon-os-volaille": "bouillon d'os de volaille",
   "boules-neige-mandarine-amande": "boules de neige à la mandarine et à l'amande",
-  "boulettes-potager-celeri-jambon": "« meat balls » du potager",
   "brandade-haricots-blancs-cabillaud": "brandade « parmentière » aux haricots blancs",
   "brioche-epeautre-huile-olive-fleur-oranger": "brioche très saine à l'épeautre complet, huile d'olive et fleur d'oranger",
   "brioche-phenomenale-coco": "brioche « phénoménale » à l'épeautre et à la crème de coco",
@@ -104,7 +103,6 @@
   "crunchy-petit-dej-orge-noisettes": "crunchy du petit-déj' (orge, amandes et noisettes)",
   "cupcakes-chocolat-agrumes-gingembre": "cupcakes au chocolat noir, parfum d'agrumes et gingembre confit",
   "cupcakes-nids-chocolat-avocat": "cupcakes « nids de Pâques » au chocolat et à l'avocat",
-  "curry-cremeux-celeri": "curry crémeux de céleri-rave",
   "dahl-riz-lentilles-corail": "dahl de riz et lentilles corail aux carottes",
   "dinde-farcie-basse-temperature": "dinde farcie « confite » à basse température",
   "dinde-noel-farce-truffee": "dinde de Noël ultra moelleuse et sa farce au parfum de truffe",
@@ -139,7 +137,6 @@
   "gateau-yaourt-fruits": "juste un gâteau au yaourt, la « classe » en plus",
   "gateau-baies-fromage-blanc-brebis": "gâteau aux baies et fromage blanc de brebis, cuit à la vapeur",
   "gateau-bain-trois-petits-cochons": "le gâteau d'anniversaire « bain des 3 petits cochons »",
-  "gateau-celeri-noix": "gâteau de céleri-rave aux noix",
   "gateau-chocolat-courgettes": "gâteau au chocolat « inavouable » de l'été (courgettes inside)",
   "gateau-de-legumes": "gâteau de légumes",
   "gateau-ete-miel-chantilly-lavande": "gâteau tout simple pour l'été, chantilly à la lavande",
@@ -366,7 +363,6 @@
   "truffes-vegan-cafe-whisky": "truffes « magiques » 100 % vegan",
   "veloute-butternut-coco": "velouté de butternut au coco, pois chiches rôtis",
   "veloute-carottes-corail": "velouté de carottes aux lentilles corail",
-  "veloute-celeri-huile-persil": "velouté de céleri-rave, huile de persil",
   "veloute-courgettes": "velouté de courgettes",
   "veloute-epinards-corail": "velouté d'épinards frais aux lentilles corail",
   "veloute-vert": "velouté vert",
@@ -500,12 +496,6 @@
    "grill": {
     "id": "four-chaleur-tournante",
     "label": "four chaleur tournante",
-    "reecrit": null,
-    "deltaMin": 0
-   },
-   "machine-a-pain": {
-    "id": null,
-    "label": null,
     "reecrit": null,
     "deltaMin": 0
    },
@@ -3514,7 +3504,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "sucre-complet",
+       "nom": "sucre complet",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "extrait-vanille",
@@ -3574,7 +3572,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "fleur-de-sel",
@@ -4973,7 +4979,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "sucre-glace",
@@ -6700,7 +6714,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "sucre-complet",
+       "nom": "sucre complet",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "farine",
@@ -9602,294 +9624,6 @@
    "cuisinable": true
   },
   {
-   "id": "boulettes-potager-celeri-jambon",
-   "titre": "« Meat balls » du potager",
-   "minutes": 50,
-   "minutesSurPlace": 50,
-   "avanceMin": 54,
-   "anticipations": [],
-   "portions": 5,
-   "source": {
-    "auteur": "Marie Chioca",
-    "ouvrage": "« Vous faire raffoler du céleri rave ?… chiche ! », blog Saines Gourmandises, 6 mars 2026",
-    "url": "https://saines-gourmandises.fr/vous-faire-raffoler-du-celeri-rave-chiche/",
-    "saison": null
-   },
-   "apports": {
-    "proteine": "viande-blanche",
-    "feculent": "pommes-de-terre",
-    "legumes": [
-     "allium",
-     "racine"
-    ],
-    "profil": "poele",
-    "origine": "francais"
-   },
-   "ingredients": [
-    {
-     "id": "poireau",
-     "ref": "poireau",
-     "nom": "blancs de poireaux",
-     "qty": 250,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "celeri-rave",
-     "ref": "celeri-rave",
-     "nom": "petit céleri-rave",
-     "qty": 250,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "pomme-de-terre",
-     "ref": "pomme-de-terre",
-     "nom": "grosse pomme de terre",
-     "qty": 250,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "jambon",
-     "ref": "jambon",
-     "nom": "jambon",
-     "qty": 250,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "pain-levain",
-     "ref": "pain-levain",
-     "nom": "pain rassis",
-     "qty": 100,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "persil",
-     "ref": "persil",
-     "nom": "persil",
-     "qty": 5,
-     "unit": "brin",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "oeufs",
-     "ref": "oeufs",
-     "nom": "œuf",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "muscade",
-     "ref": "muscade",
-     "nom": "muscade",
-     "qty": 1,
-     "unit": "pincée",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    },
-    {
-     "id": "sel",
-     "ref": "sel",
-     "nom": "sel",
-     "qty": 2,
-     "unit": "pincée",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    },
-    {
-     "id": "poivre",
-     "ref": "poivre",
-     "nom": "poivre",
-     "qty": 1,
-     "unit": "pincée",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    },
-    {
-     "id": "farine",
-     "ref": "farine",
-     "nom": "farine pour rouler",
-     "qty": 3,
-     "unit": "c. à s.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "huile-olive",
-     "ref": "huile-olive",
-     "nom": "huile pour la poêle",
-     "qty": 3,
-     "unit": "c. à s.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    }
-   ],
-   "role": "plat",
-   "format": "galettes",
-   "avec": [
-    {
-     "id": "sauce-tomate",
-     "nom": "sauce tomate",
-     "qty": 300,
-     "unit": "g"
-    },
-    {
-     "id": "salade-verte",
-     "nom": "salade verte",
-     "qty": 0.5,
-     "unit": "pièce"
-    }
-   ],
-   "steps": [
-    {
-     "id": "vapeur",
-     "action": "Couper les poireaux en fines rondelles, céleri et pomme de terre en petits cubes, et les cuire 20 min à la vapeur",
-     "minutes": 28,
-     "needs": [
-      "steam"
-     ],
-     "surveille": false,
-     "astuce": null,
-     "uses": [
-      "poireau",
-      "celeri-rave",
-      "pomme-de-terre"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "hacher",
-     "action": "Laisser tiédir et hacher par brèves impulsions avec le pain en petits morceaux, l'œuf et le jambon ; ajouter persil haché, sel, poivre, muscade",
-     "minutes": 8,
-     "needs": [
-      "chop-coarse-small"
-     ],
-     "surveille": true,
-     "astuce": "Garder de petits morceaux ; en deux fois au petit blender.",
-     "uses": [
-      "pain-levain",
-      "oeufs",
-      "jambon",
-      "persil",
-      "sel",
-      "poivre",
-      "muscade"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "faconner",
-     "action": "Façonner une quinzaine de grosses boulettes et les rouler dans la farine",
-     "minutes": 8,
-     "needs": [],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "farine"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": "rouler les boulettes dans la farine",
-     "enfantDes": 24,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "dorer",
-     "action": "Les dorer à la poêle huilée en les faisant rouler",
-     "minutes": 10,
-     "needs": [
-      "pan-fry"
-     ],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "huile-olive"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    }
-   ],
-   "bebe": null,
-   "bebePrep": null,
-   "bebeApres": null,
-   "actifMin": 30,
-   "accepts": [],
-   "creneaux": [
-    "dejeuner",
-    "diner"
-   ],
-   "transportable": true,
-   "sansReste": null,
-   "emits": [
-    {
-     "type": "boulettes-potager-celeri-jambon",
-     "kind": "reste-plat",
-     "qty": null,
-     "band": "lunchbox",
-     "espace": "congelo",
-     "note": null,
-     "gardeFrigo": 3,
-     "congelo": true,
-     "horsTable": false
-    }
-   ],
-   "lotEntier": false,
-   "calibreMax": null,
-   "vaisselle": {
-    "id": "sauteuse-28",
-    "label": "sauteuse 28 cm",
-    "facteurMax": 1.2
-   },
-   "gainChainage": 0,
-   "cuisinable": true
-  },
-  {
    "id": "brandade-haricots-blancs-cabillaud",
    "titre": "Brandade « parmentière » aux haricots blancs",
    "minutes": 55,
@@ -11288,7 +11022,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "puree-amande-blanche",
@@ -12043,7 +11785,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "huile-essentielle-citron",
@@ -12073,7 +11823,15 @@
      "unit": "c. à s.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "sucre-complet",
+       "nom": "sucre complet",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "sel",
@@ -12492,7 +12250,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "creme-coco",
@@ -12853,9 +12619,9 @@
      "central": false
     },
     {
-     "id": "celeri-rave",
-     "ref": "celeri-rave",
-     "nom": "petit céleri-rave",
+     "id": "panais",
+     "ref": "panais",
+     "nom": "panais",
      "qty": 300,
      "unit": "g",
      "base": false,
@@ -12991,7 +12757,7 @@
     },
     {
      "id": "celeri",
-     "action": "Cuire le céleri-rave en petits cubes 15 min à l'eau salée, l'égoutter et le mixer avec le comté, 80 g de liant et du poivre",
+     "action": "Cuire les panais en petits cubes 15 min à l'eau salée, l'égoutter et le mixer avec le comté, 80 g de liant et du poivre",
      "minutes": 20,
      "needs": [
       "boil"
@@ -12999,7 +12765,7 @@
      "surveille": true,
      "astuce": null,
      "uses": [
-      "celeri-rave",
+      "panais",
       "comte"
      ],
      "enParallele": null,
@@ -13602,7 +13368,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "huile-essentielle-citron",
@@ -14948,7 +14722,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "sucre-complet",
+       "nom": "sucre complet",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "farine-epeautre",
@@ -16614,7 +16396,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "sucre-complet",
@@ -16694,7 +16484,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "farine-complete",
@@ -17250,7 +17048,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "sirop-agave",
@@ -17799,222 +17605,6 @@
     "id": "cocotte-7.5l",
     "label": "cocotte 7,5 L",
     "facteurMax": 2.0
-   },
-   "gainChainage": 0,
-   "cuisinable": true
-  },
-  {
-   "id": "celeri-pommes-tapees",
-   "titre": "Céleri-rave façon « pommes tapées »",
-   "minutes": 35,
-   "minutesSurPlace": 35,
-   "avanceMin": 36,
-   "anticipations": [],
-   "portions": 5,
-   "source": {
-    "auteur": "Marie Chioca",
-    "ouvrage": "« Vous faire raffoler du céleri rave ?… chiche ! », blog Saines Gourmandises, 6 mars 2026",
-    "url": "https://saines-gourmandises.fr/vous-faire-raffoler-du-celeri-rave-chiche/",
-    "saison": null
-   },
-   "apports": {
-    "proteine": "aucune",
-    "feculent": "pommes-de-terre",
-    "legumes": [
-     "racine"
-    ],
-    "profil": "four",
-    "origine": "francais"
-   },
-   "ingredients": [
-    {
-     "id": "legumes-cuits",
-     "ref": "legumes-cuits",
-     "nom": "céleri-rave et pommes de terre cuits (400 g de chaque)",
-     "qty": 800,
-     "unit": "g",
-     "base": true,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "huile-olive",
-     "ref": "huile-olive",
-     "nom": "huile d'olive",
-     "qty": 4,
-     "unit": "c. à s.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "beurre",
-     "ref": "beurre",
-     "nom": "beurre",
-     "qty": 80,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "muscade",
-     "ref": "muscade",
-     "nom": "muscade",
-     "qty": 1,
-     "unit": "pincée",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    },
-    {
-     "id": "sel",
-     "ref": "sel",
-     "nom": "sel",
-     "qty": 2,
-     "unit": "pincée",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    },
-    {
-     "id": "poivre",
-     "ref": "poivre",
-     "nom": "poivre",
-     "qty": 1,
-     "unit": "pincée",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    },
-    {
-     "id": "persil",
-     "ref": "persil",
-     "nom": "un peu de persil",
-     "qty": 3,
-     "unit": "brin",
-     "base": false,
-     "assaisonnement": false,
-     "central": false,
-     "facultatif": true
-    }
-   ],
-   "role": "accompagnement",
-   "format": null,
-   "avec": [],
-   "steps": [
-    {
-     "id": "taper",
-     "action": "Allumer le gril à 220 °C ; écraser les morceaux de légumes cuits à la paume ou au fond d'un verre, sans en faire une purée",
-     "minutes": 3,
-     "needs": [],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "legumes-cuits"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": "taper les légumes avec un verre",
-     "enfantDes": 24,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "napper",
-     "action": "Fondre le beurre avec l'huile, le poivre et la muscade, le verser sur les légumes, mélanger délicatement et étaler en couche fine dans un plat ; saler",
-     "minutes": 3,
-     "needs": [
-      "simmer"
-     ],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "beurre",
-      "huile-olive",
-      "poivre",
-      "muscade",
-      "sel"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "griller",
-     "action": "Griller environ 30 min en haut du four, jusqu'à un dessus très doré ; parsemer de persil",
-     "minutes": 30,
-     "needs": [
-      "gratin"
-     ],
-     "surveille": false,
-     "astuce": null,
-     "uses": [
-      "persil"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    }
-   ],
-   "bebe": null,
-   "bebePrep": null,
-   "bebeApres": null,
-   "actifMin": 6,
-   "accepts": [
-    {
-     "type": "legumes-pot-au-feu",
-     "kind": null,
-     "requis": true,
-     "qty": {
-      "amount": 800.0,
-      "unit": "g"
-     },
-     "delaiMaxH": null,
-     "mere": "pot-au-feu-traditionnel"
-    }
-   ],
-   "creneaux": [
-    "dejeuner",
-    "diner"
-   ],
-   "transportable": true,
-   "sansReste": {
-    "minutes": 25,
-    "ingredients": [
-     {
-      "id": "celeri-rave",
-      "nom": "céleri-rave à cuire",
-      "qty": 400,
-      "unit": "g"
-     },
-     {
-      "id": "pomme-de-terre",
-      "nom": "pommes de terre à cuire",
-      "qty": 400,
-      "unit": "g"
-     }
-    ]
-   },
-   "emits": [],
-   "lotEntier": false,
-   "calibreMax": null,
-   "vaisselle": {
-    "id": "sauteuse-28",
-    "label": "sauteuse 28 cm",
-    "facteurMax": 1.2
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -19142,7 +18732,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "sucre-complet",
+       "nom": "sucre complet",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     }
    ],
    "role": "plat",
@@ -19729,7 +19327,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "sucre-complet",
+       "nom": "sucre complet",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "farine-orge",
@@ -19749,7 +19355,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "noix-coco-rapee",
@@ -19998,7 +19612,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "farine-epeautre",
@@ -21616,7 +21238,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "eau",
@@ -21683,7 +21313,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "sucre-complet",
+       "nom": "sucre complet",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "extrait-vanille",
@@ -24362,7 +24000,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "eau",
@@ -24392,7 +24038,15 @@
      "unit": "c. à s.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "sucre-complet",
+       "nom": "sucre complet",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "noix-coco-rapee",
@@ -24847,7 +24501,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "noisettes",
@@ -25730,7 +25392,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "sucre-complet",
@@ -26011,7 +25681,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "jus-pomme",
@@ -33610,7 +33288,15 @@
      "unit": "c. à s.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "sel",
@@ -34056,7 +33742,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "sucre-vanille",
@@ -35225,225 +34919,6 @@
    "cuisinable": true
   },
   {
-   "id": "curry-cremeux-celeri",
-   "titre": "Curry crémeux de céleri-rave",
-   "minutes": 30,
-   "minutesSurPlace": 30,
-   "avanceMin": 33,
-   "anticipations": [],
-   "portions": 4,
-   "source": {
-    "auteur": "Marie Chioca",
-    "ouvrage": "« Vous faire raffoler du céleri rave ?… chiche ! », blog Saines Gourmandises, 6 mars 2026",
-    "url": "https://saines-gourmandises.fr/vous-faire-raffoler-du-celeri-rave-chiche/",
-    "saison": null
-   },
-   "apports": {
-    "proteine": "aucune",
-    "feculent": "aucun",
-    "legumes": [
-     "racine",
-     "allium"
-    ],
-    "profil": "mijote",
-    "origine": "indien"
-   },
-   "ingredients": [
-    {
-     "id": "celeri-rave",
-     "ref": "celeri-rave",
-     "nom": "beau céleri-rave",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "oignon",
-     "ref": "oignon",
-     "nom": "oignons",
-     "qty": 3,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "carottes",
-     "ref": "carottes",
-     "nom": "carotte",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "piment-frais",
-     "ref": "piment-frais",
-     "nom": "petit piment frais ou séché",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false,
-     "facultatif": true
-    },
-    {
-     "id": "beurre",
-     "ref": "beurre",
-     "nom": "ghee, beurre ou huile d'olive",
-     "qty": 30,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "curry",
-     "ref": "curry",
-     "nom": "curry bien parfumé",
-     "qty": 1,
-     "unit": "c. à c.",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    },
-    {
-     "id": "creme-coco",
-     "ref": "creme-coco",
-     "nom": "crème de coco",
-     "qty": 10,
-     "unit": "cl",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "sel",
-     "ref": "sel",
-     "nom": "sel",
-     "qty": 2,
-     "unit": "pincée",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    }
-   ],
-   "role": "plat",
-   "format": "mijote",
-   "avec": [
-    {
-     "id": "riz",
-     "nom": "riz basmati",
-     "qty": 300,
-     "unit": "g"
-    }
-   ],
-   "steps": [
-    {
-     "id": "oignons",
-     "action": "Émincer les oignons et les rissoler au ghee dans une cocotte",
-     "minutes": 6,
-     "needs": [
-      "simmer-large"
-     ],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "oignon",
-      "beurre"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "mijoter",
-     "action": "Ajouter le céleri brossé en tranches de 1 cm, la carotte en rondelles et le piment en dés ; saler, ajouter le curry, couvrir et mijoter 20 min",
-     "minutes": 25,
-     "needs": [
-      "simmer-large"
-     ],
-     "surveille": false,
-     "astuce": "Cinq minutes avant la fin, quelques branches tendres du cœur, ciselées.",
-     "uses": [
-      "celeri-rave",
-      "carottes",
-      "piment-frais",
-      "sel",
-      "curry"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "coco",
-     "action": "Hors du feu, ajouter la crème de coco et servir avec du riz",
-     "minutes": 2,
-     "needs": [],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "creme-coco"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    }
-   ],
-   "bebe": null,
-   "bebePrep": null,
-   "bebeApres": null,
-   "actifMin": 12,
-   "accepts": [],
-   "creneaux": [
-    "dejeuner",
-    "diner"
-   ],
-   "transportable": true,
-   "sansReste": null,
-   "emits": [
-    {
-     "type": "curry-cremeux-celeri",
-     "kind": "reste-plat",
-     "qty": null,
-     "band": "1-repas",
-     "espace": "congelo",
-     "note": null,
-     "gardeFrigo": 3,
-     "congelo": true,
-     "horsTable": false
-    }
-   ],
-   "lotEntier": false,
-   "calibreMax": null,
-   "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 3.0
-   },
-   "gainChainage": 0,
-   "cuisinable": true
-  },
-  {
    "id": "dahl-riz-lentilles-corail-carottes",
    "titre": "Dahl de riz et lentilles corail aux carottes",
    "minutes": 30,
@@ -35488,7 +34963,8 @@
        "nom": "beurre",
        "ratio": 1.0
       }
-     ]
+     ],
+     "potager": true
     },
     {
      "id": "oignon",
@@ -37270,7 +36746,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "gousse-vanille",
@@ -37513,7 +36997,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "sucre-complet",
@@ -38131,7 +37623,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "oeufs",
@@ -42090,7 +41590,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "cacao",
@@ -42264,7 +41772,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "chocolat-noir",
@@ -42782,7 +42298,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "sucre-complet",
@@ -43620,7 +43144,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "sucre-complet",
+       "nom": "sucre complet",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "farine-epeautre",
@@ -43843,21 +43375,14 @@
      "central": false
     },
     {
-     "id": "celeri-rave",
-     "ref": "celeri-rave",
-     "nom": "demi-céleri-rave de taille moyenne",
-     "qty": 0.5,
+     "id": "panais",
+     "ref": "panais",
+     "nom": "panais, plus doux pour les enfants",
+     "qty": 2,
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false,
-     "remplacants": [
-      {
-       "id": "panais",
-       "nom": "panais, plus doux pour les enfants",
-       "ratio": 1.0
-      }
-     ]
+     "central": false
     },
     {
      "id": "carottes",
@@ -43942,14 +43467,14 @@
     },
     {
      "id": "tailler",
-     "action": "Éplucher le céleri ; ouvrir le potimarron, l'épépiner ; brosser les carottes et les fendre en deux ; tailler potimarron et céleri en frites",
+     "action": "Éplucher les panais ; ouvrir le potimarron, l'épépiner ; brosser les carottes et les fendre en deux ; tailler potimarron et panais en frites",
      "minutes": 8,
      "needs": [],
      "surveille": true,
      "astuce": null,
      "uses": [
       "potimarron",
-      "celeri-rave",
+      "panais",
       "carottes"
      ],
      "enParallele": null,
@@ -46626,7 +46151,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "cannelle",
@@ -46869,245 +46402,6 @@
    "lotEntier": true,
    "calibreMax": null,
    "vaisselle": null,
-   "gainChainage": 0,
-   "cuisinable": true
-  },
-  {
-   "id": "gateau-celeri-noix",
-   "titre": "Gâteau de céleri-rave aux noix",
-   "minutes": 55,
-   "minutesSurPlace": 55,
-   "avanceMin": 55,
-   "anticipations": [],
-   "portions": 5,
-   "source": {
-    "auteur": "Marie Chioca",
-    "ouvrage": "« Vous faire raffoler du céleri rave ?… chiche ! », blog Saines Gourmandises, 6 mars 2026",
-    "url": "https://saines-gourmandises.fr/vous-faire-raffoler-du-celeri-rave-chiche/",
-    "saison": null
-   },
-   "apports": {
-    "proteine": "oeuf",
-    "feculent": "farine",
-    "legumes": [
-     "racine"
-    ],
-    "profil": "four",
-    "origine": "francais"
-   },
-   "ingredients": [
-    {
-     "id": "celeri-rave",
-     "ref": "celeri-rave",
-     "nom": "céleri-rave moyen",
-     "qty": 700,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "farine",
-     "ref": "farine",
-     "nom": "farine",
-     "qty": 125,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "poudre-a-lever",
-     "ref": "poudre-a-lever",
-     "nom": "poudre à lever (demi-sachet)",
-     "qty": 0.5,
-     "unit": "sachet",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "oeufs",
-     "ref": "oeufs",
-     "nom": "œufs",
-     "qty": 6,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "creme",
-     "ref": "creme",
-     "nom": "crème au choix",
-     "qty": 20,
-     "unit": "cl",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "parmesan",
-     "ref": "parmesan",
-     "nom": "parmesan ou grana padano râpé",
-     "qty": 100,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "noix",
-     "ref": "noix",
-     "nom": "noix fraîchement cassées",
-     "qty": 85,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "sel",
-     "ref": "sel",
-     "nom": "sel fin (c. à c. un peu bombée)",
-     "qty": 1,
-     "unit": "c. à c.",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    },
-    {
-     "id": "poivre",
-     "ref": "poivre",
-     "nom": "poivre",
-     "qty": 1,
-     "unit": "pincée",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    },
-    {
-     "id": "muscade",
-     "ref": "muscade",
-     "nom": "muscade",
-     "qty": 1,
-     "unit": "pincée",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    }
-   ],
-   "role": "plat",
-   "format": "cake",
-   "avec": [
-    {
-     "id": "salade-verte",
-     "nom": "salade verte",
-     "qty": 0.5,
-     "unit": "pièce"
-    }
-   ],
-   "steps": [
-    {
-     "id": "brosser",
-     "action": "Préchauffer le four à 200 °C ; ôter les racines du céleri, le brosser sous l'eau et le râper finement",
-     "minutes": 6,
-     "needs": [],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "celeri-rave"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "mixer",
-     "action": "Mixer avec farine, levure, œufs, crème, parmesan, sel, poivre et muscade, puis mêler les noix à la main",
-     "minutes": 4,
-     "needs": [
-      "blend-smooth"
-     ],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "farine",
-      "poudre-a-lever",
-      "oeufs",
-      "creme",
-      "parmesan",
-      "sel",
-      "poivre",
-      "muscade",
-      "noix"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "cuire",
-     "action": "Verser dans un plat chemisé et cuire 45 min ; servir chaud, tiède ou froid",
-     "minutes": 45,
-     "needs": [
-      "gratin-vessel",
-      "bake"
-     ],
-     "surveille": false,
-     "astuce": null,
-     "uses": [],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    }
-   ],
-   "bebe": null,
-   "bebePrep": null,
-   "bebeApres": null,
-   "actifMin": 10,
-   "accepts": [],
-   "creneaux": [
-    "dejeuner",
-    "diner"
-   ],
-   "transportable": true,
-   "sansReste": null,
-   "emits": [
-    {
-     "type": "gateau-celeri-noix",
-     "kind": "reste-plat",
-     "qty": null,
-     "band": "lunchbox",
-     "espace": "congelo",
-     "note": null,
-     "gardeFrigo": 3,
-     "congelo": true,
-     "horsTable": false
-    }
-   ],
-   "lotEntier": true,
-   "calibreMax": null,
-   "vaisselle": {
-    "id": "plats-a-gratin",
-    "label": "plats à gratin 35×18 / 32×20",
-    "facteurMax": 2.4
-   },
    "gainChainage": 0,
    "cuisinable": true
   },
@@ -47942,7 +47236,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "chocolat-noir",
@@ -49784,7 +49086,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "cacao",
@@ -50724,7 +50034,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "sucre-vanille",
@@ -50978,7 +50296,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "sirop-agave",
@@ -52301,7 +51627,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "lait-soja-vanille",
@@ -55021,7 +54355,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "fleur-de-sel",
@@ -57214,9 +56556,9 @@
      "central": false
     },
     {
-     "id": "celeri-rave",
-     "ref": "celeri-rave",
-     "nom": "céleri-rave (ou topinambours, panais, petits navets, ou un mélange)",
+     "id": "panais",
+     "ref": "panais",
+     "nom": "panais (ou topinambours, petits navets, ou un mélange)",
      "qty": 400,
      "unit": "g",
      "base": false,
@@ -57226,11 +56568,6 @@
       {
        "id": "topinambours",
        "nom": "topinambours",
-       "ratio": 1.0
-      },
-      {
-       "id": "panais",
-       "nom": "panais",
        "ratio": 1.0
       },
       {
@@ -57395,7 +56732,7 @@
      "surveille": true,
      "astuce": null,
      "uses": [
-      "celeri-rave",
+      "panais",
       "sel",
       "poivre"
      ],
@@ -57530,7 +56867,7 @@
     {
      "id": "panais",
      "ref": "panais",
-     "nom": "légumes blancs (panais, céleri, topinambour…)",
+     "nom": "légumes blancs (panais, topinambour…)",
      "qty": 300,
      "unit": "g",
      "base": false,
@@ -59046,7 +58383,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "sirop-agave",
@@ -59902,7 +59247,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "sucre-complet",
+       "nom": "sucre complet",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "huile-coco",
@@ -59912,7 +59265,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "gousse-vanille",
@@ -61321,7 +60682,8 @@
        "nom": "beurre fondu",
        "ratio": 1.0
       }
-     ]
+     ],
+     "potager": true
     },
     {
      "id": "chocolat-poudre",
@@ -61561,9 +60923,9 @@
    },
    "ingredients": [
     {
-     "id": "celeri-rave",
-     "ref": "celeri-rave",
-     "nom": "céleri-rave (pâte blanche)",
+     "id": "panais",
+     "ref": "panais",
+     "nom": "panais (pâte blanche)",
      "qty": 150,
      "unit": "g",
      "base": false,
@@ -61690,7 +61052,7 @@
     },
     {
      "id": "pate-blanche",
-     "action": "Mélanger la moitié de la farine, de la poudre à lever et du sel ; y malaxer à la main le céleri râpé, et la moitié des œufs, du fromage, de l'huile et du jambon",
+     "action": "Mélanger la moitié de la farine, de la poudre à lever et du sel ; y malaxer à la main le panais râpé, et la moitié des œufs, du fromage, de l'huile et du jambon",
      "minutes": 6,
      "needs": [],
      "surveille": true,
@@ -61699,7 +61061,7 @@
       "farine-complete",
       "poudre-a-lever",
       "sel",
-      "celeri-rave",
+      "panais",
       "oeufs",
       "fromage-rape",
       "huile-olive",
@@ -62466,9 +61828,9 @@
      "central": false
     },
     {
-     "id": "celeri-rave",
-     "ref": "celeri-rave",
-     "nom": "céleri-rave ou chou-rave",
+     "id": "chou-rave",
+     "ref": "chou-rave",
+     "nom": "chou-rave",
      "qty": 300,
      "unit": "g",
      "base": false,
@@ -62608,7 +61970,7 @@
      "astuce": null,
      "uses": [
       "chou-rouge",
-      "celeri-rave",
+      "chou-rave",
       "carottes"
      ],
      "enParallele": null,
@@ -63852,7 +63214,15 @@
      "unit": "grosse c. à s.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "extrait-vanille",
@@ -65490,7 +64860,15 @@
      "base": false,
      "assaisonnement": false,
      "central": false,
-     "facultatif": true
+     "facultatif": true,
+     "remplacants": [
+      {
+       "id": "sucre-complet",
+       "nom": "sucre complet",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "the-matcha",
@@ -66206,7 +65584,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "oeufs",
@@ -66908,7 +66294,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "sucre-complet",
+       "nom": "sucre complet",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "farine-epeautre",
@@ -67710,10 +67104,10 @@
    },
    "ingredients": [
     {
-     "id": "celeri-rave",
-     "ref": "celeri-rave",
-     "nom": "céleri-rave",
-     "qty": 0.5,
+     "id": "panais",
+     "ref": "panais",
+     "nom": "panais",
+     "qty": 2,
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
@@ -67793,13 +67187,13 @@
    "steps": [
     {
      "id": "tailler",
-     "action": "Éplucher et couper le céleri-rave et le navet en cubes, émincer l'oignon et les blancs de poireau",
+     "action": "Éplucher et couper les panais et le navet en cubes, émincer l'oignon et les blancs de poireau",
      "minutes": 10,
      "needs": [],
      "surveille": true,
      "astuce": null,
      "uses": [
-      "celeri-rave",
+      "panais",
       "navet-primeur",
       "poireau",
       "oignon"
@@ -68744,7 +68138,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "sucre-complet",
@@ -69023,7 +68425,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "extrait-vanille",
@@ -70253,172 +69663,6 @@
    "lotEntier": true,
    "calibreMax": null,
    "vaisselle": null,
-   "gainChainage": 0,
-   "cuisinable": true
-  },
-  {
-   "id": "mousseline-celeri-romanesco",
-   "titre": "Mousseline au céleri, romanesco et parmesan",
-   "minutes": 25,
-   "minutesSurPlace": 25,
-   "avanceMin": 22,
-   "anticipations": [],
-   "portions": 4,
-   "source": {
-    "auteur": "Marie Chioca",
-    "ouvrage": "« Vous faire raffoler du céleri rave ?… chiche ! », blog Saines Gourmandises, 6 mars 2026",
-    "url": "https://saines-gourmandises.fr/vous-faire-raffoler-du-celeri-rave-chiche/",
-    "saison": null
-   },
-   "apports": {
-    "proteine": "fromage",
-    "feculent": "aucun",
-    "legumes": [
-     "crucifere",
-     "racine"
-    ],
-    "profil": "mijote",
-    "origine": "francais"
-   },
-   "ingredients": [
-    {
-     "id": "chou-romanesco",
-     "ref": "chou-romanesco",
-     "nom": "chou romanesco",
-     "qty": 1.5,
-     "unit": "kg",
-     "base": false,
-     "assaisonnement": false,
-     "central": false,
-     "remplacants": [
-      {
-       "id": "brocoli",
-       "nom": "brocoli",
-       "ratio": 1.0
-      }
-     ]
-    },
-    {
-     "id": "celeri-rave",
-     "ref": "celeri-rave",
-     "nom": "petit céleri-rave",
-     "qty": 350,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "huile-olive",
-     "ref": "huile-olive",
-     "nom": "huile d'olive",
-     "qty": 6,
-     "unit": "c. à s.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "parmesan",
-     "ref": "parmesan",
-     "nom": "parmesan râpé",
-     "qty": 50,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "sel",
-     "ref": "sel",
-     "nom": "sel",
-     "qty": 2,
-     "unit": "pincée",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    },
-    {
-     "id": "poivre-5-baies",
-     "ref": "poivre-5-baies",
-     "nom": "poivre 5 baies",
-     "qty": 1,
-     "unit": "pincée",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    }
-   ],
-   "role": "accompagnement",
-   "format": null,
-   "avec": [],
-   "steps": [
-    {
-     "id": "cuire",
-     "action": "Cuire 12 à 15 min à l'eau bouillante salée le céleri en petits cubes et le romanesco en fleurettes ; égoutter sans trop insister",
-     "minutes": 18,
-     "needs": [
-      "simmer-large"
-     ],
-     "surveille": false,
-     "astuce": null,
-     "uses": [
-      "celeri-rave",
-      "chou-romanesco",
-      "sel"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "mixer",
-     "action": "Mixer avec l'huile, le parmesan et le poivre, et servir aussitôt",
-     "minutes": 4,
-     "needs": [
-      "blend-smooth"
-     ],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "huile-olive",
-      "parmesan",
-      "poivre-5-baies"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": true
-    }
-   ],
-   "bebe": "2 c. à s. de céleri et de romanesco cuits, avant le parmesan et le poivre",
-   "bebePrep": "mixer avec un filet d'huile d'olive",
-   "bebeApres": "cuire",
-   "actifMin": 10,
-   "accepts": [],
-   "creneaux": [
-    "dejeuner",
-    "diner"
-   ],
-   "transportable": true,
-   "sansReste": null,
-   "emits": [],
-   "lotEntier": false,
-   "calibreMax": null,
-   "vaisselle": {
-    "id": "cocotte-7.5l",
-    "label": "cocotte 7,5 L",
-    "facteurMax": 3.0
-   },
    "gainChainage": 0,
    "cuisinable": true
   },
@@ -72193,7 +71437,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "chocolat-noir",
@@ -73747,7 +72999,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "extrait-vanille",
@@ -74049,7 +73309,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "sirop-agave",
@@ -77200,215 +76468,6 @@
    "cuisinable": true
   },
   {
-   "id": "pain-de-mie-machine",
-   "titre": "Pain de mie moelleux à la machine à pain",
-   "minutes": 185,
-   "minutesSurPlace": 185,
-   "avanceMin": 187,
-   "anticipations": [],
-   "portions": 5,
-   "source": {
-    "auteur": "Marie Chioca",
-    "ouvrage": "Je mange sain et bio, même au boulot !, Terre vivante, p. 20",
-    "url": null,
-    "saison": null
-   },
-   "apports": {
-    "proteine": "aucune",
-    "feculent": "pain",
-    "legumes": [],
-    "profil": "four",
-    "origine": "francais"
-   },
-   "ingredients": [
-    {
-     "id": "farine-epeautre",
-     "ref": "farine-epeautre",
-     "nom": "farine T130 ou T150 de grand épeautre ou de blé",
-     "qty": 500,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false,
-     "remplacants": [
-      {
-       "id": "farine-complete",
-       "nom": "farine de blé semi-complète",
-       "ratio": 1.0
-      }
-     ]
-    },
-    {
-     "id": "eau",
-     "ref": "eau",
-     "nom": "eau tiède, 40 °C au maximum",
-     "qty": 400,
-     "unit": "ml",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "levure-boulangere",
-     "ref": "levure-boulangere",
-     "nom": "levure de boulanger déshydratée",
-     "qty": 1,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "huile-olive",
-     "ref": "huile-olive",
-     "nom": "huile d'olive",
-     "qty": 4,
-     "unit": "c. à s.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "sirop-agave",
-     "ref": "sirop-agave",
-     "nom": "sirop d'agave",
-     "qty": 2,
-     "unit": "c. à s.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "sel",
-     "ref": "sel",
-     "nom": "sel fin",
-     "qty": 10,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    }
-   ],
-   "role": "base",
-   "format": null,
-   "avec": [],
-   "steps": [
-    {
-     "id": "charger-la-cuve",
-     "action": "Mettre tous les ingrédients dans la cuve et lancer le programme « basique » ou « pain normal »",
-     "minutes": 5,
-     "needs": [
-      "machine-a-pain"
-     ],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "farine-epeautre",
-      "eau",
-      "levure-boulangere",
-      "huile-olive",
-      "sirop-agave",
-      "sel"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "retirer-la-pale",
-     "action": "Si la machine sonne en fin de pétrissage, retirer la pâle",
-     "minutes": 2,
-     "needs": [
-      "machine-a-pain"
-     ],
-     "surveille": true,
-     "astuce": "Sinon elle reste imprimée dans la mie, et on perd deux ou trois tranches.",
-     "uses": [],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "cuire-en-machine",
-     "action": "Laisser le programme aller à son terme",
-     "minutes": 175,
-     "needs": [
-      "machine-a-pain"
-     ],
-     "surveille": false,
-     "astuce": null,
-     "uses": [],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "refroidir-machine",
-     "action": "Laisser le pain refroidir entièrement avant de le trancher",
-     "minutes": 5,
-     "needs": [],
-     "surveille": false,
-     "astuce": null,
-     "uses": [],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    }
-   ],
-   "bebe": null,
-   "bebePrep": null,
-   "bebeApres": null,
-   "actifMin": 5,
-   "accepts": [],
-   "creneaux": [
-    "dejeuner",
-    "diner"
-   ],
-   "transportable": true,
-   "sansReste": null,
-   "emits": [
-    {
-     "type": "pain-de-mie-maison",
-     "kind": "base",
-     "qty": {
-      "amount": 900.0,
-      "unit": "g"
-     },
-     "band": "3-repas",
-     "espace": "congelo",
-     "note": "mie serrée, exprès : c'est ce qui empêche la garniture des sandwichs de couler",
-     "gardeFrigo": 5,
-     "congelo": true,
-     "horsTable": true
-    }
-   ],
-   "lotEntier": false,
-   "calibreMax": null,
-   "vaisselle": null,
-   "gainChainage": 0,
-   "cuisinable": true
-  },
-  {
    "id": "pain-de-mie-son-avoine",
    "titre": "Pain de mie facile au son d'avoine",
    "minutes": 120,
@@ -80044,7 +79103,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "creme-coco",
@@ -80296,9 +79363,9 @@
      "central": false
     },
     {
-     "id": "celeri-rave",
-     "ref": "celeri-rave",
-     "nom": "céleri-rave cru",
+     "id": "chou-rave",
+     "ref": "chou-rave",
+     "nom": "chou-rave cru",
      "qty": 150,
      "unit": "g",
      "base": false,
@@ -80413,7 +79480,7 @@
    "steps": [
     {
      "id": "tailler-pasta-box",
-     "action": "Découper le rôti et le fromage en petits cubes, le céleri et les carottes en bâtonnets",
+     "action": "Découper le rôti et le fromage en petits cubes, le chou-rave et les carottes en bâtonnets",
      "minutes": 7,
      "needs": [],
      "surveille": true,
@@ -80421,7 +79488,7 @@
      "uses": [
       "roti-froid",
       "gouda",
-      "celeri-rave",
+      "chou-rave",
       "carottes"
      ],
      "enParallele": null,
@@ -83327,7 +82394,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "sucre-vanille",
@@ -85141,7 +84216,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "sucre-complet",
+       "nom": "sucre complet",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "extrait-vanille",
@@ -85423,7 +84506,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "sucre-complet",
+       "nom": "sucre complet",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "chocolat-noir",
@@ -86430,7 +85521,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "sirop-agave",
@@ -91815,21 +90914,14 @@
      "central": false
     },
     {
-     "id": "celeri-rave",
-     "ref": "celeri-rave",
-     "nom": "petit céleri-rave ou petit céleri branche",
+     "id": "celeri-branche",
+     "ref": "celeri-branche",
+     "nom": "petit céleri branche",
      "qty": 1,
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false,
-     "remplacants": [
-      {
-       "id": "celeri-branche",
-       "nom": "céleri branche",
-       "ratio": 1.0
-      }
-     ]
+     "central": false
     },
     {
      "id": "clous-girofle",
@@ -91962,12 +91054,12 @@
      "minutes": 15,
      "needs": [],
      "surveille": true,
-     "astuce": "Poireaux et navets recoupés en deux, potimarron et céleri-rave en six, pommes de terre entières.",
+     "astuce": "Poireaux et navets recoupés en deux, potimarron en six, céleri branche en tronçons, pommes de terre entières.",
      "uses": [
       "poireau",
       "navets",
       "potimarron",
-      "celeri-rave",
+      "celeri-branche",
       "pomme-de-terre"
      ],
      "enParallele": "precuire",
@@ -91981,7 +91073,7 @@
     },
     {
      "id": "ajouter-legumes",
-     "action": "Au bout des 2 heures, ajouter DANS CET ORDRE : céleri-rave, poireaux, navets, pommes de terre, puis potimarron",
+     "action": "Au bout des 2 heures, ajouter DANS CET ORDRE : céleri, poireaux, navets, pommes de terre, puis potimarron",
      "minutes": 5,
      "needs": [
       "simmer-large"
@@ -92946,19 +92038,12 @@
     {
      "id": "celeri-branche",
      "ref": "celeri-branche",
-     "nom": "cœur de céleri branche, ou petit céleri-rave",
+     "nom": "cœur de céleri branche",
      "qty": 1,
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false,
-     "remplacants": [
-      {
-       "id": "celeri-rave",
-       "nom": "petit céleri-rave",
-       "ratio": 1.0
-      }
-     ]
+     "central": false
     },
     {
      "id": "navets",
@@ -99425,7 +98510,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "sirop-agave",
@@ -100048,19 +99141,12 @@
     {
      "id": "celeri-branche",
      "ref": "celeri-branche",
-     "nom": "branche de céleri, ou une tranche de céleri-rave",
+     "nom": "branche de céleri",
      "qty": 1,
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false,
-     "remplacants": [
-      {
-       "id": "celeri-rave",
-       "nom": "céleri-rave",
-       "ratio": 1.0
-      }
-     ]
+     "central": false
     },
     {
      "id": "carottes",
@@ -100691,7 +99777,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "fleur-de-sel",
@@ -101081,7 +100175,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "eau",
@@ -101111,7 +100213,15 @@
      "unit": "c. à s.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "sucre-complet",
+       "nom": "sucre complet",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "confiture-mures",
@@ -104509,9 +103619,9 @@
      "central": false
     },
     {
-     "id": "celeri-rave",
-     "ref": "celeri-rave",
-     "nom": "céleri-rave ou chou-rave",
+     "id": "chou-rave",
+     "ref": "chou-rave",
+     "nom": "chou-rave",
      "qty": 300,
      "unit": "g",
      "base": false,
@@ -104575,7 +103685,7 @@
      "astuce": "Servie aussitôt, elle croque ; 2 à 24 h au frais, bien couverte, l'attendrissent.",
      "uses": [
       "chou-rouge",
-      "celeri-rave",
+      "chou-rave",
       "carottes"
      ],
      "enParallele": null,
@@ -107578,248 +106688,6 @@
    "cuisinable": true
   },
   {
-   "id": "souffle-vapeur-celeri-brebis",
-   "titre": "Soufflé vapeur au céleri-rave, tomme de brebis et muscade",
-   "minutes": 75,
-   "minutesSurPlace": 75,
-   "avanceMin": 77,
-   "anticipations": [],
-   "portions": 5,
-   "source": {
-    "auteur": "Marie Chioca",
-    "ouvrage": "« Vous faire raffoler du céleri rave ?… chiche ! », blog Saines Gourmandises, 6 mars 2026",
-    "url": "https://saines-gourmandises.fr/vous-faire-raffoler-du-celeri-rave-chiche/",
-    "saison": null
-   },
-   "apports": {
-    "proteine": "oeuf",
-    "feculent": "farine",
-    "legumes": [
-     "racine"
-    ],
-    "profil": "mijote",
-    "origine": "francais"
-   },
-   "ingredients": [
-    {
-     "id": "celeri-rave",
-     "ref": "celeri-rave",
-     "nom": "céleri-rave",
-     "qty": 700,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "farine-epeautre",
-     "ref": "farine-epeautre",
-     "nom": "farine semi-complète de grand épeautre",
-     "qty": 125,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false,
-     "remplacants": [
-      {
-       "id": "farine-complete",
-       "nom": "farine T110",
-       "ratio": 1
-      }
-     ]
-    },
-    {
-     "id": "oeufs",
-     "ref": "oeufs",
-     "nom": "œufs",
-     "qty": 6,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "poudre-a-lever",
-     "ref": "poudre-a-lever",
-     "nom": "poudre à lever",
-     "qty": 1,
-     "unit": "sachet",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "creme",
-     "ref": "creme",
-     "nom": "crème de vache, de soja ou de coco",
-     "qty": 25,
-     "unit": "cl",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "etorki",
-     "ref": "etorki",
-     "nom": "tomme de brebis râpée",
-     "qty": 100,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "sel",
-     "ref": "sel",
-     "nom": "sel",
-     "qty": 3,
-     "unit": "pincée",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    },
-    {
-     "id": "poivre-5-baies",
-     "ref": "poivre-5-baies",
-     "nom": "poivre 5 baies",
-     "qty": 1,
-     "unit": "pincée",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    },
-    {
-     "id": "muscade",
-     "ref": "muscade",
-     "nom": "muscade",
-     "qty": 1,
-     "unit": "pincée",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    }
-   ],
-   "role": "plat",
-   "format": "gratin",
-   "avec": [
-    {
-     "id": "salade-verte",
-     "nom": "salade verte",
-     "qty": 0.5,
-     "unit": "pièce"
-    }
-   ],
-   "steps": [
-    {
-     "id": "celeri",
-     "action": "Bouillir le céleri en gros cubes 15 min à l'eau salée, égoutter et mixer avec le fromage, la crème, le poivre et la muscade",
-     "minutes": 20,
-     "needs": [
-      "simmer"
-     ],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "celeri-rave",
-      "sel",
-      "etorki",
-      "creme",
-      "poivre-5-baies",
-      "muscade"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "blancs",
-     "action": "Porter 2 l d'eau à ébullition sous un panier vapeur ; séparer les œufs, monter les blancs en neige, incorporer les jaunes à la crème de céleri",
-     "minutes": 8,
-     "needs": [
-      "steam"
-     ],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "oeufs"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "melanger",
-     "action": "Mêler à la maryse la crème, la farine mélangée à la levure et les blancs, en soulevant ; rectifier le sel et verser dans un moule rond haut",
-     "minutes": 4,
-     "needs": [],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "farine-epeautre",
-      "poudre-a-lever"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": "verser la farine pendant qu'on mélange",
-     "enfantDes": 36,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "cuire",
-     "action": "Cuire environ 45 min à la vapeur, à couvert",
-     "minutes": 45,
-     "needs": [
-      "steam"
-     ],
-     "surveille": false,
-     "astuce": null,
-     "uses": [],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    }
-   ],
-   "bebe": null,
-   "bebePrep": null,
-   "bebeApres": null,
-   "actifMin": 20,
-   "accepts": [],
-   "creneaux": [
-    "dejeuner",
-    "diner"
-   ],
-   "transportable": true,
-   "sansReste": null,
-   "emits": [],
-   "lotEntier": true,
-   "calibreMax": null,
-   "vaisselle": {
-    "id": "sauteuse-28",
-    "label": "sauteuse 28 cm",
-    "facteurMax": 1.2
-   },
-   "gainChainage": 0,
-   "cuisinable": true
-  },
-  {
    "id": "souffles-glaces-peches-framboise",
    "titre": "Soufflés glacés aux pêches, spirale framboise",
    "minutes": 20,
@@ -108158,7 +107026,15 @@
      "unit": "c. à s.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "crevettes",
@@ -109960,9 +108836,9 @@
      "central": false
     },
     {
-     "id": "celeri-rave",
-     "ref": "celeri-rave",
-     "nom": "céleri-rave",
+     "id": "panais",
+     "ref": "panais",
+     "nom": "panais",
      "qty": 100,
      "unit": "g",
      "base": false,
@@ -110057,7 +108933,7 @@
       "courge",
       "carottes",
       "poireau",
-      "celeri-rave",
+      "panais",
       "oignon"
      ],
      "enParallele": null,
@@ -111425,7 +110301,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "eau",
@@ -111455,7 +110339,15 @@
      "unit": "c. à s.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "sucre-complet",
+       "nom": "sucre complet",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "extrait-amande-amere",
@@ -112227,7 +111119,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "sucre-complet",
+       "nom": "sucre complet",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "beurre",
@@ -112484,7 +111384,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "sel",
@@ -112544,7 +111452,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "citron",
@@ -113296,7 +112212,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "sucre-complet",
+       "nom": "sucre complet",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "fleur-de-sel",
@@ -113560,7 +112484,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "jus-pomme",
@@ -115075,7 +114007,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "eau",
@@ -115105,7 +114045,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "sucre-complet",
+       "nom": "sucre complet",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "lait-soja-vanille",
@@ -115724,7 +114672,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "sel",
@@ -118571,7 +117527,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "sirop-agave",
@@ -121073,10 +120037,10 @@
      "central": false
     },
     {
-     "id": "celeri-rave",
-     "ref": "celeri-rave",
-     "nom": "céleri-rave",
-     "qty": 1,
+     "id": "panais",
+     "ref": "panais",
+     "nom": "gros panais",
+     "qty": 3,
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
@@ -121202,7 +120166,7 @@
     },
     {
      "id": "trancher",
-     "action": "Trancher finement tous les légumes, en coupant en deux les plus larges tranches de céleri et de patate douce",
+     "action": "Trancher finement tous les légumes, en coupant en deux les plus larges tranches de panais et de patate douce",
      "minutes": 12,
      "needs": [
       "chop-coarse"
@@ -121211,7 +120175,7 @@
      "astuce": null,
      "uses": [
       "patate-douce",
-      "celeri-rave",
+      "panais",
       "radis-long",
       "oignon-rouge",
       "carottes"
@@ -122674,7 +121638,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "sirop-agave",
@@ -122869,7 +121841,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "cacao",
@@ -123086,7 +122066,15 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "beurre",
+       "nom": "beurre fondu",
+       "ratio": 1
+      }
+     ],
+     "potager": true
     },
     {
      "id": "creme-coco",
@@ -124027,218 +123015,6 @@
     "id": "cocotte-7.5l",
     "label": "cocotte 7,5 L",
     "facteurMax": 2.0
-   },
-   "gainChainage": 0,
-   "cuisinable": true
-  },
-  {
-   "id": "veloute-celeri-huile-persil",
-   "titre": "Velouté de céleri-rave, huile de persil",
-   "minutes": 30,
-   "minutesSurPlace": 30,
-   "avanceMin": 26,
-   "anticipations": [],
-   "portions": 4,
-   "source": {
-    "auteur": "Marie Chioca",
-    "ouvrage": "« Vous faire raffoler du céleri rave ?… chiche ! », blog Saines Gourmandises, 6 mars 2026",
-    "url": "https://saines-gourmandises.fr/vous-faire-raffoler-du-celeri-rave-chiche/",
-    "saison": null
-   },
-   "apports": {
-    "proteine": "aucune",
-    "feculent": "aucun",
-    "legumes": [
-     "racine",
-     "allium"
-    ],
-    "profil": "soupe",
-    "origine": "francais"
-   },
-   "ingredients": [
-    {
-     "id": "celeri-rave",
-     "ref": "celeri-rave",
-     "nom": "céleri-rave",
-     "qty": 600,
-     "unit": "g",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "poireau",
-     "ref": "poireau",
-     "nom": "gros poireaux (le blanc)",
-     "qty": 2,
-     "unit": "pièce",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "eau",
-     "ref": "eau",
-     "nom": "eau pour couvrir",
-     "qty": 1,
-     "unit": "l",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "persil",
-     "ref": "persil",
-     "nom": "brins de persil",
-     "qty": 20,
-     "unit": "brin",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "huile-olive",
-     "ref": "huile-olive",
-     "nom": "huile d'olive",
-     "qty": 4,
-     "unit": "c. à s.",
-     "base": false,
-     "assaisonnement": false,
-     "central": false
-    },
-    {
-     "id": "muscade",
-     "ref": "muscade",
-     "nom": "muscade",
-     "qty": 1,
-     "unit": "pincée",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    },
-    {
-     "id": "sel",
-     "ref": "sel",
-     "nom": "sel",
-     "qty": 3,
-     "unit": "pincée",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    },
-    {
-     "id": "poivre-5-baies",
-     "ref": "poivre-5-baies",
-     "nom": "poivre 5 baies",
-     "qty": 1,
-     "unit": "pincée",
-     "base": false,
-     "assaisonnement": true,
-     "central": false
-    }
-   ],
-   "role": "plat",
-   "format": "soupe",
-   "avec": [],
-   "steps": [
-    {
-     "id": "cuire",
-     "action": "Cuire le céleri en gros cubes et le blanc des poireaux émincé, couverts d'eau, salés, poivrés et muscadés, 20 min à couvert",
-     "minutes": 22,
-     "needs": [
-      "simmer"
-     ],
-     "surveille": false,
-     "astuce": "Le vert des poireaux sert pour un bouillon.",
-     "uses": [
-      "celeri-rave",
-      "poireau",
-      "eau",
-      "sel",
-      "poivre-5-baies",
-      "muscade"
-     ],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "huile",
-     "action": "Mixer le persil avec l'huile, 4 c. à s. d'eau et un peu de sel, jusqu'à une huile lisse et fluide",
-     "minutes": 4,
-     "needs": [
-      "blend-small"
-     ],
-     "surveille": true,
-     "astuce": null,
-     "uses": [
-      "persil",
-      "huile-olive"
-     ],
-     "enParallele": "cuire",
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    },
-    {
-     "id": "mixer",
-     "action": "Mixer le velouté et servir avec l'huile de persil à côté",
-     "minutes": 4,
-     "needs": [
-      "blend-smooth"
-     ],
-     "surveille": true,
-     "astuce": null,
-     "uses": [],
-     "enParallele": null,
-     "attente": null,
-     "attenteRaison": null,
-     "attenteSouple": true,
-     "rattrapage": null,
-     "enfant": null,
-     "enfantDes": null,
-     "porteAssaisonnement": false
-    }
-   ],
-   "bebe": null,
-   "bebePrep": null,
-   "bebeApres": null,
-   "actifMin": 12,
-   "accepts": [],
-   "creneaux": [
-    "dejeuner",
-    "diner"
-   ],
-   "transportable": true,
-   "sansReste": null,
-   "emits": [
-    {
-     "type": "veloute-celeri-huile-persil",
-     "kind": "reste-plat",
-     "qty": null,
-     "band": "1-repas",
-     "espace": "congelo",
-     "note": null,
-     "gardeFrigo": 3,
-     "congelo": true,
-     "horsTable": false
-    }
-   ],
-   "lotEntier": false,
-   "calibreMax": null,
-   "vaisselle": {
-    "id": "sauteuse-28",
-    "label": "sauteuse 28 cm",
-    "facteurMax": 1.5
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -125975,11 +124751,6 @@
      "central": false,
      "remplacants": [
       {
-       "id": "celeri-rave",
-       "nom": "300 g de céleri-rave",
-       "ratio": 1.0
-      },
-      {
        "id": "tomates-pelees",
        "nom": "un bocal de 400 g de tomates pelées",
        "ratio": 1.0
@@ -126943,10 +125714,10 @@
      "central": false
     },
     {
-     "id": "celeri-rave",
-     "ref": "celeri-rave",
-     "nom": "céleri-rave",
-     "qty": 0.5,
+     "id": "panais",
+     "ref": "panais",
+     "nom": "panais",
+     "qty": 2,
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
@@ -127066,12 +125837,12 @@
       "simmer-large"
      ],
      "surveille": false,
-     "astuce": "Carottes et poireaux en tronçons de 3 cm, chou en carrés de 4 cm, céleri en cubes de 5 cm.",
+     "astuce": "Carottes et poireaux en tronçons de 3 cm, chou en carrés de 4 cm, panais en tronçons de 5 cm.",
      "uses": [
       "carottes",
       "poireau",
       "chou-vert",
-      "celeri-rave",
+      "panais",
       "jarret-porc-demi-sel",
       "laurier",
       "clous-girofle",
@@ -128859,6 +127630,7 @@
     "chou-frise",
     "chou-blanc",
     "celeri-rave",
+    "chou-rave",
     "champignons-conserve",
     "basilic",
     "abricots",
@@ -129285,6 +128057,7 @@
    "cavolo-nero": "chou noir toscan",
    "cedrat": "cédrat",
    "celeri-rave": "céleri-rave",
+   "chou-rave": "chou-rave",
    "cepes": "cèpes",
    "cerises": "cerises",
    "cerises-bocal": "cerises en bocal",
@@ -132055,6 +130828,7 @@
    "ids": [
     "carottes",
     "celeri-rave",
+    "chou-rave",
     "navets",
     "pommes",
     "citron",

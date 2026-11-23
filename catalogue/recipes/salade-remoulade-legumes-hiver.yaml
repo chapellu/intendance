@@ -39,7 +39,8 @@ recipe:
     - {id: yaourt-brebis, name: yaourt de brebis, qty: 1, unit: pot}
     - {id: sel, name: sel fin (c. à c. rase), qty: 1, unit: c. à c., seasoning: true}
     - {id: chou-rouge, name: chou rouge ou cabus, qty: 300, unit: g}
-    - {id: celeri-rave, name: céleri-rave ou chou-rave, qty: 300, unit: g}
+    # T198 — pas de céleri-rave chez ce foyer : le chou-rave, que l'autrice propose à égalité.
+    - {id: chou-rave, name: chou-rave, qty: 300, unit: g}
     - {id: carottes, name: carottes ou potiron, qty: 300, unit: g}
 
   avec:
@@ -55,7 +56,7 @@ recipe:
       action: "Émincer finement les légumes et les mélanger à la sauce"
       astuce: "Servie aussitôt, elle croque ; 2 à 24 h au frais, bien couverte, l'attendrissent."
       needs: [chop-coarse]
-      uses: [chou-rouge, celeri-rave, carottes]
+      uses: [chou-rouge, chou-rave, carottes]
       time_min: 10
 
   emits:

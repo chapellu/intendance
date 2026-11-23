@@ -527,8 +527,9 @@ describe("l'outil de l'étape", () => {
   // Nommer un ustensile qu'on n'a pas serait pire que se taire : `compile.py`
   // marque déjà ces étapes « aucune solution avec l'équipement du foyer ».
   test("une capacité que le foyer ne porte pas se tait", () => {
-    expect(foyer.outils["gaufrier"]?.label).toBeNull();
-    expect(outilDe(foyer, etape(["gaufrier"]))).toBeNull();
+    // Le gaufrier est entré dans l'inventaire ; la machine à pain, non (T198).
+    expect(foyer.outils["machine-a-pain"]?.label ?? null).toBeNull();
+    expect(outilDe(foyer, etape(["machine-a-pain"]))).toBeNull();
   });
 
   // Un repli ne se résume pas à son nom : c'est la manière de faire qui est

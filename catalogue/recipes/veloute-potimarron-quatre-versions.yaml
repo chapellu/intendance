@@ -46,7 +46,6 @@ recipe:
       qty: 3
       unit: pièce
       subs:
-        - {id: celeri-rave, name: "300 g de céleri-rave", ratio: 1.0}
         - {id: tomates-pelees, name: "un bocal de 400 g de tomates pelées", ratio: 1.0}
     - {id: huile-olive, name: huile d'olive, qty: 6, unit: c. à s.}
     - {id: eau, name: eau, qty: 1.2, unit: l}

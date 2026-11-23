@@ -40,7 +40,8 @@ recipe:
 
   ingredients:
     - {id: pomme-de-terre, name: pommes de terre à purée, qty: 400, unit: g}
-    - {id: celeri-rave, name: "céleri-rave (ou topinambours, panais, petits navets, ou un mélange)", qty: 400, unit: g, subs: [{id: topinambours, name: "topinambours", ratio: 1.0}, {id: panais, name: "panais", ratio: 1.0}, {id: navets-roses, name: "petits navets roses", ratio: 1.0}]}
+    # T198 — pas de céleri-rave chez ce foyer : le panais, que l'autrice propose, devient la ligne.
+    - {id: panais, name: "panais (ou topinambours, petits navets, ou un mélange)", qty: 400, unit: g, subs: [{id: topinambours, name: "topinambours", ratio: 1.0}, {id: navets-roses, name: "petits navets roses", ratio: 1.0}]}
     - {id: boeuf-hache, name: bœuf haché, qty: 300, unit: g}
     - {id: oignon, name: gros oignons, qty: 2, unit: pièce}
     - {id: fromage-rape, name: gruyère râpé, qty: 100, unit: g}
@@ -75,7 +76,7 @@ recipe:
     - id: legumes
       action: "Ajouter les légumes en dés de 1 cm, saler, poivrer, verser un petit verre d'eau et cuire jusqu'à ce que tout soit tendre et doré"
       needs: [pan-fry]
-      uses: [celeri-rave, sel, poivre]
+      uses: [panais, sel, poivre]
       time_min: 15
       parallel_with: pommes-de-terre
     - id: melanger

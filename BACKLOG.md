@@ -6962,8 +6962,8 @@ Les recettes rédigées pour ce dépôt n'y sont pas soumises : elles partent un
 
 **Restent au jugement, recette par recette** : reformuler sans recopier, un geste par étape, `avec:` tiré de la page, un `role:` cité, la sécurité avant le livre.
 
-- [ ] Céleri-rave : plats écartés, racines remplacées
-- [ ] Machine à pain : plat écarté
+- [x] Céleri-rave : sept plats écartés (le céleri au centre), douze où il se remplace — panais, chou-rave (que l'autrice propose), céleri branche
+- [x] Machine à pain : le pain de mie p. 20 écarté ; le test des horloges pose lui-même son second producteur
 - [ ] Provenance et en-têtes
 - [ ] `parallel_with`, appareils, `optional`
 - [ ] `uses:` à la première mention

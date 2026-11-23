@@ -47,7 +47,7 @@ recipe:
     - {id: poulet-cuit, name: "reste de viande (poulet, pot-au-feu…)", qty: 150, unit: g, from_accepts: true}
     - {id: pomme-de-terre, name: pommes de terre, qty: 300, unit: g}
     - {id: oignon, name: oignons, qty: 2, unit: pièce}
-    - {id: panais, name: "légumes blancs (panais, céleri, topinambour…)", qty: 300, unit: g}
+    - {id: panais, name: "légumes blancs (panais, topinambour…)", qty: 300, unit: g}
     - {id: jambon, name: bon jambon, qty: 150, unit: g}
     - {id: fromage-rape, name: fromage râpé, qty: 70, unit: g}
     - {id: huile-olive, name: huile d'olive, qty: 4, unit: c. à s.}

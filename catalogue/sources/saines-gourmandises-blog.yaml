@@ -5370,8 +5370,8 @@ recettes:
   - slug: vous-faire-raffoler-du-celeri-rave-chiche
     titre: "Vous faire raffoler du céleri rave ?… chiche !"
     url: https://saines-gourmandises.fr/vous-faire-raffoler-du-celeri-rave-chiche/
-    catalogue_ids: [boulettes-potager-celeri-jambon, celeri-pommes-tapees, curry-cremeux-celeri, gateau-celeri-noix, hachis-parmentier-legumes-racine, mousseline-celeri-romanesco, salade-remoulade-legumes-hiver, souffle-vapeur-celeri-brebis, veloute-celeri-huile-persil]
-    note_encodage: "le marbré aux légumes-racines est déjà au catalogue depuis le livre"
+    catalogue_ids: [hachis-parmentier-legumes-racine, salade-remoulade-legumes-hiver]
+    note_encodage: "le marbré aux légumes-racines est déjà au catalogue depuis le livre ; écartés (T198), le céleri-rave au centre et le foyer ne l'aime pas : boulettes du potager, céleri façon pommes tapées, curry crémeux, gâteau céleri-noix, mousseline au romanesco, soufflé vapeur, velouté à l'huile de persil"
   - slug: yeees-enfin-du-bon-riz-a-ig-bas
     titre: ""
     url: https://saines-gourmandises.fr/yeees-enfin-du-bon-riz-a-ig-bas/

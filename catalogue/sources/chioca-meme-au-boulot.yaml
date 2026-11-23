@@ -108,7 +108,7 @@ souches:
 sommaire:
   bases_saines:
     - {page: 19, titre: "Pain de mie facile au son d'avoine", catalogue_id: pain-de-mie-son-avoine}
-    - {page: 20, titre: "Pain de mie moelleux à la machine à pain", catalogue_id: pain-de-mie-machine}
+    - {page: 20, titre: "Pain de mie moelleux à la machine à pain", ecartee: "demande une machine à pain, absente de l'inventaire (T198)"}
     - {page: 22, titre: "Pâte brisée des fainéants (souche)", catalogue_id: pate-brisee-faineants}
     - {page: 25, titre: "Pâte à wraps (souche)", catalogue_id: pate-a-wraps}
     - {page: 26, titre: "Pains suédois très simplifiés (souche)", catalogue_id: pains-suedois}

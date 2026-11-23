@@ -35,7 +35,8 @@ recipe:
 
   ingredients:
     - {id: potimarron, name: demi-potimarron de taille moyenne, qty: 0.5, unit: pièce}
-    - {id: celeri-rave, name: demi-céleri-rave de taille moyenne, qty: 0.5, unit: pièce, subs: [{id: panais, name: "panais, plus doux pour les enfants", ratio: 1.0}]}
+    # T198 — pas de céleri-rave chez ce foyer : le panais que l'autrice propose prend la ligne.
+    - {id: panais, name: "panais, plus doux pour les enfants", qty: 2, unit: pièce}
     - {id: carottes, name: carottes, qty: 6, unit: pièce}
     - {id: huile-olive, name: "huile d'olive, ou de tournesol désodorisée pour un goût plus « frites »", qty: 6, unit: c. à s., subs: [{id: huile-tournesol, name: "huile de tournesol désodorisée", ratio: 1.0}]}
     - {id: paprika, name: paprika (c. à c. rases), qty: 2, unit: c. à c.}
@@ -50,9 +51,9 @@ recipe:
       time_min: 1
       attended: false
     - id: tailler
-      action: "Éplucher le céleri ; ouvrir le potimarron, l'épépiner ; brosser les carottes et les fendre en deux ; tailler potimarron et céleri en frites"
+      action: "Éplucher les panais ; ouvrir le potimarron, l'épépiner ; brosser les carottes et les fendre en deux ; tailler potimarron et panais en frites"
       needs: []
-      uses: [potimarron, celeri-rave, carottes]
+      uses: [potimarron, panais, carottes]
       time_min: 8
       kid: {age_min_months: 30, task: "brosser les carottes sous l'eau"}
     - id: enrober
