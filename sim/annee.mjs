@@ -209,7 +209,8 @@ function quantiteAchat(id, txt) {
 }
 /** Une unité d'achat du fond (« pack de 4 »), en unité du placard réel. */
 const UNITE_ACHAT = new Map((cat.fond?.denrees ?? []).map((d) => [cat.rayons.aliases?.[d.ingredient] ?? d.ingredient, d.unite ?? "pièce"]));
-const unDuFond = (id) => quantiteAchat(id, `1 ${UNITE_ACHAT.get(id) ?? "pièce"}`) || 1;
+// « 1 kg en vrac », « 500 g en vrac » : l'unité porte déjà sa quantité.
+const unDuFond = (id) => { const u = UNITE_ACHAT.get(id) ?? "pièce"; return quantiteAchat(id, /^\d/.test(u) ? u : `1 ${u}`) || 1; };
 // LE PRIX — un relevé de magasin, HORS DU DÉPÔT (`PRIX=…/references.json`) :
 // les montants du foyer ne vivent pas dans git. Absent, rien ne se chiffre.
 const PRIX = process.env.PRIX && existsSync(process.env.PRIX) ? JSON.parse(readFileSync(process.env.PRIX, "utf8")).articles ?? {} : {};
