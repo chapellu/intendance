@@ -850,7 +850,9 @@ function saisonDe(p, mois) {
   return hors ? "hors" : de ? "de-saison" : "neutre";
 }
 /** Mangé ces trois derniers jours — par la date, pas par le rang dans une liste. */
-const mangeRecemment = (titre, j) => (etat.manges ?? []).some((m) => m.t === titre && (new Date(j) - new Date(m.j)) / 864e5 <= 3 && m.j !== j);
+// « Reste réchauffé » n'est pas un plat : c'est un reste différent chaque fois.
+// Le refuser « parce qu'on en a mangé avant-hier » remplissait le congélateur.
+const mangeRecemment = (titre, j) => titre !== "Reste réchauffé" && (etat.manges ?? []).some((m) => m.t === titre && (new Date(j) - new Date(m.j)) / 864e5 <= 3 && m.j !== j);
 /** « Rien à acheter » / « il manque : a, b et 3 autres » → les noms et le compte. */
 function lireAchats(t) {
   t = (t ?? "").trim();
