@@ -170,7 +170,7 @@ function parUniteDuFond(id) {
 // LES UNITÉS DU MONDE RÉEL. Le placard tient chaque denrée dans UNE unité (la
 // première que le corpus emploie) ; une recette qui la dit autrement se
 // convertit : « 300 g de poireau » ne vide pas un stock compté en pièces.
-const POIDS_PIECE = { poireau: 200, oignon: 120, "oignon-rouge": 120, carottes: 100, pommes: 150, poires: 150, banane: 120, "pomme-de-terre": 150, courge: 1500, potimarron: 1200, courgettes: 200, tomates: 120, citron: 100, oeufs: 55, echalote: 30, navets: 120, panais: 150, brocoli: 400, "chou-fleur": 800, "yaourt-nature": 125, basilic: 1, menthe: 1, persil: 1, "olives-noires": 4, jambon: 40, "jambon-cru": 17, poulet: 1500, "tomates-cerises": 15, champignons: 20, noix: 5 };
+const POIDS_PIECE = { courge: 1000, concombre: 300, avocat: 200, "salade-verte": 300, pomelo: 400, anchois: 4, cornichons: 8, radis: 15, "radis-long": 250, ail: 6, "ail-noir": 40, "champignons-paris": 20, pruneaux: 10, "sardines-boite": 25, sardines: 60, saumon: 130, "saucisse-fumee": 250, saucisses: 100, dinde: 3500, "chevre-demi-sec": 60, "petits-suisses": 60, "pate-feuilletee": 230, "pate-brisee": 230, "feuilles-brick": 17, biscottes: 8, "pain-levain": 40, coppa: 15, seitan: 30, betterave: 20, "poudre-a-lever": 11, "levure-boulangere": 25, "bouillon-legumes": 10, "bouillon-volaille": 10, "sucre-vanille": 7.5, "gousse-vanille": 3, cebette: 20, "tomates-roma": 80, fenouil: 250, "chou-frise": 800, "chou-chinois": 800, "chou-romanesco": 600, "ail-des-ours": 2, oseille: 2, orties: 2, "navet-primeur": 80, "navets-roses": 80, topinambours: 60, "patate-douce": 300, patidou: 500, gingembre: 30, "piment-frais": 10, tortillas: 40, "pains-burger": 60, "galettes-sarrasin": 50, "galettes-riz": 10, crevettes: 15, "poisson-entier": 400, canette: 1800, poireau: 200, oignon: 120, "oignon-rouge": 120, carottes: 100, pommes: 150, poires: 150, banane: 120, "pomme-de-terre": 150, potimarron: 1200, courgettes: 200, tomates: 120, citron: 100, oeufs: 55, echalote: 30, navets: 120, panais: 150, brocoli: 400, "chou-fleur": 800, "yaourt-nature": 125, basilic: 1, menthe: 1, persil: 1, "olives-noires": 4, jambon: 40, "jambon-cru": 17, poulet: 1500, "tomates-cerises": 15, champignons: 20, noix: 5 };
 function versBase(id, qty, unit) {
   const base = UNITE_RECETTE.get(id) ?? unit;
   if (!unit || unit === base) return qty;
@@ -223,7 +223,7 @@ function prixUnitaire(id) {
   else if (m) base = versBase(id, +m[1], m[2].toLowerCase());
   else if (/^kg$/i.test(c.trim())) base = versBase(id, 1000, "g");
   else if (/botte/i.test(c)) base = versBase(id, /basilic|persil|ciboulette|menthe|coriandre|herbe/.test(id) ? 30 : 500, "g");
-  else if (/(\d+)\s*(cubes|sachets|pièces)/i.test(c)) base = versBase(id, +/(\d+)/.exec(c)[1], "pièce");
+  else if (/(\d+)\s*(cubes|sachets|pièces|feuilles|tranches)|de (\d+)\b|[×x]\s*(\d+)\b/i.test(c)) { const n = /(\d+)\s*(?:cubes|sachets|pièces|feuilles|tranches)|de (\d+)\b|[×x]\s*(\d+)\b/i.exec(c); base = versBase(id, +(n[1] ?? n[2] ?? n[3]), "pièce"); }
   else base = versBase(id, 1, "pièce");
   return base > 0 ? a.prix / base : null;
 }
