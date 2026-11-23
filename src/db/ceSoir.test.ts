@@ -30,35 +30,35 @@ describe("T134 — « Je lance ça » après trois jours sans geste, l'onglet re
     // Ce que l'écran aurait visé : le dîner de lundi, sorti de la fenêtre de jeudi.
     expect(cleDuCreneau(enCache, soirDe(enCache))).toBe(cleCreneau("2026-10-19", "diner"));
 
-    const c = await poserCeSoir(base, enCache.catalogue, "hachis-parmentier-lentilles", ["oignon"], JEUDI);
+    const c = await poserCeSoir(base, enCache.catalogue, "hachis-parmentier-50-50", ["oignon"], JEUDI);
     expect(c).toEqual({ jour: "2026-10-22", repas: "diner" });
 
     const ecrit = await base.creneaux.get(cleCreneau("2026-10-22", "diner"));
-    expect(ecrit).toMatchObject({ plat: "hachis-parmentier-lentilles", ici: ["oignon"] });
+    expect(ecrit).toMatchObject({ plat: "hachis-parmentier-50-50", ici: ["oignon"] });
     expect(await base.creneaux.get(cleCreneau("2026-10-19", "diner"))).toBeUndefined();
   });
 });
 
 describe("T142 — « Je lance ça » nourrit aussi demain midi", () => {
   test("le dîner s'agrandit du midi, et demain midi part sur son reste", async () => {
-    await poserCeSoir(base, catalogue, "dahl-lentilles-corail", [], LUNDI, 3);
+    await poserCeSoir(base, catalogue, "dahl-riz-lentilles-corail-carottes", [], LUNDI, 3);
     const diner = await base.creneaux.get(cleCreneau("2026-10-19", "diner"));
-    expect(diner).toMatchObject({ plat: "dahl-lentilles-corail", parts: catalogue.foyer.parts + 3, midi: 3 });
+    expect(diner).toMatchObject({ plat: "dahl-riz-lentilles-corail-carottes", parts: catalogue.foyer.parts + 3, midi: 3 });
     const midi = await base.creneaux.get(cleCreneau("2026-10-20", "dejeuner"));
-    expect(midi).toMatchObject({ plat: "reste-de-la-veille", de: "dahl-lentilles-corail" });
+    expect(midi).toMatchObject({ plat: "reste-de-la-veille", de: "dahl-riz-lentilles-corail-carottes" });
   });
 
   test("relancer ce soir n'empile pas deux midis, et sans boîtes le dîner revient à sa taille", async () => {
-    await poserCeSoir(base, catalogue, "dahl-lentilles-corail", [], LUNDI, 3);
-    await poserCeSoir(base, catalogue, "soupe-pois-casses-carottes", [], LUNDI, 3);
+    await poserCeSoir(base, catalogue, "dahl-riz-lentilles-corail-carottes", [], LUNDI, 3);
+    await poserCeSoir(base, catalogue, "veloute-pois-casses-poireaux-mache", [], LUNDI, 3);
     expect(await base.creneaux.get(cleCreneau("2026-10-19", "diner"))).toMatchObject({
       parts: catalogue.foyer.parts + 3,
       midi: 3,
     });
     expect(await base.creneaux.get(cleCreneau("2026-10-20", "dejeuner"))).toMatchObject({
-      de: "soupe-pois-casses-carottes",
+      de: "veloute-pois-casses-poireaux-mache",
     });
-    await poserCeSoir(base, catalogue, "dahl-lentilles-corail", [], LUNDI);
+    await poserCeSoir(base, catalogue, "dahl-riz-lentilles-corail-carottes", [], LUNDI);
     const diner = await base.creneaux.get(cleCreneau("2026-10-19", "diner"));
     expect(diner?.parts ?? null).toBeNull();
     expect(diner?.midi).toBeUndefined();
@@ -69,7 +69,7 @@ describe("T142 — « Je lance ça » nourrit aussi demain midi", () => {
       cle: cleCreneau("2026-10-20", "dejeuner"), jour: "2026-10-20", repas: "dejeuner",
       plat: "salade-lentilles-amelioree", parts: null, maj: 1,
     });
-    await poserCeSoir(base, catalogue, "dahl-lentilles-corail", [], LUNDI, 3);
+    await poserCeSoir(base, catalogue, "dahl-riz-lentilles-corail-carottes", [], LUNDI, 3);
     expect((await base.creneaux.get(cleCreneau("2026-10-20", "dejeuner")))?.plat).toBe("salade-lentilles-amelioree");
     expect((await base.creneaux.get(cleCreneau("2026-10-19", "diner")))?.midi).toBeUndefined();
   });

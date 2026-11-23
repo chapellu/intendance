@@ -1,0 +1,86 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE ÉPAULE DÉSOSSÉE farcie d'un hachis d'herbes douces et aromatiques (moitié
+# orthies, épinards ou persil, moitié sauge, romarin, thym, sarriette), oignon
+# et ail, précuite 30 min en cocotte, puis enveloppée dans une pâte levée
+# d'épeautre à l'huile d'olive et rôtie 45 min dans la cocotte farinée.
+
+recipe:
+  id: epaule-agneau-briochee-herbes
+  title: Épaule d'agneau briochée aux herbes sauvages, épeautre et huile d'olive
+  format: piece
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Épaule d'agneau briochée aux herbes sauvages, épeautre et huile d'olive », blog Saines Gourmandises, 22 avril 2015"
+    url: https://saines-gourmandises.fr/un-agneau-fermier-un-vieux-chameau-un-mouflon-6-ans-dage-un-bouc-un-zebu-daustralie-et-meme-un-lapereau-abandonne/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6
+  lot_entier: true
+  time_min_total: 150
+  active_min: 40
+
+  apports:
+    proteine: viande-rouge
+    feculent: farine
+    legumes: [feuille, allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: agneau-epaule, name: "épaule d'agneau fermier désossée", qty: 1200, unit: g}
+    - {id: cebette, name: "oignon tige", qty: 1, unit: pièce}
+    - {id: ail, name: "gousses d'ail", qty: 4, unit: pièce}
+    - {id: herbes-fraiches, name: "herbes fraîches mêlées (douces et aromatiques)", qty: 200, unit: g}
+    - {id: huile-olive, name: "huile d'olive (7 cl pour la pâte)", qty: 9, unit: cl}
+    - {id: sel, name: "sel (10 g pour la pâte)", qty: 12, unit: g, seasoning: true}
+    - {id: poivre, name: "poivre du moulin", qty: 1, unit: pincée, seasoning: true}
+    - {id: farine-epeautre, name: "farine de grand épeautre T110", qty: 530, unit: g}
+    - {id: eau, name: "eau tiède", qty: 25, unit: cl}
+    - {id: levure-boulangere, name: "levure de boulangerie", qty: 1, unit: cube}
+
+  steps:
+    - id: pate
+      action: "Délayer la levure dans l'eau tiède et pétrir 10 min avec 500 g de farine, 7 cl d'huile et le sel ; laisser lever sous un torchon mouillé"
+      needs: []
+      uses: [levure-boulangere, eau, farine-epeautre, sel]
+      time_min: 12
+      attente_min: 60
+      attente_raison: "la pâte lève environ 1 h"
+    - id: farcir
+      action: "Hacher herbes, oignon et ail avec sel et poivre ; étaler la moitié sur l'épaule ouverte, la reficeler serrée"
+      needs: [chop-coarse]
+      uses: [herbes-fraiches, cebette, ail, poivre]
+      time_min: 12
+      parallel_with: pate
+    - id: precuire
+      action: "Dorer l'épaule 30 min en cocotte couverte avec un filet d'huile, en la retournant et en ajoutant un verre d'eau à mi-cuisson ; garder le jus"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [agneau-epaule, huile-olive]
+      time_min: 30
+      attended: false
+    - id: envelopper
+      action: "Préchauffer à 220 °C ; étaler la pâte en ovale de 33 × 28 cm, y étaler le reste de hachis, poser l'épaule et la refermer"
+      needs: []
+      uses: []
+      time_min: 10
+    - id: rotir
+      action: "Huiler et fariner le fond de la cocotte propre, y poser l'épaule soudure dessous et cuire 45 min à couvert ; servir avec le jus réchauffé"
+      needs: [bake]
+      uses: []
+      time_min: 45
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: epaule-agneau-briochee-herbes
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

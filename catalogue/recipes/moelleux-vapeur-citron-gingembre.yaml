@@ -1,0 +1,71 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DIX MINUTES ET UN PANIER VAPEUR : farine d'épeautre, levure, fleur de sel,
+# gingembre frais en petits dés, jus et zestes de deux citrons, œufs, huile
+# d'olive, miel ; 35 min à couvert, poudré de sucre vanillé.
+
+recipe:
+  id: moelleux-vapeur-citron-gingembre
+  title: Moelleux vapeur au citron, gingembre, miel et huile d'olive
+  creneaux: [gouter, dessert, petit-dejeuner]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Moelleux vapeur au citron, gingembre, miel et huile d'olive », blog Saines Gourmandises, 8 février 2022"
+    url: https://saines-gourmandises.fr/moelleux-vapeur-au-citron-gingembre-miel-et-huile-dolive/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 7          # « 6 à 8 parts »
+  lot_entier: true
+  time_min_total: 50
+  active_min: 10
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: mijote
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: "farine T110 de grand épeautre", qty: 200, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever", qty: 1, unit: sachet}
+    - {id: fleur-de-sel, name: "grosse pincée de fleur de sel", qty: 1, unit: bonne pincée, seasoning: true}
+    - {id: gingembre, name: "gingembre frais", qty: 20, unit: g}
+    - {id: citron, name: "citrons bio (8 cl de jus et zestes)", qty: 2, unit: pièce}
+    - {id: oeufs, name: "œufs", qty: 3, unit: pièce}
+    - {id: huile-olive, name: "huile d'olive", qty: 90, unit: g}
+    - {id: miel-acacia, name: "miel d'acacia", qty: 120, unit: g}
+    - {id: sucre-vanille, name: "sucre vanillé", qty: 1, unit: sachet}
+
+  steps:
+    - id: vapeur
+      action: "Mettre 2,5 l d'eau à bouillir sous le panier vapeur, à couvert"
+      needs: [steam]
+      uses: []
+      time_min: 8
+    - id: pate
+      action: "Presser et zester les citrons, couper le gingembre en petits dés, et mélanger juste assez avec la farine, la levure, le sel, les œufs, l'huile et le miel"
+      needs: []
+      uses: [citron, gingembre, farine-epeautre, poudre-a-lever, fleur-de-sel, oeufs, huile-olive, miel-acacia]
+      time_min: 8
+      parallel_with: vapeur
+      kid: {age_min_months: 30, task: "verser et mélanger"}
+    - id: cuire
+      action: "Verser dans un moule, cuire 35 min à la vapeur à feu moyen, démouler et poudrer de sucre vanillé"
+      needs: [steam]
+      uses: [sucre-vanille]
+      time_min: 37
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: moelleux-vapeur-citron-gingembre
+      qty_band: 3-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

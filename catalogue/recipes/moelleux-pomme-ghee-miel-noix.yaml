@@ -1,0 +1,77 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN MOELLEUX D'AUTOMNE : compote de pomme, ghee fondu, miel d'acacia, un œuf,
+# rhum, sucre vanillé, une reinette en cubes ; 40 min dans un cercle de 18 cm.
+# En option, fendu et fourré d'une chantilly de coco aux noix concassées et à
+# la fleur de sel, décoré de noix ; les feuilles en chocolat du décor ne sont
+# pas encodées.
+
+recipe:
+  id: moelleux-pomme-ghee-miel-noix
+  title: Moelleux à la pomme, ghee et miel, crème fouettée aux noix
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Moelleux à la pomme, ghee et miel, crème végétale fouettée à la noix de Grenoble et fleur de sel », blog Saines Gourmandises, 24 octobre 2019"
+    url: https://saines-gourmandises.fr/ode-a-lautomne/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 7          # « un gâteau de 6/8 parts »
+  lot_entier: true
+  time_min_total: 55
+  active_min: 15
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: "farine de grand épeautre T110", qty: 200, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever", qty: 1, unit: sachet}
+    - {id: sucre-vanille, name: "sucre vanillé (3 + 1 sachets)", qty: 4, unit: sachet}
+    - {id: compote, name: "compote de pomme sans sucre", qty: 200, unit: g}
+    - {id: rhum, name: "rhum ambré", qty: 2, unit: c. à s.}
+    - {id: ghee, name: "ghee (ou beurre)", qty: 110, unit: g}
+    - {id: oeufs, name: "œuf", qty: 1, unit: pièce}
+    - {id: pommes, name: "pomme reinette (150 g)", qty: 1, unit: pièce}
+    - {id: miel-acacia, name: "miel d'acacia", qty: 115, unit: g}
+    - {id: fleur-de-sel, name: "fleur de sel (2 pincées)", qty: 2, unit: pincée, seasoning: true}
+    - {id: creme-coco, name: "crème de coco bien froide", qty: 40, unit: cl, optional: true}
+    - {id: sucre-complet, name: "sucre de coco", qty: 40, unit: g, optional: true}
+    - {id: noix, name: "cerneaux de noix", qty: 60, unit: g, optional: true}
+
+  steps:
+    - id: pate
+      action: "Préchauffer à 180 °C ; fondre le ghee, couper la pomme en cubes, et mêler à la farine et la levure avec tous les ingrédients du moelleux"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [ghee, pommes, farine-epeautre, poudre-a-lever, compote, rhum, oeufs, miel-acacia]
+      time_min: 10
+    - id: cuire
+      action: "Verser aussitôt dans un cercle de 18 cm et cuire environ 40 min ; laisser refroidir"
+      needs: [bake]
+      uses: []
+      time_min: 40
+      attended: false
+    - id: creme
+      action: "Au goût, fouetter la crème de coco avec les sucres et le sel, y mêler les noix concassées, fendre le gâteau, le fourrer et le napper"
+      needs: []
+      uses: [creme-coco, sucre-complet, sucre-vanille, fleur-de-sel, noix]
+      time_min: 12
+      kid: {age_min_months: 30, task: "concasser les noix au rouleau"}
+
+  emits:
+    - kind: reste-plat
+      type: moelleux-pomme-ghee-miel-noix
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

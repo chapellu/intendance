@@ -1,0 +1,79 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE CRÈME SANS AGAR-AGAR NI GÉLATINE : graines de chia gonflées 30 min dans le
+# soja-vanille, fouettées 5 min avec la crème de coco et le sucre de bouleau,
+# puis mêlées à une chantilly de coco ; une génoise aux œufs entiers très peu
+# sucrée cuite en rectangle, fendue, framboises et crème ; une nuit au frais.
+
+recipe:
+  id: framboisier-nuage-chia
+  title: Framboisier « nuage » à IG super bas
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Framboisier nuage à IG super bas », blog Saines Gourmandises, 4 septembre 2025"
+    url: https://saines-gourmandises.fr/framboisier-nuage-a-ig-super-bas/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 12          # « pour 12 parts »
+  lot_entier: true
+  time_min_total: 50
+  active_min: 30
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: oeufs, name: "œufs", qty: 4, unit: pièce}
+    - {id: sucre-bouleau, name: "sucre de bouleau (30 + 80 + 20 g)", qty: 130, unit: g}
+    - {id: farine-epeautre, name: "farine d'épeautre T110", qty: 50, unit: g}
+    - {id: sel, name: "pincée de sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: lait-soja-vanille, name: "lait de soja-vanille", qty: 10, unit: cl}
+    - {id: graines-chia, name: "graines de chia", qty: 4, unit: c. à s.}
+    - {id: creme-coco, name: "crème de coco bien froide (40 + 20 cl)", qty: 60, unit: cl}
+    - {id: framboises, name: "framboises", qty: 350, unit: g}
+
+  steps:
+    - id: chia
+      action: "Mêler la chia au soja-vanille, remuer après 5 min et laisser gonfler"
+      needs: []
+      uses: [lait-soja-vanille, graines-chia]
+      time_min: 2
+      attente_min: 30
+      attente_raison: "la chia gonfle 30 min"
+    - id: genoise
+      action: "Préchauffer à 180 °C ; fouetter les œufs jusqu'à tripler, y mêler la farine avec 30 g de sucre et le sel, verser dans un cadre et cuire environ 15 min"
+      needs: [bake]
+      uses: [oeufs, farine-epeautre, sel]
+      time_min: 25
+      attended: false
+    - id: creme
+      action: "Fouetter 5 min 40 cl de crème de coco avec 80 g de sucre et la chia, puis y mêler 20 cl de crème montée en chantilly avec 20 g de sucre"
+      needs: []
+      uses: [creme-coco, sucre-bouleau]
+      time_min: 12
+    - id: monter
+      action: "Fendre la génoise, remettre la base dans le cadre, couvrir de framboises et de crème, poser la seconde couche"
+      needs: []
+      uses: [framboises]
+      time_min: 8
+      attente_min: 600
+      attente_raison: "une nuit au frais"
+      kid: {age_min_months: 30, task: "poser les framboises"}
+
+  emits:
+    - kind: reste-plat
+      type: framboisier-nuage-chia
+      qty_band: 3-repas
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

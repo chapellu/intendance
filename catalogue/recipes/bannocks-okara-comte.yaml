@@ -1,0 +1,73 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# L'OKARA DU LAIT AMANDE-AVOINE (430 g) mêlé à trois œufs, un peu de farine
+# d'épeautre et du comté râpé : de grosses cuillerées cuites à couvert dans une
+# poêle bien chaude huilée, retournées dès que le dessus fige. Au petit
+# déjeuner ou à midi avec une salade.
+# L'OKARA EST UN RESTE du catalogue : sans lui, pas de bannocks.
+
+recipe:
+  id: bannocks-okara-comte
+  title: Bannocks à l'okara d'avoine et d'amande, au comté
+  format: galettes
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Lait végétal amande-avoine (+ des bannocks pour recycler l'okara !) », blog Saines Gourmandises, 16 avril 2016"
+    url: https://saines-gourmandises.fr/de-la-douceur-au-petit-dejeuner/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 3          # « pour 3 personnes »
+  time_min_total: 25
+  active_min: 20
+
+  accepts:
+    - type: okara-amande-avoine
+      qty: {amount: 430, unit: g}
+      required: true
+      fallback_recipe: lait-amande-avoine
+
+  apports:
+    proteine: oeuf
+    feculent: avoine
+    legumes: []
+    profil: poele
+    origine: francais
+
+  ingredients:
+    - {id: okara, name: "okara d'avoine et d'amande", qty: 430, unit: g, from_accepts: true}
+    - {id: oeufs, name: "œufs", qty: 3, unit: pièce}
+    - {id: farine-epeautre, name: "farine de grand épeautre T110 ou T150 (65 à 70 g si l'okara est humide)", qty: 55, unit: g}
+    - {id: comte, name: "comté râpé", qty: 90, unit: g}
+    - {id: sel, name: "bonne pincée de sel", qty: 1, unit: bonne pincée, seasoning: true}
+    - {id: huile-olive, name: "huile d'olive pour la poêle", qty: 2, unit: c. à s.}
+
+  avec:
+    - {id: salade-verte, name: "salade composée", qty: 0.5, unit: pièce}
+
+  steps:
+    - id: melanger
+      action: "Mêler l'okara, les œufs, la farine, le comté et le sel"
+      needs: []
+      uses: [okara, oeufs, farine-epeautre, comte, sel]
+      time_min: 4
+      kid: {age_min_months: 24, task: "mélanger la pâte"}
+    - id: cuire
+      action: "Poser de grosses cuillerées dans une poêle chaude huilée, couvrir, baisser le feu et retourner dès que le dessus fige"
+      needs: [pan-fry]
+      charge_partielle: true
+      uses: [huile-olive]
+      time_min: 18
+      attended: true
+
+  emits:
+    - kind: reste-plat
+      type: bannocks-okara-comte
+      qty_band: 1-repas
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

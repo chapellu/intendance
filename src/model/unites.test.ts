@@ -20,7 +20,7 @@ test("une recette à la pièce et une au kilo retirent toutes deux des grammes d
     const p = catalogue.plats.find((x) => x.id === id)!;
     return demandes(p, 1).find((d) => (catalogue.rayons.aliases[d.ingredient] ?? d.ingredient) === "pomme-de-terre")!;
   };
-  for (const id of ["omelette-du-potager", "hachis-parmentier-lentilles"]) {
+  for (const id of ["omelette-du-potager", "hachis-parmentier-50-50"]) {
     const d = pdt(id);
     expect(d).toMatchObject({ unite: "g", pieces: null });
     expect(d.grammes).toBeGreaterThan(100);

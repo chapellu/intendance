@@ -1,0 +1,68 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE PÂTE LEVÉE UNE NUIT AU FRAIS : eau tiède, levure, sucre de coco, œufs,
+# farine d'épeautre, son d'avoine ; cuits à couvert à feu très doux, quatre par
+# poêlée, retournés dès que le dessus n'est plus liquide. Sucrés au miel, ou
+# salés avec du poisson fumé et de l'avocat.
+
+recipe:
+  id: pancakes-epeautre-son-avoine
+  title: Pancakes à l'épeautre et au son d'avoine
+  creneaux: [petit-dejeuner, gouter]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« 4 recettes minceur durable », blog Saines Gourmandises, 8 juin 2015"
+    url: https://saines-gourmandises.fr/des-pancakes-des-polpettes-une-peche-melba-et-un-fondant-au-chocolat/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « 12 à 16 pancakes (4 personnes) »
+    pieces: 14
+  time_min_total: 30
+  active_min: 25
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: poele
+    origine: francais
+
+  ingredients:
+    - {id: eau, name: "eau tiède", qty: 25, unit: cl}
+    - {id: oeufs, name: "œufs", qty: 3, unit: pièce}
+    - {id: farine-epeautre, name: "farine T130 de grand épeautre", qty: 200, unit: g}
+    - {id: son-avoine, name: "son d'avoine", qty: 100, unit: g}
+    - {id: levure-boulangere, name: "levure de boulanger déshydratée", qty: 1, unit: sachet}
+    - {id: sel, name: "pincée de sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: sucre-complet, name: "sucre de coco ou rapadura", qty: 2, unit: c. à s.}
+    - {id: huile-olive, name: "huile d'olive pour la poêle", qty: 4, unit: c. à s.}
+
+  steps:
+    - id: pate
+      action: "Délayer la levure dans l'eau tiède, y fouetter le sucre et les œufs, puis la farine, le son et le sel sans grumeaux ; couvrir et mettre au frais"
+      needs: []
+      uses: [eau, levure-boulangere, sucre-complet, oeufs, farine-epeautre, son-avoine, sel]
+      time_min: 6
+      attente_min: 600
+      attente_raison: "une nuit au frais"
+    - id: cuire
+      action: "Remuer à peine la pâte levée ; dans une poêle huilée bien chaude, poser 4 grosses cuillerées, couvrir à feu très doux, retourner quand le dessus a pris"
+      astuce: "Un peu d'huile entre chaque tournée ; jamais de poêle à revêtement à sec."
+      needs: [pan-fry]
+      uses: [huile-olive]
+      time_min: 20
+      attended: true
+      kid: {age_min_months: 36, task: "poser les cuillerées de pâte"}
+
+  emits:
+    - kind: reste-plat
+      type: pancakes-epeautre-son-avoine
+      qty_band: 1-repas
+      keeps: {frigo_days: 2, congelo: true}
+
+  plan_b: []

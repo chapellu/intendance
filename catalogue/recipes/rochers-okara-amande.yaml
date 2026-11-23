@@ -1,0 +1,61 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# À MI-CHEMIN DU MACARON PROVENÇAL ET DU ROCHER COCO : okara d'amande, agave,
+# farine d'épeautre, un œuf, extrait d'amande amère, pochés à la douille
+# cannelée en grosses cerises, 15 min.
+
+recipe:
+  id: rochers-okara-amande
+  title: Rochers-macarons à l'okara d'amande
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Et l'okara, on en fait quoi ? (part 2) : des recettes sucrées ! », blog Saines Gourmandises, 25 février 2015"
+    url: https://saines-gourmandises.fr/et-lokara-on-en-fait-quoi-part-2/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4
+    pieces: 16
+  time_min_total: 20
+  active_min: 5
+
+  apports:
+    proteine: oeuf
+    feculent: aucun
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: okara, name: "okara d'amande bien égoutté", qty: 120, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 60, unit: g}
+    - {id: farine-epeautre, name: "farine d'épeautre T130", qty: 25, unit: g}
+    - {id: oeufs, name: "œuf", qty: 1, unit: pièce}
+    - {id: extrait-amande-amere, name: "extrait d'amande amère (demi-c. à c.)", qty: 1, unit: pincée}
+
+  steps:
+    - id: pocher
+      action: "Préchauffer à 180 °C ; tout mélanger, mettre en poche cannelée et pocher de petits rochers sur un papier"
+      needs: []
+      uses: [okara, sirop-agave, farine-epeautre, oeufs, extrait-amande-amere]
+      time_min: 5
+      kid: {age_min_months: 36, task: "pocher les rochers"}
+    - id: cuire
+      action: "Cuire 15 min"
+      needs: [bake]
+      uses: []
+      time_min: 15
+      attended: false
+
+  emits:
+    - kind: base
+      type: rochers-okara-amande
+      qty_band: 2-repas
+      keeps: {frigo_days: 5, congelo: false}
+
+  plan_b: []

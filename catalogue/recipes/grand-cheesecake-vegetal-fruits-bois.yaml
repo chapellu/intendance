@@ -1,0 +1,80 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# POUR 12 À 15 : fond sablé à l'huile de coco tassé dans un cercle de 25 cm, 15 min ;
+# un « curd » de mûres et myrtilles mixées avec agave, agar-agar, crème de coco,
+# vanille, farine et huile de coco, bouilli 3 min, remixé et versé ; une nuit
+# au frais ; chantilly de coco et volutes de confiture de mûres.
+
+recipe:
+  id: grand-cheesecake-vegetal-fruits-bois
+  title: Grand cheesecake végétal aux fruits des bois
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Grand cheesecake végétal aux fruits des bois », blog Saines Gourmandises, 11 août 2016"
+    url: https://saines-gourmandises.fr/chouette-mures-mures/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 13          # « pour 12 à 15 personnes »
+  lot_entier: true
+  time_min_total: 50
+  active_min: 30
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: "farine T110 de grand épeautre (265 + 25 g)", qty: 290, unit: g}
+    - {id: sucre-complet, name: "sucre de coco", qty: 100, unit: g}
+    - {id: huile-coco, name: "huile de coco (150 + 75 g)", qty: 225, unit: g}
+    - {id: fleur-de-sel, name: "grosse pincée de fleur de sel", qty: 1, unit: bonne pincée, seasoning: true}
+    - {id: mures, name: "mûres (+ quelques-unes pour décorer)", qty: 260, unit: g}
+    - {id: myrtilles, name: "myrtilles (+ quelques-unes)", qty: 175, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 200, unit: g}
+    - {id: agar-agar, name: "agar-agar", qty: 6, unit: g}
+    - {id: creme-coco, name: "crème de coco (40 cl + 40 cl très froide)", qty: 80, unit: cl}
+    - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 2, unit: c. à s.}
+    - {id: confiture-mures, name: "confiture de mûres ou de myrtilles", qty: 200, unit: g}
+
+  steps:
+    - id: fond
+      action: "Préchauffer à 180 °C ; sabler 265 g de farine, le sucre, 150 g d'huile de coco et le sel, tasser dans un cercle de 25 cm et cuire 15 min"
+      needs: [bake]
+      uses: [sucre-complet, fleur-de-sel]
+      time_min: 20
+      kid: {age_min_months: 30, task: "tasser le fond"}
+    - id: curd
+      action: "Mixer mûres, myrtilles, agave, agar-agar, 40 cl de crème de coco, vanille, 25 g de farine et 75 g d'huile de coco, puis bouillir 3 min en fouettant"
+      needs: [blend-smooth, simmer]
+      charge_partielle: true
+      uses: [mures, myrtilles, sirop-agave, agar-agar, extrait-vanille, farine-epeautre, huile-coco]
+      time_min: 10
+    - id: prendre
+      action: "Remixer, verser sur le fond, couvrir et mettre au frais"
+      needs: [blend-smooth]
+      uses: []
+      time_min: 3
+      attente_min: 600
+      attente_raison: "une nuit au frais"
+    - id: finir
+      action: "Couvrir de chantilly de coco très froide et y étirer au doigt des gouttes de confiture mixée ; quelques fruits"
+      needs: []
+      uses: [creme-coco, confiture-mures]
+      time_min: 10
+
+  emits:
+    - kind: reste-plat
+      type: grand-cheesecake-vegetal-fruits-bois
+      qty_band: 3-repas
+      keeps: {frigo_days: 1, congelo: false}
+
+  plan_b: []

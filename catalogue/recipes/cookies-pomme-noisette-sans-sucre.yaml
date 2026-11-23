@@ -1,0 +1,71 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# VINGT-CINQ COOKIES SUCRÉS PAR LA POMME SÉCHÉE : rondelles déshydratées un peu
+# molles (pas des chips) hachées avec farine, levure, sucre vanillé, huile de
+# coco, jus de pomme et fleur de sel, puis les noisettes ; boules de 20 g
+# écrasées, 20 min à 150 °C puis 10 min à 100 °C. Au petit blender, en
+# plusieurs fois.
+
+recipe:
+  id: cookies-pomme-noisette-sans-sucre
+  title: Cookies pomme-noisette sans sucre ajouté
+  creneaux: [gouter]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Cookies pomme-noisette sans sucre ajouté », blog Saines Gourmandises, 22 septembre 2020"
+    url: https://saines-gourmandises.fr/desolee-ils-ne-savent-vraiment-pas-se-tenir/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « environ 25 biscuits »
+    pieces: 25
+  time_min_total: 50
+  active_min: 20
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: pommes-sechees, name: "rondelles de pommes séchées moelleuses", qty: 125, unit: g}
+    - {id: farine-epeautre, name: "farine T110 de grand épeautre", qty: 125, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever (demi-sachet)", qty: 0.5, unit: sachet}
+    - {id: sucre-vanille, name: "sucre vanillé", qty: 3, unit: sachet}
+    - {id: huile-coco, name: "huile de coco", qty: 100, unit: g}
+    - {id: noisettes, name: "noisettes décortiquées", qty: 125, unit: g}
+    - {id: jus-pomme, name: "jus de pomme", qty: 3, unit: c. à s.}
+    - {id: fleur-de-sel, name: "grosse pincée de fleur de sel", qty: 1, unit: bonne pincée, seasoning: true}
+
+  steps:
+    - id: pate
+      action: "Préchauffer à 150 °C ; hacher en pâte tous les ingrédients sauf les noisettes, puis ajouter les noisettes"
+      needs: [chop-coarse-small]
+      uses: [pommes-sechees, farine-epeautre, poudre-a-lever, sucre-vanille, huile-coco, jus-pomme, fleur-de-sel, noisettes]
+      time_min: 8
+    - id: faconner
+      action: "Former des boules de 20 g et les écraser sur une plaque chemisée"
+      needs: []
+      uses: []
+      time_min: 8
+      kid: {age_min_months: 30, task: "écraser les boules"}
+    - id: cuire
+      action: "Cuire 20 min à 150 °C puis 10 min à 100 °C, et laisser refroidir avant de ranger"
+      needs: [bake]
+      uses: []
+      time_min: 30
+      attended: false
+
+  emits:
+    - kind: base
+      type: cookies-pomme-noisette-sans-sucre
+      qty_band: 3-repas
+      keeps: {frigo_days: 15, congelo: false}
+
+  plan_b: []

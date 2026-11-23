@@ -1,0 +1,79 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LES COQUES D'AVOCAT SERVENT DE MOULE : nettoyées, peintes au pinceau d'une couche
+# épaisse de chocolat 70 % durcie au frais ; garnies d'une mousse de chocolat,
+# lait d'avoine, agave, arômes caramel et vanille, rhum, chair d'avocat mixée
+# (facultative), blancs en neige, un biscuit imbibé de café enfoncé au centre ;
+# une nuit, puis on déchire les coques.
+
+recipe:
+  id: oeufs-condor-mousse-caramel-cafe
+  title: « Œufs de condor » en mousse choco-caramel, biscuit café et coque de chocolat
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Des œufs de condor pour votre dessert de Pâques ? », blog Saines Gourmandises, 16 avril 2019"
+    url: https://saines-gourmandises.fr/88973/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « pour 6 personnes (6 demi-œufs) »
+  time_min_total: 30
+  active_min: 25
+
+  apports:
+    proteine: oeuf
+    feculent: biscuit
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: chocolat-noir, name: "chocolat noir pâtissier 70 %", qty: 250, unit: g}
+    - {id: avocat, name: "avocats Hass mûrs (3 coques, 1 chair)", qty: 3, unit: pièce}
+    - {id: lait-avoine, name: "lait d'avoine ou de soja", qty: 100, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 65, unit: g}
+    - {id: arome-caramel, name: "arôme de caramel (ou vanille)", qty: 1, unit: c. à s.}
+    - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 1, unit: c. à s.}
+    - {id: rhum, name: "rhum", qty: 1, unit: c. à s., optional: true}
+    - {id: oeufs, name: "œufs ultra frais", qty: 3, unit: pièce}
+    - {id: biscuits-cuillere, name: "biscuits à la cuillère", qty: 6, unit: pièce}
+    - {id: cafe, name: "café bien corsé", qty: 20, unit: cl}
+    - {id: fleur-de-sel, name: "pincée de fleur de sel", qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: coques
+      action: "Vider les avocats sans abîmer les coques, garder la plus belle chair ; brosser et sécher les coques, puis les peindre d'une couche épaisse de chocolat fondu"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [avocat, chocolat-noir]
+      time_min: 15
+      attente_min: 60
+      attente_raison: "le chocolat durcit au frais"
+    - id: mousse
+      action: "Chauffer le lait et le verser sur le reste du chocolat avec l'agave, les arômes, le rhum, le sel et 3 jaunes ; mixer avec la chair d'avocat"
+      needs: [simmer, blend-smooth]
+      charge_partielle: true
+      uses: [lait-avoine, sirop-agave, arome-caramel, extrait-vanille, rhum, fleur-de-sel]
+      time_min: 8
+    - id: remplir
+      action: "Incorporer les blancs en neige, remplir les coques et y enfoncer un biscuit à peine imbibé de café"
+      needs: []
+      uses: [oeufs, biscuits-cuillere, cafe]
+      time_min: 8
+      attente_min: 600
+      attente_raison: "une nuit au frais"
+      kid: {age_min_months: 36, task: "enfoncer les biscuits"}
+    - id: demouler
+      action: "Déchirer délicatement les peaux d'avocat pour libérer les coques de chocolat"
+      needs: []
+      uses: []
+      time_min: 6
+
+  emits: []
+
+  plan_b: []

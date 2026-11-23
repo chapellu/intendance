@@ -1,0 +1,77 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE CARCASSE de volaille fermière (fraîche, ou celle d'un poulet rôti) couverte
+# d'eau avec sel et vinaigre de cidre, 12 h à feu minimal ; les os retirés, puis
+# 30 min avec oignon, carottes, poireaux, ail, céleri, girofle et laurier
+# (macis, muscade, carvi ou paprika au goût). Environ 5 l.
+# LA CARCASSE EST UN RESTE du catalogue ; à défaut, le poulet rôti du dimanche.
+
+recipe:
+  id: bouillon-os-volaille
+  title: Bouillon d'os de volaille
+  role: base
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Bienfaits ancestraux des bouillons d'os », blog Saines Gourmandises, 24 février 2023"
+    url: https://saines-gourmandises.fr/bienfaits-ancestraux-des-bouillons-dos/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 12          # « environ 5 l de bouillon »
+  lot_entier: true
+  time_min_total: 760
+  active_min: 20
+
+  accepts:
+    - type: carcasse-volaille
+      qty: {amount: 1, unit: pièce}
+      required: true
+      fallback_recipe: poulet-roti-du-dimanche
+
+  apports:
+    proteine: viande-blanche
+    feculent: aucun
+    legumes: [allium, racine]
+    profil: soupe
+    origine: francais
+
+  ingredients:
+    - {id: carcasse, name: "carcasse de volaille fermière", qty: 1, unit: pièce, from_accepts: true}
+    - {id: gros-sel, name: "sel", qty: 2, unit: c. à s., seasoning: true}
+    - {id: vinaigre, name: "vinaigre de cidre", qty: 3, unit: c. à s.}
+    - {id: oignon, name: "oignon", qty: 1, unit: pièce}
+    - {id: carottes, name: "carottes", qty: 2, unit: pièce}
+    - {id: poireau, name: "poireau", qty: 2, unit: pièce}
+    - {id: ail, name: "gousses d'ail", qty: 3, unit: pièce}
+    - {id: celeri-branche, name: "branches de céleri", qty: 2, unit: pièce}
+    - {id: clous-girofle, name: "clous de girofle", qty: 5, unit: pièce}
+    - {id: laurier, name: "feuilles de laurier", qty: 2, unit: pièce}
+    - {id: eau, name: "eau", qty: 5, unit: l}
+
+  steps:
+    - id: cuire
+      action: "Couvrir la carcasse d'eau dans le faitout avec le sel et le vinaigre, et cuire à feu minimal"
+      needs: [simmer-large]
+      uses: [carcasse, gros-sel, vinaigre, eau]
+      time_min: 5
+      attente_min: 720
+      attente_raison: "12 h à feu minimal"
+    - id: legumes
+      action: "Retirer les os, ajouter les légumes en petits morceaux, girofle, laurier et épices au goût, et cuire encore 30 min"
+      needs: [chop-coarse, simmer-large]
+      uses: [oignon, carottes, poireau, ail, celeri-branche, clous-girofle, laurier]
+      time_min: 35
+      attended: false
+
+  emits:
+    - kind: base
+      type: bouillon-os-volaille
+      qty_band: 3-repas
+      qty: {amount: 500, unit: cl}
+      keeps: {frigo_days: 4, congelo: true}
+
+  plan_b: []

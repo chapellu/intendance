@@ -44,28 +44,31 @@ const fondRentre: Evenement = {
 const cuisson = (plat: string, n: number): Evenement[] =>
   Array.from({ length: n }, (_, i) => ({
     sorte: "cuisine" as const, jour: jourAvant(29 - i), saisi: jourAvant(29 - i), maj: 2 + i,
-    repas: "diner" as const, plat, parts: 4,
+    repas: "diner" as const, plat, parts: 5,
   }));
 
 function apres(n: number) {
-  const rejeu = rejouer(catalogue, [fondRentre, ...cuisson("hachis-parmentier-lentilles", n)], ctx, jourAvant(0));
+  const rejeu = rejouer(catalogue, [fondRentre, ...cuisson("lentilles-paysanne", n)], ctx, jourAvant(0));
   const jeu = creerJeu(catalogue, 7, LUNDI);
   jeu.stock = [];
   // L'intersection de #32, telle que `hydraterGardeManger` la fait.
   jeu.gardeManger = jeu.gardeManger.filter((id) => rejeu.parIngredient.has(id));
   const savoir: Savoir = { rejeu, passe: PASSE_VIDE, cuisinesRecemment: new Set(), planchers: [] };
   const p = proposerCeSoir({ jeu, savoir, recents: new Set(), maintenant: LUNDI, sortis: new Set() });
-  const carte = [...p.cartes, ...p.plus].find((c) => c.plat.id === "hachis-parmentier-lentilles");
+  const carte = [...p.cartes, ...p.plus].find((c) => c.plat.id === "lentilles-paysanne");
   return { rejeu, jeu, carte, liste: sousLeurPlancher(catalogue, rejeu, planchers) };
 }
 
 describe("T134 — cuisiner un plat du fond le consomme, et la liste le recharge", () => {
-  test("le fond juste rentré : aucune ligne de plancher, et le hachis ne demande pas de lentilles", () => {
+  test("le fond juste rentré : aucune ligne de plancher, et les lentilles à la paysanne n'en demandent pas", () => {
     const { liste, carte } = apres(0);
     expect(liste.map((l) => l.ingredient)).not.toContain("lentilles-seches");
     expect(carte?.manque.map((a) => a.id) ?? []).not.toContain("lentilles-seches");
   });
 
+  // T197 — le hachis de lentilles (recette rédigée pour ce dépôt) est retiré ;
+  // les lentilles à la paysanne de l'autrice prennent les mêmes 250 g pour
+  // cinq parts, cuisinées entières.
   // T135 — 200 g par hachis (250 g pour 5 parts, cuisiné pour 4). T142 : le
   // fond rentrait trois sachets de 500 g.
   // T152 — 250 g : le hachis se garde, il se cuisine en lot entier (la fiche
@@ -74,14 +77,14 @@ describe("T134 — cuisiner un plat du fond le consomme, et la liste le recharge
   // T150 — L'ENTAME COMPTE À SA FRACTION : sous un plancher d'un sachet, la
   // liste en demande dès qu'il est entamé — avant, le sachet entamé valait un
   // sachet plein, et elle attendait qu'il soit vide.
-  test("un hachis (250 g) : un demi-sachet, la liste dit « pour le fond »", () => {
+  test("un plat de lentilles (250 g) : un demi-sachet, la liste dit « pour le fond »", () => {
     const { liste } = apres(1);
     const l = liste.find((x) => x.ingredient === "lentilles-seches");
     expect(l).toMatchObject({ a: 0.5, niveau: 1, manque: 1, fond: true });
     expect(phraseDuPlancher(l!, 0)).toContain("à toujours avoir");
   });
 
-  test("deux hachis : les lentilles sont épuisées au rejeu, et « Ce soir » le dit", () => {
+  test("deux plats de lentilles : les lentilles sont épuisées au rejeu, et « Ce soir » le dit", () => {
     const { rejeu, jeu, carte, liste } = apres(2);
     expect(rejeu.parIngredient.has("lentilles-seches")).toBe(false);
     expect(jeu.gardeManger).not.toContain("lentilles-seches");
@@ -383,23 +386,26 @@ describe("T150 — le beurre se rachète sous deux plaquettes, pas sous une", ()
 // T152 — LA FARINE DÉRIVAIT D'UN SAC PAR MOIS : la fournée se cuisine en lot
 // entier (la fiche le dit), mais le rejeu retirait `parts / portions` du foyer.
 describe("T152 — le rejeu retire ce que la fiche fait cuisiner", () => {
-  test("un pain maison pour 2,5 parts prend ses 500 g de farine, pas 208", () => {
-    const pain = catalogue.plats.find((p) => p.id === "pain-maison-semi-complet")!;
+  test("un pain maison pour 2,5 parts prend toute la farine de sa fiche, pas une fraction", () => {
+    const pain = catalogue.plats.find((p) => p.id === "pain-de-mie-son-avoine")!;
     const ev: Evenement[] = [
       { sorte: "entree", jour: "2026-10-22", saisi: "2026-10-22", maj: 1,
         lignes: [{ ingredient: "farine-complete", unites: 1, parUnite: null, zone: null, etat: "sec" as const }] },
       { sorte: "cuisine", jour: "2026-10-23", saisi: "2026-10-23", maj: 2, repas: "gouter", plat: pain.id, parts: 2.5 },
     ];
     expect(pain.portions).toBeGreaterThan(2.5);
-    // T154 : le sac de 1 kg.
-    expect(rejouer(catalogue, ev, ctx, "2026-10-23").parIngredient.get("farine-complete")?.grammes).toBe(1000 - 500);
+    // T154 : le sac de 1 kg. T197 : le pain de mie de l'autrice en prend 375 g,
+    // tout le lot, quel que soit le nombre de parts.
+    const farine = pain.ingredients.find((i) => i.id === "farine-complete")!.qty;
+    expect(farine).toBe(375);
+    expect(rejouer(catalogue, ev, ctx, "2026-10-23").parIngredient.get("farine-complete")?.grammes).toBe(1000 - farine);
   });
 });
 
 // T156 — 60 DÎNERS DE L'ANNÉE N° 11 SANS CAROTTES QUE L'APP CROYAIT LÀ.
 describe("T156 — la carotte à la pièce se retire d'un demi-kilo pesé", () => {
   test("trois carottes (450 g) sur un kilo : il en reste 550 g, pas un demi-kilo entier", () => {
-    const soupe = catalogue.plats.find((p) => p.id === "soupe-pois-casses-carottes")!;
+    const soupe = catalogue.plats.find((p) => p.id === "soupe-reconfortante-epices")!;
     expect(soupe.ingredients.find((i) => i.id === "carottes")).toMatchObject({ qty: 3, unit: "pièce" });
     const ev: Evenement[] = [
       { sorte: "entree", jour: "2026-10-22", saisi: "2026-10-22", maj: 1,
@@ -412,12 +418,16 @@ describe("T156 — la carotte à la pièce se retire d'un demi-kilo pesé", () =
 
 // T157 — 14 DÎNERS SANS LAIT DE COCO QUE L'APP CROYAIT LÀ.
 describe("T157 — la brique de lait de coco a son volume", () => {
-  test("un dahl (400 ml) vide une brique de 40 cl ; un curry (40 cl) aussi", () => {
+  // T197 — le dahl et le curry qui vidaient chacun une brique étaient rédigés
+  // pour ce dépôt ; le fruchtebrot de l'autrice en prend 35 cl, cuit en lot.
+  // Une brique ouverte devient un reste (T135) : ses 5 cl ne restent pas au
+  // placard, et chaque fournée en ouvre une neuve.
+  test("deux fruchtebrots (35 cl chacun) vident chacun une brique de 40 cl", () => {
     const ev: Evenement[] = [
       { sorte: "entree", jour: "2026-10-22", saisi: "2026-10-22", maj: 1,
         lignes: [{ ingredient: "lait-coco", unites: 3, parUnite: null, zone: null, etat: "conserve" as const }] },
-      { sorte: "cuisine", jour: "2026-10-23", saisi: "2026-10-23", maj: 2, repas: "diner", plat: "dahl-lentilles-corail", parts: 5 },
-      { sorte: "cuisine", jour: "2026-10-24", saisi: "2026-10-24", maj: 3, repas: "diner", plat: "curry-pois-chiches", parts: 4 },
+      { sorte: "cuisine", jour: "2026-10-23", saisi: "2026-10-23", maj: 2, repas: "diner", plat: "fruchtebrot", parts: 12 },
+      { sorte: "cuisine", jour: "2026-10-24", saisi: "2026-10-24", maj: 3, repas: "gouter", plat: "fruchtebrot", parts: 12 },
     ];
     expect(rejouer(catalogue, ev, ctx, "2026-10-24").parIngredient.get("lait-coco")?.grammes).toBe(400);
   });

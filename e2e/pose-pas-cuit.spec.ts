@@ -25,7 +25,7 @@ test("trois plats posés par « Proposer », aucun cuit : le cockpit n'annonce a
   const champ = page.getByLabel("chercher un plat par son nom");
   await expect(champ).toBeVisible({ timeout: 30_000 });
 
-  for (const [n, mot] of ["croque-monsieur et salade", "soupe d'orge", "tarte au potimarron"].entries()) {
+  for (const [n, mot] of ["croque-monsieur montagnards", "soupe d'orge", "tarte au potimarron"].entries()) {
     await champ.fill(mot);
     const carte = page.locator(".co-jouable").first();
     await expect(carte.locator(".tete .nom")).toContainText(mot.split(" ")[0]!, { ignoreCase: true });

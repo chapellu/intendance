@@ -10,7 +10,7 @@ Usage:
   python3 compile.py burgers-de-lentilles --time 20        # plan B compression
   python3 compile.py burgers-de-lentilles --no-stock       # the reste is gone
   python3 compile.py burgers-de-lentilles --kids           # monthly kids session
-  python3 compile.py lentilles-mijotees
+  python3 compile.py mitonnee-lentilles
 """
 
 import argparse

@@ -45,7 +45,7 @@ describe("T144 — le lot du midi porte la date de son déjeuner", () => {
   test("T145 — le dahl agrandi de trois parts : son lot porte le midi entier", async () => {
     // Le dahl déclare un reste « 1-repas » que la table entame ; agrandi, il
     // restait « 1 repas » et un midi compté à une part.
-    const dahl = plat("dahl-lentilles-corail");
+    const dahl = plat("dahl-riz-lentilles-corail-carottes");
     await journaliserCuisson(base, {
       jour: "2026-10-25", repas: "diner", plat: platDuSoir(dahl, 3), parts: catalogue.foyer.parts + 3, midi: 3, foyer: catalogue.foyer,
     });
@@ -58,7 +58,7 @@ describe("T144 — le lot du midi porte la date de son déjeuner", () => {
     const lot = (o: Partial<LotStock>): LotStock =>
       ({ kind: "reste-plat", qty: null, unite: null, band: "3-repas", espace: "congelo", born: "2026-10-24", origine: null, maj: 1, ...o }) as LotStock;
     await base.stock.add(lot({ type: "banana-bread", location: "congelo" }));
-    await base.stock.add(lot({ type: "dahl-lentilles-corail", espace: "frigo", location: "frigo", born: "2026-10-25", midiLe: "2026-10-26", midi: 3 }));
+    await base.stock.add(lot({ type: "dahl-riz-lentilles-corail-carottes", espace: "frigo", location: "frigo", born: "2026-10-25", midiLe: "2026-10-26", midi: 3 }));
     await journaliserCuisson(base, { jour: "2026-10-26", repas: "dejeuner", plat: plat(RESTE_DE_LA_VEILLE), parts: 3 });
     expect((await base.stock.toArray()).map((l) => l.type)).toEqual(["banana-bread"]);
   });
@@ -85,8 +85,8 @@ describe("T146 — l'onglet resté ouvert mange quand même son pain", () => {
 
 describe("T146 — le midi sans geste prend sa part du reste au frigo", () => {
   const reste = (o: Partial<LotStock>): LotStock =>
-    ({ type: "curry-pois-chiches", kind: "reste-plat", location: "frigo", espace: "frigo", band: "4-repas", qty: null, unite: null, born: "2026-10-25", origine: null, maj: 1, ...o }) as LotStock;
-  const bande = async () => (await base.stock.toArray()).find((l) => l.type === "curry-pois-chiches")?.band ?? null;
+    ({ type: "goulasch-boeuf", kind: "reste-plat", location: "frigo", espace: "frigo", band: "4-repas", qty: null, unite: null, born: "2026-10-25", origine: null, maj: 1, ...o }) as LotStock;
+  const bande = async () => (await base.stock.toArray()).find((l) => l.type === "goulasch-boeuf")?.band ?? null;
 
   test("entamé au midi : il garde le reste, au prorata — ses boîtes suivent la bande", async () => {
     await base.stock.add(reste({}));

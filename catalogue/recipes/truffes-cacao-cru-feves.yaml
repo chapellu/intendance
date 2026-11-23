@@ -1,0 +1,72 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# BEURRE DE CACAO CRU RÂPÉ fondu au bain-marie hors du feu avec l'huile de coco,
+# la vanille et l'agave ; mixé longuement avec la poudre de cacao cru et la
+# lécithine (sans elle, c'est grumeleux) ; grué mêlé, 12 h au frais en petit
+# plat, puis cubes roulés dans le cacao. Se gardent des semaines.
+
+recipe:
+  id: truffes-cacao-cru-feves
+  title: Truffes végétaliennes au chocolat cru et éclats de fève
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Truffes vegan au chocolat cru (2 recettes !) », blog Saines Gourmandises, 2 décembre 2013"
+    url: https://saines-gourmandises.fr/jai-teste-pour-vous-et-pour-moi-le-chocolat-cru/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « une quarantaine de truffes »
+    pieces: 40
+  lot_entier: true
+  time_min_total: 30
+  active_min: 25
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: cacao, name: "poudre de cacao cru (+ pour rouler)", qty: 110, unit: g}
+    - {id: beurre-cacao, name: "beurre de cacao cru", qty: 85, unit: g}
+    - {id: huile-coco, name: "huile de coco vierge", qty: 55, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 15, unit: cl}
+    - {id: gousse-vanille, name: "gousse de vanille", qty: 1, unit: pièce}
+    - {id: grue-cacao, name: "éclats de fèves de cacao", qty: 2, unit: c. à s.}
+    - {id: lecithine-soja, name: "lécithine de soja", qty: 1, unit: c. à s.}
+
+  steps:
+    - id: fondre
+      action: "Râper le beurre de cacao dans un bol, ajouter huile de coco, vanille grattée et agave, et fondre au bain-marie hors du feu en remuant"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [beurre-cacao, huile-coco, gousse-vanille, sirop-agave]
+      time_min: 8
+    - id: mixer
+      action: "Mixer plusieurs minutes avec la poudre de cacao et la lécithine, mêler le grué et couler dans un petit plat chemisé"
+      needs: [blend-small]
+      uses: [cacao, lecithine-soja, grue-cacao]
+      time_min: 6
+      attente_min: 720
+      attente_raison: "12 h au frais"
+    - id: rouler
+      action: "Démouler, couper en cubes de 1,5 à 2 cm et les rouler dans le cacao"
+      needs: [chop-coarse]
+      uses: []
+      time_min: 12
+      kid: {age_min_months: 30, task: "rouler les truffes dans le cacao"}
+
+  emits:
+    - kind: base
+      type: truffes-cacao-cru-feves
+      qty_band: 3-repas
+      keeps: {frigo_days: 30, congelo: false}
+
+  plan_b: []

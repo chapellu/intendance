@@ -37,7 +37,7 @@ recipe:
     - type: carcasse-volaille
       qty: {amount: 1, unit: pièce}
       required: true
-      fallback_recipe: poulet-roti
+      fallback_recipe: poulet-roti-du-dimanche
     - type: poulet-cuit
       qty: {amount: 100, unit: g}
       required: false
