@@ -108,7 +108,7 @@ describe("un jour sans courses, le fond en place : ce qui se fait avec ce qui es
       const pl = plat(p);
       return sans(pl, pl.ingredients.find((i) => i.id === id)!);
     };
-    expect(ligne("poulet-roti", plat("poulet-roti").ingredients.find((i) => i.id.startsWith("poulet"))!.id)).toBe(true);
+    expect(ligne("poulet-roti-du-dimanche", plat("poulet-roti-du-dimanche").ingredients.find((i) => i.id.startsWith("poulet"))!.id)).toBe(true);
     expect(ligne("pates-bolognaise", "fromage-rape")).toBe(false);
     const omelette = catalogue.plats.find((p) => p.apports.proteine === "oeuf" && p.ingredients.some((i) => i.id === "oeufs"))!;
     expect(ligne(omelette.id, "oeufs")).toBe(true);
@@ -117,7 +117,7 @@ describe("un jour sans courses, le fond en place : ce qui se fait avec ce qui es
   test("aucune carte de la main ne manque de ce dont le plat ne se fait pas — T165", () => {
     // Le poulet d'un poulet rôti n'est pas « un article à prendre en passant ».
     for (const c of proposition.cartes) expect(c.manqueCentral, c.plat.id).toBe(false);
-    const poulet = proposition.plus.find((c) => c.plat.id === "poulet-roti");
+    const poulet = proposition.plus.find((c) => c.plat.id === "poulet-roti-du-dimanche");
     if (poulet && poulet.manque.some((a) => a.id.startsWith("poulet"))) expect(poulet.manqueCentral).toBe(true);
   });
 
@@ -160,13 +160,13 @@ describe("un jour sans courses, le fond en place : ce qui se fait avec ce qui es
 });
 
 describe("un article manquant se NOMME", () => {
-  test("sans lait de coco, le dahl demande exactement le lait de coco", () => {
-    const { proposition } = monde({ evts: [fondRentre(veille(LUNDI), ["lait-coco"])] });
+  test("sans lentilles corail, le dahl demande exactement le lentilles corail", () => {
+    const { proposition } = monde({ evts: [fondRentre(veille(LUNDI), ["lentilles-corail"])] });
     const dahl = [...proposition.cartes, ...proposition.plus].find(
-      (c) => c.plat.id === "dahl-lentilles-corail",
+      (c) => c.plat.id === "dahl-riz-lentilles-corail-carottes",
     )!;
-    expect(dahl.manque.map((a) => a.id)).toEqual(["lait-coco"]);
-    expect(dahl.manque[0]!.nom).toMatch(/coco/);
+    expect(dahl.manque.map((a) => a.id)).toEqual(["lentilles-corail"]);
+    expect(dahl.manque[0]!.nom).toMatch(/corail/);
   });
 
   test("zéro passe devant un, un devant plusieurs — sans appel, un jour sans courses", () => {
@@ -230,7 +230,7 @@ describe("un article hors saison ne compte pas comme « un article à acheter »
     const base = { presse: null, manque: [], horsSaison: [], tient: true, score: 0 } as unknown as CarteDuSoir;
     const orties = { id: "orties", nom: "orties" };
     const presse = { ...base, presse: { placard: "riz" }, manque: [orties], horsSaison: [orties], plat: plat("veloute-ortie") } as CarteDuSoir;
-    const deux = { ...base, manque: [orties, orties], plat: plat("lentilles-mijotees") } as CarteDuSoir;
+    const deux = { ...base, manque: [orties, orties], plat: plat("mitonnee-lentilles") } as CarteDuSoir;
     expect([presse, deux].sort(ordre(false))[0]).toBe(deux);
   });
 });
@@ -252,7 +252,7 @@ describe("ce qui doit être mangé passe devant, même devant zéro article", ()
     // 70 jours sur 90 : la marque « à manger » de T57 est franchie.
     const { proposition } = monde({
       evts: [fondRentre(veille(LUNDI))],
-      stock: [resteDe("curry-pois-chiches", veille(LUNDI, 70), "congelo")],
+      stock: [resteDe("goulasch-boeuf", veille(LUNDI, 70), "congelo")],
     });
     const tete = proposition.cartes[0]!;
     expect(tete.presse).not.toBeNull();
@@ -305,13 +305,13 @@ describe("ce qui doit être mangé passe devant, même devant zéro article", ()
   test("un lot JEUNE du congélateur ne presse pas — il attend, et le cockpit le sait", () => {
     const { proposition } = monde({
       evts: [fondRentre(veille(LUNDI))],
-      stock: [resteDe("curry-pois-chiches", veille(LUNDI, 5), "congelo")],
+      stock: [resteDe("goulasch-boeuf", veille(LUNDI, 5), "congelo")],
     });
     expect(proposition.cartes.every((c) => c.presse === null)).toBe(true);
-    expect(proposition.attend.map((l) => [l.type, l.location])).toEqual([["curry-pois-chiches", "congelo"]]);
+    expect(proposition.attend.map((l) => [l.type, l.location])).toEqual([["goulasch-boeuf", "congelo"]]);
     // La carte qui le mangerait le dit, sans passer devant le rang.
     const reste = [...proposition.cartes, ...proposition.plus].find((c) => c.plat.id === "reste-de-la-veille")!;
-    expect(reste.attend?.type).toBe("curry-pois-chiches");
+    expect(reste.attend?.type).toBe("goulasch-boeuf");
   });
 
   test("une base cuisinée à mi-vie au frigo fait passer devant le plat qui la finit", () => {
@@ -352,7 +352,7 @@ describe("un jour de courses, plusieurs achats redeviennent possibles", () => {
 
 describe("ce qui tient ce soir : prêt à 18 h si on le lance maintenant", () => {
   test("une étape faite PENDANT une autre ne s'additionne pas", () => {
-    const p = plat("curry-pois-chiches");
+    const p = plat("blinis-de-legumes");
     const somme = p.steps.reduce((a, s) => a + s.minutes + (s.attente ?? 0), 0);
     expect(p.steps.some((s) => s.enParallele)).toBe(true);
     expect(horaire(p).total).toBeLessThan(somme);
@@ -375,8 +375,8 @@ describe("ce qui tient ce soir : prêt à 18 h si on le lance maintenant", () =>
 
   test("à rang d'achats égal, ce qui tient passe devant ce qui ne tient pas", () => {
     const base = { presse: null, manque: [], horsSaison: [], score: 0 } as unknown as CarteDuSoir;
-    const tient = { ...base, tient: true, score: -5, plat: plat("lentilles-mijotees") } as CarteDuSoir;
-    const tard = { ...base, tient: false, score: 9, plat: plat("curry-pois-chiches") } as CarteDuSoir;
+    const tient = { ...base, tient: true, score: -5, plat: plat("mitonnee-lentilles") } as CarteDuSoir;
+    const tard = { ...base, tient: false, score: 9, plat: plat("goulasch-boeuf") } as CarteDuSoir;
     expect([tard, tient].sort(ordre(false))[0]).toBe(tient);
   });
 });
@@ -411,7 +411,7 @@ describe("à rang égal, les préférences départagent — et seulement là", (
 
   test("quiche, soupe et gratin pèsent ; les pâtes non", () => {
     expect(scoreFormat(plat("quiche-courgettes-yaourt"))).toBeGreaterThan(0);
-    expect(scoreFormat(plat("hachis-parmentier-lentilles"))).toBeGreaterThan(0);
+    expect(scoreFormat(plat("hachis-parmentier-50-50"))).toBeGreaterThan(0);
     const pates = catalogue.plats.find((p) => p.format === "pates")!;
     expect(scoreFormat(pates)).toBe(0);
   });
@@ -421,7 +421,7 @@ describe("à rang égal, les préférences départagent — et seulement là", (
     expect(scoreSaison(catalogue, q, 7)).toBeGreaterThan(0);
     expect(scoreSaison(catalogue, q, 1)).toBeLessThan(0);
     // Un dîner du fond — oignon, carotte, lentilles — n'a pas de saison.
-    expect(scoreSaison(catalogue, plat("lentilles-mijotees"), 1)).toBe(0);
+    expect(scoreSaison(catalogue, plat("dahl-riz-lentilles-corail-carottes"), 1)).toBe(0);
   });
 });
 
@@ -462,7 +462,7 @@ describe("ce qui est ici : le rejeu entier, avec une vie pour le frais court", (
 
   test("le sel ne manque jamais, l'accompagnement se dit sans compter", () => {
     const vide = new Set<string>();
-    const sel = ceQuiManque(catalogue, plat("lentilles-mijotees"), vide);
+    const sel = ceQuiManque(catalogue, plat("mitonnee-lentilles"), vide);
     expect(sel.ingredients.map((a) => a.id)).not.toContain("sel");
     const escalopes = ceQuiManque(catalogue, plat("escalopes-emmental-champignons"), vide);
     expect(escalopes.aCote.map((a) => a.id)).toContain("salade-verte");
@@ -477,10 +477,10 @@ describe("posé depuis « Ce soir », la liste ne demande que ce que la carte di
     jeu.dejaLa[soir] = { plat: c.plat.id, ids: c.ici };
   };
 
-  test("le dahl sans lait de coco : la liste dit lait de coco, et rien de ce que la carte disait là", () => {
-    const { jeu, proposition } = monde({ evts: [fondRentre(veille(LUNDI), ["lait-coco"])] });
-    const dahl = [...proposition.cartes, ...proposition.plus].find((c) => c.plat.id === "dahl-lentilles-corail")!;
-    expect(dahl.manque.map((a) => a.id)).toEqual(["lait-coco"]);
+  test("le dahl sans lentilles corail : la liste dit lentilles corail, et rien de ce que la carte disait là", () => {
+    const { jeu, proposition } = monde({ evts: [fondRentre(veille(LUNDI), ["lentilles-corail"])] });
+    const dahl = [...proposition.cartes, ...proposition.plus].find((c) => c.plat.id === "dahl-riz-lentilles-corail-carottes")!;
+    expect(dahl.manque.map((a) => a.id)).toEqual(["lentilles-corail"]);
 
     // LE BUG : posé sans l'instantané, la liste lit l'intersection de #32 et
     // réclame ce que le fond rentré a apporté — la carte et la liste se
@@ -492,39 +492,39 @@ describe("posé depuis « Ce soir », la liste ne demande que ce que la carte di
     poserDepuisCeSoir(jeu, proposition.soir, dahl);
     const attendu = [...dahl.manque, ...dahl.aCote].map((a) => a.id).sort();
     expect(cles(jeu)).toEqual(attendu);
-    expect(cles(jeu)).toContain("lait-coco");
+    expect(cles(jeu)).toContain("lentilles-corail");
   });
 
   test("l'intersection de #32 n'est pas touchée : l'instantané ne vaut que pour CE plat", () => {
-    const { jeu, proposition } = monde({ evts: [fondRentre(veille(LUNDI), ["lait-coco"])] });
-    const dahl = [...proposition.cartes, ...proposition.plus].find((c) => c.plat.id === "dahl-lentilles-corail")!;
+    const { jeu, proposition } = monde({ evts: [fondRentre(veille(LUNDI), ["lentilles-corail"])] });
+    const dahl = [...proposition.cartes, ...proposition.plus].find((c) => c.plat.id === "dahl-riz-lentilles-corail-carottes")!;
     const avant = [...jeu.gardeManger];
     poserDepuisCeSoir(jeu, proposition.soir, dahl);
     expect(jeu.gardeManger).toEqual(avant);
     // Un autre plat simulé sur le même créneau — ce que fait le comptoir pour
     // chaque candidat — n'en hérite pas.
     const choix = [...jeu.choix];
-    choix[proposition.soir] = "lentilles-mijotees";
+    choix[proposition.soir] = "mitonnee-lentilles";
     const autre = [...calculer(jeu, choix).panier.values()].map((l) => l.id);
-    jeu.choix[proposition.soir] = "lentilles-mijotees";
+    jeu.choix[proposition.soir] = "mitonnee-lentilles";
     jeu.dejaLa[proposition.soir] = null;
     expect(autre.sort()).toEqual(cles(jeu));
   });
 
   test("rentrer l'article manquant APRÈS ne retire pas sa ligne : l'instantané est figé au geste", () => {
-    const { jeu, proposition } = monde({ evts: [fondRentre(veille(LUNDI), ["lait-coco"])] });
-    const dahl = [...proposition.cartes, ...proposition.plus].find((c) => c.plat.id === "dahl-lentilles-corail")!;
+    const { jeu, proposition } = monde({ evts: [fondRentre(veille(LUNDI), ["lentilles-corail"])] });
+    const dahl = [...proposition.cartes, ...proposition.plus].find((c) => c.plat.id === "dahl-riz-lentilles-corail-carottes")!;
     poserDepuisCeSoir(jeu, proposition.soir, dahl);
-    // Le lait de coco rentré : le rejeu le voit, l'intersection non, et
+    // Le lentilles corail rentré : le rejeu le voit, l'intersection non, et
     // l'instantané ne bouge pas — la ligne reste sous le doigt, cochée.
     const rejeu = rejouer(
       catalogue,
-      [fondRentre(veille(LUNDI), ["lait-coco"]), { sorte: "entree", jour: iso(LUNDI), saisi: iso(LUNDI), maj: 3, lignes: [{ ingredient: "lait-coco", unites: 1, parUnite: null, zone: null, etat: "sec" }] }],
+      [fondRentre(veille(LUNDI), ["lentilles-corail"]), { sorte: "entree", jour: iso(LUNDI), saisi: iso(LUNDI), maj: 3, lignes: [{ ingredient: "lentilles-corail", unites: 1, parUnite: null, zone: null, etat: "sec" }] }],
       contexte(catalogue),
       iso(LUNDI),
     );
     jeu.gardeManger = jeu.gardeManger.filter((id) => rejeu.parIngredient.has(id));
-    expect(cles(jeu)).toContain("lait-coco");
+    expect(cles(jeu)).toContain("lentilles-corail");
   });
 });
 
@@ -544,7 +544,7 @@ describe("la proposition ne pose rien et ne touche à rien", () => {
 
 describe("trois heures ne décongèlent pas un bloc : ce qui demande la veille se sort pour demain", () => {
   test("sauces, soupes et mijotés vont du congélo au feu ; gratins, quiches et pièces non", () => {
-    for (const t of ["sauce-bolognaise", "curry-pois-chiches", "soupe-pois-casses", "veloute-potiron", "bouillon-maison", "bolognaise-lentilles", "pois-chiches-cuits"])
+    for (const t of ["sauce-bolognaise", "goulasch-boeuf", "soupe-pois-casses", "veloute-potiron", "bouillon-maison", "bolognaise-lentilles", "pois-chiches-cuits"])
       expect(directAuFeu(catalogue, t), t).toBe(true);
     for (const t of ["gratin-pates", "lasagnes", "quiche-courgettes", "poulet-cuit", "escalopes-vegetariennes"])
       expect(directAuFeu(catalogue, t), t).toBe(false);
@@ -571,7 +571,7 @@ describe("trois heures ne décongèlent pas un bloc : ce qui demande la veille s
   test("une soupe congelée, elle, se cuisine ce soir et ne demande rien la veille", () => {
     const { proposition } = monde({
       evts: [fondRentre(veille(LUNDI))],
-      stock: [resteDe("curry-pois-chiches", veille(LUNDI, 70), "congelo")],
+      stock: [resteDe("goulasch-boeuf", veille(LUNDI, 70), "congelo")],
     });
     expect(proposition.cartes[0]!.presse).not.toBeNull();
     expect(proposition.aSortir).toEqual([]);
@@ -613,7 +613,7 @@ describe("un plat posé mais pas cuisiné ne laisse aucun reste dans « ce qui a
     const jeu = creerJeu(catalogue, 7, maintenant);
     jeu.stock = [];
     const ou = (jour: number, repas: string) => jeu.creneaux.findIndex((c) => c.jour === jour && c.repas === repas);
-    jeu.choix[ou(0, "diner")] = "croque-monsieur-salade";
+    jeu.choix[ou(0, "diner")] = "croque-monsieur-montagnards";
     for (const [j, r, p] of [
       [0, "dejeuner", "soupe-orge-petits-pois"],
       [1, "diner", "soupe-orge-petits-pois"],
@@ -645,7 +645,7 @@ describe("T185 — un jour sans courses, la main se fait avec ce qui est là", (
     }], contexte(catalogue), iso(LUNDI));
     const ici = ceQuiEstIci(catalogue, [], rejeu, iso(LUNDI));
     expect(ici.has("oeufs")).toBe(true);
-    const p = plat("frittata-petits-pois-cebettes");
+    const p = plat("frittata-vegetarienne");
     const suffit = suffitAuStock(catalogue, rejeu);
     const oeuf = ceQuiManque(catalogue, p, ici, false, suffit).ingredients.find((a) => a.id === "oeufs");
     expect(oeuf?.pasAssez).toBe(true);
@@ -660,7 +660,7 @@ describe("T185 — un jour sans courses, la main se fait avec ce qui est là", (
         sorte: "entree", jour, saisi: jour, maj: 1,
         lignes: [{ ingredient: "oeufs", unites: 2, parUnite, zone: null, etat: "sec" }],
       }], contexte(catalogue), iso(LUNDI)));
-    const p = plat("frittata-petits-pois-cebettes");
+    const p = plat("frittata-vegetarienne");
     const ligne = p.ingredients.find((i) => i.id === "oeufs")!;
     expect(avec({ amount: 6, unit: "pièce" })(p, ligne, "oeufs")).toBe(true);
     expect(avec(null)(p, ligne, "oeufs")).toBe(true);

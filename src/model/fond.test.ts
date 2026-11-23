@@ -25,7 +25,8 @@ describe("le fond de roulement fait exister comme stock ce qu'aucun relevé n'av
   test("lentilles corail, pois cassés, surgelés et œufs sont posables, à zéro", () => {
     const rejeu = rejouer(catalogue, [], ctx, "2026-10-19");
     const p = new Map(posables(catalogue, rejeu).map((x) => [x.ingredient, x]));
-    for (const id of ["lentilles-corail", "pois-casses", "epinards-surgeles", "oeufs", "lait-coco"]) {
+    // T197 : le lait de coco a quitté le fond ; le soja-vanille y est entré.
+    for (const id of ["lentilles-corail", "pois-casses", "epinards-surgeles", "oeufs", "lait-soja-vanille"]) {
       expect(p.get(id), id).toBeDefined();
       expect(p.get(id)!.comptable, id).toBe(true);
       expect(p.get(id)!.minimumDuFond, id).toBeGreaterThanOrEqual(1);
@@ -188,10 +189,17 @@ describe("les haricots rouges secs bouillent dix minutes à gros bouillons", () 
     // le premier plat du corpus à partir du sachet sec.
     for (const p of catalogue.plats) {
       const trempe = p.steps.some((s) => (s.attente ?? 0) >= 480);
-      if (!trempe || !p.ingredients.some((i) => i.id === "haricots-rouges")) continue;
-      expect(p.steps.some((s) => /gros bouillons/.test(s.action) && /10 minutes/.test(s.action)), p.id)
+      // T197 — un REMPLAÇANT compte aussi : la souche de légumineuses propose
+      // les haricots rouges secs en `subs`, et c'est là que le geste manquait.
+      const rouges = p.ingredients.some(
+        (i) => i.id === "haricots-rouges" || (i.remplacants ?? []).some((r) => r.id === "haricots-rouges"),
+      );
+      if (!trempe || !rouges) continue;
+      const texte = (s: (typeof p.steps)[number]) => `${s.action} ${s.astuce ?? ""}`;
+      expect(p.steps.some((s) => /gros bouillons/.test(texte(s)) && /10 minutes/.test(texte(s))), p.id)
         .toBe(true);
     }
-    expect(plat("chili-haricots-rouges").steps.map((s) => s.id)).toContain("bouillir");
+    expect(plat("legumineuses-mitonnees").ingredients.some((i) =>
+      (i.remplacants ?? []).some((r) => r.id === "haricots-rouges"))).toBe(true);
   });
 });

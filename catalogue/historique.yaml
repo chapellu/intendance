@@ -7,5 +7,5 @@
 # the failure a "deck qui varie" is meant to avoid.
 cuisines:
   - {recipe: gratin-de-pates-tomates, date: 2026-08-08}
-  - {recipe: poulet-roti, date: 2026-08-05}
-  - {recipe: croque-monsieur-salade, date: 2026-08-09}
+  - {recipe: poulet-roti-du-dimanche, date: 2026-08-05}
+  - {recipe: croque-monsieur-montagnards, date: 2026-08-09}

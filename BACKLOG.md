@@ -6879,46 +6879,42 @@ reformulé comme ceux du livre.
       apport, et la même contrainte s'il y en a une. Une vague par PR, avec
       ses tests.
 
-      **DÉJÀ COUVERTES (première vague possible).** `poulet-roti` →
-      `poulet-roti-du-dimanche` (penser au `fallback_recipe` de
-      `cock-a-leekie`) · `lentilles-mijotees` → `lentilles-paysanne` ou
-      `mitonnee-lentilles` · `frittata-petits-pois-cebettes` →
-      `omelette-du-potager` ou `frittata-vegetarienne` ·
-      `gratin-courgettes-riz` → `gratin-courge-riz` · `salade-lentilles-feta`
-      → `salade-lentilles-amelioree` · `tarte-tomates-moutarde` →
-      `tarte-tomates-meme` · `croque-monsieur-salade` →
-      `croque-monsieur-montagnards` · `hachis-parmentier-lentilles` →
-      `hachis-parmentier-50-50` · `crepes-maison` →
-      `crepes-son-avoine-fleur-oranger` · `cookies-avoine-maison` → les
-      cookies du blog · `pain-maison-semi-complet` → les pains de mie du blog.
+      **PREMIÈRE VAGUE FAITE (2026-11-23) : VINGT RECETTES RETIRÉES.** Onze
+      qu'une recette sourcée couvrait déjà (poulet rôti, lentilles mijotées,
+      frittata, gratin courgettes-riz, salade lentilles-feta, tarte tomates-
+      moutarde, croque-monsieur-salade, hachis de lentilles, crêpes, cookies
+      d'avoine, pain maison) et les neuf anciens dîners du fond. Ce qui les
+      tenait est rebranché sur l'autrice :
+      — le fond de roulement : dix de ses dîners, élargi de la courge, du
+        poireau, du parmesan, de la sauce tomate, du lait et du soja-vanille.
+        Le lait de croissance n'est plus suivi (le foyer le gère), le lait de
+        coco n'y est plus (sa brique garde sa taille dans `conditionnements`).
+        Trois fiches portent une adaptation du foyer en `subs` (huile et
+        gingembre du dahl, fromage de la frittata, potimarron du velouté), et
+        `fond.manques` compte une ligne couverte si un remplaçant est au fond.
+        La règle « chacun se fait toute l'année » devient « chaque mois, au
+        moins trois sont de saison » : elle cuisine avec les saisons ;
+      — le pain du matin : son pain de mie au son d'avoine, celui que le foyer
+        fait (`creneaux: [petit-dejeuner]`, congelé tranché en deux sachets) ;
+      — le goûter puise dans ses crêpes au son d'avoine et ses cookies
+        pralinés ; les replis de `cock-a-leekie` et des burgers visent son
+        poulet rôti et sa mitonnée ;
+      — les tests qui prenaient ces plats pour exemples prennent les siens et
+        vérifient la même propriété ; celui du volume de questions vérifie ce
+        que son titre promet au lieu de comparer deux totaux.
+      Le retrait a révélé un vrai trou : sa souche de légumineuses propose des
+      haricots rouges secs en remplaçant sans dire les dix minutes de grosse
+      ébullition. L'astuce de l'étape le dit, et le garde-fou regarde
+      désormais les remplaçants.
 
-      **LE FOND DE ROULEMENT N'EST PLUS UN BLOCAGE (fait le 2026-11-23).**
-      Il avait été écrit en même temps que les neuf dîners rédigés pour ce
-      dépôt, et leur allait comme un gant : un seul plat sourcé s'y faisait
-      sans courses. Il gagne la courge, le poireau (frais de la semaine), le
-      parmesan, la sauce tomate, le lait et le soja-vanille (le lait des
-      enfants n'est plus suivi : le foyer le gère) ; pas de céleri-rave (pas aimé), pas d'huile
-      de coco ni de gingembre frais (on adapte plutôt que d'acheter). Trois
-      fiches portent une adaptation du foyer en `subs` (huile et gingembre du
-      dahl, fromage de la frittata, potimarron du velouté), et
-      `fond.manques` compte une ligne couverte si un remplaçant est au fond.
-      Les dîners du fond sont désormais dix plats de l'autrice, et la règle
-      « chacun se fait toute l'année » devient « chaque mois, au moins trois
-      sont de saison » : elle cuisine avec les saisons. Les neuf anciens
-      dîners (`dahl-lentilles-corail`, `pates-bolognaise-lentilles`,
-      `soupe-pois-casses-carottes`, `curry-pois-chiches`,
-      `chili-haricots-rouges`, `haricots-blancs-tomate-oeufs`,
-      `tortilla-pommes-de-terre-haricots-verts`, `salade-tiede-lentilles-thon`,
-      `soupe-legumes-pois-chiches`) ne tiennent plus rien : ils rejoignent la
-      vague de retrait.
-
-      **SANS ÉQUIVALENT SOURCÉ.** Chili sin carne, fajitas, gnocchis (deux),
+      **RESTENT 32 RECETTES SANS SOURCE** (plus les trois mécanismes), aucune
+      couverte pour l'instant : chili sin carne, fajitas, gnocchis (deux),
       lasagnes, sauce et pâtes bolognaise, saumon-riz-brocoli, soupe de poule,
-      couscous d'hiver, taboulé, minestrone, moussaka de lentilles,
-      ratatouille minute, quiches (courgettes-yaourt, épinards-thon, poireaux),
-      tartes oignons-thon et potimarron-oignons, burgers de lentilles,
-      veloutés (courgettes, butternut-coco, carottes-corail, épinards-corail,
-      poireaux-pommes de terre-corail), soupe chou frisé-haricots,
-      tian de printemps, banana bread, compote pommes-poires,
-      gratins de pâtes (tomates, brocoli-thon), omelette aux courgettes.
-      D'autres livres de l'autrice les couvriraient peut-être.
+      couscous d'hiver, taboulé, minestrone, moussaka de lentilles, ratatouille
+      minute, quiches (courgettes-yaourt, épinards-thon, poireaux), tartes
+      oignons-thon et potimarron-oignons, burgers de lentilles, veloutés
+      (courgettes, butternut-coco, carottes-corail, épinards-corail,
+      poireaux-pommes de terre-corail), soupe chou frisé-haricots, tian de
+      printemps, banana bread, compote pommes-poires, gratins de pâtes
+      (tomates, brocoli-thon), omelette aux courgettes. D'autres livres de
+      l'autrice les couvriraient peut-être.

@@ -270,7 +270,7 @@ describe("la liste de courses suit le magasin", () => {
   test("un article qu'aucun rayon ne réclame finit dans « autre », jamais nulle part", () => {
     poser(0, "diner", "fajitas-poulet");
     poser(1, "diner", "sauce-bolognaise");
-    poser(2, "diner", "poulet-roti");
+    poser(2, "diner", "poulet-roti-du-dimanche");
     const calc = calculer(jeu);
     const groupes = parRayon(catalogue, calc.panier);
     const places = groupes.flatMap(([, items]) => items.map((a) => a.id));
@@ -346,7 +346,7 @@ describe("l'anti-gaspi entre dans le score", () => {
     // C'est le cas que la paire abandonnée ne savait PAS noter du tout : elle ne
     // payait que les lots présents avant la semaine. Un reste produit mardi et
     // oublié jusqu'à samedi ne valait rien de plus que le mercredi.
-    poser(0, "diner", "lentilles-mijotees");
+    poser(0, "diner", "mitonnee-lentilles");
     const vu: [number, boolean][] = [];
     for (const jour of [1, 2, 3, 4]) {
       const c = offre(jeu, jeu.choix, creneau(jour, "diner")).find(

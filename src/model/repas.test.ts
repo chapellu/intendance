@@ -52,7 +52,7 @@ describe("le déjeuner de demain, pris au dîner de ce soir", () => {
   });
 
   test("quatre boîtes libres : le dîner s'agrandit de trois parts, rangées dans deux boîtes", () => {
-    const m = midiDeDemain(jeuDuLundi(), plat("dahl-lentilles-corail"), libres(4));
+    const m = midiDeDemain(jeuDuLundi(), plat("dahl-riz-lentilles-corail-carottes"), libres(4));
     expect(m).toMatchObject({ etat: "oui", parts: 3, boites: 2 });
     expect(phraseDuMidi(m)).toBe("+ le déjeuner de demain, 2 boîtes");
   });
@@ -61,20 +61,20 @@ describe("le déjeuner de demain, pris au dîner de ce soir", () => {
     const ikea = catalogue.foyer.contenants.find((c) => c.id === "boites-hermetiques")!;
     expect(portionsParBoite(ikea)).toBe(2);
     expect(portionsParBoite({ portions: 1, volumeMl: null })).toBe(1);
-    expect(midiDeDemain(jeuDuLundi(), plat("dahl-lentilles-corail"), libres(2))).toMatchObject({ etat: "oui", boites: 2 });
+    expect(midiDeDemain(jeuDuLundi(), plat("dahl-riz-lentilles-corail-carottes"), libres(2))).toMatchObject({ etat: "oui", boites: 2 });
   });
 
   test("une boîte seulement : la carte le dit, et le dîner reste à sa taille", () => {
-    const m = midiDeDemain(jeuDuLundi(), plat("dahl-lentilles-corail"), libres(1));
+    const m = midiDeDemain(jeuDuLundi(), plat("dahl-riz-lentilles-corail-carottes"), libres(1));
     expect(m).toMatchObject({ etat: "boites-pleines", libres: 1 });
     expect(phraseDuMidi(m)).toBe("Boîtes pleines (1 libre) : ce soir seulement");
-    expect(phraseDuMidi(midiDeDemain(jeuDuLundi(), plat("dahl-lentilles-corail"), libres(0)))).toBe(
+    expect(phraseDuMidi(midiDeDemain(jeuDuLundi(), plat("dahl-riz-lentilles-corail-carottes"), libres(0)))).toBe(
       "Boîtes pleines : ce soir seulement",
     );
   });
 
   test("les sacs de congélation ne portent pas un déjeuner", () => {
-    const m = midiDeDemain(jeuDuLundi(), plat("dahl-lentilles-corail"), new Map([["boites-hermetiques", 0], ["sacs-congelation", 20]]));
+    const m = midiDeDemain(jeuDuLundi(), plat("dahl-riz-lentilles-corail-carottes"), new Map([["boites-hermetiques", 0], ["sacs-congelation", 20]]));
     expect(m.etat).toBe("boites-pleines");
   });
 
@@ -82,10 +82,10 @@ describe("le déjeuner de demain, pris au dîner de ce soir", () => {
     const j = jeuDuLundi();
     const midi = j.creneaux.findIndex((c) => c.jour === 1 && c.repas === "dejeuner");
     j.choix[midi] = "salade-lentilles-amelioree";
-    expect(midiDeDemain(j, plat("dahl-lentilles-corail"), libres(4)).etat).toBe("deja-pose");
+    expect(midiDeDemain(j, plat("dahl-riz-lentilles-corail-carottes"), libres(4)).etat).toBe("deja-pose");
     j.choix[midi] = RESTE_DE_LA_VEILLE;
-    j.deLaVeille![midi] = "soupe-pois-casses-carottes";
-    expect(midiDeDemain(j, plat("dahl-lentilles-corail"), libres(4)).etat).toBe("oui");
+    j.deLaVeille![midi] = "veloute-pois-casses-poireaux-mache";
+    expect(midiDeDemain(j, plat("dahl-riz-lentilles-corail-carottes"), libres(4)).etat).toBe("oui");
   });
 
   test("« Reste réchauffé » ne se prolonge pas en midi", () => {
@@ -93,14 +93,14 @@ describe("le déjeuner de demain, pris au dîner de ce soir", () => {
   });
 
   test("un plat sans reste déclaré gagne le reste du midi ; un plat qui en déclare un le grossit", () => {
-    const sans = plat("tortilla-pommes-de-terre-haricots-verts");
+    const sans = plat("omelette-du-potager");
     const avec = platDuSoir(sans, 3);
     if (!sans.emits.some((e) => e.kind === "reste-plat")) {
       expect(avec.emits.at(-1)).toMatchObject({ kind: "reste-plat", band: "3-repas", midi: true });
       const r = restesApresTable(avec, 1, catalogue.foyer.parts, catalogue.foyer);
       expect(r.at(-1)?.repas).toBe(3);
     }
-    const dahl = plat("dahl-lentilles-corail");
+    const dahl = plat("dahl-riz-lentilles-corail-carottes");
     expect(platDuSoir(dahl, 3)).toBe(dahl);
     const ceSoirSeul = restesApresTable(dahl, 1, catalogue.foyer.parts, catalogue.foyer)[0]!;
     const avecMidi = restesApresTable(dahl, (catalogue.foyer.parts + 3) / dahl.portions, catalogue.foyer.parts, catalogue.foyer)[0]!;
@@ -112,11 +112,11 @@ describe("le déjeuner de demain, pris au dîner de ce soir", () => {
     const soir = j.creneaux.findIndex((c) => c.jour === 0 && c.repas === "diner");
     const midi = j.creneaux.findIndex((c) => c.jour === 1 && c.repas === "dejeuner");
     const choix = [...j.choix];
-    choix[soir] = "tortilla-pommes-de-terre-haricots-verts";
+    choix[soir] = "omelette-du-potager";
     choix[midi] = RESTE_DE_LA_VEILLE;
     j.parts[soir] = catalogue.foyer.parts + 3;
     expect(calculer(j, choix).chaine.some((c) => c.creneau === midi)).toBe(
-      plat("tortilla-pommes-de-terre-haricots-verts").emits.some((e) => e.kind === "reste-plat"),
+      plat("omelette-du-potager").emits.some((e) => e.kind === "reste-plat"),
     );
     j.midi![soir] = 3;
     expect(calculer(j, choix).chaine.some((c) => c.creneau === midi)).toBe(true);
@@ -182,7 +182,7 @@ describe("les routines se rejouent, chaque jour", () => {
   test("un jour sans lot ne prend rien, et un lot né demain n'est pas mangé hier", () => {
     const gouter = catalogue.creneaux.routines!.liste.filter((x) => x.repas === "gouter");
     expect(prisesDesRoutines(gouter, [], ["2026-10-21"])).toEqual([]);
-    const futur = [{ id: 9, type: "cookies-avoine", band: "3-repas", born: "2026-10-25" }];
+    const futur = [{ id: 9, type: "cookies-pralines-son-avoine", band: "3-repas", born: "2026-10-25" }];
     expect(prisesDesRoutines(gouter, futur, ["2026-10-21", "2026-10-22"])).toEqual([]);
   });
 });
@@ -238,7 +238,7 @@ describe("la fournée, proposée à la pause", () => {
   });
 
   test("des bananes qui passent : le banana bread, même avec le congélateur plein", () => {
-    const f = fourneeAProposer(catalogue, [pain, congelo("cookies-avoine", "3-repas"), congelo("compote-maison", "3-repas")], ["banane"], ici)!;
+    const f = fourneeAProposer(catalogue, [pain, congelo("cookies-pralines-son-avoine", "3-repas"), congelo("compote-maison", "3-repas")], ["banane"], ici)!;
     expect(f).toMatchObject({ raison: "fruits-murs", fruits: ["banane"] });
     expect(f.plat.id).toBe("banana-bread-avoine");
     expect(phraseDeFournee(f)).toContain("les bananes sont mûres");
@@ -260,12 +260,12 @@ describe("la fournée, proposée à la pause", () => {
   });
 
   test("T146 — sans besoin de goûters, le fruit mûr ne relance pas la fournée déjà au congélo ni celle de la semaine", () => {
-    const plein = [pain, congelo("cookies-avoine", "3-repas"), congelo("banana-bread", "2-repas")];
+    const plein = [pain, congelo("cookies-pralines-son-avoine", "3-repas"), congelo("banana-bread", "2-repas")];
     // Le banana bread est déjà au congélo : les bananes mûres n'en relancent pas un.
     expect(fourneeAProposer(catalogue, plein, ["banane"], ici)).toBeNull();
     // Compote faite avant-hier : les poires mûres attendent.
     const tout = new Set(catalogue.plats.flatMap((p) => p.ingredients.map((i) => catalogue.rayons.aliases[i.id] ?? i.id)));
-    const sansCompote = [pain, congelo("cookies-avoine", "3-repas")];
+    const sansCompote = [pain, congelo("cookies-pralines-son-avoine", "3-repas")];
     const auxPoires = catalogue.plats.filter((p) => estUneFournee(catalogue, p) && p.ingredients.some((i) => i.id === "poires")).map((p) => p.id);
     expect(fourneeAProposer(catalogue, sansCompote, ["poires"], tout)?.raison).toBe("fruits-murs");
     expect(fourneeAProposer(catalogue, sansCompote, ["poires"], tout, new Set(["compote-pommes-poires"]))?.plat.id).not.toBe("compote-pommes-poires");
@@ -324,10 +324,10 @@ describe("les lignes calmes du cockpit", () => {
     j.stock = [{ type: "banana-bread", kind: "reste-plat", qty: null, qty_band: "3-repas", born: "2026-10-20", location: "congelo" }];
     const midi = j.creneaux.findIndex((c) => c.jour === 0 && c.repas === "dejeuner");
     j.choix[midi] = RESTE_DE_LA_VEILLE;
-    j.deLaVeille![midi] = "dahl-lentilles-corail";
+    j.deLaVeille![midi] = "dahl-riz-lentilles-corail-carottes";
     const l = lignesDuJour(j, null);
     expect(l.find((x) => x.cle === "gouter")?.texte).toBe("Goûter : banana bread à l'avoine (congélo, 3 restants), yaourt, fruit");
-    expect(l.find((x) => x.cle === "dejeuner")?.texte).toBe(`Midi : le reste de ${plat("dahl-lentilles-corail").titre}`);
+    expect(l.find((x) => x.cle === "dejeuner")?.texte).toBe(`Midi : le reste de ${plat("dahl-riz-lentilles-corail-carottes").titre}`);
     expect(l.find((x) => x.cle === "petit-dejeuner")?.texte).toBe("Petit-déj : porridge, yaourt, fruit — plus de pain maison");
   });
 });
@@ -351,18 +351,18 @@ describe("T144 — les boîtes libres ne comptent que les restes vivants en boî
     // T148, rien de ce qui dort au congélateur n'en prend une, routine ou pas.
     expect(contenantsLibres(catalogue.foyer, stock).get("boites-hermetiques")).toBe(4);
     expect(libresDe(stock, LUNDI)).toBe(4);
-    expect(midiDeDemain(jeuDuLundi(), plat("dahl-lentilles-corail"), contenantsLibres(catalogue.foyer, lotsEnBoites(catalogue, stock, LUNDI))).etat).toBe("oui");
+    expect(midiDeDemain(jeuDuLundi(), plat("dahl-riz-lentilles-corail-carottes"), contenantsLibres(catalogue.foyer, lotsEnBoites(catalogue, stock, LUNDI))).etat).toBe("oui");
   });
 
   test("un reste du frigo périmé ne garde pas sa boîte ; un reste vivant, si", () => {
-    expect(libresDe([reste("dahl-lentilles-corail", "1-repas", "2026-10-10")], LUNDI)).toBe(4);
-    expect(libresDe([reste("dahl-lentilles-corail", "1-repas", "2026-10-25")], LUNDI)).toBe(3);
+    expect(libresDe([reste("dahl-riz-lentilles-corail-carottes", "1-repas", "2026-10-10")], LUNDI)).toBe(4);
+    expect(libresDe([reste("dahl-riz-lentilles-corail-carottes", "1-repas", "2026-10-25")], LUNDI)).toBe(3);
   });
 
   test("T145 — la bolognaise (700 g, deux repas) tient une seule boîte de 0,8 L", () => {
     const bolo: LotInitial = { type: "sauce-bolognaise", kind: "base", qty_band: "2-repas", qty: { amount: 700, unit: "g" }, born: "2026-10-25", location: "frigo" };
     expect(libresDe([bolo], LUNDI)).toBe(3);
-    expect(midiDeDemain(jeuDuLundi(), plat("dahl-lentilles-corail"), contenantsLibres(catalogue.foyer, lotsEnBoites(catalogue, [bolo], LUNDI))).etat).toBe("oui");
+    expect(midiDeDemain(jeuDuLundi(), plat("dahl-riz-lentilles-corail-carottes"), contenantsLibres(catalogue.foyer, lotsEnBoites(catalogue, [bolo], LUNDI))).etat).toBe("oui");
   });
 
   // T148 — L'ANNÉE SIMULÉE N° 10 : 159 cartes « Boîtes pleines », dont 119 avec
@@ -374,16 +374,16 @@ describe("T144 — les boîtes libres ne comptent que les restes vivants en boî
     const lentilles: LotInitial = { type: "lentilles-vertes-cuites", kind: "base", qty_band: "2-repas", qty: { amount: 300, unit: "g" }, born: "2026-10-20", location: "congelo" };
     const gratin = reste("gratin-pates", "1-repas", "2026-10-25");
     expect(libresDe([bolo, lentilles, gratin], LUNDI)).toBe(3);
-    expect(midiDeDemain(jeuDuLundi(), plat("dahl-lentilles-corail"), contenantsLibres(catalogue.foyer, lotsEnBoites(catalogue, [bolo, lentilles, gratin], LUNDI))).etat).toBe("oui");
+    expect(midiDeDemain(jeuDuLundi(), plat("dahl-riz-lentilles-corail-carottes"), contenantsLibres(catalogue.foyer, lotsEnBoites(catalogue, [bolo, lentilles, gratin], LUNDI))).etat).toBe("oui");
   });
 
   test("le midi mis de côté rend ses boîtes une fois le déjeuner passé", () => {
-    const midi = reste("dahl-lentilles-corail", "3-repas", "2026-10-25", { midiLe: "2026-10-26", midi: 3 });
+    const midi = reste("dahl-riz-lentilles-corail-carottes", "3-repas", "2026-10-25", { midiLe: "2026-10-26", midi: 3 });
     // T145 — trois parts tiennent dans deux boîtes de 0,8 L.
     expect(libresDe([midi], new Date(2026, 9, 26, 11, 0))).toBe(2);
     expect(libresDe([midi], LUNDI)).toBe(4);
     // Un reste qui avait grossi des parts du midi garde ce qui dépasse.
-    const gros = reste("dahl-lentilles-corail", "4-repas", "2026-10-25", { midiLe: "2026-10-26", midi: 3 });
+    const gros = reste("dahl-riz-lentilles-corail-carottes", "4-repas", "2026-10-25", { midiLe: "2026-10-26", midi: 3 });
     expect(libresDe([gros], LUNDI)).toBe(3);
   });
 
@@ -455,19 +455,21 @@ describe("T144 — le fruit de la semaine", () => {
 describe("T144 — le pain, puis des goûters qui tournent", () => {
   const congelo = (type: string, band: string) => ({ type, qty_band: band, location: "congelo" as const, born: "2026-10-20" });
   const tout = new Set(catalogue.plats.flatMap((p) => p.ingredients.map((i) => catalogue.rayons.aliases[i.id] ?? i.id)));
-  const fond = new Set(["eau", "farine-complete", "levure-boulangere", "oeufs", "beurre", "sucre-complet", "flocons-avoine", "poudre-a-lever", "lait"]);
+  // T197 — le pain du matin est celui de l'autrice (son d'avoine, agave) : le
+  // pain maison rédigé pour ce dépôt est retiré.
+  const fond = new Set(["eau", "farine-complete", "levure-boulangere", "oeufs", "beurre", "sucre-complet", "flocons-avoine", "poudre-a-lever", "lait", "son-avoine", "sirop-agave", "huile-olive"]);
 
   test("plus de pain au congélo : la fournée est le pain maison, compté à part des goûters", () => {
-    const f = fourneeAProposer(catalogue, [congelo("banana-bread", "3-repas"), congelo("cookies-avoine", "3-repas")], [], fond)!;
+    const f = fourneeAProposer(catalogue, [congelo("banana-bread", "3-repas"), congelo("cookies-pralines-son-avoine", "3-repas")], [], fond)!;
     expect(f).toMatchObject({ raison: "pain-bas", restants: 0, manque: [] });
-    expect(f.plat.id).toBe("pain-maison-semi-complet");
-    expect(phraseDeFournee(f)).toBe("Fournée : Pain maison semi-complet — plus de pain maison");
+    expect(f.plat.id).toBe("pain-de-mie-son-avoine");
+    expect(phraseDeFournee(f)).toBe("Fournée : Pain de mie facile au son d'avoine — plus de pain maison");
     expect(matinsDePain(catalogue, [congelo("pain-de-mie-maison", "3-repas")])).toBe(3);
   });
 
   test("le pain maison part en sachets, deux de trois matins", async () => {
     const { vueDeLaSortie } = await import("../ecrans/sortie.vue");
-    const p = plat("pain-maison-semi-complet");
+    const p = plat("pain-de-mie-son-avoine");
     expect(estUneFournee(catalogue, p)).toBe(true);
     const v = vueDeLaSortie(p, catalogue.foyer.parts, 1, catalogue.foyer, [], true);
     const auCongelo = v.lots.filter((l) => l.location === "congelo");
@@ -478,7 +480,7 @@ describe("T144 — le pain, puis des goûters qui tournent", () => {
   test("T145 — le pain sous trois matins gagne la fournée, même quand les goûters manquent davantage", () => {
     const pain = congelo("pain-de-mie-maison", "2-repas");
     expect(fourneeAProposer(catalogue, [pain], [], fond)!.raison).toBe("pain-bas");
-    expect(fourneeAProposer(catalogue, [pain, congelo("cookies-avoine", "2-repas")], [], fond)!.raison).toBe("pain-bas");
+    expect(fourneeAProposer(catalogue, [pain, congelo("cookies-pralines-son-avoine", "2-repas")], [], fond)!.raison).toBe("pain-bas");
     expect(fourneeAProposer(catalogue, [congelo("pain-de-mie-maison", "3-repas")], [], fond)!.raison).toBe("stock-bas");
   });
 
@@ -504,7 +506,9 @@ describe("T144 — le pain, puis des goûters qui tournent", () => {
 
   test("T146 — un jour de courses, la fournée qui manque d'un article passe devant la compote d'hier", () => {
     const tout = new Set(catalogue.plats.flatMap((p) => p.ingredients.map((i) => catalogue.rayons.aliases[i.id] ?? i.id)));
-    const sansOeufs = new Set([...tout].filter((x) => x !== "oeufs"));
+    // T197 — les crêpes de l'autrice se font sans œufs, mais pas sans
+    // petits-suisses : les deux manquent, pour que seule la compote reste.
+    const sansOeufs = new Set([...tout].filter((x) => x !== "oeufs" && x !== "petits-suisses"));
     const stock = [congelo("pain-de-mie-maison", "3-repas"), congelo("compote-maison", "2-repas")];
     const hier = new Set(["compote-pommes-poires"]);
     // Un autre jour : seule la compote se lance sans achat — elle revient.
@@ -529,7 +533,7 @@ describe("T144 — le pain, puis des goûters qui tournent", () => {
     // Un catalogue où la compote est la seule fournée du goûter : on lit sa phrase.
     const seule: Catalogue = {
       ...catalogue,
-      plats: catalogue.plats.filter((p) => p.id === "compote-pommes-poires" || !estUneFournee(catalogue, p) || p.id === "pain-maison-semi-complet"),
+      plats: catalogue.plats.filter((p) => p.id === "compote-pommes-poires" || !estUneFournee(catalogue, p) || p.id === "pain-de-mie-son-avoine"),
     };
     const sans = new Set([...tout].filter((x) => x !== "pommes" && x !== "poires"));
     const manque = (ici: ReadonlySet<string>) => fourneeAProposer(seule, [congelo("pain-de-mie-maison", "3-repas")], [], ici)!.manque;
@@ -546,7 +550,7 @@ test("T144 — la ligne du fruit de la semaine ne parle pas de plancher", async 
 });
 
 describe("T146 — le midi sans geste et le reste qu'il prend", () => {
-  const l = (o: Record<string, unknown>) => ({ type: "curry-pois-chiches", kind: "reste-plat", band: "4-repas", born: "2026-10-24", location: "frigo", ...o });
+  const l = (o: Record<string, unknown>) => ({ type: "goulasch-boeuf", kind: "reste-plat", band: "4-repas", born: "2026-10-24", location: "frigo", ...o });
   test("le plus ancien reste du frigo né avant le jour — ni une routine, ni un midi prévu, ni le congélo", () => {
     const stock = [
       l({ type: "compote-maison", born: "2026-10-20" }),
@@ -575,10 +579,10 @@ describe("T155 — le dîner s'agrandit du midi moins ce que le frigo tient", ()
     ({ type: "gratin-pates", kind: "reste-plat", qty: null, qty_band: "1-repas", born: "2026-10-25", location: "frigo", ...o });
 
   test("une part au frigo : le dîner ne prend que le reste du midi, et la carte le dit", () => {
-    const m = midiDeDemain(jeuDuLundi(), plat("dahl-lentilles-corail"), undefined, 1);
+    const m = midiDeDemain(jeuDuLundi(), plat("dahl-riz-lentilles-corail-carottes"), undefined, 1);
     expect(m).toMatchObject({ etat: "oui", parts: p - 1, auFrigo: 1 });
     expect(phraseDuMidi(m)).toMatch(/avec le reste du frigo$/);
-    expect(midiDeDemain(jeuDuLundi(), plat("dahl-lentilles-corail"), undefined, p).etat).toBe("non");
+    expect(midiDeDemain(jeuDuLundi(), plat("dahl-riz-lentilles-corail-carottes"), undefined, p).etat).toBe("non");
   });
 
   test("ce que le frigo tiendra demain : ni routine, ni midi prévu, ni périmé, ni congélo", () => {
