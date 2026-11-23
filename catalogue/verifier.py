@@ -516,9 +516,11 @@ EN_PARTIE = re.compile(r"\+[^)]*(pour décorer|pour servir)|le reste pour servir
 PENDANT = re.compile(r"^\s*(Pendant (?:ce temps|la|le|les|que)|Entre-temps)\b")
 # T188 — une viande ou un poisson qui se compte à la pièce ne se dit pas qu'au
 # poids : « 400 g de filets de poulet » ne dit pas combien de filets acheter.
-PIECES = re.compile(r"\b(filets?|pavés?|cuisses?|escalopes?|blancs?|darnes?|côtes?|"
-                    r"saucisses?|sardines?|gambas|steaks?|pilons?|magrets?)\b", re.I)
-COMPTE = re.compile(r"\b(\d+|un|une|deux|trois|quatre|cinq|six|huit|dix|douze)\s+"
+# Au PLURIEL seulement : « un blanc de poulet » dit déjà sa pièce, et « filet
+# de porc » ou « steak haché » ne se comptent pas.
+PIECES = re.compile(r"\b(filets|pavés|cuisses|escalopes|blancs(?= de)|darnes|côtes|"
+                    r"saucisses|sardines|gambas|pilons|magrets)\b", re.I)
+COMPTE = re.compile(r"\b(\d+|deux|trois|quatre|cinq|six|huit|dix|douze)\s+"
                     r"(grands?\s+|gros\s+|petits?\s+|longs?\s+|beaux?\s+)?" + PIECES.pattern[2:], re.I)
 # Les mots d'un id qui ne nomment pas l'ingrédient à eux seuls.
 MOTS_VIDES = {"huile", "sucre", "farine", "fleur", "poudre", "pate", "creme", "jus",

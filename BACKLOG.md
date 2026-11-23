@@ -6954,7 +6954,7 @@ Les recettes rédigées pour ce dépôt n'y sont pas soumises : elles partent un
 | Un nom qui se dit facultatif est `optional: true` | T186 | 4 |
 | Une alternative qui a un rayon est un `subs:` | T167 | 49 (78 avant d'écarter assaisonnements, table du commerce et faux amis) |
 | Pas de céleri-rave | le foyer, 23/11 | 23 |
-| Une viande ou un poisson en pièces se compte (avertissement) | T188 | 21 |
+| Une viande ou un poisson en pièces se compte (avertissement) | T188 | 11 (au pluriel, sans nombre) |
 
 **Et par la table du commerce** : `evite: true` dans `equivalences.yaml` (huile de coco, sucre de bouleau, margarine, ghee → ce que le placard a), lu comme `potager`. Le gaufrier entre dans l'inventaire ; la machine à pain non.
 
@@ -6968,4 +6968,4 @@ Les recettes rédigées pour ce dépôt n'y sont pas soumises : elles partent un
 - [x] `parallel_with` (3 étapes, et une quatrième dont « pendant ce temps » était faux), trois « bol du robot » sans robot, quatre lignes « pour servir / pour décorer » facultatives
 - [x] `uses:` à la première mention : 58 étapes de 51 plats reçoivent la ligne qu'elles nomment ; deux consignes reformulées, qui nommaient une ligne sans la verser (les parures de la bouillabaisse, le cacao des truffes). Le contrôle départage les lignes sœurs (« oignons rouges » n'est pas `oignon`, « beurre de cacao » n'est pas `cacao`)
 - [x] Alternatives en `subs:` : 49 lignes de 48 plats. 34 reçoivent un remplaçant qui s'achète (miel ↔ agave, cognac → whisky, abricots → cerises, pêches…) ; 15 dont l'alternative n'a pas d'id propre ou pas la même unité gardent une note (`subs:` sans `id`). Le contrôle ignore les assaisonnements, les lignes que la table du commerce couvre, et « à défaut de rôti » (ce qu'une base chaînée remplace)
-- [ ] Pièces des viandes et poissons : nombres à donner par le foyer
+- [ ] Pièces des viandes et poissons : nombres à donner par le foyer. Le contrôle reste un avertissement : les livres donnent la pièce (« 1 poulet », « 12 sardines ») ou le poids (« 300 g de filets »), presque jamais les deux, et ce qui manque ne s'invente pas. Onze lignes au pluriel sans nombre : brandade (filets de cabillaud, 500 g), dinde de Noël (blancs, 400 g), marmite dieppoise (filets de poisson blanc, 600 g ; pavés de saumon, 300 g), paella verte (filets de poulet, 300 g), pizza ratatouille (blancs de poulet, 200 g), rillettes de maquereau (filets fumés, 350 g), terrine poulet-poireaux (blancs, 400 g), terrine de saumon (filets, 500 g), waterzoï (filets de saumon, 300 g ; de cabillaud, 400 g)
