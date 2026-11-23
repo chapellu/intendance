@@ -27,7 +27,7 @@ import os
 import re
 
 ICI = os.path.dirname(os.path.abspath(__file__))
-cat = json.load(open(os.path.join(ICI, "..", "public", "cuisine-data.json")))
+cat = json.load(open("public/cuisine-data.json"))  # le catalogue du dépôt où l'on se tient
 ALIAS = cat["rayons"].get("aliases", {})
 a = lambda i: ALIAS.get(i, i)
 TOUJOURS = {a(i) for i in cat["rayons"]["placard"]}
