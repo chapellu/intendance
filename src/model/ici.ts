@@ -31,6 +31,7 @@
 
 import { retenir } from "./remplacants";
 import { commeIngredient, facteur } from "./calcul";
+import { familleDe } from "./froid";
 import { contexte, type Classe, type EtatIngredient, type Rejeu } from "./journal";
 import type { Catalogue, Ingredient, Plat } from "./types";
 
@@ -87,6 +88,16 @@ export function estLa(catalogue: Catalogue, e: EtatIngredient, aujourdhui: strin
  * question de #32 (« une ligne qui s'efface sous le doigt »), pas recopier cet
  * ensemble dans `calculer`.
  */
+/**
+ * T187 — UN POULET CONGELÉ À LA MAISON N'EST PAS LÀ POUR CE SOIR. Il demande une
+ * nuit au frigo. Les surgelés du commerce, eux, vont du sachet à la poêle :
+ * c'est la famille qui le dit (`espace: frigo` = du frais qu'on a congelé).
+ */
+function aDecongeler(catalogue: Catalogue, e: EtatIngredient): boolean {
+  if (!e.lots.length || !e.lots.every((l) => l.zone === "congelo")) return false;
+  return familleDe(catalogue, e.ingredient)?.espace === "frigo";
+}
+
 export function ceQuiEstIci(
   catalogue: Catalogue,
   gardeManger: readonly string[],
@@ -97,7 +108,7 @@ export function ceQuiEstIci(
   const ici = new Set<string>(catalogue.rayons.placard.map(ctx.alias));
   for (const id of gardeManger) ici.add(id);
   for (const e of rejeu.parIngredient.values())
-    if (estLa(catalogue, e, aujourdhui)) ici.add(ctx.alias(e.ingredient));
+    if (estLa(catalogue, e, aujourdhui) && !aDecongeler(catalogue, e)) ici.add(ctx.alias(e.ingredient));
   return ici;
 }
 

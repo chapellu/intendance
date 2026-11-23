@@ -109,3 +109,37 @@ test("T182 — il me reste 2 œufs : la ligne compte des œufs, et se corrige en
   await oeufs.getByRole("button", { name: "OK" }).click();
   await expect(oeufs.locator(".q")).toHaveText("2 œufs");
 });
+
+test("T187 — un poulet au frigo, sa date, puis congelé ; le colin surgelé va au congélateur", async ({ page }) => {
+  await page.goto("/#/cuisine/stock");
+  await attendreLApp(page);
+
+  // RANGÉ OÙ ? Le rayon choisit la porte : le poulet au frigo…
+  await page.locator(".st-tete").getByRole("button", { name: "+ Ajouter" }).click();
+  await page.getByRole("searchbox", { name: "Quoi ?" }).fill("poulet");
+  await page.locator(".aj-ligne", { hasText: /^poulet$/ }).click();
+  await expect(page.getByRole("radio", { name: "Frigo" })).toHaveAttribute("aria-checked", "true");
+  await page.getByRole("button", { name: /^Ajouter 1 au stock/ }).click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+
+  // …le colin surgelé au congélateur.
+  await page.locator(".st-tete").getByRole("button", { name: "+ Ajouter" }).click();
+  await page.getByRole("searchbox", { name: "Quoi ?" }).fill("colin");
+  await page.locator(".aj-ligne").first().click();
+  await expect(page.getByRole("radio", { name: "Congélateur" })).toHaveAttribute("aria-checked", "true");
+  await page.getByRole("button", { name: /^Ajouter 1 au stock/ }).click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+
+  // AU FRIGO, LA LIGNE DIT JUSQU'À QUAND — deux jours pour la viande fraîche.
+  const frigo = page.locator(".st-panneau");
+  const poulet = ligne(frigo, /^poulet$/);
+  await expect(poulet.locator(".ou").first()).toContainText("à manger d'ici");
+  await expect(ligne(frigo, /^colin/)).toHaveCount(0);
+
+  // CONGELER : un geste, et le poulet passe derrière l'autre porte.
+  await poulet.getByRole("button", { name: "congeler : poulet" }).click();
+  await expect(ligne(frigo, /^poulet$/)).toHaveCount(0);
+  const congelo = await ouvrirRangement(page, "congél");
+  await expect(ligne(congelo, /^poulet$/).locator(".ou").first()).toContainText("à consommer avant le");
+  await expect(ligne(congelo, /^colin/)).toHaveCount(1);
+});

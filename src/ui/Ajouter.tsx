@@ -10,6 +10,7 @@ import { useJournal, usePlacard } from "../db/hooks";
 import { poidsConnu } from "../db/journal";
 import { chercherIngredient, idDuNom, ingredientsConnus } from "../ecrans/stock.vue";
 import { placesDuReleve } from "../model/journal";
+import { porteDuRayon, ZONES_FROID } from "../model/froid";
 import type { Catalogue } from "../model/types";
 import { nomLisible, pourChercher } from "./noms";
 
@@ -138,10 +139,12 @@ function Feuille({
   // d'office : des tomates pelées vont sur l'étagère où sont les autres, sans un
   // tap de plus. Sans place connue, rien n'est choisi, et la course attend sous
   // « Rentrés, à ranger » comme avant.
-  const zones = catalogue.gardeManger.zones;
+  // T187 — LE FROID D'ABORD : un poulet, un colin surgelé se rangent au frigo
+  // ou au congélateur, que le relevé des placards ne connaît pas.
+  const zones = [...ZONES_FROID, ...catalogue.gardeManger.zones];
   const places = useMemo(() => placesDuReleve(catalogue), [catalogue]);
   const placeDe = (id: string | null): string | null =>
-    id ? (places.get(catalogue.rayons.aliases[id] ?? id)?.[0] ?? null) : null;
+    id ? (places.get(catalogue.rayons.aliases[id] ?? id)?.[0] ?? porteDuRayon(catalogue, id)) : null;
   const [zone, setZone] = useState<string | null>(() => placeDe(depart));
 
   // T181 — ce que le journal a déjà vu rentrer compte aussi : un produit créé

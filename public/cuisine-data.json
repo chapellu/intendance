@@ -128766,6 +128766,7 @@
     "crèmerie"
    ],
    "ids": [
+    "colin-surgele",
     "lentilles-seches",
     "pois-chiches",
     "haricots-rouges",
@@ -128935,7 +128936,6 @@
    "poissonnerie": [
     "gambas",
     "saumon",
-    "colin-surgele",
     "sardines-boite",
     "poisson-blanc",
     "crevettes",
@@ -129214,7 +129214,8 @@
     "petits-pois-surgeles",
     "haricots-verts-surgeles",
     "champignons-surgeles",
-    "legumes-surgeles"
+    "legumes-surgeles",
+    "colin-surgele"
    ]
   },
   "placard": [
@@ -132078,7 +132079,8 @@
     "petits-pois-surgeles",
     "haricots-verts-surgeles",
     "champignons-surgeles",
-    "legumes-surgeles"
+    "legumes-surgeles",
+    "colin-surgele"
    ]
   },
   {
@@ -132240,7 +132242,11 @@
     "crevettes",
     "poissons-roche",
     "sardines",
-    "poisson-entier"
+    "poisson-entier",
+    "roti-veau",
+    "agneau-collier",
+    "jarret-boeuf",
+    "os-a-moelle"
    ]
   },
   {
