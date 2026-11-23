@@ -661,7 +661,7 @@ recettes:
   - slug: faites-comme-je-dis-pas-comme-je-fais
     titre: "Carrés sablés à la crème de groseille"
     url: https://saines-gourmandises.fr/faites-comme-je-dis-pas-comme-je-fais/
-    ecartee: "recette invitée : la crème de groseille teste « la recette de Karen » (les carrés sablés sont par ailleurs au catalogue depuis le livre)"
+    ecartee: "doublon : les carrés sablés à la crème de groseilles sont déjà au catalogue depuis le livre, aux mêmes quantités"
     prep_min: 20
     cuisson_min: 15
     ingredients:
@@ -1764,7 +1764,8 @@ recettes:
   - slug: dapres-une-recette-a-ig-bas-damandine-et-olivier
     titre: "Fondant de Noël au chocolat, orange et épices à spéculoos"
     url: https://saines-gourmandises.fr/dapres-une-recette-a-ig-bas-damandine-et-olivier/
-    ecartee: "recette invitée : adaptée du « Moelleux au chocolat, kamut et sirop d'agave » d'Amandine Geers et Olivier Degorce"
+    catalogue_id: fondant-noel-chocolat-orange-speculoos
+    note_encodage: "recette invitée, créditée : d'après le moelleux d'Amandine Geers et Olivier Degorce"
     rendement: {n: 6, unite: personnes}
     prep_min: 10
     ingredients:
@@ -2627,7 +2628,8 @@ recettes:
   - slug: le-gateau-de-paques-au-citron-rocca-et-pomelo-de-corse
     titre: "Le gâteau de Pâques au citron Rocca et pomelo de Corse"
     url: https://saines-gourmandises.fr/le-gateau-de-paques-au-citron-rocca-et-pomelo-de-corse/
-    ecartee: "recette invitée : la génoise citron-amande est « empruntée » à la blogueuse Cléa"
+    catalogue_id: gateau-paques-citron-pomelo
+    note_encodage: "recette invitée, créditée : la génoise est celle de la blogueuse Cléa"
     rendement: {n: 8, unite: parts}
     prep_min: 25
     cuisson_min: 30
@@ -5233,8 +5235,8 @@ recettes:
   - slug: cocooning
     titre: ""
     url: https://saines-gourmandises.fr/cocooning/
-    catalogue_id: cookies-amande-citron-chocolat
-    note_encodage: "le lait chaud à la badiane, « très librement inspiré » d'une autre blogueuse, n'est pas repris"
+    catalogue_ids: [cookies-amande-citron-chocolat, lait-chaud-chocolat-badiane]
+    note_encodage: "le lait chaud à la badiane est une recette invitée, créditée (inspirée de Frédérique)"
   - slug: connaissez-vous-le-sucre-de-bouleau
     titre: ""
     url: https://saines-gourmandises.fr/connaissez-vous-le-sucre-de-bouleau/
@@ -5334,8 +5336,8 @@ recettes:
   - slug: petite-anthologie-gourmande-et-legere-de-la-mousse-au-chocolat-bio
     titre: ""
     url: https://saines-gourmandises.fr/petite-anthologie-gourmande-et-legere-de-la-mousse-au-chocolat-bio/
-    catalogue_ids: [mousse-chocolat-traditionnelle-agave, petits-pots-creme-avoine-chocolat]
-    note_encodage: "la crème-mousse au tofu soyeux est la recette de Valérie Cupillard (invitée), et sa variante « nuage » en dérive : non reprises"
+    catalogue_ids: [creme-mousse-chocolat-tofu-soyeux, mousse-chocolat-traditionnelle-agave, mousse-nuage-chocolat-tofu-soyeux, petits-pots-creme-avoine-chocolat]
+    note_encodage: "la crème-mousse au tofu soyeux est une recette invitée, créditée (Valérie Cupillard), comme sa variante « nuage »"
   - slug: piou
     titre: ""
     url: https://saines-gourmandises.fr/piou/

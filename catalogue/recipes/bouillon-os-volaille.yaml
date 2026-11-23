@@ -7,7 +7,7 @@
 # d'eau avec sel et vinaigre de cidre, 12 h à feu minimal ; les os retirés, puis
 # 30 min avec oignon, carottes, poireaux, ail, céleri, girofle et laurier
 # (macis, muscade, carvi ou paprika au goût). Environ 5 l.
-# LA CARCASSE EST UN RESTE du catalogue ; à défaut, rôtir un poulet.
+# LA CARCASSE EST UN RESTE du catalogue ; à défaut, le poulet rôti du dimanche.
 
 recipe:
   id: bouillon-os-volaille
@@ -30,7 +30,7 @@ recipe:
     - type: carcasse-volaille
       qty: {amount: 1, unit: pièce}
       required: true
-      fallback_recipe: poulet-roti
+      fallback_recipe: poulet-roti-du-dimanche
 
   apports:
     proteine: viande-blanche

@@ -92,6 +92,7 @@
   "couscous-legumes": "couscous de légumes d'hiver aux pois chiches",
   "creme-dessert-chocolat-maison": "crème dessert au chocolat « 3 min chrono »",
   "creme-marron-maison": "crème de marron maison",
+  "creme-mousse-chocolat-tofu-soyeux": "crème-mousse au chocolat et tofu soyeux",
   "creme-psyllium-amande-citron-miel": "crème dessert amande-citron-miel sans cuisson, au psyllium",
   "creme-psyllium-chocolat": "crème dessert au chocolat sans cuisson, au psyllium",
   "creme-psyllium-praline": "crème dessert pralinée sans cuisson, au psyllium",
@@ -133,6 +134,7 @@
   "focaccia-porcini": "focaccia ai porcini",
   "fondant-chocolat-cafe-whisky": "le meilleur fondant au chocolat du monde",
   "fondant-chocolat-chataigne": "fondant chocolat-châtaigne sans gluten",
+  "fondant-noel-chocolat-orange-speculoos": "fondant de Noël au chocolat, orange et épices à spéculoos",
   "fondant-potimarron-chocolat-rennes": "fondant au (poti)marron façon « rennes de Noël »",
   "fraisier-huile-olive-dix-ans": "fraisier à l'huile d'olive (le gâteau des dix ans du blog)",
   "fraisier-leger-faisselle": "un fraisier tout simple et tout léger",
@@ -158,6 +160,7 @@
   "gateau-leger-chocolat-feve-tonka": "gâteau très léger au chocolat noir et à la fève tonka",
   "gateau-mendiant-epices-vapeur": "gâteau « mendiant » aux épices, cuit à la vapeur",
   "gateau-noel-vache-potimarron": "le gâteau de Noël en vache, ganache rousse au potimarron",
+  "gateau-paques-citron-pomelo": "gâteau de Pâques au citron et au pomelo",
   "gateau-poires-debout-noix": "gâteau moelleux aux poires, vanille et noix caramélisées",
   "gateau-pomme-or-sans-sucre": "le gâteau « Pomme d'Or » sans sucre ajouté",
   "gateau-ptit-dej-abricots-framboises": "petit gâteau du p'tit déj aux abricots et framboises",
@@ -219,6 +222,7 @@
   "moussaka-lentilles": "moussaka de lentilles aux aubergines",
   "mousse-chocolat": "mousse au chocolat",
   "mousse-peches": "mousse légère aux pêches",
+  "mousse-nuage-chocolat-tofu-soyeux": "mousse « nuage » au chocolat et tofu soyeux",
   "muffins-chevre": "muffins au chèvre frais",
   "muffins-choco-courgettes": "muffins choco-courgettes",
   "muffins-mures-sauvages": "muffins aux mûres sauvages, façon gâteau au yaourt",
@@ -10566,7 +10570,7 @@
       "unit": "pièce"
      },
      "delaiMaxH": null,
-     "mere": "poulet-roti"
+     "mere": "poulet-roti-du-dimanche"
     }
    ],
    "creneaux": [
@@ -30606,6 +30610,159 @@
    "cuisinable": true
   },
   {
+   "id": "creme-mousse-chocolat-tofu-soyeux",
+   "titre": "Crème-mousse au chocolat et tofu soyeux",
+   "minutes": 130,
+   "minutesSurPlace": 119,
+   "avanceMin": 131,
+   "anticipations": [
+    {
+     "gestes": [
+      "fondre",
+      "mixer"
+     ],
+     "minutes": 11,
+     "attente": 120,
+     "avantMin": 131,
+     "raison": "au frais avant de servir"
+    }
+   ],
+   "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "« Petite anthologie gourmande (et légère) de la mousse au chocolat bio », blog Saines Gourmandises, 12 juillet 2011",
+    "url": "https://saines-gourmandises.fr/petite-anthologie-gourmande-et-legere-de-la-mousse-au-chocolat-bio/",
+    "saison": null
+   },
+   "apports": {
+    "proteine": "tofu-soja",
+    "feculent": "aucun",
+    "legumes": [],
+    "profil": "cru",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "lait-soja-vanille",
+     "ref": "lait-soja-vanille",
+     "nom": "lait de soja (vanille, c'est encore meilleur)",
+     "qty": 10,
+     "unit": "cl",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "chocolat-noir",
+     "ref": "chocolat-noir",
+     "nom": "chocolat noir 70 à 85 %",
+     "qty": 100,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sirop-agave",
+     "ref": "sirop-agave",
+     "nom": "sirop d'agave",
+     "qty": 3,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "tofu-soyeux",
+     "ref": "tofu-soyeux",
+     "nom": "tofu soyeux",
+     "qty": 400,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": null,
+   "avec": [],
+   "steps": [
+    {
+     "id": "fondre",
+     "action": "Fondre le chocolat dans le lait de soja avec l'agave, dans une petite casserole",
+     "minutes": 6,
+     "needs": [
+      "simmer"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "lait-soja-vanille",
+      "chocolat-noir",
+      "sirop-agave"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "mixer",
+     "action": "Mixer quelques minutes le chocolat chaud avec le tofu soyeux jusqu'à une crème mousseuse, et verser en pots",
+     "minutes": 5,
+     "needs": [
+      "blend-smooth"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "tofu-soyeux"
+     ],
+     "enParallele": null,
+     "attente": 120,
+     "attenteRaison": "au frais avant de servir",
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 10,
+   "accepts": [],
+   "creneaux": [
+    "gouter",
+    "dessert"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [
+    {
+     "type": "creme-mousse-chocolat-tofu-soyeux",
+     "kind": "reste-plat",
+     "qty": null,
+     "band": "2-repas",
+     "espace": "frigo",
+     "note": null,
+     "gardeFrigo": 3,
+     "congelo": false,
+     "horsTable": false
+    }
+   ],
+   "lotEntier": true,
+   "calibreMax": null,
+   "vaisselle": null,
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
    "id": "creme-potiron-beaufort-lard",
    "titre": "Crème de potiron au beaufort et lard fumé",
    "minutes": 45,
@@ -44569,6 +44726,233 @@
    "cuisinable": true
   },
   {
+   "id": "fondant-noel-chocolat-orange-speculoos",
+   "titre": "Fondant de Noël au chocolat, orange et épices à spéculoos",
+   "minutes": 25,
+   "minutesSurPlace": 0,
+   "avanceMin": 628,
+   "anticipations": [
+    {
+     "gestes": [
+      "fondre",
+      "pate",
+      "cuire"
+     ],
+     "minutes": 28,
+     "attente": 600,
+     "avantMin": 628,
+     "raison": "au frais jusqu'au lendemain"
+    }
+   ],
+   "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "« Fondant de Noël au chocolat, orange et épices à spéculoos », blog Saines Gourmandises, 4 décembre 2012",
+    "url": "https://saines-gourmandises.fr/dapres-une-recette-a-ig-bas-damandine-et-olivier/",
+    "saison": null
+   },
+   "apports": {
+    "proteine": "oeuf",
+    "feculent": "aucun",
+    "legumes": [],
+    "profil": "four",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "chocolat-noir",
+     "ref": "chocolat-noir",
+     "nom": "chocolat noir 70 %",
+     "qty": 200,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sirop-agave",
+     "ref": "sirop-agave",
+     "nom": "sirop d'agave",
+     "qty": 3,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "eau",
+     "ref": "eau",
+     "nom": "soupçon d'eau",
+     "qty": 1,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "puree-amande-blanche",
+     "ref": "puree-amande-blanche",
+     "nom": "purée d'amande",
+     "qty": 2,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "farine-complete",
+     "ref": "farine-complete",
+     "nom": "farine de blé complète (ou de kamut)",
+     "qty": 3,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "yaourt-soja",
+     "ref": "yaourt-soja",
+     "nom": "yaourt de soja (ou de brebis)",
+     "qty": 1,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "oeufs",
+     "ref": "oeufs",
+     "nom": "œufs (6 dans la recette initiale)",
+     "qty": 5,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "epices-pain-epices",
+     "ref": "epices-pain-epices",
+     "nom": "épices pour spéculoos",
+     "qty": 1,
+     "unit": "c. à moka",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "huile-essentielle-orange",
+     "ref": "huile-essentielle-orange",
+     "nom": "gouttes d'huile essentielle d'orange douce",
+     "qty": 7,
+     "unit": "goutte",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": null,
+   "avec": [],
+   "steps": [
+    {
+     "id": "fondre",
+     "action": "Préchauffer à 180 °C ; fondre très doucement le chocolat avec l'agave et un soupçon d'eau",
+     "minutes": 6,
+     "needs": [
+      "simmer"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "chocolat-noir",
+      "sirop-agave",
+      "eau"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "pate",
+     "action": "Monter les blancs en neige ; hors du feu, mêler au chocolat les jaunes, la purée d'amande, le yaourt, les épices et l'orange, puis verser sur les blancs",
+     "minutes": 8,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "oeufs",
+      "puree-amande-blanche",
+      "yaourt-soja",
+      "epices-pain-epices",
+      "huile-essentielle-orange"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cuire",
+     "action": "Incorporer délicatement la farine, verser dans un petit moule et cuire 10 à 12 min",
+     "minutes": 14,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [
+      "farine-complete"
+     ],
+     "enParallele": null,
+     "attente": 600,
+     "attenteRaison": "au frais jusqu'au lendemain",
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 12,
+   "accepts": [],
+   "creneaux": [
+    "gouter",
+    "dessert"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [
+    {
+     "type": "fondant-noel-chocolat-orange-speculoos",
+     "kind": "reste-plat",
+     "qty": null,
+     "band": "2-repas",
+     "espace": "frigo",
+     "note": null,
+     "gardeFrigo": 3,
+     "congelo": false,
+     "horsTable": false
+    }
+   ],
+   "lotEntier": true,
+   "calibreMax": null,
+   "vaisselle": null,
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
    "id": "fondant-potimarron-chocolat-rennes",
    "titre": "Fondant au (poti)marron façon « rennes de Noël »",
    "minutes": 40,
@@ -52647,6 +53031,324 @@
    "emits": [
     {
      "type": "gateau-noel-vache-potimarron",
+     "kind": "reste-plat",
+     "qty": null,
+     "band": "3-repas",
+     "espace": "frigo",
+     "note": null,
+     "gardeFrigo": 3,
+     "congelo": false,
+     "horsTable": false
+    }
+   ],
+   "lotEntier": true,
+   "calibreMax": null,
+   "vaisselle": null,
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
+   "id": "gateau-paques-citron-pomelo",
+   "titre": "Gâteau de Pâques au citron et au pomelo",
+   "minutes": 180,
+   "minutesSurPlace": 124,
+   "avanceMin": 176,
+   "anticipations": [
+    {
+     "gestes": [
+      "genoise",
+      "cuire",
+      "curd",
+      "mixer",
+      "monter"
+     ],
+     "minutes": 56,
+     "attente": 120,
+     "avantMin": 176,
+     "raison": "au moins 2 h au frais, au mieux une nuit"
+    }
+   ],
+   "portions": 8,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "« Le gâteau de Pâques au citron Rocca et pomelo de Corse », blog Saines Gourmandises, 1er avril 2026",
+    "url": "https://saines-gourmandises.fr/le-gateau-de-paques-au-citron-rocca-et-pomelo-de-corse/",
+    "saison": null
+   },
+   "apports": {
+    "proteine": "oeuf",
+    "feculent": "farine",
+    "legumes": [],
+    "profil": "four",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "oeufs",
+     "ref": "oeufs",
+     "nom": "œufs (3 + 2 jaunes)",
+     "qty": 5,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "farine-epeautre",
+     "ref": "farine-epeautre",
+     "nom": "farine T80 ou T110 (40 + 40 g)",
+     "qty": 80,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false,
+     "remplacants": [
+      {
+       "id": "farine-complete",
+       "nom": "farine T110",
+       "ratio": 1
+      }
+     ]
+    },
+    {
+     "id": "poudre-amande",
+     "ref": "poudre-amande",
+     "nom": "poudre d'amande",
+     "qty": 40,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sucre-roux",
+     "ref": "sucre-roux",
+     "nom": "sucre blond de canne",
+     "qty": 80,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "puree-amande-blanche",
+     "ref": "puree-amande-blanche",
+     "nom": "purée d'amande blanche",
+     "qty": 60,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "poudre-a-lever",
+     "ref": "poudre-a-lever",
+     "nom": "poudre à lever",
+     "qty": 1,
+     "unit": "c. à c.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "citron",
+     "ref": "citron",
+     "nom": "citrons (6 cl de jus et zestes, + 1 pour le curd)",
+     "qty": 3,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "pomelo",
+     "ref": "pomelo",
+     "nom": "pomelo",
+     "qty": 1,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sirop-agave",
+     "ref": "sirop-agave",
+     "nom": "sirop d'agave ou miel d'acacia",
+     "qty": 150,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "ghee",
+     "ref": "ghee",
+     "nom": "ghee ou beurre",
+     "qty": 75,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sucre-vanille",
+     "ref": "sucre-vanille",
+     "nom": "sucre vanillé",
+     "qty": 25,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "chocolat-noir",
+     "ref": "chocolat-noir",
+     "nom": "chocolat noir",
+     "qty": 100,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "amandes",
+     "ref": "amandes",
+     "nom": "amandes concassées",
+     "qty": 40,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": null,
+   "avec": [],
+   "steps": [
+    {
+     "id": "genoise",
+     "action": "Préchauffer à 180 °C ; fouetter 3 jaunes et le sucre, puis la purée d'amande et 6 cl de jus ; y mêler 40 g de farine, levure, poudre d'amande et zestes",
+     "minutes": 10,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "sucre-roux",
+      "puree-amande-blanche",
+      "poudre-a-lever",
+      "poudre-amande"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "cuire",
+     "action": "Incorporer les 3 blancs montés fermes, verser dans un moule de 18 à 20 cm et cuire environ 25 min ; laisser refroidir",
+     "minutes": 28,
+     "needs": [
+      "bake"
+     ],
+     "surveille": false,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "curd",
+     "action": "Mêler à froid 30 cl de jus de citron et de pomelo, 40 g de farine, l'agave, le sucre vanillé et 2 jaunes ; épaissir à feu doux en fouettant, ajouter le ghee",
+     "minutes": 12,
+     "needs": [
+      "simmer"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "citron",
+      "pomelo",
+      "farine-epeautre",
+      "sirop-agave",
+      "sucre-vanille",
+      "oeufs",
+      "ghee"
+     ],
+     "enParallele": "cuire",
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "mixer",
+     "action": "Mixer le curd pour le velouter et le laisser tiédir",
+     "minutes": 3,
+     "needs": [
+      "blend-smooth"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "monter",
+     "action": "Fendre la génoise, étaler le chocolat fondu puis du curd, refermer, couvrir de curd et coller les amandes sur les bords",
+     "minutes": 15,
+     "needs": [
+      "simmer"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "chocolat-noir",
+      "amandes"
+     ],
+     "enParallele": null,
+     "attente": 120,
+     "attenteRaison": "au moins 2 h au frais, au mieux une nuit",
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "coller les amandes",
+     "enfantDes": 36,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 45,
+   "accepts": [],
+   "creneaux": [
+    "gouter",
+    "dessert"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [
+    {
+     "type": "gateau-paques-citron-pomelo",
      "kind": "reste-plat",
      "qty": null,
      "band": "3-repas",
@@ -62107,6 +62809,140 @@
     "id": "sauteuse-28",
     "label": "sauteuse 28 cm",
     "facteurMax": 1.5
+   },
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
+   "id": "lait-chaud-chocolat-badiane",
+   "titre": "Lait chaud mousseux, doucement chocolaté, à la badiane",
+   "minutes": 10,
+   "minutesSurPlace": 10,
+   "avanceMin": 11,
+   "anticipations": [],
+   "portions": 1,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "« Cookies « 0 complexe » amande-citron-chocolat, lait chaud… », blog Saines Gourmandises, 12 janvier 2012",
+    "url": "https://saines-gourmandises.fr/cocooning/",
+    "saison": null
+   },
+   "apports": {
+    "proteine": "aucune",
+    "feculent": "aucun",
+    "legumes": [],
+    "profil": "rapide",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "lait-amande",
+     "ref": "lait-amande",
+     "nom": "lait d'amande ou de soja-vanille",
+     "qty": 25,
+     "unit": "cl",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "extrait-vanille",
+     "ref": "extrait-vanille",
+     "nom": "extrait de vanille liquide",
+     "qty": 1,
+     "unit": "c. à c.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "badiane",
+     "ref": "badiane",
+     "nom": "étoile de badiane",
+     "qty": 1,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "chocolat-noir",
+     "ref": "chocolat-noir",
+     "nom": "chocolat noir 85 %",
+     "qty": 20,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    }
+   ],
+   "role": "boisson",
+   "format": null,
+   "avec": [],
+   "steps": [
+    {
+     "id": "infuser",
+     "action": "Porter le lait à ébullition avec la badiane et la vanille, couper le feu et laisser infuser à couvert",
+     "minutes": 4,
+     "needs": [
+      "simmer"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "lait-amande",
+      "badiane",
+      "extrait-vanille"
+     ],
+     "enParallele": null,
+     "attente": 5,
+     "attenteRaison": "5 min d'infusion",
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "mousser",
+     "action": "Ajouter le chocolat en tout petits morceaux et fouetter ou mixer pour le fondre et faire mousser ; servir bien chaud",
+     "minutes": 2,
+     "needs": [
+      "blend-smooth"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "chocolat-noir"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 5,
+   "accepts": [],
+   "creneaux": [
+    "gouter",
+    "petit-dejeuner"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [],
+   "lotEntier": false,
+   "calibreMax": null,
+   "vaisselle": {
+    "id": "sauteuse-28",
+    "label": "sauteuse 28 cm",
+    "facteurMax": 6.0
    },
    "gainChainage": 0,
    "cuisinable": true
@@ -72614,6 +73450,188 @@
     }
    ],
    "lotEntier": false,
+   "calibreMax": null,
+   "vaisselle": null,
+   "gainChainage": 0,
+   "cuisinable": true
+  },
+  {
+   "id": "mousse-nuage-chocolat-tofu-soyeux",
+   "titre": "Mousse « nuage » au chocolat et tofu soyeux",
+   "minutes": 135,
+   "minutesSurPlace": 116,
+   "avanceMin": 139,
+   "anticipations": [
+    {
+     "gestes": [
+      "fondre",
+      "mixer",
+      "blancs"
+     ],
+     "minutes": 19,
+     "attente": 120,
+     "avantMin": 139,
+     "raison": "au frais avant de servir"
+    }
+   ],
+   "portions": 6,
+   "source": {
+    "auteur": "Marie Chioca",
+    "ouvrage": "« Petite anthologie gourmande (et légère) de la mousse au chocolat bio », blog Saines Gourmandises, 12 juillet 2011",
+    "url": "https://saines-gourmandises.fr/petite-anthologie-gourmande-et-legere-de-la-mousse-au-chocolat-bio/",
+    "saison": null
+   },
+   "apports": {
+    "proteine": "tofu-soja",
+    "feculent": "aucun",
+    "legumes": [],
+    "profil": "cru",
+    "origine": "francais"
+   },
+   "ingredients": [
+    {
+     "id": "lait-soja-vanille",
+     "ref": "lait-soja-vanille",
+     "nom": "lait de soja vanille",
+     "qty": 10,
+     "unit": "cl",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "chocolat-noir",
+     "ref": "chocolat-noir",
+     "nom": "chocolat noir 70 à 85 %",
+     "qty": 100,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "sirop-agave",
+     "ref": "sirop-agave",
+     "nom": "sirop d'agave",
+     "qty": 3,
+     "unit": "c. à s.",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "tofu-soyeux",
+     "ref": "tofu-soyeux",
+     "nom": "tofu soyeux",
+     "qty": 400,
+     "unit": "g",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    },
+    {
+     "id": "oeufs",
+     "ref": "oeufs",
+     "nom": "œufs bio ultra frais",
+     "qty": 2,
+     "unit": "pièce",
+     "base": false,
+     "assaisonnement": false,
+     "central": false
+    }
+   ],
+   "role": "plat",
+   "format": null,
+   "avec": [],
+   "steps": [
+    {
+     "id": "fondre",
+     "action": "Fondre le chocolat dans le lait de soja avec l'agave",
+     "minutes": 6,
+     "needs": [
+      "simmer"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "lait-soja-vanille",
+      "chocolat-noir",
+      "sirop-agave"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "mixer",
+     "action": "Mixer le chocolat chaud avec le tofu soyeux et les jaunes d'œufs",
+     "minutes": 5,
+     "needs": [
+      "blend-smooth"
+     ],
+     "surveille": true,
+     "astuce": null,
+     "uses": [
+      "tofu-soyeux",
+      "oeufs"
+     ],
+     "enParallele": null,
+     "attente": null,
+     "attenteRaison": null,
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": null,
+     "enfantDes": null,
+     "porteAssaisonnement": false
+    },
+    {
+     "id": "blancs",
+     "action": "Monter les blancs en neige, les incorporer à la spatule et verser en petits pots",
+     "minutes": 8,
+     "needs": [],
+     "surveille": true,
+     "astuce": null,
+     "uses": [],
+     "enParallele": null,
+     "attente": 120,
+     "attenteRaison": "au frais avant de servir",
+     "attenteSouple": true,
+     "rattrapage": null,
+     "enfant": "incorporer les blancs",
+     "enfantDes": 36,
+     "porteAssaisonnement": false
+    }
+   ],
+   "bebe": null,
+   "bebePrep": null,
+   "bebeApres": null,
+   "actifMin": 15,
+   "accepts": [],
+   "creneaux": [
+    "gouter",
+    "dessert"
+   ],
+   "transportable": true,
+   "sansReste": null,
+   "emits": [
+    {
+     "type": "mousse-nuage-chocolat-tofu-soyeux",
+     "kind": "reste-plat",
+     "qty": null,
+     "band": "2-repas",
+     "espace": "frigo",
+     "note": null,
+     "gardeFrigo": 2,
+     "congelo": false,
+     "horsTable": false
+    }
+   ],
+   "lotEntier": true,
    "calibreMax": null,
    "vaisselle": null,
    "gainChainage": 0,

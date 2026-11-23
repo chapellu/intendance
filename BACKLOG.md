@@ -6859,3 +6859,56 @@ reformulé comme ceux du livre.
       **UN FAIT DE CORPUS A BOUGÉ.** 105 plats mangent l'épeautre (13 de
       plus). 24 ingrédients nouveaux, dont seitan, ail noir, reblochon,
       psyllium et kéfir de lait.
+
+- [x] **T196e — Les recettes invitées du blog, créditées.** Le mot « invitées »
+      de la demande visait les recettes RÉDIGÉES POUR CE DÉPÔT, pas celles
+      d'autres auteurs publiées sur le blog : ces dernières reviennent, chacune
+      avec son auteur dans l'en-tête de la fiche. Le fondant de Noël (d'après
+      Amandine Geers et Olivier Degorce), le gâteau de Pâques 2026 (génoise de
+      la blogueuse Cléa), la crème-mousse au tofu soyeux de Valérie Cupillard
+      et sa variante « nuage », le lait chaud à la badiane (inspiré de
+      Frédérique). Les carrés à la crème de groseille restent dehors, mais
+      pour la bonne raison : ils sont déjà au catalogue depuis le livre.
+
+- [ ] **T197 — Retirer peu à peu les recettes rédigées pour ce dépôt.** 52
+      plats n'ont aucune source extérieure (37 fiches « Recette du foyer » et
+      15 entrées de `_repertoire.yaml`) ; trois autres sont des mécanismes,
+      pas des recettes, et restent (`gouter-des-enfants`,
+      `petit-dejeuner-des-enfants`, `reste-de-la-veille`). Règle : une fiche
+      ne part que quand une recette sourcée tient sa place — même rôle, même
+      apport, et la même contrainte s'il y en a une. Une vague par PR, avec
+      ses tests.
+
+      **DÉJÀ COUVERTES (première vague possible).** `poulet-roti` →
+      `poulet-roti-du-dimanche` (penser au `fallback_recipe` de
+      `cock-a-leekie`) · `lentilles-mijotees` → `lentilles-paysanne` ou
+      `mitonnee-lentilles` · `frittata-petits-pois-cebettes` →
+      `omelette-du-potager` ou `frittata-vegetarienne` ·
+      `gratin-courgettes-riz` → `gratin-courge-riz` · `salade-lentilles-feta`
+      → `salade-lentilles-amelioree` · `tarte-tomates-moutarde` →
+      `tarte-tomates-meme` · `croque-monsieur-salade` →
+      `croque-monsieur-montagnards` · `hachis-parmentier-lentilles` →
+      `hachis-parmentier-50-50` · `crepes-maison` →
+      `crepes-son-avoine-fleur-oranger` · `cookies-avoine-maison` → les
+      cookies du blog · `pain-maison-semi-complet` → les pains de mie du blog.
+
+      **BLOQUÉES PAR LE FOND DE ROULEMENT.** Les dîners de `fond.yaml` se
+      cuisinent avec le fond et le placard SEULS ; aucune recette sourcée ne
+      le fait encore. `dahl-lentilles-corail` (le dahl du livre veut des
+      carottes fraîches), `pates-bolognaise-lentilles`,
+      `soupe-pois-casses-carottes`, `curry-pois-chiches`,
+      `chili-haricots-rouges`, `haricots-blancs-tomate-oeufs`,
+      `tortilla-pommes-de-terre-haricots-verts`, `salade-tiede-lentilles-thon`,
+      `soupe-legumes-pois-chiches`. Il faut d'abord des recettes sourcées qui
+      tiennent ce contrat, ou revoir le contrat.
+
+      **SANS ÉQUIVALENT SOURCÉ.** Chili sin carne, fajitas, gnocchis (deux),
+      lasagnes, sauce et pâtes bolognaise, saumon-riz-brocoli, soupe de poule,
+      couscous d'hiver, taboulé, minestrone, moussaka de lentilles,
+      ratatouille minute, quiches (courgettes-yaourt, épinards-thon, poireaux),
+      tartes oignons-thon et potimarron-oignons, burgers de lentilles,
+      veloutés (courgettes, butternut-coco, carottes-corail, épinards-corail,
+      poireaux-pommes de terre-corail), soupe chou frisé-haricots,
+      tian de printemps, banana bread, compote pommes-poires,
+      gratins de pâtes (tomates, brocoli-thon), omelette aux courgettes.
+      D'autres livres de l'autrice les couvriraient peut-être.
