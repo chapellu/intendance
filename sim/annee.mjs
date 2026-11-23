@@ -82,7 +82,7 @@ function evenements(j) {
   if (j === "2027-03-15") e.push({ type: "batch", prevu: true, quoi: "dimanche de batch cooking" });
   // ALEA > 1 : des imprévus en plus, tirés par la date (le même jour donne le même tirage).
   if (ALEA > 1 && !e.some((x) => x.type === "absent")) {
-    const h = [...j].reduce((a, c) => (a * 31 + c.charCodeAt(0)) % 1000003, 7) / 1000003;
+    const h = ([...j].reduce((a, c) => Math.imul(a ^ c.charCodeAt(0), 16777619) >>> 0, 2166136261) % 100000) / 100000;
     const k = ALEA - 1;
     if (h < 0.03 * k) e.push({ type: "invites", prevu: false, parts: 5, quoi: "des amis à dîner, à l'improviste", repas: "diner" });
     else if (h < 0.06 * k) e.push({ type: "dehors", prevu: false, quoi: "dîner dehors, au dernier moment" });
