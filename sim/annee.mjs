@@ -19,6 +19,11 @@ const MOI = process.env.PERSONA === "moi";
 // Par défaut, la pause de 15 h passe par le cockpit et « Ce soir » (T127–T129).
 const PASSE = process.env.FLUX === "passe";
 const URL = process.env.URL || "http://localhost:4193";
+// COURSES=6 : un seul jour de courses (le samedi) — le fond seul tient la semaine.
+const JOURS_COURSES = (process.env.COURSES ?? "3,6").split(",").map(Number);
+// ALEA=2 : un foyer plus agité — invités, soirs dehors, plats ratés, desserts et
+// apéros plus souvent (×ALEA sur les probabilités).
+const ALEA = +(process.env.ALEA ?? 1);
 const OUT = process.env.OUT;
 const PROFILE = process.env.PROFILE;
 mkdirSync(`${OUT}/captures`, { recursive: true });
@@ -75,6 +80,14 @@ function evenements(j) {
   if (j === "2027-09-10") e.push({ type: "rate", prevu: false, quoi: "plat brûlé, pizza commandée" });
   if (j === "2027-10-04") e.push({ type: "panne-frigo", prevu: false, quoi: "le frigo lâche dans la nuit" });
   if (j === "2027-03-15") e.push({ type: "batch", prevu: true, quoi: "dimanche de batch cooking" });
+  // ALEA > 1 : des imprévus en plus, tirés par la date (le même jour donne le même tirage).
+  if (ALEA > 1 && !e.some((x) => x.type === "absent")) {
+    const h = [...j].reduce((a, c) => (a * 31 + c.charCodeAt(0)) % 1000003, 7) / 1000003;
+    const k = ALEA - 1;
+    if (h < 0.03 * k) e.push({ type: "invites", prevu: false, parts: 5, quoi: "des amis à dîner, à l'improviste", repas: "diner" });
+    else if (h < 0.06 * k) e.push({ type: "dehors", prevu: false, quoi: "dîner dehors, au dernier moment" });
+    else if (h < 0.08 * k) e.push({ type: "rate", prevu: false, quoi: "plat raté" });
+  }
   return e;
 }
 
@@ -255,7 +268,7 @@ function choisir(cartes, j, ev) {
     if (!MOI && etat.recents.includes(c.titre)) pourquoi.push("déjà mangé récemment");
     if (MOI && etat.recents.slice(-3).includes(c.titre)) pourquoi.push("mangé ces trois derniers jours");
     const art = +(/\+(\d+)\s*art/.exec(c.meta ?? "")?.[1] ?? 0);
-    if (MOI && ![3, 6].includes(new Date(j).getDay()) && art > 1) pourquoi.push(`${art} articles à acheter un jour sans courses`);
+    if (MOI && !JOURS_COURSES.includes(new Date(j).getDay()) && art > 1) pourquoi.push(`${art} articles à acheter un jour sans courses`);
     if (four && p && (p.vaisselle?.id ?? "").match(/plat|moule|four|cocotte/) ) pourquoi.push("demande le four");
     raisons.push(`${c.titre}: ${pourquoi.join(", ") || "ok"}`);
     return { n, ok: !pourquoi.length, pourquoi };
@@ -871,7 +884,7 @@ function juger(c, j, ev) {
   const four = ev.some((e) => e.type === "four-en-panne" || e.type === "canicule");
   if (DESSERT.test(c.titre) || (p && p.role && p.role !== "plat")) pourquoi.push("pas un repas");
   if (mangeRecemment(c.titre, j)) pourquoi.push("mangé ces trois derniers jours");
-  if (![3, 6].includes(new Date(j).getDay()) && c.achats.n > 1) pourquoi.push(`${c.achats.n} articles à acheter un jour sans courses`);
+  if (!JOURS_COURSES.includes(new Date(j).getDay()) && c.achats.n > 1) pourquoi.push(`${c.achats.n} articles à acheter un jour sans courses`);
   if (/prêt vers/.test(c.heure)) pourquoi.push("pas prêt pour 18 h en lançant à 15 h");
   if (four && p && (p.vaisselle?.id ?? "").match(/plat|moule|four|cocotte/)) pourquoi.push("demande le four");
   // T134 — LE FOYER NE CUISINE PAS CE QU'IL N'A PAS. Un jour sans courses, au
@@ -879,7 +892,7 @@ function juger(c, j, ev) {
   // tient à zéro (et que la carte ne disait pas manquer, donc qu'on n'ira pas
   // chercher) se découvre — noté, et on prend la carte suivante. Un id jamais
   // acheté n'est pas au grand livre : on n'en sait rien, on ne l'invente pas.
-  if (!pourquoi.length && p && ![3, 6].includes(new Date(j).getDay())) {
+  if (!pourquoi.length && p && !JOURS_COURSES.includes(new Date(j).getDay())) {
     // La carte dit les noms COURTS (« il manque : lentilles ») : un préfixe suffit.
     const dits = c.achats.noms.map(norm);
     const dit = (i) => dits.some((d) => norm(i.nom).startsWith(d) || norm(i.id).startsWith(d) || d.startsWith(norm(i.id)));
@@ -1038,7 +1051,7 @@ function gouter(j, stats) {
   stats.repas = { ...stats.repas, gouter: m.length ? `manque ${m.join(",")}` : f ? `fournée (${f})` : "yaourt et fruit seuls" };
 }
 function dessert(j, stats) {
-  if (hasard() > 0.6) { stats.repas = { ...stats.repas, dessert: "pas de dessert" }; return; }
+  if (hasard() > Math.min(0.95, 0.6 * ALEA)) { stats.repas = { ...stats.repas, dessert: "pas de dessert" }; return; }
   // Trois desserts (les adultes et le grand) : un yaourt, ou un fruit.
   const choix = hasard() < 0.5 ? ["yaourt-nature"] : ["pommes", "poires", "banane"];
   const id = choix.find((x) => (etat.reel[x]?.q ?? 0) >= 3);
@@ -1048,7 +1061,7 @@ function dessert(j, stats) {
 async function apero(j, ev, stats) {
   const invites = ev.some((e) => e.type === "invites");
   const dow = new Date(j).getDay();
-  if (!(invites || (dow === 5 && hasard() < 0.35) || (dow === 6 && hasard() < 0.25))) return;
+  if (!(invites || (dow === 5 && hasard() < 0.35 * ALEA) || (dow === 6 && hasard() < 0.25 * ALEA))) return;
   const pris = [];
   for (const id of APERO) {
     const r = etat.reel[id]; if (!r || r.q <= 0) { manqueDuJour(stats, "apero", id); continue; }
@@ -1157,7 +1170,7 @@ async function journee2(idx) {
   if (idx === 0) await poserFond(j);
   // Les jours de courses, les courses du matin, avant toute décision. LE FOND NE SE
   // RECHARGE QUE PAR LA LISTE DE L'APP (T134) : aucun réassort côté harnais.
-  if (!absent && [3, 6].includes(dow)) { await page.clock.setFixedTime(new Date(`${j}T10:00:00`)); await courses(j, ev, stats); stats.coursesDuMatin = stats.articles; stats.listeMatin = stats.liste; }
+  if (!absent && JOURS_COURSES.includes(dow)) { await page.clock.setFixedTime(new Date(`${j}T10:00:00`)); await courses(j, ev, stats); stats.coursesDuMatin = stats.articles; stats.listeMatin = stats.liste; }
 
   if (absent) { stats.absent = true; }
   else {
@@ -1181,7 +1194,7 @@ async function journee2(idx) {
         repliMange(j, stats);
       } else {
         const p = platParTitre.get(pris.titre);
-        const courseDay = [3, 6].includes(dow);
+        const courseDay = JOURS_COURSES.includes(dow);
         Object.assign(stats, { carte: { pos: pris.pos, par: pris.par, achats: pris.achats.n, manque: pris.achats.noms, raison: pris.raison.slice(0, 160), heure: pris.heure.slice(0, 120) } });
         stats.legume = legumineux(p);
         stats.format = p?.format ?? null;
