@@ -128,7 +128,7 @@ routines:
     du_depot:
       # Les goûters de la fournée, et la compote. Un jour sans lot, rien ne se
       # retire : le goûter s'est fait d'un fruit et d'un yaourt.
-      types: [banana-bread, cookies-avoine, crepes-maison, compote-maison,
+      types: [banana-bread, cookies-pralines-son-avoine, crepes-son-avoine-fleur-oranger, compote-maison,
               muffins-choco-courgettes, quatre-quarts-poire, mini-brownies,
               cookies-figues-noisettes, mini-cakes-fruits]
       parts: 1

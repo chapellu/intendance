@@ -25,13 +25,13 @@ recipe:
   ingredients:
     - {id: yaourt-nature, name: yaourts nature, qty: 2, unit: pot}
     - {id: pommes, name: pomme, qty: 1, unit: pièce}
-    - {id: lait-croissance, name: lait de croissance, qty: 200, unit: ml}
+    # T197 — leur lait n'est pas suivi : le foyer le gère lui-même.
 
   steps:
     - id: servir
       action: "Couper la pomme en quartiers, sortir les yaourts et la part de la fournée"
       needs: []
-      uses: [pommes, yaourt-nature, lait-croissance]
+      uses: [pommes, yaourt-nature]
       time_min: 5
 
   plan_b: []

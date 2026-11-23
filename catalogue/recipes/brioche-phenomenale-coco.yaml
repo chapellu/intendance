@@ -1,0 +1,79 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LA BRIOCHE « PHÉNOMÉNALE » : épeautre T110 et crème de coco (40 cl),
+# agave, fleur d'oranger, vanille, rhum ; pétrie très souple, une nuit au
+# frais, neuf boules dans un moule, levée 45 min à 1 h, amandes effilées,
+# 1 min à four maximal puis 25 min à 180 °C. Jamais au frigo une fois cuite :
+# le coco durcit la mie. La confiture express de l'article est à part.
+
+recipe:
+  id: brioche-phenomenale-coco
+  title: Brioche « phénoménale » à l'épeautre et à la crème de coco
+  role: base
+  creneaux: [petit-dejeuner, gouter]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Une brioche phénoménale à l'épeautre non hybridé », blog Saines Gourmandises, 16 juin 2015"
+    url: https://saines-gourmandises.fr/aboutissement-dune-quete-aujourdhui-tadaaam-je-vous-presente-mesdames-et-messieurs/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 9          # « une brioche de 9 parts »
+  lot_entier: true
+  time_min_total: 100       # 15 min + 1 h de pousse + 26 min (nuit au frais)
+  active_min: 20
+
+  apports:
+    proteine: aucune
+    feculent: pain
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: farine de grand épeautre T110, qty: 500, unit: g}
+    - {id: creme-coco, name: crème de coco liquide, qty: 40, unit: cl}
+    - {id: sirop-agave, name: sirop d'agave, qty: 5, unit: cl}
+    - {id: eau-fleur-oranger, name: eau de fleur d'oranger, qty: 2, unit: c. à s.}
+    - {id: extrait-vanille, name: extrait de vanille liquide, qty: 1, unit: c. à s.}
+    - {id: rhum, name: rhum ambré, qty: 1, unit: c. à s.}
+    - {id: levure-boulangere, name: levure de boulanger déshydratée, qty: 1, unit: sachet}
+    - {id: sel, name: sel fin, qty: 5, unit: g, seasoning: true}
+    - {id: amandes-effilees, name: petite poignée d'amandes effilées, qty: 1, unit: poignée}
+
+  steps:
+    - id: petrir
+      action: "Tiédir la crème de coco avec l'agave, le rhum, la fleur d'oranger et la vanille sous 40 °C, y fouetter la levure, verser sur la farine salée et pétrir 7 min"
+      astuce: "La pâte est très souple : elle prend du corps pendant la nuit."
+      needs: [simmer]
+      charge_partielle: true   # le récipient ne tient que cette part du plat
+      uses: [creme-coco, sirop-agave, rhum, eau-fleur-oranger, extrait-vanille, levure-boulangere, farine-epeautre, sel]
+      time_min: 12
+      attente_min: 600
+      attente_raison: "une nuit au réfrigérateur, sous une assiette"
+    - id: faconner
+      action: "Diviser en 9 boules sans fariner, les ranger côte à côte dans un moule chemisé, vaporiser d'eau, couvrir et laisser lever au chaud"
+      needs: []
+      uses: []
+      time_min: 8
+      attente_min: 50
+      attente_raison: "pousse jusqu'à presque doubler, four au maximum"
+    - id: cuire
+      action: "Vaporiser de nouveau, parsemer d'amandes, cuire 1 min à four maximal puis 25 min à 180 °C sans ouvrir ; démouler tiède"
+      needs: [bake]
+      uses: [amandes-effilees]
+      time_min: 26
+      attended: false
+
+  emits:
+    - kind: base
+      type: brioche-phenomenale-coco
+      qty_band: 3-repas
+      keeps: {frigo_days: 1, congelo: true}
+      note: "jamais au frigo : le coco durcit la mie"
+
+  plan_b: []

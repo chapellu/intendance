@@ -1,0 +1,92 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# TROIS GÉNOISES MINUTE (œufs entiers fouettés à l'agave jusqu'à doubler, farine
+# d'épeautre et levure tamisées, 7 min à 200 °C), une mousse végétale de
+# chocolat 70 %, crème de coco, soja et café mixée avec de la lécithine, une
+# nuit au frais dans un cercle ; une crème au thé blanc à l'agar-agar et à
+# l'huile de coco dressée finement à la poche. Le robot pâtissier de
+# l'autrice manque : au fouet électrique ou à la main, plus long.
+
+recipe:
+  id: layer-cake-noel-chocolat-the-blanc
+  title: Layer-cake de Noël enneigé, mousse chocolatée et crème au thé blanc
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Le layer-cake bio de Noël tout enneigé, mousse doucement chocolatée et crème au thé blanc », blog Saines Gourmandises, 12 décembre 2013"
+    url: https://saines-gourmandises.fr/le-fameux-de-noel-dont-je-vous-parlais-hier/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 15          # « un layer-cake de 15 parts »
+  lot_entier: true
+  time_min_total: 60
+  active_min: 45
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: oeufs, name: "œufs", qty: 4, unit: pièce}
+    - {id: sirop-agave, name: "sirop d'agave (10 cl + 8 c. à s.)", qty: 22, unit: cl}
+    - {id: farine-epeautre, name: "farine de grand épeautre T110 (150 + 30 g)", qty: 180, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever", qty: 1, unit: sachet}
+    - {id: chocolat-noir, name: "chocolat noir 70 %", qty: 200, unit: g}
+    - {id: creme-coco, name: "crème de coco liquide", qty: 40, unit: cl}
+    - {id: lait-soja-vanille, name: "lait de soja-vanille (40 + 40 cl)", qty: 80, unit: cl}
+    - {id: lecithine-soja, name: "lécithine de soja", qty: 2, unit: c. à c.}
+    - {id: cafe, name: "café très fort", qty: 3, unit: cl}
+    - {id: agar-agar, name: "agar-agar", qty: 2, unit: g}
+    - {id: sucre-bouleau, name: "sucre de bouleau", qty: 100, unit: g}
+    - {id: huile-coco, name: "huile de coco vierge", qty: 150, unit: g}
+    - {id: gousse-vanille, name: "gousse de vanille", qty: 1, unit: pièce}
+    - {id: the-blanc, name: "thé blanc parfumé", qty: 1, unit: c. à c.}
+
+  steps:
+    - id: genoises
+      action: "Préchauffer à 200 °C ; fouetter œufs et 10 cl d'agave jusqu'à doubler, y mêler 150 g de farine tamisée avec la levure, et cuire 7 min en 3 moules"
+      needs: [bake]
+      uses: [oeufs, poudre-a-lever]
+      time_min: 25
+    - id: mousse
+      action: "Chauffer 40 cl de soja, la crème de coco, 8 c. à s. d'agave et le café ; hors du feu, y fondre le chocolat et mixer avec la lécithine"
+      needs: [simmer, blend-smooth]
+      charge_partielle: true
+      uses: [creme-coco, cafe, chocolat-noir, lecithine-soja]
+      time_min: 10
+    - id: monter
+      action: "Dans un cercle chemisé, alterner les trois génoises et la mousse (350, 300 et 300 g) ; couvrir et mettre au frais"
+      needs: []
+      uses: []
+      time_min: 10
+      attente_min: 720
+      attente_raison: "une nuit au frais"
+    - id: creme
+      action: "Fouetter à froid 40 cl de soja, agar-agar, 30 g de farine et sucre, ajouter vanille et thé, bouillir 3 min, filtrer, puis mixer avec l'huile de coco"
+      needs: [simmer, blend-smooth]
+      charge_partielle: true
+      uses: [lait-soja-vanille, agar-agar, farine-epeautre, sucre-bouleau, gousse-vanille, the-blanc, huile-coco, sirop-agave]
+      time_min: 10
+    - id: decor
+      action: "Décercler et lisser le tour, puis dresser la crème en fins anneaux serrés contre le gâteau, de bas en haut, et sur le dessus"
+      astuce: "Ou simplement poudrer de cacao, sans la crème."
+      needs: []
+      uses: []
+      time_min: 15
+      kid: {age_min_months: 48, task: "poser les décors de Noël"}
+
+  emits:
+    - kind: reste-plat
+      type: layer-cake-noel-chocolat-the-blanc
+      qty_band: 3-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

@@ -1,0 +1,85 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LA GÉNOISE DE BASE cuite 15 min à 180 °C dans un savarin de 22 cm, fendue,
+# garnie de fraises en dés et d'une crème mousseline : soja-vanille, farine,
+# agar-agar, agave, vanille, sel, bouillie 3 min, huile de coco fondue
+# dedans, puis tiédie à 28-37 °C (ni plus, ni moins) et allégée de crème de
+# coco montée glacée.
+
+recipe:
+  id: nid-paques-facon-fraisier
+  title: « Nid » de Pâques façon fraisier, crème mousseline végétale
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Nid douillet façon fraisier + Agneau de Pâques en génoise moelleuse », blog Saines Gourmandises, 10 avril 2014"
+    url: https://saines-gourmandises.fr/gourmandises-de-paques-une-genoise-de-base-2-recettes/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « pour 8 personnes »
+  lot_entier: true
+  time_min_total: 70
+  active_min: 40
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: oeufs, name: "œufs", qty: 4, unit: pièce}
+    - {id: sirop-agave, ref: agave-genoise, name: "sirop d'agave (génoise)", qty: 10, unit: cl}
+    - {id: farine-petit-epeautre, ref: farine-genoise, name: "farine de petit épeautre T110", qty: 170, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever (demi-paquet)", qty: 0.5, unit: sachet}
+    - {id: creme-coco, name: "crème de coco liquide", qty: 20, unit: cl}
+    - {id: lait-soja-vanille, name: "lait de soja à la vanille", qty: 40, unit: cl}
+    - {id: agar-agar, name: "agar-agar", qty: 2, unit: g}
+    - {id: farine-petit-epeautre, ref: farine-creme, name: "farine de petit épeautre (crème)", qty: 15, unit: g}
+    - {id: gousse-vanille, name: "gousse de vanille", qty: 1, unit: pièce}
+    - {id: huile-coco, name: "huile de coco vierge", qty: 150, unit: g}
+    - {id: sirop-agave, ref: agave-creme, name: "sirop d'agave (crème)", qty: 10, unit: cl}
+    - {id: fraises, name: "bonnes fraises", qty: 250, unit: g}
+    - {id: fleur-de-sel, name: "pincée de fleur de sel", qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: genoise
+      action: "Préchauffer à 180 °C ; fouetter œufs et agave jusqu'à tripler, y mêler la farine tamisée avec la levure et cuire 15 min dans un savarin"
+      astuce: "Mettre le bol, le fouet et la crème de coco au congélateur."
+      needs: [bake]
+      uses: [oeufs, agave-genoise, farine-genoise, poudre-a-lever]
+      time_min: 30
+    - id: creme
+      action: "Fouetter le soja avec la farine tamisée, agar-agar, agave, sel et vanille fendue, bouillir 3 min, puis y fondre l'huile de coco hors du feu"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [lait-soja-vanille, farine-creme, agar-agar, agave-creme, fleur-de-sel, gousse-vanille, huile-coco]
+      time_min: 8
+    - id: fraises
+      action: "Couper les fraises en dés ; fendre la génoise et en remettre la moitié dans le moule, couverte de fraises"
+      needs: []
+      uses: [fraises]
+      time_min: 8
+      kid: {age_min_months: 36, task: "répartir les fraises"}
+    - id: mousseline
+      action: "Quand la crème est tiède, monter la crème de coco glacée et l'incorporer à la maryse, verser sur les fraises et couvrir de l'autre moitié"
+      astuce: "La crème à température du doigt (28 à 37 °C) : plus chaude, la chantilly retombe ; plus froide, l'agar-agar fige."
+      needs: []
+      uses: [creme-coco]
+      time_min: 8
+      attente_min: 240
+      attente_raison: "prise au frais avant de démouler"
+
+  emits:
+    - kind: reste-plat
+      type: nid-paques-facon-fraisier
+      qty_band: 3-repas
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

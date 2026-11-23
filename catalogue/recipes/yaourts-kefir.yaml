@@ -1,0 +1,68 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# 10 CL DE KÉFIR À BOIRE mêlés à un litre de lait cru (ou frais microfiltré) entier,
+# versés en pots sous un torchon : 24 à 48 h jusqu'à bien épaissir, puis 4 h
+# au frais. Une texture bien plus crémeuse que la plupart des yaourts maison.
+# LE KÉFIR EST UNE BASE du catalogue.
+
+recipe:
+  id: yaourts-kefir
+  title: « Yaourts » de kéfir
+  creneaux: [petit-dejeuner, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Alors le lait, bon ou mauvais ? (En bonus, la recette du kéfir de lait) », blog Saines Gourmandises, 12 août 2019"
+    url: https://saines-gourmandises.fr/petit-eloge-de-nuance-episode-2/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 7          # « 6 à 8 yaourts »
+    pieces: 7
+  lot_entier: true
+  time_min_total: 2165
+  active_min: 5
+
+  accepts:
+    - type: kefir-lait
+      qty: {amount: 10, unit: cl}
+      required: true
+      fallback_recipe: kefir-lait-boisson
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: []
+    profil: routine
+    origine: francais
+
+  ingredients:
+    - {id: kefir-lait, name: "kéfir bien actif", qty: 10, unit: cl, from_accepts: true}
+    - {id: lait, name: "lait cru entier", qty: 1, unit: l}
+
+  steps:
+    - id: ensemencer
+      action: "Mêler le kéfir et le lait, verser en pots, couvrir d'un torchon et laisser fermenter"
+      needs: []
+      uses: [kefir-lait, lait]
+      time_min: 4
+      attente_min: 2160
+      attente_raison: "24 à 48 h, jusqu'à bien épaissir"
+    - id: rafraichir
+      action: "Couvrir les pots et les mettre au frais"
+      needs: []
+      uses: []
+      time_min: 1
+      attente_min: 240
+      attente_raison: "au moins 4 h au frais"
+
+  emits:
+    - kind: reste-plat
+      type: yaourts-kefir
+      qty_band: 3-repas
+      keeps: {frigo_days: 6, congelo: false}
+
+  plan_b: []

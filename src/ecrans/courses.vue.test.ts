@@ -27,7 +27,7 @@ beforeEach(async () => {
   const i = jeu.creneaux.findIndex((c) => c.jour === 0 && c.repas === "diner");
   jeu.choix[i] = "lasagnes";
   const j = jeu.creneaux.findIndex((c) => c.jour === 1 && c.repas === "diner");
-  jeu.choix[j] = "poulet-roti";
+  jeu.choix[j] = "poulet-roti-du-dimanche";
   calc = calculer(jeu);
   await base.courses.clear();
 });

@@ -1,0 +1,64 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# SANS NOM, PAS BEAU, MAIS TRÈS BON, dit l'autrice : reines-claudes serrées dans
+# un petit plat chemisé, couvertes d'une pâte de poudre d'amande, son
+# d'avoine, agave, œufs et eau-de-vie de prune ; 25 min, démoulé froid.
+
+recipe:
+  id: gateau-reines-claudes-amande
+  title: « Truc » aux reines-claudes et à l'amande
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Espèce de truc aux reines-claudes », blog Saines Gourmandises, 16 août 2012"
+    url: https://saines-gourmandises.fr/un-petit-gateau-2-news/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes »
+  lot_entier: true
+  time_min_total: 35
+  active_min: 10
+
+  apports:
+    proteine: oeuf
+    feculent: aucun
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: reines-claudes, name: "reines-claudes", qty: 500, unit: g}
+    - {id: poudre-amande, name: "poudre d'amandes", qty: 125, unit: g}
+    - {id: son-avoine, name: "son d'avoine", qty: 2, unit: c. à s.}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 3, unit: c. à s.}
+    - {id: eau-de-vie, name: "eau-de-vie de prune ou amaretto", qty: 1, unit: c. à s.}
+    - {id: eau, name: "eau", qty: 2, unit: c. à s.}
+    - {id: oeufs, name: "œufs", qty: 2, unit: pièce}
+    - {id: extrait-amande-amere, name: "extrait d'amande amère", qty: 1, unit: pincée, optional: true}
+
+  steps:
+    - id: fruits
+      action: "Préchauffer à 180 °C ; dénoyauter les reines-claudes et les serrer dans un plat de 18 cm chemisé"
+      needs: []
+      uses: [reines-claudes]
+      time_min: 6
+      kid: {age_min_months: 30, task: "ranger les demi-prunes"}
+    - id: pate
+      action: "Fouetter tous les autres ingrédients, verser sur les fruits et cuire 25 min ; démouler froid"
+      needs: [bake]
+      uses: [poudre-amande, son-avoine, sirop-agave, eau-de-vie, eau, oeufs, extrait-amande-amere]
+      time_min: 28
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: gateau-reines-claudes-amande
+      qty_band: 1-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

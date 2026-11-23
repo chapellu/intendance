@@ -1,0 +1,80 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE PAËLLA DE DÉBUT DE PRINTEMPS sans tomate ni poivron : riz complet cuit 10 min
+# à l'eau, puis mêlé à une poêlée de poulet, calmars et oignons tiges, petits
+# pois croquants, moules et coques ouvertes au dernier moment ; pousses
+# d'épinards crues et ciboulette, servie tiède.
+
+recipe:
+  id: paella-verte-printaniere
+  title: Paëlla légère vert tendre aux petits légumes printaniers
+  format: poelee
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Paëlla légère vert tendre aux petits légumes printaniers », blog Saines Gourmandises, 29 mars 2012"
+    url: https://saines-gourmandises.fr/yeees-enfin-du-bon-riz-a-ig-bas/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « pour 6 bons mangeurs »
+  time_min_total: 25
+  active_min: 20
+
+  apports:
+    proteine: viande-blanche
+    feculent: riz
+    legumes: [allium, legumineuse, feuille]
+    profil: poele
+    origine: espagnol
+
+  ingredients:
+    - {id: riz, name: "riz thaï complet (cuisson 10 min)", qty: 500, unit: g}
+    - {id: cebette, name: "oignons tiges", qty: 4, unit: pièce}
+    - {id: petits-pois, name: "petits pois surgelés", qty: 2, unit: poignée}
+    - {id: pousses-epinards, name: "jeunes pousses d'épinards", qty: 2, unit: poignée}
+    - {id: ciboulette, name: "brins de ciboulette", qty: 5, unit: brin}
+    - {id: poulet-filets, name: "filets de poulet en petits cubes", qty: 300, unit: g}
+    - {id: moules, name: "moules", qty: 1, unit: poignée}
+    - {id: coques, name: "coques", qty: 1, unit: poignée}
+    - {id: crevettes, name: "crevettes", qty: 3, unit: pièce}
+    - {id: calmars, name: "calmars ou encornets", qty: 200, unit: g}
+    - {id: huile-olive, name: "huile d'olive", qty: 8, unit: c. à s.}
+    - {id: sel, name: "sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: "poivre du moulin", qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: riz
+      action: "Cuire le riz 10 min précises à l'eau bouillante salée"
+      needs: [boil]
+      charge_partielle: true
+      uses: [riz]
+      time_min: 12
+      attended: false
+    - id: poeler
+      action: "Dorer poulet, calmars, crevettes et oignons tiges émincés dans 6 c. à s. d'huile ; saler, poivrer ; ajouter les petits pois 5 min"
+      needs: [pan-fry]
+      uses: [huile-olive, poulet-filets, calmars, crevettes, cebette, petits-pois, sel, poivre]
+      time_min: 15
+      parallel_with: riz
+    - id: coquillages
+      action: "Jeter moules et coques dans la poêle et couper le feu dès qu'elles s'ouvrent"
+      needs: [pan-fry]
+      uses: [moules, coques]
+      time_min: 4
+    - id: meler
+      action: "Mêler le riz égoutté avec le reste d'huile, la garniture et les pousses d'épinards crues ; parsemer de ciboulette"
+      needs: []
+      uses: [pousses-epinards, ciboulette]
+      time_min: 3
+
+  emits:
+    - kind: reste-plat
+      type: paella-verte-printaniere
+      qty_band: 2-repas
+      keeps: {frigo_days: 1, congelo: false}
+
+  plan_b: []

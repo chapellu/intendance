@@ -24,7 +24,7 @@ test.beforeEach(async ({ page }) => {
 /** Vide le dépôt, puis y range `restes` restes du jour d'un repas chacun (une
  *  boîte chacun). Dexie ne voit pas une écriture faite hors de lui — d'où le
  *  rechargement. */
-async function viderLeDepot(page: Page, restes = 0, sorte: { type: string; kind: string } = { type: "dahl-lentilles-corail", kind: "reste-plat" }): Promise<void> {
+async function viderLeDepot(page: Page, restes = 0, sorte: { type: string; kind: string } = { type: "dahl-riz-lentilles-corail-carottes", kind: "reste-plat" }): Promise<void> {
   await page.evaluate(
     ({ n, jour, sorte }) =>
       new Promise<void>((ok, ko) => {

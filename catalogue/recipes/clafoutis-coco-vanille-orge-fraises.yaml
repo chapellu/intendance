@@ -1,0 +1,65 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LE CLAFOUTIS DES FRUITS ROUGES (fraises surtout, ou framboises, mûres,
+# myrtilles) : soja-vanille, crème de coco, quatre œufs, 35 g de farine
+# d'orge mondé et agave ; cuit doucement à 150 °C. La variante miel-amande
+# au petit épeautre de la même page est déjà au catalogue (le livre).
+
+recipe:
+  id: clafoutis-coco-vanille-orge-fraises
+  title: Clafoutis coco-vanille à l'orge mondé, aux fraises
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« 2 bons desserts de saison (en « mode feignasse »…) », blog Saines Gourmandises, 2 juillet 2015"
+    url: https://saines-gourmandises.fr/en-clafoutisez-vos-fruits-dete/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « un grand moule ou 6 ramequins »
+  lot_entier: true
+  time_min_total: 70
+  active_min: 10
+
+  apports:
+    proteine: oeuf
+    feculent: orge
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: lait-soja-vanille, name: "lait de soja à la vanille", qty: 30, unit: cl}
+    - {id: creme-coco, name: "crème de coco liquide", qty: 20, unit: cl}
+    - {id: oeufs, name: "œufs ultra frais", qty: 4, unit: pièce}
+    - {id: farine-orge, name: "farine d'orge mondé", qty: 35, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 10, unit: cl}
+    - {id: gousse-vanille, name: "gousse de vanille (ou 1 c. à s. d'extrait)", qty: 1, unit: pièce}
+    - {id: fraises, name: "fraises bien mûres", qty: 300, unit: g}
+    - {id: huile-tournesol, name: "huile ou beurre pour le moule", qty: 1, unit: c. à c.}
+
+  steps:
+    - id: appareil
+      action: "Préchauffer à 150 °C et huiler le moule ; fouetter sans grumeaux tous les ingrédients sauf les fruits"
+      needs: []
+      uses: [huile-tournesol, lait-soja-vanille, creme-coco, oeufs, farine-orge, sirop-agave, gousse-vanille]
+      time_min: 8
+    - id: cuire
+      action: "Verser, répartir les fraises et cuire environ 1 h (30 min en ramequins), jusqu'à ce que le centre soit pris et doré ; laisser refroidir"
+      needs: [bake]
+      uses: [fraises]
+      time_min: 60
+      attended: false
+      kid: {age_min_months: 24, task: "poser les fraises"}
+
+  emits:
+    - kind: reste-plat
+      type: clafoutis-coco-vanille-orge-fraises
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

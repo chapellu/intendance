@@ -1,0 +1,79 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE GANACHE sans crème ni beurre (chocolat aux éclats de fève fondu avec lait
+# végétal et agave, purée de noisette) prise 3 à 4 h ; façonnée en gros
+# rochers roulés dans des noisettes concassées torréfiées, puis enrobés de
+# chocolat de couverture. Tirée de son livre « Je crée mes cadeaux
+# gourmands », coécrit avec Delphine Paslin.
+
+recipe:
+  id: rochers-chocolat-noisette
+  title: Gros rochers au chocolat, cœur noisette et éclats de fève
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« C'est aujourd'hui ! », blog Saines Gourmandises, 13 septembre 2012"
+    url: https://saines-gourmandises.fr/jour-j-special-post-pour-evelyne/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8
+    pieces: 16
+  lot_entier: true
+  time_min_total: 270
+  active_min: 35
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: chocolat-noir, name: "chocolat noir aux éclats de fèves de cacao", qty: 300, unit: g}
+    - {id: lait-soja-vanille, name: "lait soja-vanille ou autre lait végétal", qty: 10, unit: cl}
+    - {id: puree-noisette, name: "purée de noisette", qty: 100, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 4, unit: c. à s.}
+    - {id: noisettes, name: "noisettes ou amandes", qty: 100, unit: g}
+    - {id: chocolat-couverture, name: "chocolat de couverture", qty: 200, unit: g}
+
+  steps:
+    - id: ganache
+      action: "Fondre au bain-marie le chocolat avec le lait et l'agave ; hors du feu, y mêler la purée de noisette et couler sur 3 cm dans un petit plat"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [chocolat-noir, lait-soja-vanille, sirop-agave, puree-noisette]
+      time_min: 10
+      attente_min: 210
+      attente_raison: "3 à 4 h au frais"
+    - id: torrefier
+      action: "Concasser les noisettes en gros éclats et les torréfier 10 min à 150 °C ; laisser refroidir"
+      needs: [bake]
+      uses: [noisettes]
+      time_min: 14
+      parallel_with: ganache
+    - id: rochers
+      action: "Couper la ganache en gros cubes, les façonner en rochers et les rouler dans les éclats en pressant"
+      needs: []
+      uses: []
+      time_min: 12
+      kid: {age_min_months: 36, task: "rouler les rochers"}
+    - id: enrober
+      action: "Fondre la couverture au bain-marie, y enrober chaque rocher et laisser figer sur papier cuisson"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [chocolat-couverture]
+      time_min: 15
+
+  emits:
+    - kind: base
+      type: rochers-chocolat-noisette
+      qty_band: 3-repas
+      keeps: {frigo_days: 15, congelo: false}
+
+  plan_b: []

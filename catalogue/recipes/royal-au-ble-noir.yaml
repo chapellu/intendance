@@ -1,0 +1,89 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN ROYAL (TROIS CHOCOLATS) AU SARRASIN : biscuit Joconde à la poudre d'amande et à
+# la farine de sarrasin, œufs entiers fouettés et blancs en plus, 15 min dans un
+# moule de 26 cm ; croustillant de chocolat aux noisettes, tartines craquantes
+# au sarrasin, pâte noisette et grué ; mousse au chocolat à la crème et à
+# l'huile de coco (40 g, et non 40 cl : erratum de l'autrice), 12 h au frais,
+# tour de kasha.
+
+recipe:
+  id: royal-au-ble-noir
+  title: Royal au blé noir
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Royal au blé noir », blog Saines Gourmandises, 14 avril 2022"
+    url: https://saines-gourmandises.fr/royal-au-ble-noir/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 12          # « pour 12 parts »
+  lot_entier: true
+  time_min_total: 45
+  active_min: 30
+
+  apports:
+    proteine: oeuf
+    feculent: sarrasin
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: oeufs, name: "œufs (3 + 2 blancs + 3)", qty: 8, unit: pièce}
+    - {id: farine-sarrasin, name: "farine de sarrasin", qty: 25, unit: g}
+    - {id: poudre-amande, name: "poudre d'amande blanche", qty: 100, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 75, unit: g}
+    - {id: huile-tournesol, name: "huile neutre", qty: 35, unit: g}
+    - {id: sucre-vanille, name: "sucre vanillé (3 + 2)", qty: 5, unit: sachet}
+    - {id: chocolat-noisettes, name: "chocolat noir aux noisettes", qty: 150, unit: g}
+    - {id: tartines-sarrasin, name: "tartines craquantes au sarrasin", qty: 5, unit: pièce}
+    - {id: grue-cacao, name: "grué de cacao", qty: 2, unit: c. à s.}
+    - {id: pate-a-tartiner, name: "purée de noisette toastée (Nocciola)", qty: 2, unit: c. à s.}
+    - {id: sucre-complet, name: "sucre de coco", qty: 40, unit: g}
+    - {id: chocolat-noir, name: "chocolat noir pâtissier 70 %", qty: 200, unit: g}
+    - {id: creme-coco, name: "crème de coco", qty: 20, unit: cl}
+    - {id: huile-coco, name: "huile de coco vierge", qty: 40, unit: g}
+    - {id: fleur-de-sel, name: "pincée de fleur de sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 1, unit: c. à s.}
+    - {id: kasha, name: "kasha pour le décor", qty: 3, unit: c. à s.}
+
+  steps:
+    - id: joconde
+      action: "Préchauffer à 180 °C ; fouetter 3 œufs à tripler, y mêler farine, amande, agave et huile, puis 2 blancs montés au sucre vanillé ; cuire 15 min (26 cm)"
+      needs: [bake]
+      uses: [farine-sarrasin, poudre-amande, sirop-agave, huile-tournesol]
+      time_min: 25
+    - id: croustillant
+      action: "Fondre le chocolat aux noisettes, le hacher par impulsions avec les tartines, la pâte noisette et le sucre vanillé, ajouter le grué et étaler sur le biscuit"
+      needs: [simmer, chop-coarse-small]
+      charge_partielle: true
+      uses: [chocolat-noisettes, tartines-sarrasin, pate-a-tartiner, sucre-vanille, grue-cacao]
+      time_min: 10
+    - id: mousse
+      action: "Chauffer la crème, la vanille, le sel et l'huile de coco, y fondre le chocolat hors du feu, ajouter 3 jaunes puis 3 blancs montés avec le sucre de coco"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [creme-coco, extrait-vanille, fleur-de-sel, huile-coco, chocolat-noir, oeufs, sucre-complet]
+      time_min: 12
+      attente_min: 720
+      attente_raison: "au moins 12 h au frais"
+    - id: decor
+      action: "Démouler et poser le kasha sur le pourtour"
+      needs: []
+      uses: [kasha]
+      time_min: 3
+      kid: {age_min_months: 30, task: "poser le kasha autour"}
+
+  emits:
+    - kind: reste-plat
+      type: royal-au-ble-noir
+      qty_band: 3-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

@@ -1,0 +1,92 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DES BOULETTES MOELLEUSES SANS MIE DE PAIN : oignon et épinards tombés avec origan
+# et estragon, hachés avec son d'avoine, parmesan et œufs, puis la viande
+# hachée mêlée à la cuillère ; 16 boulettes mijotées 15 min dans la sauce
+# tomate, spaghettis d'épeautre al dente.
+
+recipe:
+  id: polpettes-herbes-spaghettis-epeautre
+  title: Polpettes italiennes aux herbes et spaghettis d'épeautre
+  format: pates
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« 4 recettes minceur durable », blog Saines Gourmandises, 8 juin 2015"
+    url: https://saines-gourmandises.fr/des-pancakes-des-polpettes-une-peche-melba-et-un-fondant-au-chocolat/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « 16 polpettes (4 personnes) »
+    pieces: 16
+  time_min_total: 40
+  active_min: 25
+
+  apports:
+    proteine: viande-rouge
+    feculent: pates
+    legumes: [feuille, allium, solanacee]
+    profil: mijote
+    origine: italien
+
+  ingredients:
+    - {id: pates, name: "spaghettis d'épeautre complet", qty: 400, unit: g}
+    - {id: boeuf-hache, name: "bœuf haché très frais", qty: 400, unit: g}
+    - {id: oeufs, name: "œufs", qty: 2, unit: pièce}
+    - id: pousses-epinards
+      name: "épinards frais ou surgelés"
+      qty: 100
+      unit: g
+      subs:
+        - {id: epinards-surgeles, name: "épinards surgelés", ratio: 1.0}
+    - {id: oignon, name: "oignon (ou 3 échalotes)", qty: 1, unit: pièce}
+    - {id: ail, name: "ail", qty: 1, unit: gousse}
+    - {id: parmesan, name: "parmesan râpé", qty: 40, unit: g}
+    - {id: son-avoine, name: "son d'avoine", qty: 40, unit: g}
+    - {id: origan, name: "origan séché", qty: 1, unit: c. à c., seasoning: true}
+    - {id: estragon, name: "estragon séché (demi-c. à c.)", qty: 0.5, unit: c. à c., seasoning: true}
+    - {id: huile-olive, name: "huile d'olive", qty: 2, unit: c. à s.}
+    - {id: sauce-tomate, name: "bonne sauce tomate cuisinée", qty: 350, unit: g}
+    - {id: sel, name: "sel", qty: 2, unit: pincée, seasoning: true}
+    - {id: poivre-5-baies, name: "poivre 5 baies", qty: 1, unit: pincée, seasoning: true}
+    - {id: piment-espelette, name: "un peu de piment d'Espelette", qty: 1, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: salade-verte, name: "salade verte", qty: 0.5, unit: pièce}
+
+  steps:
+    - id: revenir
+      action: "Dorer l'oignon en petits dés à l'huile dans une grande poêle, puis faire tomber les épinards avec sel, origan et estragon jusqu'à évaporation"
+      needs: [pan-fry]
+      uses: [oignon, huile-olive, pousses-epinards, sel, origan, estragon]
+      time_min: 10
+      attended: true
+    - id: hacher
+      action: "Hacher par brèves impulsions avec l'ail, le son, le parmesan et les œufs, puis y mêler la viande à la cuillère, poivrée et pimentée"
+      needs: [chop-coarse-small]
+      uses: [ail, son-avoine, parmesan, oeufs, boeuf-hache, poivre-5-baies, piment-espelette]
+      time_min: 6
+    - id: boulettes
+      action: "Former 16 boulettes de la taille d'une balle de ping-pong, les poser dans la sauce tomate versée dans la poêle et mijoter 15 min à couvert"
+      needs: [pan-fry]
+      uses: [sauce-tomate]
+      time_min: 20
+      attended: false
+      kid: {age_min_months: 30, task: "rouler les boulettes"}
+    - id: pates
+      action: "Cuire les spaghettis al dente à l'eau bouillante salée"
+      needs: [boil]
+      uses: [pates]
+      time_min: 12
+      parallel_with: boulettes
+
+  emits:
+    - kind: reste-plat
+      type: polpettes-herbes-spaghettis-epeautre
+      qty_band: 1-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

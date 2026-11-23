@@ -1,0 +1,67 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LA VERSION ACIDULÉE : jus et zestes (prélevés à l'économe, ils texturent la
+# crème) de deux citrons, miel d'acacia, purée d'amande blanche et 15 g de
+# psyllium dans 50 cl d'eau.
+
+recipe:
+  id: creme-psyllium-amande-citron-miel
+  title: Crème dessert amande-citron-miel sans cuisson, au psyllium
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Les sublimes crèmes dessert sans lait, sans oeufs, sans farine… et sans cuisson ! », blog Saines Gourmandises, 13 juin 2025"
+    url: https://saines-gourmandises.fr/les-sublimes-cremes-dessert-sans-lait-sans-oeufs-sans-farine-et-sans-cuisson-avec-un-ingredient-improbable/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6
+    pieces: 6
+  lot_entier: true
+  time_min_total: 70
+  active_min: 8
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: eau, name: "eau", qty: 50, unit: cl}
+    - {id: citron, name: "citrons bien juteux (10 cl de jus + zestes)", qty: 2, unit: pièce}
+    - {id: psyllium, name: "psyllium blond", qty: 15, unit: g}
+    - {id: miel-acacia, name: "miel d'acacia", qty: 140, unit: g}
+    - {id: puree-amande-blanche, name: "purée d'amande blanche", qty: 50, unit: g}
+    - {id: fleur-de-sel, name: "pincée de fleur de sel", qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: mixer
+      action: "Presser les citrons, prélever les zestes à l'économe, et mixer le tout dans l'eau avec les autres ingrédients"
+      needs: [blend-smooth]
+      uses: [eau, citron, psyllium, miel-acacia, puree-amande-blanche, fleur-de-sel]
+      time_min: 5
+      attente_min: 60
+      attente_raison: "le psyllium gonfle 10 min au moins, 1 h au mieux"
+      attente_souple: true
+    - id: empoter
+      action: "Mixer à nouveau, verser en pots et mettre au frais"
+      needs: [blend-smooth]
+      uses: []
+      time_min: 3
+      attente_min: 60
+      attente_raison: "au frais avant de servir"
+      attente_souple: true
+
+  emits:
+    - kind: reste-plat
+      type: creme-psyllium-amande-citron-miel
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

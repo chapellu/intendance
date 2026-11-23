@@ -1,0 +1,89 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE PÂTE LEVÉE BRIOCHÉE au grand épeautre T80 (à la rigueur T110), pétrie
+# 10 à 15 min jusqu'à se décoller, le beurre très mou ajouté ensuite ; fruits
+# séchés trempés au kirsch incorporés après la première levée, amandes au fond
+# des cannelures du moule beurré-fariné de 22 cm ; deux levées, 50 min de four.
+
+recipe:
+  id: kouglof-epeautre-fruits-seches
+  title: Kouglof à l'épeautre et aux fruits séchés
+  creneaux: [gouter, petit-dejeuner]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Mon (super bon…) Kouglof à l'épeautre et aux fruits séchés », blog Saines Gourmandises, 2 décembre 2014"
+    url: https://saines-gourmandises.fr/kouf-kouf/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 10          # « 10 parts »
+  lot_entier: true
+  time_min_total: 260
+  active_min: 40
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: beurre, name: "beurre mou (+ pour le moule)", qty: 165, unit: g}
+    - {id: fruits-secs-melange, name: "fruits séchés (raisins, canneberges, abricots)", qty: 100, unit: g}
+    - {id: kirsch, name: "kirsch (2 c. à s. + une rasade)", qty: 3, unit: c. à s.}
+    - {id: lait-avoine, name: "lait d'avoine ou d'amande", qty: 20, unit: cl}
+    - {id: sucre-complet, name: "sucre complet ou de coco", qty: 75, unit: g}
+    - {id: levure-boulangere, name: "levure fraîche de boulangerie", qty: 20, unit: g}
+    - {id: farine-epeautre, name: "farine T80 de grand épeautre", qty: 510, unit: g}
+    - {id: oeufs, name: "œufs", qty: 2, unit: pièce}
+    - {id: amandes, name: "poignée d'amandes émondées", qty: 30, unit: g}
+    - {id: sel, name: "sel fin", qty: 10, unit: g, seasoning: true}
+    - {id: sucre-glace, name: "sucre glace pour décorer", qty: 1, unit: c. à s.}
+
+  steps:
+    - id: tremper
+      action: "Couper le beurre en dés et le laisser ramollir au tiède ; couvrir les fruits d'eau bouillante avec une rasade de kirsch"
+      needs: []
+      uses: [fruits-secs-melange]
+      time_min: 4
+    - id: petrir
+      action: "Tiédir le lait (45 °C au plus), y fouetter sucre, levure et 2 c. à s. de kirsch ; pétrir 10 à 15 min avec 500 g de farine, le sel et les œufs battus"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [lait-avoine, sucre-complet, levure-boulangere, farine-epeautre, sel, oeufs, kirsch]
+      time_min: 18
+    - id: beurrer
+      action: "Incorporer le beurre mou en pétrissant, couvrir et laisser lever au tiède"
+      needs: []
+      uses: [beurre]
+      time_min: 5
+      attente_min: 105
+      attente_raison: "1 h 30 à 2 h, jusqu'à doubler"
+    - id: mouler
+      action: "Égoutter et éponger les fruits, les mêler à la pâte ; beurrer et fariner le moule, une amande par cannelure, y verser la pâte et laisser lever à nouveau"
+      needs: []
+      uses: [amandes]
+      time_min: 10
+      attente_min: 60
+      attente_raison: "seconde levée, jusqu'aux bords"
+      attente_souple: true
+      kid: {age_min_months: 30, task: "poser les amandes"}
+    - id: cuire
+      action: "Cuire à 180 °C environ 50 min (baisser à 150 °C s'il dore vite) ; tiédir, démouler et saupoudrer de sucre glace"
+      needs: [bake]
+      uses: [sucre-glace]
+      time_min: 52
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: kouglof-epeautre-fruits-seches
+      qty_band: 3-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

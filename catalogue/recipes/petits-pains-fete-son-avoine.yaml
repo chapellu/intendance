@@ -1,0 +1,78 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN PAIN LÉGÈREMENT BRIOCHÉ, trois boules dans un moule à cake : épeautre,
+# son d'avoine, œufs, margarine fondue, agave, vinaigre de cidre ; levé
+# 1 h 30, puis 30 min, cuit 40 min à 150 °C, doré au lait. Le second pain de
+# l'article (algues, citron, fenouil) n'a pas d'étapes : non encodé.
+
+recipe:
+  id: petits-pains-fete-son-avoine
+  title: Petits pains de fête au son d'avoine
+  role: base
+  creneaux: [petit-dejeuner, gouter]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Petits pains de fête au son d'avoine », blog Saines Gourmandises, 30 décembre 2011"
+    url: https://saines-gourmandises.fr/apres-2-memorables-ratees/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « pour 1 pain »
+  lot_entier: true
+  time_min_total: 185       # 15 min + 1 h 30 + 30 min de pousse + 40 min
+  active_min: 20
+
+  apports:
+    proteine: oeuf
+    feculent: pain
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: farine d'épeautre ou de blé T110, qty: 350, unit: g}
+    - {id: son-avoine, name: son d'avoine, qty: 150, unit: g}
+    - {id: oeufs, name: œufs, qty: 2, unit: pièce}
+    - {id: margarine, name: margarine bio non hydrogénée, qty: 60, unit: g}
+    - {id: sirop-agave, name: sirop d'agave, qty: 3, unit: cl}
+    - {id: eau, name: eau, qty: 10, unit: cl}
+    - {id: vinaigre, name: vinaigre de cidre, qty: 2, unit: c. à s.}
+    - {id: levure-boulangere, name: levure de boulanger déshydratée, qty: 2, unit: sachet}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: lait, name: un peu de lait pour dorer, qty: 2, unit: c. à s.}
+
+  steps:
+    - id: petrir
+      action: "Tiédir l'eau avec l'agave, le vinaigre, les œufs battus et la margarine fondue, y délayer la levure, verser sur farine, son et sel, et pétrir"
+      needs: [simmer]
+      uses: [eau, sirop-agave, vinaigre, oeufs, margarine, levure-boulangere, farine-epeautre, son-avoine, sel]
+      time_min: 10
+      attente_min: 90
+      attente_raison: "première pousse au tiède"
+    - id: faconner
+      action: "Repétrir rapidement, former 3 boules dans un moule à cake graissé et fariné, et les badigeonner de lait"
+      astuce: "Le lait dore mieux que le jaune d'œuf, qui brûle."
+      needs: []
+      uses: [lait]
+      time_min: 5
+      attente_min: 30
+      attente_raison: "seconde pousse, four à 150 °C"
+      kid: {age_min_months: 30, task: "badigeonner le pain au pinceau"}
+    - id: cuire
+      action: "Cuire 40 min à 150 °C"
+      needs: [bake]
+      uses: []
+      time_min: 40
+      attended: false
+
+  emits:
+    - kind: base
+      type: petits-pains-fete-son-avoine
+      qty_band: 3-repas
+      keeps: {frigo_days: 4, congelo: true}
+
+  plan_b: []

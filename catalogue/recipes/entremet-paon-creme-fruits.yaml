@@ -1,0 +1,84 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE CHARLOTTE DE FRUITS D'ÉTÉ : biscuits à la cuillère imbibés de jus de fruit au
+# fond d'un moule à charnière de 26 cm, oreillons de pêche et fraises, une crème
+# de soja-vanille, crème de coco, agar-agar, farine, sucre de coco et jaunes
+# bouillie 3 min ; 4 h au frais. Le décor de paon (demi-poire, raisins,
+# myrtilles, abricot) est un jeu ; seuls les fruits sont encodés.
+
+recipe:
+  id: entremet-paon-creme-fruits
+  title: Entremet « paon » à la crème et aux fruits d'été
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Entremet Paon à la crème et aux fruits », blog Saines Gourmandises, 1er août 2016"
+    url: https://saines-gourmandises.fr/ete-y-a-de-route-dautres-roue/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 9          # « 8/10 parts »
+  lot_entier: true
+  time_min_total: 40
+  active_min: 35
+
+  apports:
+    proteine: oeuf
+    feculent: biscuit
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: lait-soja-vanille, name: "lait de soja-vanille", qty: 80, unit: cl}
+    - {id: creme-coco, name: "crème de coco", qty: 40, unit: cl}
+    - {id: gousse-vanille, name: "gousse de vanille", qty: 1, unit: pièce}
+    - {id: agar-agar, name: "agar-agar", qty: 4, unit: g}
+    - {id: farine, name: "farine blanche de blé ou de grand épeautre", qty: 20, unit: g}
+    - {id: sucre-complet, name: "sucre de coco", qty: 100, unit: g}
+    - {id: oeufs, name: "jaunes d'œufs", qty: 2, unit: pièce}
+    - {id: extrait-amande-amere, name: "extrait d'amande amère", qty: 1, unit: pincée}
+    - {id: peches, name: "pêches jaunes mûres (500 g préparées)", qty: 5, unit: pièce}
+    - {id: fraises, name: "fraises mûres", qty: 250, unit: g}
+    - {id: biscuits-cuillere, name: "biscuits à la cuillère", qty: 40, unit: pièce}
+    - {id: jus-orange, name: "jus de fruit (orange, abricot…)", qty: 20, unit: cl}
+    - {id: fruits-frais, name: "fruits pour le décor (poire, raisins, myrtilles, abricot)", qty: 300, unit: g, optional: true}
+
+  steps:
+    - id: creme
+      action: "Mêler en casserole lait, agar-agar, sucre, crème de coco, farine, jaunes, extrait et vanille fendue, porter à ébullition en remuant et cuire 3 min ; tiédir"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [lait-soja-vanille, agar-agar, sucre-complet, creme-coco, farine, oeufs, extrait-amande-amere, gousse-vanille]
+      time_min: 8
+    - id: fond
+      action: "Tapisser un moule à charnière huilé de biscuits imbibés de jus de fruit, bien serrés, puis des oreillons de pêche et des fraises en quartiers"
+      needs: []
+      uses: [biscuits-cuillere, jus-orange, peches, fraises]
+      time_min: 12
+      kid: {age_min_months: 36, task: "tremper les biscuits dans le jus"}
+    - id: prendre
+      action: "Verser la crème, égaliser et laisser prendre au frais"
+      needs: []
+      uses: []
+      time_min: 2
+      attente_min: 240
+      attente_raison: "au moins 4 h au frais"
+    - id: decor
+      action: "Démouler et décorer de fruits en forme de paon, ou simplement de fruits"
+      needs: []
+      uses: [fruits-frais]
+      time_min: 10
+      kid: {age_min_months: 36, task: "poser les fruits du décor"}
+
+  emits:
+    - kind: reste-plat
+      type: entremet-paon-creme-fruits
+      qty_band: 3-repas
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

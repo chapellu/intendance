@@ -1,0 +1,94 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LA FLAMICHE AVEC PÂTE (le livre en donne une sans pâte, déjà au catalogue) :
+# pâte d'épeautre à l'huile, poireaux fondus avec oignon et lardons de tofu
+# fumé, faisselle de chèvre égouttée quelques heures, œufs.
+
+recipe:
+  id: flamiche-epeautre-tofu-fume
+  title: Flamiche végétarienne à l'épeautre et au tofu fumé
+  format: quiche
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Flamiches végétariennes à l'épeautre et tofu fumé », blog Saines Gourmandises, 16 janvier 2014"
+    url: https://saines-gourmandises.fr/soyons-un-peu-serieux/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « une flamiche de 6 parts »
+  lot_entier: true
+  time_min_total: 75        # 25 min de préparation + 15 min de poêle + 35 min de four
+  active_min: 30
+
+  apports:
+    proteine: fromage
+    feculent: pate-brisee
+    legumes: [allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: faisselle, name: fromage blanc de chèvre en faisselle, qty: 500, unit: g}
+    - {id: poireau, name: poireaux, qty: 2, unit: pièce}
+    - {id: oignon, name: oignon, qty: 1, unit: pièce}
+    - {id: tofu-fume, name: tofu fumé, qty: 100, unit: g}
+    - {id: oeufs, name: œufs, qty: 3, unit: pièce}
+    - {id: huile-olive, ref: huile-garniture, name: huile d'olive (garniture), qty: 4, unit: c. à s.}
+    - {id: comte, name: "comté, parmesan ou tomme de chèvre râpé", qty: 50, unit: g, optional: true}
+    - {id: sel, ref: sel-garniture, name: sel, qty: 2, unit: pincée, seasoning: true}
+    - {id: poivre-5-baies, name: poivre 5 baies, qty: 1, unit: pincée, seasoning: true}
+    - {id: farine-epeautre, name: farine complète de grand épeautre, qty: 220, unit: g}
+    - {id: huile-olive, ref: huile-pate, name: huile d'olive (pâte), qty: 7.5, unit: cl}
+    - {id: eau, name: eau, qty: 6, unit: c. à s.}
+    - {id: poudre-a-lever, name: poudre à lever (demi-sachet), qty: 0.5, unit: sachet}
+    - {id: sel, ref: sel-pate, name: sel (pâte), qty: 1, unit: bonne pincée, seasoning: true}
+
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: egoutter
+      action: "Mettre la faisselle à égoutter dans une passoire fine"
+      needs: []
+      uses: [faisselle]
+      time_min: 1
+      attente_min: 180
+      attente_raison: "égouttage du fromage, quelques heures avant"
+    - id: fondre
+      action: "Préchauffer le four à 180 °C ; dorer à l'huile l'oignon émincé et le tofu en lardons, puis fondre les poireaux émincés à couvert, salés et poivrés"
+      needs: [pan-fry]
+      uses: [oignon, tofu-fume, huile-garniture, poireau]
+      time_min: 15
+      attended: true
+    - id: pate
+      action: "Sabler farine, levure, sel et huile du bout des doigts, ajouter l'eau, rassembler en boule souple et foncer un moule huilé et fariné"
+      astuce: "Une ou deux cuillerées d'eau de plus si la pâte résiste."
+      needs: []
+      uses: [farine-epeautre, poudre-a-lever, sel-pate, huile-pate, eau]
+      time_min: 10
+      parallel_with: fondre
+    - id: appareil
+      action: "Battre le fromage égoutté avec les œufs, le sel, le poivre et le fromage râpé, mêler aux poireaux et verser sur la pâte"
+      needs: []
+      uses: [oeufs, sel-garniture, poivre-5-baies, comte]
+      time_min: 4
+      kid: {age_min_months: 30, task: "battre les œufs avec le fromage"}
+    - id: cuire
+      action: "Cuire 30 à 35 min et servir tiède ou frais"
+      astuce: "Démoulée, repassée 5 à 10 min à four chaud, la pâte croustille davantage."
+      needs: [bake]
+      uses: []
+      time_min: 33
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: flamiche-epeautre-tofu-fume
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

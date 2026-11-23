@@ -1,0 +1,92 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DES PETITS PAINS RONDS D'ÉPEAUTRE COMPLET maison (deux levées, 5 min à 260 °C
+# puis à 150 °C), ouverts aux deux tiers et évidés, garnis de tomates,
+# poivron, concombre, céleri, cébettes, œufs durs, thon et anchois, huile et
+# vinaigre ; emballés une nuit au frais. On peut acheter les pains.
+
+recipe:
+  id: pans-bagnats-epeautre
+  title: Pans bagnats aux petits pains d'épeautre
+  format: tartine
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« De fameux pans bagnats… pour prolonger les vacances d'été ! », blog Saines Gourmandises, 25 août 2013"
+    url: https://saines-gourmandises.fr/et-si-lon-repoussait-un-peu-la-rentree-du-moins-le-temps-dun-beau-pique-nique/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « pour 6 pans-bagnats »
+    pieces: 6
+  lot_entier: true
+  time_min_total: 200
+  active_min: 50
+
+  apports:
+    proteine: poisson
+    feculent: pain
+    legumes: [solanacee, cucurbitacee, allium]
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: "farine complète de grand épeautre", qty: 1, unit: kg}
+    - {id: levure-boulangere, name: "levure fraîche", qty: 1, unit: cube}
+    - {id: eau, name: "eau tiède", qty: 60, unit: cl}
+    - {id: huile-olive, name: "huile d'olive (4 c. à s. + pour garnir)", qty: 8, unit: c. à s.}
+    - {id: sel, name: "sel fin", qty: 1, unit: c. à c., seasoning: true}
+    - {id: tomates, name: "tomates", qty: 3, unit: pièce}
+    - {id: poivron, name: "poivron rouge", qty: 1, unit: pièce}
+    - {id: concombre, name: "concombre", qty: 1, unit: pièce}
+    - {id: celeri-branche, name: "branches de cœur de céleri", qty: 3, unit: pièce}
+    - {id: cebette, name: "cébettes", qty: 3, unit: pièce}
+    - {id: oeufs, name: "œufs durs", qty: 6, unit: pièce}
+    - {id: thon-boite, name: "thon", qty: 400, unit: g}
+    - {id: anchois, name: "filets d'anchois", qty: 18, unit: pièce}
+    - {id: vinaigre, name: "vinaigre", qty: 2, unit: c. à s.}
+    - {id: olives-noires, name: "olives noires dénoyautées", qty: 40, unit: g, optional: true}
+
+  steps:
+    - id: pate
+      action: "Délayer la levure dans l'eau tiède, pétrir avec la farine, le sel et 4 c. à s. d'huile jusqu'à une pâte souple et laisser lever"
+      needs: []
+      uses: [levure-boulangere, eau, farine-epeautre, sel]
+      time_min: 12
+      attente_min: 90
+      attente_raison: "première levée"
+    - id: bouler
+      action: "Dégazer, diviser en 6 et bouler sur une plaque chemisée ; laisser lever à nouveau"
+      needs: []
+      uses: []
+      time_min: 8
+      attente_min: 30
+      attente_raison: "seconde levée"
+    - id: cuire
+      action: "Enfourner 5 min au maximum (260 °C) puis finir à 150 °C ; laisser refroidir"
+      needs: [bake]
+      uses: []
+      time_min: 25
+      attended: false
+    - id: oeufs
+      action: "Cuire les œufs durs et préparer les légumes en tranches et lamelles"
+      needs: [boil, chop-coarse]
+      charge_partielle: true
+      uses: [oeufs, tomates, poivron, concombre, celeri-branche, cebette]
+      time_min: 15
+      parallel_with: cuire
+    - id: garnir
+      action: "Découper un chapeau aux deux tiers des pains et les évider sans percer ; garnir de légumes, œufs, thon et anchois, saler, huiler, vinaigrer"
+      needs: []
+      uses: [thon-boite, anchois, huile-olive, vinaigre, olives-noires]
+      time_min: 12
+      attente_min: 720
+      attente_raison: "une nuit au frais, emballés"
+      kid: {age_min_months: 36, task: "répartir les légumes"}
+
+  emits: []
+
+  plan_b: []

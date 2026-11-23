@@ -1,0 +1,58 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE CONFITURE MINUTE À GARDER AU FRAIS : 500 g d'abricots dénoyautés, 2 g
+# d'agar-agar, 150 g de miel d'acacia, 10 min à feu doux en remuant. Elle
+# accompagne la brioche « phénoménale » du même article.
+
+recipe:
+  id: confiture-express-abricots-miel
+  title: Confiture « express » d'abricots au miel
+  role: base
+  creneaux: [petit-dejeuner, gouter]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Une brioche phénoménale à l'épeautre non hybridé (et sa petite confiture miel-abricot) », blog Saines Gourmandises, 16 juin 2015"
+    url: https://saines-gourmandises.fr/aboutissement-dune-quete-aujourdhui-tadaaam-je-vous-presente-mesdames-et-messieurs/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 10
+  time_min_total: 15
+  active_min: 12
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: []
+    profil: compote
+    origine: francais
+
+  ingredients:
+    - {id: abricots, name: abricots bien mûrs dénoyautés, qty: 500, unit: g}
+    - {id: agar-agar, name: agar-agar, qty: 2, unit: g}
+    - {id: miel-acacia, name: miel d'acacia, qty: 150, unit: g}
+
+  steps:
+    - id: cuire
+      action: "Dans une casserole large, saupoudrer les abricots d'agar-agar, ajouter le miel et cuire 10 min à feu doux en remuant très souvent, jusqu'à compote sans jus"
+      needs: [simmer]
+      uses: [abricots, agar-agar, miel-acacia]
+      time_min: 12
+      attended: true
+    - id: pot
+      action: "Verser dans un pot et laisser prendre en refroidissant"
+      needs: []
+      uses: []
+      time_min: 2
+
+  emits:
+    - kind: base
+      type: confiture-express-abricots-miel
+      qty_band: 3-repas
+      keeps: {frigo_days: 10, congelo: false}
+
+  plan_b: []

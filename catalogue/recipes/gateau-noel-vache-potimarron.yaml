@@ -1,0 +1,99 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE GÉNOISE AU LAIT (sans œuf) de 24 cm fendue et fourrée d'une ganache montée au
+# chocolat ; couverte d'une ganache « rousse » de 500 g de potimarron cuit mixé
+# encore chaud avec chocolat, beurre, vanille, sucre de coco et fleur de sel ;
+# museau, oreilles et cornes en pâte d'amande (décor non détaillé). 2 h de
+# repos ; se prépare la veille.
+# LA PURÉE DE POTIMARRON EST UN RESTE du catalogue ; à défaut, cuire un
+# potimarron en gros cubes.
+
+recipe:
+  id: gateau-noel-vache-potimarron
+  title: Le gâteau de Noël en vache, ganache rousse au potimarron
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Le gâteau de Noël 2025 sera une vache ! », blog Saines Gourmandises, 19 décembre 2025"
+    url: https://saines-gourmandises.fr/le-gateau-de-noel-2025-sera-une-vache/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 12          # « pour 12 »
+  lot_entier: true
+  time_min_total: 70
+  active_min: 35
+
+  accepts:
+    - type: puree-potimarron
+      qty: {amount: 500, unit: g}
+      required: true
+      fallback_recipe: puree-potimarron-huile-olive
+
+  sans_reste:
+    temps_min: 20
+    ingredients:
+      - {id: potimarron, name: "potimarron à cuire (500 g de chair)", qty: 0.7, unit: pièce}
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: [cucurbitacee]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: puree-potimarron, name: "chair de potimarron cuite", qty: 500, unit: g, from_accepts: true}
+    - {id: farine-epeautre, name: "farine T110", qty: 330, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever", qty: 2, unit: sachet}
+    - {id: sel, name: "pincée de sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: sucre-complet, name: "sucre de coco (165 + 65 g)", qty: 230, unit: g}
+    - {id: lait, name: "lait entier (33 cl + 140 g)", qty: 47, unit: cl}
+    - {id: jus-pomme, name: "jus de pomme", qty: 3.5, unit: cl}
+    - {id: beurre, name: "beurre (55 g fondu + 100 g)", qty: 155, unit: g}
+    - {id: extrait-vanille, name: "vanille en poudre (demi-c. à c.)", qty: 0.5, unit: c. à c.}
+    - {id: rhum, name: "rhum ambré", qty: 1, unit: c. à s.}
+    - {id: sirop-agave, name: "sirop d'agave ou miel", qty: 55, unit: g}
+    - {id: chocolat-noir, name: "chocolat noir pâtissier 70 % (150 + 50 g)", qty: 200, unit: g}
+    - {id: gousse-vanille, name: "gousse de vanille", qty: 1, unit: pièce}
+    - {id: fleur-de-sel, name: "bonne pincée de fleur de sel", qty: 1, unit: bonne pincée, seasoning: true}
+    - {id: pate-amande, name: "pâte d'amande pour le décor", qty: 100, unit: g, optional: true}
+
+  steps:
+    - id: genoise
+      action: "Préchauffer à 180 °C ; mêler farine, levure et sel, y fouetter le sucre, 33 cl de lait, le jus, le beurre fondu et la vanille, et cuire dans un moule de 24 cm"
+      needs: [bake]
+      uses: [farine-epeautre, poudre-a-lever, sel, jus-pomme, extrait-vanille]
+      time_min: 35
+      attended: false
+    - id: ganache
+      action: "Chauffer 140 g de lait, y fondre hors du feu 150 g de chocolat avec le rhum et l'agave, mixer et mettre au frais"
+      needs: [simmer, blend-smooth]
+      charge_partielle: true
+      uses: [rhum, sirop-agave]
+      time_min: 6
+      attente_min: 120
+      attente_raison: "au moins 2 h au frais"
+    - id: rousse
+      action: "Mixer le potimarron cuit encore chaud avec 50 g de chocolat, 100 g de beurre, la vanille grattée, 65 g de sucre et la fleur de sel, et mettre au frais"
+      needs: [blend-smooth]
+      uses: [puree-potimarron, chocolat-noir, beurre, gousse-vanille, sucre-complet, lait, fleur-de-sel]
+      time_min: 8
+    - id: monter
+      action: "Fouetter la ganache froide pour la monter, fendre la génoise et la fourrer, couvrir de ganache rousse et modeler la vache en pâte d'amande"
+      needs: []
+      uses: [pate-amande]
+      time_min: 20
+      kid: {age_min_months: 36, task: "modeler les oreilles et le museau"}
+
+  emits:
+    - kind: reste-plat
+      type: gateau-noel-vache-potimarron
+      qty_band: 3-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

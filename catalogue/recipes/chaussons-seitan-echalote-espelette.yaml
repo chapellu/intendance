@@ -1,0 +1,74 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE FARCE d'échalotes, de seitan haché, de concentré de tomate, paprika et
+# Espelette, enfermée en chaussons dans une pâte sans levure de petit épeautre
+# à l'huile d'olive et au vin blanc ; 25 à 35 min au four selon la taille.
+
+recipe:
+  id: chaussons-seitan-echalote-espelette
+  title: Petits pâtés de seitan à l'échalote et au piment d'Espelette
+  format: piece
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Connaissez-vous le seitan ? », blog Saines Gourmandises, 10 mars 2014"
+    url: https://saines-gourmandises.fr/seitan-forgeant-quon-devient-forgeron/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 2          # « 2 en plat principal, 4 en entrée »
+  time_min_total: 60
+  active_min: 25
+
+  apports:
+    proteine: tofu-soja
+    feculent: farine
+    legumes: [allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: echalote, name: "échalotes", qty: 4, unit: pièce}
+    - {id: huile-olive, name: "huile d'olive (4 + 3 c. à s.)", qty: 7, unit: c. à s.}
+    - {id: seitan, name: "tranches de seitan", qty: 2, unit: tranche}
+    - {id: concentre-tomate, name: "concentré de tomate", qty: 30, unit: g}
+    - {id: paprika, name: "paprika", qty: 1, unit: c. à s.}
+    - {id: piment-espelette, name: "piment d'Espelette", qty: 1, unit: c. à c.}
+    - {id: sel, name: "sel et poivre", qty: 1, unit: pincée, seasoning: true}
+    - {id: farine-petit-epeautre, name: "farine bise de petit épeautre", qty: 160, unit: g}
+    - {id: vin-blanc-sec, name: "vin blanc", qty: 6, unit: c. à s.}
+    - {id: origan, name: "origan", qty: 2, unit: pincée}
+
+  avec:
+    - {id: salade-verte, name: "salade verte", qty: 0.5, unit: pièce}
+
+  steps:
+    - id: farce
+      action: "Préchauffer à 180 °C ; revenir les échalotes en dés dans 4 c. à s. d'huile, ajouter le seitan haché, puis concentré, paprika, Espelette, sel et poivre"
+      needs: [pan-fry]
+      charge_partielle: true
+      uses: [echalote, seitan, concentre-tomate, paprika, piment-espelette, sel]
+      time_min: 10
+    - id: pate
+      action: "Mêler la farine, 3 c. à s. d'huile, le vin blanc, une pincée de sel et l'origan en pâte souple ; diviser et étaler en disques fins"
+      needs: []
+      uses: [farine-petit-epeautre, huile-olive, vin-blanc-sec, origan]
+      time_min: 10
+    - id: cuire
+      action: "Garnir une moitié de chaque disque, replier, souder, et cuire 25 à 35 min jusqu'à ce que la pâte soit dorée"
+      needs: [bake]
+      uses: []
+      time_min: 35
+      attended: false
+      kid: {age_min_months: 36, task: "souder les bords à la fourchette"}
+
+  emits:
+    - kind: reste-plat
+      type: chaussons-seitan-echalote-espelette
+      qty_band: 1-repas
+      keeps: {frigo_days: 2, congelo: true}
+
+  plan_b: []

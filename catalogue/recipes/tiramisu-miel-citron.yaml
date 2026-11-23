@@ -1,0 +1,66 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN TIRAMISU AUX PETITS-SUISSES, sans mascarpone : jaunes, miel d'acacia,
+# vanille et huile essentielle de citron, blancs en neige, sur des biscuits à
+# la cuillère arrosés d'un peu de limoncello ; une douzaine d'heures au
+# frais, cacao au moment de servir. Des œufs bio très frais : ils sont crus.
+
+recipe:
+  id: tiramisu-miel-citron
+  title: Tiramisu léger au miel et au citron
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Les Secrets de la Pâtisserie Bio, suite… Des biscuits à la cuillère, 2 charlottes, un tiramisu », blog Saines Gourmandises, 5 juin 2014"
+    url: https://saines-gourmandises.fr/mieux-que-60-desserts-a-ig-bas-97-desserts-a-ig-bas/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « environ 6 tiramisus individuels »
+  time_min_total: 10
+  active_min: 10
+
+  apports:
+    proteine: fromage
+    feculent: biscuit
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: petits-suisses, name: "petits-suisses", qty: 6, unit: pièce}
+    - {id: oeufs, name: "œufs ultra-frais", qty: 3, unit: pièce}
+    - {id: miel-acacia, name: "miel liquide d'acacia", qty: 6, unit: c. à s.}
+    - {id: extrait-vanille, name: "extrait de vanille", qty: 1, unit: c. à s.}
+    - {id: huile-essentielle-citron, name: "huile essentielle de citron", qty: 10, unit: pièce}
+    - {id: biscuits-cuillere, name: "biscuits à la cuillère", qty: 12, unit: pièce}
+    - {id: cacao, name: "cacao", qty: 1, unit: c. à s.}
+    - {id: cointreau, name: "limoncello ou Cointreau", qty: 4, unit: c. à c., optional: true}
+
+  steps:
+    - id: creme
+      action: "Mélanger petits-suisses, jaunes, miel, vanille et huile essentielle, puis incorporer les blancs montés en neige"
+      needs: []
+      uses: [petits-suisses, oeufs, miel-acacia, extrait-vanille, huile-essentielle-citron]
+      time_min: 6
+    - id: monter
+      action: "Poser un ou deux biscuits au fond de chaque coupelle, un peu d'alcool, puis la mousse"
+      needs: []
+      uses: [biscuits-cuillere, cointreau]
+      time_min: 4
+      attente_min: 720
+      attente_raison: "une douzaine d'heures au frais"
+      kid: {age_min_months: 30, task: "poser les biscuits au fond des coupes"}
+    - id: servir
+      action: "Poudrer de cacao à la passoire fine et servir aussitôt"
+      needs: []
+      uses: [cacao]
+      time_min: 1
+
+  emits: []
+
+  plan_b: []

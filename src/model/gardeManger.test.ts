@@ -174,9 +174,13 @@ describe("ce que le plat prend au placard", () => {
     // deviendrait vert par vacuité. On épingle donc ce qu'on vient de mesurer —
     // cinq des huit écoulables ont un mangeur, et l'épeautre en a le plus.
     // T196 : le blog Saines Gourmandises en ajoute trois (le pounti, le « pâté
-    // épatant » aux courgettes, les cupcakes au potimarron).
+    // épatant » aux courgettes, les cupcakes au potimarron), puis 24 de plus
+    // avec ses tartes, entrées et pains (T196b), puis 14 avec ses desserts de
+    // 2011 à 2014 (T196c), puis 44 avec ceux de 2015 à 2026 (T196c2),
+    // puis 13 avec le reste du blog (T196d), puis 1 avec ses recettes
+    // invitées (T196e).
     const mangeurs = catalogue.plats.filter((p) => ids(p).includes("farine-epeautre"));
-    expect(mangeurs).toHaveLength(10);
+    expect(mangeurs).toHaveLength(106);
   });
 
   test("un ingrédient cité deux fois ne compte qu'une", () => {

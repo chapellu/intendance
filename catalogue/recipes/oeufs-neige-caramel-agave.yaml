@@ -1,0 +1,73 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# SANS POCHAGE : les blancs montés très serrés à la cassonade se servent crus
+# sur la crème anglaise, ou passent 3 min à 180 °C. Crème anglaise aux jaunes,
+# lait (soja-vanille ou lait de ferme entier) et vanille, sans jamais bouillir,
+# 3 h au frais ; « caramel » d'agave épaissi 3 min. Œufs fermiers très frais.
+
+recipe:
+  id: oeufs-neige-caramel-agave
+  title: Œufs à la neige inratables, caramel d'agave
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« La Cuisine des Grands Classiques, ma version bio (suite et fin) », blog Saines Gourmandises, 12 septembre 2014"
+    url: https://saines-gourmandises.fr/je-vous-apporte-la-carte-des-desserts/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « pour 6 personnes »
+  time_min_total: 30
+  active_min: 25
+
+  apports:
+    proteine: oeuf
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: lait, name: "lait de soja-vanille ou lait entier frais", qty: 50, unit: cl}
+    - {id: oeufs, name: "œufs fermiers ultra frais", qty: 5, unit: pièce}
+    - {id: sucre-roux, name: "cassonade rousse", qty: 75, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave (4 c. à s. + 7 cl)", qty: 13, unit: cl}
+    - {id: gousse-vanille, name: "gousse de vanille", qty: 1, unit: pièce}
+
+  steps:
+    - id: caramel
+      action: "Séparer les œufs ; bouillir 7 cl d'agave 3 min sur le plus petit feu en remuant pour l'épaissir, et laisser refroidir"
+      needs: [simmer]
+      charge_partielle: true
+      uses: []
+      time_min: 5
+      attended: true
+    - id: anglaise
+      action: "Délayer les jaunes dans le lait avec 4 c. à s. d'agave et la vanille grattée, et cuire à feu très doux en remuant sans jamais bouillir, jusqu'à napper"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [lait, sirop-agave, gousse-vanille]
+      time_min: 12
+      attended: true
+      attente_min: 180
+      attente_raison: "3 h au frais"
+    - id: blancs
+      action: "Au moment de servir, monter les blancs restés à température ambiante, ajouter la cassonade à la fin jusqu'à des blancs très serrés"
+      needs: []
+      uses: [oeufs, sucre-roux]
+      time_min: 8
+    - id: servir
+      action: "Poser de grosses cuillerées de blancs sur la crème bien froide et napper de caramel"
+      astuce: "Ou cuire les blancs 3 min à 180 °C sur un papier, puis refroidir."
+      needs: []
+      uses: []
+      time_min: 4
+      kid: {age_min_months: 36, task: "poser les nuages de blanc"}
+
+  emits: []
+
+  plan_b: []

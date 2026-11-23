@@ -1,0 +1,65 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DEUX CRÈMES MARBRÉES EN VERRINES : chocolat 70 % fondu dans le soja-vanille à
+# l'agave et mixé mousseux ; tofu soyeux mixé avec jus et huile essentielle de
+# citron et agave. Bord givré d'agave et de coco. 2 à 12 h au frais.
+
+recipe:
+  id: petits-pots-chocolat-citron
+  title: Petits pots de crème chocolat-citron « sur leur 31 »
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Petits pots de crème chocolat-citron sur leur 31 », blog Saines Gourmandises, 30 décembre 2012"
+    url: https://saines-gourmandises.fr/ne-vous-prenez-pas-trop-la-tete-pour-le-dessert/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 9          # « 8 à 10 petits pots »
+  time_min_total: 15
+  active_min: 15
+
+  apports:
+    proteine: tofu-soja
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: chocolat-noir, name: "chocolat noir à plus de 70 %", qty: 100, unit: g}
+    - {id: lait-soja-vanille, name: "lait de soja-vanille", qty: 30, unit: cl}
+    - {id: sirop-agave, name: "sirop d'agave (4 c. à s. + 12 cl)", qty: 18, unit: cl}
+    - {id: tofu-soyeux, name: "tofu soyeux", qty: 400, unit: g}
+    - {id: citron, name: "citrons (6 cl de jus)", qty: 2, unit: pièce}
+    - {id: huile-essentielle-citron, name: "huile essentielle de citron", qty: 15, unit: pièce}
+    - {id: noix-coco-rapee, name: "un peu de noix de coco", qty: 2, unit: c. à s., optional: true}
+
+  steps:
+    - id: chocolat
+      action: "Fondre en casserole le chocolat, le soja-vanille et 4 c. à s. d'agave, mixer pour faire mousser et laisser tiédir"
+      needs: [simmer, blend-smooth]
+      charge_partielle: true
+      uses: [chocolat-noir, lait-soja-vanille]
+      time_min: 6
+    - id: citron
+      action: "Mixer le tofu soyeux avec le jus de citron, l'huile essentielle et 12 cl d'agave"
+      needs: [blend-smooth]
+      uses: [tofu-soyeux, citron, huile-essentielle-citron, sirop-agave]
+      time_min: 4
+    - id: monter
+      action: "Givrer le bord des verrines d'agave et de coco, puis alterner les cuillerées de chocolat et de citron contre la paroi"
+      needs: []
+      uses: [noix-coco-rapee]
+      time_min: 8
+      attente_min: 120
+      attente_raison: "au moins 2 h au frais, au mieux 12 h"
+      kid: {age_min_months: 36, task: "tremper le bord des verres dans la coco"}
+
+  emits: []
+
+  plan_b: []

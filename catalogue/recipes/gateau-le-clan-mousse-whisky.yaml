@@ -1,0 +1,82 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# SANS CUISSON : un fond de crêpes dentelles écrasées liées de chocolat et de pâte
+# noisette, tassé dans un cercle de 19 cm ; une mousse au chocolat 70 %, café et
+# soja-vanille, blancs montés au sucre vanillé ; une nuit au frais ; boules de
+# chantilly au whisky et grué de cacao au moment de servir.
+
+recipe:
+  id: gateau-le-clan-mousse-whisky
+  title: « Le Clan », gâteau mousse au chocolat sur biscuit croustillant, crème au whisky
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Le Clan, gâteau mousse au chocolat sur biscuit croustillant, crème de whisky », blog Saines Gourmandises, 23 octobre 2020"
+    url: https://saines-gourmandises.fr/encore-du-chocolat-ben-oui-pardon/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 9          # « pour 8/10 parts »
+  lot_entier: true
+  time_min_total: 35
+  active_min: 35
+
+  apports:
+    proteine: oeuf
+    feculent: biscuit
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: crepes-dentelles, name: "crêpes dentelles", qty: 80, unit: g}
+    - {id: chocolat-noir, name: "chocolat noir 70 % (50 + 300 g)", qty: 350, unit: g}
+    - {id: pate-a-tartiner, name: "pâte noisette-chocolat (Nocciola)", qty: 100, unit: g}
+    - {id: oeufs, name: "œufs", qty: 6, unit: pièce}
+    - {id: cafe, name: "expresso bien serré", qty: 5, unit: cl}
+    - {id: lait-soja-vanille, name: "lait de soja à la vanille", qty: 5, unit: cl}
+    - {id: sucre-vanille, name: "sucre vanillé (3 + 3)", qty: 6, unit: sachet}
+    - {id: sirop-agave, name: "sirop d'agave (10 cl + 3 c. à s.)", qty: 14, unit: cl}
+    - {id: fleur-de-sel, name: "grosse pincée de fleur de sel", qty: 1, unit: bonne pincée, seasoning: true}
+    - {id: creme, name: "crème (vache ou coco) bien froide", qty: 20, unit: cl}
+    - {id: whisky, name: "whisky", qty: 2, unit: c. à s.}
+    - {id: grue-cacao, name: "grué de cacao", qty: 3, unit: c. à s., optional: true}
+
+  steps:
+    - id: fond
+      action: "Fondre 50 g de chocolat au bain-marie, y mêler la pâte noisette et les crêpes dentelles écrasées, et tasser dans un cercle de 19 cm"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [crepes-dentelles, pate-a-tartiner]
+      time_min: 8
+      kid: {age_min_months: 24, task: "écraser les crêpes dentelles"}
+    - id: mousse
+      action: "Bouillir 10 cl d'agave, le lait et le café, les verser sur 300 g de chocolat à couvert ; y mêler jaunes et sel, puis les blancs montés au sucre vanillé"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [cafe, lait-soja-vanille, chocolat-noir, oeufs, fleur-de-sel]
+      time_min: 12
+      attente_min: 600
+      attente_raison: "une nuit au frais"
+    - id: chantilly
+      action: "Fouetter la crème en chantilly ferme avec 3 sachets de sucre vanillé, 3 c. à s. d'agave et le whisky"
+      needs: []
+      uses: [creme, sucre-vanille, sirop-agave, whisky]
+      time_min: 6
+    - id: servir
+      action: "Démouler, poser des boules de chantilly au centre et couronner de grué de cacao"
+      needs: []
+      uses: [grue-cacao]
+      time_min: 5
+
+  emits:
+    - kind: reste-plat
+      type: gateau-le-clan-mousse-whisky
+      qty_band: 3-repas
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

@@ -1,0 +1,78 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE PÂTE AU SON D'AVOINE (sans robot, du bout des doigts) précuite 10 min,
+# une crème de tofu soyeux, jaunes, margarine fondue, jus et huile essentielle
+# de citron, mélangée au fouet sans faire mousser ; 35 min à 150 °C. Encore
+# tremblante à la sortie, elle prend en refroidissant.
+
+recipe:
+  id: tarte-citron-raisonnable
+  title: Tarte au citron saine et « raisonnable »
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Tarte au citron saine et raisonnable », blog Saines Gourmandises, 16 février 2012"
+    url: https://saines-gourmandises.fr/depuis-que-le-temps-quon-lattendait/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « 6 tartelettes ou une grande tarte »
+  lot_entier: true
+  time_min_total: 55
+  active_min: 15
+
+  apports:
+    proteine: oeuf
+    feculent: avoine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: son-avoine, name: "son d'avoine", qty: 150, unit: g}
+    - {id: farine-complete, name: "farine T110", qty: 80, unit: g}
+    - {id: margarine, ref: margarine-pate, name: "margarine bio non hydrogénée", qty: 80, unit: g}
+    - {id: sel, name: "pincée de sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: sirop-agave, ref: agave-pate, name: "sirop d'agave (pâte)", qty: 2, unit: c. à s.}
+    - {id: tofu-soyeux, name: "tofu soyeux", qty: 200, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave (crème)", qty: 15, unit: cl}
+    - {id: oeufs, name: "jaunes d'œufs", qty: 4, unit: pièce}
+    - {id: margarine, ref: margarine-creme, name: "margarine (crème)", qty: 80, unit: g}
+    - {id: citron, name: "citrons (10 cl de jus)", qty: 2, unit: pièce}
+    - {id: huile-essentielle-citron, name: "huile essentielle de citron (ou un zeste)", qty: 25, unit: pièce}
+    - {id: safran, name: "dose de safran (couleur)", qty: 1, unit: dosette, optional: true}
+
+  steps:
+    - id: pate
+      action: "Préchauffer à 150 °C ; travailler son, farine, margarine, sel et agave en pâte souple, l'étaler et foncer le moule ; précuire 10 min"
+      needs: [bake]
+      uses: [son-avoine, farine-complete, margarine-pate, sel, agave-pate]
+      time_min: 15
+      kid: {age_min_months: 30, task: "sabler la pâte du bout des doigts"}
+    - id: creme
+      action: "Mixer le tofu soyeux avec l'agave, puis y fouetter sans mixer la margarine fondue, les jaunes, le jus de citron, l'huile essentielle et le safran"
+      needs: [blend-smooth]
+      uses: [tofu-soyeux, sirop-agave, margarine-creme, oeufs, citron, huile-essentielle-citron, safran]
+      time_min: 6
+      parallel_with: pate
+    - id: cuire
+      action: "Verser sur la pâte et cuire 35 min à 150 °C ; laisser bien refroidir"
+      needs: [bake]
+      uses: []
+      time_min: 35
+      attended: false
+      attente_min: 120
+      attente_raison: "la crème se raffermit en refroidissant"
+      attente_souple: true
+
+  emits:
+    - kind: reste-plat
+      type: tarte-citron-raisonnable
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

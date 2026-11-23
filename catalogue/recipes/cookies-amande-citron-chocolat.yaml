@@ -1,0 +1,74 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE PÂTE D'AMANDE ET DE FARINE T110 au citron (huile essentielle), un seul œuf
+# pour trente biscuits, partagée 2/3 – 1/3 : la grosse part reçoit le chocolat
+# 85 % fondu à l'agave et se découpe en ronds de 5 cm, la petite en motifs
+# posés dessus. 12 min à 150 °C. Le lait chaud à la badiane de la même page,
+# « très librement inspiré » d'une autre blogueuse, n'est pas repris.
+
+recipe:
+  id: cookies-amande-citron-chocolat
+  title: Cookies « 0 complexe » amande-citron-chocolat
+  creneaux: [gouter]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Cookies « 0 complexe » amande-citron-chocolat, lait chaud… », blog Saines Gourmandises, 12 janvier 2012"
+    url: https://saines-gourmandises.fr/cocooning/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « une trentaine de cookies »
+    pieces: 30
+  lot_entier: true
+  time_min_total: 35
+  active_min: 22
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: poudre-amande, name: "poudre d'amande", qty: 125, unit: g}
+    - {id: farine-epeautre, name: "farine T110", qty: 150, unit: g}
+    - {id: poudre-a-lever, name: "levure", qty: 1, unit: sachet}
+    - {id: oeufs, name: "œuf", qty: 1, unit: pièce}
+    - {id: puree-amande-blanche, name: "purée d'amande", qty: 50, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave (4 + 1 c. à s.)", qty: 5, unit: c. à s.}
+    - {id: sel, name: "pincée de sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: huile-essentielle-citron, name: "gouttes d'huile essentielle de citron", qty: 15, unit: goutte}
+    - {id: chocolat-noir, name: "chocolat noir 85 %", qty: 100, unit: g}
+
+  steps:
+    - id: pate
+      action: "Mêler poudre d'amande, farine et levure ; y pétrir l'œuf, la purée d'amande, 4 c. à s. d'agave, le sel et le citron ; partager en boules 2/3 et 1/3"
+      needs: []
+      uses: [poudre-amande, farine-epeautre, poudre-a-lever, oeufs, puree-amande-blanche, sel, huile-essentielle-citron]
+      time_min: 10
+    - id: chocolat
+      action: "Fondre au bain-marie le chocolat avec le reste d'agave et l'incorporer à la grosse boule"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [chocolat-noir, sirop-agave]
+      time_min: 6
+    - id: decouper
+      action: "Étaler les deux pâtes ; découper des ronds de 5 cm au chocolat, y presser des petits motifs de pâte blanche, et cuire 12 min à 150 °C"
+      needs: [bake]
+      uses: []
+      time_min: 25
+      attended: false
+      kid: {age_min_months: 30, task: "poser les motifs"}
+
+  emits:
+    - kind: base
+      type: cookies-amande-citron-chocolat
+      qty_band: 3-repas
+      keeps: {frigo_days: 10, congelo: false}
+
+  plan_b: []

@@ -1,0 +1,75 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DES PARURES DE POISSON très fraîches (têtes, arêtes, peaux, pas d'entrailles)
+# ou des petits poissons à soupe, couverts d'eau vinaigrée et salée et cuits
+# au moins 6 h à feu minimal ; filtrés (ou mixés s'ils sont entiers), puis
+# 30 min avec fenouil, poireau, carotte, oignon, girofle et laurier.
+# LE VINAIGRE et LA CUISSON LONGUE sont tout le principe. Environ 5 l.
+
+recipe:
+  id: bouillon-os-poisson
+  title: Bouillon d'arêtes de poisson
+  role: base
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Bienfaits ancestraux des bouillons d'os », blog Saines Gourmandises, 24 février 2023"
+    url: https://saines-gourmandises.fr/bienfaits-ancestraux-des-bouillons-dos/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 12          # « environ 5 l de bouillon »
+  lot_entier: true
+  time_min_total: 400
+  active_min: 20
+
+  apports:
+    proteine: poisson
+    feculent: aucun
+    legumes: [allium, racine]
+    profil: soupe
+    origine: francais
+
+  ingredients:
+    - {id: parures-poisson, name: "parures de poisson très fraîches", qty: 1, unit: kg}
+    - {id: gros-sel, name: "sel", qty: 2, unit: c. à s., seasoning: true}
+    - {id: vinaigre, name: "vinaigre de cidre", qty: 3, unit: c. à s.}
+    - {id: fenouil, name: "fenouil", qty: 1, unit: pièce}
+    - {id: oignon, name: "oignon", qty: 1, unit: pièce}
+    - {id: carottes, name: "carottes", qty: 2, unit: pièce}
+    - {id: poireau, name: "poireau", qty: 1, unit: pièce}
+    - {id: clous-girofle, name: "clous de girofle", qty: 5, unit: pièce}
+    - {id: laurier, name: "feuilles de laurier", qty: 2, unit: pièce}
+    - {id: eau, name: "eau", qty: 5, unit: l}
+
+  steps:
+    - id: cuire
+      action: "Couvrir le poisson d'eau dans le faitout avec le vinaigre et le sel, et cuire à feu minimal"
+      needs: [simmer-large]
+      uses: [parures-poisson, vinaigre, gros-sel, eau]
+      time_min: 5
+      attente_min: 360
+      attente_raison: "au moins 6 h à feu minimal"
+    - id: filtrer
+      action: "Filtrer le bouillon, ou tout mixer si l'on a pris des petits poissons entiers"
+      needs: [blend-smooth]
+      uses: []
+      time_min: 8
+    - id: legumes
+      action: "Ajouter légumes en petits morceaux, girofle et laurier, compléter d'eau et cuire 30 min à feu doux"
+      needs: [chop-coarse, simmer-large]
+      uses: [fenouil, oignon, carottes, poireau, clous-girofle, laurier]
+      time_min: 35
+      attended: false
+
+  emits:
+    - kind: base
+      type: bouillon-os-poisson
+      qty_band: 3-repas
+      qty: {amount: 500, unit: cl}
+      keeps: {frigo_days: 4, congelo: true}
+
+  plan_b: []

@@ -1,0 +1,78 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LE « FAUX FOIE GRAS » DE GRAND-MÈRE : foies (de canard, ou de volaille, plus
+# faciles à trouver) marinés une nuit à l'armagnac et au porto, cuits 1 h à
+# 150 °C, mixés tièdes avec le beurre, tassés et laissés 24 à 48 h au frais,
+# bien emballés. Une entrée de fête pour 15.
+
+recipe:
+  id: faux-foie-gras-lyonnaise
+  title: Faux foie gras de grand-mère à la lyonnaise
+  role: entree
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Faux foie-gras de grand-mère à la Lyonnaise, pain brioché à l'épeautre », blog Saines Gourmandises, 10 décembre 2015"
+    url: https://saines-gourmandises.fr/deux-recettes-de-gourmets-pour-noel/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 15         # « environ 500 g de terrine (au moins 15 parts) »
+  lot_entier: true
+  time_min_total: 75        # 10 min de préparation + 1 h de cuisson (36 h de repos)
+  active_min: 15
+
+  apports:
+    proteine: viande-blanche
+    feculent: aucun
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: foies-volaille, name: "foies de canard ou de volaille très frais", qty: 500, unit: g}
+    - {id: beurre, name: beurre doux, qty: 250, unit: g}
+    - {id: cognac, name: armagnac ou cognac, qty: 2, unit: c. à s.}
+    - {id: porto, name: porto, qty: 1, unit: c. à s.}
+    - {id: fleur-de-sel, name: fleur de sel, qty: 12, unit: g, seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 3, unit: g, seasoning: true}
+
+
+  steps:
+    - id: mariner
+      action: "Rincer les foies et les mettre en terrine avec l'armagnac, le porto, le sel et le poivre, couverts, au frais"
+      needs: []
+      uses: [foies-volaille, cognac, porto, fleur-de-sel, poivre]
+      time_min: 5
+      attente_min: 720
+      attente_raison: "marinade d'une nuit au frais"
+    - id: cuire
+      action: "Cuire la terrine 1 h à 150 °C ; pendant ce temps, laisser le beurre en dés ramollir"
+      needs: [bake]
+      uses: [beurre]
+      time_min: 60
+      attended: false
+    - id: mixer
+      action: "Égoutter les foies et les mixer tièdes avec le beurre jusqu'à une crème parfaitement lisse ; tasser en terrine ou en petits pots"
+      needs: [blend-smooth]
+      uses: []
+      time_min: 6
+    - id: reposer
+      action: "Emballer soigneusement et laisser au frais avant de servir"
+      astuce: "Mal emballée, elle brunit même au frigo."
+      needs: []
+      uses: []
+      time_min: 2
+      attente_min: 1440
+      attente_raison: "24 à 48 h au frais"
+
+  emits:
+    - kind: reste-plat
+      type: faux-foie-gras-lyonnaise
+      qty_band: 3-repas
+      keeps: {frigo_days: 5, congelo: true}
+
+  plan_b: []

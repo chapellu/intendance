@@ -1,0 +1,94 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DOUZE « PAINTIMARRONS » : 250 g de potimarron cuit mixé au parmesan et à
+# l'huile, pétris avec farine d'épeautre, paprika fumé, eau et levure ; levés
+# 45 min, boulés serrés, ficelés pour dessiner les côtes, 20 min à 180 °C bas
+# dans le four. On ôte les ficelles.
+#
+# LA PURÉE DE POTIMARRON EST UN RESTE du catalogue (T196a) : 250 g ; sans
+# elle, cuire le potimarron 12 à 15 min dans un fond d'eau salée.
+
+recipe:
+  id: petits-pains-potimarron
+  title: Petits pains au potimarron et au parmesan
+  role: base
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Petits pains trop mignons au potimarron », blog Saines Gourmandises, 5 octobre 2021"
+    url: https://saines-gourmandises.fr/petits-pains-trop-mignons-au-potimarron/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6
+    pieces: 12              # « pour 12 petits pains »
+  lot_entier: true
+  time_min_total: 120       # 25 min + 45 min + 20 min de pousse + 20 min
+  active_min: 30
+
+  accepts:
+    - type: puree-potimarron
+      qty: {amount: 250, unit: g}
+      required: true
+      fallback_recipe: puree-potimarron-huile-olive
+
+  sans_reste:
+    temps_min: 15
+    ingredients:
+      - {id: potimarron, name: "potimarron à cuire (environ 350 g)", qty: 0.35, unit: pièce}
+
+  apports:
+    proteine: fromage
+    feculent: pain
+    legumes: [cucurbitacee]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: puree-potimarron, name: purée de potimarron cuite, qty: 250, unit: g, from_accepts: true}
+    - {id: farine-epeautre, name: farine T110 de grand épeautre, qty: 460, unit: g}
+    - {id: paprika, name: paprika fumé, qty: 20, unit: g}
+    - {id: parmesan, name: parmesan râpé, qty: 100, unit: g}
+    - {id: eau, name: eau tiède, qty: 15, unit: cl}
+    - {id: huile-olive, name: "huile d'olive (+ pour badigeonner)", qty: 50, unit: g}
+    - {id: sel, name: sel fin, qty: 7, unit: g, seasoning: true}
+    - {id: levure-boulangere, name: levure fraîche (20 g), qty: 1, unit: pièce}
+
+  steps:
+    - id: puree
+      action: "Mixer la purée de potimarron avec le parmesan et l'huile, et laisser tiédir"
+      needs: [blend-smooth]
+      uses: [puree-potimarron, parmesan, huile-olive]
+      time_min: 4
+    - id: petrir
+      action: "Délayer la levure dans l'eau tiède et pétrir 7 à 10 min avec la farine, le paprika, le sel et la purée"
+      needs: []
+      uses: [levure-boulangere, eau, farine-epeautre, paprika, sel]
+      time_min: 10
+      attente_min: 45
+      attente_raison: "pousse au tiède, sous une assiette"
+    - id: faconner
+      action: "Dégazer, diviser en 12, bouler serré, ficeler chaque boule sans trop serrer pour dessiner les côtes"
+      needs: []
+      uses: []
+      time_min: 15
+      attente_min: 20
+      attente_raison: "pousse le temps de chauffer le four à 180 °C"
+      kid: {age_min_months: 36, task: "bouler les pâtons"}
+    - id: cuire
+      action: "Badigeonner d'huile et cuire 20 min bas dans le four ; ôter les ficelles"
+      needs: [bake]
+      uses: []
+      time_min: 20
+      attended: false
+
+  emits:
+    - kind: base
+      type: petits-pains-potimarron
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

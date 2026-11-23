@@ -1,0 +1,63 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# TROIS MINUTES DE PRÉPARATION : crème et lait d'amande, vanille fendue, miel
+# d'acacia, 15 à 20 g de farine d'orge (selon l'épaisseur voulue), purée
+# d'amande, eau de fleur d'oranger, une pointe de sel ; 3 min d'ébullition en
+# fouettant, à couvert au frais. Ôter la gousse avant de servir.
+
+recipe:
+  id: cremes-miel-amande-fleur-oranger
+  title: Petits pots de crème au miel, à l'amande et à la fleur d'oranger
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Petits pots de crème au miel, à l'amande et à la fleur d'oranger », blog Saines Gourmandises, 15 avril 2013"
+    url: https://saines-gourmandises.fr/une-douceur-toute-printaniere-souffle-sur-les-cremes-dessert/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « pour 6 petites crèmes »
+    pieces: 6
+  time_min_total: 8
+  active_min: 8
+
+  apports:
+    proteine: aucune
+    feculent: orge
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: creme-amande, name: "crème d'amande liquide", qty: 20, unit: cl}
+    - {id: lait-amande, name: "lait d'amande ou de soja", qty: 20, unit: cl}
+    - {id: gousse-vanille, name: "gousse de vanille", qty: 1, unit: pièce}
+    - {id: miel-acacia, name: "miel d'acacia", qty: 6, unit: c. à s.}
+    - {id: farine-orge, name: "farine d'orge mondé", qty: 18, unit: g}
+    - {id: puree-amande-blanche, name: "purée d'amande blanche", qty: 3, unit: c. à s.}
+    - {id: eau-fleur-oranger, name: "eau de fleur d'oranger", qty: 2, unit: c. à s.}
+    - {id: sel, name: "pointe de sel fin", qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: cuire
+      action: "Tout mettre en casserole, gousse fendue, et chauffer à feu très doux en fouettant jusqu'aux premiers bouillons, puis 3 min encore"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [creme-amande, lait-amande, gousse-vanille, miel-acacia, farine-orge, puree-amande-blanche, eau-fleur-oranger, sel]
+      time_min: 8
+      attended: true
+    - id: refroidir
+      action: "Couvrir pour éviter la peau, répartir en pots et laisser refroidir au frais ; ôter la gousse"
+      needs: []
+      uses: []
+      time_min: 3
+      attente_min: 120
+      attente_raison: "refroidissement complet au frais"
+
+  emits: []
+
+  plan_b: []

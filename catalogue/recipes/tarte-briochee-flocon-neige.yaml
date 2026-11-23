@@ -1,0 +1,88 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE BRIOCHE À LA CRÈME DE COCO levée une nuit au frais, partagée en trois disques
+# de 24 cm superposés avec deux couches de pâte à tartiner maison (noisette
+# grillée, agave, cacao, vanille) ; recoupée à 25 cm, fendue en 16 rayons
+# torsadés deux à deux en flocon ; levée 30 min, 12 min de four.
+
+recipe:
+  id: tarte-briochee-flocon-neige
+  title: Tarte briochée « flocon de neige »
+  creneaux: [gouter, petit-dejeuner]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Tarte briochée flocon de neige », blog Saines Gourmandises, 20 janvier 2023"
+    url: https://saines-gourmandises.fr/tarte-briochee-flocon-de-neige/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « pour 8 personnes »
+  lot_entier: true
+  time_min_total: 70
+  active_min: 30
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: creme-coco, name: "crème de coco", qty: 20, unit: cl}
+    - {id: sirop-agave, name: "sirop d'agave (3 cl + 40 g)", qty: 7, unit: cl}
+    - {id: rhum, name: "rhum ambré", qty: 1, unit: c. à c.}
+    - {id: eau-fleur-oranger, name: "eau de fleur d'oranger", qty: 1, unit: c. à s.}
+    - {id: extrait-vanille, name: "extrait de vanille liquide (1 c. à c. + 1 c. à s.)", qty: 4, unit: c. à c.}
+    - {id: levure-boulangere, name: "levure boulangère", qty: 1, unit: sachet}
+    - {id: farine-epeautre, name: "farine semi-complète", qty: 250, unit: g}
+    - {id: sel, name: "pincée de sel", qty: 1, unit: pincée, seasoning: true}
+    - {id: puree-noisette, name: "purée de noisette grillée", qty: 80, unit: g}
+    - {id: cacao, name: "cacao amer", qty: 15, unit: g}
+    - {id: lait-avoine, name: "un peu de lait au choix", qty: 2, unit: c. à s., optional: true}
+
+  steps:
+    - id: pate
+      action: "Tiédir la crème de coco avec 3 cl d'agave, rhum, fleur d'oranger et vanille (40 °C au plus), y fouetter la levure, pétrir 7 min avec farine et sel"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [creme-coco, rhum, eau-fleur-oranger, levure-boulangere, farine-epeautre, sel]
+      time_min: 12
+      attente_min: 480
+      attente_raison: "une nuit au frais"
+    - id: tartiner
+      action: "Mêler la noisette, 40 g d'agave, le cacao et la vanille, en ajoutant un peu de lait si besoin"
+      needs: []
+      uses: [puree-noisette, sirop-agave, cacao, extrait-vanille, lait-avoine]
+      time_min: 4
+    - id: monter
+      action: "Étaler trois disques de 24 cm, tartiner les deux premiers et les empiler, recouper à 25 cm, marquer le centre et découper 16 rayons"
+      needs: []
+      uses: []
+      time_min: 12
+    - id: flocon
+      action: "Tordre les rayons deux par deux trois fois vers l'extérieur et souder leurs pointes ; laisser lever couvert"
+      needs: []
+      uses: []
+      time_min: 8
+      attente_min: 30
+      attente_raison: "pousse au tiède, four à 180 °C"
+      kid: {age_min_months: 48, task: "torsader les rayons"}
+    - id: cuire
+      action: "Cuire environ 12 min, pas trop haut : la brioche doit rester souple"
+      needs: [bake]
+      uses: []
+      time_min: 12
+      attended: true
+
+  emits:
+    - kind: reste-plat
+      type: tarte-briochee-flocon-neige
+      qty_band: 2-repas
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

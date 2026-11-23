@@ -1,0 +1,76 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# RECETTE INVITÉE : d'après le « Moelleux au chocolat, kamut et sirop d'agave »
+# d'Amandine Geers et Olivier Degorce (« Indice glycémique, objectif minceur »),
+# remanié par Marie Chioca : farine de blé complète au lieu du kamut, cinq
+# œufs au lieu de six, orange et épices à spéculoos. Chocolat fondu à
+# l'agave, jaunes, purée d'amande et yaourt, blancs en neige ; 10 à 12 min
+# à 180 °C, à manger le lendemain.
+
+recipe:
+  id: fondant-noel-chocolat-orange-speculoos
+  title: Fondant de Noël au chocolat, orange et épices à spéculoos
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Fondant de Noël au chocolat, orange et épices à spéculoos », blog Saines Gourmandises, 4 décembre 2012"
+    url: https://saines-gourmandises.fr/dapres-une-recette-a-ig-bas-damandine-et-olivier/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « pour 6 personnes »
+  lot_entier: true
+  time_min_total: 25
+  active_min: 12
+
+  apports:
+    proteine: oeuf
+    feculent: aucun
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: chocolat-noir, name: "chocolat noir 70 %", qty: 200, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 3, unit: c. à s.}
+    - {id: eau, name: "soupçon d'eau", qty: 1, unit: c. à s.}
+    - {id: puree-amande-blanche, name: "purée d'amande", qty: 2, unit: c. à s.}
+    - {id: farine-complete, name: "farine de blé complète (ou de kamut)", qty: 3, unit: c. à s.}
+    - {id: yaourt-soja, name: "yaourt de soja (ou de brebis)", qty: 1, unit: pièce}
+    - {id: oeufs, name: "œufs (6 dans la recette initiale)", qty: 5, unit: pièce}
+    - {id: epices-pain-epices, name: "épices pour spéculoos", qty: 1, unit: c. à moka}
+    - {id: huile-essentielle-orange, name: "gouttes d'huile essentielle d'orange douce", qty: 7, unit: goutte}
+
+  steps:
+    - id: fondre
+      action: "Préchauffer à 180 °C ; fondre très doucement le chocolat avec l'agave et un soupçon d'eau"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [chocolat-noir, sirop-agave, eau]
+      time_min: 6
+    - id: pate
+      action: "Monter les blancs en neige ; hors du feu, mêler au chocolat les jaunes, la purée d'amande, le yaourt, les épices et l'orange, puis verser sur les blancs"
+      needs: []
+      uses: [oeufs, puree-amande-blanche, yaourt-soja, epices-pain-epices, huile-essentielle-orange]
+      time_min: 8
+    - id: cuire
+      action: "Incorporer délicatement la farine, verser dans un petit moule et cuire 10 à 12 min"
+      needs: [bake]
+      uses: [farine-complete]
+      time_min: 14
+      attended: false
+      attente_min: 600
+      attente_raison: "au frais jusqu'au lendemain"
+      attente_souple: true
+
+  emits:
+    - kind: reste-plat
+      type: fondant-noel-chocolat-orange-speculoos
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

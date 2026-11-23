@@ -15,12 +15,15 @@
 # `verifier.py` refuse un type émis qui n'a ni l'un ni l'autre.
 # ---------------------------------------------------------------------------
 libelles:
+  biscuits-cuillere-maison: biscuits à la cuillère maison
+  blinis-epeautre-son-avoine: blinis d'épeautre au son d'avoine
   bouillon-herbes: bouillon d'herbes
   bouillon-maison: bouillon de fanes
   bouillon-pot-au-feu: bouillon de pot-au-feu
   bouillon-poule-epeautre: bouillon de poule à l'épeautre
   carcasse-volaille: carcasse de poulet
   cereale-cuite: céréale cuite
+  creme-marron-maison: crème de marron maison
   crepes-wraps: crêpes à wraps
   falafels: falafels
   fondue-courgettes: fondue de courgettes
@@ -50,7 +53,7 @@ libelles:
   sauce-bolognaise: sauce bolognaise
   tartinade-legumineuse: houmous
   tartinade-vegetale: fromage végétal
+  tomme-vegetale: tomme végétale
   veloute-vert: velouté vert
   viande-pot-au-feu: viande du pot-au-feu
   yaourt-soja: soja-dessert
-

@@ -1,0 +1,91 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN FRAISIER POUR 15 : deux génoises à l'huile d'olive, au miel, au rhum et à la
+# fleur d'oranger, blancs en neige, cuites 20 min dans deux moules de 20 cm
+# (plus régulières qu'une seule fendue) ; imbibées d'un sirop miel-rhum,
+# cerclées, fraises coupées contre la paroi, chantilly de coco à la vanille, au
+# miel et à l'amande amère ; une nuit au frais. Pour 7 ou 8 : moitié des
+# quantités, 12 min de cuisson.
+
+recipe:
+  id: fraisier-huile-olive-dix-ans
+  title: Fraisier à l'huile d'olive (le gâteau des dix ans du blog)
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Fraisier à l'huile d'olive pour les 10 ans de Saines Gourmandises ! », blog Saines Gourmandises, 12 mai 2021"
+    url: https://saines-gourmandises.fr/fraisier-a-lhuile-dolive-pour-les-10-ans-de-saines-gourmandises/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 15          # « au moins 15 personnes »
+  lot_entier: true
+  time_min_total: 60
+  active_min: 40
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: huile-olive, name: "huile d'olive", qty: 20, unit: cl}
+    - {id: miel-acacia, name: "miel d'acacia (180 + 125 + 70 g)", qty: 375, unit: g}
+    - {id: rhum, name: "rhum ambré (4 + 3 c. à s.)", qty: 7, unit: c. à s.}
+    - {id: eau-fleur-oranger, name: "véritable eau de fleur d'oranger", qty: 4, unit: c. à s.}
+    - {id: oeufs, name: "œufs", qty: 8, unit: pièce}
+    - {id: poudre-a-lever, name: "poudre à lever", qty: 1, unit: sachet}
+    - {id: farine-epeautre, name: "farine T110 de grand épeautre", qty: 250, unit: g}
+    - {id: gousse-vanille, name: "gousse de vanille", qty: 1, unit: pièce}
+    - {id: extrait-amande-amere, name: "arôme d'amande amère doux", qty: 2, unit: c. à c.}
+    - {id: creme-coco, name: "crème de coco bien froide", qty: 80, unit: cl}
+    - {id: eau, name: "eau", qty: 70, unit: g}
+    - {id: fraises, name: "très bonnes fraises", qty: 500, unit: g}
+    - {id: amandes-effilees, name: "poignée d'amandes effilées toastées", qty: 30, unit: g}
+
+  steps:
+    - id: genoises
+      action: "Préchauffer à 180 °C et chemiser deux moules de 20 cm ; mêler à part l'huile, la fleur d'oranger, les jaunes, 180 g de miel et 4 c. à s. de rhum"
+      needs: []
+      uses: [huile-olive, eau-fleur-oranger, oeufs]
+      time_min: 8
+    - id: cuire
+      action: "Monter les blancs, y mêler la farine avec la levure et le mélange liquide, partager entre les moules et cuire 20 min ; refroidir"
+      needs: [bake]
+      uses: [farine-epeautre, poudre-a-lever]
+      time_min: 25
+      attended: false
+    - id: creme
+      action: "Mêler 70 g de miel, 3 c. à s. de rhum et l'eau en sirop ; monter la crème de coco avec la vanille grattée, 125 g de miel et l'arôme d'amande"
+      needs: []
+      uses: [miel-acacia, rhum, eau, creme-coco, gousse-vanille, extrait-amande-amere]
+      time_min: 10
+    - id: monter
+      action: "Cercler la première génoise imbibée, border de demi-fraises, couvrir de fraises et de crème, poser la seconde imbibée et finir de crème"
+      needs: []
+      uses: [fraises]
+      time_min: 15
+      attente_min: 600
+      attente_raison: "au frais jusqu'au lendemain, couvert"
+      attente_souple: true
+      kid: {age_min_months: 36, task: "poser les fraises contre le cercle"}
+    - id: decor
+      action: "Décorer de fraises, d'amandes toastées à sec et de fleurs comestibles"
+      needs: [pan-fry]
+      charge_partielle: true
+      uses: [amandes-effilees]
+      time_min: 5
+
+  emits:
+    - kind: reste-plat
+      type: fraisier-huile-olive-dix-ans
+      qty_band: 3-repas
+      keeps: {frigo_days: 2, congelo: false}
+
+  plan_b: []

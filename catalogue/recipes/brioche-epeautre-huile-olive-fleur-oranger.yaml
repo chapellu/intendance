@@ -1,0 +1,76 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE BRIOCHE SANS ŒUF NI BEURRE : épeautre T130, fleur d'oranger, agave,
+# huile d'olive, vanille, deux sachets de levure ; à la machine à pain
+# (programme brioche ou pain sucré) ou à la main, encodée à la main ici.
+# Façonnée au choix (tresse, kringle, boules), 10 min à 220 °C puis 15 min à
+# 150 °C.
+
+recipe:
+  id: brioche-epeautre-huile-olive-fleur-oranger
+  title: Brioche très saine à l'épeautre complet, huile d'olive et fleur d'oranger
+  role: base
+  creneaux: [petit-dejeuner, gouter]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Brioche très saine à l'épeautre complet, huile d'olive et fleur d'oranger », blog Saines Gourmandises, 6 février 2015"
+    url: https://saines-gourmandises.fr/pour-flo-une-recette-experimentale-pas-trop-ratee/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8          # « une grosse brioche de 8 parts »
+  lot_entier: true
+  time_min_total: 190       # 25 min + 2 h + 45 min de pousse + 25 min
+  active_min: 25
+
+  apports:
+    proteine: aucune
+    feculent: pain
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: farine-epeautre, name: farine de grand épeautre T130, qty: 500, unit: g}
+    - {id: eau-fleur-oranger, name: eau de fleur d'oranger, qty: 5, unit: cl}
+    - {id: sirop-agave, name: sirop d'agave, qty: 10, unit: cl}
+    - {id: huile-olive, name: huile d'olive, qty: 10, unit: cl}
+    - {id: eau, name: eau à peine tiède, qty: 15, unit: cl}
+    - {id: extrait-vanille, name: extrait de vanille liquide, qty: 1, unit: c. à s.}
+    - {id: levure-boulangere, name: levure de boulanger déshydratée, qty: 2, unit: sachet}
+    - {id: sel, name: sel fin, qty: 5, unit: g, seasoning: true}
+
+  steps:
+    - id: petrir
+      action: "Délayer la levure dans l'eau tiède avec la fleur d'oranger, l'agave et la vanille, verser sur la farine salée, ajouter l'huile et pétrir 10 min"
+      needs: []
+      uses: [levure-boulangere, eau, eau-fleur-oranger, sirop-agave, extrait-vanille, farine-epeautre, sel, huile-olive]
+      time_min: 12
+      attente_min: 105
+      attente_raison: "première pousse au bain-marie tiède, 1 h 30 à 2 h"
+      kid: {age_min_months: 36, task: "pétrir à tour de rôle"}
+    - id: faconner
+      action: "Façonner en tresse, en couronne ou en boules collées, et laisser lever jusqu'à presque doubler"
+      needs: []
+      uses: []
+      time_min: 8
+      attente_min: 40
+      attente_raison: "seconde pousse au chaud, four à 220 °C"
+    - id: cuire
+      action: "Cuire 10 min à 220 °C puis 15 min à 150 °C sans ouvrir ; tiédir 15 min avant de démouler"
+      needs: [bake]
+      uses: []
+      time_min: 25
+      attended: false
+
+  emits:
+    - kind: base
+      type: brioche-epeautre-huile-olive-fleur-oranger
+      qty_band: 3-repas
+      keeps: {frigo_days: 3, congelo: true}
+
+  plan_b: []

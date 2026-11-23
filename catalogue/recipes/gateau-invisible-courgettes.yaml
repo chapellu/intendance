@@ -1,0 +1,76 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# LE « GÂTEAU INVISIBLE » SALÉ : 800 g de courgettes en tranches de 2 à 3 mm,
+# liées d'une pâte de crêpe épaisse (farine, œufs, lait, huile, parmesan,
+# sarriette, ail), tassées dans un moule de 20 cm, une heure de four. Chaud,
+# tiède ou froid.
+
+recipe:
+  id: gateau-invisible-courgettes
+  title: Gâteau invisible aux courgettes
+  format: cake
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Gâteau invisible aux courgettes », blog Saines Gourmandises, 30 juillet 2024"
+    url: https://saines-gourmandises.fr/gateau-invisible-aux-courgettes/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 5          # « pour 8 parts »
+  lot_entier: true
+  time_min_total: 70        # 10 min de préparation + 1 h de cuisson
+  active_min: 12
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: [cucurbitacee]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: courgettes, name: courgettes, qty: 800, unit: g}
+    - {id: farine, name: farine, qty: 150, unit: g}
+    - {id: huile-olive, name: huile d'olive, qty: 20, unit: g}
+    - {id: lait, name: lait de vache ou végétal, qty: 10, unit: cl}
+    - {id: oeufs, name: œufs, qty: 4, unit: pièce}
+    - {id: sarriette, name: sarriette, qty: 6, unit: brin}
+    - {id: ail, name: ail, qty: 1, unit: gousse}
+    - {id: parmesan, name: parmesan ou grana padano, qty: 100, unit: g}
+    - {id: sel, name: sel, qty: 10, unit: g, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  avec:
+    - {id: salade-verte, name: salade verte, qty: 0.5, unit: pièce}
+
+  steps:
+    - id: trancher
+      action: "Préchauffer le four à 180 °C ; trancher les courgettes non épluchées en rondelles de 2 à 3 mm"
+      astuce: "À la mandoline si on en a : des tranches régulières cuisent ensemble."
+      needs: [chop-coarse]
+      uses: [courgettes]
+      time_min: 6
+    - id: pate
+      action: "Mélanger la farine avec l'huile, les œufs, le lait, la sarriette effeuillée, l'ail écrasé, le fromage, le sel et le poivre, puis les courgettes"
+      needs: []
+      uses: [farine, huile-olive, oeufs, lait, sarriette, ail, parmesan, sel, poivre]
+      time_min: 4
+      kid: {age_min_months: 30, task: "effeuiller la sarriette"}
+    - id: cuire
+      action: "Tasser dans un moule de 20 cm chemisé de papier, égaliser et cuire 1 h"
+      needs: [bake]
+      uses: []
+      time_min: 60
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: gateau-invisible-courgettes
+      qty_band: lunchbox
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

@@ -1,0 +1,79 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UN GÂTEAU DE SEPTEMBRE : farine de petit épeautre, poudre d'amande, huile
+# d'olive, miel, fleur d'oranger, blancs en neige, rosace de figues fraîches ;
+# 20 min à 180 °C puis 125 °C pour cuire le cœur ; imbibé chaud d'un sirop de
+# figues filtré, servi tiède avec la compotée.
+
+recipe:
+  id: moelleux-provencal-figue-amande
+  title: Moelleux provençal à la figue, amande et fleur d'oranger
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Moelleux provençal à la figue, amande et fleur d'oranger », blog Saines Gourmandises, 25 septembre 2013"
+    url: https://saines-gourmandises.fr/septembre-dans-le-sud-de-la-france/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « un gâteau de 6 parts »
+  lot_entier: true
+  time_min_total: 55
+  active_min: 20
+
+  apports:
+    proteine: oeuf
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: oeufs, name: "œufs", qty: 4, unit: pièce}
+    - {id: farine-petit-epeautre, name: "farine de petit épeautre", qty: 90, unit: g}
+    - {id: poudre-amande, name: "poudre d'amande", qty: 125, unit: g}
+    - {id: huile-olive, name: "huile d'olive", qty: 4, unit: c. à s.}
+    - {id: eau-fleur-oranger, name: "eau de fleur d'oranger (2 + 2 c. à s.)", qty: 4, unit: c. à s.}
+    - {id: poudre-a-lever, name: "poudre à lever (demi-sachet)", qty: 0.5, unit: sachet}
+    - {id: miel-acacia, name: "miel liquide (4 + 3 c. à s.)", qty: 7, unit: c. à s.}
+    - {id: extrait-vanille, name: "extrait de vanille liquide", qty: 4, unit: c. à c.}
+    - {id: figues, name: "figues violettes fraîches (300 + 150 g)", qty: 450, unit: g}
+    - {id: eau, name: "eau", qty: 4, unit: c. à s.}
+
+  steps:
+    - id: pate
+      action: "Mélanger farine, poudre d'amande et levure ; monter les blancs ; y mêler les jaunes battus avec huile, fleur d'oranger, miel et vanille, puis la farine"
+      needs: []
+      uses: [farine-petit-epeautre, poudre-amande, poudre-a-lever, oeufs, huile-olive]
+      time_min: 10
+    - id: cuire
+      action: "Couvrir d'une rosace de quartiers de figues et cuire 20 min à 180 °C, puis baisser à 125 °C jusqu'à ce qu'une pointe ressorte sèche"
+      needs: [bake]
+      uses: [figues]
+      time_min: 40
+      attended: false
+      kid: {age_min_months: 30, task: "poser les quartiers de figue en rosace"}
+    - id: sirop
+      action: "Cuire 10 min à feu doux 150 g de figues en petits morceaux avec la fleur d'oranger, l'eau, le miel et la vanille, puis filtrer"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [eau-fleur-oranger, eau, miel-acacia, extrait-vanille]
+      time_min: 12
+      parallel_with: cuire
+    - id: imbiber
+      action: "Verser le sirop chaud sur le gâteau et servir tiède avec la compotée"
+      needs: []
+      uses: []
+      time_min: 2
+
+  emits:
+    - kind: reste-plat
+      type: moelleux-provencal-figue-amande
+      qty_band: 2-repas
+      keeps: {frigo_days: 3, congelo: false}
+
+  plan_b: []

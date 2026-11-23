@@ -1,0 +1,70 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DES CROTTINS COUPÉS EN DEUX, panés d'œuf et de biscottes mixées à l'ail et au
+# thym, dorés 3 min par face — croustillants dehors, coulants dedans — sur des
+# pousses d'épinards au jambon cru et aux noix, vinaigrette à la moutarde.
+
+recipe:
+  id: cromesquis-chevre-thym
+  title: Cromesquis de chèvre à l'huile d'olive, ail et thym
+  format: salade
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Cromesquis de chèvre à l'huile d'olive, ail et thym », blog Saines Gourmandises, 20 novembre 2018"
+    url: https://saines-gourmandises.fr/derniere-recette-chevre-de-saison/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4
+  time_min_total: 25
+  active_min: 25
+
+  apports:
+    proteine: fromage
+    feculent: pain
+    legumes: [feuille]
+    profil: poele
+    origine: francais
+
+  ingredients:
+    - {id: chevre-demi-sec, name: crottins de chèvre (60 g chacun), qty: 6, unit: pièce}
+    - {id: biscottes, name: biscottes complètes, qty: 35, unit: g}
+    - {id: oeufs, name: œuf, qty: 1, unit: pièce}
+    - {id: ail, name: "ail (1 pour la panure, 1 pour la sauce)", qty: 2, unit: gousse}
+    - {id: thym, name: thym séché, qty: 1, unit: c. à c., seasoning: true}
+    - {id: huile-olive, ref: huile-cuisson, name: huile d'olive (cuisson), qty: 2, unit: c. à s.}
+    - {id: pousses-epinards, name: jeunes pousses d'épinards, qty: 300, unit: g}
+    - {id: jambon-cru, name: tranches fines de jambon cru, qty: 4, unit: tranche, optional: true}
+    - {id: noix, name: noix, qty: 8, unit: pièce}
+    - {id: huile-olive, ref: huile-sauce, name: huile d'olive (sauce), qty: 6, unit: c. à s.}
+    - {id: vinaigre, name: vinaigre de cidre, qty: 2, unit: c. à s.}
+    - {id: moutarde, name: moutarde de Dijon (c. à s. rase), qty: 1, unit: c. à s.}
+    - {id: sel, name: sel, qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre, qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: paner
+      action: "Couper chaque crottin en deux dans l'épaisseur ; mixer biscottes, une gousse d'ail et thym, et paner les fromages à l'œuf puis à cette chapelure"
+      needs: [chop-coarse-small]
+      uses: [chevre-demi-sec, biscottes, thym, oeufs]
+      time_min: 8
+      kid: {age_min_months: 36, task: "rouler les fromages dans la chapelure"}
+    - id: assiettes
+      action: "Répartir les épinards, le jambon en lanières et les noix, et arroser d'une vinaigrette fouettée d'huile, vinaigre, moutarde, ail écrasé, sel et poivre"
+      needs: []
+      uses: [pousses-epinards, jambon-cru, noix, huile-sauce, vinaigre, moutarde, ail, sel, poivre]
+      time_min: 5
+    - id: dorer
+      action: "Dorer les fromages à peine 3 min par face dans l'huile chaude et les poser sur les assiettes"
+      needs: [pan-fry]
+      uses: [huile-cuisson]
+      time_min: 7
+      attended: true
+
+  emits: []
+
+  plan_b: []

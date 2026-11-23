@@ -1,0 +1,55 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# TROIS MINUTES : poudre d'amande et agave malaxées, parfumées au choix
+# (amande amère, tonka, huile essentielle d'orange façon calisson, citron,
+# cannelle, matcha). Meilleure après 24 h, quand la poudre a bu le sirop.
+# La galette des rois et le stollen du livre achètent leur pâte d'amande ;
+# rien ne les relie encore à celle-ci.
+
+recipe:
+  id: pate-amande-minute
+  title: Pâte d'amande « minute » au sirop d'agave
+  creneaux: [gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Leçon n°3 : ma pâte d'amande minute au sirop d'agave », blog Saines Gourmandises, 14 décembre 2011"
+    url: https://saines-gourmandises.fr/saines-gourmandises-de-noel/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « environ 350 g de pâte d'amande »
+  time_min_total: 3
+  active_min: 3
+
+  apports:
+    proteine: aucune
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: poudre-amande, name: "poudre d'amande", qty: 250, unit: g}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 8, unit: c. à s.}
+    - {id: huile-essentielle-citron, name: "parfum au choix (15 gouttes d'huile essentielle de citron…)", qty: 15, unit: pièce, optional: true}
+
+  steps:
+    - id: malaxer
+      action: "Malaxer la poudre d'amande avec l'agave et le parfum choisi en boule de pâte"
+      astuce: "Un peu d'agave ou de poudre en plus selon la finesse de la poudre d'amande."
+      needs: []
+      uses: [poudre-amande, sirop-agave, huile-essentielle-citron]
+      time_min: 3
+      kid: {age_min_months: 24, task: "malaxer et modeler des petits animaux"}
+
+  emits:
+    - kind: base
+      type: pate-amande-minute
+      qty_band: 3-repas
+      keeps: {frigo_days: 15, congelo: false}
+
+  plan_b: []

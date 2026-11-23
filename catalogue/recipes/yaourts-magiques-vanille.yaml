@@ -1,0 +1,77 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# SANS YAOURTIÈRE NI THERMOMÈTRE : moitié du lait bouillie avec le sucre et la
+# vanille, versée sur l'autre moitié froide fouettée avec un yaourt, en pots
+# dans une cocotte tiédie avec de l'eau très chaude, le tout dans un sac
+# isotherme, une nuit sans y toucher ; puis 2 à 3 h au frais. Lait entier non
+# UHT, de vache, chèvre, brebis ou soja.
+
+recipe:
+  id: yaourts-magiques-vanille
+  title: Yaourts « magiques » à la vanille, sans yaourtière
+  creneaux: [petit-dejeuner, gouter, dessert]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Yaourts magiques à la vanille et bon lait de ferme », blog Saines Gourmandises, 9 juillet 2015"
+    url: https://saines-gourmandises.fr/pour-regaler-vos-loulous-en-vacances-officieusement-vous-aurez-aussi-le-droit-dy-gouter/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 7          # « 6 à 8 yaourts »
+    pieces: 7
+  time_min_total: 15
+  active_min: 15
+
+  apports:
+    proteine: fromage
+    feculent: aucun
+    legumes: []
+    profil: cru
+    origine: francais
+
+  ingredients:
+    - {id: lait, name: "lait frais entier non UHT", qty: 1, unit: l}
+    - {id: yaourt-nature, name: "yaourt bio au lait entier (ou ferments)", qty: 1, unit: pot}
+    - {id: sucre-complet, name: "sucre de canne complet ou de coco", qty: 6, unit: c. à s.}
+    - {id: gousse-vanille, name: "gousse de vanille bien charnue", qty: 1, unit: pièce}
+
+  steps:
+    - id: bouillir
+      action: "Tiédir une cocotte et la poser dans un sac isotherme propre ; porter à ébullition 50 cl de lait avec le sucre et la vanille fendue et grattée"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [sucre-complet, gousse-vanille]
+      time_min: 6
+    - id: ensemencer
+      action: "Fouetter le yaourt dans les 50 cl de lait froid, y verser le lait bouillant en fouettant et remplir les pots"
+      needs: []
+      uses: [lait, yaourt-nature]
+      time_min: 4
+      kid: {age_min_months: 30, task: "remplir les pots à la louche"}
+    - id: etuver
+      action: "Ranger les pots dans la cocotte, verser de l'eau très chaude jusqu'aux trois quarts, couvrir, fermer le sac et ne plus y toucher"
+      needs: [simmer-large]
+      charge_partielle: true
+      uses: []
+      time_min: 3
+      attente_min: 420
+      attente_raison: "toute la nuit, ou au moins 5 à 6 h, sans y toucher"
+    - id: frais
+      action: "Mettre les yaourts au frais avant de les manger"
+      needs: []
+      uses: []
+      time_min: 1
+      attente_min: 150
+      attente_raison: "2 à 3 h au frais"
+
+  emits:
+    - kind: base
+      type: yaourts-magiques-vanille
+      qty_band: 3-repas
+      keeps: {frigo_days: 7, congelo: false}
+
+  plan_b: []

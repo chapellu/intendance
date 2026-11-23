@@ -1,0 +1,85 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# UNE PÂTE SANS ÉTALER DE BEURRE : son d'avoine, un peu de farine, œuf, petit
+# suisse, huile, croûte de parmesan, cuite à blanc pendant que la fondue de
+# fenouil et d'oignons confit. Lardons de tofu fumé par-dessus. Quatre
+# tartelettes ou une grande ; l'article dit « 3 disques » pour 4 tartes.
+
+recipe:
+  id: tarte-fine-son-avoine-fenouil
+  title: Tarte fine au son d'avoine, fondue de fenouil et lardons végétariens
+  format: quiche
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Tarte fine et croquante au son d'avoine, croûte de parmesan, fondue de fenouil et lardons végétariens », blog Saines Gourmandises, 20 janvier 2012"
+    url: https://saines-gourmandises.fr/un-peu-de-sale-apres-toutes-ces-douceurs/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « 4 tartes individuelles, ou une grande tarte »
+  time_min_total: 40        # 15 min de préparation + 20 min (cuissons en parallèle)
+  active_min: 20
+
+  apports:
+    proteine: tofu-soja
+    feculent: avoine
+    legumes: [allium]
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: son-avoine, name: son d'avoine, qty: 150, unit: g}
+    - {id: farine-complete, name: farine complète, qty: 50, unit: g}
+    - {id: oeufs, name: œuf, qty: 1, unit: pièce}
+    - {id: petits-suisses, name: petit-suisse demi-écrémé, qty: 1, unit: pièce}
+    - {id: huile-olive, ref: huile-pate, name: huile d'olive (pâte), qty: 3, unit: c. à s.}
+    - {id: sel, ref: sel-pate, name: sel (pâte), qty: 1, unit: pincée, seasoning: true}
+    - {id: parmesan, name: parmesan râpé, qty: 80, unit: g}
+    - {id: oignon, name: oignons, qty: 3, unit: pièce}
+    - {id: fenouil, name: gros bulbes de fenouil, qty: 2, unit: pièce}
+    - {id: huile-olive, ref: huile-fondue, name: huile d'olive (fondue et lardons), qty: 5, unit: c. à s.}
+    - {id: sel, ref: sel-fondue, name: sel (fondue), qty: 1, unit: pincée, seasoning: true}
+    - {id: poivre, name: poivre du moulin, qty: 1, unit: pincée, seasoning: true}
+    - {id: tofu-fume, name: tofu fumé, qty: 100, unit: g}
+
+  avec:
+    - {id: jeunes-pousses, name: jeunes pousses de salade, qty: 100, unit: g}
+
+  steps:
+    - id: pate
+      action: "Préchauffer le four à 175 °C ; mélanger son, farine, œuf, petit-suisse, huile et sel, abaisser en disques et saupoudrer de parmesan"
+      needs: []
+      uses: [son-avoine, farine-complete, oeufs, petits-suisses, huile-pate, sel-pate, parmesan]
+      time_min: 8
+      kid: {age_min_months: 30, task: "saupoudrer le parmesan sur les disques"}
+    - id: cuire-pate
+      action: "Cuire les fonds 20 min"
+      needs: [bake]
+      uses: []
+      time_min: 20
+      attended: false
+    - id: fondue
+      action: "Émincer oignons et fenouils et les dorer à l'huile ; saler, poivrer, mouiller d'un fond d'eau et confire 20 min à couvert en remuant"
+      needs: [pan-fry]
+      uses: [oignon, fenouil, huile-fondue, sel-fondue, poivre]
+      time_min: 25
+      attended: false
+      parallel_with: cuire-pate
+    - id: lardons
+      action: "Dorer le tofu fumé en fins lardons et l'éponger"
+      needs: [pan-fry]
+      uses: [tofu-fume]
+      time_min: 5
+    - id: garnir
+      action: "Étaler la fondue bien sèche sur les fonds, parsemer de lardons et servir tiède"
+      needs: []
+      uses: []
+      time_min: 3
+
+  emits: []
+
+  plan_b: []

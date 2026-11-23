@@ -1,0 +1,70 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DES CRÊPES DE CHANDELEUR À IG BAS : son d'avoine et un peu de farine
+# complète, petits-suisses, fleur d'oranger, vanille, agave, reposées une
+# demi-heure, cuites plus longtemps qu'une crêpe de blé dans une poêle en
+# fer. Les noix caramélisées de l'article les accompagnent.
+
+recipe:
+  id: crepes-son-avoine-fleur-oranger
+  title: Crêpes au son d'avoine et à la fleur d'oranger
+  creneaux: [gouter, dessert, petit-dejeuner]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Bientôt la chandeleur… », blog Saines Gourmandises, 28 janvier 2012"
+    url: https://saines-gourmandises.fr/bientot-la-chandeleur/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4
+    pieces: 12
+  time_min_total: 55
+  active_min: 25
+
+  apports:
+    proteine: aucune
+    feculent: avoine
+    legumes: []
+    profil: poele
+    origine: francais
+
+  ingredients:
+    - {id: son-avoine, name: "son d'avoine", qty: 200, unit: g}
+    - {id: farine-complete, name: "farine complète", qty: 50, unit: g}
+    - {id: eau, name: "eau", qty: 50, unit: cl}
+    - {id: petits-suisses, name: "petits-suisses écrémés", qty: 2, unit: pièce}
+    - {id: eau-fleur-oranger, name: "eau de fleur d'oranger", qty: 2, unit: c. à s.}
+    - {id: extrait-vanille, name: "extrait de vanille", qty: 1, unit: c. à c.}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 2, unit: c. à s.}
+    - {id: huile-tournesol, name: "huile", qty: 2, unit: c. à s.}
+    - {id: sel, name: "bonne pincée de sel", qty: 1, unit: bonne pincée, seasoning: true}
+
+  steps:
+    - id: pate
+      action: "Fouetter tous les ingrédients et laisser reposer"
+      needs: []
+      uses: [son-avoine, farine-complete, eau, petits-suisses, eau-fleur-oranger, extrait-vanille, sirop-agave, huile-tournesol, sel]
+      time_min: 4
+      attente_min: 30
+      attente_raison: "repos de la pâte"
+      attente_souple: true
+      kid: {age_min_months: 24, task: "fouetter la pâte"}
+    - id: cuire
+      action: "Cuire les crêpes à très petit feu dans une poêle huilée, un peu plus longtemps qu'une crêpe de blé"
+      astuce: "Une poêle en tôle de fer : l'inox accroche."
+      needs: [pan-fry]
+      uses: []
+      time_min: 20
+      attended: true
+
+  emits:
+    - kind: reste-plat
+      type: crepes-son-avoine-fleur-oranger
+      qty_band: 1-repas
+      keeps: {frigo_days: 2, congelo: true}
+
+  plan_b: []

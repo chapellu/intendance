@@ -1,0 +1,68 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# DES GAUFRES À IG TRÈS BAS qui font illusion : petit épeautre, orge, son d'avoine,
+# lait de soja-vanille, œufs, rhum, fleur d'oranger, agave et huile ; une
+# demi-heure de repos pour que le son s'hydrate, gaufrier huilé au pinceau.
+
+recipe:
+  id: gaufres-son-avoine-orge
+  title: Gaufres au son d'avoine, à l'orge et à la fleur d'oranger
+  creneaux: [gouter, petit-dejeuner]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Trois délicieux desserts à IG bas… », blog Saines Gourmandises, 9 mai 2016"
+    url: https://saines-gourmandises.fr/sos-patissiers-malheureux/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 4          # « pour 4 personnes »
+  time_min_total: 50
+  active_min: 20
+
+  apports:
+    proteine: oeuf
+    feculent: avoine
+    legumes: []
+    profil: poele
+    origine: francais
+
+  ingredients:
+    - {id: farine-petit-epeautre, name: "farine T110 de petit épeautre", qty: 100, unit: g}
+    - {id: farine-orge, name: "farine d'orge mondé", qty: 100, unit: g}
+    - {id: son-avoine, name: "son d'avoine", qty: 50, unit: g}
+    - {id: poudre-a-lever, name: "poudre à lever (demi-sachet)", qty: 0.5, unit: sachet}
+    - {id: lait-soja-vanille, name: "lait de soja-vanille", qty: 35, unit: cl}
+    - {id: oeufs, name: "œufs", qty: 2, unit: pièce}
+    - {id: rhum, name: "rhum ambré", qty: 1, unit: c. à s.}
+    - {id: eau-fleur-oranger, name: "eau de fleur d'oranger", qty: 1, unit: c. à s.}
+    - {id: sirop-agave, name: "sirop d'agave", qty: 2, unit: c. à s.}
+    - {id: huile-pepin-raisin, name: "huile neutre (+ pour le gaufrier)", qty: 6, unit: cl}
+    - {id: sel, name: "pincée de sel", qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: pate
+      action: "Mêler les farines, le son, le sel et la levure, puis tout le reste, et laisser reposer"
+      needs: []
+      uses: [farine-petit-epeautre, farine-orge, son-avoine, sel, poudre-a-lever, lait-soja-vanille, oeufs, rhum, eau-fleur-oranger, sirop-agave, huile-pepin-raisin]
+      time_min: 5
+      attente_min: 30
+      attente_raison: "le son d'avoine s'hydrate"
+      kid: {age_min_months: 30, task: "mélanger la pâte"}
+    - id: cuire
+      action: "Huiler le gaufrier chaud et cuire une louchée par gaufre jusqu'à ce qu'elle soit dorée"
+      needs: [gaufrier]
+      uses: []
+      time_min: 20
+      attended: true
+
+  emits:
+    - kind: reste-plat
+      type: gaufres-son-avoine-orge
+      qty_band: 1-repas
+      keeps: {frigo_days: 2, congelo: true}
+
+  plan_b: []

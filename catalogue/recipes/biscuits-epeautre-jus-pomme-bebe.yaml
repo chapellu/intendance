@@ -1,0 +1,71 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# VINGT-CINQ BISCUITS LONGS POUR BÉBÉ : beurre (ou ghee), sucre complet et sucre
+# vanillé fondus avec un peu de jus de pomme, versés sur la farine d'épeautre et
+# la levure ; étalés à 5 mm, coupés en bâtonnets, 10 à 12 min, à peine dorés
+# pour rester tendres. Bocal hermétique.
+
+recipe:
+  id: biscuits-epeautre-jus-pomme-bebe
+  title: Biscuits express à l'épeautre et au jus de pomme, pour petites quenottes
+  creneaux: [gouter]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Biscuits express à l'épeautre et au jus de pomme », blog Saines Gourmandises, 10 mai 2019"
+    url: https://saines-gourmandises.fr/bebe-de-jeanne/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 6          # « environ 25 biscuits »
+    pieces: 25
+  time_min_total: 25
+  active_min: 12
+
+  apports:
+    proteine: aucune
+    feculent: farine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: jus-pomme, name: "jus de pomme", qty: 5, unit: cl}
+    - {id: beurre, name: "bon beurre bio ou ghee", qty: 80, unit: g}
+    - {id: sucre-complet, name: "sucre complet ou de coco", qty: 50, unit: g}
+    - {id: farine-epeautre, name: "farine semi-complète de grand épeautre", qty: 200, unit: g}
+    - {id: sucre-vanille, name: "sucre vanillé", qty: 2, unit: sachet}
+    - {id: poudre-a-lever, name: "poudre à lever (demi-sachet)", qty: 0.5, unit: sachet}
+    - {id: sel, name: "petite pincée de sel", qty: 1, unit: pincée, seasoning: true}
+
+  steps:
+    - id: pate
+      action: "Préchauffer à 180 °C ; fondre sans bouillir le beurre, les sucres et le jus de pomme, et les verser sur la farine mêlée à la levure et au sel"
+      needs: [simmer]
+      charge_partielle: true
+      uses: [beurre, sucre-complet, sucre-vanille, jus-pomme, farine-epeautre, poudre-a-lever, sel]
+      time_min: 6
+    - id: decouper
+      action: "Étaler à 5 mm et couper des biscuits longs à la roulette sur une plaque chemisée"
+      astuce: "30 min au frais facilitent la découpe."
+      needs: []
+      uses: []
+      time_min: 8
+      kid: {age_min_months: 24, task: "couper les biscuits à la roulette"}
+    - id: cuire
+      action: "Cuire 10 à 12 min, à peine dorés, et laisser croustiller en refroidissant"
+      needs: [bake]
+      uses: []
+      time_min: 11
+      attended: true
+
+  emits:
+    - kind: base
+      type: biscuits-epeautre-jus-pomme-bebe
+      qty_band: 3-repas
+      keeps: {frigo_days: 15, congelo: false}
+
+  plan_b: []

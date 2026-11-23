@@ -1,0 +1,67 @@
+# Encodage structuré et reformulé d'une recette de Marie Chioca (blog Saines
+# Gourmandises), selon le cadre de licence de la carte #26 : le plat, les
+# quantités et le procédé relèvent du savoir-faire non protégeable ; sa prose et
+# ses photos ne sont PAS reproduites. Encodée le 2026-11-22 (T196).
+#
+# SANS MIEL OBLIGATOIRE : son d'avoine et farine complète, agave (ou miel
+# d'acacia), cannelle et épices à pain d'épices, huile essentielle d'orange,
+# yaourt de soja, six œufs. Un grand moule 1 h, des petits 30 min.
+
+recipe:
+  id: pain-epices-son-avoine
+  title: Pain d'épices bio tout moelleux à IG bas
+  creneaux: [gouter, petit-dejeuner]
+  lang: fr
+  source:
+    author: Marie Chioca
+    work: "« Ma recette de pain d'épices bio tout moelleux à IG bas », blog Saines Gourmandises, 6 octobre 2011"
+    url: https://saines-gourmandises.fr/2-recettes-pour-le-prix-dune-et-le-resultat-de-notre-petit-jeu/
+    source_id: saines-gourmandises-blog
+    encoding: étapes restructurées et reformulées ; ni prose ni photo d'origine
+  yields:
+    portions_eq: 8
+  lot_entier: true
+  time_min_total: 70
+  active_min: 10
+
+  apports:
+    proteine: oeuf
+    feculent: avoine
+    legumes: []
+    profil: four
+    origine: francais
+
+  ingredients:
+    - {id: son-avoine, name: "son d'avoine", qty: 125, unit: g}
+    - {id: farine-complete, name: "farine complète T110", qty: 125, unit: g}
+    - {id: poudre-a-lever, name: "levure à gâteaux", qty: 1, unit: sachet}
+    - {id: sirop-agave, name: "sirop d'agave (ou 10 c. à s. de miel d'acacia)", qty: 8, unit: c. à s.}
+    - {id: cannelle, name: "cannelle", qty: 1, unit: c. à s., seasoning: true}
+    - {id: epices-pain-epices, name: "mélange pour pain d'épices", qty: 1, unit: c. à s., seasoning: true}
+    - {id: huile-essentielle-orange, name: "huile essentielle d'orange", qty: 20, unit: pièce, optional: true}
+    - {id: yaourt-soja, name: "yaourt de soja", qty: 1, unit: pot}
+    - {id: huile-tournesol, name: "huile végétale", qty: 4, unit: c. à s.}
+    - {id: oeufs, name: "œufs", qty: 6, unit: pièce}
+
+  steps:
+    - id: pate
+      action: "Mélanger son, farine et levure, puis tous les autres ingrédients"
+      needs: []
+      uses: [son-avoine, farine-complete, poudre-a-lever, sirop-agave, cannelle, epices-pain-epices, huile-essentielle-orange, yaourt-soja, huile-tournesol, oeufs]
+      time_min: 6
+      kid: {age_min_months: 24, task: "verser les épices et mélanger"}
+    - id: cuire
+      action: "Verser dans un grand moule à cake et cuire 1 h à 175 °C"
+      astuce: "En petits moules individuels, 30 min."
+      needs: [bake]
+      uses: []
+      time_min: 60
+      attended: false
+
+  emits:
+    - kind: reste-plat
+      type: pain-epices-son-avoine
+      qty_band: 3-repas
+      keeps: {frigo_days: 7, congelo: true}
+
+  plan_b: []
