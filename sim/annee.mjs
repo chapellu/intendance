@@ -565,12 +565,18 @@ async function cuisiner(j, ev, stats, { autrement = false, parts = 2.75, deja = 
     // des quatre en prend un : `partsDuMidi`). Le harnais lisait « 2 parts » par
     // défaut, et le midi des quatre finissait chaque jour sur une omelette.
     const nParts = /([\d,.]+)\s*(part|portion)/.exec(l.nom), nRepas = /([\d,.]+)\s*repas/.exec(l.nom);
-    const portions = nParts ? parseFloat(nParts[1].replace(",", ".")) : nRepas ? parseFloat(nRepas[1].replace(",", ".")) * MIDI_PARTS : 2;
     // Le lot EST un des emits du plat : on le retrouve par son nom lisible, pour
     // savoir si c'est un reste à manger ou une BASE (pois chiches cuits, bouillon)
     // qu'un autre plat attend — le midi ne mange pas une base.
     const emits = plat?.emits ?? [];
     const e = emits.find((x) => norm(l.nom).includes(lisible(x.type)));
+    // T198 — UN GOÛTER OU UN MATIN DE PAIN EST UNE PART : la routine en prend
+    // une par jour, comme l'app. « 2 repas » de compote comptaient six goûters
+    // (× MIDI_PARTS), et le congélateur réel montait trois fois plus vite.
+    const routine = (e ? [e.type] : emits.map((x) => x.type)).some((t) => TYPES_GOUTER.has(t) || TYPES_PAIN.has(t));
+    const portions = routine
+      ? (nRepas ? parseFloat(nRepas[1].replace(",", ".")) : BAND((e ?? emits.find((x) => TYPES_GOUTER.has(x.type) || TYPES_PAIN.has(x.type)))?.band))
+      : nParts ? parseFloat(nParts[1].replace(",", ".")) : nRepas ? parseFloat(nRepas[1].replace(",", ".")) * MIDI_PARTS : 2;
     etat.restes.push({ plat: p0.titre, types: e ? [e.type] : emits.map((x) => x.type), kind: e?.kind ?? (emits.every((x) => x.kind === "base") ? "base" : "reste-plat"), ou: autrement ? "Frigo" : (m?.[1] ?? "Frigo"), portions, le: j, garde: parseInt(l.garde) || (m?.[1] === "Frigo" ? 3 : 90), quoi: l.nom });
   }
   etat.compte.cuits++;
