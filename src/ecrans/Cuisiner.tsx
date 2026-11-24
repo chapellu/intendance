@@ -26,7 +26,7 @@ import {
   useNombre,
   useObjet,
 } from "../db/reglages";
-import { base } from "../db/schema";
+import { base, jourISO } from "../db/schema";
 import { facteurAffiche, quantiteACuire, type Calcul } from "../model/calcul";
 import { estUneFournee, lotsEnBoites, platDuSoir } from "../model/repas";
 import { joue, type Jeu } from "../model/jeu";
@@ -206,9 +206,15 @@ function Fiche({
     rienGarde = false,
   ) => {
     if ((lecture && !guide) || i < 0) return "hors" as const;
-    if (await dejaCuisine(base, creneau.jour, creneau.repas)) return "deja" as const;
+    // UN PLAT LU, CUISINÉ POUR UN AUTRE JOUR QUE CELUI DE SON CRÉNEAU DE LECTURE :
+    // la cuisson se date d'aujourd'hui et n'occupe pas ce créneau
+    // (`EvtCuisine.horsCreneau`). Lu sur un créneau d'aujourd'hui, rien ne change.
+    const aujourdhui = jourISO(new Date());
+    const horsCreneau = lecture && creneau.jour !== aujourdhui;
+    if (!horsCreneau && (await dejaCuisine(base, creneau.jour, creneau.repas))) return "deja" as const;
     await journaliserCuisson(base, {
-      jour: creneau.jour,
+      horsCreneau,
+      jour: horsCreneau ? aujourdhui : creneau.jour,
       repas: creneau.repas,
       plat: pSoir,
       parts,

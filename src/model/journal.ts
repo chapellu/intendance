@@ -77,6 +77,15 @@ export interface EvtCuisine extends Commun {
   repas: RepasId;
   plat: string;
   /**
+   * UNE CUISSON SANS CRÉNEAU. Un plat lu dans « Recettes » s'ouvre sur un
+   * créneau vide qui ne le porte pas, parfois demain (`creneauDeLecture`) ; le
+   * cuisiner quand même le journalisait sur CE créneau — l'apéro du vendredi
+   * devenait le dîner du samedi, et le vrai dîner du samedi, « déjà noté »,
+   * n'était jamais décompté (année simulée des cinq repas). Elle se date du
+   * jour où elle se fait, et n'occupe aucun créneau.
+   */
+  horsCreneau?: true;
+  /**
    * Les parts FIGÉES au moment de cuisiner.
    *
    * `DecisionCreneau.parts: null` veut dire « les parts du foyer, quelles
