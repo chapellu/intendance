@@ -192,6 +192,30 @@ denrees:
   # congélateur en prend, ils partent à la poubelle. Une boîte au moins, deux au
   # rachat (≈ 2 sacs par jour à l'année simulée : un reste, un goûter, du pain).
   - {ingredient: sacs-congelation, minimum: 1, jusqua: 2, unite: boîte de 20}
+  # T198 (2026-11-24, « ajoute-les tous, rien d'interdit sauf le céleri ») — CE
+  # QUI FAIT D'UN DÎNER À UN PRODUIT FRAIS UN DÎNER SANS COURSES. Mesuré avant
+  # (`sim/fond_annee.py`, zéro achat) : 16 dîners par mois ; avec les légumes
+  # surgelés 34 ; avec le frais sous vide 41 ; avec le placard 45.
+  # Les légumes surgelés — l'été et le marché, au congélateur.
+  - {ingredient: courgettes-surgelees, minimum: 1, jusqua: 2, unite: sachet de 1 kg}
+  - {ingredient: poivrons-surgeles, minimum: 1, unite: sachet de 750 g}
+  - {ingredient: aubergines-surgelees, minimum: 1, unite: sachet de 750 g}
+  - {ingredient: poireaux-surgeles, minimum: 1, unite: sachet de 1 kg}
+  - {ingredient: moules-surgelees, minimum: 1, unite: sachet de 1 kg}
+  - {ingredient: pain-levain-congele, minimum: 1, unite: pain de 500 g}
+  # Le frais qui tient des semaines fermé.
+  - {ingredient: tofu-fume, minimum: 1, jusqua: 2, unite: bloc de 200 g}
+  - {ingredient: jambon-cru, minimum: 1, jusqua: 2, unite: barquette de 90 g}
+  - {ingredient: creme, minimum: 1, jusqua: 2, unite: brique de 20 cl}
+  - {ingredient: cantal, minimum: 1, unite: morceau de 250 g}
+  - {ingredient: oignon-rouge, minimum: 1, unite: filet de 500 g}
+  - {ingredient: miso-blanc, minimum: 1, unite: pot de 300 g}
+  # Le placard.
+  - {ingredient: anchois, minimum: 1, unite: bocal de 90 g}
+  - {ingredient: capres, minimum: 1, unite: bocal de 100 g}
+  - {ingredient: vinaigre-balsamique, minimum: 1, unite: bouteille de 25 cl}
+  - {ingredient: pignons-pin, minimum: 1, unite: sachet de 100 g}
+  - {ingredient: cepes-seches, minimum: 1, unite: sachet de 30 g}
   - {ingredient: sardines-boite, minimum: 2, unite: boîte de 135 g}
   - {ingredient: polenta, minimum: 1, unite: paquet de 500 g}
   - {ingredient: cornichons, minimum: 1, unite: bocal}

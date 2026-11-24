@@ -438,10 +438,13 @@ describe("ce qui est ici : le rejeu entier, avec une vie pour le frais court", (
     lignes: [{ ingredient, unites: 1, parUnite: null, zone: null, etat }],
   });
 
-  test("une crème rentrée il y a dix jours n'est plus une raison de dîner", () => {
+  // T198 — la crème est au fond (frais sous vide, quatre semaines fermée) :
+  // c'est à cinq semaines qu'elle n'est plus une raison de dîner.
+  test("une crème rentrée il y a cinq semaines n'est plus une raison de dîner", () => {
     const jour = iso(LUNDI);
-    const rejeu = rejouer(catalogue, [entree(veille(LUNDI, 10), "creme", "frais")], contexte(catalogue), jour);
-    expect(estLa(catalogue, rejeu.parIngredient.get("creme")!, jour)).toBe(false);
+    const rejeu = rejouer(catalogue, [entree(veille(LUNDI, 35), "creme", "frais")], contexte(catalogue), jour);
+    const vieille = rejeu.parIngredient.get("creme");
+    expect(vieille ? estLa(catalogue, vieille, jour) : false).toBe(false);
     const hier = rejouer(catalogue, [entree(veille(LUNDI), "creme", "frais")], contexte(catalogue), jour);
     expect(estLa(catalogue, hier.parIngredient.get("creme")!, jour)).toBe(true);
   });

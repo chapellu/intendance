@@ -656,6 +656,14 @@ rayons:
     - boeuf-hache-congele
     - poulet-filets-congeles
     - saumon-congele
+    # T198 — les légumes d'été et du marché, surgelés : le dîner de courgettes
+    # se fait en février, et un soir sans courses.
+    - courgettes-surgelees
+    - poivrons-surgeles
+    - aubergines-surgelees
+    - poireaux-surgeles
+    - moules-surgelees
+    - pain-levain-congele
 
 placard:
   - huile-olive
@@ -754,6 +762,12 @@ noms:
   cointreau: liqueur d'agrume
   colin-surgele: colin surgelé
   sacs-congelation: sacs de congélation
+  courgettes-surgelees: courgettes (surgelées)
+  poivrons-surgeles: poivrons en lanières (surgelés)
+  aubergines-surgelees: aubergines grillées (surgelées)
+  poireaux-surgeles: poireaux émincés (surgelés)
+  moules-surgelees: moules (surgelées)
+  pain-levain-congele: pain au levain tranché (congelé)
   boeuf-hache-congele: bœuf haché (congelé)
   poulet-filets-congeles: filets de poulet (congelés)
   saumon-congele: pavés de saumon (congelés)

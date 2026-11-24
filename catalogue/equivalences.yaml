@@ -199,6 +199,32 @@ equivalences:
   poisson-blanc:
     par:
       - {id: colin-surgele, nom: "colin surgelé", ratio: 1, unites: [g, kg]}
-  cabillaud:
+
+  # ── T198 — LE FRAIS QUI A UNE FORME QUI SE GARDE (24/11 : « ajoute-les
+  # tous »). 64 % de ce qui empêchait un dîner de se faire sans courses était
+  # un produit frais ; ces formes-ci tiennent des mois au congélateur. Sans
+  # `unites` : une courgette de la recette est « une courgette » du sachet.
+  courgettes:
     par:
-      - {id: colin-surgele, nom: "colin surgelé", ratio: 1, unites: [g]}
+      - {id: courgettes-surgelees, nom: "courgettes surgelées", ratio: 1}
+  poivron:
+    par:
+      - {id: poivrons-surgeles, nom: "poivrons en lanières surgelés", ratio: 1}
+  aubergine:
+    par:
+      - {id: aubergines-surgelees, nom: "aubergines grillées surgelées", ratio: 1}
+  poireau:
+    par:
+      - {id: poireaux-surgeles, nom: "poireaux émincés surgelés", ratio: 1}
+  pousses-epinards:
+    par:
+      - {id: epinards-surgeles, nom: "épinards surgelés", ratio: 1}
+  moules:
+    par:
+      - {id: moules-surgelees, nom: "moules surgelées", ratio: 1}
+  pain-levain:
+    par:
+      - {id: pain-levain-congele, nom: "pain au levain du congélateur", ratio: 1}
+  tomme-savoie:
+    par:
+      - {id: cantal, nom: "cantal", ratio: 1}

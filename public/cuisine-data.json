@@ -1342,7 +1342,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courgettes-surgelees",
+       "nom": "courgettes surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -1531,7 +1538,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poivrons-surgeles",
+       "nom": "poivrons en lanières surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -1763,7 +1777,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "vermicelles",
@@ -2135,7 +2156,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oeufs",
@@ -2382,7 +2410,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poivrons-surgeles",
+       "nom": "poivrons en lanières surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -4079,7 +4114,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "aubergines-surgelees",
+       "nom": "aubergines grillées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "boeuf-hache",
@@ -5977,7 +6019,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "epinards-surgeles",
+       "nom": "épinards surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "riz",
@@ -7326,7 +7375,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -8070,7 +8126,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "carottes",
@@ -8180,7 +8243,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "pain-levain-congele",
+       "nom": "pain au levain du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "rouille",
@@ -8818,7 +8888,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "gingembre",
@@ -9100,7 +9177,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "clous-girofle",
@@ -9338,7 +9422,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "ail",
@@ -9706,7 +9797,7 @@
      "remplacants": [
       {
        "id": "colin-surgele",
-       "nom": "colin surgelé",
+       "nom": "filets de colin surgelés",
        "ratio": 1
       }
      ]
@@ -9806,7 +9897,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "pain-levain-congele",
+       "nom": "pain au levain du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "vin-blanc-sec",
@@ -11512,7 +11610,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "pain-levain-congele",
+       "nom": "pain au levain du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "sauce-tomate",
@@ -12745,7 +12850,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "epinards-surgeles",
+       "nom": "épinards surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "ail",
@@ -14568,7 +14680,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courgettes-surgelees",
+       "nom": "courgettes surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "tomme-savoie",
@@ -14578,7 +14697,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "cantal",
+       "nom": "cantal",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oeufs",
@@ -15268,7 +15394,14 @@
      "unit": "kg",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courgettes-surgelees",
+       "nom": "courgettes surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "pousses-epinards",
@@ -20288,7 +20421,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poivrons-surgeles",
+       "nom": "poivrons en lanières surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "carottes",
@@ -22317,7 +22457,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "pruneaux",
@@ -26080,7 +26227,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "carottes",
@@ -27337,7 +27491,14 @@
      "unit": "kg",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courgettes-surgelees",
+       "nom": "courgettes surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -31357,7 +31518,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -32217,7 +32385,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "epinards-surgeles",
+       "nom": "épinards surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "jambon-cru",
@@ -32422,7 +32597,14 @@
      "unit": "tranche",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "pain-levain-congele",
+       "nom": "pain au levain du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -32442,7 +32624,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "cantal",
+       "nom": "cantal",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "jambon-cru",
@@ -34502,7 +34691,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courgettes-surgelees",
+       "nom": "courgettes surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oeufs",
@@ -40143,7 +40339,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -40700,7 +40903,14 @@
      "unit": "kg",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courgettes-surgelees",
+       "nom": "courgettes surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -44481,7 +44691,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "carottes",
@@ -45290,7 +45507,14 @@
      "unit": "kg",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courgettes-surgelees",
+       "nom": "courgettes surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "huile-olive",
@@ -46856,7 +47080,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courgettes-surgelees",
+       "nom": "courgettes surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "chocolat-noir",
@@ -48160,7 +48391,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courgettes-surgelees",
+       "nom": "courgettes surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "farine",
@@ -51814,7 +52052,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courgettes-surgelees",
+       "nom": "courgettes surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "parmesan",
@@ -55480,7 +55725,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "cantal",
+       "nom": "cantal",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "creme-soja",
@@ -58121,7 +58373,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "carottes",
@@ -60327,7 +60586,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "carottes",
@@ -61838,7 +62104,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "moules-surgelees",
+       "nom": "moules surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "crevettes",
@@ -61858,7 +62131,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "echalote",
@@ -63188,7 +63468,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -63433,7 +63720,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courgettes-surgelees",
+       "nom": "courgettes surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "carottes",
@@ -64624,7 +64918,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "carottes",
@@ -64885,7 +65186,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "creme-epeautre",
@@ -65108,7 +65416,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "pois-casses",
@@ -67425,7 +67740,14 @@
      "unit": "kg",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "moules-surgelees",
+       "nom": "moules surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "echalote",
@@ -67784,7 +68106,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -68166,7 +68495,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "aubergines-surgelees",
+       "nom": "aubergines grillées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "sauce-tomate",
@@ -68391,7 +68727,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "aubergines-surgelees",
+       "nom": "aubergines grillées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "huile-olive",
@@ -69328,7 +69671,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courgettes-surgelees",
+       "nom": "courgettes surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "lait-soja-vanille",
@@ -70689,7 +71039,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courgettes-surgelees",
+       "nom": "courgettes surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "chocolat-noir",
@@ -72662,7 +73019,14 @@
      "unit": "kg",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courgettes-surgelees",
+       "nom": "courgettes surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "champignons-noirs",
@@ -73019,7 +73383,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poivrons-surgeles",
+       "nom": "poivrons en lanières surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "tomates-cerises",
@@ -75507,7 +75878,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courgettes-surgelees",
+       "nom": "courgettes surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -75752,7 +76130,14 @@
      "unit": "poignée",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "epinards-surgeles",
+       "nom": "épinards surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "ciboulette",
@@ -76754,7 +77139,14 @@
      "unit": "poignée",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "epinards-surgeles",
+       "nom": "épinards surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "ciboulette",
@@ -76798,7 +77190,14 @@
      "unit": "poignée",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "moules-surgelees",
+       "nom": "moules surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "coques",
@@ -78224,7 +78623,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "aubergines-surgelees",
+       "nom": "aubergines grillées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "creme-soja",
@@ -79223,7 +79629,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poivrons-surgeles",
+       "nom": "poivrons en lanières surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "concombre",
@@ -80709,7 +81122,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poivrons-surgeles",
+       "nom": "poivrons en lanières surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "tomates-roma",
@@ -82294,6 +82714,11 @@
        "id": "blettes",
        "nom": "blettes",
        "ratio": 1.0
+      },
+      {
+       "id": "epinards-surgeles",
+       "nom": "épinards surgelés",
+       "ratio": 1
       }
      ]
     },
@@ -82560,7 +82985,14 @@
      "unit": "kg",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courgettes-surgelees",
+       "nom": "courgettes surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -85550,7 +85982,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poivrons-surgeles",
+       "nom": "poivrons en lanières surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "courgettes",
@@ -85560,7 +85999,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courgettes-surgelees",
+       "nom": "courgettes surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -88011,7 +88457,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poivrons-surgeles",
+       "nom": "poivrons en lanières surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "ail",
@@ -89251,7 +89704,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "aubergines-surgelees",
+       "nom": "aubergines grillées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "tofu-fume",
@@ -89557,7 +90017,14 @@
      "unit": "kg",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courgettes-surgelees",
+       "nom": "courgettes surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "pousses-epinards",
@@ -90017,7 +90484,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "moules-surgelees",
+       "nom": "moules surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "thon-boite",
@@ -90328,7 +90802,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "cantal",
+       "nom": "cantal",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "olives-noires",
@@ -91269,7 +91750,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "pain-levain-congele",
+       "nom": "pain au levain du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "poisson-blanc",
@@ -91785,7 +92273,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "panais",
@@ -92169,7 +92664,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "carottes",
@@ -92991,7 +93493,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "celeri-branche",
@@ -93339,7 +93848,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "pain-levain-congele",
+       "nom": "pain au levain du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "cepes-seches",
@@ -94375,7 +94891,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "navets",
@@ -96166,7 +96689,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courgettes-surgelees",
+       "nom": "courgettes surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -97132,7 +97662,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courgettes-surgelees",
+       "nom": "courgettes surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "aubergine",
@@ -97142,7 +97679,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "aubergines-surgelees",
+       "nom": "aubergines grillées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "poivron",
@@ -97152,7 +97696,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poivrons-surgeles",
+       "nom": "poivrons en lanières surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "tomates",
@@ -98496,7 +99047,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -98809,7 +99367,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poivrons-surgeles",
+       "nom": "poivrons en lanières surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -99955,7 +100520,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "herbes-fraiches",
@@ -102297,7 +102869,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "celeri-branche",
@@ -102337,7 +102916,7 @@
       },
       {
        "id": "colin-surgele",
-       "nom": "colin surgelé",
+       "nom": "filets de colin surgelés",
        "ratio": 1
       }
      ]
@@ -103535,7 +104114,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "aubergines-surgelees",
+       "nom": "aubergines grillées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "tomates-cerises",
@@ -104197,7 +104783,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "pain-levain-congele",
+       "nom": "pain au levain du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "ail",
@@ -104963,7 +105556,14 @@
      "unit": "kg",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oeufs",
@@ -105224,7 +105824,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poivrons-surgeles",
+       "nom": "poivrons en lanières surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "jambon-cru",
@@ -105446,7 +106053,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courgettes-surgelees",
+       "nom": "courgettes surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "aubergine",
@@ -105456,7 +106070,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "aubergines-surgelees",
+       "nom": "aubergines grillées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "poivron",
@@ -105466,7 +106087,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poivrons-surgeles",
+       "nom": "poivrons en lanières surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "tomates-roma",
@@ -106628,7 +107256,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "pain-levain-congele",
+       "nom": "pain au levain du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "huile-olive",
@@ -107059,7 +107694,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "pousses-epinards",
@@ -107069,7 +107711,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "epinards-surgeles",
+       "nom": "épinards surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "ail",
@@ -108172,7 +108821,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "carottes",
@@ -110090,7 +110746,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "panais",
@@ -114820,7 +115483,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courgettes-surgelees",
+       "nom": "courgettes surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -116446,7 +117116,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "pain-levain-congele",
+       "nom": "pain au levain du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "sel",
@@ -117871,7 +118548,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "aubergines-surgelees",
+       "nom": "aubergines grillées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "parmesan",
@@ -118404,7 +119088,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "aubergines-surgelees",
+       "nom": "aubergines grillées surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "courgettes",
@@ -118414,7 +119105,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courgettes-surgelees",
+       "nom": "courgettes surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "poivron",
@@ -118424,7 +119122,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poivrons-surgeles",
+       "nom": "poivrons en lanières surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "tomates-roma",
@@ -119701,7 +120406,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poivrons-surgeles",
+       "nom": "poivrons en lanières surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "piment-espelette",
@@ -120310,7 +121022,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "courge",
@@ -120930,7 +121649,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "jambon-cru",
@@ -122021,7 +122747,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courgettes-surgelees",
+       "nom": "courgettes surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -124660,7 +125393,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courgettes-surgelees",
+       "nom": "courgettes surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "pomme-de-terre",
@@ -124832,7 +125572,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "epinards-surgeles",
+       "nom": "épinards surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "pomme-de-terre",
@@ -125585,7 +126332,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "pomme-de-terre",
@@ -125883,7 +126637,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -126167,6 +126928,11 @@
        "id": "tomates-pelees",
        "nom": "un bocal de 400 g de tomates pelées",
        "ratio": 1.0
+      },
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
       }
      ]
     },
@@ -126641,7 +127407,7 @@
      "remplacants": [
       {
        "id": "colin-surgele",
-       "nom": "colin surgelé",
+       "nom": "filets de colin surgelés",
        "ratio": 1
       }
      ]
@@ -126654,7 +127420,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "moules-surgelees",
+       "nom": "moules surgelées",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "gambas",
@@ -126675,7 +127448,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "carottes",
@@ -127121,7 +127901,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "carottes",
@@ -127610,7 +128397,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poireaux-surgeles",
+       "nom": "poireaux émincés surgelés",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "huile-olive",
@@ -129430,7 +130224,13 @@
     "colin-surgele",
     "boeuf-hache-congele",
     "poulet-filets-congeles",
-    "saumon-congele"
+    "saumon-congele",
+    "courgettes-surgelees",
+    "poivrons-surgeles",
+    "aubergines-surgelees",
+    "poireaux-surgeles",
+    "moules-surgelees",
+    "pain-levain-congele"
    ]
   },
   "placard": [
@@ -129522,6 +130322,12 @@
    "cointreau": "liqueur d'agrume",
    "colin-surgele": "colin surgelé",
    "sacs-congelation": "sacs de congélation",
+   "courgettes-surgelees": "courgettes (surgelées)",
+   "poivrons-surgeles": "poivrons en lanières (surgelés)",
+   "aubergines-surgelees": "aubergines grillées (surgelées)",
+   "poireaux-surgeles": "poireaux émincés (surgelés)",
+   "moules-surgelees": "moules (surgelées)",
+   "pain-levain-congele": "pain au levain tranché (congelé)",
    "boeuf-hache-congele": "bœuf haché (congelé)",
    "poulet-filets-congeles": "filets de poulet (congelés)",
    "saumon-congele": "pavés de saumon (congelés)",
@@ -131676,7 +132482,7 @@
       "specifique": false
      }
     ],
-    "garde": null,
+    "garde": "sec",
     "note": null
    },
    {
@@ -132223,7 +133029,28 @@
     "levure-boulangere",
     "poudre-a-lever",
     "noix",
-    "polenta"
+    "polenta",
+    "pignons-pin",
+    "cepes-seches"
+   ]
+  },
+  {
+   "id": "frais-sous-vide",
+   "label": "frais sous vide",
+   "fond": true,
+   "entameSeFinit": false,
+   "espace": "frigo",
+   "rangement": "au frigo, fermé dans son emballage d'origine",
+   "methode": null,
+   "fenetreJours": 28,
+   "fenetre": "4 semaines",
+   "source": "ordre de grandeur — tofu fumé, jambon cru en barquette et miso portent une date à trois à six semaines ; ouverts, trois à cinq jours (le miso, des mois).",
+   "conseil": "Ne pas ouvrir d'avance : c'est l'emballage qui conserve. Entamé, le refermer d'un film et le finir dans la semaine.",
+   "ids": [
+    "tofu-fume",
+    "jambon-cru",
+    "miso-blanc",
+    "creme"
    ]
   },
   {
@@ -132325,7 +133152,13 @@
     "colin-surgele",
     "boeuf-hache-congele",
     "poulet-filets-congeles",
-    "saumon-congele"
+    "saumon-congele",
+    "courgettes-surgelees",
+    "poivrons-surgeles",
+    "aubergines-surgelees",
+    "poireaux-surgeles",
+    "moules-surgelees",
+    "pain-levain-congele"
    ]
   },
   {
@@ -132352,7 +133185,10 @@
     "olives-noires",
     "vinaigre",
     "vin-blanc-sec",
-    "cornichons"
+    "cornichons",
+    "capres",
+    "vinaigre-balsamique",
+    "anchois"
    ]
   },
   {
@@ -132401,7 +133237,8 @@
    "conseil": "Râper la moitié d'un bloc qui traîne et la congeler à plat : elle s'emploie sans décongeler, directement sur le gratin.",
    "ids": [
     "fromage-rape",
-    "parmesan"
+    "parmesan",
+    "cantal"
    ]
   },
   {
@@ -132945,6 +133782,125 @@
     "jusqua": 2,
     "hebdo": false,
     "unite": "boîte de 20"
+   },
+   {
+    "ingredient": "courgettes-surgelees",
+    "minimum": 1,
+    "jusqua": 2,
+    "hebdo": false,
+    "unite": "sachet de 1 kg"
+   },
+   {
+    "ingredient": "poivrons-surgeles",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "sachet de 750 g"
+   },
+   {
+    "ingredient": "aubergines-surgelees",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "sachet de 750 g"
+   },
+   {
+    "ingredient": "poireaux-surgeles",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "sachet de 1 kg"
+   },
+   {
+    "ingredient": "moules-surgelees",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "sachet de 1 kg"
+   },
+   {
+    "ingredient": "pain-levain-congele",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "pain de 500 g"
+   },
+   {
+    "ingredient": "tofu-fume",
+    "minimum": 1,
+    "jusqua": 2,
+    "hebdo": false,
+    "unite": "bloc de 200 g"
+   },
+   {
+    "ingredient": "jambon-cru",
+    "minimum": 1,
+    "jusqua": 2,
+    "hebdo": false,
+    "unite": "barquette de 90 g"
+   },
+   {
+    "ingredient": "creme",
+    "minimum": 1,
+    "jusqua": 2,
+    "hebdo": false,
+    "unite": "brique de 20 cl"
+   },
+   {
+    "ingredient": "cantal",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "morceau de 250 g"
+   },
+   {
+    "ingredient": "oignon-rouge",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "filet de 500 g"
+   },
+   {
+    "ingredient": "miso-blanc",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "pot de 300 g"
+   },
+   {
+    "ingredient": "anchois",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "bocal de 90 g"
+   },
+   {
+    "ingredient": "capres",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "bocal de 100 g"
+   },
+   {
+    "ingredient": "vinaigre-balsamique",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "bouteille de 25 cl"
+   },
+   {
+    "ingredient": "pignons-pin",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "sachet de 100 g"
+   },
+   {
+    "ingredient": "cepes-seches",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "sachet de 30 g"
    },
    {
     "ingredient": "sardines-boite",
