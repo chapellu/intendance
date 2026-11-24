@@ -65,12 +65,17 @@ denrees:
   # T145 — l'année simulée : 21 matins sans flocons, 29 sans beurre. Le
   # porridge prend 40 g par matin et les cookies en vident autant : 1 kg au
   # moins, 1,5 kg au rachat. Le beurre : deux plaquettes au moins, trois.
-  - {ingredient: flocons-avoine, minimum: 2, jusqua: 3, unite: paquet de 500 g (petits flocons)}
+  # T198 (2026-11-24) — l'année simulée du congélateur qui tourne : 54 matins
+  # sans flocons, la ligne remontait d'un paquet à la fois pour ≈ 500 g mangés
+  # la semaine (porridge, banana bread). 1,5 kg au moins, 2 kg au rachat.
+  - {ingredient: flocons-avoine, minimum: 3, jusqua: 4, unite: paquet de 500 g (petits flocons)}
   - {ingredient: son-avoine, minimum: 1, unite: paquet de 250 g}
   # T154 — 1 kg fait l'année : un paquet au placard, pas davantage.
   - {ingredient: sucre-complet, minimum: 1, unite: paquet de 500 g}
   - {ingredient: beurre, minimum: 2, jusqua: 3, unite: plaquette de 250 g}
-  - {ingredient: oeufs, minimum: 3, jusqua: 4, unite: boîte de 6}
+  # T198 — 57 midis sans œufs à l'année simulée : l'omelette du midi en prend
+  # quatre. Quatre boîtes au moins, cinq au rachat (ils tiennent quatre semaines).
+  - {ingredient: oeufs, minimum: 4, jusqua: 5, unite: boîte de 6}
   # Le fromage EN BLOC, râpé à la maison, remplace le sachet de fromage râpé :
   # l'id reste `fromage-rape` parce que c'est ce que les recettes demandent.
   - {ingredient: fromage-rape, minimum: 1, unite: "morceau de 400 g (en bloc, à râper)"}

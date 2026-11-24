@@ -132322,8 +132322,8 @@
    },
    {
     "ingredient": "flocons-avoine",
-    "minimum": 2,
-    "jusqua": 3,
+    "minimum": 3,
+    "jusqua": 4,
     "hebdo": false,
     "unite": "paquet de 500 g (petits flocons)"
    },
@@ -132350,8 +132350,8 @@
    },
    {
     "ingredient": "oeufs",
-    "minimum": 3,
-    "jusqua": 4,
+    "minimum": 4,
+    "jusqua": 5,
     "hebdo": false,
     "unite": "boîte de 6"
    },
