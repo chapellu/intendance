@@ -75,6 +75,9 @@ def resume(out):
     r["depenseParId"] = sorted((c.get("depenseParId") or {}).items(), key=lambda x: -x[1])[:8]
     r["aperos"] = (c.get("aperos", 0), c.get("aperosCuisines", 0))
     r["dejaNotes"] = c.get("dejaNotes", 0)
+    cz = [j["congelo"] for j in jours if "congelo" in j]
+    r["congelo"] = (round(sum(cz) / len(cz)), max(cz)) if cz else None
+    r["sortis"] = c.get("sortis", 0)
     r["tapsParJour"] = round(sum(j.get("taps", 0) for j in jours) / max(1, len(jours)), 1)
     r["distincts"] = len({j["diner"] for j in maison if isinstance(j.get("diner"), str) and not j["diner"].startswith(("repli", "malade", "dehors", "rien"))})
     return r
@@ -107,6 +110,8 @@ def main():
     ligne("dîners distincts", lambda r: str(r["distincts"]))
     ligne("fournées / midis cuisinés", lambda r: f"{r['fournees']} / {r['midisCuisines']}")
     ligne("gaspillage (kg) / restes jetés", lambda r: f"{r['gaspilleKg']} / {r['restesJetes']}")
+    ligne("congélateur : lots (moyenne / max)", lambda r: "—" if not r["congelo"] else f"{r['congelo'][0]} / {r['congelo'][1]}")
+    ligne("sortis la veille (geste)", lambda r: str(r["sortis"]))
     ligne("taps par jour", lambda r: str(r["tapsParJour"]))
     ligne("apéros (dont cuisinés)", lambda r: f"{r['aperos'][0]} ({r['aperos'][1]})")
     ligne("« Déjà noté » à la sortie", lambda r: str(r["dejaNotes"]))

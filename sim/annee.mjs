@@ -463,8 +463,24 @@ async function reglerParts(j, voulu, stats) {
 }
 
 /** Cuisiner le premier posé, du guide à la sortie. */
+/** Les lots de l'app (IndexedDB) : id → {type, band, location}. Pour savoir
+ *  lequel une cuisson a pris, et le prendre au monde réel aussi. */
+const stockApp = () => page.evaluate(() => new Promise((ok) => { const r = indexedDB.open("intendance"); r.onsuccess = () => { const q = r.result.transaction("stock").objectStore("stock").getAll(); q.onsuccess = () => { r.result.close(); ok(Object.fromEntries(q.result.map((l) => [l.id, { type: l.type, band: l.band, location: l.location, kind: l.kind }]))); }; q.onerror = () => ok({}); }; r.onerror = () => ok({}); })).catch(() => ({}));
+const BANDN = (b) => +(/^([\d.]+)/.exec(b ?? "")?.[1] ?? 0);
+/** Ce qu'une cuisson a pris aux restes de l'app : [{type, location}] (lots finis ou réduits). */
+function prisParLApp(avant, apres) {
+  const out = [];
+  for (const [id, l] of Object.entries(avant)) {
+    if (l.kind !== "reste-plat" && l.kind !== "base") continue;
+    const b = apres[id];
+    if (!b || BANDN(b.band) < BANDN(l.band) - 1e-9) out.push({ type: l.type, location: l.location });
+  }
+  return out;
+}
+
 async function cuisiner(j, ev, stats, { autrement = false, parts = 2.75, deja = null } = {}) {
   let p0;
+  const avantApp = await stockApp();
   if (deja) {
     // T128/T129 : « Je lance ça » a posé le plat ET ouvert sa fiche — on y est.
     p0 = { titre: deja };
@@ -529,9 +545,14 @@ async function cuisiner(j, ev, stats, { autrement = false, parts = 2.75, deja = 
   if (plat) consommer(plat, parts);
   // Le monde réel mange aussi les restes que le plat réclame : la bolognaise
   // des pâtes, le poulet des fajitas, n'importe quel reste pour « Reste réchauffé ».
+  // CE QUE L'APP A PRIS, LE MONDE RÉEL LE PREND : le lot que la cuisson a fini
+  // dans l'app (lu avant/après), le plus ancien de ce type au même endroit.
+  const prisApp = prisParLApp(avantApp, await stockApp());
   for (const a of plat?.accepts ?? []) {
     const vivants = etat.restes.filter((r) => !r.jete && r.portions > 0);
-    const pris = a.type
+    const lu = prisApp.shift();
+    const parApp = lu && vivants.filter((r) => r.types.includes(lu.type)).sort((x, y) => Number((y.ou === "Frigo") === (lu.location === "frigo")) - Number((x.ou === "Frigo") === (lu.location === "frigo")) || x.le.localeCompare(y.le))[0];
+    const pris = parApp ? parApp : a.type
       ? vivants.filter((r) => r.types.includes(a.type)).sort((x, y) => (x.ou === "Frigo" ? -1 : 1) - (y.ou === "Frigo" ? -1 : 1))[0]
       : vivants.filter((r) => r.ou === "Frigo")[0] ?? vivants[0];
     if (pris) { pris.portions = 0; pris.mangeLe = j; pris.parPlat = p0.titre; etat.compte.restesManges++; }
@@ -1172,6 +1193,24 @@ async function dejeuner(j, ev, stats, weekend) {
   stats.midi = stats.repas.midi;
   if (!pris.length) etat.compte.midisHorsApp = (etat.compte.midisHorsApp ?? 0) + 1;
 }
+/** 21 h : le geste du cockpit, « Sortir … du congélo » — le foyer le fait, et
+ *  le monde réel passe le bloc au frigo pour demain. */
+async function sortirDuCongelo(j, stats) {
+  await page.clock.setFixedTime(new Date(`${j}T21:00:00`));
+  await aller("cockpit"); await attendre(".co-barre", 20_000).catch(() => {}); await page.waitForTimeout(400);
+  const t = page.locator(".co-tache", { hasText: /Sortir .* du congélo/ }).first();
+  if (!(await t.count())) return;
+  const fait = t.getByRole("button", { name: "Fait" });
+  if (!(await fait.count())) return;
+  await tap(fait); await page.waitForTimeout(300);
+  const cles = await page.evaluate((jour) => new Promise((ok) => { const r = indexedDB.open("intendance"); r.onsuccess = () => { const q = r.result.transaction("reglages").objectStore("reglages").getAllKeys(); q.onsuccess = () => { r.result.close(); ok(q.result.filter((k) => String(k).startsWith(`geste|${jour}|`))); }; q.onerror = () => ok([]); }; r.onerror = () => ok([]); }), j).catch(() => []);
+  for (const k of cles) {
+    const type = String(k).split("|")[2];
+    const l = etat.restes.filter((r) => !r.jete && r.portions > 0 && r.ou === "Congélo" && r.types.includes(type)).sort((a, b) => a.le.localeCompare(b.le))[0];
+    if (l) { l.ou = "Frigo"; l.sortiLe = j; l.garde = Math.round((new Date(j) - new Date(l.le)) / 864e5) + 2; etat.compte.sortis = (etat.compte.sortis ?? 0) + 1; stats.sorti = type; }
+  }
+}
+
 /** 14 h 30 : la fournée que « Ce soir » propose — le mercredi, le week-end, ou quand le pain manque. */
 async function fournee(j, stats) {
   await page.clock.setFixedTime(new Date(`${j}T14:30:00`));
@@ -1319,7 +1358,11 @@ async function journee2(idx) {
     await page.clock.setFixedTime(new Date(`${j}T20:15:00`));
     dessert(j, stats);
     await apero(j, ev, stats);
+    await sortirDuCongelo(j, stats).catch((e) => note(j, "sortir", String(e).slice(0, 120)));
   }
+
+  // T198 — le congélateur, chaque soir : combien de lots y vivent vraiment.
+  stats.congelo = etat.restes.filter((r) => !r.jete && r.portions > 0 && r.ou === "Congélo").length;
 
   // Chaque dimanche : le journal de l'app (rejoué ensuite par sim/croyance.ts)
   // et la cuisine réelle, côte à côte.
