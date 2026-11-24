@@ -24,12 +24,15 @@ recipe:
 
   ingredients:
     - {id: yaourt-nature, name: yaourts nature, qty: 2, unit: pot}
-    - {id: pommes, name: pomme, qty: 1, unit: pièce}
+    # LE FRUIT DE SAISON, PAS « UNE POMME » TOUTE L'ANNÉE. La pomme n'est plus au
+    # fond d'avril à août (`fond.yaml`, saisons) : l'année simulée des cinq repas
+    # comptait 110 goûters sans fruit, tous entre avril et août.
+    - {id: pommes, name: pomme, qty: 1, unit: pièce, subs: [{id: poires, name: poire, ratio: 1.0}, {id: peches, name: pêche, ratio: 1.0}, {id: abricots, name: abricots, ratio: 2.0}]}
     # T197 — leur lait n'est pas suivi : le foyer le gère lui-même.
 
   steps:
     - id: servir
-      action: "Couper la pomme en quartiers, sortir les yaourts et la part de la fournée"
+      action: "Couper le fruit en quartiers, sortir les yaourts et la part de la fournée"
       needs: []
       uses: [pommes, yaourt-nature]
       time_min: 5

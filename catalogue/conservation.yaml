@@ -410,7 +410,7 @@ familles:
     conseil: >-
       Une banane tachée n'est pas perdue : c'est le banana bread de la fournée,
       ou le fruit écrasé du porridge de demain matin.
-    ids: [banane, poires]
+    ids: [banane, poires, abricots, peches]
 
   - id: viande-poisson
     label: viande et poisson frais

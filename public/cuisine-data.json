@@ -54417,7 +54417,24 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poires",
+       "nom": "poire",
+       "ratio": 1.0
+      },
+      {
+       "id": "peches",
+       "nom": "pêche",
+       "ratio": 1.0
+      },
+      {
+       "id": "abricots",
+       "nom": "abricots",
+       "ratio": 2.0
+      }
+     ]
     }
    ],
    "role": "plat",
@@ -54426,7 +54443,7 @@
    "steps": [
     {
      "id": "servir",
-     "action": "Couper la pomme en quartiers, sortir les yaourts et la part de la fournée",
+     "action": "Couper le fruit en quartiers, sortir les yaourts et la part de la fournée",
      "minutes": 5,
      "needs": [],
      "surveille": true,
@@ -131319,7 +131336,9 @@
    "conseil": "Une banane tachée n'est pas perdue : c'est le banana bread de la fournée, ou le fruit écrasé du porridge de demain matin.",
    "ids": [
     "banane",
-    "poires"
+    "poires",
+    "abricots",
+    "peches"
    ]
   },
   {
@@ -131514,6 +131533,20 @@
     "jusqua": null,
     "hebdo": true,
     "unite": "500 g en vrac"
+   },
+   {
+    "ingredient": "abricots",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": true,
+    "unite": "500 g en vrac"
+   },
+   {
+    "ingredient": "peches",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": true,
+    "unite": "1 kg en vrac"
    },
    {
     "ingredient": "lentilles-corail",
