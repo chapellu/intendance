@@ -639,7 +639,7 @@ describe("T198 — la viande et le poisson reviennent dans la rotation", () => {
     const sansAnimal = score([{ plat: legume.id, jour: veille(LUNDI) }]);
     const avecPoisson = score([{ plat: poisson.id, jour: veille(LUNDI, 40) }, { plat: catalogue.plats.find((p) => p.apports.proteine === "viande-blanche")!.id, jour: veille(LUNDI) }]);
     expect(sansAnimal).toBeDefined();
-    expect(sansAnimal - avecPoisson).toBeCloseTo(POIDS.viandePoisson, 5);
+    expect(sansAnimal! - avecPoisson!).toBeCloseTo(POIDS.viandePoisson, 5);
   });
 });
 
