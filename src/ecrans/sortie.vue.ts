@@ -102,11 +102,13 @@ export function vueDeLaSortie(
   stock: readonly LotInitial[] = [],
   /** T142 — une fournée : ce qui part au congélateur va en sachets. */
   sachets = false,
+  /** T198 — les sacs au stock (`contenantsLibres`). */
+  reserve: ReadonlyMap<string, number> = new Map(),
 ): VueSortie {
   const lots: LotSortie[] = [];
   // T109 — LES LOTS DE LA SORTIE PUISENT L'UN APRÈS L'AUTRE dans ce que le
   // dépôt laisse libre : deux lots ne prennent jamais la même boîte.
-  const libres = contenantsLibres(foyer, stock);
+  const libres = contenantsLibres(foyer, stock, reserve);
   restesApresTable(p, f, parts, foyer).forEach(({ emit: rang, repas: total, qty }) => {
     const e = p.emits[rang]!;
     couper(e, total).forEach((part, n) => {
@@ -350,11 +352,22 @@ export function prendre(foyer: Foyer, libres: Libres, boites: readonly Boite[]):
  * dedans, et une boîte qui va au frigo comme au congélateur y compte deux fois.
  * Ici une boîte est une boîte, et seul compte ce qui est rangé maintenant.
  */
-export function contenantsLibres(foyer: Foyer, stock: readonly LotInitial[]): Libres {
+export function contenantsLibres(
+  foyer: Foyer,
+  stock: readonly LotInitial[],
+  /** T198 — LES CONSOMMABLES AU STOCK, par id (`journal.sacsEnReserve`). Un sac
+   *  de congélation ne revient pas quand on mange ce qu'il tenait : ce qui en
+   *  reste est ce que le stock en compte, pas `nombre` moins ce qui est rangé. */
+  reserve: ReadonlyMap<string, number> = new Map(),
+): Libres {
   const libres: Libres = new Map(foyer.contenants.map((c) => [c.id, c.nombre]));
   for (const l of stock) {
     const { boites } = rangerDans(foyer, l.location, bandRepas(l.qty_band), l.qty, libres);
     prendre(foyer, libres, boites);
+  }
+  for (const c of foyer.contenants) {
+    const n = reserve.get(c.id);
+    if (c.consommable && n != null) libres.set(c.id, Math.max(0, Math.floor(n)));
   }
   return libres;
 }

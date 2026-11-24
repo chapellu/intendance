@@ -26,9 +26,9 @@
 # tout le reste. Le vérificateur exige que chaque denrée du fond appartienne à
 # une famille `fond: true` : le fond, c'est par définition ce qui se garde.
 #
-# ABSENTE EXPRÈS : « viande en portions (sacs), 2 portions ». C'est un LOT
-# (de la viande achetée en quantité puis congelée), pas une denrée qu'on
-# achète : quel morceau, quel id ? La question est posée à l'utilisateur.
+# T198 (2026-11-24) — « VIANDE EN PORTIONS (SACS) », LONGTEMPS ABSENTE faute de
+# savoir quel morceau : elle entre sous trois ids de congélateur (bœuf haché,
+# filets de poulet, saumon), que les recettes atteignent par `equivalences.yaml`.
 #
 # LES ÉPICES ET LE FOND DE PLACARD (huile, sel, cumin, bouillon…) NE SONT PAS
 # ICI : ils sont dans `rayons.placard`, qu'on vérifie sans compter.
@@ -182,6 +182,16 @@ denrees:
   # Gnocchis et lait de coco ouvriraient davantage, mais le foyer les a sortis
   # (T142, T197) : ils restent dehors.
   - {ingredient: colin-surgele, minimum: 1, unite: sachet de 1 kg}
+  # T198 — LA VIANDE EN PORTIONS, que le brouillon laissait en question : les
+  # deux viandes que les dîners demandent le plus au poids (haché 17 fiches avec
+  # porc et agneau, filets de poulet 5) et le saumon (6). Une portion = un sac.
+  - {ingredient: boeuf-hache-congele, minimum: 2, jusqua: 4, unite: portion de 250 g}
+  - {ingredient: poulet-filets-congeles, minimum: 2, jusqua: 4, unite: portion de 300 g}
+  - {ingredient: saumon-congele, minimum: 1, jusqua: 2, unite: portion de 250 g}
+  # T198 — LES SACS DE CONGÉLATION NE SE LAVENT PAS : chaque rangement au
+  # congélateur en prend, ils partent à la poubelle. Une boîte au moins, deux au
+  # rachat (≈ 2 sacs par jour à l'année simulée : un reste, un goûter, du pain).
+  - {ingredient: sacs-congelation, minimum: 1, jusqua: 2, unite: boîte de 20}
   - {ingredient: sardines-boite, minimum: 2, unite: boîte de 135 g}
   - {ingredient: polenta, minimum: 1, unite: paquet de 500 g}
   - {ingredient: cornichons, minimum: 1, unite: bocal}

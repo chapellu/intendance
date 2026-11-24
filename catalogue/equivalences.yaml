@@ -176,3 +176,29 @@ equivalences:
   huile-tournesol:
     par:
       - {id: huile-olive, nom: "huile d'olive", ratio: 1}
+
+  # ── T198 — LA VIANDE ET LE POISSON DU CONGÉLATEUR (24/11 : « la viande et le
+  # poisson ne sont jamais proposés »). Sans eux au fond, chaque plat de viande
+  # demandait un achat, et un jour sans courses n'en proposait aucun : 13 dîners
+  # de viande sur l'année simulée, pour 66 au catalogue. Au poids seulement.
+  boeuf-hache:
+    par:
+      - {id: boeuf-hache-congele, nom: "bœuf haché du congélateur", ratio: 1, unites: [g]}
+  porc-hache:
+    par:
+      - {id: boeuf-hache-congele, nom: "bœuf haché du congélateur", ratio: 1, unites: [g]}
+  agneau-hache:
+    par:
+      - {id: boeuf-hache-congele, nom: "bœuf haché du congélateur", ratio: 1, unites: [g]}
+  poulet-filets:
+    par:
+      - {id: poulet-filets-congeles, nom: "filets de poulet du congélateur", ratio: 1, unites: [g]}
+  saumon:
+    par:
+      - {id: saumon-congele, nom: "pavés de saumon du congélateur", ratio: 1, unites: [g]}
+  poisson-blanc:
+    par:
+      - {id: colin-surgele, nom: "colin surgelé", ratio: 1, unites: [g, kg]}
+  cabillaud:
+    par:
+      - {id: colin-surgele, nom: "colin surgelé", ratio: 1, unites: [g]}

@@ -23,7 +23,7 @@ import {
   scoreSaison,
   TAILLE,
   type CarteDuSoir,
-  type PropositionDuSoir, sansLuiPasDePlat, CONGELO_CHARGE } from "./pause";
+  type PropositionDuSoir, sansLuiPasDePlat, CONGELO_CHARGE, POIDS } from "./pause";
 import { PASSE_VIDE } from "./questions";
 import { offre, type Savoir } from "./scoring";
 import type { Catalogue } from "./types";
@@ -68,6 +68,7 @@ function monde(o: {
   stock?: LotInitial[];
   recents?: string[];
   sortis?: string[];
+  mange?: { plat: string; jour: string }[];
   /** Des plats posés, par créneau de la fenêtre : `[jour, repas, plat]`. */
   poses?: [number, string, string][];
 } = {}): Monde {
@@ -85,6 +86,7 @@ function monde(o: {
     recents: new Set(o.recents ?? []),
     maintenant,
     sortis: new Set(o.sortis ?? []),
+    ...(o.mange ? { mange: o.mange } : {}),
   });
   return { jeu, savoir, proposition };
 }
@@ -624,6 +626,20 @@ describe("le congélateur chargé : le plus ancien reste passe devant", () => {
   test(`${CONGELO_CHARGE} repas ou moins : un reste de dix jours attend sans presser`, () => {
     const { proposition } = monde({ evts: [fondRentre(veille(LUNDI))], stock: [resteDe("goulasch-boeuf", veille(LUNDI, 10), "congelo")] });
     expect(proposition.cartes.some((c) => c.presse && "type" in c.presse && c.presse.type === "goulasch-boeuf")).toBe(false);
+  });
+});
+
+describe("T198 — la viande et le poisson reviennent dans la rotation", () => {
+  test("trois soirs sans viande ni poisson : un plat de poisson gagne des points", () => {
+    const poisson = catalogue.plats.find((p) => p.apports.proteine === "poisson" && p.creneaux.includes("diner"))!;
+    const legume = catalogue.plats.find((p) => p.apports.proteine === "legumineuse" && p.creneaux.includes("diner"))!;
+    const score = (mange: { plat: string; jour: string }[]) =>
+      [...monde({ evts: [fondRentre(veille(LUNDI))], mange }).proposition.cartes, ...monde({ evts: [fondRentre(veille(LUNDI))], mange }).proposition.plus]
+        .find((c) => c.plat.id === poisson.id)?.score;
+    const sansAnimal = score([{ plat: legume.id, jour: veille(LUNDI) }]);
+    const avecPoisson = score([{ plat: poisson.id, jour: veille(LUNDI, 40) }, { plat: catalogue.plats.find((p) => p.apports.proteine === "viande-blanche")!.id, jour: veille(LUNDI) }]);
+    expect(sansAnimal).toBeDefined();
+    expect(sansAnimal - avecPoisson).toBeCloseTo(POIDS.viandePoisson, 5);
   });
 });
 

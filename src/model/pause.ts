@@ -97,6 +97,11 @@ export const POIDS = {
   /** T198 — le plat range au congélateur ce qui y est déjà (un bouillon, le même
    *  reste) : le refaire remplit un sac de plus au lieu d'en vider un. */
   dejaAuCongelo: -4,
+  /** T198 — viande ou poisson, quand les `JOURS_SANS_ANIMAL` derniers soirs n'en
+   *  ont pas eu. L'année simulée du 24/11 : 13 dîners de viande et 16 de
+   *  poisson pour 137 de légumineuses — « la viande et le poisson ne sont
+   *  jamais proposés ». Pas une conversion : un retour dans la rotation. */
+  viandePoisson: 3,
   /** Mangé il y a moins de trois jours. Un malus, pas un filtre : le foyer
    *  répète ses plats, et un plat d'avant-hier vaut mieux que pas de dîner. */
   recent: -6,
@@ -130,7 +135,10 @@ export const POIDS = {
 } as const;
 
 /** T135 — la mémoire longue de la rotation. */
-export const JOURS_DE_ROTATION = 14;
+export const JOURS_DE_ROTATION = 21;
+/** T198 — sans viande ni poisson depuis ce nombre de soirs, ils remontent. */
+export const JOURS_SANS_ANIMAL = 3;
+const ANIMALES = new Set(["viande-blanche", "viande-rouge", "poisson"]);
 export const JOURS_DE_FORMAT = 2;
 export const JOURS_D_OUBLI = 30;
 
@@ -590,6 +598,12 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
   // tâche « à jeter » de T103 qui le porte.
   const vivants = depot.lignes.filter((l) => !l.epuise && !depot.perime(l, date));
   const routine = new Set(catalogue.creneaux.routines?.liste.flatMap((r) => r.duDepot?.types ?? []) ?? []);
+  // T198 — viande ou poisson ces derniers soirs ?
+  const animalRecent = (e.mange ?? []).some((m) => {
+    const d = ecart(m.jour, isoLocal(maintenant));
+    if (d <= 0 || d > JOURS_SANS_ANIMAL) return false;
+    return ANIMALES.has(catalogue.plats.find((x) => x.id === m.plat)?.apports.proteine ?? "");
+  });
   const auCongelo = new Set(vivants.filter((l) => l.location === "congelo").map((l) => l.type));
   const pression: PressionDuCongelo = { sortis, plusAncien: plusAncienSiCharge(vivants, routine) };
   const attend = vivants
@@ -666,6 +680,7 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
     let score = 0;
     if (recent) score += POIDS.recent;
     if (p.emits.some((x) => x.congelo && auCongelo.has(x.type))) score += POIDS.dejaAuCongelo;
+    if (ANIMALES.has(p.apports.proteine ?? "") && !animalRecent) score += POIDS.viandePoisson;
     if (attendIci && !presse) score += POIDS.attend;
     if (p.apports.proteine === "legumineuse" || p.apports.feculent === "legumineuse")
       score += POIDS.legumineuse;

@@ -20,6 +20,9 @@ import os
 import sys
 
 
+CAT = json.load(open("public/cuisine-data.json")) if os.path.exists("public/cuisine-data.json") else None
+
+
 def lire(out):
     jours = [json.loads(l) for l in open(os.path.join(out, "jours.jsonl"))]
     etat = json.load(open(os.path.join(out, "etat.json")))
@@ -78,6 +81,9 @@ def resume(out):
     cz = [j["congelo"] for j in jours if "congelo" in j]
     r["congelo"] = (round(sum(cz) / len(cz)), max(cz)) if cz else None
     r["sortis"] = c.get("sortis", 0)
+    r["sacs"] = (c.get("sacs", 0), c.get("sansSac", 0))
+    P = {p["titre"].strip(): (p.get("apports") or {}).get("proteine") for p in CAT["plats"]} if CAT else {}
+    r["proteines"] = collections.Counter(P.get(str(j.get("diner") or "").strip()) for j in maison if str(j.get("diner") or "").strip() in P)
     r["tapsParJour"] = round(sum(j.get("taps", 0) for j in jours) / max(1, len(jours)), 1)
     r["distincts"] = len({j["diner"] for j in maison if isinstance(j.get("diner"), str) and not j["diner"].startswith(("repli", "malade", "dehors", "rien"))})
     return r
@@ -112,6 +118,9 @@ def main():
     ligne("gaspillage (kg) / restes jetés", lambda r: f"{r['gaspilleKg']} / {r['restesJetes']}")
     ligne("congélateur : lots (moyenne / max)", lambda r: "—" if not r["congelo"] else f"{r['congelo'][0]} / {r['congelo'][1]}")
     ligne("sortis la veille (geste)", lambda r: str(r["sortis"]))
+    ligne("sacs utilisés (rangements sans sac)", lambda r: f"{r['sacs'][0]} ({r['sacs'][1]})")
+    ligne("dîners viande / poisson", lambda r: f"{r['proteines'].get('viande-blanche', 0) + r['proteines'].get('viande-rouge', 0)} / {r['proteines'].get('poisson', 0)}")
+    ligne("dîners légumineuses", lambda r: str(r["proteines"].get("legumineuse", 0)))
     ligne("taps par jour", lambda r: str(r["tapsParJour"]))
     ligne("apéros (dont cuisinés)", lambda r: f"{r['aperos'][0]} ({r['aperos'][1]})")
     ligne("« Déjà noté » à la sortie", lambda r: str(r["dejaNotes"]))

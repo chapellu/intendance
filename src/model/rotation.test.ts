@@ -68,13 +68,13 @@ describe("T135 — la rotation garde les favoris sans les servir 41 fois", () =>
     expect(pire).toBeLessThanOrEqual(3);
   });
 
-  test("les trois termes : répétition sur 14 jours, format sur 2 soirs, oubli au-delà de 30 jours si faisable", () => {
+  test("les trois termes : répétition sur 21 jours (T198), format sur 2 soirs, oubli au-delà de 30 jours si faisable", () => {
     const soupe = catalogue.plats.find((p) => p.format === "soupe")!;
     const autreSoupe = catalogue.plats.find((p) => p.format === "soupe" && p.id !== soupe.id)!;
     const j = "2026-10-20";
     expect(scoreRotation(catalogue, soupe, [{ plat: soupe.id, jour: "2026-10-10" }, { plat: soupe.id, jour: "2026-10-15" }], j, true))
       .toBe(2 * POIDS.repetition);
-    expect(scoreRotation(catalogue, soupe, [{ plat: soupe.id, jour: "2026-10-01" }], j, true)).toBe(0);
+    expect(scoreRotation(catalogue, soupe, [{ plat: soupe.id, jour: "2026-09-27" }], j, true)).toBe(0);
     expect(scoreRotation(catalogue, soupe, [{ plat: autreSoupe.id, jour: "2026-10-19" }, { plat: autreSoupe.id, jour: "2026-10-18" }], j, true))
       .toBe(2 * POIDS.memeFormat + POIDS.oublie);
     expect(scoreRotation(catalogue, soupe, [{ plat: soupe.id, jour: "2026-09-01" }], j, true)).toBe(POIDS.oublie);

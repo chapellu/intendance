@@ -9,7 +9,7 @@
 
 import { facteur } from "../model/calcul";
 import { accepte, bandRepas } from "../model/depot";
-import type { Constat, Evenement, EvtCuisine, LigneEntree } from "../model/journal";
+import { SACS, type Constat, type Evenement, type EvtCuisine, type LigneEntree } from "../model/journal";
 import { mangeALaTable, restesApresTable } from "../model/restes";
 import type { Catalogue, Foyer, Plat, RepasId } from "../model/types";
 import { jourISO, type Base, type LotStock } from "./schema";
@@ -88,7 +88,7 @@ export interface Cuisson {
    * (les tests du journal), LA TABLE EST PRISE POUR LE FOYER : personne n'est
    * de plus, et le reste suit le seul facteur du lot.
    */
-  foyer?: Pick<Foyer, "parts" | "mangeurs">;
+  foyer?: Pick<Foyer, "parts" | "mangeurs"> & Partial<Pick<Foyer, "contenants">>;
 }
 
 /**
@@ -251,8 +251,17 @@ export async function journaliserCuisson(
     }
 
     // ── effet 1 : l'événement lui-même ─────────────────────────────────────
+    // T198 — CE QUI PART AU CONGÉLATEUR PREND DES SACS, et un sac ne revient
+    // pas : un par portion du sac (`household.yaml`), qu'on retire du stock.
+    const sac = foyer?.contenants?.find((c) => c.id === SACS);
+    const sacs = sac
+      ? (rangement ?? [])
+          .filter((r) => r.location === "congelo")
+          .reduce((n, r) => n + Math.max(1, Math.ceil(bandRepas(r.band) / Math.max(sac.portions, 1) - 1e-9)), 0)
+      : 0;
     const evt: EvtCuisine = {
       sorte: "cuisine", jour, saisi, repas, plat: plat.id, parts, maj,
+      ...(sacs ? { sacs } : {}),
       ...(sortie ? { sortie } : {}),
       ...(remplacements && Object.keys(remplacements).length ? { remplacements } : {}),
       ...(horsCreneau ? { horsCreneau: true as const } : {}),

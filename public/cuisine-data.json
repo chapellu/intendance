@@ -642,7 +642,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "boeuf-hache-congele",
+       "nom": "bœuf haché du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "tomates-pelees",
@@ -4093,6 +4100,11 @@
        "id": "thon-boite",
        "nom": "thon",
        "ratio": 1.0
+      },
+      {
+       "id": "boeuf-hache-congele",
+       "nom": "bœuf haché du congélateur",
+       "ratio": 1
       }
      ]
     },
@@ -8011,7 +8023,14 @@
      "unit": "kg",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "colin-surgele",
+       "nom": "colin surgelé",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -9687,7 +9706,7 @@
      "remplacants": [
       {
        "id": "colin-surgele",
-       "nom": "filets de colin surgelés",
+       "nom": "colin surgelé",
        "ratio": 1
       }
      ]
@@ -13664,7 +13683,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "boeuf-hache-congele",
+       "nom": "bœuf haché du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon-rouge",
@@ -23266,7 +23292,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "boeuf-hache-congele",
+       "nom": "bœuf haché du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -27287,7 +27320,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "boeuf-hache-congele",
+       "nom": "bœuf haché du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "courgettes",
@@ -36165,7 +36205,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poulet-filets-congeles",
+       "nom": "filets de poulet du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "cognac",
@@ -54089,7 +54136,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "boeuf-hache-congele",
+       "nom": "bœuf haché du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "olives-noires",
@@ -55897,7 +55951,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "boeuf-hache-congele",
+       "nom": "bœuf haché du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "fromage-rape",
@@ -57065,7 +57126,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "boeuf-hache-congele",
+       "nom": "bœuf haché du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -61736,7 +61804,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "colin-surgele",
+       "nom": "colin surgelé",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "saumon",
@@ -61746,7 +61821,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "saumon-congele",
+       "nom": "pavés de saumon du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "moules",
@@ -67913,7 +67995,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "boeuf-hache-congele",
+       "nom": "bœuf haché du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "boeuf-hache",
@@ -67923,7 +68012,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "boeuf-hache-congele",
+       "nom": "bœuf haché du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -76685,7 +76781,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poulet-filets-congeles",
+       "nom": "filets de poulet du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "moules",
@@ -78157,6 +78260,11 @@
        "id": "porc-saute",
        "nom": "sauté de porc",
        "ratio": 1.0
+      },
+      {
+       "id": "boeuf-hache-congele",
+       "nom": "bœuf haché du congélateur",
+       "ratio": 1
       }
      ]
     },
@@ -82143,7 +82251,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "saumon-congele",
+       "nom": "pavés de saumon du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "fenouil",
@@ -83655,7 +83770,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poulet-filets-congeles",
+       "nom": "filets de poulet du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "jambon-cru",
@@ -85468,7 +85590,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "boeuf-hache-congele",
+       "nom": "bœuf haché du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "parmesan",
@@ -86519,7 +86648,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "boeuf-hache-congele",
+       "nom": "bœuf haché du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -90813,7 +90949,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "boeuf-hache-congele",
+       "nom": "bœuf haché du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oeufs",
@@ -91136,7 +91279,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "colin-surgele",
+       "nom": "colin surgelé",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oeufs",
@@ -93125,7 +93275,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "boeuf-hache-congele",
+       "nom": "bœuf haché du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -98059,7 +98216,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "saumon-congele",
+       "nom": "pavés de saumon du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "echalote",
@@ -98362,7 +98526,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "saumon-congele",
+       "nom": "pavés de saumon du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "vin-blanc-sec",
@@ -102166,7 +102337,7 @@
       },
       {
        "id": "colin-surgele",
-       "nom": "filets de colin surgelés",
+       "nom": "colin surgelé",
        "ratio": 1
       }
      ]
@@ -103347,7 +103518,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "boeuf-hache-congele",
+       "nom": "bœuf haché du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "aubergine",
@@ -116727,7 +116905,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "boeuf-hache-congele",
+       "nom": "bœuf haché du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -117163,7 +117348,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "poulet-filets-congeles",
+       "nom": "filets de poulet du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "son-avoine",
@@ -117399,7 +117591,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "saumon-congele",
+       "nom": "pavés de saumon du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "huile-olive",
@@ -117655,7 +117854,14 @@
      "unit": "kg",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "colin-surgele",
+       "nom": "colin surgelé",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "aubergine",
@@ -119211,6 +119417,11 @@
        "id": "tofu-fume",
        "nom": "tofu fumé",
        "ratio": 1.0
+      },
+      {
+       "id": "poulet-filets-congeles",
+       "nom": "filets de poulet du congélateur",
+       "ratio": 1
       }
      ]
     },
@@ -126409,7 +126620,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "saumon-congele",
+       "nom": "pavés de saumon du congélateur",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "cabillaud",
@@ -126423,7 +126641,7 @@
      "remplacants": [
       {
        "id": "colin-surgele",
-       "nom": "filets de colin surgelés",
+       "nom": "colin surgelé",
        "ratio": 1
       }
      ]
@@ -128755,6 +128973,9 @@
    ],
    "ids": [
     "colin-surgele",
+    "boeuf-hache-congele",
+    "poulet-filets-congeles",
+    "saumon-congele",
     "lentilles-seches",
     "pois-chiches",
     "haricots-rouges",
@@ -128989,6 +129210,7 @@
     "tofu-lactofermente"
    ],
    "épicerie": [
+    "sacs-congelation",
     "vin-rouge",
     "creme-avoine",
     "pastis",
@@ -129205,7 +129427,10 @@
     "haricots-verts-surgeles",
     "champignons-surgeles",
     "legumes-surgeles",
-    "colin-surgele"
+    "colin-surgele",
+    "boeuf-hache-congele",
+    "poulet-filets-congeles",
+    "saumon-congele"
    ]
   },
   "placard": [
@@ -129296,6 +129521,10 @@
    "cocktail-fruits": "cocktail de fruits",
    "cointreau": "liqueur d'agrume",
    "colin-surgele": "colin surgelé",
+   "sacs-congelation": "sacs de congélation",
+   "boeuf-hache-congele": "bœuf haché (congelé)",
+   "poulet-filets-congeles": "filets de poulet (congelés)",
+   "saumon-congele": "pavés de saumon (congelés)",
    "comte": "comté",
    "concentre-tomate": "concentré de tomate",
    "confiture-fraise": "confiture de fraises",
@@ -131998,6 +132227,22 @@
    ]
   },
   {
+   "id": "consommables",
+   "label": "consommables de cuisine",
+   "fond": true,
+   "entameSeFinit": false,
+   "espace": "placard",
+   "rangement": "dans le tiroir de la cuisine",
+   "methode": null,
+   "fenetreJours": 1800,
+   "fenetre": "60 mois",
+   "source": "un sac ou une boîte ne se périme pas ; la fenêtre ne sert qu'au rejeu.",
+   "conseil": "Un sac par portion, aplati avant de fermer, la date au feutre : il se range debout et se décongèle vite.",
+   "ids": [
+    "sacs-congelation"
+   ]
+  },
+  {
    "id": "emballe",
    "label": "frais emballé longue garde",
    "fond": true,
@@ -132077,7 +132322,10 @@
     "herbes-surgelees",
     "champignons-surgeles",
     "legumes-surgeles",
-    "colin-surgele"
+    "colin-surgele",
+    "boeuf-hache-congele",
+    "poulet-filets-congeles",
+    "saumon-congele"
    ]
   },
   {
@@ -132669,6 +132917,34 @@
     "jusqua": null,
     "hebdo": false,
     "unite": "sachet de 1 kg"
+   },
+   {
+    "ingredient": "boeuf-hache-congele",
+    "minimum": 2,
+    "jusqua": 4,
+    "hebdo": false,
+    "unite": "portion de 250 g"
+   },
+   {
+    "ingredient": "poulet-filets-congeles",
+    "minimum": 2,
+    "jusqua": 4,
+    "hebdo": false,
+    "unite": "portion de 300 g"
+   },
+   {
+    "ingredient": "saumon-congele",
+    "minimum": 1,
+    "jusqua": 2,
+    "hebdo": false,
+    "unite": "portion de 250 g"
+   },
+   {
+    "ingredient": "sacs-congelation",
+    "minimum": 1,
+    "jusqua": 2,
+    "hebdo": false,
+    "unite": "boîte de 20"
    },
    {
     "ingredient": "sardines-boite",

@@ -86,6 +86,12 @@ export interface EvtCuisine extends Commun {
    */
   horsCreneau?: true;
   /**
+   * T198 — LES SACS DE CONGÉLATION QUE LE RANGEMENT A PRIS. Un sac sert une
+   * fois et part à la poubelle avec son contenu vidé : il sort du stock comme
+   * un ingrédient (`SACS`), et la boîte se rachète par la liste.
+   */
+  sacs?: number;
+  /**
    * Les parts FIGÉES au moment de cuisiner.
    *
    * `DecisionCreneau.parts: null` veut dire « les parts du foyer, quelles
@@ -572,6 +578,25 @@ export { contenuDUnite };
 
 /** L'unité de compte des recettes : `pièce`, et `pot` pour un yaourt. */
 const PIECE = "pièce";
+
+/**
+ * T198 — l'id des sacs de congélation, À LA FOIS contenant du foyer
+ * (`household.yaml`) et denrée du fond. Un sac n'est pas une boîte qu'on lave :
+ * il se compte au stock, se dépense au rangement et se rachète par la liste.
+ */
+export const SACS = "sacs-congelation";
+
+/** Les sacs qui restent au stock selon le rejeu — `null` : jamais rentrés ni
+ *  relevés, l'app n'en sait rien (le foyer en a, sans les avoir comptés). */
+export function sacsEnReserve(rejeu: Pick<Rejeu, "parIngredient">): number | null {
+  const e = rejeu.parIngredient.get(SACS);
+  if (!e) return null;
+  // En pièces : une boîte de 20 est vingt sacs, l'entamée compte ce qui lui reste.
+  return e.lots.reduce((n, l) => {
+    const par = contenuUnite(l, "pièce");
+    return n + (par == null ? l.unites : l.unites * par + (l.entame ?? 0));
+  }, 0);
+}
 const enPieces = (unit: string): boolean => unit === PIECE || unit === "piece" || unit === "pot";
 
 /**
@@ -1106,6 +1131,14 @@ export function rejouer(
     (a, b) => a.jour.localeCompare(b.jour) || a.maj - b.maj,
   );
 
+  /** T198 — un sac de congélation sert une fois : il sort du stock. */
+  const prendreDesSacs = (n: number) => {
+    const l = lots.get(SACS);
+    if (!l || l.length === 0) return;
+    retirer(l, SACS, n, PIECE);
+    if (l.length === 0) lots.delete(SACS);
+  };
+
   for (const e of ordonnes) {
     releverJusquA(e.jour);
     if (e.sorte === "cuisine") {
@@ -1142,6 +1175,7 @@ export function rejouer(
           pieces: brute.pieces == null ? null : Math.ceil(brute.pieces * r.ratio - 1e-9),
         }];
       });
+      if (e.sacs) prendreDesSacs(e.sacs);
       for (const d of aRetirer) {
         const id = ctx.alias(d.ingredient);
         const l = lots.get(id);
@@ -1179,6 +1213,8 @@ export function rejouer(
     }
 
     if (e.sorte === "deplacement") {
+      // T198 — CONGELER UNE DENRÉE, c'est la mettre dans un sac.
+      if (e.vers === "congelo") prendreDesSacs(1);
       const id = ctx.alias(e.ingredient);
       const l = lots.get(id);
       if (!l) continue;

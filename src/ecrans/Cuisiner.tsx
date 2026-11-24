@@ -32,6 +32,7 @@ import { estUneFournee, lotsEnBoites, platDuSoir } from "../model/repas";
 import { joue, type Jeu } from "../model/jeu";
 import { heureDe } from "../model/heures";
 import type { Catalogue, Etape, Foyer, Plat } from "../model/types";
+import { SACS, sacsEnReserve } from "../model/journal";
 import { ENTREE_CUISINE, type CleCreneau } from "../nav/routes";
 import { aller } from "../nav/useRoute";
 import { armer, arreter, demanderBandeau, desarmer, plateforme, promesse } from "../pwa/alarme";
@@ -306,6 +307,7 @@ function Fiche({
         sachets={estUneFournee(jeu.catalogue, p)}
         f={f}
         foyer={jeu.catalogue.foyer}
+        catalogue={jeu.catalogue}
         stock={lotsEnBoites(jeu.catalogue, jeu.stock, new Date())}
         revenir={() => setSortie(false)}
         repondre={repondre}
@@ -591,6 +593,7 @@ function Sortie({
   parts,
   f,
   foyer,
+  catalogue,
   stock,
   sachets = false,
   revenir,
@@ -605,6 +608,8 @@ function Sortie({
   stock: Jeu["stock"];
   /** T142 — une fournée part en sachets de congélation, pas en boîtes. */
   sachets?: boolean;
+  /** T198 — pour lire les sacs au stock. */
+  catalogue?: Catalogue;
   revenir: () => void;
   repondre: (
     rangement: RangementLot[] | null,
@@ -613,7 +618,10 @@ function Sortie({
   ) => Promise<Issue>;
   fermer: () => void;
 }) {
-  const v = vueDeLaSortie(p, parts, f, foyer, stock, sachets);
+  // T198 — LES SACS QUI RESTENT AU STOCK : un sac rangé ne revient pas.
+  const placard = usePlacard(catalogue ?? null);
+  const enReserve = placard ? sacsEnReserve(placard) : null;
+  const v = vueDeLaSortie(p, parts, f, foyer, stock, sachets, enReserve == null ? new Map() : new Map([[SACS, enReserve]]));
   // « J'AI FAIT AUTREMENT » POSE LA QUESTION, au lieu de fermer la recette sur
   // un rangement que personne n'a dit (le frigo par défaut). Puis il montre ce
   // qu'il a retenu : c'est le témoin que le 07/11 réclamait — « je ne sais pas

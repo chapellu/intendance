@@ -21,6 +21,11 @@ const PASSE = process.env.FLUX === "passe";
 const URL = process.env.URL || "http://localhost:4193";
 // COURSES=6 : un seul jour de courses (le samedi) — le fond seul tient la semaine.
 const JOURS_COURSES = (process.env.COURSES ?? "3,6").split(",").map(Number);
+// T198 — PLAN=courses : le matin d'un jour de courses, le foyer pose les dîners
+// jusqu'aux courses suivantes (« Fil », N repas), et la liste achète leur frais.
+const PLAN = process.env.PLAN === "courses";
+/** Les dîners d'aujourd'hui jusqu'à la veille des prochaines courses. */
+const soirsJusquAuxCourses = (dow) => { let n = 1; while (!JOURS_COURSES.includes((dow + n) % 7) && n < 7) n++; return n; };
 // ALEA=2 : un foyer plus agité — invités, soirs dehors, plats ratés, desserts et
 // apéros plus souvent (×ALEA sur les probabilités).
 const ALEA = +(process.env.ALEA ?? 1);
@@ -577,6 +582,12 @@ async function cuisiner(j, ev, stats, { autrement = false, parts = 2.75, deja = 
     const portions = routine
       ? (nRepas ? parseFloat(nRepas[1].replace(",", ".")) : BAND((e ?? emits.find((x) => TYPES_GOUTER.has(x.type) || TYPES_PAIN.has(x.type)))?.band))
       : nParts ? parseFloat(nParts[1].replace(",", ".")) : nRepas ? parseFloat(nRepas[1].replace(",", ".")) * MIDI_PARTS : 2;
+    // T198 — un lot au congélateur prend des sacs, et la cuisine réelle les dépense.
+    if (!autrement && m?.[1] && m[1] !== "Frigo") {
+      const n = Math.max(1, Math.ceil(nRepas ? parseFloat(nRepas[1].replace(",", ".")) : 1));
+      if (!prendre("sacs-congelation", n)) { etat.compte.sansSac = (etat.compte.sansSac ?? 0) + 1; note(j, "sacs", `plus de sacs pour ranger « ${l.nom} »`); }
+      etat.compte.sacs = (etat.compte.sacs ?? 0) + n;
+    }
     etat.restes.push({ plat: p0.titre, types: e ? [e.type] : emits.map((x) => x.type), kind: e?.kind ?? (emits.every((x) => x.kind === "base") ? "base" : "reste-plat"), ou: autrement ? "Frigo" : (m?.[1] ?? "Frigo"), portions, le: j, garde: parseInt(l.garde) || (m?.[1] === "Frigo" ? 3 : 90), quoi: l.nom });
   }
   etat.compte.cuits++;
@@ -1285,6 +1296,10 @@ async function journee2(idx) {
   if (idx === 0) await poserFond(j);
   // Les jours de courses, les courses du matin, avant toute décision. LE FOND NE SE
   // RECHARGE QUE PAR LA LISTE DE L'APP (T134) : aucun réassort côté harnais.
+  if (!absent && PLAN && JOURS_COURSES.includes(dow)) {
+    await page.clock.setFixedTime(new Date(`${j}T09:30:00`));
+    await passe(j, soirsJusquAuxCourses(dow), ev, stats).catch((e) => note(j, "plan", `passe impossible : ${String(e).slice(0, 120)}`));
+  }
   if (!absent && JOURS_COURSES.includes(dow)) { await page.clock.setFixedTime(new Date(`${j}T10:00:00`)); await courses(j, ev, stats); stats.coursesDuMatin = stats.articles; stats.listeMatin = stats.liste; }
 
   if (absent) { stats.absent = true; }

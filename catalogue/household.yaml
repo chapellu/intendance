@@ -78,6 +78,8 @@ household:
       portions: 1
       espaces: [congelo]
       reutilisable: false        # consommable : il part avec le contenu
+      # T198 — `nombre` n'est que le départ : dès que les sacs sont au stock
+      # (`fond.yaml`, id `sacs-congelation`), c'est le stock qui les compte.
 
   exclusions:
     - piquant

@@ -226,6 +226,22 @@ familles:
           flocons-avoine, son-avoine, sucre-complet, levure-boulangere,
           poudre-a-lever, noix, polenta]
 
+  # T198 — CE QUI N'EST PAS UN ALIMENT ET SE RACHÈTE QUAND MÊME. Un sac de
+  # congélation sert une fois : il se compte au stock comme une denrée, sort à
+  # chaque rangement au congélateur (`EvtCuisine.sacs`) et revient par la liste.
+  - id: consommables
+    label: consommables de cuisine
+    fond: true
+    espace: placard
+    rangement: dans le tiroir de la cuisine
+    fenetre: {unite: mois, valeur: 60}
+    source: >-
+      un sac ou une boîte ne se périme pas ; la fenêtre ne sert qu'au rejeu.
+    conseil: >-
+      Un sac par portion, aplati avant de fermer, la date au feutre : il se
+      range debout et se décongèle vite.
+    ids: [sacs-congelation]
+
   - id: emballe
     label: frais emballé longue garde
     fond: true
@@ -288,7 +304,8 @@ familles:
       pas le temps, qui abîme. Un sachet décongelé ne repart pas au
       congélateur.
     ids: [epinards-surgeles, petits-pois-surgeles, haricots-verts-surgeles, herbes-surgelees,
-          champignons-surgeles, legumes-surgeles, colin-surgele]
+          champignons-surgeles, legumes-surgeles, colin-surgele,
+          boeuf-hache-congele, poulet-filets-congeles, saumon-congele]
 
   - id: conserve
     label: conserves
