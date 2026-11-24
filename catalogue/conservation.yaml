@@ -224,7 +224,7 @@ familles:
           lentilles-corail, lentilles-seches, pois-casses, pois-chiches,
           haricots-blancs, haricots-rouges, riz, riz-rond, pates, semoule,
           flocons-avoine, son-avoine, sucre-complet, levure-boulangere,
-          poudre-a-lever, noix]
+          poudre-a-lever, noix, polenta]
 
   - id: emballe
     label: frais emballé longue garde
@@ -305,7 +305,7 @@ familles:
       boîte hermétique, au frigo, et finir dans les trois jours.
     ids: [tomates-pelees, concentre-tomate, lait-coco, thon-boite,
           maquereaux-boite, sardines-boite, mais, sauce-tomate,
-          olives-noires, vinaigre, vin-blanc-sec]
+          olives-noires, vinaigre, vin-blanc-sec, cornichons]
 
   - id: oeufs
     label: œufs

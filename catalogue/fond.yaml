@@ -169,6 +169,17 @@ denrees:
   - {ingredient: echalote, minimum: 1, unite: filet de 500 g}
   - {ingredient: noix, minimum: 1, unite: sachet de 200 g}
   - {ingredient: creme-soja, minimum: 2, unite: brique de 20 cl}
+  # T198 (2026-11-24) — PLUS D'ALTERNATIVES DANS L'ANNÉE, mesurées mois par
+  # mois (`sim/fond_annee.py` : un dîner compte le mois où ses frais sont de
+  # saison). Le poisson du fond — le colin surgelé et la sardine — pour sortir
+  # de la lentille corail (28 soirs sur 324 l'an simulé) ; la polenta, un
+  # féculent de plus qui se garde ; les cornichons, l'apéro et la salade.
+  # Gnocchis et lait de coco ouvriraient davantage, mais le foyer les a sortis
+  # (T142, T197) : ils restent dehors.
+  - {ingredient: colin-surgele, minimum: 1, unite: sachet de 1 kg}
+  - {ingredient: sardines-boite, minimum: 2, unite: boîte de 135 g}
+  - {ingredient: polenta, minimum: 1, unite: paquet de 500 g}
+  - {ingredient: cornichons, minimum: 1, unite: bocal}
   # EXPÉRIENCE — les herbes ciselées surgelées, cousines de l'étal (`equivalences.yaml`).
   - {ingredient: herbes-surgelees, minimum: 1, unite: sachet de 250 g}
 

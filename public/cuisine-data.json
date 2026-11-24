@@ -6580,7 +6580,14 @@
      "unit": "cl",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "sel",
@@ -12692,7 +12699,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courge",
+       "nom": "courge (butternut ou autre)",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -14319,7 +14333,14 @@
      "unit": "cl",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "extrait-vanille",
@@ -15535,7 +15556,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courge",
+       "nom": "courge (butternut ou autre)",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "chou-romanesco",
@@ -17186,7 +17214,14 @@
      "unit": "cl",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "sucre-vanille",
@@ -21796,6 +21831,11 @@
        "id": "beurre",
        "nom": "beurre",
        "ratio": 1.0
+      },
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1
       }
      ]
     }
@@ -24349,7 +24389,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "noisettes",
@@ -28880,7 +28927,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courge",
+       "nom": "courge (butternut ou autre)",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -30306,7 +30360,14 @@
      "unit": "c. à s.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "rhum",
@@ -30838,7 +30899,14 @@
      "unit": "c. à s.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "sel",
@@ -31877,7 +31945,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courge",
+       "nom": "courge (butternut ou autre)",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "huile-olive",
@@ -43626,7 +43701,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courge",
+       "nom": "courge (butternut ou autre)",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "panais",
@@ -44148,7 +44230,14 @@
      "unit": "cl",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "fruits-secs-melange",
@@ -46365,7 +46454,14 @@
      "unit": "cl",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "extrait-vanille",
@@ -47758,7 +47854,14 @@
      "unit": "cl",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "eau",
@@ -48819,7 +48922,14 @@
      "unit": "cl",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "extrait-vanille",
@@ -49684,7 +49794,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "rhum",
@@ -50842,7 +50959,14 @@
      "unit": "cl",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "jus-pomme",
@@ -52219,7 +52343,14 @@
      "unit": "cl",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "mures",
@@ -56667,7 +56798,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "lait-soja-vanille",
@@ -59036,7 +59174,14 @@
      "unit": "c. à s.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "eau",
@@ -60384,7 +60529,14 @@
      "unit": "ml",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "citron",
@@ -62266,7 +62418,14 @@
      "unit": "cl",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "yaourt-brebis",
@@ -63893,7 +64052,14 @@
      "unit": "ml",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "rhum",
@@ -65396,7 +65562,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courge",
+       "nom": "courge (butternut ou autre)",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "farine-complete",
@@ -65470,7 +65643,14 @@
      "unit": "cl",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "poudre-a-lever",
@@ -73071,7 +73251,14 @@
      "unit": "cl",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "sel",
@@ -77521,7 +77708,14 @@
      "unit": "c. à s.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oeufs",
@@ -77703,7 +77897,14 @@
      "unit": "cl",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "cannelle",
@@ -84670,7 +84871,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oeufs",
@@ -92299,7 +92507,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courge",
+       "nom": "courge (butternut ou autre)",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "veau-blanquette",
@@ -95070,7 +95285,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courge",
+       "nom": "courge (butternut ou autre)",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "huile-olive",
@@ -100395,7 +100617,14 @@
      "unit": "g",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "sucre-vanille",
@@ -102163,7 +102392,14 @@
      "unit": "pièce",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courge",
+       "nom": "courge (butternut ou autre)",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "noisettes",
@@ -106421,7 +106657,14 @@
      "unit": "c. à s.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oeufs",
@@ -107362,7 +107605,14 @@
      "unit": "cl",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1
+      }
+     ]
     }
    ],
    "role": "plat",
@@ -109948,7 +110198,14 @@
      "unit": "cl",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "lait-avoine",
@@ -110163,7 +110420,14 @@
      "unit": "cl",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "sel",
@@ -110720,7 +110984,14 @@
      "unit": "cl",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "noisettes",
@@ -113950,7 +114221,14 @@
      "unit": "kg",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "courge",
+       "nom": "courge (butternut ou autre)",
+       "ratio": 1
+      }
+     ]
     },
     {
      "id": "oignon",
@@ -115586,7 +115864,14 @@
      "unit": "c. à s.",
      "base": false,
      "assaisonnement": false,
-     "central": false
+     "central": false,
+     "remplacants": [
+      {
+       "id": "huile-olive",
+       "nom": "huile d'olive",
+       "ratio": 1
+      }
+     ]
     }
    ],
    "role": "plat",
@@ -131084,7 +131369,7 @@
       "specifique": false
      }
     ],
-    "garde": null,
+    "garde": "sec",
     "note": null
    },
    {
@@ -131708,7 +131993,8 @@
     "sucre-complet",
     "levure-boulangere",
     "poudre-a-lever",
-    "noix"
+    "noix",
+    "polenta"
    ]
   },
   {
@@ -131817,7 +132103,8 @@
     "sauce-tomate",
     "olives-noires",
     "vinaigre",
-    "vin-blanc-sec"
+    "vin-blanc-sec",
+    "cornichons"
    ]
   },
   {
@@ -132375,6 +132662,34 @@
     "jusqua": null,
     "hebdo": false,
     "unite": "brique de 20 cl"
+   },
+   {
+    "ingredient": "colin-surgele",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "sachet de 1 kg"
+   },
+   {
+    "ingredient": "sardines-boite",
+    "minimum": 2,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "boîte de 135 g"
+   },
+   {
+    "ingredient": "polenta",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "paquet de 500 g"
+   },
+   {
+    "ingredient": "cornichons",
+    "minimum": 1,
+    "jusqua": null,
+    "hebdo": false,
+    "unite": "bocal"
    },
    {
     "ingredient": "herbes-surgelees",
