@@ -41,6 +41,10 @@ const platParTitre = new Map(cat.plats.map((p) => [p.titre.trim(), p]));
 const norm = (s) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[-_'’]/g, " ").replace(/\s+/g, " ").trim();
 const idParNom = new Map();
 for (const p of cat.plats) for (const i of p.ingredients) { idParNom.set(norm(i.id), i.id); idParNom.set(norm(i.nom), i.id); if (i.ref) idParNom.set(norm(i.ref), i.id); }
+// T198 — LES NOMS DU STOCK AUSSI : les sacs, la viande du congélateur ne sont
+// le nom d'aucune ligne de recette, et leur achat se perdait.
+for (const [id, nom] of Object.entries(cat.rayons.noms ?? {})) { if (!idParNom.has(norm(nom))) idParNom.set(norm(nom), id); if (!idParNom.has(norm(id))) idParNom.set(norm(id), id); }
+for (const d of cat.fond?.denrees ?? []) if (!idParNom.has(norm(d.ingredient))) idParNom.set(norm(d.ingredient), d.ingredient);
 const toujours = new Set(cat.rayons.placard);
 const rayonDe = new Map();
 for (const [r, ids] of Object.entries(cat.rayons.rayons ?? {})) for (const id of ids) rayonDe.set(id, r);
