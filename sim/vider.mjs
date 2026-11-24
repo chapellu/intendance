@@ -8,7 +8,7 @@ const ctx = await chromium.launchPersistentContext(process.env.PROFILE, {
   viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, serviceWorkers: "block",
 });
 const page = ctx.pages()[0] ?? (await ctx.newPage());
-await page.clock.setFixedTime(new Date("2026-10-16T08:00"));
+await page.clock.setFixedTime(new Date(`${process.env.DEBUT ?? "2026-10-16"}T08:00`));
 await page.goto(`${process.env.URL || "http://localhost:4193"}/#/cuisine/stock`);
 const plan = page.getByRole("group", { name: /Plan de la cuisine/ });
 await plan.waitFor({ timeout: 30_000 }); await page.waitForTimeout(800);

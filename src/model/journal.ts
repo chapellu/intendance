@@ -36,7 +36,7 @@
 
 import { repartir, retenir } from "./remplacants";
 import { facteur } from "./calcul";
-import { enUniteDeCompte } from "./unites";
+import { enUniteDeCompte, POIDS_PIECE } from "./unites";
 import type {
   Catalogue, Denree, Espace, Etat, Plat, Quantite, RepasId,
   Remplacant,
@@ -76,6 +76,21 @@ export interface EvtCuisine extends Commun {
   sorte: "cuisine";
   repas: RepasId;
   plat: string;
+  /**
+   * UNE CUISSON SANS CRÉNEAU. Un plat lu dans « Recettes » s'ouvre sur un
+   * créneau vide qui ne le porte pas, parfois demain (`creneauDeLecture`) ; le
+   * cuisiner quand même le journalisait sur CE créneau — l'apéro du vendredi
+   * devenait le dîner du samedi, et le vrai dîner du samedi, « déjà noté »,
+   * n'était jamais décompté (année simulée des cinq repas). Elle se date du
+   * jour où elle se fait, et n'occupe aucun créneau.
+   */
+  horsCreneau?: true;
+  /**
+   * T198 — LES SACS DE CONGÉLATION QUE LE RANGEMENT A PRIS. Un sac sert une
+   * fois et part à la poubelle avec son contenu vidé : il sort du stock comme
+   * un ingrédient (`SACS`), et la boîte se rachète par la liste.
+   */
+  sacs?: number;
   /**
    * Les parts FIGÉES au moment de cuisiner.
    *
@@ -266,6 +281,10 @@ export interface LotPlacard {
   sansPlace?: true;
   /** Né d'un reste d'unité scellée (T29) : il court, donc il presse. */
   court: boolean;
+  /** Le jour où CE lot est rentré des courses. L'âge se compte par lot : une
+   *  boîte d'œufs neuve ne ressuscite pas celle d'il y a un mois. Absent : un
+   *  lot relevé, qui vieillit avec le dernier achat de sa denrée (T137). */
+  rentreLe?: string;
 }
 
 export interface EtatIngredient {
@@ -478,10 +497,17 @@ export function contexte(catalogue: Catalogue): Contexte {
         .flatMap((f) => f.ids),
     ),
     fenetreCourte: (() => {
+      // LE FRAIS DE LA SEMAINE VIEILLIT AUSSI. Une famille `fond: false` (fruits
+      // frais, légumes fragiles) n'entre au fond que par `hebdo` ; sans horloge,
+      // les bananes et les poireaux rachetés une fois restaient au grand livre
+      // pour toujours — on ne les décrémente pas, ils « ne s'estiment pas » —,
+      // la ligne « pour la semaine » ne revenait jamais et « Ce soir » disait
+      // « rien à acheter » sur des poireaux mangés depuis dix jours.
+      const hebdo = new Set((catalogue.fond?.denrees ?? []).filter((d) => d.hebdo).map((d) => alias(d.ingredient)));
       const par = new Map<string, number>();
       for (const f of catalogue.garde ?? [])
-        if (f.fond && f.fenetreJours <= SEMAINES_FENETRE_COURTE * 7)
-          for (const id of f.ids) par.set(alias(id), f.fenetreJours);
+        if (f.fenetreJours <= SEMAINES_FENETRE_COURTE * 7)
+          for (const id of f.ids) if (f.fond || hebdo.has(alias(id))) par.set(alias(id), f.fenetreJours);
       return (id: string) => par.get(alias(id)) ?? null;
     })(),
     releve: catalogue.gardeManger.releve,
@@ -552,6 +578,32 @@ export { contenuDUnite };
 
 /** L'unité de compte des recettes : `pièce`, et `pot` pour un yaourt. */
 const PIECE = "pièce";
+
+/**
+ * T198 — l'id des sacs de congélation, À LA FOIS contenant du foyer
+ * (`household.yaml`) et denrée du fond. Un sac n'est pas une boîte qu'on lave :
+ * il se compte au stock, se dépense au rangement et se rachète par la liste.
+ */
+export const SACS = "sacs-congelation";
+
+/** Le contenu d'une unité d'achat, dit par `fond.yaml` (« boîte de 20 »). */
+function contenuDuFond(catalogue: Catalogue, id: string): Quantite | null {
+  const d = catalogue.fond?.denrees.find((x) => x.ingredient === id);
+  return d ? contenuDUnite(d.unite) : null;
+}
+
+/** Les sacs qui restent au stock selon le rejeu — `null` : jamais rentrés ni
+ *  relevés, l'app n'en sait rien (le foyer en a, sans les avoir comptés). */
+export function sacsEnReserve(rejeu: Pick<Rejeu, "parIngredient">, catalogue?: Catalogue): number | null {
+  const e = rejeu.parIngredient.get(SACS);
+  if (!e) return null;
+  const parBoite = catalogue ? contenuDuFond(catalogue, SACS) : null;
+  // En pièces : une boîte de 20 est vingt sacs, l'entamée compte ce qui lui reste.
+  return e.lots.reduce((n, l) => {
+    const par = contenuUnite(l.parUnite || !parBoite ? l : { ...l, parUnite: parBoite }, "pièce");
+    return n + (par == null ? l.unites : l.unites * par + (l.entame ?? 0));
+  }, 0);
+}
 const enPieces = (unit: string): boolean => unit === PIECE || unit === "piece" || unit === "pot";
 
 /**
@@ -689,7 +741,13 @@ const poidsUnite = (l: LotPlacard): number | null =>
 /** Ce que contient une unité DANS L'UNITÉ DE LA DEMANDE — des grammes, ou des
  *  pièces pour une boîte d'œufs (T135). Une autre unité : non chiffré. */
 const contenuUnite = (l: LotPlacard, unite: "g" | "pièce"): number | null => {
-  if (unite === "g") return poidsUnite(l);
+  if (unite === "g") {
+    // T198 — UN LOT COMPTÉ À LA PIÈCE SE PÈSE quand la pièce a un poids :
+    // « 4 poireaux » rentrés, une recette en demande 300 g, deux partent.
+    const piece = POIDS_PIECE[l.ingredient];
+    if (piece != null && l.parUnite && enPieces(l.parUnite.unit)) return l.parUnite.amount * piece;
+    return poidsUnite(l);
+  }
   return l.parUnite && enPieces(l.parUnite.unit) ? l.parUnite.amount : null;
 };
 
@@ -1086,6 +1144,17 @@ export function rejouer(
     (a, b) => a.jour.localeCompare(b.jour) || a.maj - b.maj,
   );
 
+  /** T198 — un sac de congélation sert une fois : il sort du stock. */
+  const sacsParBoite = contenuDuFond(catalogue, SACS);
+  const prendreDesSacs = (n: number) => {
+    const l = lots.get(SACS);
+    if (!l || l.length === 0) return;
+    // « En garder 1 » ne dit pas la taille de la boîte : c'est celle du fond.
+    for (const x of l) if (!x.parUnite && sacsParBoite) x.parUnite = sacsParBoite;
+    retirer(l, SACS, n, PIECE);
+    if (l.length === 0) lots.delete(SACS);
+  };
+
   for (const e of ordonnes) {
     releverJusquA(e.jour);
     if (e.sorte === "cuisine") {
@@ -1122,6 +1191,7 @@ export function rejouer(
           pieces: brute.pieces == null ? null : Math.ceil(brute.pieces * r.ratio - 1e-9),
         }];
       });
+      if (e.sacs) prendreDesSacs(e.sacs);
       for (const d of aRetirer) {
         const id = ctx.alias(d.ingredient);
         const l = lots.get(id);
@@ -1159,6 +1229,8 @@ export function rejouer(
     }
 
     if (e.sorte === "deplacement") {
+      // T198 — CONGELER UNE DENRÉE, c'est la mettre dans un sac.
+      if (e.vers === "congelo") prendreDesSacs(1);
       const id = ctx.alias(e.ingredient);
       const l = lots.get(id);
       if (!l) continue;
@@ -1193,6 +1265,7 @@ export function rejouer(
           etat: ligne.etat,
           entame: null,
           court: false,
+          rentreLe: e.jour,
           ...(ligne.zone ? {} : { sansPlace: true as const }),
         });
         lots.set(id, l);
@@ -1331,12 +1404,20 @@ export function rejouer(
   // l'achat, ou de la dernière observation qui l'a suivi : répondre « oui » à
   // « Des œufs ? » est le geste de confirmation, et il existe déjà.
   const finis = new Map<string, number>();
-  for (const [id, l] of lots) {
+  for (const [id, l] of [...lots]) {
     const s = suivi.get(id);
     const fenetre = ctx.fenetreCourte(id);
     if (!s?.rentreLe || fenetre === null || l.length === 0) continue;
-    const depuis = s.vuLe && s.vuLe > s.rentreLe ? s.vuLe : s.rentreLe;
-    if (joursEntre(depuis, aujourdhui) <= fenetre) continue;
+    // L'ÂGE SE COMPTE PAR LOT. Un lot rentré a sa date ; un lot relevé prend
+    // celle du dernier achat, comme avant. Une observation postérieure (« Des
+    // œufs ? oui ») confirme tout ce qui est là et relance l'horloge.
+    const age = (x: LotPlacard): number => {
+      const ne = x.rentreLe ?? s.rentreLe!;
+      return joursEntre(s.vuLe && s.vuLe > ne ? s.vuLe : ne, aujourdhui);
+    };
+    const vivants = l.filter((x) => age(x) <= fenetre);
+    if (vivants.length === l.length) continue;
+    if (vivants.length) { lots.set(id, vivants); continue; }
     finis.set(id, joursEntre(s.rentreLe, aujourdhui));
     lots.delete(id);
   }

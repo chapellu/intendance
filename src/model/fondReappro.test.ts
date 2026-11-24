@@ -15,7 +15,7 @@ import { lireCatalogue } from "./catalogue";
 import { creerJeu } from "./jeu";
 import { contenuDUnite, contexte, rejouer, retirer, type Evenement } from "./journal";
 import { proposerCeSoir } from "./pause";
-import { minimumsDuFond, sousLeurPlancher } from "./plancherGardeManger";
+import { fruitsDeLaSemaine, minimumsDuFond, sousLeurPlancher } from "./plancherGardeManger";
 import { PASSE_VIDE } from "./questions";
 import type { Savoir } from "./scoring";
 import type { Catalogue, Plat } from "./types";
@@ -248,7 +248,7 @@ describe("T136 — œufs, yaourts, fromage râpé : achetés par la liste, cuisi
     // T142 — le fond rentre 3 boîtes de 6 œufs (jusqu'à 4), un bloc de 400 g,
     // 3 packs de 4 yaourts (jusqu'à 9) : la liste remonte jusqu'au `jusqua`.
     // quiche-poireaux : 6 parts, 3 œufs, 80 g de fromage râpé
-    { ingredient: "oeufs", nom: "œufs", plat: "quiche-poireaux", parts: 6, avant: 5, apres: 6, manque: 4 },
+    { ingredient: "oeufs", nom: "œufs", plat: "quiche-poireaux", parts: 6, avant: 7, apres: 8, manque: 5 },
     { ingredient: "fromage-rape", nom: "râpé", plat: "quiche-poireaux", parts: 6, avant: 4, apres: 5, manque: 1 },
     // quiche-courgettes-yaourt : 6 parts, 2 yaourts
     // T145 — six packs rentrés (24 pots) ; T154 : remontés à 9 (36 pots).
@@ -329,6 +329,46 @@ describe("T137 — un article du fond à garde courte se finit par son âge", ()
     expect(rejeu.finis.has("pomme-de-terre")).toBe(true);
   });
 
+  test("le frais de la semaine vieillit aussi : bananes à 8 jours et poireaux à 6 sont « sans doute finis »", () => {
+    const { rejeu } = rentreIlYA(8);
+    expect(rejeu.finis.get("banane")).toBe(8);
+    expect(rejeu.finis.has("poireau")).toBe(true);
+    expect(rejeu.parIngredient.has("banane")).toBe(false);
+    // …et la ligne de la semaine revient : c'est tout l'objet.
+    expect(fruitsDeLaSemaine(catalogue, rejeu, 10).map((l) => l.ingredient)).toEqual(expect.arrayContaining(["banane", "poireau"]));
+    // à 4 jours, tout est encore là
+    const tot = rentreIlYA(4).rejeu;
+    expect(tot.parIngredient.has("banane")).toBe(true);
+    expect(tot.parIngredient.has("poireau")).toBe(true);
+  });
+
+  test("l'âge se compte par lot : une boîte d'œufs neuve ne ressuscite pas celle d'il y a un mois", () => {
+    const neuve: Evenement = {
+      sorte: "entree", jour: jourAvant(2), saisi: jourAvant(2), maj: 9,
+      lignes: [{ ingredient: "oeufs", unites: 1, parUnite: null, zone: null, etat: "sec" }],
+    };
+    const { rejeu } = rentreIlYA(30, [neuve]);
+    const e = rejeu.parIngredient.get("oeufs")!;
+    expect(e.lots.map((l) => l.unites)).toEqual([1]);
+    expect(rejeu.finis.has("oeufs")).toBe(false);
+    // et les bananes rachetées remplacent celles qui ont passé, sans s'y ajouter
+    const bananes: Evenement = { ...neuve, lignes: [{ ingredient: "banane", unites: 7, parUnite: null, zone: null, etat: "sec" }] };
+    expect(rentreIlYA(10, [bananes]).rejeu.parIngredient.get("banane")!.unites).toBe(7);
+  });
+
+  test("une banane achetée à la pièce part à chaque petit-déjeuner, pas un matin sur deux", () => {
+    const bananes: Evenement = {
+      sorte: "entree", jour: jourAvant(6), saisi: jourAvant(6), maj: 9,
+      lignes: [{ ingredient: "banane", unites: 7, parUnite: null, zone: null, etat: "sec" }],
+    };
+    const matins: Evenement[] = [5, 4, 3, 2, 1].map((n, k) => ({
+      sorte: "cuisine", jour: jourAvant(n), saisi: jourAvant(n), maj: 20 + k,
+      repas: "petit-dejeuner", plat: "petit-dejeuner-des-enfants", parts: 1,
+    }) as Evenement);
+    const r = rejouer(catalogue, [bananes, ...matins], ctx, jourAvant(0));
+    expect(r.parIngredient.get("banane")!.unites).toBe(2);
+  });
+
   test("une observation après l'achat relance l'horloge : « Des œufs ? oui » est la confirmation", () => {
     const vu = {
       sorte: "observation", jour: jourAvant(10), saisi: jourAvant(10), maj: 5,
@@ -351,8 +391,8 @@ describe("T137 — un article du fond à garde courte se finit par son âge", ()
       repas: "diner" as const, plat: "quiche-poireaux", parts: 6,
     }));
     const l = rentreIlYA(6, quiches).liste.find((x) => x.ingredient === "oeufs");
-    // T142 : trois boîtes rentrées, deux quiches en prennent une.
-    expect(l).toMatchObject({ a: 2, rentreLe: jourAvant(6) });
+    // T198 : quatre boîtes rentrées, deux quiches en prennent une.
+    expect(l).toMatchObject({ a: 3, rentreLe: jourAvant(6) });
     expect(phraseDuPlancher(l!, 0)).not.toContain("jamais vu");
     expect(phraseDuPlancher(l!, 0)).toContain(`acheté le ${jourAvant(6).slice(8, 10)}/${jourAvant(6).slice(5, 7)}`);
   });

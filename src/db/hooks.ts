@@ -336,7 +336,7 @@ export function useCuisines(debut: string, fin: string): ReadonlySet<string> | u
     if (!debut) return new Set<string>();
     const evts = await base.evenements.where("jour").between(debut, fin, true, true).toArray();
     return new Set(
-      evts.filter((e) => e.sorte === "cuisine").map((e) => `${e.jour}|${(e as { repas: string }).repas}`),
+      evts.filter((e) => e.sorte === "cuisine" && !e.horsCreneau).map((e) => `${e.jour}|${(e as { repas: string }).repas}`),
     );
   }, [debut, fin]);
 }

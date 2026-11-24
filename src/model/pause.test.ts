@@ -23,7 +23,7 @@ import {
   scoreSaison,
   TAILLE,
   type CarteDuSoir,
-  type PropositionDuSoir, sansLuiPasDePlat } from "./pause";
+  type PropositionDuSoir, sansLuiPasDePlat, CONGELO_CHARGE, POIDS } from "./pause";
 import { PASSE_VIDE } from "./questions";
 import { offre, type Savoir } from "./scoring";
 import type { Catalogue } from "./types";
@@ -68,6 +68,7 @@ function monde(o: {
   stock?: LotInitial[];
   recents?: string[];
   sortis?: string[];
+  mange?: { plat: string; jour: string }[];
   /** Des plats posés, par créneau de la fenêtre : `[jour, repas, plat]`. */
   poses?: [number, string, string][];
 } = {}): Monde {
@@ -85,6 +86,7 @@ function monde(o: {
     recents: new Set(o.recents ?? []),
     maintenant,
     sortis: new Set(o.sortis ?? []),
+    ...(o.mange ? { mange: o.mange } : {}),
   });
   return { jeu, savoir, proposition };
 }
@@ -436,10 +438,13 @@ describe("ce qui est ici : le rejeu entier, avec une vie pour le frais court", (
     lignes: [{ ingredient, unites: 1, parUnite: null, zone: null, etat }],
   });
 
-  test("une crème rentrée il y a dix jours n'est plus une raison de dîner", () => {
+  // T198 — la crème est au fond (frais sous vide, quatre semaines fermée) :
+  // c'est à cinq semaines qu'elle n'est plus une raison de dîner.
+  test("une crème rentrée il y a cinq semaines n'est plus une raison de dîner", () => {
     const jour = iso(LUNDI);
-    const rejeu = rejouer(catalogue, [entree(veille(LUNDI, 10), "creme", "frais")], contexte(catalogue), jour);
-    expect(estLa(catalogue, rejeu.parIngredient.get("creme")!, jour)).toBe(false);
+    const rejeu = rejouer(catalogue, [entree(veille(LUNDI, 35), "creme", "frais")], contexte(catalogue), jour);
+    const vieille = rejeu.parIngredient.get("creme");
+    expect(vieille ? estLa(catalogue, vieille, jour) : false).toBe(false);
     const hier = rejouer(catalogue, [entree(veille(LUNDI), "creme", "frais")], contexte(catalogue), jour);
     expect(estLa(catalogue, hier.parIngredient.get("creme")!, jour)).toBe(true);
   });
@@ -598,6 +603,46 @@ describe("trois heures ne décongèlent pas un bloc : ce qui demande la veille s
     });
     expect(proposition.aSortir).toEqual([]);
     expect(proposition.cartes[0]!.plat.id).toBe("reste-de-la-veille");
+  });
+});
+
+/* ═══════════════ T198 — un congélateur qui tourne (année simulée du 24/11) */
+
+describe("le congélateur chargé : le plus ancien reste passe devant", () => {
+  const sept = ["goulasch-boeuf", "lasagnes", "soupe-orge-petits-pois", "ratatouille", "dahl", "chili", "curry"];
+  test(`plus de ${CONGELO_CHARGE} repas au congélateur, un jeune reste presse déjà`, () => {
+    const stock = sept.map((t, i) => resteDe(t, veille(LUNDI, 5 + i), "congelo"));
+    const { proposition } = monde({ evts: [fondRentre(veille(LUNDI))], stock });
+    // Le plus ancien (curry, 11 jours) presse : il est en tête de ce qui attend.
+    expect(proposition.attend[0]!.type).toBe("curry");
+  });
+  test("un plat qui range au congélateur ce qui y est déjà perd des points", () => {
+    const toutes = (pr: PropositionDuSoir) => [...pr.cartes, ...pr.plus];
+    const sans = toutes(monde({ evts: [fondRentre(veille(LUNDI))] }).proposition);
+    const bouillon: LotInitial = { type: "bouillon-maison", kind: "base", qty: null, qty_band: "1-repas", born: veille(LUNDI, 3), location: "congelo", ref: "b" };
+    const avec = toutes(monde({ evts: [fondRentre(veille(LUNDI))], stock: [bouillon] }).proposition);
+    const score = (cs: CarteDuSoir[], id: string) => cs.find((c) => c.plat.id === id)?.score;
+    const a = score(sans, "consomme-de-fanes"), b = score(avec, "consomme-de-fanes");
+    expect(a).toBeDefined();
+    expect(b).toBeLessThan(a!);
+  });
+  test(`${CONGELO_CHARGE} repas ou moins : un reste de dix jours attend sans presser`, () => {
+    const { proposition } = monde({ evts: [fondRentre(veille(LUNDI))], stock: [resteDe("goulasch-boeuf", veille(LUNDI, 10), "congelo")] });
+    expect(proposition.cartes.some((c) => c.presse && "type" in c.presse && c.presse.type === "goulasch-boeuf")).toBe(false);
+  });
+});
+
+describe("T198 — la viande et le poisson reviennent dans la rotation", () => {
+  test("trois soirs sans viande ni poisson : un plat de poisson gagne des points", () => {
+    const poisson = catalogue.plats.find((p) => p.apports.proteine === "poisson" && p.creneaux.includes("diner"))!;
+    const legume = catalogue.plats.find((p) => p.apports.proteine === "legumineuse" && p.creneaux.includes("diner"))!;
+    const score = (mange: { plat: string; jour: string }[]) =>
+      [...monde({ evts: [fondRentre(veille(LUNDI))], mange }).proposition.cartes, ...monde({ evts: [fondRentre(veille(LUNDI))], mange }).proposition.plus]
+        .find((c) => c.plat.id === poisson.id)?.score;
+    const sansAnimal = score([{ plat: legume.id, jour: veille(LUNDI) }]);
+    const avecPoisson = score([{ plat: poisson.id, jour: veille(LUNDI, 40) }, { plat: catalogue.plats.find((p) => p.apports.proteine === "viande-blanche")!.id, jour: veille(LUNDI) }]);
+    expect(sansAnimal).toBeDefined();
+    expect(sansAnimal! - avecPoisson!).toBeCloseTo(POIDS.viandePoisson, 5);
   });
 });
 

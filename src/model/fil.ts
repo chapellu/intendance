@@ -78,6 +78,30 @@ export function itineraire(jeu: Jeu, horizon: number): CleCreneau[] {
   return out;
 }
 
+/**
+ * Les dîners libres d'aujourd'hui jusqu'à la veille des prochaines courses — T198.
+ *
+ * LE RYTHME DU FOYER, PAS UN CRAN. On fait les courses le mercredi et le samedi
+ * (`pause.JOURS_DE_COURSES`) : du samedi au mardi, c'est quatre dîners, et aucun
+ * cran ne disait quatre. Les poser le matin des courses met leur frais sur la
+ * liste ; sans eux, un jour sans courses ne propose que ce que le fond fait
+ * seul — une douzaine de dîners, et 36 plats distincts sur l'année simulée.
+ * `null` : aujourd'hui n'est pas un jour de courses.
+ */
+export function jusquAuxCourses(jeu: Jeu, joursDeCourses: readonly string[]): { creneaux: CleCreneau[]; jusqua: string } | null {
+  const j0 = jeu.jours[0];
+  if (!j0 || !joursDeCourses.includes(j0.nom)) return null;
+  const fin = jeu.jours.findIndex((j, i) => i > 0 && joursDeCourses.includes(j.nom));
+  if (fin < 0) return null;
+  const creneaux: CleCreneau[] = [];
+  for (const [i, c] of jeu.creneaux.entries()) {
+    if (c.jour >= fin || c.repas !== "diner" || c.nature !== "choisi" || jeu.choix[i] != null) continue;
+    const j = jeu.jours[c.jour];
+    if (j) creneaux.push({ jour: jourISO(j.date), repas: c.repas });
+  }
+  return { creneaux, jusqua: jeu.jours[fin]!.nom };
+}
+
 export const cleDuPas = (c: CleCreneau): string => `${c.jour}|${c.repas}`;
 
 /**

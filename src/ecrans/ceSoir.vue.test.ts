@@ -53,6 +53,15 @@ describe("un lot se dit comme on le dirait en ouvrant le frigo", () => {
     expect(ceQuiAttend(l).split(" · ")).toHaveLength(2);
   });
 
+  test("deux sachets du même plat au congélo font une seule phrase, additionnée", () => {
+    const l = [
+      lot({ type: "bouillon-fanes", location: "congelo", band: "2-repas" }),
+      lot({ type: "bouillon-fanes", location: "congelo", band: "2-repas" }),
+      lot({ type: "soupe", location: "congelo", band: "1-repas" }),
+    ];
+    expect(ceQuiAttend(l)).toBe("4 repas de bouillon fanes au congélo · 1 repas de soupe au congélo");
+  });
+
   test("l'élision", () => {
     expect(de("escalopes")).toBe("d’escalopes");
     // Le h aspiré ne s’élide pas : « de haricots », jamais « d’haricots ».

@@ -61,7 +61,7 @@ export async function consommerLesRoutines(base: Base, catalogue: Catalogue, auj
       const jours = joursDe(depuisMidi, dernier).slice(1);
       const cuits = new Set(
         (await base.evenements.where("jour").between(jours[0]!, dernier, true, true).toArray())
-          .filter((e) => e.sorte === "cuisine" && "repas" in e && e.repas === "dejeuner")
+          .filter((e) => e.sorte === "cuisine" && "repas" in e && e.repas === "dejeuner" && !e.horsCreneau)
           .map((e) => e.jour),
       );
       const majM = Date.now();

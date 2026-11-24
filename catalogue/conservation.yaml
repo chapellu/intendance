@@ -223,7 +223,42 @@ familles:
     ids: [farine, farine-complete, farine-epeautre, farine-petit-epeautre,
           lentilles-corail, lentilles-seches, pois-casses, pois-chiches,
           haricots-blancs, haricots-rouges, riz, riz-rond, pates, semoule,
-          flocons-avoine, son-avoine, sucre-complet, levure-boulangere]
+          flocons-avoine, son-avoine, sucre-complet, levure-boulangere,
+          poudre-a-lever, noix, polenta, pignons-pin, cepes-seches]
+
+  # T198 — LE FRAIS QUI TIENT DES SEMAINES FERMÉ : sous vide, sous atmosphère,
+  # ou en pot. C'est lui qui fait tenir au fond le jambon cru de 23 dîners, le
+  # tofu fumé de 13, le miso — sans courses ce soir-là.
+  - id: frais-sous-vide
+    label: frais sous vide
+    fond: true
+    espace: frigo
+    rangement: au frigo, fermé dans son emballage d'origine
+    fenetre: {unite: semaines, valeur: 4}
+    source: >-
+      ordre de grandeur — tofu fumé, jambon cru en barquette et miso portent
+      une date à trois à six semaines ; ouverts, trois à cinq jours (le miso,
+      des mois).
+    conseil: >-
+      Ne pas ouvrir d'avance : c'est l'emballage qui conserve. Entamé, le
+      refermer d'un film et le finir dans la semaine.
+    ids: [tofu-fume, jambon-cru, miso-blanc, creme]
+
+  # T198 — CE QUI N'EST PAS UN ALIMENT ET SE RACHÈTE QUAND MÊME. Un sac de
+  # congélation sert une fois : il se compte au stock comme une denrée, sort à
+  # chaque rangement au congélateur (`EvtCuisine.sacs`) et revient par la liste.
+  - id: consommables
+    label: consommables de cuisine
+    fond: true
+    espace: placard
+    rangement: dans le tiroir de la cuisine
+    fenetre: {unite: mois, valeur: 60}
+    source: >-
+      un sac ou une boîte ne se périme pas ; la fenêtre ne sert qu'au rejeu.
+    conseil: >-
+      Un sac par portion, aplati avant de fermer, la date au feutre : il se
+      range debout et se décongèle vite.
+    ids: [sacs-congelation]
 
   - id: emballe
     label: frais emballé longue garde
@@ -286,8 +321,11 @@ familles:
       Chasser l'air et refermer d'une pince à chaque usage : c'est le givre,
       pas le temps, qui abîme. Un sachet décongelé ne repart pas au
       congélateur.
-    ids: [epinards-surgeles, petits-pois-surgeles, haricots-verts-surgeles,
-          champignons-surgeles, legumes-surgeles, colin-surgele]
+    ids: [epinards-surgeles, petits-pois-surgeles, haricots-verts-surgeles, herbes-surgelees,
+          champignons-surgeles, legumes-surgeles, colin-surgele,
+          boeuf-hache-congele, poulet-filets-congeles, saumon-congele, 
+          courgettes-surgelees, poivrons-surgeles, aubergines-surgelees,
+          poireaux-surgeles, moules-surgelees, pain-levain-congele]
 
   - id: conserve
     label: conserves
@@ -303,7 +341,9 @@ familles:
       Une boîte entamée ne reste jamais dans le métal : transvaser dans une
       boîte hermétique, au frigo, et finir dans les trois jours.
     ids: [tomates-pelees, concentre-tomate, lait-coco, thon-boite,
-          maquereaux-boite, sardines-boite, mais, sauce-tomate]
+          maquereaux-boite, sardines-boite, mais, sauce-tomate,
+          olives-noires, vinaigre, vin-blanc-sec, cornichons, capres,
+          vinaigre-balsamique, anchois]
 
   - id: oeufs
     label: œufs
@@ -354,7 +394,7 @@ familles:
     conseil: >-
       Râper la moitié d'un bloc qui traîne et la congeler à plat : elle
       s'emploie sans décongeler, directement sur le gratin.
-    ids: [fromage-rape, parmesan]
+    ids: [fromage-rape, parmesan, cantal]
 
   # T150 — LE BEURRE N'EST PAS UN YAOURT. T142 l'avait rangé ici, à trois
   # semaines : l'année simulée n° 10 jetait la plaquette entamée au 22e jour
@@ -391,7 +431,7 @@ familles:
     conseil: >-
       Ouvrir une brique à la fois et noter le jour dessus au feutre : deux
       briques entamées au frigo, c'est une de trop.
-    ids: [lait, lait-soja-vanille, lait-amande, lait-avoine]
+    ids: [lait, lait-soja-vanille, lait-amande, lait-avoine, creme-soja]
 
   # ── Le frais fragile : PAS du fond, et c'est là que le geste compte ──────
 
@@ -410,7 +450,7 @@ familles:
     conseil: >-
       Une banane tachée n'est pas perdue : c'est le banana bread de la fournée,
       ou le fruit écrasé du porridge de demain matin.
-    ids: [banane, poires]
+    ids: [banane, poires, abricots, peches]
 
   - id: viande-poisson
     label: viande et poisson frais

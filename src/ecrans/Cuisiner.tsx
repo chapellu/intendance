@@ -26,12 +26,13 @@ import {
   useNombre,
   useObjet,
 } from "../db/reglages";
-import { base } from "../db/schema";
+import { base, jourISO } from "../db/schema";
 import { facteurAffiche, quantiteACuire, type Calcul } from "../model/calcul";
 import { estUneFournee, lotsEnBoites, platDuSoir } from "../model/repas";
 import { joue, type Jeu } from "../model/jeu";
 import { heureDe } from "../model/heures";
 import type { Catalogue, Etape, Foyer, Plat } from "../model/types";
+import { SACS, sacsEnReserve } from "../model/journal";
 import { ENTREE_CUISINE, type CleCreneau } from "../nav/routes";
 import { aller } from "../nav/useRoute";
 import { armer, arreter, demanderBandeau, desarmer, plateforme, promesse } from "../pwa/alarme";
@@ -51,6 +52,7 @@ import {
   minuteur,
   minuteurUtile,
   miseEnPlace,
+  ligneAvecRemplacant,
   montrerMiseEnPlace,
   outilDe,
   phraseAussi,
@@ -80,6 +82,9 @@ import {
 
 /** Ce qu'est devenue la réponse de la sortie. */
 type Issue = "note" | "deja" | "hors";
+
+/** « 2 », « 1,5 » — des pièces, au demi près. */
+const fmtPieces = (n: number): string => String(Math.round(n * 2) / 2).replace(".", ",");
 
 export function Cuisiner({ creneau, plat }: { creneau: CleCreneau; plat?: string }) {
   const { catalogue } = useCatalogue();
@@ -206,9 +211,15 @@ function Fiche({
     rienGarde = false,
   ) => {
     if ((lecture && !guide) || i < 0) return "hors" as const;
-    if (await dejaCuisine(base, creneau.jour, creneau.repas)) return "deja" as const;
+    // UN PLAT LU, CUISINÉ POUR UN AUTRE JOUR QUE CELUI DE SON CRÉNEAU DE LECTURE :
+    // la cuisson se date d'aujourd'hui et n'occupe pas ce créneau
+    // (`EvtCuisine.horsCreneau`). Lu sur un créneau d'aujourd'hui, rien ne change.
+    const aujourdhui = jourISO(new Date());
+    const horsCreneau = lecture && creneau.jour !== aujourdhui;
+    if (!horsCreneau && (await dejaCuisine(base, creneau.jour, creneau.repas))) return "deja" as const;
     await journaliserCuisson(base, {
-      jour: creneau.jour,
+      horsCreneau,
+      jour: horsCreneau ? aujourdhui : creneau.jour,
       repas: creneau.repas,
       plat: pSoir,
       parts,
@@ -300,6 +311,7 @@ function Fiche({
         sachets={estUneFournee(jeu.catalogue, p)}
         f={f}
         foyer={jeu.catalogue.foyer}
+        catalogue={jeu.catalogue}
         stock={lotsEnBoites(jeu.catalogue, jeu.stock, new Date())}
         revenir={() => setSortie(false)}
         repondre={repondre}
@@ -585,6 +597,7 @@ function Sortie({
   parts,
   f,
   foyer,
+  catalogue,
   stock,
   sachets = false,
   revenir,
@@ -599,6 +612,8 @@ function Sortie({
   stock: Jeu["stock"];
   /** T142 — une fournée part en sachets de congélation, pas en boîtes. */
   sachets?: boolean;
+  /** T198 — pour lire les sacs au stock. */
+  catalogue?: Catalogue;
   revenir: () => void;
   repondre: (
     rangement: RangementLot[] | null,
@@ -607,7 +622,10 @@ function Sortie({
   ) => Promise<Issue>;
   fermer: () => void;
 }) {
-  const v = vueDeLaSortie(p, parts, f, foyer, stock, sachets);
+  // T198 — LES SACS QUI RESTENT AU STOCK : un sac rangé ne revient pas.
+  const placard = usePlacard(catalogue ?? null);
+  const enReserve = placard ? sacsEnReserve(placard, catalogue) : null;
+  const v = vueDeLaSortie(p, parts, f, foyer, stock, sachets, enReserve == null ? new Map() : new Map([[SACS, enReserve]]));
   // « J'AI FAIT AUTREMENT » POSE LA QUESTION, au lieu de fermer la recette sur
   // un rangement que personne n'a dit (le frigo par défaut). Puis il montre ce
   // qu'il a retenu : c'est le témoin que le 07/11 réclamait — « je ne sais pas
@@ -972,8 +990,10 @@ function Ingredients({
         {p.ingredients.map((x) => {
           const prov = provenanceIngredient(jeu, x, { i, plat: p.id }, enStock, choix[x.ref]);
           const pris = prov.avec?.id ?? x.id;
-          // La quantité DU REMPLAÇANT : 3 c. à s. de miel pour 2 de sirop.
-          const xq = prov.avec ? { ...x, id: pris, qty: x.qty * prov.avec.ratio } : x;
+          // La quantité DU REMPLAÇANT : 3 c. à s. de miel pour 2 de sirop ; et
+          // T198, en grammes quand la pièce sort d'un sachet surgelé.
+          const avecR = ligneAvecRemplacant(x, prov.avec, (id) => jeu.catalogue.rayons.aliases[id] ?? id);
+          const xq = avecR.ing;
           // T167 — UN FOND PESÉ QUI NE SUFFIT PAS SE COMPLÈTE avec l'autre
           // option présente : « 200 g d'épeautre, puis 175 g de T110 ».
           const parts =
@@ -1036,6 +1056,9 @@ function Ingredients({
                 {complete
                   ? parts.map((pt) => `${Math.round(pt.qty)} g`).join(" + ")
                   : quantiteACuire(jeu.catalogue, xq, f)}
+                {avecR.pieces != null && !complete ? (
+                  <span className="co-soit">{` (${fmtPieces(avecR.pieces * f)} ${nomCourt(x.nom)})`}</span>
+                ) : null}
               </span>
               {/* « À ACHETER » SE TOUCHE : si on en a, on le dit ici même, et la
                   ligne passe au vert. L'eau n'a pas d'étiquette. */}

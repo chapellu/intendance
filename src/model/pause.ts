@@ -45,7 +45,7 @@
 
 import { dejeunerDuStock, fourneeAProposer, fruitsAuDelaDuGouter, fruitsMurs, partsAuFrigoDemain, midiDeDemain, type DejeunerDuStock, type Fournee, type MidiDeDemain } from "./repas";
 import { marque, SEUIL_A_MANGER } from "./axe";
-import { Depot, horlogesDu, type LigneDepot, type LotInitial } from "./depot";
+import { bandRepas, Depot, horlogesDu, type LigneDepot, type LotInitial } from "./depot";
 import { ceQuiEstIci, ceQuiManque, ceQueLaCarteDitIci, suffitAuStock, type Article } from "./ici";
 import { HEURE } from "./heures";
 import type { Jeu } from "./jeu";
@@ -94,6 +94,14 @@ export const JOURS_DE_VARIETE = 3;
  * coûtent la même chose ce soir.
  */
 export const POIDS = {
+  /** T198 — le plat range au congélateur ce qui y est déjà (un bouillon, le même
+   *  reste) : le refaire remplit un sac de plus au lieu d'en vider un. */
+  dejaAuCongelo: -4,
+  /** T198 — viande ou poisson, quand les `JOURS_SANS_ANIMAL` derniers soirs n'en
+   *  ont pas eu. L'année simulée du 24/11 : 13 dîners de viande et 16 de
+   *  poisson pour 137 de légumineuses — « la viande et le poisson ne sont
+   *  jamais proposés ». Pas une conversion : un retour dans la rotation. */
+  viandePoisson: 3,
   /** Mangé il y a moins de trois jours. Un malus, pas un filtre : le foyer
    *  répète ses plats, et un plat d'avant-hier vaut mieux que pas de dîner. */
   recent: -6,
@@ -127,7 +135,10 @@ export const POIDS = {
 } as const;
 
 /** T135 — la mémoire longue de la rotation. */
-export const JOURS_DE_ROTATION = 14;
+export const JOURS_DE_ROTATION = 21;
+/** T198 — sans viande ni poisson depuis ce nombre de soirs, ils remontent. */
+export const JOURS_SANS_ANIMAL = 3;
+const ANIMALES = new Set(["viande-blanche", "viande-rouge", "poisson"]);
 export const JOURS_DE_FORMAT = 2;
 export const JOURS_D_OUBLI = 30;
 
@@ -485,12 +496,48 @@ function lotMange(depot: Depot, l: LigneDepot, date: Date): LotMange {
 }
 
 /**
+ * Au-delà de ces repas de restes au congélateur, le plus ancien presse — T198.
+ *
+ * L'ANNÉE SIMULÉE (24/11) : un reste congelé ne pressait qu'à mi-vie, 45 jours.
+ * Chaque dîner en rangeait un ou deux, et le congélateur montait à 65 repas
+ * au printemps — les vingt sacs pris, « Boîtes pleines » un soir sur deux, et
+ * 78 restes jetés à 90 jours. Une cuisine au par tient un congélateur qui
+ * TOURNE : passé une semaine de dîners d'avance, le plus ancien sort d'abord.
+ */
+export const CONGELO_CHARGE = 6;
+
+interface PressionDuCongelo {
+  /** Sortis hier soir (le geste du cockpit) : au frigo depuis, à finir ce soir. */
+  sortis: ReadonlySet<string>;
+  /** Le plus ancien reste du congélateur quand il dépasse `CONGELO_CHARGE`. */
+  plusAncien: LigneDepot | null;
+}
+const PAS_DE_PRESSION: PressionDuCongelo = { sortis: new Set(), plusAncien: null };
+
+/** Le reste le plus ancien du congélateur, s'il y en a plus de `CONGELO_CHARGE`
+ *  repas. Les goûters et le pain des routines n'en sont pas : ils ont leur
+ *  propre compte (`gouterAuCongelo`, `PLAFOND_GOUTERS`). */
+function plusAncienSiCharge(lignes: readonly LigneDepot[], routine: ReadonlySet<string>): LigneDepot | null {
+  const restes = lignes
+    .filter((l) => l.location === "congelo" && l.kind === "reste-plat" && !routine.has(l.type))
+    .sort((a, b) => (a.born?.getTime() ?? 0) - (b.born?.getTime() ?? 0));
+  const repas = restes.reduce((n, l) => n + bandRepas(l.band), 0);
+  return repas > CONGELO_CHARGE ? restes[0] ?? null : null;
+}
+
+/**
  * Ce qui presse dans le dépôt, et ce qui attend : un reste au frigo presse
  * toujours (il a une horloge de quelques jours et il est déjà cuisiné) ; un lot
  * qui a franchi la moitié de sa vie presse ; le reste attend.
  */
-function presseLeLot(depot: Depot, l: LigneDepot, date: Date): boolean {
-  if (l.location === "congelo") return marque(depot.vie(l, date)?.fraction ?? null) !== "";
+function presseLeLot(depot: Depot, l: LigneDepot, date: Date, congelo: PressionDuCongelo = PAS_DE_PRESSION): boolean {
+  if (l.location === "congelo") {
+    // T198 — SORTI HIER SOIR, IL A DÉGELÉ : il ne retourne pas au congélateur.
+    if (congelo.sortis.has(l.type)) return true;
+    // T198 — LE CONGÉLATEUR SE CHARGE : le plus ancien reste passe devant.
+    if (congelo.plusAncien?.type === l.type) return true;
+    return marque(depot.vie(l, date)?.fraction ?? null) !== "";
+  }
   if (l.kind === "reste-plat") return true;
   return (depot.vie(l, date)?.fraction ?? 0) >= SEUIL_A_MANGER;
 }
@@ -550,9 +597,18 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
   // vivant, du plus pressé au moins. Un lot périmé ne s'y dit pas — c'est la
   // tâche « à jeter » de T103 qui le porte.
   const vivants = depot.lignes.filter((l) => !l.epuise && !depot.perime(l, date));
+  const routine = new Set(catalogue.creneaux.routines?.liste.flatMap((r) => r.duDepot?.types ?? []) ?? []);
+  // T198 — viande ou poisson ces derniers soirs ?
+  const animalRecent = (e.mange ?? []).some((m) => {
+    const d = ecart(m.jour, isoLocal(maintenant));
+    if (d <= 0 || d > JOURS_SANS_ANIMAL) return false;
+    return ANIMALES.has(catalogue.plats.find((x) => x.id === m.plat)?.apports.proteine ?? "");
+  });
+  const auCongelo = new Set(vivants.filter((l) => l.location === "congelo").map((l) => l.type));
+  const pression: PressionDuCongelo = { sortis, plusAncien: plusAncienSiCharge(vivants, routine) };
   const attend = vivants
     .filter((l) => l.kind === "reste-plat" || l.kind === "base")
-    .map((l) => ({ l, presse: presseLeLot(depot, l, date), f: depot.vie(l, date)?.fraction ?? 0 }))
+    .map((l) => ({ l, presse: presseLeLot(depot, l, date, pression), f: depot.vie(l, date)?.fraction ?? 0 }))
     .sort((a, b) => Number(b.presse) - Number(a.presse) || b.f - a.f)
     .map((x) => lotMange(depot, x.l, date));
 
@@ -604,7 +660,7 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
       }
       const l = lotDe(a.id);
       if (!l) continue;
-      if (!presse && presseLeLot(depot, l, date)) presse = lotMange(depot, l, date);
+      if (!presse && presseLeLot(depot, l, date, pression)) presse = lotMange(depot, l, date);
       else if (!attendIci) attendIci = lotMange(depot, l, date);
     }
 
@@ -623,6 +679,8 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
 
     let score = 0;
     if (recent) score += POIDS.recent;
+    if (p.emits.some((x) => x.congelo && auCongelo.has(x.type))) score += POIDS.dejaAuCongelo;
+    if (ANIMALES.has(p.apports.proteine ?? "") && !animalRecent) score += POIDS.viandePoisson;
     if (attendIci && !presse) score += POIDS.attend;
     if (p.apports.proteine === "legumineuse" || p.apports.feculent === "legumineuse")
       score += POIDS.legumineuse;

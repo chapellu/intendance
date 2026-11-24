@@ -93,7 +93,9 @@ describe("suggerer — des noms canoniques, rien qui ne s'achète pas", () => {
     expect(bannis).toEqual([]);
   });
   test("POIREAU n'appelle pas les poires ; CAROTTES n'appelle que les carottes", () => {
-    expect(ids("POIREAU VRAC")).toEqual(["poireau"]);
+    // T198 — les poireaux surgelés du fond peuvent suivre ; le frais d'abord, jamais les poires.
+    expect(ids("POIREAU VRAC")[0]).toBe("poireau");
+    expect(ids("POIREAU VRAC")).not.toContain("poires");
     expect(ids("CAROTTES VRAC")[0]).toBe("carottes");
     expect(ids("CAROTTES VRAC")).not.toContain("petits-pois-carottes");
     expect(ids("CAROTTE DES SABLES")[0]).toBe("carottes"); // singulier → pluriel

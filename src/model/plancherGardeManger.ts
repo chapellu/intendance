@@ -65,6 +65,7 @@
 //    restera : c'est ce trou-là que le canal d'achat referme, et l'apéro n'en
 //    est que le cas nommé.
 
+import { POIDS_PIECE } from "./unites";
 import { classeDe, contexte } from "./journal";
 import type { Classe, EtatIngredient, Rejeu } from "./journal";
 import type { Catalogue, Usage } from "./types";
@@ -422,7 +423,10 @@ export function unitesReelles(e: Pick<EtatIngredient, "lots" | "unites"> | null)
   if (!e.lots.length) return e.unites;
   return e.lots.reduce((n, l) => {
     if (l.entame == null) return n + l.unites;
-    const pu = l.parUnite && (l.parUnite.unit === "g" || l.parUnite.unit === "ml") ? l.parUnite.amount : null;
+    // T198 — une boîte de pièces entamée aussi : 14 sacs sur 20, 2 œufs sur 6.
+    // Une pièce qui a un poids s'entame en grammes (`journal.contenuUnite`).
+    const parPiece = l.parUnite?.unit === "pièce" ? (POIDS_PIECE[l.ingredient] ?? 1) : 1;
+    const pu = l.parUnite && (l.parUnite.unit === "g" || l.parUnite.unit === "ml" || l.parUnite.unit === "pièce") ? l.parUnite.amount * parPiece : null;
     return n + l.unites + (pu ? Math.min(1, l.entame / pu) : 1);
   }, 0);
 }

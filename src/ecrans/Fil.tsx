@@ -30,7 +30,7 @@ import { indexDuCreneau, jourISO } from "../db";
 import { useCatalogue, useSavoir, useSemaine } from "../db/hooks";
 import { cleRepioche, poserReglage, useNombre, useObjet } from "../db/reglages";
 import {
-  CLE_FIL, CRANS, cleDuPas, decidesDuFil, itineraire, pasSuivant, perimesDuFil, premierPas,
+  CLE_FIL, CRANS, cleDuPas, decidesDuFil, itineraire, jusquAuxCourses, pasSuivant, perimesDuFil, premierPas,
   type Fil as Passe,
 } from "../model/fil";
 import { SAUTE, type Jeu } from "../model/jeu";
@@ -38,6 +38,7 @@ import { JOURS_VISIBLES } from "../nav/jours";
 import { contexte } from "../model/journal";
 import { questions } from "../model/questions";
 import { main, offre, type Savoir } from "../model/scoring";
+import { JOURS_DE_COURSES } from "../model/pause";
 import { chemin, type CleCreneau } from "../nav/routes";
 import { aller } from "../nav/useRoute";
 import { Demande, Jouable } from "../ui/Cartes";
@@ -131,8 +132,8 @@ function Perimee() {
  * précis où on voulait juste commencer. Cinq boutons se répondent du pouce.
  */
 function Ouverture({ jeu }: { jeu: Jeu }) {
-  const demarrer = (horizon: number) => {
-    const creneaux = itineraire(jeu, horizon);
+  const demarrer = (horizon: number, choisis?: CleCreneau[]) => {
+    const creneaux = choisis ?? itineraire(jeu, horizon);
     if (!creneaux.length) return;
     void poserReglage(CLE_FIL, { horizon, creneaux } satisfies Passe).then(() =>
       aller({ ecran: "fil", creneau: creneaux[0]! }),
@@ -140,6 +141,7 @@ function Ouverture({ jeu }: { jeu: Jeu }) {
   };
 
   const libres = itineraire(jeu, 99).length;
+  const courses = jusquAuxCourses(jeu, JOURS_DE_COURSES);
   // CE SOIR D'ABORD — T128. La porte de la facette ouvrait sur une passe de
   // planification ; le foyer ne planifie pas, il décide à 15 h pour 18 h. La
   // passe reste, en dessous : c'est « prévoir plusieurs repas », que
@@ -157,6 +159,18 @@ function Ouverture({ jeu }: { jeu: Jeu }) {
         {soir ? "Pour prévoir plusieurs repas d’un coup : on" : "On"} les choisit un par un, dans
         l’ordre.
       </p>
+
+      {/* T198 — LE MATIN DES COURSES, les dîners jusqu'aux suivantes : leur frais
+          part sur la liste qu'on va lire au magasin. */}
+      {courses && courses.creneaux.length ? (
+        <button
+          className="btn btn-primary btn-block"
+          style={{ marginBottom: "var(--space-3)" }}
+          onClick={() => demarrer(courses.creneaux.length, courses.creneaux)}
+        >
+          {`Jusqu’aux courses de ${courses.jusqua} · ${courses.creneaux.length} dîner${courses.creneaux.length > 1 ? "s" : ""}`}
+        </button>
+      ) : null}
 
       <div className="co-crans">
         {CRANS.map((n) => (

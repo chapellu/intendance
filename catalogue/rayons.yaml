@@ -50,6 +50,9 @@ centraux:
   ids:
     # T187 — sorti de la poissonnerie (rayon surgelés), il reste le poisson.
     - colin-surgele
+    - boeuf-hache-congele
+    - poulet-filets-congeles
+    - saumon-congele
     # Légumineuses et céréales sèches
     - lentilles-seches
     - pois-chiches
@@ -367,6 +370,8 @@ rayons:
     # pour sa digestibilité, pas pour son goût, et les deux ne se remplacent pas.
     - tofu-lactofermente
   épicerie:
+    # T198 — les sacs de congélation : jetés après usage, rachetés par la liste.
+    - sacs-congelation
     # Arrivés avec le blog Saines Gourmandises (T196).
     - vin-rouge
     - creme-avoine
@@ -635,6 +640,7 @@ rayons:
   # saisons que le sachet du congélateur est « hors saison » en novembre.
   surgelés:
     - epinards-surgeles
+    - herbes-surgelees
     - petits-pois-surgeles
     - haricots-verts-surgeles
     - champignons-surgeles
@@ -643,6 +649,21 @@ rayons:
     # stock, il finissait au frigo. Son rayon dit sa porte, donc il vit ici ;
     # il reste central par `centraux.ids` (le poisson d'un plat de poisson).
     - colin-surgele
+    # T198 — LA VIANDE ET LE POISSON DU FOND, AU CONGÉLATEUR : achetés frais (Grand
+    # Frais) et portionnés en sacs, ou achetés surgelés. Distincts du frais pour
+    # la même raison que les petits pois : ils ne tiennent pas trois jours mais
+    # des mois. Centraux par `centraux.ids`.
+    - boeuf-hache-congele
+    - poulet-filets-congeles
+    - saumon-congele
+    # T198 — les légumes d'été et du marché, surgelés : le dîner de courgettes
+    # se fait en février, et un soir sans courses.
+    - courgettes-surgelees
+    - poivrons-surgeles
+    - aubergines-surgelees
+    - poireaux-surgeles
+    - moules-surgelees
+    - pain-levain-congele
 
 placard:
   - huile-olive
@@ -740,6 +761,16 @@ noms:
   cocktail-fruits: cocktail de fruits
   cointreau: liqueur d'agrume
   colin-surgele: colin surgelé
+  sacs-congelation: sacs de congélation
+  courgettes-surgelees: courgettes (surgelées)
+  poivrons-surgeles: poivrons en lanières (surgelés)
+  aubergines-surgelees: aubergines grillées (surgelées)
+  poireaux-surgeles: poireaux émincés (surgelés)
+  moules-surgelees: moules (surgelées)
+  pain-levain-congele: pain au levain tranché (congelé)
+  boeuf-hache-congele: bœuf haché (congelé)
+  poulet-filets-congeles: filets de poulet (congelés)
+  saumon-congele: pavés de saumon (congelés)
   comte: comté
   concentre-tomate: concentré de tomate
   confiture-fraise: confiture de fraises
@@ -810,6 +841,7 @@ noms:
   gruau-avoine: gruau d'avoine
   grue-cacao: grué de cacao
   herbes-provence: herbes de Provence
+  herbes-surgelees: herbes surgelées
   huile-coco: huile de coco
   huile-essentielle-citron: huile essentielle de citron
   huile-essentielle-menthe: huile essentielle de menthe

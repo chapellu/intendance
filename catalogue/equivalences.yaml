@@ -54,6 +54,11 @@ equivalences:
       - {id: ail, nom: "ail", ratio: 1, unites: [gousse]}
 
   # ── Le frais qui a un cousin à l'étal
+  # T198 — le fond tient « une courge (butternut ou potimarron) » : la recette
+  # qui nomme le potimarron prend la courge du placard.
+  potimarron:
+    par:
+      - {id: courge, nom: "courge (butternut ou autre)", ratio: 1}
   tomates-roma:
     par:
       - {id: tomates, nom: "tomates", ratio: 1}
@@ -150,3 +155,76 @@ equivalences:
     evite: true
     par:
       - {id: beurre, nom: "beurre", ratio: 1, unites: [g]}
+
+  # ── EXPÉRIENCE (2026-11-23) — les herbes fraîches, garniture de 50 dîners du
+  # corpus, se tiennent au congélateur : persil, ciboulette, basilic ciselés,
+  # « l'équivalent » dans l'unité de la ligne (un petit bouquet ciselé).
+  persil:
+    par:
+      - {id: herbes-surgelees, nom: "herbes ciselées surgelées", ratio: 1}
+  ciboulette:
+    par:
+      - {id: herbes-surgelees, nom: "herbes ciselées surgelées", ratio: 1}
+  basilic:
+    par:
+      - {id: herbes-surgelees, nom: "herbes ciselées surgelées", ratio: 1}
+  herbes-fraiches:
+    par:
+      - {id: herbes-surgelees, nom: "herbes ciselées surgelées", ratio: 1}
+
+  # ── T198 — le placard a une huile : l'huile neutre d'une poêlée se fait à l'olive
+  huile-tournesol:
+    par:
+      - {id: huile-olive, nom: "huile d'olive", ratio: 1}
+
+  # ── T198 — LA VIANDE ET LE POISSON DU CONGÉLATEUR (24/11 : « la viande et le
+  # poisson ne sont jamais proposés »). Sans eux au fond, chaque plat de viande
+  # demandait un achat, et un jour sans courses n'en proposait aucun : 13 dîners
+  # de viande sur l'année simulée, pour 66 au catalogue. Au poids seulement.
+  boeuf-hache:
+    par:
+      - {id: boeuf-hache-congele, nom: "bœuf haché du congélateur", ratio: 1, unites: [g]}
+  porc-hache:
+    par:
+      - {id: boeuf-hache-congele, nom: "bœuf haché du congélateur", ratio: 1, unites: [g]}
+  agneau-hache:
+    par:
+      - {id: boeuf-hache-congele, nom: "bœuf haché du congélateur", ratio: 1, unites: [g]}
+  poulet-filets:
+    par:
+      - {id: poulet-filets-congeles, nom: "filets de poulet du congélateur", ratio: 1, unites: [g]}
+  saumon:
+    par:
+      - {id: saumon-congele, nom: "pavés de saumon du congélateur", ratio: 1, unites: [g]}
+  poisson-blanc:
+    par:
+      - {id: colin-surgele, nom: "colin surgelé", ratio: 1, unites: [g, kg]}
+
+  # ── T198 — LE FRAIS QUI A UNE FORME QUI SE GARDE (24/11 : « ajoute-les
+  # tous »). 64 % de ce qui empêchait un dîner de se faire sans courses était
+  # un produit frais ; ces formes-ci tiennent des mois au congélateur. Sans
+  # `unites` : une courgette de la recette est « une courgette » du sachet.
+  courgettes:
+    par:
+      - {id: courgettes-surgelees, nom: "courgettes surgelées", ratio: 1}
+  poivron:
+    par:
+      - {id: poivrons-surgeles, nom: "poivrons en lanières surgelés", ratio: 1}
+  aubergine:
+    par:
+      - {id: aubergines-surgelees, nom: "aubergines grillées surgelées", ratio: 1}
+  poireau:
+    par:
+      - {id: poireaux-surgeles, nom: "poireaux émincés surgelés", ratio: 1}
+  pousses-epinards:
+    par:
+      - {id: epinards-surgeles, nom: "épinards surgelés", ratio: 1}
+  moules:
+    par:
+      - {id: moules-surgelees, nom: "moules surgelées", ratio: 1}
+  pain-levain:
+    par:
+      - {id: pain-levain-congele, nom: "pain au levain du congélateur", ratio: 1}
+  tomme-savoie:
+    par:
+      - {id: cantal, nom: "cantal", ratio: 1}

@@ -8,6 +8,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, test } from "vitest";
 import { lireCatalogue } from "./catalogue";
 import {
+  jusquAuxCourses,
   CRANS, cleDuPas, decidesDuFil, itineraire, pasSuivant, perimesDuFil, premierPas, type Fil,
 } from "./fil";
 import { creerJeu, SAUTE, type Jeu } from "./jeu";
@@ -218,5 +219,19 @@ describe("une passe que la semaine a dépassée", () => {
     const suite = premierPas(fil, decidesDuFil(vendredi, fil), enjambes);
     expect(suite).not.toBeNull();
     expect(enjambes.has(cleDuPas(suite!))).toBe(false);
+  });
+});
+
+describe("T198 — jusqu'aux prochaines courses", () => {
+  const jdc = ["mercredi", "samedi"];
+  test("le samedi : quatre dîners, jusqu'au mercredi", () => {
+    const r = jusquAuxCourses(creerJeu(catalogue, 7, new Date("2026-10-24T09:30:00")), jdc)!;
+    expect(r.jusqua).toBe("mercredi");
+    expect(r.creneaux.map((c) => c.jour)).toEqual(["2026-10-24", "2026-10-25", "2026-10-26", "2026-10-27"]);
+    expect(r.creneaux.every((c) => c.repas === "diner")).toBe(true);
+  });
+  test("le mercredi : trois dîners, jusqu'au samedi ; un lundi : rien", () => {
+    expect(jusquAuxCourses(creerJeu(catalogue, 7, new Date("2026-10-21T09:30:00")), jdc)!.creneaux).toHaveLength(3);
+    expect(jusquAuxCourses(creerJeu(catalogue, 7, new Date("2026-10-26T09:30:00")), jdc)).toBeNull();
   });
 });

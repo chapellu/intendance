@@ -92,6 +92,11 @@ export function contenuDUnite(unite: string): Quantite | null {
   if (ml) return { amount: nombre(ml[1]!), unit: "ml" };
   const pieces = /\bde\s+(\d+)\s*$/i.exec(unite);
   if (pieces) return { amount: nombre(pieces[1]!), unit: "pièce" };
+  // UNE PIÈCE ACHETÉE À LA PIÈCE EST UNE PIÈCE. Sans contenu, une banane se
+  // comptait comme un paquet sec : le premier petit-déjeuner l'« entamait », le
+  // second la finissait — une banane pour deux matins, et la ligne de la
+  // semaine revenait tous les dix jours (année simulée des cinq repas).
+  if (/^\s*pièces?\b/i.test(unite)) return { amount: 1, unit: "pièce" };
   return null;
 }
 

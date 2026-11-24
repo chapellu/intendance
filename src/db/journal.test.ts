@@ -138,6 +138,18 @@ describe("marquer deux fois « fait » ne décrémente pas deux fois", () => {
   });
 });
 
+describe("une cuisson hors créneau (un plat lu dans Recettes) n'occupe aucun repas", () => {
+  test("l'apéro du vendredi ne fait pas « déjà noté » le dîner : il se note, et le dîner aussi", async () => {
+    await journaliserCuisson(base, { jour: "2026-09-04", repas: "diner", plat: pates, parts: 4, horsCreneau: true });
+    expect(await dejaCuisine(base, "2026-09-04", "diner")).toBe(false);
+    await journaliserCuisson(base, { jour: "2026-09-04", repas: "diner", plat: bolognaise, parts: 4 });
+    expect(await dejaCuisine(base, "2026-09-04", "diner")).toBe(true);
+    const cuissons = (await lireJournal(base)).filter((e) => e.sorte === "cuisine");
+    expect(cuissons).toHaveLength(2);
+    expect(cuissons.filter((e) => e.sorte === "cuisine" && e.horsCreneau)).toHaveLength(1);
+  });
+});
+
 describe("T87 — ce qu'on vient de cuisiner refroidit au frigo", () => {
   // LE COMMENTAIRE DISAIT VRAI, LE CODE ÉCRIVAIT FAUX, ET PERSONNE NE LES
   // COMPARAIT. `journaliserCuisson` annonçait depuis T26 « `location: "frigo"`

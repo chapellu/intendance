@@ -15,6 +15,7 @@ import {
   type LotMange,
   type PropositionDuSoir,
 } from "../model/pause";
+import { bandRepas } from "../model/depot";
 import { nomDuType } from "../model/plancher";
 import { duree, hhmm } from "../ui/format";
 import { bandeEnMots } from "../ui/phrases";
@@ -169,7 +170,25 @@ export function chapeau(p: PropositionDuSoir): string {
  * DEUX, PARCE QUE LA LIGNE TIENT SUR UN TÉLÉPHONE ; l'inventaire porte le reste.
  */
 export function ceQuiAttend(lots: readonly LotMange[]): string {
-  return lots.slice(0, 2).map(phraseDuLot).join(" · ");
+  return regrouper(lots).slice(0, 2).map(phraseDuLot).join(" · ");
+}
+
+/**
+ * DEUX SACHETS DU MÊME BOUILLON SONT UN SEUL « 4 REPAS ». Le congélateur range
+ * par sachets ; la phrase, elle, répond à « qu'est-ce qu'il y a » — et l'année
+ * simulée lisait « 2 repas de bouillon de fanes au congélo · 2 repas de bouillon
+ * de fanes au congélo » au cockpit. Au congélateur, les lots d'un même type
+ * s'additionnent ; au frigo, le plus pressé parle pour les autres.
+ */
+function regrouper(lots: readonly LotMange[]): LotMange[] {
+  const out: LotMange[] = [];
+  for (const l of lots) {
+    const deja = out.find((x) => x.type === l.type && x.location === l.location);
+    if (!deja) { out.push({ ...l }); continue; }
+    if (l.location === "congelo") deja.band = `${bandRepas(deja.band) + bandRepas(l.band)}-repas`;
+    deja.joursRestants = Math.min(deja.joursRestants, l.joursRestants);
+  }
+  return out;
 }
 
 /**
