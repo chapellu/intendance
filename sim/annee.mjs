@@ -317,7 +317,9 @@ async function passe(j, nRepas, ev, stats) {
   // Une passe finie ou en cours reste ouverte : on la ferme pour en ouvrir une.
   const fin = page.getByRole("button", { name: "Poser un plat de plus" });
   if (await fin.count()) { await tap(fin); await page.waitForTimeout(500); }
-  const bouton = page.getByRole("button", { name: `${nRepas} repas`, exact: true });
+  const bouton = nRepas === "courses"
+    ? page.getByRole("button", { name: /^Jusqu’aux courses/ })
+    : page.getByRole("button", { name: `${nRepas} repas`, exact: true });
   if (!(await bouton.count())) {
     // Pas l'écran « combien ? » : une passe en cours. On la poursuit.
     stats.passeReprise = (stats.passeReprise ?? 0) + 1;
@@ -1298,7 +1300,7 @@ async function journee2(idx) {
   // RECHARGE QUE PAR LA LISTE DE L'APP (T134) : aucun réassort côté harnais.
   if (!absent && PLAN && JOURS_COURSES.includes(dow)) {
     await page.clock.setFixedTime(new Date(`${j}T09:30:00`));
-    await passe(j, soirsJusquAuxCourses(dow), ev, stats).catch((e) => note(j, "plan", `passe impossible : ${String(e).slice(0, 120)}`));
+    await passe(j, "courses", ev, stats).catch((e) => note(j, "plan", `passe impossible : ${String(e).slice(0, 120)}`));
   }
   if (!absent && JOURS_COURSES.includes(dow)) { await page.clock.setFixedTime(new Date(`${j}T10:00:00`)); await courses(j, ev, stats); stats.coursesDuMatin = stats.articles; stats.listeMatin = stats.liste; }
 

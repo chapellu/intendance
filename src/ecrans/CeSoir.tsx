@@ -115,7 +115,7 @@ export function useProposition(jeu: Jeu | null): PropositionDuSoir | null {
     const mange = evts.flatMap((e) => (e.sorte === "cuisine" ? [{ plat: e.plat, jour: e.jour }] : []));
     // LES BOÎTES PROPRES, après ce que le dépôt occupe : c'est elles qui disent
     // si demain midi se prend au dîner (T142).
-    const sacs = sacsEnReserve(savoir.rejeu);
+    const sacs = sacsEnReserve(savoir.rejeu, jeu.catalogue);
     const libres = contenantsLibres(jeu.catalogue.foyer, lotsEnBoites(jeu.catalogue, jeu.stock, maintenant),
       sacs == null ? new Map() : new Map([[SACS, sacs]]));
     return proposerCeSoir({ jeu, savoir, recents, maintenant, sortis, mange, libres });

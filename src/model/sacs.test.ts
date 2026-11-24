@@ -9,6 +9,7 @@ import { describe, expect, test } from "vitest";
 import { contenantsLibres } from "../ecrans/sortie.vue";
 import { lireCatalogue } from "./catalogue";
 import { contexte, rejouer, SACS, sacsEnReserve, type Evenement } from "./journal";
+import { sousLeurPlancher } from "./plancherGardeManger";
 import type { Catalogue } from "./types";
 
 const catalogue: Catalogue = lireCatalogue(JSON.parse(readFileSync("public/cuisine-data.json", "utf8")));
@@ -31,6 +32,16 @@ describe("les sacs de congélation se dépensent", () => {
   test("une boîte de 20 rentrée, deux cuissons en rangent 2 et 3 : il en reste 15", () => {
     const r = rejouer(catalogue, [boite("2026-11-02"), cuisson("2026-11-03", 2), cuisson("2026-11-04", 3, 3)], ctx, "2026-11-05");
     expect(sacsEnReserve(r)).toBe(15);
+  });
+
+  test("« En garder 1 » ne dit pas la taille : la boîte du fond fait 20 sacs, et la liste les redemande", () => {
+    const garder: Evenement = { sorte: "entree", jour: "2026-11-02", saisi: "2026-11-02", maj: 1,
+      lignes: [{ ingredient: SACS, unites: 1, parUnite: null, zone: null, etat: "sec" }] };
+    expect(sacsEnReserve(rejouer(catalogue, [garder], ctx, "2026-11-02"), catalogue)).toBe(20);
+    const r = rejouer(catalogue, [garder, cuisson("2026-11-03", 6)], ctx, "2026-11-04");
+    expect(sacsEnReserve(r, catalogue)).toBe(14);
+    const ligne = sousLeurPlancher(catalogue, r, [{ ingredient: SACS, niveau: 1 }]).find((l) => l.ingredient === SACS);
+    expect(ligne).toBeDefined();
   });
 
   test("congeler une denrée du frigo prend un sac", () => {

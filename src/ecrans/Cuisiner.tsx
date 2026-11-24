@@ -620,7 +620,7 @@ function Sortie({
 }) {
   // T198 — LES SACS QUI RESTENT AU STOCK : un sac rangé ne revient pas.
   const placard = usePlacard(catalogue ?? null);
-  const enReserve = placard ? sacsEnReserve(placard) : null;
+  const enReserve = placard ? sacsEnReserve(placard, catalogue) : null;
   const v = vueDeLaSortie(p, parts, f, foyer, stock, sachets, enReserve == null ? new Map() : new Map([[SACS, enReserve]]));
   // « J'AI FAIT AUTREMENT » POSE LA QUESTION, au lieu de fermer la recette sur
   // un rangement que personne n'a dit (le frigo par défaut). Puis il montre ce

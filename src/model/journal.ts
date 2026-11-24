@@ -586,14 +586,21 @@ const PIECE = "pièce";
  */
 export const SACS = "sacs-congelation";
 
+/** Le contenu d'une unité d'achat, dit par `fond.yaml` (« boîte de 20 »). */
+function contenuDuFond(catalogue: Catalogue, id: string): Quantite | null {
+  const d = catalogue.fond?.denrees.find((x) => x.ingredient === id);
+  return d ? contenuDUnite(d.unite) : null;
+}
+
 /** Les sacs qui restent au stock selon le rejeu — `null` : jamais rentrés ni
  *  relevés, l'app n'en sait rien (le foyer en a, sans les avoir comptés). */
-export function sacsEnReserve(rejeu: Pick<Rejeu, "parIngredient">): number | null {
+export function sacsEnReserve(rejeu: Pick<Rejeu, "parIngredient">, catalogue?: Catalogue): number | null {
   const e = rejeu.parIngredient.get(SACS);
   if (!e) return null;
+  const parBoite = catalogue ? contenuDuFond(catalogue, SACS) : null;
   // En pièces : une boîte de 20 est vingt sacs, l'entamée compte ce qui lui reste.
   return e.lots.reduce((n, l) => {
-    const par = contenuUnite(l, "pièce");
+    const par = contenuUnite(l.parUnite || !parBoite ? l : { ...l, parUnite: parBoite }, "pièce");
     return n + (par == null ? l.unites : l.unites * par + (l.entame ?? 0));
   }, 0);
 }
@@ -1132,9 +1139,12 @@ export function rejouer(
   );
 
   /** T198 — un sac de congélation sert une fois : il sort du stock. */
+  const sacsParBoite = contenuDuFond(catalogue, SACS);
   const prendreDesSacs = (n: number) => {
     const l = lots.get(SACS);
     if (!l || l.length === 0) return;
+    // « En garder 1 » ne dit pas la taille de la boîte : c'est celle du fond.
+    for (const x of l) if (!x.parUnite && sacsParBoite) x.parUnite = sacsParBoite;
     retirer(l, SACS, n, PIECE);
     if (l.length === 0) lots.delete(SACS);
   };

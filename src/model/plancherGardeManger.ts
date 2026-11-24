@@ -422,7 +422,8 @@ export function unitesReelles(e: Pick<EtatIngredient, "lots" | "unites"> | null)
   if (!e.lots.length) return e.unites;
   return e.lots.reduce((n, l) => {
     if (l.entame == null) return n + l.unites;
-    const pu = l.parUnite && (l.parUnite.unit === "g" || l.parUnite.unit === "ml") ? l.parUnite.amount : null;
+    // T198 — une boîte de pièces entamée aussi : 14 sacs sur 20, 2 œufs sur 6.
+    const pu = l.parUnite && (l.parUnite.unit === "g" || l.parUnite.unit === "ml" || l.parUnite.unit === "pièce") ? l.parUnite.amount : null;
     return n + l.unites + (pu ? Math.min(1, l.entame / pu) : 1);
   }, 0);
 }
