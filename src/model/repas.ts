@@ -410,6 +410,16 @@ export const typesDuGouter = (catalogue: Catalogue): ReadonlySet<string> =>
 /** Sous ce nombre de goûters au congélateur, la pause propose une fournée. */
 export const SEUIL_FOURNEE = 3;
 
+/**
+ * Au-delà de ces goûters au congélateur, AUCUNE fournée pour des fruits mûrs —
+ * T198 (24/11). L'année simulée : la fournée « les bananes passent » se
+ * lançait quel que soit le stock, pourvu que le congélateur n'ait pas déjà
+ * CETTE recette — banana bread sur compote sur cookies, jusqu'à 60 goûters
+ * congelés au printemps, et 20 jetés à 90 jours. Une semaine et demie de
+ * goûters, c'est assez : les fruits mûrs vont au porridge, au dessert.
+ */
+export const PLAFOND_GOUTERS = 2 * SEUIL_FOURNEE + 4;
+
 /** Sous ce nombre de matins de pain maison, la pause propose le pain — T144. */
 export const SEUIL_PAIN = 3;
 
@@ -664,7 +674,7 @@ export function fourneeAProposer(
   // SANS BESOIN DE GOÛTERS, seule une recette qui finit les fruits mûrs a sa
   // place — et pas celle que le congélateur a déjà, ni celle de ces derniers
   // jours (T146 : la compote relancée six jours sur sept, le congélo plein).
-  const gouter = bas || murs.length
+  const gouter = bas || (murs.length && restants < PLAFOND_GOUTERS)
     ? candidats("gouter").find((c) => bas || (c.fruits.length > 0 && !c.deja && !c.recente))
     : undefined;
   if (!gouter) return null;

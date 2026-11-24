@@ -17,6 +17,7 @@ import {
   estUneFournee,
   evenementsDesRoutines,
   fourneeAProposer,
+  PLAFOND_GOUTERS,
   fruitsAuDelaDuGouter,
   lotsEnBoites,
   midisDuFrigo,
@@ -242,6 +243,11 @@ describe("la fournée, proposée à la pause", () => {
     expect(f).toMatchObject({ raison: "fruits-murs", fruits: ["banane"] });
     expect(f.plat.id).toBe("banana-bread-avoine");
     expect(phraseDeFournee(f)).toContain("les bananes sont mûres");
+  });
+
+  test(`T198 — au-delà de ${PLAFOND_GOUTERS} goûters congelés, les fruits mûrs ne relancent aucune fournée`, () => {
+    const plein = [pain, congelo("cookies-pralines-son-avoine", "6-repas"), congelo("compote-maison", "6-repas")];
+    expect(fourneeAProposer(catalogue, plein, ["banane"], ici)).toBeNull();
   });
 
   test("T146 — une banane rentrée il y a cinq jours passe ; il y a quatre, non", () => {

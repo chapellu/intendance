@@ -23,7 +23,7 @@ import {
   scoreSaison,
   TAILLE,
   type CarteDuSoir,
-  type PropositionDuSoir, sansLuiPasDePlat } from "./pause";
+  type PropositionDuSoir, sansLuiPasDePlat, CONGELO_CHARGE } from "./pause";
 import { PASSE_VIDE } from "./questions";
 import { offre, type Savoir } from "./scoring";
 import type { Catalogue } from "./types";
@@ -598,6 +598,22 @@ describe("trois heures ne décongèlent pas un bloc : ce qui demande la veille s
     });
     expect(proposition.aSortir).toEqual([]);
     expect(proposition.cartes[0]!.plat.id).toBe("reste-de-la-veille");
+  });
+});
+
+/* ═══════════════ T198 — un congélateur qui tourne (année simulée du 24/11) */
+
+describe("le congélateur chargé : le plus ancien reste passe devant", () => {
+  const sept = ["goulasch-boeuf", "lasagnes", "soupe-orge-petits-pois", "ratatouille", "dahl", "chili", "curry"];
+  test(`plus de ${CONGELO_CHARGE} repas au congélateur, un jeune reste presse déjà`, () => {
+    const stock = sept.map((t, i) => resteDe(t, veille(LUNDI, 5 + i), "congelo"));
+    const { proposition } = monde({ evts: [fondRentre(veille(LUNDI))], stock });
+    // Le plus ancien (curry, 11 jours) presse : il est en tête de ce qui attend.
+    expect(proposition.attend[0]!.type).toBe("curry");
+  });
+  test(`${CONGELO_CHARGE} repas ou moins : un reste de dix jours attend sans presser`, () => {
+    const { proposition } = monde({ evts: [fondRentre(veille(LUNDI))], stock: [resteDe("goulasch-boeuf", veille(LUNDI, 10), "congelo")] });
+    expect(proposition.cartes.some((c) => c.presse && "type" in c.presse && c.presse.type === "goulasch-boeuf")).toBe(false);
   });
 });
 
