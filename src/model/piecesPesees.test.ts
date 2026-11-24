@@ -5,6 +5,7 @@ import { describe, expect, test } from "vitest";
 import { lireCatalogue } from "./catalogue";
 import { contexte, rejouer, type Evenement } from "./journal";
 import { unitesReelles } from "./plancherGardeManger";
+import { ligneAvecRemplacant } from "../ecrans/cuisiner.vue";
 import type { Catalogue } from "./types";
 
 const catalogue: Catalogue = lireCatalogue(JSON.parse(readFileSync("public/cuisine-data.json", "utf8")));
@@ -32,5 +33,17 @@ describe("les pièces qui ont un poids", () => {
     const e = r.parIngredient.get("poireau")!;
     const pris = ligne.unit === "pièce" ? ligne.qty : ligne.qty / 150;
     expect(unitesReelles(e)).toBeCloseTo(4 - pris, 5);
+  });
+});
+
+describe("la fiche dit les grammes du sachet", () => {
+  test("2 courgettes prises surgelées : 400 g, et le rappel des 2 courgettes", () => {
+    const x = { id: "courgettes", nom: "courgettes", qty: 2, unit: "pièce", ref: "c" } as unknown as Parameters<typeof ligneAvecRemplacant>[0];
+    const r = ligneAvecRemplacant(x, { id: "courgettes-surgelees", ratio: 1 });
+    expect(r.ing).toMatchObject({ id: "courgettes-surgelees", qty: 400, unit: "g" });
+    expect(r.pieces).toBe(2);
+    // Le miel pour le sirop : la quantité du remplaçant, dans l'unité de la ligne.
+    const sirop = { ...x, id: "sirop-agave", unit: "c. à s." } as typeof x;
+    expect(ligneAvecRemplacant(sirop, { id: "miel", ratio: 1.5 })).toMatchObject({ ing: { qty: 3, unit: "c. à s." }, pieces: null });
   });
 });

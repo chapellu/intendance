@@ -6,6 +6,7 @@
 //
 // Port de `apps/proto-shell/comptoir.js` (`CHAUFFE`, `ecranCuisine`).
 
+import { POIDS_PIECE } from "../model/unites";
 import { retenir } from "../model/remplacants";
 import { commeIngredient, echelleTexte, quantiteACuire } from "../model/calcul";
 import { dejaLaPour, ROLES, type Choix, type Jeu } from "../model/jeu";
@@ -263,6 +264,27 @@ export function provenanceIngredient(
   const r = retenir(ing, (cid) => ou1(cid) !== null, alias, choisi);
   const p = ou1(alias(r.id)) ?? { label: "à acheter", acheter: true };
   return r.remplacant ? { ...p, avec: { id: r.id, nom: r.remplacant.nom, ratio: r.ratio } } : p;
+}
+
+/**
+ * La ligne telle qu'on la cuisine AVEC SON REMPLAÇANT — T198.
+ *
+ * « 2 courgettes » prises au sachet surgelé ne se comptent pas : elles se
+ * pèsent. Quand la recette compte à la pièce un légume qui a un poids
+ * (`POIDS_PIECE`) et que c'est un remplaçant qui sert, la fiche dit les
+ * grammes à sortir du sachet, et rappelle la pièce : « 400 g (2 courgettes) ».
+ * Sinon, la quantité du remplaçant dans l'unité de la ligne, comme avant.
+ */
+export function ligneAvecRemplacant(
+  x: Ingredient,
+  avec: { id: string; ratio: number } | undefined,
+  alias: (id: string) => string = (id) => id,
+): { ing: Ingredient; pieces: number | null } {
+  if (!avec) return { ing: x, pieces: null };
+  const poids = POIDS_PIECE[alias(x.id)];
+  if (poids != null && (x.unit === "pièce" || x.unit === "piece") && alias(avec.id) !== alias(x.id))
+    return { ing: { ...x, id: avec.id, qty: x.qty * avec.ratio * poids, unit: "g" }, pieces: x.qty };
+  return { ing: { ...x, id: avec.id, qty: x.qty * avec.ratio }, pieces: null };
 }
 
 /* ────────────────────────────────────────────────────────────────── le rôle */

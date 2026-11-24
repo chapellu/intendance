@@ -52,6 +52,7 @@ import {
   minuteur,
   minuteurUtile,
   miseEnPlace,
+  ligneAvecRemplacant,
   montrerMiseEnPlace,
   outilDe,
   phraseAussi,
@@ -81,6 +82,9 @@ import {
 
 /** Ce qu'est devenue la réponse de la sortie. */
 type Issue = "note" | "deja" | "hors";
+
+/** « 2 », « 1,5 » — des pièces, au demi près. */
+const fmtPieces = (n: number): string => String(Math.round(n * 2) / 2).replace(".", ",");
 
 export function Cuisiner({ creneau, plat }: { creneau: CleCreneau; plat?: string }) {
   const { catalogue } = useCatalogue();
@@ -986,8 +990,10 @@ function Ingredients({
         {p.ingredients.map((x) => {
           const prov = provenanceIngredient(jeu, x, { i, plat: p.id }, enStock, choix[x.ref]);
           const pris = prov.avec?.id ?? x.id;
-          // La quantité DU REMPLAÇANT : 3 c. à s. de miel pour 2 de sirop.
-          const xq = prov.avec ? { ...x, id: pris, qty: x.qty * prov.avec.ratio } : x;
+          // La quantité DU REMPLAÇANT : 3 c. à s. de miel pour 2 de sirop ; et
+          // T198, en grammes quand la pièce sort d'un sachet surgelé.
+          const avecR = ligneAvecRemplacant(x, prov.avec, (id) => jeu.catalogue.rayons.aliases[id] ?? id);
+          const xq = avecR.ing;
           // T167 — UN FOND PESÉ QUI NE SUFFIT PAS SE COMPLÈTE avec l'autre
           // option présente : « 200 g d'épeautre, puis 175 g de T110 ».
           const parts =
@@ -1050,6 +1056,9 @@ function Ingredients({
                 {complete
                   ? parts.map((pt) => `${Math.round(pt.qty)} g`).join(" + ")
                   : quantiteACuire(jeu.catalogue, xq, f)}
+                {avecR.pieces != null && !complete ? (
+                  <span className="co-soit">{` (${fmtPieces(avecR.pieces * f)} ${nomCourt(x.nom)})`}</span>
+                ) : null}
               </span>
               {/* « À ACHETER » SE TOUCHE : si on en a, on le dit ici même, et la
                   ligne passe au vert. L'eau n'a pas d'étiquette. */}
