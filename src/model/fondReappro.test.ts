@@ -248,7 +248,7 @@ describe("T136 — œufs, yaourts, fromage râpé : achetés par la liste, cuisi
     // T142 — le fond rentre 3 boîtes de 6 œufs (jusqu'à 4), un bloc de 400 g,
     // 3 packs de 4 yaourts (jusqu'à 9) : la liste remonte jusqu'au `jusqua`.
     // quiche-poireaux : 6 parts, 3 œufs, 80 g de fromage râpé
-    { ingredient: "oeufs", nom: "œufs", plat: "quiche-poireaux", parts: 6, avant: 5, apres: 6, manque: 4 },
+    { ingredient: "oeufs", nom: "œufs", plat: "quiche-poireaux", parts: 6, avant: 7, apres: 8, manque: 5 },
     { ingredient: "fromage-rape", nom: "râpé", plat: "quiche-poireaux", parts: 6, avant: 4, apres: 5, manque: 1 },
     // quiche-courgettes-yaourt : 6 parts, 2 yaourts
     // T145 — six packs rentrés (24 pots) ; T154 : remontés à 9 (36 pots).
@@ -391,8 +391,8 @@ describe("T137 — un article du fond à garde courte se finit par son âge", ()
       repas: "diner" as const, plat: "quiche-poireaux", parts: 6,
     }));
     const l = rentreIlYA(6, quiches).liste.find((x) => x.ingredient === "oeufs");
-    // T142 : trois boîtes rentrées, deux quiches en prennent une.
-    expect(l).toMatchObject({ a: 2, rentreLe: jourAvant(6) });
+    // T198 : quatre boîtes rentrées, deux quiches en prennent une.
+    expect(l).toMatchObject({ a: 3, rentreLe: jourAvant(6) });
     expect(phraseDuPlancher(l!, 0)).not.toContain("jamais vu");
     expect(phraseDuPlancher(l!, 0)).toContain(`acheté le ${jourAvant(6).slice(8, 10)}/${jourAvant(6).slice(5, 7)}`);
   });
