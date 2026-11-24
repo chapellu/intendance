@@ -28,6 +28,16 @@ export const POIDS_PIECE: Readonly<Record<string, number>> = {
   // la pièce) dérivait de même, dans l'autre sens. 150 g, comme le harnais.
   carottes: 150,
   oignon: 150,
+  // T198 — LES LÉGUMES QUI ONT UNE FORME SURGELÉE AU FOND. « 2 courgettes »
+  // prises au sachet de 1 kg passaient au mode non chiffré : le sachet
+  // s'entamait, sans un gramme, et l'app ne savait plus ce qu'il en restait.
+  // Pesées ici, elles en retirent 400 g. Le frais acheté à la pièce se recompte
+  // en pièces (`journal.contenuUnite`).
+  courgettes: 200,
+  poivron: 180,
+  aubergine: 300,
+  poireau: 150,
+  "champignons-paris": 20,
 };
 
 /** `qty unit` dans l'unité où l'on additionne : le kilo en grammes, le litre

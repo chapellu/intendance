@@ -36,7 +36,7 @@
 
 import { repartir, retenir } from "./remplacants";
 import { facteur } from "./calcul";
-import { enUniteDeCompte } from "./unites";
+import { enUniteDeCompte, POIDS_PIECE } from "./unites";
 import type {
   Catalogue, Denree, Espace, Etat, Plat, Quantite, RepasId,
   Remplacant,
@@ -741,7 +741,13 @@ const poidsUnite = (l: LotPlacard): number | null =>
 /** Ce que contient une unité DANS L'UNITÉ DE LA DEMANDE — des grammes, ou des
  *  pièces pour une boîte d'œufs (T135). Une autre unité : non chiffré. */
 const contenuUnite = (l: LotPlacard, unite: "g" | "pièce"): number | null => {
-  if (unite === "g") return poidsUnite(l);
+  if (unite === "g") {
+    // T198 — UN LOT COMPTÉ À LA PIÈCE SE PÈSE quand la pièce a un poids :
+    // « 4 poireaux » rentrés, une recette en demande 300 g, deux partent.
+    const piece = POIDS_PIECE[l.ingredient];
+    if (piece != null && l.parUnite && enPieces(l.parUnite.unit)) return l.parUnite.amount * piece;
+    return poidsUnite(l);
+  }
   return l.parUnite && enPieces(l.parUnite.unit) ? l.parUnite.amount : null;
 };
 
