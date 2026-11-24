@@ -94,6 +94,9 @@ export const JOURS_DE_VARIETE = 3;
  * coûtent la même chose ce soir.
  */
 export const POIDS = {
+  /** T198 — le plat range au congélateur ce qui y est déjà (un bouillon, le même
+   *  reste) : le refaire remplit un sac de plus au lieu d'en vider un. */
+  dejaAuCongelo: -4,
   /** Mangé il y a moins de trois jours. Un malus, pas un filtre : le foyer
    *  répète ses plats, et un plat d'avant-hier vaut mieux que pas de dîner. */
   recent: -6,
@@ -587,6 +590,7 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
   // tâche « à jeter » de T103 qui le porte.
   const vivants = depot.lignes.filter((l) => !l.epuise && !depot.perime(l, date));
   const routine = new Set(catalogue.creneaux.routines?.liste.flatMap((r) => r.duDepot?.types ?? []) ?? []);
+  const auCongelo = new Set(vivants.filter((l) => l.location === "congelo").map((l) => l.type));
   const pression: PressionDuCongelo = { sortis, plusAncien: plusAncienSiCharge(vivants, routine) };
   const attend = vivants
     .filter((l) => l.kind === "reste-plat" || l.kind === "base")
@@ -661,6 +665,7 @@ export function proposerCeSoir(e: EntreeDuSoir): PropositionDuSoir {
 
     let score = 0;
     if (recent) score += POIDS.recent;
+    if (p.emits.some((x) => x.congelo && auCongelo.has(x.type))) score += POIDS.dejaAuCongelo;
     if (attendIci && !presse) score += POIDS.attend;
     if (p.apports.proteine === "legumineuse" || p.apports.feculent === "legumineuse")
       score += POIDS.legumineuse;

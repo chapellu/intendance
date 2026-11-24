@@ -611,6 +611,16 @@ describe("le congélateur chargé : le plus ancien reste passe devant", () => {
     // Le plus ancien (curry, 11 jours) presse : il est en tête de ce qui attend.
     expect(proposition.attend[0]!.type).toBe("curry");
   });
+  test("un plat qui range au congélateur ce qui y est déjà perd des points", () => {
+    const toutes = (pr: PropositionDuSoir) => [...pr.cartes, ...pr.plus];
+    const sans = toutes(monde({ evts: [fondRentre(veille(LUNDI))] }).proposition);
+    const bouillon: LotInitial = { type: "bouillon-maison", kind: "base", qty: null, qty_band: "1-repas", born: veille(LUNDI, 3), location: "congelo", ref: "b" };
+    const avec = toutes(monde({ evts: [fondRentre(veille(LUNDI))], stock: [bouillon] }).proposition);
+    const score = (cs: CarteDuSoir[], id: string) => cs.find((c) => c.plat.id === id)?.score;
+    const a = score(sans, "consomme-de-fanes"), b = score(avec, "consomme-de-fanes");
+    expect(a).toBeDefined();
+    expect(b).toBeLessThan(a!);
+  });
   test(`${CONGELO_CHARGE} repas ou moins : un reste de dix jours attend sans presser`, () => {
     const { proposition } = monde({ evts: [fondRentre(veille(LUNDI))], stock: [resteDe("goulasch-boeuf", veille(LUNDI, 10), "congelo")] });
     expect(proposition.cartes.some((c) => c.presse && "type" in c.presse && c.presse.type === "goulasch-boeuf")).toBe(false);
