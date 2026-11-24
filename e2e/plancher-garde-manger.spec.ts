@@ -57,7 +57,7 @@ test("un plancher posé au placard part tout seul dans les courses", async ({ pa
   // porte son bouton, comme les lentilles corail du fond de roulement, qu'aucun
   // relevé n'avait jamais vues.
   await expect(
-    page.locator(".co-lot").filter({ hasText: /^oignon/ }).getByRole("button", { name: /En garder/ }),
+    page.locator(".co-lot").filter({ hasText: /^oignon(?! rouge)/ }).getByRole("button", { name: /En garder/ }),
   ).toBeVisible();
   await expect(
     page.locator(".co-lot").filter({ hasText: "lentilles corail" }).getByRole("button", { name: /En garder/ }),
