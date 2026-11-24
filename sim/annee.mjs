@@ -1143,7 +1143,10 @@ const nomDe = (id) => cat.rayons.noms?.[id] ?? id.replace(/-/g, " ");
 /** Midi : un reste pour les quatre (3 parts), sinon une omelette-tartines hors app. */
 async function dejeuner(j, ev, stats, weekend) {
   // Le week-end, le cockpit peut proposer un midi à cuisiner avec le stock.
-  if (weekend) {
+  // Le week-end on cuisine le midi ; en semaine aussi quand le frigo n'a pas de
+  // reste (télétravail) — si le cockpit propose un midi « rien à acheter ».
+  const resteAuFrigo = etat.restes.some((x) => !x.jete && x.portions > 0 && x.ou === "Frigo" && x.kind !== "base" && !x.types.some((t) => TYPES_PAIN.has(t) || TYPES_GOUTER.has(t)));
+  if (weekend || !resteAuFrigo) {
     await page.clock.setFixedTime(new Date(`${j}T11:30:00`));
     await aller("cockpit"); await attendre(".co-barre", 20_000); await page.waitForTimeout(300);
     const lien = page.locator("a", { hasText: /^Midi : .* — rien à acheter/ }).first();
@@ -1232,7 +1235,8 @@ async function journee2(idx) {
   }
   if (ev.some((e) => e.type === "don")) {
     note(j, "don", "courgettes et tomates offertes : toujours aucune porte d'entrée hors liste (T114)");
-    for (const id of ["courgette", "tomate"]) etat.reel[id] = { q: (etat.reel[id]?.q ?? 0) + 1500, achete: 1500, le: j, frais: true };
+    // 1,5 kg de chaque, dans l'unité du placard réel (des pièces, pas 1500 courgettes).
+    for (const id of ["courgettes", "tomates"]) { const q = versBase(id, 1500, "g"); etat.reel[id] = { q: (etat.reel[id]?.q ?? 0) + q, achete: q, le: j, frais: true }; }
   }
 
   if (idx === 0) await poserFond(j);
