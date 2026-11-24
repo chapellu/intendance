@@ -1231,10 +1231,8 @@ async function fournee(j, stats) {
   const fait = await cuisiner(j, [], stats, { parts: platParTitre.get(titre)?.portions ?? 4, deja: titre }).catch((e) => { note(j, "fournee", `fournée échouée : ${String(e).slice(0, 120)}`); return null; });
   if (fait) {
     etat.compte.fournees = (etat.compte.fournees ?? 0) + 1; stats.fournee = fait;
-    // Une fournée se range en sachets de rations (`band`), pas en « 2 parts ».
-    const p = platParTitre.get(fait);
-    const lots = etat.restes.filter((r) => r.plat === fait && r.le === j);
-    lots.forEach((r, k) => { const e = p?.emits?.[Math.min(k, (p.emits.length || 1) - 1)]; if (e) { r.portions = BAND(e.band); r.garde = e.congelo ? 90 : e.gardeFrigo ?? 3; r.ou = e.congelo ? "Congélo" : "Frigo"; } });
+    // T198 — la sortie a déjà dit où et combien (`cuisiner` : une part par goûter) ;
+    // le harnais ne réécrit plus chaque sachet à la bande entière de la recette.
   } else note(j, "fournee", `« ${txt} » n'a pas abouti`);
 }
 
